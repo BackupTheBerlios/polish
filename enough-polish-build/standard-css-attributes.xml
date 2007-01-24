@@ -2021,10 +2021,10 @@
 	/>
 
 	<attribute
-		name="gauge-tachometer-outer-color"
+		name="gauge-tachometer-clockface-color"
 		type="color"
 		appliesTo="Gauge, gauge-tachometer view-type"
-		description="the outer color of the tachometer"
+		description="the color of the clockface of the tachometer"
 		default="black"
 		id="205"
 	/>

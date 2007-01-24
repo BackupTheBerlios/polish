@@ -25,6 +25,9 @@
  */
 package de.enough.polish.ui.gaugeviews;
 
+
+
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Color;
@@ -49,8 +52,7 @@ import de.enough.polish.ui.Style;
  * 	<li><b>gauge-tachometer-section1-color</b>: the color of the first section</li>
  * 	<li><b>gauge-tachometer-section2-color</b>: the color of the second section</li>
  * 	<li><b>gauge-tachometer-section3-color</b>: the color of the third section</li>
- * 	<li><b>gauge-tachometer-outer-color</b>: the outer color of the tachometer, defaults to black</li>
- * 	<li><b>gauge-tachometer-inner-color</b>: the inner color of the tachometer, defaults to white</li>
+ * 	<li><b>gauge-tachometer-clockface-color</b>: the outer color of the tachometer, defaults to black</li>
  * 	<li><b>gauge-tachometer-needle-color</b>: the color of the tachometer needle/pointer/indicator, defaults to red.</li>
  * 	<li><b>gauge-tachometer-factor</b>: an integer factor by which all given values are divided for simulating floating point. A factor of 10 and a value of 14 will result in a shown value of 1.4, for example.</li>
  * </ul>
@@ -76,7 +78,7 @@ public class TachometerGaugeView extends ItemView {
 	private int section2Color = -1; // -1 means this section is not visible
 	private int section3Color = -1; // -1 means this section is not visible
 	
-	private int outerColor = 0x000000; // black
+	private int clockfaceColor = 0x000000; // black
 	private int innerColor = 0xFFFFFF; // white
 	private int needleColor = 0xFF0000; // red
 
@@ -94,8 +96,8 @@ public class TachometerGaugeView extends ItemView {
 		if (this.section3Start == 0) {
 			this.section3Start = (range * 2) / 3;
 		}
-		
 		this.contentWidth = ( lineWidth * 2 ) / 3;
+		System.out.println("firstline:"+firstLineWidth+";lineWidth:"+lineWidth+";contentWidth:"+this.contentWidth);
 		this.contentHeight = this.contentWidth;
 		
 	}
@@ -111,20 +113,41 @@ public class TachometerGaugeView extends ItemView {
 		if (this.section1Color != -1) {
 			// ...
 		}
+		int itemWidth = parent.itemWidth;
+		int itemHeight = parent.itemHeight;
+		System.out.println("itemHeight: "+parent.itemHeight+"; itemWidth: "+parent.itemWidth);
 		// draw outer area
 		// (to be done)
-		int centerX = x + this.contentWidth / 2;
-		int centerY = y + this.contentHeight / 2;
+		Gauge gauge = (Gauge)parent;
+		int centerX = x + itemWidth / 2;
+		int centerY = y + itemHeight / 2;
 		int innerCircleRadius = this.contentWidth / 10;
+		System.out.println("x:"+x+";y:"+y+";centerX:"+centerX+";centerY:"+centerY+";innerCircleRadius:"+innerCircleRadius);
 		// draw inner circle:
-		g.setColor( this.outerColor );
-		g.fillArc(x - innerCircleRadius, y - innerCircleRadius, innerCircleRadius * 2, innerCircleRadius * 2, 0, 360 );
+		g.setColor( this.clockfaceColor );
+		g.drawArc(centerX - (innerCircleRadius ), centerY- (innerCircleRadius ), innerCircleRadius * 2, innerCircleRadius * 2, 0, 360 );
+		g.drawArc(x , y, parent.itemWidth, parent.itemHeight, 0, 360 );
+		g.drawArc(x + 10, y + 10, parent.itemWidth - 20, parent.itemHeight - 20, 315, 270 );
+		Font font = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN,Font.SIZE_SMALL);
+		int startValueStringWidth = font.stringWidth(""+this.startValue);
+		int maxValueStringWidth = font.stringWidth(""+this.maxValue);
+		int gaugeValueStringWidth = font.stringWidth(""+gauge.getValue());
+		System.out.println("startValueWidth:"+startValueStringWidth);
+		System.out.println("maxValueWidth:"+maxValueStringWidth);
+		g.setFont(font);
+		g.drawString(""+this.startValue, x + 20 + startValueStringWidth, parent.itemHeight, 0);
+		g.drawString(""+this.maxValue, parent.itemWidth - 20 - maxValueStringWidth, parent.itemHeight, 0);
+		g.drawString(""+gauge.getValue(), centerX - gaugeValueStringWidth /2 , parent.itemHeight + 15, 0);
+		g.drawRect(x, y, parent.itemWidth, parent.itemHeight);
+		g.setColor( this.needleColor );
+		g.drawLine(centerX, centerY, parent.itemWidth - 20 - maxValueStringWidth, parent.itemHeight);
+		g.drawLine(centerX, centerY, x + 20 + maxValueStringWidth, parent.itemHeight);
 		// draw outer circle:
 		// (to be done)
 		// draw needle:
 		// (to be done)
-
-	}
+	
+		}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#setStyle(de.enough.polish.ui.Style)
@@ -180,10 +203,10 @@ public class TachometerGaugeView extends ItemView {
 				this.innerColor = colorInnerObj.getColor();
 			}
 		//#endif
-		//#if polish.css.gauge-tachometer-outer-color
-			Color colorOuterObj = style.getColorProperty("gauge-tachometer-outer-color");
+		//#if polish.css.gauge-tachometer-clockface-color
+			Color colorOuterObj = style.getColorProperty("gauge-tachometer-clockface-color");
 			if (colorOuterObj != null) {
-				this.outerColor = colorOuterObj.getColor();
+				this.clockfaceColor = colorOuterObj.getColor();
 			}
 		//#endif
 		//#if polish.css.gauge-tachometer-needle-color
