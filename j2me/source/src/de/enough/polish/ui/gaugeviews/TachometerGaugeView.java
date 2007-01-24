@@ -114,20 +114,28 @@ public class TachometerGaugeView extends ItemView {
 			// ...
 		}
 		int itemWidth = parent.itemWidth;
-		int itemHeight = parent.itemHeight;
+		int itemHeight = parent.itemWidth;
+		int widthLine = x + itemWidth;
+		int heightLine = y + itemHeight;
 		System.out.println("itemHeight: "+parent.itemHeight+"; itemWidth: "+parent.itemWidth);
 		// draw outer area
 		// (to be done)
 		Gauge gauge = (Gauge)parent;
 		int centerX = x + itemWidth / 2;
-		int centerY = y + itemHeight / 2;
+		int centerY = y + itemWidth / 2;
 		int innerCircleRadius = this.contentWidth / 10;
 		System.out.println("x:"+x+";y:"+y+";centerX:"+centerX+";centerY:"+centerY+";innerCircleRadius:"+innerCircleRadius);
 		// draw inner circle:
 		g.setColor( this.clockfaceColor );
+		g.drawRect(x, y, itemWidth, itemHeight);
 		g.drawArc(centerX - (innerCircleRadius ), centerY- (innerCircleRadius ), innerCircleRadius * 2, innerCircleRadius * 2, 0, 360 );
-		g.drawArc(x , y, parent.itemWidth, parent.itemHeight, 0, 360 );
-		g.drawArc(x + 10, y + 10, parent.itemWidth - 20, parent.itemHeight - 20, 315, 270 );
+		g.drawArc(x , y, itemWidth, itemHeight, 0, 360 );
+		int innerStartX = x + 10;
+		int innerStartY = y + 10;
+		int innerWidth = itemWidth - 20;
+		int innerHeight = itemHeight - 20;
+		int pointerLength = innerWidth;
+		g.drawArc(innerStartX, innerStartY, innerWidth , innerHeight , 315, 270 );
 		Font font = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN,Font.SIZE_SMALL);
 		int startValueStringWidth = font.stringWidth(""+this.startValue);
 		int maxValueStringWidth = font.stringWidth(""+this.maxValue);
@@ -135,13 +143,45 @@ public class TachometerGaugeView extends ItemView {
 		System.out.println("startValueWidth:"+startValueStringWidth);
 		System.out.println("maxValueWidth:"+maxValueStringWidth);
 		g.setFont(font);
-		g.drawString(""+this.startValue, x + 20 + startValueStringWidth, parent.itemHeight, 0);
-		g.drawString(""+this.maxValue, parent.itemWidth - 20 - maxValueStringWidth, parent.itemHeight, 0);
-		g.drawString(""+gauge.getValue(), centerX - gaugeValueStringWidth /2 , parent.itemHeight + 15, 0);
-		g.drawRect(x, y, parent.itemWidth, parent.itemHeight);
+		g.drawString(""+this.startValue, x + 20 + startValueStringWidth, itemHeight, 0);
+		g.drawString(""+this.maxValue, itemWidth - 20 - maxValueStringWidth, itemHeight, 0);
+		g.drawString(""+gauge.getValue(), centerX - gaugeValueStringWidth /2 , itemHeight + 15, 0);
 		g.setColor( this.needleColor );
-		g.drawLine(centerX, centerY, parent.itemWidth - 20 - maxValueStringWidth, parent.itemHeight);
-		g.drawLine(centerX, centerY, x + 20 + maxValueStringWidth, parent.itemHeight);
+		int value = 75;
+		int degree = 90;
+		if(value < 75){
+			degree = 315 - (value * 3); 
+		}
+		else if(value > 75 ){
+			degree = (value * 3) + 45;
+		}
+		int newX = ((int)(Math.cos(degree) *100));
+		int newY = ((int)(Math.sin(degree)*100));
+		System.out.println("cos "+newX+" sin "+newY);
+		if(newX >= 0){
+			newX = centerX - newX;
+		}else{
+			newX = centerX + newX;
+		}
+		if(newY >= 0){
+			newY = centerY - newY;
+		}else{
+			newY = centerY + newY;
+		}
+		
+		System.out.println("degree "+degree+" "+newX+" "+newY);
+		g.drawLine( centerX, centerY, newX , newY);
+//		if( value < 25 ){
+//			int sum = ((heightLine - centerY)*100)/value;
+//			System.out.println("sum "+sum);
+//			g.drawLine( centerX, centerY, x , heightLine - sum);
+//		}
+//		g.drawLine( centerX, centerY, widthLine  , heightLine);
+//		g.drawLine( centerX, centerY, x , heightLine);
+//		g.drawLine( centerX, centerY, widthLine, centerY);
+//		g.drawLine( centerX, centerY, centerX-((widthLine)/2) , centerY);
+//		g.drawLine( centerX, centerY, centerX , y);
+//		g.drawLine( centerX, centerY, centerX ,  heightLine);
 		// draw outer circle:
 		// (to be done)
 		// draw needle:
