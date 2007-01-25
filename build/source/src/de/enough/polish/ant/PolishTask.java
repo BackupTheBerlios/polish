@@ -332,6 +332,7 @@ public class PolishTask extends ConditionalTask {
 				checkSettings();
 				initProject();
 				selectDevices();
+        clearDeviceManager();
 				this.isInitialized = true;
 			}
 			// check if there has been an error at the last run:
@@ -473,6 +474,11 @@ public class PolishTask extends ConditionalTask {
 			}
 		}
 	}
+
+
+  private void clearDeviceManager() {
+    this.deviceManager.clear();
+  }
 	
 
 	protected void executeErrorTarget( String targetName, Exception e ) {

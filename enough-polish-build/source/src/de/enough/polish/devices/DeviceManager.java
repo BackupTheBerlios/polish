@@ -65,9 +65,8 @@ public class DeviceManager {
 	private Device[] devices;
 	private final ArrayList devicesList;
 	private final HashMap devicesByIdentifier;
-    private HashMap devicesByUserAgent;
+	private HashMap devicesByUserAgent;
 	private final VendorManager vendorManager;
-    private boolean isUserAgentMappingInitialized;
 
 	/**
 	 * Creates a new device manager with the given devices.xml file.
@@ -91,7 +90,6 @@ public class DeviceManager {
         
 		this.devicesList = new ArrayList();
 		this.vendorManager = vendorManager;
-        this.isUserAgentMappingInitialized = false;
 		loadDevices( configuratioManager, platformManager, vendorManager, groupManager, libraryManager, capabilityManager, devicesIS );
 		devicesIS.close();
 	}
@@ -221,9 +219,8 @@ public class DeviceManager {
      * @return the device corresponding to the given userAgent or null.
      */
     public Device getDeviceByUserAgent(String userAgent) {
-        if( ! this.isUserAgentMappingInitialized) {
+        if (this.devicesByUserAgent == null) {
             initializeUserAgentMapping();
-            this.isUserAgentMappingInitialized = true;
         }
         Object device = null;
 //        device = this.devicesByUserAgent.get(userAgent);
@@ -460,5 +457,16 @@ public class DeviceManager {
 		}
 	}
 
+  public void clear()
+  {
+    this.devices = null;
+    this.devicesList.clear();
+    this.devicesByIdentifier.clear();
+    this.vendorManager.clear();
 
+    if (this.devicesByUserAgent != null)
+    {
+      this.devicesByUserAgent.clear();
+    }
+  }
 }

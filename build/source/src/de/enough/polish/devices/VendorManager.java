@@ -177,4 +177,9 @@ public class VendorManager {
 			}
 		}
 	}
+  
+  public void clear()
+  {
+    this.vendors.clear();
+  }
 }
