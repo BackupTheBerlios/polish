@@ -54,8 +54,9 @@
         <panel classname="UserInputPanel" />
 		<!-- showing the licensing possibilities -->
         <panel classname="HTMLLicencePanel" />
-		<!-- choosing the license -->
+		<!-- choosing the license 
         <panel classname="ChooseLicensePanel" />
+        -->
 		<!-- where to install J2ME Polish -->
 	 	<panel classname="ChooseTargetPanel" />
 		<!-- setting of global.properties -->
