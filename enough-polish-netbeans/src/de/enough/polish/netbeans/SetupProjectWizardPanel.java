@@ -27,7 +27,7 @@ public class SetupProjectWizardPanel implements WizardDescriptor.Panel,
     public Component getComponent() {
         if (component == null) {
             component = new SetupProjectPanelVisual(this);
-            component.setName(NbBundle.getMessage(J2mePolishProjectTemplateWizardPanel.class, "LBL_SelectTargetDevicesStep"));
+            component.setName(NbBundle.getMessage(J2mePolishProjectTemplateWizardPanel.class, "LBL_SetupProjectStep"));
         }
         return component;
     }

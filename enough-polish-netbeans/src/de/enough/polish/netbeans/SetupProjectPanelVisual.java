@@ -4,6 +4,7 @@ import de.enough.polish.ide.swing.DeviceSelector;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
@@ -40,31 +41,30 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         projectNameLabel = new javax.swing.JLabel();
-        projectLocationLabel = new javax.swing.JLabel();
-        projectLocationTextField = new javax.swing.JTextField();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
         projectNameLabel3 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        textFieldEmulatorPlatform = new javax.swing.JTextField();
+        comboBoxTemplate = new javax.swing.JComboBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(projectNameLabel, "&Activate J2ME Polish GUI:");
-
-        projectLocationLabel.setLabelFor(projectLocationTextField);
-        org.openide.awt.Mnemonics.setLocalizedText(projectLocationLabel, "Create sample MIDlet:");
-
-        projectLocationTextField.setText("de.enough.polish.sample.MenuMidlet");
 
         jCheckBox1.setSelected(true);
         jCheckBox1.setToolTipText("Uncheck this element if you do not want to use the advanced J2ME Polish GUI for your project.");
         jCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        jCheckBox2.setSelected(true);
-        jCheckBox2.setToolTipText("Uncheck this element if you do not want to use the advanced J2ME Polish GUI for your project.");
-        jCheckBox2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox2.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        org.openide.awt.Mnemonics.setLocalizedText(projectNameLabel3, "Template");
 
-        org.openide.awt.Mnemonics.setLocalizedText(projectNameLabel3, "Name");
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, "Emulator Platform");
+        jLabel1.setName("labelEmulatorPlatform");
+
+        textFieldEmulatorPlatform.setText("MPowerPlayer");
+        textFieldEmulatorPlatform.setName("textFieldEmulatorPlatform");
+
+        comboBoxTemplate.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -73,17 +73,19 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(projectNameLabel)
-                    .add(projectLocationLabel)
-                    .add(projectNameLabel3))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                    .add(projectNameLabel3)
+                    .add(jLabel1)
+                    .add(projectNameLabel))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 18, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(jCheckBox2)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 305, Short.MAX_VALUE))
-                    .add(jCheckBox1)
-                    .add(projectLocationTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE))
-                .addContainerGap())
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(jCheckBox1)
+                        .add(317, 317, 317))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(comboBoxTemplate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 315, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(textFieldEmulatorPlatform, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -94,24 +96,24 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
                     .add(jCheckBox1))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(projectLocationLabel)
-                    .add(jCheckBox2))
+                    .add(projectNameLabel3)
+                    .add(comboBoxTemplate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(projectLocationTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(projectNameLabel3))
-                .addContainerGap(227, Short.MAX_VALUE))
+                    .add(jLabel1)
+                    .add(textFieldEmulatorPlatform, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(214, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
         
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox comboBoxTemplate;
     private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JLabel projectLocationLabel;
-    private javax.swing.JTextField projectLocationTextField;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel projectNameLabel;
     private javax.swing.JLabel projectNameLabel3;
+    private javax.swing.JTextField textFieldEmulatorPlatform;
     // End of variables declaration//GEN-END:variables
     
     public void addNotify() {
@@ -125,20 +127,33 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
     }
     
     void store(WizardDescriptor settings) {
-        DeviceSelector selector = (DeviceSelector) settings.getProperty("polish.devicesselector");
-        File projectDir = (File) settings.getProperty("projdir");
-        String projectName = (String) settings.getProperty("name");
-        String polishHome =  (String) settings.getProperty("polish.home");
-        File templateDir = new File( polishHome, "samples/menu");
-        try {
-            J2mePolishProjectGenerator.generateProjectFromTemplate("unknown", projectDir, templateDir, selector, null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        settings.putProperty("polish.EmulatorPlatform", this.textFieldEmulatorPlatform.getText() );
+        // read template:
+        String template = (String) this.comboBoxTemplate.getSelectedItem();
+        settings.putProperty("polish.template", template );
     }
     
     void read(WizardDescriptor settings) {
-        
+        // read available alatforms
+        // JavaPlatformManager;
+        // CustomPlatformConfigurator
+        String polishHome =  (String) settings.getProperty("polish.home");
+        ArrayList templatesList = new ArrayList();
+        File samplesDir = new File( polishHome + "/samples");
+        File[] samples = samplesDir.listFiles();
+        for (int i = 0; i < samples.length; i++) {
+            File file = samples[i];
+            if (file.isDirectory()) {
+                templatesList.add( file.getName() );
+            }
+        }
+        //TODO add other netbeans templates..
+        this.comboBoxTemplate.removeAllItems();
+        for (Iterator it = templatesList.iterator(); it.hasNext();) {
+            String templateName = (String) it.next();
+            this.comboBoxTemplate.addItem( templateName );
+        }
+
 
     }
     

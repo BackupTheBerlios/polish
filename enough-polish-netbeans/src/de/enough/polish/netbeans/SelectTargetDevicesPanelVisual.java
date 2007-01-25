@@ -4,6 +4,8 @@ import de.enough.polish.ide.swing.DeviceSelector;
 import de.enough.polish.ide.swing.DirectInvocationHandler;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -26,7 +28,7 @@ import org.openide.WizardDescriptor;
 import org.openide.WizardValidationException;
 import org.openide.filesystems.FileUtil;
 
-public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentListener {
+public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentListener, PropertyChangeListener {
     
     public static final String PROP_PROJECT_NAME = "projectName";
     
@@ -34,6 +36,7 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
     private int type;
     private JComponent deviceSelectionComponent;
     private boolean isWrongJ2mePolishHomeError;
+    private DeviceSelector deviceSelector;
     
     /** Creates new form PanelProjectLocationVisual */
     public SelectTargetDevicesPanelVisual(SelectTargetDevicesWizardPanel panel) {
@@ -81,6 +84,10 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
             wizardDescriptor.putProperty("WizardPanel_errorMessage", "Unable to read selected devices - check your J2ME Polish installation.\nYou will need at least J2ME Polish 2.0 Beta 4 or later.");
             return false;
         }
+//        if (this.deviceSelector.getSelectedDeviceIdentifiers().length == 0 ) {
+//            wizardDescriptor.putProperty("WizardPanel_errorMessage", "Please select at least one target device.");
+//            return false;            
+//        }
         wizardDescriptor.putProperty("WizardPanel_errorMessage", "");
         return true;
     }
@@ -91,16 +98,10 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
             return;
         }
         try {
-            DeviceSelector deviceSelector = (DeviceSelector) Proxy.newProxyInstance(
-                DeviceSelector.class.getClassLoader(),
-                new Class[] { DeviceSelector.class },
-                new DirectInvocationHandler(this.deviceSelectionComponent)
-            );
-            Map properties = deviceSelector.getSelectedDeviceProperties();
+            Map properties = this.deviceSelector.getSelectedDeviceProperties();
             //System.out.println("properties of selected devices: " + properties );
-            String[] deviceIdentifiers = deviceSelector.getSelectedDeviceIdentifiers();
+            String[] deviceIdentifiers = this.deviceSelector.getSelectedDeviceIdentifiers();
             d.putProperty( "polish.devices", properties );
-            d.putProperty( "polish.devicesselector",  deviceSelector );
 //            Method method = this.deviceSelectionComponent.getClass().getMethod("getSelectedDeviceIdentifiers", new Class[0]);
 //            String[] deviceIdentifiers = (String[]) method.invoke( this.deviceSelectionComponent, new Object[0]);
 //            d.putProperty( "polish.DeviceIdentifiers", deviceIdentifiers );
@@ -147,6 +148,17 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
                     component = (JComponent) constructor.newInstance( new Object[]{ polishHome} );
                     this.deviceSelectionComponent = component;
                     add( component, BorderLayout.CENTER );
+                    component.addPropertyChangeListener( this );
+                    settings.putProperty("polish.DeviceSelectionComponent", component );
+                    
+                    this.deviceSelector = (DeviceSelector) Proxy.newProxyInstance(
+                        DeviceSelector.class.getClassLoader(),
+                        new Class[] { DeviceSelector.class },
+                        new DirectInvocationHandler(this.deviceSelectionComponent)
+                    );
+                    settings.putProperty( "polish.devicesselector",  deviceSelector );
+                  
+                            
                 } catch (Exception ex) {
                     this.isWrongJ2mePolishHomeError = true;
                     ex.printStackTrace();
@@ -212,6 +224,11 @@ public class SelectTargetDevicesPanelVisual extends JPanel implements DocumentLi
     }
 
     public void changedUpdate(DocumentEvent e) {
+    }
+
+    public void propertyChange(PropertyChangeEvent event) {
+        System.out.println("property change event: " + event );
+        this.panel.fireChangeEvent();
     }
 
 

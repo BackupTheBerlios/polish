@@ -39,6 +39,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -247,6 +248,7 @@ public final class FileUtil {
 	throws IOException 
 	{
 		Object[] keys = properties.keySet().toArray();
+                Arrays.sort( keys );
 		String[] lines = new String[ keys.length ];
 		for (int i = 0; i < lines.length; i++) {
 			String key = keys[i].toString();

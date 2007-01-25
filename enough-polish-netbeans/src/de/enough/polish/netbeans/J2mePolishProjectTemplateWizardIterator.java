@@ -1,5 +1,6 @@
 package de.enough.polish.netbeans;
 
+import de.enough.polish.ide.swing.DeviceSelector;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
@@ -7,7 +8,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -55,12 +58,29 @@ public class J2mePolishProjectTemplateWizardIterator implements WizardDescriptor
     
     public Set/*<FileObject>*/ instantiate() throws IOException {
         Set resultSet = new LinkedHashSet();
-        File dirF = FileUtil.normalizeFile((File) wiz.getProperty("projdir"));
-        dirF.mkdirs();
+        File projectDir = FileUtil.normalizeFile((File) wiz.getProperty("projdir"));
+        projectDir.mkdirs();
         
-        FileObject template = Templates.getTemplate(wiz);
-        FileObject dir = FileUtil.toFileObject(dirF);
-        //unZipFile(template.getInputStream(), dir);
+        //FileObject template = Templates.getTemplate(wiz);
+        FileObject dir = FileUtil.toFileObject(projectDir);
+        // do not unzip the template, rather load it from J2ME Polish directly... 
+        // unZipFile(template.getInputStream(), dir);
+        //Map map = new HashMap
+        DeviceSelector selector = (DeviceSelector) wiz.getProperty("polish.devicesselector");
+        //File projectDir = (File) wiz.getProperty("projdir");
+        String projectName = (String) wiz.getProperty("name");
+        String polishHome =  (String) wiz.getProperty("polish.home");
+        String template = (String) wiz.getProperty("polish.template");
+        if (template == null) {
+            template = "menu";
+        }
+        File templateDir = new File( polishHome, "samples/" + template );
+        Map buildProperties = new HashMap();
+        buildProperties.put("polish.home", polishHome );
+        buildProperties.put("polish.EmulatorPlatform", wiz.getProperty("polish.EmulatorPlatform"));
+        J2mePolishProjectGenerator.generateProjectFromTemplate(projectName, projectDir, templateDir, selector, buildProperties);
+        
+
         
         // Always open top dir as a project:
         resultSet.add(dir);
@@ -73,7 +93,7 @@ public class J2mePolishProjectTemplateWizardIterator implements WizardDescriptor
             }
         }
         
-        File parent = dirF.getParentFile();
+        File parent = projectDir.getParentFile();
         if (parent != null && parent.exists()) {
             ProjectChooser.setProjectsFolder(parent);
         }
