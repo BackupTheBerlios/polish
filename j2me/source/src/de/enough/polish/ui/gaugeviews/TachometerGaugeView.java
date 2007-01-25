@@ -96,10 +96,10 @@ public class TachometerGaugeView extends ItemView {
 		if (this.section3Start == 0) {
 			this.section3Start = (range * 2) / 3;
 		}
-		this.contentWidth = ( lineWidth * 2 ) / 3;
+//		this.contentWidth = ( lineWidth * 2 ) / 3;
 		System.out.println("firstline:"+firstLineWidth+";lineWidth:"+lineWidth+";contentWidth:"+this.contentWidth);
+		this.contentWidth = 120 ;
 		this.contentHeight = this.contentWidth;
-		
 	}
 
 	/* (non-Javadoc)
@@ -108,42 +108,36 @@ public class TachometerGaugeView extends ItemView {
 	protected void paintContent(Item parent, int x, int y, int leftBorder,
 			int rightBorder, Graphics g) 
 	{
-		// draw sections:
-		// (to be done)
-		if (this.section1Color != -1) {
-			// ...
-		}
-		int itemWidth = parent.itemWidth;
-		int itemHeight = parent.itemWidth;
+		System.out.println("this.contentWidth "+this.contentWidth+" this.contentHeight "+this.contentHeight);
+		int itemWidth = this.contentWidth;
+		int itemHeight = this.contentHeight;
 		int widthLine = x + itemWidth;
 		int heightLine = y + itemHeight;
-		System.out.println("itemHeight: "+parent.itemHeight+"; itemWidth: "+parent.itemWidth);
-		// draw outer area
-		// (to be done)
 		Gauge gauge = (Gauge)parent;
 		int centerX = x + itemWidth / 2;
 		int centerY = y + itemWidth / 2;
 		int innerCircleRadius = this.contentWidth / 10;
-		
-		System.out.println("x:"+x+";y:"+y+";centerX:"+centerX+";centerY:"+centerY+";innerCircleRadius:"+innerCircleRadius);
-		// draw inner circle:
 		g.setColor( this.clockfaceColor );
 		g.drawRect(x, y, itemWidth, itemHeight);
 		g.drawArc(centerX - (innerCircleRadius ), centerY- (innerCircleRadius ), innerCircleRadius * 2, innerCircleRadius * 2, 0, 360 );
 		g.drawArc(x , y, itemWidth, itemHeight, 0, 360 );
-		int innerStartX = x + 10;
-		int innerStartY = y + 10;
-		int innerWidth = itemWidth - 20;
-		int innerHeight = itemHeight - 20;
-		int pointerLength = innerWidth /2;
-		System.out.println("pointerLength "+pointerLength);
+		int innerStartX = x + innerCircleRadius;
+		int innerStartY = y + innerCircleRadius;
+		int innerWidth = itemWidth - innerCircleRadius *2;
+		int innerHeight = itemHeight - innerCircleRadius *2;
+		int pointerLength = (innerWidth /2)-(innerWidth /8);
 		g.drawArc(innerStartX, innerStartY, innerWidth , innerHeight , 315, 270 );
+		g.setColor(0xFF00CC);
+		g.drawArc(innerStartX + 3, innerStartY +3, innerWidth-6 , innerHeight-6 , 315, 90 );
+		g.setColor(0xFFFFCC);
+		g.drawArc(innerStartX + 3, innerStartY +3, innerWidth-6 , innerHeight-6 , 405, 90 );
+		g.setColor(0xFF0000);
+		g.drawArc(innerStartX + 3, innerStartY +3, innerWidth-6 , innerHeight-6 , 135, 90 );
+		g.setColor( this.clockfaceColor );
 		Font font = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN,Font.SIZE_SMALL);
 		int startValueStringWidth = font.stringWidth(""+this.startValue);
 		int maxValueStringWidth = font.stringWidth(""+this.maxValue);
 		int gaugeValueStringWidth = font.stringWidth(""+gauge.getValue());
-		System.out.println("startValueWidth:"+startValueStringWidth);
-		System.out.println("maxValueWidth:"+maxValueStringWidth);
 		g.setFont(font);
 		g.drawString(""+this.startValue, x + 20 + startValueStringWidth, itemHeight, 0);
 		g.drawString(""+this.maxValue, itemWidth - 20 - maxValueStringWidth, itemHeight, 0);
@@ -151,56 +145,17 @@ public class TachometerGaugeView extends ItemView {
 		g.setColor( this.needleColor );
 		int value = gauge.getValue();
 		double valuePercent = ((double)value / (double)maxValue)*100 ;
-		System.out.println("(value / maxValue)"+((double)value / (double)maxValue));
 		int degree ;
-		if(valuePercent >= 0 && valuePercent < 75){
-			degree = (int) (225 - (valuePercent*3));
-		}else if (valuePercent > 75){
-			degree = (int) (360 - ((valuePercent-75)*2));
-		}else{
-			degree = 0;
-		}
-		System.out.println("maxValue "+maxValue);
-		System.out.println("valuePercent "+valuePercent);
-		System.out.println("degree "+degree);
-//		if(value < 75){
-//			degree = 315 - (value * 3); 
-//		}
-//		else if(value > 75 ){
-//			degree = (value * 3) + 45;
-//		}
+		degree = (int) (225 - (valuePercent*2.7));
 		double degreeCos = Math.cos(Math.PI*degree/180);
 		double degreeSin = Math.sin(Math.PI*degree/180);
-		System.out.println("degreeCos "+degreeCos+" degreeSin "+degreeSin*100);
 		int angleCos = (int)( degreeCos * pointerLength);
 		int angleSin = (int)( degreeSin * pointerLength);
-		System.out.println("angleCos "+angleCos+" angleSin "+angleSin);
-		System.out.println("degree:"+degree);
 		int newX = (angleCos / pointerLength)*100;
 		int newY = (angleSin / pointerLength)*100;
-//		g.drawLine(x, y, newX, newY);
-		System.out.println("newX "+newX+" newY "+newY);
 		newX = centerX + (angleCos);
 		newY = centerY + (-angleSin);
-		
-		System.out.println("degree "+degree+" newX "+newX+" newY "+newY+" centerX "+centerX+" centerY"+centerY);
 		g.drawLine( centerX, centerY, newX , newY);
-//		if( value < 25 ){
-//			int sum = ((heightLine - centerY)*100)/value;
-//			System.out.println("sum "+sum);
-//			g.drawLine( centerX, centerY, x , heightLine - sum);
-//		}
-//		g.drawLine( centerX, centerY, widthLine  , heightLine);
-//		g.drawLine( centerX, centerY, x , heightLine);
-//		g.drawLine( centerX, centerY, widthLine, centerY);
-//		g.drawLine( centerX, centerY, centerX-((widthLine)/2) , centerY);
-//		g.drawLine( centerX, centerY, centerX , y);
-//		g.drawLine( centerX, centerY, centerX ,  heightLine);
-		// draw outer circle:
-		// (to be done)
-		// draw needle:
-		// (to be done)
-	
 		}
 
 	/* (non-Javadoc)
