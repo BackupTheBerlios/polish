@@ -26,5 +26,6 @@
 	<classpathentry kind="lib" path="lib/swing-layout-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/ZKM.jar"/>
 	<classpathentry kind="lib" path="lib/javax.servlet.jar"/>
+	<classpathentry kind="lib" path="lib/enough-license.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

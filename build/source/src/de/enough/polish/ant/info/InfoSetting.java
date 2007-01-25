@@ -95,7 +95,6 @@ public class InfoSetting {
 	private ArrayList jadAttributes;
 	private String vendorName;
 	private String jarName;
-	private String license = GPL_LICENSE;
 	private String profile;
 	private String configuration;
 	
@@ -469,13 +468,7 @@ public class InfoSetting {
 		this.manifestAttributes.add( var );
 		this.jadAttributes.add( var );
 	}
-	
-	/**
-	 * @return Returns the license.
-	 */
-	public String getlicense() {
-		return this.license;
-	}
+
 	
 	/**
 	 * Sets the license of the license key for this project.
@@ -483,22 +476,6 @@ public class InfoSetting {
 	 * @param license The license of the created applications, either "GPL" or the license-key for commercial use.
 	 */
 	public void setLicense(String license) {
-		if ("GPL".equalsIgnoreCase(license)) {
-			this.license = GPL_LICENSE;
-		} else if ("%{J2ME_POLISH_LICENSE}".equalsIgnoreCase(license)) {
-			System.err.println("Warning: your license-setting [" + license + "] is invalid, it seems like an incorrect installation of J2ME Polish... Using now GPL license instead.");
-			this.license = GPL_LICENSE;
-		} else {
-			if (license.length() != 12) {
-				throw new BuildException("Invalid license: [" + license +"]. Please use either the GPL license or obtain a commercial license from Enough Software at www.j2mepolish.org");
-			}
-			try {
-				Long.parseLong(license, 0x10);
-				this.license = license;
-			} catch (Exception e) {
-				throw new BuildException("Invalid license: [" + license +"]. Please use either the GPL license or obtain a commercial license from Enough Software at www.j2mepolish.org.");
-			}
-		}
 		System.out.println("info: the license attribute is no longer supported. Please place your license.key file either to ${project.home} or to ${polish.home}.");
 	}
 	

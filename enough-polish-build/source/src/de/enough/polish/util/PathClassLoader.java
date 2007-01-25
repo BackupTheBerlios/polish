@@ -444,7 +444,7 @@ public class PathClassLoader extends ClassLoader {
      *
      * @throws IOException if data needed from the file cannot be read.
      */
-    protected void addPathFile(File pathComponent) throws IOException {
+    public void addPathFile(File pathComponent) throws IOException {
     	if (!pathComponent.exists()) {
     		return;
     	}

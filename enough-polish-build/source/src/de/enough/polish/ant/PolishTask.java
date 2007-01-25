@@ -60,6 +60,7 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
 import de.enough.polish.ExtensionManager;
+import de.enough.polish.LicenseLoader;
 import de.enough.polish.PolishProject;
 import de.enough.polish.Variable;
 import de.enough.polish.ant.build.BuildSetting;
@@ -111,6 +112,7 @@ import de.enough.polish.resources.ResourceManager;
 import de.enough.polish.resources.TranslationManager;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;
+import de.enough.polish.util.PathClassLoader;
 import de.enough.polish.util.ReflectionUtil;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringList;
@@ -248,6 +250,8 @@ public class PolishTask extends ConditionalTask {
 
 	private StringList styleCacheCode;
 
+	private Map licensingInformation;
+
 
 	
 	/**
@@ -270,9 +274,6 @@ public class PolishTask extends ConditionalTask {
 	public void addConfiguredInfo( InfoSetting setting ) {
 		if (setting.getName() == null ) {
 			throw new BuildException("The nested element <info> requires the attribute [name] which defines the name of this project.");
-		}
-		if (setting.getlicense() == null) {
-			throw new BuildException("The nested element <info> requires the attribute [license] with either \"GPL\" for open source software or the commercial license, which can be obtained at http://www.j2mepolish.org.");
 		}
 		if (setting.getVendorName() == null) {
 			throw new BuildException("The nested element <info> requires the attribute [vendorName] which defines the name of the vendor providing the application.");
@@ -322,7 +323,7 @@ public class PolishTask extends ConditionalTask {
 	 * @throws BuildException when the build failed.
 	 */
 	public void execute() throws BuildException {
-		System.out.println("J2ME Polish " + VERSION );
+		System.out.println("J2ME Polish " + VERSION + " (" + getLicenseInfo() +")");
 		if (!isActive()) {
 			return;
 		}
@@ -473,6 +474,7 @@ public class PolishTask extends ConditionalTask {
 		}
 	}
 	
+
 	protected void executeErrorTarget( String targetName, Exception e ) {
 		try {
 			if ( targetName != null ) {
@@ -752,7 +754,7 @@ public class PolishTask extends ConditionalTask {
 		if (debugManager != null && this.buildSetting.getDebugSetting().showLogOnError()) {
 			this.polishProject.addFeature("showLogOnError");
 		}
-		this.polishProject.addCapability("license", this.infoSetting.getlicense() );
+		this.polishProject.addCapability("license", getLicense() );
 		if (isDebugEnabled) {
 			this.polishProject.addFeature("debugEnabled");
 		}
@@ -1177,6 +1179,81 @@ public class PolishTask extends ConditionalTask {
 			this.polishBuildListeners = (PolishBuildListener[]) polishBuildListenersList.toArray( new PolishBuildListener[ polishBuildListenersList.size() ] ); 
 		}
 	}
+
+	/**
+	 * Retrieves the license for J2ME Polish
+	 * 
+	 * @return the license name
+	 */
+	private String getLicense() {
+		if (this.licensingInformation == null) {
+			// check project license.key:
+			File polishDir = null;
+			String polishHome = getProject().getProperty("polish.home");
+			if (polishHome != null) {
+				polishDir = getProject().resolveFile(polishHome);
+			}
+			File licenseKeyFile = new File( getProject().getBaseDir(), "license.key" );
+			if (!licenseKeyFile.exists()) {
+				// check ${polish.home}/license.key file:
+				if (polishDir != null) {
+					licenseKeyFile = new File( polishDir, "license.key" );
+				}
+			}
+			if (licenseKeyFile.exists()) {
+				try {
+					PathClassLoader classLoader = new PathClassLoader( getClass().getClassLoader(), false );
+					if (polishDir != null) {
+						classLoader.addPathFile( new File( polishDir, "lib/enough-license.jar") );
+						classLoader.addPathFile( new File( polishDir, "lib/enough-j2mepolish-extensions.jar") );
+						classLoader.addPathFile( new File( polishDir, "bin/extensions") );
+					}
+					LicenseLoader licenseLoader = (LicenseLoader) classLoader.findClass("de.enough.polish.license.PolishLicenseLoader").newInstance();
+					this.licensingInformation = licenseLoader.verifyLicense(licenseKeyFile);
+				} catch (SecurityException e) {
+					BuildException be = new BuildException("Encountered invalid license file " + licenseKeyFile.getAbsolutePath() + ": " + e.toString() );
+					be.initCause( e );
+					throw be;
+				} catch (Exception e) {
+					BuildException be = new BuildException("Unable to extract information from license file " + licenseKeyFile.getAbsolutePath() + ": " + e.toString() );
+					be.initCause( e );
+					throw be;
+
+				}
+			} else {
+				this.licensingInformation = new HashMap();
+			}
+		}
+		String license = (String) this.licensingInformation.get("license.name");
+		if (license == null) {
+			license = "GPL";
+		}
+		return license;
+	}
+	
+	/**
+	 * Retrieves full licensing information like "Single License for Companyname" or "GPL License".
+	 * 
+	 * @return the full licensing information
+	 */
+	private String getLicenseInfo() {
+		String license = getLicense();
+		if ("GPL".equals(license)) {
+			return "GPL License";
+		}
+		// encountered a real license:
+		String licenseeName = (String) this.licensingInformation.get("licensee.name");
+		if (licenseeName == null) {
+			licenseeName = "Unknown Licensee";
+		}
+		if ("Enterprise".equals(license)) {
+			return "Enterprise License for " + licenseeName;
+		}
+		// either Single or J2ME Polish Developer Program license:
+		String projectName = (String) this.licensingInformation.get("licensee.project");
+		return license + " License for " + licenseeName + ", project \"" + projectName + "\"";
+	}
+
 
 	/**
 	 * Creates an array of text files.
@@ -2377,7 +2454,7 @@ public class PolishTask extends ConditionalTask {
 						+ File.separatorChar + jarName );
 		device.setJarFile( jarFile );
 		String test = this.polishProject.getCapability("polish.license");
-		if ( !this.infoSetting.getlicense().equals(test)) {
+		if ( !getLicense().equals(test)) {
 			throw new BuildException("Encountered invalid license.");
 		}
 		
