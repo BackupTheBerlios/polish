@@ -166,4 +166,11 @@ public class DeviceGroupManager {
 			}
 		}
 	}
+
+	/**
+	 * Clears all stored groups from memory.
+	 */
+	public void clear() {
+		this.groups.clear();
+	}
 }

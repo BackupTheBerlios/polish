@@ -95,6 +95,29 @@ public class DeviceManager {
 	}
 	
 	/**
+	 * Creates a new device manager with the given devices.xml file.
+	 * 
+	 * @param platformManager
+	 * @param configuratioManager
+	 * @param vendorManager The manager of the device-manufacturers
+	 * @param groupManager The manager for device-groups.
+	 * @param libraryManager the manager for device-specific APIs
+	 * @param capabilityManager
+	 * @param devicesIS the InputStream containing the device definitions.
+	 * 			Usally this is the devices.xml file in the current directory.
+	 * @throws JDOMException when there are syntax errors in devices.xml
+	 * @throws IOException when devices.xml could not be read
+	 * @throws InvalidComponentException when a device definition has errors
+	 */
+	public DeviceManager( VendorManager vendorManager ) 
+	throws JDOMException, IOException, InvalidComponentException 
+	{
+		this.devicesByIdentifier = new HashMap();
+		this.devicesList = new ArrayList();
+		this.vendorManager = vendorManager;
+	}
+
+	/**
 	 * Loads the device definitions.
 	 * 
 	 * @param vendManager The manager of the device-manufacturers
@@ -106,7 +129,25 @@ public class DeviceManager {
 	 * @throws IOException when devices.xml could not be read
 	 * @throws InvalidComponentException when a device definition has errors
 	 */
-	private void loadDevices(  ConfigurationManager configuratioManager, PlatformManager platformManager, VendorManager vendManager, DeviceGroupManager grManager, LibraryManager libManager, CapabilityManager capabilityManager, InputStream devicesIS ) 
+	protected void loadDevices(  ConfigurationManager configuratioManager, PlatformManager platformManager, VendorManager vendManager, DeviceGroupManager grManager, LibraryManager libManager, CapabilityManager capabilityManager, InputStream devicesIS ) 
+	throws JDOMException, IOException, InvalidComponentException 
+	{
+		loadDevices( null, configuratioManager, platformManager, vendManager, grManager, libManager, capabilityManager, devicesIS);
+	}
+	
+	/**
+	 * Loads the device definitions.
+	 * @param identifierList a list of identifiers that should be loaded, when null all found devices are loaded
+	 * @param vendManager The manager of the device-manufacturers
+	 * @param grManager The manager for device-groups.
+	 * @param libManager the manager for API libraries
+	 * @param devicesIS the InputStream containing the device definitions.
+	 * 			Usally this is the devices.xml file in the current directory.
+	 * @throws JDOMException when there are syntax errors in devices.xml
+	 * @throws IOException when devices.xml could not be read
+	 * @throws InvalidComponentException when a device definition has errors
+	 */
+	protected void loadDevices(  List identifierList, ConfigurationManager configuratioManager, PlatformManager platformManager, VendorManager vendManager, DeviceGroupManager grManager, LibraryManager libManager, CapabilityManager capabilityManager, InputStream devicesIS ) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
 		if (devicesIS == null) {
@@ -130,6 +171,12 @@ public class DeviceManager {
 			String[] identifiers = StringUtil.splitAndTrim(identifierStr,',');
 			for (int i = 0; i < identifiers.length; i++) {
 				String identifier = identifiers[i];
+				if (identifierList != null) {
+					boolean isRequiredIdentifier = identifierList.remove( identifier );
+					if (!isRequiredIdentifier) {
+						continue;
+					}
+				}
 				if (devicesMap.get( identifier ) != null) {
 					throw new InvalidComponentException("The device [" + identifier + "] has been defined twice in [devices.xml]. Please remove one of those definitions.");
 				}
@@ -157,6 +204,9 @@ public class DeviceManager {
 	 * @return the device definitions found in the devices.xml file.
 	 */
 	public Device[] getDevices() {
+		if (this.devices == null) {
+			this.devices = (Device[]) this.devicesList.toArray( new Device[ this.devicesList.size()]);
+		}
 		return this.devices;
 	}
 
@@ -422,7 +472,6 @@ public class DeviceManager {
 		Arrays.sort( vendorDevices );
 		return vendorDevices;
 	}
-
 	/**
 	 * @param configuratioManager
 	 * @param platformManager
@@ -436,9 +485,26 @@ public class DeviceManager {
 	 */
 	public void loadCustomDevices( ConfigurationManager configuratioManager, PlatformManager platformManager, VendorManager vendManager, DeviceGroupManager deviceGroupManager, LibraryManager libManager, CapabilityManager capabilityManager, File customDevices ) 
 	throws JDOMException, InvalidComponentException {
+		loadCustomDevices(null, configuratioManager, platformManager, vendManager, deviceGroupManager, libManager, capabilityManager, customDevices);
+	}
+
+	/**
+	 * @param identifierList
+	 * @param configuratioManager
+	 * @param platformManager
+	 * @param vendManager
+	 * @param deviceGroupManager
+	 * @param libManager
+	 * @param capabilityManager
+	 * @param customDevices
+	 * @throws JDOMException
+	 * @throws InvalidComponentException
+	 */
+	public void loadCustomDevices( List identifierList, ConfigurationManager configuratioManager, PlatformManager platformManager, VendorManager vendManager, DeviceGroupManager deviceGroupManager, LibraryManager libManager, CapabilityManager capabilityManager, File customDevices ) 
+	throws JDOMException, InvalidComponentException {
 		if (customDevices.exists()) {
 			try {
-				loadDevices( configuratioManager, platformManager, vendManager, deviceGroupManager, libManager, capabilityManager, new FileInputStream( customDevices ) );
+				loadDevices( identifierList, configuratioManager, platformManager, vendManager, deviceGroupManager, libManager, capabilityManager, new FileInputStream( customDevices ) );
 			} catch (FileNotFoundException e) {
 				// this shouldn't happen
 				System.err.println("Unable to load [custom-devices.xml]: " + e.toString() );
@@ -457,16 +523,18 @@ public class DeviceManager {
 		}
 	}
 
-  public void clear()
-  {
-    this.devices = null;
-    this.devicesList.clear();
-    this.devicesByIdentifier.clear();
-    this.vendorManager.clear();
 
-    if (this.devicesByUserAgent != null)
-    {
-      this.devicesByUserAgent.clear();
-    }
-  }
+	/**
+	 * Clears all stored devices from memory.
+	 */
+	public void clear()
+	{
+		this.devices = null;
+		this.devicesList.clear();
+		this.devicesByIdentifier.clear();
+		if (this.devicesByUserAgent != null)
+		{
+			this.devicesByUserAgent.clear();
+		}
+	}
 }

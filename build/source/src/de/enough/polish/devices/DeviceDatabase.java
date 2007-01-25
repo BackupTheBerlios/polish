@@ -30,6 +30,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import de.enough.polish.BuildException;
@@ -266,21 +268,32 @@ public class DeviceDatabase {
 			throw new BuildException("unable to read vendors.xml/custom-vendors.xml: " + e.getMessage(), e );
 		}
 		try {				
-			// load devices:
+			// at last load devices:
+			List requiredIdentifiers = (List) properties.get("polish.devicedatabase.identifiers");
 			InputStream is = getInputStream("devices.xml", polishHomeDir, inputStreamsByFileName);
-			this.deviceManager = new DeviceManager( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, is );
+			//this.deviceManager = new DeviceManager( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, is );
+			this.deviceManager = new DeviceManager( this.vendorManager );
+			this.deviceManager.loadDevices(requiredIdentifiers, this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, is );
 			File file = (File) customFilesByFileName.get("custom-devices.xml");
 			if ( file != null ) {
-				this.deviceManager.loadCustomDevices( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, file );
+				this.deviceManager.loadCustomDevices( requiredIdentifiers, this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, file );
 			} else {
 				// use default vendors:
 				file = new File( polishHomeDir, "custom-devices.xml");
 				if (file.exists()) {
-					this.deviceManager.loadCustomDevices( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, file );
+					this.deviceManager.loadCustomDevices( requiredIdentifiers, this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, file );
 				}
 				file = new File( projectHomeDir, "custom-devices.xml");
 				if (file.exists()) {
-					this.deviceManager.loadCustomDevices( this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, file );
+					this.deviceManager.loadCustomDevices( requiredIdentifiers, this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, file );
+				}
+			}
+			if (requiredIdentifiers != null && requiredIdentifiers.size() != 0) {
+				System.out.println("Warning: unable to resolve follorwing requested identifiers:");
+				for (Iterator iter = requiredIdentifiers.iterator(); iter.hasNext();) 
+				{
+					String identifier = (String) iter.next();
+					System.out.println("  " + identifier);
 				}
 			}
 		} catch (BuildException e) {
@@ -447,6 +460,38 @@ public class DeviceDatabase {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Clears all referenced objects and databases from the memory.
+	 */
+	public void clear() {
+		if (instanceByPolishHome != null) {
+			instanceByPolishHome.clear();
+		}
+		if (this.deviceManager != null) {
+			this.deviceManager.clear();
+		}
+		if (this.vendorManager != null) {
+			this.vendorManager.clear();
+		}
+		if (this.groupManager != null) {
+			this.groupManager.clear();
+		}
+		// following managers are required by other build phases:
+//		if (this.capabilityManager != null) {
+//			this.capabilityManager.clear();
+//		}
+//		if (this.configurationManager != null) {
+//			this.configurationManager.clear();
+//		}
+//		if (this.libraryManager != null) {
+//			this.libraryManager.clear();
+//		}
+//		if (this.platformManager != null) {
+//			this.platformManager.clear();
+//		}
+		System.gc();
 	}
 	
         

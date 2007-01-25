@@ -115,4 +115,11 @@ public class CapabilityManager {
 	public Capability getCapability( String identifier ) {
 		return (Capability) this.capabilitiesByIdentifier.get( identifier );
 	}
+
+	/**
+	 * Clears all stored capabilities from memory.
+	 */
+	public void clear() {
+		this.capabilitiesByIdentifier.clear();
+	}
 }

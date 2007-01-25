@@ -49,7 +49,6 @@ extends AndRelation
 {
 	
 	ConditionalElement condition;
-
 	/**
 	 * Creates a new device requirements list.
 	 */

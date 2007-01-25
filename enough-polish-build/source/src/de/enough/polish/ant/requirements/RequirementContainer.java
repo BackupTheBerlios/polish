@@ -28,6 +28,8 @@ package de.enough.polish.ant.requirements;
 import de.enough.polish.Variable;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <p>Represents an "AND", "OR", "XOR" and "NOT" relation between several requirements.</p>
@@ -45,6 +47,7 @@ implements DeviceFilter
 {
 	
 	private ArrayList filters;
+	protected List requiredIdentifiers;
 
 	/**
 	 * Creates a new empty container
@@ -53,33 +56,73 @@ implements DeviceFilter
 		this.filters = new ArrayList();
 	}
 	
+	protected void add( DeviceFilter filter ) {
+		this.filters.add( filter );
+		// check if this is a <identfier> requirement of if this container/relation only includes <identifier> requirements.
+		// when a non-<identifier> requirement has been added before, the requiredIdentifiers field is set to null.
+		if (this.requiredIdentifiers != null || this.filters.size() == 1 ) {
+			addIdentifiers( filter );
+		}
+	}
+	
+	/**
+	 * Adds the (possibly nested) <identifier> requirements. 
+	 * When there is a filter that is neither a Requirement nor a RequirementsContainer, the 
+	 * requiredIdentifiers field is set to null.
+	 * 
+	 * @param filter the filter that is added
+	 */
+	private void addIdentifiers(DeviceFilter filter) {
+    	if (filter instanceof IdentifierRequirement) {
+    		if (this.requiredIdentifiers == null) {
+    			this.requiredIdentifiers = new LinkedList();
+    		}
+    		String[] identifiers = ((IdentifierRequirement) filter).getIdentifers();
+    		for (int i = 0; i < identifiers.length; i++) {
+				String identifier = identifiers[i];
+				this.requiredIdentifiers.add( identifier ); 
+			}
+    	} else if (filter instanceof RequirementContainer) {
+    		DeviceFilter[] deviceFilters = ((RequirementContainer) filter).getFilters();
+    		for (int i = 0; i < deviceFilters.length; i++) {
+				DeviceFilter subFilter = deviceFilters[i];
+				addIdentifiers(subFilter);
+				if (this.requiredIdentifiers == null) {
+					break;
+				}
+			}
+    	} else {
+    		this.requiredIdentifiers = null;
+    	}
+	}
+
 	public void addConfiguredRequirement( Variable req ) {
 		String name = req.getName(); 
 		String value = req.getValue();
 		String type = req.getType();
 		Requirement requirement = Requirement.getInstance( name, value, type );
-		this.filters.add( requirement );
+		add( requirement );
 	}
     
     public void addRequirement( Requirement requirement ) {
-        this.filters.add( requirement );
+    	add( requirement );
     }
 
 	
 	public void addConfiguredAnd( AndRelation andRelation ) {
-		this.filters.add( andRelation );
+		add( andRelation );
 	}
 	
 	public void addConfiguredOr( OrRelation orRelation ) {
-		this.filters.add( orRelation );
+		add( orRelation );
 	}
 	
 	public void addConfiguredNot( NotRelation notRelation ) {
-		this.filters.add( notRelation );
+		add( notRelation );
 	}
 	
 	public void addConfiguredNand( NotRelation notRelation ) {
-		this.filters.add( notRelation );
+		add( notRelation );
 	}
 	
 	public void addConfiguredXor( XorRelation xorRelation ) {
@@ -88,6 +131,17 @@ implements DeviceFilter
 	
 	public DeviceFilter[] getFilters() {
 		return (DeviceFilter[]) this.filters.toArray( new DeviceFilter[this.filters.size()] );
+	}
+
+	/**
+	 * Retrieves a list of the required device identifiers.
+	 * This is a special case that allows a faster time for reading the device database, since 
+	 * only those devices need to be read that have the wanted identifier.
+	 * 
+	 * @return a list of the required identifiers when only &lt;identifier&gt; requirements are used, otherwise null.
+	 */
+	public List getRequiredIdentifiers() {
+		return this.requiredIdentifiers;
 	}
 	
 	

@@ -66,5 +66,14 @@ public class IdentifierRequirement extends Requirement {
 		}
 		return false;
 	}
+
+	/**
+	 * Retrieves all desired identifiers.
+	 * 
+	 * @return all desired identifiers
+	 */
+	public String[] getIdentifers() {
+		return this.identifiers;
+	}
 	
 }

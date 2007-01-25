@@ -160,7 +160,10 @@ public class PolishTask extends ConditionalTask {
 	/** the project settings */ 
 	private PolishProject polishProject;
 	/** the manager of all devices */
-	private DeviceManager deviceManager;
+	private DeviceDatabase deviceDatabase;
+	private ExtensionManager extensionManager;
+	private Environment environment;
+
 	/** the actual devices which are supported by this project */
 	private Device[] devices;
 	private Preprocessor preprocessor;
@@ -232,10 +235,6 @@ public class PolishTask extends ConditionalTask {
 
 	private LibrariesSetting binaryLibraries;
 
-	private ExtensionManager extensionManager;
-	private Environment environment;
-
-	private DeviceDatabase deviceDatabase;
 
 	private boolean isInitialized;
 
@@ -332,7 +331,7 @@ public class PolishTask extends ConditionalTask {
 				checkSettings();
 				initProject();
 				selectDevices();
-        clearDeviceManager();
+				clearDeviceDatabase();
 				this.isInitialized = true;
 			}
 			// check if there has been an error at the last run:
@@ -476,8 +475,8 @@ public class PolishTask extends ConditionalTask {
 	}
 
 
-  private void clearDeviceManager() {
-    this.deviceManager.clear();
+  private void clearDeviceDatabase() {
+    this.deviceDatabase.clear();
   }
 	
 
@@ -668,8 +667,9 @@ public class PolishTask extends ConditionalTask {
 			throw new BuildException("Unable to load extensions.xml - please report this error to j2mepolish@enough.de.");
 		}
 		
+		Map buildProperties = getProject().getProperties();
 		// create environment
-		this.environment = new Environment( this.extensionManager, getProject().getProperties(), getProject().getBaseDir() );
+		this.environment = new Environment( this.extensionManager, buildProperties, getProject().getBaseDir() );
 		this.environment.setBuildSetting( this.buildSetting );
 		
 		
@@ -772,11 +772,10 @@ public class PolishTask extends ConditionalTask {
 		}
 		// add all ant properties if desired: 
 		if (this.buildSetting.includeAntProperties()) {
-			Hashtable antProperties = getProject().getProperties();
-			Set keySet = antProperties.keySet();
+			Set keySet = buildProperties.keySet();
 			for (Iterator iter = keySet.iterator(); iter.hasNext();) {
 				String key = (String) iter.next();
-				this.polishProject.addDirectCapability( key, (String) antProperties.get(key) );
+				this.polishProject.addDirectCapability( key, (String) buildProperties.get(key) );
 			}
 		}
 		// add all variables from the build.xml:
@@ -833,17 +832,23 @@ public class PolishTask extends ConditionalTask {
 		}
 
 		// create device database:
+		if (this.deviceRequirements != null) {
+			// special case for the usage of <identifier> requirements:
+			// in that case not all devices need to be loaded, just the ones which have the correct identifiers.
+			// This allows a faster start up time for around 80% of all cases.
+			List identifiersList = this.deviceRequirements.getRequiredIdentifiers();
+			if (identifiersList != null) {
+				buildProperties.put("polish.devicedatabase.identifiers", identifiersList );
+			}
+		}
 		System.out.println("Loading device database...");
-		this.deviceDatabase = DeviceDatabase.getInstance( getProject().getProperties(), this.polishHomeDir, getProject().getBaseDir(),
+		this.deviceDatabase = DeviceDatabase.getInstance( buildProperties, this.polishHomeDir, getProject().getBaseDir(),
 				this.buildSetting.getApiDir(), this.polishProject, this.buildSetting.getDeviceDatabaseInputStreams(), this.buildSetting.getDeviceDatabaseFiles() );
 		System.out.println("  ...done.");
 		
 		this.libraryManager = this.deviceDatabase.getLibraryManager();
 		this.environment.setLibraryManager(this.libraryManager);
-		
-		// create capability/vendor/group/device manager:
-		this.deviceManager = this.deviceDatabase.getDeviceManager();
-				
+						
 		// create preprocessor:
 		boolean replacePropertiesWithoutDirective = false;
 		if (this.variables != null) {
@@ -1348,14 +1353,14 @@ public class PolishTask extends ConditionalTask {
 	 */
 	public void selectDevices() {
 		if (this.deviceRequirements == null) {
-			this.devices = this.deviceManager.getDevices();
+			this.devices = this.deviceDatabase.getDevices();
 			if (this.devices == null || this.devices.length == 0) {
-				throw new BuildException("The [devices.xml] file does not define any devices at all - please specify a correct devices-file." );
+				throw new BuildException("The [devices.xml] file does not define any devices at all - please specify a correct devices-file or check your polish.home property." );
 			}
 		} else {
-			this.devices = this.deviceRequirements.filterDevices( this.deviceManager.getDevices() );
+			this.devices = this.deviceRequirements.filterDevices( this.deviceDatabase.getDevices() );
 			if (this.devices == null || this.devices.length == 0) {
-				throw new BuildException("Your device-requirements are too strict - no device fulfills them." );
+				throw new BuildException("Your device-requirements are too strict - no device fulfills them. Check the <deviceRequirements> section(s) in your build.xml script." );
 			}
 			Arrays.sort( this.devices );
 		}

@@ -150,4 +150,11 @@ public class ConfigurationManager {
 			}
 		}
 	}
+
+	/**
+	 * Clears all stored configurations from memory.
+	 */
+	public void clear() {
+		this.configurationsByIdentifier.clear();
+	}
 }

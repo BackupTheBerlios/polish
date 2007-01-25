@@ -181,4 +181,11 @@ public class PlatformManager {
 			}
 		}
 	}
+
+	/**
+	 * Clears all stored platforms from memory.
+	 */
+	public void clear() {
+		this.platformsByIdentifier.clear();
+	}
 }

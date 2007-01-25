@@ -281,4 +281,11 @@ public class LibraryManager {
 		
 	}
 
+	/**
+	 * Clears all stored libraries from memory.
+	 */
+	public void clear() {
+		this.libraries.clear();
+	}
+
 }

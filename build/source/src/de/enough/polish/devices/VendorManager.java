@@ -178,8 +178,11 @@ public class VendorManager {
 		}
 	}
   
-  public void clear()
-  {
-    this.vendors.clear();
-  }
+	/**
+	 * Clears all stored devices from memory.
+	 */
+	public void clear()
+	{
+		this.vendors.clear();
+	}
 }

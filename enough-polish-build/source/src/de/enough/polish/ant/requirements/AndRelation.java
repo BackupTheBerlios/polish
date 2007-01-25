@@ -25,6 +25,7 @@
  */
 package de.enough.polish.ant.requirements;
 
+
 import de.enough.polish.Device;
 
 /**
