@@ -118,33 +118,35 @@ public class TachometerGaugeView extends ItemView {
 		int centerY = y + itemWidth / 2;
 		int innerCircleRadius = this.contentWidth / 10;
 		g.setColor( this.clockfaceColor );
-		g.drawRect(x, y, itemWidth, itemHeight);
-		g.drawArc(centerX - (innerCircleRadius ), centerY- (innerCircleRadius ), innerCircleRadius * 2, innerCircleRadius * 2, 0, 360 );
+//		g.drawRect(x, y, itemWidth, itemHeight);
+//		g.drawArc(centerX - (innerCircleRadius ), centerY- (innerCircleRadius ), innerCircleRadius * 2, innerCircleRadius * 2, 0, 360 );
 		g.drawArc(x , y, itemWidth, itemHeight, 0, 360 );
 		int innerStartX = x + innerCircleRadius;
 		int innerStartY = y + innerCircleRadius;
 		int innerWidth = itemWidth - innerCircleRadius *2;
 		int innerHeight = itemHeight - innerCircleRadius *2;
 		int pointerLength = (innerWidth /2)-(innerWidth /8);
-		g.drawArc(innerStartX, innerStartY, innerWidth , innerHeight , 315, 270 );
-		g.setColor(0xFF00CC);
-		g.drawArc(innerStartX + 3, innerStartY +3, innerWidth-6 , innerHeight-6 , 315, 90 );
-		g.setColor(0xFFFFCC);
-		g.drawArc(innerStartX + 3, innerStartY +3, innerWidth-6 , innerHeight-6 , 405, 90 );
-		g.setColor(0xFF0000);
-		g.drawArc(innerStartX + 3, innerStartY +3, innerWidth-6 , innerHeight-6 , 135, 90 );
+//		g.drawArc(innerStartX, innerStartY, innerWidth , innerHeight , 315, 270 );
+//		for (int i = 1; i < 6; i++) {
+//			g.setColor(0xFF00CC);
+//			g.drawArc(innerStartX + 1*i, innerStartY +1*i, innerWidth-2*i , innerHeight-2*i , 315, 90 );
+//			g.setColor(0xFFFFCC);
+//			g.drawArc(innerStartX + 1*i, innerStartY +1*i, innerWidth-2*i , innerHeight-2*i , 405, 90 );
+//			g.setColor(0xFF0000);
+//			g.drawArc(innerStartX + 1*i, innerStartY +1*i, innerWidth-2*i , innerHeight-2*i , 135, 90 );
+//		}
 		g.setColor( this.clockfaceColor );
 		Font font = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN,Font.SIZE_SMALL);
 		int startValueStringWidth = font.stringWidth(""+this.startValue);
 		int maxValueStringWidth = font.stringWidth(""+this.maxValue);
 		int gaugeValueStringWidth = font.stringWidth(""+gauge.getValue());
 		g.setFont(font);
-		g.drawString(""+this.startValue, x + 20 + startValueStringWidth, itemHeight, 0);
-		g.drawString(""+this.maxValue, itemWidth - 20 - maxValueStringWidth, itemHeight, 0);
-		g.drawString(""+gauge.getValue(), centerX - gaugeValueStringWidth /2 , itemHeight + 15, 0);
+		g.drawString(""+this.startValue, centerX / 2 + startValueStringWidth,  innerStartY + innerHeight - font.getHeight(), 0);
+		g.drawString(""+this.maxValue, centerX + maxValueStringWidth,  innerStartY + innerHeight - font.getHeight(), 0);
+		g.drawString(""+gauge.getValue(), centerX - gaugeValueStringWidth/2 ,  innerStartY + innerHeight - font.getHeight()*2, 0);
 		g.setColor( this.needleColor );
 		int value = gauge.getValue();
-		double valuePercent = ((double)value / (double)maxValue)*100 ;
+		double valuePercent = ((double)value / (double)this.maxValue)*100 ;
 		int degree ;
 		degree = (int) (225 - (valuePercent*2.7));
 		double degreeCos = Math.cos(Math.PI*degree/180);
@@ -156,7 +158,24 @@ public class TachometerGaugeView extends ItemView {
 		newX = centerX + (angleCos);
 		newY = centerY + (-angleSin);
 		g.drawLine( centerX, centerY, newX , newY);
+		//----------------------
+		int startX, startY, endX, endY;
+		for (int i = 225; i >= -45; i-=45) {
+			System.out.println("i"+i);
+			degree = i;
+			degreeCos = Math.cos(Math.PI*degree/180);
+			degreeSin = Math.sin(Math.PI*degree/180);
+			angleCos = (int)( degreeCos * pointerLength);
+			angleSin = (int)( degreeSin * pointerLength);
+			startX = centerX + (angleCos);
+			startY = centerY + (-angleSin);
+			angleCos = (int)( degreeCos * pointerLength / 4);
+			angleSin = (int)( degreeSin * pointerLength / 4);
+			endX = centerX + (angleCos);
+			endY = centerY + (-angleSin);
+			g.drawLine( startX , startY, endX , endY);
 		}
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#setStyle(de.enough.polish.ui.Style)
