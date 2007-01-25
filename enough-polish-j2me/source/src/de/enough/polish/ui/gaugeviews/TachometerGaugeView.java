@@ -149,8 +149,20 @@ public class TachometerGaugeView extends ItemView {
 		g.drawString(""+this.maxValue, itemWidth - 20 - maxValueStringWidth, itemHeight, 0);
 		g.drawString(""+gauge.getValue(), centerX - gaugeValueStringWidth /2 , itemHeight + 15, 0);
 		g.setColor( this.needleColor );
-		int value = 4;
-		int degree = value;
+		int value = gauge.getValue();
+		double valuePercent = ((double)value / (double)maxValue)*100 ;
+		System.out.println("(value / maxValue)"+((double)value / (double)maxValue));
+		int degree ;
+		if(valuePercent >= 0 && valuePercent < 75){
+			degree = (int) (225 - (valuePercent*3));
+		}else if (valuePercent > 75){
+			degree = (int) (360 - ((valuePercent-75)*2));
+		}else{
+			degree = 0;
+		}
+		System.out.println("maxValue "+maxValue);
+		System.out.println("valuePercent "+valuePercent);
+		System.out.println("degree "+degree);
 //		if(value < 75){
 //			degree = 315 - (value * 3); 
 //		}
