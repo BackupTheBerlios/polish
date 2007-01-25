@@ -183,7 +183,7 @@ public final class FileUtil {
 		}
 		out.close();
 	}
-
+	
 	/**
 	 * Copies the given files to the specified target directory.
 	 * 
@@ -196,12 +196,33 @@ public final class FileUtil {
 	public static void copy(File[] files, File targetDir) 
 	throws FileNotFoundException, IOException 
 	{
+		copy( files, targetDir, false );
+	}
+
+
+	/**
+	 * Copies the given files to the specified target directory.
+	 * 
+	 * @param files The files which should be copied, when an array element is null, it will be ignored.
+	 * @param targetDir The directory to which the given files should be copied to.
+	 * @param overwrite true when existing target files should be overwritten even when they are newer
+	 * @throws FileNotFoundException when the source file was not found
+	 * @throws IOException when there is an error while copying the file.
+	 * @throws NullPointerException when files or targetDir is null.
+	 */
+	public static void copy(File[] files, File targetDir, boolean overwrite) 
+	throws FileNotFoundException, IOException 
+	{
 		String targetPath = targetDir.getAbsolutePath() + File.separatorChar;
 		byte[] buffer = new byte[ 1024 * 1024 ];
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
 			if (file != null) {
-				copy( file, new File( targetPath + file.getName() ), buffer );
+				File targetFile = new File( targetPath + file.getName() );
+				if (!overwrite && targetFile.exists() && targetFile.lastModified() > file.lastModified()) {
+					continue;
+				}
+				copy( file, targetFile, buffer );
 			}
 		}
 	}
