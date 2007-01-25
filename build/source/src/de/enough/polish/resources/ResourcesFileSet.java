@@ -103,6 +103,7 @@ public class ResourcesFileSet extends FileSet {
 		this.environment = env;
 		this.resolvedDir = null;
 		if (this.condition.isActive(evaluator, antProject)) {
+		
 			if (dirExists(antProject)) {
 				return true;
 			} else {
@@ -125,6 +126,7 @@ public class ResourcesFileSet extends FileSet {
 		if (this.environment == null) {
 			System.err.println("Warning: no environment has been set for ResourcesFileSet.");
 		} else {
+			realDirName = this.environment.writeProperties( this.dirName );
 			this.resolvedDir = new File( realDirName );
 		}
 		File file = new File( realDirName );
