@@ -124,6 +124,7 @@ public class TachometerGaugeView extends ItemView {
 		int centerX = x + itemWidth / 2;
 		int centerY = y + itemWidth / 2;
 		int innerCircleRadius = this.contentWidth / 10;
+		
 		System.out.println("x:"+x+";y:"+y+";centerX:"+centerX+";centerY:"+centerY+";innerCircleRadius:"+innerCircleRadius);
 		// draw inner circle:
 		g.setColor( this.clockfaceColor );
@@ -134,7 +135,8 @@ public class TachometerGaugeView extends ItemView {
 		int innerStartY = y + 10;
 		int innerWidth = itemWidth - 20;
 		int innerHeight = itemHeight - 20;
-		int pointerLength = innerWidth;
+		int pointerLength = innerWidth /2;
+		System.out.println("pointerLength "+pointerLength);
 		g.drawArc(innerStartX, innerStartY, innerWidth , innerHeight , 315, 270 );
 		Font font = Font.getFont(Font.FACE_MONOSPACE, Font.STYLE_PLAIN,Font.SIZE_SMALL);
 		int startValueStringWidth = font.stringWidth(""+this.startValue);
@@ -147,29 +149,29 @@ public class TachometerGaugeView extends ItemView {
 		g.drawString(""+this.maxValue, itemWidth - 20 - maxValueStringWidth, itemHeight, 0);
 		g.drawString(""+gauge.getValue(), centerX - gaugeValueStringWidth /2 , itemHeight + 15, 0);
 		g.setColor( this.needleColor );
-		int value = 75;
-		int degree = 90;
-		if(value < 75){
-			degree = 315 - (value * 3); 
-		}
-		else if(value > 75 ){
-			degree = (value * 3) + 45;
-		}
-		int newX = ((int)(Math.cos(degree) *100));
-		int newY = ((int)(Math.sin(degree)*100));
-		System.out.println("cos "+newX+" sin "+newY);
-		if(newX >= 0){
-			newX = centerX - newX;
-		}else{
-			newX = centerX + newX;
-		}
-		if(newY >= 0){
-			newY = centerY - newY;
-		}else{
-			newY = centerY + newY;
-		}
+		int value = 4;
+		int degree = value;
+//		if(value < 75){
+//			degree = 315 - (value * 3); 
+//		}
+//		else if(value > 75 ){
+//			degree = (value * 3) + 45;
+//		}
+		double degreeCos = Math.cos(Math.PI*degree/180);
+		double degreeSin = Math.sin(Math.PI*degree/180);
+		System.out.println("degreeCos "+degreeCos+" degreeSin "+degreeSin*100);
+		int angleCos = (int)( degreeCos * pointerLength);
+		int angleSin = (int)( degreeSin * pointerLength);
+		System.out.println("angleCos "+angleCos+" angleSin "+angleSin);
+		System.out.println("degree:"+degree);
+		int newX = (angleCos / pointerLength)*100;
+		int newY = (angleSin / pointerLength)*100;
+//		g.drawLine(x, y, newX, newY);
+		System.out.println("newX "+newX+" newY "+newY);
+		newX = centerX + (angleCos);
+		newY = centerY + (-angleSin);
 		
-		System.out.println("degree "+degree+" "+newX+" "+newY);
+		System.out.println("degree "+degree+" newX "+newX+" newY "+newY+" centerX "+centerX+" centerY"+centerY);
 		g.drawLine( centerX, centerY, newX , newY);
 //		if( value < 25 ){
 //			int sum = ((heightLine - centerY)*100)/value;
