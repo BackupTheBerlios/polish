@@ -158,19 +158,24 @@ public class TachometerGaugeView extends ItemView {
 		newX = centerX + (angleCos);
 		newY = centerY + (-angleSin);
 		g.drawLine( centerX, centerY, newX , newY);
-		//----------------------
-		int startX, startY, endX, endY;
-		for (int i = 225; i >= -45; i-=45) {
-			System.out.println("i"+i);
+		//draws ticks
+		int startX, startY, endX, endY, tickLength = pointerLength + 10;
+//		for (int i = 225; i >= -45; i-=45) {
+		for (int i = 225; i >= -45; i-=15) {
 			degree = i;
 			degreeCos = Math.cos(Math.PI*degree/180);
 			degreeSin = Math.sin(Math.PI*degree/180);
-			angleCos = (int)( degreeCos * pointerLength);
-			angleSin = (int)( degreeSin * pointerLength);
+			angleCos = (int)( degreeCos * tickLength);
+			angleSin = (int)( degreeSin * tickLength);
 			startX = centerX + (angleCos);
 			startY = centerY + (-angleSin);
-			angleCos = (int)( degreeCos * pointerLength / 4);
-			angleSin = (int)( degreeSin * pointerLength / 4);
+			if(i != 90 && i != 225 && i != -45 && i != 0 && i != 180 && i != 45 && i != 135){
+				angleCos = (int)( degreeCos * (tickLength -4));
+				angleSin = (int)( degreeSin * (tickLength -4));
+			}else{
+				angleCos = (int)( degreeCos * (tickLength -10));
+				angleSin = (int)( degreeSin * (tickLength -10));
+			}
 			endX = centerX + (angleCos);
 			endY = centerY + (-angleSin);
 			g.drawLine( startX , startY, endX , endY);
