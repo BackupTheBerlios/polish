@@ -640,11 +640,11 @@ public class TextField extends StringItem
 	//#ifndef tmp.suppressCommands
 		// the delete command is a Command.ITEM type, because CANCEL will be mapped on special keys like the return key on Sony Ericsson devices.
 		//#ifdef polish.i18n.useDynamicTranslations
-	  		protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.ITEM, 1 );
+	  		protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.CANCEL, 1 );
 		//#elifdef polish.command.delete:defined
-			//#= protected static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.ITEM, 1 );
+			//#= protected static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.CANCEL, 1 );
 		//#else
-			//# protected static final Command DELETE_CMD = new Command( "Delete", Command.ITEM, 1 ); 
+			//# protected static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, 1 ); 
 		//#endif
 	//#endif
 	//#ifdef polish.i18n.useDynamicTranslations
