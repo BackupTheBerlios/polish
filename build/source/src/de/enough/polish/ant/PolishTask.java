@@ -1362,6 +1362,7 @@ public class PolishTask extends ConditionalTask {
 		// intialise the environment
 		this.environment.initialize(device, locale);
 		device.setEnvironment( this.environment );
+		this.environment.set("ant.project", getProject() );
 		// set variables and symbols:
 		//this.environment.setSymbols( device.getFeatures() );
 		//this.environment.setVariables( device.getCapabilities() );

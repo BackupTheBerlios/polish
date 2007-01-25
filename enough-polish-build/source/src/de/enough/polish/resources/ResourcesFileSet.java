@@ -122,13 +122,18 @@ public class ResourcesFileSet extends FileSet {
 
 	private void resolveDir(Project antProject) {
 		String realDirName = this.dirName;
-		if (this.environment != null) {
-			this.resolvedDir = this.environment.resolveFile( realDirName );
-		} else if (antProject != null){
-			this.resolvedDir = antProject.resolveFile( realDirName );
+		if (this.environment == null) {
+			System.err.println("Warning: no environment has been set for ResourcesFileSet.");
 		} else {
 			this.resolvedDir = new File( realDirName );
 		}
+		File file = new File( realDirName );
+		if (file.isAbsolute() || (antProject == null)) {
+			this.resolvedDir = file;
+		} else {
+			this.resolvedDir = new File( antProject.getBaseDir(), realDirName );
+		}
+		//System.out.println("resolved dir = [" + this.resolvedDir.getAbsolutePath() + "]");
 	}
 
 	/* (non-Javadoc)

@@ -38,6 +38,7 @@ import java.util.Map;
 
 import de.enough.polish.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
@@ -303,7 +304,8 @@ public class ResourceManager {
 			if (!dir.isDirectory()) {
 				throw new BuildException("The referenced directory [" + dir.getAbsolutePath() + "] of <fileset> does point to a file which is not a directory. Please correct the \"dir\"-attribute of the corresponding <fileset>-element.");				
 			}
-			String[] fileNames = FileUtil.filterDirectory(dir, null, true );
+			String[] fileNames = set.getDirectoryScanner( (Project)this.environment.get("ant.project")).getIncludedFiles();
+			//String[] fileNames = FileUtil.filterDirectory(dir, null, true );
 			//System.out.println("Adding resources from " + dir.getPath() );
 			addFiles( dir, fileNames, resourcesByName );
 		}
