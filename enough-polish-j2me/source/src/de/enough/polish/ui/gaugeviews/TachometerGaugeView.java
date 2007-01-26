@@ -105,9 +105,9 @@ public class TachometerGaugeView extends ItemView {
 	private int section2Color = -1; // -1 means this section is not visible
 	private int section3Color = -1; // -1 means this section is not visible
 	
-	private int clockfaceColor = 0x000000; // black
+	private int clockfaceColor = 0xFF0000; // black
 	private int innerColor = 0xFFFFFF; // white
-	private int needleColor = 0xFF0000; // red
+	private int needleColor = 0x000000; // red
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
@@ -135,7 +135,6 @@ public class TachometerGaugeView extends ItemView {
 	protected void paintContent(Item parent, int x, int y, int leftBorder,
 			int rightBorder, Graphics g) 
 	{
-		System.out.println("this.contentWidth "+this.contentWidth+" this.contentHeight "+this.contentHeight);
 		int itemWidth = this.contentWidth;
 		int itemHeight = this.contentHeight;
 		int widthLine = x + itemWidth;
@@ -173,18 +172,36 @@ public class TachometerGaugeView extends ItemView {
 		g.drawString(""+gauge.getValue(), centerX - gaugeValueStringWidth/2 ,  innerStartY + innerHeight - font.getHeight()*2, 0);
 		g.setColor( this.needleColor );
 		int value = gauge.getValue();
-		double valuePercent = ((double)value / (double)this.maxValue)*100 ;
+		double valuePercent;
 		int degree ;
+		double degreeCos,degreeSin;
+		int angleCos,angleSin,newX,newY;
+		valuePercent = ((double)value / (double)this.maxValue)*100 ;
 		degree = (int) (225 - (valuePercent*2.7));
-		double degreeCos = Math.cos(Math.PI*degree/180);
-		double degreeSin = Math.sin(Math.PI*degree/180);
-		int angleCos = (int)( degreeCos * pointerLength);
-		int angleSin = (int)( degreeSin * pointerLength);
-		int newX = (angleCos / pointerLength)*100;
-		int newY = (angleSin / pointerLength)*100;
+		degreeCos = Math.cos(Math.PI*degree/180);
+		degreeSin = Math.sin(Math.PI*degree/180);
+		angleCos = (int)( degreeCos * pointerLength);
+		angleSin = (int)( degreeSin * pointerLength);
+//		newX = (angleCos / pointerLength)*100;
+//		newY = (angleSin / pointerLength)*100;
 		newX = centerX + (angleCos);
 		newY = centerY + (-angleSin);
-		g.drawLine( centerX, centerY, newX , newY);
+		g.drawLine( centerX, centerY, newX, newY);
+//		for (int i = -1; i < 3; i++) {
+//			double pi= Math.PI;
+//			double xAbstand=120*(Math.cos(pi /(double)8 - (double)1 *pi/6));
+//			double yAbstand=120*(Math.sin(pi /(double)8 - (double)1 *pi/6)); 
+//			int xc = centerX + (int)xAbstand;
+//			int yc = centerY - (int)yAbstand;
+//			int xe = newX + (int)xAbstand;
+//			int ye = newY - (int)yAbstand;
+////			g.drawLine( centerX, centerY, newX, newY);
+//			g.drawLine( centerX+i, centerY+i, newX+i, newY+i);
+//			g.drawLine( xc, yc, xc, yc);
+//			g.drawLine( xe, ye, xe, ye);
+////			g.drawLine( centerX, centerY, xe, ye);
+//		}
+		System.out.println("--------------------");
 		//draws ticks
 		int startX, startY, endX, endY, tickLength = pointerLength + 10;
 //		for (int i = 225; i >= -45; i-=45) {
