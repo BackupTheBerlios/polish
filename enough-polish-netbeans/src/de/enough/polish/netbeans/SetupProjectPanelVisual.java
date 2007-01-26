@@ -139,9 +139,11 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
     }
     
     void read(WizardDescriptor settings) {
-        // read available alatforms
-        // JavaPlatformManager;
-        // CustomPlatformConfigurator
+        //TODO find out which emulator platform to use!
+        if (File.separatorChar == '\\') {
+            // windows:
+            this.textFieldEmulatorPlatform.setText("J2ME_Wireless_Toolkit_2_2");
+        }
         String polishHome =  (String) settings.getProperty("polish.home");
         ArrayList templatesList = new ArrayList();
         File samplesDir = new File( polishHome + "/samples");

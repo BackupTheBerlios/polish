@@ -78,6 +78,7 @@ public class J2mePolishProjectTemplateWizardIterator implements WizardDescriptor
         Map buildProperties = new HashMap();
         buildProperties.put("polish.home", polishHome );
         buildProperties.put("polish.EmulatorPlatform", wiz.getProperty("polish.EmulatorPlatform"));
+        buildProperties.put("polish.usePolishGui",  wiz.getProperty("polish.usePolishGui") );
         J2mePolishProjectGenerator.generateProjectFromTemplate(projectName, projectDir, templateDir, selector, buildProperties);
         
 

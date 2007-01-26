@@ -107,7 +107,6 @@ public class J2mePolishProjectGenerator {
         // set name in project.properties:
         buildProperties.put( "name", name );
         
-       
         // add configuration properties:
         //TODO dynamically find the used J2ME Platform
         String j2mePlatform = (String) buildProperties.get("polish.EmulatorPlatform");//"MPowerPlayer"; // "J2ME_Wireless_Toolkit_2_2"; 
@@ -115,15 +114,25 @@ public class J2mePolishProjectGenerator {
             j2mePlatform = "MPowerPlayer";
         }
         String j2mePlatformDescription = "Emulator Platform"; 
+        StringBuffer allIdentifiers = new StringBuffer();
+        boolean usePolishGui = "true".equals( buildProperties.get("polish.usePolishGui") );
         for (int j = 0; j < configurationNames.length; j++) {
             String identifier = configurationNames[j];
+            allIdentifiers.append( identifier );
+            if (j != configurationNames.length - 1 ) {
+                allIdentifiers.append(',');
+            }
             Map deviceProperties = targetDevices.getDeviceProperties( identifier );
+            if (usePolishGui) {
+                deviceProperties.put("polish.usePolishGui", "true" );
+            }
             addProperties( "configs." + identifier + ".", deviceProperties, buildProperties, j2mePlatform, j2mePlatformDescription );            
             if ( j == 0) {
                 addProperties( "", deviceProperties, buildProperties, j2mePlatform, j2mePlatformDescription );                            
             }
         }
-        
+        buildProperties.put("devices", allIdentifiers.toString() );
+        buildProperties.put("platform.device", configurationNames[0] );
         // write build properties:
         File buildPropertiesFile = new File( projectDir, "nbproject/project.properties");
         Map properties = FileUtil.readPropertiesFile( buildPropertiesFile );
@@ -138,6 +147,14 @@ public class J2mePolishProjectGenerator {
 
         properties.putAll(buildProperties); 
         FileUtil.writePropertiesFile(buildPropertiesFile, properties);
+        
+        // write private properties:
+        String[] privatePropertiesLines = new String[] {
+            "config.active=" + configurationNames[0],
+            "javadoc.preview=true"
+        };
+        File privatePropertiesFile = new File( projectDir, "nbproject/private/private.properties");
+        FileUtil.writeTextFile( privatePropertiesFile, privatePropertiesLines );
         
         //ProjectManager manager = ProjectManager.getDefault();
         //FileObject projectFileObject = org.openide.filesystems.FileUtil.toFileObject(projectDir);
