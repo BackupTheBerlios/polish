@@ -101,22 +101,14 @@
 				deleteConfirm="Do you really want to kill me?" 
 			/>
 			<!-- selection of supported devices -->
-			<!-- In the test mode the application is build only for the  -->
-			<!-- Generic/midp1 phone, but when the test-property is set to false, -->
-			<!-- the second deviceRequirements will be used instead. -->
-			<deviceRequirements if="test or enableCompilerMode">
-				<requirement name="Name" value="${platform.device}" />
+            <deviceRequirements if="config.active:defined and (test or enableCompilerMode)" >		
+                <requirement name="Identifier" value="${config.active}" />
 			</deviceRequirements>
-			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Sony-Ericsson/P900, Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />
-				<!-- on could use other devices for real builds, e.g. :
-				<or>
-					<and>
-						<requirement name="JavaPackage" value="nokia-ui" />
-						<requirement name="BitsPerPixel" value="16+" />
-					</and>
-				</or>
-				 -->
+			<deviceRequirements if="device:defined and (test or enableCompilerMode)" unless="config.active:defined">
+				<requirement name="Identifier" value="${device}" />
+			</deviceRequirements>
+			<deviceRequirements unless="test or enableCompilerMode">
+				<requirement name="Identifier" value="${devices}" />
 			</deviceRequirements>
 		    <!-- build settings -->
 			<!-- 
@@ -163,6 +155,14 @@
 						includes="*.mid" 
 						if="polish.audio.midi and not polish.audio.wav" 
 					/>
+					-->
+					<!-- you can also use several root directories for your resource assembling.
+					     This is useful for customizations and for having a cleanly structured 
+					     resources directory (for example seperating images from sounds, etc):
+					<root dir="resources/images" />
+					<root dir="resources/sounds" />
+					<root dir="resources/customer1" if="customer1" />
+					<root dir="resources/customer2" if="customer2" />
 					-->
 					<!-- add the localization element for created localized
 					     versions of your application: -->

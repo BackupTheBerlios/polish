@@ -103,14 +103,15 @@
 				version="1.0.4"
 		    />
 			<!-- selection of supported devices -->
-			<!-- In the test mode the application is build only for the  -->
-			<!-- Generic/midp1 phone, but when the test-property is set to false, -->
-			<!-- the second deviceRequirements will be used instead. -->
-			<deviceRequirements if="test or enableCompilerMode">
-				<requirement name="Name" value="${platform.device}" />
+			<!-- selection of supported devices -->
+            <deviceRequirements if="config.active:defined and (test or enableCompilerMode)" >		
+                <requirement name="Identifier" value="${config.active}" />
 			</deviceRequirements>
-			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Sony-Ericsson/W900i, Nokia/Series60E1, Nokia/Series60E2, Generic/midp2, Generic/midp1" />
+			<deviceRequirements if="device:defined and (test or enableCompilerMode)" unless="config.active:defined">
+				<requirement name="Identifier" value="${device}" />
+			</deviceRequirements>
+			<deviceRequirements unless="test or enableCompilerMode">
+				<requirement name="Identifier" value="${devices}" />
 			</deviceRequirements>
 		    <!-- build settings -->
 			<build fullscreen="menu" 

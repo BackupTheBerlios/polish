@@ -11,6 +11,10 @@
 	<!-- import global properties                                 -->
 	<property file="${polish.home}/global.properties" />
 	
+	<!-- the device for the test mode - you can define it on the command-line
+	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
+	<property name="device" value="Nokia/Series60E2" />
+
 
 	<!-- Definition of the J2ME Polish task:                      -->
 	<taskdef name="j2mepolish" 
@@ -47,10 +51,10 @@
 		    />
 			<!-- selection of supported devices -->
 			<deviceRequirements if="test">
-				<requirement name="Identifier" value="Nokia/Series60E2"/>
+				<requirement name="Identifier" value="${device}"/>
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Nokia/6630, Motorola/A1000, Sony-Ericsson/K700, Siemens/S65"/>
+				<requirement name="Identifier" value="Generic/jtwi,Generic/midp1,Nokia/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6"/>
 			</deviceRequirements>
 		    <!-- build settings -->
 			<build 

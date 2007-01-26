@@ -103,26 +103,16 @@
 				copyright="Copyright 2005, 2006, 2007 Enough Software. All rights reserved."
 			/>
 			<!-- selection of supported devices -->
-			<!-- In the test mode the application is build only for the  -->
-			<!-- Generic/midp1 phone, but when the test-property is set to false, -->
-			<!-- the second deviceRequirements will be used instead. -->
-			<deviceRequirements if="test or enableCompilerMode">
-				<requirement name="Name" value="${platform.device}" />
+            <deviceRequirements if="config.active:defined and (test or enableCompilerMode)" >		
+                <requirement name="Identifier" value="${config.active}" />
 			</deviceRequirements>
-			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Sony-Ericsson/P900, Nokia/Series60, Nokia/Series60Midp2, Generic/midp2, Generic/midp1" />
-				<!-- on could use other devices for real builds, e.g. :
-				<or>
-					<and>
-						<requirement name="JavaPackage" value="nokia-ui" />
-						<requirement name="BitsPerPixel" value="16+" />
-					</and>
-				</or>
-				 -->
+			<deviceRequirements if="device:defined and (test or enableCompilerMode)" unless="config.active:defined">
+				<requirement name="Identifier" value="${device}" />
+			</deviceRequirements>
+			<deviceRequirements unless="test or enableCompilerMode">
+				<requirement name="Identifier" value="${devices}" />
 			</deviceRequirements>
 		    <!-- build settings -->
-			<!-- 
-			 -->
 			<build
 				symbols="ExampleSymbol, AnotherExample"
 				fullscreen="menu"
@@ -133,8 +123,7 @@
                 compilerModePreverify="true"
 			>
 				<!-- midlets definition, NetBeans defines all MIDlets in the Ant property manifest.midlets:  -->
-				<midlets definition="${manifest.midlets}" if="manifest.midlets:defined" />
-				<midlets unless="manifest.midlets:defined">
+				<midlets>
 					<midlet class="de.enough.polish.log.rms.LogViewerMidlet" name="Log Viewer"/>
 				</midlets>
 				<!-- project-wide variables - used for preprocessing.  -->

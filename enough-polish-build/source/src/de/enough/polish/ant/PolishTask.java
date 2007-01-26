@@ -844,7 +844,6 @@ public class PolishTask extends ConditionalTask {
 		System.out.println("Loading device database...");
 		this.deviceDatabase = DeviceDatabase.getInstance( buildProperties, this.polishHomeDir, getProject().getBaseDir(),
 				this.buildSetting.getApiDir(), this.polishProject, this.buildSetting.getDeviceDatabaseInputStreams(), this.buildSetting.getDeviceDatabaseFiles() );
-		System.out.println("  ...done.");
 		
 		this.libraryManager = this.deviceDatabase.getLibraryManager();
 		this.environment.setLibraryManager(this.libraryManager);

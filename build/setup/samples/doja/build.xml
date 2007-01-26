@@ -31,17 +31,10 @@
 	
 	<!-- import global properties                                 -->
 	<property file="${polish.home}/global.properties" />
-
-
-	<!-- The path to the DoJa SDK. Not needed when it is         -->
-	<!-- installed to C:\jDKDoJa2.5 or C:\iDK.                   -->
-	<!--
-	<property name="doja.home" location="/home/enough/dev/doja/jDKDoJa2.5" />
-	-->
 		
 	<!-- the device for the test mode - you can define it on the command-line
 	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
-	<property name="device" value="DoJa/os15"/>
+	<property name="device" value="DoJa/os25"/>
 	
 
 

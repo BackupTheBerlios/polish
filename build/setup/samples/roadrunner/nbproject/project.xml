@@ -3,13 +3,16 @@
     <type>org.netbeans.modules.kjava.j2meproject</type>
     <configuration>
         <configurations xmlns="http://www.netbeans.org/ns/project-configurations/1">
-            <configuration>DefaultGrayPhone</configuration>
-            <configuration>MediaControlSkin</configuration>
-            <configuration>QwertyDevice</configuration>
-            <configuration>DefaultColorPhone</configuration>
+            <configuration>Generic/jtwi</configuration>
+            <configuration>Generic/midp1</configuration>
+            <configuration>Nokia/Midp2Cldc11</configuration>
+            <configuration>Nokia/Series40E3</configuration>
+            <configuration>Nokia/Series60E2</configuration>
+            <configuration>Nokia/Series60E3</configuration>
+            <configuration>Sony-Ericsson/JavaPlatform6</configuration>
         </configurations>
         <data xmlns="http://www.netbeans.org/ns/j2me-project">
-            <name>j2mepolish-roadrunner</name>
+            <name>j2mepolish-menu</name>
             <minimum-ant-version>1.6</minimum-ant-version>
         </data>
     </configuration>

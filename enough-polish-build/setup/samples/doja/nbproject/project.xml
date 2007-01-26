@@ -3,7 +3,8 @@
     <type>org.netbeans.modules.kjava.j2meproject</type>
     <configuration>
         <configurations xmlns="http://www.netbeans.org/ns/project-configurations/1">
-            <configuration>DefaultColorPhone</configuration>
+            <configuration>DoJa/os15</configuration>
+            <configuration>DoJa/os25</configuration>
         </configurations>
         <data xmlns="http://www.netbeans.org/ns/j2me-project">
             <name>j2mepolish-doja</name>

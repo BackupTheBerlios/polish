@@ -289,12 +289,13 @@ public class DeviceDatabase {
 				}
 			}
 			if (requiredIdentifiers != null && requiredIdentifiers.size() != 0) {
-				System.out.println("Warning: unable to resolve follorwing requested identifiers:");
+				System.out.println("Warning: unable to find following requested device-identifiers:");
 				for (Iterator iter = requiredIdentifiers.iterator(); iter.hasNext();) 
 				{
 					String identifier = (String) iter.next();
 					System.out.println("  " + identifier);
 				}
+				System.out.println("Please check your <deviceRequirements> section in your build.xml script.");
 			}
 		} catch (BuildException e) {
 			throw e;
@@ -328,6 +329,8 @@ public class DeviceDatabase {
 					e.printStackTrace();
 				}
 			}
+			// now try to load file from default position in build.xml:
+			is = getClass().getResourceAsStream( "/" + fileName );
 		}
 		return is;
 	}

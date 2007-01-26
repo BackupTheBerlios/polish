@@ -32,7 +32,7 @@
 
 		
 	<!-- the home of the server based web application - is needed in the deploy-war target -->
-	<property name="webapps.home" location="/Users/robertvirkus/Downloads/apache-tomcat-5.5.17/webapps" />
+	<property name="webapps.home" location="/Users/robertvirkus/dev/apache-tomcat-5.5.17/webapps" />
 	<!-- the device for the test mode - you can define it on the command-line
 	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
 	<property name="device" value="Nokia/Series60E2"/>
@@ -115,7 +115,7 @@
 				<requirement name="Identifier" value="${device}" />
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Sony-Ericsson/W900i, Nokia/Series60E1, Nokia/Series60E2, Generic/midp2, Generic/midp1" />
+				<requirement name="Identifier" value="Generic/jtwi,Generic/midp1,Nokia/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6" />
 			</deviceRequirements>
 		    <!-- build settings -->
 			<!-- 

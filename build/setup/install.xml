@@ -90,14 +90,18 @@
             <file src="../custom-css-attributes.xml" targetdir="$INSTALL_PATH"/>
             <file src="../LICENSE.txt" targetdir="$INSTALL_PATH"/>
             <file src="custom-devices.xml" targetdir="$INSTALL_PATH"/>
+            <file src="../setup/JadTool.jar" targetdir="$INSTALL_PATH/bin"/>
             <!--
             <file src="../setup/build.xml" targetdir="$INSTALL_PATH"/>
             <parsable targetfile="$INSTALL_PATH/build.xml" type="shell" /> 
             -->
         </pack>
         <pack name="NetBeans Integration" required="no" preselected="no">
-            <description>A plugin for creating J2ME Polish projects in NetBeans. Please note that you need to specify the netbeans.home property in the previous settings screen and that your NetBeans installation directory needs to be writable for you.
-            The module will be activated the next time you exit NetBeans (so please start NetBeans and exit right away again, NetBeans will automatically relaunch and integrate the J2ME Polish module).
+            <description>EXPERIMENTAL plugin for creating J2ME Polish projects in NetBeans. 
+Please note that you need to specify the netbeans.home property in the previous settings screen and that your NetBeans installation directory needs to be writable for you.
+You will also need the Mobility Plugin for NetBeans that can be downloaded at http://www.netbeans.org.
+The module will be activated the next time you exit NetBeans (so please start NetBeans and exit right away again, NetBeans will automatically relaunch and integrate the J2ME Polish module, in some cases you might need to exit twice).
+For using the module select File &gt; New Project &gt; Mobile &gt; J2ME Polish Project and follow the steps.            
             </description>
             <file src="ide/netbeans/de-enough-polish-netbeans.nbm" targetdir="$NETBEANS_INSTALL_HOME"/>
         </pack>
@@ -261,19 +265,8 @@
             <parsable targetfile="$INSTALL_PATH/samples/doja/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/doja/.classpath" type="shell" /> 
         </pack>
-        <pack name="External Device Database" required="no" preselected="yes" >
-            <description>The files &quot;devices.xml&quot;, &quot;vendors.xml&quot;, &quot;groups.xml&quot; and &quot;apis.xml&quot; etc. These are necessary if you want to add your own device-definitions or modify existing ones.</description>
-            <file src="devices.xml" targetdir="$INSTALL_PATH"/>
-            <file src="vendors.xml" targetdir="$INSTALL_PATH"/>
-      	    <file src="groups.xml" targetdir="$INSTALL_PATH"/>
-            <file src="apis.xml" targetdir="$INSTALL_PATH"/>
-            <file src="platforms.xml" targetdir="$INSTALL_PATH"/>
-            <file src="configurations.xml" targetdir="$INSTALL_PATH"/>
-            <file src="capabilities.xml" targetdir="$INSTALL_PATH"/>
-            <file src="custom-extensions.xml" targetdir="$INSTALL_PATH"/>
-        </pack>
         <pack name="Docs" required="no" preselected="yes">
-            <description>The documentation of J2ME Polish in HTML and PDF format.</description>
+            <description>The documentation of J2ME Polish in HTML format.</description>
             <file src="doc" targetdir="$INSTALL_PATH"/> <!-- Reccursive adding -->
         </pack>
         <pack name="Tools" required="no" preselected="yes">
@@ -313,14 +306,23 @@
             	<os name="Mac OS X" />
             </parsable>
         </pack>
+        <pack name="External Device Database" required="no" preselected="no" >
+            <description>The files &quot;devices.xml&quot;, &quot;vendors.xml&quot;, &quot;groups.xml&quot; and &quot;apis.xml&quot; etc. 
+Do NOT use these if you want to add your own device-definitions!
+Instead use custom-devices.xml, custom-vendors.xml, custom-groups.xml and custom-apis.xml for your own definitions.
+			</description>
+            <file src="devices.xml" targetdir="$INSTALL_PATH"/>
+            <file src="vendors.xml" targetdir="$INSTALL_PATH"/>
+      	    <file src="groups.xml" targetdir="$INSTALL_PATH"/>
+            <file src="apis.xml" targetdir="$INSTALL_PATH"/>
+            <file src="platforms.xml" targetdir="$INSTALL_PATH"/>
+            <file src="configurations.xml" targetdir="$INSTALL_PATH"/>
+            <file src="capabilities.xml" targetdir="$INSTALL_PATH"/>
+            <file src="custom-extensions.xml" targetdir="$INSTALL_PATH"/>
+        </pack>
         <pack name="Sources" required="no" preselected="no">
             <description>The sources of J2ME Polish. These are useful if you want to extend J2ME Polish.</description>
             <file src="j2mepolish-src" targetdir="$INSTALL_PATH"/>
-        </pack>
-        <pack name="OS X: JadUtil.jar" required="no" preselected="yes">
-        	<os name="Mac OS X" />
-            <description>The Jad utility is needed for signing MIDlets on Mac OS X platforms.</description>
-            <file src="../setup/JadTool.jar" targetdir="$INSTALL_PATH/bin"/>
         </pack>
     </packs>
     
