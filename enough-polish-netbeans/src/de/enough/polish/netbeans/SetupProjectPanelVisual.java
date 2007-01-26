@@ -42,19 +42,19 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        projectNameLabel = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        activatePolishGuiLabel = new javax.swing.JLabel();
+        activatePolishGuiCheckBox = new javax.swing.JCheckBox();
         projectNameLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         textFieldEmulatorPlatform = new javax.swing.JTextField();
         comboBoxTemplate = new javax.swing.JComboBox();
 
-        org.openide.awt.Mnemonics.setLocalizedText(projectNameLabel, "&Activate J2ME Polish GUI:");
+        org.openide.awt.Mnemonics.setLocalizedText(activatePolishGuiLabel, "&Activate J2ME Polish GUI:");
 
-        jCheckBox1.setSelected(true);
-        jCheckBox1.setToolTipText("Uncheck this element if you do not want to use the advanced J2ME Polish GUI for your project.");
-        jCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        activatePolishGuiCheckBox.setSelected(true);
+        activatePolishGuiCheckBox.setToolTipText("Uncheck this element if you do not want to use the advanced J2ME Polish GUI for your project.");
+        activatePolishGuiCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        activatePolishGuiCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
         org.openide.awt.Mnemonics.setLocalizedText(projectNameLabel3, "Template");
 
@@ -75,11 +75,11 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(projectNameLabel3)
                     .add(jLabel1)
-                    .add(projectNameLabel))
+                    .add(activatePolishGuiLabel))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 18, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(jCheckBox1)
+                        .add(activatePolishGuiCheckBox)
                         .add(317, 317, 317))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
@@ -92,8 +92,8 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(projectNameLabel)
-                    .add(jCheckBox1))
+                    .add(activatePolishGuiLabel)
+                    .add(activatePolishGuiCheckBox))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(projectNameLabel3)
@@ -108,10 +108,10 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
         
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox activatePolishGuiCheckBox;
+    private javax.swing.JLabel activatePolishGuiLabel;
     private javax.swing.JComboBox comboBoxTemplate;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel projectNameLabel;
     private javax.swing.JLabel projectNameLabel3;
     private javax.swing.JTextField textFieldEmulatorPlatform;
     // End of variables declaration//GEN-END:variables
@@ -131,6 +131,11 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
         // read template:
         String template = (String) this.comboBoxTemplate.getSelectedItem();
         settings.putProperty("polish.template", template );
+        if (this.activatePolishGuiCheckBox.isSelected()) {
+            settings.putProperty("poliush.usePolishGui", "true");
+        } else {
+            settings.putProperty("poliush.usePolishGui", "false");
+        }
     }
     
     void read(WizardDescriptor settings) {
