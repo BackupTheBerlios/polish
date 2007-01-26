@@ -36,6 +36,7 @@ import de.enough.polish.BuildException;
 import de.enough.polish.Variable;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.PropertyUtil;
+import de.enough.polish.util.StringUtil;
 
 
 /**
@@ -49,6 +50,7 @@ public class PropertyWriterTask extends Task {
 	private File destinationFile;
 	private HashMap properties = new HashMap();
 	private HashMap definedProperties = new HashMap();
+	private String ignore;
 	
 	/**
 	 * Creates an empty property writer
@@ -75,6 +77,10 @@ public class PropertyWriterTask extends Task {
 		this.destinationFile = destfile;
 	}
 	
+	public void setIgnore( String ignoreList ) {
+		this.ignore = ignoreList;
+	}
+	
 	private  void checkSettings() {
 		if (this.sourceFile == null) {
 			throw new BuildException("The PropertyWriter task needs the srcfile attribute.");
@@ -86,6 +92,7 @@ public class PropertyWriterTask extends Task {
 		}
 	}
 	
+	
 	private void initSettings() {
 		// copy the Ant-properties:
 		Hashtable antProperties = getProject().getProperties();
@@ -94,9 +101,17 @@ public class PropertyWriterTask extends Task {
 		// this is done here so that these properties overwrite
 		// any Ant-properties:
 		this.properties.putAll( this.definedProperties );
+		if (this.ignore != null) {
+			String[] irgnores = StringUtil.splitAndTrim(this.ignore, ',');
+			for (int i = 0; i < irgnores.length; i++) {
+				String property = irgnores[i];
+				this.properties.remove(property);
+			}
+		}
 	}
 	
 	public void execute() {
+		System.out.println("polish.home" + getProject().getProperty("polish.home"));
 		checkSettings();
 		initSettings();
 		// read source file:
@@ -109,7 +124,7 @@ public class PropertyWriterTask extends Task {
 		// replace all properties:
 		for (int i = 0; i < lines.length; i++) {
 			String line = lines[i];
-			lines[i] = PropertyUtil.writeProperties( line, this.properties, true );
+			lines[i] = PropertyUtil.writeProperties( line, this.properties, this.ignore == null );
 		}
 		try {
 			// write destination file:

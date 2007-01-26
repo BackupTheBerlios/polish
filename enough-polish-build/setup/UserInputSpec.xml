@@ -8,6 +8,11 @@
 	<field type="staticText" txt="" />
 	<field type="staticText" txt="Find more information about J2ME Polish at www.j2mepolish.org. " />
 	<field type="staticText" txt="" />
+	<field type="staticText" txt="IMPORTANT: when migrating from J2ME Polish 1.x, please adjust your &lt;j2mepolish&gt; task definition: build libraries are now in ${polish.home}/lib! " />
+	<field type="staticText" txt="Example: &lt;taskdef name=&quot;j2mepolish&quot; 
+   classname=&quot;de.enough.polish.ant.PolishTask&quot;
+   classpath=&quot;${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar&quot;
+	/&gt;" />
 	<divider alignment="top"/>
 	<field type="staticText" txt="Copyright 2003 - 2007 Enough Software " />
 </panel>

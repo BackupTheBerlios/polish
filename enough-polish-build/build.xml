@@ -7,7 +7,7 @@
 	<property name="device" value="Generic/Midp2Cldc11" />
 	<property file="version.properties" />
 	
-	<property name="all.jars" value="jdom.jar,wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.0-java5.0.jar,cldc-1.1.jar,cldc-1.1-java5.0.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,doja-1.5.jar,doja-2.5.jar,location.jar,cdc-1.0.jar" />
+	<property name="all.jars" value="wmapi.jar,nokia-ui.jar,mmapi.jar,siemens-color-game-api.jar,siemens-extension-api.jar,btapi.jar,m3g.jar,fileconnection.jar,pim.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.0-java5.0.jar,cldc-1.1.jar,cldc-1.1-java5.0.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,doja-1.5.jar,doja-2.5.jar,location.jar,cdc-1.0.jar,javase-1.0.jar" />
 	<property name="all.library.jars" value="enough-j2mepolish-extensions.jar,enough-j2mepolish-build-src.jar,asm-all.jar,enough-bytecode.jar,enough-floater.jar,jdom.jar,proguard.jar,proguard2.jar,yguard-lib.jar,retroguard.jar,retroweaver-all.jar,svgSalamander.jar,ant.jar" />
 	<property name="update.jars" value="asm-all.jar,enough-bytecode.jar,enough-floater.jar,pim.jar,fileconnection.jar,pdaapi.jar,m2g.jar,cldc-1.0.jar,cldc-1.1.jar,midp-1.0.jar,midp-2.0.jar,blackberry-4.0.jar,svgSalamander.jar,doja-1.5.jar,doja-2.5.jar,location.jar" />
 	
@@ -428,7 +428,7 @@
 		<copy todir="tmp/import">
 			<fileset dir="import" includes="${all.jars}" />
 			<fileset dir="lib" includes="${all.jars}" />
-			<fileset dir="dist" includes="enough-j2mepolish-build.jar,enough-j2mepolish-client.jar,enough-j2mepolish-client-java5.jar"  />
+			<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-client-java5.jar"  />
 		</copy>
 		<copy todir="tmp/lib">
 			<fileset dir="import" includes="${all.library.jars}" />
@@ -713,7 +713,8 @@
 		<propertyWriter srcfile="setup/install.xml"
 			            destfile="tmp/install.xml" />
 		<propertyWriter srcfile="setup/UserInputSpec.xml"
-			            destfile="tmp/userInputSpec.xml" />
+			            destfile="tmp/userInputSpec.xml"
+						ignore="polish.home" />
 		<propertyWriter srcfile="setup/Readme.txt"
 			            destfile="tmp/Readme.txt" />
 		<!-- create installation file -->
@@ -734,7 +735,8 @@
 		<propertyWriter srcfile="setup/install.xml"
 			            destfile="tmp/install.xml" />
 		<propertyWriter srcfile="setup/UserInputSpec.xml"
-			            destfile="tmp/userInputSpec.xml" />
+			            destfile="tmp/userInputSpec.xml"
+						ignore="polish.home" />
 		<propertyWriter srcfile="setup/Readme.txt"
 			            destfile="tmp/Readme.txt" />
 		<!-- create installation file -->
