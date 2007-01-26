@@ -638,6 +638,10 @@ public class TextField extends StringItem
 	public static final int CONSTRAINT_MASK = 0xFFFF;
 		
 	//#ifndef tmp.suppressCommands
+		//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+			//#define tmp.updateDeleteCommand
+		//#endif
+			
 		// the delete command is a Command.ITEM type, because CANCEL will be mapped on special keys like the return key on Sony Ericsson devices.
 		//#ifdef polish.i18n.useDynamicTranslations
 	  		protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.CANCEL, 1 );
@@ -1057,7 +1061,7 @@ public class TextField extends StringItem
 				this.caretColumn = this.caretPosition;
 			}
 		//#endif
-		//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+			//#if tmp.updateDeleteCommand
 			updateDeleteCommand( text );
 		//#endif
 		setText(text);
@@ -1068,7 +1072,7 @@ public class TextField extends StringItem
 		//#endif
 	}
 	
-	//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+	//#if tmp.updateDeleteCommand
 	private void updateDeleteCommand(String newText) {
 			// remove delete command when the caret is before the first character,
 			// add it when it is after the first character:
@@ -2715,7 +2719,7 @@ public class TextField extends StringItem
 						this.caretPosition -= previousCaretRowFirstLength + (this.originalRowText.length() - this.caretColumn);
 						this.internalX = 0;
 						this.internalY = this.caretRow * this.rowHeight;
-						//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+						//#if tmp.updateDeleteCommand
 							updateDeleteCommand( this.text );
 						//#endif
 						return true;
@@ -2743,7 +2747,7 @@ public class TextField extends StringItem
 						setCaretRow( nextLine, this.caretColumn );
 						this.caretPosition += (lastCaretRowLastPartLength + this.caretColumn );
 						this.internalY = this.caretRow * this.rowHeight;
-						//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+						//#if tmp.updateDeleteCommand
 							updateDeleteCommand( this.text );
 						//#endif
 						return true;
@@ -2761,7 +2765,7 @@ public class TextField extends StringItem
 							this.caretPosition--;
 							this.caretColumn--;
 							setCaretRow( this.originalRowText, this.caretColumn );
-							//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+							//#if tmp.updateDeleteCommand
 								updateDeleteCommand( this.text );
 							//#endif
 							return true;
@@ -2780,7 +2784,7 @@ public class TextField extends StringItem
 							//System.out.println(this + ".handleKeyPressed()/font4: caretX=" + this.caretX);
 							this.caretY -= this.rowHeight;
 							this.internalY = this.caretY;
-							//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+							//#if tmp.updateDeleteCommand
 								updateDeleteCommand( this.text );
 							//#endif
 							return true;
@@ -2809,7 +2813,7 @@ public class TextField extends StringItem
 							this.caretColumn++;
 							this.caretPosition++;
 							setCaretRow( this.originalRowText, this.caretColumn );
-							//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+							//#if tmp.updateDeleteCommand
 								updateDeleteCommand( this.text );
 							//#endif
 							return true;
@@ -2829,7 +2833,7 @@ public class TextField extends StringItem
 							}
 							this.caretY += this.rowHeight;
 							this.internalY = this.caretY;
-							//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+							//#if tmp.updateDeleteCommand
 								updateDeleteCommand( this.text );
 							//#endif
 							return true;
@@ -2840,7 +2844,7 @@ public class TextField extends StringItem
 							this.caretRowFirstPart += character;
 							this.caretColumn++;
 							this.caretPosition++;
-							//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+							//#if tmp.updateDeleteCommand
 								updateDeleteCommand( this.text );
 							//#endif
 							return true;
@@ -3235,7 +3239,7 @@ public class TextField extends StringItem
 			//#endif
 		//#endif
 		Style unfocusedStyle = super.focus(focStyle, direction);
-		//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+		//#if tmp.updateDeleteCommand
 			updateDeleteCommand( this.text );
 		//#endif
 		return unfocusedStyle;
