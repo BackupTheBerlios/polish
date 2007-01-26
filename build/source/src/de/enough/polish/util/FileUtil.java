@@ -305,8 +305,8 @@ public final class FileUtil {
 		Object[] keys = properties.keySet().toArray();
 		String[] lines = new String[ keys.length ];
 		for (int i = 0; i < lines.length; i++) {
-			String key = keys[i].toString();
-			String value = properties.get( key ).toString();
+			Object key = keys[i];
+			Object value = properties.get( key );
 			lines[i] = key.toString() + "=" + value.toString();
 		}
 		writeTextFile( file, lines );
