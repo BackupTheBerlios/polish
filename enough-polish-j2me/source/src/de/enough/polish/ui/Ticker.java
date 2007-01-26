@@ -25,8 +25,11 @@
  */
 package de.enough.polish.ui;
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.TextUtil;
 
@@ -68,20 +71,24 @@ import de.enough.polish.util.TextUtil;
  * to be displayed as the user switches among screens. </p>
  * <HR>
  * 
- * 
+ * Supported CSS Attributes, next to any IconItem and StringItem attributes:
+ * <ul>
+ * 	<li><b>ticker-step</b>: the number of pixels by which the ticker is moved in every animation step, defaults to 2.</li>
+ * 	<li><b>ticker-position</b>: the position of the ticker relative to the screen - either top or bottom</li>
+ * 	<!--
+ * 	<li><b></b>: </li>
+ * 	<li><b></b>: </li>
+ *  -->
+ * </ul>
+ * @see StringItem
+ * @see IconItem
  * @since MIDP 1.0
  */
-public class Ticker extends Item
+public class Ticker extends IconItem
 {
-	private int xOffset;
-	private String chunk;
-	private int chunkIndex;
-	private int chunkWidth;
-	private String[] chunks;
-	private String text;
-	private Font font;
-	private int textColor;
+	private int tickerXOffset;
 	private int step = 2;
+	private int tickerWidth;
 
 	/**
 	 * Constructs a new <code>Ticker</code> object, given its initial
@@ -105,38 +112,45 @@ public class Ticker extends Item
 	 */
 	public Ticker( String str, Style style )
 	{
-		super( style );
+		super( null, null, style );
 		setString( str );
 	}
 	
+	/**
+	 * Retrieves the shown text of this ticker.
+	 * 
+	 * @return the ticker text
+	 */
 	public String getString() {
 		return this.text;
 	}
 	
+	/**
+	 * Sets the ticker text
+	 * 
+	 * @param text the text that is being scrolled
+	 */
 	public void setString( String text ) {
-		this.text = text;
-		this.chunks = TextUtil.split( text, '\n');
-		this.chunk = this.chunks[0];
-		this.isInitialised = false;
+		if (text != null) {
+			text = text.replace('\n', ' ');
+		}
+		super.setText(text);
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
-		if (this.font == null) {
-			this.font = Font.getFont( Font.FACE_PROPORTIONAL, Font.STYLE_PLAIN, Font.SIZE_SMALL );
-		}
-		this.chunkWidth = this.font.stringWidth( this.chunk );
+		super.initContent( Integer.MAX_VALUE, Integer.MAX_VALUE );
+		this.tickerWidth = this.contentWidth;
 		this.contentWidth = firstLineWidth;
-		this.contentHeight = this.font.getHeight();
-		this.xOffset = - firstLineWidth;
+		this.tickerXOffset = - firstLineWidth;
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//System.out.println("painting ticker at " + x);
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
@@ -144,10 +158,19 @@ public class Ticker extends Item
 		int clipWidth = g.getClipWidth();
 		int width = (rightBorder - leftBorder);
 		g.clipRect( x, clipY, width, clipHeight);
-		x -= this.xOffset;
-		g.setColor( this.textColor );
-		g.setFont( this.font );
-		g.drawString( this.chunk, x, y, Graphics.TOP | Graphics.LEFT );
+		x -= this.tickerXOffset;
+		
+		super.paintContent(x, y, leftBorder, rightBorder, g);
+		if (x < leftBorder &&  x + this.tickerWidth + this.paddingHorizontal < rightBorder) {
+			// the item can be wrapped to the other side again:
+			if (this.tickerWidth > width) {
+				x += this.tickerWidth + this.paddingHorizontal;
+			} else {
+				x = rightBorder + (x - leftBorder);
+			}
+			super.paintContent(x, y, leftBorder, rightBorder, g);
+		}
+		
 		g.setClip(clipX, clipY, clipWidth, clipHeight);
 	}
 
@@ -179,18 +202,17 @@ public class Ticker extends Item
 	 * @see de.enough.polish.ui.Item#animate()
 	 */
 	public boolean animate() {
-		if (this.xOffset < this.chunkWidth) {
-			this.xOffset += this.step;
-			//System.out.println("changing offset");
+		if (this.tickerWidth == 0) {
+			return false;
+		}
+		if (this.tickerXOffset < this.tickerWidth) {
+			this.tickerXOffset += this.step;
 		} else {
-			//System.out.println("changing chunk: xOffset=" + this.xOffset + " chunkWidth=" + this.chunkWidth );
-			this.xOffset = -this.contentWidth;
-			this.chunkIndex++;
-			if ( this.chunkIndex >= this.chunks.length  ) {
-				this.chunkIndex = 0;
+			if (this.tickerWidth > this.contentWidth) {
+				this.tickerXOffset -= (this.tickerWidth + this.paddingHorizontal) - this.step;
+			} else {
+				this.tickerXOffset = (this.tickerXOffset - this.contentWidth) + this.step;
 			}
-			this.chunk = this.chunks[ this.chunkIndex ];
-			this.chunkWidth = this.font.stringWidth( this.chunk );
 		}
 		return true;
 	}

@@ -103,35 +103,35 @@ public class ShadowTextEffect extends TextEffect {
 			if (orientationInt != null) {
 				switch ( orientationInt.intValue() ) {
 				case ORIENTATION_BOTTOM_RIGHT: 
-					this.xOffset = 2;
-					this.yOffset = 2;
+					this.xOffset = 1;
+					this.yOffset = 1;
 					break;
 				case ORIENTATION_BOTTOM_LEFT: 
-					this.xOffset = -2;
-					this.yOffset = 2;
+					this.xOffset = -1;
+					this.yOffset = 1;
 					break;
 				case ORIENTATION_TOP_RIGHT: 
-					this.xOffset = 2;
-					this.yOffset = -2;
+					this.xOffset = 1;
+					this.yOffset = -1;
 					break;
 				case ORIENTATION_TOP_LEFT: 
-					this.xOffset = -2;
-					this.yOffset = -2;
+					this.xOffset = -1;
+					this.yOffset = -1;
 					break;
 				case ORIENTATION_BOTTOM: 
 					this.xOffset = 0;
-					this.yOffset = 2;
+					this.yOffset = 1;
 					break;
 				case ORIENTATION_TOP: 
 					this.xOffset = 0;
-					this.yOffset = -2;
+					this.yOffset = -1;
 					break;
 				case ORIENTATION_RIGHT: 
-					this.xOffset = 2;
+					this.xOffset = 1;
 					this.yOffset = 0;
 					break;
 				case ORIENTATION_LEFT: 
-					this.xOffset = -2;
+					this.xOffset = -1;
 					this.yOffset = 0;
 				}
 			}

@@ -30,6 +30,7 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.HashMap;
 
@@ -1447,6 +1448,32 @@ public final class UiAccess {
 		} else {
 			item.setAppearanceMode( Item.PLAIN );
 		}
+	}
+	//#endif
+	
+	  //#if polish.midp
+	/**
+	 * Sets an image for the specified ticker.
+	 * This method is ignored when the J2ME Polish UI is not activated.
+	 * 
+	 * @param item the item that should be made accessible 
+	 * @param isAccessible true when the item should be accessible/selectable
+	 */
+	public static void setTickerImage( javax.microedition.lcdui.Ticker ticker, Image image ) {
+		// ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets an image for the specified ticker.
+	 * This method is ignored when the J2ME Polish UI is not activated.
+	 * 
+	 * @param item the item that should be made accessible 
+	 * @param isAccessible true when the item should be accessible/selectable
+	 */
+	public static void setAccessible( Ticker ticker, Image image ) {
+		ticker.setImage(image);
 	}
 	//#endif
 

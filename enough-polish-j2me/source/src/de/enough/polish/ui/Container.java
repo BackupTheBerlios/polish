@@ -37,7 +37,7 @@ import de.enough.polish.util.ArrayList;
  * <p>Containers support following CSS attributes:
  * </p>
  * <ul>
- * 		<li><b>focused</b>: The name of the focused style, e.g. "style( funnyFocused );"
+ * 		<li><b>focused-style</b>: The name of the focused style, e.g. "focused-style: funnyFocused;"
  * 				</li>
  * 		<li><b>columns</b>: The number of columns. If defined a table will be drawn.</li>
  * 		<li><b>columns-width</b>: The width of the columns. "equals" for an equal width
