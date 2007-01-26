@@ -300,7 +300,12 @@ public class DeviceDatabase {
 		} catch (BuildException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new BuildException("unable to read devices.xml/custom-devices.xml: " + e.getMessage(), e );
+			String message = e.getMessage(); 
+			if ( message == null) {
+				e.printStackTrace();
+				message = e.toString();
+			}
+			throw new BuildException("unable to read devices.xml/custom-devices.xml: " + message, e );
 		}
         this.polishHome = polishHomeDir;
         this.apisHome = apisHomeDir;

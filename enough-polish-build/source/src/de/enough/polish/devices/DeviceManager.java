@@ -67,12 +67,19 @@ public class DeviceManager {
 	private final HashMap devicesByIdentifier;
 	private HashMap devicesByUserAgent;
 	private final VendorManager vendorManager;
+	private List devicesXmlList;
+	private List currentDevicesXmlList;
+	private ConfigurationManager configurationManager;
+	private PlatformManager platformManager;
+	private DeviceGroupManager groupManager;
+	private LibraryManager libraryManager;
+	private CapabilityManager capabilityManager;
 
 	/**
 	 * Creates a new device manager with the given devices.xml file.
 	 * 
 	 * @param platformManager
-	 * @param configuratioManager
+	 * @param configurationManager
 	 * @param vendorManager The manager of the device-manufacturers
 	 * @param groupManager The manager for device-groups.
 	 * @param libraryManager the manager for device-specific APIs
@@ -83,14 +90,14 @@ public class DeviceManager {
 	 * @throws IOException when devices.xml could not be read
 	 * @throws InvalidComponentException when a device definition has errors
 	 */
-	public DeviceManager( ConfigurationManager configuratioManager, PlatformManager platformManager, VendorManager vendorManager, DeviceGroupManager groupManager, LibraryManager libraryManager, CapabilityManager capabilityManager, InputStream devicesIS ) 
+	public DeviceManager( ConfigurationManager configurationManager, PlatformManager platformManager, VendorManager vendorManager, DeviceGroupManager groupManager, LibraryManager libraryManager, CapabilityManager capabilityManager, InputStream devicesIS ) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
-		this.devicesByIdentifier = new HashMap();
-        
-		this.devicesList = new ArrayList();
 		this.vendorManager = vendorManager;
-		loadDevices( configuratioManager, platformManager, vendorManager, groupManager, libraryManager, capabilityManager, devicesIS );
+
+		this.devicesByIdentifier = new HashMap();        
+		this.devicesList = new ArrayList();
+		loadDevices( configurationManager, platformManager, vendorManager, groupManager, libraryManager, capabilityManager, devicesIS );
 		devicesIS.close();
 	}
 	
@@ -129,10 +136,10 @@ public class DeviceManager {
 	 * @throws IOException when devices.xml could not be read
 	 * @throws InvalidComponentException when a device definition has errors
 	 */
-	protected void loadDevices(  ConfigurationManager configuratioManager, PlatformManager platformManager, VendorManager vendManager, DeviceGroupManager grManager, LibraryManager libManager, CapabilityManager capabilityManager, InputStream devicesIS ) 
+	protected void loadDevices(  ConfigurationManager configManager, PlatformManager platfManager, VendorManager vendManager, DeviceGroupManager grManager, LibraryManager libManager, CapabilityManager capManager, InputStream devicesIS ) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
-		loadDevices( null, configuratioManager, platformManager, vendManager, grManager, libManager, capabilityManager, devicesIS);
+		loadDevices( null, configManager, platfManager, vendManager, grManager, libManager, capManager, devicesIS);
 	}
 	
 	/**
@@ -147,9 +154,15 @@ public class DeviceManager {
 	 * @throws IOException when devices.xml could not be read
 	 * @throws InvalidComponentException when a device definition has errors
 	 */
-	protected void loadDevices(  List identifierList, ConfigurationManager configuratioManager, PlatformManager platformManager, VendorManager vendManager, DeviceGroupManager grManager, LibraryManager libManager, CapabilityManager capabilityManager, InputStream devicesIS ) 
+	protected void loadDevices(  List identifierList, ConfigurationManager configManager, PlatformManager platfManager, VendorManager vendManager, DeviceGroupManager grManager, LibraryManager libManager, CapabilityManager capManager, InputStream devicesIS ) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{
+		this.configurationManager = configManager;
+		this.platformManager = platfManager;
+		this.groupManager = grManager;
+		this.libraryManager = libManager;
+		this.capabilityManager = capManager;
+		
 		if (devicesIS == null) {
 			throw new BuildException("Unable to load devices.xml, no file found.");
 		}
@@ -158,6 +171,37 @@ public class DeviceManager {
 		
 		HashMap devicesMap = this.devicesByIdentifier;
 		List xmlList = document.getRootElement().getChildren();
+		if (identifierList != null) {
+			// optimized loading: load only devices of the specified identifiers.
+			// This drastically improves loadtime but produces overhead for cases
+			// when a desired device contains a parent device that is not in the list.
+			// To workaround this problem, the getDevice( String identifier ) method
+			// can load devices as well, if required.
+			if (this.devicesXmlList == null ) {
+				// this contains the devices.xml list when only devices with identifiers should be loaded:
+				this.devicesXmlList = xmlList;
+			}
+			this.currentDevicesXmlList = xmlList;
+		}
+		loadDevices(identifierList, configManager, platfManager, vendManager, grManager, libManager, capManager, devicesMap, xmlList);
+		this.devices = (Device[]) this.devicesList.toArray( new Device[ this.devicesList.size()]);
+	}
+
+	/**
+	 * Loads the requested devices from the given xmlList
+	 * 
+	 * @param identifierList the requested identifiers, if null all devices are loaded
+	 * @param configuratioManager
+	 * @param platfManager
+	 * @param vendManager
+	 * @param grManager
+	 * @param libManager
+	 * @param capManager
+	 * @param devicesMap
+	 * @param xmlList
+	 * @throws InvalidComponentException
+	 */
+	private void loadDevices(List identifierList, ConfigurationManager configuratioManager, PlatformManager platfManager, VendorManager vendManager, DeviceGroupManager grManager, LibraryManager libManager, CapabilityManager capManager, HashMap devicesMap, List xmlList) throws InvalidComponentException {
 		String lastKnownWorkingDevice = null;
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element definition = (Element) iter.next();
@@ -174,8 +218,11 @@ public class DeviceManager {
 				if (identifierList != null) {
 					boolean isRequiredIdentifier = identifierList.remove( identifier );
 					if (!isRequiredIdentifier) {
+						// skip the loading of devices which are not needed. When a device later onwards
+						// refers to a parent device, this will be loaded in the getDevice( String identifier ) method.
 						continue;
 					}
+//					System.out.println("found required identifier: " + identifier );
 				}
 				if (devicesMap.get( identifier ) != null) {
 					throw new InvalidComponentException("The device [" + identifier + "] has been defined twice in [devices.xml]. Please remove one of those definitions.");
@@ -190,12 +237,16 @@ public class DeviceManager {
 				if (vendor == null) {
 					throw new InvalidComponentException("Invalid device-specification in [devices.xml]: Please specify the vendor [" + vendorName + "] in the file [vendors.xml].");
 				}
-				Device device = new Device( configuratioManager, platformManager, definition, identifier, deviceName, vendor, grManager, libManager, this, capabilityManager );
+				Device device = new Device( configuratioManager, platfManager, definition, identifier, deviceName, vendor, grManager, libManager, this, capManager );
 				devicesMap.put( identifier, device );
 				this.devicesList.add( device );
+				if (identifierList != null && identifierList.size() == 0) {
+//					System.out.println("done loading <identifier> devices");
+					break;
+				}
+
 			}
 		}
-		this.devices = (Device[]) this.devicesList.toArray( new Device[ this.devicesList.size()]);
 	}
 
 	/**
@@ -225,7 +276,24 @@ public class DeviceManager {
 	 *@return the device or null when it is not known.
 	 */
 	public Device getDevice(String identifier) {
-		return (Device) this.devicesByIdentifier.get( identifier );
+		Device device = (Device) this.devicesByIdentifier.get( identifier );
+		// when devices are only loaded for specific identifiers, 
+		// J2ME Polish might need to load parent devices later onwards:
+		if (device == null && this.devicesXmlList != null) {
+			List identifiers = new ArrayList();
+			identifiers.add(identifier);
+			try {
+				loadDevices(identifiers, this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, this.devicesByIdentifier, this.devicesXmlList);
+				device = (Device) this.devicesByIdentifier.get( identifier );
+				if (device == null && this.currentDevicesXmlList != this.devicesXmlList) {
+					loadDevices(identifiers, this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, this.devicesByIdentifier, this.currentDevicesXmlList );
+					device = (Device) this.devicesByIdentifier.get( identifier );
+				}
+			} catch (InvalidComponentException e) {
+				e.printStackTrace();
+			}
+		}
+		return device;
 	}
     
     /**
@@ -529,6 +597,8 @@ public class DeviceManager {
 	 */
 	public void clear()
 	{
+		this.devicesXmlList = null;
+		this.currentDevicesXmlList = null;
 		this.devices = null;
 		this.devicesList.clear();
 		this.devicesByIdentifier.clear();
