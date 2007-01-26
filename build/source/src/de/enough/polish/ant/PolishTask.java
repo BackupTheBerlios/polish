@@ -2510,8 +2510,17 @@ public class PolishTask extends ConditionalTask {
 		} else {
 			String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon(), this.useDefaultPackage, this.environment );
 			for (int i = 0; i < midletInfos.length; i++) {
-				String info = midletInfos[i];
-				attributesByName.put( InfoSetting.NMIDLET + (i+1), new  Attribute(InfoSetting.NMIDLET + (i+1), info ) );
+				String key = InfoSetting.NMIDLET + (i+1);
+				String midletDefinition = this.environment.getVariable(key); 
+				if (midletDefinition == null) {
+					String info = midletInfos[i];
+					attributesByName.put( key, 
+								new Attribute(key, info) );
+					this.environment.setVariable( key, info );
+				} else {
+					attributesByName.put( key, 
+							new Attribute(key, midletDefinition) );	
+				}
 			}
 		}
 		// add user-defined attributes:
@@ -2601,10 +2610,17 @@ public class PolishTask extends ConditionalTask {
 //		} else {
 			String[] midletInfos = this.buildSetting.getMidletInfos( this.infoSetting.getIcon(), this.useDefaultPackage, this.environment );
 			for (int i = 0; i < midletInfos.length; i++) {
-				String info = midletInfos[i];
-				attributesByName.put( InfoSetting.NMIDLET + (i+1), 
-							new Attribute(InfoSetting.NMIDLET + (i+1), info) );
-				this.environment.setVariable( InfoSetting.NMIDLET + (i+1), info );
+				String key = InfoSetting.NMIDLET + (i+1);
+				String midletDefinition = this.environment.getVariable(key); 
+				if (midletDefinition == null) {
+					String info = midletInfos[i];
+					attributesByName.put( key, 
+								new Attribute(key, info) );
+					this.environment.setVariable( key, info );
+				} else {
+					attributesByName.put( key, 
+							new Attribute(key, midletDefinition) );	
+				}
 			}
 //		}
 		

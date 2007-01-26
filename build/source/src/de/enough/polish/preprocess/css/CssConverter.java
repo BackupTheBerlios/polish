@@ -577,41 +577,8 @@ public class CssConverter extends Converter {
 					// process columns-width value:
 					// remove all spaces and check for the star-value (e.g. "20, *"):
 					if (key.equals("width") && groupName.equals("columns")) {
+						// remove any spaces, e.g. "columns-width: 50, 100, *":
 						value = StringUtil.replace( value, " ", "" );
-						int starPos = value.indexOf('*');
-						if (starPos != -1) {
-							if (starPos < value.length() - 1 ) {
-								value = value.substring( 0, starPos ) + "-1" + value.substring( starPos + 1 );
-							} else {
-								value = value.substring( 0, starPos ) + "-1";
-							}
-							/*
-							String screenWidthStr = device.getCapability("ScreenWidth");
-							if (screenWidthStr != null) {
-								int screenWidth = Integer.parseInt( screenWidthStr );
-								String[] valueChunks = StringUtil.split( value, ',' );
-								int combinedWidth = 0;
-								int starIndex = -1;
-								for (int j = 0; j < valueChunks.length; j++) {
-									String widthStr = valueChunks[j];
-									if ("*".equals( widthStr)) {
-										starIndex = j;
-									} else {
-										combinedWidth += Integer.parseInt( widthStr );
-									}
-								}
-								valueChunks[ starIndex ] = "" + ( screenWidth - combinedWidth);
-								StringBuffer buffer = new StringBuffer();
-								for (int j = 0; j < valueChunks.length; j++) {
-									buffer.append( valueChunks[j] );
-									if (j != valueChunks.length -1) {
-										buffer.append(',');
-									}
-								}
-								value = buffer.toString();
-							}
-							*/
-						}
 					}
 					if (attributeType == CssAttribute.STYLE || key.endsWith("style")) {
 						value = getStyleReference( value, style, styleSheet );

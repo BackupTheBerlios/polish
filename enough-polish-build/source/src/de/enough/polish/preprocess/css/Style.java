@@ -353,7 +353,7 @@ public class Style {
 					// check if there is a "columns-width: 23, *;" kind of setting: 
 					if ("columns-width".equals(fullName)) {
 						String value = (String) group.get( attributeName );
-						if (value.indexOf('*') != -1 && device.getCapability("ScreenWidth") == null) {
+						if (value.indexOf('*') != -1) { // && device.getCapability("ScreenWidth") == null) {
 							attributes.add( "columns-width.star");
 						}
 					}
