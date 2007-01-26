@@ -1397,6 +1397,7 @@ implements AccessibleCanvas
 						 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 						} 
 						//#if !polish.doja
+							System.out.println("showTitleOrMenu=" + showTitleOrMenu); 
 							if (this.showTitleOrMenu || this.menuOpened) {
 								// clear menu-bar:
 								if (this.menuBarColor != Item.TRANSPARENT) {
@@ -1404,6 +1405,8 @@ implements AccessibleCanvas
 									//TODO check use menuY instead of this.originalScreenHeight?
 									g.fillRect(menuLeftX, this.originalScreenHeight, menuRightX,  this.menuBarHeight );
 								}
+								g.setColor( this.menuFontColor );
+								g.setFont( this.menuFont );
 								String menuText = this.menuLeftString;
 								if (menuText != null) {
 									//#ifdef polish.Menu.MarginLeft:defined
@@ -1411,8 +1414,6 @@ implements AccessibleCanvas
 									//#else
 										menuLeftX += 2;
 									//#endif
-									g.setColor( this.menuFontColor );
-									g.setFont( this.menuFont );
 									//#ifdef polish.Menu.MarginTop:defined
 										//#= g.drawString(menuLeftX, menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.LEFT );
 									//#else
