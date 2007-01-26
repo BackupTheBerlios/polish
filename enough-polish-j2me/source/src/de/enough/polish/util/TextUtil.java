@@ -267,9 +267,10 @@ public final class TextUtil {
 				currentLineWidth = 0;
 				firstLineWidth = lineWidth; 
 				i = startPos;
-			} else if (currentLineWidth >= firstLineWidth ) {
+			} else if (currentLineWidth >= firstLineWidth && i > 0) {
 				if ( lastSpacePos == -1 ) {
 					i--;
+					System.out.println("value=" + value + ", i=" + i + ", startPos=" + startPos);
 					list.add( new String( valueChars, startPos, i - startPos ) );
 					startPos =  i;
 					currentLineWidth = 0;

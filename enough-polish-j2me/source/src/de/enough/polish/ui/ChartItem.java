@@ -197,7 +197,7 @@ public class ChartItem
 			if (scr == null) {
 				maxHeight = 100;
 			} else {
-				maxHeight = scr.contentHeight;
+				maxHeight = scr.contentHeight - 2;
 			}
 		}
 		int dataRange;

@@ -202,6 +202,9 @@ extends ItemView
 							combinedWidth += this.columnsWidths[i];
 						}
 						this.columnsWidths[this.starIndex] = lineWidth - combinedWidth;
+						this.starIndex = -1;
+						//#debug
+						System.out.println("width of star column=" + (lineWidth - combinedWidth) );
 					}
 				} else {
 			//#else
@@ -917,18 +920,22 @@ extends ItemView
 								this.columnsSetting = STATIC_WIDTH_COLUMNS;
 								this.columnsWidths = new int[ this.numberOfColumns ];
 								//#ifdef polish.css.columns-width.star
-									//int combinedWidth = 0;
 									this.starIndex = -1;
 								//#endif
 								for (int i = 0; i < widths.length; i++) {
 									//#ifdef polish.css.columns-width.star
 										String widthStr = widths[i];
 										if ("*".equals( widthStr )) {
-											this.starIndex = i;
-											this.columnsWidths[i] = 0;
+											if (this.starIndex != -1) {												
+												//#debug error
+												System.out.println("Container: Invalid [columns-width] setting: [" + width + "], only one * can be used!");
+												this.columnsWidths[i] = 30;
+											} else {
+												this.starIndex = i;
+												this.columnsWidths[i] = 0;
+											}
 										} else {
 											int w = Integer.parseInt( widthStr );
-											//combinedWidth += w;
 											this.columnsWidths[i] = w;
 										}
 									//#else

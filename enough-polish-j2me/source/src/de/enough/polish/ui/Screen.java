@@ -1397,7 +1397,6 @@ implements AccessibleCanvas
 						 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 						} 
 						//#if !polish.doja
-							System.out.println("showTitleOrMenu=" + showTitleOrMenu); 
 							if (this.showTitleOrMenu || this.menuOpened) {
 								// clear menu-bar:
 								if (this.menuBarColor != Item.TRANSPARENT) {
