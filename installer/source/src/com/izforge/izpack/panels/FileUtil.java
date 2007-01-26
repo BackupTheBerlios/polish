@@ -426,6 +426,7 @@ public final class FileUtil {
             for (int i=0; i < children.length; i++) {            	
                 boolean success = delete(new File(file, children[i]));
                 if ( !success ) {
+                	System.err.println("Unable to delete file " + file.getAbsolutePath() );
                     return false;
                 }
             }

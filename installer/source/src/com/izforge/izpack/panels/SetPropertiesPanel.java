@@ -158,7 +158,7 @@ public class SetPropertiesPanel extends IzPanel {
 		this.propertyPanels = filePropertyPanels;
 		
 		JPanel subPanel = new JPanel( new BorderLayout() );
-	    JLabel title = new JLabel("Paths to Emulators and SDKs");
+	    JLabel title = new JLabel("Paths to Emulators, SDKs and IDEs");
 	    title.setFont( title.getFont().deriveFont( title.getFont().getSize() * 2F ));
 	    subPanel.add( title, BorderLayout.NORTH );
 	    String message = "Please specify the paths to your emulators and SKDs that you are using. These paths will be written to ${polish.home}/global.properties.\n";
@@ -173,7 +173,7 @@ public class SetPropertiesPanel extends IzPanel {
 	    subPanel.add( area, BorderLayout.CENTER );
 	    
 	    JScrollPane scrollPane = new JScrollPane( propertiesPanel );
-	    scrollPane.setPreferredSize( new Dimension( 300, 450 ));
+	    scrollPane.setPreferredSize( new Dimension( 200, 450 ));
 	    subPanel.add( scrollPane, BorderLayout.SOUTH );
 
 	    setLayout( new BorderLayout() );
@@ -310,14 +310,45 @@ public class SetPropertiesPanel extends IzPanel {
 //        }
     }
 
+    /**
+     * Gets the properties from the input panels.
+     * 
+     * @return a map containing all defined properties.
+     */
 	private Map readProperties() {
+		boolean isWindows = File.separatorChar == '\\';
 		FilePropertyPanel[] panels = this.propertyPanels;
 		HashMap properties = new HashMap( panels.length );
 		for (int i = 0; i < panels.length; i++) {
 			FilePropertyPanel panel = panels[i];
 			String value = panel.getValueString();
 			if (value != null && value.length() > 0) {
+				if (isWindows) {
+					value = StringUtil.replace(value, "\\\\", "/");
+					value = value.replace('\\', '/' );
+				}
 				properties.put( panel.getPropertyName(), value );
+			}
+		}
+		// check for install path of the netbeans module:
+		String netbeansHomePath = (String) properties.get("netbeans.home");
+		if (netbeansHomePath != null) {
+			File netbeansHome = new File( netbeansHomePath );
+			if ( this.isMacOsX && netbeansHomePath.endsWith(".app")) {
+				netbeansHome = new File( netbeansHome, "Contents/Resources/NetBeans");
+			}
+			if (netbeansHome.canWrite()) {
+				File[] files = netbeansHome.listFiles();
+				for (int i = 0; i < files.length; i++) {
+					File file = files[i];
+					if (file.isDirectory() && file.getName().startsWith("nb")) {
+						// found correct installation directory:
+						File autoupdateDir = new File( file, "update/download");
+						autoupdateDir.mkdirs();
+						this.idata.setVariable("NETBEANS_INSTALL_HOME", autoupdateDir.getAbsolutePath() );
+						break;
+					}
+				}
 			}
 		}
 		return properties;

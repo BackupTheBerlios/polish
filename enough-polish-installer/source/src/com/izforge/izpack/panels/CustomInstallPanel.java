@@ -25,8 +25,14 @@
  */
 package com.izforge.izpack.panels;
 
+import java.io.File;
+
+import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
+import com.izforge.izpack.gui.IzPanelLayout;
+import com.izforge.izpack.gui.LabelFactory;
 import com.izforge.izpack.installer.InstallData;
 import com.izforge.izpack.installer.InstallerFrame;
 
@@ -40,9 +46,13 @@ import com.izforge.izpack.installer.InstallerFrame;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class CustomInstallPanel extends InstallPanel {
+public class CustomInstallPanel 
+extends InstallPanel
+implements Runnable
+{
 
 	private boolean isActivated;
+	private JLabel deletingInfoLabel;
 
 	/**
 	 * @param parent
@@ -52,6 +62,28 @@ public class CustomInstallPanel extends InstallPanel {
 		super(parent, idata);
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see com.izforge.izpack.panels.InstallPanel#panelActivate()
+	 */
+	public void panelActivate() {
+		// make a clean installation by removing the existing installation first:
+		File existingInstallationDir = new File( this.idata.getInstallPath() );
+		if (existingInstallationDir.exists()) {
+			this.deletingInfoLabel = LabelFactory.create("Please stand by while clearing previous installation...",
+		                parent.icons.getImageIcon("information"), LEADING);
+			add(this.deletingInfoLabel, IzPanelLayout.getDefaultConstraint(FULL_LINE_CONTROL_CONSTRAINT));
+			Thread thread = new Thread( this );
+			thread.start();
+		} else {			
+			super.panelActivate();
+		}
+	}
+
+
+
+
 	public void stopAction()
     {
 		final InstallPanel p = this;
@@ -91,6 +123,49 @@ public class CustomInstallPanel extends InstallPanel {
             }
         });
     }
+
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
+	public void run() {
+		try {
+			File existingInstallationDir = new File( this.idata.getInstallPath() );
+			// for some reason I'm not able to delete the installation directory itself - could be
+			// that IzPack already holds a reference or something.
+			// So instead remove files within the install directory:
+			File[] files = existingInstallationDir.listFiles();
+//			StringBuffer failuresBuffer = new StringBuffer();
+			boolean overallSuccess = true;
+			for (int i = 0; i < files.length; i++) {
+				File file = files[i];
+				boolean success = FileUtil.delete(file);
+				overallSuccess &= success;
+//				if (!success) {
+//					failuresBuffer.append( file.getAbsolutePath() + "\n");
+//				}
+			}
+			if (overallSuccess) {
+				this.deletingInfoLabel.setText("Previous installation has been removed.");
+			} else {
+				this.deletingInfoLabel.setText("Previous installation could not be removed. Please make a clean install if you encounter problems.");
+				// does only work after manually resizing install window...
+//				JTextArea area = new JTextArea( "\nFollowing files/directories could not be removed:\n" + failuresBuffer.toString() );
+//				area.setEditable( false );
+//				area.setLineWrap( true );
+//				area.setBackground( getBackground() );
+//			    add( area, IzPanelLayout.getDefaultConstraint(FULL_LINE_CONTROL_CONSTRAINT) );
+//			    SwingUtilities.updateComponentTreeUI( this );
+			}
+		} catch (Exception e) {
+			System.err.println("Unable to remove previous installation: " + e.toString() );
+			this.deletingInfoLabel.setText("Previous installation could not be removed, please make a clean install if you encounter problems.");
+			e.printStackTrace();
+		} finally {
+			super.panelActivate();
+		}
+	}
 
 
 }
