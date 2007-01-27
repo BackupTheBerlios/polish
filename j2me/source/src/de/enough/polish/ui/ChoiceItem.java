@@ -28,6 +28,7 @@ package de.enough.polish.ui;
 
 import java.io.IOException;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -384,7 +385,8 @@ public class ChoiceItem extends IconItem
 		}
 		
 	}
-	
+
+
 	//#ifdef polish.images.backgroundLoad
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ImageConsumer#setImage(java.lang.String, javax.microedition.lcdui.Image)
@@ -449,8 +451,7 @@ public class ChoiceItem extends IconItem
 	 * @param lastItem the item to use the values from for adjustoing
 	 */
 	public void adjustProperties(Item lastItem) {
-		this.yTopPos = lastItem.yTopPos;
-		this.yBottomPos = lastItem.yBottomPos;
+		this.relativeY = lastItem.relativeY;
 	}
 	
 	/**

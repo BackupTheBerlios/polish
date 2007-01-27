@@ -29,6 +29,7 @@ package de.enough.polish.ui;
 
 import java.io.IOException;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -278,5 +279,40 @@ public class ScrollBar extends Item {
 		//#endif
 	}
 
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the event when a pointer has been pressed at the specified position.
+	 * The default method discards this event when relX/relY is outside of the item's area.
+	 * When the event took place inside of the content area, the pointer-event is translated into an artificial
+	 * FIRE game-action keyPressed event, which is subsequently handled
+	 * bu the handleKeyPressed(-1, Canvas.FIRE) method.
+	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
+	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
+	 *    
+	 * @param relX the x position of the pointer pressing relative to this item's left position
+	 * @param relY the y position of the pointer pressing relative to this item's top position
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 * @see #isInItemArea(int, int) this method is used for determining whether the event belongs to this item
+	 * @see #isInContentArea(int, int) for a helper method for determining whether the event took place into the actual content area
+	 * @see #handleKeyPressed(int, int) 
+	 */
+	protected boolean handlePointerPressed( int relX, int relY ) {
+		if ( isInItemArea(relX, relY) ) {
+			int diff = 0;
+			if (relY < this.sliderY) {
+				// scroll up
+				diff = 30;
+			} else if (relY > this.sliderY + this.sliderHeight){
+				// scroll down
+				diff = -30;
+			}
+			if (diff != 0) {
+				this.screen.scroll( diff );
+			}
+			
+		}
+		return false;
+	}
+	//#endif
 	
 }

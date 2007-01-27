@@ -62,8 +62,8 @@ public class FixedFocusView extends ContainerView {
 		int clipHeight = g.getClipHeight();
 		int yOffset = 0;
 		if (this.focusedItem != null) {
-			int yTop = getItemYTopPos( this.focusedItem );
-			int yBottom = getItemYBottomPos( this.focusedItem );
+			int yTop = getItemRelativeY( this.focusedItem );
+			//int yBottom = getItemYBottomPos( this.focusedItem );
 			
 		}
 		super.paintContent(parent, x, y + this.yOffset, leftBorder, rightBorder, g);

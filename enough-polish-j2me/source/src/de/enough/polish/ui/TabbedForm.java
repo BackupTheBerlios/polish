@@ -86,7 +86,7 @@ public class TabbedForm extends Form {
 		this.tabContainers = new Container[ length ];
 		this.tabContainers[0] = this.container;
 		for (int i = 1; i < length; i++) {
-			Container tabContainer = new Container( null, true, null, 20, this.screenHeight );
+			Container tabContainer = new Container( null, true, null, this.screenHeight );
 			tabContainer.setStyle( style, true );
 			tabContainer.screen = this;
 			this.tabContainers[i] = tabContainer;
@@ -308,7 +308,7 @@ public class TabbedForm extends Form {
 		this.tabBar.setActiveTab(tabIndex);
 		Container tabContainer = this.tabContainers[ tabIndex ];
 		this.container = tabContainer;
-		tabContainer.setVerticalDimensions( this.contentY, this.contentY + this.contentHeight );
+		tabContainer.setHeight( this.contentHeight );
 		if (!tabContainer.isInitialised) {
 			tabContainer.init( this.contentWidth, this.contentWidth );
 		}
@@ -369,7 +369,7 @@ public class TabbedForm extends Form {
 //		}
 		if (focusedItem != null && focusedItem.handleKeyPressed(keyCode, gameAction)) {
 			if (focusedItem.internalX != -9999) {
-				this.container.adjustScrolling( focusedItem );
+				this.container.scroll( gameAction, focusedItem );
 			}
 
 			return true;
@@ -410,7 +410,7 @@ public class TabbedForm extends Form {
 	 * @return true when the pressing of the pointer was actually handled by this item.
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
-		if ( y <= this.tabBar.yBottomPos && y >= this.tabBar.yTopPos 
+		if ( y <= this.tabBar.relativeY + this.tabBar.itemHeight && y >= this.tabBar.relativeY 
 				&& this.tabBar.handlePointerPressed(x, y)) 
 		{
 			if (this.tabBar.newActiveTabIndex == this.activeTabIndex) {

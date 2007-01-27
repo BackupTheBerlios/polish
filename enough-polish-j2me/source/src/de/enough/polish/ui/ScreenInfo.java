@@ -89,6 +89,11 @@ public class ScreenInfo {
 		visible = isVisible;
 	}
 	
+	/**
+	 * Determines whether the ScreenInfo object should be painted.
+	 * 
+	 * @return true when the ScreenInfo item should be painted
+	 */
 	public static boolean isVisible() {
 		return visible;
 	}
@@ -205,6 +210,15 @@ public class ScreenInfo {
 		itemY = y;
 		positionSet = true;
 		repaint();
+	}
+	
+	/**
+	 * Sets the screen which now uses the ScreenInfo element.
+	 * 
+	 * @param screen the new screen or null when an old screen deregisters itself (hideNotify())
+	 */
+	public static void setScreen( Screen screen ) {
+		item.screen = screen;
 	}
 	
 	/**

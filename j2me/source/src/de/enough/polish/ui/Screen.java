@@ -298,8 +298,6 @@ implements AccessibleCanvas
 	protected ScreenStateListener screenStateListener;
 	private boolean isScreenChangeDirtyFlag;
 	private final Object paintLock = new Object();
-	private int containerX;
-	protected int containerY;
 	private ArrayList itemCommands;
 
 	/**
@@ -370,6 +368,9 @@ implements AccessibleCanvas
 			//#= this.screenWidth = ${ polish.ScreenWidth };
 		//#else
 			this.screenWidth = getWidth();
+		//#endif
+		//#if tmp.useScrollBar
+			this.scrollBar.screen = this;
 		//#endif
 						
 		// creating standard container:
@@ -626,7 +627,7 @@ implements AccessibleCanvas
 		//#debug
 		System.out.println("calculateContentArea: x=" + this.contentX + ", y=" + this.contentY + ", width=" + this.contentWidth + ", height=" + this.contentHeight);
 		if (this.container != null) {
-			this.container.setVerticalDimensions( y, y + height );
+			this.container.setHeight( height );
 		}
 	}
 	
@@ -762,6 +763,9 @@ implements AccessibleCanvas
 		//#ifdef polish.Vendor.Siemens
 			this.showNotifyTime = System.currentTimeMillis();
 		//#endif
+		//#if polish.ScreenInfo.enable
+			ScreenInfo.setScreen( this );
+		//#endif
 	}
 	
 	/**
@@ -808,6 +812,12 @@ implements AccessibleCanvas
 		}
 		//#ifdef tmp.ignoreMotorolaTitleCall
 			this.ignoreMotorolaTitleCall = true;
+		//#endif
+		//#if polish.ScreenInfo.enable
+			// de-register screen from ScreenInfo element:
+			if (ScreenInfo.item.screen == this ) {
+				ScreenInfo.setScreen( null );
+			}
 		//#endif
 	}
 	
@@ -1249,9 +1259,8 @@ implements AccessibleCanvas
 				//#endif
 				if (this.subTitle != null) {
 					this.subTitle.paint( leftBorder, topHeight, leftBorder, rightBorder, g );
-					this.subTitle.yTopPos = topHeight;
+					this.subTitle.relativeY = topHeight;
 					topHeight += this.subTitleHeight;
-					this.subTitle.yBottomPos = topHeight;
 				}
 				//#ifndef polish.skipTicker			
 					//#if tmp.paintTickerAtTop
@@ -1294,11 +1303,13 @@ implements AccessibleCanvas
 					if (this.container != null && this.container.itemHeight > this.contentHeight) {
 						// paint scroll bar: - this.container.yOffset
 						//#debug
-						System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.yTop=" + this.container.yTop + ", container.yTopPos=" + this.container.yTopPos);
+						System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
 						
 						int scrollX = sWidth + this.marginLeft 
 									- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
 						//TODO allow scroll bar on the left side
+						this.scrollBar.relativeX = scrollX;
+						this.scrollBar.relativeY = this.contentY;
 						this.scrollBar.paint( scrollX, this.contentY, scrollX, rightBorder, g);
 					}
 				//#endif
@@ -1391,7 +1402,7 @@ implements AccessibleCanvas
 								this.paintScrollIndicator = false;
 							//#endif
 							}
-							this.menuContainer.setVerticalDimensions(topHeight, this.originalScreenHeight);
+							this.menuContainer.setHeight(this.originalScreenHeight-topHeight);
 							g.setClip(0, topHeight, this.screenWidth, this.originalScreenHeight - topHeight );
 							this.menuContainer.paint(menuLeftX, y, menuLeftX, menuLeftX + this.screenWidth, g);
 						 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
@@ -1564,8 +1575,8 @@ implements AccessibleCanvas
 			x += diff;
 			width -= diff;
 		}
-		this.containerX = x;
-		this.containerY = y;
+		this.container.relativeX = x;
+		this.container.relativeY = y;
 		//System.out.println("content: x=" + x + ", rightBorder=" + (x + width) );
 		this.container.paint( x, y, x, x + width, g );
 	}
@@ -2751,27 +2762,36 @@ implements AccessibleCanvas
 					}
 				//#endif
 			//#endif
+			if (this.subTitle != null && this.subTitle.handlePointerPressed(x - this.subTitle.relativeX, y - this.subTitle.relativeY)) {
+				return;
+			}
+			//#if tmp.useScrollBar
+				if (this.scrollBar.handlePointerPressed( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
+					return;
+				} else {
+					System.out.println("scrollBar failed: x=" + x + ", scrollBar.relativeX=" + this.scrollBar.relativeX );
+				}
+			//#endif
 			// let the screen handle the pointer pressing:
+			boolean processed = handlePointerPressed( x, y  );
 			//#ifdef tmp.usingTitle
 				//boolean processed = handlePointerPressed( x, y - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
-				boolean processed = handlePointerPressed( x, y  );
 				if (processed) {
 					notifyScreenStateChanged();
 					repaint();
 				}
 			//#else
-				//# boolean processed = handlePointerPressed( x, y );
 				if (processed) {
 					repaint();
 				}
 			//#endif
 			
-			//#ifdef polish.debug.debug
+			// #ifdef polish.debug.debug
 				if (!processed) {
-					//#debug
+					// #debug
 					System.out.println("PointerPressed at " + x + ", " + y + " not processed.");					
 				}
-			//#endif
+			// #endif
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("PointerPressed at " + x + "," + y + " resulted in exception" + e );
@@ -2791,18 +2811,15 @@ implements AccessibleCanvas
 	 * The default implementation returns the result of calling the container's
 	 *  handlePointerPressed-method
 	 *  
-	 * @param x the x position of the pointer pressing
-	 * @param y the y position of the pointer pressing
+	 * @param x the absolute x position of the pointer pressing
+	 * @param y the absolute y position of the pointer pressing
 	 * @return true when the pressing of the pointer was actually handled by this item.
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
-		if (this.subTitle != null && this.subTitle.handlePointerPressed(x, y)) {
-			return true;
-		}
 		if (this.container == null) {
 			return false;
 		}
-		return this.container.handlePointerPressed(x, y - this.containerY );
+		return this.container.handlePointerPressed(x - this.container.relativeX, y - this.container.relativeY );
 	}
 	//#endif
 	
@@ -3001,12 +3018,28 @@ implements AccessibleCanvas
 	}
 	
 	
-	//#if polish.Bugs.displaySetCurrentFlickers
-	/* (non-Javadoc)
+	//#if polish.Bugs.displaySetCurrentFlickers || tmp.menuFullScreen
+	/**
+	 * Determines whether the screen is currently shown.
+	 * When the screen is shown but the menu is openend, this method return false.
+	 * 	 
 	 * @see javax.microedition.lcdui.Displayable#isShown()
 	 */
 	public boolean isShown() {
-		return (StyleSheet.currentScreen == this);
+		boolean isShown;
+		//#if polish.Bugs.displaySetCurrentFlickers
+			isShown = (StyleSheet.currentScreen == this);
+		//#else
+			isShown = super.isShown();
+		//#endif
+		//#if tmp.menuFullScreen
+			//#if tmp.useExternalMenuBar
+				isShown &= this.menuBar.isOpened;
+			//#else
+				isShown &= this.menuOpened;
+			//#endif
+		//#endif
+		return isShown;
 	}
 	//#endif
 	
@@ -3090,6 +3123,18 @@ implements AccessibleCanvas
 				this.ticker.releaseResources();
 			}
 		//#endif	
+	}
+
+	/**
+	 * Scrolls this screen by the given amount.
+	 * 
+	 * @param amount the number of pixels, positive values scroll upwards, negative scroll downwards
+	 */
+	public void scroll(int amount) {
+		if (this.container != null) {
+			this.container.setScrollYOffset( this.container.getScrollYOffset() + amount );
+			repaint();
+		}
 	}
 
 		

@@ -36,7 +36,7 @@ import javax.microedition.lcdui.Image;
  *    you can specify view-types, columns, colspans, etc.
  * </p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
  * <pre>
  * history
  *        16-Feb-2005 - rob creation
@@ -52,10 +52,6 @@ public class TreeItem
  
 {
 	
-	private int availableWidth;
-	
-	private Item lastAddedItem;
-
 	/**
 	 * Creates a new tree item.
 	 * 
@@ -174,7 +170,7 @@ public class TreeItem
 	 */
 	public void appendToRoot( Item item ) {
 		add(item);
-		this.lastAddedItem = item;
+//		this.lastAddedItem = item;
 	}
 
 	/**
@@ -188,7 +184,7 @@ public class TreeItem
 			item.setStyle( nodeStyle );
 		}
 		add(item);
-		this.lastAddedItem = item;
+//		this.lastAddedItem = item;
 	}
 	
 	/**
@@ -271,7 +267,7 @@ public class TreeItem
 		}
 		item.parent = parentNode;
 		parentNode.addChild(item);
-		this.lastAddedItem = item;
+//		this.lastAddedItem = item;
 		
 	}
 

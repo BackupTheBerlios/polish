@@ -2967,8 +2967,12 @@ public class TextField extends StringItem
 	 * @return true when the pressing of the pointer was actually handled by this item.
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
-		showTextBox();
-		return true;
+		if (isInItemArea(x, y)) {
+			showTextBox();
+			return true;
+		} else {
+			return false;
+		}
 	}
 	//#endif
 

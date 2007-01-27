@@ -282,7 +282,7 @@ public class CommandItem extends IconItem {
 //						g.drawLine( x - 20,y-i, x+childrenWidth+10, y-i);						
 //					}
 				}
-				this.children.setVerticalDimensions( clipY, clipY + clipHeight );
+				this.children.setHeight( clipHeight );
 				this.children.paint( x, y, x, x + childrenWidth, g);
 			}
 		}
@@ -361,18 +361,6 @@ public class CommandItem extends IconItem {
 		}
 	}
 
-	//#if polish.hasPointerEvents
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
-	 */
-	protected boolean handlePointerPressed(int x, int y) {
-		if (y < this.yTopPos || y > this.yBottomPos || x < this.xLeftPos || x > this.xRightPos ) {
-			return false;
-		}
-		// trigger command or open submenu:
-		return handleKeyPressed( 0, Canvas.FIRE );
-	}
-	//#endif
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)

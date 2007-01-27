@@ -73,6 +73,13 @@ extends ItemView
 	protected int[] columnsWidths;
 	protected int[] rowsHeights;
 	protected int numberOfRows;
+//	/** 
+//	 * the number of items - this information is used for rebuilding the table only when it is necessary 
+//	 * (number is changed or the columns-width is not static). 
+//	 */
+//	protected int numberOfItems;
+//	/** All items ordered within a table. Some cells can be null when colspan or rowspan CSS attributes are used. */
+//	protected Item[][] itemsTable;
 	
 	protected boolean allowCycling = true;
 	
@@ -151,8 +158,8 @@ extends ItemView
 				if (width > myContentWidth) {
 					myContentWidth = width; 
 				}
-				item.yTopPos = myContentHeight;
-				item.yBottomPos = myContentHeight + item.itemHeight;
+				item.relativeY = myContentHeight;
+				item.relativeX = 0;
 				myContentHeight += height + this.paddingVertical;
 			}
 			if (hasFocusableItem) {
@@ -246,6 +253,7 @@ extends ItemView
 			int maxWidth = 0; // important for "equal" columns-width
 			int myContentHeight = 0;
 			boolean hasFocusableItem = false;
+			int columnX = 0; // the horizontal position of the current column relative to the content's left corner (starting a 0)
 			//System.out.println("starting init of " + myItems.length + " container items.");
 			for (int i=0; i< myItems.length; i++) {
 				Item item = myItems[i];
@@ -329,11 +337,13 @@ extends ItemView
 				//#else
 					columnIndex++;
 				//#endif
-				item.yTopPos = myContentHeight;
-				item.yBottomPos = myContentHeight + height;
+				item.relativeY = myContentHeight;
+				item.relativeX = columnX; // when equal or normal column widths are used, this is below changed again, since the widhs are just calculated right now.
+				columnX += availableWidth;
 				if (columnIndex == this.numberOfColumns) {
 					//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
 					columnIndex = 0;
+					columnX = 0;
 					//#if polish.css.colspan
 						//System.out.println("ContainerView.init(): adding new row " + rowIndex + " with height " + maxRowHeight + ", contentHeight=" + myContentHeight + ", item " + i);
 						rowHeightsList.add( new Integer( maxRowHeight ) );
@@ -367,6 +377,7 @@ extends ItemView
 				}
 			//#endif
 			// now save the worked out dimensions:
+			columnX = 0;
 			if (isNormalWidthColumns) {
 				// Each column should use up as much space as 
 				// needed in the "normal" columns-width mode.
@@ -429,8 +440,7 @@ extends ItemView
 						//#else
 							columnIndex++;
 						//#endif
-						item.yTopPos = myContentHeight;
-						item.yBottomPos = myContentHeight + item.itemHeight;
+						item.relativeY = myContentHeight;
 						//System.out.println( i + ": yTopPos=" + item.yTopPos );
 						if (columnIndex == this.numberOfColumns) {
 							//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
@@ -545,6 +555,8 @@ extends ItemView
 							
 						}
 					//#endif
+					//TODO this is a quick hack so that pointer events work - normally the item.relativeX position should be set in initContent! 
+					item.relativeX = x - leftBorder;
 					if (i == this.focusedIndex) {
 						focusedY = y;
 						focusedX = x;
@@ -1115,10 +1127,10 @@ extends ItemView
 	 * //#if polish.hasPointerEvents
 	 * </pre>
 	 * 
-	 * @param x the x position of the event
-	 * @param y the y position of the event
+	 * @param x the horizontal position of the event relative to the parent container's left content edge 
+	 * @param y the vertical position of the event relative to the parent container's top content edge
 	 * @return true when the event has been handled. When false is returned the parent container
-	 *         will forward the event to the affected item.
+	 *         tries to sort out the event itself.
 	 */
 	public boolean handlePointerPressed(int x, int y) {
 		return false;
@@ -1127,57 +1139,40 @@ extends ItemView
 	
 	
 	/**
-	 * Scrolls the parent container (or one of its parent containers) so that the given positions relative to the parent's leftXPos/topYPos coordinates are shown as much as possible.
+	 * Adjusts the yOffset or the targetYOffset so that the given relative values are inside of the visible area.
+	 * The call is ignored when scrolling is not enabled for this item.
 	 * 
-	 * @param isDownwards true when the bottom is more important than the top
-	 * @param x the x coordinate relative to the parent container's leftXPos
-	 * @param y the y coordinate relative to the parent container's topYPos
-	 * @param width the width of the visible area
-	 * @param height the height of the area that should be as much as possible visible
+	 * @param direction the direction, is used for adjusting the scrolling when the internal area is to large. Either 0 or Canvas.UP, Canvas.DOWN, Canvas.LEFT or Canvas.RIGHT
+	 * @param x the horizontal position of the area relative to this content's left edge, is ignored in the current version
+	 * @param y the vertical position of the area relative to this content's top edge
+	 * @param width the width of the area
+	 * @param height the height of the area
 	 */
-	protected void scrollRelative( boolean isDownwards, int x, int y, int width, int height ){
+	protected void scroll( int direction, int x, int y, int width, int height ){
 		Container container = this.parentContainer;
 		while (!container.enableScrolling) {
 			Item item = container.parent;
 			if (item instanceof Container) {
+				x += container.relativeX;
+				y += container.relativeY;
 				container = (Container) item;
 			} else {
 				break;
 			}
 		} 
 		if (container.enableScrolling) {
-			container.scroll( isDownwards, this.parentContainer.xLeftPos + x, this.parentContainer.yTopPos + y, width, height );
+			container.scroll( direction, x, y, width, height );
 		}
 	}
 	
-	protected void scrollTo( int absoluteY ) {
-		//System.out.println("scrollTo: original=" + absoluteY + ", current=" + this.parentContainer.yTopPos + ", difference=" + (absoluteY - this.parentContainer.yTopPos));
-		int difference = absoluteY - this.parentContainer.yTopPos;
-		Container container = this.parentContainer;
-		while (!container.enableScrolling) {
-			Item item = container.parent;
-			if (item instanceof Container) {
-				container = (Container) item;
-			} else {
-				break;
-			}
-		} 
-		if (container.enableScrolling) {
-			container.targetYOffset = container.yOffset + difference;
-		}
+	protected int getParentRelativeY(){
+		return this.parentContainer.relativeY;
 	}
 	
-	protected int getParentYTopPos(){
-		return this.parentContainer.yTopPos;
-	}
-	
-	protected int getItemYTopPos( Item item ){
-		return item.yTopPos;
+	protected int getItemRelativeY( Item item ){
+		return item.relativeY;
 	}
 
-	protected int getItemYBottomPos( Item item ){
-		return item.yBottomPos;
-	}
 
 
 }

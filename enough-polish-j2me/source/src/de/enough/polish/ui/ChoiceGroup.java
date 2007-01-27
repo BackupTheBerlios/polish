@@ -412,7 +412,7 @@ implements Choice
 	 */
 	public ChoiceGroup( String label, int choiceType, ChoiceItem[] items, Style style, boolean allowImplicit )
 	{
-		super( label, false, style, -1, -1 );
+		super( label, false, style, -1 );
 		if (choiceType == Choice.EXCLUSIVE) {
 			//this.isExclusive = true;
 		} else if (choiceType == Choice.MULTIPLE) {
@@ -910,6 +910,7 @@ implements Choice
 	 */
 	public void setSelectedIndex(int elementNum, boolean selected)
 	{
+		System.out.println("ChoiceGroup: setSelectedIndex=" + elementNum);
 		if (this.isMultiple) {
 			ChoiceItem item = (ChoiceItem) this.itemsList.get( elementNum );
 			item.select( selected );
@@ -1191,27 +1192,10 @@ implements Choice
 	//#ifdef polish.usePopupItem
 	private void closePopup() {
 		this.isPopupClosed = true;
-		/*
-		int difference = this.popupOpenY - this.yTopPos;
-		if (difference > 0 && (this.parent instanceof Container) && (((Container)this.parent).yOffset != 0) ) {	
-			//System.out.println("Closing popup: adjusting parent.offset from [" + (((Container)this.parent).yOffset) + "] to [" + (((Container)this.parent).yOffset + difference) + "].");
-			((Container)this.parent).yOffset += difference;
-		}
-		*/
 		if (this.parent instanceof Container) {
-			((Container)this.parent).yOffset = this.popupParentOpenY;
+			((Container)this.parent).setScrollYOffset( this.popupParentOpenY );
+			this.internalX = -9999;
 		}
-		/*
-		this.internalX = -9999;		
-		if (this.yOffset < 0) {
-			System.out.println("Closing popup: adjusting ChoiceGroup.offset from [" + this.yOffset + "] to [" + (this.yOffset + (this.contentHeight - this.popupItem.contentHeight)) + "].");
-			this.yOffset += (this.contentHeight - this.popupItem.contentHeight);
-			if (this.yOffset > 0 ) {
-				this.yOffset = 0;
-			}
-		}
-		*/
-		requestInit();
 	}
 	//#endif
 
@@ -1219,17 +1203,16 @@ implements Choice
 	private void openPopup() {
 		//this.popupOpenY = this.yTopPos; 
 		if (this.parent instanceof Container) {
-			this.popupParentOpenY = ((Container)this.parent).yOffset;
+			this.popupParentOpenY = ((Container)this.parent).getScrollYOffset();
 		}
 		this.isPopupClosed = false;
 		focus( this.selectedIndex );
 		// recalculate the internal positions of the selected choice:
 		Item item = this.items[ this.selectedIndex ];
-		if (item.yTopPos != item.yBottomPos) {
-			// okay, this item has been painted alrady: 
-			this.internalY = (item.itemHeight + this.paddingVertical) * this.selectedIndex;
+		if (item.isInitialised) {
+			this.internalY = item.relativeY;
 			this.internalHeight = item.itemHeight;
-			this.internalX = 0;
+			this.internalX = item.relativeX;
 			this.internalWidth = item.itemWidth;
 		} else {
 			this.internalX = 0;
@@ -1402,62 +1385,66 @@ implements Choice
 		return processed;
 	}
 	
+	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
-		//#debug
-		System.out.println("ChoiceGroup.handlePointerPressed(" + x + ", " + y + ")");
-		//#ifndef polish.usePopupItem
-			boolean processed = super.handlePointerPressed(x, y);
-			int labelHeight = 0;
-			if (this.label != null) {
-				labelHeight = this.label.itemHeight; // TODO: what if the label is on the same line???
-			}
-			y -= this.yOffset + this.marginTop + this.paddingTop + labelHeight;
-			if (this.focusedItem != null 
-					&& ( x >= this.focusedItem.xLeftPos ) 
-					&& ( x <= this.focusedItem.xRightPos ) 
-					&& ( y >= this.focusedItem.yTopPos ) 
-					&& ( y <= this.focusedItem.yBottomPos ) ) 
-			{
-				return handleKeyPressed( -1, Canvas.FIRE ) || processed;
-			}
-			//# return processed;
-		//#else
-			if (!this.isPopup) {
-				super.handlePointerPressed(x, y);
-				return handleKeyPressed( -1, Canvas.FIRE ); 
-			}
-			// this is a popup-item:
-			if (this.isPopupClosed) {
-				focus( this.selectedIndex );
-				this.isPopupClosed = false;
+		//#ifdef polish.usePopupItem
+		if (this.isPopup && this.isPopupClosed) {
+			if (isInContentArea(x, y)) {
+				openPopup();
+				return true;
 			} else {
-				y -= this.yOffset + this.marginTop + this.paddingTop;
-				// select item at x,y and close this popup:
-				// an item within this container was selected:
-				Item[] myItems = getItems();
-				for (int i = 0; i < myItems.length; i++) {
-					Item item = myItems[i];
-					if (y < item.yTopPos  || y > item.yBottomPos || x < item.xLeftPos || x > item.xRightPos) {
-						// this item is not in the range:
-						continue;
-					}
-					// found out the item:
-					setSelectedIndex(i, true);
-					if ( getScreen() instanceof Form) {
-						notifyStateChanged();
-					}
-					break;
-				}
-				closePopup();
+				return false;
 			}
-			requestInit();
-			return true;
+		}
 		//#endif
-	}	
+		boolean success = super.handlePointerPressed(x, y); // focuses the appropriate item
+		if (isInContentArea(x, y)) {
+			success |= handleKeyPressed( -1, Canvas.FIRE );
+		}
+		return success;
+	}
+	//#endif
+	
+
+	//#if polish.usePopupItem
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#isInContentArea(int, int)
+	 */
+	public boolean isInContentArea(int relX, int relY) {
+		if (this.isPopup && !this.isPopupClosed) {
+			if (relY < this.contentY || relY > this.contentY + this.originalContentHeight) {
+				return false;
+			}
+			if (relX < this.contentX || relX > this.contentX + this.originalContentWidth) {
+				return false;
+			}
+			return true;
+		} else {
+			return super.isInContentArea(relX, relY);
+		}
+	}
+	//#endif
+
+	//#if polish.usePopupItem
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#isInItemArea(int, int)
+	 */
+	public boolean isInItemArea(int relX, int relY) {
+		if (this.isPopup && !this.isPopupClosed) {
+			if (relY < 0 || relY > (this.itemHeight + (this.originalContentHeight - this.contentHeight)) 
+					|| relX < 0 || relX > (this.itemWidth + (this.originalContentWidth - this.contentWidth)))
+			{
+				return false;
+			}
+			return true;
+		} else {
+			return super.isInItemArea(relX, relY);
+		}
+	}
 	//#endif
 
 	/**

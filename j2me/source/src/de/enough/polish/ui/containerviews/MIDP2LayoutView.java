@@ -186,8 +186,7 @@ public class MIDP2LayoutView extends ContainerView {
                 this.currentContentHeight += this.rowHeight;
                 for (int i = 0; i < this.currentRow.size(); i++) {
                     RowItem rowItem = (RowItem) this.currentRow.get(i);
-                    rowItem.item.yTopPos = top;
-                    rowItem.item.yBottomPos = bottom;
+                    rowItem.item.relativeY = top;
                     remainingWidth -= rowItem.width;
                     if (Item.LAYOUT_EXPAND == (rowItem.item.getLayout() & Item.LAYOUT_EXPAND)) {
                         if (requiredExpanded == null) {

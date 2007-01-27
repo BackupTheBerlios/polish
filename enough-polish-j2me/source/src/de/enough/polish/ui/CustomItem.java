@@ -1360,12 +1360,12 @@ public abstract class CustomItem extends Item
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
 		// translate the coordinates to the origin of this custom-item:
-		x -= this.contentX;
-		y -= this.contentY;
-		if (x < 0 || y < 0 || x > this.contentWidth || y > this.contentHeight ) {
+		if ( !isInContentArea(x, y) ) {
 			// the content area has not been clicked, so return false:
 			return false;
 		}
+		x -= this.contentX;
+		y -= this.contentY;
 		pointerPressed( x, y );
 		return (this.isInitialised == false);
 	}

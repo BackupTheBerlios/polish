@@ -655,23 +655,24 @@ public abstract class Item extends Object
 	protected boolean isLayoutExpand;
 	protected boolean isLayoutRight;
 	// the current positions of this item:
-	protected int xLeftPos;
-	public int yTopPos; // relativ to parent item
-	protected int xRightPos;
-	public int yBottomPos; // relative to parent item
-	// the current positions of this item's content:
+	/** the horizontal start position relative to it's parent's item left content edge */
+	protected int relativeX;
+	/** the vertical start position of this item relative to it's parent item top content edge */
+	public int relativeY; // relativ to parent item
+	/** the horizontal position of this item's content relative to it's left edge */
 	protected int contentX;
+	/** the vertical position of this item's content relative to it's top edge */
 	protected int contentY; // absolute top vertical position of the content 
 	// the current positions of an internal element relative to the content origin 
 	// which should be visible:
 	/** 
-	 * The internal x position of this item's content. 
+	 * The internal horizontal position of this item's content relative to it's left edge. 
 	 * When it is equal -9999 this item's internal position is not known.
 	 * The internal position is useful for items that have a large content which
 	 * needs to be scrolled, e.g. containers.  
 	 */
 	protected int internalX = -9999;
-	/** The internal y position of this item's content, relative to the contentY position.  */
+	/** the vertical position of this item's internal content relative to it's top edge */
 	protected int internalY;
 	/** The internal width of this item's content.  */
 	protected int internalWidth;
@@ -1466,6 +1467,8 @@ public abstract class Item extends Object
 	public void paint( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
 		// initialise this item if necessary:
 		int availableWidth = rightBorder - leftBorder;
+		int originalX = x;
+		int originalY = y;
 		if (!this.isInitialised || (availableWidth < this.itemWidth )) {
 			//#if polish.debug.info
 			if (availableWidth < this.itemWidth ) {
@@ -1476,11 +1479,6 @@ public abstract class Item extends Object
 			init( rightBorder - x, availableWidth );
 		}
 		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
-		// set coordinates of this item:
-		this.xLeftPos = leftBorder;
-//		this.yTopPos = y;
-		this.xRightPos = rightBorder; // contentX + this.contentWidth; //x + this.itemWidth; //TODO rob: Item.xRightPos might differ when this item contains line breaks
-//		this.yBottomPos = y + this.itemHeight;
 		
 		// paint background and border when the label should be included in this:
 		//#if polish.css.include-label
@@ -1645,8 +1643,8 @@ public abstract class Item extends Object
 		
 
 		// paint content:
-		this.contentX = x;
-		this.contentY = y;
+		this.contentX = x - originalX;
+		this.contentY = y - originalY;
 		//#ifdef polish.css.view-type
 			if (this.view != null) {
 				this.view.paintContent( this, x, y, leftBorder, rightBorder, g);
@@ -1961,27 +1959,74 @@ public abstract class Item extends Object
 		return false;
 	}
 
+	
+	/**
+	 * Determines whether the given relative x/y position is inside of this item's content area.
+	 * Subclasses which extend their area over the declared/official content area, which is determined
+	 * in the initContent() method (like popup items), might want to override this method or possibly the getContentX(), getContentY() methods.
+	 * It is assumed that the item has been initialized before.
+	 * 
+	 * @param relX the x position relative to this item's left position
+	 * @param relY the y position relative to this item's top position
+	 * @return true when the relX/relY coordinate is within this item's content area.
+	 * @see #initContent(int, int)
+	 */
+	public boolean isInContentArea( int relX, int relY ) {
+		int contTop = this.contentY;
+		if ( relY < contTop || relY > contTop + this.contentHeight ) {
+			return false;
+		}
+		int contLeft = this.contentX;
+		if (relX < contLeft || relX > contLeft + this.contentWidth) {
+			return false;
+		}
+		return true;
+	}
 
-
+	/**
+	 * Determines whether the given relative x/y position is inside of this item's area including paddings, margins and label.
+	 * Subclasses which extend their area over the declared/official content area, which is determined
+	 * in the initContent() method (like popup items), might want to override this method.
+	 * It is assumed that the item has been initialized before.
+	 * 
+	 * @param relX the x position relative to this item's left position
+	 * @param relY the y position relative to this item's top position
+	 * @return true when the relX/relY coordinate is within this item's area.
+	 * @see #initContent(int, int)
+	 */
+	public boolean isInItemArea( int relX, int relY ) {
+		// problem:
+		// itemWidth can be smaller than the available width - when then a center or right layout is used, then this fucks up...
+		if (relY < 0 || relY > this.itemHeight || relX < 0 || relX > this.itemWidth) {
+			System.out.println("isInItemArea(" + relX + "," + relY + ") = false: itemWidth=" + this.itemWidth + ", itemHeight=" + this.itemHeight + " (" + this + ")");
+			return false;
+		}
+		System.out.println("isInItemArea(" + relX + "," + relY + ") = true: itemWidth=" + this.itemWidth + ", itemHeight=" + this.itemHeight + " (" + this + ")");
+		return true;
+	}
+	
 	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
-	 * The default method translates the pointer-event into an artificial
-	 * pressing of the FIRE game-action, which is subsequently handled
+	 * The default method discards this event when relX/relY is outside of the item's area.
+	 * When the event took place inside of the content area, the pointer-event is translated into an artificial
+	 * FIRE game-action keyPressed event, which is subsequently handled
 	 * bu the handleKeyPressed(-1, Canvas.FIRE) method.
 	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
 	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
 	 *    
-	 * @param x the x position of the pointer pressing
-	 * @param y the y position of the pointer pressing
+	 * @param relX the x position of the pointer pressing relative to this item's left position
+	 * @param relY the y position of the pointer pressing relative to this item's top position
 	 * @return true when the pressing of the pointer was actually handled by this item.
+	 * @see #isInItemArea(int, int) this method is used for determining whether the event belongs to this item
+	 * @see #isInContentArea(int, int) for a helper method for determining whether the event took place into the actual content area
+	 * @see #handleKeyPressed(int, int) 
 	 */
-	protected boolean handlePointerPressed( int x, int y ) {
-		//if (y < this.yTopPos || y > this.yBottomPos || x < this.xLeftPos || x > this.xRightPos ) {
-		if (y < 0 || y > this.itemHeight || x < this.xLeftPos || x > this.xRightPos ) {
-			return false;
+	protected boolean handlePointerPressed( int relX, int relY ) {
+		if ( isInItemArea(relX, relY)) {
+			return handleKeyPressed( -1, Canvas.FIRE );
 		}
-		return handleKeyPressed( -1, Canvas.FIRE );
+		return false;
 	}
 	//#endif
 	
@@ -2024,10 +2069,7 @@ public abstract class Item extends Object
 		}
 		// when an item is focused, it usually grows bigger, so
 		// increase the bottom position a bit:
-		if (this.yTopPos != this.yBottomPos) {
-			this.yBottomPos += 5;
-			this.itemHeight += 5;
-		}
+		this.itemHeight += 5;
 		if (oldStyle == null) {
 			oldStyle = StyleSheet.defaultStyle;
 		}

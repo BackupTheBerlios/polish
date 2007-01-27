@@ -497,7 +497,7 @@ public class MenuBar extends Item {
 			int titleHeight = this.screen.titleHeight; // + this.screen.subTitleHeight + this.screen.infoHeight;
 			int screenHeight = this.screen.screenHeight;
 			this.topY = titleHeight;
-			this.commandsContainer.setVerticalDimensions( titleHeight, screenHeight );
+			this.commandsContainer.setHeight( screenHeight - titleHeight );
 			//System.out.println("setting vertical dimension: " + topMargin + ", " + (this.screen.screenHeight - topMargin) );
 			//#if polish.Screen.maxMenuWidthInPercent:defined
 				//#= this.commandsContainerWidth = (this.screen.screenWidth * ${polish.Screen.maxMenuWidthInPercent}) / 100;
@@ -912,9 +912,16 @@ public class MenuBar extends Item {
 		// okay, y is above the menu bar, so let the commandContainer process the event:
 		} else if (this.isOpened) {
 			y -= this.commandsContainerY;
+			//#if tmp.RightOptions
+				// the menu is painted at the lower right corner:
+				x -= this.screen.screenWidth - this.commandsContainerWidth;
+			//#endif
+
 			boolean handled = this.commandsContainer.handlePointerPressed(x, y);
-			return handled;
-//			setOpen( false );
+			if (!handled) {
+				setOpen( false );
+			}
+			return true;
 //			// a menu-item could have been selected:
 //			if (x <= this.commandsContainer.xLeftPos + this.commandsContainerWidth 
 //					&& y >= this.commandsContainerY ) 

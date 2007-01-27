@@ -1086,7 +1086,7 @@ implements ImageConsumer
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
-		if (this.isIndefinite || !this.isInteractive) {
+		if (this.isIndefinite || !this.isInteractive || !isInItemArea(x, y)) {
 			return false;
 		}
 		int val = this.value;
