@@ -136,7 +136,11 @@ public class DigitalClockItem
 		}
 		buffer.append( hour );
 		buffer.append( this.formatAfterHours );
-		buffer.append( this.calendar.get( Calendar.MINUTE ) );
+		int minute = this.calendar.get( Calendar.MINUTE );
+		if (minute < 10) {
+			buffer.append( '0' );
+		} 
+		buffer.append( minute  );
 		buffer.append( this.formatAfterMinutes );
 		if (this.includeSeconds) {
 			buffer.append( this.calendar.get( Calendar.SECOND ) );
