@@ -188,10 +188,9 @@ public class AnimationThread extends Thread
 	 * @see #addAnimationItem(Item)
 	 */
 	public static void removeAnimationItem( Item item ) {
-		if (animationList == null) {
-			animationList = new ArrayList();
+		if (animationList != null) {
+			animationList.remove(item);
 		}
-		animationList.add( item );
 	}
 
 	//#if polish.LibraryBuild
