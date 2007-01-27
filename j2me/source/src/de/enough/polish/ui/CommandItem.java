@@ -224,7 +224,8 @@ public class CommandItem extends IconItem {
 			//rightBorder -= this.childIndicatorWidth;
 			//#if polish.css.command-child-indicator
 				if (this.childIndicator != null) {
-					g.drawImage( this.childIndicator, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
+					int height = this.childIndicator.getHeight(); // center image if lower than the font:
+					g.drawImage( this.childIndicator, rightBorder, y + (this.contentHeight - height)/2, Graphics.TOP | Graphics.RIGHT );
 				} else {
 			//#endif
 					//#if polish.css.command-child-indicator-color
