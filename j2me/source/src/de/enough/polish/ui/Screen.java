@@ -1673,7 +1673,7 @@ implements AccessibleCanvas
 			this.title = null;
 			this.titleHeight = 0;
 		}
-		if (this.isInitialised && isShown()) {
+		if (this.isInitialised && super.isShown()) {
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 			repaint();
 		}
@@ -1700,7 +1700,7 @@ implements AccessibleCanvas
 		} else {
 			this.titleHeight = 0;
 		}
-		if (this.isInitialised && isShown()) {
+		if (this.isInitialised && super.isShown()) {
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 			repaint();
 		}
@@ -1775,7 +1775,7 @@ implements AccessibleCanvas
 		}
 		//System.out.println("setTicker(): screenHeight=" + this.screenHeight + ", original=" + this.originalScreenHeight );
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
-		if (isShown()) {
+		if (super.isShown()) {
 			repaint();
 		}
 	}
@@ -2311,7 +2311,7 @@ implements AccessibleCanvas
 		//#endif
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.addCommand(cmd);
-			if (this.isShown()) {
+			if (super.isShown()) {
 				if (this.menuBarHeight == 0 && this.isInitialised) {
 					int availableWidth = this.screenWidth - (this.marginLeft + this.marginRight );
 					this.menuBarHeight = this.menuBar.getItemHeight( availableWidth, availableWidth );
@@ -2361,7 +2361,8 @@ implements AccessibleCanvas
 					}					
 					// this is a command for the right side of the menu:
 					this.menuSingleRightCommand = cmd;
-					if (isShown()) {
+					if (super.isShown()) {
+						updateMenuTexts();
 						repaint();
 					}
 					return;
@@ -2383,6 +2384,7 @@ implements AccessibleCanvas
 				for (int i = 0; i < myCommands.length; i++) {
 					Command command = myCommands[i];
 					if ( cmd == command ) {
+						// ignore existing command:
 						return;
 					}
 					if (command.getPriority() > priority ) {
@@ -2397,14 +2399,8 @@ implements AccessibleCanvas
 					this.menuContainer.add( menuItem );
 				}
 			}
-//			this.menuContainer.add( menuItem );
-//			if (this.menuContainer.size() == 1) {
-//				this.menuSingleLeftCommand = cmd;
-//			} else {
-//				this.menuSingleLeftCommand = null;
-//			}
-//			this.menuCommands.add( cmd );
-			if (isShown()) {
+			if (super.isShown()) {
+				updateMenuTexts();
 				repaint();
 			}
 		//#endif
@@ -2422,8 +2418,10 @@ implements AccessibleCanvas
 			//#else
 				this.menuCommands.clear();
 				this.menuContainer.clear();
+				updateMenuTexts();
 			//#endif
-			if (isShown()) {
+			if (super.isShown()) {
+				this.isInitialised = false;
 				repaint();
 			}
 		//#endif
@@ -2489,7 +2487,7 @@ implements AccessibleCanvas
 					repaint();
 				}				
 			//#endif	
-			if (this.isShown()) {
+			if (super.isShown()) {
 				repaint();
 			}
 		//#endif
@@ -2503,7 +2501,7 @@ implements AccessibleCanvas
 	public void removeCommand(Command cmd) {
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.removeCommand(cmd);
-			if (this.isShown()) {
+			if (super.isShown()) {
 				repaint();
 			}
 		//#else
@@ -2523,7 +2521,8 @@ implements AccessibleCanvas
 						}
 					}
 				}
-				if (isShown()) {
+				if (super.isShown()) {
+					updateMenuTexts();
 					repaint();
 				}
 				return;
@@ -2542,7 +2541,8 @@ implements AccessibleCanvas
 			} else {
 				this.menuContainer.remove(index);			
 			}
-			if (isShown()) {
+			if (super.isShown()) {
+				updateMenuTexts();
 				repaint();
 			}
 		//#endif
@@ -2577,7 +2577,6 @@ implements AccessibleCanvas
 					if ( !this.menuCommands.contains( command) ) {
 						addCommand(command);
 						this.itemCommands.add( command );
-						updateMenuTexts();
 					}
 				//#else
 					addCommand(command);
@@ -2588,7 +2587,7 @@ implements AccessibleCanvas
 			this.itemCommands.clear();
 		}
 		//#ifdef tmp.useExternalMenuBar
-			if (isShown()) {
+			if (super.isShown()) {
 				repaint();
 			}
 		//#endif
@@ -2618,7 +2617,7 @@ implements AccessibleCanvas
 			this.focusedItem = null;
 		}
 		//#ifdef tmp.useExternalMenuBar
-			if (isShown()) {
+			if (super.isShown()) {
 				repaint();
 			}
 		//#endif
@@ -3034,9 +3033,9 @@ implements AccessibleCanvas
 		//#endif
 		//#if tmp.menuFullScreen
 			//#if tmp.useExternalMenuBar
-				isShown &= this.menuBar.isOpened;
+				isShown &= !this.menuBar.isOpened;
 			//#else
-				isShown &= this.menuOpened;
+				isShown &= !this.menuOpened;
 			//#endif
 		//#endif
 		return isShown;
