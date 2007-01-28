@@ -2001,6 +2001,7 @@ public abstract class Item extends Object
 			System.out.println("isInItemArea(" + relX + "," + relY + ") = false: itemWidth=" + this.itemWidth + ", itemHeight=" + this.itemHeight + " (" + this + ")");
 			return false;
 		}
+		//#debug
 		System.out.println("isInItemArea(" + relX + "," + relY + ") = true: itemWidth=" + this.itemWidth + ", itemHeight=" + this.itemHeight + " (" + this + ")");
 		return true;
 	}

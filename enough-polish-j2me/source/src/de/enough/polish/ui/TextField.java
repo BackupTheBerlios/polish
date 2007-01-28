@@ -642,14 +642,25 @@ public class TextField extends StringItem
 			//#define tmp.updateDeleteCommand
 		//#endif
 			
-		// the delete command is a Command.ITEM type, because CANCEL will be mapped on special keys like the return key on Sony Ericsson devices.
-		//#ifdef polish.i18n.useDynamicTranslations
-	  		protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.CANCEL, 1 );
-		//#elifdef polish.command.delete:defined
-			//#= protected static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.CANCEL, 1 );
+		// the delete command is a Command.ITEM type when the extended menubar is used in conjunction with a defined return-key, 
+		// because CANCEL will be mapped on special keys like the return key on Sony Ericsson devices.
+		//#if polish.MenuBar.useExtendedMenuBar && polish.key.ReturnKey:defined
+			//#ifdef polish.i18n.useDynamicTranslations
+				//#	protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.ITEM, 1 );
+			//#elifdef polish.command.delete:defined
+				//#= protected static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.ITEM, 1 );
+			//#else
+				//# protected static final Command DELETE_CMD = new Command( "Delete", Command.ITEM, 1 ); 
+			//#endif
 		//#else
-			//# protected static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, 1 ); 
-		//#endif
+			//#ifdef polish.i18n.useDynamicTranslations
+		  		protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.CANCEL, 1 );
+			//#elifdef polish.command.delete:defined
+				//#= protected static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.CANCEL, 1 );
+			//#else
+				//# protected static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, 1 ); 
+			//#endif
+	  	//#endif
 	//#endif
 	//#ifdef polish.i18n.useDynamicTranslations
   		protected static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), Command.ITEM, 2 );

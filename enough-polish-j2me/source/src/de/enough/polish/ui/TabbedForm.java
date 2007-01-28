@@ -395,35 +395,6 @@ public class TabbedForm extends Form {
 		}
 	}
 	
-	//#ifdef polish.hasPointerEvents
-	/**
-	 * Handles the pressing of a pointer.
-	 * This method should be overwritten only when the polish.hasPointerEvents 
-	 * preprocessing symbol is defined.
-	 * When the screen could handle the pointer pressing, it needs to 
-	 * return true.
-	 * The default implementation returns the result of calling the container's
-	 *  handlePointerPressed-method
-	 *  
-	 * @param x the x position of the pointer pressing
-	 * @param y the y position of the pointer pressing
-	 * @return true when the pressing of the pointer was actually handled by this item.
-	 */
-	protected boolean handlePointerPressed( int x, int y ) {
-		if ( y <= this.tabBar.relativeY + this.tabBar.itemHeight && y >= this.tabBar.relativeY 
-				&& this.tabBar.handlePointerPressed(x, y)) 
-		{
-			if (this.tabBar.newActiveTabIndex == this.activeTabIndex) {
-				return false;
-			}
-			setActiveTab( this.tabBar.newActiveTabIndex );
-			notifyScreenStateChanged();
-			return true;
-		} else {
-			return super.handlePointerPressed(x, y);
-		}
-	}
-	//#endif
 	
 	/**
 	 * Retrieves the index of the currently active tab.

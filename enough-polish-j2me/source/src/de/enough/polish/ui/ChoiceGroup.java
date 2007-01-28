@@ -910,7 +910,6 @@ implements Choice
 	 */
 	public void setSelectedIndex(int elementNum, boolean selected)
 	{
-		System.out.println("ChoiceGroup: setSelectedIndex=" + elementNum);
 		if (this.isMultiple) {
 			ChoiceItem item = (ChoiceItem) this.itemsList.get( elementNum );
 			item.select( selected );

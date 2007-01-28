@@ -175,6 +175,7 @@ public class TabBar extends Item {
 			}
 			// I can use the itemWidth field, since I have called getItemHeight(..) above,
 			// which initialises the tab.
+			tab.relativeX = completeWidth;
 			completeWidth += tab.itemWidth;
 		}
 		this.contentHeight = maxHeight;
@@ -394,27 +395,28 @@ public class TabBar extends Item {
 				index = this.tabs.length - 1;
 			}
 			this.newActiveTabIndex = index;
-		} else if ( (this.activeTabIndex < this.tabs.length -1 || this.allowRoundtrip) && x >= this.relativeX - scrollerWidth) {
+		} else if ( (this.activeTabIndex < this.tabs.length -1 || this.allowRoundtrip) && x >= this.contentWidth - scrollerWidth) {
 			//System.out.println("right: x >= " + (this.xRightPos - scrollerWidth) );
 			this.newActiveTabIndex = (this.activeTabIndex + 1) % this.tabs.length;
 		} else {
-			int width = this.xOffset;
 			if (this.activeTabIndex > 0 || this.allowRoundtrip) {
-				width += scrollerWidth;
+//				x -= scrollerWidth;
 			}
 			for (int i = 0; i < this.tabs.length; i++) {
 				ImageItem tab = this.tabs[i];
-				if ( x >= width && x <= width + tab.itemWidth) {
-					//System.out.println("i-1=" + i + ": x <= " + tab.xLeftPos + ", x <= " + tab.xRightPos );
+//				System.out.println( "x=" + x + ", tab.relativeX=" + tab.relativeX + ", xOffset=" + this.xOffset +  ", tab=" + tab);
+				int tabX = tab.relativeX + this.xOffset;
+				if (tabX <= x && x <= tabX + tab.itemWidth) {
 					this.newActiveTabIndex = i;
-					return true;
+					break;
 				}
-				width += tab.itemWidth;
 			}
-			this.newActiveTabIndex = this.tabs.length - 1;
+		}
+		if (this.screen instanceof TabbedForm) {
+			((TabbedForm)this.screen).setActiveTab( this.newActiveTabIndex );
 		}
 		
-		return true;
+		return (this.newActiveTabIndex != this.activeTabIndex);
 	}
 	//#endif
 

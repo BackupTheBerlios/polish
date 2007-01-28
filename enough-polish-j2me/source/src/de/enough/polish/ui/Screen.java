@@ -2762,6 +2762,7 @@ implements AccessibleCanvas
 				//#endif
 			//#endif
 			if (this.subTitle != null && this.subTitle.handlePointerPressed(x - this.subTitle.relativeX, y - this.subTitle.relativeY)) {
+				System.out.println("subtitle handled pointer pressed...");
 				return;
 			}
 			//#if tmp.useScrollBar
@@ -2787,7 +2788,7 @@ implements AccessibleCanvas
 			
 			// #ifdef polish.debug.debug
 				if (!processed) {
-					// #debug
+					//#debug
 					System.out.println("PointerPressed at " + x + ", " + y + " not processed.");					
 				}
 			// #endif
@@ -3007,6 +3008,7 @@ implements AccessibleCanvas
 			this.subTitleHeight = 0;
 		} else {
 			subTitle.screen = this;
+			this.subTitle.relativeY = this.titleHeight;
 			//#ifdef polish.ScreenWidth:defined
 				//#= this.subTitleHeight = subTitle.getItemHeight(${polish.ScreenWidth}, ${polish.ScreenWidth});
 			//#else
