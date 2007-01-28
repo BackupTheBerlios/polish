@@ -288,6 +288,7 @@ public class CommandItem extends IconItem {
 				this.children.relativeY = y - originalY;
 				this.children.setHeight( clipHeight );
 				this.children.paint( x, y, x, x + childrenWidth, g);
+				System.out.println("set height for children to " + clipHeight + ", yOffset=" + this.children.yOffset + ", internalY=" + this.children.internalY);				
 			}
 		}
 	}
@@ -454,6 +455,19 @@ public class CommandItem extends IconItem {
 			}
 		//#endif
 
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.IconItem#animate()
+	 */
+	public boolean animate() {
+		boolean animated = super.animate();
+		if (this.isOpen && this.isFocused) {
+			animated |= this.children.animate();
+		}
+		return animated;
 	}
 
 	/* (non-Javadoc)

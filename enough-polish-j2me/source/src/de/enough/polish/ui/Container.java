@@ -485,14 +485,14 @@ public class Container extends Item {
 				this.internalHeight = item.internalHeight;
 				
 				//#debug
-				System.out.println("Container (" + getClass().getName() + "): no internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight);
+				System.out.println("Container (" + getClass().getName() + "): internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight);
 			} else {
 				this.internalX = item.relativeX;
 				this.internalY = item.relativeY;
 				this.internalWidth = item.itemWidth;
 				this.internalHeight = item.itemHeight;
 				//#debug
-				System.out.println("Container (" + getClass().getName() + "): internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.internalY=" + item.internalY + ", item.internalHeight=" +item.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight);
+				System.out.println("Container (" + getClass().getName() + "): NO internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.internalY=" + item.internalY + ", item.internalHeight=" +item.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight);
 			}
 			if (this.enableScrolling) {	
 				// Now adjust the scrolling:
