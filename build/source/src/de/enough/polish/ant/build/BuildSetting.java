@@ -1276,16 +1276,16 @@ public class BuildSetting {
 	}
 	
 	/**
-	 * Opens the [standard-css-attributes.xml] file.
+	 * Opens the [css-attributes.xml] file.
 	 * 
 	 * @return an input stream to that file
 	 * @throws BuildException when the file could not be found
 	 */
 	public InputStream openStandardCssAttributes(){
 		try {
-			return openResource( getFile("standard-css-attributes.xml"), "standard-css-attributes.xml");
+			return openResource( getFile("css-attributes.xml"), "css-attributes.xml");
 		} catch (FileNotFoundException e) {
-			throw new BuildException("Unable to load [standard-css-attributes.xml].");
+			throw new BuildException("Unable to load [css-attributes.xml].");
 		}
 	}
 
