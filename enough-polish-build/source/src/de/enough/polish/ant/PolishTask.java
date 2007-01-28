@@ -838,7 +838,11 @@ public class PolishTask extends ConditionalTask {
 			// This allows a faster start up time for around 80% of all cases.
 			List identifiersList = this.deviceRequirements.getRequiredIdentifiers();
 			if (identifiersList != null) {
-				buildProperties.put("polish.devicedatabase.identifiers", identifiersList );
+				// use a different map, so that no non-string attributes "pollute" the Ant properties:
+				Map newBuildProperties = new HashMap();
+				newBuildProperties.putAll( buildProperties );
+				newBuildProperties.put("polish.devicedatabase.identifiers", identifiersList );
+				buildProperties = newBuildProperties;
 			}
 		}
 		System.out.println("Loading device database...");
