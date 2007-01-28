@@ -2768,8 +2768,6 @@ implements AccessibleCanvas
 			//#if tmp.useScrollBar
 				if (this.scrollBar.handlePointerPressed( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
 					return;
-				} else {
-					System.out.println("scrollBar failed: x=" + x + ", scrollBar.relativeX=" + this.scrollBar.relativeX );
 				}
 			//#endif
 			// let the screen handle the pointer pressing:

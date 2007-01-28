@@ -43,6 +43,25 @@ import de.enough.polish.util.HashMap;
 /**
  * A superclass for components that can be added to a Form.
  * 
+ * <p>Items support following CSS attributes:
+ * </p>
+ * <ul>
+ * 		<li><b>margin, margin-left, margin-right, margin-top, margin-bottom, margin-vertical, margin-horizontal</b>: margins between border and next item.</li>
+ * 		<li><b>padding, padding-left, padding-right, padding-top, padding-bottom, padding-vertical, padding-horizontal</b>: paddings between border and content.</li>
+ * 		<li><b>background</b>: The background of this item.</li>
+ * 		<li><b>border</b>: The border of this item.</li>
+ * 		<li><b>min-width</b>: The minimum width of this item.</li>
+ * 		<li><b>max-width</b>: The maximum width of this item.</li>
+ * 		<li><b>min-height</b>: The minimum height of this item.</li>
+ * 		<li><b>max-height</b>: The maximum height of this item.</li>
+ * 		<li><b>before</b>: URL of image that should be placed before this item.</li>
+ * 		<li><b>after</b>: URL of image that should be placed after this item.</li>
+ * 		<li><b>include-label</b>: set to true when the background and border should include the label of this item as well.</li>
+ * 		<li><b>colspan</b>: when this item is embedded in a table, you can span it over several cells, e.g. colspan: 2;.</li>
+ * 		<li><b>label-style</b>: The name of the specialized label style for this item, e.g. "label-style: funnyLabel;"</li>
+ * 		<li><b>focused-style</b>: The name of the specialized focused style for this item, e.g. "focused-style: funnyFocused;"</li>
+ * 		<li><b>view-type</b>: The view of this item.</li>
+ * </ul>
  * 
  * A superclass for components that can be added to a <A HREF="../../../javax/microedition/lcdui/Form.html"><CODE>Form</CODE></A>. All <code>Item</code> objects have a label field,
  * which is a string that is
@@ -1918,10 +1937,14 @@ public abstract class Item extends Object
 	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
 		//#debug
 		System.out.println("item " + this + ": handling keyPressed for keyCode=" + keyCode + ", gameAction=" + gameAction);
+		Item item = this;
+		if (this.defaultCommand == null && this.parent != null) {
+			item = this.parent;
+		}
 		if ((gameAction == Canvas.FIRE) 
-				&& (this.defaultCommand != null)
-				&& (this.itemCommandListener != null)) {
-			this.itemCommandListener.commandAction(this.defaultCommand, this);
+				&& (item.defaultCommand != null)
+				&& (item.itemCommandListener != null)) {
+			item.itemCommandListener.commandAction(item.defaultCommand, this);
 			return true;
 		}
 		return false;

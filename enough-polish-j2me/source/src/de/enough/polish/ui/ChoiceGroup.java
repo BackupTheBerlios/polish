@@ -1227,7 +1227,7 @@ implements Choice
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		if (this.itemsList.size() == 0) {
-			return false;
+			return super.handleKeyPressed(keyCode, gameAction);
 		}
 		//#if polish.ChoiceGroup.handleDefaultCommandFirst == true
 			if (gameAction == Canvas.FIRE) {

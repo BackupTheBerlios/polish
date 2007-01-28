@@ -37,8 +37,6 @@ import de.enough.polish.util.ArrayList;
  * <p>Containers support following CSS attributes:
  * </p>
  * <ul>
- * 		<li><b>focused-style</b>: The name of the focused style, e.g. "focused-style: funnyFocused;"
- * 				</li>
  * 		<li><b>columns</b>: The number of columns. If defined a table will be drawn.</li>
  * 		<li><b>columns-width</b>: The width of the columns. "equals" for an equal width
  * 				of each column, "normal" for a column width which depends on
@@ -50,7 +48,6 @@ import de.enough.polish.util.ArrayList;
  * 				</pre>
  * 				</li>
  * 		<li><b>scroll-mode</b>: Either "smooth" (=default) or "normal".</li>
- * 		<li><b>view-type</b>: The view of this container.</li>
  * </ul>
  * <p>Copyright Enough Software 2004, 2005</p>
 
@@ -483,19 +480,19 @@ public class Container extends Item {
 			// so the dimensions are known.
 			if (item.internalX != -9999) {
 				this.internalX =  item.relativeX + item.contentX + item.internalX;
-				this.internalWidth = item.internalWidth;
 				this.internalY = item.relativeY + item.contentY + item.internalY;
+				this.internalWidth = item.internalWidth;
 				this.internalHeight = item.internalHeight;
 				
 				//#debug
-				System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight);
+				System.out.println("Container (" + getClass().getName() + "): no internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight);
 			} else {
 				this.internalX = item.relativeX;
-				this.internalWidth = item.itemWidth;
 				this.internalY = item.relativeY;
+				this.internalWidth = item.itemWidth;
 				this.internalHeight = item.itemHeight;
 				//#debug
-				System.out.println("Container (" + getClass().getName() + "): setting internalY=" + this.internalY + ", item.relativeY=" + item.relativeY + ", this.contentY=" + this.contentY + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight);
+				System.out.println("Container (" + getClass().getName() + "): internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.internalY=" + item.internalY + ", item.internalHeight=" +item.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight);
 			}
 			if (this.enableScrolling) {	
 				// Now adjust the scrolling:
@@ -553,6 +550,8 @@ public class Container extends Item {
 	 * @param item the item for which the scrolling should be adjusted
 	 */
 	protected void scroll(int direction, Item item) {
+		//#debug
+		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX);
 		if (item.internalX != -9999) {
 			int relativeInternalX = item.relativeX + item.contentX + item.internalX;
 			int relativeInternalY = item.relativeY + item.contentY + item.internalY;
@@ -577,10 +576,11 @@ public class Container extends Item {
 			return;
 		}
 		//#debug
-		System.out.println("scroll: direction=" + direction + ", y=" + y + ", Container.height=" + this.availableHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset );
+		System.out.println("scroll: direction=" + direction + ", y=" + y + ", availableHeight=" + this.availableHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset );
 		
 		// assume scrolling down when the direction is not known:
-		boolean isDownwards = (direction == Canvas.DOWN  ||   direction == 0);
+		boolean isDownwards = (direction == Canvas.DOWN || direction == Canvas.RIGHT ||  direction == 0);
+		boolean isUpwards = (direction == Canvas.UP );
 		
 		int currentYOffset = this.targetYOffset; // yOffset starts at 0 and grows to -contentHeight + lastItem.itemHeight
 		//#if polish.css.scroll-mode
@@ -607,7 +607,7 @@ public class Container extends Item {
 			//#debug
 			System.out.println("scroll: item too high: , y=" + y + ", target=" + currentYOffset ); //+ ", focusedTopMargin=" + this.focusedTopMargin );
 			// check if the bottom of the area is still visible when scrolling upwards:
-			if (!isDownwards && y + height + currentYOffset > verticalSpace ) {
+			if (isUpwards && y + height + currentYOffset > verticalSpace ) {
 				currentYOffset += verticalSpace - (y + height + currentYOffset);
 			}
 
@@ -896,8 +896,18 @@ public class Container extends Item {
 		if (this.focusedItem != null) {
 			Item item = this.focusedItem;
 			if ( item.handleKeyPressed(keyCode, gameAction) ) {
-				if (this.enableScrolling && item.internalX != -9999) {
-					scroll(gameAction, item);
+				if (item.internalX != -9999) {
+					if (this.enableScrolling) {
+						scroll(gameAction, item);
+					} else  {
+						// adjust internal settings for root container:
+						this.internalX = item.relativeX + item.contentX + item.internalX;
+						this.internalY = item.relativeY + item.contentY + item.internalY;
+						this.internalWidth = item.internalWidth;
+						this.internalHeight = item.internalHeight;
+						//#debug
+						System.out.println("Adjusted internal area to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );
+					}
 				}
 				//#debug
 				System.out.println("Container(" + this + "): handleKeyPressed consumed by item " + item.getClass().getName() + "/" + item );
@@ -970,7 +980,10 @@ public class Container extends Item {
 				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
 			if (this.focusedItem != null 
 					&& this.enableScrolling
-					&& offset + this.focusedItem.relativeY + this.focusedItem.itemHeight > availableHeight) 
+					&& ( (offset + this.focusedItem.relativeY + this.focusedItem.itemHeight > availableHeight)
+					     || ( this.focusedItem.internalX != -9999
+						    && offset + this.focusedItem.relativeY + this.focusedItem.contentY + this.focusedItem.internalY + this.focusedItem.internalHeight > availableHeight)) 
+				       )
 			{
 				if (gameAction == Canvas.RIGHT) {
 					return false;
@@ -1431,7 +1444,7 @@ public class Container extends Item {
 			int newFocusIndex = this.focusedIndex;
 			//if (this.focusedIndex == -1) {
 			//#if tmp.supportViewType
-				if (this.containerView != null && false) {
+				if (this.containerView != null) {
 			//#endif
 				Item[] myItems = getItems();
 				// focus the first interactive item...

@@ -59,10 +59,9 @@ import javax.microedition.lcdui.Image;
  *                          In the &quot;item&quot; mode the index of currently selected item
  *                          is taken into account relative to the number of items.
  *                          In the &quot;page&quot;
- *                          The default mode is &quot;area&quot;, unless there is no focusable item
- *                          on the screen, in which case the &quot;page&quot; mode is used.
+ *                          The default mode is &quot;page&quot;.
  * </li>
- * 	<li><b>scrollbar-position</b>: either &quot;left&quot; or &quot;right&quot;.</li>
+ * 	<li><b>scrollbar-position</b>: either &quot;left&quot; or &quot;right&quot; (not yet supported).</li>
  * 	<li><b></b>: </li>
  * </ul>
  * <p>You can exchange the default implementation with the &quot;polish.classes.ScrollBar&quot;
@@ -80,7 +79,7 @@ public class ScrollBar extends Item {
 	
 	private static final int MODE_AREA = 0;
 	private static final int MODE_ITEM = 1;
-	//private static final int MODE_PAGE = 2;
+	private static final int MODE_PAGE = 2;
 	protected int sliderColor;
 	protected int sliderWidth = 2;
 	//#if polish.css.scrollbar-slider-image
@@ -91,7 +90,7 @@ public class ScrollBar extends Item {
 		//#endif
 	//#endif
 	//#if polish.css.scrollbar-slider-mode
-		protected int sliderMode;
+		protected int sliderMode = MODE_PAGE;
 	//#endif
 	protected int sliderY;
 	protected int sliderHeight;
@@ -143,19 +142,19 @@ public class ScrollBar extends Item {
 				this.sliderY = (chunkPerSlider * focusedIndex) >>> 8;
 				this.sliderHeight = chunkPerSlider >>> 8;
 			} else if ( this.sliderMode == MODE_AREA && selectionHeight != 0 ) {
-		//#else
-				//# if (selectionHeight != 0) {
+				// take the currently selected area
+				//System.out.println("using area");
+				this.sliderY = ( (selectionStart - contentYOffset) * screenAvailableHeight) / screenContentHeight;
+				this.sliderHeight = (selectionHeight * screenAvailableHeight) / screenContentHeight;					
+			} else {
 		//#endif
-			// take the currently selected area
-			//System.out.println("using area");
-			this.sliderY = ( (selectionStart - contentYOffset) * screenAvailableHeight) / screenContentHeight;
-			this.sliderHeight = (selectionHeight * screenAvailableHeight) / screenContentHeight;					
-		} else {
-			// use the page dimensions:
-			//System.out.println("using page");
-			this.sliderY = (-contentYOffset  * screenAvailableHeight) / screenContentHeight;
-			this.sliderHeight = (screenAvailableHeight * screenAvailableHeight) / screenContentHeight;
-		}
+				// use the page dimensions:
+				//System.out.println("using page");
+				this.sliderY = (-contentYOffset  * screenAvailableHeight) / screenContentHeight;
+				this.sliderHeight = (screenAvailableHeight * screenAvailableHeight) / screenContentHeight;
+		//#if polish.css.scrollbar-slider-mode
+			}
+		//#endif
 		//#if polish.css.scrollbar-slider-image && polish.css.scrollbar-slider-image-repeat
 			if (this.repeatSliderImage && this.sliderImage != null ) {
 				if (this.sliderHeight > this.sliderImage.getHeight()) {
