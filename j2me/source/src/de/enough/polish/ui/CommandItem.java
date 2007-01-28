@@ -247,6 +247,7 @@ public class CommandItem extends IconItem {
 			//#endif
 			
 			if (this.isOpen) {
+				int originalY = y;
 				// draw children:
 				// when there is enough space to the right, open it on the right side, otherwise open it on the left:
 				int clipX = g.getClipX();
@@ -283,6 +284,8 @@ public class CommandItem extends IconItem {
 //						g.drawLine( x - 20,y-i, x+childrenWidth+10, y-i);						
 //					}
 				}
+				this.children.relativeX = x - leftBorder;
+				this.children.relativeY = y - originalY;
 				this.children.setHeight( clipHeight );
 				this.children.paint( x, y, x, x + childrenWidth, g);
 			}
@@ -325,11 +328,21 @@ public class CommandItem extends IconItem {
 			scr.callCommandListener( this.command );
 			return true;
 		}
-//		if (this.parentItem != null && gameAction == Canvas.LEFT ) {
-//			open( false );
-//		}
 		return false;
 	}
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
+	 */
+	protected boolean handlePointerPressed(int x, int y) {
+		boolean handled = false;
+		if (this.isOpen) {
+			handled = this.children.handlePointerPressed(x - this.children.relativeX, y - this.children.relativeY );
+		}
+		return handled || super.handlePointerPressed(x, y);
+	}
+	//#endif
 
 	/**
 	 * Opens or closes this command item so that the children commands are visible (or not).
