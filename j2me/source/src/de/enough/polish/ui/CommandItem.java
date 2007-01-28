@@ -59,8 +59,6 @@ public class CommandItem extends IconItem {
 		private int childIndicatorColor = -1;
 	//#endif
 	private boolean isOpen;
-	private Style originalStyle;
-	private Style focusingStyle;
 
 	
 	/**
@@ -103,8 +101,17 @@ public class CommandItem extends IconItem {
 	 * @param childStyle the style for the child command
 	 */
 	public void addChild( Command childCommand, Style childStyle ) {
-		boolean inserted = false;
 		CommandItem child = new CommandItem( childCommand, this, childStyle );
+		addChild( child );
+	}
+	
+	/**
+	 * Adds a subcommand to this node.
+	 * 
+	 * @param child the child command item
+	 */
+	public void addChild(CommandItem child) {
+		boolean inserted = false;
 		if ( this.children == null ) {
 			int layer = getLayer();
 			if (layer == 0) {
@@ -125,7 +132,7 @@ public class CommandItem extends IconItem {
 			this.hasChildren = true;
 			this.children.parent = this;
 		} else {
-			int priority = childCommand.getPriority();
+			int priority = child.command.getPriority();
 			for (int i = 0; i < this.children.size(); i++) {
 				CommandItem item = (CommandItem) this.children.get(i);
 				if (item.command.getPriority() > priority ) {
@@ -288,7 +295,7 @@ public class CommandItem extends IconItem {
 				this.children.relativeY = y - originalY;
 				this.children.setHeight( clipHeight );
 				this.children.paint( x, y, x, x + childrenWidth, g);
-				System.out.println("set height for children to " + clipHeight + ", yOffset=" + this.children.yOffset + ", internalY=" + this.children.internalY);				
+				//System.out.println("set height for children to " + clipHeight + ", yOffset=" + this.children.yOffset + ", internalY=" + this.children.internalY);				
 			}
 		}
 	}
@@ -355,36 +362,18 @@ public class CommandItem extends IconItem {
 		System.out.println( this + ": opening children: " + open);
 		this.isOpen = open;
 		if ( open ) {
-			// defocus myself:
-//			if (this.originalStyle != null) {
-//				setStyle( this.originalStyle );
-//			} else {
-//				//#debug error
-//				System.out.println("Unable to defocus parent command " + this );
-//			}
 			// move focus to first child:
-			this.children.focus( this.focusingStyle, 0 );
+			this.children.focus( getFocusedStyle(), 0 );
 		} else {
 			// focus myself:
-//			setStyle( this.focusingStyle );
 			// reset selected command element to the first one in the list:
 			if ( this.children != null ) {
 				this.children.focus( 0 );
-//			} else {
-//				System.out.println("WHIOA WHOA WHOA NO CHILDREN!!!");
+				this.children.setScrollYOffset( 0 );
 			}
 		}
 	}
-
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
-	 */
-	protected Style focus(Style newStyle, int direction) {
-		this.originalStyle = super.focus(newStyle, direction);
-		this.focusingStyle = this.style;
-		return this.originalStyle;
-	}
+	
 
 	/**
 	 * Retrieves the child item for the specified command.
@@ -482,6 +471,8 @@ public class CommandItem extends IconItem {
 		}
 		super.hideNotify();
 	}
+
+
 	
 	
 	

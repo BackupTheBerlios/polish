@@ -28,6 +28,7 @@ package de.enough.polish.ui;
 
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
@@ -112,6 +113,7 @@ public class MenuBar extends Item {
 	//#if !polish.Bugs.noTranslucencyWithDrawRgb
 		private Background overlayBackground;
 	//#endif
+	private final Hashtable allCommands;
 
 	/**
 	 * Creates a new menu bar
@@ -132,6 +134,7 @@ public class MenuBar extends Item {
 		super(style);
 		this.screen = screen;
 		this.commandsList = new ArrayList();
+		this.allCommands = new Hashtable();
 		//#style menu, default
 		this.commandsContainer = new Container( true );
 		if (this.commandsContainer.style != null) {
@@ -149,6 +152,12 @@ public class MenuBar extends Item {
 	}
 
 	public void addCommand(Command cmd) {
+		//#style menuitem, menu, default
+		addCommand( cmd );		
+	}
+	
+	public void addCommand(Command cmd, Style commandStyle) {
+		//System.out.println("adding cmd " + cmd.getLabel() + " with style " + commandStyle );
 		if (cmd == this.singleLeftCommand || cmd == this.singleRightCommand || this.commandsList.contains(cmd)) {
 			// do not add an existing command again...
 			//#debug
@@ -160,6 +169,8 @@ public class MenuBar extends Item {
 			//#endif
 			return;
 		}
+		CommandItem item = new CommandItem( cmd, this, commandStyle );
+		this.allCommands.put( cmd, item );
 		//#debug
 		System.out.println(this + ": adding command " + cmd.getLabel() + " (" + cmd + ")");
 		int type = cmd.getCommandType();
@@ -175,7 +186,7 @@ public class MenuBar extends Item {
 					//# String text =  "Hide";
 				//#endif
 				this.hideCommand = new Command( text, Command.CANCEL, 2000 );
-				addCommand( this.hideCommand );
+				addCommand( this.hideCommand, commandStyle );
 			}
 			if ( (cmd != this.hideCommand) && 
 					(type == Command.BACK || type == Command.CANCEL || type == Command.EXIT) ) 
@@ -207,6 +218,7 @@ public class MenuBar extends Item {
 						this.singleLeftCommand = cmd;
 						this.singleLeftCommandItem.setText( cmd.getLabel() );
 						cmd = oldLeftCommand;
+						item = (CommandItem) this.allCommands.get( cmd );
 						priority = oldLeftCommand.getPriority();		
 					}
 				}
@@ -227,6 +239,7 @@ public class MenuBar extends Item {
 							this.singleLeftCommand = cmd;
 							this.singleLeftCommandItem.setText( cmd.getLabel() );
 							cmd = oldLeftCommand;
+							item = (CommandItem) this.allCommands.get( cmd );
 							priority = oldLeftCommand.getPriority();
 						}
 					//#else
@@ -246,6 +259,7 @@ public class MenuBar extends Item {
 							this.singleRightCommand = cmd;
 							this.singleRightCommandItem.setText( cmd.getLabel() );
 							cmd = oldRightCommand;
+							item = (CommandItem) this.allCommands.get( cmd );
 							priority = oldRightCommand.getPriority();
 							//#debug
 							System.out.println("exchanging right command " + oldRightCommand.getLabel() );
@@ -256,10 +270,9 @@ public class MenuBar extends Item {
 			//#if tmp.RightOptions
 				if (this.singleRightCommand != null) {
 					// add existing right command first:
-					//#style menuitem, menu, default
-					CommandItem item = new CommandItem( this.singleRightCommand, this );
+					CommandItem singleItem = (CommandItem) this.allCommands.get( this.singleRightCommand );
 					this.commandsList.add( this.singleRightCommand );
-					this.commandsContainer.add( item );
+					this.commandsContainer.add( singleItem );
 					this.singleRightCommand = null;
 				}  else if (this.commandsList.size() == 0) {
 					// this is the new single right command!
@@ -278,10 +291,9 @@ public class MenuBar extends Item {
 					// add existing left command first:
 					//#debug
 					System.out.println("moving single left command " + this.singleLeftCommand.getLabel() + " to commandsContainer");
-					//#style menuitem, menu, default
-					CommandItem item = new CommandItem( this.singleLeftCommand, this );
+					CommandItem singleItem = (CommandItem) this.allCommands.get( this.singleLeftCommand );
 					this.commandsList.add( this.singleLeftCommand );
-					this.commandsContainer.add( item );
+					this.commandsContainer.add( singleItem );
 					this.singleLeftCommand = null;
 				}  else if (this.commandsList.size() == 0) {
 					// this is the new single left command!
@@ -308,35 +320,7 @@ public class MenuBar extends Item {
 			}
 		//#endif
 	
-		//#debug
-		System.out.println("Adding command " + cmd.getLabel() + " to the commands list...");
-		//#style menuitem, menu, default
-		CommandItem item = new CommandItem( cmd, this );
-		if ( this.commandsList.size() == 0 ) {
-			this.commandsList.add( cmd );
-			this.commandsContainer.add( item );
-		} else {
-			// there are already several commands,
-			// so add this cmd to the appropriate sorted position:
-			Command[] myCommands = (Command[]) this.commandsList.toArray( new Command[ this.commandsList.size() ]);
-			boolean inserted = false;
-			for (int i = 0; i < myCommands.length; i++) {
-				Command command = myCommands[i];
-				if ( cmd == command ) {
-					return;
-				}
-				if (command.getPriority() > priority ) {
-					this.commandsList.add( i, cmd );
-					this.commandsContainer.add(i, item);
-					inserted = true;
-					break;
-				}
-			}
-			if (!inserted) {
-				this.commandsList.add( cmd );
-				this.commandsContainer.add( item );
-			}
-		}
+		addCommand( item );
 		
 		if (this.isInitialised) {
 			this.isInitialised = false;
@@ -350,11 +334,13 @@ public class MenuBar extends Item {
 	public void removeCommand(Command cmd) {
 		//#debug
 		System.out.println(this + ": removing command " + cmd.getLabel() + " (" + cmd + ")");
+		this.allCommands.remove( cmd );
 		//#if tmp.useInvisibleMenuBar
 			if (cmd == this.positiveCommand) {
 				this.positiveCommand = null;
 			}
 		//#endif
+		
 		// 1.case: cmd == this.singleLeftCommand
 		if ( cmd == this.singleLeftCommand ) {
 			this.singleLeftCommand = null;
@@ -1042,22 +1028,29 @@ public class MenuBar extends Item {
 	 * @param commandStyle the style for the command
 	 * @throws IllegalStateException when the parent command has not be added before
 	 */
+	public void addSubCommand(Command childCommand, Command parentCommand) {
+		//#style menuitem, menu, default
+		addSubCommand(childCommand, parentCommand);		
+	}
+
+	/**
+	 * Adds the given command as a subcommand to the specified parent command.
+	 * 
+	 * @param parentCommand the parent command
+	 * @param childCommand the child command
+	 * @param commandStyle the style for the command
+	 * @throws IllegalStateException when the parent command has not be added before
+	 */
 	public void addSubCommand(Command childCommand, Command parentCommand, Style commandStyle) {
         //#if tmp.useInvisibleMenuBar
 	        if (parentCommand == this.positiveCommand) {
 	            this.positiveCommand = null;
 	        }
 	    //#endif
-		// find parent CommandItem, could be tricky, especially when there are nested commands over several layers
-		int index = this.commandsList.indexOf( parentCommand );
-		CommandItem parentCommandItem = null;
-		if (index != -1) {
-			// found it:
-			parentCommandItem = (CommandItem) this.commandsContainer.get( index );
-		} else if (parentCommand == this.singleLeftCommand ){
-			parentCommandItem = new CommandItem( parentCommand, this );
-			this.commandsContainer.add( parentCommandItem );
-			this.commandsList.add( parentCommand );
+		// find parent CommandItem:
+		CommandItem parentCommandItem = (CommandItem) this.allCommands.get( parentCommand );
+		if (parentCommand == this.singleLeftCommand ){
+			addCommand( parentCommandItem );
 			this.singleLeftCommand = null;
 			//#if tmp.RightOptions
 				if (this.singleRightCommand != null) {
@@ -1067,9 +1060,7 @@ public class MenuBar extends Item {
 				}
 			//#endif
 		} else if (parentCommand == this.singleRightCommand ){
-			parentCommandItem = new CommandItem( parentCommand, this );
-			this.commandsContainer.add( parentCommandItem );
-			this.commandsList.add( parentCommand );
+			addCommand( parentCommandItem );
 			this.singleRightCommand = null;
 			//#if !tmp.RightOptions
 				if (this.singleLeftCommand != null) {
@@ -1078,23 +1069,53 @@ public class MenuBar extends Item {
 					addCommand( cmd );
 				}
 			//#endif
-		} else {
-			// search through all commands
-			for ( int i=0; i < this.commandsContainer.size(); i++ ) {
-				CommandItem item = (CommandItem) this.commandsContainer.get( i );
-				parentCommandItem = item.getChild( parentCommand );
-				if ( parentCommandItem != null ) {
-					break;
-				}
-			}
-		}
+		} 
 		if ( parentCommandItem == null ) {
 			throw new IllegalStateException();
 		}
-		parentCommandItem.addChild( childCommand, commandStyle );
+		CommandItem child = new CommandItem( childCommand, parentCommandItem, commandStyle );
+		this.allCommands.put( childCommand, child);
+		parentCommandItem.addChild( child );
 		if (this.isOpened) {
 			this.isInitialised = false;
 			repaint();
+		}
+	}
+
+	/**
+	 * Adds the given command item to the list of commands at the appropriate place.
+	 * 
+	 * @param item the command item
+	 */
+	private void addCommand(CommandItem item ) {
+		Command cmd = item.command;
+		int priority = cmd.getPriority();
+		//#debug
+		System.out.println("Adding command " + cmd.getLabel() + " to the commands list...");
+		if ( this.commandsList.size() == 0 ) {
+			this.commandsList.add( cmd );
+			this.commandsContainer.add( item );
+		} else {
+			// there are already several commands,
+			// so add this cmd to the appropriate sorted position:
+			Command[] myCommands = (Command[]) this.commandsList.toArray( new Command[ this.commandsList.size() ]);
+			boolean inserted = false;
+			for (int i = 0; i < myCommands.length; i++) {
+				Command command = myCommands[i];
+				if ( cmd == command ) {
+					return;
+				}
+				if (command.getPriority() > priority ) {
+					this.commandsList.add( i, cmd );
+					this.commandsContainer.add(i, item);
+					inserted = true;
+					break;
+				}
+			}
+			if (!inserted) {
+				this.commandsList.add( cmd );
+				this.commandsContainer.add( item );
+			}
 		}
 	}
 

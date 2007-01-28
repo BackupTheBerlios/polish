@@ -2067,6 +2067,23 @@ public abstract class Item extends Object
 		}
 		return false;
 	}
+	
+	/**
+	 * Retrieves the approriate style for focusing this item.
+	 * This is either a item specific one or one inherit by its parents.
+	 * When no parent has a specific focus style, the StyleSheet.focusedStyle is used.
+	 * 
+	 * @return the style used for focussing this item.
+	 */
+	public Style getFocusedStyle() {
+		if (this.focusedStyle != null) {
+			return this.focusedStyle;
+		} else if (this.parent != null) {
+			return this.parent.getFocusedStyle();
+		} else {
+			return StyleSheet.focusedStyle;
+		}
+	}
 
 	/**
 	 * Focuses this item.

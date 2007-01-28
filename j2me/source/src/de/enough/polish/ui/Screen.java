@@ -2310,7 +2310,7 @@ implements AccessibleCanvas
 			}
 		//#endif
 		//#ifdef tmp.useExternalMenuBar
-			this.menuBar.addCommand(cmd);
+			this.menuBar.addCommand(cmd, commandStyle);
 			if (super.isShown()) {
 				if (this.menuBarHeight == 0 && this.isInitialised) {
 					int availableWidth = this.screenWidth - (this.marginLeft + this.marginRight );
@@ -2723,6 +2723,7 @@ implements AccessibleCanvas
 				//#else
 					// check if one of the command buttons has been pressed:
 					if (y > this.screenHeight) {
+//						System.out.println("pointer at x=" + x + ", menuLeftCommandX=" + menuLeftCommandX );
 						if (x >= this.menuRightCommandX && this.menuRightCommandX != 0) {
 							if (this.menuOpened) {
 								openMenu( false );
@@ -2733,17 +2734,14 @@ implements AccessibleCanvas
 							return;
 						} else if (x <= this.menuLeftCommandX){
 							// assume that the left command has been pressed:
-							System.out.println("x <= this.menuLeftCommandX: open=" + this.menuOpened );
+//							System.out.println("x <= this.menuLeftCommandX: open=" + this.menuOpened );
 							if (this.menuOpened ) {
 								// the "SELECT" command has been clicked:
 								this.menuContainer.handleKeyPressed(0, Canvas.FIRE);
 								openMenu( false );
-								System.out.println("letting menuContainer handle the selection,  open=" + this.menuOpened);
 							} else if (this.menuSingleLeftCommand != null) {								
-								System.out.println("invoking single left command");
 								this.callCommandListener(this.menuSingleLeftCommand);
 							} else {
-								System.out.println("opening menu");
 								openMenu( true );
 								//this.menuOpened = true;
 							}
@@ -2751,18 +2749,17 @@ implements AccessibleCanvas
 							return;
 						}
 					} else if (this.menuOpened) {
-						openMenu( false );
 						// a menu-item could have been selected:
 						int menuY = this.originalScreenHeight - (this.menuContainer.itemHeight + 1);
-						if (this.menuContainer.handlePointerPressed( x, y - menuY )) {
-							repaint();
+						if (!this.menuContainer.handlePointerPressed( x, y - menuY )) {
+							openMenu( false );
 						}
+						repaint();
 						return;
 					}
 				//#endif
 			//#endif
 			if (this.subTitle != null && this.subTitle.handlePointerPressed(x - this.subTitle.relativeX, y - this.subTitle.relativeY)) {
-				System.out.println("subtitle handled pointer pressed...");
 				return;
 			}
 			//#if tmp.useScrollBar
