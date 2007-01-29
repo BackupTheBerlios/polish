@@ -26,12 +26,15 @@
 package de.enough.polish.browser;
 
 import de.enough.polish.ui.Container;
-import de.enough.polish.ui.FakeContainerCustomItem;
 import de.enough.polish.ui.Item;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.xml.PullParser;
 
 import javax.microedition.lcdui.Command;
+
+//#if polish.LibraryBuild
+import de.enough.polish.ui.FakeContainerCustomItem;
+//#endif
 
 /**
  * This class provides the basic functionality for tag handlers. A tag handler is a
