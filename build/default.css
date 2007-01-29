@@ -44,8 +44,9 @@
 }
 
 /* inherit is true for this style, since
- * people tend to forget to set this layout */	
+ * people tend to forget to set this layout 	
 rightcommand {
 	layout: right;
 }
+*/
 
