@@ -105,6 +105,22 @@ For using the module select File &gt; New Project &gt; Mobile &gt; J2ME Polish P
             </description>
             <file src="ide/netbeans/de-enough-polish-netbeans.nbm" targetdir="$NETBEANS_INSTALL_HOME"/>
         </pack>
+        <pack name="Blank Sample Application" required="no" preselected="yes">
+            <description>A sample skeleton project structure useful for creating new J2ME Polish projects.</description>
+            <file src="samples/blank" targetdir="$INSTALL_PATH/samples"/>
+            <!-- 
+            <file src="samples/blank/resources" targetdir="$INSTALL_PATH/samples/blank"/>
+            <file src="../setup/samples/blank/.classpath" targetdir="$INSTALL_PATH/samples/blank"/>
+            <file src="../setup/samples/blank/.project" targetdir="$INSTALL_PATH/samples/blank"/>
+            <file src="../setup/samples/blank/build.xml" targetdir="$INSTALL_PATH/samples/blank"/>
+            <file src="../setup/samples/blank/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/blank"/>
+            <file src="../setup/samples/blank/nbproject" targetdir="$INSTALL_PATH/samples/blank"/>
+             -->
+            <parsable targetfile="$INSTALL_PATH/samples/blank/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/blank/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/blank/.classpath" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/blank/nbproject/project.properties" type="shell" /> 
+        </pack>
         <pack name="Menu Sample Application" required="no" preselected="yes">
             <description>A sample application that shows a simple menu and contains three different CSS designs. This can be used as a master for new projects.</description>
             <file src="samples/menu/source" targetdir="$INSTALL_PATH/samples/menu"/>
