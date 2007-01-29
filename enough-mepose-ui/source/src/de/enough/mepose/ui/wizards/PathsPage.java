@@ -153,8 +153,8 @@ public class PathsPage extends WizardPage {
             this.mppStatusGroup.setLayoutData(new GridData(SWT.FILL,SWT.BEGINNING,true,false));
             main = this.mppStatusGroup.getMainComposite();
             main.setLayout(new GridLayout(3,false));
-            Label wtkLabel = new Label(main,SWT.NONE);
-            wtkLabel.setText("WTK Home:");
+            Label mppLabel = new Label(main,SWT.NONE);
+            mppLabel.setText("MPP Home:");
             
             this.mppHomeText = new Text(main,SWT.BORDER);
             this.mppHomeText.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
@@ -163,13 +163,13 @@ public class PathsPage extends WizardPage {
                     modifyMppHomeText();
                 }
             });
-            String mppHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_WTK_HOME);
+            String mppHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_MPP_HOME);
             this.mppHomeText.setText(mppHomePath);
             modifyMppHomeText();
             
             browseButton = new Button(main,SWT.NONE);
             browseButton.setText("Browse for Path");
-            browseButton.addSelectionListener(new BrowsePathSelected(this.wtkHomeText,"Choose the location of your MPP directory"));
+            browseButton.addSelectionListener(new BrowsePathSelected(this.mppHomeText,"Choose the location of your MPP directory"));
         }
         else {
         

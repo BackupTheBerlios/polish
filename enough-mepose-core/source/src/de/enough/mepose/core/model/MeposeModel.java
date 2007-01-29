@@ -364,7 +364,6 @@ public class MeposeModel extends PropertyModel{
             return new Device[0];
         }
         return dt.getSelectedDevices();
-//        return this.supportedDevices;
     }
     
     public Platform[] getSupportedPlatforms() {
@@ -393,7 +392,13 @@ public class MeposeModel extends PropertyModel{
             throw new IllegalArgumentException("setSupportedDevices(...):parameter 'supportedDevices' is null contrary to API.");
         }
         this.supportedDevices = supportedDevices;
-        DeviceTree deviceTreeTemp = getDeviceTree();
+        
+        List supportedDevicesStringList = new LinkedList();
+        for (int i = 0; i < supportedDevices.length; i++) {
+            supportedDevicesStringList.add(supportedDevices[i].getIdentifier());
+        }
+        
+        DeviceTree deviceTreeTemp = getDeviceTree(supportedDevicesStringList);
         if(deviceTreeTemp == null) {
             return;
         }
@@ -552,31 +557,37 @@ public class MeposeModel extends PropertyModel{
 
     /**
      * 
+     * @param targetDevices 
      * @return May be null.
      * @throws DeviceDatabaseException 
      */
-    public DeviceDatabase getDeviceDatabase() throws DeviceDatabaseException {
-//        if(this.deviceDatabase == null) {
-//            this.deviceDatabase = PolishDeviceDatabase.getDeviceDatabase(this.polishHome,this.projectHome);
-//        }
-//        return this.deviceDatabase;
+    public DeviceDatabase getDeviceDatabase(List targetDevices) throws DeviceDatabaseException {
+        
         if(getPolishHome() != null && getProjectHome() != null) {
-            return PolishDeviceDatabase.getDeviceDatabase(this.polishHome,this.projectHome);
+            return PolishDeviceDatabase.getNewDeviceDatabase(this.polishHome,this.projectHome,targetDevices);
         }
         return null;
     }
+    
+    public DeviceDatabase getDeviceDatabase() throws DeviceDatabaseException {
+        return getDeviceDatabase(null);
+    }
 
-    // May be null.
     public DeviceTree getDeviceTree() {
+        return getDeviceTree(null);
+    }
+    
+    // May be null.
+    public DeviceTree getDeviceTree(List supportedDevicesStringList) {
         
-        DeviceDatabase deviceDatabase2;
-        try {
-            deviceDatabase2 = getDeviceDatabase();
-        } catch (DeviceDatabaseException exception) {
-            //TODO: Rethrow the exception.
-            return null;
-        }
-        if(this.deviceTree == null && deviceDatabase2 != null) {
+        if(this.deviceTree == null) {
+            DeviceDatabase deviceDatabase2;
+            try {
+                deviceDatabase2 = getDeviceDatabase(supportedDevicesStringList);
+            } catch (DeviceDatabaseException exception) {
+                //TODO: Rethrow the exception.
+                return null;
+            }
             try {
                 this.deviceTree = new DeviceTree(deviceDatabase2,null,null);
             }
@@ -725,22 +736,68 @@ public class MeposeModel extends PropertyModel{
         if(projectNameTmp != null) {
             setProjectHome(new File(projectNameTmp));
         }
-        String buildXmlTmp = (String)p.get(ID_PATH_BUILDXML_FILE);
-        if(buildXmlTmp != null) {
-            setBuildxml(new File(buildXmlTmp));
-        }
         
         DeviceDatabase db = null;
+        
+        String supportedDevicesString = (String)p.get(ID_SUPPORTED_DEVICES);
+        if(supportedDevicesString == null) {
+            supportedDevicesString = "";
+        }
+        String[] supportedDevicesStringArray = supportedDevicesString.split(",");
+        boolean genericDeviceFound = false;
+        int index = java.util.Arrays.binarySearch(supportedDevicesStringArray,DEFAULT_DEVICE_NAME);
+        genericDeviceFound = index >= 0;
+        if(! genericDeviceFound) {
+            String[] temp = new String[supportedDevicesStringArray.length+1];
+            System.arraycopy(supportedDevicesStringArray,0,temp,0,supportedDevicesStringArray.length);
+            temp[supportedDevicesStringArray.length] = DEFAULT_DEVICE_NAME;
+            supportedDevicesStringArray = temp;
+        }
+        List supportedDevicesList = new LinkedList();
+        List targetDevicesStringList = new LinkedList();
+        for (int i = 0; i < supportedDevicesStringArray.length; i++) {
+            targetDevicesStringList.add(supportedDevicesStringArray[i]);
+        }
+        
         try {
-            db = getDeviceDatabase();
+            db = getDeviceDatabase(targetDevicesStringList);
         } catch (DeviceDatabaseException exception) {
             MeposePlugin.log(exception);
+            return;
         }
+        
+        // TODO: This will happen on the first invocation as the user has most
+        // probably not set the polish home in the preferences.
         if(db == null) {
             return;
-            // Return as from here on we initialize things like supported devices.
-            // But this is not possible without a db.
-//            throw new IllegalStateException("Device Database not found. Most likely some paths are invalid.");
+        }
+        
+        DeviceManager deviceManager = db.getDeviceManager();
+        if(deviceManager == null) {
+            return;
+        }
+        for(int i = 0; i < supportedDevicesStringArray.length; i++) {
+            String identifier = supportedDevicesStringArray[i];
+            Device device = deviceManager.getDevice(identifier);
+            //TODO: Sometimes the Nokia/6611 is not found although it is in the supportedDevicesString.
+            if(device == null) {
+                continue;
+            }
+            supportedDevicesList.add(device);
+        }
+        setSupportedDevices((Device[]) supportedDevicesList.toArray(new Device[supportedDevicesList.size()]));
+        
+        // When no supported devices are found, no device database has been created. We do this know with the default
+        // device.
+        
+        if(db == null) {
+            try {
+                List devicesList = new LinkedList();
+                devicesList.add(DEFAULT_DEVICE_NAME);
+                db = getDeviceDatabase(devicesList);
+            } catch (DeviceDatabaseException exception) {
+                MeposePlugin.log(exception);
+            }
         }
         
         // Supported Config.
@@ -778,33 +835,23 @@ public class MeposeModel extends PropertyModel{
             setSupportedPlatforms(supportedPlatformsTmp);
         }
         
-        String supportedDevicesString = (String)p.get(ID_SUPPORTED_DEVICES);
-        if(supportedDevicesString != null && ! supportedDevicesString.equals("")) {
-            String[] supportedDevicesArray = supportedDevicesString.split(",");
-            List supportedDevicesTemp = new LinkedList();
-            DeviceManager deviceManager = db.getDeviceManager();
-            if(deviceManager == null) {
-                return;
-            }
-            for(int i = 0; i < supportedDevicesArray.length; i++) {
-                String identifier = supportedDevicesArray[i];
-                Device device = deviceManager.getDevice(identifier);
-                //TODO: Sometimes the Nokia/6611 is not found although it is in the supportedDevicesString.
-                if(device == null) {
-                    continue;
-                }
-                supportedDevicesTemp.add(device);
-            }
-            setSupportedDevices((Device[]) supportedDevicesTemp.toArray(new Device[supportedDevicesTemp.size()]));
-        }
+        
         
         String currentDeviceString = (String)p.get(ID_CURRENT_DEVICE);
-        if(currentDeviceString != null) {
-            Device device = db.getDeviceManager().getDevice(currentDeviceString);
-            if(device != null) {
-                setCurrentDevice(device);
-            }
+        if(currentDeviceString == null) {
+            currentDeviceString = MeposeModel.DEFAULT_DEVICE_NAME;
         }
+        Device device = deviceManager.getDevice(currentDeviceString);
+        if(device != null) {
+            setCurrentDevice(device);
+        }
+        
+        
+        String buildXmlTmp = (String)p.get(ID_PATH_BUILDXML_FILE);
+        if(buildXmlTmp != null) {
+            setBuildxml(new File(buildXmlTmp));
+        }
+        db.clear();
     }
 
 //    public void build(String targetName) {

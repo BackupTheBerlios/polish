@@ -6,7 +6,7 @@
         <editor class="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor"
         contributorClass="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor" extensions="java" icon="icons/jongleur2_16x16.png"
         id="de.enough.polish.plugin.eclipse.polishEditor.editor.PolishEditor"
-        name="Polish Editor"
+        name="J2ME Polish Editor"
         default="false">
         	<contentTypeBinding contentTypeId="de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin.j2mepolish"/>
         </editor>

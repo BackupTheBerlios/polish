@@ -61,6 +61,7 @@ public class MIDletLaunchConfigurationDelegate extends
     private PrintStream oldErr;
     private BuildRunnable buildRunnable;
     private IProject project;
+    private AbstractSourceLookupDirector sourceLocator;
 
     public void launch(ILaunchConfiguration configuration, String mode,
                        ILaunch launch, final IProgressMonitor monitor)
@@ -141,16 +142,7 @@ public class MIDletLaunchConfigurationDelegate extends
             monitor.subTask("Setting source lookup path.");
             monitor.worked(1);
             
-            AbstractSourceLookupDirector sourceLocator = (AbstractSourceLookupDirector) launch
-                    .getSourceLocator();
-            ISourceContainer[] sourceContainers = sourceLocator.getSourceContainers();
             
-            LinkedList sourceContainerList = new LinkedList();
-            sourceContainerList.addAll(Arrays.asList(sourceContainers));
-            createNewSourceContainers(model, sourceContainerList);
-            sourceContainers = (ISourceContainer[]) sourceContainerList.toArray(new ISourceContainer[sourceContainerList.size()]);
-            
-            sourceLocator.setSourceContainers(sourceContainers);
 
             AntProcess antProcess = new MeposeProcess("J2ME Polish", launch,attributes);
 
@@ -236,11 +228,29 @@ public class MIDletLaunchConfigurationDelegate extends
                 // Connect to remote VM.
                 monitor.subTask("Connecting to emulator.");
                 monitor.worked(1);
+                
+                while( ! this.buildRunnable.isFinished()) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException exception) {
+                        //
+                    }
+                }
+                
                 connector.connect(argMap, monitor, launch);
+                
+                // We have connected. Thats means the build should be finised.
+                
+                // Create SourceLocator objects.
+                this.sourceLocator = (AbstractSourceLookupDirector) launch.getSourceLocator();
+                ISourceContainer[] sourceContainers = this.sourceLocator.getSourceContainers();
+                sourceContainers = createNewSourceContainers(model, sourceContainers);
+                this.sourceLocator.setSourceContainers(sourceContainers);
+
                 monitor.done();
             }
             
-            while( ! thread.isInterrupted() && ! antProcess.isCanceled() && ! monitor.isCanceled() &&  ! this.buildRunnable.isFinished()) {
+            while( ! thread.isInterrupted() && ! antProcess.isCanceled() && ! monitor.isCanceled() /*&& ! this.buildRunnable.isFinished()*/) {
                 try {
 //                    System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):sleeping.");
                     Thread.sleep(500);
@@ -315,13 +325,26 @@ public class MIDletLaunchConfigurationDelegate extends
      * @param model
      * @param sourceContainers
      */
-    private void createNewSourceContainers(MeposeModel model, LinkedList sourceContainers) {
-        Path path = new Path(model.getProjectHome()+"/source/src");
-        ISourceContainer mainSourceContainer =
-            new DirectorySourceContainer(path,true);
-        sourceContainers.add(mainSourceContainer);
+    private ISourceContainer[] createNewSourceContainers(MeposeModel model, ISourceContainer[] sourceContainers) {
+        // TODO: Do not hardwire the path here.
+        Path path;
+        LinkedList list = new LinkedList();
+        list.addAll(Arrays.asList(sourceContainers));
+        
+        path = new Path(model.getProjectHome()+"/source/src");
+        ISourceContainer mainSourceContainer = new DirectorySourceContainer(path,true);
+        list.add(mainSourceContainer);
         
         Device currentDevice = model.getCurrentDevice();
+        String sourceDir = currentDevice.getSourceDir();
+        if(sourceDir != null) {
+            path = new Path(sourceDir);
+            ISourceContainer deviceSourceContainer = new DirectorySourceContainer(path,true);
+            list.add(deviceSourceContainer);
+        }
+        
+        return (ISourceContainer[]) list.toArray(new ISourceContainer[list.size()]);
+        
         //TODO: How to solve this? The sourcePath of a device is initialized first the build started.
 //        String unprocessedBuildPath = model.getSourcePath(currentDevice);
 //        if(unprocessedBuildPath != null) {

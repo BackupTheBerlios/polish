@@ -371,7 +371,12 @@ public class PlatformPage extends WizardPage {
         if(this.deviceTreeModel == null) {
             return false;
         }
-        return this.deviceTreeModel.getSelectedDevices().length > 0;
+        Device[] selectedDevices = this.deviceTreeModel.getSelectedDevices();
+        if(selectedDevices == null) {
+            // This case happens when the new polish version was installed over the old one.
+            return false;
+        }
+        return selectedDevices.length > 0;
     }
 
 

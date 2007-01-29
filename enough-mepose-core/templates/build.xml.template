@@ -29,6 +29,7 @@
 <!-- containing the J2ME Polish installation.                 -->
 
 <property name="polish.home" value="$polishHome" />
+<property file="${polish.home}/global.properties" />
 
 <!-- The wtk.home property should point to the directory      -->
 <!-- containing the Wireless Toolkit.                         -->
@@ -234,7 +235,7 @@
 		</emulator>
 	
 		<emulator
-			wait="true"
+			wait="false"
 			securityDomain="trusted"
 			enableProfiler="false"
 			enableMemoryMonitor="false"

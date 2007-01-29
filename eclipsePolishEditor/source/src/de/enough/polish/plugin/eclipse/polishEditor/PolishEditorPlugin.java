@@ -9,10 +9,14 @@ import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.ui.text.IJavaColorConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPageListener;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPartListener2;
+import org.eclipse.ui.IWindowListener;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -31,18 +35,80 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
      * <br>Copyright Enough Software 2005
      * <pre>
      * history
+     *        Oct 6, 2006 - rickyn creation
+     * </pre>
+     * @author Richard Nkrumah, Richard.Nkrumah@enough.de
+     */
+    public class LayerPageListener implements IPageListener {
+
+        public void pageActivated(IWorkbenchPage page) {
+        }
+
+        public void pageClosed(IWorkbenchPage page) {
+            System.out.println("DEBUG:LayerPageListener.pageClosed(...):enter.");
+            page.removePartListener(PolishEditorPlugin.this.defaultPartListener);
+        }
+
+        public void pageOpened(IWorkbenchPage page) {
+            System.out.println("DEBUG:LayerPageListener.pageOpened(...):enter.");
+            page.addPartListener(PolishEditorPlugin.this.defaultPartListener);
+        }
+
+    }
+
+
+
+    /**
+     * 
+     * <br>Copyright Enough Software 2005
+     * <pre>
+     * history
+     *        Oct 6, 2006 - rickyn creation
+     * </pre>
+     * @author Richard Nkrumah, Richard.Nkrumah@enough.de
+     */
+    public class LayerWindowListener implements IWindowListener {
+
+        public void windowActivated(IWorkbenchWindow window) {
+//            System.out.println("DEBUG:LayerWindowListener.windowActivated(...):enter.");
+        }
+
+        public void windowClosed(IWorkbenchWindow window) {
+//            System.out.println("DEBUG:LayerWindowListener.windowClosed(...):enter.");
+            window.removePageListener(new LayerPageListener());
+        }
+
+        public void windowDeactivated(IWorkbenchWindow window) {
+//            System.out.println("DEBUG:LayerWindowListener.windowDeactivated(...):enter.");
+        }
+
+        public void windowOpened(IWorkbenchWindow window) {
+//            System.out.println("DEBUG:LayerWindowListener.windowOpened(...):enter.");
+            window.addPageListener(new LayerPageListener());
+        }
+    }
+
+
+
+    /**
+     * 
+     * <br>Copyright Enough Software 2005
+     * <pre>
+     * history
      *        Sep 29, 2006 - rickyn creation
      * </pre>
      * @author Richard Nkrumah, Richard.Nkrumah@enough.de
      */
     private final class DefaultPartListener implements IPartListener2 {
         public void partActivated(IWorkbenchPartReference partRef) {
+//            System.out.println("DEBUG:DefaultPartListener.partActivated(...):enter.");
         }
         public void partBroughtToTop(IWorkbenchPartReference partRef) {
         }
         public void partClosed(IWorkbenchPartReference partRef) {
         }
         public void partDeactivated(IWorkbenchPartReference partRef) {
+//            System.out.println("DEBUG:DefaultPartListener.partDeactivated(...):enter.");
         }
         public void partHidden(IWorkbenchPartReference partRef) {
         }
@@ -130,6 +196,8 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
 	public static final String ID = "de.enough.polish.plugin.eclipse.polishEditor.polishEditorPlugin";
 	public static final String POLISH_NATURE_LOCAL_ID = "polishNature";
 	public static final String POLISH_NATURE_ID = ID + "." + POLISH_NATURE_LOCAL_ID;
+    private MeposeLayerManager meposeLayerManager;
+    protected DefaultPartListener defaultPartListener;
 
 	/**
 	 * The constructor.
@@ -156,8 +224,9 @@ public class PolishEditorPlugin extends AbstractUIPlugin {
 	}
 
     private void registerLayerManager() {
-        MeposeLayerManager meposeLayerManager = new MeposeLayerManager();
-        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new DefaultPartListener());
+        this.meposeLayerManager = new MeposeLayerManager();
+        this.defaultPartListener = new DefaultPartListener();
+        PlatformUI.getWorkbench().addWindowListener(new LayerWindowListener());
     }
 
     /**

@@ -6,7 +6,9 @@
 package de.enough.mepose.core.model;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.enough.polish.devices.DeviceDatabase;
@@ -24,38 +26,44 @@ public class PolishDeviceDatabase {
 
     private static DeviceDatabase deviceDatabase;
     
-    private static void init(File polishHome,File projectHome) throws DeviceDatabaseException{
+    private static DeviceDatabase init(File polishHome,File projectHome,List targetDevices) throws DeviceDatabaseException{
         Map properties = new HashMap();
-//        properties.put("mpp.home","no/path");
         properties.put("polish.home",polishHome.getAbsolutePath());
         
-//        Map inputStreamsByfileName = new HashMap();
-        
-        // This is deprecated !! Do not use the things within the plugin but the polish home things !!
-//        inputStreamsByfileName.put("capabilities.xml",PolishDeviceDatabase.class.getResourceAsStream("/capabilities.xml"));
-//        inputStreamsByfileName.put("apis.xml",PolishDeviceDatabase.class.getResourceAsStream("/apis.xml"));
-//        inputStreamsByfileName.put("configurations.xml",PolishDeviceDatabase.class.getResourceAsStream("/configurations.xml"));
-//        inputStreamsByfileName.put("platforms.xml",PolishDeviceDatabase.class.getResourceAsStream("/platforms.xml"));
-//        inputStreamsByfileName.put("groups.xml",PolishDeviceDatabase.class.getResourceAsStream("/groups.xml"));
-//        inputStreamsByfileName.put("vendors.xml",PolishDeviceDatabase.class.getResourceAsStream("/vendors.xml"));
-//        inputStreamsByfileName.put("devices.xml",PolishDeviceDatabase.class.getResourceAsStream("/devices.xml"));
-
+        if(targetDevices != null) {
+            properties.put("polish.devicedatabase.identifiers",targetDevices);
+        }
+        DeviceDatabase db = null;
         try {
-//            deviceDatabase = DeviceDatabase.getInstance(properties,polishHome,projectHome,null,null,inputStreamsByfileName,new HashMap());
-            deviceDatabase = DeviceDatabase.getInstance(properties,polishHome,projectHome,null,null,null,new HashMap());
-//            deviceDatabase = DeviceDatabase.getInstance(polishHome);
+            db = DeviceDatabase.getInstance(properties,polishHome,projectHome,null,null,null,new HashMap());
         } catch (Exception e) {
-            throw new DeviceDatabaseException("Could not create deviceDatabase.",e);
+            throw new DeviceDatabaseException("Could not create deviceDatabase.(1)",e);
         }
-        if(deviceDatabase == null || deviceDatabase.getPolishHome() == null) {
-            throw new DeviceDatabaseException("Could not create deviceDatabase.");
+        if(db == null || db.getPolishHome() == null) {
+            throw new DeviceDatabaseException("Could not create deviceDatabase.(2)");
         }
+        return db;
     }
     
-    public static DeviceDatabase getDeviceDatabase(File polishHome,File projectHome) throws DeviceDatabaseException{
+    public static DeviceDatabase getDeviceDatabase(File polishHome,File projectHome,List targetDevices) throws DeviceDatabaseException{
         if(deviceDatabase == null) {
-            init(polishHome,projectHome);
+            deviceDatabase = init(polishHome,projectHome,targetDevices);
         }
         return deviceDatabase;
+    }
+    
+    public static DeviceDatabase getNewDeviceDatabase(File polishHome,File projectHome,List targetDevices) throws DeviceDatabaseException{
+        Map properties = new HashMap();
+        properties.put("polish.home",polishHome.getAbsolutePath());
+        
+        if(targetDevices != null) {
+            properties.put("polish.devicedatabase.identifiers",targetDevices);
+        }
+        try {
+            return DeviceDatabase.getInstance(properties,polishHome,projectHome,null,null,null,new HashMap());
+        }
+        catch (Exception e) {
+            throw new DeviceDatabaseException("Could not create deviceDatabase.",e);
+        }
     }
 }

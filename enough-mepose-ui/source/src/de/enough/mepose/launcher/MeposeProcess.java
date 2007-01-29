@@ -56,6 +56,7 @@ public class MeposeProcess extends AntProcess {
 
     public void terminate() {
         super.terminate();
+        //TODO: This is needed as terminate is called somewhere but terminated should have been called.
         terminated();
     }
 

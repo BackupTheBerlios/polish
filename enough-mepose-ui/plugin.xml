@@ -109,6 +109,7 @@
 			type="de.enough.mepose.launcher.launchConfigurationType" />
 	</extension>
  
+ <!--
  <extension point="org.eclipse.ui.popupMenus"> 
       <objectContribution 
          id="de.enough.mepose.popupmenus.menu1" 
@@ -148,6 +149,7 @@
             
       </objectContribution> 
    </extension> 
+ 	-->
  
  <!--
 	<extension point="org.eclipse.ui.popupMenus">

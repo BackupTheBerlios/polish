@@ -27,7 +27,7 @@ import org.osgi.framework.BundleContext;
 import de.enough.mepose.core.model.MeposeModelManager;
 import de.enough.mepose.core.model.MiDletChangeListener;
 import de.enough.mepose.core.project.ProjectPersistence;
-import de.enough.polish.util.PopulateUtil;
+import de.enough.polish.util.ReflectionUtil;
 
 
 public class MeposePlugin extends Plugin {
@@ -45,7 +45,6 @@ public class MeposePlugin extends Plugin {
 
 	public MeposePlugin() {
 		super();
-        System.out.println("DEBUG:MeposePlugin.MeposePlugin(...):enter.");
 		plugin = this;
 //        Log4JPlugin.init();
         putToolsJarOnClasspath();
@@ -101,12 +100,12 @@ public class MeposePlugin extends Plugin {
         try {
             
             BundleFile bundleFile = new ZipBundleFile(toolsJarFile,null);
-            Object toolsJarClasspathEntryObject = PopulateUtil.callMethod("createClassPathEntry",classLoader,new Class[] {BundleFile.class,ProtectionDomain.class},new Object[] {bundleFile,null});
+            Object toolsJarClasspathEntryObject = ReflectionUtil.callMethod("createClassPathEntry",classLoader,new Class[] {BundleFile.class,ProtectionDomain.class},new Object[] {bundleFile,null});
             
-            Field classpathManagerField = PopulateUtil.getField(classLoader,"manager");
+            Field classpathManagerField = ReflectionUtil.getField(classLoader,"manager");
             Object classpathManagerObject = classpathManagerField.get(classLoader);
             
-            Field classpathEntriesField = PopulateUtil.getField(classpathManagerObject,"entries");
+            Field classpathEntriesField = ReflectionUtil.getField(classpathManagerObject,"entries");
             classpathEntriesField.setAccessible(true);
             Object classpathEntriesObject = classpathEntriesField.get(classpathManagerObject);
             Object[] classpathEntriesArray = (Object[])classpathEntriesObject;
