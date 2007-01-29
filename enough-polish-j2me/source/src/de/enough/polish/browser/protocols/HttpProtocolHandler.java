@@ -85,13 +85,6 @@ public class HttpProtocolHandler extends ProtocolHandler
     {
       this.requestProperties.put("User-Agent", HttpProtocolHandler.USER_AGENT);
     }
-    
-    //#if polish.Browser.Gzip
-    if (this.requestProperties.get("Accept-Endcoding") == null)
-    {
-      this.requestProperties.put("Accept-Encoding", "gzip");
-    }
-    //#endif
   }
 
   /* (non-Javadoc)

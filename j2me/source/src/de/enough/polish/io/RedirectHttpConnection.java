@@ -169,18 +169,6 @@ public class RedirectHttpConnection
           continue;
         }
 
-        //#ifdef polish.Browser.Gzip
-        // Check for Content-Encoding: gzip
-        String contentEncoding = tmpHttpConnection.getHeaderField("content-encoding");
-
-        // We support gzip only if we can detect the format...
-        if (contentEncoding != null && ("gzip".regionMatches(true, 0, contentEncoding, 0, 4)))
-        {
-          // GZIP extension....
-          //tmpIn = new GzipInputStream(tmpIn);
-        }
-        //#endif
-        
         break;
       }
     }
