@@ -34,6 +34,7 @@ import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.TextUtil;
 import de.enough.polish.xml.PullParser;
 
 import javax.microedition.lcdui.Command;
@@ -144,6 +145,7 @@ public class HtmlTagHandler
       	  linkItem.setAttribute("href", href != null ? href : "");
       	  addCommands(TAG_A, linkItem);
 
+// TODO
 //          if (!this.firstInteractiveElementAdded
 //              && this.browser.getScreen() != null)
 //          {
@@ -188,7 +190,11 @@ public class HtmlTagHandler
         {
           String type = (String) attributeMap.get(INPUT_TYPE);
           
+          //#if polish.cldc1.1
           if (INPUTTYPE_TEXT.equalsIgnoreCase(type))
+          //#else
+          //# if (TextUtil.equalsIgnoreCase(INPUTTYPE_TEXT, type))
+          //#endif
           {
             String name = (String) attributeMap.get(INPUT_NAME);
             String value = (String) attributeMap.get(INPUT_VALUE);
@@ -201,7 +207,11 @@ public class HtmlTagHandler
             textField.setAttribute("name", name);
             textField.setAttribute("value", value);
           }
+          //#if polish.cldc1.1
           else if (INPUTTYPE_SUBMIT.equalsIgnoreCase(type))
+          //#else
+          //# if (TextUtil.equalsIgnoreCase(INPUTTYPE_SUBMIT, type))
+          //#endif
           {
             String name = (String) attributeMap.get(INPUT_NAME);
             String value = (String) attributeMap.get(INPUT_VALUE);

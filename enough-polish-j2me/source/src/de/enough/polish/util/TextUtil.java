@@ -470,4 +470,34 @@ public final class TextUtil {
 		return lastIndex;
 	}
     
+
+  /**
+   * Compares two strings in a case-insensitive way. Both strings are lower cased and
+   * then compared. If both are equal this method returns <code>true</code>,
+   * <code>false</code> otherwise.
+   *    
+   * @param str1 the string to compare
+   * @param str2 the string to compare to
+   * 
+   * @return <code>true</code> if both strings are equals except case,
+   * <code>false</code>
+   * 
+   * @throws NullPointerException if <code>str1</code> is <code>null</code>
+   * 
+   * @see String#equals(Object)
+   * @see String#equalsIgnoreCase(String)
+   */
+  public static boolean equalsIgnoreCase(String str1, String str2)
+  {
+    //#if polish.cldc1.1
+    //# return str1.equalsIgnoreCase(str2);
+    //#else
+    if (str1 != null && str2 == null)
+    {
+      return false;
+    }
+
+    return str1.toLowerCase().equals(str2.toLowerCase());
+    //#endif
+  }
 }
