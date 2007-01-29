@@ -34,11 +34,14 @@ import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.HashMap;
-import de.enough.polish.util.TextUtil;
 import de.enough.polish.xml.PullParser;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Image;
+
+//#if polish.cldc1.0
+//# import de.enough.polish.util.TextUtil;
+//#endif
 
 public class HtmlTagHandler
   extends TagHandler
