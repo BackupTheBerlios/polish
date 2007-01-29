@@ -147,3 +147,15 @@ rightcommand {
 		color: browserFontColorFocused;
 	}
 }
+
+.browserGauge {
+    gauge-color: white;
+    gauge-gap-color: white;
+    gauge-animation-mode: backandforth;
+    gauge-animation-speed: 2;
+    background{
+    	color: red;
+		border-width: 2;
+		border-color: black;
+    }
+}
