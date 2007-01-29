@@ -492,7 +492,7 @@ public class ChoiceTextField
 					//#debug
 					System.out.println("choicesHeight " + choicesHeight + ", choicesBottom=" + choicesBottomY + ", parent.height=" + parentContainer.availableHeight  );
 					int parentYOffset = parentContainer.getScrollYOffset();
-					int overlap = choicesBottomY - (parentContainer.availableHeight - (this.relativeY + parentYOffset));
+					int overlap = choicesBottomY - (parentContainer.getContentScrollHeight() - (this.relativeY + parentYOffset));
 					//System.out.println("overlap=" + overlap );
 					if (overlap > 0) {
 						// try to scroll up this item, so that the user sees all matches:
@@ -503,7 +503,10 @@ public class ChoiceTextField
 						parentContainer.setScrollYOffset( parentYOffset - yOffsetAdjustment, true );
 						//System.out.println("choice.itemHeight=" + this.choicesContainer.itemHeight + ", parentContainer.availableHeight=" + parentContainer.availableHeight + ", (this.contentY + this.contentHeight + this.paddingVertical)=" + (this.contentY + this.contentHeight + this.paddingVertical) + ", children.relativeY=" + this.choicesContainer.relativeY );
 						//TODO this needs some finetuning!
-						this.choicesContainer.setHeight( parentContainer.availableHeight  - this.itemHeight );
+						int itHeight = this.itemHeight;
+						int ctHeight = this.contentY + this.contentHeight + this.paddingVertical;
+						int max = Math.max( itHeight, ctHeight);
+						this.choicesContainer.setScrollHeight( parentContainer.getContentScrollHeight()  - max );
 					} else {
 						this.choicesYOffsetAdjustment = 0;
 					}
@@ -528,14 +531,7 @@ public class ChoiceTextField
 		if ( this.isFocused && this.numberOfMatches > 0 ) {
 			// paint containert
 			y += this.contentHeight + this.paddingVertical;
-			int clipX = g.getClipX();
-			int clipY = g.getClipY();
-			int clipWidth = g.getClipWidth();
-			int clipHeight = g.getClipHeight();
-			this.choicesContainer.setHeight( clipHeight );
-			g.clipRect( clipX, y, clipWidth, clipY - y + clipHeight);
 			this.choicesContainer.paint(x, y, leftBorder, rightBorder, g);			
-			g.setClip( clipX, clipY, clipWidth, clipHeight );
 		}
 	}
 	

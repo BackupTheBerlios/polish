@@ -293,7 +293,7 @@ public class CommandItem extends IconItem {
 				}
 				this.children.relativeX = x - leftBorder;
 				this.children.relativeY = y - originalY;
-				this.children.setHeight( clipHeight );
+				this.children.setScrollHeight( clipHeight );
 				this.children.paint( x, y, x, x + childrenWidth, g);
 				//System.out.println("set height for children to " + clipHeight + ", yOffset=" + this.children.yOffset + ", internalY=" + this.children.internalY);				
 			}

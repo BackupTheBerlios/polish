@@ -210,7 +210,7 @@ public class FramedForm extends Form {
 		this.contentY = y;
 		this.contentWidth = width;
 		this.contentHeight = height;
-		this.container.setHeight( height );
+		this.container.setScrollHeight( height );
 	}
 	
 	

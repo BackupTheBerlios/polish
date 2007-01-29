@@ -42,10 +42,10 @@ import javax.microedition.lcdui.Image;
  *
  */
 public final class IconCustomItem 
-//#if polish.usePolishGui
-	//# extends IconItem 
-//#else
+//#if polish.LibraryBuild
 	extends CustomItem 
+//#else
+	//# extends IconItem 
 //#endif
 {
 
@@ -61,23 +61,23 @@ public final class IconCustomItem
 		//#endif
 	}
 
-	protected int getMinContentWidth() {
+	protected final int getMinContentWidth() {
 		return 0;
 	}
 
-	protected int getMinContentHeight() {
+	protected final int getMinContentHeight() {
 		return 0;
 	}
 
-	protected int getPrefContentWidth(int maxHeight) {
+	protected final int getPrefContentWidth(int maxHeight) {
 		return 0;
 	}
 
-	protected int getPrefContentHeight(int maxWidth) {
+	protected final int getPrefContentHeight(int maxWidth) {
 		return 1;
 	}
 
-	protected void paint(Graphics g, int width, int height) {
+	protected final void paint(Graphics g, int width, int height) {
 		// do nothing
 	}
 

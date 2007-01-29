@@ -552,7 +552,7 @@ implements AccessibleCanvas
 		}
 		this.isInitialised = true;
 	}
-	
+		
 	/**
 	 * Calculates and sets the content area for this screen.
 	 * Usually no items are painted outside of the specified area.
@@ -627,7 +627,7 @@ implements AccessibleCanvas
 		//#debug
 		System.out.println("calculateContentArea: x=" + this.contentX + ", y=" + this.contentY + ", width=" + this.contentWidth + ", height=" + this.contentHeight);
 		if (this.container != null) {
-			this.container.setHeight( height );
+			this.container.setScrollHeight( height );
 		}
 	}
 	
@@ -1402,7 +1402,7 @@ implements AccessibleCanvas
 								this.paintScrollIndicator = false;
 							//#endif
 							}
-							this.menuContainer.setHeight(this.originalScreenHeight-topHeight);
+							this.menuContainer.setScrollHeight(this.originalScreenHeight-topHeight);
 							g.setClip(0, topHeight, this.screenWidth, this.originalScreenHeight - topHeight );
 							this.menuContainer.paint(menuLeftX, y, menuLeftX, menuLeftX + this.screenWidth, g);
 						 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );

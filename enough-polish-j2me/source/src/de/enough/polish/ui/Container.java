@@ -118,7 +118,7 @@ public class Container extends Item {
 	 * @param style the style for this container
 	 * @param height the vertical space available for this container, set to -1 when scrolling should not be activated
 	 * @param yBottom the vertical end of the scren - used for scrolling -1 when not set.
-	 * @see #setHeight( int ) 
+	 * @see #setScrollHeight( int ) 
 	 */
 	public Container(String label, boolean focusFirstElement, Style style, int height ) {
 		super( label, LAYOUT_DEFAULT, INTERACTIVE, style );
@@ -143,7 +143,7 @@ public class Container extends Item {
 			this.focusedTopMargin += focStyle.background.borderWidth;
 		}
 		this.layout |= Item.LAYOUT_NEWLINE_BEFORE;
-		setHeight( height );
+		setScrollHeight( height );
 	}
 	
 	/**
@@ -151,7 +151,7 @@ public class Container extends Item {
 	 * 
 	 * @param available height for this item including label, padding, margin and border, -1 when scrolling should not be done.
 	 */
-	public void setHeight( int height ) {
+	public void setScrollHeight( int height ) {
 		this.availableHeight = height;
 		this.enableScrolling = (height != -1);
 	}
@@ -769,6 +769,10 @@ public class Container extends Item {
 		this.contentHeight = myContentHeight;
 		this.contentWidth = myContentWidth;	
 	}
+	
+	int getContentScrollHeight() {
+		return this.availableHeight - (this.contentX + this.borderWidth + this.paddingBottom + this.marginBottom ); 
+	}
 
 	
 	/* (non-Javadoc)
@@ -781,11 +785,15 @@ public class Container extends Item {
 		// adjust vertical start for scrolling:
 		//#if polish.debug.debug
 			if (this.enableScrolling) {
+//				g.setColor( 0xFFFF00 );
+//				g.drawLine( leftBorder, y, rightBorder, y + getContentScrollHeight() );
+//				g.drawLine( rightBorder, y, leftBorder, y  + + getContentScrollHeight() );
+//				g.drawString( "" + this.availableHeight, x, y, Graphics.TOP | Graphics.LEFT );
 				//#debug 
 				System.out.println("Container: drawing " + getClass().getName() + " with yOffset=" + this.yOffset );
 			}
 		//#endif
-		boolean setClipping = (this.yOffset != 0 && (this.marginTop != 0 || this.paddingTop != 0) );
+		boolean setClipping = ( this.enableScrolling && this.itemHeight > this.availableHeight) ; //( this.yOffset != 0 && (this.marginTop != 0 || this.paddingTop != 0) );
 		int clipX = 0;
 		int clipY = 0;
 		int clipWidth = 0;
@@ -1728,7 +1736,7 @@ public class Container extends Item {
 				continue;
 			}
 			// the pressed item has been found:
-			// #debug
+			//#debug
 			System.out.println("Container.handlePointerPressed(" + x + "," + y + "): found item " + i + "=" + item + " at relative " + itemRelX + "," + itemRelY + ", itemHeight=" + item.itemHeight);
 			// only focus the item when it has not been focused already:
 			focus(i, item, 0);

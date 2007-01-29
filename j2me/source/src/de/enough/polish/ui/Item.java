@@ -675,7 +675,7 @@ public abstract class Item extends Object
 	protected boolean isLayoutRight;
 	// the current positions of this item:
 	/** the horizontal start position relative to it's parent's item left content edge */
-	protected int relativeX;
+	public int relativeX;
 	/** the vertical start position of this item relative to it's parent item top content edge */
 	public int relativeY; 
 	/** the horizontal position of this item's content relative to it's left edge */
@@ -2021,6 +2021,7 @@ public abstract class Item extends Object
 		// problem:
 		// itemWidth can be smaller than the available width - when then a center or right layout is used, then this fucks up...
 		if (relY < 0 || relY > this.itemHeight || relX < 0 || relX > this.itemWidth) {
+			//#debug
 			System.out.println("isInItemArea(" + relX + "," + relY + ") = false: itemWidth=" + this.itemWidth + ", itemHeight=" + this.itemHeight + " (" + this + ")");
 			return false;
 		}

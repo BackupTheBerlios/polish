@@ -43,10 +43,10 @@ import javax.microedition.lcdui.Image;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class ListItem 
-//#ifdef polish.usePolishGui
-	//# extends Container
-//#else
+//#if polish.LibraryBuild
 	extends FakeContainerCustomItem
+//#else
+	//# extends Container
 //#endif
  
 {
