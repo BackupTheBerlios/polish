@@ -122,6 +122,23 @@ public class ListItem
 	//#endif
 	}
 
+	/**
+	 * Adds the specified item to this list.
+	 * 
+	 * @param item the item that should be added
+	 */
+	public void append( Item item ) {
+		super.add( item );
+	}
+
+//	/**
+//	 * Adds the specified item to this list.
+//	 * 
+//	 * @param item the item that should be added
+//	 */
+//	public void append( Item item, Style itemStyle ) {
+//		super.add( item,  itemStyle );
+//	}
 
 	/**
 	 * Inserts the specified item into this list.
