@@ -167,6 +167,16 @@ public class ChoiceTextField
 		}
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeTextFieldCustomItem#initContent(int, int)
+	 */
+	protected void initContent(int firstLineWidth, int lineWidth) {
+		super.initContent(firstLineWidth, lineWidth);
+		this.choicesContainer.relativeY = this.contentHeight + this.paddingVertical;
+	}
+
 	/**
 	 * Enables that available choices should (only) be shown after the specified character is entered.
 	 * This method automatically enables the append mode.
@@ -262,9 +272,7 @@ public class ChoiceTextField
 	 * @see de.enough.polish.ui.TextField#defocus(de.enough.polish.ui.Style)
 	 */
 	protected void defocus(Style origStyle) {
-		//#if polish.usePolishGui
-			//# super.defocus(origStyle);
-		//#endif
+		super.defocus(origStyle);
 		if (!this.isAllowFreeTextEntry && this.numberOfMatches > 0) {
 			Item item = this.choicesContainer.get( 0 );
 			if (item instanceof StringItem) {
@@ -284,11 +292,7 @@ public class ChoiceTextField
 	 * @see de.enough.polish.ui.TextField#animate()
 	 */
 	public boolean animate() {
-		//#if polish.usePolishGui
-			//# boolean animated = super.animate();
-		//#else
-			boolean animated = false;
-		//#endif
+		boolean animated = super.animate();
 		if (this.numberOfMatches > 0) {
 			animated |= this.choicesContainer.animate();
 		}
@@ -299,10 +303,8 @@ public class ChoiceTextField
 	 * @see de.enough.polish.ui.TextField#focus(de.enough.polish.ui.Style, int)
 	 */
 	protected Style focus(Style focStyle, int direction) {
-		//#if polish.usePolishGui
-			//# this.originalStyle = super.focus(focStyle, direction);
-			//# this.focusingStyle = this.style;
-		//#endif
+		this.originalStyle = super.focus(focStyle, direction);
+		this.focusingStyle = this.style;
 		return this.originalStyle;
 	}
 	
@@ -422,22 +424,19 @@ public class ChoiceTextField
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
-		int height = this.itemHeight - this.paddingVertical - this.marginBottom;
-		//System.out.println("pointer pressed at y=" + y + ", height=" + height);
-		if (this.isOpen && y > height) {
-			boolean handled = this.choicesContainer.handlePointerPressed(x, y - height);
+		boolean handled = super.handlePointerPressed(x, y);
+		if (!handled && this.isOpen) {
+			handled = this.choicesContainer.handlePointerPressed(x, y - (this.choicesContainer.relativeY + this.contentY) );
 			if (handled) {
 				// select the current element:
 				this.isInChoice = true;
 				handleKeyPressed( 0, Canvas.FIRE );
+			} else {
+				openChoices( false );
+				handled = true;
 			}
-			return handled;
-		} else if (this.isOpen) {
-			openChoices( false );
-			return true;
-		} else {
-			return super.handlePointerPressed(x, y);
 		}
+		return handled;
 	}
 	//#endif
 
@@ -492,46 +491,30 @@ public class ChoiceTextField
 					int choicesBottomY = this.contentY + this.contentHeight + this.paddingVertical + choicesHeight;
 					//#debug
 					System.out.println("choicesHeight " + choicesHeight + ", choicesBottom=" + choicesBottomY + ", parent.height=" + parentContainer.availableHeight  );
-					if ( choicesBottomY > parentContainer.availableHeight ) {
+					int parentYOffset = parentContainer.getScrollYOffset();
+					int overlap = choicesBottomY - (parentContainer.availableHeight - (this.relativeY + parentYOffset));
+					//System.out.println("overlap=" + overlap );
+					if (overlap > 0) {
 						// try to scroll up this item, so that the user sees all matches:
-						int yOffsetAdjustment = Math.min( this.relativeY, choicesBottomY - parentContainer.availableHeight );
-						this.choicesYOffsetAdjustment += yOffsetAdjustment;
+						int yOffsetAdjustment = Math.min( this.relativeY + parentYOffset, overlap );
+						this.choicesYOffsetAdjustment = yOffsetAdjustment;
 						//#debug
 						System.out.println("Adjusting yOffset of parent by " + yOffsetAdjustment );
-						parentContainer.targetYOffset -= yOffsetAdjustment;
-						//#if polish.css.scroll-mode
-							if (!parentContainer.scrollSmooth) {
-								parentContainer.yOffset = parentContainer.targetYOffset;
-							}
-						//#endif						
-					} else if (this.contentY < parentContainer.availableHeight) { // scroll down again
-						int newYOffsetAdjustment = Math.max( this.choicesYOffsetAdjustment - ( parentContainer.availableHeight - choicesBottomY), 0 );
-						int difference = this.choicesYOffsetAdjustment - newYOffsetAdjustment;
-						//#debug
-						 System.out.println("Re-Adjusting yOffset of parent from " + this.choicesYOffsetAdjustment + " over " +  difference + " to " + (this.choicesYOffsetAdjustment - difference ) );
-						this.choicesYOffsetAdjustment -= difference;
-						parentContainer.targetYOffset += difference;
-						//#if polish.css.scroll-mode
-							if (!parentContainer.scrollSmooth) {
-								parentContainer.yOffset = parentContainer.targetYOffset;
-							}
-						//#endif						
+						parentContainer.setScrollYOffset( parentYOffset - yOffsetAdjustment, true );
+						//System.out.println("choice.itemHeight=" + this.choicesContainer.itemHeight + ", parentContainer.availableHeight=" + parentContainer.availableHeight + ", (this.contentY + this.contentHeight + this.paddingVertical)=" + (this.contentY + this.contentHeight + this.paddingVertical) + ", children.relativeY=" + this.choicesContainer.relativeY );
+						//TODO this needs some finetuning!
+						this.choicesContainer.setHeight( parentContainer.availableHeight  - this.itemHeight );
+					} else {
+						this.choicesYOffsetAdjustment = 0;
 					}
 				}
 			}			
 		} else {
 			this.choicesContainer.clear();
-			if (this.parent instanceof Container) {
+			if (this.choicesYOffsetAdjustment != 0 && this.parent instanceof Container) {
 				Container parentContainer = (Container) this.parent;
-				if (this.relativeY + this.contentY + parentContainer.yOffset < 0) {
-					parentContainer.targetYOffset += this.choicesYOffsetAdjustment;
-					this.choicesYOffsetAdjustment = 0;
-					//#if polish.scroll-mode
-						if (!parentContainer.scrollSmooth) {
-							parentContainer.yOffset = parentContainer.targetYOffset;
-						}
-					//#endif
-				}
+				parentContainer.setScrollYOffset( parentContainer.getScrollYOffset() + this.choicesYOffsetAdjustment, true );
+				this.choicesYOffsetAdjustment = 0;
 			}
 		}
 		this.isOpen = open;
@@ -541,9 +524,7 @@ public class ChoiceTextField
 	 * @see de.enough.polish.ui.TextField#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		//#if polish.usePolishGui
-			//# super.paintContent(x, y, leftBorder, rightBorder, g);
-		//#endif
+		super.paintContent(x, y, leftBorder, rightBorder, g);
 		if ( this.isFocused && this.numberOfMatches > 0 ) {
 			// paint containert
 			y += this.contentHeight + this.paddingVertical;
@@ -557,16 +538,13 @@ public class ChoiceTextField
 			g.setClip( clipX, clipY, clipWidth, clipHeight );
 		}
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#notifyStateChanged()
 	 */
 	public void notifyStateChanged() {
-		//#if polish.usePolishGui
-			//# Screen scr = getScreen();
-		//#else
-			Screen scr = null;
-		//#endif
+		Screen scr = getScreen();
 		if (scr != null && scr instanceof Form && ((Form)scr).itemStateListener != null ) {
 			// let the external item state listener do the work
 			super.notifyStateChanged();

@@ -492,7 +492,7 @@ public class Container extends Item {
 				this.internalWidth = item.itemWidth;
 				this.internalHeight = item.itemHeight;
 				//#debug
-				System.out.println("Container (" + getClass().getName() + "): NO internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.internalY=" + item.internalY + ", item.internalHeight=" +item.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight);
+				System.out.println("Container (" + getClass().getName() + "): NO internal area found in item " + item + ": setting internalY=" + this.internalY + ", internalHeight=" + this.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight + ", this.availableHeight=" + this.availableHeight);
 			}
 			if (this.enableScrolling) {	
 				// Now adjust the scrolling:
@@ -1788,6 +1788,25 @@ public class Container extends Item {
 	public void setScrollYOffset( int offset) {
 		this.targetYOffset = offset;
 		this.yOffset = offset;
+	}
+
+	/**
+	 * Sets the vertical scrolling offset of this item.
+	 *  
+	 * @param offset either the new offset
+	 * @param smooth scroll to this new offset smooth if allowed
+	 */
+	public void setScrollYOffset( int offset, boolean smooth) {
+		//#ifdef polish.css.scroll-mode
+			if (!smooth || !this.scrollSmooth) {
+				this.yOffset = offset;			
+			}
+		//#else
+			if (!smooth) {
+				this.yOffset = offset;
+			}
+		//#endif
+		this.targetYOffset = offset;
 	}
 
 

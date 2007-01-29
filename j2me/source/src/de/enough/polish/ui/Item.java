@@ -677,7 +677,7 @@ public abstract class Item extends Object
 	/** the horizontal start position relative to it's parent's item left content edge */
 	protected int relativeX;
 	/** the vertical start position of this item relative to it's parent item top content edge */
-	public int relativeY; // relativ to parent item
+	public int relativeY; 
 	/** the horizontal position of this item's content relative to it's left edge */
 	protected int contentX;
 	/** the vertical position of this item's content relative to it's top edge */
@@ -2045,6 +2045,8 @@ public abstract class Item extends Object
 	 * @see #isInItemArea(int, int) this method is used for determining whether the event belongs to this item
 	 * @see #isInContentArea(int, int) for a helper method for determining whether the event took place into the actual content area
 	 * @see #handleKeyPressed(int, int) 
+	 * @see #contentX for calculating the horizontal position relative to the content (relX - contentX)
+	 * @see #contentY for calculating the vertical position relative to the content (relY - contentY)
 	 */
 	protected boolean handlePointerPressed( int relX, int relY ) {
 		if ( isInItemArea(relX, relY)) {
