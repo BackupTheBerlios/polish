@@ -141,7 +141,7 @@ title {
 }
 
 /*************   SCROLL BAR   *************/
-/* You need to activate the scrollbar by setting the "polish.ScrollBar.enable" variable to "true" in your build.xml script. */
+/* You need to activate the scrollbar by setting the "polish.useScrollBar" variable to "true" in your build.xml script. */
 scrollbar {
 	scrollbar-slider-color: #333;
 	scrollbar-slider-width: 3;
