@@ -26,6 +26,7 @@
 package de.enough.polish.browser;
 
 import de.enough.polish.ui.Container;
+import de.enough.polish.ui.FakeContainerCustomItem;
 import de.enough.polish.ui.Item;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.xml.PullParser;
@@ -53,18 +54,31 @@ public abstract class TagHandler
   public abstract void register(Browser browser);
   
   /**
-   * @param parentItem
-   * @param parser
-   * @param tagName
+   * @param parentItem the container item the put the browser items into 
+   * @param parser the parser
+   * @param tagName the name of the tag to handle
    * @param opening
    * @param attributeMap
    * @return
    */
   public abstract boolean handleTag(Container parentItem, PullParser parser, String tagName, boolean opening, HashMap attributeMap);
+  
+  //#if polish.LibraryBuild
+  /**
+   * Dummy method.
+   */
+  public boolean handleTag(FakeContainerCustomItem parentItem, PullParser parser, String tagName, boolean opening, HashMap attributeMap)
+  {
+    return false;
+  }
+  //#endif
 
   /**
-   * @param command
-   * @return
+   * Handles all commands this tag handler is responsible for.
+   * 
+   * @param command the command to handle
+   * 
+   * @return <code>true</code> if the command was handled, <code>false</code> otherwise
    */
   public boolean handleCommand(Command command)
   {
