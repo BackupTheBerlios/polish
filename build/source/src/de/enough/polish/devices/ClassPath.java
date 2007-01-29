@@ -122,16 +122,19 @@ public class ClassPath {
                             if(importFolder != null) {
                                 importFolderString = importFolder.getAbsolutePath();
                             }
-							throw new BuildException("IllegalState: unable to resolve boot classpath library [" + pathElement + "] of device [" + this.device.identifier +"]: file not found! default-dir=[" + 
-                                                     polishHomeString + "], api-dir=[" + importFolderString + "].");
+							System.err.println("WARNING: unable to resolve boot classpath library [" + pathElement + "] of device [" + this.device.identifier +"]: file not found! default-dir=[" + 
+                                                     polishHomeString + "], api-dir=[" + importFolderString + "]. When this leads to problems, please add those libraries to ${polish.home}/import.");
+							lib = null;
 						}
 					}
 				}
 			}
-			paths[i] = lib.getAbsolutePath();
-			buffer.append( lib.getAbsolutePath() );
-			if ( i < paths.length - 1 ) {
-				buffer.append( File.pathSeparatorChar );
+			if (lib != null) {
+				paths[i] = lib.getAbsolutePath();
+				buffer.append( lib.getAbsolutePath() );
+				if ( i < paths.length - 1 ) {
+					buffer.append( File.pathSeparatorChar );
+				}
 			}
 		}
 		

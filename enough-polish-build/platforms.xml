@@ -54,6 +54,21 @@
 	</platform>
 
 	<platform>
+		<identifier>FP/1.0</identifier>
+		<features>fp</features>
+		<description>Foundation Profile 1.0 is based on the CDC configuration.</description>
+		<capability name="build.BootClassPath" value="fp-1.0.jar" />
+	</platform>
+
+	<platform>
+		<identifier>PP/1.0</identifier>
+		<parent>FP/1.0</parent>
+		<features>fp</features>
+		<description>Personal Profile 1.0 is based on the CDC configuration and extends the Foundation Profile.</description>
+		<capability name="build.BootClassPath" value="pp-1.0.jar" />
+	</platform>
+
+	<platform>
 		<identifier>BlackBerry</identifier>
 		<features>blackberry, hasCommandKeyEvents</features>
 		<description>BlackBerry provides a platform that supplements CLDC 1.0 and MIDP 2.0 by BlackBerry specific APIs.</description>

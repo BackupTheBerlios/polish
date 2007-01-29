@@ -67,7 +67,7 @@
 	</group>
 
 	<group>
-		<name>Series40DP1</name>
+		<name>Series40E1</name>
 		<parent>Series40</parent>
 		<capability name="Emulator.Skin" value="Nokia_S40_DP10_SDK_1_0" />
 		<capability name="Font.medium.oldFirmware" value="16" />
@@ -75,10 +75,15 @@
 		<capability name="RMS.MaxRecordSize" value="20 kb" />
 		<capability name="Bugs" value="stringWidthLineBreak" />
 	</group>
+	
+	<group>
+		<name>Series40DP1</name>
+		<parent>Series40E1</parent>
+	</group>
 
 	<group>
-		<name>Series40DP2</name>
-		<parent>Series40</parent>
+		<name>Series40E2</name>
+		<parent>Series40E1</parent>
 		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_0" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
@@ -87,8 +92,13 @@
 	</group>
 
 	<group>
+		<name>Series40DP2</name>
+		<parent>Series40E2</parent>
+	</group>
+
+	<group>
 		<name>Series40E3</name>
-		<parent>Series40</parent>
+		<parent>Series40E2</parent>
 		<capability name="ScreenSize" value="240x320" />
 		<capability name="FullCanvasSize" value="240x320" />
 		<capability name="Emulator.Skin" value="Devices/S40_SDK_3rd_Edition_Feature_Pack_2" />
@@ -102,6 +112,17 @@
 		<name>Series40DP3</name>
 		<parent>Series40E3</parent>
 	</group>
+
+	<group>
+		<name>Series40E3FP1</name>
+		<parent>Series40E3</parent>
+	</group>
+
+	<group>
+		<name>Series40E3FP2</name>
+		<parent>Series40E3FP1</parent>
+	</group>
+
 
 	<group>
 		<name>Series60</name>
@@ -203,6 +224,18 @@
 		<capability name="OS" value="Symbian OS 7.0s" />
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi" />		
 	</group>
+
+	<group>
+		<name>Series80E1</name>
+		<parent>Series80</parent>
+	</group>
+	
+
+	<group>
+		<name>Series80E2</name>
+		<parent>Series80E1</parent>
+	</group>
+	
 	
 	<group>
 		<name>Series90</name>
