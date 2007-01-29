@@ -4,6 +4,11 @@
  *                                                                               *
  *********************************************************************************/
  
+ colors {
+ 	browserFontColor: rgb( 30, 85, 86 );
+	browserFontColorFocused: rgb(20,40,80);
+ }
+ 
 .textFieldSymbolList {
 	inherit: false;
 	padding: 10;
@@ -50,3 +55,95 @@ rightcommand {
 }
 */
 
+.browserText {
+	padding-bottom: 1;
+	padding-right: 1;
+	font-color: black;
+	focused-style: .browserTextFocused
+}
+
+.browserTextFocused {
+	padding-bottom: 1;
+	padding-right: 1;
+	font-color: red;
+}
+
+.browserTextBold {
+	padding-bottom: 1;
+	padding-right: 1;
+	font-color: black;
+	font-style: bold;
+	focused-style: .browserTextBoldFocused
+}
+
+.browserTextBoldFocused {
+	padding-bottom: 1;
+	padding-right: 1;
+	font-color: red;
+	font-style: bold;
+}
+
+.browserTextItalic {
+	padding-bottom: 1;
+	padding-right: 1;
+	font-color: black;
+	font-style: italic;
+	focused-style: .browserTextItalicFocused
+}
+
+.browserTextItalicFocused {
+	padding-bottom: 1;
+	padding-right: 1;
+	font-color: red;
+	font-style: italic;
+}
+
+.browserTextBoldItalic {
+	padding-bottom: 1;
+	padding-right: 1;
+	font-color: black;
+	font-style: bold | italic;
+	focused-style: .browserTextBoldItalicFocused
+}
+
+.browserTextBoldItalicFocused {
+	padding-bottom: 1;
+	padding-right: 1;
+	font-color: red;
+	font-style: bold | italic;
+}
+
+.browserLink {
+	padding-bottom: 1;
+	padding-right: 1;
+	font-color: blue;
+	font-style: bold;
+	focused-style: .browserLinkFocused;
+}
+
+.browserLinkFocused {
+	padding-bottom: 1;
+	padding-right: 1;
+	font-color: red;
+	font-style: bold;
+}
+
+.browserInput extends .browserText {
+	padding: 2;
+	layout: expand | left;
+	focused-style: browserInputFocused;
+	border {
+		type: round-rect;
+		width: 1;
+		color: browserFontColor;
+	}
+}
+
+.browserInputFocused extends .browserTextFocused {
+	layout: expand | left;
+	border {
+		type: round-rect;
+		width: 2;
+		color: browserFontColorFocused;
+	}
+}
