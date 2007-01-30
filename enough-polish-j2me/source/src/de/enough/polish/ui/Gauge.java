@@ -1086,6 +1086,13 @@ implements ImageConsumer
 	 * @see de.enough.polish.ui.Item#animate()
 	 */
 	public boolean animate() {
+		boolean animated = super.animate();
+		//#if polish.view-type
+			if (this.view != null) {
+				// skip animation when there is a view present in this gauge
+				return animated;
+			}
+		//#endif
 		if (this.isIndefinite && this.value == CONTINUOUS_RUNNING && this.isInitialised) {
 			//#if polish.css.gauge-animation-mode
 				if ( this.image != null && this.animationMode == ANIMATION_MODE_BACKANDFORTH ) {
@@ -1128,7 +1135,7 @@ implements ImageConsumer
 			}
 			return true;
 		}
-		return false;
+		return animated;
 	}
 	
 	
