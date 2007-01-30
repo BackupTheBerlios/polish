@@ -322,9 +322,17 @@ public class ChoiceItem extends IconItem
 	public void setStyle(Style style) {
 		super.setStyle(style);
 		if (this.drawBox) {
+			Style parentStyle = null;
+			if (this.parent != null) {
+				parentStyle = this.parent.style;
+			}
 			//#ifdef polish.css.radiobox-selected
 				if (this.choiceType == Choice.EXCLUSIVE) {
-					loadImage( style.getProperty( "radiobox-selected"), false );
+					String url = style.getProperty( "radiobox-selected");
+					if (url == null && parentStyle != null) {
+						url = parentStyle.getProperty( "radiobox-selected");
+					}
+					loadImage( url, false );
 				}
 			//#endif
 			//#ifdef polish.css.radiobox-plain
@@ -333,13 +341,20 @@ public class ChoiceItem extends IconItem
 					if ("none".equals(plainName)) {
 						this.drawNoPlain = true;
 					} else {
+						if (plainName == null && parentStyle != null) {
+							plainName = parentStyle.getProperty( "radiobox-plain");
+						}
 						loadImage( plainName, true );
 					}
 				}
 			//#endif
 			//#ifdef polish.css.checkbox-selected
 				if (this.choiceType == Choice.MULTIPLE) {
-					loadImage( style.getProperty( "checkbox-selected"), false );
+					String url = style.getProperty( "checkbox-selected");
+					if (url == null && parentStyle != null) {
+						url = parentStyle.getProperty( "checkbox-selected");
+					}
+					loadImage( url, false );
 				}
 			//#endif
 			//#ifdef polish.css.checkbox-plain
@@ -348,14 +363,20 @@ public class ChoiceItem extends IconItem
 					if ("none".equals(plainName)) {
 						this.drawNoPlain = true;
 					} else {
+						if (plainName == null && parentStyle != null) {
+							plainName = parentStyle.getProperty( "checkbox-plain");
+						}
 						loadImage( plainName, true );
 					}
 				}
 			//#endif
 			//#ifdef polish.css.choice-color
-				Integer color = style.getIntProperty("choice-color");
+				Color color = style.getColorProperty("choice-color");
+				if (color == null && parentStyle != null) {
+					color = parentStyle.getColorProperty("choice-color");
+				}
 				if (color != null) {
-					this.boxColor = color.intValue();
+					this.boxColor = color.getColor();
 				}
 			//#endif
 	
