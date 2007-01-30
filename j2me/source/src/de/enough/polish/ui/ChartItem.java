@@ -253,10 +253,17 @@ public class ChartItem
 	 * @param y the upper start position
 	 * @param leftBorder the left border, nothing must be painted left of this position
 	 * @param rightBorder the right border, nothing must be painted right of this position
+	 * @param inout_params an array with 2 elements for adjusting x and y:
+	 * <pre>
+	 * int[] inout_params = new int[]{ x, y };
+	 * int baseLineY = chart.paintGrid(x, y, leftBorder, rightBorder, inout_params, g); 
+	 * x = inout_params[0];
+	 * y = inout_params[1];
+	 * </pre>
 	 * @param g the Graphics on which this item should be painted.
 	 * @return the y position of the baseline
 	 */
-	public int paintGrid(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+	public int paintGrid(int x, int y, int leftBorder, int rightBorder, int[] inout_params, Graphics g) {
 		int dataLength = this.dataSequences[0].length - 1;
 		int xAxisWidth = (dataLength*this.scaleFactorX)/100;
 		int yAxisHeight = (Math.abs( this.dataMaximum - this.dataMinimum )  * this.scaleFactorY) /100;
@@ -272,6 +279,7 @@ public class ChartItem
 					g.drawString( this.labelX, x + xAxisWidth, y, Graphics.RIGHT | Graphics.TOP  );
 				//#endif
 				y += this.font.getHeight() + this.paddingVertical;
+				inout_params[1] = y;
 			} else {
 				//#if tmp.rotate
 					g.drawString( this.labelX, x + xAxisWidth/2, y + this.contentHeight, Graphics.HCENTER | Graphics.BOTTOM  );
@@ -301,6 +309,9 @@ public class ChartItem
 		g.drawLine( x, baseLineY, x + xAxisWidth,  baseLineY );
 		g.drawLine( x, y, x, y +  yAxisHeight );
 		
+		x++;
+		inout_params[0] = x;
+		
 		return baseLineY;
 	}
 
@@ -313,9 +324,12 @@ public class ChartItem
 		if (sequences == null) {
 			return;
 		}
-
-		int baseLineY = paintGrid(x, y, leftBorder, rightBorder, g);
 		
+		int[] inout_params = new int[]{ x, y };
+		int baseLineY = paintGrid(x, y, leftBorder, rightBorder, inout_params, g); 
+		x = inout_params[0];
+		y = inout_params[1];
+
 		// draw data:
 		for (int i = 0; i < sequences.length; i++) {
 			g.setColor( this.colors[i] );

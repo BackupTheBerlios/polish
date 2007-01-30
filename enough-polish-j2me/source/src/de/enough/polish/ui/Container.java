@@ -736,7 +736,6 @@ public class Container extends Item {
 				hasFocusableItem = true;
 			}
 			if (this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
-				//#debug
 				this.autoFocusEnabled = false;
 				focus( i, item, 0 );
 				height = item.getItemHeight(lineWidth, lineWidth);

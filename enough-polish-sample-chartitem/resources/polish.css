@@ -24,15 +24,6 @@ colors {
 	translucentBgColor:  argb(130, 238,241,229);
 	fontColor: rgb( 30, 85, 86 );
 	focusedFontColor: rgb(238,241,229);
-	
-	mailBoxBgColor: bgColor;
-	mailBoxFontColor: focusedFontColor;
-	
-	mailSummaryBgColor: rgb( 200, 0, 0 );
-	mailSummaryFontColor: fontColor;
-
-	mailDetailBgColor: rgb( 200, 200, 200 );
-	mailDetailFontColor: fontColor;
 }
 
 .mainScreen {
@@ -45,6 +36,7 @@ colors {
 	layout: horizontal-expand | horizontal-center | top;
 }
 
+
 .lineChart {
 	background-color: white;
 	padding: 3;
@@ -52,63 +44,11 @@ colors {
 	font-size: small;
 }
 
-/**
-  * The element that displays the current input mode, e.g. "abc" or "Abc" or "123"
-  */
-info {
-	layout: right;
-	margin-right: 10;
-	background-color: argb( 170, 255, 255, 255 );
-}
-
-.addressInput {
-	text-wrap: true;
+.verticalBarChart {
+	background-color: white;
 	padding: 3;
-	padding-left: 5;
-	padding-vertical: 1;
-	background {
-		type: round-rect;
-		color: silver;
-	}
-	include-label: true;
-	focused-style: .addressInputFocused;
-	choicetextfield-choicestyle: .addressChoice;
-	choicetextfield-containerstyle: .addressChoicesContainer;
-	layout: left | expand;
-}
-
-.addressInputFocused {
-	padding: 1;
-	padding-left: 3;
-	background {
-		type: round-rect;
-		color: white;
-		border-color: black;
-		border-width: 2;
-	}
-	layout: left | expand;	
-}
-
-.addressChoice {
-	padding: 2;
-	font-size: small;
-	font-style: plain;
-	font-color: gray;
-	focused-style: .addressChoiceFocused;
-	layout: left | expand;
-}
-
-.addressChoiceFocused {
-	padding: 2;
-	font-size: small;
-	font-style: plain;
-	font-color: red;
-	layout: left | expand;
-}
-
-.addressChoicesContainer {
-	background-color: argb( 210, 255, 255, 255 );
-	layout: left | expand;
+	view-type: chart-vertical-bars;
+	chart-vertical-bars-shadow-color: gray;
 }
 
 /**
@@ -188,7 +128,6 @@ menu1 extends menu {
       margin-bottom: 4;
       margin-right: 4;
 }
-
 
 /**
   * The menuItem style is a predefined style

@@ -1064,7 +1064,12 @@ public abstract class Item extends Object
 					}
 				}
 			}
-		//#endif		
+		//#endif
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.setStyle(style);
+			}
+		//#endif
 	}
 	
 	/**
