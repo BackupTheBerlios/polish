@@ -55,7 +55,12 @@ rightcommand {
 }
 */
 
+.browser {
+	view-type: midp2;
+}
+
 .browserText {
+	inherit: false;
 	padding-bottom: 1;
 	padding-right: 1;
 	font-color: black;
@@ -63,12 +68,14 @@ rightcommand {
 }
 
 .browserTextFocused {
+	inherit: false;
 	padding-bottom: 1;
 	padding-right: 1;
 	font-color: red;
 }
 
 .browserTextBold {
+	inherit: false;
 	padding-bottom: 1;
 	padding-right: 1;
 	font-color: black;
@@ -77,6 +84,7 @@ rightcommand {
 }
 
 .browserTextBoldFocused {
+	inherit: false;
 	padding-bottom: 1;
 	padding-right: 1;
 	font-color: red;
@@ -84,6 +92,7 @@ rightcommand {
 }
 
 .browserTextItalic {
+	inherit: false;
 	padding-bottom: 1;
 	padding-right: 1;
 	font-color: black;
@@ -92,6 +101,7 @@ rightcommand {
 }
 
 .browserTextItalicFocused {
+	inherit: false;
 	padding-bottom: 1;
 	padding-right: 1;
 	font-color: red;
@@ -99,6 +109,7 @@ rightcommand {
 }
 
 .browserTextBoldItalic {
+	inherit: false;
 	padding-bottom: 1;
 	padding-right: 1;
 	font-color: black;
@@ -107,6 +118,7 @@ rightcommand {
 }
 
 .browserTextBoldItalicFocused {
+	inherit: false;
 	padding-bottom: 1;
 	padding-right: 1;
 	font-color: red;
@@ -114,6 +126,7 @@ rightcommand {
 }
 
 .browserLink {
+	inherit: false;
 	padding-bottom: 1;
 	padding-right: 1;
 	font-color: blue;
@@ -122,6 +135,7 @@ rightcommand {
 }
 
 .browserLinkFocused {
+	inherit: false;
 	padding-bottom: 1;
 	padding-right: 1;
 	font-color: red;
@@ -129,6 +143,7 @@ rightcommand {
 }
 
 .browserInput extends .browserText {
+	inherit: false;
 	padding: 2;
 	layout: expand | left;
 	focused-style: browserInputFocused;
@@ -140,6 +155,7 @@ rightcommand {
 }
 
 .browserInputFocused extends .browserTextFocused {
+	inherit: false;
 	layout: expand | left;
 	border {
 		type: round-rect;
@@ -148,8 +164,12 @@ rightcommand {
 	}
 }
 
-.browserGauge {
-    gauge-color: white;
+.browserDownloadIndicator {
+	inherit: false;
+	layout: vertical-shrink | horizontal-shrink | top | right;
+	/*
+	hehe, hey Michael: white stripes on white background, eh?
+    gauge-color: white; 
     gauge-gap-color: white;
     gauge-animation-mode: backandforth;
     gauge-animation-speed: 2;
@@ -158,4 +178,5 @@ rightcommand {
 		border-width: 2;
 		border-color: black;
     }
+    */
 }
