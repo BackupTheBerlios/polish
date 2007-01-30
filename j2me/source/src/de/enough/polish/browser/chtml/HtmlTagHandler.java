@@ -78,9 +78,6 @@ public class HtmlTagHandler
   public static final Command CMD_BACK = new Command("Back", Command.BACK, 10);
   
   private HtmlForm currentForm;
-  
-  // TODO: Remove me. This is a hack.
-//  private boolean firstInteractiveElementAdded;
 
   protected HtmlBrowser browser;
 

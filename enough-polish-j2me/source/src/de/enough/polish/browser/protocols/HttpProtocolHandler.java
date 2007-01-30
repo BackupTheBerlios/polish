@@ -52,38 +52,48 @@ public class HttpProtocolHandler extends ProtocolHandler
   private HashMap requestProperties;
 
   /**
-   * Creates a new HTTPProtocolHandler object.
+   * Creates a new HTTPProtocolHandler object with "http" as it's protocol.
    */
   public HttpProtocolHandler()
   {
-    super("http");
-    
-    this.requestProperties = new HashMap();
-    init();
+    this("http",  new HashMap() );
   }
   
   /**
-   * Creates a new HTTPProtocolHandler object.
+   * Creates a new HTTPProtocolHandler object with "http" as it's protocol.
    * 
    * @param requestProperties the request properties to use for each request
-   * 
-   * @throws NullPointerException if requestProperties is null
    */
   public HttpProtocolHandler(HashMap requestProperties)
   {
-    super("http");
-
-    this.requestProperties = requestProperties;
-    init();
+    this("http", requestProperties );
   }
 
-  private void init()
+  /**
+   * Creates a new HTTPProtocolHandler object.
+   * 
+   * @param protocolName the protocolname (usually "http" or "https")
+   */
+  public HttpProtocolHandler(String protocolName)
   {
-    this.requestProperties.put("gofer-nosession", "true");
+	    this(protocolName,  new HashMap() );
+  }
+  /**
+   * Creates a new HTTPProtocolHandler object.
+   * 
+   * @param protocolName the protocolname (usually "http" or "https")
+   * @param requestProperties the request properties to use for each request
+   */
+  public HttpProtocolHandler(String protocolName, HashMap requestProperties)
+  {
+    super( protocolName );
 
-    if (this.requestProperties.get("User-Agent") == null)
-    {
-      this.requestProperties.put("User-Agent", HttpProtocolHandler.USER_AGENT);
+    this.requestProperties = requestProperties;
+    if (requestProperties != null) {
+	    if (requestProperties.get("User-Agent") == null)
+	    {
+	      requestProperties.put("User-Agent", HttpProtocolHandler.USER_AGENT);
+	    }
     }
   }
 

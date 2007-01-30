@@ -38,8 +38,14 @@ public class ResourceProtocolHandler extends ProtocolHandler
 {
   public ResourceProtocolHandler()
   {
-    super("resource");
+    this("resource");
   }
+  
+  public ResourceProtocolHandler( String protocolName )
+  {
+    super(protocolName);
+  }
+
   
   /* (non-Javadoc)
    * @see de.enough.polish.browser.ProtocolHandler#getConnection(java.lang.String)

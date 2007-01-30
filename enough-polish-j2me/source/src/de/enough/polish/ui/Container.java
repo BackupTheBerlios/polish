@@ -682,23 +682,28 @@ public class Container extends Item {
 			if (this.containerView != null) {
 				// additional initialization is necessary when a view is used for this container:
 				boolean requireScrolling = this.isScrollRequired;
-				if (this.autoFocusEnabled) {
-					//#debug
-					System.out.println("Container/View: autofocusing element " + this.autoFocusIndex);
-					this.autoFocusEnabled = false;
-					requireScrolling = true;
-					if (this.autoFocusIndex >= 0 ) {
-						for (int i = this.autoFocusIndex; i < myItems.length; i++) {
-							Item item = myItems[i];
-							if (item.appearanceMode != Item.PLAIN) {
-								// make sure that the item has applied it's own style first:
-								item.getItemHeight( firstLineWidth, lineWidth );
-								// now focus the item:
-								focus( i, item, 0 );
-								this.containerView.focusedIndex = i;
-								this.containerView.focusedItem = item;
-								break;
-							}							
+				synchronized (this) {
+					if (this.autoFocusEnabled) {
+						//#debug
+						System.out.println("Container/View: autofocusing element " + this.autoFocusIndex);
+						if (this.autoFocusIndex >= 0 ) {
+							for (int i = this.autoFocusIndex; i < myItems.length; i++) {
+								Item item = myItems[i];
+								if (item.appearanceMode != Item.PLAIN) {
+									// make sure that the item has applied it's own style first:
+									item.getItemHeight( firstLineWidth, lineWidth );
+									// now focus the item:
+									this.autoFocusEnabled = false;
+									requireScrolling = true;
+									focus( i, item, 0 );
+									this.containerView.focusedIndex = i;
+									this.containerView.focusedItem = item;
+									System.out.println("autofocus: found item " + i );
+									break;
+								}							
+							}
+						} else {
+							this.autoFocusEnabled = false;
 						}
 					}
 				}
@@ -732,7 +737,6 @@ public class Container extends Item {
 			}
 			if (this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
 				//#debug
-				System.out.println("Container: autofocusing element " + i);
 				this.autoFocusEnabled = false;
 				focus( i, item, 0 );
 				height = item.getItemHeight(lineWidth, lineWidth);

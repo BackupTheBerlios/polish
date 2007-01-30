@@ -25,21 +25,13 @@
  */
 package de.enough.polish.browser.chtml;
 
-import java.io.IOException;
-import java.util.Stack;
-
-import javax.microedition.io.StreamConnection;
-import javax.microedition.lcdui.Graphics;
-
 import de.enough.polish.browser.Browser;
 import de.enough.polish.browser.ProtocolHandler;
 import de.enough.polish.browser.protocols.HttpProtocolHandler;
 import de.enough.polish.browser.protocols.ResourceProtocolHandler;
 import de.enough.polish.io.RedirectHttpConnection;
-import de.enough.polish.ui.Gauge;
-import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
-import de.enough.polish.ui.containerviews.MIDP2LayoutView;
+import de.enough.polish.ui.Style;
 import de.enough.polish.util.StringTokenizer;
 
 /**
@@ -58,196 +50,68 @@ import de.enough.polish.util.StringTokenizer;
 public class HtmlBrowser
   extends Browser
 {
-  /**
-   * Helper thread for reading all content in background!
-   */
-  public class ReadThread extends Thread
-  {
-    private String url;
-    private boolean cancelRequest;
-    private boolean isRunning;
-    private boolean isWorking;
-    
-    public synchronized void run()
-    {
-      this.isRunning = true;
 
-      while (this.isRunning)
-      {
-        if (this.isRunning && this.url != null)
-        {
-          this.isWorking = true;
-          String url = this.url;
-          this.url = null;
-            
-          if (this.cancelRequest != true)
-          {
-            goImpl(url);
-          }
-          
-          this.isWorking = false;
-          HtmlBrowser.this.requestRepaint();
-        }
-          
-        if (this.cancelRequest == true)
-        {
-          this.isWorking = false;
-          HtmlBrowser.this.requestRepaint();
-          this.cancelRequest = false;
-          this.url = null;
-          loadPage("Anfrage abgebrochen!");
-        }
-          
-        try
-        {
-          this.isWorking = false;
-          HtmlBrowser.this.requestRepaint();
-          wait();
-        }
-        catch (InterruptedException ie)
-        {
-//          interrupt();
-        }
-      }
-    }
-    
-    public synchronized void go(String url)
-    {
-      this.url = url;
-      notify();
-    }
-        
-    public void cancel()
-    {
-      this.cancelRequest = true;
-    }
-  
-    public synchronized void requestStop()
-    {
-      this.isRunning = false;
-      notify();
-    }
-
-    public boolean isRunning()
-    {
-      return this.isRunning;
-    }
-    
-    public boolean isCanceled()
-    {
-      return this.cancelRequest;
-    }
-    
-    public boolean isWorking()
-    {
-      return this.isWorking;
-    }
-  }
-
-  private Stack history = new Stack();
   private HtmlTagHandler htmlTagHandler;
-  private ReadThread readThread;
 
-  //#if polish.Browser.PaintDownloadIndicator:defined
-  private Gauge gauge;
-  //#endif
-
+  	/**
+  	 * Creates a new browser using the default ".browser" style and default tag- and protocol handlers.
+  	 */
   public HtmlBrowser()
   {
-    this.containerView = new MIDP2LayoutView();
-
-    this.readThread = new ReadThread();
-    this.readThread.start();
-
-    //#if polish.Browser.PaintDownloadIndicator:defined
-    //#style browserGauge
-    this.gauge = new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING);
-    this.gauge.setPreferredSize(100,30);
-    //#endif
-  }
-
-  public void setHtmlTagHandler(HtmlTagHandler htmlTagHandler)
-  {
-    this.htmlTagHandler = htmlTagHandler;
+	  //#if polish.css.style.browser
+	  	//#style browser
+	  	//# this();	
+	  //#else
+	  	this( (Style) null );
+	  //#endif
   }
   
-  public void go(String url)
+  /**
+   * Creates a new browser with the given style, the default tag handler and default protocol handlers (http, https, resource)
+   * 
+   * @param style the style
+   * @see #getDefaultProtocolHandlers()
+   * @see HtmlTagHandler
+   */
+  public HtmlBrowser( Style style )
   {
-    if (this.readThread != null)
-    {
-      if (this.currentDocumentBase != null)
-      {
-      	this.history.push(this.currentDocumentBase);
-      }
-      this.readThread.go(url);
-    }
+	  this( new HtmlTagHandler(), getDefaultProtocolHandlers(), style );
   }
   
-  protected void goImpl(String url)
+  /**
+   * Creates a new browser with the specified html tag handler
+   * 
+   * @param tagHandler the HtmlTagHandler used for this browser
+   * @param protocolHandlers the protocol handlers
+   * 
+   * @throws NullPointerException when the tagHandler is null
+   */
+  public HtmlBrowser( HtmlTagHandler tagHandler, ProtocolHandler[] protocolHandlers )
   {
-    try
-    {
-      // Throws an exception if no handler found.
-      ProtocolHandler handler = getProtocolHandlerForURL(url);
-    
-      this.currentDocumentBase = url;
-    
-      StreamConnection connection = handler.getConnection(url);
-      
-      if (connection != null)
-      {
-        loadPage(connection.openInputStream());
-        connection.close();
-      }
-    }
-    catch (IOException e)
-    {
-      //#debug
-      e.printStackTrace();
-    }
+	  //#if polish.css.style.browser
+	  	//#style browser
+	  	//# this( tagHandler, protocolHandlers );	
+	  //#else
+	  	this( tagHandler, protocolHandlers, (Style) null );
+	  //#endif	  
   }
   
-  public void go(int historySteps)
+  /**
+   * Creates a new browser with the specified html tag handler
+   * 
+   * @param tagHandler the HtmlTagHandler used for this browser
+   * @param protocolHandlers the protocol handlers
+   * @param style the style of this browser
+   * 
+   * @throws NullPointerException when the tagHandler is null
+   */
+  public HtmlBrowser( HtmlTagHandler tagHandler, ProtocolHandler[] protocolHandlers,  Style style )
   {
-    String document = null;
-    
-    while (historySteps > 0 && this.history.size() > 0)
-    {
-      document = (String) this.history.pop();
-      historySteps--;
-    }
-    
-    if (document != null)
-    {
-      goImpl(document);
-    }
+	  super( protocolHandlers, style );
+	  tagHandler.register(this);
+	  this.htmlTagHandler = tagHandler;
   }
   
-  public void followLink()
-  {
-    Item item = getFocusedItem();
-    String href = (String) item.getAttribute("href");
-    
-    if (href != null)
-    {
-      go(makeAbsoluteURL(href));
-    }
-  }
-  
-  public void goBack()
-  {
-    go(1);
-  }
-  
-  public boolean canGoBack()
-  {
-    return this.history.size() > 0;
-  }
-  
-  public void clearHistory()
-  {
-    this.history.removeAllElements();
-  }
   
   protected void handleText(String text)
   {
@@ -281,45 +145,9 @@ public class HtmlBrowser
           stringItem = new StringItem(null, str);
         }
         
-        // TODO: Remove me.
-//        stringItem.addCommand(new Command("Test", Command.SCREEN, 1));
         add(stringItem);
       }
     }
   }
   
-  //#if polish.Browser.PaintDownloadIndicator:defined
-  /* (non-Javadoc)
-   * @see de.enough.polish.ui.Container#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
-   */
-  protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g)
-  {
-    super.paintContent(x, y, leftBorder, rightBorder, g);
-
-    if (this.readThread.isWorking())
-    {
-      this.gauge.paint(x, y, leftBorder, rightBorder, g);
-    }
-  }
-  
-  /* (non-Javadoc)
-   * @see de.enough.polish.ui.Container#animate()
-   */
-  public boolean animate()
-  {
-    boolean result = false;
-    
-    if (this.readThread.isWorking())
-    {
-      result = this.gauge.animate();
-    }
-
-    return super.animate() | result;
-  }
-  //#endif
-  
-  void requestRepaint()
-  {
-    repaint();
-  }
 }

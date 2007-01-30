@@ -108,4 +108,13 @@ public abstract class ProtocolHandler
    */
   public abstract StreamConnection getConnection(String url)
     throws IOException;
+
+	/**
+	 * Retrieves the name of this protocol
+	 * 
+	 * @return the name of the protocol like "http" or "navigate"
+	 */
+	public String getProtocolName() {
+		return this.protocolName;
+	}
 }

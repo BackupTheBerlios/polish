@@ -220,8 +220,6 @@ implements AccessibleCanvas
 			//#endif
 		//#endif
 	//#endif
-	/** The Gauge Item which should be animated by this screen */
-	Item gauge;
 	/** The currently focused items which has item-commands */
 	private Item focusedItem;
 	//#if polish.useScrollBar || polish.classes.ScrollBar:defined
@@ -737,9 +735,6 @@ implements AccessibleCanvas
 			if (this.container != null && !this.container.isInitialised) {
 				this.container.init( width, width );
 			}
-			if (this.gauge != null && !this.gauge.isInitialised) {
-				this.gauge.init( width, width );
-			}
 			//#ifdef tmp.usingTitle
 				if (this.title != null && !this.title.isInitialised) {
 					this.title.init( width, width );
@@ -1061,9 +1056,6 @@ implements AccessibleCanvas
 				//#endif
 				if (this.container != null) {
 					animated = animated | this.container.animate();
-				}
-				if (this.gauge != null) {
-					animated = animated | this.gauge.animate();
 				}
 				//#ifdef tmp.usingTitle
 					if (this.title != null) {
@@ -3106,9 +3098,6 @@ implements AccessibleCanvas
 				this.menuContainer.releaseResources();
 			//#endif
 		//#endif
-		if (this.gauge != null) {
-			this.gauge.releaseResources();
-		}
 		//#ifdef tmp.usingTitle
 			if (this.title != null) {
 				this.title.releaseResources();

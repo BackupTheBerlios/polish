@@ -308,6 +308,7 @@ implements ImageConsumer
 	//#if polish.css.gauge-inactive-image
 		private Image inactiveImage;
 	//#endif
+	private boolean isShown;
 
 	/**
 	 * Creates a new <code>Gauge</code> object with the given
@@ -477,20 +478,16 @@ implements ImageConsumer
 	public void setValue(int value)
 	{
 		if (this.isIndefinite) {
-			if (this.value == CONTINUOUS_RUNNING ) {
+			if (this.value == CONTINUOUS_RUNNING  && value != CONTINUOUS_RUNNING) {
 				// when the value WAS continuous-running, remove this gauge from 
 				// the animations:
-				Screen scr = getScreen();
-				if (scr != null) {
-					scr.gauge = null;
-				}
+				AnimationThread.removeAnimationItem( this );
 			}
 			if (value == CONTINUOUS_IDLE) {
 				this.indefinitePos = 0;
-			} else if (value == CONTINUOUS_RUNNING){
-				Screen scr = getScreen();
-				if (scr != null) {
-					scr.gauge = this;
+			} else if (value == CONTINUOUS_RUNNING && this.value != CONTINUOUS_RUNNING){
+				if (this.isShown) {
+					AnimationThread.addAnimationItem( this );
 				}
 			} else if ( value == INCREMENTAL_IDLE ) {
 				this.indefinitePos = 0;
@@ -582,43 +579,26 @@ implements ImageConsumer
 			g.setColor( this.gapColor );
 			g.fillRect( 0, 0, this.contentWidth, this.contentHeight );
 		} else if (this.value == CONTINUOUS_RUNNING ) {
-			if (this.image != null) {
-				g.setColor( this.color );
-				g.fillRect( 0, 0, this.contentWidth, this.contentHeight );
-				g.drawImage( this.image, this.indefinitePos, 0, Graphics.TOP | Graphics.LEFT );
-			} else {
-				g.setColor( this.color );
-				g.fillRect( 0, 0, this.contentWidth, this.contentHeight );
-				g.setColor( this.gapColor );
-				int cWidth = this.chunkWidth + this.gapWidth;
-				int x =  this.indefinitePos - cWidth;
-				while (x < this.contentWidth) {
-					g.fillRect( x, 0, this.gapWidth, this.contentHeight );
-					x += cWidth;
-				}
+			g.setColor( this.color );
+			g.fillRect( 0, 0, this.contentWidth, this.contentHeight );
+			g.setColor( this.gapColor );
+			int cWidth = this.chunkWidth + this.gapWidth;
+			int x =  this.indefinitePos - cWidth;
+			while (x < this.contentWidth) {
+				g.fillRect( x, 0, this.gapWidth, this.contentHeight );
+				x += cWidth;
 			}
 		} else { // value == INCREMENTAL_UPDATE
 			int percentage = (this.indefinitePos * 100) / this.maxValue;
 			int position = (percentage * this.contentWidth) / 100;
-			if (this.image != null) {
-				g.setColor( this.color );
-				g.fillRect( 0, 0, this.contentWidth, this.contentHeight );
-				int imageWidth = this.image.getWidth();
-				int x = 0;
-				while (x < position) {
-					g.drawImage( this.image, x, 0, Graphics.TOP | Graphics.LEFT );
-					x += imageWidth;
-				} 
-			} else {
-				g.setColor( this.gapColor );
-				g.fillRect( 0, 0, this.contentWidth, this.contentHeight );
-				g.setColor( this.color );
-				int cWidth = this.chunkWidth + this.gapWidth;
-				int x = 0;
-				while (x < position) {
-					g.fillRect( x, 0, this.chunkWidth, this.contentHeight );
-					x += cWidth;
-				}
+			g.setColor( this.gapColor );
+			g.fillRect( 0, 0, this.contentWidth, this.contentHeight );
+			g.setColor( this.color );
+			int cWidth = this.chunkWidth + this.gapWidth;
+			int x = 0;
+			while (x < position) {
+				g.fillRect( x, 0, this.chunkWidth, this.contentHeight );
+				x += cWidth;
 			}
 		}
 	}
@@ -748,7 +728,7 @@ implements ImageConsumer
 		if (this.isIndefinite) {
 			if (this.image != null) {
 				g.drawImage( this.image, x + this.indefinitePos, y + this.imageYOffset,  Graphics.TOP | Graphics.LEFT );
-			} else {
+			} else if (this.indicatorImage != null ) {
 				g.drawImage(this.indicatorImage, x, y + this.imageYOffset, Graphics.TOP | Graphics.LEFT );
 			}
 		} else if (this.image != null) {
@@ -860,21 +840,14 @@ implements ImageConsumer
 			this.contentWidth = this.preferredWidth + this.valueWidth;
 		} else if (this.isLayoutExpand) {
 			this.contentWidth = lineWidth;
+		} else if ((this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK) {
+			this.contentWidth = Math.max( lineWidth / 3, 10 );
 		} else {
 			this.contentWidth = firstLineWidth;
 		}
 		
 		// update other settings:
 		if (this.isIndefinite) {
-			if (this.value == CONTINUOUS_RUNNING) {
-				Screen scr = getScreen();
-				if (scr != null) {
-					// register this gauge at the current screen:
-					scr.gauge = this;
-					//} else {
-					//System.out.println("unable to register gauge");
-				}
-			}
 			if (this.image != null ) {
 				if (this.value == CONTINUOUS_IDLE  || this.value == CONTINUOUS_RUNNING ) {
 					this.maxValue = this.contentWidth;
@@ -884,8 +857,18 @@ implements ImageConsumer
 			} else {
 				this.maxValue = 20;
 			}
-			this.indicatorImage = Image.createImage( this.contentWidth - this.valueWidth, this.contentHeight );
-			updateIndefiniteIndicatorImage();
+			int imageWidth = this.contentWidth - this.valueWidth; //Math.max( 1, this.contentWidth - this.valueWidth );
+			int imageHeight =  this.contentHeight; // Math.max( 1, this.contentHeight );
+			if (imageWidth > 0 && imageHeight > 0) {
+				this.indicatorImage = Image.createImage( imageWidth, imageHeight );
+				updateIndefiniteIndicatorImage();
+			} else {
+				//#if polish.debug.error
+					throw new IllegalArgumentException( "invalid lineWidth for gauge: " + lineWidth );
+				//#else
+					//# throw new IllegalArgumentException();
+				//#endif
+			}
 		} else if (this.image == null){ // this is a definite gauge
 			createIndicatorImage();
 		}
@@ -1127,7 +1110,6 @@ implements ImageConsumer
 							this.animationDirectionDownwards = true;
 						}
 					}
-					//updateIndefiniteIndicatorImage();
 					return true;
 				}
 			//#endif
@@ -1147,5 +1129,29 @@ implements ImageConsumer
 			return true;
 		}
 		return false;
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeStringCustomItem#hideNotify()
+	 */
+	protected void hideNotify() {
+		super.hideNotify();
+		if (this.isIndefinite && this.value == CONTINUOUS_RUNNING) {
+			AnimationThread.removeAnimationItem( this );
+		}
+		this.isShown = false;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeStringCustomItem#showNotify()
+	 */
+	protected void showNotify() {
+		super.showNotify();
+		if (this.isIndefinite && this.value == CONTINUOUS_RUNNING) {
+			AnimationThread.addAnimationItem( this );
+		}
+		this.isShown = true;
 	}
 }

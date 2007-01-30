@@ -30,12 +30,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Stack;
 
 import javax.microedition.io.StreamConnection;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.browser.protocols.HttpProtocolHandler;
+import de.enough.polish.browser.protocols.ResourceProtocolHandler;
+import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.io.StringReader;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.xml.PullParser;
@@ -45,15 +49,32 @@ import de.enough.polish.xml.XmlPullParser;
 //# import de.enough.polish.ui.FakeContainerCustomItem;
 //#else
 import de.enough.polish.ui.Container;
+import de.enough.polish.ui.Gauge;
+import de.enough.polish.ui.Item;
 //#endif
+import de.enough.polish.ui.Style;
 
+/**
+ * TODO: Write good docs.
+ * 
+ * polish.Browser.UserAgent
+ * polish.Browser.MaxRedirects
+ * polish.Browser.Gzip
+ * polish.Browser.POISupport
+ * polish.Browser.PaintDownloadIndicator
+ * 
+ * @see HttpProtocolHandler
+ * @see ResourceProtocolHandler
+ * @see RedirectHttpConnection
+ */
 public abstract class Browser
 //#if polish.LibraryBuild
-//#  extends FakeContainerCustomItem
+	//#  extends FakeContainerCustomItem
 //#else
   extends Container
 //#endif
-{
+implements Runnable
+ {
   private static final String BROKEN_IMAGE = "resource://broken.png";
 
   private HashMap imageCache = new HashMap();
@@ -61,11 +82,124 @@ public abstract class Browser
   protected String currentDocumentBase = null;
   protected HashMap protocolHandlers = new HashMap();
   protected HashMap tagHandlers = new HashMap();
+  
+  protected Stack history = new Stack();
+  //#if polish.Browser.PaintDownloadIndicator
+  	protected Gauge loadingIndicator;
+  //#endif
+  
+  private Thread loadingThread;
+  private boolean isRunning;
+  private boolean isWorking;
+  private boolean isCancelRequested;
 
+private String nextUrl;
+
+
+
+  /**
+   * Creates a new Browser without any protocol handlers, tag handlers or style.
+   */
   public Browser()
   {
-    super(true);
+	  //#style browser?
+    this( (String[])null, (TagHandler[])null, (ProtocolHandler[]) null );
   }
+  
+  /**
+   * Creates a new Browser without any protocol handler or tag handlers.
+   * 
+   * @param style the style of this browser
+   */
+  public Browser( Style style )
+  {
+    this( (String[])null, (TagHandler[])null, (ProtocolHandler[]) null, style );
+  }
+
+  /**
+   * Creates a new Browser with the specified handlers and style.
+   * 
+   * @param tagHandlers the tag handlers
+   */
+  public Browser( ProtocolHandler[] protocolHandlers )
+  {
+	  //#if polish.css.style.browser
+	  	//#style browser
+	  	//# this(protocolHandlers);
+	  //#else
+	  	this(protocolHandlers, null);
+	  //#endif
+  }
+  /**
+   * Creates a new Browser with the specified handlers and style.
+   * 
+   * @param tagHandlers the tag handlers
+   */
+  public Browser( ProtocolHandler[] protocolHandlers, Style style )
+  {
+	  this( (String[])null, (TagHandler[])null, protocolHandlers, style);
+  }
+
+
+  /**
+   * Creates a new Browser with the specified handlers and style.
+   * 
+   * @param tagHandlers the tag handlers
+   * @param protocolHandlers the protocol handlers
+   */
+  public Browser(  String[] tagNames, TagHandler[] tagHandlers, ProtocolHandler[] protocolHandlers )
+  {
+	  //#if polish.css.style.browser
+	  	//#style browser
+	  	//# this(tagNames, tagHandlers, protocolHandlers);
+	  //#else
+	  	this(tagNames,tagHandlers, protocolHandlers, null);
+	  //#endif
+  }
+
+  /**
+   * Creates a new Browser with the specified handlers and style.
+   * 
+   * @param tagNames the names of the tags that the taghandler should handle (this allows to use a single taghandler for several tags)
+   * @param tagHandlers the tag handlers
+   * @param protocolHandlers the protocol handlers
+   * @param style the style of this browser
+   */
+  public Browser( String[] tagNames, TagHandler[] tagHandlers, ProtocolHandler[] protocolHandlers, Style style )
+  {
+    super( true, style );
+    if (tagHandlers != null && tagNames != null && tagNames.length == tagHandlers.length) {
+	    for (int i = 0; i < tagHandlers.length; i++) {
+	    	TagHandler handler = tagHandlers[i];
+			addTagHandler(tagNames[i], handler);
+		}
+    }
+    if (protocolHandlers != null) {
+    	for (int i = 0; i < protocolHandlers.length; i++) {
+			ProtocolHandler handler = protocolHandlers[i];
+			addProtocolHandler( handler );
+			
+		}
+    }
+    //#if polish.Browser.PaintDownloadIndicator
+	    //#style browserDownloadIndicator
+	    this.loadingIndicator = new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING);
+	//#endif
+	this.loadingThread = new Thread( this );
+	this.loadingThread.start();
+  }
+  
+  /**
+   * Instantiates and returns the default tag handlers for "http", "https" and "resource" URLs.
+   * 
+   * @return new default tag handlers
+   * @see HttpProtocolHandler
+   * @see ResourceProtocolHandler
+   */
+  public static ProtocolHandler[] getDefaultProtocolHandlers() {
+	  return new ProtocolHandler[] { new HttpProtocolHandler("http"), new HttpProtocolHandler("https"), new ResourceProtocolHandler("resource") };  
+  }
+
 
   public void addTagCommand(String tagName, Command command)
   {
@@ -92,6 +226,11 @@ public abstract class Browser
 	  }
   }
 
+  public void addProtocolHandler(ProtocolHandler handler)
+  {
+    this.protocolHandlers.put(handler.getProtocolName(), handler);
+  }
+  
   public void addProtocolHandler(String protocolName, ProtocolHandler handler)
   {
     this.protocolHandlers.put(protocolName, handler);
@@ -501,5 +640,226 @@ public abstract class Browser
     }
     
     return false;
+  }
+  
+  protected void goImpl(String url)
+  {
+    try
+    {
+      // Throws an exception if no handler found.
+      ProtocolHandler handler = getProtocolHandlerForURL(url);
+    
+      this.currentDocumentBase = url;
+    
+      StreamConnection connection = handler.getConnection(url);
+      
+      if (connection != null)
+      {
+        loadPage(connection.openInputStream());
+        connection.close();
+      }
+    }
+    catch (IOException e)
+    {
+      //#debug error
+      e.printStackTrace();
+    }
+  }
+  
+  //////////////// download indicator handling /////////////
+  
+  //#if polish.Browser.PaintDownloadIndicator
+  
+  /* (non-Javadoc)
+   * @see de.enough.polish.ui.Container#initContent(int, int)
+   */
+  protected void initContent(int firstLineWidth, int lineWidth) {
+  	super.initContent(firstLineWidth, lineWidth);
+  	// when there is a loading indicator, we need to specify the minmum size:
+  	int width = this.loadingIndicator.getItemWidth( lineWidth, lineWidth );
+  	if (width > this.contentWidth) {
+  		this.contentWidth = width;
+  	}
+  	int height = this.loadingIndicator.itemHeight;
+  	if (height > this.contentHeight) {
+  		this.contentHeight = height;
+  	}
+  }
+  
+  /* (non-Javadoc)
+   * @see de.enough.polish.ui.Container#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
+   */
+  protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g)
+  {
+    super.paintContent(x, y, leftBorder, rightBorder, g);
+
+    if (this.isWorking)
+    {
+    	int lineWidth = rightBorder - leftBorder;
+      	int liHeight = this.loadingIndicator.getItemHeight( lineWidth, lineWidth );
+      	int liLayout = this.loadingIndicator.getLayout();
+      	if ( (liLayout & LAYOUT_VCENTER) == LAYOUT_VCENTER ) {
+      		y += this.contentHeight>>1 + liHeight>>1;
+      	} else if ( (liLayout & LAYOUT_BOTTOM ) == LAYOUT_BOTTOM ) {
+      		y += this.contentHeight - liHeight;
+      	}
+      	this.loadingIndicator.paint(x, y, leftBorder, rightBorder, g);
+    }
+  }
+  
+  /* (non-Javadoc)
+   * @see de.enough.polish.ui.Container#animate()
+   */
+  public boolean animate()
+  {
+    boolean result = false;
+    
+    if (this.isWorking)
+    {
+      result = this.loadingIndicator.animate();
+    }
+
+    return super.animate() | result;
+  }
+  //#endif
+ 
+  
+  ////////////////  downloading thread /////////////////
+  public void run()
+  {
+    this.isRunning = true;
+
+    while (this.isRunning)
+    {
+      if (this.isRunning && this.nextUrl != null)
+      {
+        this.isWorking = true;
+        String url = this.nextUrl;
+        this.nextUrl = null;
+          
+        if (this.isCancelRequested != true)
+        {
+          goImpl(url);
+        }
+        
+        this.isWorking = false;
+        repaint();
+      }
+        
+      if (this.isCancelRequested == true)
+      {
+        this.isWorking = false;
+        repaint();
+        this.isCancelRequested = false;
+        this.nextUrl = null;
+        loadPage("Request canceled");
+      }
+        
+      try
+      {
+        this.isWorking = false;
+        synchronized( this.loadingThread ) {
+        	this.loadingThread.wait();
+        }
+      }
+      catch (InterruptedException ie)
+      {
+//        interrupt();
+      }
+    } // end while(isRunning)
+  } // end run()
+  
+  protected void schedule(String url)
+  {
+    this.nextUrl = url;
+    synchronized( this.loadingThread ) {
+    	System.out.println("notifying thread for url " + url);
+    	this.loadingThread.notify();
+    }
+    System.out.println("done...");
+  }
+      
+  public void cancel()
+  {
+    this.isCancelRequested = true;
+  }
+
+  public synchronized void requestStop()
+  {
+    this.isRunning = false;
+    synchronized( this.loadingThread ) {
+    	this.loadingThread.notify();
+    }
+  }
+
+  public boolean isRunning()
+  {
+    return this.isRunning;
+  }
+  
+  public boolean isCanceled()
+  {
+    return this.isCancelRequested;
+  }
+  
+  public boolean isWorking()
+  {
+    return this.isWorking;
+  }
+  
+  
+  //////////////////////////// History //////////////////////////////
+  
+  public void go(String url)
+  {
+      if (this.currentDocumentBase != null)
+      {
+      	this.history.push(this.currentDocumentBase);
+      }
+      schedule(url);
+  }
+  
+
+  
+  public void go(int historySteps)
+  {
+    String document = null;
+    
+    while (historySteps > 0 && this.history.size() > 0)
+    {
+      document = (String) this.history.pop();
+      historySteps--;
+    }
+    
+    if (document != null)
+    {
+      goImpl(document);
+    }
+  }
+  
+  public void followLink()
+  {
+    Item item = getFocusedItem();
+    String href = (String) item.getAttribute("href");
+    
+    if (href != null)
+    {
+      go(makeAbsoluteURL(href));
+    }
+  }
+  
+  public void goBack()
+  {
+    go(1);
+  }
+  
+  public boolean canGoBack()
+  {
+    return this.history.size() > 0;
+  }
+  
+  public void clearHistory()
+  {
+    this.history.removeAllElements();
   }
 }
