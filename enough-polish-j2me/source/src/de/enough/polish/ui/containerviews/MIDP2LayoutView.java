@@ -315,26 +315,19 @@ public class MIDP2LayoutView extends ContainerView {
         protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder,
                         Graphics g) 
         {
+			int clipX = g.getClipX();
+			int clipY = g.getClipY();
+			int clipWidth = g.getClipWidth();
+			int clipHeight = g.getClipHeight();
                 for (int i = 0; i < this.allRows.size(); i++) {
-                        ArrayList row = (ArrayList) this.allRows.get(i);
-                        for (int j = 0; j < row.size(); j++) {
-                            Item rowItem = (Item) row.get(j);
-                            int xItem = x + rowItem.relativeX;
-                            rowItem.paint( xItem, y + rowItem.relativeY, 
-                            		Math.max(leftBorder, xItem), Math.min(rightBorder, xItem + rowItem.itemWidth),
-                            		g );
-                            
-                        	
-//                                RowItem rowItem = (RowItem) row.get(j);
-//                                int xItem = x + rowItem.x;
-//                                g.setColor( 0xFFFF00 );
-//                                g.drawLine( xItem + 1, y + rowItem.item.relativeY, xItem + rowItem.width - 2,  y + rowItem.item.relativeY );
-//                                rowItem.item.paint(xItem, 
-//                                		y + rowItem.y, 
-//										Math.max(leftBorder, xItem), 
-//										Math.min(rightBorder, xItem + rowItem.width), 
-//										g );
-                        }
+                    ArrayList row = (ArrayList) this.allRows.get(i);
+                    for (int j = 0; j < row.size(); j++) {
+                        Item rowItem = (Item) row.get(j);
+                        int xItem = x + rowItem.relativeX;
+                        paintItem(rowItem, i, xItem,  y + rowItem.relativeY, 
+                        		Math.max(leftBorder, xItem), Math.min(rightBorder, xItem + rowItem.itemWidth),
+                        		clipX, clipY, clipWidth, clipHeight, g);
+                    }
                 }
         }
         /*

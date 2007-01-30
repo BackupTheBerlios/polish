@@ -851,7 +851,13 @@ public abstract class Item extends Object
 	 */
 	public void setLayout(int layout)
 	{
-		this.layout = layout;
+		if (layout != this.layout) {
+			this.layout = layout;
+			if (this.isInitialised) {
+				this.isInitialised = false;
+				repaint();
+			}
+		}
 	}
 
 	/**

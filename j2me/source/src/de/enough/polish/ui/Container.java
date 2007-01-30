@@ -865,6 +865,8 @@ public class Container extends Item {
 				// adjust the right border:
 				rightBorder = leftBorder + this.contentWidth;
 			}
+			int startY = g.getClipY();
+			int endY = startY + g.getClipHeight();
 			Item focItem = this.focusedItem;
 			int focIndex = this.focusedIndex;
 			for (int i = 0; i < myItems.length; i++) {
@@ -874,7 +876,7 @@ public class Container extends Item {
 				if (i == focIndex) {
 					focusedY = y;
 					item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
-				} else {
+				} else if ( y + item.itemHeight >= startY && y < endY ){
 					// the currently focused item is painted last
 					item.paint(x, y, leftBorder, rightBorder, g);
 				}

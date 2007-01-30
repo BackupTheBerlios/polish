@@ -78,13 +78,7 @@ public class FixedFocusView extends ContainerView {
 		super.initContent(parent, firstLineWidth, lineWidth);	
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#paintItem(de.enough.polish.ui.Item, int, int, int, int, int, javax.microedition.lcdui.Graphics)
-	 */
-	protected void paintItem(Item item, int index, int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		// TODO robertvirkus implement paintItem
-		super.paintItem(item, index, x, y, leftBorder, rightBorder, g);
-	}
+	
 	
 	
 

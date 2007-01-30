@@ -490,12 +490,14 @@ extends ItemView
 
 	/**
 	 * Paints the content of this container view.
+	 * This method adjusts the x and y offsets and forwards the call to paintContent(Container, Item[], int, int, int, int, int, int, int, int, Graphics)
 	 * 
 	 * @param x the left start position
 	 * @param y the upper start position
 	 * @param leftBorder the left border, nothing must be painted left of this position
 	 * @param rightBorder the right border, nothing must be painted right of this position
 	 * @param g the Graphics on which this item should be painted.
+	 * @see #paintContent(Container, Item[], int, int, int, int, int, int, int, int, Graphics)
 	 */
 	protected void paintContent( Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g ) {
 		//System.out.println("ContainerView: painting content for " + this + " with vertical-padding " + this.paddingVertical  + ", screen=" + this.parentContainer.getScreen());
@@ -514,6 +516,27 @@ extends ItemView
 		
 		Item[] myItems = this.parentContainer.getItems();
 		
+		paintContent( this.parentContainer, myItems, x, y, leftBorder, rightBorder, g.getClipX(), g.getClipY(), g.getClipWidth(), g.getClipHeight(), g);
+		
+	}
+	
+	/**
+	 * Paints the content of this container view.
+	 * This method calls 
+	 * 
+	 * @param container the parent container
+	 * @param myItems the items that should be painted
+	 * @param x the left start position
+	 * @param y the upper start position
+	 * @param leftBorder the left border, nothing must be painted left of this position
+	 * @param rightBorder the right border, nothing must be painted right of this position
+	 * @param clipX absolute horizontal clipping start
+	 * @param clipY absolute verical clipping start
+	 * @param clipWidth clipping width
+	 * @param clipHeight clipping height
+	 * @param g the Graphics on which this item should be painted.
+	 */
+	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
 		int focusedX = x;
 		int focusedY = 0;
 		int focusedRightBorder = rightBorder;
@@ -533,7 +556,7 @@ extends ItemView
 						item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
 					} else {
 						// the currently focused item is painted last
-						paintItem(item, i, x, y, leftBorder, rightBorder, g);
+						paintItem(item, i, x, y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
 						//item.paint(x, y, leftBorder, rightBorder, g);
 					}
 					y += item.itemHeight + this.paddingVertical;
@@ -564,7 +587,7 @@ extends ItemView
 						//System.out.println("focusedItem in table: x=" + focusedX + ", rocusedRightBorder=" + focusedRightBorder + ", rightBorder=" + rightBorder +  ", isInitialized=" + this.focusedItem.isInitialised +  ", itemWidth=" + item.getItemWidth( columnWidth, columnWidth ));
 						// item.getItemHeight( columnWidth, columnWidth );
 					} else {
-						paintItem( item, i, x, y, x, x + columnWidth, g );
+						paintItem( item, i, x, y, x, x + columnWidth, clipX, clipY, clipWidth, clipHeight,  g );
 						// item.paint(x, y, x, x + columnWidth, g);
 					}
 					x += columnWidth + this.paddingHorizontal;
@@ -587,14 +610,15 @@ extends ItemView
 		// paint the currently focused item:
 		if (this.focusedItem != null) {
 			//System.out.println("Painting focusedItem " + this.focusedItem + " with width=" + this.focusedItem.itemWidth + " and with increased colwidth of " + (focusedRightBorder - focusedX)  );
-			paintItem( this.focusedItem, this.focusedIndex, focusedX, focusedY, focusedX, focusedRightBorder, g);
+			paintItem( this.focusedItem, this.focusedIndex, focusedX, focusedY, focusedX, focusedRightBorder, clipX, clipY, clipWidth, clipHeight, g);
 			//this.focusedItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
 		}
 	}
-	
+
 	/**
 	 * Paints this item at the specified position.
 	 * Subclasses can override this method for taking advantage of the table support of the basic ContainerView class. 
+	 * When the item is outside of the given clipping area, it will not be painted.
 	 *  
 	 * @param item the item that needs to be painted
 	 * @param index the index of the item
@@ -602,12 +626,18 @@ extends ItemView
 	 * @param y the vertical position of the item
 	 * @param leftBorder the left border
 	 * @param rightBorder the right border
+	 * @param clipX absolute horizontal clipping start
+	 * @param clipY absolute verical clipping start
+	 * @param clipWidth clipping width
+	 * @param clipHeight clipping height
 	 * @param g the graphics context
 	 */
-	protected void paintItem( Item item, int index,  int x, int y, int leftBorder, int rightBorder, Graphics g ) {
+	protected void paintItem( Item item, int index,  int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g ) {
 		//#debug
 		System.out.println("ContainerView: painting item at (" +  x + ", " + y + ") " + item );
-		item.paint(x, y, leftBorder, rightBorder, g);
+		if (y < clipY + clipHeight && y + item.itemHeight > clipY && x < clipX + clipWidth && x + item.itemWidth > clipX) {
+			item.paint(x, y, leftBorder, rightBorder, g);
+		}
 	}
 
 	/**
