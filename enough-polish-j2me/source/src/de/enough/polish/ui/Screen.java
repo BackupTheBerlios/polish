@@ -1531,13 +1531,15 @@ implements AccessibleCanvas
 		//#if tmp.useScrollIndicator
 			this.paintScrollIndicator = false; // defaults to false
 		//#endif
-		if (containerHeight > height ) {
+		if (containerHeight > this.container.availableHeight ) {
 			//#if tmp.useScrollIndicator
 				this.paintScrollIndicator = true;
 				this.paintScrollIndicatorUp = (this.container.yOffset != 0);
 					//&& (this.container.focusedIndex != 0);
-				this.paintScrollIndicatorDown = ( (this.container.focusedIndex != this.container.size() - 1)
-						 && (this.container.yOffset + containerHeight > height) );
+				this.paintScrollIndicatorDown = (  
+						( (this.container.focusedIndex != this.container.size() - 1) 
+								|| (this.container.focusedItem != null && this.container.focusedItem.itemHeight > this.container.availableHeight) )
+						 && (this.container.getScrollYOffset() + containerHeight > this.container.availableHeight) );
 			//#endif
 		} else if (this.isLayoutVCenter) {
 			/*
