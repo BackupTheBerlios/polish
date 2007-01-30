@@ -64,7 +64,7 @@ public class FileSizeFunction extends ResourceFuntion {
 			String[] arguments, Environment env) 
 	throws IOException 
 	{
-		if (resource == null) {
+		if (resource == null || !(resource.exists())) {
 			return "-1";
 		} else {
 			return "" + resource.length();

@@ -492,6 +492,7 @@
 		<mapping from="plain" to="none" />
 		<mapping from="normal" to="none" />
 		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" />
+		<mapping from="chart-vertical-bars" to="new de.enough.polish.ui.chartviews.VerticalBarChartView()" />
 		<!--
 		<mapping from="" to="" />
 		-->
@@ -2066,6 +2067,13 @@
 		id="209"
 	/>
 	
+	<attribute
+		name="chart-vertical-bars-shadow-color"
+		type="color"
+		appliesTo="ChartItem, chart-vertical-bars view-type"
+		description="The color of the shadow for the bars. By default no shadows are painted."
+		id="210"
+	/>
 	
 	
 	

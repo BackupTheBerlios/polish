@@ -56,7 +56,7 @@ public class ExistsFunction extends ResourceFuntion {
 			String[] arguments, Environment env) 
 	throws IOException 
 	{
-		if (resource == null) {
+		if (resource == null || !(resource.exists())) {
 			return "false";
 		} else {
 			return "true";

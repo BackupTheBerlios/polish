@@ -67,7 +67,7 @@ public abstract class ResourceFuntion extends PropertyFunction {
 			throw new BuildException("Unable to use property function " + getClass().getName() + " with unknown resource \"" + input + "\": resource not found." );
 		}
 		try {
-		return process(resource, input, arguments, env);
+			return process(resource, input, arguments, env);
 		} catch (IOException e) {
 			throw new BuildException("Unable to handle property function " + getClass().getName() + " for resource \"" + input + "\": " + e.toString() );
 		}
@@ -76,7 +76,7 @@ public abstract class ResourceFuntion extends PropertyFunction {
 	/**
 	 * Evaluates the given resource.
 	 * 
-	 * @param resource the resource in question
+	 * @param resource the resource in question, can be not null even though it does not exist!
 	 * @param resourceName the name of the resource
 	 * @param arguments any arguments
 	 * @param env the environment
