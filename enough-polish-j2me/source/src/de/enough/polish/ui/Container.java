@@ -335,15 +335,20 @@ public class Container extends Item {
 				}
 			}
 			this.focusedItem = null;
-			this.autoFocusEnabled = true;
 		}
 		this.yOffset = 0;
 		this.targetYOffset = 0;
 		if (this.internalX != -9999) {
 			this.internalX = -9999;
 			this.internalY = 0;
+			// adjust scrolling:
 			if ( this.isFocused && this.parent instanceof Container ) {
-				((Container) this.parent).scroll( 0, this );
+				Container parentContainer = (Container) this.parent;
+				int scrollOffset = - parentContainer.getScrollYOffset();
+				if (scrollOffset > this.relativeY) {
+					int diff = scrollOffset - this.relativeY;
+					parentContainer.setScrollYOffset( diff - scrollOffset,  false );
+				}
 			}
 		}
 		if (this.isInitialised) {
@@ -447,17 +452,35 @@ public class Container extends Item {
 			// ignore the focusing of the same element:
 			return;
 		}
+		// indicating if either the former focusedItem or the new focusedItem has changed it's size or it's layout by losing/gaining the focus, 
+		// of course this can only work if this container is already initialized:
+		boolean isReinitializationRequired = false;
 		// first defocus the last focused item:
 		if (this.focusedItem != null) {
+			Item fItem = this.focusedItem;
+			int wBefore = fItem.itemWidth;
+			int hBefore = fItem.itemHeight;
+			int layoutBefore = fItem.layout;
 			if (this.itemStyle != null) {
-				this.focusedItem.defocus(this.itemStyle);
+				fItem.defocus(this.itemStyle);
 			} else {
 				//#debug error
 				System.out.println("Container: Unable to defocus item - no previous style found.");
-				this.focusedItem.defocus( StyleSheet.defaultStyle );
+				fItem.defocus( StyleSheet.defaultStyle );
+			}
+			if (this.isInitialised) {
+				int wAfter = fItem.getItemWidth( this.contentWidth, this.contentWidth );
+				int hAfter = fItem.itemHeight;
+				int layoutAfter = fItem.layout;
+				if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
+					isReinitializationRequired = true;
+					fItem.isInitialised = false; // could be that a container view poses restrictions on the possible size, i.e. within a table
+				}
 			}
 		}
-		
+		int wBefore = item.itemWidth;
+		int hBefore = item.itemHeight;
+		int layoutBefore = item.layout;
 		this.itemStyle = item.focus( this.focusedStyle, direction );
 		//#ifdef polish.debug.error
 			if (this.itemStyle == null) {
@@ -478,6 +501,14 @@ public class Container extends Item {
 		if  (this.isInitialised) {
 			// this container has been initialised already,
 			// so the dimensions are known.
+			int wAfter = item.getItemWidth( this.contentWidth, this.contentWidth );
+			int hAfter = item.itemHeight;
+			int layoutAfter = item.layout;
+			if (wAfter != wBefore || hAfter != hBefore || layoutAfter != layoutBefore ) {
+				isReinitializationRequired = true;
+				item.isInitialised = false; // could be that a container view poses restrictions on the possible size, i.e. within a table
+			}
+
 			if (item.internalX != -9999) {
 				this.internalX =  item.relativeX + item.contentX + item.internalX;
 				this.internalY = item.relativeY + item.contentY + item.internalY;
@@ -538,7 +569,9 @@ public class Container extends Item {
 			this.isScrollRequired = true;
 			
 		}
-		this.isInitialised = false;
+		if (this.isInitialised) {
+			this.isInitialised = !isReinitializationRequired;
+		}
 	}
 	
 	/**
@@ -654,15 +687,18 @@ public class Container extends Item {
 					System.out.println("Container/View: autofocusing element " + this.autoFocusIndex);
 					this.autoFocusEnabled = false;
 					requireScrolling = true;
-					if (this.autoFocusIndex < myItems.length  && this.autoFocusIndex >= 0 ) {
-						Item item = myItems [ this.autoFocusIndex ];
-						if (item.appearanceMode != Item.PLAIN) {
-							// make sure that the item has applied it's own style first:
-							item.getItemHeight( firstLineWidth, lineWidth );
-							// now focus the item:
-							focus( this.autoFocusIndex, item, 0 );
-							this.containerView.focusedIndex = this.autoFocusIndex;
-							this.containerView.focusedItem = this.focusedItem;
+					if (this.autoFocusIndex >= 0 ) {
+						for (int i = this.autoFocusIndex; i < myItems.length; i++) {
+							Item item = myItems[i];
+							if (item.appearanceMode != Item.PLAIN) {
+								// make sure that the item has applied it's own style first:
+								item.getItemHeight( firstLineWidth, lineWidth );
+								// now focus the item:
+								focus( i, item, 0 );
+								this.containerView.focusedIndex = i;
+								this.containerView.focusedItem = item;
+								break;
+							}							
 						}
 					}
 				}
