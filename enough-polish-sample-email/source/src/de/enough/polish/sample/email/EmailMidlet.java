@@ -27,17 +27,20 @@ package de.enough.polish.sample.email;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
+import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.ItemStateListener;
 import javax.microedition.lcdui.StringItem;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import de.enough.polish.ui.ListItem;
 import de.enough.polish.ui.TreeItem;
 import de.enough.polish.ui.UiAccess;
 
@@ -111,7 +114,7 @@ implements CommandListener, ItemStateListener
 		detail = new StringItem( "Subject: ", "String Theory");
 		tree.appendToNode( email, detail );
 		//#style mailDetail
-		detail = new StringItem( "Text: ", "Or is m-theory with multidimensional branes?!");
+		detail = new StringItem( "Text: ", "Or is it m-theory with multidimensional branes?!");
 		tree.appendToNode( email, detail );
 
 		//#style mailbox
@@ -124,7 +127,18 @@ implements CommandListener, ItemStateListener
 		//#style mailDetail
 		detail = new StringItem( "Text: ", "A rider in the night.");
 		tree.appendToNode( email, detail );
-		
+
+		//#style mailbox
+		node = tree.appendToRoot("Sent", null);
+		//#style mailSummary
+		email = tree.appendToNode(node, "Steve Jobs", null );
+		//#style mailDetail
+		detail = new StringItem( "Subject: ", "iPhone?");
+		tree.appendToNode( email, detail );
+		//#style mailDetail
+		detail = new StringItem( "Text: ", "Gimme that phone, please :-)  - and don't forget the Java support!");
+		tree.appendToNode( email, detail );
+
 		form.append( tree );
 		form.setCommandListener( this );
 		form.setItemStateListener( this );
@@ -132,6 +146,7 @@ implements CommandListener, ItemStateListener
 		form.addCommand( this.exitCommand );
 		UiAccess.addSubCommand( this.createNewMailCommand, this.createNewCommand, form );
 		UiAccess.addSubCommand( this.createNewIMCommand, this.createNewCommand, form );
+		//form.addCommand( new Command("test", Command.SCREEN, 10) );
 		
 		this.mainScreen = form;
 		
@@ -175,11 +190,17 @@ implements CommandListener, ItemStateListener
 				form.addCommand( this.abortCommand );
 				this.createMessageForm = form;
 				this.display.setCurrent( form );
+			} else {
+				//#style mailAlert
+				Alert alert = new Alert( "Not supported", 
+						"The action is not yet implemented.", null, AlertType.INFO );
+				this.display.setCurrent( alert, this.mainScreen );
 			}
 		} else if (disp == this.createMessageForm ){
 			if (cmd == this.okCommand) {
 				//#debug
 				System.out.println("creating message for " + this.createMessageForm.getReceiver() + " from " + this.createMessageForm.getSender() );
+				//#style mailAlert
 				Alert alert = new Alert( "Creating New Message", 
 						"Receiver: " + this.createMessageForm.getReceiver() 
 						+ "\nSender: " + this.createMessageForm.getSender(), null, AlertType.INFO );
@@ -196,5 +217,6 @@ implements CommandListener, ItemStateListener
 	public void itemStateChanged(Item item) {
 		System.out.println("ItemStateChanged " + item);
 	}
+
 
 }

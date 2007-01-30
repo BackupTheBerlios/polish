@@ -49,11 +49,12 @@ import de.enough.polish.util.Locale;
 public class CreateMessageForm extends Form  {
 		
 	private final static String[] RECEIVERS = new String[] {
-		"aaron@somewhere.com", "ajax@hype.com", "asynchron@performance.com", "best@j2mepolish.org",
-		"beta@j2mepolish.org", "circus@ms.com", "doing@going.com", "info@enough.de", "j2mepolish@enough.de"		
+		"google.com", "yahoo.com", "msn.com", "somewhere.com"
+//		"aaron@somewhere.com", "ajax@hype.com", "asynchron@performance.com", "best@j2mepolish.org",
+//		"beta@j2mepolish.org", "circus@ms.com", "doing@going.com", "info@enough.de", "j2mepolish@enough.de"		
 	};
 	private final static String[] SENDERS = new String[] {
-		"auser@somewhere.net", "buser@other.org", "donkey@p2p.net", "gold@ironr.us", "j2me@polish.org"
+		"auser@somewhere.net", "buser@other.org", "donkey@p2p.net", "gold@ironr.us", "info@enough.de", "j2mepolish@enough.de", "relative@einstein.net", "uncertainty@heisenberg.net", "you@conquertheworld.com"
 	};
 	private final static String DEFAULT_SENDER = "j2me@polish.org";
 	         
@@ -67,7 +68,7 @@ public class CreateMessageForm extends Form  {
 	 * @param title the title of the frame
 	 */
 	public CreateMessageForm(String title) {
-		//#if polish.usePolishGui
+		//#if polish.usePolishGui && polish.css.style.createMessageForm
 			//#style createMessageForm?
 			//# this( title );
 		//#else
@@ -76,7 +77,6 @@ public class CreateMessageForm extends Form  {
 	}
 	
 	
-	//#if polish.usePolishGui
 	/**
 	 * Creates a new form for writing an email.
 	 * 
@@ -94,6 +94,9 @@ public class CreateMessageForm extends Form  {
 		String appendDelimiter = ";";
 		//#style addressInput
 		this.receiver = new ChoiceTextField( "to: " , null, 255, TextField.EMAILADDR, RECEIVERS, allowFreeText, appendSelectedChoice, appendDelimiter );
+		char choiceTriggerChar = '@';
+		boolean allowChoicesBeforeChoiceTriggerHasBeenEntered = false;
+		this.receiver.setChoiceTrigger( choiceTriggerChar, allowChoicesBeforeChoiceTriggerHasBeenEntered );
 		append( this.receiver );
 		allowFreeText = false;
 		//#style addressInput
@@ -102,8 +105,10 @@ public class CreateMessageForm extends Form  {
 		//#style input, addressInput
 		this.text = new TextField( "message: ", null, 255, TextField.ANY );
 		append( this.text );
+		//#style input, addressInput
+		this.text = new TextField( "message2: ", null, 255, TextField.ANY );
+		append( this.text );
 	}
-	//#endif
 	
 	/**
 	 * Retrieves the reveiver for the email

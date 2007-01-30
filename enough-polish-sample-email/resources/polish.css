@@ -19,13 +19,15 @@
   * can be changed here. 
   */
 colors {
-	bgColor:  rgb(132,143,96);
-	focusedBgColor:  rgb(238,241,229);
-	translucentBgColor:  argb(130, 238,241,229);
+	screenColorTop: #fff;
+	screenColorBottom: #ddd;
+	bgColor:  #eee;
+	focusedBgColor:  #fff;
 	fontColor: rgb( 30, 85, 86 );
-	focusedFontColor: rgb(238,241,229);
+	focusedFontColor: #000;
+	focusedBorderColor: focusedFontColor;
 	
-	mailBoxBgColor: bgColor;
+	mailBoxBgColor: #f00;
 	mailBoxFontColor: focusedFontColor;
 	
 	mailSummaryBgColor: rgb( 200, 0, 0 );
@@ -37,21 +39,33 @@ colors {
 
 .mailForm {
 	padding: 5;
-	padding-left: 15;
-	padding-right: 15;
+	padding-left: 5;
+	padding-right: 5;
 	background {
-		color: focusedBgColor;
+		type: gradient;
+		top: title;
+		bottom: menubar;
+		top-color: screenColorTop;
+		bottom-color: screenColorBottom;
+		start: 30%;
+		end: 90%;
 	}
 	layout: horizontal-expand | horizontal-center | top;
 }
 
+.mailAlert extends .mailForm {
+	layout: horizontal-center | bottom | horizontal-shrink | vertical-shrink;
+	repaint-previous-screen: true;
+}
+
 .mailTree {
-	skip-set-clip: true;
+	
 }
 
 .mailBox {
 	padding: 3;
 	background {
+		type: round-rect;
 		color: mailBoxBgColor;
 	}
 	font {
@@ -77,7 +91,7 @@ colors {
 
 
 .mailDetail {
-	padding: 4;
+	padding: 0;
 	background {
 		color: mailDetailBgColor;
 	}
@@ -87,6 +101,7 @@ colors {
 		color: mailDetailFontColor;
 	}
 }
+
 
 .createMessageForm extends .mailForm {
 }
@@ -135,11 +150,13 @@ info {
 	layout: left | expand;	
 }
 
+/*
 .textFieldSymbolList {
 	padding: 10;
 	columns: 5;
 	layout: vertical-shrink | horizontal-shrink | center | vertical-center;
 }
+*/
 
 .addressChoice {
 	padding: 2;
@@ -171,15 +188,16 @@ info {
   */
 focused {
 	padding: 1;
-	border {
+	background {
 		type: round-rect;
 		arc: 4;
-		border-color: fontColor;
+		color: focusedBgColor;
+		border-color: focusedBorderColor;
 		border-width: 2;
 	}
 	font {
 		style: bold;
-		color: fontColor;
+		color: focusedFontColor;
 		size: small;
 	}
 	layout: expand | left;	
@@ -192,10 +210,6 @@ focused {
   */
 title {
 	padding: 2;
-	margin-top: 0;
-	margin-bottom: 5;
-	margin-left: 0;
-	margin-right: 0;
 	font-face: proportional;
 	font-size: large;
 	font-style: bold;
@@ -203,9 +217,20 @@ title {
 	background-color: bgColor;
 	border: none;
 	layout: horizontal-center | horizontal-expand;
+	//#if polish.midp2
+		text-effect: vertical-gradient;
+		text-vertical-gradient-start-color: #ddd;
+		text-vertical-gradient-end-color: #000;		
+	//#endif
 }
 
-/*************   MENU BAR *************/
+/*************   SCROLL BAR   *************/
+scrollbar {
+	scrollbar-slider-color: #333;
+	scrollbar-slider-width: 3;
+}
+
+/*************   MENU BAR     *************/
 
 menubar
 {
@@ -228,13 +253,11 @@ menu {
 	}
 	focused-style: .menuFocused;
 	font-color: focusedFontColor;
-	font-style: bold;
-	menubar-color: bgColor;
 }
 
 /** Style for the first layer of subcommands: **/
 menu1 extends menu {
-	background-color: yellow;
+	background-color: argb(150, 255, 255, 0 );
 	background-type: simple;
       layout: right;
       margin-bottom: 4;
@@ -269,7 +292,7 @@ menuItem {
 	//#if ${ exists( arrowRight.png ) }
 		command-child-indicator: url(arrowRight.png);
 	//#else
-		command-child-indicator-color: green;
+		command-child-indicator-color: blue;
 		command-child-indicator-width: 8;
 		command-child-indicator-height: 10;
 	//#endif
@@ -289,7 +312,7 @@ menuItem {
 leftcommand
 {
 	margin: 0;
-        margin-horizontal: 10;
+    margin-horizontal: 10;
 	padding-top: 3;
 	padding-bottom: 0;
 	font-color: black;
