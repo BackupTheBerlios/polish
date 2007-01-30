@@ -61,13 +61,13 @@ public class MIDP2LayoutView extends ContainerView {
         static private final int LAYOUT_VERTICAL = Item.LAYOUT_TOP
                         | Item.LAYOUT_VCENTER | Item.LAYOUT_BOTTOM;
 
-        class RowItem {
-                int x;
-                int y;
-                int width;
-                int height;
-                Item item;
-        }
+//        class RowItem {
+//                int x;
+//                int y;
+//                int width;
+//                int height;
+//                Item item;
+//        }
         private ArrayList allRows;
         private ArrayList currentRow;
         private int rowWidth;
@@ -114,7 +114,7 @@ public class MIDP2LayoutView extends ContainerView {
                     appendItemToRow(i, item, firstLineWidth, lineWidth);
                 }
                 // Make the remaining items a final line
-                rowBreak(lineWidth);
+                rowBreak(lineWidth, 0 );
                 if (!hasFocusableItem) {
                 	this.appearanceMode = Item.PLAIN;
                 } else {
@@ -130,22 +130,28 @@ public class MIDP2LayoutView extends ContainerView {
         */
 
         void appendItemToRow(int index, Item item, int firstLineWidth, int lineWidth) {
+	        	int itemLayout = item.getLayout();
+	        	boolean isExpand = (itemLayout & Item.LAYOUT_EXPAND) == Item.LAYOUT_EXPAND;
+	        	if (isExpand) {
+	        		item.setLayout( itemLayout ^ Item.LAYOUT_EXPAND );
+	        	}
                 if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
                         focusItem(index, item);
                         this.focusFirstElement = false;
                 }
                 int width = item.getItemWidth(firstLineWidth, lineWidth);
                 int height = item.getItemHeight(firstLineWidth, lineWidth);
-                int layout = item.getLayout();
-                
+                if (isExpand) {
+                	item.setLayout(itemLayout);
+                }
                 
 
-                if ((Item.LAYOUT_NEWLINE_BEFORE == (layout & Item.LAYOUT_NEWLINE_BEFORE))
+                if ((Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE) || isExpand )
                                 || (this.rowWidth + this.paddingHorizontal + width > lineWidth)) 
                 {
                         // Break if the NEWLINE_BEFORE is specified or not enough
                         // room in the current row
-                        rowBreak(lineWidth);
+                        rowBreak(lineWidth, itemLayout);
                 }
 
                 this.rowWidth += width;
@@ -158,18 +164,18 @@ public class MIDP2LayoutView extends ContainerView {
                     this.rowWidth += this.paddingHorizontal;
                 }
 
-                RowItem rowItem = new RowItem();
-                rowItem.width = width;
-                rowItem.height = height;
-                rowItem.item = item;
-                this.currentRow.add(rowItem);
+//                RowItem rowItem = new RowItem();
+//                rowItem.width = width;
+//                rowItem.height = height;
+//                rowItem.item = item;
+                this.currentRow.add(item);
 
-                if (Item.LAYOUT_NEWLINE_AFTER == (layout & Item.LAYOUT_NEWLINE_AFTER)) {
-                        rowBreak(lineWidth);
+                if (Item.LAYOUT_NEWLINE_AFTER == (itemLayout & Item.LAYOUT_NEWLINE_AFTER)) {
+                        rowBreak(lineWidth, itemLayout);
                 }
         }
 
-        private void rowBreak(int lineWidth) {
+        private void rowBreak(int lineWidth, int itemLayout) {
                 if (this.currentRow.size() == 0) {
                         return; // Current row is empty
                 }
@@ -179,45 +185,52 @@ public class MIDP2LayoutView extends ContainerView {
                 // Take away all the horizontal paddings
                 int remainingWidth = lineWidth
                                 - ((this.currentRow.size() - 1) * this.paddingHorizontal);
-                RowItem[] requiredExpanded = null;
+//                RowItem[] requiredExpanded = null;
+                //Item[] requiredExpanded = null;
                 int requiredExpandedIndex = 0;
                 int top = this.currentContentHeight;
                 int bottom = top + this.rowHeight;
-                this.currentContentHeight += this.rowHeight;
+                this.currentContentHeight += this.rowHeight + this.paddingVertical;
                 int currentWidth = 0;
                 for (int i = 0; i < this.currentRow.size(); i++) {
-                    RowItem rowItem = (RowItem) this.currentRow.get(i);
-                    rowItem.item.relativeY = top;
-                    rowItem.item.relativeX = currentWidth;
-                    currentWidth += rowItem.width;
-                    remainingWidth -= rowItem.width;
-                    if (Item.LAYOUT_EXPAND == (rowItem.item.getLayout() & Item.LAYOUT_EXPAND)) {
-                        if (requiredExpanded == null) {
-                            requiredExpanded = new RowItem[this.currentRow.size() - i];
-                        }
-                        requiredExpanded[requiredExpandedIndex++] = rowItem;
+//                    RowItem rowItem = (RowItem) this.currentRow.get(i);
+                    Item rowItem = (Item) this.currentRow.get(i);
+                    rowItem.relativeY = top;
+                    rowItem.relativeX = currentWidth;
+                    if (Item.LAYOUT_EXPAND == (itemLayout & Item.LAYOUT_EXPAND)) {
+                    	rowItem.getItemWidth( lineWidth - currentWidth, lineWidth - currentWidth );
+//                        if (requiredExpanded == null) {
+////                            requiredExpanded = new RowItem[this.currentRow.size() - i];
+//                        	requiredExpanded = new Item[this.currentRow.size() - i];
+//                        }
+//                        requiredExpanded[requiredExpandedIndex++] = rowItem;
+                    	
                     }
+                    currentWidth += rowItem.itemWidth;
+                    remainingWidth -= rowItem.itemWidth;
                 }
                 // Distribute the remaining width to the items that require expanding
-                if (requiredExpanded != null) {
-                    int expansion = remainingWidth / requiredExpandedIndex;
-                    remainingWidth = remainingWidth % requiredExpandedIndex;
-                    for (int i = 0; i < requiredExpandedIndex; i++) {
-                        RowItem rowItem = requiredExpanded[i];
-                        rowItem.width += expansion;
-                        if (i == 0) {
-                            // The first item get all the rounding
-                            rowItem.width += remainingWidth;
-                        }
-                    }
-                }
+//                if (requiredExpanded != null) {
+//                    int expansion = remainingWidth / requiredExpandedIndex;
+//                    remainingWidth = remainingWidth % requiredExpandedIndex;
+//                    for (int i = 0; i < requiredExpandedIndex; i++) {
+////                        RowItem rowItem = requiredExpanded[i];
+//                    	Item rowItem = requiredExpanded[i];
+//                        rowItem.width += expansion;
+//                        if (i == 0) {
+//                            // The first item get all the rounding
+//                            rowItem.width += remainingWidth;
+//                        }
+//                    }
+//                }
 
                 // Horizontal Positioning determined by the first item in a row
-                RowItem rowItem = (RowItem) this.currentRow.get(0);
-                int rowHorizontalLayout = (rowItem.item.getLayout() & LAYOUT_HORIZONTAL);
-                if (requiredExpanded != null) {
-                	rowHorizontalLayout = Item.LAYOUT_LEFT;
-                }
+//                RowItem rowItem = (RowItem) this.currentRow.get(0);
+                Item rowItem = (Item) this.currentRow.get(0);
+                int rowHorizontalLayout = (itemLayout & LAYOUT_HORIZONTAL);
+//                if (requiredExpanded != null) {
+//                	rowHorizontalLayout = Item.LAYOUT_LEFT;
+//                }
 
                 int x = 0;
                 switch (rowHorizontalLayout) {
@@ -231,29 +244,50 @@ public class MIDP2LayoutView extends ContainerView {
                 }
 
                 for (int i = 0; i < this.currentRow.size(); i++) {
-	                rowItem = (RowItem) this.currentRow.get(i);
-	                rowItem.x = x;
-	                x += rowItem.width + this.paddingHorizontal; // Next Item
-	
+//	                rowItem = (RowItem) this.currentRow.get(i);
+//	                rowItem.x = x;
+//	                x += rowItem.width + this.paddingHorizontal; // Next Item
+
 	                /**
 	                 * Vertical Layout starts here
 	                 */
-	                int layout = rowItem.item.getLayout();
-	                rowItem.y = this.contentHeight;
-	                if (Item.LAYOUT_VEXPAND == (layout & Item.LAYOUT_VEXPAND)) {
-                        // Vertical expansion is required, ignore all other
-                        rowItem.height = this.rowHeight;
-	                } else {
-                        layout = (layout & LAYOUT_VERTICAL);
-                        switch (layout) {
-	                        case Item.LAYOUT_VCENTER :
-	                            rowItem.y += ((this.rowHeight - rowItem.height) >> 1);
-	                            break;
-                            case Item.LAYOUT_BOTTOM :
-                                rowItem.y += this.rowHeight - rowItem.height;
-                                break;
-                        }
-	                }
+//	                int layout = rowItem.item.getLayout();
+//	                rowItem.y = this.contentHeight;
+//	                if (Item.LAYOUT_VEXPAND == (layout & Item.LAYOUT_VEXPAND)) {
+//                        // Vertical expansion is required, ignore all other
+//                        rowItem.height = this.rowHeight;
+//	                } else {
+//                        layout = (layout & LAYOUT_VERTICAL);
+//                        switch (layout) {
+//	                        case Item.LAYOUT_VCENTER :
+//	                            rowItem.y += ((this.rowHeight - rowItem.height) >> 1);
+//	                            break;
+//                            case Item.LAYOUT_BOTTOM :
+//                                rowItem.y += this.rowHeight - rowItem.height;
+//                                break;
+//                        }
+//	                }
+                	rowItem = (Item) this.currentRow.get(i);
+                	rowItem.relativeX = x;
+                	x += rowItem.itemWidth + this.paddingHorizontal; // Next Item
+
+                	if (Item.LAYOUT_VEXPAND == (itemLayout & Item.LAYOUT_VEXPAND)) {
+		                rowItem.relativeY = this.contentHeight;
+		                if (Item.LAYOUT_VEXPAND == (itemLayout & Item.LAYOUT_VEXPAND)) {
+	                        // Vertical expansion is required, ignore all other
+	                        //rowItem.height = this.rowHeight;
+		                } else {
+		                	itemLayout = (itemLayout & LAYOUT_VERTICAL);
+	                        switch (itemLayout) {
+		                        case Item.LAYOUT_VCENTER :
+		                            rowItem.relativeY += ((this.rowHeight - rowItem.itemHeight) >> 1);
+		                            break;
+	                            case Item.LAYOUT_BOTTOM :
+	                                rowItem.relativeY += this.rowHeight - rowItem.itemHeight;
+	                                break;
+	                        }
+		                }
+                	}
                 }
 
                 if (this.allRows.size() == 0) {
@@ -284,13 +318,22 @@ public class MIDP2LayoutView extends ContainerView {
                 for (int i = 0; i < this.allRows.size(); i++) {
                         ArrayList row = (ArrayList) this.allRows.get(i);
                         for (int j = 0; j < row.size(); j++) {
-                                RowItem rowItem = (RowItem) row.get(j);
-                                int xItem = x + rowItem.x;
-                                rowItem.item.paint(xItem, 
-                                		y + rowItem.y, 
-										Math.max(leftBorder, xItem), 
-										Math.min(rightBorder, xItem + rowItem.width), 
-										g );
+                            Item rowItem = (Item) row.get(j);
+                            int xItem = x + rowItem.relativeX;
+                            rowItem.paint( xItem, y + rowItem.relativeY, 
+                            		Math.max(leftBorder, xItem), Math.min(rightBorder, xItem + rowItem.itemWidth),
+                            		g );
+                            
+                        	
+//                                RowItem rowItem = (RowItem) row.get(j);
+//                                int xItem = x + rowItem.x;
+//                                g.setColor( 0xFFFF00 );
+//                                g.drawLine( xItem + 1, y + rowItem.item.relativeY, xItem + rowItem.width - 2,  y + rowItem.item.relativeY );
+//                                rowItem.item.paint(xItem, 
+//                                		y + rowItem.y, 
+//										Math.max(leftBorder, xItem), 
+//										Math.min(rightBorder, xItem + rowItem.width), 
+//										g );
                         }
                 }
         }
@@ -306,7 +349,7 @@ public class MIDP2LayoutView extends ContainerView {
                 if (this.focusedIndex >= items.length) {
                         for(int i=0; i < items.length; i++) {
                                 if(items[i].appearanceMode != Item.PLAIN) {
-                                        focusItem(i, items[i]);
+                                        focusItem(i, items[i], gameAction );
                                         return items[i];
                                 }
                         }
@@ -320,15 +363,25 @@ public class MIDP2LayoutView extends ContainerView {
                 for (int i = 0; i < this.allRows.size(); i++) {
                         ArrayList row = (ArrayList) this.allRows.get(i);
                         for (int j = 0; j < row.size(); j++) {
-                                RowItem rowItem = (RowItem) row.get(j);
-                                if (rowItem.item == focusedItem) {
-                                        rowIndex = i;
-                                        //colIndex = j;
-                                        xOffset = rowItem.x + (rowItem.width >> 1);
-                                        i = 10000;
-                                        break;
-                                }
-                        }
+                            Item rowItem = (Item) row.get(j);
+                            if (rowItem == focusedItem) {
+                                    rowIndex = i;
+                                    //colIndex = j;
+                                    xOffset = rowItem.relativeX + (rowItem.itemWidth >> 1);
+                                    i = 10000;
+                                    break;
+                            }
+                    }
+//                        for (int j = 0; j < row.size(); j++) {
+//                                RowItem rowItem = (RowItem) row.get(j);
+//                                if (rowItem.item == focusedItem) {
+//                                        rowIndex = i;
+//                                        //colIndex = j;
+//                                        xOffset = rowItem.x + (rowItem.width >> 1);
+//                                        i = 10000;
+//                                        break;
+//                                }
+//                        }
                 }
 
                 Item item = null;
@@ -379,7 +432,7 @@ public class MIDP2LayoutView extends ContainerView {
                 if (item != null) {
                         for (int i = 0; i < items.length; i++) {
                                 if (items[i] == item) {
-                                        focusItem(i, item);
+                                        focusItem(i, item, gameAction);
                                         break;
                                 }
                         }
@@ -387,9 +440,10 @@ public class MIDP2LayoutView extends ContainerView {
                 else {
                         if (this.focusedIndex >= items.length) {
                                 for(int i=0; i < items.length; i++) {
-                                        if(items[i].appearanceMode != Item.PLAIN) {
-                                                focusItem(i, items[i]);
-                                                return items[i];
+                                        Item focItem = items[i];
+										if(focItem.appearanceMode != Item.PLAIN) {
+                                                focusItem(i, focItem, gameAction );
+                                                return focItem;
                                         }
                                 }
                         }
@@ -398,24 +452,46 @@ public class MIDP2LayoutView extends ContainerView {
         }
 
         private Item getItemByHorizontalOffset(ArrayList row, int xOffset) {
-                Item item = null;
-                RowItem rowItem = null;
-                int distance = 60000;
-                int itemOffset = 0;
-                int itemDistance = 0;
-                for (int i = 0; i < row.size(); i++) {
-                        rowItem = (RowItem) row.get(i);
-                        if (rowItem.item.appearanceMode != Item.PLAIN) {
-                                itemOffset = rowItem.x + (rowItem.width >> 1);
-                                itemDistance = xOffset - itemOffset;
-                                if(itemDistance < 0) itemDistance = -itemDistance;
+            Item item = null;
+            Item rowItem = null;
+            int distance = 60000;
+            int itemOffset = 0;
+            int itemDistance = 0;
+            for (int i = 0; i < row.size(); i++) {
+                    rowItem = (Item) row.get(i);
+                    if (rowItem.appearanceMode != Item.PLAIN) {
+                            itemOffset = rowItem.relativeX + (rowItem.itemWidth >> 1);
+                            itemDistance = xOffset - itemOffset;
+                            if(itemDistance < 0) {
+                            	itemDistance = -itemDistance;
+                            }
 
-                                if (itemDistance < distance) {
-                                        distance = itemDistance;
-                                        item = rowItem.item;
-                                }
-                        }
-                }
-                return item;
+                            if (itemDistance < distance) {
+                                    distance = itemDistance;
+                                    item = rowItem;
+                            }
+                    }
+            }
+            return item;
+
+//                Item item = null;
+//                RowItem rowItem = null;
+//                int distance = 60000;
+//                int itemOffset = 0;
+//                int itemDistance = 0;
+//                for (int i = 0; i < row.size(); i++) {
+//                        rowItem = (RowItem) row.get(i);
+//                        if (rowItem.item.appearanceMode != Item.PLAIN) {
+//                                itemOffset = rowItem.x + (rowItem.width >> 1);
+//                                itemDistance = xOffset - itemOffset;
+//                                if(itemDistance < 0) itemDistance = -itemDistance;
+//
+//                                if (itemDistance < distance) {
+//                                        distance = itemDistance;
+//                                        item = rowItem.item;
+//                                }
+//                        }
+//                }
+//                return item;
         }
 }
