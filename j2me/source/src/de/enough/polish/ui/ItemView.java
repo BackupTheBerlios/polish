@@ -50,7 +50,7 @@ public abstract class ItemView {
 	protected boolean isLayoutRight;
 	protected Item parentItem;
 	protected boolean isFocused;
-
+	
 	/**
 	 * Initialises this item view. 
 	 * The implementation needs to calculate and set the contentWidth and 
@@ -78,7 +78,36 @@ public abstract class ItemView {
 	 */
 	protected abstract void paintContent( Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g );
 	
-	
+	/**
+	 * Calls the original initContent method on the parent.
+	 * This is only useful when the parent should later onward paint (parts) of the item's interface.
+	 * contentWidth and contentHeight fields are set according to the parent results.
+	 * 
+	 * @param parent the parent item
+	 * @param firstLineWidth the maximum width of the first line 
+	 * @param lineWidth the maximum width of any following lines
+	 */
+	protected void initContentByParent( Item parent, int firstLineWidth, int lineWidth) {
+		parent.initContent(firstLineWidth, lineWidth);
+		this.contentWidth = parent.contentWidth;
+		this.contentHeight = parent.contentHeight;
+	}
+
+	/**
+	 * Paints this item view by the parent.
+	 * This could make sense if a specific view is only useful for a special case of the parent item.
+	 * 
+	 * @param parent the parent item
+	 * @param x the left start position
+	 * @param y the upper start position
+	 * @param leftBorder the left border, nothing must be painted left of this position
+	 * @param rightBorder the right border, nothing must be painted right of this position
+	 * @param g the Graphics on which this item should be painted.
+	 */
+	protected void paintContentByParent( Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g ) {
+		parent.paintContent(x, y, leftBorder, rightBorder, g);
+	}
+
 
 		
 	/**

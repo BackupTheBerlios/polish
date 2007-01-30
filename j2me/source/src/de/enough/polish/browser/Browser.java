@@ -46,12 +46,12 @@ import de.enough.polish.xml.PullParser;
 import de.enough.polish.xml.XmlPullParser;
 
 //#if polish.LibraryBuild
-//# import de.enough.polish.ui.FakeContainerCustomItem;
+	import de.enough.polish.ui.FakeContainerCustomItem;
 //#else
-import de.enough.polish.ui.Container;
+	//# import de.enough.polish.ui.Container;
+//#endif
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
-//#endif
 import de.enough.polish.ui.Style;
 
 /**
@@ -69,9 +69,9 @@ import de.enough.polish.ui.Style;
  */
 public abstract class Browser
 //#if polish.LibraryBuild
-	//#  extends FakeContainerCustomItem
+	extends FakeContainerCustomItem
 //#else
-  extends Container
+  //# extends Container
 //#endif
 implements Runnable
  {
@@ -123,7 +123,7 @@ private String nextUrl;
    */
   public Browser( ProtocolHandler[] protocolHandlers )
   {
-	  //#if polish.css.style.browser
+	  //#if polish.css.style.browser && !polish.LibraryBuild
 	  	//#style browser
 	  	//# this(protocolHandlers);
 	  //#else
@@ -149,7 +149,7 @@ private String nextUrl;
    */
   public Browser(  String[] tagNames, TagHandler[] tagHandlers, ProtocolHandler[] protocolHandlers )
   {
-	  //#if polish.css.style.browser
+	  //#if polish.css.style.browser && !polish.LibraryBuild
 	  	//#style browser
 	  	//# this(tagNames, tagHandlers, protocolHandlers);
 	  //#else

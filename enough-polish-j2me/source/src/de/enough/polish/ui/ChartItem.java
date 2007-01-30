@@ -245,16 +245,18 @@ public class ChartItem
 		//#endif
 
 	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeCustomItem#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
+	
+	/**
+	 * Paints the labels and the axis of this chart.
+	 * 
+	 * @param x the left start position
+	 * @param y the upper start position
+	 * @param leftBorder the left border, nothing must be painted left of this position
+	 * @param rightBorder the right border, nothing must be painted right of this position
+	 * @param g the Graphics on which this item should be painted.
+	 * @return the y position of the baseline
 	 */
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		// TODO robertvirkus cache diagram in an image at least on nokia-ui-api and MIDP 2.0+ devices
-		int[][] sequences = this.dataSequences;
-		if (sequences == null) {
-			return;
-		}
+	public int paintGrid(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		int dataLength = this.dataSequences[0].length - 1;
 		int xAxisWidth = (dataLength*this.scaleFactorX)/100;
 		int yAxisHeight = (Math.abs( this.dataMaximum - this.dataMinimum )  * this.scaleFactorY) /100;
@@ -299,6 +301,20 @@ public class ChartItem
 		g.drawLine( x, baseLineY, x + xAxisWidth,  baseLineY );
 		g.drawLine( x, y, x, y +  yAxisHeight );
 		
+		return baseLineY;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeCustomItem#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
+	 */
+	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		// TODO robertvirkus cache diagram in an image at least on nokia-ui-api and MIDP 2.0+ devices
+		int[][] sequences = this.dataSequences;
+		if (sequences == null) {
+			return;
+		}
+
+		int baseLineY = paintGrid(x, y, leftBorder, rightBorder, g);
 		
 		// draw data:
 		for (int i = 0; i < sequences.length; i++) {
@@ -500,5 +516,26 @@ public class ChartItem
 	public void setColors(int[] colors) {
 		this.colors = colors;
 	}
+
+	/**
+	 * Retrieves the scale factor used by the default implementation.
+	 * This method is usually only interesting for specifc chart ItemViews.
+	 *  
+	 * @return the vertical scale factor
+	 */
+	public int getScaleFactorY() {
+		return this.scaleFactorY;
+	}
+	
+	/**
+	 * Retrieves the scale factor used by the default implementation.
+	 * This method is usually only interesting for specifc chart ItemViews.
+	 *  
+	 * @return the honrizontal scale factor
+	 */
+	public int getScaleFactorX() {
+		return this.scaleFactorX;
+	}
+
 
 }

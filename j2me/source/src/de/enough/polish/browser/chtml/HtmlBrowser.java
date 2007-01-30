@@ -58,7 +58,7 @@ public class HtmlBrowser
   	 */
   public HtmlBrowser()
   {
-	  //#if polish.css.style.browser
+	  //#if polish.css.style.browser && !polish.LibraryBuild
 	  	//#style browser
 	  	//# this();	
 	  //#else
@@ -88,7 +88,7 @@ public class HtmlBrowser
    */
   public HtmlBrowser( HtmlTagHandler tagHandler, ProtocolHandler[] protocolHandlers )
   {
-	  //#if polish.css.style.browser
+	  //#if polish.css.style.browser && !polish.LibraryBuild
 	  	//#style browser
 	  	//# this( tagHandler, protocolHandlers );	
 	  //#else

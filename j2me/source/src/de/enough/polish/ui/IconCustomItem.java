@@ -54,7 +54,7 @@ public final class IconCustomItem
 	}
 
 	public IconCustomItem(String label, String text, Image image, Style style ) {
-		//#if polish.usePolishGui
+		//#if polish.usePolishGui && !polish.LibraryBuild
 			//# super( label, text, image, style  );
 		//#else
 			super( label );
