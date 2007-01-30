@@ -12,7 +12,7 @@
             <configuration>Sony-Ericsson/JavaPlatform6</configuration>
         </configurations>
         <data xmlns="http://www.netbeans.org/ns/j2me-project">
-            <name>j2mepolish-menu</name>
+            <name>j2mepolish-blank</name>
             <minimum-ant-version>1.6</minimum-ant-version>
         </data>
     </configuration>
