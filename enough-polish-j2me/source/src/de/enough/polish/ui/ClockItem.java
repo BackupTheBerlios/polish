@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && polish.hasFloatingPoint
+//#condition polish.usePolishGui
 
 /*
  * Created on 02-Jul-2006 at 15:19:49.
@@ -30,10 +30,8 @@ package de.enough.polish.ui;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.microedition.lcdui.Graphics;
-
 /**
- * <p>Display the current time in an analog clock. Note that the device needs to support CLDC 1.1. Alternatively you can use the Floater tool for CLDC 1.0 devices.</p>
+ * <p>Display the current time digitally.</p>
  *
  * <p>Copyright Enough Software 2006</p>
  * <pre>
@@ -42,11 +40,11 @@ import javax.microedition.lcdui.Graphics;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class AnalogClockItem
+public class ClockItem
 //#if polish.LibraryBuild
-	extends FakeCustomItem
+	extends FakeStringCustomItem
 //#else
-	//# extends Item
+	//# extends StringItem
 //#endif
 {
 
@@ -60,26 +58,13 @@ public class AnalogClockItem
 	private String formatAfterSeconds;
 	private String formatEnd;
 	private long lastTimeUpdate;
-	
-	// arrays with cosinus and sinus values for every second value (360 / 60)
-	private static double[] cos;
-	private static double[] sin;
-	static {
-		sin = new double[ 60 ];
-		cos = new double[ 60 ];
-		for (int i = 0; i < 60; i++) {
-			double degree = (360D/60D)*i;
-			cos[i] = Math.cos(degree);
-			sin[i] = Math.sin(degree);
-		}		
-	}
 
 	/**
 	 * Creates a new clock.
 	 * 
 	 * @param label the label for the clock
 	 */
-	public AnalogClockItem(String label) {
+	public ClockItem(String label) {
 		this(label, null );
 	}
 
@@ -89,11 +74,10 @@ public class AnalogClockItem
 	 * @param label the label for the clock
 	 * @param style the style for the clock string etc
 	 */
-	public AnalogClockItem(String label, Style style) {
-		super(label, 0, Item.PLAIN, style);
+	public ClockItem(String label, Style style) {
+		super(label, null, style);
 		this.date = new Date();
 		this.calendar = Calendar.getInstance();
-		
 	}
 
 	/* (non-Javadoc)
@@ -126,21 +110,8 @@ public class AnalogClockItem
 	 * @see de.enough.polish.ui.FakeStringCustomItem#initContent(int, int)
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
-		if (this.preferredWidth != 0) {
-			this.contentWidth = this.preferredWidth;
-			this.contentHeight = this.preferredHeight;
-		} else {
-			//#if polish.ScreenWidth:defined
-				int width = 0;
-				//#= width = ${polish.ScreenWidth}/2;
-				this.contentWidth = width;
-				this.contentHeight = width;
-			//#else
-				this.contentWidth = 100;
-				this.contentHeight = 100;
-			//#endif
-		}
 		updateTime( System.currentTimeMillis() );
+		super.initContent(firstLineWidth, lineWidth);
 	}
 
 	private void updateTime( long time ) {
@@ -165,7 +136,11 @@ public class AnalogClockItem
 		}
 		buffer.append( hour );
 		buffer.append( this.formatAfterHours );
-		buffer.append( this.calendar.get( Calendar.MINUTE ) );
+		int minute = this.calendar.get( Calendar.MINUTE );
+		if (minute < 10) {
+			buffer.append( '0' );
+		} 
+		buffer.append( minute  );
 		buffer.append( this.formatAfterMinutes );
 		if (this.includeSeconds) {
 			buffer.append( this.calendar.get( Calendar.SECOND ) );
@@ -180,6 +155,7 @@ public class AnalogClockItem
 		}
 		buffer.append( this.formatEnd );
 		
+		setText( buffer.toString() ); 
 	}
 
 	/* (non-Javadoc)
@@ -252,11 +228,6 @@ public class AnalogClockItem
 	protected void showNotify() {
 		super.showNotify();
 		AnimationThread.addAnimationItem( this );
-	}
-
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		// TODO enough implement paintContent
-		
 	}
 	
 	

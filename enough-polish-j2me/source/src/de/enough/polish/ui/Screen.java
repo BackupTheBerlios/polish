@@ -1845,20 +1845,6 @@ implements AccessibleCanvas
 				//#endif
 				//#if tmp.menuFullScreen
 					if (!processed) {
-						/*
-						//#ifdef polish.key.ReturnKey:defined
-							//#if  polish.key.ReturnKey == polish.key.ClearKey
-								//#define tmp.checkReturnKeyLater
-							//#else
-								//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
-										callCommandListener( this.backCommand );
-										repaint();
-										//# return;
-								//# }
-							//#endif
-						//#endif
-						 * 
-						 */
 						//#ifdef tmp.useExternalMenuBar
 							if (this.menuBar.handleKeyPressed(keyCode, 0)) {
 								//System.out.println("menubar handled key " + keyCode );
@@ -1874,6 +1860,7 @@ implements AccessibleCanvas
 							}
 							//System.out.println("menubar did not handle " + keyCode );
 						//#else
+							// internal menubar is used:
 							if (keyCode == LEFT_SOFT_KEY) {
 								if ( this.menuSingleLeftCommand != null) {
 									callCommandListener( this.menuSingleLeftCommand );
@@ -1917,7 +1904,14 @@ implements AccessibleCanvas
 		//							this.menuOpened = false;
 		//							callCommandListener( cmd );
 								} else { 
-									this.menuContainer.handleKeyPressed(keyCode, gameAction);
+									processed = this.menuContainer.handleKeyPressed(keyCode, gameAction);
+									//#if polish.key.ReturnKey:defined && polish.key.ReturnKey != polish.key.ClearKey
+									if ((!processed)
+										//#= && ( (keyCode == ${polish.key.ReturnKey}) && this.menuOpened ) 
+									) {
+										openMenu( false );
+									}
+									//#endif
 								}
 								repaint();
 								return;
@@ -3024,7 +3018,7 @@ implements AccessibleCanvas
 		//#endif
 		//#if tmp.menuFullScreen
 			//#if tmp.useExternalMenuBar
-				isShown &= !this.menuBar.isOpened;
+				isShown &= this.menuBar != null && !this.menuBar.isOpened;
 			//#else
 				isShown &= !this.menuOpened;
 			//#endif

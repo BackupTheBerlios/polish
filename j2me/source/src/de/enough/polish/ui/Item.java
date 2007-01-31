@@ -1154,20 +1154,55 @@ public abstract class Item extends Object
 	}
 
 	/**
-	 * Repaints the screen to which this item belongs to.
+	 * Repaints the complete screen to which this item belongs to.
 	 * Subclasses can call this method whenever their contents
 	 * have changed and they need an immediate refresh. 
 	 */
-	protected void repaint() {
-		//System.out.println("repaint called by class " + getClass().getName() );
+	protected void repaintFully() {
+		repaint( this.relativeX, this.relativeY, this.itemWidth, this.itemHeight );
 		if (this.parent instanceof Container) {
 			((Container) this.parent).isInitialised = false;
 		}
 		Screen scr = getScreen();
 		if (scr != null && scr == StyleSheet.currentScreen) {
-			scr.repaint();
+			scr.repaint(  );
 		}
 	}
+	
+	/**
+	 * Repaints the screen to which this item belongs to and repaints only the area covered by this item (unless other repaint requests are queued).
+	 * Subclasses can call this method whenever their contents
+	 * have changed and they need an immediate refresh. 
+	 */
+	protected void repaint() {
+		repaint( this.relativeX, this.relativeY, this.itemWidth, this.itemHeight );
+	}
+	
+	/**
+	 * Repaints the specified relative area of this item.
+	 * 
+	 * @param relX horizontal start position relative to this item's item area (including border, margins, paddings)
+	 * @param relY vertical start position relative to this item's item area (including border, margins, paddings)
+	 * @param width the width of the area
+	 * @param height the height of the area
+	 */
+	protected void repaint( int relX, int relY, int width, int height ) {
+		//System.out.println("repaint called by class " + getClass().getName() );
+		if (this.parent instanceof Container) {
+			((Container) this.parent).isInitialised = false;
+		}
+		Item p = this;
+		while (p != null) {
+			relX += p.relativeX;
+			relY += p.relativeY;
+			p = p.parent;
+		}
+		Screen scr = getScreen();
+		if (scr != null && scr == StyleSheet.currentScreen) {
+			scr.repaint( relX, relY, width, height );
+		}
+	}
+
 	
 	/**
 	 * Requests that this item and all its parents are to be re-initialised at the next repainting.
