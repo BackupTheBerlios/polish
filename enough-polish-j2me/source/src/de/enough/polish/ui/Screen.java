@@ -421,18 +421,22 @@ implements AccessibleCanvas
 				this.menuBarHeight = this.menuBar.getItemHeight( availableScreenWidth, availableScreenWidth );
 				//#if tmp.useScrollIndicator
 					int scrollWidth = this.menuBar.contentHeight + this.menuBar.paddingTop + this.menuBar.paddingBottom;
+					int scrollHeight = scrollWidth;
 					//#if polish.css.scrollindicator-up-image
 						if (this.scrollIndicatorUpImage != null) {
 							scrollWidth = this.scrollIndicatorUpImage.getWidth(); 
+							scrollHeight = this.scrollIndicatorUpImage.getHeight();
 						}
 					//#elif polish.css.scrollindicator-down-image
 						if (this.scrollIndicatorDownImage != null) {
 							scrollWidth = this.scrollIndicatorDownImage.getWidth(); 
+							scrollHeight = this.scrollIndicatorDownImage.getHeight();
 						}
 					//#endif
 					this.scrollIndicatorWidth = scrollWidth;
-					this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
-					this.scrollIndicatorY = (this.fullScreenHeight - (this.menuBar.marginBottom + this.menuBar.paddingBottom + this.menuBar.contentHeight)) + ((this.menuBar.contentHeight - this.scrollIndicatorWidth)/2);
+					this.scrollIndicatorX = (this.screenWidth >> 1) - (scrollWidth >> 1);
+					int space = this.menuBarHeight - (scrollHeight << 1 + 1);
+					this.scrollIndicatorY = (this.fullScreenHeight - this.menuBarHeight) + (space >> 1) + (this.menuBarHeight >> 1);
 				//#endif
 				//System.out.println("without ExternalMenu: scrollIndicatorY=" + this.scrollIndicatorY + ", screenHeight=" + this.screenHeight + ", FullScreenHeight=" + this.fullScreenHeight );	
 				//System.out.println("Screen.init: menuBarHeight=" + this.menuBarHeight + " scrollIndicatorWidth=" + this.scrollIndicatorWidth );

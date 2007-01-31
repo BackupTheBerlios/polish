@@ -80,42 +80,17 @@ public class ShuffleView extends ContainerView {
 	}
 	
 	
+	
+	
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#paintItem(de.enough.polish.ui.Item, int, int, int, int, int, javax.microedition.lcdui.Graphics)
+	 * @see de.enough.polish.ui.ContainerView#paintItem(de.enough.polish.ui.Item, int, int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	protected void paintItem(Item item, int index, int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		int xAdjustment = this.xAdjustments[index];
-		item.paint(x - xAdjustment, y, leftBorder - xAdjustment, rightBorder - xAdjustment, g);
+	protected void paintItem(Item item, int index, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
+		x -= this.xAdjustments[index];
+		super.paintItem(item, index, x, y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
 	}
 
-//	/* (non-Javadoc)
-//	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
-//	 */
-//	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
-//			Graphics g) 
-//	{
-//		Item[] myItems = this.parentContainer.getItems();
-//		for (int i = 0; i < myItems.length; i++) {
-//			Item item = myItems[i];
-//			int xAdjustment = this.xAdjustments[i];
-//			item.paint(x - xAdjustment, y, leftBorder - xAdjustment, rightBorder - xAdjustment, g);
-//			y += item.itemHeight + this.paddingVertical;
-//		}
-//	}
-
-//	/* (non-Javadoc)
-//	 * @see de.enough.polish.ui.ContainerView#getNextItem(int, int)
-//	 */
-//	protected Item getNextItem(int keyCode, int gameAction) {
-//		if (gameAction == Canvas.DOWN) {
-//			return getNextFocusableItem( this.parentContainer.getItems(), true, 1, true);
-//		} else if (gameAction == Canvas.UP) {
-//			return getNextFocusableItem( this.parentContainer.getItems(), false, 1, true);
-//		} else {
-//			return null;
-//		}
-//	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#setStyle(de.enough.polish.ui.Style)

@@ -93,40 +93,16 @@ public class DroppingView extends ContainerView {
 	}
 
 	
-	protected void paintItem(Item item, int index, int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		int adjustedY = y - this.yAdjustments[ index ];
-		item.paint(x, adjustedY, leftBorder, rightBorder, g);
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#paintItem(de.enough.polish.ui.Item, int, int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
+	 */
+	protected void paintItem(Item item, int index, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
+		y -= this.yAdjustments[ index ];
+		super.paintItem(item, index, x, y, leftBorder, rightBorder, clipX, clipY,
+				clipWidth, clipHeight, g);
 	}
 
-//	/* (non-Javadoc)
-//	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
-//	 */
-//	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
-//			Graphics g) 
-//	{
-//		Item[] myItems = this.parentContainer.getItems();
-//		for (int i = 0; i < myItems.length; i++) {
-//			Item item = myItems[i];
-//			// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
-//			// since after every item a line break will be done.
-//			int adjustedY = y - this.yAdjustments[i];
-//			item.paint(x, adjustedY, leftBorder, rightBorder, g);
-//			y += item.itemHeight + this.paddingVertical;
-//		}
-//	}
-
-//	/* (non-Javadoc)
-//	 * @see de.enough.polish.ui.ContainerView#getNextItem(int, int)
-//	 */
-//	protected Item getNextItem(int keyCode, int gameAction) {
-//		if (gameAction == Canvas.DOWN) {
-//			return getNextFocusableItem( this.parentContainer.getItems(), true, 1, true);
-//		} else if (gameAction == Canvas.UP) {
-//			return getNextFocusableItem( this.parentContainer.getItems(), false, 1, true);
-//		} else {
-//			return null;
-//		}
-//	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#setStyle(de.enough.polish.ui.Style)

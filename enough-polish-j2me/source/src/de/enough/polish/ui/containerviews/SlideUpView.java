@@ -53,9 +53,9 @@ public class SlideUpView extends BackgroundContainerView {
 	public boolean animate() {
 		boolean animated = super.animate();
 		if (this.restartAnimation) {
+			this.yOffset = this.contentHeight;			
 			this.restartAnimation = false;
 			this.isAnimationFinished = false;
-			this.yOffset = this.contentHeight;			
 		}
 		if (!this.isAnimationFinished ) {
 			int y = this.yOffset;
@@ -97,6 +97,11 @@ public class SlideUpView extends BackgroundContainerView {
 	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		if (this.restartAnimation) {
+			this.restartAnimation = false;
+			this.isAnimationFinished = false;
+			this.yOffset = this.contentHeight;			
+		}
 		y += this.yOffset;		
 		super.paintContent(parent, x, y, leftBorder, rightBorder, g);
 	}
