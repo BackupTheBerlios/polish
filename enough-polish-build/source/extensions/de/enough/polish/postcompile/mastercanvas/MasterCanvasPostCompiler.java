@@ -148,6 +148,14 @@ public class MasterCanvasPostCompiler extends BytecodePostCompiler
                                                       masterCanvasClassName,
                                                       "repaintCanvas",
                                                       "(Ljavax/microedition/lcdui/Canvas;)V"));
+        
+        // mapping of repaint(int, int. int, int):
+        mapper.addMapping(new MethodInvocationMapping(true,
+                                                      "javax/microedition/lcdui/Canvas",
+                                                      "repaint", "(IIII)V", false,
+                                                      masterCanvasClassName,
+                                                      "repaintCanvas",
+                                                      "(javax/microedition/lcdui/Canvas;IIII)V"));
 
         mapper.doMethodMapping(classesDir, classes);
         System.out.println("MasterCanvasPostCompiler finished.");
