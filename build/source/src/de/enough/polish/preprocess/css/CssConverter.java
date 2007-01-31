@@ -74,6 +74,8 @@ public class CssConverter extends Converter {
 		BACKGROUND_TYPES.put( "snow", "de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter");
 		BACKGROUND_TYPES.put( "snowflakes", "de.enough.polish.preprocess.backgrounds.XmasSnowBackgroundConverter");
 		BACKGROUND_TYPES.put( "web20", "de.enough.polish.preprocess.backgrounds.Web20RoundRectBackgroundConverter" );
+		BACKGROUND_TYPES.put( "horizontal-stripes", "de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" );
+		BACKGROUND_TYPES.put( "stripes", "de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" );
 	}
 	private static final HashMap BORDER_TYPES = new HashMap();
 	static {

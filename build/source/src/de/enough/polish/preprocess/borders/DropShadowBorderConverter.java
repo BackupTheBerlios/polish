@@ -71,7 +71,7 @@ public class DropShadowBorderConverter extends BorderConverter {
 		}
 		innerColorStr = parseColor( innerColorStr );
 		if ( !isAlphaColor(innerColorStr) ) {
-			int innerColor = Integer.parseInt(innerColorStr) | 0xFF000000;
+			int innerColor = Integer.parseInt(innerColorStr.substring(2), 16) | 0xFF000000;
 			innerColorStr = "0x" + Integer.toHexString( innerColor );
 		}
 		String outerColorStr = (String) border.get("outer-color");
@@ -80,7 +80,7 @@ public class DropShadowBorderConverter extends BorderConverter {
 		}
 		outerColorStr = parseColor( outerColorStr );
 		if ( !isAlphaColor(outerColorStr) ) {
-			int outerColor = Integer.parseInt(outerColorStr) | 0x10000000;
+			int outerColor = Integer.parseInt(outerColorStr.substring(2), 16) | 0x10000000;
 			outerColorStr = "0x" + Integer.toHexString( outerColor );
 		}
 		String orientation = BORDERS_PACKAGE + "DropShadowBorder.BOTTOM_RIGHT";
