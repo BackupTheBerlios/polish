@@ -155,7 +155,7 @@ public class MasterCanvasPostCompiler extends BytecodePostCompiler
                                                       "repaint", "(IIII)V", false,
                                                       masterCanvasClassName,
                                                       "repaintCanvas",
-                                                      "(javax/microedition/lcdui/Canvas;IIII)V"));
+                                                      "(Ljavax/microedition/lcdui/Canvas;IIII)V"));
 
         mapper.doMethodMapping(classesDir, classes);
         System.out.println("MasterCanvasPostCompiler finished.");
