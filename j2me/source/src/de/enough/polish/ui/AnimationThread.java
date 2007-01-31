@@ -98,16 +98,6 @@ public class AnimationThread extends Thread
 				Screen screen = StyleSheet.currentScreen;
 				if (screen != null) {
 					boolean animated = screen.animate();
-					if (animationList != null) {
-						Object[] animationItems = animationList.getInternalArray();
-						for (int i = 0; i < animationItems.length; i++) {
-							Object object = animationItems[i];
-							if (object == null) {
-								break;
-							}
-							animated |= ((Item)object).animate();
-						}
-					}
 					if (animated) {
 						//System.out.println("AnimationThread: screen needs repainting");
 						//#if polish.Bugs.displaySetCurrentFlickers
@@ -119,14 +109,22 @@ public class AnimationThread extends Thread
 						//#endif
 						
 						sleeptime = ANIMATION_INTERVAL;
-//						animationCounter = 0;
-//					} else {
-//						animationCounter++;
-//						if (animationCounter > 10) {
-//							sleeptime = SLEEP_INTERVAL;
-//							animationCounter = 0;
-//						}
 					}
+					if (animationList != null) {
+						Object[] animationItems = animationList.getInternalArray();
+						for (int i = 0; i < animationItems.length; i++) {
+							Item item = (Item) animationItems[i];
+							if (item == null) {
+								break;
+							}
+							
+							if ( item.animate() ) {
+								// repaint only area of item:
+								item.repaint();
+							}
+						}
+					}
+
 					if (releaseResourcesOnScreenChange) {
 						Displayable d = StyleSheet.display.getCurrent();
 						if (d != screen) {

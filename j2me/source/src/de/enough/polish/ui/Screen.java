@@ -1288,12 +1288,21 @@ implements AccessibleCanvas
 	//					clipHeight = cHeight;
 	//				}
 	//			//#endif
-				g.setClip(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
+				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() + " before clipRect");
+				int clipX = g.getClipX();
+				int clipY = g.getClipY();
+				int clipWidth = g.getClipWidth();
+				int clipHeight = g.getClipHeight();
+				//g.setClip(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
+				g.clipRect(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
 	
 				// paint content:
 				//System.out.println("starting to paint content of screen");
 				paintScreen( g );
 				//System.out.println("done painting content of screen");
+				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() );
+				g.setColor( 0xff0000 );
+				g.drawRect(g.getClipX() + 1 , g.getClipY() + 1 , g.getClipWidth() - 2 ,  g.getClipHeight() - 2);
 				
 				//#if tmp.useScrollBar
 					if (this.container != null && this.container.itemHeight > this.contentHeight) {
@@ -1311,11 +1320,12 @@ implements AccessibleCanvas
 				//#endif
 				
 				// allow painting outside of the screen again:
-				//#ifdef tmp.menuFullScreen
-				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
-				//#else
-				 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
-				//#endif
+				g.setClip( clipX, clipY, clipWidth, clipHeight );
+//				//#ifdef tmp.menuFullScreen
+//				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
+//				//#else
+//				 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
+//				//#endif
 				 
 				// paint info element:
 				if (this.showInfoItem) {			

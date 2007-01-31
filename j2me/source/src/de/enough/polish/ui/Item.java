@@ -1175,6 +1175,7 @@ public abstract class Item extends Object
 	 * have changed and they need an immediate refresh. 
 	 */
 	protected void repaint() {
+		System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
 		repaint( this.relativeX, this.relativeY, this.itemWidth, this.itemHeight );
 	}
 	
@@ -1191,14 +1192,21 @@ public abstract class Item extends Object
 		if (this.parent instanceof Container) {
 			((Container) this.parent).isInitialised = false;
 		}
-		Item p = this;
+		relX += this.relativeX;
+		relY += this.relativeY;
+		Item p = this.parent;
 		while (p != null) {
-			relX += p.relativeX;
-			relY += p.relativeY;
+			relX += p.relativeX + p.contentX;
+			relY += p.relativeY + p.contentY;
+			if (p instanceof Container) {
+				//System.out.println("yOffset of container: " + ((Container)p).yOffset + "  :   " + p );
+				relY += ((Container)p).yOffset;
+			}
 			p = p.parent;
 		}
 		Screen scr = getScreen();
 		if (scr != null && scr == StyleSheet.currentScreen) {
+			System.out.println("item.repaint(" + relX + ", " + relY+ ", " +  width+ ", " +  height + ")  for " + this );
 			scr.repaint( relX, relY, width, height );
 		}
 	}

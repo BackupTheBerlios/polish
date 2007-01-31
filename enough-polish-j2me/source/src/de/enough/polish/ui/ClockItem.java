@@ -30,6 +30,8 @@ package de.enough.polish.ui;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.microedition.lcdui.Graphics;
+
 /**
  * <p>Display the current time digitally.</p>
  *
@@ -143,7 +145,12 @@ public class ClockItem
 		buffer.append( minute  );
 		buffer.append( this.formatAfterMinutes );
 		if (this.includeSeconds) {
-			buffer.append( this.calendar.get( Calendar.SECOND ) );
+			int seconds = this.calendar.get( Calendar.SECOND );
+			if (seconds < 10) {
+				buffer.append('0');
+			}
+			buffer.append( seconds );
+			
 			buffer.append( this.formatAfterSeconds );
 		}
 		if (this.includeAmPm) {
@@ -228,6 +235,14 @@ public class ClockItem
 	protected void showNotify() {
 		super.showNotify();
 		AnimationThread.addAnimationItem( this );
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeStringCustomItem#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
+	 */
+	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		System.out.println("painting clock");
+		super.paintContent(x, y, leftBorder, rightBorder, g);
 	}
 	
 	

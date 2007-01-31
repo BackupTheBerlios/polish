@@ -879,6 +879,8 @@ public class Container extends Item {
 				} else if ( y + item.itemHeight >= startY && y < endY ){
 					// the currently focused item is painted last
 					item.paint(x, y, leftBorder, rightBorder, g);
+//				} else {
+//					System.out.println("skipping " + item);
 				}
 				y += item.itemHeight + this.paddingVertical;
 			}

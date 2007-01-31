@@ -52,11 +52,6 @@ public class SlideUpView extends BackgroundContainerView {
 	 */
 	public boolean animate() {
 		boolean animated = super.animate();
-		if (this.restartAnimation) {
-			this.yOffset = this.contentHeight;			
-			this.restartAnimation = false;
-			this.isAnimationFinished = false;
-		}
 		if (!this.isAnimationFinished ) {
 			int y = this.yOffset;
 			int speed = Math.max( this.minSpeed, y / 3 );
@@ -76,15 +71,35 @@ public class SlideUpView extends BackgroundContainerView {
 	}
 	
 	
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#showNotify()
+	 */
+	public void showNotify() {
+		super.showNotify();
+		if (this.contentHeight != 0) {
+			this.yOffset = this.contentHeight;			
+//			System.out.println("slide up: showNotify: " + this.yOffset);
+			this.restartAnimation = false;
+			this.isAnimationFinished = false;
+		}
+	}
+
+
+
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
 	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
 		super.initContent(parentContainerItem, firstLineWidth, lineWidth);
-		// not sufficient to check this only in the animate method,
-		// since the container is already drawn once before animate() is called
+		// not sufficient to check this only in the showNotify method,
+		// since the container dimensions might not yet be known:
 		if (this.restartAnimation) {
+//			System.out.println("initContent: " + this.contentHeight);
 			this.restartAnimation = false;
 			this.isAnimationFinished = false;
 			this.yOffset = this.contentHeight;			
@@ -97,11 +112,6 @@ public class SlideUpView extends BackgroundContainerView {
 	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		if (this.restartAnimation) {
-			this.restartAnimation = false;
-			this.isAnimationFinished = false;
-			this.yOffset = this.contentHeight;			
-		}
 		y += this.yOffset;		
 		super.paintContent(parent, x, y, leftBorder, rightBorder, g);
 	}
