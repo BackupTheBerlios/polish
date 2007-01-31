@@ -128,6 +128,8 @@
 					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
+					<variable name="polish.Browser.MaxRedirects" value="5" />
+					<variable name="polish.Browser.PaintDownloadIndicator" value="true" />
 					-->
 				</variables>
 				<!-- Configure the customization settings here: -->
