@@ -55,7 +55,7 @@ import de.enough.polish.util.HashMap;
  * 		<li><b>min-height</b>: The minimum height of this item.</li>
  * 		<li><b>max-height</b>: The maximum height of this item.</li>
  * 		<li><b>before</b>: URL of image that should be placed before this item.</li>
- * 		<li><b>after</b>: URL of image that should be placed after this item.</li>
+ * 		<li><b>after</b>: URL of image that should be laced after this item.</li>
  * 		<li><b>include-label</b>: set to true when the background and border should include the label of this item as well.</li>
  * 		<li><b>colspan</b>: when this item is embedded in a table, you can span it over several cells, e.g. colspan: 2;.</li>
  * 		<li><b>label-style</b>: The name of the specialized label style for this item, e.g. "label-style: funnyLabel;"</li>

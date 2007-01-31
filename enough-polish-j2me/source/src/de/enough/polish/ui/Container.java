@@ -117,7 +117,6 @@ public class Container extends Item {
 	 * @param focusFirstElement true when the first focussable element should be focused automatically.
 	 * @param style the style for this container
 	 * @param height the vertical space available for this container, set to -1 when scrolling should not be activated
-	 * @param yBottom the vertical end of the scren - used for scrolling -1 when not set.
 	 * @see #setScrollHeight( int ) 
 	 */
 	public Container(String label, boolean focusFirstElement, Style style, int height ) {
@@ -149,7 +148,7 @@ public class Container extends Item {
 	/**
 	 * Sets the height available for scrolling of this item.
 	 * 
-	 * @param available height for this item including label, padding, margin and border, -1 when scrolling should not be done.
+	 * @param height available height for this item including label, padding, margin and border, -1 when scrolling should not be done.
 	 */
 	public void setScrollHeight( int height ) {
 		this.availableHeight = height;

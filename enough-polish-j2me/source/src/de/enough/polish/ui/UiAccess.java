@@ -1456,8 +1456,8 @@ public final class UiAccess {
 	 * Sets an image for the specified ticker.
 	 * This method is ignored when the J2ME Polish UI is not activated.
 	 * 
-	 * @param item the item that should be made accessible 
-	 * @param isAccessible true when the item should be accessible/selectable
+	 * @param ticker the ticker item which will the image be set 
+	 * @param image that image that will be set to the ticker
 	 */
 	public static void setTickerImage( javax.microedition.lcdui.Ticker ticker, Image image ) {
 		// ignore
@@ -1469,8 +1469,8 @@ public final class UiAccess {
 	 * Sets an image for the specified ticker.
 	 * This method is ignored when the J2ME Polish UI is not activated.
 	 * 
-	 * @param item the item that should be made accessible 
-	 * @param isAccessible true when the item should be accessible/selectable
+   * @param ticker the ticker item which will the image be set 
+   * @param image that image that will be set to the ticker
 	 */
 	public static void setAccessible( Ticker ticker, Image image ) {
 		ticker.setImage(image);

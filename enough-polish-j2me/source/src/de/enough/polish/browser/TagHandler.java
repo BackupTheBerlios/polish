@@ -60,9 +60,9 @@ public abstract class TagHandler
    * @param parentItem the container item the put the browser items into 
    * @param parser the parser
    * @param tagName the name of the tag to handle
-   * @param opening
-   * @param attributeMap
-   * @return
+   * @param opening <code>true</code> if this is an opening tag, <code>false</code> otherwise
+   * @param attributeMap all attributes for the tag
+   * @return <code>true</code> if the tag was handled, <code>false</code> otherwise
    */
   public abstract boolean handleTag(Container parentItem, PullParser parser, String tagName, boolean opening, HashMap attributeMap);
   

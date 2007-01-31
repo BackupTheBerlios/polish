@@ -133,7 +133,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	/**
 	 * Sets the height available for scrolling of this item.
 	 * 
-	 * @param available height for this item including label, padding, margin and border, -1 when scrolling should not be done.
+	 * @param height available height for this item including label, padding, margin and border, -1 when scrolling should not be done.
 	 */
 	public void setHeight( int height ) {
 		this.availableHeight = height;

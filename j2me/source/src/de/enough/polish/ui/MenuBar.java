@@ -1025,8 +1025,8 @@ public class MenuBar extends Item {
 	 * 
 	 * @param parentCommand the parent command
 	 * @param childCommand the child command
-	 * @param commandStyle the style for the command
 	 * @throws IllegalStateException when the parent command has not be added before
+	 * @see #addSubCommand(Command, Command, Style)
 	 */
 	public void addSubCommand(Command childCommand, Command parentCommand) {
 		//#style menuitem, menu, default
@@ -1040,6 +1040,7 @@ public class MenuBar extends Item {
 	 * @param childCommand the child command
 	 * @param commandStyle the style for the command
 	 * @throws IllegalStateException when the parent command has not be added before
+	 * @see #addSubCommand(Command, Command)
 	 */
 	public void addSubCommand(Command childCommand, Command parentCommand, Style commandStyle) {
         //#if tmp.useInvisibleMenuBar

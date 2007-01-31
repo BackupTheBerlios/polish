@@ -119,7 +119,7 @@ private String nextUrl;
   /**
    * Creates a new Browser with the specified handlers and style.
    * 
-   * @param tagHandlers the tag handlers
+   * @param protocolHandlers the tag handlers
    */
   public Browser( ProtocolHandler[] protocolHandlers )
   {
@@ -133,7 +133,7 @@ private String nextUrl;
   /**
    * Creates a new Browser with the specified handlers and style.
    * 
-   * @param tagHandlers the tag handlers
+   * @param protocolHandlers the tag handlers
    */
   public Browser( ProtocolHandler[] protocolHandlers, Style style )
   {
