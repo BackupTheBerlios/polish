@@ -309,6 +309,24 @@ public class MasterCanvas
 		}
 	}
 	
+	public static void repaintCanvas( Canvas canvas, int x, int y, int width, int height ) {
+		if (canvas == null) {
+			//#debug warn
+			System.out.println("MasterCanvas: repaintCanvas got [null] canvas." );
+			return;
+		}
+		//#debug
+		System.out.println("MasterCanvas: repaintCanvas " + canvas + ", MasterCanvas.instance != null: " + ( instance != null) + ", instance == canvas: " +  ( instance == null) );
+		if ( !(canvas instanceof AccessibleCanvas) ) {
+			canvas.repaint( x, y, width, height );
+		} else if ( instance != null ) {
+			instance.repaint( x, y, width, height );
+		} else {
+			//System.out.println("native canvas repaint");
+			canvas.repaint( x, y, width, height );
+		}
+	}
+	
 	public static boolean isAccessibleCanvasShown(AccessibleCanvas canvas) {
 		//#debug
 		System.out.println("MasterCanvas: isAccessibleCanvasShown");
