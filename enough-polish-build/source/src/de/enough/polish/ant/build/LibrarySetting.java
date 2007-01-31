@@ -203,6 +203,9 @@ public class LibrarySetting extends Setting {
 			if ( (!this.cacheDir.exists())
 					|| (this.file.lastModified() > this.cacheDir.lastModified())) {
 				changed = true;
+				if (!this.file.exists()) {
+					throw new BuildException("Unable to extract the binary class files from the library [" + this.file.getAbsolutePath() + "]: this library does not exist. Check the <library> settings in your build.xml script." );
+				}
 				try {
 					// copy the library to the cache:
 					FileUtil.copy(this.file, new File( jarCacheDir, this.file.getName() ) );
