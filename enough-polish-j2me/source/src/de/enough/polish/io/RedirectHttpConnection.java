@@ -427,8 +427,12 @@ public class RedirectHttpConnection
    */
   public void close() throws IOException
   {
-    ensureConnectionCreated();
-    this.httpConnection.close();
+    // Check if there is a connection to actually close.
+    if (this.httpConnection != null)
+    {
+      this.httpConnection.close();
+      this.httpConnection = null;
+    }
   }
 
   /* (non-Javadoc)
@@ -436,7 +440,7 @@ public class RedirectHttpConnection
    */
   public DataOutputStream openDataOutputStream() throws IOException
   {
-    // TODO: Needs to be synnchronized and the DataOutputStream should only be created once.
+    // TODO: Needs to be synchronized and the DataOutputStream should only be created once.
     return new DataOutputStream( openOutputStream() );
   }
 
