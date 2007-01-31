@@ -250,7 +250,7 @@ public class MIDletLaunchConfigurationDelegate extends
                 monitor.done();
             }
             
-            while( ! thread.isInterrupted() && ! antProcess.isCanceled() && ! monitor.isCanceled() /*&& ! this.buildRunnable.isFinished()*/) {
+            while( ! thread.isInterrupted() && ! antProcess.isCanceled() && ! monitor.isCanceled() && ! this.buildRunnable.isFinishedAbnormally()) {
                 try {
 //                    System.out.println("DEBUG:MIDletLaunchConfigurationDelegate.launch(...):sleeping.");
                     Thread.sleep(500);
@@ -417,6 +417,7 @@ public class MIDletLaunchConfigurationDelegate extends
         private String[] targets;
         private Throwable throwable;
         private boolean finished = false;
+        private boolean finishedAbnormally = false;
         public BuildRunnable(AntBox antBox, String[] targets) {
             this.antBox = antBox;
             this.targets = targets;
@@ -429,6 +430,7 @@ public class MIDletLaunchConfigurationDelegate extends
                 this.throwable = e;
             }
             this.finished = true;
+            this.finishedAbnormally = true;
         }
 
         public boolean isFinished() {
@@ -439,6 +441,8 @@ public class MIDletLaunchConfigurationDelegate extends
             return this.throwable;
         }
         
-        
+        public boolean isFinishedAbnormally() {
+            return this.finishedAbnormally;
+        }
     }
 }
