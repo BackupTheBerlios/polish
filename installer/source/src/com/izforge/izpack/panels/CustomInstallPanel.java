@@ -26,6 +26,8 @@
 package com.izforge.izpack.panels;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Map;
 
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -53,6 +55,7 @@ implements Runnable
 
 	private boolean isActivated;
 	private JLabel deletingInfoLabel;
+	private JLabel installationFinishInfoLabel;
 
 	/**
 	 * @param parent
@@ -72,11 +75,18 @@ implements Runnable
 		File existingInstallationDir = new File( this.idata.getInstallPath() );
 		if (existingInstallationDir.exists()) {
 			this.deletingInfoLabel = LabelFactory.create("Please stand by while clearing previous installation...",
-		                parent.icons.getImageIcon("information"), LEADING);
+		                this.parent.icons.getImageIcon("information"), LEADING);
 			add(this.deletingInfoLabel, IzPanelLayout.getDefaultConstraint(FULL_LINE_CONTROL_CONSTRAINT));
+			this.installationFinishInfoLabel = LabelFactory.create("Waiting for installation...",
+	                this.parent.icons.getImageIcon("information"), LEADING);
+			add(this.installationFinishInfoLabel, IzPanelLayout.getDefaultConstraint(FULL_LINE_CONTROL_CONSTRAINT));
 			Thread thread = new Thread( this );
 			thread.start();
-		} else {			
+		} else {
+			this.installationFinishInfoLabel = LabelFactory.create("Waiting for installation...",
+	                this.parent.icons.getImageIcon("information"), LEADING);
+			add(this.installationFinishInfoLabel, IzPanelLayout.getDefaultConstraint(FULL_LINE_CONTROL_CONSTRAINT));
+
 			super.panelActivate();
 		}
 	}
@@ -86,42 +96,86 @@ implements Runnable
 
 	public void stopAction()
     {
-		final InstallPanel p = this;
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run()
-            {
-                parent.releaseGUI();
-                parent.lockPrevButton();
-                
-                // With custom actions it is possible, that the current value
-                // is not max - 1. Therefore we use always max for both
-                // progress bars to signal finish state.
-                overallProgressBar.setValue(overallProgressBar.getMaximum());
-                int ppbMax = packProgressBar.getMaximum();
-                if (ppbMax < 1)
-                {
-                    ppbMax = 1;
-                    packProgressBar.setMaximum(ppbMax);
-                }
-                packProgressBar.setValue(ppbMax);
-
-                packProgressBar.setString(parent.langpack.getString("InstallPanel.finished"));
-                packProgressBar.setEnabled(false);
-                try {
-	                String no_of_packs = Integer.toString( ReflectionUtil.getIntField( p, "noOfPacks") );
-	                overallProgressBar.setString(no_of_packs + " / " + no_of_packs);
-	                overallProgressBar.setEnabled(false);
-	                packOpLabel.setText(" ");
-	                packOpLabel.setEnabled(false);
-	                //idata.canClose = true;
-	                ReflectionUtil.setField(p, "validated", true);
-                } catch (NoSuchFieldException e) {
-                	e.printStackTrace();
-                }
-                //validated = true;
-                if (idata.panels.indexOf(this) != (idata.panels.size() - 1)) parent.unlockNextButton();
-            }
-        });
+		// restore backup and write global.properties:
+	    // now write global properties:
+	    Map globalProperties = (Map) this.idata.getAttribute("global.properties");
+	    if (globalProperties == null) {
+	    	System.err.println("Unable to store global.properties - no properties found!");
+	    } else {
+	        try {
+	        	File globalPropertiesFile = new File( this.idata.getInstallPath() + File.separatorChar + "global.properties" );
+	        	FileUtil.writePropertiesFile(globalPropertiesFile, globalProperties );
+				this.installationFinishInfoLabel.setText("Wrote global.properties successfully.");
+	        } catch (Exception e) {
+	        	e.printStackTrace();
+	        	emitError(this.parent.langpack.getString("installer.error"), "Unable to write global.properties to " + this.idata.getInstallPath() + ": " + e.toString() );
+	        	this.installationFinishInfoLabel.setText("Unable to write global.properties to " + this.idata.getInstallPath() + ": " + e.toString());
+	    	}	
+	    }
+	    // restore backuped files:
+	    File backupDir = (File) this.idata.getAttribute("polish.backup" );
+	    boolean isBackupError = false;
+	    if (backupDir != null) {
+	    	File[] files = backupDir.listFiles();
+	    	File target = new File( this.idata.getInstallPath() );
+	    	for (int i = 0; i < files.length; i++) {
+				File file = files[i];
+				try {
+					FileUtil.copy(file, target );
+					this.installationFinishInfoLabel.setText("Restored backup files from previous installation successfully.");
+				} catch (IOException e) {
+					e.printStackTrace();
+		        	emitError(this.parent.langpack.getString("installer.error"), "Unable to restore backup from " + file.getAbsolutePath() + ": " + e.toString() + "\nPlease restore the backup files manually." );
+					this.installationFinishInfoLabel.setText("Unable to restore backup from " + file.getAbsolutePath() + ": " + e.toString() );
+		        	isBackupError = true;
+				}
+			}
+	    	if (!isBackupError) {
+	    		FileUtil.delete( backupDir );
+	    	}
+	    }
+	    
+	    super.stopAction();
+	    
+//	    this.idata.canClose = true;
+//	    
+//	    // inform user about installation success:
+//		final InstallPanel p = this;
+//        SwingUtilities.invokeLater(new Runnable() {
+//            public void run()
+//            {
+//                parent.releaseGUI();
+//                parent.lockPrevButton();
+//                
+//                // With custom actions it is possible, that the current value
+//                // is not max - 1. Therefore we use always max for both
+//                // progress bars to signal finish state.
+//                overallProgressBar.setValue(overallProgressBar.getMaximum());
+//                int ppbMax = packProgressBar.getMaximum();
+//                if (ppbMax < 1)
+//                {
+//                    ppbMax = 1;
+//                    packProgressBar.setMaximum(ppbMax);
+//                }
+//                packProgressBar.setValue(ppbMax);
+//
+//                packProgressBar.setString(parent.langpack.getString("InstallPanel.finished"));
+//                packProgressBar.setEnabled(false);
+//                try {
+//	                String no_of_packs = Integer.toString( ReflectionUtil.getIntField( p, "noOfPacks") );
+//	                overallProgressBar.setString(no_of_packs + " / " + no_of_packs);
+//	                overallProgressBar.setEnabled(false);
+//	                packOpLabel.setText(" ");
+//	                packOpLabel.setEnabled(false);
+//	                //idata.canClose = true;
+//	                ReflectionUtil.setField(p, "validated", true);
+//                } catch (NoSuchFieldException e) {
+//                	e.printStackTrace();
+//                }
+//                //validated = true;
+//                if (idata.panels.indexOf(this) != (idata.panels.size() - 1)) parent.unlockNextButton();
+//            }
+//        });
     }
 
 

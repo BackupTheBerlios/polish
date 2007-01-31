@@ -328,6 +328,8 @@ public class SetPropertiesPanel extends IzPanel {
 					value = value.replace('\\', '/' );
 				}
 				properties.put( panel.getPropertyName(), value );
+			} else {
+				properties.put( "# " + panel.getPropertyName(), "(please define if needed)" );
 			}
 		}
 		// check for install path of the netbeans module:

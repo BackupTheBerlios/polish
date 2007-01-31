@@ -53,7 +53,7 @@ import com.izforge.izpack.installer.InstallerFrame;
 import com.izforge.izpack.installer.IzPanel;
 
 /**
- * <p>Let the user choose where to install or where to find a resource.</p>
+ * <p>Was used for playing back the backup files and for writing the global properties - is now moved to CustomInstallPanel.</p>
  *
  * <p>copyright Enough Software 2004</p>
  * <pre>
@@ -83,41 +83,6 @@ public class FinishInstallationPanel extends UserInputPanel {
         if (this.isActivated) {
         	return;
         }
-	    
-	    // now write global properties:
-	    Map globalProperties = (Map) this.idata.getAttribute("global.properties");
-	    if (globalProperties == null) {
-	    	System.err.println("Unable to store global.properties - no properties found!");
-	    } else {
-	        try {
-	        	File globalPropertiesFile = new File( this.idata.getInstallPath() + File.separatorChar + "global.properties" );
-	        	FileUtil.writePropertiesFile(globalPropertiesFile, globalProperties );
-	        } catch (Exception e) {
-	        	e.printStackTrace();
-	        	emitError(this.parent.langpack.getString("installer.error"), "Unable to write global.properties to " + this.idata.getInstallPath() + ": " + e.toString() );
-	    	}	
-	    }
-	    // restore backuped files:
-	    File backupDir = (File) this.idata.getAttribute("polish.backup" );
-	    boolean isBackupError = false;
-	    if (backupDir != null) {
-	    	File[] files = backupDir.listFiles();
-	    	File target = new File( this.idata.getInstallPath() );
-	    	for (int i = 0; i < files.length; i++) {
-				File file = files[i];
-				try {
-					FileUtil.copy(file, target );
-				} catch (IOException e) {
-					e.printStackTrace();
-		        	emitError(this.parent.langpack.getString("installer.error"), "Unable to restore backup from " + file.getAbsolutePath() + ": " + e.toString() + "\nPlease restore the backup files manually." );
-		        	isBackupError = true;
-				}
-			}
-	    	if (!isBackupError) {
-	    		FileUtil.delete( backupDir );
-	    	}
-	    }
-	    this.idata.canClose = true;
 
 	    this.isActivated = true;
     }
