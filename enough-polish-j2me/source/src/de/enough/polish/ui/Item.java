@@ -1176,14 +1176,16 @@ public abstract class Item extends Object
 	 */
 	protected void repaint() {
 		System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
-		repaint( this.relativeX, this.relativeY, this.itemWidth, this.itemHeight );
+		repaint( - this.contentX, -this.contentY, this.itemWidth, this.itemHeight );
 	}
 	
 	/**
 	 * Repaints the specified relative area of this item.
+	 * The area is specified relative to the <code>Item's</code>
+	 * content area.
 	 * 
-	 * @param relX horizontal start position relative to this item's item area (including border, margins, paddings)
-	 * @param relY vertical start position relative to this item's item area (including border, margins, paddings)
+	 * @param relX horizontal start position relative to this item's content area
+	 * @param relY vertical start position relative to this item's content area
 	 * @param width the width of the area
 	 * @param height the height of the area
 	 */
@@ -1192,9 +1194,7 @@ public abstract class Item extends Object
 		if (this.parent instanceof Container) {
 			((Container) this.parent).isInitialised = false;
 		}
-		relX += this.relativeX;
-		relY += this.relativeY;
-		Item p = this.parent;
+		Item p = this;
 		while (p != null) {
 			relX += p.relativeX + p.contentX;
 			relY += p.relativeY + p.contentY;

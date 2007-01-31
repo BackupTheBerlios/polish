@@ -758,27 +758,6 @@ public abstract class CustomItem extends Item
 	protected abstract void paint( Graphics g, int w, int h);
 
 	/**
-	 * Called by subclass code to request that the specified rectangular area
-	 * of the item be repainted.  If that area is visible on the display, this
-	 * will result in call to <code>paint</code> with graphics set to
-	 * include the specified rectangular area.
-	 * The area is specified relative to the <code>CustomItem's</code>
-	 * content area.
-	 * The <code>CustomItem</code> should call this method when the item's
-	 * internal state has been updated and only part of the visual
-	 * representation needs to be updated.
-	 * 
-	 * @param x the x coordinate of the rectangular area to be updated
-	 * @param y the y coordinate of the rectangular area to be updated
-	 * @param w the width of the rectangular area to be updated
-	 * @param h the height of the rectangular area to be updated
-	 */
-	protected final void repaint(int x, int y, int w, int h)
-	{
-		repaint();
-	}
-
-	/**
 	 * Called by the system when traversal has entered the item or has occurred within the item.  
 	 * The direction of traversal and the item's
 	 * visible rectangle are passed into the method.  The method must do one
