@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 //import org.apache.tools.ant.AntClassLoader;
+import org.apache.tools.ant.AntClassLoader;
 import org.jdom.Element;
 
 import de.enough.polish.ant.requirements.MemoryMatcher;
@@ -746,36 +747,37 @@ public class Device extends PolishComponent {
 	public ClassLoader getClassLoader() {
 		if (this.classLoader == null) {
 			String[] bootClassPaths = this.classPath.getBootClassPaths();
-			PathClassLoader acl = new PathClassLoader();
+			//PathClassLoader acl = new PathClassLoader();
+			AntClassLoader acl = new AntClassLoader( );
 			//acl.addPathElement( this.bootClassPath );
 			for ( int i=0; i < bootClassPaths.length; i++ ) {
 				String path = bootClassPaths[i];
 //				System.out.println("adding bootclasspath [" + path +"]" );
-				try {
+//				try {
 					acl.addPathElement( path );
-				} catch (IOException e) {
-					// TODO robertvirkus handle IOException
-					e.printStackTrace();
-				}
+//				} catch (IOException e) {
+//					// TODO robertvirkus handle IOException
+//					e.printStackTrace();
+//				}
 			}
 			String[] classPaths = this.classPath.getClassPaths();
 			for (int i=0; i < classPaths.length; i++ ) {
 				String path = classPaths[i];
 //				System.out.println("adding classpath [" + path +"]" );
-				try {
+//				try {
 					acl.addPathElement( path );
-				} catch (IOException e) {
-					// TODO robertvirkus handle IOException
-					e.printStackTrace();
-				}
+//				} catch (IOException e) {
+//					// TODO robertvirkus handle IOException
+//					e.printStackTrace();
+//				}
 			}
-			try {
+//			try {
 				acl.addPathElement( this.classesDir );
-			} catch (IOException e) {
-				// TODO robertvirkus handle IOException
-				e.printStackTrace();
-			}
-			//System.out.println( "Classpath for device [" + this.identifier + "]: " + acl.getClasspath() );
+//			} catch (IOException e) {
+//				// TODO robertvirkus handle IOException
+//				e.printStackTrace();
+//			}
+//			//System.out.println( "Classpath for device [" + this.identifier + "]: " + acl.getClasspath() );
 			this.classLoader = acl;
 			
 		}
