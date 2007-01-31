@@ -69,6 +69,15 @@ public abstract class TagHandler
   //#if polish.LibraryBuild
   /**
    * Dummy method.
+   * 
+   * @param parentItem the container item the put the browser items into 
+   * @param parser the parser
+   * @param tagName the name of the tag to handle
+   * @param opening <code>true</code> if this is an opening tag, <code>false</code> otherwise
+   * @param attributeMap all attributes for the tag
+   * @return <code>true</code> if the tag was handled, <code>false</code> otherwise
+   * 
+   * @see #handleTag(Container, PullParser, String, boolean, HashMap)
    */
   public boolean handleTag(FakeContainerCustomItem parentItem, PullParser parser, String tagName, boolean opening, HashMap attributeMap)
   {
@@ -89,8 +98,10 @@ public abstract class TagHandler
   }
 
 	/**
-	 * @param tagName
-	 * @param command
+   * Adds a command to a specific tag.
+   * 
+	 * @param tagName the tag to add the command to
+	 * @param command the command to add
 	 */
 	public void addTagCommand(String tagName, Command command)
 	{
@@ -98,10 +109,12 @@ public abstract class TagHandler
 	}
 
 	/**
-	 * @param tagName
-	 * @param attributeName
-	 * @param attributeValue
-	 * @param command
+   * Adds a command to a specific tag/attribute combination.
+   * 
+	 * @param tagName the tag to add the command to
+	 * @param attributeName the attribute name to add the command to
+	 * @param attributeValue the attribute value to add the command to
+	 * @param command the command to add
 	 */
 	public void addAttributeCommand(String tagName, String attributeName, String attributeValue, Command command)
 	{

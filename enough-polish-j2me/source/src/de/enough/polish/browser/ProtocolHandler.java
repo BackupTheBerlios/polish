@@ -73,6 +73,10 @@ public abstract class ProtocolHandler
    * Uses a static preallocated temp buffer, bytebuf. The access to this
    * buffer is synchronized. Usage of this method from several threads
    * is allowed.
+   * 
+   * @param in the input stream to read from
+   * @return the read data in a byte array
+   * @throws IOException if an I/O error occurs
    */
   public static byte[] readByteArrayFromStream(InputStream in)
       throws IOException

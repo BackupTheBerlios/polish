@@ -85,17 +85,14 @@ implements Runnable
   
   protected Stack history = new Stack();
   //#if polish.Browser.PaintDownloadIndicator
-  	protected Gauge loadingIndicator;
+  protected Gauge loadingIndicator;
   //#endif
   
   private Thread loadingThread;
   private boolean isRunning;
   private boolean isWorking;
   private boolean isCancelRequested;
-
-private String nextUrl;
-
-
+  private String nextUrl;
 
   /**
    * Creates a new Browser without any protocol handlers, tag handlers or style.
@@ -130,24 +127,26 @@ private String nextUrl;
 	  	this(protocolHandlers, null);
 	  //#endif
   }
+  
   /**
    * Creates a new Browser with the specified handlers and style.
    * 
    * @param protocolHandlers the tag handlers
+   * @param style the style to use for the browser item
    */
   public Browser( ProtocolHandler[] protocolHandlers, Style style )
   {
 	  this( (String[])null, (TagHandler[])null, protocolHandlers, style);
   }
 
-
   /**
    * Creates a new Browser with the specified handlers and style.
    * 
+   * @param tagNames the names of the tags that the taghandler should handle (this allows to use a single taghandler for several tags)
    * @param tagHandlers the tag handlers
    * @param protocolHandlers the protocol handlers
    */
-  public Browser(  String[] tagNames, TagHandler[] tagHandlers, ProtocolHandler[] protocolHandlers )
+  public Browser( String[] tagNames, TagHandler[] tagHandlers, ProtocolHandler[] protocolHandlers )
   {
 	  //#if polish.css.style.browser && !polish.LibraryBuild
 	  	//#style browser
@@ -370,13 +369,16 @@ private String nextUrl;
   }
   
   /**
-   * @param text
+   * Handles norml text.
+   *  
+   * @param text the text
    */
   protected abstract void handleText(String text);
 
   /**
-   * @param reader
+   * Loads a page from a given <code>Reader</code>.
    * 
+   * @param reader the reader to load the page from
    * @throws IOException of an error occurs
    */
   public void loadPage(Reader reader)

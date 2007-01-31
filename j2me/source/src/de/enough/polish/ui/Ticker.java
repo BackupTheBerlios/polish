@@ -75,10 +75,6 @@ import de.enough.polish.util.TextUtil;
  * <ul>
  * 	<li><b>ticker-step</b>: the number of pixels by which the ticker is moved in every animation step, defaults to 2.</li>
  * 	<li><b>ticker-position</b>: the position of the ticker relative to the screen - either top or bottom</li>
- * 	<!--
- * 	<li><b></b>: </li>
- * 	<li><b></b>: </li>
- *  -->
  * </ul>
  * @see StringItem
  * @see IconItem

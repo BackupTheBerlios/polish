@@ -31,7 +31,7 @@ import javax.microedition.io.StreamConnection;
 import javax.microedition.midlet.MIDlet;
 
 /**
- * Protocol handler to handle the <code>external:/<code> protocol.
+ * Protocol handler to handle the <code>external:</code> protocol.
  * This class calls the given URLs in an external browser.
  */
 public class ExternalProtocolHandler

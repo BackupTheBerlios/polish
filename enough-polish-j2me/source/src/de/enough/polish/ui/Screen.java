@@ -3020,7 +3020,8 @@ implements AccessibleCanvas
 	/**
 	 * Determines whether the screen is currently shown.
 	 * When the screen is shown but the menu is openend, this method return false.
-	 * 	 
+	 * 
+   * @return <code>true</code> if the screen is currently shown, <code>false</code> otherwise
 	 * @see javax.microedition.lcdui.Displayable#isShown()
 	 */
 	public boolean isShown() {
