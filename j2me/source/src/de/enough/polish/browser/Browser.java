@@ -773,10 +773,8 @@ private String nextUrl;
   {
     this.nextUrl = url;
     synchronized( this.loadingThread ) {
-    	System.out.println("notifying thread for url " + url);
     	this.loadingThread.notify();
     }
-    System.out.println("done...");
   }
       
   public void cancel()
