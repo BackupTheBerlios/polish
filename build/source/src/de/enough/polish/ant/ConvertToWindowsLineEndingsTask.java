@@ -1,4 +1,4 @@
-package de.enough.polish.ant.build;
+package de.enough.polish.ant;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

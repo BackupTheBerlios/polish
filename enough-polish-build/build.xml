@@ -24,6 +24,8 @@
 	<taskdef name="indexWriter" classname="de.enough.polish.ant.WriteFileListTask" classpath="bin/classes"/>
 	<taskdef name="propertyWriter" classname="de.enough.polish.ant.PropertyWriterTask" classpath="bin/classes"/>
 	<taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="bin/classes:lib/jdom.jar"/>
+	<taskdef name="convertToWindowsLineEndings" classname="de.enough.polish.ant.ConvertToWindowsLineEndingsTask" classpath=".:bin/classes"/>
+	<taskdef name="setAttribute" classname="de.enough.polish.ant.SetAttributeTask" classpath=".:bin/classes"/>
 	<taskdef resource="genjar.properties" classpath="import/GenJar.jar" />
 	<taskdef resource="proguard/ant/task.properties" classpath="lib/proguard.jar" />	
 	<taskdef resource="checkstyletask.properties" classpath="lib/checkstyle-4.1.jar:lib/commons-beanutils-core.jar:lib/commons-logging.jar:lib/antlr.jar" />
@@ -436,7 +438,17 @@
 			<fileset dir="dist" includes="*.jar" />
 		</copy>
 	</target>
-	
+
+	<target name="copylegal" 
+		description="copies legal information files" 
+		depends="tmpsetup" >
+		<!-- copy the legal files of J2ME Polish -->
+		<mkdir dir="tmp/legal" />
+		<copy todir="tmp/legal">
+			<fileset dir="setup/legal" excludes="**/CVS" />
+		</copy>
+		</target>
+
 	<target name="copyplugins" 
 		description="copies IDE integration files" 
 		depends="tmpsetup" >
@@ -445,6 +457,21 @@
 		<copy todir="tmp/ide/netbeans">
 			<fileset dir="setup/netbeans" excludes="**/CVS" />
 		</copy>
+		<!-- copy eclipse integration (mepose) -->
+		<mkdir dir="tmp/ide/eclipse" />
+		<copy todir="tmp/ide/eclipse">
+			<fileset dir="setup/eclipse" excludes="**/CVS, **/de.enough.mepose.core*" />
+		</copy>
+		<setAttribute property="mepose.core" dir="setup/eclipse/plugins" fileValue="de.enough.mepose.core*" />
+		<!-- add current enough-j2mepolish-build.jar to mepose: -->
+		<mkdir dir="tmp/ide/mepose_core" />
+		<unjar overwrite="true" dest="tmp/ide/mepose_core" src="setup/eclipse/plugins/${mepose.core}" />
+		<copy file="dist/enough-j2mepolish-build.jar" todir="tmp/ide/mepose_core/lib" />
+		<jar basedir="tmp/ide/mepose_core" 
+			destfile="tmp/ide/eclipse/plugins/${mepose.core}" 
+			excludes="**/*src.zip" 
+			manifest="tmp/ide/mepose_core/META-INF/MANIFEST.MF"
+		/>
 	</target>
 
 	<target name="copysamples" 
@@ -521,7 +548,27 @@
 		<copy todir="tmp/samples/java5/" 
 			>
 			<fileset dir="setup/samples/java5" excludes="**/macosx/**" />
-			<fileset dir="../enough-polish-sample-java5" includes="resources/**/*.*" excludes="CVS"/>
+			<fileset dir="../enough-polish-sample-java5" includes="resources/**/*.*" excludes="**/CVS"/>
+		</copy>
+		<!-- copy browser sample application -->
+		<mkdir dir="tmp/samples/browser/source/src" />
+		<copy todir="tmp/samples/browser/source/src">
+			<fileset dir="../enough-polish-sample-browser/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/browser/" 
+			>
+			<fileset dir="setup/samples/browser" excludes="**/macosx/**, **/CVS" />
+			<fileset dir="../enough-polish-sample-browser" includes="resources/**/*.*" excludes="**/CVS"/>
+		</copy>
+		<!-- copy chartitem sample application -->
+		<mkdir dir="tmp/samples/chartitem/source/src" />
+		<copy todir="tmp/samples/chartitem/source/src">
+			<fileset dir="../enough-polish-sample-chartitem/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/chartitem/" 
+			>
+			<fileset dir="setup/samples/chartitem" excludes="**/macosx/**, **/CVS" />
+			<fileset dir="../enough-polish-sample-chartitem" includes="resources/**/*.*" excludes="**/CVS"/>
 		</copy>
 		<!-- copy roadrunner sample application -->
 		<mkdir dir="tmp/samples/roadrunner/source/src" />
@@ -587,11 +634,19 @@
 
 	<target name="copyfiles" 
 		description="copies all library and sample project files" 
-		depends="copylibs, copyplugins, copysamples, copyosx" >
+		depends="copylibs, copyplugins, copysamples, copyosx, copylegal" >
 	</target>
-		
+
+	<target name="convertWindowsLineEndings" 
+		description="converts all text files to windows line endings, so that the stupid windows default text editor can show them correctly. Just sad." 
+		>
+		<convertToWindowsLineEndings>
+			<fileset dir="tmp" includes="**/*.txt"></fileset>
+		</convertToWindowsLineEndings>
+	</target>
+
 	<target name="installer" 
-			 depends="bin-dist, copyfiles"
+			 depends="bin-dist, copyfiles, convertWindowsLineEndings"
 			 description="creates the j2mepolish-installer." 
 		>
 		<taskdef name="izpack" 
@@ -615,7 +670,9 @@
 		<mkdir dir="tmp/doc/javadoc/j2me" />
 		<copy todir="tmp/doc" >
 			<fileset dir="setup" includes="javadoc.html" />
+			<!--
 			<fileset dir="../enough-polish-website/site/source/downloads" includes="Complete_Guide_to_J2ME_Polish.pdf" />			
+			-->
 		</copy>
 		<javadoc 
 		    	destdir="tmp/doc/javadoc/build" 
@@ -725,8 +782,11 @@
 		<propertyWriter srcfile="setup/UserInputSpec.xml"
 			            destfile="tmp/userInputSpec.xml"
 						ignore="polish.home" />
+		<!--
 		<propertyWriter srcfile="setup/Readme.txt"
 			            destfile="tmp/Readme.txt" />
+		-->
+		<copy file="setup/Readme.txt" todir="tmp" />
 		<!-- create installation file -->
 		<echo message="starting izpack..." />
 		<izpack input="tmp/install.xml"

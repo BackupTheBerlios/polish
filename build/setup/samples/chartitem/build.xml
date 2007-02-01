@@ -8,7 +8,7 @@
 <!--                                                          -->
 <!-- Have fun!                                                -->
 <project 
-	name="enough-polish-browser" 
+	name="enough-polish-chartitem" 
 	default="j2mepolish">
 	
 	<!-- import user specific properties                          -->
@@ -80,12 +80,12 @@
 		    <!-- Have a look at the <jad>-section for setting specialised attributes.
 		         You can also define localized attributes in the resources/messages.txt files -->
 			<info
-				name="Browser"
+				name="Chart"
 				version="1.0.0"
-				description="A demonstration of the Browser."
+				description="A demonstration of the J2ME Polish ChartItem."
 				vendorName="Enough Software"
 				infoUrl="http://www.j2mepolish.org"
-				jarName="${polish.vendor}-${polish.name}-${polish.locale}-browser.jar" 
+				jarName="${polish.vendor}-${polish.name}-${polish.locale}-chartitem.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
 				copyright="Copyright 2006, 2007 Enough Software. All rights reserved."
 			/>
@@ -114,34 +114,23 @@
 				workDir="${dir.work}"
 			>
 				<!-- midlets definition -->
-				<!-- CHANGE THIS!       -->
-				<midlet class="de.enough.polish.sample.email.EmailMidlet" name="Email" />
+				<midlet class="de.enough.polish.sample.chartitem.ChartMidlet" name="Chart" />
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
-					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
-					<variable name="polish.useScrollBar" value="true" />
-					<variable name="polish.Browser.MaxRedirects" value="5" />
-					<variable name="polish.Browser.PaintDownloadIndicator" value="true" />
 					<!-- Sample configuration options for J2ME Polish
 					<variable name="polish.TextField.useDirectInput" value="true" />
 					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
 					-->
+					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+					<variable name="polish.useScrollBar" value="true" />
 				</variables>
 				<!-- Configure the customization settings here: -->
 				<resources
-					dir="resources/base"
+					dir="resources"
 					defaultexcludes="yes"
 					excludes="readme.txt"
 				>
-					<root dir="resources/base/images" />
-					<root dir="resources/base/sounds" />
-					<root dir="resources/customization1" if="cfg.customization1" />
-					<root dir="resources/customization1/images" if="cfg.customization1" />
-					<root dir="resources/customization1/sounds" if="cfg.customization1" />
-					<root dir="resources/customization2" if="cfg.customization2" />
-					<root dir="resources/customization2/images" if="cfg.customization2" />
-					<root dir="resources/customization2/sounds" if="cfg.customization2" />
 					<!-- add the localization element for created localized
 					     versions of your application: 
 					<localization>
@@ -159,15 +148,17 @@
 				</obfuscator>
 				<!-- log settings: only use debug setting when the test-property is true -->
 				<debug if="test" showLogOnError="true" verbose="true" level="error">
-					<filter pattern="de.enough.polish.example.*" level="debug" />
-					<filter pattern="de.enough.polish.ui.*" level="warn" />
+					<filter package="de.enough.polish.sample.chartitem" level="debug" />
+					<filter package="de.enough.polish.ui" level="warn" />
 					<!-- example for writing log entries to the Recordstore Management System: 
 					<handler name="rms" />
 					-->
 				</debug>
 				<!-- user defined JAD attributes can also be used: -->
 				<jad>
+					<!--
 					<attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40" />
+					-->
 				</jad>	
 			</build>
 			
@@ -225,25 +216,4 @@
 	
     <target name="debug" description="debugs the project" depends="enableDebug, test, j2mepolish" />
 	
-	<target name="enableCustomization1">
-		<property name="dir.work" value="build/customization1" />
-		<property name="cfg.customization1" value="true" />
-	</target>
-		
-	<target name="customization1"
-			description="customizes this project with the settings found in resources/customization1"
-			depends="enableCustomization1, j2mepolish"
-	/>
-	
-	<target name="enableCustomization2">
-		<property name="dir.work" value="build/customization2" />
-		<property name="cfg.customization2" value="true" />
-	</target>
-		
-	<target name="customization2"
-			description="customizes this project with the settings found in resources/customization2"
-			depends="enableCustomization2, j2mepolish"
-	/>
-	
-
 </project>

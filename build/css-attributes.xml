@@ -492,6 +492,7 @@
 		<mapping from="plain" to="none" />
 		<mapping from="normal" to="none" />
 		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" />
+		<mapping from="gauge-rotating-arcs" to="new de.enough.polish.ui.gaugeviews.RotatingArcsGaugeView()" />
 		<mapping from="chart-vertical-bars" to="new de.enough.polish.ui.chartviews.VerticalBarChartView()" />
 		<!--
 		<mapping from="" to="" />

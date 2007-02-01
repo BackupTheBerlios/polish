@@ -113,6 +113,15 @@
 		<required>no</required>
 		<type>extension</type>
 	</capability>
+
+	<capability>
+		<identifier>build.Emulator.Skin</identifier>
+		<extension-mode>append</extension-mode>
+		<extension-mode-separator>:</extension-mode-separator>
+		<group>Build</group>
+		<required>no</required>
+		<type>list</type>
+	</capability>
 	
 	<capability>
 		<identifier>wap.userAgent</identifier>
