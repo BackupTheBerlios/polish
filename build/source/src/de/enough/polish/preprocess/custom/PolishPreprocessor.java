@@ -476,6 +476,12 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					throw new BuildException (getErrorStart(className, lines) + ": Invalid RemoteClient.open() usage - please specify the name of the interface directly with quotes, e.g. \"RemoteClient.open(\"GameServer\", \"http://localhost/gameserver/myservice\")\" . This line is not valid: " + line );					
 				}
 				name = name.substring( 1, name.length() - 1);
+				if (this.environment.hasSymbol("polish.useDefaultPackage")) {
+					int lastDotPos = name.lastIndexOf('.');
+					if (lastDotPos != -1) {
+						name = name.substring(lastDotPos + 1);
+					}
+				}
 				String url = line.substring( commaPos + 1, parenthesesEnd ).trim();
 				line = line.substring(0, startPos)
 					+ "new " + name + "RemoteClient(" + url + "); //" + line.substring(startPos);
@@ -501,7 +507,16 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				try {
 					boolean extendsRemote = createRemoteImplementation( className, lines );
 					if (extendsRemote) {
-						File classFile = new File( this.environment.getDevice().getBaseDir(), "classes" + File.separatorChar +  className.replace('.', File.separatorChar ) + ".class" );
+						File classFile;
+						if (this.environment.hasSymbol("polish.useDefaultPackage")) {
+							int lastDotPost = className.lastIndexOf('.');
+							if (lastDotPost != -1) {
+								className = className.substring( lastDotPost + 1 );
+							}
+							classFile = new File( this.environment.getDevice().getBaseDir(), "classes" + File.separatorChar +  className + ".class" );
+						} else {
+							classFile = new File( this.environment.getDevice().getBaseDir(), "classes" + File.separatorChar +  className.replace('.', File.separatorChar ) + ".class" );
+						}
 						rmiClassFiles.add( classFile );						
 					}
 				} catch (IOException e) {
@@ -579,9 +594,25 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				"super( url );"
 		} );
 		sourceClass.addMethod( constructor );
-		File targetDir = new File( this.currentDevice.getSourceDir() + File.separatorChar + sourceClass.getPackageName().replace('.', File.separatorChar) );
+		File targetDir;
+		if (this.environment.hasSymbol("polish.useDefaultPackage")) {
+			targetDir = new File( this.currentDevice.getSourceDir() );
+			sourceClass.setPackageName(null);
+		} else {
+			targetDir = new File( this.currentDevice.getSourceDir() + File.separatorChar + sourceClass.getPackageName().replace('.', File.separatorChar) );
+		}
 		File targetFile = new File( targetDir, sourceClass.getClassName() + ".java");
-		FileUtil.writeTextFile(targetFile, sourceClass.renderCode() );
+		String[] sourceCode;
+		// let the preprocessor handle the source code again when the default package should be used:
+		if (this.environment.hasSymbol("polish.useDefaultPackage")) {
+			StringList sourceCodeList = new StringList(  sourceClass.renderCode() );
+			this.preprocessor.preprocess( sourceClass.getClassName(), sourceCodeList  );
+			sourceCode = sourceCodeList.getArray();
+			
+		} else {
+			sourceCode = sourceClass.renderCode();
+		}
+		FileUtil.writeTextFile(targetFile, sourceCode );
 		return true;
 	}
 
