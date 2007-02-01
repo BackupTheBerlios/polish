@@ -421,8 +421,8 @@ implements ImageConsumer
 	public void setImage(String name, Image image) {
 		this.image = image;
 		//System.out.println("image [" + name + "] has been set.");
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -452,8 +452,8 @@ implements ImageConsumer
 			this.rgbData = null;
 			this.scaleData = null;
 		//#endif
-		if (this.isInitialised) {	
-			this.isInitialised = false;
+		if (this.isInitialized) {	
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -466,7 +466,7 @@ implements ImageConsumer
 	 */
 	public void setImageAlign( int imageAlign ) {
 		this.imageAlign = imageAlign;
-		this.isInitialised = false;
+		this.isInitialized = false;
 	}
 	
 	//#if polish.midp2 && polish.css.scale-factor

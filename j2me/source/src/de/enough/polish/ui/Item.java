@@ -55,7 +55,7 @@ import de.enough.polish.util.HashMap;
  * 		<li><b>min-height</b>: The minimum height of this item.</li>
  * 		<li><b>max-height</b>: The maximum height of this item.</li>
  * 		<li><b>before</b>: URL of image that should be placed before this item.</li>
- * 		<li><b>after</b>: URL of image that should be laced after this item.</li>
+ * 		<li><b>after</b>: URL of image that should be placed after this item.</li>
  * 		<li><b>include-label</b>: set to true when the background and border should include the label of this item as well.</li>
  * 		<li><b>colspan</b>: when this item is embedded in a table, you can span it over several cells, e.g. colspan: 2;.</li>
  * 		<li><b>label-style</b>: The name of the specialized label style for this item, e.g. "label-style: funnyLabel;"</li>
@@ -619,7 +619,7 @@ public abstract class Item extends Object
 	//#ifdef polish.css.max-height
 		protected int maximumHeight;
 	//#endif
-	protected boolean isInitialised;
+	protected boolean isInitialized;
 	public Background background;
 	protected Border border;
 	protected Style style;
@@ -795,8 +795,8 @@ public abstract class Item extends Object
 		} else {
 			this.label.setText( label );
 		}
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -853,8 +853,8 @@ public abstract class Item extends Object
 	{
 		if (layout != this.layout) {
 			this.layout = layout;
-			if (this.isInitialised) {
-				this.isInitialised = false;
+			if (this.isInitialized) {
+				this.isInitialized = false;
 				repaint();
 			}
 		}
@@ -899,7 +899,7 @@ public abstract class Item extends Object
 	public void setStyle( Style style ) {
 		//#debug
 		System.out.println("setting style - with background: " + (style.background != null));
-		this.isInitialised = false;
+		this.isInitialized = false;
 		this.isStyleInitialised = true;
 		this.style = style;
 		if (style != StyleSheet.defaultStyle) {
@@ -1088,7 +1088,7 @@ public abstract class Item extends Object
 	 * @return the complete width of this item.
 	 */
 	public int getItemWidth( int firstLineWidth, int lineWidth ) {
-		if (!this.isInitialised || this.itemWidth > lineWidth) {
+		if (!this.isInitialized || this.itemWidth > lineWidth) {
 			init( firstLineWidth, lineWidth );
 		}
 		return this.itemWidth;
@@ -1104,7 +1104,7 @@ public abstract class Item extends Object
 	 * @return the complete heigth of this item.
 	 */
 	public int getItemHeight( int firstLineWidth, int lineWidth ) {
-		if (!this.isInitialised || this.itemWidth > lineWidth) {
+		if (!this.isInitialized || this.itemWidth > lineWidth) {
 			init( firstLineWidth, lineWidth );
 		}
 		return this.itemHeight;
@@ -1147,7 +1147,7 @@ public abstract class Item extends Object
 					scr.addCommand( cmd );
 				}
 			}
-			if (this.isInitialised) {
+			if (this.isInitialized) {
 				repaint();
 			}
 		}
@@ -1156,12 +1156,15 @@ public abstract class Item extends Object
 	/**
 	 * Repaints the complete screen to which this item belongs to.
 	 * Subclasses can call this method whenever their contents
-	 * have changed and they need an immediate refresh. 
+	 * have changed and they need an immediate refresh.
+	 *  
+	 * @see #repaint()
+	 * @see #repaint(int, int, int, int)
 	 */
 	protected void repaintFully() {
 		repaint( this.relativeX, this.relativeY, this.itemWidth, this.itemHeight );
 		if (this.parent instanceof Container) {
-			((Container) this.parent).isInitialised = false;
+			((Container) this.parent).isInitialized = false;
 		}
 		Screen scr = getScreen();
 		if (scr != null && scr == StyleSheet.currentScreen) {
@@ -1170,13 +1173,23 @@ public abstract class Item extends Object
 	}
 	
 	/**
-	 * Repaints the screen to which this item belongs to and repaints only the area covered by this item (unless other repaint requests are queued).
-	 * Subclasses can call this method whenever their contents
-	 * have changed and they need an immediate refresh. 
+	 * Repaints the screen to which this item belongs to depending on the isInitialized field
+	 * When this item is initialized, only the area covered by this item is repainted (unless other repaint requests are queued).
+	 * When this item is not initialized (isInitialized == false), a repaint for the complete screen is triggered, as there might be
+	 * a size change involved.
+	 * Subclasses can call this method whenever their contents have changed and they need an immediate refresh.
+	 * 
+	 * @see #isInitialized 
+	 * @see #repaintFully()
+	 * @see #repaint(int, int, int, int)
 	 */
 	protected void repaint() {
-		System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
-		repaint( - this.contentX, -this.contentY, this.itemWidth, this.itemHeight );
+		//System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
+		if (this.isInitialized) {
+			repaint( - this.contentX, -this.contentY, this.itemWidth, this.itemHeight );
+		} else {
+			repaintFully();
+		}
 	}
 	
 	/**
@@ -1188,11 +1201,14 @@ public abstract class Item extends Object
 	 * @param relY vertical start position relative to this item's content area
 	 * @param width the width of the area
 	 * @param height the height of the area
+	 * 
+	 * @see #repaint()
+	 * @see #repaintFully()
 	 */
 	protected void repaint( int relX, int relY, int width, int height ) {
 		//System.out.println("repaint called by class " + getClass().getName() );
 		if (this.parent instanceof Container) {
-			((Container) this.parent).isInitialised = false;
+			((Container) this.parent).isInitialized = false;
 		}
 		Item p = this;
 		while (p != null) {
@@ -1223,11 +1239,11 @@ public abstract class Item extends Object
 		//System.out.println("requestInit called by class " + getClass().getName() + " - screen.class=" + getScreen().getClass().getName()  );
 		Item p = this.parent;
 		while ( p != null) {
-			p.isInitialised = false;
+			p.isInitialized = false;
 			p = p.parent;
 		}
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -1292,7 +1308,7 @@ public abstract class Item extends Object
 						scr.removeCommand( cmd );
 					}
 				}
-				if (this.isInitialised) {
+				if (this.isInitialized) {
 					repaint();
 				}
 			}
@@ -1542,7 +1558,7 @@ public abstract class Item extends Object
 		int availableWidth = rightBorder - leftBorder;
 		int originalX = x;
 		int originalY = y;
-		if (!this.isInitialised || (availableWidth < this.itemWidth )) {
+		if (!this.isInitialized || (availableWidth < this.itemWidth )) {
 			//#if polish.debug.info
 			if (availableWidth < this.itemWidth ) {
 				//#debug info
@@ -1761,7 +1777,7 @@ public abstract class Item extends Object
 		int labelWidth = 0;
 		int labelHeight = 0;
 		if (this.label != null) {
-			if (!this.label.isInitialised) {
+			if (!this.label.isInitialized) {
 				this.label.init( firstLineWidth, lineWidth );
 			}
 			labelWidth = this.label.itemWidth;
@@ -1818,7 +1834,7 @@ public abstract class Item extends Object
 			this.itemHeight = labelHeight;
 			this.backgroundHeight = 0;
 			this.backgroundWidth = 0;
-			this.isInitialised = true;
+			this.isInitialized = true;
 			return;
 		}
 		this.itemWidth = noneContentWidth + this.contentWidth;
@@ -1890,7 +1906,7 @@ public abstract class Item extends Object
 							  - this.marginBottom
 							  - labelHeight;
 		}
-		this.isInitialised = true;
+		this.isInitialized = true;
 		//#debug
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
 	}
@@ -2114,15 +2130,21 @@ public abstract class Item extends Object
 	/**
 	 * Animates this item.
 	 * Subclasses can override this method to create animations.
-	 * The default implementation just animates the background if present.
+	 * The default implementation animates the background and the item view if present.
 	 * 
 	 * @return true when this item has been animated.
 	 */
 	public boolean animate() {
+		boolean animated = false;
 		if (this.background != null) {
-			return this.background.animate();
+			animated = this.background.animate();
 		}
-		return false;
+		//#if polish.css.view-type
+			if (this.view != null) {
+				animated |= this.view.animate();
+			}
+		//#endif
+		return animated;
 	}
 	
 	/**

@@ -510,14 +510,14 @@ implements ImageConsumer
 		}
 		this.value = value;
 		this.valueString = "" + value;
-		if (this.isInitialised) {
+		if (this.isInitialized) {
 			if (this.isIndefinite) {
 				updateIndefiniteIndicatorImage();
 			} else if (this.image == null){
 				createIndicatorImage();
 			}
 		}
-		if (this.isInitialised) {
+		if (this.isInitialized) {
 			repaint();
 		}
 	}
@@ -665,7 +665,7 @@ implements ImageConsumer
 	 */
 	public void setMaxValue(int maxValue)
 	{
-		this.isInitialised = false;
+		this.isInitialized = false;
 		if (maxValue == INDEFINITE) {
 			this.isIndefinite = true;
 			//#ifndef polish.skipArgumentCheck
@@ -678,7 +678,7 @@ implements ImageConsumer
 			//#endif
 		}
 		this.maxValue = maxValue;
-		this.isInitialised = false;
+		this.isInitialized = false;
 	}
 
 	/**
@@ -1021,7 +1021,7 @@ implements ImageConsumer
 	 */
 	public void setImage(String name, Image image) {
 		this.image = image;
-		this.isInitialised = false;
+		this.isInitialized = false;
 		repaint();
 	}
 	//#endif
@@ -1087,13 +1087,13 @@ implements ImageConsumer
 	 */
 	public boolean animate() {
 		boolean animated = super.animate();
-		//#if polish.view-type
+		//#if polish.css.view-type
 			if (this.view != null) {
 				// skip animation when there is a view present in this gauge
 				return animated;
 			}
 		//#endif
-		if (this.isIndefinite && this.value == CONTINUOUS_RUNNING && this.isInitialised) {
+		if (this.isIndefinite && this.value == CONTINUOUS_RUNNING && this.isInitialized) {
 			//#if polish.css.gauge-animation-mode
 				if ( this.image != null && this.animationMode == ANIMATION_MODE_BACKANDFORTH ) {
 					if (this.animationDirectionDownwards) {

@@ -296,7 +296,7 @@ public class TabbedForm extends Form {
 	public void setActiveTab( int tabIndex ) {
 		//#debug
 		System.out.println("Activating tab [" + tabIndex + "].");
-		if (this.container.isInitialised) {
+		if (this.container.isInitialized) {
 			//System.out.println("defocus of container " + this.container);
 			this.container.hideNotify();
 			this.container.defocus( this.container.style );
@@ -309,7 +309,7 @@ public class TabbedForm extends Form {
 		Container tabContainer = this.tabContainers[ tabIndex ];
 		this.container = tabContainer;
 		tabContainer.setScrollHeight( this.contentHeight );
-		if (!tabContainer.isInitialised) {
+		if (!tabContainer.isInitialized) {
 			tabContainer.init( this.contentWidth, this.contentWidth );
 		}
 		if (tabContainer.appearanceMode != Item.PLAIN) {

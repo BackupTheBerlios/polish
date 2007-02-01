@@ -208,8 +208,8 @@ public class MenuBar extends Item {
 						this.singleLeftCommand = cmd;
 						this.singleLeftCommandItem.setImage( (Image)null );
 						this.singleLeftCommandItem.setText( cmd.getLabel() );
-						if (this.isInitialised) {
-							this.isInitialised = false;
+						if (this.isInitialized) {
+							this.isInitialized = false;
 							repaint();
 						}
 						return;
@@ -229,8 +229,8 @@ public class MenuBar extends Item {
 							this.singleLeftCommand = cmd;
 							this.singleLeftCommandItem.setImage( (Image)null );
 							this.singleLeftCommandItem.setText( cmd.getLabel() );
-							if (this.isInitialised) {
-								this.isInitialised = false;
+							if (this.isInitialized) {
+								this.isInitialized = false;
 								repaint();
 							}
 							return;
@@ -249,8 +249,8 @@ public class MenuBar extends Item {
 							this.singleRightCommand = cmd;
 							this.singleRightCommandItem.setImage( (Image)null );
 							this.singleRightCommandItem.setText( cmd.getLabel() );
-							if (this.isInitialised) {
-								this.isInitialised = false;
+							if (this.isInitialized) {
+								this.isInitialized = false;
 								repaint();
 							}
 							return;
@@ -280,8 +280,8 @@ public class MenuBar extends Item {
 					System.out.println("Setting single right command " + cmd.getLabel() );
 					this.singleRightCommand = cmd;
 					this.singleRightCommandItem.setText( cmd.getLabel() );
-					if (this.isInitialised) {
-						this.isInitialised = false;
+					if (this.isInitialized) {
+						this.isInitialized = false;
 						repaint();
 					}
 					return;
@@ -301,8 +301,8 @@ public class MenuBar extends Item {
 					System.out.println("Setting single left command " + cmd.getLabel() );
 					this.singleLeftCommand = cmd;
 					this.singleLeftCommandItem.setText( cmd.getLabel() );
-					if (this.isInitialised) {
-						this.isInitialised = false;
+					if (this.isInitialized) {
+						this.isInitialized = false;
 						repaint();
 					}
 					return;
@@ -322,8 +322,8 @@ public class MenuBar extends Item {
 	
 		addCommand( item );
 		
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -344,8 +344,8 @@ public class MenuBar extends Item {
 		// 1.case: cmd == this.singleLeftCommand
 		if ( cmd == this.singleLeftCommand ) {
 			this.singleLeftCommand = null;
-			if (this.isInitialised) {
-				this.isInitialised = false;
+			if (this.isInitialized) {
+				this.isInitialized = false;
 				repaint();
 			}
 			//#if tmp.RightOptions
@@ -357,8 +357,8 @@ public class MenuBar extends Item {
 						this.singleLeftCommandItem.setText( this.singleLeftCommand.getLabel() );
 						this.singleRightCommand = null;
 					}
-					if (this.isInitialised) {
-						this.isInitialised = false;
+					if (this.isInitialized) {
+						this.isInitialized = false;
 						repaint();
 					}
 					return;
@@ -392,8 +392,8 @@ public class MenuBar extends Item {
 						this.singleRightCommandItem.setText( this.singleLeftCommand.getLabel() );
 						this.singleLeftCommand = null;
 					}
-					if (this.isInitialised) {
-						this.isInitialised = false;
+					if (this.isInitialized) {
+						this.isInitialized = false;
 						repaint();
 					}
 					return;
@@ -443,8 +443,8 @@ public class MenuBar extends Item {
 		}
 		//#endif
 
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -737,7 +737,7 @@ public class MenuBar extends Item {
 	 * @param open true when the menu should be opened
 	 */
 	protected void setOpen( boolean open ) {
-		this.isInitialised = (open == this.isOpened);
+		this.isInitialized = (open == this.isOpened);
 		if (!open && this.isOpened) {
 			this.commandsContainer.hideNotify();
 		} else if (open && !this.isOpened) {
@@ -748,7 +748,7 @@ public class MenuBar extends Item {
 			this.commandsContainer.showNotify();
 		}
 		this.isOpened = open;
-		this.isInitialised = false;
+		this.isInitialized = false;
 	}
 	
 
@@ -809,7 +809,7 @@ public class MenuBar extends Item {
 //				}
 				boolean handled = this.commandsContainer.handleKeyPressed(keyCode, gameAction);
 				if (handled) {
-					this.isInitialised = false;
+					this.isInitialized = false;
 				} else { 
 					if (gameAction == Canvas.DOWN || gameAction == Canvas.UP) {
 						//#debug error
@@ -1078,7 +1078,7 @@ public class MenuBar extends Item {
 		this.allCommands.put( childCommand, child);
 		parentCommandItem.addChild( child );
 		if (this.isOpened) {
-			this.isInitialised = false;
+			this.isInitialized = false;
 			repaint();
 		}
 	}

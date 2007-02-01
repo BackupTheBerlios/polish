@@ -1043,7 +1043,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 		//#if polish.blackberry
 			this.editField.setCursorPosition(position);
 		//#elif tmp.allowDirectInput || tmp.forceDirectInput
-			if ( ! this.isInitialised ) {
+			if ( ! this.isInitialized ) {
 				this.doSetCaretPosition = true;
 				this.caretPosition = position;
 			} else if (this.realTextLines == null ){
@@ -2806,7 +2806,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 
 	//#if polish.blackberry
 	public void fieldChanged(Field field, int context) {
-		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialised ) {
+		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialized ) {
 			//#if polish.Bugs.ItemStateListenerCalledTooEarly
 				this.lastFieldChangedEvent = System.currentTimeMillis();
 			//#else

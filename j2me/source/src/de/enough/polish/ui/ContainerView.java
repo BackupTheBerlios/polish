@@ -167,13 +167,13 @@ extends ItemView
 				if (isLayoutShrink && this.focusedItem != null) {
 					Item item = this.focusedItem;
 					//System.out.println("container has shrinking layout and contains focuse item " + item);
-					item.isInitialised = false;
+					item.isInitialized = false;
 					boolean doExpand = item.isLayoutExpand;
 					int width;
 					if (doExpand) {
 						item.isLayoutExpand = false;
 						width = item.getItemWidth( lineWidth, lineWidth );
-						item.isInitialised = false;
+						item.isInitialized = false;
 						item.isLayoutExpand = true;
 					} else {
 						width = item.itemWidth;
@@ -263,7 +263,7 @@ extends ItemView
 				int availableWidth = this.columnsWidths[columnIndex];
 				//#if polish.css.colspan
 					int itemColSpan = item.colSpan;
-					if (!item.isInitialised && item.style != null) {
+					if (!item.isInitialized && item.style != null) {
 						Integer colSpanInt = item.style.getIntProperty("colspan");
 						if ( colSpanInt != null ) {
 							itemColSpan = colSpanInt.intValue();
@@ -304,8 +304,8 @@ extends ItemView
 					}
 				//#endif
 				//System.out.println( i + ": available with: " + availableWidth + ", item.isInitialized=" + item.isInitialised + ", itemWidth=" + item.getItemWidth( availableWidth, availableWidth ));
-				if (item.isInitialised && item.itemWidth > availableWidth) {
-					item.isInitialised = false;
+				if (item.isInitialized && item.itemWidth > availableWidth) {
+					item.isInitialized = false;
 				}
 				int width = item.getItemWidth( availableWidth, availableWidth );
 				//System.out.println("got item width");
@@ -331,7 +331,7 @@ extends ItemView
 						//#debug
 						System.out.println("initializing new colspan of item " + i + "/" + item + ", column " + columnIndex + ": " + itemColSpan);
 						item.colSpan = itemColSpan;
-						item.isInitialised = false;
+						item.isInitialized = false;
 					}
 					columnIndex += itemColSpan;
 				//#else
@@ -424,7 +424,7 @@ extends ItemView
 							// re-initialise this item,
 							// if it is wider than the left-available-column-width
 							if ( width > leftAvailableColumnWidth ) {
-								item.isInitialised = false;
+								item.isInitialized = false;
 								width = item.getItemWidth( leftAvailableColumnWidth, leftAvailableColumnWidth );
 								height = item.getItemHeight( leftAvailableColumnWidth, leftAvailableColumnWidth );
 							}

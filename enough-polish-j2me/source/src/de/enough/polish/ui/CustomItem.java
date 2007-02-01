@@ -1293,7 +1293,7 @@ public abstract class CustomItem extends Item
 			}
 		}
 		keyPressed( keyCode );
-		if (this.isInitialised == false) {
+		if (this.isInitialized == false) {
 			return true;
 		} else {
 			return super.handleKeyPressed(keyCode, gameAction);
@@ -1305,7 +1305,7 @@ public abstract class CustomItem extends Item
 	 */
 	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
 		keyRepeated( keyCode );
-		if (this.isInitialised == false) {
+		if (this.isInitialized == false) {
 			return true;
 		} else {
 			return super.handleKeyRepeated(keyCode, gameAction);
@@ -1317,7 +1317,7 @@ public abstract class CustomItem extends Item
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		keyReleased( keyCode );
-		if (this.isInitialised == false) {
+		if (this.isInitialized == false) {
 			return true;
 		} else {
 			return super.handleKeyReleased(keyCode, gameAction);
@@ -1346,7 +1346,7 @@ public abstract class CustomItem extends Item
 		x -= this.contentX;
 		y -= this.contentY;
 		pointerPressed( x, y );
-		return (this.isInitialised == false);
+		return (this.isInitialized == false);
 	}
 	//#endif
 

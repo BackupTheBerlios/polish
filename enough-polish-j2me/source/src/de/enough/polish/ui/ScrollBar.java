@@ -166,7 +166,7 @@ public class ScrollBar extends Item {
 		//#endif
 		//#debug
 		System.out.println("sliderY=" + this.sliderY + ", sliderHeight=" + this.sliderHeight);
-		if (!this.isInitialised) {	
+		if (!this.isInitialized) {	
 			init( screenWidth, screenWidth );
 		}
 		return this.itemWidth;

@@ -422,7 +422,7 @@ public class ChoiceItem extends IconItem
 		} else {
 			setImage( image );
 		}
-		this.isInitialised = false;
+		this.isInitialized = false;
 		/*
 		this.isInitialised = false;
 		repaint();

@@ -106,7 +106,7 @@ public class Spacer extends Item
 	{
 		this.contentWidth = minWidth;
 		this.contentHeight = minHeight;
-		this.isInitialised = false;
+		this.isInitialized = false;
 	}
 
 	/**

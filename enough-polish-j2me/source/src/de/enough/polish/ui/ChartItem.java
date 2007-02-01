@@ -498,7 +498,7 @@ public class ChartItem
 	public void setLabelY(String labelY) {
 		//#if tmp.rotate
 			this.rotatedLabelY = null; 
-			this.isInitialised = false;
+			this.isInitialized = false;
 		//#endif
 		this.labelY = labelY;
 	}

@@ -175,7 +175,7 @@ public class TachometerGaugeView extends ItemView {
 //			g.drawLine( xe, ye, xe, ye);
 ////			g.drawLine( centerX, centerY, xe, ye);
 //		}
-		System.out.println("--------------------");
+//		System.out.println("--------------------");
 		//draws ticks
 		int startX, startY, endX, endY, tickLength = pointerLength + 10;
 //		for (int i = 225; i >= -45; i-=45) {

@@ -151,8 +151,8 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		item.internalX = -9999;
 //		item.parent = this;
 		this.itemsList.add( item );
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -175,8 +175,8 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		if (index <= this.focusedIndex) {
 			this.focusedIndex++;
 		}
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -200,8 +200,8 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				this.itemStyle = item.focus( this.focusedStyle, 0 );
 			}
 		}
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 		return last;
@@ -269,8 +269,8 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		}
 		this.yOffset = 0;
 		this.targetYOffset = 0;
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 		return removedItem;
@@ -330,8 +330,8 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 //				((Container) this.parent).scroll( 0, this );
 			}
 		}
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			//this.yBottom = this.yTop = 0;
 			repaint();
 		}
@@ -353,7 +353,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @return an array of all items, can be empty but not null.
 	 */
 	public Item[] getItems() {
-		if (!this.isInitialised || this.items == null) {
+		if (!this.isInitialized || this.items == null) {
 			this.items = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		}
 		return this.items;
@@ -415,7 +415,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		//#endif
 		
 		
-		if (this.autoFocusEnabled  && !this.isInitialised) {
+		if (this.autoFocusEnabled  && !this.isInitialized) {
 			// setting the index for automatically focusing the appropriate item
 			// during the initialisation:
 			//#debug
@@ -459,7 +459,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				this.containerView.focusedItem = item;
 			}
 		//#endif
-		if  (this.isInitialised) {
+		if  (this.isInitialized) {
 			// this container has been initialised already,
 			// so the dimensions are known.
 			if (item.internalX != -9999) {
@@ -522,7 +522,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			this.isScrollRequired = true;
 			
 		}
-		this.isInitialised = false;
+		this.isInitialized = false;
 	}
 	
 	/**
@@ -723,13 +723,13 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 			if (isLayoutShrink && this.focusedItem != null) {
 				Item item = this.focusedItem;
 				//System.out.println("container has shrinking layout and contains focuse item " + item);
-				item.isInitialised = false;
+				item.isInitialized = false;
 				boolean doExpand = item.isLayoutExpand;
 				int width;
 				if (doExpand) {
 					item.isLayoutExpand = false;
 					width = item.getItemWidth( lineWidth, lineWidth );
-					item.isInitialised = false;
+					item.isInitialized = false;
 					item.isLayoutExpand = true;
 				} else {
 					width = item.itemWidth;
@@ -1729,7 +1729,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		requestInit();
 		for (int i = 0; i < this.itemsList.size(); i++) {
 			Item item = (Item) this.itemsList.get(i);
-			item.isInitialised = false;
+			item.isInitialized = false;
 		}
 	}
 

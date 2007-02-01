@@ -50,6 +50,7 @@ import de.enough.polish.xml.XmlPullParser;
 //#else
 	//# import de.enough.polish.ui.Container;
 //#endif
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
@@ -697,6 +698,11 @@ implements Runnable
 
     if (this.isWorking)
     {
+    	int originalY = y;
+    	if (this.parent instanceof Container) {
+    		y += ((Container)this.parent).getScrollYOffset();
+    	}
+    	y += this.yOffset;
     	int lineWidth = rightBorder - leftBorder;
       	int liHeight = this.loadingIndicator.getItemHeight( lineWidth, lineWidth );
       	int liLayout = this.loadingIndicator.getLayout();
@@ -705,6 +711,9 @@ implements Runnable
       	} else if ( (liLayout & LAYOUT_BOTTOM ) == LAYOUT_BOTTOM ) {
       		y += this.contentHeight - liHeight;
       	}
+      	this.loadingIndicator.relativeX = x;
+      	this.loadingIndicator.relativeY = y - originalY;
+      	System.out.println(">>>>>> download indicator at " + x + ", " + y + ", originalY=" + originalY +", yOffset=" + this.yOffset);
       	this.loadingIndicator.paint(x, y, leftBorder, rightBorder, g);
     }
   }
@@ -729,6 +738,12 @@ implements Runnable
   ////////////////  downloading thread /////////////////
   public void run()
   {
+	  // ensure that the user is able to specify the first location before this thread is going to sleep/wait.
+	  try {
+		Thread.sleep( 100 );
+	} catch (InterruptedException e) {
+		// ignore
+	}
     this.isRunning = true;
 
     while (this.isRunning)

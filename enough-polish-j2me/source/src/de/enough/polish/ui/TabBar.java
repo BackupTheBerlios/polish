@@ -128,7 +128,7 @@ public class TabBar extends Item {
 		// activating the new tab:
 		this.tabs[ index ].setStyle(this.activeStyle);
 		this.activeTabIndex = index;
-		this.isInitialised = false;
+		this.isInitialized = false;
 	}
 
 

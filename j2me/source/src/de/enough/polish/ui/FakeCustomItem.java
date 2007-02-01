@@ -349,7 +349,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	//#ifdef polish.css.max-height
 		protected int maximumHeight;
 	//#endif
-	protected boolean isInitialised;
+	protected boolean isInitialized;
 	public Background background;
 	protected Border border;
 	protected Style style;
@@ -526,8 +526,8 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		} else {
 			this.label.setText( label );
 		}
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -624,7 +624,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	public void setStyle( Style style ) {
 		//#debug
 		System.out.println("setting style - with background: " + (style.background != null));
-		this.isInitialised = false;
+		this.isInitialized = false;
 		this.isStyleInitialised = true;
 		this.style = style;
 		if (style != StyleSheet.defaultStyle) {
@@ -808,7 +808,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @return the complete width of this item.
 	 */
 	public int getItemWidth( int firstLineWidth, int lineWidth ) {
-		if (!this.isInitialised || this.itemWidth > lineWidth) {
+		if (!this.isInitialized || this.itemWidth > lineWidth) {
 			init( firstLineWidth, lineWidth );
 		}
 		return this.itemWidth;
@@ -824,7 +824,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @return the complete heigth of this item.
 	 */
 	public int getItemHeight( int firstLineWidth, int lineWidth ) {
-		if (!this.isInitialised || this.itemWidth > lineWidth) {
+		if (!this.isInitialized || this.itemWidth > lineWidth) {
 			init( firstLineWidth, lineWidth );
 		}
 		return this.itemHeight;
@@ -867,7 +867,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 					scr.addCommand( cmd );
 				}
 			}
-			if (this.isInitialised) {
+			if (this.isInitialized) {
 				repaint();
 			}
 		}
@@ -886,11 +886,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//System.out.println("requestInit called by class " + getClass().getName() + " - screen.class=" + getScreen().getClass().getName()  );
 		Item p = this.parent;
 		while ( p != null) {
-			p.isInitialised = false;
+			p.isInitialized = false;
 			p = p.parent;
 		}
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -955,7 +955,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 						scr.removeCommand( cmd );
 					}
 				}
-				if (this.isInitialised) {
+				if (this.isInitialized) {
 					repaint();
 				}
 			}
@@ -1205,7 +1205,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		int availableWidth = rightBorder - leftBorder;
 		int originalX = x;
 		int originalY = y;
-		if (!this.isInitialised || (availableWidth < this.itemWidth )) {
+		if (!this.isInitialized || (availableWidth < this.itemWidth )) {
 			//#if polish.debug.info
 			if (availableWidth < this.itemWidth ) {
 				//#debug info
@@ -1424,7 +1424,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		int labelWidth = 0;
 		int labelHeight = 0;
 		if (this.label != null) {
-			if (!this.label.isInitialised) {
+			if (!this.label.isInitialized) {
 				this.label.init( firstLineWidth, lineWidth );
 			}
 			labelWidth = this.label.itemWidth;
@@ -1481,7 +1481,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			this.itemHeight = labelHeight;
 			this.backgroundHeight = 0;
 			this.backgroundWidth = 0;
-			this.isInitialised = true;
+			this.isInitialized = true;
 			return;
 		}
 		this.itemWidth = noneContentWidth + this.contentWidth;
@@ -1553,7 +1553,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 							  - this.marginBottom
 							  - labelHeight;
 		}
-		this.isInitialised = true;
+		this.isInitialized = true;
 		//#debug
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
 	}

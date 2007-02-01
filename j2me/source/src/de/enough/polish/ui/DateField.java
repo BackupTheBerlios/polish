@@ -545,8 +545,8 @@ public class DateField extends StringItem
 			}
 			this.text = buffer.toString();
 		} // date != null
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -1160,7 +1160,7 @@ public class DateField extends StringItem
 
 	//#if polish.blackberry
 	public void fieldChanged(Field field, int context) {
-		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialised ) {
+		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialized ) {
 			setDate( new Date( this.blackberryDateField.getDate()) );
 			if (getScreen() instanceof Form ) {
 				notifyStateChanged();

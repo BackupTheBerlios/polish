@@ -714,8 +714,8 @@ implements Choice
 //		}
 		//#endif
 
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -733,8 +733,8 @@ implements Choice
 	{
 		delete( elementNum );
 		add( elementNum, item );
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -925,7 +925,7 @@ implements Choice
 			newSelected.select( true );
 			this.selectedIndex = elementNum;
 			if (this.isFocused) {
-				if ( this.isInitialised) {
+				if ( this.isInitialized) {
 					focus( elementNum, newSelected, 0 );
 				} else {
 					this.autoFocusEnabled = true;
@@ -938,8 +938,8 @@ implements Choice
 				}
 			//#endif
 		}
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -1008,8 +1008,8 @@ implements Choice
 			}
 			setSelectedIndex( index, true );
 		}
-		if (this.isInitialised) {
-			this.isInitialised = false;
+		if (this.isInitialized) {
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -1164,7 +1164,7 @@ implements Choice
 					ChoiceItem selectedItem = (ChoiceItem) this.itemsList.get( 0 );
 					this.popupItem.setText( selectedItem.getText() );
 				}
-				if (!this.popupItem.isInitialised) {
+				if (!this.popupItem.isInitialized) {
 					int noneContentWidth = this.marginLeft + this.borderWidth + this.paddingLeft
 								+ this.marginRight + this.borderWidth + this.paddingRight;
 					this.popupItem.init(firstLineWidth + noneContentWidth, lineWidth + noneContentWidth);
@@ -1208,7 +1208,7 @@ implements Choice
 		focus( this.selectedIndex );
 		// recalculate the internal positions of the selected choice:
 		Item item = this.items[ this.selectedIndex ];
-		if (item.isInitialised) {
+		if (item.isInitialized) {
 			this.internalY = item.relativeY;
 			this.internalHeight = item.itemHeight;
 			this.internalX = item.relativeX;

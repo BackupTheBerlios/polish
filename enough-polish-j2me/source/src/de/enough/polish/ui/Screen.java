@@ -725,27 +725,27 @@ implements AccessibleCanvas
 			int	width = this.screenWidth - (this.marginLeft + this.marginRight);
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
-					if (!this.menuBar.isInitialised) {
+					if (!this.menuBar.isInitialized) {
 						this.menuBar.init( width, width );
 					}
 				//#else
 					if (this.menuOpened) {
-						if (!this.menuContainer.isInitialised) {
+						if (!this.menuContainer.isInitialized) {
 							this.menuContainer.init( width, width );
 						}
 					} else
 				//#endif
 			//#endif
-			if (this.container != null && !this.container.isInitialised) {
+			if (this.container != null && !this.container.isInitialized) {
 				this.container.init( width, width );
 			}
 			//#ifdef tmp.usingTitle
-				if (this.title != null && !this.title.isInitialised) {
+				if (this.title != null && !this.title.isInitialized) {
 					this.title.init( width, width );
 				}
 			//#endif
 			//#ifndef polish.skipTicker
-				if (this.ticker != null && !this.ticker.isInitialised) {
+				if (this.ticker != null && !this.ticker.isInitialized) {
 					this.ticker.init( width, width );					
 				}
 			//#endif
@@ -918,8 +918,8 @@ implements AccessibleCanvas
 			} else {
 		//#endif
 		 //#if tmp.usingTitle
-		 	if (this.title != null && this.title.isInitialised) {
-		 		this.title.isInitialised = false;
+		 	if (this.title != null && this.title.isInitialized) {
+		 		this.title.isInitialized = false;
 				int width = this.screenWidth - (this.marginLeft + this.marginRight);
 				this.titleHeight = this.title.getItemHeight( width, width );
 		 	}
@@ -3021,7 +3021,7 @@ implements AccessibleCanvas
 	 * Determines whether the screen is currently shown.
 	 * When the screen is shown but the menu is openend, this method return false.
 	 * 
-   * @return <code>true</code> if the screen is currently shown, <code>false</code> otherwise
+	 * @return <code>true</code> if the screen is currently shown, <code>false</code> otherwise
 	 * @see javax.microedition.lcdui.Displayable#isShown()
 	 */
 	public boolean isShown() {

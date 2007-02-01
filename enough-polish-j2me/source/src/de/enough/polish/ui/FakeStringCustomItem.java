@@ -334,7 +334,7 @@ public class FakeStringCustomItem extends FakeCustomItem
 	public void setFont( Font font)
 	{
 		this.font = font;
-		this.isInitialised = false;
+		this.isInitialized = false;
 	}
 
 	/**
