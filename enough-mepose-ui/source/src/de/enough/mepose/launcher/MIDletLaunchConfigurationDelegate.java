@@ -428,9 +428,9 @@ public class MIDletLaunchConfigurationDelegate extends
                 this.antBox.run(this.targets);
             } catch (final Throwable e) {
                 this.throwable = e;
+                this.finishedAbnormally = true;
             }
             this.finished = true;
-            this.finishedAbnormally = true;
         }
 
         public boolean isFinished() {

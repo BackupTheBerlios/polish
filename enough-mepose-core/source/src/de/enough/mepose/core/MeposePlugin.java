@@ -137,7 +137,6 @@ public class MeposePlugin extends Plugin {
     
 
 	public void stop(BundleContext context) throws Exception {
-        System.out.println("DEBUG:MeposePlugin.stop(...):enter.");
 		super.stop(context);
 		plugin = null;
 		this.resourceBundle = null;

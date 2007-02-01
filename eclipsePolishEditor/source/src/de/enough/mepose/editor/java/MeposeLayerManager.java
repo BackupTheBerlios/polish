@@ -47,7 +47,7 @@ public class MeposeLayerManager {
     }
     
     public void activateLayer(IEditorPart editorPart) {
-        System.out.println("DEBUG:MeposeLayer.activateLayer(...):enter.");
+//        System.out.println("DEBUG:MeposeLayer.activateLayer(...):enter.");
         MeposeLayer meposeLayer = (MeposeLayer)this.layerByEditorPart.get(editorPart);
         if(meposeLayer == null) {
             meposeLayer = createLayer(editorPart);
@@ -57,7 +57,7 @@ public class MeposeLayerManager {
     
 
     public void deactivateLayer(IEditorPart editorPart) {
-        System.out.println("DEBUG:enclosing_type.enclosing_method(...):enter.");
+//        System.out.println("DEBUG:enclosing_type.enclosing_method(...):enter.");
         this.layerByEditorPart.remove(editorPart);
     }
 
