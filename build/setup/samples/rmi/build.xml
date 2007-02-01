@@ -162,7 +162,7 @@
 					-->
 				</resources>
 				<!-- obfuscator settings: always obfuscate -->
-				<obfuscator name="ProGuard" useDefaultPackage="true" unless="polish.blackberry" />
+				<obfuscator name="ProGuard" useDefaultPackage="true" unless="polish.blackberry or dontobfuscate" />
 				
 				<!-- debug/log settings: only include debug setting when the test-property is true -->
 				<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true"  if="test">

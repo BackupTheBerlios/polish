@@ -1155,8 +1155,7 @@ public class PolishTask extends ConditionalTask {
 			getProject().removeBuildListener(logger);
 		} else {
 			System.err.println("Warning: unable to replace Ant-logger. Compile errors will point to the preprocessed files instead of the original sources.");
-		}
-		
+		}		
 		
 		// initialize polish build listeners:
 		ArrayList polishBuildListenersList = new ArrayList();
@@ -1377,6 +1376,8 @@ public class PolishTask extends ConditionalTask {
 		this.environment.initialize(device, locale);
 		device.setEnvironment( this.environment );
 		this.environment.set("ant.project", getProject() );
+		this.environment.set( "polish.sourcefiles", this.sourceFiles );
+
 		// set variables and symbols:
 		//this.environment.setSymbols( device.getFeatures() );
 		//this.environment.setVariables( device.getCapabilities() );

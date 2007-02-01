@@ -503,7 +503,19 @@ public final class FileUtil {
 		readProperties(in, '=', '#', map, false );
 		return map;
 	}
-	
+
+	/**
+	 * Reads properties from the given file.
+	 * 
+	 * @param in the file containing properties separated with '='
+	 * @return a map containing all properties that could be read from the input stream
+	 * @throws IOException when reading from the file fails
+	 * @throws FileNotFoundException when the file does not exist
+	 */
+	public static Map readProperties(File file) throws IOException {
+		return readProperties( new FileInputStream( file ) );
+	}
+
 	/**
 	 * Reads properties from the given reader.
 	 * 

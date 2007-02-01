@@ -64,7 +64,9 @@
 			
 	<target name="init">
 	  	<property name="test" value="false" />
-		<property name="dir.work" value="build/real" />
+	  	<property name="customization" value="" />
+		<property name="dir.work" value="build/real/${customization}" />
+		<property name="dir.dist" value="dist/${customization}" />
 		<property name="deploy-url" value="" />
 	</target>
 	 
@@ -123,6 +125,9 @@
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
+					<variable file="configuration/configuration.properties" />
+					<!-- allow customized configuration settings: -->
+					<variable file="configuration/${customization}/configuration.properties" />
 					<!-- Sample configuration options for J2ME Polish
 					<variable name="polish.TextField.useDirectInput" value="true" />
 					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
@@ -138,19 +143,16 @@
 				>
 					<root dir="resources/base/images" />
 					<root dir="resources/base/sounds" />
-					<root dir="resources/customization1" if="cfg.customization1" />
-					<root dir="resources/customization1/images" if="cfg.customization1" />
-					<root dir="resources/customization1/sounds" if="cfg.customization1" />
-					<root dir="resources/customization2" if="cfg.customization2" />
-					<root dir="resources/customization2/images" if="cfg.customization2" />
-					<root dir="resources/customization2/sounds" if="cfg.customization2" />
+					<root dir="resources/${customization}" if="build.${customization}" />
+					<root dir="resources/${customization}/images" if="build.${customization}" />
+					<root dir="resources/${customization}/sounds" if="build.${customization}" />
 					<!-- add the localization element for created localized
 					     versions of your application: 
+					-->
 					<localization>
 						<locale name="en_US" />
 						<locale name="de_DE" encoding="utf-8" unless="test" />
 					</localization>
-					-->
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
@@ -228,24 +230,33 @@
     <target name="debug" description="debugs the project" depends="enableDebug, test, j2mepolish" />
 	
 	<target name="enableCustomization1">
-		<property name="dir.work" value="build/customization1" />
-		<property name="cfg.customization1" value="true" />
+		<property name="customization" value="customization1" />
+		<property name="build.customization1" value="true" />
 	</target>
 		
-	<target name="customization1"
+	<target name="buildCustomization1"
 			description="customizes this project with the settings found in resources/customization1"
 			depends="enableCustomization1, j2mepolish"
 	/>
 	
 	<target name="enableCustomization2">
-		<property name="dir.work" value="build/customization2" />
-		<property name="cfg.customization2" value="true" />
+		<property name="customization" value="customization2" />
+		<property name="build.customization2" value="true" />
 	</target>
 		
-	<target name="customization2"
+	<target name="buildCustomization2"
 			description="customizes this project with the settings found in resources/customization2"
 			depends="enableCustomization2, j2mepolish"
 	/>
+	
+	<target 
+		name="buildAllCustomizations"
+		description="Builds your application in all customizations." 
+		>
+		<subant target="buildCustomization1"      buildpath="." genericantfile="build.xml" inheritall="false" ></subant>
+		<subant target="buildCustomization2" buildpath="." genericantfile="build.xml" inheritall="false" ></subant>
+	</target>
+
 	
 
 </project>
