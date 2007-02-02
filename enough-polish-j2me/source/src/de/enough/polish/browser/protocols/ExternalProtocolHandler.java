@@ -1,3 +1,4 @@
+//#condition polish.midp2
 /*
  * Created on 11-Jan-2006 at 19:20:28.
  * 
@@ -23,16 +24,19 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.browser;
+package de.enough.polish.browser.protocols;
 
 import java.io.IOException;
 
 import javax.microedition.io.StreamConnection;
 import javax.microedition.midlet.MIDlet;
 
+import de.enough.polish.browser.ProtocolHandler;
+
 /**
- * Protocol handler to handle the <code>external:</code> protocol.
- * This class calls the given URLs in an external browser.
+ * Protocol handler to handle the <code>external:</code> protocol. This class calls the given URLs in an external browser on MIDP 2.0 phones.
+ * Example: &lt;a href=&quot;external:http://www.j2mepolish.org&quot;>J2ME Polish&lt;/a&gt;
+ * Note that this handler requires MIDP 2.0 or higher.
  */
 public class ExternalProtocolHandler
   extends ProtocolHandler
@@ -40,17 +44,27 @@ public class ExternalProtocolHandler
   private MIDlet midlet;
   
   /**
-   * Creates an ExternalProtocolHandler object.
+   * Creates an ExternalProtocolHandler object using the default "external" protocol name.
    * 
    * @param midlet the midlet object of the application
    */
   public ExternalProtocolHandler(MIDlet midlet)
   {
-    super("external");
-    
+    this( "external", midlet );
+  }
+
+  /**
+   * Creates an ExternalProtocolHandler object using the default "external" protocol name.
+   * 
+   * @param midlet the midlet object of the application
+   */
+  public ExternalProtocolHandler(String protocolName, MIDlet midlet)
+  {
+    super( protocolName );
     this.midlet = midlet;
   }
 
+  
   /* (non-Javadoc)
    * @see de.enough.polish.browser.ProtocolHandler#getConnection(java.lang.String)
    */
@@ -60,4 +74,19 @@ public class ExternalProtocolHandler
     
     return null;
   }
+  
+  /**
+   * Strips the protol part off an url. 
+   * In contrast to other protocol handlers, the external protocol handler only uses a single colon to
+   * separate the external protocol from the folllowing protocol, e.g. external:http://www.j2mepolish.org
+   * 
+   * @param url the url to remove the protocol from
+   * 
+   * @return the host and part part of the given url
+   */
+  protected String stripProtocol(String url)
+  {
+    return url.substring(this.protocolName.length() + 1);
+  }
+
 }
