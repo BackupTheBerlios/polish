@@ -79,7 +79,8 @@ public class ClassRenamingPostCompiler
   {
     String tmpClassName = className.replace(File.separatorChar, '/');
     String newClassName = ClassRenamingHelper.doRenaming(tmpClassName, this.renamingMap);
-    
+    newClassName = newClassName.replace('/', File.separatorChar);
+
     // Write class file.
     ClassHelper.writeClass(classesDir, newClassName, byteArray);
 
