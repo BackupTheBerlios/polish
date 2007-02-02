@@ -596,8 +596,12 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		sourceClass.addMethod( constructor );
 		File targetDir;
 		if (this.environment.hasSymbol("polish.useDefaultPackage")) {
-			targetDir = new File( this.currentDevice.getSourceDir() );
-			sourceClass.setPackageName(null);
+			// not supported!
+			throw new BuildException("When using the RMI framework, you must deactivate the \"useDefaultPackage\" option in the obfuscator. "
+					+ "\nPlease change the <obfuscator> tag in your build.xml script and define useDefaultPackage=\"false\"."
+					);
+//			targetDir = new File( this.currentDevice.getSourceDir() );
+//			sourceClass.setPackageName(null);
 		} else {
 			targetDir = new File( this.currentDevice.getSourceDir() + File.separatorChar + sourceClass.getPackageName().replace('.', File.separatorChar) );
 		}

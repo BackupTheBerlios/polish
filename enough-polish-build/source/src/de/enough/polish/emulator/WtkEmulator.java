@@ -37,6 +37,7 @@ import de.enough.polish.Variable;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.util.ConvertUtil;
 import de.enough.polish.util.PropertyFileMap;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Is responsible for configuring and starting any WTK-based emulator.</p>
@@ -152,6 +153,17 @@ public class WtkEmulator extends Emulator {
 		}
 		return executable;
 	}
+	
+	
+	protected String[] getEmulatorSkinNames( Environment env ) {
+		String skinNamesStr = env.getVariable("polish.Emulator.Skin");
+		if (skinNamesStr == null) {
+			return new String[0];
+		} else {
+			return StringUtil.splitAndTrim(skinNamesStr, ':');
+		}
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.emulator.Emulator#init(de.enough.polish.Device, de.enough.polish.ant.emulator.EmulatorSetting, de.enough.polish.Environment)

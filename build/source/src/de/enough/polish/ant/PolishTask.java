@@ -2078,7 +2078,7 @@ public class PolishTask extends ConditionalTask {
 		precompile( device, locale );
 		System.out.println("compiling for device [" +  device.getIdentifier() + "]." );
 		// init javac task:
-		CompilerTask compiler = this.buildSetting.getCompiler(evaluator );
+		CompilerTask compiler = this.buildSetting.getCompiler( evaluator );
 		compiler.setProject( antProject );
 		if (!compiler.isTaskNameSet()) {
 			compiler.setDirectTaskName(getTaskName() + "-javac-" + device.getIdentifier() );
@@ -2128,14 +2128,23 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 			//device.setBootClassPath( bootClassPath.toString() );
-			compiler.setDirectBootclasspath( bootClassPath );
+			// check out if the bootclasspath should not be set. This is the case for JavaSE devices, for example:
+			if (this.environment.hasSymbol("polish.build.compile.dontSetBootClassPath")) {
+				if (classPath != null) {
+					classPath = device.getBootClassPath() + File.separatorChar + classPath;
+				} else {
+					classPath = device.getBootClassPath();
+				}
+			} else {
+				// default mode:
+				compiler.setDirectBootclasspath( bootClassPath );
+			}
+			
 			if (completePath != null) {
 				completePath = bootClassPath.toString() + File.pathSeparatorChar + completePath;
 			} else {
 				completePath = bootClassPath.toString();				
 			}
-		//} else {
-		//	device.setBootClassPath( compiler.getBootclasspath().toString() );
 		}
 		if ( !compiler.isClassPathSet()) {
 			if (classPath != null) {

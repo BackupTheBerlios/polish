@@ -44,6 +44,7 @@ public class Capability {
 
 	private final String identifier;
 	private final boolean appendExtensions;
+	private final char appendExtensionsSeparator;
 	private final String group;
 	private final boolean required;
 	private final String type;
@@ -68,6 +69,12 @@ public class Capability {
 			throw new InvalidComponentException("Each defined capability need the <identifier> element in capabilities.xml");
 		}
 		this.appendExtensions = "append".equals( definition.getChildTextTrim("extension-mode") );
+		String separator = definition.getChildTextTrim("extension-mode-separator");
+		if (separator == null || separator.length()==0) {
+			this.appendExtensionsSeparator = ',';
+		} else {
+			this.appendExtensionsSeparator = separator.charAt(0);
+		}
 		this.appendZeroDelimitedExtension = "appendZero".equals(definition.getChildTextTrim("extension-mode"));
         this.group = definition.getChildTextTrim("group");
 		this.required = CastUtil.getBoolean( definition.getChildTextTrim("required") );
@@ -82,6 +89,9 @@ public class Capability {
 	 */
 	public boolean appendExtensions() {
 		return this.appendExtensions;
+	}
+	public char getAppendExtensionsSeparator(){
+		return this.appendExtensionsSeparator;
 	}
 	/**
 	 * @return Returns the group.
