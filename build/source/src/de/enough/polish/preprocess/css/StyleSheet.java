@@ -479,6 +479,25 @@ public class StyleSheet {
 					throw new BuildException( "Invalid CSS code: The style [default] must not extend any other style.");
 				}
 			}
+			// check for the "[parentStyleName]:hover" syntax:
+			int hoverPos = selector.indexOf(":hover");
+			if ( hoverPos != -1) {
+				parent = selector.substring(0, hoverPos ).trim();
+				if (parent.charAt(0) == '.') {
+					parent = parent.substring(1);
+				}
+				Style parentStyle = getStyle( parent );
+				if (parentStyle == null) {
+					throw new BuildException("Invalid CSS: the :hover CSS style \"" + selector + "\" needs to follow AFTER the referenced style definition. Please adjust your polish.css design settings.");
+				} 
+				// found parent style, now set the implicit focused-style attribute:
+				selector = (selector.substring(0, hoverPos ).trim() + "focused " + selector.substring( hoverPos + ":hover".length() ).trim()).trim();
+				cssBlock.setSelector( selector );
+				HashMap referenceMap = new HashMap(1);
+				referenceMap.put("style", parent + "focused" );
+				parentStyle.addGroup("focused", referenceMap );
+				
+			}
 			boolean isDynamicStyle = false;
 			// check if this style is dynamic:
 			isDynamicStyle =  (selector.indexOf(' ') != -1)
@@ -516,6 +535,7 @@ public class StyleSheet {
 				styleName = StringUtil.replace( styleName, ">", "__");
 				styleName = StringUtil.replace( styleName, "*", "___");
 			}
+			
 			// check style name for invalid characters:
 			if ( (styleName.indexOf('.') != -1 )
 				|| (styleName.indexOf('"') != -1 )

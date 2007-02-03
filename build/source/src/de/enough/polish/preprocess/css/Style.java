@@ -121,7 +121,30 @@ public class Style {
 		String[] groupNames = parent.getGroupNames();
 		for (int i = 0; i < groupNames.length; i++) {
 			String groupName = groupNames[i];
+			// check for cases, in which a style extends another style which uses this style as its focused style:
 			HashMap parentGroup = parent.getGroup(groupName);
+			if ("focused".equals(groupName)) {
+				//System.out.println("detected focused CSS attribute: " + parentGroup + ", child.selector=" + this.selector );
+				String focusedStyleName = (String) parentGroup.get("style");
+				if (focusedStyleName != null && focusedStyleName.startsWith(".")) {
+					focusedStyleName = focusedStyleName.substring(1);
+				}
+				if (this.selector.equalsIgnoreCase( focusedStyleName )) {
+					//System.out.println("found focused style circular reference in child style " + this.selector);
+					if (parentGroup.size() == 1) {
+						// this is just a focused-style: thisStyle reference - ignore
+						// and continue with rest:
+						continue;
+					} else {
+						// there is more than the "style" attribute in the "focused" group,
+						// so remove
+						HashMap parentGroupCopy = new HashMap( parentGroup.size() );
+						parentGroupCopy.putAll( parentGroup );
+						parentGroupCopy.remove( "style" );
+						parentGroup = parentGroupCopy;					
+					}
+				}
+			}
 			HashMap targetGroup = (HashMap) this.groupsByName.get( groupName );
 			if (targetGroup == null) {
 				//System.out.println("setting group [" + groupName + "].");

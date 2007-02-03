@@ -174,6 +174,10 @@ public class CssBlock {
 	public HashMap getGroupDeclarations( String group ) {
 		return (HashMap) this.groupsByNames.get( group );
 	}
+
+	public void setSelector(String styleName) {
+		this.selector = styleName;
+	}
 	
 
 }
