@@ -1293,8 +1293,8 @@ implements AccessibleCanvas
 				int clipY = g.getClipY();
 				int clipWidth = g.getClipWidth();
 				int clipHeight = g.getClipHeight();
-				//g.setClip(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
-				g.clipRect(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
+				g.setClip(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
+				//g.clipRect(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
 	
 				// paint content:
 				//System.out.println("starting to paint content of screen");
@@ -1320,12 +1320,12 @@ implements AccessibleCanvas
 				//#endif
 				
 				// allow painting outside of the screen again:
-				g.setClip( clipX, clipY, clipWidth, clipHeight );
-//				//#ifdef tmp.menuFullScreen
-//				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
-//				//#else
-//				 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
-//				//#endif
+				//g.setClip( clipX, clipY, clipWidth, clipHeight );
+				//#ifdef tmp.menuFullScreen
+				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
+				//#else
+				 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
+				//#endif
 				 
 				// paint info element:
 				if (this.showInfoItem) {			
@@ -2849,7 +2849,7 @@ implements AccessibleCanvas
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	public void sizeChanged(int width, int height) {
-		 //#if !polish.Bugs.sizeChangedReportsWrongHeight
+		 // #if !polish.Bugs.sizeChangedReportsWrongHeight 
 			if (!this.isInitialised) {
 				return;
 			}
@@ -2869,7 +2869,7 @@ implements AccessibleCanvas
 				this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
 			//#endif
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight  );
-		//#endif
+		// #endif
 	}
 	//#endif
 	

@@ -48,7 +48,8 @@ import de.enough.polish.ui.Background;
 public class TranslucentSimpleBackground extends Background {
 
 	private final int argbColor;
-	//#ifdef polish.api.nokia-ui
+	//#if polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi
+		//#define tmp.useNokiaUi
 		private final int[] xCoords;
 		private final int[] yCoords;
 	//#elifdef polish.midp2
@@ -68,7 +69,7 @@ public class TranslucentSimpleBackground extends Background {
 	public TranslucentSimpleBackground( int argbColor ) {
 		super();
 		this.argbColor = argbColor;
-		//#if polish.api.nokia-ui
+		//#if tmp.useNokiaUi
 			this.xCoords = new int[4];
 			this.xCoords[0] = Integer.MIN_VALUE;
 			this.yCoords = new int[4];
@@ -80,7 +81,7 @@ public class TranslucentSimpleBackground extends Background {
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		//#ifdef polish.api.nokia-ui
+		//#ifdef tmp.useNokiaUi
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
 			if ( this.xCoords[0] != x || this.xCoords[1] != x + width) {
 				this.xCoords[0] = x;
@@ -144,7 +145,7 @@ public class TranslucentSimpleBackground extends Background {
 			//#else
 				g.drawRGB(this.buffer, 0, 0, x, y, width, height, true);
 			//#endif
-//		//#elif polish.api.nokia-ui
+//		//#elif tmp.useNokiaUi
 //			if (width != this.lastWidth || height != this.lastHeight) {
 //				this.lastWidth = width;
 //				this.lastHeight = height;
