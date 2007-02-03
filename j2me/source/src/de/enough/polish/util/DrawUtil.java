@@ -397,13 +397,16 @@ public final class DrawUtil {
 	
 	/**
 	 * Creates a gradient of colors.
-	 * This method is highly optimized and only uses bit-shifting and additions (no multitplication nor devision).
+	 * This method is highly optimized and only uses bit-shifting and additions (no multitplication nor devision), but
+	 * it will create a new integer array in each call. 
 	 * 
 	 * @param startColor the first color
 	 * @param endColor the last color
 	 * @param steps the number of colors in the gradient, 
 	 *        when 2 is given, the first one will be the startColor and the second one will the endColor.  
 	 * @return an int array with the gradient.
+	 * @see #getGradient(int, int, int[])
+	 * @see #getGradientColor(int, int, int)
 	 */
 	public static final int[] getGradient( int startColor, int endColor, int steps ) {
 		int[] gradient = new int[ steps ];
@@ -419,11 +422,15 @@ public final class DrawUtil {
 	 * @param startColor the first color
 	 * @param endColor the last color
 	 * @param gradient the array in which the gradient colors are stored.  
+	 * @see #getGradientColor(int, int, int, int)
 	 */
-	public static void getGradient(int startColor, int endColor, int[] gradient) {
+	public static final void getGradient(int startColor, int endColor, int[] gradient) {
 		int steps = gradient.length;
 		if (steps == 0) {
 			return;
+		} else if (steps == 1) {
+			gradient[0] = startColor;
+			return; 
 		}
 		int startAlpha = startColor >>> 24;
 		int startRed = (startColor >>> 16) & 0x00FF;
@@ -472,26 +479,48 @@ public final class DrawUtil {
 	 * 			500 a gradient color directly in the middlet between start and endcolor.
 	 * @return the gradient color
 	 */
-	public static int getGradientColor( int startColor, int endColor, int permille ) {
+	public static final int getGradientColor( int startColor, int endColor, int permille ) {
 		int alpha = startColor >>> 24;
 		int red = (startColor >>> 16) & 0x00FF;
 		int green = (startColor >>> 8) & 0x0000FF;
-		int blue = startColor  & 0x00000FF;
+		int blue = startColor  & 0x000000FF;
 
 		int diffAlpha = (endColor >>> 24) - alpha;
 		int diffRed   = ( (endColor >>> 16) & 0x00FF ) - red;
 		int diffGreen = ( (endColor >>> 8) & 0x0000FF ) - green;
-		int diffBlue  = ( endColor  & 0x00000FF ) - blue;
+		int diffBlue  = ( endColor  & 0x000000FF ) - blue;
 		
 		alpha += (diffAlpha * permille) / 1000;
 		red   += (diffRed   * permille) / 1000;
 		green += (diffGreen * permille) / 1000;
 		blue  += (diffBlue  * permille) / 1000;
 		
-		return (( alpha << 16) & 0xFF000000)
-			| (( red << 8) & 0x00FF0000)
-			| ( green & 0x0000FF00)
-			| ( blue >>> 8);		
+		return ( alpha << 24 ) 
+		     | ( red   << 16 ) 
+		     | ( green <<  8 ) 
+		     | ( blue        );		
+
+		
+//		return (( alpha << 24) & 0xFF000000)
+//			| (( red << 16) & 0x00FF0000)
+//			| ( (green << 8) & 0x0000FF00)
+//			| ( blue );		
+	}
+	
+	/**
+	 * Retrieves the gradient color between the given start and end colors.
+	 * This method returns getGradientColor(startColor, endColor, (step * 1000)/numberOfSteps);
+	 * 
+	 * @param startColor the start color
+	 * @param endColor the end color
+	 * @param step the step/position within the gradient
+	 * @param numberOfSteps the maxium step (=100%)
+	 * @return the gradient color
+	 * @see #getGradientColor(int, int, int)
+	 */
+	public static final int getGradientColor( int startColor, int endColor, int step, int numberOfSteps ) {
+		int permille = (step * 1000) / numberOfSteps;
+		return getGradientColor(startColor, endColor, permille);
 	}
 	
 	/**

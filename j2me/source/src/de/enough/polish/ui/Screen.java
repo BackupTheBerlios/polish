@@ -1288,7 +1288,7 @@ implements AccessibleCanvas
 	//					clipHeight = cHeight;
 	//				}
 	//			//#endif
-				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() + " before clipRect");
+//				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() + " before clipRect");
 				int clipX = g.getClipX();
 				int clipY = g.getClipY();
 				int clipWidth = g.getClipWidth();
@@ -1300,9 +1300,9 @@ implements AccessibleCanvas
 				//System.out.println("starting to paint content of screen");
 				paintScreen( g );
 				//System.out.println("done painting content of screen");
-				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() );
-				g.setColor( 0xff0000 );
-				g.drawRect(g.getClipX() + 1 , g.getClipY() + 1 , g.getClipWidth() - 2 ,  g.getClipHeight() - 2);
+//				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() );
+//				g.setColor( 0xff0000 );
+//				g.drawRect(g.getClipX() + 1 , g.getClipY() + 1 , g.getClipWidth() - 2 ,  g.getClipHeight() - 2);
 				
 				//#if tmp.useScrollBar
 					if (this.container != null && this.container.itemHeight > this.contentHeight) {

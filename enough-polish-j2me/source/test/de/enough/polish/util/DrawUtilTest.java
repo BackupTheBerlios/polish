@@ -53,5 +53,28 @@ public class DrawUtilTest extends TestCase {
 			System.out.println( Integer.toHexString(color));
 		}
 	}
+	
+	public void testGetGradientColor() {
+		int gradient = DrawUtil.getGradientColor( 0xFFFFFF, 0x000000, 0);
+		assertEquals( 0xFFFFFF, gradient );
+		gradient = DrawUtil.getGradientColor( 0xFFFFFF, 0x000000, 1000);
+		assertEquals( 0x000000, gradient );
+		gradient = DrawUtil.getGradientColor( 0xFFFFFF, 0x000000, 500);
+		assertEquals( 0x808080, gradient );
+		
+		gradient = DrawUtil.getGradientColor( 0xFFFFFF, 0xFF0000, 0);
+		assertEquals( 0xFFFFFF, gradient );
+		gradient = DrawUtil.getGradientColor( 0xFFFFFF, 0xFF0000, 1000);
+		assertEquals( 0xFF0000, gradient );
+		gradient = DrawUtil.getGradientColor( 0xFFFFFF, 0xFF0000, 500);
+		System.out.println( Integer.toHexString(gradient));
+		assertEquals( 0xff8080, gradient );
+		
+		System.out.println("get gradient color...");
+		for (int i = 0; i < 20; i++) {
+			gradient = DrawUtil.getGradientColor( 0xFF0099, 0x000000, i, 19 );;
+			System.out.println( Integer.toHexString(gradient));
+		}
+	}
 
 }

@@ -29,7 +29,6 @@ package de.enough.polish.ui.gaugeviews;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Color;
-import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Style;
@@ -73,7 +72,7 @@ public class RotatingArcsGaugeView extends ItemView {
 	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
 		this.contentWidth = Math.max( lineWidth/4, 24 );
 		this.contentHeight = this.contentWidth;
-		this.arcColors = DrawUtil.getGradient(this.startArc, this.endColor, this.numberOfArcs );
+		this.arcColors = DrawUtil.getGradient(this.startColor, this.endColor, this.numberOfArcs );
 	}
 
 	/* (non-Javadoc)

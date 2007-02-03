@@ -75,9 +75,9 @@ public class HorizontalStripesBackground extends Background {
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		if (this.firstGradient == null || height != this.firstGradient.length) {
-			this.firstGradient = DrawUtil.getGradient( this.firstTopColor, this.firstBottomColor, height);
-			this.secondGradient = DrawUtil.getGradient( this.secondTopColor, this.secondBottomColor, height);
+		if (this.firstGradient == null || height>>1 != this.firstGradient.length) {
+			this.firstGradient = DrawUtil.getGradient( this.firstTopColor, this.firstBottomColor, height>>1);
+			this.secondGradient = DrawUtil.getGradient( this.secondTopColor, this.secondBottomColor, height>>1);
 		}
 		
 		int[] first = this.firstGradient;
@@ -86,10 +86,12 @@ public class HorizontalStripesBackground extends Background {
 		int rightX = x + width;
 		for (int i = 0; i < (height>>1); i++) {
 			int color = first[i];
+			//int color = DrawUtil.getGradientColor(this.firstTopColor, this.firstBottomColor, i, height>>1 );
 			g.setColor( color );
 			g.drawLine( x, y, rightX, y );
 			y++;
 			color = second[i];
+			//color = DrawUtil.getGradientColor(this.secondTopColor, this.secondBottomColor, i, height>>1 );
 			g.setColor( color );
 			g.drawLine( x, y, rightX, y );
 			y++;			

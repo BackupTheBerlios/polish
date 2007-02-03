@@ -98,7 +98,7 @@ public class TachometerGaugeView extends ItemView {
 			this.section3Start = (range * 2) / 3;
 		}
 //		this.contentWidth = ( lineWidth * 2 ) / 3;
-		System.out.println("firstline:"+firstLineWidth+";lineWidth:"+lineWidth+";contentWidth:"+this.contentWidth);
+//		System.out.println("firstline:"+firstLineWidth+";lineWidth:"+lineWidth+";contentWidth:"+this.contentWidth);
 		this.contentWidth = 120 ;
 		this.contentHeight = this.contentWidth;
 	}
