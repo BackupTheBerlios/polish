@@ -15,16 +15,18 @@ title {
 	padding-top: 5;
 	layout: center;
 	font-size: large;
-	text-effect: alien-glow;
-	
 	font-color: #FF000000;
-	text-alien-glow-outer-color: blue;
-	text-alien-glow-inner-color: #FF0000FF;
 	
+	//#if polish.midp2 and polish.hasFloatingPoint
+		text-effect: alien-glow;
+		text-alien-glow-outer-color: blue;
+		text-alien-glow-inner-color: #FF0000FF;
+	//#else
+		text-effect: gradient;
+		text-vertical-gradient-start-color: white;
+		text-vertical-gradient-end-color: highlightedFontColor;
+	//#endif	
 	
-	/*text-effect: gradient;
-	text-vertical-gradient-start-color: white;
-	text-vertical-gradient-end-color: highlightedFontColor;*/
 }
 
 

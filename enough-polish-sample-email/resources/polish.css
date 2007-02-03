@@ -42,6 +42,16 @@ colors {
 	padding-left: 5;
 	padding-right: 5;
 	background {
+		type: horizontal-stripes;
+		top: title;
+		bottom: menubar;
+		first-top-color: screenColorTop;
+		first-bottom-color: screenColorBottom;
+		second-top-color: #ff0;
+		second-bottom-color: screenColorBottom;
+	}
+	/*
+	background {
 		type: gradient;
 		top: title;
 		bottom: menubar;
@@ -50,6 +60,7 @@ colors {
 		start: 30%;
 		end: 90%;
 	}
+	*/
 	layout: horizontal-expand | horizontal-center | top;
 }
 

@@ -39,9 +39,17 @@ colors {
 		color: focusedBgColor;
 	}
 	layout: horizontal-expand | horizontal-center | top;
+	scroll-mode: normal;
+	/*
+	*/
 }
 
 .createNoteForm extends notesList {
+}
+
+scrollbar {
+	scrollbar-slider-mode: page;
+	background-color: red;
 }
 
 

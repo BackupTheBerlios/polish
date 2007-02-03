@@ -58,8 +58,8 @@ extends MIDlet
 implements ScreenStateListener, CommandListener
 {
 
-	private Command exitCmd = new Command( Locale.get("cmd.exit"), Command.BACK, 1 );
-	private Command backCmd = new Command( Locale.get("cmd.back"), Command.BACK, 1 );
+	private Command exitCmd = new Command( Locale.get("cmd.exit"), Command.BACK, 2 );
+	private Command backCmd = new Command( Locale.get("cmd.back"), Command.BACK, 2 );
 	private Command parentCmd = new Command( Locale.get("cmd.modetypes"), Command.SCREEN, 20 );
 	private TabbedForm tabbedForm;
 	private int lastTabIndex;
@@ -70,7 +70,7 @@ implements ScreenStateListener, CommandListener
 	public TabbedFormDemo() {
 		super();
 		//#debug
-		System.out.println("Creating FramedFormDemo MIDlet.");
+		System.out.println("Creating TabbedFormDemo MIDlet.");
 	}
 
 	/* (non-Javadoc)

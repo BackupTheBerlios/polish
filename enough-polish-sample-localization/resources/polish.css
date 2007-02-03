@@ -53,6 +53,7 @@ menu {
 	font-color: brightFontColor;
 	font-style: bold;
 	menubar-color: bgColor;
+	view-type: slide-up;
 }
 
 /**
@@ -138,17 +139,26 @@ focused {
   */
 .mainScreen {
 	padding: 5;
-	padding-left: 15;
-	padding-right: 15;
+	padding-left: 10;
+	padding-right: 10;
+	padding-vertical: 10;
 	background {
 		color: brightBgColor;
 	}
 	layout: horizontal-expand | horizontal-center | vertical-center;
+	view-type: carrousel;
+	focused-style: .mainScreenFocused;
+	/*
 	columns: 2;
 	columns-width: equal;
-	/*
 	show-text-in-title: true;
 	*/
+}
+
+.mainScreenFocused extends focused {
+	background: none;	
+	layout: center;
+	max-width: 100;
 }
 
 /**
@@ -168,7 +178,8 @@ focused {
 	font-color: fontColor;
 	font-style: bold;
 	font-size: small;
-	layout: center;
+	layout: center | expand;
+	max-width: 100;
 	icon-image: url( icon%INDEX%.png );
 	icon-image-align: top;
 }

@@ -129,6 +129,7 @@
 		    <sources>
 		    	<source dir="source/src" />
 			</sources>
+			<postcompiler name="floater" />
 			
 			<!-- midlets definition -->
 			<!-- <midlet class="de.enough.polish.example.MenuMidlet" name="Example" /> -->
@@ -145,6 +146,7 @@
 				<variable name="title" value="J2ME Polish" />
 				<variable name="polish.DateField.useDirectInput" value="true" />
 				<variable name="polish.TextField.useDirectInput" value="true" />
+				<variable name="polish.rmi.redirect" value="false" />
 			</variables>
 			<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 			<resources
@@ -152,18 +154,6 @@
 				defaultexcludes="yes"
 				excludes="readme.txt"
 			>
-				<!-- you can add resources based on complex criterias: 
-				<fileset 
-					dir="resources/multimedia" 
-					includes="*.wav" 
-					if="polish.audio.wav" 
-				/>
-				<fileset 
-					dir="resources/multimedia" 
-					includes="*.mid" 
-					if="polish.audio.midi and not polish.audio.wav" 
-				/>
-				-->
 				<!-- add the localization element for created localized
 				     versions of your application: -->
 				<localization locales="de_DE, en_US" unless="test" />
@@ -171,7 +161,7 @@
 			</resources>
 			
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-			<obfuscator name="ProGuard" useDefaultPackage="false" unless="polish.blackberry" >
+			<obfuscator name="ProGuard" useDefaultPackage="false" unless="polish.blackberry or dontobfuscate" >
 				<!--
 				You can set additional parameters here, e.g.:
 				<parameter name="optimize" value="false" />

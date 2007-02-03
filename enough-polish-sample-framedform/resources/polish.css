@@ -31,7 +31,7 @@ rightframe {
 	exclusiveview-left-arrow: url( left.png );
 	exclusiveview-roundtrip: true;
 	
-	/* Alternatively you might want to use for polish > 2006-03-30:
+	/* Alternatively you might want to use the horizontal-choice view-type:
 	view-type: horizontal-choice;
 	horizontalview-right-arrow: url( right.png );
 	horizontalview-left-arrow: url( left.png );

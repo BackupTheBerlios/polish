@@ -74,6 +74,13 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 		this.menuScreen.append(Locale.get( "menu.Highscore"), null);
 		//#style mainCommand
 		this.menuScreen.append(Locale.get( "menu.Quit"), null);
+		//#style mainCommand
+		this.menuScreen.append(Locale.get( "menu.Quit"), null);
+		//#style mainCommand
+		this.menuScreen.append(Locale.get( "menu.Quit"), null);
+		//#style mainCommand
+		this.menuScreen.append(Locale.get( "menu.Quit"), null);
+		
 		this.menuScreen.setCommandListener(this);
 		this.menuScreen.addCommand( this.startGameCmd ); 
 		this.menuScreen.addCommand( this.quitCmd );

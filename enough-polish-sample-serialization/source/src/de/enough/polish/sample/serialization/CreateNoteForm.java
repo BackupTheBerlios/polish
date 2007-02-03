@@ -29,6 +29,8 @@ package de.enough.polish.sample.serialization;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.TextField;
 
+import de.enough.polish.ui.Style;
+
 /**
  * <p>Provides a form for creating a new note.</p>
  *
@@ -42,7 +44,7 @@ import javax.microedition.lcdui.TextField;
 public class CreateNoteForm extends Form  {
 	         
 	private final TextField text;
-
+ 
 	/**
 	 * Creates a new form for writing an email.
 	 * 

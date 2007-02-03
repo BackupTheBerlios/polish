@@ -5,7 +5,7 @@
 <property file="${user.name}.properties" />
 <property name="wtk.home" location="/home/enough/dev/WTK2.1" />
 <property name="nokia.home" location="/home/enough/dev/Nokia" />
-<property name="polish.home" location="/home/enough/workspace/enough-polish-build" />
+<property name="polish.home" location="../enough-polish-build" />
 <property  name="mpp.home" location="/home/enough/dev/mpp-sdk"/>
 	<property  name="device" value="Nokia/Series60E2" />
 
@@ -15,7 +15,7 @@
 	<taskdef 
 		name="j2mepolish"
 		classname="de.enough.polish.ant.PolishTask" 
-		classpath="${polish.home}/bin/classes:${polish.home}/import/jdom.jar:${polish.home}/import/proguard.jar" 
+		classpath="${polish.home}/bin/classes:${polish.home}/lib/jdom.jar" 
 	/>
 
 		
@@ -93,12 +93,15 @@
 			</obfuscator>
 			<!-- debug settings: only include debug setting when the test-property is true -->
 			<debug if="test" level="error" showLogOnError="true" verbose="true">
+				<!--
 				<filter level="debug" class="de.enough.polish.ui.MasterCanvas"/>
 				<filter level="debug" class="de.enough.polish.ui.Alert"/>
 				<filter level="debug" class="de.enough.polish.ui.StyleSheet"/>
 				<filter level="info" class="de.enough.polish.ui.Container"/>
 				<filter level="debug" class="de.enough.polish.ui.Screen"/>
 				<filter level="debug" pattern="de.enough.polish.example.*"/>
+				-->
+				<filter level="debug" class="de.enough.polish.ui.ContainerView"/>
 				<filter level="info" pattern="de.enough.polish.ui.*"/>
 			</debug>
 			<!-- play around with an additional preprocessor: 
