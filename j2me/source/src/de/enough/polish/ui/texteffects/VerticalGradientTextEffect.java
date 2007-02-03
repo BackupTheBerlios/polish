@@ -97,19 +97,18 @@ public class VerticalGradientTextEffect extends TextEffect {
 		if (this.colors == null) {
 			g.drawString( text, x, y, orientation );
 			return;
-		//#if tmp.useNokiaUiApi
-			} else if ( this.nokiaImageBuffer == null || text != this.oldText  ){
+		}
+		Font font = g.getFont();
+		int height = font.getHeight();
+		int width = font.stringWidth( text );
+		int startX = getLeftX( x, orientation, width );
+		int startY = getTopY( y, orientation, height, font.getBaselinePosition() );
+		//#if tmp.useNokiaUisApi
+			if ( this.nokiaImageBuffer == null || text != this.oldText  ){
 		//#elif polish.midp2
-			} else if ( this.rgbBuffer == null || text != this.oldText  ){
-		//#else
-			//# } else {
+			if ( this.rgbBuffer == null || text != this.oldText || this.rgbBuffer.length != width * height ){
 		//#endif
 			// create image buffer
-			Font font = g.getFont();
-			int height = font.getHeight();
-			int width = font.stringWidth( text );
-			int startX = getLeftX( x, orientation, width );
-			int startY = getTopY( y, orientation, height, font.getBaselinePosition() );
 			//#if tmp.useNokiaUiApi || polish.midp2
 				Graphics bufferG;
 			//#else
@@ -190,22 +189,18 @@ public class VerticalGradientTextEffect extends TextEffect {
 				g.setClip( clipX, clipY, clipWidth, clipHeight );
 			//#endif
 			this.oldText = text;	
-		}
 		//#if tmp.useNokiaUiApi || polish.midp2
-			else {
+			} else {
 				// text has been buffered:
-				Font font = g.getFont();
-				int height = font.getHeight();
-				int width = font.stringWidth( text );
-				int startX = getLeftX( x, orientation, width );
-				int startY = getTopY( y, orientation, height, font.getBaselinePosition() );
 				//#if tmp.useNokiaUiApi
 					DirectGraphics dg = DirectUtils.getDirectGraphics( g );
 					dg.drawImage( this.nokiaImageBuffer, startX, startY, Graphics.TOP | Graphics.LEFT, 0 );
 				//#elif polish.midp2
 					g.drawRGB( this.rgbBuffer, 0, width, startX, startY, width, height, true );
 				//#endif
-
+			}
+		//#endif
+		//#if false
 			}
 		//#endif
 	}
