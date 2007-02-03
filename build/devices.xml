@@ -947,6 +947,14 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
+		<identifier>Sony-Ericsson/W900_Emu</identifier>
+		<parent>Sony-Ericsson/W900</parent>
+		<features>isVirtual</features>
+		<description>The emulator definition takes the faulty Nokia-UI support of the emulator into account</description>
+   		<capability name="Bugs" value="TransparencyNotWorkingInNokiaUiApi"/>
+	</device>
+
+	<device>
 		<identifier>Sony-Ericsson/W800</identifier>
 		<groups>SE-JavaPlatform5</groups>
 		<features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>

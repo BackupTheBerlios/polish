@@ -71,6 +71,7 @@ public class CssConverter extends Converter {
 		BACKGROUND_TYPES.put( "tiger-stripes", "de.enough.polish.preprocess.backgrounds.TigerStripesBackgroundConverter");
 		BACKGROUND_TYPES.put( "smooth-color", "de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter");
 		BACKGROUND_TYPES.put( "gradient", "de.enough.polish.preprocess.backgrounds.GradientVerticalBackgroundConverter");
+		BACKGROUND_TYPES.put( "vertical-gradient", "de.enough.polish.preprocess.backgrounds.GradientVerticalBackgroundConverter");
 		BACKGROUND_TYPES.put( "snow", "de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter");
 		BACKGROUND_TYPES.put( "snowflakes", "de.enough.polish.preprocess.backgrounds.XmasSnowBackgroundConverter");
 		BACKGROUND_TYPES.put( "web20", "de.enough.polish.preprocess.backgrounds.Web20RoundRectBackgroundConverter" );

@@ -443,6 +443,7 @@ public class PolishTask extends ConditionalTask {
 			}
 		} catch (de.enough.polish.BuildException e) {
 			executeErrorTarget( this.buildSetting.getOnError(), e );
+			//e.printStackTrace();
 			throw new BuildException( e.getMessage() );
 		} catch (BuildException e) {
 			executeErrorTarget( this.buildSetting.getOnError(), e );

@@ -49,9 +49,9 @@ public class GradientVerticalBackgroundConverter extends BackgroundConverter {
 			topColor = parseColor( topColorStr );			
 		}
 		String bottomColor = "0x0000FF";
-		String gradientColorStr = (String) map.get("bottom-color");
-		if ( gradientColorStr != null ) {
-			bottomColor = parseColor( gradientColorStr );			
+		String bottomColorStr = (String) map.get("bottom-color");
+		if ( bottomColorStr != null ) {
+			bottomColor = parseColor( bottomColorStr );			
 		}
 		String stroke = "Graphics.SOLID";
 		String strokeStr =  (String)map.get("stroke");
