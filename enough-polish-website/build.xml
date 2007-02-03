@@ -6,12 +6,14 @@
 <taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="../enough-polish-build/bin/classes:../enough-polish-build/lib/jdom.jar"/>
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
-<property name="Version" value="1.2.4" />
-<property name="BetaVersion" value="2.0-beta3" />
-<property name="JavaDocVersion" value="${BetaVersion}" />
-<property name="symbols" value="isBetaAvailable" />
-<!--
+<property name="Version" value="2.0" />
+	<!--
+-->
+<property name="JavaDocVersion" value="${Version}" />
 <property name="symbols" value="" />
+<!--
+<property name="BetaVersion" value="2.0-beta3" />
+<property name="symbols" value="isBetaAvailable" />
 	<property name="symbols" value="isBetaAvailable" />
 -->
 	

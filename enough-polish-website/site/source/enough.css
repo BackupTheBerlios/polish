@@ -1,4 +1,3 @@
-/**************** NEW BASE STYLES ***************************/
 
 /* Default Stylesheet */
 
@@ -203,13 +202,13 @@ ul.list {
 #content-in ul li {
 	margin-left: 30px;
 	margin-bottom: 4px;
-	line-height: 100%;
+	line-height: 110%;
 	}
 
 #content-in ol li {
 	margin-left: 30px;
 	margin-bottom: 4px;
-	line-height: 100%;
+	line-height: 110%;
 	}
 
 
@@ -416,7 +415,7 @@ a {
 /* pre is used for code samples */
 pre {
 	padding: 10px;
-	color: 666;
+	color: #333;
 	background-color: #f5f5f5;
 	font-size: 110%;
 	/*
@@ -425,16 +424,29 @@ pre {
 	*/
 }
 
+#content .caption {
+	margin-left: 10px;
+	margin-top: -1px;
+	margin-bottom: 10px;
+	font-size: 75%;
+	font-style: italic;
+	color: #666;
+	}
+#content .caption:before {
+	content: "Above: ";
+	}
+
 
 
 img {
+	padding: 10px;
 	border: 0px;
 }
 
 
 .headerImage {
 	position: absolute; 
-	top: 18px;
+	top: 22px;
 	right: 2%;
 	border: 0px;
 }
@@ -462,6 +474,23 @@ img {
 	background /**/: url(); /* removing quote graphic in IE5+ */
 }
 
+#content .relatedtechnologies {
+	list-style: none;
+	width: 20%;
+	float: right;
+	font-size: 90%;
+	line-height: 100%;
+	margin:10px;
+	padding: 5px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	background-color: rgb(240,255,238);
+	}
+	
+#content .relatedtechnologiesheader {
+	font-size: 110%;
+	font-style: : bold;
+	}
 
 /*               **** TABLES ***/
 
@@ -491,6 +520,7 @@ tr th {
 	border-color: #f5f5f5;
 	border-width: 1px;
 	color: #666;
+	margin-top: 10px;
 	margin-right: 10px;
 }
 
@@ -573,379 +603,5 @@ tr th {
 
 																/* >>> END <<< */
 																
-																/**** UNUSED OLD CSS CODE, PRESERVED FOR NOW... ****/
-
-																
-																
-																	/*
-body {
-	background-color:  rgb(235,232,224);
-}
-h1 {
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	font-size: x-large;
-	color: rgb(1,75,105);
-	margin-bottom: 15px;
-}
-
-h2 {
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	font-size: medium;
-	color: rgb(1,75,105);
-	margin-bottom: 10px;
-	margin-top: 30px;
-}
-
-h3 {
-	margin-bottom: 5px;
-	margin-top: 30px;
-	padding-left: 10px;
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	font-size: medium;
-	color: rgb(1,75,105);
-	text-indent: 0px;
-}
-
-p {
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	color: rgb( 50, 50, 50 );
-	margin-right: 10px;
-}
-	*/
-
-
-/*
-.figuretext {
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	font-size: x-small;
-	color: rgb(1,75,105);
-}
-
-.legalText {
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	color: black;
-	margin-right: 10px;
-	background-color: white;
-}
-
-.questionText {
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	color: black;
-	margin-right: 10px;
-	background-color: white;
-}
-
-li {
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	color: rgb( 50, 50, 50 );
-	margin-right: 10px;
-}
-
-
-.menuTable {
-	border-style: solid;
-	border-color: silver;
-	border-width: 1px;
-	color: silver;
-	margin-right: 10px;
-}
-
-.menuTable td {
-	vertical-align: top;
-}
-
-
-code {
-	color: rgb(1,75,105); 
-}
-
-
-
-.info {
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	color: rgb(1,75,105);
-	font-style: italic;
-	margin-left: 0%;
-	margin-right: 10px;
-}
-
-a:link {
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	color: rgb(1,75,105);
-	text-decoration: underline;
-}
-
-
-a:hover {
-	color: red;
-	text-decoration: underline;
-}
-
-/*
-#navigation>a:hover:before {
-	content: "> ";
-}
-*/
-
-/*
-a:visited {
-	color: rgb(24,41,44);
-	text-decoration: underline;
-}
-
-a:visited:hover {
-	color: red;
-	text-decoration: underline;
-}
-
-
-.imageLink:link {
-	text-decoration: none;
-}
-
-/*
-#navigation>.imageLink:hover:before {
-	content: ""; 
-}
-*/
-
-	/*
-#header {
-	float: left;
-	padding-left: 2%;
-	padding-right: 2%;
-	padding-top: 8px;
-	padding-bottom: 0;
-	margin: 0;
-	width: 100%;
-	height: 90px;
-	background-color: white;
-	border-style: solid;
-	border-top-width: 0px;
-	border-left-width: 0px;
-	border-right-width: 0px;
-	border-bottom-width: 2px;
-	border-color: rgb(235,232,224);
-}
-	*/
-	
-	
-	
-	/*
-/*
-
-#navigation {
-	padding: 0.0%;
-	padding-left: 20px;
-	float: left;
-	width: 16%;
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-	font-size: medium;
-	color: rgb( 50, 50, 50);
-}
-
-#navigationLinks {
-	padding-top: 5px;
-	padding-right: 10px;
-	padding-bottom: 5px;
-	border-style: solid;
-	border-top-width: 0px;
-	border-left-width: 0px;
-	border-right-width: 2px;
-	border-bottom-width: 0px;
-	border-color: rgb(235,232,224);
-}
-
-
-
-
-#navigation a:link {
-	padding-left: 5px;
-	text-decoration: none;
-}
-*/
-		
-
-
-
-
-/*
-
-#navigation a:visited {
-	padding-left: 5px;
-	text-decoration: none;
-}
-
-
-.navigationImage {
-	margin-top: 50px;
-	margin-left: -10px;
-}
-
-.navigationImage a:hover {
-	background-color: rgb(235,232,224);
-}
-
-#navigation .navigationImage a:hover {
-	background-color: rgb(235,232,224);
-}
-
-
-#navigation .imageLinkImage a:hover {
-	background-color: rgb(235,232,224);
-}
-
-
-#thincontent {
-	float: left;
-	width: 56%;
-	margin-top: 0px;
-	padding: 0 2%;
-}
-
-#content {
-	padding: 0 2%;
-	float: left;
-	width: 76%;
-}
-
-#infoSection {
-	float: right;
-	padding: 0 2%;
-	width: 16%;
-}
-
-#currentLink {
-	padding: 5px;
-	padding-left: 0px;
-	background-color: rgb(235,232,224);
-	color: rgb(1,75,105);
-	/*
-	border-style: solid;
-	border-top-width: 0px;
-	border-left-width: 0px;
-	border-right-width: 2px;
-	border-bottom-width: 2px;
-	border-color: rgb(1,75,105);
-	padding-left: 10px;
-	*/
-	/*
-	font-weight: bold;
-}
-
-#currentLink a:link {
-	display: block;
-}
-
-#currentLink a:visited {
-	display: block;
-}
-
-/*
-#currentLink a:hover {
-	background-color: white;
-}
-*/
-/*
-.secondLevelLink {
-	margin-right: 10px;
-	margin-left: 10px;
-	font-family: Helvetica, Verdana, Arial, sans-serif;
-}
-
-.secondLevelLink a {
-	text-decoration: none;
-	display: block;
-}
-
-.secondLevelLink a:visited {
-	text-decoration: none;
-	display: block;
-}
-
-/*
-.secondLevelLink a:hover {
-	background-color: white;
-}
-*/
-
-/*
-#currentSecondLevelLink {
-	padding: 5px;
-	padding-bottom: 1px;
-	display: block;
-	margin-right: 10px;
-	margin-left: 10px;
-	color: rgb(1,75,105);
-	background-color: rgb(235,232,224);
-	/*
-	border-style: solid;
-	border-top-width: 0px;
-	border-left-width: 0px;
-	border-right-width: 0px;
-	border-bottom-width: 2px;
-	border-color: rgb(1,75,105);
-	font-weight: bold;
-	*/
-	/*
-}
-
-#currentSecondLevelLink a:visited {
-	display: block;
-	text-decoration: none;
-}
-
-/*
-#currentSecondLevelLink a:hover {
-	background-color: rgb(235,232,224);
-}
-*/
-/*
-
-.thirdLevel {
-	margin-top: 0px;
-	margin-bottom: 5px;
-	margin-left: 10px;
-	padding-left: 2px;
-	padding-right: 2px;
-	background-color: white;
-	font-size: small;
-	border-style: solid;
-	border-top-width: 0px;
-	border-left-width: 2px;
-	border-right-width: 2px;
-	border-bottom-width: 2px;
-	border-color: rgb(1,75,105);
-}
-
-#thirdLevel a:link {
-	text-decoration: none;
-	display: block;
-}
-
-#thirdLevel a:hover {
-	background-color: rgb(235,232,224);
-}
-
-#thirdLevel a:visited {
-	text-decoration: none;
-	display: block;
-}
-
-
-
-#currentLink a:link{
-	color: white;
-}
-
-#currentLink a:visited {
-	text-decoration: none;
-}
-
-.newsdate {
-	font-size: x-small;
-	color: rgb(1,75,105);
-	margin-bottom: -25px;
-}
-*/
+															
 	

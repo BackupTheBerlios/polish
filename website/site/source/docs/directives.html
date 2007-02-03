@@ -599,7 +599,7 @@ The #condition directive can be used to prevent the usage of complete files, whe
 When in the above example the J2ME&nbsp;Polish GUI is not used (and thus the symbol polish.usePolishGui is not defined), the file will not be included into the application bundle for the current device. Conditions can use the same operators and comparators like the #if directive. 
 </p>
 
-<h2 id="define">Defining Temporary Symbols and Variables with #define and #undefine</h2>
+<h2 id="define">Defining Temporary Symbols and Variables with #define, #defineorappend and #undefine</h2>
 <p>
 You can temporarily define and undefine symbols with the #define directive. This can be used to evaluate a complex if-term only once and then referring a simple symbol instead of using the complex term again:
 <pre>
@@ -623,7 +623,7 @@ You can later just check the temporary defined symbol:
 	</tr>
 </table>
 <p>
-Please note that you should rely on a defined or undefined symbol only in the same source-file where you defined or undefined that symbol.  It is advised that you start the names of defined symbols with &quot;tmp.&quot;, so that you always know that this is a temporary symbol.
+Symbols defined in this way are only available in the same source-file where you defined that symbol.  It is advised that you start the names of defined symbols with &quot;tmp.&quot;, so that you always know that this is a temporary symbol.
 </p>
 <p>You can temporarily define and undefine variables with the #define as well. When the expression after the #define directive contains the equals-sign, the left part will be taken as the variable name, and the right part as the variable value:
 <pre>
@@ -636,10 +636,39 @@ You can later just use the defined variable normally:
 <pre>
 //#= String message = &quot;${ message }&quot;;</p>
 </pre></p>
+<p>
+When you have complex rules for implementing interfaces, you might want to use the #defineorappend directive. This allows you to add values
+to a single variable step by step. The following example is taken from J2ME Polish's TextField implementation that 
+<pre>
+//#if !(tmp.forceDirectInput || polish.blackberry || polish.doja) || tmp.supportsSymbolEntry
+	<b>//#defineorappend tmp.implements=CommandListener</b>
+	//#define tmp.implementsCommandListener
+//#endif
+//#if polish.TextField.suppressCommands == true
+	//#define tmp.suppressCommands
+//#else
+ 	<b>//#defineorappend tmp.implements=ItemCommandListener</b>
+	//#define tmp.implementsItemCommandListener
+//#endif
+//#if polish.blackberry
+	<b>//#defineorappend tmp.implements=FieldChangeListener</b>
+//#endif
+//#if false
+	//#define tmp.implementsCommandListener
+	//#define tmp.implementsItemCommandListener
+	implements CommandListener, ItemCommandListener, FieldChangeListener
+//#else
+	<b>//#= implements ${tmp.implements}</b>
+//#endif
+</pre>
+</p>
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>Directive&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>//#define [name]=[value]</td>
 	 <td>Defines the specified variable with the given value.</td>
+	</tr>
+	<tr><td>//#defineorapend [name]=[value]</td>
+	 <td>Either defines the specified variable with the given value or adds the given value with a comma to the existing value.</td>
 	</tr>
 	<tr><td>//#undefine [name]</td>
 	 <td>Removes the specified variable.</td>

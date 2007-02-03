@@ -27,29 +27,33 @@ optimizations are easier than ever.</p>
 	<tr><th>Type</th><th>Symbol</th><th>Variable</th><th>Explanation</th></tr>
 	<tr>
 	 <td>Platform</td>
-	 <td>polish.midp1</td>
+	 <td>polish.midp1, polish.midp2, polish.midp3</td>
 	 <td>polish.JavaPlatform</td>
-	 <td>When a device supports the MIDP/1.0 platform, the &quot;polish.midp1&quot;-symbol is defined.</td>
+	 <td>When a device supports the MIDP 1.0, 2.0 or 3.0 platform, the symbols &quot;polish.midp1&quot;, &quot;polish.midp2&quot;, and &quot;polish.midp3&quot; respectively are defined.
+	 Regardless of the version the &quot;polish.midp&quot; symbol is defined for all devices supporting the MIDP platform.
+	 </td>
 	</tr>
 	<tr>
 	 <td>Platform</td>
-	 <td>polish.midp2</td>
+	 <td>polish.blackberry</td>
 	 <td>polish.JavaPlatform</td>
-	 <td>When a device supports the MIDP/2.0 platform, the &quot;polish.midp2&quot;-symbol is defined.</td>
+	 <td>When a device supports the BlackBerry platform, the &quot;polish.blackbery&quot;-symbol is defined.</td>
+	</tr>
+	<tr>
+	 <td>Platform</td>
+	 <td>polish.doja</td>
+	 <td>polish.JavaPlatform</td>
+	 <td>When a device supports the DoJa platform or NTT Docomo, the &quot;polish.doja&quot;-symbol is defined.</td>
 	</tr>
 	<tr>
 	 <td>Configuration</td>
-	 <td>polish.cldc1.0</td>
+	 <td>polish.cldc, polish.cldc1.0, polish.cldc1.1, polish.hasFloatingPoint</td>
 	 <td>polish.JavaConfiguration</td>
-	 <td>When a device supports the Connected Limited Device Configuration 1.0, the 
-	 &quot;polish.cldc1.0&quot;-symbol is defined.</td>
-	</tr>
-	<tr>
-	 <td>Configuration</td>
-	 <td>polish.cldc1.1</td>
-	 <td>polish.JavaConfiguration</td>
-	 <td>When a device supports the Connected Limited Device Configuration 1.1, the 
-	 &quot;polish.cldc1.1&quot;-symbol is defined.</td>
+	 <td>Depending on the supported configuration, either &quot;polish.cldc1.0&quot; or &quot;polish.cldc1.1&quot; is defined. 
+	 For all CLDC devices the &quot;polish.cldc&quot; symbol is defined. When you want to check if the target device supports
+	 floating point calculations, we recommend to check for the &quot;polish.hasFloatingPoint&quot; instead of &quot;polish.cldc1.1&quot;,
+	 because in this way you can use the <a href="floater.html">Floater</a> tool.
+	 </td>
 	</tr>
 	<tr>
 	 <td>api</td>

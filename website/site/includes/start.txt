@@ -18,6 +18,7 @@
 	<script type="text/javascript">
 	window.onload=function(){
 		Nifty("pre","tl br big");
+		Nifty("ul.relatedtechnologies","tl br big");
 		//Nifty("header-in","tl tr big");
 	}
 	</script>
@@ -195,25 +196,35 @@
 		-->
 		<div id="navigation-in">
 		<%ifdef inIntroductionSection %>
-			<div id="currentLink"><a href="<%= basedir %>docs/introduction.html">Introduction</a></div>
+			<div id="currentLink"><a href="<%= basedir %>docs/introduction/introduction.html">Introduction</a></div>
 			<%ifdef inIntroductionSection.tour %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/tour.html">Take a Tour</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/introduction/tour.html">Take a Tour</a></div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/tour.html">Take a Tour</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/introduction/tour.html">Take a Tour</a></div>
 			<%endif %>
 			<%ifdef inIntroductionSection.features %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/features.html">Features</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/introduction/features.html">Features</a></div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/features.html">Features</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/introduction/features.html">Features</a></div>
 			<%endif %>
 			<%ifdef inIntroductionSection.tutorial %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/tutorial.html">Tutorial</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/introduction/tutorial.html">Tutorial</a></div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/tutorial.html">Tutorial</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/introduction/tutorial.html">Tutorial</a></div>
+			<%endif %>
+			<%ifdef inDocumentationSection.install %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install/install.html">Installation</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/install/install.html">Installation</a></div>
+			<%endif %>
+			<%ifdef inDocumentationSection.integration %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install/integration.html">IDE Installation</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/install/integration.html">IDE Installation</a></div>
 			<%endif %>
 			
 		<%else %>
-			<a href="<%= basedir %>docs/introduction.html">Introduction</a>
+			<a href="<%= basedir %>docs/introduction/introduction.html">Introduction</a>
 		<%endif %>
 		
 		<%ifndef excludeDownload %>
@@ -227,29 +238,29 @@
 		
 		<%ifdef inDocumentationSection %>
 			<div id="currentLink"><a href="<%= basedir %>documentation.html">Documentation</a></div>
-			<!--
-			<%ifdef inDocumentationSection.articles %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/articles.html">Articles</a></div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/articles.html">Articles</a></div>
-			<%endif %>
-			-->
 			<%ifdef inDocumentationSection.install %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install.html">Installation &amp; Integration</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install/install.html">Installation</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/install/netbeans.html">NetBeans</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/install/mepose.html">Eclipse</a></div>
+				<div id="thirdLevel">
+				<p class="thirdLevel">
+				<a href="<%= basedir %>docs/install/mepose-features.html">&nbsp;&gt; Features</a>
+				<a href="<%= basedir %>docs/install/mepose-install.html">&nbsp;&gt; Installation</a>
+				<a href="<%= basedir %>docs/install/mepose-wizard.html">&nbsp;&gt; Creating Projects</a>
+				<a href="<%= basedir %>docs/install/mepose-convert.html">&nbsp;&gt; Converting Projects</a>
+				<a href="<%= basedir %>docs/install/mepose-running.html">&nbsp;&gt; Running and Debugging</a>
+				</p>
+				</div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/install.html">Installation &amp; Integration</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/install/install.html">Installation</a></div>
+			<%endif %>
+			<%ifdef inDocumentationSection.integration %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install/integration.html">IDE Installation</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/install/integration.html">IDE Installation</a></div>
 			<%endif %>
 			<%ifdef inDocumentationSection.mepose %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/mepose.html">Mepose (Eclipse)</a></div>
-				<div id="thirdLevel">
-				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/mepose-features.html">Features</a>
-				<a href="<%= basedir %>docs/mepose-install.html">Installation</a>
-				<a href="<%= basedir %>docs/mepose-wizard.html">Creating Projects</a>
-				<a href="<%= basedir %>docs/mepose-convert.html">Converting Projects</a>
-				<a href="<%= basedir %>docs/mepose-running.html">Running and Debugging</a>
-				</p>
-				</div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/mepose.html">Mepose (Eclipse)</a></div>
 			<%endif %>
