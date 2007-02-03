@@ -45,31 +45,14 @@
 	<!-- build targets, each target can be called via "ant [name]", 
 		 e.g. "ant clean", "ant test j2mepolish" or just "ant" for calling the default-target -->
 	
-	<target name="setdeploy" 
-		description="Call this target first to set the OTA download-URL, e.g. ant setdeploy j2mepolish"
-		>
-		<property name="deploy-url" value="http://www.company.com/download/" />
-	</target>
-	
-	<target name="enableDebug" 
-		description="Call this target first to skip the obfuscation step, call the emulator and start the debugger, e.g. ant enableDebug j2mepolish"
-		>
-		<property name="debug" value="true" />
-	</target>
-	
-		
-	<target name="test" 
-		description="Call this target first to skip the obfuscation step and call the emulator, e.g. ant test j2mepolish"
-		>
-		<property name="test" value="true" />
-		<property name="dir.work" value="build/test" />
-	</target>
 			
 	<target name="j2mepolish-init"
 		    depends="init"
 		>
 	  	<property name="test" value="false" />
-		<property name="dir.work" value="build/real" />
+	  	<property name="customization" value="" />
+		<property name="dir.work" value="build/real/${customization}" />
+		<property name="dir.dist" value="dist/${customization}" />
 		<property name="deploy-url" value="" />
 	</target>
 	 
@@ -109,6 +92,8 @@
 			<build fullscreen="menu"
 	                symbols="polish.skipArgumentCheck" 
 	                usePolishGui="true"
+					workDir="${dir.work}"
+					destDir="${dir.dist}"
 				>
 				<!-- midlets definition -->
 				<!-- NetBeans defines this property automatically:  -->
@@ -133,12 +118,9 @@
 				>
 					<root dir="resources/base/images" />
 					<root dir="resources/base/sounds" />
-					<root dir="resources/customization1" if="cfg.customization1" />
-					<root dir="resources/customization1/images" if="cfg.customization1" />
-					<root dir="resources/customization1/sounds" if="cfg.customization1" />
-					<root dir="resources/customization2" if="cfg.customization2" />
-					<root dir="resources/customization2/images" if="cfg.customization2" />
-					<root dir="resources/customization2/sounds" if="cfg.customization2" />
+					<root dir="resources/${customization}" if="build.${customization}" />
+					<root dir="resources/${customization}/images" if="build.${customization}" />
+					<root dir="resources/${customization}/sounds" if="build.${customization}" />
 					<!-- add the localization element for created localized
 					     versions of your application: 
 					<localization>
@@ -148,7 +130,7 @@
 					-->
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
+				<obfuscator name="ProGuard" unless="test" >
 					<!--
 					You can set additional parameters here, e.g.:
 					<parameter name="optimize" value="false" />
@@ -197,9 +179,29 @@
 		</j2mepolish>
 	</target>
 	
+	<target name="setdeploy" 
+		description="Call this target first to set the OTA download-URL, e.g. ant setdeploy j2mepolish"
+		>
+		<property name="deploy-url" value="http://www.company.com/download/" />
+	</target>
+	
+	<target name="enableDebug" 
+		description="Call this target first to skip the obfuscation step, call the emulator and start the debugger, e.g. ant enableDebug j2mepolish"
+		>
+		<property name="debug" value="true" />
+	</target>
+	
+		
+	<target name="enableEmulator" 
+		description="Call this target first to skip the obfuscation step and call the emulator, e.g. ant test j2mepolish"
+		>
+		<property name="test" value="true" />
+		<property name="dir.work" value="build/test" />
+	</target>
+	
 	<target 
 		name="emulator"
-		depends="test,j2mepolish"
+		depends="enableEmulator,j2mepolish"
 		description="invokes the emulator"
 	>
 	</target>
@@ -216,7 +218,7 @@
 		depends="clean, j2mepolish"
 	/>
 	
-    <target name="debug" description="debugs the project" depends="enableDebug, test, j2mepolish" />
+    <target name="debug" description="debugs the project" depends="enableDebug, enableEmulator, j2mepolish" />
 	
 	<target name="deploy"
 			description="Deploys the applications. Currently empty."
@@ -228,7 +230,7 @@
 	<!-- NetBeans specific build targets: -->
 	        
 	        <target name="run" 
-	                depends="test, j2mepolish"
+	                depends="enableEmulator, j2mepolish"
 	        >
 	        </target>
 

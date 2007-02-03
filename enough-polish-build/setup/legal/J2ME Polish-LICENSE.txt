@@ -20,7 +20,7 @@ The XML processing library JDOM is licensed under a Apache style license. Find J
 http://www.jdom.org
 
 * ASM *
-ASM is a very small and fast Java bytecode manipulation framework which is availabe under a BDS derived licene. More information at:
+ASM is a very small and fast Java bytecode manipulation framework which is availabe under a BDS derived license. More information at:
 http://asm.objectweb.org
 
 

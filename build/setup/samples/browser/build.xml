@@ -94,7 +94,7 @@
 				<requirement name="Identifier" value="${device}" />
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Generic/jtwi,Generic/midp1,Nokia/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6" />
+				<requirement name="Identifier" value="Generic/jtwi,Generic/midp1,Generic/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6" />
 				<!-- on could use other devices for real builds, e.g. :
 				<requirement name="Term" value="polish.api.nokia-ui and polish.midp2" />
 				or:

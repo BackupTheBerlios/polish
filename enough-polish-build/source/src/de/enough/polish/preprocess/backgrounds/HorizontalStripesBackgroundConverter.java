@@ -50,20 +50,20 @@ public class HorizontalStripesBackgroundConverter extends BackgroundConverter {
 			firstTopColor = parseColor( topColorStr );			
 		}
 		String firstBottomColor = "0x000000";
-		String gradientColorStr = (String) map.get("first-bottom-color");
-		if ( gradientColorStr != null ) {
-			firstBottomColor = parseColor( gradientColorStr );			
+		String firstBottomColorStr = (String) map.get("first-bottom-color");
+		if ( firstBottomColorStr != null ) {
+			firstBottomColor = parseColor( firstBottomColorStr );			
 		}
 		
 		String secondTopColor = "0x000000";
 		String secondTopColorStr = (String) map.get("second-top-color");
-		if ( topColorStr != null ) {
-			firstTopColor = parseColor( topColorStr );			
+		if ( secondTopColorStr != null ) {
+			secondTopColor = parseColor( secondTopColorStr );			
 		}
 		String secondBottomColor = "0xFFFFFF";
-		String secondBColorStr = (String) map.get("second-bottom-color");
-		if ( secondBColorStr != null ) {
-			secondBottomColor = parseColor( gradientColorStr );			
+		String secondBottomColorStr = (String) map.get("second-bottom-color");
+		if ( secondBottomColorStr != null ) {
+			secondBottomColor = parseColor( secondBottomColorStr );			
 		}
 
 //		String stroke = "Graphics.SOLID";

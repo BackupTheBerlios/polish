@@ -5,7 +5,7 @@
         <configurations xmlns="http://www.netbeans.org/ns/project-configurations/1">
             <configuration>Generic/jtwi</configuration>
             <configuration>Generic/midp1</configuration>
-            <configuration>Nokia/Midp2Cldc11</configuration>
+            <configuration>Generic/Midp2Cldc11</configuration>
             <configuration>Nokia/Series40E3</configuration>
             <configuration>Nokia/Series60E2</configuration>
             <configuration>Nokia/Series60E3</configuration>

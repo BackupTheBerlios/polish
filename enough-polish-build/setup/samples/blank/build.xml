@@ -41,27 +41,7 @@
 		
 	<!-- build targets, each target can be called via "ant [name]", 
 		 e.g. "ant clean", "ant test j2mepolish" or just "ant" for calling the default-target -->
-	
-	<target name="setdeploy" 
-		description="Call this target first to set the OTA download-URL, e.g. ant setdeploy j2mepolish"
-		>
-		<property name="deploy-url" value="http://www.company.com/download/" />
-	</target>
-	
-	<target name="enableDebug" 
-		description="Call this target first to skip the obfuscation step, call the emulator and start the debugger, e.g. ant enableDebug j2mepolish"
-		>
-		<property name="debug" value="true" />
-	</target>
-	
-		
-	<target name="test" 
-		description="Call this target first to skip the obfuscation step and call the emulator, e.g. ant test j2mepolish"
-		>
-		<property name="test" value="true" />
-		<property name="dir.work" value="build/test" />
-	</target>
-			
+				
 	<target name="init">
 	  	<property name="test" value="false" />
 	  	<property name="customization" value="" />
@@ -71,12 +51,13 @@
 	</target>
 	 
 	<!-- In this target the J2ME Polish task is used.             -->
-	<!-- It has 3 sections:                                       -->
+	<!-- It has 4 sections:                                       -->
 	<!--    1. The info-section defines some general information  -->
 	<!--    2. The deviceRequirements-section chooses the devices -->
-	<!--       for which the application is optimized.            -->
+	<!--       for which the application is build.                -->
 	<!--    3. The build-section controls the actual build        -->
 	<!--       process.                                           -->	
+	<!--    4. The emulator-section calls the emulator            -->
 	<target name="j2mepolish" 
 			depends="init"
 			description="This is the controller for the J2ME build process." 
@@ -100,7 +81,7 @@
 				<requirement name="Identifier" value="${device}" />
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Generic/jtwi,Generic/midp1,Nokia/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6" />
+				<requirement name="Identifier" value="Generic/jtwi,Generic/midp1,Generic/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6" />
 				<!-- on could use other devices for real builds, e.g. :
 				<requirement name="Term" value="polish.api.nokia-ui and polish.midp2" />
 				or:
@@ -156,7 +137,7 @@
 					</localization>
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
+				<obfuscator name="ProGuard" unless="test" >
 					<!--
 					You can set additional parameters here, e.g.:
 					<parameter name="optimize" value="false" />
@@ -209,9 +190,27 @@
 		</j2mepolish>
 	</target>
 	
+	<target name="setdeploy" 
+		description="Call this target first to set the OTA download-URL, e.g. ant setdeploy j2mepolish"
+		>
+		<property name="deploy-url" value="http://www.company.com/download/" />
+	</target>
+	
+	<target name="enableDebug" 
+		>
+		<property name="debug" value="true" />
+	</target>
+	
+		
+	<target name="enableEmulator" 
+		>
+		<property name="test" value="true" />
+		<property name="dir.work" value="build/test" />
+	</target>
+
 	<target 
 		name="emulator"
-		depends="test,j2mepolish"
+		depends="enableEmulator,j2mepolish"
 		description="invokes the emulator"
 	>
 	</target>
@@ -228,7 +227,7 @@
 		depends="clean, j2mepolish"
 	/>
 	
-    <target name="debug" description="debugs the project" depends="enableDebug, test, j2mepolish" />
+    <target name="debug" description="debugs the project" depends="enableDebug, enableEmulator, j2mepolish" />
 	
 	<target name="enableCustomization1">
 		<property name="customization" value="customization1" />
@@ -254,7 +253,7 @@
 		name="buildAllCustomizations"
 		description="Builds your application in all customizations." 
 		>
-		<subant target="buildCustomization1"      buildpath="." genericantfile="build.xml" inheritall="false" ></subant>
+		<subant target="buildCustomization1" buildpath="." genericantfile="build.xml" inheritall="false" ></subant>
 		<subant target="buildCustomization2" buildpath="." genericantfile="build.xml" inheritall="false" ></subant>
 	</target>
 

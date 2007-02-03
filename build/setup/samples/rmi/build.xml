@@ -115,7 +115,7 @@
 				<requirement name="Identifier" value="${device}" />
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Generic/jtwi,Generic/midp1,Nokia/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6" />
+				<requirement name="Identifier" value="Generic/jtwi,Generic/midp1,Generic/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6" />
 			</deviceRequirements>
 		    <!-- build settings -->
 			<!-- 
@@ -162,7 +162,7 @@
 					-->
 				</resources>
 				<!-- obfuscator settings: always obfuscate -->
-				<obfuscator name="ProGuard" useDefaultPackage="true" unless="polish.blackberry or dontobfuscate" />
+				<obfuscator name="ProGuard" useDefaultPackage="false" unless="polish.blackberry or dontobfuscate" />
 				
 				<!-- debug/log settings: only include debug setting when the test-property is true -->
 				<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true"  if="test">
