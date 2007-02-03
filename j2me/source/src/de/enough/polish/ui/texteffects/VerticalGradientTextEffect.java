@@ -103,7 +103,7 @@ public class VerticalGradientTextEffect extends TextEffect {
 		int width = font.stringWidth( text );
 		int startX = getLeftX( x, orientation, width );
 		int startY = getTopY( y, orientation, height, font.getBaselinePosition() );
-		//#if tmp.useNokiaUisApi
+		//#if tmp.useNokiaUiApi
 			if ( this.nokiaImageBuffer == null || text != this.oldText  ){
 		//#elif polish.midp2
 			if ( this.rgbBuffer == null || text != this.oldText || this.rgbBuffer.length != width * height ){
