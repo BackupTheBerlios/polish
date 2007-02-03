@@ -772,7 +772,9 @@ public class Device extends PolishComponent {
 //				}
 			}
 //			try {
+			if ( (new File(this.classesDir)).exists()) {
 				acl.addPathElement( this.classesDir );
+			}
 //			} catch (IOException e) {
 //				// TODO robertvirkus handle IOException
 //				e.printStackTrace();
