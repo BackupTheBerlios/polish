@@ -335,11 +335,12 @@ public class SetPropertiesPanel extends IzPanel {
 		// check for install path of the netbeans module:
 		String netbeansHomePath = (String) properties.get("netbeans.home");
 		if (netbeansHomePath != null) {
+			boolean netbeansSuccess = false;
 			File netbeansHome = new File( netbeansHomePath );
 			if ( this.isMacOsX && netbeansHomePath.endsWith(".app")) {
 				netbeansHome = new File( netbeansHome, "Contents/Resources/NetBeans");
 			}
-			if (netbeansHome.canWrite()) {
+			if (netbeansHome.exists() && netbeansHome.canWrite()) {
 				File[] files = netbeansHome.listFiles();
 				for (int i = 0; i < files.length; i++) {
 					File file = files[i];
@@ -348,11 +349,27 @@ public class SetPropertiesPanel extends IzPanel {
 						File autoupdateDir = new File( file, "update/download");
 						autoupdateDir.mkdirs();
 						this.idata.setVariable("NETBEANS_INSTALL_HOME", autoupdateDir.getAbsolutePath() );
+						netbeansSuccess = true;
 						break;
 					}
 				}
 			}
+			if (!netbeansSuccess) {
+				System.err.println("netbeans.home is not writeable, so the NetBeans module cannot be installed automatically: " + netbeansHomePath);
+			}
 		}
+		// check for install path of the mepose plugin in eclipse:
+		String eclipseHomePath = (String) properties.get("eclipse.home");
+		if (eclipseHomePath != null) {
+			File eclipseHome = new File( eclipseHomePath );
+			if (eclipseHome.exists() && eclipseHome.canWrite()) {
+				this.idata.setVariable("ECLIPSE_INSTALL_HOME", eclipseHome.getAbsolutePath() );
+				//System.err.println("Setting ECLIPSE_INSTALL_HOME = " + eclipseHome.getAbsolutePath());
+			} else {
+				System.err.println("eclipse.home is not writable, so the Eclipse plugin cannot be installed automatically: " + eclipseHomePath);
+			}
+		}
+		
 		return properties;
 	}
 
