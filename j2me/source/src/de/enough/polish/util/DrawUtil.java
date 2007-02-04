@@ -40,7 +40,7 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Provides functions for drawing shadows, polygons, gradients, etc.</p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
  * <p>
  * The implementation for filling a polygon on devices without Nokia-UI-API and without the BlackBerry API is based
  * upon JMicroPolygon: http://sourceforge.net/projects/jmicropolygon, which is licensed under the Apache Software License
@@ -814,5 +814,69 @@ public final class DrawUtil {
 		}
 	}
 
+	/**
+	 * Draws a translucent line on MIDP 2.0+ and Nokia-UI-API devices.
+	 * Note that on pure MIDP 1.0 devices without support for the Nokia-UI-API the translucency is ignored.
+	 * 
+	 * @param color the ARGB color
+	 * @param x1 horizontal start position 
+	 * @param y1 vertical start position
+	 * @param x2 horizontal end position
+	 * @param y2 vertical end position
+	 * @param g the graphics context
+	 */
+	public static void drawLine( int color, int x1, int y1, int x2, int y2, Graphics g) {
+		//#if polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi
+			int[] xPoints = new int[] { x1, x2 };
+			int[] yPoints = new int[] { y1, y2 };
+			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
+			dg.drawPolygon(xPoints, 0, yPoints, 0, 2, color );
+		//#elifdef polish.midp2
+			if (y2 < y1 ) {
+				int top = y2;
+				y2 = y1;
+				y1 = top; 
+			}
+			if (x2 < x1) {
+				int left = x2;
+				x1 = x2;
+				x2 = x1;
+				x1 = left;
+			}
+//			int[] rgb = new int[]{ color };
+//			if (y1 == y2) {
+//				int start = Math.max( x1, 0);
+//				for (int i = start; i < x2; i++ ) {
+//					g.drawRGB(rgb, 0, 0, start + i, y1, 1, 1, true ); 
+//				}
+//			} else if (x1 == x2) {
+//				int start = Math.max( y1, 0);
+//				for (int i = start; i < y2; i++ ) {
+//					g.drawRGB(rgb, 0, 0, x1, start + i, 1, 1, true ); 
+//				}				
+//			}
+			
+			if (x1 == x2 || y1 == y2) {
+//				int[] rgb = new int[]{ color };
+//				g.drawRGB( rgb, 0, 0, x1, y1, x2 - x1, y2 - y1, true );
+				int width = x2 - x1;
+				if (width == 0) {
+					width = 1;
+				}
+				int height = y2 - y1;
+				if (height == 0) {
+					height = 1;
+				}
+				int[] rgb = new int[ Math.max( width, height )];
+				for (int i = 0; i < rgb.length; i++) {
+					rgb[i] = color;
+				}
+				g.drawRGB( rgb, 0, 0, x1, y1, width, height, true );
+			}
+		//#else
+			g.setColor( color );
+			g.drawLine(x1, y1, x2, y2);
+		//#endif
+	}
 	
 }

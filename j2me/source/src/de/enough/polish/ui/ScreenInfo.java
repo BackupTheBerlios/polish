@@ -35,7 +35,10 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Can be used for displaying information on each screen. 
  * This needs to be enabled specifically by setting the 
- * "polish.ScreenInfo.enable" preprocessing variable to "true".
+ * "polish.ScreenInfo.enable" preprocessing variable to "true":
+ * <pre>
+ * 	&lt;variable name=&quot;polish.ScreenInfo.enable&quot; value=&quot;true&quot;&gt;
+ * </pre>
  * </p>
  * <p>
  *  If you want to display text you can use the "screeninfo" style
