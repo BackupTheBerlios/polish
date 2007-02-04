@@ -820,11 +820,13 @@ public class CssConverter extends Converter {
 			BorderConverter creator =  (BorderConverter) Class.forName(className).newInstance();
 			creator.setColorConverter(this.colorConverter);
 			creator.addBorder( codeList, group, borderName, style, styleSheet, isStandalone );
+		} catch (ClassNotFoundException e) {
+			throw new BuildException("Invalid CSS: unable to load border-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
 		} catch (BuildException e) {
 			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new BuildException("Invalid CSS: unable to load background-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
+			throw new BuildException("Invalid CSS: unable to load border-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
 		}
 	}
 
@@ -893,6 +895,8 @@ public class CssConverter extends Converter {
 			BackgroundConverter creator =  (BackgroundConverter) Class.forName(className).newInstance();
 			creator.setColorConverter(this.colorConverter);
 			creator.addBackground( codeList, group, backgroundName, style, styleSheet, isStandalone );
+		} catch (ClassNotFoundException e) {
+			throw new BuildException("Invalid CSS: unable to load background-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
 		} catch (BuildException e) {
 			throw e;
 		} catch (Exception e) {
