@@ -230,6 +230,34 @@ public final class UiAccess {
 	}
 	//#endif
 
+
+	//#if polish.midp2
+	/**
+	 * Sets the fullscreen mode of the screen.
+	 * The title and the menubar will be hidden by this call.
+	 * 
+	 * @param screen the screen
+	 * @param fullScreen true when the fullscreen mode should be entered
+	 */
+	public static void setFullScreenMode( javax.microedition.lcdui.Screen screen, boolean fullScreen ) {
+		// this is ignored.
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Sets the fullscreen mode of the screen.
+	 * The title and the menubar will be hidden by this call.
+	 * 
+	 * @param screen the screen
+	 * @param fullScreen true when the fullscreen mode should be entered
+	 */
+	public static void setFullScreenMode( Screen screen, boolean fullScreen ) {
+		screen.setFullScreenMode(fullScreen);
+	}
+	//#endif
+
+	
 	//#if polish.midp
 	/**
 	 * Adds a command to a list item.
