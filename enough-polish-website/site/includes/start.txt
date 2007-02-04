@@ -196,35 +196,35 @@
 		-->
 		<div id="navigation-in">
 		<%ifdef inIntroductionSection %>
-			<div id="currentLink"><a href="<%= basedir %>docs/introduction/introduction.html">Introduction</a></div>
+			<div id="currentLink"><a href="<%= basedir %>docs/introduction.html">Introduction</a></div>
 			<%ifdef inIntroductionSection.tour %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/introduction/tour.html">Take a Tour</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/tour.html">Take a Tour</a></div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/introduction/tour.html">Take a Tour</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/tour.html">Take a Tour</a></div>
 			<%endif %>
 			<%ifdef inIntroductionSection.features %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/introduction/features.html">Features</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/features.html">Features</a></div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/introduction/features.html">Features</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/features.html">Features</a></div>
 			<%endif %>
 			<%ifdef inIntroductionSection.tutorial %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/introduction/tutorial.html">Tutorial</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/tutorial.html">Tutorial</a></div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/introduction/tutorial.html">Tutorial</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/tutorial.html">Tutorial</a></div>
 			<%endif %>
 			<%ifdef inDocumentationSection.install %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install/install.html">Installation</a></div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/install/install.html">Installation</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/install.html">Installation</a></div>
 			<%endif %>
 			<%ifdef inDocumentationSection.integration %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install/integration.html">IDE Installation</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/integration.html">IDE Installation</a></div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/install/integration.html">IDE Installation</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/integration.html">IDE Installation</a></div>
 			<%endif %>
 			
 		<%else %>
-			<a href="<%= basedir %>docs/introduction/introduction.html">Introduction</a>
+			<a href="<%= basedir %>docs/introduction.html">Introduction</a>
 		<%endif %>
 		
 		<%ifndef excludeDownload %>
@@ -239,62 +239,142 @@
 		<%ifdef inDocumentationSection %>
 			<div id="currentLink"><a href="<%= basedir %>documentation.html">Documentation</a></div>
 			<%ifdef inDocumentationSection.install %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install/install.html">Installation</a></div>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/install/netbeans.html">NetBeans</a></div>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/install/mepose.html">Eclipse</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install.html">Installation</a></div>
+				<%ifdef inDocumentationSection.integration %>
+					<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/integration.html">IDE Installation</a></div>
+				<%else %>
+					<div class="secondLevelLink"><a href="<%= basedir %>docs/integration.html">IDE Installation</a></div>
+				<%endif %>
+				<%ifdef inDocumentationSection.netbeans %>
+					<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/netbeans.html">&nbsp;&gt; NetBeans</a></div>
+				<%else %>
+					<div class="secondLevelLink"><a href="<%= basedir %>docs/mepose.html">&nbsp;&gt; NetBeans</a></div>
+				<%endif %>
+				<%ifdef inDocumentationSection.mepose %>
+					<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/mepose.html">&nbsp;&gt; Eclipe</a></div>
+				<%else %>
+					<div class="secondLevelLink"><a href="<%= basedir %>docs/mepose.html">&nbsp;&gt; Eclipse</a></div>
+				<%endif %>
 				<div id="thirdLevel">
 				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/install/mepose-features.html">&nbsp;&gt; Features</a>
-				<a href="<%= basedir %>docs/install/mepose-install.html">&nbsp;&gt; Installation</a>
-				<a href="<%= basedir %>docs/install/mepose-wizard.html">&nbsp;&gt; Creating Projects</a>
-				<a href="<%= basedir %>docs/install/mepose-convert.html">&nbsp;&gt; Converting Projects</a>
-				<a href="<%= basedir %>docs/install/mepose-running.html">&nbsp;&gt; Running and Debugging</a>
+				<a href="<%= basedir %>docs/mepose-features.html">Features</a>
+				<a href="<%= basedir %>docs/mepose-install.html">Installation</a>
+				<a href="<%= basedir %>docs/mepose-wizard.html">Creating Projects</a>
+				<a href="<%= basedir %>docs/mepose-convert.html">Converting Projects</a>
+				<a href="<%= basedir %>docs/mepose-running.html">Running and Debugging</a>
 				</p>
 				</div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/install/install.html">Installation</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/install.html">Installation</a></div>
 			<%endif %>
-			<%ifdef inDocumentationSection.integration %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install/integration.html">IDE Installation</a></div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/install/integration.html">IDE Installation</a></div>
-			<%endif %>
-			<%ifdef inDocumentationSection.mepose %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/mepose.html">Mepose (Eclipse)</a></div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/mepose.html">Mepose (Eclipse)</a></div>
-			<%endif %>
-			<%ifdef inDocumentationSection.optimization %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/optimization.html">Optimization</a></div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/optimization.html">Optimization</a></div>
-			<%endif %>
-			<%ifdef inDocumentationSection.build %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/build.html">Build</a></div>
+			<%ifdef inDocumentationSection.gui %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/gui-concepts.html">Design</a></div>
 				<div id="thirdLevel">
 				<p class="thirdLevel">
+				<a href="<%= basedir %>docs/gui-visualguide.html">Visual Guide</a>
+				<a href="<%= basedir %>docs/gui-css.html">CSS Know-how</a>
+				<a href="<%= basedir %>docs/gui-programming.html">Programming Concepts</a>
+				<a href="<%= basedir %>docs/gui-localization.html">GUI Localization</a>
+				<a href="<%= basedir %>docs/gui-configuration.html">Configuration Options</a>
+				</p>
+				</div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/gui-concepts.html">Design</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/gui-visualguide.html">Visual Guide</a></div>
+			<%endif %>
+
+			<%ifdef inDocumentationSection.customization %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/customization.html">Customization</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/customization.html">Customization</a></div>
+			<%endif %>			
+			<%ifdef inDocumentationSection.localization %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/localization.html">Localization</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/localization.html">Localization</a></div>
+			<%endif %>			
+			<%ifdef inDocumentationSection.persistence %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/persistence.html">Persistence</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/persistence.html">Persistence</a></div>
+			<%endif %>			
+			<%ifdef inDocumentationSection.rmi %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/rmi.html">RMI/RPC</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/rmi.html">RMI/RPC</a></div>
+			<%endif %>			
+			<%ifdef inDocumentationSection.build %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/build.html">Building</a></div>
+				<div id="thirdLevel">
+				<p class="thirdLevel">
+				Resource Handling:<br />
+				<a href="<%= basedir %>docs/resource-assembling.html">Resource Assembling</a>
+				<a href="<%= basedir %>docs/resource-conversions.html">Resource Conversions</a>
+				Preprocessing:<br />
+				<a href="<%= basedir %>docs/preprocessing-directives.html">Directives</a>
+				<a href="<%= basedir %>docs/preprocessing-propertyfunctions.html">Property Functions</a>
+				<a href="<%= basedir %>docs/preprocessing-variables.html">Variables &amp; Symbols</a>
+				build.xml:<br />
 				<a href="<%= basedir %>docs/build-taskdef.html">Task Definition</a>
 				<a href="<%= basedir %>docs/build-info.html">Info Section</a>
 				<a href="<%= basedir %>docs/build-deviceRequirements.html">Device Requirements Section</a>
 				<a href="<%= basedir %>docs/build-build.html">Build Section</a>
 				<a href="<%= basedir %>docs/build-emulator.html">Emulator Section</a>
-				<a href="<%= basedir %>docs/build-example.html">Example</a>
 				</p>
 				</div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/build.html">Build</a></div>
-			<%endif %>
-			<%ifdef inDocumentationSection.resources %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/resources-overview.html">Resources</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/build.html">Building</a></div>
+			<%endif %>			
+			<%ifdef inDocumentationSection.programming %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/programming.html">Programming</a></div>
 				<div id="thirdLevel">
 				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/resource-assembling.html">Resource Assembling</a>
-				<a href="<%= basedir %>docs/localization.html">Localization</a>
+				<a href="<%= basedir %>docs/utilities.html">Utility Classes</a>
+				<a href="<%= basedir %>docs/serialization.html">Serialization</a>
+				<a href="<%= basedir %>docs/java5.html">Java 5 Syntax</a>
+				<a href="<%= basedir %>docs/porting.html">Porting</a>
 				</p>
 				</div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/resources-overview.html">Resources and Localization</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/programming.html">Programming</a></div>
+			<%endif %>			
+			<%ifdef inDocumentationSection.platform %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/platform.html">Platforms</a></div>
+				<div id="thirdLevel">
+				<p class="thirdLevel">
+				<a href="<%= basedir %>docs/platform-midp.html">MIDP</a>
+				<a href="<%= basedir %>docs/platform-blackberry.html">BlackBerry</a>
+				<a href="<%= basedir %>docs/platform-doja.html">DoJa</a>
+				<a href="<%= basedir %>docs/platform-javase.html">Java SE</a>
+				<a href="<%= basedir %>docs/platform-palm.html">Palm</a>
+				</p>
+				</div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/platform.html">Platforms</a></div>
 			<%endif %>
+			<%ifdef inDocumentationSection.javadoc %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/javadoc.html">JavaDoc</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/javadoc.html">JavaDoc</a></div>
+			<%endif %>
+			
+			
+			<!--
+			<%ifdef inDocumentationSection.extending %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/extending.html">Extending</a></div>
+				<div id="thirdLevel">
+				<p class="thirdLevel">
+				<a href="<%= basedir %>docs/custom-obfuscator.html">Obfuscator</a>
+				<a href="<%= basedir %>docs/custom-preprocessor.html">Preprocessor</a>
+				<a href="<%= basedir %>docs/custom-item.html">GUI: CustomItem</a>
+				<a href="<%= basedir %>docs/custom-background.html">GUI: Background</a>
+				<a href="<%= basedir %>docs/custom-border.html">GUI: Border</a>
+				</p>
+				</div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/extending.html">Extending</a></div>
+			<%endif %>
+						
 			<%ifdef inDocumentationSection.css %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/css.html">GUI</a></div>
 				<div id="thirdLevel">
@@ -310,47 +390,10 @@
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/css.html">GUI</a></div>
 			<%endif %>
-			<%ifdef inDocumentationSection.preprocessing %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/preprocessing.html">Preprocessing</a></div>
-				<div id="thirdLevel">
-				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/directives.html">Directives</a>
-				<a href="<%= basedir %>docs/variables.html">Variables &amp; Symbols</a>
-				</p>
-				</div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/preprocessing.html">Preprocessing</a></div>
-			<%endif %>
-			<%ifdef inDocumentationSection.serialization %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/serialization.html">Serialization</a></div>
-				<div id="thirdLevel">
-				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/serialization-howto.html">How To</a>
-				<a href="<%= basedir %>docs/serialization-persistence.html">Persistence</a>
-				</p>
-				</div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/serialization.html">Serialization</a></div>
-			<%endif %>
-			<%ifdef inDocumentationSection.rmi %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/rmi.html">RMI</a></div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/rmi.html">RMI</a></div>
-			<%endif %>
-			<%ifdef inDocumentationSection.utilities %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/utilities.html">Utilities</a></div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/utilities.html">Utilities</a></div>
-			<%endif %>
 			<%ifdef inDocumentationSection.tools %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/tools.html">Tools</a></div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/tools.html">Tools</a></div>
-			<%endif %>
-			<%ifdef inDocumentationSection.java5 %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/java5.html">Java 5 Syntax</a></div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/java5.html">Java 5 Syntax</a></div>
 			<%endif %>
 			<%ifdef inDocumentationSection.floater %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/floater.html">Floater</a></div>
@@ -362,42 +405,14 @@
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/game-engine.html">Game-Engine</a></div>
 			<%endif %>
-			<%ifdef inDocumentationSection.platform %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/platform.html">Platforms</a></div>
-				<div id="thirdLevel">
-				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/platform-blackberry.html">BlackBerry</a>
-				<a href="<%= basedir %>docs/platform-palm.html">Palm</a>
-				<a href="<%= basedir %>docs/platform-doja.html">DoJa</a>
-				</p>
-				</div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/platform.html">Platforms</a></div>
-			<%endif %>
-			<%ifdef inDocumentationSection.extending %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/extending.html">Extending</a></div>
-				<div id="thirdLevel">
-				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/custom-obfuscator.html">Obfuscator</a>
-				<a href="<%= basedir %>docs/custom-preprocessor.html">Preprocessor</a>
-				<a href="<%= basedir %>docs/custom-item.html">GUI: CustomItem</a>
-				<a href="<%= basedir %>docs/custom-background.html">GUI: Background</a>
-				<a href="<%= basedir %>docs/custom-border.html">GUI: Border</a>
-				</p>
-				</div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/extending.html">Extending</a></div>
-			<%endif %>
+			-->
+			<!--
 			<%ifdef inDocumentationSection.howto %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/how-tos.html">How-tos</a></div>
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/how-tos.html">How-tos</a></div>
 			<%endif %>
-			<%ifdef inDocumentationSection.javadoc %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/javadoc.html">JavaDoc</a></div>
-			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/javadoc.html">JavaDoc</a></div>
-			<%endif %>
+			-->
 			
 		<%else %>
 			<a href="<%= basedir %>documentation.html">Documentation</a>

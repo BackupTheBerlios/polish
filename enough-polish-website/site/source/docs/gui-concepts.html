@@ -1,21 +1,34 @@
 <%define inDocumentationSection %>
-<%define inDocumentationSection.css %>
-<%set title = J2ME Polish: Documentation %>
+<%define inDocumentationSection.gui %>
+<%set title = J2ME Polish: Design %>
 <%set basedir = ../ %>
 <%include start.txt %>
 
-	<h1 id="top">CSS for J2ME</h1>
+	<h1 id="top">Designing Your Mobile Applications</h1>
 	<p>
-J2ME Polish includes an optional Graphical User Interface, which can be designed using the 
-web-standard Cascading Style Sheets (CSS). So every web-designer can now design mobile 
-applications thanks to J2ME Polish! This chapter will explain all details of the design 
-possibilities, no prior knowledge about CSS is required. The GUI is compatible with the 
-javax.microedition.ui-classes, therefore no changes need to be made in the source code of 
-the application. The GUI will be incorporated by the preprocessing mechanism automatically, 
-unless the &quot;usePolishGui&quot;-attribute of the 
-&lt;build&gt; element is set to false in the build.xml file.
+	J2ME Polish combines the power of the mobile Java world with the flexibility of webdesigns by separating the 
+	design settings from the application's source code. By using the 
+web-standard Cascading Style Sheets (CSS), customizing and designing of applications becomes very easy and flexible. 
+With J2ME Polish any web-designer can now design mobile 
+applications, while the programmers can concentrate on the business logic!
 </p>
-<h2 id="glance">A Quick Glance</h2>
+<h2 id="concepts">Concepts</h2>
+<p>
+	The J2ME Polish GUI uses some basic concepts:
+</p>
+<ul>
+	<li>Develop your GUI with the normal <code>javax.microedition.lcdui</code> classes like Form, List or TextField.</li>
+	<li>Use additionally J2ME Polish <a href="gui-visualguide.html">custom components</a> like TabbedForm, TreeItem, ChoiceTextField and so on.</li>
+	<li>If you need further control over standard <code>javax.microedition.lcdui</code> components like setting the input mode of an TextField, use
+	<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/ui/UiAccess.html">de.enough.polish.ui.UiAccess</a>.</li>
+	<li>Add <a href="preprocessing-directives.html#style">#style</a> directives to your applications source code for connecting your code with the design</li>
+	<li>Design and customize your application by using simple CSS texfiles</li>
+	<li>Configure additional GUI options in your build.xml script</li>
+	<!--  
+	<li></li>
+	-->
+</ul>
+<h2 id="glance">A Quick Glance at CSS</h2>
 <p>
 All design settings and files are stored in the &quot;resources&quot; directory of the project, 
 unless another directory has been specified. 

@@ -1,15 +1,15 @@
 <%define inDocumentationSection %>
 <%define inDocumentationSection.customization %>
 <%set title = J2ME Polish: Customization %>
-<%set basedir = ../../ %>
+<%set basedir = ../ %>
 <%include start.txt %>
 
 	<h1 id="top">Customization</h1>
 	<ul class="relatedtechnologies">
 	<li class="relatedtechnologiesheader">Related Technologies:</li>
-	<li><a href="../build/resource-assembling.html">Resource Assembling</a></li>
-	<li><a href="../localization/localization.html">Localization</a></li>
-	<li><a href="../build/preprocessing.html">Preprocessing</a></li>
+	<li><a href="resource-assembling.html">Resource Assembling</a></li>
+	<li><a href="localization.html">Localization</a></li>
+	<li><a href="preprocessing.html">Preprocessing</a></li>
 	</ul>
 	<%index %>
 	<p>
@@ -278,7 +278,7 @@ public void storeSettings() {
 	&quot;customize&quot; calls the &quot;enable&quot; target first and then the &quot;j2mepolish&quot; target.
 	<br />
 	For building all customized versions of your application at once, we need to use some &lt;subant&gt; Ant voodoo, because we cannot
-	overwrite defined Ant properties once they are set. Have a look at this example:
+	overwrite defined Ant properties once they are set. Have a look at this example taken from the &quot;blank&quot; sample application:
 <pre>
 &lt;project 
 	name=&quot;blank&quot; 
@@ -313,9 +313,9 @@ public void storeSettings() {
 				
 	&lt;target name=&quot;init&quot;&gt;
 	  	&lt;property name=&quot;test&quot; value=&quot;false&quot; /&gt;
-	  	&lt;property name=&quot;customization&quot; value=&quot;&quot; /&gt;
-		&lt;property name=&quot;dir.work&quot; value=&quot;build/real/${customization}&quot; /&gt;
-		&lt;property name=&quot;dir.dist&quot; value=&quot;dist/${customization}&quot; /&gt;
+	  	<b>&lt;property name=&quot;customization&quot; value=&quot;&quot; /&gt;</b>
+		<b>&lt;property name=&quot;dir.work&quot; value=&quot;build/real/${customization}&quot; /&gt;</b>
+		<b>&lt;property name=&quot;dir.dist&quot; value=&quot;dist/${customization}&quot; /&gt;</b>
 		&lt;property name=&quot;deploy-url&quot; value=&quot;&quot; /&gt;
 	&lt;/target&gt;
 	 
@@ -357,8 +357,8 @@ public void storeSettings() {
 			&lt;build
 				fullscreen=&quot;menu&quot;
 				usePolishGui=&quot;true&quot;
-				workDir=&quot;${dir.work}&quot;
-				destDir=&quot;${dir.dist}&quot;
+				<b>workDir=&quot;${dir.work}&quot;
+				destDir=&quot;${dir.dist}&quot;</b>
 			&gt;
 				&lt;!-- midlets definition --&gt;
 				&lt;midlet class=&quot;de.enough.polish.sample.email.EmailMidlet&quot; name=&quot;Email&quot; /&gt;
@@ -377,15 +377,15 @@ public void storeSettings() {
 				&lt;/variables&gt;
 				&lt;!-- Configure the customization settings here: --&gt;
 				&lt;resources
-					dir=&quot;resources/base&quot;
 					defaultexcludes=&quot;yes&quot;
 					excludes=&quot;readme.txt&quot;
 				&gt;
+					<b>&lt;root dir=&quot;resources/base&quot; /&gt;
 					&lt;root dir=&quot;resources/base/images&quot; /&gt;
 					&lt;root dir=&quot;resources/base/sounds&quot; /&gt;
 					&lt;root dir=&quot;resources/${customization}&quot; if=&quot;build.${customization}&quot; /&gt;
 					&lt;root dir=&quot;resources/${customization}/images&quot; if=&quot;build.${customization}&quot; /&gt;
-					&lt;root dir=&quot;resources/${customization}/sounds&quot; if=&quot;build.${customization}&quot; /&gt;
+					&lt;root dir=&quot;resources/${customization}/sounds&quot; if=&quot;build.${customization}&quot; /&gt;</b>
 					&lt;!-- add the localization element for created localized
 					     versions of your application: 
 					--&gt;
@@ -486,7 +486,7 @@ public void storeSettings() {
 	
     &lt;target name=&quot;debug&quot; description=&quot;debugs the project&quot; depends=&quot;enableDebug, enableEmulator, j2mepolish&quot; /&gt;
 	
-	&lt;target name=&quot;enableCustomization1&quot;&gt;
+	<b>&lt;target name=&quot;enableCustomization1&quot;&gt;
 		&lt;property name=&quot;customization&quot; value=&quot;customization1&quot; /&gt;
 		&lt;property name=&quot;build.customization1&quot; value=&quot;true&quot; /&gt;
 	&lt;/target&gt;
@@ -513,7 +513,7 @@ public void storeSettings() {
 		&lt;subant target=&quot;buildCustomization1&quot; buildpath=&quot;.&quot; genericantfile=&quot;build.xml&quot; inheritall=&quot;false&quot; &gt;&lt;/subant&gt;
 		&lt;subant target=&quot;buildCustomization2&quot; buildpath=&quot;.&quot; genericantfile=&quot;build.xml&quot; inheritall=&quot;false&quot; &gt;&lt;/subant&gt;
 	&lt;/target&gt;
-
+</b>
 	
 
 &lt;/project&gt;
