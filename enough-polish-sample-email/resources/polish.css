@@ -19,21 +19,27 @@
   * can be changed here. 
   */
 colors {
-	screenColorTop: #fff;
-	screenColorBottom: #ddd;
+	screenColorTop1: #fff;
+	screenColorBottom1: #fff;
+	screenColorTop2: #ff0;
+	screenColorBottom2: #ff0;
 	bgColor:  #eee;
-	focusedBgColor:  #fff;
-	fontColor: rgb( 30, 85, 86 );
-	focusedFontColor: #000;
-	focusedBorderColor: focusedFontColor;
+	focusedBgColor:  #eee;
+	fontColor: #222;
+	fontShadowColor: #eee;
+	focusedFontColor: #111;
+	focusedBackgroundColor: #eee;
+	focusedBorderColor: #444;
 	
-	mailBoxBgColor: #f00;
+	mailBoxBgColor: #eee;
+	mailBoxBorderColor: #fe0;
 	mailBoxFontColor: focusedFontColor;
 	
-	mailSummaryBgColor: rgb( 200, 0, 0 );
+	mailSummaryBgColor: #eee;
+	mailSummaryBorderColor: #fe0;
 	mailSummaryFontColor: fontColor;
 
-	mailDetailBgColor: rgb( 200, 200, 200 );
+	mailDetailBgColor: argb( 80%, 100%, 100%, 100% );
 	mailDetailFontColor: fontColor;
 }
 
@@ -45,10 +51,10 @@ colors {
 		type: horizontal-stripes;
 		top: title;
 		bottom: menubar;
-		first-top-color: screenColorTop;
-		first-bottom-color: screenColorBottom;
-		second-top-color: #ff0;
-		second-bottom-color: screenColorBottom;
+		first-top-color: screenColorTop1;
+		first-bottom-color: screenColorBottom1;
+		second-top-color: screenColorTop2;
+		second-bottom-color: screenColorBottom2;
 	}
 	/*
 	background {
@@ -70,14 +76,17 @@ colors {
 }
 
 .mailTree {
-	
+	padding-vertical: 3;
 }
 
 .mailBox {
-	padding: 3;
+	padding: 2;
+	padding-left: 9;
+	padding-right: 9;
 	background {
 		type: round-rect;
 		color: mailBoxBgColor;
+		border-color: mailBoxBorderColor;
 	}
 	font {
 		style: bold;
@@ -87,22 +96,33 @@ colors {
 	layout: expand | left;
 }
 
+.mailBox:hover {
+	background-border-color: focusedBorderColor;
+}
+
 .mailSummary {
-	padding: 3;
+	padding: 2;
+	padding-left: 9;
+	padding-right: 9;
 	background {
 		type: round-rect;
 		color: mailSummaryBgColor;
+		border-color: mailSummaryBorderColor;
 	}
 	font {
-		style: italic;
+		style: plain;
 		size: small;
 		color: mailSummaryFontColor;
 	}
 }
 
+.mailSummary:hover {
+	background-border-color: focusedBorderColor;
+}
+
 
 .mailDetail {
-	padding: 0;
+	padding: 2;
 	background {
 		color: mailDetailBgColor;
 	}
@@ -117,11 +137,26 @@ colors {
 .createMessageForm extends .mailForm {
 }
 
+/**
+ * Default style for labels.
+ * Set an explicit style with "label-style: name;" in the appropriate style.
+ */
 label {
 	font-size: small;
 	margin: 2;
 	margin-left: 5;
 	layout: left | newline-after;
+}
+
+/**
+  * You could style the screen info element here, which is used to display information
+  * over several screens. Since we use only two images, however, this style is not
+  * really needed.
+  */
+screeninfo {
+	margin-top: -24;
+	margin-left: 10;
+	layout: expand | right;
 }
 
 /**
@@ -199,6 +234,8 @@ info {
   */
 focused {
 	padding: 1;
+	padding-left: 8;
+	padding-right: 8;
 	background {
 		type: round-rect;
 		arc: 4;
@@ -215,6 +252,12 @@ focused {
 }
 
 
+/*************   SCROLL BAR   *************/
+scrollbar {
+	scrollbar-slider-color: #333;
+	scrollbar-slider-width: 3;
+}
+
 /**
   * The title style is a predefined style which is used
   * for all screen-titles.
@@ -225,20 +268,22 @@ title {
 	font-size: large;
 	font-style: bold;
 	font-color: focusedFontColor;
-	background-color: bgColor;
+	background {
+		type: vertical-gradient;
+		top-color: #fff;
+		bottom-color: #ccc;
+		start: 2%;
+		end: 90%;
+	}
 	border: none;
 	layout: horizontal-center | horizontal-expand;
-	//#if polish.midp2
-		text-effect: vertical-gradient;
-		text-vertical-gradient-start-color: #ddd;
-		text-vertical-gradient-end-color: #000;		
-	//#endif
-}
-
-/*************   SCROLL BAR   *************/
-scrollbar {
-	scrollbar-slider-color: #333;
-	scrollbar-slider-width: 3;
+	/*
+	text-effect: vertical-gradient;
+	text-vertical-gradient-start-color: #eee;
+	text-vertical-gradient-end-color: #000;		
+	*/
+	text-effect: shadow;
+	text-shadow-color: fontShadowColor;
 }
 
 /*************   MENU BAR     *************/
@@ -248,32 +293,88 @@ menubar
 	margin: 0;
 	padding-top: 3;
 	padding: 2;
-	background-color: bgColor;
+	background {
+		type: vertical-gradient;
+		top-color: #ccc;
+		bottom-color: #fff;
+		start: 10%;
+		end: 90%;
+	}
 }
 
+/**
+ * Commands within the menubar on the left side
+ */
+leftcommand
+{
+	margin: 0;
+    margin-horizontal: 10;
+	padding-top: 3;
+	padding-bottom: 0;
+	font-color: fontColor;
+	font-style: bold;
+	/*
+	text-effect: vertical-gradient;
+	text-vertical-gradient-end-color: #eee;
+	text-vertical-gradient-start-color: #000;
+	*/
+	text-effect: shadow;
+	text-shadow-color: fontShadowColor;
+}
+
+/**
+ * Commands within the menubar on the right side
+ */
+rightcommand extends leftcommand
+{
+	layout: right;
+}
+
+
 menu {
-	margin-left: 2;
-	margin-right: 2;
-	min-width: 120;
+	margin-left: 4;
+	margin-right: 4;
+	margin-bottom: -4;
+	min-width: 100;
 	padding: 2;
+	font-color: focusedFontColor;
+	font-size: small;
+	view-type: slide-up;
+	border {
+		type: drop-shadow;
+		width: 4;
+		start-color: #aeee;
+		end-color: #2222;
+		orientation: top-right;
+	}
+	background {
+		type: horizontal-stripes;
+		first-top-color: screenColorTop1;
+		first-bottom-color: screenColorBottom1;
+		second-top-color: screenColorTop2;
+		second-bottom-color: screenColorBottom2;
+	}
+	/*
 	background {
 		type: round-rect;
 		color: focusedBgColor;
 		border-width: 2;
 		border-color: bgColor;
 	}
-	focused-style: .menuFocused;
-	font-color: focusedFontColor;
+	*/
 }
 
-/** Style for the first layer of subcommands: **/
+
+/** Style for the first layer of subcommands.
 menu1 extends menu {
-	background-color: argb(150, 255, 255, 0 );
+	background-color: argb(75%, 100%, 100%, 0 );
 	background-type: simple;
-      layout: right;
-      margin-bottom: 4;
-      margin-right: 4;
+	background-border-width: 0;
+    layout: right;
+    margin-bottom: 4;
+    margin-right: 4;
 }
+ */
 
 
 /**
@@ -283,12 +384,12 @@ menu1 extends menu {
   * the menu style will be used instead. 
   */
 menuItem {
-	margin-top: 2;
-	padding: 2;
-	padding-left: 5;
+	padding: 3;
+	padding-left: 10;
+	padding-right: 10;
 	font {
 		color: fontColor;
-		size: medium;
+		size: small;
 		style: bold;
 	}
 	layout: left;
@@ -314,27 +415,23 @@ menuItem {
   * menu items. It is used, because it has
   * been defined in the menu style. 
   */
-.menuFocused extends .menuItem {
-	background-color: bgColor;
-	font-color: focusedFontColor;
+.menuItem:hover {
+	padding: 2;
+	padding-left: 9;
+	padding-right: 9;
+	background {
+		type: round-rect;
+		color: focusedBackgroundColor;
+		border-color: focusedBorderColor;
+	}
+	font {
+		style: bold;
+		size: small;
+		color: focusedFontColor;
+	}
 	layout: left | horizontal-expand;
 }
 
-leftcommand
-{
-	margin: 0;
-    margin-horizontal: 10;
-	padding-top: 3;
-	padding-bottom: 0;
-	font-color: black;
-	font-style: bold;
-	layout: left;
-}
-
-rightcommand extends leftcommand
-{
-	layout: right;
-}
 
 
 

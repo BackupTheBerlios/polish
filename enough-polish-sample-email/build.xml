@@ -2,14 +2,12 @@
 <project basedir="." default="j2mepolish" name="enough-polish-example">
 
 	<property file="${user.name}.properties" />
-	<!-- the device used for test builds:                         -->
+	<property name="polish.home" location="../enough-polish-build" />
 	<property  name="device" value="Nokia/Series60E2" />
 
 
-	<property name="wtk.home" location="/home/enough/dev/WTK2.2" />
-	<property name="nokia.home" location="/home/enough/dev/Nokia" />
-	<property name="polish.home" location="../enough-polish-build" />
-	<property  name="mpp.home" location="/home/enough/dev/mpp-sdk"/>
+	<property name="wtk.home" location="C:/WTK22" />
+	<property name="nokia.home" location="C:/Nokia" />
 
 	
 	<!-- task definitions -->
@@ -76,6 +74,7 @@
 				<variable name="polish.Container.allowCycling" value="false" />
 				-->
 				<variable name="polish.useScrollBar" value="true" />
+				<variable name="polish.ScreenInfo.enable" value="true" />
 			</variables>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 			<obfuscator useDefaultPackage="false" name="ProGuard" unless="test">
