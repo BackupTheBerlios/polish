@@ -49,6 +49,19 @@ public class Manifest {
 		this.environment = environment;
 		this.encoding = encoding;
 	}
+  
+  public void addAttribute( Attribute attribute ) {
+    if (this.attributes != null) {
+      Attribute[] tmpArray = new Attribute[this.attributes.length + 1];
+      System.arraycopy(this.attributes, 0, tmpArray, 0, this.attributes.length);
+      tmpArray[this.attributes.length] = attribute;
+      this.attributes = tmpArray;
+    }
+    else {
+      this.attributes = new Attribute[1];
+      this.attributes[0] = attribute;
+    }
+  }
 	
 	public void setAttributes( Attribute[] attributes ) {
 		this.attributes = attributes;
