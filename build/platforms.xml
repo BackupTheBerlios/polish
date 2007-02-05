@@ -113,7 +113,7 @@
 		<features>wipi2.0, midp, midp2</features>
 		<description>The Korean Wireless Internet Platform for Interoperability 2.0 is compatible to MIDP 2.0.</description>
 		<capability name="build.BootClassPath" value="midp-2.0.jar" />
-		<capability name="build.Preverfier" value="none" />
+		<capability name="build.Preverifier" value="none" />
 		<capability name="build.ImplicitGroups" value="wipi, wipi2.0" />
 	</platform>
 	
