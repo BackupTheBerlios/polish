@@ -38,7 +38,6 @@ import java.util.Locale;
 public class JavaSeManifestCreator
   extends ManifestCreator
 {
-  @Override
   public void createManifest(File manifestFile, Attribute[] manifestAttributes, String encoding, Device device, Locale locale, Environment env)
     throws IOException
   {

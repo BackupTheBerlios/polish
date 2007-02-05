@@ -43,7 +43,6 @@ public class JavaSEPostCompiler
   /* (non-Javadoc)
    * @see de.enough.polish.postcompile.PostCompiler#postCompile(java.io.File, de.enough.polish.Device)
    */
-  @Override
   public void postCompile(File classesDir, Device device) throws BuildException
   {
     System.out.println("Michael: JavaSEPostCompiler");
