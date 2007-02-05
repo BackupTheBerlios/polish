@@ -622,6 +622,14 @@
 		<class>de.enough.polish.postcompile.java5.Java5PostCompiler</class>
 		<classpath>${polish.home}/lib/retroweaver-all.jar:${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 	</extension>
+
+	<extension>
+		<type>postcompiler</type>
+		<name>j2se</name>
+		<class>de.enough.polish.postcompile.j2se.JavaSEPostCompiler</class>
+		<!-- TODO: Remove the next line -->
+		<classpath></classpath>
+	</extension>
 	
 	<!-- Log Handler -->
 	
@@ -677,6 +685,14 @@
 		<class>de.enough.polish.manifest.AntCallManifestCreator</class>
 	</extension>
 
+	<extension>
+		<type>manifestcreator</type>
+		<name>j2se</name>
+		<class>de.enough.polish.manifest.j2se.JavaSeManifestCreator</class>
+		<!-- TODO: Remove the next line  -->
+		<classpath></classpath>
+	</extension>
+	
 	<!-- Descriptor Creator -->
 
 	<extension>

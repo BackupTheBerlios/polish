@@ -39,6 +39,19 @@ These namespaces/schemas will be used soon.
 
 <!-- Standard devices -->
 	<device supportsPolishGui="true">
+		<identifier>Generic/Java</identifier>
+		<features>hasPointerEvents, hasCommandKeyEvents</features>
+		<description>A device to build supports applets, desktop and webstart applications.</description>
+		<capability name="JavaPlatform" value="MIDP/2.0, JavaSE/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="Emulator.Skin" value="Series60"/>
+	</device>
+
+	<device supportsPolishGui="true">
 		<identifier>Generic/midp1</identifier>
 		<features>isVirtual</features>
 		<description>A device that merely supports the MIDP 1.0 and CLDC 1.0 standards.</description>

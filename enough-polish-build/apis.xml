@@ -276,6 +276,15 @@
 		<path>import/doja_classes.zip</path>
 	</api>
 
+	<api>
+		<name>J2ME Polish SE Runtime</name>
+		<description>J2ME Polish Runtime</description>
+		<names>j2seRuntime</names>
+		<symbol>j2seRuntime</symbol>
+		<files>enough-j2mepolish-runtime.jar</files>
+		<path>import/enough-j2mepolish-runtime.jar</path>
+	</api>
+
 <!--
 	You can use this block to define a new API
 	( remove these XML-comments ):
