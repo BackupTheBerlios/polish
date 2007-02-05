@@ -77,8 +77,7 @@ public abstract class PostCompiler extends Extension {
 	throws BuildException
 	{
 		try {
-			PostCompiler postCompiler = (PostCompiler) manager.getExtension( ExtensionManager.TYPE_POSTCOMPILER, postCompilerSetting, environment );
-			return postCompiler;
+			return (PostCompiler) manager.getExtension( ExtensionManager.TYPE_POSTCOMPILER, postCompilerSetting, environment );
 		} catch (BuildException e) {
 			throw e;
 		} catch (Exception e) {
