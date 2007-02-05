@@ -58,7 +58,8 @@ import javax.microedition.lcdui.Image;
  *                          position of the current selection relativ to the complete width and height.
  *                          In the &quot;item&quot; mode the index of currently selected item
  *                          is taken into account relative to the number of items.
- *                          In the &quot;page&quot;
+ *                          In the &quot;page&quot; mode the position and height of the currently visible area is 
+ *                          shown relative to the complete height of that screen.
  *                          The default mode is &quot;page&quot;.
  * </li>
  * 	<li><b>scrollbar-position</b>: either &quot;left&quot; or &quot;right&quot; (not yet supported).</li>
