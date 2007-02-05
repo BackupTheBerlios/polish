@@ -477,8 +477,9 @@ These namespaces/schemas will be used soon.
 	</device>
 
 <!-- Sony-Ericsson devices -->
+	<!-- Sony-Ericsson devices -->
 	<device>
-		<identifier>Sony-Ericsson/K320i</identifier>
+		<identifier>Sony-Ericsson/K320i, Sony-Ericsson/K320</identifier>
 		<groups>SE-JavaPlatform3</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="128x160"/>
@@ -508,7 +509,7 @@ These namespaces/schemas will be used soon.
 	</device>
 	
 	<device>
-		<identifier>Sony-Ericsson/W830i</identifier>
+		<identifier>Sony-Ericsson/W830i, Sony-Ericsson/W830</identifier>
 		<groups>SE-JavaPlatform6</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="240x320" />
@@ -569,7 +570,7 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
-		<identifier>Sony-Ericsson/W710i</identifier>
+		<identifier>Sony-Ericsson/W710i, Sony-Ericsson/W710</identifier>
 		<groups>SE-JavaPlatform6</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="176x220" />
@@ -597,6 +598,41 @@ These namespaces/schemas will be used soon.
 		<capability name="Bugs" value="displaySetCurrentFlickers, ImageIOStreamAutoClose, NoPermanentBacklight" />
 		<capability name="DebugInterface" value="KDWP" />
 		<capability name="key.ReturnKey" value="-11" />
+	</device>
+	
+	<device>
+		<identifier>Sony-Ericsson/Z525</identifier>
+		<groups></groups>
+		<features>hasCamera, hasVideo</features>
+		<capability name="ScreenSize" value="128x160" />
+		<capability name="FullCanvasSize" value="128x160" />
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="wmapi1.0, btapi, pdaapi, m3g, mascot" />
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="SoundFormat" value="aac, mp3, mp4, m4a, 3gp, amr, wav, midi, midi40" />
+		<capability name="VideoFormat" value="mpeg-4, h.263, 3gp" />	
+		<capability name="ImageFormat" value="gif, gif87, gif89a, jpeg, bmp, wbmp, png, svg" />	
+		<capability name="CameraZoom" value="2x" />
+		<capability name="CameraResolution" value="640x480" />
+	</device>
+	
+	<device>
+		<identifier>Sony-Ericsson/Z530</identifier>
+		<groups></groups>
+		<features>hasCamera, hasVideo</features>
+		<capability name="ScreenSize" value="128x160" />
+		<capability name="FullCanvasSize" value="128x160" />
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="wmapi1.0, wmapi2.0, mmapi, btapi, pdaapi, webservice, m3g, mascot" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="SoundFormat" value="aac, mp3, mp4, m4a, 3gp, amr, wav, midi, midi40" />
+		<capability name="VideoFormat" value="mpeg-4, h.263, 3gp" />	
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, jpeg, bmp, wbmp, png" />	
+		<capability name="StorageSize" value="28 MB" />
+		<capability name="CameraZoom" value="4x" />
+		<capability name="CameraResolution" value="640x480" />
 	</device>
 	
 	<device>
@@ -662,7 +698,7 @@ These namespaces/schemas will be used soon.
 	</device>
 	
 	<device>
-			<identifier>Sony-Ericsson/Z300</identifier>
+			<identifier>Sony-Ericsson/Z300, Sony-Ericsson/Z300a</identifier>
 			<groups>SE-JavaPlatform3</groups>
 			<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 			<capability name="ScreenSize" value="128x160"/>
@@ -787,7 +823,7 @@ These namespaces/schemas will be used soon.
 	</device>
 	
 	<device>
-		<identifier>Sony-Ericsson/W810i</identifier>
+		<identifier>Sony-Ericsson/W810i, Sony-Ericsson/W810</identifier>
 		<groups>SE-JavaPlatform6</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="176x220" />
@@ -819,7 +855,7 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
-		<identifier>Sony-Ericsson/W850i</identifier>
+		<identifier>Sony-Ericsson/W850i, Sony-Ericsson/W850</identifier>
 		<groups>SE-JavaPlatform6</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="240x320" />
@@ -850,7 +886,7 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
-		<identifier>Sony-Ericsson/K800i</identifier>
+		<identifier>Sony-Ericsson/K800i, Sony-Ericsson/K800</identifier>
 		<groups>SE-JavaPlatform7</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="240x320"/>
@@ -957,14 +993,6 @@ These namespaces/schemas will be used soon.
         <capability name="IconSize" value="16x16, 24x24" />
    		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin, NoPermanentBacklight"/>
 		<capability name="key.ReturnKey" value="-11"/>
-	</device>
-
-	<device>
-		<identifier>Sony-Ericsson/W900_Emu</identifier>
-		<parent>Sony-Ericsson/W900</parent>
-		<features>isVirtual</features>
-		<description>The emulator definition takes the faulty Nokia-UI support of the emulator into account</description>
-   		<capability name="Bugs" value="TransparencyNotWorkingInNokiaUiApi"/>
 	</device>
 
 	<device>
@@ -1240,6 +1268,24 @@ These namespaces/schemas will be used soon.
 
 
 	<device>
+		<identifier>Sony-Ericsson/W300</identifier>
+		<groups>SE-JavaPlatform3</groups>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.0, wmapi2.0, btapi, pdaapi, webservice, mascot, m3g"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
+		<capability name="SoundFormat" value="midi, midi40, amr, aac, wav, mp3, mp4, m4a, 3gp, imelody, emelody, xmf, sp-midi"/>
+		<capability name="VideoFormat" value="3gpp, h.263, mpeg4"/>
+		<capability name="ImageFormat" value="jpeg, gif, gif87a, gif89a, png, bmp, wbmp"/>
+		<capability name="StorageSize" value="20 MB"/>
+		<capability name="CameraResolution" value="640x480"/>
+	</device>
+
+	<device>
 		<identifier>Sony-Ericsson/J300</identifier>
 		<groups>SE-JavaPlatform3</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
@@ -1298,6 +1344,27 @@ These namespaces/schemas will be used soon.
 		<capability name="DebugInterface" value="KDWP"/>
 	</device>
 
+
+	<device>
+		<identifier>Sony-Ericsson/K790</identifier>
+		<groups>SE-JavaPlatform5</groups>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.0, wmapi2.0, pdaapi, btapi, webservice, advanced-multimedia, mascot, m3g"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
+		<capability name="SoundFormat" value="midi, midi40, amr, aac, aac+, eaac+, wav, mp3, mp4, m4a, realaudio8, emelody, imelody, rhz, xmf, wma"/>
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263, realvideo8, wmv"/>
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png, bmp, wbmp, svg"/>
+		<capability name="CaptureImageFormat" value="jpeg"/>
+		<capability name="StorageSize" value="64 MB"/>
+		<capability name="CameraZoom" value="16x"/>
+		<capability name="CameraResolution" value="3.2 MP"/>
+		<capability name="Network" value="GSM, GPRS"/>
+		<capability name="Frequency" value="900,1800,1900"/>
+	</device>
 
 	<device>
 		<identifier>Sony-Ericsson/K750</identifier>
@@ -1366,6 +1433,36 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="vscl2.0"/>
 	</device>	
 
+	<device>
+		<identifier>Sony-Ericsson/V630</identifier>
+		<groups/>
+		<features>hasCamera</features>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="wmapi1.0, wmapi2.0, btapi, pdaapi, webservice, m3g, mmapi, mascot, advancedmultimedia"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="SoundFormat" value="iMelody, midi, midi32, amr, mp3, mp4, aac, aac+, eaac+, m4a, wav, RA8, xmf, wma"/>
+		<capability name="StorageSize" value="16 MB"/>
+	</device>
+
+	<device>
+		<identifier>Sony-Ericsson/K610</identifier>
+		<groups/>
+		<features>hasCamera</features>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="wmapi 1.0, wmapi2.0, mmapi, btapi, pdaapi, webservice, advanced-multimedia, m3g, mascot"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="SoundFormat" value="iMelody, eMelody, midi, sp-midi, amr, mp4, mp3, m4a, 3gpp, wav, RA8, wma, xmf, rhz"/>
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, wmv, realvideo8"/>
+		<capability name="ImageFormat" value="jpeg, gif, gif87a, gif89a, png, bmp, svg, wbmp"/>
+		<capability name="CameraResolution" value="2 MP"/>
+		<capability name="CameraZoom" value="4"/>
+	</device>
+	
 	<device>
 		<identifier>Sony-Ericsson/T610, Sony-Ericsson/T618</identifier>
 		<groups/>
@@ -1713,6 +1810,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.large" value="22"/>
 		<capability name="Property.imei" value="com.sonyericsson.IMEI"/>
 	</device>
+	
 	
 <!-- Motorola devices -->
 

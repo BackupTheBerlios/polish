@@ -1514,7 +1514,7 @@ public class PolishTask extends ConditionalTask {
 		this.environment.addVariable("polish.source.dir", sourceDir);
 		File resourceDir = new File( buildPath + File.separatorChar + "resources" );
 		device.setResourceDir( resourceDir );
-		this.environment.addVariable("polish.resources.dir", sourceDir);
+		this.environment.addVariable("polish.resources.dir", resourceDir.getAbsolutePath() );
 
 
 		
