@@ -510,6 +510,23 @@ public class ExtensionManager {
 			Extension extension = extensions[i];
 			extension.execute( device, locale, environment );
 		}
+    String buildExtensionName = environment.getVariable("polish.build." + type );
+    if (buildExtensionName  != null ) {
+      try
+      {
+        Extension extension = getExtension(type, buildExtensionName, environment);
+        extension.execute(device, locale, environment);
+      }
+      catch (BuildException e)  
+      {
+        throw e;
+      }
+      catch (Exception e)
+      {
+        e.printStackTrace();
+        throw new BuildException( e.toString(), e );
+      }
+    }
 	}
 	
 	/**
