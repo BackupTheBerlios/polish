@@ -73,7 +73,7 @@ public final class ConvertUtil {
 	 * Converts the given object according to the provided function.
 	 * 
 	 * @param value the value, e.g. "200 kb"
-	 * @param targetFunction, the function-name, e.g. "bytes"
+	 * @param targetFunction the function-name, e.g. "bytes"
 	 * @param environment the environment with any defined variables
 	 * @return the converted value, e.g. new Long( 204800 )
 	 */
