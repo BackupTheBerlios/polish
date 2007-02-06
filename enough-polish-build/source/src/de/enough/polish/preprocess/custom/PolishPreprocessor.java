@@ -562,7 +562,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	 * @param className the name of the remote interface
 	 * @param lines the source code of the interface
 	 * @throws IOException when the source code could not be written
-	 * @returnn true when the given source code really extends de.enough.polish.rmi.Remote
+	 * @return true when the given source code really extends de.enough.polish.rmi.Remote
 	 */
 	protected boolean createRemoteImplementation(String className, StringList lines) throws IOException {
 		JavaSourceClass sourceClass = new JavaSourceClass( lines.getArray() );
