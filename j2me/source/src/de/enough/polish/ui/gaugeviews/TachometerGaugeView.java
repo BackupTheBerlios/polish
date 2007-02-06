@@ -206,7 +206,7 @@ public class TachometerGaugeView extends ItemView {
 	protected void setStyle(Style style) {
 		super.setStyle(style);
 		
-		//#if polish.csss.gauge-tachometer-startvalue
+		//#if polish.css.gauge-tachometer-startvalue
 			Integer startValueInt = style.getIntProperty("gauge-tachometer-startvalue");
 			if (startValueInt != null) {
 				this.startValue = startValueInt.intValue();

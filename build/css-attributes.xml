@@ -491,6 +491,7 @@
 		<mapping from="carrousel" to="new de.enough.polish.ui.containerviews.CarrouselContainerView()" />
 		<mapping from="plain" to="none" />
 		<mapping from="normal" to="none" />
+		<mapping from="gauge-recline" to="new de.enough.polish.ui.gaugeviews.RecLineGaugeView()" />
 		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" />
 		<mapping from="gauge-rotating-arcs" to="new de.enough.polish.ui.gaugeviews.RotatingArcsGaugeView()" />
 		<mapping from="chart-vertical-bars" to="new de.enough.polish.ui.chartviews.VerticalBarChartView()" />
@@ -2076,7 +2077,45 @@
 		id="210"
 	/>
 	
+	<attribute
+		name="gauge-recline-width"
+		type="int"
+		appliesTo="Gauge, RecLineGaugeView"
+		description="The width of the rects."
+		id="211"
+	/>
 	
+	<attribute
+		name="gauge-recline-height"
+		type="int"
+		appliesTo="Gauge, RecLineGaugeView"
+		description="The height of the rects."
+		id="212"
+	/>
+	
+	<attribute
+		name="gauge-recline-number"
+		type="int"
+		appliesTo="Gauge, RecLineGaugeView"
+		description="The number of rects."
+		id="213"
+	/>
+	
+	<attribute
+		name="gauge-recline-selectedcolor"
+		type="color"
+		appliesTo="Gauge, RecLineGaugeView"
+		description="The color of an selected rects."
+		id="214"
+	/>
+	
+	<attribute
+		name="gauge-recline-unselectedcolor"
+		type="color"
+		appliesTo="Gauge, RecLineGaugeView"
+		description="The number of an unselected rects."
+		id="215"
+	/>
 	
 	
 	<!--
