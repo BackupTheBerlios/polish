@@ -307,7 +307,7 @@ public class ScrollBar extends Item {
 				diff = -30;
 			}
 			if (diff != 0) {
-				this.screen.scroll( diff );
+				this.screen.scrollRelative( diff );
 			}
 			
 		}

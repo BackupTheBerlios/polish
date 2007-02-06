@@ -3126,7 +3126,7 @@ implements AccessibleCanvas
 	 * 
 	 * @param amount the number of pixels, positive values scroll upwards, negative scroll downwards
 	 */
-	public void scroll(int amount) {
+	public void scrollRelative(int amount) {
 		if (this.container != null) {
 			this.container.setScrollYOffset( this.container.getScrollYOffset() + amount );
 			repaint();
