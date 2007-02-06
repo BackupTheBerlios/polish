@@ -34,7 +34,7 @@ import java.util.HashMap;
  * history
  *        09.01.2005 - rob creation
  * </pre>
- * @
+ * 
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class TextFileManager {
