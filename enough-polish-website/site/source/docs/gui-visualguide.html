@@ -5,55 +5,74 @@
 <%include start.txt %>
 
 	<h1 id="top">Visual Guide</h1>
+	<ul class="relatedtechnologies">
+		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-concepts.html">GUI Concepts</a></li>
+		<li><a href="gui-css-basics.html">CSS Basics</a></li>
+		<li><a href="customization.html">Customization</a></li>
+	</ul>
+	<%index %>
 	<p>
 	This guide shows you the available screens, items and effects that you can use with J2ME Polish. Click on the GUI components to
 	learn more about them.
 </p>
-<h2 id="gui-overview">GUI Elements</h2>
+<h2 id="gui-overview">Screen Elements</h2>
 	<!--  CSS for image map below, original from http://www.frankmanno.com/ideas/css-imagemap/ -->
 <style type="text/css" media="screen">
-img.image{display:none}
-dl#screenElements{margin:0;padding:0;background:transparent url(<%= basedir%>images/vg_screenelements_closedmenu.png) top left no-repeat;height:320px;width:240px;position:relative}
+
+img.imagemap{display:none}
+dl#screenElements1{margin:0;padding:0;background:transparent url(<%= basedir%>images/vg_screenelements_closedmenu.png) top left no-repeat;height:320px;width:240px;position:relative}
 dt{margin:0;padding:0;position:absolute;font-size:85%;display:none}
 dd{margin:0;padding:0;position:absolute;font-size:85%}
 dd#titleDef{top:0px;left:40px}
 dd#titleDef a{position:absolute;width:200px;height:30px;text-decoration:none}
 dd#titleDef a span{display:none}
 dd#titleDef a:hover{position:absolute;background:transparent url(<%= basedir%>images/vg_screenelements_closedmenu.png) -40px -320px no-repeat;top: 0px;left:0px}
-dd#titleDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold;position:absolute;border:1px solid #BCBCBC;bottom:100%;margin:0;padding:5px;width:250%}
+dd#titleDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold; position:absolute;bottom:100%;border:1px solid #BCBCBC;margin:0px;margin-left:20px;padding:10px;width: 150px;}
 
 dd#screenInfoDef{top:0px;left:0px}
 dd#screenInfoDef a{position:absolute;width:40px;height:30px;text-decoration:none}
 dd#screenInfoDef a span{display:none}
 dd#screenInfoDef a:hover{position:absolute;background:transparent url(<%= basedir%>images/vg_screenelements_closedmenu.png) 0px -320px no-repeat;top: 0px;left:0px}
-dd#screenInfoDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold;position:absolute;border:1px solid #BCBCBC;bottom:100%;margin:0;padding:5px;width:250%}
+dd#screenInfoDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold;position:absolute;border:1px solid #BCBCBC;bottom:100%;margin:0;padding:10px;width:150px}
 
-dd#contentDef{top:40px;left:40px}
-dd#contentDef a{position:absolute;width:160px;height:250px;text-decoration:none}
-dd#contentDef a span{display:none}
-dd#contentDef a:hover{position:absolute;background:transparent url(<%= basedir%>images/vg_screenelements_closedmenu.png) -40px -360px no-repeat;top: 0px;left:0px}
-dd#contentDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold;position:absolute;border:1px solid #BCBCBC;bottom:100%;margin:0;padding:5px;width:250%}
+dd#screenbackgroundDef{top:30px;left:0px}
+dd#screenbackgroundDef a{position:absolute;width:235px;height:300px;text-decoration:none}
+dd#screenbackgroundDef a span{display:none}
+dd#screenbackgroundDef a:hover{position:absolute;background:transparent url(<%= basedir%>images/vg_screenelements_closedmenu.png) 0px -670px no-repeat;top: 0px;left:0px}
+dd#screenbackgroundDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold; position:absolute; bottom:100%; border:1px solid #BCBCBC;margin:0px;margin-bottom:-150px;margin-left:75px;padding:10px;width:150px;}
 
 dd#scrollbarDef{top:40px;left:220px}
 dd#scrollbarDef a{position:absolute;width:20px;height:250px;text-decoration:none}
 dd#scrollbarDef a span{display:none}
 dd#scrollbarDef a:hover{position:absolute;background:transparent url(<%= basedir%>images/vg_screenelements_closedmenu.png) -220px -360px no-repeat;top: 0px;left:0px}
-dd#scrollbarDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold;
-border:1px solid #BCBCBC;
-margin:0;padding:5px;
-width:150px;
-/*
-position:absolute
-bottom:100%;
-width:250%
-*/
-}
+dd#scrollbarDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold; border:1px solid #BCBCBC;margin:0;margin-left:-150px;margin-top:100px;padding:10px;/*position:absolute;*/bottom:100%;width:150px;}
 
 dd#menubarDef{top:290px;left:0px}
 dd#menubarDef a{position:absolute;width:240px;height:30px;text-decoration:none}
 dd#menubarDef a span{display:none}
 dd#menubarDef a:hover{position:absolute;background:transparent url(<%= basedir%>images/vg_screenelements_closedmenu.png) 0px -610px no-repeat;top: 0px;left:0px}
-dd#menubarDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold;position:absolute;border:1px solid #BCBCBC;bottom:100%;margin:0;padding:5px;width:250%}
+dd#menubarDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold;position:absolute;border:1px solid #BCBCBC;bottom:100%;margin:0px;margin-left:60px;padding:10px;width: 150px;}
+
+dl#screenElements2{margin:0;padding:0;background:transparent url(<%= basedir%>images/vg_screenelements_openmenu.png) top left no-repeat;height:320px;width:240px;position:relative}
+dd#menuDef{top:205px;left:8px}
+dd#menuDef a{position:absolute;width:228px;height:87px;text-decoration:none}
+dd#menuDef a span{display:none}
+dd#menuDef a:hover{position:absolute;background:transparent url(<%= basedir%>images/vg_screenelements_openmenu.png) -8px -524px no-repeat;top: 0px;left:0px}
+dd#menuDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold;position:absolute;border:1px solid #BCBCBC;bottom:100%;margin:0;margin-left:45px;padding:10px;width: 150px;}
+
+dl#screenElements3{margin:0;padding:0;background:transparent url(<%= basedir%>images/vg_screenelements_ticker.png) top left no-repeat;height:320px;width:240px;position:relative}
+dd#focusedDef{top:120px;left:5px}
+dd#focusedDef a{position:absolute;width:230px;height:55px;text-decoration:none}
+dd#focusedDef a span{display:none}
+dd#focusedDef a:hover{position:absolute;background:transparent url(<%= basedir%>images/vg_screenelements_ticker.png) -5px -445px no-repeat;top: 0px;left:0px}
+dd#focusedDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold; position:absolute; bottom:100%; border:1px solid #BCBCBC;margin:0;margin-left:65px;margin-bottom:-30px;padding:10px;width:150px;}
+
+dd#tickerDef{top:240px;left:0px}
+dd#tickerDef a{position:absolute;width:240px;height:54px;text-decoration:none}
+dd#tickerDef a span{display:none}
+dd#tickerDef a:hover{position:absolute;background:transparent url(<%= basedir%>images/vg_screenelements_ticker.png) 0px -565px no-repeat;top: 0px;left:0px}
+dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#000;background-color:#F4F4F4;font-weight:bold;position:absolute;border:1px solid #BCBCBC;bottom:100%;margin:0;margin-left:65px;margin-bottom:-30px;padding:10px;width:150px;}
 
 </style>
 
@@ -61,17 +80,31 @@ dd#menubarDef a:hover span{display:block;text-indent:0;vertical-align:top;color:
 	There are several typical components in each application's user interface. Hover your mouse over the areas of interest to find out more about them.
 </p>
 <!--  image map -->
-<div id="ex">
-<img src="<%= basedir%>images/vg_screenelements_closedmenu.png"  width="240" height="320" class="image" alt="Screen Elements" />
-<dl id="screenElements">
-	<dt id="screenInfo">1. ScreenInfo</dt><dd id="screenInfoDef"><a href="gui-vg-screeninfo.html"><span>Use the ScreenInfo element to display information consistently over all screens of your application.</span></a></dd>
-	<dt id="title">2. Title</dt><dd id="titleDef"><a href="gui-vg-title.html"><span>There are various options to design screen titles, including text effects.</span></a></dd>
-	<dt id="content">3. Content</dt><dd id="contentDef"><a href="#gui-items"><span>J2ME Polish provides all standard as well as many specialized GUI items for your usage. Here you see a TreeItem in action.</span></a></dd>
-	<dt id="scrollbar">4. ScrollBar</dt><dd id="scrollbarDef"><a href="gui-vg-scrollbar.html"><span>J2ME Polish uses either a scrollbar (as shown here) or simple scrollindicators to inform the user about possible scrolling.</span></a></dd>
-	<dt id="menubar">4. MenuBar</dt><dd id="menubarDef"><a href="gui-vg-menubar.html"><span>Choose between two menubar options that provide different design possibilities.</span></a></dd>
-</dl>
-</div>
-
+<table><tr>
+<td>
+<img src="<%= basedir%>images/vg_screenelements_closedmenu.png"  width="240" height="320" class="imagemap" alt="Screen Elements 1/3" />
+	<dl id="screenElements1">
+		<dt id="screenInfo">1. ScreenInfo</dt><dd id="screenInfoDef"><a href="gui-screenelement-screeninfo.html"><span>1. Use the ScreenInfo element to display information consistently over all screens of your application.</span></a></dd>
+		<dt id="title">2. Title</dt><dd id="titleDef"><a href="gui-screenelement-title.html"><span>2. There are various options to design screen titles, including text effects.</span></a></dd>
+		<dt id="screenbackground">3. Screen Background</dt><dd id="screenbackgroundDef"><a href="gui-screenelement-screenbackground.html"><span>3. Screen backgrounds usually range from the very top to the bottom of the screen, but you can also let them start under the title and stop at the menubar.</span></a></dd>
+		<dt id="scrollbar">4. ScrollBar</dt><dd id="scrollbarDef"><a href="gui-screenelement-scrollbar.html"><span>4. J2ME Polish uses either a scrollbar (as shown here) or simple scrollindicators to inform the user about possible scrolling.</span></a></dd>
+		<dt id="menubar">5. MenuBar</dt><dd id="menubarDef"><a href="gui-screenelement-menubar.html"><span>5. Choose between two menubar options that provide different design possibilities.</span></a></dd>
+	</dl>
+</td>
+<td>
+	<img src="<%= basedir%>images/vg_screenelements_openmenu.png"  width="240" height="320" class="imagemap" alt="Screen Elements 2/3" />
+	<dl id="screenElements2">
+		<dt id="menu">6. MenuBar</dt><dd id="menuDef"><a href="gui-screenelement-menubar.html#Menu"><span>6. With J2ME Polish you can use sub menus as well.</span></a></dd>
+	</dl>
+</td>
+<td>
+	<img src="<%= basedir%>images/vg_screenelements_ticker.png"  width="240" height="320" class="imagemap" alt="Screen Elements 3/3" />
+	<dl id="screenElements3">
+		<dt id="focused">7. Focused Item</dt><dd id="focusedDef"><a href="gui-screenelement-focused.html"><span>7. Use the <code>focused</code> or the <code>[style-name]:hover</code> style selector to design interactive elements when they are focused by the user.</span></a></dd>
+		<dt id="ticker">8. Ticker</dt><dd id="tickerDef"><a href="gui-screenelement-ticker.html"><span>8. A ticker scrolls information over a screen and can include images in J2ME Polish.</span></a></dd>
+	</dld>
+</td>
+</tr></table>
 <h2 id="gui-screens">Screens</h2>
 	<p>
 	J2ME Polish caters standard as well as advanced screens:

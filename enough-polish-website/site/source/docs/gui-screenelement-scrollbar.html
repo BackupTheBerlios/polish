@@ -1,0 +1,168 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.gui %>
+<%set title = J2ME Polish: Scrollbar Design %>
+<%set basedir = ../ %>
+<%include start.txt %>
+
+	<h1 id="top">Scrollbar Design</h1>
+	<ul class="relatedtechnologies">
+		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-screenelement-menubar.html">Menubar</a></li>
+		<li><a href="gui-screenelement-screenbackground.html">Screen Background</a></li>
+		<li><a href="gui-css-basics.html">CSS Basics</a></li>
+	</ul>
+	<%index %>
+	<p>
+	There are 3 different options to indicate possible scrolling:
+	</p>
+	<ol>
+		<li><b>Default</b>: In the default mode, scroll indicators are drawn in the middle of the menubar.</li>
+		<li><b>ScrollBar</b>: You can activate the scrollbar mode, in which the scrollbar will be shown on the right side of the screen.</li>
+		<li><b>None</b>: You can also deactivate the indication of possible scrolling completely.</li>
+	</ol>
+	<h2 id="Design">Design</h2>
+	<h3 id="default-scrollindicators">Default Scroll Indicators</h3>
+	<p>
+	By default scroll arrows are painted in the menubar to indicate possible scrolling. You can specify the color or the images used for the indicators:
+	<img src="<%= basedir%>images/gui-screenelement-scrollindicator.png"  width="240" height="320" alt="Default Scroll Indicators" />	
+	</p>
+	<p>The example above is realized with two images and following CSS code:
+<pre>
+.mailForm {
+	padding: 5;
+	padding-left: 5;
+	padding-right: 5;
+	background {
+		type: horizontal-stripes;
+		top: title;
+		bottom: menubar;
+		first-top-color: screenColorTop1;
+		first-bottom-color: screenColorBottom1;
+		second-top-color: screenColorTop2;
+		second-bottom-color: screenColorBottom2;
+	}
+	layout: horizontal-expand | horizontal-center | top;
+	//#if !polish.useScrollBar
+		<b>scrollindicator-up-image: url( arrowUp.png );
+		scrollindicator-down-image: url( arrowDown.png );</b>
+	//#endif
+}
+</pre>
+	</p>
+	<p>
+	Specific design attributes:
+	</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Applies To&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+		<td>scrollindicator-color</td><td>black</td>color<td></td><td>screen styles</td>
+		<td>
+		The color of the scrolling indicators.
+<pre>
+.myForm {
+	scrollindicator-color: #a00;
+}
+</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>scrollindicator-up-image</td><td>-</td><td>image-URL</td><td>screen styles</td>
+		<td>
+		The image indicating that the user can scroll upwards.
+		</td>
+	</tr>
+	<tr>
+		<td>scrollindicator-down-image</td><td>-</td><td>image-URL</td><td>screen styles
+		<td>
+		The image indicating that the user can scroll downwards.
+		</td>
+	</tr>
+	</table>
+	
+	<h3 id="scrollbar">ScrollBar</h3>
+	<p>
+	You can activate the ScrollBar by setting the variable &quot;polish.useScrollBar&quot; to &quot;true&quot; in your <i>build.xml</i> script.
+	The scrollbar is then drawn at the right side of the screen and can operate in different modes:
+	</p>
+	<ul>
+		<li><b>page</b>: In the &quot;page&quot; mode the position and height of the currently visible area is shown relative to the complete height of that screen.</li>
+		<li><b>area</b>: In the &quot;area&quot; mode the slider represents the position of the current selection relativ to the complete width and height.</li>
+		<li><b>item</b>: In the &quot;item&quot; mode the index of currently selected item is taken into account relative to the number of items.</li>
+	</ul>
+	<p>
+	This example shows the ScrollBar in the default &quot;page&quot; scrollmode: <br />
+	<img src="<%= basedir%>images/gui-screenelement-scrollbar.png"  width="240" height="320" alt="ScrollBar" />	
+	</p>
+	<p>You can design the scrollbar by using the <code>scrollbar</code> CSS selector:
+<pre>
+scrollbar {
+	scrollbar-slider-color: #333;
+	scrollbar-slider-width: 3;
+	/* You can also define background, border, padding, etc */
+}
+</pre>
+	</p>
+	<p>
+	Specific design attributes:
+	</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Applies To&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+		<td>scrollbar-slider-color</td><td>black</td><td>color</td><td>scrollbar style</td>
+		<td>
+		The color of the slider used to indicate the position, ignored when slider image is used.
+		</td>
+	</tr>
+	<tr>
+		<td>scrollbar-slider-width</td><td>2</td><td>integer</td><td>scrollbar style</td>
+		<td>
+		The width of the slider used to indicate the position, ignored when slider image is used.
+		</td>
+	</tr>
+	<tr>
+		<td>scrollbar-slider-image</td><td>-</td><td>image URL</td><td>scrollbar style</td>
+		<td>
+		The image used for the scrollbar's slider.
+		</td>
+	</tr>
+	<tr>
+		<td>scrollbar-slider-image-repeat</td><td>false</td><td>true, false</td><td>scrollbar style</td>
+		<td>
+		When &quot;true&quot; is given, the slider image is repeated vertically, if necessary.
+		</td>
+	</tr>
+	<tr>
+		<td>scrollbar-slider-mode</td><td>page</td><td>page, area, item</td><td>scrollbar style</td>
+		<td>
+		The mode of the scrollbar (see above).
+		</td>
+	</tr>	</table>
+	
+	<h3 id="deactivate-scrollindicators">Deactivate Scroll Indicators</h3>
+	<p>
+	You can deactivates scroll indicators completely by setting the variable 
+	&quot;polish.deactivateScrollIndicator&quot; to &quot;true&quot; in your <i>build.xml</i> script.
+	</p>
+	
+	<h2 id="Configuration">Configuration</h2>
+	<ul>
+	<li>
+	To activate the scrollbar:
+<pre>
+&lt;variable name=&quot;polish.useScrollBar&quot; value=&quot;true&quot; /&gt;
+</pre>
+	</li>
+	<li>
+	To deactivate all scrollindicators:
+<pre>
+&lt;variable name=&quot;polish.deactivateScrollIndicator&quot; value=&quot;true&quot; /&gt;
+</pre>
+	</li>
+	</ul>
+	
+	<h2 id="JavaDoc">JavaDoc</h2>
+	<p>
+		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ScrollBar.html">ScrollBar</a>.
+	</p>
+
+<%include end.txt %>

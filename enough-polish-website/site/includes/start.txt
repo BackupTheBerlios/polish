@@ -272,7 +272,7 @@
 				<div id="thirdLevel">
 				<p class="thirdLevel">
 				<a href="<%= basedir %>docs/gui-visualguide.html">Visual Guide</a>
-				<a href="<%= basedir %>docs/gui-css.html">CSS Know-how</a>
+				<a href="<%= basedir %>docs/gui-css-basics.html">CSS Basics</a>
 				<a href="<%= basedir %>docs/gui-programming.html">Programming Concepts</a>
 				<a href="<%= basedir %>docs/gui-localization.html">GUI Localization</a>
 				<a href="<%= basedir %>docs/gui-configuration.html">Configuration Options</a>

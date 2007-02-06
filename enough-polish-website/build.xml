@@ -68,7 +68,7 @@
 	/>	
 </target>
 	
-<target name="device-export">
+<target name="device-export" description="exports the device database">
 		<deviceExport />
 		<webprocessor 
 				srcdir="../enough-polish-website/tmp"
@@ -88,7 +88,7 @@
 		</webprocessor>
 </target>
 	
-<target name="webprocessor"	>
+<target name="webprocessor" description="just builds the website without JavaDoc/devicedb"	>
 	<webprocessor 
 		srcdir="site/source"
 	 	includedir="site/includes"
