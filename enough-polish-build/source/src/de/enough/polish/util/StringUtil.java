@@ -250,10 +250,7 @@ public final class StringUtil {
 	 * Retrieves properties from the given String array.
 	 * 
 	 * @param lines the String array that contains properties
-	 * @param delimiter the character that separates a property-name from a property-value.
-	 * @param comment the char denoting comments
 	 * @return properties a map containing properties
-	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
 	 * @throws IllegalArgumentException when an invalid property definition is encountered and ignoreInvalidProperties is false
 	 */
 	public static Map getProperties(String[] lines) {
@@ -268,7 +265,6 @@ public final class StringUtil {
 	 * @param lines the String array that contains properties
 	 * @param delimiter the character that separates a property-name from a property-value.
 	 * @return properties a map containing properties
-	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
 	 * @throws IllegalArgumentException when an invalid property definition is encountered and ignoreInvalidProperties is false
 	 */
 	public static Map getProperties(String[] lines, char delimiter ) {

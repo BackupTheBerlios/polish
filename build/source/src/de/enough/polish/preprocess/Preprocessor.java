@@ -466,7 +466,7 @@ public class Preprocessor {
 	 * Preprocesses the given string array.
 	 * 
 	 * @param resourceName the name of the resource file.
-	 * @param lines the text.
+	 * @param list a list of strings the text.
 	 * @return the preprocessed text.
 	 * @throws BuildException when the preprocessing fails.
 	 */

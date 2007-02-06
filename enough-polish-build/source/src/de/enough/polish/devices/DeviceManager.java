@@ -104,14 +104,7 @@ public class DeviceManager {
 	/**
 	 * Creates a new device manager with the given devices.xml file.
 	 * 
-	 * @param platformManager
-	 * @param configuratioManager
 	 * @param vendorManager The manager of the device-manufacturers
-	 * @param groupManager The manager for device-groups.
-	 * @param libraryManager the manager for device-specific APIs
-	 * @param capabilityManager
-	 * @param devicesIS the InputStream containing the device definitions.
-	 * 			Usally this is the devices.xml file in the current directory.
 	 * @throws JDOMException when there are syntax errors in devices.xml
 	 * @throws IOException when devices.xml could not be read
 	 * @throws InvalidComponentException when a device definition has errors

@@ -507,7 +507,7 @@ public final class FileUtil {
 	/**
 	 * Reads properties from the given file.
 	 * 
-	 * @param in the file containing properties separated with '='
+	 * @param file the file containing properties separated with '='
 	 * @return a map containing all properties that could be read from the input stream
 	 * @throws IOException when reading from the file fails
 	 * @throws FileNotFoundException when the file does not exist
@@ -519,7 +519,7 @@ public final class FileUtil {
 	/**
 	 * Reads properties from the given reader.
 	 * 
-	 * @param in the input reader
+	 * @param reader the input reader
 	 * @return a map containing all properties that could be read from the reader
 	 * @throws IOException when reading fails
 	 */
@@ -636,9 +636,6 @@ public final class FileUtil {
 	 * @param comment the char denoting comments
 	 * @param properties a map containing properties
 	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
-	 * @param encoding the encoding of the text file, when null the default charset is used
-	 * @param translateToAscii true when the FileUtil should translate the code into ASCII only code (using unicode). 
-	 * @param translateToNative true when escape sequences like \t or \n should be converted to native characters
 	 * @throws IOException when reading from the input stream fails
 	 * @throws IllegalArgumentException when an invalid property definition is encountered and ignoreInvalidProperties is false
 	 */
@@ -684,7 +681,6 @@ public final class FileUtil {
 	 * @param comment the char denoting comments
 	 * @param properties a map containing properties
 	 * @param ignoreInvalidProperties when this flag is true, invalid property definition (those that do not contain the delimiter char) are ignored
-	 * @param encoding the encoding of the text file, when null the default charset is used
 	 * @param translateToAscii true when the FileUtil should translate the code into ASCII only code (using unicode). 
 	 * @param translateToNative true when escape sequences like \t or \n should be converted to native characters
 	 * @throws IOException when reading from the input stream fails

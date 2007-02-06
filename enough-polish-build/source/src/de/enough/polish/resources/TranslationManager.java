@@ -90,7 +90,6 @@ implements Comparator
 	/**
 	 * Creates a new manager for translations.
 	 * 
-	 * @param project the current Ant project
 	 * @param device the current device
 	 * @param locale the current locale
 	 * @param environment the environment

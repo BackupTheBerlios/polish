@@ -272,8 +272,6 @@ implements Runnable, OutputFilter
 	 * Gets the parameters for this emulator.
 	 * 
 	 * @param setting the emulator setting
-	 * @param project the Ant project
-	 * @param evalutor the boolean evaluator
 	 * @param env all Ant- and J2ME Polish-properties.
 	 * @return an array of initialised parameters.
 	 */

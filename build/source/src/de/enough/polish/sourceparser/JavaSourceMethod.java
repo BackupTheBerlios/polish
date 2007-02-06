@@ -202,7 +202,7 @@ public class JavaSourceMethod {
 	/**
 	 * Checks whether the given exception is thrown by this method.
 	 * 
-	 * @param name the name of the exception
+	 * @param exceptionName the name of the exception
 	 * @return true when this exception is thrown by this method
 	 */
 	public boolean throwsException(String exceptionName) {
