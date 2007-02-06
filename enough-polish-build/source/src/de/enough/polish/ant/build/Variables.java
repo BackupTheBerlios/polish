@@ -173,21 +173,27 @@ public class Variables {
 
 
 	/**
-	 * @return
+   * Converts a given list of variables into an array of variables.
+   * 
+	 * @return an array of variables
 	 */
 	protected Variable[] getVariables( List list ) {
 		return (Variable[]) list.toArray( new Variable[ list.size() ] );	
 	}
 
 	/**
-	 * @return
+   * Retrieves all unconditional variables registered in this object.
+   * 
+	 * @return an array of variables
 	 */
 	public Variable[] getUnconditionalVariables() {
 		return (Variable[]) this.unconditionalVariablesList.toArray( new Variable[ this.unconditionalVariablesList.size() ] );
 	}
 
 	/**
-	 * @return
+   * Retrieves all variables registered in this object.
+   * 
+	 * @return an array of variables
 	 */
 	public Variable[] getVariables() {
 		return getVariables( this.variablesList );

@@ -74,7 +74,9 @@ public class ExtensionTypeDefinition {
 	}
 
 	/**
-	 * @return
+   * Retrieves the name of the extension type.
+   * 
+	 * @return the name of the the extension type
 	 */
 	public String getName() {
 		return this.name;

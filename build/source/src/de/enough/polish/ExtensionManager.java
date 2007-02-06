@@ -403,8 +403,10 @@ public class ExtensionManager {
 	}
 
 	/**
-	 * @param type
-	 * @return
+   * Retrieves the type definition of the specified extension type.
+   * 
+	 * @param type the name of the type
+	 * @return the type definition
 	 */
 	public ExtensionTypeDefinition getTypeDefinition(String type) {
 		return (ExtensionTypeDefinition) this.typesByName.get( type );
@@ -569,9 +571,9 @@ public class ExtensionManager {
 	}
 
 	/**
-	 * @param type
-	 * @param environment
-	 * @return
+	 * @param type the type of the extension
+	 * @param environment the environment
+	 * @return the extension
 	 */
 	public Extension getActiveExtension(String type, Environment environment) {
 		Map store = (Map) this.extensionsByType.get( type );
