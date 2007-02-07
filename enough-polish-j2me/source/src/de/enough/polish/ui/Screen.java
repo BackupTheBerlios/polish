@@ -2929,7 +2929,13 @@ implements AccessibleCanvas
 	 * @param item the item which is already shown on this screen.
 	 */
 	public void focus(Item item) {
-		focus( this.container.itemsList.indexOf(item), item, false );
+		int index;
+		if (item == null) {
+			index = -1;
+		} else {
+			index = this.container.itemsList.indexOf(item);
+		}
+		focus( index, item, false );
 	}
 	
 	/**
@@ -2939,7 +2945,13 @@ implements AccessibleCanvas
 	 * @param force true when the item should be focused even when it is inactive (like a label for example)
 	 */
 	public void focus(Item item, boolean force ) {
-		focus( this.container.itemsList.indexOf(item), item, force );
+		int index;
+		if (item == null) {
+			index = -1;
+		} else {
+			index = this.container.itemsList.indexOf(item);
+		}
+		focus( index, item, force );
 	}
 	
 	/**

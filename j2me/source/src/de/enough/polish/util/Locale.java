@@ -52,7 +52,7 @@ public final class Locale {
 	
 	private static short[][] multipleParameterOrders;
 	private static String[][] multipleParameterTranslations;
-	//#ifdef polish.i18n.useDynamicTranslations
+	//#if polish.i18n.useDynamicTranslations || polish.LibraryBuild
 		private static String[] plainTranslations;
 		private static String[] singleParameterTranslationsStart;
 		private static String[] singleParameterTranslationsEnd;
@@ -170,7 +170,7 @@ public final class Locale {
 	//#endif
 
 	
-	//#if polish.i18n.useDynamicTranslations
+	//#if polish.i18n.useDynamicTranslations || polish.LibraryBuild
 	private static void initialize() {
 		//#if polish.Locale.initializeMethod:defined
 			//#include ${polish.Locale.initializeMethod}
@@ -193,7 +193,7 @@ public final class Locale {
 	}
 	//#endif
 
-	//#ifdef polish.i18n.useDynamicTranslations
+	//#if polish.i18n.useDynamicTranslations || polish.LibraryBuild
 	/**
 	 * Retrieves the translation for the specified key.
 	 * 
@@ -218,7 +218,7 @@ public final class Locale {
 	}
 	//#endif
 	
-	//#ifdef polish.i18n.useDynamicTranslations
+	//#if polish.i18n.useDynamicTranslations || polish.LibraryBuild
 	/**
 	 * Retrieves the translation for the specified key.
 	 * 
@@ -426,7 +426,7 @@ public final class Locale {
 		//#endif	
 	}
 
-	//#ifdef polish.i18n.useDynamicTranslations
+	//#if polish.i18n.useDynamicTranslations || polish.LibraryBuild
 	public static void loadTranslations( String url ) 
 	throws IOException 
 	{
@@ -441,7 +441,7 @@ public final class Locale {
 	}
 	//#endif
 
-	//#ifdef polish.i18n.useDynamicTranslations
+	//#if polish.i18n.useDynamicTranslations || polish.LibraryBuild
 	public static void loadTranslations( DataInputStream in ) 
 	throws IOException 
 	{

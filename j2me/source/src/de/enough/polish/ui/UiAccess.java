@@ -158,7 +158,55 @@ public final class UiAccess {
 	}
 	//#endif
 
-	//#if polish.midp2
+	//#if polish.midp
+	/**
+	 * Sets the focused index of the specified screen
+	 * 
+	 * @param screen the screen
+	 * @param index the focused index, -1 when none should be focused
+	 */
+	public static void setFocusedIndex( javax.microedition.lcdui.Screen screen, int index ) {
+		// ignore
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Sets the focused index of the specified screen
+	 * 
+	 * @param screen the screen
+	 * @param index the focused index, -1 when none should be focused
+	 */
+	public static void setFocusedIndex( Screen screen, int index ) {
+		screen.focus( index );
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Sets the focused item of the specified screen
+	 * 
+	 * @param screen the screen
+	 * @param item the focused item, null when none should be focused
+	 */
+	public static void setFocusedItem( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Item item ) {
+		// ignore
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Sets the focused item of the specified screen
+	 * 
+	 * @param screen the screen
+	 * @param item the focused item, null when none should be focused
+	 */
+	public static void setFocusedItem( Screen screen, Item item ) {
+		screen.focus(item);
+	}
+	//#endif
+	
+	//#if polish.midp
 	/**
 	 * Sets the title of the screen using an Item.
 	 * <b>important</b>: you cannot call screen.setTitle(String) afterwards anymore!
@@ -231,7 +279,7 @@ public final class UiAccess {
 	//#endif
 
 
-	//#if polish.midp2
+	//#if polish.midp
 	/**
 	 * Sets the fullscreen mode of the screen.
 	 * The title and the menubar will be hidden by this call.
@@ -1479,7 +1527,7 @@ public final class UiAccess {
 	}
 	//#endif
 	
-	  //#if polish.midp
+	//#if polish.midp
 	/**
 	 * Sets an image for the specified ticker.
 	 * This method is ignored when the J2ME Polish UI is not activated.
@@ -1489,6 +1537,19 @@ public final class UiAccess {
 	 */
 	public static void setTickerImage( javax.microedition.lcdui.Ticker ticker, Image image ) {
 		// ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets an image for the specified ticker.
+	 * This method is ignored when the J2ME Polish UI is not activated.
+	 * 
+	 * @param ticker the ticker item which will the image be set 
+	 * @param image that image that will be set to the ticker
+	 */
+	public static void setTickerImage( Ticker ticker, Image image ) {
+		ticker.setImage(image);
 	}
 	//#endif
 	
