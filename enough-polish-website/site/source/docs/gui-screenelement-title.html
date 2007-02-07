@@ -93,9 +93,9 @@ title {
 	</p>
 	<ul>
 		<li><a href="gui-css-common.html">Common CSS Attributes</a> for specifying margins, layout, colors, before/after images and so on.</li>
+		<li><a href="gui-css-text.html">Text Design</a> for specifying fonts and text-effects.</li>
 		<li><a href="gui-visualguide.html#backgrounds">Backgrounds</a> for designing the background.</li>
 		<li><a href="gui-visualguide.html#borders">Borders</a> for designing the border.</li>
-		<li><a href="gui-css-text.html">Text Design</a> for specifying fonts and text-effects.</li>
 	</ul>
 	
 	<h2 id="Configuration">Configuration</h2>
@@ -113,6 +113,9 @@ title {
 	<p>
 	You can use any GUI item including your own CustomItem as a title by calling
 	<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess.setTitle( Screen, Item )</a>.
+	</p>
+	<p>You can also set a subtitle located under the title by calling
+	<code>UiAccess.setSubTitle( Screen screen, String subTitle)</code> or <code>UiAccess.setSubTitle( Screen screen, Item subTitle)</code>.
 	</p>
 	<p>
 	You can hide the title as well as the menubar by calling <code>screen.setFullScreenMode( true );</code> or 
