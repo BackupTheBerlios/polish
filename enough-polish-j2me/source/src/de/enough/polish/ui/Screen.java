@@ -467,13 +467,13 @@ implements AccessibleCanvas
 					this.menuFont = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );
 				}
 				int localMenuBarHeight = this.menuFont.getHeight();
-				//#ifdef polish.Menu.PaddingBottom:defined
-					//#= localMenuBarHeight += ${polish.Menu.PaddingBottom};  
+				//#ifdef polish.MenuBar.PaddingBottom:defined
+					//#= localMenuBarHeight += ${polish.MenuBar.PaddingBottom};  
 				//#endif
-				//#ifdef polish.Menu.PaddingTop:defined
-					//#= localMenuBarHeight += ${polish.Menu.PaddingTop};  
+				//#ifdef polish.MenuBar.PaddingTop:defined
+					//#= localMenuBarHeight += ${polish.MenuBar.PaddingTop};  
 				//#endif
-				//#if !polish.Menu.PaddingBottom:defined && !polish.Menu.PaddingTop:defined
+				//#if !polish.MenuBar.PaddingBottom:defined && !polish.MenuBar.PaddingTop:defined
 					localMenuBarHeight += 2;
 				//#endif
 				//#if tmp.useScrollIndicator
@@ -492,12 +492,12 @@ implements AccessibleCanvas
 					this.scrollIndicatorY = (this.fullScreenHeight - localMenuBarHeight) + (localMenuBarHeight -  this.scrollIndicatorWidth)/2;
 				//#endif
 				//System.out.println("without ExternalMenu: scrollIndicatorY=" + this.scrollIndicatorY + ", screenHeight=" + this.screenHeight + ", FullScreenHeight=" + this.fullScreenHeight + ", localMenuBarHeight=" + localMenuBarHeight);	
-				//#ifdef polish.Menu.MarginBottom:defined 
-					//#= localMenuBarHeight += ${polish.Menu.MarginBottom};
-					//#= this.scrollIndicatorY -=  ${polish.Menu.MarginBottom};
+				//#ifdef polish.MenuBar.MarginBottom:defined 
+					//#= localMenuBarHeight += ${polish.MenuBar.MarginBottom};
+					//#= this.scrollIndicatorY -=  ${polish.MenuBar.MarginBottom};
 				//#endif
-				//#ifdef polish.Menu.MarginTop:defined 
-					//#= localMenuBarHeight += ${polish.Menu.MarginTop};
+				//#ifdef polish.MenuBar.MarginTop:defined 
+					//#= localMenuBarHeight += ${polish.MenuBar.MarginTop};
 				//#endif
 				//#if polish.doja
 					localMenuBarHeight = 0;
@@ -1425,13 +1425,15 @@ implements AccessibleCanvas
 								g.setFont( this.menuFont );
 								String menuText = this.menuLeftString;
 								if (menuText != null) {
-									//#ifdef polish.Menu.MarginLeft:defined
-										//#= int menuLeftX += ${polish.Menu.MarginLeft};
+									//#ifdef polish.MenuBar.MarginLeft:defined
+										//#= menuLeftX += ${polish.MenuBar.MarginLeft};
+									//#elifdef polish.MenuBar.PaddingLeft:defined
+										//#= menuLeftX += ${polish.MenuBar.PaddingLeft};
 									//#else
 										menuLeftX += 2;
 									//#endif
-									//#ifdef polish.Menu.MarginTop:defined
-										//#= g.drawString(menuLeftX, menuX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.LEFT );
+									//#ifdef polish.MenuBar.MarginTop:defined
+										//#= g.drawString(menuText, menuX, this.originalScreenHeight + ${polish.MenuBar.MarginTop}, Graphics.TOP | Graphics.LEFT );
 									//#else
 										g.drawString(menuText, menuLeftX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.LEFT );
 									//#endif
@@ -1439,8 +1441,16 @@ implements AccessibleCanvas
 								}
 								menuText = this.menuRightString;
 								if (menuText != null) {
-									//#ifdef polish.Menu.MarginTop:defined
-										//#= g.drawString(menuText, menuRightX, this.originalScreenHeight + ${polish.Menu.MarginTop}, Graphics.TOP | Graphics.RIGHT );
+									//#ifdef polish.MenuBar.MarginRight:defined
+										//#= menuRightX -= ${polish.MenuBar.MarginRight};
+									//#elifdef polish.MenuBar.PaddingRight:defined
+										//#= menuRightX -= ${polish.MenuBar.PaddingRight};
+									//#elifdef polish.MenuBar.MarginLeft:defined
+										menuRightX -= 2;
+									//#endif
+
+									//#ifdef polish.MenuBar.MarginTop:defined
+										//#= g.drawString(menuText, menuRightX, this.originalScreenHeight + ${polish.MenuBar.MarginTop}, Graphics.TOP | Graphics.RIGHT );
 									//#else
 										g.drawString(menuText, menuRightX, this.originalScreenHeight + 2, Graphics.TOP | Graphics.RIGHT );
 									//#endif
@@ -2223,9 +2233,11 @@ implements AccessibleCanvas
 				//#else
 					menuText = "Cancel";
 				//#endif
-				//#ifdef polish.Menu.MarginRight:defined
-					//#= menuRightX -= ${polish.Menu.MarginRight};
-				//#elifdef polish.Menu.MarginLeft:defined
+				//#ifdef polish.MenuBar.MarginRight:defined
+					//#= menuRightX -= ${polish.MenuBar.MarginRight};
+				//#elifdef polish.MenuBar.PaddingRight:defined
+					//#= menuRightX -= ${polish.MenuBar.PaddingRight};
+				//#elifdef polish.MenuBar.MarginLeft:defined
 					menuRightX -= 2;
 				//#endif
 				right = menuText;
@@ -2233,9 +2245,11 @@ implements AccessibleCanvas
 		}
 		if (this.menuSingleRightCommand != null && !this.menuOpened) {
 			String menuText = this.menuSingleRightCommand.getLabel();
-			//#ifdef polish.Menu.MarginRight:defined
-				//#= menuRightX -= ${polish.Menu.MarginRight};
-			//#elifdef polish.Menu.MarginLeft:defined
+			//#ifdef polish.MenuBar.MarginRight:defined
+				//#= menuRightX -= ${polish.MenuBar.MarginRight};
+			//#elifdef polish.MenuBar.PaddingRight:defined
+				//#= menuRightX -= ${polish.MenuBar.PaddingRight};
+			//#elifdef polish.MenuBar.MarginLeft:defined
 				menuRightX -= 2;
 			//#endif
 			//#ifdef polish.hasPointerEvents

@@ -67,7 +67,7 @@ implements ImageConsumer
 	private int imageAlign = Graphics.LEFT;
 	private int imageHeight;
 	private int imageWidth;
-	private int yAdjust;
+	private int yAdjustText;
 	//#if polish.midp2 && polish.css.scale-factor
 		private int scaleFactor;
 		private int scaleSteps;
@@ -86,6 +86,7 @@ implements ImageConsumer
 	//#if polish.css.icon-horizontal-adjustment
 		private int horizontalAdjustment;
 	//#endif
+	private int yAdjustImage;
 
 	/**
 	 * Creates a new icon.
@@ -147,18 +148,31 @@ implements ImageConsumer
 			lineWidth -= this.imageWidth;
 			super.initContent(firstLineWidth, lineWidth);
 			if (this.imageHeight > this.contentHeight) {
+				this.yAdjustImage = 0;
 				int verticalAlign = this.layout & LAYOUT_VCENTER;
 				if ( verticalAlign == LAYOUT_VCENTER || verticalAlign == 0 ) {
-					this.yAdjust = (this.imageHeight - this.contentHeight) / 2;
+					this.yAdjustText = (this.imageHeight - this.contentHeight) / 2;
 				} else if ( verticalAlign == LAYOUT_BOTTOM ) {
-					this.yAdjust = this.imageHeight - this.contentHeight;
+					this.yAdjustText = this.imageHeight - this.contentHeight;
 				} else {
 					// top layout:
-					this.yAdjust = 0;
+					this.yAdjustText = 0;
 				}
 				this.contentHeight = this.imageHeight;
+			} else if (this.contentHeight > this.imageHeight) {
+				this.yAdjustText = 0;
+				int verticalAlign = this.layout & LAYOUT_VCENTER;
+				if ( verticalAlign == LAYOUT_VCENTER || verticalAlign == 0 ) {
+					this.yAdjustImage = (this.contentHeight - this.imageHeight) / 2;
+				} else if ( verticalAlign == LAYOUT_BOTTOM ) {
+					this.yAdjustImage = (this.contentHeight - this.imageHeight);
+				} else {
+					// top layout:
+					this.yAdjustImage = 0;
+				}	
 			} else {
-				this.yAdjust = 0;
+				this.yAdjustImage = 0;
+				this.yAdjustText = 0;
 			}
 			if (this.isLayoutExpand && this.imageAlign == Graphics.RIGHT) {
 				this.contentWidth = firstLineWidth;
@@ -203,29 +217,29 @@ implements ImageConsumer
 				//#if polish.midp2 && polish.css.scale-factor
 					if (useScaledImage) { 
 						scaleX = x  -  ((sWidth - this.image.getWidth()) / 2);
-						scaleY = y - ((sHeight - this.image.getHeight()) / 2);
+						scaleY = y - ((sHeight - this.image.getHeight()) / 2) + this.yAdjustImage;
 					} else {
 				//#endif
-				g.drawImage(this.image, x, y, Graphics.TOP | Graphics.LEFT );
+				g.drawImage(this.image, x, y + this.yAdjustImage, Graphics.TOP | Graphics.LEFT );
 				//#if polish.midp2 && polish.css.scale-factor
 					}
 				//#endif
 				x += this.imageWidth;
 				leftBorder += this.imageWidth;
-				y += this.yAdjust;
+				y += this.yAdjustText;
 			} else if (this.imageAlign == Graphics.RIGHT ) {
 				//#if polish.midp2 && polish.css.scale-factor
 					if (useScaledImage) {
 						scaleX = rightBorder  -  ((this.image.getWidth()  + sWidth) / 2);
-						scaleY = y - ((sHeight - this.image.getHeight()) / 2);
+						scaleY = y - ((sHeight - this.image.getHeight()) / 2) + this.yAdjustImage;
 					} else {
 				//#endif
-				g.drawImage(this.image, x + this.contentWidth, y, Graphics.TOP | Graphics.RIGHT );
+				g.drawImage(this.image, x + this.contentWidth, y + this.yAdjustImage, Graphics.TOP | Graphics.RIGHT );
 				//#if polish.midp2 && polish.css.scale-factor
 					}
 				//#endif
 				rightBorder -= this.imageWidth;
-				y += this.yAdjust;
+				y += this.yAdjustText;
 			} else if (this.imageAlign == Graphics.TOP ) {
 				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
 				//System.out.println("left: " + leftBorder + "  right: " + rightBorder + "  contentWidth: " + this.contentWidth);
