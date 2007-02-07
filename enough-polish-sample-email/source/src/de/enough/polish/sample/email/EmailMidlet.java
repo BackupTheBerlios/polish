@@ -40,6 +40,7 @@ import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.ItemStateListener;
 import javax.microedition.lcdui.StringItem;
+import javax.microedition.lcdui.Ticker;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -115,6 +116,13 @@ implements CommandListener, ItemStateListener
 		addMessage(tree, node, "Steve Jobs", "iPhone?", "Gimme that phone, please :-)  - and don't forget the Java support!"  );
 
 		form.append( tree );
+
+		/*
+		//#style mailTicker
+		Ticker ticker = new Ticker( "Sending mail \"J2ME Polish Test Result\" to sales@mycompany.com" );
+		form.setTicker( ticker );
+		*/
+
 		form.setCommandListener( this );
 		form.setItemStateListener( this );
 		form.addCommand( this.createNewCommand );

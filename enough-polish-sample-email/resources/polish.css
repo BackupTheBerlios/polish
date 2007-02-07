@@ -26,7 +26,7 @@ colors {
 	bgColor:  #eee;
 	focusedBgColor:  #eee;
 	fontColor: #222;
-	fontShadowColor: #eee;
+	fontShadowColor: #fff;
 	focusedFontColor: #111;
 	focusedBackgroundColor: #eee;
 	focusedBorderColor: #444;
@@ -68,6 +68,10 @@ colors {
 	}
 	*/
 	layout: horizontal-expand | horizontal-center | top;
+	//#if !polish.useScrollBar
+		scrollindicator-up-image: url( arrowUp.png );
+		scrollindicator-down-image: url( arrowDown.png );
+	//#endif
 }
 
 .mailAlert extends .mailForm {
@@ -131,6 +135,17 @@ colors {
 		size: small;
 		color: mailDetailFontColor;
 	}
+}
+
+.mailTicker {
+	ticker-step: 1;
+	padding-horizontal: 5;
+	layout: vertical-center;
+	icon-image: url( sending.png );
+	font-color: fontColor;
+	font-size: small;
+	text-effect: shadow;
+	text-shadow-color: fontShadowColor;
 }
 
 
@@ -318,7 +333,7 @@ leftcommand
 	text-vertical-gradient-start-color: #000;
 	*/
 	text-effect: shadow;
-	text-shadow-color: fontShadowColor;
+	text-shadow-color: #ff0;
 }
 
 /**
@@ -361,6 +376,12 @@ menu {
 		border-color: bgColor;
 	}
 	*/
+	/* When the extended menubar is not used, the font-section will
+	   apply to the menubar as well:
+	font-color: fontColor;
+	font-style: bold;
+	menubar-color: yellow;
+	 */
 }
 
 
