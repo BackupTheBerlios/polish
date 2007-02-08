@@ -66,7 +66,7 @@ public class PolishLicenseLoader implements LicenseLoader {
 			}
 			return properties;
 		} catch (IOException e) {
-			throw new SecurityException( e.toString(), e );
+			throw new SecurityException( e.toString() );
 		}
 	}
 
