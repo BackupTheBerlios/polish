@@ -475,6 +475,17 @@
 		</solution>
 	</bug>
 	
+	<bug>
+		<name>noNetworking</name>
+		<area>io</area>
+		<description>
+			Event though MIDP mandates support of at least HTTP, affected devices do not even allow HTTP connections nor other networking.
+		</description>
+		<solution>
+			None, except not doing any network stuff.
+		</solution>
+	</bug>
+	
 	<!--
 	<bug>
 		<name></name>

@@ -9262,37 +9262,1360 @@ These namespaces/schemas will be used soon.
 
 <!-- Samsung devices -->
 	<device> 
-		<identifier>Samsung/SGH-E720</identifier> 
-		<features>isDoubleBuffered</features>
-		<groups>jtwi</groups>
-		<capability name="OS" value="Nucleus OS"/>
-		<capability name="CompatibleDevice" value="Samsung/SGH-530, Samsung/SGH-E880"/>
-		<capability name="ScreenSize" value="176x220"/>
-		<capability name="CanvasSize" value="176x204"/>
-		<capability name="FullCanvasSize" value="176x220"/>
-		<capability name="BitsPerPixel" value="16"/>
+		<identifier>Samsung/SGH-E810</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="China, Americas"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaConfiguration" value="CLDC/1.0"/>
-		<capability name="JavaPackage" value="samsung-util, mmapi1.1, 3d, wmapi1.1, "/>
-		<capability name="SoundFormat" value="midi, midi64, smaf"/>
-		<capability name="PolyphonicVoices" value="64"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
-		<capability name="JavaProtocol" value="http, https, socket, securesocket"/>
-		<capability name="HeapSize" value="512kb"/>
-		<capability name="VideoHeapSize" value="400kb"/>
-		<capability name="MaxJarSize" value="300kb"/>
-		<capability name="StorageSize" value="4MB"/>
-		<capability name="key.LeftSoftKey" value="-6"/>
-		<capability name="key.RightSoftKey" value="-7"/>
+		<capability name="VideoFormat" value="3gpp"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="4 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="700 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="256 KB"/>
 		<capability name="key.ClearKey" value="-8"/>
 		<capability name="Font.small" value="14"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="20"/>
-		<capability name="MaxRecordStoreSize" value="5kb" />
-		<capability name="MaxRecordStoreNumber" value="5" />
-		<capability name="io.MaxCommunicationVolume" value="2048" />
-		<capability name="io.MaxUrlLength" value="256" />
-		<capability name="Bugs" value="MaxCommunnicationVolume, MaxUrlLength, RmsLimited, SoftKeyMappedToFire" />
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-10-25"/>
+	</device>
+					
+	<device> 
+		<identifier>Samsung/SGH-E898</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Europe,Asia Pacific, Africa, Americas"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="MenuBarHeight" value="36"/>
+		<capability name="CanvasSize" value="240x284"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.2 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="1 MB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="18"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-26"/>
+	</device>
+					
+	<device> 
+		<identifier>Samsung/SGH-E900</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="China, Americas"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="SoundFormat" value="mmf, amr, midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="MenuBarHeight" value="34"/>
+		<capability name="CanvasSize" value="240x286"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="4 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="700 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="256 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="16"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-16"/>
+	</device>
+					
+	<device> 
+		<identifier>Samsung/SGH-P300</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="China, Americas"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="SoundFormat" value="mmf, midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x176"/>
+		<capability name="ScreenSize" value="240x176"/>
+		<capability name="MenuBarHeight" value="17"/>
+		<capability name="CanvasSize" value="240x159"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="HeapSize" value="512 KB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="300 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="25 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="14"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="20"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-10-25"/>
+	</device>
+					
+	<device> 
+		<identifier>Samsung/SGH-P310</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="SoundFormat" value="mmf, midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="320x240"/>
+		<capability name="ScreenSize" value="320x240"/>
+		<capability name="MenuBarHeight" value="32"/>
+		<capability name="CanvasSize" value="3200x208"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="4 MB"/>
+		<capability name="VideoHeapSize" value="0 MB"/>
+		<capability name="MaxJarSize" value="700 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="256 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="16"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-11-16"/>
+	</device>
+				
+	<device> 
+		<identifier>Samsung/SGH-P858</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Europe,Asia Pacific, Africa, Americas"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="MenuBarHeight" value="34"/>
+		<capability name="CanvasSize" value="240x286"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.2 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="500 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="18"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-26"/>
+	</device>
+				
+	<device> 
+		<identifier>Samsung/SGH-T509</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Europe,Asia Pacific, Africa, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="SoundFormat" value="mmf, midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.2 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="500 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="100 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="18"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-15"/>
+	</device>
+				
+	<device> 
+		<identifier>Samsung/SGH-T619</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Europe,Asia Pacific, Africa, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="3gpp"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="34"/>
+		<capability name="CanvasSize" value="176x186"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="1.8 MB"/>
+		<capability name="VideoHeapSize" value="900 KB"/>
+		<capability name="MaxJarSize" value="300 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="100 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="18"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-26"/>
+	</device>
+			
+	<device> 
+		<identifier>Samsung/SGH-T709</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Europe,Asia Pacific, Africa, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="34"/>
+		<capability name="CanvasSize" value="176x186"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.2 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="500 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="100 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="18"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-26"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-X700</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="1.1 MB"/>
+		<capability name="VideoHeapSize" value="540 KB"/>
+		<capability name="MaxJarSize" value="300 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="13"/>
+		<capability name="Font.medium" value="17"/>
+		<capability name="Font.large" value="19"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-15"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-X708</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, Europe, Asia Pacific, Africa"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="1.1 MB"/>
+		<capability name="VideoHeapSize" value="540 KB"/>
+		<capability name="MaxJarSize" value="300 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="4 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="13"/>
+		<capability name="Font.medium" value="17"/>
+		<capability name="Font.large" value="19"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-26"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-X820</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="SoundFormat" value="mmf, midi, amr"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="220x176"/>
+		<capability name="ScreenSize" value="220x176"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="220x153"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="HeapSize" value="4 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="700 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="256 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="14"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="20"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-10-25"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-Z400</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
+		<capability name="SoundFormat" value="mmf, mp3, amr, midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="3gpp, mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x297"/>
+		<capability name="ScreenSize" value="240x297"/>
+		<capability name="MenuBarHeight" value="18"/>
+		<capability name="CanvasSize" value="240x279"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="1 MB"/>
+		<capability name="StorageSize" value="2 MB"/>
+		<capability name="MaxRecordStoreSize" value="512 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="14"/>
+		<capability name="Font.large" value="16"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-10-25"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-Z540</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="3gpp, mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x297"/>
+		<capability name="ScreenSize" value="240x297"/>
+		<capability name="MenuBarHeight" value="18"/>
+		<capability name="CanvasSize" value="240x279"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="1 MB"/>
+		<capability name="StorageSize" value="2 MB"/>
+		<capability name="MaxRecordStoreSize" value="256 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="14"/>
+		<capability name="Font.large" value="16"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-10-25"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-Z720</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="3gpp, mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x297"/>
+		<capability name="ScreenSize" value="240x297"/>
+		<capability name="MenuBarHeight" value="18"/>
+		<capability name="CanvasSize" value="240x279"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="1 MB"/>
+		<capability name="StorageSize" value="2 MB"/>
+		<capability name="MaxRecordStoreSize" value="512 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="14"/>
+		<capability name="Font.large" value="16"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-31"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-Z560</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
+		<capability name="SoundFormat" value="mmf, midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="3gpp, mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x297"/>
+		<capability name="ScreenSize" value="240x297"/>
+		<capability name="MenuBarHeight" value="18"/>
+		<capability name="CanvasSize" value="240x279"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="1 MB"/>
+		<capability name="StorageSize" value="2 MB"/>
+		<capability name="MaxRecordStoreSize" value="512 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="14"/>
+		<capability name="Font.large" value="16"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-10-27"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-E730</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="SoundFormat" value="mmf, midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="1.1 MB"/>
+		<capability name="VideoHeapSize" value="540 KB"/>
+		<capability name="MaxJarSize" value="300 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="18"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-15"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-E760</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="SoundFormat" value="mmf, midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="1.1 MB"/>
+		<capability name="VideoHeapSize" value="540 KB"/>
+		<capability name="MaxJarSize" value="300 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="18"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-15"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-E770</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="4 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="700 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="256 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="14"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="20"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-10-25"/>
+	</device>
+			
+	<device> 
+		<identifier>Samsung/SGH-E788</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.1 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="1 MB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="18"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-26"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-E780</identifier>
+		<parent>Samsung/SGH-E788</parent>
+	</device>
+	
+	<device> 
+		<identifier>Samsung/SGH-E570</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value="secure socket"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="SoundFormat" value="mmf, midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="HeapSize" value="1 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="300 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="14"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="20"/>
+		<capability name="AnnouncementDate" value="2007-01-11"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-E530</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="16"/>
+		<capability name="CanvasSize" value="176x204"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="912 KB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="300 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="25 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="14"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="20"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-10-25"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-E380</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="HeapSize" value="1.5 MB"/>
+		<capability name="VideoHeapSize" value="600 KB"/>
+		<capability name="MaxJarSize" value="300 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="18"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-10-25"/>
+	</device>
+		
+	<device> 
+		<identifier>Samsung/SGH-E388</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, Europe, Asia Pacific, Africa"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="HeapSize" value="1.5 MB"/>
+		<capability name="VideoHeapSize" value="600 KB"/>
+		<capability name="MaxJarSize" value="300 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="18"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-26"/>
+	</device>
+			
+	<device> 
+		<identifier>Samsung/SGH-E390</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="3ggp, mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="18"/>
+		<capability name="CanvasSize" value="176x202"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.2 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="1 MB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="18"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-12-06"/>
+	</device>
+			
+	<device> 
+		<identifier>Samsung/SGH-E490</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, Asia Pacific, China, Africa"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value="secure socket"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-sms"/>
+		<capability name="SoundFormat" value="mmf, midi, amr"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="1 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="300 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="dynamic"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="14"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="20"/>
+		<capability name="AnnouncementDate" value="2007-01-25"/>
+	</device>
+			
+	<device> 
+		<identifier>Samsung/SGH-E500</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.1 MB"/>
+		<capability name="VideoHeapSize" value="1.2 MB"/>
+		<capability name="MaxJarSize" value="1 MB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="18"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-10-25"/>
+	</device>
+
+	<device> 
+		<identifier>Samsung/SGH-D820</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="MenuBarHeight" value="34"/>
+		<capability name="CanvasSize" value="240x286"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.2 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="500 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="18"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-15"/>
+	</device>
+			
+	<device> 
+		<identifier>Samsung/SGH-D828</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Europe, Asia Pacific, Americas, Africa"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="MenuBarHeight" value="34"/>
+		<capability name="CanvasSize" value="240x286"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.2 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="500 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="18"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-26"/>
+	</device>
+	
+	<device> 
+		<identifier>Samsung/SGH-D908</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Europe, Asia Pacific, Americas, Africa"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="MenuBarHeight" value="36"/>
+		<capability name="CanvasSize" value="240x284"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.2 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="1 MB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="18"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-26"/>
+	</device>
+	
+	<device> 
+		<identifier>Samsung/SGH-C130</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="China, Americas"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value="secure socket"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="128x128"/>
+		<capability name="ScreenSize" value="128x128"/>
+		<capability name="MenuBarHeight" value="17"/>
+		<capability name="CanvasSize" value="128x111"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="HeapSize" value="350 KB"/>
+		<capability name="VideoHeapSize" value="170 KB"/>
+		<capability name="MaxJarSize" value="100 KB"/>
+		<capability name="StorageSize" value="512 KB"/>
+		<capability name="MaxRecordStoreSize" value="25 KB" />
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="14"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="AnnouncementDate" value="2006-12-06" />
+	</device>
+	
+	<device> 
+		<identifier>Samsung/SGH-D520</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="China, Americas"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="CanvasSize" value="176x196"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="4 MB"/>
+		<capability name="MaxJarSize" value="700 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="256 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="14"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="20"/>
+		<capability name="Bugs" value="noNetworking"/>
+		<capability name="AnnouncementDate" value="2006-10-25"/>
+	</device>
+	
+	<device> 
+		<identifier>Samsung/SGH-D608</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Europe, Asia Pacific, Americas, Africa"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio "/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x286"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.2 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="500 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="18"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-26"/>
+<capability name="wap.userAgent" value="SAMSUNG-SGH-D608"/>
+<capability name="wap.userAgent" value="SAMSUNG-SGH-D608/1.0/WAP2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1/*MzU3MTEzMDAwMDIyMjY5 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
+<capability name="wap.userAgent" value="SAMSUNG-SGH-D608/1.0/WAP2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1/*MzU3MTEzMDAwMjI5MzY5 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
+	</device>
+	
+	<device> 
+		<identifier>Samsung/SGH-T809</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Europe, Asia Pacific, China, Africa"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio "/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="MenuBarHeight" value="34"/>
+		<capability name="CanvasSize" value="240x286"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.2 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="500 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB" />
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="18"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-xx-xx" />
+	</device>
+	
+<device> 
+		<identifier>Samsung/SGH-E720</identifier> 
+		<features>isDoubleBuffered</features>
+		<groups></groups>
+		<capability name="OS" value="Nucleus OS"/>
+		<capability name="CompatibleDevice" value="Samsung/SGH-530, Samsung/SGH-E880"/>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="mpeg4"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="16"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="912 KB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="300 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="25 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="14"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="20"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-10-25"/>
 	</device>
 	
 	<device> 
@@ -9358,14 +10681,7 @@ These namespaces/schemas will be used soon.
 		<parent>Samsung/SGH-D720</parent>
 		<capability name="Emulator.Control" value="SamsungD730"/>
 	</device>
-
-	<device>
-		<identifier>Samsung/SGH-E730</identifier>
-		<parent>Samsung/SGH-D730</parent>
-		<capability name="IconSize" value="16x16"/>
-		<capability name="Bugs" value="SoftKeyMappedToFire" />
-	</device>
-
+	
 	<device> 
 		<identifier>Samsung/Z100</identifier> 
 		<features>hasCommandKeyEvents</features> 
@@ -10064,24 +11380,41 @@ These namespaces/schemas will be used soon.
  	<device> 
 		<identifier>Samsung/SGH-D500</identifier> 
 		<features>hasCommandKeyEvents, hasCamera</features> 
+		<capability name="Region" value="Americas, China"/> 
 		<capability name="ScreenSize" value="176x220"/> 
 		<capability name="FullCanvasSize" value="176x220"/> 
-		<capability name="MenuBarHeight" value="23"/> 
+		<capability name="CanvasSize" value="176x196"/>
+		<capability name="MenuBarHeight" value="23"/>
 		<capability name="BitsPerPixel" value="18"/> 
 		<capability name="JavaPlatform" value="MIDP/2.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.1"/> 
-		<capability name="JavaPackage" value="wmapi, mmapi"/> 
-		<capability name="SoundFormat" value="mmf, midi, midi64, wav"/> 
-		<capability name="PolyphonicVoices" value="64"/> 
+		<capability name="JavaPackage" value="pdaapi, btapi, wmapi1.0, wmapi2.0, m3g, mmapi, samsung-acceleration"/> 
+		<capability name="SoundFormat" value="mmf, midi, midi64"/> 
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="PolyphonicVoices" value="64"/>
 		<capability name="ImageFormat" value="png"/> 
-		<capability name="HeapSize" value="560 kb"/> 
+		<capability name="HeapSize" value="1.1 MB"/> 
+		<capability name="VideoHeapSize" value="540 kb"/> 
 		<capability name="MaxJarSize" value="300 kb"/> 
 		<capability comment="available size for Java applications" name="StorageSize" value="4096 kb"/> 
 		<capability name="TotalStorageSize" value="80 MB"/> 
+		<capability name="MaxRecordStoreSize" value="4 MB" />
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="18"/>
 		<capability name="Network" value="GSM, GPRS"/> 
 		<capability name="Frequency" value="900, 1800, 1900"/> 
 		<capability name="CameraResolution" value="1.3 MP"/> 
 		<capability name="Bugs" value="losesFullScreen"/> 
+		<capability name="AnnouncementDate" value="2007-01-15" />
 	<capability name="wap.userAgent" value="SAMSUNG-SGH-D500"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-D500/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-D500/1.0 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
@@ -10097,40 +11430,89 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG-SGH-D500E/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
 </device> 
 	
-	<device>
-		<identifier>Samsung/SGH-D600</identifier>
-		<features>hasCommandKeyEvents, hasCamera</features>
-		<capability name="ScreenSize" value="240x320"/>
-		<capability name="FullCanvasSize" value="240x320"/>
-		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="wmapi, mmapi"/>
-		<capability name="SoundFormat" value="mmf, midi, midi64, wav"/>
+
+ 	<device> 
+		<identifier>Samsung/SGH-D600</identifier> 
+		<features>hasCommandKeyEvents, hasCamera</features> 
+		<capability name="Region" value="Americas, China"/> 
+		<capability name="ScreenSize" value="240x320"/> 
+		<capability name="FullCanvasSize" value="240x320"/> 
+		<capability name="CanvasSize" value="240x286"/>
+		<capability name="MenuBarHeight" value="34"/>
+		<capability name="BitsPerPixel" value="18"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0"/> 
+		<capability name="JavaConfiguration" value="CLDC/1.1"/> 
+		<capability name="JavaPackage" value="pdaapi, btapi, wmapi1.0, wmapi2.0, m3g, mmapi, samsung-acceleration, samsung-audio"/> 
+		<capability name="SoundFormat" value="mmf, midi, midi64, wav"/> 
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
 		<capability name="PolyphonicVoices" value="64"/>
-		<capability name="ImageFormat" value="png"/>
-		<capability name="HeapSize" value="560 kb"/>
-		<capability name="MaxJarSize" value="300 kb"/>
-		<capability name="StorageSize" value="80 MB"/>
-		<capability name="Network" value="GSM, GPRS"/>
-		<capability name="Frequency" value="900, 1800, 1900"/>
-		<capability name="CameraResolution" value="1.3 MP"/>
+		<capability name="ImageFormat" value="png"/> 
+		<capability name="HeapSize" value="2.2 MB"/> 
+		<capability name="VideoHeapSize" value="1.3 MB"/> 
+		<capability name="MaxJarSize" value="500 kb"/> 
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="18"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Network" value="GSM, GPRS"/> 
+		<capability name="Frequency" value="900, 1800, 1900"/> 
+		<capability name="CameraResolution" value="1.3 MP"/> 
 		<capability name="IconSize" value="16x16"/>
+		<capability name="Bugs" value="noNetworking"/> 
+		<capability name="AnnouncementDate" value="2007-01-15" />
 	<capability name="wap.userAgent" value="SAMSUNG-SGH-D600"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-D600/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SCH-D600/1.0 profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101(GUI) MMP/2.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-D600E/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
-<capability name="wap.userAgent" value="SAMSUNG-SGH-D608"/>
-<capability name="wap.userAgent" value="SAMSUNG-SGH-D608/1.0/WAP2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1/*MzU3MTEzMDAwMDIyMjY5 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
-<capability name="wap.userAgent" value="SAMSUNG-SGH-D608/1.0/WAP2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1/*MzU3MTEzMDAwMjI5MzY5 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
 </device>
 
 	<device>
 		<identifier>Samsung/SGH-D800</identifier>
-		<parent>Samsung/SGH-D600</parent>
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Americas, China"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="SoundFormat" value="midi, mmf"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="MenuBarHeight" value="34"/>
+		<capability name="CanvasSize" value="240x286"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="4 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="700 KB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="256 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="16"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2006-10-27"/>
 	</device>
 	
- 
 	<device> 
 		<identifier>Samsung/SGH-E100</identifier> 
 		<features>hasCommandKeyEvents</features> 
@@ -10158,27 +11540,46 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E108/T2 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E108/T2*MzUyMjkxMDAxNzI3OTgw UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
 </device> 
- 
- 		 <device> 
+ 	
+	<device> 
 		<identifier>Samsung/SGH-D900</identifier> 
-		<features>hasCommandKeyEvents</features> 
-		<capability name="ScreenSize" value="240x320"/> 
-		<capability name="FullCanvasSize" value="240x320"/> 
-		<capability name="MenuBarHeight" value="20"/> 
-		<capability name="BitsPerPixel" value="16"/> 
-		<capability name="JavaPlatform" value="MIDP/2.0"/> 
-		<capability name="JavaConfiguration" value="CLDC/1.1"/> 
-		<capability name="SoundFormat" value="midi,x-tone-seq,mpeg,mp3,3gpp,amr,aac,m4a,"/> 
-		<capability name="PolyphonicVoices" value="40"/> 
-		<capability name="JavaPackage" value="wmapi-1.1,mmapi-1.1,pdaapi,btapi"/> 
+		<features>hasCommandKeyEvents</features>
+		<groups></groups>
+		<capability name="Region" value="China, Americas"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value=""/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio "/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="midi,x-tone-seq,mpeg,mp3,3gpp,amr,aac,m4a"/>
 		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="PolyphonicVoices" value="40"/>
 		<capability name="CaptureImageFormat" value="jpeg"/>
-		<capability name="StorageSize" value="32 MB"/>
-		<capability name="HeapSize" value="1.5 MB"/>
-		<capability name="VideoHeapSize" value="500 kb"/>
-		<capability name="MaxJarSize" value="dynamic"/>
-		<capability name="DRM" value="OMA v1.0"/>
-		<capability name="Region" value="global"/>
+		<capability name="mmapi.AudioPlayback" value="false"/>
+		<capability name="mmapi.AudioStreaming" value="true"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="true"/>
+		<capability name="mmapi.VideoResizing" value="true"/>
+		<capability name="mmapi.VideoPositioning" value="true"/>
+		<capability name="DRM" value="yes"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="MenuBarHeight" value="36"/>
+		<capability name="CanvasSize" value="240x284"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.2 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="1 MB"/>
+		<capability name="StorageSize" value="4MB"/>
+		<capability name="MaxRecordStoreSize" value="4 MB" />
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="18"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Bugs" value="noNetworking" />
+		<capability name="AnnouncementDate" value="2007-01-17" />
 		<capability name="Network" value="GSM, GPRS, UMTS"/>
 		<capability name="Frequency" value="900,1800,1900"/>
 		<capability name="DebugInterface" value="KDWP"/>
@@ -10186,7 +11587,7 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraZoom" value="4"/>
 		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin"/>
 		<capability name="key.ReturnKey" value="-11"/>
-        </device> 
+	</device> 
  
         <device> 
 		<identifier>Samsung/E100A</identifier> 
@@ -10656,7 +12057,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/1.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.0"/> 
 	</device>
-	
+
 
 <!-- Sanyo devices -->
 

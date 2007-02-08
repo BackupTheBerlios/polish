@@ -311,6 +311,9 @@ public class JavaSourceClassTest extends TestCase {
 		matcher = pattern.matcher("	public static void hello(String first, Integer second, com.server.MyClass third) throws IOException, BBEx;");
 		assertEquals(true, matcher.find() );
 		assertEquals("public static void hello(String first, Integer second, com.server.MyClass third) throws IOException, BBEx", matcher.group() );
+		matcher = pattern.matcher("	public static void hello(String first, Integer second, com.server.MyClass[] third) throws IOException, BBEx;");
+		assertEquals(true, matcher.find() );
+		assertEquals("public static void hello(String first, Integer second, com.server.MyClass[] third) throws IOException, BBEx", matcher.group() );
 		
 		String[] lines = new String[] {
 				"package de.enough.polish.util;	 ",

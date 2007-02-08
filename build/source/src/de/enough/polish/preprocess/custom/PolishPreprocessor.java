@@ -259,7 +259,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	 * @see de.enough.polish.preprocess.LineProcessor#processClass(de.enough.polish.util.StringList, java.lang.String)
 	 */
 	public void processClass(StringList lines, String className) {
-		if (!this.isUsingPolishGui || this.isLibraryBuild) {
+		if (this.isLibraryBuild) {
 			return;
 		}
 		boolean isIllegalStateExceptionClass = false;
@@ -288,179 +288,6 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			}
 			// check for style-property-usage:
 			int startPos = -1;
-			String methodName = "tyle.getProperty(";
-			startPos = line.indexOf(methodName);
-			if (startPos == -1) {
-				methodName = "tyle.getIntProperty(";
-				startPos = line.indexOf(methodName);
-				if (startPos == -1) {
-					methodName = "tyle.getBooleanProperty(";
-					startPos = line.indexOf(methodName);
-				}
-				if (startPos == -1) {
-					methodName = "tyle.getObjectProperty(";
-					startPos = line.indexOf(methodName);
-				}
-				if (startPos == -1) {
-					methodName = "tyle.getColorProperty(";
-					startPos = line.indexOf(methodName);
-				}
-			}
-			if (startPos != -1) {
-				int endPos = line.indexOf( ')', startPos );
-				if (endPos == -1) {
-					throw new BuildException ( getErrorStart(className, lines) + ": Invalid style-usage: "
-							+ "style.getProperty( \"name\" ); always needs to be on a single line. "
-							+ " This line is invalid: " + line );
-				}
-				
-				String property = line.substring( startPos + methodName.length(),
-						endPos ).trim();
-				//System.out.println("last line: " + lines.getPrevious() + "\ncurrent=" + lines.getCurrent() + "\nnext = " + lines.getNext() );
-				if (property.charAt(0) != '"' || property.charAt( property.length() - 1) != '"') {
-					throw new BuildException (getErrorStart(className, lines) + ": Invalid style-usage: "
-							+ "style.getProperty( \"name\" ); always needs to use the property-name directly (not a variable). "
-							+ " This line is invalid: " + line );
-				}
-				String key = property.substring( 1, property.length() - 1);
-				int id = this.idGenerator.getId(
-						key, this.environment.hasSymbol("polish.css." + key) );
-				// check if this property is used at all:
-				//if ( id == -1 ) {
-					//System.out.println("skipping attribute [" + key + "]");
-					//TODO Problem: when a user does not check for the availalability of the CSS symbol
-					// via if polish.css.name, then this will end with an invalid key!
-					// So we add for now a -1 call, which shouldn't result in any problems
-					// since the css attribute is not used anyhow
-					// continue;
-				//}
-				//System.out.println("got id " + id + " for key " + key);
-				line = StringUtil.replace( line, property, "" + id );
-				//System.out.println("style: setting line[" + lines.getCurrentIndex() + " to = [" + line + "]");
-				lines.setCurrent( line );
-				continue;
-			}
-			
-			// check for usage of java.lang.IllegalStateException:
-			if (!this.usesDefaultPackage && this.usesDoJa && !isIllegalStateExceptionClass) {
-				startPos = line.indexOf("IllegalStateException");
-				if (startPos != -1) {
-					line = line.substring( 0, startPos ) + "de.enough.polish.doja.lang." + line.substring( startPos );
-					lines.setCurrent( line );
-				}
-			}
-			
-			if (this.isInJ2MEPolishPackage) {
-				// skip the next checks, when the J2ME Polish package is preprocessed:
-				continue;
-			}
-			
-			startPos = line.indexOf("getTicker"); 
-			if ( startPos != -1) {
-				int commentPos = line.indexOf("//");
-				if (commentPos != -1 && commentPos < startPos) {
-					continue;
-				}
-				Matcher matcher = GET_TICKER_PATTERN.matcher( line );
-				boolean matchFound = false;
-				while (matcher.find()) {
-					matchFound = true;
-					String group = matcher.group();
-					String replacement = StringUtil.replace( group, "getTicker", "getPolishTicker");
-					line = StringUtil.replace( line, group, replacement );
-				}
-				if (matchFound) {
-					this.isTickerUsed = true;
-					lines.setCurrent( line );					
-				}
-				continue;
-			}
-			startPos = line.indexOf("setTicker");
-			if ( startPos != -1) {
-				//System.out.println("setTicker found in line " + line );
-				int commentPos = line.indexOf("//");
-				if (commentPos != -1 && commentPos < startPos) {
-					continue;
-				}
-				Matcher matcher = SET_TICKER_PATTERN.matcher( line );
-				boolean matchFound = false;
-				while (matcher.find()) {
-					matchFound = true;
-					String group = matcher.group();
-					String replacement = StringUtil.replace( group, "setTicker", "setPolishTicker");
-					line = StringUtil.replace( line, group, replacement );
-				}
-				if (matchFound) {
-					this.isTickerUsed = true;
-					lines.setCurrent( line );
-					//System.out.println( "line is now " + line );
-				}
-				continue;
-			}
-			
-			// check for display.setCurrentItem:
-			startPos = line.indexOf("setCurrentItem");
-			if ( startPos != -1) {
-				//System.out.println("setCurrentItem found in line " + line );
-				int commentPos = line.indexOf("//");
-				if (commentPos != -1 && commentPos < startPos) {
-					continue;
-				}
-				Matcher matcher = SET_CURRENT_ITEM_PATTERN.matcher( line );
-				if (matcher.find()) {
-					String group = matcher.group();
-					//System.out.println("group = [" + group + "]");
-					int parenthesisPos = group.indexOf('(', startPos );
-					if (parenthesisPos == -1) {
-						throw new BuildException( getErrorStart(className, lines) + ": setCurrentItem() method found without opening parentheses: " + line);
-					}
-					String displayVar = group.substring(0, parenthesisPos);
-					int dotPos = displayVar.lastIndexOf('.');
-					displayVar = displayVar.substring( 0, dotPos ).trim();
-					String itemVar = group.substring( parenthesisPos + 1, group.length() -1 ).trim();
-					String replacement = itemVar + ".show( " + displayVar + " )"; 
-					//System.out.println("replacement = [" + replacement + "].");
-					line = StringUtil.replace( line, group, replacement );
-					//System.out.println("line = [" + line + "]");
-					lines.setCurrent( line );
-				}
-				continue;
-			}
-			
-			// check for display.setCurrent( Alert, Displayable ):
-			startPos = line.indexOf("setCurrent");
-			if ( startPos != -1) {
-				//System.out.println("setCurrent found in line " + line );
-				int commentPos = line.indexOf("//");
-				if (commentPos != -1 && commentPos < startPos) {
-					continue;
-				}
-				Matcher matcher = SET_CURRENT_ALERT_DISPLAYABLE_PATTERN.matcher( line );
-				if (matcher.find()) {
-					String group = matcher.group();
-					//System.out.println("group = [" + group + "]");
-					int parenthesisPos = group.indexOf('(');
-					String displayVar = group.substring(0, parenthesisPos);
-					int dotPos = displayVar.lastIndexOf('.');
-					displayVar = displayVar.substring( 0, dotPos ).trim();
-					String alertDisplayableVars = group.substring( parenthesisPos + 1, group.length() -1 ).trim();
-					//int commaPos = alertDisplayableVars.indexOf('.');
-					String replacement = "Alert.setCurrent( " + displayVar + ", " + alertDisplayableVars  + " )"; 
-					//System.out.println("replacement = [" + replacement + "].");
-					line = StringUtil.replace( line, group, replacement );
-					//System.out.println("line = [" + line + "]");
-					lines.setCurrent( line );
-				}
-				continue;
-			}			
-
-			
-			// check for Choice.POPUP:
-			startPos = line.indexOf(".POPUP");
-			if (startPos != -1) {
-				this.isPopupUsed = true;
-				continue;
-			}
 			
 			// check for RemoteClient.open("de.enough.polish.sample.rmi.GameServer", "http://localhost:8080/gameserver/myservice") etc;
 			startPos = line.indexOf("RemoteClient.open");
@@ -526,22 +353,92 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					throw be;
 				}
 				continue;
-			}
-
-			// check for GameCanvase.getGraphics() on BlackBerry phones:
-			if (this.usesBlackBerry) {
-				startPos = line.indexOf("getGraphics"); 
+			}	
+		
+			
+			//////////////////////////////////////////////////////////////////////////
+			/// The rest applies only when the J2ME Polish UI is being used      /////
+			//////////////////////////////////////////////////////////////////////////
+			if (this.isUsingPolishGui) {
+				String methodName = "tyle.getProperty(";
+				startPos = line.indexOf(methodName);
+				if (startPos == -1) {
+					methodName = "tyle.getIntProperty(";
+					startPos = line.indexOf(methodName);
+					if (startPos == -1) {
+						methodName = "tyle.getBooleanProperty(";
+						startPos = line.indexOf(methodName);
+					}
+					if (startPos == -1) {
+						methodName = "tyle.getObjectProperty(";
+						startPos = line.indexOf(methodName);
+					}
+					if (startPos == -1) {
+						methodName = "tyle.getColorProperty(";
+						startPos = line.indexOf(methodName);
+					}
+				}
+				if (startPos != -1) {
+					int endPos = line.indexOf( ')', startPos );
+					if (endPos == -1) {
+						throw new BuildException ( getErrorStart(className, lines) + ": Invalid style-usage: "
+								+ "style.getProperty( \"name\" ); always needs to be on a single line. "
+								+ " This line is invalid: " + line );
+					}
+					
+					String property = line.substring( startPos + methodName.length(),
+							endPos ).trim();
+					//System.out.println("last line: " + lines.getPrevious() + "\ncurrent=" + lines.getCurrent() + "\nnext = " + lines.getNext() );
+					if (property.charAt(0) != '"' || property.charAt( property.length() - 1) != '"') {
+						throw new BuildException (getErrorStart(className, lines) + ": Invalid style-usage: "
+								+ "style.getProperty( \"name\" ); always needs to use the property-name directly (not a variable). "
+								+ " This line is invalid: " + line );
+					}
+					String key = property.substring( 1, property.length() - 1);
+					int id = this.idGenerator.getId(
+							key, this.environment.hasSymbol("polish.css." + key) );
+					// check if this property is used at all:
+					//if ( id == -1 ) {
+						//System.out.println("skipping attribute [" + key + "]");
+						//TODO Problem: when a user does not check for the availalability of the CSS symbol
+						// via if polish.css.name, then this will end with an invalid key!
+						// So we add for now a -1 call, which shouldn't result in any problems
+						// since the css attribute is not used anyhow
+						// continue;
+					//}
+					//System.out.println("got id " + id + " for key " + key);
+					line = StringUtil.replace( line, property, "" + id );
+					//System.out.println("style: setting line[" + lines.getCurrentIndex() + " to = [" + line + "]");
+					lines.setCurrent( line );
+					continue;
+				}
+				
+				// check for usage of java.lang.IllegalStateException:
+				if (!this.usesDefaultPackage && this.usesDoJa && !isIllegalStateExceptionClass) {
+					startPos = line.indexOf("IllegalStateException");
+					if (startPos != -1) {
+						line = line.substring( 0, startPos ) + "de.enough.polish.doja.lang." + line.substring( startPos );
+						lines.setCurrent( line );
+					}
+				}
+				
+				if (this.isInJ2MEPolishPackage) {
+					// skip the next checks, when the J2ME Polish package is preprocessed:
+					continue;
+				}
+				
+				startPos = line.indexOf("getTicker"); 
 				if ( startPos != -1) {
 					int commentPos = line.indexOf("//");
 					if (commentPos != -1 && commentPos < startPos) {
 						continue;
 					}
-					Matcher matcher = GET_GRAPHICS_PATTERN.matcher( line );
+					Matcher matcher = GET_TICKER_PATTERN.matcher( line );
 					boolean matchFound = false;
 					while (matcher.find()) {
 						matchFound = true;
 						String group = matcher.group();
-						String replacement = StringUtil.replace( group, "getGraphics", "getPolishGraphics");
+						String replacement = StringUtil.replace( group, "getTicker", "getPolishTicker");
 						line = StringUtil.replace( line, group, replacement );
 					}
 					if (matchFound) {
@@ -549,6 +446,117 @@ public class PolishPreprocessor extends CustomPreprocessor {
 						lines.setCurrent( line );					
 					}
 					continue;
+				}
+				startPos = line.indexOf("setTicker");
+				if ( startPos != -1) {
+					//System.out.println("setTicker found in line " + line );
+					int commentPos = line.indexOf("//");
+					if (commentPos != -1 && commentPos < startPos) {
+						continue;
+					}
+					Matcher matcher = SET_TICKER_PATTERN.matcher( line );
+					boolean matchFound = false;
+					while (matcher.find()) {
+						matchFound = true;
+						String group = matcher.group();
+						String replacement = StringUtil.replace( group, "setTicker", "setPolishTicker");
+						line = StringUtil.replace( line, group, replacement );
+					}
+					if (matchFound) {
+						this.isTickerUsed = true;
+						lines.setCurrent( line );
+						//System.out.println( "line is now " + line );
+					}
+					continue;
+				}
+				
+				// check for display.setCurrentItem:
+				startPos = line.indexOf("setCurrentItem");
+				if ( startPos != -1) {
+					//System.out.println("setCurrentItem found in line " + line );
+					int commentPos = line.indexOf("//");
+					if (commentPos != -1 && commentPos < startPos) {
+						continue;
+					}
+					Matcher matcher = SET_CURRENT_ITEM_PATTERN.matcher( line );
+					if (matcher.find()) {
+						String group = matcher.group();
+						//System.out.println("group = [" + group + "]");
+						int parenthesisPos = group.indexOf('(', startPos );
+						if (parenthesisPos == -1) {
+							throw new BuildException( getErrorStart(className, lines) + ": setCurrentItem() method found without opening parentheses: " + line);
+						}
+						String displayVar = group.substring(0, parenthesisPos);
+						int dotPos = displayVar.lastIndexOf('.');
+						displayVar = displayVar.substring( 0, dotPos ).trim();
+						String itemVar = group.substring( parenthesisPos + 1, group.length() -1 ).trim();
+						String replacement = itemVar + ".show( " + displayVar + " )"; 
+						//System.out.println("replacement = [" + replacement + "].");
+						line = StringUtil.replace( line, group, replacement );
+						//System.out.println("line = [" + line + "]");
+						lines.setCurrent( line );
+					}
+					continue;
+				}
+				
+				// check for display.setCurrent( Alert, Displayable ):
+				startPos = line.indexOf("setCurrent");
+				if ( startPos != -1) {
+					//System.out.println("setCurrent found in line " + line );
+					int commentPos = line.indexOf("//");
+					if (commentPos != -1 && commentPos < startPos) {
+						continue;
+					}
+					Matcher matcher = SET_CURRENT_ALERT_DISPLAYABLE_PATTERN.matcher( line );
+					if (matcher.find()) {
+						String group = matcher.group();
+						//System.out.println("group = [" + group + "]");
+						int parenthesisPos = group.indexOf('(');
+						String displayVar = group.substring(0, parenthesisPos);
+						int dotPos = displayVar.lastIndexOf('.');
+						displayVar = displayVar.substring( 0, dotPos ).trim();
+						String alertDisplayableVars = group.substring( parenthesisPos + 1, group.length() -1 ).trim();
+						//int commaPos = alertDisplayableVars.indexOf('.');
+						String replacement = "Alert.setCurrent( " + displayVar + ", " + alertDisplayableVars  + " )"; 
+						//System.out.println("replacement = [" + replacement + "].");
+						line = StringUtil.replace( line, group, replacement );
+						//System.out.println("line = [" + line + "]");
+						lines.setCurrent( line );
+					}
+					continue;
+				}			
+	
+				
+				// check for Choice.POPUP:
+				startPos = line.indexOf(".POPUP");
+				if (startPos != -1) {
+					this.isPopupUsed = true;
+					continue;
+				}
+				
+	
+				// check for GameCanvase.getGraphics() on BlackBerry phones:
+				if (this.usesBlackBerry) {
+					startPos = line.indexOf("getGraphics"); 
+					if ( startPos != -1) {
+						int commentPos = line.indexOf("//");
+						if (commentPos != -1 && commentPos < startPos) {
+							continue;
+						}
+						Matcher matcher = GET_GRAPHICS_PATTERN.matcher( line );
+						boolean matchFound = false;
+						while (matcher.find()) {
+							matchFound = true;
+							String group = matcher.group();
+							String replacement = StringUtil.replace( group, "getGraphics", "getPolishGraphics");
+							line = StringUtil.replace( line, group, replacement );
+						}
+						if (matchFound) {
+							this.isTickerUsed = true;
+							lines.setCurrent( line );					
+						}
+						continue;
+					}
 				}
 			}
 
