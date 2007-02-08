@@ -69,7 +69,7 @@ public class NokiaEmulator extends WtkEmulator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.emulator.WtkEmulator#getEmulatorExcecutable(java.lang.String, java.lang.String)
 	 */
-	protected File getEmulatorExcecutable(String wtkHome, String xDevice, Device dev) {
+	protected File getEmulatorExcecutable(String wtkHome, String xDevice, Device dev, Environment env) {
 		String execName = dev.getCapability("polish.Emulator.Executable");
 		if (execName == null) {
 			if (File.separatorChar == '\\') {

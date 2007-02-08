@@ -83,12 +83,25 @@ public class SonyEricssonEmulator extends WtkEmulator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.emulator.WtkEmulator#getEmulatorExcecutable(java.lang.String, java.lang.String)
 	 */
-	protected File getEmulatorExcecutable(String wtkHome, String xDevice, Device dev) {
+	protected File getEmulatorExcecutable(String wtkHome, String xDevice, Device dev, Environment env) {
 		if (this.sonyEricssonHome == null || this.sonyWtkHome == null) {
-			return super.getEmulatorExcecutable(wtkHome, xDevice, dev);
+			return super.getEmulatorExcecutable(wtkHome, xDevice, dev, env);
 		}
+		if (env.hasSymbol("debug.odd") && this.sonyEricssonHome != null) {
+			File execDir = new File( this.sonyEricssonHome + "\\OnDeviceDebug\\bin");
+			if (execDir.exists()) {
+				this.workingDirectory = execDir;
+				return new File( execDir, "emulator.exe");
+			}
+		}
+		String execPath;
+		if (this.sonyWtkHome  != null) {
+			execPath = this.sonyWtkHome + "\\bin\\emulator.exe";	
+		} else {
+			execPath = this.sonyEricssonHome + "\\bin\\emulator.exe";
+		}
+	
 		
-		String execPath = this.sonyWtkHome + "\\bin\\emulator.exe";
 		this.workingDirectory = new File( this.sonyWtkHome + "\\bin" );
 		return new File( execPath );
 	}
@@ -111,17 +124,21 @@ public class SonyEricssonEmulator extends WtkEmulator {
 		}
 		if (sonyHomePath == null) {
 			if (File.separatorChar == '\\') {
-				sonyHomePath = "C:\\SonyEricsson\\J2ME_SDK";
+				sonyHomePath = "C:\\SonyEricsson\\J2ME_SDK_CLDC";
 				File home = new File( sonyHomePath );
 				if (!home.exists()) {
-					sonyHomePath = null;
-					// try to start emulators from the standard WTK directory.
+					sonyHomePath = "C:\\SonyEricsson\\J2ME_SDK";
+					home = new File( sonyHomePath );
+					if (!home.exists()) {
+						sonyHomePath = null;
+						// try to start emulators from the standard WTK directory.
+					}
 				}
 			}
 		} else {
 			File home = new File( sonyHomePath );
 			if (!home.exists()) {
-				System.err.println("Unable to start emulator for device [" + dev.getIdentifier() + "]: Please adjust the ${nokia.home}-property in your build.xml. The path [" + sonyHomePath + "] does not exist.");
+				System.err.println("Unable to start emulator for device [" + dev.getIdentifier() + "]: Please adjust the ${sony-ericsson.home}-property in your build.xml. The path [" + sonyHomePath + "] does not exist.");
 			}
 		}
 		this.sonyEricssonHome = sonyHomePath;

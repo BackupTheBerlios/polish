@@ -127,13 +127,14 @@ public class WtkEmulator extends Emulator {
 	 * @param wtkHome the path to the Wireless Toolkit
 	 * @param xDevice the name of the skin
 	 * @param dev the device
+	 * @param env TODO
 	 * @return the file which points to the emulator-application
 	 */
-	protected File getEmulatorExcecutable( String wtkHome, String xDevice, Device dev ) {
+	protected File getEmulatorExcecutable( String wtkHome, String xDevice, Device dev, Environment env ) {
 		if (wtkHome == null) {
 			wtkHome = ".";
 		}
-		return getEmulatorExcecutable( new File( wtkHome ), xDevice, dev);
+		return getEmulatorExcecutable( new File( wtkHome ), xDevice, dev, env );
 	}
 	
 	/**
@@ -142,9 +143,10 @@ public class WtkEmulator extends Emulator {
 	 * @param wtkHome the path to the Wireless Toolkit
 	 * @param xDevice the name of the skin
 	 * @param dev the device
+	 * @param env TODO
 	 * @return the file which points to the emulator-application
 	 */
-	protected File getEmulatorExcecutable( File wtkHome, String xDevice, Device dev ) {
+	protected File getEmulatorExcecutable( File wtkHome, String xDevice, Device dev, Environment env ) {
 		File executable = null;
 		if (File.separatorChar == '/') {
 			executable = new File( wtkHome, "bin/emulator" );
@@ -218,7 +220,7 @@ public class WtkEmulator extends Emulator {
 		}
 		
 		// get emulator executable:
-		File execFile = getEmulatorExcecutable(wtkHome, xDevice, dev );
+		File execFile = getEmulatorExcecutable(wtkHome, xDevice, dev, env );
 		String executable = execFile.getAbsolutePath();
 		if (!execFile.exists()) {
 			System.out.println("Warning: unable to find the emulator [" + executable + "].");
