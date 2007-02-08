@@ -92,7 +92,9 @@ public class RmiFinalizer extends Finalizer {
 		    	System.out.println("packaging rmi classes to " + targetJar.getAbsolutePath() );
 				File[] files = (File[]) rmiClasses.toArray( new File[ rmiClasses.size() ] );
 				JarUtil.jar( files, sourceDir, targetJar, false );
-				JarUtil.addToJar( obfuscationMapFile, targetJar, null, false );
+				if (obfuscationMapFile.exists()) {
+					JarUtil.addToJar( obfuscationMapFile, targetJar, null, false );
+				}
 			} catch (IOException e) {
 				BuildException be =  new BuildException("Unable to create " + targetJar.getAbsolutePath() + ": " + e.toString() );
 				be.initCause( e );
