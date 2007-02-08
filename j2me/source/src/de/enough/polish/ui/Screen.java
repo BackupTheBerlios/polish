@@ -1155,6 +1155,11 @@ implements AccessibleCanvas
 					int contWidth = this.contentWidth;
 					if (this.container != null) {
 						contWidth = this.container.getItemWidth(sWidth, sWidth); 
+						//#ifdef tmp.usingTitle
+							if (this.title != null && this.title.itemWidth > contWidth ) {
+								this.titleHeight = this.title.getItemHeight( contWidth, contWidth );
+							}
+						//#endif
 					}
 					sWidth = contWidth;
 					//System.out.println("is horizontal shrink - from sWidth=" + (this.screenWidth - this.marginLeft - this.marginRight) + ", to=" + sWidth );					
@@ -1209,7 +1214,7 @@ implements AccessibleCanvas
 					int backgroundY = topBorder;
 					//#ifdef tmp.menuFullScreen
 						if (this.excludeMenuBarForBackground) {
-							backgroundHeight = this.screenHeight - this.marginTop - this.marginBottom;
+							backgroundHeight = this.screenHeight - this.marginTop - this.marginBottom + 1;
 						}
 					//#endif
 					//#ifdef tmp.usingTitle
@@ -1226,7 +1231,7 @@ implements AccessibleCanvas
 					int backgroundY = topBorder;
 					//#ifdef tmp.menuFullScreen
 						if (this.excludeMenuBarForBackground) {
-							backgroundHeight = this.screenHeight - this.marginTop - this.marginBottom;
+							backgroundHeight = this.screenHeight - this.marginTop - this.marginBottom + 1;
 						}
 					//#endif
 					//#ifdef tmp.usingTitle
@@ -2863,7 +2868,7 @@ implements AccessibleCanvas
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	public void sizeChanged(int width, int height) {
-		 // #if !polish.Bugs.sizeChangedReportsWrongHeight 
+		 //#if !polish.Bugs.sizeChangedReportsWrongHeight 
 			if (!this.isInitialised) {
 				return;
 			}
@@ -2883,7 +2888,7 @@ implements AccessibleCanvas
 				this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
 			//#endif
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight  );
-		// #endif
+		//#endif
 	}
 	//#endif
 	
@@ -3041,8 +3046,7 @@ implements AccessibleCanvas
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 	}
 	
-	
-	//#if polish.Bugs.displaySetCurrentFlickers || tmp.menuFullScreen
+	//#if polish.Bugs.displaySetCurrentFlickers
 	/**
 	 * Determines whether the screen is currently shown.
 	 * When the screen is shown but the menu is openend, this method return false.
@@ -3051,22 +3055,37 @@ implements AccessibleCanvas
 	 * @see javax.microedition.lcdui.Displayable#isShown()
 	 */
 	public boolean isShown() {
-		boolean isShown;
-		//#if polish.Bugs.displaySetCurrentFlickers
-			isShown = (StyleSheet.currentScreen == this);
-		//#else
-			isShown = super.isShown();
-		//#endif
-		//#if tmp.menuFullScreen
-			//#if tmp.useExternalMenuBar
-				isShown &= this.menuBar != null && !this.menuBar.isOpened;
-			//#else
-				isShown &= !this.menuOpened;
-			//#endif
-		//#endif
-		return isShown;
+		return (StyleSheet.currentScreen == this);
 	}
 	//#endif
+	
+	// when returning false in isShown(), repaint() will not trigger an actual repaint() on Sony Ericsson devices
+	// so we cannot implement this behavior differently
+//	//#if polish.Bugs.displaySetCurrentFlickers || tmp.menuFullScreen
+//	/**
+//	 * Determines whether the screen is currently shown.
+//	 * When the screen is shown but the menu is openend, this method return false.
+//	 * 
+//	 * @return <code>true</code> if the screen is currently shown, <code>false</code> otherwise
+//	 * @see javax.microedition.lcdui.Displayable#isShown()
+//	 */
+//	public boolean isShown() {
+//		boolean isShown;
+//		//#if polish.Bugs.displaySetCurrentFlickers
+//			isShown = (StyleSheet.currentScreen == this);
+//		//#else
+//			isShown = super.isShown();
+//		//#endif
+//		//#if tmp.menuFullScreen
+//			//#if tmp.useExternalMenuBar
+//				isShown &= this.menuBar != null && !this.menuBar.isOpened;
+//			//#else
+//				isShown &= !this.menuOpened;
+//			//#endif
+//		//#endif
+//		return isShown;
+//	}
+//	//#endif
 	
 	/**
 	 * Retrieves the currently focused item.
