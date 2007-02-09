@@ -70,7 +70,7 @@
 		-->
 		<position>bootclasspath/p</position>
 		<parent>mmapi</parent>
-		<names>mmapi1.1,mm-api1.1</names>
+		<names>mmapi1.1,mm-api1.1,mmapi-1.1</names>
 		<symbol>mmapi1.1</symbol>
 		<files>mmapi.jar,j2me-mmapi.jar, mma.zip</files>
 		<path>import/mmapi.jar</path>
@@ -81,7 +81,7 @@
 		<description>The Wireless Messaging API provides
 			functionalities for sending and receiving messages (SMS).
 		</description>
-		<names>wmapi, wm-api, JSR-120, JSR120, wma, wmapi-1.1, wmapi1.1</names>
+		<names>wmapi, wm-api, JSR-120, JSR120, wma, wmapi-1.1, wmapi1.1,wmapi-1.0,wmapi1.0</names>
 		<symbol>wmapi</symbol>
 		<files>j2me-wmapi.jar, wma.zip</files>
 		<path>import/wmapi.jar</path>
@@ -104,7 +104,7 @@
 		<description>The Location API provides
 			functionalities for determing the position of the user.
 		</description>
-		<names>location api, location-api, JSR-179</names>
+		<names>location api, location-api, JSR-179,location,JSR179</names>
 		<symbol>locationapi</symbol>
 		<files>j2me-locationapi.jar, location.jar</files>
 		<path>import/locationapi.jar</path>
@@ -115,7 +115,7 @@
 		<description>The Bluetooth API provides
 			functionalities for data exchange with other bluetooth devices.
 		</description>
-		<names>btapi,bt-api, bluetooth, bluetooth-api, JSR-82, JSR82</names>
+		<names>btapi,bt-api, bluetooth, bluetooth-api, JSR-082, JSR-82, JSR82</names>
 		<symbol>btapi</symbol>
 		<files>btapi.jar, j2me-btapi.jar, bluetooth.zip</files>
 		<path>import/btapi.jar</path>
@@ -148,7 +148,7 @@
 		<description>The PDA Optional Packages API defines one package for Personal Information Management (PIM) access, and one package for accessing file systems through the Generic Connection Framework (GCF).
 		</description>
 		<features>api.pimapi, api.pim, api.fileconnectionapi, api.fileconnection</features>
-		<names>pdaapi, pda-api, JSR-75, JSR75</names>
+		<names>pdaapi, pda-api, JSR-075, JSR-75, JSR75,pdapi</names>
 		<symbol>pdaapi</symbol>
 		<files>j2me-pdaapi.jar</files>
 		<path>import/pdaapi.jar</path>
@@ -235,6 +235,16 @@
 	</api>
 
 	<api>
+		<name>Siemens Game API</name>
+		<description>An obsolete b/w gaming API.
+		</description>
+		<names>siemens-game-api, siemens-game</names>
+		<symbol>siemens-game-api</symbol>
+		<files>siemens-game-api.jar</files>
+		<path>import/siemens-game-api.jar</path>
+	</api>
+
+	<api>
 		<name>Siemens Color Game API</name>
 		<description>A predecessor of the MIDP/2.0 game API without
 		transformations.
@@ -249,7 +259,7 @@
 		<name>Siemens Extension API</name>
 		<description>A collection of additional classes for Siemens MIDP/1.0 devices.
 		</description>
-		<names>siemens-extension-api</names>
+		<names>siemens-extension-api,siemens-extension</names>
 		<symbol>siemens-extension-api</symbol>
 		<features>supportsWMAPIWrapper</features>
 		<files>siemens-extension-api.jar</files>
@@ -265,6 +275,17 @@
 		<symbol>svg</symbol>
 		<files>m2g.jar</files>
 		<path>import/m2g.jar</path>
+	</api>
+
+	<api>
+		<name>Advanced Multimedia Supplements</name>
+		<description>
+		Extensions for handling multimedia content.
+		</description>
+		<names>JSR-234, JSR234, advancedmultimedia, advanced-multimedia, advancedmmapi</names>
+		<symbol>advancedmultimedia</symbol>
+		<files>advancedmultimedia.jar</files>
+		<path>import/advancedmultimedia.jar</path>
 	</api>
 
 	<api>
@@ -284,6 +305,40 @@
 		<files>enough-j2mepolish-runtime.jar</files>
 		<path>import/enough-j2mepolish-runtime.jar</path>
 	</api>
+
+	<api>
+		<name>Webservices API</name>
+		<description>
+		Allows to access SOAP webservices.
+		</description>
+		<names>webservice, webservices, webserviceapi, JSR-172, JSR172</names>
+		<symbol>webservice</symbol>
+		<files>webservice.jar</files>
+		<path>import/webservice-api.jar</path>
+	</api>
+
+	<api>
+		<name>Security and Trust Services API</name>
+		<description>
+		Provides J2ME applications with APIs for security and trust services through the integration of a Security Element.
+		</description>
+		<names>security, security-api, security-and-trust-api, JSR-177, JSR177</names>
+		<symbol>security</symbol>
+		<files>security.jar</files>
+		<path>import/security.jar</path>
+	</api>
+	
+	<api>
+		<name>SIP API</name>
+		<description>
+		The SIP API enables SIP applications to be executed in memory limited terminals, especially targeting to mobile phones.
+		</description>
+		<names>sip, sipapi, sip-api, JSR-180, JSR180</names>
+		<symbol>sip</symbol>
+		<files>sip.jar</files>
+		<path>import/sip.jar</path>
+	</api>
+	
 
 <!--
 	You can use this block to define a new API

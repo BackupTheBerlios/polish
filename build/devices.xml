@@ -769,7 +769,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ClosedFlipScreenSize" value="240x320"/>
         <capability name="CanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="jtwi,pdapi,btapi,wmapi2.0,webservice,mmapi,m3g,nokiaui,"/>
+		<capability name="JavaPackage" value="jtwi,pdapi,btapi,wmapi2.0,webservice,mmapi,m3g,nokiaui"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1, CDC/1.0"/>
         <capability name="JavaProtocol" value="http, socket, https, ssl, datagram"/>
@@ -993,6 +993,13 @@ These namespaces/schemas will be used soon.
         <capability name="IconSize" value="16x16, 24x24" />
    		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin, NoPermanentBacklight"/>
 		<capability name="key.ReturnKey" value="-11"/>
+	</device>
+	
+	<device>
+		<identifier>Sony-Ericsson/W900_emu</identifier>
+		<description>Emulator definition, since nokia-ui=API does not work on emulator</description>
+		<parent>Sony-Ericsson/W900</parent>
+   		<capability name="Bugs" value="TransparencyNotWorkingInNokiaUiApi"/>
 	</device>
 
 	<device>
@@ -1453,7 +1460,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="wmapi 1.0, wmapi2.0, mmapi, btapi, pdaapi, webservice, advanced-multimedia, m3g, mascot"/>
+		<capability name="JavaPackage" value="wmapi, wmapi2.0, mmapi, btapi, pdaapi, webservice, advanced-multimedia, m3g, mascot"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="SoundFormat" value="iMelody, eMelody, midi, sp-midi, amr, mp4, mp3, m4a, 3gpp, wav, RA8, wma, xmf, rhz"/>
@@ -1823,7 +1830,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="176x220" />       
 		<capability name="ExternalScreenSize" value="96x32"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="mmapi 1.1, wmapi1.1, wmapi2.0, btapi" />
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, wmapi2.0, btapi" />
 		<capability name="SoundFormat" value="amr,mp3,wav,midi,imelody" />
 		<capability name="ImageFormat" value="png, jpeg, bmp, wbmp, gif" />
 		<capability name="JavaProtocol" value="HTTP, Socket, UDP" />
@@ -1862,7 +1869,7 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="176x206"/>
 		<capability name="CanvasSize" value="176x188"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi 1.1, wmapi1.1, wmapi2.0, pdaapi, bluetooth,bluetooth-obex-api,M3G,location,webservices" />
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, wmapi2.0, pdaapi, bluetooth,bluetooth-obex-api,M3G,location,webservices" />
 		<capability name="SoundFormat" value="amr,mpeg,,x-tone-seq,midi,x-wav,basic,x-idenvselp,x-idenambe,mp4v-es,quicktime" />
 		<capability name="VideoFormat" value="mpeg, mp4v-es, quicktime" />
 		<capability name="ImageFormat" value="wbmp, png,PNG w/ Transparency and Alpha, jpeg, x-rgb565" />
@@ -3659,7 +3666,6 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Motorola"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value=""/>
 		<capability name="JavaProtocol" value="udp, http1.1, tcp"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="FullCanvasSize" value=""/>
@@ -4467,7 +4473,7 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Nokia OS"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, pdaapi,"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, pdaapi"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
@@ -10627,7 +10633,7 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="176x205"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaPackage" value="mmapi1.1, 3d, wmapi1.1, "/>
+		<capability name="JavaPackage" value="mmapi1.1, 3d, wmapi1.1"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="SoundFormat" value="midi, midi64, x-tone-seq, wav, x-wav, basic, au, amr, wb-amr, raw"/>
 		<capability name="PolyphonicVoices" value="64"/>

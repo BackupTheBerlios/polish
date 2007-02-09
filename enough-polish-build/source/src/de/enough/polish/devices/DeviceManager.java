@@ -434,6 +434,24 @@ public class DeviceManager {
 		return getDevices( this.devices, supportedConfigurations, supportedPlatforms );
 	}
 	
+	/**
+	 * Retrieves all devices with support for the specified platform.
+	 * @param platform the platform that should be supported by the device
+	 * @return a list of devices suporting that specific platform, can be empty
+	 */
+	public Device[] getDevices(Platform platform) {
+		return getDevices(null, new Platform[]{platform});
+	}
+	
+	/**
+	 * Retrieves all devices with support for the specified configuration.
+	 * @param configuration the configuration that should be supported by the device
+	 * @return a list of devices suporting that specific configuration, can be empty
+	 */
+	public Device[] getDevices(Configuration configuration) {
+		return getDevices( new Configuration[]{ configuration }, null);
+	}
+	
 	public Device[] getDevices( Device[] filteredDevices, Configuration[] supportedConfigurations, Platform[] supportedPlatforms ) {
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < filteredDevices.length; i++) {
@@ -600,4 +618,6 @@ public class DeviceManager {
 			this.devicesByUserAgent.clear();
 		}
 	}
+
+
 }

@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -500,6 +501,24 @@ public class DeviceDatabase {
 //			this.platformManager.clear();
 //		}
 		System.gc();
+	}
+
+	/**
+	 * Retrieves all devices with support for the specified platform.
+	 * @param platform the platform that should be supported by the device
+	 * @return a list of devices suporting that specific platform, can be empty
+	 */
+	public Device[] getDevices(Platform platform) {
+		return this.deviceManager.getDevices(platform);
+	}
+	
+	/**
+	 * Retrieves all devices with support for the specified configuration.
+	 * @param configuration the configuration that should be supported by the device
+	 * @return a list of devices suporting that specific configuration, can be empty
+	 */
+	public Device[] getDevices(Configuration configuration) {
+		return this.deviceManager.getDevices(configuration);
 	}
 	
         
