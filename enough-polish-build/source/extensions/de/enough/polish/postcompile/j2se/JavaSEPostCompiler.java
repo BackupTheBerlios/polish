@@ -45,8 +45,6 @@ public class JavaSEPostCompiler
    */
   public void postCompile(File classesDir, Device device) throws BuildException
   {
-    System.out.println("Michael: JavaSEPostCompiler");
-    
     byte[] buffer = new byte[1024 * 1024];
     
     try
