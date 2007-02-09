@@ -46,15 +46,13 @@ import de.enough.polish.Variable;
 import de.enough.polish.ant.requirements.Requirements;
 import de.enough.polish.devices.Bug;
 import de.enough.polish.devices.BugManager;
-import de.enough.polish.devices.CapabilityManager;
-import de.enough.polish.devices.ConfigurationManager;
-import de.enough.polish.devices.DeviceGroupManager;
-import de.enough.polish.devices.DeviceManager;
+import de.enough.polish.devices.Configuration;
+import de.enough.polish.devices.DeviceDatabase;
+import de.enough.polish.devices.DeviceTree;
 import de.enough.polish.devices.IdentifierComparator;
 import de.enough.polish.devices.Library;
 import de.enough.polish.devices.LibraryManager;
-import de.enough.polish.devices.PlatformManager;
-import de.enough.polish.devices.VendorManager;
+import de.enough.polish.devices.Platform;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.StringUtil;
@@ -77,11 +75,13 @@ public class HtmlExporterTask extends Task {
 	private String targetDir = "../enough-polish-website/tmp/devices/";
 	private HashMap deviceLinks = new HashMap();
 	private Comparator caseInsensitiveComparator = new CaseInsensitiveComparator();
-	private String databaseDir = "../enough-polish-build/";
+	private File polishHome = new File("../enough-polish-build/" );
 	private LibraryManager libraryManager;
 	private BugManager bugManager;
 
-	private DeviceManager deviceManager;
+	//private DeviceManager deviceManager;
+
+	private DeviceDatabase database;
 	
 	/**
 	 * Creates a new uninitialised task
@@ -93,15 +93,20 @@ public class HtmlExporterTask extends Task {
 	public void execute() throws BuildException {
 		// load device database:
 		try {
-			CapabilityManager capabilityManager = new CapabilityManager( getProject().getProperties(),  open( "capabilities.xml" ) );
-			ConfigurationManager configurationManager = new ConfigurationManager( capabilityManager, open("configurations.xml"));
-			PlatformManager platformManager = new PlatformManager( capabilityManager, open("platforms.xml"));
-			this.libraryManager = new LibraryManager(getProject().getProperties(), new File( "import"), this.wtkHome, open( "apis.xml" ) );
-			DeviceGroupManager groupManager = new DeviceGroupManager( open("groups.xml"), capabilityManager ); 
-			VendorManager vendorManager = new VendorManager( null, open("vendors.xml"), capabilityManager, groupManager );
-			this.deviceManager = new DeviceManager( configurationManager, platformManager, vendorManager, groupManager, this.libraryManager, capabilityManager, open("devices.xml") );
+			this.database = new DeviceDatabase( this.polishHome );
+			this.libraryManager = this.database.getLibraryManager();
+//			CapabilityManager capabilityManager = new CapabilityManager( getProject().getProperties(),  open( "capabilities.xml" ) );
+//			ConfigurationManager configurationManager = new ConfigurationManager( capabilityManager, open("configurations.xml"));
+//			PlatformManager platformManager = new PlatformManager( capabilityManager, open("platforms.xml"));
+//			this.libraryManager = new LibraryManager(getProject().getProperties(), new File( "import"), this.wtkHome, open( "apis.xml" ) );
+//			DeviceGroupManager groupManager = new DeviceGroupManager( open("groups.xml"), capabilityManager ); 
+//			VendorManager vendorManager = new VendorManager( null, open("vendors.xml"), capabilityManager, groupManager );
+//			this.deviceManager = new DeviceManager( configurationManager, platformManager, vendorManager, groupManager, this.libraryManager, capabilityManager, open("devices.xml") );
 			this.bugManager = new BugManager( getProject().getProperties(), open("bugs.xml"));
-			Device[] devices = this.deviceManager.getDevices();
+//			Device[] devices = this.deviceManager.getDevices();
+			
+			Device[] devices = this.database.getDevices();
+
 			
 			// create detailed device pages:
 			for (int i = 0; i < devices.length; i++) {
@@ -129,8 +134,9 @@ public class HtmlExporterTask extends Task {
 				}
 			}
 			String[] apis = (String[]) apisByName.keySet().toArray( new String[ apisByName.size()] );
-			Arrays.sort( apis );
-			String[] apiLinks = new String[ apis.length ];
+			//Arrays.sort( apis );
+			ArrayList apiLinksList = new ArrayList( apis.length * 2 );
+			//String[] apiLinks = new String[ apis.length ];
 			
 		 	// get the devices for each api:
 			IndexGenerator indexGenerator = new NoIndexGenerator();
@@ -155,38 +161,51 @@ public class HtmlExporterTask extends Task {
 				String fileName = "devices-" + clean( api ) + ".html";
 				process( "Devices supporting the " + fullApiName,  fileName,
 						filteredDevices, indexGenerator, introText, "api" );
-				apiLinks[i] = "<a href=\"" + fileName + "\" class=\"h2index\">" + fullApiName + "</a><br/>";
+				apiLinksList.add(  "<a id=\"" + fullApiName + "\" href=\"" + fileName + "\" class=\"h2index\">" + fullApiName + " (" + filteredDevices.length + ")</a><br/>" );
+				if (lib != null) {
+					String[] names = lib.getNames();
+					for (int j = 0; j < names.length; j++) {
+						String name = names[j];
+						if (name.startsWith("JSR-")) {
+							apiLinksList.add(  "<a id=\"" + name + "\" href=\"" + fileName + "\" class=\"h2index\">" + name + ": " + fullApiName +  " (" + filteredDevices.length + ")</a><br/>" );
+							break;
+						}
+					}
+				}
 			}
+			String[] apiLinks = (String[]) apiLinksList.toArray( new String[ apiLinksList.size() ] );
+			Arrays.sort( apiLinks );
 			writeApiOverview( apiLinks );
 			
 			// now select devices by platform:
-			writePlatformOverview();
-			Requirements requirements = new Requirements();
-			requirements.addConfiguredRequirement( new Variable("JavaPlatform", "MIDP/1.0" ));
-			Device[] filteredDevices = requirements.filterDevices(devices);
-	 		process("MIDP/1.0 Devices", "midp1.html", filteredDevices, indexGenerator, 
-					"The following devices support the MIDP/1.0 standard.", "platform");
-
-			requirements = new Requirements();
-			requirements.addConfiguredRequirement( new Variable("JavaPlatform", "MIDP/2.0" ));
-			filteredDevices = requirements.filterDevices(devices);
-			process("MIDP/2.0 Devices", "midp2.html", filteredDevices, indexGenerator, 
-					"The following devices support the MIDP/2.0 standard.", "platform");			
-
-			requirements = new Requirements();
-			requirements.addConfiguredRequirement( new Variable("JavaConfiguration", "CLDC/1.0" ));
-			filteredDevices = requirements.filterDevices(devices);
-			process("CLDC/1.0 Devices", "cldc10.html", filteredDevices, indexGenerator, 
-					"The following devices support the CLDC/1.0 configuration.", "platform");			
-
-			requirements = new Requirements();
-			requirements.addConfiguredRequirement( new Variable("JavaConfiguration", "CLDC/1.1" ));
-			filteredDevices = requirements.filterDevices(devices);
-			process("CLDC/1.1 Devices", "cldc11.html", filteredDevices, indexGenerator, 
-					"The following devices support the CLDC/1.1 configuration.", "platform");	
+			Platform[] platforms = this.database.getPlatforms();
+			String[] platformsLinks = new String[ platforms.length ];
+			for (int i = 0; i < platforms.length; i++) {
+				Platform platform = platforms[i];
+				String identifier = platform.getIdentifier();
+				Device[] filteredDevices = this.database.getDevices( platform );
+				String page = "platform_" + getPageFromIdentifier(identifier);
+				platformsLinks[i] = "<a href=\"" + page + "\">" + identifier + " (" + filteredDevices.length + ")</a>";
+		 		process( identifier + " Devices", page, filteredDevices, indexGenerator, 
+						"The following devices support the " + identifier + " platform", "platform");
+			}
+			Configuration[] configurations = this.database.getConfigurations();
+			String[] configurationsLinks = new String[ configurations.length ];
+			for (int i = 0; i < configurations.length; i++) {
+				Configuration configuration = configurations[i];
+				String identifier = configuration.getIdentifier();
+				Device[] filteredDevices = this.database.getDevices( configuration );
+		 		String page = "configuration_" + getPageFromIdentifier(identifier);
+		 		configurationsLinks[i] =  "<a href=\"" + page + "\">" + identifier + " (" + filteredDevices.length + ")</a>";
+				process( identifier + " Devices", page, filteredDevices, indexGenerator, 
+						"The following devices support the " + identifier + " configuration", "configuration");
+				
+			}
+			writePlatformOverview(platformsLinks, configurationsLinks);
 			
 			// write known issues:
 			writeKnownIssues();
+			
 		} catch (de.enough.polish.BuildException e) {
 			throw new BuildException( e.getMessage() );
 		} catch (IOException e) {
@@ -305,7 +324,7 @@ public class HtmlExporterTask extends Task {
 		lines.add("	// implement workaround");
 		lines.add("//#endif" );
 		lines.add("</pre></p>");
-		Device[] devices = issue.getDevices( this.deviceManager );
+		Device[] devices = issue.getDevices( this.database.getDeviceManager() );
 		if (devices.length == 1) {
 			lines.add("<h2 id=\"devices\">Affected Device</h2>" );
 			
@@ -779,10 +798,12 @@ public class HtmlExporterTask extends Task {
 	}
 	
 	/**
+	 * @param configurations 
+	 * @param platforms 
 	 * @throws IOException
 	 * 
 	 */
-	private void writePlatformOverview() throws IOException {
+	private void writePlatformOverview(String[] platforms, String[] configurations) throws IOException {
 		String fileName = "platform.html";
 		System.out.println("Creating " + fileName);
 		ArrayList lines = new ArrayList();
@@ -793,14 +814,20 @@ public class HtmlExporterTask extends Task {
 		lines.add("<%include start.txt %>" );
 		lines.add("");
 //		lines.add("<div id=\"content\">" );
-		lines.add("<h1 id=\"top\">Device by APIs</h1>" );
-		lines.add( "<p>Following platforms are supported by J2ME devices:</p><ul>");
-		lines.add("<li><a href=\"midp1.html\">MIDP/1.0</a></li>");
-		lines.add("<li><a href=\"midp2.html\">MIDP/2.0</a></li>");
+		lines.add("<h1 id=\"top\">Device by Platforms</h1>" );
+		lines.add( "<p>Following platforms are supported by mobile devices:</p><ul>");
+		for (int i = 0; i < platforms.length; i++) {
+			lines.add("<li>" + platforms[i]  + "</li>");
+		}
+//		lines.add("<li><a href=\"midp1.html\">MIDP/1.0</a></li>");
+//		lines.add("<li><a href=\"midp2.html\">MIDP/2.0</a></li>");
 		lines.add("</ul>");
-		lines.add( "<p>Following configurations are supported by J2ME devices:</p><ul>");
-		lines.add("<li><a href=\"cldc10.html\">CLDC/1.0</a></li>");
-		lines.add("<li><a href=\"cldc11.html\">CLDC/1.1</a></li>");
+		lines.add( "<p>Following configurations are supported by mobile devices:</p><ul>");
+		for (int i = 0; i < configurations.length; i++) {
+			lines.add("<li>" + configurations[i]  + "</li>");
+		}
+//		lines.add("<li><a href=\"cldc10.html\">CLDC/1.0</a></li>");
+//		lines.add("<li><a href=\"cldc11.html\">CLDC/1.1</a></li>");
 		lines.add("</ul>");
 		// add the end:
 		lines.add("<%include end.txt %>");
@@ -808,6 +835,12 @@ public class HtmlExporterTask extends Task {
 		// write the file:
 		String[] htmlCode = (String[] ) lines.toArray( new String[ lines.size() ] );
 		FileUtil.writeTextFile( new File( this.targetDir + fileName), htmlCode );
+	}
+	
+	String getPageFromIdentifier( String identifier ) {
+		identifier = identifier.replace('/', '_' );
+		identifier += ".html";
+		return identifier;
 	}
 
 	/**
@@ -856,7 +889,7 @@ public class HtmlExporterTask extends Task {
 	private InputStream open(String fileName) 
 	throws FileNotFoundException 
 	{
-		File file = new File( this.databaseDir + fileName );
+		File file = new File( this.polishHome, fileName );
 		return new FileInputStream( file );
 	}
 	
@@ -865,9 +898,6 @@ public class HtmlExporterTask extends Task {
 			String introText, String subSection ) 
 	throws IOException 
 	{
-		if (devices.length == 0) {
-			throw new BuildException("unable to create [" + fileName + "]: got only 0 devices.");
-		}
 		System.out.println("Creating " + fileName);
 		String[] cssRowClasses = new String[]{"oddRow", "evenRow" };
 		ArrayList lines = new ArrayList();
@@ -882,7 +912,9 @@ public class HtmlExporterTask extends Task {
 		if (introText != null) {
 			lines.add("<p>" + introText + "</p>");
 		}
-		if (devices.length > 1) {
+		if (devices.length == 0) {
+			lines.add("<p>There are not known devices in this list yet.</p>");
+		} else if (devices.length > 1) {
 			lines.add("<p>There are " + devices.length + " devices in this list.</p>");
 		}
 		int indexRow = lines.size();
