@@ -150,7 +150,7 @@
 		<features>JavaSE, j2seRuntime</features>
 		<description>Includes some classes of the Jave Standard Edition for compilation.</description>
 		<capability name="build.compile.dontSetBootClassPath" value="true" />
-		<capability name="build.BootClassPath" value="midp-2.0.jar,${polish.home}/lib/AppleJavaExtensions.jar,${java.home}/jre/lib/rt.jar,${java.home}/lib/rt.jar:${java.home}/../Classes/classes.jar" />
+		<capability name="build.BootClassPath" value="midp-2.0.jar,${polish.home}/lib/AppleJavaExtensions.jar,${java.home}/jre/lib/rt.jar,${java.home}/lib/rt.jar,${java.home}/../Classes/classes.jar" />
 		<capability name="build.obfuscator.ignorewarnings" value="true" />
 		<capability name="build.obfuscator.KeepClasses" value="de.enough.polish.runtime.swing.SwingSimulator,de.enough.polish.runtime.swing.SwingAppletSimulator" />
 		<capability name="build.Preverifier" value="none" />
