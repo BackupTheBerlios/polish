@@ -38,11 +38,13 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.ExtensionDefinition;
 import de.enough.polish.util.AbbreviationsGenerator;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.OutputFilter;
 import de.enough.polish.util.ProcessUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Is used to obfuscate code with the ProGuard obfuscator.</p>
@@ -126,6 +128,14 @@ implements OutputFilter
 		for (int i = 0; i < preserve.length; i++) {
 			argsList.add( "-keep" );
 			argsList.add( "class " + preserve[i] );
+		}
+		Environment env = device.getEnvironment();
+		if (env != null && env.getVariable("polish.build.Obfuscator.KeepClasses") != null ) {
+			preserve = StringUtil.splitAndTrim(env.getVariable("polish.build.Obfuscator.KeepClasses"), ',');
+			for (int i = 0; i < preserve.length; i++) {
+				argsList.add( "-keep" );
+				argsList.add( "class " + preserve[i] );
+			}			
 		}
 		// add settings:
 		if (!this.doOptimize) {
