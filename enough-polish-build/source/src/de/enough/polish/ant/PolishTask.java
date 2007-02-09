@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Vector;
@@ -770,6 +771,13 @@ public class PolishTask extends ConditionalTask {
 		// this is actually outdated and only kept for backwards-compatibility:
 		if (debugManager != null && this.buildSetting.getDebugSetting().useGui()) {
 			this.polishProject.addFeature("useDebugGui");
+		}
+		// add all system properties:
+		Properties props = System.getProperties();
+		Object[] keys = props.keySet().toArray();
+		for (int i = 0; i < keys.length; i++) {
+			String key = (String) keys[i];
+			this.polishProject.addDirectCapability( key, System.getProperty(key) );
 		}
 		// add all ant properties if desired: 
 		if (this.buildSetting.includeAntProperties()) {
