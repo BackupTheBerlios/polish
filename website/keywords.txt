@@ -15,7 +15,7 @@ Symbol
 #ifdef, #ifndef, #elifdef, #elifndef
 #condition
 #style
-#define, #undefine
+#define, #undefine, #defineorappend
 #=
 #include
 #message
@@ -31,6 +31,11 @@ Symbol
 ArrayList
 TextUtil
 Locale
+HashMap
+IntegerHashMap
+Arrays
+DrawUtil
+ImageUtil
 
 
 #####################################
@@ -73,8 +78,9 @@ View Type::viewtype
 #####################################
 
 MIDlet
-Form, List, TextBox, Screen
+Form, List, TextBox, Screen, SnapshotScreen, FramedForm, TabbedForm
 Item, Gauge, StringItem, ImageItem, IconItem, ChoiceGroup
+ChoiceTextField
 TextField, DateField
 Ticker, MenuBar
 

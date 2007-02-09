@@ -3,8 +3,16 @@
 	<%index %>
 <%endif %>
 
+<p class="newsdate">2007-02-09:</p>
+<h2 id="20-rc">J2ME Polish 2.0 RC</h2>
+<p>
+	Please check out the release candidate of J2ME Polish 2.0 - we are now working hard on the documentation! Please let us know about
+	possible bugs in there:
+	<a href="<%= newsbasedir %>download.html">J2ME Polish 2.0 RC</a>
+</p>
+
 <p class="newsdate">2006-10-06:</p>
-<h2 id="20-beta3">Last beta before going final: J2ME Polish 2.0 Beta 3!</h2>
+<h2 id="20-beta3">Last beta before going RC: J2ME Polish 2.0 Beta 3!</h2>
 <p>
 	J2ME Polish 2.0 Beta 3 is now publicly available for <a href="<%= newsbasedir %>downloads/j2mepolish-2.0-beta3.html">download</a>
 	This includes many bugfixes and improvements - the final release is just around the corner!

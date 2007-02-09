@@ -1,0 +1,51 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.gui %>
+<%set title = J2ME Polish: GUI: FramedForm %>
+<%set basedir = ../ %>
+<%include start.txt %>
+
+	<h1 id="top">Using FramedForms</h1>
+	<p>
+	
+</p>
+<h2 id="design">Design</h2>
+<p><<img src="<%= basedir%>images/gui-screen-framedform.png" width="354" height="421" alt="FramedForm"/>
+
+<br />The above design has been realized with following settings in <i>polish.css</i>:
+<pre>
+.gradientFramedForm {
+	padding: 2;
+	background-color: screenBgColor;
+	layout: vertical-center | horizontal-center;
+}
+
+rightframe {
+	layout: vertical-expand | vertical-center;
+}
+</pre>
+</p>
+<p>The FramedForm contains any kind of items in several frames. 
+The user can jump between different frames by clicking left and right (when the non-scrollable frames contain selectable items).
+</p>
+<p>
+The FramedForm uses different styles for its design:
+</p>
+<ul>
+	<li><b>leftframe</b>: the design of the frame left of the main content area</li>
+	<li><b>rightframe</b>: the design of the frame right of the main content area</li>
+	<li><b>topframe</b>: the design of the frame over the main content area</li>
+	<li><b>bottomframe</b>: the design of the frame below the main content area</li>
+</ul>
+
+<h2 id="programming">Programming</h2>
+<p>
+Please refer to the &quot;framedform&quot; sample application.
+</p>
+	<h2 id="JavaDoc">JavaDoc</h2>
+	<p>
+		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/FramedForm.html">FramedForm</a>
+	</p>
+
+
+
+<%include end.txt %>
