@@ -52,7 +52,7 @@ public class NumberFunction extends PropertyFunction {
 	 * @see de.enough.polish.propertyfunctions.PropertyFunction#process(java.lang.String, java.lang.String[], de.enough.polish.Environment)
 	 */
 	public String process(String input, String[] arguments, Environment env) {
-		return "" + StringUtil.split( input,',' ).length;
+		return Integer.toString(StringUtil.split( input,',' ).length);
 	}
 
 }
