@@ -102,6 +102,7 @@ public class ClassPath {
 		File polishHome = (File) env.get("polish.home");
 		polishHome = new File( polishHome, "import" );
 		File importFolder = (File) env.get("polish.apidir");
+    ArrayList cleanedPaths = new ArrayList( paths.length );
 		for (int i = 0; i < paths.length; i++) {
 			String pathElement = env.writeProperties( paths[i] );
 			
@@ -130,6 +131,7 @@ public class ClassPath {
 				}
 			}
 			if (lib != null) {
+        cleanedPaths.add( lib.getAbsolutePath() );
 				paths[i] = lib.getAbsolutePath();
 				buffer.append( lib.getAbsolutePath() );
 				if ( i < paths.length - 1 ) {
@@ -137,6 +139,7 @@ public class ClassPath {
 				}
 			}
 		}
+    paths = (String[]) cleanedPaths.toArray( new String[ cleanedPaths.size() ] );
 		
 		// now add ccertain optional APIs to the bootclasspath if they require it (like the MMAPI on MIDP 2.0 systems):
 		Library[] libraries = this.libraryManager.getLibraries( this.device );
