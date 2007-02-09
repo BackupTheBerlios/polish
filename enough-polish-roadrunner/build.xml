@@ -14,7 +14,7 @@
 	<!-- task definitions -->
 	<!-- classpath="import/enough-j2mepolish-build.jar:import/jdom.jar:import/proguard.jar" -->
 	<taskdef classname="de.enough.polish.ant.PolishTask" 
-		classpath="${polish.home}/bin/classes:${polish.home}/import/jdom.jar:${polish.home}/import/proguard.jar" 
+		classpath="${polish.home}/bin/classes:${polish.home}/lib/jdom.jar:${polish.home}/lib/proguard.jar" 
 		name="j2mepolish"/>
 	
 			
