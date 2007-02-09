@@ -141,7 +141,7 @@ implements OutputFilter
 		if (!this.doOptimize) {
 			argsList.add( "-dontoptimize" );
 		}
-		if (this.environment.hasSymbol("build.obfuscator.ignorewarnings")) {
+		if (this.environment.hasSymbol("polish.build.obfuscator.ignorewarnings")) {
 			argsList.add( "-ignorewarnings" );
 		}
 	    List serializableClassNames = (List) this.environment.get("serializable-classes" );
