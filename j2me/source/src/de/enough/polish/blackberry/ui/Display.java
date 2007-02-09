@@ -6,6 +6,7 @@ package de.enough.polish.blackberry.ui;
 
 import java.util.Hashtable;
 
+import net.rim.device.api.system.Application;
 import net.rim.device.api.system.KeyListener;
 import net.rim.device.api.system.TrackwheelListener;
 
@@ -13,7 +14,6 @@ import de.enough.polish.blackberry.midlet.MIDlet;
 import de.enough.polish.ui.Alert;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
-import de.enough.polish.ui.StyleSheet;
 
 /**
  * <code>Display</code> represents the manager of the display and
@@ -573,7 +573,7 @@ implements TrackwheelListener, KeyListener
 	public void setCurrent( Displayable nextDisplayable)
 	{
 		((Canvas)nextDisplayable).showNotify();
-        Object lock = MIDlet.getEventLock();
+        Object lock = Application.getEventLock();
         synchronized (lock) {
             if (this.current != null) {
         		((Canvas)this.current).hideNotify();

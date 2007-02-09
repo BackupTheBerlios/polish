@@ -53,6 +53,7 @@ import java.util.TimeZone;
 
 import de.enough.polish.ui.StyleSheet;
 import net.rim.device.api.i18n.DateFormat;
+import net.rim.device.api.system.Application;
 import net.rim.device.api.ui.UiApplication;
 import net.rim.device.api.ui.component.DateField;
 
@@ -159,7 +160,7 @@ public class PolishDateField extends DateField {
 
 	public void setInputMode(int mode) {
 		DateFormat format = getDateFormat(mode);
-		Object bbLock = UiApplication.getEventLock();
+		Object bbLock = Application.getEventLock();
 		synchronized (bbLock) {
 			setFormat( format );
 		}
