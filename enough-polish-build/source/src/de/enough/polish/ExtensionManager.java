@@ -512,21 +512,28 @@ public class ExtensionManager {
 			Extension extension = extensions[i];
 			extension.execute( device, locale, environment );
 		}
-    String buildExtensionName = environment.getVariable("polish.build." + type );
-    if (buildExtensionName  != null ) {
-      try
-      {
-        Extension extension = getExtension(type, buildExtensionName, environment);
-        extension.execute(device, locale, environment);
-      }
-      catch (BuildException e)  
-      {
-        throw e;
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace();
-        throw new BuildException( e.toString(), e );
+    String tmpBuildExtensionNames = environment.getVariable("polish.build." + type);
+    if (tmpBuildExtensionNames != null)
+    {
+      String[] buildExtensionNames = StringUtil.splitAndTrim(tmpBuildExtensionNames, ',');
+      if (buildExtensionNames != null ) {
+        try
+        {
+          for (int i = 0; i < buildExtensionNames.length; i++)
+          {
+            Extension extension = getExtension(type, buildExtensionNames[i], environment);
+            extension.execute(device, locale, environment);
+          }
+        }
+        catch (BuildException e)  
+        {
+          throw e;
+        }
+        catch (Exception e)
+        {
+          e.printStackTrace();
+          throw new BuildException( e.toString(), e );
+        }
       }
     }
 	}
