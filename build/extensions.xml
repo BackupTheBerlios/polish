@@ -822,5 +822,11 @@
 		<autostart>polish.build.hasRemoteClasses</autostart>
 	</extension>
 	
+	<extension>
+		<type>finalizer</type>
+		<name>applet</name>
+		<class>de.enough.polish.finalize.applet.AppletFinalizer</class>
+		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar</classpath>
+	</extension>
 	
 </extensions>
