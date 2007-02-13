@@ -171,6 +171,8 @@ public abstract class ScreenChangeAnimation
 	 *         will be stopped and the next screen will be shown instead.
 	 */
 	protected abstract boolean animate();
+	
+	public abstract void paint( Graphics g );
 
 	
 	

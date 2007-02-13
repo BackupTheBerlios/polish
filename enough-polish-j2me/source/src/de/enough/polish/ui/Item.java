@@ -1837,11 +1837,17 @@ public abstract class Item extends Object
 			this.isInitialized = true;
 			return;
 		}
+		
 		this.itemWidth = noneContentWidth + this.contentWidth;
 		//#ifdef polish.css.min-width
-		if (this.itemWidth < this.minimumWidth ) {
-			this.itemWidth = this.minimumWidth;
-		}
+			if (this.itemWidth < this.minimumWidth ) {
+				this.itemWidth = this.minimumWidth;
+			}
+		//#endif
+		//#ifdef polish.css.max-width
+			if (this.maximumWidth != 0 && this.itemWidth > this.maximumWidth ) {
+				this.itemWidth = this.maximumWidth;
+			}
 		//#endif
 		int cHeight = this.contentHeight;
 		//#ifdef polish.css.before
@@ -1858,13 +1864,15 @@ public abstract class Item extends Object
 			  + this.paddingBottom + this.borderWidth + this.marginBottom;
 		if (this.itemWidth + labelWidth <= lineWidth) {
 			// label and content fit on one row:
-			this.itemWidth += labelWidth;
 			this.useSingleRow = true;
 			if (this.label != null) {
 				if ( (this.label.layout & LAYOUT_NEWLINE_AFTER) != 0 || ((this.layout & LAYOUT_NEWLINE_BEFORE) == LAYOUT_NEWLINE_BEFORE )) {
 					this.useSingleRow = false;
 					cHeight += labelHeight;
 				}
+			}
+			if (this.useSingleRow) {
+				this.itemWidth += labelWidth;				
 			}
 			if ( cHeight + noneContentHeight < labelHeight ) {
 				cHeight = labelHeight - noneContentHeight;

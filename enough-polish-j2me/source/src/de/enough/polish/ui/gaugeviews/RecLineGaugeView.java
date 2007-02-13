@@ -51,12 +51,11 @@ public class RecLineGaugeView extends ItemView{
 
 	
 	protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		// TODO Auto-generated method stub
 		Gauge gauge = (Gauge)parent;
-		int centerX = x + parent.itemWidth / 2;
-		int centerY = y + parent.itemHeight / 2;
-		double valuePercent = ((double)gauge.getValue() / (double)gauge.getMaxValue())*100 ;
-		int position = (int) ((valuePercent*this.number)/100);
+//		int centerX = x + parent.itemWidth / 2;
+//		int centerY = y + parent.itemHeight / 2;
+		int valuePercent = (gauge.getValue() * 100 ) / gauge.getMaxValue();
+		int position = ((valuePercent*this.number)/100);
 		for(int i = 0; i < this.number; i++){
 			if(i == position ){
 				g.setColor(this.selectedColor);

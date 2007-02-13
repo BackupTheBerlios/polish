@@ -937,7 +937,7 @@ public class MenuBar extends Item {
 						this.overlayBackground = new TranslucentSimpleBackground( color );
 					}
 				//#else
-					this.overlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
+					this.overlayBackground = new TranslucentSimpleBackground( 0x88000000 );
 				//#endif
 	
 			}
