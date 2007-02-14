@@ -419,22 +419,24 @@ public class SerializationVisitor
               {
             	String descShort = type.substring(1, type.length() - 1);
             	
+                /* TODO: According to M. Zdila this breaks with Externalizable[].
             	if ( this.loader.inherits(getClassName(SERIALIZABLE, this.environment), descShort))
             	  {
                     maxStack = Math.max(maxStack, 4);
             		
-            		mv.visitTypeInsn(NEW, descShort);
-            		mv.visitInsn(DUP);
-            		mv.visitMethodInsn(INVOKESPECIAL, descShort, "<init>", "()V");
-            		mv.visitInsn(AASTORE);
-            		mv.visitVarInsn(ALOAD, 0);
+                    mv.visitTypeInsn(NEW, descShort);
+                    mv.visitInsn(DUP);
+                    mv.visitMethodInsn(INVOKESPECIAL, descShort, "<init>", "()V");
+                    mv.visitInsn(AASTORE);
+                    mv.visitVarInsn(ALOAD, 0);
                     mv.visitFieldInsn(GETFIELD, this.className, name, desc);
                     mv.visitVarInsn(ILOAD, 3);
-            		mv.visitInsn(AALOAD);
+                    mv.visitInsn(AALOAD);
                     mv.visitVarInsn(ALOAD, 1);
-            		mv.visitMethodInsn(INVOKEVIRTUAL, descShort, "read", "(Ljava/io/DataInputStream;)V");
+                    mv.visitMethodInsn(INVOKEVIRTUAL, descShort, "read", "(Ljava/io/DataInputStream;)V");
             	  }
             	else
+                */
             	  {
             		mv.visitVarInsn(ALOAD, 1);
             		mv.visitMethodInsn(INVOKESTATIC, getClassName(SERIALIZER, this.environment), "deserialize", "(Ljava/io/DataInputStream;)Ljava/lang/Object;");
