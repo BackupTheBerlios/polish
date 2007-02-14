@@ -495,7 +495,7 @@ public final class Serializer {
 					classes[idCounter] = currentClass;
 					idCounter++;
 				} else {
-					currentClass = classes[ classId ];
+					currentClass = classes[ classId - 1 ];
 				}
 				Externalizable externalizable;
 				try {
