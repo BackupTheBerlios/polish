@@ -3555,7 +3555,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="HeapSize" value="2 MB"/>
 		<capability name="StorageSize" value="9 MB"/>
-		<capability name="MaxJarSize" value=""/>
+		<capability name="MaxJarSize" value="9 MB"/>
 		<capability name="MaxRecordStoreSize" value="100 KB"/>
 		<capability name="MaxSockets" value="10"/>
 		<capability name="ImageFormat" value="png, jpeg, bmp"/>
@@ -3577,7 +3577,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="HeapSize" value="800 kb"/>
 		<capability name="StorageSize" value="10 MB"/>
-		<capability name="MaxJarSize" value=""/>
+		<capability name="MaxJarSize" value="10 MB"/>
 		<capability name="MaxRecordStoreSize" value=""/>
 		<capability name="MaxSockets" value="10"/>
 		<capability name="ImageFormat" value="png, jpeg"/>
@@ -3673,7 +3673,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="HeapSize" value="1.5 MB"/>
 		<capability name="StorageSize" value="4 MB"/>
-		<capability name="MaxJarSize" value=""/>
+		<capability name="MaxJarSize" value="4 MB"/>
 		<capability name="MaxRecordStoreSize" value="64 KB"/>
 		<capability name="MaxSockets" value="4"/>
 		<capability name="ImageFormat" value="png, jpeg, bmp, gif"/>
@@ -3988,7 +3988,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="HeapSize" value="800 kb"/>
 		<capability name="StorageSize" value="5 MB"/>
-		<capability name="MaxJarSize" value=""/>
+		<capability name="MaxJarSize" value="5 MB"/>
 		<capability name="MaxRecordStoreSize" value="64 KB"/>
 		<capability name="MaxSockets" value="4"/>
 		<capability name="ImageFormat" value="png, jpeg, gif"/>
