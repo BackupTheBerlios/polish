@@ -346,6 +346,10 @@ public class Environment {
 			
 			String value = getProperty( property, needsToBeDefined );
 			if (value != null) {
+        if (value.equals("${" + property + "}")) {
+          System.err.println("WARNING: replacing " + value + " with " + value);
+          break;
+        }
 				input = StringUtil.replace( input, group, value );
 				matcher = PROPERTY_PATTERN.matcher( input );
 			}
