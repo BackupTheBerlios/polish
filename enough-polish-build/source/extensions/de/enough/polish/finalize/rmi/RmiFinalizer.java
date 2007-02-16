@@ -26,7 +26,6 @@
 package de.enough.polish.finalize.rmi;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +62,7 @@ public class RmiFinalizer extends Finalizer {
 		File sourceDir = (File) this.environment.get("rmi-classes-dir" );
 	    List rmiClasses = (List) this.environment.get("rmi-classes" );
 	    if (rmiClasses != null) {
-	    	File targetJar = targetJar = new File( device.getJarFile().getParentFile(), "client-rmi-classes.jar" );;
+	    	File targetJar = new File( device.getJarFile().getParentFile(), "client-rmi-classes.jar" );
 	    	try {
 				File obfuscationMapFile = new File( this.environment.getProjectHome(), ".polishSettings/obfuscation-map.txt" );
 				if (obfuscationMapFile.exists()) {
