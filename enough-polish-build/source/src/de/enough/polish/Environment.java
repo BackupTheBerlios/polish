@@ -346,6 +346,7 @@ public class Environment {
 			
 			String value = getProperty( property, needsToBeDefined );
 			if (value != null) {
+			  // We had an endless loop when '${foo}' got replaced by '${foo}'.
         if (value.equals("${" + property + "}")) {
           System.err.println("WARNING: replacing " + value + " with " + value);
           break;
