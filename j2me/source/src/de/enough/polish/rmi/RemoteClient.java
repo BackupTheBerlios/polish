@@ -200,31 +200,44 @@ public class RemoteClient implements Runnable {
 	 */
 	public void run() {
 		while (true) {
-			// wait for a new remote call:
-			synchronized( this.callQueue ) {
-				try {
-					this.callQueue.wait();
-				} catch (InterruptedException e) {
-					// ignore
-				}
-			}
-			// check for call:
-			while ( this.callQueue.size() != 0 ) {
-				RemoteCall call = (RemoteCall) this.callQueue.elementAt(0);
-				this.callQueue.removeElementAt(0);
-				Object[] parameters = call.getParameters();
-				long primitivesFlag = call.getPrimitivesFlag();
-				String name = call.getName();
-				try {
-					Object returnValue = callMethodSynchrone(name, primitivesFlag, parameters);
-					call.setReturnValue( returnValue );
-				} catch (RemoteException e) {
-					call.setRaisedException(e);
-				}
-				synchronized( call ) {
-					call.notify();
-				}
-			} // while there are queued calls
+      RemoteCall call = null;
+      try
+      {
+        // wait for a new remote call:
+        synchronized( this.callQueue ) {
+          try {
+            this.callQueue.wait();
+          } catch (InterruptedException e) {
+            // ignore
+          }
+        }
+        // check for call:
+        while ( this.callQueue.size() != 0 ) {
+          call = (RemoteCall) this.callQueue.elementAt(0);
+          this.callQueue.removeElementAt(0);
+          Object[] parameters = call.getParameters();
+          long primitivesFlag = call.getPrimitivesFlag();
+          String name = call.getName();
+          try {
+            Object returnValue = callMethodSynchrone(name, primitivesFlag, parameters);
+            call.setReturnValue( returnValue );
+          } catch (RemoteException e) {
+            call.setRaisedException(e);
+          }
+        } // while there are queued calls
+      }
+      // All exceptions need to be catched to not deadlock RMI.
+      catch (Exception e) {
+        //#debug error
+        System.out.println("Uncaught exception " + e.getClass().getName());
+      }
+      finally {
+        if ( call != null ) {
+          synchronized( call ) {
+            call.notify();
+          }
+        }
+      }
 		} // while true
 	} // run
 
