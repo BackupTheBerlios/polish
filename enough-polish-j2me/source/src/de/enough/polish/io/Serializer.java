@@ -28,6 +28,7 @@ package de.enough.polish.io;
 //#if polish.JavaSE
 	// imports for the Java Standard Edition:
 	import java.awt.image.BufferedImage;
+  import java.lang.reflect.Array;
 	import java.lang.reflect.Field;
 	import javax.imageio.ImageIO;
 	import java.util.Map;
@@ -175,6 +176,18 @@ public final class Serializer {
 				((Externalizable)object).write(out);
 			} else if (object instanceof Externalizable[]) { 
 				out.writeByte(TYPE_EXTERNALIZABLE_ARRAY);
+        String cn = object.getClass().getName();
+        cn = cn.substring(cn.lastIndexOf('[') + 2, cn.length() - 1);
+        //#if polish.JavaSE
+          if (obfuscationSerializeMap != null) {
+            String obfuscatedClassName = (String) obfuscationSerializeMap.get( cn );
+            if (obfuscatedClassName != null) {
+              //System.out.println("Serializer.serialize: translating classname from " + className + " to " +  obfuscatedClassName );
+              cn = obfuscatedClassName;
+            }
+          }
+        //#endif
+        out.writeUTF(cn);
 				Externalizable[] externalizables = (Externalizable[]) object;
 				out.writeInt( externalizables.length );
 				Hashtable classNames = new Hashtable();
@@ -462,8 +475,34 @@ public final class Serializer {
 			extern.read( in );
 			return extern;
 		case TYPE_EXTERNALIZABLE_ARRAY:
-			int length = in.readInt();
-			Externalizable[] externalizables = new Externalizable[ length ];
+      String cn = in.readUTF();
+      //#if polish.JavaSE
+        if (obfuscationDeserializeMap != null) {
+          String fullClassName = (String) obfuscationDeserializeMap.get( cn );
+          if (fullClassName != null) {
+            //System.out.println("Serializer.deserialize: translating classname from " + className + " to " +  fullClassName );
+            cn = fullClassName;
+          }
+        }
+      //#endif
+
+      int length = in.readInt();
+      Externalizable[] externalizables;
+
+      //#if polish.midp
+        externalizables = new Externalizable[ length ];
+      //#endif
+
+      //#if polish.JavaSE
+        try {
+          externalizables = (Externalizable[]) Array.newInstance(Class.forName( cn ), length);
+        } catch (Exception e) {
+          //#debug error
+          System.out.println("Unable to instantiate Serializable \"" + cn + "\"" + e);
+          throw new IOException( e.toString() );
+        }
+      //#endif
+      
 			Class[] classes = new Class[ Math.min( length, 7 ) ];
 			Class currentClass;
 			byte idCounter = 0;
@@ -495,7 +534,7 @@ public final class Serializer {
 					classes[idCounter] = currentClass;
 					idCounter++;
 				} else {
-					currentClass = classes[ classId - 1 ];
+					currentClass = classes[ classId  - 1 ];
 				}
 				Externalizable externalizable;
 				try {
