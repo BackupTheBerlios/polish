@@ -182,14 +182,14 @@ public class RemoteClient implements Runnable {
 		} catch (IOException e) {
 			// create new RemoteException for this:
 			throw new RemoteException( e.toString() );					
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			// create new RemoteException for this (e.g. SecurityException):
 			throw new RemoteException( e.toString() );					
 		} finally {
 			if (connection != null) {
 				try {
 					connection.close();
-					// on SE devices it happens fairly regularly that no further HttpConnection can be established - possibly because former ones have not been gargabe collected yet.
+					// on SE devices it happens fairly regularly that no further HttpConnection can be established - possibly because former ones have not been garbage collected yet.
 					System.gc();
 				} catch (IOException e) {
 					// ignore
@@ -231,8 +231,9 @@ public class RemoteClient implements Runnable {
 		  }
 		  // All exceptions need to be catched to not deadlock RMI.
 		  catch (Exception e) {
-			  //#debug error
-			  System.out.println("Uncaught exception " + e.getClass().getName());
+			//#debug error
+			System.out.println("Uncaught exception " + e.getClass().getName());
+			call.setRaisedException( new RemoteException( e.toString() ) );
 		  }
 		  finally {
 		    if ( call != null ) {
