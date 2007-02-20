@@ -78,7 +78,7 @@ public class MasterCanvasPostCompiler extends BytecodePostCompiler
         String masterCanvasClassName = getMasterCanvasClassName();
 
         MethodMapper mapper = new MethodMapper();
-        mapper.setClassLoader(device.getClassLoader());
+        mapper.setClassLoader(loader);
 
         boolean enableScreenEffects = this.environment.hasSymbol("polish.css.screen-change-animation")
                                       || this.environment.hasSymbol("polish.ScreenChangeAnimation.forward:defined");
