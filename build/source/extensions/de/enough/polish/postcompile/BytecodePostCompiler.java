@@ -38,7 +38,7 @@ public abstract class BytecodePostCompiler extends PostCompiler
       }
 
     // Create classloader for the classesDir.
-    DirClassLoader loader = DirClassLoader.createClassLoader(classesDir);
+    DirClassLoader loader = DirClassLoader.createClassLoader(device.getClassLoader(), classesDir);
     
     // Post compile stuff.
     postCompile(classesDir, device, loader, filterClassList(loader, classes));
