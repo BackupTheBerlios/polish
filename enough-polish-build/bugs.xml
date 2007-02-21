@@ -486,6 +486,17 @@
 		</solution>
 	</bug>
 	
+	<bug>
+		<name>needsAbsoluteUrlToJar</name>
+		<area>jad</area>
+		<description>
+			Some devices cannot handle relative URLs to the JAR file in the JAD file.
+		</description>
+		<solution>
+			Use absolute URL to JAR in JAD file.
+		</solution>
+	</bug>
+
 	<!--
 	<bug>
 		<name></name>

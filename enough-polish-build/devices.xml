@@ -12845,6 +12845,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="CameraResulution" value="640x480"/>
 		<capability name="CameraZoom" value="0"/>
+		<capability name="Bugs" value="needsAbsoluteUrlToJar"/>
 	</device> 
 	
 	
