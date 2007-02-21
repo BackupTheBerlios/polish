@@ -777,7 +777,12 @@ public class PolishTask extends ConditionalTask {
 		Object[] keys = props.keySet().toArray();
 		for (int i = 0; i < keys.length; i++) {
 			String key = (String) keys[i];
-			this.polishProject.addDirectCapability( key, System.getProperty(key) );
+			try {
+				this.polishProject.addDirectCapability( key, System.getProperty(key) );
+			} catch (Exception e) {
+				// netbeans throws security exception in some cases:
+				System.out.println("Warning: unable to access system property " + key + ": " + e.toString() );
+			}
 		}
 		// add all ant properties if desired: 
 		if (this.buildSetting.includeAntProperties()) {

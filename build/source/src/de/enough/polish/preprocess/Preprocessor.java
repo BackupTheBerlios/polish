@@ -500,6 +500,7 @@ public class Preprocessor {
 	public int preprocess(String className, StringList lines) 
 	throws BuildException 
 	{
+		//System.out.println("preprocessing " + className);
 		if (this.isNetBeans) {
 			// remove all NetBeans specific Preprocessing comments (//--) from line starts:
 			String[] sourceLines = lines.getArray();
@@ -595,6 +596,7 @@ public class Preprocessor {
 	protected int processSingleLine( String className, StringList lines, String line, String trimmedLine ) 
 	throws BuildException 
 	{
+		//System.out.println("processing line " + lines.getCurrentIndex() + ": " + line );
 		if (!trimmedLine.startsWith("//#")) {
 			// this is not a preprocesssing directive:
 			if (this.replacePropertiesWithoutDirective && trimmedLine.indexOf("${") != -1) {

@@ -116,7 +116,7 @@
 
 	<capability>
 		<identifier>build.Emulator.Skin</identifier>
-		<extension-mode>append</extension-mode>
+		<extension-mode>prepend</extension-mode>
 		<extension-mode-separator>:</extension-mode-separator>
 		<group>Build</group>
 		<required>no</required>

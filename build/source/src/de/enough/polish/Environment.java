@@ -333,7 +333,7 @@ public class Environment {
 			String group = matcher.group(); // == ${ property.name }
 											// or == ${ function( property.name ) }
 											// or == ${ function( fix.value ) }
-			if (group == lastGroup) {
+			if (group.equals(lastGroup)) {
 				if (matcher.find()) {
 					group = matcher.group();
 				} else {
@@ -347,10 +347,10 @@ public class Environment {
 			String value = getProperty( property, needsToBeDefined );
 			if (value != null) {
 			  // We had an endless loop when '${foo}' got replaced by '${foo}'.
-        if (value.equals("${" + property + "}")) {
-          System.err.println("WARNING: replacing " + value + " with " + value);
-          break;
-        }
+				if (value.equals("${" + property + "}")) {
+				  System.err.println("WARNING: replacing " + value + " with " + value);
+				  break;
+				}
 				input = StringUtil.replace( input, group, value );
 				matcher = PROPERTY_PATTERN.matcher( input );
 			}
@@ -418,6 +418,7 @@ public class Environment {
 	 * @return the found property or null when it is not found
 	 */
 	private String getProperty(String property, boolean needsToBeDefined) {
+		//System.out.println("getProperty for " + property);
 		if (property.indexOf('(') == -1) {
 			// the property does not contain a property-function:
 			String value = getVariable( property );
