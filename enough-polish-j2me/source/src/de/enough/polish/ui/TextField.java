@@ -35,12 +35,12 @@ import de.enough.polish.util.BitMapFontViewer;
 import de.enough.polish.util.Locale;
 
 //#if polish.blackberry
-import de.enough.polish.blackberry.ui.PolishEditField;
-import net.rim.device.api.ui.Field;
-import net.rim.device.api.ui.FieldChangeListener;
-import net.rim.device.api.ui.UiApplication;
-import net.rim.device.api.ui.XYRect;
-import net.rim.device.api.ui.component.BasicEditField;
+	import de.enough.polish.blackberry.ui.PolishEditField;
+	import net.rim.device.api.ui.Field;
+	import net.rim.device.api.ui.FieldChangeListener;
+	import net.rim.device.api.ui.UiApplication;
+	import net.rim.device.api.ui.XYRect;
+	import net.rim.device.api.ui.component.BasicEditField;
 //#endif
 
 
@@ -334,7 +334,7 @@ public class TextField extends StringItem
 		//#abort You need to define the ".textFieldSymbolList" CSS style when enabling the polish.TextField.supportSymbolsEntry option. 
 	//#endif
 //#endif
-//#if !(tmp.forceDirectInput || polish.blackberry || polish.doja) || tmp.supportsSymbolEntry
+//#if !(polish.blackberry || polish.doja) || tmp.supportsSymbolEntry
 	//#defineorappend tmp.implements=CommandListener
 	//#define tmp.implementsCommandListener
 //#endif
@@ -837,8 +837,9 @@ public class TextField extends StringItem
 			private long lastFieldChangedEvent;
 		//#endif
 	//#endif
-	//#if !tmp.forceDirectInput
-			private javax.microedition.lcdui.TextBox midpTextBox;
+	//#if !polish.blackberry && !polish.doja
+		//#define tmp.useNativeTextBox
+		private javax.microedition.lcdui.TextBox midpTextBox;
 	//#endif
 	protected boolean flashCaret = true;
 	protected boolean isUneditable;
@@ -932,7 +933,7 @@ public class TextField extends StringItem
 	}
 	
 	
-	//#if !(polish.blackberry || tmp.forceDirectInput)
+	//#if tmp.useNativeTextBox
 	/**
 	 * Creates the TextBox used for the actual input mode.
 	 */
@@ -2500,7 +2501,7 @@ public class TextField extends StringItem
 						//#else
 						if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE) {
 						//#endif
-							//#if !(polish.blackberry || tmp.forceDirectInput)
+							//#if tmp.useNativeTextBox
 								showTextBox();
 								return true;
 							//#endif
@@ -3115,7 +3116,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if !(polish.blackberry || tmp.forceDirectInput)
+	//#if tmp.useNativeTextBox
 	/**
 	 * Shows the TextBox for entering texts.
 	 */
@@ -3151,7 +3152,7 @@ public class TextField extends StringItem
 				return;
 			}
 		//#endif
-		//#if !tmp.forceDirectInput
+		//#if  tmp.useNativeTextBox
 			if (cmd == StyleSheet.CANCEL_CMD) {
 				this.midpTextBox.setString( this.text );
 			} else if (!this.isUneditable) {

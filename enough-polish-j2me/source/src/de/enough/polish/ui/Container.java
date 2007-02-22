@@ -697,7 +697,7 @@ public class Container extends Item {
 									focus( i, item, 0 );
 									this.containerView.focusedIndex = i;
 									this.containerView.focusedItem = item;
-									System.out.println("autofocus: found item " + i );
+									//System.out.println("autofocus: found item " + i );
 									break;
 								}							
 							}

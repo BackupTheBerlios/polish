@@ -89,6 +89,11 @@ public class ScreenInfo {
 	 * @param isVisible true when this element should be shown. 
 	 */
 	public static void setVisible( boolean isVisible ) {
+		if (isVisible) {
+			item.showNotify();
+		} else {
+			item.hideNotify();
+		}
 		visible = isVisible;
 	}
 	
@@ -183,6 +188,9 @@ public class ScreenInfo {
 	 */
 	public static void setItem( Item newItem ) {
 		item = newItem;
+		if (visible) {
+			newItem.showNotify();
+		}
 		repaint();
 	}
 
@@ -200,6 +208,9 @@ public class ScreenInfo {
 			item.setStyle( style );
 		}
 		item = newItem;
+		if (visible) {
+			newItem.showNotify();
+		}
 		repaint();
 	}
 
@@ -211,6 +222,8 @@ public class ScreenInfo {
 	public static void setPosition( int x, int y ) {
 		itemX = x;
 		itemY = y;
+		item.relativeX = x;
+		item.relativeY = y;
 		positionSet = true;
 		repaint();
 	}
@@ -266,7 +279,7 @@ public class ScreenInfo {
 		} else {
 			//#debug
 			System.out.println("painting screeninfo " + item + " without set position at " + 0 + ", " + titleHeight );
-			item.paint( 0, titleHeight, 0, screenWidth, g );
+			item.paint( 0, 0, 0, screenWidth, g );
 		}
 	}
 }

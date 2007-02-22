@@ -1186,7 +1186,8 @@ public abstract class Item extends Object
 	protected void repaint() {
 		//System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
 		if (this.isInitialized) {
-			repaint( - this.contentX, -this.contentY, this.itemWidth, this.itemHeight );
+			// note: -contentX, -contentY fails for right or center layouts
+			repaint( - (this.paddingLeft + this.marginLeft + this.borderWidth), -(this.paddingTop + this.marginTop + this.borderWidth), this.itemWidth, this.itemHeight );
 		} else {
 			repaintFully();
 		}
@@ -1222,7 +1223,7 @@ public abstract class Item extends Object
 		}
 		Screen scr = getScreen();
 		if (scr != null && scr == StyleSheet.currentScreen) {
-//			System.out.println("item.repaint(" + relX + ", " + relY+ ", " +  width+ ", " +  height + ")  for " + this );
+			//System.out.println("item.repaint(" + relX + ", " + relY+ ", " +  width + ", " +  height + ")  for " + this );
 			scr.repaint( relX, relY, width, height );
 		}
 	}

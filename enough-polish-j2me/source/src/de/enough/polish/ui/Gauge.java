@@ -485,8 +485,8 @@ implements ImageConsumer
 			}
 			if (value == CONTINUOUS_IDLE) {
 				this.indefinitePos = 0;
-			} else if (value == CONTINUOUS_RUNNING && this.value != CONTINUOUS_RUNNING){
-				if (this.isShown) {
+			} else if (value == CONTINUOUS_RUNNING) {
+				if (this.isShown && this.value != CONTINUOUS_RUNNING) {
 					AnimationThread.addAnimationItem( this );
 				}
 			} else if ( value == INCREMENTAL_IDLE ) {
@@ -667,6 +667,9 @@ implements ImageConsumer
 	{
 		this.isInitialized = false;
 		if (maxValue == INDEFINITE) {
+			if (this.maxValue != maxValue) {
+				this.value = CONTINUOUS_IDLE;
+			}
 			this.isIndefinite = true;
 			//#ifndef polish.skipArgumentCheck
 				} else if (maxValue < 0) {
@@ -676,6 +679,9 @@ implements ImageConsumer
 						//# throw new IllegalArgumentException();
 					//#endif
 			//#endif
+		} else if (this.value == CONTINUOUS_RUNNING) {
+			this.isIndefinite = false;
+			AnimationThread.removeAnimationItem( this );
 		}
 		this.maxValue = maxValue;
 		this.isInitialized = false;

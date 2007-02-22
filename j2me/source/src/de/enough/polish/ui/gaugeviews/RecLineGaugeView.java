@@ -42,10 +42,30 @@ public class RecLineGaugeView extends ItemView{
 	private int number = 4;
 	private int selectedColor = 0xFF00FF;
 	private int unSelectedColor = 0xFFFFFF;	
+	private int valuePosition = 0;
+	private long animationInterval = 300;
+	private long lastAnimationTime;
+	
+	public boolean animate() {
+		boolean animated = super.animate();
+		Gauge gauge = (Gauge)this.parentItem;
+		if ( gauge.getMaxValue() == Gauge.INDEFINITE && gauge.getValue() == Gauge.CONTINUOUS_RUNNING ) {
+			long time = System.currentTimeMillis();
+			if (time - this.lastAnimationTime >= this.animationInterval) {
+				this.lastAnimationTime = time;
+				int position = this.valuePosition + 1;
+				if (position >= this.number) {
+					position = 0;
+				}
+				this.valuePosition = position; 
+				animated = true;				
+			}
+		}
+		return animated;
+	}
 	
 	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
-		// TODO Auto-generated method stub
-		this.contentWidth = this.width * this.number ;
+		this.contentWidth = (this.width + this.paddingHorizontal) * this.number ;
 		this.contentHeight = this.height ;
 	}
 
@@ -54,8 +74,11 @@ public class RecLineGaugeView extends ItemView{
 		Gauge gauge = (Gauge)parent;
 //		int centerX = x + parent.itemWidth / 2;
 //		int centerY = y + parent.itemHeight / 2;
-		int valuePercent = (gauge.getValue() * 100 ) / gauge.getMaxValue();
-		int position = ((valuePercent*this.number)/100);
+		int position = this.valuePosition;
+		if (gauge.getMaxValue() != Gauge.INDEFINITE) {
+			int valuePercent = (gauge.getValue() * 100 ) / gauge.getMaxValue();
+			position = ((valuePercent*this.number)/100);
+		}
 		for(int i = 0; i < this.number; i++){
 			if(i == position ){
 				g.setColor(this.selectedColor);

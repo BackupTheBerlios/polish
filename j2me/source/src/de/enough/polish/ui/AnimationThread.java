@@ -160,7 +160,9 @@ public class AnimationThread extends Thread
 		if (animationList == null) {
 			animationList = new ArrayList();
 		}
-		animationList.add( item );
+		if (!animationList.contains(item)) {
+			animationList.add( item );
+		}
 	}
 
 	//#if polish.LibraryBuild
