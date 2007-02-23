@@ -1442,6 +1442,7 @@ public class TextField extends StringItem
 	public void setConstraints(int constraints)
 	{
 		this.constraints = constraints;
+		int fieldType = constraints & 0xffff;
 		this.isUneditable = (constraints & UNEDITABLE) == UNEDITABLE;
 		//#if polish.blackberry
 			
@@ -1450,15 +1451,15 @@ public class TextField extends StringItem
 				bbStyle |= Field.EDITABLE;
 			}
 			
-			if ( (constraints & DECIMAL) == DECIMAL) {
+			if ( fieldType == DECIMAL) {
 				bbStyle |= BasicEditField.FILTER_REAL_NUMERIC;
-			} else if ((constraints & NUMERIC) == NUMERIC) {
+			} else if (fieldType == NUMERIC) {
 				bbStyle |= BasicEditField.FILTER_INTEGER;
-			} else if ((constraints & PHONENUMBER) == PHONENUMBER) {
+			} else if (fieldType == PHONENUMBER) {
 				bbStyle |= BasicEditField.FILTER_PHONE;
-			} else if ( (constraints & EMAILADDR) == EMAILADDR ) {
+			} else if (fieldType == EMAILADDR ) {
 				bbStyle |= BasicEditField.FILTER_EMAIL;
-			} else if ( (constraints & URL) == URL ) {
+			} else if ( fieldType == URL ) {
 				bbStyle |= BasicEditField.FILTER_URL;
 			}
 			if (this.editField != null) {
@@ -1481,7 +1482,7 @@ public class TextField extends StringItem
 			if ((constraints & PASSWORD) == PASSWORD) {
 				this.isPassword = true;
 			}
-			if ((constraints & NUMERIC) == NUMERIC) {
+			if (fieldType == NUMERIC) {
 				this.isNumeric = true;
 				this.inputMode = MODE_NUMBERS;
 				//#ifndef polish.hasPointerEvents
@@ -1490,14 +1491,14 @@ public class TextField extends StringItem
 			} else {
 				this.isNumeric = false;
 			}
-			if ((constraints & DECIMAL) == DECIMAL) {
+			if (fieldType == DECIMAL) {
 				this.isNumeric = true;
 				this.isDecimal = true;
 				this.inputMode = MODE_NUMBERS;
 			} else {
 				this.isDecimal = false;
 			}
-			if ((constraints & EMAILADDR) == EMAILADDR) {
+			if (fieldType == EMAILADDR) {
 				this.isEmail = true;
 				this.characters = EMAIL_CHARACTERS;
 			}
@@ -2216,7 +2217,7 @@ public class TextField extends StringItem
 			return;
 		}
 		char insertChar = this.caretChar;
-		//#debug
+		//m #debug
 		System.out.println(this + ": inserting character " + insertChar );
 		String myText;
 //		int width;
@@ -2281,6 +2282,7 @@ public class TextField extends StringItem
 					isValidInput = VALID_DOMAIN_CHARACTERS.indexOf( insertChar ) != -1;
 				}
 				if (!isValidInput) {
+					System.out.println("email: invalid input!");
 					return;
 				}
 			}
@@ -2292,6 +2294,7 @@ public class TextField extends StringItem
 			myText = myText.substring( 0, this.caretPosition )
 				+ insertChar + myText.substring( this.caretPosition );
 		}
+		//System.out.println("new text=[" + myText + "]" );
 		this.caretPosition++;
 		this.caretColumn++;
 		//#if polish.TextField.suppressAutoInputModeChange
