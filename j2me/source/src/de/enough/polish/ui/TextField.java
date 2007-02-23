@@ -2217,7 +2217,7 @@ public class TextField extends StringItem
 			return;
 		}
 		char insertChar = this.caretChar;
-		//m #debug
+		//#debug
 		System.out.println(this + ": inserting character " + insertChar );
 		String myText;
 //		int width;
