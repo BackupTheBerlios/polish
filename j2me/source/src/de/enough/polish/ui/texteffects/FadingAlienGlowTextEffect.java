@@ -17,7 +17,7 @@ import de.enough.polish.util.DrawUtil;
  * <p>Paints an alien glow text effect, whereas you are able to specify
  *  the inner and outer color as well as the font-color. This particular 
  *  version supports also an anminated outer color (look at FadeTextEffect for details).</p>
- * <p>Activate the alien glow text effect by specifying <code>text-effect: alien-glow;</code> in your polish.css file.
+ * <p>Activate the alien glow text effect by specifying <code>text-effect: fading-alien-glow;</code> in your polish.css file.
  *    You can finetune the effect with following attributes:
  * </p>
  * <ul>
