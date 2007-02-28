@@ -27,8 +27,11 @@ package de.enough.polish.preprocess.css;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.enough.polish.BuildException;
+import de.enough.polish.Environment;
 
 import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.StringUtil;
@@ -45,7 +48,7 @@ import de.enough.polish.util.StringUtil;
  * @author Robert Virkus, robert@enough.de
  */
 public class Converter {
-	protected final static String STANDALONE_MODIFIER = "\tpublic final static "; 
+	protected final static String STANDALONE_MODIFIER = "\tpublic final static ";
 	protected ColorConverter colorConverter;
 
 	public static final Map ANCHORS = new HashMap();
@@ -92,7 +95,19 @@ public class Converter {
 	public static final int parseInt(String styleName, String groupName, String name, String value) {
 		try {
 			return Integer.parseInt( value );
-		} catch (NumberFormatException e) {
+		} catch (Exception e) {
+			// check for property functions:
+			Environment env = Environment.getInstance();
+			try {
+				String processedValue = env.getProperty( "calculate(" + value + ")", true);
+				if ( !processedValue.equals(value) ) {
+					return Integer.parseInt( processedValue );
+				}
+			} catch (Exception e1) {
+				if (value.indexOf('(') != -1) {
+					e = e1;
+				}
+			}
 			throw new BuildException("Unable to parse the field [" + groupName + "-" + name + "] with the value [" + value + "] from the style [" + styleName + "]: " + e.getMessage(), e );
 		}
 	}

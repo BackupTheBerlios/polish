@@ -42,7 +42,7 @@ import de.enough.polish.util.StringUtil;
 public class NumberFunction extends PropertyFunction {
 
 	/**
-	 * Creates a new uppercase function
+	 * Creates a new number function
 	 */
 	public NumberFunction() {
 		super();

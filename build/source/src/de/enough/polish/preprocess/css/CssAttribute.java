@@ -334,7 +334,13 @@ implements Comparable
 			}
 		} else if (this.type == INTEGER && this.allowedValues == null) {
 			try {
-				int intValue = Integer.parseInt( value );
+				int intValue;
+				try {
+					intValue = Integer.parseInt( value );
+				} catch (NumberFormatException e) {
+					String processedValue = environment.getProperty( "calculate(" + value + ")", true);
+					intValue = Integer.parseInt( processedValue );
+				}
 				if (this.isBaseAttribute) {
 					return "" + intValue;
 				} else {

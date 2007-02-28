@@ -911,9 +911,21 @@ public class PolishTask extends ConditionalTask {
 		this.sourceFiles = new TextFile[ this.sourceSettings.length][];
 		TextFileManager textFileManager = new TextFileManager();
 		this.preprocessor.setTextFileManager(textFileManager);
-		if (this.buildSetting.getPolishDir() != null) {
+		String polishSourceDirPath = getProject().getProperty("polish.client.source");
+		if (polishSourceDirPath != null || this.buildSetting.getPolishDir() != null) {
 			// there is an explicit J2ME Polish directory:
-			this.polishSourceDir = this.buildSetting.getPolishDir();
+			if (polishSourceDirPath != null) {
+				File file = new File( polishSourceDirPath );
+				if (!file.isAbsolute()) {
+					file = new File( getProject().getBaseDir(), polishSourceDirPath );
+				}
+				if (!file.exists()) {
+					throw new BuildException("The property \"polish.client.source\" points to the invalid location \"" + polishSourceDirPath + "\". Please correct this proerty within your build.xml or ${user.name}.properties." );
+				}
+				this.polishSourceDir = file;
+			} else {
+				this.polishSourceDir = this.buildSetting.getPolishDir();
+			}
 			if (this.variables == null) {
 				this.variables = new Variables();
 			}

@@ -112,6 +112,22 @@ public class EnvironmentTest extends TestCase {
 		matcher = Environment.FUNCTION_PATTERN.matcher( input );
 		assertTrue( matcher.find() );
 		assertEquals( "bytes( 100 kb )", matcher.group() );
+		
+		input = "imagewidth(spk.png) + 3";
+		matcher = Environment.FUNCTION_PATTERN.matcher( input );
+		assertTrue( matcher.find() );
+		assertEquals( "imagewidth(spk.png)", matcher.group() );
+		
+		
+		input = "calculate( imagewidth(spk.png) + 3 )";
+		matcher = Environment.FUNCTION_PATTERN.matcher( input );
+		assertTrue( matcher.find() );
+		assertEquals( "imagewidth(spk.png)", matcher.group() );
+
+		input = "calculate( 16 + 3 )";
+		matcher = Environment.FUNCTION_PATTERN.matcher( input );
+		assertTrue( matcher.find() );
+		assertEquals( "calculate( 16 + 3 )", matcher.group() );
 }
 
 

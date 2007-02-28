@@ -49,10 +49,12 @@ import de.enough.polish.util.StringUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class Environment {
+	private static Environment INSTANCE;
 	private final static String PROPERTY_CHARS_STR = "\\w|\\.|\\-|,|\\(|\\)|\\s|/";
 	private final static String PROPERTY_PATTERN_STR = "\\$\\{\\s*[" + PROPERTY_CHARS_STR + "]+\\s*\\}";
 	protected final static Pattern PROPERTY_PATTERN = Pattern.compile( PROPERTY_PATTERN_STR );
-	private final static String FUNCTION_PATTERN_STR = "\\w+\\s*\\(\\s*[" + PROPERTY_CHARS_STR + "|\\s|,]+\\s*\\)";
+	private final static String PROPERTY_FUNCTION_CHARS_STR = "\\w|\\.|\\-|,|\\s|/|\\s|,|\\+|\\*|:";
+	private final static String FUNCTION_PATTERN_STR = "\\w+\\s*\\(\\s*[" + PROPERTY_FUNCTION_CHARS_STR + "]+\\s*\\)";
 	protected final static Pattern FUNCTION_PATTERN = Pattern.compile( FUNCTION_PATTERN_STR );
 	
 	
@@ -86,6 +88,7 @@ public class Environment {
 		this.extensionManager = null;
 		this.booleanEvaluator = new BooleanEvaluator( this );
 		this.basicProperties = null;
+		INSTANCE = this;
 	}
 	
 	/**
@@ -107,6 +110,16 @@ public class Environment {
 		this.variables.putAll( properties );
 		this.basicProperties = properties;
 		this.baseDir = baseDir;
+		INSTANCE = this;
+	}
+	
+	/**
+	 * Retrieves the instance of the environment
+	 * 
+	 * @return the last instantiated instance of the environment
+	 */
+	public static Environment getInstance() {
+		return INSTANCE;
 	}
 	
 	public void initialize( Device newDevice, Locale newLocale ) {
@@ -417,7 +430,7 @@ public class Environment {
 	 * @param needsToBeDefined true when an exception should be thrown when the property is not defined
 	 * @return the found property or null when it is not found
 	 */
-	private String getProperty(String property, boolean needsToBeDefined) {
+	public String getProperty(String property, boolean needsToBeDefined) {
 		//System.out.println("getProperty for " + property);
 		if (property.indexOf('(') == -1) {
 			// the property does not contain a property-function:
