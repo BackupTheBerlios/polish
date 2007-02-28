@@ -1295,25 +1295,25 @@ extends Displayable
           // Trackball up.
           if (dx == 0 && dy < 0)
           {
-            keyPressed(getGameAction(Canvas.UP));
+            keyPressed(Canvas.KEY_BB_UP);
             return true;
           }
           // Trackball down.
           else if (dx == 0 && dy > 0)
           {
-            keyPressed(getGameAction(Canvas.DOWN));
+            keyPressed(Canvas.KEY_BB_DOWN);
             return true;
           }
           // Trackball left.
           else if (dx < 0 && dy == 0)
           {
-            keyPressed(getGameAction(Canvas.LEFT));
+            keyPressed(Canvas.KEY_BB_LEFT);
             return true;
           }
           // Trackball right.
           else if (dx > 0 && dy == 0)
           {
-            keyPressed(getGameAction(Canvas.RIGHT));
+            keyPressed(Canvas.KEY_BB_RIGHT);
             return true;
           }
 
