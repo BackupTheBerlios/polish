@@ -7,7 +7,6 @@ import net.rim.device.api.system.TrackwheelListener;
 import net.rim.device.api.ui.Keypad;
 import net.rim.device.api.ui.Field;
 import de.enough.polish.blackberry.midlet.MIDlet;
-import de.enough.polish.ui.TextField;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 
@@ -1270,4 +1269,62 @@ extends Displayable
 	        }
         }
 
+        /* (non-Javadoc)
+         * @see net.rim.device.api.ui.Screen#navigationClick(int, int)
+         */
+        protected boolean navigationClick(int status, int time)
+        {
+          /* From Blackberry Java Development Guide, might be useful in the future.
+          if ((status & KeypadListener.STATUS_TRACKWHEEL) == KeypadListener.STATUS_TRACKWHEEL)
+          {
+            // TODO: Do something here.
+          }
+          else if ((status & KeypadListener.STATUS_FOUR_WAY) == KeypadListener.STATUS_FOUR_WAY)
+          {
+            // TODO: Do something here.
+          }
+          */
+          return super.navigationClick(status, time);
+        }
+
+        /* (non-Javadoc)
+         * @see net.rim.device.api.ui.Screen#navigationMovement(int, int, int, int)
+         */
+        protected boolean navigationMovement(int dx, int dy, int status, int time)
+        {
+          // Trackball up.
+          if (dx == 0 && dy < 0)
+          {
+            keyPressed(getGameAction(Canvas.UP));
+            return true;
+          }
+          // Trackball down.
+          else if (dx == 0 && dy > 0)
+          {
+            keyPressed(getGameAction(Canvas.DOWN));
+            return true;
+          }
+          // Trackball left.
+          else if (dx < 0 && dy == 0)
+          {
+            keyPressed(getGameAction(Canvas.LEFT));
+            return true;
+          }
+          // Trackball right.
+          else if (dx > 0 && dy == 0)
+          {
+            keyPressed(getGameAction(Canvas.RIGHT));
+            return true;
+          }
+
+          return super.navigationMovement(dx, dy, status, time);
+        }
+
+        /* (non-Javadoc)
+         * @see net.rim.device.api.ui.Screen#navigationUnclick(int, int)
+         */
+        protected boolean navigationUnclick(int status, int time)
+        {
+          return super.navigationUnclick(status, time);
+        }
 }
