@@ -297,6 +297,7 @@ implements AccessibleCanvas
 	private boolean isScreenChangeDirtyFlag;
 	private final Object paintLock = new Object();
 	private ArrayList itemCommands;
+	private Object data;
 
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
@@ -1105,7 +1106,9 @@ implements AccessibleCanvas
 						//#endif
 						this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
 						this.originalScreenHeight = this.screenHeight;
-						this.scrollIndicatorY = this.screenHeight + 1; //- this.scrollIndicatorWidth - 1 - this.menuBarHeight;
+						//#if tmp.useScrollIndicator
+							this.scrollIndicatorY = this.screenHeight + 1; //- this.scrollIndicatorWidth - 1 - this.menuBarHeight;
+						//#endif
 					//#endif
 				}
 			//#endif
@@ -2595,7 +2598,7 @@ implements AccessibleCanvas
 						this.itemCommands.add( command );
 					}
 				//#elif tmp.menuFullScreen
-					if ( !this.menuCommands.contains( command) ) {
+					if ( ( this.menuCommands == null) ||  !this.menuCommands.contains( command) ) {
 						addCommand(command);
 						this.itemCommands.add( command );
 					}
@@ -3176,6 +3179,30 @@ implements AccessibleCanvas
 			this.container.setScrollYOffset( this.container.getScrollYOffset() + amount );
 			repaint();
 		}
+	}
+
+	/**
+	 * Attaches data to this screen.
+	 * This mechanism can be used to add business logic to screens.
+	 * 
+	 * @param data the screen specific data
+	 * @see UiAccess#setData(Screen, Object)
+	 * @see UiAccess#getData(Screen)
+	 */
+	public void setData(Object data) {
+		this.data = data;
+	}
+	
+	/**
+	 * Retrieves screen specific data.
+	 * This mechanism can be used to add business logic to screens.
+	 * 
+	 * @return any screen specific data or null when no data has been attached before
+	 * @see UiAccess#setData(Screen, Object)
+	 * @see UiAccess#getData(Screen)
+	 */
+	public Object getData() {
+		return this.data;
 	}
 
 		

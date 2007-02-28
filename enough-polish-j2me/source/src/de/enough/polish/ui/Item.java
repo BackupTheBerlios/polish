@@ -1569,7 +1569,7 @@ public abstract class Item extends Object
 			init( rightBorder - x, availableWidth );
 		}
 		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
-		
+
 		// paint background and border when the label should be included in this:
 		//#if polish.css.include-label
 			if (this.includeLabel) {

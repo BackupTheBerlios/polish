@@ -184,9 +184,13 @@ public abstract class ScreenChangeAnimation
 	 * @param y the vertical coordinate of the clicked pixel
 	 */
 	public void pointerPressed( int x, int y ) {
-		this.nextCanvas.pointerPressed( x, y );
-		Graphics g = this.nextCanvasImage.getGraphics();
-		this.nextCanvas.paint( g );
+		AccessibleCanvas next = this.nextCanvas;
+		Image nextImage = this.nextCanvasImage;
+		if (next != null) {
+			next.pointerPressed( x, y );
+			Graphics g = nextImage.getGraphics();
+			next.paint( g );
+		}
 	}
 	//#endif
 	
@@ -228,9 +232,13 @@ public abstract class ScreenChangeAnimation
 	 * @see #nextCanvasImage
 	 */
 	public void keyRepeated( int keyCode ) {
-		this.nextCanvas.keyRepeated( keyCode );
-		Graphics g = this.nextCanvasImage.getGraphics();
-		this.nextCanvas.paint( g );
+		AccessibleCanvas next = this.nextCanvas;
+		Image nextImage = this.nextCanvasImage;
+		if (next != null) {
+			next.keyRepeated( keyCode );
+			Graphics g = nextImage.getGraphics();
+			next.paint( g );
+		}
 	}
 
 	/**
@@ -242,9 +250,13 @@ public abstract class ScreenChangeAnimation
 	 * @see #nextCanvasImage
 	 */
 	public void keyReleased( int keyCode ) {
-		this.nextCanvas.keyReleased( keyCode );
-		Graphics g = this.nextCanvasImage.getGraphics();
-		this.nextCanvas.paint( g );
+		AccessibleCanvas next = this.nextCanvas;
+		Image nextImage = this.nextCanvasImage;
+		if (next != null) {
+			next.keyReleased( keyCode );
+			Graphics g = nextImage.getGraphics();
+			next.paint( g );
+		}
 	}
 
 	/**
@@ -256,9 +268,13 @@ public abstract class ScreenChangeAnimation
 	 * @see #nextCanvasImage
 	 */
 	public void keyPressed( int keyCode ) {
-		this.nextCanvas.keyPressed( keyCode );
-		Graphics g = this.nextCanvasImage.getGraphics();
-		this.nextCanvas.paint( g );
+		AccessibleCanvas next = this.nextCanvas;
+		Image nextImage = this.nextCanvasImage;
+		if (next != null) {
+			next.keyPressed( keyCode );
+			Graphics g = nextImage.getGraphics();
+			next.paint( g );
+		}
 		//this.nextScreenImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 	}
 	
@@ -268,13 +284,13 @@ public abstract class ScreenChangeAnimation
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		if (animate()) {
+		if (this.nextCanvas != null && animate()) {
 			//#if polish.Bugs.displaySetCurrentFlickers
 				MasterCanvas.instance.repaint();
 			//#else
 				repaint();
 			//#endif
-		} else {
+		} else if (this.nextCanvas != null) {
 			//#debug
 			System.out.println("ScreenChangeAnimation: setting next screen");
 			this.lastCanvasImage = null;
@@ -285,12 +301,13 @@ public abstract class ScreenChangeAnimation
 			Displayable next = this.nextDisplayable;
 			this.nextDisplayable = null;
 			System.gc();
-
-			//#if polish.Bugs.displaySetCurrentFlickers
-				MasterCanvas.setCurrent( disp, next );
-			//#else
-				disp.setCurrent( next );
-			//#endif
+			if (next != null) {
+				//#if polish.Bugs.displaySetCurrentFlickers
+					MasterCanvas.setCurrent( disp, next );
+				//#else
+					disp.setCurrent( next );
+				//#endif
+			}
 		}
 	}
 

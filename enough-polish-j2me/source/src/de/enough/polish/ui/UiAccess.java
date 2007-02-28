@@ -1408,7 +1408,7 @@ public final class UiAccess {
 	 * @param key the key for the attribute
 	 * @param value the attribute value
 	 */
-	public void setAttribute( Item item, Object key, Object value ) {
+	public static void setAttribute( Item item, Object key, Object value ) {
 		item.setAttribute( key, value );
 	}
     //#endif
@@ -1433,14 +1433,52 @@ public final class UiAccess {
    * @param item the item from which the attributes should be retrieved
    * @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
    */
-  public static HashMap getAttibutes( Item item ) {
-    if ( attributes == null ) {
-      return null;
-    }
-    return (HashMap) attributes.get( item );
+  public static HashMap getAttributes( Item item ) {
+	  return item.getAttributes();
   }
   //#endif
 
+  //#if polish.usePolishGui
+	/**
+	 * Sets an arbitrary attribute for the specified list item.
+	 * 
+	 * @param item the item to which the attribute should be added
+	 * @param key the key for the attribute
+	 * @param value the attribute value
+	 */
+	public static void setAttribute( List list, int index, Object key, Object value ) {
+		Item item = list.getItem(index);
+		item.setAttribute( key, value );
+	}
+  //#endif
+	
+  //#if polish.usePolishGui
+	/**
+	 * Gets an previously added attribute of the specified item.
+	 * 
+	 * @param item the item to which the attribute should be added
+	 * @param key the key of the attribute
+	 * @return the attribute value, null if none has been registered under the given key before
+	 */
+	public static Object getAttribute( List list, int index, Object key ) {
+		Item item = list.getItem( index );
+		return item.getAttribute( key );
+	}
+  //#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Returns a HashMap object with all registered attributes.
+	 * 
+	 * @param item the item from which the attributes should be retrieved
+	 * @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
+	 */
+	public static HashMap getAttributes( List list, int index ) {
+		Item item = list.getItem(index);
+		return item.getAttributes();
+	}
+	//#endif
+	
 	//#if polish.midp
   /**
 	 * Sets an arbitrary attribute for the given item.
@@ -1489,7 +1527,7 @@ public final class UiAccess {
    * @param item the item from which the attributes should be retrieved
    * @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
    */
-  public static HashMap getAttibutes( javax.microedition.lcdui.Item item ) {
+  public static HashMap getAttributes( javax.microedition.lcdui.Item item ) {
     if ( attributes == null ) {
       return null;
     }
@@ -1497,6 +1535,64 @@ public final class UiAccess {
   }
   //#endif
   
+//#if polish.midp
+	/**
+	 * Sets an arbitrary attribute for the specified list item.
+	 * 
+	 * @param item the item to which the attribute should be added
+	 * @param key the key for the attribute
+	 * @param value the attribute value
+	 */
+	public static void setAttribute( javax.microedition.lcdui.List list, int index, Object key, Object value ) {
+		if (attributes == null) {
+			attributes = new HashMap();
+		}
+		String item = list.toString() + index;
+		HashMap itemAttributes = (HashMap) attributes.get( item );
+		if (itemAttributes == null) {
+			itemAttributes = new HashMap();
+			attributes.put( item, itemAttributes );
+		}
+		itemAttributes.put( key, value );
+	}
+//#endif
+	
+//#if polish.midp
+	/**
+	 * Gets an previously added attribute of the specified item.
+	 * 
+	 * @param item the item to which the attribute should be added
+	 * @param key the key of the attribute
+	 * @return the attribute value, null if none has been registered under the given key before
+	 */
+	public static Object getAttribute( javax.microedition.lcdui.List list, int index, Object key ) {
+		if ( attributes == null ) {
+			return null;
+		}
+		String item = list.toString() + index;
+		HashMap itemAttributes = (HashMap) attributes.get( item );
+		if (itemAttributes == null) {
+			return null;
+		}
+		return itemAttributes.get( key );
+	}
+//#endif
+	
+	//#if polish.midp
+	/**
+	 * Returns a HashMap object with all registered attributes.
+	 * 
+	 * @param item the item from which the attributes should be retrieved
+	 * @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
+	 */
+	public static HashMap getAttributes( javax.microedition.lcdui.List list, int index ) {
+	    if ( attributes == null ) {
+	        return null;
+	      }
+	    String item = list.toString() + index;
+	    return (HashMap) attributes.get( item );
+	}
+	//#endif
 
   //#if polish.midp
 	/**
@@ -1566,5 +1662,62 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.usePolishGui
+	/**
+	 * Attaches data to the specified screen.
+	 * This mechanism can be used to add business logic to screens.
+	 * 
+	 * @param data the screen specific data
+	 * @see #getData(Screen)
+	 */
+	public static void setData(Screen screen, Object data) {
+		screen.setData( data );
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves screen specific data.
+	 * This mechanism can be used to add business logic to screens.
+	 * 
+	 * @return any screen specific data or null when no data has been attached before
+	 * @see #setData(Screen, Object)
+	 */
+	public static Object getData(Screen screen) {
+		return screen.getData();
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Attaches data to the specified screen.
+	 * This mechanism can be used to add business logic to screens.
+	 * 
+	 * @param data the screen specific data
+	 * @see #getData(Screen)
+	 */
+	public static void setData( javax.microedition.lcdui.Screen screen, Object data) {
+		if (attributes == null) {
+			attributes = new HashMap();
+		}
+		attributes.put(screen, data);
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Retrieves screen specific data.
+	 * This mechanism can be used to add business logic to screens.
+	 * 
+	 * @return any screen specific data or null when no data has been attached before
+	 * @see #setData(Screen, Object)
+	 */
+	public static Object getData(javax.microedition.lcdui.Screen screen) {
+		if (attributes == null) {
+			return null;
+		}
+		return attributes.get( screen );
+	}
+	//#endif
 
 }
