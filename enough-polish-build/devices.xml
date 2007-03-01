@@ -9301,8 +9301,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="14"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="20"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 					
 	<device> 
@@ -9340,8 +9340,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="18"/>
 		<capability name="Font.medium" value="20"/>
 		<capability name="Font.large" value="24"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-26"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 					
 	<device> 
@@ -9378,8 +9378,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="16"/>
 		<capability name="Font.medium" value="20"/>
 		<capability name="Font.large" value="24"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-16"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 					
 	<device> 
@@ -9415,8 +9415,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="14"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="20"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 					
 	<device> 
@@ -9453,8 +9453,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="16"/>
 		<capability name="Font.medium" value="20"/>
 		<capability name="Font.large" value="24"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-11-16"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 				
 	<device> 
@@ -9492,8 +9492,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="18"/>
 		<capability name="Font.medium" value="20"/>
 		<capability name="Font.large" value="24"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-26"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 				
 	<device> 
@@ -9531,8 +9531,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="18"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-15"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 				
 	<device> 
@@ -9570,8 +9570,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="18"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-26"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 			
 	<device> 
@@ -9609,8 +9609,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="18"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-26"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -9648,8 +9648,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="13"/>
 		<capability name="Font.medium" value="17"/>
 		<capability name="Font.large" value="19"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-15"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -9687,8 +9687,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="13"/>
 		<capability name="Font.medium" value="17"/>
 		<capability name="Font.large" value="19"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-26"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -9724,8 +9724,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="14"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="20"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -9763,8 +9763,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="14"/>
 		<capability name="Font.large" value="16"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -9802,8 +9802,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="14"/>
 		<capability name="Font.large" value="16"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -9841,8 +9841,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="14"/>
 		<capability name="Font.large" value="16"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-31"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -9880,8 +9880,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="14"/>
 		<capability name="Font.large" value="16"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-10-27"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -9919,8 +9919,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="18"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-15"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -9958,8 +9958,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="18"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-15"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -9996,8 +9996,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="14"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="20"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 			
 	<device> 
@@ -10035,8 +10035,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="18"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-26"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -10079,6 +10079,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="20"/>
 		<capability name="AnnouncementDate" value="2007-01-11"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -10116,8 +10117,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="14"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="20"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -10155,8 +10156,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="18"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
 	<device> 
@@ -10194,8 +10195,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="18"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-26"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 			
 	<device> 
@@ -10233,8 +10234,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="18"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-12-06"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 			
 	<device> 
@@ -10272,6 +10273,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="20"/>
 		<capability name="AnnouncementDate" value="2007-01-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 			
 	<device> 
@@ -10309,8 +10311,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="12"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="18"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 
 	<device> 
@@ -10348,8 +10350,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="18"/>
 		<capability name="Font.medium" value="20"/>
 		<capability name="Font.large" value="24"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-15"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 			
 	<device> 
@@ -10387,8 +10389,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="18"/>
 		<capability name="Font.medium" value="20"/>
 		<capability name="Font.large" value="24"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-26"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 	
 	<device> 
@@ -10426,8 +10428,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="18"/>
 		<capability name="Font.medium" value="20"/>
 		<capability name="Font.large" value="24"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-26"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 	
 	<device> 
@@ -10466,6 +10468,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="24"/>
 		<capability name="AnnouncementDate" value="2006-12-06" />
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 	
 	<device> 
@@ -10500,8 +10503,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="14"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="20"/>
-		<capability name="Bugs" value="noNetworking"/>
 		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 	
 	<device> 
@@ -10537,11 +10540,11 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="18"/>
 		<capability name="Font.medium" value="20"/>
 		<capability name="Font.large" value="24"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-26"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-D608"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-D608/1.0/WAP2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1/*MzU3MTEzMDAwMDIyMjY5 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-D608/1.0/WAP2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1/*MzU3MTEzMDAwMjI5MzY5 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 	
 	<device> 
@@ -10579,8 +10582,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="18"/>
 		<capability name="Font.medium" value="20"/>
 		<capability name="Font.large" value="24"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-xx-xx" />
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 	
 <device> 
@@ -10620,8 +10623,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="14"/>
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="20"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 	
 	<device> 
@@ -10660,6 +10663,7 @@ These namespaces/schemas will be used soon.
 		<capability name="key.RightSoftKey" value="-7"/>
 		<capability name="key.ClearKey" value="-8"/>
 		<capability name="Emulator.Control" value="SamsungZM60"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 
 	<device> 
@@ -10680,6 +10684,7 @@ These namespaces/schemas will be used soon.
 		<capability name="StorageSize" value="18MB"/>
 		<capability name="MaxJarSize" value="dynamic"/>
 		<capability name="Emulator.Control" value="SamsungD720"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 	
 	<device>
@@ -10723,6 +10728,7 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SGH-Z107          SHP/VPP/R5              SMM-MMS/1.1.0 profile/MDIP-2.0 configuration/CLD"/>
 <capability name="wap.userAgent" value="SGH-Z107NOMIME"/>
 <capability name="wap.userAgent" value="SGH-Z107/1.0 SHP/VPP/R5 SMB3.1 SMM-MMS/1.2.0 profile/MIDP-2.0 configuration/CLDC-1.1"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 </device> 
  
 	<device> 
@@ -10757,7 +10763,8 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SGH-Z107          SHP/VPP/R5              SMM-MMS/1.1.0 profile/MDIP-2.0 configuration/CLD"/>
 <capability name="wap.userAgent" value="SGH-Z107NOMIME"/>
 <capability name="wap.userAgent" value="SGH-Z107/1.0 SHP/VPP/R5 SMB3.1 SMM-MMS/1.2.0 profile/MIDP-2.0 configuration/CLDC-1.1"/>
-</device>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+	</device>
  
 	<device> 
 		<identifier>Samsung/P730</identifier> 
@@ -10776,6 +10783,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="170 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -10795,6 +10803,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="170 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="North America"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
  
 	<device> 
@@ -10814,6 +10823,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
  
@@ -10834,6 +10844,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -10853,6 +10864,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe, CIS"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -10872,6 +10884,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
  
@@ -10892,6 +10905,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="170 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe, CIS"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -10930,6 +10944,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="170 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="China"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -10949,6 +10964,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe, CIS"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -10968,6 +10984,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="China"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -10987,7 +11004,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe"/> 
-		<capability name="Bugs" value="inaccessibleFirstRow"/>
+		<capability name="Bugs" value="inaccessibleFirstRow, SoftKeyMappedToFire"/>
 	</device> 
  
 	<device> 
@@ -11007,7 +11024,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="North America"/> 
-		<capability name="Bugs" value="inaccessibleFirstRow"/>
+		<capability name="Bugs" value="inaccessibleFirstRow, SoftKeyMappedToFire"/>
 	</device> 
  
 	<device> 
@@ -11027,7 +11044,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe, CIS, South East Asia"/> 
-		<capability name="Bugs" value="inaccessibleFirstRow"/>
+		<capability name="Bugs" value="inaccessibleFirstRow, SoftKeyMappedToFire"/>
 	</device> 
  
 	<device> 
@@ -11067,6 +11084,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="North America"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11086,7 +11104,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe, CIS"/> 
-		<capability name="Bugs" value="inaccessibleFirstRow"/>
+		<capability name="Bugs" value="inaccessibleFirstRow, SoftKeyMappedToFire"/>
 	</device> 
  
 	<device> 
@@ -11106,6 +11124,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="China"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11125,6 +11144,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="South East Asia"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11145,6 +11165,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="North America"/> 
 		<capability name="Bugs" value="inaccessibleFirstRow"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11164,6 +11185,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="North America"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11183,6 +11205,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe, CIS, South East Asia"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11202,6 +11225,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe, CIS, South Africa, South East Asia"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11221,6 +11245,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe, CIS"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11240,6 +11265,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Italy, CIS"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
  
@@ -11266,6 +11292,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe, CIS, South Africa, South East Asia"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11285,6 +11312,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe, CIS"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11304,6 +11332,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="North America"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
  
@@ -11324,6 +11353,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Italy, CIS, South East Asia"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11343,6 +11373,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="China"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11362,6 +11393,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="Europe, CIS, South Africa"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -11381,6 +11413,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="100 kb"/> 
 		<capability name="Network" value="GPRS"/> 
 		<capability name="Region" value="North America"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
     </device> 
  
  	<device> 
@@ -11420,6 +11453,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="900, 1800, 1900"/> 
 		<capability name="CameraResolution" value="1.3 MP"/> 
 		<capability name="Bugs" value="losesFullScreen"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 		<capability name="AnnouncementDate" value="2007-01-15" />
 	<capability name="wap.userAgent" value="SAMSUNG-SGH-D500"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-D500/1.0"/>
@@ -11473,12 +11507,12 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="900, 1800, 1900"/> 
 		<capability name="CameraResolution" value="1.3 MP"/> 
 		<capability name="IconSize" value="16x16"/>
-		<capability name="Bugs" value="noNetworking"/> 
 		<capability name="AnnouncementDate" value="2007-01-15" />
 	<capability name="wap.userAgent" value="SAMSUNG-SGH-D600"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-D600/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SCH-D600/1.0 profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101(GUI) MMP/2.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-D600E/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 </device>
 
 	<device>
@@ -11515,8 +11549,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="16"/>
 		<capability name="Font.medium" value="20"/>
 		<capability name="Font.large" value="24"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2006-10-27"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 	
 	<device> 
@@ -11545,7 +11579,8 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E108/T2*NDQ3OTY3ODk0MDAwNDQ4 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E108/T2 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E108/T2*MzUyMjkxMDAxNzI3OTgw UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
-</device> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+	</device> 
  	
 	<device> 
 		<identifier>Samsung/SGH-D900</identifier> 
@@ -11584,15 +11619,14 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="18"/>
 		<capability name="Font.medium" value="20"/>
 		<capability name="Font.large" value="24"/>
-		<capability name="Bugs" value="noNetworking" />
 		<capability name="AnnouncementDate" value="2007-01-17" />
 		<capability name="Network" value="GSM, GPRS, UMTS"/>
 		<capability name="Frequency" value="900,1800,1900"/>
 		<capability name="DebugInterface" value="KDWP"/>
 		<capability name="CameraResolution" value="2 MP"/>
 		<capability name="CameraZoom" value="4"/>
-		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin"/>
 		<capability name="key.ReturnKey" value="-11"/>
+		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin, SoftKeyMappedToFire"/>
 	</device> 
  
         <device> 
@@ -11631,7 +11665,8 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E330N"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E330C/1.0 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E330N/1.0 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
-</device> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+	</device> 
  
         <device> 
 		<identifier>Samsung/SGH-E600</identifier> 
@@ -11663,7 +11698,8 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SEC-SGHE608*MzUxOTgyMDA1OTg4ODY0"/>
 <capability name="wap.userAgent" value="SEC-SGHE608*MzUxOTgyMDA1Njk4OTY4"/>
 <capability name="wap.userAgent" value="SEC-SGHE608*MzUxOTgyODkwOTg5MDUw"/>
-</device> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+	</device> 
  
         <device> 
 			<identifier>Samsung/SGH-E630</identifier> 
@@ -11692,7 +11728,8 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E638"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E630C"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E630C/1.0 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
-</device> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+	</device> 
  
 	<device> 
 		<identifier>Samsung/SGH-E700</identifier> 
@@ -11730,7 +11767,6 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SEC-SGHE700, SEC-SGHE700"/>
 <capability name="wap.userAgent" value="SEC-SGHE700/1.0 TSS/2.5"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E700/BSI UP.Browser/6.2"/>
-<capability name="wap.userAgent" value="SAMSUNG-SGH-E700A"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E708"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E700/BSI UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E700/1.0 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
@@ -11742,6 +11778,20 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E700/BSI UP.Browser/6.2.3.4.100 (GUI) MMP/2.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E700/BSI UP.Browser/6.2.3.4.103 (GUI) MMP/2.0 Push/PO"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E700A/BSI UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/E700A</identifier> 
+		<parent>Samsung/SGH-E700</parent>
+		<capability name="wap.userAgent" value="SAMSUNG-SGH-E700A"/>
+		<capability name="Region" value="Singapore, Malaysia"/> 
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/E708</identifier> 
+		<parent>Samsung/SGH-E700</parent>
+		<capability name="Region" value="China"/> 
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E708/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E708/1.0*MzUwOTcxODkxMDAyNjI2 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E708/1.0*MzUyMjgwMDAwMDU0NjQ1 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
@@ -11755,18 +11805,6 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E708/1.0*MzUyNTUyMDAxNDk0MjA2 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E708/1.0*MzUyNTUyMDAxNDczNjE0 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E708/1.0*MzUyMjgwMDAwMDQyNzcyUP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
-</device> 
- 
-	<device> 
-		<identifier>Samsung/E700A</identifier> 
-		<parent>Samsung/SGH-E700</parent>
-		<capability name="Region" value="Singapore, Malaysia"/> 
-	</device> 
- 
-	<device> 
-		<identifier>Samsung/E708</identifier> 
-		<parent>Samsung/SGH-E700</parent>
-		<capability name="Region" value="China"/> 
 	</device> 
  
 	<device> 
@@ -11854,6 +11892,7 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E808/1.0*MzUzODAxMDAzNDEzNTY4 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E808/1.0*MzUzODAxMDAzNDcxMzE5 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E808/1.0*MzUzODAxMDAzNTg1NTE0 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 </device> 
  
 	<device> 
@@ -11893,6 +11932,7 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E820/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E820/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.102 (GUI) MMP/2.0"/>
 <capability name="wap.userAgent" value="SEC-SGHE820"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 </device> 
  
         <device> 
@@ -11934,6 +11974,7 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG-SGH-X108/1.0*MzUyODA4MDAzMzY2OTk0 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-X108/1.0*MzUyODA4MDAzNTU5OTg2 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-X108/1.0*MzUyODA4MDAzNjYyNDI2 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 </device> 
  
         <device> 
@@ -11975,6 +12016,7 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SEC-SGHX600"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-X600A"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-X600A/K3 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 </device> 
  
         <device> 
@@ -11997,6 +12039,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.0"/> 
 		<capability name="VideoFormat" value="3gpp, 3gpp2, h.263, mpeg-4, real-video"/> 
 		<capability name="SoundFormat" value="qcelp, aac, amr"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
         </device> 
  
         <device> 
@@ -12005,6 +12048,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="2"/> 
 		<capability name="JavaPlatform" value="MIDP/1.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.0"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
         </device> 
  
         <device> 
@@ -12013,6 +12057,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="8"/> 
 		<capability name="JavaPlatform" value="MIDP/1.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.0"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
         </device> 
  
         <device> 
@@ -12021,6 +12066,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="8"/> 
 		<capability name="JavaPlatform" value="MIDP/1.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.0"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
         </device> 
  
         <device> 
@@ -12029,6 +12075,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="2"/> 
 		<capability name="JavaPlatform" value="MIDP/1.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.0"/> 
+ 		<capability name="Bugs" value="SoftKeyMappedToFire" />
         </device> 
  
 	<device> 
@@ -12046,6 +12093,7 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SEC-SGHS300/1.0 UP.Browser/6.2"/>
 <capability name="wap.userAgent" value="SEC-SGHS300M"/>
 <capability name="wap.userAgent" value="SEC-SGHS300/1.0 UP.Browser/6.2.0.1.155 (GUI) MMP/1.0"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 </device> 
  
 	<device> 
@@ -12054,6 +12102,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/> 
 		<capability name="JavaPlatform" value="MIDP/1.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.0"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device> 
  
 	<device> 
@@ -12062,6 +12111,7 @@ These namespaces/schemas will be used soon.
 		<!-- <capability name="BitsPerPixel" value="16"/> --> 
 		<capability name="JavaPlatform" value="MIDP/1.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.0"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 
 
@@ -12073,6 +12123,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 	
 	<device>
@@ -12082,6 +12133,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 	<capability name="wap.userAgent" value="Mozilla/4.0 (MobilePhone SCP-4900/1.0) NetFront/3.0 MMP/2.0"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 </device>
 	
 	<device>
@@ -12091,6 +12143,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 	<capability name="wap.userAgent" value="Mozilla/4.0 (MobilePhone SCP-5300/1.0) NetFront/3.0 MMP/2.0"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 </device>
 	
 	

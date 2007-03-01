@@ -83,6 +83,7 @@
 		<features></features>
 		<capability name="key.LeftSoftKey" value="-6" />
 		<capability name="key.RightSoftKey" value="-7" />
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</vendor>
 
 	<vendor>

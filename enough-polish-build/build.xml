@@ -119,24 +119,6 @@
 		</jar>
 	</target>
 
-	<target name="build-rmi" 
-		depends="build-init"
-		description="builds the enough-j2mepolish-rmi.jar">
-		<!-- create the binary rmi distribution -->
-		<jar destfile="dist/enough-j2mepolish-rmi.jar"
-		     basedir="bin/classes"
-			 excludes="**/*.html"
-			 includes="de/enough/polish/rmi/*"
-			 index="true"
-		     >
-			<!--
-			<fileset dir="bin/classes" includes="de/enough/polish/util/*" />
-			-->
-			<fileset dir="../enough-polish-j2me/bin/classes" includes="de/enough/polish/rmi/*" />
-			<fileset dir="../enough-polish-j2me/bin/classes" includes="de/enough/polish/io/*" />
-		</jar>
-	</target>
-
 	<target name="build-client" 
 		depends="build-init"
 		description="builds the enough-j2mepolish-client.jar"
@@ -292,6 +274,24 @@
 		     >
 		</jar>
 		
+	</target>
+
+	<target name="build-rmi" 
+		depends="build-client"
+		description="builds the enough-j2mepolish-rmi.jar">
+		<!-- create the binary rmi distribution -->
+		<jar destfile="dist/enough-j2mepolish-rmi.jar"
+		     basedir="bin/classes"
+			 excludes="**/*.html"
+			 includes="de/enough/polish/rmi/*"
+			 index="true"
+		     >
+			<!--
+			<fileset dir="bin/classes" includes="de/enough/polish/util/*" />
+			-->
+			<fileset dir="build/clientclasses" includes="de/enough/polish/rmi/*" />
+			<fileset dir="build/clientclasses" includes="de/enough/polish/io/*" />
+		</jar>
 	</target>
 
 	
