@@ -48,7 +48,7 @@ public class ScreenHistory {
 	/**
 	 * Creates a new ScreenStack with no limitations on the number of possible screens between a former and a new screen.
 	 * 
-	 * @see #ScreenStack(int)
+	 * @see #ScreenHistory(int)
 	 */
 	public ScreenHistory( ) {
 		this( -1 );
@@ -104,7 +104,7 @@ public class ScreenHistory {
 	 * 
 	 * @return true when there is a previous screen
 	 * @see #getPrevious()
-	 * @see #showPrevious()
+	 * @see #showPrevious(Display)
 	 */
 	public synchronized boolean hasPrevious() {
 		return this.history.size() > 1;
@@ -139,7 +139,7 @@ public class ScreenHistory {
 	 * 
 	 * @return the previous screen or null when there is no previous screen
 	 * @see #hasPrevious()
-	 * @see #showPrevious()
+	 * @see #showPrevious(Display)
 	 * @see #getCurrent()
 	 */
 	public synchronized Displayable getPrevious() {

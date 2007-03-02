@@ -135,7 +135,9 @@ implements PlayerListener
 	 * 
 	 * @throws MediaException when the player cannot be started
 	 * @see #AudioPlayer(boolean)
-	 * @see #AudioPlayer(boolean, PlayerListener)
+	 * @see #AudioPlayer(boolean, String)
+	 * @see #AudioPlayer(boolean, String, PlayerListener)
+	 * @see #AudioPlayer(String)
 	 */
 	public void play() throws MediaException {
 		if (this.player != null) {

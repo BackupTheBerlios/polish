@@ -1442,7 +1442,8 @@ public final class UiAccess {
 	/**
 	 * Sets an arbitrary attribute for the specified list item.
 	 * 
-	 * @param item the item to which the attribute should be added
+   * @param list a list of items
+	 * @param index the index of the item to which the attribute should be added
 	 * @param key the key for the attribute
 	 * @param value the attribute value
 	 */
@@ -1456,7 +1457,8 @@ public final class UiAccess {
 	/**
 	 * Gets an previously added attribute of the specified item.
 	 * 
-	 * @param item the item to which the attribute should be added
+   * @param list a list of items
+	 * @param index the index of item from which the attribute should be retrieved
 	 * @param key the key of the attribute
 	 * @return the attribute value, null if none has been registered under the given key before
 	 */
@@ -1470,7 +1472,8 @@ public final class UiAccess {
 	/**
 	 * Returns a HashMap object with all registered attributes.
 	 * 
-	 * @param item the item from which the attributes should be retrieved
+   * @param list a list of items
+	 * @param index the index of item from which the attributes should be retrieved
 	 * @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
 	 */
 	public static HashMap getAttributes( List list, int index ) {
@@ -1539,7 +1542,8 @@ public final class UiAccess {
 	/**
 	 * Sets an arbitrary attribute for the specified list item.
 	 * 
-	 * @param item the item to which the attribute should be added
+   * @param list a list of items
+	 * @param index the index of the item to which the attribute should be added
 	 * @param key the key for the attribute
 	 * @param value the attribute value
 	 */
@@ -1561,7 +1565,8 @@ public final class UiAccess {
 	/**
 	 * Gets an previously added attribute of the specified item.
 	 * 
-	 * @param item the item to which the attribute should be added
+   * @param list a list of items
+   * @param index the index of item from which the attributes should be retrieved
 	 * @param key the key of the attribute
 	 * @return the attribute value, null if none has been registered under the given key before
 	 */
@@ -1582,7 +1587,8 @@ public final class UiAccess {
 	/**
 	 * Returns a HashMap object with all registered attributes.
 	 * 
-	 * @param item the item from which the attributes should be retrieved
+   * @param list a list of items
+	 * @param index the index of the item from which the attributes should be retrieved
 	 * @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
 	 */
 	public static HashMap getAttributes( javax.microedition.lcdui.List list, int index ) {
