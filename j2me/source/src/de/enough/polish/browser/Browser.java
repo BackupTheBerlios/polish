@@ -714,7 +714,7 @@ implements Runnable
       	}
       	this.loadingIndicator.relativeX = x;
       	this.loadingIndicator.relativeY = y - originalY;
-      	System.out.println(">>>>>> download indicator at " + x + ", " + y + ", originalY=" + originalY +", yOffset=" + this.yOffset);
+      	//System.out.println(">>>>>> download indicator at " + x + ", " + y + ", originalY=" + originalY +", yOffset=" + this.yOffset);
       	this.loadingIndicator.paint(x, y, leftBorder, rightBorder, g);
     }
   }
