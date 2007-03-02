@@ -44,7 +44,8 @@ public class CalculateFunction extends PropertyFunction {
 	private static final char PLUS = '+';
 	private static final char MINUS = '-';
 	private static final char MULTIPLY = '*';
-	private static final char DEVIDE = ':';
+	private static final char DIVIDE = '/';
+	private static final char DIVIDE2 = ':';
 
 	/**
 	 * Creates a new number function
@@ -81,7 +82,8 @@ public class CalculateFunction extends PropertyFunction {
 				case MULTIPLY:
 					result *= part;
 					break;
-				case DEVIDE:
+				case DIVIDE:
+				case DIVIDE2:
 					result /= part;
 					break;
 				}
@@ -101,7 +103,8 @@ public class CalculateFunction extends PropertyFunction {
 							case PLUS: lastOperator = PLUS; break;
 							case MINUS: lastOperator = MINUS; break;
 							case MULTIPLY: lastOperator = MULTIPLY; break;
-							case DEVIDE: lastOperator = DEVIDE; break;
+							case DIVIDE:
+							case DIVIDE2: lastOperator = DIVIDE; break;
 							default: throw new BuildException("Unknown operator in term \"" + input + "\" at index " + j + ": " + d );
 							}
 							foundNextOperator = true;
@@ -123,7 +126,8 @@ public class CalculateFunction extends PropertyFunction {
 			case MULTIPLY:
 				result *= part;
 				break;
-			case DEVIDE:
+			case DIVIDE:
+			case DIVIDE2:
 				result /= part;
 				break;
 			}

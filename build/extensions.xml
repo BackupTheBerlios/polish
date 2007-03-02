@@ -208,6 +208,8 @@
 				</to>
 			</mapping>
 			<mapping from="javax.microedition.io.HttpConnection" to="com.nttdocomo.io.HttpConnection" />
+			<mapping from="javax.microedition.io.*" to="com.nttdocomo.io.HttpConnection; import javax.microedition.io.*" />
+			<mapping from="javax.microedition.rms.*" to="de.enough.polish.doja.rms.*" />
 			<mapping from="javax.microedition.rms.RecordComparator" to="de.enough.polish.doja.rms.RecordComparator" />
 			<mapping from="javax.microedition.rms.RecordEnumeration" to="de.enough.polish.doja.rms.RecordEnumeration" />
 			<mapping from="javax.microedition.rms.RecordEnumeration" to="de.enough.polish.doja.rms.RecordEnumeration" />
