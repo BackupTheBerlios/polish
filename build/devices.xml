@@ -9279,7 +9279,6 @@ These namespaces/schemas will be used soon.
 		<capability name="wap.userAgent" value="BlackBerry5820/3.6.0"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
-
 <!-- Samsung devices -->
 	<device> 
 		<identifier>Samsung/SGH-E810</identifier> 
@@ -9323,23 +9322,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-E898</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Europe,Asia Pacific, Africa, Americas"/>
+		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="MenuBarHeight" value="36"/>
@@ -9357,27 +9355,67 @@ These namespaces/schemas will be used soon.
 		<capability name="AnnouncementDate" value="2007-01-26"/>
 		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
-					
+		
+				
+	<device> 
+		<identifier>Samsung/SGH-E870</identifier> 
+		<features></features>
+		<groups></groups>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
+		<capability name="SoundFormat" value="mmf, amr, midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="3gpp"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="4 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="700 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="256 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="14"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="20"/>
+		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+	</device>
+		
+				
 	<device> 
 		<identifier>Samsung/SGH-E900</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="China, Americas"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="mmf, amr, midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="MenuBarHeight" value="34"/>
@@ -9400,21 +9438,21 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-P300</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="China, Americas"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x176"/>
 		<capability name="ScreenSize" value="240x176"/>
 		<capability name="MenuBarHeight" value="17"/>
@@ -9437,22 +9475,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-P310</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="320x240"/>
 		<capability name="ScreenSize" value="320x240"/>
 		<capability name="MenuBarHeight" value="32"/>
@@ -9475,23 +9513,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-P858</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Europe,Asia Pacific, Africa, Americas"/>
+		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="MenuBarHeight" value="34"/>
@@ -9514,23 +9551,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-T509</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Europe,Asia Pacific, Africa, China"/>
+		<capability name="Region" value="Americas"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -9553,23 +9589,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-T619</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Europe,Asia Pacific, Africa, China"/>
+		<capability name="Region" value="Americas"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="3gpp"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="34"/>
@@ -9592,23 +9627,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-T709</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Europe,Asia Pacific, Africa, China"/>
+		<capability name="Region" value="Americas"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="34"/>
@@ -9631,23 +9665,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-X700</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -9670,23 +9703,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-X708</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, Europe, Asia Pacific, Africa"/>
+		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -9709,21 +9741,21 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-X820</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi, mmf"/>
 		<capability name="SoundFormat" value="mmf, midi, amr"/>
 		<capability name="ImageFormat" value="png"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="220x176"/>
 		<capability name="ScreenSize" value="220x176"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -9746,23 +9778,21 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-Z400</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf, midi"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, m3g"/>
 		<capability name="SoundFormat" value="mmf, mp3, amr, midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="3gpp, mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="false"/>
-		<capability name="mmapi.VideoPlayback" value="false"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x297"/>
 		<capability name="ScreenSize" value="240x297"/>
 		<capability name="MenuBarHeight" value="18"/>
@@ -9785,23 +9815,21 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-Z540</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf, midi"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="m3g, mmapi1.1, wmapi1.0"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="3gpp, mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="false"/>
-		<capability name="mmapi.VideoPlayback" value="false"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x297"/>
 		<capability name="ScreenSize" value="240x297"/>
 		<capability name="MenuBarHeight" value="18"/>
@@ -9863,23 +9891,21 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-Z560</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf, midi"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, m3g"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="3gpp, mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="false"/>
-		<capability name="mmapi.VideoPlayback" value="false"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="true"/>
+		<capability name="mmapi.VideoPlayback" value="true"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x297"/>
 		<capability name="ScreenSize" value="240x297"/>
 		<capability name="MenuBarHeight" value="18"/>
@@ -9902,23 +9928,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-E730</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -9941,23 +9966,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-E760</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-acceleration, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -9980,22 +10004,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-E770</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -10018,23 +10042,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-E788</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -10062,22 +10085,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-E570</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value="secure socket"/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="JavaProtocol" value="http, https, socket"/>
+		<capability name="JavaPackage" value="pdaapi, m3g, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -10100,23 +10123,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-E530</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="16"/>
@@ -10139,23 +10161,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-E380</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -10178,23 +10199,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-E388</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, Europe, Asia Pacific, Africa"/>
+		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -10217,23 +10237,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-E390</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="3ggp, mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="18"/>
@@ -10256,22 +10275,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-E490</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, Asia Pacific, China, Africa"/>
+		<capability name="Region" value="Europe"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value="secure socket"/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-sms"/>
+		<capability name="JavaProtocol" value="http, https, socket"/>
+		<capability name="JavaPackage" value="pdaapi, mmapi1.1, wmapi1.0, m3g, samsung-vibration, samsung-backlight, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="mmf, midi, amr"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -10294,23 +10313,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-E500</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="23"/>
@@ -10333,23 +10351,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-D820</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="MenuBarHeight" value="34"/>
@@ -10372,23 +10389,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-D828</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Europe, Asia Pacific, Americas, Africa"/>
+		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="MenuBarHeight" value="34"/>
@@ -10411,23 +10427,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-D908</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Europe, Asia Pacific, Americas, Africa"/>
+		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure-socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="MenuBarHeight" value="36"/>
@@ -10450,23 +10465,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-C130</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="China, Americas"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value="secure socket"/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="128x128"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="MenuBarHeight" value="17"/>
@@ -10489,22 +10503,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-D520</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="China, Americas"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="CanvasSize" value="176x196"/>
@@ -10525,22 +10539,21 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-D608</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Europe, Asia Pacific, Americas, Africa"/>
+		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio "/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x286"/>
@@ -10565,23 +10578,22 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-T809</identifier> 
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Europe, Asia Pacific, China, Africa"/>
+		<capability name="Region" value="Americas"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio "/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="MenuBarHeight" value="34"/>
@@ -10606,23 +10618,22 @@ These namespaces/schemas will be used soon.
 		<groups></groups>
 		<capability name="OS" value="Nucleus OS"/>
 		<capability name="CompatibleDevice" value="Samsung/SGH-530, Samsung/SGH-E880"/>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio"/>
-		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value="mpeg4"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="MenuBarHeight" value="16"/>
@@ -11433,7 +11444,7 @@ These namespaces/schemas will be used soon.
  	<device> 
 		<identifier>Samsung/SGH-D500</identifier> 
 		<features>hasCommandKeyEvents, hasCamera</features> 
-		<capability name="Region" value="Americas, China"/> 
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/> 
 		<capability name="ScreenSize" value="176x220"/> 
 		<capability name="FullCanvasSize" value="176x220"/> 
 		<capability name="CanvasSize" value="176x196"/>
@@ -11441,16 +11452,17 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/> 
 		<capability name="JavaPlatform" value="MIDP/2.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.1"/> 
-		<capability name="JavaPackage" value="pdaapi, btapi, wmapi1.0, wmapi2.0, m3g, mmapi, samsung-acceleration"/> 
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="wmapi1.0, mmapi1.1, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/> 
+		<capability name="SamsungSoundFormat" value="mmf"/> 
 		<capability name="SoundFormat" value="mmf, midi, midi64"/> 
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="PolyphonicVoices" value="64"/>
 		<capability name="ImageFormat" value="png"/> 
 		<capability name="HeapSize" value="1.1 MB"/> 
@@ -11488,24 +11500,24 @@ These namespaces/schemas will be used soon.
  	<device> 
 		<identifier>Samsung/SGH-D600</identifier> 
 		<features>hasCommandKeyEvents, hasCamera</features> 
-		<capability name="Region" value="Americas, China"/> 
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/> 
 		<capability name="ScreenSize" value="240x320"/> 
 		<capability name="FullCanvasSize" value="240x320"/> 
 		<capability name="CanvasSize" value="240x286"/>
 		<capability name="MenuBarHeight" value="34"/>
 		<capability name="BitsPerPixel" value="18"/> 
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.1"/> 
-		<capability name="JavaPackage" value="pdaapi, btapi, wmapi1.0, wmapi2.0, m3g, mmapi, samsung-acceleration, samsung-audio"/> 
+		<capability name="JavaPackage" value="wmapi1.0, mmapi1.1, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/> 
 		<capability name="SoundFormat" value="mmf, midi, midi64, wav"/> 
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="PolyphonicVoices" value="64"/>
 		<capability name="ImageFormat" value="png"/> 
 		<capability name="HeapSize" value="2.2 MB"/> 
@@ -11533,22 +11545,21 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-D800</identifier>
 		<features></features>
 		<groups></groups>
-		<capability name="Region" value="Americas, China"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, m3g, wmapi1.1, wmapi2.0, samsung-acceleration"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms"/>
 		<capability name="SoundFormat" value="midi, mmf"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="MenuBarHeight" value="34"/>
@@ -11600,25 +11611,25 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/SGH-D900</identifier> 
 		<features>hasCommandKeyEvents</features>
 		<groups></groups>
-		<capability name="Region" value="China, Americas"/>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-audio "/>
-		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="JavaProtocol" value="http, https, Socket, Secure Socket"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi,x-tone-seq,mpeg,mp3,3gpp,amr,aac,m4a"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
 		<capability name="PolyphonicVoices" value="40"/>
 		<capability name="CaptureImageFormat" value="jpeg"/>
-		<capability name="mmapi.AudioPlayback" value="false"/>
-		<capability name="mmapi.AudioStreaming" value="true"/>
-		<capability name="mmapi.VideoCapture" value="true"/>
-		<capability name="mmapi.VideoPlayback" value="true"/>
-		<capability name="mmapi.VideoStreaming" value="true"/>
-		<capability name="mmapi.VideoResizing" value="true"/>
-		<capability name="mmapi.VideoPositioning" value="true"/>
-		<capability name="DRM" value="yes"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
+		<capability name="DRM" value="no"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="MenuBarHeight" value="36"/>
@@ -12159,6 +12170,8 @@ These namespaces/schemas will be used soon.
 	<capability name="wap.userAgent" value="Mozilla/4.0 (MobilePhone SCP-5300/1.0) NetFront/3.0 MMP/2.0"/>
 		<capability name="Bugs" value="SoftKeyMappedToFire" />
 </device>
+	
+
 	
 	
 <!-- Sharp devices -->
