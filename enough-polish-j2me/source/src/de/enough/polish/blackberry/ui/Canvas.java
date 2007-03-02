@@ -1269,6 +1269,7 @@ extends Displayable
 	        }
         }
 
+        //#if polish.hasTrackballEvents
         /* (non-Javadoc)
          * @see net.rim.device.api.ui.Screen#navigationClick(int, int)
          */
@@ -1327,4 +1328,5 @@ extends Displayable
         {
           return super.navigationUnclick(status, time);
         }
+        //#endif
 }
