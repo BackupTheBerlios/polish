@@ -9190,7 +9190,21 @@ These namespaces/schemas will be used soon.
 	</device>
 	
 	<device>
+		<identifier>BlackBerry/8800</identifier>
+		<features>hasTrackballEvents</features>
+		<capability name="ScreenSize" value="320x240"/>
+		<capability name="FullCanvasSize" value="320x240"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
+		<capability name="SoundFormat" value="amr, nb-amr"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+	</device>
+
+	<device>
 		<identifier>BlackBerry/Pearl, BlackBerry/8100</identifier>
+		<features>hasTrackballEvents</features>
 		<capability name="ScreenSize" value="240x260"/>
 		<capability name="FullCanvasSize" value="240x260"/>
 		<capability name="BitsPerPixel" value="16"/>

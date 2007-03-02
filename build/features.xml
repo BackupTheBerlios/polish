@@ -34,5 +34,9 @@
 		<description>Stylus based devices do have pointer events.</description>
 	</feature>
 
+	<feature>
+		<identifier>hasTrackballEvents</identifier>
+		<description>Some Blackberry devices have a trackball</description>
+	</feature>
 	
 </features>
