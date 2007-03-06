@@ -299,17 +299,28 @@
 		depends="build-build, build-extension, build-client, build-client-java5, build-rmi, build-build-source"
 		description="creates the binary distribution"
 		>
-		
+		<mkdir dir="tmp/core/lib" />
+		<copy todir="tmp/core/lib">
+			<fileset dir="lib" includes="${all.library.jars}" />
+			<fileset dir="dist" includes="enough-j2mepolish-rmi.jar" />
+		</copy>	
+		<mkdir dir="tmp/core/import" />
+		<copy todir="tmp/core/import">
+			<fileset dir="import" includes="${all.jars}" />
+			<fileset dir="import" includes="${all.jars}" />
+			<fileset dir="dist" includes="enough-j2mepolish-client*" />
+		</copy>	
+		<mkdir dir="tmp/core/legal" />
+		<copy todir="tmp/core/legal">
+			<fileset dir="setup/legal" includes="*" />
+		</copy>
+		<copy todir="tmp/core">
+			<fileset dir="." includes="custom-devices.xml,custom-css-attributes.xml,custom-extensions.xml" />
+		</copy>
 		
 		<!-- create the update zip file containing the jars -->
-		<zip destfile="dist/j2mepolish-${Version}.zip">
-			<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-build.jar,enough-j2mepolish-extensions.jar,setup/Update.txt,LICENSE.txt" />
-			<fileset dir="setup" includes="Update.txt,menu/build.xml" />
-			<fileset dir="." includes="LICENSE.txt,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,custom-css-attributes.xml,custom-devices.xml,custom-extensions.xml,capabilities.xml,configurations.xml,platforms.xml" />
-			<fileset dir="import" includes="${update.jars}" />
-			<!--
-			<fileset dir="import" includes="midp2-cldc11.jar, siemens-color-game-api.jar, midp2.jar" />
-			-->
+		<zip destfile="dist/j2mepolish-${Version}.zip" basedir="tmp/core">
+			<!-- <fileset dir="tmp/core" includes="**/*" /> -->
 		</zip>
 	</target>
 		
