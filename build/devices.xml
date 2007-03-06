@@ -9287,10 +9287,11 @@ These namespaces/schemas will be used soon.
 		<capability name="wap.userAgent" value="BlackBerry5820/3.6.0"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
+	
 <!-- Samsung devices -->
 	<device> 
 		<identifier>Samsung/SGH-E810</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="China, Americas"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9328,7 +9329,7 @@ These namespaces/schemas will be used soon.
 					
 	<device> 
 		<identifier>Samsung/SGH-E898</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9367,7 +9368,7 @@ These namespaces/schemas will be used soon.
 				
 	<device> 
 		<identifier>Samsung/SGH-E870</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9406,7 +9407,7 @@ These namespaces/schemas will be used soon.
 				
 	<device> 
 		<identifier>Samsung/SGH-E900</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9444,7 +9445,7 @@ These namespaces/schemas will be used soon.
 					
 	<device> 
 		<identifier>Samsung/SGH-P300</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9481,7 +9482,7 @@ These namespaces/schemas will be used soon.
 					
 	<device> 
 		<identifier>Samsung/SGH-P310</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9519,7 +9520,7 @@ These namespaces/schemas will be used soon.
 				
 	<device> 
 		<identifier>Samsung/SGH-P858</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9557,7 +9558,7 @@ These namespaces/schemas will be used soon.
 				
 	<device> 
 		<identifier>Samsung/SGH-T509</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Americas"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9595,7 +9596,7 @@ These namespaces/schemas will be used soon.
 				
 	<device> 
 		<identifier>Samsung/SGH-T619</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Americas"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9633,7 +9634,7 @@ These namespaces/schemas will be used soon.
 			
 	<device> 
 		<identifier>Samsung/SGH-T709</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Americas"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9671,7 +9672,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-X700</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9709,7 +9710,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-X708</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9747,7 +9748,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-X820</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9784,7 +9785,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-Z400</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9821,7 +9822,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-Z540</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9858,7 +9859,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-Z720</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Americas, China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9897,7 +9898,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-Z560</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9934,7 +9935,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-E730</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -9972,7 +9973,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-E760</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10010,7 +10011,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-E770</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10048,7 +10049,7 @@ These namespaces/schemas will be used soon.
 			
 	<device> 
 		<identifier>Samsung/SGH-E788</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10091,7 +10092,7 @@ These namespaces/schemas will be used soon.
 	
 	<device> 
 		<identifier>Samsung/SGH-E570</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10129,7 +10130,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-E530</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
@@ -10167,7 +10168,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-E380</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10205,7 +10206,7 @@ These namespaces/schemas will be used soon.
 		
 	<device> 
 		<identifier>Samsung/SGH-E388</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10243,7 +10244,7 @@ These namespaces/schemas will be used soon.
 			
 	<device> 
 		<identifier>Samsung/SGH-E390</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10281,7 +10282,7 @@ These namespaces/schemas will be used soon.
 			
 	<device> 
 		<identifier>Samsung/SGH-E490</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10319,7 +10320,7 @@ These namespaces/schemas will be used soon.
 			
 	<device> 
 		<identifier>Samsung/SGH-E500</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10357,7 +10358,7 @@ These namespaces/schemas will be used soon.
 
 	<device> 
 		<identifier>Samsung/SGH-D820</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10395,7 +10396,7 @@ These namespaces/schemas will be used soon.
 			
 	<device> 
 		<identifier>Samsung/SGH-D828</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10433,7 +10434,7 @@ These namespaces/schemas will be used soon.
 	
 	<device> 
 		<identifier>Samsung/SGH-D908</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10471,7 +10472,7 @@ These namespaces/schemas will be used soon.
 	
 	<device> 
 		<identifier>Samsung/SGH-C130</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
@@ -10509,7 +10510,7 @@ These namespaces/schemas will be used soon.
 	
 	<device> 
 		<identifier>Samsung/SGH-D520</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10545,7 +10546,7 @@ These namespaces/schemas will be used soon.
 	
 	<device> 
 		<identifier>Samsung/SGH-D608</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="China"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10584,7 +10585,7 @@ These namespaces/schemas will be used soon.
 	
 	<device> 
 		<identifier>Samsung/SGH-T809</identifier> 
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="Region" value="Americas"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10622,7 +10623,7 @@ These namespaces/schemas will be used soon.
 	
 <device> 
 		<identifier>Samsung/SGH-E720</identifier> 
-		<features>isDoubleBuffered</features>
+		<features>isDoubleBuffered, hasCommandKeyEvents</features>
 		<groups></groups>
 		<capability name="OS" value="Nucleus OS"/>
 		<capability name="CompatibleDevice" value="Samsung/SGH-530, Samsung/SGH-E880"/>
@@ -10662,7 +10663,7 @@ These namespaces/schemas will be used soon.
 	
 	<device> 
 		<identifier>Samsung/SGH-ZM60</identifier> 
-		<features>isDoubleBuffered</features>
+		<features>isDoubleBuffered, hasCommandKeyEvents</features>
 		<groups>jtwi</groups>
 		<capability name="ScreenSize" value="176x205"/>
 		<capability name="CanvasSize" value="176x189"/>
@@ -10701,6 +10702,7 @@ These namespaces/schemas will be used soon.
 
 	<device> 
 		<identifier>Samsung/SGH-D720</identifier> 
+		<features>hasCommandKeyEvents</features> 
 		<groups>Series60</groups>
 		<capability name="ScreenSize" value="176x220" />
 		<capability name="CanvasSize" value="176x204"/>
@@ -11551,7 +11553,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Samsung/SGH-D800</identifier>
-		<features></features>
+		<features>hasCommandKeyEvents</features> 
 		<groups></groups>
 		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -11868,9 +11870,22 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E800/1.0 UP.Browser/6.2.3.3 (GUI) MMP/2.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E800/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3 (GUI) MMP/2.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E800/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0"/>
-<capability name="wap.userAgent" value="SAMSUNG-SGH-E800C"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+</device> 
+ 
+	<device> 
+		<identifier>Samsung/E800C</identifier> 
+		<parent>Samsung/SGH-E800</parent>
+		<capability name="Region" value="Singapore, Malaysia"/> 
+		<capability name="wap.userAgent" value="SAMSUNG-SGH-E800C"/>
+		<capability name="wap.userAgent" value="SAMSUNG-SGH-E800C/1.0 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
+	</device> 
+ 
+	<device> 
+		<identifier>Samsung/E808</identifier> 
+		<parent>Samsung/SGH-E800</parent>
+		<capability name="Region" value="China"/> 
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E808"/>
-<capability name="wap.userAgent" value="SAMSUNG-SGH-E800C/1.0 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E808/1.0*MzUzODAxMDAwMzk0NTk3 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E808/1.0*MzUzODAxMDAwNjAxMTE2 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E808/1.0*MzUzODAxMDAxMTE3NzQw UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
@@ -11925,19 +11940,6 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E808/1.0*MzUzODAxMDAzNDEzNTY4 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E808/1.0*MzUzODAxMDAzNDcxMzE5 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-E808/1.0*MzUzODAxMDAzNTg1NTE0 UP.Browser/6.2.2.6 (GUI) MMP/1.0"/>
-		<capability name="Bugs" value="SoftKeyMappedToFire" />
-</device> 
- 
-	<device> 
-		<identifier>Samsung/E800C</identifier> 
-		<parent>Samsung/SGH-E800</parent>
-		<capability name="Region" value="Singapore, Malaysia"/> 
-	</device> 
- 
-	<device> 
-		<identifier>Samsung/E808</identifier> 
-		<parent>Samsung/SGH-E800</parent>
-		<capability name="Region" value="China"/> 
 	</device> 
  
 	<device> 
@@ -12047,8 +12049,6 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="SAMSUNG SGH-X600 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
 <capability name="wap.userAgent" value="SAMSUNG-SGH-X600/K3 UP.Browser/6.1.0.6 (GUI) MMP/1.01.00"/>
 <capability name="wap.userAgent" value="SEC-SGHX600"/>
-<capability name="wap.userAgent" value="SAMSUNG-SGH-X600A"/>
-<capability name="wap.userAgent" value="SAMSUNG-SGH-X600A/K3 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
 		<capability name="Bugs" value="SoftKeyMappedToFire" />
 </device> 
  
@@ -12056,6 +12056,8 @@ These namespaces/schemas will be used soon.
 		<identifier>Samsung/X600A</identifier> 
 		<parent>Samsung/SGH-X600</parent>
 		<capability name="Region" value="Singapore, Malaysia"/> 
+<capability name="wap.userAgent" value="SAMSUNG-SGH-X600A"/>
+<capability name="wap.userAgent" value="SAMSUNG-SGH-X600A/K3 UP.Browser/6.1.0.6 (GUI) MMP/1.0"/>
         </device> 
  
         <device> 
@@ -12066,6 +12068,7 @@ These namespaces/schemas will be used soon.
  
         <device> 
 		<identifier>Samsung/SGH-A700</identifier> 
+		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="178x220"/> 
 		<capability name="BitsPerPixel" value="16"/> 
 		<capability name="JavaPlatform" value="MIDP/2.0"/> 
