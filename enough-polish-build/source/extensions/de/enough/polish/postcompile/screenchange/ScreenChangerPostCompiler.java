@@ -31,6 +31,7 @@ import java.util.ArrayList;
 
 import org.apache.tools.ant.BuildException;
 
+import de.enough.bytecode.DirClassLoader;
 import de.enough.bytecode.MethodInvocationMapping;
 import de.enough.bytecode.MethodMapper;
 import de.enough.polish.Device;
@@ -91,7 +92,7 @@ public class ScreenChangerPostCompiler extends PostCompiler {
 				targetClassName = "de/enough/polish/ui/StyleSheet";
 			}
 			MethodMapper mapper = new MethodMapper();
-			mapper.setClassLoader(device.getClassLoader());
+			mapper.setClassLoader(DirClassLoader.createClassLoader(device.getClassLoader(), classesDir));
 			
 			// Note: This code is duplicated in MasterCanvasPostCompiler.
 			
