@@ -5324,9 +5324,9 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="2048x1536"/>
 		<capability name="AnnouncementDate" value="2005-11-02"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
-		<capability name="Font.small" value="18" />
+		<capability name="Font.small" value="24" />
 		<capability name="Font.medium" value="26" />
-		<capability name="Font.large" value="28" />
+		<capability name="Font.large" value="34" />
 		<capability name="wap.userAgent" value="NokiaN80"/>
 	</device>
 
