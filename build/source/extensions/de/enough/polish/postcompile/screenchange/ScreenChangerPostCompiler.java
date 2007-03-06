@@ -28,6 +28,8 @@ package de.enough.polish.postcompile.screenchange;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 
@@ -35,6 +37,7 @@ import de.enough.bytecode.DirClassLoader;
 import de.enough.bytecode.MethodInvocationMapping;
 import de.enough.bytecode.MethodMapper;
 import de.enough.polish.Device;
+import de.enough.polish.postcompile.BytecodePostCompiler;
 import de.enough.polish.postcompile.PostCompiler;
 import de.enough.polish.util.FileUtil;
 
@@ -48,7 +51,7 @@ import de.enough.polish.util.FileUtil;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class ScreenChangerPostCompiler extends PostCompiler {
+public class ScreenChangerPostCompiler extends BytecodePostCompiler {
 
 	/**
 	 * Creates a new screen changer post compiler.
@@ -57,32 +60,42 @@ public class ScreenChangerPostCompiler extends PostCompiler {
 		super();
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.postcompile.PostCompiler#postCompile(java.io.File, de.enough.polish.Device)
-	 */
-	public void postCompile(File classesDir, Device device)
-	throws BuildException 
-	{
-		/*
-		boolean enableScreenEffects = this.environment.hasSymbol("polish.css.screen-change-animation");
-		if (!enableScreenEffects) {
-			return;
-		}*/
-		String[] fileNames = FileUtil.filterDirectory( classesDir, ".class", true );
-		ArrayList filesList = new ArrayList( fileNames.length );
-		for (int i = 0; i < fileNames.length; i++) {
-			String fileName = fileNames[i];
-			if (!(fileName.endsWith("StyleSheet.class") 
-					|| fileName.endsWith("MasterCanvas.class")
-					|| fileName.endsWith("ScreenChangeAnimation.class") 
-					|| (fileName.indexOf("screenanimations") != -1) )) 
-			{
-				filesList.add( new File( classesDir, fileName ) );
-			//} else {
-			//	System.out.println("ScreenChanger: skipping class " + fileName);
-			}
-		}
-		File[] files = (File[]) filesList.toArray( new File[ filesList.size() ] );
+  /* (non-Javadoc)
+   * @see de.enough.polish.postcompile.BytecodePostCompiler#filterClassList(de.enough.bytecode.DirClassLoader, java.util.List)
+   */
+  public List filterClassList(DirClassLoader classLoader, List classes)
+  {
+    Iterator it = classes.iterator();
+    ArrayList filteredClasses = new ArrayList();
+    
+    while (it.hasNext())
+      {
+        String classFileName = (String) it.next();
+        if (!(classFileName.endsWith("StyleSheet.class") 
+          || classFileName.endsWith("MasterCanvas.class")
+          || classFileName.endsWith("ScreenChangeAnimation.class") 
+          || (classFileName.indexOf("screenanimations") != -1) )) 
+          {
+            filteredClasses.add( classFileName );
+            //} else {
+            //  System.out.println("ScreenChanger: skipping class " + fileName);
+          }
+      }
+    
+    return filteredClasses;
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see de.enough.polish.postcompile.BytecodePostCompiler#postCompile(java.io.File, de.enough.polish.Device, de.enough.bytecode.DirClassLoader, java.util.List)
+   */
+  public void postCompile(File classesDir, Device device, DirClassLoader loader, List classes) throws BuildException
+  {
+    /*
+    boolean enableScreenEffects = this.environment.hasSymbol("polish.css.screen-change-animation");
+    if (!enableScreenEffects) {
+      return;
+    }*/
 		try {
 			//System.out.println("mapping of Display.setCurrent() for " + files.length + " class files.");
 			String targetClassName;
@@ -92,7 +105,7 @@ public class ScreenChangerPostCompiler extends PostCompiler {
 				targetClassName = "de/enough/polish/ui/StyleSheet";
 			}
 			MethodMapper mapper = new MethodMapper();
-			mapper.setClassLoader(DirClassLoader.createClassLoader(device.getClassLoader(), classesDir));
+			mapper.setClassLoader(loader);
 			
 			// Note: This code is duplicated in MasterCanvasPostCompiler.
 			
@@ -117,7 +130,7 @@ public class ScreenChangerPostCompiler extends PostCompiler {
 				);
 			}
 			
-			mapper.doMethodMapping( files );
+			mapper.doMethodMapping( classesDir, classes );
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to map Display.setCurrent( Displayable ) to StyleSheet.setCurrent( Display, Displayable ): " + e.toString(), e );
