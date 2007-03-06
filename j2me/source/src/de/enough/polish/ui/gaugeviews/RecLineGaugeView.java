@@ -65,7 +65,7 @@ public class RecLineGaugeView extends ItemView{
 	}
 	
 	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
-		this.contentWidth = (this.width + this.paddingHorizontal) * this.number ;
+		this.contentWidth = (this.width + this.paddingHorizontal) * this.number - (this.paddingHorizontal);
 		this.contentHeight = this.height ;
 	}
 
