@@ -83,7 +83,7 @@
 		<features></features>
 		<capability name="key.LeftSoftKey" value="-6" />
 		<capability name="key.RightSoftKey" value="-7" />
-		<capability name="Bugs" value="SoftKeyMappedToFire" />
+		<capability name="Bugs" value="SoftKeyMappedToFire2" />
 	</vendor>
 
 	<vendor>
@@ -129,11 +129,6 @@
 		<features></features>
 		<capability name="key.LeftSoftKey" value="-6" />
 		<capability name="key.RightSoftKey" value="-7" />
-	</vendor>
-
-	<vendor>
-		<name>Samsung</name>
-		<features></features>
 	</vendor>
 
 	<vendor>
