@@ -415,6 +415,12 @@ public class ChoiceTextField
 				}
 			//}
 			return true;
+		//#if polish.Key.ReturnKey:defined
+		} else if (this.isOpen
+				//#= && (keyCode == ${polish.Key.ReturnKey})
+				) {
+			openChoices(false);
+			return true;
 		}
 		return super.handleKeyPressed(keyCode, gameAction);
 	}
