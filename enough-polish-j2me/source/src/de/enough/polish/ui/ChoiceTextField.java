@@ -421,6 +421,7 @@ public class ChoiceTextField
 				) {
 			openChoices(false);
 			return true;
+		//#endif
 		}
 		return super.handleKeyPressed(keyCode, gameAction);
 	}
