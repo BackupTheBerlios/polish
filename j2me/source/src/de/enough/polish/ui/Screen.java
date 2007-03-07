@@ -1072,6 +1072,11 @@ implements AccessibleCanvas
 						animated = animated | this.ticker.animate();
 					}
 				//#endif
+				//#if polish.ScreenInfo.enable
+					if (ScreenInfo.item != null && ScreenInfo.isVisible()) {
+						animated = animated | ScreenInfo.item.animate();
+					}
+				//#endif
 				return animated;
 			} catch (Exception e) {
 				//#debug error
@@ -1373,7 +1378,7 @@ implements AccessibleCanvas
 	//				//#endif
 				}
 				
-				//#if polish.ScreenInfo.enable == true
+				//#if polish.ScreenInfo.enable
 					ScreenInfo.paint( g, topHeight, this.screenWidth );
 				//#endif
 					
