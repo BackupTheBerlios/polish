@@ -171,7 +171,7 @@ implements AccessibleCanvas
 	private boolean isLayoutBottom;
 	private boolean isLayoutHorizontalShrink;
 	private boolean isLayoutVerticalShrink;
-	private boolean isInitialised;
+	private boolean isInitialized;
 	//#if polish.ScreenChangeAnimation.forward:defined
 		protected Command lastTriggeredCommand;
 	//#endif	
@@ -553,7 +553,7 @@ implements AccessibleCanvas
 		if (startAnimationThread) {
 			StyleSheet.animationThread.start();
 		}
-		this.isInitialised = true;
+		this.isInitialized = true;
 	}
 		
 	/**
@@ -641,7 +641,7 @@ implements AccessibleCanvas
 	 */
 	public void showNotify() {
 		//#debug
-		System.out.println("showNotify " + this + " isInitialised=" + this.isInitialised);
+		System.out.println("showNotify " + this + " isInitialised=" + this.isInitialized);
 		try {
 			//#ifdef polish.Screen.showNotifyCode:defined
 				//#include ${polish.Screen.showNotifyCode}
@@ -657,7 +657,7 @@ implements AccessibleCanvas
 				this.originalScreenHeight = this.screenHeight;
 				this.scrollIndicatorY = this.screenHeight + 1; //- this.scrollIndicatorWidth - 1;
 			//#endif
-			if (!this.isInitialised) {
+			if (!this.isInitialized) {
 				init();
 			}
 			//#if polish.css.repaint-previous-screen
@@ -1041,7 +1041,7 @@ implements AccessibleCanvas
 	 * @return true when at least one animated item needs a redraw/repaint.
 	 */
 	public boolean animate() {
-		if (!this.isInitialised) {
+		if (!this.isInitialized) {
 			return false;
 		}
 			synchronized (this.paintLock) {
@@ -1704,7 +1704,7 @@ implements AccessibleCanvas
 			this.title = null;
 			this.titleHeight = 0;
 		}
-		if (this.isInitialised && super.isShown()) {
+		if (this.isInitialized && super.isShown()) {
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 			repaint();
 		}
@@ -1731,7 +1731,7 @@ implements AccessibleCanvas
 		} else {
 			this.titleHeight = 0;
 		}
-		if (this.isInitialised && super.isShown()) {
+		if (this.isInitialized && super.isShown()) {
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 			repaint();
 		}
@@ -1764,7 +1764,7 @@ implements AccessibleCanvas
 			this.showInfoItem = true;
 		}
 		
-		if (this.isInitialised && this.container != null) {
+		if (this.isInitialized && this.container != null) {
 			int previousContentHeight = this.contentHeight;
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 			int differentce = this.contentHeight - previousContentHeight;
@@ -2341,7 +2341,7 @@ implements AccessibleCanvas
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.addCommand(cmd, commandStyle);
 			if (super.isShown()) {
-				if (this.menuBarHeight == 0 && this.isInitialised) {
+				if (this.menuBarHeight == 0 && this.isInitialized) {
 					int availableWidth = this.screenWidth - (this.marginLeft + this.marginRight );
 					this.menuBarHeight = this.menuBar.getItemHeight( availableWidth, availableWidth );
 					this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
@@ -2450,7 +2450,7 @@ implements AccessibleCanvas
 				updateMenuTexts();
 			//#endif
 			if (super.isShown()) {
-				this.isInitialised = false;
+				this.isInitialized = false;
 				repaint();
 			}
 		//#endif
@@ -2512,7 +2512,7 @@ implements AccessibleCanvas
 					this.menuSingleLeftCommand = null;
 				}
 				if (this.menuOpened) {
-					this.isInitialised = false;
+					this.isInitialized = false;
 					repaint();
 				}				
 			//#endif	
@@ -2877,7 +2877,7 @@ implements AccessibleCanvas
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	public void sizeChanged(int width, int height) {
 		 //#if !polish.Bugs.sizeChangedReportsWrongHeight 
-			if (!this.isInitialised) {
+			if (!this.isInitialized) {
 				return;
 			}
 			//#debug
@@ -2888,13 +2888,8 @@ implements AccessibleCanvas
 				this.originalScreenHeight = this.screenHeight;
 			//#else
 				this.screenHeight = height;
-				//#if tmp.useScrollIndicator
-					this.scrollIndicatorY = this.screenHeight - this.scrollIndicatorWidth - 1;
-				//#endif
 			//#endif
-			//#if tmp.useScrollIndicator
-				this.scrollIndicatorY = height - this.scrollIndicatorWidth - 1;
-			//#endif
+			init();
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight  );
 		//#endif
 	}
