@@ -303,6 +303,8 @@
 		<copy todir="tmp/core/lib">
 			<fileset dir="lib" includes="${all.library.jars}" />
 			<fileset dir="dist" includes="enough-j2mepolish-rmi.jar" />
+			<fileset dir="dist" includes="enough-j2mepolish-build.jar" />
+			<fileset dir="dist" includes="enough-j2mepolish-extensions.jar" />
 		</copy>	
 		<mkdir dir="tmp/core/import" />
 		<copy todir="tmp/core/import">
