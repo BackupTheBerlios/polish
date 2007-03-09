@@ -242,7 +242,8 @@ implements AccessibleCanvas
 		private int scrollIndicatorColor;
 		private int scrollIndicatorX; // left x position of scroll indicator
 		private int scrollIndicatorY; // top y position of scroll indicator
-		private int scrollIndicatorWidth; // width and height of the indicator
+		private int scrollIndicatorWidth; // width of the indicator
+		private int scrollIndicatorHeight; // width of the indicator
 		//#if polish.css.scrollindicator-up-image || polish.css.scrollindicator-down-image 
 			private Image scrollIndicatorUpImage; 
 			private Image scrollIndicatorDownImage; 
@@ -435,6 +436,7 @@ implements AccessibleCanvas
 						}
 					//#endif
 					this.scrollIndicatorWidth = scrollWidth;
+					this.scrollIndicatorHeight = scrollHeight;
 					this.scrollIndicatorX = (this.screenWidth >> 1) - (scrollWidth >> 1);
 					int space = this.menuBarHeight - ((scrollHeight << 1) + 1);
 					this.scrollIndicatorY = (this.fullScreenHeight - this.menuBarHeight) + (space >> 1);
@@ -482,15 +484,19 @@ implements AccessibleCanvas
 					//#if polish.css.scrollindicator-up-image
 						if (this.scrollIndicatorUpImage != null) {
 							scrollWidth = this.scrollIndicatorUpImage.getWidth(); 
+							scrollHeight = this.scrollIndicatorUpImage.getHeight();
 						}
 					//#elif polish.css.scrollindicator-down-image
 						if (this.scrollIndicatorDownImage != null) {
 							scrollWidth = this.scrollIndicatorDownImage.getWidth(); 
+							scrollHeight = this.scrollIndicatorDownImage.getHeight();
 						}
 					//#endif
 					this.scrollIndicatorWidth = scrollWidth;
-					this.scrollIndicatorX = this.screenWidth / 2 - this.scrollIndicatorWidth / 2;
-					this.scrollIndicatorY = (this.fullScreenHeight - localMenuBarHeight) + (localMenuBarHeight -  this.scrollIndicatorWidth)/2;
+					this.scrollIndicatorHeight = scrollHeight;
+					this.scrollIndicatorX = this.screenWidth / 2 - scrollWidth / 2;
+					//# int space = localMenuBarHeight - ((scrollHeight << 1) + 1);
+					this.scrollIndicatorY = (this.fullScreenHeight - localMenuBarHeight) + (space >> 1);
 				//#endif
 				//System.out.println("without ExternalMenu: scrollIndicatorY=" + this.scrollIndicatorY + ", screenHeight=" + this.screenHeight + ", FullScreenHeight=" + this.fullScreenHeight + ", localMenuBarHeight=" + localMenuBarHeight);	
 				//#ifdef polish.MenuBar.MarginBottom:defined 
@@ -2711,13 +2717,13 @@ implements AccessibleCanvas
 						(x > this.scrollIndicatorX) &&
 						(y > this.scrollIndicatorY) &&
 						(x < this.scrollIndicatorX + this.scrollIndicatorWidth) &&
-						(y < this.scrollIndicatorY + this.scrollIndicatorWidth) ) 
+						(y < this.scrollIndicatorY + (this.scrollIndicatorHeight << 1) + 1) ) 
 				{
 					//#debug
 					System.out.println("ScrollIndicator has been clicked... ");
 					// the scroll-indicator has been clicked:
 					int gameAction;
-					if ( (( !this.paintScrollIndicatorUp) || (y > this.scrollIndicatorY + this.scrollIndicatorWidth/2)) && this.paintScrollIndicatorDown) {
+					if ( (( !this.paintScrollIndicatorUp) || (y > this.scrollIndicatorY + this.scrollIndicatorHeight)) && this.paintScrollIndicatorDown) {
 						gameAction = Canvas.DOWN;
 					} else {
 						gameAction = Canvas.UP;

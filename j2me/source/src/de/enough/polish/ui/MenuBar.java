@@ -854,26 +854,34 @@ public class MenuBar extends Item {
 		// check if one of the command buttons has been pressed:
 		int leftCommandEndX = this.marginLeft + this.paddingLeft + this.singleLeftCommandItem.itemWidth;
 		int rightCommandStartX = this.screen.screenWidth - (this.marginRight + this.paddingRight + this.singleRightCommandItem.itemWidth);
-		//System.out.println("MenuBar: handlePointerPressed( x=" + x + ", y=" + y + " )\nleftCommandEndX = " + leftCommandEndX + ", rightCommandStartXs = " + rightCommandStartX + " screenHeight=" + this.screen.screenHeight);
+		//#debug
+		System.out.println("MenuBar: handlePointerPressed( x=" + x + ", y=" + y + " )\nleftCommandEndX = " + leftCommandEndX + ", rightCommandStartXs = " + rightCommandStartX + " screenHeight=" + this.screen.screenHeight);
 		if (y > this.screen.screenHeight) {
 			//System.out.println("menubar clicked");
 			boolean isCloseKeySelected;
 			boolean isOpenKeySelected;
-			
-			//#if tmp.RightOptions
+			boolean isSelectKeySelected;
+			//#if tmp.OkCommandOnLeft && tmp.RightOptions
 				isCloseKeySelected = x > rightCommandStartX;
-				isOpenKeySelected =  x < leftCommandEndX;
-			//#else
+				isOpenKeySelected =  isCloseKeySelected;
+				isSelectKeySelected = x < leftCommandEndX;
+			//#elif tmp.RightOptions
 				isCloseKeySelected = x < leftCommandEndX;
 				isOpenKeySelected = x > rightCommandStartX;
+				isSelectKeySelected = isOpenKeySelected;
+			//#else
+				isOpenKeySelected = x < leftCommandEndX;
+				isCloseKeySelected = x > rightCommandStartX;
+				isSelectKeySelected = isOpenKeySelected;
 			//#endif
+			//System.out.println("isOpened=" + this.isOpened + ", isCloseKeySelected=" + isCloseKeySelected + ", isOpenKeySelected=" + isOpenKeySelected + ", isSelectKeySelected=" + isSelectKeySelected);
 			if (this.isOpened) {
-				if ( isCloseKeySelected ) {
+				if ( isSelectKeySelected ) {
 					//System.out.println("selecting command from opened menu");
 					setOpen( false );
 					Command command = (Command) this.commandsList.get( this.commandsContainer.focusedIndex );
 					this.screen.callCommandListener(command);
-				} else if ( isOpenKeySelected ) {
+				} else if ( isCloseKeySelected ) {
 					//System.out.println("closing menu");
 					setOpen( false );
 				}
@@ -888,9 +896,8 @@ public class MenuBar extends Item {
 				//System.out.println("calling single right command");
 				this.screen.callCommandListener(this.singleRightCommand);
 			} else if (this.commandsList.size() > 0 
-					&& x < leftCommandEndX)
+					&& isOpenKeySelected)
 			{
-				//System.out.println("opening menu");
 				setOpen( true );
 			}
 			//System.out.println("nothing was clicked...");
