@@ -94,6 +94,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	 */
 	public ExclusiveSingleLineView() {
 		super();
+		this.allowsAutoTraversal = false;
 	}
 
 	/* (non-Javadoc)
@@ -501,24 +502,29 @@ public class ExclusiveSingleLineView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#defocus(de.enough.polish.ui.Style)
 	 */
 	protected void defocus(Style originalStyle) {
+		//System.out.println("DEFOCUSING ExclusiveSingleLineView " + this.parentContainer.getLabel());
 		if (this.parentBackground != null ) {
 			this.parentContainer.background = this.parentBackground;
 			this.parentBackground = null;
 		}
+		//#ifdef polish.css.exclusiveview-expand-background
+			if (this.expandBackground) {
+				this.background = null;
+			}
+		//#endif		
 		super.defocus(originalStyle);
-		//System.out.println("EXCLUSIVE:   DEFOCUS!");
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#focus(de.enough.polish.ui.Style, int)
 	 */
 	public void focus(Style focusstyle, int direction) {
+		//System.out.println("FOCUSING ExclusiveSingleLineView " + this.parentContainer.getLabel());
 		Background bg = this.parentContainer.background;
 		if (bg != null) {
 			this.parentBackground = bg; 
 			this.parentContainer.background = null;
 		}
-		//System.out.println("EXCLUSIVE:   FOCUS, parentBackround != null: " + (this.parentBackground != null));
 		super.focus(focusstyle, direction);
 	}
 	

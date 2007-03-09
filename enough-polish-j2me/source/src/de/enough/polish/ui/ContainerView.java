@@ -92,6 +92,10 @@ extends ItemView
 	//#if polish.css.view-type-top-y-offset
 		protected int topYOffset;
 	//#endif
+	/** indicates whether the parent Container is allowed to change the currently focused item 
+	 *  when the user traverses around a form and enters the container from different sides 
+	 */
+	protected boolean allowsAutoTraversal = true;
 
 
 	/**

@@ -87,7 +87,9 @@ public class TabbedForm extends Form {
 		this.tabContainers[0] = this.container;
 		for (int i = 1; i < length; i++) {
 			Container tabContainer = new Container( null, true, null, this.screenHeight );
-			tabContainer.setStyle( style, true );
+			if (style != null) {
+				tabContainer.setStyle( style, true );
+			}
 			tabContainer.screen = this;
 			this.tabContainers[i] = tabContainer;
 		}
