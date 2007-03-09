@@ -48,10 +48,9 @@
 		<name>Motorola</name>
 		<features>hasCommandKeyEvents</features>
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="keys.CommandKeys" value="21, 22, 23" />
-		<capability name="key.LeftSoftKey" value="21" />
-		<capability name="key.RightSoftKey" value="22" />
-		<capability name="key.MiddleSoftKey" value="23" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="key.MiddleSoftKey" value="-23" />
 		<capability name="key.ChangeInputModeKey" value="48" />
 		<capability name="key.ChangeNumericalAlphaInputModeKey" value="35" />
 		<capability name="TextField.charactersKeyStar" value=" " />		
@@ -59,6 +58,7 @@
 		<capability name="Property.imsi" value="IMSI" />
 		<capability name="MenuBar.OptionsPosition" value="right" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb, ignoreTitleCall"/>
+		<capability name="Emulator.Class" value="MotorolaEmulator" />
 	</vendor>
 	
 	<vendor>

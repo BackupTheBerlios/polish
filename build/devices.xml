@@ -1842,6 +1842,8 @@ These namespaces/schemas will be used soon.
 		<capability name="key.LeftSoftKey" value="-21" />
 		<capability name="key.MiddleSoftKey" value="-20" />
 		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="Pebl_U6.props" />
     </device>
     
 	<device>
@@ -1915,6 +1917,8 @@ These namespaces/schemas will be used soon.
 	    <capability name="Font.small" value="17" />
 	    <capability name="Font.medium" value="22" />
 	    <capability name="Font.large" value="27" />
+		<capability name="Emulator.Class" value="MotorolaEmulatorA3" />
+		<capability name="Emulator.Skin" value="E770.props" />
 	    <capability name="Bugs" value="ReducedMessageLength" />
 	</device>
     
@@ -1950,6 +1954,8 @@ These namespaces/schemas will be used soon.
 		<capability name="key.LeftSoftKey" value="21"/>
 		<capability name="key.RightSoftKey" value="22"/>
 		<capability name="key.MiddleSoftKey" value="23"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA3" />
+		<capability name="Emulator.Skin" value="C975.props" />
 	<capability name="wap.userAgent" value="MOT-C975"/>
 <capability name="wap.userAgent" value="MOT-C975/80.12.02I MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-C975/80.12.03I MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
@@ -2111,6 +2117,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="900, 1800, 1900"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="AnnounceDate" value="2007-01-03"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA5" />
+		<capability name="Emulator.Skin" value="V1100.props" />
 	</device>
 
 	<device>
@@ -2130,6 +2138,8 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="midi, mp3, wav"/>
 		<capability name="Region" value="Global"/>
 		<capability name="AnnounceDate" value="2006-12-18"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="V195_V196_V197.props" />
 	</device>
 
 	<device>
@@ -2151,9 +2161,10 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="midi, mp3, wav"/>
 		<capability name="Region" value="Global"/>
 		<capability name="AnnounceDate" value="2006-12-18"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="V195_V196_V197.props" />
 	</device>
 		
-	
 	
 	<device>
 		<identifier>Motorola/V360</identifier>
@@ -2182,6 +2193,8 @@ These namespaces/schemas will be used soon.
 		<capability name="key.LeftSoftKey" value="-21"/>
 		<capability name="key.RightSoftKey" value="-22"/>
 		<capability name="key.MiddleSoftKey" value="-23"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="V360_V361.props" />
 	<capability name="wap.userAgent" value="MOT-V360"/>
 <capability name="wap.userAgent" value="MOT-V360/08.A0.0EI MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-V360/08.B7.05R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
@@ -2227,6 +2240,8 @@ These namespaces/schemas will be used soon.
 		<capability name="key.LeftSoftKey" value="21"/>
 		<capability name="key.RightSoftKey" value="22"/>
 		<capability name="key.MiddleSoftKey" value="23"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="V635.props" />
 	<capability name="wap.userAgent" value="MOT-V635"/>
 <capability name="wap.userAgent" value="MOT-V635/08.46.11R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
 <capability name="wap.userAgent" value="MOT-V635/08.47.15R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
@@ -2253,22 +2268,6 @@ These namespaces/schemas will be used soon.
 		<capability name="CanvasSize" value="176x179"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="HeapSize" value="10240 kb"/>
-		<!--
-		UNKNOWN CAPABILITIES
-		<capability name="JavaPackage" value="mmapi, wmapi, 3d, jtwi" />
-		<capability name="ExternalScreenSize" value="96x80" />
-		<capability name="MaxJarSize" value="200 kb" />
-		<capability name="MaxRecordStoreSize" value="64 kb" />
-		<capability name="JavaProtocol" value="udp, http, https, socket, tcp" />
-		<capability name="MaxSockets" value="4" />
-		<capability name="MaxSockets.tcp" value="4" />
-		<capability name="MaxSockets.http" value="4" />
-		<capability name="MaxSockets.udp" value="4" />
-		<capability name="ImageFormat" value="png, jpeg, gif, bmp" />
-		<capability name="SoundFormat" value="midi, wav, amr, mp3. mp4. iMelody" />
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorM.1/bin/emulator.exe" />
-		<capability name="Emulator.Arguments" value="-classpath;;${polish.jarPath};;-descriptor;;${polish.jadPath};;-deviceFile;;Resources/A760.props;;${polish.midlet.class}" />
-		-->
 	</device>
 	
 	<device>
@@ -2291,13 +2290,11 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxSockets.udp" value="4"/>
 		<capability name="ImageFormat" value="png, jpeg, gif, bmp"/>
 		<capability name="SoundFormat" value="midi, wav, amr, mp3, mp4, iMelody"/>
-		<!--
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorM.1/bin/emulator.exe" />
-		<capability name="Emulator.Arguments" value="-classpath;;${polish.jarPath};;-descriptor;;${polish.jadPath};;-deviceFile;;Resources/A760.props;;${polish.midlet.class}" />
-		-->
 		<capability name="key.LeftSoftKey" value="21"/>
 		<capability name="key.RightSoftKey" value="22"/>
 		<capability name="key.MiddleSoftKey" value="23"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA3" />
+		<capability name="Emulator.Skin" value="V980.props" />
 	<capability name="wap.userAgent" value="MOT-V980"/>
 <capability name="wap.userAgent" value="MOT-V980/74.07.1DI MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
 <capability name="wap.userAgent" value="MOT-V980/80.2E.27I MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
@@ -2353,8 +2350,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Region" value="North America"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="1"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V550_V545.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="V540_V545_V550.props" />
 		<capability name="Bugs" value="ReducedMessageLength"/>
 	<capability name="wap.userAgent" value="MOT-V550"/>
 <capability name="wap.userAgent" value="MOT-V550/0E.65.11R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
@@ -2391,8 +2388,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Region" value="EMEA"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="1"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V550_V545.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="V330_V547_V551_V555.props" />
 		<capability name="Bugs" value="ReducedMessageLength"/>
 	<capability name="wap.userAgent" value="MOT-V551"/>
 <capability name="wap.userAgent" value="MOT-V551/01.02.03 MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
@@ -2442,8 +2439,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Region" value="EMEA"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="1"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V550_V545.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="V620.props" />
 		<capability name="Bugs" value="ReducedMessageLength"/>
 	<capability name="wap.userAgent" value="MOT-V620"/>
 <capability name="wap.userAgent" value="MOT-V620/05.11.01_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
@@ -2464,6 +2461,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, 3d, pdaapi, telephony-api, jtwi"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="HeapSize" value="2 mb"/>
 		<capability name="MaxJarSize" value="1 mb"/>
@@ -2472,8 +2470,8 @@ These namespaces/schemas will be used soon.
 		<capability name="ImageFormat" value="png, jpeg, gif"/>
 		<capability name="SoundFormat" value="midi, mp3, nb-amr, wb-amr, wav, amr, Tone Sequence"/>
 		<capability name="VideoFormat" value="mpeg-4, 3gpp"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorM.1/bin/emulator.exe"/>
-		<capability name="Emulator.Arguments" value="-classpath;;${polish.jarPath};;-descriptor;;${polish.jadPath};;-deviceFile;;Resources/A760.props;;${polish.midlet.class}"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorM3" />
+		<capability name="Emulator.Skin" value="A780.props" />
 		<capability name="CameraZoom" value="0"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 	<capability name="wap.userAgent" value="MOT-A780"/>
@@ -2496,8 +2494,8 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaProtocol" value="udp, http, https, ssl, socket"/>
 		<capability name="ImageFormat" value="png, jpeg, gif"/>
 		<capability name="SoundFormat" value="midi, mp3, wav, amr"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorM.1/bin/emulator.exe"/>
-		<capability name="Emulator.Arguments" value="-classpath;;${polish.jarPath};;-descriptor;;${polish.jadPath};;-deviceFile;;Resources/A760.props;;${polish.midlet.class}"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorM1" />
+		<capability name="Emulator.Skin" value="A760_A760i.props" />
 	<capability name="wap.userAgent" value="MOT-A760"/>
 <capability name="wap.userAgent" value="MOT-A760/EZX_G_00.53.A1R MIB/2.2 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
 <capability name="wap.userAgent" value="MOT-A760/EZX_G_00.54.A1R MIB/2.2 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
@@ -2667,8 +2665,8 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="wmapi, mmapi, phonebook"/>
 		<capability name="ImageFormat" value="png, jpeg"/>
 		<capability name="SoundFormat" value="midi, wav, amr"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/C650.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="C650_C651.props" />
 	<capability name="wap.userAgent" value="MOT-C650"/>
 <capability name="wap.userAgent" value="MOT-C650/03.12.01_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
 <capability name="wap.userAgent" value="MOT-C650/03.15.02_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
@@ -2710,6 +2708,7 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Motorola"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="HeapSize" value="2 mb"/>
 		<capability name="StorageSize" value="50MB"/>
@@ -2724,8 +2723,8 @@ These namespaces/schemas will be used soon.
 		<capability name="ImageFormat" value="png, jpeg, gif"/>
 		<capability name="SoundFormat" value="midi, mp3, wav, amr, Tone Sequence"/>
 		<capability name="VideoFormat" value="mpeg-4, 3gpp"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorM.3/bin/emulator.exe"/>
-		<capability name="Emulator.Arguments" value="-classpath;;${polish.jarPath};;-descriptor;;${polish.jadPath};;${polish.midlet.class}"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorM3" />
+		<capability name="Emulator.Skin" value="E680_E680i.props" />
 	<capability name="wap.userAgent" value="MOT-E680"/>
 <capability name="wap.userAgent" value="MOT-E680/R51_G_0F.24.A1P MIB/2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-E680/R51_G_0F.27.A1R MIB/2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
@@ -2754,8 +2753,8 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxSockets" value="4"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, phonebook"/>
 		<capability name="ImageFormat" value="png, jpeg"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/C380.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="C380.props" />
 	<capability name="wap.userAgent" value="MOT-C380"/>
 <capability name="wap.userAgent" value="MOT-C380/04.05.02_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
 <capability name="wap.userAgent" value="MOT-C380/06.09.01_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
@@ -2784,8 +2783,8 @@ These namespaces/schemas will be used soon.
 		<capability name="ImageFormat" value="png, jpeg"/>
 		<capability name="SoundFormat" value="midi, wav, amr"/>
 		<capability name="CameraResolution" value="640x480"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/E398.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="E398.props" />
 		<capability name="key.LeftSoftKey" value="-21"/>
 		<capability name="key.RightSoftKey" value="-22"/>
 		<capability name="key.MiddleSoftKey" value="-23"/>
@@ -2865,8 +2864,8 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="wmapi, mmapi, phonebook"/>
 		<capability name="ImageFormat" value="png, jpeg"/>
 		<capability name="SoundFormat" value="midi, wav, amr"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/E398.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="E398.props" />
 		<capability name="key.LeftSoftKey" value="21"/>
 		<capability name="key.RightSoftKey" value="22"/>
 		<capability name="key.MiddleSoftKey" value="23"/>
@@ -2874,11 +2873,12 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Motorola/Motorokr_E6, Motorola/E6</identifier>
-		<features>doubleBuffering, hasCamera</features>
+		<features>doubleBuffering, hasCamera, hasPointerEvents</features>
 		<capability name="OS" value="Linux"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="HeapSize" value="2 MB"/>
 		<capability name="StorageSize" value="16 MB"/>
@@ -2893,6 +2893,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="900, 1800, 1900"/>
 		<capability name="CameraResolution" value="2 MP"/>
 		<capability name="AnnounceDate" value="2006-12-11"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorM3" />
+		<capability name="Emulator.Skin" value="MOTOROKR_E6.props" />
 	</device>
 
 	<device>
@@ -2917,6 +2919,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="2.0 MP"/>
 		<capability name="CameraZoom" value="4"/>
 		<capability name="AnnounceDate" value="2007-01-18"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA6" />
+		<capability name="Emulator.Skin" value="MOTORIZR_Z3.props" />
 	</device>
 
 	<device>
@@ -2942,6 +2946,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="640x480, 1.3 MP"/>
 		<capability name="CameraZoom" value="8"/>
 		<capability name="AnnounceDate" value="2006-12-18"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA5" />
+		<capability name="Emulator.Skin" value="MOTORAZR_V3xx.props" />
 	</device>
 
 	<device>
@@ -2967,6 +2973,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="1.23 MP"/>
 		<capability name="CameraZoom" value="8"/>
 		<capability name="AnnounceDate" value="2006-12-11"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="V3i_V3e_V3t.props" />
 	</device>
 
     <device>
@@ -3000,6 +3008,8 @@ These namespaces/schemas will be used soon.
         <capability name="Font.small" value="19" />
         <capability name="Font.medium" value="27" />
         <capability name="Font.large" value="33" />
+		<capability name="Emulator.Class" value="MotorolaEmulatorA3" />
+		<capability name="Emulator.Skin" value="RAZR_V3x.props" />
         <capability name="Bugs" value="ReducedMessageLength" />
 	</device>
 
@@ -3026,6 +3036,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="8"/>
 		<capability name="AnnounceDate" value="2006-11-07"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="V3i_V3e_V3t.props" />
 	</device>
 
 	<device>
@@ -3049,10 +3061,12 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="1.23 MP"/>
 		<capability name="CameraZoom" value="8"/>
 		<capability name="AnnounceDate" value="2006-12-11"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="V3i_V3e_V3t.props" />
 	</device>
 
 	<device>
-		<identifier>Motorola/Motorazr_V3-CLDC1.1, Motorola/V3-CLDC1.1</identifier>
+		<identifier>Motorola/V3, Motorola/Motorazr_V3-CLDC1.1, Motorola/V3-CLDC1.1</identifier>
 		<features>doubleBuffering, hasCamera</features>
 		<capability name="OS" value="Motorola"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
@@ -3074,6 +3088,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="4"/>
 		<capability name="AnnounceDate" value="2006-07-07"/>
+		<capability name="Emulator.Skin" value="RAZR_V3.props" />
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 	</device>
 
 	<device>
@@ -3099,6 +3115,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="640x480, 2 MP"/>
 		<capability name="CameraZoom" value="8"/>
 		<capability name="AnnounceDate" value="2006-12-11"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA5" />
+		<capability name="Emulator.Skin" value="MOTORAZR_maxx_V6.props" />
 	</device>
 
 	<device>
@@ -3124,6 +3142,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="2 MP"/>
 		<capability name="CameraZoom" value="8"/>
 		<capability name="AnnounceDate" value="2006-12-18"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA6" />
+		<capability name="Emulator.Skin" value="MOTOKRZR_K1.props" />
 	</device>
 
 	<device>
@@ -3148,6 +3168,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="4"/>
 		<capability name="AnnounceDate" value="2006-12-27"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="ROKR_E1.props" />
 	</device>
 
 	<device>
@@ -3157,6 +3179,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="HeapSize" value="2 MB"/>
 		<capability name="StorageSize" value="10 MB"/>
@@ -3172,6 +3195,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="8"/>
 		<capability name="AnnounceDate" value="2006-12-28"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorM3" />
+		<capability name="Emulator.Skin" value="ROKR_E2.props" />
 	</device>
 
 	<device>
@@ -3194,6 +3219,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Network" value="GSM, GPRS"/>
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="AnnounceDate" value="2006-12-11"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="L2_L6_L6i.props" />
 	</device>
 	
     <device>
@@ -3225,6 +3252,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="18" />
 		<capability name="Font.medium" value="18" />
 		<capability name="Font.large" value="18" />
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="L2_L6_L6i.props" />
 	</device>
 
 	<device>
@@ -3249,6 +3278,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="4"/>
 		<capability name="AnnounceDate" value="2006-09-05"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="L2_L6_L6i.props" />
 	</device>
 
 	<device>
@@ -3272,6 +3303,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="AnnounceDate" value="2006-12-28"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="SLVR_L7.props" />
 	</device>
 
 	<device>
@@ -3302,6 +3335,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="19" />
 		<capability name="Font.medium" value="19" />
 		<capability name="Font.large" value="19" />
+		<capability name="Emulator.Skin" value="RAZR_V3.props" />
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 	<capability name="wap.userAgent" value="MOT-V3"/>
 <capability name="wap.userAgent" value="MOT-V3 RAZR/0E.40.3ER MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
 <capability name="wap.userAgent" value="MOT-RAZR v3/0B.D2.23R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
@@ -3366,6 +3401,7 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="MOT-RAZRV3xv/85.97.70R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-RAZRV3xv/85.97.80R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 </device>
+	
 	
 	<device>
 		<identifier>Motorola/A920,Motorola/A925</identifier>
@@ -3446,8 +3482,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="900, 1800, 1900, WCDMA 2100"/>
 		<capability name="key.LeftSoftKey" value="-21"/>
 		<capability name="key.RightSoftKey" value="-22"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.3/bin/jblend.exe"/>
-		<capability name="Emulator.Arguments" value="-Xdescriptor:${polish.jadPath};;-Xdevice:E1000"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA3" />
+		<capability name="Emulator.Skin" value="E1000_E1000R.props" />
 		<capability name="key.LeftSoftKey" value="-21"/>
 		<capability name="key.RightSoftKey" value="-22"/>
 	<capability name="wap.userAgent" value="MOT-E1000"/>
@@ -3531,8 +3567,8 @@ These namespaces/schemas will be used soon.
 		<capability name="ImageFormat" value="png, jpeg"/>
 		<capability name="SoundFormat" value="midi, wav, amr"/>
 		<capability name="CameraResolution" value="640x480"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/A630.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="A630.props" />
 	<capability name="wap.userAgent" value="MOT-A630"/>
 <capability name="wap.userAgent" value="MOT-A630/0B.81.15I MIB/2.2 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
 <capability name="wap.userAgent" value="MOT-A630/0B.81.16I MIB/2.2 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
@@ -3570,13 +3606,15 @@ These namespaces/schemas will be used soon.
 		
 	<device>
 		<identifier>Motorola/A728</identifier>
-		<features>doubleBuffering, hasCamera</features>
+		<features>doubleBuffering, hasCamera, hasPointerEvents</features>
 		<capability name="OS" value="Motorola"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="JavaPackage" value="wmapi"/>
 		<capability name="JavaProtocol" value="udp, http, https, serial, socket, secure socket"/>
-		<capability name="ScreenSize" value="128x160"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x240"/>
+		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="HeapSize" value="800 kb"/>
 		<capability name="StorageSize" value="10 MB"/>
@@ -3588,6 +3626,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="Region" value="global"/>
 		<capability name="AnnouncementDate" value="2006-12-27"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorM1" />
+		<capability name="Emulator.Skin" value="A728.props" />
 	</device>
 		
 	<device>
@@ -3610,8 +3650,8 @@ These namespaces/schemas will be used soon.
 		<capability name="ImageFormat" value="png, jpeg, gif, bmp, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, wav, amr, aac, mp3"/>
 		<capability name="CameraResolution" value="640x480"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/A845.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="A845.props" />
 		<capability name="key.LeftSoftKey" value="-21"/>
 		<capability name="key.RightSoftKey" value="-22"/>
 		<capability name="key.MiddleSoftKey" value="-23"/>
@@ -3623,13 +3663,14 @@ These namespaces/schemas will be used soon.
 		
 	<device>
 		<identifier>Motorola/A910</identifier>
-		<features>doubleBuffering, hasCamera</features>
+		<features>doubleBuffering, hasCamera, hasPointerEvents</features>
 		<capability name="OS" value="Linux"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="pdaapi, btapi, mmapi, wmapi1.0, wmapi2.0, webservice, m3g, mot-geturl"/>
 		<capability name="JavaProtocol" value="udp, http, https, serial, socket, secure socket"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="HeapSize" value="2 MB"/>
 		<capability name="StorageSize" value="10 MB"/>
@@ -3640,17 +3681,20 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="Region" value="global"/>
 		<capability name="AnnouncementDate" value="2006-12-18"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorM3" />
+		<capability name="Emulator.Skin" value="A910.props" />
 	</device>
 			
 	<device>
 		<identifier>Motorola/A1200</identifier>
-		<features>doubleBuffering, hasCamera</features>
+		<features>doubleBuffering, hasCamera, hasPointerEvents</features>
 		<capability name="OS" value="Linux"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="pdaapi, btapi, mmapi, wmapi1.0, wmapi2.0, webservice, m3g"/>
 		<capability name="JavaProtocol" value="udp, http, https, serial, socket, secure socket"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="HeapSize" value="2 MB"/>
 		<capability name="StorageSize" value="8 MB"/>
@@ -3661,6 +3705,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="2 MP"/>
 		<capability name="Region" value="EMEA, Asia"/>
 		<capability name="AnnouncementDate" value="2006-10-30"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorM3" />
+		<capability name="Emulator.Skin" value="MOTOMING_A1200_A1200i_A1200r.props" />
 	</device>
 		
 	<device>
@@ -3684,6 +3730,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value=""/>
 		<capability name="Region" value="North America"/>
 		<capability name="AnnouncementDate" value="2006-07-13"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA3" />
+		<capability name="Emulator.Skin" value="C980.props" />
 	</device>
 		
 	<device>
@@ -3706,8 +3754,8 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxSockets.udp" value="4"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, Phonebook"/>
 		<capability name="ImageFormat" value="png, jpeg"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V180.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="V180_V185_V186_V188.props" />
 	<capability name="wap.userAgent" value="MOT-V180"/>
 <capability name="wap.userAgent" value="MOT-V180/0B.D1.09R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
 <capability name="wap.userAgent" value="MOT-V180/0B.D1.09R MIB/2.2.1 Profile/MIDP-2.0Configuration/CLDC-1.0"/>
@@ -3759,8 +3807,8 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="midi, wav, amr"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="0"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V220.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="V220_V220i_V226.props" />
 		<capability name="key.LeftSoftKey" value="-21"/>
 		<capability name="key.RightSoftKey" value="-22"/>
 		<capability name="key.SelectSoftKey" value="-20"/>
@@ -3810,8 +3858,8 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="midi, wav, amr, mp3"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="0"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V80.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="V80.props" />
 		<capability name="key.LeftSoftKey" value="-21"/>
 		<capability name="key.RightSoftKey" value="-22"/>
 		<capability name="key.SelectSoftKey" value="-20"/>
@@ -3947,8 +3995,8 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="wmapi, mmapi, Phonebook"/>
 		<capability name="ImageFormat" value="png, jpeg"/>
 		<capability name="SoundFormat" value="midi, wav, amr"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/T725.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="T725.props" />
 	</device>
 	
 	<device>
@@ -3974,9 +4022,15 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="midi, wav, amr, mp3"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="0"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V300_V400_V500.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="V300_V400_V500.props" />
 		<capability name="Bugs" value="dateFieldBroken"/>
+	</device>
+	
+	<device>
+		<identifier>Motorola/V303</identifier>
+		<parent>Motorola/V300</parent>
+		<capability name="Emulator.Skin" value="V303p_V400p.props" />
 	</device>
 	
 	<device>
@@ -4000,8 +4054,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraZoom" value="4"/>
 		<capability name="Region" value="global"/>
 		<capability name="AnnouncementDate" value="2006-12-11"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V300_V400_V500.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Emulator.Skin" value="V365.props" />
 		<capability name="Bugs" value="dateFieldBroken"/>
 	</device>
 	
@@ -4028,8 +4082,8 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="midi, wav, amr"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="0"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V300_V400_V500.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="V300_V400_V500.props" />
 		<capability name="Bugs" value="dateFieldBroken"/>
 	<capability name="wap.userAgent" value="MOT-V400"/>
 <capability name="wap.userAgent" value="V400 MOT-V400/0B.08.74R MIB/2.2 Profile/MIDP-2.0"/>
@@ -4084,8 +4138,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="0"/>
 		<capability name="DRM" value="Forward Lock"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V300_V400_V500.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="V300_V400_V500.props" />
 		<capability name="IconSize" value="15x15"/>
 		<capability name="Bugs" value="dateFieldBroken"/>
 	</device>
@@ -4114,8 +4168,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="0"/>
 		<capability name="DRM" value="Forward Lock"/>
-		<capability name="Emulator.Executable" value="${motorola.home}/EmulatorA.1/bin/emujava.exe"/>
-		<capability name="Emulator.Arguments" value="${polish.jadPath};;-deviceFile;;${motorola.home}/EmulatorA.1/bin/Resources/V600.props"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA1" />
+		<capability name="Emulator.Skin" value="V600.props" />
 		<capability name="Bugs" value="dateFieldBroken"/>
 	<capability name="wap.userAgent" value="MOT-V600"/>
 <capability name="wap.userAgent" value="MOT-V600/05.20.0BR MIB/2.0 Profile/MIDP-1.0 Configuration/CLDC-1.0"/>
