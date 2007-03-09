@@ -349,7 +349,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 			int startX = x + this.leftArrowStartX;
 			if (startX >= rightBorder) {
 				//TODO this is  a hack for cases where the label is staying on the same line as this view:
-				startX = rightBorder - this.arrowWidth;
+				startX = rightBorder - (this.arrowWidth << 1);
 			}
 			
 			//#ifdef polish.css.exclusiveview-left-arrow
@@ -387,7 +387,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 			int startX = x + this.rightArrowStartX;
 			if (startX >= rightBorder) {
 				//TODO this is  a hack for cases where the label is staying on the same line as this view:
-				startX = rightBorder - (this.arrowWidth >> 1);
+				startX = rightBorder; // - this.arrowWidth;
 			}
 			//#ifdef polish.css.exclusiveview-right-arrow
 				if (this.rightArrow != null) {
