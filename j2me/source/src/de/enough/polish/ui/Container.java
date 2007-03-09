@@ -1583,11 +1583,11 @@ public class Container extends Item {
 			this.isFocused = false;
 			Item item = this.focusedItem; //(Item) this.itemsList.get( this.focusedIndex );
 			item.defocus( this.itemStyle );
-			//#if tmp.supportViewType
-//				if (this.view != null) {
-//					//this.view.defocus( this.itemStyle );
-//					this.isInitialised = false;
-//				}
+			//#ifdef tmp.supportViewType
+				if (this.containerView != null) {
+					this.containerView.defocus( originalStyle );
+					this.isInitialized = false;
+				}
 			//#endif
 			this.isFocused = false;
 			// now remove any commands which are associated with this item:

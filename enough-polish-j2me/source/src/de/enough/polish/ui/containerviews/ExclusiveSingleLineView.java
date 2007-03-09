@@ -100,8 +100,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
-	protected void initContent(Item parentItm, int firstLineWidth,
-			int lineWidth) 
+	protected void initContent(Item parentItm, int firstLineWidth, int lineWidth) 
 	{
 		//#debug
 		System.out.println("Initalizing ExclusiveSingleLineView");
@@ -301,8 +300,11 @@ public class ExclusiveSingleLineView extends ContainerView {
 		int modifiedX = x;
 		//#ifdef polish.css.exclusiveview-expand-background
 			if (this.expandBackground && this.background != null) {
-				this.currentItem.background = null;
-				this.background.paint(x, y, this.contentWidth, this.contentHeight, g);
+				if (this.currentItem != null && this.currentItem.background == this.background) {
+					this.currentItem.background = null;
+				}
+				//this.background.paint(x, y, this.contentWidth, this.contentHeight, g);
+				this.background.paint(leftBorder, y, rightBorder-leftBorder, this.contentHeight, g);
 			}
 		//#endif
 
@@ -344,7 +346,12 @@ public class ExclusiveSingleLineView extends ContainerView {
 			//# if (this.currentItemIndex > 0) {
 		//#endif
 			// draw left arrow
-			int startX = x + this.leftArrowStartX;	
+			int startX = x + this.leftArrowStartX;
+			if (startX >= rightBorder) {
+				//TODO this is  a hack for cases where the label is staying on the same line as this view:
+				startX = rightBorder - this.arrowWidth;
+			}
+			
 			//#ifdef polish.css.exclusiveview-left-arrow
 				if (this.leftArrow != null) {
 					//System.out.println("Drawing left IMAGE arrow at " + startX );
@@ -377,7 +384,11 @@ public class ExclusiveSingleLineView extends ContainerView {
 			//# if (this.currentItemIndex < this.parentContainer.size() - 1) {
 		//#endif
 			// draw right arrow
-			int startX = x + this.rightArrowStartX;	
+			int startX = x + this.rightArrowStartX;
+			if (startX >= rightBorder) {
+				//TODO this is  a hack for cases where the label is staying on the same line as this view:
+				startX = rightBorder - (this.arrowWidth >> 1);
+			}
 			//#ifdef polish.css.exclusiveview-right-arrow
 				if (this.rightArrow != null) {
 					g.drawImage( this.rightArrow, startX, y + this.rightYOffset, Graphics.LEFT | Graphics.TOP );
