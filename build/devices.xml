@@ -4050,7 +4050,7 @@ These namespaces/schemas will be used soon.
 	</device>
 	
 	<device>
-		<identifier>Motorola/V300, Motorola/V303</identifier>
+		<identifier>Motorola/V300</identifier>
 		<features>doubleBuffering, hasCamera</features>
 		<capability name="OS" value="Motorola"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
