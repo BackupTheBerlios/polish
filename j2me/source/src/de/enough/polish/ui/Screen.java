@@ -482,6 +482,7 @@ implements AccessibleCanvas
 				//#endif
 				//#if tmp.useScrollIndicator
 					//# int scrollWidth = localMenuBarHeight;
+					//# int scrollHeight = scrollWidth;
 					//#if polish.css.scrollindicator-up-image
 						if (this.scrollIndicatorUpImage != null) {
 							scrollWidth = this.scrollIndicatorUpImage.getWidth(); 
