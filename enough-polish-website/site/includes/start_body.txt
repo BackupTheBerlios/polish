@@ -182,7 +182,16 @@
 		<%ifdef inDocumentationSection %>
 			<div id="currentLink"><a href="<%= basedir %>documentation.html">Documentation</a></div>
 			<%ifdef inDocumentationSection.install %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install.html">Installation</a></div>
+				<%ifdef inDocumentationSection.installcore %>
+					<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/install.html">Installation</a></div>
+				<%else %>
+					<div class="secondLevelLink"><a href="<%= basedir %>docs/install.html">Installation</a></div>
+				<%endif %>				
+				<%ifdef inDocumentationSection.migration %>
+					<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/migration.html">Migration</a></div>
+				<%else %>
+					<div class="secondLevelLink"><a href="<%= basedir %>docs/migration.html">Migration</a></div>
+				<%endif %>
 				<%ifdef inDocumentationSection.integration %>
 					<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/integration.html">IDE Integration</a></div>
 				<%else %>

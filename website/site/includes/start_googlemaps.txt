@@ -1,3 +1,4 @@
+
 <%include start_header.txt %>
 
 	<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAA_DCzrXv1CGPucgDgwGPDBT69rLnFJXh92hs996-0g5j4Fv6KxT70K6ODecsoXg1IBjoZmM1rVL3ig"
@@ -37,3 +38,4 @@
 <body onload="load()" onunload="GUnload()">
 
 <%include start_body.txt %>
+

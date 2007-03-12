@@ -1,11 +1,21 @@
 <%define inDocumentationSection %>
-<%define inDocumentationSection.serialization %>
+<%define inDocumentationSection.persistence %>
 <%set title = J2ME Polish: Persistence with Serialization  %>
 <%set basedir = ../ %>
 <%include start.txt %>
 			
-	<h1 id="top">Serialization: How to persist serializable classes</h1>
-	<%index %>
+	<h1 id="top">Persisting Objects with J2ME Polish</h1>
+	<ul class="relatedtechnologies">
+		<li class="relatedtechnologiesheader">Related Technologies:</li>
+		<li><a href="serialization.html">Serialization</a></li>
+		<li><a href="rmi.html">Remote Method Invocation (RMI)</a></li>
+	</ul>
+	
+	<p>
+	Based on top of J2ME Polish' serialization framework, the persistence framework allows you to store data easily on the handset.
+		<br/><img src="../images/persistence-overview.gif" width="500" height="257" alt="Persistence Overview" />
+
+	</p>
 		
 		<p>
 			Use the  <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/io/RmsStorage.html">RmsStorage</a> to read and save data to the record store in the easiest possible way!

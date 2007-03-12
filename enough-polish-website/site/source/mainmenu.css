@@ -53,10 +53,11 @@ way to fit your requirements.
 	border-width:1px 1px 0 0; 
 	background:#758279; 
 	padding: 1px;
-	*/
 	padding-left:10px; 
+	*/
 	line-height:29px;
-}
+	padding-left:10px; 
+	}
 /* a hack so that IE5.5 faulty box model is corrected */
 * html .menu2 a, * html .menu2 a:visited {
 	width:100px;
