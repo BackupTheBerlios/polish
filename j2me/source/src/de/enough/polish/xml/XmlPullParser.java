@@ -27,7 +27,7 @@ import java.util.*;
     support for namespaces, or access to XML comments or
     processing instructions, please use kXML(2) instead. */
 
-public class XmlPullParser implements PullParser {
+public class XmlPullParser implements SimplePullParser {
 
     static final private String UNEXPECTED_EOF =
         "Unexpected EOF";
@@ -532,7 +532,7 @@ public class XmlPullParser implements PullParser {
     }
 
     /* (non-Javadoc)
-     * @see de.enough.polish.xml.PullParser#getText()
+     * @see de.enough.polish.xml.SimplePullParser#getText()
      */
     public String getText() {
 
@@ -543,7 +543,7 @@ public class XmlPullParser implements PullParser {
     }
 
     /* (non-Javadoc)
-     * @see de.enough.polish.xml.PullParser#getName()
+     * @see de.enough.polish.xml.SimplePullParser#getName()
      */
     public String getName() {
         return this.name;
@@ -554,14 +554,14 @@ public class XmlPullParser implements PullParser {
     }
 
     /* (non-Javadoc)
-     * @see de.enough.polish.xml.PullParser#getAttributeCount()
+     * @see de.enough.polish.xml.SimplePullParser#getAttributeCount()
      */
     public int getAttributeCount() {
         return this.attributeCount;
     }
 
     /* (non-Javadoc)
-     * @see de.enough.polish.xml.PullParser#getAttributeName(int)
+     * @see de.enough.polish.xml.SimplePullParser#getAttributeName(int)
      */
     public String getAttributeName(int index) {
         if (index >= this.attributeCount)
@@ -570,7 +570,7 @@ public class XmlPullParser implements PullParser {
     }
 
     /* (non-Javadoc)
-     * @see de.enough.polish.xml.PullParser#getAttributeValue(int)
+     * @see de.enough.polish.xml.SimplePullParser#getAttributeValue(int)
      */
     public String getAttributeValue(int index) {
         if (index >= this.attributeCount)
@@ -579,7 +579,7 @@ public class XmlPullParser implements PullParser {
     }
 
     /* (non-Javadoc)
-     * @see de.enough.polish.xml.PullParser#getAttributeValue(java.lang.String)
+     * @see de.enough.polish.xml.SimplePullParser#getAttributeValue(java.lang.String)
      */
     public String getAttributeValue(String name) {
 
@@ -598,7 +598,7 @@ public class XmlPullParser implements PullParser {
     }
 
     /* (non-Javadoc)
-     * @see de.enough.polish.xml.PullParser#next()
+     * @see de.enough.polish.xml.SimplePullParser#next()
      */
     public int next() {
 

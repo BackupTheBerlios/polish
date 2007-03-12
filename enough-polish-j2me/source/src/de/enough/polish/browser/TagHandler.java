@@ -30,7 +30,7 @@ package de.enough.polish.browser;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.util.HashMap;
-import de.enough.polish.xml.PullParser;
+import de.enough.polish.xml.SimplePullParser;
 
 import javax.microedition.lcdui.Command;
 
@@ -66,7 +66,7 @@ public abstract class TagHandler
    * @param attributeMap all attributes for the tag
    * @return <code>true</code> if the tag was handled, <code>false</code> otherwise
    */
-  public abstract boolean handleTag(Container parentItem, PullParser parser, String tagName, boolean opening, HashMap attributeMap);
+  public abstract boolean handleTag(Container parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap);
   
   //#if polish.LibraryBuild
   /**
@@ -79,9 +79,9 @@ public abstract class TagHandler
    * @param attributeMap all attributes for the tag
    * @return <code>true</code> if the tag was handled, <code>false</code> otherwise
    * 
-   * @see #handleTag(Container, PullParser, String, boolean, HashMap)
+   * @see #handleTag(Container, SimplePullParser, String, boolean, HashMap)
    */
-  public boolean handleTag(FakeContainerCustomItem parentItem, PullParser parser, String tagName, boolean opening, HashMap attributeMap)
+  public boolean handleTag(FakeContainerCustomItem parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap)
   {
     return false;
   }

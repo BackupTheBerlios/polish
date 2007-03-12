@@ -36,7 +36,7 @@ import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.HashMap;
-import de.enough.polish.xml.PullParser;
+import de.enough.polish.xml.SimplePullParser;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Image;
@@ -113,7 +113,7 @@ public class HtmlTagHandler
   /* (non-Javadoc)
    * @see de.enough.polish.browser.TagHandler#handleTag(de.enough.polish.ui.Container, de.enough.polish.xml.PullParser, java.lang.String, boolean, de.enough.polish.util.HashMap)
    */
-  public boolean handleTag(Container parentItem, PullParser parser, String tagName, boolean opening, HashMap attributeMap)
+  public boolean handleTag(Container parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap)
   {
 	  //#debug
 	  System.out.println("checking tag " + tagName );

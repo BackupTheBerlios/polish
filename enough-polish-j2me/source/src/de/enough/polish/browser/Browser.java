@@ -43,7 +43,7 @@ import de.enough.polish.browser.protocols.ResourceProtocolHandler;
 import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.io.StringReader;
 import de.enough.polish.util.HashMap;
-import de.enough.polish.xml.PullParser;
+import de.enough.polish.xml.SimplePullParser;
 import de.enough.polish.xml.XmlPullParser;
 
 //#if polish.LibraryBuild
@@ -291,7 +291,7 @@ implements Runnable
   /**
    * @param parser the parser to read the page from
    */
-  private void parsePage(PullParser parser)
+  private void parsePage(SimplePullParser parser)
   {
     // Clear out all items in the browser.
     clear();
@@ -299,12 +299,12 @@ implements Runnable
     // Clear image cache when visiting a new page.
     this.imageCache.clear();
     
-    while (parser.next() != PullParser.END_DOCUMENT)
+    while (parser.next() != SimplePullParser.END_DOCUMENT)
     {
-      if (parser.getType() == PullParser.START_TAG
-          || parser.getType() == PullParser.END_TAG)
+      if (parser.getType() == SimplePullParser.START_TAG
+          || parser.getType() == SimplePullParser.END_TAG)
       {
-        boolean openingTag = parser.getType() == PullParser.START_TAG;
+        boolean openingTag = parser.getType() == SimplePullParser.START_TAG;
 
         //#debug
         System.out.println( "looking for handler for " + parser.getName()  + ", openingTag=" + openingTag );
@@ -325,7 +325,7 @@ implements Runnable
         	System.out.println( "no handler for " + parser.getName() );
         }
       }
-      else if (parser.getType() == PullParser.TEXT)
+      else if (parser.getType() == SimplePullParser.TEXT)
       {
         handleText(parser.getText().trim());
       }
@@ -339,7 +339,7 @@ implements Runnable
     System.out.println("end of document...");
   }
 
-  private TagHandler getTagHandler(PullParser parser, HashMap attributeMap)
+  private TagHandler getTagHandler(SimplePullParser parser, HashMap attributeMap)
   {
     TagHandlerKey key;
     TagHandler handler = null;
