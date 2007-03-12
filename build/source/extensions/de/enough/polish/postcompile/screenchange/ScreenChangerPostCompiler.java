@@ -71,15 +71,16 @@ public class ScreenChangerPostCompiler extends BytecodePostCompiler {
     while (it.hasNext())
       {
         String classFileName = (String) it.next();
-        if (!(classFileName.endsWith("StyleSheet.class") 
-          || classFileName.endsWith("MasterCanvas.class")
-          || classFileName.endsWith("ScreenChangeAnimation.class") 
+        if (!(classFileName.endsWith("StyleSheet") 
+          || classFileName.endsWith("MasterCanvas")
+          || classFileName.endsWith("ScreenChangeAnimation") 
           || (classFileName.indexOf("screenanimations") != -1) )) 
           {
             filteredClasses.add( classFileName );
-            //} else {
-            //  System.out.println("ScreenChanger: skipping class " + fileName);
-          }
+//            System.out.println("ScreenChanger: ADDING class " + classFileName);
+//            } else {
+//              System.out.println("ScreenChanger: skipping class " + classFileName);
+          } 
       }
     
     return filteredClasses;

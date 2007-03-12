@@ -3038,6 +3038,10 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Skin" value="RAZR_V3x.props" />
         <capability name="Bugs" value="ReducedMessageLength" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
+		<capability name="wap.userAgent" value="MOT-RAZRV3x"/>
+		<capability name="wap.userAgent" value="MOT-RAZRV3x/01.2A.01 MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+		<capability name="wap.userAgent" value="MOT-RAZRV3x/01.2B.02 MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+		<capability name="wap.userAgent" value="MOT-RAZRV3x/01.2D.02 MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 	</device>
 
 	<device>
@@ -3066,6 +3070,11 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="V3i_V3e_V3t.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
+		<capability name="wap.userAgent" value="MOT-V3i"/>
+		<capability name="wap.userAgent" value="MOT-V3i_iTunes/08.B4.1CI MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+		<capability name="wap.userAgent" value="MOT-V3i_iTunes/08.B4.2FR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+		<capability name="wap.userAgent" value="MOT-V3i/04.25.01_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+		<capability name="wap.userAgent" value="MOT-V3i/04.25.02_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 	</device>
 
 	<device>
@@ -3203,6 +3212,15 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="ROKR_E1.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
+<capability name="wap.userAgent" value="MOT-E1 iTunes"/>
+<capability name="wap.userAgent" value="MOT-E1 iTunes/01.42.02_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+<capability name="wap.userAgent" value="MOT-E1 iTunes/01.43.01_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+<capability name="wap.userAgent" value="MOT-E1 iTunes/0E.30.14I MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+<capability name="wap.userAgent" value="MOT-ROKR E1/0E.30.1ER MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+<capability name="wap.userAgent" value="MOT-ROKR E1/0E.30.42R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+<capability name="wap.userAgent" value="MOT-ROKR E1/0E.30.44R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+<capability name="wap.userAgent" value="MOT-ROKR_E1/0E.30.6FR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
+<capability name="wap.userAgent" value="MOT-Verbatim_E1/0E.30.6FR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 	</device>
 
 	<device>
@@ -3409,24 +3427,15 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="MOT-V3/0E.41.C3R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
 <capability name="wap.userAgent" value="MOT-V3/0E.42.0CR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
 <capability name="wap.userAgent" value="MOT-V3b"/>
-<capability name="wap.userAgent" value="MOT-V3i"/>
 <capability name="wap.userAgent" value="MOT-V3r"/>
 <capability name="wap.userAgent" value="MOT-V3v"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3x"/>
 <capability name="wap.userAgent" value="MOT-V3b/0E.A4.21R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3i_iTunes/08.B4.1CI MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3i_iTunes/08.B4.2FR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3i/04.25.01_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3i/04.25.02_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-V3r/04.25.01_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-V3r/04.25.02_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-V3r/04.27.02_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-V3r/08.BD.26I MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-V3r/08.BD.27R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-V3v/0E.42.08R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3x/01.2A.01 MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3x/01.2B.02 MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3x/01.2D.02 MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-RAZRV3xv"/>
 <capability name="wap.userAgent" value="MOT-RAZRV3xv/85.6A.60R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-RAZRV3xv/85.70.70R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
@@ -4288,88 +4297,7 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="MOT-V600/_G_0B.06. MIB/2.2 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
 <capability name="wap.userAgent" value="MOT-V600/R51_G_0F.27.A1R MIB/2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="MOT-V600i"/>
-<capability name="wap.userAgent" value="MOT-V620"/>
-<capability name="wap.userAgent" value="MOT-E1 iTunes"/>
-<capability name="wap.userAgent" value="MOT-V3"/>
 <capability name="wap.userAgent" value="MOT-V600i/0E.65.23R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V620/05.11.01_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V620/0B.09.4AR MIB/2.2 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V620/0E.65.24R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V620/0E.65.25R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-SuLe V620/0E.65.25R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V620/0E.66.04R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V620/0E.66.06R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V620/0E.66.0BR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-E1 iTunes/01.42.02_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-E1 iTunes/01.43.01_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-E1 iTunes/0E.30.14I MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-ROKR E1/0E.30.1ER MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-ROKR E1/0E.30.42R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-ROKR E1/0E.30.44R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-ROKR_E1/0E.30.6FR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-Verbatim_E1/0E.30.6FR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3 RAZR/0E.40.3ER MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-RAZR v3/0B.D2.23R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-RAZR V3/0E.40.3CR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-Razr V3/0B.09.38R MIB/2.2 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0B.09.38R MIB/2.2 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.2AI MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.31I MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.31R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.33R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.37R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.39R MIB/2.2.1 Profile/MIDP-2.0Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.3BR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.3CR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.3DR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.3ER MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.3FR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.52R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.53R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.57R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.64R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.74R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.75R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.79R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.7AR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.7BR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.92R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.94R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.95R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.40.99R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.41.C3R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3/0E.42.0CR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3b"/>
-<capability name="wap.userAgent" value="MOT-V3i"/>
-<capability name="wap.userAgent" value="MOT-V3r"/>
-<capability name="wap.userAgent" value="MOT-V3v"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3x"/>
-<capability name="wap.userAgent" value="MOT-V3b/0E.A4.21R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-V3i_iTunes/08.B4.1CI MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3i_iTunes/08.B4.2FR MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3i/04.25.01_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3i/04.25.02_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3r/04.25.01_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3r/04.25.02_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3r/04.27.02_ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3r/08.BD.26I MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3r/08.BD.27R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-V3v/0E.42.08R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3x/01.2A.01 MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3x/01.2B.02 MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3x/01.2D.02 MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3xv"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3xv/85.6A.60R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3xv/85.70.70R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3xv/85.82.60R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3xv/85.83.E0R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3xv/85.83.E1P MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3xv/85.92.10R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3xv/85.92.70R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3xv/85.92.71P MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3xv/85.97.00R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3xv/85.97.70R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
-<capability name="wap.userAgent" value="MOT-RAZRV3xv/85.97.80R MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 </device>
 	
 	<device>
