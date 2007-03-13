@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -62,7 +63,8 @@ public class LibraryManager {
 	private final File wtkLibPath;
 	private final File projectLibPath;
 	private final File polishLibPath;
-	private final HashMap libraries = new HashMap();
+	private final HashMap librariesByName = new HashMap();
+	private final ArrayList libraries = new ArrayList();
 	private final HashMap resolvedClassPaths = new HashMap();
 	private final HashMap resolvedLibraryPaths = new HashMap();
 	private final Map antProperties;
@@ -113,7 +115,7 @@ public class LibraryManager {
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element definition = (Element) iter.next();
 			Library lib = new Library( this.antProperties, this.wtkLibPath, this.projectLibPath, this.polishLibPath, definition, this );
-			Library existingLib = (Library) this.libraries.get( lib.getSymbol() ); 
+			Library existingLib = (Library) this.librariesByName.get( lib.getSymbol() ); 
 			if ( existingLib != null ) {
 				throw new InvalidComponentException("The library [" + lib.getFullName() 
 						+ "] uses the symbol [" + lib.getSymbol() + "], which is already used by the "
@@ -123,16 +125,17 @@ public class LibraryManager {
 			String[] names = lib.getNames();
 			for (int i = 0; i < names.length; i++) {
 				String name = names[i];
-				existingLib = (Library) this.libraries.get( name ); 
+				existingLib = (Library) this.librariesByName.get( name ); 
 				if ( existingLib != null ) {
 					throw new InvalidComponentException("The library [" + lib.getFullName() 
 							+ "] uses the name [" + name + "], which is already used by the "
 							+ "library [" + existingLib.getFullName() 
 							+ "]. Please adjust your settings in [apis.xml].");
 				}
-				this.libraries.put( name, lib );
+				this.librariesByName.put( name, lib );
 			}
-			this.libraries.put( lib.getSymbol(), lib );
+			this.librariesByName.put( lib.getSymbol(), lib );
+			this.libraries.add( lib );
 		}		
 	}
 	
@@ -150,7 +153,7 @@ public class LibraryManager {
 		ArrayList libs = new ArrayList();
 		for (int i = 0; i < libNames.length; i++) {
 			String libName = libNames[i];
-			Library library = (Library) this.libraries.get( libName );
+			Library library = (Library) this.librariesByName.get( libName );
 			if (library != null) {
 				libs.add( library );
 			}
@@ -179,7 +182,7 @@ public class LibraryManager {
 		ArrayList libPaths = new ArrayList();
 		for (int i = 0; i < libNames.length; i++) {
 			String libName = libNames[i];
-			Library lib = (Library) this.libraries.get( libName );
+			Library lib = (Library) this.librariesByName.get( libName );
 			String libPath = null;
 			if (lib != null ) {
 				libPath = lib.getPath();
@@ -232,7 +235,7 @@ public class LibraryManager {
 	 * @return the symbols for this library. When the library is not known, null is returned.
 	 */
 	public String[] getSymbols(String libName) {
-		Library lib = (Library) this.libraries.get( libName );
+		Library lib = (Library) this.librariesByName.get( libName );
 		if (lib == null) { 
 			return null;
 		} else {
@@ -247,7 +250,7 @@ public class LibraryManager {
 	 * @return the library. When the library is not known, null is returned.
 	 */
 	public Library getLibrary(String libName) {
-		return (Library) this.libraries.get( libName );
+		return (Library) this.librariesByName.get( libName );
 	}
 
 	/**
@@ -285,7 +288,16 @@ public class LibraryManager {
 	 * Clears all stored libraries from memory.
 	 */
 	public void clear() {
-		this.libraries.clear();
+		this.librariesByName.clear();
+	}
+
+	/**
+	 * @return all defined libraries
+	 */
+	public Library[] getLibraries() {
+		Library[] libs = (Library[]) this.libraries.toArray( new Library[ this.libraries.size() ]);
+		Arrays.sort( libs );
+		return libs;
 	}
 
 }

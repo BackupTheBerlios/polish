@@ -47,46 +47,66 @@ implements ActionListener
 	private PolishComponent[] entries;
 	private PolishComponentSelectionListener selectionListener;
 
+	private int startIndexForComponents;
+
 	public PolishComponentCheckBoxList( PolishComponent[] entries ) {
-		super( entries.length + 1 );
+		this(entries, true );
+	}
+	
+	public PolishComponentCheckBoxList( PolishComponent[] entries, boolean addAllCheckBox ) {
+		super( getEntriesNumber( entries, addAllCheckBox) );
 		this.entries = entries;
-		this.checkBoxes = new JCheckBox[ entries.length + 1 ];
-		this.selectAllEntries = new JCheckBox( "All", true );
-		this.selectAllEntries.addActionListener( this );
-		this.checkBoxes[0] = this.selectAllEntries;
+		this.checkBoxes = new JCheckBox[ getEntriesNumber( entries, addAllCheckBox) ];
+		int start = 0;
+		if (addAllCheckBox) {
+			this.selectAllEntries = new JCheckBox( "All", true );
+			this.selectAllEntries.addActionListener( this );
+			this.checkBoxes[0] = this.selectAllEntries;
+			start = 1;
+		}
+		this.startIndexForComponents = start;
 		Color backgroundColor = Color.WHITE; //getBackground();
 		for (int i = 0; i < entries.length; i++) {
 			PolishComponent entry = entries[i];				
 			PolishComponentCheckBox box = new PolishComponentCheckBox( entry  );
 			box.setBackground( backgroundColor );
-			this.checkBoxes[i+1] = box;
+			this.checkBoxes[i+start] = box;
 		}
 		addCheckBoxes(this.checkBoxes);
 		super.addActionListener( this );
 	}
 
+	private static int getEntriesNumber(PolishComponent[] entries, boolean addAllCheckBox) {
+		if (addAllCheckBox) {
+			return entries.length + 1;
+		} else {
+			return entries.length;
+		}
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		//System.out.println( e );
-		JCheckBox source = (JCheckBox) e.getSource(); 
-		if ( source == this.selectAllEntries) {
-			if (source.isSelected()) {
-				for (int i = 1; i < this.checkBoxes.length; i++) {
-					this.checkBoxes[i].setSelected(false);
+		JCheckBox source = (JCheckBox) e.getSource();
+		if (this.selectAllEntries != null) {
+			if ( source == this.selectAllEntries) {
+				if (source.isSelected()) {
+					for (int i = 1; i < this.checkBoxes.length; i++) {
+						this.checkBoxes[i].setSelected(false);
+					}
+				} else {
+					source.setSelected( true );
 				}
+			} else if (source.isSelected()){
+				this.selectAllEntries.setSelected(false);
 			} else {
-				source.setSelected( true );
-			}
-		} else if (source.isSelected()){
-			this.selectAllEntries.setSelected(false);
-		} else {
-			// check if the last configuration has been de-selected:
-			boolean atLeastOneElementIsSelected = false;
-			for (int i = 1; i < this.checkBoxes.length; i++) {
-				atLeastOneElementIsSelected |= this.checkBoxes[i].isSelected();
-			}
-			if (!atLeastOneElementIsSelected) {
-				this.selectAllEntries.setSelected(true);
+				// check if the last configuration has been de-selected:
+				boolean atLeastOneElementIsSelected = false;
+				for (int i = this.startIndexForComponents; i < this.checkBoxes.length; i++) {
+					atLeastOneElementIsSelected |= this.checkBoxes[i].isSelected();
+				}
+				if (!atLeastOneElementIsSelected) {
+					this.selectAllEntries.setSelected(true);
+				}
 			}
 		}
 		if (this.selectionListener != null) {
@@ -104,14 +124,17 @@ implements ActionListener
 	 * @return null when the "ALL" checkbox is selected or an array of components that are selected
 	 */
 	public PolishComponent[] getSelectedComponents() {
-		if (this.selectAllEntries.isSelected()) {
+		if (this.selectAllEntries != null && this.selectAllEntries.isSelected()) {
 			return null;
 		}
 		ArrayList list = new ArrayList();
-		for (int i = 1; i < this.checkBoxes.length; i++) {
+		for (int i = this.startIndexForComponents; i < this.checkBoxes.length; i++) {
 			if (this.checkBoxes[i].isSelected()) {
-				list.add( this.entries[ i-1 ]);
+				list.add( this.entries[ i-this.startIndexForComponents ]);
 			}
+		}
+		if (list.size() == 0) {
+			return null;
 		}
 		return (PolishComponent[]) list.toArray( new PolishComponent[ list.size() ]);
 	}

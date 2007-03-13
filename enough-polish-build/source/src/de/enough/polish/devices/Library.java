@@ -93,6 +93,7 @@ public class Library extends PolishComponent {
 		this.polishLibPath = polishLibPath;
 		this.projectLibPath = projectLibPath;
 		this.fullName = definition.getChildTextTrim( "name");
+		this.identifier = this.fullName;
 		Attribute hasPackageAttr = definition.getAttribute("hasPackage");
 		this.hasPackage = hasPackageAttr == null || !"false".equals(hasPackageAttr.getValue());
 		if (this.fullName == null) {
@@ -153,6 +154,23 @@ public class Library extends PolishComponent {
 		loadCapabilities(definition, this.symbol, "apis.xml");
 	}
 	
+	/**
+	 * @param fullName
+	 * @param parent
+	 */
+	public Library(String fullName, Library parent) {
+		super( null );
+		this.fullName = fullName;
+		this.identifier = fullName;
+		this.names = parent.names;
+		this.symbol = parent.symbol;
+		this.position = parent.position;
+		this.description = parent.description;
+		this.hasPackage = parent.hasPackage;
+		this.symbols = parent.symbols;
+		this.antProperties = parent.antProperties;
+	}
+
 	/**
 	 * Retrieves the path for this library
 	 * @return either the path for this library or null when it could
@@ -323,6 +341,11 @@ public class Library extends PolishComponent {
 	 */
 	public int getPosition() {
 		return this.position;
+	}
+	
+	
+	public String toString() {
+		return this.identifier;
 	}
 
 }

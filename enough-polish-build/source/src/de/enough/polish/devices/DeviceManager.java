@@ -429,9 +429,12 @@ public class DeviceManager {
 		return realDevices;
 	}
 
-	
 	public Device[] getDevices( Configuration[] supportedConfigurations, Platform[] supportedPlatforms ) {
-		return getDevices( this.devices, supportedConfigurations, supportedPlatforms );
+		return getDevices( this.devices, supportedConfigurations, supportedPlatforms, null );
+	}
+	
+	public Device[] getDevices( Configuration[] supportedConfigurations, Platform[] supportedPlatforms, Library[] supportedLibraries ) {
+		return getDevices( this.devices, supportedConfigurations, supportedPlatforms, supportedLibraries );
 	}
 	
 	/**
@@ -453,11 +456,15 @@ public class DeviceManager {
 	}
 	
 	public Device[] getDevices( Device[] filteredDevices, Configuration[] supportedConfigurations, Platform[] supportedPlatforms ) {
+		return getDevices( this.devices, supportedConfigurations, supportedPlatforms, null );
+	}
+	
+	public Device[] getDevices( Device[] filteredDevices, Configuration[] supportedConfigurations, Platform[] supportedPlatforms, Library[] supportedLibraries ) {
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < filteredDevices.length; i++) {
 			Device device = filteredDevices[i];
 			boolean addDevice = true;
-			if (supportedConfigurations != null) {
+			if (supportedConfigurations != null) { // at least one configuration needs to be suported
 				addDevice = false;
 				for (int j = 0; j < supportedConfigurations.length; j++) {
 					Configuration configuration = supportedConfigurations[j];
@@ -467,12 +474,21 @@ public class DeviceManager {
 					}
 				}
 			}
-			if (addDevice && supportedPlatforms != null) {
+			if (addDevice && supportedPlatforms != null) { // at least one platform needs to be suported
 				addDevice = false;
 				for (int j = 0; j < supportedPlatforms.length; j++) {
 					Platform platform = supportedPlatforms[j];
 					if (device.supportsPlatform( platform )) {
 						addDevice = true;
+						break;
+					}
+				}
+			}
+			if (addDevice && supportedLibraries != null) { // all libraries need to be supported
+				for (int j = 0; j < supportedLibraries.length; j++) {
+					Library library = supportedLibraries[j];
+					if (!device.supportsLibrary( library )) {
+						addDevice = false;
 						break;
 					}
 				}

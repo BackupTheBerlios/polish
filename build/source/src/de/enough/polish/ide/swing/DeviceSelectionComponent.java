@@ -27,12 +27,17 @@ package de.enough.polish.ide.swing;
 
 import java.awt.Component;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -45,6 +50,7 @@ import de.enough.polish.devices.Configuration;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.DeviceTree;
 import de.enough.polish.devices.DeviceTreeItem;
+import de.enough.polish.devices.Library;
 import de.enough.polish.devices.Platform;
 import de.enough.polish.devices.PolishComponent;
 import de.enough.polish.swing.CheckBoxList;
@@ -67,9 +73,25 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
 	private static final long serialVersionUID = 3962911176522710954L;
 	private DeviceDatabase database;
 	private DeviceTree deviceTree;
-	private PolishComponentCheckBoxList configurationsCheckBoxList;
-	private PolishComponentCheckBoxList platformsCheckBoxList;
+	private PolishComponentCheckBoxList configurationsList;
+	private PolishComponentCheckBoxList platformsList;
 	private DeviceTreeView deviceTreeView;
+	private PolishComponentCheckBoxList librariesList;
+	private Environment environment;
+	
+	
+	// ui variables:
+    private JLabel configurationsLabel;
+    private JTextArea description;
+    private JLabel descriptionLabel;
+    private JLabel devicesLabel;
+    private JScrollPane configurationsScrollPane;
+    private JScrollPane platformsScrollPane;
+    private JScrollPane devicesListScrollPane;
+    private JScrollPane descriptionScrollPane;
+    private JLabel platformsLabel;
+	private JScrollPane librariesScrollPane;
+	private JLabel librariesLabel;
 
 
 	 /**
@@ -91,32 +113,36 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">
     private void initComponents() {
-        this.jScrollPane1 = new javax.swing.JScrollPane();
-        this.configurationsCheckBoxList = getConfigurationsCheckBoxList();
-        this.configurationsLabel = new javax.swing.JLabel();
-        this.jScrollPane2 = new javax.swing.JScrollPane();
+        this.configurationsScrollPane = new JScrollPane();
+        this.configurationsList = getConfigurationsCheckBoxList();
+        this.configurationsLabel = new JLabel();
+        this.platformsScrollPane = new JScrollPane();
         this.platformsList = getPlatformsCheckBoxList();
-        this.platformsLabel = new javax.swing.JLabel();
-        this.devicesListScrollPane = new javax.swing.JScrollPane();
+        this.platformsLabel = new JLabel();
+        this.librariesScrollPane = new JScrollPane();
+        this.librariesList = getLibrariesCheckBoxList();
+        this.librariesLabel = new JLabel();
+        this.devicesListScrollPane = new JScrollPane();
         this.deviceTreeView = getDeviceTreeView();
-        this.devicesLabel = new javax.swing.JLabel();
-        this.descriptionLabel = new javax.swing.JLabel();
-        this.jScrollPane4 = new javax.swing.JScrollPane();
-        this.description = new javax.swing.JTextArea();
+        this.devicesLabel = new JLabel();
+        this.descriptionLabel = new JLabel();
+        this.descriptionScrollPane = new JScrollPane();
+        this.description = new JTextArea();
 
 //        configurationsList.setModel( getConfigurationsModel() );
 //        configurationsList.addListSelectionListener( getConfigurationsModel() );
 //        CheckBoxCellRenderer checkBoxCellRenderer = new CheckBoxCellRenderer();
 //        configurationsList.setCellRenderer( checkBoxCellRenderer );
-        this.jScrollPane1.setViewportView( getConfigurationsCheckBoxList() );
-
+        this.configurationsScrollPane.setViewportView( this.configurationsList );
         this.configurationsLabel.setText( "Configuration:" );
         //org.openide.awt.Mnemonics.setLocalizedText(configurationsLabel, "Configuration:");
 
-        this.jScrollPane2.setViewportView(this.platformsList);
-
+        this.platformsScrollPane.setViewportView(this.platformsList);
         this.platformsLabel.setText( "Profiles/Platforms:" );
         //org.openide.awt.Mnemonics.setLocalizedText(platformsLabel, "Profiles/Platforms:");
+        
+        this.librariesScrollPane.setViewportView(this.librariesList);
+        this.librariesLabel.setText( "Libraries:" );
 
         this.devicesListScrollPane.setViewportView(this.deviceTreeView);
 
@@ -133,7 +159,7 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
         this.description.setRows(2);
         this.description.setToolTipText("Description of the currently selected device");
         this.description.setWrapStyleWord(true);
-        this.jScrollPane4.setViewportView(this.description);
+        this.descriptionScrollPane.setViewportView(this.description);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -142,17 +168,22 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, this.jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, this.descriptionScrollPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                         .add(this.devicesListScrollPane)
                         .add(layout.createSequentialGroup()
                             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                .add(this.jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 219, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(this.configurationsLabel))
-                            .add(25, 25, 25)
+                                .add(this.configurationsLabel)
+                                .add(this.configurationsScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 219, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(23, 23, 23)
                             .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                 .add(this.platformsLabel)
-                                .add(this.jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 219, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                .add(this.platformsScrollPane,      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 219, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(23, 23, 23)
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                .add(this.librariesLabel)
+                                .add(this.librariesScrollPane,      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 219, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                )
                         .add(this.devicesLabel)
                         .add(this.descriptionLabel)))
                 .addContainerGap(23, Short.MAX_VALUE))
@@ -163,11 +194,14 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(this.configurationsLabel)
-                    .add(this.platformsLabel))
+                    .add(this.platformsLabel)
+                    .add(this.librariesLabel))
                 .add(4, 4, 4)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(this.jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(this.jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                	.add(this.librariesScrollPane,      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(this.platformsScrollPane,      org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(this.configurationsScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    )
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(this.devicesLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -175,11 +209,12 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(this.descriptionLabel)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(this.jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(this.descriptionScrollPane, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>
         
+
 
 	private DeviceTreeView createDeviceTreeView() {
 		DeviceTreeView view = new DeviceTreeView( this.deviceTree );
@@ -197,19 +232,6 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
 
 
 
-	// Variables declaration - do not modify
-    private javax.swing.JLabel configurationsLabel;
-    private javax.swing.JTextArea description;
-    private javax.swing.JLabel descriptionLabel;
-    private javax.swing.JLabel devicesLabel;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane devicesListScrollPane;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JLabel platformsLabel;
-    private CheckBoxList platformsList;
-    // End of variables declaration
-	private Environment environment;
     
     public void init( String polishHomePath ) {
     	if (polishHomePath == null) {
@@ -235,20 +257,44 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
     public void changedUpdate(DocumentEvent e) {
     }
     
-    private PolishComponentCheckBoxList getConfigurationsCheckBoxList() {    	
-    	if (this.configurationsCheckBoxList == null) {
-    		this.configurationsCheckBoxList = new PolishComponentCheckBoxList( this.database.getConfigurations() );
-    		this.configurationsCheckBoxList.setSelectionListener( this );
+    private PolishComponentCheckBoxList getLibrariesCheckBoxList() {
+    	if (this.librariesList == null) {	
+    		Library[] libraries = this.database.getLibraries();
+    		ArrayList libsList = new ArrayList( (libraries.length * 3) / 2);
+    		for (int i = 0; i < libraries.length; i++) {
+				Library library = libraries[i];
+				libsList.add(library);
+				String[] names = library.getNames();
+				for (int j = 0; j < names.length; j++) {
+					String name = names[j];
+					if (name.startsWith("JSR-")) {
+						libsList.add( new Library( name + ": " + library.getFullName(), library) );
+						break;
+					}
+				}
+			}
+    		libraries = (Library[]) libsList.toArray( new Library[ libsList.size() ]);
+    		Arrays.sort( libraries );
+    		this.librariesList = new PolishComponentCheckBoxList( libraries, false );
+    		this.librariesList.setSelectionListener( this );
     	}
-        return this.configurationsCheckBoxList;
+        return this.librariesList;
+	}
+
+    private PolishComponentCheckBoxList getConfigurationsCheckBoxList() {    	
+    	if (this.configurationsList == null) {
+    		this.configurationsList = new PolishComponentCheckBoxList( this.database.getConfigurations() );
+    		this.configurationsList.setSelectionListener( this );
+    	}
+        return this.configurationsList;
     }
 
     private PolishComponentCheckBoxList getPlatformsCheckBoxList() {    	
-    	if (this.platformsCheckBoxList == null) {
-    		this.platformsCheckBoxList = new PolishComponentCheckBoxList( this.database.getPlatforms() );
-    		this.platformsCheckBoxList.setSelectionListener( this );
+    	if (this.platformsList == null) {
+    		this.platformsList = new PolishComponentCheckBoxList( this.database.getPlatforms() );
+    		this.platformsList.setSelectionListener( this );
     	}
-        return this.platformsCheckBoxList;
+        return this.platformsList;
     }
 
     class CheckBoxCellRenderer implements ListCellRenderer {
@@ -302,7 +348,11 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
 
     
     public static void main(String[] args) {
-		DeviceSelectionComponent c = new DeviceSelectionComponent("/home/enough/J2ME-Polish");
+    	if (args.length == 0) {
+    		System.out.println("Usage: java de.enough.polish.ide.swing.DeviceSelectionComponent polish.home");
+    		return;
+    	}
+		DeviceSelectionComponent c = new DeviceSelectionComponent(args[0]);
 		
 		JFrame frame = new JFrame("Hello World");
 		frame.getContentPane().add(c);
@@ -314,10 +364,12 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
 	public void notifySelection( PolishComponentSelectionEvent event) {
 		Object source = event.getSource();
 		PolishComponent[] entries = event.getEntries();
-		if (source == this.configurationsCheckBoxList) {
-			this.deviceTree.rebuild( getConfigurations( entries ), getPlatforms( this.platformsCheckBoxList.getSelectedComponents() ) );
-		} else if (source == this.platformsCheckBoxList) {
-			this.deviceTree.rebuild( getConfigurations( this.configurationsCheckBoxList.getSelectedComponents() ), getPlatforms( entries ) );
+		if (source == this.configurationsList) {
+			this.deviceTree.rebuild( getConfigurations( entries ), getPlatforms(), getLibraries() );
+		} else if (source == this.platformsList) {
+			this.deviceTree.rebuild( getConfigurations(), getPlatforms( entries ), getLibraries() );
+		} else if (source == this.librariesList) {
+			this.deviceTree.rebuild( getConfigurations(), getPlatforms(), getLibraries( entries ) );
 		}
 		this.deviceTreeView = createDeviceTreeView();
 		this.devicesListScrollPane.setViewportView( this.deviceTreeView );
@@ -333,6 +385,9 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
 	}
 
 
+	private Configuration[] getConfigurations() {
+		return getConfigurations( this.configurationsList.getSelectedComponents() );
+	}
 
 	private Configuration[] getConfigurations(PolishComponent[] entries) {
 		if (entries == null) {
@@ -343,6 +398,9 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
 		return configurations;
 	}
 
+	private Platform[] getPlatforms() {
+		return getPlatforms( this.platformsList.getSelectedComponents() );
+	}
 
 	private Platform[] getPlatforms(PolishComponent[] entries) {
 		if (entries == null) {
@@ -352,6 +410,19 @@ implements DocumentListener, PolishComponentSelectionListener, DeviceSelector
 		System.arraycopy( entries, 0, platforms, 0, entries.length );
 		return platforms;
 	}
+	
+	private Library[] getLibraries() {
+		return getLibraries( this.librariesList.getSelectedComponents() );
+	}
+	private Library[] getLibraries(PolishComponent[] entries) {
+		if (entries == null) {
+			return null;
+		}
+		Library[] libraries = new Library[ entries.length ];
+		System.arraycopy( entries, 0, libraries, 0, entries.length );
+		return libraries;
+	}
+
 	
 	class TreeSelectionListenerImpl implements TreeSelectionListener {
 

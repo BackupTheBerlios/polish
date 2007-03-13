@@ -69,8 +69,14 @@ public class DeviceTree {
 		rebuild( supportedConfigurations, supportedPlatforms );
 	}
 
+	/**
+	 * Rebuilds this tree.
+	 *  
+	 * @param configurations all configurations that should be supported, can be null (in which case all configurations are supported)
+	 * @param platforms all platforms/profiles that should be supported, can be null (in which case all platforms/profiles are supported)
+	 */
     public void rebuild(Configuration[] configurations, Platform[] platforms) {
-        rebuild(configurations,platforms,null);
+        rebuild(configurations, platforms, null, null);
     }
     
 	/**
@@ -78,14 +84,39 @@ public class DeviceTree {
 	 *  
 	 * @param configurations all configurations that should be supported, can be null (in which case all configurations are supported)
 	 * @param platforms all platforms/profiles that should be supported, can be null (in which case all platforms/profiles are supported)
+	 * @param selectedDevices the devices that have been previously been selected  (so that they can be selected again)
 	 */
-	public void rebuild(Configuration[] configurations, Platform[] platforms,Device[] selectedDevices) {
+	public void rebuild(Configuration[] configurations, Platform[] platforms, Device[] selectedDevices) {
+		rebuild(configurations, platforms, null, selectedDevices);
+	}
+	
+	/**
+	 * Rebuilds this tree.
+	 *  
+	 * @param configurations all configurations that should be supported, can be null (in which case all configurations are supported)
+	 * @param platforms all platforms/profiles that should be supported, can be null (in which case all platforms/profiles are supported)
+	 * @param libraries all libraries that should be supported by the devices (can be null)
+	 */
+	public void rebuild(Configuration[] configurations, Platform[] platforms, Library[] libraries) {
+		rebuild(configurations, platforms, libraries, null);
+	}
+
+
+	/**
+	 * Rebuilds this tree.
+	 *  
+	 * @param configurations all configurations that should be supported, can be null (in which case all configurations are supported)
+	 * @param platforms all platforms/profiles that should be supported, can be null (in which case all platforms/profiles are supported)
+	 * @param libraries all libraries that should be supported by the devices (can be null)
+	 * @param selectedDevices the devices that have been previously been selected  (so that they can be selected again)
+	 */
+	public void rebuild( Configuration[] configurations, Platform[] platforms, Library[] libraries, Device[] selectedDevices ) {
 	    Set selectedDevicesSet = new HashSet();
         if(selectedDevices != null) {
             selectedDevicesSet.addAll(Arrays.asList(selectedDevices));
         }
         Device[] devices;
-        devices = this.deviceDatabase.getDeviceManager().getDevices(configurations, platforms);
+        devices = this.deviceDatabase.getDeviceManager().getDevices(configurations, platforms, libraries);
 		DeviceTreeItem[] deviceItems = new DeviceTreeItem[ devices.length ];
 		ArrayList rootItemsList = new ArrayList();
         DeviceTreeItem virtualTreeItem = null;

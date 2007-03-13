@@ -812,6 +812,16 @@ public class Device extends PolishComponent {
 		}
 		return false;
 	}
+	
+	/**
+	 * Determines whether the given library is supported
+	 * @param library the library that might be supported
+	 * @return true the the specified library is supported
+	 */
+	public boolean supportsLibrary(Library library) {
+		//System.out.println(this.identifier + " supports " +  "polish.api." + library.getSymbol() + ": " + hasFeature(  "polish.api." + library.getSymbol() ));
+		return hasFeature( "polish.api." + library.getSymbol() );
+	}
 
 	public void setResourceDir(File resourceDir) {
 		this.resourceDir = resourceDir;
@@ -820,5 +830,7 @@ public class Device extends PolishComponent {
 	public File getResourceDir() {
 		return this.resourceDir;
 	}
+
+	
 
 }

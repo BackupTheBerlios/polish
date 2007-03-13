@@ -449,6 +449,11 @@ public class DeviceDatabase {
 	public Platform[] getPlatforms() {
 		return this.platformManager.getPlatforms();
 	}
+
+	public Library[] getLibraries() {
+		return this.libraryManager.getLibraries();
+	}
+	
 	
 	public Device[] getDevices() {
 		return this.deviceManager.getDevices();
@@ -520,6 +525,5 @@ public class DeviceDatabase {
 	public Device[] getDevices(Configuration configuration) {
 		return this.deviceManager.getDevices(configuration);
 	}
-	
         
 }
