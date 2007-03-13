@@ -28,7 +28,6 @@ package de.enough.polish.ui;
 
 /**
  * <p>Is used to detect internal changes of TabbedForms, e.g. when the user changes the tab of a TabbedForm.</p>
- * <p>This is a J2ME Polish specific mechanism and not supported by the MIDP standard.</p>
  *
  * <p>Copyright (c) 2007 Enough Software</p>
  * <pre>

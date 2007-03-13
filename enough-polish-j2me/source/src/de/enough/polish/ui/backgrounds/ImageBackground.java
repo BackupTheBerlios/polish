@@ -170,7 +170,7 @@ implements ImageConsumer
 		}
 		if (this.color != Item.TRANSPARENT) {
 			g.setColor( this.color );
-			g.fillRect( x, y, width + 1, height + 1 );
+			g.fillRect( x, y, width, height );
 		}
 		x += this.xOffset;
 		y += this.yOffset;
