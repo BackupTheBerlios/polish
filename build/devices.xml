@@ -9253,6 +9253,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
 		<capability name="SoundFormat" value="amr, nb-amr"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
 	</device>
 
 	<device>
@@ -9283,6 +9284,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="wmapi"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
 	
 	<device>
