@@ -298,6 +298,15 @@ public class TabbedForm extends Form {
 	}
 
 	/**
+	 * Retrieves the number of tabs in this <code>TabbedForm</code>.
+	 * 
+	 * @return the number of tabs
+	 */
+	public int getTabCount() {
+		return this.tabContainers.length;
+	}
+
+	/**
 	 * Focuses the specified tab.
 	 * 
 	 * @param tabIndex the index of the tab, the first tab has the index 0.
