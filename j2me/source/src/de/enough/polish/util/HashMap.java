@@ -86,9 +86,13 @@ public class HashMap
 	 * @param initialCapacity the initial number of elements that this map can hold without needing to 
 	 *        increase it's internal size.
 	 * @param loadFactor the loadfactor in percent, a number between 0 and 100. When the loadfactor is 100,
-	 *        the size of this map is only increased after all slots have been filled. 
+	 *        the size of this map is only increased after all slots have been filled.
+	 * @throws IllegalArgumentException when the initialCapacity is less than 1 
 	 */
 	public HashMap(int initialCapacity, int loadFactor) {
+		if (initialCapacity <= 0) {
+			throw new IllegalArgumentException();
+		}
 		// check if initial capacity is a power of 2:
 		initialCapacity = (initialCapacity * 100) / loadFactor;
 		int capacity = 1;
