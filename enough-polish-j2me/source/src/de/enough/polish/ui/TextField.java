@@ -35,7 +35,9 @@ import de.enough.polish.util.BitMapFontViewer;
 import de.enough.polish.util.Locale;
 
 //#if polish.blackberry
+	import de.enough.polish.blackberry.ui.PolishTextField;
 	import de.enough.polish.blackberry.ui.PolishEditField;
+	import de.enough.polish.blackberry.ui.PolishPasswordEditField;
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
 	import net.rim.device.api.ui.UiApplication;
@@ -832,7 +834,7 @@ public class TextField extends StringItem
 	//#endif
 	protected char emailSeparatorChar = ';';
 	//#if polish.blackberry
-		private PolishEditField editField;
+		private PolishTextField editField;
 		//#if polish.Bugs.ItemStateListenerCalledTooEarly
 			private long lastFieldChangedEvent;
 		//#endif
@@ -1469,9 +1471,13 @@ public class TextField extends StringItem
 					//# getScreen().setFocus( this );
 				}
 			}
-			this.editField = new PolishEditField( null, getString(), this.maxSize, bbStyle );
+			if ((constraints & PASSWORD) == PASSWORD) {
+				this.editField = new PolishPasswordEditField( null, getString(), this.maxSize, bbStyle );
+			} else {
+				this.editField = new PolishEditField( null, getString(), this.maxSize, bbStyle );
+			}
 			this.editField.setChangeListener( this );
-			this._bbField = this.editField;
+			this._bbField = (Field) this.editField;
 		//#elif !tmp.forceDirectInput
 			if (this.midpTextBox != null) {
 				this.midpTextBox.setConstraints(constraints);
@@ -1836,7 +1842,7 @@ public class TextField extends StringItem
 			}
 			this.editField.setFont( this.font, this.textColor );
 			// allow extra pixels for the cursor:
-			this.editField.layout( this.contentWidth+8, this.contentHeight );
+			//this.editField.layout( this.contentWidth+8, this.contentHeight );
 			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
 			XYRect rect = this.editField.getExtent();
 			this.contentWidth = rect.width;

@@ -28,7 +28,7 @@ package de.enough.polish.blackberry.ui;
 import de.enough.polish.ui.StyleSheet;
 import net.rim.device.api.ui.component.EditField;
 
-public class PolishEditField extends EditField {
+public class PolishEditField extends EditField implements PolishTextField {
 
 
         private boolean isFocused;

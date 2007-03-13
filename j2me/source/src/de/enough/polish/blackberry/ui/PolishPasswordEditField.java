@@ -27,15 +27,16 @@ package de.enough.polish.blackberry.ui;
 
 import de.enough.polish.ui.StyleSheet;
 import net.rim.device.api.ui.component.EditField;
+import net.rim.device.api.ui.component.PasswordEditField;
 
-public class PolishEditField extends EditField implements PolishTextField {
+public class PolishPasswordEditField extends PasswordEditField implements PolishTextField {
 
 
         private boolean isFocused;
         public boolean processKeyEvents = true;
 		private int fontColor;
 
-        public PolishEditField(String label, String text, int numChars, long style) {
+        public PolishPasswordEditField(String label, String text, int numChars, long style) {
                 super(label, text, numChars, style);
         }
 
