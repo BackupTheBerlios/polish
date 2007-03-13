@@ -3197,7 +3197,7 @@ implements AccessibleCanvas
 	 * @see UiAccess#setData(Screen, Object)
 	 * @see UiAccess#getData(Screen)
 	 */
-	public void setData(Object data) {
+	public void setScreenData(Object data) {
 		this.data = data;
 	}
 	
@@ -3209,7 +3209,7 @@ implements AccessibleCanvas
 	 * @see UiAccess#setData(Screen, Object)
 	 * @see UiAccess#getData(Screen)
 	 */
-	public Object getData() {
+	public Object getScreenData() {
 		return this.data;
 	}
 

@@ -1673,11 +1673,12 @@ public final class UiAccess {
 	 * Attaches data to the specified screen.
 	 * This mechanism can be used to add business logic to screens.
 	 * 
+	 * @param screen the screen in which the data should be stored
 	 * @param data the screen specific data
 	 * @see #getData(Screen)
 	 */
 	public static void setData(Screen screen, Object data) {
-		screen.setData( data );
+		screen.setScreenData( data );
 	}
 	//#endif
 
@@ -1686,11 +1687,12 @@ public final class UiAccess {
 	 * Retrieves screen specific data.
 	 * This mechanism can be used to add business logic to screens.
 	 * 
+	 * @param screen the screen in which data has been previously stored using UiAccess.setData()
 	 * @return any screen specific data or null when no data has been attached before
 	 * @see #setData(Screen, Object)
 	 */
 	public static Object getData(Screen screen) {
-		return screen.getData();
+		return screen.getScreenData();
 	}
 	//#endif
 
@@ -1699,6 +1701,7 @@ public final class UiAccess {
 	 * Attaches data to the specified screen.
 	 * This mechanism can be used to add business logic to screens.
 	 * 
+	 * @param screen the screen in which the data should be stored
 	 * @param data the screen specific data
 	 * @see #getData(Screen)
 	 */
@@ -1715,6 +1718,7 @@ public final class UiAccess {
 	 * Retrieves screen specific data.
 	 * This mechanism can be used to add business logic to screens.
 	 * 
+	 * @param screen the screen in which data has been previously stored using UiAccess.setData()
 	 * @return any screen specific data or null when no data has been attached before
 	 * @see #setData(Screen, Object)
 	 */
