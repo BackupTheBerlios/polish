@@ -1,3 +1,5 @@
+//#condition polish.usePolishGui && polish.blackberry
+
 /*
  * Created on Mar 13, 2007 at 12:37:50 PM.
  * 
