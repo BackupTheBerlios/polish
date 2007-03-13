@@ -46,6 +46,8 @@
 	<javac classpath="import/installer.jar:import/TargetPanel.jar:import/UserInputPanel.jar:InstallPanel.jar"
 		srcdir="source/src"
 		destdir="bin/classes"
+		source="1.4"
+		target="1.4"
 	/>
 	<!-- create and copy the jar file for the ChooseLicensePanel -->
 	<echo message="creating jar" />

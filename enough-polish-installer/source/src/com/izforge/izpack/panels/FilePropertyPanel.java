@@ -188,8 +188,11 @@ public class FilePropertyPanel extends JPanel implements ActionListener {
 //	        	if (fileName == null) {
 //	        		fileName = dialog.getDirectory();
 //	        	}
-//	        	File file = new File( fileName );
-//	        	if ( this.isDirectory && !file.isDirectory()) {
+//	        	File file = null;
+//	        	if (fileName != null) {
+//	        		file = new File( fileName );
+//	        	}
+//	        	if ( this.isDirectory && isDirectory(file)) {
 //	        		file = file.getParentFile();
 //	        	}
 //        		path = file.getAbsolutePath();
@@ -198,8 +201,13 @@ public class FilePropertyPanel extends JPanel implements ActionListener {
 	            JFileChooser fc = new JFileChooser();
 	            fc.setCurrentDirectory( getValueFile() );
 	            fc.setMultiSelectionEnabled(false);
-	            if (this.isDirectory && !this.isMacOsX) { // on OS X the .app applications do not count as folders
-	            	fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	            if (this.isDirectory ) { //&& !this.isMacOsX) { 
+	            	// on OS X the .app applications do not count as folders:
+	            	if (this.isMacOsX) {
+	            		fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+	            	} else {
+	            		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);	            		
+	            	}
 	            }
 	            fc.addChoosableFileFilter(fc.getAcceptAllFileFilter());
 	
@@ -208,11 +216,15 @@ public class FilePropertyPanel extends JPanel implements ActionListener {
 	            {
 	            	return;
 	            }
+	            File file = fc.getSelectedFile();
+	            if (this.isDirectory && !isDirectory(file)) {
+	            	file = file.getParentFile();
+	            }
                 path = fc.getSelectedFile().getAbsolutePath();
 //        	}
         	if (this.needsToExist) {
-        		File file = new File( path );
-        		if (!file.exists()) {
+        		File existingFile = new File( path );
+        		if (!existingFile.exists()) {
         			//showWarning("")
         			return;
         		}
@@ -224,6 +236,13 @@ public class FilePropertyPanel extends JPanel implements ActionListener {
         }
     }
 
+	private boolean isDirectory(File file) {
+		if (file == null) {
+			return false;
+		}
+		return file.isDirectory() || (this.isMacOsX && file.getName().endsWith(".app"));
+	}
+	
 	public void setValue(String value) {
 		if (this.inputTextField != null) {
 			this.inputTextField.setText( value );
