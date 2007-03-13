@@ -340,7 +340,7 @@ public class TextField extends StringItem
 	//#defineorappend tmp.implements=CommandListener
 	//#define tmp.implementsCommandListener
 //#endif
-//#if polish.TextField.suppressCommands == true
+//#if polish.TextField.suppressCommands
 	//#define tmp.suppressCommands
 //#else
  	//#defineorappend tmp.implements=ItemCommandListener
@@ -356,7 +356,7 @@ public class TextField extends StringItem
 	//#if polish.blackberry
 		, FieldChangeListener
 	//#endif
-//#else
+//#elif tmp.implements:defined
 	//#= implements ${tmp.implements}
 //#endif
 {
@@ -2637,7 +2637,7 @@ public class TextField extends StringItem
 								//#= int addSymbolCode = ${polish.key.AddSymbolKey};
 							//#endif
 							if (keyCode == addSymbolCode ) {
-								commandAction( ENTER_SYMBOL_CMD, this );
+								showSymbolsList();
 								return true;
 							}
 						//#endif
@@ -3182,6 +3182,26 @@ public class TextField extends StringItem
 		}
 	//#endif
 	
+	//#if tmp.supportsSymbolEntry
+	private void showSymbolsList() {
+		if (this.caretChar != this.editingCaretChar) {
+			insertCharacter();
+		}
+		if (symbolsList == null) {
+			//#style textFieldSymbolList?, textFieldSymbolTable?
+			symbolsList = new List( ENTER_SYMBOL_CMD.getLabel(), List.IMPLICIT );
+			for (int i = 0; i < definedSymbols.length(); i++) {
+				//#style textFieldSymbolItem?
+				symbolsList.append( definedSymbols.substring(i, i+1), null );
+			}
+			//TODO check localization when using dynamic localization
+			symbolsList.addCommand( StyleSheet.CANCEL_CMD );
+		}
+		symbolsList.setCommandListener( this );
+		StyleSheet.display.setCurrent( symbolsList );			
+	}
+	//#endif
+	
 	//#if tmp.implementsItemCommandListener
 		/* (non-Javadoc)
 		 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
@@ -3191,21 +3211,7 @@ public class TextField extends StringItem
 			System.out.println("commandAction( " + cmd.getLabel() + ", " + this + " )");
 			//#if tmp.supportsSymbolEntry
 				if (cmd == ENTER_SYMBOL_CMD ) {
-					if (this.caretChar != this.editingCaretChar) {
-						insertCharacter();
-					}
-					if (symbolsList == null) {
-						//#style textFieldSymbolList?, textFieldSymbolTable?
-						symbolsList = new List( ENTER_SYMBOL_CMD.getLabel(), List.IMPLICIT );
-						for (int i = 0; i < definedSymbols.length(); i++) {
-							//#style textFieldSymbolItem?
-							symbolsList.append( definedSymbols.substring(i, i+1), null );
-						}
-						//TODO check localization when using dynamic localization
-						symbolsList.addCommand( StyleSheet.CANCEL_CMD );
-					}
-					symbolsList.setCommandListener( this );
-					StyleSheet.display.setCurrent( symbolsList );
+					showSymbolsList();
 					return;
 				}
 			//#endif
