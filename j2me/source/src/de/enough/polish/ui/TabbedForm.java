@@ -231,11 +231,18 @@ public class TabbedForm extends Form {
 	 * @return the item at the given position
 	 * @throws IndexOutOfBoundsException - if itemNum is invalid
 	 */
-	public Item get(int tabIndex, int itemNum)
-	{
-		Container tabContainer = this.tabContainers[ tabIndex ];
-		return tabContainer.get( itemNum );
-	}
+	//#if polish.LibraryBuild
+		public javax.microedition.lcdui.Item get(int tabIndex, int itemNum)
+		{
+			return null;
+		}
+	//#else
+		//# public Item get(int tabIndex, int itemNum)
+		//# {
+		//#	Container tabContainer = this.tabContainers[ tabIndex ];
+		//#	return tabContainer.get( itemNum );
+		//# }
+	//#endif
 
 	
 	/**
