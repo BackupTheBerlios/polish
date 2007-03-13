@@ -47,6 +47,7 @@ public class TabbedForm extends Form {
 	//#endif
 	private final Container[] tabContainers;
 	private int activeTabIndex;
+	private TabbedFormListener tabbedFormListener;
 
 	/**
 	 * Creates a new tabbed form without a style.
@@ -312,6 +313,9 @@ public class TabbedForm extends Form {
 	 * @param tabIndex the index of the tab, the first tab has the index 0.
 	 */
 	public void setActiveTab( int tabIndex ) {
+		if (!notifyTabbedChangeRequested( this.activeTabIndex, tabIndex )) {
+			return;
+		}
 		//#debug
 		System.out.println("Activating tab [" + tabIndex + "].");
 		if (this.container.isInitialized) {
@@ -322,6 +326,7 @@ public class TabbedForm extends Form {
 				this.container.releaseResources();
 			//#endif
 		}
+		int oldTabIndex = this.activeTabIndex;
 		this.activeTabIndex = tabIndex;
 		this.tabBar.setActiveTab(tabIndex);
 		Container tabContainer = this.tabContainers[ tabIndex ];
@@ -346,6 +351,7 @@ public class TabbedForm extends Form {
 			tabContainer.showNotify();
 			repaint();
 		}
+		notifyTabbedChangeCompleted(oldTabIndex, this.activeTabIndex);
 	}
 	
 	/**
@@ -430,6 +436,36 @@ public class TabbedForm extends Form {
 	 */
 	public void setScreenStateListener( ScreenStateListener listener ) {
 		this.screenStateListener = listener;
+	}
+
+	/**
+	 * @param oldTabIndex
+	 * @param newTabIndex
+	 * @return
+	 */
+	public boolean notifyTabbedChangeRequested(int oldTabIndex, int newTabIndex) {
+		if (this.tabbedFormListener != null) {
+			return this.tabbedFormListener.notifyTabChangeRequested(oldTabIndex, newTabIndex);
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param oldTabIndex
+	 * @param newTabIndex
+	 */
+	public void notifyTabbedChangeCompleted(int oldTabIndex, int newTabIndex) {
+		if (this.tabbedFormListener != null) {
+			this.tabbedFormListener.notifyTabChangeCompleted(oldTabIndex, newTabIndex);
+		}
+	}
+
+	/**
+	 * @param listener the listener that is notified whenever the user selects another tab,
+	 */
+	public void setTabbedFormListener( TabbedFormListener listener ) {
+		this.tabbedFormListener = listener;
 	}
 
 }
