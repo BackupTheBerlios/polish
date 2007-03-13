@@ -1838,7 +1838,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxRecordStoreSize" value="512kb" />
 		<capability name="HeapSize" value="800kb" />
 		<capability name="Region" value="Global"/>
-		<capability name="AnnounceDate" value="2006-17-06"/>
+		<capability name="AnnouncementDate" value="2006-17-06"/>
 		<capability name="key.LeftSoftKey" value="-21" />
 		<capability name="key.MiddleSoftKey" value="-20" />
 		<capability name="key.RightSoftKey" value="-22" />
@@ -1858,7 +1858,7 @@ These namespaces/schemas will be used soon.
 		<capability name="HeapSize" value="64 MB" />
 		<capability name="StorageSize" value="128 MB" />
 		<capability name="Region" value="USA, Canada"/>
-		<capability name="AnnounceDate" value="2006-04-13"/>
+		<capability name="AnnouncementDate" value="2006-04-13"/>
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
     </device>
 
@@ -1869,7 +1869,7 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Motorola" />
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="Screen Size" value="176x188" />       
+		<capability name="ScreenSize" value="176x188" />       
 		<capability name="FullCanvasSize" value="176x206"/>
 		<capability name="CanvasSize" value="176x188"/>
 		<capability name="BitsPerPixel" value="16"/>
@@ -1952,7 +1952,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="4"/>
-		<capability name="AnnounceDate" value="2005"/>
+		<capability name="AnnouncementDate" value="2005"/>
 		<capability name="mmapi.protocol.http" value="audio/imelody audio/x-imelody audio/imy audio/x-imy audio/midi audio/x-midi audio/mid audio/x-mid audio/sp-midi audio/wav audio/x-wav audio/mp3 audio/x-mp3 audio/mpeg3 audio/x-mpeg3 audio/mpeg audio/xmpeg audio/amr audio/x-amr audio/mp4 audio/x-mp4 video/mp4"/>
 		<capability name="mmapi.protocol.device" value="audio/x-tone-seq"/>
 		<capability name="key.LeftSoftKey" value="21"/>
@@ -2001,7 +2001,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="4"/>
-		<capability name="AnnounceDate" value="2005"/>
+		<capability name="AnnouncementDate" value="2005"/>
 	</device>
 
 	<device>
@@ -2025,7 +2025,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="4"/>
-		<capability name="AnnounceDate" value="2005"/>
+		<capability name="AnnouncementDate" value="2005"/>
 		<capability name="key.LeftSoftKey" value="-21"/>
 		<capability name="key.RightSoftKey" value="-22"/>
 		<capability name="key.MiddleSoftKey" value="-23"/>
@@ -2056,7 +2056,7 @@ These namespaces/schemas will be used soon.
 		-->
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="4"/>
-		<capability name="AnnounceDate" value="2005"/>
+		<capability name="AnnouncementDate" value="2005"/>
 		<capability name="key.LeftSoftKey" value="21"/>
 		<capability name="key.RightSoftKey" value="22"/>
 		<capability name="key.MiddleSoftKey" value="23"/>
@@ -2098,7 +2098,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="4"/>
-		<capability name="AnnounceDate" value="2005"/>
+		<capability name="AnnouncementDate" value="2005"/>
 		<capability name="key.LeftSoftKey" value="21"/>
 		<capability name="key.RightSoftKey" value="22"/>
 		<capability name="key.MiddleSoftKey" value="23"/>
@@ -2124,7 +2124,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Network" value="GSM, GPRS"/>
 		<capability name="Frequency" value="900, 1800, 1900"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
-		<capability name="AnnounceDate" value="2007-01-03"/>
+		<capability name="AnnouncementDate" value="2007-01-03"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA5" />
 		<capability name="Emulator.Skin" value="V1100.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -2146,7 +2146,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ImageFormat" value="png, jpeg, gif, bmp, wbmp, ems"/>
 		<capability name="SoundFormat" value="midi, mp3, wav"/>
 		<capability name="Region" value="Global"/>
-		<capability name="AnnounceDate" value="2006-12-18"/>
+		<capability name="AnnouncementDate" value="2006-12-18"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="V195_V196_V197.props" />
 	</device>
@@ -2169,7 +2169,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ImageFormat" value="png, jpeg, gif"/>
 		<capability name="SoundFormat" value="midi, mp3, wav"/>
 		<capability name="Region" value="Global"/>
-		<capability name="AnnounceDate" value="2006-12-18"/>
+		<capability name="AnnouncementDate" value="2006-12-18"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="V195_V196_V197.props" />
 	</device>
@@ -2198,7 +2198,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="4"/>
-		<capability name="AnnounceDate" value="2005"/>
+		<capability name="AnnouncementDate" value="2005"/>
 		<capability name="key.LeftSoftKey" value="-21"/>
 		<capability name="key.RightSoftKey" value="-22"/>
 		<capability name="key.MiddleSoftKey" value="-23"/>
@@ -2246,7 +2246,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="0"/>
-		<capability name="AnnounceDate" value="2005"/>
+		<capability name="AnnouncementDate" value="2005"/>
 		<capability name="key.LeftSoftKey" value="21"/>
 		<capability name="key.RightSoftKey" value="22"/>
 		<capability name="key.MiddleSoftKey" value="23"/>
@@ -2535,7 +2535,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxSockets.tcp" value="16"/>
 		<capability name="MaxSockets.http" value="8"/>
 		<capability name="MaxSockets.udp" value="24"/>
-		<capability name="wap.UserAgent" value="MOTi730"/>
+		<capability name="wap.userAgent" value="MOTi730"/>
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	</device>
 	
@@ -2557,7 +2557,7 @@ These namespaces/schemas will be used soon.
 		<capability name="key.LeftSoftKey" value="-20"/>
 		<capability name="key.RightSoftKey" value="-21"/>
 		<capability name="key.MiddleSoftKey" value="-22"/>
-		<capability name="wap.UserAgent" value="MOTi50sx"/>
+		<capability name="wap.userAgent" value="MOTi50sx"/>
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	</device>
 
@@ -2915,7 +2915,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Network" value="GSM, GPRS"/>
 		<capability name="Frequency" value="900, 1800, 1900"/>
 		<capability name="CameraResolution" value="2 MP"/>
-		<capability name="AnnounceDate" value="2006-12-11"/>
+		<capability name="AnnouncementDate" value="2006-12-11"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorM3" />
 		<capability name="Emulator.Skin" value="MOTOROKR_E6.props" />
 	</device>
@@ -2941,7 +2941,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="2.0 MP"/>
 		<capability name="CameraZoom" value="4"/>
-		<capability name="AnnounceDate" value="2007-01-18"/>
+		<capability name="AnnouncementDate" value="2007-01-18"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA6" />
 		<capability name="Emulator.Skin" value="MOTORIZR_Z3.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -2969,7 +2969,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="900, 1800, 1900"/>
 		<capability name="CameraResolution" value="640x480, 1.3 MP"/>
 		<capability name="CameraZoom" value="8"/>
-		<capability name="AnnounceDate" value="2006-12-18"/>
+		<capability name="AnnouncementDate" value="2006-12-18"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA5" />
 		<capability name="Emulator.Skin" value="MOTORAZR_V3xx.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -2997,7 +2997,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="1.23 MP"/>
 		<capability name="CameraZoom" value="8"/>
-		<capability name="AnnounceDate" value="2006-12-11"/>
+		<capability name="AnnouncementDate" value="2006-12-11"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="V3i_V3e_V3t.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -3066,7 +3066,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="8"/>
-		<capability name="AnnounceDate" value="2006-11-07"/>
+		<capability name="AnnouncementDate" value="2006-11-07"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="V3i_V3e_V3t.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -3097,7 +3097,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="1.23 MP"/>
 		<capability name="CameraZoom" value="8"/>
-		<capability name="AnnounceDate" value="2006-12-11"/>
+		<capability name="AnnouncementDate" value="2006-12-11"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="V3i_V3e_V3t.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -3125,7 +3125,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="4"/>
-		<capability name="AnnounceDate" value="2006-07-07"/>
+		<capability name="AnnouncementDate" value="2006-07-07"/>
 		<capability name="Emulator.Skin" value="RAZR_V3.props" />
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -3153,7 +3153,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="900, 1800, 1900"/>
 		<capability name="CameraResolution" value="640x480, 2 MP"/>
 		<capability name="CameraZoom" value="8"/>
-		<capability name="AnnounceDate" value="2006-12-11"/>
+		<capability name="AnnouncementDate" value="2006-12-11"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA5" />
 		<capability name="Emulator.Skin" value="MOTORAZR_maxx_V6.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -3181,7 +3181,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="2 MP"/>
 		<capability name="CameraZoom" value="8"/>
-		<capability name="AnnounceDate" value="2006-12-18"/>
+		<capability name="AnnouncementDate" value="2006-12-18"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA6" />
 		<capability name="Emulator.Skin" value="MOTOKRZR_K1.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -3208,7 +3208,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="4"/>
-		<capability name="AnnounceDate" value="2006-12-27"/>
+		<capability name="AnnouncementDate" value="2006-12-27"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="ROKR_E1.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -3245,7 +3245,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="900, 1800, 1900"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="8"/>
-		<capability name="AnnounceDate" value="2006-12-28"/>
+		<capability name="AnnouncementDate" value="2006-12-28"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorM3" />
 		<capability name="Emulator.Skin" value="ROKR_E2.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -3270,7 +3270,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Region" value="Global"/>
 		<capability name="Network" value="GSM, GPRS"/>
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
-		<capability name="AnnounceDate" value="2006-12-11"/>
+		<capability name="AnnouncementDate" value="2006-12-11"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="L2_L6_L6i.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -3331,7 +3331,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="4"/>
-		<capability name="AnnounceDate" value="2006-09-05"/>
+		<capability name="AnnouncementDate" value="2006-09-05"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="L2_L6_L6i.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -3357,7 +3357,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Network" value="GSM, GPRS"/>
 		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="640x480"/>
-		<capability name="AnnounceDate" value="2006-12-28"/>
+		<capability name="AnnouncementDate" value="2006-12-28"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="SLVR_L7.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
@@ -3383,7 +3383,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ImageFormat" value="png, jpeg"/>
 		<capability name="SoundFormat" value="midi, mp3, wav, amr"/>
 		<capability name="CameraResolution" value="640x480"/>
-			<capability name="AnnounceDate" value="2004-07-27"/>
+		<capability name="AnnouncementDate" value="2004-07-27"/>
 		<capability name="key.LeftSoftKey" value="-21"/>
 		<capability name="key.MiddleSoftKey" value="-23"/>
 		<capability name="key.RightSoftKey" value="-22"/>
@@ -4539,7 +4539,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="Europe, North America"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD"/>
-		<capability name="Frequence" value="800, 1900"/>
+		<capability name="Frequency" value="800, 1900"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="AnnouncementDate" value="2006-01-16"/>
 		<capability name="Font.small" value="18" />
@@ -4613,7 +4613,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="Africa, Asia-Pacific, China, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="800, 1900"/>
+		<capability name="Frequency" value="800, 1900"/>
 		<capability name="CameraResolution" value="1600x1200"/>
 		<capability name="AnnouncementDate" value="2005-12-01"/>
 		<capability name="RootCertificates" value="UTI Root"/>
@@ -4679,7 +4679,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0, OMA DRM Forward-Lock"/>
 		<capability name="Region" value="Africa, China, Asia-Pacific, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="1600x1200"/>
 		<capability name="Font.small" value="13" />
 		<capability name="Font.medium" value="18" />
@@ -4707,7 +4707,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM Forward Lock"/>
 		<capability name="Region" value="Africa, Latin America, North America, Asia-Pacific, China, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="1280x960"/>
 		<capability name="AnnouncementDate" value="2006-05-18"/>
 		<capability name="Font.small" value="18" />
@@ -4735,7 +4735,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="Africa, Asia-Pacific, Europe, Latin America"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD"/>
-		<capability name="Frequence" value="900, 1800, 1900"/>
+		<capability name="Frequency" value="900, 1800, 1900"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="AnnouncementDate" value="2005-04-26"/>
 	<capability name="wap.userAgent" value="Nokia5140i"/>
@@ -4762,7 +4762,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="Africa, Asia-Pacific, China, Europe, Latin America"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="800, 1900"/>
+		<capability name="Frequency" value="800, 1900"/>
 		<capability name="CameraResolution" value="2 MP"/>
 		<capability name="AnnouncementDate" value="2005-07-04"/>
 		<capability name="Font.small" value="18" />
@@ -4794,7 +4794,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0"/>
 		<capability name="Region" value="Americas, Asia-Pacific, China"/>
 		<capability name="Network" value="CSD, CDMA"/>
-		<capability name="Frequence" value="800, 1900"/>
+		<capability name="Frequency" value="800, 1900"/>
 		<capability name="CameraResolution" value="1152x864"/>
 		<capability name="AnnouncementDate" value="2005-06-17"/>
 	</device>
@@ -4818,7 +4818,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="Africa, Asia-Pacific, China, Europe, Latin-America"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD"/>
-		<capability name="Frequence" value="900, 1800, 1900"/>
+		<capability name="Frequency" value="900, 1800, 1900"/>
 		<capability name="CameraResolution" value="1 MP"/>
 		<capability name="CameraZoom" value="2"/>
 		<capability name="AnnouncementDate" value="2005-06-14"/>
@@ -4844,7 +4844,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="Africa, Americas, Asia-Pacific, China, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD"/>
-		<capability name="Frequence" value="850, 900, 1800, 1900"/>
+		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="2 MP"/>
 		<capability name="AnnouncementDate" value="2005-06-14"/>
 	</device>
@@ -4868,7 +4868,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM forward lock"/>
 		<capability name="Region" value="Africa, Americas, Asia-Pacific, China, Europe"/>
 		<capability name="Network" value="GSM, GPRS"/>
-		<capability name="Frequence" value="850, 900, 1800, 1900"/>
+		<capability name="Frequency" value="850, 900, 1800, 1900"/>
 		<capability name="AnnouncementDate" value="2005-06-14"/>
 		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator"/>
 	</device>
@@ -4936,7 +4936,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM Forward Lock"/>
 		<capability name="Region" value="Latin America, Asia-Pacific, Middle East, North America"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="AnnouncementDate" value="2006-08-16"/>
 	</device>
 	
@@ -5002,7 +5002,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM Forward Lock"/>
 		<capability name="Region" value="Asia-Pacific, Europe, Africa"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="1600x1200"/>
 		<capability name="AnnouncementDate" value="2005-10-12"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
@@ -5050,7 +5050,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0, OMA DRM v2.0"/>
 		<capability name="Region" value="North America"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="1600x1200"/>
 		<capability name="AnnouncementDate" value="2006-09-26"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
@@ -5075,7 +5075,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0, OMA DRM v2.0"/>
 		<capability name="Region" value="Asia-Pacific, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="2582x1944"/>
 		<capability name="AnnouncementDate" value="2006-09-26"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
@@ -5100,7 +5100,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0, OMA DRM v2.0"/>
 		<capability name="Region" value="Latin America, North America, Asia-Pacific, China, Africa, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="2048x1536"/>
 		<capability name="AnnouncementDate" value="2006-04-25"/>
 	</device>
@@ -5170,7 +5170,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0, OMA DRM v2.0"/>
 		<capability name="Region" value="Americas, Asia-Pacific, China, Africa, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="1600x1200"/>
 		<capability name="AnnouncementDate" value="2006-09-26"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
@@ -5197,7 +5197,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="Americas, Asia-Pacific, China, Africa, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="2 MP"/>
 		<capability name="CameraZoom" value="20"/>
 		<capability name="AnnouncementDate" value="2005-04-27"/>
@@ -5233,7 +5233,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="Americas, Asia-Pacific, China, Africa, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="1600x1200"/>
 		<capability name="AnnouncementDate" value="2005-04-27"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian B"/>
@@ -5276,7 +5276,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="Asia-Pacific, Africa, China, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="2 MP"/>
 		<capability name="AnnouncementDate" value="2005-11-02"/>
 	</device>
@@ -5300,7 +5300,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="Asia-Pacific, Africa"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="1600x1200"/>
 		<capability name="AnnouncementDate" value="2006-04-25"/>
 	</device>
@@ -5324,7 +5324,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0"/>
 		<capability name="Region" value="Americas, Asia-Pacific, Africa, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="2048x1536"/>
 		<capability name="AnnouncementDate" value="2006-04-25"/>
 		<capability name="Font.small" value="12" />
@@ -5352,7 +5352,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0"/>
 		<capability name="Region" value="Asia-Pacific, Africa, China, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
-		<capability name="Frequence" value="900, 1800, 1900, 2100"/>
+		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="CameraResolution" value="2048x1536"/>
 		<capability name="AnnouncementDate" value="2005-11-02"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
@@ -5895,7 +5895,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="Latin America, Asia-Pacific, China, Europe"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD"/>
-		<capability name="Frequence" value="850, 900, 1800"/>
+		<capability name="Frequency" value="850, 900, 1800"/>
 		<capability name="CameraResolution" value="s640x480"/>
 		<capability name="AnnouncementDate" value="2005-04-07"/>
 	<capability name="wap.userAgent" value="Nokia8800"/>
@@ -5922,7 +5922,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="North America"/>
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD"/>
-		<capability name="Frequence" value="850, 900, 1800"/>
+		<capability name="Frequency" value="850, 900, 1800"/>
 		<capability name="CameraResolution" value="s640x480"/>
 		<capability name="AnnouncementDate" value="2005-04-07"/>
 	<capability name="wap.userAgent" value="Nokia8801"/>
@@ -5949,7 +5949,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="China, North America, Asia-Pacific, Latin America"/>
 		<capability name="Network" value="CSD, CDM"/>
-		<capability name="Frequence" value="800, 1900"/>
+		<capability name="Frequency" value="800, 1900"/>
 		<capability name="CameraResolution" value="1MP"/>
 		<capability name="AnnouncementDate" value="2005-03-14"/>
 		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator"/>
@@ -5975,7 +5975,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="China, North America, Asia-Pacific, Latin America"/>
 		<capability name="Network" value="CSD, CDM"/>
-		<capability name="Frequence" value="800, 1900"/>
+		<capability name="Frequency" value="800, 1900"/>
 		<capability name="CameraResolution" value="1MP"/>
 		<capability name="AnnouncementDate" value="2005-03-14"/>
 		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator"/>
@@ -6001,7 +6001,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="China, North America, Asia-Pacific, Latin America"/>
 		<capability name="Network" value="CSD, CDM"/>
-		<capability name="Frequence" value="800, 1900"/>
+		<capability name="Frequency" value="800, 1900"/>
 		<capability name="CameraResolution" value="1MP"/>
 		<capability name="AnnouncementDate" value="2005-03-14"/>
 		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator"/>
@@ -6027,7 +6027,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="China, North America, Asia-Pacific, Latin America"/>
 		<capability name="Network" value="CSD, CDM"/>
-		<capability name="Frequence" value="800, 1900"/>
+		<capability name="Frequency" value="800, 1900"/>
 		<capability name="CameraResolution" value="1MP"/>
 		<capability name="AnnouncementDate" value="2005-03-14"/>
 		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator"/>
@@ -6053,7 +6053,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="China, North America, Asia-Pacific, Latin America"/>
 		<capability name="Network" value="CSD, CDM"/>
-		<capability name="Frequence" value="800, 1900"/>
+		<capability name="Frequency" value="800, 1900"/>
 		<capability name="CameraResolution" value="1MP"/>
 		<capability name="AnnouncementDate" value="2005-03-14"/>
 		<capability name="Emulator.Skin" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x160_MIDP_Emulator"/>
@@ -6077,7 +6077,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA Forward Lock"/>
 		<capability name="Region" value="Europe, Africa, Asia-Pacific, Latin America"/>
 		<capability name="Network" value="GSM, GPRS"/>
-		<capability name="Frequence" value="900, 1800, 850, 1900"/>
+		<capability name="Frequency" value="900, 1800, 850, 1900"/>
 		<capability name="AnnouncementDate" value="2005-03-01"/>
 	<capability name="wap.userAgent" value="Nokia6030"/>
 <capability name="wap.userAgent" value="Nokia6030/2.0 (y3.43) Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
@@ -6101,7 +6101,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM v1.0"/>
 		<capability name="Region" value="Europe, Africa, Asia-Pacific, China"/>
 		<capability name="Network" value="GSM, CSD, HSCSD, GPRS, EGPRS"/>
-		<capability name="Frequence" value="900, 1800, 1900"/>
+		<capability name="Frequency" value="900, 1800, 1900"/>
 		<capability name="AnnouncementDate" value="2005-03-01"/>
 	<capability name="wap.userAgent" value="Nokia6021"/>
 <capability name="wap.userAgent" value="Nokia6021/2.0 (p3.79c) Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
@@ -6132,7 +6132,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA v1.0"/>
 		<capability name="Region" value="Europe, Africa, Asia-Pacific, Americas"/>
 		<capability name="Network" value="GSM, CSD, HSCSD, GPRS, EGPRS"/>
-		<capability name="Frequence" value="900, 1800, 1900, 850"/>
+		<capability name="Frequency" value="900, 1800, 1900, 850"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="3"/>
 		<capability name="Font.small" value="18"/>
@@ -6169,7 +6169,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA v1.0"/>
 		<capability name="Region" value="Americas"/>
 		<capability name="Network" value="GSM, CSD, GPRS, EGPRS"/>
-		<capability name="Frequence" value="850, 1800, 1900"/>
+		<capability name="Frequency" value="850, 1800, 1900"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="6"/>
 		<capability name="AnnouncementDate" value="2005-02-20"/>
@@ -6196,7 +6196,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA v1.0"/>
 		<capability name="Region" value=" Europe, Africa, Asia-Pacific, Americas"/>
 		<capability name="Network" value="GSM, CSD, HSCSD, GPRS, EGPRS"/>
-		<capability name="Frequence" value="900,1800,1900,850"/>
+		<capability name="Frequency" value="900,1800,1900,850"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="1"/>
 		<capability name="AnnouncementDate" value="2005-02-14"/>
@@ -6273,7 +6273,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA v1.0"/>
 		<capability name="Region" value="China, Americas"/>
 		<capability name="Network" value="GSM, CSD, HSCSD, GPRS, EGPRS"/>
-		<capability name="Frequence" value="900,1800,1900,850"/>
+		<capability name="Frequency" value="900,1800,1900,850"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="1"/>
 		<capability name="AnnouncementDate" value="2005-02-14"/>
@@ -6300,7 +6300,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA v1.0"/>
 		<capability name="Region" value="Europe, Africa, Asia-Pacific, Americas"/>
 		<capability name="Network" value="WCDMA, GSM, CSD, GPRS, HSCSD, EGPRS"/>
-		<capability name="Frequence" value="WCDMA 2100, 900, 1800, 1900"/>
+		<capability name="Frequency" value="WCDMA 2100, 900, 1800, 1900"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="6"/>
 		<capability name="AnnouncementDate" value="2005-02-14"/>
@@ -6368,7 +6368,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA v1.0"/>
 		<capability name="Region" value="Europe, Americas"/>
 		<capability name="Network" value="CSD, HSCSD, GPRS, EGPRS"/>
-		<capability name="Frequence" value="900,1800,1900,850"/>
+		<capability name="Frequency" value="900,1800,1900,850"/>
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="1"/>
 		<capability name="AnnouncementDate" value="2005-01-05"/>
@@ -6399,7 +6399,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA v1.0"/>
 		<capability name="Region" value="Asia-Pacific, Americas, Latin America, Canada"/>
 		<capability name="Network" value="CSD, HSCSD,  CDMA1X"/>
-		<capability name="Frequence" value="800,1900"/>
+		<capability name="Frequency" value="800,1900"/>
 		<capability name="AnnouncementDate" value="2004-11-16"/>
 	</device>
 
@@ -6423,7 +6423,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA v1.0"/>
 		<capability name="Region" value="Americas, Canada,  Latin America, Asia-Pacific"/>
 		<capability name="Network" value="CSD, HSCSD,  CDMA1X"/>
-		<capability name="Frequence" value="800,1900"/>
+		<capability name="Frequency" value="800,1900"/>
 		<capability name="AnnouncementDate" value="2004-11-16"/>
 	</device>
 
@@ -6445,7 +6445,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA Forward Lock"/>
 		<capability name="Region" value="Europe, Asia-Pacific, China"/>
 		<capability name="Network" value="GSM, HSCSD, GPRS, EGPRS"/>
-		<capability name="Frequence" value="900,1800,1900"/>
+		<capability name="Frequency" value="900,1800,1900"/>
 		<capability name="CameraResolution" value="1 MP"/>
 		<capability name="CameraZoom" value="1"/>
 		<capability name="AnnouncementDate" value="2004-11-02"/>
@@ -6633,7 +6633,7 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA Forward Lock"/>
 		<capability name="Region" value="Europe, Asia-Pacific, Africa"/>
 		<capability name="Network" value="GSM, HSCSD, GPRS, EGPRS"/>
-		<capability name="Frequence" value="900,1800,1900"/>
+		<capability name="Frequency" value="900,1800,1900"/>
 		<capability name="RootCertificates" value="UTI Root"/>
 		<capability name="AnnouncementDate" value="2005-11-29"/>
 	</device>
@@ -6779,7 +6779,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Region" value="Europe, Africa, Americas, Asia-Pacific"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="6"/>
-		<capability name="wap.UserAgent" value="Nokia6630/1.0 (4.03.38) SymbianOS/8.0 Series60/2.6 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Link/6.3.0.0.0"/>
+		<capability name="wap.userAgent" value="Nokia6630/1.0 (4.03.38) SymbianOS/8.0 Series60/2.6 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Link/6.3.0.0.0"/>
 	<capability name="wap.userAgent" value="Mozilla/4.0 (compatible; MSIE 5.0; Series60/2.6 Nokia6630"/>
 <capability name="wap.userAgent" value="Mozilla/4.0 (compatible; MSIE 5.0; Series60/2.6 Nokia6630/1.25.3 Profile/MIDP-2.0 Configuration/CLDC-1.1)"/>
 <capability name="wap.userAgent" value="Mozilla/4.0 (compatible; MSIE 5.0; Series60/2.6 Nokia6630/2.39.129 Profile/MIDP-2.0 Configuration/CLDC-1.1)"/>
@@ -11747,7 +11747,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/> 
 		<capability name="JavaPlatform" value="MIDP/2.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.0"/> 
-		<capability name="SoundForma" value="mmf, midi"/> 
+		<capability name="SoundFormat" value="mmf, midi"/> 
 		<capability name="PolyphonicVoices" value="64"/> 
 		<capability name="HeapSize" value="256 kb"/> 
 		<capability name="MaxJarSize" value="100 kb"/> 
@@ -12494,7 +12494,7 @@ These namespaces/schemas will be used soon.
 	<device>
 		<identifier>Mio/8390</identifier>
 		<features>hasCamera</features>
-		<capability name="os" value="Windows Mobile 2003"/>
+		<capability name="OS" value="Windows Mobile 2003"/>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -12509,7 +12509,7 @@ These namespaces/schemas will be used soon.
 	<device>
 		<identifier>Sagem/MyX5-2</identifier>
 		<features>doubleBuffering, hasCamera</features>
-		<capability name="os" value="Windows Mobile 2003"/>
+		<capability name="OS" value="Windows Mobile 2003"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x142"/>
 		<capability name="CanvasSize" value="128x128"/>
@@ -12846,7 +12846,7 @@ These namespaces/schemas will be used soon.
 		<identifier>HTC/Himalaya</identifier>
 		<groups/>
 		<features>hasPointerEvents, hasCommandKeyEvents</features>
-		<capability name="os" value="Windows Mobile 2003"/>
+		<capability name="OS" value="Windows Mobile 2003"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, btapi"/>
@@ -12861,7 +12861,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Qtek/8310</identifier>
 		<groups/>
 		<features>hasCommandKeyEvents, isDoubleBuffered</features>
-		<capability name="os" value="Windows Mobile 2005"/>
+		<capability name="OS" value="Windows Mobile 2005"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x266"/>
 		<capability name="FullCanvasSize" value="240x266"/>
@@ -12884,7 +12884,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Qtek/9100</identifier>
 		<groups/>
 		<features>hasCommandKeyEvents, isDoubleBuffered</features>
-		<capability name="os" value="Windows Mobile 2005"/>
+		<capability name="OS" value="Windows Mobile 2005"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x266"/>
 		<capability name="FullCanvasSize" value="240x266"/>
@@ -12906,7 +12906,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Qtek/XDAII</identifier>
 		<groups/>
 		<features>hasPointerEvents, hasCommandKeyEvents</features>
-		<capability name="os" value="Windows Mobile 2003"/>
+		<capability name="OS" value="Windows Mobile 2003"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, btapi"/>
@@ -12921,7 +12921,7 @@ These namespaces/schemas will be used soon.
 		<identifier>O2/XDAII</identifier>
 		<groups/>
 		<features>hasPointerEvents, hasCommandKeyEvents</features>
-		<capability name="os" value="Windows Mobile 2003"/>
+		<capability name="OS" value="Windows Mobile 2003"/>
 		<capability name="ScreenSize" value="240x247"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -12933,14 +12933,14 @@ These namespaces/schemas will be used soon.
 		<identifier>T-Mobile/MDAcompact</identifier>
 		<groups/>
 		<features>hasPointerEvents, hasCommandKeyEvents, hasCamera</features>
-		<capability name="os" value="Windows Mobile 2003"/>
+		<capability name="OS" value="Windows Mobile 2003"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x268"/>
 		<capability name="CanvasSize" value="240x245"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="CameraResulution" value="1280x960"/>
+		<capability name="CameraResolution" value="1280x960"/>
 		<capability name="CameraZoom" value="8"/>
 	</device> 
 	
@@ -12948,14 +12948,14 @@ These namespaces/schemas will be used soon.
 		<identifier>T-Mobile/MDAII</identifier>
 		<groups/>
 		<features>hasPointerEvents, hasCommandKeyEvents, hasCamera</features>
-		<capability name="os" value="Windows Mobile 2003"/>
+		<capability name="OS" value="Windows Mobile 2003"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x268"/>
 		<capability name="CanvasSize" value="240x245"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="CameraResulution" value="1280x960"/>
+		<capability name="CameraResolution" value="1280x960"/>
 		<capability name="CameraZoom" value="8"/>
 	</device> 
 
@@ -12963,12 +12963,12 @@ These namespaces/schemas will be used soon.
 		<identifier>T-Mobile/SDA</identifier>
 		<groups/>
 		<features>hasCommandKeyEvents, hasCamera</features>
-		<capability name="os" value="Windows Mobile 2003"/>
+		<capability name="OS" value="Windows Mobile 2003"/>
 		<capability name="ScreenSize" value="176x208"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
-		<capability name="CameraResulution" value="640x480"/>
+		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="0"/>
 		<capability name="Bugs" value="needsAbsoluteUrlToJar"/>
 	</device> 
