@@ -56,6 +56,8 @@ public interface PolishTextField {
 	
 	public void setCursorPosition( int pos );
 	
+	public int getInsertPositionOffset();
+	
 	public void setChangeListener( FieldChangeListener listener );
 
 }
