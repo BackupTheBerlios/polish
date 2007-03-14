@@ -31,8 +31,8 @@ With the &lt;build&gt;-section the actual build process is controlled:
                level=&quot;error&quot;
 	       if=&quot;test&quot; 
 	       &gt;
-        &lt;filter pattern=&quot;de.enough.polish.example.*&quot; level=&quot;debug&quot; /&gt;
-        &lt;filter pattern=&quot;de.enough.polish.ui.*&quot; level=&quot;warn&quot; /&gt;
+        &lt;filter package=&quot;de.enough.polish.example&quot; level=&quot;debug&quot; /&gt;
+        &lt;filter class=&quot;de.enough.polish.ui.Gauge&quot; level=&quot;info&quot; /&gt;
      &lt;/debug&gt;
 &lt;/build&gt;</pre></p>
 	<h2 id="attributes">Supported Attributes</h2>
@@ -1255,6 +1255,53 @@ This can be used for allowing new preprocessing directives for example.
 	<p>
 	The preprocessor can be configured using a number &lt;parameter&gt; subelements. Each &lt;parameter&gt; subelement needs to define the attributes &quot;name&quot; and &quot;value&quot;.
 	</p>
+	
+<h3 id="sign">&lt;sign&gt;</h3>
+<p>
+The &lt;sign&gt;-element signs your application for all MIDP 2.0 devices. 
+Please note that you need a valid certificate for example from Verisign or Thawte. Some devices do not contain
+&quot;open&quot; certificates. In that case you either need to manually install a root certificate (only possible on some devices), use the 
+java verified program or cooperate with a device vendor or an operator.
+</p>
+<p>In the following example we are using the <code>password</code> ant property for specifying the password. In this way it can be specified on the command line
+without risking the security:
+<pre>
+ant -Dpassword=secret
+</pre>
+<p>
+<pre>
+&lt;sign
+	key=&quot;SignMIDlet&quot;
+	keystore=&quot;midlets.ks&quot;
+	password=&quot;${password}&quot;
+	unless=&quot;test&quot;
+/&gt;
+</pre>
+</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>sign-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>key</td>
+ 	 <td>Yes</td>
+	 <td>The name of the key used for signing.</td>
+	</tr>
+	<tr>
+	 <td>keystore</td>
+ 	 <td>Yes</td>
+	 <td>The path of the keystore that contains the key. The path is taken relative to the <i>build.xml</i> script.</td>
+	</tr>
+	<tr><td>password</td>
+ 	 <td>Yes</td>
+	 <td>The passphrase used to protect the key.</td>
+	</tr>
+	<tr><td>if</td>
+ 	 <td>No</td>
+	 <td>The name of the Ant-property, which needs to be &quot;true&quot; or &quot;yes&quot;, when this &lt;sign&gt; element should be used.</td>
+	</tr>
+	<tr><td>unless</td>
+ 	 <td>No</td>
+	 <td>The name of the Ant-property, which needs to be &quot;false&quot; or &quot;no&quot;, when this &lt;sign &gt; element should be used..</td>
+	</tr>
+	</table>
 
 <h3 id="java">&lt;java&gt;</h3>
 <p>

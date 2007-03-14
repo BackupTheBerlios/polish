@@ -199,23 +199,31 @@
 				<%endif %>
 				<%ifdef inDocumentationSection.netbeans %>
 					<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/netbeans.html">&nbsp;&gt; NetBeans</a></div>
+					<div id="thirdLevel">
+					<p class="thirdLevel">
+					<a href="<%= basedir %>docs/netbeans-install.html">Installation</a>
+					<a href="<%= basedir %>docs/netbeans-newproject.html">Creating Projects</a>
+					<a href="<%= basedir %>docs/netbeans-running.html">Running and Debugging</a>
+					</p>
+					</div>
 				<%else %>
 					<div class="secondLevelLink"><a href="<%= basedir %>docs/netbeans.html">&nbsp;&gt; NetBeans</a></div>
 				<%endif %>
 				<%ifdef inDocumentationSection.mepose %>
 					<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/mepose.html">&nbsp;&gt; Eclipe</a></div>
+					<div id="thirdLevel">
+					<p class="thirdLevel">
+					<a href="<%= basedir %>docs/mepose-features.html">Features</a>
+					<a href="<%= basedir %>docs/mepose-install.html">Installation</a>
+					<a href="<%= basedir %>docs/mepose-wizard.html">Creating Projects</a>
+					<a href="<%= basedir %>docs/mepose-convert.html">Converting Projects</a>
+					<a href="<%= basedir %>docs/mepose-running.html">Running and Debugging</a>
+					</p>
+					</div>
 				<%else %>
 					<div class="secondLevelLink"><a href="<%= basedir %>docs/mepose.html">&nbsp;&gt; Eclipse</a></div>
 				<%endif %>
-				<div id="thirdLevel">
-				<p class="thirdLevel">
-				<a href="<%= basedir %>docs/mepose-features.html">Features</a>
-				<a href="<%= basedir %>docs/mepose-install.html">Installation</a>
-				<a href="<%= basedir %>docs/mepose-wizard.html">Creating Projects</a>
-				<a href="<%= basedir %>docs/mepose-convert.html">Converting Projects</a>
-				<a href="<%= basedir %>docs/mepose-running.html">Running and Debugging</a>
-				</p>
-				</div>
+				
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/install.html">Installation</a></div>
 			<%endif %>
