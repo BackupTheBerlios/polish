@@ -2445,6 +2445,36 @@ implements AccessibleCanvas
 	//#endif
 	
 	/**
+	 * Retrieves the CommandItem used for rendering the specified command. 
+	 * 
+	 * @param command the command
+	 * @return the corresponding CommandItem or null when this command is not present in this MenuBar.
+	 */
+	public CommandItem getCommanItem(Command command) {
+		//#if tmp.menuFullScreen
+			//#ifdef tmp.useExternalMenuBar
+				//# return this.menuBar.getCommandItem( command );
+			//#else
+				int index = this.menuCommands.indexOf(command);
+				if (index != -1) {
+					return (CommandItem) this.menuContainer.get(index);
+				} else {
+					for (int i = 0; i < this.menuContainer.size(); i++) {
+						CommandItem item = (CommandItem) this.menuContainer.get(i);
+						item = item.getChild(command);
+						if (item != null) {
+							return item;
+						}
+					}
+				}
+			//#endif
+		//#endif
+		//#ifndef tmp.useExternalMenuBar
+			return null;
+		//#endif
+	}
+
+	/**
 	 * Removes all commands from this screen.
 	 * This option is only available when the "menu" fullscreen mode is activated.
 	 */
@@ -3212,6 +3242,7 @@ implements AccessibleCanvas
 	public Object getScreenData() {
 		return this.data;
 	}
+
 
 		
 	

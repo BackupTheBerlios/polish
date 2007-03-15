@@ -241,6 +241,8 @@ public class FramedForm extends Form {
 			} else if ( (frameStyle.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM ) {
 				y += this.originalContentHeight - frameStyle.marginBottom - this.leftFrame.itemHeight;
 			}
+			this.leftFrame.relativeX = 0;
+			this.leftFrame.relativeY = y;
 			this.leftFrame.paint( 0, y, 0, this.contentWidth, g );
 		}
 		if (this.rightFrame != null) {
@@ -259,12 +261,18 @@ public class FramedForm extends Form {
 			} else if ( (frameStyle.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM ) {
 				y += this.originalContentHeight - frameStyle.marginBottom - this.rightFrame.itemHeight;
 			}
+			this.rightFrame.relativeX = this.contentWidth;
+			this.rightFrame.relativeY = y;
 			this.rightFrame.paint( this.contentWidth, y, this.contentWidth, this.screenWidth, g );
 		}
 		if (this.topFrame != null ) {
-			this.topFrame.paint( this.originalContentX, this.originalContentY, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
+			this.topFrame.relativeX = this.originalContentX;
+			this.topFrame.relativeY = this.originalContentX;
+			this.topFrame.paint( this.originalContentX, this.originalContentX, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 		}
 		if (this.bottomFrame != null ) {
+			this.topFrame.relativeX = this.originalContentX;
+			this.topFrame.relativeY = this.contentY + this.contentHeight;
 			this.bottomFrame.paint( this.originalContentX, this.contentY + this.contentHeight, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 		}
 	}

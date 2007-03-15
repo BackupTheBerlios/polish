@@ -237,16 +237,6 @@ public class ClockItem
 		AnimationThread.addAnimationItem( this );
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeStringCustomItem#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
-	 */
-	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		System.out.println("painting clock");
-		super.paintContent(x, y, leftBorder, rightBorder, g);
-	}
-	
-	
-
 
 }
  

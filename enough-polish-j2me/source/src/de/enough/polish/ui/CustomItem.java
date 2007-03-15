@@ -717,6 +717,14 @@ public abstract class CustomItem extends Item
 	 */
 	protected final void invalidate()
 	{
+		if (this.parent instanceof Container) {
+			traverse( 0, this.clipWidth, this.clipHeight, this.visRect_inout );
+			this.internalX = this.visRect_inout[0];
+			this.internalY = this.visRect_inout[1];
+			this.internalWidth = this.visRect_inout[2];
+			this.internalHeight = this.visRect_inout[3];
+			((Container)this.parent).scroll(0, this);
+		}
 		requestInit();
 	}
 

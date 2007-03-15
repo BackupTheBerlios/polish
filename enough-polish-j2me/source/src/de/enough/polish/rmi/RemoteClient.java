@@ -56,7 +56,7 @@ import de.enough.polish.io.Serializer;
  */
 public class RemoteClient implements Runnable {
 	/** The version of the RMI protocol, currently 101 (=1.0.1) is used (support for primitives) */
-	public static int RMI_VERSION = 101; // = 1.0.1 (support of primitives)
+	public static final int RMI_VERSION = 101; // = 1.0.1 (support of primitives)
 	
 	private final Vector callQueue;
 	private String url;

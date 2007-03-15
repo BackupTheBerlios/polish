@@ -1527,7 +1527,7 @@ public abstract class Item extends Object
 	{
 		
 		Screen scr = StyleSheet.currentScreen;
-		if (scr == null) {
+		if (scr == null || !(scr instanceof Form)) {
 			scr = getScreen();
 		}
 		//#ifndef polish.skipArgumentCheck

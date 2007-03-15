@@ -93,9 +93,9 @@ public class MenuBar extends Item {
 	private final Container commandsContainer;
 	protected boolean isOpened;
 	private Command singleLeftCommand;
-	private final IconItem singleLeftCommandItem;
+	private final CommandItem singleLeftCommandItem;
 	private Command singleRightCommand;
-	private final IconItem singleRightCommandItem;
+	private final CommandItem singleRightCommandItem;
 	private int commandsContainerY;
 	private int topY;
 	private int commandsContainerWidth;
@@ -143,11 +143,12 @@ public class MenuBar extends Item {
 		this.commandsContainer.layout |= LAYOUT_SHRINK;
 		this.commandsContainer.screen = screen;
 		this.commandsContainer.parent = this;
+		Command dummy = new Command("", Command.ITEM, 10000);
 		//#style rightcommand, default
-		this.singleRightCommandItem = new IconItem( null, null );
+		this.singleRightCommandItem = new CommandItem( dummy, this );
 		this.singleRightCommandItem.setImageAlign( Graphics.LEFT );
 		//#style leftcommand, default
-		this.singleLeftCommandItem = new IconItem( null, null );
+		this.singleLeftCommandItem = new CommandItem( dummy, this );
 		this.singleLeftCommandItem.setImageAlign( Graphics.LEFT );
 	}
 
@@ -1134,6 +1135,33 @@ public class MenuBar extends Item {
 	public void removeAllCommands() {
 		this.commands.clear();
 		this.commandsContainer.clear();
+	}
+
+	/**
+	 * Retrieves the CommandItem used for rendering the specified command. 
+	 * 
+	 * @param command the command
+	 * @return the corresponding CommandItem or null when this command is not present in this MenuBar.
+	 */
+	public CommandItem getCommandItem(Command command) {
+		int index = this.commands.indexOf(command);
+		if (index != -1) {
+			return (CommandItem) this.commandsContainer.get(index);
+		} else if (command == this.singleLeftCommand){
+			return this.singleLeftCommandItem;
+		} else if (command == this.singleLeftCommand) {
+			return this.singleRightCommandItem;
+		} else {
+			for (int i = 0; i < this.commandsContainer.size(); i++) {
+				CommandItem item = (CommandItem) this.commandsContainer.get(i);
+				item = item.getChild(command);
+				if (item != null) {
+					return item;
+				}
+			}
+
+		}
+		return null;
 	}
 
 	

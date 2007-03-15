@@ -576,7 +576,7 @@ public class Container extends Item {
 	/**
 	 * Scrolls this container so that the (internal) area of the given item is best seen.
 	 * This is used when a GUI even has been consumed by the currently focused item.
-	 * The call is fowarded to scroll( isDownwards, x, y, w, h ).
+	 * The call is fowarded to scroll( direction, x, y, w, h ).
 	 * 
 	 * @param direction the direction, is used for adjusting the scrolling when the internal area is to large. Either 0 or Canvas.UP, Canvas.DOWN, Canvas.LEFT or Canvas.RIGHT
 	 * @param item the item for which the scrolling should be adjusted
@@ -595,7 +595,7 @@ public class Container extends Item {
 	
 	/**
 	 * Adjusts the yOffset or the targetYOffset so that the given relative values are inside of the visible area.
-	 * The call is ignored when scrolling is not enabled for this item.
+	 * The call is forwarded to a parent container when scrolling is not enabled for this item.
 	 * 
 	 * @param direction the direction, is used for adjusting the scrolling when the internal area is to large. Either 0 or Canvas.UP, Canvas.DOWN, Canvas.LEFT or Canvas.RIGHT
 	 * @param x the horizontal position of the area relative to this content's left edge, is ignored in the current version
@@ -605,6 +605,11 @@ public class Container extends Item {
 	 */
 	protected void scroll( int direction, int x, int y, int width, int height ) {
 		if (!this.enableScrolling) {
+			if (this.parent instanceof Container) {
+				x += this.contentX + this.relativeX;
+				y += this.contentY + this.relativeY;
+				((Container)this.parent).scroll(direction, x, y, width, height );
+			}
 			return;
 		}
 		//#debug

@@ -1600,10 +1600,14 @@ public final class UiAccess {
 	}
 	//#endif
 
-  //#if polish.midp
+	//#if polish.midp
 	/**
 	 * Makes the item interactive (accessible) or non-interactive.
 	 * This method is ignored when the J2ME Polish UI is not activated.
+	 * <pre>
+	 * //#style inactiveStyle
+	 * UiAccess.setAccessible( myItem, false );
+	 * </pre>
 	 * 
 	 * @param item the item that should be made accessible 
 	 * @param isAccessible true when the item should be accessible/selectable
@@ -1616,6 +1620,11 @@ public final class UiAccess {
 	//#if polish.usePolishGui
 	/**
 	 * Makes the item interactive (accessible) or non-interactive.
+	 * You can set a new style at the same time by adding a style directive:
+	 * <pre>
+	 * //#style inactiveStyle
+	 * UiAccess.setAccessible( myItem, false );
+	 * </pre>
 	 * 
 	 * @param item the item that should be made accessible 
 	 * @param isAccessible true when the item should be accessible/selectable
@@ -1625,6 +1634,101 @@ public final class UiAccess {
 			item.setAppearanceMode( Item.INTERACTIVE );
 		} else {
 			item.setAppearanceMode( Item.PLAIN );
+		}
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Makes the item interactive (accessible) or non-interactive.
+	 * You can set a new style at the same time by adding a style directive:
+	 * <pre>
+	 * //#style inactiveStyle
+	 * UiAccess.setAccessible( myItem, false );
+	 * </pre>
+	 * 
+	 * @param item the item that should be made accessible 
+	 * @param isAccessible true when the item should be accessible/selectable
+	 * @param style the new style, is ignored when it is null
+	 */
+	public static void setAccessible( Item item, boolean isAccessible, Style style ) {
+		if (style != null) {
+			item.setStyle(style);
+		}
+		if (isAccessible) {
+			item.setAppearanceMode( Item.INTERACTIVE );
+		} else {
+			item.setAppearanceMode( Item.PLAIN );
+		}
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Makes the command interactive (accessible) or non-interactive.
+	 * This method is ignored when the J2ME Polish UI is not activated.
+	 * <pre>
+	 * //#style inactiveStyle
+	 * UiAccess.setAccessible( myScreen, myCommand, false );
+	 * </pre>
+	 * 
+	 * @param screen the screen that contains the command
+	 * @param command the item that should be made accessible 
+	 * @param isAccessible true when the item should be accessible/selectable
+	 */
+	public static void setAccessible( javax.microedition.lcdui.Screen screen, Command command, boolean isAccessible ) {
+		// ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Makes the item interactive (accessible) or non-interactive.
+	 * <pre>
+	 * //#style inactiveStyle
+	 * UiAccess.setAccessible( myScreen, myCommand, false );
+	 * </pre>
+	 * 
+	 * @param screen the screen that contains the command
+	 * @param command the item that should be made accessible 
+	 * @param isAccessible true when the item should be accessible/selectable
+	 */
+	public static void setAccessible( Screen screen, Command command, boolean isAccessible ) {
+		CommandItem item = screen.getCommanItem(command);
+		if (item != null) {
+			if (isAccessible) {
+				item.setAppearanceMode( Item.INTERACTIVE );
+			} else {
+				item.setAppearanceMode( Item.PLAIN );
+			}
+		}
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Makes the item interactive (accessible) or non-interactive.
+	 * <pre>
+	 * //#style inactiveStyle
+	 * UiAccess.setAccessible( myScreen, myCommand, false );
+	 * </pre>
+	 * 
+	 * @param screen the screen that contains the command
+	 * @param command the item that should be made accessible 
+	 * @param isAccessible true when the item should be accessible/selectable
+	 * @param style the new style for the command, is ignored when null
+	 */
+	public static void setAccessible( Screen screen, Command command, boolean isAccessible, Style style ) {
+		CommandItem item = screen.getCommanItem(command);
+		if (item != null) {
+			if (style != null) {
+				item.setStyle(style);
+			}
+			if (isAccessible) {
+				item.setAppearanceMode( Item.INTERACTIVE );
+			} else {
+				item.setAppearanceMode( Item.PLAIN );
+			}
 		}
 	}
 	//#endif
@@ -1730,4 +1834,42 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
+	/**
+	 * Changes the shown label of the specified command.
+	 * Note that command.getLabel() will afterwards retrieve the same string as before, 
+	 * only the shown label will be changed. You cannot change the labels of the
+	 * commands that are shown on the left or right side of the menu, unless the extended menubar is activated 
+	 * (polish.MenuBar.useExtendedMenuBar=true).
+	 * This call is ignored when J2ME Polish does not render the menu.
+	 *
+	 * @param screen the screen that contains the command
+	 * @param command the command
+	 * @param label the new label that should be shown
+	 */
+	public static void setCommandLabel( javax.microedition.lcdui.Screen screen, Command command, String label) {
+		//ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Changes the shown label of the specified command.
+	 * Note that command.getLabel() will afterwards retrieve the same string as before, 
+	 * only the shown label will be changed. You cannot change the labels of the
+	 * commands that are shown on the left or right side of the menu, unless the extended menubar is activated 
+	 * (polish.MenuBar.useExtendedMenuBar=true).
+	 * This call is ignored when J2ME Polish does not render the menu.
+	 *
+	 * @param screen the screen that contains the command
+	 * @param command the command
+	 * @param label the new label that should be shown
+	 */
+	public static void setCommandLabel( Screen screen, Command command, String label) {
+		CommandItem item = screen.getCommanItem(command);
+		if (item != null) {
+			item.setText(label);
+		}
+	}
+	//#endif
 }
