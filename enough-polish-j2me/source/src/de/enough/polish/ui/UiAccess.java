@@ -1694,7 +1694,7 @@ public final class UiAccess {
 	 * @param isAccessible true when the item should be accessible/selectable
 	 */
 	public static void setAccessible( Screen screen, Command command, boolean isAccessible ) {
-		CommandItem item = screen.getCommanItem(command);
+		CommandItem item = screen.getCommandItem(command);
 		if (item != null) {
 			if (isAccessible) {
 				item.setAppearanceMode( Item.INTERACTIVE );
@@ -1719,7 +1719,7 @@ public final class UiAccess {
 	 * @param style the new style for the command, is ignored when null
 	 */
 	public static void setAccessible( Screen screen, Command command, boolean isAccessible, Style style ) {
-		CommandItem item = screen.getCommanItem(command);
+		CommandItem item = screen.getCommandItem(command);
 		if (item != null) {
 			if (style != null) {
 				item.setStyle(style);
@@ -1866,7 +1866,7 @@ public final class UiAccess {
 	 * @param label the new label that should be shown
 	 */
 	public static void setCommandLabel( Screen screen, Command command, String label) {
-		CommandItem item = screen.getCommanItem(command);
+		CommandItem item = screen.getCommandItem(command);
 		if (item != null) {
 			item.setText(label);
 		}

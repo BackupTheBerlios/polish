@@ -2450,7 +2450,7 @@ implements AccessibleCanvas
 	 * @param command the command
 	 * @return the corresponding CommandItem or null when this command is not present in this MenuBar.
 	 */
-	public CommandItem getCommanItem(Command command) {
+	public CommandItem getCommandItem(Command command) {
 		//#if tmp.menuFullScreen
 			//#ifdef tmp.useExternalMenuBar
 				//# return this.menuBar.getCommandItem( command );
