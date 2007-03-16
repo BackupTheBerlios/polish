@@ -399,7 +399,7 @@ public abstract class GameCanvas
 		this.clipY = y;
 		this.clipWidth = width;
 		this.clipHeight = height;
-		//#if polish.Bugs.displaySetCurrentFlickers
+		//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 			MasterCanvas.instance.repaint();
 			MasterCanvas.instance.serviceRepaints();			
 		//#else
@@ -425,7 +425,7 @@ public abstract class GameCanvas
 	 */
 	public void flushGraphics()
 	{
-		//#if polish.Bugs.displaySetCurrentFlickers
+		//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 			MasterCanvas.instance.repaint();
 			MasterCanvas.instance.serviceRepaints();			
 		//#else

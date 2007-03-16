@@ -96,7 +96,7 @@ public abstract class ScreenChangeAnimation
 //#else
 	//#= extends Canvas 
 //#endif
-//#if polish.Bugs.displaySetCurrentFlickers
+//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 	implements Runnable, AccessibleCanvas
 //#else
 	//# implements Runnable	
@@ -153,7 +153,7 @@ public abstract class ScreenChangeAnimation
 		this.nextScreenRgb = new int[ width * height ];
 		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
 		*/
-		//#if polish.Bugs.displaySetCurrentFlickers
+		//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 			MasterCanvas.setCurrent( dsplay, this );
 		//#else
 			dsplay.setCurrent( this );
@@ -285,7 +285,7 @@ public abstract class ScreenChangeAnimation
 	 */
 	public void run() {
 		if (this.nextCanvas != null && animate()) {
-			//#if polish.Bugs.displaySetCurrentFlickers
+			//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 				MasterCanvas.instance.repaint();
 			//#else
 				repaint();
@@ -302,7 +302,7 @@ public abstract class ScreenChangeAnimation
 			this.nextDisplayable = null;
 			System.gc();
 			if (next != null) {
-				//#if polish.Bugs.displaySetCurrentFlickers
+				//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 					MasterCanvas.setCurrent( disp, next );
 				//#else
 					disp.setCurrent( next );

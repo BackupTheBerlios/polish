@@ -364,7 +364,7 @@ public final class StyleSheet {
 		if ( nextDisplayable instanceof AccessibleCanvas ) {
 			//#if polish.ScreenChangeAnimation.allowConfiguration == true
 				if (!enableScreenChangeAnimations) {
-					//#if polish.Bugs.displaySetCurrentFlickers
+					//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 						MasterCanvas.setCurrent(display, nextDisplayable);
 					//#else
 						display.setCurrent( nextDisplayable );						
@@ -380,7 +380,7 @@ public final class StyleSheet {
 				}
 				ScreenChangeAnimation screenAnimation = null;
 				Displayable lastDisplayable = null;
-				//#if polish.Bugs.displaySetCurrentFlickers
+				//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 					if ( MasterCanvas.instance != null ) {
 						//# lastDisplayable = MasterCanvas.instance.currentDisplayable;
 					}
@@ -434,7 +434,7 @@ public final class StyleSheet {
 					if ( screenAnimation == null ) {
 						//#debug
 						System.out.println("StyleSheet: found no screen animation");
-						//#if polish.Bugs.displaySetCurrentFlickers
+						//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 							MasterCanvas.setCurrent(display, nextDisplayable);
 						//#else
 							display.setCurrent( nextDisplayable );						
@@ -494,7 +494,7 @@ public final class StyleSheet {
 			} catch (Exception e) {
 				//#debug error
 				System.out.println("Screen: unable to start screen change animation" + e );
-				//#if polish.Bugs.displaySetCurrentFlickers
+				//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 					MasterCanvas.setCurrent(display, nextDisplayable);
 				//#else
 					display.setCurrent( nextDisplayable );						
@@ -502,7 +502,7 @@ public final class StyleSheet {
 			}
 			
 		} else {
-			//#if polish.Bugs.displaySetCurrentFlickers
+			//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 				MasterCanvas.setCurrent(display, nextDisplayable);
 			//#else
 				display.setCurrent( nextDisplayable );						

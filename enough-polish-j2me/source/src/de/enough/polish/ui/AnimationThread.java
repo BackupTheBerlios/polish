@@ -100,7 +100,7 @@ public class AnimationThread extends Thread
 					boolean animated = screen.animate();
 					if (animated) {
 						//System.out.println("AnimationThread: screen needs repainting");
-						//#if polish.Bugs.displaySetCurrentFlickers
+						//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 							if ( MasterCanvas.instance != null ) {
 								MasterCanvas.instance.repaint();
 							}

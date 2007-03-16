@@ -970,6 +970,9 @@ public class TextField extends StringItem
 			}
 		//#endif
 		if ( this.isPassword ) {
+			if (this.passwordText == null) {
+				return "";
+			}
 			return this.passwordText;
 		} else {
 			if (this.text == null) {

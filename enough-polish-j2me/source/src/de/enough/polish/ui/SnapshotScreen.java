@@ -109,7 +109,7 @@ public class SnapshotScreen extends Screen implements Runnable {
 				this.player.realize();
 				this.videoControl = (VideoControl) this.player.getControl("VideoControl");
 				if (this.videoControl != null) {
-					//#if polish.Bugs.displaySetCurrentFlickers
+					//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 						this.videoControl.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, MasterCanvas.instance);
 					//#else
 						this.videoControl.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, this);

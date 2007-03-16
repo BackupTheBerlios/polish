@@ -3087,7 +3087,7 @@ implements AccessibleCanvas
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 	}
 	
-	//#if polish.Bugs.displaySetCurrentFlickers
+	//#if polish.Bugs.displaySetCurrentFlickers  && polish.useFullScreen
 	/**
 	 * Determines whether the screen is currently shown.
 	 * When the screen is shown but the menu is openend, this method return false.
