@@ -56,53 +56,6 @@ public class HttpServer extends Thread
 		this.port = port;
 		this.baseDir = baseDir;
 	}
-   
-    public static void main(String args[]) {
-int port;
-ServerSocket server_socket;
-
-try {
-    port = Integer.parseInt(args[0]);
-}
-catch (Exception e) {
-    port = 4444;
-}
-
-
-try {
-
-//print out the port number for user
-server_socket = new ServerSocket(port);
-System.out.println("httpServer running on port " +
-       server_socket.getLocalPort());
-   
-// server infinite loop
-while(true) {
-Socket socket = server_socket.accept();
-System.out.println("New connection accepted " +
-   socket.getInetAddress() +
-   ":" + socket.getPort());
-
-// Construct handler to process the HTTP request message.
-try {
-    HttpRequestHandler request =
-new HttpRequestHandler(socket);
-    // Create a new thread to process the request.
-    Thread thread = new Thread(request);
-   
-    // Start the thread.
-    thread.start();
-}
-catch(Exception e) {
-    System.out.println(e);
-}
-    }
-}
-
-catch (IOException e) {
-    System.out.println(e);
-}
-    }
 
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
@@ -111,7 +64,7 @@ catch (IOException e) {
 		//		print out the port number for user
 		try {
 			ServerSocket serverSocket = new ServerSocket(this.port);
-			System.out.println("HttpServer running on port " + serverSocket.getLocalPort());
+			System.out.println("HttpServer running on port " + serverSocket.getLocalPort() + " with base dir " + this.baseDir.getAbsolutePath() );
 			   
 			// server infinite loop
 			while(!this.isStopRequested) {
@@ -120,7 +73,7 @@ catch (IOException e) {
 		
 				//	Construct handler to process the HTTP request message.
 				try {
-				    HttpRequestHandler request = new HttpRequestHandler(socket);
+				    HttpRequestHandler request = new HttpRequestHandler(socket, this.baseDir);
 				    // Create a new thread to process the request.
 				    Thread thread = new Thread(request);
 				    // Start the thread.
@@ -133,6 +86,31 @@ catch (IOException e) {
 			System.out.println("Unable to start HttpServer: " + e.toString() );
 		}
 	}
+	
+	public static void main(String[] args) {
+		if (args.length < 2) {
+			System.out.println("Usage: java de.enough.polish.http.HttpServer [port] [base-directory]");
+		}
+		int port = 9090;
+		if (args.length > 0) {
+			try {
+				port = Integer.parseInt( args[0]);
+			} catch (Exception e) {
+				System.err.println("Invalid port: " + args[0]);
+				System.exit(1);
+			}
+		}
+		File baseDir = new File(".");
+		if (args.length > 1) {
+			baseDir = new File( args[1]);
+			if (!baseDir.exists()) {
+				System.err.println("Invalid base-directory: " + args[1]);
+				System.exit(1);
+			}
+		}
+		HttpServer server= new HttpServer( port, baseDir );
+		server.start();
+	}
 }
 
 
@@ -144,15 +122,18 @@ class HttpRequestHandler implements Runnable
     InputStream input;
     OutputStream output;
     BufferedReader bufferedReader;
+	private final File baseDir;
 
     /**
      * Create a new request handler
      * @param socket
+     * @param baseDir the base directory
      * @throws Exception
      */
-    public HttpRequestHandler(Socket socket) throws Exception
+    public HttpRequestHandler(Socket socket, File baseDir) throws Exception
     {
 		this.socket = socket;
+		this.baseDir = baseDir;
 		this.input = socket.getInputStream();
 		this.output = socket.getOutputStream();
 		this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -183,15 +164,18 @@ class HttpRequestHandler implements Runnable
 	   
 		    if(temp.equals("GET")) {
 		    	String fileName = s.nextToken();
-		    	fileName = "." + fileName ;
+		    	//fileName = fileName ;
 	
 				// Open the requested file.
 				FileInputStream fis = null ;
-				boolean fileExists = true ;
-				try {
-					fis = new FileInputStream( fileName ) ;
-				} catch ( FileNotFoundException e ) {
-					fileExists = false ;
+				File file =  new File( this.baseDir, fileName );
+				boolean fileExists = file.exists();
+				if (fileExists) {
+					try {
+						fis = new FileInputStream( file ) ;
+					} catch ( FileNotFoundException e ) {
+						fileExists = false ;
+					}
 				}
 	
 				// Construct the response message.
@@ -203,15 +187,13 @@ class HttpRequestHandler implements Runnable
 				if ( fileExists ) {
 					statusLine = "HTTP/1.0 200 OK" + CRLF ;
 					contentTypeLine = "Content-type: " + contentType( fileName ) + CRLF ;
-					contentLengthLine = "Content-Length: " + (new Integer(fis.available())).toString() + CRLF;
+					contentLengthLine = "Content-Length: " + (new Long(file.length())).toString() + CRLF;
 				} else {
 					statusLine = "HTTP/1.0 404 Not Found" + CRLF ;
 					contentTypeLine = "text/html" ;
 					entityBody = "<HTML>" +
 					    "<HEAD><TITLE>404 Not Found</TITLE></HEAD>" +
-					    "<BODY>404 Not Found"
-					    +"<br>usage:http://www.snaip.com:4444/"
-					    +"fileName.html</BODY></HTML>" ;
+					    "<BODY>404 Not Found</BODY></HTML>" ;
 				}
 
 				// Send the status line.
@@ -236,7 +218,7 @@ class HttpRequestHandler implements Runnable
 				} else {
 					this.output.write(entityBody.getBytes());
 				}
-		    }
+		    } // if GET
 		} // while there are more request lines
 
 		try {

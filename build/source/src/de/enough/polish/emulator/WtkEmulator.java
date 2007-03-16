@@ -237,7 +237,9 @@ public class WtkEmulator extends Emulator {
 		// add -Xdescriptor-parameter:
 		if (setting != null && setting.isTransient()) {
 			int port = setting.getTransientPort();
-			argumentsList.add( "-Xjam:transient=http://127.0.0.1/" + port + "/" + env.getVariable("polish.jadName") );
+			String transientParam =  "-Xjam:transient=http://127.0.0.1:" + port + "/" + env.getVariable("polish.jadName");
+			//System.out.println("transient param: " + transientParam );
+			argumentsList.add( transientParam );
 			// fire up HttpServer:
 			File dir = (new File(  env.getVariable("polish.jadPath") )).getParentFile();
 			HttpServer httpServer = new HttpServer( port, dir );

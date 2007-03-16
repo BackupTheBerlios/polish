@@ -151,7 +151,7 @@ implements Runnable, OutputFilter
 			long startTime = System.currentTimeMillis();
 			int res = exec( arguments, this.device.getIdentifier() + ": ",  wait, this, getExecutionDir() );
 			long usedTime = System.currentTimeMillis() - startTime;
-			if ( res != 0 || (wait && usedTime < 2000) ) {
+			if ( res != 0 || (wait && usedTime < 4000) ) {
 				if (debuggerThread != null) {
 					debuggerThread.cancel();
 				}
