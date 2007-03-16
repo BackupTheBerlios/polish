@@ -58,6 +58,7 @@ public class EmulatorSetting extends ExtensionSetting {
 	private boolean enableMemoryMonitor;
 	private boolean enableNetworkMonitor;
 	private boolean showDecompiledStackTrace;
+	private boolean isTransient;
 	private List debuggers;
 	
 	/**
@@ -274,5 +275,23 @@ public class EmulatorSetting extends ExtensionSetting {
 			return false;
 		}
 		return (this.trace.indexOf(string) != -1);
+	}
+	
+	/**
+	 * Starts the emulator in transient mode (install, run, deinstall) if isTransient is true.
+	 * 
+	 * @param isTransient true for starting the emulator in transient mode
+	 */
+	public void setTransient( boolean isTransient ) {
+		this.isTransient = isTransient;
+	}
+	
+	/**
+	 * Determines if the emulator should be started in transient mode.
+	 * 
+	 * @return true when the emulator should be started in transient mode
+	 */
+	public boolean isTransient() {
+		return this.isTransient;
 	}
 }

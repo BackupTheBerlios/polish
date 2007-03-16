@@ -234,7 +234,11 @@ public class WtkEmulator extends Emulator {
 		}
 		
 		// add -Xdescriptor-parameter:
-		argumentsList.add( "-Xdescriptor:" + env.getVariable("polish.jadPath") );
+		if (setting != null && setting.isTransient()) {
+			argumentsList.add( "-Xjam:transient=" + env.getVariable("polish.jadPath") );
+		} else {
+			argumentsList.add( "-Xdescriptor:" + env.getVariable("polish.jadPath") );
+		}
 		
 		// add the -Xverbose-parameter:
 		String trace = setting.getTrace();
