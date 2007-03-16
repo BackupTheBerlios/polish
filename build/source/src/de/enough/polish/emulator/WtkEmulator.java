@@ -35,6 +35,7 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Variable;
 import de.enough.polish.ant.emulator.EmulatorSetting;
+import de.enough.polish.http.HttpServer;
 import de.enough.polish.util.ConvertUtil;
 import de.enough.polish.util.PropertyFileMap;
 import de.enough.polish.util.StringUtil;
@@ -235,7 +236,12 @@ public class WtkEmulator extends Emulator {
 		
 		// add -Xdescriptor-parameter:
 		if (setting != null && setting.isTransient()) {
-			argumentsList.add( "-Xjam:transient=" + env.getVariable("polish.jadPath") );
+			int port = setting.getTransientPort();
+			argumentsList.add( "-Xjam:transient=http://127.0.0.1/" + port + "/" + env.getVariable("polish.jadName") );
+			// fire up HttpServer:
+			File dir = (new File(  env.getVariable("polish.jadPath") )).getParentFile();
+			HttpServer httpServer = new HttpServer( port, dir );
+			httpServer.start();
 		} else {
 			argumentsList.add( "-Xdescriptor:" + env.getVariable("polish.jadPath") );
 		}

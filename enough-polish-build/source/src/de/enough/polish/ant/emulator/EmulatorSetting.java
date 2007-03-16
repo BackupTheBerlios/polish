@@ -60,6 +60,7 @@ public class EmulatorSetting extends ExtensionSetting {
 	private boolean showDecompiledStackTrace;
 	private boolean isTransient;
 	private List debuggers;
+	private int transientPort = 9090;
 	
 	/**
 	 * Creates an empty uninitialised run setting.
@@ -293,5 +294,21 @@ public class EmulatorSetting extends ExtensionSetting {
 	 */
 	public boolean isTransient() {
 		return this.isTransient;
+	}
+	
+	/**
+	 * Sets the port on which the application should be delivered in transient mode. Default port is 9090.
+	 * 
+	 * @param transientPort the port on which the application should be delivered
+	 */
+	public void setTransientPort( int transientPort) {
+		this.transientPort = transientPort;
+	}
+
+	/**
+	 * @return the port on which the application should be delivered
+	 */
+	public int getTransientPort() {
+		return this.transientPort;
 	}
 }
