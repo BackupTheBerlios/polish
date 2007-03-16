@@ -1408,6 +1408,8 @@ public class PolishTask extends ConditionalTask {
 		//this.environment.setSymbols( device.getFeatures() );
 		//this.environment.setVariables( device.getCapabilities() );
 		this.environment.addVariable( "polish.identifier", device.getIdentifier() );
+		this.environment.addVariable( device.getIdentifier(), "true" );
+		this.environment.addSymbol( device.getIdentifier() );	
 		this.environment.addVariable( "polish.name", device.getName() );
 		this.environment.addVariable( "polish.vendor", device.getVendorName() );
 		this.environment.addVariable( "polish.version", this.infoSetting.getVersion() );

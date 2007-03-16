@@ -30,6 +30,7 @@ import de.enough.bytecode.DirClassLoader;
 import de.enough.bytecode.MethodInvocationMapping;
 import de.enough.bytecode.MethodMapper;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.postcompile.BytecodePostCompiler;
 
 import java.io.File;
@@ -71,6 +72,11 @@ public class MasterCanvasPostCompiler extends BytecodePostCompiler
    */
   public void postCompile(File classesDir, Device device, DirClassLoader loader, List classes) throws BuildException
   {
+	  Environment env = device.getEnvironment();
+	  if (!env.hasSymbol("polish.useFullScreen")) {
+		  System.out.println("Warning: the device " + device.getIdentifier() + " flickers when a new displayable is shown in Display.setCurrent(). J2ME Polish can fix this, but only in the fullscreen mode. Set the \"fullscreen\" attribute of the <build> element to \"menu\" to handle this: <build fullscreen=\"menu\">.");
+		  return;
+	  }
     try
       {
         System.out.println("MasterCanvas: mapping of Display.setCurrent() for "
