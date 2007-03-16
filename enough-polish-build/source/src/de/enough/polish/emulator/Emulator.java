@@ -124,8 +124,12 @@ implements Runnable, OutputFilter
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
+		String[] arguments = getArguments();
+		run( arguments, true );
+	}
+	
+	protected void run( String[] arguments, boolean retryOnError ) {
 		try {
-			String[] arguments = getArguments();
 			DebuggerSetting debuggerSetting = this.emulatorSetting.getDebuggerSetting( this.environment.getBooleanEvaluator() );
 			DebuggerThread debuggerThread = null;
 			if ( debuggerSetting != null ) {
@@ -155,8 +159,20 @@ implements Runnable, OutputFilter
 				if (debuggerThread != null) {
 					debuggerThread.cancel();
 				}
-				if (res == 0) {
-					res = -110011;
+//				if (res == 0) {
+//					res = -110011;
+//				}
+				if (res == 0 && retryOnError && arguments.length > 1 && arguments[1].indexOf("transient=") != -1) {
+					// the application should have run in the transient mode (install, run, de-install).
+					// Most likely it has not been de-installed correctly before, so just de-install all applications:
+					String[] removeArguments = new String[]{ arguments[0], "-Xjam:remove=all" };
+					System.out.println("Emulator execution has failed in transient mode. Now trying to de-install all applications (-Xjam:remove=all).");
+					res = exec( removeArguments, this.device.getIdentifier() + ": ",  wait, this, getExecutionDir() );
+					if (res == 0) {
+						System.out.println("All applications have been de-installed successfully - now restarting emulator.");
+						run( arguments, false );
+						return;
+					}
 				}
 				System.out.println("Emulator returned [" + res + "], arguments were:");
 				for (int i = 0; i < arguments.length; i++) {
