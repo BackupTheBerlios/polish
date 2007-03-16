@@ -1265,9 +1265,9 @@ public class Container extends Item {
 							// there is still space, do
 							// scroll first before cycling to the
 							// first item:
-							allowCycle = (this.targetYOffset + this.itemHeight <= this.availableHeight);
+							allowCycle = (this.targetYOffset + this.itemHeight <= this.availableHeight + 1);
 							// #debug
-							// System.out.println("allowCycle-calculation ( forward non-smoothScroll): targetYOffset=" + this.targetYOffset + ", contentHeight=" + this.contentHeight + " (together="+ (this.targetYOffset + this.contentHeight) + ", targetYOfset+itemHeight=" + (this.targetYOffset + this.itemHeight) + ", availableHeight=" + this.availableHeight );
+							//System.out.println("allowCycle-calculation ( forward non-smoothScroll): targetYOffset=" + this.targetYOffset + ", contentHeight=" + this.contentHeight + " (together="+ (this.targetYOffset + this.contentHeight) + ", targetYOfset+itemHeight=" + (this.targetYOffset + this.itemHeight) + ", availableHeight=" + this.availableHeight );
 						} else {
 							// when you scroll to the top and
 							// there is still space, do
