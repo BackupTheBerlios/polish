@@ -69,7 +69,7 @@ public class HttpServer extends Thread
 			// server infinite loop
 			while(!this.isStopRequested) {
 				Socket socket = serverSocket.accept();
-				System.out.println("HttpServer: New connection accepted " + socket.getInetAddress() + ":" + socket.getPort());
+				System.out.println("HttpServer: " + (new Date().toString()) + ": New connection accepted " + socket.getInetAddress() + ":" + socket.getPort());
 		
 				//	Construct handler to process the HTTP request message.
 				try {
@@ -179,7 +179,7 @@ class HttpRequestHandler implements Runnable
 				}
 	
 				// Construct the response message.
-				String serverLine = "Provisioning Server";
+				String serverLine = "Server: J2ME Polish Server/1.0" + CRLF ;
 				String statusLine = null;
 				String contentTypeLine = null;
 				String entityBody = null;
@@ -208,6 +208,8 @@ class HttpRequestHandler implements Runnable
 				// Send the Content-Length
 				this.output.write(contentLengthLine.getBytes());
 				
+				this.output.write( ("Connection: close" + CRLF).getBytes() );
+				
 				// Send a blank line to indicate the end of the header lines.
 				this.output.write(CRLF.getBytes());
 		
@@ -218,6 +220,8 @@ class HttpRequestHandler implements Runnable
 				} else {
 					this.output.write(entityBody.getBytes());
 				}
+				this.output.flush();
+				//break;
 		    } // if GET
 		} // while there are more request lines
 
