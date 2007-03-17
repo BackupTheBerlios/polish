@@ -689,8 +689,7 @@ public abstract class CustomItem extends Item
 	}
 
 	/**
-	 * Signals that the <code>CustomItem's</code> size and traversal
-	 * location need to be updated.
+	 * Signals that the <code>CustomItem's</code> size and traversal location need to be updated.
 	 * This method is intended to be called by <code>CustomItem</code>
 	 * subclass code to inform the implementation that the size of
 	 * the <code>CustomItem's</code> content area or the internal
@@ -717,14 +716,6 @@ public abstract class CustomItem extends Item
 	 */
 	protected final void invalidate()
 	{
-		if (this.parent instanceof Container) {
-			traverse( 0, this.clipWidth, this.clipHeight, this.visRect_inout );
-			this.internalX = this.visRect_inout[0];
-			this.internalY = this.visRect_inout[1];
-			this.internalWidth = this.visRect_inout[2];
-			this.internalHeight = this.visRect_inout[3];
-			((Container)this.parent).scroll(0, this);
-		}
 		requestInit();
 	}
 
@@ -1217,6 +1208,10 @@ public abstract class CustomItem extends Item
 		this.preferredHeight = prefHeight;
 		if (resetSize) {
 			sizeChanged( prefWidth, prefHeight );
+		}
+		if (this.contentHeight > prefHeight && this.parent instanceof Container) {
+			// this item has been probably collapsed, so adjust scrolling:
+			((Container)this.parent).scroll(0, 0, 0, prefWidth, prefHeight );
 		}
 		this.contentWidth = prefWidth;
 		this.contentHeight = prefHeight;
