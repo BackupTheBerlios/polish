@@ -317,12 +317,12 @@ public class CommandItem extends IconItem {
 				}
 			}
 			return true;
-		} else if ( this.hasChildren ) { // has children but is not open
+		} else if ( this.hasChildren && this.appearanceMode != PLAIN ) { // has children but is not open
 			if ( gameAction == Canvas.FIRE || gameAction == Canvas.RIGHT ) {
 				open( true );
 				return true;
 			}
-		} else if ( gameAction == Canvas.FIRE ){ // has no children:
+		} else if ( gameAction == Canvas.FIRE  && this.appearanceMode != PLAIN ){ // has no children:
 			// fire command action event:
 			//#debug
 			System.out.println( this + " invoking command " + this.command.getLabel() );

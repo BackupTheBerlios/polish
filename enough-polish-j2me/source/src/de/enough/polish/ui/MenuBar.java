@@ -821,11 +821,11 @@ public class MenuBar extends Item {
 				return handled;				
 			}
 		} else {
-			if (keyCode == LEFT_SOFT_KEY && this.singleLeftCommand != null) {
+			if (keyCode == LEFT_SOFT_KEY && this.singleLeftCommand != null && this.singleLeftCommandItem.getAppearanceMode() != PLAIN) {
 				this.isSoftKeyPressed = true;			
 				this.screen.callCommandListener(this.singleLeftCommand);
 				return true;			
-			} else if (keyCode == RIGHT_SOFT_KEY && this.singleRightCommand != null) {
+			} else if (keyCode == RIGHT_SOFT_KEY && this.singleRightCommand != null && this.singleRightCommandItem.getAppearanceMode() != PLAIN) {
 				this.isSoftKeyPressed = true;			
 				this.screen.callCommandListener(this.singleRightCommand);
 				return true;			
@@ -887,12 +887,12 @@ public class MenuBar extends Item {
 					setOpen( false );
 				}
 			} else if (this.singleLeftCommand != null 
-					&& x < leftCommandEndX) 
+					&& x < leftCommandEndX && this.singleLeftCommandItem.getAppearanceMode() != PLAIN) 
 			{
 				//System.out.println("calling single left command");
 				this.screen.callCommandListener(this.singleLeftCommand);
 			} else if (this.singleRightCommand != null
-					&& x > rightCommandStartX) 
+					&& x > rightCommandStartX && this.singleRightCommandItem.getAppearanceMode() != PLAIN) 
 			{
 				//System.out.println("calling single right command");
 				this.screen.callCommandListener(this.singleRightCommand);
