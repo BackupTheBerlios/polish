@@ -17,6 +17,8 @@ The &lt;emulator&gt;-element is responsible for launching any emulators after th
 	enableProfiler=&quot;true&quot;
 	enableMemoryMonitor=&quot;true&quot;
 	enableNetworkMonitor=&quot;true&quot;
+	transient=&quot;true&quot;
+	transientPort=&quot;9099&quot;
 	if=&quot;test&quot;
 	&gt;
 	&lt;parameter name=&quot;-Xjam&quot; 
@@ -55,6 +57,14 @@ The &lt;emulator&gt;-element is responsible for launching any emulators after th
 	<tr><td>enableNetworkMonitor</td>
  	 <td>No</td>
 	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. When any network activities are done, a monitor will show details of the sent and received data.</td>
+	</tr>
+	<tr><td>transient</td>
+ 	 <td>No</td>
+	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. When <code>true</code> is given, the application is installed, run and de-installed again.</td>
+	</tr>
+	<tr><td>transientPort</td>
+ 	 <td>No</td>
+	 <td>Integer port number. The port on which the application is served when the transient mode is activated. Defaults to 9090.</td>
 	</tr>
 	<tr><td>preferences</td>
  	 <td>No</td>
@@ -127,17 +137,21 @@ You can also set several skins, when several versions of an emulator do exist, f
 </p>
 <h3 id="nokia">Nokia Emulators</h3>
 <p>
-For launching Nokia emulators it might be necessary to define the  &quot;<code>nokia.home</code>&quot;-property in the build.xml. This property needs to point to the installation directory of the Nokia emulators and defaults to  &quot;C:\Nokia&quot; on Windows machines and to  &quot;${user.home}/Nokia&quot; on Unix machines. For many emulators it is sufficient to set the  <code>&quot;Emulator.Class&quot;</code> and  <code>&quot;Emulator.Skin&quot;</code>-capabilities of the device in the  &quot;${polish.home}/devices.xml&quot; file. The  <code>&quot;Emulator.Class&quot;</code>-capability then needs to be  &quot;NokiaEmulator&quot; and the  <code>&quot;Emulator.Skin&quot;</code>-capability needs to correspond with the name of the emulator which can be found in the  &quot;${nokia.home}/Devices&quot;-directory.
+For launching Nokia emulators it might be necessary to define the  &quot;<code>nokia.home</code>&quot;-property in the <i>${polish.home}/global.properties</i> file. This property needs to point to the installation directory of the Nokia emulators and defaults to  &quot;C:\Nokia&quot; on Windows machines and to  &quot;${user.home}/Nokia&quot; on Unix machines. For many emulators it is sufficient to set the  <code>&quot;Emulator.Class&quot;</code> and  <code>&quot;Emulator.Skin&quot;</code>-capabilities of the device in the  &quot;${polish.home}/devices.xml&quot; file. The  <code>&quot;Emulator.Class&quot;</code>-capability then needs to be  &quot;NokiaEmulator&quot; and the  <code>&quot;Emulator.Skin&quot;</code>-capability needs to correspond with the name of the emulator which can be found in the  &quot;${nokia.home}/Devices&quot;-directory.
 </p><p>
 Some non-standard-emulators make it necessary the use the  &quot;GenericEmulator&quot;-class instead. The invocation of such emulators is explained below.
 </p>
 <h3 id="siemens">Siemens Emulators</h3>
 <p>
-For launching Siemens emulators it might be necessary to define the  &quot;<code>siemens.home</code>&quot;-property in the build.xml. This property needs to point to the installation directory of the  &quot;Siemens Mobile Toolkit&quot; (SMTK) and defaults to  &quot;C:\siemens&quot;. When a Siemens-emulator should be used, the corresponding device-definition in the  &quot;${polish.home}/devices.xml&quot; file needs to set the  <code>&quot;Emulator.Class&quot;</code>-capability to  &quot;SiemensEmulator&quot; (this is the default for all Siemens-phones). The <code>&quot;Emulator.Skin&quot;</code>-capability needs to specify the name of the emulator, which can be found in the &quot;${siemens.home}/SMTK/emulators&quot;-directory.
+For launching Siemens emulators it might be necessary to define the  &quot;<code>siemens.home</code>&quot;-property in the <i>${polish.home}/global.properties</i> file. This property needs to point to the installation directory of the  &quot;Siemens Mobile Toolkit&quot; (SMTK) and defaults to  &quot;C:\siemens&quot;. When a Siemens-emulator should be used, the corresponding device-definition in the  &quot;${polish.home}/devices.xml&quot; file needs to set the  <code>&quot;Emulator.Class&quot;</code>-capability to  &quot;SiemensEmulator&quot; (this is the default for all Siemens-phones). The <code>&quot;Emulator.Skin&quot;</code>-capability needs to specify the name of the emulator, which can be found in the &quot;${siemens.home}/SMTK/emulators&quot;-directory.
 </p>
 <h3 id="motorola">Motorola Emulators</h3>
 <p>
-For launching Motorola emulators it is necessary to define the &quot;<code>motorola.home</code>&quot;-property in the build.xml. This property needs to point to the installation directory of the Motorola SDK, e.g. &quot;C:\program files\Motorola\SDK v.4.3 for J2ME&quot;. Since Motorola-emulators do not support the &quot;Unified Emulator Interface&quot;, the emulators are started by the  &quot;GenericEmulator&quot;. See below for more details.
+For launching Motorola emulators it might be  necessary to define the &quot;<code>motorola.home</code>&quot;-property in the <i>${polish.home}/global.properties</i> file. This property needs to point to the installation directory of the Motorola SDKs, e.g. &quot;C:\program files\Motorola&quot;. 
+</p>
+<h3 id="blackberry">Blackberrt Emulators</h3>
+<p>
+For launching BlackBerry emulators it might be  necessary to define the &quot;<code>blackberry.home</code>&quot;-property in the <i>${polish.home}/global.properties</i> file. This property needs to point to the installation directory of the BlackBerry JDE, e.g. &quot;C:\program files\Research in Motion&quot;. 
 </p>
 <h3 id="any-emulator">Launching any Emulator with the GenericEmulator-Implementation</h3>
 <p>

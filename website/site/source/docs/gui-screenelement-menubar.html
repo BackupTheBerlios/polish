@@ -241,10 +241,18 @@ rightcommand extends leftcommand
   <h2 id="Menu">Menu</h2>
   <h3 id="Menu-Design">Designing the Menu</h3>
   <p>When you have activated the default or the extended menubar, you can also design your menu using the <code>menu</code> and <code>menuitem</code>
-  styles in your <i>polish.css</i> file:
+  styles in your <i>polish.css</i> file.
+  </p>
+  <p>
+  When the menu is opened (and you use the extended menubar), the shown screen will be dimmed by painting the screen with a translucent overlay color,
+  if the device supports translucency. The default overlay color is <code>argb( 136, 0, 0, 0 )</code>, you can specify it differently within the
+  colors section of your <i>polish.css</i> file:
   <br />
   <img src="<%= basedir%>images/gui-screenelement-menu.png" alt="menu" width="240" height="318" />
 <pre>
+colors {
+	overlay: argb( 136, 0, 0, 0 );
+}
 menu {
 	margin-left: 4;
 	margin-right: 4;
@@ -398,6 +406,7 @@ polish.command.options=Options
 	</p>
 	
 	<h2 id="Programming">Programming</h2>
+	<h3 id="commandsstyle">Styling Specific Commands</h3>
 	<p>
 	When adding commands or subcommands you can use the <code>#style</code> preprocessing directive for applying specialized styles:
 <pre>
@@ -405,7 +414,7 @@ Form form = new Form("Hello World");
 //#style helloCommand
 form.addCommand( this.cmdHello );
 // using the default "menuitem" style:
-form.addCommand( this.exitHello );
+form.addCommand( this.cmdExit );
 </pre>
 	</p>
 	<p>You can add subcommands by calling 
@@ -416,6 +425,24 @@ UiAccess.addSubCommand( this.cmdStatusOnline, this.cmdStatus, form );
 // using the default "menuitem" style:
 UiAccess.addSubCommand( this.cmdStatusOffline, this.cmdStatus, form );
 </pre>
+</p>
+	<h3 id="commandsorder">Order Commands</h3>
+	<p>
+	The order of commands is specified using the priorities of commands. A command with a higher numerical value will be placed below a command with
+	a lower value.
+	</p>
+	<h3 id="commandsdeactivate">Deactivate Commands</h3>
+	<p>
+	You can deactivate specific commands by calling 
+	<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess.setAccessible( Screen screen, Command command, boolean accessible )</a>:
+	<pre>
+//#style commandInactive
+UiAccess.setAccessible( myForm, cmdForward, false );
+	</pre>
+	</p>
+	<p>
+	Please note that you need to use the extended menubar when you want to deactivate commands that are shown directly (not within the Options menu).
+	</p>
 	
 	<h2 id="JavaDoc">JavaDoc</h2>
 	<p>

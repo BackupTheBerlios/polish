@@ -7,13 +7,14 @@
 
 
 	<h1 id="top">Migration</h1>
+	<%index %>
+	
 	<ul class="relatedtechnologies">
 		<li class="relatedtechnologiesheader">Related Topics:</li>
 		<li><a href="install.html">J2ME Polish Installation</a></li>
 		<li><a href="netbeans.html">NetBeans Integration</a></li>
 		<li><a href="mepose.html">Eclipse Integration</a></li>
 	</ul>
-	<%index %>
 
 	<p>
 	Some aspects of J2ME Polish have been changed since J2ME Polish 1.x. On this page you will learn about the necessary changes
@@ -51,6 +52,12 @@ within build.xml scripts have to be changed:
 	<code>center</code> which have been not possible in J2ME Polish 1.x.
 	</p>
 	
+	<h2 id="license">License Key</h2>
+	<p>
+	In J2ME Polish 1.x the <code>license</code> attribute of the <code>&lt;info&gt;</code> element described the used J2ME Polish license. This element
+	is not supported anymore and is ignored. Existing J2ME Polish 1.x customers can upgrade to 2.x, please inquire for details by sending a query 
+	to j2mepolish(at)enough(dot)de.
+	</p>
 	
 	
 <%include end.txt %>

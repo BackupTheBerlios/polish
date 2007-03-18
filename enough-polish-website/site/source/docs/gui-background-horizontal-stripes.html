@@ -1,0 +1,72 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.gui %>
+<%set title = J2ME Polish: Design %>
+<%set basedir = ../ %>
+<%include start.txt %>
+
+	<h1 id="top">Horizontal Stripes Background</h1>
+	<ul class="relatedtechnologies">
+		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-visualguide.html#gui-backgrounds">Backgrounds</a></li>
+	</ul>
+	<p>
+	</p>
+	<h2 id="Design">Design</h2>
+	<p>
+	Displays horizontal stripes :D.
+	<br /><img src="<%= basedir%>images/background-horizontal-stripes.png" width="253" height="248" />
+<pre>
+.myItem {
+	background {
+		type: horizontal-stripes;
+		first-top-color: green;
+		first-bottom-color: green;
+		second-top-color: white;
+		second-bottom-color: yellow;
+	}
+}
+</pre>
+	</p>
+	<p>
+	CSS attributes:
+	</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Explanation</th></tr>
+	<tr>
+		<td>type</td><td>n/a</td><td></td>
+		<td>
+		Set the type to <code>horizontal-stripes</code> for having this background.
+		</td>
+	</tr>
+	<tr>
+		<td>first-top-color</td><td>white</td><td>color definition</td>
+		<td>
+		The color of the first stripe at the top of background, can be a rbg/hexadecimal value or the name of the color as defined in the colors section.
+		</td>
+	</tr>
+	<tr>
+		<td>first-bottom-color</td><td>black</td><td>color definition</td>
+		<td>
+		The color of the first stripe at the bottom of background, can be a rbg/hexadecimal value or the name of the color as defined in the colors section.
+		</td>
+	</tr>
+	<tr>
+		<td>second-top-color</td><td>white</td><td>color definition</td>
+		<td>
+		The color of the second stripe at the top of background, can be a rbg/hexadecimal value or the name of the color as defined in the colors section.
+		</td>
+	</tr>
+	<tr>
+		<td>second-bottom-color</td><td>black</td><td>color definition</td>
+		<td>
+		The color of the second stripe at the bottom of background, can be a rbg/hexadecimal value or the name of the color as defined in the colors section.
+		</td>
+	</tr>
+	</table>
+	
+	<h2 id="JavaDoc">JavaDoc</h2>
+	<p>
+		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/backgrounds/HorizontalStripesBackground.html">HorizontalStripesBackground</a>.
+	</p>
+
+<%include end.txt %>
