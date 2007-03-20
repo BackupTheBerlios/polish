@@ -165,12 +165,14 @@ public class JavaSourceMethod {
 		}
 		buffer.append( this.returnType ).append(' ')
 			.append( this.name ).append("( ");
-		for (int i = 0; i < this.parameterNames.length; i++) {
-			String pType = this.parameterTypes[i];
-			String pName = this.parameterNames[i];
-			buffer.append( pType ).append(' ').append( pName );
-			if (i != this.parameterNames.length - 1) {
-				buffer.append(", ");
+		if (this.parameterNames != null) {
+			for (int i = 0; i < this.parameterNames.length; i++) {
+				String pType = this.parameterTypes[i];
+				String pName = this.parameterNames[i];
+				buffer.append( pType ).append(' ').append( pName );
+				if (i != this.parameterNames.length - 1) {
+					buffer.append(", ");
+				}
 			}
 		}
 		buffer.append(" ) ");

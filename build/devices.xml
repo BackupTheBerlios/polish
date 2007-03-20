@@ -997,6 +997,7 @@ These namespaces/schemas will be used soon.
 	
 	<device>
 		<identifier>Sony-Ericsson/W900_emu</identifier>
+		<features>isVirtual</features>
 		<description>Emulator definition, since nokia-ui=API does not work on emulator</description>
 		<parent>Sony-Ericsson/W900</parent>
    		<capability name="Bugs" value="TransparencyNotWorkingInNokiaUiApi"/>

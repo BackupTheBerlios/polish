@@ -272,10 +272,10 @@ public class BuildSetting {
 	}
 	
 	public void addConfiguredSign( SignSetting setting ) {
-		if (setting.getKeystore() == null) {
-			throw new BuildException("The \"keystore\" attribute of the <sign> element is mandatory.");
-		}
-		if (!setting.getKeystore().exists()) {
+//		if (setting.getKeystore() == null) {
+//			throw new BuildException("The \"keystore\" attribute of the <sign> element is mandatory.");
+//		}
+		if (setting.getKeystore() != null && !setting.getKeystore().exists()) {
 			throw new BuildException("The \"keystore\" attribute of the <sign> element points to the non-existing file[" + setting.getKeystore().getAbsolutePath() + "].");
 		}
 		if (setting.getKey() == null) {
