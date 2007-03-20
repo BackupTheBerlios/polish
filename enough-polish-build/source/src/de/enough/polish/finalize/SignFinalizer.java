@@ -90,8 +90,10 @@ public class SignFinalizer extends Finalizer {
 		parametersList.add( setting.getPassword() );
 		parametersList.add( "-alias" );
 		parametersList.add( setting.getKey() );
-		parametersList.add( "-keystore" );
-		parametersList.add( setting.getKeystore().getAbsolutePath() );
+		if (setting.getKeystore() != null) {
+			parametersList.add( "-keystore" );
+			parametersList.add( setting.getKeystore().getAbsolutePath() );
+		}
 		parametersList.add( "-inputjad" );
 		parametersList.add( jadFile.getAbsolutePath() );
 		parametersList.add( "-outputjad" );
@@ -125,8 +127,10 @@ public class SignFinalizer extends Finalizer {
 			parametersList.add( "-addcert" );
 			parametersList.add( "-alias" );
 			parametersList.add( setting.getKey() );
-			parametersList.add( "-keystore" );
-			parametersList.add( setting.getKeystore().getAbsolutePath() );
+			if (setting.getKeystore() != null) {
+				parametersList.add( "-keystore" );
+				parametersList.add( setting.getKeystore().getAbsolutePath() );
+			}
 			parametersList.add( "-inputjad" );
 			parametersList.add( jadFile.getAbsolutePath() );
 			parametersList.add( "-outputjad" );
