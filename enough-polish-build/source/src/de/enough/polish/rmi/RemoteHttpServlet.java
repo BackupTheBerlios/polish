@@ -289,6 +289,9 @@ public class RemoteHttpServlet extends HttpServlet {
 		if (cause instanceof Externalizable) {
 			out.writeInt( Remote.STATUS_CHECKED_EXCEPTION );
 			Serializer.serialize( cause, out );
+		} else if (cause != null) {
+			out.writeInt( Remote.STATUS_UNCHECKED_EXCEPTION );
+			out.writeUTF( cause.toString() );
 		} else {
 			out.writeInt( Remote.STATUS_UNCHECKED_EXCEPTION );
 			out.writeUTF( e.toString() );
