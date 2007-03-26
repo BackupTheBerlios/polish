@@ -511,7 +511,7 @@ implements ImageConsumer
 		this.value = value;
 		this.valueString = "" + value;
 		//#if polish.css.view-type
-		if (this.view != null) {
+		if (this.view == null) {
 		//#endif		
 			if (this.isInitialized) {
 				if (this.isIndefinite) {
