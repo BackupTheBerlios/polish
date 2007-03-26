@@ -510,13 +510,19 @@ implements ImageConsumer
 		}
 		this.value = value;
 		this.valueString = "" + value;
-		if (this.isInitialized) {
-			if (this.isIndefinite) {
-				updateIndefiniteIndicatorImage();
-			} else if (this.image == null){
-				createIndicatorImage();
+		//#if polish.css.view-type
+		if (this.view != null) {
+		//#endif		
+			if (this.isInitialized) {
+				if (this.isIndefinite) {
+					updateIndefiniteIndicatorImage();
+				} else if (this.image == null){
+					createIndicatorImage();
+				}
 			}
+		//#if polish.css.view-type
 		}
+		//#endif
 		if (this.isInitialized) {
 			repaint();
 		}
