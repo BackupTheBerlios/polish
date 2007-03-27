@@ -15,7 +15,6 @@ public class SwingAppletSimulator
   private SimulationManager manager;
   private Simulation simulation;
 
-  @Override
   public void init()
   {
     super.init();
@@ -37,21 +36,18 @@ public class SwingAppletSimulator
     }
   }
 
-  @Override
   public void destroy()
   {
     // TODO Auto-generated method stub
     super.destroy();
   }
   
-  @Override
   public void start()
   {
     // TODO Auto-generated method stub
     super.start();
   }
 
-  @Override
   public void stop()
   {
     // TODO Auto-generated method stub
