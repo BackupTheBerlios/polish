@@ -2,7 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="/enough-polish-build"/>
+	<classpathentry kind="lib" path="/enough-polish-j2me/bin"/>
+	<classpathentry kind="lib" path="/enough-polish-build/bin"/>
+	<classpathentry kind="lib" path="/enough-polish-build/lib/AppleJavaExtensions.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/btapi.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/lib/ant.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/lib/junit.jar"/>

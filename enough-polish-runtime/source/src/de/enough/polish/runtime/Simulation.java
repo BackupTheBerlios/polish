@@ -42,7 +42,6 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import javax.swing.JComponent;
 
-import de.enough.polish.Device;
 
 /**
  * <p>Provides a simulation of a device that is capable of changing fullscreen-mode, simulating key- and pointer-events and so on.</p>
@@ -66,7 +65,7 @@ implements MouseListener, KeyListener
 	
 	private static HashMap simulationsByMidlet = new HashMap();
 	
-	private final Device device;
+	private final SimulationDevice device;
 	private int canvasWidth;
 	private int canvasHeight;
 	private static Simulation currentDeviceSimulator;
@@ -99,7 +98,7 @@ implements MouseListener, KeyListener
 	 * 
 	 * @param device the actual XML based device
 	 */
-	public Simulation( SimulationManager manager, Device device ) {
+	public Simulation( SimulationManager manager, SimulationDevice device ) {
 		super();
 		this.simulationManager = manager;
 		//this.repaintQueue = new ArrayList();
@@ -419,7 +418,7 @@ implements MouseListener, KeyListener
 		}
 	}
 	
-	public Device getDevice() {
+	public SimulationDevice getDevice() {
 		return this.device;
 	}
 

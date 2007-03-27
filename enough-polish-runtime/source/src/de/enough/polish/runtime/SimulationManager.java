@@ -25,17 +25,6 @@
  */
 package de.enough.polish.runtime;
 
-import de.enough.polish.Device;
-import de.enough.polish.ant.requirements.Requirements;
-import de.enough.polish.devices.CapabilityManager;
-import de.enough.polish.devices.ConfigurationManager;
-import de.enough.polish.devices.DeviceGroupManager;
-import de.enough.polish.devices.DeviceManager;
-import de.enough.polish.devices.LibraryManager;
-import de.enough.polish.devices.PlatformManager;
-import de.enough.polish.devices.Vendor;
-import de.enough.polish.devices.VendorManager;
-import de.enough.polish.exceptions.InvalidComponentException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,8 +50,7 @@ import org.jdom.JDOMException;
 public class SimulationManager {
 	
 	private final File databaseDir;
-	private final DeviceManager deviceManager;
-	private Device[] devices;
+	private SimulationDevice[] devices;
 	private boolean useFixKeys;
 	private int clearKey;
 	private int leftSoftKey;
@@ -78,7 +66,7 @@ public class SimulationManager {
 	 * 
 	 */
 	public SimulationManager( Map configurationSettings ) 
-	throws FileNotFoundException, JDOMException, IOException, InvalidComponentException 
+	throws FileNotFoundException, JDOMException, IOException 
 	{
 		super();
 		String databasePath = (String) configurationSettings.get("polish.home");
@@ -92,16 +80,16 @@ public class SimulationManager {
 		} else {
 			this.databaseDir = new File( ".");
 		}
-		File wtkHome = new File( (String) configurationSettings.get("wtk.home") );
+//		File wtkHome = neaw File( (String) configurationSettings.get("wtk.home") );
 		//String preverifyHome = null;
-		CapabilityManager capabilityManager = new CapabilityManager( null, open("capabilities.xml"));
-		ConfigurationManager configurationManager = new ConfigurationManager( capabilityManager, open("configurations.xml"));
-		PlatformManager platformManager = new PlatformManager( capabilityManager, open("platforms.xml"));
-		DeviceGroupManager groupManager = new DeviceGroupManager( open("groups.xml"), capabilityManager ); 
-		VendorManager vendorManager = new VendorManager( null, open("vendors.xml"), capabilityManager, groupManager );
-		LibraryManager libraryManager = new LibraryManager(configurationSettings, new File( "import" ), wtkHome, open( "apis.xml" ) );
-		this.deviceManager = new DeviceManager( configurationManager, platformManager, vendorManager, groupManager, libraryManager, capabilityManager, open("devices.xml") );
-		this.devices = this.deviceManager.getDevices();
+//		CapabilityManager capabilityManager = new CapabilityManager( null, open("capabilities.xml"));
+//		ConfigurationManager configurationManager = new ConfigurationManager( capabilityManager, open("configurations.xml"));
+//		PlatformManager platformManager = new PlatformManager( capabilityManager, open("platforms.xml"));
+//		DeviceGroupManager groupManager = new DeviceGroupManager( open("groups.xml"), capabilityManager ); 
+//		VendorManager vendorManager = new VendorManager( null, open("vendors.xml"), capabilityManager, groupManager );
+//		LibraryManager libraryManager = new LibraryManager(configurationSettings, new File( "import" ), wtkHome, open( "apis.xml" ) );
+//		this.deviceManager = new DeviceManager( configurationManager, platformManager, vendorManager, groupManager, libraryManager, capabilityManager, open("devices.xml") );
+//		this.devices = this.deviceManager.getDevices();
 	}
 	
 	/**
@@ -125,7 +113,8 @@ public class SimulationManager {
 	public Simulation loadSimulation( String deviceIdentifier, String midletClass ) 
 	throws ClassNotFoundException, InstantiationException, IllegalAccessException, MIDletStateChangeException 
 	{
-		Device device = this.deviceManager.getDevice(deviceIdentifier);
+//	  Device device = this.deviceManager.getDevice(deviceIdentifier);
+		SimulationDevice device = new SimulationDevice();
 		if (device == null) {
 			throw new IllegalArgumentException("device [" + deviceIdentifier + "] is not known.");
 		} 
@@ -138,23 +127,6 @@ public class SimulationManager {
 		return simulation;
 	}
 
-	/**
-	 * Sets the device requirements for this simulation.
-	 * 
-	 * @param requirements the requirements
-	 */
-	public void setDeviceRequirements(Requirements requirements) {
-		this.devices = requirements.filterDevices( this.deviceManager.getDevices() );
-	}
-	
-	public Vendor[] getVendors() {
-		return this.deviceManager.getVendors(this.devices);
-	}
-	
-	public Device[] getDevices( Vendor vendor ) {
-		return this.deviceManager.getDevices(this.devices, vendor);
-	}
-	
 	public void setFixKeyCodes( int clearKey, int leftSoftKey, int rightSoftKey, int changeInputKey ) {
 		this.useFixKeys = true;
 		this.clearKey = clearKey;

@@ -178,6 +178,7 @@ implements ActionListener
 			this.view.remove( this.control );
 		}
 		this.control = null;
+    System.out.println("Michael: TEST");
 		this.controlName = sim.getDevice().getCapability("polish.Emulator.control");
 		if ( this.controlName != null ) {
 			//System.out.println("SimulationPanel: trying to load control [" + this.controlName + "]");

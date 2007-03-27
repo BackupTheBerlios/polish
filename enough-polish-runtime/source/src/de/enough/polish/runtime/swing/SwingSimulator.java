@@ -41,6 +41,7 @@ import javax.swing.JLayeredPane;
 import de.enough.polish.runtime.DisplayChangeListener;
 import de.enough.polish.runtime.Simulation;
 import de.enough.polish.runtime.SimulationManager;
+import de.enough.polish.runtime.SimulationPanel;
 import de.enough.polish.swing.SwingApplication;
 
 /**
@@ -73,8 +74,7 @@ implements DisplayChangeListener
 	{
 		super("J2ME Polish Simulator", systemExitOnQuit );
 		this.manager = new SimulationManager( configuration );
-		//this.simulation = this.manager.loadSimulation("Nokia/6600", "de.enough.polish.demo.DemoMidlet");
-		this.simulation = this.manager.loadSimulation("Nokia/6600", "de.navigon.lithium3.Lithium3Midlet");
+		this.simulation = this.manager.loadSimulation("Nokia/6600", "de.enough.polish.sample.browser.BrowserMidlet");
 		this.simulation.setDisplayChangeListener( this );
 		this.simulation.simulateGameActionEvent( Canvas.DOWN );
 		Container contentPane = getContentPane();

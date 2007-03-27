@@ -5,6 +5,8 @@
 	<!-- global properties -->
 	<property name="Version" value="0.9" />
 	
+	<taskdef resource="proguard/ant/task.properties"
+	         classpath="../enough-polish-build/lib/proguard.jar" />	
 	
 	
 	<!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
@@ -24,9 +26,26 @@
 			 index="true"
 		    >
 			<!-- include device database as well -->
+			<!--
 			<fileset dir="../enough-polish-build" includes="capabilities.xml,configurations.xml,platforms.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml" />
 			<fileset dir="." includes="resources/*" />
+			-->
 		</jar>
+		<!--
+		<proguard>
+		  -ignorewarnings
+		  -defaultpackage
+		  -libraryjars ${java.home}/lib/rt.jar:../enough-polish-build/lib/AppleJavaExtensions.jar
+		  -injars      ../enough-polish-sample-browser/dist/Generic-MppPhone-en_US-browser.jar:dist/enough-j2mepolish-runtime.jar
+		  -outjars     test.jar
+
+		  -keepclasseswithmembers public class * {
+		      public static void main(java.lang.String[]);
+		  }
+
+		  -keep class de.enough.polish.sample.browser.BrowserMidlet
+		</proguard>
+		-->
 	</target>
 
 	<target name="clean" depends="init">
