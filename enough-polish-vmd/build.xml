@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="netbeans" name="mobility/designer2/polish">
+    <description>Builds, tests, and runs the project de.enough.polish.plugin.netbeans</description>
+    <import file="../../../nbbuild/templates/projectized.xml"/>
+
+    <target name="release" depends="init">
+        <mkdir dir="${cluster}/modules/ext"/>
+        <copy todir="${cluster}/modules/ext">
+            <fileset dir="external">
+                <include name="jdom.jar"/>
+                <include name="enough-j2mepolish-runtime.jar"/>
+                <include name="enough-j2mepolish-client.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="netbeans-extra" depends="release"/>
+
+</project>
