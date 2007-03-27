@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && polish.mmapi
+//#condition polish.usePolishGui && polish.api.mmapi
 
 /*
  * Created on Sep 8, 2006 at 5:00:10 PM.
@@ -41,6 +41,16 @@ import de.enough.polish.util.TextUtil;
 
 /**
  * <p>A convenience screen for taking snapshots. This screen requires support of the MMAPI by the current target device!</p>
+ * <pre>
+ * //#if polish.api.mmapi
+ *    import de.enough.polish.ui.SnapshotScreen;
+ * //#endif
+ * ...
+ * //#if polish.api.mmapi
+ *    //#style snapshotScreen
+ *    SnapshotScreen screen = new SnapshotScreen("Snapshot");
+ * //#endif
+ * </pre>
  *
  * <p>Copyright Enough Software 2006</p>
  * <pre>
@@ -114,10 +124,10 @@ public class SnapshotScreen extends Screen implements Runnable {
 					//#else
 						this.videoControl.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, this);
 					//#endif
-					int width = getWidth() -5;
-					int height = getHeight() - (this.titleHeight + 2);
-					this.videoControl.setDisplayLocation(5, this.titleHeight);
-					this.videoControl.setDisplaySize( width -5, height - 40 );
+					int width = this.contentWidth;//getWidth() - 5;
+					int height = this.contentHeight; //getHeight() - (this.titleHeight + 2);
+					this.videoControl.setDisplayLocation(this.contentX, this.contentY );
+					this.videoControl.setDisplaySize( width, height );
 					this.videoControl.setVisible(true);
 					this.player.prefetch();
 					this.player.start();
@@ -134,7 +144,7 @@ public class SnapshotScreen extends Screen implements Runnable {
 		}
 		if (this.takeSnapshot) {
 			if (this.videoControl == null) {
-				this.error = new MediaException("Unable to start player.");
+				this.error = new MediaException("Unable to init player: " + (this.error != null ? this.error.toString() : "unknown"));
 			} else {
 				try {
 					this.snapshotData = this.videoControl.getSnapshot(this.snapshotEncoding);
@@ -228,6 +238,9 @@ public class SnapshotScreen extends Screen implements Runnable {
 	 * @throws MediaException when taking the snapshot fails
 	 */
 	public byte[] getSnapshot( String encoding ) throws MediaException {
+		if (this.error != null) {
+			throw this.error;
+		}
 		this.snapshotEncoding = encoding;
 		this.takeSnapshot = true;
 		Thread thread = new Thread( this );
