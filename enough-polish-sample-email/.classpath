@@ -10,7 +10,7 @@
 	<classpathentry kind="lib" path="/enough-polish-build/import/pdaapi.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/siemens-color-game-api.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/wmapi.jar"/>
-	<classpathentry kind="lib" path="/enough-polish-build/import/enough-j2mepolish-client.jar"/>
+	<classpathentry kind="src" path="/enough-polish-j2me" combineaccessrules="false"/>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
