@@ -228,7 +228,7 @@ These namespaces/schemas will be used soon.
 	<device supportsPolishGui="true">
 		<identifier>Generic/DotNetCF1.1</identifier>
 		<description>A MIDP 2.0 and CLDC 1.1 phone using the mpowerplayer for emulation.</description>
-		<groups>DotNetCF1.1</groups>
+		<groups>DotNetCF/1.1</groups>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="HeapSize" value="20MB"/>
 		<capability name="MenuBar.OptionsPosition" value="right" />
