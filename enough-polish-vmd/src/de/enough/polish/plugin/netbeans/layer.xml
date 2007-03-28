@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
+    <folder name="j2mepolish">
+        <folder name="palette">
+            <folder name="backgrounds">
+                <file name="de-enough-polish-plugin-netbeans-palette-SimpleBackgroundCreator.instance">
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="de.enough.polish.plugin.netbeans.palette.Bundle"/>
+                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc://de/enough/polish/plugin/netbeans/resources/simplebackground.png"/>
+                </file>
+                <attr boolvalue="true" name="de-enough-polish-plugin-netbeans-palette-SimpleBackgroundCreator.instance/de-enough-polish-plugin-netbeans-palette-ImageBackgroundCreator.instance"/>
+                <file name="de-enough-polish-plugin-netbeans-palette-ImageBackgroundCreator.instance">
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="de.enough.polish.plugin.netbeans.palette.Bundle"/>
+                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc://de/enough/polish/plugin/netbeans/resources/imagebackground.png"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
 </filesystem>

@@ -46,7 +46,7 @@ public class PolishDataEditorView implements DataEditorView {
     }
 
     public boolean canShowSideWindows() {
-        return true;
+        return false;
     }
 
     public String preferredID() {
