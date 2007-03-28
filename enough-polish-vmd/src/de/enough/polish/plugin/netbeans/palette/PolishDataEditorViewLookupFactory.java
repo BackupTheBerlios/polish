@@ -22,6 +22,8 @@ import org.netbeans.modules.vmd.api.io.DataObjectContext;
 import org.netbeans.spi.palette.DragAndDropHandler;
 import org.netbeans.spi.palette.PaletteActions;
 import org.netbeans.spi.palette.PaletteFactory;
+import org.openide.cookies.InstanceCookie;
+import org.openide.loaders.InstanceDataObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.datatransfer.ExTransferable;
@@ -69,9 +71,22 @@ public class PolishDataEditorViewLookupFactory implements DataEditorViewLookupFa
     private static class PolishDragAndDropHandler extends DragAndDropHandler {
         
         public void customize(ExTransferable t, Lookup item) {
-            final Creator creator = item.lookup(Creator.class);
-            if (creator == null)
+            InstanceDataObject dataObject = item.lookup(InstanceDataObject.class);
+            if (dataObject == null)
                 return;
+            InstanceCookie instanceCookie = dataObject.getCookie(InstanceCookie.class);
+            if (instanceCookie == null)
+                return;
+            Object o;
+            try {
+                o = instanceCookie.instanceCreate();
+            } catch (Exception e) {
+                Exceptions.printStackTrace(e);
+                return;
+            }
+            if (! (o instanceof Creator))
+                return;
+            final Creator creator = (Creator) o;
             t.put(new ExTransferable.Single (Simulation.BACKGROUND_DATA_FLAVOR) {
                 protected Object getData() throws IOException, UnsupportedFlavorException {
                     return creator.createBackground();
