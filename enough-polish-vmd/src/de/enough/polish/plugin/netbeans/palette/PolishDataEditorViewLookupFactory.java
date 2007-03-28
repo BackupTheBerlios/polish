@@ -77,6 +77,11 @@ public class PolishDataEditorViewLookupFactory implements DataEditorViewLookupFa
                     return creator.createBackground();
                 }
             });
+            t.put(new ExTransferable.Single (Simulation.BORDER_DATA_FLAVOR) {
+                protected Object getData() throws IOException, UnsupportedFlavorException {
+                    return creator.createBorder();
+                }
+            });
         }
 
     }

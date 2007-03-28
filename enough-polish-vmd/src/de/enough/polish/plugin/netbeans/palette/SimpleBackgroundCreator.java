@@ -10,6 +10,7 @@
 package de.enough.polish.plugin.netbeans.palette;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Border;
 import de.enough.polish.ui.Color;
 import de.enough.polish.ui.backgrounds.SimpleBackground;
 import javax.swing.JColorChooser;
@@ -25,6 +26,10 @@ public class SimpleBackgroundCreator implements Creator {
     public Background createBackground() {
         java.awt.Color color = JColorChooser.showDialog(null, "Choose Color for background", java.awt.Color.WHITE);
         return color != null ? new SimpleBackground (new Color (color.getRGB())) : null;
+    }
+
+    public Border createBorder() {
+        return null;
     }
 
 }

@@ -11,21 +11,22 @@ package de.enough.polish.plugin.netbeans.palette;
 
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Border;
+import de.enough.polish.ui.borders.SimpleBorder;
 
 /**
  * @author dave
  */
-public class ImageBackgroundCreator implements Creator {
+public class SimpleBorderCreator implements Creator {
     
-    public ImageBackgroundCreator() {
+    public SimpleBorderCreator() {
     }
     
     public Background createBackground() {
-        return null;//new ImageBackground ();
+        return null;
     }
 
     public Border createBorder() {
-        return null;
+        return new SimpleBorder (); // TODO - ask user
     }
 
 }

@@ -14,6 +14,12 @@
                     <attr name="SystemFileSystem.icon" urlvalue="nbresloc://de/enough/polish/plugin/netbeans/resources/imagebackground.png"/>
                 </file>
             </folder>
+            <folder name="borders">
+                <file name="de-enough-polish-plugin-netbeans-palette-SimpleBorderCreator.instance">
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="de.enough.polish.plugin.netbeans.palette.Bundle"/>
+                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc://de/enough/polish/plugin/netbeans/resources/simpleborder.png"/>
+                </file>
+            </folder>
         </folder>
     </folder>
     <folder name="vmd-midp">

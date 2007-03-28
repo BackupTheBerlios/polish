@@ -10,6 +10,7 @@
 package de.enough.polish.plugin.netbeans.palette;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Border;
 
 /**
  *
@@ -18,5 +19,7 @@ import de.enough.polish.ui.Background;
 public interface Creator {
     
     Background createBackground ();
+    
+    Border createBorder ();
     
 }
