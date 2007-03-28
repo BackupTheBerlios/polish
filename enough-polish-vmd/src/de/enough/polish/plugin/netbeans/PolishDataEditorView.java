@@ -46,7 +46,7 @@ public class PolishDataEditorView implements DataEditorView {
     }
 
     public boolean canShowSideWindows() {
-        return false;
+        return true;
     }
 
     public String preferredID() {
@@ -54,7 +54,7 @@ public class PolishDataEditorView implements DataEditorView {
     }
 
     public String getDisplayName() {
-        return "Polish";
+        return " J2ME Polish ";
     }
 
     public HelpCtx getHelpCtx() {

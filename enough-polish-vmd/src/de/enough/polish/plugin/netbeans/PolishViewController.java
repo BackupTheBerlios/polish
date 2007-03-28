@@ -11,10 +11,11 @@ package de.enough.polish.plugin.netbeans;
 
 import de.enough.polish.runtime.Simulation;
 import de.enough.polish.runtime.SimulationDevice;
-import de.enough.polish.ui.TextBox;
+import de.enough.polish.runtime.SimulationPanel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Collection;
+import javax.microedition.lcdui.Displayable;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,13 +28,8 @@ import org.netbeans.modules.vmd.api.model.DesignDocument;
 import org.netbeans.modules.vmd.api.model.DesignEvent;
 import org.netbeans.modules.vmd.api.model.DesignEventFilter;
 import org.netbeans.modules.vmd.api.model.DesignListener;
-import org.netbeans.modules.vmd.api.model.PropertyValue;
 import org.netbeans.modules.vmd.midp.components.MidpDocumentSupport;
-import org.netbeans.modules.vmd.midp.components.MidpTypes;
-import org.netbeans.modules.vmd.midp.components.MidpValueSupport;
 import org.netbeans.modules.vmd.midp.components.categories.DisplayablesCategoryCD;
-import org.netbeans.modules.vmd.midp.components.displayables.DisplayableCD;
-import org.netbeans.modules.vmd.midp.components.displayables.TextBoxCD;
 
 /**
  *
@@ -43,24 +39,24 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
 
     public static final String POLISH_ID = "polish"; // NOI18N
     
-    private Simulation simulation;
-
+    private DisplayableParserManager displayableParserManager;
     private DesignDocument designDocument;
+   
 
-    private JPanel visual;
+    private PolishDataEditorVisual visual;
     private JComponent toolbar;
 
 //    private JComponent loadingPanel;
 
     public PolishViewController (DataObjectContext context) {
+        
 //        loadingPanel = IOUtils.createLoadingPanel (); // you can use this JComponent when the document is null
+        displayableParserManager = DisplayableParserManager.getInstance();
+                
+        visual = new PolishDataEditorVisual ();
         
-        SimulationDevice device = new SimulationDevice ();
-        simulation = new Simulation (device);
-        
-        visual = new JPanel ();
-        visual.setLayout(new GridBagLayout ());
-        visual.add(simulation, new GridBagConstraints ());
+        //visual.setLayout(new GridBagLayout ());
+        //visual.add( simulationPanel, new GridBagConstraints ());
 
         toolbar = new JLabel ("This is a polish toolbar"); // TODO
 
@@ -113,7 +109,7 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
     
     private void refreshFromModel (DesignDocument document) {
         if (document == null) {
-            simulation.setCurrent(null);
+            this.visual.setCurrent(null);
             return;
         }
 
@@ -128,33 +124,19 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
         DesignComponent displayablesCategory = MidpDocumentSupport.getCategoryComponent(document, DisplayablesCategoryCD.TYPEID);
         Collection<DesignComponent> displayables = displayablesCategory.getComponents();
         if (displayables.isEmpty()) {
-            simulation.setCurrent(null);
+            this.visual.setCurrent(null);
             return;
         }
-        DesignComponent displayable = displayables.iterator().next();
-
-//        displayable.getComponentDescriptor().getTypeDescriptor().getSuperType();
-//        displayable.getDocument().getDescriptorRegistry().getComponentDescriptor(componentType);
-//        displayable.getComponentDescriptor().getPropertyDescriptors();
-
-        if (displayable.getDocument().getDescriptorRegistry().isInHierarchy(TextBoxCD.TYPEID, displayable.getType())) {
-            String title = MidpValueSupport.getHumanReadableString(displayable.readProperty(DisplayableCD.PROP_TITLE));
-            String string = MidpValueSupport.getHumanReadableString(displayable.readProperty(TextBoxCD.PROP_STRING));
-            PropertyValue value =  displayable.readProperty(TextBoxCD.PROP_MAX_SIZE);
-            int maxsize = 100;
-            if (value.getKind() == PropertyValue.Kind.VALUE) {   
-                maxsize = MidpTypes.getInteger(value);
-            }
-            int constraint = 0;
-            value =  displayable.readProperty(TextBoxCD.PROP_CONSTRAINTS);
-            if (value.getKind() == PropertyValue.Kind.VALUE) {   
-                constraint = MidpTypes.getInteger(value);                
-            }
-
-            TextBox textbox = new TextBox (title, string, maxsize, constraint);
-            textbox._callShowNotify();
-            simulation.setCurrent (textbox);
+        //TODO add all displayables to drop down box and use the currently selected one
+        // - would be great if we could have the very same one as the ScreenDesigner is using,
+        // so that we always stay in sync...
+        DesignComponent designComponent = displayables.iterator().next();
+        Displayable displayable = this.displayableParserManager.parseDisplayable(designComponent);
+        if (displayable != null) {
+            displayable._callShowNotify();
+            this.visual.setCurrent(displayable);
         }
+
 
 //        DataObjectContext context = ProjectUtils.getDataObjectContextForDocument(displayable.getDocument());
 //        Project project = ProjectUtils.getProject(context);
