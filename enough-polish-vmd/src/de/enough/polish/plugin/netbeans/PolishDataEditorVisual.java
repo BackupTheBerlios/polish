@@ -15,6 +15,7 @@ import de.enough.polish.runtime.SimulationPanel;
 import java.awt.BorderLayout;
 import javax.microedition.lcdui.Displayable;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
 /**
@@ -34,7 +35,8 @@ public class PolishDataEditorVisual extends JPanel {
         simulation = new Simulation (device);
         simulationPanel = new SimulationPanel( simulation );
         editor = new EditorPanel( simulationPanel );
-        JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, simulationPanel, editor );
+        JSplitPane splitPane = new JSplitPane( JSplitPane.HORIZONTAL_SPLIT, simulationPanel, new JScrollPane( editor) );
+        //splitPane.setResizeWeight( 0.5 );
         add( splitPane, BorderLayout.CENTER );
     }
     
