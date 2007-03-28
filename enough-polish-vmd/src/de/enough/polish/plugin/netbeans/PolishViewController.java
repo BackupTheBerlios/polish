@@ -14,7 +14,6 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
 import java.util.List;
 import javax.microedition.lcdui.Displayable;
 import javax.swing.DefaultComboBoxModel;
@@ -22,11 +21,9 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.vmd.api.io.DataObjectContext;
 import org.netbeans.modules.vmd.api.io.DesignDocumentAwareness;
@@ -39,8 +36,6 @@ import org.netbeans.modules.vmd.api.model.DesignEventFilter;
 import org.netbeans.modules.vmd.api.model.DesignListener;
 import org.netbeans.modules.vmd.api.model.presenters.InfoPresenter;
 import org.netbeans.modules.vmd.api.screen.editor.EditedScreenSupport;
-import org.netbeans.modules.vmd.midp.components.MidpDocumentSupport;
-import org.netbeans.modules.vmd.midp.components.categories.DisplayablesCategoryCD;
 import org.netbeans.modules.vmd.midp.project.MidpProjectPropertiesSupport;
 import org.netbeans.spi.project.support.ant.AntProjectEvent;
 import org.netbeans.spi.project.support.ant.AntProjectHelper;
@@ -112,7 +107,7 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
     }
     
     void open () {
-        System.out.println(">>> PolishViewController opened");
+//        System.out.println(">>> PolishViewController opened");
         Project project = ProjectUtils.getProject (context);
         AntProjectHelper helper = project.getLookup ().lookup (AntProjectHelper.class);
         helper.addAntProjectListener(this);
@@ -120,7 +115,7 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
     }
     
     void close () {
-        System.out.println(">>> PolishViewController closed");
+//        System.out.println(">>> PolishViewController closed");
         Project project = ProjectUtils.getProject (context);
         AntProjectHelper helper = project.getLookup ().lookup (AntProjectHelper.class);
         helper.removeAntProjectListener(this);
@@ -132,7 +127,7 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
 
     public void propertiesChanged(AntProjectEvent ev) {
         Dimension deviceScreenSize = MidpProjectPropertiesSupport.getDeviceScreenSizeFromProject(context);
-        System.out.println(">> At " + System.currentTimeMillis() + " device screen size changed to " + deviceScreenSize);
+//        System.out.println(">> At " + System.currentTimeMillis() + " device screen size changed to " + deviceScreenSize);
         // TODO - update your screen size here
     }
 
@@ -156,7 +151,7 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
     }
     
     public void editedScreenChanged(long editedScreenComponentID) {
-        System.out.println(">> At " + System.currentTimeMillis() + " edited screen was changed to " + editedScreenComponentID);
+//        System.out.println(">> At " + System.currentTimeMillis() + " edited screen was changed to " + editedScreenComponentID);
         refreshFromModel(designDocument);
     }
 
@@ -204,7 +199,7 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
     
     private void refreshVisual (DesignDocument document) {
         // TODO - change your visual, toolbar views based on data in document, if document is null, then clean your views
-        System.out.println(">> At " + System.currentTimeMillis() + " refreshing polish view for document " + document + " with edited screen " + editedScreen);
+//        System.out.println(">> At " + System.currentTimeMillis() + " refreshing polish view for document " + document + " with edited screen " + editedScreen);
 
 //        document.getRootComponent().readProperty(RootCD.PROP_VERSION);
 //        DesignComponent displayablesCategory = MidpDocumentSupport.getCategoryComponent(document, DisplayablesCategoryCD.TYPEID);
