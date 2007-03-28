@@ -10,8 +10,7 @@
 package de.enough.polish.plugin.netbeans.palette;
 
 import de.enough.polish.plugin.netbeans.PolishDataEditorView;
-import de.enough.polish.ui.Background;
-import java.awt.datatransfer.DataFlavor;
+import de.enough.polish.runtime.Simulation;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.util.Arrays;
@@ -33,8 +32,6 @@ import org.openide.util.datatransfer.ExTransferable;
  */
 public class PolishDataEditorViewLookupFactory implements DataEditorViewLookupFactory {
     
-    public static DataFlavor DATA_FLAVOR_BACKGROUND = new DataFlavor (Background.class, "J2ME Polish Background");
-
     public Collection<? extends Object> getLookupObjects(DataObjectContext context, DataEditorView view) {
         try {
             if (view instanceof PolishDataEditorView)
@@ -75,7 +72,7 @@ public class PolishDataEditorViewLookupFactory implements DataEditorViewLookupFa
             final Creator creator = item.lookup(Creator.class);
             if (creator == null)
                 return;
-            t.put(new ExTransferable.Single (DATA_FLAVOR_BACKGROUND) {
+            t.put(new ExTransferable.Single (Simulation.BACKGROUND_DATA_FLAVOR) {
                 protected Object getData() throws IOException, UnsupportedFlavorException {
                     return creator.createBackground();
                 }
