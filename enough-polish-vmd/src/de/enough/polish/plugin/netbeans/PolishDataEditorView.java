@@ -38,6 +38,10 @@ public class PolishDataEditorView implements DataEditorView {
     private void init () {
         controller = new PolishViewController (context);
     }
+    
+    public PolishViewController getViewController () {
+        return controller;
+    }
 
     public DataObjectContext getContext() {
         return context;
