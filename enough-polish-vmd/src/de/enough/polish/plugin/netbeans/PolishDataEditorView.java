@@ -10,10 +10,12 @@
 package de.enough.polish.plugin.netbeans;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import org.netbeans.modules.vmd.api.io.DataEditorView;
 import org.netbeans.modules.vmd.api.io.DataObjectContext;
+import org.netbeans.modules.vmd.api.palette.PaletteSupport;
 import org.openide.awt.UndoRedo;
 import org.openide.util.HelpCtx;
 
@@ -46,7 +48,11 @@ public class PolishDataEditorView implements DataEditorView {
     }
 
     public boolean canShowSideWindows() {
-        return false;
+        return true;
+    }
+
+    public Collection<String> getTags() {
+        return Collections.singleton(PaletteSupport.VIEW_TAG_NO_PALETTE);
     }
 
     public String preferredID() {
