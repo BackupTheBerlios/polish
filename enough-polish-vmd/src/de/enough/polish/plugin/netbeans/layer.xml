@@ -16,4 +16,12 @@
             </folder>
         </folder>
     </folder>
+    <folder name="vmd-midp">
+       <folder name="components">
+           <file name="de-enough-polish-plugin-netbeans-components-items-BrowserCD.instance"/>
+       </folder>
+       <folder name="producers">
+           <file name="de-enough-polish-plugin-netbeans-components-items-BrowserProducer.instance"/>
+       </folder>
+   </folder>    
 </filesystem>
