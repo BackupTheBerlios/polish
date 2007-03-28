@@ -74,9 +74,11 @@ public class PolishDataEditorView implements DataEditorView {
     }
 
     public void componentOpened() {
+        controller.open();
     }
 
     public void componentClosed() {
+        controller.close();
     }
 
     public void componentShowing() {

@@ -9,20 +9,17 @@
 
 package de.enough.polish.plugin.netbeans;
 
-import de.enough.polish.runtime.Simulation;
-import de.enough.polish.runtime.SimulationDevice;
-import de.enough.polish.runtime.SimulationPanel;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Dimension;
 import java.util.Collection;
 import javax.microedition.lcdui.Displayable;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import org.netbeans.api.project.Project;
 import org.netbeans.modules.vmd.api.io.DataObjectContext;
 import org.netbeans.modules.vmd.api.io.DesignDocumentAwareness;
 import org.netbeans.modules.vmd.api.io.IOUtils;
+import org.netbeans.modules.vmd.api.io.ProjectUtils;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
 import org.netbeans.modules.vmd.api.model.DesignDocument;
 import org.netbeans.modules.vmd.api.model.DesignEvent;
@@ -30,14 +27,20 @@ import org.netbeans.modules.vmd.api.model.DesignEventFilter;
 import org.netbeans.modules.vmd.api.model.DesignListener;
 import org.netbeans.modules.vmd.midp.components.MidpDocumentSupport;
 import org.netbeans.modules.vmd.midp.components.categories.DisplayablesCategoryCD;
+import org.netbeans.modules.vmd.midp.project.MidpProjectPropertiesSupport;
+import org.netbeans.spi.project.support.ant.AntProjectEvent;
+import org.netbeans.spi.project.support.ant.AntProjectHelper;
+import org.netbeans.spi.project.support.ant.AntProjectListener;
 
 /**
  *
  * @author dave
  */
-public class PolishViewController implements DesignDocumentAwareness, DesignListener {
+public class PolishViewController implements DesignDocumentAwareness, DesignListener, AntProjectListener {
 
     public static final String POLISH_ID = "polish"; // NOI18N
+    
+    private DataObjectContext context;
     
     private DisplayableParserManager displayableParserManager;
     private DesignDocument designDocument;
@@ -49,7 +52,7 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
 //    private JComponent loadingPanel;
 
     public PolishViewController (DataObjectContext context) {
-        
+        this.context = context;
 //        loadingPanel = IOUtils.createLoadingPanel (); // you can use this JComponent when the document is null
         displayableParserManager = DisplayableParserManager.getInstance();
                 
@@ -69,6 +72,31 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
 
     public JComponent getToolbarRepresentation () {
         return toolbar;
+    }
+    
+    void open () {
+        System.out.println(">>> PolishViewController opened");
+        Project project = ProjectUtils.getProject (context);
+        AntProjectHelper helper = project.getLookup ().lookup (AntProjectHelper.class);
+        helper.addAntProjectListener(this);
+        propertiesChanged(null);
+    }
+    
+    void close () {
+        System.out.println(">>> PolishViewController closed");
+        Project project = ProjectUtils.getProject (context);
+        AntProjectHelper helper = project.getLookup ().lookup (AntProjectHelper.class);
+        helper.removeAntProjectListener(this);
+    }
+
+    public void configurationXmlChanged(AntProjectEvent ev) {
+        propertiesChanged(ev); // TODO
+    }
+
+    public void propertiesChanged(AntProjectEvent ev) {
+        Dimension deviceScreenSize = MidpProjectPropertiesSupport.getDeviceScreenSizeFromProject(context);
+        System.out.println(">> At " + System.currentTimeMillis() + " device screen size changed to " + deviceScreenSize);
+        // TODO - update your screen size here
     }
 
     public void setDesignDocument (final DesignDocument newDesignDocument) {
