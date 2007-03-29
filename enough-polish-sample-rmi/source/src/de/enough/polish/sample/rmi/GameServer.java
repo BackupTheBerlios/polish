@@ -25,6 +25,8 @@
  */
 package de.enough.polish.sample.rmi;
 
+import javax.microedition.lcdui.Image;
+
 import de.enough.polish.rmi.Remote;
 import de.enough.polish.rmi.RemoteException;
 
@@ -45,4 +47,7 @@ public interface GameServer extends Remote {
 	public GameHighscore storeHighscore( GameHighscore highscore, boolean flag ) throws RemoteException;
 	
 	public boolean ping( long time ) throws RemoteException;
+	
+	public void uploadScreenShot( Image image ) throws RemoteException;
+	
 }

@@ -25,8 +25,16 @@
  */
 package de.enough.polish.sample.rmi;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
+import javax.microedition.lcdui.Image;
 import javax.servlet.http.HttpSession;
 
 import de.enough.polish.rmi.RemoteException;
@@ -101,6 +109,42 @@ implements GameServer
 	public boolean ping(long time) throws RemoteException {
 		System.out.println("ping at client-time of " + time );
 		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.sample.rmi.GameServer#uploadScreenShot(javax.microedition.lcdui.Image)
+	 */
+	public void uploadScreenShot(Image image) throws RemoteException {
+		System.out.println("got screenshot");
+		try {
+			Method getDataMethod = image.getClass().getDeclaredMethod("getBufferedImage", new Class[0] );
+			System.out.println("got getBufferedImage");
+			BufferedImage data = (BufferedImage) getDataMethod.invoke(image, new Object[0]);
+			if (data != null) {
+				System.out.println("got data");
+				File file = new File( "/var/lib/tomcat5/webapps/gameserver/" + System.currentTimeMillis() + ".png");
+				ImageIO.write(data, "png", file);
+				System.out.println("wrote buffered image");
+			}
+		} catch (SecurityException e) {
+			// TODO robertvirkus handle SecurityException
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO robertvirkus handle NoSuchMethodException
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO robertvirkus handle IllegalArgumentException
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO robertvirkus handle IllegalAccessException
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO robertvirkus handle InvocationTargetException
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO robertvirkus handle IOException
+			e.printStackTrace();
+		} 
 	}
 
 }

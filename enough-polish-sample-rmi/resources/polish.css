@@ -144,11 +144,6 @@ focused {
 		color: brightBgColor;
 	}
 	layout: horizontal-expand | horizontal-center | vertical-center;
-	columns: 2;
-	columns-width: equal;
-	/*
-	show-text-in-title: true;
-	*/
 }
 
 /**

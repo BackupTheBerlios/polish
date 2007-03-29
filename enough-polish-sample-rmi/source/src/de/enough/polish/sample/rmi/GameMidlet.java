@@ -25,16 +25,24 @@
  */
 package de.enough.polish.sample.rmi;
 
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.Image;
+import javax.microedition.media.MediaException;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import de.enough.polish.event.ThreadedCommandListener;
 import de.enough.polish.rmi.RemoteClient;
 import de.enough.polish.rmi.RemoteException;
+//#if polish.api.mmapi
+import de.enough.polish.ui.SnapshotScreen;
+//#endif
 
 /**
  * <p>Uses a remote server for user management and more aspects of a (non existing) game.</p>
@@ -51,9 +59,13 @@ public class GameMidlet extends MIDlet implements Runnable, CommandListener {
 	private GameServer server;
 	private Form form;
 	private Command cmdRegister = new Command("Register", Command.SCREEN, 2);
+	private Command cmdTakeScreenshot = new Command("Take Screenshot", Command.SCREEN, 3 );
 	private Command cmdQuit = new Command("Quit", Command.EXIT, 9);
-
+	private Display display;
+	private final ThreadedCommandListener commandListener;
+	
 	public GameMidlet(){
+		this.commandListener = new ThreadedCommandListener( this );
 		// when you are importing the complete package of the remote interface or when you within the same package, you do not
 		// need to specify the fully qualified name, in this example following line would also suffice:
 		// this.server = (GameServer) RemoteClient.open("GameServer", "http://localhost:8080/gameserver/myservice");
@@ -63,10 +75,14 @@ public class GameMidlet extends MIDlet implements Runnable, CommandListener {
 			String gameServerUrl = "http://localhost:8080/gameserver/myservice";
 		//#endif
 		this.server = (GameServer) RemoteClient.open("de.enough.polish.sample.rmi.GameServer", gameServerUrl );
+		//#style mainScreen
 		this.form = new Form("RMI");
 		this.form.addCommand( this.cmdRegister );
+		//#if polish.api.mmapi
+			this.form.addCommand( this.cmdTakeScreenshot );
+		//#endif
 		this.form.addCommand( this.cmdQuit );
-		this.form.setCommandListener( this );
+		this.form.setCommandListener( this.commandListener );
 	}
 
 	/* (non-Javadoc)
@@ -87,7 +103,7 @@ public class GameMidlet extends MIDlet implements Runnable, CommandListener {
 	 * @see javax.microedition.midlet.MIDlet#startApp()
 	 */
 	protected void startApp() throws MIDletStateChangeException {
-		Display display = Display.getDisplay( this );
+		this.display = Display.getDisplay( this );
 		this.form.deleteAll();
 		display.setCurrent( this.form );
 		Thread thread = new Thread( this );
@@ -125,8 +141,38 @@ public class GameMidlet extends MIDlet implements Runnable, CommandListener {
 		} else if (cmd == this.cmdRegister) {
 			Thread thread = new Thread( this );
 			thread.start();			
+		//#if polish.api.mmapi
+		} else if (cmd == this.cmdTakeScreenshot) {
+			if (dis == this.form ) {
+				//#style mainScreen
+				SnapshotScreen screen = new SnapshotScreen( "Snapshot" );
+				screen.addCommand( this.cmdTakeScreenshot );
+				screen.setCommandListener( this.commandListener );
+				this.display.setCurrent( screen );
+			} else {
+				SnapshotScreen screen = (SnapshotScreen) dis;
+				try {
+					Image image = screen.getSnapshotImage();
+					this.form.append(image);
+					this.form.append("uploading image...");
+					this.display.setCurrent( this.form );
+					this.server.uploadScreenShot( image );
+					this.form.append("Image uploaded!");
+					this.form.setTitle("image uploaded");
+					this.display.setCurrent( this.form );
+				} catch (MediaException e) {
+					Alert alert = new Alert( "Media-Error", e.toString(), null, AlertType.ERROR );
+					System.out.println("returning to form...");
+					this.display.setCurrent(alert, this.form);
+				} catch (RemoteException e) {
+					Alert alert = new Alert( "RMI-Error", e.toString(), null, AlertType.ERROR );
+					this.display.setCurrent(alert, this.form);
+				}
+			}
+		//#endif
 		}
 		
 	}
 
 }
+

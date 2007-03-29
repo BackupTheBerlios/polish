@@ -147,6 +147,7 @@
 				<variable name="polish.DateField.useDirectInput" value="true" />
 				<variable name="polish.TextField.useDirectInput" value="true" />
 				<variable name="polish.rmi.redirect" value="false" />
+				<variable name="polish.useScrollBar" value="true" />
 			</variables>
 			<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 			<resources
@@ -156,8 +157,7 @@
 			>
 				<!-- add the localization element for created localized
 				     versions of your application: -->
-				<localization locales="de_DE, en_US" unless="test" />
-				<localization locales="en_US" if="test" />
+				<localization locales="en_US" />
 			</resources>
 			
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
@@ -169,7 +169,7 @@
 			</obfuscator>
 			
 			<!-- debug settings: only include debug setting when the test-property is true -->
-			<debug if="test" showLogOnError="true" verbose="true" level="error">
+			<debug if="test" showLogOnError="false" verbose="true" level="error">
 				<filter pattern="de.enough.polish.sample.*" level="debug" />
 				<filter pattern="de.enough.polish.browser.*" level="debug" />
 			</debug>
@@ -223,7 +223,7 @@
 	</war>
 </target>
 	
-<target name="deploy-war" depends="build-war" >
+<target name="deploy-war" depends="build-war" description="copies the war to the applications root of the application server">
 	<copy file="dist/gameserver.war" todir="${webapps.home}" />
 </target>
 	
