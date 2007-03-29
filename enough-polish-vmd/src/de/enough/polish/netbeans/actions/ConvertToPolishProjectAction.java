@@ -12,6 +12,8 @@ package de.enough.polish.netbeans.actions;
 import java.awt.event.ActionEvent;
 import org.openide.util.HelpCtx;
 import org.openide.util.actions.SystemAction;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 
 /**
  * @author dave
@@ -42,7 +44,20 @@ public class ConvertToPolishProjectAction extends SystemAction {
 //        }
 
 //        // TODO - use project.getProjectDirectory()
-//        DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message ("Not implemented yet!"));
+        DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message ("Not implemented yet!"));
     }
-    
+// sample of reading properties from project.properties
+// to write properties, use: ep.putProperty and helper.setProperties method
+//    private static boolean isPolishProjectUsed (DataObjectContext context) {
+//        Project project = ProjectUtils.getProject(context);
+//        if (project == null)
+//            return false;
+//        AntProjectHelper helper = project.getLookup ().lookup (AntProjectHelper.class);
+//        if (helper == null)
+//            return false;
+//        EditableProperties ep = helper.getProperties (AntProjectHelper.PROJECT_PROPERTIES_PATH);
+//        String value = ep.getProperty (PROP_USE_POLISH_PROJECT);
+//        return "true".equalsIgnoreCase(value)  ||  "yes".equalsIgnoreCase(value);
+//    }
+
 }
