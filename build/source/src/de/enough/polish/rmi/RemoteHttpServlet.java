@@ -171,7 +171,9 @@ public class RemoteHttpServlet extends HttpServlet {
 			process(in, out);
 			byte[] responseData = byteOut.toByteArray();
 			response.setContentLength( responseData.length );
+			response.setContentType( "application/octet-stream" );
 			response.getOutputStream().write(responseData, 0, responseData.length );
+			response.flushBuffer();
 		} catch (IOException e) {
 			e.printStackTrace();
 			try {
