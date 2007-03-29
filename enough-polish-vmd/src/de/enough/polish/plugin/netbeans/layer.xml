@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
-     <folder name="Navigator">
+    <folder name="Navigator">
         <folder name="Panels">
             <folder name="polish-styles">
                 <file name="de-enough-polish-plugin-netbeans-navigator-PolishNavigatorPanel.instance"/>
             </folder>
         </folder>
     </folder>
+    
+    <folder name="WarmUp">
+        <file name="de-enough-polish-plugin-netbeans-settings-PolishWarmUp.instance"/>
+    </folder>
+    
+    <folder name="OptionsDialog">
+        <folder name="Advanced">
+            <file name="de-enough-polish-plugin-netbeans-settings-PolishAdvancedOption.instance"/>
+        </folder>
+    </folder>
+    
     <folder name="j2mepolish">
         <folder name="palette">
             <folder name="backgrounds">
@@ -29,12 +40,13 @@
             </folder>
         </folder>
     </folder>
+    
     <folder name="vmd-midp">
-       <folder name="components">
-           <file name="de-enough-polish-plugin-netbeans-components-items-BrowserCD.instance"/>
-       </folder>
-       <folder name="producers">
-           <file name="de-enough-polish-plugin-netbeans-components-items-BrowserProducer.instance"/>
-       </folder>
-   </folder>    
+        <folder name="components">
+            <file name="de-enough-polish-plugin-netbeans-components-items-BrowserCD.instance"/>
+        </folder>
+        <folder name="producers">
+            <file name="de-enough-polish-plugin-netbeans-components-items-BrowserProducer.instance"/>
+        </folder>
+    </folder>    
 </filesystem>
