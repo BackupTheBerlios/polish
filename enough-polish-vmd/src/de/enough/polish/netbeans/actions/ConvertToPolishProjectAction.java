@@ -9,11 +9,7 @@
 
 package de.enough.polish.netbeans.actions;
 
-import de.enough.polish.netbeans.J2mePolishProjectWizardIterator;
-import java.awt.Dialog;
 import java.awt.event.ActionEvent;
-import org.openide.DialogDisplayer;
-import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
 import org.openide.util.actions.SystemAction;
 
@@ -35,14 +31,16 @@ public class ConvertToPolishProjectAction extends SystemAction {
     }
 
     public void actionPerformed(ActionEvent ev) {
-        WizardDescriptor desc = new WizardDescriptor (J2mePolishProjectWizardIterator.createIterator());
-        Dialog dia = DialogDisplayer.getDefault().createDialog(desc);
-        dia.setVisible (true);
+//        WizardDescriptor desc = new WizardDescriptor (J2mePolishProjectWizardIterator.createIterator());
+//        Dialog dia = DialogDisplayer.getDefault().createDialog(desc);
+//        dia.setVisible (true);
+
 //        Project project = Utilities.actionsGlobalContext().lookup(Project.class);
 //        if (! "J2MEProject".equals (project.getClass().getSimpleName())) { // TODO - HACK because of J2MEProject is not in API
 //            DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message ("Select Mobile Project in Projects window before invoking this action.")); // TODO
 //            return;
 //        }
+
 //        // TODO - use project.getProjectDirectory()
 //        DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message ("Not implemented yet!"));
     }

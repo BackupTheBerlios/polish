@@ -9,6 +9,7 @@ package de.enough.polish.plugin.netbeans.settings;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -49,7 +50,10 @@ public class StartPanel extends javax.swing.JPanel {
     }
     
     public void load () {
-        homeText.setText(PolishSettings.getDefault().getPolishHome());
+        String home = PolishSettings.getDefault().getPolishHome();
+        if (home == null  ||  "".equals (home))
+            home = getJ2mePolishInstallPath ();
+        homeText.setText(home);
         doNotAskCombo.setSelected(PolishSettings.getDefault().isDoNotAskForPolishHome());
         setChanged (false);
     }
@@ -74,6 +78,47 @@ public class StartPanel extends javax.swing.JPanel {
     
     public void removeListener (PropertyChangeListener l) {
         support.removePropertyChangeListener(l);
+    }
+    
+        private String getJ2mePolishInstallPath() {
+        File[] paths = getApplicationPaths();
+        for (int i = 0; i < paths.length; i++) {
+            File path = paths[i];
+            File installPath = new File( path, "J2ME-Polish");
+            if (installPath.exists()) {
+                return installPath.getAbsolutePath();
+            }
+        }
+        return null;
+    }
+    
+    private File[] getApplicationPaths() {
+        ArrayList pathsList = new ArrayList();
+        File userHome = new File( System.getProperty("user.home") );
+        pathsList.add( userHome );
+        if (File.separatorChar == '\\') { // this is windows:
+            pathsList.add( new File( "C:\\Program Files") );
+            String systemDir = userHome.getAbsolutePath().substring( 0, userHome.getAbsolutePath().indexOf(':')  ) 
+                +  ":\\";
+            pathsList.add( new File( systemDir + "Program Files" ) );
+            pathsList.add( new File( systemDir + "Archivos de Programa" ) );
+            pathsList.add( new File( systemDir + "Programmer" ) );
+            pathsList.add( new File( systemDir + "Programme" ) );
+            pathsList.add( new File( systemDir + "Programmi" ) );
+            pathsList.add( new File( systemDir + "Programfiler" ) );
+            pathsList.add( new File( systemDir + "Programas" ) );
+            pathsList.add( new File( systemDir + "Arquivos de programas" ) );
+            pathsList.add( new File( systemDir + "Archivos de programa" ) );
+            pathsList.add( new File( systemDir + "Program" ) );
+        } else if ( System.getProperty("os.name").indexOf("OS X") != -1 ) {
+            pathsList.add( new File( "/Applications") );
+            pathsList.add( new File( userHome, "Applications") );
+        } else  {
+            pathsList.add( new File( "/usr/local") );
+            pathsList.add( new File( "/usr/local/share") );
+            pathsList.add( new File( userHome, "bin") );
+        }
+        return (File[]) pathsList.toArray( new File[ pathsList.size() ]);
     }
     
     /** This method is called from within the constructor to

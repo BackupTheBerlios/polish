@@ -1,5 +1,6 @@
 package de.enough.polish.netbeans;
 
+import de.enough.polish.plugin.netbeans.settings.PolishSettings;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
@@ -29,8 +30,10 @@ public class J2mePolishProjectTemplatePanelVisual extends JPanel implements Docu
         projectLocationTextField.getDocument().addDocumentListener(this);
         
         // check for default J2ME Polish installation directory:
-        this.j2mePolishLocationTextField.setText( getJ2mePolishInstallPath() );
+        j2mePolishLocationTextField.setText(PolishSettings.getDefault().getPolishHome());
+//        this.j2mePolishLocationTextField.setText( getJ2mePolishInstallPath() );
         this.j2mePolishLocationTextField.getDocument().addDocumentListener(this);
+        
         panel.fireChangeEvent(); // Notify that the panel changed
     }
     
@@ -45,6 +48,7 @@ public class J2mePolishProjectTemplatePanelVisual extends JPanel implements Docu
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         projectNameLabel = new javax.swing.JLabel();
         projectNameTextField = new javax.swing.JTextField();
         projectLocationLabel = new javax.swing.JLabel();
@@ -79,8 +83,11 @@ public class J2mePolishProjectTemplatePanelVisual extends JPanel implements Docu
         projectNameLabel2.setLabelFor(projectNameTextField);
         org.openide.awt.Mnemonics.setLocalizedText(projectNameLabel2, "&J2ME Polish Location:");
 
+        j2mePolishLocationTextField.setEnabled(false);
+
         org.openide.awt.Mnemonics.setLocalizedText(browseForJ2mePolishButton, "&Browse...");
         browseForJ2mePolishButton.setActionCommand("BROWSE");
+        browseForJ2mePolishButton.setEnabled(false);
         browseForJ2mePolishButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 browseForJ2mePolishButtonActionPerformed(evt);
@@ -88,6 +95,7 @@ public class J2mePolishProjectTemplatePanelVisual extends JPanel implements Docu
         });
 
         org.openide.awt.Mnemonics.setLocalizedText(downloadJ2mePolishButton, "Download J2ME Polish");
+        downloadJ2mePolishButton.setEnabled(false);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -352,45 +360,4 @@ public class J2mePolishProjectTemplatePanelVisual extends JPanel implements Docu
         panel.fireChangeEvent(); // Notify that the panel changed
     }
 
-    private String getJ2mePolishInstallPath() {
-        File[] paths = getApplicationPaths();
-        for (int i = 0; i < paths.length; i++) {
-            File path = paths[i];
-            File installPath = new File( path, "J2ME-Polish");
-            if (installPath.exists()) {
-                return installPath.getAbsolutePath();
-            }
-        }
-        return null;
-    }
-    
-    private File[] getApplicationPaths() {
-        ArrayList pathsList = new ArrayList();
-        File userHome = new File( System.getProperty("user.home") );
-        pathsList.add( userHome );
-        if (File.separatorChar == '\\') { // this is windows:
-            pathsList.add( new File( "C:\\Program Files") );
-            String systemDir = userHome.getAbsolutePath().substring( 0, userHome.getAbsolutePath().indexOf(':')  ) 
-                +  ":\\";
-            pathsList.add( new File( systemDir + "Program Files" ) );
-            pathsList.add( new File( systemDir + "Archivos de Programa" ) );
-            pathsList.add( new File( systemDir + "Programmer" ) );
-            pathsList.add( new File( systemDir + "Programme" ) );
-            pathsList.add( new File( systemDir + "Programmi" ) );
-            pathsList.add( new File( systemDir + "Programfiler" ) );
-            pathsList.add( new File( systemDir + "Programas" ) );
-            pathsList.add( new File( systemDir + "Arquivos de programas" ) );
-            pathsList.add( new File( systemDir + "Archivos de programa" ) );
-            pathsList.add( new File( systemDir + "Program" ) );
-        } else if ( System.getProperty("os.name").indexOf("OS X") != -1 ) {
-            pathsList.add( new File( "/Applications") );
-            pathsList.add( new File( userHome, "Applications") );
-        } else  {
-            pathsList.add( new File( "/usr/local") );
-            pathsList.add( new File( "/usr/local/share") );
-            pathsList.add( new File( userHome, "bin") );
-        }
-        return (File[]) pathsList.toArray( new File[ pathsList.size() ]);
-    }
-    
 }
