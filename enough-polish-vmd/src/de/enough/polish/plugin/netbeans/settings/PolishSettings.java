@@ -88,12 +88,14 @@ public class PolishSettings {
                     if (dir == null)
                         dir = fs.getRoot().createFolder("j2mepolish");
                     FileObject file = dir.getFileObject("settings.properties");
+                    if (file == null)
+                        file = dir.createData ("settings.properties");
                     if (file != null) {
                         Properties props = new Properties ();
                         if (polishHome != null)
                             props.put("polish.home", polishHome);
                         if (doNotAskForPolishHome)
-                            props.put("do.not.ask.for.polish.home", doNotAskForPolishHome);
+                            props.put("do.not.ask.for.polish.home", Boolean.toString(doNotAskForPolishHome));
                         OutputStream os = file.getOutputStream();
                         try {
                             props.store(os, "Settings for J2ME Polish NetBeans Plugin");
