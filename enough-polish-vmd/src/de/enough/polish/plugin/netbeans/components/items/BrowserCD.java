@@ -35,7 +35,7 @@ import org.netbeans.modules.vmd.midp.propertyeditors.PropertyEditorString;
 public class BrowserCD extends ComponentDescriptor {
     
     // we use convention to typeid that reprensents a class that the second parameter is fully-qualified class-name 
-    public static final TypeID TYPEID = new TypeID (TypeID.Kind.COMPONENT, "de.enough.polish.browser.Browser"); // NOI18N
+    public static final TypeID TYPEID = new TypeID (TypeID.Kind.COMPONENT, "de.enough.polish.browser.chtml.HtmlBrowser"); // NOI18N
     public static final String PROP_URL = "URL";
     public static final String ICON_PATH = null;
 
@@ -53,7 +53,7 @@ public class BrowserCD extends ComponentDescriptor {
     public List<PropertyDescriptor> getDeclaredPropertyDescriptors() {
         return Arrays.asList (
             // create a property description
-            new PropertyDescriptor (PROP_URL, MidpTypes.TYPEID_INT, MidpTypes.createStringValue("http://www.j2mepolish.org/mobile/index.html"), false, true, MidpVersionable.MIDP)
+            new PropertyDescriptor (PROP_URL, MidpTypes.TYPEID_JAVA_LANG_STRING, MidpTypes.createStringValue("http://www.j2mepolish.org/mobile/index.html"), false, true, MidpVersionable.MIDP)
         );
     }
 

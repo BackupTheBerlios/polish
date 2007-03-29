@@ -36,7 +36,7 @@ public class TextBoxParser extends DisplayableParser{
     }
 
     protected Displayable createDisplayable(DesignComponent designComponent) {
-         String string = MidpValueSupport.getHumanReadableString(designComponent.readProperty(TextBoxCD.PROP_STRING));
+        String string = MidpValueSupport.getHumanReadableString(designComponent.readProperty(TextBoxCD.PROP_STRING));
         PropertyValue value =  designComponent.readProperty(TextBoxCD.PROP_MAX_SIZE);
         int maxsize = 100;
         if (value.getKind() == PropertyValue.Kind.VALUE) {   

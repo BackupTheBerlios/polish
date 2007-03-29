@@ -10,6 +10,7 @@
 package de.enough.polish.plugin.netbeans;
 
 import de.enough.polish.plugin.netbeans.modelparser.DisplayableParser;
+import de.enough.polish.plugin.netbeans.modelparser.FormParser;
 import de.enough.polish.plugin.netbeans.modelparser.ListParser;
 import de.enough.polish.plugin.netbeans.modelparser.TextBoxParser;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class DisplayableParserManager {
         this.parsersByClassName = new HashMap<String, DisplayableParser>();
         this.parsersByClassName.put("javax.microedition.lcdui.TextBox", new TextBoxParser() );
         this.parsersByClassName.put("javax.microedition.lcdui.List", new ListParser() );
+        this.parsersByClassName.put("javax.microedition.lcdui.Form", new FormParser() );
     }
     
     public static DisplayableParserManager getInstance() {

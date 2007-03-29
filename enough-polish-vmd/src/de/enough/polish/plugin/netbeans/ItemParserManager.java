@@ -10,6 +10,7 @@
 package de.enough.polish.plugin.netbeans;
 
 import de.enough.polish.plugin.netbeans.modelparser.ChoiceItemParser;
+import de.enough.polish.plugin.netbeans.modelparser.HtmlBrowserParser;
 import de.enough.polish.plugin.netbeans.modelparser.ItemParser;
 import de.enough.polish.ui.Item;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public class ItemParserManager {
     private ItemParserManager() {
         this.parsersByClassName = new HashMap<String, ItemParser>();
         this.parsersByClassName.put("#ListElementEventSource", new ChoiceItemParser() );
+        this.parsersByClassName.put("de.enough.polish.browser.chtml.HtmlBrowser", new HtmlBrowserParser() );
     }
     
     public static ItemParserManager getInstance() {
