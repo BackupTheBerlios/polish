@@ -1,5 +1,6 @@
 package de.enough.polish.netbeans;
 
+import de.enough.polish.plugin.netbeans.settings.PolishSettings;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 
@@ -8,6 +9,7 @@ public final class PolishProjectSetupVisualPanel1 extends JPanel {
     /** Creates new form PolishProjectSetupVisualPanel1 */
     public PolishProjectSetupVisualPanel1() {
         initComponents();
+        polishHomeField.setText(PolishSettings.getDefault ().getPolishHome());
     }
     
     public String getName() {
@@ -17,7 +19,6 @@ public final class PolishProjectSetupVisualPanel1 extends JPanel {
     private void openFileChooser() {
         JFileChooser chooser = new JFileChooser();
         chooser.setVisible( true );
-        
     }
     
     /** This method is called from within the constructor to
@@ -27,6 +28,7 @@ public final class PolishProjectSetupVisualPanel1 extends JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         polishHomeField = new javax.swing.JTextField();
@@ -39,6 +41,7 @@ public final class PolishProjectSetupVisualPanel1 extends JPanel {
         jLabel1.setText("J2ME Polish Installation folder:");
         add(jLabel1, java.awt.BorderLayout.WEST);
 
+        polishHomeField.setEnabled(false);
         add(polishHomeField, java.awt.BorderLayout.CENTER);
 
         openFileChooserButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -46,9 +49,7 @@ public final class PolishProjectSetupVisualPanel1 extends JPanel {
                 ChooseInstallFolderButtonHandler(evt);
             }
         });
-
         add(openFileChooserButton, java.awt.BorderLayout.EAST);
-
     }// </editor-fold>//GEN-END:initComponents
 
     private void ChooseInstallFolderButtonHandler(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ChooseInstallFolderButtonHandler

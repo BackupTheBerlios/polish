@@ -1,5 +1,6 @@
 package de.enough.polish.netbeans;
 
+import de.enough.polish.plugin.netbeans.settings.PolishSettings;
 import java.awt.FileDialog;
 import java.io.File;
 import java.io.IOException;
@@ -31,11 +32,12 @@ public class J2mePolishProjectPanelVisual extends JPanel implements DocumentList
         projectNameTextField.getDocument().addDocumentListener( this );
         projectLocationTextField.getDocument().addDocumentListener( this );
         
-        // Check for default J2ME Polish installation:
-        File file = new File( "/Applications/J2ME-Polish" );
-        if (file.exists()) {
-            this.j2mePolishInstallationFolderField.setText( file.getAbsolutePath() );
-        }
+        j2mePolishInstallationFolderField.setText(PolishSettings.getDefault ().getPolishHome());
+//        // Check for default J2ME Polish installation:
+//        File file = new File( "/Applications/J2ME-Polish" );
+//        if (file.exists()) {
+//            this.j2mePolishInstallationFolderField.setText( file.getAbsolutePath() );
+//        }
     }
     
     
@@ -71,7 +73,6 @@ public class J2mePolishProjectPanelVisual extends JPanel implements DocumentList
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 12, 0);
         add(projectNameLabel, gridBagConstraints);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -87,7 +88,6 @@ public class J2mePolishProjectPanelVisual extends JPanel implements DocumentList
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 0, 5, 0);
         add(projectLocationLabel, gridBagConstraints);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -104,7 +104,6 @@ public class J2mePolishProjectPanelVisual extends JPanel implements DocumentList
                 browseButtonActionPerformed(evt);
             }
         });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
@@ -120,7 +119,6 @@ public class J2mePolishProjectPanelVisual extends JPanel implements DocumentList
         gridBagConstraints.gridheight = java.awt.GridBagConstraints.REMAINDER;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         add(createdFolderLabel, gridBagConstraints);
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -139,6 +137,7 @@ public class J2mePolishProjectPanelVisual extends JPanel implements DocumentList
         gridBagConstraints.gridy = 3;
         add(createdFolderLabel1, gridBagConstraints);
 
+        j2mePolishInstallationFolderField.setEnabled(false);
         j2mePolishInstallationFolderField.setName("j2mepolishInstallFolderField");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
@@ -149,17 +148,16 @@ public class J2mePolishProjectPanelVisual extends JPanel implements DocumentList
 
         org.openide.awt.Mnemonics.setLocalizedText(browseButton1, "Br&owse...");
         browseButton1.setActionCommand("BROWSE");
+        browseButton1.setEnabled(false);
         browseButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chooseJ2mePolishInstallationFolderActionPerformed(evt);
             }
         });
-
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 3;
         add(browseButton1, gridBagConstraints);
-
     }// </editor-fold>//GEN-END:initComponents
 
     private void chooseJ2mePolishInstallationFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chooseJ2mePolishInstallationFolderActionPerformed
