@@ -84,7 +84,10 @@ public class PolishSettings {
         try {
             fs.runAtomicAction(new FileSystem.AtomicAction() {
                 public void run() throws IOException {
-                    FileObject file = fs.findResource("j2mepolish/settings.properties");
+                    FileObject dir = fs.getRoot ().getFileObject("j2mepolish");
+                    if (dir == null)
+                        dir = fs.getRoot().createFolder("j2mepolish");
+                    FileObject file = dir.getFileObject("settings.properties");
                     if (file != null) {
                         Properties props = new Properties ();
                         if (polishHome != null)
