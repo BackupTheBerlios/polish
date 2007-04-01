@@ -1937,7 +1937,13 @@ public abstract class Item extends Object
 			this.cssSelector = createCssSelector();
 			//#debug
 			System.out.println("getting style for item [" + this.cssSelector + "].");
-			setStyle( StyleSheet.getStyle( this ) );
+			Style style = StyleSheet.getStyle( this );
+			if (style == null) {
+				style = StyleSheet.defaultStyle;
+			}
+			if (style != null) {
+				setStyle( style );
+			}
 		} else {
 			//System.out.println("item has already style [" + this.style.name + "].");
 			this.cssSelector = this.style.name;

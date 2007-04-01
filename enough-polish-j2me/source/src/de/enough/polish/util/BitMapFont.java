@@ -137,11 +137,13 @@ public final class BitMapFont {
 				return null;
 			//#ifndef polish.Bugs.ImageIOStreamAutoClose
 			} finally {
-				try { 
-					in.close();
-				} catch (IOException e) {
-					//#debug error
-					System.out.println("Unable to close bitmap-font stream" + e);
+				if (in != null) {
+					try { 
+						in.close();
+					} catch (IOException e) {
+						//#debug error
+						System.out.println("Unable to close bitmap-font stream" + e);
+					}
 				}
 			//#endif
 			}

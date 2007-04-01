@@ -189,7 +189,7 @@ public class Style
 	 * @return the value of this property as a String. If none has been defined, null will be returned.
 	 */
 	public String getProperty( String propName ) {
-		return propName;
+		return null;
 	}
 	//#endif
 	
@@ -201,7 +201,7 @@ public class Style
 	 * @return the value of this property. If none has been defined, null will be returned.
 	 */
 	public Object getObjectProperty( String propName ) {
-		return propName;
+		return null;
 	}
 	//#endif
 

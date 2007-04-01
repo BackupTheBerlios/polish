@@ -60,8 +60,8 @@ public final class StyleSheet {
 		private static Timer timer;
 	//#endif
 	//#ifdef polish.LibraryBuild
-		public static Style defaultStyle = null;
-		public static Style focusedStyle = null;
+		public static Style defaultStyle = new Style( 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0x000000, Font.getDefaultFont(), null, null, null, null );
+		public static Style focusedStyle = new Style( 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0xFF0000, Font.getDefaultFont(), null, null, null, null );;
 		public static Style labelStyle = null; 
 		public static Style menuStyle = null;
 		private static Hashtable stylesByName = new Hashtable();

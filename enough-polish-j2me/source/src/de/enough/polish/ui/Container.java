@@ -34,7 +34,7 @@ import de.enough.polish.util.ArrayList;
 /**
  * <p>Contains a number of items.</p>
  * <p>Main purpose is to manage all items of a Form or similiar canvases.</p>
- * <p>Containers support following CSS attributes:
+ * <p>Containers support following additional CSS attributes:
  * </p>
  * <ul>
  * 		<li><b>columns</b>: The number of columns. If defined a table will be drawn.</li>
@@ -62,7 +62,9 @@ public class Container extends Item {
 		//#define tmp.useTable
 	//#endif
 	
+	/** constant for normal scrolling (0) */
 	public static final int SCROLL_DEFAULT = 0;
+	/** constant for smooth scrolling (1) */
 	public static final int SCROLL_SMOOTH = 1;
 	
 	protected ArrayList itemsList;
@@ -698,7 +700,7 @@ public class Container extends Item {
 									item.getItemHeight( firstLineWidth, lineWidth );
 									// now focus the item:
 									this.autoFocusEnabled = false;
-									requireScrolling = true;
+									requireScrolling = (this.autoFocusIndex != 0);
 									focus( i, item, 0 );
 									this.containerView.focusedIndex = i;
 									this.containerView.focusedItem = item;
@@ -748,7 +750,7 @@ public class Container extends Item {
 				} else {
 					width = 0;
 				}
-				if (this.enableScrolling) {
+				if (this.enableScrolling && this.autoFocusIndex != 0) {
 					//#debug
 					System.out.println("initContent(): scrolling autofocused item");
 					scroll( 0, 0, myContentHeight, width, height );

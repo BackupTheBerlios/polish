@@ -155,7 +155,7 @@ public class RedirectHttpConnection
         tmpIn = tmpHttpConnection.openInputStream();
         int resultCode = tmpHttpConnection.getResponseCode();
 
-        if (resultCode == HttpConnection.HTTP_MOVED_TEMP)
+        if (resultCode == HttpConnection.HTTP_MOVED_TEMP ||  resultCode == HttpConnection.HTTP_MOVED_PERM || resultCode == HttpConnection.HTTP_SEE_OTHER || resultCode == HttpConnection.HTTP_TEMP_REDIRECT)
         {
           url = tmpHttpConnection.getHeaderField("Location");
           tmpHttpConnection.close();

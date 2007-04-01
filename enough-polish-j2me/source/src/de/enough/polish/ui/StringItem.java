@@ -533,6 +533,8 @@ public class StringItem extends Item
 		//#ifdef polish.css.font-bitmap
 			String bitMapUrl = style.getProperty("font-bitmap");
 			if (bitMapUrl != null) {
+				//#debug
+				System.out.println("getting bitmapfont " + bitMapUrl );
 				this.bitMapFont = BitMapFont.getInstance( bitMapUrl );
 			} else {
 				this.bitMapFont = null;

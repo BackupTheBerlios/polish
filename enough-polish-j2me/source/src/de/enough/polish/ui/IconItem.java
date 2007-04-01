@@ -545,7 +545,7 @@ implements ImageConsumer
 
 	//#if polish.debug.enabled
 		public String toString(){
-			return "IconItem(" + this.text + ")/" + this;
+			return "IconItem(" + this.text + ")/" + super.toString();
 		}
 	//#endif
 		
