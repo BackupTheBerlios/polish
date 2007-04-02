@@ -114,8 +114,13 @@ public class SnapshotScreen extends Screen implements Runnable {
 
 	public void run() {
 		if (!this.isHiding && this.player == null) {
-			try {				
-				this.player = Manager.createPlayer("capture://video");				
+			try {
+				//#if polish.mmapi.ImageCaptureLocator:defined
+					// on Series 40 this is for example "capture://image"
+					//#= this.player = Manager.createPlayer("${polish.mmapi.ImageCaptureLocator}");
+				//#else
+					this.player = Manager.createPlayer("capture://video");
+				//#endif
 				this.player.realize();
 				this.videoControl = (VideoControl) this.player.getControl("VideoControl");
 				if (this.videoControl != null) {

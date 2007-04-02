@@ -14,6 +14,7 @@ import javax.microedition.midlet.MIDletStateChangeException;
 import de.enough.polish.blackberry.ui.Display;
 import de.enough.polish.util.TextUtil;
 
+import net.rim.blackberry.api.browser.Browser;
 import net.rim.device.api.ui.UiApplication;
 
 /**
@@ -340,6 +341,10 @@ public abstract class MIDlet extends UiApplication
 	 */
 	public final boolean platformRequest( String URL) throws ConnectionNotFoundException
 	{
+		if (URL.startsWith("http")) {
+			Browser.getDefaultSession().displayPage(URL);
+			return false;
+		}
 		NativeMidlet midlet = new NativeMidlet();
 		return midlet.platformRequest(URL);
 	}
