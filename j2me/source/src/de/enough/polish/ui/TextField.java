@@ -3251,10 +3251,13 @@ public class TextField extends StringItem
 		super.defocus(originalStyle);
 		//#if polish.blackberry
 			this.editField.focusRemove();
-			//#if polish.blackberry && polish.Bugs.ItemStateListenerCalledTooEarly
-				if (this.lastFieldChangedEvent != 0) {
+			//#if polish.Bugs.ItemStateListenerCalledTooEarly
+				String newText = this.editField.getText();
+				String oldText = this.isPassword ? this.passwordText : this.text;
+				
+				if (( this.lastFieldChangedEvent != 0) || !newText.equals(oldText ) ) {
 					this.lastFieldChangedEvent = 0;
-					setString( this.editField.getText() );
+					setString( newText );
 					if (getScreen() instanceof Form ) {
 						notifyStateChanged();
 					}
