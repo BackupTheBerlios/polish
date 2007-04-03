@@ -1849,7 +1849,7 @@ public class TextField extends StringItem
 			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
 			XYRect rect = this.editField.getExtent();
 			this.contentWidth = rect.width;
-			this.contentHeight = rect.height;
+			this.contentHeight = rect.height >= this.font.getHeight() ? rect.height : this.font.getHeight();
 		//#elif tmp.directInput
 			//#ifdef polish.css.font-bitmap
 				if (this.bitMapFontViewer != null) {
@@ -3251,6 +3251,15 @@ public class TextField extends StringItem
 		super.defocus(originalStyle);
 		//#if polish.blackberry
 			this.editField.focusRemove();
+			//#if polish.blackberry && polish.Bugs.ItemStateListenerCalledTooEarly
+				if (this.lastFieldChangedEvent != 0) {
+					this.lastFieldChangedEvent = 0;
+					setString( this.editField.getText() );
+					if (getScreen() instanceof Form ) {
+						notifyStateChanged();
+					}
+				}
+			//#endif
 		//#elif polish.TextField.showInputInfo != false
 			if (this.screen != null) {
 				this.screen.setInfo(null);
