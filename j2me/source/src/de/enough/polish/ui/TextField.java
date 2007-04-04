@@ -2402,7 +2402,6 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if !polish.blackberry
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate()
 	 */
@@ -2411,37 +2410,41 @@ public class TextField extends StringItem
 			return false;
 		}
 		long currentTime = System.currentTimeMillis();
-		//#if polish.blackberry && polish.Bugs.ItemStateListenerCalledTooEarly
-			if (this.lastFieldChangedEvent != 0 && currentTime - this.lastFieldChangedEvent > 500) {
-				this.lastFieldChangedEvent = 0;
-				setString( this.editField.getText() );
-				if (getScreen() instanceof Form ) {
-					notifyStateChanged();
-				}
-			}
-		//#endif
-		//#if tmp.directInput && !polish.blackberry
-			synchronized ( this.lock ) {
-				if (this.caretChar != this.editingCaretChar) {
-					if ( !this.isKeyDown && (currentTime - this.lastInputTime) >= INPUT_TIMEOUT ) {
-						insertCharacter();
+		//#if polish.blackberry
+			//#if polish.Bugs.ItemStateListenerCalledTooEarly
+				if (this.lastFieldChangedEvent != 0 && currentTime - this.lastFieldChangedEvent > 500) {
+					this.lastFieldChangedEvent = 0;
+					setString( this.editField.getText() );
+					if (getScreen() instanceof Form ) {
+						notifyStateChanged();
+						return true;
 					}
 				}
+			//#endif
+			//# return false;
+		//#else
+			//#if tmp.directInput
+				synchronized ( this.lock ) {
+					if (this.caretChar != this.editingCaretChar) {
+						if ( !this.isKeyDown && (currentTime - this.lastInputTime) >= INPUT_TIMEOUT ) {
+							insertCharacter();
+						}
+					}
+				}
+			//#endif
+			if (!this.flashCaret || this.isUneditable) {
+				//System.out.println("TextField.animate():  flashCaret==false");
+				return false;
+			}
+			if ( currentTime - this.lastCaretSwitch > 500 ) {
+				this.lastCaretSwitch = currentTime;
+				this.showCaret = ! this.showCaret;
+				return true;
+			} else {
+				return false;
 			}
 		//#endif
-		if (!this.flashCaret || this.isUneditable) {
-			//System.out.println("TextField.animate():  flashCaret==false");
-			return false;
-		}
-		if ( currentTime - this.lastCaretSwitch > 500 ) {
-			this.lastCaretSwitch = currentTime;
-			this.showCaret = ! this.showCaret;
-			return true;
-		} else {
-			return false;
-		}
 	}
-	//#endif
 	
 	//#if !polish.blackberry
 	/* (non-Javadoc)
