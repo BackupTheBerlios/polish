@@ -8,8 +8,10 @@
         <copy todir="${cluster}/modules/ext">
             <fileset dir="external">
                 <include name="jdom.jar"/>
+                <include name="ant.jar"/>
                 <include name="enough-j2mepolish-runtime.jar"/>
                 <include name="enough-j2mepolish-client.jar"/>
+                <include name="enough-j2mepolish-build.jar"/>
             </fileset>
         </copy>
     </target>

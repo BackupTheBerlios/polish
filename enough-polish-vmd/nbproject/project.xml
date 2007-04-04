@@ -187,6 +187,10 @@
                 <binary-origin>external/jdom.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/ant.jar</runtime-relative-path>
+                <binary-origin>external/ant.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/enough-j2mepolish-runtime.jar</runtime-relative-path>
                 <binary-origin>external/enough-j2mepolish-runtime.jar</binary-origin>
             </class-path-extension>

@@ -1,7 +1,12 @@
 package de.enough.polish.netbeans.database;
 
-import java.util.*;
+import de.enough.polish.devices.DeviceDatabase;
+import de.enough.polish.devices.Vendor;
+import de.enough.polish.plugin.netbeans.settings.PolishSettings;
 import org.netbeans.spi.mobility.cfgfactory.ProjectConfigurationFactory;
+
+import java.io.File;
+import java.util.*;
 
 public class PolishDeviceDatabase implements ProjectConfigurationFactory, ProjectConfigurationFactory.CategoryDescriptor {
     
@@ -13,30 +18,72 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
     }
 
     public String getDisplayName() {
-        return "My StJupid Device Database";
+        return "J2ME Polish Device Database";
     }
 
     public List<ProjectConfigurationFactory.Descriptor> getChildren() {
-        return Arrays.asList(new ProjectConfigurationFactory.Descriptor[] {
-            new Category("Devices Category 1", new ProjectConfigurationFactory.Descriptor[] {
-                new Device("MyDevice1", "ability1=value1,ability2,ability3"),
-                new Category("Devices Category 1 / A", new ProjectConfigurationFactory.Descriptor[] {
-                    new Device("MyDevice1A", "ability1=value1,ability2,ability3"),
-                }),
-                new Device("MyDevice2", "ability1=value2,ability5,ability7"),
-            }),
-            new Category("Devices Category 2", new ProjectConfigurationFactory.Descriptor[] {
-                new Device("MyDevice23", "ability15=value16"),
-            }),
-            new Device("MyDeviceOutOfCategories", "abilityXX=yyy"),
+        DeviceDatabase database = new DeviceDatabase (new File (PolishSettings.getDefault ().getPolishHome ()));
+        Category virtualDevices = null;
+        HashMap<Vendor,Category> categories = new HashMap<Vendor, Category> ();
+        for (de.enough.polish.Device device : database.getDevices ()) {
+            if (device.isVirtual ()) {
+                if (virtualDevices == null)
+                    virtualDevices = new Category ("Virtual Devices", new ArrayList<Descriptor> ());
+                add (device, virtualDevices);
+            } else {
+                Vendor vendor = device.getVendor ();
+                Category category = categories.get (vendor);
+                if (category == null) {
+                    category = new Category (vendor.getIdentifier (), new ArrayList<Descriptor> ());
+                    categories.put (vendor, category);
+                }
+                add (device, category);
+            }
+        }
+        ArrayList<Descriptor> list = new ArrayList<Descriptor> (categories.values ());
+        Collections.sort (list, new Comparator<Descriptor>() {
+            public int compare (Descriptor o1, Descriptor o2) {
+                return o1.getDisplayName ().compareToIgnoreCase (o2.getDisplayName ());
+            }
         });
+        if (virtualDevices != null)
+            list.add (0, virtualDevices);
+        return list;
+    }
+
+    private void add (de.enough.polish.Device device, Category category) {
+        Device dev = new Device (device.getName (), checkForJavaIdentifierCompliant (device.getIdentifier ()), ""); // TODO - convert abilities
+        category.getChildren ().add (dev);
+    }
+
+    private static String checkForJavaIdentifierCompliant (String instanceName) {
+        if (instanceName == null  ||  instanceName.length () < 1)
+            return "a"; // NOI18N
+        StringBuffer buffer = new StringBuffer ();
+        int index = 0;
+        if (Character.isJavaIdentifierStart (instanceName.charAt (0))) {
+            buffer.append (instanceName.charAt (0));
+            index ++;
+        } else {
+            buffer.append ('a'); // NOI18N
+        }
+        while (index < instanceName.length ()) {
+            char c = instanceName.charAt (index);
+            if (Character.isJavaIdentifierPart (c))
+                buffer.append (c);
+            else if (c == '/')
+                buffer.append ('_');
+            index ++;
+        }
+        return buffer.toString ();
     }
 
     class Category implements ProjectConfigurationFactory.CategoryDescriptor {
+
         private String name;
-        private ProjectConfigurationFactory.Descriptor[] children;
+        private List<ProjectConfigurationFactory.Descriptor> children;
         
-        public Category(String name, ProjectConfigurationFactory.Descriptor[] children) {
+        public Category(String name, List<ProjectConfigurationFactory.Descriptor> children) {
             this.name = name;
             this.children = children;
         }
@@ -46,16 +93,20 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
         }
     
         public List<ProjectConfigurationFactory.Descriptor> getChildren() {
-            return Arrays.asList(children);
+            return children;
         }
+
     }
     
     class Device implements ProjectConfigurationFactory.ConfigurationTemplateDescriptor {
+
         private String name;
+        private String cfgName;
         private String abilities;
 
-        public Device(String name, String abilities) {
+        public Device(String name, String cfgName, String abilities) {
             this.name = name;
+            this.cfgName = cfgName;
             this.abilities = abilities;
         }
 
@@ -64,7 +115,7 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
         }
     
         public String getCfgName() {
-            return name;
+            return cfgName;
         }
 
         public Map<String, String> getProjectConfigurationProperties() {
@@ -78,5 +129,7 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
         public Map<String, String> getPrivateProperties() {
             return null;
         }
+
     }
+
 }
