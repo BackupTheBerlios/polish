@@ -87,7 +87,8 @@ implements Runnable
   
   protected Stack history = new Stack();
   //#if polish.Browser.PaintDownloadIndicator
-  protected Gauge loadingIndicator;
+	  protected Gauge loadingIndicator;
+	  private boolean isStoppedWorking;
   //#endif
   
   private Thread loadingThread;
@@ -496,7 +497,7 @@ implements Runnable
   }
 
   public void loadPage(InputStream in)
-    throws IOException
+  throws IOException
   {
 	  if (in == null)
 	  {
@@ -648,6 +649,7 @@ implements Runnable
   
   protected void goImpl(String url)
   {
+	 String previousDocumentBase = this.currentDocumentBase; 
     try
     {
       // Throws an exception if no handler found.
@@ -666,7 +668,8 @@ implements Runnable
     catch (IOException e)
     {
       //#debug error
-      e.printStackTrace();
+      System.out.println("Unable to load page " + url + e );
+      this.currentDocumentBase = previousDocumentBase;
     }
   }
   
@@ -725,10 +728,11 @@ implements Runnable
   public boolean animate()
   {
     boolean result = false;
-    
-    if (this.isWorking)
-    {
-      result = this.loadingIndicator.animate();
+    if (this.isWorking) {
+    	result = this.loadingIndicator.animate();
+    } else if (!this.isStoppedWorking) {
+    	this.isStoppedWorking = true;
+    	result = true;
     }
 
     return super.animate() | result;
@@ -752,6 +756,9 @@ implements Runnable
       if (this.isRunning && this.nextUrl != null)
       {
         this.isWorking = true;
+        //#if polish.Browser.PaintDownloadIndicator
+        	this.isStoppedWorking = false;
+        //#endif
         String url = this.nextUrl;
         this.nextUrl = null;
           

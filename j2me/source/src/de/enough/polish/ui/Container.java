@@ -198,6 +198,15 @@ public class Container extends Item {
 		}
 	}
 	
+	//#if polish.LibraryBuild
+	public void add( javax.microedition.lcdui.Item item ) {
+		// ignore
+	}
+	public void add( int index, javax.microedition.lcdui.Item item ) {
+		// ignore
+	}
+	//#endif
+	
 	/**
 	 * Replaces the item at the specified position in this list with the given item. 
 	 * 

@@ -115,27 +115,46 @@ public class SnapshotScreen extends Screen implements Runnable {
 	public void run() {
 		if (!this.isHiding && this.player == null) {
 			try {
-				//#if polish.mmapi.ImageCaptureLocator:defined
-					// on Series 40 this is for example "capture://image"
-					//#= this.player = Manager.createPlayer("${polish.mmapi.ImageCaptureLocator}");
-				//#else
-					this.player = Manager.createPlayer("capture://video");
-				//#endif
+				// note: now using dynamic/defensive approach, so that it works also with generic devices
+//				//#if polish.mmapi.ImageCaptureLocator:defined
+//					// on Series 40 this is for example "capture://image"
+//					//#= this.player = Manager.createPlayer("${polish.mmapi.ImageCaptureLocator}");
+//				//#else
+//					this.player = Manager.createPlayer("capture://video");
+//				//#endif
+				String[] contentTypes = Manager.getSupportedContentTypes("capture");
+				if (contentTypes == null || contentTypes.length == 0) {
+					this.error = new MediaException("capture not supported");
+					return;
+				}
+				String protocol = "capture://video";
+				for (int i = 0; i < contentTypes.length; i++) {
+					String contentType = contentTypes[i];
+					if ("image".equals(contentType)) { // this is the case on Series 40, for example
+						protocol = "capture://image";
+					}
+				}
+				this.player = Manager.createPlayer(protocol);
 				this.player.realize();
 				this.videoControl = (VideoControl) this.player.getControl("VideoControl");
 				if (this.videoControl != null) {
-					//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-						this.videoControl.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, MasterCanvas.instance);
-					//#else
-						this.videoControl.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, this);
-					//#endif
-					int width = this.contentWidth;//getWidth() - 5;
-					int height = this.contentHeight; //getHeight() - (this.titleHeight + 2);
-					this.videoControl.setDisplayLocation(this.contentX, this.contentY );
-					this.videoControl.setDisplaySize( width, height );
-					this.videoControl.setVisible(true);
-					this.player.prefetch();
-					this.player.start();
+					try {
+						//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
+							this.videoControl.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, MasterCanvas.instance);
+						//#else
+							this.videoControl.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, this);
+						//#endif
+						int width = this.contentWidth;//getWidth() - 5;
+						int height = this.contentHeight; //getHeight() - (this.titleHeight + 2);
+						this.videoControl.setDisplayLocation(this.contentX, this.contentY );
+						this.videoControl.setDisplaySize( width, height );
+						this.videoControl.setVisible(true);
+						this.player.prefetch();
+						this.player.start();
+					} catch (MediaException e) {
+						this.error = e;
+						return;
+					}
 				}
 			} catch (IOException e) {
 				//#debug error
@@ -145,8 +164,16 @@ public class SnapshotScreen extends Screen implements Runnable {
 				//#debug error
 				System.out.println("Unable to establish player" + e);
 				this.error = e;
+				return;
 			}
 		}
+//		if (!this.isHiding) {
+//			if (this.videoControl != null) {
+//				this.videoControl.setVisible(true);
+//			} else {
+//
+//			}
+//		}
 		if (this.takeSnapshot) {
 			if (this.videoControl == null) {
 				this.error = new MediaException("Unable to init player: " + (this.error != null ? this.error.toString() : "unknown"));
@@ -160,6 +187,7 @@ public class SnapshotScreen extends Screen implements Runnable {
 		}
 		//#if !polish.Bugs.SingleCapturePlayer
 			if (this.isHiding && this.player != null) {
+				//this.videoControl.setVisible(false);
 				try {
 					try {
 						this.player.stop();
