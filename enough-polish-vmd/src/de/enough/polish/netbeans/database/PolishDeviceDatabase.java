@@ -3,6 +3,7 @@ package de.enough.polish.netbeans.database;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.Vendor;
 import de.enough.polish.plugin.netbeans.settings.PolishSettings;
+import de.enough.polish.netbeans.J2mePolishProjectGenerator;
 import org.netbeans.spi.mobility.cfgfactory.ProjectConfigurationFactory;
 
 import java.io.File;
@@ -52,7 +53,9 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
     }
 
     private void add (de.enough.polish.Device device, Category category) {
-        Device dev = new Device (device.getName (), checkForJavaIdentifierCompliant (device.getIdentifier ()), ""); // TODO - convert abilities
+        String name = checkForJavaIdentifierCompliant (device.getIdentifier ());
+        String abilities = J2mePolishProjectGenerator.getAbilities (device.getCapabilities ());
+        Device dev = new Device (device.getName (), name, abilities);
         category.getChildren ().add (dev);
     }
 
