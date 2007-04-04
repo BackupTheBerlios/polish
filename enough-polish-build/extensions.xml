@@ -466,6 +466,24 @@
 		<name>calculate</name>
 		<class>de.enough.polish.propertyfunctions.CalculateFunction</class>
 	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
+		<name>contains</name>
+		<class>de.enough.polish.propertyfunctions.ContainsFunction</class>
+	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
+		<name>containsIgnoreCase</name>
+		<class>de.enough.polish.propertyfunctions.ContainsIgnoreCaseFunction</class>
+	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
+		<name>isOS</name>
+		<class>de.enough.polish.propertyfunctions.OsFunction</class>
+	</extension>
 	
 	<!-- Preverifier -->
 	
