@@ -53,6 +53,7 @@
 		<capability name="ScreenSize" value="128x128" />
 		<capability name="CanvasSize" value="128x96" />
 		<capability name="FullCanvasSize" value="128x128" />
+		<capability name="mmapi.ImageCaptureLocator" value="capture://image" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
 		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_1" />
 		<capability name="Emulator.Skin.2" value="\Devices\Nokia_Prototype_SDK_3_0\devices\Prototype_3_0_S40_128x128_MIDP_Emulator" />
@@ -64,6 +65,7 @@
 		<capability name="Font.small" value="9" />
 		<capability name="Font.medium" value="12" />
 		<capability name="Font.large" value="16" />
+		<capability name="Bugs" value="ImageCaptureNotWithVideo" />
 	</group>
 
 	<group>

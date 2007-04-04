@@ -2644,7 +2644,6 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// add build properties - midlet infos:
-		// add build properties - midlet infos:
 //		String mainClassName = this.environment.getVariable( "polish.classes.main" );
 //		if (mainClassName != null) {
 //			//attributesByName.put( "Main-Class", new Attribute( "Main-Class", mainClassName ) );
@@ -2660,6 +2659,10 @@ public class PolishTask extends ConditionalTask {
 								new Attribute(key, info) );
 					this.environment.setVariable( key, info );
 				} else {
+					if (this.useDefaultPackage) {
+						Midlet midlet = new Midlet( midletDefinition );
+						midletDefinition = key + ": " + midlet.getMidletInfo(null, this.useDefaultPackage );
+					}
 					attributesByName.put( key, 
 							new Attribute(key, midletDefinition) );	
 				}

@@ -39,41 +39,68 @@ import de.enough.polish.propertyfunctions.PropertyFunction;
 import de.enough.polish.util.StringUtil;
 
 /**
- * <p>Contains all variables, settings, etc not only for the preprocessing, but also for the various other build phases.</p>
- *
- * <p>Copyright Enough Software 2005</p>
+ * <p>
+ * Contains all variables, settings, etc not only for the preprocessing, but
+ * also for the various other build phases.
+ * </p>
+ * 
+ * <p>
+ * Copyright Enough Software 2005
+ * </p>
+ * 
  * <pre>
- * history
- *        22-Apr-2005 - rob creation
+ *  history
+ *         22-Apr-2005 - rob creation
  * </pre>
+ * 
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class Environment {
 	private static Environment INSTANCE;
+
 	private final static String PROPERTY_CHARS_STR = "\\w|\\.|\\-|,|\\(|\\)|\\s|/";
-	private final static String PROPERTY_PATTERN_STR = "\\$\\{\\s*[" + PROPERTY_CHARS_STR + "]+\\s*\\}";
-	protected final static Pattern PROPERTY_PATTERN = Pattern.compile( PROPERTY_PATTERN_STR );
+
+	private final static String PROPERTY_PATTERN_STR = "\\$\\{\\s*["
+			+ PROPERTY_CHARS_STR + "]+\\s*\\}";
+
+	protected final static Pattern PROPERTY_PATTERN = Pattern
+			.compile(PROPERTY_PATTERN_STR);
+
 	private final static String PROPERTY_FUNCTION_CHARS_STR = "\\w|\\.|\\-|,|\\s|/|\\s|,|\\+|\\*|:";
-	private final static String FUNCTION_PATTERN_STR = "\\w+\\s*\\(\\s*[" + PROPERTY_FUNCTION_CHARS_STR + "]+\\s*\\)";
-	protected final static Pattern FUNCTION_PATTERN = Pattern.compile( FUNCTION_PATTERN_STR );
-	
-	
+
+	private final static String FUNCTION_PATTERN_STR = "\\w+\\s*\\(\\s*["
+			+ PROPERTY_FUNCTION_CHARS_STR + "]+\\s*\\)";
+
+	protected final static Pattern FUNCTION_PATTERN = Pattern
+			.compile(FUNCTION_PATTERN_STR);
+
 	private final Map symbols;
+
 	private final Map variables;
+
 	/** holds all temporary defined variables */
 	private final HashMap temporaryVariables;
+
 	/** holds all temporary defined symbols */
 	private final HashMap temporarySymbols;
+
 	private final ExtensionManager extensionManager;
+
 	private final BooleanEvaluator booleanEvaluator;
+
 	private Locale locale;
+
 	private Device device;
+
 	private BuildSetting buildSetting;
+
 	private LibraryManager libraryManager;
+
 	private final HashMap exchangeStore;
+
 	private final Map basicProperties;
+
 	private File baseDir;
-	
 
 	/**
 	 * Creates a new empty environment.
@@ -86,19 +113,23 @@ public class Environment {
 		this.temporarySymbols = new HashMap();
 		this.temporaryVariables = new HashMap();
 		this.extensionManager = null;
-		this.booleanEvaluator = new BooleanEvaluator( this );
+		this.booleanEvaluator = new BooleanEvaluator(this);
 		this.basicProperties = null;
 		INSTANCE = this;
 	}
-	
+
 	/**
 	 * Creates a new empty environment.
 	 * 
-	 * @param extensionsManager the manager for extensions
-	 * @param properties basic environment settings
-	 * @param baseDir the base directory like the project's home directory
+	 * @param extensionsManager
+	 *            the manager for extensions
+	 * @param properties
+	 *            basic environment settings
+	 * @param baseDir
+	 *            the base directory like the project's home directory
 	 */
-	public Environment( ExtensionManager extensionsManager, Map properties, File baseDir ) {
+	public Environment(ExtensionManager extensionsManager, Map properties,
+			File baseDir) {
 		super();
 		this.symbols = new HashMap();
 		this.variables = new HashMap();
@@ -106,13 +137,13 @@ public class Environment {
 		this.temporarySymbols = new HashMap();
 		this.temporaryVariables = new HashMap();
 		this.extensionManager = extensionsManager;
-		this.booleanEvaluator = new BooleanEvaluator( this );
-		this.variables.putAll( properties );
+		this.booleanEvaluator = new BooleanEvaluator(this);
+		this.variables.putAll(properties);
 		this.basicProperties = properties;
 		this.baseDir = baseDir;
 		INSTANCE = this;
 	}
-	
+
 	/**
 	 * Retrieves the instance of the environment
 	 * 
@@ -121,17 +152,17 @@ public class Environment {
 	public static Environment getInstance() {
 		return INSTANCE;
 	}
-	
-	public void initialize( Device newDevice, Locale newLocale ) {
+
+	public void initialize(Device newDevice, Locale newLocale) {
 		this.device = newDevice;
 		this.locale = newLocale;
 		this.symbols.clear();
-		this.symbols.putAll( newDevice.getFeatures() );
+		this.symbols.putAll(newDevice.getFeatures());
 		this.variables.clear();
 		if (this.basicProperties != null) {
-			this.variables.putAll( this.basicProperties );
+			this.variables.putAll(this.basicProperties);
 		}
-		this.variables.putAll( newDevice.getCapabilities() );
+		this.variables.putAll(newDevice.getCapabilities());
 		this.temporaryVariables.clear();
 		this.temporarySymbols.clear();
 	}
@@ -139,165 +170,189 @@ public class Environment {
 	/**
 	 * @param features
 	 */
-	public void setSymbols( Map features ) {
+	public void setSymbols(Map features) {
 		this.symbols.clear();
-		this.symbols.putAll( features );
+		this.symbols.putAll(features);
 	}
 
 	/**
 	 * @param capabilities
 	 */
-	public void setVariables( Map capabilities ) {
+	public void setVariables(Map capabilities) {
 		this.variables.clear();
-		this.variables.putAll( capabilities );
+		this.variables.putAll(capabilities);
 	}
-	
+
 	public void clearTemporarySettings() {
 		this.temporarySymbols.clear();
 		this.temporaryVariables.clear();
 	}
-	
 
 	/**
 	 * @param name
 	 * @param value
 	 */
 	public void addVariable(String name, String value) {
-		this.variables.put( name, value );
-		this.symbols.put( name + ":defined", Boolean.TRUE );
+		String previousValue = (String) this.variables.get(name);
+		if (previousValue != null) {
+			// remove previous values from defined symbols first:
+			if ("true".equals(previousValue)) {
+				this.symbols.remove(name);
+			}
+			this.symbols.remove(name + "." + previousValue);
+			String[] individualValues = StringUtil.splitAndTrim(previousValue
+					.toLowerCase(), ',');
+			for (int i = 0; i < individualValues.length; i++) {
+				String individualValue = individualValues[i];
+				this.symbols.remove(name + "." + individualValue);
+			}
+		}
+		if (value.length() == 0) {
+			this.variables.remove(name);
+			this.symbols.remove(name + ":defined");
+			name = name.toLowerCase();
+			this.variables.remove(name);
+			this.symbols.remove(name + ":defined");
+			return;
+		}
+		this.variables.put(name, value);
+		this.symbols.put(name + ":defined", Boolean.TRUE);
 		name = name.toLowerCase();
-		this.variables.put( name, value );
-		this.symbols.put( name + ":defined", Boolean.TRUE );
+		this.variables.put(name, value);
+		this.symbols.put(name + ":defined", Boolean.TRUE);
 		value = value.toLowerCase();
 		if ("true".equals(value)) {
-			this.symbols.put(name, Boolean.TRUE );
+			this.symbols.put(name, Boolean.TRUE);
 		}
-		String[] individualValues = StringUtil.splitAndTrim( value, ',' );
+		String[] individualValues = StringUtil.splitAndTrim(value, ',');
 		for (int i = 0; i < individualValues.length; i++) {
 			String individualValue = individualValues[i];
-			this.symbols.put( name + "." + individualValue, Boolean.TRUE );
+			this.symbols.put(name + "." + individualValue, Boolean.TRUE);
 		}
 	}
-	
-	public String removeVariable( String name ) {
-		this.variables.remove( name );
-		this.temporaryVariables.remove( name );
-		this.variables.remove( name + ":defined" );
-		this.temporaryVariables.remove( name + ":defined" );
+
+	public String removeVariable(String name) {
+		this.variables.remove(name);
+		this.temporaryVariables.remove(name);
+		this.variables.remove(name + ":defined");
+		this.temporaryVariables.remove(name + ":defined");
 		name = name.toLowerCase();
-		String value = (String) this.variables.remove( name );
-		String tempValue = (String) this.temporaryVariables.remove( name );
+		String value = (String) this.variables.remove(name);
+		String tempValue = (String) this.temporaryVariables.remove(name);
 		if (value == null) {
 			value = tempValue;
 		}
 		if (value != null) {
-			this.symbols.remove( name + ":defined" );
-			this.temporarySymbols.remove( name + ":defined" );
-			String[] individualValues = StringUtil.splitAndTrim( value.toLowerCase(), ',' );
+			this.symbols.remove(name + ":defined");
+			this.temporarySymbols.remove(name + ":defined");
+			String[] individualValues = StringUtil.splitAndTrim(value
+					.toLowerCase(), ',');
 			for (int i = 0; i < individualValues.length; i++) {
 				String individualValue = name + "." + individualValues[i];
-				this.symbols.remove( individualValue );
-				this.temporarySymbols.remove( individualValue );
+				this.symbols.remove(individualValue);
+				this.temporarySymbols.remove(individualValue);
 			}
 		}
 		return value;
 	}
-	
+
 	/**
 	 * @param name
 	 * @param value
 	 */
 	public void setVariable(String name, String value) {
-		removeVariable( name );
-		addVariable( name, value );
+		removeVariable(name);
+		addVariable(name, value);
 	}
 
-	
-	public String removeTemporaryVariable( String name ) {
+	public String removeTemporaryVariable(String name) {
 		name = name.toLowerCase();
-		String value = (String) this.temporaryVariables.remove( name );
+		String value = (String) this.temporaryVariables.remove(name);
 		if (value != null) {
-			this.temporarySymbols.remove( name + ":defined" );
-			String[] individualValues = StringUtil.splitAndTrim( value.toLowerCase(), ',' );
+			this.temporarySymbols.remove(name + ":defined");
+			String[] individualValues = StringUtil.splitAndTrim(value
+					.toLowerCase(), ',');
 			for (int i = 0; i < individualValues.length; i++) {
 				String individualValue = name + "." + individualValues[i];
-				this.temporarySymbols.remove( individualValue );
+				this.temporarySymbols.remove(individualValue);
 			}
 		}
 		return value;
 	}
 
-	
-	public String getVariable( String name ) {
-		String value = (String) this.variables.get( name );
+	public String getVariable(String name) {
+		String value = (String) this.variables.get(name);
 		if (value == null) {
 			name = name.toLowerCase();
-			value = (String) this.variables.get( name );
+			value = (String) this.variables.get(name);
 			if (value == null) {
-				value = (String) this.temporaryVariables.get( name );
+				value = (String) this.temporaryVariables.get(name);
 			}
 		}
 		return value;
 	}
-	
-	public void addTemporaryVariable( String name, String value ) {
-		this.temporaryVariables.put( name, value );
-		this.temporarySymbols.put( name + ":defined", Boolean.TRUE );
+
+	public void addTemporaryVariable(String name, String value) {
+		this.temporaryVariables.put(name, value);
+		this.temporarySymbols.put(name + ":defined", Boolean.TRUE);
 		name = name.toLowerCase();
-		this.temporaryVariables.put( name, value );
-		this.temporarySymbols.put( name + ":defined", Boolean.TRUE );
+		this.temporaryVariables.put(name, value);
+		this.temporarySymbols.put(name + ":defined", Boolean.TRUE);
 		value = value.toLowerCase();
-		String[] individualValues = StringUtil.splitAndTrim( value, ',' );
+		String[] individualValues = StringUtil.splitAndTrim(value, ',');
 		for (int i = 0; i < individualValues.length; i++) {
 			String individualValue = individualValues[i];
-			this.temporarySymbols.put( name + "." + individualValue, Boolean.TRUE );
+			this.temporarySymbols.put(name + "." + individualValue,
+					Boolean.TRUE);
 		}
 	}
-	
 
 	/**
 	 * @param name
 	 */
-	public void addSymbol( String name ) {
-//		if ( name.indexOf("screen-change-animation") != -1) {
-//			System.out.println("ADDING SYMBOL "+ name);
-//			throw new IllegalArgumentException("hier");
-//		}
-		this.symbols.put( name, Boolean.TRUE );
+	public void addSymbol(String name) {
+		// if ( name.indexOf("screen-change-animation") != -1) {
+		// System.out.println("ADDING SYMBOL "+ name);
+		// throw new IllegalArgumentException("hier");
+		// }
+		this.symbols.put(name, Boolean.TRUE);
 		name = name.toLowerCase();
-		this.symbols.put( name, Boolean.TRUE );
+		this.symbols.put(name, Boolean.TRUE);
 	}
-	
-	public boolean removeSymbol( String name ) {
-		this.symbols.remove( name ); 
-		this.temporarySymbols.remove( name );
+
+	public boolean removeSymbol(String name) {
+		this.symbols.remove(name);
+		this.temporarySymbols.remove(name);
 		name = name.toLowerCase();
-		boolean removed = ((this.symbols.remove( name ) != null) 
-		       | (this.temporarySymbols.remove( name ) != null) );
+		boolean removed = ((this.symbols.remove(name) != null) | (this.temporarySymbols
+				.remove(name) != null));
 		return removed;
 	}
-	
-	public boolean hasSymbol( String name ) {
+
+	public boolean hasSymbol(String name) {
 		name = name.toLowerCase();
-		//System.out.println( "Environment: hasSymbol(" + name + ") = " + ( this.symbols.get(name) != null ) );
-//		if ( name.indexOf("screen-change-animation") != -1) {
-//			System.out.println("this.symbols.get(" + name + ")=" + ( this.symbols.get(name) != null) );
-//			System.out.println("this.temporarySymbols.get(" + name + ")=" + ( this.temporarySymbols.get(name) != null) );
-//		}
-		return ( this.symbols.get(name) != null 
-				|| this.temporarySymbols.get( name ) != null );
+		// System.out.println( "Environment: hasSymbol(" + name + ") = " + (
+		// this.symbols.get(name) != null ) );
+		// if ( name.indexOf("screen-change-animation") != -1) {
+		// System.out.println("this.symbols.get(" + name + ")=" + (
+		// this.symbols.get(name) != null) );
+		// System.out.println("this.temporarySymbols.get(" + name + ")=" + (
+		// this.temporarySymbols.get(name) != null) );
+		// }
+		return (this.symbols.get(name) != null || this.temporarySymbols
+				.get(name) != null);
 	}
-	
-	public void addTemporarySymbol( String name ) {
+
+	public void addTemporarySymbol(String name) {
 		name = name.toLowerCase();
-		this.temporarySymbols.put( name, Boolean.TRUE );
+		this.temporarySymbols.put(name, Boolean.TRUE);
 	}
-	
-	public boolean removeTemporarySymbol( String name ) {
+
+	public boolean removeTemporarySymbol(String name) {
 		name = name.toLowerCase();
-		return (this.temporarySymbols.remove( name ) != null);
+		return (this.temporarySymbols.remove(name) != null);
 	}
-	
+
 	public Locale getLocale() {
 		return this.locale;
 	}
@@ -305,38 +360,46 @@ public class Environment {
 	/**
 	 * Inserts the property-values in a string with property-definitions.
 	 * 
-	 * @param input the string in which property definition might be included, e.g. "file=${source}/MyFile.java"
-	 * @return the input with all properties replaced by their values.
-	 * 			When a property is not defined the full property-name is inserted instead (e.g. "${ property-name }").  
+	 * @param input
+	 *            the string in which property definition might be included,
+	 *            e.g. "file=${source}/MyFile.java"
+	 * @return the input with all properties replaced by their values. When a
+	 *         property is not defined the full property-name is inserted
+	 *         instead (e.g. "${ property-name }").
 	 */
-	public String writeProperties( String input ) {
-		return writeProperties( input, false );
+	public String writeProperties(String input) {
+		return writeProperties(input, false);
 	}
-	
+
 	/**
 	 * Inserts the property-values in a string with property-definitions.
 	 * 
-	 * @param input the string in which property definition might be included, e.g. "file=${source}/MyFile.java"
-	 * @param needsToBeDefined true when an IllegalArgumentException should be thrown when
-	 *              no value for a property was found.
-	 * @return the input with all properties replaced by their values.
-	 * 			When a property is not defined (and needsToBeDefined is false),
-	 *             the full property-name is inserted instead (e.g. "${ property-name }").  
-	 * @throws IllegalArgumentException when a property-value was not found and needsToBeDefined is true.
+	 * @param input
+	 *            the string in which property definition might be included,
+	 *            e.g. "file=${source}/MyFile.java"
+	 * @param needsToBeDefined
+	 *            true when an IllegalArgumentException should be thrown when no
+	 *            value for a property was found.
+	 * @return the input with all properties replaced by their values. When a
+	 *         property is not defined (and needsToBeDefined is false), the full
+	 *         property-name is inserted instead (e.g. "${ property-name }").
+	 * @throws IllegalArgumentException
+	 *             when a property-value was not found and needsToBeDefined is
+	 *             true.
 	 */
-	public String writeProperties( String input, boolean needsToBeDefined ) {
+	public String writeProperties(String input, boolean needsToBeDefined) {
 		if (input == null) {
-			throw new IllegalArgumentException("internal error: input cannot be null.");
+			throw new IllegalArgumentException(
+					"internal error: input cannot be null.");
 		}
-		Matcher matcher = PROPERTY_PATTERN.matcher( input );
+		Matcher matcher = PROPERTY_PATTERN.matcher(input);
 		boolean propertyFound = matcher.find();
 		if (!propertyFound) {
 			return input;
 		}
 		/*
-		StringBuffer buffer = new StringBuffer();
-		int startPos = 0;
-		*/
+		 * StringBuffer buffer = new StringBuffer(); int startPos = 0;
+		 */
 		String lastGroup = null;
 		while (propertyFound) {
 			// append string til start of the pattern:
@@ -344,8 +407,8 @@ public class Environment {
 			// startPos = matcher.end();
 			// append property:
 			String group = matcher.group(); // == ${ property.name }
-											// or == ${ function( property.name ) }
-											// or == ${ function( fix.value ) }
+			// or == ${ function( property.name ) }
+			// or == ${ function( fix.value ) }
 			if (group.equals(lastGroup)) {
 				if (matcher.find()) {
 					group = matcher.group();
@@ -354,90 +417,78 @@ public class Environment {
 				}
 			}
 			lastGroup = group;
-			
-			String property = group.substring( 2, group.length() -1 ).trim(); // == property.name
-			
-			String value = getProperty( property, needsToBeDefined );
+
+			String property = group.substring(2, group.length() - 1).trim(); // ==
+																				// property.name
+
+			String value = getProperty(property, needsToBeDefined);
 			if (value != null) {
-			  // We had an endless loop when '${foo}' got replaced by '${foo}'.
+				// We had an endless loop when '${foo}' got replaced by
+				// '${foo}'.
 				if (value.equals("${" + property + "}")) {
-				  System.err.println("WARNING: replacing " + value + " with " + value);
-				  break;
+					System.err.println("WARNING: replacing " + value + " with "
+							+ value);
+					break;
 				}
-				input = StringUtil.replace( input, group, value );
-				matcher = PROPERTY_PATTERN.matcher( input );
+				input = StringUtil.replace(input, group, value);
+				matcher = PROPERTY_PATTERN.matcher(input);
 			}
-			propertyFound = matcher.find();
-		} 
-		/*
-			// the property-name can also include a convert-function, e.g. bytes( polish.HeapSize )
-			int functionStart = property.indexOf('(');
-			if (functionStart != -1) {
-				int functionEnd = property.indexOf(')', functionStart);
-				if (functionEnd == -1) {
-					throw new IllegalArgumentException("The function [" + property + "] needs a closing paranthesis in input [" + input + "].");
-				}
-				String functionName = property.substring(0, functionStart).trim();
-				property = property.substring( functionStart + 1, functionEnd ).trim();
-				String originalValue = getVariable( property );
-				if (originalValue == null) {
-					// when functions are used, fix values can be used, too: 
-					originalValue = property;
-				}
-				
-				Object intermediateValue = ConvertUtil.convert( originalValue, functionName, this.variables);
-				value = ConvertUtil.toString(intermediateValue);
-			} else {
-				value = getVariable( property );
-			}
-			if (value == null) {
-				if (needsToBeDefined) {
-					throw new IllegalArgumentException("property " + group + " is not defined.");
-				} else {
-					value = group;
-				}
-			} else {
-				if ( value.indexOf("${") != -1) {
-					Matcher valueMatcher = PROPERTY_PATTERN.matcher( value );
-					while ( valueMatcher.find() ) {
-						String internalGroup = valueMatcher.group();
-						String internalProperty = internalGroup.substring( 2, internalGroup.length() -1 ).trim(); // == property.name
-						String internalValue = getVariable( internalProperty );
-						if (internalValue != null) {
-							value = StringUtil.replace( value, internalGroup, internalValue);
-						} else if ( needsToBeDefined ) {
-							throw new IllegalArgumentException("property " + internalGroup + " is not defined.");
-						}
-					}
-					
-				}
-			}
-			buffer.append( value );
-			// look for another property:
 			propertyFound = matcher.find();
 		}
-		// append tail:
-		buffer.append( input.substring( startPos ) );
-		return buffer.toString();
-		*/ 
+		/*
+		 * // the property-name can also include a convert-function, e.g. bytes(
+		 * polish.HeapSize ) int functionStart = property.indexOf('('); if
+		 * (functionStart != -1) { int functionEnd = property.indexOf(')',
+		 * functionStart); if (functionEnd == -1) { throw new
+		 * IllegalArgumentException("The function [" + property + "] needs a
+		 * closing paranthesis in input [" + input + "]."); } String
+		 * functionName = property.substring(0, functionStart).trim(); property =
+		 * property.substring( functionStart + 1, functionEnd ).trim(); String
+		 * originalValue = getVariable( property ); if (originalValue == null) { //
+		 * when functions are used, fix values can be used, too: originalValue =
+		 * property; }
+		 * 
+		 * Object intermediateValue = ConvertUtil.convert( originalValue,
+		 * functionName, this.variables); value =
+		 * ConvertUtil.toString(intermediateValue); } else { value =
+		 * getVariable( property ); } if (value == null) { if (needsToBeDefined) {
+		 * throw new IllegalArgumentException("property " + group + " is not
+		 * defined."); } else { value = group; } } else { if (
+		 * value.indexOf("${") != -1) { Matcher valueMatcher =
+		 * PROPERTY_PATTERN.matcher( value ); while ( valueMatcher.find() ) {
+		 * String internalGroup = valueMatcher.group(); String internalProperty =
+		 * internalGroup.substring( 2, internalGroup.length() -1 ).trim(); // ==
+		 * property.name String internalValue = getVariable( internalProperty );
+		 * if (internalValue != null) { value = StringUtil.replace( value,
+		 * internalGroup, internalValue); } else if ( needsToBeDefined ) { throw
+		 * new IllegalArgumentException("property " + internalGroup + " is not
+		 * defined."); } }
+		 *  } } buffer.append( value ); // look for another property:
+		 * propertyFound = matcher.find(); } // append tail: buffer.append(
+		 * input.substring( startPos ) ); return buffer.toString();
+		 */
 		return input;
 	}
 
 	/**
 	 * Retrieves the given property.
 	 * 
-	 * @param property the name of the property
-	 * @param needsToBeDefined true when an exception should be thrown when the property is not defined
+	 * @param property
+	 *            the name of the property
+	 * @param needsToBeDefined
+	 *            true when an exception should be thrown when the property is
+	 *            not defined
 	 * @return the found property or null when it is not found
 	 */
 	public String getProperty(String property, boolean needsToBeDefined) {
-		//System.out.println("getProperty for " + property);
+		// System.out.println("getProperty for " + property);
 		if (property.indexOf('(') == -1) {
 			// the property does not contain a property-function:
-			String value = getVariable( property );
+			String value = getVariable(property);
 			if (value == null) {
 				if (needsToBeDefined) {
-					throw new IllegalArgumentException("The property [" + property + "] is not defined.");
+					throw new IllegalArgumentException("The property ["
+							+ property + "] is not defined.");
 				} else {
 					return null;
 				}
@@ -446,52 +497,72 @@ public class Environment {
 			}
 		} else {
 			// the property contains a property-function:
-			Matcher matcher = FUNCTION_PATTERN.matcher( property );
-			while ( matcher.find() ) {
-				String group = matcher.group(); // == function ( propertyname [, arg, arg, ...] )
+			Matcher matcher = FUNCTION_PATTERN.matcher(property);
+			while (matcher.find()) {
+				String group = matcher.group(); // == function ( propertyname [,
+												// arg, arg, ...] )
 				int propertyNameStart = group.indexOf('(');
 				int propertyNameEnd = group.indexOf(',');
 				boolean hasParameters = true;
-				if (propertyNameEnd == -1 ) {
+				if (propertyNameEnd == -1) {
 					propertyNameEnd = group.length() - 1;
 					hasParameters = false;
 				}
-				String propertyName = group.substring( propertyNameStart + 1, propertyNameEnd ).trim();
-				String propertyValue = getVariable( propertyName );
-				if (propertyValue == null ) {
-//					if (needsToBeDefined) {
-//						throw new IllegalArgumentException("The property [" + propertyName + "] is not defined.");
-//					} else {
-						propertyValue = propertyName;
-//					}
+				String propertyName = group.substring(propertyNameStart + 1,
+						propertyNameEnd).trim();
+				String propertyValue = getVariable(propertyName);
+				if (propertyValue == null) {
+					// if (needsToBeDefined) {
+					// throw new IllegalArgumentException("The property [" +
+					// propertyName + "] is not defined.");
+					// } else {
+					propertyValue = propertyName;
+					// }
 				}
 				String[] parameters = null;
-				if ( hasParameters ) {
-					String parametersStr = property.substring( propertyNameEnd + 1, property.length() -1 ).trim();
-					parameters = StringUtil.splitAndTrim( parametersStr, ',' );
+				if (hasParameters) {
+					String parametersStr = property.substring(
+							propertyNameEnd + 1, property.length() - 1).trim();
+					parameters = StringUtil.splitAndTrim(parametersStr, ',');
 				}
-				String functionName = group.substring( 0, propertyNameStart ).trim();
+				String functionName = group.substring(0, propertyNameStart)
+						.trim();
 				PropertyFunction function = null;
 				try {
-					function = (PropertyFunction) this.extensionManager.getExtension( ExtensionManager.TYPE_PROPERTY_FUNCTION, functionName, this );
+					function = (PropertyFunction) this.extensionManager
+							.getExtension(
+									ExtensionManager.TYPE_PROPERTY_FUNCTION,
+									functionName, this);
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new IllegalArgumentException("The property function [" + functionName + "] could not be loaded. Please register it in custom-extensions.xml.");
+					throw new IllegalArgumentException(
+							"The property function ["
+									+ functionName
+									+ "] could not be loaded. Please register it in custom-extensions.xml.");
 				}
 				if (function == null) {
-					throw new IllegalArgumentException("The property function [" + functionName + "] is not known. Please register it in custom-extensions.xml.");
+					throw new IllegalArgumentException(
+							"The property function ["
+									+ functionName
+									+ "] is not known. Please register it in custom-extensions.xml.");
 				}
-				// now ask the function whether it needs a defined property value:
-				if ( propertyValue == null && function.needsDefinedPropertyValue()) {
-					throw new IllegalArgumentException("The property [" + propertyName + "] is not defined.");
+				// now ask the function whether it needs a defined property
+				// value:
+				if (propertyValue == null
+						&& function.needsDefinedPropertyValue()) {
+					throw new IllegalArgumentException("The property ["
+							+ propertyName + "] is not defined.");
 				}
 				try {
-					String replacement = function.process(propertyValue, parameters, this);
-					property = StringUtil.replace( property, group, replacement );
-					matcher = FUNCTION_PATTERN.matcher( property );
+					String replacement = function.process(propertyValue,
+							parameters, this);
+					property = StringUtil.replace(property, group, replacement);
+					matcher = FUNCTION_PATTERN.matcher(property);
 				} catch (RuntimeException e) {
 					e.printStackTrace();
-					System.out.println("Unable to process function [" + functionName + "] on value [" + propertyValue + "]: " + e.toString() );
+					System.out.println("Unable to process function ["
+							+ functionName + "] on value [" + propertyValue
+							+ "]: " + e.toString());
 					throw e;
 				}
 			}
@@ -500,17 +571,20 @@ public class Environment {
 	}
 
 	/**
-	 * @param locale the locale
+	 * @param locale
+	 *            the locale
 	 */
 	public void setLocale(Locale locale) {
 		this.locale = locale;
 	}
+
 	public BooleanEvaluator getBooleanEvaluator() {
 		return this.booleanEvaluator;
 	}
 
 	/**
-	 * Retrieves all defined variables (capabilities) for the current device and this project.
+	 * Retrieves all defined variables (capabilities) for the current device and
+	 * this project.
 	 * 
 	 * @return all defined variables
 	 */
@@ -522,9 +596,9 @@ public class Environment {
 	 * @param additionalSymbols
 	 */
 	public void addSymbols(Map additionalSymbols) {
-		this.symbols.putAll( additionalSymbols );
+		this.symbols.putAll(additionalSymbols);
 	}
-	
+
 	public Device getDevice() {
 		return this.device;
 	}
@@ -535,27 +609,29 @@ public class Environment {
 	public void addVariables(Map vars) {
 		for (Iterator iter = vars.keySet().iterator(); iter.hasNext();) {
 			String name = (String) iter.next();
-			String value = (String) vars.get( name );
-			addVariable( name, value );
+			String value = (String) vars.get(name);
+			addVariable(name, value);
 		}
 	}
 
 	/**
 	 * Resolves the path to a file.
 	 * 
-	 * @param url the filepath that can contain properties such as ${polish.home}.
-	 * @return the appropriate file. Please note that the file doesn't need to exist,
-	 *         call file.exists() for determining that.
+	 * @param url
+	 *            the filepath that can contain properties such as
+	 *            ${polish.home}.
+	 * @return the appropriate file. Please note that the file doesn't need to
+	 *         exist, call file.exists() for determining that.
 	 */
 	public File resolveFile(String url) {
-		url = writeProperties( url );
-		File file = new File( url );
+		url = writeProperties(url);
+		File file = new File(url);
 		if (!file.isAbsolute()) {
-			file = new File( this.baseDir, url );
+			file = new File(this.baseDir, url);
 		}
 		return file;
 	}
-	
+
 	public File getBaseDir() {
 		return this.baseDir;
 	}
@@ -566,15 +642,15 @@ public class Environment {
 	public void setBuildSetting(BuildSetting setting) {
 		this.buildSetting = setting;
 	}
-	
+
 	public BuildSetting getBuildSetting() {
 		return this.buildSetting;
 	}
-	
-	public void setLibraryManager( LibraryManager manager ) {
+
+	public void setLibraryManager(LibraryManager manager) {
 		this.libraryManager = manager;
 	}
-	
+
 	public LibraryManager getLibraryManager() {
 		return this.libraryManager;
 	}
@@ -582,57 +658,63 @@ public class Environment {
 	/**
 	 * Retrieves all symbols.
 	 * 
-	 * @return a map containing the names of all defined symbols. The value for the symbols is always Boolean.TRUE
+	 * @return a map containing the names of all defined symbols. The value for
+	 *         the symbols is always Boolean.TRUE
 	 */
 	public Map getSymbols() {
 		return this.symbols;
 	}
 
-
 	/**
-	 * Sets any object to this environment.
-	 * This eases communication between different components.
+	 * Sets any object to this environment. This eases communication between
+	 * different components.
 	 * 
-	 * @param key the key under which the value is stored
-	 * @param value the value
+	 * @param key
+	 *            the key under which the value is stored
+	 * @param value
+	 *            the value
 	 * @see #get( String )
 	 */
-	public void set(String key, Object value ) {
-		this.exchangeStore.put( key, value );
+	public void set(String key, Object value) {
+		this.exchangeStore.put(key, value);
 	}
-	
+
 	/**
-	 * Retrieves any object to this environment.
-	 * This eases communication between different components.
+	 * Retrieves any object to this environment. This eases communication
+	 * between different components.
 	 * 
-	 * @param key the key under which the value is stored
-	 * @return the object that has been stored previously, or null when none has been set
+	 * @param key
+	 *            the key under which the value is stored
+	 * @return the object that has been stored previously, or null when none has
+	 *         been set
 	 * @see #set( String, Object )
 	 */
-	public Object get( String key ) {
-		return this.exchangeStore.get( key );
+	public Object get(String key) {
+		return this.exchangeStore.get(key);
 	}
 
 	/**
 	 * Checks whether a condition is met.
 	 * 
-	 * @param condition the condition
+	 * @param condition
+	 *            the condition
 	 * @return true when the given condition is met by this environment
 	 */
 	public boolean isConditionFulfilled(String condition) {
 		if (condition == null) {
 			return true;
 		}
-		return this.booleanEvaluator.evaluate(condition, "Environment", 0 );
+		return this.booleanEvaluator.evaluate(condition, "Environment", 0);
 	}
 
 	/**
 	 * Retrieves the variables and writes any properties into it's value.
 	 * 
-	 * @param name the name of the variable
+	 * @param name
+	 *            the name of the variable
 	 * @return the value of the variable that doesn't include any properties
 	 */
-	public String resolveVariable(String name ) {
+	public String resolveVariable(String name) {
 		String value = getVariable(name);
 		if (value != null && value.indexOf('$') != -1) {
 			value = writeProperties(value);
@@ -643,7 +725,8 @@ public class Environment {
 	/**
 	 * Determines whether a variable is defined.
 	 * 
-	 * @param name the name of the variable
+	 * @param name
+	 *            the name of the variable
 	 * @return true when the variable is defined
 	 */
 	public boolean hasVariable(String name) {
@@ -651,23 +734,26 @@ public class Environment {
 	}
 
 	/**
-	 * Puts all properties of the given map into the internal map without conversion.
+	 * Puts all properties of the given map into the internal map without
+	 * conversion.
 	 * 
-	 * @param properties a map of properties
+	 * @param properties
+	 *            a map of properties
 	 */
 	public void putAll(Map properties) {
-		this.variables.putAll( properties );
+		this.variables.putAll(properties);
 	}
 
 	/**
 	 * Retrieves the project's home dir.
 	 * 
-	 * @return the current project's base directory, the working dir when there is no Ant project attached.
+	 * @return the current project's base directory, the working dir when there
+	 *         is no Ant project attached.
 	 */
 	public File getProjectHome() {
 		if (this.baseDir != null) {
 			return this.baseDir;
-		} 
+		}
 		File home = (File) get("project.home");
 		if (home == null) {
 			home = new File(".");

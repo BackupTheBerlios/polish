@@ -26,6 +26,7 @@
 package de.enough.polish.ant.build;
 
 import de.enough.polish.BuildException;
+import de.enough.polish.Environment;
 
 import de.enough.polish.ant.Setting;
 import de.enough.polish.util.StringUtil;
@@ -65,7 +66,6 @@ public class Midlet extends Setting {
 		setDefinition(definition);
 	}
 	
-
 	/**
 	 * The number of this midlet. 
 	 *  
@@ -167,7 +167,6 @@ public class Midlet extends Setting {
 		return this.name + "," + this.icon + "," + myClassName;
 	}
 
-
 	/**
 	 * Sets the definition like "MIDlet-1: TabbedForm,/icon.png,de.enough.polish.sample.tabbedform.TabbedFormDemo" or "TabbedForm,/icon.png,de.enough.polish.sample.tabbedform.TabbedFormDemo"
 	 * 
@@ -186,6 +185,7 @@ public class Midlet extends Setting {
 			String nameStr = chunks[0];
 			String iconStr = chunks[1];
 			String classNameStr = chunks[2];
+			//if (environment)
 			setName( nameStr );
 			if (iconStr.length() > 0) {
 				setIcon(iconStr);

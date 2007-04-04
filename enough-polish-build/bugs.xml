@@ -497,6 +497,17 @@
 		</solution>
 	</bug>
 
+	<bug>
+		<name>ImageCaptureNotWithVideo</name>
+		<area>mmapi</area>
+		<description>
+			capture://video cannot be used for taking image snapshots.
+		</description>
+		<solution>
+			Use capture://image instead.
+		</solution>
+	</bug>
+
 	<!--
 	<bug>
 		<name></name>

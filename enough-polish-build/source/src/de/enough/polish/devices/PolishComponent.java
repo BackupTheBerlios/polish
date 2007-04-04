@@ -451,6 +451,28 @@ implements Comparable
 	private void addSingleCapability( String name, String value ) {
 //		String originalName = name;
 		name = name.toLowerCase();
+		String previousValue = (String) this.capabilities.get(name);
+		if (previousValue != null) {
+			// remove previous values from defined symbols first:
+			if ("true".equals(previousValue)) {
+				this.features.remove( name );
+			}
+			this.features.remove( name + "." + previousValue );
+			String[] individualValues = StringUtil.splitAndTrim( previousValue.toLowerCase(), ',' );
+			for (int i = 0; i < individualValues.length; i++) {
+				String individualValue = individualValues[i];
+				this.features.remove( name + "." + individualValue );
+			}
+		}
+		if (value.length() == 0) {
+			this.capabilities.remove(name);
+			this.features.remove(name + ":defined" );
+			name = name.toLowerCase();
+			this.capabilities.remove(name);
+			this.features.remove(name + ":defined" );
+			return;
+		}
+
 		this.capabilities.put( name, value );
 //		this.capabilities.put( originalName, value );
 		this.features.put( name + ":defined", Boolean.TRUE );

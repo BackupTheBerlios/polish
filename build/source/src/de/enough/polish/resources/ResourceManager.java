@@ -70,7 +70,7 @@ import de.enough.polish.util.StringUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class ResourceManager {
-	private final static String[] DEFAULT_EXCLUDES = new String[]{ "polish.css", "*~", "*.bak", "Thumbs.db" };
+	private final static String[] DEFAULT_EXCLUDES = new String[]{ "polish.css", "*~", "*.bak", "Thumbs.db", ".DS_Store" };
 	private final ResourceSetting resourceSetting;
 	private final BooleanEvaluator booleanEvaluator;
 	private final Map resourceDirsByDevice;
