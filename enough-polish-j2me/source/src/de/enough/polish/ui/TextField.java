@@ -3250,7 +3250,6 @@ public class TextField extends StringItem
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
 		//#if polish.blackberry
-			this.editField.focusRemove();
 			//#if polish.Bugs.ItemStateListenerCalledTooEarly
 				String newText = this.editField.getText();
 				String oldText = this.isPassword ? this.passwordText : this.text;
@@ -3263,6 +3262,7 @@ public class TextField extends StringItem
 					}
 				}
 			//#endif
+			this.editField.focusRemove();
 		//#elif polish.TextField.showInputInfo != false
 			if (this.screen != null) {
 				this.screen.setInfo(null);
