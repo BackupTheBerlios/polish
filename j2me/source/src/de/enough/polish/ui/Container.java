@@ -536,8 +536,7 @@ public class Container extends Item {
 				System.out.println("Container (" + getClass().getName() + "): NO internal area found in item " + item + ": setting internalY=" + this.internalY + ", internalHeight=" + this.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight + ", this.availableHeight=" + this.availableHeight);
 			}
 			if (this.enableScrolling) {	
-				// Now adjust the scrolling:
-				
+				// Now adjust the scrolling:			
 				Item nextItem;
 				if ( isDownwards && index < this.itemsList.size() - 1 ) {
 					nextItem = (Item) this.itemsList.get( index + 1 );
@@ -554,7 +553,7 @@ public class Container extends Item {
 				}
 
 				
-				if ( (index == 0) || (isDownwards && index < previousIndex) ) {
+				if ( (index == 0) || (isDownwards && (index < previousIndex) || (previousIndex == -1)) ) {
 					// either the first item or the first selectable item has been focused, so scroll to the very top:
 					//#ifdef polish.css.scroll-mode
 						if (!this.scrollSmooth) {
@@ -761,7 +760,7 @@ public class Container extends Item {
 				}
 				if (this.enableScrolling && this.autoFocusIndex != 0) {
 					//#debug
-					System.out.println("initContent(): scrolling autofocused item");
+					System.out.println("initContent(): scrolling autofocused item, autofocus-index=" + this.autoFocusIndex + ", i=" + i  );
 					scroll( 0, 0, myContentHeight, width, height );
 				}
 			} else if (i == this.focusedIndex) {
