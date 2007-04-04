@@ -9229,6 +9229,12 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Skin" value="8700r"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
+
+	<device>
+		<identifier>BlackBerry/8707</identifier>
+		<parent>BlackBerry/8700</parent>
+		<capability name="Network" value="UMTS"/> 
+	</device>
 	
 	<device>
 		<identifier>BlackBerry/8800</identifier>
