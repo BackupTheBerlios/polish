@@ -94,27 +94,40 @@ public class SnapshotScreen extends Screen implements Runnable {
 	 * @see de.enough.polish.ui.Screen#hideNotify()
 	 */
 	public void hideNotify() {
+//		System.out.println("<<<HIDE NOTIFY");
 		super.hideNotify();
-		this.isHiding = true;
-		//#if !polish.Bugs.SingleCapturePlayer
-			Thread thread = new Thread( this );
-			thread.start();
-		//#endif
+		if (!this.takeSnapshot) {
+			// this is propably just a system alert that is shown to the user:
+			this.isHiding = true;
+			//#if !polish.Bugs.SingleCapturePlayer
+				Thread thread = new Thread( this );
+				thread.start();
+			//#endif
+//		} else {
+//			System.out.println("IGNORING HIDE NOTIFY");
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#showNotify()
 	 */
 	public void showNotify() {
+//		System.out.println(">>>SHOW NOTIFY");
 		super.showNotify();
-		this.isHiding = false;
-		Thread thread = new Thread( this );
-		thread.start();
+		if (!this.takeSnapshot) {
+			// this is propably just a system alert that is shown to the user:
+			this.isHiding = false;
+			Thread thread = new Thread( this );
+			thread.start();
+//		} else {
+//			System.out.println("IGNORING SHOW NOTIFY");
+		}
 	}
 
 	public void run() {
 		if (!this.isHiding && this.player == null) {
 			try {
+				//System.out.println("CREATING NEW PLAYER...");
 				// note: now using dynamic/defensive approach, so that it works also with generic devices
 //				//#if polish.mmapi.ImageCaptureLocator:defined
 //					// on Series 40 this is for example "capture://image"
@@ -166,6 +179,14 @@ public class SnapshotScreen extends Screen implements Runnable {
 				this.error = e;
 				return;
 			}
+		} else if (!this.isHiding && this.player.getState() != Player.STARTED) {
+			//System.out.println("STARTING CAMERA PLAYER...");
+			try {
+				this.player.start();
+			} catch (MediaException e) {
+				// TODO Besitzer handle MediaException
+				e.printStackTrace();
+			}
 		}
 //		if (!this.isHiding) {
 //			if (this.videoControl != null) {
@@ -175,13 +196,26 @@ public class SnapshotScreen extends Screen implements Runnable {
 //			}
 //		}
 		if (this.takeSnapshot) {
+			//System.out.println("TAKING SNAPSHOT DATA");
 			if (this.videoControl == null) {
 				this.error = new MediaException("Unable to init player: " + (this.error != null ? this.error.toString() : "unknown"));
 			} else {
 				try {
 					this.snapshotData = this.videoControl.getSnapshot(this.snapshotEncoding);
+					//System.out.println("!!!! GOT THE DATA: " + (this.snapshotData != null) );
+					if (this.snapshotData == null) {
+						// retry:
+						this.snapshotData = this.videoControl.getSnapshot(this.snapshotEncoding);
+						if (this.snapshotData == null) {
+							this.error = new MediaException("No Data");
+						}
+					}
 				} catch (MediaException e) {
+					e.printStackTrace();
 					this.error = e;
+				} catch (SecurityException e) {
+					e.printStackTrace();
+					this.error = new MediaException( e.toString() );
 				}
 			}
 		}
@@ -190,18 +224,19 @@ public class SnapshotScreen extends Screen implements Runnable {
 				//this.videoControl.setVisible(false);
 				try {
 					try {
+						//System.out.println("STOPPING CAMERA PLAYER...");
 						this.player.stop();
 					} catch (MediaException e) {
 						//#debug error
 						System.out.println("Unable to stop player" + e);
 					}
 					this.player.close();
-					this.player.deallocate();
+					this.player = null;
 				} catch (Exception e) {
 					//#debug error
-					System.out.println("Unable to deallocate playzer" + e);
+					System.out.println("Unable to close player" + e);
 				} finally {
-					this.player = null;					
+					//this.player = null;					
 				}
 			}
 		//#endif
@@ -248,6 +283,7 @@ public class SnapshotScreen extends Screen implements Runnable {
 	 * @throws MediaException when taking the snapshot fails
 	 */
 	public Image getSnapshotImage( String encoding ) throws MediaException {
+		//System.out.println("GET SNAPSHOT IMAGE");
 		byte[] data = getSnapshot(encoding);
 		return Image.createImage( data, 0, data.length );
 	}
@@ -274,31 +310,38 @@ public class SnapshotScreen extends Screen implements Runnable {
 		if (this.error != null) {
 			throw this.error;
 		}
-		this.snapshotEncoding = encoding;
-		this.takeSnapshot = true;
-		Thread thread = new Thread( this );
-		thread.start();
-		while (this.snapshotData == null) {
-			try {
-				Thread.sleep(40);
-			} catch (InterruptedException e) {
-				// ignore
+		try {
+			this.snapshotEncoding = encoding;
+			this.takeSnapshot = true;
+			//System.out.println("STARTING SNAPSHOT THREAD...");
+			Thread thread = new Thread( this );
+			thread.start();
+			while (this.snapshotData == null && this.error == null) {
+				try {
+					Thread.sleep(40);
+					//System.out.print('0');
+				} catch (InterruptedException e) {
+					// ignore
+				}
 			}
+			//System.out.println("SNAPSHOT DATA HAS ARRIVED");
+	//		synchronized ( thread ) {
+	//			try {
+	//				thread.wait();
+	//			} catch (InterruptedException e) {
+	//				// ignore
+	//			}
+	//		}
+			if (this.error != null) {
+				throw this.error;
+			}
+			byte[] data = this.snapshotData;
+			this.snapshotData = null;
+			return data;
+		} finally {
+			//System.out.println("GETTING OUT OF SNAPSHOT HELL...!");
+			this.takeSnapshot = false;
 		}
-//		synchronized ( thread ) {
-//			try {
-//				thread.wait();
-//			} catch (InterruptedException e) {
-//				// ignore
-//			}
-//		}
-		if (this.error != null) {
-			throw this.error;
-		}
-		this.takeSnapshot = false;
-		byte[] data = this.snapshotData;
-		this.snapshotData = null;
-		return data;
 	}
 	
 	
