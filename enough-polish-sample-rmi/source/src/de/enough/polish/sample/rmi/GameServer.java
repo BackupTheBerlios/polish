@@ -49,5 +49,5 @@ public interface GameServer extends Remote {
 	public boolean ping( long time ) throws RemoteException;
 	
 	public void uploadScreenShot( Image image ) throws RemoteException;
-	
+
 }

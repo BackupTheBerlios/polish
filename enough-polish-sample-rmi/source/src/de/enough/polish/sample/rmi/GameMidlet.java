@@ -59,7 +59,7 @@ public class GameMidlet extends MIDlet implements Runnable, CommandListener {
 	private GameServer server;
 	private Form form;
 	private Command cmdRegister = new Command("Register", Command.SCREEN, 2);
-	private Command cmdTakeScreenshot = new Command("Take Screenshot", Command.SCREEN, 3 );
+	private Command cmdTakeScreenshot = new Command("Take Screenshot", Command.OK, 3 );
 	private Command cmdQuit = new Command("Quit", Command.EXIT, 9);
 	private Display display;
 	private final ThreadedCommandListener commandListener;
@@ -112,17 +112,17 @@ public class GameMidlet extends MIDlet implements Runnable, CommandListener {
 
 	public void run() {
 		try {
-			GameHighscore highscore = new GameHighscore( "PowerScore", new int[] {1,2,3,4,5,6,7,8,9,10});
-			highscore = this.server.storeHighscore(highscore, true );
-			System.out.println("highscore stored successfully:" + highscore.getName() );
+			//GameHighscore highscore = new GameHighscore( "PowerScore", new int[] {1,2,3,4,5,6,7,8,9,10});
+			//highscore = this.server.storeHighscore(highscore, true );
+			//System.out.println("highscore stored successfully:" + highscore.getName() );
 
 			GameUser response = this.server.registerUser( System.currentTimeMillis(), "testuser", "password");
 			this.form.deleteAll();
 			this.form.setTitle("added user!");
 			this.form.append( response.toString() );
 			
-			boolean pingSucceeded = this.server.ping( System.currentTimeMillis() );
-			System.out.println("ping succeeded: " + pingSucceeded);
+			//boolean pingSucceeded = this.server.ping( System.currentTimeMillis() );
+			//System.out.println("ping succeeded: " + pingSucceeded);
 			
 		} catch (RemoteException e) {
 			//#debug error
@@ -159,7 +159,6 @@ public class GameMidlet extends MIDlet implements Runnable, CommandListener {
 					this.server.uploadScreenShot( image );
 					this.form.append("Image uploaded!");
 					this.form.setTitle("image uploaded");
-					this.display.setCurrent( this.form );
 				} catch (MediaException e) {
 					Alert alert = new Alert( "Media-Error", e.toString(), null, AlertType.ERROR );
 					System.out.println("returning to form...");
