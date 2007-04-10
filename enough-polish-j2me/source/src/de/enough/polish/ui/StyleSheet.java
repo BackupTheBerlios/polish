@@ -353,7 +353,6 @@ public final class StyleSheet {
 	}		
 	//#endif
 	
-	//#if polish.css.screen-change-animation || polish.ScreenChangeAnimation.forward:defined
 	/**
 	 * Includes an animation while changing the screen.
 	 *  
@@ -361,6 +360,27 @@ public final class StyleSheet {
 	 * @param nextDisplayable the new screen, animations are only included for de.enough.polish.ui.Screen classes
 	 */
 	public static void setCurrent( Display display, Displayable nextDisplayable ) {
+		Displayable lastDisplayable = null;
+		//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
+			if ( MasterCanvas.instance != null ) {
+				//# lastDisplayable = MasterCanvas.instance.currentDisplayable;
+			}
+		//#else
+			lastDisplayable = display.getCurrent();
+		//#endif
+		if (nextDisplayable instanceof Alert) {
+			Alert alert = (Alert) nextDisplayable;
+			if (alert.nextDisplayable == null) {
+				alert.nextDisplayable = lastDisplayable;
+			}
+		}
+		//#if !(polish.css.screen-change-animation || polish.ScreenChangeAnimation.forward:defined)
+			//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
+				MasterCanvas.setCurrent(display, nextDisplayable);
+			//#else
+				display.setCurrent( nextDisplayable );						
+			//#endif			
+		//#else
 		if ( nextDisplayable instanceof AccessibleCanvas ) {
 			//#if polish.ScreenChangeAnimation.allowConfiguration == true
 				if (!enableScreenChangeAnimations) {
@@ -379,14 +399,6 @@ public final class StyleSheet {
 					nextScreen = (Screen) nextDisplayable;
 				}
 				ScreenChangeAnimation screenAnimation = null;
-				Displayable lastDisplayable = null;
-				//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-					if ( MasterCanvas.instance != null ) {
-						//# lastDisplayable = MasterCanvas.instance.currentDisplayable;
-					}
-				//#else
-					lastDisplayable = display.getCurrent();
-				//#endif
 	
 				Screen lastScreen = null;
 				Style screenstyle = null;
@@ -412,7 +424,7 @@ public final class StyleSheet {
 					}
 					if (lastDisplayable != null && lastDisplayable instanceof ScreenChangeAnimation ) {
 						//#debug
-						System.out.println("StyleSheet: last displayable is a ScreenChangeAnomation" );
+						System.out.println("StyleSheet: last displayable is a ScreenChangeAnimation" );
 						lastDisplayable = ((ScreenChangeAnimation) lastDisplayable).nextDisplayable;
 					}
 					if (lastDisplayable != null && lastDisplayable instanceof Screen) {
@@ -508,8 +520,8 @@ public final class StyleSheet {
 				display.setCurrent( nextDisplayable );						
 			//#endif
 		}
+		//#endif
 	}
-	//#endif
 	
 	/**
 	 * Releases all (memory intensive) resources such as images or RGB arrays of this style sheet.

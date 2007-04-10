@@ -479,7 +479,7 @@ public class MenuBar extends Item {
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		//#debug
-		System.out.println("Init content of MenuBar - isOpened=" + this.isOpened );
+		System.out.println("Init content of MenuBar - isOpened=" + this.isOpened + ", firstLineWidth=" + firstLineWidth + ", lineWidth=" + lineWidth + ", screen=" + this.screen );
 		if (this.isOpened) {
 			int titleHeight = this.screen.titleHeight; // + this.screen.subTitleHeight + this.screen.infoHeight;
 			int screenHeight = this.screen.screenHeight;

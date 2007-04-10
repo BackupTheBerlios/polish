@@ -230,8 +230,8 @@ public class SnapshotScreen extends Screen implements Runnable {
 						//#debug error
 						System.out.println("Unable to stop player" + e);
 					}
-					this.player.close();
-					this.player = null;
+					//this.player.close();
+					//this.player = null;
 				} catch (Exception e) {
 					//#debug error
 					System.out.println("Unable to close player" + e);

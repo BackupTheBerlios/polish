@@ -419,7 +419,13 @@ implements AccessibleCanvas
 		//#endif
 		//#ifdef tmp.menuFullScreen
 			//#ifdef tmp.useExternalMenuBar
-				int availableScreenWidth = this.screenWidth - (this.marginLeft + this.marginRight);
+				int availableScreenWidth = this.screenWidth;
+				//#if polish.css.separate-menubar
+					if (!this.separateMenubar) {
+						availableScreenWidth -= (this.marginLeft + this.marginRight);
+					}
+				//#endif
+
 				this.menuBarHeight = this.menuBar.getItemHeight( availableScreenWidth, availableScreenWidth );
 				//#if tmp.useScrollIndicator
 					int scrollWidth = this.menuBar.contentHeight + this.menuBar.paddingTop + this.menuBar.paddingBottom;
@@ -1310,10 +1316,10 @@ implements AccessibleCanvas
 	//				}
 	//			//#endif
 //				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() + " before clipRect");
-				int clipX = g.getClipX();
-				int clipY = g.getClipY();
-				int clipWidth = g.getClipWidth();
-				int clipHeight = g.getClipHeight();
+//				int clipX = g.getClipX();
+//				int clipY = g.getClipY();
+//				int clipWidth = g.getClipWidth();
+//				int clipHeight = g.getClipHeight();
 				g.setClip(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
 				//g.clipRect(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
 	
@@ -1379,11 +1385,7 @@ implements AccessibleCanvas
 				
 				// paint border:
 				if (this.border != null) {
-	//				//#ifdef tmp.menuFullScreen
-	//					this.border.paint(this.marginLeft, this.marginTop, sWidth, this.screenHeight - this.marginBottom - this.marginTop, g);
-	//				//#else
-						this.border.paint(leftBorder, this.marginTop, sWidth, sHeight, g);
-	//				//#endif
+					this.border.paint(leftBorder, topBorder-1, sWidth, sHeight, g );
 				}
 				
 				//#if polish.ScreenInfo.enable

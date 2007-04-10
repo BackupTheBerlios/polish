@@ -71,7 +71,7 @@ public class HashMap
 	 * Creates a new HashMap with the specified initial capacity.
 	 * 
 	 * @param initialCapacity the initial number of elements that this map can hold without needing to 
-	 *        increase it's internal size.
+	 *        increase it's internal size. Must not be 0.
 	 */
 	public HashMap(int initialCapacity ) {
 		this( initialCapacity, DEFAULT_LOAD_FACTOR );
