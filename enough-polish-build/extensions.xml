@@ -586,9 +586,13 @@
 		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 		<autostart>
 			polish.usePolishGui 
-			and (polish.css.screen-change-animation or polish.ScreenChangeAnimation.forward:defined) 
 			and not polish.Bugs.displaySetCurrentFlickers
 		</autostart>
+		<!--  old condition:
+			polish.usePolishGui 
+			and (polish.css.screen-change-animation or polish.ScreenChangeAnimation.forward:defined) 
+			and not polish.Bugs.displaySetCurrentFlickers
+		 -->
 	</extension>
 
 	<extension>

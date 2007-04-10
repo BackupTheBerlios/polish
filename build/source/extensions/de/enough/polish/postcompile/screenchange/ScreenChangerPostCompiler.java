@@ -93,6 +93,7 @@ public class ScreenChangerPostCompiler extends BytecodePostCompiler {
   public void postCompile(File classesDir, Device device, DirClassLoader loader, List classes) throws BuildException
   {
     /*
+     * this is tested within this extension's autostart XML definition
     boolean enableScreenEffects = this.environment.hasSymbol("polish.css.screen-change-animation");
     if (!enableScreenEffects) {
       return;
