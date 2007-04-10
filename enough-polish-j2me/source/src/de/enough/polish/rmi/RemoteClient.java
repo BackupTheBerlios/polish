@@ -70,8 +70,10 @@ public class RemoteClient implements Runnable {
 	protected RemoteClient( String url ) {
 		this.url = url;
 		this.callQueue = new Vector( 3 );
-		Thread thread = new Thread( this );
-		thread.start();
+		//#if !polish.rmi.synchrone
+			Thread thread = new Thread( this );
+			thread.start();
+		//#endif
 	}
 	
 	/**
@@ -118,6 +120,7 @@ public class RemoteClient implements Runnable {
 	
 	/**
 	 * Calls a remote method in the same thread.
+	 * Note that this method must not be called manually when polish.rmi.synchrone is set to true.
 	 * 
 	 * @param name the method name
 	 * @param primitivesFlag for each element of the parameters which is originally a primitive the bit will be one: 
@@ -191,7 +194,7 @@ public class RemoteClient implements Runnable {
 					connection.close();
 					// on SE devices it happens fairly regularly that no further HttpConnection can be established - possibly because former ones have not been garbage collected yet.
 					System.gc();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					// ignore
 				}
 			}
@@ -202,16 +205,24 @@ public class RemoteClient implements Runnable {
 	 * Accesses the server asynchronly. 
 	 */
 	public void run() {
+		  // ensure that the user is able to specify the first call before this thread is going to sleep/wait.
+		  try {
+			Thread.sleep( 100 );
+		} catch (InterruptedException e) {
+			// ignore
+		}
 		while (true) {
 		  RemoteCall call = null;
 		  try
 		  {
 			  // wait for a new remote call:
 			  synchronized( this.callQueue ) {
-				  try {
-					  this.callQueue.wait();
-				  } catch (InterruptedException e) {
-					  // ignore
+				  if (this.callQueue.size() == 0) {
+					  try {
+						  this.callQueue.wait();
+					  } catch (InterruptedException e) {
+						  // ignore
+					  }
 				  }
 			}
 			// check for call:
