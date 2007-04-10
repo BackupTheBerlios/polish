@@ -677,6 +677,9 @@ implements AccessibleCanvas
 			//#if polish.css.repaint-previous-screen
 				if (this.repaintPreviousScreen) {
 					Displayable currentDisplayable = StyleSheet.display.getCurrent();
+					if (currentDisplayable == this) {
+						currentDisplayable = StyleSheet.currentScreen;
+					}
 					//#if polish.Screen.dontBufferPreviousScreen
 						if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas) {
 							this.previousScreen = (AccessibleCanvas) currentDisplayable;							
