@@ -196,7 +196,8 @@
 		description="Call this target first to skip the obfuscation step and call the emulator, e.g. ant test j2mepolish"
 		>
 		<property name="test" value="true" />
-		<property name="dir.work" value="build/test" />
+	  	<property name="customization" value="" /><!-- use empty value in case none has been set before -->
+		<property name="dir.work" value="build/test/${customization}" />
 	</target>
 	
 	<target 

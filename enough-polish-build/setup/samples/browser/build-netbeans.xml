@@ -109,18 +109,17 @@
 				<!-- NetBeans defines this property automatically:  -->
 				<midlets definition="${manifest.midlets}" if="manifest.midlets:defined" />
 				<midlets unless="manifest.midlets:defined">
-					<midlet class="de.enough.polish.example.MenuMidlet" name="Example" />
+					<midlet class="de.enough.polish.sample.browser.BrowserMidlet" name="Browser" />
 				</midlets>
 				<!-- project-wide variables - used for preprocessing  -->
 				<variables>
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
 					<variable name="polish.Browser.MaxRedirects" value="5" />
+					<variable name="polish.Browser.UserAgent" value="J2ME-Polish 2.0" />
+					<variable name="polish.Browser.MaxRedirects" value="5" />
+					<variable name="polish.Browser.Gzip" value="false" />
 					<variable name="polish.Browser.PaintDownloadIndicator" value="true" />
-					<!-- Sample configuration options for J2ME Polish
-					<variable name="polish.TextField.useDirectInput" value="true" />
-					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
-					-->
 				</variables>
 				<!-- Configure the customization settings here: -->
 				<resources

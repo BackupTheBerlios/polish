@@ -28,7 +28,7 @@
 	<vendor>
 		<name>Nokia</name>
 		<groups>UEI</groups>
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<capability name="key.ChangeInputModeKey" value="35" />
 		<!-- use the star for triggering input of symbols in direct input mode: -->
 		<capability name="key.AddSymbolKey" value="42" />
@@ -63,7 +63,7 @@
 	
 	<vendor>
 		<name>Sony-Ericsson</name>
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 		<capability name="Emulator.Class" value="SonyEricssonEmulator" />
 		<capability name="key.LeftSoftKey" value="-6" />
 		<capability name="key.RightSoftKey" value="-7" />

@@ -25,6 +25,7 @@
 	<!-- the device for the test mode - you can define it on the command-line
 	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
 	<property name="device" value="Nokia/Series60E2" />
+	<property name="devices" value="${device},Generic/jtwi,Generic/midp1,Generic/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6" />
 	
 	
 
@@ -114,19 +115,17 @@
 				workDir="${dir.work}"
 			>
 				<!-- midlets definition -->
-				<!-- CHANGE THIS!       -->
-				<midlet class="de.enough.polish.sample.email.EmailMidlet" name="Email" />
+				<midlet class="de.enough.polish.sample.browser.BrowserMidlet" name="Browser" />
 				<!-- project-wide variables - used for preprocessing.  -->
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />
 					<variable name="polish.Browser.MaxRedirects" value="5" />
+					<variable name="polish.Browser.UserAgent" value="J2ME-Polish 2.0" />
+					<variable name="polish.Browser.MaxRedirects" value="5" />
+					<variable name="polish.Browser.Gzip" value="false" />
 					<variable name="polish.Browser.PaintDownloadIndicator" value="true" />
-					<!-- Sample configuration options for J2ME Polish
-					<variable name="polish.TextField.useDirectInput" value="true" />
-					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
-					-->
 				</variables>
 				<!-- Configure the customization settings here: -->
 				<resources

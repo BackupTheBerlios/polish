@@ -792,6 +792,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ImageFormat" value="gif,bmp,gifa,jpeg,mbm,png,wbmp"/>
 		<capability name="VideoFormat" value="mpeg-4, 3gpp, realvideo"/>
 		<capability name="HeapSize" value="16 MB"/>
+		<capability name="MaxJarSize" value="dynamic"/>
 		<capability name="DRM" value="OMA-Forward Lock"/>
 		<capability name="usePolishTitle" value="true"/>
 		<capability name="Network" value="GSM, GPRS, UMTS"/>
@@ -1471,7 +1472,7 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
-		<identifier>Sony-Ericsson/K610</identifier>
+		<identifier>Sony-Ericsson/K610i</identifier>
 		<groups/>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="176x220"/>
@@ -1490,6 +1491,9 @@ These namespaces/schemas will be used soon.
 		<identifier>Sony-Ericsson/T610, Sony-Ericsson/T618</identifier>
 		<groups/>
 		<features>hasCamera</features>
+		<capability name="hasCommandKeyEvents" value="false"/>
+		<capability name="key.LeftSoftKey" value="" />
+		<capability name="key.RightSoftKey" value="" />
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="CanvasSize" value="128x127"/>
 		<capability name="BitsPerPixel" value="16"/>
@@ -1509,6 +1513,9 @@ These namespaces/schemas will be used soon.
 		<identifier>Sony-Ericsson/T616</identifier>
 		<groups/>
 		<features>hasCamera</features>
+		<capability name="hasCommandKeyEvents" value="false"/>
+		<capability name="key.LeftSoftKey" value="" />
+		<capability name="key.RightSoftKey" value="" />
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="CanvasSize" value="128x127"/>
 		<capability name="BitsPerPixel" value="16"/>
@@ -1532,6 +1539,9 @@ These namespaces/schemas will be used soon.
 		<identifier>Sony-Ericsson/T628, Sony-Ericsson/T630</identifier>
 		<groups/>
 		<features>hasCamera</features>
+		<capability name="hasCommandKeyEvents" value="false"/>
+		<capability name="key.LeftSoftKey" value="" />
+		<capability name="key.RightSoftKey" value="" />
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="CanvasSize" value="128x127"/>
 		<capability name="BitsPerPixel" value="16"/>
@@ -1551,6 +1561,9 @@ These namespaces/schemas will be used soon.
 		<identifier>Sony-Ericsson/T637</identifier>
 		<groups/>
 		<features>hasCamera</features>
+		<capability name="hasCommandKeyEvents" value="false"/>
+		<capability name="key.LeftSoftKey" value="" />
+		<capability name="key.RightSoftKey" value="" />
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="CanvasSize" value="128x127"/>
 		<capability name="BitsPerPixel" value="16"/>
@@ -1574,6 +1587,9 @@ These namespaces/schemas will be used soon.
 		<identifier>Sony-Ericsson/Z600, Sony-Ericsson/Z608</identifier>
 		<groups/>
 		<features>hasCamera</features>
+		<capability name="hasCommandKeyEvents" value="false"/>
+		<capability name="key.LeftSoftKey" value="" />
+		<capability name="key.RightSoftKey" value="" />
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="CanvasSize" value="128x127"/>
 		<capability name="BitsPerPixel" value="16"/>
@@ -6510,7 +6526,7 @@ These namespaces/schemas will be used soon.
 	<device>
 		<identifier>Nokia/3230</identifier>
 		<groups>Series60E2FP1</groups>
-		<features>hasCamera</features>
+		<features>hasCamera, hasCommandKeyEvents</features>
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>
 		<capability name="BitsPerPixel" value="16"/>
@@ -7246,10 +7262,12 @@ These namespaces/schemas will be used soon.
 	
 	<device>
 		<identifier>Nokia/6255</identifier>
-		<features>hasCamera</features>
+		<features>hasCamera, hasCommandKeyEvents</features>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="16"/>
+		<capability name="MaxJarSize" value="391 kb"/>
+		<capability name="HeapSize" value="977 kb"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="VideoFormat" value="3gpp"/>
