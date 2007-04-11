@@ -123,10 +123,18 @@ public class BooleanEvaluator {
 	 * Sets the environment for this evaluator.
 	 * 
 	 * @param device the device
-	 * @throws NullPointerException when symbols or variables are null
 	 */
 	public void setEnvironment( Device device ) {
 		this.device = device;
+	}
+
+	/**
+	 * Sets the environment for this evaluator.
+	 * 
+	 * @param environment the environment
+	 */
+	public void setEnvironment( Environment environment ) {
+		this.environment = environment;
 	}
 
 	

@@ -29,6 +29,7 @@ import java.util.HashMap;
 
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 
 /**
  * <p>Selects a device that fullfill a preprocessing term.</p>
@@ -69,7 +70,14 @@ public class TermRequirement extends Requirement {
 	 * @see de.enough.polish.ant.requirements.Requirement#isMet(de.enough.polish.Device)
 	 */
 	public boolean isMet(Device device) {
-		this.booleanEvaluator.setEnvironment( device );
+		Environment env = Environment.getInstance();
+		if (env != null) {
+			env.setSymbols( device.getFeatures() );
+			env.setVariables( device.getCapabilities() );
+			this.booleanEvaluator.setEnvironment(env);
+		} else {
+			this.booleanEvaluator.setEnvironment( device );
+		}
 		return this.booleanEvaluator.evaluate( this.term, "build.xml", 0 );
 		/*
 		if (result) {
