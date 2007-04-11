@@ -1,5 +1,5 @@
 /*
- * Created on Feb 22, 2007 at 12:41:53 PM.
+ * Created on March 12, 2007 at 2:14:10 PM.
  * 
  * Copyright (c) 2006 Robert Virkus / Enough Software
  *
@@ -32,26 +32,27 @@ import javax.microedition.lcdui.Displayable;
 import de.enough.polish.util.ArrayList;
 
 /**
- * <p>Processes commandAction events in a separate thread.</p>
- * <p>Note that several long running operations are handled synchronously, meaning they are handled
- *    one after the other. For processing several long running operations in parallel you
- *    can use the AsynchronousCommandListener.
+ * <p>Processes commandAction events in separate threads.</p>
+ * <p>Note that several long running operations are handled asynchronously, meaning they are handled
+ *    at the same time in different threads. For processing several long running operations in a sequence you
+ *    can use the ThreadedCommandListener.
  * </p>
  *
  * <p>Copyright Enough Software 2006</p>
  * <pre>
  * history
- *        Feb 22, 2007 - rob creation
+ *        March 12, 2007 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
- * @see AsynchronousCommandListener
+ * @see ThreadedCommandListener
  */
-public class ThreadedCommandListener implements Runnable, CommandListener {
+public class AsynchronousCommandListener implements Runnable, CommandListener {
 	
 	private final CommandListener parent;
 	private final ArrayList commands;
 	private final ArrayList displays;
 	private boolean isStopRequested;
+	private boolean isWorking;
 
 	/**
 	 * Creates a new threaded command listener
@@ -59,7 +60,7 @@ public class ThreadedCommandListener implements Runnable, CommandListener {
 	 * @param parent the parent CommandListener that is used to process commands in a background thread.
 	 * @throws IllegalArgumentException when parent is null
 	 */
-	public ThreadedCommandListener( CommandListener parent) {
+	public AsynchronousCommandListener( CommandListener parent) {
 		if (parent == null) {
 			throw new IllegalArgumentException();
 		}
@@ -85,12 +86,14 @@ public class ThreadedCommandListener implements Runnable, CommandListener {
 		while (!this.isStopRequested) {
 			synchronized(this) {
 				if (this.commands.size() == 0) {
+					this.isWorking = false;
 					try {
 						wait();
 					} catch (InterruptedException e) {
 						// ignore
 					}
 				}
+				this.isWorking = true;
 			}
 			while (this.commands.size() > 0) {
 				Command cmd = null;
@@ -115,11 +118,30 @@ public class ThreadedCommandListener implements Runnable, CommandListener {
 	 */
 	public void commandAction(Command cmd, Displayable disp) {
 		synchronized (this) {
-			this.commands.add( cmd );
-			this.displays.add( disp );
-			notify();
+			if (this.isWorking) {
+				WorkerThread thread = new WorkerThread( cmd, disp );
+				thread.start();
+			} else {
+				this.commands.add( cmd );
+				this.displays.add( disp );
+				notify();
+			}
 		}
 
+	}
+	
+	class WorkerThread extends Thread {
+		private Command command;
+		private Displayable displayable;
+		
+		public WorkerThread( Command command, Displayable displayable) {
+			this.command = command;
+			this.displayable = displayable;
+		}
+		
+		public void run() {
+			AsynchronousCommandListener.this.parent.commandAction( this.command, this.displayable);
+		}
 	}
 
 }

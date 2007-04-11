@@ -267,12 +267,12 @@ public class FramedForm extends Form {
 		}
 		if (this.topFrame != null ) {
 			this.topFrame.relativeX = this.originalContentX;
-			this.topFrame.relativeY = this.originalContentX;
-			this.topFrame.paint( this.originalContentX, this.originalContentX, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
+			this.topFrame.relativeY = this.originalContentY;
+			this.topFrame.paint( this.originalContentX, this.originalContentY, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 		}
 		if (this.bottomFrame != null ) {
-			this.topFrame.relativeX = this.originalContentX;
-			this.topFrame.relativeY = this.contentY + this.contentHeight;
+			this.bottomFrame.relativeX = this.originalContentX;
+			this.bottomFrame.relativeY = this.contentY + this.contentHeight;
 			this.bottomFrame.paint( this.originalContentX, this.contentY + this.contentHeight, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 		}
 	}
@@ -296,8 +296,10 @@ public class FramedForm extends Form {
 					case LEFT:
 						nextFrames = new Container[]{ this.leftFrame, this.topFrame, this.bottomFrame, this.rightFrame };
 						break;
-					default:
+					case RIGHT:
 						nextFrames = new Container[]{ this.rightFrame, this.topFrame, this.bottomFrame, this.leftFrame };
+					default:
+						return false;
 				}
 				for (int i = 0; i < nextFrames.length; i++) {
 					Container frame = nextFrames[i];

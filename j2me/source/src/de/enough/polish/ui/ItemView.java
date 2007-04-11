@@ -270,5 +270,17 @@ public abstract class ItemView {
 	}
 	//#endif
 	
+	/**
+	 * Implementation that are valid only for specific item classes can override this method so that they cannot be accidently attached to unsupported classes.
+	 * This allows casting without checking the parent item with instanceof in each method, for example.
+	 * The default implementation just returns true for any case.
+	 * 
+	 * @param parent the parent item
+	 * @param style the style
+	 * @return true when the view can be used for the parent item.
+	 */
+	protected boolean isValid( Item parent, Style style ) {
+		return true;
+	}
 
 }

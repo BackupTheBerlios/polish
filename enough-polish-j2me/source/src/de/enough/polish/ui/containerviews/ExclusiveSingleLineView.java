@@ -539,5 +539,11 @@ public class ExclusiveSingleLineView extends ContainerView {
 		super.focus(focusstyle, direction);
 	}
 	
-	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#isValid(de.enough.polish.ui.Item, de.enough.polish.ui.Style)
+	 */
+	protected boolean isValid(Item parent, Style style) {
+		return (parent instanceof ChoiceGroup);
+	}
+
 }

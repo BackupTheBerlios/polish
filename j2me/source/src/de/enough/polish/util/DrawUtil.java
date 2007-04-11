@@ -826,7 +826,7 @@ public final class DrawUtil {
 	 * @param g the graphics context
 	 */
 	public static void drawLine( int color, int x1, int y1, int x2, int y2, Graphics g) {
-		//#if polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi
+		//#if polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi && !polish.Bugs.TransparencyNotWorkingInDrawPolygon
 			int[] xPoints = new int[] { x1, x2 };
 			int[] yPoints = new int[] { y1, y2 };
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);

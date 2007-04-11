@@ -32,7 +32,11 @@ import javax.microedition.lcdui.Displayable;
 import de.enough.polish.util.ArrayList;
 
 /**
- * <p>Processes commandAction events in a separate thread</p>
+ * <p>Processes commandAction events in a separate thread.</p>
+ * <p>Note that several long running operations are handled synchronously, meaning they are handled
+ *    one after the other. For processing several long running operations in parallel you
+ *    can use the AsynchronousCommandListener.
+ * </p>
  *
  * <p>Copyright Enough Software 2006</p>
  * <pre>
@@ -40,6 +44,7 @@ import de.enough.polish.util.ArrayList;
  *        Feb 22, 2007 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @see AsynchronousCommandListener
  */
 public class ThreadedCommandListener implements Runnable, CommandListener {
 	
@@ -79,10 +84,12 @@ public class ThreadedCommandListener implements Runnable, CommandListener {
 	public void run() {
 		while (!this.isStopRequested) {
 			synchronized(this) {
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					// ignore
+				if (this.commands.size() == 0) {
+					try {
+						wait();
+					} catch (InterruptedException e) {
+						// ignore
+					}
 				}
 			}
 			while (this.commands.size() > 0) {
