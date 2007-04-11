@@ -75,6 +75,7 @@
 		<capability name="MenuBar.OptionsPosition" value="right" />
 		<capability name="MenuBar.OkPosition" value="left" />
 		<capability name="command.options" value="Menu" />
+		<capability name="Bugs" value="TransparencyNotWorkingInDrawPolygon" />
 	</vendor>
 	
 	<vendor>

@@ -160,4 +160,8 @@
 		<capability name="build.DescriptorCreator" value="none" />
 		<capability name="build.Finalizer" value="applet" />
 	</platform>
+	
+	<platform>
+		<identifier>DotNetCF/1.1</identifier>
+	</platform>
 </platforms>

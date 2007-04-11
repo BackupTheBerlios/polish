@@ -152,11 +152,11 @@ public class ColorConverter {
 			} else {
 				value = definition.substring( 2 );
 			}
-			if (value.length() == 3) {
+			if (value.length() == 3 || value.length() == 4) {
 				// an allowed shortcut in CSS is to use only one character
 				// for each color, when they are equal otherwise.
-				// blue is e.g. "#00F"
-				StringBuffer buffer = new StringBuffer(10);
+				// blue is e.g. "#00F", translucent blue is "#a00f"
+				StringBuffer buffer = new StringBuffer(12);
 				buffer.append("0x");
 				char[] chars = value.toCharArray();
 				for (int i = 0; i < chars.length; i++) {
@@ -166,7 +166,7 @@ public class ColorConverter {
 				value = buffer.toString();
 				// check value:
 				try {
-					Integer.decode(value);
+					Long.decode(value);
 				} catch (NumberFormatException e) {
 					throw new BuildException("Invalid color definition in CSS: [" + definition + "] is not a valid hexadecimal value (" + e.getMessage() + ").");
 				}

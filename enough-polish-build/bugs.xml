@@ -508,6 +508,17 @@
 		</solution>
 	</bug>
 
+	<bug>
+		<name>TransparencyNotWorkingInDrawPolygon</name>
+		<area>ui</area>
+		<description>
+			Translucent polygons cannot be drawn using the Nokia-UI-API on this device.
+		</description>
+		<solution>
+			Use Graphics.drawRGB() or the J2ME Polish DrawUtil instead.
+		</solution>
+	</bug>
+
 	<!--
 	<bug>
 		<name></name>
