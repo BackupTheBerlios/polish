@@ -8,6 +8,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry kind="lib" path="lib/AppleJavaExtensions.jar"/>
+	<classpathentry kind="lib" path="lib/retroweaver-all.jar"/>
 	<classpathentry sourcepath="/asm-2.2/src" kind="lib" path="lib/asm-all.jar">
 		<attributes>
 			<attribute value="http://asm.objectweb.org/current/doc/javadoc/user/" name="javadoc_location"/>
@@ -21,7 +22,6 @@
 	<classpathentry kind="lib" path="lib/kenv.zip"/>
 	<classpathentry kind="lib" path="lib/proguard.jar"/>
 	<classpathentry kind="lib" path="lib/retroguard.jar"/>
-	<classpathentry kind="lib" path="lib/retroweaver-all.jar"/>
 	<classpathentry kind="lib" path="lib/svgSalamander.jar"/>
 	<classpathentry kind="lib" path="lib/swing-layout-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/ZKM.jar"/>
