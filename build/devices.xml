@@ -133,10 +133,10 @@ These namespaces/schemas will be used soon.
 	<device supportsPolishGui="true">
 		<identifier>Generic/jtwi</identifier>
 		<features>isVirtual</features>
-		<description>An JTWI 1.0 compatible device that supports the MIDP 2.0 and CLDC 1.0 standards.</description>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaConfiguration" value="CLDC/1.0"/>
-		<capability name="JavaPackage" value="mmapi,wmapi,jtwi"/>
+		<description>An JTWI 1.0 compatible device that supports the MIDP 2.0 and CLDC 1.1 standards.</description>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="mmapi,wmapi"/>
 		<capability name="SoundFormat" value="midi, amr"/>
 	</device>	
 
