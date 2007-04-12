@@ -134,6 +134,8 @@ public class RemoteClient implements Runnable {
 	 */
 	protected Object callMethodSynchrone( String name, long primitivesFlag, Object[] parameters ) throws RemoteException {
 		HttpConnection connection = null;
+		DataOutputStream out = null;
+		DataInputStream in = null;
 		try {
 			//#if polish.rmi.redirects == false
 				connection = (HttpConnection) Connector.open( this.url, Connector.READ_WRITE );
@@ -146,14 +148,14 @@ public class RemoteClient implements Runnable {
 				connection.setRequestProperty("cookie", this.cookie );
 			}
 			// write parameters:
-			DataOutputStream out = connection.openDataOutputStream();
+			out = connection.openDataOutputStream();
 			out.writeInt( RMI_VERSION );
 			out.writeBoolean( this.useObfuscation );
 			out.writeUTF( name );
 			out.writeLong( primitivesFlag );
 			Serializer.serialize( parameters, out);
 			// send request and read return values:
-			DataInputStream in = connection.openDataInputStream();
+			in = connection.openDataInputStream();
 			int status = connection.getResponseCode();
 			if (status != HttpConnection.HTTP_OK) {
 				throw new RemoteException("Server responded with response code " + status );
@@ -193,6 +195,20 @@ public class RemoteClient implements Runnable {
 			// create new RemoteException for this (e.g. SecurityException):
 			throw new RemoteException( e );					
 		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (Exception e) {
+					// ignore
+				}
+			}
+			if (out != null) {
+				try {
+					out.close();
+				} catch (Exception e) {
+					// ignore
+				}
+			}
 			if (connection != null) {
 				try {
 					connection.close();
