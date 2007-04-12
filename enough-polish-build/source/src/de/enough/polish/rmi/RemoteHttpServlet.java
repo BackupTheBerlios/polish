@@ -34,6 +34,8 @@ import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -76,6 +78,7 @@ public class RemoteHttpServlet extends HttpServlet {
 		PRIMITIVES_TYPES_MAP.put( Boolean.class, Boolean.TYPE );
 		PRIMITIVES_TYPES_MAP.put( Character.class, Character.TYPE );
 	}
+	private static Logger logger = Logger.getLogger( "RemoteHttpServlet" );
 	
 	/** Contains a HttServletRequest for each thread. */
 	protected final Map requestsByThread;
@@ -198,16 +201,21 @@ public class RemoteHttpServlet extends HttpServlet {
 	protected void process( DataInputStream in, DataOutputStream out )
 	throws IOException
 	{
-		try {
-			
+		boolean useObfuscation = true;
+		try {			
 			int version = in.readInt();
-			System.out.println("using RMI version=" + version);
+			logger.log( Level.FINE, "using RMI version=" + version);
+			if (version > 101) {
+				useObfuscation = in.readBoolean();
+				logger.log( Level.FINER, "using obfuscation: " + useObfuscation );
+			}
+			
 			String methodName = in.readUTF();
-			System.out.println("requested method: " + methodName );
+			logger.log( Level.FINE, "requested method: " + methodName );
 			long primitivesFlag = 0;
 			if (version > 100) {
 				primitivesFlag = in.readLong();
-				//System.out.println("primitivesFlag=" + primitivesFlag );
+				logger.log( Level.FINER, "primitivesFlag=" + primitivesFlag );
 			}
 			Object[] parameters = (Object[]) Serializer.deserialize(in);
 			Class[] signature = null;
@@ -237,28 +245,28 @@ public class RemoteHttpServlet extends HttpServlet {
 			Method method = this.implementation.getClass().getMethod( methodName, signature );
 			Object returnValue = method.invoke(this.implementation, parameters); // for void methods null is returned...
 			out.writeInt( Remote.STATUS_OK );
-			Serializer.serialize(returnValue, out);
+			Serializer.serialize(returnValue, out, useObfuscation);
 		} catch (SecurityException e) {
 			e.printStackTrace();
-			processRemoteException( e, out );
+			processRemoteException( e, out, useObfuscation );
 		} catch (NoSuchMethodException e) {
 			e.printStackTrace();
-			processRemoteException( e, out );
+			processRemoteException( e, out, useObfuscation );
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-			processRemoteException( e, out );
+			processRemoteException( e, out, useObfuscation );
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
-			processRemoteException( e, out );
+			processRemoteException( e, out, useObfuscation );
 		} catch (InvocationTargetException e) {
 			System.out.println("InvocationTargetException, cause=" + e.getCause() );
-			processRemoteException( e, out );
+			processRemoteException( e, out, useObfuscation );
 		} catch (RemoteException e) {
 			e.printStackTrace();
-			processRemoteException( e, out );
+			processRemoteException( e, out, useObfuscation );
 		} catch (Exception e) {
 			e.printStackTrace();
-			processRemoteException( e, out );
+			processRemoteException( e, out, useObfuscation );
 		} finally {
 			if (in != null) {
 				try {
@@ -282,15 +290,16 @@ public class RemoteHttpServlet extends HttpServlet {
 	 * Processes an exception which is thrown by the method or while accessing the method.
 	 * @param e the exception
 	 * @param out the stream to which the exception is written as a result
+	 * @param useObfuscation true when obfuscation should be used
 	 * @throws IOException when data could not be written
 	 */
-	protected void processRemoteException(Throwable e, DataOutputStream out)
+	protected void processRemoteException(Throwable e, DataOutputStream out, boolean useObfuscation)
 	throws IOException
 	{
 		Throwable cause = e.getCause();
 		if (cause instanceof Externalizable) {
 			out.writeInt( Remote.STATUS_CHECKED_EXCEPTION );
-			Serializer.serialize( cause, out );
+			Serializer.serialize( cause, out, useObfuscation );
 		} else if (cause != null) {
 			out.writeInt( Remote.STATUS_UNCHECKED_EXCEPTION );
 			out.writeUTF( cause.toString() );
