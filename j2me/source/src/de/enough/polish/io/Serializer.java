@@ -125,7 +125,7 @@ public final class Serializer {
 					}
 					String fullClassName = line.substring(0, splitPos);
 					String obfuscatedClassName = line.substring( splitPos + 1 );
-					//System.out.println("full name=" + fullClassName + ", obsucated=" + obfuscatedClassName);
+					//System.out.println("full name=" + fullClassName + ", obfuscated=" + obfuscatedClassName);
 					obfuscationDeserializeMap.put( obfuscatedClassName, fullClassName );
 					obfuscationSerializeMap.put( fullClassName, obfuscatedClassName );
 				}
@@ -144,7 +144,8 @@ public final class Serializer {
 	
 
 	/**
-	 * Serializes an Object like java.lang.Integer, java.util.Date, javax.microedition.lcdui.Image etc.
+	 * Serializes the specified object.
+	 * Any class implementing Serializable can be serialized, additionally classes like java.lang.Integer, java.util.Date, javax.util.Vector,  javax.microedition.lcdui.Image etc. can be serialized.
 	 * 
 	 * @param object the object
 	 * @param out the stream into which the object should be serialized
@@ -154,6 +155,21 @@ public final class Serializer {
 	public static void serialize( Object object, DataOutputStream out ) 
 	throws IOException 
 	{
+		//#if polish.JavaSE
+		serialize( object, out, true );
+	}
+	/**
+	 * WARNING: Can only be used in JavaSE environments! Serializes the specified object.
+	 * 
+	 * @param object the object
+	 * @param out the stream into which the object should be serialized
+	 * @param useObfuscation true when classnames are obfuscated
+	 * @throws IOException when serialization data could not be written or when encountering an object that cannot be serialized
+	 */
+	public static void serialize( Object object, DataOutputStream out, boolean useObfuscation )
+	throws IOException
+	{
+		//#endif
 		out.writeByte( VERSION );
 		boolean isNull = (object == null);
 		out.writeBoolean( isNull );
@@ -162,10 +178,10 @@ public final class Serializer {
 				out.writeByte(TYPE_EXTERNALIZABLE);
 				String className = object.getClass().getName();
 				//#if polish.JavaSE
-					if (obfuscationSerializeMap != null) {
+					if (useObfuscation && obfuscationSerializeMap != null) {
 						String obfuscatedClassName = (String) obfuscationSerializeMap.get( className );
 						if (obfuscatedClassName != null) {
-							//System.out.println("Serializer.serialize: translating classname from " + className + " to " +  obfuscatedClassName );
+							//System.out.println("Serializer.serialize: translating classname from " + className + " to " +  obfuscatedClassName +  " useObfuscationIndicator=" + useObfuscationIndicator.get() );
 							className = obfuscatedClassName;
 						}
 					}
@@ -176,18 +192,18 @@ public final class Serializer {
 				((Externalizable)object).write(out);
 			} else if (object instanceof Externalizable[]) { 
 				out.writeByte(TYPE_EXTERNALIZABLE_ARRAY);
-        String cn = object.getClass().getName();
-        cn = cn.substring(cn.lastIndexOf('[') + 2, cn.length() - 1);
-        //#if polish.JavaSE
-          if (obfuscationSerializeMap != null) {
-            String obfuscatedClassName = (String) obfuscationSerializeMap.get( cn );
-            if (obfuscatedClassName != null) {
-              //System.out.println("Serializer.serialize: translating classname from " + className + " to " +  obfuscatedClassName );
-              cn = obfuscatedClassName;
-            }
-          }
-        //#endif
-        out.writeUTF(cn);
+				String cn = object.getClass().getName();
+				cn = cn.substring(cn.lastIndexOf('[') + 2, cn.length() - 1);
+				//#if polish.JavaSE
+				  if (useObfuscation && obfuscationSerializeMap != null) {
+				    String obfuscatedClassName = (String) obfuscationSerializeMap.get( cn );
+				    if (obfuscatedClassName != null) {
+				      //System.out.println("Serializer.serialize: translating classname from " + className + " to " +  obfuscatedClassName );
+				      cn = obfuscatedClassName;
+				    }
+				  }
+				//#endif
+				out.writeUTF(cn);
 				Externalizable[] externalizables = (Externalizable[]) object;
 				out.writeInt( externalizables.length );
 				Hashtable classNames = new Hashtable();
@@ -209,7 +225,7 @@ public final class Serializer {
 							idCounter++;
 							String className = currentClass.getName() ;
 							//#if polish.JavaSE
-								if (obfuscationSerializeMap != null) {
+								if (useObfuscation && obfuscationSerializeMap != null) {
 									String obfuscatedClassName = (String) obfuscationSerializeMap.get( className );
 									if (obfuscatedClassName != null) {
 										//System.out.println("Serializer.serialize: translating classname from " + className + " to " +  obfuscatedClassName );
@@ -475,33 +491,31 @@ public final class Serializer {
 			extern.read( in );
 			return extern;
 		case TYPE_EXTERNALIZABLE_ARRAY:
-      String cn = in.readUTF();
-      //#if polish.JavaSE
-        if (obfuscationDeserializeMap != null) {
-          String fullClassName = (String) obfuscationDeserializeMap.get( cn );
-          if (fullClassName != null) {
-            //System.out.println("Serializer.deserialize: translating classname from " + className + " to " +  fullClassName );
-            cn = fullClassName;
-          }
-        }
-      //#endif
+			String cn = in.readUTF();
+			//#if polish.JavaSE
+				if (obfuscationDeserializeMap != null) {
+					String fullClassName = (String) obfuscationDeserializeMap.get( cn );
+					if (fullClassName != null) {
+						//System.out.println("Serializer.deserialize: translating classname from " + cn + " to " +  fullClassName );
+						cn = fullClassName;
+					}
+				}
+			//#endif
 
-      int length = in.readInt();
-      Externalizable[] externalizables;
-
-      //#if polish.midp
-        externalizables = new Externalizable[ length ];
-      //#endif
-
-      //#if polish.JavaSE
-        try {
-          externalizables = (Externalizable[]) Array.newInstance(Class.forName( cn ), length);
-        } catch (Exception e) {
-          //#debug error
-          System.out.println("Unable to instantiate Serializable \"" + cn + "\"" + e);
-          throw new IOException( e.toString() );
-        }
-      //#endif
+			int length = in.readInt();
+			Externalizable[] externalizables;
+		
+			//#if !polish.JavaSE
+				externalizables = new Externalizable[ length ];
+			//#else
+				try {
+					externalizables = (Externalizable[]) Array.newInstance(Class.forName( cn ), length);
+				} catch (Exception e) {
+					//#debug error
+					System.out.println("Unable to instantiate Serializable \"" + cn + "\"" + e);
+					throw new IOException( e.toString() );
+				}
+			//#endif
       
 			Class[] classes = new Class[ Math.min( length, 7 ) ];
 			Class currentClass;

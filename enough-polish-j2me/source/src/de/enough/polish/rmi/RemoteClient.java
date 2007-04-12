@@ -55,9 +55,11 @@ import de.enough.polish.io.Serializer;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class RemoteClient implements Runnable {
-	/** The version of the RMI protocol, currently 101 (=1.0.1) is used (support for primitives) */
-	public static final int RMI_VERSION = 101; // = 1.0.1 (support of primitives)
+	/** The version of the RMI protocol, currently 102 (=1.0.2) is used (support for dynamic obfuscation) */
+	//public static final int RMI_VERSION = 101; // = 1.0.1 (support of primitives)
+	public static final int RMI_VERSION = 102; // = 1.0.2 (support of dynamic obfuscation)
 	
+	private final boolean useObfuscation;
 	private final Vector callQueue;
 	private String url;
 	private String cookie;
@@ -68,6 +70,7 @@ public class RemoteClient implements Runnable {
 	 * @param url the url of the server, e.g. http://myserver.com/myservice
 	 */
 	protected RemoteClient( String url ) {
+		this.useObfuscation = (getClass().getName().indexOf("RemoteClient") == -1);
 		this.url = url;
 		this.callQueue = new Vector( 3 );
 		//#if !polish.rmi.synchrone
@@ -145,6 +148,7 @@ public class RemoteClient implements Runnable {
 			// write parameters:
 			DataOutputStream out = connection.openDataOutputStream();
 			out.writeInt( RMI_VERSION );
+			out.writeBoolean( this.useObfuscation );
 			out.writeUTF( name );
 			out.writeLong( primitivesFlag );
 			Serializer.serialize( parameters, out);
@@ -184,10 +188,10 @@ public class RemoteClient implements Runnable {
 			}
 		} catch (IOException e) {
 			// create new RemoteException for this:
-			throw new RemoteException( e.toString() );					
+			throw new RemoteException( e );					
 		} catch (Throwable e) {
 			// create new RemoteException for this (e.g. SecurityException):
-			throw new RemoteException( e.toString() );					
+			throw new RemoteException( e );					
 		} finally {
 			if (connection != null) {
 				try {
