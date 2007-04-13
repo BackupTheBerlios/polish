@@ -105,7 +105,7 @@ public class FramedForm extends Form {
         if (this.bottomFrame != null)
         {
             this.bottomFrame.clear();
-        }           
+        }
     }
 
 
@@ -143,6 +143,34 @@ public class FramedForm extends Form {
 	 */
 	public void append( int frameOrientation, Item item ) {
 		append( frameOrientation, item, null );
+	}
+	
+	/**
+	 * Removes the given item to the specifid frame.
+	 * The <code>itemNum</code> parameter must be
+	 * within the range <code>[0..size()-1]</code>, inclusive.
+	 * 
+	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param itemNum the index of the item
+	 */
+	public void delete( int frameOrientation, int itemNum ) {
+		Container frame;
+		switch (frameOrientation) {
+		case  Graphics.TOP:
+			frame = this.topFrame;
+			break;
+		case  Graphics.BOTTOM:
+			frame = this.bottomFrame;
+			break;
+		case  Graphics.LEFT:
+			frame = this.leftFrame;
+			break;
+		default:
+			frame = this.rightFrame;
+		}
+		if (frame != null) {
+			frame.remove(itemNum);
+		}
 	}
 
 	/**

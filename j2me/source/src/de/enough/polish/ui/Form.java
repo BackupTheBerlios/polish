@@ -675,8 +675,8 @@ public class Form extends Screen
 	 * The <code>itemNum</code> parameter must be
 	 * within the range <code>[0..size()-1]</code>, inclusive.
 	 * 
-	 * @param itemNum - the index of the item to be deleted
-	 * @throws IndexOutOfBoundsException - if itemNum is invalid
+	 * @param itemNum the index of the item to be deleted
+	 * @throws IndexOutOfBoundsException if itemNum is invalid
 	 */
 	public void delete(int itemNum)
 	{
