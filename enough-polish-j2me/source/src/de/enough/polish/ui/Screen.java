@@ -561,6 +561,9 @@ implements AccessibleCanvas
 		if (this.container != null) {
 			this.container.screen = this;
 		}
+		//#if !tmp.menuFullScreen
+			this.screenHeight = getHeight();
+		//#endif
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 		
 		// start the animmation thread if necessary: 
