@@ -80,6 +80,34 @@ public class FramedForm extends Form {
 		//#endif
 
 	}
+	
+	/**
+	 * Deletes all the items from this <code>Form</code>, leaving  it with zero items.
+	 * This method does nothing if the <code>Form</code> is already empty.
+	 * 
+	 * @since  MIDP 2.0
+	 */
+	public void deleteAll()
+    {
+        super.deleteAll();
+        if (this.leftFrame != null)
+        {
+            this.leftFrame.clear();
+        }
+        if (this.rightFrame != null)
+        {
+            this.rightFrame.clear();
+        }
+        if (this.topFrame != null)
+        {
+            this.topFrame.clear();
+        }
+        if (this.bottomFrame != null)
+        {
+            this.bottomFrame.clear();
+        }           
+    }
+
 
 	//#if polish.LibraryBuild
 	public int append( javax.microedition.lcdui.Item item ) {
