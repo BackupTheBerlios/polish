@@ -710,7 +710,7 @@ public class Container extends Item {
 									this.autoFocusEnabled = false;
 									requireScrolling = (this.autoFocusIndex != 0);
 									focus( i, item, 0 );
-									this.isScrollRequired = requireScrolling; // override setting in focus()
+									this.isScrollRequired = this.isScrollRequired && requireScrolling; // override setting in focus()
 									this.containerView.focusedIndex = i;
 									this.containerView.focusedItem = item;
 									//System.out.println("autofocus: found item " + i );
@@ -753,7 +753,7 @@ public class Container extends Item {
 			if (this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
 				this.autoFocusEnabled = false;
 				focus( i, item, 0 );
-				this.isScrollRequired = (this.autoFocusIndex != 0); // override setting in focus()
+				this.isScrollRequired = this.isScrollRequired && (this.autoFocusIndex != 0); // override setting in focus()
 				height = item.getItemHeight(lineWidth, lineWidth);
 				if (!isLayoutShrink) {
 					width = item.itemWidth;  // no need to call getItemWidth() since the item is now initialised...
