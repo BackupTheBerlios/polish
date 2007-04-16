@@ -63,14 +63,14 @@ public class CssMapping {
 			throw new BuildException("Invalid mapping without \"from\" attribute - check your css-attributes.xml file(s).");
 		}
 		this.to = definition.getAttributeValue("to");
-		if (this.to == null) {
-			throw new BuildException("Invalid mapping without \"to\" attribute - check your css-attributes.xml file(s) of the mapping from [" + this.from + "].");
-		}
 		this.condition = definition.getAttributeValue("condition");
 		if (this.condition == null) {
 			this.condition = definition.getChildTextTrim("condition");
 		}
 		this.converter = definition.getAttributeValue("converter");
+		if (this.to == null && this.converter == null) {
+			throw new BuildException("Invalid mapping without \"to\" and  without \"converter\" attribute - check your css-attributes.xml file(s) of the mapping from [" + this.from + "].");
+		}
 		String excludesStr = definition.getAttributeValue("excludes");
 		if (excludesStr != null) {
 			this.excludes = StringUtil.splitAndTrim( excludesStr, ',');

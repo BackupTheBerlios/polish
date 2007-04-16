@@ -75,10 +75,18 @@ public class RoundRectBackgroundConverter extends BackgroundConverter {
 		} else {
 			arcWidth = arc;
 		}
-		if (this.hasBorder ) {
+		boolean hasAlphaColor = isAlphaColor(this.color);
+		if (this.hasBorder && !hasAlphaColor) {
 			return "new " + BACKGROUNDS_PACKAGE + "BorderedRoundRectBackground( " 
 					+ this.color + "," + arcWidth + ", " + arcHeight + ", " 
 					+ this.borderColor + ", " + this.borderWidth + ")";
+		} else if (this.hasBorder && hasAlphaColor) {
+			return "new " + BACKGROUNDS_PACKAGE + "TranslucentRoundRectBackground( " 
+			+ this.color + "," + arcWidth + ", " + arcHeight + ", " 
+			+ this.borderColor + ", " + this.borderWidth + ")";
+		} else if (hasAlphaColor) {
+			return "new " + BACKGROUNDS_PACKAGE + "TranslucentRoundRectBackground( " 
+					+ this.color + "," + arcWidth + ", " + arcHeight + ")";
 		} else {
 			return "new " + BACKGROUNDS_PACKAGE + "RoundRectBackground( " 
 					+ this.color + "," + arcWidth + ", " + arcHeight + ")";

@@ -26,11 +26,26 @@
 
 -->
 <attributes>
+	<types>
+		<type name="string" class="de.enough.polish.preprocess.css.attributes.StringCssAttribute" />
+		<type names="char, character" class="de.enough.polish.preprocess.css.attributes.CharCssAttribute" />
+		<type names="bool, boolean" class="de.enough.polish.preprocess.css.attributes.BooleanCssAttribute" />
+		<type names="integer, int" class="de.enough.polish.preprocess.css.attributes.IntegerCssAttribute" />
+		<type name="percent" class="de.enough.polish.preprocess.css.attributes.PercentCssAttribute" />
+		<type name="percentorabsolute" class="de.enough.polish.preprocess.css.attributes.PercentOrAbsoluteCssAttribute" />
+		<type name="imageurl" class="de.enough.polish.preprocess.css.attributes.ImageUrlCssAttribute" />
+		<type name="imageurlornone" class="de.enough.polish.preprocess.css.attributes.ImageUrlOrNoneCssAttribute" />
+		<type name="object" class="de.enough.polish.preprocess.css.attributes.ObjectCssAttribute" />
+		<type name="style" class="de.enough.polish.preprocess.css.attributes.StyleCssAttribute" />
+		<type name="color" class="de.enough.polish.preprocess.css.attributes.ColorCssAttribute" />
+		<type name="map" class="de.enough.polish.preprocess.css.attributes.MapCssAttribute" />
+		<type name="columns-width" class="de.enough.polish.preprocess.css.attributes.ColumnsWidthCssAttribute" />
+		<type name="converter" class="de.enough.polish.preprocess.css.attributes.ConverterCssAttribute" />
+	</types>
 
-<!--
 	<attribute
 		name="background"
-		type="object"
+		type="converter"
 		appliesTo="Item, Screen"
 		description="The background of an item or screen. The default background for items is &quot;none&quot;, the default background for screens is a simple white background."
 	>
@@ -54,8 +69,32 @@
 		<mapping from="snow"                converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" />
 		<mapping from="snowflakes"          converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" />
 		<mapping from="web20"          		converter="de.enough.polish.preprocess.backgrounds.Web20RoundRectBackgroundConverter" />
+		<mapping from="stripes"          	converter="de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" />
+		<mapping from="horizontal-stripes"	converter="de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" />
+		<mapping from="gradient"          	converter="de.enough.polish.preprocess.backgrounds.GradientVerticalBackgroundConverter" />
+		<mapping from="vertical-gradient"   converter="de.enough.polish.preprocess.backgrounds.GradientVerticalBackgroundConverter" />
 	</attribute>
--->
+
+	<attribute
+		name="border"
+		type="converter"
+		appliesTo="Item, Screen"
+		description="The border of an item or screen. The default border is &quot;none&quot;."
+	>
+		<mapping from="simple" 				converter="de.enough.polish.preprocess.borders.SimpleBorderConverter" />
+		<mapping from="plain" 				converter="de.enough.polish.preprocess.borders.SimpleBorderConverter" />
+		<mapping from="bottom-right-shadow" converter="de.enough.polish.preprocess.borders.ShadowBorderConverter" />
+		<mapping from="right-bottom-shadow" converter="de.enough.polish.preprocess.borders.ShadowBorderConverter" />
+		<mapping from="shadow" 				converter="de.enough.polish.preprocess.borders.ShadowBorderConverter" />
+		<mapping from="round-rect" 			converter="de.enough.polish.preprocess.borders.RoundRectBorderConverter" />
+		<mapping from="roundrect" 			converter="de.enough.polish.preprocess.borders.RoundRectBorderConverter" />
+		<mapping from="circle" 				converter="de.enough.polish.preprocess.borders.CircleBorderConverter" />
+		<mapping from="bottom"				converter="de.enough.polish.preprocess.borders.BottomBorderConverter" />
+		<mapping from="top" 				converter="de.enough.polish.preprocess.borders.TopBorderConverter" />
+		<mapping from="left" 				converter="de.enough.polish.preprocess.borders.LeftBorderConverter" />
+		<mapping from="right" 				converter="de.enough.polish.preprocess.borders.RightBorderConverter" />
+		<mapping from="drop-shadow" 		converter="de.enough.polish.preprocess.borders.DropShadowBorderConverter" />
+	</attribute>		
 		<!--
 		<mapping from="" converter="" />
 		-->
@@ -64,7 +103,7 @@
 		name="layout"
 		appliesTo="Screen,Item"
 		description="The arrangement of the item or screen."
-		type="integer"
+		type="map"
 		values="left, horizontal-center, h-center, hcenter, center, right, top, vertical-center, v-center, vcenter, bottom, horizontal-expand, h-expand, hexpand, expand, vertical-expand, v-expand, vexpand, horizontal-shrink, h-shrink, hshrink, vertical-shrink, v-shrink, vshrink, newline-after, newline-before"
 		allowsCombinations="true"
 		isCaseSensitive="false"
@@ -105,7 +144,7 @@
 		name="font-style"
 		appliesTo="Screen,Item"
 		description="The font style of an item or screen element."
-		type="integer"
+		type="map"
 		values="plain, default, normal, bold, italic, cursive, underlined"
 		allowsCombinations="true"
 		requiresMapping="true"
@@ -161,7 +200,7 @@
 
 	<attribute
 		name="columns-width"
-		type="string"
+		type="columns-width"
 		appliesTo="Screen, Form, List, ChoiceGroup"
 		description="Either &quot;normal&quot;, &quot;equal&quot; or the width for each column in a comma separated list (e.g. &quot;columns-width: 60,60,10&quot;)."
 		default="normal"
@@ -206,7 +245,7 @@
 
 	<attribute
 		name="checkbox-plain"
-		type="imageurl"
+		type="imageurlornone"
 		appliesTo="ChoiceItem"
 		description="The URL of the image for a not-selected item. This will be used only when the type of the list or of the choice group is multiple. Default is a simple image drawn in the defined choice-color. When &quot;none&quot; is given, no image will be drawn for not-selected items. Only the image for selected items will be drawn in that case."
 		id="10"
@@ -222,7 +261,7 @@
 
 	<attribute
 		name="radiobox-plain"
-		type="imageurl"
+		type="imageurlornone"
 		appliesTo="ChoiceItem"
 		description="The URL of the image for a not-selected item. This will be used only when the type of the list or of the choice group is exclusive. Default is a simple image drawn in the defined choice-color. When &quot;none&quot; is given, no image will be drawn for not-selected items. Only the image for selected items will be drawn in that case."
 		id="12"
@@ -465,7 +504,7 @@
 
 	<attribute
 		name="view-type"
-		type="object"
+		type="map"
 		appliesTo="Form, List, ChoiceGroup, Container"
 		description="Defines which view should be used for showing the items of a Form, List, etc."
 		id="39"
@@ -476,6 +515,7 @@
 		<mapping from="DroppingView" to="new de.enough.polish.ui.containerviews.DroppingView()" />
 		<mapping from="midp2" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
 		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
+		<mapping from="relative" to="new de.enough.polish.ui.containerviews.RelativeLayoutView()" />
 		<mapping from="exclusive" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
 		<mapping from="exclusive-choice" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
 		<mapping from="exclusive-single-line" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
@@ -688,7 +728,7 @@
 
 	<attribute
 		name="screen-change-animation"
-		type="object"
+		type="map"
 		appliesTo="Screen, List, Form, FramedForm, TabbedForm"
 		description="An effect that should be shown whenever the screen is changed."
 		id="62"
@@ -697,9 +737,10 @@
 		<mapping from="right" to="new de.enough.polish.ui.screenanimations.RightScreenChangeAnimation()" />
 		<mapping from="top" to="new de.enough.polish.ui.screenanimations.TopScreenChangeAnimation()" />
 		<mapping from="bottom" to="new de.enough.polish.ui.screenanimations.BottomScreenChangeAnimation()" />
-		<mapping from="3drotation" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()" />
-		<mapping from="3dRotation" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()" />
-		<mapping from="3d" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()" />
+		<mapping from="diagonal" to="new de.enough.polish.ui.screenanimations.DiagonalScreenChangeAnimation()" />
+		<mapping from="3drotation" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()"  condition="polish.api.3d" />
+		<mapping from="3dRotation" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()"  condition="polish.api.3d" />
+		<mapping from="3d" to="new de.enough.polish.ui.screenanimations.Rotate3DScreenChangeAnimation()"  condition="polish.api.3d" />
 		<mapping from="scale" to="new de.enough.polish.ui.screenanimations.ScaleScreenChangeAnimation()" />
 		<mapping from="leftshutter" to="new de.enough.polish.ui.screenanimations.LeftShutterScreenChangeAnimation()" />
 		<mapping from="leftShutter" to="new de.enough.polish.ui.screenanimations.LeftShutterScreenChangeAnimation()" />
@@ -713,8 +754,6 @@
 		<mapping from="flash" to="new de.enough.polish.ui.screenanimations.FlashScreenChangeAnimation()" />
 		<mapping from="verticalflash" to="new de.enough.polish.ui.screenanimations.VerticalFlashScreenChangeAnimation()" />
 		<mapping from="verticalFlash" to="new de.enough.polish.ui.screenanimations.VerticalFlashScreenChangeAnimation()" />
-		<mapping from="scrollup" to="new de.enough.polish.ui.screenanimations.ScrollUpScreenChangeAnimation()" />
-		<mapping from="scrollUp" to="new de.enough.polish.ui.screenanimations.ScrollUpScreenChangeAnimation()" />
 		<mapping from="zoomout" to="new de.enough.polish.ui.screenanimations.ZoomOutScreenChangeAnimation()">
 			<condition>polish.midp2</condition>
 		</mapping>
@@ -733,32 +772,32 @@
 		<mapping from="zoomInAndHide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()">
 			<condition>polish.midp2</condition>
 		</mapping>
+		<mapping from="fade" to="new de.enough.polish.ui.screenanimations.FadeScreenChangeAnimation()" condition="polish.midp2"/>
+		<mapping from="scale" to="new de.enough.polish.ui.screenanimations.ScaleScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="bwToColor" to="new de.enough.polish.ui.screenanimations.BwToColorScreenChangeAnimation()">
 			<condition>polish.midp2</condition>
 		</mapping>
 		
-		<mapping from="Cube" to="new de.enough.polish.ui.screenanimations.CubeScreenChangeAnimation()" />
-		<!--
-		<mapping from="Cube" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()">
-			<condition>polish.midp2</condition>
-		</mapping>
-		-->
-		<mapping from="Card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()">
-			<condition>polish.midp2</condition>
-		</mapping>
-		<mapping from="MIDPCube" to="new de.enough.polish.ui.screenanimations.DisplayScreenChangeAnimation()" condition="polish.midp2"/>
+		<mapping from="Cube" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()"  condition="polish.midp2" />
+		<mapping from="cube" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()" condition="polish.midp2" />
 		<mapping from="Cage" to="new de.enough.polish.ui.screenanimations.CageScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="CagePart2" to="new de.enough.polish.ui.screenanimations.Cage2ScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="Card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="cage" to="new de.enough.polish.ui.screenanimations.CageScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="Card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()" condition="polish.midp2" />
+		<mapping from="card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="Paper" to="new de.enough.polish.ui.screenanimations.PaperScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="paper" to="new de.enough.polish.ui.screenanimations.PaperScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="Pixel" to="new de.enough.polish.ui.screenanimations.PixelScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="pixel" to="new de.enough.polish.ui.screenanimations.PixelScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="Domino" to="new de.enough.polish.ui.screenanimations.DominoScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="test" to="new de.enough.polish.ui.screenanimations.TestScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="TabliodPress" to="new de.enough.polish.ui.screenanimations.TabloidPressScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="domino" to="new de.enough.polish.ui.screenanimations.DominoScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="TabloidPress" to="new de.enough.polish.ui.screenanimations.TabloidPressScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="squash" to="new de.enough.polish.ui.screenanimations.TabloidPressScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="Rain" to="new de.enough.polish.ui.screenanimations.RainScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="TestRain" to="new de.enough.polish.ui.screenanimations.TestRainScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="rain" to="new de.enough.polish.ui.screenanimations.RainScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="NewWave" to="new de.enough.polish.ui.screenanimations.NewWaveScreenChangeAnimation()" condition="polish.midp2"/>
+		<mapping from="newWave" to="new de.enough.polish.ui.screenanimations.NewWaveScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="DanceBabyDance" to="new de.enough.polish.ui.screenanimations.DancingPixelScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="gradient" to="new de.enough.polish.ui.screenanimations.GradientScreenChangeAnimation()"  condition="polish.midp2"/>
 	</attribute>
 	
 	<attribute
@@ -971,7 +1010,7 @@
 	
 	<attribute
 		name="text-effect"
-		type="object"
+		type="map"
 		appliesto="StringItem, IconItem, ChoiceItem"
 		description="Sets a text effect."
 		id="88"
@@ -2117,6 +2156,98 @@
 		id="215"
 	/>
 	
+	<attribute
+		name="fade-screen-change-animation-steps"
+		type="int"
+		appliesTo="ScreenChangeAnimation, FadeScreenChangeAnimation"
+		description="Number of animation steps."
+		default="6"
+		id="216"
+	/>
+	<attribute
+		name="left-screen-change-animation-move-previous"
+		type="boolean"
+		appliesTo="ScreenChangeAnimation, LeftScreenChangeAnimation"
+		description="Set to true for moving the previous screen along with the animation."
+		default="false"
+		id="217"
+	/>
+	<attribute
+		name="right-screen-change-animation-move-previous"
+		type="boolean"
+		appliesTo="ScreenChangeAnimation, RightScreenChangeAnimation"
+		description="Set to true for moving the previous screen along with the animation."
+		default="false"
+		id="218"
+	/>
+	<attribute
+		name="top-screen-change-animation-move-previous"
+		type="boolean"
+		appliesTo="ScreenChangeAnimation, TopScreenChangeAnimation"
+		description="Set to true for moving the previous screen along with the animation."
+		default="false"
+		id="219"
+	/>
+	<attribute
+		name="bottom-screen-change-animation-move-previous"
+		type="boolean"
+		appliesTo="ScreenChangeAnimation, BottomScreenChangeAnimation"
+		description="Set to true for moving the previous screen along with the animation."
+		default="false"
+		id="220"
+	/>
+	<attribute
+		name="diagonal-screen-change-animation-speed"
+		type="int"
+		appliesTo="ScreenChangeAnimation, DiagonalScreenChangeAnimation"
+		description="The speed of the animation."
+		default="2"
+		id="221"
+	/>
+	<attribute
+		name="diagonal-screen-change-animation-move-previous"
+		type="boolean"
+		appliesTo="ScreenChangeAnimation, DiagonalScreenChangeAnimation"
+		description="Set to true for moving the previous screen along with the animation."
+		default="false"
+		id="222"
+	/>
+	<attribute
+		name="diagonal-screen-change-animation-background-color"
+		type="color"
+		appliesTo="ScreenChangeAnimation, DiagonalScreenChangeAnimation"
+		description="The color of background of the animation when the previous screen should also be moved."
+		default="white"
+		id="223"
+	/>
+	<attribute
+		name="width"
+		type="percentorabsolute"
+		appliesTo="Item, relative view-type"
+		description="The width of an item either in pixels or in percent."
+		id="224"
+	/>
+	<attribute
+		name="height"
+		type="percentorabsolute"
+		appliesTo="Item, relative view-type"
+		description="The height of an item either in pixels or in percent."
+		id="225"
+	/>
+	<attribute
+		name="x"
+		type="percentorabsolute"
+		appliesTo="Item, relative view-type"
+		description="The horizontal position of an item either in pixels or in percent relative to it's parent."
+		id="226"
+	/>
+	<attribute
+		name="y"
+		type="percentorabsolute"
+		appliesTo="Item, relative view-type"
+		description="The vertical position of an item either in pixels or in percent relative to it's parent."
+		id="227"
+	/>
 	
 	<!--
 	

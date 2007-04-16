@@ -45,6 +45,8 @@ import java.util.*;
  */
 public class ColorConverter {
 	
+	/** the key for retrieving the color converter from the environment */
+	public static final String ENVIRONMENT_KEY = "ColorConverter";
 	/**
 	 * Defines the standard VGA colors.
 	 * Available colors are red, green, blue, lime, black, white, silver, gray,

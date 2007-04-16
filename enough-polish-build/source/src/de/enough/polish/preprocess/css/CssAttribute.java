@@ -39,7 +39,7 @@ import de.enough.polish.util.CastUtil;
 import de.enough.polish.util.StringUtil;
 
 /**
- * <p>Represents a non-standard CSS attribute.</p>
+ * <p>Represents a CSS attribute.</p>
  *
  * <p>Copyright Enough Software 2004, 2005</p>
 
@@ -53,44 +53,23 @@ public class CssAttribute
 implements Comparable
 {
 	
-	public final static int STRING = 0;
-	public final static int INTEGER = 1;
-	public final static int COLOR = 2;
-	public final static int BOOLEAN = 3;
-	public final static int STYLE = 4;
-	public static final int CHAR = 5;
-	public static final int OBJECT = 6;
-	public static final int IMAGE_URL = 7;
-	
-	public final static Map TYPES_MAP = new HashMap();
-	static {
-		TYPES_MAP.put( "color", new Integer( COLOR ) );
-		TYPES_MAP.put( "integer", new Integer( INTEGER ) );
-		TYPES_MAP.put( "int", new Integer( INTEGER ) );
-		TYPES_MAP.put( "boolean", new Integer( BOOLEAN ) );
-		TYPES_MAP.put( "bool", new Integer( BOOLEAN ) );
-		TYPES_MAP.put( "style", new Integer( STYLE ) );
-		TYPES_MAP.put( "string", new Integer( STRING ) );
-		TYPES_MAP.put( "char", new Integer( CHAR ) );
-		TYPES_MAP.put( "object", new Integer( OBJECT ) );
-		TYPES_MAP.put( "imageurl", new Integer( IMAGE_URL ) );
-	}
-	
-	private final String name;
-	private final int type;
-	private final String[] allowedValues;
-	private final String defaultValue;
-	private final String appliesTo;
-	private final String description;
+	protected String name;
+	protected String[] allowedValues;
+	private String defaultValue;
+	private String appliesTo;
+	private String description;
 	private int id;
-	private final Map appliesToMap;
-	private final Map mappingsByName;
-	private final String group;
-	private final boolean isBaseAttribute;
-	private final boolean isCaseSensitive;
-	private final boolean allowsCombinations;
-	private final boolean requiresMapping;
+	private Map appliesToMap;
+	protected Map mappingsByName;
+	private String group;
+	protected boolean isBaseAttribute;
+	protected boolean isCaseSensitive;
+	protected boolean allowsCombinations;
+	protected boolean requiresMapping;
 	
+	protected CssAttribute() {
+		// do nothing
+	}
 
 	/**
 	 * Creates a new CSS-attribute
@@ -98,22 +77,31 @@ implements Comparable
 	 * @param definition the XML definition of this attribute.
 	 */
 	public CssAttribute(Element definition) {
+		setDefinition( definition );
+	}
+	
+	/**
+	 * Creates a new CSS-attribute
+	 *  
+	 * @param definition the XML definition of this attribute.
+	 */
+	public void setDefinition(Element definition) {
 		this.name = definition.getAttributeValue("name");
 		if (this.name == null) {
 			throw new BuildException("All CSS-attributes need to define the attribute [name]. Please check the files [standard-css-attributes.xml] and [custom-css-attributes.xml].");
 		}
 		this.defaultValue = definition.getAttributeValue("default");
-		String typeStr = definition.getAttributeValue("type");
-		if (typeStr != null) {
-			Integer typeInt = (Integer) TYPES_MAP.get( typeStr.toLowerCase() );
-			if (typeInt == null) {
-				throw new BuildException("The CSS-attribute-type [" + typeStr + "] is not supported. It needs to be either [integer], [color], [boolean], [style] or [string]. Please check your custom-css-attributes.xml file.");
-			} else {
-				this.type = typeInt.intValue();
-			}
-		} else {
-			this.type = STRING;
-		}
+//		String typeStr = definition.getAttributeValue("type");
+//		if (typeStr != null) {
+//			Integer typeInt = (Integer) TYPES_MAP.get( typeStr.toLowerCase() );
+//			if (typeInt == null) {
+//				throw new BuildException("The CSS-attribute-type [" + typeStr + "] is not supported. It needs to be either [integer], [color], [boolean], [style] or [string]. Please check your custom-css-attributes.xml file.");
+//			} else {
+//				this.type = typeInt.intValue();
+//			}
+//		} else {
+//			this.type = STRING;
+//		}
 		String allowedValuesStr = definition.getAttributeValue("values");
 		if (allowedValuesStr != null) {
 			this.allowedValues = StringUtil.splitAndTrim( allowedValuesStr, ',' );
@@ -194,68 +182,6 @@ implements Comparable
 	public String getName() {
 		return this.name;
 	}
-	/**
-	 * @return Returns the type.
-	 */
-	public int getType() {
-		return this.type;
-	}
-	
-	/**
-	 * Determines whether this attribute contains integer values
-	 * 
-	 * @return true when this attribute contains integer values.
-	 */
-	public boolean isInteger() {
-		return (this.type == INTEGER);
-	}
-	
-	/**
-	 * Determines whether this attribute contains color values
-	 * 
-	 * @return true when this attribute contains color values.
-	 */
-	public boolean isColor() {
-		return (this.type == COLOR);
-	}
-	
-	/**
-	 * Determines whether this attribute contains boolean values
-	 * 
-	 * @return true when this attribute contains boolean values.
-	 */
-	public boolean isBoolean() {
-		return (this.type == BOOLEAN);
-	}
-	
-	/**
-	 * Determines whether this attribute contains Style values
-	 * 
-	 * @return true when this attribute 
-	 */
-	public boolean isStyle() {
-		return ( this.type == STYLE );
-	}
-	
-	/**
-	 * Determines whether this attribute contains image-url values
-	 * 
-	 * @return true when this attribute 
-	 */
-	public boolean isImageUrl() {
-		return ( this.type == IMAGE_URL );
-	}
-
-
-	
-	/**
-	 * Determines whether this attribute contains string values
-	 * 
-	 * @return true when this attribute contains string values.
-	 */
-	public boolean isString() {
-		return (this.type == STRING);
-	}
 	
 	/**
 	 * Checks and transforms the given CSS value for this attribute.
@@ -266,26 +192,7 @@ implements Comparable
 	 * @throws BuildException when a condition is not met or when the value contains conflicting values
 	 */
 	public String getValue(String value, Environment environment ) {
-		if (isBoolean()) {
-			if ("true".equals( value ) || "true".equals( value )) {
-				if (this.isBaseAttribute) {
-					return "true";
-				}
-				return "Style.TRUE";
-			} else if ("false".equals( value ) || "no".equals( value )) {
-				if (this.isBaseAttribute) {
-					return "false";
-				}
-				return "Style.FALSE";
-			} else {
-				throw new BuildException( "Invalid CSS: the attribute \"" + this.name + "\" needs to be eiter \"true\" or \"false\" - the given value \"" + value + "\" is not supported."  );
-			}
-		} else if (this.type == CHAR) {
-			if (value.length() != 1) {
-				throw new BuildException( "Invalid CSS: the attribute \"" + this.name + "\" needs to be a character - the given value \"" + value + "\" is not supported."  );
-			}
-			return value;
-		} else if (this.mappingsByName != null) {
+		if (this.mappingsByName != null) {
 			if (!this.allowsCombinations) {
 				CssMapping mapping = getMapping(value);
 				if (mapping != null) {
@@ -326,60 +233,17 @@ implements Comparable
 						convertedValueBuffer.append(" | ");
 					}
 				}
-				if (this.isBaseAttribute) {
-					return convertedValueBuffer.toString();
-				} else if ( isInteger() ){
-					return "new Integer( " + convertedValueBuffer.toString() + ")";
-				}
-			}
-		} else if (this.type == INTEGER && this.allowedValues == null) {
-			try {
-				int intValue;
-				try {
-					intValue = Integer.parseInt( value );
-				} catch (NumberFormatException e) {
-					String processedValue = environment.getProperty( "calculate(" + value + ")", true);
-					intValue = Integer.parseInt( processedValue );
-				}
-				if (this.isBaseAttribute) {
-					return "" + intValue;
-				} else {
-					return "new Integer(" + intValue + ")";
-				}
-			} catch (NumberFormatException e) {
-				throw new BuildException("Invalid CSS: The attribute [" + this.name + "] needs an integer value. The value [" + value + "] cannot be accepted.");
-			}
-			
-		}
-		if (this.allowedValues == null) {
-			return value;
-		}
-		for (int i = 0; i < this.allowedValues.length; i++) {
-			if (!this.isCaseSensitive) {
-				value = value.toLowerCase();
-			}
-			if (value.equals( this.allowedValues[i])) {
-				if (isInteger()) {
-					if (this.isBaseAttribute) {
-						return "" + i;
-					} else {
-						return "new Integer(" + i + ")";
-					}
-				}
-				return value;
+				return convertedValueBuffer.toString();
+//				if (this.isBaseAttribute) {
+//					return convertedValueBuffer.toString();
+//				} else if ( isInteger() ){
+//					return "new Integer( " + convertedValueBuffer.toString() + ")";
+//				}
 			}
 		}
-		String message = "Invalid CSS: the attribute [" + this.name + "] needs to be one "
-					+ "of the following values: [";
-		for (int i = 0; i < this.allowedValues.length; i++) {
-			message += this.allowedValues[i];
-			if (i < this.allowedValues.length - 1) {
-				message += "], [";
-			}
-		}		
-		message += "]. The value [" + value + "] is not supported.";
-		throw new BuildException( message );
+		return value;
 	}
+	
 	
 	
 	/**
@@ -419,7 +283,6 @@ implements Comparable
 	 *         When the value is invalid, -1 will be returned
 	 * @throws NullPointerException when no fix allowed values are defined
 	 * @see #hasFixValues()
-	 * @see #checkValue(String, BooleanEvaluator) 
 	 */
 	public int getValuePosition( String value ) {
 		for (int i = 0; i < this.allowedValues.length; i++) {
@@ -473,7 +336,7 @@ implements Comparable
 		return 0;
 	}
 	
-	private CssMapping getMapping( String value ) {
+	protected CssMapping getMapping( String value ) {
 		if (this.mappingsByName == null) {
 			return null;
 		} else {
@@ -481,14 +344,7 @@ implements Comparable
 		}
 	}
 
-//	private String getMappingFrom(String value) {
-//		CssMapping mapping = getMapping(value);
-//		if (mapping != null) {
-//			return mapping.getTo();
-//		}
-//		return null;
-//	}
-	
+
 	/**
 	 * Adds the mappings of the given capability to this one.
 	 * With this feature new mappings can be added in custom-css-attributes.xml

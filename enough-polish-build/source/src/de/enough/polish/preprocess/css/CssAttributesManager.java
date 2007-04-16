@@ -33,6 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import de.enough.polish.BuildException;
+import de.enough.polish.util.StringUtil;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -50,7 +52,7 @@ import org.jdom.input.SAXBuilder;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class CssAttributesManager {
-	
+	private final HashMap typesByName;
 	private final HashMap attributesByName;
 
 	/**
@@ -60,6 +62,7 @@ public class CssAttributesManager {
 	 */
 	public CssAttributesManager( InputStream is ) {
 		this.attributesByName = new HashMap();
+		this.typesByName = new HashMap();
 		addCssAttributes( is );
 	}
 
@@ -83,10 +86,30 @@ public class CssAttributesManager {
 			e.printStackTrace();
 			throw new BuildException("Unable to read [custom-css-attributes.xml] or [standard-css-attributes.xml]: " + e, e );
 		}
-		List xmlList = document.getRootElement().getChildren();
+		Element typesElement = document.getRootElement().getChild("types");
+		if (typesElement != null) {
+			registerTypes( typesElement.getChildren() );
+		}
+		List xmlList = document.getRootElement().getChildren( "attribute" );
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element definition = (Element) iter.next();
-			CssAttribute attribute = new CssAttribute( definition );
+			String type = definition.getAttributeValue("type");
+			if (type == null) {
+				System.out.println("Warning: CSS attribute definition has no \"type\" attribute - now assuming \"string\" type for " + definition.getAttributeValue("name") );
+				type = "string";
+			}
+			Class attributeClass = (Class) this.typesByName.get( type );
+			if (attributeClass == null) {
+				throw new BuildException("Invalid CSS attribute: unable to instantiate type " + type + ": no definition found.");
+			}
+			CssAttribute attribute;
+			try {
+				attribute = (CssAttribute) attributeClass.newInstance();
+				attribute.setDefinition(definition);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new BuildException("Invalid CSS attribute: unable to instantiate type " + type + ": " + e.toString() );
+			}
 			CssAttribute existingAttribute = (CssAttribute) this.attributesByName.get( attribute.getName() );
 			if (existingAttribute != null) {
 				existingAttribute.add( attribute );
@@ -97,6 +120,42 @@ public class CssAttributesManager {
 		}
 	}
 	
+	/**
+	 * Loads type definitions from the css-attributes.xml file.
+	 * 
+	 * @param xmlList the list of <type> elements
+	 */
+	private void registerTypes(List xmlList) {
+		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
+			Element definition = (Element) iter.next();
+			String name = definition.getAttributeValue("name");
+			String[] names;
+			if (name != null) {
+				names = new String[] { name.toLowerCase() };
+			} else {
+				name = definition.getAttributeValue("names");
+				if (name == null) {
+					throw new BuildException("Invalid CSS type definition: no name nor names attribute found: " + definition );
+				}
+				names = StringUtil.splitAndTrim(name.toLowerCase(), ',');
+			}
+			String className = definition.getAttributeValue("class");
+			if (className == null) {
+				throw new BuildException("Invalid CSS type definition: no class attribute found: " + definition );
+			}
+			try {
+				Class typeClass = Class.forName( className );
+				for (int i = 0; i < names.length; i++) {
+					name = names[i];
+					this.typesByName.put( name, typeClass );
+				}
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				throw new BuildException("Invalid CSS type definition: class attribute " + className + " points to invalid class: " + e.toString() );
+			}
+		}
+	}
+
 	/**
 	 * Retrieves the specified attribute.
 	 * 

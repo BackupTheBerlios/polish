@@ -35,6 +35,7 @@ import de.enough.polish.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.Preprocessor;
+import de.enough.polish.preprocess.css.attributes.StyleCssAttribute;
 import de.enough.polish.util.AbbreviationsGenerator;
 import de.enough.polish.util.StringList;
 import de.enough.polish.util.StringUtil;
@@ -51,54 +52,14 @@ import de.enough.polish.util.StringUtil;
 public class CssConverter extends Converter {
 	
 	private static final String INCLUDE_MARK = "//$$IncludeStyleSheetDefinitionHere$$//";
-	private static final HashMap BACKGROUND_TYPES = new HashMap();
-	static {
-		BACKGROUND_TYPES.put( "simple", "de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter");
-		BACKGROUND_TYPES.put( "plain", "de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter");
-		BACKGROUND_TYPES.put( "image", "de.enough.polish.preprocess.backgrounds.ImageBackgroundConverter");
-		BACKGROUND_TYPES.put( "roundrect", "de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter");
-		BACKGROUND_TYPES.put( "round-rect", "de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter");
-		BACKGROUND_TYPES.put( "pulsating", "de.enough.polish.preprocess.backgrounds.PulsatingBackgroundConverter");
-		BACKGROUND_TYPES.put( "pulsating-circle", "de.enough.polish.preprocess.backgrounds.PulsatingCircleBackgroundConverter");
-		BACKGROUND_TYPES.put( "pulsating-circles", "de.enough.polish.preprocess.backgrounds.PulsatingCirclesBackgroundConverter");
-		BACKGROUND_TYPES.put( "circle", "de.enough.polish.preprocess.backgrounds.CircleBackgroundConverter");
-		BACKGROUND_TYPES.put( "opening", "de.enough.polish.preprocess.backgrounds.OpeningBackgroundConverter");
-		BACKGROUND_TYPES.put( "round-rect-opening", "de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter");
-		BACKGROUND_TYPES.put( "opening-round-rect", "de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter");
-		BACKGROUND_TYPES.put( "round-tab", "de.enough.polish.preprocess.backgrounds.RoundTabBackgroundConverter");
-		BACKGROUND_TYPES.put( "fade-in", "de.enough.polish.preprocess.backgrounds.FadeInBackgroundConverter");
-		BACKGROUND_TYPES.put( "ball-games", "de.enough.polish.preprocess.backgrounds.BallBackgroundConverter");
-		BACKGROUND_TYPES.put( "tiger-stripes", "de.enough.polish.preprocess.backgrounds.TigerStripesBackgroundConverter");
-		BACKGROUND_TYPES.put( "smooth-color", "de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter");
-		BACKGROUND_TYPES.put( "gradient", "de.enough.polish.preprocess.backgrounds.GradientVerticalBackgroundConverter");
-		BACKGROUND_TYPES.put( "vertical-gradient", "de.enough.polish.preprocess.backgrounds.GradientVerticalBackgroundConverter");
-		BACKGROUND_TYPES.put( "snow", "de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter");
-		BACKGROUND_TYPES.put( "snowflakes", "de.enough.polish.preprocess.backgrounds.XmasSnowBackgroundConverter");
-		BACKGROUND_TYPES.put( "web20", "de.enough.polish.preprocess.backgrounds.Web20RoundRectBackgroundConverter" );
-		BACKGROUND_TYPES.put( "horizontal-stripes", "de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" );
-		BACKGROUND_TYPES.put( "stripes", "de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" );
-	}
-	private static final HashMap BORDER_TYPES = new HashMap();
-	static {
-		BORDER_TYPES.put( "simple", "de.enough.polish.preprocess.borders.SimpleBorderConverter");
-		BORDER_TYPES.put( "plain", "de.enough.polish.preprocess.borders.SimpleBorderConverter");
-		BORDER_TYPES.put( "bottom-right-shadow", "de.enough.polish.preprocess.borders.ShadowBorderConverter");
-		BORDER_TYPES.put( "right-bottom-shadow", "de.enough.polish.preprocess.borders.ShadowBorderConverter");
-		BORDER_TYPES.put( "shadow", "de.enough.polish.preprocess.borders.ShadowBorderConverter");
-		BORDER_TYPES.put( "round-rect", "de.enough.polish.preprocess.borders.RoundRectBorderConverter");
-		BORDER_TYPES.put( "circle", "de.enough.polish.preprocess.borders.CircleBorderConverter");
-		BORDER_TYPES.put( "bottom", "de.enough.polish.preprocess.borders.BottomBorderConverter");
-		BORDER_TYPES.put( "top", "de.enough.polish.preprocess.borders.TopBorderConverter");
-		BORDER_TYPES.put( "left", "de.enough.polish.preprocess.borders.LeftBorderConverter");
-		BORDER_TYPES.put( "right", "de.enough.polish.preprocess.borders.RightBorderConverter");
-		BORDER_TYPES.put( "drop-shadow", "de.enough.polish.preprocess.borders.DropShadowBorderConverter");
-	}
 
 	protected ArrayList referencedStyles;
 	protected AbbreviationsGenerator abbreviationGenerator;
 	protected CssAttributesManager attributesManager;
 	private CssAttribute fontStyleAttribute;
 	private CssAttribute layoutAttribute;
+	private CssAttribute backgroundAttribute;
+	private CssAttribute borderAttribute;
 	
 	/**
 	 * Creates a new CSS converter
@@ -117,6 +78,8 @@ public class CssConverter extends Converter {
 		this.attributesManager = attributesManager;
 		this.fontStyleAttribute = attributesManager.getAttribute("font-style");
 		this.layoutAttribute = attributesManager.getAttribute("layout");
+		this.backgroundAttribute = attributesManager.getAttribute("background");
+		this.borderAttribute = attributesManager.getAttribute("border");
 	}
 	
 
@@ -126,6 +89,7 @@ public class CssConverter extends Converter {
 								   Preprocessor preprocessor,
 								   Environment env ) 
 	{
+		env.set( ColorConverter.ENVIRONMENT_KEY,  this.colorConverter );
 		this.abbreviationGenerator = null;
 		// search for the position to include the style-sheet definitions:
 		int index = -1;
@@ -173,7 +137,7 @@ public class CssConverter extends Converter {
 				defaultBackgroundDefined = true;
 			} 
 			HashMap group = (HashMap) backgrounds.get( groupName );
-			processBackground(groupName, group, null, codeList, styleSheet, true );
+			processBackground(groupName, group, null, codeList, styleSheet, true, env );
 		}
 		
 		// add the borders-definition:
@@ -186,7 +150,7 @@ public class CssConverter extends Converter {
 				defaultBorderDefined = true;
 			} 
 			HashMap group = (HashMap) borders.get( groupName );
-			processBorder(groupName, group, null, codeList, styleSheet, true );
+			processBorder(groupName, group, null, codeList, styleSheet, true, env );
 		}
 		String test = env.getVariable("polish.license");
 //		if ( "GPL".equals(test) ) {
@@ -381,7 +345,7 @@ public class CssConverter extends Converter {
 			if (group == null) {
 				codeList.add( STANDALONE_MODIFIER + "Background defaultBackground = null;");
 			} else {
-				processBackground("default", group, copy, codeList, styleSheet, true );
+				processBackground("default", group, copy, codeList, styleSheet, true, environment );
 			}
 		}
 		group = copy.getGroup("border");
@@ -389,7 +353,7 @@ public class CssConverter extends Converter {
 			if (group == null) {
 				codeList.add( STANDALONE_MODIFIER + "Border defaultBorder = null;");
 			} else {
-				processBorder("default", group, copy, codeList, styleSheet, true );
+				processBorder("default", group, copy, codeList, styleSheet, true, environment );
 			}
 		}
 		// set default values:
@@ -491,7 +455,7 @@ public class CssConverter extends Converter {
 		// process the background:
 		group = style.removeGroup("background");
 		if ( group != null ) {
-			processBackground( style.getSelector(), group, style, codeList, styleSheet, false );
+			processBackground( style.getSelector(), group, style, codeList, styleSheet, false, environment );
 			// ugly hack to preserve background-bottom and background-top values:
 			if ( group.get("bottom") != null || group.get("top") != null) {
 				HashMap newGroup = new HashMap(2);
@@ -512,7 +476,7 @@ public class CssConverter extends Converter {
 		// process the border:
 		group = style.removeGroup("border");
 		if ( group != null ) {
-			processBorder( style.getSelector(), group, style, codeList, styleSheet, false );
+			processBorder( style.getSelector(), group, style, codeList, styleSheet, false, environment );
 		} else {
 			codeList.add("\t\tnull\t// no border");
 		}
@@ -564,10 +528,8 @@ public class CssConverter extends Converter {
 						keyList.append(", ");
 					}
 					
-					int attributeType = CssAttribute.STRING;
 					CssAttribute attribute = this.attributesManager.getAttribute( attributeName );
 					if (attribute != null) {
-						attributeType = attribute.getType();
 						value = attribute.getValue( value, environment );
 						//attribute.checkValue( value, evaluator );
 //						if (attributeType == CssAttribute.INTEGER && attribute.hasFixValues()) {
@@ -581,25 +543,15 @@ public class CssConverter extends Converter {
 					// remove all spaces and check for the star-value (e.g. "20, *"):
 					if (key.equals("width") && groupName.equals("columns")) {
 						// remove any spaces, e.g. "columns-width: 50, 100, *":
+						// TODO: use specialized CSS attribute
 						value = StringUtil.replace( value, " ", "" );
 					}
-					if (attributeType == CssAttribute.STYLE || key.endsWith("style")) {
+					if (attribute instanceof StyleCssAttribute || ( attribute != null && (key.endsWith("style") || value.startsWith("style(")) ) ) {
 						value = getStyleReference( value, style, styleSheet );
-					} else if (attributeType == CssAttribute.COLOR || key.endsWith("color")) {
-						value = this.colorConverter.generateColorConstructor( value );
-						attributeType = CssAttribute.COLOR;
-					} else if (key.equals("url")) {
-						value = getUrl( value );
 					}
-					if (value.startsWith("url")) {
-						value = getUrl( value );
-					} else if (value.startsWith("style(")) {
-						value = getStyleReference( value, style, styleSheet );
-					}					
-					if (attributeType == CssAttribute.STRING 
-							|| attributeType == CssAttribute.IMAGE_URL 
-							|| attributeType == CssAttribute.CHAR) 
-					{
+					if (attribute != null) {
+						valueList.append( value );
+					} else {
 						if ( "none".equals(value) && !"plain".equals(key)) {
 							// note: !"plain".equals(key) is an ugly hack for
 							// radiobox-plain and choicebox-plain...
@@ -610,24 +562,6 @@ public class CssConverter extends Converter {
 							.append( value )
 							.append('"');
 						}
-					} else if (attributeType == CssAttribute.STYLE) {
-						valueList.append( value );
-					} else if (attributeType == CssAttribute.COLOR 
-							|| attributeType == CssAttribute.INTEGER ) 
-					{
-						valueList.append( value );
-					} else if (attributeType == CssAttribute.BOOLEAN) {
-						valueList.append( value );
-					} else if (attributeType == CssAttribute.OBJECT) {
-						//String value = attribute.getMappingFrom( value );
-						 if ("none".equals( value)) {
-							valueList.append("null");
-						 } else {
-						 	//System.out.println("Using mapped value [" + mappedValue + "] for attribute [" + attribute.getId() + "]");
-						 	valueList.append( value );
-						 }
-					} else {
-						throw new BuildException("Error while processing CSS code. Encountered unknown attributes-type [" + attributeType + "]: please report this error to j2mepolish@enough.de.");
 					}
 					if ( currentAttribute < numberOfAttributes) {
 						valueList.append(", ");
@@ -661,11 +595,6 @@ public class CssConverter extends Converter {
 	protected String getColor(String value) {
 		String color = this.colorConverter.parseColor(value);
 		return color;
-//		if (color == ColorConverter.TRANSPARENT ) {
-//			return "-1";
-//		}
-//		//TODO rob this won't work with argb-colors
-//		return Integer.decode(color).toString();
 	}
 
 
@@ -785,7 +714,7 @@ public class CssConverter extends Converter {
 	 * @param isStandalone true when a new public border-field should be created,
 	 *        otherwise the border will be embedded in a style instantiation. 
 	 */
-	protected void processBorder(String borderName, HashMap group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone ) {
+	protected void processBorder(String borderName, HashMap group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone, Environment env ) {
 		//System.out.println("processing border " + borderName + " = "+ group.toString() );
 		String reference = (String) group.get("border");
 		if (reference != null && group.size() == 1) {
@@ -812,7 +741,7 @@ public class CssConverter extends Converter {
 		} else {
 			type = type.toLowerCase();
 		}
-		String className = (String) BORDER_TYPES.get(type);
+		String className = this.borderAttribute.getValue( type, env );
 		if (className == null) {
 			className = originalType;
 		}
@@ -842,7 +771,7 @@ public class CssConverter extends Converter {
 	 * @param isStandalone true when a new public background-field should be created,
 	 *        otherwise the background will be embedded in a style instantiation. 
 	 */
-	protected void processBackground(String backgroundName, HashMap group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone) {
+	protected void processBackground(String backgroundName, HashMap group, Style style, ArrayList codeList, StyleSheet styleSheet, boolean isStandalone, Environment env ) {
 		//System.out.println("processing background " + backgroundName + " = " + group.toString() );
 		// check if the background is just a reference to another background:
 		String reference = (String) group.get("background");
@@ -854,7 +783,7 @@ public class CssConverter extends Converter {
 					codeList.add( "\t\tnull,\t// background:none was specified");
 				}
 			} else {
-				// a reference to an existing border is given:
+				// a reference to an existing background is given:
 				if (isStandalone) {
 					codeList.add( STANDALONE_MODIFIER + "Background " + backgroundName + "Background = " + reference + "Background;");
 				} else {
@@ -865,6 +794,7 @@ public class CssConverter extends Converter {
 //		} else if (reference != null) {
 //			System.out.println("ignoring reference " + reference + " in style " + style.getSelector());
 		}
+		
 		String type = getAttributeValue("background", "type", group );
 		String originalType = type;
 		if (type == null) {
@@ -887,7 +817,8 @@ public class CssConverter extends Converter {
 				}
 			}
 		}
-		String className = (String) BACKGROUND_TYPES.get(type);
+		//String className = (String) BACKGROUND_TYPES.get(type);
+		String className = this.backgroundAttribute.getValue( type, env );
 		if (className == null) {
 			className = originalType;
 		}
