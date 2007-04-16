@@ -444,7 +444,7 @@ implements AccessibleCanvas
 					this.scrollIndicatorWidth = scrollWidth;
 					this.scrollIndicatorHeight = scrollHeight;
 					this.scrollIndicatorX = (this.screenWidth >> 1) - (scrollWidth >> 1);
-					int space = this.menuBarHeight - ((scrollHeight << 1) + 1);
+					int space = Math.max( 0, this.menuBarHeight - ((scrollHeight << 1) + 1) );
 					//System.out.println("space=" + space + ", menubarHEIGHT="+ this.menuBarHeight);
 					this.scrollIndicatorY = (this.fullScreenHeight - this.menuBarHeight) + (space >> 1);
 				//#endif
@@ -503,7 +503,7 @@ implements AccessibleCanvas
 					this.scrollIndicatorWidth = scrollWidth;
 					this.scrollIndicatorHeight = scrollHeight;
 					this.scrollIndicatorX = this.screenWidth / 2 - scrollWidth / 2;
-					//# int space = localMenuBarHeight - ((scrollHeight << 1) + 1);
+					//# int space = Math.max( 0, localMenuBarHeight - ((scrollHeight << 1) + 1) );
 					this.scrollIndicatorY = (this.fullScreenHeight - localMenuBarHeight) + (space >> 1);
 				//#endif
 				//System.out.println("without ExternalMenu: scrollIndicatorY=" + this.scrollIndicatorY + ", screenHeight=" + this.screenHeight + ", FullScreenHeight=" + this.fullScreenHeight + ", localMenuBarHeight=" + localMenuBarHeight);	
