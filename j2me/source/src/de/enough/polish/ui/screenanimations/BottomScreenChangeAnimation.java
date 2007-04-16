@@ -38,8 +38,17 @@ import de.enough.polish.ui.Style;
 
 /**
  * <p>Moves the new screen from the bottom to the top.</p>
+ * <p>Activate this animation by specifying it in the corresponding screen's style:
+ * <pre>
+ * .myAlert {
+ * 		screen-change-animation: bottom;
+ * 		bottom-screen-change-animation-speed: 4; ( 2 is default )
+ * 		bottom-screen-change-animation-move-previous: true; ( false is default )
+ * }
+ * </pre>
+ * </p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
  * <pre>
  * history
  *        27-May-2005 - rob creation
@@ -52,6 +61,9 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 	//#if polish.css.bottom-screen-change-animation-speed
 		private int speed = 2;
 	//#endif
+	//#if polish.css.bottom-screen-change-animation-move-previous
+		private boolean movePrevious;
+	//#endif
 
 	/**
 	 * Creates a new animation 
@@ -61,21 +73,27 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 	}
 
 
-	//#if polish.css.bottom-screen-change-animation-speed
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable ) 
 	{
-		Integer speedInt = style.getIntProperty( "bottom-screen-change-animation-speed" );
-		if (speedInt != null ) {
-			this.speed = speedInt.intValue();
-		}
+		//#if polish.css.bottom-screen-change-animation-speed
+			Integer speedInt = style.getIntProperty( "bottom-screen-change-animation-speed" );
+			if (speedInt != null ) {
+				this.speed = speedInt.intValue();
+			}
+		//#endif
+		//#if polish.css.bottom-screen-change-animation-move-previous
+			Boolean movePreviousBool = style.getBooleanProperty("bottom-screen-change-animation-move-previous");
+			if (movePreviousBool != null) {
+				this.movePrevious = movePreviousBool.booleanValue();
+			}
+		//#endif
 		super.show(style, dsplay, width, height, lstScreenImage,
 				nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
-	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
@@ -87,8 +105,6 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 			//#else
 				this.currentY += 2;
 			//#endif
-			/*
-			*/
 			return true;
 		} else {
 			//#if polish.css.bottom-screen-change-animation-speed
@@ -109,7 +125,13 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 				this.fullScreenModeSet = true;
 			}
 		//#endif
-		g.drawImage( this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+		int y = 0;
+		//#if polish.css.bottom-screen-change-animation-move-previous
+			if (this.movePrevious) {
+				y = -this.currentY;
+			}
+		//#endif
+		g.drawImage( this.lastCanvasImage, 0, y, Graphics.TOP | Graphics.LEFT );
 		g.drawImage( this.nextCanvasImage, 0, this.screenHeight -  this.currentY, Graphics.TOP | Graphics.LEFT );
 		this.display.callSerially( this );
 	}

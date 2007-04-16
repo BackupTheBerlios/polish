@@ -38,8 +38,17 @@ import de.enough.polish.ui.Style;
 
 /**
  * <p>Moves the new screen from the left to the front.</p>
+ * <p>Activate this animation by specifying it in the corresponding screen's style:
+ * <pre>
+ * .myAlert {
+ * 		screen-change-animation: right;
+ * 		right-screen-change-animation-speed: 4; ( 2 is default )
+ * 		right-screen-change-animation-move-previous: true; ( false is default )
+ * }
+ * </pre>
+ * </p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
  * <pre>
  * history
  *        27-May-2005 - rob creation
@@ -52,6 +61,9 @@ public class RightScreenChangeAnimation extends ScreenChangeAnimation {
 	//#if polish.css.right-screen-change-animation-speed
 		private int speed = 2;
 	//#endif
+	//#if polish.css.right-screen-change-animation-move-previous
+		private boolean movePrevious;
+	//#endif
 
 	/**
 	 * Creates a new animation 
@@ -61,21 +73,27 @@ public class RightScreenChangeAnimation extends ScreenChangeAnimation {
 	}
 
 
-	//#if polish.css.right-screen-change-animation-speed
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
-		Integer speedInt = style.getIntProperty( "right-screen-change-animation-speed" );
-		if (speedInt != null ) {
-			this.speed = speedInt.intValue();
-		}
+		//#if polish.css.right-screen-change-animation-speed
+			Integer speedInt = style.getIntProperty( "right-screen-change-animation-speed" );
+			if (speedInt != null ) {
+				this.speed = speedInt.intValue();
+			}
+		//#endif
+		//#if polish.css.right-screen-change-animation-move-previous
+			Boolean movePreviousBool = style.getBooleanProperty("right-screen-change-animation-move-previous");
+			if (movePreviousBool != null) {
+				this.movePrevious = movePreviousBool.booleanValue();
+			}
+		//#endif
 		super.show(style, dsplay, width, height, lstScreenImage,
 				nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
-	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
@@ -87,13 +105,6 @@ public class RightScreenChangeAnimation extends ScreenChangeAnimation {
 			//#else
 				this.currentX += 2;
 			//#endif
-			/*
-			try {
-				Thread.sleep( 100 );
-			} catch (Exception e) {
-				
-			}
-			*/
 			return true;
 		} else {
 			//#if polish.css.right-screen-change-animation-speed
@@ -114,7 +125,13 @@ public class RightScreenChangeAnimation extends ScreenChangeAnimation {
 				this.fullScreenModeSet = true;
 			}
 		//#endif
-		g.drawImage( this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+		int x = 0;
+		//#if polish.css.right-screen-change-animation-move-previous
+			if (this.movePrevious) {
+				x = -this.currentX;
+			}
+		//#endif
+		g.drawImage( this.lastCanvasImage, x, 0, Graphics.TOP | Graphics.LEFT );
 		g.drawImage( this.nextCanvasImage, this.screenWidth - this.currentX, 0, Graphics.TOP | Graphics.LEFT );
 		this.display.callSerially( this );
 	}

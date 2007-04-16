@@ -37,7 +37,6 @@ import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
 public class CageScreenChangeAnimation extends ScreenChangeAnimation {
-	private boolean stillRun = true;
 	//row = wo sich das neue image befindet am display
 	private int row = 0;
 	private int[] rgbNew ;
@@ -53,9 +52,9 @@ public class CageScreenChangeAnimation extends ScreenChangeAnimation {
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
 			this.row = 0;
-			int size = nxtScreenImage.getWidth() * nxtScreenImage.getHeight();
-			this.height = height;
+			int size = width * height;
 			this.width = width;
+			this.height = height;
 			this.rgbNew = new int [size];
 			this.rgbimage = new int[size];
 			nxtScreenImage.getRGB(this.rgbNew, 0, width, 0, 0, width, height );
@@ -66,33 +65,30 @@ public class CageScreenChangeAnimation extends ScreenChangeAnimation {
 	
 	
 	protected boolean animate() {
-		// TODO Auto-generated method stub
-		boolean Rowswitch = true;
-		int row = 0;
+		boolean doSwitchRow = true;
+		int currentRow = 0;
 		for(int i = 0; i < this.rgbimage.length;i++){		
-			if(row <= this.row && Rowswitch){
+			if(doSwitchRow && currentRow <= this.row){
 				this.rgbimage[i] = this.rgbNew[i];
 			}
-			else if(row >= this.width-this.row && !Rowswitch){
+			else if(!doSwitchRow && currentRow >= this.width-this.row ){
 				this.rgbimage[i] = this.rgbNew[i];
 			}	
-			row = (row + 1) % this.width;
-			if(row == 0){
-				if(Rowswitch){
-					Rowswitch=false;
-				}else{	
-					Rowswitch=true;		
-					}
-				}
+			currentRow = (currentRow + 1) % this.width;
+			if(currentRow == 0){
+				doSwitchRow = !doSwitchRow;
+			}
 		}
 		this.row+=4;
-		if(this.row >= this.width)this.stillRun=false;
-		return this.stillRun;
+		if(this.row >= this.width) {
+			this.row = 0;
+			return false;
+		}
+		return true;
 	}
 
 	public void paint(Graphics g) {
 		g.drawRGB(this.rgbimage,0,this.width,0,0,this.width,this.height,false);
-		// TODO Auto-generated method stub
 		this.display.callSerially( this );
 	}
 

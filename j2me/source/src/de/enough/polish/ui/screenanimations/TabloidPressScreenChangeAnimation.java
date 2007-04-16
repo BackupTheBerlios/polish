@@ -49,12 +49,9 @@ public class TabloidPressScreenChangeAnimation extends ScreenChangeAnimation {
 	//the height of the columns
 	private int[] scaleableHeight;
 	private int[] scaleableWidth;
- 	//the scale from the row
-//	//kann nachher weg nur zum testen
-//	private boolean first = true;
+	
 	public TabloidPressScreenChangeAnimation() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	protected void show(Style style, Display dsplay, int width, int height,
@@ -92,7 +89,6 @@ public class TabloidPressScreenChangeAnimation extends ScreenChangeAnimation {
 	
 	
 	protected boolean animate() {
-		// TODO Auto-generated method stub
 		int row = 0,column = 0;
 		int length = this.rgbData.length-1;
 		int sH,c,scalePercentH,scalePercentWidth,r,newI,sW = 0,left = 0,right = this.screenWidth;

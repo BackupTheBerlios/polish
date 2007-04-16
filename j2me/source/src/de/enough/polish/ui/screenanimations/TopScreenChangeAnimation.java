@@ -37,9 +37,18 @@ import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
 /**
- * <p>Moves the new screen from the left to the front.</p>
+ * <p>Moves the new screen from the top to the bottom.</p>
+ * <p>Activate this animation by specifying it in the corresponding screen's style:
+ * <pre>
+ * .myAlert {
+ * 		screen-change-animation: top;
+ * 		top-screen-change-animation-speed: 4; ( 2 is default )
+ * 		top-screen-change-animation-move-previous: true; ( false is default )
+ * }
+ * </pre>
+ * </p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
  * <pre>
  * history
  *        27-May-2005 - rob creation
@@ -52,6 +61,9 @@ public class TopScreenChangeAnimation extends ScreenChangeAnimation {
 	//#if polish.css.top-screen-change-animation-speed
 		private int speed = 2;
 	//#endif
+	//#if polish.css.top-screen-change-animation-move-previous
+		private boolean movePrevious;
+	//#endif
 
 	/**
 	 * Creates a new animation 
@@ -61,21 +73,27 @@ public class TopScreenChangeAnimation extends ScreenChangeAnimation {
 	}
 
 
-	//#if polish.css.top-screen-change-animation-speed
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
-		Integer speedInt = style.getIntProperty( "top-screen-change-animation-speed" );
-		if (speedInt != null ) {
-			this.speed = speedInt.intValue();
-		}
+		//#if polish.css.top-screen-change-animation-speed
+			Integer speedInt = style.getIntProperty( "top-screen-change-animation-speed" );
+			if (speedInt != null ) {
+				this.speed = speedInt.intValue();
+			}
+		//#endif
+		//#if polish.css.top-screen-change-animation-move-previous
+			Boolean movePreviousBool = style.getBooleanProperty("top-screen-change-animation-move-previous");
+			if (movePreviousBool != null) {
+				this.movePrevious = movePreviousBool.booleanValue();
+			}
+		//#endif
 		super.show(style, dsplay, width, height, lstScreenImage,
 				nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
-	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
@@ -107,7 +125,13 @@ public class TopScreenChangeAnimation extends ScreenChangeAnimation {
 				this.fullScreenModeSet = true;
 			}
 		//#endif
-		g.drawImage( this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+		int y = 0;
+		//#if polish.css.top-screen-change-animation-move-previous
+			if (this.movePrevious) {
+				y = this.currentY;
+			}
+		//#endif
+		g.drawImage( this.lastCanvasImage, 0, y, Graphics.TOP | Graphics.LEFT );
 		g.drawImage( this.nextCanvasImage, 0, -this.screenHeight +  this.currentY, Graphics.TOP | Graphics.LEFT );
 		this.display.callSerially( this );
 	}

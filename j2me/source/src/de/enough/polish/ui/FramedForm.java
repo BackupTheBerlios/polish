@@ -82,8 +82,8 @@ public class FramedForm extends Form {
 	}
 	
 	/**
-	 * Deletes all the items from this <code>Form</code>, leaving  it with zero items.
-	 * This method does nothing if the <code>Form</code> is already empty.
+	 * Deletes all the items from all frames of this <code>FramedForm</code>, leaving  it with zero items.
+	 * This method does nothing if the <code>FramedForm</code> is already empty.
 	 * 
 	 * @since  MIDP 2.0
 	 */
@@ -107,6 +107,31 @@ public class FramedForm extends Form {
             this.bottomFrame.clear();
         }
     }
+	
+	/**
+	 * Removes all items from the specifid frame.
+	 * 
+	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 */
+	public void deleteAll( int frameOrientation ) {
+		Container frame;
+		switch (frameOrientation) {
+		case  Graphics.TOP:
+			frame = this.topFrame;
+			break;
+		case  Graphics.BOTTOM:
+			frame = this.bottomFrame;
+			break;
+		case  Graphics.LEFT:
+			frame = this.leftFrame;
+			break;
+		default:
+			frame = this.rightFrame;
+		}
+		if (frame != null) {
+			frame.clear();
+		}
+	}
 
 
 	//#if polish.LibraryBuild
@@ -146,7 +171,7 @@ public class FramedForm extends Form {
 	}
 	
 	/**
-	 * Removes the given item to the specifid frame.
+	 * Removes the given item from the specifid frame.
 	 * The <code>itemNum</code> parameter must be
 	 * within the range <code>[0..size()-1]</code>, inclusive.
 	 * 

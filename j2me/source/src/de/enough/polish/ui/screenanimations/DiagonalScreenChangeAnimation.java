@@ -33,17 +33,18 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.AccessibleCanvas;
+import de.enough.polish.ui.Color;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
 /**
- * <p>Moves the new screen from the top to the bottom.</p>
+ * <p>Moves the new screen diagonally over the old screen.</p>
  * <p>Activate this animation by specifying it in the corresponding screen's style:
  * <pre>
  * .myAlert {
- * 		screen-change-animation: top;
- * 		top-screen-change-animation-speed: 4; ( 2 is default )
- * 		top-screen-change-animation-move-previous: true; ( false is default )
+ * 		screen-change-animation: diagonal;
+ * 		diagonal-screen-change-animation-speed: 4; ( 2 is default )
+ * 		diagonal-screen-change-animation-move-previous: true; ( false is default )
  * }
  * </pre>
  * </p>
@@ -55,20 +56,23 @@ import de.enough.polish.ui.Style;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class TopScreenChangeAnimation extends ScreenChangeAnimation {
-	
+public class DiagonalScreenChangeAnimation extends ScreenChangeAnimation {
+	private int currentX;
 	private int currentY;
-	//#if polish.css.top-screen-change-animation-speed
-		private int speed = 2;
+	//#if polish.css.diagonal-screen-change-animation-speed
+		private int speed = 3;
 	//#endif
-	//#if polish.css.top-screen-change-animation-move-previous
+	//#if polish.css.diagonal-screen-change-animation-move-previous
 		private boolean movePrevious;
+	//#endif
+	//#if polish.css.diagonal-screen-change-animation-background-color
+		private int backgroundColor = 0xffffff;
 	//#endif
 
 	/**
 	 * Creates a new animation 
 	 */
-	public TopScreenChangeAnimation() {
+	public DiagonalScreenChangeAnimation() {
 		super();
 	}
 
@@ -77,18 +81,24 @@ public class TopScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable ) 
 	{
-		//#if polish.css.top-screen-change-animation-speed
-			Integer speedInt = style.getIntProperty( "top-screen-change-animation-speed" );
+		//#if polish.css.diagonal-screen-change-animation-speed
+			Integer speedInt = style.getIntProperty( "diagonal-screen-change-animation-speed" );
 			if (speedInt != null ) {
 				this.speed = speedInt.intValue();
 			}
 		//#endif
-		//#if polish.css.top-screen-change-animation-move-previous
-			Boolean movePreviousBool = style.getBooleanProperty("top-screen-change-animation-move-previous");
+		//#if polish.css.diagonal-screen-change-animation-move-previous
+			Boolean movePreviousBool = style.getBooleanProperty("diagonal-screen-change-animation-move-previous");
 			if (movePreviousBool != null) {
 				this.movePrevious = movePreviousBool.booleanValue();
+			}
+		//#endif
+		//#if polish.css.diagonal-screen-change-animation-background-color
+			Color color = style.getColorProperty( "diagonal-screen-change-animation-background-color" );
+			if (color != null) {
+				this.backgroundColor = color.getColor();
 			}
 		//#endif
 		super.show(style, dsplay, width, height, lstScreenImage,
@@ -100,17 +110,19 @@ public class TopScreenChangeAnimation extends ScreenChangeAnimation {
 	 */
 	protected boolean animate() {
 		if (this.currentY < this.screenHeight) {
-			//#if polish.css.top-screen-change-animation-speed
+			//#if polish.css.diagonal-screen-change-animation-speed
 				this.currentY += this.speed;
 			//#else
-				this.currentY += 2;
+				this.currentY += 3;
 			//#endif
+			this.currentX = ( this.currentY * this.screenWidth ) / this.screenHeight;
 			return true;
 		} else {
-			//#if polish.css.top-screen-change-animation-speed
-				this.speed = 2;
+			//#if polish.css.diagonal-screen-change-animation-speed
+				this.speed = 3;
 			//#endif
 			this.currentY = 0;
+			this.currentX = 0;
 			return false;
 		}
 	}
@@ -126,13 +138,21 @@ public class TopScreenChangeAnimation extends ScreenChangeAnimation {
 			}
 		//#endif
 		int y = 0;
-		//#if polish.css.top-screen-change-animation-move-previous
+		int x = 0;
+		//#if polish.css.diagonal-screen-change-animation-move-previous
 			if (this.movePrevious) {
-				y = this.currentY;
+				//#if polish.css.diagonal-screen-change-animation-background-color
+					g.setColor( this.backgroundColor );
+				//#else
+					g.setColor( 0xffffff );
+				//#endif
+				g.fillRect( 0, 0, this.screenWidth, this.screenHeight );
+				x = -this.currentX;
+				y = -this.currentY;
 			}
 		//#endif
-		g.drawImage( this.lastCanvasImage, 0, y, Graphics.TOP | Graphics.LEFT );
-		g.drawImage( this.nextCanvasImage, 0, -this.screenHeight +  this.currentY, Graphics.TOP | Graphics.LEFT );
+		g.drawImage( this.lastCanvasImage, x, y, Graphics.TOP | Graphics.LEFT );
+		g.drawImage( this.nextCanvasImage, this.screenWidth - this.currentX, this.screenHeight -  this.currentY, Graphics.TOP | Graphics.LEFT );
 		this.display.callSerially( this );
 	}
 

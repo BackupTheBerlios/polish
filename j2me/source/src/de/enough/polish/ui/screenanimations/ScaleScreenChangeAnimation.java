@@ -48,13 +48,11 @@ import de.enough.polish.util.ImageUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class ScaleScreenChangeAnimation extends ScreenChangeAnimation {
-	private int scaleFactor = 200;
+	private int scaleFactor = 60;
 	private int steps = 6;
 	private int currentStep;
 	private int[] nextScreenRgb;
 	private boolean scaleDown;
-	private int scaleWidth;
-	private int scaleHeight;
 	private int[] scaledScreenRgb;
 
 	/**
@@ -73,9 +71,8 @@ public class ScaleScreenChangeAnimation extends ScreenChangeAnimation {
 	{
 		this.nextScreenRgb = new int[ width * height ];
 		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
-		this.scaledScreenRgb = this.nextScreenRgb;
-		this.scaleWidth = width;
-		this.scaleHeight = height;
+		this.scaledScreenRgb = new int[ width * height ];
+		System.arraycopy(this.nextScreenRgb, 0, this.scaledScreenRgb, 0, width * height );
 		super.show(style, dsplay, width, height, lstScreenImage,
 				nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
@@ -90,8 +87,10 @@ public class ScaleScreenChangeAnimation extends ScreenChangeAnimation {
 			if (step <= 0) {
 				// set default values:
 				this.scaleFactor = 200;
-				this.steps = 6;
 				this.currentStep = 0;
+				this.nextScreenRgb = null;
+				this.scaledScreenRgb = null;
+				this.scaleDown = false;
 				return false;
 			}
 		} else {
@@ -102,10 +101,8 @@ public class ScaleScreenChangeAnimation extends ScreenChangeAnimation {
 			}
 		}
 		this.currentStep = step;
-		this.scaleWidth = this.screenWidth + ((this.screenWidth * this.scaleFactor * step) / (this.steps * 100));
-		this.scaleHeight = this.screenHeight + ((this.screenHeight * this.scaleFactor * step) / (this.steps * 100));
-		this.scaledScreenRgb = ImageUtil.scale(this.scaleWidth, this.scaleHeight, this.screenWidth, 
-				this.screenWidth, this.screenHeight, this.nextScreenRgb);
+		int factor = 100 + ( this.scaleFactor * step ) / this.steps; 
+		ImageUtil.scale(factor, this.screenWidth, this.screenHeight, this.nextScreenRgb, this.scaledScreenRgb );
 		
 		return true;
 	}
@@ -120,17 +117,8 @@ public class ScaleScreenChangeAnimation extends ScreenChangeAnimation {
 				this.fullScreenModeSet = true;
 			}
 		//#endif
-		/*
-		int x = (this.screenWidth - this.scaleWidth) / 2;
-		int y = (this.screenHeight - this.scaleHeight) / 2;
-		if (x > 0) {
-			g.setColor( 0xFFFFFF );
-			g.fillRect( 0, 0, this.screenWidth, this.screenHeight );
-		}
-		g.drawRGB(this.scaledScreenRgb, 0, this.scaleWidth, x, y, this.scaleWidth, this.scaleHeight, false );
-		*/
-		g.drawRGB(this.scaledScreenRgb, 0, this.scaleWidth, 0, 0, this.scaleWidth, this.scaleHeight, false );
-		
+			
+		g.drawRGB(this.scaledScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, false );
 		this.display.callSerially( this );
 	}
 

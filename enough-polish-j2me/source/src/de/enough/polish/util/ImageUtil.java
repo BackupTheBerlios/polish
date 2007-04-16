@@ -90,7 +90,7 @@ public final class ImageUtil {
 			int c1 = y * width;
 			int c2 = yStart + (y * 100  / scaleFactor) * width;
 			for (int x = 0; x < width; x++) {
-				scaledRgbData[c1 + x] = rgbData[ c2 + xStart + x * 100/scaleFactor ] & opacity;
+				scaledRgbData[c1 + x] = ( rgbData[ c2 + xStart + x * 100/scaleFactor ] | 0xff000000 )  & opacity;
 			}
 		}
 	}

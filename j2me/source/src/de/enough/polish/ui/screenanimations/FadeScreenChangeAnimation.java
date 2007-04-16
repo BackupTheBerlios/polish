@@ -1,6 +1,7 @@
-//#condition polish.usePolishGui and polish.midp2
+//#condition polish.usePolishGui && polish.midp2
+
 /*
- * Created on 24.08.2005 at 15:37:25.
+ * Created on 15-April-2007 at 18:54:36.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -34,42 +35,39 @@ import javax.microedition.lcdui.Image;
 import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
-import de.enough.polish.util.DrawUtil;
 
 /**
- * <p>Creates a black and white picture out of the next screen and fades this into the actual target color.</p>
+ * <p>Fades in the new screen.</p>
  * <p>Activate this animation by specifying it in the corresponding screen's style:
  * <pre>
  * .myAlert {
  * 		//#if polish.midp2
- * 			screen-change-animation: bwToColor;
+ * 			screen-change-animation: fade;
+ * 			fade-screen-change-animation-steps: 4; (6 is default)
  * 		//#endif
  * }
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright (c) 2007 Enough Software</p>
  * <pre>
  * history
- *        Apr 15, 2007 - rob creation
+ *        15-April-2007 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class BwToColorScreenChangeAnimation 
-extends ScreenChangeAnimation 
-{
-	
-	private int[] targetScreenRgb;
-	private int[] currentScreenRgb;
-	private int steps = 5;
+public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
+	private int steps = 6;
 	private int currentStep;
+	private int[] nextScreenRgb;
 
 	/**
-	 * Creates a new animation.
+	 * Creates a new animation 
 	 */
-	public BwToColorScreenChangeAnimation() {
+	public FadeScreenChangeAnimation() {
 		super();
 	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
@@ -77,77 +75,75 @@ extends ScreenChangeAnimation
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
-		if ( this.targetScreenRgb == null ) {
-			this.targetScreenRgb = new int[ width * height ];
-			this.currentScreenRgb = new int[ width * height ];
-		}
-		nxtScreenImage.getRGB( this.targetScreenRgb, 0, width, 0, 0, width, height );
-		// render a black and white version out of the nextScreenRgb array:
-		int color,red,green,blue;
-		for(int i = 0;i < this.currentScreenRgb.length;i++){
-			color = this.targetScreenRgb[i];			
-			red = (0x00FF & (color >>> 16));	
-			green = (0x0000FF & (color >>> 8));
-			blue = color & (0x000000FF );
-			int brightness = (red + green + blue) / 3;
-			if ( brightness > 127 ) {
-				this.currentScreenRgb[i] = 0xFFFFFF;
-			} else {
-				this.currentScreenRgb[i] = 0x000000;
+		//#if polish.css.fade-screen-change-animation-steps
+			Integer stepsInt = style.getIntProperty("fade-screen-change-animation-steps");
+			if (stepsInt != null) {
+				this.steps = stepsInt.intValue();
 			}
+		//#endif
+		if ( this.nextScreenRgb == null ) {
+			this.nextScreenRgb = new int[ width * height ];
 		}
+		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
+		addOpacity( 255/this.steps, this.nextScreenRgb );
 		this.currentStep = 0;
+		
 		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
-	
-	
-	
-	public void keyPressed(int keyCode) {
-		super.keyPressed(keyCode);
-		this.nextCanvasImage.getRGB( this.targetScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-	}
-
-	//#if polish.hasPointerEvents
-	public void pointerPressed(int x, int y) {
-		super.pointerPressed(x, y);
-		this.nextCanvasImage.getRGB( this.targetScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-	}
-	//#endif
-
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate() {
-		if (this.currentStep < this.steps) {
-			int currentColor;
-			int targetColor;
-			int permille = 1000 * this.currentStep / this.steps;
-			for (int i = 0; i < this.currentScreenRgb.length; i++) {
-				currentColor = this.currentScreenRgb[i];
-				targetColor = this.targetScreenRgb[i];
-				if (currentColor != targetColor) {
-					this.currentScreenRgb[i] = DrawUtil.getGradientColor(currentColor, targetColor, permille );
-				}
-			}
-			this.currentStep++;
-			return true;
-		} else {
-			this.currentScreenRgb = null;
-			this.targetScreenRgb = null;
+		this.currentStep++;
+		if (this.currentStep >= this.steps) {
+			//this.steps = 10;
 			this.currentStep = 0;
+			this.nextScreenRgb = null;
 			return false;
 		}
+		int opacity = (255 * this.currentStep )  / this.steps;
+		addOpacity( opacity, this.nextScreenRgb );
+		return true;
+	}
 	
+	
+
+	/**
+	 * Adds the specified opacity to the RGB data.
+	 * 
+	 * @param opacity the opacity between 0 (fully transparent) and 255 (fully opaque)
+	 * @param data the RGB data
+	 */
+	private void addOpacity(int opacity, int[] data) {
+		opacity = (opacity << 24) | 0xFFFFFF;
+		for (int i = 0; i < data.length; i++) {
+			data[i] = (data[i] | 0xff000000) & opacity;
+		}
 	}
 
-	
 
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
+	 */
+	public void keyPressed(int keyCode) {
+		super.keyPressed(keyCode);
+		this.nextCanvasImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
+	}
+	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(Graphics g) {
-		g.drawRGB(this.currentScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, false );		
+		//#if polish.Bugs.fullScreenInPaint
+			if (! this.fullScreenModeSet ) {
+				setFullScreenMode(true);
+				this.fullScreenModeSet = true;
+			}
+		//#endif
+		g.drawImage( this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+		g.drawRGB(this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
+		
 		this.display.callSerially( this );
 	}
 

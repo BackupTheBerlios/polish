@@ -37,6 +37,7 @@ import javax.microedition.lcdui.Graphics;
 	import com.nokia.mid.ui.DirectUtils;
 //#endif
 
+
 /**
  * <p>Provides functions for drawing shadows, polygons, gradients, etc.</p>
  *
@@ -52,6 +53,83 @@ import javax.microedition.lcdui.Graphics;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public final class DrawUtil {
+	
+	/**
+	 * Draws a (translucent) filled out rectangle.
+	 * Please note that this method has to create temporary arrays each time it is called, using a TranslucentSimpleBackground
+	 * is probably less resource intensiv.
+	 * 
+	 * @param x the horizontal start position
+	 * @param y the vertical start position 
+	 * @param width the width of the rectangle
+	 * @param height the heigh of the rectanglet 
+	 * @param color the argb color of the rectangle, when there is no alpha value (color & 0xff000000 == 0), the traditional g.fillRect() method is called
+	 * @param g the graphics context
+	 * @see de.enough.polish.ui.backgrounds.TranslucentSimpleBackground
+	 */
+	public final static void fillRect( int x, int y, int width, int height, int color, Graphics g ) {
+		if ((color & 0xff000000) == 0) {
+			g.setColor(color);
+			g.fillRect(x, y, width, height);
+			return;
+		}
+		//#ifdef tmp.useNokiaUi
+			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
+			int[] xCoords = new int[4];
+			xCoords[0] = x;
+			xCoords[1] = x + width;
+			xCoords[2] = x + width;
+			xCoords[3] = x;
+			int[] yCoords = new int[4];
+			yCoords[0] = y;
+			yCoords[1] = y;
+			yCoords[2] = y + height;
+			yCoords[3] = y + height;
+			dg.fillPolygon( xCoords, 0, yCoords, 0, 4, color );
+		//#elifdef polish.midp2
+			//#ifdef polish.Bugs.drawRgbOrigin
+				x += g.getTranslateX();
+				y += g.getTranslateY();
+			//#endif
+				
+			// check if the buffer needs to be created:
+			int[] buffer;
+			//#if polish.Bugs.drawRgbNeedsFullBuffer
+				buffer = new int[ width * height ];
+				for (int i = buffer.length - 1; i >= 0 ; i--) {
+					buffer[i] = color;
+				}
+			//#else
+				buffer = new int[ width ];
+				for (int i = buffer.length - 1; i >= 0 ; i--) {
+					buffer[i] = color;
+				}
+			//#endif
+			if (x < 0) {
+				width += x;
+				x = 0;
+			}
+			if (width <= 0) {
+				return;
+			}
+			if (y < 0) {
+				height += y;
+				y = 0;
+			}
+			if (height <= 0) {
+				return;
+			}
+			//#if polish.Bugs.drawRgbNeedsFullBuffer
+				g.drawRGB(buffer, 0, width, x, y, width, height, true);
+			//#else
+				g.drawRGB(buffer, 0, 0, x, y, width, height, true);
+			//#endif
+		//#else
+			g.setColor(color);
+			g.fillRect(x, y, width, height);
+		//#endif
+	}
+
 
 	/**
 	 * Draws a polygon.
