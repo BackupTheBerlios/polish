@@ -10743,12 +10743,12 @@ These namespaces/schemas will be used soon.
 	<device> 
 		<identifier>Samsung/SGH-ZM60</identifier> 
 		<features>isDoubleBuffered, hasCommandKeyEvents</features>
-		<groups>jtwi</groups>
+		<groups></groups>
 		<capability name="ScreenSize" value="176x205"/>
 		<capability name="CanvasSize" value="176x189"/>
 		<capability name="FullCanvasSize" value="176x205"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaPackage" value="mmapi1.1, 3d, wmapi1.1"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="SoundFormat" value="midi, midi64, x-tone-seq, wav, x-wav, basic, au, amr, wb-amr, raw"/>

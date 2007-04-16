@@ -657,7 +657,7 @@
 		<type>postcompiler</type>
 		<name>j2se</name>
 		<class>de.enough.polish.postcompile.j2se.JavaSEPostCompiler</class>
-		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar</classpath>
+		<classpath>${polish.home}/bin/extensions</classpath>
 	</extension>
 	
 	<!-- Log Handler -->
@@ -718,7 +718,7 @@
 		<type>manifestcreator</type>
 		<name>j2se</name>
 		<class>de.enough.polish.manifest.j2se.JavaSeManifestCreator</class>
-		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar</classpath>
+		<classpath>${polish.home}/bin/extensions</classpath>
 	</extension>
 	
 	<!-- Descriptor Creator -->
@@ -827,28 +827,28 @@
 		<type>finalizer</type>
 		<name>jar2cod</name>
 		<class>de.enough.polish.finalize.blackberry.JarToCodFinalizer</class>
-		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar</classpath>
+		<classpath>${polish.home}/bin/extensions</classpath>
 	</extension>
 	
 	<extension>
 		<type>finalizer</type>
 		<name>jar2prc</name>
 		<class>de.enough.polish.finalize.palm.JarToPrcFinalizer</class>
-		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar</classpath>
+		<classpath>${polish.home}/bin/extensions</classpath>
 	</extension>
 	
 	<extension>
 		<type>finalizer</type>
 		<name>jar2dotnet</name>
 		<class>de.enough.polish.finalize.dotnetcf.DotNetCFFinalizer</class>
-		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar:${polish.home}/lib/enough-polish-dotnetcf-1.1.jar</classpath>
+		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/enough-polish-dotnetcf-1.1.jar</classpath>
 	</extension>
 	
 	<extension>
 		<type>finalizer</type>
 		<name>rmi</name>
 		<class>de.enough.polish.finalize.rmi.RmiFinalizer</class>
-		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar</classpath>
+		<classpath>${polish.home}/bin/extensions</classpath>
 		<autostart>polish.build.hasRemoteClasses</autostart>
 	</extension>
 	
@@ -856,7 +856,7 @@
 		<type>finalizer</type>
 		<name>applet</name>
 		<class>de.enough.polish.finalize.applet.AppletFinalizer</class>
-		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/extensions.jar</classpath>
+		<classpath>${polish.home}/bin/extensions</classpath>
 	</extension>
 	
 </extensions>
