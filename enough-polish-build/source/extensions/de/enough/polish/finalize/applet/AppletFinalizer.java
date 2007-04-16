@@ -29,6 +29,7 @@ import de.enough.polish.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.finalize.Finalizer;
+import de.enough.polish.util.StringUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -52,7 +53,7 @@ public class AppletFinalizer
     try
     {
       File htmlFile = new File(jarFile.getParentFile(),
-                               jarFile.getName().replace(".jar", ".html"));
+                              StringUtil.replace( jarFile.getName(), ".jar", ".html" ) );
       FileOutputStream out = new FileOutputStream(htmlFile);
       PrintWriter writer = new PrintWriter(out);
       

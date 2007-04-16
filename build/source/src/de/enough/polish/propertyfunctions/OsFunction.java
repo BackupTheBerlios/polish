@@ -60,7 +60,7 @@ public class OsFunction extends PropertyFunction {
 		if (osValue == null) {
 			return "false";
 		}
-		if ( osValue.contains( os )  || osValue.toLowerCase().contains(os.toLowerCase() )) {
+		if ( (osValue.indexOf( os ) != -1)  ||  (osValue.toLowerCase().indexOf(os.toLowerCase() ) != -1) ) {
 			return "true";
 		} else {
 			return "false";

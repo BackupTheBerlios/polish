@@ -7,6 +7,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.util.TraceClassVisitor;
 
 import de.enough.bytecode.ASMClassLoader;
+import de.enough.polish.util.StringUtil;
 
 import junit.framework.TestCase;
 
@@ -84,7 +85,7 @@ public class SerializationVisitorTest
 	  clazz = loader.loadClass(classNameTemplate);
 	  result = new StringWriter();
 	  clazz.accept(new TraceClassVisitor(new PrintWriter(result)));
-	  expected = result.toString().replace("_template", "");
+	  expected = StringUtil.replace( result.toString(), "_template", "");
 	  
 	  loader = new ASMClassLoader();
 	  clazz = loader.loadClass(className);
