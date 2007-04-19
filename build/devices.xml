@@ -418,11 +418,10 @@ These namespaces/schemas will be used soon.
 		<capability name="key.MiddleSoftKey" value="-26"/>
 		<capability name="key.ReturnKey" value="-12"/>
 		<capability name="key.ClearKey" value="-12"/>
-		<capability name="Font.small" value="12"/>
-		<capability name="Font.medium" value="15"/>
-		<capability name="Font.large" value="23"/>
 		<capability name="Bugs" value="layerManagerSetViewWindow"/>	
 	</device>
+	
+	
 	
 	<device supportsPolishGui="false">
 		<identifier>Siemens/x55</identifier>
@@ -8497,11 +8496,52 @@ These namespaces/schemas will be used soon.
 	
 <!-- Siemens devices -->
 
+
+	<device supportsPolishGui="true">
+		<identifier>Siemens/EF81</identifier>
+		<features>hasCommandKeyEvents, isDoubleBuffered</features>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x267"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="wmapi, mmapi1.1, siemens-color-game, siemens-extension-api"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr"/>
+		<capability name="key.LeftSoftKey" value="-6"/>
+		<capability name="key.RightSoftKey" value="-7"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="18"/>
+		<capability name="Font.medium" value="22"/>
+		<capability name="Font.large" value="36"/>
+		<capability name="Bugs" value="layerManagerSetViewWindow"/>	
+	</device>
+	
+	<device supportsPolishGui="true">
+		<identifier>Siemens/EL71</identifier>
+		<features>hasCommandKeyEvents, isDoubleBuffered</features>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x267"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="wmapi, mmapi1.1, siemens-color-game, siemens-extension-api"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr"/>
+		<capability name="key.ClearKey" value="-12"/>
+		<capability name="key.ReturnKey" value="-12"/>
+		<capability name="Font.small" value="18"/>
+		<capability name="Font.medium" value="22"/>
+		<capability name="Font.large" value="36"/>
+		<capability name="Bugs" value="layerManagerSetViewWindow, SoftKeyMappedToFire"/>	
+	</device>
 	<device>
 		<identifier>Siemens/SXG75</identifier>
 		<groups>x75</groups>
 		<capability name="JavaPackage" value="mmapi1.1, 3d, pdaapi, locationapi, btapi, siemens-game, siemens-color-game, siemens-extension"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x294"/>
+		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="HeapSize" value="3MB"/>
 		<capability name="StorageSize" value="64MB"/>
