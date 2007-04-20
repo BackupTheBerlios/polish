@@ -9,18 +9,14 @@
 
 package de.enough.polish.plugin.netbeans;
 
-import org.netbeans.api.project.Project;
 import org.netbeans.modules.vmd.api.io.DataObjectContext;
 import org.netbeans.modules.vmd.api.io.DesignDocumentAwareness;
 import org.netbeans.modules.vmd.api.io.IOUtils;
-import org.netbeans.modules.vmd.api.io.ProjectUtils;
+import org.netbeans.modules.vmd.api.io.javame.DeviceListener;
 import org.netbeans.modules.vmd.api.io.javame.MidpProjectPropertiesSupport;
 import org.netbeans.modules.vmd.api.model.*;
 import org.netbeans.modules.vmd.api.model.presenters.InfoPresenter;
 import org.netbeans.modules.vmd.api.screen.editor.EditedScreenSupport;
-import org.netbeans.spi.project.support.ant.AntProjectEvent;
-import org.netbeans.spi.project.support.ant.AntProjectHelper;
-import org.netbeans.spi.project.support.ant.AntProjectListener;
 
 import javax.microedition.lcdui.Displayable;
 import javax.swing.*;
@@ -33,7 +29,7 @@ import java.util.List;
  *
  * @author dave
  */
-public class PolishViewController implements DesignDocumentAwareness, DesignListener, AntProjectListener, EditedScreenSupport.Listener {
+public class PolishViewController implements DesignDocumentAwareness, DesignListener, DeviceListener, EditedScreenSupport.Listener {
 
     public static final String POLISH_ID = "polish"; // NOI18N
     
@@ -96,25 +92,16 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
     
     void open () {
 //        System.out.println(">>> PolishViewController opened");
-        Project project = ProjectUtils.getProject (context);
-        AntProjectHelper helper = project.getLookup ().lookup (AntProjectHelper.class);
-        helper.addAntProjectListener(this);
-        propertiesChanged(null);
+        MidpProjectPropertiesSupport.addDeviceListener (context, this);
     }
     
     void close () {
 //        System.out.println(">>> PolishViewController closed");
-        Project project = ProjectUtils.getProject (context);
-        AntProjectHelper helper = project.getLookup ().lookup (AntProjectHelper.class);
-        helper.removeAntProjectListener(this);
+        MidpProjectPropertiesSupport.removeDeviceChangedListener (context, this);
     }
 
-    public void configurationXmlChanged(AntProjectEvent ev) {
-        propertiesChanged(ev); // TODO
-    }
-
-    public void propertiesChanged(AntProjectEvent ev) {
-        Dimension deviceScreenSize = MidpProjectPropertiesSupport.getDeviceScreenSizeFromProject(context);
+    public void deviceChanged () {
+//        Dimension deviceScreenSize = MidpProjectPropertiesSupport.getDeviceScreenSizeFromProject(context);
 //        System.out.println(">> At " + System.currentTimeMillis() + " device screen size changed to " + deviceScreenSize);
         // TODO - update your screen size here
     }

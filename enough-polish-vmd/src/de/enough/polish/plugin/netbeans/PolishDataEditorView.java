@@ -9,15 +9,16 @@
 
 package de.enough.polish.plugin.netbeans;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import javax.swing.JComponent;
 import org.netbeans.modules.vmd.api.io.DataEditorView;
 import org.netbeans.modules.vmd.api.io.DataObjectContext;
 import org.netbeans.modules.vmd.api.palette.PaletteSupport;
 import org.openide.awt.UndoRedo;
 import org.openide.util.HelpCtx;
+
+import javax.swing.*;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
@@ -64,7 +65,7 @@ public class PolishDataEditorView implements DataEditorView {
     }
 
     public String getDisplayName() {
-        return " J2ME Polish ";
+        return "J2ME Polish";
     }
 
     public HelpCtx getHelpCtx() {
@@ -84,17 +85,17 @@ public class PolishDataEditorView implements DataEditorView {
     }
 
     public void componentOpened() {
-        controller.open();
     }
 
     public void componentClosed() {
-        controller.close();
     }
 
     public void componentShowing() {
+        controller.open();
     }
 
     public void componentHidden() {
+        controller.close();
     }
 
     public void componentActivated() {

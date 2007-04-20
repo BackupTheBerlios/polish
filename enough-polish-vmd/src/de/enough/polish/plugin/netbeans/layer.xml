@@ -6,8 +6,8 @@
         <folder name="Tools">
             <attr name="j2mepolish/Separator1.instance" boolvalue="true"/>
             <folder name="j2mepolish">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="de.enough.polish.netbeans.actions.Bundle"/>
-                <file name="de-enough-polish-netbeans-actions-ConvertToPolishProjectAction.instance"/>
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="de.enough.polish.netbeans.convert.Bundle"/>
+                <file name="de-enough-polish-netbeans-convert-ConvertWizardAction.instance"/>
             </folder>
         </folder>
     </folder>
