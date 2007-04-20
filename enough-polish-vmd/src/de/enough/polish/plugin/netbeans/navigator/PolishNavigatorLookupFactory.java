@@ -10,12 +10,15 @@
 package de.enough.polish.plugin.netbeans.navigator;
 
 import de.enough.polish.plugin.netbeans.PolishDataEditorView;
-import java.util.Arrays;
-import java.util.Collection;
 import org.netbeans.modules.vmd.api.io.DataEditorView;
 import org.netbeans.modules.vmd.api.io.DataEditorViewLookupFactory;
 import org.netbeans.modules.vmd.api.io.DataObjectContext;
 import org.netbeans.spi.navigator.NavigatorLookupHint;
+import org.openide.util.Lookup;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
@@ -31,6 +34,10 @@ public class PolishNavigatorLookupFactory implements DataEditorViewLookupFactory
                 }
             });
         return null;
+    }
+
+    public Collection<? extends Lookup> getLookups(DataObjectContext context, DataEditorView view) {
+        return Collections.emptySet ();
     }
 
 }

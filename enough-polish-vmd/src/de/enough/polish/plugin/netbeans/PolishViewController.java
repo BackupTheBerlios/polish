@@ -9,37 +9,25 @@
 
 package de.enough.polish.plugin.netbeans;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
-import javax.microedition.lcdui.Displayable;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JList;
-import javax.swing.JSeparator;
-import javax.swing.JToolBar;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.vmd.api.io.DataObjectContext;
 import org.netbeans.modules.vmd.api.io.DesignDocumentAwareness;
 import org.netbeans.modules.vmd.api.io.IOUtils;
 import org.netbeans.modules.vmd.api.io.ProjectUtils;
-import org.netbeans.modules.vmd.api.model.DesignComponent;
-import org.netbeans.modules.vmd.api.model.DesignDocument;
-import org.netbeans.modules.vmd.api.model.DesignEvent;
-import org.netbeans.modules.vmd.api.model.DesignEventFilter;
-import org.netbeans.modules.vmd.api.model.DesignListener;
+import org.netbeans.modules.vmd.api.io.javame.MidpProjectPropertiesSupport;
+import org.netbeans.modules.vmd.api.model.*;
 import org.netbeans.modules.vmd.api.model.presenters.InfoPresenter;
 import org.netbeans.modules.vmd.api.screen.editor.EditedScreenSupport;
-import org.netbeans.modules.vmd.midp.project.MidpProjectPropertiesSupport;
 import org.netbeans.spi.project.support.ant.AntProjectEvent;
 import org.netbeans.spi.project.support.ant.AntProjectHelper;
 import org.netbeans.spi.project.support.ant.AntProjectListener;
+
+import javax.microedition.lcdui.Displayable;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  *

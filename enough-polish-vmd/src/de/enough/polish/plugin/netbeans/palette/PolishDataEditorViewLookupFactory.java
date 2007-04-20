@@ -11,11 +11,6 @@ package de.enough.polish.plugin.netbeans.palette;
 
 import de.enough.polish.plugin.netbeans.PolishDataEditorView;
 import de.enough.polish.runtime.Simulation;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import javax.swing.Action;
 import org.netbeans.modules.vmd.api.io.DataEditorView;
 import org.netbeans.modules.vmd.api.io.DataEditorViewLookupFactory;
 import org.netbeans.modules.vmd.api.io.DataObjectContext;
@@ -27,6 +22,13 @@ import org.openide.loaders.InstanceDataObject;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.datatransfer.ExTransferable;
+
+import javax.swing.*;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  *
@@ -43,7 +45,11 @@ public class PolishDataEditorViewLookupFactory implements DataEditorViewLookupFa
         }
         return null;
     }
-    
+
+    public Collection<? extends Lookup> getLookups (DataObjectContext context, DataEditorView view) {
+        return Collections.emptySet ();
+    }
+
     private static class PolishPaletteActions extends PaletteActions {
     
         public Action[] getImportActions() {
