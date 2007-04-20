@@ -95,6 +95,7 @@ public class ScreenInfo {
 			item.hideNotify();
 		}
 		visible = isVisible;
+		repaint();
 	}
 	
 	/**
