@@ -56,7 +56,7 @@ public class PolishProjectSupport {
     }
 
     public static Dimension parseDimension (String s) {
-        if (s != null)
+        if (s == null)
             return null;
         int i = s.indexOf ('x');
         if (i < 0)

@@ -21,6 +21,7 @@
 package de.enough.polish.netbeans.platform;
 
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.plugin.netbeans.project.PolishProjectSupport;
 import de.enough.polish.plugin.netbeans.settings.PolishSettings;
@@ -59,6 +60,7 @@ public class PolishPlatform {
                 else
                     deviceBuffer.append ("<profile name=\"MIDP\" version=\"2.0\" displayname=\"Mobile Information Device Profile\" classpath=\"${platform.home}/lib/midpapi10.jar\" dependencies=\"CLDC > 1.0\" default=\"default\"/>\n");
 
+                device.setEnvironment (new Environment ());
                 String[] strings = device.getBootClassPaths ();
                 for (int i = 0; i < strings.length; i++)
                     deviceBuffer.append ("<optional name=\"OptionalBootPathElement" + (i + 1) + "\" version=\"1.0\" displayname=\"Optional Path Element\" classpath=\"" + strings[i] + "\" dependencies=\"\" default=\"true\"/>\n");
