@@ -9,14 +9,16 @@
 
 package de.enough.polish.plugin.netbeans.settings;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Properties;
+import de.enough.polish.netbeans.platform.PolishPlatform;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.Repository;
 import org.openide.util.Exceptions;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Properties;
 
 /**
  * @author dave
@@ -111,6 +113,7 @@ public class PolishSettings {
         } catch (IOException e) {
             Exceptions.printStackTrace(e);
         }
+        PolishPlatform.updatePlatform ();
     }
     
 }

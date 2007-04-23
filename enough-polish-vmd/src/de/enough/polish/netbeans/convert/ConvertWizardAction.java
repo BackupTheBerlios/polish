@@ -4,6 +4,7 @@ import org.openide.DialogDisplayer;
 import org.openide.WizardDescriptor;
 import org.openide.util.HelpCtx;
 import org.openide.util.actions.CallableSystemAction;
+import org.netbeans.api.project.Project;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +13,8 @@ import java.text.MessageFormat;
 // An example action demonstrating how the wizard could be called from within
 // your code. You can copy-paste the code below wherever you need.
 public final class ConvertWizardAction extends CallableSystemAction {
+
+    static final String PROJECT = "Project"; // NOI18N
     
     private WizardDescriptor.Panel[] panels;
 
@@ -29,7 +32,8 @@ public final class ConvertWizardAction extends CallableSystemAction {
         dialog.toFront();
         boolean cancelled = wizardDescriptor.getValue() != WizardDescriptor.FINISH_OPTION;
         if (!cancelled) {
-            // do something
+            Project project = (Project) ((WizardDescriptor) wizardDescriptor).getProperty (ConvertWizardAction.PROJECT);
+            Converter.convert (project);
         }
     }
     

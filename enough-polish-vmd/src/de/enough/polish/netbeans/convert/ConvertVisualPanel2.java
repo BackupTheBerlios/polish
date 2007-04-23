@@ -1,6 +1,11 @@
 package de.enough.polish.netbeans.convert;
 
-import javax.swing.JPanel;
+import de.enough.polish.ide.swing.DeviceSelectionComponent;
+import de.enough.polish.plugin.netbeans.settings.PolishSettings;
+import org.openide.util.NbBundle;
+
+import javax.swing.*;
+import java.awt.*;
 
 public final class ConvertVisualPanel2 extends JPanel {
     
@@ -12,6 +17,14 @@ public final class ConvertVisualPanel2 extends JPanel {
     public String getName() {
         return "Select Device";
     }
+
+    public void reload (boolean toPolish) {
+        removeAll ();
+        if (toPolish)
+            add (new DeviceSelectionComponent (PolishSettings.getDefault ().getPolishHome ()), BorderLayout.CENTER);
+        else
+            add (new JLabel (NbBundle.getMessage (ConvertVisualPanel2.class, "TXT_NoAdditionalDataRequired")), BorderLayout.CENTER);
+    }
     
     /** This method is called from within the constructor to
      * initialize the form.
@@ -21,16 +34,7 @@ public final class ConvertVisualPanel2 extends JPanel {
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 300, Short.MAX_VALUE)
-        );
+        setLayout(new java.awt.BorderLayout());
     }// </editor-fold>//GEN-END:initComponents
     
     

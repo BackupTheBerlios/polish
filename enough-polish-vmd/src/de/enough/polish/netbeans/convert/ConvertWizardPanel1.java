@@ -13,8 +13,6 @@ import java.util.Set;
 
 public class ConvertWizardPanel1 implements WizardDescriptor.Panel {
     
-    private static final String PROJECT = "Project"; // NOI18N
-
     /**
      * The visual component that displays this panel. If you need to access the
      * component from this class, just use getComponent().
@@ -81,12 +79,12 @@ public class ConvertWizardPanel1 implements WizardDescriptor.Panel {
     // by the user.
     public void readSettings(Object settings) {
         getComponent ();
-        component.loadProjects ((Project) ((WizardDescriptor) settings).getProperty (PROJECT));
+        component.loadProjects ((Project) ((WizardDescriptor) settings).getProperty (ConvertWizardAction.PROJECT));
     }
 
     public void storeSettings(Object settings) {
         getComponent ();
-        ((WizardDescriptor) settings).putProperty (PROJECT, component.getSelectedProject ());
+        ((WizardDescriptor) settings).putProperty (ConvertWizardAction.PROJECT, component.getSelectedProject ());
     }
     
 }

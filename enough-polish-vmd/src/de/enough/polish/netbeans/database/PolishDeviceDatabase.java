@@ -4,6 +4,7 @@ import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.Vendor;
 import de.enough.polish.plugin.netbeans.settings.PolishSettings;
 import de.enough.polish.netbeans.J2mePolishProjectGenerator;
+import de.enough.polish.netbeans.platform.PolishPlatform;
 import org.netbeans.spi.mobility.cfgfactory.ProjectConfigurationFactory;
 
 import java.io.File;
@@ -53,32 +54,10 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
     }
 
     private void add (de.enough.polish.Device device, Category category) {
-        String name = checkForJavaIdentifierCompliant (device.getIdentifier ());
+        String name = PolishPlatform.checkForJavaIdentifierCompliant (device.getIdentifier ());
         String abilities = J2mePolishProjectGenerator.getAbilities (device.getCapabilities ());
         Device dev = new Device (device.getName (), name, abilities);
         category.getChildren ().add (dev);
-    }
-
-    private static String checkForJavaIdentifierCompliant (String instanceName) {
-        if (instanceName == null  ||  instanceName.length () < 1)
-            return "a"; // NOI18N
-        StringBuffer buffer = new StringBuffer ();
-        int index = 0;
-        if (Character.isJavaIdentifierStart (instanceName.charAt (0))) {
-            buffer.append (instanceName.charAt (0));
-            index ++;
-        } else {
-            buffer.append ('a'); // NOI18N
-        }
-        while (index < instanceName.length ()) {
-            char c = instanceName.charAt (index);
-            if (Character.isJavaIdentifierPart (c))
-                buffer.append (c);
-            else if (c == '/')
-                buffer.append ('_');
-            index ++;
-        }
-        return buffer.toString ();
     }
 
     class Category implements ProjectConfigurationFactory.CategoryDescriptor {

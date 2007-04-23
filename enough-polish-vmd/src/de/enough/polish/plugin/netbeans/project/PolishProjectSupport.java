@@ -14,7 +14,9 @@ import java.awt.*;
  */
 public class PolishProjectSupport {
 
-    // HINT - this represents diferrent property from one returns in MidpProjectPropertiesSupport.getDeviceScreenSizeFromProject 
+    public static final String PROP_USE_POLISH_PROJECT = "polish.project.useJ2MEPolish"; // NOI18N
+
+    // HINT - this represents diferrent property from one returns in MidpProjectPropertiesSupport.getDeviceScreenSizeFromProject
     public static Dimension getDeviceScreenSizeFromProject (DataObjectContext context) {
         return parseDimension (evaluateProjectConfigurationProperty (context, "polish.ScreenSize")); // NOI18N
     }
@@ -39,11 +41,11 @@ public class PolishProjectSupport {
         return parseInteger (evaluateProjectConfigurationProperty (context, "polish.Font.large")); // NOI18N
     }
 
-    private static boolean parseBoolean (String s) {
+    public static boolean parseBoolean (String s) {
         return "true".equalsIgnoreCase (s)  ||  "yes".equalsIgnoreCase (s);
     }
 
-    private static Integer parseInteger (String s) {
+    public static Integer parseInteger (String s) {
         if (s != null) {
             try {
                 return Integer.parseInt (s);
@@ -53,7 +55,7 @@ public class PolishProjectSupport {
         return null;
     }
 
-    private static Dimension parseDimension (String s) {
+    public static Dimension parseDimension (String s) {
         if (s != null)
             return null;
         int i = s.indexOf ('x');
@@ -84,7 +86,7 @@ public class PolishProjectSupport {
     }
 
     public static boolean isPolishProject (Project project) {
-        return parseBoolean (evaluateProjectProperty (project, "polish.project.useJ2MEPolish", null)); // NOI18N
+        return parseBoolean (evaluateProjectProperty (project, PROP_USE_POLISH_PROJECT, null)); // NOI18N
     }
 
 }
