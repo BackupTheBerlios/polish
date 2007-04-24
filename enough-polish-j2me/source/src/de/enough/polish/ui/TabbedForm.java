@@ -439,9 +439,12 @@ public class TabbedForm extends Form {
 	}
 
 	/**
-	 * @param oldTabIndex
-	 * @param newTabIndex
-	 * @return
+	 * Notifies the <code>TabbedFormListener</code> that a tab change was requested. Then
+	 * <code>TabbedFormListener</code> can now allow or disallow the tab change.
+	 * 
+	 * @param oldTabIndex the index of the old tab
+	 * @param newTabIndex the index of the new tab
+	 * @return <code>true</code> if a tab change is okay, <code>false</code> otherwise
 	 */
 	public boolean notifyTabbedChangeRequested(int oldTabIndex, int newTabIndex) {
 		if (this.tabbedFormListener != null) {
@@ -452,8 +455,10 @@ public class TabbedForm extends Form {
 	}
 
 	/**
-	 * @param oldTabIndex
-	 * @param newTabIndex
+	 * Notifies the <code>TabbedFormListener</code> that a tab change is completed.
+	 * 
+	 * @param oldTabIndex the index of the old tab
+	 * @param newTabIndex the index of the new tab
 	 */
 	public void notifyTabbedChangeCompleted(int oldTabIndex, int newTabIndex) {
 		if (this.tabbedFormListener != null) {
@@ -462,6 +467,8 @@ public class TabbedForm extends Form {
 	}
 
 	/**
+	 * Sets the <code>TabbedFormListener</code> to be notified when tab changes happen.
+	 * 
 	 * @param listener the listener that is notified whenever the user selects another tab,
 	 */
 	public void setTabbedFormListener( TabbedFormListener listener ) {
