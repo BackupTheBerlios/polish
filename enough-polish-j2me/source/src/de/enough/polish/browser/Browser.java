@@ -198,10 +198,9 @@ implements Runnable
    * @see HttpProtocolHandler
    * @see ResourceProtocolHandler
    */
-  public static ProtocolHandler[] getDefaultProtocolHandlers() {
+  protected static ProtocolHandler[] getDefaultProtocolHandlers() {
 	  return new ProtocolHandler[] { new HttpProtocolHandler("http"), new HttpProtocolHandler("https"), new ResourceProtocolHandler("resource") };  
   }
-
 
   public void addTagCommand(String tagName, Command command)
   {
