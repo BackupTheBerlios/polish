@@ -80,7 +80,10 @@ public class ConvertWizardPanel2 implements WizardDescriptor.Panel {
         component.reload (! PolishProjectSupport.isPolishProject (project));
     }
 
-    public void storeSettings(Object settings) {}
+    public void storeSettings(Object settings) {
+        getComponent ();
+        ((WizardDescriptor) settings).putProperty (ConvertWizardAction.DEVICES, component.getSelectedDeviceIdentifiers ());
+    }
     
 }
 

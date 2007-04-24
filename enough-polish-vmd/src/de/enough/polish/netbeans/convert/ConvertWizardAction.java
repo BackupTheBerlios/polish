@@ -15,6 +15,7 @@ import java.text.MessageFormat;
 public final class ConvertWizardAction extends CallableSystemAction {
 
     static final String PROJECT = "Project"; // NOI18N
+    static final String DEVICES = "Devices"; // NOI18N
     
     private WizardDescriptor.Panel[] panels;
 
@@ -32,8 +33,9 @@ public final class ConvertWizardAction extends CallableSystemAction {
         dialog.toFront();
         boolean cancelled = wizardDescriptor.getValue() != WizardDescriptor.FINISH_OPTION;
         if (!cancelled) {
-            Project project = (Project) ((WizardDescriptor) wizardDescriptor).getProperty (ConvertWizardAction.PROJECT);
-            Converter.convert (project);
+            Project project = (Project) ((WizardDescriptor) wizardDescriptor).getProperty (PROJECT);
+            String[] devices = (String[]) ((WizardDescriptor) wizardDescriptor).getProperty (DEVICES);
+            Converter.convert (project, devices);
         }
     }
     

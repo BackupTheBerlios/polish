@@ -41,37 +41,46 @@ import java.util.HashMap;
  */
 public class PolishPlatform {
     
-    private static Environment environment;
-
     public static void updatePlatform () {
-        if (environment == null) {
-            environment = new Environment( new File (PolishSettings.getDefault ().getPolishHome ())  );
-        }
-        DeviceDatabase database = new DeviceDatabase (new File (PolishSettings.getDefault ().getPolishHome ()));
+        String polishHome = PolishSettings.getDefault ().getPolishHome ();
+        DeviceDatabase database = new DeviceDatabase (new File (polishHome));
         final StringBuffer buffer = new StringBuffer ();
         buffer.append ("<?xml version='1.0'?>\n" +
                 "<!DOCTYPE platform PUBLIC '-//NetBeans//DTD J2ME PlatformDefinition 1.0//EN' 'http://www.netbeans.org/dtds/j2me-platformdefinition-1_0.dtd'>\n" +
-                "<platform name=\"J2MEPolishEmulator\" home=\"" + PolishSettings.getDefault ().getPolishHome () + "\" type=\"UEI-1.0.1\" displayname=\"J2ME Polish Emulator\" srcpath=\"\" docpath=\"\">\n");
+                "<platform name=\"J2MEPolishEmulator\" home=\"" + polishHome + "\" type=\"UEI-1.0.1\" displayname=\"J2ME Polish Emulator\" srcpath=\"\" docpath=\"\"" +
+                " preverifycommandline=\"\" debugcommandline=\"\" runcommandline=\"\">\n"); // TODO - specify command lines
 
         for (Device device : database.getDevices ()) {
             StringBuffer deviceBuffer = new StringBuffer ();
             try {
                 deviceBuffer.append ("<device name=\"" + checkForJavaIdentifierCompliant (device.getIdentifier ()) + "\" description=\"" + device.getIdentifier () + "\">\n");
 
-                deviceBuffer.append ("<configuration name=\"CLDC\" version=\"1.0\" displayname=\"Connected Limited Device Configuration\" classpath=\"\" dependencies=\"\" default=\"default\"/>\n");
+                if (device.isCldc10 ())
+                    deviceBuffer.append ("<configuration name=\"CLDC\" version=\"1.0\" displayname=\"Connected Limited Device Configuration\" classpath=\"${platform.home}/import/cldc-1.0.jar\" dependencies=\"\" default=\"" + (device.isCldc11 () ? "false" : "true") + "\"/>\n");
+                if (device.isCldc11 ())
+                    deviceBuffer.append ("<configuration name=\"CLDC\" version=\"1.1\" displayname=\"Connected Limited Device Configuration\" classpath=\"${platform.home}/import/cldc-1.1.jar\" dependencies=\"\" default=\"true\"/>\n");
+                if (! device.isCldc10 ()  &&  ! device.isCldc11 ())
+                    continue;
+                
+                if (device.isMidp1 ())
+                    deviceBuffer.append ("<profile name=\"MIDP\" version=\"1.0\" displayname=\"Mobile Information Device Profile\" classpath=\"${platform.home}/import/midp-1.0.jar\" dependencies=\"\" default=\"" + (device.isMidp2 () ? "false" : "true") + "\"/>\n");
+                if (device.isMidp2 ())
+                    deviceBuffer.append ("<profile name=\"MIDP\" version=\"2.0\" displayname=\"Mobile Information Device Profile\" classpath=\"${platform.home}/import/midp-2.0.jar\" dependencies=\"\" default=\"true\"/>\n");
+                if (! device.isMidp1 ()  &&  ! device.isMidp2 ())
+                    continue;
 
                 if (device.getMidpVersion () == 1)
                     deviceBuffer.append ("<profile name=\"MIDP\" version=\"1.0\" displayname=\"Mobile Information Device Profile\" classpath=\"${platform.home}/lib/midpapi10.jar\" dependencies=\"CLDC > 1.0\" default=\"default\"/>\n");
                 else
                     deviceBuffer.append ("<profile name=\"MIDP\" version=\"2.0\" displayname=\"Mobile Information Device Profile\" classpath=\"${platform.home}/lib/midpapi10.jar\" dependencies=\"CLDC > 1.0\" default=\"default\"/>\n");
 
-                device.setEnvironment (environment);
+                device.setEnvironment (new Environment (new File (polishHome)));
                 String[] strings = device.getBootClassPaths ();
                 for (int i = 0; i < strings.length; i++)
-                    deviceBuffer.append ("<optional name=\"OptionalBootPathElement" + (i + 1) + "\" version=\"1.0\" displayname=\"Optional Path Element\" classpath=\"" + strings[i] + "\" dependencies=\"\" default=\"true\"/>\n");
+                    deviceBuffer.append ("<optional name=\"OptionalBootPathElement" + (i + 1) + "\" version=\"1.0\" displayname=\"" + strings[i] + "\" classpath=\"" + strings[i] + "\" dependencies=\"\" default=\"true\"/>\n");
                 strings = device.getClassPaths ();
                 for (int i = 0; i < strings.length; i++)
-                    deviceBuffer.append ("<optional name=\"OptionalPathElement" + (i + 1) + "\" version=\"1.0\" displayname=\"Optional Path Element\" classpath=\"" + strings[i] + "\" dependencies=\"\" default=\"true\"/>\n");
+                    deviceBuffer.append ("<optional name=\"OptionalPathElement" + (i + 1) + "\" version=\"1.0\" displayname=\"" + strings[i] + "\" classpath=\"" + strings[i] + "\" dependencies=\"\" default=\"true\"/>\n");
 
                 HashMap capabilities = device.getCapabilities ();
                 Dimension screenSize = PolishProjectSupport.parseDimension ((String) capabilities.get ("polish.ScreenSize"));
