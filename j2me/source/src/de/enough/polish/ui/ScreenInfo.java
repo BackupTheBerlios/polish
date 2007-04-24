@@ -37,7 +37,7 @@ import javax.microedition.lcdui.Image;
  * This needs to be enabled specifically by setting the 
  * "polish.ScreenInfo.enable" preprocessing variable to "true":
  * <pre>
- * 	&lt;variable name=&quot;polish.ScreenInfo.enable&quot; value=&quot;true&quot;&gt;
+ * 	&lt;variable name=&quot;polish.ScreenInfo.enable&quot; value=&quot;true&quot; /&gt;
  * </pre>
  * </p>
  * <p>
