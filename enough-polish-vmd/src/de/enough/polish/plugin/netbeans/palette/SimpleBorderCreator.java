@@ -26,7 +26,7 @@ public class SimpleBorderCreator implements Creator {
     }
 
     public Border createBorder() {
-        return new SimpleBorder (); // TODO - ask user
+        return new SimpleBorder (0xFF0000, 6); // TODO - ask user
     }
 
 }

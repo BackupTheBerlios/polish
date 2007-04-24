@@ -7,11 +7,7 @@
         <mkdir dir="${cluster}/modules/ext"/>
         <copy todir="${cluster}/modules/ext">
             <fileset dir="external">
-                <include name="jdom.jar"/>
-                <include name="ant.jar"/>
-                <include name="enough-j2mepolish-runtime.jar"/>
-                <include name="enough-j2mepolish-client.jar"/>
-                <include name="enough-j2mepolish-build.jar"/>
+                <include name="*.jar"/>
             </fileset>
         </copy>
     </target>

@@ -101,9 +101,8 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
     }
 
     public void deviceChanged () {
-//        Dimension deviceScreenSize = MidpProjectPropertiesSupport.getDeviceScreenSizeFromProject(context);
 //        System.out.println(">> At " + System.currentTimeMillis() + " device screen size changed to " + deviceScreenSize);
-        // TODO - update your screen size here
+        visual.deviceChanged( context );
     }
 
     public void setDesignDocument (final DesignDocument newDesignDocument) {

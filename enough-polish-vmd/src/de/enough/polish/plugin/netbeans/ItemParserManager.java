@@ -9,9 +9,12 @@
 
 package de.enough.polish.plugin.netbeans;
 
+import de.enough.polish.plugin.netbeans.modelparser.ChoiceGroupParser;
 import de.enough.polish.plugin.netbeans.modelparser.ChoiceItemParser;
 import de.enough.polish.plugin.netbeans.modelparser.HtmlBrowserParser;
+import de.enough.polish.plugin.netbeans.modelparser.ImageItemParser;
 import de.enough.polish.plugin.netbeans.modelparser.ItemParser;
+import de.enough.polish.plugin.netbeans.modelparser.StringItemParser;
 import de.enough.polish.ui.Item;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +33,11 @@ public class ItemParserManager {
     private ItemParserManager() {
         this.parsersByClassName = new HashMap<String, ItemParser>();
         this.parsersByClassName.put("#ListElementEventSource", new ChoiceItemParser() );
+        this.parsersByClassName.put("#ChoiceElement", new ChoiceItemParser() );
         this.parsersByClassName.put("de.enough.polish.browser.chtml.HtmlBrowser", new HtmlBrowserParser() );
+        this.parsersByClassName.put("javax.microedition.lcdui.StringItem", new StringItemParser() );
+        this.parsersByClassName.put("javax.microedition.lcdui.ImageItem", new ImageItemParser() );
+        this.parsersByClassName.put("javax.microedition.lcdui.ChoiceGroup", new ChoiceGroupParser() );
     }
     
     public static ItemParserManager getInstance() {

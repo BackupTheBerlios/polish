@@ -78,11 +78,15 @@ public class PolishDataEditorViewLookupFactory implements DataEditorViewLookupFa
         
         public void customize(ExTransferable t, Lookup item) {
             InstanceDataObject dataObject = item.lookup(InstanceDataObject.class);
-            if (dataObject == null)
+            if (dataObject == null) {
+                System.out.println("PolishDragAndDropHandler failed: item.lookup(" + InstanceDataObject.class + ") returned null");
                 return;
+            }
             InstanceCookie instanceCookie = dataObject.getCookie(InstanceCookie.class);
-            if (instanceCookie == null)
+            if (instanceCookie == null) {
+                System.out.println("PolishDragAndDropHandler failed: no cookie in dataObject");
                 return;
+            }
             Object o;
             try {
                 o = instanceCookie.instanceCreate();
@@ -90,9 +94,13 @@ public class PolishDataEditorViewLookupFactory implements DataEditorViewLookupFa
                 Exceptions.printStackTrace(e);
                 return;
             }
-            if (! (o instanceof Creator))
+            if (! (o instanceof Creator)) {
+                System.out.println("PolishDragAndDropHandler failed: instanceCookie.instanceCreate() returns " + o);
+                System.out.println("is SimpleBackgroundCreator:  " + (o instanceof SimpleBackgroundCreator));
                 return;
+            }
             final Creator creator = (Creator) o;
+            System.out.println("PolishDragAndDropHandler: Adding " + Simulation.BACKGROUND_DATA_FLAVOR );
             t.put(new ExTransferable.Single (Simulation.BACKGROUND_DATA_FLAVOR) {
                 protected Object getData() throws IOException, UnsupportedFlavorException {
                     return creator.createBackground();

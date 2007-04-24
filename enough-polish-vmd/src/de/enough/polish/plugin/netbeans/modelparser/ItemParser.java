@@ -10,10 +10,16 @@
 package de.enough.polish.plugin.netbeans.modelparser;
 
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.ChoiceItem;
+import de.enough.polish.plugin.netbeans.ItemParserManager; 
+import de.enough.polish.ui.Style;
 import javax.microedition.lcdui.Displayable;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
+import org.netbeans.modules.vmd.api.model.PropertyValue;
+import org.netbeans.modules.vmd.midp.components.MidpTypes;
 import org.netbeans.modules.vmd.midp.components.MidpValueSupport;
 import org.netbeans.modules.vmd.midp.components.displayables.DisplayableCD;
+import org.netbeans.modules.vmd.midp.components.items.ItemCD;
 
 /**
  * <p>Parses screens from DesignComponents</p>
@@ -41,8 +47,24 @@ public abstract class ItemParser {
      * @param item a J2ME Polish item
      */
     protected void addAttributes(  DesignComponent designComponent, Item item ) {
-        //String title = MidpValueSupport.getHumanReadableString(designComponent.readProperty(DisplayableCD.PROP_TITLE));
-        //displayable.setTitle(title);
+        if (!(item instanceof ChoiceItem)) {
+            PropertyValue value = designComponent.readProperty( ItemCD.PROP_LABEL);
+             if (value.getKind() == PropertyValue.Kind.VALUE) {
+                String label = MidpTypes.getString(value);
+                item.setLabel(label);
+            }
+        }
+    }
+    
+    /**
+     * Adds the style of the item. 
+     * 
+     * @param designComponent the data of the displayable
+     * @param item a J2ME Polish item
+     */
+    protected void addStyle(  DesignComponent designComponent, Item item ) {
+        //TODO read the style name from the designComponent and apply it to the item
+        item.setStyle( new Style() );
     }
     
     /**
@@ -60,7 +82,14 @@ public abstract class ItemParser {
             throw new IllegalStateException("Unable to create item");
         }
         addAttributes(designComponent,item);
+        addStyle(designComponent,item);
         return item;
     }
+    
+    
+     protected Item getItem(  DesignComponent designComponent, Item item  ) {
+         ItemParserManager itemManager = ItemParserManager.getInstance();
+         return itemManager.parseItem(designComponent);
+     }
 
 }

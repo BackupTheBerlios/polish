@@ -40,8 +40,13 @@ import java.util.HashMap;
  * @author David Kaspar
  */
 public class PolishPlatform {
+    
+    private static Environment environment;
 
     public static void updatePlatform () {
+        if (environment == null) {
+            environment = new Environment( new File (PolishSettings.getDefault ().getPolishHome ())  );
+        }
         DeviceDatabase database = new DeviceDatabase (new File (PolishSettings.getDefault ().getPolishHome ()));
         final StringBuffer buffer = new StringBuffer ();
         buffer.append ("<?xml version='1.0'?>\n" +
@@ -60,7 +65,7 @@ public class PolishPlatform {
                 else
                     deviceBuffer.append ("<profile name=\"MIDP\" version=\"2.0\" displayname=\"Mobile Information Device Profile\" classpath=\"${platform.home}/lib/midpapi10.jar\" dependencies=\"CLDC > 1.0\" default=\"default\"/>\n");
 
-                device.setEnvironment (new Environment ());
+                device.setEnvironment (environment);
                 String[] strings = device.getBootClassPaths ();
                 for (int i = 0; i < strings.length; i++)
                     deviceBuffer.append ("<optional name=\"OptionalBootPathElement" + (i + 1) + "\" version=\"1.0\" displayname=\"Optional Path Element\" classpath=\"" + strings[i] + "\" dependencies=\"\" default=\"true\"/>\n");

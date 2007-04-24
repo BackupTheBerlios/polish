@@ -244,6 +244,10 @@
                 <runtime-relative-path>ext/enough-j2mepolish-build.jar</runtime-relative-path>
                 <binary-origin>external/enough-j2mepolish-build.jar</binary-origin>
             </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/enough-j2mepolish-styleeditor.jar</runtime-relative-path>
+                <binary-origin>external/enough-j2mepolish-styleeditor.jar</binary-origin>
+            </class-path-extension>
         </data>
     </configuration>
 </project>

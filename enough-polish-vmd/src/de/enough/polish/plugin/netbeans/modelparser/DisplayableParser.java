@@ -11,6 +11,8 @@ package de.enough.polish.plugin.netbeans.modelparser;
 
 import de.enough.polish.plugin.netbeans.ItemParserManager;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.Style;
 import java.util.Collection;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
@@ -62,6 +64,19 @@ public abstract class DisplayableParser {
             }
         }
         
+    }
+    
+      /**
+     * Adds the style of the item. 
+     * 
+     * @param designComponent the data of the displayable
+     * @param item a J2ME Polish item
+     */
+    protected void addStyle(  DesignComponent designComponent, Displayable displayable ) {
+        //TODO read the style name from the designComponent and apply it to the screen
+        if (displayable instanceof Screen) {
+            ((Screen)displayable).setStyle( new Style() );
+        }
     }
     
     protected void addCommand( DesignComponent commandComponent, Displayable displayable ) {
@@ -127,6 +142,7 @@ public abstract class DisplayableParser {
             throw new IllegalStateException("Unable to create displayable");
         }
         addAttributes(designComponent, displayable);
+        addStyle(designComponent, displayable);
         return displayable;
     }
 
