@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.MIDlet;
 import javax.swing.JLabel;
@@ -40,9 +41,17 @@ import javax.swing.JLayeredPane;
 
 import de.enough.polish.runtime.DisplayChangeListener;
 import de.enough.polish.runtime.Simulation;
+import de.enough.polish.runtime.SimulationDevice;
 import de.enough.polish.runtime.SimulationManager;
 import de.enough.polish.runtime.SimulationPanel;
+import de.enough.polish.runtime.overlays.HoverOverlay;
+import de.enough.polish.runtime.overlays.SelectionOverlay;
 import de.enough.polish.swing.SwingApplication;
+import de.enough.polish.ui.Background;
+import de.enough.polish.ui.ChoiceGroup;
+import de.enough.polish.ui.Form;
+import de.enough.polish.ui.UiAccess;
+import de.enough.polish.ui.backgrounds.SimpleBackground;
 
 /**
  * <p>Provides a GUI for running simualations.</p>
@@ -74,7 +83,21 @@ implements DisplayChangeListener
 	{
 		super("J2ME Polish Simulator", systemExitOnQuit );
 		this.manager = new SimulationManager( configuration );
-		this.simulation = this.manager.loadSimulation("Nokia/6600", "de.enough.polish.sample.browser.BrowserMidlet");
+		String device = (String) configuration.get("device");
+		if (device == null) {
+			device = System.getProperty("device");
+			if (device == null) {
+				device = "Nokia/6630";
+			}
+		}
+		String midletClass = (String) configuration.get("midlet");
+		if (midletClass == null) {
+			midletClass = System.getProperty("midlet");
+			if (midletClass == null) {
+				throw new IllegalStateException("no midlet defined");
+			}
+		}
+		this.simulation = this.manager.loadSimulation(device, midletClass);
 		this.simulation.setDisplayChangeListener( this );
 		this.simulation.simulateGameActionEvent( Canvas.DOWN );
 		Container contentPane = getContentPane();
@@ -88,22 +111,24 @@ implements DisplayChangeListener
 		super("J2ME Polish Simulator", true );
 		this.manager = null;
 		Container contentPane = getContentPane();
-		contentPane.setLayout( new BorderLayout() );
-		JLabel label = new JLabel("title");
-		contentPane.add( label, BorderLayout.NORTH );
-		JLayeredPane view = new JLayeredPane();
-		view.setPreferredSize( new Dimension( 200, 200));
-		label = new JLabel("first");
-		label.setOpaque(true);
-		label.setBackground( Color.WHITE );
-		label.setBounds( 0, 50, 100, 100 );
-		view.add( label, new Integer(0) );
-		label = new JLabel("second");
-		label.setOpaque(true);
-		label.setBackground( Color.YELLOW );
-		label.setBounds( 20, 40, 100, 100 );
-		view.add( label, new Integer(1) );
-		contentPane.add( view, BorderLayout.CENTER );
+		Simulation simulation = new Simulation( new SimulationDevice() );
+		Form form = new Form("Hello World");
+		form.append("first line");
+		form.append("second line");
+		form.append("third line");
+		form.append("fourth line");
+		ChoiceGroup group = new ChoiceGroup( "choice:", ChoiceGroup.MULTIPLE );
+		group.append( "first choice", null );
+		group.append( "second choice", null );
+		form.append( group );
+		form.addCommand( new Command("Command", Command.SCREEN, 2 ));
+		form._callShowNotify();
+		Background background = new SimpleBackground( 0xffff00 );
+		UiAccess.setBackground(form, background);
+		simulation.setCurrent( form );
+		simulation.addOverlay( new SelectionOverlay() );
+		simulation.addOverlay( new HoverOverlay() );
+		contentPane.add( simulation );
 		pack();
 	}
 

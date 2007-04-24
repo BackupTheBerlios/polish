@@ -178,7 +178,6 @@ implements ActionListener
 			this.view.remove( this.control );
 		}
 		this.control = null;
-    System.out.println("Michael: TEST");
 		this.controlName = sim.getDevice().getCapability("polish.Emulator.control");
 		if ( this.controlName != null ) {
 			//System.out.println("SimulationPanel: trying to load control [" + this.controlName + "]");
@@ -192,7 +191,9 @@ implements ActionListener
 		} else {
 			this.control = new DefaultControl( sim );
 		}
-		this.view.setPreferredSize( new Dimension( this.control.controlWidth, this.control.controlHeight ));
+		Dimension size = new Dimension( this.control.controlWidth, this.control.controlHeight );
+		this.view.setPreferredSize( size );
+		this.view.setMinimumSize( size );
 		this.control.setBounds( 0, 0, this.control.controlWidth, this.control.controlHeight );
 		sim.setBounds( this.control.screenX, this.control.screenY, sim.getCanvasWidth(), sim.getCanvasHeight() );
 		
@@ -200,6 +201,5 @@ implements ActionListener
 		this.view.add( sim, new Integer(1) );
 		this.simulation = sim;
 	}
-	
 
 }

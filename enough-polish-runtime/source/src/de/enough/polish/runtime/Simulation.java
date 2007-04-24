@@ -28,12 +28,15 @@ package de.enough.polish.runtime;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
@@ -41,6 +44,11 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import javax.swing.JComponent;
+
+import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Border;
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Screen;
 
 
 /**
@@ -58,6 +66,17 @@ public class Simulation
 extends JComponent 
 implements MouseListener, KeyListener
 {
+	/** mouse events interact with the application (as pointerPressed() events) */
+	public final static int SELECTION_MODE_ACTIVE = 0;
+	/** mouse events do not interact with the application (as pointerPressed() events), when a SelectionListener is registered, it will be notified. */
+	public final static int SELECTION_MODE_PASSIVE = 1;
+	/** mouse events interact with the application (as pointerPressed() events), when a SelectionListener is registered, it will be notified. This is the default mode. */
+	public final static int SELECTION_MODE_BOTH = 2;
+	/** A data flavor for transferign background via drag'n'drop */
+	public static final DataFlavor BACKGROUND_DATA_FLAVOR = new DataFlavor( Background.class, "j2mepolish/background" );
+	/** A data flavor for transferign borders via drag'n'drop */
+	public static final DataFlavor BORDER_DATA_FLAVOR = new DataFlavor( Border.class, "j2mepolish/border" );
+	
 	private static final long serialVersionUID = -5601752053686017794L;
 	private static final int DEFAULT_LARGE_FONT_SIZE = 22;
 	private static final int DEFAULT_MEDIUM_FONT_SIZE = 18;
@@ -65,21 +84,21 @@ implements MouseListener, KeyListener
 	
 	private static HashMap simulationsByMidlet = new HashMap();
 	
-	private final SimulationDevice device;
+	private  SimulationDevice device;
 	private int canvasWidth;
 	private int canvasHeight;
 	private static Simulation currentDeviceSimulator;
-	private final boolean isColorDevice;
-	private final int numberOfColors;
-	private final int numberOfAlphaLevels;
-	private final javax.microedition.lcdui.Graphics graphics;
+	private boolean isColorDevice;
+	private int numberOfColors;
+	private int numberOfAlphaLevels;
+	private javax.microedition.lcdui.Graphics graphics;
 	private MIDlet midlet;
-	private final BufferedImage displayImage;
+	private BufferedImage displayImage;
 	private Dimension minimumSize;
 	//private final ArrayList repaintQueue;
-	private final int fontSizeSmall;
-	private final int fontSizeMedium;
-	private final int fontSizeLarge;
+	private int fontSizeSmall;
+	private int fontSizeMedium;
+	private int fontSizeLarge;
 	private String midletClassName;
 	private SimulationManager simulationManager;
 	private Displayable currentDisplayable;
@@ -91,31 +110,79 @@ implements MouseListener, KeyListener
 	private int rightSoftKey;
 	private int changeInputKey;
 	private boolean isDisposed;
+	private ArrayList selectionListeners;
+	private int selectionMode = SELECTION_MODE_BOTH;
+	private ArrayList overlays;
+	private boolean isRepaintRequested;
+	
+	/**
+	 * Creates a new device simulator.
+	 * 
+//	 * @param displayable the displayable that should be shown
+	 * @param device the actual XML based device
+	 */
+	public Simulation( SimulationDevice device ) {
+		this( null, null,  device );
+	}
 
 	/**
 	 * Creates a new device simulator.
-	 * @param manager
 	 * 
+	 * @param manager
 	 * @param device the actual XML based device
 	 */
 	public Simulation( SimulationManager manager, SimulationDevice device ) {
+		this( null, manager, device );
+	}
+
+	/**
+	 * Creates a new device simulator.
+	 * 
+	 * @param displayable the displayable that should be shown
+	 * @param manager
+	 * @param device the actual XML based device
+	 */
+	public Simulation( Displayable displayable, SimulationManager manager, SimulationDevice device ) {
 		super();
+//		if (displayable == null && manager == null) {
+//			throw new IllegalArgumentException("either displayable or manager must not be null");
+//		}
+		this.currentDisplayable = displayable;
 		this.simulationManager = manager;
 		//this.repaintQueue = new ArrayList();
+
+		//Thread repaintThread = new Thread( this );
+		//repaintThread.start();
+		addMouseListener( this );
+		addKeyListener( this );
+		setFocusable( true );
+		setDevice( device );
+	}
+	
+	public void setDevice( SimulationDevice device ) {
+		if (device == null) {
+			throw new IllegalArgumentException("device must not be null");
+		}
+
 		String canvasWidthStr = device.getCapability("polish.FullCanvasWidth");
 		String canvasHeightStr = device.getCapability("polish.FullCanvasHeight");
 		if (canvasWidthStr == null ) {
 			canvasWidthStr = device.getCapability("polish.ScreenWidth");
 			canvasHeightStr = device.getCapability("polish.ScreenHeight");
 		}
-		this.canvasWidth = Integer.parseInt( canvasWidthStr );
-		this.canvasHeight = Integer.parseInt( canvasHeightStr );
+		if (canvasWidthStr != null && canvasHeightStr != null) {
+			this.canvasWidth = Integer.parseInt( canvasWidthStr );
+			this.canvasHeight = Integer.parseInt( canvasHeightStr );			
+		} else {			
+			this.canvasWidth = 240;
+			this.canvasHeight = 320;			
+		}
 		//System.out.println("Simulation: canvasHeight of " + device.getIdentifier() + "=" + this.canvasHeight );
 		currentDeviceSimulator = this;
 		String bitsPerPixelStr =  device.getCapability("polish.BitsPerPixel");
 		if (bitsPerPixelStr == null) {
-			this.isColorDevice = false;
-			this.numberOfColors = 2;
+			this.isColorDevice = true;
+			this.numberOfColors = (int) Math.pow( 2D, 16 );;
 		} else {
 			int bitsPerColor = Integer.parseInt( bitsPerPixelStr );
 			this.numberOfColors = (int) Math.pow( 2D, bitsPerColor );
@@ -153,13 +220,94 @@ implements MouseListener, KeyListener
 		this.minimumSize = new Dimension( this.canvasWidth, this.canvasHeight );
 		setPreferredSize( this.minimumSize );
 		//java.awt.Graphics awtGraphics =  null;
-		this.graphics = new javax.microedition.lcdui.Graphics( g, this );
-		//Thread repaintThread = new Thread( this );
-		//repaintThread.start();
-		addMouseListener( this );
-		addKeyListener( this );
-		setFocusable( true );
+		this.graphics = new javax.microedition.lcdui.Graphics( g, this );	}
+	
+	/**
+	 * Adds a selection listener
+	 * 
+	 * @param listener the listener that should be added
+	 * @see #SELECTION_MODE_ACTIVE
+	 * @see #SELECTION_MODE_PASSIVE
+	 * @see #SELECTION_MODE_BOTH
+	 * @see #removeSelectionListener(SelectionListener)
+	 */
+	public void addSelectionListener( SelectionListener listener ) {
+		if (this.selectionListeners == null) {
+			this.selectionListeners = new ArrayList();
+		}
+		this.selectionListeners.add(listener);
 	}
+		
+	/**
+	 * Removes a selection listener
+	 * 
+	 * @param listener the listener that should be removed
+	 * @see #SELECTION_MODE_ACTIVE
+	 * @see #SELECTION_MODE_PASSIVE
+	 * @see #SELECTION_MODE_BOTH
+	 * @see #addSelectionListener(SelectionListener)
+	 */
+	public void removeSelectionListener( SelectionListener listener ) {
+		if (this.selectionListeners != null) {
+			this.selectionListeners.remove( listener );
+		}
+	}
+	
+	/**
+	 * Sets the selection mode
+	 * 
+	 * @param selectionMode the new selection mode
+	 * @see #SELECTION_MODE_ACTIVE
+	 * @see #SELECTION_MODE_PASSIVE
+	 * @see #SELECTION_MODE_BOTH
+	 * @see #addSelectionListener(SelectionListener)
+	 * @see #removeSelectionListener(SelectionListener)
+	 */
+	public void setSelectionMode( int selectionMode ) {
+		this.selectionMode = selectionMode;
+	}
+	
+	/**
+	 * Gets the selection mode
+	 * 
+	 * @return selectionMode the new selection mode
+	 * @see #SELECTION_MODE_ACTIVE
+	 * @see #SELECTION_MODE_PASSIVE
+	 * @see #SELECTION_MODE_BOTH
+	 * @see #addSelectionListener(SelectionListener)
+	 * @see #removeSelectionListener(SelectionListener)
+	 */
+	public int getSelectionMode() {
+		return this.selectionMode;
+	}
+	
+	/**
+	 * Adds the specified overlay to this simulation.
+	 * The simulation calls overlay.registerSimulation(this).
+	 * 
+	 * @param overlay the overlay
+	 */
+	public void addOverlay( SimulationOverlay overlay ) {
+		if (this.overlays == null) {
+			this.overlays = new ArrayList();
+		}
+		overlay.registerSimulation(this);
+		this.overlays.add(overlay);
+	}
+	/**
+	 * Removes the specified overlay to this simulation.
+	 * The simulation calls overlay.deregisterSimulation(this).
+	 * 
+	 * @param overlay the overlay
+	 */
+	public void removeOverlay( SimulationOverlay overlay ) {
+		if (this.overlays != null) {
+			this.overlays.remove(overlay);
+			overlay.deregisterSimulation(this);
+		}
+	}
+
+
 
 	/**
 	 * Retrieves the width of the canvas.
@@ -184,9 +332,9 @@ implements MouseListener, KeyListener
 	public void loadMIDlet( String className ) 
 	throws ClassNotFoundException, InstantiationException, IllegalAccessException, MIDletStateChangeException 
 	{
-		this.midletClassName = className;
 		// load class:
 		Class midletClass = Class.forName( className );
+		this.midletClassName = className;
 		// call constructor
 		this.midlet = (MIDlet) midletClass.newInstance();
 		simulationsByMidlet.put( this.midlet, this );
@@ -268,10 +416,9 @@ implements MouseListener, KeyListener
 		
 		if (displayable instanceof Canvas) {
 			//System.out.println("repaint for screenclass: " + displayable.getClass().getName() );
-			this.graphics.reset();
-			((Canvas) displayable)._paint( this.graphics );
+			this.isRepaintRequested = true;
 			repaint();
-		} else {
+		} else if (displayable != null){
 			System.out.println("Unable to paint unknown screenclass: " + displayable.getClass().getName() );
 		}
 		//synchronized ( this.repaintQueue ) {
@@ -282,7 +429,19 @@ implements MouseListener, KeyListener
 	
 
 	protected void paintComponent(Graphics g) {
+		if (this.isRepaintRequested) {
+			this.graphics.reset();
+			((Canvas)this.currentDisplayable)._paint( this.graphics );
+			this.isRepaintRequested = false;
+		}
 		g.drawImage( this.displayImage, 0, 0, null );
+		if (this.overlays != null) {
+			for (Iterator iter = this.overlays.iterator(); iter.hasNext();) {
+				SimulationOverlay overlay = (SimulationOverlay) iter.next();
+				overlay.paintOverlay(g, this.canvasWidth, this.canvasHeight);
+				
+			}
+		}
 	}
 	
 	
@@ -523,8 +682,26 @@ implements MouseListener, KeyListener
 	 */
 	public void mouseClicked(MouseEvent e) {
 		//System.out.println("mouse clicked: " + e );
-		if (this.currentDisplayable instanceof Canvas) {
-			((Canvas)this.currentDisplayable)._callPointerPressed( e.getX(), e.getY() );
+		if (this.selectionMode != SELECTION_MODE_PASSIVE) {
+			if (this.currentDisplayable instanceof Canvas) {
+				((Canvas)this.currentDisplayable)._callPointerPressed( e.getX(), e.getY() );
+			}
+		}
+		if (this.selectionMode != SELECTION_MODE_ACTIVE && this.selectionListeners != null && this.currentDisplayable instanceof Screen) {
+			Screen screen = (Screen) this.currentDisplayable;
+			int x =  e.getX();
+			int y = e.getY();
+			Item item = screen.getItemAt( x, y );
+			//System.out.println("item at " + x + "," + y + ": " + item );
+			for (Iterator iter = this.selectionListeners.iterator(); iter.hasNext();) {
+				SelectionListener listener = (SelectionListener) iter.next();
+				if (item != null) {
+					listener.notifyItemSelected(item, item.getStyle(), x, y );
+				} else {
+					listener.notifyScreenSelected(screen, screen.getStyle(), x, y );					
+				}
+			}
+			super.repaint();
 		}
 	}
 

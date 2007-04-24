@@ -520,6 +520,8 @@ public class Graphics extends Object
 	private int fontBaseline;
 
 	private ImageListener imageListener;
+
+	private boolean fontIsUnderlined;
 	
 	/**
 	 * Creates the Graphics.
@@ -766,6 +768,7 @@ public class Graphics extends Object
 		this.font = font;
 		this.g.setFont( font._getAwtFont() );
 		this.fontBaseline = font.getBaselinePosition();
+		this.fontIsUnderlined = font.isUnderlined();
 	}
 
 	/**
@@ -1124,6 +1127,11 @@ public class Graphics extends Object
 		//System.out.println("drawString (" + str + ", x=" + x + ", y=" + y  + ")");
 		y += this.fontBaseline;
 		this.g.drawString(str, x, y);
+		if (this.fontIsUnderlined) {
+			//y += this.font._getAwtFont().getSize() + 1;
+			y++;
+			this.g.drawLine(x, y, x + this.font.stringWidth(str), y );
+		}
 	}
 
 	/**

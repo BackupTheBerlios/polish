@@ -330,5 +330,14 @@ public abstract class Displayable
 		// ignore
 	}
 
+	/**
+	 * 
+	 */
+	public void _requestRepaint() {
+		if (this instanceof Canvas) {
+			((Canvas)this).repaint();
+		}
+	}
+
 
 }

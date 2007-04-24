@@ -178,6 +178,8 @@ public final class Font extends Object
 	private final java.awt.Font awtFont;
 
 	private FontRenderContext fontRenderContext;
+
+	private boolean isUnderlined;
 	
 	/**
 	 * Creates an object representing a font having the specified face, style,
@@ -196,60 +198,67 @@ public final class Font extends Object
 		this.face = face;
 		this.style = style;
 		this.size = size;
-		String faceStr;
+		String awtFace;
 		switch (face) {
 			case FACE_MONOSPACE:
-				faceStr = "COURIER";
+				awtFace = "COURIER";
 				break;
 			case FACE_PROPORTIONAL:
-				faceStr = "ARIAL";
+				awtFace = "ARIAL";
 				break;
 			default:
-				faceStr = "ARIAL";
+				awtFace = "ARIAL";
 		}
-		String styleStr;
-		switch (style) {
-			case STYLE_ITALIC:
-				styleStr = "ITALIC";
-				break;
-			case STYLE_BOLD:
-				styleStr = "BOLD";
-				break;
-			case STYLE_UNDERLINED:
-				//TODO allow underlined fonts
-			default:
-				styleStr = "PLAIN";
+		int awtStyle = style;
+		this.isUnderlined = ((style & STYLE_UNDERLINED) == STYLE_UNDERLINED);
+		if (this.isUnderlined){
+			awtStyle &= ~STYLE_UNDERLINED; // awt does not support the UNDERLINED style
 		}
+//		
+//		String styleStr;
+//		switch (style) {
+//			case STYLE_ITALIC:
+//				styleStr = "ITALIC";
+//				break;
+//			case STYLE_BOLD:
+//				styleStr = "BOLD";
+//				break;
+//			case STYLE_UNDERLINED:
+//				//TODO allow underlined fonts
+//			default:
+//				styleStr = "PLAIN";
+//		}
 		Simulation simulation = Simulation.getCurrentSimulation();
 //		if (simulation != null) {
 //			System.out.println("Font-small: " + simulation.getFontSizeSmall());
 //			System.out.println("Font-medium: " + simulation.getFontSizeMedium());
 //			System.out.println("Font-large: " + simulation.getFontSizeLarge());
 //		}
-		String sizeStr;
+		int awtSize;
 		switch (size) {
 			case SIZE_SMALL:
 				if (simulation == null) {
-					sizeStr = "14";
+					awtSize = 14;
 				} else {
-					sizeStr = "" + (simulation.getFontSizeSmall() - 2); // adjust size to compensate for bulky Arial font
+					awtSize = (simulation.getFontSizeSmall() - 2); // adjust size to compensate for bulky Arial font
 				}
 				break;
 			case SIZE_LARGE:
 				if (simulation == null) {
-					sizeStr = "19";
+					awtSize = 19;
 				} else {
-					sizeStr  = "" + (simulation.getFontSizeLarge() - 2);
+					awtSize  = (simulation.getFontSizeLarge() - 2);
 				}
 				break;
 			default:
 				if (simulation == null) {
-					sizeStr = "15";
+					awtSize = 15;
 				} else {
-					sizeStr = "" + (simulation.getFontSizeMedium() - 2);
+					awtSize = (simulation.getFontSizeMedium() - 2);
 				}
 		}
-		this.awtFont = java.awt.Font.decode( faceStr + "-" + styleStr + "-" + sizeStr );
+		//this.awtFont = java.awt.Font.decode( faceStr + "-" + styleStr + "-" + sizeStr );
+		this.awtFont = new java.awt.Font( awtFace, awtStyle, awtSize );
 		BufferedImage image =
 		    new BufferedImage(1,1,BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D g = image.createGraphics();
@@ -350,8 +359,7 @@ public final class Font extends Object
 	 */
 	public boolean isPlain()
 	{
-		return false;
-		//TODO implement isPlain
+		return this.style == STYLE_PLAIN;
 	}
 
 	/**
@@ -362,8 +370,7 @@ public final class Font extends Object
 	 */
 	public boolean isBold()
 	{
-		return false;
-		//TODO implement isBold
+		return (( this.style & STYLE_BOLD) == STYLE_BOLD);
 	}
 
 	/**
@@ -374,8 +381,7 @@ public final class Font extends Object
 	 */
 	public boolean isItalic()
 	{
-		return false;
-		//TODO implement isItalic
+		return (( this.style & STYLE_ITALIC) == STYLE_ITALIC);
 	}
 
 	/**
@@ -386,8 +392,7 @@ public final class Font extends Object
 	 */
 	public boolean isUnderlined()
 	{
-		return false;
-		//TODO implement isUnderlined
+		return (( this.style & STYLE_UNDERLINED) == STYLE_UNDERLINED);
 	}
 
 	/**

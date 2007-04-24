@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.jdom.Element;
@@ -37,19 +38,16 @@ public class SimulationDevice
 
 	public static final String NAME = "polish.Name";
 
-	public static final String SCREEN_SIZE = "polish.ScreenSize";
-
 	public static final String SCREEN_WIDTH = "polish.ScreenWidth";
 
 	public static final String SCREEN_HEIGHT = "polish.ScreenHeigth";
-
-	public static final String CANVAS_SIZE = "polish.CanvasSize";
 
 	public static final String CANVAS_WIDTH = "polish.CanvasWidth";
 
 	public static final String CANVAS_HEIGHT = "polish.CanvasHeigth";
 
-	public static final String FULL_CANVAS_SIZE = "polish.FullCanvasSize";
+	public static final String FULL_CANVAS_WIDTH = "polish.FullCanvasWidth";
+	public static final String FULL_CANVAS_HEIGHT = "polish.FullCanvasHeight";
 
 	public static final String BITS_PER_PIXEL = "polish.BitsPerPixel";
 
@@ -118,20 +116,36 @@ public class SimulationDevice
 
   private String identifier;
 
-  private Hashtable capabilities = new Hashtable();
+  private Map capabilities;
 
   public SimulationDevice() {
-		this.identifier = "Generic/AppletDevice";
+	  this( "Generic/NetBeans");
+  }
+  
+  public SimulationDevice(String identifier ) {
+	  this( identifier, getDefaultCapabilities(identifier) );
+  }
+  
+  
+  private static Map getDefaultCapabilities( String identifier ) {
+		Map capabilities = new Hashtable();
+		capabilities.put( IDENTIFIER, identifier );
+		capabilities.put("polish.FullCanvasWidth", "240");
+		capabilities.put("polish.FullCanvasHeight", "320");
+		capabilities.put("polish.ScreenWidth", "240");
+	    capabilities.put("polish.ScreenHeight", "320");
+	    capabilities.put("polish.BitsPerPixel", "18");
+	    //this.capabilities.put("polish.Emulator.control", "Series60");
+	    capabilities.put("polish.hasPointerEvents", "true");
+	    return capabilities;
+  }
+  
+  public SimulationDevice(String identifier, Map capabilities ) {
+		this.identifier = identifier;
 		this.isVirtual = false;
-    
-		this.capabilities.put("polish.FullCanvasWidth", "240");
-		this.capabilities.put("polish.FullCanvasHeight", "320");
-		this.capabilities.put("polish.ScreenWidth", "240");
-    this.capabilities.put("polish.ScreenHeight", "320");
-    this.capabilities.put("polish.BitsPerPixel", "18");
-    this.capabilities.put("polish.Emulator.control", "Series60");
-    this.capabilities.put("hasPointerEvents", "true");
+		this.capabilities = capabilities;
 	}
+
   
   public String getCapability(String key)
   {
@@ -141,5 +155,9 @@ public class SimulationDevice
   public String getIdentifier()
   {
     return this.identifier;
+  }
+  
+  public void setCapability( String key, String value ) {
+	  this.capabilities.put( key, value);
   }
 }

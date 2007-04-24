@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="source/src"/>
+	<classpathentry kind="src" path="source/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/enough-polish-j2me/bin"/>
 	<classpathentry kind="lib" path="/enough-polish-build/bin"/>
