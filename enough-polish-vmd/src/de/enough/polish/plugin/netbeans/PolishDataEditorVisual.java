@@ -42,6 +42,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import org.netbeans.modules.vmd.api.io.DataObjectContext;
 import org.netbeans.modules.vmd.api.io.javame.MidpProjectPropertiesSupport;
+import org.netbeans.modules.vmd.api.io.ProjectUtils;
 
 /**
  * <p>Visalizes the currently edited displayable, accepts droppping.</p>
@@ -89,7 +90,7 @@ public class PolishDataEditorVisual extends JPanel
     
      
     public void deviceChanged( DataObjectContext context ) {
-        String deviceName = MidpProjectPropertiesSupport.getActiveConfiguration(context);
+        String deviceName = MidpProjectPropertiesSupport.getActiveConfiguration(ProjectUtils.getProject (context));
         if ( deviceName.indexOf('/') == -1) {
             deviceName = "Generic/" + deviceName;
         }
