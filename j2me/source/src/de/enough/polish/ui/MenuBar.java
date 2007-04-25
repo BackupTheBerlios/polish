@@ -96,7 +96,6 @@ public class MenuBar extends Item {
 	private final CommandItem singleLeftCommandItem;
 	private Command singleRightCommand;
 	private final CommandItem singleRightCommandItem;
-	private int commandsContainerY;
 	private int topY;
 	private int commandsContainerWidth;
 	protected boolean isSoftKeyPressed;
@@ -108,8 +107,6 @@ public class MenuBar extends Item {
 	private boolean showImageAndText;
 	private Image selectImage;
 	private Image cancelImage;
-	private int singleLeftCommandY;
-	private int singleRightCommandY;
 	//#if !polish.Bugs.noTranslucencyWithDrawRgb
 		private Background overlayBackground;
 	//#endif
@@ -495,10 +492,16 @@ public class MenuBar extends Item {
 			this.commandsContainerWidth = this.commandsContainer.itemWidth;
 			//#debug
 			System.out.println("commandsContainerWidth=" + this.commandsContainerWidth);
-			this.commandsContainerY = screenHeight - containerHeight - 1;
-			if (this.commandsContainerY < titleHeight) {
-				this.commandsContainerY = titleHeight;
+			int commandsContainerY = screenHeight - containerHeight - 1;
+			if ( commandsContainerY < titleHeight) {
+				containerHeight -= titleHeight - commandsContainerY;
+				commandsContainerY = titleHeight;
 			}
+			this.commandsContainer.relativeY = - containerHeight;
+			//#if tmp.useInvisibleMenuBar || tmp.RightOptions
+				// move menu to the right of the screen:
+				this.commandsContainer.relativeX = lineWidth - this.commandsContainerWidth;
+			//#endif
 			/*
 			int focusedIndex = this.commandsContainer.focusedIndex;
 			this.canScrollUpwards = (focusedIndex != 0); 
@@ -638,19 +641,32 @@ public class MenuBar extends Item {
 		}
 		//#if !tmp.useInvisibleMenuBar
 			int availableWidth = lineWidth / 2;
+			this.singleRightCommandItem.relativeX = availableWidth;
 //			if ( ! this.isOpened && this.singleRightCommand == null ) {
 //				availableWidth = lineWidth;
 //			}
 			//System.out.println("Initialising single commands with a width of " + availableWidth + " lineWidth is " + lineWidth);
-			int height = this.singleLeftCommandItem.getItemHeight( availableWidth, availableWidth);
-			if (this.singleRightCommandItem.getItemHeight( availableWidth, availableWidth ) > height) {
-				height = this.singleRightCommandItem.itemHeight;
-			}
+			int height = Math.max( this.singleLeftCommandItem.getItemHeight( availableWidth, availableWidth),
+					this.singleRightCommandItem.getItemHeight( availableWidth, availableWidth) );
 			if (height > this.contentHeight) {
 				this.contentHeight = height; 
+			} else {
+				// TODO allow LAYOUT_VEXPAND
+				if (( this.singleLeftCommandItem.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {
+					this.singleLeftCommandItem.relativeY = (this.contentHeight - this.singleLeftCommandItem.itemHeight) / 2;					
+				} else if (( this.singleLeftCommandItem.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM) {
+					this.singleLeftCommandItem.relativeY = this.contentHeight - this.singleLeftCommandItem.itemHeight;
+				} else {
+					this.singleLeftCommandItem.relativeY = 0;
+				}
+				if (( this.singleRightCommandItem.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {
+					this.singleRightCommandItem.relativeY = (this.contentHeight - this.singleRightCommandItem.itemHeight) / 2;					
+				} else if (( this.singleRightCommandItem.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM) {
+					this.singleRightCommandItem.relativeY = this.contentHeight - this.singleRightCommandItem.itemHeight;
+				} else {
+					this.singleLeftCommandItem.relativeY = 0;
+				}
 			}
-			this.singleLeftCommandY = this.contentHeight - this.singleLeftCommandItem.itemHeight;
-			this.singleRightCommandY = this.contentHeight - this.singleRightCommandItem.itemHeight;
 			this.contentWidth = lineWidth;
 		//#endif
 	}
@@ -669,38 +685,26 @@ public class MenuBar extends Item {
 			//#endif
 			// paint opened menu:
 			//System.out.println("setting clip " + this.topY + ", " + (this.screen.screenHeight - this.topY) );
-			//#if tmp.useInvisibleMenuBar
-				// paint menu at the top right corner:
-                int contY = this.screen.contentY;
-                g.setClip(0, contY, this.screen.screenWidth , this.screen.screenHeight - contY);
-                if (this.topY > contY) {
-                    contY = this.topY;
-                }
-                this.commandsContainer.paint( this.screen.screenWidth - this.commandsContainerWidth, contY, this.screen.screenWidth - this.commandsContainerWidth, this.screen.screenWidth, g);
-				g.setClip(0, 0, this.screen.screenWidth , this.screen.screenHeight );
-			//#elif tmp.RightOptions
-				// paint menu at the lower right corner:
-				g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
-				this.commandsContainer.paint( this.screen.screenWidth - this.commandsContainerWidth, this.commandsContainerY, this.screen.screenWidth - this.commandsContainerWidth, this.screen.screenWidth, g);
-				g.setClip(0, 0, this.screen.screenWidth , this.screen.screenHeight );
-			//#else
-				// paint menu at the lower left corner:
-				g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
-				this.commandsContainer.paint(0, this.commandsContainerY, 0, this.commandsContainerWidth , g);
-			//#endif
+			int clipX = g.getClipX();
+			int clipY = g.getClipY();
+			int clipWidth = g.getClipWidth();
+			int clipHeight = g.getClipHeight();
+			g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
+            this.commandsContainer.paint( x + this.commandsContainer.relativeX, y + this.commandsContainer.relativeY, x + this.commandsContainer.relativeX, x + this.commandsContainer.relativeX + this.commandsContainerWidth, g);
+			g.setClip(clipX, clipY, clipWidth, clipHeight );
 			//System.out.println("MenuBar: commandContainer.background == null: " + ( this.commandsContainer.background == null ) );
 			//System.out.println("MenuBar: commandContainer.style.background == null: " + ( this.commandsContainer.style.background == null ) );
 		//#if !tmp.useInvisibleMenuBar
-			//#ifdef polish.FullCanvasSize:defined
-				//#= g.setClip(0, 0, ${polish.FullCanvasWidth}, ${polish.FullCanvasHeight} );
-			//#else
-				//TODO rob check if resetting of clip really works
-				g.setClip(0, this.commandsContainerY, this.screen.screenWidth, this.screen.screenHeight );
-			//#endif
+//			//#ifdef polish.FullCanvasSize:defined
+//				//#= g.setClip(0, 0, ${polish.FullCanvasWidth}, ${polish.FullCanvasHeight} );
+//			//#else
+//				//TODO rob check if resetting of clip really works
+//				g.setClip(0, this.commandsContainerY, this.screen.screenWidth, this.screen.screenHeight );
+//			//#endif
 			// paint menu-bar:
 			int centerX = leftBorder + ((rightBorder - leftBorder)/2); 
-			this.singleLeftCommandItem.paint(leftBorder, y + this.singleLeftCommandY, leftBorder, centerX, g);			
-			this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandY, centerX, rightBorder, g);
+			this.singleLeftCommandItem.paint(leftBorder, y + this.singleLeftCommandItem.relativeY, leftBorder, centerX, g);			
+			this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandItem.relativeY, centerX, rightBorder, g);
 		} else {
 			int centerX = leftBorder + ((rightBorder - leftBorder)/2);
 			//#if tmp.RightOptions
@@ -709,7 +713,7 @@ public class MenuBar extends Item {
 				if (this.commandsContainer.size() > 0 || this.singleLeftCommand != null) {
 			//#endif
 				//System.out.println("painting left command from " + leftBorder + " to " + centerX );
-				this.singleLeftCommandItem.paint(leftBorder, y + this.singleLeftCommandY, leftBorder, centerX, g);
+				this.singleLeftCommandItem.paint(leftBorder, y + this.singleLeftCommandItem.relativeY, leftBorder, centerX, g);
 			}
 			//#if tmp.RightOptions
 				if (this.commandsContainer.size() > 0 || this.singleRightCommand != null) {
@@ -717,7 +721,7 @@ public class MenuBar extends Item {
 				//# if (this.singleRightCommand != null) {
 			//#endif
 				//System.out.println("painting right command from " + centerX + " to " + rightBorder );
-				this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandY, centerX, rightBorder, g);
+				this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandItem.relativeY, centerX, rightBorder, g);
 			}
 		//#endif
 		}
@@ -851,28 +855,28 @@ public class MenuBar extends Item {
 	}
 	
 	//#ifdef polish.hasPointerEvents
-	protected boolean handlePointerPressed(int x, int y) {
+	protected boolean handlePointerPressed(int relX, int relY) {
 		// check if one of the command buttons has been pressed:
-		int leftCommandEndX = this.marginLeft + this.paddingLeft + this.singleLeftCommandItem.itemWidth;
-		int rightCommandStartX = this.screen.screenWidth - (this.marginRight + this.paddingRight + this.singleRightCommandItem.itemWidth);
+		int leftCommandEndX = this.singleLeftCommandItem.relativeX + this.singleLeftCommandItem.itemWidth;
+		int rightCommandStartX = this.singleRightCommandItem.relativeX;
 		//#debug
-		System.out.println("MenuBar: handlePointerPressed( x=" + x + ", y=" + y + " )\nleftCommandEndX = " + leftCommandEndX + ", rightCommandStartXs = " + rightCommandStartX + " screenHeight=" + this.screen.screenHeight);
-		if (y > this.screen.screenHeight) {
+		System.out.println("MenuBar: handlePointerPressed( relX=" + relX + ", relY=" + relY + " )\nleftCommandEndX = " + leftCommandEndX + ", rightCommandStartXs = " + rightCommandStartX + " screenHeight=" + this.screen.screenHeight);
+		if (relY > 0) {
 			//System.out.println("menubar clicked");
 			boolean isCloseKeySelected;
 			boolean isOpenKeySelected;
 			boolean isSelectKeySelected;
 			//#if tmp.OkCommandOnLeft && tmp.RightOptions
-				isCloseKeySelected = x > rightCommandStartX;
+				isCloseKeySelected = relX > rightCommandStartX;
 				isOpenKeySelected =  isCloseKeySelected;
-				isSelectKeySelected = x < leftCommandEndX;
+				isSelectKeySelected = relX < leftCommandEndX;
 			//#elif tmp.RightOptions
-				isCloseKeySelected = x < leftCommandEndX;
-				isOpenKeySelected = x > rightCommandStartX;
+				isCloseKeySelected = relX < leftCommandEndX;
+				isOpenKeySelected = relX > rightCommandStartX;
 				isSelectKeySelected = isOpenKeySelected;
 			//#else
-				isOpenKeySelected = x < leftCommandEndX;
-				isCloseKeySelected = x > rightCommandStartX;
+				isOpenKeySelected = relX < leftCommandEndX;
+				isCloseKeySelected = relX > rightCommandStartX;
 				isSelectKeySelected = isOpenKeySelected;
 			//#endif
 			//System.out.println("isOpened=" + this.isOpened + ", isCloseKeySelected=" + isCloseKeySelected + ", isOpenKeySelected=" + isOpenKeySelected + ", isSelectKeySelected=" + isSelectKeySelected);
@@ -887,12 +891,12 @@ public class MenuBar extends Item {
 					setOpen( false );
 				}
 			} else if (this.singleLeftCommand != null 
-					&& x < leftCommandEndX && this.singleLeftCommandItem.getAppearanceMode() != PLAIN) 
+					&& relX < leftCommandEndX && this.singleLeftCommandItem.getAppearanceMode() != PLAIN) 
 			{
 				//System.out.println("calling single left command");
 				this.screen.callCommandListener(this.singleLeftCommand);
 			} else if (this.singleRightCommand != null
-					&& x > rightCommandStartX && this.singleRightCommandItem.getAppearanceMode() != PLAIN) 
+					&& relX > rightCommandStartX && this.singleRightCommandItem.getAppearanceMode() != PLAIN) 
 			{
 				//System.out.println("calling single right command");
 				this.screen.callCommandListener(this.singleRightCommand);
@@ -905,13 +909,13 @@ public class MenuBar extends Item {
 			return true;
 		// okay, y is above the menu bar, so let the commandContainer process the event:
 		} else if (this.isOpened) {
-			y -= this.commandsContainerY;
+			relY -= this.commandsContainer.relativeY;
 			//#if tmp.RightOptions
 				// the menu is painted at the lower right corner:
-				x -= this.screen.screenWidth - this.commandsContainerWidth;
+				relX -= this.screen.screenWidth - this.commandsContainerWidth;
 			//#endif
 
-			boolean handled = this.commandsContainer.handlePointerPressed(x, y);
+			boolean handled = this.commandsContainer.handlePointerPressed(relX, relY);
 			if (!handled) {
 				setOpen( false );
 			}
@@ -1164,6 +1168,27 @@ public class MenuBar extends Item {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#getItemAt(int, int)
+	 */
+	public Item getItemAt(int relX, int relY) {
+		if (this.isOpened && relY < 0) {
+			return this.commandsContainer.getItemAt(relX - this.commandsContainer.relativeX, relY - this.commandsContainer.relativeY);
+		} else if (relY >= 0) {
+			// test for left or right commanditem:
+			Item item = this.singleLeftCommandItem.getItemAt(relX - this.singleLeftCommandItem.relativeX, relY - this.singleLeftCommandItem.relativeY);
+			if (item != null) {
+				return item;
+			}
+			item = this.singleRightCommandItem.getItemAt(relX - this.singleRightCommandItem.relativeX, relY - this.singleRightCommandItem.relativeY);
+			if (item != null) {
+				return item;
+			}
+		}
+		return super.getItemAt(relX, relY);
+	}
+
+	
 	
 	
 	

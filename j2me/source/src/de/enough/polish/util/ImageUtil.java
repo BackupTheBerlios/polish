@@ -57,10 +57,23 @@ public final class ImageUtil {
 	 * @param height the height of the rgbData and the scaledRgbData (scanline width)
 	 * @param rgbData the source rgbData
 	 * @param scaledRgbData the target rgbData array, must have the same dimensions like the given rgbData
+	 * @throws ArithmeticException when width of scaleFactor is 0
 	 */
 	public static void scale(int scaleFactor, int width, int height, int[] rgbData, int[] scaledRgbData) {
-		int yStart = ((height - height * 100 / scaleFactor ) / 2) * width;
+		if (scaleFactor < 100){
+			int xStart = ((width*100) - (width*scaleFactor)) / 200;
+			int yStart = ((height*100) - (height*scaleFactor)) / 200;
+			for (int y=yStart; y < height-yStart; y++){
+				for (int x=xStart; x < width-xStart; x++){
+					int xTarget = (x*scaleFactor)/100  + xStart;
+					int yTarget = (y*scaleFactor)/100 + yStart;            
+					scaledRgbData[(yTarget*width) + xTarget] = rgbData[(y*width)+x];
+				}
+			}
+			return;
+		}
 		int xStart = (width - width * 100 / scaleFactor ) / 2;
+		int yStart = ((height - height * 100 / scaleFactor ) / 2) * width;
 		for (int y = 0; y < height; y++) {
 			int c1 = y * width;
 			int c2 = yStart + (y * 100  / scaleFactor) * width;
@@ -80,9 +93,24 @@ public final class ImageUtil {
 	 * @param height the height of the rgbData and the scaledRgbData (scanline width)
 	 * @param rgbData the source rgbData
 	 * @param scaledRgbData the target rgbData array, must have the same dimensions like the given rgbData
+	 * @throws ArithmeticException when width of scaleFactor is 0
 	 */
 	public static void scale( int opacity, int scaleFactor, int width, int height, int[] rgbData, int[] scaledRgbData) {
 		opacity = (opacity << 24) | 0xFFFFFF;
+		if (scaleFactor < 100){
+			int xStart = ((width*100) - (width*scaleFactor)) / 200;
+			int yStart = ((height*100) - (height*scaleFactor)) / 200;
+//			for (int y=yStart; y < height-yStart; y++){
+//				for (int x=xStart; x < width-xStart; x++){
+			for (int y=0; y < height; y++){
+				for (int x=0; x < width; x++){
+					int xTarget = (x*scaleFactor)/100  + xStart;
+					int yTarget = (y*scaleFactor)/100 + yStart;            
+					scaledRgbData[(yTarget*width) + xTarget] = ( rgbData[(y*width)+x]  | 0xff000000 )  & opacity;
+				}
+			}
+			return;
+		}
 		
 		int yStart = ((height - height * 100 / scaleFactor ) / 2) * width;
 		int xStart = (width - width * 100 / scaleFactor ) / 2;
@@ -106,6 +134,7 @@ public final class ImageUtil {
 	 * @param sourceHeight the height of the rgbData
 	 * @param rgbData the source rgbData
 	 * @return a new rgbData array that contains the scaled version
+	 * @throws ArithmeticException when width of scaleFactor is 0
 	 */
 	public static int[] scale(int scaledWidth, int scaledHeight, int scanlength, int sourceWidth, int sourceHeight, int[] rgbData) {
 		int scaledRgbData[] = new int[scaledWidth * scaledHeight];
@@ -575,8 +604,12 @@ public final class ImageUtil {
 				currentY++;	
 			}				
 			targetArrayIndex = ((currentX*100)/horizontalScaleFactorPercent)+(oldWidth * ((currentY*100)/verticalShrinkFactorPercent));
-			if(targetArrayIndex >= oldLenght)targetArrayIndex = oldLenght-1;
-			if(targetArrayIndex < 0)targetArrayIndex = 0;
+			if(targetArrayIndex >= oldLenght) {
+				targetArrayIndex = oldLenght-1;
+			}
+			if(targetArrayIndex < 0) {
+				targetArrayIndex = 0;
+			}
 			newrgbData[i] = rgbData[targetArrayIndex];
 		}
 	}

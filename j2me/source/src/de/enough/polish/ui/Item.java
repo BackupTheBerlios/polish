@@ -791,7 +791,7 @@ public abstract class Item extends Object
 	{
 		if (this.label == null) {
 			this.label = new StringItem( null, label, this.labelStyle );
-			this.label.parent = this.parent;
+			this.label.parent = this; // orginally used "this.parent", however that field might not be known at this moment.
 		} else {
 			this.label.setText( label );
 		}
@@ -902,9 +902,9 @@ public abstract class Item extends Object
 		this.isInitialized = false;
 		this.isStyleInitialised = true;
 		this.style = style;
-		if (style != StyleSheet.defaultStyle) {
+		//if (style != StyleSheet.defaultStyle) {
 			this.layout = style.layout;
-		}
+		//}
 		// horizontal styles: center -> right -> left
 		if ( ( this.layout & LAYOUT_CENTER ) == LAYOUT_CENTER ) {
 			this.isLayoutCenter = true;
@@ -917,7 +917,7 @@ public abstract class Item extends Object
 				this.isLayoutRight = false;
 			}
 		}
-		//System.out.println(" style [" + style.name + "]: right: " + this.isLayoutRight + " center: " + this.isLayoutCenter);
+		
 		// vertical styles: vcenter -> bottom -> top
 		// expanding layouts:
 		if ( ( this.layout & LAYOUT_EXPAND ) == LAYOUT_EXPAND ) {
@@ -925,6 +925,7 @@ public abstract class Item extends Object
 		} else {
 			this.isLayoutExpand = false;
 		}
+		//System.out.println( this + " style [" + style.name + "]: right: " + this.isLayoutRight + " center: " + this.isLayoutCenter + " expand: " + this.isLayoutExpand + " layout=" + Integer.toHexString(this.layout));
 		this.background = style.background;
 		this.border = style.border;
 		if (this.border != null) {
@@ -2315,14 +2316,84 @@ public abstract class Item extends Object
 		return this.attributes.get( key );
 	}
   
-  /**
-   * Returns a HashMap object with all registered attributes.
-   * 
-   * @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
-   */
-  public HashMap getAttributes() {
-    return this.attributes;
-  }
+	/**
+	* Returns a HashMap object with all registered attributes.
+	* 
+	* @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
+	*/
+	public HashMap getAttributes() {
+		return this.attributes;
+	}
+	
+	/**
+	 * Determines if this item or one of it's children is within the specified point.
+	 * The default implementation returns this item or this item's label when the position fits.
+	 * 
+	 * @param relX the x position of the point relative to this item's left position
+	 * @param relY the y position of the point relative to this item's top position
+	 * @return this item or one of it's children, when the position fits, otherwise null is returned 
+	 */
+	public Item getItemAt( int relX, int relY ) {
+		if ( isInItemArea(relX, relY) ) {
+			if (this.label != null) {
+				Item item = this.label.getItemAt(relX, relY);
+				if (item != null) {
+					return item;
+				}
+			}
+			return this;
+		}
+		return null;
+	}
+	
+	/**
+	 * Retrieves this item's current absolute horizontal position
+	 * 
+	 * @return the absolute x position of this item in pixel.
+	 */
+	public int getAbsoluteX() {
+		int absX = this.relativeX;
+		Item item = this.parent;
+		if (item != null && item.label == this) {
+			absX -= item.contentX;
+		}
+		while (item != null) {
+			absX += item.relativeX + item.contentX;
+			item = item.parent;
+		}
+		return absX;
+	}
+	
+	/**
+	 * Retrieves this item's current absolute horizontal position
+	 * 
+	 * @return the absolute x position of this item in pixel.
+	 */
+	public int getAbsoluteY() {
+		int absY = this.relativeY;
+		Item item = this.parent;
+		if (item != null && item.label == this) {
+			absY -= item.contentY;
+		}
+		while (item != null) {
+			absY += item.relativeY + item.contentY;
+			if (item instanceof Container) {
+				absY += ((Container)item).yOffset;
+			}
+			item = item.parent;
+		}
+		return absY;
+	}
+
+	/**
+	 * Retrieves the parent of this item.
+	 * 
+	 * @return this item's parent.
+	 */
+	public Item getParent() {
+		return this.parent;
+	}
+
 	
 
 //#ifdef polish.Item.additionalMethods:defined

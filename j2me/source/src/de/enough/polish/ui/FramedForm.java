@@ -80,6 +80,20 @@ public class FramedForm extends Form {
 		//#endif
 
 	}
+
+	private Container getFrame( int frameOrientation ) {
+		switch (frameOrientation) {
+		case  Graphics.TOP:
+			return this.topFrame;
+		case  Graphics.BOTTOM:
+			return this.bottomFrame;
+		case  Graphics.LEFT:
+			return this.leftFrame;
+		case  Graphics.RIGHT:
+			return this.rightFrame;
+		}		
+		return this.container;
+	}
 	
 	/**
 	 * Deletes all the items from all frames of this <code>FramedForm</code>, leaving  it with zero items.
@@ -114,20 +128,7 @@ public class FramedForm extends Form {
 	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
 	 */
 	public void deleteAll( int frameOrientation ) {
-		Container frame;
-		switch (frameOrientation) {
-		case  Graphics.TOP:
-			frame = this.topFrame;
-			break;
-		case  Graphics.BOTTOM:
-			frame = this.bottomFrame;
-			break;
-		case  Graphics.LEFT:
-			frame = this.leftFrame;
-			break;
-		default:
-			frame = this.rightFrame;
-		}
+		Container frame = getFrame( frameOrientation );
 		if (frame != null) {
 			frame.clear();
 		}
@@ -138,6 +139,12 @@ public class FramedForm extends Form {
 	public int append( javax.microedition.lcdui.Item item ) {
 		// just a convenience method, in reality the append( Item item ) method is called
 		return -1;
+	}
+	//#endif
+
+	//#if polish.LibraryBuild
+	public void set( int frameIndex, int itemNumber, javax.microedition.lcdui.Item item ) {
+		// just a convenience method, in reality the append( Item item ) method is called
 	}
 	//#endif
 
@@ -170,6 +177,20 @@ public class FramedForm extends Form {
 		append( frameOrientation, item, null );
 	}
 	
+	
+	/**
+	 * Updates an existing item in the specified frame
+	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param itemNum the index of the previous item
+	 * @param item the new item
+	 */
+	public void set( int frameOrientation, int itemNum, Item item ) {
+		Container frame = getFrame( frameOrientation );
+		if (frame != null) {
+			frame.set(itemNum, item);
+		}
+	}
+	
 	/**
 	 * Removes the given item from the specifid frame.
 	 * The <code>itemNum</code> parameter must be
@@ -179,20 +200,7 @@ public class FramedForm extends Form {
 	 * @param itemNum the index of the item
 	 */
 	public void delete( int frameOrientation, int itemNum ) {
-		Container frame;
-		switch (frameOrientation) {
-		case  Graphics.TOP:
-			frame = this.topFrame;
-			break;
-		case  Graphics.BOTTOM:
-			frame = this.bottomFrame;
-			break;
-		case  Graphics.LEFT:
-			frame = this.leftFrame;
-			break;
-		default:
-			frame = this.rightFrame;
-		}
+		Container frame = getFrame( frameOrientation );
 		if (frame != null) {
 			frame.remove(itemNum);
 		}

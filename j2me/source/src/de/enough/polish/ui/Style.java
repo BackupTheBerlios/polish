@@ -27,6 +27,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 
@@ -51,20 +52,20 @@ public class Style
 		public final static Boolean FALSE = new Boolean( false );
 	//#endif
 	/**
-	 * The name of this style. The name is only used when
-	 * the preprocessing-symbol polish.useDynamicStyles is defined.
+	 * The name of this style.
 	 */
 	public String name;
+	public String dynamicName;
 
-	public final Background background;
-	public final Border border;
-	public final Font font;
+	public Background background;
+	public Border border;
+	public Font font;
 	/**
 	 * @deprecated Please use getFontColor() instead
 	 * @see #getFontColor()
 	 */
-	public final int fontColor;
-	private final Color fontColorObj;
+	public int fontColor;
+	private Color fontColorObj;
 	public int paddingLeft;
 	public int paddingTop;
 	public int paddingRight;
@@ -76,10 +77,25 @@ public class Style
 	public int marginRight;
 	public int marginBottom;
 
-	public final int layout;
+	public int layout;
 	
-	private final short[] attributeKeys;
-	private final Object[] attributeValues;
+	private short[] attributeKeys;
+	private Object[] attributeValues;
+	
+	/**
+	 * Creates a new style with default settings
+	 */
+	public Style() {
+		this( 0, 0, 0, 0, // margin
+				1, 1, 1, 1, 1, 1, // padding
+				Graphics.TOP | Graphics.LEFT, // layout
+				0, null, null, // font
+				null, null // background, border
+				, null // attributes
+				, null
+		);
+	}
+
 
 	/**
 	 * Creates a new Style.
@@ -359,6 +375,49 @@ public class Style
 		}
 	}
 
+
+	/**
+	 * @param key the integer key of the attribute
+	 */
+	public void removeAttribute(int key) {
+		if (this.attributeKeys == null) {
+			return;
+		}
+		for (int i = 0; i < this.attributeKeys.length; i++ ) {
+			if (this.attributeKeys[i] == key) {
+				//TODO decrease array
+				this.attributeValues[i] = null;
+				return;
+			}
+		}
+	}
+	
+	/**
+	 * @param key the integer key of the attribute
+	 * @param value the value of the attribute
+	 */
+	public void addAttribute(int key, Object value) {
+		if (this.attributeKeys == null) {
+			this.attributeKeys = new short[]{ (short)key };
+			this.attributeValues = new Object[]{ value };
+			return;
+		}
+		for (int i = 0; i < this.attributeKeys.length; i++ ) {
+			if (this.attributeKeys[i] == key) {
+				this.attributeValues[i] = value;
+				return;
+			}
+		}
+		// need to increas the attributes tables:
+		short[] keys = new short[ this.attributeKeys.length + 1 ];
+		System.arraycopy(this.attributeKeys,0, keys, 0, this.attributeKeys.length );
+		keys[ this.attributeKeys.length ] = (short) key;
+		Object[] values = new Object[ this.attributeKeys.length + 1 ];
+		System.arraycopy(this.attributeValues,0, values, 0, this.attributeKeys.length );
+		values[ this.attributeKeys.length ] = value;
+		this.attributeKeys = keys;
+		this.attributeValues = values;
+	}
 	
 //#ifdef polish.Style.additionalMethods:defined
 	//#include ${polish.Style.additionalMethods}

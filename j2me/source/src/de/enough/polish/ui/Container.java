@@ -1601,7 +1601,7 @@ public class Container extends Item {
 			Item item = this.focusedItem; //(Item) this.itemsList.get( this.focusedIndex );
 			item.defocus( this.itemStyle );
 			//#ifdef tmp.supportViewType
-				if (this.containerView != null) {
+				if (this.containerView != null && originalStyle != null) {
 					this.containerView.defocus( originalStyle );
 					this.isInitialized = false;
 				}
@@ -1756,30 +1756,30 @@ public class Container extends Item {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
-	protected boolean handlePointerPressed(int x, int y) {
+	protected boolean handlePointerPressed(int relX, int relY) {
 		//System.out.println("Container.handlePointerPressed( x=" + x + ", y=" + y + "): adjustedY=" + (y - (this.yOffset  + this.marginTop + this.paddingTop )) );
 		// an item within this container was selected:
-		y -= this.yOffset;
+		relY -= this.yOffset;
 		Item item = this.focusedItem;
 		if (item != null) {
 			// the focused item can extend the parent container, e.g. subcommands, 
 			// so give it a change to process the event itself:
-			boolean processed = item.handlePointerPressed(x - (this.contentX + item.relativeX), y - ( this.contentY + item.relativeY) );
+			boolean processed = item.handlePointerPressed(relX - (this.contentX + item.relativeX), relY - ( this.contentY + item.relativeY) );
 			if (processed) {
 				//#debug
-				System.out.println("pointer event at " + x + "," + y + " consumed by focusedItem.");
+				System.out.println("pointer event at " + relX + "," + relY + " consumed by focusedItem.");
 				return true;
 			}
 		}
-		if (!isInContentArea(x, y + this.yOffset)) {
+		if (!isInContentArea(relX, relY + this.yOffset)) {
 			//System.out.println("Container.handlePointerPressed(): out of range, xLeft=" + this.xLeftPos + ", xRight="  + this.xRightPos + ", contentHeight=" + this.contentHeight );
 			return false;
 		}
-		x -= this.contentX;
-		y -= this.contentY;
+		relX -= this.contentX;
+		relY -= this.contentY;
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
-				if ( this.containerView.handlePointerPressed(x,y) ) {
+				if ( this.containerView.handlePointerPressed(relX,relY) ) {
 					return true;
 				}
 			}
@@ -1788,15 +1788,15 @@ public class Container extends Item {
 		int itemRelX, itemRelY;
 		for (int i = 0; i < myItems.length; i++) {
 			item = myItems[i];
-			itemRelX = x - item.relativeX;
-			itemRelY = y - item.relativeY;
+			itemRelX = relX - item.relativeX;
+			itemRelY = relY - item.relativeY;
 			if ( i == this.focusedIndex || (item.appearanceMode == Item.PLAIN) || !item.isInItemArea(itemRelX, itemRelY)) {
 				// this item is not in the range or not suitable:
 				continue;
 			}
 			// the pressed item has been found:
 			//#debug
-			System.out.println("Container.handlePointerPressed(" + x + "," + y + "): found item " + i + "=" + item + " at relative " + itemRelX + "," + itemRelY + ", itemHeight=" + item.itemHeight);
+			System.out.println("Container.handlePointerPressed(" + relX + "," + relY + "): found item " + i + "=" + item + " at relative " + itemRelX + "," + itemRelY + ", itemHeight=" + item.itemHeight);
 			// only focus the item when it has not been focused already:
 			focus(i, item, 0);
 			// let the item also handle the pointer-pressing event:
@@ -1807,6 +1807,44 @@ public class Container extends Item {
 	}
 	//#endif
 
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#getItemAt(int, int)
+	 */
+	public Item getItemAt(int relX, int relY) {
+		relY -= this.yOffset;
+		relX -= this.contentX;
+		relY -= this.contentY;
+		Item item = this.focusedItem;
+		if (item != null) {
+			int itemRelX = relX - item.relativeX;
+			int itemRelY = relY - item.relativeY;
+//			if (this.label != null) {
+//				System.out.println("itemRelY=" + itemRelY + " of item " + item + ", parent=" + this );
+//			}
+			if (item.isInItemArea(itemRelX, itemRelY)) {
+				return item.getItemAt(itemRelX, itemRelY);
+			}
+		}
+		Item[] myItems = getItems();
+		int itemRelX, itemRelY;
+		for (int i = 0; i < myItems.length; i++) {
+			item = myItems[i];
+			itemRelX = relX - item.relativeX;
+			itemRelY = relY - item.relativeY;
+			if ( i == this.focusedIndex || !item.isInItemArea(itemRelX, itemRelY)) {
+				// this item is not in the range or not suitable:
+				continue;
+			}
+			// the pressed item has been found:
+			return item.getItemAt(itemRelX, itemRelY);			
+		}
+		relY += this.yOffset;
+		relX += this.contentX;
+		relY += this.contentY;
+		return super.getItemAt(relX, relY);
+	}
+	
 	/**
 	 * Moves the focus away from the specified item.
 	 * 

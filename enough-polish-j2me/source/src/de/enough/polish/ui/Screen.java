@@ -563,6 +563,8 @@ implements AccessibleCanvas
 		}
 		//#if !tmp.menuFullScreen
 			this.screenHeight = getHeight();
+		//#else tmp.useExternalMenuBar
+			this.menuBar.relativeY = this.screenHeight;
 		//#endif
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 		
@@ -2791,7 +2793,7 @@ implements AccessibleCanvas
 			//#endif
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
-					if (this.menuBar.handlePointerPressed(x, y)) {
+					if (this.menuBar.handlePointerPressed(x - this.menuBar.relativeX, y - this.menuBar.relativeY)) {
 						repaint();
 						return;
 					}
@@ -3249,6 +3251,69 @@ implements AccessibleCanvas
 	 */
 	public Object getScreenData() {
 		return this.data;
+	}
+	
+	/**
+	 * Locates and returns the item at the given coordinate.
+	 * 
+	 * @param x horizontal position in pixels
+	 * @param y vertical position in pixels
+	 * @return the found item or null when no item is at the specific coordinate
+	 */
+	public Item getItemAt( int x, int y ) {
+		Item item = null;
+		//#ifdef tmp.menuFullScreen
+			//#ifdef tmp.useExternalMenuBar
+				item = this.menuBar.getItemAt( x - this.menuBar.relativeX, y - this.menuBar.relativeY );
+				if (item != null) {
+					return item;
+				}
+			//#else
+				if (this.menuOpened) {
+					item = this.menuContainer.getItemAt( x - this.menuContainer.relativeX, y - this.menuContainer.relativeY );
+				} else
+			//#endif
+		//#endif
+		if (this.container != null) {
+			item = this.container.getItemAt( x - this.container.relativeX, y - this.container.relativeY );
+			if (item != null) {
+				return item;
+			}
+		}
+		//#ifdef tmp.usingTitle
+			if (this.title != null) {
+				item = this.title.getItemAt( x - this.title.relativeX, y - this.title.relativeY );
+				if (item != null) {
+					return item;
+				}
+			}
+		//#endif
+		//#ifndef polish.skipTicker
+			if (this.ticker != null) {
+				item = this.ticker.getItemAt( x - this.ticker.relativeX, y - this.ticker.relativeY );
+				if (item != null) {
+					return item;
+				}
+			}
+		//#endif
+		//#if polish.ScreenInfo.enable
+			if (ScreenInfo.item != null && ScreenInfo.isVisible()) {
+				item = ScreenInfo.item.getItemAt( x - ScreenInfo.item.relativeX, y - ScreenInfo.item.relativeY );
+				if (item != null) {
+					return item;
+				}
+			}
+		//#endif
+		return null;
+	}
+
+	/**
+	 * Retrieves the style currently used by this screen.
+	 * 
+	 * @return this screen's style
+	 */
+	public Style getStyle() {
+		return this.style;
 	}
 
 

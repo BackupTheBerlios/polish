@@ -1,7 +1,7 @@
 //#condition polish.usePolishGui && polish.midp2
 
 /*
- * Created on 27-May-2005 at 18:54:36.
+ * Created on 30-May-2005 at 01:14:36.
  * 
  * Copyright (c) 2005 Robert Virkus / Enough Software
  *
@@ -38,12 +38,14 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.util.ImageUtil;
 
 /**
- * <p>Magnifies the new screen.</p>
+ * <p>Magnifies both the last screen and the next screen.</p>
  * <p>Activate this animation by specifying it in the corresponding screen's style:
  * <pre>
  * .myAlert {
  * 		//#if polish.midp2
- * 			screen-change-animation: zoomOut;
+ * 			screen-change-animation: zoomBoth;
+ * 			zoomBoth-screen-change-animation-factor: 300; (260 is default)
+ * 			zoomBoth-screen-change-animation-steps: 4; (6 is default)
  * 		//#endif
  * }
  * </pre>
@@ -52,21 +54,24 @@ import de.enough.polish.util.ImageUtil;
  * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
  * history
- *        27-May-2005 - rob creation
+ *        30-May-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
-	private int scaleFactor = 200;
+public class ZoomBothScreenChangeAnimation extends ScreenChangeAnimation {
+	private int outerScaleFactor = 260;
+	private int innerScaleFactor = 460;
 	private int steps = 6;
 	private int currentStep;
 	private int[] nextScreenRgb;
-	private int[] scaledScreenRgb;
+	private int[] nextScreenScaledRgb;
+	private int[] lastScreenRgb;
+	private int[] lastScreenScaledRgb;
 
 	/**
 	 * Creates a new animation 
 	 */
-	public ZoomOutScreenChangeAnimation() {
+	public ZoomBothScreenChangeAnimation() {
 		super();
 	}
 
@@ -77,43 +82,45 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
-		if ( this.nextScreenRgb == null ) {
-			this.nextScreenRgb = new int[ width * height ];
-			this.scaledScreenRgb = new int[ width * height ];
+		int size = width * height;
+		if ( this.lastScreenRgb == null ) {
+			this.lastScreenRgb = new int[ size ];
+			this.lastScreenScaledRgb = new int[ size ];
+			this.nextScreenRgb = new int[ size ];
+			this.nextScreenScaledRgb = new int[ size ];			
 		}
+		lstScreenImage.getRGB( this.lastScreenRgb, 0, width, 0, 0, width, height );
 		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
-		this.currentStep = this.steps;
-		ImageUtil.scale( 255/this.steps, this.scaleFactor, width, height, this.nextScreenRgb, this.scaledScreenRgb);
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+		
+		System.arraycopy( this.lastScreenRgb, 0, this.lastScreenScaledRgb, 0,  width * height );
+		//ImageUtil.scale( 200, this.scaleFactor, this.screenWidth, this.screenHeight, this.lastScreenRgb, this.scaledScreenRgb);
+		super.show(style, dsplay, width, height, lstScreenImage,
+				nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate() {
-		this.currentStep--;
-		if (this.currentStep <= 0) {
-			this.steps = 6;
-			this.scaleFactor = 200;
+		try {
+			//Thread.sleep( 500 );
+		} catch (Exception e) {}
+		this.currentStep++;
+		if (this.currentStep >= this.steps) {
+			this.currentStep = 0;
+			this.lastScreenRgb = null;
+			this.lastScreenScaledRgb = null;
 			this.nextScreenRgb = null;
-			this.scaledScreenRgb = null;
+			this.nextScreenScaledRgb = null;
 			return false;
 		}
-		int factor = 100 + ( (this.scaleFactor - 100) * this.currentStep ) / this.steps;
-		int opacity = 255 / this.steps * ( this.steps - this.currentStep );
-		ImageUtil.scale( opacity, factor, this.screenWidth, this.screenHeight, this.nextScreenRgb, this.scaledScreenRgb);
-		
+		int magnifyFactor = 100 + (this.outerScaleFactor - 100) * this.currentStep / this.steps;
+		ImageUtil.scale(magnifyFactor, this.screenWidth, this.screenHeight, this.lastScreenRgb, this.lastScreenScaledRgb);
+		//magnifyFactor = (100 + (this.innerScaleFactor - 100) * this.currentStep / this.steps * 100 ) / this.innerScaleFactor;
+		magnifyFactor = ((100 + (this.innerScaleFactor - 100) * this.currentStep / this.steps) * 100) / this.innerScaleFactor;
+		int opacity = (magnifyFactor * 255) / 100;
+		ImageUtil.scale(opacity, magnifyFactor, this.screenWidth, this.screenHeight, this.nextScreenRgb, this.nextScreenScaledRgb);
 		return true;
-	}
-	
-	
-
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
-	 */
-	public void keyPressed(int keyCode) {
-		super.keyPressed(keyCode);
-		this.nextCanvasImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 	}
 	
 	/* (non-Javadoc)
@@ -126,8 +133,8 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 				this.fullScreenModeSet = true;
 			}
 		//#endif
-		g.drawImage( this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
-		g.drawRGB(this.scaledScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
+		g.drawRGB(this.lastScreenScaledRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
+		g.drawRGB(this.nextScreenScaledRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
 		
 		this.display.callSerially( this );
 	}

@@ -585,7 +585,7 @@ public class StringItem extends Item
 	}
 	//#endif
 	
-	//#if polish.debug.error
+	//#if polish.debug.error || polish.keepToString
 	public String toString() {
 		return  "StringItem " + super.toString() + ": \"" + this.getText() + "\""; 
 	}

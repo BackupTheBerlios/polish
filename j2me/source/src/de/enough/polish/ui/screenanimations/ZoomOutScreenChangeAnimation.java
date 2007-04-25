@@ -39,6 +39,15 @@ import de.enough.polish.util.ImageUtil;
 
 /**
  * <p>Magnifies the new screen.</p>
+ * <p>Activate this animation by specifying it in the corresponding screen's style:
+ * <pre>
+ * .myAlert {
+ * 		//#if polish.midp2
+ * 			screen-change-animation: zoomOut;
+ * 		//#endif
+ * }
+ * </pre>
+ * </p>
  *
  * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>
