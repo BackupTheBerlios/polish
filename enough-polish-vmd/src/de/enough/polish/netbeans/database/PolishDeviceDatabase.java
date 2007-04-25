@@ -1,11 +1,12 @@
 package de.enough.polish.netbeans.database;
 
-import de.enough.polish.Environment;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.Vendor;
 import de.enough.polish.netbeans.J2mePolishProjectGenerator;
 import de.enough.polish.netbeans.platform.PolishPlatform;
 import de.enough.polish.plugin.netbeans.settings.PolishSettings;
+import de.enough.polish.ExtensionManager;
+import de.enough.polish.Environment;
 import org.netbeans.spi.mobility.cfgfactory.ProjectConfigurationFactory;
 import org.openide.util.Exceptions;
 
@@ -67,7 +68,7 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
     public static HashMap<String, String> createPropertiesMap (de.enough.polish.Device device) {
         String polishHome = PolishSettings.getDefault ().getPolishHome ();
         try {
-            device.setEnvironment (new Environment (new File (polishHome))); // NOI18N
+            device.setEnvironment (new Environment (new ExtensionManager (new org.apache.tools.ant.Project ()), new HashMap (), new File (polishHome + "/samples/blank/"))); // NOI18N
         } catch (Exception e) {
             Exceptions.printStackTrace (e);
             return null;
@@ -79,7 +80,7 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
         map.put ("abilities", abilities); // NOI18N
         map.put ("platform.active", "J2MEPolishEmulator"); // NOI18N
         map.put ("platform.active.description", "J2ME Polish Emulator"); // NOI18N
-        map.put ("platform.device", PolishPlatform.checkForJavaIdentifierCompliant (device.getIdentifier ())); // NOI18N
+        map.put ("platform.device", device.getIdentifier ()); // NOI18N
         map.put ("platform.configuration", device.isCldc11 () ? "CLDC-1.1" : "CLDC-1.0"); // NOI18N
         map.put ("platform.profile", device.isMidp2 () ? "MIDP-2.0" : "MIDP-1.0"); // NOI18N
 

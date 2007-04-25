@@ -22,6 +22,7 @@ package de.enough.polish.netbeans.platform;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
+import de.enough.polish.ExtensionManager;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.plugin.netbeans.project.PolishProjectSupport;
 import de.enough.polish.plugin.netbeans.settings.PolishSettings;
@@ -53,7 +54,7 @@ public class PolishPlatform {
         for (Device device : database.getDevices ()) {
             StringBuffer deviceBuffer = new StringBuffer ();
             try {
-                deviceBuffer.append ("<device name=\"" + checkForJavaIdentifierCompliant (device.getIdentifier ()) + "\" description=\"" + device.getIdentifier () + "\">\n");
+                deviceBuffer.append ("<device name=\"" + device.getIdentifier () + "\">\n");
 
                 if (device.isCldc10 ())
                     deviceBuffer.append ("<configuration name=\"CLDC\" version=\"1.0\" displayname=\"Connected Limited Device Configuration\" classpath=\"${platform.home}/import/cldc-1.0.jar\" dependencies=\"\" default=\"" + (device.isCldc11 () ? "false" : "true") + "\"/>\n");
@@ -74,7 +75,7 @@ public class PolishPlatform {
                 else
                     deviceBuffer.append ("<profile name=\"MIDP\" version=\"2.0\" displayname=\"Mobile Information Device Profile\" classpath=\"${platform.home}/lib/midpapi10.jar\" dependencies=\"CLDC > 1.0\" default=\"default\"/>\n");
 
-                device.setEnvironment (new Environment (new File (polishHome)));
+                device.setEnvironment (new Environment (new ExtensionManager (new org.apache.tools.ant.Project ()), new HashMap (), new File (polishHome + "/samples/blank/"))); // NOI18N
                 String[] strings = device.getBootClassPaths ();
                 for (int i = 0; i < strings.length; i++)
                     deviceBuffer.append ("<optional name=\"OptionalBootPathElement" + (i + 1) + "\" version=\"1.0\" displayname=\"" + strings[i] + "\" classpath=\"" + strings[i] + "\" dependencies=\"\" default=\"true\"/>\n");
