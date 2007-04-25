@@ -772,7 +772,12 @@
 		<mapping from="zoomInAndHide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()">
 			<condition>polish.midp2</condition>
 		</mapping>
+		<mapping from="zoomBoth" to="new de.enough.polish.ui.screenanimations.ZoomBothScreenChangeAnimation()">
+			<condition>polish.midp2</condition>
+		</mapping>
 		<mapping from="fade" to="new de.enough.polish.ui.screenanimations.FadeScreenChangeAnimation()" condition="polish.midp2"/>
+		<mapping from="fadeoutfadein" to="new de.enough.polish.ui.screenanimations.FadeOutFadeInScreenChangeAnimation()" condition="polish.midp2"/>
+		<mapping from="fadeOutFadeIn" to="new de.enough.polish.ui.screenanimations.FadeOutFadeInScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="scale" to="new de.enough.polish.ui.screenanimations.ScaleScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="bwToColor" to="new de.enough.polish.ui.screenanimations.BwToColorScreenChangeAnimation()">
 			<condition>polish.midp2</condition>
@@ -2221,32 +2226,48 @@
 		id="223"
 	/>
 	<attribute
+		name="fadeOutFadeIn-screen-change-animation-steps"
+		type="int"
+		appliesTo="ScreenChangeAnimation,FadeOutFadeInScreenChangeAnimation"
+		description="The number of steps of the animation."
+		default="6"
+		id="224"
+	/>
+	<attribute
+		name="fadeOutFadeIn-screen-change-animation-background-color"
+		type="color"
+		appliesTo="ScreenChangeAnimation, FadeOutFadeInScreenChangeAnimation"
+		description="The color of background of the animation."
+		default="black"
+		id="225"
+	/>
+	<attribute
 		name="width"
 		type="percentorabsolute"
 		appliesTo="Item, relative view-type"
 		description="The width of an item either in pixels or in percent."
-		id="224"
+		id="226"
 	/>
 	<attribute
 		name="height"
 		type="percentorabsolute"
 		appliesTo="Item, relative view-type"
 		description="The height of an item either in pixels or in percent."
-		id="225"
+		id="227"
 	/>
 	<attribute
 		name="x"
 		type="percentorabsolute"
 		appliesTo="Item, relative view-type"
 		description="The horizontal position of an item either in pixels or in percent relative to it's parent."
-		id="226"
+		id="228"
 	/>
 	<attribute
 		name="y"
 		type="percentorabsolute"
 		appliesTo="Item, relative view-type"
 		description="The vertical position of an item either in pixels or in percent relative to it's parent."
-		id="227"
+		id="229"
 	/>
 	
 	<!--

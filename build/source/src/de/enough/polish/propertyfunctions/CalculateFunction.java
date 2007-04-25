@@ -25,8 +25,12 @@
  */
 package de.enough.polish.propertyfunctions;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Calculates the term embedded into the code.</p>
@@ -46,6 +50,10 @@ public class CalculateFunction extends PropertyFunction {
 	private static final char MULTIPLY = '*';
 	private static final char DIVIDE = '/';
 	private static final char DIVIDE2 = ':';
+	
+	static final String TERM_PART_STR = "\\s*\\d+\\s*(\\+|-|\\*|/)?\\s*";
+	static final String TERM_STR = "\\((" + TERM_PART_STR + ")+\\)";
+	static final Pattern TERM_PATTERN = Pattern.compile( TERM_STR );
 
 	/**
 	 * Creates a new number function
@@ -58,19 +66,90 @@ public class CalculateFunction extends PropertyFunction {
 	 * @see de.enough.polish.propertyfunctions.PropertyFunction#process(java.lang.String, java.lang.String[], de.enough.polish.Environment)
 	 */
 	public String process(String input, String[] arguments, Environment env) {
-		try {
-		int result = 0;
-		char lastOperator = PLUS;
-		StringBuffer lastNumber = new StringBuffer();
-		char[] chars = input.toCharArray();
-		for (int i = 0; i < chars.length; i++) {
-			char c = chars[i];
-			if (Character.isDigit(c) || ( c == MINUS && (lastNumber.length() == 0)) ) {
-				lastNumber.append(c);
-			} else {
-				if (lastNumber.length() == 0) {
-					throw new BuildException("No digit in term \"" + input + "\" at index " + i + ": " + c );
+		if (input.indexOf('(') != -1) {
+			Matcher matcher = TERM_PATTERN.matcher(input);
+			boolean foundMatch = matcher.find(); 
+			while (foundMatch) {
+				String term = matcher.group();
+				String intermediateResult = processTerm( term.substring(1, term.length() - 1 ), env );
+				input = StringUtil.replace(input, term, intermediateResult );
+				foundMatch = matcher.find();
+				if (!foundMatch) {
+					matcher = TERM_PATTERN.matcher(input);
+					foundMatch = matcher.find();
 				}
+			}
+			return processTerm(input, env );
+		} else {
+			return processTerm(input, env );
+		}
+	}
+
+	/**
+	 * Calculates the specified term.
+	 * 
+	 * @param term the term without any parentheses
+	 * @param env the environment
+	 * @return the final result of the calculation
+	 */
+	private String processTerm(String term, Environment env) {
+		int result = 0;
+		try {
+			char lastOperator = PLUS;
+			StringBuffer lastNumber = new StringBuffer();
+			char[] chars = term.toCharArray();
+			for (int i = 0; i < chars.length; i++) {
+				char c = chars[i];
+				if (Character.isDigit(c) || ( c == MINUS && (lastNumber.length() == 0)) ) {
+					lastNumber.append(c);
+				} else {
+					if (lastNumber.length() == 0) {
+						throw new BuildException("No digit in term \"" + term + "\" at index " + i + ": " + c );
+					}
+					int part = Integer.parseInt( lastNumber.toString() );
+					switch (lastOperator) {
+					case PLUS:
+						result += part;
+						break;
+					case MINUS:
+						result -= part;
+						break;
+					case MULTIPLY:
+						result *= part;
+						break;
+					case DIVIDE:
+					case DIVIDE2:
+						result /= part;
+						break;
+					}
+					// clear lastNumber buffer:
+					lastNumber.delete(0, lastNumber.length() );
+					// get next operator:
+					boolean foundNextOperator = false;
+					for (int j = i; j < chars.length; j++) {
+						char d = chars[j];
+						if (d == ' ' || d == '\t') {
+							// ignore spaces
+						} else {
+							if (foundNextOperator) {
+								break;
+							} else {
+								switch (d) {
+								case PLUS: lastOperator = PLUS; break;
+								case MINUS: lastOperator = MINUS; break;
+								case MULTIPLY: lastOperator = MULTIPLY; break;
+								case DIVIDE:
+								case DIVIDE2: lastOperator = DIVIDE; break;
+								default: throw new BuildException("Unknown operator in term \"" + term + "\" at index " + j + ": " + d );
+								}
+								foundNextOperator = true;
+							}
+						}
+						i = j;
+					}
+				}
+			} // for each char
+			if (lastNumber.length() != 0) {
 				int part = Integer.parseInt( lastNumber.toString() );
 				switch (lastOperator) {
 				case PLUS:
@@ -87,54 +166,10 @@ public class CalculateFunction extends PropertyFunction {
 					result /= part;
 					break;
 				}
-				// clear lastNumber buffer:
-				lastNumber.delete(0, lastNumber.length() );
-				// get next operator:
-				boolean foundNextOperator = false;
-				for (int j = i; j < chars.length; j++) {
-					char d = chars[j];
-					if (d == ' ' || d == '\t') {
-						// ignore spaces
-					} else {
-						if (foundNextOperator) {
-							break;
-						} else {
-							switch (d) {
-							case PLUS: lastOperator = PLUS; break;
-							case MINUS: lastOperator = MINUS; break;
-							case MULTIPLY: lastOperator = MULTIPLY; break;
-							case DIVIDE:
-							case DIVIDE2: lastOperator = DIVIDE; break;
-							default: throw new BuildException("Unknown operator in term \"" + input + "\" at index " + j + ": " + d );
-							}
-							foundNextOperator = true;
-						}
-					}
-					i = j;
-				}
 			}
-		} // for each char
-		if (lastNumber.length() != 0) {
-			int part = Integer.parseInt( lastNumber.toString() );
-			switch (lastOperator) {
-			case PLUS:
-				result += part;
-				break;
-			case MINUS:
-				result -= part;
-				break;
-			case MULTIPLY:
-				result *= part;
-				break;
-			case DIVIDE:
-			case DIVIDE2:
-				result /= part;
-				break;
-			}
-		}
-		return Integer.toString( result );
+			return Integer.toString( result );
 		} catch (Exception e) {
-			throw new BuildException("Unable to calculate input from term \"" + input + "\": " + e.toString() );
+			throw new BuildException("Unable to calculate input from term \"" + term + "\": " + e.toString() );
 		}
 	}
 

@@ -39,7 +39,7 @@ import de.enough.polish.preprocess.css.CssAttribute;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CharCssAttribute extends CssAttribute {
+public class CharCssAttribute extends StringCssAttribute {
 	
 	/**
 	 * Creates a new instance.
@@ -60,7 +60,11 @@ public class CharCssAttribute extends CssAttribute {
 		if (value.length() != 1) {
 			throw new BuildException( "Invalid CSS: the attribute \"" + this.name + "\" needs to be a character - the given value \"" + value + "\" is not supported."  );
 		}
-		return value;
+		if (this.isBaseAttribute) {
+			return value;
+		} else {
+			return '"'+ value + '"';
+		}
 	}			
 
 }

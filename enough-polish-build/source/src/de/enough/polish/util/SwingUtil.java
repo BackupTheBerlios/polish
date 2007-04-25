@@ -34,8 +34,10 @@ import java.io.InputStream;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
@@ -165,6 +167,18 @@ public final class SwingUtil {
 		}
 
 	}
+	
+	/**
+	 * Sets a title for the given component by surrounding it with a CompoundBorder
+	 * 
+	 * @param component the component
+	 * @param title the title of the component
+	 */
+	public static void setTitle( JComponent component, String title ) {
+		component.setBorder(  BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder( title ),
+                BorderFactory.createEmptyBorder(5,5,5,5)) );
+	}
 
 
 	class CustomFileFilter extends FileFilter {
@@ -187,6 +201,8 @@ public final class SwingUtil {
 			return this.lowerCaseType;
 		}	
 	}
+	
+	
 
 
 }

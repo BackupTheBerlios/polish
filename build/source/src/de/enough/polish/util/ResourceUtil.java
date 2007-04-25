@@ -60,14 +60,33 @@ public final class ResourceUtil {
 	public final InputStream open( String baseDir, String url ) 
 	throws FileNotFoundException 
 	{
+		File baseDirFile = null;
+		if (baseDir != null) {
+			baseDirFile = new File( baseDir );
+		}
+		return open( baseDirFile, url );
+	}
+	
+	/**
+	 * Opens the specified resource.
+	 * The caller needs to ensure that the resource is closed.
+	 * 
+	 * @param baseDir the base directory
+	 * @param url the url to the resource, a '/'-separated path
+	 * @return the InputStream for the specified resource.
+	 * @throws FileNotFoundException when the specified resource could not be found
+	 */
+	public InputStream open(File baseDir, String url) throws FileNotFoundException {
 		// check if url points to an existing file:
-		File file = new File( baseDir, url );
-		if (file.exists()) {
-			try {
-				return new FileInputStream( file );
-			} catch (FileNotFoundException e) {
-				// should not be thrown, since we checked file.exists()
-				// now try to get the specified resource from the class loader...
+		if (baseDir != null) {
+			File file = new File( baseDir, url );
+			if (file.exists()) {
+				try {
+					return new FileInputStream( file );
+				} catch (FileNotFoundException e) {
+					// should not be thrown, since we checked file.exists()
+					// now try to get the specified resource from the class loader...
+				}
 			}
 		}
 		InputStream in = this.classLoader.getResourceAsStream(url);
@@ -104,4 +123,7 @@ public final class ResourceUtil {
 		is.close();
 		return (String[]) lines.toArray( new String[ lines.size() ]);
 	}
+
+
+
 }

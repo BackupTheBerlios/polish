@@ -25,6 +25,9 @@
  */
 package de.enough.polish.propertyfunctions;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import junit.framework.TestCase;
 
 /**
@@ -67,6 +70,24 @@ public class CalculateFunctionTest extends TestCase {
 
 		output = calculate.process("16+-1", null, null);
 		assertEquals("15", output );
+
+		System.out.println("Term part pattern=" + CalculateFunction.TERM_PART_STR );
+		String input = "19 - 10 * 4";
+		Matcher matcher = Pattern.compile( CalculateFunction.TERM_PART_STR ).matcher(input);
+		while (matcher.find()) {
+			System.out.println("group=" + matcher.group() );
+		}
+
+		
+		System.out.println("Term pattern=" + CalculateFunction.TERM_STR );
+		input = "(19 - 10 * 4) + (19 - 8 / 2 * 4) + 4";
+		matcher = CalculateFunction.TERM_PATTERN.matcher(input);
+		while (matcher.find()) {
+			System.out.println("group=" + matcher.group() );
+		}
+		
+		output = calculate.process("(19 - 10 * 4) + (19 - 8 / 2 * 4) + 4", null, null );
+		assertEquals( "60", output );
 
 	}
 

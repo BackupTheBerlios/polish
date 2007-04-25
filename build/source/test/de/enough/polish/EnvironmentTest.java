@@ -128,6 +128,11 @@ public class EnvironmentTest extends TestCase {
 		matcher = Environment.FUNCTION_PATTERN.matcher( input );
 		assertTrue( matcher.find() );
 		assertEquals( "calculate( 16 + 3 )", matcher.group() );
+
+		input = "calculate( 16 + calculate(3/5) )";
+		matcher = Environment.FUNCTION_PATTERN.matcher( input );
+		assertTrue( matcher.find() );
+		assertEquals( "calculate(3/5)", matcher.group() );
 }
 
 

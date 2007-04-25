@@ -158,4 +158,23 @@ public class CssMapping {
 		}
 	}
 
+	/**
+	 * @return
+	 */
+	public String getToClassName() {
+		if (this.to == null) {
+			return null;
+		}
+		String target = this.to.trim();
+		if (target.startsWith("new ")) {
+			target = target.substring( "new ".length() );
+		}
+		int parenthesesPos = target.indexOf('(');
+		if (parenthesesPos != -1) {
+			target = target.substring(0, parenthesesPos );
+		}
+		target = target.trim();
+		return target;
+	}
+
 }

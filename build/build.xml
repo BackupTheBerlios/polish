@@ -124,6 +124,9 @@
 		description="builds the enough-j2mepolish-client.jar"
 		>
 		<delete dir="build/tmp" />
+		<delete dir="build/clientsource" />
+		<delete dir="build/clientclasses" />
+		<delete dir="build/clientresources" />
 		<mkdir dir="build/clientsource" />
 		<mkdir dir="build/clientclasses" />
 		<mkdir dir="build/clientresources" />
@@ -160,6 +163,7 @@
 				<variables 
 					replacePropertiesWithoutDirective="false"
 					>
+					<variable name="polish.hasPointerEvents" value="true" />
 					<variable name="polish.LibraryBuild" value="true" />
 		            <variable name="polish.css.allowAllAttributes" value="true"/>
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
@@ -275,6 +279,78 @@
 		</jar>
 		
 	</target>
+	
+	<target name="build-client-editor" 
+			depends="build-init"
+			description="builds the dist/editor/enough-j2mepolish-client.jar"
+			>
+			<delete dir="build/tmp" />
+			<delete dir="build/clientsource" />
+			<delete dir="build/clientclasses" />
+			<delete dir="build/clientresources" />
+			<mkdir dir="build/clientsource" />
+			<mkdir dir="build/clientclasses" />
+			<mkdir dir="build/clientresources" />
+			<j2mepolish>
+			    <!-- general settings -->
+				<info 
+					license="GPL"
+					copyright="Copyright 2007 Enough Software. All rights reserved." 
+					description="Used for building the enough-j2mepolish-client.jar." 
+					infoUrl="http://www.j2mepolish.org" 
+					jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-${polish.locale}-j2mepolish.jar" 
+					jarUrl="${deploy-url}${polish.jarName}" 
+					name="J2ME Polish" 
+					vendorName="Enough Software" 
+					version="2.0.0"
+			    />
+				<!-- selection of supported devices -->
+				<deviceRequirements>
+					<requirement name="Identifier" value="${device}"/>
+				</deviceRequirements>
+			    <!-- build settings -->
+				<build 
+					fullscreen="menu" 
+		            polishDir="../enough-polish-j2me/source/src" 
+		            usePolishGui="always"
+		            sourceDir="build/clientsource"
+					workDir="build/tmp"
+					compilerMode="true"
+					compilerDestDir="build/clientclasses"
+					compilerModePreverify="true"
+					>
+		
+					<!-- project-wide variables - used for preprocessing  -->
+					<variables 
+						replacePropertiesWithoutDirective="false"
+						>
+						<!-- 
+						<variable name="polish.LibraryBuild" value="true" /> 
+						-->
+			            <variable name="polish.css.allowAllAttributes" value="true"/>
+						<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+						<variable name="polish.hasCommandKeyEvents" value="true" />
+						<variable name="polish.hasPointerEvents" value="true" />
+					</variables>
+					<resources
+						dir="build/clientresources" 
+						defaultexcludes="yes"
+						excludes="*.db"
+						filterZeroLengthFiles="true"
+					 >
+						<localization locales="en_US" />
+					</resources>
+				</build>
+			</j2mepolish>
+			<!-- now package the compiled classes -->
+			<mkdir dir="dist/editor" />
+			<jar destfile="dist/editor/enough-j2mepolish-client.jar"
+			     basedir="build/clientclasses"
+				 excludes="**/*.html"
+				 index="true"
+			     >
+			</jar>
+		</target>
 
 	<target name="build-rmi" 
 		depends="build-client"
@@ -302,7 +378,7 @@
 
 	
 	<target name="bin-dist" 
-		depends="build-build, build-extension, build-client, build-client-java5, build-rmi, build-build-source"
+		depends="build-build, build-extension, build-client, build-client-java5, build-client-editor, build-rmi, build-build-source"
 		description="creates the binary distribution"
 		>
 		<mkdir dir="tmp/core/lib" />

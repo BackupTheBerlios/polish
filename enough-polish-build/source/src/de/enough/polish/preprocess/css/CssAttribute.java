@@ -336,7 +336,7 @@ implements Comparable
 		return 0;
 	}
 	
-	protected CssMapping getMapping( String value ) {
+	public CssMapping getMapping( String value ) {
 		if (this.mappingsByName == null) {
 			return null;
 		} else {
@@ -363,6 +363,16 @@ implements Comparable
 	 */
 	public String getGroup() {
 		return this.group;
+	}
+
+	/**
+	 * 
+	 */
+	public CssMapping[] getMappings() {
+		if (this.mappingsByName == null) {
+			return new CssMapping[0];
+		}
+		return (CssMapping[]) this.mappingsByName.values().toArray( new CssMapping[ this.mappingsByName.size() ] );
 	}
 	
 

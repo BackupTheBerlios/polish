@@ -26,6 +26,7 @@
 package de.enough.polish;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -33,9 +34,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jdom.JDOMException;
+
 import de.enough.polish.ant.build.BuildSetting;
 import de.enough.polish.devices.LibraryManager;
+import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.propertyfunctions.PropertyFunction;
+import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -115,8 +121,33 @@ public class Environment {
 		this.extensionManager = null;
 		this.booleanEvaluator = new BooleanEvaluator(this);
 		this.basicProperties = null;
+		if (INSTANCE == null) {
+			INSTANCE = this;
+		}
+	}
+	
+	/**
+	 * Creates a new empty environment.
+	 * @param polishHome the path to the J2ME Polish installation directory
+	 */
+	public Environment(File polishHome) {
+		this.symbols = new HashMap();
+		this.variables = new HashMap();
+		this.exchangeStore = new HashMap();
+		this.temporarySymbols = new HashMap();
+		this.temporaryVariables = new HashMap();
+		ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
+		try {
+			this.extensionManager = ExtensionManager.getInstance( polishHome, resourceUtil );
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new IllegalArgumentException( "Unable to initialize the ExtensionManager: " + e );
+		}
+		this.booleanEvaluator = new BooleanEvaluator(this);
+		this.basicProperties = null;
 		INSTANCE = this;
 	}
+
 
 	/**
 	 * Creates a new empty environment.
@@ -128,8 +159,7 @@ public class Environment {
 	 * @param baseDir
 	 *            the base directory like the project's home directory
 	 */
-	public Environment(ExtensionManager extensionsManager, Map properties,
-			File baseDir) {
+	public Environment(ExtensionManager extensionsManager, Map properties, File baseDir) {
 		super();
 		this.symbols = new HashMap();
 		this.variables = new HashMap();

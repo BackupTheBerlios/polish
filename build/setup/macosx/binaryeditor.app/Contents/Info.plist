@@ -51,8 +51,8 @@
 	<dict>
 		<key>ClassPath</key>
 		<array>
-			<string>%{INSTALL_PATH}/import/enough-j2mepolish-build.jar</string>
-			<string>%{INSTALL_PATH}/import/jdom.jar</string>
+			<string>%{INSTALL_PATH}/lib/enough-j2mepolish-build.jar</string>
+			<string>%{INSTALL_PATH}/lib/jdom.jar</string>
 		</array>
 		<key>MainClass</key>
 		<string>de.enough.polish.dataeditor.swing.SwingDataEditor</string>

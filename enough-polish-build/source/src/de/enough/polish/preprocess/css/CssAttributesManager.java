@@ -25,6 +25,8 @@
  */
 package de.enough.polish.preprocess.css;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import de.enough.polish.BuildException;
+import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 
 import org.jdom.Document;
@@ -211,6 +214,32 @@ public class CssAttributesManager {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * @param polishHome
+	 * @param resourceUtil
+	 * @return
+	 */
+	public static CssAttributesManager getInstance(File polishHome, ResourceUtil resourceUtil) 
+	{
+		try {
+			InputStream in = resourceUtil.open( polishHome, "css-attributes.xml" );
+			CssAttributesManager manager = new CssAttributesManager( in );
+			try {
+				in = resourceUtil.open( polishHome, "custom-css-attributes.xml" );
+				if (in != null) {
+					manager.addCssAttributes(in);
+				}
+			} catch (Exception e) {
+				// ignore
+			}
+			return manager;
+		} catch (FileNotFoundException e) {
+			// TODO robertvirkus handle FileNotFoundException
+			e.printStackTrace();
+			throw new IllegalArgumentException("Unable to load css attributes: " + e );
+		}
 	}
 
 }

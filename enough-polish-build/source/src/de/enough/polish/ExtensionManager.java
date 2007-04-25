@@ -45,7 +45,10 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
+import com.sun.org.apache.bcel.internal.generic.LoadClass;
+
 import de.enough.polish.exceptions.InvalidComponentException;
+import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 
 
@@ -621,6 +624,24 @@ public class ExtensionManager {
 
 	public void removeExtension(Extension extension) {
 		this.instantiatedExtensions.remove(extension);
+	}
+
+
+	/**
+	 * @param polishHome
+	 * @param resourceUtil
+	 * @return
+	 * @throws IOException 
+	 * @throws JDOMException 
+	 * @throws InvalidComponentException 
+	 */
+	public static ExtensionManager getInstance(File polishHome, ResourceUtil resourceUtil) 
+	throws JDOMException, IOException, InvalidComponentException 
+	{	
+		InputStream in = resourceUtil.open( polishHome.getAbsolutePath(), "extensions.xml" );
+		ExtensionManager manager = new ExtensionManager( null, in );
+		manager.loadCustomDefinitions( new File( polishHome, "custom-extensions.xml"));
+		return manager;
 	}
 
 }
