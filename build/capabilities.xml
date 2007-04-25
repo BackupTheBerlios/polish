@@ -57,7 +57,7 @@
 
 	<capability>
 		<identifier>SoundFormat</identifier>
-		<extension-mode>append</extension-mode>
+		<extension-mode>overwrite</extension-mode>
 		<group>Multimedia</group>
 		<required>no</required>
 		<type>list</type>
