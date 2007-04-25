@@ -49,7 +49,7 @@ public class PolishPlatform {
         buffer.append ("<?xml version='1.0'?>\n" +
                 "<!DOCTYPE platform PUBLIC '-//NetBeans//DTD J2ME PlatformDefinition 1.0//EN' 'http://www.netbeans.org/dtds/j2me-platformdefinition-1_0.dtd'>\n" +
                 "<platform name=\"J2MEPolishEmulator\" home=\"" + polishHome + "\" type=\"UEI-1.0.1\" displayname=\"J2ME Polish Emulator\" srcpath=\"\" docpath=\"\"" +
-                " preverifycommandline=\"\" debugcommandline=\"\" runcommandline=\"\">\n"); // TODO - specify command lines
+                " preverifycommandline=\"\" debugcommandline=\"\" runcommandline=\"\">\n");
 
         for (Device device : database.getDevices ()) {
             StringBuffer deviceBuffer = new StringBuffer ();
@@ -69,11 +69,6 @@ public class PolishPlatform {
                     deviceBuffer.append ("<profile name=\"MIDP\" version=\"2.0\" displayname=\"Mobile Information Device Profile\" classpath=\"${platform.home}/import/midp-2.0.jar\" dependencies=\"\" default=\"true\"/>\n");
                 if (! device.isMidp1 ()  &&  ! device.isMidp2 ())
                     continue;
-
-                if (device.getMidpVersion () == 1)
-                    deviceBuffer.append ("<profile name=\"MIDP\" version=\"1.0\" displayname=\"Mobile Information Device Profile\" classpath=\"${platform.home}/lib/midpapi10.jar\" dependencies=\"CLDC > 1.0\" default=\"default\"/>\n");
-                else
-                    deviceBuffer.append ("<profile name=\"MIDP\" version=\"2.0\" displayname=\"Mobile Information Device Profile\" classpath=\"${platform.home}/lib/midpapi10.jar\" dependencies=\"CLDC > 1.0\" default=\"default\"/>\n");
 
                 device.setEnvironment (new Environment (new ExtensionManager (new org.apache.tools.ant.Project ()), new HashMap (), new File (polishHome + "/samples/blank/"))); // NOI18N
                 String[] strings = device.getBootClassPaths ();
