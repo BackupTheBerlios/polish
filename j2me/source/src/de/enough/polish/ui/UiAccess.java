@@ -1692,6 +1692,13 @@ public final class UiAccess {
 	 * @param style the new style, is ignored when it is null
 	 */
 	public static void setAccessible( Item item, boolean isAccessible, Style style ) {
+		if (!isAccessible && item.isFocused) {
+			// first defocus item:
+			Item parent = item.parent;
+			if (parent instanceof Container) {
+				((Container)parent).focus(-1);
+			}
+		}
 		if (style != null) {
 			item.setStyle(style);
 		}

@@ -80,7 +80,9 @@ public class FadeInItemView extends ItemView {
 				itemRgbData[i] = 0;
 			}
 		}
-		ImageUtil.setTransparencyOnlyForOpaque(this.currentTransparency, itemRgbData);
+		if (this.currentTransparency != 0) {
+			ImageUtil.setTransparencyOnlyForOpaque(this.currentTransparency, itemRgbData);
+		}
 		this.rgbData = itemRgbData;
 		AnimationThread.addAnimationItem(parent);
 	}
@@ -103,14 +105,15 @@ public class FadeInItemView extends ItemView {
 					}
 				//#endif
 				this.rgbData = null;
+				this.currentTransparency = transparency;
 				return true;
 			}
 		}
-		this.currentTransparency = transparency;
 		int[] data = this.rgbData;
 		if (data != null) {
 			ImageUtil.setTransparencyOnlyForOpaque(transparency, data);
 		}
+		this.currentTransparency = transparency;
 		return true;
 	}
 
@@ -159,7 +162,9 @@ public class FadeInItemView extends ItemView {
 	 */
 	protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		int[] data = this.rgbData;
-		if (this.currentTransparency != 255 || data == null) {
+		if (this.currentTransparency == 0) {
+			// do not paint anything
+		} else if (this.currentTransparency != 255 || data == null) {
 			g.drawRGB( data, 0, this.contentWidth, x, y, this.contentWidth, this.contentHeight, true );
 		} else {
 			super.paintContentByParent(parent, x, y, leftBorder, rightBorder, g);
