@@ -21,9 +21,9 @@ import de.enough.polish.postcompile.BytecodePostCompiler;
  * This post compiler adds the needed serialization methods for classes
  * implementing de.enough.polish.serialization.Serializable.
  * 
- * @see de.enough.polish.postcompile.io.io.Externalizable2
- * @see de.enough.polish.postcompile.io.io.Serializable2
- * @see de.enough.polish.postcompile.io.io.Serializer
+ * @see de.enough.polish.postcompile.io.Externalizable2
+ * @see de.enough.polish.postcompile.io.Serializable2
+ * @see de.enough.polish.postcompile.io.Serializer
  */
 public class SerializationPostCompiler extends BytecodePostCompiler
 {
