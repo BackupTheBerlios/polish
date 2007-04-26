@@ -124,14 +124,18 @@ public class SonyEricssonEmulator extends WtkEmulator {
 		}
 		if (sonyHomePath == null) {
 			if (File.separatorChar == '\\') {
-				sonyHomePath = "C:\\SonyEricsson\\J2ME_SDK_CLDC";
+				sonyHomePath = "C:\\SonyEricsson\\JavaME_SDK_CLDC";
 				File home = new File( sonyHomePath );
 				if (!home.exists()) {
-					sonyHomePath = "C:\\SonyEricsson\\J2ME_SDK";
+					sonyHomePath = "C:\\SonyEricsson\\J2ME_SDK_CLDC";
 					home = new File( sonyHomePath );
 					if (!home.exists()) {
-						sonyHomePath = null;
-						// try to start emulators from the standard WTK directory.
+						sonyHomePath = "C:\\SonyEricsson\\J2ME_SDK";
+						home = new File( sonyHomePath );
+						if (!home.exists()) {
+							sonyHomePath = null;
+							// try to start emulators from the standard WTK directory.
+						}
 					}
 				}
 			}
