@@ -1548,9 +1548,6 @@ public abstract class Item extends Object
 	 * @param g the Graphics on which this item should be painted.
 	 */
 	public void paint( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
-//		if (this instanceof ChoiceItem && "Help".equals(((ChoiceItem)this).getText())) {
-//			System.out.println("painting " + ((ChoiceItem)this).getText() + " with view-type " + this.view );
-//		}
 		// initialise this item if necessary:
 		int availableWidth = rightBorder - leftBorder;
 		int originalX = x;

@@ -80,6 +80,7 @@ public class FadeInItemView extends ItemView {
 				itemRgbData[i] = 0;
 			}
 		}
+		ImageUtil.setTransparencyOnlyForOpaque(this.currentTransparency, itemRgbData);
 		this.rgbData = itemRgbData;
 		AnimationThread.addAnimationItem(parent);
 	}
