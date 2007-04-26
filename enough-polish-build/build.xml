@@ -705,6 +705,16 @@
 			<fileset dir="setup/samples/tabbedform" excludes="**/macosx/**" />
 			<fileset dir="../enough-polish-sample-tabbedform" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
+		<!-- copy accessible application -->
+		<mkdir dir="tmp/samples/accessible/source/src" />
+		<copy todir="tmp/samples/accessible/source/src">
+			<fileset dir="../enough-polish-sample-accessible/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/accessible/" 
+			>
+			<fileset dir="setup/samples/accessible" excludes="**/macosx/**" />
+			<fileset dir="../enough-polish-sample-accessible" includes="resources/**/*.*" excludes="**/CVS"/>
+		</copy>
 		<!-- copy doja sample application -->
 		<mkdir dir="tmp/samples/doja/source/src" />
 		<copy todir="tmp/samples/doja/source/src">

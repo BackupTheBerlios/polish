@@ -225,6 +225,21 @@ This sample application shows how to use the browser technology of J2ME Polish.
             <parsable targetfile="$INSTALL_PATH/samples/roadrunner/nbproject/project.properties" type="shell" /> 
         </pack>
         
+        <pack name="Accessible Sample Application" required="no" preselected="yes">
+            <description>Learn how to deactivate and reactivate user interface elements with J2ME Polish.</description>
+            <file src="samples/accessible/source" targetdir="$INSTALL_PATH/samples/accessible"/>
+            <file src="samples/accessible/resources" targetdir="$INSTALL_PATH/samples/accessible"/>
+            <file src="../setup/samples/accessible/.classpath" targetdir="$INSTALL_PATH/samples/accessible"/>
+            <file src="../setup/samples/accessible/.project" targetdir="$INSTALL_PATH/samples/accessible"/>
+            <file src="../setup/samples/accessible/build.xml" targetdir="$INSTALL_PATH/samples/accessible"/>
+            <file src="../setup/samples/accessible/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/accessible"/>
+            <file src="../setup/samples/accessible/nbproject" targetdir="$INSTALL_PATH/samples/accessible"/>
+            <parsable targetfile="$INSTALL_PATH/samples/accessible/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/accessible/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/accessible/.classpath" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/accessible/nbproject/project.properties" type="shell" /> 
+        </pack>
+        
         <pack name="Menu Sample Application" required="no" preselected="yes">
             <description>A sample application that shows a very simple menu and contains three different CSS designs as well as two localizations.</description>
             <file src="samples/menu/source" targetdir="$INSTALL_PATH/samples/menu"/>
