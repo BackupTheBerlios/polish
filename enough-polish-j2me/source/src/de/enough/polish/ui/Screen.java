@@ -563,7 +563,7 @@ implements AccessibleCanvas
 		}
 		//#if !tmp.menuFullScreen
 			this.screenHeight = getHeight();
-		//#else tmp.useExternalMenuBar
+		//#elif tmp.useExternalMenuBar
 			this.menuBar.relativeY = this.screenHeight;
 		//#endif
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
