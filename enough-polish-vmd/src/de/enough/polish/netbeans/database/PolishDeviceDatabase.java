@@ -87,24 +87,24 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
         StringBuffer apis = new StringBuffer ();
         StringBuffer bootclasspath = new StringBuffer ();
         if (device.isCldc11 ())
-            bootclasspath.append (polishHome).append ("/import/cldc-1.1.jar,"); // NOI18N
+            bootclasspath.append (polishHome).append ("/import/cldc-1.1.jar:"); // NOI18N
         if (device.isCldc10 ())
-            bootclasspath.append (polishHome).append ("/import/cldc-1.0.jar,"); // NOI18N
+            bootclasspath.append (polishHome).append ("/import/cldc-1.0.jar:"); // NOI18N
         if (device.isMidp2 ())
-            bootclasspath.append (polishHome).append ("/import/midp-2.0.jar,"); // NOI18N
+            bootclasspath.append (polishHome).append ("/import/midp-2.0.jar:"); // NOI18N
         if (device.isMidp1 ())
-            bootclasspath.append (polishHome).append ("/import/midp-1.0.jar,"); // NOI18N
+            bootclasspath.append (polishHome).append ("/import/midp-1.0.jar:"); // NOI18N
         String[] strings = device.getBootClassPaths ();
         if (strings != null)
             for (int a = 0; a < strings.length; a ++) {
                 apis.append ("OptionalBootPathElement").append (a + 1).append ("-1.0,"); // NOI18N
-                bootclasspath.append (strings[a]).append (","); // NOI18N
+                bootclasspath.append (strings[a]).append (":"); // NOI18N
             }
         strings = device.getClassPaths ();
         if (strings != null)
             for (int a = 0; a < strings.length; a ++) {
                 apis.append ("OptionalPathElement").append (a + 1).append ("-1.0,"); // NOI18N
-                bootclasspath.append (strings[a]).append (",");
+                bootclasspath.append (strings[a]).append (":");
             }
         map.put ("platform.apis", apis.toString ()); // NOI18N
         map.put ("platform.bootclasspath", bootclasspath.toString ()); // NOI18N
