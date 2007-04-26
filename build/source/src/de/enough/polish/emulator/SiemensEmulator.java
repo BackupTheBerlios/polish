@@ -95,6 +95,8 @@ public class SiemensEmulator extends WtkEmulator {
 		if (siemensHomePath == null) {
 			if ( (new File("C:\\siemens\\SMTK_3.X")).exists()) {
 				siemensHomePath = "C:\\siemens\\SMTK_3.X";
+			} else if ( (new File("C:\\BenQ\\MTK_3.X")).exists()) {
+					siemensHomePath = "C:\\BenQ\\MTK_3.X";
 			} else {
 				siemensHomePath = "C:\\siemens\\SMTK";
 			}
