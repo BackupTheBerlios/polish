@@ -626,6 +626,46 @@ public final class UiAccess {
 	}
 	//#endif	
 
+	//#if polish.midp
+	/**
+	 * Applies a style to the specified list item.
+	 * 
+	 * @param list the list 
+	 * @param itemIndex the index of the list
+	 */
+	public static void setStyle(javax.microedition.lcdui.List list, int itemIndex) {
+		// ignore
+		
+	}
+	//#endif	
+
+	//#if polish.usePolishGui
+	/**
+	 * Applies a style to the specified list item.
+	 * 
+	 * @param list the list 
+	 * @param itemIndex the index of the list
+	 */
+	public static void setStyle(List list, int itemIndex) {
+		// ignore
+		
+	}
+	//#endif	
+
+	//#if polish.usePolishGui
+	/**
+	 * Applies a style to the specified list item.
+	 * 
+	 * @param list the list 
+	 * @param itemIndex the index of the list
+	 * @param style the new style of the item
+	 */
+	public static void setStyle(List list, int itemIndex, Style style) {
+		Item item = list.getItem(itemIndex);
+		item.setStyle(style);
+	}
+	//#endif	
+
 	//#if polish.usePolishGui && polish.midp
 	/**
 	 * Gets the current style of the given item.
@@ -1665,6 +1705,45 @@ public final class UiAccess {
 	
 	//#if polish.midp
 	/**
+	 * Applies a style to the specified list item.
+	 * 
+	 * @param list the list 
+	 * @param itemIndex the index of the list
+	 */
+	public static void setAccessible(javax.microedition.lcdui.List list, int itemIndex, boolean isAccessible) {
+		// ignore
+	}
+	//#endif	
+
+	//#if polish.usePolishGui
+	/**
+	 * Applies a style to the specified list item.
+	 * 
+	 * @param list the list 
+	 * @param itemIndex the index of the list
+	 * @param isAccessible true when the item should be accessible/selectable
+	 */
+	public static void setAccessible(List list, int itemIndex, boolean isAccessible) {
+		setAccessible(list.getItem(itemIndex), isAccessible);
+	}
+	//#endif	
+
+	//#if polish.usePolishGui
+	/**
+	 * Applies a style to the specified list item.
+	 * 
+	 * @param list the list 
+	 * @param itemIndex the index of the list
+	 * @param isAccessible true when the item should be accessible/selectable
+	 * @param style the new style of the item
+	 */
+	public static void setAccessible(List list, int itemIndex, boolean isAccessible, Style style) {
+		setAccessible( list.getItem(itemIndex), isAccessible, style );
+	}
+	//#endif	
+	
+	//#if polish.midp
+	/**
 	 * Makes the command interactive (accessible) or non-interactive.
 	 * This method is ignored when the J2ME Polish UI is not activated.
 	 * <pre>
@@ -1694,14 +1773,7 @@ public final class UiAccess {
 	 * @param isAccessible true when the item should be accessible/selectable
 	 */
 	public static void setAccessible( Screen screen, Command command, boolean isAccessible ) {
-		CommandItem item = screen.getCommandItem(command);
-		if (item != null) {
-			if (isAccessible) {
-				item.setAppearanceMode( Item.INTERACTIVE );
-			} else {
-				item.setAppearanceMode( Item.PLAIN );
-			}
-		}
+		setAccessible( screen.getCommandItem(command), isAccessible );
 	}
 	//#endif
 	
@@ -1719,17 +1791,8 @@ public final class UiAccess {
 	 * @param style the new style for the command, is ignored when null
 	 */
 	public static void setAccessible( Screen screen, Command command, boolean isAccessible, Style style ) {
-		CommandItem item = screen.getCommandItem(command);
-		if (item != null) {
-			if (style != null) {
-				item.setStyle(style);
-			}
-			if (isAccessible) {
-				item.setAppearanceMode( Item.INTERACTIVE );
-			} else {
-				item.setAppearanceMode( Item.PLAIN );
-			}
-		}
+		setAccessible( screen.getCommandItem(command), isAccessible, style );
+
 	}
 	//#endif
 	
@@ -1872,4 +1935,5 @@ public final class UiAccess {
 		}
 	}
 	//#endif
+
 }

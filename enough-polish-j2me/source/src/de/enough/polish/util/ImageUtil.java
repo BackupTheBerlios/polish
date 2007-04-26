@@ -613,5 +613,35 @@ public final class ImageUtil {
 			newrgbData[i] = rgbData[targetArrayIndex];
 		}
 	}
+	
+
+	/**
+	 * Sets the specified transparency to the RGB data.
+	 * 
+	 * @param transparency the transparency between 0 (fully transparent) and 255 (fully opaque)
+	 * @param data the RGB data
+	 */
+	public static void setTransparency(int transparency, int[] data) {
+		transparency = (transparency << 24); // is now 0xtt000000
+		for (int i = 0; i < data.length; i++) {
+			data[i] = (data[i] & 0x00ffffff) | transparency;
+		}
+	}
+
+	/**
+	 * Sets the specified transparency to the RGB data, but only for pixels that are not full transparent already.
+	 * 
+	 * @param transparency the transparency between 0 (fully transparent) and 255 (fully opaque)
+	 * @param data the RGB data
+	 */
+	public static void setTransparencyOnlyForOpaque(int transparency, int[] data) {
+		transparency = (transparency << 24); // is now 0xtt000000
+		for (int i = 0; i < data.length; i++) {
+			int pixel = data[i];
+			if ((pixel & 0xff000000) != 0) {
+				data[i] = (pixel & 0x00ffffff) | transparency;
+			}
+		}
+	}
 
 }

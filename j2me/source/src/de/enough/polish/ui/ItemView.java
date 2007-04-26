@@ -282,5 +282,13 @@ public abstract class ItemView {
 	protected boolean isValid( Item parent, Style style ) {
 		return true;
 	}
+	
+	/**
+	 * Removes this view from the parent item.
+	 */
+	protected void removeViewFromParent() {
+		this.parentItem.view = null;
+	}
+
 
 }

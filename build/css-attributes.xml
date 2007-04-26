@@ -535,6 +535,8 @@
 		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" />
 		<mapping from="gauge-rotating-arcs" to="new de.enough.polish.ui.gaugeviews.RotatingArcsGaugeView()" />
 		<mapping from="chart-vertical-bars" to="new de.enough.polish.ui.chartviews.VerticalBarChartView()" />
+		<mapping from="fade-out" to="new de.enough.polish.ui.itemviews.FadeOutItemView()" />
+		<mapping from="fade-in" to="new de.enough.polish.ui.itemviews.FadeInItemView()" />
 		<!--
 		<mapping from="" to="" />
 		-->
@@ -2268,6 +2270,61 @@
 		appliesTo="Item, relative view-type"
 		description="The vertical position of an item either in pixels or in percent relative to it's parent."
 		id="229"
+	/>
+	<attribute
+		name="fade-in-transparency-start"
+		type="integer"
+		default="10"
+		appliesTo="FadeInItemView"
+		description="The transparency that is used for the first animation step."
+		id="230"
+	/>
+	<attribute
+		name="fade-in-transparency-end"
+		type="integer"
+		default="255"
+		appliesTo="FadeInItemView"
+		description="The transparency that is used for the last animation step."
+		id="231"
+	/>
+	<attribute
+		name="fade-in-transparency-delta"
+		type="integer"
+		default="20"
+		appliesTo="FadeInItemView"
+		description="The amount by which the transparency is increased in each animation step."
+		id="232"
+	/>
+	<attribute
+		name="fade-in-next-style"
+		type="style"
+		appliesTo="FadeInItemView"
+		description="The style that should be automatically set when the fade-in animation has been finished."
+		id="233"
+	/>
+	<attribute
+		name="fade-out-transparency-start"
+		type="integer"
+		default="240"
+		appliesTo="FadeOutItemView"
+		description="The transparency that is used for the first animation step."
+		id="234"
+	/>
+	<attribute
+		name="fade-out-transparency-end"
+		type="integer"
+		default="0"
+		appliesTo="FadeOutItemView"
+		description="The transparency that is used for the last animation step."
+		id="235"
+	/>
+	<attribute
+		name="fade-out-transparency-delta"
+		type="integer"
+		default="20"
+		appliesTo="FadeOutItemView"
+		description="The amount by which the transparency is decreased in each animation step."
+		id="236"
 	/>
 	
 	<!--
