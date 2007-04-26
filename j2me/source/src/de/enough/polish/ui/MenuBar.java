@@ -217,7 +217,8 @@ public class MenuBar extends Item {
 						this.singleLeftCommandItem.setText( cmd.getLabel() );
 						cmd = oldLeftCommand;
 						item = (CommandItem) this.allCommands.get( cmd );
-						priority = oldLeftCommand.getPriority();		
+						priority = oldLeftCommand.getPriority();
+						//System.out.println("MenuBar: now adding previous singleleft command " + cmd.getLabel() );
 					}
 				}
 			//#else
@@ -361,11 +362,15 @@ public class MenuBar extends Item {
 					}
 					return;
 				}
-				int newSingleRightCommandIndex = getNextNegativeCommandIndex();
-				if ( newSingleRightCommandIndex != -1 ) {
-					this.singleLeftCommand = (Command) this.commandsList.remove(newSingleRightCommandIndex);
+				int newSingleLeftCommandIndex = getNextNegativeCommandIndex();
+				if ( newSingleLeftCommandIndex != -1 ) {
+					//System.out.println("moving commmand with index " + newSingleLeftCommandIndex + " from commands container (focused=" + this.commandsContainer.getFocusedIndex() + ") - new Single Left=" + ((Command) this.commandsList.get(newSingleLeftCommandIndex)).getLabel() );
+					if (newSingleLeftCommandIndex == this.commandsContainer.getFocusedIndex()) {
+						this.commandsContainer.focus(-1);
+					}
+					this.singleLeftCommand = (Command) this.commandsList.remove(newSingleLeftCommandIndex);
 					this.singleLeftCommandItem.setText( this.singleLeftCommand.getLabel() );
-					this.commandsContainer.remove( newSingleRightCommandIndex );
+					this.commandsContainer.remove( newSingleLeftCommandIndex );
 				}	
 				// don't return here yet, since it could well be that there is only
 				// one remaining item in the commandsList. In such a case the 
@@ -401,6 +406,9 @@ public class MenuBar extends Item {
 					//#if tmp.useInvisibleMenuBar
 						this.singleRightCommand = (Command) this.commandsList.get(newSingleRightCommandIndex);
 					//#else
+						if (newSingleRightCommandIndex == this.commandsContainer.getFocusedIndex()) {
+							this.commandsContainer.focus(-1);
+						}
 						this.singleRightCommand = (Command) this.commandsList.remove(newSingleRightCommandIndex);
 						this.commandsContainer.remove( newSingleRightCommandIndex );
 					//#endif
@@ -418,6 +426,9 @@ public class MenuBar extends Item {
 		int index = this.commandsList.indexOf( cmd );
 		if (index != -1) {
 			//System.out.println("removing normal command");
+			if (index == this.commandsContainer.getFocusedIndex()) {
+				this.commandsContainer.focus(-1);
+			}
 			this.commandsList.remove( index );
 			this.commandsContainer.remove( index );
 		}
@@ -425,11 +436,13 @@ public class MenuBar extends Item {
 		// single left command is used instead:
 		//#if !tmp.useInvisibleMenuBar
 		if (this.commandsList.size() == 1) {
-			//System.out.println("moving only left command to single-left-one");
+			//System.out.println("moving only left command to single-left/right-one, currently focused index=" + this.commandsContainer.getFocusedIndex() );
 			CommandItem item = (CommandItem) this.commandsContainer.get( 0 );
 			if (!item.hasChildren) {
 				Command command = (Command) this.commandsList.remove( 0 );
+				this.commandsContainer.focus(-1);
 				this.commandsContainer.remove( 0 );
+				//System.out.println("MenuBar: moving command " + command.getLabel() + ", new currently focused index=" + this.commandsContainer.getFocusedIndex() );
 				//#if tmp.RightOptions
 					this.singleRightCommand = command;
 					this.singleRightCommandItem.setText( command.getLabel() );
@@ -742,18 +755,18 @@ public class MenuBar extends Item {
 	 * @param open true when the menu should be opened
 	 */
 	protected void setOpen( boolean open ) {
-		this.isInitialized = (open == this.isOpened);
 		if (!open && this.isOpened) {
 			this.commandsContainer.hideNotify();
 		} else if (open && !this.isOpened) {
 			//#if !polish.MenuBar.focusFirstAfterClose
 				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
+				//System.out.println("MenuBar: focussing first command: " + ((Command)this.commandsList.get(0)).getLabel() );
 				this.commandsContainer.focus(0);
 			//#endif
 			this.commandsContainer.showNotify();
 		}
+		this.isInitialized = (open == this.isOpened);
 		this.isOpened = open;
-		this.isInitialized = false;
 	}
 	
 

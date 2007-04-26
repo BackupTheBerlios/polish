@@ -394,7 +394,7 @@ public class Container extends Item {
 	 * Focuses the specified item.
 	 * 
 	 * @param index the index of the item. The first item has the index 0, 
-	 * 		when -1 is given, the focus will be removed altogether (remember to call defocus( Style ) first in that case). 
+	 * 		when -1 is given, the focus will be removed altogether 
 	 * @return true when the specified item could be focused.
 	 * 		   It needs to have an appearanceMode which is not Item.PLAIN to
 	 *         be focusable.
@@ -402,6 +402,10 @@ public class Container extends Item {
 	public boolean focus(int index) {
 		if (index == -1) {
 			this.focusedIndex = -1;
+			Item item = this.focusedItem; 
+			if (item != null && this.itemStyle != null && item.isFocused) {
+				item.defocus( this.itemStyle );
+			}
 			this.focusedItem = null;
 			//#ifdef tmp.supportViewType
 				if (this.containerView != null) {
@@ -409,7 +413,7 @@ public class Container extends Item {
 					this.containerView.focusedItem = null;
 				}
 			//#endif
-			return false;
+			return true;
 		}
 		Item item = (Item) this.itemsList.get(index );
 		if (item.appearanceMode != Item.PLAIN) {
