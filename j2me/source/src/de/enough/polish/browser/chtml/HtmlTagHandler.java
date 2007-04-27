@@ -80,6 +80,7 @@ public class HtmlTagHandler
   public static final Command CMD_BACK = new Command("Back", Command.BACK, 10);
   
   private HtmlForm currentForm;
+  private HtmlSelect currentSelect;
 
   protected HtmlBrowser browser;
 
@@ -107,7 +108,8 @@ public class HtmlTagHandler
     browser.addTagHandler(TAG_EM, this);
     browser.addTagHandler(TAG_FORM, this);
     browser.addTagHandler(TAG_INPUT, this);
-//    browser.addTagHandler(TAG_OPTION, this);
+    browser.addTagHandler(TAG_SELECT, this);
+    browser.addTagHandler(TAG_OPTION, this);
   }
 
   /* (non-Javadoc)
@@ -185,6 +187,47 @@ public class HtmlTagHandler
         Image image = this.browser.loadImage(url);
         this.browser.add(new ImageItem(null, image, Item.LAYOUT_DEFAULT, ""));
         return true;
+      }
+      else if (TAG_SELECT.equals(tagName)) {
+    	  if (opening) {
+    		  if (this.currentSelect != null) {
+    			  //debug error
+    			  System.out.println("Error in HTML-Code. You cannot open a <select>-tag inside another <select>-tag.");
+
+    			  this.browser.add(this.currentSelect.getChoiceGroup());
+    			  this.currentSelect = null;
+    		  }
+
+    		  String name = parser.getAttributeValue("name");
+    		  this.currentSelect = new HtmlSelect(name);
+    	  }
+    	  else {
+    		  if (this.currentSelect != null) {
+    			  this.browser.add(this.currentSelect.getChoiceGroup());
+    			  this.currentSelect = null;
+    		  }
+    		  //#mdebug error
+    		  else {
+    			  System.out.println("Error in HTML-Code. You cannot close a <select>-tag without opening one.");
+    		  }
+    		  //#enddebug
+    	  }
+    	  return true;
+      }
+      else if (TAG_OPTION.equals(tagName)) {
+    	  if (this.currentSelect != null && opening) {
+    		  // TODO: handle "seclected" attribute.
+    		  String value = parser.getAttributeValue("value");
+    		  parser.next();
+    		  String name = parser.getText();
+
+    		  if (value == null) {
+    			  value = name;
+    		  }
+
+    		  this.currentSelect.addOption(name, value);
+    	  }
+    	  return true;
       }
       else if (TAG_INPUT.equals(tagName))
       {
