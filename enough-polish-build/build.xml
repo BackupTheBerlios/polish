@@ -579,7 +579,7 @@
 		</copy>
 		<copy todir="tmp/samples/blank/" 
 			>
-			<fileset dir="setup/samples/blank" excludes="**/macosx/**" />
+			<fileset dir="setup/samples/blank" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-blank" includes="resources/**/*.*" excludes="**/CVS"/>
 		</copy>
 		<!-- copy menu application -->
@@ -589,7 +589,7 @@
 		</copy>
 		<copy todir="tmp/samples/menu/" 
 			>
-			<fileset dir="setup/samples/menu" excludes="**/macosx/**" />
+			<fileset dir="setup/samples/menu" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-localization" includes="resources/**/*.*" excludes="**/CVS"/>
 			<fileset dir="../enough-polish-sample-localization" includes="resources2/**/*.*" excludes="**/CCVS"/>
 			<fileset dir="../enough-polish-sample-localization" includes="resources3/**/*.*" excludes="**/CCVS"/>
@@ -602,7 +602,7 @@
 		<copy todir="tmp/samples/sysinfo/" 
 			>
 			<fileset dir="../enough-polish-sysinfo" includes="AUTHORS,COPYING,ChangeLog,INSTALL,README,TODO" />
-			<fileset dir="setup/samples/sysinfo" excludes="**/macosx/**" />
+			<fileset dir="setup/samples/sysinfo" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sysinfo" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
 		<!-- copy logviewer sample application -->
@@ -612,7 +612,7 @@
 		</copy>
 		<copy todir="tmp/samples/logviewer/" 
 			>
-			<fileset dir="setup/samples/logviewer" excludes="**/macosx/**" />
+			<fileset dir="setup/samples/logviewer" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-logviewer" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
 		<!-- copy serialization sample application -->
@@ -622,7 +622,7 @@
 		</copy>
 		<copy todir="tmp/samples/serialization/" 
 			>
-			<fileset dir="setup/samples/serialization" excludes="**/macosx/**" />
+			<fileset dir="setup/samples/serialization" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-serialization" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
 		<!-- copy rmi sample application -->
@@ -642,7 +642,7 @@
 		</copy>
 		<copy todir="tmp/samples/java5/" 
 			>
-			<fileset dir="setup/samples/java5" excludes="**/macosx/**" />
+			<fileset dir="setup/samples/java5" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-java5" includes="resources/**/*.*" excludes="**/CVS"/>
 		</copy>
 		<!-- copy browser sample application -->
@@ -672,7 +672,7 @@
 		</copy>
 		<copy todir="tmp/samples/roadrunner/" 
 			>
-			<fileset dir="setup/samples/roadrunner" excludes="**/macosx/**" />
+			<fileset dir="setup/samples/roadrunner" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-roadrunner" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
 		<!-- copy email sample application -->
@@ -682,7 +682,7 @@
 		</copy>
 		<copy todir="tmp/samples/email/" 
 			>
-			<fileset dir="setup/samples/email" excludes="**/macosx/**" />
+			<fileset dir="setup/samples/email" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-email" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
 		<!-- copy framedform sample application -->
@@ -692,7 +692,7 @@
 		</copy>
 		<copy todir="tmp/samples/framedform/" 
 			>
-			<fileset dir="setup/samples/framedform" excludes="**/macosx/**" />
+			<fileset dir="setup/samples/framedform" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-framedform" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
 		<!-- copy tabbedform sample application -->
@@ -712,7 +712,7 @@
 		</copy>
 		<copy todir="tmp/samples/accessible/" 
 			>
-			<fileset dir="setup/samples/accessible" excludes="**/macosx/**" />
+			<fileset dir="setup/samples/accessible" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-accessible" includes="resources/**/*.*" excludes="**/CVS"/>
 		</copy>
 		<!-- copy doja sample application -->
@@ -722,7 +722,7 @@
 		</copy>
 		<copy todir="tmp/samples/doja/" 
 			>
-			<fileset dir="setup/samples/doja" excludes="**/macosx/**" />
+			<fileset dir="setup/samples/doja" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-doja" includes="resources/**/*.*" excludes="CVS"/>
 		</copy>
 	</target>
