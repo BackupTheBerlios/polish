@@ -255,12 +255,6 @@ public class SnapshotScreen extends Screen implements Runnable {
 		}
 		
 		String[] encodings = TextUtil.split(supportedEncodingsStr, ' ');
-		for (int i = 0; i < encodings.length; i++) {
-			String encoding = encodings[i];
-			if (encoding.startsWith("encoding=")) {
-				encodings[i] = encoding.substring( "encoding=".length() );
-			}
-		}	
 		Arrays.sort(encodings);
 		return encodings;
 	}
