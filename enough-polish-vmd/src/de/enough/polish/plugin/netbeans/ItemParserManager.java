@@ -34,7 +34,7 @@ public class ItemParserManager {
         this.parsersByClassName = new HashMap<String, ItemParser>();
         this.parsersByClassName.put("#ListElementEventSource", new ChoiceItemParser() );
         this.parsersByClassName.put("#ChoiceElement", new ChoiceItemParser() );
-        this.parsersByClassName.put("de.enough.polish.browser.chtml.HtmlBrowser", new HtmlBrowserParser() );
+        this.parsersByClassName.put("de.enough.polish.browser.html.HtmlBrowser", new HtmlBrowserParser() );
         this.parsersByClassName.put("javax.microedition.lcdui.StringItem", new StringItemParser() );
         this.parsersByClassName.put("javax.microedition.lcdui.ImageItem", new ImageItemParser() );
         this.parsersByClassName.put("javax.microedition.lcdui.ChoiceGroup", new ChoiceGroupParser() );
