@@ -30,9 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.enough.polish.BuildException;
-import org.apache.tools.ant.Project;
 
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Environment;
 import de.enough.polish.Variable;
 
