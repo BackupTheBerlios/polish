@@ -27,7 +27,7 @@
  */
 package de.enough.polish.browser.rss;
 
-import de.enough.polish.browser.chtml.HtmlBrowser;
+import de.enough.polish.browser.html.HtmlBrowser;
 import de.enough.polish.ui.Style;
 
 public class RssBrowser

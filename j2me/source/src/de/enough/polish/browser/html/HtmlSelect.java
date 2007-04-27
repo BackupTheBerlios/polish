@@ -25,7 +25,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.browser.chtml;
+package de.enough.polish.browser.html;
 
 import de.enough.polish.ui.Choice;
 import de.enough.polish.ui.ChoiceGroup;
