@@ -334,5 +334,10 @@ public class Variable {
 		}
 		return true;
 	}
+	
+	public String toString()
+	{
+		return this.name + ":" + this.value;
+	}
 
 }
