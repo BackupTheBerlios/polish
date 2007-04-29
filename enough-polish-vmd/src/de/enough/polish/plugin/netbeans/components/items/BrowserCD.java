@@ -9,23 +9,20 @@
 
 package de.enough.polish.plugin.netbeans.components.items;
 
-import java.util.Arrays;
-import java.util.List;
 import org.netbeans.modules.vmd.api.codegen.CodeSetterPresenter;
-import org.netbeans.modules.vmd.api.model.ComponentDescriptor;
-import org.netbeans.modules.vmd.api.model.Presenter;
-import org.netbeans.modules.vmd.api.model.PropertyDescriptor;
-import org.netbeans.modules.vmd.api.model.TypeDescriptor;
-import org.netbeans.modules.vmd.api.model.TypeID;
-import org.netbeans.modules.vmd.api.model.VersionDescriptor;
+import org.netbeans.modules.vmd.api.model.*;
 import org.netbeans.modules.vmd.api.properties.DefaultPropertiesPresenter;
 import org.netbeans.modules.vmd.midp.codegen.MidpParameter;
 import org.netbeans.modules.vmd.midp.codegen.MidpSetter;
+import org.netbeans.modules.vmd.midp.codegen.MidpCodePresenterSupport;
 import org.netbeans.modules.vmd.midp.components.MidpTypes;
 import org.netbeans.modules.vmd.midp.components.MidpVersionable;
 import org.netbeans.modules.vmd.midp.components.items.CustomItemCD;
 import org.netbeans.modules.vmd.midp.propertyeditors.PropertiesCategories;
 import org.netbeans.modules.vmd.midp.propertyeditors.PropertyEditorString;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * <p>Describes the Browser item of J2ME Polish.</p>
@@ -71,7 +68,8 @@ public class BrowserCD extends ComponentDescriptor {
                 // define a default contructor of the "MyForm" class
                 .addSetters(MidpSetter.createConstructor(TYPEID, MidpVersionable.MIDP).addParameters())
                 // define "setMyValue" setter
-                .addSetters (MidpSetter.createSetter("go", MidpVersionable.MIDP).addParameters(PROP_URL))
+                .addSetters (MidpSetter.createSetter("go", MidpVersionable.MIDP).addParameters(PROP_URL)),
+            MidpCodePresenterSupport.createAddImportPresenter ()
         );
     }
 
