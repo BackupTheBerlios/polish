@@ -9,7 +9,7 @@
 
 package de.enough.polish.plugin.netbeans.modelparser;
 
-import de.enough.polish.browser.chtml.HtmlBrowser;
+import de.enough.polish.browser.html.HtmlBrowser;
 import de.enough.polish.plugin.netbeans.components.items.BrowserCD;
 import de.enough.polish.ui.Item;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
