@@ -36,6 +36,7 @@ import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.TextUtil;
 import de.enough.polish.xml.SimplePullParser;
 
 import javax.microedition.lcdui.Command;
@@ -405,7 +406,7 @@ public class HtmlTagHandler
       sb.append(separatorChar);
       sb.append(name);
       sb.append('=');
-      sb.append(value);
+      sb.append(TextUtil.encodeUrl(value));
       separatorChar = '&';
     }
     return sb.toString();
