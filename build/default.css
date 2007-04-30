@@ -180,3 +180,11 @@ rightcommand {
     }
     */
 }
+
+.browserOption {
+	view-type: exclusive;
+	layout: left | expand;
+}
+
+.browserOptionItem {
+}
