@@ -316,12 +316,12 @@ implements Runnable
         {
           //#debug
           System.out.println("Michael: Calling handler: " + parser.getName() + " " + attributeMap);
-          
+
           handler.handleTag(this, parser, parser.getName(), openingTag, attributeMap);
         }
         else
         {
-          //#debug
+        	//#debug
         	System.out.println( "no handler for " + parser.getName() );
         }
       }
