@@ -29,6 +29,7 @@ package de.enough.polish.browser.html;
 
 import de.enough.polish.browser.Browser;
 import de.enough.polish.browser.TagHandler;
+import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ImageItem;
 import de.enough.polish.ui.Item;
@@ -128,7 +129,9 @@ public class HtmlTagHandler
     			  //debug error
     			  System.out.println("Error in HTML-Code. You cannot open a <select>-tag inside another <select>-tag.");
 
-    			  this.browser.add(this.currentSelect.getChoiceGroup());
+    			  ChoiceGroup choiceGroup = this.currentSelect.getChoiceGroup();
+    			  this.browser.add(choiceGroup);
+    			  this.currentForm.addItem(choiceGroup);
     			  this.currentSelect = null;
     		  }
 
@@ -137,7 +140,9 @@ public class HtmlTagHandler
     	  }
     	  else {
     		  if (this.currentSelect != null) {
-    			  this.browser.add(this.currentSelect.getChoiceGroup());
+    			  ChoiceGroup choiceGroup = this.currentSelect.getChoiceGroup();
+    			  this.browser.add(choiceGroup);
+    			  this.currentForm.addItem(choiceGroup);
     			  this.currentSelect = null;
     		  }
     		  //#mdebug error
@@ -401,6 +406,11 @@ public class HtmlTagHandler
       {
         TextField textField = (TextField) item;
         value = textField.getText();
+      }
+      else if (item instanceof ChoiceGroup) {
+    	  ChoiceGroup choiceGroup = (ChoiceGroup) item;
+    	  HtmlSelect htmlSelect = (HtmlSelect) choiceGroup.getAttribute(HtmlSelect.SELECT);
+    	  value = htmlSelect.getValue(choiceGroup.getSelectedIndex());
       }
       
       sb.append(separatorChar);

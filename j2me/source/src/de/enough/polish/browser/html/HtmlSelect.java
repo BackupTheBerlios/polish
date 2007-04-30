@@ -34,7 +34,7 @@ import java.util.Vector;
 
 public class HtmlSelect
 {
-	private static final String SELECT = "select";
+	public static final String SELECT = "select";
 
 	private String name;
 	private int selectedIndex;
@@ -53,6 +53,11 @@ public class HtmlSelect
 	public String getName()
 	{
 		return this.name;
+	}
+
+	public String getValue(int index)
+	{
+		return (String) this.optionValues.elementAt(index);
 	}
 	
 	public void addOption(String name)
@@ -86,7 +91,8 @@ public class HtmlSelect
 				choiceGroup.setSelectedIndex(this.selectedIndex, true);
 			}
 
-			choiceGroup.setAttribute(SELECT, choiceGroup);
+			choiceGroup.setAttribute("name", this.name);
+			choiceGroup.setAttribute(SELECT, this);
 			return choiceGroup;
 		}
 		catch (Exception e)
