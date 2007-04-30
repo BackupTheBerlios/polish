@@ -37,6 +37,7 @@ public class HtmlSelect
 	private static final String SELECT = "select";
 
 	private String name;
+	private int selectedIndex;
 	private Vector optionNames;
 	private Vector optionValues;
 
@@ -44,6 +45,7 @@ public class HtmlSelect
 	{
 		this.name = name;
 
+		this.selectedIndex = -1;
 		this.optionNames = new Vector();
 		this.optionValues = new Vector();
 	}
@@ -55,13 +57,17 @@ public class HtmlSelect
 	
 	public void addOption(String name)
 	{
-		addOption(name, name);
+		addOption(name, name, false);
 	}
 
-	public void addOption(String name, String value)
+	public void addOption(String name, String value, boolean selected)
 	{
 		this.optionNames.addElement(name);
 		this.optionValues.addElement(value);
+
+		if (selected) {
+			this.selectedIndex = this.optionNames.size() - 1;
+		}
 	}
 	
 	public ChoiceGroup getChoiceGroup()
@@ -74,6 +80,10 @@ public class HtmlSelect
 			for (int i = 0; i < this.optionNames.size(); i++) {
 				//#style browserOptionItem
 				choiceGroup.append((String) this.optionNames.elementAt(i), null);
+			}
+
+			if (this.selectedIndex != -1) {
+				choiceGroup.setSelectedIndex(this.selectedIndex, true);
 			}
 
 			choiceGroup.setAttribute(SELECT, choiceGroup);

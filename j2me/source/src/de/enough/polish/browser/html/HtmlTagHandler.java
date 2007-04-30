@@ -151,6 +151,7 @@ public class HtmlTagHandler
     	  if (this.currentSelect != null && opening) {
     		  // TODO: handle "seclected" attribute.
     		  String value = parser.getAttributeValue("value");
+    		  String selected = parser.getAttributeValue("selected");
     		  parser.next();
     		  String name = parser.getText();
 
@@ -158,7 +159,7 @@ public class HtmlTagHandler
     			  value = name;
     		  }
 
-    		  this.currentSelect.addOption(name, value);
+    		  this.currentSelect.addOption(name, value, selected != null);
     	  }
     	  return true;
       }
