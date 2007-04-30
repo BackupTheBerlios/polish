@@ -45,8 +45,6 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
-import com.sun.org.apache.bcel.internal.generic.LoadClass;
-
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
