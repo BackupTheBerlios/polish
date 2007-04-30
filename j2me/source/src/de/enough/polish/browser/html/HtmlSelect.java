@@ -69,7 +69,7 @@ public class HtmlSelect
 		try
 		{
 		//#style browserChoiceGroup
-		ChoiceGroup choiceGroup = new ChoiceGroup(null, Choice.POPUP);
+		ChoiceGroup choiceGroup = new ChoiceGroup(null, Choice.EXCLUSIVE);
 
 		for (int i = 0; i < this.optionNames.size(); i++) {
 			//#style browserChoiceItem
