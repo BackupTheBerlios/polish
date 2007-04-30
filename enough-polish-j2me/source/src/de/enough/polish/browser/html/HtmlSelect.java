@@ -68,16 +68,16 @@ public class HtmlSelect
 	{
 		try
 		{
-		//#style browserChoiceGroup
-		ChoiceGroup choiceGroup = new ChoiceGroup(null, Choice.EXCLUSIVE);
+			//#style browserOption
+			ChoiceGroup choiceGroup = new ChoiceGroup(null, Choice.EXCLUSIVE);
 
-		for (int i = 0; i < this.optionNames.size(); i++) {
-			//#style browserChoiceItem
-			choiceGroup.append((String) this.optionNames.elementAt(i), null);
-		}
+			for (int i = 0; i < this.optionNames.size(); i++) {
+				//#style browserOptionItem
+				choiceGroup.append((String) this.optionNames.elementAt(i), null);
+			}
 
-		choiceGroup.setAttribute(SELECT, choiceGroup);
-		return choiceGroup;
+			choiceGroup.setAttribute(SELECT, choiceGroup);
+			return choiceGroup;
 		}
 		catch (Exception e)
 		{
