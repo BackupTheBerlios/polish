@@ -96,6 +96,7 @@ implements Runnable
   private boolean isWorking;
   private boolean isCancelRequested;
   private String nextUrl;
+  private BrowserListener browserListener;
 
   /**
    * Creates a new Browser without any protocol handlers, tag handlers or style.
@@ -514,6 +515,7 @@ implements Runnable
     {
       try
       {
+    	  notifyDownloadStart(url);
         ProtocolHandler handler = getProtocolHandlerForURL(url);
         
         StreamConnection connection = handler.getConnection(url);
@@ -533,6 +535,7 @@ implements Runnable
         }
         while (bytesRead >= 0);
         
+        notifyDownloadEnd();
         buf = bos.toByteArray();
         
         //#debug
@@ -648,14 +651,14 @@ implements Runnable
   
   protected void goImpl(String url)
   {
+	  notifyPageStart(url);
 	 String previousDocumentBase = this.currentDocumentBase; 
     try
     {
       // Throws an exception if no handler found.
       ProtocolHandler handler = getProtocolHandlerForURL(url);
-    
+
       this.currentDocumentBase = url;
-    
       StreamConnection connection = handler.getConnection(url);
       
       if (connection != null)
@@ -670,6 +673,7 @@ implements Runnable
       System.out.println("Unable to load page " + url + e );
       this.currentDocumentBase = previousDocumentBase;
     }
+    notifyPageEnd();
   }
   
   //////////////// download indicator handling /////////////
@@ -752,6 +756,7 @@ implements Runnable
 
     while (this.isRunning)
     {
+    	try {
       if (this.isRunning && this.nextUrl != null)
       {
         this.isWorking = true;
@@ -769,6 +774,10 @@ implements Runnable
         this.isWorking = false;
         repaint();
       }
+    	}
+    	catch (Exception e) {
+    		e.printStackTrace();
+    	}
         
       if (this.isCancelRequested == true)
       {
@@ -883,5 +892,43 @@ implements Runnable
   public void clearHistory()
   {
     this.history.removeAllElements();
+  }
+
+  protected void notifyPageStart(String url)
+  {
+	  if (this.browserListener != null) {
+		  this.browserListener.notifyPageStart(url);
+	  }
+  }
+  
+  protected void notifyPageEnd()
+  {
+	  if (this.browserListener != null) {
+		  this.browserListener.notifyPageEnd();
+	  }
+  }
+
+  protected void notifyDownloadStart(String url)
+  {
+	  if (this.browserListener != null) {
+		  this.browserListener.notifyDownloadStart(url);
+	  }
+  }
+  
+  protected void notifyDownloadEnd()
+  {
+	  if (this.browserListener != null) {
+		  this.browserListener.notifyDownloadEnd();
+	  }
+  }
+
+  public BrowserListener getBrowserListener()
+  {
+	return this.browserListener;
+  }
+
+  public void setBrowserListener(BrowserListener browserListener)
+  {
+	this.browserListener = browserListener;
   }
 }
