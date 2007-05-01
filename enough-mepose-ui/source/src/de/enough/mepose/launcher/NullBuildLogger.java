@@ -49,18 +49,18 @@ public class NullBuildLogger implements BuildLogger {
      * @see org.apache.tools.ant.BuildLogger#setMessageOutputLevel(int)
      */
     public void setMessageOutputLevel(int level) {
-        fMessageOutputLevel= level;
+        this.fMessageOutputLevel = level;
     }
     
     protected int getMessageOutputLevel() {
-        return fMessageOutputLevel;
+        return this.fMessageOutputLevel;
     }
 
     /**
      * @see org.apache.tools.ant.BuildLogger#setEmacsMode(boolean)
      */
     public void setEmacsMode(boolean emacsMode) {
-        fEmacsMode= emacsMode;
+        this.fEmacsMode = emacsMode;
     }
 
     /**
@@ -74,7 +74,7 @@ public class NullBuildLogger implements BuildLogger {
      */
     public void buildFinished(BuildEvent event) {
         handleException(event);
-        fHandledException= null;
+        this.fHandledException = null;
     }
 
     /**
@@ -111,11 +111,11 @@ public class NullBuildLogger implements BuildLogger {
     }
 
     protected PrintStream getErrorPrintStream() {
-        return fErr;
+        return this.fErr;
     }
     
     protected PrintStream getOutputPrintStream() {
-        return fOut;
+        return this.fOut;
     }
     
     /**
@@ -127,7 +127,7 @@ public class NullBuildLogger implements BuildLogger {
 //        if (err == System.err) {
 //            fErr= null;
 //        } else {
-            fErr= err;
+            this.fErr = err;
 //        }
     }
 
@@ -140,7 +140,7 @@ public class NullBuildLogger implements BuildLogger {
 //        if (output == System.out) {
 //            fOut= null;
 //        } else {
-            fOut= output;
+            this.fOut = output;
 //        }
     }
     
@@ -164,12 +164,12 @@ public class NullBuildLogger implements BuildLogger {
     
     protected void handleException(BuildEvent event) {
         Throwable exception = event.getException();
-        if (exception == null || exception == fHandledException
+        if (exception == null || exception == this.fHandledException
         || exception instanceof OperationCanceledException
         || exception instanceof AntSecurityException) {
             return;
         }
-        fHandledException= exception;
+        this.fHandledException = exception;
 //        logMessage(MessageFormat.format()format(""),new String[] { exception.toString()}),
 //                    Project.MSG_ERR);   
     }
