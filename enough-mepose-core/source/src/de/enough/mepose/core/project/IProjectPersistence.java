@@ -7,9 +7,7 @@ import org.eclipse.core.runtime.CoreException;
 
 public interface IProjectPersistence
 {
-  @SuppressWarnings("unchecked")
   public void putMapInProject(Map map, IProject resource) throws CoreException;
 
-  @SuppressWarnings("unchecked")
   public Map getMapFromProject(IProject project) throws CoreException;
 }

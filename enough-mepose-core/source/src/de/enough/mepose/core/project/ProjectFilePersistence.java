@@ -49,7 +49,6 @@ public class ProjectFilePersistence
 
   private static final String MEPOSE_ENCODING = "UTF8";
   
-  @SuppressWarnings("unchecked")
   public Map getMapFromProject(IProject project) throws CoreException
   {
     String data = null;
@@ -101,7 +100,6 @@ public class ProjectFilePersistence
     }
   }
 
-  @SuppressWarnings("unchecked")
   public void putMapInProject(Map map, IProject project) throws CoreException
   {
     IFile file = project.getFile(MEPOSE_FILENAME);
@@ -131,7 +129,6 @@ public class ProjectFilePersistence
     }
   }
   
-  @SuppressWarnings("unchecked")
   private Map decodeMap(String data)
     throws CoreException
   {
@@ -180,7 +177,6 @@ public class ProjectFilePersistence
     return map;
   }
 
-  @SuppressWarnings("unchecked")
   private String encodeMap(Map map)
   {
     try
