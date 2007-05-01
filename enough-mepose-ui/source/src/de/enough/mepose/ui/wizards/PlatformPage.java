@@ -242,7 +242,7 @@ public class PlatformPage extends WizardPage {
     
 
     public void createControl(Composite parent) {
-        if(isInitialized) {
+        if(this.isInitialized) {
             return;
         }
         DescriptionDumper descriptionDumper = new DescriptionDumper();
