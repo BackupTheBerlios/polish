@@ -55,7 +55,7 @@ public class AntProcessBuildLogger extends NullBuildLogger {
         
         StringBuffer fullMessage= new StringBuffer(System.getProperty("line.separator")); //$NON-NLS-1$
         
-        if (event.getException() == null && event.getTask() != null && !fEmacsMode) {
+        if (event.getException() == null && event.getTask() != null && !this.fEmacsMode) {
             adornMessage(event, fullMessage);
         } else {
             fullMessage.append(message);
@@ -128,7 +128,7 @@ public class AntProcessBuildLogger extends NullBuildLogger {
     }
 
     private AntStreamMonitor getMonitor(int priority) {
-        AntStreamsProxy proxy = (AntStreamsProxy)fProcess.getStreamsProxy();
+        AntStreamsProxy proxy = (AntStreamsProxy) this.fProcess.getStreamsProxy();
         AntStreamMonitor monitor = null;
         switch (priority) {
             case Project.MSG_INFO:
@@ -186,17 +186,17 @@ public class AntProcessBuildLogger extends NullBuildLogger {
      * already found.
      */
     private AntProcess getAntProcess(String processId) {
-        if (fProcess == null && processId != null) {
+        if (this.fProcess == null && processId != null) {
             IProcess[] all = DebugPlugin.getDefault().getLaunchManager().getProcesses();
             for (int i = 0; i < all.length; i++) {
                 IProcess process = all[i];
                 if (process instanceof AntProcess && processId.equals(process.getAttribute(AbstractEclipseBuildLogger.ANT_PROCESS_ID))) {
-                    fProcess = (AntProcess)process;
+                    this.fProcess = (AntProcess)process;
                     break;
                 }
             }
         }
-        return fProcess;
+        return this.fProcess;
     }
 
     /* (non-Javadoc)
@@ -205,7 +205,7 @@ public class AntProcessBuildLogger extends NullBuildLogger {
      * @see org.apache.tools.ant.BuildListener#buildStarted(org.apache.tools.ant.BuildEvent)
      */
     public void buildStarted(BuildEvent event) {
-        fStartTime= System.currentTimeMillis();
+        this.fStartTime = System.currentTimeMillis();
     }
     
     /* (non-Javadoc)
@@ -240,7 +240,7 @@ public class AntProcessBuildLogger extends NullBuildLogger {
         }
         message.append(StringUtils.LINE_SEP);
         message.append("Total time: ");
-        message.append(getTimeString(System.currentTimeMillis() - fStartTime));
+        message.append(getTimeString(System.currentTimeMillis() - this.fStartTime));
 
         String msg = message.toString();
         if (error == null) {
@@ -249,9 +249,9 @@ public class AntProcessBuildLogger extends NullBuildLogger {
             logMessage(msg,Project.MSG_INFO);
         }
         
-        fHandledException= null;
+        this.fHandledException = null;
 //        logMessage(getTimeString(System.currentTimeMillis() - fStartTime), event, fMessageOutputLevel);
-        fProcess= null;
+        this.fProcess = null;
         event.getProject().removeBuildListener(this);
     }
     
@@ -308,12 +308,12 @@ public class AntProcessBuildLogger extends NullBuildLogger {
     
     protected void handleException(BuildEvent event) {
         Throwable exception = event.getException();
-        if (exception == null || exception == fHandledException
+        if (exception == null || exception == this.fHandledException
         || exception instanceof OperationCanceledException
         || exception instanceof AntSecurityException) {
             return;
         }
-        fHandledException= exception;
+        this.fHandledException = exception;
 //        logMessage(MessageFormat.format(AntSupportMessages.getString("AntProcessBuildLogger.BUILD_FAILED__{0}_1"), new String[] { exception.toString()}), //$NON-NLS-1$
 //                    event, Project.MSG_ERR);    
     }
