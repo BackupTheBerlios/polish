@@ -322,7 +322,7 @@ public class PathsPage extends WizardPage {
     /**
      * 
      */
-    private void modifySiemensHomeText() {
+    protected void modifySiemensHomeText() {
         String path = this.siemensHomeText.getText();
         File file = new File(path);
         if( ! file.exists() || ! file.isDirectory()) {
@@ -334,7 +334,7 @@ public class PathsPage extends WizardPage {
         }
     }
 
-    private void modifyMotorolaHomeText() {
+    protected void modifyMotorolaHomeText() {
         String path = this.motorolaHomeText.getText();
         File file = new File(path);
         if( ! file.exists() || ! file.isDirectory()) {
