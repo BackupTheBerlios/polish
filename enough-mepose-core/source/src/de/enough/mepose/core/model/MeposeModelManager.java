@@ -34,6 +34,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
 import de.enough.mepose.core.MeposePlugin;
+import de.enough.mepose.core.project.IProjectPersistence;
+import de.enough.mepose.core.project.ProjectFilePersistence;
 import de.enough.mepose.core.project.ProjectPersistence;
 
 
@@ -51,14 +53,14 @@ public class MeposeModelManager {
     private Map modelByProject;
     private Map projectByModel;
     private IProject currentProject;
-    private ProjectPersistence persistence;
+    private IProjectPersistence persistence;
     
     public static class PropertyStorer implements PropertyChangeListener{
         private MeposeModel model;
-        private ProjectPersistence persistence;
+        private IProjectPersistence persistence;
         private IProject project;
         
-        public PropertyStorer(MeposeModel model,ProjectPersistence persistence,IProject project) {
+        public PropertyStorer(MeposeModel model,IProjectPersistence persistence,IProject project) {
             this.model = model;
             this.persistence = persistence;
             this.project = project;
@@ -76,7 +78,13 @@ public class MeposeModelManager {
     public MeposeModelManager() {
         this.modelByProject = new HashMap();
         this.projectByModel = new HashMap();
-        this.persistence = new ProjectPersistence();
+        this.persistence = createProjectPersistence();
+    }
+
+    public IProjectPersistence createProjectPersistence()
+    {
+//      return new ProjectPersistence();
+      return new ProjectFilePersistence();
     }
     
     public MeposeModel getModel(IProject project) {

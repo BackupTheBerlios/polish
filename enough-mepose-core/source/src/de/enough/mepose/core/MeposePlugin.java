@@ -26,6 +26,8 @@ import org.osgi.framework.BundleContext;
 
 import de.enough.mepose.core.model.MeposeModelManager;
 import de.enough.mepose.core.model.MiDletChangeListener;
+import de.enough.mepose.core.project.IProjectPersistence;
+import de.enough.mepose.core.project.ProjectFilePersistence;
 import de.enough.mepose.core.project.ProjectPersistence;
 import de.enough.polish.util.ReflectionUtil;
 
@@ -41,7 +43,7 @@ public class MeposePlugin extends Plugin {
 //    private MeposeModel meposeModel;
     private BundleContext bundleContext;
 
-    private MiDletChangeListener miDletChangeListener;
+    private MiDletChangeListener midletChangeListener;
 
 	public MeposePlugin() {
 		super();
@@ -140,7 +142,7 @@ public class MeposePlugin extends Plugin {
 		super.stop(context);
 		plugin = null;
 		this.resourceBundle = null;
-        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this.miDletChangeListener);
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener(this.midletChangeListener);
 	}
 
 	
@@ -218,7 +220,7 @@ public class MeposePlugin extends Plugin {
     
     private void initModelManager() {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-        ProjectPersistence persistence = new ProjectPersistence();
+        IProjectPersistence persistence = getMeposeModelManager().createProjectPersistence();
         for (int i = 0; i < projects.length; i++) {
             IProject project = projects[i];
             if(project.isOpen() && isMeposeProject(project)) {
@@ -233,8 +235,8 @@ public class MeposePlugin extends Plugin {
             }
         }
         // TODO: This registration should be done somewhere else.
-        this.miDletChangeListener = new MiDletChangeListener();
-        ResourcesPlugin.getWorkspace().addResourceChangeListener(this.miDletChangeListener);
+        this.midletChangeListener = new MiDletChangeListener();
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(this.midletChangeListener);
     }
 
     

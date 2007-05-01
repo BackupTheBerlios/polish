@@ -40,7 +40,7 @@ public class PolishNature implements IProjectNature
             // Everything is fine. We have a model for this project and do not need to configure it.
 //            return;
 //        }
-        ProjectPersistence p = new ProjectPersistence();
+        IProjectPersistence p = new ProjectPersistence();
         // Search for existing properties.
         Map map = p.getMapFromProject(this.project);
         

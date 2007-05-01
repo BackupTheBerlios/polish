@@ -45,7 +45,7 @@ import de.enough.utils.Arrays;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
-public class ProjectPersistence {
+public class ProjectPersistence implements IProjectPersistence {
 
     private static final String ID = MeposePlugin.class.getName();
     public static final String CONTAINED_KEYS = "CONTAINED_KEYS";
@@ -55,6 +55,9 @@ public class ProjectPersistence {
 //    public static final QualifiedName QN_PLATFORMS_SUPPORTED = new QualifiedName(ID,MeposeModel.ID_SUPPORTED_PLATFORMS);
 //    public static final QualifiedName QN_DEVICES_SUPPORTED = new QualifiedName(ID,MeposeModel.ID_SUPPORTED_DEVICES);;
     
+    /* (non-Javadoc)
+     * @see de.enough.mepose.core.project.IProjectPersistence#putMapInProject(java.util.Map, org.eclipse.core.resources.IProject)
+     */
     public void putMapInProject(Map map, IProject resource) throws CoreException {
         for (Iterator iterator = map.keySet().iterator(); iterator.hasNext(); ) {
             String key = (String) iterator.next();
@@ -65,6 +68,9 @@ public class ProjectPersistence {
         resource.setPersistentProperty(new QualifiedName(ID,CONTAINED_KEYS),keysAsString);
     }
     
+    /* (non-Javadoc)
+     * @see de.enough.mepose.core.project.IProjectPersistence#getMapFromProject(org.eclipse.core.resources.IProject)
+     */
     public Map getMapFromProject(IProject project) throws CoreException {
        String keysAsString = project.getPersistentProperty(new QualifiedName(ID,CONTAINED_KEYS));
        Map p = new HashMap();
