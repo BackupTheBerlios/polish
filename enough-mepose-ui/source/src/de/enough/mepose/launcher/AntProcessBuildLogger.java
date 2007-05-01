@@ -20,9 +20,9 @@ import org.eclipse.ant.internal.ui.launchConfigurations.TaskLinkManager;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.debug.ui.console.IConsoleHyperlink;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
+import org.eclipse.ui.console.IHyperlink;
     
 public class AntProcessBuildLogger extends NullBuildLogger {
     
@@ -120,7 +120,7 @@ public class AntProcessBuildLogger extends NullBuildLogger {
         if (location != null) {
             String newLine= (label + line).trim();
             IRegion region= new Region(offset, label.length() - 3); // only want the name length "[name] "
-            IConsoleHyperlink link= getTaskLink(location);
+            IHyperlink link= getTaskLink(location);
             if (link != null) {
                 TaskLinkManager.addTaskHyperlink(getAntProcess(null), link, region, newLine);
             }
@@ -173,7 +173,7 @@ public class AntProcessBuildLogger extends NullBuildLogger {
      * 
      * @return hyper link, or <code>null</code>
      */
-    private IConsoleHyperlink getTaskLink(Location location) {
+    private IHyperlink getTaskLink(Location location) {
         //TODO: What to do here?
 //        if (location != null) {
 //            return AntUtil.getTaskLink(location.toString(), fBuildFileParent);
