@@ -40,10 +40,9 @@ import de.enough.polish.ExtensionSetting;
 public class FinalizerSetting extends ExtensionSetting {
 
 	/**
-	 * 
+	 * Creates a <code>FinalizerSetting</code> object. 
 	 */
 	public FinalizerSetting() {
-		super();
+		// Exists only to make the class instantiable from everywhere.
 	}
-
 }
