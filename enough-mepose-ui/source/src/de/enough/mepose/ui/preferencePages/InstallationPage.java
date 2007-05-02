@@ -1,12 +1,12 @@
 package de.enough.mepose.ui.preferencePages;
 
-import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.MeposePlugin;
+import de.enough.mepose.ui.SubstitutionDirectoryFieldEditor;
 import de.enough.mepose.ui.propertyPages.PreferencesAdapter;
 
 /**
@@ -22,7 +22,6 @@ import de.enough.mepose.ui.propertyPages.PreferencesAdapter;
  * the main plug-in class. That way, preferences can
  * be accessed directly via the preference store.
  */
-
 public class InstallationPage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
@@ -35,48 +34,40 @@ public class InstallationPage
 	
 	public void createFieldEditors() {
         
-	    addField(new DirectoryFieldEditor(MeposeConstants.ID_POLISH_HOME, 
+	    addField(new SubstitutionDirectoryFieldEditor(MeposeConstants.ID_POLISH_HOME, 
 	                                      "J2ME Polish Installation Directory:", getFieldEditorParent()));
 
         if(MeposePlugin.isMacOS()) {
-            addField(new DirectoryFieldEditor(MeposeConstants.ID_MPP_HOME, 
+            addField(new SubstitutionDirectoryFieldEditor(MeposeConstants.ID_MPP_HOME, 
                                               "MPP Installation Directory:", getFieldEditorParent()));
         }
         else {
-            addField(new DirectoryFieldEditor(MeposeConstants.ID_WTK_HOME, 
+            addField(new SubstitutionDirectoryFieldEditor(MeposeConstants.ID_WTK_HOME, 
                                               "WTK Installation Directory:", getFieldEditorParent()));
         }
 	
-        addField(new DirectoryFieldEditor(MeposeConstants.ID_MOTOROLA_HOME, 
+        addField(new SubstitutionDirectoryFieldEditor(MeposeConstants.ID_MOTOROLA_HOME, 
                                           "Motorola Installation Directory:", getFieldEditorParent()));
         
-	    addField(new DirectoryFieldEditor(MeposeConstants.ID_NOKIA_HOME, 
+	    addField(new SubstitutionDirectoryFieldEditor(MeposeConstants.ID_NOKIA_HOME, 
 	                                      "Nokia Installation Directory:", getFieldEditorParent()));
 	    
-	    addField(new DirectoryFieldEditor(MeposeConstants.ID_SIEMENS_HOME, 
+	    addField(new SubstitutionDirectoryFieldEditor(MeposeConstants.ID_SIEMENS_HOME, 
 	                                      "Siemens Installation Directory:", getFieldEditorParent()));
 
-        addField(new DirectoryFieldEditor(MeposeConstants.ID_SONY_HOME, 
+        addField(new SubstitutionDirectoryFieldEditor(MeposeConstants.ID_SONY_HOME, 
 	                                      "Sony-Ericsson Installation Directory:", getFieldEditorParent()));
-	    
-        
-        
     }
-
-    
     
 	public void init(IWorkbench workbench) {
         // Not needed.
 	}
 
     public boolean performOk() {
-//       
         boolean isPerformOK = super.performOk();
         if(isPerformOK) {
             MeposePlugin.getDefault().savePluginPreferences();
         }
         return isPerformOK;
     }
-	
-    
 }
