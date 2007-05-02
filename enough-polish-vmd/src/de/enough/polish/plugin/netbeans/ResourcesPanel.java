@@ -55,7 +55,7 @@ public class ResourcesPanel extends JPanel implements ChangeListener, SelectionL
                 UiAccess.setStyle(this.currentItem, style);
             } else {
                 Screen screen = (Screen) this.simulationPanel.getSimulation().getCurrentDisplayable();
-                Style style = screen.getStyle();
+                Style style = screen.getScreenStyle();
                 if (style == null) {
                     style = new Style();
                 }

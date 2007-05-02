@@ -8,6 +8,7 @@
  */
 
 package de.enough.polish.plugin.netbeans;
+import de.enough.polish.Environment;
 import de.enough.polish.plugin.netbeans.settings.PolishSettings;
 import de.enough.polish.preprocess.css.CssAttributesManager;
 import de.enough.polish.runtime.SelectionListener;
@@ -71,8 +72,10 @@ public class PolishDataEditorVisual extends JPanel
         
        SwingStyleEditor styleEditorVisual = new SwingStyleEditor();
         ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
-        CssAttributesManager manager = CssAttributesManager.getInstance( new File(PolishSettings.getDefault ().getPolishHome ()), resourceUtil );
-	this.styleEditor = new StyleEditor( manager,  styleEditorVisual );
+        File polishHome = new File(PolishSettings.getDefault ().getPolishHome ());
+        Environment environment = new Environment( polishHome );
+        CssAttributesManager manager = CssAttributesManager.getInstance( polishHome, resourceUtil );
+	this.styleEditor = new StyleEditor( manager, environment, styleEditorVisual );
 	this.styleEditor.addDefaultPartEditors();
 	this.styleEditor.addStyleListener( this );
 
@@ -110,9 +113,10 @@ public class PolishDataEditorVisual extends JPanel
      * @see de.enough.polish.styleeditor.StyleListener#notifyStyleUpdated(de.enough.polish.styleeditor.EditStyle)
     */
     public void notifyStyleUpdated(EditStyle style) {
-	//System.out.println("Test.notifyStyleUpdated(): layout=" + Integer.toHexString( style.getStyle().layout ));
-	style.getItemOrScreen().setStyle( style.getStyle() );
-	this.simulation.getCurrentDisplayable()._requestRepaint();
+        //System.out.println("Test.notifyStyleUpdated(): layout=" + Integer.toHexString( style.getStyle().layout ));
+        style.getItemOrScreen().setStyle( style.getStyle() );
+        style.getItemOrScreen().requestInit();
+        this.simulation.getCurrentDisplayable()._requestRepaint();
     }
 
    /* (non-Javadoc)
@@ -168,7 +172,7 @@ class SimulationDropListener extends DropTargetAdapter {
         Point location = event.getLocation();
         System.out.println("drag'n'drop at " + location.x + ", " + location.y);
         Item item = screen.getItemAt( location.x, location.y );
-        Style style = item != null ? item.getStyle() : screen.getStyle();
+        Style style = item != null ? item.getStyle() : screen.getScreenStyle();
         final Transferable transferable = event.getTransferable(); 
         if (transferable.isDataFlavorSupported(Simulation.BACKGROUND_DATA_FLAVOR)) {
             //System.out.println("data flavor supported...");
