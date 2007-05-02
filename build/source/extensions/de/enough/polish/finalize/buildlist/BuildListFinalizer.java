@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 public class BuildListFinalizer
 	extends Finalizer
@@ -19,14 +20,33 @@ public class BuildListFinalizer
 
 	public void finalize(File jadFile, File jarFile, Device device, Locale locale, Environment env)
 	{
+		StringBuffer userAgents = new StringBuffer();
+		String tmpUserAgents = device.getCapability("wap.userAgent");
+
+		if (tmpUserAgents != null) {
+			StringTokenizer st = new StringTokenizer(tmpUserAgents, "\u0001");
+			
+			while (st.hasMoreTokens()) {
+				userAgents.append("\"");
+				userAgents.append(st.nextToken());
+				userAgents.append("\"");
+				
+				if (st.hasMoreTokens()) {
+					userAgents.append(",");
+				}
+			}
+		}
+
 		StringBuffer sb = new StringBuffer();
 		sb.append(device.getIdentifier());
 		sb.append("\t");
 		sb.append(locale);
 		sb.append("\t");
-		sb.append(jarFile);
+		sb.append(jarFile.getName());
 		sb.append("\t");
-		sb.append(jadFile);
+		sb.append(jadFile.getName());
+		sb.append("\t");
+		sb.append(userAgents);
 		sb.append("\r\n");
 
 		try {
