@@ -859,4 +859,11 @@
 		<classpath>${polish.home}/bin/extensions</classpath>
 	</extension>
 	
+	<extension>
+		<type>finalizer</type>
+		<name>buildlist</name>
+		<class>de.enough.polish.finalize.buildlist.BuildListFinalizer</class>
+		<classpath>${polish.home}/bin/extensions</classpath>
+	</extension>
+
 </extensions>
