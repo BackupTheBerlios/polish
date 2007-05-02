@@ -35,11 +35,11 @@ package de.enough.mepose.ui.propertyPages;
  * </pre>
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
  */
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Preferences;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.ListenerList;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
 /**
@@ -68,7 +68,7 @@ public class PreferencesAdapter implements IPreferenceStore {
     }
 
     /** Listeners on the adapter */
-    private ListenerList fListeners= new ListenerList();
+    private ListenerList fListeners= new ListenerList(ListenerList.IDENTITY);
 
     /** Listener on the adapted Preferences */
     private PropertyChangeListener fListener= new PropertyChangeListener();
