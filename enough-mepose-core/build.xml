@@ -144,7 +144,7 @@
 			<fileset dir="${build.result.folder}" includes="MeposeCore.jar" excludes="lib/enough-j2mepolish-client.jar,lib/enough-j2mepolish-extensions.jar"			/>
 		</copy>
 		<copy todir="${destination.temp.folder}/de.enough.mepose.core_0.7.21" failonerror="true" overwrite="false">
-			<fileset dir="${basedir}" includes="MeposeCore.jar,lib/,plugin.xml,META-INF/,templates/,j2mepolish124/,schema/,mpp-sdk/,icons/,lib/enough-j2mepolish-build.jar,lib/jdom.jar" excludes="lib/enough-j2mepolish-client.jar,lib/enough-j2mepolish-extensions.jar"			/>
+			<fileset dir="${basedir}" includes="MeposeCore.jar,lib/,plugin.xml,META-INF/,templates/,j2mepolish124/,schema/,icons/,lib/enough-j2mepolish-build.jar,lib/jdom.jar" excludes="lib/enough-j2mepolish-client.jar,lib/enough-j2mepolish-extensions.jar"			/>
 		</copy>
 	</target>
 
