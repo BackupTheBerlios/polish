@@ -27,8 +27,6 @@ import org.osgi.framework.BundleContext;
 import de.enough.mepose.core.model.MeposeModelManager;
 import de.enough.mepose.core.model.MiDletChangeListener;
 import de.enough.mepose.core.project.IProjectPersistence;
-import de.enough.mepose.core.project.ProjectFilePersistence;
-import de.enough.mepose.core.project.ProjectPersistence;
 import de.enough.polish.util.ReflectionUtil;
 
 

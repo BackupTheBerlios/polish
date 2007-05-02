@@ -36,7 +36,6 @@ import org.eclipse.core.runtime.CoreException;
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.project.IProjectPersistence;
 import de.enough.mepose.core.project.ProjectFilePersistence;
-import de.enough.mepose.core.project.ProjectPersistence;
 
 
 /**
