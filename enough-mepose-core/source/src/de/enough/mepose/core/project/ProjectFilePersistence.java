@@ -153,10 +153,6 @@ public class ProjectFilePersistence
           IStringVariableManager stringVariableManager =
             VariablesPlugin.getDefault().getStringVariableManager();
           String newValue = stringVariableManager.performStringSubstitution(value);
-          
-          System.out.println("Michael: name=" + name + ", value=" + value);
-          System.out.println("Michael: substituted value=" + newValue);
-          
           map.put(name, value);
         }
       }
