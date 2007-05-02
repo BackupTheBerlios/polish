@@ -61,14 +61,13 @@ public class LibrarySetting extends Setting {
 		super();
 	}
 	
-	
-
 	/**
 	 * @return Returns the dir.
 	 */
 	public File getDir() {
 		return this.dir;
 	}
+
 	/**
 	 * @param dir The dir to set.
 	 */
@@ -82,12 +81,14 @@ public class LibrarySetting extends Setting {
 		this.dir = dir;
 		this.dirOrFile = dir;
 	}
-	/**
+
+  /**
 	 * @return Returns the file.
 	 */
 	public File getFile() {
 		return this.file;
 	}
+
 	/**
 	 * @param file The file to set.
 	 */
@@ -102,14 +103,16 @@ public class LibrarySetting extends Setting {
 		this.dirOrFile = file;
 	}
 
-	
+	/**
+	 * @return
+	 */
 	public File getDirOrFile() {
 		return this.dirOrFile;
 	}
 
 
 	/**
-	 * @return
+	 * @return <code>true</code> if 
 	 */
 	public boolean isDirectory() {
 		return (this.dir != null);
@@ -122,28 +125,38 @@ public class LibrarySetting extends Setting {
 		return this.dirOrFile.lastModified();
 	}
 	
+	/**
+	 * @return the name of the library file
+	 */
 	public String getName() {
 		return this.dirOrFile.getName();
 	}
 	
+	/**
+	 * @return the absolute path of the library
+	 */
 	public String getAbsolutePath() {
 		return this.dirOrFile.getAbsolutePath();
 	}
 
-
-
 	/**
-	 * @return
+	 * @return the id of the library
 	 */
 	public int getId() {
 		return this.id;
 	}
 	
+	/**
+	 * @param id the id of the library
+	 */
 	public void setId( int id ) {
 		this.id = id;
 	}
 	
-	
+	/**
+	 * @param cacheBaseDir
+	 * @return
+	 */
 	public boolean copyToCache( File cacheBaseDir ) {
 		
 		boolean changed = false;
@@ -237,6 +250,9 @@ public class LibrarySetting extends Setting {
 		return changed;
 	}
 	
+	/**
+	 * @param targetDir
+	 */
 	public void copyFromCache( File targetDir ) {
 		//targetDir = new File( targetDir, "" + this.id );
 		//System.out.println("<<<<copyFromCache: copying " + this.cacheDir + " to " + targetDir );
@@ -248,7 +264,10 @@ public class LibrarySetting extends Setting {
 		}
 	}
 	
-	public boolean isLibraryChange() {
+	/**
+	 * @return
+	 */
+	public boolean isLibraryChanged() {
 		return this.libraryChanged;
 	}
 }
