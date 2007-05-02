@@ -1,0 +1,65 @@
+<project 
+	name="enough-polish-styleditor" 
+	default="bin-dist">
+
+	<!-- global properties -->
+	<property name="Version" value="0.9" />
+		
+	<!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
+	
+	<target name="init">
+		<!-- Create the time stamp -->
+	    <tstamp/>
+	</target>
+		
+	<target name="bin-dist" depends="init">
+		<delete dir="dist" />
+		<mkdir dir="dist" />
+		<!--
+		<delete dir="bin" />
+		<mkdir dir="bin/classes" />
+		<javac 
+			srcdir="src"
+			destdir="bin/classes"
+			target="1.2"
+			source="1.3"
+			classpath="../enough-polish-build/import/cldc-1.0.jar"
+			/>
+		-->
+		<!-- create the binary build distribution -->
+		<jar destfile="dist/enough-j2mepolish-styleeditor.jar"
+		     basedir="bin/classes"
+			 excludes="**/*.html"
+			 index="true"
+		    >
+			<!--
+			<fileset dir="." includes="resources/*" />
+			-->
+		</jar>
+		<!--
+		<proguard>
+		  -ignorewarnings
+		  -defaultpackage
+		  -libraryjars ${java.home}/lib/rt.jar:../enough-polish-build/lib/AppleJavaExtensions.jar
+		  -injars      ../enough-polish-sample-browser/dist/Generic-MppPhone-en_US-browser.jar:dist/enough-j2mepolish-runtime.jar
+		  -outjars     test.jar
+
+		  -keepclasseswithmembers public class * {
+		      public static void main(java.lang.String[]);
+		  }
+
+		  -keep class de.enough.polish.sample.browser.BrowserMidlet
+		</proguard>
+		-->
+	</target>
+
+	<target name="clean" depends="init">
+		<delete dir="dist" />
+		<!--
+		<delete dir="build" />
+		<delete dir="tmp" />
+		-->
+	</target>
+
+
+</project>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="source/src"/>
+	<classpathentry kind="src" path="source/test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/enough-j2mepolish-client.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-build"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-runtime"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>
