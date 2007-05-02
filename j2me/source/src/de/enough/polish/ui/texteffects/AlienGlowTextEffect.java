@@ -134,6 +134,7 @@ public class AlienGlowTextEffect extends TextEffect {
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
+		this.lastText = null;
 		//#if polish.css.text-alien-glow-inner-color
 			Color sShadowColorObj = style.getColorProperty( "text-alien-glow-inner-color" );
 			if (sShadowColorObj != null) {

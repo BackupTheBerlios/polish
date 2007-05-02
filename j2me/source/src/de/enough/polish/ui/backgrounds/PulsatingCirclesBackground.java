@@ -61,6 +61,10 @@ public class PulsatingCirclesBackground extends Background {
 	private final int preciseMaxDiameter;
 	private final int[] preciseDiameters; 
 	private final int diameterGrowth;
+	private int minDiameter;
+	private int maxDiameter;
+	private int numberOfCircles;
+	private int step;
 	
 	/**
 	 * Creates a new pulsating-circle background.
@@ -82,6 +86,10 @@ public class PulsatingCirclesBackground extends Background {
 		this.startColor = firstColor;
 		this.firstColor = firstColor;
 		this.secondColor = secondColor;
+		this.minDiameter = minDiameter;
+		this.maxDiameter = maxDiameter;
+		this.numberOfCircles = numberOfCircles;
+		this.step = step;
 		this.preciseMinDiameter = minDiameter * 100;
 		this.preciseMaxDiameter = maxDiameter * 100;
 		this.diameters = new short[ numberOfCircles ];

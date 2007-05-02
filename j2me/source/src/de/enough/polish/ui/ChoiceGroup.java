@@ -1389,10 +1389,12 @@ implements Choice
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
-	protected boolean handlePointerPressed(int x, int y) {
+	protected boolean handlePointerPressed(int relX, int relY) {
+		//#debug
+		System.out.println("ChoiceGroup.handlePointerPressed(" + relX + ", " + relY + ") for " + this );
 		//#ifdef polish.usePopupItem
 		if (this.isPopup && this.isPopupClosed) {
-			if (isInContentArea(x, y)) {
+			if (isInContentArea(relX, relY)) {
 				openPopup();
 				return true;
 			} else {
@@ -1400,8 +1402,8 @@ implements Choice
 			}
 		}
 		//#endif
-		boolean success = super.handlePointerPressed(x, y); // focuses the appropriate item
-		if (isInContentArea(x, y)) {
+		boolean success = super.handlePointerPressed(relX, relY); // focuses the appropriate item
+		if (success || isInItemArea(relX, relY)) {
 			success |= handleKeyPressed( -1, Canvas.FIRE );
 		}
 		return success;

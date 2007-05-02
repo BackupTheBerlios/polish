@@ -108,6 +108,7 @@ implements ImageConsumer
 		this.xOffset = xOffset;
 		this.yOffset = yOffset;
 		this.doCenter = ( anchor == (Graphics.VCENTER | Graphics.HCENTER) );
+		this.isLoaded = (imageUrl == null);
 	}
 	
 	/**

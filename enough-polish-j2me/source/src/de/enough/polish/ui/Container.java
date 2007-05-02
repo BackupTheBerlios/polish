@@ -744,6 +744,8 @@ public class Container extends Item {
 	
 		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
 		boolean hasFocusableItem = false;
+		int myContentStartX = Integer.MAX_VALUE;
+		int myContentEndX = Integer.MIN_VALUE;
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
 			//System.out.println("initalising " + item.getClass().getName() + ":" + i);
@@ -791,8 +793,18 @@ public class Container extends Item {
 			} else {
 				item.relativeX = 0;
 			}
+			if (item.relativeX < myContentStartX ) {
+				myContentStartX = item.relativeX;
+			}
+			if (item.relativeX + width > myContentEndX ) {
+				myContentEndX = item.relativeX + width;
+			}
 			myContentHeight += height + this.paddingVertical;
 			//System.out.println("item.yTopPos=" + item.yTopPos);
+		}
+		if (myContentEndX - myContentStartX > myContentWidth) {
+			// this can happen when there are different layouts like left and right within the same container:
+			myContentWidth = myContentEndX - myContentStartX;
 		}
 		if (!hasFocusableItem) {
 			this.appearanceMode = PLAIN;
@@ -878,27 +890,29 @@ public class Container extends Item {
 			//synchronized (this.itemsList) {
 				myItems = this.items;
 			//}
+//			if (!(this.isLayoutCenter || this.isLayoutRight)) {
+//				// adjust the right border:
+//				rightBorder = leftBorder + this.contentWidth;
+//			}
 			int focusedX = x;
 			int focusedY = 0;
 			int focusedRightBorder = rightBorder;
-			if (!(this.isLayoutCenter || this.isLayoutRight)) {
-				// adjust the right border:
-				rightBorder = leftBorder + this.contentWidth;
-			}
 			int startY = g.getClipY();
 			int endY = startY + g.getClipHeight();
 			Item focItem = this.focusedItem;
 			int focIndex = this.focusedIndex;
+			//int originalY = y;
 			for (int i = 0; i < myItems.length; i++) {
 				Item item = myItems[i];
 				// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
-				// since after every item a line break will be done.
+				// since after every item a line break will be done. Use view-type: midp2; to place several items into a single row.
 				if (i == focIndex) {
 					focusedY = y;
 					item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
 				} else if ( y + item.itemHeight >= startY && y < endY ){
 					// the currently focused item is painted last
 					item.paint(x, y, leftBorder, rightBorder, g);
+					//System.out.println("painting item at " + x + ", " + y + " - x+item.relativeX=" + (x+ item.relativeX) + ", y+item.relativeY=" + (originalY + item.relativeY) );
 //				} else {
 //					System.out.println("skipping " + item);
 				}
@@ -1417,7 +1431,7 @@ public class Container extends Item {
 //			if (this instanceof ChoiceGroup) {
 //				System.out.println("SET.STYLE / CHOICEGROUP: found view-type (1): " + (viewType != null) + " for " + this);
 //			}
-			if (this.view != null) {
+			if (this.view != null && this.view instanceof ContainerView) {
 				ContainerView viewType = (ContainerView) this.view; // (ContainerView) style.getObjectProperty("view-type");
 				this.containerView = viewType;
 				this.view = null; // set to null so that this container can control the view completely. This is necessary for scrolling, for example.
@@ -1761,26 +1775,28 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int relX, int relY) {
+		//#debug
+		System.out.println("Container.handlePointerPressed(" + relX + ", " + relY + ") for " + this );
 		//System.out.println("Container.handlePointerPressed( x=" + x + ", y=" + y + "): adjustedY=" + (y - (this.yOffset  + this.marginTop + this.paddingTop )) );
 		// an item within this container was selected:
 		relY -= this.yOffset;
+		relX -= this.contentX;
+		relY -= this.contentY;
 		Item item = this.focusedItem;
 		if (item != null) {
 			// the focused item can extend the parent container, e.g. subcommands, 
 			// so give it a change to process the event itself:
-			boolean processed = item.handlePointerPressed(relX - (this.contentX + item.relativeX), relY - ( this.contentY + item.relativeY) );
+			boolean processed = item.handlePointerPressed(relX - item.relativeX, relY - item.relativeY );
 			if (processed) {
 				//#debug
 				System.out.println("pointer event at " + relX + "," + relY + " consumed by focusedItem.");
 				return true;
 			}
 		}
-		if (!isInContentArea(relX, relY + this.yOffset)) {
+		if (!isInItemArea(relX, relY)) {
 			//System.out.println("Container.handlePointerPressed(): out of range, xLeft=" + this.xLeftPos + ", xRight="  + this.xRightPos + ", contentHeight=" + this.contentHeight );
 			return false;
 		}
-		relX -= this.contentX;
-		relY -= this.contentY;
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
 				if ( this.containerView.handlePointerPressed(relX,relY) ) {

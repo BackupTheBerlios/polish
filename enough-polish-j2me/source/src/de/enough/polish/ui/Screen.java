@@ -3282,6 +3282,7 @@ implements AccessibleCanvas
 		}
 		//#ifdef tmp.usingTitle
 			if (this.title != null) {
+				//item = this.title.getItemAt( x - this.title.relativeX, y - this.title.relativeY );
 				item = this.title.getItemAt( x - this.title.relativeX, y - this.title.relativeY );
 				if (item != null) {
 					return item;
@@ -3312,7 +3313,7 @@ implements AccessibleCanvas
 	 * 
 	 * @return this screen's style
 	 */
-	public Style getStyle() {
+	public Style getScreenStyle() {
 		return this.style;
 	}
 

@@ -19,24 +19,26 @@ public class BallBackground extends Background {
 	private boolean gameover;
 	private int  changeX[],changeY[],detective[],width, height,direction[];
 	//private final String imageURL;
-	private transient Sprite sprite[];
+	private transient Sprite[] sprite;
 //	x--{1,5,8}, y--{2,5,6}, y++{3,7,8}, x++{4,6,7}
+	private String url;
 	
 	public BallBackground() {
 		this.random = new Random();
 	}
-	public BallBackground(int color, int borderColor,String url,int width,int height,int number) {
+	public BallBackground(int color, int borderColor,String url,int roundWidth,int roundHeight,int number) {
 		super();
-		this.roundHeight = height;
-		this.roundWidth = width;
-		this.number = number;
-		this.sprite  = new Sprite [this.number];
-		this.changeX = new int[this.number];
-		this.changeY = new int[this.number];
-		this.detective = new int[this.number];
-		this.direction = new int[this.number];
 		this.color = color;
 		this.borderColor = borderColor;
+		this.url = url;
+		this.roundWidth = roundWidth;
+		this.roundHeight = roundHeight;
+		this.number = number;
+		this.sprite  = new Sprite [number];
+		this.changeX = new int[number];
+		this.changeY = new int[number];
+		this.detective = new int[number];
+		this.direction = new int[number];
 		this.random = new Random();
 		Sprite s = null;
 		int a = 0;
@@ -44,7 +46,7 @@ public class BallBackground extends Background {
 			Image image = Image.createImage(url);
 			s = new Sprite(image, this.roundWidth, this.roundHeight);
 			a = (image.getHeight() / this.roundHeight) + (image.getWidth() / this.roundWidth);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

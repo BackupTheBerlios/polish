@@ -116,6 +116,7 @@ public class DropShadowTextEffect extends TextEffect {
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
+		this.lastText = null;
 		//#if polish.css.text-drop-shadow-inner-color
 			Color sShadowColorObj = style.getColorProperty( "text-drop-shadow-inner-color" );
 			if (sShadowColorObj != null) {

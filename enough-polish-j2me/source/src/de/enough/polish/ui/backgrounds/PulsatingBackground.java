@@ -27,6 +27,7 @@
 package de.enough.polish.ui.backgrounds;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.util.DrawUtil;
 
 import javax.microedition.lcdui.Graphics;
 
@@ -58,6 +59,9 @@ public class PulsatingBackground extends Background {
 	private final boolean backAndForth;
 	private boolean directionUp = true;
 	private boolean animationStopped;
+	private int startColor;
+	private int endColor;
+	private int steps;
 	
 
 	/**
@@ -65,8 +69,20 @@ public class PulsatingBackground extends Background {
 	 * @param repeat
 	 * @param backAndForth
 	 */
-	public PulsatingBackground(int[] colors, boolean repeat,
-			boolean backAndForth) 
+	public PulsatingBackground(int startColor, int endColor, int steps, boolean repeat,  boolean backAndForth) 
+	{
+		this( DrawUtil.getGradient(startColor, endColor, steps), repeat, backAndForth );
+		this.startColor = startColor;
+		this.endColor = endColor;
+		this.steps = steps;
+	}
+
+	/**
+	 * @param colors
+	 * @param repeat
+	 * @param backAndForth
+	 */
+	public PulsatingBackground(int[] colors, boolean repeat, boolean backAndForth) 
 	{
 		super();
 		this.currentColor = colors[0];

@@ -36,26 +36,31 @@ public class XmasSnowBackground extends Background {
 	private boolean isRunning = true,plus = true;
 //	private transient Image imgSnowflake;
 	private int[] x,y,z;
-	private int numbers,color,far;
+	private int numberOfFlakes,color,maxFlakeSize;
 	private transient final Random rand = new Random();
+	private int flakeColor = 0xffffff;
 	
 	public XmasSnowBackground() {
 		// just have rand completed
 	}
 	
-	public XmasSnowBackground(int color, String url, int width, int height, int far, int numbers) {
+	public XmasSnowBackground(int color, int snowFlakesColor, int maxSnowFlakeSize, int numbers) {
+		this( color, null, 100, 100, maxSnowFlakeSize, numbers );
+		this.flakeColor = snowFlakesColor;
+	}
+	public XmasSnowBackground(int color, String url, int width, int height, int maxSnowFlakeSize, int numberOfFlakes) {
 		super();
 		this.color = color;
-		this.far = far;
-		this.numbers = numbers;
-		this.x = new int[numbers];
-		this.y = new int[numbers];
-		this.z = new int[numbers];
+		this.maxFlakeSize = maxSnowFlakeSize;
+		this.numberOfFlakes = numberOfFlakes;
+		this.x = new int[numberOfFlakes];
+		this.y = new int[numberOfFlakes];
+		this.z = new int[numberOfFlakes];
 		int i = 0;
-		while(i < numbers){
+		while(i < numberOfFlakes){
 			this.x[i] = Math.abs( rand.nextInt() % width );
 			this.y[i] = Math.abs( rand.nextInt() % height );
-			this.z[i] = Math.abs( rand.nextInt() % far );
+			this.z[i] = Math.abs( rand.nextInt() % maxSnowFlakeSize );
 			i++;
 		}
 //		try {
@@ -75,9 +80,9 @@ public class XmasSnowBackground extends Background {
 		// TODO Auto-generated method stub
 		g.setColor(this.color);
 		g.fillRect(0,0,width,height);
-		g.setColor(0xffffff);
+		g.setColor(this.flakeColor );
 		int i = 0;
-		while(i < this.numbers){
+		while(i < this.numberOfFlakes){
 //			this.x[i]++;
 			if(this.y[i] < height && this.x[i] < width){
 				int z = this.z[i];
@@ -87,7 +92,7 @@ public class XmasSnowBackground extends Background {
 			else{
 				this.y[i] = 0;
 				this.x[i] = Math.abs( rand.nextInt() % width );
-				this.z[i] = Math.abs( rand.nextInt() % this.far );
+				this.z[i] = Math.abs( rand.nextInt() % this.maxFlakeSize );
 			}
 //			System.out.print("X:"+this.x[i]+";Y:"+this.y[i]+";Z:"+this.z[i]+";width"+width+";height"+height+"\n");
 			int size = this.z[i];

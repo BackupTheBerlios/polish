@@ -56,7 +56,7 @@ import de.enough.polish.util.DrawUtil;
 public class VerticalGradientTextEffect extends TextEffect {
 	
 	private int[] colors;
-	private String oldText;
+	private String lastText;
 	//#if polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi
 		//#define tmp.useNokiaUiApi
 		private Image nokiaImageBuffer;
@@ -104,9 +104,9 @@ public class VerticalGradientTextEffect extends TextEffect {
 		int startX = getLeftX( x, orientation, width );
 		int startY = getTopY( y, orientation, height, font.getBaselinePosition() );
 		//#if tmp.useNokiaUiApi
-			if ( this.nokiaImageBuffer == null || text != this.oldText  ){
+			if ( this.nokiaImageBuffer == null || text != this.lastText  ){
 		//#elif polish.midp2
-			if ( this.rgbBuffer == null || text != this.oldText || this.rgbBuffer.length != width * height ){
+			if ( this.rgbBuffer == null || text != this.lastText || this.rgbBuffer.length != width * height ){
 		//#endif
 			// create image buffer
 			//#if tmp.useNokiaUiApi || polish.midp2
@@ -188,7 +188,7 @@ public class VerticalGradientTextEffect extends TextEffect {
 			//#else
 				g.setClip( clipX, clipY, clipWidth, clipHeight );
 			//#endif
-			this.oldText = text;	
+			this.lastText = text;	
 		//#if tmp.useNokiaUiApi || polish.midp2
 			} else {
 				// text has been buffered:
@@ -207,7 +207,8 @@ public class VerticalGradientTextEffect extends TextEffect {
 
 	public void setStyle(Style style) {
 		super.setStyle(style);
-		boolean styleDefined = false;
+		this.lastText = null;
+		boolean styleDefined = false; 
 		int startColor = 0xFFFFFFFF;
 		//#if polish.css.text-vertical-gradient-start-color
 			Integer startColorInt = style.getIntProperty("text-vertical-gradient-start-color");
@@ -240,7 +241,7 @@ public class VerticalGradientTextEffect extends TextEffect {
 		if (styleDefined || this.colors == null) {
 			this.colors = DrawUtil.getGradient(startColor, endColor, steps);
 		}
-		this.oldText = null;
+		this.lastText = null;
 	}
 	
 	

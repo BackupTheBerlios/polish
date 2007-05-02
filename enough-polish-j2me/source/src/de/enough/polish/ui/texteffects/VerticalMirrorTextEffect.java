@@ -196,6 +196,7 @@ public class VerticalMirrorTextEffect extends TextEffect {
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
+		this.lastText = null;
 		this.shadowColor = style.getFontColor();
 		//#if polish.css.text-mirror-color
 			Color shadowColorObj = style.getColorProperty( "text-mirror-color" );

@@ -52,12 +52,16 @@ public class DropShadowBorder extends Border {
 	private final int[] shadowColors;
 	private final int orientation;
 	private final int offset;
+	private int innerColor;
+	private int outerColor;
 
 	public DropShadowBorder( int innerColor, int outerColor, int width, int offset, int orientation ) {
 		super();
 		this.borderWidth = width;
 		this.offset = offset;
 		this.orientation = orientation;
+		this.innerColor = innerColor;
+		this.outerColor = outerColor;
 		this.shadowColors = DrawUtil.getGradient(innerColor, outerColor, width);
 	}
 

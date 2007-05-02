@@ -1229,7 +1229,7 @@ public abstract class Item extends Object
 	 * usual.
 	 * When the item already has been initialised, a repaint() is requested, too.
 	 */
-	protected void requestInit() {
+	public void requestInit() {
 		//System.out.println("requestInit called by class " + getClass().getName() + " - screen.class=" + getScreen().getClass().getName()  );
 		Item p = this.parent;
 		while ( p != null) {
@@ -2075,12 +2075,18 @@ public abstract class Item extends Object
 	public boolean isInContentArea( int relX, int relY ) {
 		int contTop = this.contentY;
 		if ( relY < contTop || relY > contTop + this.contentHeight ) {
+			//#debug
+			System.out.println("isInContentArea(" + relX + "," + relY + ") = false: contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
 			return false;
 		}
 		int contLeft = this.contentX;
 		if (relX < contLeft || relX > contLeft + this.contentWidth) {
+			//#debug
+			System.out.println("isInContentArea(" + relX + "," + relY + ") = false: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + " (" + this +")");
 			return false;
 		}
+		//#debug
+		System.out.println("isInContentArea(" + relX + "," + relY + ") = true: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + ", contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
 		return true;
 	}
 
@@ -2098,7 +2104,7 @@ public abstract class Item extends Object
 	public boolean isInItemArea( int relX, int relY ) {
 		// problem:
 		// itemWidth can be smaller than the available width - when then a center or right layout is used, then this fucks up...
-		if (relY < 0 || relY > this.itemHeight || relX < 0 || relX > this.itemWidth) {
+		if (relY < 0 || relY > this.itemHeight || relX < 0 || relX > Math.max(this.itemWidth, this.contentX + this.contentWidth)) {
 			//#debug
 			System.out.println("isInItemArea(" + relX + "," + relY + ") = false: itemWidth=" + this.itemWidth + ", itemHeight=" + this.itemHeight + " (" + this + ")");
 			return false;

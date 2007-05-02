@@ -165,6 +165,7 @@ public class FadingAlienGlowTextEffect extends TextEffect {
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
+		this.lastText = null;
 		
 		 //#if polish.css.text-fading-alien-glow-inner-color
 			Color innerColorObj = style.getColorProperty( "text-fading-alien-glow-inner-color" );

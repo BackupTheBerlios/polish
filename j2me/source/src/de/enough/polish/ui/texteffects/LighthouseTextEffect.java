@@ -198,6 +198,7 @@ public class LighthouseTextEffect extends TextEffect {
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
+		this.animationRunning = true;
 		//#if polish.css.text-lighthouse-mode
 			Integer modeInt = style.getIntProperty("text-lighthouse-mode");
 			if (modeInt != null) {

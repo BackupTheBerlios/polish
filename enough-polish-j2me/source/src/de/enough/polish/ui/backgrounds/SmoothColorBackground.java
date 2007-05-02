@@ -34,11 +34,11 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.ui.Background;
 
 public class SmoothColorBackground extends Background {
-	private int color,stripesColor;
+	private int color,targetColor;
 	private final int stroke;
-	public SmoothColorBackground(int color, int stripesColor,int stroke){
+	public SmoothColorBackground(int color, int targetColor,int stroke){
 		this.color = color;
-		this.stripesColor = stripesColor;
+		this.targetColor = targetColor;
 		this.stroke = stroke;
 		
 	}
@@ -75,9 +75,9 @@ public class SmoothColorBackground extends Background {
 		red = (0x00FF & (this.color >>> 16));	
 		green = (0x0000FF & (this.color >>> 8));
 		blue = this.color & (0x000000FF );
-		red2 = (0x00FF & (this.stripesColor >>> 16));
-		green2 = (0x0000FF & (this.stripesColor >>> 8));
-		blue2 = this.stripesColor & (0x000000FF);
+		red2 = (0x00FF & (this.targetColor >>> 16));
+		green2 = (0x0000FF & (this.targetColor >>> 8));
+		blue2 = this.targetColor & (0x000000FF);
 		do{		
 			int sumX = width-(x-startX);
 			int sumY = height-(y-startY);

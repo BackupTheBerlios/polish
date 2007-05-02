@@ -171,6 +171,7 @@ public class RotatingTextEffect extends TextEffect {
 	 */
 	public void setStyle(Style style) {
 		super.setStyle(style);
+		this.lastText = null;
 		//#if polish.css.text-rotating-start-angle
 			Integer startAngleInt = style.getIntProperty("text-rotating-start-angle");
 			if (startAngleInt != null) {
