@@ -131,7 +131,9 @@ private ILaunchConfiguration createLaunchConfiguration(IProject project) {
 }
 
 /**
- * @return
+ * Retrieves the launch manager.
+ * 
+ * @return the launch manager
  */
 private ILaunchManager getLaunchManager() {
     ILaunchManager launchManager = DebugPlugin.getDefault().getLaunchManager();
