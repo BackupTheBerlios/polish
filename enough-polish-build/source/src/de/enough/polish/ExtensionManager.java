@@ -636,9 +636,11 @@ public class ExtensionManager {
 	public static ExtensionManager getInstance(File polishHome, ResourceUtil resourceUtil) 
 	throws JDOMException, IOException, InvalidComponentException 
 	{	
-		InputStream in = resourceUtil.open( polishHome.getAbsolutePath(), "extensions.xml" );
+		InputStream in = resourceUtil.open( polishHome, "extensions.xml" );
 		ExtensionManager manager = new ExtensionManager( null, in );
-		manager.loadCustomDefinitions( new File( polishHome, "custom-extensions.xml"));
+		if (polishHome != null) {
+			manager.loadCustomDefinitions( new File( polishHome, "custom-extensions.xml"));
+		}
 		return manager;
 	}
 

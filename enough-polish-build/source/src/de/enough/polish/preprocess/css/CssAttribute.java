@@ -25,6 +25,10 @@
  */
 package de.enough.polish.preprocess.css;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +40,7 @@ import org.jdom.Element;
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Environment;
 import de.enough.polish.util.CastUtil;
+import de.enough.polish.util.ReflectionUtil;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -66,6 +71,7 @@ implements Comparable
 	protected boolean isCaseSensitive;
 	protected boolean allowsCombinations;
 	protected boolean requiresMapping;
+	private String type;
 	
 	protected CssAttribute() {
 		// do nothing
@@ -90,6 +96,7 @@ implements Comparable
 		if (this.name == null) {
 			throw new BuildException("All CSS-attributes need to define the attribute [name]. Please check the files [standard-css-attributes.xml] and [custom-css-attributes.xml].");
 		}
+		this.type = definition.getAttributeValue("type");
 		this.defaultValue = definition.getAttributeValue("default");
 //		String typeStr = definition.getAttributeValue("type");
 //		if (typeStr != null) {
@@ -125,7 +132,7 @@ implements Comparable
 		} else {
 			this.mappingsByName = new HashMap( mappingsList.size() );
 			for (Iterator iter = mappingsList.iterator(); iter.hasNext();) {
-				CssMapping mapping = new CssMapping( (Element) iter.next());
+				CssMapping mapping = createMapping( (Element) iter.next());
 				this.mappingsByName.put( mapping.getFrom(), mapping );
 			}
 		}
@@ -162,6 +169,15 @@ implements Comparable
 		} else {
 			this.requiresMapping = false;
 		}
+	}
+
+	/**
+	 * Creates a CSS mapping - can be overridden by subclasses to create specific mapping subclasses
+	 * @param element the XML definition
+	 * @return a new CSS mapping
+	 */
+	protected CssMapping createMapping(Element element) {
+		return new CssMapping( element );
 	}
 
 	/**
@@ -242,6 +258,177 @@ implements Comparable
 			}
 		}
 		return value;
+	}
+	
+	/**
+	 * Instantiates the referened value.
+	 * 
+	 * @param value the transformed value of this attribute
+	 * @return the instantiated value (value as object instead of source code) 
+	 */
+	public Object instantiateValue( String value ) {
+		if ("null".equals(value)) {
+			return null;
+		}
+		if (value.startsWith("new ")) {
+			int parenthesesPos = value.indexOf('(');
+			String className = value.substring( "new ".length(), parenthesesPos );
+			Class valueClass;
+			try {
+				valueClass = loadClass(className);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				throw new IllegalArgumentException("Unable to instantiate " + value  + ": " + e.toString() );
+			}
+			String parametersStr = value.substring( parenthesesPos + 1, value.lastIndexOf(')'));
+			String[] parameters = StringUtil.splitAndTrim(parametersStr, ',');
+			// getting constructor:
+			Constructor[] constructors = valueClass.getConstructors();
+			for (int i = 0; i < constructors.length; i++) {
+				Constructor constructor = constructors[i];
+				Class[] parametersClasses = constructor.getParameterTypes();
+				if (parametersClasses.length == parameters.length) {
+					Object[] parameterValues = new Object[ parameters.length ];
+					try {
+						for (int j = 0; j < parametersClasses.length; j++) {
+							Class parameterClass = parametersClasses[j];
+							String parameter = parameters[j];
+							parameterValues[j] = instantiate( parameterClass, parameter );
+						}
+						// got all parameters:
+						return constructor.newInstance(parameterValues);
+					} catch (IllegalArgumentException e) {
+						System.out.println("Warning: unable to instantiate constructor parameter: " + e.getMessage() );
+					} catch (Exception e) {
+						System.out.println("Warning: unable to instantiate constructor for value " + value + ": " + e.getMessage() );
+						e.printStackTrace();
+					}
+					
+				}
+			}
+		}
+		throw new IllegalArgumentException("Unable to instantiate " + value );
+	}
+
+	protected Object instantiate(Class parameterClass, String parameter) {
+		if ("null".equals(parameter) && !parameterClass.isPrimitive()) {
+			return null;
+		}
+		// check if a static class field is referenced, e.g. Color.COLOR_HIGHLIGHTED_BACKGROUND
+		Object returnValue = resolveField( parameterClass, parameter);
+		if (returnValue != null) {
+			return returnValue;
+		}
+		if (parameterClass == Byte.TYPE || parameterClass == Byte.class) {
+			return instantiateByte( parameter );
+		} else if (parameterClass == Short.TYPE || parameterClass == Short.class) {
+			return instantiateShort( parameter );
+		} else if (parameterClass == Integer.TYPE || parameterClass == Integer.class) {
+			return instantiateInt( parameter );
+		} else if (parameterClass == Long.TYPE || parameterClass == Long.class) {
+			return instantiateLong( parameter );
+		} else if (parameterClass == Float.TYPE || parameterClass == Float.class) {
+			return instantiateFloat( parameter );
+		} else if (parameterClass == Double.TYPE || parameterClass == Double.class) {
+			return instantiateDouble( parameter );
+		} else if (parameterClass == Character.TYPE || parameterClass == Character.class) {
+			return instantiateChar( parameter );
+		} else if (parameterClass == Boolean.TYPE || parameterClass == Boolean.class) {
+			return instantiateBoolean( parameter );
+		} else if (parameterClass == String.class) {
+			if (parameter.length() > 2 && parameter.charAt(0) == '"' && parameter.charAt(parameter.length()-1) == '"') {
+				return parameter.substring(1, parameter.length() - 1);
+			} else {
+				return parameter;
+			}
+		}
+		throw new IllegalArgumentException("Unable to initial parameter [" + parameter + "] of class " + parameterClass.getName() );
+	}
+
+	/**
+	 * @param parameterClass
+	 * @param parameter
+	 * @return
+	 */
+	protected Object resolveField(Class parameterClass, String parameter) {
+		int dotPos = parameter.indexOf('.'); 
+		if (dotPos != -1) {
+			String fieldClassName = parameter.substring(0, dotPos );
+			String fieldName = parameter.substring(dotPos+1);
+			try {
+				Class fieldClass = loadClass(fieldClassName);
+				if (fieldName.indexOf('.') != -1) {
+					return resolveField( fieldClass, fieldName );
+				} else {
+					Field field = ReflectionUtil.getField(fieldClass, fieldName);
+					return field.get(null);
+				}
+			} catch (ClassNotFoundException e) {
+				// ignore
+			} catch (NoSuchFieldException e) {
+				// ignore
+			} catch (IllegalArgumentException e) {
+				// TODO robertvirkus handle IllegalArgumentException
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO robertvirkus handle IllegalAccessException
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	protected Class loadClass( String className ) throws ClassNotFoundException {
+		try {
+			return Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			if (className.indexOf('.') == -1) {
+				try {
+					return Class.forName( "de.enough.polish.ui." + className );
+				} catch (ClassNotFoundException e1) {
+					return Class.forName( "java.lang." + className );
+				}
+			}
+			throw e;
+		}
+		
+	}
+
+	protected Object instantiateByte(String parameter) {
+		return Byte.decode(parameter);
+	}
+	protected Object instantiateShort(String parameter) {
+		return Short.decode(parameter);
+	}
+	protected Object instantiateInt(String parameter) {
+		// use long, as otherwise ARGB color values cannot be read correctly:
+		Long longObj = Long.decode(parameter);
+		return new Integer( longObj.intValue() );
+	}
+	protected Object instantiateLong(String parameter) {
+		return Long.decode(parameter);
+	}
+	protected Object instantiateFloat(String parameter) {
+		return new Float( Float.parseFloat(parameter));
+	}
+	protected Object instantiateDouble(String parameter) {
+		return new Double( Double.parseDouble(parameter));
+	}
+	protected Object instantiateChar(String parameter) {
+		if (parameter.length() == 3) {
+			return new Character( parameter.charAt(1));
+		} else if (parameter.length() == 1) {
+			return new Character( parameter.charAt(0));
+		}
+		throw new IllegalArgumentException("Unable to parse character [" + parameter + "]");
+	}
+	protected Object instantiateBoolean(String parameter) {
+		if ("true".equals(parameter) || "Style.TRUE".equals(parameter) || "Boolean.TRUE".equals( parameter)) {
+			return Boolean.TRUE;
+		} else if ( "false".equals(parameter) || "Style.FALSE".equals(parameter) || "Boolean.FALSE".equals( parameter)) {
+			return Boolean.FALSE;
+		}
+		throw new IllegalArgumentException("Unable to parse boolean [" + parameter + "]");
 	}
 	
 	
@@ -336,12 +523,30 @@ implements Comparable
 		return 0;
 	}
 	
-	public CssMapping getMapping( String value ) {
+	public CssMapping getMapping( String fromName ) {
 		if (this.mappingsByName == null) {
 			return null;
 		} else {
-			return (CssMapping) this.mappingsByName.get( value );
+			return (CssMapping) this.mappingsByName.get( fromName );
 		}
+	}
+	
+	/**
+	 * @param toName the name to which the mapping is usally converted, e.g. a class name
+	 * @return
+	 */
+	public CssMapping getMappingByTo(String toName) {
+		if (this.mappingsByName == null) {
+			return null;
+		}
+		CssMapping[] mappings = getMappings();
+		for (int i = 0; i < mappings.length; i++) {
+			CssMapping mapping = mappings[i];
+			if (toName.equals(mapping.getTo()) || toName.equals(mapping.getToClassName())) {
+				return mapping;
+			}
+		}
+		return null;
 	}
 
 
@@ -373,6 +578,60 @@ implements Comparable
 			return new CssMapping[0];
 		}
 		return (CssMapping[]) this.mappingsByName.values().toArray( new CssMapping[ this.mappingsByName.size() ] );
+	}
+
+	/**
+	 * @return
+	 */
+	public String getType() {
+		return this.type;
+	}
+
+	/**
+	 * @param environment
+	 * @return
+	 */
+	public Object instantiateDefault(Environment environment) {
+		if (getDefaultValue() == null) {
+			return null;
+		}
+		return instantiateValue( getValue( getDefaultValue(), environment) );
+	}
+
+	/**
+	 * @param class1
+	 * @return
+	 */
+	public CssMapping[] getApplicableMappings(Class targetClass) {
+		ArrayList fullClassNamesList = new ArrayList();
+		while (targetClass != null) {
+			fullClassNamesList.add( targetClass.getName() );
+			targetClass = targetClass.getSuperclass();
+		}
+		String[] fullClassNames = (String[]) fullClassNamesList.toArray( new String[ fullClassNamesList.size()] );
+		String[] classNames = new String[ fullClassNames.length ];
+		for (int i = 0; i < classNames.length; i++) {
+			String className = fullClassNames[i];
+			int lastDotPos = className.lastIndexOf('.');
+			if (lastDotPos != -1) {
+				className = className.substring( lastDotPos + 1 );
+			}
+			classNames[i] = className;
+		}
+		CssMapping[] mappings = getMappings();
+		ArrayList list = new ArrayList();
+		for (int i = 0; i < mappings.length; i++) {
+			CssMapping mapping = mappings[i];
+			for (int j = 0; j < classNames.length; j++) {
+				if ( mapping.appliesTo( classNames[j] ) || mapping.appliesTo( fullClassNames[j] ) ) {
+					list.add( mapping );
+					break;
+				}
+			}
+		}
+		mappings = (CssMapping[]) list.toArray( new CssMapping[ list.size() ] );
+		Arrays.sort( mappings );
+		return mappings;
 	}
 	
 

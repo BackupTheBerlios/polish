@@ -26,6 +26,7 @@
 package de.enough.polish.util;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,6 +46,18 @@ import de.enough.polish.Variable;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public final class ReflectionUtil {
+	
+	private final static HashMap PRIMITIVE_CLASS_WRAPPERS = new HashMap();
+	static {
+		PRIMITIVE_CLASS_WRAPPERS.put(Byte.TYPE, Byte.class);
+		PRIMITIVE_CLASS_WRAPPERS.put(Short.TYPE, Short.class);
+		PRIMITIVE_CLASS_WRAPPERS.put(Integer.TYPE, Integer.class);
+		PRIMITIVE_CLASS_WRAPPERS.put(Long.TYPE, Long.class);
+		PRIMITIVE_CLASS_WRAPPERS.put(Float.TYPE, Float.class);
+		PRIMITIVE_CLASS_WRAPPERS.put(Double.TYPE, Double.class);
+		PRIMITIVE_CLASS_WRAPPERS.put(Character.TYPE, Character.class);
+		PRIMITIVE_CLASS_WRAPPERS.put(Boolean.TYPE, Boolean.class);
+	}
 
 	/**
 	 * Populates the given object with the specified parameter.
@@ -287,9 +300,22 @@ public final class ReflectionUtil {
 	public static Field getField( Object object, String fieldName ) 
 	throws NoSuchFieldException
 	{
+		return getField( object.getClass(), fieldName );
+	}
+	
+	/**
+	 * Retrieves the specified field of the given object.
+	 * 
+	 * @param instanceClass the class that contains the field
+	 * @param fieldName the name of the field
+	 * @return the field
+	 * @throws NoSuchFieldException when the field does not exist
+	 */
+	public static Field getField( Class instanceClass, String fieldName ) 
+	throws NoSuchFieldException
+	{
 		try {
 			Field field = null;
-			Class instanceClass = object.getClass();
 			while (field == null) {
 				try {
 					field = instanceClass.getDeclaredField( fieldName );
@@ -484,6 +510,99 @@ public final class ReflectionUtil {
 			e.printStackTrace();
 			throw new RuntimeException( e.getCause() );
 		}
+	}
+
+	/**
+	 * Searches for the correct constructor and instantiates a new object with the given parameters.
+	 * @param constructorClass the class that contains the constructor
+	 * @param parameters the parameters for the constructor
+	 * @return a new instance created with the correct constructor
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 */
+	public static Object newInstance(Class constructorClass, Object[] parameters) 
+	throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException 
+	{
+		if (parameters == null || parameters.length == 0) {
+			return constructorClass.newInstance();
+		}
+		Constructor[] constructors = constructorClass.getConstructors();
+		for (int i = 0; i < constructors.length; i++) {
+			Constructor constructor = constructors[i];
+			if ( constructorFits( constructor, parameters ) ) {
+				return constructor.newInstance(parameters);
+			}
+		}
+		throw new IllegalArgumentException("Found no matching constructor in class " + constructorClass.getName() + " for parameters " + parameters.length );
+	}
+
+	/**
+	 * @param constructor
+	 * @param parameters
+	 * @return true when the contructor fits
+	 */
+	public static boolean constructorFits(Constructor constructor, Object[] parameters) {
+		return signatureFits( constructor.getParameterTypes(), parameters );
+	}
+
+	/**
+	 * @param parameterTypes
+	 * @param parameters
+	 * @return true when the signature fits
+	 */
+	private static boolean signatureFits(Class[] parameterTypes, Object[] parameters) {
+		if ((parameterTypes == null && parameters != null) || (parameterTypes != null && parameters == null) || (parameterTypes.length != parameters.length)) {
+			return false;
+		}
+		for (int i = 0; i < parameters.length; i++) {
+			Object parameter = parameters[i];
+			Class parameterType = parameterTypes[i];
+			if (parameter == null) {
+				if (parameterType.isPrimitive()) {
+					return false;
+				}
+				continue; // null fits any class
+			}
+			Class parameterClass = parameter.getClass();
+			if (! (parameterType.isAssignableFrom(parameterClass) || (parameterType.isPrimitive() && isCompatible( parameterType, parameterClass )) )) {
+//				System.out.println("- signature-mismatch: wanted=" + parameterType + ", have=" + parameter.getClass() );
+				return false;
+//			} else {
+//				System.out.println("+ signature-match: wanted=" + parameterType + ", have=" + parameter.getClass() );
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * @param parameterType
+	 * @param parameterClass
+	 * @return
+	 */
+	private static boolean isCompatible(Class parameterType, Class parameterClass) {
+		Class wrapperClass = (Class) PRIMITIVE_CLASS_WRAPPERS.get(parameterType);
+		if (wrapperClass != null) {
+			return wrapperClass.isAssignableFrom(parameterClass);
+		}
+		return false;
+	}
+
+
+	/**
+	 * @param object
+	 * @param fieldName
+	 * @return
+	 * @throws NoSuchFieldException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 */
+	public static Object getFieldValue(Object object, String fieldName) 
+	throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException 
+	{
+		Field field = getField( object, fieldName );
+		return field.get(object);
 	}
 
 }

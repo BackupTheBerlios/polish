@@ -27,10 +27,10 @@ package de.enough.polish.preprocess.css.attributes;
 
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
-import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.preprocess.css.ColorConverter;
 
 /**
- * <p>A simple character based attribute.</p>
+ * <p>A simple color based attribute.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
@@ -39,12 +39,12 @@ import de.enough.polish.preprocess.css.CssAttribute;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CharCssAttribute extends StringCssAttribute {
+public class PrimitiveColorCssAttribute extends ColorCssAttribute {
 	
 	/**
 	 * Creates a new instance.
 	 */
-	public CharCssAttribute() {
+	public PrimitiveColorCssAttribute() {
 		super();
 	}
 	
@@ -57,21 +57,19 @@ public class CharCssAttribute extends StringCssAttribute {
 	 * @throws BuildException when a condition is not met or when the value contains conflicting values
 	 */
 	public String getValue(String value, Environment environment ) {
-		if (value.length() != 1) {
-			throw new BuildException( "Invalid CSS: the attribute \"" + this.name + "\" needs to be a character - the given value \"" + value + "\" is not supported."  );
+		ColorConverter colorConverter = (ColorConverter) environment.get( ColorConverter.ENVIRONMENT_KEY );
+		if (colorConverter != null) {
+			return colorConverter.parseColor(value);
 		}
-		if (this.isBaseAttribute) {
-			return value;
-		} else {
-			return '"'+ value + '"';
-		}
-	}			
-
+		throw new BuildException("Unable to load color converter during converting the polish.css file.");
+	}
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
 	 */
 	public Object instantiateValue(String value) {
-		return super.instantiateChar(value);
+		return new Integer( Long.decode(value).intValue() );
 	}	
+
 
 }

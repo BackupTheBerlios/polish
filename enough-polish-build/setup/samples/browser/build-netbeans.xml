@@ -123,18 +123,10 @@
 				</variables>
 				<!-- Configure the customization settings here: -->
 				<resources
-					dir="resources/base"
+					dir="resources"
 					defaultexcludes="yes"
 					excludes="readme.txt"
 				>
-					<root dir="resources/base/images" />
-					<root dir="resources/base/sounds" />
-					<root dir="resources/customization1" if="cfg.customization1" />
-					<root dir="resources/customization1/images" if="cfg.customization1" />
-					<root dir="resources/customization1/sounds" if="cfg.customization1" />
-					<root dir="resources/customization2" if="cfg.customization2" />
-					<root dir="resources/customization2/images" if="cfg.customization2" />
-					<root dir="resources/customization2/sounds" if="cfg.customization2" />
 					<!-- add the localization element for created localized
 					     versions of your application: 
 					<localization>

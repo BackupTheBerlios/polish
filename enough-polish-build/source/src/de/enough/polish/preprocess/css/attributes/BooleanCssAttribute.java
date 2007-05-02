@@ -85,6 +85,15 @@ public class BooleanCssAttribute extends CssAttribute {
 				throw new BuildException( "Invalid CSS: the attribute \"" + this.name + "\" needs to be eiter \"true\" or \"false\" or a valid boolean expression - the given value \"" + value + "\" is not supported."  );
 			}
 		}
-	}			
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
+	 */
+	public Object instantiateValue(String value) {
+		return super.instantiateBoolean(value);
+	}	
+	
+	
 
 }

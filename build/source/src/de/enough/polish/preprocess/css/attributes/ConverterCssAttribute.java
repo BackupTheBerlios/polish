@@ -31,7 +31,7 @@ import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssMapping;
 
 /**
- * <p>A simple boolean based attribute.</p>
+ * <p>A CSS attribute that requires a converter for the correct processing.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>

@@ -25,12 +25,16 @@
  */
 package de.enough.polish.preprocess.css.attributes;
 
+import org.jdom.Element;
+
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.preprocess.css.CssMapping;
+import de.enough.polish.preprocess.css.ParameterizedCssMapping;
 
 /**
- * <p>A simple character based attribute.</p>
+ * <p>A CSS attribute that can contain several complex parameters, e.g. a background definition.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
@@ -39,12 +43,12 @@ import de.enough.polish.preprocess.css.CssAttribute;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CharCssAttribute extends StringCssAttribute {
+public class ParameterizedCssAttribute extends CssAttribute {
 	
 	/**
 	 * Creates a new instance.
 	 */
-	public CharCssAttribute() {
+	public ParameterizedCssAttribute() {
 		super();
 	}
 	
@@ -57,21 +61,22 @@ public class CharCssAttribute extends StringCssAttribute {
 	 * @throws BuildException when a condition is not met or when the value contains conflicting values
 	 */
 	public String getValue(String value, Environment environment ) {
-		if (value.length() != 1) {
-			throw new BuildException( "Invalid CSS: the attribute \"" + this.name + "\" needs to be a character - the given value \"" + value + "\" is not supported."  );
-		}
-		if (this.isBaseAttribute) {
-			return value;
+		CssMapping mapping = getMapping(value);
+		if (mapping != null) {
+			mapping.checkCondition( this.name, value, environment.getBooleanEvaluator() );
+			return mapping.getConverter();
 		} else {
-			return '"'+ value + '"';
+			return null;
 		}
-	}			
+	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
+	 * @see de.enough.polish.preprocess.css.CssAttribute#createMapping(org.jdom.Element)
 	 */
-	public Object instantiateValue(String value) {
-		return super.instantiateChar(value);
-	}	
+	protected CssMapping createMapping(Element element) {
+		return new ParameterizedCssMapping( element );
+	}
+	
+	
 
 }

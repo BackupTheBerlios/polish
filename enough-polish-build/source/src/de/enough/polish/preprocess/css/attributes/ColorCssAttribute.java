@@ -29,6 +29,7 @@ import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.css.ColorConverter;
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.ui.Color;
 
 /**
  * <p>A simple character based attribute.</p>
@@ -66,6 +67,19 @@ public class ColorCssAttribute extends CssAttribute {
 			return colorConverter.generateColorConstructor(value);
 		}
 		throw new BuildException("Unable to load color converter during converting the polish.css file.");
-	}			
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
+	 */
+	public Object instantiateValue(String value) {
+		if (this.isBaseAttribute) {
+			return new Color( Long.decode(value).intValue() );
+		}
+		// a complex Color instantiation is used, e.g. "new Color( Color.COLOR_HIGHLIGHTED_BACKGROUND, true );
+		//System.out.println("instantiating value " + value + " for attribute " + getName() );
+		return super.instantiateValue(value);
+	}	
+
 
 }

@@ -181,6 +181,11 @@ rightcommand {
     */
 }
 
+.browserChoiceGroup {
+}
+.browserChoiceItem {
+}}
+
 .browserOption {
 	view-type: exclusive;
 	layout: left | expand;

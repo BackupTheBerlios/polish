@@ -469,12 +469,14 @@ These namespaces/schemas will be used soon.
 		<identifier>Sony-Ericsson/JavaPlatform5</identifier>
 		<features>isVirtual</features>
 		<groups>SE-JavaPlatform5</groups>
+		<capability name="FullCanvasSize" value="" />
 	</device>
 
 	<device supportsPolishGui="true">
 		<identifier>Sony-Ericsson/JavaPlatform6</identifier>
 		<features>isVirtual</features>
 		<groups>SE-JavaPlatform6</groups>
+		<capability name="FullCanvasSize" value="" />
 	</device>
 
 	<device supportsPolishGui="true">
@@ -487,6 +489,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Sony-Ericsson/JavaPlatform2Symbian</identifier>
 		<features>isVirtual</features>
 		<groups>SE-JavaPlatform2Symbian</groups>
+		<capability name="FullCanvasSize" value="" />
 	</device>
 
 <!-- Sony-Ericsson devices -->
@@ -968,6 +971,43 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.small" value="18" />
         <capability name="Font.medium" value="22" />
         <capability name="Font.large" value="26" />
+        <capability name="IconSize" value="16x16, 24x24" />
+   		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin, NoPermanentBacklight"/>
+		<capability name="key.ReturnKey" value="-11"/>
+	</device>
+
+	<device>
+		<identifier>Sony-Ericsson/W880, Sony-Ericsson/880i</identifier>
+		<groups>SE-JavaPlatform6</groups>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x262"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, m3g, btapi, nokia-ui, pdaapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
+		<capability name="SoundFormat" value="mp3, mp4, m4a, aac, amr, wav, midi, midi40"/>
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263, xmf, svgt" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, jpeg, png, png1.0, bmp, bmp3, wbmp"/>
+		<capability name="CaptureImageFormat" value="jpeg"/>
+		<capability name="StorageSize" value="38 MB"/>
+		<capability name="HeapSize" value="1.5 MB"/>
+		<capability name="VideoHeapSize" value="500 kb"/>
+		<capability name="MaxJarSize" value="dynamic"/>
+		<capability name="DRM" value="OMA v1.0"/>
+		<capability name="Region" value="global"/>
+		<capability name="Network" value="GSM, GPRS, UMTS"/>
+		<capability name="Frequency" value="900,1800,1900"/>
+		<capability name="Emulator.Skin" value="SonyEricsson_W880"/>
+		<capability name="Emulator.Skin.2" value="SonyEricsson_W880i"/>
+		<capability name="DebugInterface" value="KDWP"/>
+		<capability name="CameraResolution" value="2 MP"/>
+		<capability name="CameraZoom" value="4"/>
+		<capability name="Font.small" value="20" />
+        <capability name="Font.medium" value="24" />
+        <capability name="Font.large" value="28" />
         <capability name="IconSize" value="16x16, 24x24" />
    		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin, NoPermanentBacklight"/>
 		<capability name="key.ReturnKey" value="-11"/>

@@ -30,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,6 +56,7 @@ import org.jdom.input.SAXBuilder;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class CssAttributesManager {
+	private static CssAttributesManager INSTANCE;
 	private final HashMap typesByName;
 	private final HashMap attributesByName;
 
@@ -66,7 +68,12 @@ public class CssAttributesManager {
 	public CssAttributesManager( InputStream is ) {
 		this.attributesByName = new HashMap();
 		this.typesByName = new HashMap();
+		INSTANCE = this;
 		addCssAttributes( is );
+	}
+	
+	public static CssAttributesManager getInstance() {
+		return INSTANCE;
 	}
 
 	/**
@@ -96,23 +103,7 @@ public class CssAttributesManager {
 		List xmlList = document.getRootElement().getChildren( "attribute" );
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element definition = (Element) iter.next();
-			String type = definition.getAttributeValue("type");
-			if (type == null) {
-				System.out.println("Warning: CSS attribute definition has no \"type\" attribute - now assuming \"string\" type for " + definition.getAttributeValue("name") );
-				type = "string";
-			}
-			Class attributeClass = (Class) this.typesByName.get( type );
-			if (attributeClass == null) {
-				throw new BuildException("Invalid CSS attribute: unable to instantiate type " + type + ": no definition found.");
-			}
-			CssAttribute attribute;
-			try {
-				attribute = (CssAttribute) attributeClass.newInstance();
-				attribute.setDefinition(definition);
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new BuildException("Invalid CSS attribute: unable to instantiate type " + type + ": " + e.toString() );
-			}
+			CssAttribute attribute = createCssAttribute( definition );
 			CssAttribute existingAttribute = (CssAttribute) this.attributesByName.get( attribute.getName() );
 			if (existingAttribute != null) {
 				existingAttribute.add( attribute );
@@ -123,6 +114,32 @@ public class CssAttributesManager {
 		}
 	}
 	
+	/**
+	 * Adds a new CSS attribute.
+	 * 
+	 * @param definition the XML definition of the CSS attribute.
+	 */
+	public CssAttribute createCssAttribute(Element definition) {
+		String type = definition.getAttributeValue("type");
+		if (type == null) {
+			System.out.println("Warning: CSS attribute definition has no \"type\" attribute - now assuming \"string\" type for " + definition.getAttributeValue("name") );
+			type = "string";
+		}
+		Class attributeClass = (Class) this.typesByName.get( type );
+		if (attributeClass == null) {
+			throw new BuildException("Invalid CSS attribute: unable to instantiate type " + type + ": no definition found.");
+		}
+		CssAttribute attribute;
+		try {
+			attribute = (CssAttribute) attributeClass.newInstance();
+			attribute.setDefinition(definition);
+			return attribute;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BuildException("Invalid CSS attribute: unable to instantiate type " + type + ": " + e.toString() );
+		}
+	}
+
 	/**
 	 * Loads type definitions from the css-attributes.xml file.
 	 * 
@@ -179,24 +196,39 @@ public class CssAttributesManager {
 	/**
 	 * Retrieves all attributes for the given class.
 	 * 
-	 * @param fullClassName the name of the class, e.g. "de.enough.polish.ui.StringItem"
+	 * @param targetClass the target class, e.g. "de.enough.polish.ui.StringItem"
 	 * @return all applicable attributes for the given class
 	 */
-	public CssAttribute[] getApplicableAttributes( String fullClassName ) {
+	public CssAttribute[] getApplicableAttributes( Class targetClass ) {
 		ArrayList list = new ArrayList();
 		CssAttribute[] attributes = getAttributes();
-		int lastDotPos = fullClassName.lastIndexOf('.');
-		String className = fullClassName; 
-		if (lastDotPos != -1) {
-			className = fullClassName.substring( lastDotPos + 1 );
+		ArrayList fullClassNamesList = new ArrayList();
+		while (targetClass != null) {
+			fullClassNamesList.add( targetClass.getName() );
+			targetClass = targetClass.getSuperclass();
+		}
+		String[] fullClassNames = (String[]) fullClassNamesList.toArray( new String[ fullClassNamesList.size()] );
+		String[] classNames = new String[ fullClassNames.length ];
+		for (int i = 0; i < classNames.length; i++) {
+			String name = fullClassNames[i];
+			int lastDotPos = name.lastIndexOf('.');
+			if (lastDotPos != -1) {
+				name = name.substring( lastDotPos + 1 );
+			}
+			classNames[i] = name;
 		}
 		for (int i = 0; i < attributes.length; i++) {
 			CssAttribute attribute = attributes[i];
-			if ( attribute.appliesTo( className ) || attribute.appliesTo( fullClassName ) ) {
-				list.add( attribute );
+			for (int j = 0; j < classNames.length; j++) {
+				if ( attribute.appliesTo( classNames[j] ) || attribute.appliesTo( fullClassNames[j] ) ) {
+					list.add( attribute );
+					break;
+				}
 			}
 		}
-		return (CssAttribute[]) list.toArray( new CssAttribute[ list.size() ] );
+		attributes = (CssAttribute[]) list.toArray( new CssAttribute[ list.size() ] ); 
+		Arrays.sort( attributes );
+		return attributes;
 	}
 
 	/**

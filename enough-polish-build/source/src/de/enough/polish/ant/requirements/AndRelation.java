@@ -26,6 +26,8 @@
 package de.enough.polish.ant.requirements;
 
 
+import java.util.Map;
+
 import de.enough.polish.Device;
 
 /**
@@ -47,6 +49,15 @@ public class AndRelation extends RequirementContainer {
 	public AndRelation() {
 		super();
 	}
+	
+	/**
+	 * Cerates a new device requirements list.
+	 * @param buildProperties the build properties
+	 */
+	public AndRelation(Map buildProperties) {
+		super(buildProperties);
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.requirements.DeviceFilter#isMet(de.enough.polish.Device)

@@ -25,6 +25,9 @@
  */
 package de.enough.polish.preprocess.css;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import de.enough.polish.BuildException;
 import org.jdom.Element;
 
@@ -41,13 +44,16 @@ import de.enough.polish.util.StringUtil;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CssMapping {
+public class CssMapping
+implements Comparable
+{
 	
 	private String from;
 	private String to;
 	private String condition;
 	private String converter;
 	private String[] excludes;
+	private Map appliesToMap;
 	
 
 
@@ -74,6 +80,15 @@ public class CssMapping {
 		String excludesStr = definition.getAttributeValue("excludes");
 		if (excludesStr != null) {
 			this.excludes = StringUtil.splitAndTrim( excludesStr, ',');
+		}
+		String appliesToStr = definition.getAttributeValue("appliesTo");
+		if (appliesToStr != null) {
+			String[] appliesToNames = StringUtil.splitAndTrim(appliesToStr, ',');
+			this.appliesToMap = new HashMap( appliesToNames.length );
+			for (int i = 0; i < appliesToNames.length; i++) {
+				String appliesToName = appliesToNames[i];
+				this.appliesToMap.put(appliesToName, Boolean.TRUE );
+			}
 		}
 	}
 
@@ -176,5 +191,30 @@ public class CssMapping {
 		target = target.trim();
 		return target;
 	}
+
+	/**
+	 * @param className
+	 * @return true when the attribute can be used for the given class.
+	 */
+	public boolean appliesTo(String className) {
+		if (this.appliesToMap == null) {
+			//System.out.println("CssAttribute.appliesTo=[" + this.appliesTo + "], to [" + className + "] = NO APPLIES MAP DEFINED!");
+			return false;
+		} else {
+			//System.out.println("CssAttribute.appliesTo=[" + this.appliesTo + "], to [" + className + "] = " + (this.appliesToMap.get( className ) != null));
+			return (this.appliesToMap.get( className ) != null);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(Object o) {
+		if (o instanceof CssMapping) {
+			return this.from.compareTo( ((CssMapping)o).from );
+		}
+		return 0;
+	}
+
 
 }

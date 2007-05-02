@@ -354,6 +354,7 @@
 		<capability name="FullCanvasSize" value="176x220" />
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="Bugs" value="usesVideoRam" />
+		<capability name="key.ReturnKey" value="-11"/>
 	</group>
 
 	<group>
@@ -362,10 +363,11 @@
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi, wmapi2.0, nokia-ui, m3g, pdaapi, webservice" />
-		<capability name="ScreenSize" value="176x220" />
-		<capability name="FullCanvasSize" value="176x220" />
-		<capability name="CanvasSize" value="176x176"/>
+		<capability name="ScreenSize" value="" />
+		<capability name="FullCanvasSize" value="" />
+		<capability name="CanvasSize" value=""/>
 		<capability name="Bugs" value="usesVideoRam" />
+		<capability name="key.ReturnKey" value="-11"/>
 	</group>
 
 	<group>
@@ -375,6 +377,10 @@
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi, wmapi2.0, nokia-ui, m3g, pdaapi, webservice" />
 		<capability name="Bugs" value="usesVideoRam" />
+		<capability name="key.ReturnKey" value="-11"/>
+		<capability name="ScreenSize" value="" />
+		<capability name="FullCanvasSize" value="" />
+		<capability name="CanvasSize" value=""/>
 	</group>
 		
 	<group>

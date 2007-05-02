@@ -95,7 +95,7 @@
 				<requirement name="Identifier" value="${device}" />
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Generic/jtwi,Generic/midp1,Generic/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6" />
+				<requirement name="Identifier" value="${devices}" />
 				<!-- on could use other devices for real builds, e.g. :
 				<requirement name="Term" value="polish.api.nokia-ui and polish.midp2" />
 				or:
@@ -129,18 +129,10 @@
 				</variables>
 				<!-- Configure the customization settings here: -->
 				<resources
-					dir="resources/base"
+					dir="resources"
 					defaultexcludes="yes"
 					excludes="readme.txt"
 				>
-					<root dir="resources/base/images" />
-					<root dir="resources/base/sounds" />
-					<root dir="resources/customization1" if="cfg.customization1" />
-					<root dir="resources/customization1/images" if="cfg.customization1" />
-					<root dir="resources/customization1/sounds" if="cfg.customization1" />
-					<root dir="resources/customization2" if="cfg.customization2" />
-					<root dir="resources/customization2/images" if="cfg.customization2" />
-					<root dir="resources/customization2/sounds" if="cfg.customization2" />
 					<!-- add the localization element for created localized
 					     versions of your application: 
 					<localization>
@@ -150,12 +142,7 @@
 					-->
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
-					<!--
-					You can set additional parameters here, e.g.:
-					<parameter name="optimize" value="false" />
-					-->
-				</obfuscator>
+				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test or polish.blackberry" />
 				<!-- log settings: only use debug setting when the test-property is true -->
 				<debug if="test" showLogOnError="true" verbose="true" level="error">
 					<filter pattern="de.enough.polish.example.*" level="debug" />

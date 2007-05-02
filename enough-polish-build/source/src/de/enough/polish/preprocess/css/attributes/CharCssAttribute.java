@@ -67,4 +67,11 @@ public class CharCssAttribute extends StringCssAttribute {
 		}
 	}			
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
+	 */
+	public Object instantiateValue(String value) {
+		return super.instantiateChar(value);
+	}	
+
 }

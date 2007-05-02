@@ -30,6 +30,7 @@ import de.enough.polish.Variable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>Represents an "AND", "OR", "XOR" and "NOT" relation between several requirements.</p>
@@ -48,6 +49,15 @@ implements DeviceFilter
 	
 	private ArrayList filters;
 	protected List requiredIdentifiers;
+	private Map buildProperties;
+	/**
+	 * Cerates a new device requirements list.
+	 * @param buildProperties the build properties
+	 */
+	public RequirementContainer(Map buildProperties) {
+		this.buildProperties = buildProperties;
+		this.filters = new ArrayList();
+	}
 
 	/**
 	 * Creates a new empty container
@@ -57,6 +67,9 @@ implements DeviceFilter
 	}
 	
 	protected void add( DeviceFilter filter ) {
+		if (filter instanceof Requirement) {
+			((Requirement)filter).setBuildProperties( this.buildProperties );
+		}
 		this.filters.add( filter );
 		// check if this is a <identfier> requirement of if this container/relation only includes <identifier> requirements.
 		// when a non-<identifier> requirement has been added before, the requiredIdentifiers field is set to null.

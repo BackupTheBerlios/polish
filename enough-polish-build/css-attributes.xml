@@ -27,73 +27,230 @@
 -->
 <attributes>
 	<types>
-		<type name="string" class="de.enough.polish.preprocess.css.attributes.StringCssAttribute" />
+		<type  name="string" class="de.enough.polish.preprocess.css.attributes.StringCssAttribute" />
 		<type names="char, character" class="de.enough.polish.preprocess.css.attributes.CharCssAttribute" />
 		<type names="bool, boolean" class="de.enough.polish.preprocess.css.attributes.BooleanCssAttribute" />
 		<type names="integer, int" class="de.enough.polish.preprocess.css.attributes.IntegerCssAttribute" />
-		<type name="percent" class="de.enough.polish.preprocess.css.attributes.PercentCssAttribute" />
-		<type name="percentorabsolute" class="de.enough.polish.preprocess.css.attributes.PercentOrAbsoluteCssAttribute" />
-		<type name="imageurl" class="de.enough.polish.preprocess.css.attributes.ImageUrlCssAttribute" />
-		<type name="imageurlornone" class="de.enough.polish.preprocess.css.attributes.ImageUrlOrNoneCssAttribute" />
-		<type name="object" class="de.enough.polish.preprocess.css.attributes.ObjectCssAttribute" />
-		<type name="style" class="de.enough.polish.preprocess.css.attributes.StyleCssAttribute" />
-		<type name="color" class="de.enough.polish.preprocess.css.attributes.ColorCssAttribute" />
-		<type name="map" class="de.enough.polish.preprocess.css.attributes.MapCssAttribute" />
-		<type name="columns-width" class="de.enough.polish.preprocess.css.attributes.ColumnsWidthCssAttribute" />
-		<type name="converter" class="de.enough.polish.preprocess.css.attributes.ConverterCssAttribute" />
+		<type  name="percent" class="de.enough.polish.preprocess.css.attributes.PercentCssAttribute" />
+		<type  name="percentorabsolute" class="de.enough.polish.preprocess.css.attributes.PercentOrAbsoluteCssAttribute" />
+		<type names="imageurl,image-url" class="de.enough.polish.preprocess.css.attributes.ImageUrlCssAttribute" />
+		<type  name="imageurlornone" class="de.enough.polish.preprocess.css.attributes.ImageUrlOrNoneCssAttribute" />
+		<type  name="object" class="de.enough.polish.preprocess.css.attributes.ObjectCssAttribute" />
+		<type  name="style" class="de.enough.polish.preprocess.css.attributes.StyleCssAttribute" />
+		<type  name="color" class="de.enough.polish.preprocess.css.attributes.ColorCssAttribute" />
+		<type  name="primitive-color" class="de.enough.polish.preprocess.css.attributes.PrimitiveColorCssAttribute" />
+		<type  name="map" class="de.enough.polish.preprocess.css.attributes.MapCssAttribute" />
+		<type  name="columns-width" class="de.enough.polish.preprocess.css.attributes.ColumnsWidthCssAttribute" />
+		<type  name="converter" class="de.enough.polish.preprocess.css.attributes.ConverterCssAttribute" />
+		<type  name="parameterized" class="de.enough.polish.preprocess.css.attributes.ParameterizedCssAttribute" />
 	</types>
 
 	<attribute
 		name="background"
-		type="converter"
+		type="parameterized"
 		appliesTo="Item, Screen"
 		description="The background of an item or screen. The default background for items is &quot;none&quot;, the default background for screens is a simple white background."
 	>
-		<mapping from="simple"              converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter" />
+		<mapping from="simple"              to="de.enough.polish.ui.backgrounds.SimpleBackground"   converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter">
+			<param name="color" type="color" default="white" />
+		</mapping>
+		<mapping from="simple-bordered"     to="de.enough.polish.ui.backgrounds.BorderedSimpleBackground"   converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter">
+			<param name="color" type="color" default="white" />
+			<param name="border-color" type="color" default="black" />
+			<param name="border-width" type="integer" default="1" />
+		</mapping>
 		<mapping from="plain"               converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter" />
-		<mapping from="image"               converter="de.enough.polish.preprocess.backgrounds.ImageBackgroundConverter" />
+		<mapping from="image"               to="de.enough.polish.ui.backgrounds.ImageBackground" converter="de.enough.polish.preprocess.backgrounds.ImageBackgroundConverter" >
+			<param name="color" type="primitive-color" default="white" />
+			<param name="image" type="image-url" default="none" />
+			<!--  not yet supported... <param name="anchor" type="anchor" default="0" />  -->
+			<param name="anchor" type="integer" default="0" />
+			<param name="x-offset" type="integer" default="0" />
+			<param name="y-offset" type="integer" default="0" />
+		</mapping>
 		<mapping from="roundrect"           converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" />
-		<mapping from="round-rect"          converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" />
-		<mapping from="pulsating"           converter="de.enough.polish.preprocess.backgrounds.PulsatingBackgroundConverter" />
-		<mapping from="pulsating-circle"    converter="de.enough.polish.preprocess.backgrounds.PulsatingCircleBackgroundConverter" />
-		<mapping from="pulsating-circles"   converter="de.enough.polish.preprocess.backgrounds.PulsatingCirclesBackgroundConverter" />
-		<mapping from="circle"              converter="de.enough.polish.preprocess.backgrounds.CircleBackgroundConverter" />
-		<mapping from="opening"             converter="de.enough.polish.preprocess.backgrounds.OpeningBackgroundConverter" />
-		<mapping from="round-rect-opening"  converter="de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter" />
+		<mapping from="round-rect"          to="de.enough.polish.ui.backgrounds.RoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
+			<param name="color" type="primitive-color" default="white" />
+			<param name="arc-width" type="integer" default="4" />
+			<param name="arc-height" type="integer" default="4" />			
+		</mapping>
+		<mapping from="round-rect-bordered"          to="de.enough.polish.ui.backgrounds.BorderedRoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
+			<param name="color" type="primitive-color" default="white" />
+			<param name="arc-width" type="integer" default="4" />
+			<param name="arc-height" type="integer" default="4" />			
+			<param name="border-color" type="primitive-color" default="black" />
+			<param name="border-width" type="integer" default="1" />
+		</mapping>
+		<mapping from="round-rect-translucent"       to="de.enough.polish.ui.backgrounds.TranslucentRoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
+			<param name="color" type="primitive-color" default="white" />
+			<param name="arc-width" type="integer" default="4" />
+			<param name="arc-height" type="integer" default="4" />			
+			<param name="border-color" type="primitive-color" default="black" />
+			<param name="border-width" type="integer" default="0" />
+		</mapping>
+		<mapping from="pulsating"           to="de.enough.polish.ui.backgrounds.PulsatingBackground" converter="de.enough.polish.preprocess.backgrounds.PulsatingBackgroundConverter" >
+			<param name="start-color" type="primitive-color" default="white" />
+			<param name="end-color" type="primitive-color" default="gray" />
+			<param name="steps" type="integer" default="8" />
+			<param name="repeat" type="boolean" default="true" />
+			<param name="back-and-forth" type="boolean" default="true" />
+		</mapping>
+		<mapping from="pulsating-circle"    to="de.enough.polish.ui.backgrounds.PulsatingCircleBackground" converter="de.enough.polish.preprocess.backgrounds.PulsatingCircleBackgroundConverter" >
+			<param name="color" type="primitive-color" default="white" />
+			<param name="min-diameter" type="integer" default="8" />
+			<param name="max-diameter" type="integer" default="40" />
+		</mapping>
+		<mapping from="pulsating-circles"   to="de.enough.polish.ui.backgrounds.PulsatingCirclesBackground" converter="de.enough.polish.preprocess.backgrounds.PulsatingCirclesBackgroundConverter" >
+			<param name="first-color" type="primitive-color" default="white" />
+			<param name="second-color" type="primitive-color" default="gray" />
+			<param name="min-diameter" type="integer" default="8" />
+			<param name="max-diameter" type="integer" default="40" />
+			<param name="number-of-circles" type="integer" default="3" />
+			<param name="step" type="integer" default="350" />
+		</mapping>
+		<mapping from="circle"              to="de.enough.polish.ui.backgrounds.CircleBackground" converter="de.enough.polish.preprocess.backgrounds.CircleBackgroundConverter" >
+			<param name="color" type="primitive-color" default="white" />
+			<param name="diameter" type="integer" default="-1" />			
+		</mapping>
+		<mapping from="opening"             to="de.enough.polish.ui.backgrounds.OpeningBackground" converter="de.enough.polish.preprocess.backgrounds.OpeningBackgroundConverter" >
+			<param name="color" type="primitive-color" default="white" />
+			<param name="start-height" type="integer" default="1" />			
+			<param name="steps" type="integer" default="8" />			
+		</mapping>
+		<mapping from="round-rect-opening"  to="de.enough.polish.ui.backgrounds.BorderedRoundRectOpeningBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter" >
+			<param name="color" type="primitive-color" default="white" />
+			<param name="start-height" type="integer" default="1" />			
+			<param name="steps" type="integer" default="8" />			
+			<param name="arc-width" type="integer" default="4" />
+			<param name="arc-height" type="integer" default="4" />			
+			<param name="border-color" type="primitive-color" default="black" />
+			<param name="border-width" type="integer" default="0" />
+		</mapping>
 		<mapping from="opening-round-rect"  converter="de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter" />
-		<mapping from="round-tab"           converter="de.enough.polish.preprocess.backgrounds.RoundTabBackgroundConverter" />
-		<mapping from="fade-in"             converter="de.enough.polish.preprocess.backgrounds.FadeInBackgroundConverter" />
-		<mapping from="ball-games"          converter="de.enough.polish.preprocess.backgrounds.BallBackgroundConverter" />
+		<mapping from="round-tab"           to="de.enough.polish.ui.backgrounds.RoundTabBackground" converter="de.enough.polish.preprocess.backgrounds.RoundTabBackgroundConverter" >
+			<param name="color" type="primitive-color" default="white" />
+			<param name="arc-width" type="integer" default="4" />
+			<param name="arc-height" type="integer" default="4" />			
+		</mapping>
+		<mapping from="round-tab-bordered"  to="de.enough.polish.ui.backgrounds.BorderedRoundTabBackground" converter="de.enough.polish.preprocess.backgrounds.BorderedRoundTabBackgroundConverter" >
+			<param name="color" type="primitive-color" default="white" />
+			<param name="arc-width" type="integer" default="4" />
+			<param name="arc-height" type="integer" default="4" />			
+			<param name="border-color" type="primitive-color" default="black" />
+			<param name="border-width" type="integer" default="1" />
+		</mapping>
+		<mapping from="fade-in"             to="de.enough.polish.ui.backgrounds.FadeInBackground" converter="de.enough.polish.preprocess.backgrounds.FadeInBackgroundConverter" >
+			<param name="target-argb-color" type="primitive-color" default="white" />
+			<param name="restart-on-time" type="boolean" default="false" />
+			<param name="restart-on-position-change" type="boolean" default="false" />
+		</mapping>
+		<mapping from="ball-games"           converter="de.enough.polish.preprocess.backgrounds.BallBackgroundConverter" >
+			<!--  to="de.enough.polish.ui.backgrounds.BallBackground" deactivated because of required game-API support -->
+			<param name="color" type="primitive-color" default="white" />
+			<param name="border-color" type="primitive-color" default="black" />
+			<param name="url" type="image-url" default="/none" />
+			<param name="round-width" type="integer" default="1" />
+			<param name="round-height" type="integer" default="1" />
+			<param name="number" type="integer" default="5" />
+		</mapping>
 		<mapping from="tiger-stripes"       converter="de.enough.polish.preprocess.backgrounds.TigerStripesBackgroundConverter" />
 		<mapping from="smooth-color"        converter="de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter" />
+		<mapping from="diagonal-gradient"   to="de.enough.polish.ui.backgrounds.SmoothColorBackground" converter="de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter" >
+			<param name="color" type="primitive-color" default="white" />
+			<param name="target-color" type="primitive-color" default="gray" />
+			<param name="stroke" type="integer" default="solid" values="solid,dotted" />
+		</mapping>
 		<mapping from="snow"                converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" />
-		<mapping from="snowflakes"          converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" />
-		<mapping from="web20"          		converter="de.enough.polish.preprocess.backgrounds.Web20RoundRectBackgroundConverter" />
+		<mapping from="snowflakes"          to="de.enough.polish.ui.backgrounds.XmasSnowBackground" converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" >
+			<param name="color" type="primitive-color" default="red" />
+			<param name="flake-color" type="primitive-color" default="white" />
+			<param name="max-flake-size" type="integer" default="10" />
+			<param name="number-of-flakes" type="integer" default="5" />
+		</mapping>
+		<mapping from="web20"          		to="de.enough.polish.ui.backgrounds.Web20RoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.Web20RoundRectBackgroundConverter" >
+			<param name="color" type="primitive-color" default="white" />
+			<param name="arc-width" type="integer" default="4" />
+			<param name="arc-height" type="integer" default="4" />			
+			<param name="circle-color" type="primitive-color" default="yellow" />
+			<!--  todo: add anchor support -->
+			<param name="circle-anchor" type="integer" default="16" />			
+			<param name="padding-left" type="integer" default="0" />			
+			<param name="padding-right" type="integer" default="0" />			
+			<param name="padding-top" type="integer" default="0" />			
+			<param name="padding-bottom" type="integer" default="0" />			
+		</mapping>
 		<mapping from="stripes"          	converter="de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" />
-		<mapping from="horizontal-stripes"	converter="de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" />
+		<mapping from="horizontal-stripes"	to="de.enough.polish.ui.backgrounds.HorizontalStripesBackground" converter="de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" >
+			<param name="first-top-color" type="primitive-color" default="yellow" />
+			<param name="first-bottom-color" type="primitive-color" default="green" />
+			<param name="second-top-color" type="primitive-color" default="white" />
+			<param name="second-bottom-color" type="primitive-color" default="green" />
+		</mapping>
 		<mapping from="gradient"          	converter="de.enough.polish.preprocess.backgrounds.GradientVerticalBackgroundConverter" />
-		<mapping from="vertical-gradient"   converter="de.enough.polish.preprocess.backgrounds.GradientVerticalBackgroundConverter" />
+		<mapping from="vertical-gradient"   to="de.enough.polish.ui.backgrounds.GradientVerticalBackground" converter="de.enough.polish.preprocess.backgrounds.GradientVerticalBackgroundConverter" >
+			<param name="top-color" type="primitive-color" default="white" />
+			<param name="bottom-color" type="primitive-color" default="gray" />
+			<param name="stroke" type="integer" default="solid" values="solid,dotted" />
+			<param name="start" type="integer" default="0" />
+			<param name="end" type="integer" default="100" />
+			<param name="is-percent" type="boolean" default="true" />
+		</mapping>
 	</attribute>
 
 	<attribute
 		name="border"
-		type="converter"
+		type="parameterized"
 		appliesTo="Item, Screen"
 		description="The border of an item or screen. The default border is &quot;none&quot;."
 	>
-		<mapping from="simple" 				converter="de.enough.polish.preprocess.borders.SimpleBorderConverter" />
+		<mapping from="simple" 				to="de.enough.polish.ui.borders.SimpleBorder" converter="de.enough.polish.preprocess.borders.SimpleBorderConverter" >
+			<param name="color" type="primitive-color" default="black" />
+			<param name="border-width" type="integer" default="1" />
+		</mapping>
 		<mapping from="plain" 				converter="de.enough.polish.preprocess.borders.SimpleBorderConverter" />
-		<mapping from="bottom-right-shadow" converter="de.enough.polish.preprocess.borders.ShadowBorderConverter" />
+		<mapping from="bottom-right-shadow" to="de.enough.polish.ui.borders.BottomRightShadowBorder" converter="de.enough.polish.preprocess.borders.ShadowBorderConverter" >
+			<param name="color" type="primitive-color" default="black" />
+			<param name="border-width" type="integer" default="1" />			
+			<param name="offset" type="integer" default="1" />			
+		</mapping>
 		<mapping from="right-bottom-shadow" converter="de.enough.polish.preprocess.borders.ShadowBorderConverter" />
 		<mapping from="shadow" 				converter="de.enough.polish.preprocess.borders.ShadowBorderConverter" />
-		<mapping from="round-rect" 			converter="de.enough.polish.preprocess.borders.RoundRectBorderConverter" />
+		<mapping from="round-rect" 			to="de.enough.polish.ui.borders.RoundRectBorder" converter="de.enough.polish.preprocess.borders.RoundRectBorderConverter" >
+			<param name="color" type="primitive-color" default="black" />
+			<param name="border-width" type="integer" default="1" />
+			<param name="arc-width" type="integer" default="4" />
+			<param name="arc-height" type="integer" default="4" />			
+		</mapping>
 		<mapping from="roundrect" 			converter="de.enough.polish.preprocess.borders.RoundRectBorderConverter" />
-		<mapping from="circle" 				converter="de.enough.polish.preprocess.borders.CircleBorderConverter" />
-		<mapping from="bottom"				converter="de.enough.polish.preprocess.borders.BottomBorderConverter" />
-		<mapping from="top" 				converter="de.enough.polish.preprocess.borders.TopBorderConverter" />
-		<mapping from="left" 				converter="de.enough.polish.preprocess.borders.LeftBorderConverter" />
-		<mapping from="right" 				converter="de.enough.polish.preprocess.borders.RightBorderConverter" />
-		<mapping from="drop-shadow" 		converter="de.enough.polish.preprocess.borders.DropShadowBorderConverter" />
+		<mapping from="circle" 				to="de.enough.polish.ui.borders.CircleBorder" converter="de.enough.polish.preprocess.borders.CircleBorderConverter" >
+			<param name="color" type="primitive-color" default="black" />
+			<param name="border-width" type="integer" default="1" />
+			<param name="stroke=style" type="integer" default="solid" values="solid,dotted" />
+		</mapping>
+		<mapping from="bottom"				to="de.enough.polish.ui.borders.BottomBorder" converter="de.enough.polish.preprocess.borders.BottomBorderConverter" >
+			<param name="color" type="primitive-color" default="black" />
+			<param name="border-width" type="integer" default="1" />
+		</mapping>
+		<mapping from="top" 				to="de.enough.polish.ui.borders.TopBorder" converter="de.enough.polish.preprocess.borders.TopBorderConverter" >
+			<param name="color" type="primitive-color" default="black" />
+			<param name="border-width" type="integer" default="1" />
+		</mapping>
+		<mapping from="left" 				to="de.enough.polish.ui.borders.LeftBorder" converter="de.enough.polish.preprocess.borders.LeftBorderConverter" >
+			<param name="color" type="primitive-color" default="black" />
+			<param name="border-width" type="integer" default="1" />
+		</mapping>
+		<mapping from="right" 				to="de.enough.polish.ui.borders.RightBorder" converter="de.enough.polish.preprocess.borders.RightBorderConverter" >
+			<param name="color" type="primitive-color" default="black" />
+			<param name="border-width" type="integer" default="1" />
+		</mapping>
+		<mapping from="drop-shadow" 		to="de.enough.polish.ui.borders.DropShadowBorder" converter="de.enough.polish.preprocess.borders.DropShadowBorderConverter" >
+		<!--  todo: add argb support  -->
+			<param name="inner-color" type="primitive-color" default="0xbb000000" />
+			<param name="outer-color" type="primitive-color" default="0x77333333" />
+			<param name="border-width" type="integer" default="4" />
+			<param name="offset" type="integer" default="4" />
+			<param name="orientation" type="integer" default="bottom-right" values="bottom-right,top-right,bottom-left,top-left" />
+		</mapping>
 	</attribute>		
 		<!--
 		<mapping from="" converter="" />
@@ -165,7 +322,7 @@
 	<attribute
 		name="focused-style"
 		type="style"
-		appliesTo="Screen, Form, List, ChoiceGroup"
+		appliesTo="Screen, Item"
 		description="The name of the style for the currently focused item."
 		default="focused"
 		id="1"
@@ -174,7 +331,7 @@
 	<attribute
 		name="title-style"
 		type="style"
-		appliesTo="Screen, Form, List, TextBox"
+		appliesTo="Screen"
 		description="The name of the style for the title of the corresponding Screen."
 		default="title"
 		id="2"
@@ -192,7 +349,7 @@
 	<attribute
 		name="columns"
 		type="integer"
-		appliesTo="Screen, Form, List, ChoiceGroup"
+		appliesTo="Screen"
 		description="The number of columns. This can be used to layout the items in a table."
 		default="1"
 		id="4"
@@ -201,7 +358,7 @@
 	<attribute
 		name="columns-width"
 		type="columns-width"
-		appliesTo="Screen, Form, List, ChoiceGroup"
+		appliesTo="Screen, Container"
 		description="Either &quot;normal&quot;, &quot;equal&quot; or the width for each column in a comma separated list (e.g. &quot;columns-width: 60,60,10&quot;)."
 		default="normal"
 		id="5"
@@ -210,7 +367,7 @@
 	<attribute
 		name="icon-image"
 		type="imageurl"
-		appliesTo="List-Item, IconItem, ChoiceItem"
+		appliesTo="IconItem"
 		description="The URL of the image. The keyword %INDEX% can be used for adding the position of the icon to the name, e.g.&quot;icon-image: url(icon%INDEX%.png);&quot;."
 		default="none"
 		id="6"
@@ -219,7 +376,7 @@
 	<attribute
 		name="icon-image-align"
 		type="integer"
-		appliesTo="List-Item, IconItem, ChoiceItem"
+		appliesTo="IconItem"
 		description="The position of the image relative to the text."
 		default="left"
 		values="left,right,top,bottom,center"
@@ -229,7 +386,7 @@
 	<attribute
 		name="choice-color"
 		type="color"
-		appliesTo="ChoiceGroup-Item"
+		appliesTo="ChoiceItem"
 		description="The color in which the check- or radio-box will be painted."
 		default="black"
 		id="8"
@@ -297,7 +454,7 @@
 	<attribute
 		name="menubar-color"
 		type="color"
-		appliesTo="Screen,List,Form,TextBox"
+		appliesTo="Screen"
 		description="The color of the menu-bar. This overrides the settings in the predefined style &quot;menu&quot;. This attribute is only used, when the &quot;menu&quot; fullscreen setting is activated in the &quot;build.xml&quot; file."
 		id="16"
 	/>
@@ -479,8 +636,8 @@
 	<attribute
 		name="scrollindicator-color"
 		type="color"
-		appliesTo="Screen, List, Form, TabbedForm"
-		description="The color of the item which indicates that the user can scroll the current screen."
+		appliesTo="Screen"
+		description="The color of the item which indicates that the user can scroll the current screen. Is ignored when a scrollbar is used."
 		default="black"
 		id="36"
 	/>
@@ -497,7 +654,7 @@
 	<attribute
 		name="font-bitmap"
 		type="string"
-		appliesTo="Font, BitMapFont"
+		appliesTo="StringItem"
 		description="Defines which bitmap (bmf) font should be used."
 		id="38"
 	/>
@@ -505,38 +662,38 @@
 	<attribute
 		name="view-type"
 		type="map"
-		appliesTo="Form, List, ChoiceGroup, Container"
+		appliesTo="Screen,Item"
 		description="Defines which view should be used for showing the items of a Form, List, etc."
 		id="39"
 	>
-		<mapping from="shuffle" to="new de.enough.polish.ui.containerviews.ShuffleView()" />
+		<mapping from="shuffle" to="new de.enough.polish.ui.containerviews.ShuffleView()" appliesTo="Screen" />
 		<mapping from="ShuffleView" to="new de.enough.polish.ui.containerviews.ShuffleView()" />
-		<mapping from="dropping" to="new de.enough.polish.ui.containerviews.DroppingView()" />
+		<mapping from="dropping" to="new de.enough.polish.ui.containerviews.DroppingView()" appliesTo="Screen"  />
 		<mapping from="DroppingView" to="new de.enough.polish.ui.containerviews.DroppingView()" />
 		<mapping from="midp2" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
-		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
+		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" appliesTo="Screen,Container" />
 		<mapping from="relative" to="new de.enough.polish.ui.containerviews.RelativeLayoutView()" />
 		<mapping from="exclusive" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
-		<mapping from="exclusive-choice" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
+		<mapping from="exclusive-choice" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" appliesTo="ChoiceGroup" />
 		<mapping from="exclusive-single-line" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
-		<mapping from="horizontal-choice" to="new de.enough.polish.ui.containerviews.HorizontalChoiceView()" />
+		<mapping from="horizontal-choice" to="new de.enough.polish.ui.containerviews.HorizontalChoiceView()" appliesTo="ChoiceGroup" />
 		<mapping from="ExclusiveSingleLineView" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
 		<mapping from="Dinner" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
 		<mapping from="dinner" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
 		<mapping from="DinnerForOne" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
 		<mapping from="fully-animated" to="new de.enough.polish.ui.containerviews.AnimationContainerView()" />
-		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideUpView()" />
+		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideUpView()"  appliesTo="Item" />
 		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideUpView()" />
 		<mapping from="carousel" to="new de.enough.polish.ui.containerviews.CarrouselContainerView()" />
 		<mapping from="carrousel" to="new de.enough.polish.ui.containerviews.CarrouselContainerView()" />
 		<mapping from="plain" to="none" />
 		<mapping from="normal" to="none" />
-		<mapping from="gauge-recline" to="new de.enough.polish.ui.gaugeviews.RecLineGaugeView()" />
-		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" />
-		<mapping from="gauge-rotating-arcs" to="new de.enough.polish.ui.gaugeviews.RotatingArcsGaugeView()" />
-		<mapping from="chart-vertical-bars" to="new de.enough.polish.ui.chartviews.VerticalBarChartView()" />
-		<mapping from="fade-out" to="new de.enough.polish.ui.itemviews.FadeOutItemView()" />
-		<mapping from="fade-in" to="new de.enough.polish.ui.itemviews.FadeInItemView()" />
+		<mapping from="gauge-recline" to="new de.enough.polish.ui.gaugeviews.RecLineGaugeView()"  appliesTo="Gauge" />
+		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" appliesTo="Gauge" />
+		<mapping from="gauge-rotating-arcs" to="new de.enough.polish.ui.gaugeviews.RotatingArcsGaugeView()" appliesTo="Gauge" />
+		<mapping from="chart-vertical-bars" to="new de.enough.polish.ui.chartviews.VerticalBarChartView()" appliesTo="ChartItem" />
+		<mapping from="fade-out" to="new de.enough.polish.ui.itemviews.FadeOutItemView()" appliesTo="Item" />
+		<mapping from="fade-in" to="new de.enough.polish.ui.itemviews.FadeInItemView()" appliesTo="Item" />
 		<!--
 		<mapping from="" to="" />
 		-->
@@ -545,7 +702,7 @@
 	<attribute
 		name="droppingview-repeat-animation"
 		type="boolean"
-		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		appliesTo="DroppingView"
 		description="Defines whether the animation should be repeated each time the screen is shown."
 		default="false"
 		id="40"
@@ -554,7 +711,7 @@
 	<attribute
 		name="droppingview-speed"
 		type="integer"
-		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		appliesTo="DroppingView"
 		description="Defines the speed in pixels per animation-step of the falling items."
 		default="10"
 		id="41"
@@ -563,7 +720,7 @@
 	<attribute
 		name="droppingview-maximum"
 		type="integer"
-		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		appliesTo="DroppingView"
 		description="Defines the maximum bouncing height of the falling items."
 		default="30"
 		id="42"
@@ -572,7 +729,7 @@
 	<attribute
 		name="droppingview-damping"
 		type="integer"
-		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		appliesTo="DroppingView"
 		description="The value by which the maximum is decreased for each following item. By having a damping, the top items seem to bounce higher than lower ones."
 		default="10"
 		id="43"
@@ -581,7 +738,7 @@
 	<attribute
 		name="droppingview-maxperiode"
 		type="integer"
-		appliesTo="Container, Form, List, ChoiceGroup, The dropping view-type"
+		appliesTo="DroppingView"
 		description="The maximum allowed number of bounces."
 		default="5"
 		id="44"
@@ -590,7 +747,7 @@
 	<attribute
 		name="shuffleview-repeat-animation"
 		type="boolean"
-		appliesTo="Container, Form, List, ChoiceGroup, The shuffle view-type"
+		appliesTo="ShuffleView"
 		description="Defines whether the animation should be repeated each time the screen is shown."
 		default="false"
 		id="45"
@@ -599,7 +756,7 @@
 	<attribute
 		name="shuffleview-speed"
 		type="integer"
-		appliesTo="Container, Form, List, ChoiceGroup, The shuffle view-type"
+		appliesTo="ShuffleView"
 		description="Defines the speed in pixels per animation-step of the items."
 		default="10"
 		id="46"
@@ -608,7 +765,7 @@
 	<attribute
 		name="tabbar-scrolling-indicator-color"
 		type="color"
-		appliesTo="Tabbar, TabbedForm"
+		appliesTo="TabBar, TabbedForm"
 		description="Defines the color of the scrolling indicator of the tabbar."
 		default="white"
 		id="47"
@@ -650,7 +807,7 @@
 	<attribute
 		name="foreground-image"
 		type="imageurl"
-		appliesTo="Screen, List, Form, TabbedForm"
+		appliesTo="Screen"
 		description="The url of the image that should be shown at the topmost layer. You can also set the foreground-x and forground-y positions."
 		id="52"
 	/>
@@ -658,7 +815,7 @@
 	<attribute
 		name="foreground-x"
 		type="integer"
-		appliesTo="Screen, List, Form, TabbedForm"
+		appliesTo="Screen"
 		description="The x position of the foreground image."
 		id="53"
 	/>
@@ -666,7 +823,7 @@
 	<attribute
 		name="foreground-y"
 		type="integer"
-		appliesTo="Screen, List, Form, TabbedForm"
+		appliesTo="Screen"
 		description="The y position of the foreground image."
 		id="54"
 	/>
@@ -674,7 +831,7 @@
 	<attribute
 		name="exclusiveview-arrow-color"
 		type="color"
-		appliesTo="ChoiceGroup, List, The exclusive view-type"
+		appliesTo="ExclusiveSingleLineView"
 		description="The color of the arrows."
 		default="black"
 		id="55"
@@ -683,7 +840,7 @@
 	<attribute
 		name="exclusiveview-right-arrow"
 		type="imageurl"
-		appliesTo="ChoiceGroup, List, The exclusive view-type"
+		appliesTo="ExclusiveSingleLineView"
 		description="The URL of the right arrow image."
 		id="56"
 	/>
@@ -691,7 +848,7 @@
 	<attribute
 		name="exclusiveview-left-arrow"
 		type="imageurl"
-		appliesTo="ChoiceGroup, List, The exclusive view-type"
+		appliesTo="ExclusiveSingleLineView"
 		description="The URL of the left arrow image."
 		id="57"
 	/>
@@ -699,7 +856,7 @@
 	<attribute
 		name="min-width"
 		type="integer"
-		appliesTo="Item, StringItem, ChoiceGroup, Container, ChoiceItem, IconItem, ImageItem, CustomItem, DateField, TextField, Gauge, ListItem, SpriteItem, Ticker"
+		appliesTo="Item"
 		description="The minimum width of an item."
 		id="58"
 	/>
@@ -707,7 +864,7 @@
 	<attribute
 		name="max-width"
 		type="integer"
-		appliesTo="Item, StringItem, ChoiceGroup, Container, ChoiceItem, IconItem, ImageItem, CustomItem, DateField, TextField, Gauge, ListItem, SpriteItem, Ticker"
+		appliesTo="Item"
 		description="The maximum width of an item."
 		id="59"
 	/>
@@ -990,7 +1147,7 @@
 	<attribute
 		name="scroll-mode"
 		type="integer"
-		appliesTo="Form, List, TabbedForm, FramedForm, Container, Screen"
+		appliesTo="Container, Screen"
 		description="Enables or disables the smooth scrolling function."
 		default="smooth"
 		values="normal,smooth"
@@ -1000,7 +1157,7 @@
 	<attribute
 		name="cube-screen-change-animation-background-color"
 		type="color"
-		appliesto="CubeScreenChangeAnimation"
+		appliesTo="CubeScreenChangeAnimation"
 		description="Sets the background of a cube screen change animation."
 		default="black"
 		id="86"
@@ -1009,7 +1166,7 @@
 	<attribute
 		name="clip-screen-info"
 		type="boolean"
-		appliesto="Screen, Form, TabbedForm, FramedForm, TextBox"
+		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox"
 		description="Enables or disables the clipping of the info-section. This is visible for TextFields in the direct input mode, for example."
 		default="false"
 		id="87"
@@ -1018,7 +1175,7 @@
 	<attribute
 		name="text-effect"
 		type="map"
-		appliesto="StringItem, IconItem, ChoiceItem"
+		appliesTo="StringItem, IconItem, ChoiceItem"
 		description="Sets a text effect."
 		id="88"
 	>
@@ -1055,7 +1212,7 @@
 	<attribute
 		name="text-shadow-color"
 		type="color"
-		appliesto="ShadowTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="ShadowTextEffect"
 		description="Sets the color of a shadow for the shadow font-effect."
 		default="black"
 		id="89"
@@ -1064,7 +1221,7 @@
 	<attribute
 		name="text-shadow-orientation"
 		type="integer"
-		appliesto="ShadowTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="ShadowTextEffect"
 		description="Sets the orientation of a shadow for the shadow font-effect."
 		default="bottom-right"
 		values="bottom-right, bottom-left, top-right, top-left, bottom, top, right, left"
@@ -1074,7 +1231,7 @@
 	<attribute
 		name="text-shadow-x"
 		type="integer"
-		appliesto="ShadowTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="ShadowTextEffect"
 		description="Sets the x-orientation in pixels of a shadow for the shadow font-effect."
 		default="1"
 		id="91"
@@ -1083,7 +1240,7 @@
 	<attribute
 		name="text-shadow-y"
 		type="integer"
-		appliesto="ShadowTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="ShadowTextEffect"
 		description="Sets the y-orientation in pixels of a shadow for the shadow font-effect."
 		default="1"
 		id="92"
@@ -1092,7 +1249,7 @@
 	<attribute
 		name="text-outline-inner-color"
 		type="color"
-		appliesto="OutlineTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="OutlineTextEffect"
 		description="The color with which the outline is filled inside. The outline itself will be painted in the specified font-color."
 		default="white"
 		id="93"
@@ -1101,7 +1258,7 @@
 	<attribute
 		name="text-segment-color"
 		type="color"
-		appliesto="SegmentTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="SegmentTextEffect"
 		description="The color of the lines used for separating the segments."
 		default="white"
 		id="94"
@@ -1110,7 +1267,7 @@
 	<attribute
 		name="text-segment-gap"
 		type="integer"
-		appliesto="SegmentTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="SegmentTextEffect"
 		description="The gap between segment lines."
 		default="3"
 		id="95"
@@ -1120,7 +1277,7 @@
 	<attribute
 		name="text-lighthouse-mode"
 		type="integer"
-		appliesto="LighthouseTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="LighthouseTextEffect"
 		description="Sets the mode of the lighthouse font-effect."
 		default="back-and-forth"
 		values="back-and-forth, left-to-right, right-to-left, back-and-forth-once, left-to-right-once, right-to-left-once"
@@ -1130,7 +1287,7 @@
 	<attribute
 		name="text-lighthouse-color"
 		type="color"
-		appliesto="LighthouseTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="LighthouseTextEffect"
 		description="Sets the main color of the lighthouse font-effect."
 		default="#44b500"
 		id="97"
@@ -1139,7 +1296,7 @@
 	<attribute
 		name="text-lighthouse-neighbor-color"
 		type="color"
-		appliesto="LighthouseTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="LighthouseTextEffect"
 		description="Sets the color for characters next to the currently main character in the lighthouse font-effect."
 		default="#379100"
 		id="98"
@@ -1148,7 +1305,7 @@
 	<attribute
 		name="text-vertical-gradient-start-color"
 		type="color"
-		appliesto="VerticalGradientTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="VerticalGradientTextEffect"
 		description="Sets the top color for the font gradient."
 		default="white"
 		id="99"
@@ -1157,7 +1314,7 @@
 	<attribute
 		name="text-vertical-gradient-end-color"
 		type="color"
-		appliesto="VerticalGradientTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="VerticalGradientTextEffect"
 		description="Sets the bottom color for the font gradient."
 		default="black"
 		id="100"
@@ -1166,7 +1323,7 @@
 	<attribute
 		name="text-vertical-gradient-steps"
 		type="integer"
-		appliesto="VerticalGradientTextEffect, StringItem, IconItem, ChoiceItem"
+		appliesTo="VerticalGradientTextEffect"
 		description="Sets number of steps for the font gradient. This defaults to the height of the standard font (Font.getDefaultFont())."
 		id="101"
 	/>
@@ -1174,7 +1331,7 @@
 	<attribute
 		name="scrollindicator-up-image"
 		type="imageurl"
-		appliesTo="Screen, List, Form, TabbedForm"
+		appliesTo="Screen"
 		description="The URL of the image indicating that the user can scroll upwards."
 		id="102"
 	/>
@@ -1182,7 +1339,7 @@
 	<attribute
 		name="scrollindicator-down-image"
 		type="imageurl"
-		appliesTo="Screen, List, Form, TabbedForm"
+		appliesTo="Screen"
 		description="The URL of the image indicating that the user can scroll downwards."
 		id="103"
 	/>
@@ -1190,7 +1347,7 @@
 	<attribute
 		name="exclusiveview-arrow-position"
 		type="integer"
-		appliesTo="ChoiceGroup, List, The exclusive view-type"
+		appliesTo="ExclusiveSingleLineView"
 		description="The position of the arrows, either on both sides, left or right."
 		default="bothsides"
 		values="bothsides,right,left"
@@ -1200,7 +1357,7 @@
 	<attribute
 		name="exclusiveview-expand-background"
 		type="boolean"
-		appliesTo="ChoiceGroup, List, The exclusive view-type"
+		appliesTo="ExclusiveSingleLineView"
 		description="Defines whether the background should be painted under the arrows as well."
 		default="false"
 		id="105"
@@ -1228,7 +1385,7 @@
 	<attribute
 		name="view-type-left-x-offset"
 		type="integer"
-		appliesTo="Container, ContainerView, view-type"
+		appliesTo="CCContainerView"
 		description="The number of pixels the left border of the a view-type is shifted to the right (inside), negative values move the left border to the left (outside)."
 		default="0"
 		id="108"
@@ -1237,7 +1394,7 @@
 	<attribute
 		name="view-type-right-x-offset"
 		type="integer"
-		appliesTo="Container, ContainerView, view-type"
+		appliesTo="CCContainerView"
 		description="The number of pixels the right border of the a view-type is shifted to the left (inside), negative values move the right border to the right (outside)."
 		default="0"
 		id="109"
@@ -1246,7 +1403,7 @@
 	<attribute
 		name="view-type-top-y-offset"
 		type="integer"
-		appliesTo="Container, ContainerView, view-type"
+		appliesTo="CCContainerView"
 		description="The number of pixels the top border of the a view-type is shifted downwards, negative values move the top border to the upwards."
 		default="0"
 		id="110"
@@ -1283,7 +1440,7 @@
 	<attribute
 		name="ticker-position"
 		type="integer"
-		appliesTo="Ticker, Screen, Form, TabbedForm, FramedForm, List"
+		appliesTo="Ticker, Screen"
 		description="You can specify the position of the ticker on the screen."
 		default="top"
 		values="top, bottom"
@@ -1293,7 +1450,7 @@
 	<attribute
 		name="title-position"
 		type="integer"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		appliesTo="Screen"
 		description="You can specify the position of the title on the screen."
 		default="top"
 		values="top, bottom"
@@ -1303,7 +1460,7 @@
 	<attribute
 		name="repaint-previous-screen"
 		type="boolean"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		appliesTo="Screen"
 		description="Specifies whether the previous screen should be repainted whenever the current screen changes, i.e. by user interaction. This makes sense when a translucent background is used for the current screen and the screen contains modifiable or selectable items."
 		default="false"
 		id="116"
@@ -1312,7 +1469,7 @@
 	<attribute
 		name="menubar-style"
 		type="style"
-		appliesTo="Screen, Form, List, TextBox"
+		appliesTo="Screen"
 		description="The name of the style for the menubar of the corresponding Screen."
 		default="menubar"
 		id="117"
@@ -1321,7 +1478,7 @@
 	<attribute
 		name="scrollbar-position"
 		type="integer"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		appliesTo="XXScreen"
 		description="(Note: not supported yes!) You can specify the position of the scrollbar on the screen after activating it with polish.useScrollBar."
 		default="right"
 		values="right, left"
@@ -1331,7 +1488,7 @@
 	<attribute
 		name="scrollbar-slider-width"
 		type="integer"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		appliesTo="Screen, ScrollBar"
 		description="The width of the slider in pixels, is ignored when a slider-image is defined."
 		default="2"
 		id="119"
@@ -1340,7 +1497,7 @@
 	<attribute
 		name="scrollbar-slider-color"
 		type="color"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		appliesTo="Screen, ScrollBar"
 		description="The color of the slider, is ignored when a slider-image is defined."
 		default="black"
 		id="120"
@@ -1349,7 +1506,7 @@
 	<attribute
 		name="scrollbar-slider-image"
 		type="imageurl"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		appliesTo="Screen, ScrollBar"
 		description="The URL of image used for the slider."
 		id="121"
 	/>
@@ -1357,7 +1514,7 @@
 	<attribute
 		name="scrollbar-slider-image-repeat"
 		type="boolean"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		appliesTo="Screen, ScrollBar"
 		description="Either &quot;true&quot; or &quot;false&quot;. When &quot;true&quot; is given, the slider image is repeated vertically, if necessary."
 		default="false"
 		id="122"
@@ -1366,7 +1523,7 @@
 	<attribute
 		name="scrollbar-slider-mode"
 		type="integer"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		appliesTo="Screen, ScrollBar"
 		description="The mode of the slider, either &quot;area&quot;, &quot;item&quot; or &quot;page&quot;. In the &quot;area&quot; mode the slider represents the position of the current selection relativ to the complete width and height. In the &quot;item&quot; mode the index of currently selected item is taken into account relative to the number of items. In the &quot;page&quot; The default mode is &quot;page&quot;."
 		default="page"
 		values="area, item, page"
@@ -1376,7 +1533,7 @@
 	<attribute
 		name="scrollbar-slider-up-image"
 		type="imageurl"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		appliesTo="Screen, ScrollBar"
 		description="The image used for signaling that the user can scoll upwards. By default nothing is painted."
 		id="124"
 	/>
@@ -1384,7 +1541,7 @@
 	<attribute
 		name="scrollbar-slider-down-image"
 		type="imageurl"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, List"
+		appliesTo="Screen, ScrollBar"
 		description="The image used for signaling that the user can scoll downwards. By default nothing is painted."
 		id="125"
 	/>
@@ -1392,7 +1549,7 @@
 	<attribute
 		name="scrollbar-style"
 		type="style"
-		appliesTo="Screen, Form, List, TextBox"
+		appliesTo="Screen, ScrollBar"
 		description="The name of the style for the scrollbar of the corresponding Screen."
 		default="scrollbar"
 		id="126"
@@ -1401,7 +1558,7 @@
 	<attribute
 		name="exclusiveview-roundtrip"
 		type="boolean"
-		appliesTo="ChoiceGroup, EXCLUSIVE ChoiceGroup, List, The exclusive view-type"
+		appliesTo="ExclusiveSingleLineView"
 		description="Determines whether the user can continue at the first ChoiceGroup item when he reaches the last item."
 		default="false"
 		id="127"
@@ -1410,9 +1567,9 @@
 	<attribute
 		name="exclusiveview-arrow-padding"
 		type="integer"
-		appliesTo="ChoiceGroup, EXCLUSIVE ChoiceGroup, List, The exclusive view-type"
+		appliesTo="ExclusiveSingleLineView"
 		description="Sets the horizontal padding between the arrows of the exclusive view type. This overrides the default-horizontal-padding and makes only sense when the arrows are placed on either the left or the right side."
-		default="padding-horizontal"
+		default="1"
 		id="128"
 	/>
 	
@@ -1457,7 +1614,7 @@
 	<attribute
 		name="horizontalview-arrow-color"
 		type="color"
-		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		appliesTo="HorizontalChoiceView"
 		description="The color of the arrows."
 		default="black"
 		id="133"
@@ -1466,7 +1623,7 @@
 	<attribute
 		name="horizontalview-right-arrow"
 		type="imageurl"
-		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		appliesTo="HorizontalChoiceView"
 		description="The URL of the right arrow image."
 		id="134"
 	/>
@@ -1474,7 +1631,7 @@
 	<attribute
 		name="horizontalview-left-arrow"
 		type="imageurl"
-		appliesTo="ChoiceGroup, List, The horizontal view-type"
+		appliesTo="HorizontalChoiceView"
 		description="The URL of the left horizontal-choice image."
 		id="135"
 	/>
@@ -1482,7 +1639,7 @@
 	<attribute
 		name="horizontalview-arrow-position"
 		type="integer"
-		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		appliesTo="HorizontalChoiceView"
 		description="The position of the arrows, either on both sides, left or right. The special value none can be used for deactivating the arrows completely."
 		default="bothsides"
 		values="bothsides,right,left,none"
@@ -1492,7 +1649,7 @@
 	<attribute
 		name="horizontalview-expand-background"
 		type="boolean"
-		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		appliesTo="HorizontalChoiceView"
 		description="Defines whether the background should be painted under the arrows as well."
 		default="false"
 		id="137"
@@ -1501,7 +1658,7 @@
 	<attribute
 		name="horizontalview-roundtrip"
 		type="boolean"
-		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		appliesTo="HorizontalChoiceView"
 		description="Determines whether the user can continue at the first ChoiceGroup item when he reaches the last item."
 		default="false"
 		id="138"
@@ -1510,16 +1667,16 @@
 	<attribute
 		name="horizontalview-arrow-padding"
 		type="integer"
-		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		appliesTo="HorizontalChoiceView"
 		description="Sets the horizontal padding between the arrows of the horizontal view type. This overrides the default-horizontal-padding and makes only sense when the arrows are placed on either the left or the right side."
-		default="padding-horizontal"
+		default="1"
 		id="139"
 	/>
 	
 	<attribute
 		name="horizontalview-scroll-mode"
 		type="integer"
-		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		appliesTo="HorizontalChoiceView"
 		description="Enables or disables the smooth scrolling mode within the horizontal view-type."
 		default="smooth"
 		values="normal,smooth"
@@ -1529,7 +1686,7 @@
 	<attribute
 		name="separate-menu"
 		type="boolean"
-		appliesTo="Screen, Form, List, TabbedForm, FramedForm"
+		appliesTo="Screen"
 		description="Ensures that the menu is painted at the bottom of the screen without using the margins of the screen. You can apply the screen margins to the menubar as well by setting the &quot;separate-menubar&quot; property to &quot;true&quot;."
 		default="true"
 		id="141"
@@ -1554,7 +1711,7 @@
 	<attribute
 		name="min-height"
 		type="integer"
-		appliesTo="Item, StringItem, ChoiceGroup, Container, ChoiceItem, IconItem, ImageItem, CustomItem, DateField, TextField, Gauge, ListItem, SpriteItem, Ticker"
+		appliesTo="Item"
 		description="The minimum height of an item."
 		id="144"
 	/>
@@ -1562,7 +1719,7 @@
 	<attribute
 		name="max-height"
 		type="integer"
-		appliesTo="Item, StringItem, ChoiceGroup, Container, ChoiceItem, IconItem, ImageItem, CustomItem, DateField, TextField, Gauge, ListItem, SpriteItem, Ticker"
+		appliesTo="Item"
 		description="The maximum height of an item."
 		id="145"
 	/>
@@ -1602,7 +1759,7 @@
 	<attribute
 		name="text-wrap"
 		type="boolean"
-		appliesTo="StringItem, TextField, ListItem, IconItem, Command, CommandItem"
+		appliesTo="StringItem, Command, CommandItem"
 		description="Determines wether the text should be wrapped (=default) or whether it should be kept on one single line, even when it is larger than the available width."
 		default="true"
 		id="150"
@@ -1627,7 +1784,7 @@
 	<attribute
 		name="background-bottom"
 		type="integer"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox, Alert"
+		appliesTo="Screen"
 		description="The bottom border of the background for this screen. Usually the background reaches to the very bottom of the screen which includes the menubar. By setting background-bottom: menubar; this background only reaches until the menubar." 
 		id="153"
 		values="bottom,menubar"
@@ -1636,7 +1793,7 @@
 	<attribute
 		name="background-top"
 		type="integer"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox, Alert"
+		appliesTo="Screen"
 		description="The top border of the background for this screen. Usually the background reaches from the very top of the screen which includes the title. By setting background-top: title; this background starts after the title." 
 		id="154"
 		values="top,title"
@@ -1686,7 +1843,7 @@
 	<attribute
 		name="horizontalview-arrows-image"
 		type="imageurl"
-		appliesTo="ChoiceGroup, List, The horizontal-choice view-type"
+		appliesTo="HorizontalChoiceView"
 		description="The URL of the combined arrows image (showing both arrows to the left and to the right)."
 		id="159"
 	/>
@@ -1710,7 +1867,7 @@
 	<attribute
 		name="text-mirror-color"
 		type="color"
-		appliesTo="StringItem, mirror text-effect"
+		appliesTo="VerticalMirrorTextEffect"
 		description="The color for the vertically mirrored text, defaults to the given font-color."
 		id="162"
 	/>
@@ -1718,7 +1875,7 @@
 	<attribute
 		name="text-mirror-padding"
 		type="integer"
-		appliesTo="StringItem, mirror text-effect"
+		appliesTo="VerticalMirrorTextEffect"
 		description="The gap between the text and the mirror-shadow, defaults to 0."
 		default="0"
 		id="163"
@@ -1727,7 +1884,7 @@
 	<attribute
 		name="text-mirror-steps"
 		type="integer"
-		appliesTo="StringItem, mirror text-effect"
+		appliesTo="VerticalMirrorTextEffect"
 		description="The number of pixels until the mirror-shadow fades away, defaults to the given font's height."
 		id="164"
 	/>
@@ -1735,7 +1892,7 @@
 	<attribute
 		name="text-mirror-start-translucency"
 		type="integer"
-		appliesTo="StringItem, mirror text-effect"
+		appliesTo="VerticalMirrorTextEffect"
 		description="The opaqueness of the first row of the shadow in percent: between 0 (fully transparent) and 100 (fully opaque)"
 		default="90"
 		id="165"
@@ -1744,7 +1901,7 @@
 	<attribute
 		name="text-mirror-end-translucency"
 		type="integer"
-		appliesTo="StringItem, mirror text-effect"
+		appliesTo="VerticalMirrorTextEffect"
 		description="The opaqueness of the last row of the shadow in percent: between 0 (fully transparent) and 100 (fully opaque)"
 		default="0"
 		id="165"
@@ -1753,7 +1910,7 @@
 	<attribute
 		name="clock-format"
 		type="string"
-		appliesTo="ClockItem, DigitalClockItem"
+		appliesTo="ClockItem"
 		description="The time format for the DigitalClockItem with following identifiers: hh=hours, mm=minutes, ss=seconds, am or pm=for using the 12 hour system instead of the 24 hour one. Examples: &quot;hh:mm am&quot;, &quot;hh/mm/ss&quot;."
 		default="hh:mm:ss"
 		id="166"
@@ -1762,7 +1919,7 @@
 	<attribute
 		name="text-drop-shadow-size"
 		type="integer"
-		appliesTo="StringItem, DropShadowTextEffect"
+		appliesTo="DropShadowTextEffect"
 		description="The size of the shadow (in all directions)."
 		default="6"
 		id="167"
@@ -1770,7 +1927,7 @@
 	<attribute
 		name="text-drop-shadow-offsetx"
 		type="integer"
-		appliesTo="StringItem, DropShadowTextEffect"
+		appliesTo="DropShadowTextEffect"
 		description="The x offset of the shadow (negative values are possible)"
 		default="1"
 		id="168"
@@ -1778,7 +1935,7 @@
 	<attribute
 		name="text-drop-shadow-offsety"
 		type="integer"
-		appliesTo="StringItem, DropShadowTextEffect"
+		appliesTo="DropShadowTextEffect"
 		description="The y offset of the shadow (negative values are possible)"
 		default="2"
 		id="169"
@@ -1786,7 +1943,7 @@
 	<attribute
 		name="text-drop-shadow-inner-color"
 		type="color"
-		appliesTo="StringItem, DropShadowTextEffect"
+		appliesTo="DropShadowTextEffect"
 		description="The color of the inner shadow. The color must not be fully opaque!"
 		default="#A0909090"
 		id="170"
@@ -1794,7 +1951,7 @@
 	<attribute
 		name="text-drop-shadow-outer-color"
 		type="color"
-		appliesTo="StringItem, DropShadowTextEffect"
+		appliesTo="DropShadowTextEffect"
 		description="The color of the outer shadow, which must be less opaque than the start-color and the difference between them should be at least size."
 		default="#20909090"
 		id="171"
@@ -1802,7 +1959,7 @@
 	<attribute
 		name="text-alien-glow-inner-color"
 		type="color"
-		appliesTo="StringItem, AlienGlowTextEffect"
+		appliesTo="AlienGlowTextEffect"
 		description="The inner parts color of the glow."
 		default="#FFFFFFFF"
 		id="172"
@@ -1810,7 +1967,7 @@
 	<attribute
 		name="text-alien-glow-outer-color"
 		type="color"
-		appliesTo="StringItem, AlienGlowTextEffect"
+		appliesTo="AlienGlowTextEffect"
 		description="The outer parts color of the glow."
 		default="#FF00FF00"
 		id="173"
@@ -1818,7 +1975,7 @@
 	<attribute
 		name="text-fade-in-color"
 		type="color"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The color, which the text has, if it is faded in."
 		default="#FF000000"
 		id="174"
@@ -1826,7 +1983,7 @@
 	<attribute
 		name="text-fade-out-color"
 		type="color"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The color, which the text has, if it is faded out."
 		default="#FF00FF00"
 		id="175"
@@ -1834,7 +1991,7 @@
 	<attribute
 		name="text-fade-delay"
 		type="integer"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The delay (in animation steps) before the animation starts."
 		default="0"
 		id="176"
@@ -1842,7 +1999,7 @@
 	<attribute
 		name="text-fade-duration-in"
 		type="integer"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The time (in animation steps), which the text stays faded in."
 		default="10"
 		id="177"
@@ -1850,7 +2007,7 @@
 	<attribute
 		name="text-fade-duration-out"
 		type="integer"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The time (in animation steps), which the text stays faded out."
 		default="0"
 		id="178"
@@ -1858,7 +2015,7 @@
 	<attribute
 		name="text-fade-steps"
 		type="integer"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The time (in animation teps), which the fade-effect lasts."
 		default="5"
 		id="179"
@@ -1866,7 +2023,7 @@
 	<attribute
 		name="text-fade-mode"
 		type="string"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The fade mode can be fadein, fadeout or loop."
 		default="loop"
 		id="180"
@@ -1876,7 +2033,7 @@
 	<attribute
 		name="text-fading-alien-glow-inner-color"
 		type="color"
-		appliesTo="StringItem, AlienGlowTextEffect"
+		appliesTo="AlienGlowTextEffect"
 		description="The inner parts color of the glow."
 		default="#FFFFFFFF"
 		id="181"
@@ -1884,7 +2041,7 @@
 	<attribute
 		name="text-fading-alien-glow-outer-out-color"
 		type="color"
-		appliesTo="StringItem, AlienGlowTextEffect"
+		appliesTo="AlienGlowTextEffect"
 		description="The outer parts color of the glow, if the state is faded out."
 		default="#FF0080FF"
 		id="182"
@@ -1892,7 +2049,7 @@
 	<attribute
 		name="text-fading-alien-glow-outer-in-color"
 		type="color"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The outer parts color of the glow, if the state is faded in."
 		default="#FF80FF00"
 		id="183"
@@ -1900,7 +2057,7 @@
 	<attribute
 		name="text-fading-alien-glow-delay"
 		type="integer"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The delay (in steps) before the animation starts."
 		default="0"
 		id="184"
@@ -1908,7 +2065,7 @@
 	<attribute
 		name="text-fading-alien-glow-duration-in"
 		type="integer"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The time (in steps), which the text stays faded in."
 		default="10"
 		id="186"
@@ -1918,7 +2075,7 @@
 	<attribute
 		name="text-fading-alien-glow-duration-out"
 		type="integer"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The time (in steps), which the text stays faded out."
 		default="0"
 		id="187"
@@ -1926,7 +2083,7 @@
 	<attribute
 		name="text-fading-alien-glow-steps"
 		type="integer"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The time (in steps), which the fade-effect lasts."
 		default="5"
 		id="188"
@@ -1935,7 +2092,7 @@
 	<attribute
 		name="text-fading-alien-glow-mode"
 		type="string"
-		appliesTo="StringItem, FadeTextEffect"
+		appliesTo="FadeTextEffect"
 		description="The fade mode can be fadein, fadeout or loop."
 		default="loop"
 		id="189"
@@ -1960,7 +2117,7 @@
 	<attribute
 		name="text-rotate-angle"
 		type="integer"
-		appliesTo="StringItem, RotateTextEffect"
+		appliesTo="RotateTextEffect"
 		description="The angle in degrees between 0 and 360 by which the text should be rotated."
 		default="10"
 		id="192"
@@ -1969,7 +2126,7 @@
 	<attribute
 		name="text-rotating-start-angle"
 		type="integer"
-		appliesTo="StringItem, RotatingTextEffect"
+		appliesTo="RotatingTextEffect"
 		description="The angle in degrees between 0 and 360 at which the text rotation animation is started."
 		default="0"
 		id="193"
@@ -1978,7 +2135,7 @@
 	<attribute
 		name="text-rotating-end-angle"
 		type="integer"
-		appliesTo="StringItem, RotatingTextEffect"
+		appliesTo="RotatingTextEffect"
 		description="The angle in degrees between 0 and 360 at which the text rotation animation is ended."
 		default="360"
 		id="194"
@@ -1987,7 +2144,7 @@
 	<attribute
 		name="text-rotating-steps"
 		type="integer"
-		appliesTo="StringItem, RotatingTextEffect"
+		appliesTo="RotatingTextEffect"
 		description="The steps in degrees by which the rotation is increased in each animation phase."
 		default="4"
 		id="195"
@@ -1996,7 +2153,7 @@
 	<attribute
 		name="carrouselview-remove-text"
 		type="boolean"
-		appliesTo="Container, ContainerView, CarrouselContainerView"
+		appliesTo="CarrouselContainerView"
 		description="Text like labels are shown for the focused item ony by default. Set carrouselview-remove-text to false for showing the text for every item."
 		default="true"
 		id="196"
@@ -2014,7 +2171,7 @@
 	<attribute
 		name="gauge-tachometer-startvalue"
 		type="int"
-		appliesTo="Gauge, gauge-tachometer view-type"
+		appliesTo="TachometerGaugeView"
 		description="The lowest possible value of this gauge."
 		default="0"
 		id="198"
@@ -2023,7 +2180,7 @@
 	<attribute
 		name="gauge-tachometer-section1-start"
 		type="int"
-		appliesTo="Gauge, gauge-tachometer view-type"
+		appliesTo="TachometerGaugeView"
 		description="the value at which the first section starts, default is the startvalue (0)."
 		default="0"
 		id="199"
@@ -2032,7 +2189,7 @@
 	<attribute
 		name="gauge-tachometer-section2-start"
 		type="int"
-		appliesTo="Gauge, gauge-tachometer view-type"
+		appliesTo="TachometerGaugeView"
 		description="the value at which the first section starts, default is the value range divided by 3."
 		id="200"
 	/>
@@ -2040,7 +2197,7 @@
 	<attribute
 		name="gauge-tachometer-section3-start"
 		type="int"
-		appliesTo="Gauge, gauge-tachometer view-type"
+		appliesTo="TachometerGaugeView"
 		description="the value at which the first section starts, default is the value range multiplied by 2/3."
 		id="201"
 	/>
@@ -2048,7 +2205,7 @@
 	<attribute
 		name="gauge-tachometer-section1-color"
 		type="color"
-		appliesTo="Gauge, gauge-tachometer view-type"
+		appliesTo="TachometerGaugeView"
 		description="the color of the first section, is invisible by default"
 		id="202"
 	/>
@@ -2056,7 +2213,7 @@
 	<attribute
 		name="gauge-tachometer-section2-color"
 		type="color"
-		appliesTo="Gauge, gauge-tachometer view-type"
+		appliesTo="TachometerGaugeView"
 		description="the color of the second section, is invisible by default"
 		id="203"
 	/>
@@ -2064,7 +2221,7 @@
 	<attribute
 		name="gauge-tachometer-section3-color"
 		type="color"
-		appliesTo="Gauge, gauge-tachometer view-type"
+		appliesTo="TachometerGaugeView"
 		description="the color of the third section, is invisible by default"
 		id="204"
 	/>
@@ -2072,7 +2229,7 @@
 	<attribute
 		name="gauge-tachometer-clockface-color"
 		type="color"
-		appliesTo="Gauge, gauge-tachometer view-type"
+		appliesTo="TachometerGaugeView"
 		description="the color of the clockface of the tachometer"
 		default="black"
 		id="205"
@@ -2081,7 +2238,7 @@
 	<attribute
 		name="gauge-tachometer-inner-color"
 		type="color"
-		appliesTo="Gauge, gauge-tachometer view-type"
+		appliesTo="TachometerGaugeView"
 		description="the inner color of the tachometer"
 		default="white"
 		id="206"
@@ -2091,7 +2248,7 @@
 	<attribute
 		name="gauge-tachometer-needle-color"
 		type="color"
-		appliesTo="Gauge, gauge-tachometer view-type"
+		appliesTo="TachometerGaugeView"
 		description="the color of the tachometer needle/pointer/indicator."
 		default="red"
 		id="207"
@@ -2100,7 +2257,7 @@
 	<attribute
 		name="gauge-tachometer-factor"
 		type="int"
-		appliesTo="Gauge, gauge-tachometer view-type"
+		appliesTo="TachometerGaugeView"
 		description="an integer factor by which all given values are divided for simulating floating point. A factor of 10 and a value of 14 will result in a shown value of 1.4, for example."
 		default="1"
 		id="208"
@@ -2126,7 +2283,7 @@
 	<attribute
 		name="gauge-recline-width"
 		type="int"
-		appliesTo="Gauge, RecLineGaugeView"
+		appliesTo="RecLineGaugeView"
 		description="The width of the rects."
 		id="211"
 	/>
@@ -2134,7 +2291,7 @@
 	<attribute
 		name="gauge-recline-height"
 		type="int"
-		appliesTo="Gauge, RecLineGaugeView"
+		appliesTo="RecLineGaugeView"
 		description="The height of the rects."
 		id="212"
 	/>
@@ -2142,7 +2299,7 @@
 	<attribute
 		name="gauge-recline-number"
 		type="int"
-		appliesTo="Gauge, RecLineGaugeView"
+		appliesTo="RecLineGaugeView"
 		description="The number of rects."
 		id="213"
 	/>
@@ -2150,7 +2307,7 @@
 	<attribute
 		name="gauge-recline-selectedcolor"
 		type="color"
-		appliesTo="Gauge, RecLineGaugeView"
+		appliesTo="RecLineGaugeView"
 		description="The color of an selected rects."
 		id="214"
 	/>
@@ -2158,7 +2315,7 @@
 	<attribute
 		name="gauge-recline-unselectedcolor"
 		type="color"
-		appliesTo="Gauge, RecLineGaugeView"
+		appliesTo="RecLineGaugeView"
 		description="The number of an unselected rects."
 		id="215"
 	/>
@@ -2166,7 +2323,7 @@
 	<attribute
 		name="fade-screen-change-animation-steps"
 		type="int"
-		appliesTo="ScreenChangeAnimation, FadeScreenChangeAnimation"
+		appliesTo="FadeScreenChangeAnimation"
 		description="Number of animation steps."
 		default="6"
 		id="216"
@@ -2174,7 +2331,7 @@
 	<attribute
 		name="left-screen-change-animation-move-previous"
 		type="boolean"
-		appliesTo="ScreenChangeAnimation, LeftScreenChangeAnimation"
+		appliesTo="LeftScreenChangeAnimation"
 		description="Set to true for moving the previous screen along with the animation."
 		default="false"
 		id="217"
@@ -2182,7 +2339,7 @@
 	<attribute
 		name="right-screen-change-animation-move-previous"
 		type="boolean"
-		appliesTo="ScreenChangeAnimation, RightScreenChangeAnimation"
+		appliesTo="RightScreenChangeAnimation"
 		description="Set to true for moving the previous screen along with the animation."
 		default="false"
 		id="218"
@@ -2190,7 +2347,7 @@
 	<attribute
 		name="top-screen-change-animation-move-previous"
 		type="boolean"
-		appliesTo="ScreenChangeAnimation, TopScreenChangeAnimation"
+		appliesTo="TopScreenChangeAnimation"
 		description="Set to true for moving the previous screen along with the animation."
 		default="false"
 		id="219"
@@ -2198,7 +2355,7 @@
 	<attribute
 		name="bottom-screen-change-animation-move-previous"
 		type="boolean"
-		appliesTo="ScreenChangeAnimation, BottomScreenChangeAnimation"
+		appliesTo="BottomScreenChangeAnimation"
 		description="Set to true for moving the previous screen along with the animation."
 		default="false"
 		id="220"
@@ -2206,7 +2363,7 @@
 	<attribute
 		name="diagonal-screen-change-animation-speed"
 		type="int"
-		appliesTo="ScreenChangeAnimation, DiagonalScreenChangeAnimation"
+		appliesTo="DiagonalScreenChangeAnimation"
 		description="The speed of the animation."
 		default="2"
 		id="221"
@@ -2214,7 +2371,7 @@
 	<attribute
 		name="diagonal-screen-change-animation-move-previous"
 		type="boolean"
-		appliesTo="ScreenChangeAnimation, DiagonalScreenChangeAnimation"
+		appliesTo="DiagonalScreenChangeAnimation"
 		description="Set to true for moving the previous screen along with the animation."
 		default="false"
 		id="222"
@@ -2222,7 +2379,7 @@
 	<attribute
 		name="diagonal-screen-change-animation-background-color"
 		type="color"
-		appliesTo="ScreenChangeAnimation, DiagonalScreenChangeAnimation"
+		appliesTo="DiagonalScreenChangeAnimation"
 		description="The color of background of the animation when the previous screen should also be moved."
 		default="white"
 		id="223"
@@ -2238,7 +2395,7 @@
 	<attribute
 		name="fadeOutFadeIn-screen-change-animation-background-color"
 		type="color"
-		appliesTo="ScreenChangeAnimation, FadeOutFadeInScreenChangeAnimation"
+		appliesTo="FadeOutFadeInScreenChangeAnimation"
 		description="The color of background of the animation."
 		default="black"
 		id="225"
@@ -2246,28 +2403,28 @@
 	<attribute
 		name="width"
 		type="percentorabsolute"
-		appliesTo="Item, relative view-type"
+		appliesTo="relative view-type"
 		description="The width of an item either in pixels or in percent."
 		id="226"
 	/>
 	<attribute
 		name="height"
 		type="percentorabsolute"
-		appliesTo="Item, relative view-type"
+		appliesTo="relative view-type"
 		description="The height of an item either in pixels or in percent."
 		id="227"
 	/>
 	<attribute
 		name="x"
 		type="percentorabsolute"
-		appliesTo="Item, relative view-type"
+		appliesTo="relative view-type"
 		description="The horizontal position of an item either in pixels or in percent relative to it's parent."
 		id="228"
 	/>
 	<attribute
 		name="y"
 		type="percentorabsolute"
-		appliesTo="Item, relative view-type"
+		appliesTo="relative view-type"
 		description="The vertical position of an item either in pixels or in percent relative to it's parent."
 		id="229"
 	/>

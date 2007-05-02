@@ -31,6 +31,7 @@ import de.enough.polish.BuildException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 /**
  * <p>A requirement which a supported device needs to satisfy.</p>
@@ -50,6 +51,7 @@ implements DeviceFilter
 	//private String value;
 	protected final String propertyName;
 	protected final boolean needsToBeUndefined;
+	private Map buildProperties;
 	
 
 	/**
@@ -175,6 +177,14 @@ implements DeviceFilter
 			throw new BuildException( e );
 		}
 		
+	}
+	
+	public void setBuildProperties( Map buildProperties ) {
+		this.buildProperties = buildProperties;
+	}
+	
+	public Map getBuildProperties() {
+		return this.buildProperties;
 	}
 	
 	

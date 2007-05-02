@@ -155,7 +155,7 @@ public class PolishTask extends ConditionalTask {
 
 	private BuildSetting buildSetting;
 	private InfoSetting infoSetting;
-	private Requirements deviceRequirements;
+	private List deviceRequirements;
 	private List emulatorSettings;
 	
 	/** the project settings */ 
@@ -285,10 +285,23 @@ public class PolishTask extends ConditionalTask {
 		this.infoSetting = setting;
 	}
 	
-	public void addConfiguredDeviceRequirements( Requirements requirements ) {
-		if (requirements.isActive( this.antPropertiesEvaluator )) {
-			this.deviceRequirements = requirements;
+	public Requirements createDeviceRequirements() {
+		if (this.deviceRequirements == null) {
+			this.deviceRequirements = new ArrayList();
 		}
+		Requirements requirements = new Requirements( getProject().getProperties() );
+		this.deviceRequirements.add( requirements );
+		return requirements;
+	}
+	
+	public Requirements getDeviceRequirements() {
+		for (Iterator iter = deviceRequirements.iterator(); iter.hasNext();) {
+			Requirements requirements = (Requirements) iter.next();
+			if (requirements.isActive( this.antPropertiesEvaluator )) {
+				return requirements;
+			}
+		}
+		return null;
 	}
 	
 	/**
@@ -850,7 +863,7 @@ public class PolishTask extends ConditionalTask {
 			// special case for the usage of <identifier> requirements:
 			// in that case not all devices need to be loaded, just the ones which have the correct identifiers.
 			// This allows a faster start up time for around 80% of all cases.
-			List identifiersList = this.deviceRequirements.getRequiredIdentifiers();
+			List identifiersList = getDeviceRequirements().getRequiredIdentifiers();
 			if (identifiersList != null) {
 				// use a different map, so that no non-string attributes "pollute" the Ant properties:
 				Map newBuildProperties = new HashMap();
@@ -1386,7 +1399,7 @@ public class PolishTask extends ConditionalTask {
 				throw new BuildException("The [devices.xml] file does not define any devices at all - please specify a correct devices-file or check your polish.home property." );
 			}
 		} else {
-			this.devices = this.deviceRequirements.filterDevices( this.deviceDatabase.getDevices() );
+			this.devices = getDeviceRequirements().filterDevices( this.deviceDatabase.getDevices() );
 			if (this.devices == null || this.devices.length == 0) {
 				throw new BuildException("Your device-requirements are too strict - no device fulfills them. Check the <deviceRequirements> section(s) in your build.xml script." );
 			}

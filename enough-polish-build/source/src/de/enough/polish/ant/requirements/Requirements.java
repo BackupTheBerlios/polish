@@ -26,6 +26,7 @@
 package de.enough.polish.ant.requirements;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.tools.ant.Project;
 
@@ -53,14 +54,22 @@ extends AndRelation
 	 * Creates a new device requirements list.
 	 */
 	public Requirements() {
-		super();
-		this.condition = new ConditionalElement();
+		this( null );
 	}
 	
 	//TODO rob addConfiguredGroup( OrRelation orRelation )
 	// when requirements should be given in groups
 	
 	
+	/**
+	 * Cerates a new device requirements list.
+	 * @param buildProperties the build properties
+	 */
+	public Requirements(Map buildProperties) {
+		super(buildProperties);
+		this.condition = new ConditionalElement();
+	}
+
 	/**
 	 * Filters the available devices and only returns those which satisfy all requirements.
 	 * 
