@@ -146,19 +146,8 @@ focused {
 		color: brightBgColor;
 	}
 	layout: horizontal-expand | horizontal-center | vertical-center;
-	view-type: carrousel;
-	focused-style: .mainScreenFocused;
-	/*
 	columns: 2;
 	columns-width: equal;
-	show-text-in-title: true;
-	*/
-}
-
-.mainScreenFocused extends focused {
-	background: none;	
-	layout: center;
-	max-width: 100;
 }
 
 /**
