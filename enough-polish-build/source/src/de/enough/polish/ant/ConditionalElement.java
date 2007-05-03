@@ -28,6 +28,7 @@ package de.enough.polish.ant;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.Environment;
 import de.enough.polish.util.CastUtil;
 
 /**
@@ -171,6 +172,16 @@ public class ConditionalElement {
 			}
 		}
 		return true;
+	}
+	/**
+	 * Checks if the conditions for this element are met.
+	 * 
+	 * @param environment the environment settings
+	 * @return true when no condition has been specified 
+	 * 			or the specified conditions have been met.
+	 */
+	public boolean isActive( Environment environment ) {
+		return isActive( environment.getBooleanEvaluator() );
 	}
 	
 	/**

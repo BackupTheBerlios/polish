@@ -116,7 +116,7 @@ public class ResourceManager {
 		}		
 
 		// get localization setting:
-		this.localizationSetting = this.resourceSetting.getLocalizationSetting();
+		this.localizationSetting = this.resourceSetting.getLocalizationSetting(this.environment);
 		
 		// creates resources-filter:
 		this.resourceFilter = new ResourceFilter( setting.getExcludes(), DEFAULT_EXCLUDES, setting.useDefaultExcludes() );
@@ -171,12 +171,12 @@ public class ResourceManager {
 			targetDir.mkdirs();
 		}
 		// add manual excludes from the user:
-		this.resourceFilter.setAdditionalFilters( this.resourceSetting.getFilters(this.booleanEvaluator));
+		this.resourceFilter.setAdditionalFilters( this.resourceSetting.getFilters(this.environment));
 		File[] resources = getResources( device, locale );
 		RootSetting[] includeSubDirsRoots = getIncludeSubDirsRoots();
 		//FileUtil.copy(resources, targetDir);
 		// creating resource copier:
-		ResourceCopierSetting[] copierSettings = this.resourceSetting.getCopiers( this.environment.getBooleanEvaluator() );
+		ResourceCopierSetting[] copierSettings = this.resourceSetting.getCopiers( this.environment );
 		if (copierSettings == null || copierSettings.length == 0 ) {
 			// use default resource copier:
 			ResourceCopier resourceCopier = ResourceCopier.getInstance( null, this.extensionManager, this.environment );
@@ -294,7 +294,7 @@ public class ResourceManager {
 			addFiles(files, resourcesByName);
 		}
 		// also load resources from the filesets:
-		ResourcesFileSet[] fileSets = this.resourceSetting.getFileSets(this.booleanEvaluator, this.environment );
+		ResourcesFileSet[] fileSets = this.resourceSetting.getFileSets(this.environment );
 		for (int i = 0; i < fileSets.length; i++) {
 			ResourcesFileSet set = fileSets[i];
 			File dir = set.getDir(null);

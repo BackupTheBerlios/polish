@@ -630,18 +630,22 @@ public class ExtensionManager {
 	 * @param resourceUtil
 	 * @return
 	 * @throws IOException 
-	 * @throws JDOMException 
 	 * @throws InvalidComponentException 
 	 */
 	public static ExtensionManager getInstance(File polishHome, ResourceUtil resourceUtil) 
-	throws JDOMException, IOException, InvalidComponentException 
+	throws IOException, InvalidComponentException 
 	{	
+		try {
 		InputStream in = resourceUtil.open( polishHome, "extensions.xml" );
 		ExtensionManager manager = new ExtensionManager( null, in );
 		if (polishHome != null) {
 			manager.loadCustomDefinitions( new File( polishHome, "custom-extensions.xml"));
 		}
 		return manager;
+		} catch (JDOMException e) {
+			e.printStackTrace();
+			throw new InvalidComponentException("Unable to read custom-extenions.xml: " + e );
+		}
 	}
 
 }

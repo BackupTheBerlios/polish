@@ -27,12 +27,11 @@ package de.enough.polish.resources;
 
 import java.io.File;
 
-import de.enough.polish.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 
-import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.ConditionalElement;
 
@@ -50,7 +49,6 @@ import de.enough.polish.ant.ConditionalElement;
 public class ResourcesFileSet extends FileSet {
 	
 	private ConditionalElement condition = new ConditionalElement();
-	private Environment environment;
 	private String dirName; 
 	private File resolvedDir;
 
@@ -90,21 +88,18 @@ public class ResourcesFileSet extends FileSet {
 		return this.condition.getCondition();
 	}
 
+	
 	/**
 	 * Checks if the conditions for this element are met.
 	 * 
-	 * @param evaluator the boolean evaluator with the settings for the current device
-	 * @param antProject the Ant project into which this variable is embedded
 	 * @param env the environment
 	 * @return true when no condition has been specified 
 	 * 			or the specified conditions have been met.
 	 */
-	public boolean isActive(BooleanEvaluator evaluator, Project antProject, Environment env) {
-		this.environment = env;
+	public boolean isActive(Environment env) {
 		this.resolvedDir = null;
-		if (this.condition.isActive(evaluator, antProject)) {
-		
-			if (dirExists(antProject)) {
+		if (this.condition.isActive(env)) {
+			if (dirExists(env)) {
 				return true;
 			} else {
 				System.err.println("Warning: resources <fileset> with dir=\"" + this.dirName + "\" points to the non-existing directory " + this.resolvedDir.getAbsolutePath() );
@@ -113,28 +108,42 @@ public class ResourcesFileSet extends FileSet {
 		return false;
 	}	
 	
-
-	private boolean dirExists(Project antProject) {
+	
+	private boolean dirExists(Environment env) {
 		if (this.resolvedDir == null) {
-			resolveDir(antProject);
+			resolveDir(env);
 		}
 		return this.resolvedDir.exists();
 	}
 
-	private void resolveDir(Project antProject) {
+
+	private void resolveDir(Environment env) {
 		String realDirName = this.dirName;
-		if (this.environment == null) {
+		if (env == null) {
 			System.err.println("Warning: no environment has been set for ResourcesFileSet.");
 		} else {
-			realDirName = this.environment.writeProperties( this.dirName );
-			this.resolvedDir = new File( realDirName );
+			realDirName =  env.writeProperties( this.dirName );
 		}
-		File file = new File( realDirName );
-		if (file.isAbsolute() || (antProject == null)) {
-			this.resolvedDir = file;
-		} else {
-			this.resolvedDir = new File( antProject.getBaseDir(), realDirName );
+		File resolved = new File( realDirName );
+		if (!(resolved.isAbsolute() || resolved.exists())) {
+			resolved = new File( env.getBaseDir(), realDirName );
 		}
+		this.resolvedDir = resolved;
+		//System.out.println("resolved dir = [" + this.resolvedDir.getAbsolutePath() + "]");
+	}
+	
+	private void resolveDir(Project antProject) {
+		Environment env = Environment.getInstance();
+		if (env != null) {
+			resolveDir( env );
+			return;
+		}
+		String realDirName = this.dirName;
+		File resolved = new File( realDirName );
+		if (!(resolved.isAbsolute() || resolved.exists())) {
+			resolved = new File( env.getBaseDir(), realDirName );
+		}
+		this.resolvedDir = resolved;
 		//System.out.println("resolved dir = [" + this.resolvedDir.getAbsolutePath() + "]");
 	}
 
@@ -162,7 +171,7 @@ public class ResourcesFileSet extends FileSet {
 	
 	public File getDir() {
 		if (this.resolvedDir == null) {
-			resolveDir( null );
+			resolveDir( Environment.getInstance() );
 		}
 		return this.resolvedDir;
 	}
@@ -179,8 +188,5 @@ public class ResourcesFileSet extends FileSet {
 		return super.getDirectoryScanner( antProject );
 	}
 	
-	public void setEnvironment( Environment env ) {
-		this.environment = env;
-	}
 
 }

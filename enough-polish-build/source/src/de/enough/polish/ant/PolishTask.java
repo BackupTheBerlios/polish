@@ -1129,7 +1129,7 @@ public class PolishTask extends ConditionalTask {
 		this.resourceManager = new ResourceManager( this.buildSetting.getResourceSetting(), this.extensionManager, this.environment );
 		LocaleSetting[] localizations = this.resourceManager.getLocales();
 		if (localizations != null) {
-			this.localizationSetting = this.buildSetting.getResourceSetting().getLocalizationSetting();
+			this.localizationSetting = this.buildSetting.getResourceSetting().getLocalizationSetting(this.environment);
 			if (this.localizationSetting.isDynamic()) {
 				this.supportedLocales = null;
 			} else {

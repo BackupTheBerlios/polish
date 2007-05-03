@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.Locale;
 
 import de.enough.polish.BuildException;
-import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Environment;
@@ -57,22 +56,20 @@ public class ResourceSetting extends Setting {
 	private boolean useDefaultExcludes = true;
 	private String[] excludes = new String[0];
 	private String baseDir;
-	private Project project;
 	private ArrayList copierSettings;
 	private boolean filterZeroLengthFiles = true;
 	private ArrayList filterSettings;
 	private ArrayList rootSettings;
 
+
 	/**
 	 * Creates a new empty Resource Setting.
 	 * 
-	 * @param project the parent Ant project. 
-	 * 			Is needed to resolve paths.
+	 * @param baseDir the base directory of the corresponding project
 	 */
-	public ResourceSetting( Project project ) {
+	public ResourceSetting( File baseDir ) {
 		super();
-		this.baseDir = project.getBaseDir().getAbsolutePath() + File.separator;
-		this.project = project;
+		this.baseDir = baseDir.getAbsolutePath() + File.separator;
 		this.localizationSettings = new ArrayList();
 		this.fileSets = new ArrayList();
 	}
@@ -178,12 +175,13 @@ public class ResourceSetting extends Setting {
 	/**
 	 * Retrieves the first active localization setting or null when none was found.
 	 * 
+	 * @param env the environment
 	 * @return the first active localization setting or null when none was found.
 	 */
-	public LocalizationSetting getLocalizationSetting() {
+	public LocalizationSetting getLocalizationSetting( Environment env ) {
 		for (Iterator iter = this.localizationSettings.iterator(); iter.hasNext();) {
 			LocalizationSetting localizationSetting = (LocalizationSetting) iter.next();
-			if (localizationSetting.isActive(this.project)) {
+			if (localizationSetting.isActive( env )) {
 				return localizationSetting;
 			}
 		}
@@ -200,14 +198,14 @@ public class ResourceSetting extends Setting {
 	 * @param env the environment
 	 * @return an array of the appropriate ResourcesFileSet, can be empty but not null
 	 */
-	public ResourcesFileSet[] getFileSets( BooleanEvaluator evaluator, Environment env ) {
+	public ResourcesFileSet[] getFileSets( Environment env ) {
 		if (this.fileSets.size() == 0) {
 			return new ResourcesFileSet[0];
 		}
 		ArrayList list = new ArrayList( this.fileSets.size());
 		for (Iterator iter = this.fileSets.iterator(); iter.hasNext();) {
 			ResourcesFileSet set = (ResourcesFileSet) iter.next();
-			if (set.isActive(evaluator, this.project, env )) {
+			if (set.isActive(env )) {
 				//System.out.println("Adding <fileset> " + set.getDir(this.project)  + " (condition=" + set.getCondition() + ")");
 				list.add( set );
 			//} else {
@@ -219,21 +217,21 @@ public class ResourceSetting extends Setting {
 		return sets;
 	}
 	
-	public ResourceCopierSetting getCopier( BooleanEvaluator evaluator ) {
+	public ResourceCopierSetting getCopier( Environment env ) {
 		if (this.copierSettings == null) {
 			return null;
 		}
 		ResourceCopierSetting[] settings = (ResourceCopierSetting[]) this.copierSettings.toArray( new ResourceCopierSetting[ this.copierSettings.size()]  );
 		for (int i = 0; i < settings.length; i++) {
 			ResourceCopierSetting setting = settings[i];
-			if (setting.isActive(evaluator, this.project)) {
+			if (setting.isActive(env)) {
 				return setting;
 			}
 		}
 		return null;
 	}
 
-	public ResourceCopierSetting[] getCopiers(BooleanEvaluator evaluator) {
+	public ResourceCopierSetting[] getCopiers(Environment env) {
 		if (this.copierSettings == null) {
 			return null;
 		}
@@ -241,14 +239,14 @@ public class ResourceSetting extends Setting {
 		ResourceCopierSetting[] settings = (ResourceCopierSetting[]) this.copierSettings.toArray( new ResourceCopierSetting[ this.copierSettings.size()]  );
 		for (int i = 0; i < settings.length; i++) {
 			ResourceCopierSetting setting = settings[i];
-			if (setting.isActive(evaluator, this.project)) {
+			if (setting.isActive(env)) {
 				copiers.add( setting );
 			}
 		}
 		return (ResourceCopierSetting[]) copiers.toArray( new ResourceCopierSetting[ copiers.size() ] );
 	}
 	
-	public ResourceFilterSetting[] getFilters(BooleanEvaluator evaluator) {
+	public ResourceFilterSetting[] getFilters(Environment env) {
 		if (this.filterSettings == null) {
 			return null;
 		}
@@ -257,7 +255,7 @@ public class ResourceSetting extends Setting {
 		ResourceFilterSetting[] settings = (ResourceFilterSetting[]) this.filterSettings.toArray( new ResourceFilterSetting[ this.filterSettings.size()]  );
 		for (int i = 0; i < settings.length; i++) {
 			ResourceFilterSetting setting = settings[i];
-			if (setting.isActive(evaluator, this.project)) {
+			if (setting.isActive(env)) {
 				//System.out.println("ResourceSetting: adding filter with pattern " + setting.getExcludePatterns()[0].pattern() );
 				filters.add( setting );
 //			} else {
