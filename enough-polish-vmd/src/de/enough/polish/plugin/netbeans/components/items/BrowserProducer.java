@@ -25,8 +25,8 @@ public class BrowserProducer extends ComponentProducer {
 
     public BrowserProducer() {
         super( BrowserCD.TYPEID.toString(), BrowserCD.TYPEID, 
-                new PaletteDescriptor (MidpPaletteProvider.CATEGORY_ITEMS, "Browser", "Displays XML based content like HTML", BrowserCD.ICON_PATH, BrowserCD.ICON_PATH ) 
-        ); // NOI18N
+                new PaletteDescriptor (MidpPaletteProvider.CATEGORY_ITEMS, "Browser", "Displays XML based content like HTML", BrowserCD.ICON_PATH, BrowserCD.ICON_PATH ) // NOI18N
+        );
     }
 
     public Result createComponent(DesignDocument document) {

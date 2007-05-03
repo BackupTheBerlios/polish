@@ -11,16 +11,19 @@ package de.enough.polish.plugin.netbeans.components.items;
 
 import org.netbeans.modules.vmd.api.codegen.CodeSetterPresenter;
 import org.netbeans.modules.vmd.api.model.*;
+import org.netbeans.modules.vmd.api.model.common.DocumentSupport;
 import org.netbeans.modules.vmd.api.properties.DefaultPropertiesPresenter;
+import org.netbeans.modules.vmd.api.screen.display.ScreenDisplayPresenter;
+import org.netbeans.modules.vmd.midp.codegen.MidpCodePresenterSupport;
 import org.netbeans.modules.vmd.midp.codegen.MidpParameter;
 import org.netbeans.modules.vmd.midp.codegen.MidpSetter;
-import org.netbeans.modules.vmd.midp.codegen.MidpCodePresenterSupport;
 import org.netbeans.modules.vmd.midp.components.MidpTypes;
 import org.netbeans.modules.vmd.midp.components.MidpVersionable;
 import org.netbeans.modules.vmd.midp.components.items.CustomItemCD;
 import org.netbeans.modules.vmd.midp.propertyeditors.PropertiesCategories;
 import org.netbeans.modules.vmd.midp.propertyeditors.PropertyEditorString;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -54,6 +57,11 @@ public class BrowserCD extends ComponentDescriptor {
         );
     }
 
+    protected void gatherPresenters (ArrayList<Presenter> presenters) {
+        DocumentSupport.removePresentersOfClass (presenters, ScreenDisplayPresenter.class);
+        super.gatherPresenters (presenters);
+    }
+
     protected List<? extends Presenter> createPresenters() {
         return Arrays.asList (
             // create a properties presenter
@@ -69,7 +77,9 @@ public class BrowserCD extends ComponentDescriptor {
                 .addSetters(MidpSetter.createConstructor(TYPEID, MidpVersionable.MIDP).addParameters())
                 // define "setMyValue" setter
                 .addSetters (MidpSetter.createSetter("go", MidpVersionable.MIDP).addParameters(PROP_URL)),
-            MidpCodePresenterSupport.createAddImportPresenter ()
+            MidpCodePresenterSupport.createAddImportPresenter (),
+            // screen
+            new BrowserDisplayPresenter ()
         );
     }
 
