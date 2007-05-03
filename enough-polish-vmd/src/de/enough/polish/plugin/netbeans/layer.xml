@@ -6,7 +6,7 @@
         <folder name="Tools">
             <attr name="j2mepolish/Separator1.instance" boolvalue="true"/>
             <folder name="j2mepolish">
-                <attr name="SystemFileSystem.localizingBundle" stringvalue="de.enough.polish.netbeans.convert.Bundle"/>
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="de.enough.polish.netbeans.Bundle"/>
                 <file name="de-enough-polish-netbeans-convert-ConvertWizardAction.instance"/>
             </folder>
         </folder>
@@ -63,6 +63,7 @@
                 </file>
             </folder>
         </folder>
+	<file name="build.xml" url="resources/build.xml"/> <!-- convert-project build.xml template -->
     </folder>
     
     <folder name="vmd-midp">

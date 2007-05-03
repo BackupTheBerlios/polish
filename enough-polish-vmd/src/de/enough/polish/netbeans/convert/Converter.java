@@ -25,6 +25,7 @@ import de.enough.polish.plugin.netbeans.settings.PolishSettings;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.Device;
 import de.enough.polish.netbeans.database.PolishDeviceDatabase;
+import java.io.BufferedReader;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
@@ -37,8 +38,13 @@ import org.openide.util.Exceptions;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import org.netbeans.api.project.ProjectInformation;
+import org.openide.filesystems.Repository;
 
 /**
  * @author David Kaspar
@@ -58,6 +64,7 @@ public final class Converter {
         FileObject projectRoot = helper.getProjectDirectory ();
         String polishHomePath = PolishSettings.getDefault ().getPolishHome ();
         FileObject polishHome = FileUtil.toFileObject (FileUtil.normalizeFile (new File (polishHomePath)));
+        String projectName = project.getLookup().lookup(ProjectInformation.class).getName();
         assert polishHome != null;
 
         EditableProperties ep = helper.getProperties (AntProjectHelper.PROJECT_PROPERTIES_PATH);
@@ -68,12 +75,13 @@ public final class Converter {
             FileObject backupDir = projectRoot.getFileObject ("backup"); // NOI18N
             if (backupDir == null)
                 backupDir = projectRoot.createFolder ("backup"); // NOI18N
-            FileObject buildXML = projectRoot.getFileObject ("build.xml"); // NOI18N
-            FileUtil.moveFile (buildXML, backupDir, "build"); // NOI18N
+            FileObject oldBuildXML = projectRoot.getFileObject ("build.xml"); // NOI18N
+            FileUtil.moveFile (oldBuildXML, backupDir, "build"); // NOI18N
             FileObject projectProperties = projectRoot.getFileObject ("nbproject/project.properties"); // NOI18N
             FileUtil.moveFile (projectProperties, backupDir, "project"); // NOI18N
-            FileObject emptyBuildXML = polishHome.getFileObject ("samples/blank/build.xml"); // NOI18N
-            FileUtil.copyFile (emptyBuildXML, projectRoot, "build"); // NOI18N
+            FileObject emptyBuildXML = Repository.getDefault().getDefaultFileSystem().findResource("j2mepolish/build.xml"); // polishHome.getFileObject ("samples/blank/build.xml"); // NOI18N
+            FileObject buildXML = FileUtil.copyFile (emptyBuildXML, projectRoot, "build"); // NOI18N
+            processBuildXML (projectName, buildXML);
             FileObject resources = projectRoot.getFileObject ("resources"); // NOI18N
             if (resources == null)
                 copyDir (polishHome.getFileObject ("samples/blank/resources"), projectRoot, "resources"); // NOI18N
@@ -81,11 +89,10 @@ public final class Converter {
             Exceptions.printStackTrace (e);
         }
 
-        if (devices != null  &&  devices.length > 0) {
-            DeviceDatabase database = new DeviceDatabase (new File (polishHomePath));
-            String configurations = MidpProjectPropertiesSupport.evaluateProperty (ep, "all.configurations", null);// NOI18N
-            if (configurations == null  ||  configurations.length () <= 0)
-                configurations = " "; // NOI18N
+        DeviceDatabase database = new DeviceDatabase (new File (polishHomePath));
+        String configurations = " "; // NOI18N
+
+        if (devices != null)
             for (String deviceID : devices) {
                 Device device = database.getDevice (deviceID);
                 HashMap<String,String> map = PolishDeviceDatabase.createPropertiesMap (device);
@@ -95,8 +102,13 @@ public final class Converter {
                     MidpProjectPropertiesSupport.setProperty (ep, entry.getKey (), deviceID, entry.getValue ());
                 configurations += "," + deviceID;
             }
-            MidpProjectPropertiesSupport.setProperty (ep, "all.configurations", null, configurations);
-        }
+
+        Device device = database.getDevice ("Generic/midp2"); // NOI18N
+        HashMap<String,String> map = PolishDeviceDatabase.createPropertiesMap (device);
+        for (Map.Entry<String, String> entry : map.entrySet ())
+            MidpProjectPropertiesSupport.setProperty (ep, entry.getKey (), null, entry.getValue ());
+
+        MidpProjectPropertiesSupport.setProperty (ep, "all.configurations", null, configurations); // NOI18N
         ep.put (PolishProjectSupport.PROP_USE_POLISH_PROJECT, "true"); // NOI18N
 
         helper.putProperties (AntProjectHelper.PROJECT_PROPERTIES_PATH, ep);
@@ -115,6 +127,43 @@ public final class Converter {
             } else if (file.isData ()) {
                 FileUtil.copyFile (file, targetDir, file.getName ());
             }
+        }
+    }
+    
+    private static void processBuildXML (String projectName, FileObject file) {
+        ArrayList<String> strings = new ArrayList<String> ();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader (new InputStreamReader (file.getInputStream()));
+            for (;;) {
+                String line = br.readLine();
+                if (line == null)
+                    break;
+                line = line.replace ("__PROJECT_NAME__", projectName); // NOI18N
+                line = line.replace("__POLISH_HOME__", PolishSettings.getDefault().getPolishHome()); // NOI18N
+                strings.add (line);
+            }
+        } catch (IOException e) {
+            Exceptions.printStackTrace(e);
+        } finally {
+            try {
+                if (br != null)
+                    br.close ();
+            } catch (IOException e) {
+                Exceptions.printStackTrace(e);
+            }
+        }
+        
+        PrintStream bw = null;
+        try {
+            bw = new PrintStream (file.getOutputStream());
+            for (String line : strings)
+                bw.println(line);
+        } catch (IOException e) {
+            Exceptions.printStackTrace(e);
+        } finally {
+            if (bw != null)
+                bw.close ();
         }
     }
 
