@@ -31,9 +31,13 @@ import de.enough.polish.browser.Browser;
 import de.enough.polish.browser.TagHandler;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.Locale;
 import de.enough.polish.xml.SimplePullParser;
+
+import javax.microedition.lcdui.Command;
 
 public class RssTagHandler
 	extends TagHandler
@@ -57,11 +61,21 @@ public class RssTagHandler
 	private static final String TAG_DIGG_CATEGORY = "digg:category";
 	private static final String TAG_DIGG_COMMENTCOUNT = "digg:commentCount";
 
+	public static final String RSS_ITEM = "RSS_ITEM";
+
+	public static final Command CMD_RSS_ITEM_SELECT = new Command(Locale.get("cmd.select"), Command.SCREEN, 1);
+
 	private Browser browser;
 	private boolean inChannelTag;
 	private boolean inItemTag;
 	private String title;
 	private String description;
+	private ItemCommandListener itemListener;
+
+	public RssTagHandler(ItemCommandListener listener)
+	{
+		this.itemListener = listener;
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.browser.TagHandler#register(de.enough.polish.browser.Browser)
@@ -161,6 +175,9 @@ public class RssTagHandler
 		//#style browserLink
 		StringItem item = new StringItem(null, title);
 		item.setAppearanceMode(Item.HYPERLINK);
+		item.setDefaultCommand(CMD_RSS_ITEM_SELECT);
+		item.setItemCommandListener(this.itemListener);
+		item.setAttribute(RSS_ITEM, new RssItem(title, description));
 		this.browser.add(item);
 	}
 }

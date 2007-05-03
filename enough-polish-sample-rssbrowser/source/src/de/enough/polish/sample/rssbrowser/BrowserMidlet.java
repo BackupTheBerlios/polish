@@ -8,8 +8,8 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 public class BrowserMidlet 
-extends MIDlet
-implements CommandListener
+	extends MIDlet
+	implements CommandListener
 {
 	
 	private Command cmdBack = new Command("Back", Command.SCREEN, Command.BACK );
@@ -18,7 +18,7 @@ implements CommandListener
      protected void startApp() throws MIDletStateChangeException{
           Display display = Display.getDisplay( this );
           //#style browserScreen
-          BrowserScreen screen = new BrowserScreen("BrowserItem");
+          BrowserScreen screen = new BrowserScreen(display, "BrowserItem");
           screen.getURL("http://www.digg.com/rss/containerscience.xml");
           screen.addCommand( this.cmdBack );
           screen.setCommandListener( this );
@@ -34,14 +34,15 @@ implements CommandListener
           // TODO: Implement this method.
      }
 
-	public void commandAction(Command cmd, Displayable arg1) {
-    //#debug
-		System.out.println("browserMidlet, cmd=" + cmd.getLabel() );
-    if (this.browserScreen.handleCommand(cmd))
-    {
-      return;
-    }
-		if (cmd == this.cmdBack) {
+	public void commandAction(Command command, Displayable displayable) {
+		//#debug
+		System.out.println("browserMidlet, cmd=" + command.getLabel() );
+
+		if (this.browserScreen.handleCommand(command)) {
+			return;
+		}
+
+		if (command == this.cmdBack) {
 			this.browserScreen.goBack();
 		}
 		

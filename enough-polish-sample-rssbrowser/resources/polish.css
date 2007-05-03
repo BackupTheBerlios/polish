@@ -419,9 +419,12 @@ rightcommand extends leftcommand
 }
 */
 
-.browserChart {
-	background-color: white;
-	padding: 3;
-	font-color: gray;
-	font-size: small;
+.rssItemView {
+	repaint-previous-screen: true;
+	background {
+		type: round-rect;
+		color: focusedBgColor;
+	}
+	padding: 10;
+	layout: vertical-shrink | horizontal-shrink | top | center;
 }
