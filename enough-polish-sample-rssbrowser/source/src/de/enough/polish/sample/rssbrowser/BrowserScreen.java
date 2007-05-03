@@ -2,7 +2,7 @@ package de.enough.polish.sample.rssbrowser;
 
 import javax.microedition.lcdui.Command;
 
-import de.enough.polish.browser.chtml.HtmlBrowser;
+import de.enough.polish.browser.html.HtmlBrowser;
 import de.enough.polish.browser.rss.RssBrowser;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.Style;
