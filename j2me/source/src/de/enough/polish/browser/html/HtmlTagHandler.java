@@ -75,8 +75,12 @@ public class HtmlTagHandler
   public static final String INPUTTYPE_TEXT = "text";
   public static final String INPUTTYPE_SUBMIT = "submit";
   
-  public static final String KEY_FORM = "polish_form";
-  
+  public static final String ATTR_HREF = "href";
+  public static final String ATTR_FORM = "polish_form";
+  public static final String ATTR_TYPE = "type";
+  public static final String ATTR_VALUE = "value";
+  public static final String ATTR_NAME = "name";
+
   public static final Command CMD_LINK = new Command("Go To", Command.ITEM, 1);
   public static final Command CMD_SUBMIT = new Command("Submit", Command.ITEM, 2);
   public static final Command CMD_BACK = new Command("Back", Command.BACK, 10);
@@ -135,7 +139,7 @@ public class HtmlTagHandler
     			  this.currentSelect = null;
     		  }
 
-    		  String name = parser.getAttributeValue("name");
+    		  String name = parser.getAttributeValue(ATTR_NAME);
     		  this.currentSelect = new HtmlSelect(name);
     	  }
     	  else {
@@ -156,7 +160,7 @@ public class HtmlTagHandler
       else if (TAG_OPTION.equals(tagName)) {
     	  if (this.currentSelect != null && opening) {
     		  // TODO: handle "seclected" attribute.
-    		  String value = parser.getAttributeValue("value");
+    		  String value = parser.getAttributeValue(ATTR_VALUE);
     		  String selected = parser.getAttributeValue("selected");
     		  parser.next();
     		  String name = parser.getText();
@@ -186,7 +190,7 @@ public class HtmlTagHandler
       }
       else if (TAG_A.equals(tagName))
       {
-        String href = (String) attributeMap.get("href");
+        String href = (String) attributeMap.get(ATTR_HREF);
         parser.next();
         StringItem linkItem;
         if (href != null)
@@ -195,7 +199,7 @@ public class HtmlTagHandler
   	      linkItem = new StringItem(null, parser.getText());
     	    linkItem.setDefaultCommand(CMD_LINK);
     	    linkItem.setItemCommandListener( this );
-      	  linkItem.setAttribute("href", href != null ? href : "");
+      	  linkItem.setAttribute(ATTR_HREF, href != null ? href : "");
       	  addCommands(TAG_A, linkItem);
 
 // TODO
@@ -256,9 +260,9 @@ public class HtmlTagHandler
             this.browser.add(textField);
             
             this.currentForm.addItem(textField);
-            textField.setAttribute(KEY_FORM, this.currentForm);
-            textField.setAttribute("name", name);
-            textField.setAttribute("value", value);
+            textField.setAttribute(ATTR_FORM, this.currentForm);
+            textField.setAttribute(ATTR_NAME, name);
+            textField.setAttribute(ATTR_VALUE, value);
           }
           //#if polish.cldc1.1
           else if (INPUTTYPE_SUBMIT.equalsIgnoreCase(type))
@@ -277,10 +281,10 @@ public class HtmlTagHandler
             this.browser.add(buttonItem);
             
             this.currentForm.addItem(buttonItem);
-            buttonItem.setAttribute(KEY_FORM, this.currentForm);
-            buttonItem.setAttribute("type", "submit");
-            buttonItem.setAttribute("name", name);
-            buttonItem.setAttribute("value", value);
+            buttonItem.setAttribute(ATTR_FORM, this.currentForm);
+            buttonItem.setAttribute(ATTR_TYPE, "submit");
+            buttonItem.setAttribute(ATTR_NAME, name);
+            buttonItem.setAttribute(ATTR_VALUE, value);
           }
           //#if polish.debug.debug
           else
@@ -377,7 +381,7 @@ public class HtmlTagHandler
   public static String createGetSubmitCall(Browser browser)
   {
     Item submitItem = browser.getFocusedItem();
-    HtmlForm form = (HtmlForm) submitItem.getAttribute(KEY_FORM);
+    HtmlForm form = (HtmlForm) submitItem.getAttribute(ATTR_FORM);
 
 	  if (form == null)
 	  {
@@ -393,14 +397,14 @@ public class HtmlTagHandler
     {
       Item item = items[i];
       
-      if ("submit".equals(item.getAttribute("type"))
+      if ("submit".equals(item.getAttribute(ATTR_TYPE))
           && item != submitItem)
       {
         continue;
       }
       
-      String name = (String) item.getAttribute("name");
-      String value = (String) item.getAttribute("value");
+      String name = (String) item.getAttribute(ATTR_NAME);
+      String value = (String) item.getAttribute(ATTR_VALUE);
       
       if (item instanceof TextField)
       {
@@ -434,7 +438,7 @@ public class HtmlTagHandler
   protected void handleLinkCommand()
   {
     Item linkItem = this.browser.getFocusedItem();
-    String href = (String) linkItem.getAttribute("href");
+    String href = (String) linkItem.getAttribute(ATTR_HREF);
     this.browser.go(this.browser.makeAbsoluteURL(href));
   }
   
