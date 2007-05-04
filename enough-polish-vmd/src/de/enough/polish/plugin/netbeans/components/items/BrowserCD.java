@@ -42,6 +42,10 @@ public class BrowserCD extends ComponentDescriptor {
     public BrowserCD() {
     }
 
+    public void postInitialize (DesignComponent component) {
+        component.writeProperty (PROP_URL, MidpTypes.createStringValue("http://www.j2mepolish.org/mobile/index.html"));// NOI18N
+    }
+
     public TypeDescriptor getTypeDescriptor() {
         return new TypeDescriptor (CustomItemCD.TYPEID, TYPEID, true, true);
     }
@@ -53,7 +57,7 @@ public class BrowserCD extends ComponentDescriptor {
     public List<PropertyDescriptor> getDeclaredPropertyDescriptors() {
         return Arrays.asList (
             // create a property description
-            new PropertyDescriptor (PROP_URL, MidpTypes.TYPEID_JAVA_LANG_STRING, MidpTypes.createStringValue("http://www.j2mepolish.org/mobile/index.html"), false, true, MidpVersionable.MIDP)
+            new PropertyDescriptor (PROP_URL, MidpTypes.TYPEID_JAVA_LANG_STRING, PropertyValue.createNull (), false, true, MidpVersionable.MIDP)
         );
     }
 
