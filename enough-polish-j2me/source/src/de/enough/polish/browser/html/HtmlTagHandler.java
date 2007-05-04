@@ -322,7 +322,6 @@ public class HtmlTagHandler
         return true;
       }
       else if (TAG_SCRIPT.equals(tagName)) {
-System.err.println("Michael was here.");
     	  // Consume javascript code.
     	  parser.next();
     	  return true;
