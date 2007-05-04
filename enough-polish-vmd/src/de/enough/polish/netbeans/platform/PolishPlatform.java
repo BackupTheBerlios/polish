@@ -57,16 +57,16 @@ public class PolishPlatform {
                 deviceBuffer.append ("<device name=\"" + device.getIdentifier () + "\">\n");
 
                 if (device.isCldc10 ())
-                    deviceBuffer.append ("<configuration name=\"CLDC\" version=\"1.0\" displayname=\"Connected Limited Device Configuration\" classpath=\"${platform.home}/import/cldc-1.0.jar\" dependencies=\"\" default=\"" + (device.isCldc11 () ? "false" : "true") + "\"/>\n");
+                    deviceBuffer.append ("<configuration name=\"CLDC\" version=\"1.0\" displayname=\"Connected Limited Device Configuration\" classpath=\"" + polishHome + "/import/cldc-1.0.jar\" dependencies=\"\" default=\"" + (device.isCldc11 () ? "false" : "true") + "\"/>\n");
                 if (device.isCldc11 ())
-                    deviceBuffer.append ("<configuration name=\"CLDC\" version=\"1.1\" displayname=\"Connected Limited Device Configuration\" classpath=\"${platform.home}/import/cldc-1.1.jar\" dependencies=\"\" default=\"true\"/>\n");
+                    deviceBuffer.append ("<configuration name=\"CLDC\" version=\"1.1\" displayname=\"Connected Limited Device Configuration\" classpath=\"" + polishHome + "/import/cldc-1.1.jar\" dependencies=\"\" default=\"true\"/>\n");
                 if (! device.isCldc10 ()  &&  ! device.isCldc11 ())
                     continue;
                 
                 if (device.isMidp1 ())
-                    deviceBuffer.append ("<profile name=\"MIDP\" version=\"1.0\" displayname=\"Mobile Information Device Profile\" classpath=\"${platform.home}/import/midp-1.0.jar\" dependencies=\"\" default=\"" + (device.isMidp2 () ? "false" : "true") + "\"/>\n");
+                    deviceBuffer.append ("<profile name=\"MIDP\" version=\"1.0\" displayname=\"Mobile Information Device Profile\" classpath=\"" + polishHome + "/import/midp-1.0.jar\" dependencies=\"\" default=\"" + (device.isMidp2 () ? "false" : "true") + "\"/>\n");
                 if (device.isMidp2 ())
-                    deviceBuffer.append ("<profile name=\"MIDP\" version=\"2.0\" displayname=\"Mobile Information Device Profile\" classpath=\"${platform.home}/import/midp-2.0.jar\" dependencies=\"\" default=\"true\"/>\n");
+                    deviceBuffer.append ("<profile name=\"MIDP\" version=\"2.0\" displayname=\"Mobile Information Device Profile\" classpath=\"" + polishHome + "/import/midp-2.0.jar\" dependencies=\"\" default=\"true\"/>\n");
                 if (! device.isMidp1 ()  &&  ! device.isMidp2 ())
                     continue;
 
