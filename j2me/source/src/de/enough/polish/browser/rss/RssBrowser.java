@@ -28,6 +28,7 @@
 package de.enough.polish.browser.rss;
 
 import de.enough.polish.browser.html.HtmlBrowser;
+import de.enough.polish.browser.html.HtmlTagHandler;
 import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.Style;
 
@@ -36,12 +37,12 @@ public class RssBrowser
 {
 	public RssBrowser(ItemCommandListener listener)
 	{
-		new RssTagHandler(listener).register(this);
+		new RssTagHandler(HtmlTagHandler.CMD_LINK, listener).register(this);
 	}
 
 	public RssBrowser(ItemCommandListener listener, Style style)
 	{
 		super(style);
-		new RssTagHandler(listener).register(this);
+		new RssTagHandler(HtmlTagHandler.CMD_LINK, listener).register(this);
 	}
 }

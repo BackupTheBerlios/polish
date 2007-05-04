@@ -29,12 +29,12 @@ package de.enough.polish.browser.rss;
 
 import de.enough.polish.browser.Browser;
 import de.enough.polish.browser.TagHandler;
+import de.enough.polish.browser.html.HtmlTagHandler;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.util.HashMap;
-import de.enough.polish.util.Locale;
 import de.enough.polish.xml.SimplePullParser;
 
 import javax.microedition.lcdui.Command;
@@ -61,19 +61,23 @@ public class RssTagHandler
 	private static final String TAG_DIGG_CATEGORY = "digg:category";
 	private static final String TAG_DIGG_COMMENTCOUNT = "digg:commentCount";
 
-	public static final String RSS_ITEM = "RSS_ITEM";
+	public static final String ATTR_RSS_ITEM = "RSS_ITEM";
 
-	public static final Command CMD_RSS_ITEM_SELECT = new Command(Locale.get("cmd.select"), Command.SCREEN, 1);
+//	public static final Command CMD_RSS_ITEM_SELECT = new Command(Locale.get("cmd.select"), Command.SCREEN, 1);
+	public static final Command CMD_RSS_ITEM_SELECT = new Command("Select", Command.SCREEN, 1);
 
 	private Browser browser;
 	private boolean inChannelTag;
 	private boolean inItemTag;
 	private String title;
 	private String description;
+	private String url;
+	private Command linkCommand;
 	private ItemCommandListener itemListener;
 
-	public RssTagHandler(ItemCommandListener listener)
+	public RssTagHandler(Command linkCommand, ItemCommandListener listener)
 	{
+		this.linkCommand = linkCommand;
 		this.itemListener = listener;
 	}
 
@@ -119,9 +123,10 @@ public class RssTagHandler
 				this.inItemTag = opening;
 
 				if (!opening && this.title != null && this.description != null) {
-					addRssItem(this.title, this.description);
+					addRssItem(this.title, this.description, this.url);
 					this.title = null;
 					this.description = null;
+					this.url = null;
 				}
 
 				return true;
@@ -132,6 +137,15 @@ public class RssTagHandler
 					if (opening) {
 						parser.next();
 						this.title = parser.getText();
+					}
+
+					return true;
+				}
+
+				if (TAG_LINK.equals(tagName)) {
+					if (opening) {
+						parser.next();
+						this.url = parser.getText();
 					}
 
 					return true;
@@ -150,8 +164,6 @@ public class RssTagHandler
 
 		// Ignore content of some tags.
 		if (TAG_TITLE.equals(tagName)
-			|| TAG_LINK.equals(tagName)
-			|| TAG_DESCRIPTION.equals(tagName)
 			|| TAG_LANGUAGE.equals(tagName)
 			|| TAG_PUBDATE.equals(tagName)
 			|| TAG_GUID.equals(tagName)
@@ -170,14 +182,20 @@ public class RssTagHandler
 		return false;
 	}
 
-	protected void addRssItem(String title, String description)
+	protected void addRssItem(String title, String description, String url)
 	{
 		//#style browserLink
 		StringItem item = new StringItem(null, title);
 		item.setAppearanceMode(Item.HYPERLINK);
 		item.setDefaultCommand(CMD_RSS_ITEM_SELECT);
 		item.setItemCommandListener(this.itemListener);
-		item.setAttribute(RSS_ITEM, new RssItem(title, description));
+		item.setAttribute(ATTR_RSS_ITEM, new RssItem(title, description));
+		item.addCommand(this.linkCommand);
+
+		if (this.url != null) {
+			item.setAttribute(HtmlTagHandler.ATTR_HREF, url);
+		}
+
 		this.browser.add(item);
 	}
 }
