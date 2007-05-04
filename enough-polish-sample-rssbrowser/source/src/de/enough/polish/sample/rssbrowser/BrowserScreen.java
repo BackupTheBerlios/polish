@@ -1,7 +1,6 @@
 package de.enough.polish.sample.rssbrowser;
 
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
 
 import de.enough.polish.browser.html.HtmlBrowser;
 import de.enough.polish.browser.rss.RssBrowser;
