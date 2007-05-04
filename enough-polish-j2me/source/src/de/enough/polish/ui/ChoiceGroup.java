@@ -1222,6 +1222,13 @@ implements Choice
 	}
 	//#endif
 	
+	//#ifdef polish.usePopupItem
+	public boolean isPopupClosed()
+	{
+		return this.isPopupClosed;
+	}
+	//#endif
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
