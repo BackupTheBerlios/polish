@@ -1,5 +1,5 @@
 /*
- * Created on Apr 29, 2007 at 11:11:16 AM.
+ * Created on May 4, 2007 at 12:36:03 PM.
  * 
  * Copyright (c) 2007 Robert Virkus / Enough Software
  *
@@ -23,7 +23,9 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.styleeditor;
+package de.enough.polish.resources.swing;
+
+import de.enough.polish.resources.ColorProvider;
 
 /**
  * <p></p>
@@ -31,17 +33,12 @@ package de.enough.polish.styleeditor;
  * <p>Copyright Enough Software 2007</p>
  * <pre>
  * history
- *        Apr 29, 2007 - rob creation
+ *        May 4, 2007 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public interface CssAttributeReference {
+public interface ColorSelectionListener {
 	
-	public Object getReferencedValue();
-	
-	public String getReferencedName();
-	
-	public void setReference( Object value, String name );
-	
+	public void notifyColorSelected( ColorProvider color );
 
 }

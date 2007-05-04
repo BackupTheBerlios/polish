@@ -150,53 +150,53 @@ extends SwingStylePartEditor
 		LayoutEditor editor = (LayoutEditor) stylePartEditor;
 		Object source = event.getSource();
 		if (source == this.topLeft) {
-			editor.setLayoutTop();
-			editor.setLayoutLeft();
+			editor.setVerticalTop();
+			editor.setHorizontalLeft();
 		} else if (source == this.topCenter) {
-			editor.setLayoutTop();
-			editor.setLayoutHorizontalCenter();
+			editor.setVerticalTop();
+			editor.setHorizontalCenter();
 		} else if (source == this.topRight) {
-			editor.setLayoutTop();
-			editor.setLayoutRight();
+			editor.setVerticalTop();
+			editor.setHorizontalRight();
 		} else if (source == this.middleLeft) {
-			editor.setLayoutVerticalCenter();
-			editor.setLayoutLeft();
+			editor.setVerticalCenter();
+			editor.setHorizontalLeft();
 		} else if (source == this.middleCenter) {
-			editor.setLayoutVerticalCenter();
-			editor.setLayoutHorizontalCenter();
+			editor.setVerticalCenter();
+			editor.setHorizontalCenter();
 		} else if (source == this.middleRight) {
-			editor.setLayoutVerticalCenter();
-			editor.setLayoutRight();
+			editor.setVerticalCenter();
+			editor.setHorizontalRight();
 		} else if (source == this.bottomLeft) {
-			editor.setLayoutBottom();
-			editor.setLayoutLeft();
+			editor.setVerticalBottom();
+			editor.setHorizontalLeft();
 		} else if (source == this.bottomCenter) {
-			editor.setLayoutBottom();
-			editor.setLayoutHorizontalCenter();
+			editor.setVerticalBottom();
+			editor.setHorizontalCenter();
 		} else if (source == this.bottomRight) {
-			editor.setLayoutBottom();
-			editor.setLayoutRight();
+			editor.setVerticalBottom();
+			editor.setHorizontalRight();
 		} else if (source == this.horizontalExpand) {
 			boolean isSelected =  this.horizontalExpand.isSelected();
-			editor.setLayoutHorizontalExpand( isSelected );
+			editor.setHorizontalExpand( isSelected );
 			if (isSelected && this.horizontalShrink.isSelected()) {
 				this.horizontalShrink.setSelected(false);
 			}
 		} else if (source == this.horizontalShrink) {
 			boolean isSelected =  this.horizontalShrink.isSelected();
-			editor.setLayoutHorizontalShrink( isSelected );
+			editor.setHorizontalShrink( isSelected );
 			if (isSelected && this.horizontalExpand.isSelected()) {
 				this.horizontalExpand.setSelected(false);
 			}
 		} else if (source == this.verticalExpand) {
 			boolean isSelected =  this.verticalExpand.isSelected();
-			editor.setLayoutVerticalExpand( isSelected );
+			editor.setVerticalExpand( isSelected );
 			if (isSelected && this.verticalShrink.isSelected()) {
 				this.verticalShrink.setSelected(false);
 			}
 		} else if (source == this.verticalShrink) {
 			boolean isSelected =  this.verticalShrink.isSelected();
-			editor.setLayoutVerticalShrink( isSelected );
+			editor.setVerticalShrink( isSelected );
 			if (isSelected && this.verticalExpand.isSelected()) {
 				this.verticalExpand.setSelected(false);
 			}
@@ -213,37 +213,37 @@ extends SwingStylePartEditor
 	 */
 	protected void updateGui(StylePartEditor stylePartEditor) {
 		LayoutEditor editor = (LayoutEditor) stylePartEditor;
-		if ( editor.isLayoutDefault()) {
+		if ( editor.isHorizontalDefault()) {
 			this.topLeft.setSelected(true);
-		} else if ( editor.isLayoutTopLeft()) {
+		} else if ( editor.isVerticalTopAndHorizontalLeft()) {
 			this.topLeft.setSelected(true);
-		} else if ( editor.isLayoutTopCenter() ) {
+		} else if ( editor.isVerticalTopAndHorizontalCenter() ) {
 			this.topCenter.setSelected(true);
-		} else if ( editor.isLayoutTopRight() ) {
+		} else if ( editor.isVerticalTopAndHorizontalRight() ) {
 			this.topRight.setSelected(true);
-		} else if ( editor.isLayoutVerticalCenterLeft()) {
+		} else if ( editor.isVerticalCenterAndHorizontalLeft()) {
 			this.middleLeft.setSelected(true);
-		} else if ( editor.isLayoutVerticalCenterCenter() ) {
+		} else if ( editor.isVerticalCenterAndHorizontalCenter() ) {
 			this.middleCenter.setSelected(true);
-		} else if ( editor.isLayoutVerticalCenterRight() ) {
+		} else if ( editor.isVerticalCenterAndHorizontalRight() ) {
 			this.middleRight.setSelected(true);
-		} else if ( editor.isLayoutBottomLeft()) {
+		} else if ( editor.isVerticalBottomAndHorizontalLeft()) {
 			this.bottomLeft.setSelected(true);
-		} else if ( editor.isLayoutBottomCenter() ) {
+		} else if ( editor.isVerticalBottomAndHorizontalCenter() ) {
 			this.bottomCenter.setSelected(true);
-		} else if ( editor.isLayoutBottomRight() ) {
+		} else if ( editor.isVerticalBottomHorizontalRight() ) {
 			this.bottomRight.setSelected(true);			
-		} else if (editor.isLayoutLeft()) {
+		} else if (editor.isHorizontalLeft()) {
 			this.topLeft.setSelected(true);
-		} else if ( editor.isLayoutHorizontalCenter() ) {
+		} else if ( editor.isHorizontalCenter() ) {
 			this.topCenter.setSelected(true);
-		} else if ( editor.isLayoutRight() ) {
+		} else if ( editor.isHorizontalRight() ) {
 			this.topRight.setSelected(true);
 		}
-		this.horizontalExpand.setSelected(editor.isLayoutHorizontalExpand());
-		this.horizontalShrink.setSelected(editor.isLayoutHorizontalShrink());
-		this.verticalExpand.setSelected(editor.isLayoutVerticalExpand());
-		this.verticalShrink.setSelected(editor.isLayoutVerticalShrink());
+		this.horizontalExpand.setSelected(editor.isHorizontalExpand());
+		this.horizontalShrink.setSelected(editor.isHorizontalShrink());
+		this.verticalExpand.setSelected(editor.isVerticalExpand());
+		this.verticalShrink.setSelected(editor.isVerticalShrink());
 		this.newLineBefore.setSelected(editor.isNewLineBefore() );
 		this.newLineAfter.setSelected(editor.isNewLineAfter() );	}
 

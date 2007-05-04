@@ -1,5 +1,5 @@
 /*
- * Created on Apr 29, 2007 at 11:11:16 AM.
+ * Created on May 3, 2007 at 2:05:06 AM.
  * 
  * Copyright (c) 2007 Robert Virkus / Enough Software
  *
@@ -23,25 +23,26 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.styleeditor;
+package de.enough.polish.resources;
+
+import de.enough.polish.ui.Style;
 
 /**
- * <p></p>
+ * <p>Defines a style implementation that can generate source code.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
  * history
- *        Apr 29, 2007 - rob creation
+ *        May 3, 2007 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public interface CssAttributeReference {
+public interface StyleProvider {
 	
-	public Object getReferencedValue();
+	public String getName();
 	
-	public String getReferencedName();
+	public Style getStyle();
 	
-	public void setReference( Object value, String name );
-	
+	public void generateCssSourceCode( StringBuffer buffer );
 
 }

@@ -31,6 +31,7 @@ import javax.microedition.lcdui.Font;
 
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssMapping;
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.EditStyle;
 import de.enough.polish.styleeditor.ItemOrScreen;
 import de.enough.polish.styleeditor.StylePartEditor;
@@ -61,9 +62,9 @@ public class ViewTypeEditor extends StylePartEditor {
 	public void writeStyle( EditStyle style ) {
 		
 		if (this.viewTypeName == null) {
-			style.getStyle().removeAttribute( this.viewTypeAttribute.getId() );
+			style.removeAttribute( this.viewTypeAttribute );
 		} else {
-			style.getStyle().addAttribute( this.viewTypeAttribute.getId(), this.viewType );
+			style.addAttribute( new CssAttributeValue( this.viewTypeAttribute, this.viewType, this.viewTypeName ) );
 		}
 	}
 	

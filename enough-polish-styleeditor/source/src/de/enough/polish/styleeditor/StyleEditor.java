@@ -113,7 +113,7 @@ public class StyleEditor {
 	 * 
 	 */
 	public void notifyStyleUpdated() {
-		this.style.updateStyle();
+		this.style.writeStyle();
 		if (this.styleListeners != null) {
 			for (StyleEditorListener listener : this.styleListeners) {
 				listener.notifyStyleUpdated(this.style);

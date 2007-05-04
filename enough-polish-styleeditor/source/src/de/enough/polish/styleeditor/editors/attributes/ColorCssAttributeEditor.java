@@ -25,6 +25,7 @@
  */
 package de.enough.polish.styleeditor.editors.attributes;
 
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.editors.CssAttributeEditor;
 import de.enough.polish.ui.Color;
 
@@ -43,13 +44,32 @@ public class ColorCssAttributeEditor extends CssAttributeEditor {
 	protected Color value;
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.styleeditor.editors.CssAttributeEditor#getValue()
+	 * @see de.enough.polish.styleeditor.editors.CssAttributeEditor#getValueAsObject()
 	 */
-	public Object getValue() {
+	public Object getValueAsObject() {
 		return this.value;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.styleeditor.editors.CssAttributeEditor#getValue()
+	 */
+	public CssAttributeValue getValue() {
+		//TODO add support for dynamic colors and Item.transparent
+		return new CssAttributeValue( this.attribute, this.value, getValueAsString() );
+	}
 
+
+
+	/**
+	 * @return
+	 */
+	private String getValueAsString() {
+		if (this.value == null) {
+			return null;
+		} else {
+			return "#" + Integer.toHexString( this.value.getColor() );
+		}
+	}
 
 	public void setColor(Color value) {
 		this.value = value;

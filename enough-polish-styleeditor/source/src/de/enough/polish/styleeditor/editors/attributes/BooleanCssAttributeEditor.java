@@ -25,6 +25,7 @@
  */
 package de.enough.polish.styleeditor.editors.attributes;
 
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.editors.CssAttributeEditor;
 import de.enough.polish.ui.Color;
 
@@ -43,10 +44,17 @@ public class BooleanCssAttributeEditor extends CssAttributeEditor {
 	protected Boolean value;
 
 	/* (non-Javadoc)
+	 * @see de.enough.polish.styleeditor.editors.CssAttributeEditor#getValueAsObject()
+	 */
+	public Object getValueAsObject() {
+		return this.value;
+	}
+
+	/* (non-Javadoc)
 	 * @see de.enough.polish.styleeditor.editors.CssAttributeEditor#getValue()
 	 */
-	public Object getValue() {
-		return this.value;
+	public CssAttributeValue getValue() {
+		return new CssAttributeValue( this.attribute, this.value, this.value.toString() );
 	}
 
 
@@ -78,10 +86,6 @@ public class BooleanCssAttributeEditor extends CssAttributeEditor {
 	public void setValue(Object value) {
 		this.value = (Boolean)value; 
 	}
-	
-	
-	
-
 
 
 }

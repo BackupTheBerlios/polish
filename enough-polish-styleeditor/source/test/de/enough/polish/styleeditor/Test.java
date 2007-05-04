@@ -28,13 +28,25 @@ package de.enough.polish.styleeditor;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.io.File;
+import java.io.IOException;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
 import javax.swing.JPanel;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 
 import de.enough.polish.Environment;
+import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.preprocess.css.CssAttributesManager;
+import de.enough.polish.resources.ColorProvider;
+import de.enough.polish.resources.ResourcesProvider;
+import de.enough.polish.resources.StyleProvider;
+import de.enough.polish.resources.impl.ResourcesProviderImpl;
+import de.enough.polish.resources.swing.ColorSelectionListener;
+import de.enough.polish.resources.swing.ResourcesTree;
+import de.enough.polish.resources.swing.StyleSelectionListener;
 import de.enough.polish.runtime.SelectionListener;
 import de.enough.polish.runtime.Simulation;
 import de.enough.polish.runtime.SimulationDevice;
@@ -65,20 +77,101 @@ import de.enough.polish.util.ResourceUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class Test extends SwingApplication
-implements SelectionListener, StyleEditorListener
+implements SelectionListener, StyleEditorListener, StyleSelectionListener, ColorSelectionListener
 {
 
 	private StyleEditor editor;
 	private Simulation simulation;
+	private ResourcesProvider resourceProvider;
+	private ResourcesTree resourcesTree;
 
 	/**
 	 * @param title
 	 * @param systemExitOnQuit
 	 */
-	public Test(String title, boolean systemExitOnQuit, File polishHome ) {
+	public Test(String title, boolean systemExitOnQuit, File polishHome, File projectHome ) {
 		super(title, systemExitOnQuit);
+
+		DeviceDatabase deviceDB = DeviceDatabase.getInstance(polishHome);
+		ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
+		CssAttributesManager attribtuesManager = CssAttributesManager.getInstance( polishHome, resourceUtil );
+		Environment environment = new Environment(polishHome);
+		environment.setBaseDir( projectHome );
+		environment.initialize( deviceDB.getDevice("Nokia/6630"), null);
+
+		this.resourceProvider = initResourceProvider( polishHome, environment, attribtuesManager );
+		
+		this.simulation  = new Simulation( new SimulationDevice() );
+		Displayable form = initUi();
+		initSimulation( this.simulation, form ); 
+		
+		SwingStyleEditor swingEditor = new SwingStyleEditor();
+		this.editor = new StyleEditor( attribtuesManager, environment, swingEditor );
+		this.editor.addDefaultPartEditors();
+		this.editor.addStyleListener( this );
+		JPanel panel = new JPanel( new BorderLayout() );
+		panel.add( this.simulation, BorderLayout.NORTH );
+		panel.add( swingEditor, BorderLayout.CENTER );
+		ResourcesTree tree = ResourcesTree.getInstance( this.resourceProvider );
+		panel.add( tree, BorderLayout.EAST );
+		tree.addStyleSelectionListener(this);
+		this.resourcesTree = tree;
 		Container contentPane = getContentPane();
-		this.simulation = new Simulation( new SimulationDevice() );
+		contentPane.add( panel );
+		pack();
+	}
+	
+	/**
+	 * @param polishHome
+	 * @param environment 
+	 * @param manager
+	 * @return
+	 */
+	private ResourcesProvider initResourceProvider(File polishHome, Environment environment, CssAttributesManager manager) {
+		try {
+			ResourcesProvider provider = new ResourcesProviderImpl(polishHome, environment, manager);
+//			StyleProvider[] styles = provider.getStyles();
+//			for (int i = 0; i < styles.length; i++) {
+//				StyleProvider style = styles[i];
+//				System.out.println("\n===============================");
+//				printStyle(style);
+//			}
+			return provider;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new IllegalStateException("Unable to init ResourcesProvider: " +  e.toString());
+		}
+	}
+	
+	private void printStyle( StyleProvider styleProvider ) {
+		Style style = styleProvider.getStyle();
+		System.out.println(style.name + ".padding=" +  style.paddingLeft);
+		if (style.font != null) {
+			System.out.println(style.name + ".font.style=" +  style.font.getStyle());
+			System.out.println(style.name + ".font.size=" +  style.font.getSize());
+			System.out.println(style.name + ".font.face=" +  style.font.getFace());
+		}
+		System.out.println(style.name + ".font.layout=" +  style.layout);
+		System.out.println(style.name + ".background=" +  style.background);
+		System.out.println(style.name + ".border=" +  style.border);
+		
+	}
+
+	/**
+	 * @param form
+	 */
+	private void initSimulation(Simulation sim, Displayable form) {
+		sim.setSelectionMode( Simulation.SELECTION_MODE_PASSIVE );
+		sim.setCurrent( form );
+		sim.addOverlay( new SelectionOverlay() );
+		sim.addOverlay( new HoverOverlay() );
+		sim.addSelectionListener( this );
+	}
+
+	/**
+	 * 
+	 */
+	private Displayable initUi() {
 		Form form = new Form("Hello World");
 		form.append("first line");
 		Style style = new Style();
@@ -94,27 +187,24 @@ implements SelectionListener, StyleEditorListener
 		form._callShowNotify();
 		Background background = new SimpleBackground( 0xffff00 );
 		UiAccess.setBackground(form, background);
-		simulation.setCurrent( form );
-		simulation.addOverlay( new SelectionOverlay() );
-		simulation.addOverlay( new HoverOverlay() );
-		simulation.addSelectionListener( this );
-		
-		SwingStyleEditor swingEditor = new SwingStyleEditor();
-		ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
-		CssAttributesManager manager = CssAttributesManager.getInstance( polishHome, resourceUtil );
-		Environment environment = new Environment(polishHome);
-		this.editor = new StyleEditor( manager, environment, swingEditor );
-		this.editor.addDefaultPartEditors();
-		this.editor.addStyleListener( this );
-		JPanel panel = new JPanel( new BorderLayout() );
-		panel.add( simulation, BorderLayout.NORTH );
-		panel.add( swingEditor, BorderLayout.CENTER );
-		contentPane.add( panel );
-		pack();
+		return form;
 	}
-	
+
 	public static void main(String[] args) {
-		Test test = new Test( "Editor", true, null );
+		File polishHome;
+		if (args.length > 0) {
+			polishHome = new File( args[0]);
+		} else {
+			polishHome = new File("/Applications/J2ME-Polish");
+		}
+		File projectHome;
+		if (args.length > 1) {
+			projectHome = new File( args[1]);
+		} else {
+			projectHome = new File(".");
+		}
+		
+		Test test = new Test( "Editor", true, polishHome, projectHome );
 		test.setVisible(true);
 	}
 
@@ -150,8 +240,15 @@ implements SelectionListener, StyleEditorListener
 		if (style == null || style == StyleSheet.defaultStyle) {
 			style = new Style();
 		}
-		EditStyle editStyle = new EditStyle( style, itemOrScreen );
+		EditStyle editStyle;
+		if (style.name != null) {
+			editStyle = (EditStyle) this.resourceProvider.getStyle( style.name );
+			editStyle.setItemOrScreen( itemOrScreen );
+		} else {
+			editStyle = new EditStyle( itemOrScreen.getItemOrScreen().getClass().getName(), style, itemOrScreen );
+		}
 		this.editor.setStyle(editStyle);
+		this.resourcesTree.selectStyle(editStyle);
 	}
 
 	/* (non-Javadoc)
@@ -159,10 +256,38 @@ implements SelectionListener, StyleEditorListener
 	 */
 	public void notifyStyleUpdated(EditStyle style) {
 		//System.out.println("Test.notifyStyleUpdated(): layout=" + Integer.toHexString( style.getStyle().layout ));
-		style.getItemOrScreen().setStyle( style.getStyle() );
-		style.getItemOrScreen().requestInit();
+		if (style.getItemOrScreen() != null) {
+			style.getItemOrScreen().setStyle( style.getStyle() );
+			style.getItemOrScreen().requestInit();
+		}
 		this.simulation.getCurrentDisplayable()._requestRepaint();
 		//this.simulation.setCurrent( this.simulation.getCurrentDisplayable() );
+		
+		//System.out.println();
+		System.out.println( style.toSourceCode() );
+		try {
+			this.resourceProvider.saveResources();
+		} catch (IOException e) {
+			// TODO robertvirkus handle IOException
+			e.printStackTrace();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.resources.swing.StyleSelectionListener#notifyStyleSelected(de.enough.polish.resources.StyleProvider)
+	 */
+	public void notifyStyleSelected(StyleProvider styleProvider) {
+		System.out.println("notify from tree: style selected: " + styleProvider.getName() );
+		if (styleProvider instanceof EditStyle) {
+			this.editor.setStyle( (EditStyle)styleProvider );
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.resources.swing.ColorSelectionListener#notifyColorSelected(de.enough.polish.resources.ColorProvider)
+	 */
+	public void notifyColorSelected(ColorProvider color) {
+		System.out.println("notify from tree: color selected: " + color.getName() );
 	}
 
 }

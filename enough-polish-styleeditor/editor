@@ -1,1 +1,1 @@
-java -cp bin/classes/:../enough-polish-runtime/bin/classes/:../enough-polish-build/dist/editor/enough-j2mepolish-client.jar:../enough-polish-build/dist/enough-j2mepolish-build.jar:../enough-polish-build/lib/jdom.jar de.enough.polish.styleeditor.Test
+java -cp bin/classes/:../enough-polish-runtime/bin/classes/:../enough-polish-build/dist/editor/enough-j2mepolish-client.jar:../enough-polish-build/dist/enough-j2mepolish-build.jar:../enough-polish-build/lib/jdom.jar:../enough-polish-build/lib/ant.jar de.enough.polish.styleeditor.Test

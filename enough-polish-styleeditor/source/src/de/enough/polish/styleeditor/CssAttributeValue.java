@@ -25,6 +25,8 @@
  */
 package de.enough.polish.styleeditor;
 
+import de.enough.polish.preprocess.css.CssAttribute;
+
 
 /**
  * <p>Contains a value or a reference to a value (like a background- or color-reference).</p>
@@ -39,7 +41,22 @@ package de.enough.polish.styleeditor;
 public class CssAttributeValue {
 	
 	private Object value;
+	private String valueAsString;
 	private CssAttributeReference reference;
+	private CssAttribute attribute;
+	
+	public CssAttributeValue( CssAttribute attribute, Object value, String valueAsString ) {
+		this.attribute = attribute;
+		this.value = value;
+		this.valueAsString = valueAsString;
+	}
+
+	public CssAttributeValue(  CssAttribute attribute, CssAttributeReference reference ) {
+		this.attribute = attribute;
+		this.reference = reference;
+		this.valueAsString = reference.getReferencedName();
+	}
+
 	/**
 	 * @return the reference
 	 */
@@ -72,7 +89,16 @@ public class CssAttributeValue {
 		}
 		this.value = value;
 	}
+
+	/**
+	 * @return
+	 */
+	public String getValueAsString() {
+		return this.valueAsString;
+	}
 	
-	
+	public CssAttribute getAttribute() {
+		return this.attribute;
+	}
 
 }

@@ -25,9 +25,16 @@
  */
 package de.enough.polish.styleeditor;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.preprocess.css.CssMapping;
+import de.enough.polish.resources.StyleProvider;
+import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Border;
 import de.enough.polish.ui.Style;
 
 /**
@@ -40,7 +47,9 @@ import de.enough.polish.ui.Style;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class EditStyle {
+public class EditStyle
+implements StyleProvider
+{
 	
 	private ItemOrScreen itemOrScreen;
 	private Style style;
@@ -61,18 +70,26 @@ public class EditStyle {
 	private String fontColor;
 	private String fontStyle;
 	private String fontSize;
-	private List<StyleAttribute> styleAttributes;
+	private Map<CssAttribute, CssAttributeValue> attributesMap;
+	private String name;
+	private CssAttributeValue background;
+	private CssAttributeValue[] backgroundValues;
+	private CssAttributeValue border;
+	private CssAttributeValue[] borderValues;
+	private String fontFace;
 	
 	/**
 	 * Creates a new edit style with an empty style and no item/screen
 	 */
 	public EditStyle() {
-		this( new Style(), null );
+		this( "unknown", new Style(), null );
 	}
 
-	public EditStyle( Style style, ItemOrScreen itemOrScreen ) {
+	public EditStyle( String name, Style style, ItemOrScreen itemOrScreen ) {
+		this.name = name;
 		this.itemOrScreen = itemOrScreen;
-		setStyle( style );
+		this.attributesMap = new HashMap<CssAttribute, CssAttributeValue>();
+		readStyle( style );
 	}
 	
 
@@ -83,6 +100,12 @@ public class EditStyle {
 	return this.fontColor;}
 	
 
+	/**
+	 * @param fontFaceAsString
+	 */
+	public void setFontFace(String fontFaceAsString) {
+		this.fontFace = fontFaceAsString;
+	}
 
 
 	/**
@@ -377,7 +400,7 @@ public class EditStyle {
 	/**
 	 * @param style the style to set
 	 */
-	public void setStyle(Style style) {
+	public void readStyle(Style style) {
 		this.style = style;
 		this.marginLeft = Integer.toString( style.marginLeft );
 		this.marginRight = Integer.toString( style.marginRight );
@@ -389,13 +412,14 @@ public class EditStyle {
 		this.paddingBottom = Integer.toString( style.paddingBottom );
 		this.paddingVertical = Integer.toString( style.paddingVertical );
 		this.paddingHorizontal = Integer.toString( style.paddingHorizontal );
+		//todo: set background, border, font for code generation
 	}
 	
 
 	/**
 	 * Updates the original UI style
 	 */
-	public void updateStyle() {
+	public void writeStyle() {
 		this.style.marginLeft = parseInteger( this.marginLeft ).intValue();
 		this.style.marginRight = parseInteger( this.marginRight ).intValue();
 		this.style.marginTop = parseInteger( this.marginTop ).intValue();
@@ -424,24 +448,6 @@ public class EditStyle {
 		// TODO robertvirkus implement parseLayout
 		return 0;
 	}
-
-
-	/**
-	 * @return the styleAttributes
-	 */
-	public List<StyleAttribute> getStyleAttributes() {
-	return this.styleAttributes;}
-	
-
-
-
-	/**
-	 * @param styleAttributes the styleAttributes to set
-	 */
-	public void setStyleAttributes(List<StyleAttribute> styleAttributes) {
-		this.styleAttributes = styleAttributes;
-	}
-
 
 	/**
 	 * @param value
@@ -498,6 +504,180 @@ public class EditStyle {
 	public void removeAttribute(CssAttribute attribute) {
 		this.style.removeAttribute( attribute.getId() );
 	}
+
+	/**
+	 * @param value
+	 */
+	public void addAttribute(CssAttributeValue value) {
+		this.style.addAttribute( value.getAttribute().getId(), value.getValue() );
+		this.attributesMap.put( value.getAttribute(), value );
+	}
+	
+	public String toSourceCode() {
+		StringBuffer buffer = new StringBuffer();
+		appendToSource(buffer);
+		return buffer.toString();
+	}
+	
+	public void appendToSource( StringBuffer buffer) {
+		CssAttribute[] attributes = this.attributesMap.keySet().toArray(new CssAttribute[this.attributesMap.size()]);
+		Arrays.sort( attributes );
+		buffer.append(this.name).append(" {\n");
+		for (int i = 0; i < attributes.length; i++) {
+			CssAttribute attribute = attributes[i];
+			CssAttributeValue value = this.attributesMap.get(attribute);
+			CssMapping mapping = attribute.getMapping( value.getValueAsString() );
+			if (mapping != null && mapping.getCondition() != null) {
+				buffer.append("\t#if ").append(mapping.getCondition()).append("\n");
+				buffer.append("\t\t").append(attribute.getName()).append(": ").append( value.getValueAsString() ).append(";\n");
+				buffer.append("\t#endif\n");
+			} else {
+				// attribute without condition:
+				buffer.append("\t").append(attribute.getName()).append(": ").append( value.getValueAsString() ).append(";\n");
+			}
+		}
+		if (this.layout != null) {
+			buffer.append("\tlayout: ").append( this.layout ).append(";\n");			
+		}
+		if ( equals( this.style.marginLeft, this.style.marginRight, this.style.marginTop, this.style.marginBottom)) {
+			buffer.append("\tmargin: ").append( this.style.marginLeft ).append(";\n");
+		} else {
+			buffer.append("\tmargin-left: ").append( this.marginLeft ).append(";\n");
+			buffer.append("\tmargin-right: ").append( this.marginRight ).append(";\n");
+			buffer.append("\tmargin-top: ").append( this.marginTop ).append(";\n");
+			buffer.append("\tmargin-bottom: ").append( this.marginBottom ).append(";\n");
+		}
+		if ( equals( this.style.paddingLeft, this.style.paddingRight, this.style.paddingTop, this.style.paddingBottom)) {
+			buffer.append("\tpadding: ").append( this.style.paddingLeft ).append(";\n");
+		} else {
+			buffer.append("\tpadding-left: ").append( this.paddingLeft ).append(";\n");
+			buffer.append("\tpadding-right: ").append( this.paddingRight ).append(";\n");
+			buffer.append("\tpadding-top: ").append( this.paddingTop ).append(";\n");
+			buffer.append("\tpadding-bottom: ").append( this.paddingBottom ).append(";\n");
+			buffer.append("\tpadding-horizontal: ").append( this.paddingHorizontal ).append(";\n");
+			buffer.append("\tpadding-vertical: ").append( this.paddingVertical ).append(";\n");
+		}
+		if (this.fontFace != null) {
+			buffer.append("\tfont {\n");
+			buffer.append("\t\tface: ").append( this.fontFace ).append(";\n");
+			buffer.append("\t\tsize: ").append( this.fontSize ).append(";\n");
+			buffer.append("\t\tstyle: ").append( this.fontStyle ).append(";\n");
+			buffer.append("\t\tcolor: ").append( this.fontColor ).append(";\n");
+			buffer.append("\t}\n");
+		}
+		if (this.background != null) {
+			appendGroup( this.background, this.backgroundValues, buffer );			
+		}
+		if (this.border != null) {
+			appendGroup( this.border, this.borderValues, buffer );						
+		}
+		buffer.append("}\n");
+	}
+
+	
+	private boolean equals(int num1, int num2, int num3, int num4) {
+		return (num1 == num2 && num2 == num3 && num3 == num4 );
+	}
+
+	private boolean equals(int num1, int num2, int num3, int num4, int num5, int num6) {
+		return (num1 == num2 && num2 == num3 && num3 == num4 && num4 == num5 && num5 == num6 );
+	}
+
+	/**
+	 * @param background2
+	 * @param backgroundValues2
+	 * @param buffer
+	 */
+	private void appendGroup(CssAttributeValue group, CssAttributeValue[] groupValues, StringBuffer buffer) {
+		buffer.append("\t").append( group.getAttribute().getName()).append(" {\n");
+		buffer.append( "\t\ttype: ").append( group.getValueAsString() ).append(";\n");
+		if (groupValues != null) {
+			for (int i = 0; i < groupValues.length; i++) {
+				CssAttributeValue value = groupValues[i];
+				buffer.append("\t\t").append( value.getAttribute().getName() ).append(": ").append( value.getValueAsString() ).append(";\n");
+			}
+		}
+		buffer.append("\t}\n");
+	}
+
+	/**
+	 * @param value
+	 * @param bgValues 
+	 */
+	public void setBackground(CssAttributeValue value, CssAttributeValue[] bgValues) {
+		this.background = value;
+		this.backgroundValues = bgValues;
+		if (value == null) {
+			this.style.background = null;
+		} else {
+			this.style.background = (Background) value.getValue();
+		}
+	}
+
+	/**
+	 * 
+	 */
+	public void removeBackground() {
+		this.background = null;
+		this.style.background = null;
+	}
+
+	/**
+	 * @param value
+	 * @param bordValues
+	 */
+	public void setBorder(CssAttributeValue value, CssAttributeValue[] bordValues) {
+		this.border = value;
+		this.borderValues = bordValues;
+		if (value == null) {
+			this.style.border = null;
+		} else {
+			this.style.border = (Border) value.getValue();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.resources.StyleProvider#generateSourceCode(java.lang.StringBuffer)
+	 */
+	public void generateCssSourceCode(StringBuffer buffer) {
+		appendToSource(buffer);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.resources.StyleProvider#getName()
+	 */
+	public String getName() {
+		return this.name;
+	}
+	
+	public String toString() {
+		return this.name;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj) {
+		if (obj instanceof StyleProvider) {
+			return this.style.equals(  ((StyleProvider) obj).getStyle() );
+		}
+		return super.equals(obj);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+		return this.style.hashCode();
+	}
+
+	/**
+	 * @param itemOrScreen
+	 */
+	public void setItemOrScreen(ItemOrScreen itemOrScreen) {
+		this.itemOrScreen = itemOrScreen;
+	}
+	
 	
 
 }

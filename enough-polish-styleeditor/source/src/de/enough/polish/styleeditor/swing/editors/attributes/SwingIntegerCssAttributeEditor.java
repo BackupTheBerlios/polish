@@ -36,6 +36,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.StylePartEditor;
 import de.enough.polish.styleeditor.editors.CssAttributeEditor;
 import de.enough.polish.styleeditor.editors.attributes.IntegerCssAttributeEditor;
@@ -135,7 +136,8 @@ implements ChangeListener
 	/* (non-Javadoc)
 	 * @see de.enough.polish.styleeditor.swing.editors.SwingCssAttributeEditor#showValue(java.lang.Object)
 	 */
-	protected void showValue(Object value) {
+	protected void showValue(CssAttributeValue attributeValue) {
+		Object value = attributeValue.getValue();
 		if (value == null) {
 			this.integerField.setText( null );
 			if (this.allowedValuesComboBox.getItemCount() > 0) {

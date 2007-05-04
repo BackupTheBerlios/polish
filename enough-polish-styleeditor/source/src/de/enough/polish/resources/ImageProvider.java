@@ -1,5 +1,5 @@
 /*
- * Created on Apr 23, 2007 at 10:20:32 PM.
+ * Created on May 3, 2007 at 1:57:19 AM.
  * 
  * Copyright (c) 2007 Robert Virkus / Enough Software
  *
@@ -23,11 +23,18 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.styleeditor;
+package de.enough.polish.resources;
 
-import de.enough.polish.preprocess.css.CssAttribute;
+/**
+ * <p></p>
+ *
+ * <p>Copyright Enough Software 2007</p>
+ * <pre>
+ * history
+ *        May 3, 2007 - rob creation
+ * </pre>
+ * @author Robert Virkus, j2mepolish@enough.de
+ */
+public interface ImageProvider {
 
-class StyleAttribute {
-	CssAttribute cssAttribute;
-	String value;
 }

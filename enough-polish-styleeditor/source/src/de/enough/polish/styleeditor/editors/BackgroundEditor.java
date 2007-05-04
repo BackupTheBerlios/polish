@@ -27,6 +27,7 @@ package de.enough.polish.styleeditor.editors;
 
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssMapping;
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.EditStyle;
 import de.enough.polish.ui.Background;
 
@@ -122,7 +123,11 @@ public class BackgroundEditor extends ParameterizedStyleEditor {
 	 * @see de.enough.polish.styleeditor.StylePartEditor#writeStyle(de.enough.polish.styleeditor.EditStyle)
 	 */
 	public void writeStyle(EditStyle style) {
-		style.getStyle().background = this.background;
+		if (this.background == null) {
+			style.setBackground( null, null );
+		} else {
+			style.setBackground( new CssAttributeValue( this.backgroundAttribute, this.background, this.fromName ), this.attributesEditor.getAttributeValues() );
+		}
 	}
 
 	public CssAttributesEditor getAttributesEditorByTo(String className, CssAttribute attribute ) {
@@ -157,7 +162,7 @@ public class BackgroundEditor extends ParameterizedStyleEditor {
 	protected void update() {
 		if (this.backgroundAttribute != null && this.fromName != null && this.attributesEditor != null) {
 			this.attributesEditor = getAttributesEditor(this.fromName);
-			this.background = (Background) instantiate( this.backgroundAttribute, this.fromName, this.attributesEditor.getAttributeValues() );
+			this.background = (Background) instantiate( this.backgroundAttribute, this.fromName, this.attributesEditor.getAttributeValuesAsObjects() );
 		}
 		super.update();
 	}

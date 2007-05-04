@@ -31,6 +31,7 @@ import javax.microedition.lcdui.Font;
 
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssMapping;
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.EditStyle;
 import de.enough.polish.styleeditor.StylePartEditor;
 import de.enough.polish.ui.TextEffect;
@@ -61,14 +62,76 @@ public class TextEditor extends StylePartEditor {
 	public void writeStyle( EditStyle style ) {
 		style.getStyle().font = this.font;
 		style.getStyle().fontColor = this.fontColor;
-		
+		style.setFontFace( getFontFaceAsString() );
+		style.setFontSize( getFontSizeAsString() );
+		style.setFontStyle( getFontStyleAsString() );
+		style.setFontColor( getFontColorAsString() );
 		if (this.textEffectName == null) {
-			style.getStyle().removeAttribute( this.textEffectAttribute.getId() );
+			style.removeAttribute( this.textEffectAttribute );
 		} else {
-			style.getStyle().addAttribute( this.textEffectAttribute.getId(), this.textEffect );
+			style.addAttribute( new CssAttributeValue( this.textEffectAttribute, this.textEffect, this.textEffectName ) );
 		}
 	}
 	
+
+	/**
+	 * @return
+	 */
+	private String getFontColorAsString() {
+		return "#" + Integer.toHexString(this.fontColor);
+	}
+
+
+	/**
+	 * @return
+	 */
+	private String getFontSizeAsString() {
+		if (this.font == null) {
+			return null;
+		}
+		switch (this.font.getSize()) {
+		case Font.SIZE_SMALL: return "small";
+		case Font.SIZE_MEDIUM: return "medium";
+		case Font.SIZE_LARGE: return "large";
+		}
+		return null;
+	}
+	
+	private String getFontStyleAsString() {
+		if (this.font == null) {
+			return null;
+		}
+		StringBuffer buffer = new StringBuffer();
+		if (isStyleBold()) {
+			buffer.append("bold");
+		} else {
+			buffer.append("plain");
+		}
+		if (isStyleItalic()) {
+			buffer.append(" | italic");
+		}
+		if (isStyleUnderlined()) {
+			buffer.append(" | underlined");
+		}
+		return buffer.toString();
+	}
+
+
+	/**
+	 * @return
+	 */
+	private String getFontFaceAsString() {
+		if (this.font == null) {
+			return null;
+		}
+		switch (this.font.getFace()) {
+		case Font.FACE_SYSTEM: return "system";
+		case Font.FACE_PROPORTIONAL: return "proportional";
+		case Font.FACE_MONOSPACE: return "monospace";
+		}
+		return null;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.styleeditor.StylePartEditor#readStyle(de.enough.polish.styleeditor.EditStyle)

@@ -25,6 +25,7 @@
  */
 package de.enough.polish.styleeditor.editors.attributes;
 
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.EditStyle;
 import de.enough.polish.styleeditor.editors.CssAttributeEditor;
 
@@ -41,12 +42,37 @@ import de.enough.polish.styleeditor.editors.CssAttributeEditor;
 public class IntegerCssAttributeEditor extends CssAttributeEditor {
 	
 	protected Integer value;
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.styleeditor.editors.CssAttributeEditor#getValueAsObject()
+	 */
+	public Object getValueAsObject() {
+		return this.value;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.styleeditor.editors.CssAttributeEditor#getValue()
 	 */
-	public Object getValue() {
-		return this.value;
+	public CssAttributeValue getValue() {
+		return new CssAttributeValue( this.attribute, this.value, getValueAsString());
+	}
+
+
+
+	/**
+	 * @return
+	 */
+	private String getValueAsString() {
+		if (this.value == null) {
+			return null;
+		}
+		String[] allowedValues = this.attribute.getAllowedValues();
+		if (allowedValues == null) {
+			return this.value.toString();
+		} else {
+			return allowedValues[ this.value.intValue() ];
+		}
 	}
 
 
@@ -55,7 +81,21 @@ public class IntegerCssAttributeEditor extends CssAttributeEditor {
 		this.value = value;
 		update();
 	}
-
+	
+	public void setIntegerAsAllowedValue( String value ) {
+		String[] allowedValues = this.attribute.getAllowedValues();
+		if (allowedValues == null) {
+			setInteger( new Integer( Long.decode(value).intValue() ) );
+		} else {
+			for (int i = 0; i < allowedValues.length; i++) {
+				String allowedValue = allowedValues[i];
+				if (allowedValue.equals(value)) {
+					setInteger( new Integer(i));
+					break;
+				}
+			}
+		}
+	}
 
 
 	/* (non-Javadoc)

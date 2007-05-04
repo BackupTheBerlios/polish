@@ -27,6 +27,7 @@ package de.enough.polish.styleeditor.swing.editors;
 
 import java.awt.event.ActionEvent;
 
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.StylePartEditor;
 import de.enough.polish.styleeditor.editors.CssAttributeEditor;
 import de.enough.polish.styleeditor.swing.SwingStylePartEditor;
@@ -46,7 +47,7 @@ extends SwingStylePartEditor
 {
 	protected CssAttributeEditor attributeEditor;
 	
-	protected abstract void showValue( Object value );
+	protected abstract void showValue( CssAttributeValue value );
 
 
 	/* (non-Javadoc)

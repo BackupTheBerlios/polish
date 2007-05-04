@@ -1,5 +1,5 @@
 /*
- * Created on Apr 29, 2007 at 11:11:16 AM.
+ * Created on May 3, 2007 at 1:54:12 AM.
  * 
  * Copyright (c) 2007 Robert Virkus / Enough Software
  *
@@ -23,25 +23,41 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.styleeditor;
+package de.enough.polish.resources;
+
+import java.io.IOException;
 
 /**
- * <p></p>
+ * <p>Provides resources</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
  * history
- *        Apr 29, 2007 - rob creation
+ *        May 3, 2007 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public interface CssAttributeReference {
+public interface ResourcesProvider {
 	
-	public Object getReferencedValue();
 	
-	public String getReferencedName();
+	public ImageProvider[] getImages();
 	
-	public void setReference( Object value, String name );
+	public ImageProvider getImage( String name );
 	
-
+	public void addImage( String name, ImageProvider image );
+	
+	public StyleProvider[] getStyles();
+	
+	public StyleProvider getStyle( String name );
+	
+	public void addStyle( String name, StyleProvider style );
+	
+	public ColorProvider[] getColors();
+	
+	public ColorProvider getColor( String name );
+	
+	public void addColor( String name, ColorProvider color );
+	
+	
+	public void saveResources() throws IOException;
 }

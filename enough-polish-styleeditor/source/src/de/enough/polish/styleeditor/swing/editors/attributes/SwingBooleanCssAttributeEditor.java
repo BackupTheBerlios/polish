@@ -35,6 +35,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.StylePartEditor;
 import de.enough.polish.styleeditor.editors.CssAttributeEditor;
 import de.enough.polish.styleeditor.editors.attributes.BooleanCssAttributeEditor;
@@ -83,11 +84,11 @@ extends SwingCssAttributeEditor
 	/* (non-Javadoc)
 	 * @see de.enough.polish.styleeditor.swing.editors.SwingCssAttributeEditor#showValue(java.lang.Object)
 	 */
-	protected void showValue(Object value) {
-		if (value == null) {
+	protected void showValue(CssAttributeValue value) {
+		if (value.getValue() == null) {
 			this.checkBox.setSelected(false);
 		} else  {
-			this.checkBox.setSelected( ((Boolean)value).booleanValue() );
+			this.checkBox.setSelected( ((Boolean)value.getValue()).booleanValue() );
 		}
 	}
 	

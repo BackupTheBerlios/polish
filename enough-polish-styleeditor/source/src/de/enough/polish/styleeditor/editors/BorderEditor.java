@@ -27,6 +27,7 @@ package de.enough.polish.styleeditor.editors;
 
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssMapping;
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.EditStyle;
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Border;
@@ -123,7 +124,11 @@ public class BorderEditor extends ParameterizedStyleEditor {
 	 * @see de.enough.polish.styleeditor.StylePartEditor#writeStyle(de.enough.polish.styleeditor.EditStyle)
 	 */
 	public void writeStyle(EditStyle style) {
-		style.getStyle().border = this.border;
+		if (this.border == null) {
+			style.setBorder( null, null );
+		} else {
+			style.setBorder( new CssAttributeValue( this.borderAttribute, this.border, this.fromName ), this.attributesEditor.getAttributeValues() );
+		}
 	}
 
 	public CssAttributesEditor getAttributesEditorByTo(String className, CssAttribute attribute ) {
@@ -158,7 +163,7 @@ public class BorderEditor extends ParameterizedStyleEditor {
 	protected void update() {
 		if (this.borderAttribute != null && this.fromName != null && this.attributesEditor != null) {
 			this.attributesEditor = getAttributesEditor(this.fromName);
-			this.border = (Border) instantiate( this.borderAttribute, this.fromName, this.attributesEditor.getAttributeValues() );
+			this.border = (Border) instantiate( this.borderAttribute, this.fromName, this.attributesEditor.getAttributeValuesAsObjects() );
 		}
 		super.update();
 	}

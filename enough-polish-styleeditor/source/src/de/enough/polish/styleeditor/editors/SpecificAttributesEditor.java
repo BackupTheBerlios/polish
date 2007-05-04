@@ -48,7 +48,7 @@ public class SpecificAttributesEditor extends CssAttributesEditor {
 	 * @see de.enough.polish.styleeditor.StylePartEditor#writeStyle(EditStyle)
 	 */
 	public void writeStyle( EditStyle style ) {
-		
+		// attributes are written by the used CssAttributeEditors
 	}
 	
 

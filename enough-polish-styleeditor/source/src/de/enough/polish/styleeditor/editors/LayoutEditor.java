@@ -56,7 +56,9 @@ public class LayoutEditor extends StylePartEditor {
 	 */
 	public void writeStyle( EditStyle style ) {
 		style.setLayout(this.layout);
+		style.setLayout( getLayoutAsString() );
 	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.styleeditor.StylePartEditor#setStyle(de.enough.polish.styleeditor.EditStyle)
@@ -65,100 +67,138 @@ public class LayoutEditor extends StylePartEditor {
 		this.layout = style.getLayoutAsInt();
 	}
 	
-	public boolean isLayoutLeft() {
+	/**
+	 * @return
+	 */
+	private String getLayoutAsString() {
+		StringBuffer buffer = new StringBuffer();
+		if (isHorizontalCenter()) {
+			buffer.append("horizontal-center");
+		} else if (isHorizontalRight()) {
+			buffer.append("right");
+		} else {
+			buffer.append("left");
+		}
+		if (isVerticalCenter()) {
+			buffer.append( " | vertical-center");
+		} else if (isVerticalBottom()) {
+			buffer.append( " | bottom");
+		} else if (isVerticalTop()) {
+			buffer.append( " | top");
+		}
+		if (isHorizontalExpand()) {
+			buffer.append(" | horizontal-expand");
+		} else if (isHorizontalShrink()){
+			buffer.append(" | horizontal-shrink");
+		}
+		if (isVerticalExpand()) {
+			buffer.append(" | vertical-expand");
+		} else if (isVerticalShrink()){
+			buffer.append(" | vertical-shrink");
+		}
+		if (isNewLineAfter()) {
+			buffer.append(" | newline-after");
+		}
+		if (isNewLineBefore()) {
+			buffer.append(" | newline-before");
+		}
+		return buffer.toString();
+	}
+	
+	public boolean isHorizontalLeft() {
 		return ((this.layout & Item.LAYOUT_LEFT) == Item.LAYOUT_LEFT)
 			&& (( this.layout & Item.LAYOUT_RIGHT) != Item.LAYOUT_RIGHT)
 			&& (( this.layout & Item.LAYOUT_CENTER) != Item.LAYOUT_CENTER);
 	}
 
-	public boolean isLayoutRight() {
+	public boolean isHorizontalRight() {
 		return (( this.layout & Item.LAYOUT_RIGHT) == Item.LAYOUT_RIGHT)
 			&& (( this.layout & Item.LAYOUT_CENTER) != Item.LAYOUT_CENTER);
 	}
 	
-	public boolean isLayoutHorizontalCenter() {
+	public boolean isHorizontalCenter() {
 		return  (( this.layout & Item.LAYOUT_CENTER) == Item.LAYOUT_CENTER);
 	}
 	
-	public boolean isLayoutTop() {
+	public boolean isVerticalTop() {
 		return ((this.layout & Item.LAYOUT_TOP) == Item.LAYOUT_TOP)
 			&& (( this.layout & Item.LAYOUT_BOTTOM) != Item.LAYOUT_BOTTOM)
 			&& (( this.layout & Item.LAYOUT_VCENTER) != Item.LAYOUT_VCENTER);
 	}
 
-	public boolean isLayoutBottom() {
+	public boolean isVerticalBottom() {
 		return (( this.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM)
 			&& (( this.layout & Item.LAYOUT_VCENTER) != Item.LAYOUT_VCENTER);
 	}
 	
-	public boolean isLayoutVerticalCenter() {
+	public boolean isVerticalCenter() {
 		return  (( this.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER);
 	}
 	
-	public boolean isLayoutTopLeft() {
-		return isLayoutTop() & isLayoutLeft();
+	public boolean isVerticalTopAndHorizontalLeft() {
+		return isVerticalTop() & isHorizontalLeft();
 	}
 
-	public boolean isLayoutTopCenter() {
-		return isLayoutTop() & isLayoutHorizontalCenter();
+	public boolean isVerticalTopAndHorizontalCenter() {
+		return isVerticalTop() & isHorizontalCenter();
 	}
 	
-	public boolean isLayoutTopRight() {
-		return isLayoutTop() & isLayoutRight();
+	public boolean isVerticalTopAndHorizontalRight() {
+		return isVerticalTop() & isHorizontalRight();
 	}
 	
-	public boolean isLayoutVerticalCenterLeft() {
-		return isLayoutVerticalCenter() & isLayoutLeft();
+	public boolean isVerticalCenterAndHorizontalLeft() {
+		return isVerticalCenter() & isHorizontalLeft();
 	}
 
-	public boolean isLayoutVerticalCenterCenter() {
-		return isLayoutVerticalCenter() & isLayoutHorizontalCenter();
+	public boolean isVerticalCenterAndHorizontalCenter() {
+		return isVerticalCenter() & isHorizontalCenter();
 	}
 	
-	public boolean isLayoutVerticalCenterRight() {
-		return isLayoutVerticalCenter() & isLayoutRight();
+	public boolean isVerticalCenterAndHorizontalRight() {
+		return isVerticalCenter() & isHorizontalRight();
 	}
 	
-	public boolean isLayoutBottomLeft() {
-		return isLayoutBottom() & isLayoutLeft();
+	public boolean isVerticalBottomAndHorizontalLeft() {
+		return isVerticalBottom() & isHorizontalLeft();
 	}
 
-	public boolean isLayoutBottomCenter() {
-		return isLayoutBottom() & isLayoutHorizontalCenter();
+	public boolean isVerticalBottomAndHorizontalCenter() {
+		return isVerticalBottom() & isHorizontalCenter();
 	}
 	
-	public boolean isLayoutBottomRight() {
-		return isLayoutBottom() & isLayoutRight();
+	public boolean isVerticalBottomHorizontalRight() {
+		return isVerticalBottom() & isHorizontalRight();
 	}
 
 
 
-	public void setLayoutLeft() {
+	public void setHorizontalLeft() {
 		this.layout = this.layout & ~Item.LAYOUT_CENTER | Item.LAYOUT_LEFT;
 		update();
 	}
 
-	public void setLayoutRight() {
+	public void setHorizontalRight() {
 		this.layout = this.layout & ~Item.LAYOUT_CENTER | Item.LAYOUT_RIGHT;
 		update();
 	}
 
-	public void setLayoutHorizontalCenter() {
+	public void setHorizontalCenter() {
 		this.layout = this.layout | Item.LAYOUT_CENTER;
 		update();
 	}
 	
-	public void setLayoutTop() {
+	public void setVerticalTop() {
 		this.layout = this.layout & ~Item.LAYOUT_VCENTER | Item.LAYOUT_TOP;
 		update();
 	}
 
-	public void setLayoutBottom() {
+	public void setVerticalBottom() {
 		this.layout = this.layout & ~Item.LAYOUT_VCENTER | Item.LAYOUT_BOTTOM;
 		update();
 	}
 
-	public void setLayoutVerticalCenter() {
+	public void setVerticalCenter() {
 		this.layout = this.layout | Item.LAYOUT_VCENTER;
 		update();
 	}
@@ -167,26 +207,26 @@ public class LayoutEditor extends StylePartEditor {
 	/**
 	 * @return
 	 */
-	public boolean isLayoutHorizontalExpand() {
+	public boolean isHorizontalExpand() {
 		return ((this.layout & Item.LAYOUT_EXPAND) == Item.LAYOUT_EXPAND);
 	}
 	
-	public boolean isLayoutHorizontalShrink() {
+	public boolean isHorizontalShrink() {
 		return ((this.layout & Item.LAYOUT_SHRINK) == Item.LAYOUT_SHRINK);
 	}
 
-	public boolean isLayoutVerticalExpand() {
+	public boolean isVerticalExpand() {
 		return ((this.layout & Item.LAYOUT_VEXPAND) == Item.LAYOUT_VEXPAND);
 	}
 	
-	public boolean isLayoutVerticalShrink() {
+	public boolean isVerticalShrink() {
 		return ((this.layout & Item.LAYOUT_VSHRINK) == Item.LAYOUT_VSHRINK);
 	}
 
-	public void setLayoutHorizontalExpand() {
-		setLayoutHorizontalExpand(true);
+	public void setHorizontalExpand() {
+		setHorizontalExpand(true);
 	}
-	public void setLayoutHorizontalExpand(boolean enable) {
+	public void setHorizontalExpand(boolean enable) {
 		if (enable) {			
 			this.layout |= Item.LAYOUT_EXPAND;
 		} else {
@@ -195,10 +235,10 @@ public class LayoutEditor extends StylePartEditor {
 		update();
 	}
 	
-	public void setLayoutHorizontalShrink() {
-		setLayoutHorizontalShrink(true);
+	public void setHorizontalShrink() {
+		setHorizontalShrink(true);
 	}
-	public void setLayoutHorizontalShrink(boolean enable) {
+	public void setHorizontalShrink(boolean enable) {
 		if (enable) {			
 			this.layout |= Item.LAYOUT_SHRINK;
 		} else {
@@ -207,10 +247,10 @@ public class LayoutEditor extends StylePartEditor {
 		update();
 	}
 
-	public void setLayoutVerticalExpand() {
-		setLayoutVerticalExpand(true);
+	public void setVerticalExpand() {
+		setVerticalExpand(true);
 	}
-	public void setLayoutVerticalExpand(boolean enable) {
+	public void setVerticalExpand(boolean enable) {
 		if (enable) {			
 			this.layout |= Item.LAYOUT_VEXPAND;
 		} else {
@@ -219,10 +259,10 @@ public class LayoutEditor extends StylePartEditor {
 		update();
 	}
 
-	public void setLayoutVerticalShrink() {
-		setLayoutVerticalShrink(true);
+	public void setVerticalShrink() {
+		setVerticalShrink(true);
 	}
-	public void setLayoutVerticalShrink(boolean enable) {
+	public void setVerticalShrink(boolean enable) {
 		if (enable) {			
 			this.layout |= Item.LAYOUT_VSHRINK;
 		} else {
@@ -278,7 +318,7 @@ public class LayoutEditor extends StylePartEditor {
 	/**
 	 * @return
 	 */
-	public boolean isLayoutDefault() {
+	public boolean isHorizontalDefault() {
 		return (this.layout == 0);
 	}
 

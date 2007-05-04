@@ -29,6 +29,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.EditStyle;
 import de.enough.polish.styleeditor.StylePartEditor;
 import de.enough.polish.util.ReflectionUtil;
@@ -56,7 +57,10 @@ public abstract class CssAttributeEditor extends StylePartEditor {
 		this.attribute = attribute;
 	}
 	
-	public abstract Object getValue();
+	public abstract CssAttributeValue getValue();
+
+	public abstract Object getValueAsObject();
+	
 	protected abstract void setValue(Object value);
 	
 
@@ -75,15 +79,16 @@ public abstract class CssAttributeEditor extends StylePartEditor {
 	 * @see de.enough.polish.styleeditor.StylePartEditor#writeStyle(de.enough.polish.styleeditor.EditStyle)
 	 */
 	public void writeStyle(EditStyle style) {
-		System.out.println("CssAttributeEditor.writeStyle: EditStyle=" + style + ", attribute=" + attribute + ", Style=" + (style == null ? "null" : style.getStyle() ));
-		style.getStyle().addAttribute( this.attribute.getId(), getValue() );		
+		//System.out.println("CssAttributeEditor.writeStyle: EditStyle=" + style + ", attribute=" + attribute + ", Style=" + (style == null ? "null" : style.getStyle() ));
+		
+		style.addAttribute( getValue() );
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.styleeditor.StylePartEditor#readStyle(de.enough.polish.styleeditor.EditStyle)
 	 */
 	public void readStyle(EditStyle style) {
-		System.out.println(this + ".readStyle(" + style+ ")");
+		//System.out.println(this + ".readStyle(" + style+ ")");
 		Object value = style.getStyle().getObjectProperty( this.attribute.getId() );
 		if (value == null) {
 			value = this.attribute.instantiateDefault( getEnvironment() );
@@ -93,12 +98,12 @@ public abstract class CssAttributeEditor extends StylePartEditor {
 	}
 	
 	public void readStyle( Object styleSource ) {
-		System.out.println(this + ".readStyle(" + styleSource + ")");
+		//System.out.println(this + ".readStyle(" + styleSource + ")");
 		Object value = getFieldValue( styleSource );
 		if (value == null) {
 			value = this.attribute.instantiateDefault( getEnvironment() );
-		} else {
-			System.out.println(this + ".readStyle(" + styleSource + "): got value " + value + " from field " + this.attribute.getName() );
+		//} else {
+		//	System.out.println(this + ".readStyle(" + styleSource + "): got value " + value + " from field " + this.attribute.getName() );
 		}
 		setValue( value );
 	}
@@ -143,6 +148,7 @@ public abstract class CssAttributeEditor extends StylePartEditor {
 	public String getDefaultValue() {
 		return this.attribute.getDefaultValue();
 	}
+
 	
 	
 	

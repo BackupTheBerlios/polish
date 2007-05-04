@@ -34,6 +34,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.StylePartEditor;
 import de.enough.polish.styleeditor.editors.CssAttributeEditor;
 import de.enough.polish.styleeditor.editors.attributes.ColorCssAttributeEditor;
@@ -81,14 +82,14 @@ extends SwingCssAttributeEditor
 	/* (non-Javadoc)
 	 * @see de.enough.polish.styleeditor.swing.editors.SwingCssAttributeEditor#showValue(java.lang.Object)
 	 */
-	protected void showValue(Object value) {
-		if (value == null) {
+	protected void showValue(CssAttributeValue value) {
+		if (value.getValue() == null) {
 			this.colorButton.setBackground( null );
-		} else if (value instanceof Color) {
-			Color color = (Color) value;
+		} else if (value.getValue() instanceof Color) {
+			Color color = (Color) value.getValue();
 			this.colorButton.setBackground( new java.awt.Color( color.getColor() ) );
-		} else if (value instanceof Integer) {
-			this.colorButton.setBackground( new java.awt.Color( ((Integer)value).intValue() ) );
+		} else if (value.getValue() instanceof Integer) {
+			this.colorButton.setBackground( new java.awt.Color( ((Integer)value.getValue()).intValue() ) );
 		}
 	}
 	

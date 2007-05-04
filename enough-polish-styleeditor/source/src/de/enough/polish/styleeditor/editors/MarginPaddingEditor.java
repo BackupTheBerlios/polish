@@ -57,7 +57,7 @@ public class MarginPaddingEditor extends StylePartEditor {
 	/**
 	 */
 	public MarginPaddingEditor() {
-		// TODO robertvirkus implement MarginPaddingEditor
+		// just create MarginPaddingEditor
 	}
 	
 

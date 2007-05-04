@@ -26,6 +26,7 @@
 package de.enough.polish.styleeditor.editors;
 
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.EditStyle;
 import de.enough.polish.styleeditor.StyleEditor;
 import de.enough.polish.styleeditor.StylePartEditor;
@@ -154,14 +155,24 @@ public class CssAttributesEditor extends StylePartEditor {
 		super.setStyle(style);
 	}
 
-	public Object[] getAttributeValues() {
+	public CssAttributeValue[] getAttributeValues() {
+		CssAttributeEditor[] editors = this.cssAttributeEditors;
+		CssAttributeValue[] values = new CssAttributeValue[ editors.length ];
+		for (int i = 0; i < editors.length; i++) {
+			CssAttributeEditor editor = editors[i];
+			values[i] = editor.getValue();
+		}
+		return values;
+	}
+
+	public Object[] getAttributeValuesAsObjects() {
 		CssAttributeEditor[] editors = this.cssAttributeEditors;
 		Object[] values = new Object[ editors.length ];
 		for (int i = 0; i < editors.length; i++) {
 			CssAttributeEditor editor = editors[i];
 			Object value = null;
 			if (editor != null) {
-				value = editor.getValue();
+				value = editor.getValueAsObject();
 				//System.out.println("getAttributeValues: " + i + "=" + value);
 			}
 			if (value == null) {
