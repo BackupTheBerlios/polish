@@ -164,6 +164,8 @@ public class RssTagHandler
 
 		// Ignore content of some tags.
 		if (TAG_TITLE.equals(tagName)
+			|| TAG_LINK.equals(tagName)
+			|| TAG_DESCRIPTION.equals(tagName)
 			|| TAG_LANGUAGE.equals(tagName)
 			|| TAG_PUBDATE.equals(tagName)
 			|| TAG_GUID.equals(tagName)
