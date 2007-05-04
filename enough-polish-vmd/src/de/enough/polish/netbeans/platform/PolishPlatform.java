@@ -78,6 +78,8 @@ public class PolishPlatform {
                 for (int i = 0; i < strings.length; i++)
                     deviceBuffer.append ("<optional name=\"OptionalPathElement" + (i + 1) + "\" version=\"1.0\" displayname=\"" + strings[i] + "\" classpath=\"" + strings[i] + "\" dependencies=\"\" default=\"true\"/>\n");
 
+                deviceBuffer.append ("<optional name=\"OptionalElement1" + "\" version=\"1.0\" displayname=\"J2ME Polish Client Archive File\" classpath=\"" + polishHome + "/import/enough-j2mepolish-client.jar\" dependencies=\"\" default=\"true\"/>\n");
+
                 HashMap capabilities = device.getCapabilities ();
                 Dimension screenSize = PolishProjectSupport.parseDimension ((String) capabilities.get ("polish.ScreenSize"));
                 Integer bits = PolishProjectSupport.parseInteger ((String) capabilities.get ("polish.BitsPerPixel"));

@@ -106,6 +106,8 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
                 apis.append ("OptionalPathElement").append (a + 1).append ("-1.0,"); // NOI18N
                 bootclasspath.append (strings[a]).append (":");
             }
+        apis.append ("OptionalElement1-1.0,");
+        bootclasspath.append (polishHome).append ("/import/enough-j2mepolish-client.jar").append (":");
         map.put ("platform.apis", apis.toString ()); // NOI18N
         map.put ("platform.bootclasspath", bootclasspath.toString ()); // NOI18N
         map.put ("javac.source", "1.3"); // NOI18N
