@@ -98,6 +98,10 @@ implements Runnable
   private String nextUrl;
   private BrowserListener browserListener;
 
+  //#if polish.Browser.MemorySaver
+  private byte[] memorySaver;
+  //#endif
+
   /**
    * Creates a new Browser without any protocol handlers, tag handlers or style.
    */
@@ -299,6 +303,9 @@ implements Runnable
     
     // Clear image cache when visiting a new page.
     this.imageCache.clear();
+
+    // Really free memory.
+    System.gc();
     
     while (parser.next() != SimplePullParser.END_DOCUMENT)
     {
@@ -316,7 +323,7 @@ implements Runnable
         if (handler != null)
         {
           //#debug
-          System.out.println("Michael: Calling handler: " + parser.getName() + " " + attributeMap);
+          System.out.println("Calling handler: " + parser.getName() + " " + attributeMap);
 
           handler.handleTag(this, parser, parser.getName(), openingTag, attributeMap);
         }
@@ -768,7 +775,20 @@ implements Runnable
           
         if (this.isCancelRequested != true)
         {
-          goImpl(url);
+            //#if polish.Browser.MemorySaver
+        	//# this.memorySaver = new byte[50000];
+            //# try {
+            //#endif
+
+        	goImpl(url);
+       	
+       		//#if polish.Browser.MemorySaver
+        	//# }
+            //# catch (OutOfMemoryError e) {
+          	//#   this.memorySaver = null;
+          	//#   System.gc();
+            //# }
+            //#endif
         }
         
         this.isWorking = false;
