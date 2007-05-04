@@ -55,6 +55,7 @@ public class BrowserDisplayPresenter extends ItemDisplayPresenter {
         url.setBorder(LABEL_BORDER);
         panel.add (url, BorderLayout.CENTER);
         www = new JLabel ("WorldWideWeb");
+        www.setForeground (Color.GRAY);
         www.setFont (new Font ("dialog", Font.PLAIN, 32)); // NOI18N
         panel.add (www, BorderLayout.SOUTH);
         setContentComponent (panel);
