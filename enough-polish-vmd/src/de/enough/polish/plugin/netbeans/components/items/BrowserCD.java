@@ -35,7 +35,7 @@ import java.util.List;
 public class BrowserCD extends ComponentDescriptor {
     
     // we use convention to typeid that reprensents a class that the second parameter is fully-qualified class-name 
-    public static final TypeID TYPEID = new TypeID (TypeID.Kind.COMPONENT, "de.enough.polish.browser.html.HtmlBrowser"); // NOI18N
+    public static final TypeID TYPEID = new TypeID (TypeID.Kind.COMPONENT, "de.enough.polish.browser.chtml.HtmlBrowser"); // NOI18N
     public static final String PROP_URL = "URL";
     public static final String ICON_PATH = null;
 
