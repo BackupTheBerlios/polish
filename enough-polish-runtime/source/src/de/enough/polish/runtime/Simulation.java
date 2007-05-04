@@ -157,6 +157,9 @@ implements MouseListener, KeyListener
 		addKeyListener( this );
 		setFocusable( true );
 		setDevice( device );
+		if (currentDeviceSimulator == null) {
+			currentDeviceSimulator = this;
+		}
 	}
 	
 	public void setDevice( SimulationDevice device ) {
@@ -698,7 +701,7 @@ implements MouseListener, KeyListener
 				if (item != null) {
 					listener.notifyItemSelected(item, item.getStyle(), x, y );
 				} else {
-					listener.notifyScreenSelected(screen, screen.getStyle(), x, y );					
+					listener.notifyScreenSelected(screen, screen.getScreenStyle(), x, y );					
 				}
 			}
 			super.repaint();

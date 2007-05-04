@@ -1161,7 +1161,7 @@ public class Graphics extends Object
 	 */
 	public void drawSubstring( String str, int offset, int len, int x, int y, int anchor)
 	{
-		drawString( str.substring( offset, len ), x, y, anchor );
+		drawString( str.substring( offset, offset + len ), x, y, anchor );
 	}
 
 	/**
@@ -1177,7 +1177,7 @@ public class Graphics extends Object
 	 */
 	public void drawChar(char character, int x, int y, int anchor)
 	{
-		drawString( new String( new char[]{ character}), x, y, anchor );
+		drawString( Character.toString(character), x, y, anchor );
 	}
 
 	/**
@@ -1205,7 +1205,7 @@ public class Graphics extends Object
 	 */
 	public void drawChars(char[] data, int offset, int length, int x, int y, int anchor)
 	{
-		drawString( new String( data ), x, y, anchor );
+		drawString( new String( data, offset, length), x, y, anchor );
 	}
 
 	/**
@@ -1544,10 +1544,15 @@ public class Graphics extends Object
 	 */
 	public void drawRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height, boolean processAlpha)
 	{
+		try {
 		int type = processAlpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
 		BufferedImage image = new BufferedImage( width, height, type );
 		image.setRGB(0, 0, width, height, rgbData, offset, scanlength );
 		this.g.drawImage( image, x, y, width, height, null );
+		} catch (ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
+			System.out.println("width=" + width + ", height=" + height + ", rgbData.length=" + rgbData.length + ", w*h=" + (width*height) + ", offset=" + offset + ", scanlength=" + scanlength  );
+		}
 	}
 
 	/**
