@@ -98,7 +98,6 @@
 	    <!-- Have a look at the <jad>-section for setting specialised attributes.
 	         You can also define localized attributes in the resources/messages.txt files -->
 		<info
-			license="GPL"
 			name="Browser"
 			version="1.3.4"
 			description=""
