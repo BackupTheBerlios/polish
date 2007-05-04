@@ -67,6 +67,7 @@ public class HtmlTagHandler
   public static final String TAG_INPUT = "input";
   public static final String TAG_SELECT = "select";
   public static final String TAG_OPTION = "option";
+  public static final String TAG_SCRIPT = "script";
   
   public static final String INPUT_TYPE = "type";
   public static final String INPUT_NAME = "name";
@@ -116,6 +117,7 @@ public class HtmlTagHandler
     browser.addTagHandler(TAG_INPUT, this);
     browser.addTagHandler(TAG_SELECT, this);
     browser.addTagHandler(TAG_OPTION, this);
+    browser.addTagHandler(TAG_SCRIPT, this);
   }
 
   /* (non-Javadoc)
@@ -255,14 +257,22 @@ public class HtmlTagHandler
           {
             String name = (String) attributeMap.get(INPUT_NAME);
             String value = (String) attributeMap.get(INPUT_VALUE);
+
+            if (value == null) {
+            	value = name;
+            }
+
             //#style browserInput
             TextField textField = new TextField(null, value, 100, TextField.ANY);
             this.browser.add(textField);
             
             this.currentForm.addItem(textField);
             textField.setAttribute(ATTR_FORM, this.currentForm);
-            textField.setAttribute(ATTR_NAME, name);
-            textField.setAttribute(ATTR_VALUE, value);
+
+            if (name != null) {
+            	textField.setAttribute(ATTR_NAME, name);
+            	textField.setAttribute(ATTR_VALUE, value);
+            }
           }
           //#if polish.cldc1.1
           else if (INPUTTYPE_SUBMIT.equalsIgnoreCase(type))
@@ -272,7 +282,11 @@ public class HtmlTagHandler
           {
             String name = (String) attributeMap.get(INPUT_NAME);
             String value = (String) attributeMap.get(INPUT_VALUE);
-            
+
+            if (value == null) {
+            	value = name;
+            }
+
             //#style browserLink
             StringItem buttonItem = new StringItem(null, value);
             buttonItem.setDefaultCommand(CMD_SUBMIT);
@@ -283,8 +297,11 @@ public class HtmlTagHandler
             this.currentForm.addItem(buttonItem);
             buttonItem.setAttribute(ATTR_FORM, this.currentForm);
             buttonItem.setAttribute(ATTR_TYPE, "submit");
-            buttonItem.setAttribute(ATTR_NAME, name);
-            buttonItem.setAttribute(ATTR_VALUE, value);
+
+            if (name != null) {
+            	buttonItem.setAttribute(ATTR_NAME, name);
+            	buttonItem.setAttribute(ATTR_VALUE, value);
+            }
           }
           //#if polish.debug.debug
           else
@@ -303,6 +320,12 @@ public class HtmlTagHandler
 //        }
 
         return true;
+      }
+      else if (TAG_SCRIPT.equals(tagName)) {
+System.err.println("Michael was here.");
+    	  // Consume javascript code.
+    	  parser.next();
+    	  return true;
       }
     }
     
