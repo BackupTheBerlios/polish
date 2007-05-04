@@ -9,16 +9,18 @@
 
 package de.enough.polish.plugin.netbeans;
 
-import de.enough.polish.plugin.netbeans.modelparser.ChoiceGroupParser;
-import de.enough.polish.plugin.netbeans.modelparser.ChoiceItemParser;
-import de.enough.polish.plugin.netbeans.modelparser.HtmlBrowserParser;
-import de.enough.polish.plugin.netbeans.modelparser.ImageItemParser;
-import de.enough.polish.plugin.netbeans.modelparser.ItemParser;
-import de.enough.polish.plugin.netbeans.modelparser.StringItemParser;
+import de.enough.polish.plugin.netbeans.modelparser.*;
+import de.enough.polish.plugin.netbeans.components.items.BrowserCD;
 import de.enough.polish.ui.Item;
+import org.netbeans.modules.vmd.api.model.DesignComponent;
+import org.netbeans.modules.vmd.midp.components.sources.ListElementEventSourceCD;
+import org.netbeans.modules.vmd.midp.components.elements.ChoiceElementCD;
+import org.netbeans.modules.vmd.midp.components.items.StringItemCD;
+import org.netbeans.modules.vmd.midp.components.items.ImageItemCD;
+import org.netbeans.modules.vmd.midp.components.items.ChoiceGroupCD;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.netbeans.modules.vmd.api.model.DesignComponent;
 
 /**
  * Manages screen parsers and item parsers and converts NetBeans data models to actual J2ME Polish screens.
@@ -32,12 +34,12 @@ public class ItemParserManager {
     
     private ItemParserManager() {
         this.parsersByClassName = new HashMap<String, ItemParser>();
-        this.parsersByClassName.put("#ListElementEventSource", new ChoiceItemParser() );
-        this.parsersByClassName.put("#ChoiceElement", new ChoiceItemParser() );
-        this.parsersByClassName.put("de.enough.polish.browser.html.HtmlBrowser", new HtmlBrowserParser() );
-        this.parsersByClassName.put("javax.microedition.lcdui.StringItem", new StringItemParser() );
-        this.parsersByClassName.put("javax.microedition.lcdui.ImageItem", new ImageItemParser() );
-        this.parsersByClassName.put("javax.microedition.lcdui.ChoiceGroup", new ChoiceGroupParser() );
+        this.parsersByClassName.put(ListElementEventSourceCD.TYPEID.getString (), new ChoiceItemParser() );
+        this.parsersByClassName.put(ChoiceElementCD.TYPEID.getString (), new ChoiceItemParser() );
+        this.parsersByClassName.put(BrowserCD.TYPEID.getString (), new HtmlBrowserParser() );
+        this.parsersByClassName.put(StringItemCD.TYPEID.getString (), new StringItemParser() );
+        this.parsersByClassName.put(ImageItemCD.TYPEID.getString (), new ImageItemParser() );
+        this.parsersByClassName.put(ChoiceGroupCD.TYPEID.getString (), new ChoiceGroupParser() );
     }
     
     public static ItemParserManager getInstance() {

@@ -13,10 +13,14 @@ import de.enough.polish.plugin.netbeans.modelparser.DisplayableParser;
 import de.enough.polish.plugin.netbeans.modelparser.FormParser;
 import de.enough.polish.plugin.netbeans.modelparser.ListParser;
 import de.enough.polish.plugin.netbeans.modelparser.TextBoxParser;
+import org.netbeans.modules.vmd.api.model.DesignComponent;
+import org.netbeans.modules.vmd.midp.components.displayables.TextBoxCD;
+import org.netbeans.modules.vmd.midp.components.displayables.ListCD;
+import org.netbeans.modules.vmd.midp.components.displayables.FormCD;
+
+import javax.microedition.lcdui.Displayable;
 import java.util.HashMap;
 import java.util.Map;
-import javax.microedition.lcdui.Displayable;
-import org.netbeans.modules.vmd.api.model.DesignComponent;
 
 /**
  * Manages screen parsers and item parsers and converts NetBeans data models to actual J2ME Polish screens.
@@ -30,9 +34,9 @@ public class DisplayableParserManager {
     
     private DisplayableParserManager() {
         this.parsersByClassName = new HashMap<String, DisplayableParser>();
-        this.parsersByClassName.put("javax.microedition.lcdui.TextBox", new TextBoxParser() );
-        this.parsersByClassName.put("javax.microedition.lcdui.List", new ListParser() );
-        this.parsersByClassName.put("javax.microedition.lcdui.Form", new FormParser() );
+        this.parsersByClassName.put(TextBoxCD.TYPEID.getString (), new TextBoxParser() );
+        this.parsersByClassName.put(ListCD.TYPEID.getString (), new ListParser() );
+        this.parsersByClassName.put(FormCD.TYPEID.getString (), new FormParser() );
     }
     
     public static DisplayableParserManager getInstance() {
