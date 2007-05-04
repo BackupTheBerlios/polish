@@ -2,4 +2,3 @@ build
 bin
 ${dir.work}
 dist
-.polishSettings
