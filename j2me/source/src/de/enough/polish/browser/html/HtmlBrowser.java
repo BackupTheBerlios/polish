@@ -35,6 +35,7 @@ import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.StringTokenizer;
+import de.enough.polish.util.TextUtil;
 
 /**
  * TODO: Write good docs.
@@ -124,6 +125,7 @@ public class HtmlBrowser
       while (st.hasMoreTokens())
       {
         String str = st.nextToken();
+        str = TextUtil.replace(str, "&nbsp;", " ");
         StringItem stringItem = null;
 
         if (this.htmlTagHandler.textBold && this.htmlTagHandler.textItalic)
