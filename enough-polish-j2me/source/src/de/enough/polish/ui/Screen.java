@@ -221,7 +221,7 @@ implements AccessibleCanvas
 		//#endif
 	//#endif
 	/** The currently focused items which has item-commands */
-	private Item focusedItem;
+	/*package-private*/ Item focusedItem;
 	//#if polish.useScrollBar || polish.classes.ScrollBar:defined
 		//#define tmp.useScrollBar
 		//#if polish.classes.ScrollBar:defined
