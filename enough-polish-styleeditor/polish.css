@@ -1,0 +1,250 @@
+colors {
+	browserFontColor: #1e5556;
+	brightFontColor: #eef1e5;
+	translucentBgColor: #82eef1e5;
+	fontColor: #1e5556;
+	brightBgColor: #eef1e5;
+	browserFontColorFocused: #142850;
+	bgColor: #848f60;
+}
+alert {
+	margin: 0;
+	padding: 1;
+}
+alertcontent {
+	margin: 0;
+	padding: 1;
+}
+browser {
+	margin: 0;
+	padding: 1;
+}
+browserchoicegroup {
+	margin: 0;
+	padding: 1;
+}
+browserchoiceitem {
+	margin: 0;
+	padding: 1;
+}
+browserdownloadindicator {
+	margin: 0;
+	padding: 1;
+}
+browserinput {
+	margin: 0;
+	padding: 2;
+}
+browserinputfocused {
+	margin: 0;
+	padding: 1;
+}
+browserlink {
+	margin: 0;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+}
+browserlinkfocused {
+	margin: 0;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+}
+browseroption {
+	margin: 0;
+	padding: 1;
+}
+browseroptionitem {
+	margin: 0;
+	padding: 1;
+}
+browsertext {
+	margin: 0;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+}
+browsertextbold {
+	margin: 0;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+}
+browsertextboldfocused {
+	margin: 0;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+}
+browsertextbolditalic {
+	margin: 0;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+}
+browsertextbolditalicfocused {
+	margin: 0;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+}
+browsertextfocused {
+	margin: 0;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+}
+browsertextitalic {
+	margin: 0;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+}
+browsertextitalicfocused {
+	margin: 0;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+}
+focused {
+	margin: 0;
+	padding: 5;
+	background {
+		type: round-rect;
+		color: brightBgColor;
+		arc-width: 4;
+		arc-height: 4;
+	}
+}
+loadgamealert {
+	margin: 20;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+	background {
+		type: simple;
+		color: argb( 150, 255, 255, 255 );
+	}
+}
+maincommand {
+	margin: 2;
+	padding: 5;
+	background {
+		type: simple;
+		color: white;
+	}
+}
+mainscreen {
+	margin: 0;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+	background {
+		type: simple;
+		color: brightBgColor;
+	}
+}
+menu {
+	margin-left: 0;
+	margin-right: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding: 2;
+	background {
+		type: round-rect;
+		color: brightBgColor;
+		arc-width: 4;
+		arc-height: 4;
+	}
+}
+menufocused {
+	margin: 0;
+	padding: 1;
+	background {
+		type: simple;
+		color: bgColor;
+	}
+}
+menuitem {
+	margin-left: 0;
+	margin-right: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 1;
+	padding-right: 1;
+	padding-top: 1;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+}
+textfieldsymbolitem {
+	margin: 1;
+	padding: 2;
+}
+textfieldsymbollist {
+	margin: 0;
+	padding: 10;
+	background {
+		type: simple;
+		color: white;
+	}
+}
+textfieldsymbollistfocused {
+	margin: 0;
+	padding: 2;
+}
+title {
+	margin-left: 0;
+	margin-right: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding: 2;
+	font {
+		face: proportional;
+		size: large;
+		style: bold;
+		color: brightFontColor;
+	}
+	background {
+		type: simple;
+		color: bgColor;
+	}
+}
+

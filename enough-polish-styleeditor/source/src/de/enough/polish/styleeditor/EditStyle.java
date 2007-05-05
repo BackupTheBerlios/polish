@@ -158,7 +158,8 @@ implements StyleProvider
 	 * @return the layout
 	 */
 	public String getLayout() {
-	return this.layout;}
+		return this.layout;
+	}
 	
 
 
@@ -434,21 +435,12 @@ implements StyleProvider
 		this.style.paddingHorizontal = parseInteger( this.paddingHorizontal ).intValue();
 		
 		if (this.layout != null) {
-			this.style.layout = parseLayout( this.layout );
+			//this.style.layout = parseLayout( this.layout );
 		}
 		
 	}
 
 
-
-	/**
-	 * @param layout2
-	 * @return
-	 */
-	private int parseLayout(String layout2) {
-		// TODO robertvirkus implement parseLayout
-		return 0;
-	}
 
 	/**
 	 * @param value

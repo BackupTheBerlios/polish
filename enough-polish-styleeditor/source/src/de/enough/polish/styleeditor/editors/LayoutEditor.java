@@ -55,7 +55,8 @@ public class LayoutEditor extends StylePartEditor {
 	 * @see de.enough.polish.styleeditor.StylePartEditor#updateStyle()
 	 */
 	public void writeStyle( EditStyle style ) {
-		style.setLayout(this.layout);
+		//System.out.println( "LayoutEditor.writeStyle: layout=" + Integer.toHexString(this.layout));
+		style.setLayout( this.layout );
 		style.setLayout( getLayoutAsString() );
 	}
 

@@ -64,8 +64,10 @@ public class TextEditor extends StylePartEditor {
 	 */
 	public void writeStyle( EditStyle style ) {
 		style.getStyle().font = this.font;
-		style.getStyle().fontColor = this.fontColorProvider.getColor().getColor();
-		style.getStyle().fontColorObj = this.fontColorProvider.getColor();
+		if (this.fontColorProvider != null && this.fontColorProvider.getColor() != null) {
+			style.getStyle().fontColor = this.fontColorProvider.getColor().getColor();
+			style.getStyle().fontColorObj = this.fontColorProvider.getColor();
+		}
 		style.setFontFace( getFontFaceAsString() );
 		style.setFontSize( getFontSizeAsString() );
 		style.setFontStyle( getFontStyleAsString() );
@@ -79,6 +81,9 @@ public class TextEditor extends StylePartEditor {
 	
 
 	private String getFontColorAsString() {
+		if (this.fontColorProvider == null) {
+			return null;
+		}
 		return ((EditColor)this.fontColorProvider).toStringValue();
 	}
 

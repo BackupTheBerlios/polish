@@ -82,7 +82,16 @@ implements TreeSelectionListener
 		}
 		this.colorSelectionListeners.add(listener);
 	}
+	
+	public void addStyle( StyleProvider style ) {
+		this.resourcesTreeModel.addStyle(style);
+		this.resourcesTreeModel.reload();
+	}
 
+	public void addColor( ColorProvider color ) {
+		this.resourcesTreeModel.addColor(color);
+		this.resourcesTreeModel.reload();
+	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)

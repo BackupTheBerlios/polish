@@ -44,14 +44,23 @@ public class ItemOrScreen {
 	private Screen screen;
 	
 	public ItemOrScreen( Item item ) {
+		if (item == null) {
+			throw new IllegalArgumentException("item must not be null");
+		}
 		this.item = item;
 	}
 	
 	public ItemOrScreen( Screen screen ) {
+		if (screen == null) {
+			throw new IllegalArgumentException("screen must not be null");
+		}
 		this.screen = screen;
 	}
 
 	public ItemOrScreen( Screen screen, Item item ) {
+		if (item == null && screen == null) {
+			throw new IllegalArgumentException( "either screen or item must not be null");
+		}
 		this.screen = screen;
 		this.item = item;
 	}
@@ -77,6 +86,7 @@ public class ItemOrScreen {
 	 * @param style
 	 */
 	public void setStyle(Style style) {
+		
 		if (this.item != null) {
 			this.item.setStyle(style);
 		}

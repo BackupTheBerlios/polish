@@ -150,8 +150,7 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 	 * @see de.enough.polish.resources.ResourcesProvider#addStyle(java.lang.String, de.enough.polish.resources.StyleProvider)
 	 */
 	public void addStyle(String name, StyleProvider style) {
-		// TODO robertvirkus implement addStyle
-
+		this.editStylesByName.put( name, (EditStyle)style );
 	}
 
 	/* (non-Javadoc)
@@ -465,8 +464,7 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 	 * @see de.enough.polish.resources.ResourcesProvider#addColor(java.lang.String, de.enough.polish.resources.ColorProvider)
 	 */
 	public void addColor(String name, ColorProvider color) {
-		// TODO robertvirkus implement addColor
-		
+		this.editColorsByName.put(name, (EditColor) color );
 	}
 
 	/* (non-Javadoc)
@@ -480,16 +478,18 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 	 * @see de.enough.polish.resources.ResourcesProvider#getColor(java.lang.String)
 	 */
 	public ColorProvider getColor(String name) {
-		
-		String valueStr = this.colorConverter.parseColor(name);
-		int value;
-		if ("Item.TRANSPARENT".equals(valueStr)) {
-			value = Item.TRANSPARENT;
-		} else {
-			value = Long.decode(valueStr).intValue();
+		EditColor color = this.editColorsByName.get(name);
+		if (color == null) {
+			String valueStr = this.colorConverter.parseColor(name);
+			int value;
+			if ("Item.TRANSPARENT".equals(valueStr)) {
+				value = Item.TRANSPARENT;
+			} else {
+				value = Long.decode(valueStr).intValue();
+			}
+			color = new EditColor(name, new Color( value ) );
 		}
-		// TODO robertvirkus implement getColor
-		return null;
+		return color;
 	}
 
 }

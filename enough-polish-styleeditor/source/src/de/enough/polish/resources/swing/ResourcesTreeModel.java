@@ -52,14 +52,26 @@ public class ResourcesTreeModel extends DefaultTreeModel {
 
 	private static final long serialVersionUID = 287464883854438828L;
 	private final ResourceTreeNode rootNode;
+	private final ResourceTreeNode colorsNode;
+	private final ResourceTreeNode stylesNode;
 	
-	/**
-	 * @param arg0
-	 */
-	private ResourcesTreeModel(ResourceTreeNode rootNode) {
+	private ResourcesTreeModel(ResourceTreeNode rootNode, ResourceTreeNode colorsNode, ResourceTreeNode stylesNode ) {
 		super(rootNode);
 		this.rootNode = rootNode;
+		this.colorsNode = colorsNode;
+		this.stylesNode = stylesNode;
 	}
+	
+	
+	public void addStyle( StyleProvider style ) {
+		this.stylesNode.addChild(style);
+	}
+	
+	public void addColor( ColorProvider color ) {
+		this.colorsNode.addChild(color);
+	}
+	
+	
 	
 	public static ResourcesTreeModel getInstance( ResourcesProvider resourcesProvider ) {
 		ResourceTreeNode root = new ResourceTreeNode(null, "Resources");
@@ -75,7 +87,7 @@ public class ResourcesTreeModel extends DefaultTreeModel {
 			StyleProvider style = styles[i];
 			stylesNode.addChild(style);
 		}
-		return new ResourcesTreeModel( root );
+		return new ResourcesTreeModel( root, colorsNode, stylesNode );
 	}
 	
 

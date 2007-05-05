@@ -265,6 +265,8 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
 		if (style.getItemOrScreen() != null) {
 			style.getItemOrScreen().setStyle( style.getStyle() );
 			style.getItemOrScreen().requestInit();
+		} else {
+			System.out.println("notifyStyleUpdated(EditStyle style):  !!!!!!!style.getItemOrScreen() is NULL !!!!!!!!");
 		}
 		this.simulation.getCurrentDisplayable()._requestRepaint();
 		//this.simulation.setCurrent( this.simulation.getCurrentDisplayable() );
