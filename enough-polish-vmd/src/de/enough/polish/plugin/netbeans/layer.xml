@@ -2,16 +2,29 @@
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
 
-    <folder name="Menu" >
+    <folder name="Actions">
+        <folder name="Tools">
+            <file name="de-enough-polish-plugin-netbeans-settings-PolishSettingsAction.instance"/>
+        </folder>
+    </folder>
+    <folder name="Menu">
         <folder name="Tools">
             <attr name="j2mepolish/Separator1.instance" boolvalue="true"/>
             <folder name="j2mepolish">
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="de.enough.polish.netbeans.Bundle"/>
                 <file name="de-enough-polish-netbeans-convert-ConvertWizardAction.instance"/>
+
+                <attr name="de-enough-polish-netbeans-convert-ConvertWizardAction.instance/javax-swing-JSeparator.instance" boolvalue="true"/>
+                <file name="javax-swing-JSeparator.instance"/>
+                <attr name="javax-swing-JSeparator.instance/de-enough-polish-plugin-netbeans-settings-PolishSettingsAction.shadow" boolvalue="true"/>
+                
+                <file name="de-enough-polish-plugin-netbeans-settings-PolishSettingsAction.shadow">
+                    <attr name="originalFile" stringvalue="Actions/Tools/de-enough-polish-plugin-netbeans-settings-PolishSettingsAction.instance"/>
+                </file>
             </folder>
         </folder>
     </folder>
-
+<!--
     <folder name="Templates">
         <folder name="Project">
             <folder name="J2ME">
@@ -24,7 +37,7 @@
             </folder>
         </folder>
     </folder>
-
+-->
     <folder name="Navigator">
         <folder name="Panels">
             <folder name="polish-styles">

@@ -51,15 +51,7 @@ import org.openide.filesystems.Repository;
  */
 public final class Converter {
 
-    static void convert (Project project, String[] devices) {
-        if (PolishProjectSupport.isPolishProject (project)) {
-            convertToNB (project);
-        } else {
-            convertToPolish (project, devices);
-        }
-    }
-
-    private static void convertToPolish (Project project, String[] devices) {
+    static void convertToPolish (Project project, String[] devices) {
         AntProjectHelper helper = project.getLookup ().lookup (AntProjectHelper.class);
         FileObject projectRoot = helper.getProjectDirectory ();
         String polishHomePath = PolishSettings.getDefault ().getPolishHome ();

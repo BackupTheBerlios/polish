@@ -16,11 +16,16 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="convertType" alignment="0" pref="319" max="32767" attributes="0"/>
-                  <Component id="combo" alignment="0" pref="319" max="32767" attributes="0"/>
+                  <Component id="jLabel2" alignment="0" pref="376" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="convertType" alignment="0" pref="319" max="32767" attributes="0"/>
+                          <Component id="combo" alignment="0" pref="319" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -36,7 +41,9 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="convertType" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="258" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jLabel2" pref="225" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -53,6 +60,18 @@
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="convertType">
+      <Properties>
+        <Property name="text" type="java.lang.String" value=" "/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel2">
+      <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Dialog" size="12" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;The project will be converted to J2ME Polish enabled project. All your configurations will be replaced by configurations chosen in the next wizard step. The original &lt;b&gt;build.xml&lt;/b&gt; and &lt;b&gt;project.properties&lt;/b&gt; files will backup in the &lt;b&gt;backup&lt;/b&gt; directory. By copying them back, you will revert the project conversion."/>
+        <Property name="verticalAlignment" type="int" value="1"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

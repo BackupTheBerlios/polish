@@ -35,7 +35,7 @@ public final class ConvertWizardAction extends CallableSystemAction {
         if (!cancelled) {
             Project project = (Project) ((WizardDescriptor) wizardDescriptor).getProperty (PROJECT);
             String[] devices = (String[]) ((WizardDescriptor) wizardDescriptor).getProperty (DEVICES);
-            Converter.convert (project, devices);
+            Converter.convertToPolish (project, devices);
         }
     }
     
