@@ -9450,6 +9450,14 @@ These namespaces/schemas will be used soon.
 <capability name="wap.userAgent" value="LG/U8138/v2.0"/>
 </device>
 
+	<device>
+		<identifier>LG/Shiny, LG/KE970</identifier>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+	</device>
+
 <!-- Mitsubishi devices -->
 	<device>
 		<identifier>Mitsubishi/J-D05</identifier>
