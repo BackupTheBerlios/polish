@@ -150,8 +150,8 @@ public class BackgroundEditor extends ParameterizedStyleEditor {
 		System.out.println("creating attributes editor for background " + backgroundName );
 		this.fromName = backgroundName;
 		initBackgroundAttribute();
+		this.backgroundEditStyle.removeAllAttributes();
 		this.attributesEditor = getAttributesEditor(this.backgroundAttribute, backgroundName, this.backgroundEditStyle);
-		this.attributesEditor.setStyle(this.backgroundEditStyle);
 		return this.attributesEditor;
 	}
 

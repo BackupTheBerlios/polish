@@ -43,11 +43,32 @@ public class EditColor
 implements ColorProvider
 {
 	private final String name;
-	private final Color color;
+	private Color color;
+	private ColorProvider referencedColor;
+
+	public EditColor(ColorProvider referencedColor){ 
+		this( null, null, referencedColor );
+	}
+
+	public EditColor(Color color){ 
+		this( null, color, null );
+	}
+
+	public EditColor(String name, ColorProvider referencedColor){
+		this( name, null, referencedColor );
+	}
 
 	public EditColor(String name, Color color){
+		this( name, color, null );
+	}
+	
+	public EditColor(String name, Color color, ColorProvider referencedColor ){
+		if (color == null && referencedColor == null) {
+			throw new IllegalArgumentException("color or reference must not be null");
+		}
 		this.name = name;
 		this.color = color;
+		this.referencedColor = referencedColor;
 		
 	}
 
@@ -55,6 +76,9 @@ implements ColorProvider
 	 * @see de.enough.polish.resources.ColorProvider#getColor()
 	 */
 	public Color getColor() {
+		if (this.referencedColor != null) {
+			return this.referencedColor.getColor();
+		}
 		return this.color;
 	}
 
@@ -73,6 +97,9 @@ implements ColorProvider
 	}
 	
 	public String toStringValue() {
+		if (this.referencedColor != null) {
+			return this.referencedColor.getName();
+		}
 		if (this.color.isTransparent()) {
 			return "transparent";
 		}
@@ -92,11 +119,50 @@ implements ColorProvider
 			}
 		}
 		int colorValue = this.color.getColor();
-		return "#" + Integer.toHexString(colorValue);
-	}
+		String hex = Integer.toHexString(colorValue);
+		StringBuffer buffer = new StringBuffer();
+		buffer.append( '#' );
+		int remaining = 6 - hex.length();
+		if (remaining == -1) {
+			remaining = 1;
+		}
+		while (remaining > 0) {
+			remaining--;
+			buffer.append('0');
+		}
+		buffer.append(hex);
+		return buffer.toString(); 
+ 	}
 	
 	public String toString() {
 		return this.name;
+	}
+
+	/**
+	 * @param value
+	 */
+	public void setColor(Color value) {
+		if (value == null) {
+			throw new IllegalArgumentException("null not allowed");
+		}
+		this.referencedColor = null;
+		this.color = value;
+	}
+	
+	public void setColorReference(ColorProvider value) {
+		if (value == null) {
+			throw new IllegalArgumentException("null not allowed");
+		}
+		this.referencedColor = value;
+		this.color = null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.resources.ColorProvider#getReferencedColor()
+	 */
+	public ColorProvider getColorReference() {
+		return this.referencedColor;
 	}
 
 }

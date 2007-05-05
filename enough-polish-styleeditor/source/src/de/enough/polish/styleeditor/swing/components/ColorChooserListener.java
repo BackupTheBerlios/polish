@@ -1,5 +1,5 @@
 /*
- * Created on May 3, 2007 at 10:47:30 PM.
+ * Created on May 4, 2007 at 11:24:54 PM.
  * 
  * Copyright (c) 2007 Robert Virkus / Enough Software
  *
@@ -23,9 +23,9 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.resources;
+package de.enough.polish.styleeditor.swing.components;
 
-import de.enough.polish.ui.Color;
+import de.enough.polish.resources.ColorProvider;
 
 /**
  * <p></p>
@@ -33,21 +33,11 @@ import de.enough.polish.ui.Color;
  * <p>Copyright Enough Software 2007</p>
  * <pre>
  * history
- *        May 3, 2007 - rob creation
+ *        May 4, 2007 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public interface ColorProvider {
+public interface ColorChooserListener {
 	
-	public String getName();
-	
-	public Color getColor();
-	public void setColor(Color color);
-	
-	public ColorProvider getColorReference();
-	public void setColorReference( ColorProvider reference );
-	
-	public void generateCssSourceCode( StringBuffer buffer );
-
-
+	public void notifyColorUpdated( ColorProvider colorProvider );
 }

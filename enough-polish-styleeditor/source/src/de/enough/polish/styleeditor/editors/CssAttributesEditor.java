@@ -121,6 +121,7 @@ public class CssAttributesEditor extends StylePartEditor {
 			for (int i = 0; i < editors.length; i++) {
 				CssAttributeEditor editor = editors[i];
 				if (editor != null) {
+					//System.out.println(editor.getAttribute().getName() + ":  attribute " + editor.getAttribute() + " got editor " + editor );
 					editor.setStyle( style );
 				}
 			}
@@ -147,13 +148,13 @@ public class CssAttributesEditor extends StylePartEditor {
 	
 	
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.styleeditor.StylePartEditor#setStyle(de.enough.polish.styleeditor.EditStyle)
-	 */
-	public void setStyle(EditStyle style) {
-		System.out.println( this + ".setStyle(" + style + ")");
-		super.setStyle(style);
-	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.styleeditor.StylePartEditor#setStyle(de.enough.polish.styleeditor.EditStyle)
+//	 */
+//	public void setStyle(EditStyle style) {
+//		System.out.println( this + ".setStyle(" + style + ")");
+//		super.setStyle(style);
+//	}
 
 	public CssAttributeValue[] getAttributeValues() {
 		CssAttributeEditor[] editors = this.cssAttributeEditors;

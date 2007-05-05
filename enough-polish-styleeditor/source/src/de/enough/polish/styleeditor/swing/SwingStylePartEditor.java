@@ -109,7 +109,7 @@ implements StylePartEditorVisual, ActionListener
 	 * @see de.enough.polish.styleeditor.StylePartEditorVisual#setCssAttributes(de.enough.polish.preprocess.css.CssAttribute[], de.enough.polish.styleeditor.editors.CssAttributeEditor[])
 	 */
 	public void setCssAttributes(CssAttribute[] attributes, CssAttributeEditor[] editors) {
-		System.out.println("SwingStylePartEditor: adding " + (editors == null ? "null" : editors.length) + " editors with " + (attributes == null ? "null" : editors.length) + " attributes to " + this);
+		//System.out.println("SwingStylePartEditor: adding " + (editors == null ? "null" : editors.length) + " editors with " + (attributes == null ? "null" : editors.length) + " attributes to " + this);
 		this.attributesPanel.removeAll();
 		if (attributes != null) {
 			JPanel panel = new JPanel( new GridLayout( editors.length, 2, 5, 2 ) );

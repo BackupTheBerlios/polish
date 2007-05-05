@@ -34,10 +34,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.resources.ColorProvider;
 import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.StylePartEditor;
 import de.enough.polish.styleeditor.editors.CssAttributeEditor;
 import de.enough.polish.styleeditor.editors.attributes.ColorCssAttributeEditor;
+import de.enough.polish.styleeditor.swing.components.ColorChooserComponent;
+import de.enough.polish.styleeditor.swing.components.ColorChooserListener;
 import de.enough.polish.styleeditor.swing.editors.SwingCssAttributeEditor;
 import de.enough.polish.ui.Color;
 
@@ -53,6 +56,7 @@ import de.enough.polish.ui.Color;
  */
 public class SwingColorCssAttributeEditor 
 extends SwingCssAttributeEditor
+implements ColorChooserListener
 {
 	
 	private final JButton colorButton;
@@ -83,7 +87,7 @@ extends SwingCssAttributeEditor
 	 * @see de.enough.polish.styleeditor.swing.editors.SwingCssAttributeEditor#showValue(java.lang.Object)
 	 */
 	protected void showValue(CssAttributeValue value) {
-		if (value.getValue() == null) {
+		if (value == null || value.getValue() == null) {
 			this.colorButton.setBackground( null );
 		} else if (value.getValue() instanceof Color) {
 			Color color = (Color) value.getValue();
@@ -101,12 +105,20 @@ extends SwingCssAttributeEditor
 		ColorCssAttributeEditor editor = (ColorCssAttributeEditor) stylePartEditor;
 		Object source = event.getSource();
 		if (source == this.colorButton) {
-			java.awt.Color newColor = JColorChooser.showDialog( this, getName(), this.colorButton.getBackground() );
-			if (newColor != null) {
-				this.colorButton.setBackground(newColor);
-				editor.setColor( newColor );
+			ColorProvider colorProvider = ColorChooserComponent.showDialog(getName(), editor.getColorProvider(), editor.getResourcesProvider(), this, editor.isTranslucentSupported() );
+			if (colorProvider != null) {
+				this.colorButton.setBackground( new java.awt.Color( colorProvider.getColor().getColor() ) );
+				editor.setColor( colorProvider );
 			}
-		}		
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.styleeditor.swing.components.ColorChooserListener#notifyColorUpdated(de.enough.polish.resources.ColorProvider)
+	 */
+	public void notifyColorUpdated(ColorProvider colorProvider) {
+		ColorCssAttributeEditor editor = (ColorCssAttributeEditor) this.attributeEditor;
+		editor.setColor( colorProvider );
 	}
 	
 

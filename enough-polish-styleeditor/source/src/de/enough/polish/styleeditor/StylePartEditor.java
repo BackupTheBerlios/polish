@@ -27,6 +27,7 @@ package de.enough.polish.styleeditor;
 
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.styleeditor.editors.ParameterizedStyleEditor;
 import de.enough.polish.ui.Style;
 
@@ -126,5 +127,10 @@ public abstract class StylePartEditor {
 	public Environment getEnvironment() {
 		return this.styleEditor.getEnvironment();
 	}
+	
+	public ResourcesProvider getResourcesProvider() {
+		return this.styleEditor.getResourcesProvider();
+	}
+
 	
 }

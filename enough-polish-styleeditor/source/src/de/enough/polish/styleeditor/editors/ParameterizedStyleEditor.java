@@ -92,17 +92,28 @@ public abstract class ParameterizedStyleEditor extends StylePartEditor {
 		return names;
 	}
 	
+	public CssAttributesEditor getAttributesEditor( CssAttribute attribute, String fromName ) {
+		return getAttributesEditor(attribute, fromName, null);
+	}
 	public CssAttributesEditor getAttributesEditor( CssAttribute attribute, String fromName, EditStyle style ) {
 		ParameterizedCssMapping mapping = (ParameterizedCssMapping) attribute.getMapping(fromName);
 		if (mapping == null) {
 			return null;
 		}
 		CssAttribute[] parameters = mapping.getParameters();
+//		System.out.print( fromName + " has following params: ");
+//		for (int i = 0; i < parameters.length; i++) {
+//			CssAttribute param = parameters[i];
+//			System.out.print( param.getType() + " " + param.getName() + ", ");
+//		}
+//		System.out.println();
 		CssAttributesEditor editor = new CssAttributesEditor( this.styleEditor );
 		editor.setName( fromName );
 		editor.setParent( this );
 		editor.setCssAttributes(parameters);
-		editor.setStyle(style);
+		if (style != null) {
+			editor.setStyle(style);
+		}
 		return editor;
 	}
 	

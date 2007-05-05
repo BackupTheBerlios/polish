@@ -32,6 +32,7 @@ import de.enough.polish.Environment;
 import de.enough.polish.preprocess.css.ColorConverter;
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssAttributesManager;
+import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.styleeditor.editors.BackgroundEditor;
 import de.enough.polish.styleeditor.editors.BorderEditor;
 import de.enough.polish.styleeditor.editors.LayoutEditor;
@@ -59,6 +60,7 @@ public class StyleEditor {
 	private EditStyle style;
 	private List<StyleEditorListener> styleListeners;
 	private Environment environment;
+	private ResourcesProvider resourcesProvider;
 
 	/**
 	 * Creates a new StyleEditor.
@@ -67,7 +69,8 @@ public class StyleEditor {
 	 * @param environment the environment
 	 * @param visual the visualization, can be null
 	 */
-	public StyleEditor( CssAttributesManager attributesManager, Environment environment, StyleEditorVisual visual  ) {
+	public StyleEditor( ResourcesProvider resourcesProvider, CssAttributesManager attributesManager, Environment environment, StyleEditorVisual visual  ) {
+		this.resourcesProvider = resourcesProvider;
 		this.attributesManager = attributesManager;
 		this.visual = visual;
 		this.editors = new ArrayList<StylePartEditor>();
@@ -157,6 +160,13 @@ public class StyleEditor {
 	 */
 	public Environment getEnvironment() {
 		return this.environment;
+	}
+
+	/**
+	 * @return
+	 */
+	public ResourcesProvider getResourcesProvider() {
+		return this.resourcesProvider;
 	}
 
 }

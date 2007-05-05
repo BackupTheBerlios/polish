@@ -31,9 +31,12 @@ import javax.microedition.lcdui.Font;
 
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssMapping;
+import de.enough.polish.resources.ColorProvider;
 import de.enough.polish.styleeditor.CssAttributeValue;
+import de.enough.polish.styleeditor.EditColor;
 import de.enough.polish.styleeditor.EditStyle;
 import de.enough.polish.styleeditor.StylePartEditor;
+import de.enough.polish.ui.Color;
 import de.enough.polish.ui.TextEffect;
 
 /**
@@ -49,11 +52,11 @@ import de.enough.polish.ui.TextEffect;
 public class TextEditor extends StylePartEditor {
 
 	private Font font;
-	private int fontColor;
 	private CssAttribute textEffectAttribute;
 	private String textEffectName;
 	private CssAttributesEditor textEffectEditor;
 	private TextEffect textEffect;
+	private EditColor fontColorProvider;
 
 
 	/* (non-Javadoc)
@@ -61,7 +64,8 @@ public class TextEditor extends StylePartEditor {
 	 */
 	public void writeStyle( EditStyle style ) {
 		style.getStyle().font = this.font;
-		style.getStyle().fontColor = this.fontColor;
+		style.getStyle().fontColor = this.fontColorProvider.getColor().getColor();
+		style.getStyle().fontColorObj = this.fontColorProvider.getColor();
 		style.setFontFace( getFontFaceAsString() );
 		style.setFontSize( getFontSizeAsString() );
 		style.setFontStyle( getFontStyleAsString() );
@@ -74,11 +78,8 @@ public class TextEditor extends StylePartEditor {
 	}
 	
 
-	/**
-	 * @return
-	 */
 	private String getFontColorAsString() {
-		return "#" + Integer.toHexString(this.fontColor);
+		return ((EditColor)this.fontColorProvider).toStringValue();
 	}
 
 
@@ -141,7 +142,15 @@ public class TextEditor extends StylePartEditor {
 		if (this.font == null) {
 			this.font = Font.getDefaultFont();
 		}
-		this.fontColor = style.getStyle().getFontColor();
+		String fontColorStr  = style.getFontColor();
+		if (fontColorStr != null) {
+			ColorProvider fontColor = getResourcesProvider().getColor(fontColorStr);
+			if (fontColor != null) {
+				this.fontColorProvider = (EditColor) fontColor; // style.getStyle().getFontColor();
+			} else {
+				this.fontColorProvider = new EditColor( style.getStyle().fontColorObj );
+			}
+		}
 		this.textEffect = (TextEffect) style.getStyle().getObjectProperty( this.textEffectAttribute.getId() );
 		this.textEffectName = null;
 		if (this.textEffect == null) {
@@ -197,9 +206,15 @@ public class TextEditor extends StylePartEditor {
 		return (this.font.getStyle() & Font.STYLE_UNDERLINED) == Font.STYLE_UNDERLINED;
 	}
 	
-	public int getColor() {
-		return this.fontColor;
+	public ColorProvider getColorProvider() {
+		return this.fontColorProvider;
 	}
+	
+	public void setColorProvider( ColorProvider color ) {
+		this.fontColorProvider = (EditColor) color;
+		update();
+	}
+
 	
 	public void setSize( int size ) {
 		this.font = Font.getFont( this.font.getFace(), this.font.getStyle(), size);
@@ -223,10 +238,6 @@ public class TextEditor extends StylePartEditor {
 		setStyle( Font.STYLE_UNDERLINED, enable );
 	}
 	
-	public void setColor( int color ) {
-		this.fontColor = color;
-		update();
-	}
 	
 	private void initTextEffectAttribute() {
 		if (this.textEffectAttribute == null) {
@@ -309,6 +320,21 @@ public class TextEditor extends StylePartEditor {
 	 */
 	public String createName() {
 		return "text";
+	}
+
+
+	/**
+	 * @return
+	 */
+	public java.awt.Color getColorForAwt() {
+		if (this.fontColorProvider == null) {
+			return null;
+		}
+		Color color = this.fontColorProvider.getColor();
+		if (color == null) {
+			return null;
+		}
+		return new java.awt.Color( color.getColor() );
 	}
 
 

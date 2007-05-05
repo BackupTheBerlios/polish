@@ -39,9 +39,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import de.enough.polish.resources.ColorProvider;
 import de.enough.polish.styleeditor.StylePartEditor;
 import de.enough.polish.styleeditor.editors.TextEditor;
+import de.enough.polish.styleeditor.editors.attributes.ColorCssAttributeEditor;
 import de.enough.polish.styleeditor.swing.SwingStylePartEditor;
+import de.enough.polish.styleeditor.swing.components.ColorChooserComponent;
+import de.enough.polish.styleeditor.swing.components.ColorChooserListener;
 import de.enough.polish.util.SwingUtil;
 
 /**
@@ -56,6 +60,7 @@ import de.enough.polish.util.SwingUtil;
  */
 public class SwingTextEditor 
 extends SwingStylePartEditor
+implements ColorChooserListener
 {
 	private final JComboBox fontFace;
 	private final JComboBox fontSize;
@@ -155,12 +160,11 @@ extends SwingStylePartEditor
 		TextEditor editor = (TextEditor) stylePartEditor;
 		Object source = event.getSource();
 		if (source == this.fontColorButton) {
-			Color newColor = JColorChooser.showDialog( this, "Text Color", this.fontColorButton.getBackground() );
-			if (newColor == null) {
-				return;
+			ColorProvider colorProvider = ColorChooserComponent.showDialog(getName(), editor.getColorProvider(), editor.getResourcesProvider(), this, false );
+			if (colorProvider != null) {
+				this.fontColorButton.setBackground( new java.awt.Color( colorProvider.getColor().getColor() ) );
+				editor.setColorProvider( colorProvider );
 			}
-			this.fontColorButton.setBackground(newColor);
-			editor.setColor( newColor.getRGB() );
 		} else if (source == this.fontFace) {
 			editor.setFace( getFontFace() );
 		} else if (source == this.fontSize) {
@@ -180,6 +184,14 @@ extends SwingStylePartEditor
 		}	
 	}
 
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.styleeditor.swing.components.ColorChooserListener#notifyColorUpdated(de.enough.polish.resources.ColorProvider)
+	 */
+	public void notifyColorUpdated(ColorProvider colorProvider) {
+		TextEditor editor = (TextEditor) this.partEditor;
+		editor.setColorProvider( colorProvider );
+	}
 
 
 
@@ -207,7 +219,7 @@ extends SwingStylePartEditor
 		this.fontStyleItalic.setSelected( editor.isStyleItalic() );
 		this.fontStyleUnderlined.setSelected( editor.isStyleUnderlined() );
 		
-		this.fontColorButton.setBackground( new Color( editor.getColor() ) );
+		this.fontColorButton.setBackground(  editor.getColorForAwt() );
 		
 		String textEffectName = editor.getTextEffect();
 		if (textEffectName == null) {

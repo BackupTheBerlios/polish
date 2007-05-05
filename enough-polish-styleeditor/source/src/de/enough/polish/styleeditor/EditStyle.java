@@ -36,6 +36,7 @@ import de.enough.polish.resources.StyleProvider;
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Border;
 import de.enough.polish.ui.Style;
+import de.enough.polish.util.ReflectionUtil;
 
 /**
  * <p></p>
@@ -676,6 +677,22 @@ implements StyleProvider
 	 */
 	public void setItemOrScreen(ItemOrScreen itemOrScreen) {
 		this.itemOrScreen = itemOrScreen;
+	}
+
+	/**
+	 * 
+	 */
+	public void removeAllAttributes() {
+		this.attributesMap.clear();
+		if (this.style != null) {
+			try {
+				ReflectionUtil.setField( this.style, "attributeKeys", null);
+				ReflectionUtil.setField( this.style, "attributeValues", null);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("...ooops: unable to clear attributeKeys/attributeValues from style: "  + e );
+			}
+		}
 	}
 	
 	

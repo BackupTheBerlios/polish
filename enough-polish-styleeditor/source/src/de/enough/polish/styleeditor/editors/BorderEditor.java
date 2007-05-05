@@ -141,17 +141,17 @@ public class BorderEditor extends ParameterizedStyleEditor {
 
 
 	/**
-	 * @param backgroundName
+	 * @param borderName
 	 * @return
 	 */
-	public CssAttributesEditor getAttributesEditor(String backgroundName) {
-		if (this.attributesEditor != null && this.attributesEditor.getName().equals(backgroundName)) {
+	public CssAttributesEditor getAttributesEditor(String borderName) {
+		if (this.attributesEditor != null && this.attributesEditor.getName().equals(borderName)) {
 			return this.attributesEditor;
 		}
-		System.out.println("creating attributes editor for background " + backgroundName );
-		this.fromName = backgroundName;
+		this.fromName = borderName;
 		initBorderAttribute();
-		this.attributesEditor = getAttributesEditor(this.borderAttribute, backgroundName, this.borderEditStyle);
+		this.borderEditStyle.removeAllAttributes();
+		this.attributesEditor = getAttributesEditor(this.borderAttribute, borderName, this.borderEditStyle);
 		this.attributesEditor.setStyle(this.borderEditStyle);
 		return this.attributesEditor;
 	}
