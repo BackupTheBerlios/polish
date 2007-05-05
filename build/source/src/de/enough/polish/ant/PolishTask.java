@@ -341,6 +341,7 @@ public class PolishTask extends ConditionalTask {
 			return;
 		}
 		try {
+			long startTime = System.currentTimeMillis();
 			if (!this.isInitialized) {
 				checkSettings();
 				initProject();
@@ -425,17 +426,23 @@ public class PolishTask extends ConditionalTask {
 			finishProject();
 			
 			if (abortOnError || failures.size() == 0 ) {
+				int timeInSeconds = (int)((System.currentTimeMillis() - startTime) / 1000);
+				StringBuffer message = new StringBuffer();
 				if (numberOfDevices > 1 || successCount > 1 ) {
 					if ( successCount == numberOfDevices ) {
-						System.out.println("Successfully processed [" + numberOfDevices + "] devices.");
+						message.append("Successfully processed [").append( numberOfDevices ).append( "] devices");
 					} else {
 						if ( numberOfDevices == 1 ) {
-							System.out.println("Successfully processed one device with [" + successCount + "] builds.");
+							message.append("Successfully processed one device with [").append( successCount ).append( "] builds");
 						} else {
-							System.out.println("Successfully processed [" + numberOfDevices + "] devices with [" + successCount + "] builds.");
+							message.append("Successfully processed [").append( numberOfDevices ).append( "] devices with [" ).append( successCount ).append( "] builds");
 						}
 					}
+				} else if (this.devices != null && this.devices.length > 0){
+					message.append("Successfully processed " ).append( this.devices[0]);
 				}
+				message.append( " on ").append( (new Date()).toString() ).append( " in " ).append( timeInSeconds ).append( " seconds.");
+				System.out.println(message.toString());
 			} else {
 				StringBuffer buffer = new StringBuffer();
 				buffer.append("Processed [" ).append( numberOfDevices ).append( "] devices with [" )
@@ -2674,7 +2681,7 @@ public class PolishTask extends ConditionalTask {
 				} else {
 					if (this.useDefaultPackage) {
 						Midlet midlet = new Midlet( midletDefinition );
-						midletDefinition = key + ": " + midlet.getMidletInfo(null, this.useDefaultPackage );
+						midletDefinition =  midlet.getMidletInfo(null, this.useDefaultPackage );
 					}
 					attributesByName.put( key, 
 							new Attribute(key, midletDefinition) );	

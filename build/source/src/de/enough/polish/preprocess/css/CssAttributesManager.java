@@ -219,6 +219,9 @@ public class CssAttributesManager {
 		}
 		for (int i = 0; i < attributes.length; i++) {
 			CssAttribute attribute = attributes[i];
+			if (attribute.isBaseAttribute) {
+				continue;
+			}
 			for (int j = 0; j < classNames.length; j++) {
 				if ( attribute.appliesTo( classNames[j] ) || attribute.appliesTo( fullClassNames[j] ) ) {
 					list.add( attribute );

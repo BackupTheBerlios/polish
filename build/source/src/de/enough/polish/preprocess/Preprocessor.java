@@ -148,9 +148,11 @@ public class Preprocessor {
 			String newExt) 
 	{
 		this.replacePropertiesWithoutDirective = replacePropertiesWithoutDirective;
-		this.debugManager = project.getDebugManager();
-		this.enableDebug = project.isDebugEnabled();
-		this.usePolishGui = project.usesPolishGui();
+		if (project != null) {
+			this.debugManager = project.getDebugManager();
+			this.enableDebug = project.isDebugEnabled();
+			this.usePolishGui = project.usesPolishGui();
+		}
 		this.backup = backup;
 		this.indent = indent;
 		this.newExtension = newExt;

@@ -201,7 +201,11 @@ public class StyleSheet {
 	 */
 	public Style getStyle( String name ) {
 		name = name.toLowerCase();
-		return (Style) this.stylesByName.get( name );
+		Style style = (Style) this.stylesByName.get( name );
+		if (style == null && name.charAt(0) == '.') {
+			style = (Style) this.stylesByName.get( name.substring(1) );
+		}
+		return style;
 	}
 
 	/**

@@ -605,4 +605,19 @@ public final class ReflectionUtil {
 		return field.get(object);
 	}
 
+	/**
+	 * @param parameterClass
+	 * @param fieldName
+	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 * @throws NoSuchFieldException 
+	 */
+	public static Object getStaticFieldValue(Class parameterClass, String fieldName) 
+	throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException 
+	{
+		Field field = getField(parameterClass, fieldName);
+		return field.get(null);
+	}
+
 }

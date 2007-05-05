@@ -25,6 +25,8 @@
  */
 package de.enough.polish.preprocess.css.attributes;
 
+import org.jdom.Element;
+
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.css.ColorConverter;
@@ -43,6 +45,10 @@ import de.enough.polish.ui.Color;
  */
 public class ColorCssAttribute extends CssAttribute {
 	
+	private boolean isTranslucentSupported = false;
+	private boolean isTransparentSupported = false;
+	private boolean isPrimitive = false;
+	
 	/**
 	 * Creates a new instance.
 	 */
@@ -50,6 +56,29 @@ public class ColorCssAttribute extends CssAttribute {
 		super();
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.css.CssAttribute#setDefinition(org.jdom.Element)
+	 */
+	public void setDefinition(Element definition) {
+		super.setDefinition(definition);
+		String boolStr = definition.getAttributeValue("translucent");
+		if (boolStr != null) {
+			this.isTranslucentSupported = boolStr.equals("true");
+		}
+		boolStr = definition.getAttributeValue("transparent");
+		if (boolStr != null) {
+			this.isTransparentSupported = boolStr.equals("true");
+		}
+		boolStr = definition.getAttributeValue("primitive");
+		if (boolStr != null) {
+			this.isPrimitive = boolStr.equals("true");
+		}
+	}
+
+
+
 	/**
 	 * Checks and transforms the given CSS value for this attribute.
 	 * 
@@ -61,7 +90,7 @@ public class ColorCssAttribute extends CssAttribute {
 	public String getValue(String value, Environment environment ) {
 		ColorConverter colorConverter = (ColorConverter) environment.get( ColorConverter.ENVIRONMENT_KEY );
 		if (colorConverter != null) {
-			if (this.isBaseAttribute) {
+			if (this.isBaseAttribute || this.isPrimitive) {
 				return colorConverter.parseColor(value);
 			}
 			return colorConverter.generateColorConstructor(value);
@@ -73,13 +102,46 @@ public class ColorCssAttribute extends CssAttribute {
 	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
 	 */
 	public Object instantiateValue(String value) {
+		if (this.isPrimitive) {
+			return new Integer( Long.decode(value).intValue() );
+		}
 		if (this.isBaseAttribute) {
 			return new Color( Long.decode(value).intValue() );
 		}
 		// a complex Color instantiation is used, e.g. "new Color( Color.COLOR_HIGHLIGHTED_BACKGROUND, true );
 		//System.out.println("instantiating value " + value + " for attribute " + getName() );
 		return super.instantiateValue(value);
-	}	
+	}
+
+
+
+	/**
+	 * @return the isTranslucentSupported
+	 */
+	public boolean isTranslucentSupported() {
+		return this.isTranslucentSupported;
+	}
+	
+
+
+
+	/**
+	 * @return the isTransparentSupported
+	 */
+	public boolean isTransparentSupported() {
+		return this.isTransparentSupported;
+	}
+
+
+
+	/**
+	 * @return the isPrimitive
+	 */
+	public boolean isPrimitive() {
+		return this.isPrimitive;
+	}
+	
+		
 
 
 }

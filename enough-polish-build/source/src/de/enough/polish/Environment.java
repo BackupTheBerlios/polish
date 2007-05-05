@@ -791,4 +791,16 @@ public class Environment {
 		}
 		return home;
 	}
+
+	/**
+	 * Sets the project's main directory.
+	 * 
+	 * @param baseDir the project's home directory 
+	 */
+	public void setBaseDir(File baseDir) {
+		this.baseDir = baseDir;
+		if (baseDir != null) {
+			set( "project.home", baseDir );
+		}
+	}
 }

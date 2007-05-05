@@ -74,11 +74,14 @@ public class GradientVerticalBackgroundConverter extends BackgroundConverter {
 		if (endStr != null) {
 			if (endStr.charAt(endStr.length()-1) == '%') {
 				isPercent = true;
-				end = parseInt( "endStr", endStr.substring(0, endStr.length() - 1));
+				end = parseInt( "end", endStr.substring(0, endStr.length() - 1));
 			} else {
 				end = parseInt( "end", endStr);
-			}
-			
+			}	
+		}
+		String isPercentStr = (String) map.get("is-percent");
+		if (!isPercent && isPercentStr != null) {
+			isPercent = parseBoolean("is-percent", isPercentStr);
 		}
 
 		String result = "new de.enough.polish.ui.backgrounds.GradientVerticalBackground(" 

@@ -304,6 +304,7 @@ public class ColorConverter {
 						}
 						color = (String) map.get(color);
 					 	if ( COLORS.get( color ) != null ) {
+					 		//System.out.println("ColorConvert: found color " + color);
 					 		break;
 					 	}
 					 }

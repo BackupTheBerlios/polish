@@ -263,24 +263,33 @@ implements Comparable
 	/**
 	 * Instantiates the referened value.
 	 * 
-	 * @param value the transformed value of this attribute
+	 * @param sourceCode the transformed value of this attribute
 	 * @return the instantiated value (value as object instead of source code) 
 	 */
-	public Object instantiateValue( String value ) {
-		if ("null".equals(value)) {
+	public Object instantiateValue( String sourceCode ) {
+		//System.out.println("instantiate=[" + sourceCode + "] - starts with new: " + (sourceCode.startsWith("new ")) );
+		if ("null".equals(sourceCode)) {
 			return null;
 		}
-		if (value.startsWith("new ")) {
-			int parenthesesPos = value.indexOf('(');
-			String className = value.substring( "new ".length(), parenthesesPos );
+		if (sourceCode.startsWith("new ")) {
+			int parenthesesPos = sourceCode.indexOf('(');
+			String className = sourceCode.substring( "new ".length(), parenthesesPos );
 			Class valueClass;
 			try {
 				valueClass = loadClass(className);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
-				throw new IllegalArgumentException("Unable to instantiate " + value  + ": " + e.toString() );
+				throw new IllegalArgumentException("Unable to instantiate " + sourceCode  + ": " + e.toString() );
 			}
-			String parametersStr = value.substring( parenthesesPos + 1, value.lastIndexOf(')'));
+			String parametersStr = sourceCode.substring( parenthesesPos + 1, sourceCode.lastIndexOf(')')).trim();
+			if (parametersStr.length() == 0) {
+				try {
+					return valueClass.newInstance();
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new IllegalArgumentException("Unable to instantiate " + sourceCode + ": " + e, e );
+				}
+			}
 			String[] parameters = StringUtil.splitAndTrim(parametersStr, ',');
 			// getting constructor:
 			Constructor[] constructors = valueClass.getConstructors();
@@ -299,15 +308,58 @@ implements Comparable
 						return constructor.newInstance(parameterValues);
 					} catch (IllegalArgumentException e) {
 						System.out.println("Warning: unable to instantiate constructor parameter: " + e.getMessage() );
+						throw new IllegalArgumentException("Unable to instantiate " + sourceCode, e );
 					} catch (Exception e) {
-						System.out.println("Warning: unable to instantiate constructor for value " + value + ": " + e.getMessage() );
+						System.out.println("Warning: unable to instantiate constructor for value " + sourceCode + ": " + e.getMessage() );
 						e.printStackTrace();
+						throw new IllegalArgumentException("Unable to instantiate " + sourceCode, e );
 					}
-					
 				}
 			}
 		}
-		throw new IllegalArgumentException("Unable to instantiate " + value );
+		if (this.allowsCombinations && this.mappingsByName != null) {
+			try {
+				String[] parameters = StringUtil.splitAndTrim(sourceCode, '|');
+				int result = 0;
+				for (int i = 0; i < parameters.length; i++) {
+					String parameter = parameters[i];
+					//System.out.println("instantiating " + i + ": " + parameter);
+					Integer parameterValue;
+					int lastDotIndex = parameter.lastIndexOf('.');
+					if (lastDotIndex != -1) {
+						String className = parameter.substring( 0, lastDotIndex );
+						String fieldName = parameter.substring( lastDotIndex + 1);
+						Class parameterClass = loadClass( className );
+						parameterValue = (Integer) ReflectionUtil.getStaticFieldValue(parameterClass, fieldName);
+						//System.out.println(parameter + "=" + Integer.toBinaryString( parameterValue.intValue() ) );
+					} else {
+						parameterValue = new Integer( Long.decode(parameter).intValue() );
+					}
+					result |= parameterValue.intValue();
+					//System.out.println("result=" + Integer.toBinaryString( result));
+				}
+				return new Integer( result );
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new IllegalArgumentException("Unable to instantiate " + sourceCode + ": " + e.toString(), e );
+			}
+		}
+		if (this.mappingsByName != null) {
+			try {
+				int lastDotIndex = sourceCode.lastIndexOf('.');
+				if (lastDotIndex != -1) {
+					String className = sourceCode.substring( 0, lastDotIndex );
+					String fieldName = sourceCode.substring( lastDotIndex + 1);
+					Class parameterClass = loadClass( className );
+					//System.out.println(sourceCode + "=" +  ReflectionUtil.getStaticFieldValue(parameterClass, fieldName) );
+					return ReflectionUtil.getStaticFieldValue(parameterClass, fieldName);
+				}			
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new IllegalArgumentException("Unable to instantiate " + sourceCode + ": " + e.toString(), e );
+			}
+		}
+		throw new IllegalArgumentException("Unable to instantiate " + sourceCode );
 	}
 
 	protected Object instantiate(Class parameterClass, String parameter) {
@@ -386,7 +438,11 @@ implements Comparable
 				try {
 					return Class.forName( "de.enough.polish.ui." + className );
 				} catch (ClassNotFoundException e1) {
-					return Class.forName( "java.lang." + className );
+					try {
+						return Class.forName( "java.lang." + className );
+					} catch (ClassNotFoundException e2) {
+						return Class.forName( "javax.microedition.lcdui." + className );
+					}
 				}
 			}
 			throw e;
@@ -632,6 +688,23 @@ implements Comparable
 		mappings = (CssMapping[]) list.toArray( new CssMapping[ list.size() ] );
 		Arrays.sort( mappings );
 		return mappings;
+	}
+
+	/**
+	 * @param valueStr
+	 * @param environment 
+	 * @return
+	 */
+	public Object parseAndInstantiateValue(String valueStr, Environment environment ) {
+		String sourceCodeValue = getValue(valueStr, environment);
+		return instantiateValue( sourceCodeValue );
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isBaseAttribute() {
+		return this.isBaseAttribute;
 	}
 	
 

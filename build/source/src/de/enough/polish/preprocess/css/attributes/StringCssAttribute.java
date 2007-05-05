@@ -62,4 +62,19 @@ public class StringCssAttribute extends CssAttribute {
 		}
 		return '"' + super.getValue(value, environment) + '"';
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
+	 */
+	public Object instantiateValue(String sourceCode) {
+		if (sourceCode.equals("null")) {
+			return null;
+		}
+		if (sourceCode.length() > 2 && sourceCode.charAt(0) == '"' && sourceCode.charAt( sourceCode.length() - 1) == '"') {
+			return sourceCode.substring( 1, sourceCode.length() - 1 );
+		}
+		return sourceCode;
+	}
+	
+	
 }
