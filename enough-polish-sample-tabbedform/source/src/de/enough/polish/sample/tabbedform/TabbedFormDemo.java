@@ -27,6 +27,7 @@ package de.enough.polish.sample.tabbedform;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
+import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -93,7 +94,7 @@ implements ScreenStateListener, CommandListener
 		form.append( 0, label );
 
 		//#style settingsChoice
-		ChoiceGroup group = new ChoiceGroup( Locale.get("label.setting"), ChoiceGroup.EXCLUSIVE );
+		ChoiceGroup group = new ChoiceGroup( Locale.get("label.setting"), Choice.EXCLUSIVE );
 		//#style settingsItem
 		group.append( Locale.get("label.setting.fast"), null);
 		//#style settingsItem
