@@ -19,7 +19,8 @@ public class BrowserMidlet
 	extends MIDlet
 	implements CommandListener, ItemCommandListener
 {
-	private Command cmdBack = new Command("Back", Command.SCREEN, Command.BACK );
+	private static final Command CMD_BACK = new Command("Backen", Command.SCREEN, 1 );
+	private static final Command CMD_EXIT = new Command("Exit", Command.EXIT, 10);
 
 	private Display display;
 	private BrowserScreen browserScreen;
@@ -30,9 +31,10 @@ public class BrowserMidlet
           this.display = Display.getDisplay(this);
 
           //#style browserScreen
-          BrowserScreen screen = new BrowserScreen(this, "BrowserItem");
+          BrowserScreen screen = new BrowserScreen(this, "RssBrowser");
           screen.getURL("http://www.digg.com/rss/containerscience.xml");
-          screen.addCommand( this.cmdBack );
+          screen.addCommand(CMD_BACK);
+          screen.addCommand(CMD_EXIT);
           screen.setCommandListener( this );
           this.display.setCurrent( screen );
           this.browserScreen = screen;
@@ -54,10 +56,12 @@ public class BrowserMidlet
 			return;
 		}
 
-		if (command == this.cmdBack) {
+		if (command == CMD_BACK) {
 			this.browserScreen.goBack();
 		}
-		
+		else if (command == CMD_EXIT) {
+			notifyDestroyed();
+		}
 	}
 
 	public void commandAction(Command command, Item item)
