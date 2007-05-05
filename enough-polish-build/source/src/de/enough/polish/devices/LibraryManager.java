@@ -209,10 +209,10 @@ public class LibraryManager {
 								if (libFile.exists()) {
 									libPath = libFile.getAbsolutePath();
 								} else {
-									System.out.println("Warning: the Ant-property [polish.api." + libName + "] points to a non-existing file. When this leads to problems, please register this API in [apis.xml].");
+									System.err.println("Warning: the Ant-property [polish.api." + libName + "] points to a non-existing file. When this leads to problems, please register this API in [apis.xml].");
 								}
 							} else {
-								System.out.println("Warning: unable to resolve path to API \"" + libName + "\". When this leads to problems, please register this API in [apis.xml].");
+								System.err.println("Warning: unable to resolve path to API \"" + libName + "\". When this leads to problems, please register this API in [apis.xml].");
 							}
 						}
 					}

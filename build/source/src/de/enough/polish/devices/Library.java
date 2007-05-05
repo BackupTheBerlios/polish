@@ -280,10 +280,10 @@ public class Library extends PolishComponent {
 		}
 		
 		if (this.defaultPath != null) {
-			System.out.println("Warning: unable to find the library \"" + this.fullName + "\" / \"" + this.defaultPath + "\" on the path. If this leads to problems, please adjust the settings for this library in the file [apis.xml].");
-			System.out.println("polish.home=" + this.projectLibPath);
+			System.err.println("Warning: unable to find the library \"" + this.fullName + "\" / \"" + this.defaultPath + "\" on the path. If this leads to problems, please adjust the settings for this library in the file [apis.xml].");
+			System.err.println("polish.home=" + this.projectLibPath);
 		} else {
-			System.out.println("Warning: unable to find the library \"" + this.fullName + "\" on the path. If this leads to problems, please adjust the settings for this library in the file [apis.xml].");
+			System.err.println("Warning: unable to find the library \"" + this.fullName + "\" on the path. If this leads to problems, please adjust the settings for this library in the file [apis.xml].");
 		}
 	}
 	
