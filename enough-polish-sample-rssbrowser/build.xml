@@ -98,13 +98,13 @@
 	    <!-- Have a look at the <jad>-section for setting specialised attributes.
 	         You can also define localized attributes in the resources/messages.txt files -->
 		<info
-			name="Browser"
+			name="RssBrowser"
 			version="1.3.4"
 			description=""
 			vendorName="Enough Software"
 			infoUrl="http://www.j2mepolish.org"
 			icon="dot.png"
-			jarName="${polish.vendor}-${polish.name}-${polish.locale}-browser.jar" 
+			jarName="${polish.vendor}-${polish.name}-${polish.locale}-rssbrowser.jar" 
 			jarUrl="${deploy-url}${polish.jarName}"
 			copyright="Copyright 2004 Enough Software. All rights reserved."
 		/>
