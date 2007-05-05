@@ -54,6 +54,7 @@ import de.enough.polish.xml.XmlPullParser;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 
 /**
@@ -776,19 +777,24 @@ implements Runnable
         if (this.isCancelRequested != true)
         {
             //#if polish.Browser.MemorySaver
-        	//# this.memorySaver = new byte[50000];
-            //# try {
-            //#endif
+        		this.memorySaver = new byte[50000];
+        	//#endif
 
-        	goImpl(url);
-       	
-       		//#if polish.Browser.MemorySaver
-        	//# }
-            //# catch (OutOfMemoryError e) {
-          	//#   this.memorySaver = null;
-          	//#   System.gc();
-            //# }
-            //#endif
+            try {
+
+            	goImpl(url);
+
+        	}
+            catch (OutOfMemoryError e) {
+            	//#if polish.Browser.MemorySaver
+            		this.memorySaver = null;
+            		System.gc();
+            	//#endif
+
+            	// Signal stopped parsing.
+            	StringItem item = new StringItem(null, "parsing stopped");
+            	add(item);
+            }
         }
         
         this.isWorking = false;
