@@ -23,7 +23,7 @@
 	
 	
 <property file="${user.name}.properties" />
-<property file="midlet.properties" />
+<!-- <property file="midlet.properties" /> -->
 	
 <!-- The polish.home property should point to the directory   -->
 <!-- containing the J2ME Polish installation.                 -->
