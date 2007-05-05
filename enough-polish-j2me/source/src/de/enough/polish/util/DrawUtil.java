@@ -286,7 +286,7 @@ public final class DrawUtil {
 			g.fillTriangle(x1, y1, x2, y2, x3, y3);
 		//#else
 			int centerX = getCenter( x1, x2, x3 );
-			int centerY = getCenter( y1, y2, y3 );;
+			int centerY = getCenter( y1, y2, y3 );
 			boolean isPositionMoved;
 			do {
 				// drawTriangle( x1, y1, x2, y2, x3, y3, g );

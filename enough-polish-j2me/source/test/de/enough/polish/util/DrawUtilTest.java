@@ -72,7 +72,7 @@ public class DrawUtilTest extends TestCase {
 		
 		System.out.println("get gradient color...");
 		for (int i = 0; i < 20; i++) {
-			gradient = DrawUtil.getGradientColor( 0xFF0099, 0x000000, i, 19 );;
+			gradient = DrawUtil.getGradientColor( 0xFF0099, 0x000000, i, 19 );
 			System.out.println( Integer.toHexString(gradient));
 		}
 	}

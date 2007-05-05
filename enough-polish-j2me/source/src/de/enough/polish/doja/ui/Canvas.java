@@ -556,7 +556,7 @@ extends Displayable
         public int getKeyCode(int gameAction)
         {
                 switch ( gameAction ) {
-                case FIRE: ;//return net.rim.device.api.ui.Keypad.KEY_SPACE;
+                case FIRE: //return net.rim.device.api.ui.Keypad.KEY_SPACE;
                 case UP: return -100;
                 case DOWN: return -101;
                 }
