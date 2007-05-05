@@ -19,7 +19,7 @@ public class BrowserMidlet
 	extends MIDlet
 	implements CommandListener, ItemCommandListener
 {
-	private static final Command CMD_BACK = new Command("Backen", Command.SCREEN, 1 );
+	private static final Command CMD_BACK = new Command("Back", Command.SCREEN, 1 );
 	private static final Command CMD_EXIT = new Command("Exit", Command.EXIT, 10);
 
 	private Display display;
