@@ -2,7 +2,6 @@ package de.enough.polish.sample.rssbrowser;
 
 import javax.microedition.lcdui.Command;
 
-import de.enough.polish.browser.html.HtmlBrowser;
 import de.enough.polish.browser.rss.RssBrowser;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.ItemCommandListener;
@@ -11,7 +10,7 @@ import de.enough.polish.ui.Style;
 public class BrowserScreen
 	extends Form
 {
-  private HtmlBrowser htmlItem;
+  private RssBrowser htmlItem;
 
   public BrowserScreen(ItemCommandListener itemCommandListener, String title)
   {
