@@ -9,6 +9,13 @@
 
 package de.enough.polish.plugin.netbeans;
 
+import de.enough.polish.Environment;
+import de.enough.polish.devices.DeviceDatabase;
+import de.enough.polish.plugin.netbeans.settings.PolishSettings;
+import de.enough.polish.preprocess.css.CssAttributesManager;
+import de.enough.polish.resources.ResourcesProvider;
+import de.enough.polish.resources.impl.ResourcesProviderImpl;
+import de.enough.polish.util.ResourceUtil;
 import org.netbeans.modules.vmd.api.io.DataObjectContext;
 import org.netbeans.modules.vmd.api.io.DesignDocumentAwareness;
 import org.netbeans.modules.vmd.api.io.IOUtils;
@@ -23,7 +30,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.List;
+import org.netbeans.modules.vmd.api.io.ProjectUtils;
+import org.openide.filesystems.FileObject;
 
 /**
  *
@@ -51,8 +61,31 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
         this.context = context;
 //        loadingPanel = IOUtils.createLoadingPanel (); // you can use this JComponent when the document is null
         displayableParserManager = DisplayableParserManager.getInstance();
-                
-        visual = new PolishDataEditorVisual ();
+        
+        
+        File polishHome = new File(PolishSettings.getDefault ().getPolishHome ());
+        FileObject projectHomeSystem = ProjectUtils.getProject ( context ).getProjectDirectory();
+        File projectHome;
+        try {
+            //System.out.println("projectHomeSystem.getFileSystem().getRoot().getPath()=" + projectHomeSystem.getFileSystem().getRoot().getPath() );
+            //TODO resolve the project's home directory correctly!
+            projectHome = new File( "/" + projectHomeSystem.getPath() );
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to resolve project home for " +  ProjectUtils.getProject ( context ).getProjectDirectory().getPath() );
+        }
+       if (!projectHome.exists()) {
+           throw new IllegalStateException("Unable to resolve project home for " + projectHome.getAbsolutePath() );
+       }
+        
+        DeviceDatabase deviceDB = DeviceDatabase.getInstance(polishHome);
+        ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
+        CssAttributesManager attributesManager = CssAttributesManager.getInstance( polishHome, resourceUtil );
+        Environment environment = new Environment(polishHome);
+        environment.setBaseDir( projectHome );
+        environment.initialize( deviceDB.getDevice("Nokia/6630"), null);
+
+        this.resourceProvider = initResourceProvider( polishHome, environment, attributesManager );
+        visual = new PolishDataEditorVisual( context, environment, this.resourceProvider, attributesManager );
         
         //visual.setLayout(new GridBagLayout ());
         //visual.add( simulationPanel, new GridBagConstraints ());
@@ -81,6 +114,16 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
 
         context.addDesignDocumentAwareness (this);
     }
+    
+     private ResourcesProvider initResourceProvider(File polishHome, Environment environment, CssAttributesManager manager) {
+		try {
+			ResourcesProvider provider = new ResourcesProviderImpl(polishHome, environment, manager);
+			return provider;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new IllegalStateException("Unable to init ResourcesProvider: " +  e.toString());
+		}
+	}
 
     public JComponent getVisualRepresentation () {
         return visual;
@@ -187,7 +230,7 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
         //TODO add all displayables to drop down box and use the currently selected one
         // - would be great if we could have the very same one as the ScreenDesigner is using,
         // so that we always stay in sync...
-        Displayable displayable = this.displayableParserManager.parseDisplayable(editedScreen);
+        Displayable displayable = this.displayableParserManager.parseDisplayable(editedScreen, this.resourceProvider );
         if (displayable != null) {
             displayable._callShowNotify();
             this.visual.setCurrent(displayable);
@@ -229,5 +272,6 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
             return this;
         }
     }
+    private ResourcesProvider resourceProvider;
     
 }

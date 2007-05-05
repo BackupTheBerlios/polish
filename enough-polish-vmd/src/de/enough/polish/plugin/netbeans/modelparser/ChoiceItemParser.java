@@ -10,6 +10,7 @@
 package de.enough.polish.plugin.netbeans.modelparser;
 
 import de.enough.polish.plugin.netbeans.modelparser.ItemParser;
+import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.ui.Choice;
 import de.enough.polish.ui.ChoiceItem;
 import de.enough.polish.ui.Item;
@@ -26,7 +27,7 @@ import org.netbeans.modules.vmd.midp.components.sources.ListElementEventSourceCD
  */
 public class ChoiceItemParser extends ItemParser {
 
-    protected Item createItem(DesignComponent designComponent) {
+    protected Item createItem(DesignComponent designComponent, ResourcesProvider resourcesProvider ) {
         String text = null;
         Image image = null;
         int type = Choice.IMPLICIT;
@@ -45,8 +46,6 @@ public class ChoiceItemParser extends ItemParser {
         return new ChoiceItem( text, image, type );
     }
     
-    protected void addAttributes( DesignComponent designComponent, Item item ) {
-        super.addAttributes(designComponent, item);
-    }
+   
 
 }

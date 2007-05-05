@@ -11,6 +11,7 @@ package de.enough.polish.plugin.netbeans;
 
 import de.enough.polish.plugin.netbeans.modelparser.*;
 import de.enough.polish.plugin.netbeans.components.items.BrowserCD;
+import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.ui.Item;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
 import org.netbeans.modules.vmd.midp.components.sources.ListElementEventSourceCD;
@@ -51,11 +52,11 @@ public class ItemParserManager {
         INSTANCE.parsersByClassName.put( className, parser );
     }
     
-    public Item parseItem( DesignComponent designComponent ) {
+    public Item parseItem( DesignComponent designComponent, ResourcesProvider resourcesProvider ) {
         String type = designComponent.getType().getString();
         ItemParser parser = this.parsersByClassName.get( type );
         if (parser != null) {
-            return parser.parse(designComponent);
+            return parser.parse(designComponent, resourcesProvider);
         } else {
             System.out.println("Warning: unable to locate parser for item type " + type );
         }

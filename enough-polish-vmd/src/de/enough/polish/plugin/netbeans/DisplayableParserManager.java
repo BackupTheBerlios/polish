@@ -13,6 +13,7 @@ import de.enough.polish.plugin.netbeans.modelparser.DisplayableParser;
 import de.enough.polish.plugin.netbeans.modelparser.FormParser;
 import de.enough.polish.plugin.netbeans.modelparser.ListParser;
 import de.enough.polish.plugin.netbeans.modelparser.TextBoxParser;
+import de.enough.polish.resources.ResourcesProvider;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
 import org.netbeans.modules.vmd.midp.components.displayables.TextBoxCD;
 import org.netbeans.modules.vmd.midp.components.displayables.ListCD;
@@ -48,14 +49,14 @@ public class DisplayableParserManager {
         INSTANCE.parsersByClassName.put( className, parser );
     }
     
-    public Displayable parseDisplayable( DesignComponent designComponent ) {
+    public Displayable parseDisplayable( DesignComponent designComponent, ResourcesProvider resourcesProvider  ) {
         //        displayable.getComponentDescriptor().getTypeDescriptor().getSuperType();
 //        displayable.getDocument().getDescriptorRegistry().getComponentDescriptor(componentType);
 //        disayable.getComponentDescriptor().getPropertyDescriptors();
         String type = designComponent.getType().getString();
         DisplayableParser parser = this.parsersByClassName.get( type );
         if (parser != null) {
-            return parser.parse(designComponent);
+            return parser.parse(designComponent, resourcesProvider);
         } else {
             System.out.println("Warning: unable to locate parser for type " + type );
         }

@@ -10,6 +10,7 @@
 package de.enough.polish.plugin.netbeans.modelparser;
 
 import de.enough.polish.plugin.netbeans.modelparser.ItemParser;
+import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.ui.ImageItem;
 import de.enough.polish.ui.Item;
 import javax.microedition.lcdui.Image;
@@ -25,7 +26,7 @@ import org.netbeans.modules.vmd.midp.components.items.ImageItemCD;
  */
 public class ImageItemParser extends ItemParser {
 
-    protected Item createItem(DesignComponent designComponent) {
+    protected Item createItem(DesignComponent designComponent, ResourcesProvider resourcesProvider) {
         String text = null;
         String imageUrl = null;
         Image image = null;
@@ -43,9 +44,6 @@ public class ImageItemParser extends ItemParser {
         }
         return new ImageItem( null, image, layout, text, appearanceMode );
     }
-    
-    protected void addAttributes( DesignComponent designComponent, Item item ) {
-        super.addAttributes(designComponent, item);
-    }
+  
 
 }

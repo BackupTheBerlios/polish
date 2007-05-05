@@ -11,6 +11,7 @@ package de.enough.polish.plugin.netbeans.modelparser;
 
 import de.enough.polish.plugin.netbeans.modelparser.DisplayableParser;
 import de.enough.polish.plugin.netbeans.modelparser.DisplayableParser;
+import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.ui.ChoiceItem;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.List;
@@ -37,7 +38,7 @@ public class ListParser extends DisplayableParser{
     public ListParser() {
     }
 
-    protected Displayable createDisplayable(DesignComponent designComponent) {
+    protected Displayable createDisplayable(DesignComponent designComponent, ResourcesProvider resourcesProvider) {
         int type = List.IMPLICIT;
         PropertyValue value =  designComponent.readProperty(ListCD.PROP_LIST_TYPE);
         if (value.getKind() == PropertyValue.Kind.VALUE) {   
@@ -46,15 +47,15 @@ public class ListParser extends DisplayableParser{
         return new List (null, type );
     }
     
-    protected void addAttributes(  DesignComponent designComponent, Displayable displayable ) {
-        super.addAttributes(designComponent, displayable);
+    protected void addAttributes(  DesignComponent designComponent, ResourcesProvider resourcesProvider, Displayable displayable ) {
+        super.addAttributes(designComponent, resourcesProvider, displayable);
         
         List list = (List) displayable;
         PropertyValue value =  designComponent.readProperty(ListCD.PROP_ELEMENTS);
         if (value.getKind() == PropertyValue.Kind.ARRAY) {
             for (PropertyValue itemValue:value.getArray() )  {
                 //System.out.println("ChoiceItem value=" + itemValue.getComponent() );
-                Item item = getItem( itemValue.getComponent(), displayable );
+                Item item = getItem( itemValue.getComponent(), resourcesProvider,  displayable );
                 if (item instanceof ChoiceItem) {
                     ChoiceItem choiceItem = (ChoiceItem) item ;
                     list.append( choiceItem );

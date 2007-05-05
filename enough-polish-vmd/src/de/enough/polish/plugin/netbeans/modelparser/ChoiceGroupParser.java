@@ -10,6 +10,7 @@
 package de.enough.polish.plugin.netbeans.modelparser;
 
 import de.enough.polish.plugin.netbeans.modelparser.ItemParser;
+import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.ui.Choice;
 import de.enough.polish.ui.ChoiceItem;
 import de.enough.polish.ui.ChoiceGroup;
@@ -26,7 +27,7 @@ import org.netbeans.modules.vmd.midp.components.items.ChoiceGroupCD;
  */
 public class ChoiceGroupParser extends ItemParser {
 
-    protected Item createItem(DesignComponent designComponent) {
+    protected Item createItem(DesignComponent designComponent, ResourcesProvider resourcesProvider) {
         int type = Choice.EXCLUSIVE;
         
         PropertyValue value = designComponent.readProperty(ChoiceGroupCD.PROP_CHOICE_TYPE );
@@ -36,13 +37,13 @@ public class ChoiceGroupParser extends ItemParser {
         return new ChoiceGroup(null, type);
     }
     
-    protected void addAttributes( DesignComponent designComponent, Item item ) {
-        super.addAttributes(designComponent, item);
+    protected void addAttributes( DesignComponent designComponent, ResourcesProvider resourcesProvider, Item item ) {
+        super.addAttributes(designComponent, resourcesProvider, item);
         ChoiceGroup choiceGroup = (ChoiceGroup) item;
         PropertyValue value = designComponent.readProperty(ChoiceGroupCD.PROP_ELEMENTS );
         if (value.getKind() == PropertyValue.Kind.ARRAY) {
             for (PropertyValue itemValue:value.getArray() )  {
-                Item childItem = getItem( itemValue.getComponent(), item );
+                Item childItem = getItem( itemValue.getComponent(), resourcesProvider, item );
                 if (childItem instanceof ChoiceItem) {
                     ChoiceItem choiceItem = (ChoiceItem) childItem ;
                     choiceGroup.append( choiceItem );

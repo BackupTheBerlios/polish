@@ -12,6 +12,7 @@ package de.enough.polish.plugin.netbeans.modelparser;
 import de.enough.polish.plugin.netbeans.modelparser.DisplayableParser;
 import de.enough.polish.plugin.netbeans.modelparser.DisplayableParser;
 import de.enough.polish.plugin.netbeans.DisplayableParserManager;
+import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.ui.TextBox;
 import javax.microedition.lcdui.Displayable;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
@@ -35,7 +36,7 @@ public class TextBoxParser extends DisplayableParser{
     public TextBoxParser() {
     }
 
-    protected Displayable createDisplayable(DesignComponent designComponent) {
+    protected Displayable createDisplayable(DesignComponent designComponent, ResourcesProvider resourcesProvider) {
         String string = MidpValueSupport.getHumanReadableString(designComponent.readProperty(TextBoxCD.PROP_STRING));
         PropertyValue value =  designComponent.readProperty(TextBoxCD.PROP_MAX_SIZE);
         int maxsize = 100;

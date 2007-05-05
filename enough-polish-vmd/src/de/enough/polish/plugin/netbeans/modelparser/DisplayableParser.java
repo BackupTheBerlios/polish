@@ -10,9 +10,13 @@
 package de.enough.polish.plugin.netbeans.modelparser;
 
 import de.enough.polish.plugin.netbeans.ItemParserManager;
+import de.enough.polish.plugin.netbeans.components.PolishPropertiesProcessor;
+import de.enough.polish.resources.ResourcesProvider;
+import de.enough.polish.resources.StyleProvider;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.UiAccess;
 import java.util.Collection;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
@@ -40,7 +44,7 @@ public abstract class DisplayableParser {
      * @param designComponent the data of the displayable
      * @return a J2ME Polish displayable
      */ 
-    protected abstract Displayable createDisplayable( DesignComponent designComponent );
+    protected abstract Displayable createDisplayable( DesignComponent designComponent, ResourcesProvider resourcesProvider );
     
     /**
      * Adds additional attribute like the title of the screen. 
@@ -49,7 +53,7 @@ public abstract class DisplayableParser {
      * @param designComponent the data of the displayable
      * @param displayable a J2ME Polish displayable
      */
-    protected void addAttributes(  DesignComponent designComponent, Displayable displayable ) {
+    protected void addAttributes(  DesignComponent designComponent, ResourcesProvider resourcesProvider, Displayable displayable ) {
         // setting title:
         String title = MidpValueSupport.getHumanReadableString(designComponent.readProperty(DisplayableCD.PROP_TITLE));
         displayable.setTitle(title);
@@ -72,10 +76,28 @@ public abstract class DisplayableParser {
      * @param designComponent the data of the displayable
      * @param item a J2ME Polish item
      */
-    protected void addStyle(  DesignComponent designComponent, Displayable displayable ) {
+    protected void addStyle(  DesignComponent designComponent, ResourcesProvider resourcesProvider, Displayable displayable ) {
         //TODO read the style name from the designComponent and apply it to the screen
         if (displayable instanceof Screen) {
-            ((Screen)displayable).setStyle( new Style() );
+            try {
+                PropertyValue styleValue = designComponent.readProperty( PolishPropertiesProcessor.PROP_STYLE );
+                if (styleValue != null && styleValue.getKind() == PropertyValue.Kind.VALUE) {
+                    String styleName = MidpTypes.getString(styleValue);
+                    System.out.println("Found style [" + styleName + "] for " + displayable );
+                    StyleProvider styleProvider = resourcesProvider.getStyle(styleName);
+                    if (styleProvider != null) {
+                        System.out.println("And found the style in resourcesProvider :D");
+                        ((Screen)displayable).setStyle( styleProvider.getStyle() );
+                    } else {
+                        System.out.println("style not registered in resourcesProvider :(");
+                    }
+                } else {
+                    System.out.println("no style property found for " + displayable);
+                }
+            } catch (AssertionError e) {
+                System.out.println("Warning: unable to read " + PolishPropertiesProcessor.PROP_STYLE);
+                e.printStackTrace();
+            }
         }
     }
     
@@ -122,9 +144,9 @@ public abstract class DisplayableParser {
         }
     }
     
-     protected Item getItem(  DesignComponent designComponent, Displayable displayable ) {
+     protected Item getItem(  DesignComponent designComponent, ResourcesProvider resourcesProvider, Displayable displayable ) {
          ItemParserManager itemManager = ItemParserManager.getInstance();
-         return itemManager.parseItem(designComponent);
+         return itemManager.parseItem(designComponent, resourcesProvider);
      }
     
     /**
@@ -136,13 +158,16 @@ public abstract class DisplayableParser {
      * @see #createDisplayable( DesignComponent )
      * @see #addAttributes( DesignComponent, Displayable )
      */ 
-    public Displayable parse( DesignComponent designComponent ) {
-        Displayable displayable = createDisplayable(designComponent);
+    public Displayable parse( DesignComponent designComponent, ResourcesProvider resourcesProvider ) {
+        Displayable displayable = createDisplayable(designComponent, resourcesProvider);
         if (displayable == null) {
             throw new IllegalStateException("Unable to create displayable");
         }
-        addAttributes(designComponent, displayable);
-        addStyle(designComponent, displayable);
+        addAttributes(designComponent, resourcesProvider, displayable);
+        addStyle(designComponent, resourcesProvider, displayable);
+        if (displayable instanceof Screen) {
+            ((Screen)displayable).setScreenData( designComponent );
+        }
         return displayable;
     }
 

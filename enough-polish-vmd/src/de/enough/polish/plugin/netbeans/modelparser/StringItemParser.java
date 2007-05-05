@@ -10,6 +10,7 @@
 package de.enough.polish.plugin.netbeans.modelparser;
 
 import de.enough.polish.plugin.netbeans.modelparser.ItemParser;
+import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
@@ -24,7 +25,7 @@ import org.netbeans.modules.vmd.midp.components.items.StringItemCD;
  */
 public class StringItemParser extends ItemParser {
 
-    protected Item createItem(DesignComponent designComponent) {
+    protected Item createItem(DesignComponent designComponent, ResourcesProvider resourcesProvider) {
         String text = null;
         int appearanceMode = StringItem.PLAIN;
         
@@ -42,8 +43,6 @@ public class StringItemParser extends ItemParser {
         return new StringItem( null, text, appearanceMode );
     }
     
-    protected void addAttributes( DesignComponent designComponent, Item item ) {
-        super.addAttributes(designComponent, item);
-    }
+
 
 }

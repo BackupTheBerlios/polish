@@ -11,6 +11,7 @@ package de.enough.polish.plugin.netbeans.modelparser;
 
 import de.enough.polish.browser.html.HtmlBrowser;
 import de.enough.polish.plugin.netbeans.components.items.BrowserCD;
+import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.ui.Item;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
 import org.netbeans.modules.vmd.api.model.PropertyValue;
@@ -26,12 +27,12 @@ public class HtmlBrowserParser extends ItemParser {
     public HtmlBrowserParser() {
     }
 
-    protected Item createItem(DesignComponent designComponent) {
+    protected Item createItem(DesignComponent designComponent, ResourcesProvider resourcesProvider) {
         return new HtmlBrowser();
     }
     
-    protected void addAttributes( DesignComponent designComponent, Item item ) {
-        super.addAttributes(designComponent, item);
+    protected void addAttributes( DesignComponent designComponent, ResourcesProvider resourcesProvider, Item item ) {
+        super.addAttributes(designComponent, resourcesProvider, item);
         
         HtmlBrowser browser = (HtmlBrowser) item;
         PropertyValue value =  designComponent.readProperty(BrowserCD.PROP_URL);

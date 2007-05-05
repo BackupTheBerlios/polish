@@ -12,7 +12,11 @@ package de.enough.polish.plugin.netbeans.modelparser;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ChoiceItem;
 import de.enough.polish.plugin.netbeans.ItemParserManager; 
+import de.enough.polish.plugin.netbeans.components.PolishPropertiesProcessor;
+import de.enough.polish.resources.ResourcesProvider;
+import de.enough.polish.resources.StyleProvider;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.UiAccess;
 import javax.microedition.lcdui.Displayable;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
 import org.netbeans.modules.vmd.api.model.PropertyValue;
@@ -37,7 +41,7 @@ public abstract class ItemParser {
      * @param designComponent the data of the displayable
      * @return a J2ME Polish Item
      */ 
-    protected abstract Item createItem( DesignComponent designComponent );
+    protected abstract Item createItem( DesignComponent designComponent, ResourcesProvider resourcesProvider );
     
     /**
      * Adds additional attribute like the label of the item. 
@@ -46,7 +50,7 @@ public abstract class ItemParser {
      * @param designComponent the data of the displayable
      * @param item a J2ME Polish item
      */
-    protected void addAttributes(  DesignComponent designComponent, Item item ) {
+    protected void addAttributes(  DesignComponent designComponent, ResourcesProvider resourcesProvider, Item item ) {
         if (!(item instanceof ChoiceItem)) {
             PropertyValue value = designComponent.readProperty( ItemCD.PROP_LABEL);
              if (value.getKind() == PropertyValue.Kind.VALUE) {
@@ -62,9 +66,26 @@ public abstract class ItemParser {
      * @param designComponent the data of the displayable
      * @param item a J2ME Polish item
      */
-    protected void addStyle(  DesignComponent designComponent, Item item ) {
-        //TODO read the style name from the designComponent and apply it to the item
-        item.setStyle( new Style() );
+    protected void addStyle(  DesignComponent designComponent, ResourcesProvider resourcesProvider, Item item ) {
+        try {
+         PropertyValue styleValue = designComponent.readProperty( PolishPropertiesProcessor.PROP_STYLE );
+            if (styleValue != null && styleValue.getKind() == PropertyValue.Kind.VALUE) {
+                String styleName = MidpTypes.getString(styleValue);
+                System.out.println("Found style [" + styleName + "] for " + item );
+                StyleProvider styleProvider = resourcesProvider.getStyle(styleName);
+                if (styleProvider != null) {
+                    System.out.println("And found the style in resourcesProvider :D");
+                    UiAccess.setStyle( item, styleProvider.getStyle() );
+                } else {
+                    System.out.println("style not registered in resourcesProvider :(");
+                }
+            } else {
+                System.out.println("no style property found for " + item);
+            }
+        } catch (AssertionError e) {
+            System.out.println("Warning: unable to read " + PolishPropertiesProcessor.PROP_STYLE);
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -76,20 +97,21 @@ public abstract class ItemParser {
      * @see #createItem( DesignComponent )
      * @see #addAttributes( DesignComponent, Displayable )
      */ 
-    public Item parse( DesignComponent designComponent ) {
-        Item item = createItem(designComponent);
+    public Item parse( DesignComponent designComponent, ResourcesProvider resourcesProvider ) {
+        Item item = createItem(designComponent, resourcesProvider);
         if (item == null) {
             throw new IllegalStateException("Unable to create item");
         }
-        addAttributes(designComponent,item);
-        addStyle(designComponent,item);
+        item.setAttribute("DesignComponent", designComponent );
+        addAttributes(designComponent, resourcesProvider,item);
+        addStyle(designComponent, resourcesProvider,item);
         return item;
     }
     
     
-     protected Item getItem(  DesignComponent designComponent, Item item  ) {
+     protected Item getItem(  DesignComponent designComponent, ResourcesProvider resourcesProvider, Item item  ) {
          ItemParserManager itemManager = ItemParserManager.getInstance();
-         return itemManager.parseItem(designComponent);
+         return itemManager.parseItem(designComponent, resourcesProvider);
      }
 
 }

@@ -9,6 +9,7 @@
 
 package de.enough.polish.plugin.netbeans.modelparser;
 
+import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.Item;
 import javax.microedition.lcdui.Displayable;
@@ -26,17 +27,17 @@ public class FormParser extends DisplayableParser {
     public FormParser() {
     }
 
-    protected Displayable createDisplayable(DesignComponent designComponent) {
+    protected Displayable createDisplayable(DesignComponent designComponent, ResourcesProvider resourcesProvider) {
         return new Form(null);
     }
     
-    protected void addAttributes( DesignComponent designComponent, Displayable displayable ) {
-        super.addAttributes(designComponent, displayable);
+    protected void addAttributes( DesignComponent designComponent, ResourcesProvider resourcesProvider, Displayable displayable ) {
+        super.addAttributes(designComponent, resourcesProvider, displayable);
         Form form = (Form) displayable;
         PropertyValue value =  designComponent.readProperty(FormCD.PROP_ITEMS);
         if (value.getKind() == PropertyValue.Kind.ARRAY) {
              for (PropertyValue itemValue:value.getArray() )  {
-                 Item item = getItem( itemValue.getComponent(), displayable );
+                 Item item = getItem( itemValue.getComponent(), resourcesProvider, displayable );
                  if (item != null) {
                      form.append(item);
                  }
