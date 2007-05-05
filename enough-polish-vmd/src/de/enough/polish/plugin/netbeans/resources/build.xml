@@ -52,7 +52,7 @@
 
 	<target name="rebuild" depends="clean,j2mepolish"/>
 
-	<target name="run" depends="enableEmulator,j2mepolish"/>
+	<target name="run" depends="emulator"/>
 	 
 	<!-- In this target the J2ME Polish task is used.             -->
 	<!-- It has 4 sections:                                       -->
