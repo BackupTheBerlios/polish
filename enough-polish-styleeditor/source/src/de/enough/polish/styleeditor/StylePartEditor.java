@@ -65,10 +65,10 @@ public abstract class StylePartEditor {
 	protected void update() {
 		writeStyle(this.editStyle);
 		if (this.parent != null) {
-			System.out.println(getClass().getName() + " calling update on parent " + this.parent);
+			//System.out.println(getClass().getName() + " calling update on parent " + this.parent);
 			this.parent.update();
 		} else if (this.styleEditor != null) {
-			System.out.println(getClass().getName() + " calling update on styleEditor " + this.styleEditor);
+			//System.out.println(getClass().getName() + " calling update on styleEditor " + this.styleEditor);
 			this.styleEditor.notifyStyleUpdated();
 		}
 	}

@@ -25,15 +25,11 @@
  */
 package de.enough.polish.styleeditor.editors;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.EditStyle;
 import de.enough.polish.styleeditor.StylePartEditor;
 import de.enough.polish.util.ReflectionUtil;
-import de.enough.polish.util.StringUtil;
 
 /**
  * <p></p>

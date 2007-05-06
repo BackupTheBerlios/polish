@@ -86,7 +86,6 @@ public class ItemOrScreen {
 	 * @param style
 	 */
 	public void setStyle(Style style) {
-		
 		if (this.item != null) {
 			this.item.setStyle(style);
 		}
@@ -101,8 +100,16 @@ public class ItemOrScreen {
 	public void requestInit() {
 		if (this.item != null) {
 			this.item.requestInit();
+			Screen itemScreen = this.item.getScreen();
+			if (itemScreen != null) {
+				System.out.println("ItemOrScreen.requestInit() success: repaint called on item's screen. ");
+				itemScreen.repaint();
+			} else {
+				System.out.println("ItemOrScreen.requestInit() failed: item has no attached screen. ");
+			}
 		}
 		if (this.screen != null) {
+			System.out.println("ItemOrScreen.requestInit() success: repaint called on screen. ");
 			this.screen.repaint();
 		}
 		

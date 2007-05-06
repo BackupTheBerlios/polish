@@ -34,6 +34,7 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
@@ -45,6 +46,7 @@ import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.resources.StyleProvider;
 import de.enough.polish.resources.impl.ResourcesProviderImpl;
 import de.enough.polish.resources.swing.ColorSelectionListener;
+import de.enough.polish.resources.swing.SpecifyOrSelectEntryDialog;
 import de.enough.polish.resources.swing.ResourcesTree;
 import de.enough.polish.resources.swing.StyleSelectionListener;
 import de.enough.polish.runtime.SelectionListener;
@@ -102,7 +104,7 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
 		environment.initialize( deviceDB.getDevice("Nokia/6630"), null);
 
 		this.resourceProvider = initResourceProvider( polishHome, environment, attributesManager );
-		
+				
 		this.simulation  = new Simulation( new SimulationDevice() );
 		Displayable form = initUi();
 		initSimulation( this.simulation, form ); 
@@ -115,7 +117,7 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
 		panel.add( this.simulation, BorderLayout.NORTH );
 		panel.add( swingEditor, BorderLayout.CENTER );
 		ResourcesTree tree = ResourcesTree.getInstance( this.resourceProvider );
-		panel.add( tree, BorderLayout.EAST );
+		panel.add( new JScrollPane(tree), BorderLayout.EAST );
 		tree.addStyleSelectionListener(this);
 		tree.addColorSelectionListener( this );
 		this.resourcesTree = tree;
@@ -243,16 +245,17 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
 	 * @param style
 	 */
 	private void editStyle(ItemOrScreen itemOrScreen, Style style) {
-		if (style == null || style == StyleSheet.defaultStyle) {
-			style = new Style();
-		}
-		EditStyle editStyle;
-		if (style.name != null) {
-			editStyle = (EditStyle) this.resourceProvider.getStyle( style.name );
-			editStyle.setItemOrScreen( itemOrScreen );
-		} else {
-			editStyle = new EditStyle( itemOrScreen.getItemOrScreen().getClass().getName(), style, itemOrScreen );
-		}
+		EditStyle editStyle = getEditStyle(itemOrScreen, style);
+//		if (style == null || style == StyleSheet.defaultStyle) {
+//			style = new Style();
+//		}
+//		EditStyle editStyle;
+//		if (style.name != null) {
+//			editStyle = (EditStyle) this.resourceProvider.getStyle( style.name );
+//			editStyle.setItemOrScreen( itemOrScreen );
+//		} else {
+//			editStyle = new EditStyle( itemOrScreen.getItemOrScreen().getClass().getName(), style, itemOrScreen );
+//		}
 		this.editor.setStyle(editStyle);
 		this.resourcesTree.selectStyle(editStyle);
 	}
@@ -311,5 +314,77 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
 		// TODO robertvirkus implement notifyColorUpdated
 		System.out.println("named color has changed: " + colorProvider.getName() + "=" + Integer.toHexString( colorProvider.getColor().getColor() ));
 	}
+	
+    private EditStyle getEditStyle( ItemOrScreen itemOrScreen, Style style ) {       
+        EditStyle editStyle = getEditStyleImpl(itemOrScreen, style);
+        if (editStyle != null) {
+            itemOrScreen.setStyle( editStyle.getStyle() );
+            itemOrScreen.requestInit();
+        }
+        return editStyle;
+    }
+    private EditStyle getEditStyleImpl( ItemOrScreen itemOrScreen, Style style ) {       
+        EditStyle editStyle = null;
+        if (style != null && style.name != null) {
+            editStyle = (EditStyle) this.resourceProvider.getStyle(style.name);
+            if (editStyle == null) {
+                editStyle = new EditStyle( style.name, style,  itemOrScreen );
+                this.resourceProvider.addStyle(style.name, editStyle);
+                this.resourcesTree.addStyle(editStyle);
+            } else {
+                editStyle.setItemOrScreen(itemOrScreen);
+            }
+        }         
+        if (editStyle == null) {
+            //StyleProvider[] knownStyles = this.resourceProvider.getStyles();
+            //String sty
+            Object itemOrScreenObj = itemOrScreen.getItemOrScreen();
+            String defaultName = getDefaultStyleName( itemOrScreenObj.getClass() );
+            
+            String chosenName = SpecifyOrSelectEntryDialog.showDialog(
+                    null,
+                    "Choose Style Name",
+                    itemOrScreenObj instanceof Item ? 
+                        "This item has no attached style, please enter the desired name: "
+                        :
+                        "This screen has no attached style, please enter the desired name: ",
+                    this.resourceProvider.getStyles(),
+                    defaultName);
+            if (chosenName == null) {
+                return null;
+            }
+            // check if the user selected an existing style:
+            editStyle = (EditStyle) this.resourceProvider.getStyle(chosenName);
+            if (editStyle != null) {
+                editStyle.setItemOrScreen(itemOrScreen);
+            } else {
+                if (style == null || style == StyleSheet.defaultStyle) {
+                    style = new Style();
+                }
+                style.name = chosenName;
+                if (itemOrScreenObj instanceof Item) {
+                    Item item = (Item) itemOrScreenObj;
+                    item.setStyle( style );
+                    //UiAccess.setStyle( (Item)itemOrScreenObj, style );
+                    //dc = (DesignComponent) UiAccess.getAttribute( (Item)itemOrScreenObj, "DesignComponent" );
+                } else {
+                    UiAccess.setStyle( (Screen)itemOrScreenObj, style );
+                }
+                editStyle = new EditStyle( style.name, style,  itemOrScreen );
+
+                this.resourceProvider.addStyle(style.name, editStyle);
+                this.resourcesTree.addStyle(editStyle);
+            }
+        }
+        return editStyle;
+    }
+    
+    private String getDefaultStyleName( Class itemOrScreenClass ) {
+        String defaultName = itemOrScreenClass.getName();
+        if (defaultName.lastIndexOf('.' ) != -1) {
+            defaultName = defaultName.substring( defaultName.lastIndexOf('.' ) + 1 );
+        }
+        return "my" + defaultName;
+    }
 
 }

@@ -101,8 +101,8 @@ public class BackgroundEditor extends ParameterizedStyleEditor {
 	 * @see de.enough.polish.styleeditor.StylePartEditor#readStyle(de.enough.polish.styleeditor.EditStyle)
 	 */
 	public void readStyle(EditStyle style) {
-		System.out.println(this + ".readStyle(), attributesEditor==null: " + (this.attributesEditor == null));
 		this.background = style.getStyle().background;
+		//System.out.println(this + ".readStyle(), attributesEditor==null: " + (this.attributesEditor == null) + " for background=" + this.background);
 		// now extract background attributes:
 		if (this.background != null) {
 			initBackgroundAttribute();
@@ -147,7 +147,7 @@ public class BackgroundEditor extends ParameterizedStyleEditor {
 		if (this.attributesEditor != null && this.attributesEditor.getName().equals(backgroundName)) {
 			return this.attributesEditor;
 		}
-		System.out.println("creating attributes editor for background " + backgroundName );
+		//System.out.println("creating attributes editor for background " + backgroundName );
 		this.fromName = backgroundName;
 		initBackgroundAttribute();
 		this.backgroundEditStyle.removeAllAttributes();
@@ -193,7 +193,7 @@ public class BackgroundEditor extends ParameterizedStyleEditor {
 	protected String getFromName(String name, CssAttribute attribute) {
 		CssMapping mapping = attribute.getMappingByTo( name );
 		if (mapping != null) {
-			System.out.println("Mapping to " + name + " is from " + mapping.getFrom() );
+			//System.out.println("Mapping to " + name + " is from " + mapping.getFrom() );
 			return mapping.getFrom();
 		}
 		return null;

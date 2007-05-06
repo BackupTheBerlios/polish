@@ -124,6 +124,7 @@ implements TreeSelectionListener
 		TreePath path = this.resourcesTreeModel.getTreePathFor( styleProvider );
 		if (path != null) {
 			super.getSelectionModel().setSelectionPath( path );
+			scrollPathToVisible(path);
 		}
 		this.ignoreEvents = false;
 	}

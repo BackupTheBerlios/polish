@@ -151,6 +151,7 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 	 */
 	public void addStyle(String name, StyleProvider style) {
 		this.editStylesByName.put( name, (EditStyle)style );
+		this.styleNamesList.add(name);
 	}
 
 	/* (non-Javadoc)
@@ -178,7 +179,7 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 		//TODO generate EditStyle here, so that background, border, font are set correctly (for later export):
 		de.enough.polish.ui.Style style = new de.enough.polish.ui.Style();
 		EditStyle editStyle = new EditStyle( name, style, null );
-		style.name = cssStyle.getSelector();
+		style.name = name;
 		Map group = cssStyle.getGroup("margin");
 		if (group != null) {
 			int defaultValue = parseInt( group, "margin", 0 );
@@ -239,6 +240,11 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 		}
 		group = cssStyle.getGroup("background");
 		if (group != null) {
+//			if ("title".equals(name)) {
+//				System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+//				System.out.println("NOW PARSING CSS-STYLE TITLE!");
+//				System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+//			}
 			String mappingName = (String) group.get("type");
 			if (mappingName == null) {
 				if (group.get("image") != null) {
@@ -324,6 +330,7 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 	private ParameterizedParsingResult parseParameterizedAttribute(CssAttribute attribute, String mappingName, Map group) 
 	throws ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException 
 	{
+//		System.out.println("parseParameterizedAttribute for " + attribute.getName() + "-type: " + mappingName  );
 		ParameterizedCssMapping mapping = (ParameterizedCssMapping) attribute.getMapping(mappingName);
 		if (mapping == null) {
 			System.out.println("Warning: unable to find mapping for " + mappingName );
@@ -338,13 +345,16 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 			CssAttribute parameterAttribute = parameterAttributes[i];
 			String cssValue = (String) group.get( parameterAttribute.getName() );
 			if (cssValue == null) {
-				System.out.println("Unable to find CSS code for parameter " + parameterAttribute.getName() );
+//				System.out.println(i + ": Unable to find CSS code for parameter " + parameterAttribute.getName() + " = default is " +  parameterAttribute.getDefaultValue() );
 				cssValue = parameterAttribute.getDefaultValue();
+//			} else {
+//				System.out.println(i + ": fournd CSS value " + cssValue);
 			}
 			Object parameterValue = parameterAttribute.parseAndInstantiateValue(cssValue, this.environment);
 			parameterValues[i] = parameterValue;
 			attributeValues[i] = new CssAttributeValue(parameterAttribute, parameterValue, cssValue );
 		}
+		//System.out.println("Done with parseParameterizedAttribute for " + attribute.getName() + "-type: " + mappingName  );
 		
 		return new ParameterizedParsingResult( ReflectionUtil.newInstance(mappingClass, parameterValues),
 				mainValue, attributeValues );
@@ -404,7 +414,8 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 	 * @see de.enough.polish.resources.ResourcesProvider#saveResources()
 	 */	
 	public void saveResources() throws IOException {
-		File output = new File( this.environment.getBaseDir(), "polish.css");
+		File resourcesDir = new File( this.environment.getBaseDir(), "resources");
+		File output = new File( resourcesDir, "polish.css");
 		StringBuffer buffer = new StringBuffer();
 		saveColors( buffer );
 		saveStyles( buffer );

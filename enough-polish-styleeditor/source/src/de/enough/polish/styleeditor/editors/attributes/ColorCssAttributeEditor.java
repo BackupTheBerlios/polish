@@ -86,7 +86,7 @@ public class ColorCssAttributeEditor extends CssAttributeEditor {
 		if (this.value != null) {
 			this.value.setColor( value );
 		} else {
-			this.value = new EditColor( "unknown", value );
+			this.value = new EditColor( value );
 		}
 		update();
 	}
@@ -134,6 +134,12 @@ public class ColorCssAttributeEditor extends CssAttributeEditor {
 	 * @see de.enough.polish.styleeditor.editors.CssAttributeEditor#setValue(java.lang.Object)
 	 */
 	public void setValue(Object value) {
+//		System.out.println("ColorCssAttributeEditor.setValue(" + value + ")");
+//		if (value instanceof Color) {
+//			System.out.println("color=" + Integer.toHexString( ((Color)value).getColor() ));
+//		} else if(value instanceof Integer) {
+//			System.out.println("color(int)=" + Integer.toHexString( ((Integer)value).intValue() ));
+//		}  
 		if (value == null) {
 			this.value = null;
 			return;
