@@ -82,7 +82,7 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
         CssAttributesManager attributesManager = CssAttributesManager.getInstance( polishHome, resourceUtil );
         Environment environment = new Environment(polishHome);
         environment.setBaseDir( projectHome );
-        environment.initialize( deviceDB.getDevice("Nokia/6630"), null);
+        environment.initialize( deviceDB.loadDevice( polishHome, "Nokia/6630"), null);
 
         this.resourceProvider = initResourceProvider( polishHome, environment, attributesManager );
         visual = new PolishDataEditorVisual( context, environment, this.resourceProvider, attributesManager );

@@ -19,6 +19,7 @@ import de.enough.polish.resources.StyleProvider;
 import de.enough.polish.resources.impl.ResourcesProviderImpl;
 import de.enough.polish.resources.swing.ColorSelectionListener;
 import de.enough.polish.resources.swing.ResourcesTree;
+import de.enough.polish.resources.swing.SpecifyOrSelectEntryDialog;
 import de.enough.polish.resources.swing.StyleSelectionListener;
 import de.enough.polish.runtime.SelectionListener;
 import de.enough.polish.styleeditor.*;
@@ -139,6 +140,14 @@ public class PolishDataEditorVisual extends JPanel
     }
     
     private EditStyle getEditStyle( ItemOrScreen itemOrScreen, Style style ) {       
+        EditStyle editStyle = getEditStyleImpl(itemOrScreen, style);
+        if (editStyle != null) {
+            itemOrScreen.setStyle( editStyle.getStyle() );
+            itemOrScreen.requestInit();
+        }
+        return editStyle;
+    }
+    private EditStyle getEditStyleImpl( ItemOrScreen itemOrScreen, Style style ) {       
         EditStyle editStyle = null;
         if (style != null && style.name != null) {
             editStyle = (EditStyle) this.resourceProvider.getStyle(style.name);
@@ -151,50 +160,57 @@ public class PolishDataEditorVisual extends JPanel
             }
         }         
         if (editStyle == null) {
+            //StyleProvider[] knownStyles = this.resourceProvider.getStyles();
+            //String sty
             Object itemOrScreenObj = itemOrScreen.getItemOrScreen();
             String defaultName = getDefaultStyleName( itemOrScreenObj.getClass() );
-            String chosenName = (String)JOptionPane.showInputDialog(
-                    this,
+            
+            String chosenName = SpecifyOrSelectEntryDialog.showDialog(
+                    null,
+                    "Choose Style Name",
                     itemOrScreenObj instanceof Item ? 
                         "This item has no attached style, please enter the desired name: "
                         :
                         "This screen has no attached style, please enter the desired name: ",
-                    "Choose Style Name",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    null,
+                    this.resourceProvider.getStyles(),
                     defaultName);
             if (chosenName == null) {
                 return null;
             }
-            if (style == null || style == StyleSheet.defaultStyle) {
-                style = new Style();
-            }
-            style.name = chosenName;
-            DesignComponent dc;
-            if (itemOrScreenObj instanceof Item) {
-                Item item = (Item) itemOrScreenObj;
-                item.setStyle( style );
-                //UiAccess.setStyle( (Item)itemOrScreenObj, style );
-                dc =  (DesignComponent)item.getAttribute("DesignComponent" );
-                //dc = (DesignComponent) UiAccess.getAttribute( (Item)itemOrScreenObj, "DesignComponent" );
+            // check if the user selected an existing style:
+            editStyle = (EditStyle) this.resourceProvider.getStyle(chosenName);
+            if (editStyle != null) {
+                editStyle.setItemOrScreen(itemOrScreen);
             } else {
-                UiAccess.setStyle( (Screen)itemOrScreenObj, style );
-                dc = (DesignComponent) ((Screen)itemOrScreenObj).getScreenData();
+                if (style == null || style == StyleSheet.defaultStyle) {
+                    style = new Style();
+                }
+                style.name = chosenName;
+                DesignComponent dc;
+                if (itemOrScreenObj instanceof Item) {
+                    Item item = (Item) itemOrScreenObj;
+                    item.setStyle( style );
+                    //UiAccess.setStyle( (Item)itemOrScreenObj, style );
+                    dc =  (DesignComponent)item.getAttribute("DesignComponent" );
+                    //dc = (DesignComponent) UiAccess.getAttribute( (Item)itemOrScreenObj, "DesignComponent" );
+                } else {
+                    UiAccess.setStyle( (Screen)itemOrScreenObj, style );
+                    dc = (DesignComponent) ((Screen)itemOrScreenObj).getScreenData();
+                }
+                editStyle = new EditStyle( style.name, style,  itemOrScreen );
+                if (dc != null) {
+                    final DesignComponent designComponent = dc;
+                    final String styleName = chosenName;
+                    designComponent.getDocument().getTransactionManager().writeAccess( new Runnable() {
+                        public void run() {
+                            designComponent.writeProperty(PolishPropertiesProcessor.PROP_STYLE, MidpTypes.createStringValue( styleName ) );
+                        }
+                    });
+                }
+
+                this.resourceProvider.addStyle(style.name, editStyle);
+                this.resourcesTree.addStyle(editStyle);
             }
-            editStyle = new EditStyle( style.name, style,  itemOrScreen );
-            if (dc != null) {
-                final DesignComponent designComponent = dc;
-                final String styleName = chosenName;
-                designComponent.getDocument().getTransactionManager().writeAccess( new Runnable() {
-                    public void run() {
-                        designComponent.writeProperty(PolishPropertiesProcessor.PROP_STYLE, MidpTypes.createStringValue( styleName ) );
-                    }
-                });
-            }
-            
-            this.resourceProvider.addStyle(style.name, editStyle);
-            this.resourcesTree.addStyle(editStyle);
         }
         return editStyle;
     }
@@ -203,9 +219,14 @@ public class PolishDataEditorVisual extends JPanel
     public void deviceChanged( DataObjectContext context ) {
         String deviceName = MidpProjectPropertiesSupport.getActiveConfiguration(ProjectUtils.getProject (context));
         if ( deviceName.indexOf('/') == -1) {
-            deviceName = "Generic/" + deviceName;
+        	int underlinePos = deviceName.indexOf('_');
+        	if (underlinePos != -1) {
+        		deviceName = deviceName.substring(0, underlinePos) + "/" + deviceName.substring( underlinePos + 1);	
+        	} else {
+           		deviceName = "Generic/" + deviceName;
+        	}
         }
-        
+        //TODO alternatively load device with DeviceDatabase.loadDevice( polishHome, deviceName );
         System.out.println(">> At " + System.currentTimeMillis() + " device changed to " + deviceName );
         SimulationDevice device = new SimulationDevice( deviceName );
         Dimension deviceScreenSize = MidpProjectPropertiesSupport.getDeviceScreenSizeFromProject(context);
