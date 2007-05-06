@@ -56,7 +56,17 @@ public abstract class DisplayableParser {
     protected void addAttributes(  DesignComponent designComponent, ResourcesProvider resourcesProvider, Displayable displayable ) {
         // setting title:
         String title = MidpValueSupport.getHumanReadableString(designComponent.readProperty(DisplayableCD.PROP_TITLE));
-        displayable.setTitle(title);
+        if (displayable instanceof Screen) {
+            Screen screen = (Screen) displayable;
+            StyleProvider titleStyle = resourcesProvider.getStyle("title");
+            if (titleStyle != null ) {
+                screen.setTitle( title, titleStyle.getStyle() );
+            } else {
+                displayable.setTitle(title);
+            }
+        } else {
+            displayable.setTitle(title);
+        }
         
         // setting commands:
         PropertyValue value =  designComponent.readProperty(DisplayableCD.PROP_COMMANDS);
