@@ -65,7 +65,7 @@ public class Style
 	 * @see #getFontColor()
 	 */
 	public int fontColor;
-	private Color fontColorObj;
+	public Color fontColorObj;
 	public int paddingLeft;
 	public int paddingTop;
 	public int paddingRight;

@@ -35,9 +35,23 @@ import de.enough.polish.ui.Style;
 public class RssBrowser
 	extends HtmlBrowser
 {
+	
+	public RssBrowser() {
+		this( new DefaultRssItemCommandListener()); 
+	}
+	
+	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener) {
+		this( listener, null ); 
+	}
+
+	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener, Style style ) {
+		super( style );
+		new RssTagHandler(HtmlTagHandler.CMD_LINK, listener).register(this);
+	}
+	
 	public RssBrowser(ItemCommandListener listener)
 	{
-		new RssTagHandler(HtmlTagHandler.CMD_LINK, listener).register(this);
+		this( listener, null );
 	}
 
 	public RssBrowser(ItemCommandListener listener, Style style)
