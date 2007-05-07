@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.netbeans.api.project.ProjectInformation;
+import org.netbeans.api.project.ProjectManager;
+import org.netbeans.api.project.ProjectUtils;
 import org.openide.filesystems.Repository;
 
 /**
@@ -60,6 +62,7 @@ public final class Converter {
         assert polishHome != null;
 
         EditableProperties ep = helper.getProperties (AntProjectHelper.PROJECT_PROPERTIES_PATH);
+        boolean setAsMain = project == OpenProjects.getDefault().getMainProject();
         OpenProjects.getDefault ().close (new Project[] { project });
         project = null;
 
@@ -106,9 +109,11 @@ public final class Converter {
         helper.putProperties (AntProjectHelper.PROJECT_PROPERTIES_PATH, ep);
         helper = null;
         project = FileOwnerQuery.getOwner (projectRoot);
-        if (project != null)
+        if (project != null) {
             OpenProjects.getDefault().open (new Project[] { project }, false);
-
+            if (setAsMain)
+                OpenProjects.getDefault().setMainProject(project);
+        }
     }
 
     private static void copyDir (FileObject sourceDir, FileObject parentTargetDir, String targetDirName) throws IOException {
