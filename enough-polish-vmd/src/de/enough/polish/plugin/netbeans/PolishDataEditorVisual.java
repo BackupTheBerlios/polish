@@ -45,6 +45,8 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.WeakHashMap;
 import javax.microedition.lcdui.Displayable;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -65,6 +67,8 @@ public class PolishDataEditorVisual extends JPanel
         implements StyleEditorListener, SelectionListener, StyleSelectionListener, ColorSelectionListener, ColorChooserListener
 {
 
+    private static WeakHashMap<DataObjectContext,WeakReference<PolishDataEditorVisual>> instances = new WeakHashMap<DataObjectContext, WeakReference<PolishDataEditorVisual>> ();
+
     private Simulation simulation;
     private SimulationPanel simulationPanel;
     //private ResourcesPanel editor;
@@ -74,6 +78,8 @@ public class PolishDataEditorVisual extends JPanel
 
     public PolishDataEditorVisual(DataObjectContext context, Environment environment, ResourcesProvider resourcesProvider, CssAttributesManager attributesManager) {
         super( new BorderLayout() );
+        instances.put (context, new WeakReference<PolishDataEditorVisual> (this));
+
         SimulationDevice device = new SimulationDevice ();
         simulation = new Simulation (device);
         simulation.addOverlay( new SelectionOverlay() );
@@ -105,7 +111,19 @@ public class PolishDataEditorVisual extends JPanel
         new DropTarget( simulation, new SimulationDropListener( simulation ) );
     }
     
-   
+    public static void saveResources (DataObjectContext context) {
+        WeakReference<PolishDataEditorVisual> ref = instances.get(context);
+        if (ref != null) {
+            PolishDataEditorVisual visual = ref.get();
+            if (visual != null) {
+                try {
+                    visual.resourceProvider.saveResources();
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        }
+    }
     
     public void setCurrent( Displayable displayable ) {
         if (displayable == null) {
@@ -249,11 +267,11 @@ public class PolishDataEditorVisual extends JPanel
         style.getItemOrScreen().requestInit();
         this.simulation.getCurrentDisplayable()._requestRepaint();
         System.out.println( style.toSourceCode() );
-        try {
-            this.resourceProvider.saveResources();
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
+//        try {
+//            this.resourceProvider.saveResources();
+//        } catch (IOException ex) {
+//            Exceptions.printStackTrace(ex);
+//        }
     }
 
    /* (non-Javadoc)
