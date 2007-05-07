@@ -9,14 +9,11 @@
 
 package de.enough.polish.plugin.netbeans;
 import de.enough.polish.Environment;
-import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.plugin.netbeans.components.PolishPropertiesProcessor;
-import de.enough.polish.plugin.netbeans.settings.PolishSettings;
 import de.enough.polish.preprocess.css.CssAttributesManager;
 import de.enough.polish.resources.ColorProvider;
 import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.resources.StyleProvider;
-import de.enough.polish.resources.impl.ResourcesProviderImpl;
 import de.enough.polish.resources.swing.ColorSelectionListener;
 import de.enough.polish.resources.swing.ResourcesTree;
 import de.enough.polish.resources.swing.SpecifyOrSelectEntryDialog;
@@ -38,7 +35,6 @@ import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.ui.UiAccess;
-import de.enough.polish.util.ResourceUtil;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -48,10 +44,8 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
-import java.io.File;
 import java.io.IOException;
 import javax.microedition.lcdui.Displayable;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -60,7 +54,6 @@ import org.netbeans.modules.vmd.api.io.javame.MidpProjectPropertiesSupport;
 import org.netbeans.modules.vmd.api.io.ProjectUtils;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
 import org.netbeans.modules.vmd.midp.components.MidpTypes;
-import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
 
 /**
@@ -218,6 +211,11 @@ public class PolishDataEditorVisual extends JPanel
      
     public void deviceChanged( DataObjectContext context ) {
         String deviceName = MidpProjectPropertiesSupport.getActiveConfiguration(ProjectUtils.getProject (context));
+        System.out.println("deviceChanged: new device=" + deviceName );
+        if (deviceName == null) {
+            System.err.println("WARNING: no device found!!!");
+            return;
+        }
         if ( deviceName.indexOf('/') == -1) {
         	int underlinePos = deviceName.indexOf('_');
         	if (underlinePos != -1) {
@@ -250,6 +248,7 @@ public class PolishDataEditorVisual extends JPanel
         style.getItemOrScreen().setStyle(style.getStyle());
         style.getItemOrScreen().requestInit();
         this.simulation.getCurrentDisplayable()._requestRepaint();
+        System.out.println( style.toSourceCode() );
         try {
             this.resourceProvider.saveResources();
         } catch (IOException ex) {

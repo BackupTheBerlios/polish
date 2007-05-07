@@ -232,7 +232,6 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
         // so that we always stay in sync...
         Displayable displayable = this.displayableParserManager.parseDisplayable(editedScreen, this.resourceProvider );
         if (displayable != null) {
-            displayable._callShowNotify();
             this.visual.setCurrent(displayable);
         }
 

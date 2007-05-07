@@ -82,9 +82,11 @@
     <folder name="vmd-midp">
         <folder name="components">
             <file name="de-enough-polish-plugin-netbeans-components-items-BrowserCD.instance"/>
+            <file name="de-enough-polish-plugin-netbeans-components-items-RssBrowserCD.instance"/>
         </folder>
         <folder name="producers">
             <file name="de-enough-polish-plugin-netbeans-components-items-BrowserProducer.instance"/>
+            <file name="de-enough-polish-plugin-netbeans-components-items-RssBrowserProducer.instance"/>
         </folder>
     </folder>    
 

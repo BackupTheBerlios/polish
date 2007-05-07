@@ -9,6 +9,7 @@
 
 package de.enough.polish.plugin.netbeans;
 
+import de.enough.polish.plugin.netbeans.modelparser.AlertParser;
 import de.enough.polish.plugin.netbeans.modelparser.DisplayableParser;
 import de.enough.polish.plugin.netbeans.modelparser.FormParser;
 import de.enough.polish.plugin.netbeans.modelparser.ListParser;
@@ -22,6 +23,7 @@ import org.netbeans.modules.vmd.midp.components.displayables.FormCD;
 import javax.microedition.lcdui.Displayable;
 import java.util.HashMap;
 import java.util.Map;
+import org.netbeans.modules.vmd.midp.components.displayables.AlertCD;
 
 /**
  * Manages screen parsers and item parsers and converts NetBeans data models to actual J2ME Polish screens.
@@ -38,6 +40,7 @@ public class DisplayableParserManager {
         this.parsersByClassName.put(TextBoxCD.TYPEID.getString (), new TextBoxParser() );
         this.parsersByClassName.put(ListCD.TYPEID.getString (), new ListParser() );
         this.parsersByClassName.put(FormCD.TYPEID.getString (), new FormParser() );
+        this.parsersByClassName.put(AlertCD.TYPEID.getString (), new AlertParser() );
     }
     
     public static DisplayableParserManager getInstance() {

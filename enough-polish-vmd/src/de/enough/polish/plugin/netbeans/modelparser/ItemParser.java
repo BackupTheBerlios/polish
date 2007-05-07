@@ -15,14 +15,10 @@ import de.enough.polish.plugin.netbeans.ItemParserManager;
 import de.enough.polish.plugin.netbeans.components.PolishPropertiesProcessor;
 import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.resources.StyleProvider;
-import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
-import javax.microedition.lcdui.Displayable;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
 import org.netbeans.modules.vmd.api.model.PropertyValue;
 import org.netbeans.modules.vmd.midp.components.MidpTypes;
-import org.netbeans.modules.vmd.midp.components.MidpValueSupport;
-import org.netbeans.modules.vmd.midp.components.displayables.DisplayableCD;
 import org.netbeans.modules.vmd.midp.components.items.ItemCD;
 
 /**

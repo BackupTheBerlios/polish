@@ -11,6 +11,7 @@ package de.enough.polish.plugin.netbeans;
 
 import de.enough.polish.plugin.netbeans.modelparser.*;
 import de.enough.polish.plugin.netbeans.components.items.BrowserCD;
+import de.enough.polish.plugin.netbeans.components.items.RssBrowserCD;
 import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.ui.Item;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
@@ -19,7 +20,6 @@ import org.netbeans.modules.vmd.midp.components.elements.ChoiceElementCD;
 import org.netbeans.modules.vmd.midp.components.items.StringItemCD;
 import org.netbeans.modules.vmd.midp.components.items.ImageItemCD;
 import org.netbeans.modules.vmd.midp.components.items.ChoiceGroupCD;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +38,7 @@ public class ItemParserManager {
         this.parsersByClassName.put(ListElementEventSourceCD.TYPEID.getString (), new ChoiceItemParser() );
         this.parsersByClassName.put(ChoiceElementCD.TYPEID.getString (), new ChoiceItemParser() );
         this.parsersByClassName.put(BrowserCD.TYPEID.getString (), new HtmlBrowserParser() );
+        this.parsersByClassName.put(RssBrowserCD.TYPEID.getString (), new RssBrowserParser() );
         this.parsersByClassName.put(StringItemCD.TYPEID.getString (), new StringItemParser() );
         this.parsersByClassName.put(ImageItemCD.TYPEID.getString (), new ImageItemParser() );
         this.parsersByClassName.put(ChoiceGroupCD.TYPEID.getString (), new ChoiceGroupParser() );
