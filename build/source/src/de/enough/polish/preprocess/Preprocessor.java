@@ -1168,6 +1168,10 @@ public class Preprocessor {
 			if (name.charAt(0) == '.') {
 				name = name.substring( 1 );
 			}
+			int commentIndex = name.indexOf("//");
+			if (commentIndex != -1) {
+				name = name.substring(0, commentIndex ).trim();
+			}
 			isOptional = name.endsWith("?");
 			if (isOptional) {
 				name = name.substring( 0, name.length() - 1 );

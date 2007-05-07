@@ -51,14 +51,14 @@
 		description="The background of an item or screen. The default background for items is &quot;none&quot;, the default background for screens is a simple white background."
 	>
 		<mapping from="simple"              to="de.enough.polish.ui.backgrounds.SimpleBackground"   converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter">
-			<param name="color" type="color" default="white" />
+			<param name="color" type="color" primitive="true" default="white" />
 		</mapping>
 		<mapping from="simple-translucent"  to="de.enough.polish.ui.backgrounds.TranslucentSimpleBackground"  converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter">
 			<param name="argb-color" type="color" translucent="true" primitive="true" default="#8f00" />
 		</mapping>
 		<mapping from="simple-bordered"     to="de.enough.polish.ui.backgrounds.BorderedSimpleBackground"   converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter">
-			<param name="color" type="color" default="white" />
-			<param name="border-color" type="color" default="black" />
+			<param name="color" type="color" primitive="true" default="white" />
+			<param name="border-color" type="color" primitive="true" default="black" />
 			<param name="border-width" type="integer" default="1" />
 		</mapping>
 		<mapping from="plain"               converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter" />
@@ -161,7 +161,8 @@
 			<param name="stroke" type="integer" default="solid" values="solid,dotted" />
 		</mapping>
 		<mapping from="snow"                converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" />
-		<mapping from="snowflakes"          to="de.enough.polish.ui.backgrounds.XmasSnowBackground" converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" >
+		<mapping from="snowflakes"          to="de.enough.polish.ui.backgrounds.XmasSnowBackground" 
+				converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="red" />
 			<param name="flake-color" type="color" primitive="true" default="white" />
 			<param name="max-flake-size" type="integer" default="10" />
@@ -1991,6 +1992,7 @@
 	<attribute
 		name="text-drop-shadow-inner-color"
 		type="color"
+		translucent="true"
 		appliesTo="DropShadowTextEffect"
 		description="The color of the inner shadow. The color must not be fully opaque!"
 		default="#A0909090"
@@ -1999,6 +2001,7 @@
 	<attribute
 		name="text-drop-shadow-outer-color"
 		type="color"
+		translucent="true"
 		appliesTo="DropShadowTextEffect"
 		description="The color of the outer shadow, which must be less opaque than the start-color and the difference between them should be at least size."
 		default="#20909090"
@@ -2007,6 +2010,7 @@
 	<attribute
 		name="text-alien-glow-inner-color"
 		type="color"
+		translucent="true"
 		appliesTo="AlienGlowTextEffect"
 		description="The inner parts color of the glow."
 		default="#FFFFFFFF"
@@ -2015,6 +2019,7 @@
 	<attribute
 		name="text-alien-glow-outer-color"
 		type="color"
+		translucent="true"
 		appliesTo="AlienGlowTextEffect"
 		description="The outer parts color of the glow."
 		default="#FF00FF00"
@@ -2023,6 +2028,7 @@
 	<attribute
 		name="text-fade-in-color"
 		type="color"
+		translucent="true"
 		appliesTo="FadeTextEffect"
 		description="The color, which the text has, if it is faded in."
 		default="#FF000000"
@@ -2031,6 +2037,7 @@
 	<attribute
 		name="text-fade-out-color"
 		type="color"
+		translucent="true"
 		appliesTo="FadeTextEffect"
 		description="The color, which the text has, if it is faded out."
 		default="#FF00FF00"
@@ -2081,6 +2088,7 @@
 	<attribute
 		name="text-fading-alien-glow-inner-color"
 		type="color"
+		translucent="true"
 		appliesTo="FadingAlienGlowTextEffect"
 		description="The inner parts color of the glow."
 		default="#FFFFFFFF"
@@ -2089,6 +2097,7 @@
 	<attribute
 		name="text-fading-alien-glow-outer-out-color"
 		type="color"
+		translucent="true"
 		appliesTo="FadingAlienGlowTextEffect"
 		description="The outer parts color of the glow, if the state is faded out."
 		default="#FF0080FF"
@@ -2097,6 +2106,7 @@
 	<attribute
 		name="text-fading-alien-glow-outer-in-color"
 		type="color"
+		translucent="true"
 		appliesTo="FadingAlienGlowTextEffect"
 		description="The outer parts color of the glow, if the state is faded in."
 		default="#FF80FF00"

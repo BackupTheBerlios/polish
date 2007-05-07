@@ -30,6 +30,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -386,6 +387,53 @@ public class DeviceDatabase {
         	instanceByPolishHome.put(polishHomePath,deviceDatabase);
         }
         return deviceDatabase;
+	}
+	
+	/**
+	 * Loads only the specified devices.
+	 * This call ignores all other device definitions and is thus less memory intensive and much faster than using a regular device database.
+	 * @param polishHome the location of the J2ME Polish installation dir
+	 * @param identifiers the identifiers of the devices like "Nokia/N70"
+	 * @return the found device definitions, not necessarily the same length as the specified identifiers, when a device has not been found.
+	 */
+	public static Device[] loadDevices( File polishHome, String[] identifiers ) {
+		Map properties = new HashMap();
+		List deviceIdentifiersList =  Arrays.asList(identifiers);
+		properties.put( "polish.devicedatabase.identifiers", deviceIdentifiersList );
+		if (polishHome != null) {
+			properties.put( "polish.home", polishHome.getAbsolutePath() );
+		}
+		DeviceDatabase db = getInstance(properties, polishHome, null, null, null, null, null );
+		List devicesList = new ArrayList();
+		Device[] devices = db.getDevices();
+		for (int i = 0; i < devices.length; i++) {
+			Device device = devices[i];
+			if (deviceIdentifiersList.contains(device.getIdentifier())) {
+				devicesList.add(device);
+			}
+		}
+		if (devicesList.size() == devices.length) {
+			return devices;
+		} else {
+			return (Device[]) devicesList.toArray( new Device[ devicesList.size() ] );
+		}
+	}
+	
+	/**
+	 * Loads only the specified device.
+	 * This call ignores all other device definitions and is thus less memory intensive and much faster than using a regular device database.
+	 * @param polishHome the location of the J2ME Polish installation dir
+	 * @param identifier the identifier of the devic like "Nokia/N70"
+	 * @return the found device definition
+	 * @throws IllegalArgumentException when the device with the given identifier was not found
+	 */
+	public static Device loadDevice( File polishHome, String identifier ) {
+		Device[] devices = loadDevices( polishHome, new String[]{ identifier } );
+		if (devices.length == 0) {
+			throw new IllegalArgumentException("Device " + identifier + " is unknown.");
+		} else {
+			return devices[0];
+		}
 	}
 
 

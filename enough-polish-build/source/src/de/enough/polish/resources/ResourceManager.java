@@ -104,6 +104,9 @@ public class ResourceManager {
 		this.booleanEvaluator = environment.getBooleanEvaluator();
 		this.resourceDirsByDevice = new HashMap();
 		RootSetting[] resDirs = setting.getRootDirectories(environment);
+		if (resDirs == null || resDirs.length == 0) {
+			throw new IllegalStateException("Found no root directories");
+		}
 		this.resourceDirectories = resDirs;
 		for (int i = 0; i < resDirs.length; i++) {
 			File resDir = resDirs[i].resolveDir(environment);
@@ -354,6 +357,9 @@ public class ResourceManager {
 				continue;
 			}
 			File resourcesDir = rootSetting.resolveDir( this.environment );
+			if (!resourcesDir.exists()) {
+				throw new BuildException( "resource dir " + resourcesDir.getAbsolutePath() + " does not exist.");
+			}
 			// first dir is the general resources dir:
 			dirs.add( resourcesDir );
 			//String resourcePath = resourcesDir.getAbsolutePath() + File.separator;

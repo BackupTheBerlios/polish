@@ -34,6 +34,12 @@ import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;
 
 public class XmasSnowBackgroundConverter extends BackgroundConverter {
+	
+	public XmasSnowBackgroundConverter() 
+	{
+		super();
+	}
+	
 	protected String createNewStatement(HashMap map, Style stlye,
 			StyleSheet styleSheet) throws BuildException {
 		String result = "new de.enough.polish.ui.backgrounds.XmasSnowBackground(" 

@@ -91,6 +91,7 @@ public class ColorCssAttribute extends CssAttribute {
 		ColorConverter colorConverter = (ColorConverter) environment.get( ColorConverter.ENVIRONMENT_KEY );
 		if (colorConverter != null) {
 			if (this.isBaseAttribute || this.isPrimitive) {
+				//System.out.println("ColorCssAttribute.getValue( " + value  + ") results in " + colorConverter.parseColor(value));
 				return colorConverter.parseColor(value);
 			}
 			return colorConverter.generateColorConstructor(value);
