@@ -70,7 +70,7 @@ public class PolishPlatform {
                 if (! device.isMidp1 ()  &&  ! device.isMidp2 ())
                     continue;
 
-                device.setEnvironment (new Environment (new ExtensionManager (new org.apache.tools.ant.Project ()), new HashMap (), new File (polishHome + "/samples/blank/"))); // NOI18N
+                device.setEnvironment (new Environment (new File (polishHome)));
                 String[] strings = device.getBootClassPaths ();
                 for (int i = 0; i < strings.length; i++)
                     deviceBuffer.append ("<optional name=\"OptionalBootPathElement" + (i + 1) + "\" version=\"1.0\" displayname=\"" + strings[i] + "\" classpath=\"" + strings[i] + "\" dependencies=\"\" default=\"true\"/>\n");
@@ -118,6 +118,8 @@ public class PolishPlatform {
         } catch (IOException e) {
             Exceptions.printStackTrace (e);
         }
+
+        database.clear();
     }
 
     public static String checkForJavaIdentifierCompliant (String instanceName) {

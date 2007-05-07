@@ -53,6 +53,7 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
         });
         if (virtualDevices != null)
             list.add (0, virtualDevices);
+        database.clear();
         return list;
     }
 
@@ -68,7 +69,7 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
     public static HashMap<String, String> createPropertiesMap (de.enough.polish.Device device) {
         String polishHome = PolishSettings.getDefault ().getPolishHome ();
         try {
-            device.setEnvironment (new Environment (new ExtensionManager (new org.apache.tools.ant.Project ()), new HashMap (), new File (polishHome + "/samples/blank/"))); // NOI18N
+            device.setEnvironment (new Environment (new File (polishHome)));
         } catch (Exception e) {
             Exceptions.printStackTrace (e);
             return null;
