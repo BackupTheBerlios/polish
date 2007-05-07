@@ -13,6 +13,7 @@ import de.enough.polish.plugin.netbeans.ItemParserManager;
 import de.enough.polish.plugin.netbeans.components.PolishPropertiesProcessor;
 import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.resources.StyleProvider;
+import de.enough.polish.styleeditor.util.StyleEditorUtil;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
@@ -56,17 +57,7 @@ public abstract class DisplayableParser {
     protected void addAttributes(  DesignComponent designComponent, ResourcesProvider resourcesProvider, Displayable displayable ) {
         // setting title:
         String title = MidpValueSupport.getHumanReadableString(designComponent.readProperty(DisplayableCD.PROP_TITLE));
-        if (displayable instanceof Screen) {
-            Screen screen = (Screen) displayable;
-            StyleProvider titleStyle = resourcesProvider.getStyle("title");
-            if (titleStyle != null ) {
-                screen.setTitle( title, titleStyle.getStyle() );
-            } else {
-                displayable.setTitle(title);
-            }
-        } else {
-            displayable.setTitle(title);
-        }
+        displayable.setTitle(title);
         
         // setting commands:
         PropertyValue value =  designComponent.readProperty(DisplayableCD.PROP_COMMANDS);
@@ -87,8 +78,11 @@ public abstract class DisplayableParser {
      * @param item a J2ME Polish item
      */
     protected void addStyle(  DesignComponent designComponent, ResourcesProvider resourcesProvider, Displayable displayable ) {
-        //TODO read the style name from the designComponent and apply it to the screen
         if (displayable instanceof Screen) {
+            Screen screen = (Screen) displayable;
+            // set default styles:
+            StyleEditorUtil.setDefaultStyles( screen, resourcesProvider );
+            // set screen specific style:
             try {
                 PropertyValue styleValue = designComponent.readProperty( PolishPropertiesProcessor.PROP_STYLE );
                 if (styleValue != null && styleValue.getKind() == PropertyValue.Kind.VALUE) {

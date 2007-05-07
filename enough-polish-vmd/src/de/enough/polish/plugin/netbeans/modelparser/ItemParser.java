@@ -15,6 +15,7 @@ import de.enough.polish.plugin.netbeans.ItemParserManager;
 import de.enough.polish.plugin.netbeans.components.PolishPropertiesProcessor;
 import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.resources.StyleProvider;
+import de.enough.polish.styleeditor.util.StyleEditorUtil;
 import de.enough.polish.ui.UiAccess;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
 import org.netbeans.modules.vmd.api.model.PropertyValue;
@@ -63,6 +64,10 @@ public abstract class ItemParser {
      * @param item a J2ME Polish item
      */
     protected void addStyle(  DesignComponent designComponent, ResourcesProvider resourcesProvider, Item item ) {
+        // set default styles:
+        StyleEditorUtil.setDefaultStyles( item, resourcesProvider );
+
+        // set item specific style:
         try {
          PropertyValue styleValue = designComponent.readProperty( PolishPropertiesProcessor.PROP_STYLE );
             if (styleValue != null && styleValue.getKind() == PropertyValue.Kind.VALUE) {
