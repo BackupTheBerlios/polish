@@ -39,12 +39,16 @@ public class PolishProjectResourceResolver implements ProjectResourceResolver {
         FileObject resources = project.getProjectDirectory ().getFileObject ("resources"); // NOI18N
         if (resources == null)
             return null;
-        FileObject[] roots = resources.getChildren ();
         ArrayList<FileObject> result = new ArrayList<FileObject> ();
-        for (FileObject root : roots)
-            if (root != null  &&  root.isFolder ())
-                result.add (root);
+        inspect (result, resources);
         return result;
+    }
+    
+    private void inspect (ArrayList<FileObject> result, FileObject folder) {
+        for (FileObject file : folder.getChildren())
+            if (file.isFolder ())
+                inspect (result, file);
+        result.add (folder);
     }
 
 }
