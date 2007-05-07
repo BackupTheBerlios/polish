@@ -56,6 +56,7 @@ import de.enough.polish.resources.StyleProvider;
 import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.EditColor;
 import de.enough.polish.styleeditor.EditStyle;
+import de.enough.polish.styleeditor.util.StyleEditorUtil;
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Border;
 import de.enough.polish.ui.Color;
@@ -122,10 +123,7 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 			Style style = cssStyles[i];
 			this.styleNamesList.add( style.getSelector() );
 		}
-		StyleProvider focused = getStyle("focused");
-		if (focused != null) {
-			de.enough.polish.ui.StyleSheet.focusedStyle = focused.getStyle();
-		}
+		StyleEditorUtil.setDefaultStyles( this );
 	}
 
 	/**
@@ -150,6 +148,7 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 	 * @see de.enough.polish.resources.ResourcesProvider#addStyle(java.lang.String, de.enough.polish.resources.StyleProvider)
 	 */
 	public void addStyle(String name, StyleProvider style) {
+		System.out.println("eding style " + name );
 		this.editStylesByName.put( name, (EditStyle)style );
 		this.styleNamesList.add(name);
 	}
@@ -159,6 +158,9 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 	 */
 	public StyleProvider getStyle(String name) {
 		EditStyle editStyle = this.editStylesByName.get(name);
+		if (editStyle == null) {
+			editStyle = this.editStylesByName.get(name.toLowerCase());
+		}
 		if (editStyle == null) {
 			Style cssStyle = this.styleSheet.getStyle(name);
 			if (cssStyle == null) {
@@ -203,6 +205,7 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 			String valueStr = (String) group.get("layout");
 			CssAttribute attribute = this.attributesManager.getAttribute("layout");
 			style.layout = ((Integer) attribute.parseAndInstantiateValue(valueStr, this.environment)).intValue();
+			editStyle.setLayout(valueStr);
 		}
 		group = cssStyle.getGroup("font");
 		if (group != null) {
@@ -215,18 +218,21 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 				editStyle.setFontFace(valueStr);
 				CssAttribute attribute = this.attributesManager.getAttribute("font-face");
 				fface = ((Integer) attribute.parseAndInstantiateValue(valueStr, this.environment)).intValue();
+				editStyle.setFontFace(valueStr);
 			}
 			valueStr = (String) group.get("style");
 			if (valueStr != null) {
 				editStyle.setFontStyle(valueStr);
 				CssAttribute attribute = this.attributesManager.getAttribute("font-style");
 				fstyle = ((Integer) attribute.parseAndInstantiateValue(valueStr, this.environment)).intValue();
+				editStyle.setFontStyle(valueStr);
 			}
 			valueStr = (String) group.get("size");
 			if (valueStr != null) {
 				editStyle.setFontSize(valueStr);
 				CssAttribute attribute = this.attributesManager.getAttribute("font-size");
 				fsize = ( (Integer) attribute.parseAndInstantiateValue(valueStr, this.environment)).intValue();
+				editStyle.setFontSize(valueStr);
 			}
 			style.font = Font.getFont(fface, fstyle, fsize );
 			
@@ -236,6 +242,7 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 				CssAttribute attribute = this.attributesManager.getAttribute("font-color");
 				style.fontColorObj = (Color) attribute.parseAndInstantiateValue(valueStr, this.environment);
 				style.fontColor = style.fontColorObj.getColor();
+				editStyle.setFontColor(valueStr);
 			}
 		}
 		group = cssStyle.getGroup("background");
@@ -313,6 +320,14 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 			}
 		}
 		return editStyle;
+	}
+	
+	private boolean equals(int num1, int num2, int num3, int num4) {
+		return (num1 == num2 && num2 == num3 && num3 == num4 );
+	}
+
+	private boolean equals(int num1, int num2, int num3, int num4, int num5, int num6) {
+		return (num1 == num2 && num2 == num3 && num3 == num4 && num4 == num5 && num5 == num6 );
 	}
 	
 	/**
@@ -414,7 +429,10 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 	 * @see de.enough.polish.resources.ResourcesProvider#saveResources()
 	 */	
 	public void saveResources() throws IOException {
-		File resourcesDir = new File( this.environment.getBaseDir(), "resources");
+		File resourcesDir = new File( this.environment.getBaseDir(), "resources/base");
+		if (!resourcesDir.exists()) {
+			resourcesDir = new File( this.environment.getBaseDir(), "resources");
+		}
 		File output = new File( resourcesDir, "polish.css");
 		StringBuffer buffer = new StringBuffer();
 		saveColors( buffer );

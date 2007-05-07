@@ -102,14 +102,14 @@ public class ItemOrScreen {
 			this.item.requestInit();
 			Screen itemScreen = this.item.getScreen();
 			if (itemScreen != null) {
-				System.out.println("ItemOrScreen.requestInit() success: repaint called on item's screen. ");
+				//System.out.println("ItemOrScreen.requestInit() success: repaint called on item's screen. ");
 				itemScreen.repaint();
-			} else {
-				System.out.println("ItemOrScreen.requestInit() failed: item has no attached screen. ");
+//			} else {
+//				System.out.println("ItemOrScreen.requestInit() failed: item has no attached screen. ");
 			}
 		}
 		if (this.screen != null) {
-			System.out.println("ItemOrScreen.requestInit() success: repaint called on screen. ");
+//			System.out.println("ItemOrScreen.requestInit() success: repaint called on screen. ");
 			this.screen.repaint();
 		}
 		

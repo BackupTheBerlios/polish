@@ -58,6 +58,7 @@ import de.enough.polish.styleeditor.editors.MarginPaddingEditor;
 import de.enough.polish.styleeditor.swing.SwingStyleEditor;
 import de.enough.polish.styleeditor.swing.components.ColorChooserComponent;
 import de.enough.polish.styleeditor.swing.components.ColorChooserListener;
+import de.enough.polish.styleeditor.util.StyleEditorUtil;
 import de.enough.polish.swing.SwingApplication;
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.ChoiceGroup;
@@ -192,7 +193,7 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
 		group.append( "second choice", null );
 		form.append( group );
 		form.addCommand( new Command("Command", Command.SCREEN, 2 ));
-		form._callShowNotify();
+		//form._callShowNotify();
 		Background background = new SimpleBackground( 0xffff00 );
 		UiAccess.setBackground(form, background);
 		return form;
@@ -236,6 +237,7 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
 	 * @see de.enough.polish.runtime.SelectionListener#notifyScreenSelected(de.enough.polish.ui.Screen, de.enough.polish.ui.Style, int, int)
 	 */
 	public void notifyScreenSelected(Screen screen, Style style, int x, int y) {
+		StyleEditorUtil.setDefaultStyles(screen, this.resourceProvider);
 		ItemOrScreen itemOrScreen = new ItemOrScreen( screen );
 		editStyle( itemOrScreen, style );
 	}

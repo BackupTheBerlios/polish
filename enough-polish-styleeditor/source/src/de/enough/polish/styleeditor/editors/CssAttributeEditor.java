@@ -87,22 +87,30 @@ public abstract class CssAttributeEditor extends StylePartEditor {
 		//System.out.println(this + ".readStyle(" + style+ ")");
 		Object value = style.getStyle().getObjectProperty( this.attribute.getId() );
 		if (value == null) {
-			value = this.attribute.instantiateDefault( getEnvironment() );
+			value = instantiateDefault();
 			//value = this.attribute.instantiateValue( this.attribute.getValue( this.attribute.getDefaultValue(), getEnvironment()) );
 		}
 		setValue( value );
+	}
+
+	/**
+	 * @return
+	 */
+	protected Object instantiateDefault() {
+		Object value;
+		value = this.attribute.instantiateDefault( getEnvironment() );
+		return value;
 	}
 	
 	public void readStyle( Object styleSource ) {
 		//System.out.println(this + ".readStyle(" + styleSource + ")");
 		Object value = getFieldValue( styleSource );
 		if (value == null) {
-			value = this.attribute.instantiateDefault( getEnvironment() );
-		//} else {
-		//	System.out.println(this + ".readStyle(" + styleSource + "): got value " + value + " from field " + this.attribute.getName() );
+			value = instantiateDefault();
 		}
 		setValue( value );
 	}
+	
 
 	/**
 	 * @param styleSource

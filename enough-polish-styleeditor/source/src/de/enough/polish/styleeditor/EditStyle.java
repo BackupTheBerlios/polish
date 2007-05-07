@@ -553,9 +553,15 @@ implements StyleProvider
 		if (this.fontFace != null) {
 			buffer.append("\tfont {\n");
 			buffer.append("\t\tface: ").append( this.fontFace ).append(";\n");
-			buffer.append("\t\tsize: ").append( this.fontSize ).append(";\n");
-			buffer.append("\t\tstyle: ").append( this.fontStyle ).append(";\n");
-			buffer.append("\t\tcolor: ").append( this.fontColor ).append(";\n");
+			if (this.fontSize != null) {
+				buffer.append("\t\tsize: ").append( this.fontSize ).append(";\n");
+			}
+			if (this.fontStyle != null) {
+				buffer.append("\t\tstyle: ").append( this.fontStyle ).append(";\n");
+			}
+			if (this.fontColor != null) {
+				buffer.append("\t\tcolor: ").append( this.fontColor ).append(";\n");
+			}
 			buffer.append("\t}\n");
 		}
 		if (this.background != null) {
@@ -652,7 +658,8 @@ implements StyleProvider
 	 */
 	public boolean equals(Object obj) {
 		if (obj instanceof StyleProvider) {
-			return this.style.equals(  ((StyleProvider) obj).getStyle() );
+			//return this.style.equals(  ((StyleProvider) obj).getStyle() );
+			return this.name.equalsIgnoreCase(  ((StyleProvider) obj).getName() );
 		}
 		return super.equals(obj);
 	}
