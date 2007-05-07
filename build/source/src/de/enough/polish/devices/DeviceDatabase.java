@@ -403,7 +403,7 @@ public class DeviceDatabase {
 		if (polishHome != null) {
 			properties.put( "polish.home", polishHome.getAbsolutePath() );
 		}
-		DeviceDatabase db = getInstance(properties, polishHome, null, null, null, null, null );
+		DeviceDatabase db = new DeviceDatabase(properties, polishHome, null, null, null, null, null );
 		List devicesList = new ArrayList();
 		Device[] devices = db.getDevices();
 		for (int i = 0; i < devices.length; i++) {
