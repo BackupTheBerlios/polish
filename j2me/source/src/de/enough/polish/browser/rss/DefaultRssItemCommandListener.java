@@ -29,9 +29,11 @@ package de.enough.polish.browser.rss;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Item;
-import javax.microedition.lcdui.ItemCommandListener;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
 
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.ui.UiAccess;
 
@@ -45,7 +47,25 @@ import de.enough.polish.ui.UiAccess;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class DefaultRssItemCommandListener implements ItemCommandListener {
+public class DefaultRssItemCommandListener implements CommandListener, ItemCommandListener {
+
+	private RssBrowser rssBrowser;
+	private String url;
+
+	public void setRssBrowser(RssBrowser rssBrowser)
+	{
+		this.rssBrowser = rssBrowser;
+	}
+
+	public void commandAction(Command command, Displayable displayable)
+	{
+		if (command == RssTagHandler.CMD_GO_TO_ARTICLE) {
+			this.rssBrowser.go(this.url);
+			StyleSheet.display.setCurrent(this.rssBrowser.getScreen());
+		}
+
+		this.url = null;
+	}
 
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Item)
@@ -58,10 +78,11 @@ public class DefaultRssItemCommandListener implements ItemCommandListener {
 				//#style rssDescriptionAlert
 				Alert alert = new Alert( rssItem.getTitle(), rssItem.getDescription(), null, AlertType.INFO);
 				alert.setTimeout(Alert.FOREVER);
+				alert.addCommand(RssTagHandler.CMD_GO_TO_ARTICLE);
+				alert.setCommandListener(this);
 				StyleSheet.display.setCurrent(alert);
+				this.url = rssItem.getLink();
 			}
 		}
-
 	}
-
 }

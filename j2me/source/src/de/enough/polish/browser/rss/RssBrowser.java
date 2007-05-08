@@ -32,21 +32,28 @@ import de.enough.polish.browser.html.HtmlTagHandler;
 import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.Style;
 
+import javax.microedition.lcdui.Command;
+
 public class RssBrowser
 	extends HtmlBrowser
 {
-	
+	private ItemCommandListener rssItemCommandListener;
+
 	public RssBrowser() {
-		this( new DefaultRssItemCommandListener()); 
+		this((Style) null);
 	}
-	
+
+	public RssBrowser(Style style) {
+		this(new DefaultRssItemCommandListener(), null); 
+	}
+
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener) {
 		this( listener, null ); 
 	}
 
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener, Style style ) {
 		super( style );
-		new RssTagHandler(HtmlTagHandler.CMD_LINK, listener).register(this);
+		new RssTagHandler(HtmlTagHandler.CMD_LINK, (ItemCommandListener) null).register(this);
 	}
 	
 	public RssBrowser(ItemCommandListener listener)
@@ -57,6 +64,17 @@ public class RssBrowser
 	public RssBrowser(ItemCommandListener listener, Style style)
 	{
 		super(style);
+		this.rssItemCommandListener = listener;
 		new RssTagHandler(HtmlTagHandler.CMD_LINK, listener).register(this);
+		((DefaultRssItemCommandListener) listener).setRssBrowser(this);
+	}
+
+	public boolean handleCommand(Command command)
+	{
+		if (super.handleCommand(command)) {
+			return true;
+		}
+
+		return false;
 	}
 }
