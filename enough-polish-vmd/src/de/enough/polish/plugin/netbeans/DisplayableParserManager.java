@@ -58,7 +58,7 @@ public class DisplayableParserManager {
 //        disayable.getComponentDescriptor().getPropertyDescriptors();
         String type = designComponent.getType().getString();
         DisplayableParser parser = this.parsersByClassName.get( type );
-        if (parser != null) {
+        if (designComponent != null  &&  designComponent.getParentComponent() != null  &&  parser != null) {
             return parser.parse(designComponent, resourcesProvider);
         } else {
             System.out.println("Warning: unable to locate parser for type " + type );
