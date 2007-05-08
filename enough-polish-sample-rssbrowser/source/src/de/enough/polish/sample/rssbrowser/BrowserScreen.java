@@ -22,7 +22,7 @@ public class BrowserScreen
     super(title, style);
 
     //#style browser
-    this.htmlItem = new RssBrowser(itemCommandListener);
+    this.htmlItem = new RssBrowser();
     append(this.htmlItem);
   }
 

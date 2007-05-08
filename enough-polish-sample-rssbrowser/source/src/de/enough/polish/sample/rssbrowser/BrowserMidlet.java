@@ -66,17 +66,7 @@ public class BrowserMidlet
 
 	public void commandAction(Command command, Item item)
 	{
-		if (command == RssTagHandler.CMD_RSS_ITEM_SELECT) {
-			RssItem rssItem = (RssItem) item.getAttribute(RssTagHandler.ATTR_RSS_ITEM);
-
-			if (rssItem != null) {
-				//#style rssItemView
-				Alert alert = new Alert( rssItem.getTitle(), rssItem.getDescription(), null, AlertType.ERROR );
-				alert.setTimeout(Alert.FOREVER);
-				this.display.setCurrent(alert);
-			}
-		}
-		else if (command == HtmlTagHandler.CMD_LINK) {
+		if (command == HtmlTagHandler.CMD_LINK) {
 			this.browserScreen.handleCommand(command);
 		}
 		else {
