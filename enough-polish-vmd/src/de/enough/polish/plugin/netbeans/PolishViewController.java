@@ -73,18 +73,18 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
         } catch (Exception e) {
             throw new IllegalStateException("Unable to resolve project home for " +  ProjectUtils.getProject ( context ).getProjectDirectory().getPath() );
         }
-        if (!projectHome.exists()) {
-            throw new IllegalStateException("Unable to resolve project home for " + projectHome.getAbsolutePath() );
-        }
+       if (!projectHome.exists()) {
+           throw new IllegalStateException("Unable to resolve project home for " + projectHome.getAbsolutePath() );
+       }
         
         ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
         CssAttributesManager attributesManager = CssAttributesManager.getInstance( polishHome, resourceUtil );
         Environment environment = new Environment(polishHome);
         environment.setBaseDir( projectHome );
-        environment.initialize( DeviceDatabase.loadDevice( polishHome, "Generic/midp2"), null);
+        environment.initialize( DeviceDatabase.loadDevice( polishHome, "Generic/DefaultColorPhone"), null);
 
         this.resourceProvider = initResourceProvider( polishHome, environment, attributesManager );
-        visual = new PolishDataEditorVisual( context, environment, this.resourceProvider, attributesManager );
+        visual = new PolishDataEditorVisual( this, context, environment, this.resourceProvider, attributesManager );
         
         //visual.setLayout(new GridBagLayout ());
         //visual.add( simulationPanel, new GridBagConstraints ());
@@ -114,15 +114,15 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
         context.addDesignDocumentAwareness (this);
     }
     
-    private ResourcesProvider initResourceProvider(File polishHome, Environment environment, CssAttributesManager manager) {
-        try {
-            ResourcesProvider provider = new ResourcesProviderImpl(polishHome, environment, manager);
-            return provider;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalStateException("Unable to init ResourcesProvider: " +  e.toString());
-        }
-    }
+     private ResourcesProvider initResourceProvider(File polishHome, Environment environment, CssAttributesManager manager) {
+		try {
+			ResourcesProvider provider = new ResourcesProviderImpl(polishHome, environment, manager);
+			return provider;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new IllegalStateException("Unable to init ResourcesProvider: " +  e.toString());
+		}
+	}
 
     public JComponent getVisualRepresentation () {
         return visual;
@@ -164,6 +164,10 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
                 invokeSwingRefresh ();
             }
         });
+    }
+    
+    public void markAsTainted() {
+        this.designDocument.getDocumentInterface().notifyModified();
     }
     
     public void editedScreenChanged(long editedScreenComponentID) {

@@ -53,7 +53,7 @@ public class PolishDataEditorView implements DataEditorView {
     }
 
     public boolean canShowSideWindows() {
-        return true;
+        return false;
     }
 
     public Collection<String> getTags() {

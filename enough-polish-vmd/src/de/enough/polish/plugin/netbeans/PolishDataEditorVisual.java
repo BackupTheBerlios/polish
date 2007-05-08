@@ -65,7 +65,7 @@ import org.openide.util.Exceptions;
  * @author robertvirkus
  */
 public class PolishDataEditorVisual extends JPanel 
-        implements StyleEditorListener, SelectionListener, StyleSelectionListener, ColorSelectionListener, ColorChooserListener
+implements StyleEditorListener, SelectionListener, StyleSelectionListener, ColorSelectionListener, ColorChooserListener
 {
 
     private static WeakHashMap<DataObjectContext,WeakReference<PolishDataEditorVisual>> instances = new WeakHashMap<DataObjectContext, WeakReference<PolishDataEditorVisual>> ();
@@ -77,10 +77,10 @@ public class PolishDataEditorVisual extends JPanel
     private ResourcesProvider resourceProvider;
     private ResourcesTree resourcesTree;
 
-    public PolishDataEditorVisual(DataObjectContext context, Environment environment, ResourcesProvider resourcesProvider, CssAttributesManager attributesManager) {
+    public PolishDataEditorVisual(PolishViewController controller, DataObjectContext context, Environment environment, ResourcesProvider resourcesProvider, CssAttributesManager attributesManager) {
         super( new BorderLayout() );
         instances.put (context, new WeakReference<PolishDataEditorVisual> (this));
-
+        this.controller = controller;
         SimulationDevice device = new SimulationDevice ();
         simulation = new Simulation (device);
         simulation.addOverlay( new SelectionOverlay() );
@@ -164,6 +164,7 @@ public class PolishDataEditorVisual extends JPanel
         Dimension deviceScreenSize = MidpProjectPropertiesSupport.getDeviceScreenSizeFromProject(context);
         if (deviceScreenSize != null) {
             device.setCapability( SimulationDevice.FULL_CANVAS_WIDTH, Integer.toString(deviceScreenSize.width) );
+            
             device.setCapability( SimulationDevice.FULL_CANVAS_HEIGHT, Integer.toString(deviceScreenSize.height) );
         } else {
             System.out.println("deviceChanged: not screen size found for " +  deviceName );
@@ -192,13 +193,7 @@ public class PolishDataEditorVisual extends JPanel
         } else {
             System.out.println("notifyStyleUpdated(EditStyle style): !!! current displayable of simulation is null!!! ");
         }
-
-        System.out.println( style.toSourceCode() );
-//        try {
-//            this.resourceProvider.saveResources();
-//        } catch (IOException ex) {
-//            Exceptions.printStackTrace(ex);
-//        }
+        this.controller.markAsTainted();
     }
     
     public void notifyStyleAttached( ItemOrScreen itemOrScreen, EditStyle style ) {
@@ -292,6 +287,8 @@ public class PolishDataEditorVisual extends JPanel
 		// TODO robertvirkus implement notifyColorUpdated
 		System.out.println("named color has changed: " + colorProvider.getName() + "=" + Integer.toHexString( colorProvider.getColor().getColor() ));
 	}
+    private DataObjectContext context;
+    private PolishViewController controller;
 
 }
 

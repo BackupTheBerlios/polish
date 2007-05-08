@@ -25,7 +25,7 @@ public class RssBrowserProducer extends ComponentProducer {
 
     public RssBrowserProducer() {
         super( RssBrowserCD.TYPEID.toString(), RssBrowserCD.TYPEID, 
-                new PaletteDescriptor (MidpPaletteProvider.CATEGORY_ITEMS, "RSS-Browser", "Displays RSS content and HTML", RssBrowserCD.ICON_PATH, RssBrowserCD.ICON_PATH ) // NOI18N
+                new PaletteDescriptor (MidpPaletteProvider.CATEGORY_ITEMS, "RSS Browser", "Displays RSS content and HTML", RssBrowserCD.ICON_PATH, RssBrowserCD.ICON_PATH ) // NOI18N
         );
     }
 

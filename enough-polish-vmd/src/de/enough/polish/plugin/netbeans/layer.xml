@@ -37,7 +37,7 @@
             </folder>
         </folder>
     </folder>
--->
+    
     <folder name="Navigator">
         <folder name="Panels">
             <folder name="polish-styles">
@@ -45,6 +45,7 @@
             </folder>
         </folder>
     </folder>
+-->
     
     <folder name="WarmUp">
         <file name="de-enough-polish-plugin-netbeans-settings-PolishWarmUp.instance"/>
@@ -55,7 +56,7 @@
             <file name="de-enough-polish-plugin-netbeans-settings-PolishAdvancedOption.instance"/>
         </folder>
     </folder>
-    
+<!--    
     <folder name="j2mepolish">
         <folder name="palette">
             <folder name="backgrounds">
@@ -76,8 +77,9 @@
                 </file>
             </folder>
         </folder>
-	<file name="build.xml" url="resources/build.xml"/> <!-- convert-project build.xml template -->
+	<file name="build.xml" url="resources/build.xml"/>
     </folder>
+    -->
     
     <folder name="vmd-midp">
         <folder name="components">
