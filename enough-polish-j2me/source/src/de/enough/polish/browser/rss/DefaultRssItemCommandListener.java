@@ -32,6 +32,7 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 
+import de.enough.polish.browser.html.HtmlTagHandler;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StyleSheet;
@@ -70,6 +71,10 @@ public class DefaultRssItemCommandListener implements CommandListener, ItemComma
 			this.url = null;
 			StyleSheet.display.setCurrent(this.rssBrowser.getScreen());
 		}
+		else if (command == HtmlTagHandler.CMD_BACK) {
+			this.rssBrowser.goBack();
+			StyleSheet.display.setCurrent(this.rssBrowser.getScreen());
+		}
 	}
 
 	/* (non-Javadoc)
@@ -84,6 +89,7 @@ public class DefaultRssItemCommandListener implements CommandListener, ItemComma
 				Alert alert = new Alert( rssItem.getTitle(), rssItem.getDescription(), null, AlertType.INFO);
 				alert.setTimeout(Alert.FOREVER);
 				alert.addCommand(RssTagHandler.CMD_GO_TO_ARTICLE);
+				alert.addCommand(HtmlTagHandler.CMD_BACK);
 				alert.setCommandListener(this.commandListener);
 				StyleSheet.display.setCurrent(alert);
 				this.url = rssItem.getLink();
