@@ -240,6 +240,10 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
             this.visual.setCurrent(displayable);
         } else {
             System.out.println("PolishViewController.refreshVisual: unable to parse " + this.editedScreen );
+            this.visual.setCurrent(new javax.microedition.lcdui.Canvas () {
+                protected void paint(javax.microedition.lcdui.Graphics arg0) {
+                }
+            });
         }
 
 
