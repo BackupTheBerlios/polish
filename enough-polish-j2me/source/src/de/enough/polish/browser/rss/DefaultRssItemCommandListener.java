@@ -50,6 +50,7 @@ import de.enough.polish.ui.UiAccess;
 public class DefaultRssItemCommandListener implements CommandListener, ItemCommandListener {
 
 	private RssBrowser rssBrowser;
+	private CommandListener commandListener;
 	private String url;
 
 	public void setRssBrowser(RssBrowser rssBrowser)
@@ -57,14 +58,18 @@ public class DefaultRssItemCommandListener implements CommandListener, ItemComma
 		this.rssBrowser = rssBrowser;
 	}
 
+	public void setCommandListener(CommandListener commandListener)
+	{
+		this.commandListener = commandListener;
+	}
+
 	public void commandAction(Command command, Displayable displayable)
 	{
 		if (command == RssTagHandler.CMD_GO_TO_ARTICLE) {
 			this.rssBrowser.go(this.url);
+			this.url = null;
 			StyleSheet.display.setCurrent(this.rssBrowser.getScreen());
 		}
-
-		this.url = null;
 	}
 
 	/* (non-Javadoc)
@@ -79,7 +84,7 @@ public class DefaultRssItemCommandListener implements CommandListener, ItemComma
 				Alert alert = new Alert( rssItem.getTitle(), rssItem.getDescription(), null, AlertType.INFO);
 				alert.setTimeout(Alert.FOREVER);
 				alert.addCommand(RssTagHandler.CMD_GO_TO_ARTICLE);
-				alert.setCommandListener(this);
+				alert.setCommandListener(this.commandListener);
 				StyleSheet.display.setCurrent(alert);
 				this.url = rssItem.getLink();
 			}

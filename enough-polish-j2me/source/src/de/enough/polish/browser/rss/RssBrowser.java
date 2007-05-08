@@ -33,9 +33,12 @@ import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.Style;
 
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
 
 public class RssBrowser
 	extends HtmlBrowser
+	implements CommandListener
 {
 	private ItemCommandListener rssItemCommandListener;
 
@@ -66,15 +69,30 @@ public class RssBrowser
 		super(style);
 		this.rssItemCommandListener = listener;
 		new RssTagHandler(HtmlTagHandler.CMD_LINK, listener).register(this);
-		((DefaultRssItemCommandListener) listener).setRssBrowser(this);
+		if (listener instanceof DefaultRssItemCommandListener) {
+			DefaultRssItemCommandListener rssListener = (DefaultRssItemCommandListener) listener;
+			rssListener.setRssBrowser(this);
+			rssListener.setCommandListener(this);
+		}
 	}
 
 	public boolean handleCommand(Command command)
 	{
+		if (this.rssItemCommandListener != null
+			&& command == RssTagHandler.CMD_GO_TO_ARTICLE) {
+			this.rssItemCommandListener.commandAction(command, getFocusedItem());
+			return true;
+		}
+
 		if (super.handleCommand(command)) {
 			return true;
 		}
 
 		return false;
+	}
+
+	public void commandAction(Command command, Displayable displayable)
+	{
+		handleCommand(command);
 	}
 }
