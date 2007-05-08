@@ -22,6 +22,7 @@ import org.netbeans.modules.vmd.midp.components.items.ImageItemCD;
 import org.netbeans.modules.vmd.midp.components.items.ChoiceGroupCD;
 import java.util.HashMap;
 import java.util.Map;
+import org.netbeans.modules.vmd.midp.components.items.TextFieldCD;
 
 /**
  * Manages screen parsers and item parsers and converts NetBeans data models to actual J2ME Polish screens.
@@ -42,6 +43,7 @@ public class ItemParserManager {
         this.parsersByClassName.put(StringItemCD.TYPEID.getString (), new StringItemParser() );
         this.parsersByClassName.put(ImageItemCD.TYPEID.getString (), new ImageItemParser() );
         this.parsersByClassName.put(ChoiceGroupCD.TYPEID.getString (), new ChoiceGroupParser() );
+        this.parsersByClassName.put(TextFieldCD.TYPEID.getString (), new TextFieldParser() );
     }
     
     public static ItemParserManager getInstance() {
