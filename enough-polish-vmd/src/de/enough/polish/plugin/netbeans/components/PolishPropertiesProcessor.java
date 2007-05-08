@@ -16,6 +16,8 @@ import org.netbeans.modules.vmd.midp.components.displayables.DisplayableCD;
 import org.netbeans.modules.vmd.midp.components.items.ItemCD;
 
 import java.util.ArrayList;
+import org.netbeans.modules.vmd.midp.components.elements.ChoiceElementCD;
+import org.netbeans.modules.vmd.midp.components.sources.ListElementEventSourceCD;
 
 /**
  * @author dave
@@ -31,8 +33,10 @@ public class PolishPropertiesProcessor extends PropertiesProcessor {
     protected void postProcessProperties(ComponentDescriptor descriptor, ArrayList<PropertyDescriptor> properties) {
         while (descriptor != null) {
             if (DisplayableCD.TYPEID.equals (descriptor.getTypeDescriptor().getThisType()) 
-                    || ItemCD.TYPEID.equals (descriptor.getTypeDescriptor().getThisType()) ) 
-            {
+                    || ItemCD.TYPEID.equals (descriptor.getTypeDescriptor().getThisType())
+                    || ListElementEventSourceCD.TYPEID.equals (descriptor.getTypeDescriptor().getThisType())
+                    || ChoiceElementCD.TYPEID.equals (descriptor.getTypeDescriptor().getThisType())
+            ) {
                 properties.add(new PropertyDescriptor (PROP_STYLE, MidpTypes.TYPEID_JAVA_LANG_STRING, PropertyValue.createNull(), true, false, Versionable.FOREVER));
                 return;
             }

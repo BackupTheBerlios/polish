@@ -73,16 +73,15 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
         } catch (Exception e) {
             throw new IllegalStateException("Unable to resolve project home for " +  ProjectUtils.getProject ( context ).getProjectDirectory().getPath() );
         }
-       if (!projectHome.exists()) {
-           throw new IllegalStateException("Unable to resolve project home for " + projectHome.getAbsolutePath() );
-       }
+        if (!projectHome.exists()) {
+            throw new IllegalStateException("Unable to resolve project home for " + projectHome.getAbsolutePath() );
+        }
         
-        DeviceDatabase deviceDB = DeviceDatabase.getInstance(polishHome);
         ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
         CssAttributesManager attributesManager = CssAttributesManager.getInstance( polishHome, resourceUtil );
         Environment environment = new Environment(polishHome);
         environment.setBaseDir( projectHome );
-        environment.initialize( deviceDB.loadDevice( polishHome, "Nokia/6630"), null);
+        environment.initialize( DeviceDatabase.loadDevice( polishHome, "Generic/midp2"), null);
 
         this.resourceProvider = initResourceProvider( polishHome, environment, attributesManager );
         visual = new PolishDataEditorVisual( context, environment, this.resourceProvider, attributesManager );
@@ -115,15 +114,15 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
         context.addDesignDocumentAwareness (this);
     }
     
-     private ResourcesProvider initResourceProvider(File polishHome, Environment environment, CssAttributesManager manager) {
-		try {
-			ResourcesProvider provider = new ResourcesProviderImpl(polishHome, environment, manager);
-			return provider;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new IllegalStateException("Unable to init ResourcesProvider: " +  e.toString());
-		}
-	}
+    private ResourcesProvider initResourceProvider(File polishHome, Environment environment, CssAttributesManager manager) {
+        try {
+            ResourcesProvider provider = new ResourcesProviderImpl(polishHome, environment, manager);
+            return provider;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalStateException("Unable to init ResourcesProvider: " +  e.toString());
+        }
+    }
 
     public JComponent getVisualRepresentation () {
         return visual;

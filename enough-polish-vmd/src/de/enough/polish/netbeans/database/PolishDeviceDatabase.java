@@ -27,14 +27,16 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
     }
 
     public List<ProjectConfigurationFactory.Descriptor> getChildren() {
-        DeviceDatabase database = new DeviceDatabase (new File (PolishSettings.getDefault ().getPolishHome ()));
+        File polishHome = new File (PolishSettings.getDefault ().getPolishHome ());
+        DeviceDatabase database = new DeviceDatabase ();
+        Environment env = new Environment (polishHome);
         Category virtualDevices = null;
         HashMap<Vendor, Category> categories = new HashMap<Vendor, Category> ();
         for (de.enough.polish.Device device : database.getDevices ()) {
             if (device.isVirtual ()) {
                 if (virtualDevices == null)
                     virtualDevices = new Category ("Virtual Devices", new ArrayList<Descriptor> ());
-                add (device, virtualDevices);
+                add (device, virtualDevices, env);
             } else {
                 Vendor vendor = device.getVendor ();
                 Category category = categories.get (vendor);
@@ -42,7 +44,7 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
                     category = new Category (vendor.getIdentifier (), new ArrayList<Descriptor> ());
                     categories.put (vendor, category);
                 }
-                add (device, category);
+                add (device, category, env);
             }
         }
         ArrayList<Descriptor> list = new ArrayList<Descriptor> (categories.values ());
@@ -57,8 +59,8 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
         return list;
     }
 
-    private void add (de.enough.polish.Device device, Category category) {
-        HashMap<String, String> map = createPropertiesMap (device);
+    private void add (de.enough.polish.Device device, Category category, Environment environment) {
+        HashMap<String, String> map = createPropertiesMap (device, environment);
         if (map == null)
             return;
 
@@ -66,14 +68,9 @@ public class PolishDeviceDatabase implements ProjectConfigurationFactory, Projec
         category.getChildren ().add (dev);
     }
 
-    public static HashMap<String, String> createPropertiesMap (de.enough.polish.Device device) {
+    public static HashMap<String, String> createPropertiesMap (de.enough.polish.Device device, Environment environment) {
         String polishHome = PolishSettings.getDefault ().getPolishHome ();
-        try {
-            device.setEnvironment (new Environment (new File (polishHome)));
-        } catch (Exception e) {
-            Exceptions.printStackTrace (e);
-            return null;
-        }
+        device.setEnvironment (environment);
 
         String abilities = J2mePolishProjectGenerator.getAbilities (device.getCapabilities ());
 

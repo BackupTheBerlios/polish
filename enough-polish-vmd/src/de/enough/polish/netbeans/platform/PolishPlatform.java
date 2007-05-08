@@ -45,6 +45,7 @@ public class PolishPlatform {
     public static void updatePlatform () {
         String polishHome = PolishSettings.getDefault ().getPolishHome ();
         DeviceDatabase database = new DeviceDatabase (new File (polishHome));
+        Environment env = new Environment (new File (polishHome));
         final StringBuffer buffer = new StringBuffer ();
         buffer.append ("<?xml version='1.0'?>\n" +
                 "<!DOCTYPE platform PUBLIC '-//NetBeans//DTD J2ME PlatformDefinition 1.0//EN' 'http://www.netbeans.org/dtds/j2me-platformdefinition-1_0.dtd'>\n" +
@@ -70,7 +71,7 @@ public class PolishPlatform {
                 if (! device.isMidp1 ()  &&  ! device.isMidp2 ())
                     continue;
 
-                device.setEnvironment (new Environment (new File (polishHome)));
+                device.setEnvironment (env);
                 String[] strings = device.getBootClassPaths ();
                 for (int i = 0; i < strings.length; i++)
                     deviceBuffer.append ("<optional name=\"OptionalBootPathElement" + (i + 1) + "\" version=\"1.0\" displayname=\"" + strings[i] + "\" classpath=\"" + strings[i] + "\" dependencies=\"\" default=\"true\"/>\n");

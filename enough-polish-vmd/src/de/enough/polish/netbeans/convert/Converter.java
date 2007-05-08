@@ -24,6 +24,7 @@ import de.enough.polish.plugin.netbeans.project.PolishProjectSupport;
 import de.enough.polish.plugin.netbeans.settings.PolishSettings;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.Device;
+import de.enough.polish.Environment;
 import de.enough.polish.netbeans.database.PolishDeviceDatabase;
 import java.io.BufferedReader;
 import org.netbeans.api.project.FileOwnerQuery;
@@ -44,8 +45,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.netbeans.api.project.ProjectInformation;
-import org.netbeans.api.project.ProjectManager;
-import org.netbeans.api.project.ProjectUtils;
 import org.openide.filesystems.Repository;
 
 /**
@@ -78,8 +77,11 @@ public final class Converter {
             FileObject buildXML = FileUtil.copyFile (emptyBuildXML, projectRoot, "build"); // NOI18N
             processBuildXML (projectName, buildXML);
             FileObject resources = projectRoot.getFileObject ("resources"); // NOI18N
-            if (resources == null)
-                copyDir (polishHome.getFileObject ("samples/blank/resources"), projectRoot, "resources"); // NOI18N
+            if (resources == null) {
+                resources = projectRoot.createFolder("resources"); // NOI18N
+                if (resources.getFileObject("base") == null) // NOI18N
+                    copyDir (polishHome.getFileObject ("samples/blank/resources/base"), resources, "base"); // NOI18N
+            }
         } catch (IOException e) {
             Exceptions.printStackTrace (e);
         }
@@ -87,19 +89,21 @@ public final class Converter {
         DeviceDatabase database = new DeviceDatabase (new File (polishHomePath));
         String configurations = " "; // NOI18N
 
-        if (devices != null)
+        Environment env = new Environment (new File (polishHomePath));
+        if (devices != null) {
             for (String deviceID : devices) {
                 Device device = database.getDevice (deviceID);
-                HashMap<String,String> map = PolishDeviceDatabase.createPropertiesMap (device);
+                HashMap<String,String> map = PolishDeviceDatabase.createPropertiesMap (device, env);
                 if (map == null)
                     continue;
                 for (Map.Entry<String, String> entry : map.entrySet ())
                     MidpProjectPropertiesSupport.setProperty (ep, entry.getKey (), deviceID, entry.getValue ());
                 configurations += "," + deviceID;
             }
+        }
 
         Device device = database.getDevice ("Generic/midp2"); // NOI18N
-        HashMap<String,String> map = PolishDeviceDatabase.createPropertiesMap (device);
+        HashMap<String,String> map = PolishDeviceDatabase.createPropertiesMap (device, env);
         for (Map.Entry<String, String> entry : map.entrySet ())
             MidpProjectPropertiesSupport.setProperty (ep, entry.getKey (), null, entry.getValue ());
 
