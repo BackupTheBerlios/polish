@@ -56,9 +56,9 @@
             <file name="de-enough-polish-plugin-netbeans-settings-PolishAdvancedOption.instance"/>
         </folder>
     </folder>
-<!--    
+
     <folder name="j2mepolish">
-        <folder name="palette">
+<!--        <folder name="palette">
             <folder name="backgrounds">
                 <file name="de-enough-polish-plugin-netbeans-palette-SimpleBackgroundCreator.instance">
                     <attr name="SystemFileSystem.localizingBundle" stringvalue="de.enough.polish.plugin.netbeans.palette.Bundle"/>
@@ -76,10 +76,9 @@
                     <attr name="SystemFileSystem.icon" urlvalue="nbresloc://de/enough/polish/plugin/netbeans/resources/simpleborder.png"/>
                 </file>
             </folder>
-        </folder>
+        </folder> -->
 	<file name="build.xml" url="resources/build.xml"/>
     </folder>
-    -->
     
     <folder name="vmd-midp">
         <folder name="components">
