@@ -55,6 +55,7 @@ import org.netbeans.modules.vmd.api.io.DataObjectContext;
 import org.netbeans.modules.vmd.api.io.javame.MidpProjectPropertiesSupport;
 import org.netbeans.modules.vmd.api.io.ProjectUtils;
 import org.netbeans.modules.vmd.api.model.DesignComponent;
+import org.netbeans.modules.vmd.api.model.DesignDocument;
 import org.netbeans.modules.vmd.midp.components.MidpTypes;
 import org.openide.util.Exceptions;
 
@@ -91,8 +92,9 @@ public class PolishDataEditorVisual extends JPanel
         
         
         this.resourceProvider = resourcesProvider;
-        SwingStyleEditor styleEditorVisual = new SwingStyleEditor();
-	this.styleEditor = new StyleEditor( this.resourceProvider, attributesManager, environment, styleEditorVisual );
+	this.styleEditor = new StyleEditor( this.resourceProvider, attributesManager, environment );
+        SwingStyleEditor styleEditorVisual = new SwingStyleEditor( this.styleEditor );
+        this.styleEditor.setVisual( styleEditorVisual );
         
 	this.styleEditor.addDefaultPartEditors();
 	this.styleEditor.addStyleListener( this );
@@ -135,96 +137,10 @@ public class PolishDataEditorVisual extends JPanel
         }
         Screen screen = (Screen) displayable;
         Style style = UiAccess.getStyle( screen );
-        EditStyle editStyle = getEditStyle( new ItemOrScreen( screen ), style );
-        if (editStyle != null) {
-            System.out.println("setCurrent: editStyle.getScreen()=" + editStyle.getItemOrScreen().getItemOrScreen()  );
-            this.styleEditor.setStyle(editStyle);
-        }
+        editStyle( new ItemOrScreen( screen ), style );
     }
     
-    private String getDefaultStyleName( Class itemOrScreenClass ) {
-        String defaultName = itemOrScreenClass.getName();
-        if (defaultName.lastIndexOf('.' ) != -1) {
-            defaultName = defaultName.substring( defaultName.lastIndexOf('.' ) + 1 );
-        }
-        return "my" + defaultName;
-    }
-    
-    private EditStyle getEditStyle( ItemOrScreen itemOrScreen, Style style ) {       
-        EditStyle editStyle = getEditStyleImpl(itemOrScreen, style);
-        if (editStyle != null) {
-            itemOrScreen.setStyle( editStyle.getStyle() );
-            itemOrScreen.requestInit();
-        }
-        return editStyle;
-    }
-    private EditStyle getEditStyleImpl( ItemOrScreen itemOrScreen, Style style ) {       
-        EditStyle editStyle = null;
-        if (style != null && style.name != null) {
-            editStyle = (EditStyle) this.resourceProvider.getStyle(style.name);
-            if (editStyle == null) {
-                editStyle = new EditStyle( style.name, style,  itemOrScreen );
-                this.resourceProvider.addStyle(style.name, editStyle);
-                this.resourcesTree.addStyle(editStyle);
-            } else {
-                editStyle.setItemOrScreen(itemOrScreen);
-            }
-        }         
-        if (editStyle == null) {
-            //StyleProvider[] knownStyles = this.resourceProvider.getStyles();
-            //String sty
-            Object itemOrScreenObj = itemOrScreen.getItemOrScreen();
-            String defaultName = getDefaultStyleName( itemOrScreenObj.getClass() );
-            
-            String chosenName = SpecifyOrSelectEntryDialog.showDialog(
-                    null,
-                    "Choose Style Name",
-                    itemOrScreenObj instanceof Item ? 
-                        "This item has no attached style, please enter the desired name: "
-                        :
-                        "This screen has no attached style, please enter the desired name: ",
-                    this.resourceProvider.getStyles(),
-                    defaultName);
-            if (chosenName == null) {
-                return null;
-            }
-            // check if the user selected an existing style:
-            editStyle = (EditStyle) this.resourceProvider.getStyle(chosenName);
-            if (editStyle != null) {
-                editStyle.setItemOrScreen(itemOrScreen);
-            } else {
-                if (style == null || style == StyleSheet.defaultStyle) {
-                    style = new Style();
-                }
-                style.name = chosenName;
-                DesignComponent dc;
-                if (itemOrScreenObj instanceof Item) {
-                    Item item = (Item) itemOrScreenObj;
-                    item.setStyle( style );
-                    //UiAccess.setStyle( (Item)itemOrScreenObj, style );
-                    dc =  (DesignComponent)item.getAttribute("DesignComponent" );
-                    //dc = (DesignComponent) UiAccess.getAttribute( (Item)itemOrScreenObj, "DesignComponent" );
-                } else {
-                    UiAccess.setStyle( (Screen)itemOrScreenObj, style );
-                    dc = (DesignComponent) ((Screen)itemOrScreenObj).getScreenData();
-                }
-                editStyle = new EditStyle( style.name, style,  itemOrScreen );
-                if (dc != null) {
-                    final DesignComponent designComponent = dc;
-                    final String styleName = chosenName;
-                    designComponent.getDocument().getTransactionManager().writeAccess( new Runnable() {
-                        public void run() {
-                            designComponent.writeProperty(PolishPropertiesProcessor.PROP_STYLE, MidpTypes.createStringValue( styleName ) );
-                        }
-                    });
-                }
-
-                this.resourceProvider.addStyle(style.name, editStyle);
-                this.resourcesTree.addStyle(editStyle);
-            }
-        }
-        return editStyle;
-    }
+   
     
      
     public void deviceChanged( DataObjectContext context ) {
@@ -249,6 +165,8 @@ public class PolishDataEditorVisual extends JPanel
         if (deviceScreenSize != null) {
             device.setCapability( SimulationDevice.FULL_CANVAS_WIDTH, Integer.toString(deviceScreenSize.width) );
             device.setCapability( SimulationDevice.FULL_CANVAS_HEIGHT, Integer.toString(deviceScreenSize.height) );
+        } else {
+            System.out.println("deviceChanged: not screen size found for " +  deviceName );
         }
         device.setCapability( "polish.Identifier", deviceName );
         this.simulation.setDevice( device );
@@ -263,9 +181,18 @@ public class PolishDataEditorVisual extends JPanel
             System.out.println("No item or screen found!");
             return;
         }
-        style.getItemOrScreen().setStyle(style.getStyle());
-        style.getItemOrScreen().requestInit();
-        this.simulation.getCurrentDisplayable()._requestRepaint();
+        if (style.getItemOrScreen() != null) {
+                style.getItemOrScreen().setStyle( style.getStyle() );
+                style.getItemOrScreen().requestInit();
+        } else {
+                System.out.println("notifyStyleUpdated(EditStyle style):  !!!!!!!style.getItemOrScreen() is NULL !!!!!!!!");
+        }
+        if (this.simulation.getCurrentDisplayable() != null) {
+            this.simulation.getCurrentDisplayable()._requestRepaint();
+        } else {
+            System.out.println("notifyStyleUpdated(EditStyle style): !!! current displayable of simulation is null!!! ");
+        }
+
         System.out.println( style.toSourceCode() );
 //        try {
 //            this.resourceProvider.saveResources();
@@ -273,6 +200,34 @@ public class PolishDataEditorVisual extends JPanel
 //            Exceptions.printStackTrace(ex);
 //        }
     }
+    
+    public void notifyStyleAttached( ItemOrScreen itemOrScreen, EditStyle style ) {
+	Object itemOrScreenObj = itemOrScreen.getItemOrScreen();
+        System.out.println("notifyStyleAttached: style " + style.getName() + " attached to " + itemOrScreenObj );
+	DesignComponent designComponent;
+        if (itemOrScreenObj instanceof Item) {
+            Item item = (Item) itemOrScreenObj;
+            //UiAccess.setStyle( (Item)itemOrScreenObj, style );
+            designComponent =  (DesignComponent)item.getAttribute("DesignComponent" );
+            //dc = (DesignComponent) UiAccess.getAttribute( (Item)itemOrScreenObj, "DesignComponent" );
+            System.out.println("got DesignComponent from item: " + designComponent );
+        } else {
+            designComponent = (DesignComponent) ((Screen)itemOrScreenObj).getScreenData();
+            System.out.println("got DesignComponent from screen: " + designComponent );
+        }	
+        if (designComponent != null) {
+            final DesignComponent dc = designComponent;
+            final String styleName = style.getName();
+            dc.getDocument().getTransactionManager().writeAccess( new Runnable() {
+                public void run() {
+                    dc.writeProperty(PolishPropertiesProcessor.PROP_STYLE, MidpTypes.createStringValue( styleName ) );
+                }
+            });
+        }
+        this.resourcesTree.addStyle(style);
+        this.resourcesTree.selectStyle(style);
+    }
+	
 
    /* (non-Javadoc)
      * @see de.enough.polish.runtime.SelectionListener#notifyItemSelected(de.enough.polish.ui.Item, de.enough.polish.ui.Style, int, int)
@@ -296,10 +251,9 @@ public class PolishDataEditorVisual extends JPanel
      */
     private void editStyle(ItemOrScreen itemOrScreen, Style style) {
         //System.out.println("start1: itemOrScreen=" + itemOrScreen );
-        EditStyle editStyle = getEditStyle(itemOrScreen, style );
+        EditStyle editStyle = this.styleEditor.editStyle(itemOrScreen, style );
         //System.out.println("start2: editStyle.getItemOrScreen()=" + (editStyle.getItemOrScreen()) );
         if (editStyle != null) {
-            this.styleEditor.setStyle(editStyle);
             this.resourcesTree.selectStyle(editStyle);    
         }
     }
@@ -314,7 +268,7 @@ public class PolishDataEditorVisual extends JPanel
 	public void notifyStyleSelected(StyleProvider styleProvider) {
 		System.out.println("notify from tree: style selected: " + styleProvider.getName() );
 		if (styleProvider instanceof EditStyle) {
-			this.styleEditor.setStyle( (EditStyle)styleProvider );
+			this.styleEditor.editStyle( (EditStyle)styleProvider );
 		}
 	}
 

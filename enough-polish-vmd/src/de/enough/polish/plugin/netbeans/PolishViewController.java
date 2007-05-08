@@ -224,6 +224,7 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
 //        System.out.println(">>>> You have " + size + " displayable(s) in your application");
         
         if (editedScreen == null) {
+            System.out.println("PolishViewController.refreshVisual: showing NO SCREEN");
             this.visual.setCurrent(null);
             return;
         }
@@ -232,7 +233,10 @@ public class PolishViewController implements DesignDocumentAwareness, DesignList
         // so that we always stay in sync...
         Displayable displayable = this.displayableParserManager.parseDisplayable(editedScreen, this.resourceProvider );
         if (displayable != null) {
+            System.out.println("Successfull parsed " + this.editedScreen + " and now displaying it.");
             this.visual.setCurrent(displayable);
+        } else {
+            System.out.println("PolishViewController.refreshVisual: unable to parse " + this.editedScreen );
         }
 
 
