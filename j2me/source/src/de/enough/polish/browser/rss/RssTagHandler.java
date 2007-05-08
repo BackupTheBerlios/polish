@@ -65,6 +65,7 @@ public class RssTagHandler
 
 //	public static final Command CMD_RSS_ITEM_SELECT = new Command(Locale.get("cmd.select"), Command.SCREEN, 1);
 	public static final Command CMD_RSS_ITEM_SELECT = new Command("Select", Command.SCREEN, 1);
+	public static final Command CMD_GO_TO_ARTICLE = new Command("Go to article", Command.SCREEN, 1);
 
 	private Browser browser;
 	private boolean inChannelTag;
@@ -198,7 +199,7 @@ public class RssTagHandler
 		item.setAppearanceMode(Item.HYPERLINK);
 		item.setDefaultCommand(CMD_RSS_ITEM_SELECT);
 		item.setItemCommandListener(this.itemListener);
-		item.setAttribute(ATTR_RSS_ITEM, new RssItem(title, description));
+		item.setAttribute(ATTR_RSS_ITEM, new RssItem(title, description, this.url));
 		item.addCommand(this.linkCommand);
 
 		if (this.url != null) {
