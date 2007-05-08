@@ -102,7 +102,7 @@ public final class Converter {
             }
         }
 
-        Device device = database.getDevice ("Generic/midp2"); // NOI18N
+        Device device = database.getDevice ("Generic/DefaultColorPhone"); // NOI18N
         HashMap<String,String> map = PolishDeviceDatabase.createPropertiesMap (device, env);
         for (Map.Entry<String, String> entry : map.entrySet ())
             MidpProjectPropertiesSupport.setProperty (ep, entry.getKey (), null, entry.getValue ());
