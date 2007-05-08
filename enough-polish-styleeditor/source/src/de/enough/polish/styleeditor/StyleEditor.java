@@ -40,7 +40,10 @@ import de.enough.polish.styleeditor.editors.MarginPaddingEditor;
 import de.enough.polish.styleeditor.editors.SpecificAttributesEditor;
 import de.enough.polish.styleeditor.editors.TextEditor;
 import de.enough.polish.styleeditor.editors.ViewTypeEditor;
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.UiAccess;
 
 /**
  * <p>Baseclass for editing a single style.</p>
@@ -56,8 +59,8 @@ public class StyleEditor {
 	
 	private final CssAttributesManager attributesManager;
 	private final List<StylePartEditor> editors;
-	private final StyleEditorVisual visual;
-	private EditStyle style;
+	private StyleEditorVisual visual;
+	private EditStyle currentEditStyle;
 	private List<StyleEditorListener> styleListeners;
 	private Environment environment;
 	private ResourcesProvider resourcesProvider;
@@ -67,18 +70,20 @@ public class StyleEditor {
 	 * 
 	 * @param attributesManager
 	 * @param environment the environment
-	 * @param visual the visualization, can be null
 	 */
-	public StyleEditor( ResourcesProvider resourcesProvider, CssAttributesManager attributesManager, Environment environment, StyleEditorVisual visual  ) {
+	public StyleEditor( ResourcesProvider resourcesProvider, CssAttributesManager attributesManager, Environment environment ) {
 		this.resourcesProvider = resourcesProvider;
 		this.attributesManager = attributesManager;
-		this.visual = visual;
 		this.editors = new ArrayList<StylePartEditor>();
 		this.environment = environment;
 		if (environment.get( ColorConverter.ENVIRONMENT_KEY ) == null) {
 			System.out.println("warning: no color converter found.");
 			environment.set( ColorConverter.ENVIRONMENT_KEY, new ColorConverter() );
 		}
+	}
+	
+	public void setVisual( StyleEditorVisual visual ) {
+		this.visual = visual;
 	}
 	
 	public void addPartEditor( StylePartEditor partEditor ) {
@@ -102,24 +107,77 @@ public class StyleEditor {
 	 * 
 	 * @param style the style that should be added
 	 */
-	public void setStyle( EditStyle style ) {
-		this.style = style;
+	public void editStyle( EditStyle style ) {
+		this.currentEditStyle = style;
 		if (this.visual != null) {
-			this.visual.setStyle( style );
+			this.visual.editStyle( style );
 		}
 		for (StylePartEditor editor : this.editors) {
 			editor.setStyle( style );
 		}
+	}
+	
+	/**
+	 * Edits the specified style
+	 * 
+	 * @param itemOrScreen the item/screen that might contain a style that should be added
+	 * @param style the style that belongs to the item/screen. When null the user is asked for specifying that style
+	 * @return the edited style if there is a style attached, otherwise null is returned
+	 */
+	public EditStyle editStyle( ItemOrScreen itemOrScreen, Style style ) {
+		EditStyle editStyle = null;
+		if (style != null) {
+			editStyle = (EditStyle) this.resourcesProvider.getStyle(style.name); 
+		}
+		
+		if (editStyle == null) {
+			// notify visual about a necessary style selection dialog:
+			if (this.visual != null) {
+				this.visual.chooseOrCreateStyleFor( itemOrScreen, this.resourcesProvider.getStyles() );
+			}
+			return null;
+		} else {
+			// okay, we have style to edit:
+			editStyle.setItemOrScreen(itemOrScreen);
+			editStyle( editStyle );
+			return editStyle;
+		}
+	}
+	
+	public EditStyle attachStyle( ItemOrScreen itemOrScreen, String styleName ) { 
+		EditStyle editStyle = (EditStyle) this.resourcesProvider.getStyle( styleName );
+		if (editStyle == null) {
+			Style style = new Style();
+			style.name = styleName;
+			editStyle = new EditStyle( styleName, style, itemOrScreen);
+			this.resourcesProvider.addStyle(styleName, editStyle);
+		} else {
+			editStyle.setItemOrScreen(itemOrScreen);
+		}
+		Object itemOrScreenObj = itemOrScreen.getItemOrScreen();
+	    if (itemOrScreenObj instanceof Item) {
+	        UiAccess.setStyle( (Item)itemOrScreenObj, editStyle.getStyle() );
+	    } else {
+	        UiAccess.setStyle( (Screen)itemOrScreenObj, editStyle.getStyle() );
+	    }
+
+		if (this.styleListeners != null) {
+			for (StyleEditorListener listener : this.styleListeners) {
+				listener.notifyStyleAttached(itemOrScreen, editStyle);
+			}
+		}
+		editStyle( editStyle );
+		return editStyle;
 	}
 
 	/**
 	 * 
 	 */
 	public void notifyStyleUpdated() {
-		this.style.writeStyle();
+		this.currentEditStyle.writeStyle();
 		if (this.styleListeners != null) {
 			for (StyleEditorListener listener : this.styleListeners) {
-				listener.notifyStyleUpdated(this.style);
+				listener.notifyStyleUpdated(this.currentEditStyle);
 			}
 		}
 	}
@@ -167,6 +225,34 @@ public class StyleEditor {
 	 */
 	public ResourcesProvider getResourcesProvider() {
 		return this.resourcesProvider;
+	}
+
+	/**
+	 * @param itemOrScreen
+	 * @return
+	 */
+	public String getChooseOrCreateDescription(ItemOrScreen itemOrScreen) {
+		Object itemOrScreenObj = itemOrScreen.getItemOrScreen();
+        return itemOrScreenObj instanceof Item ? 
+                "This item has no attached style, please enter the desired name: "
+                :
+                "This screen has no attached style, please enter the desired name: ";
+	}
+
+	/**
+	 * @param itemOrScreen
+	 * @return
+	 */
+	public String getChooseOrCreateSuggestion(ItemOrScreen itemOrScreen) {
+		Object itemOrScreenObj = itemOrScreen.getItemOrScreen();
+		if (itemOrScreenObj instanceof Item && ((Item)itemOrScreenObj).isFocused) {
+			return "focused";
+		}
+        String defaultName = itemOrScreenObj.getClass().getName();
+        if (defaultName.lastIndexOf('.' ) != -1) {
+            defaultName = defaultName.substring( defaultName.lastIndexOf('.' ) + 1 );
+        }
+        return "my" + defaultName;
 	}
 
 }

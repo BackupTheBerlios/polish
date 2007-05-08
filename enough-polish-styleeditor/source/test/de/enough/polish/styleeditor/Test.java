@@ -27,17 +27,21 @@ package de.enough.polish.styleeditor;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
+import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.preprocess.css.CssAttributesManager;
@@ -82,13 +86,15 @@ import de.enough.polish.util.ResourceUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class Test extends SwingApplication
-implements SelectionListener, StyleEditorListener, StyleSelectionListener, ColorSelectionListener, ColorChooserListener
+implements SelectionListener, StyleEditorListener, StyleSelectionListener, ColorSelectionListener, ColorChooserListener,
+ActionListener
 {
 
 	private StyleEditor editor;
 	private Simulation simulation;
 	private ResourcesProvider resourceProvider;
 	private ResourcesTree resourcesTree;
+	private JComboBox deviceSelector;
 
 	/**
 	 * @param title
@@ -96,13 +102,16 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
 	 */
 	public Test(String title, boolean systemExitOnQuit, File polishHome, File projectHome ) {
 		super(title, systemExitOnQuit);
+		
+		this.deviceSelector = new JComboBox( new String[]{"Generic/MppPhone", "Generic/multi", "Nokia/6630"} );
+		this.deviceSelector.addActionListener( this );
 
 		DeviceDatabase deviceDB = DeviceDatabase.getInstance(polishHome);
 		ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
 		CssAttributesManager attributesManager = CssAttributesManager.getInstance( polishHome, resourceUtil );
 		Environment environment = new Environment(polishHome);
 		environment.setBaseDir( projectHome );
-		environment.initialize( deviceDB.getDevice("Nokia/6630"), null);
+		environment.initialize( deviceDB.getDevice("Generic/MppPhone"), null);
 
 		this.resourceProvider = initResourceProvider( polishHome, environment, attributesManager );
 				
@@ -110,24 +119,27 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
 		Displayable form = initUi();
 		initSimulation( this.simulation, form ); 
 		
-		SwingStyleEditor swingEditor = new SwingStyleEditor();
-		this.editor = new StyleEditor( this.resourceProvider, attributesManager, environment, swingEditor );
+		this.editor = new StyleEditor( this.resourceProvider, attributesManager, environment );
+		SwingStyleEditor swingEditor = new SwingStyleEditor(this.editor );
+		this.editor.setVisual(swingEditor);
 		this.editor.addDefaultPartEditors();
 		this.editor.addStyleListener( this );
 		JPanel panel = new JPanel( new BorderLayout() );
 		panel.add( this.simulation, BorderLayout.NORTH );
 		panel.add( swingEditor, BorderLayout.CENTER );
 		ResourcesTree tree = ResourcesTree.getInstance( this.resourceProvider );
-		panel.add( new JScrollPane(tree), BorderLayout.EAST );
 		tree.addStyleSelectionListener(this);
 		tree.addColorSelectionListener( this );
 		this.resourcesTree = tree;
 		Container contentPane = getContentPane();
-		contentPane.add( panel );
+		contentPane.setLayout( new BorderLayout() );
+		contentPane.add( new JScrollPane(tree), BorderLayout.EAST );
+		contentPane.add( panel, BorderLayout.CENTER );
+		contentPane.add( this.deviceSelector, BorderLayout.NORTH );
 		pack();
 		
 		// set style:
-		notifyScreenSelected( (Screen)form, UiAccess.getStyle( (Screen)form), 0, 0 );
+		//notifyScreenSelected( (Screen)form, UiAccess.getStyle( (Screen)form), 0, 0 );
 	}
 	
 	/**
@@ -206,6 +218,8 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
 		} else {
 			polishHome = new File("/Applications/J2ME-Polish");
 		}
+		Device device = DeviceDatabase.loadDevice( polishHome, "Generic/midp2");
+		System.out.println("device loaded: " + device.getIdentifier() );
 		File projectHome;
 		if (args.length > 1) {
 			projectHome = new File( args[1]);
@@ -247,19 +261,10 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
 	 * @param style
 	 */
 	private void editStyle(ItemOrScreen itemOrScreen, Style style) {
-		EditStyle editStyle = getEditStyle(itemOrScreen, style);
-//		if (style == null || style == StyleSheet.defaultStyle) {
-//			style = new Style();
-//		}
-//		EditStyle editStyle;
-//		if (style.name != null) {
-//			editStyle = (EditStyle) this.resourceProvider.getStyle( style.name );
-//			editStyle.setItemOrScreen( itemOrScreen );
-//		} else {
-//			editStyle = new EditStyle( itemOrScreen.getItemOrScreen().getClass().getName(), style, itemOrScreen );
-//		}
-		this.editor.setStyle(editStyle);
-		this.resourcesTree.selectStyle(editStyle);
+		EditStyle editStyle = this.editor.editStyle(itemOrScreen, style);
+		if (editStyle != null) {
+			this.resourcesTree.selectStyle(editStyle);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -292,7 +297,7 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
 	public void notifyStyleSelected(StyleProvider styleProvider) {
 		System.out.println("notify from tree: style selected: " + styleProvider.getName() );
 		if (styleProvider instanceof EditStyle) {
-			this.editor.setStyle( (EditStyle)styleProvider );
+			this.editor.editStyle( (EditStyle)styleProvider );
 		}
 	}
 
@@ -388,5 +393,33 @@ implements SelectionListener, StyleEditorListener, StyleSelectionListener, Color
         }
         return "my" + defaultName;
     }
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.styleeditor.StyleEditorListener#notifyStyleCreated(de.enough.polish.styleeditor.ItemOrScreen, de.enough.polish.styleeditor.EditStyle)
+	 */
+	public void notifyStyleCreated(ItemOrScreen itemOrScreen, EditStyle editStyle) {
+		System.out.println("a new style has been created for " + itemOrScreen.getItemOrScreen() + ": " + editStyle.getName() );
+		this.resourcesTree.selectStyle(editStyle);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.styleeditor.StyleEditorListener#notifyStyleAttached(de.enough.polish.styleeditor.ItemOrScreen, de.enough.polish.styleeditor.EditStyle)
+	 */
+	public void notifyStyleAttached(ItemOrScreen itemOrScreen, EditStyle editStyle) {
+		// TODO robertvirkus implement notifyStyleAttached
+		this.simulation.getCurrentDisplayable()._requestRepaint();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	public void actionPerformed(ActionEvent event) {
+		if (event.getSource() == this.deviceSelector) {
+			String identifier = (String) this.deviceSelector.getSelectedItem();
+			SimulationDevice device = new SimulationDevice(identifier);
+			this.simulation.setDevice(device);
+		}
+		 
+	}
 
 }

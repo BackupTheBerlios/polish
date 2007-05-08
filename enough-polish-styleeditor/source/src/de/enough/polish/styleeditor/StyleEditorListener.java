@@ -38,5 +38,7 @@ package de.enough.polish.styleeditor;
 public interface StyleEditorListener {
 	
 	public void notifyStyleUpdated( EditStyle style );
+	
+	public void notifyStyleAttached( ItemOrScreen itemOrScreen, EditStyle editStyle );
 
 }

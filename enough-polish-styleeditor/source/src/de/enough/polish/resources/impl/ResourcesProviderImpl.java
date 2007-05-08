@@ -157,6 +157,10 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 	 * @see de.enough.polish.resources.ResourcesProvider#getStyle(java.lang.String)
 	 */
 	public StyleProvider getStyle(String name) {
+		if (name == null) {
+			//throw new IllegalArgumentException("Style name must not be null");
+			return null;
+		}
 		EditStyle editStyle = this.editStylesByName.get(name);
 		if (editStyle == null) {
 			editStyle = this.editStylesByName.get(name.toLowerCase());
@@ -168,6 +172,9 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 			}
 			//de.enough.polish.ui.Style runtimeStyle = parseStyle( cssStyle );
 			editStyle = parseStyle( name, cssStyle );
+			if (editStyle.getStyle().name == null) {
+				throw new IllegalStateException("No style.name set.");
+			}
 			this.editStylesByName.put( name, editStyle );
 		}
 		return editStyle;
@@ -429,7 +436,7 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 	 * @see de.enough.polish.resources.ResourcesProvider#saveResources()
 	 */	
 	public void saveResources() throws IOException {
-		File resourcesDir = new File( this.environment.getBaseDir(), "resources/base");
+		File resourcesDir= new File( this.environment.getBaseDir(), "resources");
 		if (!resourcesDir.exists()) {
 			resourcesDir = new File( this.environment.getBaseDir(), "resources");
 		}
@@ -438,6 +445,11 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 		saveColors( buffer );
 		saveStyles( buffer );
 		FileUtil.writeTextFile( output, new String[]{ buffer.toString() } );
+		resourcesDir = new File( this.environment.getBaseDir(), "resources/base");
+		output = new File( resourcesDir, "polish.css");
+		if (resourcesDir.exists()) {
+			FileUtil.writeTextFile( output, new String[]{ buffer.toString() } );		
+		}
 		System.out.println("wrote CSS to " + output.getAbsolutePath() );
 	}
 

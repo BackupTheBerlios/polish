@@ -521,9 +521,9 @@ implements StyleProvider
 			CssAttributeValue value = this.attributesMap.get(attribute);
 			CssMapping mapping = attribute.getMapping( value.getValueAsString() );
 			if (mapping != null && mapping.getCondition() != null) {
-				buffer.append("\t#if ").append(mapping.getCondition()).append("\n");
+				buffer.append("\t//#if ").append(mapping.getCondition()).append("\n");
 				buffer.append("\t\t").append(attribute.getName()).append(": ").append( value.getValueAsString() ).append(";\n");
-				buffer.append("\t#endif\n");
+				buffer.append("\t#//endif\n");
 			} else {
 				// attribute without condition:
 				buffer.append("\t").append(attribute.getName()).append(": ").append( value.getValueAsString() ).append(";\n");

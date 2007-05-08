@@ -25,6 +25,8 @@
  */
 package de.enough.polish.styleeditor;
 
+import de.enough.polish.resources.StyleProvider;
+
 
 /**
  * <p>Interacts with the visualization of the style editor</p>
@@ -43,6 +45,12 @@ public interface StyleEditorVisual {
 	/**
 	 * @param style
 	 */
-	public void setStyle(EditStyle style);
+	public void editStyle(EditStyle style);
+
+	/**
+	 * @param itemOrScreen
+	 * @param availableStyles 
+	 */
+	public void chooseOrCreateStyleFor(ItemOrScreen itemOrScreen, StyleProvider[] availableStyles);
 
 }

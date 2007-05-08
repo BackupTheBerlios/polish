@@ -102,7 +102,7 @@ public class BorderEditor extends ParameterizedStyleEditor {
 	 * @see de.enough.polish.styleeditor.StylePartEditor#readStyle(de.enough.polish.styleeditor.EditStyle)
 	 */
 	public void readStyle(EditStyle style) {
-		System.out.println(this + ".readStyle(), attributesEditor==null: " + (this.attributesEditor == null));
+		//System.out.println(this + ".readStyle(), attributesEditor==null: " + (this.attributesEditor == null));
 		this.border = style.getStyle().border;
 		// now extract background attributes:
 		if (this.border != null) {
