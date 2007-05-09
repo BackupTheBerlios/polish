@@ -302,9 +302,9 @@ public class DeviceDatabase {
 		} catch (BuildException e) {
 			throw e;
 		} catch (Exception e) {
+			e.printStackTrace();
 			String message = e.getMessage(); 
 			if ( message == null) {
-				e.printStackTrace();
 				message = e.toString();
 			}
 			throw new BuildException("unable to read devices.xml/custom-devices.xml: " + message, e );
@@ -398,7 +398,11 @@ public class DeviceDatabase {
 	 */
 	public static Device[] loadDevices( File polishHome, String[] identifiers ) {
 		Map properties = new HashMap();
-		List deviceIdentifiersList =  Arrays.asList(identifiers);
+		List deviceIdentifiersList =  new ArrayList(); //Arrays.asList(identifiers);
+		for (int i = 0; i < identifiers.length; i++) {
+			String identifier = identifiers[i];
+			deviceIdentifiersList.add( identifier );
+		}
 		properties.put( "polish.devicedatabase.identifiers", deviceIdentifiersList );
 		if (polishHome != null) {
 			properties.put( "polish.home", polishHome.getAbsolutePath() );
@@ -408,9 +412,11 @@ public class DeviceDatabase {
 		Device[] devices = db.getDevices();
 		for (int i = 0; i < devices.length; i++) {
 			Device device = devices[i];
-			if (deviceIdentifiersList.contains(device.getIdentifier())) {
+			//if (deviceIdentifiersList.contains(device.getIdentifier())) {
 				devicesList.add(device);
-			}
+//			} else {
+//				System.out.println("ignoring device " + device.getIdentifier() );
+//			}
 		}
 		if (devicesList.size() == devices.length) {
 			return devices;
@@ -429,11 +435,17 @@ public class DeviceDatabase {
 	 */
 	public static Device loadDevice( File polishHome, String identifier ) {
 		Device[] devices = loadDevices( polishHome, new String[]{ identifier } );
-		if (devices.length == 0) {
-			throw new IllegalArgumentException("Device " + identifier + " is unknown.");
-		} else {
+		if (devices.length == 1){
 			return devices[0];
+		} else {
+			for (int i = 0; i < devices.length; i++) {
+				Device device = devices[i];
+				if (device.getIdentifier().equals( identifier)) {
+					return device;
+				}
+ 			}
 		}
+		throw new IllegalArgumentException("Device " + identifier + " is unknown.");
 	}
 
 

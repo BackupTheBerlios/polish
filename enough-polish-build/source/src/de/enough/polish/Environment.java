@@ -136,6 +136,9 @@ public class Environment {
 		this.exchangeStore = new HashMap();
 		this.temporarySymbols = new HashMap();
 		this.temporaryVariables = new HashMap();
+		if (polishHome != null) {
+			set("polish.home", polishHome);
+		}
 		ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
 		try {
 			this.extensionManager = ExtensionManager.getInstance( polishHome, resourceUtil );

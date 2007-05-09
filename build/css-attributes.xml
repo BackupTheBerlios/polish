@@ -59,126 +59,126 @@
 		<mapping from="simple-bordered"     to="de.enough.polish.ui.backgrounds.BorderedSimpleBackground"   converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter">
 			<param name="color" type="color" primitive="true" default="white" />
 			<param name="border-color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" default="1" />
+			<param name="border-width" type="integer" primitive="true" default="1" />
 		</mapping>
 		<mapping from="plain"               converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter" />
 		<mapping from="image"               to="de.enough.polish.ui.backgrounds.ImageBackground" converter="de.enough.polish.preprocess.backgrounds.ImageBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
 			<param name="image" type="image-url" default="none" />
 			<!--  not yet supported... <param name="anchor" type="anchor" default="0" />  -->
-			<param name="anchor" type="integer" default="0" />
-			<param name="x-offset" type="integer" default="0" />
-			<param name="y-offset" type="integer" default="0" />
+			<param name="anchor" type="integer" primitive="true" default="0" />
+			<param name="x-offset" type="integer" primitive="true" default="0" />
+			<param name="y-offset" type="integer" primitive="true" default="0" />
 		</mapping>
 		<mapping from="roundrect"           converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" />
 		<mapping from="round-rect"          to="de.enough.polish.ui.backgrounds.RoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
-			<param name="arc-width" type="integer" default="4" />
-			<param name="arc-height" type="integer" default="4" />			
+			<param name="arc-width" type="integer" primitive="true" default="4" />
+			<param name="arc-height" type="integer" primitive="true" default="4" />			
 		</mapping>
 		<mapping from="round-rect-bordered"          to="de.enough.polish.ui.backgrounds.BorderedRoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
-			<param name="arc-width" type="integer" default="4" />
-			<param name="arc-height" type="integer" default="4" />			
+			<param name="arc-width" type="integer" primitive="true" default="4" />
+			<param name="arc-height" type="integer" primitive="true" default="4" />			
 			<param name="border-color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" default="1" />
+			<param name="border-width" type="integer" primitive="true" default="1" />
 		</mapping>
 		<mapping from="round-rect-translucent"       to="de.enough.polish.ui.backgrounds.TranslucentRoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
 			<param name="color" type="color" primitive="true" translucent="true" default="#8fff" />
-			<param name="arc-width" type="integer" default="4" />
-			<param name="arc-height" type="integer" default="4" />			
+			<param name="arc-width" type="integer" primitive="true" default="4" />
+			<param name="arc-height" type="integer" primitive="true" default="4" />			
 		</mapping>
 		<mapping from="pulsating"           to="de.enough.polish.ui.backgrounds.PulsatingBackground" converter="de.enough.polish.preprocess.backgrounds.PulsatingBackgroundConverter" >
 			<param name="start-color" type="color" primitive="true" default="white" />
 			<param name="end-color" type="color" primitive="true" default="gray" />
-			<param name="steps" type="integer" default="8" />
-			<param name="repeat" type="boolean" default="true" />
-			<param name="back-and-forth" type="boolean" default="true" />
+			<param name="steps" type="integer" primitive="true" default="8" />
+			<param name="repeat" type="boolean" primitive="true" default="true" />
+			<param name="back-and-forth" type="boolean" primitive="true" default="true" />
 		</mapping>
 		<mapping from="pulsating-circle"    to="de.enough.polish.ui.backgrounds.PulsatingCircleBackground" converter="de.enough.polish.preprocess.backgrounds.PulsatingCircleBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
-			<param name="min-diameter" type="integer" default="8" />
-			<param name="max-diameter" type="integer" default="40" />
+			<param name="min-diameter" type="integer" primitive="true" default="8" />
+			<param name="max-diameter" type="integer" primitive="true" default="40" />
 		</mapping>
 		<mapping from="pulsating-circles"   to="de.enough.polish.ui.backgrounds.PulsatingCirclesBackground" converter="de.enough.polish.preprocess.backgrounds.PulsatingCirclesBackgroundConverter" >
 			<param name="first-color" type="color" primitive="true" default="white" />
 			<param name="second-color" type="color" primitive="true" default="gray" />
-			<param name="min-diameter" type="integer" default="8" />
-			<param name="max-diameter" type="integer" default="40" />
-			<param name="number-of-circles" type="integer" default="3" />
-			<param name="step" type="integer" default="350" />
+			<param name="min-diameter" type="integer" primitive="true" default="8" />
+			<param name="max-diameter" type="integer" primitive="true" default="40" />
+			<param name="number-of-circles" type="integer" primitive="true" default="3" />
+			<param name="step" type="integer" primitive="true" default="350" />
 		</mapping>
 		<mapping from="circle"              to="de.enough.polish.ui.backgrounds.CircleBackground" converter="de.enough.polish.preprocess.backgrounds.CircleBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
-			<param name="diameter" type="integer" default="-1" />			
+			<param name="diameter" type="integer" primitive="true" default="-1" />			
 		</mapping>
 		<mapping from="opening"             to="de.enough.polish.ui.backgrounds.OpeningBackground" converter="de.enough.polish.preprocess.backgrounds.OpeningBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
-			<param name="start-height" type="integer" default="1" />			
-			<param name="steps" type="integer" default="8" />			
+			<param name="start-height" type="integer" primitive="true" default="1" />			
+			<param name="steps" type="integer" primitive="true" default="8" />			
 		</mapping>
 		<mapping from="round-rect-opening"  to="de.enough.polish.ui.backgrounds.BorderedRoundRectOpeningBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
-			<param name="start-height" type="integer" default="1" />			
-			<param name="steps" type="integer" default="8" />			
-			<param name="arc-width" type="integer" default="4" />
-			<param name="arc-height" type="integer" default="4" />			
+			<param name="start-height" type="integer" primitive="true" default="1" />			
+			<param name="steps" type="integer" primitive="true" default="8" />			
+			<param name="arc-width" type="integer" primitive="true" default="4" />
+			<param name="arc-height" type="integer" primitive="true" default="4" />			
 			<param name="border-color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" default="0" />
+			<param name="border-width" type="integer" primitive="true" default="0" />
 		</mapping>
 		<mapping from="opening-round-rect"  converter="de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter" />
 		<mapping from="round-tab"           to="de.enough.polish.ui.backgrounds.RoundTabBackground" converter="de.enough.polish.preprocess.backgrounds.RoundTabBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
-			<param name="arc-width" type="integer" default="4" />
-			<param name="arc-height" type="integer" default="4" />			
+			<param name="arc-width" type="integer" primitive="true" default="4" />
+			<param name="arc-height" type="integer" primitive="true" default="4" />			
 		</mapping>
 		<mapping from="round-tab-bordered"  to="de.enough.polish.ui.backgrounds.BorderedRoundTabBackground" converter="de.enough.polish.preprocess.backgrounds.BorderedRoundTabBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
-			<param name="arc-width" type="integer" default="4" />
-			<param name="arc-height" type="integer" default="4" />			
+			<param name="arc-width" type="integer" primitive="true"  default="4" />
+			<param name="arc-height" type="integer" primitive="true" default="4" />			
 			<param name="border-color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" default="1" />
+			<param name="border-width" type="integer" primitive="true" default="1" />
 		</mapping>
 		<mapping from="fade-in"             to="de.enough.polish.ui.backgrounds.FadeInBackground" converter="de.enough.polish.preprocess.backgrounds.FadeInBackgroundConverter" >
 			<param name="target-argb-color" type="color" primitive="true" translucent="true" default="white" />
-			<param name="restart-on-time" type="boolean" default="false" />
-			<param name="restart-on-position-change" type="boolean" default="false" />
+			<param name="restart-on-time" type="boolean" primitive="true" default="false" />
+			<param name="restart-on-position-change" type="boolean" primitive="true" default="false" />
 		</mapping>
 		<mapping from="ball-games"           converter="de.enough.polish.preprocess.backgrounds.BallBackgroundConverter" >
 			<!--  to="de.enough.polish.ui.backgrounds.BallBackground" deactivated because of required game-API support -->
 			<param name="color" type="color" primitive="true" default="white" />
 			<param name="border-color" type="color" primitive="true" default="black" />
 			<param name="url" type="image-url" default="/none" />
-			<param name="round-width" type="integer" default="1" />
-			<param name="round-height" type="integer" default="1" />
-			<param name="number" type="integer" default="5" />
+			<param name="round-width" type="integer" primitive="true" default="1" />
+			<param name="round-height" type="integer" primitive="true" default="1" />
+			<param name="number" type="integer" primitive="true" default="5" />
 		</mapping>
 		<mapping from="tiger-stripes"       converter="de.enough.polish.preprocess.backgrounds.TigerStripesBackgroundConverter" />
 		<mapping from="smooth-color"        converter="de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter" />
 		<mapping from="diagonal-gradient"   to="de.enough.polish.ui.backgrounds.SmoothColorBackground" converter="de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
 			<param name="target-color" type="color" primitive="true" default="gray" />
-			<param name="stroke" type="integer" default="solid" values="solid,dotted" />
+			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" />
 		</mapping>
 		<mapping from="snow"                converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" />
 		<mapping from="snowflakes"          to="de.enough.polish.ui.backgrounds.XmasSnowBackground" 
 				converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="red" />
 			<param name="flake-color" type="color" primitive="true" default="white" />
-			<param name="max-flake-size" type="integer" default="10" />
-			<param name="number-of-flakes" type="integer" default="5" />
+			<param name="max-flake-size" type="integer" primitive="true" default="10" />
+			<param name="number-of-flakes" type="integer" primitive="true" default="5" />
 		</mapping>
 		<mapping from="web20"          		to="de.enough.polish.ui.backgrounds.Web20RoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.Web20RoundRectBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
-			<param name="arc-width" type="integer" default="4" />
-			<param name="arc-height" type="integer" default="4" />			
+			<param name="arc-width" type="integer" primitive="true" default="4" />
+			<param name="arc-height" type="integer" primitive="true" default="4" />			
 			<param name="circle-color" type="color" primitive="true" default="yellow" />
 			<!--  todo: add anchor support -->
-			<param name="circle-anchor" type="integer" default="16" />			
-			<param name="padding-left" type="integer" default="0" />			
-			<param name="padding-right" type="integer" default="0" />			
-			<param name="padding-top" type="integer" default="0" />			
-			<param name="padding-bottom" type="integer" default="0" />			
+			<param name="circle-anchor" type="integer" primitive="true"  default="16" />			
+			<param name="padding-left" type="integer" primitive="true" default="0" />			
+			<param name="padding-right" type="integer" primitive="true" default="0" />			
+			<param name="padding-top" type="integer" primitive="true" default="0" />			
+			<param name="padding-bottom" type="integer" primitive="true" default="0" />			
 		</mapping>
 		<mapping from="stripes"          	converter="de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" />
 		<mapping from="horizontal-stripes"	to="de.enough.polish.ui.backgrounds.HorizontalStripesBackground" converter="de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" >
@@ -191,10 +191,10 @@
 		<mapping from="vertical-gradient"   to="de.enough.polish.ui.backgrounds.GradientVerticalBackground" converter="de.enough.polish.preprocess.backgrounds.GradientVerticalBackgroundConverter" >
 			<param name="top-color" type="color" primitive="true" default="white" />
 			<param name="bottom-color" type="color" primitive="true" default="gray" />
-			<param name="stroke" type="integer" default="solid" values="solid,dotted" />
-			<param name="start" type="integer" default="0" />
-			<param name="end" type="integer" default="100" />
-			<param name="is-percent" type="boolean" default="true" />
+			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" />
+			<param name="start" type="integer" primitive="true" default="0" />
+			<param name="end" type="integer" primitive="true" default="100" />
+			<param name="is-percent" type="boolean" primitive="true" default="true" />
 		</mapping>
 	</attribute>
 
@@ -226,7 +226,7 @@
 		<mapping from="circle" 				to="de.enough.polish.ui.borders.CircleBorder" converter="de.enough.polish.preprocess.borders.CircleBorderConverter" >
 			<param name="color" type="color" primitive="true" default="black" />
 			<param name="border-width" type="integer" default="1" />
-			<param name="stroke=style" type="integer" default="solid" values="solid,dotted" />
+			<param name="stroke-style" type="integer" default="solid" values="solid,dotted" />
 		</mapping>
 		<mapping from="bottom"				to="de.enough.polish.ui.borders.BottomBorder" converter="de.enough.polish.preprocess.borders.BottomBorderConverter" >
 			<param name="color" type="color" primitive="true" default="black" />

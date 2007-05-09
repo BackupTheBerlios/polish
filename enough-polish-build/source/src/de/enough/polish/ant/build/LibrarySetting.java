@@ -34,6 +34,7 @@ import org.apache.tools.ant.DirectoryScanner;
 import de.enough.polish.ant.Setting;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Allows to include a binary library depending on conditions.</p>
@@ -47,12 +48,13 @@ import de.enough.polish.util.JarUtil;
  */
 public class LibrarySetting extends Setting {
 	
-	public File dir;
-	public File file; 
-	public File dirOrFile;
+	public File[] files;
+//	public File file; 
+//	public File dirOrFile;
 	private int id;
 	private File cacheDir;
 	private boolean libraryChanged;
+	private long lastModified;
 
 	/**
 	 * Creates a new library binding.
@@ -61,12 +63,12 @@ public class LibrarySetting extends Setting {
 		super();
 	}
 	
-	/**
-	 * @return Returns the dir.
-	 */
-	public File getDir() {
-		return this.dir;
-	}
+//	/**
+//	 * @return Returns the dir.
+//	 */
+//	public File getDir() {
+//		return this.dir;
+//	}
 
 	/**
 	 * @param dir The dir to set.
@@ -75,19 +77,20 @@ public class LibrarySetting extends Setting {
 		if (!dir.isDirectory()) {
 			throw new BuildException("The <library>-dir [" + dir.getAbsolutePath() + "] is a file and not a directory. Please use the \"file\" attribute instead in your build.xml.");
 		}
-		if (this.file != null) {
+		if (this.files != null) {
 			throw new BuildException("You cannot specify both the \"file\" as well as the \"dir\" attribute in one <library>-element. Please correct this in your build.xml.");
 		}
-		this.dir = dir;
-		this.dirOrFile = dir;
+		this.files = dir.listFiles();
+//		this.dir = dir;
+//		this.dirOrFile = dir;
 	}
 
-  /**
-	 * @return Returns the file.
-	 */
-	public File getFile() {
-		return this.file;
-	}
+//  /**
+//	 * @return Returns the file.
+//	 */
+//	public File getFile() {
+//		return this.file;
+//	}
 
 	/**
 	 * @param file The file to set.
@@ -96,48 +99,65 @@ public class LibrarySetting extends Setting {
 		if (file.isDirectory()) {
 			throw new BuildException("The <library>-file [" + file.getAbsolutePath() + "] is a directory and not a file. Please use the \"dir\" attribute instead in your build.xml.");
 		}
-		if (this.dir != null) {
-			throw new BuildException("You cannot specify both the \"file\" as well as the \"dir\" attribute in one <library>-element. Please correct this in your build.xml.");
+		if (this.files != null) {
+			throw new BuildException("You cannot specify both the \"file\" as well as the \"dir\" attribute or \"files\" attribute in one <library>-element. Please correct this in your build.xml.");
 		}
-		this.file = file;
-		this.dirOrFile = file;
+		if (!file.exists()) {
+			throw new BuildException("Unable find library " + file.getAbsolutePath() + ": file not found. Check your <library> tags in your build.xml script.");			
+		}
+		this.files = new File[]{ file };
+		this.lastModified = file.lastModified();
+		//this.dirOrFile = file;
+	}
+	
+	public void setFiles( String colonSeparatedPaths ) {
+		String[] paths = StringUtil.split(colonSeparatedPaths, ':');
+		this.files = new File[ paths.length ];
+		for (int i = 0; i < paths.length; i++) {
+			String path = paths[i];
+			File file = new File( path );
+			if ( !(file.exists())) {
+				throw new BuildException("Unable find library " + path + ": file not found. Check your <library> tags in your build.xml script.");
+			}
+			this.files[i] = file;
+		}
 	}
 
-	/**
-	 * @return
-	 */
-	public File getDirOrFile() {
-		return this.dirOrFile;
-	}
+//	/**
+//	 * @return
+//	 */
+//	public File getDirOrFile() {
+//		return this.dirOrFile;
+//	}
 
 
-	/**
-	 * @return <code>true</code> if 
-	 */
-	public boolean isDirectory() {
-		return (this.dir != null);
-	}
+//	/**
+//	 * @return <code>true</code> if 
+//	 */
+//	public boolean isDirectory() {
+//		return (this.dir != null);
+//	}
 
 	/**
 	 * @return
 	 */
 	public long lastModified() {
-		return this.dirOrFile.lastModified();
+		return this.lastModified;
 	}
 	
-	/**
-	 * @return the name of the library file
-	 */
-	public String getName() {
-		return this.dirOrFile.getName();
-	}
+//	/**
+//	 * @return the name of the library file
+//	 */
+//	public String getName() {
+//		return this.dirOrFile.getName();
+//	}
 	
-	/**
-	 * @return the absolute path of the library
-	 */
-	public String getAbsolutePath() {
-		return this.dirOrFile.getAbsolutePath();
-	}
+//	/**
+//	 * @return the absolute path of the library
+//	 */
+//	public String getAbsolutePath() {
+//		return this.dirOrFile.getAbsolutePath();
+//	}
 
 	/**
 	 * @return the id of the library
@@ -163,34 +183,30 @@ public class LibrarySetting extends Setting {
 		this.cacheDir = new File( cacheBaseDir, "" + this.id );
 		File jarCacheDir = new File( cacheBaseDir, "" + this.id + "jar");
 		//System.out.println(">>>>copyToCache: copying " + this.dirOrFile.getAbsolutePath() + " to " + this.cacheDir );
-		if ( this.dir != null ) {
+		//if ( this.dir != null ) {
 			// a directory can contain library-files (jar, zip) as well
 			// as plain class or resource files. Each library-file
 			// will be extracted whereas other files will just be copied
-			// to the build/binary folder. 
-			DirectoryScanner binaryScanner = new DirectoryScanner();
-			binaryScanner.setBasedir( this.dir );
-			// just include all files in the directory:
-			binaryScanner.scan();
-			String[] includedFiles = binaryScanner.getIncludedFiles();
-			for (int j = 0; j < includedFiles.length; j++) {
-				String fileName = includedFiles[j];
-				File fileInDir = new File( this.dir, fileName );
-				if (fileName.endsWith(".zip") || fileName.endsWith(".jar")) {
+			for (int j = 0; j < this.files.length; j++) {
+				File file = this.files[j];
+				String fileName = file.getName();
+				//File fileInDir = new File( this.dir, fileName );
+				if (fileName.endsWith(".zip") || fileName.endsWith(".jar")) 
+				{
 					// this is a library file:
 					// only extract it when the original is newer than the copy:
 					File cacheCopy = new File( jarCacheDir, fileName );
 					if ( (!cacheCopy.exists())
-							|| (fileInDir.lastModified() > cacheCopy.lastModified())) {
+							|| (lastModified() > cacheCopy.lastModified())) {
 						changed = true;
 						try {
 							// copy the library to the cache:
-							FileUtil.copy(fileInDir, cacheCopy );
+							FileUtil.copy(file, cacheCopy );
 							// unzip / unjar the content:
-							JarUtil.unjar(fileInDir, this.cacheDir );
+							JarUtil.unjar(file, this.cacheDir );
 						} catch (IOException e) {
 							e.printStackTrace();
-							throw new BuildException("Unable to extract the binary class files from the library [" + fileInDir.getAbsolutePath() + "]: " + e.toString(), e );
+							throw new BuildException("Unable to extract the binary class files from the library [" + file.getAbsolutePath() + "]: " + e.toString(), e );
 						}
 					}
 				} else {
@@ -200,35 +216,35 @@ public class LibrarySetting extends Setting {
 						// copy the file only when it is newer
 						// than the existing copy: 
 						if ( (!targetFile.exists()) 
-								|| (fileInDir.lastModified() > targetFile.lastModified()) ) {
+								|| (this.lastModified() > targetFile.lastModified()) ) {
 							changed = true;
-							FileUtil.copy(fileInDir, targetFile);
+							FileUtil.copy(file, targetFile);
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
-						throw new BuildException("Unable to copy the binary class files from the library [" + this.dirOrFile.getAbsolutePath() + "]: " + e.toString(), e );
+						throw new BuildException("Unable to copy the binary class files from the library [" + file.getAbsolutePath() + "]: " + e.toString(), e );
 					}
 				}
-			}
-		} else {
-			// this is a library (jar or zip) file:
-			// copy only when the original is newer than the cached copy: 
-			if ( (!this.cacheDir.exists())
-					|| (this.file.lastModified() > this.cacheDir.lastModified())) {
-				changed = true;
-				if (!this.file.exists()) {
-					throw new BuildException("Unable to extract the binary class files from the library [" + this.file.getAbsolutePath() + "]: this library does not exist. Check the <library> settings in your build.xml script." );
-				}
-				try {
-					// copy the library to the cache:
-					FileUtil.copy(this.file, new File( jarCacheDir, this.file.getName() ) );
-					// unzip / unjar the content:
-					JarUtil.unjar(this.file, this.cacheDir);
-				} catch (IOException e) {
-					e.printStackTrace();
-					throw new BuildException("Unable to extract the binary class files from the library [" + this.file.getAbsolutePath() + "]: " + e.toString(), e );
-				}
-			}
+			//}
+		//}  else {
+//			// this is a library (jar or zip) file:
+//			// copy only when the original is newer than the cached copy: 
+//			if ( (!this.cacheDir.exists())
+//					|| (this.file.lastModified() > this.cacheDir.lastModified())) {
+//				changed = true;
+//				if (!this.file.exists()) {
+//					throw new BuildException("Unable to extract the binary class files from the library [" + this.file.getAbsolutePath() + "]: this library does not exist. Check the <library> settings in your build.xml script." );
+//				}
+//				try {
+//					// copy the library to the cache:
+//					FileUtil.copy(this.file, new File( jarCacheDir, this.file.getName() ) );
+//					// unzip / unjar the content:
+//					JarUtil.unjar(this.file, this.cacheDir);
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//					throw new BuildException("Unable to extract the binary class files from the library [" + this.file.getAbsolutePath() + "]: " + e.toString(), e );
+//				}
+//			}
 			/*
 			File cacheCopy = new File( cachePath + lib.getId() + File.separatorChar + lib.getName() );
 			if ( (!cacheCopy.exists())
@@ -258,9 +274,9 @@ public class LibrarySetting extends Setting {
 		//System.out.println("<<<<copyFromCache: copying " + this.cacheDir + " to " + targetDir );
 		try {
 			FileUtil.copyDirectoryContents( this.cacheDir, targetDir, true );
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			throw new BuildException( "Unable to copy binary library [" + this.dirOrFile.getAbsolutePath() + "]: " + e.toString() );
+			throw new BuildException( "Unable to copy binary library: " + e.toString() );
 		}
 	}
 	
@@ -269,6 +285,35 @@ public class LibrarySetting extends Setting {
 	 */
 	public boolean isLibraryChanged() {
 		return this.libraryChanged;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getPath() {
+		if (this.files == null) {
+			return null;
+		} else if (this.files.length == 1) {
+			return this.files[0].getAbsolutePath();
+		} else {
+			StringBuffer buffer = new StringBuffer();
+			File[] includedFiles = this.files;
+			for (int j = 0; j < includedFiles.length; j++) {
+				File file = includedFiles[j];
+				buffer.append( file.getAbsolutePath() );
+				if (j != includedFiles.length -1) {
+					buffer.append(':');
+				}
+			}
+			return buffer.toString();
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public File[] getFiles() {
+		return this.files;
 	}
 }
 

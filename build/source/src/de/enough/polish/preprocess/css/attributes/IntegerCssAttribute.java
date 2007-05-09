@@ -25,6 +25,8 @@
  */
 package de.enough.polish.preprocess.css.attributes;
 
+import org.jdom.Element;
+
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.css.CssAttribute;
@@ -41,6 +43,7 @@ import de.enough.polish.preprocess.css.CssAttribute;
  */
 public class IntegerCssAttribute extends CssAttribute {
 	
+	
 	/**
 	 * Creates a new instance.
 	 */
@@ -48,6 +51,8 @@ public class IntegerCssAttribute extends CssAttribute {
 		super();
 	}
 	
+
+
 	/**
 	 * Checks and transforms the given CSS value for this attribute.
 	 * 
@@ -66,7 +71,7 @@ public class IntegerCssAttribute extends CssAttribute {
 					String processedValue = environment.getProperty( "calculate(" + value + ")", true);
 					intValue = Integer.parseInt( processedValue );
 				}
-				if (this.isBaseAttribute) {
+				if (this.isBaseAttribute ) {
 					return "" + intValue;
 				} else {
 					return "new Integer(" + intValue + ")";
@@ -102,5 +107,19 @@ public class IntegerCssAttribute extends CssAttribute {
 			throw new BuildException( message );
 		}
 	}
+
+
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
+	 */
+	public Object instantiateValue(String sourceCode) {
+		if (this.isBaseAttribute) {
+			return new Integer( Integer.parseInt(sourceCode));
+		}
+		return super.instantiateValue(sourceCode);
+	}
+	
+	
 
 }

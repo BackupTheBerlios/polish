@@ -90,9 +90,18 @@ public class BooleanCssAttribute extends CssAttribute {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
 	 */
-	public Object instantiateValue(String value) {
-		return super.instantiateBoolean(value);
-	}	
+	public Object instantiateValue(String sourceCode) {
+		//if (this.isBaseAttribute) {
+			if ("true".equals(sourceCode) || "Style.TRUE".equals(sourceCode)) {
+				return Boolean.TRUE;
+			} else {
+				return Boolean.FALSE;
+			}
+//		} else {
+//			
+//		}
+//		return super.instantiateValue(sourceCode);
+	}
 	
 	
 

@@ -64,8 +64,8 @@ public class LibrariesSetting extends Setting {
 	}
 	
 	public void addConfiguredLibrary( LibrarySetting setting ) {
-		if (setting.getDir() == null && setting.getFile() == null ) {
-			throw new BuildException("Invalid <library>-element: you need to define either the \"file\" or the \"dir\" attribute of the <library>-element in your build.xml file.");
+		if (setting.getFiles() == null ) {
+			throw new BuildException("Invalid <library>-element: you need to define either the \"file\", \"files\" or the \"dir\" attribute of the <library>-element in your build.xml file.");
 		}
 		setting.setId( this.currentId );
 		this.currentId++;
@@ -106,7 +106,7 @@ public class LibrariesSetting extends Setting {
 		boolean updated = false;
 		for (int i = 0; i < libs.length; i++) {
 			LibrarySetting lib = libs[i];
-			int id = this.integerIdGenerator.getId( lib.getAbsolutePath(), true );
+			int id = this.integerIdGenerator.getId( lib.getPath(), true );
 			lib.setId( id );
 			updated |= lib.copyToCache(binaryBaseDir);
 		}

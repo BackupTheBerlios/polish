@@ -28,6 +28,7 @@ package de.enough.polish.preprocess.css.attributes;
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.util.ReflectionUtil;
 
 /**
  * <p>A attribute referring to a style.</p>
@@ -61,6 +62,29 @@ public class StyleCssAttribute extends CssAttribute {
 			return "null";
 		}
 		return super.getValue(value, environment);
-	}			
+	}
+
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
+//	 */
+//	public Object instantiateValue(String sourceCode) {
+//		try {
+//			Class styleSheetClass = Class.forName("de.enough.polish.ui.StyleSheet");
+//			Object style = null;
+//			try {
+//				style = ReflectionUtil.getStaticFieldValue(styleSheetClass, sourceCode);
+//			} catch (Exception e) {
+//				System.out.println("Warning: unable to resolve style field " + sourceCode + " - now trying with Style at the end.");
+//			}
+//		} catch (ClassNotFoundException e) {
+//			System.out.println("Unable to load StyleSheet class: " + e );
+//			e.printStackTrace();
+//			return null;
+//		}
+//		
+//		return super.instantiateValue(sourceCode);
+//	}
+	
+	
 
 }

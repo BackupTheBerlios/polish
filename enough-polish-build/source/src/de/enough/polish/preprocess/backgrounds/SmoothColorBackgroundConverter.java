@@ -51,7 +51,9 @@ public class SmoothColorBackgroundConverter extends BackgroundConverter {
 		int stroke = 0 ;
 		String strokeStr =  (String)map.get("stroke");
 		if ( strokeStr != null ) {
-			stroke =  parseInt(strokeStr, strokeStr);			
+			if ("dotted".equals(strokeStr)) {
+				stroke = 1;
+			}
 		}
 		
 		result += gradientColor +","+stroke +")";

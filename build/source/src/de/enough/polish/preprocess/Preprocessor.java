@@ -1216,7 +1216,7 @@ public class Preprocessor {
 			nextLine = lines.getCurrent();
 			int commentIndex = nextLine.indexOf("//");
 			if (commentIndex != -1) {
-				nextLine = nextLine.substring(0, commentIndex);
+				nextLine = removeComment( nextLine, commentIndex) ;//nextLine.substring(0, commentIndex);
 				lines.setCurrent( nextLine );
 			}
 			while ( nextLine.indexOf(';') == -1) {
@@ -1283,6 +1283,34 @@ public class Preprocessor {
 		// mark the style as beeing used:
 		this.styleSheet.addUsedStyle( style );
 		return true;
+	}
+
+	/**
+	 * @param line
+	 * @param commentIndex
+	 * @return
+	 */
+	private String removeComment(String line, int commentIndex) {
+		// double check that the comment is not within quotes, e.g.   textField = new TextField("Enter URL:", "http://", 32, TextField.ANY);
+		char[] nextLineChars = line.toCharArray();
+		int numbersOfQuotes = 0;
+		for (int i = 0; i < commentIndex; i++) {
+			char c = nextLineChars[i];
+			if ( c == '"' ) {
+				numbersOfQuotes++;
+			}
+		}
+		if ( (numbersOfQuotes & 1) == 1 ) {
+			// there is an uneven number of quotes until the found position, so it's invalid:
+			commentIndex = line.indexOf(line, commentIndex + 2);
+			if (commentIndex == -1) {
+				//System.out.println("comment has been within quotes: " + line );
+				return line;
+			} else {
+				return removeComment( line, commentIndex );
+			}
+		}
+		return line.substring( 0, commentIndex );
 	}
 
 	/**

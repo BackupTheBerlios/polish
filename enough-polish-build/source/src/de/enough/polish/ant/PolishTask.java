@@ -470,7 +470,7 @@ public class PolishTask extends ConditionalTask {
 			executeErrorTarget( this.buildSetting.getOnError(), e );
 			//e.printStackTrace();
 			throw e;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			executeErrorTarget( this.buildSetting.getOnError(), e );
 			throw new BuildException("Unable to execute J2ME Polish task: " + e.toString(), e );
@@ -502,7 +502,7 @@ public class PolishTask extends ConditionalTask {
   }
 	
 
-	protected void executeErrorTarget( String targetName, Exception e ) {
+	protected void executeErrorTarget( String targetName, Throwable e ) {
 		try {
 			if ( targetName != null ) {
 				Project antProject = getProject();

@@ -60,6 +60,7 @@ public class CssConverter extends Converter {
 	private CssAttribute layoutAttribute;
 	private CssAttribute backgroundAttribute;
 	private CssAttribute borderAttribute;
+	private final ParameterizedAttributeConverter parameterizedAttributeConverter;
 	
 	/**
 	 * Creates a new CSS converter
@@ -67,6 +68,7 @@ public class CssConverter extends Converter {
 	 */
 	public CssConverter() {
 		this.colorConverter = new ColorConverter();
+		this.parameterizedAttributeConverter = new ParameterizedAttributeConverter();
 	}
 	
 	/**
@@ -578,9 +580,10 @@ public class CssConverter extends Converter {
 		codeList.add("\t);");
 		
 		// add the selector of the style, but only when dynamic styles are used:
-		if (styleSheet.containsDynamicStyles()) {
+		//TODO: hack for WYSIWG editor:
+		//if (styleSheet.containsDynamicStyles()) {
 			staticCodeList.add("\t" + styleName + "Style.name = \"" + style.getSelector() + "\"; \t// the selector of the above style");
-		}
+		//}
 
 	}
 
@@ -818,22 +821,33 @@ public class CssConverter extends Converter {
 			}
 		}
 		//String className = (String) BACKGROUND_TYPES.get(type);
-		String className = this.backgroundAttribute.getValue( type, env );
-		if (className == null) {
-			className = originalType;
+		CssMapping mapping = this.backgroundAttribute.getMapping(type);
+		if (mapping.getTo() != null) {
+			String code = this.parameterizedAttributeConverter.createNewStatement(this.backgroundAttribute, (ParameterizedCssMapping)mapping, group, env);
+			if (isStandalone) {
+				codeList.add( STANDALONE_MODIFIER + "Background " + backgroundName + "Background = " + code + ";");
+			} else {
+				codeList.add( code + ", " );
+			}
+		} else {
+			// old style converter is used
+			String className = this.backgroundAttribute.getValue( type, env );
+			if (className == null) {
+				className = originalType;
+			}
+			try {
+				BackgroundConverter creator =  (BackgroundConverter) Class.forName(className).newInstance();
+				creator.setColorConverter(this.colorConverter);
+				creator.addBackground( codeList, group, backgroundName, style, styleSheet, isStandalone );
+			} catch (ClassNotFoundException e) {
+				throw new BuildException("Invalid CSS: unable to load background-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
+			} catch (BuildException e) {
+				throw e;
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new BuildException("Invalid CSS: unable to load background-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
+			}		
 		}
-		try {
-			BackgroundConverter creator =  (BackgroundConverter) Class.forName(className).newInstance();
-			creator.setColorConverter(this.colorConverter);
-			creator.addBackground( codeList, group, backgroundName, style, styleSheet, isStandalone );
-		} catch (ClassNotFoundException e) {
-			throw new BuildException("Invalid CSS: unable to load background-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
-		} catch (BuildException e) {
-			throw e;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new BuildException("Invalid CSS: unable to load background-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
-		}		
 	}
 
 	/**

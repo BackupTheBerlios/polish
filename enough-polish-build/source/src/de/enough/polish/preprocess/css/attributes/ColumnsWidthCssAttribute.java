@@ -62,4 +62,16 @@ public class ColumnsWidthCssAttribute extends CssAttribute {
 		value = StringUtil.replace( value, " ", "" );
 		return '"' + value + '"';
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
+	 */
+	public Object instantiateValue(String sourceCode) {
+		if (sourceCode.length() > 2 && sourceCode.charAt(0) == '"' && sourceCode.charAt( sourceCode.length() - 1) == '"') {
+			return sourceCode.substring( 1, sourceCode.length() - 1 );
+		}
+		return sourceCode;
+	}
+	
+	
 }

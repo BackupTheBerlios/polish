@@ -216,5 +216,13 @@ implements Comparable
 		return 0;
 	}
 
+	/**
+	 * @return
+	 */
+	public boolean hasAppliesTo() {
+		// TODO robertvirkus implement getApplicableTo
+		return (this.appliesToMap != null);
+	}
+
 
 }

@@ -151,6 +151,10 @@ implements Comparable
 			this.group = null;
 			this.isBaseAttribute = false;
 		}
+		String boolStr = definition.getAttributeValue("primitive");
+		if (boolStr != null) {
+			this.isBaseAttribute = boolStr.equals("true");
+		}
 		String isCaseSensitiveStr = definition.getAttributeValue("isCaseSensitive");
 		if (isCaseSensitiveStr != null) {
 			this.isCaseSensitive = CastUtil.getBoolean( isCaseSensitiveStr );
@@ -596,13 +600,17 @@ implements Comparable
 			return null;
 		}
 		CssMapping[] mappings = getMappings();
+		CssMapping matchingMapping = null;
 		for (int i = 0; i < mappings.length; i++) {
 			CssMapping mapping = mappings[i];
 			if (toName.equals(mapping.getTo()) || toName.equals(mapping.getToClassName())) {
-				return mapping;
+				if (mapping.hasAppliesTo()) {
+					return mapping;
+				}
+				matchingMapping = mapping;
 			}
 		}
-		return null;
+		return matchingMapping;
 	}
 
 
