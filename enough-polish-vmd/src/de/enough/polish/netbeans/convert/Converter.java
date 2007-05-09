@@ -106,6 +106,8 @@ public final class Converter {
         HashMap<String,String> map = PolishDeviceDatabase.createPropertiesMap (device, env);
         for (Map.Entry<String, String> entry : map.entrySet ())
             MidpProjectPropertiesSupport.setProperty (ep, entry.getKey (), null, entry.getValue ());
+        
+        database.clear ();
 
         MidpProjectPropertiesSupport.setProperty (ep, "all.configurations", null, configurations); // NOI18N
         ep.put (PolishProjectSupport.PROP_USE_POLISH_PROJECT, "true"); // NOI18N
