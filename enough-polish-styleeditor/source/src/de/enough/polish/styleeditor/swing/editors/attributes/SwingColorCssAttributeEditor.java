@@ -75,7 +75,7 @@ implements ColorChooserListener
 		removeAll();
 		JPanel panel = new JPanel( new GridLayout( 1, 2, 5, 2 ));
 		setName( attribute.getName() );
-		panel.add( new JLabel( attribute.getName() + ": ") );
+		panel.add( createLabel( editor )  );
 		panel.add( this.colorButton );
 		add( panel );
 		this.isIgnoreActionEvents = false;

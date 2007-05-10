@@ -102,8 +102,8 @@ extends SwingStylePartEditor
 	 */
 	protected void updateGui(StylePartEditor stylePartEditor) {
 		ViewTypeEditor editor = (ViewTypeEditor) stylePartEditor;
-		
 		String viewTypeName = editor.getViewType();
+		//System.out.println("SwingViewTypeEditor.updateGui() to view-type " + viewTypeName);
 		String[] viewTypeNames = editor.getViewTypeNames();
 		this.viewTypeComboBox.removeAllItems();
 		this.viewTypeComboBox.addItem( NO_SELECTION );

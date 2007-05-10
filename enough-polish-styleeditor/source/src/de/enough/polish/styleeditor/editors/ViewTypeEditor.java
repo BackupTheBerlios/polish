@@ -60,7 +60,7 @@ public class ViewTypeEditor extends StylePartEditor {
 	 * @see de.enough.polish.styleeditor.StylePartEditor#writeStyle(EditStyle)
 	 */
 	public void writeStyle( EditStyle style ) {
-		
+		//System.out.println("View-Type-Editor: writeStyle()");
 		if (this.viewTypeName == null) {
 			style.removeAttribute( this.viewTypeAttribute );
 		} else {
@@ -84,7 +84,7 @@ public class ViewTypeEditor extends StylePartEditor {
 		} else {
 			CssMapping mapping = this.viewTypeAttribute.getMappingByTo( this.viewType.getClass().getName() );
 			if (mapping != null) {
-				setViewType( mapping.getFrom() );
+				setViewType( mapping.getFrom(), false );
 				this.viewTypeEditor.setStyle(style);
 				if (this.visual != null) {
 					this.visual.setCssAttributes( this.viewTypeEditor.getAttributes(),this.viewTypeEditor.getEditors() );
@@ -130,6 +130,10 @@ public class ViewTypeEditor extends StylePartEditor {
 	 * @param viewTypeName
 	 */
 	public void setViewType(String viewTypeName) {
+		setViewType(viewTypeName, true);
+	}
+	public void setViewType(String viewTypeName, boolean update) {
+		//System.out.println("setting view-type-name " + viewTypeName);
 		// remove previous settings from style:
 		if (this.viewTypeEditor != null) {
 			this.editStyle.removeAttributes( this.viewTypeEditor.getAttributes() );
@@ -160,7 +164,9 @@ public class ViewTypeEditor extends StylePartEditor {
 				}
 			}
 		}
-		update();
+		if (update) {
+			update();
+		}
 	}
 
 	/* (non-Javadoc)

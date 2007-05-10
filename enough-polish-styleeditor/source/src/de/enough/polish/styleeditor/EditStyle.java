@@ -496,6 +496,7 @@ implements StyleProvider
 	
 	public void removeAttribute(CssAttribute attribute) {
 		this.style.removeAttribute( attribute.getId() );
+		this.attributesMap.remove(attribute);
 	}
 
 	/**
@@ -523,7 +524,7 @@ implements StyleProvider
 			if (mapping != null && mapping.getCondition() != null) {
 				buffer.append("\t//#if ").append(mapping.getCondition()).append("\n");
 				buffer.append("\t\t").append(attribute.getName()).append(": ").append( value.getValueAsString() ).append(";\n");
-				buffer.append("\t#//endif\n");
+				buffer.append("\t//#endif\n");
 			} else {
 				// attribute without condition:
 				buffer.append("\t").append(attribute.getName()).append(": ").append( value.getValueAsString() ).append(";\n");
@@ -692,6 +693,13 @@ implements StyleProvider
 				System.out.println("...ooops: unable to clear attributeKeys/attributeValues from style: "  + e );
 			}
 		}
+	}
+
+	/**
+	 * @param style
+	 */
+	public void setStyle(Style style) {
+		this.style = style;
 	}
 	
 	

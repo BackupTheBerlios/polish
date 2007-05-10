@@ -79,11 +79,16 @@ public class StyleCssAttributeEditor extends CssAttributeEditor {
 
 
 
-	public void setStyle(String name) {
+	public void setOrCreateStyle(String name) {
 		if (name == null) {
 			this.value = null;
 		} else {
-			this.value = getResourcesProvider().getStyle(name);
+			StyleProvider style = getResourcesProvider().getStyle(name);
+			if (style == null) {
+				// ok, create a new Style:
+				style = this.styleEditor.createStyle( name );
+			}
+			this.value = style;		
 		}
 		update();
 	}
@@ -110,6 +115,8 @@ public class StyleCssAttributeEditor extends CssAttributeEditor {
 		Arrays.sort( styleNames );
 		return styleNames;
 	}
+	
+	
 
 
 	/* (non-Javadoc)

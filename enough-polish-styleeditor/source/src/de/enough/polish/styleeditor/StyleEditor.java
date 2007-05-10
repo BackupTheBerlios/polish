@@ -33,6 +33,7 @@ import de.enough.polish.preprocess.css.ColorConverter;
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssAttributesManager;
 import de.enough.polish.resources.ResourcesProvider;
+import de.enough.polish.resources.StyleProvider;
 import de.enough.polish.styleeditor.editors.BackgroundEditor;
 import de.enough.polish.styleeditor.editors.BorderEditor;
 import de.enough.polish.styleeditor.editors.LayoutEditor;
@@ -40,6 +41,7 @@ import de.enough.polish.styleeditor.editors.MarginPaddingEditor;
 import de.enough.polish.styleeditor.editors.SpecificAttributesEditor;
 import de.enough.polish.styleeditor.editors.TextEditor;
 import de.enough.polish.styleeditor.editors.ViewTypeEditor;
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
@@ -125,6 +127,7 @@ public class StyleEditor {
 	 * @return the edited style if there is a style attached, otherwise null is returned
 	 */
 	public EditStyle editStyle( ItemOrScreen itemOrScreen, Style style ) {
+		//System.out.println("edit style  " + (style != null ? style.name : "[NULL]") + " for " + itemOrScreen.getItemOrScreen() );
 		EditStyle editStyle = null;
 		if (style != null) {
 			editStyle = (EditStyle) this.resourcesProvider.getStyle(style.name); 
@@ -138,6 +141,7 @@ public class StyleEditor {
 			return null;
 		} else {
 			// okay, we have style to edit:
+			editStyle.setStyle( style );
 			editStyle.setItemOrScreen(itemOrScreen);
 			editStyle( editStyle );
 			return editStyle;
@@ -245,14 +249,34 @@ public class StyleEditor {
 	 */
 	public String getChooseOrCreateSuggestion(ItemOrScreen itemOrScreen) {
 		Object itemOrScreenObj = itemOrScreen.getItemOrScreen();
-		if (itemOrScreenObj instanceof Item && ((Item)itemOrScreenObj).isFocused) {
-			return "focused";
+		if (itemOrScreenObj instanceof Item) {
+			Item item = (Item)itemOrScreenObj; 
+			if (!(item instanceof Container) && item.isFocused) {
+				return "focused";
+			}
 		}
         String defaultName = itemOrScreenObj.getClass().getName();
         if (defaultName.lastIndexOf('.' ) != -1) {
             defaultName = defaultName.substring( defaultName.lastIndexOf('.' ) + 1 );
         }
         return "my" + defaultName;
+	}
+
+	/**
+	 * @param name
+	 * @return
+	 */
+	public StyleProvider createStyle(String name) {
+		Style runtimeStyle = new Style();
+		runtimeStyle.name = name;
+		EditStyle style = new EditStyle( name, runtimeStyle, null );
+		this.resourcesProvider.addStyle(name, style);
+		if (this.styleListeners != null) {
+			for (StyleEditorListener listener : this.styleListeners) {
+				listener.notifyStyleCreated(style);
+			}			
+		}
+		return style;
 	}
 
 }

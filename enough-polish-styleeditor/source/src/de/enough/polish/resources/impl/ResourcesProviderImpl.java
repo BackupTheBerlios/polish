@@ -109,12 +109,18 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 		ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
 		ExtensionManager extensionManager = ExtensionManager.getInstance(polishHome, resourceUtil);
 		ResourceSetting resourceSetting = new ResourceSetting( environment.getBaseDir() );
+		File resourcesHome = new File( this.environment.getBaseDir(), "resources/base" );
+		if (!resourcesHome.exists()) {
+			resourcesHome = new File( this.environment.getBaseDir(), "resources" );
+		}
+		resourceSetting.setDir(resourcesHome);
 		this.resourceManager = new ResourceManager(resourceSetting, extensionManager, environment );
 		// import existing polish.css file(s):
 		loadCssStyleSheet();
 	}
 	
 	private void loadCssStyleSheet() throws IOException {
+		System.out.println("ResourcesProvider: loading stylesheet from " + this.environment.getBaseDir() );
 		Preprocessor preprocessor = new Preprocessor(null, this.environment, null, false, false, false, null);
 		this.styleSheet = this.resourceManager.loadStyleSheet( this.environment.getDevice(), this.environment.getLocale(), preprocessor, this.environment);
 		loadColors();
@@ -436,21 +442,19 @@ public class ResourcesProviderImpl implements ResourcesProvider {
 	 * @see de.enough.polish.resources.ResourcesProvider#saveResources()
 	 */	
 	public void saveResources() throws IOException {
-		File resourcesDir= new File( this.environment.getBaseDir(), "resources");
-		if (!resourcesDir.exists()) {
-			resourcesDir = new File( this.environment.getBaseDir(), "resources");
-		}
+		File  resourcesDir = new File( this.environment.getBaseDir(), "resources");
 		File output = new File( resourcesDir, "polish.css");
 		StringBuffer buffer = new StringBuffer();
 		saveColors( buffer );
 		saveStyles( buffer );
 		FileUtil.writeTextFile( output, new String[]{ buffer.toString() } );
+		System.out.println("wrote CSS to " + output.getAbsolutePath() );
 		resourcesDir = new File( this.environment.getBaseDir(), "resources/base");
 		output = new File( resourcesDir, "polish.css");
 		if (resourcesDir.exists()) {
 			FileUtil.writeTextFile( output, new String[]{ buffer.toString() } );		
+			System.out.println("wrote CSS to " + output.getAbsolutePath() );
 		}
-		System.out.println("wrote CSS to " + output.getAbsolutePath() );
 	}
 
 	/**

@@ -27,6 +27,10 @@ package de.enough.polish.styleeditor.swing.editors;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+
+import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.styleeditor.CssAttributeValue;
 import de.enough.polish.styleeditor.StylePartEditor;
 import de.enough.polish.styleeditor.editors.CssAttributeEditor;
@@ -63,6 +67,13 @@ extends SwingStylePartEditor
 //			e.printStackTrace();
 //		}
 		showValue( editor.getValue() );
+	}
+	
+	protected JComponent createLabel( CssAttributeEditor editor ) {
+		CssAttribute attribute = editor.getAttribute();
+		JLabel label = new JLabel( attribute.getName() + ": " );
+		label.setToolTipText( attribute.getDescription() );
+		return label;
 	}
 	
 	

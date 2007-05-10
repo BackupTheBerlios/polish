@@ -25,6 +25,7 @@
  */
 package de.enough.polish.styleeditor;
 
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
@@ -87,6 +88,19 @@ public class ItemOrScreen {
 	 */
 	public void setStyle(Style style) {
 		if (this.item != null) {
+//			System.out.println("setting style for item " + this.item + " with parent " + this.item.getParent() + " is container=" + (this.item.getParent() instanceof Container));
+			if (this.item.getParent() instanceof Container) {
+				Item[] children = ((Container)this.item.getParent()).getItems();
+//				System.out.println("number of children=" + children.length );
+				for (int i = 0; i < children.length; i++) {
+					Item child = children[i];
+					if (child.getStyle() == style) {
+						child.setStyle(style);
+//					} else if (child.getStyle() != null){
+//						System.out.println("child style differs=" + child.getStyle().name);
+					}
+				}
+			}
 			this.item.setStyle(style);
 		}
 		if (this.screen != null) {

@@ -1,195 +1,280 @@
-/** 
-  * The polish.css files contains all
-  * design information about a project.
-  * It can be adjusted for specific devices
-  * or device groups by putting it in the 
-  * appropriate sub-folder.
-  * If you want to adjust a design for all
-  * Nokia devices, define it in "resources/Nokia/polish.css"
-  * and so on. Only new and different settings
-  * need to be specified in such polish.css files. 
-  */
-
-/**
-  * the colors which are defined in
-  * the colors section can later be referenced.
-  * This makes changes easy, since the color
-  * just needs to be changed in one position.
-  * Even default colors (like blue, green, lime, etc)
-  * can be changed here. 
-  */
 colors {
-	bgColor:  rgb(132,143,96);
-	brightBgColor:  rgb(238,241,229);
-	translucentBgColor:  argb(130, 238,241,229);
-	brightFontColor: rgb(238,241,229);
-	fontColor: rgb( 30, 85, 86 );
+	browserFontColor: #1e5556;
+	brightFontColor: #ffbd8150;
+	translucentBgColor: #82eef1e5;
+	fontColor: #1e5556;
+	brightBgColor: #eef1e5;
+	browserFontColorFocused: #142850;
+	bgColor: #848f60;
 }
-
-/**
-  * the menu style is a predefined style for
-  * designing the fullscreen-menu.
-  * The font-settings (font-color,
-  * font-face, font-style and font-size)
-  * are used to design the menu-texts
-  * (like Options, Select, or Cancel).
-  * With the focused-style attribute
-  * another style than the default "focused"
-  * style is used for the menu. 
-  * The menubar-color can be set to any
-  * color. When "transparent" is used,
-  * the background shines through.
-  */
-menu {
-	margin-left: 2;
-	padding: 2;
-	background {
-		type: round-rect;
-		color: brightBgColor;
-		border-width: 2;
-		border-color: bgColor;
-	}
-	focused-style: .menuFocused;
-	font-color: brightFontColor;
-	font-style: bold | italic;
-	menubar-color: bgColor;
-	view-type: slide-up;
+alert {
+	margin: 0;
+	padding: 1;
 }
-
-/**
-  * The menuItem style is a predefined style
-  * for the actual commands in a fullscreen-menu.
-  * When the menuItem style is not defined,
-  * the menu style will be used instead. 
-  */
-menuItem {
-	margin-top: 2;
-	padding: 2;
-	padding-left: 5;
-	font {
-		color: fontColor;
-		size: medium;
-		style: bold;
-	}
-	layout: left;
-}
-
-/**
-  * This is a custom style for selected
-  * menu items. It is used, because it has
-  * been defined in the menu style. 
-  */
-.menuFocused extends .menuItem {
-	background-color: bgColor;
-	font-color: brightFontColor;
-	layout: left | horizontal-expand;
-}
-
-/**
-  * The title style is a predefined style which is used
-  * for all screen-titles.
-  */
-title {
-	padding: 2;
-	margin-top: 0;
-	margin-bottom: 5;
-	margin-left: 0;
-	margin-right: 0;
-	font-face: proportional;
-	font-size: large;
-	font-style: bold;
-	font-color: brightFontColor;
-	background-color: bgColor;
-	border: none;
-	layout: horizontal-center | horizontal-expand;
-}
-
-/**
-  * The focused style is a predefined style which
-  * is used by lists, forms, choice-groups and so on.
-  * This style will be used for highlighting the currently
-  * focused item.
-  */
-focused {
-	padding: 5;
-	background {
-		type: round-rect;
-		arc: 8;
-		color: brightBgColor;
-	}
-	border {
-		border-color: fontColor;
-		border-width: 2;	
-	}
-	font {
-		style: bold;
-		color: fontColor;
-		size: small;
-	}
-	layout: expand | center;	
-}
-
-/** 
-  * The .mainScreen style is a static style, which
-  * is set in the MIDlet source-code with the //#style directive.
-  * If the source-code would not have defined this
-  * style, we could use the dynamic style "list" to design all
-  * list-screens. 
-  * An interesting attribute is the "columns" attribute which
-  * is used to use a table with two columns instead of the default
-  * layout.
-  */
-.mainScreen {
-	padding: 5;
-	padding-left: 10;
-	padding-right: 10;
-	padding-vertical: 10;
-	background {
-		color: brightBgColor;
-	}
-	layout: horizontal-expand | horizontal-center | vertical-center;
-	columns: 2;
-	columns-width: equal;
-}
-
-/**
-  * The .mainCommand style is also a static style, which
-  * is set in the MIDlet source-code with the //#style directive.
-  * If the source-code would not have defined this
-  * style, we could use the dynamic style "listitem" to design all
-  * items on the list-screens. 
-  * An interesting attribute is the "icon-image" URL, which uses
-  * the %INDEX% keyword. The first list-item will use the image
-  * "icon0.png", the second "icon1.png" and so on. 
-  */
-.mainCommand {
-	margin: 2; /* for the missing border of the focused style */
-	padding: 5;
-	background: none;
-	font-color: fontColor;
-	font-style: bold;
-	font-size: small;
-	layout: center | expand;
-	max-width: 100;
-	icon-image: url( icon%INDEX%.png );
-	icon-image-align: top;
-}
-
-alert extends .mainScreen {
-}
-
 alertcontent {
-	font-color: fontColor;
-	font-size: small;
-	font-style: bold;
+	margin: 0;
+	padding: 1;
+}
+browser {
+	margin: 0;
+	padding: 1;
+}
+browserchoicegroup {
+	margin: 0;
+	padding: 1;
+}
+browserchoiceitem {
+	margin: 0;
+	padding: 1;
+}
+browserdownloadindicator {
+	layout: vertical-shrink | horizontal-shrink | top | right;
+	margin: 0;
+	padding: 1;
+}
+browserinput {
+	layout: expand | left;
+	margin: 0;
+	padding: 2;
+}
+browserinputfocused {
+	layout: expand | left;
+	margin: 0;
+	padding: 1;
+}
+browserlink {
+	margin: 0;
+	padding: 1;
+	font {
+		face: system;
+		size: medium;
+		style: plain;
+		color: #ff2e2e41;
+	}
+}
+browserlinkfocused {
+	margin: 0;
+	padding: 1;
+}
+browseroption {
+	layout: left | expand;
+	margin: 0;
+	padding: 1;
+}
+browseroptionitem {
+	margin: 0;
+	padding: 1;
+}
+browsertext {
+	margin: 0;
+	padding: 1;
+}
+browsertextbold {
+	margin: 0;
+	padding: 1;
+}
+browsertextboldfocused {
+	margin: 0;
+	padding: 1;
+}
+browsertextbolditalic {
+	margin: 0;
+	padding: 1;
+}
+browsertextbolditalicfocused {
+	margin: 0;
+	padding: 1;
+}
+browsertextfocused {
+	margin: 0;
+	padding: 1;
+}
+browsertextitalic {
+	margin: 0;
+	padding: 1;
+}
+browsertextitalicfocused {
+	margin: 0;
+	padding: 1;
+}
+focused {
+	layout: expand | center;
+	margin: 0;
+	padding: 1;
+	font {
+		face: system;
+		size: medium;
+		style: plain;
+	}
+	background {
+		type: round-rect-translucent;
+		color: #88ffffff;
+		arc-width: 4;
+		arc-height: 4;
+	}
+}
+loadgamealert {
+	layout: horizontal-expand | horizontal-center | vertical-center;
+	margin: 20;
+	padding: 1;
+	background {
+		type: simple;
+		color: argb( 150, 255, 255, 255 );
+	}
+}
+maincommand {
+	layout: center | expand;
+	margin: 2;
+	padding: 5;
+	background {
+		type: simple;
+		color: white;
+	}
+}
+mainscreen {
+	layout: horizontal-expand | horizontal-center | vertical-center;
+	margin: 0;
+	padding: 1;
+	background {
+		type: simple;
+		color: brightBgColor;
+	}
+}
+mcfocused {
+	margin: 0;
+	padding: 1;
+}
+mcfocused3 {
+	margin: 0;
+	padding: 1;
+	background {
+		type: simple;
+		color: #ff66ff66;
+	}
+}
+menu {
+	margin: 0;
+	padding: 2;
+	background {
+		type: round-rect;
+		color: brightBgColor;
+		arc-width: 4;
+		arc-height: 4;
+	}
+}
+menubar {
+	margin: 0;
+	padding: 1;
+	background {
+		type: vertical-gradient;
+		top-color: #ffffff;
+		bottom-color: #ffff0033;
+		stroke: solid;
+		start: 0;
+		end: 100;
+		is-percent: true;
+	}
+}
+menufocused {
+	layout: left | horizontal-expand;
+	margin: 0;
+	padding: 1;
+	background {
+		type: simple;
+		color: bgColor;
+	}
+}
+menuitem {
+	layout: left;
+	margin: 0;
+	padding: 1;
+}
+mychoicegroup {
+	margin: 0;
+	padding: 1;
+}
+mychoiceitem {
+	layout: horizontal-center | top | horizontal-expand;
+	margin: 0;
+	padding: 1;
+	font {
+		face: system;
+		size: medium;
+		style: plain;
+		color: #ff003399;
+	}
+}
+myform {
+	layout: horizontal-center | vertical-center;
+	margin: 0;
+	padding: 1;
+	font {
+		face: system;
+		size: medium;
+		style: plain;
+	}
+	background {
+		type: vertical-gradient;
+		top-color: #ffffff;
+		bottom-color: #ffe9e91c;
+		stroke: solid;
+		start: 0;
+		end: 100;
+		is-percent: true;
+	}
+}
+mystringitem {
+	margin: 0;
+	padding: 1;
+	background {
+		type: horizontal-stripes;
+		first-top-color: #ffff66;
+		first-bottom-color: #008000;
+		second-top-color: #ffffff;
+		second-bottom-color: #33ff00;
+	}
+}
+rssdescriptionalert {
+	margin: 0;
+	padding: 1;
+}
+textfieldsymbolitem {
+	layout: center;
+	margin: 1;
+	padding: 2;
+}
+textfieldsymbollist {
+	layout: vertical-shrink | horizontal-shrink | center | vertical-center;
+	margin: 0;
+	padding: 10;
+	background {
+		type: simple;
+		color: white;
+	}
+}
+textfieldsymbollistfocused {
+	layout: center;
+	margin: 0;
+	padding: 2;
+}
+title {
+	layout: horizontal-center | top | horizontal-expand;
+	margin: 0;
+	padding: 1;
+	font {
+		face: proportional;
+		size: large;
+		style: bold;
+		color: #ffbd8150;
+	}
+	background {
+		type: vertical-gradient;
+		top-color: #ffffff;
+		bottom-color: #ff33ff33;
+		stroke: solid;
+		start: 0;
+		end: 100;
+		is-percent: true;
+	}
 }
 
-.loadGameAlert {
-	margin: 20;
-	padding: 5;
-	padding-left: 15;
-	padding-right: 15;
-	layout: horizontal-expand | horizontal-center | vertical-center;
-	background-color: argb( 150, 255, 255, 255 ); /*translucentBgColor; */
-	show-dismiss-command: false;
-}

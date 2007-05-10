@@ -64,6 +64,7 @@ extends SwingCssAttributeEditor
 
 	public SwingStyleCssAttributeEditor() {
 		this.styleNamesComboBox = new JComboBox();
+		this.styleNamesComboBox.setEditable(true);
 		this.styleNamesComboBox.addActionListener(this);
 	}
 	
@@ -77,7 +78,7 @@ extends SwingCssAttributeEditor
 		removeAll();
 		this.styleNamesComboBox.removeAllItems();
 		JPanel panel = new JPanel( new GridLayout( 1, 2, 5, 2 ));
-		panel.add( new JLabel( attribute.getName() + ": ") );
+		panel.add( createLabel( editor )  );
 		if (this.styleNames != null) {
 			String defaultValue = attribute.getDefaultValue();
 			if (defaultValue == null) {
@@ -101,14 +102,11 @@ extends SwingCssAttributeEditor
 		Object source = event.getSource();
 		StyleCssAttributeEditor editor = (StyleCssAttributeEditor) stylePartEditor;
 		if (source == this.styleNamesComboBox){
-			int selectedIndex = this.styleNamesComboBox.getSelectedIndex();
-			if (editor.getDefaultValue() == null) {
-				selectedIndex--;
-			}
-			if (selectedIndex == -1) {
-				editor.setStyle( (String)null);
+			String styleName = (String) this.styleNamesComboBox.getSelectedItem();
+			if ( NO_SELECTION.equals( styleName ) ) {
+				editor.setOrCreateStyle( (String)null);
 			} else {
-				editor.setStyle( (String)this.styleNamesComboBox.getItemAt(selectedIndex));
+				editor.setOrCreateStyle( styleName );
 			}
 		}
 	}

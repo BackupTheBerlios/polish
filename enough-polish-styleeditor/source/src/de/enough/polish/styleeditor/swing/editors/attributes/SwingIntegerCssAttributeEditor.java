@@ -78,7 +78,7 @@ implements ChangeListener
 		removeAll();
 		this.allowedValuesComboBox.removeAllItems();
 		JPanel panel = new JPanel( new GridLayout( 1, 2, 5, 2 ));
-		panel.add( new JLabel( attribute.getName() + ": ") );
+		panel.add( createLabel( editor )  );
 		if (allowedValues != null) {
 			String defaultValue = attribute.getDefaultValue();
 			if (defaultValue == null) {

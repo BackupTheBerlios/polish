@@ -231,16 +231,13 @@ textfieldsymbollistfocused {
 	padding: 2;
 }
 title {
-	margin-left: 0;
-	margin-right: 0;
-	margin-top: 0;
-	margin-bottom: 0;
-	padding: 2;
+	margin: 0;
+	padding: 1;
 	font {
 		face: proportional;
 		size: large;
 		style: bold;
-		color: brightFontColor;
+		color: #eef1e5;
 	}
 	background {
 		type: simple;

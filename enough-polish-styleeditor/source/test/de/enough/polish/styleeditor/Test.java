@@ -38,11 +38,13 @@ import javax.microedition.lcdui.Displayable;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
+import de.enough.polish.browser.rss.RssBrowser;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.preprocess.css.CssAttributesManager;
 import de.enough.polish.resources.ColorProvider;
@@ -56,6 +58,7 @@ import de.enough.polish.resources.swing.StyleSelectionListener;
 import de.enough.polish.runtime.SelectionListener;
 import de.enough.polish.runtime.Simulation;
 import de.enough.polish.runtime.SimulationDevice;
+import de.enough.polish.runtime.SimulationPanel;
 import de.enough.polish.runtime.overlays.HoverOverlay;
 import de.enough.polish.runtime.overlays.SelectionOverlay;
 import de.enough.polish.styleeditor.editors.MarginPaddingEditor;
@@ -86,7 +89,7 @@ import de.enough.polish.util.ResourceUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class Test extends SwingApplication
-implements SelectionListener, StyleEditorListener, StyleSelectionListener, ColorSelectionListener, ColorChooserListener,
+implements SelectionListener, StyleSelectionListener, ColorSelectionListener, ColorChooserListener,
 ActionListener
 {
 
@@ -123,17 +126,20 @@ ActionListener
 		SwingStyleEditor swingEditor = new SwingStyleEditor(this.editor );
 		this.editor.setVisual(swingEditor);
 		this.editor.addDefaultPartEditors();
-		this.editor.addStyleListener( this );
-		JPanel panel = new JPanel( new BorderLayout() );
-		panel.add( this.simulation, BorderLayout.NORTH );
-		panel.add( swingEditor, BorderLayout.CENTER );
 		ResourcesTree tree = ResourcesTree.getInstance( this.resourceProvider );
 		tree.addStyleSelectionListener(this);
 		tree.addColorSelectionListener( this );
 		this.resourcesTree = tree;
+		this.editor.addStyleListener( new MyStyleEditorListener( tree, this.simulation ) );
+		
+		JPanel panel = new JPanel( new BorderLayout() );
+		//panel.add( this.simulation, BorderLayout.NORTH );
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new SimulationPanel( this.simulation ), new JScrollPane( tree ) );
+		panel.add( splitPane, BorderLayout.SOUTH );
+		panel.add( swingEditor, BorderLayout.CENTER );
 		Container contentPane = getContentPane();
 		contentPane.setLayout( new BorderLayout() );
-		contentPane.add( new JScrollPane(tree), BorderLayout.EAST );
+		//contentPane.add( new JScrollPane(tree), BorderLayout.EAST );
 		contentPane.add( panel, BorderLayout.CENTER );
 		contentPane.add( this.deviceSelector, BorderLayout.NORTH );
 		pack();
@@ -203,7 +209,12 @@ ActionListener
 		ChoiceGroup group = new ChoiceGroup( "choice:", ChoiceGroup.MULTIPLE );
 		group.append( "first choice", null );
 		group.append( "second choice", null );
+		group.append( "third choice", null );
+		group.append( "fourth choice", null );
 		form.append( group );
+		RssBrowser browser = new RssBrowser();
+		browser.go(  "http://www.digg.com/rss/index.xml" );
+		form.append( browser );
 		form.addCommand( new Command("Command", Command.SCREEN, 2 ));
 		//form._callShowNotify();
 		Background background = new SimpleBackground( 0xffff00 );
@@ -420,6 +431,36 @@ ActionListener
 			this.simulation.setDevice(device);
 		}
 		 
+	}
+	
+	public class MyStyleEditorListener extends DefaultStyleEditorListener {
+
+		/**
+		 * @param resourcesTree
+		 * @param simulation
+		 */
+		public MyStyleEditorListener(ResourcesTree resourcesTree, Simulation simulation) {
+			super(resourcesTree, simulation);
+		}
+
+		/* (non-Javadoc)
+		 * @see de.enough.polish.styleeditor.DefaultStyleEditorListener#notifyStyleUpdated(de.enough.polish.styleeditor.EditStyle)
+		 */
+		public void notifyStyleUpdated(EditStyle style) {
+			super.notifyStyleUpdated(style);
+			
+			System.out.println( style.toSourceCode() );
+			try {
+				Test.this.resourceProvider.saveResources();
+			} catch (IOException e) {
+				// TODO robertvirkus handle IOException
+				e.printStackTrace();
+			}
+
+		}
+		
+		
+		
 	}
 
 }

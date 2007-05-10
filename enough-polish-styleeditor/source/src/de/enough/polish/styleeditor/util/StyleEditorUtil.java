@@ -27,6 +27,7 @@ package de.enough.polish.styleeditor.util;
 
 import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.resources.StyleProvider;
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
@@ -83,6 +84,22 @@ public class StyleEditorUtil {
 				}
 				setStyle( menubar, resourcesProvider, "leftcommand", "singleLeftCommandItem" );
 				setStyle( menubar, resourcesProvider, "rightcommand", "singleRightCommandItem" );
+				Container menu = (Container) ReflectionUtil.getFieldValue(menubar, "commandsContainer");
+				style = resourcesProvider.getStyle("menu");
+				if (style != null) {
+					menu.setStyle( style.getStyle() );
+					style = resourcesProvider.getStyle("menuitem");
+					if (style != null) {
+						Item[] menuItems = menu.getItems();
+						Style menuItemStyle = style.getStyle();
+						if (menuItems != null && menuItemStyle != null) {
+							for (int i = 0; i < menuItems.length; i++) {
+								Item menuItem = menuItems[i];
+								menuItem.setStyle( menuItemStyle );
+							}
+						}
+					}
+				}
 			}
 		} catch (Exception e) {
 			System.out.println("Warning: unable to set menubar or command style: " + e.toString());

@@ -41,4 +41,6 @@ public interface StyleEditorListener {
 	
 	public void notifyStyleAttached( ItemOrScreen itemOrScreen, EditStyle editStyle );
 
+	public void notifyStyleCreated(EditStyle style);
+
 }
