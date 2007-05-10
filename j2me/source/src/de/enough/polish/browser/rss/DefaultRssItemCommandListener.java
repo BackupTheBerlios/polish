@@ -81,6 +81,7 @@ public class DefaultRssItemCommandListener implements CommandListener, ItemComma
 	 * @see javax.microedition.lcdui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Item)
 	 */
 	public void commandAction(Command command, Item item) {
+		//System.out.println("DefaultRssItemCommandListner: command ="+ command.getLabel() );
 		if (command == RssTagHandler.CMD_RSS_ITEM_SELECT) {
 			RssItem rssItem = (RssItem) UiAccess.getAttribute(item, RssTagHandler.ATTR_RSS_ITEM);
 
@@ -90,10 +91,12 @@ public class DefaultRssItemCommandListener implements CommandListener, ItemComma
 				alert.setTimeout(Alert.FOREVER);
 				alert.addCommand(RssTagHandler.CMD_GO_TO_ARTICLE);
 				alert.addCommand(HtmlTagHandler.CMD_BACK);
-				alert.setCommandListener(this.commandListener);
+				alert.setCommandListener(this);
 				StyleSheet.display.setCurrent(alert);
 				this.url = rssItem.getLink();
 			}
+		} else {
+			this.rssBrowser.handleCommand(command);
 		}
 	}
 }

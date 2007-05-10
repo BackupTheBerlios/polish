@@ -1442,6 +1442,8 @@ public class Container extends Item {
 				//#else
 					viewType.allowCycling = false;
 				//#endif
+			} else {
+				this.containerView = null;
 			}
 		//#endif
 		//#ifdef polish.css.columns

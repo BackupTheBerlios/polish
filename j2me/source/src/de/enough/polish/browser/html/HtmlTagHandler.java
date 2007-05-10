@@ -472,6 +472,7 @@ public class HtmlTagHandler
    */
 	public void commandAction(Command command, Item item)
 	{
+		System.out.println("HtmlTagHandler: handling item command " + command.getLabel()  );
 		handleCommand(command);
 	}
 }

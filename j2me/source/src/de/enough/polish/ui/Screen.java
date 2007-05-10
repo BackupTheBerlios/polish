@@ -2706,6 +2706,7 @@ implements AccessibleCanvas
 	 * @param cmd the command wich should be issued to the listener
 	 */
 	protected void callCommandListener( Command cmd ) {
+		//System.out.println("Screen.callCommandListener() for command " + cmd.getLabel() );
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.setOpen(false);
 		//#elif tmp.menuFullScreen
@@ -2968,6 +2969,7 @@ implements AccessibleCanvas
 			System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + Screen.this.focusedItem + " and screen " + Screen.this );
 			if ((item != null) && (item.itemCommandListener != null) && (item.commands != null)) {
 				if ( item.commands.contains(cmd)) {
+					//System.out.println("forwarding straight to ItemCommandListener " + item.itemCommandListener);
 					item.itemCommandListener.commandAction(cmd, item);
 					return;
 				}
@@ -2975,9 +2977,11 @@ implements AccessibleCanvas
 				item = ((Container) item).getFocusedItem();
 				while (item != null) {
 					if ((item.itemCommandListener != null) && (item.commands != null) && item.commands.contains(cmd) ) {
+						//System.out.println("forwarding at last  to ItemCommandListener " + item.itemCommandListener);
 						item.itemCommandListener.commandAction(cmd, item);
 						return;
 					}
+					//System.out.println("did not find command or command listener in item " + item + ", listener=" + item.itemCommandListener );
 					if (item instanceof Container) {
 						item = ((Container) item).getFocusedItem();						
 					} else {

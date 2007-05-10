@@ -2138,6 +2138,9 @@ public class TextField extends StringItem
 			//this.caretPositionHasBeenSet = false;
 		//#endif
 		super.setStyle(style);
+		if (this.font == null) {
+			this.font = Font.getDefaultFont();
+		}
 		//#ifdef polish.css.textfield-width
 			Integer width = style.getIntProperty("textfield-width");
 			if (width != null) {
@@ -2209,7 +2212,7 @@ public class TextField extends StringItem
 		//#endif	
 		//#if tmp.directInput	
 			//#ifdef polish.css.font-bitmap
-			if (this.bitMapFont != null) {
+			if (this.bitMapFont != null && this.caretViewer != null) {
 				this.caretWidth = this.caretViewer.getWidth();
 			} else {
 			//#endif

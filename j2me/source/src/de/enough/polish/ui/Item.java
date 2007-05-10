@@ -1132,7 +1132,33 @@ public abstract class Item extends Object
 	 * @throws NullPointerException if cmd is null
 	 * @since  MIDP 2.0
 	 */
-	public void addCommand( Command cmd)
+	public void addCommand( Command cmd) {
+		addCommand( cmd, null );
+	}
+	
+	/**
+	 * Adds a context sensitive <code>Command</code> to the item.
+	 * The semantic type of
+	 * <code>Command</code> should be <code>ITEM</code>. The implementation
+	 * will present the command
+	 * only when the item is active, for example, highlighted.
+	 * <p>
+	 * If the added command is already in the item (tested by comparing the
+	 * object references), the method has no effect. If the item is
+	 * actually visible on the display, and this call affects the set of
+	 * visible commands, the implementation should update the display as soon
+	 * as it is feasible to do so.
+	 * 
+	 * <p>It is illegal to call this method if this <code>Item</code>
+	 * is contained within an <code>Alert</code>.</p>
+	 * 
+	 * @param cmd the command to be added
+	 * @param commandStyle the style of the command, for the moment this is ignored
+	 * @throws IllegalStateException if this Item is contained within an Alert
+	 * @throws NullPointerException if cmd is null
+	 * @since  MIDP 2.0
+	 */
+	public void addCommand( Command cmd, Style commandStyle )
 	{
 		if (this.commands == null) {
 			this.commands = new ArrayList();
