@@ -1,37 +1,24 @@
 package de.enough.polish.buildlist;
 
-import de.enough.polish.ant.ConditionalTask;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Comparator;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
 import org.apache.tools.ant.BuildException;
 
+import de.enough.polish.ant.ConditionalTask;
+
 public class HtmlGeneratorTask
 	extends ConditionalTask
 {
-	public static class VendorComparator implements Comparator
-	{
-		public int compare(Object v1, Object v2)
-		{
-			String s1 = (String) v1;
-			String s2 = (String) v2;
-
-			if ("Generic".equals(s1)) {
-				return "Generic".equals(s2) ? 0 : -1;
-			}
-
-			return "Generic".equals(s2) ? -1 : s1.compareTo(s2);
-		}
-	}
 
 	private static final String DEFAULT_BUILDLIST = "dist/buildlist.txt";
 	private static final String DEFAULT_TITLE = "Device list";
@@ -40,6 +27,7 @@ public class HtmlGeneratorTask
 	private String title = DEFAULT_TITLE;
 	private String intro = "";
 	private String outputFile = "dist/index.html";
+	
 
 	/* (non-Javadoc)
 	 * @see org.apache.tools.ant.Task#execute()
@@ -54,13 +42,12 @@ public class HtmlGeneratorTask
 		
 		try
 		{
-			TreeMap devicesByVendor = readDeviceList(buildListFile);
+			HashMap devicesByVendor = readDeviceList(buildListFile);
 
 			generateVendorList(devicesByVendor);
-			Iterator it = devicesByVendor.keySet().iterator();
-
-			while (it.hasNext()) {
-				String vendorName = (String) it.next();
+			Object[] vendors = devicesByVendor.keySet().toArray();
+			for (int i = 0; i < vendors.length; i++) {
+				String vendorName = (String) vendors[i];
 				generateVendorFile(vendorName, devicesByVendor);
 			}
 		}
@@ -70,10 +57,11 @@ public class HtmlGeneratorTask
 		}
 	}
 
-	private TreeMap readDeviceList(File buildListFile)
+	private HashMap readDeviceList(File buildListFile)
 		throws IOException
 	{
-		TreeMap devicesByVendor = new TreeMap(new VendorComparator());
+		//System.out.println("trying to read build list file " + buildListFile.getAbsolutePath() );
+		HashMap devicesByVendor = new HashMap();
 		BufferedReader reader = new BufferedReader(new FileReader(buildListFile));
 		String line;
 
@@ -85,21 +73,23 @@ public class HtmlGeneratorTask
 			st.nextElement();
 			String jadName = (String) st.nextElement();
 			String vendorName = deviceName.substring(0, pos);
-			
+			//System.out.println("found device=" + deviceName );
 			TreeMap deviceList = (TreeMap) devicesByVendor.get(vendorName);
 
 			if (deviceList == null) {
 				deviceList = new TreeMap();
+				//System.out.println("adding map for vendor " + vendorName );
 				devicesByVendor.put(vendorName, deviceList);
 			}
 			deviceList.put(deviceName, jadName);
 		}
 
 		reader.close();
+		//System.out.println("returning " + devicesByVendor);
 		return devicesByVendor;
 	}
 
-	protected void generateVendorList(TreeMap devicesByVendor)
+	protected void generateVendorList(HashMap devicesByVendor)
 		throws IOException
 	{
 		BufferedWriter writer = new BufferedWriter(new FileWriter(this.outputFile));
@@ -116,10 +106,10 @@ public class HtmlGeneratorTask
 		writer.write("</p>");
 		writer.write("<p>");
 
-		Iterator it = devicesByVendor.keySet().iterator();
-
-		while (it.hasNext()) {
-			String vendorName = (String) it.next();
+		Object[] vendors = devicesByVendor.keySet().toArray();
+		Arrays.sort( vendors );
+		for (int i = 0; i < vendors.length; i++) {
+			String vendorName =(String) vendors[i];
 
 			writer.write("<a href=\"");
 			writer.write(vendorName);
@@ -134,9 +124,15 @@ public class HtmlGeneratorTask
 		writer.close();
 	}
 
-	protected void generateVendorFile(String vendorName, TreeMap devicesByVendor)
+	protected void generateVendorFile(String vendorName, HashMap devicesByVendor)
 		throws IOException
 	{
+		TreeMap deviceList = (TreeMap) devicesByVendor.get(vendorName);
+		//System.out.println("using " + devicesByVendor);
+		if (deviceList == null) {
+			System.out.println("Warning: unable to build map for vendor " + vendorName + ": no treemap" );
+			return;
+		}
 		BufferedWriter writer = new BufferedWriter(new FileWriter("dist/" + vendorName + ".html"));
 		writer.write("<html>\n");
 		writer.write("<head>\n");
@@ -147,7 +143,6 @@ public class HtmlGeneratorTask
 		writer.write("<body>\n");
 		writer.write("<p>\n");
 
-		TreeMap deviceList = (TreeMap) devicesByVendor.get(vendorName);
 		Iterator it = deviceList.keySet().iterator();
 
 		while (it.hasNext()) {

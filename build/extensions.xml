@@ -99,6 +99,9 @@
 					import de.enough.polish.ui.*
 				</to>
 			</mapping>
+			<!-- 
+			<mapping from="org.netbeans.microedition.lcdui.SplashScreen" to="de.enough.polish.ui.SplashScreen; import de.enough.polish.ui.StyleSheet" />
+			 -->
 		</mappings>
 		<mappings if="polish.usePolishGui and polish.useDefaultPackage">
 			<mapping from="javax.microedition.lcdui.Alert" to="" />
@@ -134,6 +137,7 @@
 					import javax.microedition.lcdui.Image
 				</to>
 			</mapping>
+			<mapping from="org.netbeans.microedition.lcdui.SplashScreen" to="" />		
 		</mappings>
 		<mappings if="polish.usePolishGui and not polish.useDefaultPackage and polish.blackberry">
 			<mapping from="javax.microedition.midlet.*" to="de.enough.polish.blackberry.midlet.*" />
