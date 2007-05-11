@@ -68,7 +68,7 @@ public class AlienGlowTextEffect extends TextEffect {
 		int invY=Math.max(0, -(startY-radius));
 		
 		// check whether the string has to be rerendered
-		if (lastText!=text || lastTextColor != textColor) {
+		if (this.lastText != text || this.lastTextColor != textColor) {
 			this.lastText=text;
 			this.lastTextColor=textColor;
 			

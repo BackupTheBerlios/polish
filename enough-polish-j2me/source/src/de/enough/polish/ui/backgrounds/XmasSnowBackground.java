@@ -33,7 +33,8 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.ui.Background;
 
 public class XmasSnowBackground extends Background {
-	private boolean isRunning = true,plus = true;
+	private boolean isRunning = true;
+	private boolean plus = true;
 //	private transient Image imgSnowflake;
 	private int[] x,y,z;
 	private int numberOfFlakes,color,maxFlakeSize;
@@ -58,9 +59,9 @@ public class XmasSnowBackground extends Background {
 		this.z = new int[numberOfFlakes];
 		int i = 0;
 		while(i < numberOfFlakes){
-			this.x[i] = Math.abs( rand.nextInt() % width );
-			this.y[i] = Math.abs( rand.nextInt() % height );
-			this.z[i] = Math.abs( rand.nextInt() % maxSnowFlakeSize );
+			this.x[i] = Math.abs( this.rand.nextInt() % width );
+			this.y[i] = Math.abs( this.rand.nextInt() % height );
+			this.z[i] = Math.abs( this.rand.nextInt() % maxSnowFlakeSize );
 			i++;
 		}
 //		try {
@@ -91,8 +92,8 @@ public class XmasSnowBackground extends Background {
 			}
 			else{
 				this.y[i] = 0;
-				this.x[i] = Math.abs( rand.nextInt() % width );
-				this.z[i] = Math.abs( rand.nextInt() % this.maxFlakeSize );
+				this.x[i] = Math.abs( this.rand.nextInt() % width );
+				this.z[i] = Math.abs( this.rand.nextInt() % this.maxFlakeSize );
 			}
 //			System.out.print("X:"+this.x[i]+";Y:"+this.y[i]+";Z:"+this.z[i]+";width"+width+";height"+height+"\n");
 			int size = this.z[i];

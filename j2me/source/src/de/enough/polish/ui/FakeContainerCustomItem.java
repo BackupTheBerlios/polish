@@ -951,7 +951,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
 			if (this.focusedItem != null 
 					&& this.enableScrolling
-					&& offset + this.focusedItem.relativeY + this.focusedItem.itemHeight > availableHeight) 
+					&& offset + this.focusedItem.relativeY + this.focusedItem.itemHeight > this.availableHeight) 
 			{
 				if (gameAction == Canvas.RIGHT) {
 					return false;
