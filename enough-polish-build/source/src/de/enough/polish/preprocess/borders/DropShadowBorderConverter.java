@@ -34,7 +34,7 @@ import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;
 
 /**
- * <p>Creates a drop shadow background.</p>
+ * <p>Creates a drop shadow border.</p>
  *
  * <p>Copyright Enough Software 2005</p>
  * <pre>
