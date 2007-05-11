@@ -73,7 +73,8 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
 	{
 		this.width = width; this.height = height;
-		float wPercent = (float)(width / 256.0f); float hPercent = (float)(height / 256.0f);
+		float wPercent = width / 256.0f;
+		float hPercent = height / 256.0f;
 		this.fWidth = (5.0f*wPercent); this.fHeight = (5.0f*hPercent);
 		//System.out.print("fwidth:"+(this.fWidth)+";fheight:"+this.fHeight+";fwprocent:"+(wPercent)+";fhprocent:"+(hPercent)+"\n");
 		 this.graphics3d = Graphics3D.getInstance();
@@ -87,7 +88,7 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 //		 this.camera.setOrientation(100.0f,1.0f,1.0f,1.0f);
 		 this.light = new Light();
 		 this.light.setColor(0xffffff);
-		 this.light.setMode(this.light.AMBIENT);
+		 this.light.setMode(Light.AMBIENT);
 		 this.light.setIntensity(2.25f);
 
 		  short[] vert = {
