@@ -1065,9 +1065,9 @@ public class Container extends Item {
 				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
 			if (this.focusedItem != null 
 					&& this.enableScrolling
-					&& ( (offset + this.focusedItem.relativeY + this.focusedItem.itemHeight > availableHeight)
+					&& ( (offset + this.focusedItem.relativeY + this.focusedItem.itemHeight > this.availableHeight)
 					     || ( this.focusedItem.internalX != -9999
-						    && offset + this.focusedItem.relativeY + this.focusedItem.contentY + this.focusedItem.internalY + this.focusedItem.internalHeight > availableHeight)) 
+						    && offset + this.focusedItem.relativeY + this.focusedItem.contentY + this.focusedItem.internalY + this.focusedItem.internalHeight > this.availableHeight)) 
 				       )
 			{
 				if (gameAction == Canvas.RIGHT) {
