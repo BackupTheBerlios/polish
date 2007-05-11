@@ -3198,7 +3198,7 @@ public class TextField extends StringItem
 		}
 		if (symbolsList == null) {
 			//#style textFieldSymbolList?, textFieldSymbolTable?
-			symbolsList = new List( ENTER_SYMBOL_CMD.getLabel(), List.IMPLICIT );
+			symbolsList = new List( ENTER_SYMBOL_CMD.getLabel(), Choice.IMPLICIT );
 			for (int i = 0; i < definedSymbols.length(); i++) {
 				//#style textFieldSymbolItem?
 				symbolsList.append( definedSymbols.substring(i, i+1), null );
