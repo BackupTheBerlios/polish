@@ -251,6 +251,17 @@
 			<param name="offset" type="integer" default="4" />
 			<param name="orientation" type="integer" default="bottom-right" values="bottom-right,top-right,bottom-left,top-left" />
 		</mapping>
+		<mapping from="image"			to="de.enough.polish.ui.borders.ImageBorder" converter="de.enough.polish.preprocess.borders.ImageBorderConverter" >
+			<param name="border-width" type="integer" default="0" />
+			<param name="top-left" type="image-url" default="none" />
+			<param name="top-center" type="image-url" default="none" />
+			<param name="top-right" type="image-url" default="none" />
+			<param name="center-left" type="image-url" default="none" />
+			<param name="center-right" type="image-url" default="none" />
+			<param name="bottom-left" type="image-url" default="none" />
+			<param name="bottom-center" type="image-url" default="none" />
+			<param name="bottom-right" type="image-url" default="none" />
+		</mapping>
 	</attribute>		
 		<!--
 		<mapping from="" converter="" />
