@@ -135,7 +135,9 @@ public class NewWaveScreenChangeAnimation extends ScreenChangeAnimation {
 					
 			}
 			this.id+=20;
-			if(id > this.screenWidth)this.id = this.scaleableHeight.length;
+			if (this.id > this.screenWidth) {
+				this.id = this.scaleableHeight.length;
+			}
 		}
 		
 		public void keyPressed(int keyCode) {

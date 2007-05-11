@@ -173,7 +173,9 @@ public class RainScreenChangeAnimation extends ScreenChangeAnimation {
 			
 		}
 		this.id+=12;
-		if(id > this.screenWidth)this.id = this.scaleableHeight.length;
+		if (this.id > this.screenWidth) {
+			this.id = this.scaleableHeight.length;
+		}
 	}
 	
 	public void keyPressed(int keyCode) {
