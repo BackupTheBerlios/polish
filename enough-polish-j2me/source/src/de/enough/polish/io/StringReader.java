@@ -65,7 +65,7 @@ public class StringReader extends Reader
    */
   public void close() throws IOException
   {
-    synchronized (lock)
+    synchronized (this.lock)
     {
       this.str = null;
     }
@@ -76,7 +76,7 @@ public class StringReader extends Reader
    */
   public void mark(int readAheadLimit) throws IOException
   {
-    synchronized (lock)
+    synchronized (this.lock)
     {
       if (this.str == null)
         throw new IOException("stream closed");
@@ -98,7 +98,7 @@ public class StringReader extends Reader
    */
   public int read() throws IOException
   {
-    synchronized (lock)
+    synchronized (this.lock)
     {
       if (this.str == null)
         throw new IOException("stream closed");
@@ -115,7 +115,7 @@ public class StringReader extends Reader
    */
   public int read(char[] cbuf, int off, int len) throws IOException
   {
-    synchronized (lock)
+    synchronized (this.lock)
     {
       if (this.str == null)
         throw new IOException("stream closed");
@@ -150,7 +150,7 @@ public class StringReader extends Reader
    */
   public void reset() throws IOException
   {
-    synchronized (lock)
+    synchronized (this.lock)
     {
       if (this.str == null)
         throw new IOException("stream closed");
@@ -164,7 +164,7 @@ public class StringReader extends Reader
    */
   public long skip(long n) throws IOException
   {
-    synchronized (lock)
+    synchronized (this.lock)
     {
       long skipped = Math.min((long) (this.len - this.index), n < 0 ? 0L : n);
       this.index += skipped;
