@@ -19,15 +19,15 @@ import de.enough.polish.ant.ConditionalTask;
 public class HtmlGeneratorTask
 	extends ConditionalTask
 {
-
 	private static final String DEFAULT_BUILDLIST = "dist/buildlist.txt";
+	private static final String DEFAULT_OUTPUTFILE = "dist/index.html";
 	private static final String DEFAULT_TITLE = "Device list";
+	private static final String DEFAULT_INTRO = "";
 
-	private String buildlist = DEFAULT_BUILDLIST;
-	private String title = DEFAULT_TITLE;
-	private String intro = "";
-	private String outputFile = "dist/index.html";
-	
+	protected String buildlist = DEFAULT_BUILDLIST;
+	protected String title = DEFAULT_TITLE;
+	protected String intro = DEFAULT_INTRO;
+	protected String outputFile = DEFAULT_OUTPUTFILE;
 
 	/* (non-Javadoc)
 	 * @see org.apache.tools.ant.Task#execute()
@@ -89,11 +89,26 @@ public class HtmlGeneratorTask
 		return devicesByVendor;
 	}
 
-	protected void generateVendorList(HashMap devicesByVendor)
+	private void generateVendorList(HashMap devicesByVendor)
 		throws IOException
 	{
 		BufferedWriter writer = new BufferedWriter(new FileWriter(this.outputFile));
 
+		writeDeviceListHeader(writer);
+		Object[] vendors = devicesByVendor.keySet().toArray();
+		Arrays.sort( vendors );
+
+		for (int i = 0; i < vendors.length; i++) {
+			String vendorName =(String) vendors[i];
+			writeDeviceListEntry(writer, vendorName);
+		}
+		
+		writeDeviceListFooter(writer);
+		writer.close();
+	}
+
+	protected void writeDeviceListHeader(BufferedWriter writer) throws IOException
+	{
 		writer.write("<html>\n");
 		writer.write("<head>\n");
 		writer.write("<title>\n");
@@ -105,26 +120,25 @@ public class HtmlGeneratorTask
 		writer.write(this.intro);
 		writer.write("</p>");
 		writer.write("<p>");
-
-		Object[] vendors = devicesByVendor.keySet().toArray();
-		Arrays.sort( vendors );
-		for (int i = 0; i < vendors.length; i++) {
-			String vendorName =(String) vendors[i];
-
-			writer.write("<a href=\"");
-			writer.write(vendorName);
-			writer.write(".html\">");
-			writer.write(vendorName);
-			writer.write("</a><br />\n");
-		}
-		
+	}
+	
+	protected void writeDeviceListEntry(BufferedWriter writer, String vendorName) throws IOException
+	{
+		writer.write("<a href=\"");
+		writer.write(vendorName);
+		writer.write(".html\">");
+		writer.write(vendorName);
+		writer.write("</a><br />\n");
+	}
+	
+	protected void writeDeviceListFooter(BufferedWriter writer) throws IOException
+	{
 		writer.write("</p>");
 		writer.write("</body>\n");
 		writer.write("</html>\n");
-		writer.close();
 	}
-
-	protected void generateVendorFile(String vendorName, HashMap devicesByVendor)
+	
+	private void generateVendorFile(String vendorName, HashMap devicesByVendor)
 		throws IOException
 	{
 		TreeMap deviceList = (TreeMap) devicesByVendor.get(vendorName);
@@ -134,6 +148,22 @@ public class HtmlGeneratorTask
 			return;
 		}
 		BufferedWriter writer = new BufferedWriter(new FileWriter("dist/" + vendorName + ".html"));
+		writeVendorFileHeader(writer);
+
+		Iterator it = deviceList.keySet().iterator();
+
+		while (it.hasNext()) {
+			String deviceName = (String) it.next();
+			String jadName = (String) deviceList.get(deviceName);
+			writeVendorFileEntry(writer, deviceName, jadName);
+		}
+
+		writeVendorFileFooter(writer);
+		writer.close();
+	}
+
+	protected void writeVendorFileHeader(BufferedWriter writer) throws IOException
+	{
 		writer.write("<html>\n");
 		writer.write("<head>\n");
 		writer.write("<title>\n");
@@ -142,29 +172,27 @@ public class HtmlGeneratorTask
 		writer.write("</head>\n");
 		writer.write("<body>\n");
 		writer.write("<p>\n");
+	}
+	
+	protected void writeVendorFileEntry(BufferedWriter writer, String deviceName, String jadName) throws IOException
+	{
+		writer.write("<a href=\"");
+		writer.write(jadName);
+		writer.write("\">");
+		writer.write(deviceName);
+		writer.write("</a><br />\n");
+	}
 
-		Iterator it = deviceList.keySet().iterator();
-
-		while (it.hasNext()) {
-			String deviceName = (String) it.next();
-			String jadName = (String) deviceList.get(deviceName);
-
-			writer.write("<a href=\"");
-			writer.write(jadName);
-			writer.write("\">");
-			writer.write(deviceName);
-			writer.write("</a><br />\n");
-		}
-
+	protected void writeVendorFileFooter(BufferedWriter writer) throws IOException
+	{
 		writer.write("</p>\n");
 		writer.write("<p>\n");
 		writer.write("<a href=\"index.html\">Back</a>");
 		writer.write("</p>\n");
 		writer.write("</body>\n");
 		writer.write("</html>\n");
-		writer.close();
 	}
-
+	
 	public String getBuildlist()
 	{
 		return this.buildlist;
