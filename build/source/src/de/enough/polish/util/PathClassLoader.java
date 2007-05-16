@@ -156,7 +156,7 @@ public class PathClassLoader extends ClassLoader {
          */
         private void findNextResource() {
         	if (!this.isInitialized) {
-        		
+        		this.isInitialized = true;
         	}
             URL url = null;
         	if (this.currentPrependEnumeration != null) {
@@ -370,6 +370,38 @@ public class PathClassLoader extends ClassLoader {
    
 
     /**
+     * Creates a new classloader.
+     * 
+	 * @param file the file containing classes
+     * @throws IOException 
+	 */
+	public PathClassLoader(File file) throws IOException {
+		setParent( null );
+		addPathFile( file );
+		setParentFirst( false );
+	}
+	
+    /**
+     * Creates a new classloader.
+     * 
+     * @param parent The parent classloader to which unsatisfied loading
+     *               attempts are delegated. May be <code>null</code>,
+     *               in which case the classloader which loaded this
+     *               class is used as the parent.
+	 * @param file the file containing classes
+     * @param parentFirst If <code>true</code>, indicates that the parent
+     *                    classloader should be consulted before trying to
+     *                    load the a class through this loader.
+     * @throws IOException when the file does not exist
+	 */
+	public PathClassLoader(ClassLoader parent, File file, boolean parentFirst) throws IOException {
+		setParent( parent );
+		addPathFile( file );
+		setParentFirst( parentFirst );
+	}
+
+
+	/**
      * Set the classpath to search for classes to load. This should not be
      * changed once the classloader starts to server classes
      *
@@ -888,25 +920,33 @@ public class PathClassLoader extends ClassLoader {
      * @exception IOException if I/O errors occurs (can't happen)
      */
     protected Enumeration/*<URL>*/ findResources(String name) throws IOException {
+    	System.out.println("PathClassLoader: finding resource " + name );
     	ResourceEnumeration/*<URL>*/ mine = new ResourceEnumeration(name);
         Enumeration/*<URL>*/ base;
         if (this.parent != null && this.parent != getParent()) {
+        	System.out.println("getting resource from parent...");
             // Delegate to the parent:
             base = this.parent.getResources(name);
             // Note: could cause overlaps in case ClassLoader.this.parent has matches.
         } else {
+        	System.out.println("creating empty base...");
             // ClassLoader.this.parent is already delegated to from
             // ClassLoader.getResources, no need:
             base = new EmptyEnumeration();
         }
         if (isParentFirst(name)) {
+        	System.out.println("prepending base (isParentFirst==true");
             // Normal case.
             mine.preppend( base );
         } else if (this.ignoreBase) {
+        	System.out.println("apppending base (isParentFirst==false, ignoreBase==true");
+            // Normal case.
             if ( getRootLoader() != null ) {
+            	System.out.println("hasRootLoader");
                 mine.append( getRootLoader().getResources(name));
             }
         } else {
+        	System.out.println("apppending base (isParentFirst==false, ignoreBase==false");
             // Inverted.
             mine.append( base);
         }
