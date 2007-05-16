@@ -26,15 +26,11 @@
  */
 package de.enough.polish.sample.email;
 
-import java.util.Hashtable;
-
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.TextField;
 
 import de.enough.polish.ui.ChoiceTextField;
 import de.enough.polish.ui.Style;
-import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.Locale;
 
 /**
  * <p>Provides a form for creating a new mail.</p>
