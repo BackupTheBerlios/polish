@@ -760,7 +760,8 @@
 			classname="com.izforge.izpack.ant.IzPackTask"/>
 		<taskdef name="webprocessor" 
 			classname="de.enough.webprocessor.WebProcessorTask" 
-			classpath="../enough-webprocessor/bin/classes" />
+			classpath="../enough-webprocessor/bin/classes:dist/enough-webprocessor.jar"
+		/>
 
 		<!-- copy source of J2ME Polish -->
 		<mkdir dir="tmp/j2mepolish-src/build" />
