@@ -62,7 +62,10 @@
 			<param name="border-width" type="integer" primitive="true" default="1" />
 		</mapping>
 		<mapping from="plain"               converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter" />
-		<mapping from="image"               to="de.enough.polish.ui.backgrounds.ImageBackground" converter="de.enough.polish.preprocess.backgrounds.ImageBackgroundConverter" >
+		<!-- 
+		to="de.enough.polish.ui.backgrounds.ImageBackground" 
+		 -->
+		<mapping from="image"               converter="de.enough.polish.preprocess.backgrounds.ImageBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
 			<param name="image" type="image-url" default="none" />
 			<!--  not yet supported... <param name="anchor" type="anchor" default="0" />  -->
