@@ -2,7 +2,6 @@
 
 package de.enough.polish.ui.backgrounds;
 
-import java.io.IOException;
 import java.util.Random;
 
 import javax.microedition.lcdui.Graphics;
