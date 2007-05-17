@@ -1144,7 +1144,7 @@ public class Graphics extends Object
 	 * @throws StringIndexOutOfBoundsException - if offset and length do not specify a valid range within the String str
 	 * @throws IllegalArgumentException - if anchor is not a legal value
 	 * @throws NullPointerException - if str is null
-	 * @see #drawString(String, int, int, int).
+	 * @see #drawString(String, int, int, int)
 	 */
 	public void drawSubstring( String str, int offset, int len, int x, int y, int anchor)
 	{

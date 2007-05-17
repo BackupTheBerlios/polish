@@ -404,6 +404,9 @@ implements Runnable
    * "http://foo.bar.com/baz/blah.html" => "http://foo.bar.com"
    * <p>
    * "resource://baz/blah.html" => "resource://"
+   * 
+   * @param url the URL to the get protocol and host part from
+   * @return the protocol and host part from the given URL
    */
   protected String protocolAndHostOf(String url)
   {
@@ -598,6 +601,9 @@ implements Runnable
    * "resource://baz/blah.html" => "resource://baz"
    * <br>
    * "resource://blah.html" => "resource://"
+   * 
+   * @param url the URL to the get protocol and path part from
+   * @return the protocol and path part from the given URL
    */
   protected String protocolAndPathOf (String url)
   {

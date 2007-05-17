@@ -71,7 +71,9 @@ public class SplashScreen extends Screen {
 
     /**
      * Creates a new instance of SplashScreen
+     * 
      * @param display display - is ignored
+     * @param style the style for the splash screen 
      */
     public SplashScreen(Display display, Style style) throws IllegalArgumentException  {
         super( null, false, style );

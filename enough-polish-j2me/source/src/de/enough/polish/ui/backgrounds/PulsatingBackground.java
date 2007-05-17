@@ -65,7 +65,9 @@ public class PulsatingBackground extends Background {
 	
 
 	/**
-	 * @param colors
+	 * @param startColor
+	 * @param endColor
+	 * @param steps
 	 * @param repeat
 	 * @param backAndForth
 	 */

@@ -208,7 +208,10 @@ public class PictureBrowserItem
 	 * Changes the Selected Image if interaction:
 	 * Canvas.RIGHT
 	 * Canvas.LEFT.
-	 * 
+	 *
+	 * @param keyCode
+	 * @param gameAction
+	 * @return <code>true</code> if handled, <code>false</code> otherwise 
 	 */
 //	protected boolean traverse(int dir,int viewportWidth,int viewportHeight,int[] visRect_inout) {
 	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
