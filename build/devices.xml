@@ -13155,10 +13155,21 @@ These namespaces/schemas will be used soon.
 		<capability name="HeapSize" value="128 MB"/>
 	</device> 
 	
-	
-<!-- Qtek devices -->
 	<device>
-		<identifier>Qtek/8310</identifier>
+		<identifier>HTC/Hermes, HTC/TyTN</identifier>
+		<groups/>
+		<features>hasPointerEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="Windows Mobile 5"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, btapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+		<capability name="HeapSize" value="128 MB"/>
+	</device> 
+	
+	<device>
+		<identifier>HTC/Tornado</identifier>
 		<groups/>
 		<features>hasCommandKeyEvents, isDoubleBuffered</features>
 		<capability name="OS" value="Windows Mobile 2005"/>
@@ -13179,9 +13190,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Property.microedition.platform" value="intent JTE"/>
 	</device> 
 	
-	
-		<device>
-		<identifier>Qtek/9100</identifier>
+	<device>
+		<identifier>HTC/Wizard</identifier>
 		<groups/>
 		<features>hasCommandKeyEvents, isDoubleBuffered</features>
 		<capability name="OS" value="Windows Mobile 2005"/>
@@ -13200,6 +13210,19 @@ These namespaces/schemas will be used soon.
 		<capability name="mmapi.protocol.https" value="audio/basic, audio/midi, audio/x-wav"/>
 		<capability name="mmapi.protocol.device" value="audio/x-tone-seq"/>
 		<capability name="Property.microedition.platform" value="intent JTE"/>
+	</device> 
+
+	
+<!-- Qtek devices -->
+	<device>
+		<identifier>Qtek/8310</identifier>
+		<parent>HTC/Tornado</parent>
+	</device> 
+	
+	
+	<device>
+		<identifier>Qtek/9100</identifier>
+		<parent>HTC/Wizard</parent>
 	</device> 
 
 	<device>
