@@ -33,6 +33,7 @@ import java.io.IOException;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.game.Sprite;
 
 /**
  * <p>Paints an border with customizable images for each edge and each side.</p>
@@ -46,67 +47,56 @@ import javax.microedition.lcdui.Image;
  */
 public class ImageBorder extends Border
 {
+	private String imageUrl;
 	private Image topLeftImage;
-	private String topLeftUrl;
 	private Image topCenterImage;
-	private String topCenterUrl;
 	private Image topRightImage;
-	private String topRightUrl;
 	private Image middleLeftImage;
-	private String middleLeftUrl;
 	private Image middleRightImage;
-	private String middleRightUrl;
 	private Image bottomLeftImage;
-	private String bottomLeftUrl;
 	private Image bottomCenterImage;
-	private String bottomCenterUrl;
 	private Image bottomRightImage;
-	private String bottomRightUrl;
 	private boolean isLoaded;
 	
-	public ImageBorder(int borderWidth, Image topLeft, Image topCenter, Image topRight,
-	                    Image middleLeft, Image middleRight,
-	                    Image bottomLeft, Image bottomCenter, Image bottomRight)
+	public ImageBorder(int borderWidth, Image image)
 	{
 		this.borderWidth = borderWidth;
-		this.topLeftImage = topLeft;
-		this.topCenterImage = topCenter;
-		this.topRightImage = topRight;
-		this.middleLeftImage = middleLeft;
-		this.middleRightImage = middleRight;
-		this.bottomLeftImage = bottomLeft;
-		this.bottomCenterImage = bottomCenter;
-		this.bottomRightImage = bottomRight;
+		this.topLeftImage = getImagePart(image, 0, borderWidth);
+		this.topCenterImage = getImagePart(image, 1, borderWidth);
+		this.topRightImage = getImagePart(image, 2, borderWidth);
+		this.middleLeftImage = getImagePart(image, 3, borderWidth);
+		this.middleRightImage = getImagePart(image, 4, borderWidth);
+		this.bottomLeftImage = getImagePart(image, 5, borderWidth);
+		this.bottomCenterImage = getImagePart(image, 6, borderWidth);
+		this.bottomRightImage = getImagePart(image, 7, borderWidth);
 		this.isLoaded = true;
 	}
 
-	public ImageBorder(int borderWidth, String topLeft, String topCenter, String topRight,
-	                    String middleLeft, String middleRight,
-	                    String bottomLeft, String bottomCenter, String bottomRight)
+	public ImageBorder(int borderWidth, String imageUrl)
 	{
 		this.borderWidth = borderWidth;
-		this.topLeftUrl = topLeft;
-		this.topCenterUrl = topCenter;
-		this.topRightUrl = topRight;
-		this.middleLeftUrl = middleLeft;
-		this.middleRightUrl = middleRight;
-		this.bottomLeftUrl = bottomLeft;
-		this.bottomCenterUrl = bottomCenter;
-		this.bottomRightUrl = bottomRight;
+		this.imageUrl = imageUrl;
+	}
+	
+	private Image getImagePart(Image image, int index, int borderWidth)
+	{
+		System.out.println("Michael: " + image + ", " + index + ", " + borderWidth);
+		return Image.createImage(image, 0, index * borderWidth, borderWidth, borderWidth, Sprite.TRANS_NONE);
 	}
 
 	public void paint(int x, int y, int width, int height, Graphics g)
 	{
 		if (!this.isLoaded) {
 			try {
-				this.topLeftImage = StyleSheet.getImage(this.topLeftUrl, this, false);
-				this.topCenterImage = StyleSheet.getImage(this.topCenterUrl, this, false);
-				this.topRightImage = StyleSheet.getImage(this.topRightUrl, this, false);
-				this.middleLeftImage = StyleSheet.getImage(this.middleLeftUrl, this, false);
-				this.middleRightImage = StyleSheet.getImage(this.middleRightUrl, this, false);
-				this.bottomLeftImage = StyleSheet.getImage(this.bottomLeftUrl, this, false);
-				this.bottomCenterImage = StyleSheet.getImage(this.bottomCenterUrl, this, false);
-				this.bottomRightImage = StyleSheet.getImage(this.bottomRightUrl, this, false);
+				Image image = StyleSheet.getImage(this.imageUrl, this, false);
+				this.topLeftImage = getImagePart(image, 0, this.borderWidth);
+				this.topCenterImage = getImagePart(image, 1, this.borderWidth);
+				this.topRightImage = getImagePart(image, 2, this.borderWidth);
+				this.middleLeftImage = getImagePart(image, 3, this.borderWidth);
+				this.middleRightImage = getImagePart(image, 4, this.borderWidth);
+				this.bottomLeftImage = getImagePart(image, 5, this.borderWidth);
+				this.bottomCenterImage = getImagePart(image, 6, this.borderWidth);
+				this.bottomRightImage = getImagePart(image, 7, this.borderWidth);
 			} catch (IOException e) {
 				//#debug error
 				System.out.println( "unable to load image " + e );

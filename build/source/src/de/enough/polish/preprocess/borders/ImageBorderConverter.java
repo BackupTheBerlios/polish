@@ -60,39 +60,16 @@ public class ImageBorderConverter
 		throws BuildException
 	{
 		int borderWidth = 0;
-		String borderWidthStr = (String) border.get("border-width");
+		String borderWidthStr = (String) border.get("width");
 
 		if (borderWidthStr != null) {
-			borderWidth = parseInt("border-width", borderWidthStr);
+			borderWidth = parseInt("width", borderWidthStr);
 		}
 
-		String topLeft = (String) border.get("top-left");
-		String topCenter = (String) border.get("top-center");
-		String topRight = (String) border.get("top-right");
-		String middleLeft = (String) border.get("middle-left");
-		String middleRight = (String) border.get("middle-right");
-		String bottomLeft = (String) border.get("bottom-left");
-		String bottomCenter = (String) border.get("bottom-center");
-		String bottomRight = (String) border.get("bottom-right");
-
-		topLeft = getUrl(topLeft);
-		topCenter = getUrl(topCenter);
-		topRight = getUrl(topRight);
-		middleLeft = getUrl(middleLeft);
-		middleRight = getUrl(middleRight);
-		bottomLeft = getUrl(bottomLeft);
-		bottomCenter = getUrl(bottomCenter);
-		bottomRight = getUrl(bottomRight);
+		String image = (String) border.get("image");
+		image = getUrl(image);
 
 		return ("new " + BORDERS_PACKAGE + "ImageBorder(" + borderWidth +
-				", \"" + topLeft +
-				"\", \"" + topCenter +
-				"\", \"" + topRight +
-				"\", \"" + middleLeft +
-				"\", \"" + middleRight +
-				"\", \"" + bottomLeft +
-				"\", \"" + bottomCenter +
-				"\", \"" + bottomRight +
-				"\")");
+				", \"" + image + "\")");
 	}
 }
