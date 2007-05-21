@@ -25,6 +25,7 @@
  */
 package de.enough.polish.sample.framedform;
 
+import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -120,7 +121,7 @@ implements ItemStateListener, CommandListener
 
 	private ChoiceGroup createColorChoiceGroup(String label) {
 		//#style colorChoiceGroup
-		ChoiceGroup group = new ChoiceGroup( label, ChoiceGroup.EXCLUSIVE );
+		ChoiceGroup group = new ChoiceGroup( label, Choice.EXCLUSIVE );
 		//#style colorChoiceItem
 		group.append( "white", null );
 		//#style colorChoiceItem
