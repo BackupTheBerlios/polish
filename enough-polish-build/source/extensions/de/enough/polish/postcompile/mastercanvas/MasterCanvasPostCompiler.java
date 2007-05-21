@@ -115,14 +115,6 @@ public class MasterCanvasPostCompiler extends BytecodePostCompiler
           }
         mapper.addMapping(new MethodInvocationMapping(true,
                                                       "javax/microedition/lcdui/Display",
-                                                      "setCurrent",
-                                                      "(Ljavax/microedition/lcdui/Alert;Ljavax/microedition/lcdui/Displayable;)V",
-                                                      false,
-                                                      masterCanvasClassName,
-                                                      "setCurrent",
-                                                      "(Ljavax/microedition/lcdui/Display;Ljavax/microedition/lcdui/Alert;Ljavax/microedition/lcdui/Displayable;)V"));
-        mapper.addMapping(new MethodInvocationMapping(true,
-                                                      "javax/microedition/lcdui/Display",
                                                       "getCurrent",
                                                       "()Ljavax/microedition/lcdui/Displayable;",
                                                       false,
