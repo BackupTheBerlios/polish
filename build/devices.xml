@@ -9444,6 +9444,14 @@ These namespaces/schemas will be used soon.
 
 <!-- LG Electronics devices -->
 	<device>
+		<identifier>LG/KG800</identifier>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+	</device>
+
+	<device>
 		<identifier>LG/C-nain 2000</identifier>
 		<capability name="ScreenSize" value="120x133"/>
 		<capability name="BitsPerPixel" value="8"/>
