@@ -158,14 +158,12 @@
 		</mapping>
 		<mapping from="tiger-stripes"       converter="de.enough.polish.preprocess.backgrounds.TigerStripesBackgroundConverter" />
 		<mapping from="smooth-color"        converter="de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter" />
-		<mapping from="diagonal-gradient"   to="de.enough.polish.ui.backgrounds.SmoothColorBackground" converter="de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter" >
+		<mapping from="diagonal-gradient"   to="de.enough.polish.ui.backgrounds.SmoothColorBackground" >
 			<param name="color" type="color" primitive="true" default="white" />
 			<param name="target-color" type="color" primitive="true" default="gray" />
 			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" />
 		</mapping>
-		<mapping from="snow"                converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" />
-		<mapping from="snowflakes"          to="de.enough.polish.ui.backgrounds.XmasSnowBackground" 
-				converter="de.enough.polish.preprocess.backgrounds.XMasSnowBackgroundConverter" >
+		<mapping from="snowflakes"          to="de.enough.polish.ui.backgrounds.XmasSnowBackground"  >
 			<param name="color" type="color" primitive="true" default="red" />
 			<param name="flake-color" type="color" primitive="true" default="white" />
 			<param name="max-flake-size" type="integer" primitive="true" default="10" />

@@ -822,7 +822,7 @@ public class CssConverter extends Converter {
 		}
 		//String className = (String) BACKGROUND_TYPES.get(type);
 		CssMapping mapping = this.backgroundAttribute.getMapping(type);
-		if (mapping.getTo() != null) {
+		if (mapping != null && mapping.getConverter() == null) {
 			String code = this.parameterizedAttributeConverter.createNewStatement(this.backgroundAttribute, (ParameterizedCssMapping)mapping, group, env);
 			if (isStandalone) {
 				codeList.add( STANDALONE_MODIFIER + "Background " + backgroundName + "Background = " + code + ";");
@@ -831,10 +831,7 @@ public class CssConverter extends Converter {
 			}
 		} else {
 			// old style converter is used
-			String className = this.backgroundAttribute.getValue( type, env );
-			if (className == null) {
-				className = originalType;
-			}
+			String className = mapping != null ? mapping.getConverter() : originalType;
 			try {
 				BackgroundConverter creator =  (BackgroundConverter) Class.forName(className).newInstance();
 				creator.setColorConverter(this.colorConverter);
