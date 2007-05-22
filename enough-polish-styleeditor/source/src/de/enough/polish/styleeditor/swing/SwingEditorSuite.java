@@ -1,5 +1,5 @@
 /*
- * Created on Apr 23, 2007 at 11:55:03 PM.
+ * Created on May 16, 2007 at 12:18:11 PM.
  * 
  * Copyright (c) 2007 Robert Virkus / Enough Software
  *
@@ -23,28 +23,25 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.styleeditor;
+package de.enough.polish.styleeditor.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
-import javax.swing.JComboBox;
+import javax.microedition.midlet.MIDlet;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
+import javax.swing.SwingUtilities;
 
-import de.enough.polish.Device;
 import de.enough.polish.Environment;
-import de.enough.polish.browser.rss.RssBrowser;
+import de.enough.polish.ant.build.Midlet;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.preprocess.css.CssAttributesManager;
 import de.enough.polish.resources.ColorProvider;
@@ -52,8 +49,8 @@ import de.enough.polish.resources.ResourcesProvider;
 import de.enough.polish.resources.StyleProvider;
 import de.enough.polish.resources.impl.ResourcesProviderImpl;
 import de.enough.polish.resources.swing.ColorSelectionListener;
-import de.enough.polish.resources.swing.SpecifyOrSelectEntryDialog;
 import de.enough.polish.resources.swing.ResourcesTree;
+import de.enough.polish.resources.swing.SpecifyOrSelectEntryDialog;
 import de.enough.polish.resources.swing.StyleSelectionListener;
 import de.enough.polish.runtime.Launcher;
 import de.enough.polish.runtime.SelectionListener;
@@ -62,54 +59,51 @@ import de.enough.polish.runtime.SimulationDevice;
 import de.enough.polish.runtime.SimulationPanel;
 import de.enough.polish.runtime.overlays.HoverOverlay;
 import de.enough.polish.runtime.overlays.SelectionOverlay;
-import de.enough.polish.styleeditor.editors.MarginPaddingEditor;
-import de.enough.polish.styleeditor.swing.SwingStyleEditor;
+import de.enough.polish.styleeditor.DefaultStyleEditorListener;
+import de.enough.polish.styleeditor.EditStyle;
+import de.enough.polish.styleeditor.ItemOrScreen;
+import de.enough.polish.styleeditor.StyleEditor;
+import de.enough.polish.styleeditor.standalone.StandaloneStyleEditor;
 import de.enough.polish.styleeditor.swing.components.ColorChooserComponent;
 import de.enough.polish.styleeditor.swing.components.ColorChooserListener;
 import de.enough.polish.styleeditor.util.StyleEditorUtil;
-import de.enough.polish.swing.SwingApplication;
-import de.enough.polish.ui.Background;
-import de.enough.polish.ui.ChoiceGroup;
-import de.enough.polish.ui.Form;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.ui.UiAccess;
-import de.enough.polish.ui.backgrounds.SimpleBackground;
 import de.enough.polish.util.ResourceUtil;
 
 /**
- * <p></p>
+ * <p>Combines a style editor with a tree and a WYSIWG preview area.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
  * history
- *        Apr 23, 2007 - rob creation
+ *        May 16, 2007 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class Test extends SwingApplication
-implements SelectionListener, StyleSelectionListener, ColorSelectionListener, ColorChooserListener,
-ActionListener
+public class SwingEditorSuite 
+extends JPanel 
+implements SelectionListener, StyleSelectionListener, ColorSelectionListener, ColorChooserListener, ActionListener
 {
-
+	
 	private StyleEditor editor;
 	private Simulation simulation;
 	private ResourcesProvider resourceProvider;
 	private ResourcesTree resourcesTree;
-	private JComboBox deviceSelector;
 
-	/**
-	 * @param title
-	 * @param systemExitOnQuit
-	 */
-	public Test(File jadOrJarFile, String title, boolean systemExitOnQuit, File polishHome, File projectHome ) {
-		super(title, systemExitOnQuit);
-		
-		this.deviceSelector = new JComboBox( new String[]{"Generic/MppPhone", "Generic/multi", "Nokia/6630"} );
-		this.deviceSelector.addActionListener( this );
-
+	
+	public SwingEditorSuite( File polishHome, File projectHome, File jadOrJarFile ) {
+		super( new BorderLayout() );
+		Midlet[] midlets;
+		try {
+			midlets = Launcher.getMidlets(jadOrJarFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new IllegalStateException( e );
+		} 
 		DeviceDatabase deviceDB = DeviceDatabase.getInstance(polishHome);
 		ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
 		CssAttributesManager attributesManager = CssAttributesManager.getInstance( polishHome, resourceUtil );
@@ -118,14 +112,12 @@ ActionListener
 		environment.initialize( deviceDB.getDevice("Generic/MppPhone"), null);
 
 				
-		//this.simulation  = new Simulation( new SimulationDevice() );
-		//Displayable form = initUi();
-		//initSimulation( this.simulation, form );
-		Launcher launcher = new Launcher();
+		this.simulation = new Simulation(  new SimulationDevice()  );
 		try {
-		this.simulation = launcher.loadSimulation(jadOrJarFile, new SimulationDevice() );
-		this.simulation.setSelectionMode( Simulation.SELECTION_MODE_PASSIVE );
-		this.simulation.addSelectionListener( this );
+			MIDlet midlet = (MIDlet) Class.forName( midlets[0].getClassName() ).newInstance();
+			midlet._callStartApp();
+			this.simulation.setSelectionMode( Simulation.SELECTION_MODE_PASSIVE );
+			this.simulation.addSelectionListener( this );
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new IllegalStateException( e );
@@ -143,19 +135,12 @@ ActionListener
 		this.editor.addStyleListener( new MyStyleEditorListener( tree, this.simulation ) );
 		
 		JPanel panel = new JPanel( new BorderLayout() );
-		//panel.add( this.simulation, BorderLayout.NORTH );
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new SimulationPanel( this.simulation ), new JScrollPane( tree ) );
-		panel.add( splitPane, BorderLayout.SOUTH );
+		panel.add( splitPane, BorderLayout.NORTH );
 		panel.add( swingEditor, BorderLayout.CENTER );
-		Container contentPane = getContentPane();
-		contentPane.setLayout( new BorderLayout() );
-		//contentPane.add( new JScrollPane(tree), BorderLayout.EAST );
-		contentPane.add( panel, BorderLayout.CENTER );
-		contentPane.add( this.deviceSelector, BorderLayout.NORTH );
-		pack();
 		
-		// set style:
-		//notifyScreenSelected( (Screen)form, UiAccess.getStyle( (Screen)form), 0, 0 );
+		add( panel, BorderLayout.CENTER );
+		
 	}
 	
 	/**
@@ -204,66 +189,12 @@ ActionListener
 		sim.addOverlay( new HoverOverlay() );
 		sim.addSelectionListener( this );
 	}
-
-	/**
-	 * 
-	 */
-	private Displayable initUi() {
-		Form form = new Form("Hello World");
-		form.append("first line");
-		Style style = new Style();
-		style.layout = Item.LAYOUT_RIGHT;
-		form.append("second line", style );
-		form.append("third line");
-		form.append("fourth line");
-		ChoiceGroup group = new ChoiceGroup( "choice:", ChoiceGroup.MULTIPLE );
-		group.append( "first choice", null );
-		group.append( "second choice", null );
-		group.append( "third choice", null );
-		group.append( "fourth choice", null );
-		form.append( group );
-		RssBrowser browser = new RssBrowser();
-		browser.go(  "http://www.digg.com/rss/index.xml" );
-		form.append( browser );
-		form.addCommand( new Command("Command", Command.SCREEN, 2 ));
-		//form._callShowNotify();
-		Background background = new SimpleBackground( 0xffff00 );
-		UiAccess.setBackground(form, background);
-		return form;
-	}
-
-	public static void main(String[] args) {
-		System.out.println("Usage: test jar/jad [polish.home] [project.home]");
-		File jadOrJarFile;
-		if (args.length > 0) {
-			jadOrJarFile = new File( args[0]);
-		} else {
-			jadOrJarFile = new File( "../enough-polish-sample-localization/dist/Generic-MppPhone-en_US-example.jad" );
-		}
-		File polishHome;
-		if (args.length > 1) {
-			polishHome = new File( args[1]);
-		} else {
-			polishHome = new File("/Applications/J2ME-Polish");
-		}
-		Device device = DeviceDatabase.loadDevice( polishHome, "Generic/midp2");
-		System.out.println("device loaded: " + device.getIdentifier() );
-		File projectHome;
-		if (args.length > 2) {
-			projectHome = new File( args[2]);
-		} else {
-			projectHome = new File(".");
-		}
-		
-		Test test = new Test( jadOrJarFile, "Editor", true, polishHome, projectHome );
-		test.setVisible(true);
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.runtime.SelectionListener#clearSelection()
 	 */
 	public void clearSelection() {
-		// TODO robertvirkus implement clearSelection
+		// ignore
 		
 	}
 
@@ -271,6 +202,7 @@ ActionListener
 	 * @see de.enough.polish.runtime.SelectionListener#notifyItemSelected(de.enough.polish.ui.Item, de.enough.polish.ui.Style, int, int)
 	 */
 	public void notifyItemSelected(Item item, Style style, int x, int y) {
+		System.out.println("\n\nitem selected");
 		ItemOrScreen itemOrScreen = new ItemOrScreen( item );
 		editStyle( itemOrScreen, style );
 	}
@@ -279,6 +211,7 @@ ActionListener
 	 * @see de.enough.polish.runtime.SelectionListener#notifyScreenSelected(de.enough.polish.ui.Screen, de.enough.polish.ui.Style, int, int)
 	 */
 	public void notifyScreenSelected(Screen screen, Style style, int x, int y) {
+		System.out.println("\n\nscreen selected");
 		StyleEditorUtil.setDefaultStyles(screen, this.resourceProvider);
 		ItemOrScreen itemOrScreen = new ItemOrScreen( screen );
 		editStyle( itemOrScreen, style );
@@ -307,16 +240,11 @@ ActionListener
 			System.out.println("notifyStyleUpdated(EditStyle style):  !!!!!!!style.getItemOrScreen() is NULL !!!!!!!!");
 		}
 		this.simulation.getCurrentDisplayable()._requestRepaint();
-		//this.simulation.setCurrent( this.simulation.getCurrentDisplayable() );
-		
-		//System.out.println();
 		System.out.println( style.toSourceCode() );
-		try {
-			this.resourceProvider.saveResources();
-		} catch (IOException e) {
-			// TODO robertvirkus handle IOException
-			e.printStackTrace();
-		}
+	}
+	
+	public void save() throws IOException {
+		this.resourceProvider.saveResources();		
 	}
 
 	/* (non-Javadoc)
@@ -442,12 +370,7 @@ ActionListener
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent event) {
-		if (event.getSource() == this.deviceSelector) {
-			String identifier = (String) this.deviceSelector.getSelectedItem();
-			SimulationDevice device = new SimulationDevice(identifier);
-			this.simulation.setDevice(device);
-		}
-		 
+		// TODO might need to implement ActionListener
 	}
 	
 	public class MyStyleEditorListener extends DefaultStyleEditorListener {
@@ -468,15 +391,13 @@ ActionListener
 			
 			System.out.println( style.toSourceCode() );
 			try {
-				Test.this.resourceProvider.saveResources();
+				SwingEditorSuite.this.resourceProvider.saveResources();
 			} catch (IOException e) {
 				// TODO robertvirkus handle IOException
 				e.printStackTrace();
 			}
 
 		}
-		
-		
 		
 	}
 

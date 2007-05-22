@@ -63,8 +63,10 @@ public class ResourcesTreeModel extends DefaultTreeModel {
 	}
 	
 	
-	public void addStyle( StyleProvider style ) {
-		this.stylesNode.addChild(style);
+	public TreePath addStyle( StyleProvider style ) {
+		// check if style has not been added before:
+		ResourceTreeNode node = this.stylesNode.addChild(style);
+		return new TreePath( new Object[]{ this.root, this.stylesNode, node } );
 	}
 	
 	public void addColor( ColorProvider color ) {

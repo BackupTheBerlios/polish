@@ -51,25 +51,27 @@ public class StyleEditorUtil {
 	}
 	
 	public static final void setDefaultStyles( ResourcesProvider resourcesProvider ) {
-		StyleProvider style = resourcesProvider.getStyle( "focused" );
-		if (style != null) {
-			StyleSheet.focusedStyle = style.getStyle();
-		}
-		style = resourcesProvider.getStyle( "label" );
-		if (style != null) {
-			StyleSheet.labelStyle = style.getStyle();
-		}
-		style = resourcesProvider.getStyle( "default" );
-		if (style != null) {
-			try {
-				Style defaultStyle = style.getStyle();
-				ReflectionUtil.setStaticField( StyleSheet.class, "defaultStyle", style);
-				if (defaultStyle.font != null) {
-					ReflectionUtil.setStaticField( StyleSheet.class, "defaultFont", defaultStyle.font);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+		try {
+			StyleProvider style = resourcesProvider.getStyle( "focused" );
+			if (style != null) {
+				//StyleSheet.focusedStyle = style.getStyle();
+				ReflectionUtil.setStaticField( StyleSheet.class, "focusedStyle", style);
 			}
+			style = resourcesProvider.getStyle( "label" );
+			if (style != null) {
+				//StyleSheet.labelStyle = style.getStyle();
+				ReflectionUtil.setStaticField( StyleSheet.class, "labelStyle", style);
+			}
+			style = resourcesProvider.getStyle( "default" );
+			if (style != null) {
+					Style defaultStyle = style.getStyle();
+					ReflectionUtil.setStaticField( StyleSheet.class, "defaultStyle", style);
+					if (defaultStyle.font != null) {
+						ReflectionUtil.setStaticField( StyleSheet.class, "defaultFont", defaultStyle.font);
+					}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	

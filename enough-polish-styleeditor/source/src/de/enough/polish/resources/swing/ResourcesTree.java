@@ -83,15 +83,6 @@ implements TreeSelectionListener
 		this.colorSelectionListeners.add(listener);
 	}
 	
-	public void addStyle( StyleProvider style ) {
-		this.resourcesTreeModel.addStyle(style);
-		this.resourcesTreeModel.reload();
-	}
-
-	public void addColor( ColorProvider color ) {
-		this.resourcesTreeModel.addColor(color);
-		this.resourcesTreeModel.reload();
-	}
 
 	/* (non-Javadoc)
 	 * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
@@ -122,8 +113,13 @@ implements TreeSelectionListener
 		this.ignoreEvents = true;
 		System.out.println("tree: trying to select style " + styleProvider.getStyle().name);
 		TreePath path = this.resourcesTreeModel.getTreePathFor( styleProvider );
-		if (path != null) {
-			super.getSelectionModel().setSelectionPath( path );
+		if (path == null) {
+			path = this.resourcesTreeModel.addStyle(styleProvider);
+			this.resourcesTreeModel.reload();
+			getSelectionModel().setSelectionPath( path );
+			scrollPathToVisible(path);
+		} else {
+			getSelectionModel().setSelectionPath( path );
 			scrollPathToVisible(path);
 		}
 		this.ignoreEvents = false;

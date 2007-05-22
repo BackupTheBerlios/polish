@@ -55,7 +55,6 @@ implements StyleEditorListener
 	 * @see de.enough.polish.styleeditor.StyleEditorListener#notifyStyleAttached(de.enough.polish.styleeditor.ItemOrScreen, de.enough.polish.styleeditor.EditStyle)
 	 */
 	public void notifyStyleAttached(ItemOrScreen itemOrScreen, EditStyle style) {
-		this.resourcesTree.addStyle(style);
 	    this.resourcesTree.selectStyle(style);	
 	    this.simulation.getCurrentDisplayable()._requestRepaint();
 	}
@@ -64,8 +63,7 @@ implements StyleEditorListener
 	 * @see de.enough.polish.styleeditor.StyleEditorListener#notifyStyleCreated(de.enough.polish.styleeditor.EditStyle)
 	 */
 	public void notifyStyleCreated(EditStyle style) {
-		//System.out.println("notifyStyleCreated");
-		this.resourcesTree.addStyle(style);
+	    this.resourcesTree.selectStyle(style);	
 	}
 
 	/* (non-Javadoc)

@@ -66,7 +66,7 @@ import de.enough.polish.util.ReflectionUtil;
 import de.enough.polish.util.ResourceUtil;
 
 /**
- * <p></p>
+ * <p>Allows to access resources like styles or images.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
