@@ -478,10 +478,12 @@ public class StringItem extends Item
 					orientation = Graphics.RIGHT;
 				}
 				this.bitMapFontViewer = this.bitMapFont.getViewer( this.text );
-				this.bitMapFontViewer.layout( firstLineWidth, lineWidth, this.paddingVertical, orientation );
-				this.contentHeight = this.bitMapFontViewer.getHeight();
-				this.contentWidth = this.bitMapFontViewer.getWidth();
-				return;
+				if (this.bitMapFontViewer != null) {
+					this.bitMapFontViewer.layout( firstLineWidth, lineWidth, this.paddingVertical, orientation );
+					this.contentHeight = this.bitMapFontViewer.getHeight();
+					this.contentWidth = this.bitMapFontViewer.getWidth();
+					return;
+				}
 			}
 		//#endif
 		//#if polish.css.text-wrap

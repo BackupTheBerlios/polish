@@ -37,6 +37,7 @@ import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.ChoiceItem;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
+import de.enough.polish.ui.Form;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
@@ -345,12 +346,23 @@ public class HorizontalChoiceView extends ContainerView {
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
+	/**
+	 * Paints the content of this container view.
+	 * This method calls 
+	 * 
+	 * @param container the parent container
+	 * @param myItems the items that should be painted
+	 * @param x the left start position
+	 * @param y the upper start position
+	 * @param leftBorder the left border, nothing must be painted left of this position
+	 * @param rightBorder the right border, nothing must be painted right of this position
+	 * @param clipX absolute horizontal clipping start
+	 * @param clipY absolute verical clipping start
+	 * @param clipWidth clipping width
+	 * @param clipHeight clipping height
+	 * @param g the Graphics on which this item should be painted.
 	 */
-	protected void paintContent(Item parentItm, int x, int y, int leftBorder, int rightBorder,
-			Graphics g) 
-	{
+	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
 		//#debug
 		System.out.println("HorizontalView.start: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
 		this.xStart = x;
@@ -389,11 +401,6 @@ public class HorizontalChoiceView extends ContainerView {
 		//#debug
 		System.out.println("HorizontalChoiceView.item: x=" + modifiedX + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", availableWidth=" + (rightBorder - leftBorder) + ", itemWidth=" + this.focusedItem.itemWidth  );
 		
-		
-		int clipX = g.getClipX();
-		int clipY = g.getClipY();
-		int clipWidth = g.getClipWidth();
-		int clipHeight = g.getClipHeight();
 		boolean setClip = this.contentWidth > rightBorder - leftBorder;
 		if (setClip) {
 			g.clipRect(modifiedX, clipY, rightBorder - modifiedX, clipHeight );
@@ -403,9 +410,8 @@ public class HorizontalChoiceView extends ContainerView {
 		int focusedX = 0;
 		int cHeight = this.contentHeight;
 		int vOffset = 0;
-		Item[] items = this.parentContainer.getItems();
-		for (int i = 0; i < items.length; i++) {
-			Item item = items[i];
+		for (int i = 0; i < myItems.length; i++) {
+			Item item = myItems[i];
 			if ( item == this.focusedItem ) {
 				focusedX = itemX;				
 			} else {
@@ -545,7 +551,9 @@ public class HorizontalChoiceView extends ContainerView {
 			//nextItem.adjustProperties( lastItem );
 			//this.currentItem.select( true );
 			choiceGroup.setSelectedIndex( this.currentItemIndex, true );
-			choiceGroup.notifyStateChanged();
+			if (getScreen() instanceof Form) {
+				choiceGroup.notifyStateChanged();
+			}
 		//#ifdef polish.css.horizontalview-roundtrip
 			} else if ( gameAction == Canvas.RIGHT && (this.allowRoundTrip || this.currentItemIndex < items.length - 1  )) {
 		//#else
@@ -561,7 +569,9 @@ public class HorizontalChoiceView extends ContainerView {
 			nextItem = (ChoiceItem) items[ this.currentItemIndex ];
 			//nextItemItem.adjustProperties( lastItem );
 			choiceGroup.setSelectedIndex( this.currentItemIndex, true );
-			choiceGroup.notifyStateChanged();
+			if (getScreen() instanceof Form) {
+				choiceGroup.notifyStateChanged();
+			}
 			//this.currentItem.select( true );			
 		}
 		// in all other cases there is no next item:

@@ -367,6 +367,9 @@ implements CommandListener
 	private static final void addMessages() {
 		StringBuffer buffer = new StringBuffer();
 		int maxSize = Debug.textBox.getMaxSize();
+		if (maxSize <= 0) {
+			maxSize = 10000;
+		}
 		LogEntry[] entries = (LogEntry[]) MESSAGES.toArray( new LogEntry[ MESSAGES.size() ] );
 		//#if polish.Debug.showLastMessageFirst != false
 			int i = entries.length - 1; 
