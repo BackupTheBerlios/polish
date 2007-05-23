@@ -26,11 +26,9 @@
 package de.enough.polish.styleeditor.swing;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.microedition.lcdui.Displayable;
@@ -38,7 +36,6 @@ import javax.microedition.midlet.MIDlet;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
 
 import de.enough.polish.Environment;
 import de.enough.polish.ant.build.Midlet;
@@ -63,7 +60,6 @@ import de.enough.polish.styleeditor.DefaultStyleEditorListener;
 import de.enough.polish.styleeditor.EditStyle;
 import de.enough.polish.styleeditor.ItemOrScreen;
 import de.enough.polish.styleeditor.StyleEditor;
-import de.enough.polish.styleeditor.standalone.StandaloneStyleEditor;
 import de.enough.polish.styleeditor.swing.components.ColorChooserComponent;
 import de.enough.polish.styleeditor.swing.components.ColorChooserListener;
 import de.enough.polish.styleeditor.util.StyleEditorUtil;
