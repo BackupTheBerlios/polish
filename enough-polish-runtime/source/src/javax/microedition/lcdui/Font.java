@@ -257,6 +257,10 @@ public final class Font extends Object
 					awtSize = (simulation.getFontSizeMedium() - 2);
 				}
 		}
+		if (awtSize < 8) {
+			awtSize = 14;
+		}
+		//System.out.println("Font size=" + awtSize );
 		//this.awtFont = java.awt.Font.decode( faceStr + "-" + styleStr + "-" + sizeStr );
 		this.awtFont = new java.awt.Font( awtFace, awtStyle, awtSize );
 		BufferedImage image =
@@ -282,7 +286,7 @@ public final class Font extends Object
 	 */
 	public static Font getFont(int fontSpecifier)
 	{
-		return null;
+		return _defaultFont;
 		//TODO implement getFont
 	}
 

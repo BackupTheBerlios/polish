@@ -193,7 +193,7 @@ implements ActionListener
 		}
 		Dimension size = new Dimension( this.control.controlWidth, this.control.controlHeight );
 		this.view.setPreferredSize( size );
-		this.view.setMinimumSize( size );
+		this.view.setMinimumSize( new Dimension(this.control.controlWidth, 200) );
 		this.control.setBounds( 0, 0, this.control.controlWidth, this.control.controlHeight );
 		sim.setBounds( this.control.screenX, this.control.screenY, sim.getCanvasWidth(), sim.getCanvasHeight() );
 		

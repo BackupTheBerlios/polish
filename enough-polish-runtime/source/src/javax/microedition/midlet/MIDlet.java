@@ -42,6 +42,7 @@ import javax.microedition.lcdui.Display;
  */
 public abstract class MIDlet extends Object
 {
+	private static MIDlet instance;
 
 	/**
 	 * Protected constructor for subclasses.
@@ -53,7 +54,7 @@ public abstract class MIDlet extends Object
 	 */
 	protected MIDlet()
 	{
-		//TODO implement MIDlet
+		instance = this;
 	}
 
 	/**
@@ -326,6 +327,13 @@ public abstract class MIDlet extends Object
 	throws MIDletStateChangeException 
 	{
 		destroyApp(unconditional);
+	}
+
+	/**
+	 * @return
+	 */
+	public static MIDlet getInstance() {
+		return instance;
 	}
 
 

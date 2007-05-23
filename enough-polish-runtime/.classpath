@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="/enough-polish-build/lib/junit.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/lib/jdom.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-build"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

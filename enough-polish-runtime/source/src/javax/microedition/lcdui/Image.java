@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
+import javax.microedition.midlet.MIDlet;
 
 import de.enough.polish.runtime.Simulation;
 
@@ -316,7 +317,15 @@ public class Image extends Object
 	 */
 	public static Image createImage( String name) throws IOException
 	{
-		String url = name;
+		if (MIDlet.getInstance() != null) {
+			InputStream in = MIDlet.getInstance().getClass().getResourceAsStream(name);
+			//System.out.println("trying to load image over " + MIDlet.getInstance().getClass().getClassLoader() + " yields in " + in );
+			if (in != null) {
+				return createImage( in );
+			}
+		}
+		
+		//String url = name;
 		name = name.substring( 1 );
 		//System.out.println("loading image " + name );
 		File file = new File( name );
@@ -325,29 +334,30 @@ public class Image extends Object
 			//System.out.println("Image loaded");
 			return new Image( bufferedImage );
 		} else {
-			ClassLoader classLoader = null;
-			try {
-				Class simulationClass = Class.forName("de.enough.polish.runtime.Simulation");
-				classLoader = simulationClass.getClassLoader();
-				//System.out.println("classLoader == null:" + (classLoader == null));
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-				classLoader = Image.class.getClassLoader();
-			}
-			InputStream is = classLoader.getResourceAsStream(name);
-			if (is == null) {
-				throw new IOException("Unable to load image [" + name + "]: resource not found.");
-			}
-			try {
-				BufferedImage bufferedImage  = ImageIO.read( is );
-				Image image = new Image( bufferedImage );
-				image.url = url;
-				return image;
-			} catch (IllegalArgumentException e) {
-				System.err.println("unable to load image " + name + ": " + e.toString() );
-				//e.printStackTrace();
-				throw new IOException( "unable to load image " + name + ": " + e.toString() );
-			}
+			throw new IOException("Unable to load image [" + name + "]: resource not found.");
+//			ClassLoader classLoader = null;
+//			try {
+//				Class simulationClass = Class.forName("de.enough.polish.runtime.Simulation");
+//				classLoader = simulationClass.getClassLoader();
+//				//System.out.println("classLoader == null:" + (classLoader == null));
+//			} catch (ClassNotFoundException e) {
+//				e.printStackTrace();
+//				classLoader = Image.class.getClassLoader();
+//			}
+//			InputStream is = classLoader.getResourceAsStream(name);
+//			if (is == null) {
+//				throw new IOException("Unable to load image [" + name + "]: resource not found.");
+//			}
+//			try {
+//				BufferedImage bufferedImage  = ImageIO.read( is );
+//				Image image = new Image( bufferedImage );
+//				image.url = url;
+//				return image;
+//			} catch (IllegalArgumentException e) {
+//				System.err.println("unable to load image " + name + ": " + e.toString() );
+//				//e.printStackTrace();
+//				throw new IOException( "unable to load image " + name + ": " + e.toString() );
+//			}
 		}
 	}
 

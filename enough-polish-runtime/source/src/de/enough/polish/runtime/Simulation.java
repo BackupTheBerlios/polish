@@ -49,6 +49,7 @@ import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Border;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
+import de.enough.polish.ui.StyleSheet;
 
 
 /**
@@ -96,9 +97,9 @@ implements MouseListener, KeyListener
 	private BufferedImage displayImage;
 	private Dimension minimumSize;
 	//private final ArrayList repaintQueue;
-	private int fontSizeSmall;
-	private int fontSizeMedium;
-	private int fontSizeLarge;
+	private int fontSizeSmall = DEFAULT_SMALL_FONT_SIZE;
+	private int fontSizeMedium = DEFAULT_MEDIUM_FONT_SIZE;
+	private int fontSizeLarge = DEFAULT_LARGE_FONT_SIZE;
 	private String midletClassName;
 	private SimulationManager simulationManager;
 	private Displayable currentDisplayable;
@@ -147,6 +148,12 @@ implements MouseListener, KeyListener
 //		if (displayable == null && manager == null) {
 //			throw new IllegalArgumentException("either displayable or manager must not be null");
 //		}
+		if (currentDeviceSimulator == null) {
+			currentDeviceSimulator = this;
+		}
+		if (StyleSheet.display == null) {
+			StyleSheet.display =  Display.getDisplay( new DefaultMidlet() );
+		}
 		this.currentDisplayable = displayable;
 		this.simulationManager = manager;
 		//this.repaintQueue = new ArrayList();
@@ -157,9 +164,6 @@ implements MouseListener, KeyListener
 		addKeyListener( this );
 		setFocusable( true );
 		setDevice( device );
-		if (currentDeviceSimulator == null) {
-			currentDeviceSimulator = this;
-		}
 	}
 	
 	public void setDevice( SimulationDevice device ) {
@@ -200,18 +204,27 @@ implements MouseListener, KeyListener
 		String fontSizeStr = device.getCapability("polish.Font.small");
 		if (fontSizeStr != null) {
 			this.fontSizeSmall = Integer.parseInt( fontSizeStr );
+			if (this.fontSizeSmall < 10) {
+				this.fontSizeSmall = DEFAULT_SMALL_FONT_SIZE;
+			}
 		} else {
 			this.fontSizeSmall = DEFAULT_SMALL_FONT_SIZE;
 		}
 		fontSizeStr = device.getCapability("polish.Font.medium");
 		if (fontSizeStr != null) {
 			this.fontSizeMedium = Integer.parseInt( fontSizeStr );
+			if (this.fontSizeMedium < 10) {
+				this.fontSizeMedium = DEFAULT_MEDIUM_FONT_SIZE;
+			}
 		} else {
 			this.fontSizeMedium = DEFAULT_MEDIUM_FONT_SIZE;
 		}
 		fontSizeStr = device.getCapability("polish.Font.large");
 		if (fontSizeStr != null) {
 			this.fontSizeLarge = Integer.parseInt( fontSizeStr );
+			if (this.fontSizeLarge < 10) {
+				this.fontSizeLarge = DEFAULT_LARGE_FONT_SIZE;
+			}
 		} else {
 			this.fontSizeLarge = DEFAULT_LARGE_FONT_SIZE;
 		}
@@ -223,7 +236,11 @@ implements MouseListener, KeyListener
 		this.minimumSize = new Dimension( this.canvasWidth, this.canvasHeight );
 		setPreferredSize( this.minimumSize );
 		//java.awt.Graphics awtGraphics =  null;
-		this.graphics = new javax.microedition.lcdui.Graphics( g, this );	}
+		this.graphics = new javax.microedition.lcdui.Graphics( g, this );
+		if (this.currentDisplayable != null) {
+			this.currentDisplayable._requestRepaint();
+		}
+	}
 	
 	/**
 	 * Adds a selection listener
@@ -407,13 +424,21 @@ implements MouseListener, KeyListener
 	public int getNumberOfAlphaLevels() {
 		return this.numberOfAlphaLevels;
 	}
+	
+//	public void repaint() {
+//		if (this.currentDisplayable != null) {
+//			this.currentDisplayable._requestRepaint();
+//		} else {
+//			System.out.println("Warning: no current displayable set for the simulation.");
+//		}
+//	}
 
 	/**
 	 * @param displayable
 	 */
 	public void requestRepaint(Displayable displayable ) {
 		if (displayable != this.currentDisplayable ) {
-			//System.out.println("Simulator: ignoring repaint request");
+			System.out.println("Simulator: ignoring repaint request for " + displayable);
 			return;
 		}
 		
@@ -423,6 +448,8 @@ implements MouseListener, KeyListener
 			repaint();
 		} else if (displayable != null){
 			System.out.println("Unable to paint unknown screenclass: " + displayable.getClass().getName() );
+		} else {
+			System.out.println("Simulation.requestRepaint(): unable to serve paint request for NULL displayable!");
 		}
 		//synchronized ( this.repaintQueue ) {
 		//	this.repaintQueue.add( displayable );
@@ -448,9 +475,9 @@ implements MouseListener, KeyListener
 	}
 	
 	
-	public Dimension getMinimumSize() {
-		return this.minimumSize;
-	}
+//	public Dimension getMinimumSize() {
+//		return this.minimumSize;
+//	}
 	
 	public Dimension getPreferredSize() {
 		return this.minimumSize;
@@ -668,13 +695,30 @@ implements MouseListener, KeyListener
 	 */
 	public void setCurrent(Displayable nextDisplayable) {
 		
-		//System.out.println("simulator: setting current " + nextDisplayable.getClass().getName() );
-		this.currentDisplayable = nextDisplayable;
-		requestRepaint( nextDisplayable );
+		System.out.println("simulation: setting current " + nextDisplayable );
+		if (StyleSheet.display != null) {
+			StyleSheet.setCurrent(StyleSheet.display, nextDisplayable);
+			this.currentDisplayable = nextDisplayable;
+			requestRepaint( nextDisplayable );
+			if (this.displayChangeListener != null) {
+				this.displayChangeListener.displayChanged(nextDisplayable);
+			}
+		} else {
+			display( nextDisplayable );
+		}
 		//synchronized ( this.repaintQueue ) {
 		//	this.repaintQueue.clear();
 		//	this.repaintQueue.add(nextDisplayable);
 		//}
+	}
+	
+	/**
+	 * @param nextDisplayable
+	 */
+	public void display(Displayable nextDisplayable) {
+		nextDisplayable._callShowNotify();
+		this.currentDisplayable = nextDisplayable;
+		requestRepaint( nextDisplayable );
 		if (this.displayChangeListener != null) {
 			this.displayChangeListener.displayChanged(nextDisplayable);
 		}
@@ -690,6 +734,7 @@ implements MouseListener, KeyListener
 				((Canvas)this.currentDisplayable)._callPointerPressed( e.getX(), e.getY() );
 			}
 		}
+		System.out.println("mouse clicked on screen " + this.currentDisplayable + "  instanceof Screen=" + (this.currentDisplayable instanceof Screen) + ", this.selectionListeners != null: " + (this.selectionListeners != null));
 		if (this.selectionMode != SELECTION_MODE_ACTIVE && this.selectionListeners != null && this.currentDisplayable instanceof Screen) {
 			Screen screen = (Screen) this.currentDisplayable;
 			int x =  e.getX();
@@ -812,5 +857,34 @@ implements MouseListener, KeyListener
 		this.rightSoftKey = rightSoftKey;
 		this.changeInputKey = changeInputKey;
 	}
+
+	private static class DefaultMidlet extends MIDlet {
+
+		/* (non-Javadoc)
+		 * @see javax.microedition.midlet.MIDlet#destroyApp(boolean)
+		 */
+		protected void destroyApp(boolean unconditional) throws MIDletStateChangeException {
+			// TODO robertvirkus implement destroyApp
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see javax.microedition.midlet.MIDlet#pauseApp()
+		 */
+		protected void pauseApp() {
+			// TODO robertvirkus implement pauseApp
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see javax.microedition.midlet.MIDlet#startApp()
+		 */
+		protected void startApp() throws MIDletStateChangeException {
+			// TODO robertvirkus implement startApp
+			
+		}
+		
+	}
+
 
 }
