@@ -538,6 +538,7 @@ public class StringItem extends Item
 				//#debug
 				System.out.println("getting bitmapfont " + bitMapUrl );
 				this.bitMapFont = BitMapFont.getInstance( bitMapUrl );
+				System.out.println("bitmap=" + this.bitMapFont + " for " + this );
 			} else {
 				this.bitMapFont = null;
 				this.bitMapFontViewer = null;

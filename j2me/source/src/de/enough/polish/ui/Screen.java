@@ -1794,7 +1794,6 @@ implements AccessibleCanvas
 		}
 		
 	}
-
 	//#ifndef polish.skipTicker
 	/**
 	 * Set a ticker for use with this Screen, replacing any previous ticker.
@@ -1812,10 +1811,35 @@ implements AccessibleCanvas
 	 */
 	public void setPolishTicker( Ticker ticker)
 	{
+		setPolishTicker( ticker, null );
+	}
+	//#endif
+	
+	//#ifndef polish.skipTicker
+	/**
+	 * Set a ticker for use with this Screen, replacing any previous ticker.
+	 * If null, removes the ticker object
+	 * from this screen. The same ticker is may be shared by several Screen
+	 * objects within an application. This is done by calling setTicker() on
+	 * different screens with the same Ticker object.
+	 * If the Screen is physically visible, the visible effect
+	 * should take place no later than immediately
+	 * after the callback or
+	 * <CODE>startApp</CODE>
+	 * returns back to the implementation.
+	 * 
+	 * @param ticker the ticker object used on this screen
+	 * @param tickerStyle the style of the ticker
+	 */
+	public void setPolishTicker( Ticker ticker, Style tickerStyle )
+	{
 		//#debug
 		System.out.println("setting ticker " + ticker);
 		this.ticker = ticker;
 		if (ticker != null) {
+			if (tickerStyle != null) {
+				ticker.setStyle(tickerStyle);
+			}
 			ticker.screen = this;
 			// initialise ticker, so that subsequently ticker.itemHeight can be called:
 			ticker.getItemHeight(this.screenWidth, this.screenWidth );

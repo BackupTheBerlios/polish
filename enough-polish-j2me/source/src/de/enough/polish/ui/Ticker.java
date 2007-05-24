@@ -110,6 +110,7 @@ public class Ticker extends IconItem
 	{
 		super( null, null, style );
 		setString( str );
+		setAppearanceMode( Item.PLAIN );
 	}
 	
 	/**

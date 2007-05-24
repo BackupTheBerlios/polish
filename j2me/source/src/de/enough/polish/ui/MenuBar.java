@@ -1150,7 +1150,7 @@ public class MenuBar extends Item {
 	 * This option is only available when the "menu" fullscreen mode is activated.
 	 */
 	public void removeAllCommands() {
-		this.commands.clear();
+		this.commandsList.clear();
 		this.commandsContainer.clear();
 	}
 
@@ -1161,7 +1161,7 @@ public class MenuBar extends Item {
 	 * @return the corresponding CommandItem or null when this command is not present in this MenuBar.
 	 */
 	public CommandItem getCommandItem(Command command) {
-		int index = this.commands.indexOf(command);
+		int index = this.commandsList.indexOf(command);
 		if (index != -1) {
 			return (CommandItem) this.commandsContainer.get(index);
 		} else if (command == this.singleLeftCommand){

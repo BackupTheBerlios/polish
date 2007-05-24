@@ -704,11 +704,13 @@ implements CommandListener
 		if (this.indicator != null) {
 			this.container.remove( this.indicator );
 		}
-		if (style != null && indicator != null) {
-			indicator.setStyle( style );
-		}
 		this.indicator = indicator;
-		this.container.add( this.indicator );
+		if (this.indicator != null) {
+			if (style != null) {
+				indicator.setStyle( style );
+			}
+			this.container.add( this.indicator );
+		}
 	}
 
 	/**
