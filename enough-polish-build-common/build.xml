@@ -1,0 +1,41 @@
+<project name="enough-polish-common" default="deploy">
+
+	<!-- single steps, each step can be called via "ant [name]", e.g. "ant clean" -->
+	
+	<target name="init">
+		<!-- Create the time stamp -->
+	    <tstamp/>
+	    <!-- Create distribution dirs -->
+		<mkdir dir="dist" />
+	</target>
+	
+	
+	<target name="dist" depends="init">
+		<delete dir="bin" />
+		<mkdir dir="bin/classes" />
+		<javac 
+			srcdir="source/src"
+			destdir="bin/classes"
+			target="1.4"
+			source="1.4"
+			/>
+		<mkdir dir="bin/preverified" />
+		<jar destfile="dist/enough-j2mepolish-build-common.jar"
+		     basedir="bin/classes"
+		     >
+		</jar>
+	</target>
+	
+	<target name="deploy"
+		depends="dist"
+		description="copies the jar to ${polish.home}/lib"
+	>
+		<copy file="dist/enough-j2mepolish-build-common.jar" todir="../enough-polish-build/lib" />
+	</target>
+
+	<target name="clean" depends="init">
+		<delete dir="dist" />
+	</target>
+
+
+</project>
