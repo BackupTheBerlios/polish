@@ -239,7 +239,7 @@ public class HorizontalChoiceView extends ContainerView {
 			this.appearanceMode = Item.PLAIN;
 		}
 		if (selectedItemIndex < items.length ) {
-			this.focusedItem = (ChoiceItem) items[ selectedItemIndex ];
+			this.focusedItem = items[ selectedItemIndex ];
 			this.currentItemIndex = selectedItemIndex;
 		}
 		//if ( selectedItem.isFocused ) {
@@ -601,7 +601,7 @@ public class HorizontalChoiceView extends ContainerView {
 		}
 		
 		((ChoiceItem)this.focusedItem).select( false );
-		this.focusedItem = (ChoiceItem) items[ this.currentItemIndex ];
+		this.focusedItem = items[ this.currentItemIndex ];
 		//this.currentItem.select( true );
 		((ChoiceGroup) this.parentContainer).setSelectedIndex( this.currentItemIndex, true );
 		this.parentContainer.focus (this.currentItemIndex, this.focusedItem, 0);
