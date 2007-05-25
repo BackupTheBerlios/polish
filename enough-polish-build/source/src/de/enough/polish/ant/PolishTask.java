@@ -2765,22 +2765,6 @@ public class PolishTask extends ConditionalTask {
 			Finalizer finalizer = finalizers[i];
 			finalizer.execute(device, locale, this.environment);
 		}
-		String deviceFinalizersStr = device.getCapability( "polish.build.Finalizer");
-		if (deviceFinalizersStr != null) {
-			String[] deviceFinalizers = StringUtil.splitAndTrim(deviceFinalizersStr, ',');
-			for (int i = 0; i < deviceFinalizers.length; i++) {
-				String finalizerName = deviceFinalizers[i];
-				System.out.println("Executing device specific finalizer [" + finalizerName + "]" );
-				Finalizer finalizer = null;
-				try {
-					finalizer = (Finalizer) this.extensionManager.getTemporaryExtension( ExtensionManager.TYPE_FINALIZER, finalizerName, this.environment );
-					finalizer.execute( device, locale, this.environment );
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new BuildException("Unable to execute finalizer [" + finalizerName + "] for device [" + device.getIdentifier() + "]: " + e.toString() );
-				}
-			}
-		}
 		device.resetEnvironment();
 	}
 
