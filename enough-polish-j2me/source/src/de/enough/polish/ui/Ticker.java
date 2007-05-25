@@ -25,13 +25,7 @@
  */
 package de.enough.polish.ui;
 
-import java.io.IOException;
-
-import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
-
-import de.enough.polish.util.TextUtil;
 
 /**
  * Implements a &quot;ticker-tape&quot;, a piece of text that runs
