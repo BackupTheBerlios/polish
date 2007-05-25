@@ -1240,8 +1240,8 @@ public abstract class Item extends Object
 		}
 		Screen scr = getScreen();
 		if (scr != null && scr == StyleSheet.currentScreen) {
-			relX += getAbsoluteX() + this.contentX;
-			relY += getAbsoluteY() + this.contentY;
+			relX += getAbsoluteX(); // + this.contentX;
+			relY += getAbsoluteY(); // + this.contentY;
 			//System.out.println("item.repaint(" + relX + ", " + relY+ ", " +  width + ", " +  height + ")  for " + this );
 			scr.repaint( relX, relY, width, height );
 		}
