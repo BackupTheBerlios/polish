@@ -347,13 +347,15 @@ This sample application shows how to use the browser technology of J2ME Polish.
             <file src="doc" targetdir="$INSTALL_PATH"/> <!-- Reccursive adding -->
         </pack>
         <pack name="Tools" required="no" preselected="yes">
-            <description>General stand-alone tools for J2ME development, e.g. the binary data editor or an editor for creating bitmap-fonts.</description>
+            <description>General stand-alone tools for J2ME development, e.g. the designer, the binary data editor or an editor for creating bitmap-fonts.</description>
             <file src="macosx/binaryeditor.app" targetdir="$INSTALL_PATH/bin">
             	<os name="Mac OS X" />
             </file>
             <file src="macosx/fonteditor.app" targetdir="$INSTALL_PATH/bin" >
             	<os name="Mac OS X" />
             </file>
+            <file src="../setup/scripts/designer" targetdir="$INSTALL_PATH/bin" os="unix"/>
+            <file src="../setup/scripts/designer.bat" targetdir="$INSTALL_PATH/bin" os="windows"/>
             <file src="../setup/scripts/binaryeditor" targetdir="$INSTALL_PATH/bin" os="unix"/>
             <file src="../setup/scripts/binaryeditor.bat" targetdir="$INSTALL_PATH/bin" os="windows"/>
             <file src="../setup/scripts/fonteditor" targetdir="$INSTALL_PATH/bin" os="unix"/>
@@ -364,6 +366,7 @@ This sample application shows how to use the browser technology of J2ME Polish.
             <file src="../setup/bin/example.bmf" targetdir="$INSTALL_PATH/bin" />
             <file src="../setup/bin/bmf.definition" targetdir="$INSTALL_PATH/bin" />
             <!-- mark Unix shell skripts as executable: -->
+            <executable targetfile="$INSTALL_PATH/bin/designer" stage="never" os="unix" />
             <executable targetfile="$INSTALL_PATH/bin/binaryeditor" stage="never" os="unix" />
             <executable targetfile="$INSTALL_PATH/bin/fonteditor" stage="never" os="unix" />
             <executable targetfile="$INSTALL_PATH/bin/fonteditor.app/Contents/MacOS/FontEditor" stage="never" >
@@ -372,6 +375,8 @@ This sample application shows how to use the browser technology of J2ME Polish.
             <executable targetfile="$INSTALL_PATH/bin/binaryeditor.app/Contents/MacOS/BinaryEditor" stage="never">
             	<os name="Mac OS X" />
             </executable>            
+            <parsable targetfile="$INSTALL_PATH/bin/designer" type="shell"  os="unix" /> 
+            <parsable targetfile="$INSTALL_PATH/bin/designer.bat" type="shell"  os="windows" /> 
             <parsable targetfile="$INSTALL_PATH/bin/binaryeditor" type="shell"  os="unix" /> 
             <parsable targetfile="$INSTALL_PATH/bin/binaryeditor.bat" type="shell" os="windows" /> 
             <parsable targetfile="$INSTALL_PATH/bin/fonteditor" type="shell"  os="unix" /> 
