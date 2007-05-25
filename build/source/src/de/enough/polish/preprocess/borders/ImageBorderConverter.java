@@ -50,6 +50,7 @@ public class ImageBorderConverter
 	 * Creates a new custom border creator
 	 */
 	public ImageBorderConverter() {
+		// Make default constructor public.
 	}
 	
 
@@ -59,14 +60,19 @@ public class ImageBorderConverter
 	protected String createNewStatement(HashMap border, Style style, StyleSheet styleSheet)
 		throws BuildException
 	{
-		int borderWidth = 0;
 		String borderWidthStr = (String) border.get("width");
 
-		if (borderWidthStr != null) {
-			borderWidth = parseInt("width", borderWidthStr);
+		if (borderWidthStr == null) {
+			throw new BuildException("no width attribute found");
 		}
 
 		String image = (String) border.get("image");
+
+		if (image == null) {
+			throw new BuildException("no image attribute found");
+		}
+
+		int borderWidth = parseInt("width", borderWidthStr);
 		image = getUrl(image);
 
 		return ("new " + BORDERS_PACKAGE + "ImageBorder(" + borderWidth +
