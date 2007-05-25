@@ -2376,7 +2376,11 @@ public abstract class Item extends Object
 	 * @return the absolute x position of this item in pixel.
 	 */
 	public int getAbsoluteX() {
-		int absX = this.relativeX + this.contentX;
+		int absX = this.relativeX;
+		if (!this.isLayoutCenter && !this.isLayoutRight) {
+			// hack for left align with additional label:
+			absX += this.contentX;
+		}
 		Item item = this.parent;
 		if (item != null && item.label == this) {
 			absX -= item.contentX;
@@ -2394,7 +2398,7 @@ public abstract class Item extends Object
 	 * @return the absolute x position of this item in pixel.
 	 */
 	public int getAbsoluteY() {
-		int absY = this.relativeY + this.contentY;
+		int absY = this.relativeY; // + this.contentY; in that case no label is included anymore
 		Item item = this.parent;
 		if (item != null && item.label == this) {
 			absY -= item.contentY;

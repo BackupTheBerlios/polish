@@ -111,6 +111,7 @@ public class HorizontalChoiceView extends ContainerView {
 	 */
 	public HorizontalChoiceView() {
 		super();
+		this.allowsAutoTraversal = false;
 	}
 
 	/* (non-Javadoc)
