@@ -207,4 +207,21 @@ public class Ticker extends IconItem
 		}
 		return true;
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeStringCustomItem#hideNotify()
+	 */
+	protected void hideNotify() {
+		super.hideNotify();
+		AnimationThread.removeAnimationItem( this );
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeStringCustomItem#showNotify()
+	 */
+	protected void showNotify() {
+		super.showNotify();
+		AnimationThread.addAnimationItem( this );
+	}
 }

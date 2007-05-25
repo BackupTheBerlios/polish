@@ -732,6 +732,11 @@ implements AccessibleCanvas
 			if (this.container != null) {
 				this.container.showNotify();
 			}
+			//#ifndef polish.skipTicker
+				if (this.ticker != null) {
+					this.ticker.showNotify();
+				}
+			//#endif
 			//#if tmp.ignoreMotorolaTitleCall
 				this.ignoreMotorolaTitleCall = true;
 			//#endif
@@ -832,6 +837,11 @@ implements AccessibleCanvas
 		if (this.container != null) {
 			this.container.hideNotify();
 		}
+		//#ifndef polish.skipTicker
+			if (this.ticker != null) {
+				this.ticker.hideNotify();
+			}
+		//#endif
 		//#ifdef tmp.ignoreMotorolaTitleCall
 			this.ignoreMotorolaTitleCall = true;
 		//#endif
@@ -1090,9 +1100,9 @@ implements AccessibleCanvas
 					}
 				//#endif
 				//#ifndef polish.skipTicker
-					if (this.ticker != null) {
-						animated = animated | this.ticker.animate();
-					}
+//					if (this.ticker != null) {
+//						animated = animated | this.ticker.animate();
+//					}
 				//#endif
 				//#if polish.ScreenInfo.enable
 					if (ScreenInfo.item != null && ScreenInfo.isVisible()) {
@@ -1296,11 +1306,15 @@ implements AccessibleCanvas
 				//#ifndef polish.skipTicker			
 					//#if tmp.paintTickerAtTop
 						if (this.ticker != null) {
+							this.ticker.relativeY = topHeight;
+							this.ticker.relativeX = leftBorder;
 							this.ticker.paint( leftBorder, topHeight, leftBorder, rightBorder, g);
 							topHeight += this.ticker.itemHeight;
 						}
 					//#elif polish.css.ticker-position && !polish.TickerPosition:defined
 						if (this.paintTickerAtTop && this.ticker != null) {
+							this.ticker.relativeY = topHeight;
+							this.ticker.relativeX = leftBorder;
 							this.ticker.paint( leftBorder, topHeight, leftBorder, rightBorder, g);
 							topHeight += this.ticker.itemHeight;
 						}
@@ -1371,11 +1385,15 @@ implements AccessibleCanvas
 				//#ifndef polish.skipTicker			
 					//#if tmp.paintTickerAtBottom
 						if (this.ticker != null) {
+							this.ticker.relativeY = this.marginLeft;
+							this.ticker.relativeX = bottomY;
 							this.ticker.paint( this.marginLeft, bottomY, this.marginLeft, rightBorder, g);
 							bottomY += this.ticker.itemHeight;
 						}
 					//#elif polish.css.ticker-position && !polish.TickerPosition:defined
 						if (!this.paintTickerAtTop && this.ticker != null) {
+							this.ticker.relativeY = this.marginLeft;
+							this.ticker.relativeX = bottomY;
 							this.ticker.paint( this.marginLeft, bottomY, this.marginLeft, rightBorder, g);
 							bottomY += this.ticker.itemHeight;
 						}

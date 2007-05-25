@@ -98,6 +98,49 @@ public class AnimationThread extends Thread
 				Screen screen = StyleSheet.currentScreen;
 				if (screen != null) {
 					boolean animated = screen.animate();
+					if (animationList != null) {
+						Object[] animationItems = animationList.getInternalArray();
+						if (animated) {
+							for (int i = 0; i < animationItems.length; i++) {
+								Item item = (Item) animationItems[i];
+								if (item == null) {
+									break;
+								}
+								item.animate();
+							}
+						} else {
+							int animationX = Integer.MAX_VALUE;
+							int animationY = Integer.MAX_VALUE;
+							int animationEndX = 0;
+							int animationEndY = 0;
+							for (int i = 0; i < animationItems.length; i++) {
+								Item item = (Item) animationItems[i];
+								if (item == null) {
+									break;
+								}
+								if ( item.animate() ) {
+									int absX = item.getAbsoluteX();
+									if (absX < animationX ) {
+										animationX = absX;
+									}
+									if (absX + item.itemWidth > animationEndX) {
+										animationEndX = absX + item.itemWidth; 
+									}
+									int absY = item.getAbsoluteY();
+									if (absY < animationY ) {
+										animationY = absY;
+									}
+									if (absY + item.itemHeight > animationEndY) {
+										animationEndY = absY + item.itemHeight; 
+									}
+									
+								}
+							}
+							if (animationEndX > 0) {
+								screen.repaint( animationX, animationY, animationEndX - animationX, animationEndY - animationY );
+							}
+						}
+					}
 					if (animated) {
 						//System.out.println("AnimationThread: screen needs repainting");
 						//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
@@ -109,20 +152,6 @@ public class AnimationThread extends Thread
 						//#endif
 						
 						sleeptime = ANIMATION_INTERVAL;
-					}
-					if (animationList != null) {
-						Object[] animationItems = animationList.getInternalArray();
-						for (int i = 0; i < animationItems.length; i++) {
-							Item item = (Item) animationItems[i];
-							if (item == null) {
-								break;
-							}
-							
-							if ( item.animate() ) {
-								// repaint only area of item:
-								item.repaint();
-							}
-						}
 					}
 
 					if (releaseResourcesOnScreenChange) {
