@@ -81,7 +81,7 @@
 				<variable name="polish.ScreenInfo.enable" value="true" />
 			</variables>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-			<obfuscator useDefaultPackage="false" name="ProGuard" unless="test">
+			<obfuscator useDefaultPackage="false" name="ProGuard" unless="test or polish.blackberry">
 				<keep class="de.enough.polish.example.Dummy" />
 			</obfuscator>
 			<!-- debug settings: only include debug setting when the test-property is true -->
