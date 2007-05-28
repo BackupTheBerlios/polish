@@ -1943,7 +1943,7 @@ implements AccessibleCanvas
 				//#if tmp.menuFullScreen
 					if (!processed) {
 						//#ifdef tmp.useExternalMenuBar
-							if (this.menuBar.handleKeyPressed(keyCode, 0)) {
+							if (this.menuBar.handleKeyPressed(keyCode, gameAction)) {
 								//System.out.println("menubar handled key " + keyCode );
 								repaint();
 								return;

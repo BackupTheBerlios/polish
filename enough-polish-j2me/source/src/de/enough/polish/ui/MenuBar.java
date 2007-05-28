@@ -96,9 +96,15 @@ public class MenuBar extends Item {
 	private final CommandItem singleLeftCommandItem;
 	private Command singleRightCommand;
 	private final CommandItem singleRightCommandItem;
+	private Command singleMiddleCommand;
+	//#if polish.key.MiddleSoftKey:defined || polish.MenuBar.useMiddleCommand
+		//#define tmp.useMiddleCommand
+		private final CommandItem singleMiddleCommandItem;
+	//#endif
 	private int topY;
 	private int commandsContainerWidth;
 	protected boolean isSoftKeyPressed;
+	
 	
 	protected boolean canScrollDownwards; // indicator for parent screen
 	protected boolean canScrollUpwards; // indicator for parent screen
@@ -141,12 +147,17 @@ public class MenuBar extends Item {
 		this.commandsContainer.screen = screen;
 		this.commandsContainer.parent = this;
 		Command dummy = new Command("", Command.ITEM, 10000);
-		//#style rightcommand, default
+		//#style rightcommand, command, default
 		this.singleRightCommandItem = new CommandItem( dummy, this );
 		this.singleRightCommandItem.setImageAlign( Graphics.LEFT );
-		//#style leftcommand, default
+		//#style leftcommand, command, default
 		this.singleLeftCommandItem = new CommandItem( dummy, this );
 		this.singleLeftCommandItem.setImageAlign( Graphics.LEFT );
+		//#if tmp.useMiddleCommand
+		//#style middlecommand, command, default
+			this.singleMiddleCommandItem = new CommandItem( dummy, this );
+			this.singleMiddleCommandItem.setImageAlign( Graphics.LEFT );
+		//#endif
 	}
 
 	public void addCommand(Command cmd) {
@@ -156,7 +167,7 @@ public class MenuBar extends Item {
 	
 	public void addCommand(Command cmd, Style commandStyle) {
 		//System.out.println("adding cmd " + cmd.getLabel() + " with style " + commandStyle );
-		if (cmd == this.singleLeftCommand || cmd == this.singleRightCommand || this.commandsList.contains(cmd)) {
+		if (cmd == this.singleLeftCommand || cmd == this.singleRightCommand || cmd == this.singleMiddleCommand || this.commandsList.contains(cmd)) {
 			// do not add an existing command again...
 			//#debug
 			System.out.println( this + ": Ignoring existing command " + cmd.getLabel() + ",  cmd==this.singleRightCommand: " + ( cmd == this.singleRightCommand) + ", cmd==this.singleLeftCommand: " + (cmd == this.singleLeftCommand) + ", this.commandsList.contains(cmd): " + this.commandsList.contains(cmd)  );
@@ -200,6 +211,28 @@ public class MenuBar extends Item {
 				//#endif
 			}
 		//#else
+			//#if tmp.useMiddleCommand
+				if (type == Command.ITEM) {
+					if (this.singleMiddleCommand == null) {
+						this.singleMiddleCommand = cmd;
+						this.singleMiddleCommandItem.setImage( (Image)null );
+						this.singleMiddleCommandItem.setText( cmd.getLabel() );
+						if (this.isInitialized) {
+							this.isInitialized = false;
+							repaint();
+						}
+						return;						
+					} else if ( this.singleMiddleCommand.getPriority() > priority ) {
+						Command oldMiddleCommand = this.singleMiddleCommand;
+						this.singleMiddleCommand = cmd;
+						this.singleMiddleCommandItem.setText( cmd.getLabel() );
+						cmd = oldMiddleCommand;
+						item = (CommandItem) this.allCommands.get( cmd );
+						priority = oldMiddleCommand.getPriority();
+						//System.out.println("MenuBar: now adding previous singlemiddle command " + cmd.getLabel() );
+					}
+				}
+			//#endif
 			//#if tmp.OkCommandOnLeft
 				if (type == Command.OK || type == Command.ITEM || type == Command.SCREEN) {
 					if (this.singleLeftCommand == null) {
@@ -720,6 +753,12 @@ public class MenuBar extends Item {
 			this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandItem.relativeY, centerX, rightBorder, g);
 		} else {
 			int centerX = leftBorder + ((rightBorder - leftBorder)/2);
+			//#if tmp.useMiddleCommand
+				if (this.singleMiddleCommand != null) {
+					int width = (rightBorder - leftBorder) >>> 1;
+					this.singleMiddleCommandItem.paint(centerX, y + this.singleMiddleCommandItem.relativeY, leftBorder + width, rightBorder - width, g);
+				}
+			//#endif
 			//#if tmp.RightOptions
 				//# if (this.singleLeftCommand != null) {
 			//#else
@@ -773,7 +812,7 @@ public class MenuBar extends Item {
 
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		//#debug
-		System.out.println("MenuBar: handleKeyPressed(" + keyCode + ", " + gameAction  );
+		System.out.println("MenuBar: handleKeyPressed(" + keyCode + ", " + gameAction + ")" );
 		this.isSoftKeyPressed = false;
 		if (this.isOpened) {
 			if (keyCode == this.selectOptionsMenuKey) {
@@ -838,6 +877,21 @@ public class MenuBar extends Item {
 				return handled;				
 			}
 		} else {
+			//#if tmp.useMiddleCommand
+				//#if polish.key.MiddleSoftKey:defined
+					//# if (keyCode == ${polish.key.MiddleSoftKey}
+				//#else
+					if ( keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY && gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5
+				//#endif
+							&& this.singleMiddleCommand != null && this.singleMiddleCommandItem.getAppearanceMode() != PLAIN) 
+					{
+						//#if polish.key.MiddleSoftKey:defined
+							this.isSoftKeyPressed = true;			
+						//#endif
+						this.screen.callCommandListener(this.singleMiddleCommand);
+						return true;			
+					}
+			//#endif
 			if (keyCode == LEFT_SOFT_KEY && this.singleLeftCommand != null && this.singleLeftCommandItem.getAppearanceMode() != PLAIN) {
 				this.isSoftKeyPressed = true;			
 				this.screen.callCommandListener(this.singleLeftCommand);
@@ -913,6 +967,15 @@ public class MenuBar extends Item {
 			{
 				//System.out.println("calling single right command");
 				this.screen.callCommandListener(this.singleRightCommand);
+			//#if tmp.useMiddleCommand
+				} else if (this.singleMiddleCommand != null
+						&& relX > this.singleLeftCommandItem.relativeX 
+						&& relY < this.singleLeftCommandItem.relativeX + this.singleLeftCommandItem.itemWidth 
+						&& this.singleMiddleCommandItem.getAppearanceMode() != PLAIN) 
+				{
+					//System.out.println("calling single middle command");
+					this.screen.callCommandListener(this.singleMiddleCommand);
+			//#endif
 			} else if (this.commandsList.size() > 0 
 					&& isOpenKeySelected)
 			{
