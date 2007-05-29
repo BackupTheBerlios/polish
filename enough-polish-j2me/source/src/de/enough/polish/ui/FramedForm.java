@@ -44,16 +44,16 @@ import javax.microedition.lcdui.Graphics;
  */
 public class FramedForm extends Form {
 	
-	private Container leftFrame;
-	private Container rightFrame;
-	private Container topFrame;
-	private Container bottomFrame;
+	protected Container leftFrame;
+	protected Container rightFrame;
+	protected Container topFrame;
+	protected Container bottomFrame;
 	private int originalContentHeight;
 	private int originalContentWidth;
 	private boolean expandRightFrame;
 	private boolean expandLeftFrame;
 	
-	private Container currentlyActiveContainer;
+	protected Container currentlyActiveContainer;
 	private int originalContentY;
 	private int originalContentX;
 
