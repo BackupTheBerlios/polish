@@ -51,8 +51,9 @@
 		<capability name="key.LeftSoftKey" value="-21" />
 		<capability name="key.RightSoftKey" value="-22" />
 		<capability name="key.MiddleSoftKey" value="-23" />
-		<capability name="key.CenterSoftKey" value="-23" />
+		<!--  use '0' to switch between input modes on TextFields: -->
 		<capability name="key.ChangeInputModeKey" value="48" />
+		<!--  use '#' to switch between numerical and alphanumerical input modes on TextFields: -->
 		<capability name="key.ChangeNumericalAlphaInputModeKey" value="35" />
 		<capability name="TextField.charactersKeyStar" value=" " />		
 		<capability name="IconSize" value="15x15" />		
