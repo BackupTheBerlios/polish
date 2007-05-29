@@ -253,11 +253,11 @@
 			<param name="orientation" type="integer" default="bottom-right" values="bottom-right,top-right,bottom-left,top-left" />
 		</mapping>
 		<mapping from="image"			to="de.enough.polish.ui.borders.ImageBorder" converter="de.enough.polish.preprocess.borders.ImageBorderConverter" >
-			<param name="width" type="integer" default="1" />
+			<param name="border-width" type="integer" default="1" />
 			<param name="image" type="image-url" default="none" />
 		</mapping>
 		<mapping from="multi-image"			to="de.enough.polish.ui.borders.MultiImageBorder" converter="de.enough.polish.preprocess.borders.MultiImageBorderConverter" >
-			<param name="width" type="integer" default="1" />
+			<param name="border-width" type="integer" default="1" />
 			<param name="top-left" type="image-url" default="none" />
 			<param name="top-center" type="image-url" default="none" />
 			<param name="top-right" type="image-url" default="none" />

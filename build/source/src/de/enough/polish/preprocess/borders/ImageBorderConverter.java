@@ -60,7 +60,7 @@ public class ImageBorderConverter
 	protected String createNewStatement(HashMap border, Style style, StyleSheet styleSheet)
 		throws BuildException
 	{
-		String borderWidthStr = (String) border.get("width");
+		String borderWidthStr = (String) border.get("border-width");
 
 		if (borderWidthStr == null) {
 			throw new BuildException("no width attribute found");
@@ -72,7 +72,7 @@ public class ImageBorderConverter
 			throw new BuildException("no image attribute found");
 		}
 
-		int borderWidth = parseInt("width", borderWidthStr);
+		int borderWidth = parseInt("border-width", borderWidthStr);
 		image = getUrl(image);
 
 		return ("new " + BORDERS_PACKAGE + "ImageBorder(" + borderWidth +
