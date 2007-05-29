@@ -249,7 +249,7 @@
 		<name>Series90</name>
 		<parent>Nokia-UI</parent>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
-		<capability name="JavaConfiguration" value="CLDC/1.0, CDC/1.0" />
+		<capability name="JavaConfiguration" value="CDC/1.0, CLDC/1.0" />
 		<capability name="Emulator.Class" value="NokiaEmulator" />
 		<capability name="Emulator.Skin" value="Series_90_MIDP_Concept_SDK_Beta_0_1" />
 		<capability name="OS" value="Symbian OS 7.0s" />

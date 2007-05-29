@@ -85,7 +85,10 @@ public class StyleSheet {
 		PSEUDO_CLASSES.put("tab", Boolean.TRUE );
 		PSEUDO_CLASSES.put("menubar", Boolean.TRUE );
 		PSEUDO_CLASSES.put("rightcommand", Boolean.TRUE );
+		PSEUDO_CLASSES.put("centercommand", Boolean.TRUE );
+		PSEUDO_CLASSES.put("middlecommand", Boolean.TRUE );
 		PSEUDO_CLASSES.put("leftcommand", Boolean.TRUE );
+		PSEUDO_CLASSES.put("command", Boolean.TRUE );
 		PSEUDO_CLASSES.put("frame", Boolean.TRUE );
 		PSEUDO_CLASSES.put("leftframe", Boolean.TRUE );
 		PSEUDO_CLASSES.put("rightframe", Boolean.TRUE );
