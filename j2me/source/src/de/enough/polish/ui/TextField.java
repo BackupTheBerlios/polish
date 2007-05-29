@@ -42,7 +42,7 @@ import de.enough.polish.util.Locale;
 	import net.rim.device.api.ui.FieldChangeListener;
 	import net.rim.device.api.ui.UiApplication;
 	import net.rim.device.api.ui.XYRect;
-	import net.rim.device.api.ui.component.BasicEditField;
+import net.rim.device.api.ui.component.BasicEditField;
 //#endif
 
 
@@ -736,6 +736,11 @@ public class TextField extends StringItem
 		//#else
 			private static final int KEY_CHANGE_MODE = Canvas.KEY_POUND;
 		//#endif
+		//#ifdef polish.key.ClearKey:defined
+		   //#= public static final int KEY_DELETE = ${polish.key.ClearKey};
+		//#else
+		   public static final int KEY_DELETE = -8 ; //Canvas.KEY_STAR;
+		//#endif
 		private boolean nextCharUppercase; // is needed for the FIRST_UPPERCASE-mode
 	
 		private String[] realTextLines; // the displayed lines with spaces (which are otherwise removed)
@@ -829,7 +834,13 @@ public class TextField extends StringItem
 		private int caretRowLastPartWidth;
 
 		private int rowHeight;
-		
+		//#if polish.TextField.includeInputInfo
+			//#define tmp.includeInputInfo
+			//#define tmp.useInputInfo
+			protected StringItem infoItem;
+		//#elif polish.TextField.showInputInfo != false
+			//#define tmp.useInputInfo
+		//#endif
 		protected final Object lock;
 	//#endif
 	protected char emailSeparatorChar = ';';
@@ -847,6 +858,7 @@ public class TextField extends StringItem
 	protected boolean isUneditable;
 
 	private boolean doSetCaretPosition;
+
 
 
 		
@@ -1077,8 +1089,13 @@ public class TextField extends StringItem
 				this.caretPosition = text.length();
 				this.caretColumn = this.caretPosition;
 			}
+			//If the setString was called to set all the text instead of one character at a time:
+			if (this.text != null && text != null && text.length() > (this.text.length()+1)){
+				this.caretColumn = text.length();
+				this.caretPositionHasBeenSet = false;
+			}
 		//#endif
-			//#if tmp.updateDeleteCommand
+		//#if tmp.updateDeleteCommand
 			updateDeleteCommand( text );
 		//#endif
 		setText(text);
@@ -1491,7 +1508,7 @@ public class TextField extends StringItem
 			if ((constraints & PASSWORD) == PASSWORD) {
 				this.isPassword = true;
 			}
-			if (fieldType == NUMERIC) {
+			if (fieldType == NUMERIC || fieldType == PHONENUMBER) {
 				this.isNumeric = true;
 				this.inputMode = MODE_NUMBERS;
 				//#ifndef polish.hasPointerEvents
@@ -1515,7 +1532,7 @@ public class TextField extends StringItem
 				this.inputMode = MODE_FIRST_UPPERCASE;
 				this.nextCharUppercase = true;
 			} 
-			//#if polish.TextField.showInputInfo != false
+			//#if tmp.useInputInfo
 				updateInfo();
 			//#endif
 		//#endif
@@ -1641,6 +1658,20 @@ public class TextField extends StringItem
 			//#else
 				//# if (this.isFocused ) {
 			//#endif
+					// adjust text-start for input info abc|Abc|ABC|123 if it should be shown on the same line:
+					//#if tmp.includeInputInfo
+						int originalX = x;
+						int originalY = y;
+						if (this.infoItem != null) {
+							if (this.infoItem.isLayoutRight) {
+								rightBorder -= this.infoItem.itemWidth;								
+							} else {
+								// left aligned (center is not supported)
+								x += this.infoItem.itemWidth;
+								leftBorder += this.infoItem.itemWidth;
+							}
+						}
+					//#endif
 					//#ifdef polish.css.font-bitmap
 					if (this.bitMapFont != null) {
 						//System.out.println("Using bitmap-font");
@@ -1736,7 +1767,31 @@ public class TextField extends StringItem
 										//#ifdef polish.css.textfield-caret-color
 											g.setColor( this.textColor );
 										//#endif
+											//TODO evaluate proposed changes by motorola - currently under consideration
+//											/* Change to draw background rectangle */
+//	                                        if (this.caretChar != this.editingCaretChar) {
+//	                                            int w = g.getFont().charWidth(this.caretChar);
+//	                                            int h = g.getFont().getHeight();
+//	                                            g.fillRect(leftX, y, w, h);
+//	                                            //display highlighted text in white color
+//	                                            g.setColor(0x00FFFFFF);
+//	                                            g.drawChar( this.caretChar, leftX, y, Graphics.TOP | Graphics.LEFT );
+//	                                        }
+//	                                        int tmpColor = g.getColor();
+//	                                        g.setColor(0,0,255);
+//	                                        g.drawLine(leftX, y, leftX, y+g.getFont().getHeight());
+//	                                        g.setColor(tmpColor);
+//	                                        /* End Change to draw background rectangle */			
 									}
+//									 /*Changes to Display the info item*/
+//                                    this.getScreen().infoItem.setTextColor(0x0000FF);
+//
+//                                    int infoItemOffset = ((i + 1) * (this.font.getHeight() + this.paddingVertical)) - this.paddingVertical;
+//									int yPos = y-infoItemOffset -1;
+//                                    int infoItemLeftBorder = rightBorder - this.getScreen().infoItem.getContentWidth();
+//
+//									this.getScreen().infoItem.paint(x, yPos, infoItemLeftBorder, rightBorder, g );
+//                    				/*end of changes to display info item*/
 									leftX += this.caretWidth;
 									g.drawString( this.caretRowLastPart, leftX, y, Graphics.TOP | Graphics.LEFT );
 								}
@@ -1777,6 +1832,17 @@ public class TextField extends StringItem
 					}
 					//#ifdef polish.css.font-bitmap
 					}
+					//#endif
+					//#if tmp.includeInputInfo
+						if (this.infoItem != null) {
+							if (this.infoItem.isLayoutRight) {
+								rightBorder += this.infoItem.itemWidth;								
+							} else {
+								// left aligned (center is not supported)
+								leftBorder -= this.infoItem.itemWidth;
+							}
+							this.infoItem.paint(originalX, originalY, leftBorder, rightBorder, g);
+						}
 					//#endif
 					return;
 				} else { // this is either not focused or no direct input is enabled:
@@ -1824,6 +1890,13 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
+		//#if tmp.includeInputInfo
+			if (this.infoItem != null) {
+				int infoWidth = this.infoItem.getItemWidth(firstLineWidth, lineWidth);
+				firstLineWidth -= infoWidth;
+				lineWidth -= infoWidth;
+			}
+		//#endif
 		super.initContent(firstLineWidth, lineWidth);
 		if (this.font == null) {
 			this.font = Font.getDefaultFont();
@@ -2294,12 +2367,26 @@ public class TextField extends StringItem
 					isValidInput = VALID_DOMAIN_CHARACTERS.indexOf( insertChar ) != -1;
 				}
 				if (!isValidInput) {
+					//#debug
 					System.out.println("email: invalid input!");
 					return;
 				}
 			}
 			
 		}
+		//TODO evaluate fix
+//		if (this.realTextLines != null) {
+//			//Fix entering characters in multiple lines
+//			String currentText = this.realTextLines[this.caretRow];
+//			//For inserting chars at the end
+//			if(this.caretColumn >= currentText.length()){
+//				this.caretX = this.font.stringWidth(currentText + insertChar);
+//			} else {
+//				//For inserting characters in between the text
+//				this.caretX = this.font.stringWidth(currentText.substring(0,this.caretColumn) + insertChar);
+//			}
+//		}
+		//end fix
 		if (myText == null) {
 			myText = "" + insertChar;
 		} else {
@@ -2347,11 +2434,11 @@ public class TextField extends StringItem
 		if (getScreen() instanceof Form) {
 			notifyStateChanged();
 		}
-		//#if polish.css.textfield-show-length  && (polish.TextField.showInputInfo != false)
+		//#if polish.css.textfield-show-length  && tmp.useInputInfo
 			if (this.showLength || nextCharInputHasChanged) {
 				updateInfo();
 			}
-		//#elif polish.TextField.showInputInfo != false
+		//#elif tmp.useInputInfo
 			if (nextCharInputHasChanged) {
 				updateInfo();
 			}
@@ -2360,7 +2447,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if tmp.directInput && (polish.TextField.showInputInfo != false)
+	//#if tmp.directInput && tmp.useInputInfo
 	private void updateInfo() {
 		if (this.isUneditable) {
 			// don't show info when this field is not editable
@@ -2368,40 +2455,50 @@ public class TextField extends StringItem
 		}
 		// # debug
 		// System.out.println("update info: " + this.text );
-		if (this.screen == null) {
-			this.screen = getScreen();
-		}
-		if (this.screen != null) {
-			String modeStr;
-			switch (this.inputMode) {
-				case MODE_LOWERCASE:
-					if (this.nextCharUppercase) {
-						modeStr = "Abc";
-					} else {
-						modeStr = "abc";
-					}
-					break;
-				case MODE_FIRST_UPPERCASE:
+		String modeStr;
+		switch (this.inputMode) {
+			case MODE_LOWERCASE:
+				if (this.nextCharUppercase) {
 					modeStr = "Abc";
-					break;
-				case MODE_UPPERCASE:
-					modeStr = "ABC";
-					break;
-				case MODE_NATIVE:
-					modeStr = "T9";
-					break;
-				default:
-					modeStr = "123";
-			}
-			//#ifdef polish.css.textfield-show-length
-				if (this.showLength) {
-					int length = (this.text == null) ? 0 : this.text.length();
-					modeStr = length + " | " + modeStr;
+				} else {
+					modeStr = "abc";
 				}
-			//#endif
-			this.screen.setInfo( modeStr );
-			
+				break;
+			case MODE_FIRST_UPPERCASE:
+				modeStr = "Abc";
+				break;
+			case MODE_UPPERCASE:
+				modeStr = "ABC";
+				break;
+			case MODE_NATIVE:
+				modeStr = "Nat.";
+				break;
+			default:
+				modeStr = "123";
 		}
+		//#ifdef polish.css.textfield-show-length
+			if (this.showLength) {
+				int length = (this.text == null) ? 0 : this.text.length();
+				modeStr = length + " | " + modeStr;
+			}
+		//#endif
+		//#if tmp.includeInputInfo
+			if (this.infoItem == null) {
+				//#style info, default
+				this.infoItem = new StringItem( null, modeStr );
+				this.infoItem.screen = getScreen();
+			} else {
+				this.infoItem.setText(modeStr);
+			}
+		//#else
+			if (this.screen == null) {
+				this.screen = getScreen();
+			}
+			if (this.screen != null) {
+				this.screen.setInfo( modeStr );
+			}
+		//#endif
+			
 	}
 	//#endif
 
@@ -2533,7 +2630,7 @@ public class TextField extends StringItem
 							} else {
 								this.inputMode = MODE_NUMBERS;
 							}
-							//#if polish.TextField.showInputInfo != false
+							//#if tmp.useInputInfo
 								updateInfo();
 							//#endif
 							if (this.caretChar != this.editingCaretChar) {
@@ -2578,7 +2675,7 @@ public class TextField extends StringItem
 								this.inputMode = MODE_LOWERCASE;
 							}
 						//#endif
-						//#if polish.TextField.showInputInfo != false
+						//#if tmp.useInputInfo
 							updateInfo();
 						//#endif
 						if (this.caretChar != this.editingCaretChar) {
@@ -3035,7 +3132,7 @@ public class TextField extends StringItem
 				if (myText != null && myText.length() > 0) {
 					this.caretColumn--;
 					setString( myText.substring( 0, myText.length() - 1 ));
-					//#if polish.css.textfield-show-length  && (polish.TextField.showInputInfo != false)
+					//#if polish.css.textfield-show-length && tmp.useInputInfo
 						if (this.showLength) {
 							updateInfo();
 						}
@@ -3087,7 +3184,7 @@ public class TextField extends StringItem
 				checkCaretPosition();
 				*/
 //			}
-			//#if polish.css.textfield-show-length  && (polish.TextField.showInputInfo != false)
+			//#if polish.css.textfield-show-length  && tmp.useInputInfo
 				if (this.showLength) {
 					updateInfo();
 				}
@@ -3119,7 +3216,7 @@ public class TextField extends StringItem
 			this.internalY = this.caretY;
 			this.doSetCaretPosition = true;
 			setString( myText );
-			//#if polish.css.textfield-show-length  && (polish.TextField.showInputInfo != false)
+			//#if polish.css.textfield-show-length  && tmp.useInputInfo
 				if (this.showLength) {
 					updateInfo();
 				}
@@ -3283,7 +3380,7 @@ public class TextField extends StringItem
 			//#ifdef tmp.allowDirectInput
 				if (this.enableDirectInput) {
 			//#endif
-					//#if polish.TextField.showInputInfo != false
+					//#if tmp.useInputInfo
 						updateInfo();
 					//#endif
 			//#ifdef tmp.allowDirectInput
@@ -3322,7 +3419,7 @@ public class TextField extends StringItem
 	public void setInputMode(int inputMode) {
 		this.inputMode = inputMode;
 		//#if tmp.directInput
-			//#if polish.TextField.showInputInfo != false
+			//#if tmp.useInputInfo
 				if (this.isFocused) {
 					updateInfo();
 				}

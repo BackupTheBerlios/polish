@@ -307,6 +307,16 @@ public class StringItem extends Item
 		}
 		requestInit();
 	}
+	
+	/**
+	 * Sets the text color for contents of the <code>StringItem</code>.
+	 *
+	 * @param color the new color for the content
+	 */
+	public void setTextColor( int color)
+	{
+		this.textColor = color;
+	}
 
 	/**
 	 * Sets the application's preferred font for

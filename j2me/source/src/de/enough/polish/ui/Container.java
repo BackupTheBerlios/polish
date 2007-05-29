@@ -270,20 +270,30 @@ public class Container extends Item {
 		}
 		// check if the currenlty focused item has been removed:
 		if (index == this.focusedIndex) {
-			// remove any items:
+			// remove any item commands:
 			Screen scr = getScreen();
 			if (scr != null) {
 				scr.removeItemCommands(removedItem);
 			}
 			// focus the first possible item:
 			boolean focusSet = false;
-			for (int i = 0; i < myItems.length; i++) {
+			for (int i = index; i < myItems.length; i++) {
 				Item item = myItems[i];
 				if (item.appearanceMode != PLAIN) {
 					focus( i, item, Canvas.DOWN );
 					focusSet = true;
 					break;
 				}
+			}
+			if (!focusSet) {
+				for (int i = index - 1; i >= 0; i--) {
+					Item item = myItems[i];
+					if (item.appearanceMode != PLAIN) {
+						focus( i, item, Canvas.DOWN );
+						focusSet = true;
+						break;
+					}
+				}				
 			}
 			if (!focusSet) {
 				this.autoFocusEnabled = true;

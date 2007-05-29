@@ -97,7 +97,7 @@ public class MenuBar extends Item {
 	private Command singleRightCommand;
 	private final CommandItem singleRightCommandItem;
 	private Command singleMiddleCommand;
-	//#if polish.key.MiddleSoftKey:defined || polish.MenuBar.useMiddleCommand
+	//#if polish.key.MiddleSoftKey:defined || polish.key.CenterSoftKey:defined || polish.MenuBar.useMiddleCommand || polish.MenuBar.useCenterCommand
 		//#define tmp.useMiddleCommand
 		private final CommandItem singleMiddleCommandItem;
 	//#endif
@@ -154,7 +154,7 @@ public class MenuBar extends Item {
 		this.singleLeftCommandItem = new CommandItem( dummy, this );
 		this.singleLeftCommandItem.setImageAlign( Graphics.LEFT );
 		//#if tmp.useMiddleCommand
-		//#style middlecommand, command, default
+		//#style centercommand, middlecommand, command, default
 			this.singleMiddleCommandItem = new CommandItem( dummy, this );
 			this.singleMiddleCommandItem.setImageAlign( Graphics.LEFT );
 		//#endif
@@ -373,6 +373,15 @@ public class MenuBar extends Item {
 			}
 		//#endif
 		
+		// 0.case: cmd == this.singleMiddleCommand
+		if ( cmd == this.singleMiddleCommand ) {
+			this.singleMiddleCommand = null;
+			if (this.isInitialized) {
+				this.isInitialized = false;
+				repaint();
+			}
+			return;
+		} 
 		// 1.case: cmd == this.singleLeftCommand
 		if ( cmd == this.singleLeftCommand ) {
 			this.singleLeftCommand = null;
@@ -756,7 +765,9 @@ public class MenuBar extends Item {
 			//#if tmp.useMiddleCommand
 				if (this.singleMiddleCommand != null) {
 					int width = (rightBorder - leftBorder) >>> 1;
-					this.singleMiddleCommandItem.paint(centerX, y + this.singleMiddleCommandItem.relativeY, leftBorder + width, rightBorder - width, g);
+					int commandWidth = this.singleMiddleCommandItem.getItemWidth(width, width);
+					width >>>= 1;
+					this.singleMiddleCommandItem.paint(centerX - (commandWidth >>> 1), y + this.singleMiddleCommandItem.relativeY, leftBorder + width, rightBorder - width, g);
 				}
 			//#endif
 			//#if tmp.RightOptions
@@ -879,7 +890,9 @@ public class MenuBar extends Item {
 		} else {
 			//#if tmp.useMiddleCommand
 				//#if polish.key.MiddleSoftKey:defined
-					//# if (keyCode == ${polish.key.MiddleSoftKey}
+					//#= if ( keyCode == ${polish.key.MiddleSoftKey}
+				//#elif polish.key.CenterSoftKey:defined
+					//#= if ( keyCode == ${polish.key.CenterSoftKey}
 				//#else
 					if ( keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY && gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5
 				//#endif
@@ -1213,6 +1226,9 @@ public class MenuBar extends Item {
 	 * This option is only available when the "menu" fullscreen mode is activated.
 	 */
 	public void removeAllCommands() {
+		this.singleLeftCommand = null;
+		this.singleRightCommand = null;
+		this.singleMiddleCommand = null;
 		this.commandsList.clear();
 		this.commandsContainer.clear();
 	}
