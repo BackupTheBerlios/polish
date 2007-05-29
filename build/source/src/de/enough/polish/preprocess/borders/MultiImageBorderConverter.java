@@ -90,7 +90,7 @@ public class MultiImageBorderConverter
 		bottomCenter = getUrl(bottomCenter);
 		bottomRight = getUrl(bottomRight);
 
-		return ("new " + BORDERS_PACKAGE + "ImageBorder(" + borderWidth +
+		return ("new " + BORDERS_PACKAGE + "MultiImageBorder(" + borderWidth +
 				", \"" + topLeft +
 				"\", \"" + topCenter +
 				"\", \"" + topRight +
