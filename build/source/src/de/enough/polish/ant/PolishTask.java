@@ -88,7 +88,6 @@ import de.enough.polish.ant.info.InfoSetting;
 import de.enough.polish.ant.requirements.Requirements;
 import de.enough.polish.descriptor.DescriptorCreator;
 import de.enough.polish.devices.DeviceDatabase;
-import de.enough.polish.devices.DeviceManager;
 import de.enough.polish.devices.LibraryManager;
 import de.enough.polish.emulator.Emulator;
 import de.enough.polish.finalize.Finalizer;
