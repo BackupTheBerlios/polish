@@ -764,6 +764,12 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.midp
+	public static boolean handleKeyPressed( javax.microedition.lcdui.Item item, int keyCode, int gameAction ) {
+		return false;
+	}
+	//#endif
+
 	//#if polish.usePolishGui
 	public static boolean handlePointerPressed( Item item, int x, int y ) {
 		//#if polish.hasPointerEvents
@@ -771,6 +777,12 @@ public final class UiAccess {
 		//#else
 			//# return false;
 		//#endif
+	}
+	//#endif
+
+	//#if polish.midp
+	public static boolean handlePointerPressed( javax.microedition.lcdui.Item item, int x, int y ) {
+		return false;
 	}
 	//#endif
 	
