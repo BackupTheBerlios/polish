@@ -62,6 +62,10 @@
 			<param name="border-width" type="integer" primitive="true" default="1" />
 		</mapping>
 		<mapping from="plain"               converter="de.enough.polish.preprocess.backgrounds.SimpleBackgroundConverter" />
+		<mapping from="triangle"            to="de.enough.polish.ui.backgrounds.TriangleBackground">
+			<param name="color" type="color" primitive="true" default="white" />
+			<param name="orientation" type="integer" values="top,bottom,left,right" primitive="true" default="top" />
+		</mapping>
 		<!-- 
 		to="de.enough.polish.ui.backgrounds.ImageBackground" 
 		 -->
@@ -759,6 +763,8 @@
 		<mapping from="chart-vertical-bars" to="new de.enough.polish.ui.chartviews.VerticalBarChartView()" appliesTo="ChartItem" />
 		<mapping from="fade-out" to="new de.enough.polish.ui.itemviews.FadeOutItemView()" appliesTo="Item" />
 		<mapping from="fade-in" to="new de.enough.polish.ui.itemviews.FadeInItemView()" appliesTo="Item" />
+		<mapping from="clock-binary-text" to="new de.enough.polish.ui.clockviews.BinaryTextClockView()" appliesTo="ClockItem" />
+		<mapping from="clock-hex-text" to="new de.enough.polish.ui.clockviews.HexTextClockView()" appliesTo="ClockItem" />
 		<!--
 		<mapping from="" to="" />
 		-->

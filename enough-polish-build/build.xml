@@ -57,7 +57,7 @@
 	    	packagenames="de.enough.*" 
 	    	sourcepath="source/src:source/extensions" 
 	    	classpath="bin/classes:import/ant.jar:import/junit.jar" 
-	    	doctitle="the J2ME Polish build framework"
+	    	doctitle="J2ME Polish build framework"
 	    />
 	</target>
 	
