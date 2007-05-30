@@ -169,7 +169,7 @@ public abstract class ItemView {
 	}
 	
 	/**
-	 * Removes the background from the parent container so that the containerview implementation can paint it itself.
+	 * Removes the background from the parent container so that the view implementation can paint it itself.
 	 * 
 	 * @return the background of the parent, can be null
 	 */
@@ -185,7 +185,7 @@ public abstract class ItemView {
 	}
 	
 	/**
-	 * Removes the border from the parent container so that the containerview implementation can paint it itself.
+	 * Removes the border from the parent container so that the view implementation can paint it itself.
 	 * 
 	 * @return the border of the parent, can be null
 	 */

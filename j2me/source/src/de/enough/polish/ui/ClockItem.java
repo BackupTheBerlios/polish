@@ -98,6 +98,15 @@ public class ClockItem
 		}
 		return animated;
 	}
+	
+	/**
+	 * Determines whether seconds should be appended to this clock view.
+	 * 
+	 * @return true when seconds should be visualized
+	 */
+	public boolean includeSeconds() {
+		return this.includeSeconds;
+	}
 
 	//#ifdef polish.useDynamicStyles
 	/* (non-Javadoc)
@@ -163,6 +172,36 @@ public class ClockItem
 		buffer.append( this.formatEnd );
 		
 		setText( buffer.toString() ); 
+	}
+	
+	/**
+	 * Fills in specific formats for time - this can be adjusted using the clock-format CSS attribute.
+	 * 
+	 * @param hours the hours
+	 * @param minutes the minutes of the time
+	 * @param seconds the seconds of the time
+	 * @return the time adjusted by additional formats - e.g. "hh:mm:ss"
+	 */
+	public String updateTime( String hours, String minutes, String seconds ) {
+		if (this.formatStart == null) {
+			// setStyle has not been called, so use default:
+			this.formatStart = "";
+			this.formatAfterHours = ":";
+			this.formatAfterMinutes = ":";
+			this.formatAfterSeconds = "";
+			this.formatEnd = "";
+		}
+		StringBuffer buffer = new StringBuffer();
+		buffer.append( this.formatStart )
+			.append( hours )
+			.append( this.formatAfterHours )
+			.append( minutes );
+		if (this.includeSeconds) {
+			buffer.append( this.formatAfterMinutes )
+				.append( seconds );
+		}
+		buffer.append( this.formatEnd );
+		return buffer.toString();
 	}
 
 	/* (non-Javadoc)
