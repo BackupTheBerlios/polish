@@ -74,6 +74,7 @@
 			<!-- project-wide variables - used for preprocessing  -->
 			<variables>
 				<variable name="update-url" value="http://www.enough.de/update"/>
+				<variable name="polish.css.allowAllAttributes" value="true" />
 			</variables>
 			<!--
 			<jad>
