@@ -138,7 +138,7 @@
 					</localization>
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator name="ProGuard" unless="test" >
+				<obfuscator name="ProGuard" unless="test or polish.blackberry" >
 					<!--
 					You can set additional parameters here, e.g.:
 					<parameter name="optimize" value="false" />
