@@ -50,18 +50,18 @@ public class RssBrowser
 		this(new DefaultRssItemCommandListener(), null); 
 	}
 
-        //#if polish.midp2
+	//#if polish.midp2
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener) {
 		this( listener, null ); 
 	}
-        //#endif
+	//#endif
 
-        //#if polish.midp2
+	//#if polish.midp2
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener, Style style ) {
 		super( style );
 		new RssTagHandler(HtmlTagHandler.CMD_LINK, (ItemCommandListener) null).register(this);
 	}
-        //#endif
+	//#endif
 	
 	public RssBrowser(ItemCommandListener listener)
 	{

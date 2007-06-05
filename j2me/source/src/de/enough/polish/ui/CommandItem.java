@@ -472,6 +472,13 @@ public class CommandItem extends IconItem {
 		super.hideNotify();
 	}
 
+	/**
+	 * @return
+	 */
+	public Command getCommand() {
+		return this.command;
+	}
+
 
 	
 	

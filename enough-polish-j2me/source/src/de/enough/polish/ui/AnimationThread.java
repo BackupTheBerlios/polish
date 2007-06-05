@@ -96,6 +96,7 @@ public class AnimationThread extends Thread
 			try {
 				Thread.sleep(sleeptime);
 				Screen screen = StyleSheet.currentScreen;
+//				System.out.println("AnimationThread: animating " + screen);
 				if (screen != null) {
 					boolean animated = screen.animate();
 					if (animationList != null) {

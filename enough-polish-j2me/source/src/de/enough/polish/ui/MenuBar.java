@@ -42,7 +42,7 @@ import de.enough.polish.util.Locale;
 /**
  * <p>Provides a more powerful alternative to the build-in menu bar of the Screen-class.</p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
  * <pre>
  * history
  *        24-Jan-2005 - rob creation
@@ -649,14 +649,18 @@ public class MenuBar extends Item {
 				this.paintScrollIndicator = false;
 				//#if tmp.RightOptions
 					if (this.singleLeftCommand != null) {
-						this.singleLeftCommandItem.setText( this.singleLeftCommand.getLabel() );
+						// this allows to change the text using UiAccess.setCommandLabel():
+						CommandItem item = (CommandItem) this.allCommands.get( this.singleLeftCommand );
+						this.singleLeftCommandItem.setText( item.getText() );
 					} else {
 						this.singleLeftCommandItem.setText( null );
 					}
 					this.singleLeftCommandItem.setImage( (Image)null );
 				//#else
 					if (this.singleRightCommand != null) {
-						this.singleRightCommandItem.setText( this.singleRightCommand.getLabel() );
+						// this allows to change the text using UiAccess.setCommandLabel():
+						CommandItem item = (CommandItem) this.allCommands.get( this.singleRightCommand );
+						this.singleRightCommandItem.setText( item.getText() );
 					} else {
 						this.singleRightCommandItem.setText( null );
 					}
@@ -1049,6 +1053,7 @@ public class MenuBar extends Item {
 		//#else
 			super.setStyle(style);
 			
+			System.out.println("menubar: setting style " + style.name + ", from screen " + this.screen + ", background=" + this.background );
 			//#ifdef polish.css.menubar-show-image-and-text
 				Boolean showImageAndTextBool = style.getBooleanProperty( "menubar-show-image-and-text" );
 				if (showImageAndTextBool != null) {
@@ -1098,6 +1103,30 @@ public class MenuBar extends Item {
 						//#debug error
 						System.out.println("Unable to load cancel-image " + cancelUrl + e );
 					}
+				}
+			//#endif
+			//#if polish.css.rightcommand-style
+				Style rightStyle = (Style) style.getObjectProperty("rightcommand-style");
+				if (rightStyle != null) {
+					this.singleRightCommandItem.setStyle(rightStyle);
+				}
+			//#endif
+			//#if polish.css.leftcommand-style
+				Style leftStyle = (Style) style.getObjectProperty("leftcommand-style");
+				if (leftStyle != null) {
+					this.singleLeftCommandItem.setStyle(leftStyle);
+				}
+			//#endif
+			//#if tmp.useMiddleCommand && polish.css.middlecommand-style
+				Style middleStyle = (Style) style.getObjectProperty("middlecommand-style");
+				if (middleStyle != null) {
+					this.singleMiddleCommandItem.setStyle(middleStyle);
+				}
+			//#endif
+			//#if polish.css.menu-style
+				Style menuStyle = (Style) style.getObjectProperty("menu-style");
+				if (menuStyle != null ) {
+					this.commandsContainer.setStyle(menuStyle);
 				}
 			//#endif
 		//#endif
@@ -1230,7 +1259,18 @@ public class MenuBar extends Item {
 		this.singleRightCommand = null;
 		this.singleMiddleCommand = null;
 		this.commandsList.clear();
+		this.allCommands.clear();
 		this.commandsContainer.clear();
+		this.singleLeftCommandItem.setText(null);
+		this.singleLeftCommandItem.setImage( (Image)null);
+		this.singleRightCommandItem.setText(null);
+		this.singleRightCommandItem.setImage( (Image)null);
+		//#if tmp.useMiddleCommand
+			this.singleMiddleCommandItem.setText(null);
+			this.singleMiddleCommandItem.setImage( (Image)null);
+		//#endif
+		setOpen( false );
+		repaint();
 	}
 
 	/**
@@ -1240,24 +1280,33 @@ public class MenuBar extends Item {
 	 * @return the corresponding CommandItem or null when this command is not present in this MenuBar.
 	 */
 	public CommandItem getCommandItem(Command command) {
-		int index = this.commandsList.indexOf(command);
-		if (index != -1) {
-			return (CommandItem) this.commandsContainer.get(index);
-		} else if (command == this.singleLeftCommand){
+//		int index = this.commandsList.indexOf(command);
+//		if (index != -1) {
+//			return (CommandItem) this.commandsContainer.get(index);
+//		} else if (command == this.singleLeftCommand){
+//			return this.singleLeftCommandItem;
+//		} else if (command == this.singleLeftCommand) {
+//			return this.singleRightCommandItem;
+//		} else {
+//			for (int i = 0; i < this.commandsContainer.size(); i++) {
+//				CommandItem item = (CommandItem) this.commandsContainer.get(i);
+//				item = item.getChild(command);
+//				if (item != null) {
+//					return item;
+//				}
+//			}
+//
+//		}
+		if (command == this.singleLeftCommand){
 			return this.singleLeftCommandItem;
-		} else if (command == this.singleLeftCommand) {
+		} else if (command == this.singleRightCommand) {
 			return this.singleRightCommandItem;
-		} else {
-			for (int i = 0; i < this.commandsContainer.size(); i++) {
-				CommandItem item = (CommandItem) this.commandsContainer.get(i);
-				item = item.getChild(command);
-				if (item != null) {
-					return item;
-				}
-			}
-
-		}
-		return null;
+		//#if tmp.useMiddleCommand
+		} else if (command == this.singleMiddleCommand ) {
+			return this.singleMiddleCommandItem;
+		//#endif
+		} 
+		return (CommandItem) this.allCommands.get( command );
 	}
 
 	/* (non-Javadoc)

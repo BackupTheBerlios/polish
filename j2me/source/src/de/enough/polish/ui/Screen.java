@@ -1076,7 +1076,7 @@ implements AccessibleCanvas
 		if (!this.isInitialized) {
 			return false;
 		}
-			synchronized (this.paintLock) {
+		synchronized (this.paintLock) {
 			try {
 				boolean animated = false;
 				if (this.background != null) {
@@ -1657,13 +1657,17 @@ implements AccessibleCanvas
 	 */
 	public String getTitle()
 	{
-		if (this.title == null) {
-			return null;
-		} else if ( !(this.title instanceof StringItem ) ) {
-			return null;
-		} else {
-			return ((StringItem)this.title).getText();
-		}
+		//#if polish.Bugs.getTitleRequiresNull
+			//# return null;
+		//#else
+			if (this.title == null) {
+				return null;
+			} else if ( !(this.title instanceof StringItem ) ) {
+				return null;
+			} else {
+				return ((StringItem)this.title).getText();
+			}
+		//#endif
 	}
 	//#endif
 
@@ -1742,6 +1746,7 @@ implements AccessibleCanvas
 		}
 		if (this.isInitialized && super.isShown()) {
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+			this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -2540,7 +2545,6 @@ implements AccessibleCanvas
 				updateMenuTexts();
 			//#endif
 			if (super.isShown()) {
-				this.isInitialized = false;
 				repaint();
 			}
 		//#endif

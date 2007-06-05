@@ -226,6 +226,8 @@ public class BitMapFontViewer {
 	 * @param lineWidth the available width for the following lines
 	 * @param paddingVertical the space between lines
 	 * @param orientationSetting the orientation of this viewer, either Grapics.LEFT, Graphics.RIGHT or Graphics.HCENTER
+	 * @see #getHeight()
+	 * @see #getWidth()
 	 */
 	public void layout( int firstLineWidth, int lineWidth, int paddingVertical, int orientationSetting ) {
 		this.orientation = orientationSetting;
@@ -291,6 +293,15 @@ public class BitMapFontViewer {
 		this.numberOfLines = lineIndex + 1;
 		this.width = maxLineWidth;
 		this.height = this.numberOfLines * (this.fontHeight + paddingVertical) - paddingVertical;
+	}
+	
+	/**
+	 * Sets the orientation of the text
+	 * 
+	 * @param orientation the horizontal text orientation like Graphics.LEFT, Graphics.RIGHT or Graphics.HCENTER
+	 */
+	public void setHorizontalOrientation( int orientation ) {
+		this.orientation = orientation;
 	}
 	
 	/**

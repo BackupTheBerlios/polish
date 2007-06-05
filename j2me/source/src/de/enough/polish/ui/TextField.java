@@ -1819,7 +1819,9 @@ public class TextField extends StringItem
 					} else if ( this.showCaret ) {
 						// this.text == null: paint only caret:
 						//#ifdef polish.css.textfield-caret-color
-							g.setColor( this.caretColor );
+							if (this.caretColor != -1) {
+								g.setColor( this.caretColor );
+							}
 						//#endif
 						if (this.isLayoutRight) {
 							g.drawChar( this.caretChar, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
@@ -2236,8 +2238,6 @@ public class TextField extends StringItem
 			Integer colorInt = style.getIntProperty("textfield-caret-color");
 			if (colorInt != null) {
 				this.caretColor = colorInt.intValue();
-			} else if (this.caretColor == -1){
-				this.caretColor = this.textColor;
 			}
 		//#endif
 		//#ifdef polish.css.textfield-caret-char

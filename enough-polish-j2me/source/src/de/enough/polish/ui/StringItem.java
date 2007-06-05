@@ -59,7 +59,7 @@ public class StringItem extends Item
 		protected int xOffset;
 		private int textWidth;
 		private boolean isHorizontalAnimationDirectionRight;
-		private boolean isSkipHorizontalAnimation;
+		//private boolean isSkipHorizontalAnimation;
 	//#endif
 	//#ifdef polish.css.text-horizontal-adjustment
 		protected int textHorizontalAdjustment;
@@ -195,9 +195,9 @@ public class StringItem extends Item
 		//#endif
 		//#if polish.css.text-wrap
 			if (this.useSingleLine && this.clipText) {
-				if (this.isSkipHorizontalAnimation) {
-					this.isSkipHorizontalAnimation = false;
-				} else {
+//				if (this.isSkipHorizontalAnimation) {
+//					this.isSkipHorizontalAnimation = false;
+//				} else {
 					if (this.isHorizontalAnimationDirectionRight) {
 						this.xOffset++;
 						if (this.xOffset >= 0) {
@@ -210,8 +210,8 @@ public class StringItem extends Item
 						}
 					}
 					animated = true;
-					this.isSkipHorizontalAnimation = true;
-				}
+					//this.isSkipHorizontalAnimation = true;
+//				}
 			}
 		//#endif
 		return animated;
@@ -364,26 +364,46 @@ public class StringItem extends Item
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.text != null) {
+			//#if polish.css.text-wrap
+				int clipX = 0;
+				int clipY = 0;
+				int clipWidth = 0;
+				int clipHeight = 0;
+				if (this.useSingleLine && this.clipText ) {
+					clipX = g.getClipX();
+					clipY = g.getClipY();
+					clipWidth = g.getClipWidth();
+					clipHeight = g.getClipHeight();
+					g.clipRect( x, y, this.contentWidth, this.contentHeight );
+				}
+			//#endif
 			//#ifdef polish.css.text-vertical-adjustment
 				y += this.textVerticalAdjustment;
 			//#endif
 			//#ifdef polish.css.font-bitmap
 				if (this.bitMapFontViewer != null) {
-					if (this.isLayoutCenter) {
-						x = leftBorder + (rightBorder - leftBorder) / 2;
-						//#ifdef polish.css.text-horizontal-adjustment
-							x += this.textHorizontalAdjustment;
-						//#endif
-					} else if (this.isLayoutRight) {
-						x = rightBorder;
-						//#ifdef polish.css.text-horizontal-adjustment
-							x += this.textHorizontalAdjustment;
-						//#endif
-					} 
-					//#ifdef polish.css.text-vertical-adjustment
-						y += this.textVerticalAdjustment;
+					//#if polish.css.text-wrap
+						if (this.useSingleLine && this.clipText ) {
+							x += this.xOffset;
+						} else {
+					//#endif
+							if (this.isLayoutCenter) {
+								x = leftBorder + (rightBorder - leftBorder) / 2;
+							} else if (this.isLayoutRight) {
+								x = rightBorder;
+							} 
+					//#if polish.css.text-wrap
+						}
+					//#endif
+					//#ifdef polish.css.text-horizontal-adjustment
+						x += this.textHorizontalAdjustment;
 					//#endif
 					this.bitMapFontViewer.paint( x, y, g );
+					//#if polish.css.text-wrap
+						if (this.useSingleLine && this.clipText ) {
+							g.setClip( clipX, clipY, clipWidth, clipHeight );
+						}
+					//#endif
 					return;
 				}
 			//#endif
@@ -406,22 +426,19 @@ public class StringItem extends Item
 				leftBorder += this.textHorizontalAdjustment;
 				rightBorder += this.textHorizontalAdjustment;
 			//#endif
-			//#if polish.css.text-wrap
-				int clipX = 0;
-				int clipY = 0;
-				int clipWidth = 0;
-				int clipHeight = 0;
-				if (this.useSingleLine && this.clipText ) {
-					clipX = g.getClipX();
-					clipY = g.getClipY();
-					clipWidth = g.getClipWidth();
-					clipHeight = g.getClipHeight();
-					g.clipRect( x, y, this.contentWidth, this.contentHeight );
-				}
-			//#endif
+
 			//#if polish.css.text-effect
 				if (this.textEffect != null) {
-					this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, this.layout, g );
+					//#if polish.css.text-wrap
+						if (this.useSingleLine && this.clipText ) {
+							x += this.xOffset;
+							this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, Graphics.LEFT | Graphics.TOP, g );
+						} else {
+					//#endif
+							this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, this.layout, g );
+					//#if polish.css.text-wrap
+						}
+					//#endif
 				} else {
 			//#endif
 					for (int i = 0; i < this.textLines.length; i++) {
@@ -489,9 +506,29 @@ public class StringItem extends Item
 				}
 				this.bitMapFontViewer = this.bitMapFont.getViewer( this.text );
 				if (this.bitMapFontViewer != null) {
-					this.bitMapFontViewer.layout( firstLineWidth, lineWidth, this.paddingVertical, orientation );
-					this.contentHeight = this.bitMapFontViewer.getHeight();
-					this.contentWidth = this.bitMapFontViewer.getWidth();
+					//#if polish.css.text-wrap
+						if (this.useSingleLine) {
+							this.contentHeight = this.bitMapFontViewer.getHeight();
+							int width = this.bitMapFontViewer.getWidth();
+							if (width > lineWidth) {
+								this.clipText = true;
+								this.textWidth = width;
+								width = lineWidth;
+								this.bitMapFontViewer.setHorizontalOrientation(Graphics.LEFT);
+							} else {
+								this.bitMapFontViewer.setHorizontalOrientation(orientation);
+								this.clipText = false;
+							}
+							this.contentWidth = width;
+						} else {
+					//#endif
+							// wrap the text:
+							this.bitMapFontViewer.layout( firstLineWidth, lineWidth, this.paddingVertical, orientation );
+							this.contentHeight = this.bitMapFontViewer.getHeight();
+							this.contentWidth = this.bitMapFontViewer.getWidth();
+					//#if polish.css.text-wrap
+						}
+					//#endif
 					return;
 				}
 			}
