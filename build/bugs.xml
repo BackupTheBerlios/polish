@@ -519,6 +519,18 @@
 		</solution>
 	</bug>
 
+	<bug>
+		<name>getTitleRequiresNull</name>
+		<area>ui</area>
+		<description>
+			The getTitle() method of canvas subclasses need to return null, when the fullscreen mode should work correctly.
+		</description>
+		<solution>
+			Use the J2ME Polish UI or return null in getTitle()
+		</solution>
+	</bug>
+	
+
 	<!--
 	<bug>
 		<name></name>

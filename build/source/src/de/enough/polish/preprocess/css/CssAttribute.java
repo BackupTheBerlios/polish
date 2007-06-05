@@ -621,7 +621,14 @@ implements Comparable
 	 * @param extension the attribute containing further mappings
 	 */
 	public void add( CssAttribute extension ) {
+		try {
 		this.mappingsByName.putAll( extension.mappingsByName );
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			System.out.println("attribute=" + this.name);
+			System.out.println("mappingsByName=" + this.mappingsByName );
+			System.out.println("extension=" + extension );
+		}
 	}
 
 	

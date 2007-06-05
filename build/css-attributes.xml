@@ -2564,6 +2564,36 @@
 		id="236"
 	/>
 	
+	<attribute
+		name="rightcommand-style"
+		type="style"
+		appliesTo="MenuBar"
+		description="The style for the command shown on the right side of the menubar - can only be used when the extended menubar is enabled."
+		id="237"
+	/>
+	<attribute
+		name="leftcommand-style"
+		type="style"
+		appliesTo="MenuBar"
+		description="The style for the command shonw on the left side of the menubar - can only be used when the extended menubar is enabled."
+		id="238"
+	/>
+	<attribute
+		name="middlecommand-style"
+		type="style"
+		appliesTo="MenuBar"
+		description="The style for the (item) command shown in the middle of the menubar - can only be used when the extended menubar is enabled."
+		id="239"
+	/>
+	<attribute
+		name="menu-style"
+		type="style"
+		appliesTo="MenuBar"
+		description="The style for the commands within the options command of the menubar - can only be used when the extended menubar is enabled."
+		id="239"
+	/>
+	
+	
 	<!--
 	
 	<attribute
