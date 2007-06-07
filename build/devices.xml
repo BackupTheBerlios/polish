@@ -6424,7 +6424,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.large" value="26"/>
 		<capability name="AnnouncementDate" value="2005-03-01"/>
 		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_6230i"/>
-		<capability name="Bugs" value="FontGetBaseline"/>
+		<capability name="Bugs" value="FontGetBaseline, ImageCuttingFails"/>
 	<capability name="wap.userAgent" value="Nokia6230i"/>
 <capability name="wap.userAgent" value="Nokia6230i/2.0 (03.12) Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 <capability name="wap.userAgent" value="Nokia6230i/2.0 (03.20) Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
@@ -9584,7 +9584,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="320x240"/>
 		<capability name="FullCanvasSize" value="320x240"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.2"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
 		<capability name="SoundFormat" value="amr, nb-amr"/>
@@ -9597,7 +9597,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="240x260"/>
 		<capability name="FullCanvasSize" value="240x260"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.2"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
 		<capability name="SoundFormat" value="amr, nb-amr"/>

@@ -530,7 +530,39 @@
 		</solution>
 	</bug>
 	
-
+	<bug>
+		<name>ImageCuttingFails</name>
+		<area>ui</area>
+		<description>
+			Can't cut images properly. For example smallImage=Image.createImage(bigImage,0,0,10,10,Sprite.TRANS_NONE);
+			does not work.
+		</description>
+		<solution>
+			Use clipping instead (Graphics.setClip() and Graphics.clipRect()).
+		</solution>
+	</bug>
+	<bug>
+		<name>IncomingCallDoesNotCallPause</name>
+		<area>general</area>
+		<description>
+			Incoming calls do not call the Midlet.pauseApp() method.
+		</description>
+		<solution>
+			Use Canvas.hideNotify()/showNotify() instead for manually detecting interruptions.
+		</solution>
+	</bug>
+	
+	<bug>
+		<name>GetKeyStatesFails</name>
+		<area>game</area>
+		<description>
+			GameCanvas.getKeyStates() does not work.
+		</description>
+		<solution>
+			use keyPressed()/keyReleased() instead.
+		</solution>
+	</bug>
+	
 	<!--
 	<bug>
 		<name></name>

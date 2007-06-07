@@ -42,6 +42,7 @@
 		<capability name="key.LeftSoftKey" value="-1" />
 		<capability name="key.RightSoftKey" value="-4" />
 		<capability name="Property.imei" value="com.siemens.mp.imei" />
+		<capability name="Bugs" value="GetKeyStatesFails"/>
 	</vendor>
 	
 	<vendor>
@@ -168,6 +169,7 @@
 	<vendor>
 		<name>BlackBerry</name>
 		<features></features>
+		<capability name="IconSize" value="44x44" />
 	</vendor>
 
 	<vendor>

@@ -75,7 +75,7 @@
 		<capability name="Font.medium.oldFirmware" value="16" />
 		<capability name="Font.large.oldFirmware" value="23" />
 		<capability name="RMS.MaxRecordSize" value="20 kb" />
-		<capability name="Bugs" value="stringWidthLineBreak" />
+		<capability name="Bugs" value="stringWidthLineBreak,IncomingCallDoesNotCallPause" />
 	</group>
 	
 	<group>
@@ -85,12 +85,12 @@
 
 	<group>
 		<name>Series40E2</name>
-		<parent>Series40E1</parent>
+		<parent>Series40</parent>
 		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_0" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi, wmapi" />
-		<capability name="Bugs" value="PlatformRequestRequiresQuit" />
+		<capability name="Bugs" value="PlatformRequestRequiresQuit,IncomingCallDoesNotCallPause" />
 	</group>
 
 	<group>
@@ -100,7 +100,7 @@
 
 	<group>
 		<name>Series40E3</name>
-		<parent>Series40E2</parent>
+		<parent>Series40</parent>
 		<capability name="ScreenSize" value="240x320" />
 		<capability name="FullCanvasSize" value="240x320" />
 		<capability name="Emulator.Skin" value="Devices/S40_SDK_3rd_Edition_Feature_Pack_2" />
@@ -108,6 +108,7 @@
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi, m3gapi" />
+		<capability name="Bugs" value="PlatformRequestRequiresQuit,IncomingCallDoesNotCallPause" />
 	</group>
 
 	<group>

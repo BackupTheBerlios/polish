@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -76,13 +77,48 @@ implements OutputFilter
 		String codName = jarFile.getName();
 		codName = codName.substring( 0, codName.length() - ".jar".length() );
 		String blackberryHome = env.getVariable("blackberry.home");
+		File blackberryHomeDir;
 		if ( blackberryHome == null ) {
-			throw new BuildException("You need to define the Ant property \"blackberry.home\" that points to the JDE directory.");
+			blackberryHomeDir = new File( "C:\\Program Files\\Research In Motion");
+			if (blackberryHomeDir.exists()) {
+				blackberryHome = blackberryHomeDir.getAbsolutePath();
+			} else {
+				throw new BuildException("You need to define the Ant property \"blackberry.home\" that points to the JDE directory.");
+			}
+		} else {
+			blackberryHomeDir = new File( blackberryHome );
+			if (!blackberryHomeDir.exists()) {
+				throw new BuildException("Your Ant property \"blackberry.home\" points to the non existing location "  + blackberryHome + ".");
+			} else if (!blackberryHomeDir.isDirectory()) {
+				throw new BuildException("Your Ant property \"blackberry.home\" points not to a directory, but a file:"  + blackberryHome );
+			}
 		}
 		
-		File rapcJarFile = env.resolveFile( "${blackberry.home}/bin/rapc.jar" );
+		
+		File rapcJarFile = new File( blackberryHomeDir, "/bin/rapc.jar" );
 		if ( !rapcJarFile.exists() ) {
-			throw new BuildException("Your Ant property \"blackberry.home\" [" + blackberryHome + "] is invalid, it needs to point to the JDE directory (so that it finds the \"bin\\rapc.jar\" file within the ${blackberry.home} directory).");
+			// try to sort out the correct JDE automatically:
+			File[] files = blackberryHomeDir.listFiles();
+			boolean requires41JDE = !device.hasFeature("polish.hasTrackballEvents");
+			Arrays.sort( files );
+			for (int i = files.length -1; i >= 0; i--) {
+				File file = files[i];
+				if (file.isDirectory() && file.getName().indexOf("JDE") != -1) {
+					if (!requires41JDE || file.getName().indexOf("4.1") != -1) {
+						blackberryHomeDir = file;
+						blackberryHome = file.getAbsolutePath();
+						rapcJarFile = new File( blackberryHomeDir, "/bin/rapc.jar" );
+						if (rapcJarFile.exists()) {
+							System.out.println("Using blackberry.home " + blackberryHome);
+							break;
+						}
+					}
+				}
+			}
+			
+			if ( !rapcJarFile.exists() ) {
+				throw new BuildException("Your Ant property \"blackberry.home\" [" + blackberryHome + "] contains no JDE.");
+			}
 		}
 		
 		// check if a MIDlet should be converted or whether a normal
@@ -123,7 +159,9 @@ implements OutputFilter
 				*/
 				String iconUrl = env.getVariable("MIDlet-Icon");
 				if (iconUrl != null && iconUrl.length() > 1) {
-					iconUrl = iconUrl.substring( 1 );
+					//iconUrl = iconUrl.substring( 1 );
+					// add absolute path for the icon, so that stupid rapcs build before 4.2 can find it:
+					iconUrl = device.getClassesDir() + iconUrl;
 				} else {
 					iconUrl = "";
 				}
