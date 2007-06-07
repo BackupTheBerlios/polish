@@ -3085,6 +3085,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Class" value="MotorolaEmulatorA5" />
 		<capability name="Emulator.Skin" value="MOTORAZR_V3xx.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
+		<capability name="key.MiddleSoftKey" value="-20" />
 	</device>
 
 	<device>
@@ -3139,7 +3140,7 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="640x480, 2 MP"/>
 		<capability name="CameraZoom" value="4, 8"/>
         <capability name="key.LeftSoftKey" value="-21" />
-        <capability name="key.MiddleSoftKey" value="-23" />
+		<capability name="key.MiddleSoftKey" value="-20" />
         <capability name="key.RightSoftKey" value="-22" />
         <capability name="key.FireKey" value="-20" />
         <capability name="key.ClearKey" value="-8" />
