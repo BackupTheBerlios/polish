@@ -97,6 +97,7 @@
 				name="MobileMail" 
 				vendorName="Enough Software" 
 				version="1.0.4"
+				icon="icon.png"
 		    />
 			<!-- selection of supported devices -->
             <deviceRequirements if="config.active:defined and (test or enableCompilerMode)" >		

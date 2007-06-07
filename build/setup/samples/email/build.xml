@@ -98,6 +98,7 @@
 				jarName="${polish.vendor}-${polish.name}-${polish.locale}-email.jar" 
 				jarUrl="${deploy-url}${polish.jarName}"
 				copyright="Copyright 2006, 2007 Enough Software. All rights reserved."
+				icon="icon.png"
 			/>
 			<!-- selection of supported devices -->
 			<!-- In the test mode the application is build only for the  -->
