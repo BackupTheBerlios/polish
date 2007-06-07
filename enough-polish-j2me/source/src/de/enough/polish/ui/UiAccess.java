@@ -1171,6 +1171,36 @@ public final class UiAccess {
     }
     //#endif
 
+	//#if polish.midp
+    /**
+     * Focuses the specified item on the given choice group.
+     * 
+     * @param choiceGroup the choice group
+     * @param index the index of the item that should be focused, first item has the index 0
+     */
+    public static void focus( javax.microedition.lcdui.ChoiceGroup choiceGroup, int index ) {
+        // ignore
+    }
+    //#endif
+
+    //#if polish.usePolishGui
+    /**
+     * Focuses the specified item on the given choice group.
+     * 
+     * @param choiceGroup the choice group
+     * @param index the index of the item that should be focused, first item has the index 0
+     */
+    public static void focus( ChoiceGroup choiceGroup, int index ) {
+    	if (!choiceGroup.isFocused) {
+    		Screen screen = choiceGroup.getScreen();
+    		if (screen != null) {
+    			screen.focus(choiceGroup);
+    		}
+    	}
+        choiceGroup.focus( index );
+    }
+    //#endif
+
     /**
      * Releases all (memory) instensive resources that are currently hold by the J2ME Polish GUI.
      */
