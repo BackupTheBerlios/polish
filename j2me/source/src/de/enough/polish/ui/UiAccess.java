@@ -1986,4 +1986,174 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
+	/**
+	 * Adds a ticker as a normal item to the specified form.
+	 * 
+	 * @param ticker the ticker 
+	 * @param form  the form
+	 * @return the index of the ticker within the form, -1 when the J2ME Polish UI is not used.
+	 */
+	public static int append( javax.microedition.lcdui.Ticker ticker, javax.microedition.lcdui.Form form ) {
+		return -1;
+	}
+	//#endif
+
+
+	//#if polish.usePolishGui and polish.midp
+	/**
+	 * Adds the specified (J2ME Polish) item to the given form.
+	 * This can be used for example to add several tickers to a form.
+	 * 
+	 * @param item the item  
+	 * @param form  the form
+	 * @return the index of the item within the form, -1 when the J2ME Polish UI is not used.
+	 */
+	public static int append( Item item, javax.microedition.lcdui.Form form ) {
+		return -1;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Adds the specified (J2ME Polish) item to the given form.
+	 * 
+	 * @param item the item  
+	 * @param form  the form
+	 * @return the index of the item within the form
+	 */
+	public static int append( Item item, Form form ) {
+		return form.append(item);
+	}
+	//#endif
+
+
+	//#if polish.usePolishGui
+	/**
+	 * Gets the visible status of the specified item.
+	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
+	 * Invisible items are only supported when the preprocessing variable polish.supportInvisibleItems is true.
+	 * 
+	 * @param item the item that might be invisible
+	 * @return true when this item is visible.
+	 */
+	public static boolean isVisible( Item item ) {
+		//#if polish.supportInvisibleItems
+			return !item.isInvisible;
+		//#else
+			//# return true; 
+		//#endif
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets the invisible status of the specified item.
+	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
+	 * Invisible items are only supported when the preprocessing variable polish.supportInvisibleItems is true.
+	 * 
+	 * @param item the item
+	 * @param visible true when the item should become invisible.
+	 */
+	public static void setVisible( Item item, boolean visible ) {
+		//#if polish.supportInvisibleItems
+			item.setVisible( visible );
+		//#endif
+	}
+	//#endif
+
+	
+
+	//#if polish.midp
+	/**
+	 * Gets the visible status of the specified item.
+	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
+	 * Invisible items are only supported when the preprocessing variable polish.supportInvisibleItems is true (and the J2ME Polish UI is used).
+	 * 
+	 * @param item the item that might be invisible
+	 * @return true when this item is visible.
+	 */
+	public static boolean isVisible( javax.microedition.lcdui.Item item ) {
+		return false;
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Sets the visible status of the specified item.
+	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
+	 * Invisible items are only supported when the preprocessing variable polish.supportInvisibleItems is true (and the J2ME Polish UI is used).
+	 * 
+	 * @param item the item
+	 * @param visible true when the item should be visible.
+	 */
+	public static void setVisible( javax.microedition.lcdui.Item item, boolean visible ) {
+		// ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the index of the specified item in the screen.
+	 * 
+	 * @param item the item
+	 * @param screen the screen
+	 * @return the index of the item; -1 when the item is not part of the given screen
+	 */
+	public static int indexOf( Item item, Screen screen ) {
+		if ( screen.container != null ) {
+			return screen.container.indexOf(item);
+		}
+		return -1;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Retrieves the index of the specified item in the screen.
+	 * 
+	 * @param item the item
+	 * @param screen the screen
+	 * @return the index of the item; -1 when the item is not part of the given screen
+	 */
+	public static int indexOf( Item item, javax.microedition.lcdui.Screen screen ) {
+		return -1;
+	}
+	//#endif
+
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Retrieves the index of the specified item in the screen.
+	 * 
+	 * @param item the item
+	 * @param screen the screen
+	 * @return the index of the item; -1 when the item is not part of the given screen
+	 */
+	public static int indexOf( javax.microedition.lcdui.Item item, Screen screen ) {
+		return -1;
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Retrieves the index of the specified item in the screen.
+	 * 
+	 * @param item the item
+	 * @param screen the screen
+	 * @return the index of the item; -1 when the item is not part of the given screen
+	 */
+	public static int indexOf( javax.microedition.lcdui.Item item, javax.microedition.lcdui.Screen screen ) {
+		if (screen instanceof javax.microedition.lcdui.Form) {
+			javax.microedition.lcdui.Form form = (javax.microedition.lcdui.Form) screen;
+			int size = form.size();
+			for (int i = 0; i < size; i++) {
+				if (form.get(i) == item) {
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
+	//#endif
+
 }

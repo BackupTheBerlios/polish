@@ -739,7 +739,12 @@ public abstract class Item extends Object
 	//#ifdef polish.css.view-type
 		protected ItemView view;
 	//#endif
-
+	//#if polish.supportInvisibleItems
+		//#define tmp.invisible
+		protected boolean isInvisible;
+		private int invisibleAppearanceModeCache;
+		private int invisibleItemHeight;
+	//#endif
 	
 	protected Item() {
 		this( null, LAYOUT_DEFAULT, PLAIN, null );
@@ -1574,6 +1579,11 @@ public abstract class Item extends Object
 	 * @param g the Graphics on which this item should be painted.
 	 */
 	public void paint( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
+		//#if tmp.invisible
+			if (this.isInvisible) {
+				return;
+			}
+		//#endif
 		// initialise this item if necessary:
 		int availableWidth = rightBorder - leftBorder;
 		int originalX = x;
@@ -1934,6 +1944,12 @@ public abstract class Item extends Object
 							  - this.marginBottom
 							  - labelHeight;
 		}
+		//#if tmp.invisible
+			if (this.isInvisible) {
+				this.itemWidth = 0;
+				this.itemHeight = 0;
+			}
+		//#endif
 		this.isInitialized = true;
 		//#debug
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
@@ -2421,6 +2437,69 @@ public abstract class Item extends Object
 	public Item getParent() {
 		return this.parent;
 	}
+	
+	//#if tmp.invisible
+	/**
+	 * Sets the visible status of this item.
+	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
+	 * Note that you can call this method ONLY when the preprocessing variable polish.supportInvisibleItems is true.
+	 * @param visible true when this item should become visible.
+	 */
+	public void setVisible( boolean visible ) {
+		boolean invisible = !visible;
+		if (invisible != this.isInvisible) {
+			if (this.parent instanceof Container) {
+				Container parentContainer = (Container) this.parent;
+				if (invisible && this.isFocused) {
+					// remove any item commands:
+					Screen scr = getScreen();
+					if (scr != null) {
+						scr.removeItemCommands(this);
+					}
+					int itemIndex = parentContainer.indexOf( this );
+					boolean isFocusSet = parentContainer.focusClosestItemAbove( itemIndex );
+					if (isFocusSet && parentContainer.focusedIndex > itemIndex ) {
+						// focused has moved downwards, since the above item is now invisible,
+						// adjust the scrolling accordingly:
+						int offset = parentContainer.yOffset + this.itemHeight;
+						parentContainer.setScrollYOffset( offset > 0 ? 0 : offset, false );
+					}
+				} else if (!this.isFocused && parentContainer.focusedIndex > parentContainer.indexOf(this)) {
+					// adjust scrolling so that the focused element of the parent container stays in the current position:
+					if (invisible) {
+						int offset = parentContainer.yOffset + this.itemHeight;
+						parentContainer.setScrollYOffset( offset > 0 ? 0 : offset, false );
+					} else {
+						int offset = parentContainer.yOffset - this.invisibleItemHeight;
+						parentContainer.setScrollYOffset( offset, false );						
+					}
+				}
+			}
+			if ( invisible ) {
+				this.invisibleAppearanceModeCache = this.appearanceMode;
+				this.invisibleItemHeight = this.itemHeight;
+				this.appearanceMode = PLAIN;
+			} else {
+				this.appearanceMode = this.invisibleAppearanceModeCache;
+			}
+			if ( this.isInitialized ) {
+				requestInit();
+			}
+		}
+		this.isInvisible = invisible;
+	}
+	//#endif
+	//#if tmp.invisible
+	/**
+	 * Gets the visible status of this item.
+	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
+	 * Note that you can call this method ONLY when the preprocessing variable polish.supportInvisibleItems is true.
+	 * @return true when this item is visible.
+	 */
+	public boolean isVisible() {
+		return !this.isInvisible;
+	}
+	//#endif
 
 	
 

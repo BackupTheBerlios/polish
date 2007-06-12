@@ -256,6 +256,7 @@ public class Container extends Item {
 		//#debug
 		System.out.println("Container: removing item " + index + " " + removedItem.toString()  );
 		// adjust y-positions of following items:
+		this.items = null;
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
@@ -276,29 +277,11 @@ public class Container extends Item {
 				scr.removeItemCommands(removedItem);
 			}
 			// focus the first possible item:
-			boolean focusSet = false;
-			for (int i = index; i < myItems.length; i++) {
-				Item item = myItems[i];
-				if (item.appearanceMode != PLAIN) {
-					focus( i, item, Canvas.DOWN );
-					focusSet = true;
-					break;
-				}
-			}
-			if (!focusSet) {
-				for (int i = index - 1; i >= 0; i--) {
-					Item item = myItems[i];
-					if (item.appearanceMode != PLAIN) {
-						focus( i, item, Canvas.DOWN );
-						focusSet = true;
-						break;
-					}
-				}				
-			}
-			if (!focusSet) {
-				this.autoFocusEnabled = true;
-				this.focusedItem = null;
-				this.focusedIndex = -1;
+			Item item = myItems[index];
+			if (item.appearanceMode != PLAIN) {
+				focus( index, item, Canvas.DOWN );
+			} else {
+				focusClosestItem(index, myItems);
 			}
 		} else if (index < this.focusedIndex) {
 			this.focusedIndex--;
@@ -310,6 +293,116 @@ public class Container extends Item {
 			repaint();
 		}
 		return removedItem;
+	}
+	/**
+	 * Focuses the next focussable item starting at the specified index +/- 1. 
+	 * @param index the index of the item that should be used as a starting point for the search of a new possible focussable item
+	 * @return true when the focus could be set, when false is returned autofocus will be enabled instead
+	 */
+	public boolean focusClosestItemAbove( int index) {
+		Item[] myItems = getItems();
+		Item newFocusedItem = null;
+		int newFocusedIndex = -1;
+		for (int i = index -1; i >= 0; i--) {
+			Item item = myItems[i];
+			if (item.appearanceMode != PLAIN) {
+				newFocusedIndex = i;
+				newFocusedItem = item;
+				break;
+			}
+		}
+		if (newFocusedItem == null) {
+			for (int i = index + 1; i < myItems.length; i++) {
+				Item item = myItems[i];
+				if (item.appearanceMode != PLAIN) {
+					newFocusedIndex = i;
+					newFocusedItem = item;
+					break;
+				}
+			}			
+		}
+		if (newFocusedItem != null) {
+			int direction = Canvas.DOWN;
+			if (newFocusedIndex < index) {
+				direction = Canvas.UP;
+			}
+			focus( newFocusedIndex, newFocusedItem, direction );
+		} else {
+			this.autoFocusEnabled = true;
+			this.focusedItem = null;
+			this.focusedIndex = -1;
+			//#ifdef tmp.supportViewType
+				if (this.containerView != null) {
+					this.containerView.focusedIndex = -1;
+					this.containerView.focusedItem = null;
+				}
+			//#endif
+		}
+		return (newFocusedItem != null);
+	}
+
+	/**
+	 * Focuses the next focussable item starting at the specified index +/- 1. 
+	 * @param index the index of the item that should be used as a starting point for the search of a new possible focussable item
+	 * @return true when the focus could be set, when false is returned autofocus will be enabled instead
+	 */
+	public boolean focusClosestItem( int index) {
+		return focusClosestItem( index, getItems() );
+	}
+
+	/**
+	 * Focuses the next focussable item starting at the specified index +/- 1. 
+	 * @param index the index of the item that should be used as a starting point for the search of a new possible focussable item
+	 * @param myItems the items that should be used for the search
+	 * @return true when the focus could be set, when false is returned autofocus will be enabled instead
+	 */
+	protected boolean focusClosestItem( int index, Item[] myItems ) {
+		int i = 1;
+		Item newFocusedItem = null;
+		Item item;
+		boolean continueFocus = true;
+		while (continueFocus) {
+			continueFocus = false;
+			int testIndex = index + i;
+			if (testIndex < myItems.length) {
+				item = myItems[ testIndex ];
+				if (item.appearanceMode != Item.PLAIN) {
+					newFocusedItem = item;
+					i = testIndex;
+					break;
+				}
+				continueFocus = true;
+			}
+			testIndex = index - i;
+			if (testIndex >= 0) {
+				item = myItems[ testIndex ];
+				if (item.appearanceMode != Item.PLAIN) {
+					i = testIndex;
+					newFocusedItem = item;
+					break;
+				}
+				continueFocus = true;
+			}
+			i++;
+		}
+		if (newFocusedItem != null) {
+			int direction = Canvas.DOWN;
+			if (i < index) {
+				direction = Canvas.UP;
+			}
+			focus( i, newFocusedItem, direction );
+		} else {
+			this.autoFocusEnabled = true;
+			this.focusedItem = null;
+			this.focusedIndex = -1;
+			//#ifdef tmp.supportViewType
+				if (this.containerView != null) {
+					this.containerView.focusedIndex = -1;
+					this.containerView.focusedItem = null;
+				}
+			//#endif
+		}
+		return (newFocusedItem != null);
 	}
 	
 	/**
@@ -538,7 +631,6 @@ public class Container extends Item {
 				this.internalY = item.relativeY + item.contentY + item.internalY;
 				this.internalWidth = item.internalWidth;
 				this.internalHeight = item.internalHeight;
-				
 				//#debug
 				System.out.println("Container (" + getClass().getName() + "): internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight);
 			} else {
@@ -700,7 +792,6 @@ public class Container extends Item {
 		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled);
 		int myContentWidth = 0;
 		int myContentHeight = 0;
-		try {
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		this.items = myItems;
 		if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
@@ -809,7 +900,7 @@ public class Container extends Item {
 			if (item.relativeX + width > myContentEndX ) {
 				myContentEndX = item.relativeX + width;
 			}
-			myContentHeight += height + this.paddingVertical;
+			myContentHeight += height != 0 ? height + this.paddingVertical : 0;
 			//System.out.println("item.yTopPos=" + item.yTopPos);
 		}
 		if (myContentEndX - myContentStartX > myContentWidth) {
@@ -820,32 +911,46 @@ public class Container extends Item {
 			this.appearanceMode = PLAIN;
 		} else {
 			this.appearanceMode = INTERACTIVE;
-			if (isLayoutShrink && this.focusedItem != null) {
+			if (this.focusedItem != null) {
 				Item item = this.focusedItem;
-				//System.out.println("container has shrinking layout and contains focuse item " + item);
-				item.isInitialized = false;
-				boolean doExpand = item.isLayoutExpand;
-				int width;
-				if (doExpand) {
-					item.isLayoutExpand = false;
-					width = item.getItemWidth( lineWidth, lineWidth );
-					item.isInitialized = false;
-					item.isLayoutExpand = true;
+				if (item.internalX != -9999) {
+					this.internalX =  item.relativeX + item.contentX + item.internalX;
+					this.internalY = item.relativeY + item.contentY + item.internalY;
+					this.internalWidth = item.internalWidth;
+					this.internalHeight = item.internalHeight;
+					//#debug
+					System.out.println("Container (" + getClass().getName() + "): internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight);
 				} else {
-					width = item.itemWidth;
+					this.internalX = item.relativeX;
+					this.internalY = item.relativeY;
+					this.internalWidth = item.itemWidth;
+					this.internalHeight = item.itemHeight;
+					//#debug
+					System.out.println("Container (" + getClass().getName() + "): NO internal area found in item " + item + ": setting internalY=" + this.internalY + ", internalHeight=" + this.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight + ", this.availableHeight=" + this.availableHeight);
 				}
-				if (width > myContentWidth) {
-					myContentWidth = width;
+				if (isLayoutShrink) {
+					//System.out.println("container has shrinking layout and contains focuse item " + item);
+					item.isInitialized = false;
+					boolean doExpand = item.isLayoutExpand;
+					int width;
+					if (doExpand) {
+						item.isLayoutExpand = false;
+						width = item.getItemWidth( lineWidth, lineWidth );
+						item.isInitialized = false;
+						item.isLayoutExpand = true;
+					} else {
+						width = item.itemWidth;
+					}
+					if (width > myContentWidth) {
+						myContentWidth = width;
+					}
+					if ( this.minimumWidth != 0 && myContentWidth < this.minimumWidth ) {
+						myContentWidth = this.minimumWidth;
+					}
+					//myContentHeight += item.getItemHeight( lineWidth, lineWidth );
 				}
-				if ( this.minimumWidth != 0 && myContentWidth < this.minimumWidth ) {
-					myContentWidth = this.minimumWidth;
-				}
-				//myContentHeight += item.getItemHeight( lineWidth, lineWidth );
 			}
-		}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			//#debug error
-			System.out.println("Unable to init container " + e );
+
 		}
 		this.contentHeight = myContentHeight;
 		this.contentWidth = myContentWidth;	
@@ -917,6 +1022,7 @@ public class Container extends Item {
 				// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
 				// since after every item a line break will be done. Use view-type: midp2; to place several items into a single row.
 				if (i == focIndex) {
+					//System.out.println("paint: FOCUSED ITEM=" + item);
 					focusedY = y;
 					item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
 				} else if ( y + item.itemHeight >= startY && y < endY ){
@@ -926,7 +1032,9 @@ public class Container extends Item {
 //				} else {
 //					System.out.println("skipping " + item);
 				}
-				y += item.itemHeight + this.paddingVertical;
+				if (item.itemHeight != 0) {
+					y += item.itemHeight + this.paddingVertical;
+				}
 			}
 	
 			
@@ -939,22 +1047,22 @@ public class Container extends Item {
 			}
 		//#endif
 		
-		Item item = this.focusedItem;
-		if (item != null) {
-			if (item.internalX != -9999) {
-				// inherit the internal area of the focused item:
-				this.internalX =  item.contentX + item.internalX;
-				this.internalWidth = item.internalWidth;
-				this.internalY = item.contentY+ item.internalY;
-				this.internalHeight = item.internalHeight;
-			} else {
-				// use the item as my internal area:
-				this.internalX = item.relativeX ;
-				this.internalWidth = item.itemWidth;
-				this.internalY = item.relativeY; //(item.yTopPos - this.yOffset) - this.contentY;
-				this.internalHeight = item.itemHeight;
-			}
-			// outcommented by rob - 2006-07-13 - now positions are determined in the initContent() method already
+		// outcommented by rob - 2006-07-13 & 2007-06-12 - now positions are determined in the initContent() method already
+//		Item item = this.focusedItem;
+//		if (item != null) {
+//			if (item.internalX != -9999) {
+//				// inherit the internal area of the focused item:
+//				this.internalX =  item.contentX + item.internalX;
+//				this.internalWidth = item.internalWidth;
+//				this.internalY = item.contentY+ item.internalY;
+//				this.internalHeight = item.internalHeight;
+//			} else {
+//				// use the item as my internal area:
+//				this.internalX = item.relativeX ;
+//				this.internalWidth = item.itemWidth;
+//				this.internalY = item.relativeY; //(item.yTopPos - this.yOffset) - this.contentY;
+//				this.internalHeight = item.itemHeight;
+//			}
 //			if (this.isFirstPaint) {
 //				this.isFirstPaint = false;
 //				if (this.enableScrolling) {
@@ -965,7 +1073,7 @@ public class Container extends Item {
 //					}
 //				}
 //			}
-		}
+//		}
 
 		if (setClipping) {
 			g.setClip(clipX, clipY, clipWidth, clipHeight);
@@ -1944,6 +2052,26 @@ public class Container extends Item {
 			}
 		//#endif
 		this.targetYOffset = offset;
+	}
+
+	/**
+	 * Retrieves the index of the specified item.
+	 * 
+	 * @param item the item
+	 * @return the index of the item; -1 when the item is not part of this container
+	 */
+	public int indexOf(Item item) {
+		Object[] myItems = this.items != null ? this.items :  this.itemsList.getInternalArray();
+		for (int i = 0; i < myItems.length; i++) {
+			Object object = myItems[i];
+			if (object == null) {
+				break;
+			}
+			if (object == item) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 
