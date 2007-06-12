@@ -26,6 +26,7 @@ public class BuildListFinalizer
 	{
 		StringBuffer userAgents = new StringBuffer();
 		String tmpUserAgents = device.getCapability("wap.userAgent");
+		String screenSize = device.getCapability("ScreenSize");
 
 		if (tmpUserAgents != null) {
 			StringTokenizer st = new StringTokenizer(tmpUserAgents, "\u0001");
@@ -41,6 +42,10 @@ public class BuildListFinalizer
 			}
 		}
 
+		if (userAgents.length() == 0) {
+			userAgents.append("-");
+		}
+
 		StringBuffer sb = new StringBuffer();
 		sb.append(device.getIdentifier());
 		sb.append("\t");
@@ -51,6 +56,8 @@ public class BuildListFinalizer
 		sb.append(jadFile.getName());
 		sb.append("\t");
 		sb.append(userAgents);
+		sb.append("\t");
+		sb.append(screenSize);
 		sb.append("\r\n");
 
 		try {
