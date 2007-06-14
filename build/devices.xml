@@ -11266,6 +11266,46 @@ These namespaces/schemas will be used soon.
 	</device> 
  
 	<device> 
+		<identifier>Samsung/E370</identifier> 
+		<features>hasCommandKeyEvents</features> 
+		<capability name="ScreenSize" value="128x160"/> 
+		<capability name="FullCanvasSize" value="128x160"/> 
+		<capability name="CanvasSize" value="128x144"/> 
+		<capability name="MenuBarHeight" value="16"/> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0"/> 
+		<capability name="JavaConfiguration" value="CLDC/1.0.4"/> 
+		<capability name="SoundFormat" value="midi, midi40"/> 
+		<capability name="PolyphonicVoices" value="40"/> 
+		<capability name="ImageFormat" value="png"/> 
+		<capability name="HeapSize" value="512 kb"/> 
+		<capability name="MaxJarSize" value="100 kb"/> 
+		<capability name="Network" value="GPRS"/> 
+		<capability name="Region" value="Europe"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+	</device> 
+
+	<device> 
+		<identifier>Samsung/E380</identifier> 
+		<features>hasCommandKeyEvents</features> 
+		<capability name="ScreenSize" value="176x220"/> 
+		<capability name="FullCanvasSize" value="176x220"/> 
+		<capability name="CanvasSize" value="176x204"/> 
+		<capability name="MenuBarHeight" value="16"/> 
+		<capability name="BitsPerPixel" value="16"/> 
+		<capability name="JavaPlatform" value="MIDP/2.0"/> 
+		<capability name="JavaConfiguration" value="CLDC/1.0.4"/> 
+		<capability name="SoundFormat" value="midi, midi40"/> 
+		<capability name="PolyphonicVoices" value="40"/> 
+		<capability name="ImageFormat" value="png"/> 
+		<capability name="HeapSize" value="512 kb"/> 
+		<capability name="MaxJarSize" value="100 kb"/> 
+		<capability name="Network" value="GPRS"/> 
+		<capability name="Region" value="Europe"/> 
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+	</device> 
+
+	<device> 
 		<identifier>Samsung/E600</identifier> 
 		<features>hasCommandKeyEvents</features> 
 		<capability name="ScreenSize" value="128x128"/> 
