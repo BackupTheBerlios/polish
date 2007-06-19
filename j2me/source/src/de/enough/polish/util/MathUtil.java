@@ -84,8 +84,10 @@ public final class MathUtil {
 	 * 	is NOT measured in degree or radian. It is measured in 1000, which
 	 *  equals 2 * PI. Therefore you have to convert degree via 'd*1000/380'
 	 *  and radian via 'r*1000/2/PI'.  	
-	 *  On top pf that the resulting value equals sin()*1000 to avoid floating
+	 *  On top of that the resulting value equals sin()*1000 to avoid floating
 	 *  point errors.
+	 *  Keep also in mind that this aproximation is not necessary 
+	 *  monotonically increasing (especially arround apxSin=1000).
 	 *  
 	 * @param x1k this is the angle 360 degree correspond to 1000.
 	 * @return sin()*1000
