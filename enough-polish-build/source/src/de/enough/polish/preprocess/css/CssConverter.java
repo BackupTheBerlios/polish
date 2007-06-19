@@ -540,6 +540,9 @@ public class CssConverter extends Converter {
 					} else {
 						// the attribute is not registered anywhere:
 						System.out.println("Recommendation: It is advised to register the CSS-attribute [" + attributeName + "] in the [custom-css-attributes.xml].");
+						if ( attributeName.endsWith("-color")) {
+							value = this.colorConverter.generateColorConstructor(value);
+						}
 					}
 					// process columns-width value:
 					// remove all spaces and check for the star-value (e.g. "20, *"):

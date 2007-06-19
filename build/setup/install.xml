@@ -354,6 +354,9 @@ This sample application shows how to use the browser technology of J2ME Polish.
             <file src="macosx/fonteditor.app" targetdir="$INSTALL_PATH/bin" >
             	<os name="Mac OS X" />
             </file>
+            <file src="macosx/designer.app" targetdir="$INSTALL_PATH/bin" >
+            	<os name="Mac OS X" />
+            </file>
             <file src="../setup/scripts/designer" targetdir="$INSTALL_PATH/bin" os="unix"/>
             <file src="../setup/scripts/designer.bat" targetdir="$INSTALL_PATH/bin" os="windows"/>
             <file src="../setup/scripts/binaryeditor" targetdir="$INSTALL_PATH/bin" os="unix"/>
@@ -375,6 +378,9 @@ This sample application shows how to use the browser technology of J2ME Polish.
             <executable targetfile="$INSTALL_PATH/bin/binaryeditor.app/Contents/MacOS/BinaryEditor" stage="never">
             	<os name="Mac OS X" />
             </executable>            
+            <executable targetfile="$INSTALL_PATH/bin/designer.app/Contents/MacOS/Designer" stage="never" >
+            	<os name="Mac OS X" />
+            </executable>
             <parsable targetfile="$INSTALL_PATH/bin/designer" type="shell"  os="unix" /> 
             <parsable targetfile="$INSTALL_PATH/bin/designer.bat" type="shell"  os="windows" /> 
             <parsable targetfile="$INSTALL_PATH/bin/binaryeditor" type="shell"  os="unix" /> 
@@ -385,6 +391,9 @@ This sample application shows how to use the browser technology of J2ME Polish.
             	<os name="Mac OS X" />
             </parsable>
             <parsable targetfile="$INSTALL_PATH/bin/binaryeditor.app/Contents/Info.plist" type="shell">
+            	<os name="Mac OS X" />
+            </parsable>
+            <parsable targetfile="$INSTALL_PATH/bin/designer.app/Contents/Info.plist" type="shell">
             	<os name="Mac OS X" />
             </parsable>
         </pack>

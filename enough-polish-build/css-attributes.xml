@@ -2590,7 +2590,7 @@
 		type="style"
 		appliesTo="MenuBar"
 		description="The style for the commands within the options command of the menubar - can only be used when the extended menubar is enabled."
-		id="239"
+		id="240"
 	/>
 	
 	

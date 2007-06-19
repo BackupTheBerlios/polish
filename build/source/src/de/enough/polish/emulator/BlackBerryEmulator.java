@@ -27,8 +27,13 @@ public class BlackBerryEmulator extends Emulator {
 	{
 		String blackberryHomeStr = env.getVariable("blackberry.home");
 		if (blackberryHomeStr == null) {
-			System.err.println("Unable to start blackberry simulator: Ant property \"blackberry.home\" is not set." );
-			return false;
+			File file = new File( "C:\\Program Files\\Research In Motion");
+			if (file.exists()) {
+				blackberryHomeStr = "C:\\Program Files\\Research In Motion";
+			} else {
+				System.err.println("Unable to start blackberry simulator: Ant property \"blackberry.home\" is not set." );
+				return false;
+			}
 		}
 		this.blackberryHome = new File( blackberryHomeStr );
 		if ( !this.blackberryHome.exists() ) {
@@ -39,7 +44,12 @@ public class BlackBerryEmulator extends Emulator {
 		File executable = getExecutable(home, dev, env);
 		if ( !executable.exists() ) {
 			// search for "BlackBerry Device Simulators" folders:
-			File parent = this.blackberryHome.getParentFile();
+			File parent;
+			if (this.blackberryHome.getName().indexOf("JDE") == -1) {
+				parent = this.blackberryHome;
+			} else {
+				parent = this.blackberryHome.getParentFile();
+			}
 			File[] children = parent.listFiles( new DirectoryFilter("BlackBerry Device Simulators") );
 			Arrays.sort( children );
 			for (int i = children.length - 1; i >= 0; i--) {
@@ -55,7 +65,20 @@ public class BlackBerryEmulator extends Emulator {
 				if (executable.exists()) {
 					break;
 				}
-			}			
+			}
+			if ( !executable.exists() ) {
+				// check all JDEs as well:
+				children = parent.listFiles( new DirectoryFilter("BlackBerry JDE") );
+				Arrays.sort( children );
+				for (int i = children.length - 1; i >= 0; i--) {
+					File deviceSimulatorsFolder = children[i];
+					home = new File( deviceSimulatorsFolder, "simulator" );
+					executable = getExecutable(home, dev, env);
+					if (executable.exists()) {
+						break;
+					}
+				}
+			}
 			if ( !executable.exists() ) {
 				System.err.println("Unable to start blackberry simulator: simulator not found: " + executable.getAbsolutePath()  );
 				return false;
