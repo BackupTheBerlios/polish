@@ -77,4 +77,42 @@ public final class MathUtil {
 		}
 	}
 	//#endif
+	
+	/**
+	 * This function returns an approximated value of sin using the taylor
+	 * 	approximation of power 5. Please keep in mind that the input angle
+	 * 	is NOT measured in degree or radian. It is measured in 1000, which
+	 *  equals 2 * PI. Therefore you have to convert degree via 'd*1000/380'
+	 *  and radian via 'r*1000/2/PI'.  	
+	 *  On top pf that the resulting value equals sin()*1000 to avoid floating
+	 *  point errors.
+	 *  
+	 * @param x1k this is the angle 360 degree correspond to 1000.
+	 * @return sin()*1000
+	 */
+	public static int apxSin(int x1k){
+		while(x1k>1000){x1k-=1000;}
+		while(x1k<0){x1k+=1000;}
+		
+		if(x1k>500){
+			return -apxSin(x1k-500);
+		}
+		if(x1k>250){
+			return apxSin(500-x1k);
+		}
+		
+		x1k=(x1k*3141*2)/1000;
+		
+		int ret;
+		int sq=x1k*x1k/1000;
+		ret=x1k*1000000 + x1k*(-sq/6*1000 + sq*sq/120);
+		
+		return (int)(ret/1005000);
+	}
+	/**
+	 * see apxSin()
+	 */
+	public static int apxCos(int x1k){
+		return apxSin(x1k+250);
+	}
 }
