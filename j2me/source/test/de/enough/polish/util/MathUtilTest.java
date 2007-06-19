@@ -46,5 +46,77 @@ public class MathUtilTest extends TestCase {
 			assertEquals( java.lang.Math.round(f), MathUtil.round(f) );
 		}		
 	}
+	
+	public void testApxSin() {
+		for (int i = -2000; i < 1400; i++) {
+			//System.out.println( i + "=" + MathUtil.apxSin(i));
+			assertTrue( isSimularSin( i ) );
+		}
+	}
+	
+	private boolean isSimularSin(int x) {
+		int apx = MathUtil.apxSin(x);
+		double radians = Math.toRadians( (x * 360D) / 1000D ); 
+		int correct = (int) (Math.sin( radians ) * 1000);
+		if ( apx > correct + 5 || apx < correct - 5  ) {
+			fail( "not simular enough: x=" + x + ", MatUtil.apxSin()=" + apx + ", correct=" + correct );
+		}
+		return true;
+	}
+
+	public void testModulo() {
+		int x;
+		x = -2000;
+		assertEquals( fastModulo( x, 1000), modulo( x, 1000 ) );
+		x = -1999;
+		assertEquals( fastModulo( x, 1000), modulo( x, 1000 ) );
+		x = -1;
+		assertEquals( fastModulo( x, 1000), modulo( x, 1000 ) );
+		x = 0;
+		assertEquals( fastModulo( x, 1000), modulo( x, 1000 ) );
+		x = 1;
+		
+		long time = System.currentTimeMillis();
+		for (int i = -2000; i < 1400; i++) {
+			for (int j = 0; j < 1000; j++) {
+				fastModulo( x, 1000);
+			}
+		}
+		time = System.currentTimeMillis() - time;
+		System.out.println("fastModulo=" + time + "ms" );
+		
+		time = System.currentTimeMillis();
+		for (int i = -2000; i < 1400; i++) {
+			for (int j = 0; j < 1000; j++) {
+				modulo( x, 1000);
+			}
+		}
+		time = System.currentTimeMillis() - time;
+		System.out.println("slowModulo=" + time + "ms" );
+	}
+
+	/**
+	 * @param x
+	 * @param i
+	 * @return
+	 */
+	private int fastModulo(int x, int i) {
+		x %= i;
+		if (x < 0) {
+			x += i;
+		}
+		return x;
+	}
+
+	/**
+	 * @param x
+	 * @param i
+	 * @return
+	 */
+	private int modulo(int x, int i) {
+		while(x>i){x-=i;}
+		while(x<0){x+=i;}
+		return x;
+	}
 
 }
