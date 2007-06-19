@@ -883,6 +883,10 @@ These namespaces/schemas will be used soon.
 		<capability name="Bugs" value="displaySetCurrentFlickers, ImageIOStreamAutoClose, NoPermanentBacklight" />
 		<capability name="DebugInterface" value="KDWP" />
 		<capability name="key.ReturnKey" value="-11" />
+		<capability name="key.predictive.ClearKey" value="-8"/>
+		<capability name="key.predictive.ShiftKey" value="42"/>
+		<capability name="key.predictive.PrevKey" value="-1"/>
+		<capability name="key.predictive.NextKey" value="-2"/>
 	</device>
 
 	<device>
