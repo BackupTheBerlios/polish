@@ -861,7 +861,7 @@ public class List extends Screen implements Choice
 				super.removeCommand( this.selectCommand );
 			}
 			this.selectCommand = command;
-			if (this.choiceGroup.size() > 0) {
+			if (this.choiceGroup.size() > 0 && command != null) {
 				addCommand( command );
 			}
 			this.choiceGroup.setSelectCommand( command );
