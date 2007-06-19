@@ -76,7 +76,18 @@ public class MathUtilTest extends TestCase {
 		assertEquals( fastModulo( x, 1000), modulo( x, 1000 ) );
 		x = 1;
 		
-		long time = System.currentTimeMillis();
+		long time;
+		
+		time = System.currentTimeMillis();
+		for (int i = -2000; i < 1400; i++) {
+			for (int j = 0; j < 1000; j++) {
+				modulo( x, 1000);
+			}
+		}
+		time = System.currentTimeMillis() - time;
+		System.out.println("slowModulo=" + time + "ms" );
+
+		time = System.currentTimeMillis();
 		for (int i = -2000; i < 1400; i++) {
 			for (int j = 0; j < 1000; j++) {
 				fastModulo( x, 1000);
@@ -93,6 +104,16 @@ public class MathUtilTest extends TestCase {
 		}
 		time = System.currentTimeMillis() - time;
 		System.out.println("slowModulo=" + time + "ms" );
+
+		time = System.currentTimeMillis();
+		for (int i = -2000; i < 1400; i++) {
+			for (int j = 0; j < 1000; j++) {
+				fastModulo( x, 1000);
+			}
+		}
+		time = System.currentTimeMillis() - time;
+		System.out.println("fastModulo=" + time + "ms" );
+
 	}
 
 	/**
