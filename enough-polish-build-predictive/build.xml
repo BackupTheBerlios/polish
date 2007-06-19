@@ -1,0 +1,10 @@
+<project name="PreditiveBuilder" default="builder" basedir=".">
+
+	<taskdef name="PreditiveBuilder" classname="de.enough.polish.predictive.Builder" classpath="../enough-polish-build/bin/classes" />
+		
+	<target name="builder">
+                <PreditiveBuilder source="./top10000en.txt" dest="./predictive.trie"/>
+	</target>
+
+</project>
+
