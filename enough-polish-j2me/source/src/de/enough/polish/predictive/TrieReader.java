@@ -31,6 +31,8 @@ public class TrieReader {
 	int chunkSize = 0;
 	int lineCount = 0;
 	
+	int selectedWord = 0;
+	
 	public TrieReader(String prefix, TrieProperties prop) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException
 	{
 		this.nodes 		= new ArrayList();
@@ -120,6 +122,11 @@ public class TrieReader {
 		return words;
 	}
 	
+	public String getSelectedWord()
+	{
+		return ((TrieNode)this.nodes.get(this.selectedWord)).getWord();
+	}
+	
 	private void copyNodes(ArrayList source, ArrayList dest)
 	{
 		dest.clear();
@@ -157,7 +164,8 @@ public class TrieReader {
 		if(store == null)
 		{
 			System.out.println(storeID);
-			store = RecordStore.openRecordStore(storeID, "Enough Software", "PredictiveInstaller");
+			//store = RecordStore.openRecordStore(storeID, "Enough Software", "PredictiveInstaller");
+			store = RecordStore.openRecordStore(storeID, false);
 			stores.put(storeID, store);
 		}
 		
@@ -272,5 +280,16 @@ public class TrieReader {
 			case '9': 	return "wxyz";
 			default: 	return " \'-";
 		}
+	}
+	
+	public void reset()
+	{
+		this.nodes.clear();
+		this.prevNodes.removeAllElements();
+		this.code = "";
+	}
+
+	public void setSelectedWord(int selectedWord) {
+		this.selectedWord = selectedWord;
 	}
 }
