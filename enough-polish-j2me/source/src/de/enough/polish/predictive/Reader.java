@@ -44,7 +44,7 @@ public class Reader {
 		this.lineCount = prop.getLineCount();
 	}
 		
-	public String[] keyNum(char key) throws RecordStoreNotOpenException, InvalidRecordIDException, RecordStoreException
+	public String[] keyNum(char key) throws RecordStoreException
 	{	
 		pushNodes();
 		
@@ -78,7 +78,7 @@ public class Reader {
 		return getNodeWords(nodes);
 	}
 	
-	public String[] keyClear() throws RecordStoreNotOpenException, InvalidRecordIDException, RecordStoreException
+	public String[] keyClear() throws RecordStoreException
 	{	
 		if(this.code.length() > 0)
 		{
@@ -156,7 +156,8 @@ public class Reader {
 		
 		if(store == null)
 		{
-			store = RecordStore.openRecordStore(storeID, "Enough Software", "T9Installer");
+			System.out.println(storeID);
+			store = RecordStore.openRecordStore(storeID, "Enough Software", "PredictiveInstaller");
 			stores.put(storeID, store);
 		}
 		
