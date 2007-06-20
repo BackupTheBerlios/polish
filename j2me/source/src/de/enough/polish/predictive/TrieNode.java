@@ -1,7 +1,7 @@
 package de.enough.polish.predictive;
 
-public class Node {
-	public Node() {
+public class TrieNode {
+	public TrieNode() {
 		this.word = "";
 		this.reference = 0;
 	}

@@ -10,7 +10,7 @@ import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreNotFoundException;
 
-public class Installer {
+public class TrieInstaller {
 	
 	byte charBuffer[];
 	byte integerBuffer[];
@@ -23,7 +23,7 @@ public class Installer {
 	
 	DataInputStream stream = null;
 	
-	public Installer(String file, String prefix, Properties prop)
+	public TrieInstaller(String file, String prefix, TrieProperties prop)
 	{
 		this.stream = new DataInputStream(getClass().getResourceAsStream(file));
 		this.prefix = prefix;

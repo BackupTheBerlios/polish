@@ -38,8 +38,8 @@ import javax.microedition.rms.RecordStoreNotOpenException;
 //#if polish.blackberry
 import de.enough.polish.blackberry.ui.PolishEditField;
 //#endif
-import de.enough.polish.predictive.Properties;
-import de.enough.polish.predictive.Reader;
+import de.enough.polish.predictive.TrieProperties;
+import de.enough.polish.predictive.TrieReader;
 import de.enough.polish.util.TextUtil;
 
 /**
@@ -74,7 +74,7 @@ public class PredictiveTextField
 	private Style choiceItemStyle;
 	private String lastMatchingText;
 	
-	private Reader reader = null;
+	private TrieReader reader = null;
 	private Display display = null;
 	
 	private int CLEAR_BUTTON = -8;
@@ -126,7 +126,7 @@ public class PredictiveTextField
 			//# this.choicesContainer.parent = this;
 		//#endif		
 			
-		this.reader = new Reader("predictive", new Properties(100,500));
+		this.reader = new TrieReader("predictive", new TrieProperties(100,500));
 		this.display = display; 
 		
 		//#if polish.key.predictive.ClearKey:defined

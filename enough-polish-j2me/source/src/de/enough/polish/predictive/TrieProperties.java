@@ -1,6 +1,6 @@
 package de.enough.polish.predictive;
 
-public class Properties {
+public class TrieProperties {
 	public int chunkSize;
 	public int lineCount;
 	
@@ -9,7 +9,7 @@ public class Properties {
 	public String suiteName;
 	
 	
-	public Properties(int chunkSize, int lineCount) {
+	public TrieProperties(int chunkSize, int lineCount) {
 		super();
 		this.chunkSize = chunkSize;
 		this.lineCount = lineCount;

@@ -12,7 +12,7 @@ import javax.microedition.rms.RecordStoreNotOpenException;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
-public class Reader {
+public class TrieReader {
 	
 	final int V_OFFSET = 0;
 	final int CC_OFFSET = 2;
@@ -31,7 +31,7 @@ public class Reader {
 	int chunkSize = 0;
 	int lineCount = 0;
 	
-	public Reader(String prefix, Properties prop) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException
+	public TrieReader(String prefix, TrieProperties prop) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException
 	{
 		this.nodes 		= new ArrayList();
 		this.prevNodes 	= new Stack();
@@ -62,7 +62,7 @@ public class Reader {
 		{
 			for(int nodeIndex = 0; nodeIndex < nodes.size(); nodeIndex++)
 			{
-				Node node = (Node)nodes.get(nodeIndex);
+				TrieNode node = (TrieNode)nodes.get(nodeIndex);
 				
 				if(node.getReference() != 0)
 				{
@@ -115,7 +115,7 @@ public class Reader {
 	{
 		String[] words = new String[nodes.size()]; 
 		for(int i=0; i<nodes.size(); i++)
-			words[i] = ((Node)nodes.get(i)).getWord();
+			words[i] = ((TrieNode)nodes.get(i)).getWord();
 		
 		return words;
 	}
@@ -221,7 +221,7 @@ public class Reader {
 			{
 				if(value == letters.charAt(j))
 				{
-					Node node = new Node();
+					TrieNode node = new TrieNode();
 					node.setWord(word + value);
 					
 					if(byteToByte(record, i+CC_OFFSET) != 0)
