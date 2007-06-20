@@ -93,18 +93,23 @@ public final class MathUtil {
 	 * @return sin()*1000
 	 */
 	public static int apxSin(int x1k){
+		int p=1;
+		
 		x1k = x1k % 1000;
 		if (x1k < 0) {
 			x1k += 1000;
 		}
-//		while(x1k>1000){x1k-=1000;}
-//		while(x1k<0){x1k+=1000;}
 		
-		if(x1k>500){
-			return -apxSin(x1k-500);
-		}
-		if(x1k>250){
-			return apxSin(500-x1k);
+		if (x1k>250){
+			if(x1k<500){
+				x1k=500-x1k;
+			}else if(x1k<750){
+				p=-1;
+				x1k=x1k-500;
+			} else {
+				p=-1;
+				x1k=1000-x1k;
+			}
 		}
 		
 		x1k=(x1k*3141*2)/1000;
@@ -112,7 +117,7 @@ public final class MathUtil {
 		int sq = x1k*x1k/1000;
 		long ret = x1k*1000000 + x1k*(-sq/6*1000 + sq*sq/120);
 		
-		return (int)(ret/1005000);
+		return (int)(ret/1005000)*p;
 	}
 	/**
 	 * see apxSin()
