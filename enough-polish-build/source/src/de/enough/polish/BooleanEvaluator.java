@@ -286,23 +286,15 @@ public class BooleanEvaluator {
 				//System.out.println("comparing [" + lastSymbol + "] with [" + symbol + "].");
 				// this is either >, <, ==, >=, <= or !=
 				String var;
-				if (this.environment != null) {
-					var  = this.environment.getVariable( symbol );
-				} else if (this.device != null) {
-					var = this.device.getCapability( symbol );
+				// hack for polish.identifier comparisons:
+				if ( symbol.equals(getVariable( "polish.Identifier") )) {
+					var = symbol;
 				} else {
-					var  = (String) this.variables.get( symbol );
+					var = getVariable( symbol ); 
 				}
+				//System.out.println( symbol + "=" + var);
 				if (var == null) {
-					boolean symbolDefined = false;
-					if (this.environment != null) {
-						symbolDefined = this.environment.hasSymbol( symbol );
-					} else if (this.device != null) {
-						symbolDefined = this.device.hasFeature( symbol );
-					} else {
-						symbolDefined = this.symbols.containsKey( symbol );
-					}
-					if (symbolDefined) {
+					if (hasSymbol( symbol )) {
 						var = "true";
 					} else {
 						var = symbol;
@@ -330,7 +322,7 @@ public class BooleanEvaluator {
 					//System.out.println( var + " == " + lastVar + " = " + result);
 				} else if ( operator == NOT_EQUALS ) {
 					result = ! var.equals( lastVar );
-					//System.out.println( var + " == " + lastVar + " = " + result);
+					//System.out.println( var + " != " + lastVar + " = " + result);
 				} else {
 					// this is either >, <, >= or <= - so a numerical comparison is required
 					int numVar = -1;
@@ -426,6 +418,27 @@ public class BooleanEvaluator {
 		}
 		return result;
 	}
+	
+	private String getVariable( String name ) {
+		if (this.environment != null) {
+			return this.environment.getVariable( name );
+		} else if (this.device != null) {
+			return this.device.getCapability( name );
+		} else {
+			return (String) this.variables.get( name );
+		}
+	}
+	
+	private boolean hasSymbol( String name ) {
+		if (this.environment != null) {
+			return this.environment.hasSymbol(name);
+		} else if (this.device != null) {
+			return this.device.hasFeature(name);
+		} else {
+			return this.symbols.get( name ) != null;
+		}
+	}
+
 	
 	public Map getSymbols() {
 		return this.symbols;

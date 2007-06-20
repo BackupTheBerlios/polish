@@ -543,12 +543,14 @@ public class BooleanEvaluatorTest extends TestCase {
 		symbols.put( "sym-2", Boolean.TRUE );
 		symbols.put( "var-1:defined", Boolean.TRUE );
 		symbols.put( "polish.Identifier.Nokia/6600", Boolean.TRUE );
+		symbols.put("Nokia/6600", Boolean.TRUE);
 		HashMap variables = new HashMap();
 		variables.put("polish.Memory", "100 kb");
 		variables.put("polish.HeapSize", "1mb");
 		variables.put("polish.BitsPerPixel", "8");
 		variables.put("polish.Vendor", "Nokia");
 		variables.put("polish.Identifier", "Nokia/6600");
+		variables.put("Nokia/6600", "true");
 		variables.put("polish.Name", "6600");
 		
 		BooleanEvaluator evaluator = new BooleanEvaluator( symbols, variables );
@@ -556,6 +558,7 @@ public class BooleanEvaluatorTest extends TestCase {
 		assertTrue( evaluator.evaluate("polish.Identifier == Nokia/6600", "build.xml", 0));
 		assertFalse(evaluator.evaluate("polish.Identifier.Nokia/Series60", "build.xml", 0));
 		assertTrue( evaluator.evaluate("polish.Identifier.Nokia/6600", "build.xml", 0));
+		assertTrue( evaluator.evaluate("Nokia/6600", "build.xml", 0));
 		assertTrue(evaluator.evaluate("polish.Identifier != Nokia/Series60", "build.xml", 0));
 	}
 
