@@ -371,7 +371,7 @@ public final class Serializer {
 				out.writeUTF( command.getLabel() );
 			//#endif
 			} else if (object instanceof byte[]) {
-				out.writeByte(TYPE_BOOLEAN_ARRAY);
+				out.writeByte(TYPE_BYTE_ARRAY);
 				byte[] numbers = (byte[]) object;
 				out.writeInt( numbers.length );
 				out.write( numbers, 0, numbers.length );
