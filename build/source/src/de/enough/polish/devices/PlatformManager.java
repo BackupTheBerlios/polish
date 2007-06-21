@@ -98,6 +98,14 @@ public class PlatformManager {
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element deviceElement = (Element) iter.next();
 			Platform platform = new Platform( deviceElement, capabilityManager );
+			String parentName = deviceElement.getChildText("parent");
+			if (parentName != null) {
+				Platform parent = getPlatform(parentName);
+				if (parent == null) {
+					throw new InvalidComponentException("The platform " + platform.getIdentifier() + " references the unknown parent " + parentName + " - please check your custom-platforms.xml file." );
+				}
+				platform.addComponent(parent);
+			}
 			this.platformsByIdentifier.put( platform.getIdentifier(), platform );
 		}
 	}

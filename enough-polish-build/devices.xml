@@ -13219,6 +13219,41 @@ These namespaces/schemas will be used soon.
 	
 <!-- Palm devices -->
 	<device>
+		<identifier>Palm/Treo700p</identifier>
+		<groups/>
+		<features>hasCamera, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="PalmOS"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="ScreenSize" value="320x320"/>
+		<capability name="CanvasSize" value="160x160"/>
+		<capability name="FullCanvasSize" value="320x320"/>
+	</device>
+	<device>
+		<identifier>Palm/Treo700wx</identifier>
+		<groups/>
+		<features>hasCamera, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
+		<capability name="build.Finalizer" value="" />
+		<capability name="OS" value="Windows Mobile"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="ScreenSize" value="240x200"/>
+		<capability name="CanvasSize" value="240x200"/>
+		<capability name="FullCanvasSize" value="240x200"/>
+	</device>
+	<device>
+		<identifier>Palm/Treo680</identifier>
+		<groups/>
+		<features>hasCamera, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="PalmOS"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="ScreenSize" value="160x160"/>
+		<capability name="CanvasSize" value="160x144"/>
+		<capability name="FullCanvasSize" value="160x160"/>
+	</device>
+
+	<device>
 		<identifier>Palm/TungstenC</identifier>
 		<groups/>
 		<features>hasCamera, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>

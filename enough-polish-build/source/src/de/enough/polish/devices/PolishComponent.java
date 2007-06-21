@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 import org.jdom.Element;
 
 import de.enough.polish.Variable;
@@ -326,6 +327,12 @@ implements Comparable
 		if (!name.startsWith("polish.")) {
 			name = "polish." + name;
 //			originalName = "polish." + originalName;
+		}
+		if (value.length() == 0) {
+			String existingValue = (String) this.capabilities.remove( name );
+			this.features.remove( name + "." + existingValue );
+			this.features.remove(name + ":defined" );
+			return;
 		}
 		String existingValue = getCapability( name );
 		// remove any feature relying on the current value:
