@@ -29,16 +29,18 @@ package de.enough.polish.ui;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.rms.InvalidRecordIDException;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreFullException;
 import javax.microedition.rms.RecordStoreNotFoundException;
+import javax.microedition.rms.RecordStoreNotOpenException;
 
 //#if polish.blackberry
 import de.enough.polish.blackberry.ui.PolishEditField;
 //#endif
 import de.enough.polish.predictive.TrieProperties;
 import de.enough.polish.predictive.TrieReader;
-import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Provides a TextField that provides the user with possible matches for the current input.</p>
@@ -76,13 +78,8 @@ public class PredictiveTextField
 	private Display display = null;
 	
 	private int CLEAR_BUTTON = -8;
-	private int SHIFT_BUTTON = 0;
-	private int SPACE_BUTTON = 35;
-	
-	private ArrayList textElements = null;
-	private ArrayList textOffsets = null;
-	
-	private int caretPosition = 0;
+	private int SHIFT_BUTTON = Canvas.KEY_STAR;
+	private int SPACE_BUTTON = Canvas.KEY_POUND;
 	
 	/**
 	 * Creates a new ChoiceTextField.
@@ -127,8 +124,8 @@ public class PredictiveTextField
 		//#endif
 		//#if polish.usePolishGui && !polish.LibraryBuild
 			//# this.choicesContainer.parent = this;
-		//#endif
-
+		//#endif		
+		
 		//#if polish.key.predictive.ClearKey:defined
 		//#= CLEAR_BUTTON = ${polish.key.predictive.ClearKey};
 		//#endif
@@ -141,31 +138,10 @@ public class PredictiveTextField
 		//#= SPACE_BUTTON = ${polish.key.predictive.SpaceKey};
 		//#endif
 			
-		this.reader = new TrieReader("predictive", new TrieProperties(100,500));
+		TrieProperties properties = new TrieProperties("predictive","Enough Software","PredictiveInstaller",true, 100,500);
+		this.reader = new TrieReader("predictive", properties);
+		this.display = display; 
 		
-		this.setText("Dies ist ein Test");
-		
-		this.textElements = new ArrayList();
-		this.textElements.add("Dies");
-		this.textElements.add(" ");
-		this.textElements.add("ist");
-		this.textElements.add(" ");
-		this.textElements.add("ein");
-		this.textElements.add(" ");
-		this.textElements.add("Test");
-		
-		this.textOffsets = new ArrayList();
-		this.textOffsets.add(new Integer(0));//Dies
-		this.textOffsets.add(new Integer(5));//" "
-		this.textOffsets.add(new Integer(6));//ist
-		this.textOffsets.add(new Integer(9));//" "
-		this.textOffsets.add(new Integer(10));//ein
-		this.textOffsets.add(new Integer(13));//" "
-		this.textOffsets.add(new Integer(14));//Test
-		
-		printText();
-		
-		this.display = display;
 	}
 	
 	
@@ -191,6 +167,7 @@ public class PredictiveTextField
 			openChoices( false );
 			return;
 		}
+		this.numberOfMatches = choices.length;
 		this.choiceItems = new Item[ choices.length ];
 		for (int i = 0; i < choices.length; i++) {
 			String choiceText = choices[i];
@@ -283,35 +260,41 @@ public class PredictiveTextField
 			
 			if (gameAction == Canvas.FIRE) {
 				// option has been selected!
-				int selectedWord = this.choicesContainer.getFocusedIndex();
-				
-				reader.setSelectedWord(selectedWord);
-				
+				Item item = this.choicesContainer.getFocusedItem();
+				String choiceText;
+				if ( item instanceof ChoiceItem ) {
+					choiceText = ((ChoiceItem) item).getText();
+				} else if (item != null) {
+					choiceText = item.toString();
+				} else {
+					return false;
+				}
+				//#if polish.usePolishGui	
+					setString( choiceText );
+					//# setCaretPosition( choiceText.length() );
+				//#endif
+				this.numberOfMatches = 0;
 				openChoices( false );
 				super.notifyStateChanged();
 			}
-			
-			printText();
-			
 			return true;
 		}
 		else if ( (keyCode >= Canvas.KEY_NUM0) && keyCode <= Canvas.KEY_NUM9)
 		{
-			/*try
+			try
 			{
-				this.getCaretPosition();
 				switch(keyCode)
 				{
-					case Canvas.KEY_NUM0 : reader.keyNum('0'); break;
-					case Canvas.KEY_NUM1 : reader.keyNum('1'); break;
-					case Canvas.KEY_NUM2 : reader.keyNum('2'); break;
-					case Canvas.KEY_NUM3 : reader.keyNum('3'); break;
-					case Canvas.KEY_NUM4 : reader.keyNum('4'); break;
-					case Canvas.KEY_NUM5 : reader.keyNum('5'); break;
-					case Canvas.KEY_NUM6 : reader.keyNum('6'); break;
-					case Canvas.KEY_NUM7 : reader.keyNum('7'); break;
-					case Canvas.KEY_NUM8 : reader.keyNum('8'); break;
-					case Canvas.KEY_NUM9 : reader.keyNum('9'); break;					
+					case Canvas.KEY_NUM0 : setResults(reader.keyNum('0')); break;
+					case Canvas.KEY_NUM1 : setResults(reader.keyNum('1')); break;
+					case Canvas.KEY_NUM2 : setResults(reader.keyNum('2')); break;
+					case Canvas.KEY_NUM3 : setResults(reader.keyNum('3')); break;
+					case Canvas.KEY_NUM4 : setResults(reader.keyNum('4')); break;
+					case Canvas.KEY_NUM5 : setResults(reader.keyNum('5')); break;
+					case Canvas.KEY_NUM6 : setResults(reader.keyNum('6')); break;
+					case Canvas.KEY_NUM7 : setResults(reader.keyNum('7')); break;
+					case Canvas.KEY_NUM8 : setResults(reader.keyNum('8')); break;
+					case Canvas.KEY_NUM9 : setResults(reader.keyNum('9')); break;					
 				}
 			}
 			catch(RecordStoreException e)
@@ -319,28 +302,33 @@ public class PredictiveTextField
 				e.printStackTrace();
 			}
 			
-			printText();*/
-			
 			return true;
 		}
 		else if ( keyCode == this.CLEAR_BUTTON)
 		{
-			/*try 
+			try 
 			{
-				reader.keyClear();
+				setResults(reader.keyClear());
 			} catch (RecordStoreException e) 
 			{
 				e.printStackTrace();
 			}
 			
-			printText();*/
-			
+			return true;
+		}
+		else if ( keyCode == this.SHIFT_BUTTON )
+		{
+			//Does nothing
 			return true;
 		}
 		else if ( keyCode == this.SPACE_BUTTON )
 		{
-			String space = " ";
-			
+			//Does nothing
+			return true;
+		}
+		else if ( gameAction == Canvas.LEFT || gameAction == Canvas.RIGHT )
+		{
+			//Does nothing
 			return true;
 		}
 		else if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
@@ -375,15 +363,8 @@ public class PredictiveTextField
 				}
 			//}
 			return true;
-		} else if (gameAction == Canvas.LEFT || gameAction == Canvas.RIGHT)
-		{
-			this.notifyStateChanged();
-			this.setCaretPosition(getOffset(gameAction));
-			
-			return true;
 		//#if polish.Key.ReturnKey:defined
-		}
-		else if (this.isOpen
+		} else if (this.isOpen
 				//#= && (keyCode == ${polish.Key.ReturnKey})
 				) {
 			openChoices(false);
@@ -392,67 +373,42 @@ public class PredictiveTextField
 		}
 		return super.handleKeyPressed(keyCode, gameAction);
 	}
-		
-	private Object getTextElement(int caretPosition)
-	{
-		return null;
-		/*int arrayPosition = 0; 
-		
-		for(int i=0; i<textOffsets.size(); i++)
-		{
-			
-			if((Integer)textOffsets.get(i)).intValue() < ;
-			
-		}
-		
-		return textElements.get(textOffsets.size() - 1);*/
-	}
 	
-	private void printText()
+	private void setResults(String[] results)
 	{
-		String result = "";
-		Object object = null; 
-		String objectName = "";
-		
-		for(int i=0; i<textElements.size(); i++)
+		if(this.reader.isWordFound() && !this.reader.isEmpty())
 		{
-			object = textElements.get(i);
-			objectName = object.getClass().getName();
+			setChoices(results);
 			
-			if(objectName == "String")
-				result += (String)object;
+			if(results.length > 0)
+				this.setText(results[0]);
+			else
+				this.setText("");
 			
-			if(objectName == "TrieReader")
-				result += ((TrieReader)object).getSelectedWord();
-			
+			this.setCaretPosition(this.getText().length());
 		}
-	}
-	
-	private int getOffset(int action)
-	{
-		int offset 			= this.getString().length();
-		int position 		= this.getCaretPosition();
-		int textOffset 		= 0;
-		
-		System.out.println(position);
-		
-		for(int i=0; i<textOffsets.size(); i++)
+		else
 		{
-			textOffset = (((Integer)textOffsets.get(i)).intValue());
-			
-			if(action == Canvas.LEFT)
+			if(!this.reader.isEmpty())
 			{
-				if(position > textOffset)
-					offset = textOffset;
+				showWordNotFound();
 			}
-			else if(action == Canvas.RIGHT)
+			else
 			{
-				if(position < textOffset)
-					offset = textOffset;
+				this.setText("");
+				setChoices(results);
 			}
 		}
-		
-		return offset;
+					
+	}
+	
+	
+	private void showWordNotFound()
+	{
+		Alert alert = new Alert("PredictiveDemo");
+		alert.setInfo("Word not found");
+		alert.setTimeout(2000);
+		display.setCurrent(alert);
 	}
 	
 	//#ifdef polish.hasPointerEvents
