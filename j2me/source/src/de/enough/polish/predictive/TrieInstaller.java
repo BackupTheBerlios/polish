@@ -17,19 +17,18 @@ public class TrieInstaller {
 	byte byteBuffer[];
 	
 	String prefix = "";
-	int chunkSize = 0;
-	int lineCount = 0;
+	
+	TrieProperties properties = null;
+	
 	int totalBytes = 0;
 	
 	DataInputStream stream = null;
 	
-	public TrieInstaller(String file, String prefix, TrieProperties prop)
+	public TrieInstaller(String file, TrieProperties properties)
 	{
 		this.stream = new DataInputStream(getClass().getResourceAsStream(file));
-		this.prefix = prefix;
 		
-		this.chunkSize = prop.getChunkSize();
-		this.lineCount = prop.getLineCount();
+		this.properties = properties;
 		
 		try
 		{
@@ -62,24 +61,22 @@ public class TrieInstaller {
 			{
 				nodes = null;
 				
-				if((count % this.chunkSize) == 0)
+				if((count % this.properties.getChunkSize()) == 0)
 				{
 					if(store != null)
 					{
 						store.closeRecordStore();
-						storeID += this.chunkSize;
+						storeID += this.properties.getChunkSize();
 					}
 					
-					store = RecordStore.openRecordStore(this.prefix + ":" + storeID, true, RecordStore.AUTHMODE_ANY, true);
-					System.out.println(this.prefix + ":" + storeID);
+					store = RecordStore.openRecordStore(this.properties.getPrefix() + ":" + storeID, true, RecordStore.AUTHMODE_ANY, true);
 				}
 					
-				nodes = this.getRecord(stream, this.lineCount);
+				nodes = this.getRecord(stream, this.properties.getLineCount());
 				
 				count++;
 				
 				store.addRecord(nodes, 0, nodes.length);
-				System.out.println("new Record");
 				
 				currentBytes += nodes.length;
 				
