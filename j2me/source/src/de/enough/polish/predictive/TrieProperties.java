@@ -1,18 +1,20 @@
 package de.enough.polish.predictive;
 
 public class TrieProperties {
-	public int chunkSize;
-	public int lineCount;
+	private int chunkSize;
+	private int lineCount;
+	private String prefix;
+	private String vendor;
+	private String suite;
+	private boolean localRMS;
 	
-	public String prefix;
-	public String vendorName;
-	public String suiteName;
-	
-	
-	public TrieProperties(int chunkSize, int lineCount) {
-		super();
-		this.chunkSize = chunkSize;
-		this.lineCount = lineCount;
+	public TrieProperties(String prefix, String vendor, String suite, boolean localRMS, int chunkSize, int lineCount) {
+		this.chunkSize 	= chunkSize;
+		this.lineCount 	= lineCount;
+		this.prefix 	= prefix;
+		this.vendor 	= vendor;
+		this.suite 		= suite;
+		this.localRMS 	= localRMS;
 	}
 	
 	public int getLineCount() {
@@ -36,19 +38,27 @@ public class TrieProperties {
 		this.prefix = prefix;
 	}
 
-	public String getSuiteName() {
-		return suiteName;
+	public boolean isLocalRMS() {
+		return localRMS;
 	}
 
-	public void setSuiteName(String suiteName) {
-		this.suiteName = suiteName;
+	public void setLocalRMS(boolean localRMS) {
+		this.localRMS = localRMS;
 	}
 
-	public String getVendorName() {
-		return vendorName;
+	public String getSuite() {
+		return suite;
 	}
 
-	public void setVendorName(String vendorName) {
-		this.vendorName = vendorName;
+	public void setSuite(String suite) {
+		this.suite = suite;
+	}
+
+	public String getVendor() {
+		return vendor;
+	}
+
+	public void setVendor(String vendor) {
+		this.vendor = vendor;
 	}
 }
