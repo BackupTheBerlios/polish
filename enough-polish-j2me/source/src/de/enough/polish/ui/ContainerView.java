@@ -1215,6 +1215,24 @@ extends ItemView
 		return (parent instanceof Container);
 	}
 
+	/**
+	 * Focuses the given item and retrieves the previous style of that item.
+	 * The default implementation sets the focusedIndex and focusedItem fields
+	 * and returns the result of item.focus( focusStyle, direction ).
+	 * This is a method that is usually called from within the parent Container (in contrast to the other focusItem() methods which forward the call to the parentContainer).
+	 * 
+	 * @param index the index of the item
+	 * @param item the item which should be focused
+	 * @param direction the direction, either Canvas.DOWN, Canvas.RIGHT, Canvas.UP, Canvas.LEFT or 0.
+	 * @param focusedStyle the new style for the focused item
+	 * @return the previous style of the focussed item
+	 */
+	public Style focusItem(int index, Item item, int direction, Style focusedStyle) {
+		this.focusedIndex = index;
+		this.focusedItem = item;
+		return item.focus(focusedStyle, direction);
+	}
+
 	
 
 

@@ -201,6 +201,26 @@ public abstract class ItemView {
 	}
 	
 	/**
+	 * @param item
+	 * @return
+	 */
+	protected Border removeItemBorder(Item item) {
+		Border border = item.border;
+		item.border = null;
+		return border;
+	}
+
+	/**
+	 * @param item
+	 * @return
+	 */
+	protected Background removeItemBackground(Item item) {
+		Background background = item.background;
+		item.background = null;
+		return background;
+	}
+	
+	/**
 	 * Animates this view.
 	 * 
 	 * @return true when the view was actually animated.

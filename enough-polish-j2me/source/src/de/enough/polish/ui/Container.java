@@ -598,7 +598,17 @@ public class Container extends Item {
 		int wBefore = item.itemWidth;
 		int hBefore = item.itemHeight;
 		int layoutBefore = item.layout;
-		this.itemStyle = item.focus( this.focusedStyle, direction );
+		//#if tmp.supportViewType
+			if ( this.containerView != null ) {
+//				this.containerView.focusedIndex = index;
+//				this.containerView.focusedItem = item;
+				this.itemStyle =  this.containerView.focusItem( index, item, direction, this.focusedStyle );
+			} else {
+		//#endif
+				this.itemStyle = item.focus( this.focusedStyle, direction );
+		//#if tmp.supportViewType
+			} 
+		//#endif
 		//#ifdef polish.debug.error
 			if (this.itemStyle == null) {
 				//#debug error 
@@ -609,12 +619,6 @@ public class Container extends Item {
 		int previousIndex = this.focusedIndex; // need to determine whether the user has scrolled from the bottom to the top
 		this.focusedIndex = index;
 		this.focusedItem = item;
-		//#if tmp.supportViewType
-			if ( this.containerView != null ) {
-				this.containerView.focusedIndex = index;
-				this.containerView.focusedItem = item;
-			}
-		//#endif
 		if  (this.isInitialized) {
 			// this container has been initialised already,
 			// so the dimensions are known.

@@ -30,6 +30,7 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.HashMap;
@@ -2153,6 +2154,39 @@ public final class UiAccess {
 			}
 		}
 		return -1;
+	}
+	//#endif
+	
+	//#if polish.midp
+	public static int[] getRgbData( javax.microedition.lcdui.Item item ) {
+		return null;
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	public static int[] getRgbData( Item item ) {
+		//#if polish.midp2
+			Image image = Image.createImage( item.itemWidth, item.itemHeight );
+			int transparentColor = 0x12345678;
+			Graphics g = image.getGraphics();
+			g.setColor(transparentColor);
+			g.fillRect(0, 0, item.itemWidth, item.itemHeight );
+			int[] transparentColorRgb = new int[1];
+			image.getRGB(transparentColorRgb, 0, 1, 0, 0, 1, 1 );
+			transparentColor = transparentColorRgb[0];
+			item.paint( 0, 0, 0, item.itemWidth, g );
+			int[] itemRgbData = new int[  item.itemWidth * item.itemHeight ];
+			image.getRGB(itemRgbData, 0, item.itemWidth, 0, 0, item.itemWidth, item.itemHeight );
+			// ensure transparent parts are indeed transparent
+			for (int i = 0; i < itemRgbData.length; i++) {
+				if( itemRgbData[i] == transparentColor ) {
+					itemRgbData[i] = 0;
+				}
+			}
+			return itemRgbData;
+		//#else
+			//# return null;
+		//#endif
 	}
 	//#endif
 
