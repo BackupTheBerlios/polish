@@ -1447,7 +1447,7 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
-		<identifier>Sony-Ericsson/K750</identifier>
+		<identifier>Sony-Ericsson/K750, Sony-Ericsson/K750i</identifier>
 		<groups>SE-JavaPlatform5</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="176x220"/>
@@ -13395,6 +13395,11 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraZoom" value="8"/>
 	</device> 
 	
+	<device>
+		<identifier>T-Mobile/MDA</identifier>
+		<parent>HTC/Wizard</parent>
+	</device> 
+
 	<device>
 		<identifier>T-Mobile/MDAII</identifier>
 		<groups/>
