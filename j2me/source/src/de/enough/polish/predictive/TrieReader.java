@@ -1,5 +1,6 @@
 package de.enough.polish.predictive;
 
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 import javax.microedition.rms.InvalidRecordIDException;
@@ -20,97 +21,89 @@ public class TrieReader {
 	final int NODE_SIZE = 5;
 	final int COUNT_SIZE = 1;
 	
-	ArrayList nodes = null;
-	Stack prevNodes = null;
+	private ArrayList nodes = null;
+	private Stack prevNodes = null;
 	
-	String code = "";
+	private HashMap stores = null;
 	
-	HashMap stores = null;
-	String prefix = "";
+	private TrieProperties properties = null;
 	
-	int chunkSize = 0;
-	int lineCount = 0;
+	private int selectedWord = 0;
 	
-	int selectedWord = 0;
+	private boolean empty;
+	private boolean wordFound;
 	
-	public TrieReader(String prefix, TrieProperties prop) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException
+	
+	
+	public TrieReader(String prefix, TrieProperties properties) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException
 	{
 		this.nodes 		= new ArrayList();
 		this.prevNodes 	= new Stack();
 		
-		this.code = "";
-		
 		this.stores = new HashMap();
-		this.prefix = prefix;
-		this.chunkSize = prop.getChunkSize();	
-		this.lineCount = prop.getLineCount();
+		
+		this.properties = properties;
+		
+		this.empty 		= true;
+		this.wordFound	= true;
 	}
 		
 	public String[] keyNum(char key) throws RecordStoreException
 	{	
-		pushNodes();
-		
 		byte[] record = null;
 		ArrayList newNodes = new ArrayList();
 		
-		this.code += key;
+		pushNodes();
 		
-		if(nodes.size() == 0)
+		if(this.nodes.size() == 0)
 		{
-			record = this.getRecord(1,this.lineCount);
-			nodes = this.getNodes(record, key, "");
+			record = this.getRecord(1,this.properties.getLineCount());
+			this.nodes = this.getNodes(record, key, "");
+			
+			setEmpty(nodes.size() == 0);
 		}
 		else
 		{
-			for(int nodeIndex = 0; nodeIndex < nodes.size(); nodeIndex++)
+			for(int nodeIndex = 0; nodeIndex < this.nodes.size(); nodeIndex++)
 			{
-				TrieNode node = (TrieNode)nodes.get(nodeIndex);
+				TrieNode node = (TrieNode)this.nodes.get(nodeIndex);
 				
 				if(node.getReference() != 0)
 				{
-					record = this.getRecord(node.getReference(),this.lineCount);
+					record = this.getRecord(node.getReference(),this.properties.getLineCount());
 					addToNodes(this.getNodes(record, key, node.getWord()),newNodes);
 				}
 			}
 			
-			copyNodes(newNodes,nodes);
+			copyNodes(newNodes,this.nodes);
 		}
 		
+		setWordFound(this.nodes.size() > 0);
+		
+		if(!isWordFound())
+			popNodes(true);
+		
 		closeStores();
-		return getNodeWords(nodes);
+		return getNodeWords(this.nodes);
 	}
 	
 	public String[] keyClear() throws RecordStoreException
 	{	
-		if(this.code.length() > 0)
-		{
-			popNodes();
-			return getNodeWords(nodes);
-		}
-		else
-			return null;
+		popNodes(false);
+		return getNodeWords(nodes);
 	}
 	
 	public void keySpace()
 	{
-		this.nodes.clear();
+		/*this.nodes.clear();
 		this.prevNodes.removeAllElements();
-		this.code = "";
+		this.code = "";*/
 	}
 		
 	public void addToNodes(ArrayList source, ArrayList dest)
 	{
 		for(int i=0; i<source.size(); i++)
 			dest.add(source.get(i));
-		/*{
-			if(((TrieNode)source.get(i)).getReference() != 0)
-				if(dest.size() > 0)
-					dest.add(dest.size() - 1, source.get(i));
-				else
-					dest.add(source.get(i));
-			else
-				dest.add(0,source.get(i));
-		}*/
 	}
 	
 	public String[] getNodeWords(ArrayList nodes)
@@ -122,10 +115,6 @@ public class TrieReader {
 		return words;
 	}
 	
-	public String getSelectedWord()
-	{
-		return ((TrieNode)this.nodes.get(this.selectedWord)).getWord();
-	}
 	
 	private void copyNodes(ArrayList source, ArrayList dest)
 	{
@@ -142,14 +131,29 @@ public class TrieReader {
 		this.prevNodes.push(newNodes);
 	}
 	
-	private void popNodes()
+	private void popNodes(boolean undo)
 	{
-		ArrayList newNodes = (ArrayList)this.prevNodes.pop();
-		
-		if(newNodes != null)
+		if(!isEmpty())
+		{
+			ArrayList newNodes = null;
+			
+			try
+			{
+				newNodes = (ArrayList)this.prevNodes.pop();
+			}
+			catch(EmptyStackException e)
+			{
+				newNodes = new ArrayList();
+			}
+			
 			copyNodes(newNodes,this.nodes);
-		else
-			this.nodes.clear();
+			
+			if(!undo)
+			{
+				setEmpty(this.nodes.size() == 0);
+				setWordFound(this.nodes.size() > 0);
+			}
+		}
 	}
 		
 	private byte[] getRecord(int id, int lineCount) throws RecordStoreNotOpenException, InvalidRecordIDException, RecordStoreException
@@ -157,19 +161,24 @@ public class TrieReader {
 		int recordID 	= ((id-1) / lineCount) + 1; 
 		int partID 		= ((id-1) % lineCount) + 1;
 		
-		String storeID = this.prefix + ":" + (recordID - (recordID % this.chunkSize));
+		String storeID = this.properties.getPrefix() + ":" + (recordID - (recordID % this.properties.getChunkSize()));
 		
 		RecordStore store = (RecordStore)stores.get(storeID);
 		
 		if(store == null)
 		{
 			System.out.println(storeID);
-			//store = RecordStore.openRecordStore(storeID, "Enough Software", "PredictiveInstaller");
+			
+			if(!properties.isLocalRMS())
+				store = RecordStore.openRecordStore(storeID, this.properties.getVendor(), this.properties.getSuite());
+			else
+				store = RecordStore.openRecordStore(storeID, false);
+			
 			store = RecordStore.openRecordStore(storeID, false);
 			stores.put(storeID, store);
 		}
 		
-		byte[] record = store.getRecord(recordID % this.chunkSize); 
+		byte[] record = store.getRecord(recordID % this.properties.getChunkSize()); 
 
 		return getRecordPart(record,partID); 
 	}
@@ -256,15 +265,7 @@ public class TrieReader {
 	{
 		return bytes[offset];
 	}
-	
-	/*private int byteToInt(byte[] bytes, int offset)
-	{
-		return 	(0xff & bytes[offset + 3]) |
-        		(0xff & bytes[offset + 2]) << 8 |
-        		(0xff & bytes[offset + 1]) << 16 |
-        		bytes[offset + 0] << 24;
-	}*/
-		
+			
 	private String getLetters(char code)
 	{
 		switch(code)
@@ -286,10 +287,32 @@ public class TrieReader {
 	{
 		this.nodes.clear();
 		this.prevNodes.removeAllElements();
-		this.code = "";
+		this.setEmpty(true);
+		this.setWordFound(false);
 	}
 
 	public void setSelectedWord(int selectedWord) {
 		this.selectedWord = selectedWord;
+	}
+	
+	public String getSelectedWord()
+	{
+		return ((TrieNode)this.nodes.get(this.selectedWord)).getWord();
+	}
+
+	public boolean isEmpty() {
+		return empty;
+	}
+
+	public void setEmpty(boolean empty) {
+		this.empty = empty;
+	}
+
+	public boolean isWordFound() {
+		return wordFound;
+	}
+
+	public void setWordFound(boolean wordFound) {
+		this.wordFound = wordFound;
 	}
 }
