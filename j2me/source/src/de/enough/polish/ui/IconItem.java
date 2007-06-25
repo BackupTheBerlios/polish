@@ -68,6 +68,7 @@ implements ImageConsumer
 	private int imageHeight;
 	private int imageWidth;
 	private int yAdjustText;
+	protected boolean isTextVisible = true;
 	//#if polish.midp2 && polish.css.scale-factor
 		private int scaleFactor;
 		private int scaleSteps;
@@ -146,7 +147,12 @@ implements ImageConsumer
 			this.imageWidth += this.paddingHorizontal;
 			firstLineWidth -= this.imageWidth;
 			lineWidth -= this.imageWidth;
-			super.initContent(firstLineWidth, lineWidth);
+			if (this.isTextVisible) {
+				super.initContent(firstLineWidth, lineWidth);
+			} else {
+				this.contentWidth = 0;
+				this.contentHeight = this.imageHeight;
+			}
 			if (this.imageHeight > this.contentHeight) {
 				this.yAdjustImage = 0;
 				int verticalAlign = this.layout & LAYOUT_VCENTER;
@@ -180,7 +186,12 @@ implements ImageConsumer
 			this.contentWidth += this.imageWidth;
 		} else {
 			this.imageHeight += this.paddingVertical;
-			super.initContent(firstLineWidth, lineWidth);
+			if (this.isTextVisible) {
+				super.initContent(firstLineWidth, lineWidth);
+			} else {
+				this.contentHeight = 0;
+				this.contentWidth = 0;
+			}
 			this.contentHeight += this.imageHeight;   
 			if (this.imageWidth > this.contentWidth) {
 				this.contentWidth = this.imageWidth;
@@ -305,7 +316,9 @@ implements ImageConsumer
 				y -= this.verticalAdjustment;
 			//#endif
 		}
-		super.paintContent(x, y, leftBorder, rightBorder, g);
+		if (this.isTextVisible) {
+			super.paintContent(x, y, leftBorder, rightBorder, g);
+		}
 	}
 	
 	/**
@@ -562,6 +575,18 @@ implements ImageConsumer
 		this.isStyleInitialised = false;
 	}
 
+
+	public boolean isTextVisible() {
+		return this.isTextVisible;
+	}
+	
+	public void setTextVisible( boolean isTextVisible ) {
+		this.isTextVisible = isTextVisible;
+		if (!isTextVisible) {
+			this.textLines = null;
+		}
+		this.isInitialized = false;
+	}
 	
 //#ifdef polish.IconItem.additionalMethods:defined
 	//#include ${polish.IconItem.additionalMethods}

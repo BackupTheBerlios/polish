@@ -1789,7 +1789,7 @@ public abstract class Item extends Object
 	 */
 	protected void init( int firstLineWidth, int lineWidth ) {
 		//#debug
-		System.out.println("intialising item " + this.getClass().getName() + " (" + this + ")");
+		System.out.println("intialising item " + this.getClass().getName() + " (" + this + ") with lineWidths " + firstLineWidth + "/" + lineWidth);
 		if (this.style != null && !this.isStyleInitialised) {
 			setStyle( this.style );
 		}

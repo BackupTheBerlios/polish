@@ -258,17 +258,18 @@ public class Container extends Item {
 		// adjust y-positions of following items:
 		this.items = null;
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
-		for (int i = 0; i < myItems.length; i++) {
-			Item item = myItems[i];
-			item.internalX = -9999;
-			item.relativeY = 0;
-			/*
-			 int removedItemHeight = removedItem.itemHeight;
-			if (item.yTopPos != item.yBottomPos) {
-				item.yTopPos -= removedItemHeight;
-				item.yBottomPos -= removedItemHeight;
-			}*/
-		}
+		int removedItemHeight = removedItem.itemHeight + this.paddingVertical;
+		//#if tmp.supportViewType
+			if (this.containerView == null) {
+		//#endif
+				for (int i = index; i < myItems.length; i++) {
+					Item item = myItems[i];
+					//item.internalX = -9999;
+					item.relativeY -= removedItemHeight;
+				}
+		//#if tmp.supportViewType
+			}
+		//#endif
 		// check if the currenlty focused item has been removed:
 		if (index == this.focusedIndex) {
 			// remove any item commands:
@@ -284,10 +285,19 @@ public class Container extends Item {
 				focusClosestItem(index, myItems);
 			}
 		} else if (index < this.focusedIndex) {
+			//#if tmp.supportViewType
+				if (this.containerView == null) {
+			//#endif
+					int offset = this.yOffset + removedItemHeight;
+					//System.out.println("new container offset: from " + this.yOffset + " to " + (offset > 0 ? 0 : offset));
+					setScrollYOffset( offset > 0 ? 0 : offset, false );
+			//#if tmp.supportViewType
+				}
+			//#endif
 			this.focusedIndex--;
 		}
-		this.yOffset = 0;
-		this.targetYOffset = 0;
+//		this.yOffset = 0;
+//		this.targetYOffset = 0;
 		if (this.isInitialized) {
 			this.isInitialized = false;
 			repaint();

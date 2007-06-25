@@ -128,7 +128,9 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 	 */
 	public void keyPressed(int keyCode) {
 		super.keyPressed(keyCode);
-		this.nextCanvasImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
+		if (this.nextCanvasImage != null) {
+			this.nextCanvasImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
+		}
 	}
 	
 	/* (non-Javadoc)

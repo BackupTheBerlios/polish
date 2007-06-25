@@ -1727,6 +1727,7 @@ public class TextField extends StringItem
 											g.setColor( this.caretColor );
 										//#endif
 										g.drawChar( this.caretChar, rightBorder - this.caretRowLastPartWidth, y, Graphics.TOP | Graphics.RIGHT );
+
 										//#ifdef polish.css.textfield-caret-color
 											g.setColor( this.textColor );
 										//#endif
@@ -1763,25 +1764,31 @@ public class TextField extends StringItem
 										//#ifdef polish.css.textfield-caret-color
 											g.setColor( this.caretColor );
 										//#endif
-										g.drawChar( this.caretChar, leftX, y, Graphics.TOP | Graphics.LEFT );
+										//g.drawChar( this.caretChar, leftX, y, Graphics.TOP | Graphics.LEFT );
+											//TODO evaluate proposed changes by motorola - currently under consideration
+//											/* Change to draw background rectangle */
+                                        if (this.caretChar != this.editingCaretChar) {
+                                            int w = g.getFont().charWidth(this.caretChar);
+                                            int h = g.getFont().getHeight();
+                                            g.fillRect(leftX, y, w, h);
+                                            //display highlighted text in white color
+                                            g.setColor(0x00FFFFFF);
+                                            g.drawChar( this.caretChar, leftX, y, Graphics.TOP | Graphics.LEFT );
+                                            leftX += this.caretWidth;
+                                        } else {
+	                                        g.setColor(0,0,255);
+	                                        g.drawLine(leftX, y, leftX, y + this.font.getHeight());
+                                        }
+										//#if !polish.css.textfield-caret-color
+                                    	g.setColor(this.textColor);
+                                    	//#endif
+//	                                        /* End Change to draw background rectangle */			
 										//#ifdef polish.css.textfield-caret-color
 											g.setColor( this.textColor );
 										//#endif
-											//TODO evaluate proposed changes by motorola - currently under consideration
-//											/* Change to draw background rectangle */
-//	                                        if (this.caretChar != this.editingCaretChar) {
-//	                                            int w = g.getFont().charWidth(this.caretChar);
-//	                                            int h = g.getFont().getHeight();
-//	                                            g.fillRect(leftX, y, w, h);
-//	                                            //display highlighted text in white color
-//	                                            g.setColor(0x00FFFFFF);
-//	                                            g.drawChar( this.caretChar, leftX, y, Graphics.TOP | Graphics.LEFT );
-//	                                        }
-//	                                        int tmpColor = g.getColor();
-//	                                        g.setColor(0,0,255);
-//	                                        g.drawLine(leftX, y, leftX, y+g.getFont().getHeight());
-//	                                        g.setColor(tmpColor);
-//	                                        /* End Change to draw background rectangle */			
+									} else if (this.caretChar != this.editingCaretChar) {
+										g.drawChar( this.caretChar, leftX, y, Graphics.TOP | Graphics.LEFT );
+										leftX += this.caretWidth;
 									}
 //									 /*Changes to Display the info item*/
 //                                    this.getScreen().infoItem.setTextColor(0x0000FF);
@@ -1792,7 +1799,7 @@ public class TextField extends StringItem
 //
 //									this.getScreen().infoItem.paint(x, yPos, infoItemLeftBorder, rightBorder, g );
 //                    				/*end of changes to display info item*/
-									leftX += this.caretWidth;
+									
 									g.drawString( this.caretRowLastPart, leftX, y, Graphics.TOP | Graphics.LEFT );
 								}
 							} else {

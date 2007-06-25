@@ -380,7 +380,23 @@ public final class ImageUtil {
 	}
 	//#endif
 	
-	
+	/**
+	 * Scales an rgb data unproportional in every new size you want bigger or smaller than the given original. Returns the scaled rgb data.
+	 * 
+	 * @param opacity the alpha value, 255 (0xFF) means fully opaque, 0 fully transparent
+	 * @param rgbData the original rgbdata
+	 * @param newWidth the new width for the new rgbdata
+	 * @param newHeight the new height for the new rgbdata
+	 * @param oldWidth the width from the oiginal rgbdata
+	 * @param oldHeight the height from the oiginal rgbdata
+	 * @return the scaled rgb data.
+	 */
+	public static final int[] scale(int opacity, int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight){
+		int[]newrgbData = new int[newWidth*newHeight];
+		scale( opacity, rgbData, newWidth,newHeight, oldWidth, oldHeight, newrgbData);
+		return newrgbData;
+	}
+
 	/**
 	 * Scales an rgb data unproportional in every new size you want bigger or smaller than the given original. Returns the scaled rgb data.
 	 * 
@@ -589,12 +605,12 @@ public final class ImageUtil {
 	 * @param newHeight the new height for the new rgbdata
 	 * @param oldWidth the width from the oiginal rgbdata
 	 * @param oldHeight the height from the oiginal rgbdata
-	 * @param newrgbData the new rgbdata has to be initialised
+	 * @param newRgbData the new rgbdata has to be initialised
 	 */
-	public static final void scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight,int[] newrgbData){	
+	public static final void scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight,int[] newRgbData){	
 		int currentX = 0,currentY = 0;
 		int oldLenght = rgbData.length;
-		int newLength = newrgbData.length;	
+		int newLength = newRgbData.length;	
 		int targetArrayIndex;
 		int verticalShrinkFactorPercent = ((newHeight*100) / oldHeight);
 		int horizontalScaleFactorPercent = ((newWidth*100) / oldWidth);
@@ -610,7 +626,50 @@ public final class ImageUtil {
 			if(targetArrayIndex < 0) {
 				targetArrayIndex = 0;
 			}
-			newrgbData[i] = rgbData[targetArrayIndex];
+			newRgbData[i] = rgbData[targetArrayIndex];
+		}
+	}
+	
+	/**
+	 * Scales an rgb data unproportional in every new size you want bigger or smaller than the given original.
+	 * 
+	 * @param opacity the alpha value, 255 (0xFF) means fully opaque, 0 fully transparent
+	 * @param rgbData the original rgbdata
+	 * @param newWidth the new width for the new rgbdata
+	 * @param newHeight the new height for the new rgbdata
+	 * @param oldWidth the width from the oiginal rgbdata
+	 * @param oldHeight the height from the oiginal rgbdata
+	 * @param newRgbData the new rgbdata has to be initialised
+	 */
+	public static final void scale(int opacity, int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight,int[] newRgbData){	
+		int currentX = 0,currentY = 0;
+		int oldLenght = rgbData.length;
+		int newLength = newRgbData.length;	
+		int targetArrayIndex;
+		int verticalShrinkFactorPercent = ((newHeight*100) / oldHeight);
+		int horizontalScaleFactorPercent = ((newWidth*100) / oldWidth);
+		int alpha = (opacity << 24); // is now 0xtt000000
+		for(int i = 0; i < newLength;i++){
+			currentX = (currentX + 1) % newWidth;
+			if(currentX == 0){
+				currentY++;	
+			}				
+			targetArrayIndex = ((currentX*100)/horizontalScaleFactorPercent)+(oldWidth * ((currentY*100)/verticalShrinkFactorPercent));
+			if(targetArrayIndex >= oldLenght) {
+				targetArrayIndex = oldLenght-1;
+			}
+			if(targetArrayIndex < 0) {
+				targetArrayIndex = 0;
+			}
+			if (opacity == 255) {
+				newRgbData[i] = rgbData[targetArrayIndex];
+			} else {
+				int pixel = rgbData[targetArrayIndex];
+				if ((pixel & 0xff000000) != 0) {
+					pixel = (pixel & 0x00ffffff) | alpha;
+				}
+				newRgbData[i] = pixel;
+			}
 		}
 	}
 	

@@ -653,6 +653,4 @@ public class StringItem extends Item
 		//#endif
 	}
 
-	
-
 }
