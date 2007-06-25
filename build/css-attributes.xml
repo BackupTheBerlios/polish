@@ -755,6 +755,7 @@
 		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideUpView()" />
 		<mapping from="carousel" to="new de.enough.polish.ui.containerviews.CarrouselContainerView()" />
 		<mapping from="carrousel" to="new de.enough.polish.ui.containerviews.CarrouselContainerView()" />
+		<mapping from="fisheye" to="new de.enough.polish.ui.containerviews.FishEyeContainerView()" />
 		<mapping from="plain" to="none" />
 		<mapping from="normal" to="none" />
 		<mapping from="gauge-recline" to="new de.enough.polish.ui.gaugeviews.RecLineGaugeView()"  appliesTo="Gauge" />
@@ -2591,6 +2592,22 @@
 		appliesTo="MenuBar"
 		description="The style for the commands within the options command of the menubar - can only be used when the extended menubar is enabled."
 		id="240"
+	/>
+	<attribute
+		name="fisheyeview-scale"
+		type="percent"
+		default="50%"
+		appliesTo="FishEyeContainerView"
+		description="The factor by which the non-focused elements should be scaled - by default they are scaled to 50% of their original size."
+		id="241"
+	/>
+	<attribute
+		name="fisheyeview-remove-text"
+		type="boolean"
+		default="true"
+		appliesTo="FishEyeContainerView"
+		description="Removes the text of the non-focused elements if set to true."
+		id="242"
 	/>
 	
 	

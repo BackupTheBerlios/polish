@@ -533,6 +533,12 @@ public class CssConverter extends Converter {
 					CssAttribute attribute = this.attributesManager.getAttribute( attributeName );
 					if (attribute != null) {
 						value = attribute.getValue( value, environment );
+						if ("none".equals(value) && !"plain".equals(key)) {
+							// note: !"plain".equals(key) is an ugly hack for
+							// radiobox-plain and choicebox-plain...
+							// For such cases a converter should really be used instead.
+							value = "null";
+						}
 						//attribute.checkValue( value, evaluator );
 //						if (attributeType == CssAttribute.INTEGER && attribute.hasFixValues()) {
 //							value = Integer.toString( attribute.getValuePosition(value) );
