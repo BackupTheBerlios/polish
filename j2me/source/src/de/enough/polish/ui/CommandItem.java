@@ -307,12 +307,21 @@ public class CommandItem extends IconItem {
 		//#debug
 		System.out.println( this + " handleKeyPressed, isOpen=" + this.isOpen);
 		if ( this.isOpen ) {
-			if (gameAction == Canvas.LEFT) {
+			if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
 				// close menu:
 				open( false );
 			} else {
 				boolean handled = this.children.handleKeyPressed(keyCode, gameAction);
 				if (!handled) {
+					 if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {
+						int index = keyCode - Canvas.KEY_NUM1;
+						if (index <= this.children.size()) {
+							CommandItem item = (CommandItem) this.children.get(index);
+							if (item.appearanceMode != Item.PLAIN) {
+								return item.handleKeyPressed(0, Canvas.FIRE);
+							}
+						}
+					}
 					open( false );
 				}
 			}
@@ -479,7 +488,20 @@ public class CommandItem extends IconItem {
 		return this.command;
 	}
 
+	protected boolean isOpen() {
+		return this.isOpen;
+	}
 
+	/**
+	 * @param index
+	 * @return
+	 */
+	public CommandItem getChild(int index) {
+		if (index < 0 || this.children == null || index >= this.children.size() ) {
+			return null;
+		}
+		return (CommandItem) this.children.get(index);
+	}
 	
 	
 	

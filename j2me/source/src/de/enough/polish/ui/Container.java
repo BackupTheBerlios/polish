@@ -278,11 +278,16 @@ public class Container extends Item {
 				scr.removeItemCommands(removedItem);
 			}
 			// focus the first possible item:
-			Item item = myItems[index];
-			if (item.appearanceMode != PLAIN) {
-				focus( index, item, Canvas.DOWN );
-			} else {
-				focusClosestItem(index, myItems);
+			if (index >= myItems.length) {
+				index = myItems.length - 1;
+			}
+			if (index != -1) { 
+				Item item = myItems[ index ];
+				if (item.appearanceMode != PLAIN) {
+					focus( index, item, Canvas.DOWN );
+				} else {
+					focusClosestItem(index, myItems);
+				}
 			}
 		} else if (index < this.focusedIndex) {
 			//#if tmp.supportViewType

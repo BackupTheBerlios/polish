@@ -1554,16 +1554,9 @@ public abstract class Item extends Object
 		if (scr == null || !(scr instanceof Form)) {
 			scr = getScreen();
 		}
-		//#ifndef polish.skipArgumentCheck
-			if ( (!(scr instanceof Form)) || (scr == null)) {
-				//#ifdef polish.verboseDebug
-					throw new IllegalStateException("notifyStateChanged() is valid only for items in Forms.");
-				//#else
-					//# throw new IllegalStateException();
-				//#endif
-			}
-		//#endif
-		((Form) scr).addToStateNotifyQueue(this);
+		if (scr != null) {
+			scr.addToStateNotifyQueue(this);
+		}
 	}
 	
 	/**

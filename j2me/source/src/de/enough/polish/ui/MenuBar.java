@@ -887,6 +887,19 @@ public class MenuBar extends Item {
 						//#debug error
 						System.out.println("Container DID NOT HANDLE DOWN OR UP, selectedIndex=" + this.commandsContainer.getFocusedIndex() + ", count="+ this.commandsContainer.size() );
 					}
+					if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {
+						int index = keyCode - Canvas.KEY_NUM1;
+						if (index <= this.commandsContainer.size()) {
+							CommandItem item = (CommandItem) this.commandsContainer.get(index);
+							if (item.getAppearanceMode() != Item.PLAIN) {
+								if (!item.isFocused) {
+									this.commandsContainer.focus( index );
+								}
+								handled = item.handleKeyPressed(0, Canvas.FIRE);
+								return handled;
+							}
+						}
+					}
 					setOpen( false );
 				}
 				return handled;				

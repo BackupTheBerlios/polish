@@ -212,7 +212,7 @@ public class List extends Screen implements Choice
 	//#endif
 
 	private Command selectCommand = SELECT_COMMAND;
-	private int listType;
+	protected int listType;
 	private ChoiceGroup choiceGroup;
 	//#ifdef polish.css.show-text-in-title
 		private ArrayList titles;
@@ -453,7 +453,7 @@ public class List extends Screen implements Choice
 	 */
 	public String getString(int elementNum)
 	{
-		return this.choiceGroup.getString( elementNum );
+		return getItem(elementNum).getText();
 	}
 
 	/**
@@ -468,7 +468,7 @@ public class List extends Screen implements Choice
 	 */
 	public Image getImage( int elementNum )
 	{
-		return this.choiceGroup.getImage( elementNum );
+		return getItem(elementNum).getImage();
 	}
 
 	/**
@@ -565,7 +565,7 @@ public class List extends Screen implements Choice
 	 */
 	public void insert(int elementNum, String stringPart, Image imagePart)
 	{
-		this.choiceGroup.insert( elementNum, stringPart, imagePart, null );
+		insert( elementNum, stringPart, imagePart, null );
 	}
 	
 	/**
@@ -581,7 +581,7 @@ public class List extends Screen implements Choice
 	 */
 	public void insert(int elementNum, String stringPart, Image imagePart, Style elementStyle )
 	{
-		this.choiceGroup.insert( elementNum, stringPart, imagePart, elementStyle );
+		insert( elementNum, new ChoiceItem( stringPart, imagePart, this.listType, elementStyle ) );
 	}
 
 	/**
@@ -610,7 +610,7 @@ public class List extends Screen implements Choice
 	 */
 	public void set(int elementNum, String stringPart, Image imagePart)
 	{
-		this.choiceGroup.set( elementNum, stringPart, imagePart, null );
+		set( elementNum, stringPart, imagePart, null );
 	}
 
 	/**
@@ -628,7 +628,7 @@ public class List extends Screen implements Choice
 	 */
 	public void set(int elementNum, String stringPart, Image imagePart, Style elementStyle )
 	{
-		this.choiceGroup.set( elementNum, stringPart, imagePart, elementStyle );
+		set( elementNum, new ChoiceItem( stringPart, imagePart, this.listType, elementStyle ) );
 	}
 
 	/**
@@ -928,7 +928,7 @@ public class List extends Screen implements Choice
 	 */
 	public void setFont(int elementNum, Font font)
 	{
-		this.choiceGroup.setFont(elementNum, font);
+		getItem(elementNum).setFont(font);
 	}
 
 	/**
@@ -952,7 +952,7 @@ public class List extends Screen implements Choice
 	 */
 	public Font getFont(int elementNum)
 	{
-		return this.choiceGroup.getFont(elementNum);
+		return getItem(elementNum).getFont();
 	}
 
 

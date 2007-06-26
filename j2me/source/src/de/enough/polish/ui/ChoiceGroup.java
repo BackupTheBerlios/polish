@@ -401,9 +401,6 @@ implements Choice
 	 * @param items set of <code>ChoiceItem</code>s specifying the ChoiceGroup elements
 	 * @param style The CSS style for this item
 	 * @param allowImplicit true when the Choice.IMPLICIT choiceType is also allowed
-	 * @throws NullPointerException if <code>items</code> is null 
-	 *         or if getText() for one of the <code>ChoiceItem</code> in the array 
-	 *         retuns a null <code>String</code>.
 	 * @throws IllegalArgumentException if choiceType is not one of EXCLUSIVE, MULTIPLE, or POPUP (unless allowImplicit is defined)
 	 * @see Choice#EXCLUSIVE
 	 * @see Choice#MULTIPLE
@@ -437,9 +434,11 @@ implements Choice
 			//#endif
 		}
 		this.choiceType = choiceType;
-		for (int i = 0; i < items.length; i++) {
-			ChoiceItem item = items[i];
-			append( item );
+		if (items != null) {
+			for (int i = 0; i < items.length; i++) {
+				ChoiceItem item = items[i];
+				append( item );
+			}
 		}
 	}
 	
@@ -603,13 +602,20 @@ implements Choice
 		if ( elementStyle != null ) {
 			item.setStyle( elementStyle );
 		}
+		int itemIndex = this.itemsList.size() - 1;
+		if (this.choiceType == EXCLUSIVE && item.isSelected) {
+			if (this.selectedIndex != -1) {
+				((ChoiceItem)get( this.selectedIndex )).select( false );
+			}
+			this.selectedIndex = itemIndex;
+		}
 		//#ifdef polish.usePopupItem
 			if (this.isPopup && this.isPopupClosed && this.selectedIndex == -1) {
 				this.popupItem.setText( item.text );
 				this.selectedIndex = 0;
 			}
 		//#endif
-		return this.itemsList.size() - 1;
+		return itemIndex;
 	}
 
 	/**

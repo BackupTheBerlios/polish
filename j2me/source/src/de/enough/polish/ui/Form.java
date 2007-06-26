@@ -423,8 +423,7 @@ import javax.microedition.lcdui.Image;
  */
 public class Form extends Screen
 {
-	protected ItemStateListener itemStateListener;
-	private ArrayList stateNotifyQueue;
+
 
 	/**
 	 * Creates a new, empty <code>Form</code>.
@@ -744,20 +743,6 @@ public class Form extends Screen
 	}
 
 	/**
-	 * Sets the <code>ItemStateListener</code> for the
-	 * <code>Form</code>, replacing any previous
-	 * <code>ItemStateListener</code>. If
-	 * <code>iListener</code> is <code>null</code>, simply
-	 * removes the previous <code>ItemStateListener</code>.
-	 * 
-	 * @param iListener the new listener, or null to remove it
-	 */
-	public void setItemStateListener( ItemStateListener iListener)
-	{
-		this.itemStateListener = iListener;
-	}
-
-	/**
 	 * Gets the number of items in the <code>Form</code>.
 	 * 
 	 * @return the number of items
@@ -776,60 +761,5 @@ public class Form extends Screen
 	}
 	//#endif	
 	
-	/**
-	 * Adds the given item to the queue for state notifications.
-	 * The ItemStateListener will be called at the next possibility.
-	 * 
-	 * @param item the item which contents have been edited.
-	 */
-	protected void addToStateNotifyQueue( Item item ) {
-		if (this.itemStateListener != null) {
-			if (this.stateNotifyQueue == null) {
-				this.stateNotifyQueue = new ArrayList();
-			}
-			synchronized (this.stateNotifyQueue) {
-				this.stateNotifyQueue.add( item );
-			}
-			//#debug
-			System.out.println("added item " + item + " to stateNotifyQueue with listener " + this.itemStateListener + ", size of queue=" + this.stateNotifyQueue.size() + " to form " + this  );
-		}
-	}
 	
-	/**
-	 * Notifies the ItemStateListener about the changes which occurred to the items.
-	 */
-	protected void notifyStateListener() {
-		if (this.stateNotifyQueue != null && this.itemStateListener != null) {
-			Item lastItem = null;
-			while (this.stateNotifyQueue.size() > 0) {
-				Item item;
-				synchronized (this.stateNotifyQueue) {
-					item = (Item) this.stateNotifyQueue.remove(0);
-				}
-				if (item != lastItem) {
-					//#debug
-					System.out.println("notifying ItemStateListener for item " + item + " and form " + this ); 
-					this.itemStateListener.itemStateChanged(item);
-					lastItem = item;
-				}
-			}
-			//#debug
-			System.out.println("done notifying ItemStateListener."); 
-		}
-	}
-	
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#animate()
-	 */
-	public boolean animate() {
-		boolean animated = false;
-		if ( (this.itemStateListener != null) 
-				&& (this.stateNotifyQueue != null) 
-				&& (this.stateNotifyQueue.size() > 0 ) ) {
-			notifyStateListener();
-			animated = true;
-		}
-		return animated | super.animate();
-	}
 }

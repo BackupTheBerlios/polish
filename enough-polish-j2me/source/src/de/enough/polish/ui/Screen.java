@@ -296,6 +296,8 @@ implements AccessibleCanvas
 	//#endif
 	protected ScreenStateListener screenStateListener;
 	private boolean isScreenChangeDirtyFlag;
+	protected ItemStateListener itemStateListener;
+	private ArrayList stateNotifyQueue;
 	private final Object paintLock = new Object();
 	private ArrayList itemCommands;
 	private Object data;
@@ -1075,6 +1077,11 @@ implements AccessibleCanvas
 	public boolean animate() {
 		if (!this.isInitialized) {
 			return false;
+		}
+		if ( (this.itemStateListener != null) 
+				&& (this.stateNotifyQueue != null) 
+				&& (this.stateNotifyQueue.size() > 0 ) ) {
+			notifyStateListener();
 		}
 		synchronized (this.paintLock) {
 			try {
@@ -2622,6 +2629,8 @@ implements AccessibleCanvas
 	 * @see javax.microedition.lcdui.Displayable#removeCommand(javax.microedition.lcdui.Command)
 	 */
 	public void removeCommand(Command cmd) {
+		//#debug
+		System.out.println("removing command " + cmd.getLabel() + " from screen " + this );
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.removeCommand(cmd);
 			if (super.isShown()) {
@@ -2632,11 +2641,15 @@ implements AccessibleCanvas
 				this.menuSingleRightCommand = null;
 				//move another suitable command-item to the right-pos:
 				if (this.menuCommands != null) {
-					Command[] commands = (Command[]) this.menuCommands.toArray( new Command[ this.menuCommands.size()]);
+					Object[] commands = this.menuCommands.getInternalArray();
 					for (int i = 0; i < commands.length; i++) {
-						Command command = commands[i];
+						Command command = (Command) commands[i];
+						if (command == null) {
+							break;
+						}
 						int type = command.getCommandType(); 
 						if ( type == Command.BACK || type == Command.CANCEL ) {
+							System.out.println("removing right command [" + cmd.getLabel() + "], now using " + command.getLabel() + ", menuContainer=" + this.menuContainer.size() + ", menuCommands=" + this.menuCommands.size() );
 							this.menuContainer.remove( i );
 							this.menuCommands.remove( i );
 							this.menuSingleRightCommand = command;
@@ -2681,14 +2694,17 @@ implements AccessibleCanvas
 	protected void setItemCommands( Item item ) {
 		this.focusedItem = item;
 		if (item.commands != null) {
-			Command[] commands = (Command[]) item.commands.toArray( new Command[item.commands.size()] );
+			Object[] commands = item.commands.getInternalArray();
 			// register item commands, so that later onwards only commands that have been actually added
 			// will be removed:
 			if (this.itemCommands == null) {
 				this.itemCommands = new ArrayList( commands.length );
 			}
 			for (int i = 0; i < commands.length; i++) {
-				Command command = commands[i];
+				Command command = (Command) commands[i];
+				if (command == null) {
+					break;
+				}
 				// workaround for cases where the very same command has been added to both an item as well as this screen:
 				//System.out.println("scren: add ItemCommand " + command.getLabel() );
 				//#ifdef tmp.useExternalMenuBar
@@ -2726,9 +2742,12 @@ implements AccessibleCanvas
 		if (item.commands != null && this.itemCommands != null) {
 			// use the Screen's itemCommands list, since in this list only commands that are only present on the item
 			// are listed (not commands that are also present on the screen).
-			Command[] commands = (Command[]) this.itemCommands.toArray( new Command[this.itemCommands.size()] );
+			Object[] commands = this.itemCommands.getInternalArray();
 			for (int i = 0; i < commands.length; i++) {
-				Command command = commands[i];
+				Command command = (Command) commands[i];
+				if (command == null) {
+					break;
+				}
 				//#ifdef tmp.useExternalMenuBar
 					this.menuBar.removeCommand(command);
 				//#else
@@ -3365,6 +3384,62 @@ implements AccessibleCanvas
 	 */
 	public Style getScreenStyle() {
 		return this.style;
+	}
+	
+	/**
+	 * Sets the <code>ItemStateListener</code> for the
+	 * <code>Form</code>, replacing any previous
+	 * <code>ItemStateListener</code>. If
+	 * <code>iListener</code> is <code>null</code>, simply
+	 * removes the previous <code>ItemStateListener</code>.
+	 * 
+	 * @param iListener the new listener, or null to remove it
+	 */
+	public void setItemStateListener( ItemStateListener iListener)
+	{
+		this.itemStateListener = iListener;
+	}
+	
+	/**
+	 * Adds the given item to the queue for state notifications.
+	 * The ItemStateListener will be called at the next possibility.
+	 * 
+	 * @param item the item which contents have been edited.
+	 */
+	protected void addToStateNotifyQueue( Item item ) {
+		if (this.itemStateListener != null) {
+			if (this.stateNotifyQueue == null) {
+				this.stateNotifyQueue = new ArrayList();
+			}
+			synchronized (this.stateNotifyQueue) {
+				this.stateNotifyQueue.add( item );
+			}
+			//#debug
+			System.out.println("added item " + item + " to stateNotifyQueue with listener " + this.itemStateListener + ", size of queue=" + this.stateNotifyQueue.size() + " to form " + this  );
+		}
+	}
+	
+	/**
+	 * Notifies the ItemStateListener about the changes which occurred to the items.
+	 */
+	protected void notifyStateListener() {
+		if (this.stateNotifyQueue != null && this.itemStateListener != null) {
+			Item lastItem = null;
+			while (this.stateNotifyQueue.size() > 0) {
+				Item item;
+				synchronized (this.stateNotifyQueue) {
+					item = (Item) this.stateNotifyQueue.remove(0);
+				}
+				if (item != lastItem) {
+					//#debug
+					System.out.println("notifying ItemStateListener for item " + item + " and form " + this ); 
+					this.itemStateListener.itemStateChanged(item);
+					lastItem = item;
+				}
+			}
+			//#debug
+			System.out.println("done notifying ItemStateListener."); 
+		}
 	}
 
 

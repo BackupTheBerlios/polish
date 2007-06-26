@@ -859,6 +859,8 @@ public class TextField extends StringItem
 
 	private boolean doSetCaretPosition;
 
+	private boolean isShowInputInfo;
+
 
 
 		
@@ -2438,9 +2440,7 @@ public class TextField extends StringItem
 			}
 		//#endif
 		setString( myText );
-		if (getScreen() instanceof Form) {
-			notifyStateChanged();
-		}
+		notifyStateChanged();
 		//#if polish.css.textfield-show-length  && tmp.useInputInfo
 			if (this.showLength || nextCharInputHasChanged) {
 				updateInfo();
@@ -2456,7 +2456,7 @@ public class TextField extends StringItem
 
 	//#if tmp.directInput && tmp.useInputInfo
 	private void updateInfo() {
-		if (this.isUneditable) {
+		if (this.isUneditable || !this.isShowInputInfo) {
 			// don't show info when this field is not editable
 			return;
 		}
@@ -2522,10 +2522,8 @@ public class TextField extends StringItem
 				if (this.lastFieldChangedEvent != 0 && currentTime - this.lastFieldChangedEvent > 500) {
 					this.lastFieldChangedEvent = 0;
 					setString( this.editField.getText() );
-					if (getScreen() instanceof Form ) {
-						notifyStateChanged();
-						return true;
-					}
+					notifyStateChanged();
+					return true;
 				}
 			//#endif
 			//# return false;
@@ -3007,9 +3005,7 @@ public class TextField extends StringItem
 					}
 					String newText = (currentText == null ? "" : currentText ) + (keyCode - 48);
 					setString( newText );
-					if (getScreen() instanceof Form) {
-						notifyStateChanged();
-					}
+					notifyStateChanged();
 					return true;
 				}
 				if (currentLength > 0) {
@@ -3019,9 +3015,7 @@ public class TextField extends StringItem
 						if (keyCode == -8 || gameAction == Canvas.LEFT) {						
 					//#endif
 						setString( currentText.substring(0, currentLength - 1) );
-						if (getScreen() instanceof Form) {
-							notifyStateChanged();
-						}
+						notifyStateChanged();
 						return true;
 					}
 				}				
@@ -3144,9 +3138,7 @@ public class TextField extends StringItem
 							updateInfo();
 						}
 				    //#endif
-					if (getScreen() instanceof Form) {
-						notifyStateChanged();
-					}
+					notifyStateChanged();
 					return true;
 				} else {
 					return false;
@@ -3196,9 +3188,7 @@ public class TextField extends StringItem
 					updateInfo();
 				}
 			//#endif
-			if (getScreen() instanceof Form) {
-				notifyStateChanged();
-			}
+			notifyStateChanged();
 			return true;
 		} else if (this.caretRow > 0) {
 			this.caretPosition--;
@@ -3228,9 +3218,7 @@ public class TextField extends StringItem
 					updateInfo();
 				}
 			//#endif
-			if (getScreen() instanceof Form) {
-				notifyStateChanged();
-			}
+			notifyStateChanged();
 			return true;
 		} else {
 			return false;
@@ -3267,6 +3255,9 @@ public class TextField extends StringItem
 					this.caretChar = definedSymbols.charAt(index);
 					StyleSheet.currentScreen = this.screen;
 					insertCharacter();
+					//#if tmp.updateDeleteCommand
+						updateDeleteCommand( this.text );
+					//#endif
 				} else {
 					StyleSheet.currentScreen = this.screen;
 				}
@@ -3280,9 +3271,7 @@ public class TextField extends StringItem
 			} else if (!this.isUneditable) {
 				setString( this.midpTextBox.getString() );
 				setCaretPosition( size() );
-				if ( this.screen instanceof Form) {
-					notifyStateChanged();
-				}
+				notifyStateChanged();
 			}
 			StyleSheet.display.setCurrent( this.screen );
 		//#endif
@@ -3340,15 +3329,18 @@ public class TextField extends StringItem
 								} else {
 									String myText = getString();
 									setString( myText.substring(0, myText.length() - 1));
+									notifyStateChanged();
 								}
 							//#endif
 						//#else
 							String myText = getString();
 							setString( myText.substring(0, myText.length() - 1));
+							notifyStateChanged();
 						//#endif
 					}
 				} else if ( cmd == CLEAR_CMD ) {
 					setString( null );
+					notifyStateChanged();
 				} else if ( this.additionalItemCommandListener != null ) {
 					this.additionalItemCommandListener.commandAction(cmd, item);
 				}
@@ -3367,9 +3359,7 @@ public class TextField extends StringItem
 				if (( this.lastFieldChangedEvent != 0) || !newText.equals(oldText ) ) {
 					this.lastFieldChangedEvent = 0;
 					setString( newText );
-					if (getScreen() instanceof Form ) {
-						notifyStateChanged();
-					}
+					notifyStateChanged();
 				}
 			//#endif
 			this.editField.focusRemove();
@@ -3409,9 +3399,7 @@ public class TextField extends StringItem
 				this.lastFieldChangedEvent = System.currentTimeMillis();
 			//#else
 				setString( this.editField.getText() );
-				if (getScreen() instanceof Form ) {
-					notifyStateChanged();
-				}
+				notifyStateChanged();
 			//#endif
 		}
 	}
@@ -3440,6 +3428,18 @@ public class TextField extends StringItem
 				this.nextCharUppercase = false;
 			}
 		//#endif
+	}
+
+	/**
+	 * (De)activates the input info element for this TextField.
+	 * Note that the input info cannot be shown when it is deactivated by setting the "polish.TextField.includeInputInfo"
+	 * preprocessing variable to "false".
+	 * 
+	 * @param show true when the input info should be shown
+	 */
+	public void setShowInputInfo(boolean show) {
+		this.isShowInputInfo = show;
+		
 	}	
 	
 	/*
