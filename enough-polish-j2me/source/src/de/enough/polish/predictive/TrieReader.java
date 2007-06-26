@@ -32,8 +32,8 @@ public class TrieReader {
 	
 	private boolean empty;
 	private boolean wordFound;
-	
-	
+
+	String[] results = null;
 	
 	public TrieReader(String prefix, TrieProperties properties) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException
 	{
@@ -47,8 +47,13 @@ public class TrieReader {
 		this.empty 		= true;
 		this.wordFound	= true;
 	}
+	
+	public String[] getResults()
+	{
+		return this.results;
+	}
 		
-	public String[] keyNum(char key) throws RecordStoreException
+	public void keyNum(char key) throws RecordStoreException
 	{	
 		byte[] record = null;
 		ArrayList newNodes = new ArrayList();
@@ -84,22 +89,15 @@ public class TrieReader {
 			popNodes(true);
 		
 		closeStores();
-		return getNodeWords(this.nodes);
+		results = getNodeWords(this.nodes);
 	}
 	
-	public String[] keyClear() throws RecordStoreException
+	public void keyClear() throws RecordStoreException
 	{	
 		popNodes(false);
-		return getNodeWords(nodes);
+		results = getNodeWords(nodes);
 	}
-	
-	public void keySpace()
-	{
-		/*this.nodes.clear();
-		this.prevNodes.removeAllElements();
-		this.code = "";*/
-	}
-		
+			
 	public void addToNodes(ArrayList source, ArrayList dest)
 	{
 		for(int i=0; i<source.size(); i++)
@@ -297,7 +295,10 @@ public class TrieReader {
 	
 	public String getSelectedWord()
 	{
-		return ((TrieNode)this.nodes.get(this.selectedWord)).getWord();
+		if(this.nodes.size() > 0)
+			return ((TrieNode)this.nodes.get(this.selectedWord)).getWord();
+		else
+			return "";
 	}
 
 	public boolean isEmpty() {
