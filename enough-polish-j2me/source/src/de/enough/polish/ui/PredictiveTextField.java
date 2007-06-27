@@ -331,7 +331,10 @@ public class PredictiveTextField
 					currentReader.keyClear();
 					
 					if(currentReader.isEmpty())
+					{
 						this.builder.deleteCurrent();
+						openChoices(false);
+					}
 					else
 					{
 						setChoices(currentReader.getResults());

@@ -33,6 +33,7 @@ import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ImageUtil;
 
 /**
@@ -60,23 +61,8 @@ public class FadeOutItemView extends ItemView {
 		//TODO  question: should the view handle focused states and do this stuff or is it more appropriate for the application to do this?
 		this.currentTransparency = this.startTransparency;
 		initContentByParent(parent, firstLineWidth, lineWidth);
-		Image image = Image.createImage( this.contentWidth, this.contentHeight );
-		int transparentColor = 0x12345678;
-		Graphics g = image.getGraphics();
-		g.setColor(transparentColor);
-		g.fillRect(0, 0, this.contentWidth, this.contentHeight );
-		int[] transparentColorRgb = new int[1];
-		image.getRGB(transparentColorRgb, 0, 1, 0, 0, 1, 1 );
-		transparentColor = transparentColorRgb[0];
-		super.paintContentByParent(parent, 0, 0, 0, this.contentWidth, g );
-		int[] itemRgbData = new int[ this.contentWidth * this.contentHeight ];
-		image.getRGB(itemRgbData, 0, this.contentWidth, 0, 0, this.contentWidth, this.contentHeight );
-		// ensure transparent parts are indeed transparent
-		for (int i = 0; i < itemRgbData.length; i++) {
-			if( itemRgbData[i] == transparentColor ) {
-				itemRgbData[i] = 0;
-			}
-		}
+		
+		int[] itemRgbData = UiAccess.getRgbDataOfContent( parent );
 		this.rgbData = itemRgbData;
 		AnimationThread.addAnimationItem(parent);
 	}

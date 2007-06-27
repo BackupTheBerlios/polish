@@ -268,7 +268,7 @@ public class TrieReader {
 	{
 		switch(code)
 		{
-			case '1': 	return " \'-";
+			case '1': 	return "\"\'-.,:;!?";
 			case '2': 	return "abcä";
 			case '3': 	return "def";
 			case '4': 	return "ghi";
@@ -277,7 +277,7 @@ public class TrieReader {
 			case '7': 	return "pqrsß";
 			case '8': 	return "tuvü";
 			case '9': 	return "wxyz";
-			default: 	return " \'-";
+			default: 	return "\"\'-.,:;!?";
 		}
 	}
 	

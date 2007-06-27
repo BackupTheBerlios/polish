@@ -354,7 +354,7 @@ public class TextField extends StringItem
 	//#define tmp.implementsItemCommandListener
 	implements CommandListener, ItemCommandListener
 	//#if polish.blackberry
-		, FieldChangeListener
+	//	, FieldChangeListener
 	//#endif
 //#elif tmp.implements:defined
 	//#= implements ${tmp.implements}
@@ -1498,7 +1498,7 @@ public class TextField extends StringItem
 			} else {
 				this.editField = new PolishEditField( null, getString(), this.maxSize, bbStyle );
 			}
-			this.editField.setChangeListener( this );
+			//this.editField.setChangeListener( this );
 			this._bbField = (Field) this.editField;
 		//#elif !tmp.forceDirectInput
 			if (this.midpTextBox != null) {

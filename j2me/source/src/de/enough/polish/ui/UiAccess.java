@@ -2250,4 +2250,37 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
+	public static int[] getRgbDataOfContent( javax.microedition.lcdui.Item item ) {
+		return null;
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	public static int[] getRgbDataOfContent( Item item ) {
+		//#if polish.midp2
+			Image image = Image.createImage( item.contentWidth, item.contentHeight );
+			int transparentColor = 0x12345678;
+			Graphics g = image.getGraphics();
+			g.setColor(transparentColor);
+			g.fillRect(0, 0, item.contentWidth, item.contentHeight );
+			int[] transparentColorRgb = new int[1];
+			image.getRGB(transparentColorRgb, 0, 1, 0, 0, 1, 1 );
+			transparentColor = transparentColorRgb[0];
+			item.paintContent( 0, 0, 0, item.contentWidth, g );
+			int[] itemRgbData = new int[  item.contentWidth * item.contentHeight ];
+			image.getRGB(itemRgbData, 0, item.contentWidth, 0, 0, item.contentWidth, item.contentHeight );
+			// ensure transparent parts are indeed transparent
+			for (int i = 0; i < itemRgbData.length; i++) {
+				if( itemRgbData[i] == transparentColor ) {
+					itemRgbData[i] = 0;
+				}
+			}
+			return itemRgbData;
+		//#else
+			//# return null;
+		//#endif
+	}
+	//#endif
+
 }
