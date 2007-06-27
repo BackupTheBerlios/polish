@@ -54,25 +54,33 @@ public class SizeDecreaseItemView extends ItemView {
 		private Style nextStyle;
 	//#endif
 	
+	private int originalHeight;
 	private int targetHeight;
 	private int currentHeight;
 	
 	private int 	sizeDecreaseAmount 			= 20;
 	private boolean sizeDecreaseTop				= true;
+	private boolean isInitialized;
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
 	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
 		//TODO  question: should the view handle focused states and do this stuff or is it more appropriate for the application to do this?
+		if (this.parentItem == parent && this.parentItem.getStyle() == parent.getStyle() && this.isInitialized) {
+			return;
+		}
+		
 		initContentByParent(parent, firstLineWidth, lineWidth);
 		
 		this.currentHeight 	= this.contentHeight;
+		this.originalHeight = this.contentHeight;
 		this.targetHeight 	= 0;
 		
 		int[] itemRgbData = UiAccess.getRgbDataOfContent( parent );
 		this.rgbData = itemRgbData;
 		AnimationThread.addAnimationItem(parent);
+		this.isInitialized = true;
 	}
 	
 	
@@ -102,10 +110,12 @@ public class SizeDecreaseItemView extends ItemView {
 		}
 		int[] data = this.rgbData;
 		if (data != null) {
-			this.scaledRgbData = ImageUtil.scale(255, data, this.contentWidth, height, this.contentWidth, this.contentHeight);
+			this.scaledRgbData = ImageUtil.scale(255, data, this.contentWidth, height, this.contentWidth, this.originalHeight);
 		}
 		
 		this.currentHeight = height;
+		this.contentHeight = height;
+		this.parentItem.requestInit();
 		return true;
 	}
 	
@@ -168,7 +178,7 @@ public class SizeDecreaseItemView extends ItemView {
 			}
 			else
 			{
-				g.drawRGB( data, 0, this.contentWidth, x , y - (this.currentHeight - this.contentHeight), this.contentWidth, this.currentHeight, true );
+				g.drawRGB( data, 0, this.contentWidth, x , y - (this.currentHeight - this.originalHeight), this.contentWidth, this.currentHeight, true );
 			}
 		} else {
 			super.paintContentByParent(parent, x, y, leftBorder, rightBorder, g);

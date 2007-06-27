@@ -59,12 +59,17 @@ public class SizeIncreaseItemView extends ItemView {
 	
 	private int 	sizeIncreaseAmount 			= 20;
 	private boolean sizeIncreaseTop				= true;
+	private boolean isInitialized;
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
 	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
 		//TODO  question: should the view handle focused states and do this stuff or is it more appropriate for the application to do this?
+		if (this.parentItem == parent && this.parentItem.getStyle() == parent.getStyle() && this.isInitialized) {
+			return;
+		}
+		
 		initContentByParent(parent, firstLineWidth, lineWidth);
 		
 		this.currentHeight 	= 1;
@@ -73,6 +78,7 @@ public class SizeIncreaseItemView extends ItemView {
 		int[] itemRgbData = UiAccess.getRgbDataOfContent( parent );
 		this.rgbData = itemRgbData;
 		AnimationThread.addAnimationItem(parent);
+		this.isInitialized = true;
 	}
 	
 	
@@ -82,9 +88,7 @@ public class SizeIncreaseItemView extends ItemView {
 	 */
 	public boolean animate() {
 		int height = this.currentHeight + getAmount();
-		
-		//iodf
-		
+				
 		if (height >= this.targetHeight) {
 			height = this.targetHeight;
 			AnimationThread.removeAnimationItem(this.parentItem);
@@ -102,10 +106,13 @@ public class SizeIncreaseItemView extends ItemView {
 		}
 		int[] data = this.rgbData;
 		if (data != null) {
-			this.scaledRgbData = ImageUtil.scale(255, data, this.contentWidth, height, this.contentWidth, this.contentHeight);
+			this.scaledRgbData = ImageUtil.scale(255, data, this.contentWidth, height, this.contentWidth, this.targetHeight);
 		}
 		
+		//this.contentHeight = height;
 		this.currentHeight = height;
+		this.contentHeight = height;
+		this.parentItem.requestInit();
 		return true;
 	}
 	
@@ -115,7 +122,7 @@ public class SizeIncreaseItemView extends ItemView {
 	 */
 	protected int getAmount()
 	{
-		int remaining = this.contentHeight - this.currentHeight;
+		int remaining = this.targetHeight - this.currentHeight;
 		
 		int result = remaining / (100 / this.sizeIncreaseAmount);
 		
@@ -170,7 +177,7 @@ public class SizeIncreaseItemView extends ItemView {
 			}
 			else
 			{
-				g.drawRGB( data, 0, this.contentWidth, x , y - (this.currentHeight - this.contentHeight), this.contentWidth, this.currentHeight, true );
+				g.drawRGB( data, 0, this.contentWidth, x , y - (this.currentHeight - this.targetHeight), this.contentWidth, this.currentHeight, true );
 				
 			}
 		} else {
