@@ -762,9 +762,11 @@
 		<mapping from="gauge-recline" to="new de.enough.polish.ui.gaugeviews.RecLineGaugeView()"  appliesTo="Gauge" />
 		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-rotating-arcs" to="new de.enough.polish.ui.gaugeviews.RotatingArcsGaugeView()" appliesTo="Gauge" />
+		<mapping from="gauge-equalizer" to="new de.enough.polish.ui.gaugeviews.EqualizerGaugeView()" appliesTo="Gauge" />
 		<mapping from="chart-vertical-bars" to="new de.enough.polish.ui.chartviews.VerticalBarChartView()" appliesTo="ChartItem" />
 		<mapping from="fade-out" to="new de.enough.polish.ui.itemviews.FadeOutItemView()" appliesTo="Item" />
 		<mapping from="fade-in" to="new de.enough.polish.ui.itemviews.FadeInItemView()" appliesTo="Item" />
+		<mapping from="size-increase" to="new de.enough.polish.ui.itemviews.SizeIncreaseItemView()" appliesTo="Item" />
 		<mapping from="clock-binary-text" to="new de.enough.polish.ui.clockviews.BinaryTextClockView()" appliesTo="ClockItem" />
 		<mapping from="clock-hex-text" to="new de.enough.polish.ui.clockviews.HexTextClockView()" appliesTo="ClockItem" />
 		<!--
@@ -2610,7 +2612,6 @@
 		description="Removes the text of the non-focused elements if set to true."
 		id="242"
 	/>
-	
 	<attribute
 		name="filter-position"
 		type="integer"
@@ -2633,6 +2634,22 @@
 		appliesTo="FilteredChoiceGroup"
 		description="The style for the FilteredList that is shown when the user openes a FilteredChoiceGroup."
 		id="245"
+	/>
+	<attribute
+		name="sizeincreaseview-amount"
+		type="integer"
+		default="10"
+		appliesTo="SizeIncreaseItemView"
+		description="The transparency that is used for the first animation step."
+		id="246"
+	/>
+		<attribute
+		name="sizeincreaseview-top"
+		type="boolean"
+		default="false"
+		appliesTo="SizeIncreaseItemView"
+		description="Declares if the item should build up from the top or from the bottom"
+		id="247"
 	/>
 	
 	
