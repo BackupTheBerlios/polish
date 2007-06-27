@@ -3,7 +3,7 @@
 	<taskdef name="PreditiveBuilder" classname="de.enough.polish.predictive.Builder" classpath="bin/classes" />
 		
 	<target name="builder">
-                <PreditiveBuilder source="input/top10000en.txt" dest="output/predictive.trie"/>
+                <PreditiveBuilder source="input/top5000en.txt" dest="../enough-polish-predictive-test/resources/predictive.trie"/>
 	</target>
 
 </project>
