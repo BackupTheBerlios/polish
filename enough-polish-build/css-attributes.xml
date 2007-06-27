@@ -756,6 +756,7 @@
 		<mapping from="carousel" to="new de.enough.polish.ui.containerviews.CarrouselContainerView()" />
 		<mapping from="carrousel" to="new de.enough.polish.ui.containerviews.CarrouselContainerView()" />
 		<mapping from="fisheye" to="new de.enough.polish.ui.containerviews.FishEyeContainerView()" />
+		<mapping from="numbered" to="new de.enough.polish.ui.containerviews.NumberedContainerView()" />
 		<mapping from="plain" to="none" />
 		<mapping from="normal" to="none" />
 		<mapping from="gauge-recline" to="new de.enough.polish.ui.gaugeviews.RecLineGaugeView()"  appliesTo="Gauge" />
@@ -2609,6 +2610,31 @@
 		description="Removes the text of the non-focused elements if set to true."
 		id="242"
 	/>
+	
+	<attribute
+		name="filter-position"
+		type="integer"
+		default="bottom"
+		appliesTo="FilteredList"
+		description="Position of the textfield used to filter the results."
+		values="top,bottom"
+		id="243"
+	/>
+	<attribute
+		name="filter-style"
+		type="style"
+		appliesTo="FilteredList,FilteredChoiceGroup"
+		description="The style for the filter textfield within a FilteredList."
+		id="244"
+	/>
+	<attribute
+		name="popup-style"
+		type="style"
+		appliesTo="FilteredChoiceGroup"
+		description="The style for the FilteredList that is shown when the user openes a FilteredChoiceGroup."
+		id="245"
+	/>
+	
 	
 	
 	<!--
