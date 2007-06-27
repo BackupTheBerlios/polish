@@ -767,6 +767,7 @@
 		<mapping from="fade-out" to="new de.enough.polish.ui.itemviews.FadeOutItemView()" appliesTo="Item" />
 		<mapping from="fade-in" to="new de.enough.polish.ui.itemviews.FadeInItemView()" appliesTo="Item" />
 		<mapping from="size-increase" to="new de.enough.polish.ui.itemviews.SizeIncreaseItemView()" appliesTo="Item" />
+		<mapping from="size-decrease" to="new de.enough.polish.ui.itemviews.SizeDecreaseItemView()" appliesTo="Item" />
 		<mapping from="clock-binary-text" to="new de.enough.polish.ui.clockviews.BinaryTextClockView()" appliesTo="ClockItem" />
 		<mapping from="clock-hex-text" to="new de.enough.polish.ui.clockviews.HexTextClockView()" appliesTo="ClockItem" />
 		<!--
@@ -2640,7 +2641,7 @@
 		type="integer"
 		default="10"
 		appliesTo="SizeIncreaseItemView"
-		description="The transparency that is used for the first animation step."
+		description="The percentual amount to increase the item"
 		id="246"
 	/>
 		<attribute
@@ -2650,6 +2651,22 @@
 		appliesTo="SizeIncreaseItemView"
 		description="Declares if the item should build up from the top or from the bottom"
 		id="247"
+	/>
+	<attribute
+		name="sizedecreaseview-amount"
+		type="integer"
+		default="10"
+		appliesTo="SizeDecreaseItemView"
+		description="The percentual amount to decrease the item"
+		id="248"
+	/>
+		<attribute
+		name="sizedecreaseview-top"
+		type="boolean"
+		default="false"
+		appliesTo="SizeDecreaseItemView"
+		description="Declares if the item should build down from the top or from the bottom"
+		id="249"
 	/>
 	
 	
