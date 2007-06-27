@@ -165,6 +165,9 @@ public class FishEyeContainerView extends ContainerView {
 	 */
 	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
 		Container parent = (Container) parentContainerItem;		
+		if (this.focusedIndex == -1) {
+			this.focusedIndex = 0;
+		}
 		//#debug
 		System.out.println("ContainerView: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
 		//#if polish.Container.allowCycling != false

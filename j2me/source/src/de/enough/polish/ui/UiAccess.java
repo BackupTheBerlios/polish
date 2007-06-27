@@ -2046,7 +2046,22 @@ public final class UiAccess {
 		//#endif
 	}
 	//#endif
-	
+
+	//#if polish.usePolishGui
+	/**
+	 * Gets the visible status of the specified list-item.
+	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
+	 * Invisible items are only supported when the preprocessing variable polish.supportInvisibleItems is true.
+	 * 
+	 * @param list the list 
+	 * @param index the index of the item
+	 * @return true when this item is visible.
+	 */
+	public static boolean isVisible( List list, int index ) {
+		return isVisible( list.getItem( index ) );
+	}
+	//#endif
+
 	//#if polish.usePolishGui
 	/**
 	 * Sets the invisible status of the specified item.
@@ -2063,6 +2078,20 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.usePolishGui
+	/**
+	 * Sets the invisible status of the specified list-item.
+	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
+	 * Invisible items are only supported when the preprocessing variable polish.supportInvisibleItems is true.
+	 * 
+	 * @param list the list 
+	 * @param index the index of the item
+	 * @param visible true when the item should become invisible.
+	 */
+	public static void setVisible( List list, int index, boolean visible ) {
+		setVisible( list.getItem(index), visible );
+	}
+	//#endif
 	
 
 	//#if polish.midp
@@ -2081,6 +2110,21 @@ public final class UiAccess {
 	
 	//#if polish.midp
 	/**
+	 * Gets the visible status of the specified list-item.
+	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
+	 * Invisible items are only supported when the preprocessing variable polish.supportInvisibleItems is true.
+	 * 
+	 * @param list the list 
+	 * @param index the index of the item
+	 * @return true when this item is visible.
+	 */
+	public static boolean isVisible( javax.microedition.lcdui.List list, int index ) {
+		return false;
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
 	 * Sets the visible status of the specified item.
 	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
 	 * Invisible items are only supported when the preprocessing variable polish.supportInvisibleItems is true (and the J2ME Polish UI is used).
@@ -2092,6 +2136,22 @@ public final class UiAccess {
 		// ignore
 	}
 	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Sets the invisible status of the specified list-item.
+	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
+	 * Invisible items are only supported when the preprocessing variable polish.supportInvisibleItems is true.
+	 * 
+	 * @param list the list 
+	 * @param index the index of the item
+	 * @param visible true when the item should become invisible.
+	 */
+	public static void setVisible( javax.microedition.lcdui.List list, int index, boolean visible ) {
+		// ignore
+	}
+	//#endif
+
 	
 	//#if polish.usePolishGui
 	/**

@@ -2454,7 +2454,7 @@ public abstract class Item extends Object
 					if (isFocusSet && parentContainer.focusedIndex > itemIndex ) {
 						// focused has moved downwards, since the above item is now invisible,
 						// adjust the scrolling accordingly:
-						int offset = parentContainer.yOffset + this.itemHeight;
+						int offset = parentContainer.yOffset + this.itemHeight + parentContainer.paddingVertical;
 						parentContainer.setScrollYOffset( offset > 0 ? 0 : offset, false );
 					}
 				} else if (!this.isFocused && parentContainer.focusedIndex > parentContainer.indexOf(this)) {
