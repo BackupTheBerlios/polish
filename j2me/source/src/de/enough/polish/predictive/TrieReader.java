@@ -164,9 +164,7 @@ public class TrieReader {
 		RecordStore store = (RecordStore)stores.get(storeID);
 		
 		if(store == null)
-		{
-			System.out.println(storeID);
-			
+		{	
 			if(!properties.isLocalRMS())
 				store = RecordStore.openRecordStore(storeID, this.properties.getVendor(), this.properties.getSuite());
 			else
