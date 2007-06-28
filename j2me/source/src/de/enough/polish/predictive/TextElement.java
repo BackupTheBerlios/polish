@@ -2,6 +2,7 @@ package de.enough.polish.predictive;
 
 public class TextElement {
 	Object element;
+	boolean shift;
 	
 	public TextElement(Object object)
 	{
@@ -26,9 +27,8 @@ public class TextElement {
 		
 		return -1;
 	}
-
+	
 	public Object getElement() {
 		return element;
 	}
-	
 }

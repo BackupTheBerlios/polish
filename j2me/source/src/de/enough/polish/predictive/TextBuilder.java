@@ -5,7 +5,11 @@ import de.enough.polish.util.ArrayList;
 public class TextBuilder {
 	
 	public static final int ALIGN_LEFT 	= 0;
-	public static final int ALIGN_FOCUS 	= 1;
+	public static final int ALIGN_FOCUS = 1;
+	public static final int ALIGN_RIGHT = 2;
+	
+	public static final int JUMP_PREV = 0;
+	public static final int JUMP_NEXT = 1;
 	
 	ArrayList textElements = null;
 	int currentElement;
@@ -15,7 +19,7 @@ public class TextBuilder {
 	{
 		this.textElements 	= new ArrayList();
 		this.currentElement = -1;
-		this.currentAlign	= this.ALIGN_LEFT;
+		this.currentAlign	= ALIGN_LEFT;
 	}
 	
 	public TrieReader getCurrentReader()
@@ -33,6 +37,11 @@ public class TextBuilder {
 		return this.currentAlign;
 	}
 	
+	public void setCurrentAlign(int currentAlign)
+	{
+		this.currentAlign = currentAlign;
+	}
+	
 	private TextElement getTextElement(int index)
 	{
 		return (TextElement) this.textElements.get(index);
@@ -48,18 +57,85 @@ public class TextBuilder {
 			if(currentAlign == ALIGN_FOCUS)
 				this.textElements.add(currentElement + 1, element);
 			
-			if(currentAlign == ALIGN_FOCUS && currentElement < textElements.size())
+			if(currentAlign == ALIGN_RIGHT)
+				this.textElements.add(currentElement + 1, element);
+			
+			if( (currentAlign == ALIGN_FOCUS || currentAlign == ALIGN_RIGHT) && currentElement < textElements.size())
 				currentElement++;
 		}
 		else
 		{
 			this.textElements.add(0, element);
 			currentElement = 0;
-		}
-			
-			
+		}	
 	}
+	
+	public int getLineCaret(int jumpDirection, String[] textLines)
+	{
+		int caretPosition = getCaretPosition(); 
 		
+		int linePosition = caretPosition;
+		int line = 0;
+		
+		for (int i = 0; i < textLines.length; i++) {
+			
+			if(linePosition > textLines[i].length() + 1)
+				linePosition -= textLines[i].length();
+			else
+			{
+				line = i;
+				break;
+			}
+		}
+		
+		if(jumpDirection == JUMP_PREV)
+		{
+			if(line - 2 < 0)
+				return linePosition;
+			else
+				return textLines[line - 2].length() + linePosition;
+		}
+		else
+			if(line != (textLines.length - 1))
+				return textLines[line].length() + linePosition;
+			else
+				return -1;
+	}
+	
+	public void setCurrentElementNear(int offset)
+	{
+		int length = 0;
+		int lengthOffset = 0;
+		
+		int left  = 0;
+		int right = 0;
+		
+		for (int i = 0; i < textElements.size(); i++) {
+			length = getTextElement(i).getLength();
+			lengthOffset += length;
+			
+			if(lengthOffset > offset)
+			{
+				currentElement = i;
+				
+				left = lengthOffset - length;
+				right = lengthOffset;
+					
+				if((offset - left) > (right - offset))
+					currentAlign = ALIGN_RIGHT;
+				else
+					currentAlign = ALIGN_LEFT;
+					
+				return;
+			}
+		}
+		
+		currentElement = textElements.size() - 1;
+		currentAlign = ALIGN_RIGHT;
+		
+		return;
+	}
+	
 	public void addString(String string)
 	{
 		addObject(new TextElement(string));
@@ -84,26 +160,14 @@ public class TextBuilder {
 	
 	public void increaseCaret()
 	{	
-		switch(currentAlign)
-		{
-			case ALIGN_LEFT 	:
-				if(!isString())
-					currentAlign = ALIGN_FOCUS;
-				else if(currentElement < textElements.size() - 1)
-				{
-					currentAlign = ALIGN_LEFT;
-					currentElement++;
-				}
-			break;
-			
-			case ALIGN_FOCUS	:
-				if(currentElement < textElements.size() - 1)
-				{
-					currentAlign = ALIGN_LEFT;
-					currentElement++;
-				}
-			break;
-		};
+		if(!isString(0) && currentAlign == ALIGN_LEFT)
+			currentAlign = ALIGN_FOCUS;
+		else
+			if(currentElement < textElements.size() - 1)
+			{
+				currentAlign = ALIGN_LEFT;
+				currentElement++;
+			}
 	}
 
 	public void decreaseCaret()
@@ -113,7 +177,7 @@ public class TextBuilder {
 			case ALIGN_LEFT 	:
 				if(currentElement > 0)
 				{
-					if(!isPrevString())
+					if(!isString(-1))
 						currentAlign = ALIGN_FOCUS;
 					else
 						currentAlign = ALIGN_LEFT;
@@ -125,67 +189,33 @@ public class TextBuilder {
 			case ALIGN_FOCUS:
 				currentAlign = ALIGN_LEFT;
 			break;
+			
+			case ALIGN_RIGHT:
+				if(isString(0))
+					currentAlign = ALIGN_LEFT;
+				else
+					currentAlign = ALIGN_FOCUS;
+			break;
 		};
 	}
 	
-	public boolean isNextString()
+	public boolean isString(int offset)
 	{
-		if(currentElement < this.textElements.size() - 1)
-			return (getTextElement(currentElement + 1).getElement() instanceof String);
-		else
-			return false;
-	}
-	
-	public boolean isPrevString()
-	{
-		if(currentElement > 0)
-			return (getTextElement(currentElement - 1).getElement() instanceof String);
-		else
-			return false;
-	}
-	
-	public boolean isString()
-	{
-		if(this.textElements.size() > 0)
-			return (getTextElement(currentElement).getElement() instanceof String);
+		if(this.textElements.size() > 0 && (currentElement - offset) >= 0)
+			return (getTextElement(currentElement + offset).getElement() instanceof String);
 		else
 			return true;
-	}
-	
-	public int getCurrentOffset()
-	{
-		int result = 0;
-		int length = 0;
-		
-		for (int i = 0; i < currentElement; i++) {
-			length = getTextElement(i).getLength();
-		
-			result += length;
-		}
-		
-		return result;
-	}
-	
-	public int getCurrentLength()
-	{
-		return this.getTextElement(this.currentElement).getLength();
 	}
 		
 	public int getCaretPosition()
 	{
 		int result = 0;
-		int length = 0;
 		
-		for (int i = 0; i < currentElement; i++) {
-			length = getTextElement(i).getLength();
-			result += length;
-		}
+		for (int i = 0; i < currentElement; i++) 
+			result += getTextElement(i).getLength();
 		
-		if(currentAlign == ALIGN_FOCUS && currentElement >= 0)
-		{
-			length = getTextElement(currentElement).getLength();
-			result += length;
-		}
+		if( (currentAlign == ALIGN_FOCUS || currentAlign == ALIGN_RIGHT) && currentElement >= 0)
+			result += getTextElement(currentElement).getLength();
 		
 		return result;
 	}
@@ -198,13 +228,9 @@ public class TextBuilder {
 			Object object = getTextElement(i).getElement();
 			
 			if( object instanceof String)
-			{
 				result += (String)object;
-			}
 			else if( object instanceof TrieReader)
-			{
 				result += ((TrieReader)object).getSelectedWord();
-			}
 		}
 		
 		return result;
