@@ -434,9 +434,11 @@ implements ItemStateListener, CommandListener
 			}
 			// problem: this also adds the delete command
 			setItemCommands( this.filterTextField );
+			//#if !polish.TextField.suppressCommands
 			if (this.filterTextField.getCaretPosition() == 0) {
 				removeCommand( TextField.DELETE_CMD );
 			}
+			//#endif
 		}
 	}
 	
