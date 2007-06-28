@@ -70,36 +70,34 @@ public class TextBuilder {
 		}	
 	}
 	
-	public int getLineCaret(int jumpDirection, String[] textLines)
+	public int getCaretLine(String[] textLines)
 	{
 		int caretPosition = getCaretPosition(); 
+		int length = 0;
+		int index = 0;
 		
-		int linePosition = caretPosition;
-		int line = 0;
-		
-		for (int i = 0; i < textLines.length; i++) {
+		for (index = 0; index < textLines.length; index++) {
+			length += textLines[index].length();
 			
-			if(linePosition > textLines[i].length() + 1)
-				linePosition -= textLines[i].length();
-			else
-			{
-				line = i;
-				break;
-			}
+			if(length > caretPosition)
+				return index;
 		}
 		
-		if(jumpDirection == JUMP_PREV)
-		{
-			if(line - 2 < 0)
-				return linePosition;
-			else
-				return textLines[line - 2].length() + linePosition;
-		}
-		else
-			if(line != (textLines.length - 1))
-				return textLines[line].length() + linePosition;
-			else
-				return -1;
+		return index;
+	}
+	
+	public int getJumpPosition(int jumpDirection, String[] textLines)
+	{
+		int caretLine 		= getCaretLine(textLines); 
+		int caretPosition 	= getCaretPosition(); 
+		
+		if(jumpDirection == JUMP_PREV && caretLine > 0)
+			return caretPosition - textLines[caretLine-1].length();
+		
+		if(jumpDirection == JUMP_NEXT && caretLine != (textLines.length - 1))
+			return caretPosition + textLines[caretLine].length();
+		
+		return -1;
 	}
 	
 	public void setCurrentElementNear(int offset)
