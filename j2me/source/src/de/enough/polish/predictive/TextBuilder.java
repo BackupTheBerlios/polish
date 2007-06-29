@@ -11,15 +11,21 @@ public class TextBuilder {
 	public static final int JUMP_PREV = 0;
 	public static final int JUMP_NEXT = 1;
 	
+	public static final int SHIFT_Aa = 0;
+	public static final int SHIFT_a 	= 1;
+	public static final int SHIFT_A 	= 2;
+	
 	ArrayList textElements = null;
 	int currentElement;
 	int currentAlign;
+	int currentShift;
 	
 	public TextBuilder()
 	{
 		this.textElements 	= new ArrayList();
 		this.currentElement = -1;
 		this.currentAlign	= ALIGN_LEFT;
+		this.currentShift 	= SHIFT_Aa; 
 	}
 	
 	public TrieReader getCurrentReader()
@@ -30,6 +36,11 @@ public class TextBuilder {
 	public String getCurrentString()
 	{
 		return (String)getTextElement(currentElement).getElement();
+	}
+	
+	public TextElement getCurrentElement()
+	{
+		return getTextElement(currentElement);
 	}
 	
 	public int getCurrentAlign()
@@ -79,7 +90,7 @@ public class TextBuilder {
 		for (index = 0; index < textLines.length; index++) {
 			length += textLines[index].length();
 			
-			if(length > caretPosition)
+			if(length >= caretPosition - 1)
 				return index;
 		}
 		
@@ -137,6 +148,7 @@ public class TextBuilder {
 	public void addString(String string)
 	{
 		addObject(new TextElement(string));
+		this.currentAlign = ALIGN_RIGHT;
 	}
 	
 	public void addReader(TrieReader reader)
@@ -223,14 +235,23 @@ public class TextBuilder {
 		String result = "";
 		
 		for (int i = 0; i < textElements.size(); i++) {
-			Object object = getTextElement(i).getElement();
+			TextElement element = getTextElement(i);
+			Object object = element.getElement();
 			
 			if( object instanceof String)
 				result += (String)object;
 			else if( object instanceof TrieReader)
-				result += ((TrieReader)object).getSelectedWord();
+				result += element.getSelectedWord();
 		}
 		
 		return result;
+	}
+
+	public int getShift() {
+		return this.currentShift;
+	}
+
+	public void setShift(int currentShift) {
+		this.currentShift = currentShift;
 	}
 }

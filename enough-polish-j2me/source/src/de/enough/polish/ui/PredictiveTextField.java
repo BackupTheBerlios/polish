@@ -146,6 +146,8 @@ public class PredictiveTextField
 		this.status = status;
 		this.display =display;
 		
+		showShift();
+		
 		//Font uebernehmen
 		//this.choicesContainer.getStyle().font = this.getStyle().font;
 	}
@@ -313,9 +315,20 @@ public class PredictiveTextField
 			catch(RecordStoreException e){e.printStackTrace();}
 			
 			if(!currentReader.isWordFound())
+			{
 				showWordNotFound();
+			}
+			else
+			{
+				this.builder.getCurrentElement().pushChar(this.builder.getShift());
+					
+				if(this.builder.getShift() == TextBuilder.SHIFT_Aa)
+					this.builder.setShift(TextBuilder.SHIFT_a);
 				
-			this.setChoices(currentReader.getResults());
+				showShift();
+			}
+			
+			this.setChoices(this.builder.getCurrentElement().getResults());
 			
 			setText(this.builder.getText());
 			setCaretPosition(this.builder.getCaretPosition());
@@ -338,6 +351,8 @@ public class PredictiveTextField
 					currentReader = this.builder.getCurrentReader();
 					currentReader.keyClear();
 					
+					this.builder.getCurrentElement().popChar();
+					
 					if(currentReader.isEmpty())
 					{
 						this.builder.deleteCurrent();
@@ -345,7 +360,7 @@ public class PredictiveTextField
 					}
 					else
 					{
-						setChoices(currentReader.getResults());
+						setChoices(this.builder.getCurrentElement().getResults());
 						openChoices(true);
 					}
 				}	
@@ -360,6 +375,9 @@ public class PredictiveTextField
 		}
 		else if ( keyCode == this.SHIFT_BUTTON )
 		{
+			this.builder.setShift((this.builder.getShift() + 1) % 3);
+			
+			showShift();
 			
 			return true;
 		}
@@ -368,10 +386,12 @@ public class PredictiveTextField
 			this.builder.addString(" ");
 			
 			setText(this.builder.getText());
+			this.
 			openChoices(false);
 			
 			System.gc();
 			setCaretPosition(this.builder.getCaretPosition());
+			
 			return true;
 		}
 		else if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
@@ -394,8 +414,7 @@ public class PredictiveTextField
 			
 			if(this.builder.getCurrentAlign() == this.builder.ALIGN_FOCUS)
 			{
-				currentReader = this.builder.getCurrentReader();
-				String results[] = currentReader.getResults();
+				String results[] = this.builder.getCurrentElement().getResults();
 				if(results.length > 0)
 				{
 					setChoices(results);
@@ -410,22 +429,28 @@ public class PredictiveTextField
 		}
 		else if ( gameAction == Canvas.UP && !this.isInChoice)
 		{
-			int lineCaret = this.builder.getLineCaret(this.builder.JUMP_PREV, this.textLines);
-			this.builder.setCurrentElementNear(lineCaret);
+			int lineCaret = this.builder.getJumpPosition(this.builder.JUMP_PREV, this.textLines);
 			
-			setCaretPosition(this.builder.getCaretPosition());
-			openChoices(false);
-			
+			if(lineCaret != -1)
+			{
+				this.builder.setCurrentElementNear(lineCaret);
+				
+				setCaretPosition(this.builder.getCaretPosition());
+				openChoices(false);
+			}
 			return true;
 		}
 		else if ( gameAction == Canvas.DOWN && !this.isInChoice)
 		{
-			int lineCaret = this.builder.getLineCaret(this.builder.JUMP_NEXT, this.textLines);
-			this.builder.setCurrentElementNear(lineCaret);
+			int lineCaret = this.builder.getJumpPosition(this.builder.JUMP_NEXT, this.textLines);
 			
-			setCaretPosition(this.builder.getCaretPosition());
-			openChoices(false);
-			
+			if(lineCaret != -1)
+			{
+				this.builder.setCurrentElementNear(lineCaret);
+				
+				setCaretPosition(this.builder.getCaretPosition());
+				openChoices(false);
+			}
 			return true;
 		}
 		else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
@@ -452,6 +477,16 @@ public class PredictiveTextField
 		alert.setInfo("Word not found");
 		alert.setTimeout(2000);
 		display.setCurrent(alert);
+	}
+	
+	public void showShift()
+	{
+		switch(this.builder.getShift())
+		{
+			case TextBuilder.SHIFT_Aa : this.setLabel("Text (Aa)"); break;
+			case TextBuilder.SHIFT_A : this.setLabel("Text (A)"); break;
+			case TextBuilder.SHIFT_a : this.setLabel("Text (a)"); break;
+		};
 	}
 	
 	//#ifdef polish.hasPointerEvents
@@ -556,6 +591,7 @@ public class PredictiveTextField
 			}
 		}
 		this.isOpen = open;
+		
 	}
 
 	/* (non-Javadoc)
@@ -591,6 +627,7 @@ public class PredictiveTextField
 	 * @see de.enough.polish.ui.Item#notifyStateChanged()
 	 */
 	public void notifyStateChanged() {
+		
 		Screen scr = getScreen();
 		if (scr != null && scr instanceof Form && ((Form)scr).itemStateListener != null ) {
 			// let the external item state listener do the work
