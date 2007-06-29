@@ -121,7 +121,7 @@ public class TabbedList extends Screen {
 	
 	public void setCurrentTab( int tabIndex ) {
 		if (this.container != null) {
-			this.container.defocus( this.style );
+			//this.container.defocus( this.style );
 			this.container.hideNotify();
 		}
 		this.tabTitles.focus(tabIndex);
@@ -132,7 +132,8 @@ public class TabbedList extends Screen {
 		if (group.style == null) {
 			group.setStyle( this.style, true );			
 		}
-		group.focus( group.style, 0 );
+		//group.focus( group.style, 0 );
+		group.isFocused = true;
 		group.showNotify();
 		repaint();
 	}

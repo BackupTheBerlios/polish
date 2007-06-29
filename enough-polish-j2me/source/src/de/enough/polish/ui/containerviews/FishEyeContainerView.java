@@ -28,6 +28,7 @@ package de.enough.polish.ui.containerviews;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Border;
 import de.enough.polish.ui.Container;
@@ -82,6 +83,7 @@ public class FishEyeContainerView extends ContainerView {
 	 */
 	public FishEyeContainerView() {
 		this.isVertical = false;
+		this.allowsAutoTraversal = false;
 	}
 
 	/* (non-Javadoc)
@@ -185,6 +187,7 @@ public class FishEyeContainerView extends ContainerView {
 			} else {
 				this.focusedIndex = 0;
 			}
+			System.out.println("AUTO-FOCUSSING ITEM " + this.focusedIndex );
 			this.focusedItem = myItems[this.focusedIndex];
 			this.focusedStyle = this.focusedItem.getFocusedStyle();
 		}
@@ -341,12 +344,34 @@ public class FishEyeContainerView extends ContainerView {
 			this.focusedStyle = null;
 		}
 		
+		
 		this.contentWidth = lineWidth; //TODO: this can change when no expanded layout is used
 		this.contentHeight = this.focusedLabel == null ? maxHeight : maxHeight + this.focusedLabel.getItemHeight(lineWidth, lineWidth); // maxItemHeight + this.paddingVertical + this.focusedLabel.getItemHeight(lineWidth, lineWidth);
+		
+		if (!this.isFocused) {
+			AnimationThread.addAnimationItem( parent );
+		}
 	}
 	
 	
+	
 
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#defocus(de.enough.polish.ui.Style)
+	 */
+	protected void defocus(Style originalStyle) {
+		super.defocus(originalStyle);
+		AnimationThread.addAnimationItem( this.parentItem );
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ContainerView#focus(de.enough.polish.ui.Style, int)
+	 */
+	public void focus(Style focusstyle, int direction) {
+		super.focus(focusstyle, direction);
+		AnimationThread.removeAnimationItem( this.parentItem );
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#focusItem(int, de.enough.polish.ui.Item, int, de.enough.polish.ui.Style)
