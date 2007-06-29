@@ -132,23 +132,32 @@ public class HtmlTagHandler
 	  if (TAG_SELECT.equals(tagName)) {
     	  if (opening) {
     		  if (this.currentSelect != null) {
-    			  //debug error
-    			  System.out.println("Error in HTML-Code. You cannot open a <select>-tag inside another <select>-tag.");
+    			  //#debug error
+    			  System.out.println("Error in HTML-Code: You cannot open a <select>-tag inside another <select>-tag.");
 
     			  ChoiceGroup choiceGroup = this.currentSelect.getChoiceGroup();
     			  this.browser.add(choiceGroup);
-    			  this.currentForm.addItem(choiceGroup);
+    			  if (this.currentForm == null) {
+    				  //#debug error
+    				  System.out.println("Error in HTML-Code: no <form> for <select> element found!");
+    			  } else {
+    				  this.currentForm.addItem(choiceGroup);
+    			  }
     			  this.currentSelect = null;
     		  }
 
     		  String name = parser.getAttributeValue(ATTR_NAME);
     		  this.currentSelect = new HtmlSelect(name);
-    	  }
-    	  else {
+    	  } else {
     		  if (this.currentSelect != null) {
     			  ChoiceGroup choiceGroup = this.currentSelect.getChoiceGroup();
     			  this.browser.add(choiceGroup);
-    			  this.currentForm.addItem(choiceGroup);
+    			  if (this.currentForm == null) {
+    				  //#debug error
+    				  System.out.println("Error in HTML-Code: no <form> for <select> element found!");
+    			  } else {
+    				  this.currentForm.addItem(choiceGroup);
+    			  }
     			  this.currentSelect = null;
     		  }
     		  //#mdebug error
@@ -240,7 +249,9 @@ public class HtmlTagHandler
         String src = (String) attributeMap.get("src");
         String url = this.browser.makeAbsoluteURL(src);
         Image image = this.browser.loadImage(url);
-        this.browser.add(new ImageItem(null, image, Item.LAYOUT_DEFAULT, ""));
+        if (image != null) {
+        	this.browser.add(new ImageItem(null, image, Item.LAYOUT_DEFAULT, ""));
+        }
         return true;
       }
       else if (TAG_INPUT.equals(tagName))

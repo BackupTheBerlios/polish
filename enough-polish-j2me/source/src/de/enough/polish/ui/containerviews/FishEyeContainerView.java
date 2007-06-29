@@ -34,6 +34,7 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.IconItem;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
@@ -56,7 +57,7 @@ public class FishEyeContainerView extends ContainerView {
 	private int[] targetXCenterPositions;
 	private int[] referenceXCenterPositions;
 	
-	private boolean removeText = true;
+	private boolean isRemoveText = true;
 	private boolean includeAllItems = true;
 	private String[] labels;
 	private StringItem focusedLabel;
@@ -74,12 +75,13 @@ public class FishEyeContainerView extends ContainerView {
 	private int focusedDirection;
 	private int focusedWidth;
 	private int maxItemHeight;
+	private boolean isShowTextInTitle;
 	
 	/**
 	 * Creates a new fish eye view
 	 */
 	public FishEyeContainerView() {
-		this.focusedLabel = new StringItem(null, null);
+		//this.focusedLabel = new StringItem(null, null);
 	}
 
 	/* (non-Javadoc)
@@ -131,7 +133,7 @@ public class FishEyeContainerView extends ContainerView {
 				//#endif
 			}
 		}
-		if (this.removeText) {
+		if (this.isRemoveText && this.focusedLabel != null) {
 			animated |= this.focusedLabel.animate();
 		}
 		if (this.focusedBackground != null) {
@@ -165,9 +167,6 @@ public class FishEyeContainerView extends ContainerView {
 	 */
 	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
 		Container parent = (Container) parentContainerItem;		
-		if (this.focusedIndex == -1) {
-			this.focusedIndex = 0;
-		}
 		//#debug
 		System.out.println("ContainerView: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
 		//#if polish.Container.allowCycling != false
@@ -176,11 +175,27 @@ public class FishEyeContainerView extends ContainerView {
 
 		this.parentContainer = parent;
 		Item[] myItems = parent.getItems();
+		if (this.focusedIndex == -1 && myItems.length != 0) {
+			//this.parentContainer.focus(0);
+			this.focusedIndex = 0;
+			this.focusedItem = myItems[0];
+			this.focusedStyle = this.focusedItem.getFocusedStyle();
+		}
 		if (this.referenceXCenterPositions != null && this.referenceXCenterPositions.length == myItems.length) {
 			return;
 		}
-		
-		if (this.removeText && this.labels == null || this.labels.length != myItems.length) {
+
+		//#if polish.css.show-text-in-title
+			if (this.isRemoveText && this.focusedLabel == null && !this.isShowTextInTitle) {
+				this.focusedLabel = new StringItem(null, null);
+			}
+		//#else
+			if (this.isRemoveText && this.focusedLabel == null) {
+				this.focusedLabel = new StringItem(null, null);
+			}
+		//#endif
+
+		if (this.isRemoveText && (this.labels == null || this.labels.length != myItems.length)) {
 			this.labels = new String[ myItems.length ];
 		}
 
@@ -195,7 +210,7 @@ public class FishEyeContainerView extends ContainerView {
 		//#endif
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
-			if (this.removeText) {
+			if (this.isRemoveText) {
 				String text = item.getLabel();
 				if (text != null) {
 					this.labels[i] = text;
@@ -260,20 +275,22 @@ public class FishEyeContainerView extends ContainerView {
 		if ( (completeWidth > lineWidth && this.includeAllItems) || (completeWidth < lineWidth && isLayoutExpand() ) ) {
 			availableWidth = ((lineWidth - this.focusedWidth) >> 1) - this.paddingHorizontal;
 		} else {
-			availableWidth = (completeWidth - this.focusedWidth >> 1) - this.paddingHorizontal; 
+			availableWidth = ((completeWidth - this.focusedWidth) >> 1) - this.paddingHorizontal; 
 		}
-		//System.out.println("available=" + availableWidth + ", lineWidth=" + lineWidth + ", completeWidth=" + completeWidth + ", maxItemWidth=" + maxItemWidth + ", paddingHorizontal=" + this.paddingHorizontal);
+//		System.out.println("available=" + availableWidth + ", lineWidth=" + lineWidth + ", completeWidth=" + completeWidth + ", maxItemWidth=" + maxWidth + ", paddingHorizontal=" + this.paddingHorizontal);
 		int availableWidthPerItem = (availableWidth << 8) / (myItems.length -1);
 		// process items on the left side:
 		int index = this.focusedIndex - 1;
 		int processed = 0;
 		int length = (myItems.length -1) >> 1;
 		int startX = availableWidth;
+//		System.out.println("left: startX=" + startX + ", center=" + (lineWidth/2) );
 		while (processed < length ) {
 			if (index < 0) {
 				index = myItems.length - 1;
 			}
 			this.referenceXCenterPositions[index] = startX - ((processed * availableWidthPerItem) >>> 8); //  - (maxItemWidth >> 1);
+//			System.out.println( index + "=" + this.referenceXCenterPositions[index]);
 			index--;
 			processed++;
 		}
@@ -281,29 +298,39 @@ public class FishEyeContainerView extends ContainerView {
 		index = this.focusedIndex + 1;
 		processed = 0;
 		length = myItems.length >> 1;
-		startX =  ((lineWidth + maxWidth ) >> 1) - this.paddingHorizontal;
+		startX =  lineWidth - startX; //(lineWidth >> 1) +  ((lineWidth >> 1) - startX);
+//		System.out.println("right: startX=" + startX + ", center=" + (lineWidth/2) );
 		while (processed < length) {
 			if (index >= myItems.length) {
 				index = 0;
 			}
-			this.referenceXCenterPositions[index] = startX + ((processed * availableWidthPerItem) >>> 8) + (maxWidth >> 1);
+			this.referenceXCenterPositions[index] = startX + ((processed * availableWidthPerItem) >>> 8); //+ (maxWidth >> 1);
+//			System.out.println( index + "=" + this.referenceXCenterPositions[index]);
 			index++;
 			processed++;
 		}
 		
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
-			item.relativeX = this.referenceXCenterPositions[i] - (item.getItemWidth(lineWidth, lineWidth) >> 1);
+			int itemWidth = (item.getItemWidth(lineWidth, lineWidth) >> 1);
+			//#if polish.midp2
+				if (i != this.focusedIndex) {
+					itemWidth = (itemWidth * this.scaleFactor) / 100;
+//					System.out.println("adjusted item-width=" + itemWidth + ", max=" + maxWidth);
+				}
+			//#endif
+			item.relativeX = this.referenceXCenterPositions[i] - (itemWidth >> 1);
+//			System.out.println("item.relativeX for " + i + "=" + item.relativeX);
 		}
-		if (this.focusedItem != null) {
+		if (this.focusedStyle != null) {
 			focusItem( this.focusedIndex, this.focusedItem, this.focusedDirection, this.focusedStyle );
 			this.focusedItem.relativeX = this.referenceXCenterPositions[this.focusedIndex] - (this.focusedItem.getItemWidth(lineWidth, lineWidth) >> 1);
+//			System.out.println("focused.relativeX=" + this.focusedItem.relativeX);
 			this.focusedStyle = null;
 		}
 		
 		this.contentWidth = lineWidth; //TODO: this can change when no expanded layout is used
-		this.contentHeight = maxHeight + this.focusedLabel.getItemHeight(lineWidth, lineWidth); // maxItemHeight + this.paddingVertical + this.focusedLabel.getItemHeight(lineWidth, lineWidth);
-		
+		this.contentHeight = this.focusedLabel == null ? maxHeight : maxHeight + this.focusedLabel.getItemHeight(lineWidth, lineWidth); // maxItemHeight + this.paddingVertical + this.focusedLabel.getItemHeight(lineWidth, lineWidth);
 	}
 	
 	
@@ -323,7 +350,7 @@ public class FishEyeContainerView extends ContainerView {
 			int difference = this.referenceFocusedIndex - focIndex;
 			Item[] myItems = this.parentContainer.getItems();
 			int[] targetXPositions;
-			if (this.targetXCenterPositions == null) {
+			if (this.targetXCenterPositions == null || this.targetXCenterPositions.length != myItems.length) {
 				targetXPositions = new int[ myItems.length ];
 			} else {
 				targetXPositions = this.targetXCenterPositions;
@@ -373,13 +400,19 @@ public class FishEyeContainerView extends ContainerView {
 		
 		this.focusedBackground = removeItemBackground( item );
 		this.focusedBorder = removeItemBorder( item );
-		if (this.removeText) {
-			this.focusedLabel.setText( this.labels[ focIndex ] );
-			if (this.focusedLabel.getStyle() != focStyle ) {
-				focStyle = this.focusedItem.getFocusedStyle();
-				this.focusedLabel.setStyle( focStyle );
-				removeItemBackground( this.focusedLabel );
-				removeItemBorder( this.focusedLabel );
+		if (this.isRemoveText) {
+			if (this.isShowTextInTitle) {
+				Screen scr = getScreen();
+				if (scr != null) {
+					scr.setTitle( this.labels[ focIndex ] );
+				}
+			} else {
+				this.focusedLabel.setText( this.labels[ focIndex ] );
+				if (this.focusedLabel.getStyle() != focStyle ) {
+					this.focusedLabel.setStyle( focStyle );
+					removeItemBackground( this.focusedLabel );
+					removeItemBorder( this.focusedLabel );
+				}
 			}
 		}
 		return itemStyle;
@@ -393,7 +426,7 @@ public class FishEyeContainerView extends ContainerView {
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
 		int lineWidth = rightBorder - leftBorder;
 		int itemLabelDiff = 0;
-		if (this.removeText) {
+		if (this.isRemoveText && this.focusedLabel != null) {
 			Style labelStyle = this.focusedLabel.getStyle();
 			itemLabelDiff = labelStyle.paddingVertical - labelStyle.paddingBottom - labelStyle.paddingTop - labelStyle.marginBottom - labelStyle.marginTop;
 		}
@@ -401,7 +434,7 @@ public class FishEyeContainerView extends ContainerView {
 			Item item = this.focusedItem;
 			int backgroundWidth;
 			int backgroundHeight;
-			if ( this.removeText ) {
+			if ( this.isRemoveText ) {
 				backgroundWidth = Math.max( item.itemWidth, this.focusedLabel.getItemWidth( lineWidth, lineWidth ) );
 				backgroundHeight = item.itemHeight + this.focusedLabel.itemHeight + itemLabelDiff;
 			} else {
@@ -461,13 +494,12 @@ public class FishEyeContainerView extends ContainerView {
 			paintItem(item, this.focusedIndex, itemX, itemY, itemX, itemX + item.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
 
 			// now paint label:
-			if (this.removeText) {
+			if (this.isRemoveText && this.focusedLabel != null) {
 				int labelX = x + ((rightBorder - leftBorder) >> 1) - (this.focusedLabel.getItemWidth( lineWidth, lineWidth ) >> 1);
 				int labelY = itemY + item.itemHeight + itemLabelDiff;
 				this.focusedLabel.paint( labelX, labelY, labelX, labelX + this.focusedLabel.itemWidth, g);
 			}
-		}
-		
+		}		
 	}
 	
 
@@ -503,7 +535,7 @@ public class FishEyeContainerView extends ContainerView {
 		//#if polish.css.fisheyeview-remove-text
 			Boolean removeTextBool = style.getBooleanProperty("fisheyeview-remove-text");
 			if (removeTextBool != null) {
-				this.removeText = removeTextBool.booleanValue();
+				this.isRemoveText = removeTextBool.booleanValue();
 			}
 		//#endif
 			
@@ -513,6 +545,17 @@ public class FishEyeContainerView extends ContainerView {
 				this.scaleFactor = scaleInt.intValue();
 			}
 		//#endif
+		//#if polish.css.show-text-in-title
+			Boolean showTextInTitleBool = style.getBooleanProperty("show-text-in-title");
+			if (showTextInTitleBool != null) {
+				this.isShowTextInTitle = showTextInTitleBool.booleanValue();
+				if (this.isShowTextInTitle) {
+					this.isRemoveText = true;
+				}
+			}
+		//#endif
+			
 	}
 
+	
 }

@@ -366,7 +366,7 @@ implements ImageConsumer
 				}
 				//#if polish.debug.error
 					else if ( imageName.indexOf( "%INDEX%") != -1) {
-						throw new IllegalStateException("IconItem cannot resolve %INDEX% in url since parent is not a container: " + container );
+						throw new IllegalStateException("IconItem cannot resolve %INDEX% in url since parent is not a container: " + container + ", parent=" + this.parent);
 					}
 				//#endif
 				try {

@@ -2224,6 +2224,9 @@ public abstract class Item extends Object
 	 */
 	protected Style focus( Style newStyle, int direction ) {
 		Style oldStyle = this.style;
+		if (!this.isStyleInitialised && oldStyle != null) {
+			setStyle( oldStyle );
+		}
 		if (this.focusedStyle != null) {
 			newStyle = this.focusedStyle;
 		} 

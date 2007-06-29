@@ -166,10 +166,16 @@ public class ChoiceItem extends IconItem
 	 */
 	public ChoiceItem(String text, Image image, int choiceType, Style style) {
 		super(text, image, style);
-		this.drawBox = (choiceType == Choice.EXCLUSIVE) || (choiceType == Choice.MULTIPLE);
 		this.choiceType = choiceType;
+		this.drawBox = (choiceType == Choice.EXCLUSIVE) || (choiceType == Choice.MULTIPLE);
 		this.isMultiple = (choiceType == Choice.MULTIPLE);
 		this.appearanceMode = INTERACTIVE;
+	}
+	
+	public void setChoiceType( int choiceType ) {
+		this.choiceType = choiceType;
+		this.drawBox = (choiceType == Choice.EXCLUSIVE) || (choiceType == Choice.MULTIPLE);
+		this.isMultiple = (choiceType == Choice.MULTIPLE);
 	}
 	
 	//#ifdef polish.useDynamicStyles

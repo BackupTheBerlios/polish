@@ -787,7 +787,6 @@ implements Runnable
         	//#endif
 
             try {
-
             	goImpl(url);
 
         	}
@@ -911,9 +910,14 @@ implements Runnable
     }
   }
   
-  public void goBack()
+  public boolean goBack()
   {
-    go(1);
+	  if (this.history.size() > 0) {
+		  go(1);
+		  return true;
+	  } else {
+		  return false;
+	  }
   }
   
   public boolean canGoBack()
@@ -924,6 +928,7 @@ implements Runnable
   public void clearHistory()
   {
     this.history.removeAllElements();
+    this.currentDocumentBase = null;
   }
 
   protected void notifyPageStart(String url)

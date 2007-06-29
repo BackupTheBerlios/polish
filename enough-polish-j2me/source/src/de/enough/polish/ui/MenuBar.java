@@ -389,7 +389,7 @@ public class MenuBar extends Item {
 				this.isInitialized = false;
 				repaint();
 			}
-			//#if tmp.RightOptions
+			//#if tmp.RightOptions && polish.MenuBar.OkPosition != left
 				if (this.singleRightCommand != null) {
 					if ( this.singleRightCommand.getCommandType() == Command.BACK 
 						|| this.singleRightCommand.getCommandType() == Command.CANCEL ) 
@@ -406,7 +406,7 @@ public class MenuBar extends Item {
 				}
 				int newSingleLeftCommandIndex = getNextNegativeCommandIndex();
 				if ( newSingleLeftCommandIndex != -1 ) {
-					//System.out.println("moving commmand with index " + newSingleLeftCommandIndex + " from commands container (focused=" + this.commandsContainer.getFocusedIndex() + ") - new Single Left=" + ((Command) this.commandsList.get(newSingleLeftCommandIndex)).getLabel() );
+					System.out.println("moving commmand with index " + newSingleLeftCommandIndex + " from commands container (focused=" + this.commandsContainer.getFocusedIndex() + ") - new Single Left=" + ((Command) this.commandsList.get(newSingleLeftCommandIndex)).getLabel() );
 					if (newSingleLeftCommandIndex == this.commandsContainer.getFocusedIndex()) {
 						this.commandsContainer.focus(-1);
 					}
@@ -814,7 +814,7 @@ public class MenuBar extends Item {
 		} else if (open && !this.isOpened) {
 			//#if !polish.MenuBar.focusFirstAfterClose
 				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
-				//System.out.println("MenuBar: focussing first command: " + ((Command)this.commandsList.get(0)).getLabel() );
+				System.out.println("MenuBar: focussing first command: " + ((Command)this.commandsList.get(0)).getLabel() );
 				this.commandsContainer.focus(0);
 			//#endif
 			this.commandsContainer.showNotify();
@@ -1065,8 +1065,6 @@ public class MenuBar extends Item {
 			this.border = null;
 		//#else
 			super.setStyle(style);
-			
-			System.out.println("menubar: setting style " + style.name + ", from screen " + this.screen + ", background=" + this.background );
 			//#ifdef polish.css.menubar-show-image-and-text
 				Boolean showImageAndTextBool = style.getBooleanProperty( "menubar-show-image-and-text" );
 				if (showImageAndTextBool != null) {

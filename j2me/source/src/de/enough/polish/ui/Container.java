@@ -168,10 +168,8 @@ public class Container extends Item {
 		item.internalX = -9999;
 		item.parent = this;
 		this.itemsList.add( item );
-		if (this.isInitialized) {
-			this.isInitialized = false;
-			repaint();
-		}
+		this.isInitialized = false;
+		repaint();
 	}
 
 	/**
@@ -191,11 +189,14 @@ public class Container extends Item {
 		this.itemsList.add( index, item );
 		if (index <= this.focusedIndex) {
 			this.focusedIndex++;
+			//#if tmp.supportViewType
+				if (this.containerView != null) {
+					this.containerView.focusedIndex = this.focusedIndex;
+				}
+			//#endif
 		}
-		if (this.isInitialized) {
-			this.isInitialized = false;
-			repaint();
-		}
+		this.isInitialized = false;
+		repaint();
 	}
 	
 	//#if polish.LibraryBuild
@@ -226,10 +227,8 @@ public class Container extends Item {
 				this.itemStyle = item.focus( this.focusedStyle, 0 );
 			}
 		}
-		if (this.isInitialized) {
-			this.isInitialized = false;
-			repaint();
-		}
+		this.isInitialized = false;
+		repaint();
 		return last;
 	}
 	
@@ -264,7 +263,6 @@ public class Container extends Item {
 		//#endif
 				for (int i = index; i < myItems.length; i++) {
 					Item item = myItems[i];
-					//item.internalX = -9999;
 					item.relativeY -= removedItemHeight;
 				}
 		//#if tmp.supportViewType
@@ -272,6 +270,13 @@ public class Container extends Item {
 		//#endif
 		// check if the currenlty focused item has been removed:
 		if (index == this.focusedIndex) {
+			this.focusedItem = null;
+			//#if tmp.supportViewType
+				if (this.containerView != null) {
+					this.containerView.focusedIndex = -1;
+					this.containerView.focusedItem = null;
+				}
+			//#endif
 			// remove any item commands:
 			Screen scr = getScreen();
 			if (scr != null) {
@@ -615,8 +620,6 @@ public class Container extends Item {
 		int layoutBefore = item.layout;
 		//#if tmp.supportViewType
 			if ( this.containerView != null ) {
-//				this.containerView.focusedIndex = index;
-//				this.containerView.focusedItem = item;
 				this.itemStyle =  this.containerView.focusItem( index, item, direction, this.focusedStyle );
 			} else {
 		//#endif

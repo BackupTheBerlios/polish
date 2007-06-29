@@ -2637,6 +2637,9 @@ implements AccessibleCanvas
 				repaint();
 			}
 		//#else
+			if (this.okCommand == cmd) {
+				this.okCommand = null;
+			}
 			if (this.menuSingleRightCommand == cmd) {
 				this.menuSingleRightCommand = null;
 				//move another suitable command-item to the right-pos:

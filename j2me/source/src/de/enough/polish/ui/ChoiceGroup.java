@@ -89,7 +89,7 @@ implements Choice
 	private int selectedIndex;
 	//private boolean isExclusive;
 	private boolean isMultiple;
-	private int choiceType;
+	protected int choiceType;
 	private boolean isImplicit;
 	private Command selectCommand;
 	//#ifdef polish.usePopupItem
@@ -666,6 +666,23 @@ implements Choice
 	}
 
 	/**
+	 * Inserts an element into the <code>ChoiceGroup</code> just prior to
+	 * the element specified.
+	 * 
+	 * @param elementNum the index of the element where insertion is to occur
+	 * @param item ChoiceItem of the element to be inserted
+	 * @param elementStyle the style for the inserted ChoiceItem
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
+	 */
+	public void insert(int elementNum, ChoiceItem item, Style elementStyle)
+	{
+		if (style != null) {
+			item.setStyle(elementStyle);
+		}
+		add(elementNum, item);
+	}
+
+	/**
 	 * Sets the <code>String</code> and <code>Image</code> parts of the
 	 * element referenced by <code>elementNum</code>,
 	 * replacing the previous contents of the element.
@@ -737,6 +754,29 @@ implements Choice
 	 */
 	public void set(int elementNum, ChoiceItem item )
 	{
+		delete( elementNum );
+		add( elementNum, item );
+		if (this.isInitialized) {
+			this.isInitialized = false;
+			repaint();
+		}
+	}
+	
+	/**
+	 * Sets the <code>ChoiceItem</code> of the
+	 * element referenced by <code>elementNum</code>,
+	 * replacing the previous one.
+	 * 
+	 * @param elementNum the index of the element to be set
+	 * @param item the ChoiceItem of the new element
+	 * @param elementStyle the style for the new list element.
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
+	 */
+	public void set(int elementNum, ChoiceItem item, Style elementStyle )
+	{
+		if (elementStyle != null) {
+			item.setStyle(elementStyle);
+		}
 		delete( elementNum );
 		add( elementNum, item );
 		if (this.isInitialized) {
