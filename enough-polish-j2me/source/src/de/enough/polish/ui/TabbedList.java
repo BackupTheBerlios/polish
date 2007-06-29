@@ -130,7 +130,7 @@ public class TabbedList extends Screen {
 		this.currentTabIndex = tabIndex;
 		group.setScrollHeight( this.contentHeight );
 		if (group.style == null) {
-			group.setStyle( this.style, true );
+			group.setStyle( this.style, true );			
 		}
 		group.focus( group.style, 0 );
 		group.showNotify();
@@ -188,7 +188,14 @@ public class TabbedList extends Screen {
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		boolean handled;
 		if (gameAction == Canvas.LEFT || gameAction == Canvas.RIGHT) {
+			if (gameAction == Canvas.RIGHT) {
+				System.out.println("right");
+			} else {
+				System.out.println("left");
+			}
+			System.out.println("before keypress=current tab=" + this.currentTabIndex + ", titles=" + this.tabTitles.getFocusedIndex());
 			handled = this.tabTitles.handleKeyPressed(keyCode, gameAction);
+			System.out.println("after keypress=current titles=" + this.tabTitles.getFocusedIndex() + ", handled=" + handled);
 			if (handled) {
 				setCurrentTab( this.tabTitles.getFocusedIndex() );
 				// TODO notify TabListener
@@ -269,6 +276,7 @@ public class TabbedList extends Screen {
 	 * @see de.enough.polish.ui.Screen#animate()
 	 */
 	public boolean animate() {
+		//System.out.println("syso: animating container " + this.container + " with view " + this.container.containerView );
 		return super.animate() | this.tabTitles.animate();
 	}
 	

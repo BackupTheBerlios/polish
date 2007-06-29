@@ -96,6 +96,8 @@ extends ItemView
 	 *  when the user traverses around a form and enters the container from different sides 
 	 */
 	protected boolean allowsAutoTraversal = true;
+	protected boolean isHorizontal = true;
+	protected boolean isVertical = true;
 
 
 	/**
@@ -542,82 +544,98 @@ extends ItemView
 	 * @param g the Graphics on which this item should be painted.
 	 */
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
-		int focusedX = x;
-		int focusedY = 0;
-		int focusedRightBorder = rightBorder;
-		//#ifdef tmp.useTable
-			if (this.columnsSetting == NO_COLUMNS || myItems.length == 1) {
-		//#endif
-				if (!(this.isLayoutCenter || this.isLayoutRight)) {
-					// adjust the right border:
-					//rightBorder = leftBorder + this.contentWidth;
-				}
-				for (int i = 0; i < myItems.length; i++) {
-					Item item = myItems[i];
-					// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
-					// since after every item a line break will be done.
-					if (i == this.focusedIndex) {
-						focusedY = y;
-						item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
-					} else {
-						// the currently focused item is painted last
-						paintItem(item, i, x, y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
-						//item.paint(x, y, leftBorder, rightBorder, g);
-					}
-					y += item.itemHeight + this.paddingVertical;
-				}
-		//#ifdef tmp.useTable
-			} else {
-				x = leftBorder;
-				int columnIndex = 0;
-				int rowIndex = 0;
-				for (int i = 0; i < myItems.length; i++) {
-					Item item = myItems[i];
-					int columnWidth = this.columnsWidths[ columnIndex ];
-					//#if polish.css.colspan
-						if (item.colSpan > 1) {						
-							for (int j = columnIndex + 1; j < columnIndex + item.colSpan; j++) {
-								columnWidth += this.columnsWidths[ j ] + this.paddingHorizontal;
-							}
-							//System.out.println("Painting item " + i + "/" + item + " with width=" + item.itemWidth + " and with increased colwidth of " + columnWidth + " (prev=" + this.columnsWidths[ columnIndex ] + ")" );
-							
-						}
-					//#endif
-					//TODO this is a quick hack so that pointer events work - normally the item.relativeX position should be set in initContent! 
-					item.relativeX = x - leftBorder;
-					if (i == this.focusedIndex) {
-						focusedY = y;
-						focusedX = x;
-						focusedRightBorder = x + columnWidth;
-						//System.out.println("focusedItem in table: x=" + focusedX + ", rocusedRightBorder=" + focusedRightBorder + ", rightBorder=" + rightBorder +  ", isInitialized=" + this.focusedItem.isInitialised +  ", itemWidth=" + item.getItemWidth( columnWidth, columnWidth ));
-						// item.getItemHeight( columnWidth, columnWidth );
-					} else {
-						paintItem( item, i, x, y, x, x + columnWidth, clipX, clipY, clipWidth, clipHeight,  g );
-						// item.paint(x, y, x, x + columnWidth, g);
-					}
-					x += columnWidth + this.paddingHorizontal;
-					//#if polish.css.colspan
-						columnIndex += item.colSpan;
-					//#else
-						columnIndex++;
-					//#endif
-			
-					if (columnIndex == this.numberOfColumns) {
-						columnIndex = 0;
-						y += this.rowsHeights[ rowIndex ] + this.paddingVertical;
-						x = leftBorder;
-						rowIndex++;
-					}
-				}
+		//int endY = clipY + clipHeight;
+		for (int i = 0; i < myItems.length; i++) {
+			if (i != this.focusedIndex) {
+				Item item = myItems[i];
+				int itemY = y + item.relativeY;
+				//if (itemY < endY && itemY + item.itemHeight > clipY ) {
+					int itemX = x + item.relativeX;
+					paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+				//}
 			}
-		//#endif
-		
-		// paint the currently focused item:
-		if (this.focusedItem != null) {
-			//System.out.println("Painting focusedItem " + this.focusedItem + " with width=" + this.focusedItem.itemWidth + " and with increased colwidth of " + (focusedRightBorder - focusedX)  );
-			paintItem( this.focusedItem, this.focusedIndex, focusedX, focusedY, focusedX, focusedRightBorder, clipX, clipY, clipWidth, clipHeight, g);
-			//this.focusedItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
 		}
+		// paint focused item last:
+		if (this.focusedItem != null) {
+			paintItem(this.focusedItem, this.focusedIndex, x + this.focusedItem.relativeX, y + this.focusedItem.relativeY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+		}
+		
+//		int focusedX = x;
+//		int focusedY = 0;
+//		int focusedRightBorder = rightBorder;
+//		//#ifdef tmp.useTable
+//			if (this.columnsSetting == NO_COLUMNS || myItems.length == 1) {
+//		//#endif
+//				if (!(this.isLayoutCenter || this.isLayoutRight)) {
+//					// adjust the right border:
+//					//rightBorder = leftBorder + this.contentWidth;
+//				}
+//				for (int i = 0; i < myItems.length; i++) {
+//					Item item = myItems[i];
+//					// currently the NEWLINE_AFTER and NEWLINE_BEFORE layouts will be ignored,
+//					// since after every item a line break will be done.
+//					if (i == this.focusedIndex) {
+//						focusedY = y;
+//						item.getItemHeight( rightBorder - x, rightBorder - leftBorder );
+//					} else {
+//						// the currently focused item is painted last
+//						paintItem(item, i, x, y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+//						//item.paint(x, y, leftBorder, rightBorder, g);
+//					}
+//					y += item.itemHeight + this.paddingVertical;
+//				}
+//		//#ifdef tmp.useTable
+//			} else {
+//				x = leftBorder;
+//				int columnIndex = 0;
+//				int rowIndex = 0;
+//				for (int i = 0; i < myItems.length; i++) {
+//					Item item = myItems[i];
+//					int columnWidth = this.columnsWidths[ columnIndex ];
+//					//#if polish.css.colspan
+//						if (item.colSpan > 1) {						
+//							for (int j = columnIndex + 1; j < columnIndex + item.colSpan; j++) {
+//								columnWidth += this.columnsWidths[ j ] + this.paddingHorizontal;
+//							}
+//							//System.out.println("Painting item " + i + "/" + item + " with width=" + item.itemWidth + " and with increased colwidth of " + columnWidth + " (prev=" + this.columnsWidths[ columnIndex ] + ")" );
+//							
+//						}
+//					//#endif
+//					//TODO this is a quick hack so that pointer events work - normally the item.relativeX position should be set in initContent! 
+//					item.relativeX = x - leftBorder;
+//					if (i == this.focusedIndex) {
+//						focusedY = y;
+//						focusedX = x;
+//						focusedRightBorder = x + columnWidth;
+//						//System.out.println("focusedItem in table: x=" + focusedX + ", rocusedRightBorder=" + focusedRightBorder + ", rightBorder=" + rightBorder +  ", isInitialized=" + this.focusedItem.isInitialised +  ", itemWidth=" + item.getItemWidth( columnWidth, columnWidth ));
+//						// item.getItemHeight( columnWidth, columnWidth );
+//					} else {
+//						paintItem( item, i, x, y, x, x + columnWidth, clipX, clipY, clipWidth, clipHeight,  g );
+//						// item.paint(x, y, x, x + columnWidth, g);
+//					}
+//					x += columnWidth + this.paddingHorizontal;
+//					//#if polish.css.colspan
+//						columnIndex += item.colSpan;
+//					//#else
+//						columnIndex++;
+//					//#endif
+//			
+//					if (columnIndex == this.numberOfColumns) {
+//						columnIndex = 0;
+//						y += this.rowsHeights[ rowIndex ] + this.paddingVertical;
+//						x = leftBorder;
+//						rowIndex++;
+//					}
+//				}
+//			}
+//		//#endif
+//		
+//		// paint the currently focused item:
+//		if (this.focusedItem != null) {
+//			//System.out.println("Painting focusedItem " + this.focusedItem + " with width=" + this.focusedItem.itemWidth + " and with increased colwidth of " + (focusedRightBorder - focusedX)  );
+//			paintItem( this.focusedItem, this.focusedIndex, focusedX, focusedY, focusedX, focusedRightBorder, clipX, clipY, clipWidth, clipHeight, g);
+//			//this.focusedItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
+//		}
 	}
 
 	/**
@@ -658,15 +676,15 @@ extends ItemView
 	protected Item getNextItem( int keyCode, int gameAction ) {
 
 		Item[] myItems = this.parentContainer.getItems();
-		if ( (gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) 
-				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
+		if ( ( this.isHorizontal && gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) 
+				|| (this.isVertical && gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
 			if (gameAction == Canvas.DOWN && this.columnsSetting != NO_COLUMNS) {
 				return shiftFocus( true, this.numberOfColumns - 1, myItems );
 			}
 			return shiftFocus( true, 0, myItems );
 			
-		} else if ( (gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) 
-				|| (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) ) {
+		} else if ( (this.isHorizontal && gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) 
+				|| (this.isVertical && gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) ) {
 			if (gameAction == Canvas.UP && this.columnsSetting != NO_COLUMNS) {
 				return shiftFocus( false,  -(this.numberOfColumns -1 ), myItems);
 			}

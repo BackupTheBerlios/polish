@@ -1134,6 +1134,9 @@ implements AccessibleCanvas
 	 */
 	public void paint(Graphics g) {
 		//System.out.println("Painting screen "+ this + ", background == null: " + (this.background == null));
+		if (!this.isInitialized) {
+			init();
+		}
 		synchronized (this.paintLock ) {
 			//#if polish.Bugs.losesFullScreen
 				//# super.setFullScreenMode( true );
@@ -1753,7 +1756,7 @@ implements AccessibleCanvas
 		}
 		if (this.isInitialized && super.isShown()) {
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
-			this.isInitialized = false;
+			//this.isInitialized = false;
 			repaint();
 		}
 	}
@@ -2613,7 +2616,7 @@ implements AccessibleCanvas
 					this.menuSingleLeftCommand = null;
 				}
 				if (this.menuOpened) {
-					this.isInitialized = false;
+					//this.isInitialized = false;
 					repaint();
 				}				
 			//#endif	

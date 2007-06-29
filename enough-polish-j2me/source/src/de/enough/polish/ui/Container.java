@@ -1794,7 +1794,7 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#animate()
 	 */
 	public boolean animate() {
-		boolean animated = false;
+		boolean animated = super.animate();
 		// scroll the container:
 		int target = this.targetYOffset;
 		int current = this.yOffset;
@@ -1825,9 +1825,6 @@ public class Container extends Item {
 			// # debug
 			//System.out.println("animate(): adjusting yOffset to " + this.yOffset );
 			animated = true;
-		}
-		if  (this.background != null) {
-			animated |= this.background.animate();
 		}
 		if (this.focusedItem != null) {
 			animated |= this.focusedItem.animate();

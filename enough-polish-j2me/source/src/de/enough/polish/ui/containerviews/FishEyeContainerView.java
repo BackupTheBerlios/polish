@@ -81,7 +81,7 @@ public class FishEyeContainerView extends ContainerView {
 	 * Creates a new fish eye view
 	 */
 	public FishEyeContainerView() {
-		//this.focusedLabel = new StringItem(null, null);
+		this.isVertical = false;
 	}
 
 	/* (non-Javadoc)
@@ -94,11 +94,17 @@ public class FishEyeContainerView extends ContainerView {
 			for (int i = 0; i < this.targetXCenterPositions.length; i++) {
 				int target = this.targetXCenterPositions[i];
 				Item item = myItems[i];
-				int current = item.relativeX + (item.itemWidth >> 1);
+				int itemWidth = (item.itemWidth >> 1);
+				//#if polish.midp2
+					if (i != this.focusedIndex) {
+						itemWidth = (itemWidth * this.scaleFactor) / 100;
+					}
+				//#endif
+				int current = item.relativeX + itemWidth;
 				//System.out.println(i + ": current=" + current + ", target=" + target);
 				if (current != target) {
 					animated = true;
-					item.relativeX = calculateCurrent( current, target ) - (item.itemWidth >> 1);
+					item.relativeX = calculateCurrent( current, target ) - itemWidth;
 				}
 				//#if polish.midp2
 					if (this.scaleFactor != 100) {
@@ -169,16 +175,17 @@ public class FishEyeContainerView extends ContainerView {
 		Container parent = (Container) parentContainerItem;		
 		//#debug
 		System.out.println("ContainerView: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
-		//#if polish.Container.allowCycling != false
-			this.allowCycling = parent.allowCycling;
-		//#endif
 
 		this.parentContainer = parent;
 		Item[] myItems = parent.getItems();
 		if (this.focusedIndex == -1 && myItems.length != 0) {
 			//this.parentContainer.focus(0);
-			this.focusedIndex = 0;
-			this.focusedItem = myItems[0];
+			if (parent.focusedIndex != -1) {
+				this.focusedIndex = parent.focusedIndex;
+			} else {
+				this.focusedIndex = 0;
+			}
+			this.focusedItem = myItems[this.focusedIndex];
 			this.focusedStyle = this.focusedItem.getFocusedStyle();
 		}
 		if (this.referenceXCenterPositions != null && this.referenceXCenterPositions.length == myItems.length) {
@@ -262,7 +269,12 @@ public class FishEyeContainerView extends ContainerView {
 		this.referenceXCenterPositions[this.focusedIndex] = lineWidth >> 1;
 		this.referenceFocusedIndex = this.focusedIndex;
 
-		int completeWidth = maxWidth * myItems.length + ( myItems.length -1 ) * this.paddingHorizontal;
+		int completeWidth;
+		//#if polish.midp2
+			completeWidth = maxWidth + ((maxWidth*this.scaleFactor)/100) * (myItems.length - 1) + ( myItems.length -1 ) * this.paddingHorizontal;
+		//#else
+			completeWidth = maxWidth * myItems.length + ( myItems.length -1 ) * this.paddingHorizontal;
+		//#endif
 		
 		if (this.focusedStyle != null && this.focusedItem != null) {
 			UiAccess.focus(this.focusedItem, this.focusedDirection, this.focusedStyle );
@@ -316,10 +328,10 @@ public class FishEyeContainerView extends ContainerView {
 			//#if polish.midp2
 				if (i != this.focusedIndex) {
 					itemWidth = (itemWidth * this.scaleFactor) / 100;
-//					System.out.println("adjusted item-width=" + itemWidth + ", max=" + maxWidth);
+//					System.out.println("adjusted item-width=" + itemWidth + ", original=" + item.itemWidth + ", max=" + maxWidth + ", scale-factor=" + this.scaleFactor);
 				}
 			//#endif
-			item.relativeX = this.referenceXCenterPositions[i] - (itemWidth >> 1);
+			item.relativeX = this.referenceXCenterPositions[i] - itemWidth;
 //			System.out.println("item.relativeX for " + i + "=" + item.relativeX);
 		}
 		if (this.focusedStyle != null) {
