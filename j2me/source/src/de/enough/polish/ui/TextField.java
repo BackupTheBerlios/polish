@@ -859,7 +859,7 @@ public class TextField extends StringItem
 
 	private boolean doSetCaretPosition;
 
-	private boolean isShowInputInfo;
+	private boolean isShowInputInfo = true;
 
 
 
@@ -1468,6 +1468,7 @@ public class TextField extends StringItem
 		this.constraints = constraints;
 		int fieldType = constraints & 0xffff;
 		this.isUneditable = (constraints & UNEDITABLE) == UNEDITABLE;
+				
 		//#if polish.blackberry
 			
 			long bbStyle = Field.FOCUSABLE;
