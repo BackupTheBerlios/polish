@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui
 /*
  * Created on Jun 27, 2007 at 11:33:57 PM.
  * 
@@ -169,12 +170,11 @@ public class TabbedList extends Screen {
 	 */
 	protected void calculateContentArea(int x, int y, int width, int height) {
 		super.calculateContentArea(x, y, width, height);
-		
 		if (this.tabTitlePosition == POSITION_TOP) {
 			this.tabTitles.relativeY = this.contentY;
-			this.contentY += this.tabTitles.getItemHeight(width, width);
+			this.contentY += this.tabTitles.getItemHeight(this.contentWidth, this.contentWidth);
 		} else {
-			this.tabTitles.relativeY = this.contentY + this.contentHeight - this.tabTitles.getItemHeight(width, width);
+			this.tabTitles.relativeY = this.contentY + this.contentHeight - this.tabTitles.getItemHeight(this.contentWidth, this.contentWidth);
 		}
 		this.contentHeight -= this.tabTitles.itemHeight;
 		this.tabTitles.relativeX = this.contentX;
@@ -189,14 +189,7 @@ public class TabbedList extends Screen {
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		boolean handled;
 		if (gameAction == Canvas.LEFT || gameAction == Canvas.RIGHT) {
-			if (gameAction == Canvas.RIGHT) {
-				System.out.println("right");
-			} else {
-				System.out.println("left");
-			}
-			System.out.println("before keypress=current tab=" + this.currentTabIndex + ", titles=" + this.tabTitles.getFocusedIndex());
 			handled = this.tabTitles.handleKeyPressed(keyCode, gameAction);
-			System.out.println("after keypress=current titles=" + this.tabTitles.getFocusedIndex() + ", handled=" + handled);
 			if (handled) {
 				setCurrentTab( this.tabTitles.getFocusedIndex() );
 				// TODO notify TabListener

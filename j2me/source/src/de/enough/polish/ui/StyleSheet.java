@@ -457,29 +457,34 @@ public final class StyleSheet {
 				
 				int width;
 				int height;
-				//#if polish.FullCanvasSize:defined
-					//#= width = ${polish.FullCanvasWidth};
-					//#= height = ${polish.FullCanvasHeight};
-				//#else
-					//#if polish.midp2
-						width = nextDisplayable.getWidth();
-						height = nextDisplayable.getHeight();
+				if (currentScreen != null) {
+					width = currentScreen.getWidth();
+					height = currentScreen.getHeight();
+				} else {
+					//#if polish.FullCanvasSize:defined
+						//#= width = ${polish.FullCanvasWidth};
+						//#= height = ${polish.FullCanvasHeight};
 					//#else
-						if (nextScreen != null) {
-							width = lastScreen.getWidth();
-							height = lastScreen.getHeight();
-						} else if (nextDisplayable instanceof Canvas) {
-							width = ((Canvas) nextDisplayable).getWidth();
-							height = ((Canvas) nextDisplayable).getHeight();
-						} else {
-							Canvas canvas = new Canvas() {
-								public void paint( Graphics g) {}
-							};
-							width = canvas.getWidth();
-							height = canvas.getHeight();
-						}
+						//#if polish.midp2
+							width = nextDisplayable.getWidth();
+							height = nextDisplayable.getHeight();
+						//#else
+							if (nextScreen != null) {
+								width = lastScreen.getWidth();
+								height = lastScreen.getHeight();
+							} else if (nextDisplayable instanceof Canvas) {
+								width = ((Canvas) nextDisplayable).getWidth();
+								height = ((Canvas) nextDisplayable).getHeight();
+							} else {
+								Canvas canvas = new Canvas() {
+									public void paint( Graphics g) {}
+								};
+								width = canvas.getWidth();
+								height = canvas.getHeight();
+							}
+						//#endif
 					//#endif
-				//#endif
+				}
 				Image lastScreenImage = Image.createImage(width, height);
 				Graphics g = lastScreenImage.getGraphics(); 
 				if ( lastDisplayable != null && lastDisplayable instanceof AccessibleCanvas) {

@@ -66,9 +66,6 @@ public class MasterCanvas
 	
 	
 	private MasterCanvas() {
-		//#if polish.midp2 && tmp.fullScreen
-			setFullScreenMode( true );
-		//#endif
 	}
 	
 
@@ -87,6 +84,9 @@ public class MasterCanvas
 	 * @see javax.microedition.lcdui.Canvas#showNotify()
 	 */
 	protected void showNotify() {
+		//#if polish.midp2 && tmp.fullScreen
+			setFullScreenMode( true );
+		//#endif
 		if (this.currentCanvas != null) { 
 			this.currentCanvas.showNotify();
 		}

@@ -1279,8 +1279,10 @@ public abstract class CustomItem extends Item
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
-		if (gameAction == Canvas.UP || gameAction == Canvas.LEFT ||
-				gameAction == Canvas.DOWN || gameAction == Canvas.RIGHT ) 
+		if (   ( gameAction == Canvas.UP    && keyCode != Canvas.KEY_NUM2 )
+			|| ( gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4 )
+			|| ( gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8 )
+			|| ( gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6 ) ) 
 		{
 			this.visRect_inout[0] = 0;
 			this.visRect_inout[1] = 0;

@@ -147,7 +147,7 @@ implements AccessibleCanvas
 	protected int screenHeight;
 	/** the screen height minus the height of the menu bar */
 	protected int originalScreenHeight;
-	protected final int screenWidth;
+	protected int screenWidth;
 	//#ifndef polish.skipTicker
 		private Ticker ticker;
 		//#if polish.Ticker.Position:defined
@@ -332,45 +332,12 @@ implements AccessibleCanvas
 	 */
 	public Screen( String title, Style style, boolean createDefaultContainer ) {
 		super();
-		//#if !(polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint || tmp.needsNokiaUiForSystemAlerts)
-			//#if tmp.fullScreen && polish.midp2
-				//# super.setFullScreenMode( true );
-			//#endif			
-		//#endif
 			
 		// get the screen dimensions:
 		// this is a bit complicated, since Nokia's FullCanvas fucks
 		// up when calling super.getHeight(), so we need to use hardcoded values...
 		
-		//#ifdef tmp.menuFullScreen
-			//#if polish.needsManualMenu && !tmp.fullScreen
-				this.fullScreenHeight = getHeight();
-			//#else
-				//#if tmp.needsNokiaUiForSystemAlerts
-					//#ifdef polish.NokiaFullCanvasHeight:defined
-						//#= this.fullScreenHeight = ${ polish.NokiaFullCanvasHeight };
-					//#else
-						//# this.fullScreenHeight = getHeight();
-					//#endif
-				//#else
-					//#ifdef polish.FullCanvasHeight:defined
-						//#= this.fullScreenHeight = ${ polish.FullCanvasHeight };
-					//#else
-						//# this.fullScreenHeight = getHeight();
-					//#endif
-				//#endif
-			//#endif
-			this.screenHeight = this.fullScreenHeight; 
-		//#else
-			this.screenHeight = getHeight();
-		//#endif
-		this.originalScreenHeight = this.screenHeight;
-		
-		//#ifdef polish.ScreenWidth:defined
-			//#= this.screenWidth = ${ polish.ScreenWidth };
-		//#else
-			this.screenWidth = getWidth();
-		//#endif
+
 		//#if tmp.useScrollBar
 			this.scrollBar.screen = this;
 		//#endif
@@ -390,6 +357,9 @@ implements AccessibleCanvas
 			//#style menubar, menu, default
 			this.menuBar = new MenuBar( this );
 		//#endif
+		//#if tmp.fullScreen && polish.midp2 && !(polish.Bugs.fullScreenInPaint || tmp.needsNokiaUiForSystemAlerts)
+			super.setFullScreenMode( true );
+		//#endif
 		setTitle( title );
 	}
 		
@@ -399,6 +369,17 @@ implements AccessibleCanvas
 	private void init() {
 		//#debug
 		System.out.println("Initialising screen " + this );
+		//#if tmp.fullScreen && polish.midp2 && !(polish.Bugs.fullScreenInPaint || tmp.needsNokiaUiForSystemAlerts)
+			super.setFullScreenMode( true );
+		//#endif
+		//#ifdef tmp.menuFullScreen
+			this.fullScreenHeight = getHeight();
+		//#endif
+		this.screenHeight = getHeight();
+		this.originalScreenHeight = this.screenHeight;		
+		this.screenWidth = getWidth();
+
+		
 		boolean startAnimationThread = false;
 		if (StyleSheet.animationThread == null) {
 			StyleSheet.animationThread = new AnimationThread();
@@ -563,6 +544,12 @@ implements AccessibleCanvas
 		if (this.container != null) {
 			this.container.screen = this;
 		}
+		int availableWidth = this.screenWidth - this.marginLeft + this.marginRight;
+		//#if tmp.usingTitle
+			if (this.title != null) {
+				this.titleHeight = this.title.getItemHeight( availableWidth, availableWidth );
+			}
+		//#endif
 		//#if !tmp.menuFullScreen
 			this.screenHeight = getHeight();
 		//#elif tmp.useExternalMenuBar
@@ -570,11 +557,11 @@ implements AccessibleCanvas
 		//#endif
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 		
+		this.isInitialized = true;
 		// start the animmation thread if necessary: 
 		if (startAnimationThread) {
 			StyleSheet.animationThread.start();
 		}
-		this.isInitialized = true;
 	}
 		
 	/**
@@ -594,6 +581,12 @@ implements AccessibleCanvas
 		//#debug
 		System.out.println("calculateContentArea(" + x + ", " + y + ", " + width + ", " + height + ")");
 		
+		//#if tmp.usingTitle
+			if (this.title != null) {
+				int availableWidth = this.screenWidth - this.marginLeft - this.marginRight;
+				this.titleHeight = this.title.getItemHeight( availableWidth, availableWidth );
+			}
+		//#endif
 		x += this.marginLeft;
 		width -= this.marginLeft + this.marginRight;
 		y += this.marginTop;
@@ -667,17 +660,17 @@ implements AccessibleCanvas
 			//#ifdef polish.Screen.showNotifyCode:defined
 				//#include ${polish.Screen.showNotifyCode}
 			//#endif
-			//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
-				//# super.setFullScreenMode( true );
-				//#ifdef polish.FullCanvasHeight:defined
-					//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
-				//#else
-					this.fullScreenHeight = getHeight();
-				//#endif
-				this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
-				this.originalScreenHeight = this.screenHeight;
-				this.scrollIndicatorY = this.screenHeight + 1; //- this.scrollIndicatorWidth - 1;
-			//#endif
+//			//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
+//				//# super.setFullScreenMode( true );
+//				//#ifdef polish.FullCanvasHeight:defined
+//					//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
+//				//#else
+//					this.fullScreenHeight = getHeight();
+//				//#endif
+//				this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
+//				this.originalScreenHeight = this.screenHeight;
+//				this.scrollIndicatorY = this.screenHeight + 1; //- this.scrollIndicatorWidth - 1;
+//			//#endif
 			if (!this.isInitialized) {
 				init();
 			}
@@ -1744,17 +1737,21 @@ implements AccessibleCanvas
 			// The name of the field does not matter by the way. This is 
 			// a very interesting behaviour and should be analysed
 			// at some point...
-			//#ifdef polish.ScreenWidth:defined
-				//#= int width = ${polish.ScreenWidth}  - (this.marginLeft + this.marginRight);
-			//#else
-				int width = this.screenWidth - (this.marginLeft + this.marginRight);
-			//#endif
-			this.titleHeight = this.title.getItemHeight( width, width );			
+//			//#ifdef polish.ScreenWidth:defined
+//				//#= int width = ${polish.ScreenWidth}  - (this.marginLeft + this.marginRight);
+//			//#else
+//				int width = this.screenWidth - (this.marginLeft + this.marginRight);
+//			//#endif
+//			this.titleHeight = this.title.getItemHeight( width, width );			
 		} else {
 			this.title = null;
 			this.titleHeight = 0;
 		}
 		if (this.isInitialized && super.isShown()) {
+			if (this.title != null) {
+				int width = this.screenWidth - this.marginLeft - this.marginRight;
+				this.titleHeight = this.title.getItemHeight( width, width );
+			}
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 			//this.isInitialized = false;
 			repaint();
@@ -2275,6 +2272,8 @@ implements AccessibleCanvas
 
 	//#if tmp.menuFullScreen && !tmp.useExternalMenuBar
 	private void updateMenuTexts() {
+		//#debug
+		System.out.println("updating menu-command texts");
 		String left = null;
 		String right = null;
 		int menuLeftX = 0;
@@ -2310,7 +2309,9 @@ implements AccessibleCanvas
 			}
 			left = menuText;
 			//#ifdef polish.hasPointerEvents
-				this.menuLeftCommandX = menuLeftX + this.menuFont.stringWidth( menuText );
+				if (this.menuFont != null) {
+					this.menuLeftCommandX = menuLeftX + this.menuFont.stringWidth( menuText );
+				}
 			//#endif
 			if ( this.menuOpened ) {
 				// set cancel string:
@@ -2341,7 +2342,9 @@ implements AccessibleCanvas
 				menuRightX -= 2;
 			//#endif
 			//#ifdef polish.hasPointerEvents
-				this.menuRightCommandX = menuRightX - this.menuFont.stringWidth( menuText );
+				if (this.menuFont != null) {
+					this.menuRightCommandX = menuRightX - this.menuFont.stringWidth( menuText );
+				}
 			//#endif
 			right = menuText;
 		}
@@ -2465,16 +2468,15 @@ implements AccessibleCanvas
 					}					
 					// this is a command for the right side of the menu:
 					this.menuSingleRightCommand = cmd;
-					if (super.isShown()) {
-						updateMenuTexts();
-						repaint();
-					}
+					updateMenuTexts();
+					repaint();
 					return;
 				}
 			}
 			CommandItem menuItem = new CommandItem( cmd, this.menuContainer, commandStyle  );
 			menuItem.screen = this;
 			if ( this.menuCommands.size() == 0 ) {
+				// using this command as the single-left-command:
 				this.menuCommands.add( cmd );
 				this.menuContainer.add( menuItem );
 				this.menuSingleLeftCommand = cmd;
@@ -2503,10 +2505,8 @@ implements AccessibleCanvas
 					this.menuContainer.add( menuItem );
 				}
 			}
-			if (super.isShown()) {
-				updateMenuTexts();
-				repaint();
-			}
+			updateMenuTexts();
+			repaint();
 		//#endif
 	}
 	//#endif
@@ -2655,7 +2655,7 @@ implements AccessibleCanvas
 						}
 						int type = command.getCommandType(); 
 						if ( type == Command.BACK || type == Command.CANCEL ) {
-							System.out.println("removing right command [" + cmd.getLabel() + "], now using " + command.getLabel() + ", menuContainer=" + this.menuContainer.size() + ", menuCommands=" + this.menuCommands.size() );
+							//System.out.println("removing right command [" + cmd.getLabel() + "], now using " + command.getLabel() + ", menuContainer=" + this.menuContainer.size() + ", menuCommands=" + this.menuCommands.size() );
 							this.menuContainer.remove( i );
 							this.menuCommands.remove( i );
 							this.menuSingleRightCommand = command;
@@ -2663,10 +2663,8 @@ implements AccessibleCanvas
 						}
 					}
 				}
-				if (super.isShown()) {
-					updateMenuTexts();
-					repaint();
-				}
+				updateMenuTexts();
+				repaint();
 				return;
 			}
 			if (this.menuCommands == null) {
@@ -2683,10 +2681,8 @@ implements AccessibleCanvas
 			} else {
 				this.menuContainer.remove(index);			
 			}
-			if (super.isShown()) {
-				updateMenuTexts();
-				repaint();
-			}
+			updateMenuTexts();
+			repaint();
 		//#endif
 	}
 	//#endif
@@ -2996,22 +2992,46 @@ implements AccessibleCanvas
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	public void sizeChanged(int width, int height) {
-		 //#if !polish.Bugs.sizeChangedReportsWrongHeight 
+		 // # if !polish.Bugs.sizeChangedReportsWrongHeight 
 			if (!this.isInitialized) {
 				return;
 			}
 			//#debug
 			System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
+			boolean doInit = false;
+		
 			//#ifdef tmp.menuFullScreen
-				this.fullScreenHeight = height;
-				this.screenHeight = height - this.menuBarHeight;
-				this.originalScreenHeight = this.screenHeight;
+				doInit = width != this.screenWidth || height != this.originalScreenHeight;
+				if (doInit) {
+					this.fullScreenHeight = height;
+					this.screenHeight = height - this.menuBarHeight;
+					this.originalScreenHeight = this.screenHeight;
+					this.screenWidth = width;
+				}
 			//#else
-				this.screenHeight = height;
+				doInit = width != this.screenWidth || height != this.originalScreenHeight;
+				if (doInit) {
+					this.originalScreenHeight = this.screenHeight;
+					this.screenWidth = width;
+					this.screenHeight = height;
+				}
 			//#endif
-			init();
-			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight  );
-		//#endif
+			if (doInit) {
+				if (this.container != null) {
+					this.container.requestFullInit();
+				}
+				//#if tmp.useExternalMenuBar
+					this.menuBar.isInitialized = false;
+				//#endif
+				//#if tmp.usingTitle
+					if (this.title != null) {
+						this.title.isInitialized = false;
+					}
+				//#endif
+				init();
+				//calculateContentArea( 0, 0, this.screenWidth, this.screenHeight  ); done within init()
+			}
+		// # endif
 	}
 	//#endif
 	

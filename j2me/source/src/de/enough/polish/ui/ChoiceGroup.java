@@ -1241,6 +1241,7 @@ implements Choice
 			((Container)this.parent).setScrollYOffset( this.popupParentOpenY );
 			this.internalX = -9999;
 		}
+		this.isInitialized = false;
 	}
 	//#endif
 

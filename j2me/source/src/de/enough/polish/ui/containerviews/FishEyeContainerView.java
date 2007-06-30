@@ -471,7 +471,7 @@ public class FishEyeContainerView extends ContainerView {
 			Item item = this.focusedItem;
 			int backgroundWidth;
 			int backgroundHeight;
-			if ( this.isRemoveText ) {
+			if ( this.isRemoveText && this.focusedLabel != null) {
 				backgroundWidth = Math.max( item.itemWidth, this.focusedLabel.getItemWidth( lineWidth, lineWidth ) );
 				backgroundHeight = item.itemHeight + this.focusedLabel.itemHeight + itemLabelDiff;
 			} else {

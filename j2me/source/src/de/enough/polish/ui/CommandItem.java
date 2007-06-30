@@ -327,11 +327,11 @@ public class CommandItem extends IconItem {
 			}
 			return true;
 		} else if ( this.hasChildren && this.appearanceMode != PLAIN ) { // has children but is not open
-			if ( gameAction == Canvas.FIRE || gameAction == Canvas.RIGHT ) {
+			if ( (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) || (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) ) {
 				open( true );
 				return true;
 			}
-		} else if ( gameAction == Canvas.FIRE  && this.appearanceMode != PLAIN ){ // has no children:
+		} else if ( gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5  && this.appearanceMode != PLAIN ){ // has no children:
 			// fire command action event:
 			//#debug
 			System.out.println( this + " invoking command " + this.command.getLabel() );

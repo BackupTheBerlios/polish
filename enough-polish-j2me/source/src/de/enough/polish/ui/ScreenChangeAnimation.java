@@ -119,9 +119,6 @@ public abstract class ScreenChangeAnimation
 	 */
 	public ScreenChangeAnimation() {
 		// default constructor
-		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint
-			setFullScreenMode(true);
-		//#endif
 	}
 	
 	/**
@@ -196,10 +193,12 @@ public abstract class ScreenChangeAnimation
 	
 	/**
 	 * Notifies this animation that it will be shown shortly.
-	 * This is ignored by the default implementation.
+	 * The default implementation switches into fullscreen mode
 	 */
 	public void showNotify() {
-		// ignore
+		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint
+			setFullScreenMode(true);
+		//#endif
 	}
 	
 	/**

@@ -283,4 +283,8 @@ public class ScreenInfo {
 			item.paint( 0, 0, 0, screenWidth, g );
 		}
 	}
+	
+	public static void setCurrentScreenInfo( int id ) {
+		
+	}
 }

@@ -343,8 +343,8 @@ extends ItemView
 				//#else
 					columnIndex++;
 				//#endif
-				item.relativeY = myContentHeight;
 				item.relativeX = columnX; // when equal or normal column widths are used, this is below changed again, since the widhs are just calculated right now.
+				item.relativeY = myContentHeight;
 				columnX += availableWidth;
 				if (columnIndex == this.numberOfColumns) {
 					//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
@@ -544,20 +544,60 @@ extends ItemView
 	 * @param g the Graphics on which this item should be painted.
 	 */
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
-		//int endY = clipY + clipHeight;
-		for (int i = 0; i < myItems.length; i++) {
-			if (i != this.focusedIndex) {
-				Item item = myItems[i];
-				int itemY = y + item.relativeY;
-				//if (itemY < endY && itemY + item.itemHeight > clipY ) {
+		int focusedLeftBorder = leftBorder;
+		int focusedRightBorder = rightBorder;
+		//#ifdef tmp.useTable
+			if (this.columnsSetting == NO_COLUMNS || myItems.length == 1) {
+		//#endif
+				for (int i = 0; i < myItems.length; i++) {
+					if (i != this.focusedIndex) {
+						Item item = myItems[i];
+						System.out.println("item " + i + " at " + item.relativeX + "/" + item.relativeY);
+						int itemX = x + item.relativeX;
+						int itemY = y + item.relativeY;
+						paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+					}
+				}
+		//#ifdef tmp.useTable
+			} else {
+				int columnIndex = 0;
+				//int rowIndex = 0;
+				for (int i = 0; i < myItems.length; i++) {
+					Item item = myItems[i];
 					int itemX = x + item.relativeX;
-					paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
-				//}
+					int itemY = y + item.relativeY;
+					int columnWidth = this.columnsWidths[ columnIndex ];
+					//#if polish.css.colspan
+						if (item.colSpan > 1) {						
+							for (int j = columnIndex + 1; j < columnIndex + item.colSpan; j++) {
+								columnWidth += this.columnsWidths[ j ] + this.paddingHorizontal;
+							}
+							//System.out.println("Painting item " + i + "/" + item + " with width=" + item.itemWidth + " and with increased colwidth of " + columnWidth + " (prev=" + this.columnsWidths[ columnIndex ] + ")" );
+						}
+					//#endif
+					leftBorder = itemX;
+					rightBorder = itemX + columnWidth;
+					if (i == this.focusedIndex) {
+						focusedLeftBorder = leftBorder;
+						focusedRightBorder = rightBorder;
+					} else {
+						paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+					} 
+					//#if polish.css.colspan
+						columnIndex += item.colSpan;
+					//#else
+						columnIndex++;
+					//#endif
+		
+					if (columnIndex == this.numberOfColumns) {
+						columnIndex = 0;
+					}
+				}				
 			}
-		}
+		//#endif
 		// paint focused item last:
 		if (this.focusedItem != null) {
-			paintItem(this.focusedItem, this.focusedIndex, x + this.focusedItem.relativeX, y + this.focusedItem.relativeY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+			paintItem(this.focusedItem, this.focusedIndex, x + this.focusedItem.relativeX, y + this.focusedItem.relativeY, focusedLeftBorder, focusedRightBorder, clipX, clipY, clipWidth, clipHeight, g);
 		}
 		
 //		int focusedX = x;
@@ -607,7 +647,7 @@ extends ItemView
 //						focusedY = y;
 //						focusedX = x;
 //						focusedRightBorder = x + columnWidth;
-//						//System.out.println("focusedItem in table: x=" + focusedX + ", rocusedRightBorder=" + focusedRightBorder + ", rightBorder=" + rightBorder +  ", isInitialized=" + this.focusedItem.isInitialised +  ", itemWidth=" + item.getItemWidth( columnWidth, columnWidth ));
+//						//System.out.println("focusedItem in table: x=" + focusedX + ", focusedRightBorder=" + focusedRightBorder + ", rightBorder=" + rightBorder +  ", isInitialized=" + this.focusedItem.isInitialised +  ", itemWidth=" + item.getItemWidth( columnWidth, columnWidth ));
 //						// item.getItemHeight( columnWidth, columnWidth );
 //					} else {
 //						paintItem( item, i, x, y, x, x + columnWidth, clipX, clipY, clipWidth, clipHeight,  g );
