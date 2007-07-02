@@ -27,6 +27,7 @@ public class BuildListFinalizer
 		StringBuffer userAgents = new StringBuffer();
 		String tmpUserAgents = device.getCapability("wap.userAgent");
 		String screenSize = device.getCapability("ScreenSize");
+		String bitsPerPixel = device.getCapability("BitsPerPixel");
 
 		if (tmpUserAgents != null) {
 			StringTokenizer st = new StringTokenizer(tmpUserAgents, "\u0001");
@@ -58,6 +59,8 @@ public class BuildListFinalizer
 		sb.append(userAgents);
 		sb.append("\t");
 		sb.append(screenSize);
+		sb.append("x");
+		sb.append(bitsPerPixel);
 		sb.append("\r\n");
 
 		try {
