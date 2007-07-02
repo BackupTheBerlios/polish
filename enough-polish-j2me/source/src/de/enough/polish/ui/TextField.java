@@ -828,6 +828,9 @@ public class TextField extends StringItem
 		private boolean isNumeric;
 		private boolean isDecimal;
 		private boolean isEmail;
+		private boolean characterInserted;
+		private char 	character;
+		private int 	currentLength; 
 
 		private String caretRowFirstPart;
 		private String caretRowLastPart;
@@ -2628,362 +2631,53 @@ public class TextField extends StringItem
 							//#endif
 						}
 					//#endif
-					synchronized ( this.lock ) {
-					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-						//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} && !this.isNumeric && !this.isUneditable) {
-							if (this.inputMode == MODE_NUMBERS) {
-								this.inputMode = MODE_LOWERCASE;
-							} else {
-								this.inputMode = MODE_NUMBERS;
-							}
-							//#if tmp.useInputInfo
-								updateInfo();
-							//#endif
-							if (this.caretChar != this.editingCaretChar) {
-								insertCharacter();
-							}
-							if (this.inputMode == MODE_FIRST_UPPERCASE) {
-								this.nextCharUppercase = true;
-							} else {
-								this.nextCharUppercase = false;
-							}
-							//# return true;
-						//# }
-					//#endif
-					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-						//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
-					//#else
-					if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable) {
-					//#endif
-						if (this.nextCharUppercase && this.inputMode == MODE_LOWERCASE) {
-							this.nextCharUppercase = false;
-						} else {
-							this.inputMode++;							
-						}
-						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-							if (this.inputMode > MODE_UPPERCASE) {
-								//#if polish.TextField.allowNativeModeSwitch
-									if (this.inputMode > MODE_NATIVE) {
-										this.inputMode = MODE_LOWERCASE;
-									} else {
-										this.inputMode = MODE_NATIVE;
-									}
-								//#else
-									this.inputMode = MODE_LOWERCASE;
-								//#endif
-							}
-						//#elif polish.TextField.allowNativeModeSwitch
-							if (this.inputMode > MODE_NATIVE) {
-								this.inputMode = MODE_LOWERCASE;
-							}
-						//#else
-							if (this.inputMode > MODE_NUMBERS) {
-								this.inputMode = MODE_LOWERCASE;
-							}
-						//#endif
-						//#if tmp.useInputInfo
-							updateInfo();
-						//#endif
-						if (this.caretChar != this.editingCaretChar) {
-							insertCharacter();
-						}
-						if (this.inputMode == MODE_FIRST_UPPERCASE) {
-							this.nextCharUppercase = true;
-						} else {
-							this.nextCharUppercase = false;
-						}
-						return true;
-					}
-					int currentLength = (this.text == null ? 0 : this.text.length());
-					if (this.inputMode == MODE_NUMBERS && !this.isUneditable) {
-						if ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 )  
-						{
-							if (currentLength >= this.maxSize) {
-								// ignore this key event - also don't forward it to the parent component:
-								return true;
-							}
-							this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
-							//#ifdef polish.css.font-bitmap
-								if (this.bitMapFont != null) {
-									this.caretViewer = this.bitMapFont.getViewer("" + this.caretChar);
-								}
-							//#endif
-							insertCharacter();
-							return true;
-						} else if ( this.isDecimal ) {
-							//System.out.println("handling key for DECIMAL TextField");
-							if (currentLength < this.maxSize 
-									&& ( keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR )
-									&& (this.text.indexOf( Locale.DECIMAL_SEPARATOR) == -1)
-									) 
-							{
-								
-								this.caretChar = Locale.DECIMAL_SEPARATOR;
-								//#ifdef polish.css.font-bitmap
-									if (this.bitMapFont != null) {
-										this.caretViewer = this.bitMapFont.getViewer("" + Locale.DECIMAL_SEPARATOR);
-									}
-								//#endif
-								insertCharacter();
-								return true;								
-							}
-						}
-						
-					}
-					if ( (!this.isNumeric) //this.inputMode != MODE_NUMBERS 
-							&& !this.isUneditable
-							&& currentLength < this.maxSize 
-							&& ((keyCode >= Canvas.KEY_NUM0 
-							&& keyCode <= Canvas.KEY_NUM9)
-							|| (keyCode == Canvas.KEY_POUND ) 
-							|| (keyCode == Canvas.KEY_STAR )
-							//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
-								//#= || (keyCode == ${polish.key.AddSymbolKey} )
-							//#endif
-							)) 
-					{	
-						//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
-							//#if false
-								int addSymbolCode = 0;
-							//#else
-								//#= int addSymbolCode = ${polish.key.AddSymbolKey};
-							//#endif
-							if (keyCode == addSymbolCode ) {
-								showSymbolsList();
-								return true;
-							}
-						//#endif
-						String alphabet;
-						if (keyCode == Canvas.KEY_POUND) {
-							alphabet = charactersKeyPound;
-						} else if (keyCode == Canvas.KEY_STAR) {
-							alphabet = charactersKeyStar;
-						} else {
-							alphabet = this.characters[ keyCode - Canvas.KEY_NUM0 ];
-						}
-						if (alphabet == null || (alphabet.length() == 0)) {
-							return false;
-						}
-						this.lastInputTime = System.currentTimeMillis();
-						char newCharacter;
-						int alphabetLength = alphabet.length();
-						if (keyCode == this.lastKey && (this.caretChar != this.editingCaretChar)) {
-							this.characterIndex++;
-							if (this.characterIndex >= alphabetLength) {
-								this.characterIndex = 0;
-							}
-						} else {
-							// insert the last character into the text:
-							if (this.caretChar != this.editingCaretChar) {
-								insertCharacter();
-								if (currentLength + 1 >= this.maxSize) {
-									return true;
-								}
-							}
-							this.characterIndex = 0;
-							this.lastKey = keyCode;
-						}
-						newCharacter = alphabet.charAt( this.characterIndex );
-						//System.out.println("TextField.handleKeyPressed(): newCharacter=" + newCharacter + ", currentLength=" + currentLength + ", maxSize=" + this.maxSize + ", text.length()=" + this.text.length() );
-						if ( this.inputMode == MODE_UPPERCASE 
-								|| this.nextCharUppercase ) 
-						{
-							newCharacter = Character.toUpperCase(newCharacter);
-						}
-						//#ifdef polish.css.font-bitmap
-						if (this.bitMapFont != null) {
-							this.caretViewer = this.bitMapFont.getViewer("" + newCharacter);
-						} else {
-						//#endif
-							this.caretWidth = this.font.charWidth( newCharacter );
-						//#ifdef polish.css.font-bitmap
-						}
-						//#endif
-						this.caretChar = newCharacter;
-						if (alphabetLength == 1) {
-							insertCharacter();
-						}
-						return true;
-					}
-
-					boolean characterInserted = false;
-					char character = this.caretChar;
-					// allow backspace:
-					if ( currentLength > 0 ) {
-						if (this.isUneditable) {
-							return false;
-						}
-						//#ifdef polish.key.ClearKey:defined
-							//#= if (keyCode == ${polish.key.ClearKey}) {
-						//#else
-							if ( keyCode == -8 ) {
-						//#endif
-							//System.out.println("backspace");
-							return deleteCurrentChar();
-						}
-					}				
-					if (this.caretChar != this.editingCaretChar) {
-						insertCharacter();
-						characterInserted = true;
-					}
 					
-					// navigate the caret:
+					synchronized ( this.lock ) {
+						
+					this.currentLength = (this.text == null ? 0 : this.text.length());
+					
 					if (this.text == null) {
 						return false;
 					}
-					if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
-						//#ifdef polish.css.font-bitmap
-							if (this.bitMapFontViewer != null) {
-								// a bitmap-font is used
-								return false;
-							}
-						//#endif
-						// this TextField has a normal font:
-						if (this.caretRow ==  0) {
-							return false;
-						} 
-						// restore the text-line:
-						this.caretRow--;
-						this.caretY -= this.rowHeight;
-						this.internalY = this.caretY;
-						String fullLine = this.realTextLines[ this.caretRow ];
-						int previousCaretRowFirstLength = this.caretColumn;
-						setCaretRow(fullLine, this.caretColumn );
-						this.caretPosition -= previousCaretRowFirstLength + (this.originalRowText.length() - this.caretColumn);
-						this.internalX = 0;
-						this.internalY = this.caretRow * this.rowHeight;
-						//#if tmp.updateDeleteCommand
-							updateDeleteCommand( this.text );
-						//#endif
-						return true;
-					} else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
-						//#ifdef polish.css.font-bitmap
-							if (this.bitMapFontViewer != null) {
-								// a bitmap-font is used
-								return false;
-							}
-						//#endif
-						if (this.textLines == null || this.caretRow >= this.textLines.length - 1) {
-							return false;
-						} 
-			
-						String lastLine = this.originalRowText;
-						int lastLineLength = lastLine.length();
-						if (characterInserted) {
-							lastLineLength++;
-						}
-						this.caretRow++;	
-						this.caretY += this.rowHeight;
-						this.internalY = this.caretY;
-						int lastCaretRowLastPartLength = lastLineLength - this.caretColumn;
-						String nextLine = this.realTextLines[ this.caretRow ];
-						setCaretRow( nextLine, this.caretColumn );
-						this.caretPosition += (lastCaretRowLastPartLength + this.caretColumn );
-						this.internalY = this.caretRow * this.rowHeight;
-						//#if tmp.updateDeleteCommand
-							updateDeleteCommand( this.text );
-						//#endif
-						return true;
-					} else if (this.isUneditable) {
+					else if (this.isUneditable) {
 						return false;
-					} else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
-						//#ifdef polish.css.font-bitmap
-							if (this.bitMapFontViewer != null) {
-								// a bitmap-font is used
-								// delete last character:
-								return deleteCurrentChar();
-							}
-						//#endif
-						if (this.caretColumn > 0) {
-							this.caretPosition--;
-							this.caretColumn--;
-							setCaretRow( this.originalRowText, this.caretColumn );
-							//#if tmp.updateDeleteCommand
-								updateDeleteCommand( this.text );
-							//#endif
-							return true;
-						} else if ( this.caretRow > 0) {
-							// this is just a visual line-break:
-							//this.caretPosition--;
-							this.caretRow--;
-							String prevLine = this.realTextLines[ this.caretRow ];
-							int carColumn = prevLine.length();
-							boolean isOnNewlineChar = prevLine.charAt( carColumn - 1 ) == '\n';
-							if (isOnNewlineChar) {
-								this.caretPosition--;
-								carColumn--;
-							}
-							setCaretRow(prevLine, carColumn );
-							//System.out.println(this + ".handleKeyPressed()/font4: caretX=" + this.caretX);
-							this.caretY -= this.rowHeight;
-							this.internalY = this.caretY;
-							//#if tmp.updateDeleteCommand
-								updateDeleteCommand( this.text );
-							//#endif
-							return true;
-						}
-					} else if ( gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) {
-						//#ifdef polish.debug.debug
-						if (this.isPassword) {
-							//#debug
-							System.out.println("originalRowText=" + this.originalRowText );
-						}
-						//#endif
-						if (characterInserted) {
-							//System.out.println("right but character inserted");
-							return true;
-						}
-						//#ifdef polish.css.font-bitmap
-							if (this.bitMapFontViewer != null) {
-								// a bitmap-font is used
-								return false;
-							}
-						//#endif
-						boolean isOnNewlineChar = this.caretColumn < this.originalRowText.length() 
-												&& this.originalRowText.charAt( this.caretColumn ) == '\n';
-						if (this.caretColumn < this.originalRowText.length() && !isOnNewlineChar ) {
-							//System.out.println("right not in last column");
-							this.caretColumn++;
-							this.caretPosition++;
-							setCaretRow( this.originalRowText, this.caretColumn );
-							//#if tmp.updateDeleteCommand
-								updateDeleteCommand( this.text );
-							//#endif
-							return true;
-						} else if (this.caretRow < this.realTextLines.length - 1) {
-							//System.out.println("right in not the last row");
-							this.caretRow++;								
-							if (isOnNewlineChar) {
-								this.caretPosition++;
-							}
-							this.originalRowText = this.realTextLines[ this.caretRow ];
-							if (characterInserted) {
-								this.caretX = this.font.charWidth(character);
-								//System.out.println(this + ".handleKeyPressed()/font6: caretX=" + this.caretX);
-								this.caretColumn = 1;
-							} else {
-								setCaretRow( this.originalRowText, 0 );
-							}
-							this.caretY += this.rowHeight;
-							this.internalY = this.caretY;
-							//#if tmp.updateDeleteCommand
-								updateDeleteCommand( this.text );
-							//#endif
-							return true;
-						} else if (characterInserted) {
-							//System.out.println("right after character insertion");
-							// a character has been inserted at the last column of the last row:
-							this.caretX += this.caretWidth;
-							this.caretRowFirstPart += character;
-							this.caretColumn++;
-							this.caretPosition++;
-							//#if tmp.updateDeleteCommand
-								updateDeleteCommand( this.text );
-							//#endif
-							return true;
-						}
+					}  
+					
+					// Set the input mode
+					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+					//#= if ( keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey) {
+					//#else
+					if ( keyCode == KEY_CHANGE_MODE) {
+					//#endif
+						return handleKeyMode(keyCode, gameAction);
 					}
+					
+					// Insert a character
+					if (	keyCode >= Canvas.KEY_NUM0 	&& 
+							keyCode <= Canvas.KEY_NUM9	|| 
+							keyCode == Canvas.KEY_POUND || 
+							keyCode == Canvas.KEY_STAR)
+						return handleKeyInsert(keyCode, gameAction);
 
+					characterInserted = false;
+					character = this.caretChar;
+					
+					// Backspace
+					//#ifdef polish.key.ClearKey:defined
+					//#= if (keyCode == ${polish.key.ClearKey}) {
+					//#else
+						if ( keyCode == -8 ) {
+					//#endif
+						return handleKeyClear(keyCode, gameAction);
+					}
+					
+					// Navigate the caret
+					if ( 	gameAction == Canvas.UP 	|| 
+							gameAction == Canvas.DOWN 	||
+							gameAction == Canvas.LEFT 	||
+							gameAction == Canvas.RIGHT  )
+						return handleKeyNavigation(keyCode, gameAction);
+					
 					if (true) {
 						return false;
 					}
@@ -2995,7 +2689,7 @@ public class TextField extends StringItem
 		//#ifndef polish.hasPointerEvents
 			String currentText = this.isPassword ? this.passwordText : this.text;
 			if (this.enableDirectInput) {
-				int currentLength = (this.text == null ? 0 : this.text.length());
+				this.currentLength = (this.text == null ? 0 : this.text.length());
 				if ( 	keyCode >= Canvas.KEY_NUM0 && 
 						keyCode <= Canvas.KEY_NUM9) 
 				{	
@@ -3041,6 +2735,363 @@ public class TextField extends StringItem
 		}
 	}
 	//#endif
+	
+	protected boolean handleKeyInsert(int keyCode, int gameAction)
+	{
+		currentLength = (this.text == null ? 0 : this.text.length());
+		if (this.inputMode == MODE_NUMBERS && !this.isUneditable) {
+			if ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 )  
+			{
+				if (currentLength >= this.maxSize) {
+					// ignore this key event - also don't forward it to the parent component:
+					return true;
+				}
+				this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+				//#ifdef polish.css.font-bitmap
+					if (this.bitMapFont != null) {
+						this.caretViewer = this.bitMapFont.getViewer("" + this.caretChar);
+					}
+				//#endif
+				insertCharacter();
+				return true;
+			} else if ( this.isDecimal ) {
+				//System.out.println("handling key for DECIMAL TextField");
+				if (currentLength < this.maxSize 
+						&& ( keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR )
+						&& (this.text.indexOf( Locale.DECIMAL_SEPARATOR) == -1)
+						) 
+				{
+					
+					this.caretChar = Locale.DECIMAL_SEPARATOR;
+					//#ifdef polish.css.font-bitmap
+						if (this.bitMapFont != null) {
+							this.caretViewer = this.bitMapFont.getViewer("" + Locale.DECIMAL_SEPARATOR);
+						}
+					//#endif
+					insertCharacter();
+					return true;								
+				}
+			}
+			
+		}
+		if ( (!this.isNumeric) //this.inputMode != MODE_NUMBERS 
+				&& !this.isUneditable
+				&& currentLength < this.maxSize 
+				&& ((keyCode >= Canvas.KEY_NUM0 
+				&& keyCode <= Canvas.KEY_NUM9)
+				|| (keyCode == Canvas.KEY_POUND ) 
+				|| (keyCode == Canvas.KEY_STAR )
+				//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
+					//#= || (keyCode == ${polish.key.AddSymbolKey} )
+				//#endif
+				)) 
+		{	
+			//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
+				//#if false
+					int addSymbolCode = 0;
+				//#else
+					//#= int addSymbolCode = ${polish.key.AddSymbolKey};
+				//#endif
+				if (keyCode == addSymbolCode ) {
+					showSymbolsList();
+					return true;
+				}
+			//#endif
+			String alphabet;
+			if (keyCode == Canvas.KEY_POUND) {
+				alphabet = charactersKeyPound;
+			} else if (keyCode == Canvas.KEY_STAR) {
+				alphabet = charactersKeyStar;
+			} else {
+				alphabet = this.characters[ keyCode - Canvas.KEY_NUM0 ];
+			}
+			if (alphabet == null || (alphabet.length() == 0)) {
+				return false;
+			}
+			this.lastInputTime = System.currentTimeMillis();
+			char newCharacter;
+			int alphabetLength = alphabet.length();
+			if (keyCode == this.lastKey && (this.caretChar != this.editingCaretChar)) {
+				this.characterIndex++;
+				if (this.characterIndex >= alphabetLength) {
+					this.characterIndex = 0;
+				}
+			} else {
+				// insert the last character into the text:
+				if (this.caretChar != this.editingCaretChar) {
+					insertCharacter();
+					if (currentLength + 1 >= this.maxSize) {
+						return true;
+					}
+				}
+				this.characterIndex = 0;
+				this.lastKey = keyCode;
+			}
+			newCharacter = alphabet.charAt( this.characterIndex );
+			//System.out.println("TextField.handleKeyPressed(): newCharacter=" + newCharacter + ", currentLength=" + currentLength + ", maxSize=" + this.maxSize + ", text.length()=" + this.text.length() );
+			if ( this.inputMode == MODE_UPPERCASE 
+					|| this.nextCharUppercase ) 
+			{
+				newCharacter = Character.toUpperCase(newCharacter);
+			}
+			//#ifdef polish.css.font-bitmap
+			if (this.bitMapFont != null) {
+				this.caretViewer = this.bitMapFont.getViewer("" + newCharacter);
+			} else {
+			//#endif
+				this.caretWidth = this.font.charWidth( newCharacter );
+			//#ifdef polish.css.font-bitmap
+			}
+			//#endif
+			this.caretChar = newCharacter;
+			if (alphabetLength == 1) {
+				insertCharacter();
+			}
+			return true;
+		}
+		
+		return false;
+	}
+	
+	protected boolean handleKeyClear(int keyCode, int gameAction)
+	{
+		if ( currentLength > 0 ) {
+			if (this.isUneditable) {
+				return false;
+			}
+		
+			return deleteCurrentChar();
+		}
+		
+		return false;
+	}
+	
+	protected boolean handleKeyMode(int keyCode, int gameAction)
+	{
+		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+		//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} && !this.isNumeric && !this.isUneditable) {
+			if (this.inputMode == MODE_NUMBERS) {
+				this.inputMode = MODE_LOWERCASE;
+			} else {
+				this.inputMode = MODE_NUMBERS;
+			}
+			//#if tmp.useInputInfo
+				updateInfo();
+			//#endif
+			if (this.caretChar != this.editingCaretChar) {
+				insertCharacter();
+			}
+			if (this.inputMode == MODE_FIRST_UPPERCASE) {
+				this.nextCharUppercase = true;
+			} else {
+				this.nextCharUppercase = false;
+			}
+			//# return true;
+		//# }
+		//#endif
+		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+			//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
+		//#else
+		if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable) {
+		//#endif
+			if (this.nextCharUppercase && this.inputMode == MODE_LOWERCASE) {
+				this.nextCharUppercase = false;
+			} else {
+				this.inputMode++;							
+			}
+			//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+				if (this.inputMode > MODE_UPPERCASE) {
+					//#if polish.TextField.allowNativeModeSwitch
+						if (this.inputMode > MODE_NATIVE) {
+							this.inputMode = MODE_LOWERCASE;
+						} else {
+							this.inputMode = MODE_NATIVE;
+						}
+					//#else
+						this.inputMode = MODE_LOWERCASE;
+					//#endif
+				}
+			//#elif polish.TextField.allowNativeModeSwitch
+				if (this.inputMode > MODE_NATIVE) {
+					this.inputMode = MODE_LOWERCASE;
+				}
+			//#else
+				if (this.inputMode > MODE_NUMBERS) {
+					this.inputMode = MODE_LOWERCASE;
+				}
+			//#endif
+			//#if tmp.useInputInfo
+				updateInfo();
+			//#endif
+			if (this.caretChar != this.editingCaretChar) {
+				insertCharacter();
+			}
+			if (this.inputMode == MODE_FIRST_UPPERCASE) {
+				this.nextCharUppercase = true;
+			} else {
+				this.nextCharUppercase = false;
+			}
+			return true;
+		}
+		
+		return false;
+	}
+	
+	protected boolean handleKeyNavigation(int keyCode, int gameAction)
+	{
+		if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
+			//#ifdef polish.css.font-bitmap
+				if (this.bitMapFontViewer != null) {
+					// a bitmap-font is used
+					return false;
+				}
+			//#endif
+			// this TextField has a normal font:
+			if (this.caretRow ==  0) {
+				return false;
+			} 
+			// restore the text-line:
+			this.caretRow--;
+			this.caretY -= this.rowHeight;
+			this.internalY = this.caretY;
+			String fullLine = this.realTextLines[ this.caretRow ];
+			int previousCaretRowFirstLength = this.caretColumn;
+			setCaretRow(fullLine, this.caretColumn );
+			this.caretPosition -= previousCaretRowFirstLength + (this.originalRowText.length() - this.caretColumn);
+			this.internalX = 0;
+			this.internalY = this.caretRow * this.rowHeight;
+			//#if tmp.updateDeleteCommand
+				updateDeleteCommand( this.text );
+			//#endif
+			return true;
+		} else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
+			//#ifdef polish.css.font-bitmap
+				if (this.bitMapFontViewer != null) {
+					// a bitmap-font is used
+					return false;
+				}
+			//#endif
+			if (this.textLines == null || this.caretRow >= this.textLines.length - 1) {
+				return false;
+			} 
+
+			String lastLine = this.originalRowText;
+			int lastLineLength = lastLine.length();
+			if (characterInserted) {
+				lastLineLength++;
+			}
+			this.caretRow++;	
+			this.caretY += this.rowHeight;
+			this.internalY = this.caretY;
+			int lastCaretRowLastPartLength = lastLineLength - this.caretColumn;
+			String nextLine = this.realTextLines[ this.caretRow ];
+			setCaretRow( nextLine, this.caretColumn );
+			this.caretPosition += (lastCaretRowLastPartLength + this.caretColumn );
+			this.internalY = this.caretRow * this.rowHeight;
+			//#if tmp.updateDeleteCommand
+				updateDeleteCommand( this.text );
+			//#endif
+			return true;
+		}else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
+			//#ifdef polish.css.font-bitmap
+			if (this.bitMapFontViewer != null) {
+				// a bitmap-font is used
+				// delete last character:
+				return deleteCurrentChar();
+			}
+			//#endif
+			if (this.caretColumn > 0) {
+				this.caretPosition--;
+				this.caretColumn--;
+				setCaretRow( this.originalRowText, this.caretColumn );
+				//#if tmp.updateDeleteCommand
+					updateDeleteCommand( this.text );
+				//#endif
+				return true;
+			} else if ( this.caretRow > 0) {
+				// this is just a visual line-break:
+				//this.caretPosition--;
+				this.caretRow--;
+				String prevLine = this.realTextLines[ this.caretRow ];
+				int carColumn = prevLine.length();
+				boolean isOnNewlineChar = prevLine.charAt( carColumn - 1 ) == '\n';
+				if (isOnNewlineChar) {
+					this.caretPosition--;
+					carColumn--;
+				}
+				setCaretRow(prevLine, carColumn );
+				//System.out.println(this + ".handleKeyPressed()/font4: caretX=" + this.caretX);
+				this.caretY -= this.rowHeight;
+				this.internalY = this.caretY;
+				//#if tmp.updateDeleteCommand
+					updateDeleteCommand( this.text );
+				//#endif
+				return true;
+			}
+		} else if ( gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) {
+			//#ifdef polish.debug.debug
+			if (this.isPassword) {
+				//#debug
+				System.out.println("originalRowText=" + this.originalRowText );
+			}
+			//#endif
+			if (characterInserted) {
+				//System.out.println("right but character inserted");
+				return true;
+			}
+			//#ifdef polish.css.font-bitmap
+				if (this.bitMapFontViewer != null) {
+					// a bitmap-font is used
+					return false;
+				}
+			//#endif
+			boolean isOnNewlineChar = this.caretColumn < this.originalRowText.length() 
+									&& this.originalRowText.charAt( this.caretColumn ) == '\n';
+			if (this.caretColumn < this.originalRowText.length() && !isOnNewlineChar ) {
+				//System.out.println("right not in last column");
+				this.caretColumn++;
+				this.caretPosition++;
+				setCaretRow( this.originalRowText, this.caretColumn );
+				//#if tmp.updateDeleteCommand
+					updateDeleteCommand( this.text );
+				//#endif
+				return true;
+			} else if (this.caretRow < this.realTextLines.length - 1) {
+				//System.out.println("right in not the last row");
+				this.caretRow++;								
+				if (isOnNewlineChar) {
+					this.caretPosition++;
+				}
+				this.originalRowText = this.realTextLines[ this.caretRow ];
+				if (characterInserted) {
+					this.caretX = this.font.charWidth(character);
+					//System.out.println(this + ".handleKeyPressed()/font6: caretX=" + this.caretX);
+					this.caretColumn = 1;
+				} else {
+					setCaretRow( this.originalRowText, 0 );
+				}
+				this.caretY += this.rowHeight;
+				this.internalY = this.caretY;
+				//#if tmp.updateDeleteCommand
+					updateDeleteCommand( this.text );
+				//#endif
+				return true;
+			} else if (characterInserted) {
+				//System.out.println("right after character insertion");
+				// a character has been inserted at the last column of the last row:
+				this.caretX += this.caretWidth;
+				this.caretRowFirstPart += character;
+				this.caretColumn++;
+				this.caretPosition++;
+				//#if tmp.updateDeleteCommand
+					updateDeleteCommand( this.text );
+				//#endif
+				return true;
+			}
+		}
+		
+		return false;
+	}
 	
 	//#if !polish.blackberry && tmp.directInput
 	/* (non-Javadoc)
@@ -3325,7 +3376,11 @@ public class TextField extends StringItem
 							//#ifdef tmp.allowDirectInput
 								if (this.enableDirectInput) {
 							//#endif
-									deleteCurrentChar();
+									//#ifdef polish.key.ClearKey:defined
+									//#= handleKeyClear(${polish.key.ClearKey},0);
+									//#else
+									handleKeyClear(-8,0);
+									//#endif
 							//#ifdef tmp.allowDirectInput
 								} else {
 									String myText = getString();
