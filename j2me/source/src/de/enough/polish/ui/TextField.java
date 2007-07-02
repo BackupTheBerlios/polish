@@ -726,11 +726,11 @@ public class TextField extends StringItem
 		//#else
 			private static final int INPUT_TIMEOUT = 1000;
 		//#endif
-		private static final int MODE_LOWERCASE = 0;
-		private static final int MODE_FIRST_UPPERCASE = 1; // only the first character should be written in uppercase
-		private static final int MODE_UPPERCASE = 2;
-		static final int MODE_NUMBERS = 3;
-		private static final int MODE_NATIVE = 4;
+		public static final int MODE_LOWERCASE = 0;
+		public static final int MODE_FIRST_UPPERCASE = 1; // only the first character should be written in uppercase
+		public static final int MODE_UPPERCASE = 2;
+		public static final int MODE_NUMBERS = 3;
+		public static final int MODE_NATIVE = 4;
 		//#ifdef polish.key.ChangeInputModeKey:defined
 			//#= private static final int KEY_CHANGE_MODE = ${polish.key.ChangeInputModeKey};
 		//#else
@@ -2459,7 +2459,7 @@ public class TextField extends StringItem
 	//#endif
 
 	//#if tmp.directInput && tmp.useInputInfo
-	private void updateInfo() {
+	protected void updateInfo() {
 		if (this.isUneditable || !this.isShowInputInfo) {
 			// don't show info when this field is not editable
 			return;
