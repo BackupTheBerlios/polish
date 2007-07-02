@@ -43,6 +43,11 @@ public class TextBuilder {
 		return getTextElement(currentElement);
 	}
 	
+	public int getCurrentIndex()
+	{
+		return this.currentElement;
+	}
+	
 	public int getCurrentAlign()
 	{
 		return this.currentAlign;
@@ -145,9 +150,9 @@ public class TextBuilder {
 		return;
 	}
 	
-	public void addString(String string)
+	public void addChar(char character)
 	{
-		addObject(new TextElement(string));
+		addObject(new TextElement(new Character(character)));
 		this.currentAlign = ALIGN_RIGHT;
 	}
 	
@@ -159,18 +164,25 @@ public class TextBuilder {
 	
 	public void deleteCurrent()
 	{
-		int index = currentElement;
-		
-		if(currentElement == this.textElements.size() - 1)
-			currentElement--;
-		
-		if(textElements.size() > 0)
+		if(this.textElements.size() > 0)
+		{
+			int index = currentElement;
+			
+			if(currentElement == 0)
+				this.currentAlign = ALIGN_LEFT;
+			else
+			{
+				this.currentElement--;
+				this.currentAlign = ALIGN_RIGHT;
+			}
+				
 			this.textElements.remove(index);
+		}
 	}
 	
 	public void increaseCaret()
 	{	
-		if(!isString(0) && currentAlign == ALIGN_LEFT)
+		if(!isChar(0) && currentAlign == ALIGN_LEFT)
 			currentAlign = ALIGN_FOCUS;
 		else
 			if(currentElement < textElements.size() - 1)
@@ -187,7 +199,7 @@ public class TextBuilder {
 			case ALIGN_LEFT 	:
 				if(currentElement > 0)
 				{
-					if(!isString(-1))
+					if(!isChar(-1))
 						currentAlign = ALIGN_FOCUS;
 					else
 						currentAlign = ALIGN_LEFT;
@@ -201,7 +213,7 @@ public class TextBuilder {
 			break;
 			
 			case ALIGN_RIGHT:
-				if(isString(0))
+				if(isChar(0))
 					currentAlign = ALIGN_LEFT;
 				else
 					currentAlign = ALIGN_FOCUS;
@@ -209,10 +221,10 @@ public class TextBuilder {
 		};
 	}
 	
-	public boolean isString(int offset)
+	public boolean isChar(int offset)
 	{
 		if(this.textElements.size() > 0 && (currentElement - offset) >= 0)
-			return (getTextElement(currentElement + offset).getElement() instanceof String);
+			return (getTextElement(currentElement + offset).getElement() instanceof Character);
 		else
 			return true;
 	}
@@ -224,8 +236,9 @@ public class TextBuilder {
 		for (int i = 0; i < currentElement; i++) 
 			result += getTextElement(i).getLength();
 		
-		if( (currentAlign == ALIGN_FOCUS || currentAlign == ALIGN_RIGHT) && currentElement >= 0)
-			result += getTextElement(currentElement).getLength();
+		if(this.textElements.size() > 0)
+			if( (currentAlign == ALIGN_FOCUS || currentAlign == ALIGN_RIGHT) && currentElement >= 0)
+				result += getTextElement(currentElement).getLength();
 		
 		return result;
 	}
@@ -238,8 +251,8 @@ public class TextBuilder {
 			TextElement element = getTextElement(i);
 			Object object = element.getElement();
 			
-			if( object instanceof String)
-				result += (String)object;
+			if( object instanceof Character)
+				result += (Character)object;
 			else if( object instanceof TrieReader)
 				result += element.getSelectedWord();
 		}

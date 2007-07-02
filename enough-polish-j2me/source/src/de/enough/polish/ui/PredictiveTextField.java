@@ -266,8 +266,9 @@ public class PredictiveTextField
 			
 			if (gameAction == Canvas.FIRE) {
 				// option has been selected!
-				if(currentReader != null)
+				if(!this.builder.isChar(0))
 				{
+					currentReader = this.builder.getCurrentReader();
 					currentReader.setSelectedWord(this.choicesContainer.getFocusedIndex());
 					this.builder.setCurrentAlign(this.builder.ALIGN_RIGHT);
 					
@@ -286,7 +287,7 @@ public class PredictiveTextField
 			{
 				TrieProperties properties = new TrieProperties("predictive","Enough Software","PredictiveInstaller",true, 100,500);
 				
-				if( this.builder.isString(0) ||
+				if( this.builder.isChar(0) ||
 					this.builder.getCurrentAlign() == TextBuilder.ALIGN_LEFT ||
 					this.builder.getCurrentAlign() == TextBuilder.ALIGN_RIGHT)
 				{
@@ -342,27 +343,28 @@ public class PredictiveTextField
 			try
 			{
 				if(this.builder.getCurrentAlign() == this.builder.ALIGN_LEFT)
-					this.builder.decreaseCaret();
+					if(this.builder.getCurrentIndex() !=0)
+						this.builder.decreaseCaret();
+					else
+						return true;
 				
-				if(this.builder.isString(0))
+				if(this.builder.isChar(0))
 					this.builder.deleteCurrent();
 				else
 				{
 					currentReader = this.builder.getCurrentReader();
-					currentReader.keyClear();
 					
+					currentReader.keyClear();
 					this.builder.getCurrentElement().popChar();
 					
 					if(currentReader.isEmpty())
 					{
 						this.builder.deleteCurrent();
-						openChoices(false);
 					}
 					else
-					{
 						setChoices(this.builder.getCurrentElement().getResults());
-						openChoices(true);
-					}
+					
+					openChoices(!currentReader.isEmpty());
 				}	
 			}
 			catch(RecordStoreException e) {e.printStackTrace();}
@@ -383,27 +385,31 @@ public class PredictiveTextField
 		}
 		else if ( keyCode == this.SPACE_BUTTON )
 		{
-			this.builder.addString(" ");
+			this.builder.addChar(' ');
+			
+			this.openChoices(false);
 			
 			setText(this.builder.getText());
-			this.
-			openChoices(false);
-			
-			System.gc();
 			setCaretPosition(this.builder.getCaretPosition());
 			
+			System.gc();
 			return true;
 		}
 		else if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
 				&& this.builder.getCurrentAlign() == this.builder.ALIGN_FOCUS)
 		{
-			//System.out.println("focusing choices container");
-			if(this.numberOfMatches > 0)
+			if(this.builder.isChar(0))
+				return true;
+			else
 			{
-				enterChoices( true );
+				currentReader = this.builder.getCurrentReader();
+				setChoices(currentReader.getResults());
+				
+				if(this.numberOfMatches > 0)
+					enterChoices( true );
+				
 				return true;
 			}
-		
 		}
 		else if ( gameAction == Canvas.LEFT || gameAction == Canvas.RIGHT )
 		{
@@ -456,7 +462,7 @@ public class PredictiveTextField
 		else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
 			
 			openChoices( false );
-			if(!this.builder.isString(0))
+			if(!this.builder.isChar(0))
 				this.builder.setCurrentAlign(this.builder.ALIGN_RIGHT);
 
 			return true;

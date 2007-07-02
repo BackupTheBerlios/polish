@@ -14,9 +14,8 @@ public class TextElement {
 
 	public int getLength() {
 		if (element != null) {
-			if (element instanceof String) {
-				String string = (String) element;
-				return string.length();
+			if (element instanceof Character) {
+				return 1;
 			} else if (element instanceof TrieReader) {
 				TrieReader reader = (TrieReader) element;
 				return reader.getSelectedWord().length();
@@ -71,7 +70,7 @@ public class TextElement {
 	
 	public void setSelectedWord(int index)
 	{
-		((TrieReader) element).setSelectedWord(index);
+		((TrieReader)element).setSelectedWord(index);
 	}
 
 	public void pushChar(int shift) {
