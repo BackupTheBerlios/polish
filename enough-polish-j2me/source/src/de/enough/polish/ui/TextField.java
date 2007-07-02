@@ -700,7 +700,7 @@ public class TextField extends StringItem
 	//#endif
 
 	// this is outside of the tmp.directInput block, so that it can be referenced from the UiAccess class
-	int inputMode; // the current input mode		
+	protected int inputMode; // the current input mode		
 	//#if tmp.directInput
 		//#if tmp.supportsSymbolEntry
 			private static List symbolsList;
@@ -2594,19 +2594,7 @@ public class TextField extends StringItem
 			}
 			this.isKeyDown = true;
 		//#endif
-		if (gameAction == Canvas.FIRE
-				&& keyCode != Canvas.KEY_NUM5
-				&& this.defaultCommand != null 
-				&& this.itemCommandListener != null) 
-		{
-			//#ifdef tmp.directInput
-				if (this.caretChar != this.editingCaretChar) {
-					insertCharacter();
-				}
-			//#endif
-			this.itemCommandListener.commandAction(this.defaultCommand, this);
-			return true;
-		}
+		
 		// ignore all command keys:
 		//#ifdef polish.hasCommandKeyEvents
 			//#foreach key in polish.keys.CommandKeys
@@ -2675,7 +2663,8 @@ public class TextField extends StringItem
 					if ( 	gameAction == Canvas.UP 	|| 
 							gameAction == Canvas.DOWN 	||
 							gameAction == Canvas.LEFT 	||
-							gameAction == Canvas.RIGHT  )
+							gameAction == Canvas.RIGHT  ||
+							gameAction == Canvas.FIRE)
 						return handleKeyNavigation(keyCode, gameAction);
 					
 					if (true) {
@@ -2939,7 +2928,20 @@ public class TextField extends StringItem
 	
 	protected boolean handleKeyNavigation(int keyCode, int gameAction)
 	{
-		if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
+		if (gameAction == Canvas.FIRE
+				&& keyCode != Canvas.KEY_NUM5
+				&& this.defaultCommand != null 
+				&& this.itemCommandListener != null) 
+		{
+			//#ifdef tmp.directInput
+				if (this.caretChar != this.editingCaretChar) {
+					insertCharacter();
+				}
+			//#endif
+			this.itemCommandListener.commandAction(this.defaultCommand, this);
+			return true;
+		}
+		else if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
 			//#ifdef polish.css.font-bitmap
 				if (this.bitMapFontViewer != null) {
 					// a bitmap-font is used
@@ -3091,6 +3093,12 @@ public class TextField extends StringItem
 		}
 		
 		return false;
+	}
+	
+	protected void handleCommandClear()
+	{
+		setString( null );
+		notifyStateChanged();
 	}
 	
 	//#if !polish.blackberry && tmp.directInput
@@ -3395,8 +3403,7 @@ public class TextField extends StringItem
 						//#endif
 					}
 				} else if ( cmd == CLEAR_CMD ) {
-					setString( null );
-					notifyStateChanged();
+					handleCommandClear();
 				} else if ( this.additionalItemCommandListener != null ) {
 					this.additionalItemCommandListener.commandAction(cmd, item);
 				}
