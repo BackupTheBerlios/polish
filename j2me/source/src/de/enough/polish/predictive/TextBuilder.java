@@ -1,5 +1,6 @@
 package de.enough.polish.predictive;
 
+import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 
 public class TextBuilder {
@@ -10,11 +11,7 @@ public class TextBuilder {
 	
 	public static final int JUMP_PREV = 0;
 	public static final int JUMP_NEXT = 1;
-	
-	public static final int SHIFT_Aa = 0;
-	public static final int SHIFT_a 	= 1;
-	public static final int SHIFT_A 	= 2;
-	
+		
 	ArrayList textElements = null;
 	int currentElement;
 	int currentAlign;
@@ -25,7 +22,7 @@ public class TextBuilder {
 		this.textElements 	= new ArrayList();
 		this.currentElement = -1;
 		this.currentAlign	= ALIGN_LEFT;
-		this.currentShift 	= SHIFT_Aa; 
+		this.currentShift 	= TextField.MODE_FIRST_UPPERCASE; 
 	}
 	
 	public TrieReader getCurrentReader()
@@ -162,7 +159,7 @@ public class TextBuilder {
 		this.currentAlign = ALIGN_FOCUS;
 	}
 	
-	public void deleteCurrent()
+	public boolean deleteCurrent()
 	{
 		if(this.textElements.size() > 0)
 		{
@@ -177,7 +174,11 @@ public class TextBuilder {
 			}
 				
 			this.textElements.remove(index);
+			
+			return true;
 		}
+		
+		return false;
 	}
 	
 	public void increaseCaret()
