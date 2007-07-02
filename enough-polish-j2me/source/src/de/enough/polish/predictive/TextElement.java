@@ -1,5 +1,6 @@
 package de.enough.polish.predictive;
 
+import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 
 public class TextElement {
@@ -74,7 +75,7 @@ public class TextElement {
 	}
 
 	public void pushChar(int shift) {
-		if(shift == TextBuilder.SHIFT_Aa || shift == TextBuilder.SHIFT_A )
+		if(shift == TextField.MODE_UPPERCASE || shift == TextField.MODE_FIRST_UPPERCASE)
 			this.shift += '1';
 		else
 			this.shift += '0';
