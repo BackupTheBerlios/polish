@@ -3101,6 +3101,15 @@ public class TextField extends StringItem
 		notifyStateChanged();
 	}
 	
+	protected void handleCommandDelete()
+	{
+		//#ifdef polish.key.ClearKey:defined
+		//#= handleKeyClear(${polish.key.ClearKey},0);
+		//#else
+		handleKeyClear(-8,0);
+		//#endif
+	}
+	
 	//#if !polish.blackberry && tmp.directInput
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyRepeated(int, int)
@@ -3384,11 +3393,7 @@ public class TextField extends StringItem
 							//#ifdef tmp.allowDirectInput
 								if (this.enableDirectInput) {
 							//#endif
-									//#ifdef polish.key.ClearKey:defined
-									//#= handleKeyClear(${polish.key.ClearKey},0);
-									//#else
-									handleKeyClear(-8,0);
-									//#endif
+									handleCommandDelete();
 							//#ifdef tmp.allowDirectInput
 								} else {
 									String myText = getString();
