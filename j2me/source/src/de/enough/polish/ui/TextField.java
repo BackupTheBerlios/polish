@@ -809,19 +809,19 @@ public class TextField extends StringItem
 		//#ifdef polish.TextField.charactersKey0:defined
 			//#= private static final String charactersKey0 = "${polish.TextField.charactersKey0}";
 		//#else
-			private static final String charactersKey0 = " 0";
+			protected static final String charactersKey0 = " 0";
 		//#endif
 		//#ifdef polish.TextField.charactersKeyStar:defined
-			//#= private static final String charactersKeyStar = "${polish.TextField.charactersKeyStar}";
+			//#= protected static final String charactersKeyStar = "${polish.TextField.charactersKeyStar}";
 		//#else
-			private static final String charactersKeyStar = ".,!?:/@_-+";
+			protected static final String charactersKeyStar = ".,!?:/@_-+";
 		//#endif
 		//#ifdef polish.TextField.charactersKeyPound:defined
-			//#= private static final String charactersKeyPound = "${polish.TextField.charactersKeyPound}";
+			//#= protected static final String charactersKeyPound = "${polish.TextField.charactersKeyPound}";
 		//#else
-			private static final String charactersKeyPound = null;
+			protected static final String charactersKeyPound = null;
 		//#endif
-		private static final String[] CHARACTERS = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
+		public static final String[] CHARACTERS = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
 		private static final String[] EMAIL_CHARACTERS = new String[]{ VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS + "0", VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS + "1", "abc2", "def3", "ghi4", "jkl5", "mno6", "pqrs7", "tuv8", "wxyz9" };
 		private String[] characters;
 		private boolean caretPositionHasBeenSet;
@@ -1617,7 +1617,7 @@ public class TextField extends StringItem
 	{
 		return this.constraints;
 	}
-
+	
 	/**
 	 * Sets a hint to the implementation as to the input mode that should be
 	 * used when the user initiates editing of this <code>TextField</code>.  The

@@ -3,6 +3,7 @@ package de.enough.polish.predictive;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.rms.InvalidRecordIDException;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
@@ -10,6 +11,7 @@ import javax.microedition.rms.RecordStoreFullException;
 import javax.microedition.rms.RecordStoreNotFoundException;
 import javax.microedition.rms.RecordStoreNotOpenException;
 
+import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
@@ -53,7 +55,7 @@ public class TrieReader {
 		return this.results;
 	}
 		
-	public void keyNum(char key) throws RecordStoreException
+	public void keyNum(int keyCode) throws RecordStoreException
 	{	
 		byte[] record = null;
 		ArrayList newNodes = new ArrayList();
@@ -63,7 +65,7 @@ public class TrieReader {
 		if(this.nodes.size() == 0)
 		{
 			record = this.getRecord(1,this.properties.getLineCount());
-			this.nodes = this.getNodes(record, key, "");
+			this.nodes = this.getNodes(record, keyCode, "");
 			
 			setEmpty(nodes.size() == 0);
 		}
@@ -76,7 +78,7 @@ public class TrieReader {
 				if(node.getReference() != 0)
 				{
 					record = this.getRecord(node.getReference(),this.properties.getLineCount());
-					addToNodes(this.getNodes(record, key, node.getWord()),newNodes);
+					addToNodes(this.getNodes(record, keyCode, node.getWord()),newNodes);
 				}
 			}
 			
@@ -217,14 +219,14 @@ public class TrieReader {
 		stores.clear();
 	}
 	
-	private ArrayList getNodes(byte[] record, char code, String word)
+	private ArrayList getNodes(byte[] record, int keyCode, String word)
 	{
 		ArrayList getNodes = new ArrayList();
 		
 		char value 		= ' ';
 		String letters	= "";
 				
-		letters = getLetters(code);
+		letters = getLetters(keyCode);
 		
 		for(int i=0; i<record.length; i=i+NODE_SIZE)
 		{
@@ -262,20 +264,20 @@ public class TrieReader {
 		return bytes[offset];
 	}
 			
-	private String getLetters(char code)
+	private String getLetters(int keyCode)
 	{
-		switch(code)
+		switch(keyCode)
 		{
-			case '1': 	return "\"\'-.,:;!?";
-			case '2': 	return "abcä";
-			case '3': 	return "def";
-			case '4': 	return "ghi";
-			case '5': 	return "jkl";
-			case '6': 	return "mnoö";
-			case '7': 	return "pqrsß";
-			case '8': 	return "tuvü";
-			case '9': 	return "wxyz";
-			default: 	return "\"\'-.,:;!?";
+			case Canvas.KEY_NUM1: 	return TextField.CHARACTERS[1];
+			case Canvas.KEY_NUM2: 	return TextField.CHARACTERS[2];
+			case Canvas.KEY_NUM3: 	return TextField.CHARACTERS[3];
+			case Canvas.KEY_NUM4: 	return TextField.CHARACTERS[4];
+			case Canvas.KEY_NUM5: 	return TextField.CHARACTERS[5];
+			case Canvas.KEY_NUM6: 	return TextField.CHARACTERS[6];
+			case Canvas.KEY_NUM7: 	return TextField.CHARACTERS[7];
+			case Canvas.KEY_NUM8: 	return TextField.CHARACTERS[8];
+			case Canvas.KEY_NUM9: 	return TextField.CHARACTERS[9];
+			default: 				return TextField.CHARACTERS[1];
 		}
 	}
 	
