@@ -136,7 +136,7 @@ public class PredictiveTextField
 		this.builder = new TextBuilder();
 		this.display = display;
 		
-		this.inputMode 		= this.builder.getShift();
+		this.inputMode 		= this.builder.getInputMode();
 		this.spaceButton 	= getSpaceKey();
 		
 		this.addCommand(this.DISABLE_PREDICTIVE_CMD);
@@ -297,12 +297,12 @@ public class PredictiveTextField
 			}
 			else
 			{
-				this.builder.getCurrentElement().pushChar(this.builder.getShift());
+				this.builder.getCurrentElement().pushChar(this.builder.getInputMode());
 					
-				if(this.builder.getShift() == TextField.MODE_FIRST_UPPERCASE)
+				if(this.builder.getInputMode() == TextField.MODE_FIRST_UPPERCASE)
 				{
-					this.builder.setShift(TextField.MODE_LOWERCASE);
-					this.inputMode = this.builder.getShift();
+					this.builder.setInputMode(TextField.MODE_LOWERCASE);
+					this.inputMode = this.builder.getInputMode();
 					updateInfo();
 				}
 			}
@@ -372,7 +372,7 @@ public class PredictiveTextField
 			return super.handleKeyMode(keyCode, gameAction);
 		
 		this.inputMode = (this.inputMode + 1) % 3;
-		this.builder.setShift(this.inputMode);
+		this.builder.setInputMode(this.inputMode);
 				
 		updateInfo();
 		
@@ -536,7 +536,7 @@ public class PredictiveTextField
 		}
 		
 		this.setInputMode(MODE_LOWERCASE);
-		this.builder.setShift(MODE_LOWERCASE);
+		this.builder.setInputMode(MODE_LOWERCASE);
 		
 		updateInfo();
 		
