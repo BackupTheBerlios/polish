@@ -27,6 +27,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.rms.InvalidRecordIDException;
@@ -41,6 +42,7 @@ import de.enough.polish.blackberry.ui.PolishEditField;
 import de.enough.polish.predictive.TextBuilder;
 import de.enough.polish.predictive.TrieProperties;
 import de.enough.polish.predictive.TrieReader;
+import de.enough.polish.util.Locale;
 import de.enough.polish.util.TextUtil;
 
 /**
@@ -80,6 +82,10 @@ public class PredictiveTextField
 	private Display display = null;
 	private int spaceButton;
 	
+	protected static Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 2 );
+	protected static Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 2 );
+	private boolean predictiveInput;
+	
 	private StringItem status;
 	
 	/**
@@ -97,8 +103,8 @@ public class PredictiveTextField
 	 * @throws RecordStoreNotFoundException 
 	 * @throws RecordStoreFullException 
 	 */
-	public PredictiveTextField(String label, String text, int maxSize, int constraints, Display display, StringItem status) throws RecordStoreException {
-		this(label, text, maxSize, constraints, display, status, null);
+	public PredictiveTextField(String label, String text, int maxSize, Display display, StringItem status) throws RecordStoreException {
+		this(label, text, maxSize, display, status, null);
 	}
 	
 	/**
@@ -117,8 +123,8 @@ public class PredictiveTextField
 	 * @throws RecordStoreNotFoundException 
 	 * @throws RecordStoreFullException 
 	 */
-	public PredictiveTextField(String label, String text, int maxSize, int constraints, Display display, StringItem status, Style style) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException {
-		super(label, text, maxSize, constraints, style);
+	public PredictiveTextField(String label, String text, int maxSize, Display display, StringItem status, Style style) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException {
+		super(label, text, maxSize, TextField.ANY, style);
 		this.choicesContainer = new Container( false );
 		//#if polish.Container.allowCycling != false
 			this.choicesContainer.allowCycling = false;
@@ -132,6 +138,9 @@ public class PredictiveTextField
 		
 		this.inputMode 		= this.builder.getShift();
 		this.spaceButton 	= getSpaceKey();
+		
+		this.addCommand(this.DISABLE_PREDICTIVE_CMD);
+		predictiveInput = true;
 		
 		updateInfo();
 		
@@ -257,6 +266,9 @@ public class PredictiveTextField
 	
 	protected boolean handleKeyInsert(int keyCode, int gameAction) {
 		
+		if(!this.predictiveInput)
+			return super.handleKeyInsert(keyCode, gameAction);
+		
 		if(keyCode != this.spaceButton)
 		{	
 			try
@@ -311,6 +323,10 @@ public class PredictiveTextField
 	}
 	
 	protected boolean handleKeyClear(int keyCode, int gameAction) {
+		
+		if(!this.predictiveInput)
+			return super.handleKeyClear(keyCode, gameAction);
+		
 		try
 		{
 			if(this.builder.getCurrentAlign() == this.builder.ALIGN_LEFT)
@@ -352,16 +368,21 @@ public class PredictiveTextField
 	}
 	
 	protected boolean handleKeyMode(int keyCode, int gameAction) {
+		if(!this.predictiveInput)
+			return super.handleKeyMode(keyCode, gameAction);
+		
 		this.inputMode = (this.inputMode + 1) % 3;
 		this.builder.setShift(this.inputMode);
-		
+				
 		updateInfo();
 		
 		return true;
 	}
 	
-	protected boolean handleKeyNavigation(int keyCode, int gameAction)
-	{
+	protected boolean handleKeyNavigation(int keyCode, int gameAction) {
+		if(!this.predictiveInput)
+			return super.handleKeyNavigation(keyCode, gameAction);
+		
 		if (this.isInChoice) {
 			if ( this.choicesContainer.handleKeyPressed(keyCode, gameAction) ) {
 				//#debug
@@ -459,18 +480,75 @@ public class PredictiveTextField
 			openChoices( false );
 			if(!this.builder.isChar(0))
 				this.builder.setCurrentAlign(this.builder.ALIGN_RIGHT);
+			
+			return true;
 		}
 		
 		return false;
 	}
 	
-	protected void handleCommandClear()
+	protected void handleCommandAction(Command cmd, Item item)
+	{
+		if(!this.predictiveInput && cmd != ENABLE_PREDICTIVE_CMD)
+		{
+			super.handleCommandAction(cmd, item);
+			return;
+		}
+		
+		if ( cmd == DELETE_CMD ) {
+				//#ifdef polish.key.ClearKey:defined
+				//#= handleKeyClear(${polish.key.ClearKey},0);
+				//#else
+				handleKeyClear(-8,0);
+				//#endif
+		} else if ( cmd == CLEAR_CMD ) {
+			while(this.builder.deleteCurrent());
+				
+			openChoices(false);
+			setText(this.builder.getText());
+			setCaretPosition(this.builder.getCaretPosition());
+			
+		} else if ( cmd == ENABLE_PREDICTIVE_CMD ) {
+			this.predictiveInput = true;
+			
+			enablePredictive();
+			
+			this.removeCommand(ENABLE_PREDICTIVE_CMD);
+			this.addCommand(DISABLE_PREDICTIVE_CMD);
+			
+		} else if ( cmd == DISABLE_PREDICTIVE_CMD ) {
+			this.predictiveInput = false;
+			
+			disablePredictive();
+			
+			this.removeCommand(DISABLE_PREDICTIVE_CMD);
+			this.addCommand(ENABLE_PREDICTIVE_CMD);
+		}
+	}
+	
+	public void enablePredictive()
 	{
 		while(this.builder.deleteCurrent());
 		
+		for(int i=0;i<this.getText().length(); i++)
+		{
+			this.builder.addChar(this.getText().charAt(i));
+		}
+		
+		this.setInputMode(MODE_LOWERCASE);
+		this.builder.setShift(MODE_LOWERCASE);
+		
+		updateInfo();
+		
+		this.builder.setCurrentElementNear(this.getCaretPosition());
+	}
+	
+	public void disablePredictive()
+	{
+		this.setString(this.builder.getText());
+		this.setCaretPosition(this.builder.getCaretPosition());
+		
 		openChoices(false);
-		setText(this.builder.getText());
-		setCaretPosition(this.builder.getCaretPosition());
 	}
 		
 	public void showWordNotFound()
