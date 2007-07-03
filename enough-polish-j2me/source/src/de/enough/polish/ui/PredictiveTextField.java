@@ -145,6 +145,9 @@ public class PredictiveTextField
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		super.initContent(firstLineWidth, lineWidth);
 		this.choicesContainer.relativeY = this.contentHeight + this.paddingVertical;
+		
+		//Display commands in screen
+		((Screen)this.display.getCurrent()).setItemCommands(this);
 	}
 		
 	/**
@@ -330,7 +333,10 @@ public class PredictiveTextField
 					this.builder.deleteCurrent();
 				}
 				else
+				{
 					setChoices(this.builder.getCurrentElement().getResults());
+					this.builder.setCurrentAlign(TextBuilder.ALIGN_FOCUS);
+				}
 				
 				openChoices(!currentReader.isEmpty());
 			}	
