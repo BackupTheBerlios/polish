@@ -335,7 +335,6 @@ public class PredictiveTextField
 				else
 				{
 					setChoices(this.builder.getCurrentElement().getResults());
-					this.builder.setCurrentAlign(TextBuilder.ALIGN_FOCUS);
 				}
 				
 				openChoices(!currentReader.isEmpty());
