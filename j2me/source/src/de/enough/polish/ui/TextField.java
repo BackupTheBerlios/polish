@@ -2633,7 +2633,7 @@ public class TextField extends StringItem
 					
 					// Set the input mode
 					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-					//#= if ( keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey) {
+					//#= if ( keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}) {
 					//#else
 					if ( keyCode == KEY_CHANGE_MODE) {
 					//#endif
@@ -3095,21 +3095,50 @@ public class TextField extends StringItem
 		return false;
 	}
 	
-	protected void handleCommandClear()
+	protected void handleCommandAction(Command cmd, Item item)
 	{
-		setString( null );
-		notifyStateChanged();
-	}
-	
-	protected void handleCommandDelete()
-	{
-		//#ifdef polish.key.ClearKey:defined
-		//#= handleKeyClear(${polish.key.ClearKey},0);
-		//#else
-		handleKeyClear(-8,0);
+		//#debug
+		System.out.println("commandAction( " + cmd.getLabel() + ", " + this + " )");
+		//#if tmp.supportsSymbolEntry
+			if (cmd == ENTER_SYMBOL_CMD ) {
+				showSymbolsList();
+				return;
+			}
+		//#endif
+		//#ifndef tmp.suppressCommands
+			if ( cmd == DELETE_CMD ) {
+				if (this.text != null && this.text.length() > 0) {
+					//#ifdef tmp.directInput
+						//#ifdef tmp.allowDirectInput
+							if (this.enableDirectInput) {
+						//#endif
+							//#ifdef polish.key.ClearKey:defined
+							//#= handleKeyClear(${polish.key.ClearKey},0);
+							//#else
+							handleKeyClear(-8,0);
+							//#endif
+						//#ifdef tmp.allowDirectInput
+							} else {
+								String myText = getString();
+								setString( myText.substring(0, myText.length() - 1));
+								notifyStateChanged();
+							}
+						//#endif
+					//#else
+						String myText = getString();
+						setString( myText.substring(0, myText.length() - 1));
+						notifyStateChanged();
+					//#endif
+				}
+			} else if ( cmd == CLEAR_CMD ) {
+				setString( null );
+				notifyStateChanged();
+			} else if ( this.additionalItemCommandListener != null ) {
+				this.additionalItemCommandListener.commandAction(cmd, item);
+			}
 		//#endif
 	}
-	
+		
 	//#if !polish.blackberry && tmp.directInput
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyRepeated(int, int)
@@ -3378,41 +3407,7 @@ public class TextField extends StringItem
 		 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
 		 */
 		public void commandAction(Command cmd, Item item) {
-			//#debug
-			System.out.println("commandAction( " + cmd.getLabel() + ", " + this + " )");
-			//#if tmp.supportsSymbolEntry
-				if (cmd == ENTER_SYMBOL_CMD ) {
-					showSymbolsList();
-					return;
-				}
-			//#endif
-			//#ifndef tmp.suppressCommands
-				if ( cmd == DELETE_CMD ) {
-					if (this.text != null && this.text.length() > 0) {
-						//#ifdef tmp.directInput
-							//#ifdef tmp.allowDirectInput
-								if (this.enableDirectInput) {
-							//#endif
-									handleCommandDelete();
-							//#ifdef tmp.allowDirectInput
-								} else {
-									String myText = getString();
-									setString( myText.substring(0, myText.length() - 1));
-									notifyStateChanged();
-								}
-							//#endif
-						//#else
-							String myText = getString();
-							setString( myText.substring(0, myText.length() - 1));
-							notifyStateChanged();
-						//#endif
-					}
-				} else if ( cmd == CLEAR_CMD ) {
-					handleCommandClear();
-				} else if ( this.additionalItemCommandListener != null ) {
-					this.additionalItemCommandListener.commandAction(cmd, item);
-				}
-			//#endif
+			handleCommandAction(cmd,item);
 		}
 	//#endif
 		
