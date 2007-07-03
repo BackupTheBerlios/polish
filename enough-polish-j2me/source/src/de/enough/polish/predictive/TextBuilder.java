@@ -183,10 +183,15 @@ public class TextBuilder {
 	
 	public void increaseCaret()
 	{	
-		if(!isChar(0) && currentAlign == ALIGN_LEFT)
-			currentAlign = ALIGN_FOCUS;
+		if(currentAlign == ALIGN_LEFT)
+		{
+			if(!isChar(0))
+				currentAlign = ALIGN_FOCUS;
+			else
+				currentAlign = ALIGN_RIGHT;
+		}
 		else
-			if(currentElement < textElements.size() - 1)
+			if(currentElement != textElements.size() - 1)
 			{
 				currentAlign = ALIGN_LEFT;
 				currentElement++;
@@ -259,6 +264,7 @@ public class TextBuilder {
 		}
 		
 		return result;
+		
 	}
 
 	public int getShift() {
