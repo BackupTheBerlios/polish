@@ -372,6 +372,7 @@ implements AccessibleCanvas
 		//#if tmp.fullScreen && polish.midp2 && !(polish.Bugs.fullScreenInPaint || tmp.needsNokiaUiForSystemAlerts)
 			super.setFullScreenMode( true );
 		//#endif
+			
 		//#ifdef tmp.menuFullScreen
 			this.fullScreenHeight = getHeight();
 		//#endif
@@ -385,6 +386,7 @@ implements AccessibleCanvas
 			StyleSheet.animationThread = new AnimationThread();
 			startAnimationThread = true;
 		}
+		
 		//#ifdef polish.Screen.initCode:defined
 			//#include ${polish.Screen.initCode}
 		//#endif
@@ -408,8 +410,22 @@ implements AccessibleCanvas
 						availableScreenWidth -= (this.marginLeft + this.marginRight);
 					}
 				//#endif
-
-				this.menuBarHeight = this.menuBar.getItemHeight( availableScreenWidth, availableScreenWidth );
+				//#if polish.ScreenOrientationCanChange
+					if (this.screenWidth > this.screenHeight) {
+						//#style verticalmenubar?
+						this.menuBar.setOrientationVertical( true );
+						this.menuBarHeight = 0;
+					} else {
+						this.menuBar.setOrientationVertical( false );
+						this.menuBarHeight = this.menuBar.getItemHeight( availableScreenWidth, availableScreenWidth );
+					}
+					this.menuBar.isInitialized = false;
+					if (this.menuBar.isOrientationVertical()) {
+						this.menuBarHeight = 0;
+					}
+				//#else
+					this.menuBarHeight = this.menuBar.getItemHeight( availableScreenWidth, availableScreenWidth );
+				//#endif
 				//#if tmp.useScrollIndicator
 					int scrollWidth = this.menuBar.contentHeight + this.menuBar.paddingTop + this.menuBar.paddingBottom;
 					int scrollHeight = scrollWidth;
@@ -610,6 +626,15 @@ implements AccessibleCanvas
 			height -= topHeight + tickerHeight;
 		//#else
 			height -= topHeight;	
+		//#endif
+		//#if tmp.useExternalMenuBar && ( ${lowercase(polish.MenuBar.Position)} == right || polish.ScreenOrientationCanChange )
+			//#if tmp.useExternalMenuBar &&  polish.ScreenOrientationCanChange
+				if (this.menuBar.isOrientationVertical()) {
+			//#endif
+					width -= this.menuBar.getItemWidth(width>>2, width>>2);
+			//#if tmp.useExternalMenuBar &&  polish.ScreenOrientationCanChange
+				}
+			//#endif
 		//#endif
 		//#if tmp.useScrollBar
 			if ( this.container != null ) {
@@ -1195,6 +1220,12 @@ implements AccessibleCanvas
 				int leftBorder = this.marginLeft;
 				int rightBorder = leftBorder + sWidth;
 				if (this.isLayoutHorizontalShrink) {
+					//#if polish.ScreenOrientationCanChange && tmp.menuFullScreen && tmp.useExternalMenuBar
+						if (this.menuBar.isOrientationVertical()) {
+							sWidth -= this.menuBar.getItemWidth( sWidth, sWidth);
+							rightBorder = leftBorder + sWidth;
+						}
+					//#endif
 					int contWidth = this.contentWidth;
 					if (this.container != null) {
 						contWidth = this.container.getItemWidth(sWidth, sWidth); 
@@ -1209,10 +1240,14 @@ implements AccessibleCanvas
 					if (this.isLayoutRight) {
 						leftBorder = rightBorder - sWidth;
 					} else if (this.isLayoutCenter) {
-						leftBorder = (this.screenWidth - sWidth) / 2;
-						rightBorder = this.screenWidth - leftBorder;
-					} else {
-						rightBorder = this.screenWidth - sWidth;
+						int diff = (rightBorder - leftBorder - sWidth) >> 1;
+						leftBorder += diff;
+						rightBorder -= diff;
+//						leftBorder = (this.screenWidth - sWidth) >> 1;
+//						rightBorder = this.screenWidth - leftBorder;
+					} else { // layout left:
+						rightBorder = leftBorder + sWidth;
+//						rightBorder = this.screenWidth - sWidth;
 					}
 					//System.out.println("leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
 				}
@@ -1345,6 +1380,7 @@ implements AccessibleCanvas
 //				int clipY = g.getClipY();
 //				int clipWidth = g.getClipWidth();
 //				int clipHeight = g.getClipHeight();
+					//TODO enable only painting of clipped area
 				g.setClip(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
 				//g.clipRect(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
 	
@@ -1378,6 +1414,16 @@ implements AccessibleCanvas
 				//#else
 				 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
 				//#endif
+				 
+//				 // remove test code
+//				 g.setColor( 0x00ff00 );
+//				 g.drawRect( leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
+//				 g.drawRect( leftBorder + 1, topHeight + 1, sWidth - 2, this.screenHeight - topHeight -2 );
+//				 g.drawLine( leftBorder, topHeight, leftBorder + sWidth, topHeight + this.screenHeight - topHeight );
+//				 g.setColor( 0xff0000 );
+//				 g.drawRect( this.contentX, this.contentY, this.contentWidth, this.contentHeight );
+//				 g.drawRect( this.contentX + 1, this.contentY + 1, this.contentWidth - 2, this.contentHeight -2 );
+//				 g.drawLine( this.contentX, this.contentY, this.contentX + this.contentWidth, this.contentY + this.contentHeight );
 				 
 				// paint info element:
 				if (this.showInfoItem) {			
@@ -1434,6 +1480,13 @@ implements AccessibleCanvas
 				//#endif
 				//#ifdef tmp.menuFullScreen
 					//#ifdef tmp.useExternalMenuBar
+						//#if polish.ScreenOrientationCanChange
+							if (this.menuBar.isOrientationVertical()) {
+								menuLeftX = this.screenWidth - this.menuBar.itemHeight;
+								menuRightX = this.screenWidth;
+								menuY = 0;
+							}
+						//#endif
 						this.menuBar.paint(menuLeftX, menuY, menuLeftX, menuRightX, g);
 						//#if tmp.useScrollIndicator
 							if (this.menuBar.isOpened) {
@@ -1625,7 +1678,7 @@ implements AccessibleCanvas
 			if (this.isLayoutVerticalShrink) {
 				y = g.getClipY();
 			} else {
-				y += ((height - containerHeight) / 2);
+				y += ((height - containerHeight) >> 1);
 			}
 		} else if (this.isLayoutBottom) {
 			if (this.isLayoutVerticalShrink) {
@@ -1637,7 +1690,7 @@ implements AccessibleCanvas
 		}
 		int containerWidth = this.container.itemWidth;
 		if (this.isLayoutCenter) {
-			int diff = (width - containerWidth) / 2;
+			int diff = (width - containerWidth) >> 1;
 			x += diff;
 			width -= (width - containerWidth);
 		} else if (this.isLayoutRight) {
@@ -3001,7 +3054,7 @@ implements AccessibleCanvas
 			boolean doInit = false;
 		
 			//#ifdef tmp.menuFullScreen
-				doInit = width != this.screenWidth || height != this.originalScreenHeight;
+				doInit = width != this.screenWidth || height != this.fullScreenHeight;
 				if (doInit) {
 					this.fullScreenHeight = height;
 					this.screenHeight = height - this.menuBarHeight;
@@ -3016,13 +3069,11 @@ implements AccessibleCanvas
 					this.screenHeight = height;
 				}
 			//#endif
+			System.out.println("sizeChanged - doInit=" + doInit);
 			if (doInit) {
 				if (this.container != null) {
 					this.container.requestFullInit();
 				}
-				//#if tmp.useExternalMenuBar
-					this.menuBar.isInitialized = false;
-				//#endif
 				//#if tmp.usingTitle
 					if (this.title != null) {
 						this.title.isInitialized = false;
@@ -3466,6 +3517,13 @@ implements AccessibleCanvas
 			//#debug
 			System.out.println("done notifying ItemStateListener."); 
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	protected boolean isKeyboardAccessible() {
+		return getWidth() > getHeight();
 	}
 
 
