@@ -82,8 +82,8 @@ public class PredictiveTextField
 	private Display display = null;
 	private int spaceButton;
 	
-	protected static Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 2 );
-	protected static Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 2 );
+	protected static Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 0 );
+	protected static Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 0 );
 	private boolean predictiveInput;
 	
 	private StringItem status;
