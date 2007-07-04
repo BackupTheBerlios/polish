@@ -304,6 +304,10 @@ public class TextBuilder {
 			else
 				currentAlign = ALIGN_RIGHT;
 		}
+		if(currentAlign == ALIGN_FOCUS)
+		{
+			currentAlign = ALIGN_RIGHT;
+		}
 		else
 			if(currentElement != textElements.size() - 1)
 			{
