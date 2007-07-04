@@ -741,6 +741,19 @@ public class TextField extends StringItem
 		//#else
 		   public static final int KEY_DELETE = -8 ; //Canvas.KEY_STAR;
 		//#endif
+		//#if polish.key.a:defined && polish.key.z:defined
+		   //#define tmp.useKeyMap
+		   //#= private static final int KEY_A = ${polish.key.a};
+		   //#= private static final int KEY_Z = ${polish.key.z};
+		 //#else
+		   private static final int KEY_A = 97;
+		   private static final int KEY_Z = 122;
+		//#endif
+		//#if polish.key.shift:defined
+		   //#= private static final int KEY_SHIFT = ${polish.key.shift};
+		//#else
+		   private static final int KEY_SHIFT = -50;
+		//#endif
 		private boolean nextCharUppercase; // is needed for the FIRST_UPPERCASE-mode
 	
 		private String[] realTextLines; // the displayed lines with spaces (which are otherwise removed)
@@ -2596,13 +2609,13 @@ public class TextField extends StringItem
 		//#endif
 		
 		// ignore all command keys:
-		//#ifdef polish.hasCommandKeyEvents
-			//#foreach key in polish.keys.CommandKeys
-				//#= if ( keyCode == ${ key } ) {
-				//#		return false;
-				//# }
-			//#next key
-		//#endif
+//		#ifdef polish.hasCommandKeyEvents
+//			#foreach key in polish.keys.CommandKeys
+//				#= if ( keyCode == ${ key } ) {
+//				#		return false;
+//				# }
+//			#next key
+//		#endif
 		//#if tmp.allowDirectInput
 			//# if (this.enableDirectInput) {
 		//#endif
@@ -2622,54 +2635,70 @@ public class TextField extends StringItem
 					
 					synchronized ( this.lock ) {
 						
-					this.currentLength = (this.text == null ? 0 : this.text.length());
-					
-					if (this.text == null) {
-						return false;
-					}
-					else if (this.isUneditable) {
-						return false;
-					}  
-					
-					// Set the input mode
-					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-					//#= if ( keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}) {
-					//#else
-					if ( keyCode == KEY_CHANGE_MODE) {
-					//#endif
-						return handleKeyMode(keyCode, gameAction);
-					}
-					
-					// Insert a character
-					if (	keyCode >= Canvas.KEY_NUM0 	&& 
-							keyCode <= Canvas.KEY_NUM9	|| 
-							keyCode == Canvas.KEY_POUND || 
-							keyCode == Canvas.KEY_STAR)
-						return handleKeyInsert(keyCode, gameAction);
-
-					characterInserted = false;
-					character = this.caretChar;
-					
-					// Backspace
-					//#ifdef polish.key.ClearKey:defined
-					//#= if (keyCode == ${polish.key.ClearKey}) {
-					//#else
-						if ( keyCode == -8 ) {
-					//#endif
-						return handleKeyClear(keyCode, gameAction);
-					}
-					
-					// Navigate the caret
-					if ( 	gameAction == Canvas.UP 	|| 
-							gameAction == Canvas.DOWN 	||
-							gameAction == Canvas.LEFT 	||
-							gameAction == Canvas.RIGHT  ||
-							gameAction == Canvas.FIRE)
-						return handleKeyNavigation(keyCode, gameAction);
-					
-					if (true) {
-						return false;
-					}
+						this.currentLength = (this.text == null ? 0 : this.text.length());
+						
+	//					if (this.text == null) { // in that case no mode change can be done with an empty textfield 
+	//						return false;
+	//					}
+	//					else 
+						if (this.isUneditable) {
+							return false;
+						}  
+						
+						// Set the input mode
+						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+							//#= if ( keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}
+						//#else
+							if ( keyCode == KEY_CHANGE_MODE 
+						//#endif
+						//#if polish.key.shift:defined
+							//#= || keyCode == ${polish.key.shift}
+						//#endif
+								)
+						{
+							return handleKeyMode(keyCode, gameAction);
+						}
+						
+						// Insert a character
+//						if (	keyCode >= Canvas.KEY_NUM0 	&& 
+//								keyCode <= Canvas.KEY_NUM9	|| 
+//								keyCode == Canvas.KEY_POUND || 
+//								keyCode == Canvas.KEY_STAR    )
+//						{
+							boolean handled = handleKeyInsert(keyCode, gameAction);
+							if (handled) {
+								return true;
+							}
+//						}
+						characterInserted = false;
+						character = this.caretChar;
+						
+						// Backspace
+						//#ifdef polish.key.ClearKey:defined
+							//#= if (keyCode == ${polish.key.ClearKey}
+						//#else
+							if ( keyCode == -8 
+						//#endif
+						//#if polish.key.backspace:defined
+							//#= || keyCode == ${polish.key.backspace}
+						//#endif
+							) 
+						{
+							return handleKeyClear(keyCode, gameAction);
+						}
+						
+						// Navigate the caret
+						if ( 	gameAction == Canvas.UP 	|| 
+								gameAction == Canvas.DOWN 	||
+								gameAction == Canvas.LEFT 	||
+								gameAction == Canvas.RIGHT  ||
+								gameAction == Canvas.FIRE     ) 
+						{
+							return handleKeyNavigation(keyCode, gameAction);
+						}
+						if (true) {
+							return false;
+						}
 					}
 				//#endif
 		//#if tmp.allowDirectInput
@@ -2727,123 +2756,158 @@ public class TextField extends StringItem
 	
 	protected boolean handleKeyInsert(int keyCode, int gameAction)
 	{
-		currentLength = (this.text == null ? 0 : this.text.length());
-		if (this.inputMode == MODE_NUMBERS && !this.isUneditable) {
-			if ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 )  
-			{
-				if (currentLength >= this.maxSize) {
-					// ignore this key event - also don't forward it to the parent component:
+		//#if tmp.directInput
+			//#if tmp.useKeyMap
+				if (keyCode >= KEY_A && keyCode <= KEY_Z) {
+					this.caretChar = (char) ('a' + (keyCode - KEY_A));
+					if (this.nextCharUppercase || this.inputMode == MODE_UPPERCASE) {
+						this.caretChar = Character.toUpperCase(this.caretChar);
+					}
+					insertCharacter();
+					return true;
+				} else if (	getScreen().isKeyboardAccessible()  
+						&& 	keyCode >= Canvas.KEY_NUM0 	 
+						&&	keyCode <= Canvas.KEY_NUM9 )
+				{
+					this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+					insertCharacter();
 					return true;
 				}
-				this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
-				//#ifdef polish.css.font-bitmap
-					if (this.bitMapFont != null) {
-						this.caretViewer = this.bitMapFont.getViewer("" + this.caretChar);
-					}
+				//#if polish.key.space:defined
+					//#= if (keyCode == ${polish.key.space}) {
+						this.caretChar = ' ';
+						insertCharacter();
+						if (true) {
+							return true;
+						}
+					//# }
 				//#endif
-				insertCharacter();
-				return true;
-			} else if ( this.isDecimal ) {
-				//System.out.println("handling key for DECIMAL TextField");
-				if (currentLength < this.maxSize 
-						&& ( keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR )
-						&& (this.text.indexOf( Locale.DECIMAL_SEPARATOR) == -1)
-						) 
-				{
+			//#else
+			if (	keyCode >= Canvas.KEY_NUM0 	&& 
+					keyCode <= Canvas.KEY_NUM9	|| 
+					keyCode == Canvas.KEY_POUND || 
+					keyCode == Canvas.KEY_STAR    )
+			{
+				currentLength = (this.text == null ? 0 : this.text.length());
+				if (this.inputMode == MODE_NUMBERS && !this.isUneditable) {
+					if ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 )  
+					{
+						if (currentLength >= this.maxSize) {
+							// ignore this key event - also don't forward it to the parent component:
+							return true;
+						}
+						this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+						//#ifdef polish.css.font-bitmap
+							if (this.bitMapFont != null) {
+								this.caretViewer = this.bitMapFont.getViewer("" + this.caretChar);
+							}
+						//#endif
+						insertCharacter();
+						return true;
+					} else if ( this.isDecimal ) {
+						//System.out.println("handling key for DECIMAL TextField");
+						if (currentLength < this.maxSize 
+								&& ( keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR )
+								&& (this.text.indexOf( Locale.DECIMAL_SEPARATOR) == -1)
+								) 
+						{
+							
+							this.caretChar = Locale.DECIMAL_SEPARATOR;
+							//#ifdef polish.css.font-bitmap
+								if (this.bitMapFont != null) {
+									this.caretViewer = this.bitMapFont.getViewer("" + Locale.DECIMAL_SEPARATOR);
+								}
+							//#endif
+							insertCharacter();
+							return true;								
+						}
+					}
 					
-					this.caretChar = Locale.DECIMAL_SEPARATOR;
-					//#ifdef polish.css.font-bitmap
-						if (this.bitMapFont != null) {
-							this.caretViewer = this.bitMapFont.getViewer("" + Locale.DECIMAL_SEPARATOR);
+				}
+				if ( (!this.isNumeric) //this.inputMode != MODE_NUMBERS 
+						&& !this.isUneditable
+						&& currentLength < this.maxSize 
+						&& ((keyCode >= Canvas.KEY_NUM0 
+						&& keyCode <= Canvas.KEY_NUM9)
+						|| (keyCode == Canvas.KEY_POUND ) 
+						|| (keyCode == Canvas.KEY_STAR )
+						//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
+							//#= || (keyCode == ${polish.key.AddSymbolKey} )
+						//#endif
+						)) 
+				{	
+					//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
+						//#if false
+							int addSymbolCode = 0;
+						//#else
+							//#= int addSymbolCode = ${polish.key.AddSymbolKey};
+						//#endif
+						if (keyCode == addSymbolCode ) {
+							showSymbolsList();
+							return true;
 						}
 					//#endif
-					insertCharacter();
-					return true;								
-				}
-			}
-			
-		}
-		if ( (!this.isNumeric) //this.inputMode != MODE_NUMBERS 
-				&& !this.isUneditable
-				&& currentLength < this.maxSize 
-				&& ((keyCode >= Canvas.KEY_NUM0 
-				&& keyCode <= Canvas.KEY_NUM9)
-				|| (keyCode == Canvas.KEY_POUND ) 
-				|| (keyCode == Canvas.KEY_STAR )
-				//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
-					//#= || (keyCode == ${polish.key.AddSymbolKey} )
-				//#endif
-				)) 
-		{	
-			//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
-				//#if false
-					int addSymbolCode = 0;
-				//#else
-					//#= int addSymbolCode = ${polish.key.AddSymbolKey};
-				//#endif
-				if (keyCode == addSymbolCode ) {
-					showSymbolsList();
+					String alphabet;
+					if (keyCode == Canvas.KEY_POUND) {
+						alphabet = charactersKeyPound;
+					} else if (keyCode == Canvas.KEY_STAR) {
+						alphabet = charactersKeyStar;
+					} else {
+						alphabet = this.characters[ keyCode - Canvas.KEY_NUM0 ];
+					}
+					if (alphabet == null || (alphabet.length() == 0)) {
+						return false;
+					}
+					this.lastInputTime = System.currentTimeMillis();
+					char newCharacter;
+					int alphabetLength = alphabet.length();
+					if (keyCode == this.lastKey && (this.caretChar != this.editingCaretChar)) {
+						this.characterIndex++;
+						if (this.characterIndex >= alphabetLength) {
+							this.characterIndex = 0;
+						}
+					} else {
+						// insert the last character into the text:
+						if (this.caretChar != this.editingCaretChar) {
+							insertCharacter();
+							if (currentLength + 1 >= this.maxSize) {
+								return true;
+							}
+						}
+						this.characterIndex = 0;
+						this.lastKey = keyCode;
+					}
+					newCharacter = alphabet.charAt( this.characterIndex );
+					//System.out.println("TextField.handleKeyPressed(): newCharacter=" + newCharacter + ", currentLength=" + currentLength + ", maxSize=" + this.maxSize + ", text.length()=" + this.text.length() );
+					if ( this.inputMode == MODE_UPPERCASE 
+							|| this.nextCharUppercase ) 
+					{
+						newCharacter = Character.toUpperCase(newCharacter);
+					}
+					//#ifdef polish.css.font-bitmap
+					if (this.bitMapFont != null) {
+						this.caretViewer = this.bitMapFont.getViewer("" + newCharacter);
+					} else {
+					//#endif
+						this.caretWidth = this.font.charWidth( newCharacter );
+					//#ifdef polish.css.font-bitmap
+					}
+					//#endif
+					this.caretChar = newCharacter;
+					if (alphabetLength == 1) {
+						insertCharacter();
+					}
 					return true;
 				}
-			//#endif
-			String alphabet;
-			if (keyCode == Canvas.KEY_POUND) {
-				alphabet = charactersKeyPound;
-			} else if (keyCode == Canvas.KEY_STAR) {
-				alphabet = charactersKeyStar;
-			} else {
-				alphabet = this.characters[ keyCode - Canvas.KEY_NUM0 ];
-			}
-			if (alphabet == null || (alphabet.length() == 0)) {
-				return false;
-			}
-			this.lastInputTime = System.currentTimeMillis();
-			char newCharacter;
-			int alphabetLength = alphabet.length();
-			if (keyCode == this.lastKey && (this.caretChar != this.editingCaretChar)) {
-				this.characterIndex++;
-				if (this.characterIndex >= alphabetLength) {
-					this.characterIndex = 0;
-				}
-			} else {
-				// insert the last character into the text:
-				if (this.caretChar != this.editingCaretChar) {
-					insertCharacter();
-					if (currentLength + 1 >= this.maxSize) {
-						return true;
-					}
-				}
-				this.characterIndex = 0;
-				this.lastKey = keyCode;
-			}
-			newCharacter = alphabet.charAt( this.characterIndex );
-			//System.out.println("TextField.handleKeyPressed(): newCharacter=" + newCharacter + ", currentLength=" + currentLength + ", maxSize=" + this.maxSize + ", text.length()=" + this.text.length() );
-			if ( this.inputMode == MODE_UPPERCASE 
-					|| this.nextCharUppercase ) 
-			{
-				newCharacter = Character.toUpperCase(newCharacter);
-			}
-			//#ifdef polish.css.font-bitmap
-			if (this.bitMapFont != null) {
-				this.caretViewer = this.bitMapFont.getViewer("" + newCharacter);
-			} else {
-			//#endif
-				this.caretWidth = this.font.charWidth( newCharacter );
-			//#ifdef polish.css.font-bitmap
 			}
 			//#endif
-			this.caretChar = newCharacter;
-			if (alphabetLength == 1) {
-				insertCharacter();
-			}
-			return true;
-		}
-		
+		//#endif
 		return false;
 	}
 	
 	protected boolean handleKeyClear(int keyCode, int gameAction)
 	{
+		//#if tmp.directInput
 		if ( currentLength > 0 ) {
 			if (this.isUneditable) {
 				return false;
@@ -2851,83 +2915,107 @@ public class TextField extends StringItem
 		
 			return deleteCurrentChar();
 		}
-		
+		//#endif
 		return false;
 	}
 	
 	protected boolean handleKeyMode(int keyCode, int gameAction)
 	{
-		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-		//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} && !this.isNumeric && !this.isUneditable) {
-			if (this.inputMode == MODE_NUMBERS) {
-				this.inputMode = MODE_LOWERCASE;
-			} else {
-				this.inputMode = MODE_NUMBERS;
-			}
-			//#if tmp.useInputInfo
-				updateInfo();
-			//#endif
-			if (this.caretChar != this.editingCaretChar) {
-				insertCharacter();
-			}
-			if (this.inputMode == MODE_FIRST_UPPERCASE) {
-				this.nextCharUppercase = true;
-			} else {
-				this.nextCharUppercase = false;
-			}
-			//# return true;
-		//# }
-		//#endif
-		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-			//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
-		//#else
-		if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable) {
-		//#endif
-			if (this.nextCharUppercase && this.inputMode == MODE_LOWERCASE) {
-				this.nextCharUppercase = false;
-			} else {
-				this.inputMode++;							
-			}
+		//#if tmp.directInput
 			//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-				if (this.inputMode > MODE_UPPERCASE) {
-					//#if polish.TextField.allowNativeModeSwitch
-						if (this.inputMode > MODE_NATIVE) {
-							this.inputMode = MODE_LOWERCASE;
-						} else {
-							this.inputMode = MODE_NATIVE;
-						}
-					//#else
+				//#= if (keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} && !this.isNumeric && !this.isUneditable) {
+					if (this.inputMode == MODE_NUMBERS) {
 						this.inputMode = MODE_LOWERCASE;
+					} else {
+						this.inputMode = MODE_NUMBERS;
+					}
+					//#if tmp.useInputInfo
+						updateInfo();
 					//#endif
-				}
-			//#elif polish.TextField.allowNativeModeSwitch
-				if (this.inputMode > MODE_NATIVE) {
-					this.inputMode = MODE_LOWERCASE;
-				}
+					if (this.caretChar != this.editingCaretChar) {
+						insertCharacter();
+					}
+					if (this.inputMode == MODE_FIRST_UPPERCASE) {
+						this.nextCharUppercase = true;
+					} else {
+						this.nextCharUppercase = false;
+					}
+					//# return true;
+				//# }
+			//#endif
+			//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+				//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
 			//#else
-				if (this.inputMode > MODE_NUMBERS) {
-					this.inputMode = MODE_LOWERCASE;
+			if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable) {
+			//#endif
+				if (this.nextCharUppercase && this.inputMode == MODE_LOWERCASE) {
+					this.nextCharUppercase = false;
+				} else {
+					this.inputMode++;							
+				}
+				//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+					if (this.inputMode > MODE_UPPERCASE) {
+						//#if polish.TextField.allowNativeModeSwitch
+							if (this.inputMode > MODE_NATIVE) {
+								this.inputMode = MODE_LOWERCASE;
+							} else {
+								this.inputMode = MODE_NATIVE;
+							}
+						//#else
+							this.inputMode = MODE_LOWERCASE;
+						//#endif
+					}
+				//#elif polish.TextField.allowNativeModeSwitch
+					if (this.inputMode > MODE_NATIVE) {
+						this.inputMode = MODE_LOWERCASE;
+					}
+				//#else
+					if (this.inputMode > MODE_NUMBERS) {
+						this.inputMode = MODE_LOWERCASE;
+					}
+				//#endif
+				//#if tmp.useInputInfo
+					updateInfo();
+				//#endif
+				if (this.caretChar != this.editingCaretChar) {
+					insertCharacter();
+				}
+				if (this.inputMode == MODE_FIRST_UPPERCASE) {
+					this.nextCharUppercase = true;
+				} else {
+					this.nextCharUppercase = false;
+				}
+				return true;
+			}
+			//#if polish.key.shift:defined
+				if ( keyCode == KEY_SHIFT && !this.isNumeric && !this.isUneditable) {
+					if (this.nextCharUppercase && this.inputMode == MODE_LOWERCASE) {
+						this.nextCharUppercase = false;
+					} else {
+						int mode = this.inputMode++;
+						if (mode >= MODE_NUMBERS) {
+							mode = MODE_LOWERCASE;
+						}
+						if (mode == MODE_FIRST_UPPERCASE) {
+							this.nextCharUppercase = true;
+						} else {
+							this.nextCharUppercase = false;
+						}
+						this.inputMode = mode;
+					}
+					//#if tmp.useInputInfo
+						updateInfo();
+					//#endif
+					return true;
 				}
 			//#endif
-			//#if tmp.useInputInfo
-				updateInfo();
-			//#endif
-			if (this.caretChar != this.editingCaretChar) {
-				insertCharacter();
-			}
-			if (this.inputMode == MODE_FIRST_UPPERCASE) {
-				this.nextCharUppercase = true;
-			} else {
-				this.nextCharUppercase = false;
-			}
-			return true;
-		}
-		
+		//#endif
 		return false;
 	}
 	
 	protected boolean handleKeyNavigation(int keyCode, int gameAction)
 	{
+		//#if tmp.directInput
 		if (gameAction == Canvas.FIRE
 				&& keyCode != Canvas.KEY_NUM5
 				&& this.defaultCommand != null 
@@ -3091,6 +3179,7 @@ public class TextField extends StringItem
 				return true;
 			}
 		}
+		//#endif
 		
 		return false;
 	}
