@@ -77,6 +77,10 @@ public class MasterCanvasPostCompiler extends BytecodePostCompiler
 		  System.out.println("Warning: the device " + device.getIdentifier() + " flickers when a new displayable is shown in Display.setCurrent(). J2ME Polish can fix this, but only in the fullscreen mode. Set the \"fullscreen\" attribute of the <build> element to \"menu\" to handle this: <build fullscreen=\"menu\">.");
 		  return;
 	  }
+	  if (env.hasSymbol("polish.skipMasterCanvas")) {
+		  System.out.println("Skipping MasterCanvasPostCompiler.");
+		  return;
+	  }
     try
       {
         System.out.println("MasterCanvas: mapping of Display.setCurrent() for "

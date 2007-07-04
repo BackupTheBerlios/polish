@@ -3088,7 +3088,7 @@ These namespaces/schemas will be used soon.
 		<capability name="AnnouncementDate" value="2006-12-18"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA5" />
 		<capability name="Emulator.Skin" value="MOTORAZR_V3xx.props" />
-		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
+		<capability name="Bugs" value=""/>
 		<capability name="key.MiddleSoftKey" value="-20" />
 	</device>
 
@@ -5177,6 +5177,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="locationapi, mmapi1.1, wmapi2.0, m3g, pdaapi, btapi, sipapi, webservice, securityapi"/>
 		<capability name="BitsPerPixel" value="18"/>
+		<capability name="ScreenOrientationCanChange" value="true"/>
 		<capability name="ScreenSize" value="352x416"/>
 		<capability name="FullCanvasSize" value="352x416"/>
 		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
@@ -5191,6 +5192,11 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="1600x1200"/>
 		<capability name="AnnouncementDate" value="2005-10-12"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
+		<capability name="key.a" value="97" />
+		<capability name="key.z" value="122" />
+		<capability name="key.backspace" value="8" />
+		<capability name="key.shift" value="-50" />
+		<capability name="key.space" value="32" />
 	</device>
 	
 	<device>

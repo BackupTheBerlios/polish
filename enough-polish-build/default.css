@@ -192,6 +192,7 @@ centercommand {
 }
 
 .browserOption {
+	inherit: false;
 	view-type: exclusive;
 	layout: left | expand;
 }
@@ -200,4 +201,10 @@ centercommand {
 }
 
 .rssDescriptionAlert {
+}
+
+.verticalmenubar {
+	inherit: false;
+	background: none;
+	layout: right | horizontal-shrink;
 }
