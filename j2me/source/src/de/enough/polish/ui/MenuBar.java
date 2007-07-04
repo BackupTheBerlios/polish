@@ -117,6 +117,8 @@ public class MenuBar extends Item {
 		private Background overlayBackground;
 	//#endif
 	private final Hashtable allCommands;
+	private boolean isOrientationVertical;
+	private Style horizontalStyle;
 
 	/**
 	 * Creates a new menu bar
@@ -699,34 +701,55 @@ public class MenuBar extends Item {
 			//#endif
 		}
 		//#if !tmp.useInvisibleMenuBar
-			int availableWidth = lineWidth / 2;
-			this.singleRightCommandItem.relativeX = availableWidth;
-//			if ( ! this.isOpened && this.singleRightCommand == null ) {
-//				availableWidth = lineWidth;
-//			}
-			//System.out.println("Initialising single commands with a width of " + availableWidth + " lineWidth is " + lineWidth);
-			int height = Math.max( this.singleLeftCommandItem.getItemHeight( availableWidth, availableWidth),
-					this.singleRightCommandItem.getItemHeight( availableWidth, availableWidth) );
-			if (height > this.contentHeight) {
-				this.contentHeight = height; 
-			} else {
-				// TODO allow LAYOUT_VEXPAND
-				if (( this.singleLeftCommandItem.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {
-					this.singleLeftCommandItem.relativeY = (this.contentHeight - this.singleLeftCommandItem.itemHeight) / 2;					
-				} else if (( this.singleLeftCommandItem.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM) {
-					this.singleLeftCommandItem.relativeY = this.contentHeight - this.singleLeftCommandItem.itemHeight;
+			//#if polish.ScreenOrientationCanChange
+				if (this.isOrientationVertical) {
+					this.singleLeftCommandItem.relativeX = 0;
+					this.singleLeftCommandItem.relativeY = this.screen.fullScreenHeight - this.singleLeftCommandItem.getItemHeight(firstLineWidth, lineWidth);
+					this.singleRightCommandItem.relativeX = 0;
+					this.singleRightCommandItem.relativeY = 0;
+					int cmdWidth = this.singleLeftCommandItem.getItemWidth(firstLineWidth, lineWidth);
+					if (this.singleRightCommandItem.getItemWidth(firstLineWidth, lineWidth) > cmdWidth) {
+						cmdWidth = this.singleRightCommandItem.itemWidth;
+					}
+					this.contentHeight = this.screen.fullScreenHeight;
+					this.contentWidth = cmdWidth;
+					if (this.isOpened) {
+						this.commandsContainer.relativeX = cmdWidth - this.commandsContainerWidth;
+						this.commandsContainer.relativeY = this.singleLeftCommandItem.relativeY - this.commandsContainer.getItemHeight(firstLineWidth, lineWidth);
+					}
 				} else {
-					this.singleLeftCommandItem.relativeY = 0;
+			//#endif
+					int availableWidth = lineWidth >> 1;
+					this.singleRightCommandItem.relativeX = availableWidth;
+		//			if ( ! this.isOpened && this.singleRightCommand == null ) {
+		//				availableWidth = lineWidth;
+		//			}
+					//System.out.println("Initialising single commands with a width of " + availableWidth + " lineWidth is " + lineWidth);
+					int height = Math.max( this.singleLeftCommandItem.getItemHeight( availableWidth, availableWidth),
+							this.singleRightCommandItem.getItemHeight( availableWidth, availableWidth) );
+					//if (height > this.contentHeight) {
+						this.contentHeight = height; 
+					//} else {
+						// TODO allow LAYOUT_VEXPAND
+						if (( this.singleLeftCommandItem.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {
+							this.singleLeftCommandItem.relativeY = (this.contentHeight - this.singleLeftCommandItem.itemHeight) / 2;					
+						} else if (( this.singleLeftCommandItem.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM) {
+							this.singleLeftCommandItem.relativeY = this.contentHeight - this.singleLeftCommandItem.itemHeight;
+						} else {
+							this.singleLeftCommandItem.relativeY = 0;
+						}
+						if (( this.singleRightCommandItem.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {
+							this.singleRightCommandItem.relativeY = (this.contentHeight - this.singleRightCommandItem.itemHeight) / 2;					
+						} else if (( this.singleRightCommandItem.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM) {
+							this.singleRightCommandItem.relativeY = this.contentHeight - this.singleRightCommandItem.itemHeight;
+						} else {
+							this.singleLeftCommandItem.relativeY = 0;
+						}
+					//}
+					this.contentWidth = lineWidth;
+			//#if polish.ScreenOrientationCanChange
 				}
-				if (( this.singleRightCommandItem.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {
-					this.singleRightCommandItem.relativeY = (this.contentHeight - this.singleRightCommandItem.itemHeight) / 2;					
-				} else if (( this.singleRightCommandItem.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM) {
-					this.singleRightCommandItem.relativeY = this.contentHeight - this.singleRightCommandItem.itemHeight;
-				} else {
-					this.singleLeftCommandItem.relativeY = 0;
-				}
-			}
-			this.contentWidth = lineWidth;
+			//#endif
 		//#endif
 	}
 
@@ -748,48 +771,72 @@ public class MenuBar extends Item {
 			int clipY = g.getClipY();
 			int clipWidth = g.getClipWidth();
 			int clipHeight = g.getClipHeight();
-			g.setClip(0, this.topY, this.screen.screenWidth , this.screen.screenHeight - this.topY);
+			//#if polish.ScreenOrientationCanChange
+	        	if (this.isOrientationVertical) {
+		        	g.setClip(0, this.topY, this.screen.screenWidth, this.screen.fullScreenHeight - this.topY - this.singleLeftCommandItem.getItemHeight(rightBorder-leftBorder, rightBorder-leftBorder) );
+	        	} else {
+		        	g.setClip(0, this.topY, this.screen.screenWidth, this.screen.screenHeight - this.topY);
+	        	}
+	        //#else
+	        	g.setClip(0, this.topY, this.screen.screenWidth, this.screen.screenHeight - this.topY);
+	        //#endif
             this.commandsContainer.paint( x + this.commandsContainer.relativeX, y + this.commandsContainer.relativeY, x + this.commandsContainer.relativeX, x + this.commandsContainer.relativeX + this.commandsContainerWidth, g);
-			g.setClip(clipX, clipY, clipWidth, clipHeight );
+			g.setClip( clipX, clipY, clipWidth, clipHeight );
 			//System.out.println("MenuBar: commandContainer.background == null: " + ( this.commandsContainer.background == null ) );
 			//System.out.println("MenuBar: commandContainer.style.background == null: " + ( this.commandsContainer.style.background == null ) );
 		//#if !tmp.useInvisibleMenuBar
-//			//#ifdef polish.FullCanvasSize:defined
-//				//#= g.setClip(0, 0, ${polish.FullCanvasWidth}, ${polish.FullCanvasHeight} );
-//			//#else
-//				//TODO rob check if resetting of clip really works
-//				g.setClip(0, this.commandsContainerY, this.screen.screenWidth, this.screen.screenHeight );
-//			//#endif
 			// paint menu-bar:
-			int centerX = leftBorder + ((rightBorder - leftBorder)/2); 
-			this.singleLeftCommandItem.paint(leftBorder, y + this.singleLeftCommandItem.relativeY, leftBorder, centerX, g);			
-			this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandItem.relativeY, centerX, rightBorder, g);
-		} else {
-			int centerX = leftBorder + ((rightBorder - leftBorder)/2);
-			//#if tmp.useMiddleCommand
-				if (this.singleMiddleCommand != null) {
-					int width = (rightBorder - leftBorder) >>> 1;
-					int commandWidth = this.singleMiddleCommandItem.getItemWidth(width, width);
-					width >>>= 1;
-					this.singleMiddleCommandItem.paint(centerX - (commandWidth >>> 1), y + this.singleMiddleCommandItem.relativeY, leftBorder + width, rightBorder - width, g);
+			//#if polish.ScreenOrientationCanChange
+				if (this.isOrientationVertical) {
+					this.singleLeftCommandItem.paint(x, y + this.singleLeftCommandItem.relativeY, leftBorder, rightBorder, g);
+					this.singleRightCommandItem.paint(x, y + this.singleRightCommandItem.relativeY, leftBorder, rightBorder, g);					
+				} else {
+			//#endif
+					int centerX = leftBorder + ((rightBorder - leftBorder)/2); 
+					this.singleLeftCommandItem.paint(leftBorder, y + this.singleLeftCommandItem.relativeY, leftBorder, centerX, g);			
+					this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandItem.relativeY, centerX, rightBorder, g);
+			//#if polish.ScreenOrientationCanChange
 				}
 			//#endif
-			//#if tmp.RightOptions
-				//# if (this.singleLeftCommand != null) {
-			//#else
-				if (this.commandsContainer.size() > 0 || this.singleLeftCommand != null) {
+		} else {
+			//#if polish.ScreenOrientationCanChange
+				if (this.isOrientationVertical) {
+					if (this.commandsContainer.size() > 0 || this.singleLeftCommand != null) {
+							this.singleLeftCommandItem.paint(x, y + this.singleLeftCommandItem.relativeY, leftBorder, rightBorder, g);
+					}
+					if (this.singleRightCommand != null) {
+						this.singleRightCommandItem.paint(x, y + this.singleRightCommandItem.relativeY, leftBorder, rightBorder, g);
+					}
+				} else {
 			//#endif
-				//System.out.println("painting left command from " + leftBorder + " to " + centerX );
-				this.singleLeftCommandItem.paint(leftBorder, y + this.singleLeftCommandItem.relativeY, leftBorder, centerX, g);
-			}
-			//#if tmp.RightOptions
-				if (this.commandsContainer.size() > 0 || this.singleRightCommand != null) {
-			//#else
-				//# if (this.singleRightCommand != null) {
+				int centerX = leftBorder + ((rightBorder - leftBorder)/2);
+				//#if tmp.useMiddleCommand
+					if (this.singleMiddleCommand != null) {
+						int width = (rightBorder - leftBorder) >>> 1;
+						int commandWidth = this.singleMiddleCommandItem.getItemWidth(width, width);
+						width >>>= 1;
+						this.singleMiddleCommandItem.paint(centerX - (commandWidth >>> 1), y + this.singleMiddleCommandItem.relativeY, leftBorder + width, rightBorder - width, g);
+					}
+				//#endif
+				//#if tmp.RightOptions
+					//# if (this.singleLeftCommand != null) {
+				//#else
+					if (this.commandsContainer.size() > 0 || this.singleLeftCommand != null) {
+				//#endif
+					//System.out.println("painting left command from " + leftBorder + " to " + centerX );
+					this.singleLeftCommandItem.paint(leftBorder, y + this.singleLeftCommandItem.relativeY, leftBorder, centerX, g);
+				}
+				//#if tmp.RightOptions
+					if (this.commandsContainer.size() > 0 || this.singleRightCommand != null) {
+				//#else
+					//# if (this.singleRightCommand != null) {
+				//#endif
+					//System.out.println("painting right command from " + centerX + " to " + rightBorder );
+					this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandItem.relativeY, centerX, rightBorder, g);
+				}
+			//#if polish.ScreenOrientationCanChange
+				}
 			//#endif
-				//System.out.println("painting right command from " + centerX + " to " + rightBorder );
-				this.singleRightCommandItem.paint(centerX, y + this.singleRightCommandItem.relativeY, centerX, rightBorder, g);
-			}
 		//#endif
 		}
 	}
@@ -814,7 +861,6 @@ public class MenuBar extends Item {
 		} else if (open && !this.isOpened) {
 			//#if !polish.MenuBar.focusFirstAfterClose
 				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
-				System.out.println("MenuBar: focussing first command: " + ((Command)this.commandsList.get(0)).getLabel() );
 				this.commandsContainer.focus(0);
 			//#endif
 			this.commandsContainer.showNotify();
@@ -1340,7 +1386,36 @@ public class MenuBar extends Item {
 		return super.getItemAt(relX, relY);
 	}
 
-	
+	/**
+	 * @return true when this menubar should be positioned vertically, e.g. on the right side of the screen
+	 */
+	public boolean isOrientationVertical() {
+		return this.isOrientationVertical;
+	}
+
+	public void setOrientationVertical( boolean isVertical ) {
+		setOrientationVertical( isVertical, null );
+	}
+
+	public void setOrientationVertical( boolean isVertical, Style style ) {
+		//#if polish.ScreenOrientationCanChange
+			if (isVertical == this.isOrientationVertical) {
+				// ignore
+				return;
+			}
+			this.isOrientationVertical = isVertical;
+			if ( isVertical) {
+				this.horizontalStyle = this.style;
+			} else {
+				style = this.horizontalStyle;
+			}
+		//#endif
+		if (style != null) {
+			setStyle( style );
+		}
+		this.isInitialized = false;
+	}
+
 	
 	
 	

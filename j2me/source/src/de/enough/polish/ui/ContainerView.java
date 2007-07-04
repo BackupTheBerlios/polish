@@ -410,6 +410,7 @@ extends ItemView
 					// okay, the table is fine just how it is
 					this.columnsWidths = maxColumnWidths;
 				} else {
+					System.out.println("container-view: too wide");
 					// okay, some columns need to be adjusted:
 					// re-initialise the table:
 					int leftAvailableColumnWidth = (availableRowWidth - usedUpWidth) / leftColumns;
@@ -475,11 +476,24 @@ extends ItemView
 			} // otherwise the column widths are defined statically.
 			// set content height & width:
 			int myContentWidth = 0;
+			columnIndex = 0;			
+			for (int i = 0; i < myItems.length; i++) {
+				Item item = myItems[i];
+				item.relativeX = myContentWidth;
+				myContentWidth += this.columnsWidths[columnIndex] + this.paddingHorizontal;
+				columnIndex++;
+				if (columnIndex == this.numberOfColumns) {
+					columnIndex = 0;
+					myContentWidth = 0;
+				}
+			}
+			myContentWidth = 0;
 			for (int i = 0; i < this.columnsWidths.length; i++) {
 				myContentWidth += this.columnsWidths[i] + this.paddingHorizontal;
 			}
 			this.contentWidth = myContentWidth;
 			this.contentHeight = myContentHeight;
+			
 		//#endif
 	}
 		
@@ -552,7 +566,7 @@ extends ItemView
 				for (int i = 0; i < myItems.length; i++) {
 					if (i != this.focusedIndex) {
 						Item item = myItems[i];
-						System.out.println("item " + i + " at " + item.relativeX + "/" + item.relativeY);
+						//System.out.println("item " + i + " at " + item.relativeX + "/" + item.relativeY);
 						int itemX = x + item.relativeX;
 						int itemY = y + item.relativeY;
 						paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
@@ -576,11 +590,12 @@ extends ItemView
 						}
 					//#endif
 					leftBorder = itemX;
-					rightBorder = itemX + columnWidth;
+					rightBorder = leftBorder + columnWidth;
 					if (i == this.focusedIndex) {
 						focusedLeftBorder = leftBorder;
 						focusedRightBorder = rightBorder;
 					} else {
+						//System.out.println("item " + i + " at " + item.relativeX + "/" + item.relativeY);
 						paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
 					} 
 					//#if polish.css.colspan

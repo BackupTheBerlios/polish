@@ -295,8 +295,11 @@ public class Container extends Item {
 				}
 			}
 		} else if (index < this.focusedIndex) {
+			System.out.println("removed index " + index + ", focused=" + this.focusedIndex);
 			//#if tmp.supportViewType
-				if (this.containerView == null) {
+				if (this.containerView != null) {
+					this.containerView.focusedIndex--;
+				} else {
 			//#endif
 					int offset = this.yOffset + removedItemHeight;
 					//System.out.println("new container offset: from " + this.yOffset + " to " + (offset > 0 ? 0 : offset));
@@ -306,8 +309,6 @@ public class Container extends Item {
 			//#endif
 			this.focusedIndex--;
 		}
-//		this.yOffset = 0;
-//		this.targetYOffset = 0;
 		if (this.isInitialized) {
 			this.isInitialized = false;
 			repaint();
