@@ -597,12 +597,17 @@ implements AccessibleCanvas
 		//#debug
 		System.out.println("calculateContentArea(" + x + ", " + y + ", " + width + ", " + height + ")");
 		
+		int availableWidth = this.screenWidth - this.marginLeft - this.marginRight;
 		//#if tmp.usingTitle
 			if (this.title != null) {
-				int availableWidth = this.screenWidth - this.marginLeft - this.marginRight;
 				this.titleHeight = this.title.getItemHeight( availableWidth, availableWidth );
 			}
 		//#endif
+		if (this.subTitle != null) {
+			this.subTitle.relativeX = this.marginLeft;
+			this.subTitle.relativeY = this.titleHeight;
+			this.subTitleHeight = this.subTitle.getItemHeight( availableWidth, availableWidth );
+		}
 		x += this.marginLeft;
 		width -= this.marginLeft + this.marginRight;
 		y += this.marginTop;
@@ -707,7 +712,18 @@ implements AccessibleCanvas
 					}
 					//#if polish.Screen.dontBufferPreviousScreen
 						if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas) {
-							this.previousScreen = (AccessibleCanvas) currentDisplayable;							
+							if (this.previousScreen != null && currentDisplayable instanceof Screen) {
+								Screen screen = (Screen) currentDisplayable;
+								if (screen.previousScreen != this) {
+									this.previousScreen = screen; //(AccessibleCanvas) currentDisplayable;
+								} else {
+									screen.previousScreen = null;
+//									System.out.println("1: showNotify of " + this + ", current=" + currentDisplayable + ", current.previous=" + screen.previousScreen );
+								}
+							} else {
+//								System.out.println("2: showNotify of " + this + ", current=" + currentDisplayable);
+								this.previousScreen = (AccessibleCanvas) currentDisplayable;
+							}
 							//#if !polish.Bugs.noTranslucencyWithDrawRgb
 								//#if polish.color.overlay:defined
 									//#= this.previousScreenOverlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
@@ -774,7 +790,15 @@ implements AccessibleCanvas
 			//#ifdef tmp.menuFullScreen
 				//#ifdef tmp.useExternalMenuBar
 					if (!this.menuBar.isInitialized) {
-						this.menuBar.init( width, width );
+						//#if polish.css.separate-menubar
+							if (this.separateMenubar) {
+								this.menuBar.init( width, width );								
+							} else {
+								this.menuBar.init( this.screenWidth, this.screenWidth );								
+							}
+						//#else
+							this.menuBar.init( this.screenWidth, this.screenWidth );								
+						//#endif
 					}
 				//#else
 					if (this.menuOpened) {
@@ -821,8 +845,9 @@ implements AccessibleCanvas
 	public void hideNotify() {
 		//#if polish.css.repaint-previous-screen
 			//#if polish.Screen.dontBufferPreviousScreen
-				this.previousScreen = null;
+				// this.previousScreen = null;
 			//#else
+				//TODO remove test case
 				this.previousScreenImage = null;
 			//#endif
 			//#if !polish.Bugs.noTranslucencyWithDrawRgb
@@ -1204,7 +1229,11 @@ implements AccessibleCanvas
 						if (this.repaintPreviousScreen && this.previousScreen != null) {
 							this.previousScreen.paint(g);
 							//#if !polish.Bugs.noTranslucencyWithDrawRgb
-								this.previousScreenOverlayBackground.paint(0, 0, this.screenWidth, this.screenHeight, g);
+								if (this.previousScreenOverlayBackground != null) {
+									//System.out.println("previousScreenOverlayBackground == null for " + this);
+								//} else {
+									this.previousScreenOverlayBackground.paint(0, 0, this.screenWidth, this.screenHeight, g);
+								}
 							//#endif
 						}
 					//#else
@@ -2482,7 +2511,12 @@ implements AccessibleCanvas
 					} else {
 				//#endif
 						if (this.menuBarHeight == 0 && this.isInitialized) {
-							int availableWidth = this.screenWidth - (this.marginLeft + this.marginRight );
+							int availableWidth = this.screenWidth; // - (this.marginLeft + this.marginRight );
+							//#if polish.css.separate-menubar
+								if (!this.separateMenubar) {
+									availableWidth -= (this.marginLeft + this.marginRight);
+								}
+							//#endif
 							this.menuBarHeight = this.menuBar.getItemHeight( availableWidth, availableWidth );
 							this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
 						}
@@ -3244,14 +3278,16 @@ implements AccessibleCanvas
 			this.subTitleHeight = 0;
 		} else {
 			subTitle.screen = this;
-			this.subTitle.relativeY = this.titleHeight;
-			//#ifdef polish.ScreenWidth:defined
-				//#= this.subTitleHeight = subTitle.getItemHeight(${polish.ScreenWidth}, ${polish.ScreenWidth});
-			//#else
-				this.subTitleHeight = subTitle.getItemHeight( this.screenWidth, this.screenWidth );
-			//#endif
+//			this.subTitle.relativeY = this.titleHeight;
+//			//#ifdef polish.ScreenWidth:defined
+//				//#= this.subTitleHeight = subTitle.getItemHeight(${polish.ScreenWidth}, ${polish.ScreenWidth});
+//			//#else
+//				this.subTitleHeight = subTitle.getItemHeight( this.screenWidth, this.screenWidth );
+//			//#endif
 		}
-		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+		if (this.isInitialized) {
+			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+		}
 	}
 	
 	//#if polish.Bugs.displaySetCurrentFlickers  && polish.useFullScreen
@@ -3475,9 +3511,9 @@ implements AccessibleCanvas
 	}
 	
 	/**
-	 * Sets the <code>ItemStateListener</code> for the
-	 * <code>Form</code>, replacing any previous
-	 * <code>ItemStateListener</code>. If
+	 * Sets the <code>ItemStateListener</code> for the <code>Screen</code>, 
+	 * replacing any previous <code>ItemStateListener</code>. 
+	 * If
 	 * <code>iListener</code> is <code>null</code>, simply
 	 * removes the previous <code>ItemStateListener</code>.
 	 * 
@@ -3487,6 +3523,23 @@ implements AccessibleCanvas
 	{
 		this.itemStateListener = iListener;
 	}
+	
+	
+	//#if polish.LibraryBuild
+	/**
+	 * Sets the <code>ItemStateListener</code> for the <code>Screen</code>, 
+	 * replacing any previous <code>ItemStateListener</code>. 
+	 * If
+	 * <code>iListener</code> is <code>null</code>, simply
+	 * removes the previous <code>ItemStateListener</code>.
+	 * 
+	 * @param iListener the new listener, or null to remove it
+	 */
+	public void setItemStateListener( javax.microedition.lcdui.ItemStateListener iListener ) {
+		throw new RuntimeException("Unable to use standard ItemStateListener in a screen.");
+	}
+	//#endif
+
 	
 	/**
 	 * Adds the given item to the queue for state notifications.

@@ -2244,7 +2244,7 @@ public abstract class Item extends Object
 		}
 		// when an item is focused, it usually grows bigger, so
 		// increase the bottom position a bit:
-		this.itemHeight += 5;
+		//this.itemHeight += 5;
 		if (oldStyle == null) {
 			oldStyle = StyleSheet.defaultStyle;
 		}

@@ -137,7 +137,9 @@ public class TabBar extends Item {
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
-		int scrollerWidth = this.scrollArrowHeight + 2 * this.scrollArrowPadding; 
+		int scrollerWidth = this.scrollArrowHeight + 2 * this.scrollArrowPadding;
+		//#debug
+		System.out.println("init of TabBar lineWidth=" + lineWidth + ", scrollerWidth=" + scrollerWidth + ", number of tabs=" + this.tabs.length );
 		int maxHeight = scrollerWidth;
 		int completeWidth = 0;
 		int rightBorder = lineWidth - scrollerWidth;
@@ -224,7 +226,7 @@ public class TabBar extends Item {
 					g.drawImage(this.leftArrow, x + this.arrowXOffset, y + this.arrowYOffset, Graphics.LEFT |  Graphics.TOP );
 				} else {
 			//#endif
-					int halfWidth = this.scrollArrowHeight / 2;
+					int halfWidth = this.scrollArrowHeight >> 1;
 					//#ifdef polish.midp2
 						g.fillTriangle(x, y + halfWidth-1, x + this.scrollArrowHeight, y, x + this.scrollArrowHeight, y + this.scrollArrowHeight );
 					//#else

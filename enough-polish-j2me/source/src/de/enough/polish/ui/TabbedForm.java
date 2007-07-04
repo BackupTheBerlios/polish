@@ -137,14 +137,7 @@ public class TabbedForm extends Form {
 		throw new RuntimeException("Unable to use standard items in a tabbed form - please append only J2ME Polish items.");
 	}
 	//#endif
-	
-	
-	//#if polish.LibraryBuild
-	public void setItemStateListener( javax.microedition.lcdui.ItemStateListener listener ) {
-		throw new RuntimeException("Unable to use standard ItemStateListener in a tabbed form.");
-	}
-	//#endif
-	
+		
 	/**
 	 * Adds the  item  to the first tab of this form.
 	 * 

@@ -119,6 +119,9 @@ public abstract class ScreenChangeAnimation
 	 */
 	public ScreenChangeAnimation() {
 		// default constructor
+		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint
+			setFullScreenMode(true);
+		//#endif
 	}
 	
 	/**

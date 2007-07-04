@@ -433,7 +433,13 @@ public class FishEyeContainerView extends ContainerView {
 				}
 			//#endif
 		}
-		Style itemStyle = super.focusItem(focIndex, item, direction, focStyle);
+		
+		Style itemStyle;
+		if (!item.isFocused) {
+			itemStyle = super.focusItem(focIndex, item, direction, focStyle);
+		} else {
+			itemStyle = item.getStyle();
+		}
 		
 		this.focusedBackground = removeItemBackground( item );
 		this.focusedBorder = removeItemBorder( item );
@@ -445,8 +451,8 @@ public class FishEyeContainerView extends ContainerView {
 				}
 			} else {
 				this.focusedLabel.setText( this.labels[ focIndex ] );
-				if (this.focusedLabel.getStyle() != focStyle ) {
-					this.focusedLabel.setStyle( focStyle );
+				if (this.focusedLabel.getStyle() != item.getStyle() ) {
+					this.focusedLabel.setStyle( item.getStyle() );
 					removeItemBackground( this.focusedLabel );
 					removeItemBorder( this.focusedLabel );
 				}
@@ -532,6 +538,7 @@ public class FishEyeContainerView extends ContainerView {
 
 			// now paint label:
 			if (this.isRemoveText && this.focusedLabel != null) {
+				//System.out.println("painting focused label with style " + this.focusedLabel.getStyle() );
 				int labelX = x + ((rightBorder - leftBorder) >> 1) - (this.focusedLabel.getItemWidth( lineWidth, lineWidth ) >> 1);
 				int labelY = itemY + item.itemHeight + itemLabelDiff;
 				this.focusedLabel.paint( labelX, labelY, labelX, labelX + this.focusedLabel.itemWidth, g);
