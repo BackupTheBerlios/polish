@@ -119,6 +119,7 @@ public class MenuBar extends Item {
 	private final Hashtable allCommands;
 	private boolean isOrientationVertical;
 	private Style horizontalStyle;
+	private String errorMessage;
 
 	/**
 	 * Creates a new menu bar
@@ -168,6 +169,7 @@ public class MenuBar extends Item {
 	}
 	
 	public void addCommand(Command cmd, Style commandStyle) {
+		try {
 		//System.out.println("adding cmd " + cmd.getLabel() + " with style " + commandStyle );
 		if (cmd == this.singleLeftCommand || cmd == this.singleRightCommand || cmd == this.singleMiddleCommand || this.commandsList.contains(cmd)) {
 			// do not add an existing command again...
@@ -360,12 +362,16 @@ public class MenuBar extends Item {
 			this.isInitialized = false;
 			repaint();
 		}
+		} catch (Exception e) {
+			this.errorMessage = "aC:" + e.toString();
+		}
 	}
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Displayable#removeCommand(javax.microedition.lcdui.Command)
 	 */
 	public void removeCommand(Command cmd) {
+		try {
 		//#debug
 		System.out.println(this + ": removing command " + cmd.getLabel() + " (" + cmd + ")");
 		this.allCommands.remove( cmd );
@@ -501,6 +507,9 @@ public class MenuBar extends Item {
 		if (this.isInitialized) {
 			this.isInitialized = false;
 			repaint();
+		}
+		} catch (Exception e) {
+			this.errorMessage = e.toString();
 		}
 	}
 
@@ -758,6 +767,7 @@ public class MenuBar extends Item {
 	 */
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) 
 	{
+		try {
 		if (this.isOpened) {
 			// paint overlay background:
 			//#if !polish.Bugs.noTranslucencyWithDrawRgb
@@ -838,6 +848,14 @@ public class MenuBar extends Item {
 				}
 			//#endif
 		//#endif
+		}
+		} catch (Exception e ) {
+			g.setColor( 0xff0000 );
+			g.drawString( e.toString(), 10, 50, Graphics.TOP | Graphics.LEFT );
+		}
+		if (this.errorMessage != null) {
+			g.setColor( 0xff0000 );
+			g.drawString(this.errorMessage, 10, 80, Graphics.TOP | Graphics.LEFT );			
 		}
 	}
 

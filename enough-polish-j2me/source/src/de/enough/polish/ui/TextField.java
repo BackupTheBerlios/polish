@@ -3043,14 +3043,16 @@ public class TextField extends StringItem
 	
 	protected boolean handleKeyNavigation(int keyCode, int gameAction)
 	{
+
+		//#if tmp.directInput
+		try {
+			
 		char character = this.caretChar;
 		boolean characterInserted = character != this.editingCaretChar;
 		if (characterInserted) {
 			insertCharacter();
 		}
-
-		//#if tmp.directInput
-		try {
+		
 		if (gameAction == Canvas.FIRE
 				&& keyCode != Canvas.KEY_NUM5
 				&& this.defaultCommand != null 
