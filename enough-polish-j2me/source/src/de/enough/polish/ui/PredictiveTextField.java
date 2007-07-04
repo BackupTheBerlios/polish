@@ -64,7 +64,7 @@ public class PredictiveTextField
 {
 
 	private final Container choicesContainer;
-	private String[] choices;
+	private StringBuffer[] choices;
 	private String[] lowerCaseChoices;
 	private int numberOfMatches;
 	private boolean isInChoice;
@@ -85,6 +85,7 @@ public class PredictiveTextField
 	protected static Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 0 );
 	protected static Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 0 );
 	private boolean predictiveInput;
+	private long currentTime = 0;
 	
 	private StringItem status;
 	
@@ -133,11 +134,13 @@ public class PredictiveTextField
 			//# this.choicesContainer.parent = this;
 		//#endif		
 		
-		this.builder = new TextBuilder();
+		this.builder = new TextBuilder(maxSize);
 		this.display = display;
 		
 		this.inputMode 		= this.builder.getInputMode();
 		this.spaceButton 	= getSpaceKey();
+		this.status			= status;
+		
 		
 		this.addCommand(this.DISABLE_PREDICTIVE_CMD);
 		predictiveInput = true;
@@ -165,7 +168,7 @@ public class PredictiveTextField
 	 * 
 	 * @param choices the new choices, null when no choices are given
 	 */
-	private void setChoices( String[] choices ) {
+	private void setChoices( StringBuffer[] choices ) {
 		this.choicesContainer.clear();
 		if  ( choices == null ) {
 			this.choiceItems = new Item[ 0 ];
@@ -175,7 +178,7 @@ public class PredictiveTextField
 		this.numberOfMatches = choices.length;
 		this.choiceItems = new Item[ choices.length ];
 		for (int i = 0; i < choices.length; i++) {
-			String choiceText = choices[i];
+			String choiceText = choices[i].toString();
 			Item item = new ChoiceItem( choiceText, null, Choice.IMPLICIT, this.choiceItemStyle );
 			this.choiceItems[i] = item;
 			this.choicesContainer.add( item );
@@ -318,7 +321,6 @@ public class PredictiveTextField
 		setText(this.builder.getText());
 		setCaretPosition(this.builder.getCaretPosition());
 		
-		System.gc();
 		return true;
 	}
 	
@@ -361,9 +363,7 @@ public class PredictiveTextField
 		
 		setText(this.builder.getText());
 		setCaretPosition(this.builder.getCaretPosition());
-		super.notifyStateChanged();
 		
-		System.gc();
 		return true;
 	}
 	
@@ -436,7 +436,7 @@ public class PredictiveTextField
 			
 			if(this.builder.getCurrentAlign() == this.builder.ALIGN_FOCUS)
 			{
-				String results[] = this.builder.getCurrentElement().getResults();
+				StringBuffer results[] = this.builder.getCurrentElement().getResults();
 				if(results.length > 0)
 				{
 					setChoices(results);
@@ -679,6 +679,15 @@ public class PredictiveTextField
 			
 			this.choicesContainer.paint(x, y, leftBorder, rightBorder, g);			
 		}
+		
+		if((System.currentTimeMillis() - currentTime) > 1000)
+		{
+			currentTime = System.currentTimeMillis();
+			Runtime runtime = Runtime.getRuntime();
+			String statusString = runtime.freeMemory() + "/" + runtime.totalMemory();
+			System.gc();
+			status.setText(statusString);
+		}
 	}
 	
 	/**
@@ -726,7 +735,7 @@ public class PredictiveTextField
 						Item item = this.choiceItems[i];
 						if (item == null) {
 							// create new ChoiceItem (lazy initialisation)
-							item = new ChoiceItem( this.choices[i], null, Choice.IMPLICIT, this.choiceItemStyle );
+							item = new ChoiceItem( this.choices[i].toString(), null, Choice.IMPLICIT, this.choiceItemStyle );
 						}
 						//#debug
 						System.out.println("found match: " + choice);

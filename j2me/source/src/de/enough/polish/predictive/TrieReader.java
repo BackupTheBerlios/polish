@@ -35,7 +35,7 @@ public class TrieReader {
 	private boolean empty;
 	private boolean wordFound;
 
-	String[] results = null;
+	StringBuffer[] results = null;
 	
 	public TrieReader(String prefix, TrieProperties properties) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException
 	{
@@ -50,7 +50,7 @@ public class TrieReader {
 		this.wordFound	= true;
 	}
 	
-	public String[] getResults()
+	public StringBuffer[] getResults()
 	{
 		return this.results;
 	}
@@ -91,13 +91,13 @@ public class TrieReader {
 			popNodes(true);
 		
 		closeStores();
-		results = getNodeWords(this.nodes);
+		setNodeWords(this.nodes);
 	}
 	
 	public void keyClear() throws RecordStoreException
 	{	
 		popNodes(false);
-		results = getNodeWords(nodes);
+		setNodeWords(nodes);
 	}
 			
 	public void addToNodes(ArrayList source, ArrayList dest)
@@ -106,13 +106,16 @@ public class TrieReader {
 			dest.add(source.get(i));
 	}
 	
-	public String[] getNodeWords(ArrayList nodes)
+	public void setNodeWords(ArrayList nodes)
 	{
-		String[] words = new String[nodes.size()]; 
+		results = new StringBuffer[nodes.size()]; 
 		for(int i=0; i<nodes.size(); i++)
-			words[i] = ((TrieNode)nodes.get(i)).getWord();
+		{
+			if(results[i] == null)
+				results[i] = new StringBuffer(1);
 		
-		return words;
+			results[i].append(((TrieNode)nodes.get(i)).getWord());
+		}
 	}
 	
 	
@@ -176,8 +179,8 @@ public class TrieReader {
 			stores.put(storeID, store);
 		}
 		
-		byte[] record = store.getRecord(recordID % this.properties.getChunkSize()); 
-
+		byte[] record = store.getRecord(recordID % this.properties.getChunkSize());
+		
 		return getRecordPart(record,partID); 
 	}
 	
@@ -237,7 +240,8 @@ public class TrieReader {
 				if(value == letters.charAt(j))
 				{
 					TrieNode node = new TrieNode();
-					node.setWord(word + value);
+					node.appendToWord(word);
+					node.appendToWord(value);
 					
 					if(byteToByte(record, i+CC_OFFSET) != 0)
 						node.setReference((int)byteToChar(record, i+CR_OFFSET)); 

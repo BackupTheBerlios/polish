@@ -26,21 +26,17 @@ public class TextElement {
 		return -1;
 	}
 
-	public String[] getResults() {
-		String[] results;
-
+	public StringBuffer[] getResults() {
+		StringBuffer[] results;
+		
 		if (element instanceof TrieReader) {
 			results = ((TrieReader) element).getResults();
 
 			for (int i = 0; i < results.length; i++) {
-				char[] result = results[i].toCharArray();
-
 				for (int j = 0; j < shift.length(); j++) {
 					if (shift.charAt(j) == '1')
-						result[j] = Character.toUpperCase(result[j]);
+						results[i].setCharAt(j, Character.toUpperCase(results[i].charAt(j)));
 				}
-				
-				results[i] = new String(result);
 			}
 			
 			return results;

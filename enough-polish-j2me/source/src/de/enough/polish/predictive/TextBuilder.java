@@ -39,17 +39,21 @@ public class TextBuilder {
 	int currentAlign;
 	int currentInputMode;
 	
+	StringBuffer text = null;
+	
 	/**
 	 * Initializes the <code>TextElement</code> array, set the current element to -1, the align
 	 * for the current element to <code>ALIGN_LEFT</code> and the current input mode to 
 	 * <code>MODE_FIRST_UPPERCASE</code>.
 	 */
-	public TextBuilder()
+	public TextBuilder(int textSize)
 	{
-		this.textElements 	= new ArrayList();
-		this.currentElement = -1;
-		this.currentAlign	= ALIGN_LEFT;
-		this.currentInputMode 	= TextField.MODE_FIRST_UPPERCASE; 
+		this.textElements 		= new ArrayList();
+		this.currentElement 	= -1;
+		this.currentAlign		= ALIGN_LEFT;
+		this.currentInputMode 	= TextField.MODE_FIRST_UPPERCASE;
+		
+		text = new StringBuffer(textSize);
 	}
 	
 	/**
@@ -396,20 +400,19 @@ public class TextBuilder {
 	 */
 	public String getText()
 	{
-		String result = "";
+		this.text.setLength(0);
 		
 		for (int i = 0; i < textElements.size(); i++) {
 			TextElement element = getTextElement(i);
 			Object object = element.getElement();
 			
 			if( object instanceof Character)
-				result += (Character)object;
+				text.append((Character)object);
 			else if( object instanceof TrieReader)
-				result += element.getSelectedWord();
+				text.append(element.getSelectedWord());
 		}
 		
-		return result;
-		
+		return this.text.toString();
 	}
 
 	/**
