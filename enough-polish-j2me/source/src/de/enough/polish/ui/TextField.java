@@ -841,9 +841,6 @@ public class TextField extends StringItem
 		private boolean isNumeric;
 		private boolean isDecimal;
 		private boolean isEmail;
-		private boolean characterInserted;
-		private char 	character;
-		private int 	currentLength; 
 
 		private String caretRowFirstPart;
 		private String caretRowLastPart;
@@ -876,6 +873,8 @@ public class TextField extends StringItem
 	private boolean doSetCaretPosition;
 
 	private boolean isShowInputInfo = true;
+
+	private String errorMessage;
 
 
 
@@ -1659,6 +1658,7 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#paint(int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		try {
 		//#if polish.blackberry
         	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened() ) {
 				this.editField.setPaintPosition( x, y );
@@ -1718,10 +1718,14 @@ public class TextField extends StringItem
 						//System.out.println("bitmapfont is NULL!");
 					//#endif
 					g.setFont( this.font );
+					if (this.errorMessage != null) {
+						g.setColor( 0xff0000 );
+						g.drawString( this.errorMessage, x, y, Graphics.TOP | Graphics.LEFT );
+					}
 					g.setColor( this.textColor );
 					int centerX = 0;
 					if (this.isLayoutCenter) {
-						centerX = leftBorder + (rightBorder - leftBorder) / 2;
+						centerX = leftBorder + ((rightBorder - leftBorder) >> 1);
 					}
 					if (this.text != null) {
 				  		//#ifdef polish.css.text-wrap
@@ -1912,12 +1916,17 @@ public class TextField extends StringItem
 		}
 		// end of non-blackberry block
 		//#endif
+		} catch (Exception e) {
+			g.setColor( 0xff0000 );
+			g.drawString( e.toString(), 0, 30, Graphics.TOP | Graphics.LEFT );
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
+		try {
 		//#if tmp.includeInputInfo
 			if (this.infoItem != null) {
 				int infoWidth = this.infoItem.getItemWidth(firstLineWidth, lineWidth);
@@ -2084,6 +2093,11 @@ public class TextField extends StringItem
 			//System.out.println(this + "" + this + ".initContent():leave: caretX=" + this.caretX);
 			//System.out.println("firstpart=" + this.caretRowFirstPart + "   lastPart=" + this.caretRowLastPart);
 		//#endif
+		} catch (Exception e) {
+			this.errorMessage = e.toString();
+			this.contentWidth = 60;
+			this.contentHeight = 20;
+		}
 	}
 	
 	//#if tmp.directInput
@@ -2573,6 +2587,7 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		try {
 		//#ifndef tmp.directInput
 			if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
 					|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
@@ -2635,8 +2650,6 @@ public class TextField extends StringItem
 					
 					synchronized ( this.lock ) {
 						
-						this.currentLength = (this.text == null ? 0 : this.text.length());
-						
 	//					if (this.text == null) { // in that case no mode change can be done with an empty textfield 
 	//						return false;
 	//					}
@@ -2670,8 +2683,6 @@ public class TextField extends StringItem
 								return true;
 							}
 //						}
-						characterInserted = false;
-						character = this.caretChar;
 						
 						// Backspace
 						//#ifdef polish.key.ClearKey:defined
@@ -2707,7 +2718,7 @@ public class TextField extends StringItem
 		//#ifndef polish.hasPointerEvents
 			String currentText = this.isPassword ? this.passwordText : this.text;
 			if (this.enableDirectInput) {
-				this.currentLength = (this.text == null ? 0 : this.text.length());
+				int currentLength = (this.text == null ? 0 : this.text.length());
 				if ( 	keyCode >= Canvas.KEY_NUM0 && 
 						keyCode <= Canvas.KEY_NUM9) 
 				{	
@@ -2751,15 +2762,23 @@ public class TextField extends StringItem
 		} else {
 			return false;
 		}
+		} catch (Exception e) {
+			this.errorMessage = "hKP:" + e.toString();
+			return true;
+		}
 	}
 	//#endif
 	
 	protected boolean handleKeyInsert(int keyCode, int gameAction)
 	{
 		//#if tmp.directInput
+			int currentLength = (this.text == null ? 0 : this.text.length());
 			//#if tmp.useKeyMap
 				if (keyCode >= KEY_A && keyCode <= KEY_Z) {
-					this.caretChar = (char) ('a' + (keyCode - KEY_A));
+					if (currentLength >= this.maxSize) {
+						// ignore this key event - also don't forward it to the parent component:
+						return true;
+					}					this.caretChar = (char) ('a' + (keyCode - KEY_A));
 					if (this.nextCharUppercase || this.inputMode == MODE_UPPERCASE) {
 						this.caretChar = Character.toUpperCase(this.caretChar);
 					}
@@ -2769,12 +2788,20 @@ public class TextField extends StringItem
 						&& 	keyCode >= Canvas.KEY_NUM0 	 
 						&&	keyCode <= Canvas.KEY_NUM9 )
 				{
+					if (currentLength >= this.maxSize) {
+						// ignore this key event - also don't forward it to the parent component:
+						return true;
+					}
 					this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
 					insertCharacter();
 					return true;
 				}
 				//#if polish.key.space:defined
 					//#= if (keyCode == ${polish.key.space}) {
+						if (currentLength >= this.maxSize) {
+							// ignore this key event - also don't forward it to the parent component:
+							return true;
+						}
 						this.caretChar = ' ';
 						insertCharacter();
 						if (true) {
@@ -2782,13 +2809,12 @@ public class TextField extends StringItem
 						}
 					//# }
 				//#endif
-			//#else
+			//#endif
 			if (	keyCode >= Canvas.KEY_NUM0 	&& 
 					keyCode <= Canvas.KEY_NUM9	|| 
 					keyCode == Canvas.KEY_POUND || 
 					keyCode == Canvas.KEY_STAR    )
 			{
-				currentLength = (this.text == null ? 0 : this.text.length());
 				if (this.inputMode == MODE_NUMBERS && !this.isUneditable) {
 					if ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 )  
 					{
@@ -2900,7 +2926,6 @@ public class TextField extends StringItem
 					return true;
 				}
 			}
-			//#endif
 		//#endif
 		return false;
 	}
@@ -2908,12 +2933,15 @@ public class TextField extends StringItem
 	protected boolean handleKeyClear(int keyCode, int gameAction)
 	{
 		//#if tmp.directInput
-		if ( currentLength > 0 ) {
+		try {
 			if (this.isUneditable) {
 				return false;
 			}
-		
-			return deleteCurrentChar();
+			if ( this.text != null && this.text.length() > 0) {			
+				return deleteCurrentChar();
+			}
+		} catch (Exception e) {
+			this.errorMessage = "hKC:" + e.toString();
 		}
 		//#endif
 		return false;
@@ -2992,7 +3020,7 @@ public class TextField extends StringItem
 					if (this.nextCharUppercase && this.inputMode == MODE_LOWERCASE) {
 						this.nextCharUppercase = false;
 					} else {
-						int mode = this.inputMode++;
+						int mode = this.inputMode + 1;
 						if (mode >= MODE_NUMBERS) {
 							mode = MODE_LOWERCASE;
 						}
@@ -3015,7 +3043,14 @@ public class TextField extends StringItem
 	
 	protected boolean handleKeyNavigation(int keyCode, int gameAction)
 	{
+		char character = this.caretChar;
+		boolean characterInserted = character != this.editingCaretChar;
+		if (characterInserted) {
+			insertCharacter();
+		}
+
 		//#if tmp.directInput
+		try {
 		if (gameAction == Canvas.FIRE
 				&& keyCode != Canvas.KEY_NUM5
 				&& this.defaultCommand != null 
@@ -3067,6 +3102,7 @@ public class TextField extends StringItem
 
 			String lastLine = this.originalRowText;
 			int lastLineLength = lastLine.length();
+			//TODO check code
 			if (characterInserted) {
 				lastLineLength++;
 			}
@@ -3178,6 +3214,9 @@ public class TextField extends StringItem
 				//#endif
 				return true;
 			}
+		}
+		} catch (Exception e) {
+			this.errorMessage = "hKN:" + e.toString();
 		}
 		//#endif
 		
