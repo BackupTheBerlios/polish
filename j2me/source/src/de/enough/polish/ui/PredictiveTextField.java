@@ -272,56 +272,63 @@ public class PredictiveTextField
 		if(!this.predictiveInput)
 			return super.handleKeyInsert(keyCode, gameAction);
 		
-		if(keyCode != this.spaceButton)
-		{	
-			try
-			{
-				TrieProperties properties = new TrieProperties("predictive","Enough Software","PredictiveInstaller",true, 100,500);
-				
-				if( this.builder.isChar(0) ||
-					this.builder.getCurrentAlign() == TextBuilder.ALIGN_LEFT ||
-					this.builder.getCurrentAlign() == TextBuilder.ALIGN_RIGHT)
+		if(	(keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9) ||  
+			keyCode == Canvas.KEY_POUND || 
+			keyCode == Canvas.KEY_STAR  )
+		{
+			if(keyCode != this.spaceButton)
+			{	
+				try
 				{
-					currentReader = new TrieReader("predictive", properties);
-					this.builder.addReader(currentReader);
+					TrieProperties properties = new TrieProperties("predictive","Enough Software","PredictiveInstaller",true, 100,500);
+					
+					if( this.builder.isChar(0) ||
+						this.builder.getCurrentAlign() == TextBuilder.ALIGN_LEFT ||
+						this.builder.getCurrentAlign() == TextBuilder.ALIGN_RIGHT)
+					{
+						currentReader = new TrieReader("predictive", properties);
+						this.builder.addReader(currentReader);
+					}
+					else if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
+						currentReader = this.builder.getCurrentReader();
+					
+					currentReader.setSelectedWord(0);
+					
+					currentReader.keyNum(keyCode); 
 				}
-				else if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
-					currentReader = this.builder.getCurrentReader();
+				catch(RecordStoreException e){e.printStackTrace();}
 				
-				currentReader.setSelectedWord(0);
+				if(!currentReader.isWordFound())
+				{
+					showWordNotFound();
+				}
+				else
+				{
+					this.builder.getCurrentElement().pushChar(this.builder.getInputMode());
+						
+					if(this.builder.getInputMode() == TextField.MODE_FIRST_UPPERCASE)
+					{
+						this.builder.setInputMode(TextField.MODE_LOWERCASE);
+						this.inputMode = this.builder.getInputMode();
+						updateInfo();
+					}
+				}
 				
-				currentReader.keyNum(keyCode); 
-			}
-			catch(RecordStoreException e){e.printStackTrace();}
-			
-			if(!currentReader.isWordFound())
-			{
-				showWordNotFound();
+				this.setChoices(this.builder.getCurrentElement().getResults());
 			}
 			else
 			{
-				this.builder.getCurrentElement().pushChar(this.builder.getInputMode());
-					
-				if(this.builder.getInputMode() == TextField.MODE_FIRST_UPPERCASE)
-				{
-					this.builder.setInputMode(TextField.MODE_LOWERCASE);
-					this.inputMode = this.builder.getInputMode();
-					updateInfo();
-				}
+				this.builder.addChar(' ');
+				this.openChoices(false);
 			}
 			
-			this.setChoices(this.builder.getCurrentElement().getResults());
-		}
-		else
-		{
-			this.builder.addChar(' ');
-			this.openChoices(false);
+			setText(this.builder.getText());
+			setCaretPosition(this.builder.getCaretPosition());
+			
+			return true;
 		}
 		
-		setText(this.builder.getText());
-		setCaretPosition(this.builder.getCaretPosition());
-		
-		return true;
+		return false;
 	}
 	
 	protected boolean handleKeyClear(int keyCode, int gameAction) {
