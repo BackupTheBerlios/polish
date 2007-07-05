@@ -3580,7 +3580,11 @@ implements AccessibleCanvas
 	 * @return
 	 */
 	protected boolean isKeyboardAccessible() {
-		return getWidth() > getHeight();
+		//#if polish.key.supportsAsciiKeyMap.condition == open
+			return getWidth() > getHeight();
+		//#else
+			//# return false;
+		//#endif
 	}
 
 
