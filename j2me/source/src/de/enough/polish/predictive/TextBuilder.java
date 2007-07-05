@@ -38,6 +38,7 @@ public class TextBuilder {
 	int currentElement;
 	int currentAlign;
 	int currentInputMode;
+	int currentCaret;
 	
 	StringBuffer text = null;
 	
@@ -52,6 +53,7 @@ public class TextBuilder {
 		this.currentElement 	= -1;
 		this.currentAlign		= ALIGN_LEFT;
 		this.currentInputMode 	= TextField.MODE_FIRST_UPPERCASE;
+		this.currentCaret		= 0;
 		
 		text = new StringBuffer(textSize);
 	}
@@ -103,12 +105,24 @@ public class TextBuilder {
 	}
 	
 	/**
+	 * Returns the current caret position
+	 * @return the current caret position
+	 */
+	public int getCurrentCaret()
+	{
+		return this.currentCaret;
+	}
+	
+	/**
 	 * Returns the TextElement at the given index
 	 * @return the TextElement at the given index
 	 */
 	private TextElement getTextElement(int index)
 	{
-		return (TextElement) this.textElements.get(index);
+		if(this.textElements.size() > 0)
+			return (TextElement) this.textElements.get(index);
+		else
+			return null;
 	}
 	
 	/**
@@ -158,9 +172,9 @@ public class TextBuilder {
 	 * @param textLines the text lines of the field
 	 * @return the index of the line
 	 */
-	public int getCaretLine(String[] textLines)
+	public int getElementLine(String[] textLines)
 	{
-		int caretPosition = getCaretPosition(); 
+		int caretPosition = this.getCurrentCaret(); 
 		int length = 0;
 		int index = 0;
 		
@@ -171,7 +185,7 @@ public class TextBuilder {
 				return index;
 		}
 		
-		return index;
+		return textLines.length - 1;
 	}
 	
 	/**
@@ -182,7 +196,7 @@ public class TextBuilder {
 	 */
 	public int getJumpPosition(int jumpDirection, String[] textLines)
 	{
-		int caretLine 		= getCaretLine(textLines); 
+		int caretLine 		= getElementLine(textLines); 
 		int caretPosition 	= getCaretPosition(); 
 		
 		if(jumpDirection == JUMP_PREV && caretLine > 0)
@@ -394,6 +408,7 @@ public class TextBuilder {
 			if( (currentAlign == ALIGN_FOCUS || currentAlign == ALIGN_RIGHT) && currentElement >= 0)
 				result += getTextElement(currentElement).getLength();
 		
+		this.currentCaret = result;
 		return result;
 	}
 	
@@ -417,6 +432,16 @@ public class TextBuilder {
 		}
 		
 		return this.text.toString();
+	}
+	
+	/**
+	 * Returns the character at the given index
+	 * @param index the index of the character to return
+	 * @return the character at the given index
+	 */
+	public char getTextChar(int index)
+	{
+		return this.text.charAt(index);
 	}
 
 	/**
