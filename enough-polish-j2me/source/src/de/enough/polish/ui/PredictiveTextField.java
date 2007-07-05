@@ -40,6 +40,7 @@ import javax.microedition.rms.RecordStoreNotOpenException;
 import de.enough.polish.blackberry.ui.PolishEditField;
 //#endif
 import de.enough.polish.predictive.TextBuilder;
+import de.enough.polish.predictive.TextElement;
 import de.enough.polish.predictive.TrieProperties;
 import de.enough.polish.predictive.TrieReader;
 import de.enough.polish.util.Locale;
@@ -82,12 +83,17 @@ public class PredictiveTextField
 	private Display display = null;
 	private int spaceButton;
 	
+	private int elementX = 0;
+	private int elementY = 0;
+	private boolean newOpen = true;
+		
 	protected static Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 0 );
 	protected static Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 0 );
 	private boolean predictiveInput;
-	private long currentTime = 0;
 	
 	private StringItem status;
+	StringBuffer memory = new StringBuffer(20);
+	private long currentTime;
 	
 	/**
 	 * Creates a new ChoiceTextField.
@@ -141,7 +147,6 @@ public class PredictiveTextField
 		this.spaceButton 	= getSpaceKey();
 		this.status			= status;
 		
-		
 		this.addCommand(this.DISABLE_PREDICTIVE_CMD);
 		predictiveInput = true;
 		
@@ -184,7 +189,8 @@ public class PredictiveTextField
 			this.choicesContainer.add( item );
 		}
 		this.choices = choices;
-		openChoices( choices.length > 0 );
+		if(!isOpen)
+			openChoices( choices.length > 0 );
 	}
 	
 	
@@ -266,7 +272,7 @@ public class PredictiveTextField
 		
 		return -1;
 	}
-	
+		
 	protected boolean handleKeyInsert(int keyCode, int gameAction) {
 		
 		if(!this.predictiveInput)
@@ -454,6 +460,7 @@ public class PredictiveTextField
 				openChoices(false);
 			
 			setCaretPosition(this.builder.getCaretPosition());
+									
 			return true;
 		}
 		else if ( gameAction == Canvas.UP && !this.isInChoice)
@@ -465,6 +472,7 @@ public class PredictiveTextField
 				this.builder.setCurrentElementNear(lineCaret);
 				
 				setCaretPosition(this.builder.getCaretPosition());
+								
 				openChoices(false);
 			}
 			return true;
@@ -478,6 +486,7 @@ public class PredictiveTextField
 				this.builder.setCurrentElementNear(lineCaret);
 				
 				setCaretPosition(this.builder.getCaretPosition());
+								
 				openChoices(false);
 			}
 			return true;
@@ -514,7 +523,6 @@ public class PredictiveTextField
 			openChoices(false);
 			setText(this.builder.getText());
 			setCaretPosition(this.builder.getCaretPosition());
-			
 		} else if ( cmd == ENABLE_PREDICTIVE_CMD ) {
 			this.predictiveInput = true;
 			
@@ -668,7 +676,7 @@ public class PredictiveTextField
 			}
 		}
 		this.isOpen = open;
-		
+		this.newOpen = open;
 	}
 
 	/* (non-Javadoc)
@@ -677,24 +685,77 @@ public class PredictiveTextField
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		super.paintContent(x, y, leftBorder, rightBorder, g);
 		if ( this.isFocused && this.numberOfMatches > 0 ) {
-			// paint containert
 			
-			/*x += this.builder.getCurrentOffset() * 
-				 this.choicesContainer.getStyle().font.getSize();*/
-			
-			y += this.contentHeight + this.paddingVertical;
-			
-			this.choicesContainer.paint(x, y, leftBorder, rightBorder, g);			
+			if(this.isOpen)
+			{
+				y += this.paddingVertical;
+				
+				this.elementX = getElementX(leftBorder,rightBorder,this.choicesContainer.itemWidth);
+				this.elementY = getElementY();
+				
+				/*if(this.newOpen)
+				{
+					this.elementX = getElementX(leftBorder,rightBorder,this.choicesContainer.itemWidth);
+					this.elementY = getElementY();
+					this.newOpen = false;
+				}*/
+				
+				this.choicesContainer.paint(x + this.elementX , y + this.elementY, leftBorder + this.elementX, rightBorder, g);
+			}
 		}
 		
-		if((System.currentTimeMillis() - currentTime) > 1000)
+		/*if((System.currentTimeMillis() - currentTime) > 1000)
 		{
 			currentTime = System.currentTimeMillis();
 			Runtime runtime = Runtime.getRuntime();
-			String statusString = runtime.freeMemory() + "/" + runtime.totalMemory();
-			System.gc();
-			status.setText(statusString);
+			this.memory.setLength(0);
+			this.memory.append(runtime.freeMemory());
+			this.memory.append("/");
+			this.memory.append(runtime.totalMemory());
+			System.out.println(memory.toString());
+		}*/
+	}
+	
+	protected int getElementY()
+	{
+		if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
+			return 	(this.contentHeight / this.textLines.length) * 
+				   	(this.builder.getElementLine(this.textLines) + 1);
+		else
+			return 0;
+	}
+	
+	protected int getElementX(int leftBorder, int rightBorder, int itemWidth)
+	{	
+		if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
+		{
+			int line = this.builder.getElementLine(this.textLines);
+			int charsToLine = 0;
+						
+			for(int i = 0; i < line; i++)
+				charsToLine += this.textLines[i].length() + 1;
+			
+			TextElement element = this.builder.getCurrentElement();
+			
+			if(element != null)
+			{
+				int result = 0;
+				
+				for(int i=charsToLine; i<this.builder.getCurrentCaret() - element.getLength(); i++)
+					result += this.font.charWidth(this.builder.getTextChar(i));
+				
+				int overlap = (leftBorder + result + itemWidth) - rightBorder;
+								
+				if(overlap > 0)
+					result -= overlap;
+				
+				status.setText("" + result);
+				
+				return result;
+			}
 		}
+		
+		return 0;
 	}
 	
 	/**
