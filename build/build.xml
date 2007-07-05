@@ -394,8 +394,7 @@
 		</copy>	
 		<mkdir dir="tmp/core/import" />
 		<copy todir="tmp/core/import">
-			<fileset dir="import" includes="${all.jars}" />
-			<fileset dir="import" includes="${all.jars}" />
+			<fileset dir="import" includes="*.jar" />
 			<fileset dir="dist" includes="enough-j2mepolish-client*" />
 		</copy>	
 		<mkdir dir="tmp/core/legal" />
@@ -527,12 +526,10 @@
 			<fileset dir="." includes="capabilities.xml,platforms.xml,configurations.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,LICENSE.txt,Readme.txt" />
 		</copy>
 		<copy todir="tmp/import">
-			<fileset dir="import" includes="${all.jars}" />
-			<fileset dir="lib" includes="${all.jars}" />
+			<fileset dir="import" includes="*.jar" />
 			<fileset dir="dist" includes="enough-j2mepolish-client.jar,enough-j2mepolish-client-java5.jar"  />
 		</copy>
 		<copy todir="tmp/lib">
-			<fileset dir="import" includes="${all.library.jars}" />
 			<fileset dir="lib" includes="${all.library.jars}" />
 			<fileset dir="dist" includes="*.jar" />
 		</copy>

@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="src" output="bin/extensions" path="source/extensions"/>
 	<classpathentry kind="src" output="bin/test" path="source/test"/>
-	<classpathentry kind="lib" path="import/yguard-lib.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry kind="lib" path="lib/AppleJavaExtensions.jar"/>
@@ -27,5 +26,6 @@
 	<classpathentry kind="lib" path="lib/javax.servlet.jar"/>
 	<classpathentry kind="lib" path="lib/enough-license.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/yguard-lib.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

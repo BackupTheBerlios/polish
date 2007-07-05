@@ -81,6 +81,7 @@
 		<capability name="key.MoveLeftKey" value="5177410" />
 		<capability name="key.MoveRightKey" value="5242946" />
 		<capability name="polish.MenuBar.useExtendedMenuBar" value="true" />
+		<capability name="polish.MenuBar.Position" value="invisible" />
 		<capability name="polish.IconSize" value="28x28,55x55" />
 		<capability name="SoundFormat" value="mp3"/>
 		<!--
