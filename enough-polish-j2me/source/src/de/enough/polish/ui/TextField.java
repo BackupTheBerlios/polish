@@ -741,14 +741,6 @@ public class TextField extends StringItem
 		//#else
 		   public static final int KEY_DELETE = -8 ; //Canvas.KEY_STAR;
 		//#endif
-		//#if polish.key.a:defined && polish.key.z:defined
-		   //#define tmp.useKeyMap
-		   //#= private static final int KEY_A = ${polish.key.a};
-		   //#= private static final int KEY_Z = ${polish.key.z};
-		 //#else
-		   private static final int KEY_A = 97;
-		   private static final int KEY_Z = 122;
-		//#endif
 		//#if polish.key.shift:defined
 		   //#= private static final int KEY_SHIFT = ${polish.key.shift};
 		//#else
@@ -873,8 +865,6 @@ public class TextField extends StringItem
 	private boolean doSetCaretPosition;
 
 	private boolean isShowInputInfo = true;
-
-	private String errorMessage;
 
 
 
@@ -1718,10 +1708,6 @@ public class TextField extends StringItem
 						//System.out.println("bitmapfont is NULL!");
 					//#endif
 					g.setFont( this.font );
-					if (this.errorMessage != null) {
-						g.setColor( 0xff0000 );
-						g.drawString( this.errorMessage, x, y, Graphics.TOP | Graphics.LEFT );
-					}
 					g.setColor( this.textColor );
 					int centerX = 0;
 					if (this.isLayoutCenter) {
@@ -1926,7 +1912,6 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
-		try {
 		//#if tmp.includeInputInfo
 			if (this.infoItem != null) {
 				int infoWidth = this.infoItem.getItemWidth(firstLineWidth, lineWidth);
@@ -2093,11 +2078,6 @@ public class TextField extends StringItem
 			//System.out.println(this + "" + this + ".initContent():leave: caretX=" + this.caretX);
 			//System.out.println("firstpart=" + this.caretRowFirstPart + "   lastPart=" + this.caretRowLastPart);
 		//#endif
-		} catch (Exception e) {
-			this.errorMessage = e.toString();
-			this.contentWidth = 60;
-			this.contentHeight = 20;
-		}
 	}
 	
 	//#if tmp.directInput
@@ -2587,7 +2567,6 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
-		try {
 		//#ifndef tmp.directInput
 			if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
 					|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
@@ -2659,18 +2638,21 @@ public class TextField extends StringItem
 						}  
 						
 						// Set the input mode
-						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-							//#= if ( keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}
-						//#else
-							if ( keyCode == KEY_CHANGE_MODE 
-						//#endif
-						//#if polish.key.shift:defined
-							//#= || keyCode == ${polish.key.shift}
-						//#endif
-								)
-						{
-							return handleKeyMode(keyCode, gameAction);
-						}
+//						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+//							//#= if ( keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}
+//						//#else
+//							if ( keyCode == KEY_CHANGE_MODE 
+//						//#endif
+//						//#if polish.key.shift:defined
+//							//#= || keyCode == ${polish.key.shift}
+//						//#endif
+//								)
+//						{
+								boolean handled =  handleKeyMode(keyCode, gameAction);
+								if (handled) {
+									return true;
+								}
+//						}
 						
 						// Insert a character
 //						if (	keyCode >= Canvas.KEY_NUM0 	&& 
@@ -2678,7 +2660,7 @@ public class TextField extends StringItem
 //								keyCode == Canvas.KEY_POUND || 
 //								keyCode == Canvas.KEY_STAR    )
 //						{
-							boolean handled = handleKeyInsert(keyCode, gameAction);
+							handled = handleKeyInsert(keyCode, gameAction);
 							if (handled) {
 								return true;
 							}
@@ -2762,10 +2744,6 @@ public class TextField extends StringItem
 		} else {
 			return false;
 		}
-		} catch (Exception e) {
-			this.errorMessage = "hKP:" + e.toString();
-			return true;
-		}
 	}
 	//#endif
 	
@@ -2773,8 +2751,8 @@ public class TextField extends StringItem
 	{
 		//#if tmp.directInput
 			int currentLength = (this.text == null ? 0 : this.text.length());
-			//#if tmp.useKeyMap
-				if (keyCode > 32 && getScreen().isKeyboardAccessible()) {
+			//#if polish.key.supportsAsciiKeyMap
+				if (keyCode >= 32 && this.screen.isKeyboardAccessible()) {
 					this.caretChar = (char) (' ' + (keyCode - 32));
 					if (this.nextCharUppercase || this.inputMode == MODE_UPPERCASE) {
 						this.caretChar = Character.toUpperCase(this.caretChar);
@@ -2782,42 +2760,13 @@ public class TextField extends StringItem
 					insertCharacter();
 					return true;
 				}
-//				if (keyCode >= KEY_A && keyCode <= KEY_Z) {
-//					if (currentLength >= this.maxSize) {
-//						// ignore this key event - also don't forward it to the parent component:
-//						return true;
-//					}					
-//					this.caretChar = (char) ('a' + (keyCode - KEY_A));
-//					if (this.nextCharUppercase || this.inputMode == MODE_UPPERCASE) {
-//						this.caretChar = Character.toUpperCase(this.caretChar);
-//					}
-//					insertCharacter();
-//					return true;
-//				} else if (	getScreen().isKeyboardAccessible()  
-//						&& 	keyCode >= Canvas.KEY_NUM0 	 
-//						&&	keyCode <= Canvas.KEY_NUM9 )
-//				{
-//					if (currentLength >= this.maxSize) {
-//						// ignore this key event - also don't forward it to the parent component:
-//						return true;
-//					}
-//					this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
-//					insertCharacter();
-//					return true;
-//				}
-//				//#if polish.key.space:defined
-//					//#= if (keyCode == ${polish.key.space}) {
-//						if (currentLength >= this.maxSize) {
-//							// ignore this key event - also don't forward it to the parent component:
-//							return true;
-//						}
-//						this.caretChar = ' ';
-//						insertCharacter();
-//						if (true) {
-//							return true;
-//						}
-//					//# }
-//				//#endif
+				//#if polish.key.enter:defined
+					//#= if ( keyCode == ${polish.key.enter} ) {
+						this.caretChar = '\n';
+						insertCharacter();
+						//# return true;
+					//# }
+				//#endif
 			//#endif
 			if (	keyCode >= Canvas.KEY_NUM0 	&& 
 					keyCode <= Canvas.KEY_NUM9	|| 
@@ -2942,16 +2891,12 @@ public class TextField extends StringItem
 	protected boolean handleKeyClear(int keyCode, int gameAction)
 	{
 		//#if tmp.directInput
-		try {
 			if (this.isUneditable) {
 				return false;
 			}
 			if ( this.text != null && this.text.length() > 0) {			
 				return deleteCurrentChar();
 			}
-		} catch (Exception e) {
-			this.errorMessage = "hKC:" + e.toString();
-		}
 		//#endif
 		return false;
 	}
@@ -2980,50 +2925,58 @@ public class TextField extends StringItem
 					//# return true;
 				//# }
 			//#endif
-			//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-				//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
-			//#else
-			if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable) {
+			//#if polish.key.supportsAsciiKeyMap.condition:defined && polish.key.shift:defined
+				// there is a shift key responsible for switching the input mode which
+				// is only used when the device is opened up - example includes the Nokia/E70.
+				if (!this.screen.isKeyboardAccessible()) {
 			//#endif
-				if (this.nextCharUppercase && this.inputMode == MODE_LOWERCASE) {
-					this.nextCharUppercase = false;
-				} else {
-					this.inputMode++;							
-				}
 				//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-					if (this.inputMode > MODE_UPPERCASE) {
-						//#if polish.TextField.allowNativeModeSwitch
-							if (this.inputMode > MODE_NATIVE) {
-								this.inputMode = MODE_LOWERCASE;
-							} else {
-								this.inputMode = MODE_NATIVE;
-							}
-						//#else
-							this.inputMode = MODE_LOWERCASE;
-						//#endif
-					}
-				//#elif polish.TextField.allowNativeModeSwitch
-					if (this.inputMode > MODE_NATIVE) {
-						this.inputMode = MODE_LOWERCASE;
-					}
+					//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
 				//#else
-					if (this.inputMode > MODE_NUMBERS) {
-						this.inputMode = MODE_LOWERCASE;
+				if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable) {
+				//#endif
+					if (this.nextCharUppercase && this.inputMode == MODE_LOWERCASE) {
+						this.nextCharUppercase = false;
+					} else {
+						this.inputMode++;							
 					}
-				//#endif
-				//#if tmp.useInputInfo
-					updateInfo();
-				//#endif
-				if (this.caretChar != this.editingCaretChar) {
-					insertCharacter();
+					//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+						if (this.inputMode > MODE_UPPERCASE) {
+							//#if polish.TextField.allowNativeModeSwitch
+								if (this.inputMode > MODE_NATIVE) {
+									this.inputMode = MODE_LOWERCASE;
+								} else {
+									this.inputMode = MODE_NATIVE;
+								}
+							//#else
+								this.inputMode = MODE_LOWERCASE;
+							//#endif
+						}
+					//#elif polish.TextField.allowNativeModeSwitch
+						if (this.inputMode > MODE_NATIVE) {
+							this.inputMode = MODE_LOWERCASE;
+						}
+					//#else
+						if (this.inputMode > MODE_NUMBERS) {
+							this.inputMode = MODE_LOWERCASE;
+						}
+					//#endif
+					//#if tmp.useInputInfo
+						updateInfo();
+					//#endif
+					if (this.caretChar != this.editingCaretChar) {
+						insertCharacter();
+					}
+					if (this.inputMode == MODE_FIRST_UPPERCASE) {
+						this.nextCharUppercase = true;
+					} else {
+						this.nextCharUppercase = false;
+					}
+					return true;
 				}
-				if (this.inputMode == MODE_FIRST_UPPERCASE) {
-					this.nextCharUppercase = true;
-				} else {
-					this.nextCharUppercase = false;
+			//#if polish.key.supportsAsciiKeyMap.condition:defined && polish.key.shift:defined
 				}
-				return true;
-			}
+			//#endif
 			//#if polish.key.shift:defined
 				if ( keyCode == KEY_SHIFT && !this.isNumeric && !this.isUneditable) {
 					if (this.nextCharUppercase && this.inputMode == MODE_LOWERCASE) {
@@ -3052,10 +3005,7 @@ public class TextField extends StringItem
 	
 	protected boolean handleKeyNavigation(int keyCode, int gameAction)
 	{
-
 		//#if tmp.directInput
-		try {
-			
 		char character = this.caretChar;
 		boolean characterInserted = character != this.editingCaretChar;
 		if (characterInserted) {
@@ -3225,9 +3175,6 @@ public class TextField extends StringItem
 				//#endif
 				return true;
 			}
-		}
-		} catch (Exception e) {
-			this.errorMessage = "hKN:" + e.toString();
 		}
 		//#endif
 		
