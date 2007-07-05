@@ -412,20 +412,12 @@ implements AccessibleCanvas
 				//#endif
 				//#if polish.ScreenOrientationCanChange
 					if (this.screenWidth > this.screenHeight) {
-						//#style verticalmenubar?
 						this.menuBar.setOrientationVertical( true );
-						this.menuBarHeight = 0;
 					} else {
 						this.menuBar.setOrientationVertical( false );
-						this.menuBarHeight = this.menuBar.getItemHeight( availableScreenWidth, availableScreenWidth );
 					}
-					this.menuBar.isInitialized = false;
-					if (this.menuBar.isOrientationVertical()) {
-						this.menuBarHeight = 0;
-					}
-				//#else
-					this.menuBarHeight = this.menuBar.getItemHeight( availableScreenWidth, availableScreenWidth );
 				//#endif
+				this.menuBarHeight = this.menuBar.getSpaceBottom( availableScreenWidth, this.fullScreenHeight);
 				//#if tmp.useScrollIndicator
 					int scrollWidth = this.menuBar.contentHeight + this.menuBar.paddingTop + this.menuBar.paddingBottom;
 					int scrollHeight = scrollWidth;
@@ -632,14 +624,21 @@ implements AccessibleCanvas
 		//#else
 			height -= topHeight;	
 		//#endif
-		//#if tmp.useExternalMenuBar && ( ${lowercase(polish.MenuBar.Position)} == right || polish.ScreenOrientationCanChange )
-			//#if tmp.useExternalMenuBar &&  polish.ScreenOrientationCanChange
-				if (this.menuBar.isOrientationVertical()) {
+		//#if tmp.useExternalMenuBar
+			int space;
+			//#if polish.MenuBar.Position:defined
+				space = this.menuBar.getSpaceLeft( this.screenWidth, this.fullScreenHeight );
+				x += space;
+				width -= space;
+				space = this.menuBar.getSpaceRight( this.screenWidth, this.fullScreenHeight );
+				width -= space;
+				space = this.menuBar.getSpaceTop( this.screenWidth, this.fullScreenHeight );
+				y += space;
+				height -= space;
 			//#endif
-					width -= this.menuBar.getItemWidth(width>>2, width>>2);
-			//#if tmp.useExternalMenuBar &&  polish.ScreenOrientationCanChange
-				}
-			//#endif
+				// this is already deducted...
+//			space = this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+//			height -= space;
 		//#endif
 		//#if tmp.useScrollBar
 			if ( this.container != null ) {
@@ -1241,12 +1240,30 @@ implements AccessibleCanvas
 				int sWidth = this.screenWidth - this.marginLeft - this.marginRight;
 				int leftBorder = this.marginLeft;
 				int rightBorder = leftBorder + sWidth;
+				int sHeight;
+				//#ifdef tmp.menuFullScreen
+					sHeight = this.fullScreenHeight - this.marginTop - this.marginBottom;
+				//#else
+					sHeight = this.screenHeight - this.marginTop - this.marginBottom;
+				//#endif
+				int topBorder = this.marginTop;
 				if (this.isLayoutHorizontalShrink) {
-					//#if polish.ScreenOrientationCanChange && tmp.menuFullScreen && tmp.useExternalMenuBar
-						if (this.menuBar.isOrientationVertical()) {
-							sWidth -= this.menuBar.getItemWidth( sWidth, sWidth);
-							rightBorder = leftBorder + sWidth;
-						}
+					//#if tmp.useExternalMenuBar
+						int space;
+						//#if polish.MenuBar.Position:defined
+							space = this.menuBar.getSpaceLeft( this.screenWidth, this.fullScreenHeight );
+							leftBorder += space;
+							sWidth -= space;
+							rightBorder -= space;
+							space = this.menuBar.getSpaceRight( this.screenWidth, this.fullScreenHeight );
+							sWidth -= space;
+							rightBorder -= space;
+							space = this.menuBar.getSpaceTop( this.screenWidth, this.fullScreenHeight );
+							topBorder += space;
+							sHeight -= space;
+						//#endif
+						space = this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+						sHeight -= space;
 					//#endif
 					int contWidth = this.contentWidth;
 					if (this.container != null) {
@@ -1274,12 +1291,6 @@ implements AccessibleCanvas
 					//System.out.println("leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
 				}
 				
-				//#ifdef tmp.menuFullScreen
-					int sHeight = this.fullScreenHeight - this.marginTop - this.marginBottom;
-				//#else
-					//# int sHeight = this.screenHeight - this.marginTop - this.marginBottom;
-				//#endif
-				int topBorder = this.marginTop;
 				if (this.isLayoutVerticalShrink) {
 					int contHeight = this.contentHeight;
 					if (this.container != null) {
@@ -1504,13 +1515,7 @@ implements AccessibleCanvas
 				//#endif
 				//#ifdef tmp.menuFullScreen
 					//#ifdef tmp.useExternalMenuBar
-						//#if polish.ScreenOrientationCanChange
-							if (this.menuBar.isOrientationVertical()) {
-								menuLeftX = this.screenWidth - this.menuBar.itemHeight;
-								menuRightX = this.screenWidth;
-								menuY = 0;
-							}
-						//#endif
+						//TODO adjust for other menubar positions than bottom
 						this.menuBar.paint(menuLeftX, menuY, menuLeftX, menuRightX, g);
 						//#if tmp.useScrollIndicator
 							if (this.menuBar.isOpened) {
@@ -2496,26 +2501,17 @@ implements AccessibleCanvas
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.addCommand(cmd, commandStyle);
 			if (super.isShown()) {
-				//#if polish.ScreenOrientationCanChange
-					if (this.menuBar.isOrientationVertical()) {
-						if (this.menuBar.itemWidth < 10) {
-							this.isInitialized = false;
+				//TODO adjust for other menubar positions
+				if (this.menuBarHeight == 0 && this.isInitialized) {
+					int availableWidth = this.screenWidth;
+					//#if polish.css.separate-menubar
+						if (!this.separateMenubar) {
+							availableWidth -= (this.marginLeft + this.marginRight);
 						}
-					} else {
-				//#endif
-						if (this.menuBarHeight == 0 && this.isInitialized) {
-							int availableWidth = this.screenWidth; // - (this.marginLeft + this.marginRight );
-							//#if polish.css.separate-menubar
-								if (!this.separateMenubar) {
-									availableWidth -= (this.marginLeft + this.marginRight);
-								}
-							//#endif
-							this.menuBarHeight = this.menuBar.getItemHeight( availableWidth, availableWidth );
-							this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
-						}
-				//#if polish.ScreenOrientationCanChange
-					}
-				//#endif
+					//#endif
+					this.menuBarHeight = this.menuBar.getSpaceBottom( availableWidth, this.fullScreenHeight );
+					this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
+				}
 			}
 		//#else
 			if (this.menuCommands == null) {
