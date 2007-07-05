@@ -217,14 +217,32 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public Item set( int index, Item item ) {
-		//#debug
+		return set( index, item, null );
+	}
+	/**
+	 * Replaces the item at the specified position in this list with the given item. 
+	 * 
+	 * @param index the position of the element, the first element has the index 0.
+	 * @param item the item which should be set
+	 * @param itemStyle the new style for the item
+	 * @return the replaced item
+	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
+	 */
+	public Item set( int index, Item item, Style itemStyle ) {
+		// #debug
 		System.out.println("Container: setting item " + index + " " + item.toString() );
+		if (itemStyle != null) {
+			item.setStyle(itemStyle);
+		}
 		item.parent = this;
 		Item last = (Item) this.itemsList.set( index, item );
 		if (index == this.focusedIndex) {
 			last.defocus(this.itemStyle);
 			if ( item.appearanceMode != PLAIN ) {
-				this.itemStyle = item.focus( this.focusedStyle, 0 );
+				//this.itemStyle = item.focus( this.focusedStyle, 0 );
+				focus( index, item, 0 );
+			} else {
+				focus( -1 );
 			}
 		}
 		this.isInitialized = false;

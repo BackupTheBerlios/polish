@@ -743,47 +743,46 @@ implements Choice
 		}
 	}
 
-	/**
-	 * Sets the <code>ChoiceItem</code> of the
-	 * element referenced by <code>elementNum</code>,
-	 * replacing the previous one.
-	 * 
-	 * @param elementNum the index of the element to be set
-	 * @param item the ChoiceItem of the new element
-	 * @throws IndexOutOfBoundsException if elementNum is invalid
-	 */
-	public void set(int elementNum, ChoiceItem item )
-	{
-		delete( elementNum );
-		add( elementNum, item );
-		if (this.isInitialized) {
-			this.isInitialized = false;
-			repaint();
-		}
-	}
+//	/**
+//	 * Sets the <code>ChoiceItem</code> of the
+//	 * element referenced by <code>elementNum</code>,
+//	 * replacing the previous one.
+//	 * 
+//	 * @param elementNum the index of the element to be set
+//	 * @param item the ChoiceItem of the new element
+//	 * @throws IndexOutOfBoundsException if elementNum is invalid
+//	 */
+//	public void set(int elementNum, ChoiceItem item )
+//	{
+//		super.set(elementNum, item);
+//		if (this.isInitialized) {
+//			this.isInitialized = false;
+//			repaint();
+//		}
+//	}
 	
-	/**
-	 * Sets the <code>ChoiceItem</code> of the
-	 * element referenced by <code>elementNum</code>,
-	 * replacing the previous one.
-	 * 
-	 * @param elementNum the index of the element to be set
-	 * @param item the ChoiceItem of the new element
-	 * @param elementStyle the style for the new list element.
-	 * @throws IndexOutOfBoundsException if elementNum is invalid
-	 */
-	public void set(int elementNum, ChoiceItem item, Style elementStyle )
-	{
-		if (elementStyle != null) {
-			item.setStyle(elementStyle);
-		}
-		delete( elementNum );
-		add( elementNum, item );
-		if (this.isInitialized) {
-			this.isInitialized = false;
-			repaint();
-		}
-	}
+//	/**
+//	 * Sets the <code>ChoiceItem</code> of the
+//	 * element referenced by <code>elementNum</code>,
+//	 * replacing the previous one.
+//	 * 
+//	 * @param elementNum the index of the element to be set
+//	 * @param item the ChoiceItem of the new element
+//	 * @param elementStyle the style for the new list element.
+//	 * @throws IndexOutOfBoundsException if elementNum is invalid
+//	 */
+//	public void set(int elementNum, ChoiceItem item, Style elementStyle )
+//	{
+//		if (elementStyle != null) {
+//			item.setStyle(elementStyle);
+//		}
+//		delete( elementNum );
+//		add( elementNum, item );
+//		if (this.isInitialized) {
+//			this.isInitialized = false;
+//			repaint();
+//		}
+//	}
 
 	/**
 	 * Deletes the element referenced by <code>elementNum</code>.

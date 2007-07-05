@@ -706,6 +706,13 @@ implements AccessibleCanvas
 			}
 			//#if polish.css.repaint-previous-screen
 				if (this.repaintPreviousScreen) {
+					//#if !polish.Bugs.noTranslucencyWithDrawRgb
+						//#if polish.color.overlay:defined
+							//#= this.previousScreenOverlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
+						//#else
+							this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
+						//#endif
+					//#endif
 					Displayable currentDisplayable = StyleSheet.display.getCurrent();
 					if (currentDisplayable == this) {
 						currentDisplayable = StyleSheet.currentScreen;
@@ -724,13 +731,6 @@ implements AccessibleCanvas
 //								System.out.println("2: showNotify of " + this + ", current=" + currentDisplayable);
 								this.previousScreen = (AccessibleCanvas) currentDisplayable;
 							}
-							//#if !polish.Bugs.noTranslucencyWithDrawRgb
-								//#if polish.color.overlay:defined
-									//#= this.previousScreenOverlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
-								//#else
-									this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
-								//#endif
-							//#endif
 						}
 					//#else
 						if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas ) {
@@ -745,13 +745,6 @@ implements AccessibleCanvas
 							System.out.println("storing previous screen " + currentDisplayable + " to image buffer...");
 							Graphics g = this.previousScreenImage.getGraphics();
 							((AccessibleCanvas)currentDisplayable).paint(g);
-							//#if !polish.Bugs.noTranslucencyWithDrawRgb
-								//#if polish.color.overlay:defined
-									//#= this.previousScreenOverlayBackground = new TranslucentSimpleBackground( ${polish.color.overlay} );
-								//#else
-									this.previousScreenOverlayBackground = new TranslucentSimpleBackground( 0xAA000000 );
-								//#endif
-							//#endif
 						}
 					//#endif
 				}

@@ -2774,41 +2774,50 @@ public class TextField extends StringItem
 		//#if tmp.directInput
 			int currentLength = (this.text == null ? 0 : this.text.length());
 			//#if tmp.useKeyMap
-				if (keyCode >= KEY_A && keyCode <= KEY_Z) {
-					if (currentLength >= this.maxSize) {
-						// ignore this key event - also don't forward it to the parent component:
-						return true;
-					}					this.caretChar = (char) ('a' + (keyCode - KEY_A));
+				if (keyCode > 32 && getScreen().isKeyboardAccessible()) {
+					this.caretChar = (char) (' ' + (keyCode - 32));
 					if (this.nextCharUppercase || this.inputMode == MODE_UPPERCASE) {
 						this.caretChar = Character.toUpperCase(this.caretChar);
 					}
 					insertCharacter();
 					return true;
-				} else if (	getScreen().isKeyboardAccessible()  
-						&& 	keyCode >= Canvas.KEY_NUM0 	 
-						&&	keyCode <= Canvas.KEY_NUM9 )
-				{
-					if (currentLength >= this.maxSize) {
-						// ignore this key event - also don't forward it to the parent component:
-						return true;
-					}
-					this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
-					insertCharacter();
-					return true;
 				}
-				//#if polish.key.space:defined
-					//#= if (keyCode == ${polish.key.space}) {
-						if (currentLength >= this.maxSize) {
-							// ignore this key event - also don't forward it to the parent component:
-							return true;
-						}
-						this.caretChar = ' ';
-						insertCharacter();
-						if (true) {
-							return true;
-						}
-					//# }
-				//#endif
+//				if (keyCode >= KEY_A && keyCode <= KEY_Z) {
+//					if (currentLength >= this.maxSize) {
+//						// ignore this key event - also don't forward it to the parent component:
+//						return true;
+//					}					
+//					this.caretChar = (char) ('a' + (keyCode - KEY_A));
+//					if (this.nextCharUppercase || this.inputMode == MODE_UPPERCASE) {
+//						this.caretChar = Character.toUpperCase(this.caretChar);
+//					}
+//					insertCharacter();
+//					return true;
+//				} else if (	getScreen().isKeyboardAccessible()  
+//						&& 	keyCode >= Canvas.KEY_NUM0 	 
+//						&&	keyCode <= Canvas.KEY_NUM9 )
+//				{
+//					if (currentLength >= this.maxSize) {
+//						// ignore this key event - also don't forward it to the parent component:
+//						return true;
+//					}
+//					this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+//					insertCharacter();
+//					return true;
+//				}
+//				//#if polish.key.space:defined
+//					//#= if (keyCode == ${polish.key.space}) {
+//						if (currentLength >= this.maxSize) {
+//							// ignore this key event - also don't forward it to the parent component:
+//							return true;
+//						}
+//						this.caretChar = ' ';
+//						insertCharacter();
+//						if (true) {
+//							return true;
+//						}
+//					//# }
+//				//#endif
 			//#endif
 			if (	keyCode >= Canvas.KEY_NUM0 	&& 
 					keyCode <= Canvas.KEY_NUM9	|| 
