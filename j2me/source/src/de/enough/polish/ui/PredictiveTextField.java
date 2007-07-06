@@ -690,9 +690,11 @@ public class PredictiveTextField
 			{
 				y += this.paddingVertical;
 				
-				this.elementX = getElementX(leftBorder,rightBorder,this.choicesContainer.itemWidth);
-				this.elementY = getElementY();
+				status.setText("" + this.choicesContainer.itemWidth);
 				
+				this.elementX = getChoicesX(leftBorder,rightBorder,this.choicesContainer.itemWidth);
+				this.elementY = getChoicesY();
+								
 				/*if(this.newOpen)
 				{
 					this.elementX = getElementX(leftBorder,rightBorder,this.choicesContainer.itemWidth);
@@ -716,7 +718,7 @@ public class PredictiveTextField
 		}*/
 	}
 	
-	protected int getElementY()
+	protected int getChoicesY()
 	{
 		if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
 			return 	(this.contentHeight / this.textLines.length) * 
@@ -725,13 +727,13 @@ public class PredictiveTextField
 			return 0;
 	}
 	
-	protected int getElementX(int leftBorder, int rightBorder, int itemWidth)
+	protected int getChoicesX(int leftBorder, int rightBorder, int itemWidth)
 	{	
 		if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
 		{
 			int line = this.builder.getElementLine(this.textLines);
 			int charsToLine = 0;
-						
+			
 			for(int i = 0; i < line; i++)
 				charsToLine += this.textLines[i].length() + 1;
 			
@@ -744,12 +746,13 @@ public class PredictiveTextField
 				for(int i=charsToLine; i<this.builder.getCurrentCaret() - element.getLength(); i++)
 					result += this.font.charWidth(this.builder.getTextChar(i));
 				
-				int overlap = (leftBorder + result + itemWidth) - rightBorder;
-								
-				if(overlap > 0)
-					result -= overlap;
+				int overlap = (rightBorder) - (leftBorder + result + itemWidth) + 10;
 				
-				status.setText("" + result);
+				if(overlap < 0)
+					result += overlap;
+				
+				//status.setText("" + overlap + "/" + (leftBorder + result) + "/" + rightBorder);
+				status.setText("" + itemWidth);
 				
 				return result;
 			}
