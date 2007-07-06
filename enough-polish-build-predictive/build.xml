@@ -1,9 +1,9 @@
 <project name="PreditiveBuilder" default="builder" basedir=".">
-
-	<taskdef name="PreditiveBuilder" classname="de.enough.polish.predictive.Builder" classpath="bin/classes" />
+	
+	<taskdef name="PreditiveBuilder" classname="de.enough.polish.predictive.Builder" classpath="bin/classes;../enough-polish-j2me/bin/classes" />
 		
 	<target name="builder">
-                <PreditiveBuilder source="input/top5000en.txt" dest="../enough-polish-predictive-test/resources/predictive.trie"/>
+		<PreditiveBuilder source="input/top5000en.txt" directory="./output" version="1" prefix="predictive" chunkSize="100" lineCount="500" />
 	</target>
 
 </project>
