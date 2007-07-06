@@ -10,6 +10,10 @@ import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreNotFoundException;
 
+import de.enough.polish.io.PropertiesReader;
+import de.enough.polish.io.Serializer;
+import de.enough.polish.util.HashMap;
+
 public class TrieInstaller {
 	
 	byte charBuffer[];
@@ -18,21 +22,24 @@ public class TrieInstaller {
 	
 	String prefix = "";
 	
-	TrieProperties properties = null;
+	PropertiesReader properties = null;
 	
 	int totalBytes = 0;
 	
-	DataInputStream stream = null;
+	DataInputStream trieStream = null;
+	DataInputStream headerStream = null;
 	
-	public TrieInstaller(String file, TrieProperties properties)
+	public TrieInstaller()
 	{
-		this.stream = new DataInputStream(getClass().getResourceAsStream(file));
+		this.headerStream = new DataInputStream(getClass().getResourceAsStream("/predictive.header"));
 		
-		this.properties = properties;
+		this.properties = new PropertiesReader(this.headerStream);
+		
+		this.trieStream = new DataInputStream(getClass().getResourceAsStream("/predictive.trie"));
 		
 		try
 		{
-			this.totalBytes = stream.available();
+			this.totalBytes = trieStream.available();
 		}catch(IOException e){
 			//#debug
 			e.printStackTrace();
@@ -47,12 +54,11 @@ public class TrieInstaller {
 	{
 		try
 		{
-			
 			byte[] nodes;
 			RecordStore store = null;
 			
 			int currentBytes = 0;
-			int totalBytes = stream.available();
+			int totalBytes = trieStream.available();
 			
 			int count = 0;
 			int storeID = 0;
@@ -61,18 +67,18 @@ public class TrieInstaller {
 			{
 				nodes = null;
 				
-				if((count % this.properties.getChunkSize()) == 0)
+				if((count % this.properties.getInteger("trie.chunkSize")) == 0)
 				{
 					if(store != null)
 					{
 						store.closeRecordStore();
-						storeID += this.properties.getChunkSize();
+						storeID += this.properties.getInteger("trie.chunkSize");
 					}
 					
-					store = RecordStore.openRecordStore(this.properties.getPrefix() + ":" + storeID, true, RecordStore.AUTHMODE_ANY, true);
+					store = RecordStore.openRecordStore(this.properties.getString("trie.prefix") + ":" + storeID, true, RecordStore.AUTHMODE_ANY, true);
 				}
 					
-				nodes = this.getRecord(stream, this.properties.getLineCount());
+				nodes = this.getRecord(trieStream, this.properties.getInteger("trie.chunkSize"));
 				
 				count++;
 				
@@ -81,7 +87,7 @@ public class TrieInstaller {
 				currentBytes += nodes.length;
 				
 				status.setText(currentBytes + " von " + totalBytes + " Bytes geschrieben");				
-			}while(stream.available() > 0);
+			}while(trieStream.available() > 0);
 		}	
 		catch(IOException e)
 		{
