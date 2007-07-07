@@ -722,20 +722,6 @@ implements Choice
 		if (elementStyle != null) {
 			item.setStyle(elementStyle);
 		}
-		
-		//#if polish.i18n.useDynamicTranslations
-//		if (elementNum == this.focusedIndex) {
-//				if (this.selectCommand == List.SELECT_COMMAND ) {
-//					String selectLabel = Locale.get("polish.command.select");
-//					if ( selectLabel != List.SELECT_COMMAND.getLabel()) {
-//						List.SELECT_COMMAND = new Command( selectLabel, Command.ITEM, 3 );
-//						removeCommand(this.selectCommand);
-//						this.selectCommand = List.SELECT_COMMAND;
-//						addCommand( this.selectCommand );
-//					}
-//				}
-//		}
-		//#endif
 
 		if (this.isInitialized) {
 			this.isInitialized = false;

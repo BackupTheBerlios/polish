@@ -628,7 +628,7 @@ public class List extends Screen implements Choice
 	 */
 	public void set(int elementNum, String stringPart, Image imagePart, Style elementStyle )
 	{
-		set( elementNum, new ChoiceItem( stringPart, imagePart, this.listType, elementStyle ) );
+		this.choiceGroup.set(elementNum, stringPart, imagePart, elementStyle);
 	}
 
 	/**

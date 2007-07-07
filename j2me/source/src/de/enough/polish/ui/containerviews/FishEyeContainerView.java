@@ -43,6 +43,16 @@ import de.enough.polish.util.ImageUtil;
 
 /**
  * <p>Arranges the items in a single row and scales items down.</p>
+ * <p>Activate this view by specifying <code>view-type: fisheye</code> in the ChoiceGroup's, Container's or List's style.</p>
+ * <p>Further attributes are:</p>
+ * <ul>
+ *  <li><b>fisheyeview-remove-text</b>: removes the text of embedded items and only shows the currently selected one</li>
+ *  <li><b>fisheyeview-scale</b>: the percentage value to which the items should be scaled down, e.g. <code>fisheyeview-scale: 40%;</code></li>
+ *  <li><b>show-text-in-title</b>: uses the text of embedded items for the screen title instead of displaying it under the item</li>
+ *  <!--
+ *  <li><b></b>: </li>
+ *  -->
+ * </ul>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>

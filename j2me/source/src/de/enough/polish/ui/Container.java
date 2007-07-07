@@ -229,7 +229,7 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public Item set( int index, Item item, Style itemStyle ) {
-		// #debug
+		//#debug
 		System.out.println("Container: setting item " + index + " " + item.toString() );
 		if (itemStyle != null) {
 			item.setStyle(itemStyle);
@@ -244,6 +244,9 @@ public class Container extends Item {
 			} else {
 				focus( -1 );
 			}
+		}
+		if (this.items != null) {
+			this.items[index] = item;
 		}
 		this.isInitialized = false;
 		repaint();
@@ -602,7 +605,7 @@ public class Container extends Item {
 			return;
 		}
 		
-		if (index == this.focusedIndex && item.isFocused) {
+		if (index == this.focusedIndex && item.isFocused && item == this.focusedItem) {
 			//#debug
 			System.out.println("Container: ignoring focusing of item " + index );
 			// ignore the focusing of the same element:

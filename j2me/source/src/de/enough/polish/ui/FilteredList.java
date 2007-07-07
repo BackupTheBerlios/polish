@@ -301,6 +301,32 @@ implements ItemStateListener, CommandListener
 		this.itemsList.add(elementNum, item);
 		itemStateChanged( this.filterTextField );
 	}
+	
+	/**
+	 * Sets the <code>String</code> and <code>Image</code> parts of the
+	 * element referenced by <code>elementNum</code>,
+	 * replacing the previous contents of the element.
+	 * 
+	 * @param elementNum the index of the element to be set
+	 * @param stringPart the string part of the new element
+	 * @param imagePart the image part of the element, or null if there is no image part
+	 * @param elementStyle the style for the new list element.
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
+	 * @throws NullPointerException if stringPart is null
+	 * @see Choice#set(int, String, Image) in interface Choice
+	 */
+	public void set(int elementNum, String stringPart, Image imagePart, Style elementStyle )
+	{
+		ChoiceItem item = getItem(elementNum );
+		item.setText( stringPart );
+		if (imagePart != null) {
+			item.setImage(imagePart);
+		}
+		if (elementStyle != null) {
+			item.setStyle(elementStyle);
+		}
+		itemStateChanged( this.filterTextField );
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.List#set(int, de.enough.polish.ui.ChoiceItem)
