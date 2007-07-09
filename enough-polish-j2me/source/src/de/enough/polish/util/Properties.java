@@ -31,13 +31,20 @@ public class Properties extends Hashtable {
 	 * @return the read line
 	 * @throws IOException
 	 */
-	private String readLine(InputStream stream) throws IOException
+	private String readLine(InputStream stream) throws EOFException, IOException
 	{
 		byte character;
 		String result = "";
 		
-		while((char)(character = (byte)stream.read()) != '\r')
+		character = (byte)stream.read();
+		while((char)character != '\r')
+		{
+			if(character == -1)
+				throw new EOFException();
+			
 			result += (char)character;
+			character = (byte)stream.read();
+		}
 		
 		//Skip newline
 		stream.skip(1);
