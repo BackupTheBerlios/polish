@@ -2818,15 +2818,20 @@ public class TextField extends StringItem
 						//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
 							//#= || (keyCode == ${polish.key.AddSymbolKey} )
 						//#endif
+						//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey2:defined
+							//#= || (keyCode == ${polish.key.AddSymbolKey2} )
+						//#endif
 						)) 
 				{	
-					//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
-						//#if false
-							int addSymbolCode = 0;
-						//#else
-							//#= int addSymbolCode = ${polish.key.AddSymbolKey};
+					//#if tmp.supportsSymbolEntry && (polish.key.AddSymbolKey:defined || polish.key.AddSymbolKey2:defined)
+						boolean showSymbolList = false;
+						//#if polish.key.AddSymbolKey:defined
+							//#= showSymbolList = (keyCode == ${polish.key.AddSymbolKey});
 						//#endif
-						if (keyCode == addSymbolCode ) {
+						//#if polish.key.AddSymbolKey2:defined
+							//#= showSymbolList |= (keyCode == ${polish.key.AddSymbolKey2});
+						//#endif
+						if ( showSymbolList ) {
 							showSymbolsList();
 							return true;
 						}
