@@ -732,9 +732,9 @@ public class TextField extends StringItem
 		public static final int MODE_NUMBERS = 3;
 		public static final int MODE_NATIVE = 4;
 		//#ifdef polish.key.ChangeInputModeKey:defined
-			//#= private static final int KEY_CHANGE_MODE = ${polish.key.ChangeInputModeKey};
+			//#= protected static final int KEY_CHANGE_MODE = ${polish.key.ChangeInputModeKey};
 		//#else
-			private static final int KEY_CHANGE_MODE = Canvas.KEY_POUND;
+			protected static final int KEY_CHANGE_MODE = Canvas.KEY_POUND;
 		//#endif
 		//#ifdef polish.key.ClearKey:defined
 		   //#= public static final int KEY_DELETE = ${polish.key.ClearKey};
