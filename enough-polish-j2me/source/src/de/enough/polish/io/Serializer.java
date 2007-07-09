@@ -57,6 +57,8 @@ import java.util.Vector;
 import javax.microedition.lcdui.Image;
 //#endif
 
+import de.enough.polish.util.Properties;
+
 /**
  * <p>The serializer class is used for serializing and de-serializing objects in a unified way.</p>
  * <p>High level serialization components like the RmsStorage use this helper class for the actual serialization.</p>
@@ -103,6 +105,7 @@ public final class Serializer {
 	private static final byte TYPE_DOUBLE_ARRAY = 27;
 	private static final byte TYPE_CHAR_ARRAY = 28;
 	private static final byte TYPE_BOOLEAN_ARRAY = 29;
+	private static final byte TYPE_PROPERTIES = 30;
 	
 	//#if polish.JavaSE
 	private static Map obfuscationDeserializeMap; // for translating class names while deserializing/reading data
@@ -291,6 +294,17 @@ public final class Serializer {
 				out.writeLong( ((Calendar)object).getTime().getTime() );
 			} else if (object instanceof Random) {
 				out.writeByte(TYPE_RANDOM);
+			} else if (object instanceof Properties) {
+				out.writeByte(TYPE_PROPERTIES);
+				Hashtable table = (Hashtable) object;
+				out.writeInt( table.size() );
+				Enumeration enumeration = table.keys();
+				while( enumeration.hasMoreElements() ) {
+					Object key = enumeration.nextElement();
+					serialize(key, out);
+					Object value = table.get( key );
+					serialize(value, out);
+				}
 			} else if (object instanceof Hashtable) {
 				out.writeByte(TYPE_HASHTABLE);
 				Hashtable table = (Hashtable) object;
@@ -599,8 +613,17 @@ public final class Serializer {
 			return calendar;
 		case TYPE_RANDOM:
 			return new Random();
-		case TYPE_HASHTABLE:
+		case TYPE_PROPERTIES:
 			int size = in.readInt();
+			Properties properties = new Properties ();
+			for (int i = 0; i < size; i++) {
+				Object key = deserialize(in);
+				Object value = deserialize(in);
+				properties.put( key, value );
+			}
+			return properties;
+		case TYPE_HASHTABLE:
+			size = in.readInt();
 			Hashtable hashtable = new Hashtable( size );
 			for (int i = 0; i < size; i++) {
 				Object key = deserialize(in);
