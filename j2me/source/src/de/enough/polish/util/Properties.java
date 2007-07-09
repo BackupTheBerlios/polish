@@ -13,7 +13,13 @@ import de.enough.polish.util.TextUtil;
  * and stores it in the internal <code>Hashtable</code>. 
  * The stream is assumed to be using the ISO 8859-1 character encoding; 
  * that is each byte is one Latin1 character.
- *  
+ * 
+ * <p>Copyright (c) 2007 Enough Software</p>
+ * <pre>
+ * history
+ *        09-Jul-2007 - asc creation
+ * </pre>
+ * 
  * @author Andre Schmidt
  */
 public class Properties extends Hashtable {
