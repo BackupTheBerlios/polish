@@ -1,7 +1,9 @@
 package de.enough.polish.predictive;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 
@@ -10,9 +12,9 @@ import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreNotFoundException;
 
-import de.enough.polish.io.PropertiesReader;
 import de.enough.polish.io.Serializer;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.Properties;
 
 public class TrieInstaller {
 	
@@ -20,9 +22,11 @@ public class TrieInstaller {
 	byte integerBuffer[];
 	byte byteBuffer[];
 	
-	String prefix = "";
+	Properties properties = null;
 	
-	PropertiesReader properties = null;
+	String prefix = "";
+	int lineCount = 0;
+	int chunkSize = 0;
 	
 	int totalBytes = 0;
 	
@@ -33,7 +37,17 @@ public class TrieInstaller {
 	{
 		this.headerStream = new DataInputStream(getClass().getResourceAsStream("/predictive.header"));
 		
-		this.properties = new PropertiesReader(this.headerStream);
+		try
+		{
+			this.properties = new Properties();
+			this.properties.load(this.headerStream);
+			
+			this.prefix 	= (String)this.properties.getProperty("trie.prefix");
+			this.lineCount 	= ((Integer)this.properties.getProperty("trie.lineCount")).intValue();
+			this.chunkSize 	= ((Integer)this.properties.getProperty("trie.lineCount")).intValue();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		
 		this.trieStream = new DataInputStream(getClass().getResourceAsStream("/predictive.trie"));
 		
@@ -48,6 +62,36 @@ public class TrieInstaller {
 		this.charBuffer = new byte[2];
 		this.integerBuffer = new byte[4];
 		this.byteBuffer = new byte[1];
+	}
+	
+	public boolean createHeaderStore(StringItem status)
+	{
+		try
+		{
+			RecordStore store = null;
+			byte[]header = null;
+			
+			ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		    DataOutputStream dataStream = new DataOutputStream(byteStream); 
+			
+			Serializer.serialize(this.properties, dataStream);
+			
+			header = byteStream.toByteArray();
+			
+			store = RecordStore.openRecordStore(this.prefix + ":header", true, RecordStore.AUTHMODE_ANY, true);
+			
+			store.addRecord(header, 0, header.length);
+			
+			store.closeRecordStore();
+			
+			return true;
+		}
+		catch(Exception e)
+		{
+			//#debug
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public boolean createStores(StringItem status)
@@ -67,18 +111,18 @@ public class TrieInstaller {
 			{
 				nodes = null;
 				
-				if((count % this.properties.getInteger("trie.chunkSize")) == 0)
+				if((count % this.chunkSize) == 0)
 				{
 					if(store != null)
 					{
 						store.closeRecordStore();
-						storeID += this.properties.getInteger("trie.chunkSize");
+						storeID += this.chunkSize;
 					}
 					
-					store = RecordStore.openRecordStore(this.properties.getString("trie.prefix") + ":" + storeID, true, RecordStore.AUTHMODE_ANY, true);
+					store = RecordStore.openRecordStore(this.prefix + ":" + storeID, true, RecordStore.AUTHMODE_ANY, true);
 				}
 					
-				nodes = this.getRecord(trieStream, this.properties.getInteger("trie.chunkSize"));
+				nodes = this.getRecord(trieStream, this.lineCount);
 				
 				count++;
 				
@@ -105,7 +149,7 @@ public class TrieInstaller {
 		return true;
 	}
 	
-	public void deleteStores()
+	public void deleteAllStores()
 	{
 		try
 		{

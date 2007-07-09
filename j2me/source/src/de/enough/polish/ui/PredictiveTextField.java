@@ -44,6 +44,7 @@ import de.enough.polish.predictive.TextElement;
 import de.enough.polish.predictive.TrieProperties;
 import de.enough.polish.predictive.TrieReader;
 import de.enough.polish.util.Locale;
+import de.enough.polish.util.Properties;
 import de.enough.polish.util.TextUtil;
 
 /**
@@ -94,6 +95,7 @@ public class PredictiveTextField
 	private StringItem status;
 	StringBuffer memory = new StringBuffer(20);
 	private long currentTime;
+	private Properties properties;
 	
 	/**
 	 * Creates a new ChoiceTextField.
@@ -141,6 +143,7 @@ public class PredictiveTextField
 		//#endif		
 		
 		this.builder = new TextBuilder(maxSize);
+		this.properties = this.builder.getHeader("predictive");
 		this.display = display;
 		
 		this.inputMode 		= this.builder.getInputMode();
@@ -286,13 +289,12 @@ public class PredictiveTextField
 			{	
 				try
 				{
-					TrieProperties properties = new TrieProperties("predictive","Enough Software","PredictiveInstaller",true, 100,500);
 					
 					if( this.builder.isChar(0) ||
 						this.builder.getCurrentAlign() == TextBuilder.ALIGN_LEFT ||
 						this.builder.getCurrentAlign() == TextBuilder.ALIGN_RIGHT)
 					{
-						currentReader = new TrieReader("predictive", properties);
+						currentReader = new TrieReader(this.properties);
 						this.builder.addReader(currentReader);
 					}
 					else if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
@@ -381,15 +383,28 @@ public class PredictiveTextField
 	}
 	
 	protected boolean handleKeyMode(int keyCode, int gameAction) {
-		if(!this.predictiveInput)
-			return super.handleKeyMode(keyCode, gameAction);
+		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+		//#= if ( keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}
+		//#else
+		if ( keyCode == KEY_CHANGE_MODE 
+		//#endif
+		//#if polish.key.shift:defined
+		//#= || keyCode == ${polish.key.shift})
+		//#endif
+		)
+		{
+			if(!this.predictiveInput)
+				return super.handleKeyMode(keyCode, gameAction);
+			
+			this.inputMode = (this.inputMode + 1) % 3;
+			this.builder.setInputMode(this.inputMode);
+					
+			updateInfo();
+			
+			return true;
+		}
 		
-		this.inputMode = (this.inputMode + 1) % 3;
-		this.builder.setInputMode(this.inputMode);
-				
-		updateInfo();
-		
-		return true;
+		return false;
 	}
 	
 	protected boolean handleKeyNavigation(int keyCode, int gameAction) {
@@ -692,7 +707,7 @@ public class PredictiveTextField
 				
 				status.setText("" + this.choicesContainer.itemWidth);
 				
-				this.elementX = getChoicesX(leftBorder,rightBorder,this.choicesContainer.itemWidth);
+				this.elementX = getChoicesX(leftBorder,rightBorder,this.choicesContainer.getItemWidth(this.itemWidth, this.itemWidth));
 				this.elementY = getChoicesY();
 								
 				/*if(this.newOpen)

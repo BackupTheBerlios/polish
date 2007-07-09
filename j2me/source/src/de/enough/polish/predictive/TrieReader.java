@@ -11,6 +11,7 @@ import javax.microedition.rms.RecordStoreFullException;
 import javax.microedition.rms.RecordStoreNotFoundException;
 import javax.microedition.rms.RecordStoreNotOpenException;
 
+import de.enough.polish.util.Properties;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
@@ -23,12 +24,14 @@ public class TrieReader {
 	final int NODE_SIZE = 5;
 	final int COUNT_SIZE = 1;
 	
+	String prefix = null;
+	int lineCount = 0;
+	int chunkSize = 0;
+	
 	private ArrayList nodes = null;
 	private Stack prevNodes = null;
 	
 	private HashMap stores = null;
-	
-	private TrieProperties properties = null;
 	
 	private int selectedWord = 0;
 	
@@ -37,14 +40,16 @@ public class TrieReader {
 
 	StringBuffer[] results = null;
 	
-	public TrieReader(String prefix, TrieProperties properties) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException
+	public TrieReader(Properties properties) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException
 	{
 		this.nodes 		= new ArrayList();
 		this.prevNodes 	= new Stack();
 		
 		this.stores = new HashMap();
 		
-		this.properties = properties;
+		this.prefix 	= (String)properties.getProperty("trie.prefix");
+		this.lineCount 	= ((Integer)properties.getProperty("trie.lineCount")).intValue();
+		this.chunkSize 	= ((Integer)properties.getProperty("trie.lineCount")).intValue();
 		
 		this.empty 		= true;
 		this.wordFound	= true;
@@ -64,7 +69,7 @@ public class TrieReader {
 		
 		if(this.nodes.size() == 0)
 		{
-			record = this.getRecord(1,this.properties.getLineCount());
+			record = this.getRecord(1,this.lineCount);
 			this.nodes = this.getNodes(record, keyCode, "");
 			
 			setEmpty(nodes.size() == 0);
@@ -77,7 +82,7 @@ public class TrieReader {
 				
 				if(node.getReference() != 0)
 				{
-					record = this.getRecord(node.getReference(),this.properties.getLineCount());
+					record = this.getRecord(node.getReference(),this.lineCount);
 					addToNodes(this.getNodes(record, keyCode, node.getWord()),newNodes);
 				}
 			}
@@ -164,22 +169,23 @@ public class TrieReader {
 		int recordID 	= ((id-1) / lineCount) + 1; 
 		int partID 		= ((id-1) % lineCount) + 1;
 		
-		String storeID = this.properties.getPrefix() + ":" + (recordID - (recordID % this.properties.getChunkSize()));
+		String storeID = this.prefix + ":" + (recordID - (recordID % this.chunkSize));
 		
 		RecordStore store = (RecordStore)stores.get(storeID);
 		
 		if(store == null)
 		{	
-			if(!properties.isLocalRMS())
+			/*if(!)
 				store = RecordStore.openRecordStore(storeID, this.properties.getVendor(), this.properties.getSuite());
 			else
 				store = RecordStore.openRecordStore(storeID, false);
+			*/
 			
 			store = RecordStore.openRecordStore(storeID, false);
 			stores.put(storeID, store);
 		}
 		
-		byte[] record = store.getRecord(recordID % this.properties.getChunkSize());
+		byte[] record = store.getRecord(recordID % this.chunkSize);
 		
 		return getRecordPart(record,partID); 
 	}

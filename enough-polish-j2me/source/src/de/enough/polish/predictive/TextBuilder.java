@@ -1,7 +1,18 @@
 package de.enough.polish.predictive;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+
+import javax.microedition.rms.RecordStore;
+import javax.microedition.rms.RecordStoreException;
+import javax.microedition.rms.RecordStoreFullException;
+import javax.microedition.rms.RecordStoreNotFoundException;
+
+import de.enough.polish.io.Serializer;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.Properties;
 
 public class TextBuilder {
 	
@@ -56,6 +67,26 @@ public class TextBuilder {
 		this.currentCaret		= 0;
 		
 		text = new StringBuffer(textSize);
+	}
+	
+	public Properties getHeader(String prefix)
+	{
+		try {
+			byte[] header = null;
+			
+			RecordStore store = RecordStore.openRecordStore(prefix + ":header", false);
+			header = store.getRecord(1); 
+			
+			DataInputStream stream = new DataInputStream(new ByteArrayInputStream(header));
+			
+			return (Properties)Serializer.deserialize(stream);
+		} catch (RecordStoreException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+		
+		return null;
 	}
 	
 	/**
