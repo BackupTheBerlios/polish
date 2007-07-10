@@ -171,6 +171,21 @@ public class Container extends Item {
 		this.isInitialized = false;
 		repaint();
 	}
+	
+
+	/**
+	 * Adds an item to this container.
+	 * 
+	 * @param item the item which should be added.
+	 * @param itemStyle the style for the item
+	 * @throws IllegalArgumentException when the given item is null
+	 */
+	public void add( Item item, Style itemStyle ) {
+		add( item );
+		if (itemStyle != null) {
+			item.setStyle( itemStyle );
+		}
+	}
 
 	/**
 	 * Inserts the given item at the defined position.
@@ -588,7 +603,7 @@ public class Container extends Item {
 	 */
 	public void focus( int index, Item item, int direction ) {
 		//#debug
-		System.out.println("Container (" + getClass().getName() + "): Focusing item " + index );
+		System.out.println("Container (" + getClass().getName() + "): Focusing item " + index + " (" + item + ")" );
 		
 		//#if polish.blackberry
         	//# getScreen().setFocus( item );
@@ -676,7 +691,7 @@ public class Container extends Item {
 				this.internalWidth = item.internalWidth;
 				this.internalHeight = item.internalHeight;
 				//#debug
-				System.out.println("Container (" + getClass().getName() + "): internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight);
+				System.out.println("Container (" + getClass().getName() + "): internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight + ", item.isInitialized=" + item.isInitialized + ", item.isStyleInitialized=" + item.isStyleInitialised);
 			} else {
 				this.internalX = item.relativeX;
 				this.internalY = item.relativeY;
@@ -719,14 +734,11 @@ public class Container extends Item {
 					int itemYBottom = isDownwards ? nextItem.relativeY + nextItem.itemHeight : item.relativeY + item.itemHeight;
 					scroll( direction, this.relativeX, itemYTop, item.internalWidth, itemYBottom - itemYTop );
 				}
-				
-
 			}
 		} else if (this.enableScrolling) {
 			//#debug
-			System.out.println("focus: postpone scrolling to initContent() for " + this );
+			System.out.println("focus: postpone scrolling to initContent() for " + this + ", item " + item);
 			this.isScrollRequired = true;
-			
 		}
 		if (this.isInitialized) {
 			this.isInitialized = !isReinitializationRequired;
@@ -743,10 +755,15 @@ public class Container extends Item {
 	 */
 	protected void scroll(int direction, Item item) {
 		//#debug
-		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX);
+		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX +", relativeInternalY=" + ( item.relativeY + item.contentY + item.internalY ));
 		if (item.internalX != -9999) {
 			int relativeInternalX = item.relativeX + item.contentX + item.internalX;
 			int relativeInternalY = item.relativeY + item.contentY + item.internalY;
+//			System.out.println("scrolling to internal y coordinate " + relativeInternalY + ", height=" +  item.internalHeight );
+//			if (item instanceof Container) {
+//				Container cont = (Container) item;
+//				System.out.println( "relY=" + (cont.relativeY + cont.contentY + cont.focusedItem.relativeY + cont.focusedItem.contentY) + ", absY=" + cont.focusedItem.getAbsoluteY() + ", height=" + cont.focusedItem.itemHeight );
+//			}
 			scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
 		} else {
 			scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );			
@@ -768,12 +785,17 @@ public class Container extends Item {
 			if (this.parent instanceof Container) {
 				x += this.contentX + this.relativeX;
 				y += this.contentY + this.relativeY;
+				//#debug
+				System.out.println("Forwarding scroll request to parent now with y=" + y);
 				((Container)this.parent).scroll(direction, x, y, width, height );
 			}
 			return;
 		}
 		//#debug
 		System.out.println("scroll: direction=" + direction + ", y=" + y + ", availableHeight=" + this.availableHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset );
+		if (y == 0) {
+			new RuntimeException().printStackTrace();
+		}
 		
 		// assume scrolling down when the direction is not known:
 		boolean isDownwards = (direction == Canvas.DOWN || direction == Canvas.RIGHT ||  direction == 0);
@@ -922,7 +944,7 @@ public class Container extends Item {
 				}
 				if (this.isScrollRequired) {
 					//#debug
-					System.out.println("initContent(): scroll is required.");
+					System.out.println("initContent(): scroll is required - scrolling to y=" + myContentHeight + ", height=" + height);
 					scroll( 0, 0, myContentHeight, width, height );
 					this.isScrollRequired = false;
 				}
@@ -963,7 +985,7 @@ public class Container extends Item {
 					this.internalWidth = item.internalWidth;
 					this.internalHeight = item.internalHeight;
 					//#debug
-					System.out.println("Container (" + getClass().getName() + "): internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight);
+					System.out.println("Container (" + getClass().getName() + "): internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.relativeY=" + item.relativeY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight + ", item.isInitialized=" + item.isInitialized);
 				} else {
 					this.internalX = item.relativeX;
 					this.internalY = item.relativeY;
@@ -1142,6 +1164,9 @@ public class Container extends Item {
 		}
 		if (this.focusedItem != null) {
 			Item item = this.focusedItem;
+			if (!item.isInitialized) {
+				item.init( this.contentWidth, this.contentWidth );
+			}
 			if ( item.handleKeyPressed(keyCode, gameAction) ) {
 				if (item.internalX != -9999) {
 					if (this.enableScrolling) {
@@ -1604,7 +1629,7 @@ public class Container extends Item {
 				//#else
 					viewType.allowCycling = false;
 				//#endif
-			} else {
+			} else if (!this.preserveViewType) {
 				this.containerView = null;
 			}
 		//#endif

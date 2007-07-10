@@ -1648,7 +1648,6 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#paint(int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		try {
 		//#if polish.blackberry
         	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened() ) {
 				this.editField.setPaintPosition( x, y );
@@ -1902,10 +1901,6 @@ public class TextField extends StringItem
 		}
 		// end of non-blackberry block
 		//#endif
-		} catch (Exception e) {
-			g.setColor( 0xff0000 );
-			g.drawString( e.toString(), 0, 30, Graphics.TOP | Graphics.LEFT );
-		}
 	}
 
 	/* (non-Javadoc)
@@ -2602,14 +2597,6 @@ public class TextField extends StringItem
 			this.isKeyDown = true;
 		//#endif
 		
-		// ignore all command keys:
-//		#ifdef polish.hasCommandKeyEvents
-//			#foreach key in polish.keys.CommandKeys
-//				#= if ( keyCode == ${ key } ) {
-//				#		return false;
-//				# }
-//			#next key
-//		#endif
 		//#if tmp.allowDirectInput
 			//# if (this.enableDirectInput) {
 		//#endif
@@ -2638,33 +2625,16 @@ public class TextField extends StringItem
 						}  
 						
 						// Set the input mode
-//						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-//							//#= if ( keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}
-//						//#else
-//							if ( keyCode == KEY_CHANGE_MODE 
-//						//#endif
-//						//#if polish.key.shift:defined
-//							//#= || keyCode == ${polish.key.shift}
-//						//#endif
-//								)
-//						{
-								boolean handled =  handleKeyMode(keyCode, gameAction);
-								if (handled) {
-									return true;
-								}
-//						}
-						
-						// Insert a character
-//						if (	keyCode >= Canvas.KEY_NUM0 	&& 
-//								keyCode <= Canvas.KEY_NUM9	|| 
-//								keyCode == Canvas.KEY_POUND || 
-//								keyCode == Canvas.KEY_STAR    )
-//						{
-							handled = handleKeyInsert(keyCode, gameAction);
+							boolean handled =  handleKeyMode(keyCode, gameAction);
 							if (handled) {
 								return true;
 							}
-//						}
+						
+						// Insert a character
+						handled = handleKeyInsert(keyCode, gameAction);
+						if (handled) {
+							return true;
+						}
 						
 						// Backspace
 						//#ifdef polish.key.ClearKey:defined
@@ -2768,126 +2738,118 @@ public class TextField extends StringItem
 					//# }
 				//#endif
 			//#endif
-			if (	keyCode >= Canvas.KEY_NUM0 	&& 
-					keyCode <= Canvas.KEY_NUM9	|| 
-					keyCode == Canvas.KEY_POUND || 
-					keyCode == Canvas.KEY_STAR    )
-			{
-				if (this.inputMode == MODE_NUMBERS && !this.isUneditable) {
-					if ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 )  
-					{
-						if (currentLength >= this.maxSize) {
-							// ignore this key event - also don't forward it to the parent component:
-							return true;
+			if (this.inputMode == MODE_NUMBERS && !this.isUneditable) {
+				if ( keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9 )  
+				{
+					if (currentLength >= this.maxSize) {
+						// ignore this key event - also don't forward it to the parent component:
+						return true;
+					}
+					this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+					//#ifdef polish.css.font-bitmap
+						if (this.bitMapFont != null) {
+							this.caretViewer = this.bitMapFont.getViewer("" + this.caretChar);
 						}
-						this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+					//#endif
+					insertCharacter();
+					return true;
+				} else if ( this.isDecimal ) {
+					//System.out.println("handling key for DECIMAL TextField");
+					if (currentLength < this.maxSize 
+							&& ( keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR )
+							&& (this.text.indexOf( Locale.DECIMAL_SEPARATOR) == -1)
+							) 
+					{
+						
+						this.caretChar = Locale.DECIMAL_SEPARATOR;
 						//#ifdef polish.css.font-bitmap
 							if (this.bitMapFont != null) {
-								this.caretViewer = this.bitMapFont.getViewer("" + this.caretChar);
+								this.caretViewer = this.bitMapFont.getViewer("" + Locale.DECIMAL_SEPARATOR);
 							}
 						//#endif
 						insertCharacter();
-						return true;
-					} else if ( this.isDecimal ) {
-						//System.out.println("handling key for DECIMAL TextField");
-						if (currentLength < this.maxSize 
-								&& ( keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR )
-								&& (this.text.indexOf( Locale.DECIMAL_SEPARATOR) == -1)
-								) 
-						{
-							
-							this.caretChar = Locale.DECIMAL_SEPARATOR;
-							//#ifdef polish.css.font-bitmap
-								if (this.bitMapFont != null) {
-									this.caretViewer = this.bitMapFont.getViewer("" + Locale.DECIMAL_SEPARATOR);
-								}
-							//#endif
-							insertCharacter();
-							return true;								
-						}
+						return true;								
 					}
-					
 				}
-				if ( (!this.isNumeric) //this.inputMode != MODE_NUMBERS 
-						&& !this.isUneditable
-						&& currentLength < this.maxSize 
-						&& ((keyCode >= Canvas.KEY_NUM0 
-						&& keyCode <= Canvas.KEY_NUM9)
-						|| (keyCode == Canvas.KEY_POUND ) 
-						|| (keyCode == Canvas.KEY_STAR )
-						//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
-							//#= || (keyCode == ${polish.key.AddSymbolKey} )
-						//#endif
-						//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey2:defined
-							//#= || (keyCode == ${polish.key.AddSymbolKey2} )
-						//#endif
-						)) 
-				{	
-					//#if tmp.supportsSymbolEntry && (polish.key.AddSymbolKey:defined || polish.key.AddSymbolKey2:defined)
-						boolean showSymbolList = false;
-						//#if polish.key.AddSymbolKey:defined
-							//#= showSymbolList = (keyCode == ${polish.key.AddSymbolKey});
-						//#endif
-						//#if polish.key.AddSymbolKey2:defined
-							//#= showSymbolList |= (keyCode == ${polish.key.AddSymbolKey2});
-						//#endif
-						if ( showSymbolList ) {
-							showSymbolsList();
+			}
+			if ( (!this.isNumeric) //this.inputMode != MODE_NUMBERS 
+					&& !this.isUneditable
+					&& currentLength < this.maxSize 
+					&& ( (keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9)
+					  || (keyCode == Canvas.KEY_POUND ) 
+					  || (keyCode == Canvas.KEY_STAR )
+					//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey:defined
+						//#= || (keyCode == ${polish.key.AddSymbolKey} )
+					//#endif
+					//#if tmp.supportsSymbolEntry && polish.key.AddSymbolKey2:defined
+						//#= || (keyCode == ${polish.key.AddSymbolKey2} )
+					//#endif
+					)) 
+			{	
+				//#if tmp.supportsSymbolEntry && (polish.key.AddSymbolKey:defined || polish.key.AddSymbolKey2:defined)
+					boolean showSymbolList = false;
+					//#if polish.key.AddSymbolKey:defined
+						//#= showSymbolList = (keyCode == ${polish.key.AddSymbolKey});
+					//#endif
+					//#if polish.key.AddSymbolKey2:defined
+						//#= showSymbolList = showSymbolList || (keyCode == ${polish.key.AddSymbolKey2});
+					//#endif
+					if ( showSymbolList ) {
+						showSymbolsList();
+						return true;
+					}
+				//#endif
+				String alphabet;
+				if (keyCode == Canvas.KEY_POUND) {
+					alphabet = charactersKeyPound;
+				} else if (keyCode == Canvas.KEY_STAR) {
+					alphabet = charactersKeyStar;
+				} else {
+					alphabet = this.characters[ keyCode - Canvas.KEY_NUM0 ];
+				}
+				if (alphabet == null || (alphabet.length() == 0)) {
+					return false;
+				}
+				this.lastInputTime = System.currentTimeMillis();
+				char newCharacter;
+				int alphabetLength = alphabet.length();
+				if (keyCode == this.lastKey && (this.caretChar != this.editingCaretChar)) {
+					this.characterIndex++;
+					if (this.characterIndex >= alphabetLength) {
+						this.characterIndex = 0;
+					}
+				} else {
+					// insert the last character into the text:
+					if (this.caretChar != this.editingCaretChar) {
+						insertCharacter();
+						if (currentLength + 1 >= this.maxSize) {
 							return true;
 						}
-					//#endif
-					String alphabet;
-					if (keyCode == Canvas.KEY_POUND) {
-						alphabet = charactersKeyPound;
-					} else if (keyCode == Canvas.KEY_STAR) {
-						alphabet = charactersKeyStar;
-					} else {
-						alphabet = this.characters[ keyCode - Canvas.KEY_NUM0 ];
 					}
-					if (alphabet == null || (alphabet.length() == 0)) {
-						return false;
-					}
-					this.lastInputTime = System.currentTimeMillis();
-					char newCharacter;
-					int alphabetLength = alphabet.length();
-					if (keyCode == this.lastKey && (this.caretChar != this.editingCaretChar)) {
-						this.characterIndex++;
-						if (this.characterIndex >= alphabetLength) {
-							this.characterIndex = 0;
-						}
-					} else {
-						// insert the last character into the text:
-						if (this.caretChar != this.editingCaretChar) {
-							insertCharacter();
-							if (currentLength + 1 >= this.maxSize) {
-								return true;
-							}
-						}
-						this.characterIndex = 0;
-						this.lastKey = keyCode;
-					}
-					newCharacter = alphabet.charAt( this.characterIndex );
-					//System.out.println("TextField.handleKeyPressed(): newCharacter=" + newCharacter + ", currentLength=" + currentLength + ", maxSize=" + this.maxSize + ", text.length()=" + this.text.length() );
-					if ( this.inputMode == MODE_UPPERCASE 
-							|| this.nextCharUppercase ) 
-					{
-						newCharacter = Character.toUpperCase(newCharacter);
-					}
-					//#ifdef polish.css.font-bitmap
-					if (this.bitMapFont != null) {
-						this.caretViewer = this.bitMapFont.getViewer("" + newCharacter);
-					} else {
-					//#endif
-						this.caretWidth = this.font.charWidth( newCharacter );
-					//#ifdef polish.css.font-bitmap
-					}
-					//#endif
-					this.caretChar = newCharacter;
-					if (alphabetLength == 1) {
-						insertCharacter();
-					}
-					return true;
+					this.characterIndex = 0;
+					this.lastKey = keyCode;
 				}
+				newCharacter = alphabet.charAt( this.characterIndex );
+				//System.out.println("TextField.handleKeyPressed(): newCharacter=" + newCharacter + ", currentLength=" + currentLength + ", maxSize=" + this.maxSize + ", text.length()=" + this.text.length() );
+				if ( this.inputMode == MODE_UPPERCASE 
+						|| this.nextCharUppercase ) 
+				{
+					newCharacter = Character.toUpperCase(newCharacter);
+				}
+				//#ifdef polish.css.font-bitmap
+				if (this.bitMapFont != null) {
+					this.caretViewer = this.bitMapFont.getViewer("" + newCharacter);
+				} else {
+				//#endif
+					this.caretWidth = this.font.charWidth( newCharacter );
+				//#ifdef polish.css.font-bitmap
+				}
+				//#endif
+				this.caretChar = newCharacter;
+				if (alphabetLength == 1) {
+					insertCharacter();
+				}
+				return true;
 			}
 		//#endif
 		return false;

@@ -120,6 +120,8 @@ public class AnimationThread extends Thread
 									break;
 								}
 								if ( item.animate() ) {
+									//#debug debug
+									System.out.println("triggering repaint for item " + item + ", absX=" + item.getAbsoluteX() + ", absY=" + item.getAbsoluteY() + ", width=" + item.itemWidth + ", height=" + item.itemHeight );
 									int absX = item.getAbsoluteX();
 									if (absX < animationX ) {
 										animationX = absX;
@@ -144,6 +146,8 @@ public class AnimationThread extends Thread
 					}
 					if (animated) {
 						//System.out.println("AnimationThread: screen needs repainting");
+						//#debug debug
+						System.out.println("triggering repaint for screen " + screen + ", is shown: " + screen.isShown() );
 						//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 							if ( MasterCanvas.instance != null ) {
 								MasterCanvas.instance.repaint();

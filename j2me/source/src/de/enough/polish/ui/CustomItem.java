@@ -471,6 +471,8 @@ public abstract class CustomItem extends Item
 	private int clipHeight;
 	private int clipWidth;
 
+	private boolean supportsInternalTraversal;
+
 
 	/**
 	 * Superclass constructor, provided so that the
@@ -1211,7 +1213,7 @@ public abstract class CustomItem extends Item
 		}
 		if (this.contentHeight > prefHeight && this.parent instanceof Container) {
 			// this item has been probably collapsed, so adjust scrolling:
-			((Container)this.parent).scroll(0, 0, 0, prefWidth, prefHeight );
+			((Container)this.parent).scroll(0, 0, this.relativeY, prefWidth, prefHeight );
 		}
 		this.contentWidth = prefWidth;
 		this.contentHeight = prefHeight;
@@ -1271,7 +1273,7 @@ public abstract class CustomItem extends Item
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style)
 	 */
 	protected Style focus(Style focusStyle, int direction ) {
-		traverse( direction, this.clipWidth, this.clipHeight, this.visRect_inout );
+		this.supportsInternalTraversal = traverse( direction, this.clipWidth, this.clipHeight, this.visRect_inout );
 		return super.focus(focusStyle, direction );
 	}
 	
@@ -1279,10 +1281,11 @@ public abstract class CustomItem extends Item
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
-		if (   ( gameAction == Canvas.UP    && keyCode != Canvas.KEY_NUM2 )
-			|| ( gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4 )
-			|| ( gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8 )
-			|| ( gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6 ) ) 
+		if (   this.supportsInternalTraversal 
+			&& ( ( gameAction == Canvas.UP    && keyCode != Canvas.KEY_NUM2 )
+			  || ( gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4 )
+		  	  || ( gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8 )
+			  || ( gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6 ) ) ) 
 		{
 			this.visRect_inout[0] = 0;
 			this.visRect_inout[1] = 0;

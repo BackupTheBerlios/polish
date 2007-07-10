@@ -285,13 +285,13 @@ implements AccessibleCanvas
 	//#endif
 	//#if polish.css.repaint-previous-screen
 		private boolean repaintPreviousScreen;
-		//#if polish.Screen.dontBufferPreviousScreen
-			private AccessibleCanvas previousScreen;
-		//#else
-			private Image previousScreenImage;
-		//#endif
+		private AccessibleCanvas previousScreen;
 		//#if !polish.Bugs.noTranslucencyWithDrawRgb
 			private Background previousScreenOverlayBackground;
+		//#endif
+		//#if polish.ScreenOrientationCanChange && tmp.usingTitle
+			private Background previousScreenTitleBackground;
+			private int previousScreenTitleHeight;
 		//#endif
 	//#endif
 	protected ScreenStateListener screenStateListener;
@@ -716,36 +716,34 @@ implements AccessibleCanvas
 					if (currentDisplayable == this) {
 						currentDisplayable = StyleSheet.currentScreen;
 					}
-					//#if polish.Screen.dontBufferPreviousScreen
-						if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas) {
-							if (this.previousScreen != null && currentDisplayable instanceof Screen) {
-								Screen screen = (Screen) currentDisplayable;
-								if (screen.previousScreen != this) {
-									this.previousScreen = screen; //(AccessibleCanvas) currentDisplayable;
-								} else {
-									screen.previousScreen = null;
-//									System.out.println("1: showNotify of " + this + ", current=" + currentDisplayable + ", current.previous=" + screen.previousScreen );
+					if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas) {
+						Screen screen = currentDisplayable instanceof Screen ? (Screen) currentDisplayable : null;
+						//#if polish.ScreenOrientationCanChange && tmp.usingTitle
+							if ( screen != null && this.screenWidth > this.screenHeight ) {
+								Background titleBg = null;
+								if (screen.title != null) {
+									titleBg = screen.title.background;
+									this.previousScreenTitleHeight = screen.titleHeight;
+								} 
+								if (titleBg == null && this.title != null) {
+									titleBg = this.title.background;
+									this.previousScreenTitleHeight = this.titleHeight;
 								}
+								this.previousScreenTitleBackground = titleBg;
+							}
+						//#endif
+						if (this.previousScreen != null && screen != null) {
+							if (screen.previousScreen != this) {
+								this.previousScreen = screen; //(AccessibleCanvas) currentDisplayable;
 							} else {
+								screen.previousScreen = null;
+//									System.out.println("1: showNotify of " + this + ", current=" + currentDisplayable + ", current.previous=" + screen.previousScreen );
+							}
+						} else {
 //								System.out.println("2: showNotify of " + this + ", current=" + currentDisplayable);
-								this.previousScreen = (AccessibleCanvas) currentDisplayable;
-							}
+							this.previousScreen = (AccessibleCanvas) currentDisplayable;
 						}
-					//#else
-						if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas ) {
-							if (this.previousScreenImage == null) {
-								//#if tmp.menuFullScreen
-									this.previousScreenImage = Image.createImage( this.screenWidth, this.fullScreenHeight);
-								//#else
-									this.previousScreenImage = Image.createImage( this.screenWidth, this.screenHeight);
-								//#endif
-							}
-							//#debug
-							System.out.println("storing previous screen " + currentDisplayable + " to image buffer...");
-							Graphics g = this.previousScreenImage.getGraphics();
-							((AccessibleCanvas)currentDisplayable).paint(g);
-						}
-					//#endif
+					}
 				}
 			//#endif
 			
@@ -836,14 +834,18 @@ implements AccessibleCanvas
 	 */
 	public void hideNotify() {
 		//#if polish.css.repaint-previous-screen
-			//#if polish.Screen.dontBufferPreviousScreen
-				// this.previousScreen = null;
-			//#else
-				//TODO remove test case
-				this.previousScreenImage = null;
-			//#endif
+			//TODO when the previousScreen reference is removed, there is no way how several popus can be handled correctly
+			// e.g. an input form with a TextField as a popup that allows to enter symbols in another popup.
+			// Previously the symbol-popup was painted in the background after returning to the input-popup.
+			// However, not removing the reference might result in "memory leaks" when references to popup-screens are hold
+			// while the "parent" screen should be removed from the memory. However - we just take this risk for now.
+		 	// (rob, 2007-07-09)
+			// this.previousScreen = null;
 			//#if !polish.Bugs.noTranslucencyWithDrawRgb
 				this.previousScreenOverlayBackground = null;
+			//#endif
+			//#if polish.ScreenOrientationCanChange && tmp.usingTitle
+				this.previousScreenTitleBackground = null;
 			//#endif
 		//#endif
 		//#ifdef polish.Vendor.Siemens
@@ -852,6 +854,7 @@ implements AccessibleCanvas
 			// So hideNotify checks how long the screen
 			// has been shown - if not long enough,
 			// the call will be ignored:
+			//TODO this should be handled by a bug rather than doing it for the vendor... but: Siemens is dead anyhow ;-)
 			if (System.currentTimeMillis() - this.showNotifyTime < 500) {
 				//#debug
 				System.out.println("Ignoring hideNotify on Siemens");
@@ -1217,25 +1220,19 @@ implements AccessibleCanvas
 			try {
 			//#endif
 				//#if polish.css.repaint-previous-screen
-					//#if polish.Screen.dontBufferPreviousScreen
-						if (this.repaintPreviousScreen && this.previousScreen != null) {
-							this.previousScreen.paint(g);
-							//#if !polish.Bugs.noTranslucencyWithDrawRgb
-								if (this.previousScreenOverlayBackground != null) {
-									//System.out.println("previousScreenOverlayBackground == null for " + this);
-								//} else {
-									this.previousScreenOverlayBackground.paint(0, 0, this.screenWidth, this.screenHeight, g);
-								}
-							//#endif
-						}
-					//#else
-						if (this.repaintPreviousScreen && this.previousScreenImage != null) {
-							g.drawImage(this.previousScreenImage, 0, 0, Graphics.TOP | Graphics.LEFT );
-							//#if !polish.Bugs.noTranslucencyWithDrawRgb
+					if (this.repaintPreviousScreen && this.previousScreen != null) {
+						this.previousScreen.paint(g);
+						//#if !polish.Bugs.noTranslucencyWithDrawRgb
+							if (this.previousScreenOverlayBackground != null) {
 								this.previousScreenOverlayBackground.paint(0, 0, this.screenWidth, this.screenHeight, g);
-							//#endif
-						}
-					//#endif
+							}
+						//#endif
+						//#if polish.ScreenOrientationCanChange && tmp.usingTitle
+							if ( this.previousScreenTitleBackground != null ) {
+								this.previousScreenTitleBackground.paint(0, 0, this.screenWidth, this.previousScreenTitleHeight, g );
+							}
+						//#endif
+					}
 				//#endif
 				int sWidth = this.screenWidth - this.marginLeft - this.marginRight;
 				int leftBorder = this.marginLeft;
@@ -3573,7 +3570,10 @@ implements AccessibleCanvas
 	}
 
 	/**
-	 * @return
+	 * Checks if the keyboard (if any) is currently accessible by the application.
+	 * This is useful for devices that can be opened by the user like the Nokia/E70.
+	 * 
+	 * @return true when the keyboard (if there is one) is accessible by the application.
 	 */
 	protected boolean isKeyboardAccessible() {
 		//#if polish.key.supportsAsciiKeyMap.condition == open

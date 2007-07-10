@@ -738,6 +738,7 @@ public abstract class Item extends Object
 
 	//#ifdef polish.css.view-type
 		protected ItemView view;
+		protected boolean preserveViewType;
 	//#endif
 	//#if polish.supportInvisibleItems
 		//#define tmp.invisible
@@ -1582,8 +1583,6 @@ public abstract class Item extends Object
 		//#endif
 		// initialise this item if necessary:
 		int availableWidth = rightBorder - leftBorder;
-		int originalX = x;
-		int originalY = y;
 		if (!this.isInitialized || (availableWidth < this.itemWidth )) {
 			//#if polish.debug.info
 			if (availableWidth < this.itemWidth ) {
@@ -1635,7 +1634,7 @@ public abstract class Item extends Object
 
 		//System.out.println( this.style.name + ":  decreasing rightBorder by " + (this.marginRight + this.borderWidth + this.paddingRight));
 		if ( this.isLayoutCenter  && availableWidth > this.itemWidth) {
-			int difference = (availableWidth - this.itemWidth) / 2; 
+			int difference = (availableWidth - this.itemWidth) >> 1; 
 			x += difference;
 			if (isLayoutShrink) {
 				leftBorder += difference;
@@ -1688,7 +1687,7 @@ public abstract class Item extends Object
 				if ( isVerticalCenter ) {
 //					System.out.println("vertical: adjusting contY by " + ((this.minimumHeight - this.contentHeight) / 2)
 //							+ ", contentHeight=" + this.contentHeight + ", minHeight=" + this.minimumHeight );
-					y += (minHeight - this.contentHeight) / 2; 
+					y += ((minHeight - this.contentHeight) >> 1); 
 				} else if ( isBottom ) {
 					//System.out.println("bottom: adjusting contY by " + (this.minimumHeight - this.contentHeight) );
 					y += (minHeight - this.contentHeight);
@@ -1705,7 +1704,7 @@ public abstract class Item extends Object
 					} else if (isBottom) {
 						beforeY += yAdjustment;
 					} else {
-						beforeY -= yAdjustment / 2;
+						beforeY -= (yAdjustment >> 1);
 					}
 				} else {
 					if (isTop) {
@@ -1713,7 +1712,7 @@ public abstract class Item extends Object
 					} else if (isBottom) {
 						y += yAdjustment;
 					} else {
-						y += yAdjustment / 2;
+						y += (yAdjustment >> 1);
 					}
 					//contY += (this.beforeHeight - this.contentHeight) / 2;
 				}
@@ -1733,7 +1732,7 @@ public abstract class Item extends Object
 					} else if (isBottom) {
 						afterY += yAdjustment;
 					} else {
-						afterY -= yAdjustment / 2;
+						afterY -= (yAdjustment >> 1);
 					}
 					//afterY += (this.contentHeight - this.afterHeight) / 2;
 				} else {
@@ -1745,7 +1744,7 @@ public abstract class Item extends Object
 						} else if (isBottom) {
 							y = originalContentY + yAdjustment;
 						} else {
-							y = originalContentY + yAdjustment / 2;
+							y = originalContentY + (yAdjustment >> 1);
 						}
 						//contY = originalContentY + (this.afterHeight - this.contentHeight) / 2;
 					//#ifdef polish.css.before
@@ -1756,10 +1755,7 @@ public abstract class Item extends Object
 			}
 		//#endif
 		
-
 		// paint content:
-		this.contentX = x - originalX;
-		this.contentY = y - originalY;
 		//#ifdef polish.css.view-type
 			if (this.view != null) {
 				this.view.paintContent( this, x, y, leftBorder, rightBorder, g);
@@ -1786,6 +1782,17 @@ public abstract class Item extends Object
 	protected void init( int firstLineWidth, int lineWidth ) {
 		//#debug
 		System.out.println("intialising item " + this.getClass().getName() + " (" + this + ") with lineWidths " + firstLineWidth + "/" + lineWidth);
+		//#if tmp.invisible
+			if (this.isInvisible) {
+				//#debug 
+				System.out.println("Aborting init due to invisibility.");
+				//TODO this could lead to scrolling problems for containers when an item within an invisible container should be shown suddenly
+				this.itemWidth = 0;
+				this.itemHeight = 0;
+				return;
+			}
+		//#endif
+		
 		if (this.style != null && !this.isStyleInitialised) {
 			setStyle( this.style );
 		}
@@ -1855,6 +1862,8 @@ public abstract class Item extends Object
 			}
 		//#endif
 		
+		this.contentX = this.marginLeft + this.borderWidth + this.paddingLeft;
+		this.contentY = this.marginTop + this.borderWidth + this.paddingTop; 
 		if (this.contentWidth == 0 && this.contentHeight == 0) {
 			this.itemWidth = labelWidth;
 			this.itemHeight = labelHeight;
@@ -1888,6 +1897,18 @@ public abstract class Item extends Object
 		//#endif
 		int noneContentHeight = this.marginTop + this.borderWidth + this.paddingTop 
 			  + this.paddingBottom + this.borderWidth + this.marginBottom;
+		//#if polish.css.before || polish.css.after || polish.css.min-height  || polish.css.max-height
+			boolean isVerticalCenter = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER; 
+			//boolean isTop = !isVerticalCenter && (this.layout & LAYOUT_TOP) == LAYOUT_TOP; 
+			boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM;
+			if (cHeight > this.contentHeight) {
+				if (isVerticalCenter) {
+					this.contentY = ( (cHeight - this.contentHeight) >> 1);
+				} else if (isBottom) {
+					this.contentY = ( cHeight - this.contentHeight );
+				}
+			}
+		//#endif
 		if (this.itemWidth + labelWidth <= lineWidth) {
 			// label and content fit on one row:
 			this.useSingleRow = true;
@@ -1895,10 +1916,12 @@ public abstract class Item extends Object
 				if ( (this.label.layout & LAYOUT_NEWLINE_AFTER) != 0 || ((this.layout & LAYOUT_NEWLINE_BEFORE) == LAYOUT_NEWLINE_BEFORE )) {
 					this.useSingleRow = false;
 					cHeight += labelHeight;
+					this.contentY += labelHeight;
 				}
 			}
 			if (this.useSingleRow) {
-				this.itemWidth += labelWidth;				
+				this.itemWidth += labelWidth;
+				this.contentX = labelWidth;
 			}
 			if ( cHeight + noneContentHeight < labelHeight ) {
 				cHeight = labelHeight - noneContentHeight;
@@ -1906,6 +1929,7 @@ public abstract class Item extends Object
 		} else {
 			this.useSingleRow = false;
 			cHeight += labelHeight;
+			this.contentY += labelHeight;
 		}
 		if ( this.isLayoutExpand ) {
 			this.itemWidth = lineWidth;
@@ -1968,12 +1992,12 @@ public abstract class Item extends Object
 			this.cssSelector = createCssSelector();
 			//#debug
 			System.out.println("getting style for item [" + this.cssSelector + "].");
-			Style style = StyleSheet.getStyle( this );
-			if (style == null) {
-				style = StyleSheet.defaultStyle;
+			Style myStyle = StyleSheet.getStyle( this );
+			if (myStyle == null) {
+				myStyle = StyleSheet.defaultStyle;
 			}
-			if (style != null) {
-				setStyle( style );
+			if (myStyle != null) {
+				setStyle( myStyle );
 			}
 		} else {
 			//System.out.println("item has already style [" + this.style.name + "].");
@@ -2233,7 +2257,13 @@ public abstract class Item extends Object
 		if (this.focusedStyle != null) {
 			newStyle = this.focusedStyle;
 		} 
+		//#if polish.css.view-type
+			this.preserveViewType = true;
+		//#endif
 		setStyle( newStyle );
+		//#if polish.css.view-type
+			this.preserveViewType = false;
+		//#endif
 		this.isFocused = true;
 		// now set any commands of this item:
 		if (this.commands != null) {
