@@ -2,14 +2,12 @@ package de.enough.polish.util;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
 import de.enough.polish.io.Externalizable;
-import de.enough.polish.util.TextUtil;
 
 /**
  * Reads a property list (key and element pairs) from the input stream and stores it in the internal <code>Hashtable</code>. 
