@@ -1,16 +1,18 @@
 package de.enough.polish.util;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import de.enough.polish.io.Externalizable;
 import de.enough.polish.util.TextUtil;
 
 /**
- * Reads a property list (key and element pairs) from the input stream
- * and stores it in the internal <code>Hashtable</code>. 
+ * Reads a property list (key and element pairs) from the input stream and stores it in the internal <code>Hashtable</code>. 
  * The stream is assumed to be using the ISO 8859-1 character encoding; 
  * that is each byte is one Latin1 character.
  * 
@@ -21,45 +23,30 @@ import de.enough.polish.util.TextUtil;
  * </pre>
  * 
  * @author Andre Schmidt
+ * @author Robert Virkus (optimizations)
  */
-public class Properties extends Hashtable {
+public class Properties 
+extends Hashtable
+implements Externalizable
+{
+	private boolean isIntegerValues;
+
 	/**
-	 * Reads a line from a stream. It is expected that the line ends
-	 * with \r and \n
-	 * 
-	 * @param stream the stream to read
-	 * @return the read line
-	 * @throws IOException
+	 * Creates a new Properties set.
 	 */
-	private String readLine(InputStream stream) throws EOFException, IOException
-	{
-		byte character;
-		String result = "";
-		
-		character = (byte)stream.read();
-		while((char)character != '\r')
-		{
-			if(character == -1)
-				throw new EOFException();
-			
-			result += (char)character;
-			character = (byte)stream.read();
-		}
-		
-		//Skip newline
-		stream.skip(1);
-		
-		return result;
+	public Properties() {
+		super();
 	}
+	
 	
 	/**
 	 * Returns the property value corresponding to the given key 
 	 * @param key the key
-	 * @return the value corresponding to the key
+	 * @return the String value corresponding to the key
 	 */
-	public Object getProperty(String key)
+	public String getProperty(String key)
 	{
-		return this.get(key);
+		return (String) this.get(key);
 	}
 	
 	/**
@@ -76,43 +63,82 @@ public class Properties extends Hashtable {
 	 * Reads a property list (key and element pairs) from the input stream. 
 	 * The stream is assumed to be using the ISO 8859-1 character encoding; 
 	 * that is each byte is one Latin1 character.
-	 * @param inStream the input stream.
+	 * @param in the input stream.
 	 * @throws IOException if an error occurred when reading from the input stream.
 	 */
-	public void load(InputStream inStream) throws IOException
+	public void load(InputStream in) throws IOException
 	{
-		try
-		{
-			String line = "";
-			
-			while(true)
-			{
-				line = readLine(inStream);
-				
-				if(line.length() == 0)
-					throw new IOException("The properties stream is empty");
-				
-				if(line.charAt(0) != '#')
-				{
-					String[] values = TextUtil.split(line, '=');
-					
-					if(values.length == 0)
-						throw new IOException("The properties stream is corrupt");
-					
-					try
-					{
-						Integer number = Integer.valueOf(values[1]);
-						this.put(values[0], number);
+		load( in, null, false );
+	}
+	/**
+	 * Reads a property list (key and element pairs) from the input stream.
+	 *  
+	 * @param in the input stream.
+	 * @param encoding the expected encoding, null for the default encoding of the system
+	 * @param generateIntegerValues true when Integer values should be generated. Integers must be retrieved using get(key) instead of getProperty(key) later onwards.
+	 * @throws IOException if an error occurred when reading from the input stream.
+	 */
+	public void load(InputStream in, String encoding, boolean generateIntegerValues ) throws IOException
+	{
+		this.isIntegerValues = generateIntegerValues;
+		int bufferLength = 2 * 1024;
+		byte[] buffer = new byte[ bufferLength ];
+		int read;
+		int start = 0;
+		int end = 0;
+		boolean newLineFound;
+		while ( (read = in.read(buffer, start, bufferLength - start )) != -1) {
+			// search for next \r or \n
+			String line;
+			if (encoding != null) {
+				line = new String( buffer, 0, read + start, encoding );
+			} else {
+				line = new String( buffer, 0, read + start );				
+			}
+			start = 0;
+			newLineFound = true;
+			while (newLineFound) {
+				newLineFound = false;
+				char c = '\n';
+				for (int i = start; i < line.length(); i++) {
+					c = line.charAt(i);
+					if (c == '\r' || c == '\n') {
+						end = i;
+						newLineFound = true;
+						break;
 					}
-					catch(NumberFormatException ex)
-					{
-						this.put(values[0], values[1]);
+				}
+				if (newLineFound) {
+					int splitPos = line.indexOf('=', start);
+					if(splitPos == -1) {
+						throw new IOException("no = separator: " + line.substring( start, end ));
+					}
+					String key = line.substring( start, splitPos );
+					String value = line.substring( splitPos + 1, end );
+					if (generateIntegerValues) {
+						try {
+							put( key, Integer.valueOf(value) );
+						} catch(NumberFormatException ex) {
+							throw new IOException( ex.toString() );
+						}												
+					} else {
+						put( key, value );	
+					}
+					if (c == '\r') {
+						start = end + 2;
+					} else {
+						start = end + 1;
 					}
 				}
 			}
+			// now all key-value pairs have been read, now move any remaining data to the beginning of the buffer:
+			if (start < read) {
+				System.arraycopy( buffer, start, buffer, 0, read - start );
+				start = read - start;
+			} else {
+				start = 0;
+			}
 		}
-		catch(EOFException e){}
-		catch(IOException e){e.printStackTrace();}
 	}
 	
 	/**
@@ -121,7 +147,45 @@ public class Properties extends Hashtable {
 	 */
 	public Enumeration propertyNames()
 	{
-		return this.elements();
+		return this.keys();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#read(java.io.DataInputStream)
+	 */
+	public void read(DataInputStream in) throws IOException {
+		int size = in.readInt();
+		this.isIntegerValues = in.readBoolean();
+		for (int i=0; i < size; i++) {
+			String key = in.readUTF();
+			Object value;
+			if (this.isIntegerValues) {
+				value = new Integer( in.readInt() );
+			} else {
+				value = in.readUTF();
+			}
+			put( key, value );
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
+	 */
+	public void write(DataOutputStream out) throws IOException {
+		int size = size();
+		out.writeInt( size );
+		out.writeBoolean( this.isIntegerValues );
+		Enumeration keys = keys();
+		while (keys.hasMoreElements()) {
+			String key = (String) keys.nextElement();
+			out.writeUTF( key );
+			if (this.isIntegerValues) {
+				Integer value = (Integer) get( key );
+				out.writeInt( value.intValue() );
+			} else {
+				out.writeUTF( (String) get(key ) );
+			}
+		}
 	}
 	
 }
