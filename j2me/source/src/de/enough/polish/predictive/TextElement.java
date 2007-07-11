@@ -5,11 +5,12 @@ import de.enough.polish.util.ArrayList;
 
 public class TextElement {
 	Object element = null;
-
+	TrieCustom custom = null;
 	String shift = null;
-
+	
 	public TextElement(Object object) {
 		this.element = object;
+		this.custom = new TrieCustom();
 		this.shift = "";
 	}
 

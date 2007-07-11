@@ -40,8 +40,8 @@ import javax.microedition.rms.RecordStoreNotOpenException;
 import de.enough.polish.blackberry.ui.PolishEditField;
 //#endif
 import de.enough.polish.predictive.TextBuilder;
+import de.enough.polish.predictive.TrieCustom;
 import de.enough.polish.predictive.TextElement;
-import de.enough.polish.predictive.TrieProperties;
 import de.enough.polish.predictive.TrieReader;
 import de.enough.polish.util.Locale;
 import de.enough.polish.util.Properties;
@@ -86,7 +86,7 @@ public class PredictiveTextField
 	
 	private int elementX = 0;
 	private int elementY = 0;
-	private boolean newOpen = true;
+	private boolean refreshChoices = true;
 		
 	protected static Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 0 );
 	protected static Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 0 );
@@ -142,9 +142,9 @@ public class PredictiveTextField
 			//# this.choicesContainer.parent = this;
 		//#endif		
 		
-		this.builder = new TextBuilder(maxSize);
-		this.properties = this.builder.getHeader("predictive");
-		this.display = display;
+		this.builder 	= new TextBuilder(maxSize);
+//		this.custom		= new TextCustom();
+		this.display 	= display;
 		
 		this.inputMode 		= this.builder.getInputMode();
 		this.spaceButton 	= getSpaceKey();
@@ -154,9 +154,6 @@ public class PredictiveTextField
 		predictiveInput = true;
 		
 		updateInfo();
-		
-		//Font uebernehmen
-		//this.choicesContainer.getStyle().font = this.getStyle().font;
 	}
 	
 	/* (non-Javadoc)
@@ -176,7 +173,7 @@ public class PredictiveTextField
 	 * 
 	 * @param choices the new choices, null when no choices are given
 	 */
-	private void setChoices( StringBuffer[] choices ) {
+	private void setChoices( StringBuffer[] choices) {
 		this.choicesContainer.clear();
 		if  ( choices == null ) {
 			this.choiceItems = new Item[ 0 ];
@@ -303,6 +300,7 @@ public class PredictiveTextField
 					currentReader.setSelectedWord(0);
 					
 					currentReader.keyNum(keyCode); 
+					//custom.keyNum(keyCode);
 				}
 				catch(RecordStoreException e){e.printStackTrace();}
 				
@@ -323,6 +321,7 @@ public class PredictiveTextField
 				}
 				
 				this.setChoices(this.builder.getCurrentElement().getResults());
+//				this.setChoices(this.custom.getResults(),true);
 			}
 			else
 			{
@@ -332,6 +331,7 @@ public class PredictiveTextField
 			
 			setText(this.builder.getText());
 			setCaretPosition(this.builder.getCaretPosition());
+			this.refreshChoices = true;
 			
 			return true;
 		}
@@ -368,7 +368,9 @@ public class PredictiveTextField
 				else
 				{
 					setChoices(this.builder.getCurrentElement().getResults());
+					//setChoices(this.custom.getResults(),true);
 					this.builder.setCurrentAlign(TextBuilder.ALIGN_FOCUS);
+					this.builder.getCurrentElement().setSelectedWord(0);
 				}
 				
 				openChoices(!currentReader.isEmpty());
@@ -378,6 +380,7 @@ public class PredictiveTextField
 		
 		setText(this.builder.getText());
 		setCaretPosition(this.builder.getCaretPosition());
+		this.refreshChoices = true;
 		
 		return true;
 	}
@@ -401,6 +404,7 @@ public class PredictiveTextField
 					
 			updateInfo();
 			
+			this.refreshChoices = true;
 			return true;
 		}
 		
@@ -433,6 +437,7 @@ public class PredictiveTextField
 					
 					setText(this.builder.getText());
 					setCaretPosition(this.builder.getCaretPosition());
+					this.refreshChoices = true;
 				}
 			}
 			
@@ -468,7 +473,6 @@ public class PredictiveTextField
 				if(results.length > 0)
 				{
 					setChoices(results);
-					openChoices(true);
 				}
 			}
 			else
@@ -691,7 +695,7 @@ public class PredictiveTextField
 			}
 		}
 		this.isOpen = open;
-		this.newOpen = open;
+		this.refreshChoices = open;
 	}
 
 	/* (non-Javadoc)
@@ -704,18 +708,13 @@ public class PredictiveTextField
 			if(this.isOpen)
 			{
 				y += this.paddingVertical;
-				
-				status.setText("" + this.choicesContainer.itemWidth);
-				
-				this.elementX = getChoicesX(leftBorder,rightBorder,this.choicesContainer.getItemWidth(this.itemWidth, this.itemWidth));
-				this.elementY = getChoicesY();
-								
-				/*if(this.newOpen)
+							
+				if(this.refreshChoices)
 				{
-					this.elementX = getElementX(leftBorder,rightBorder,this.choicesContainer.itemWidth);
-					this.elementY = getElementY();
-					this.newOpen = false;
-				}*/
+					this.elementX = getChoicesX(leftBorder,rightBorder,this.choicesContainer.getItemWidth(this.itemWidth, this.itemWidth));
+					this.elementY = getChoicesY();
+					this.refreshChoices = false;
+				}
 				
 				this.choicesContainer.paint(x + this.elementX , y + this.elementY, leftBorder + this.elementX, rightBorder, g);
 			}
@@ -761,13 +760,10 @@ public class PredictiveTextField
 				for(int i=charsToLine; i<this.builder.getCurrentCaret() - element.getLength(); i++)
 					result += this.font.charWidth(this.builder.getTextChar(i));
 				
-				int overlap = (rightBorder) - (leftBorder + result + itemWidth) + 10;
+				int overlap = (rightBorder) - (leftBorder + result + itemWidth);
 				
 				if(overlap < 0)
 					result += overlap;
-				
-				//status.setText("" + overlap + "/" + (leftBorder + result) + "/" + rightBorder);
-				status.setText("" + itemWidth);
 				
 				return result;
 			}

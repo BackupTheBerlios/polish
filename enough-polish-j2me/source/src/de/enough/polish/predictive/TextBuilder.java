@@ -69,25 +69,6 @@ public class TextBuilder {
 		text = new StringBuffer(textSize);
 	}
 	
-	public Properties getHeader(String prefix)
-	{
-		try {
-			byte[] header = null;
-			
-			RecordStore store = RecordStore.openRecordStore(prefix + ":header", false);
-			header = store.getRecord(1); 
-			
-			DataInputStream stream = new DataInputStream(new ByteArrayInputStream(header));
-			
-			return (Properties)Serializer.deserialize(stream);
-		} catch (RecordStoreException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
-		
-		return null;
-	}
 	
 	/**
 	 * Returns the <code>TrieReader</code> carried in the current <code>TextElement</code>. It must be checked previously 

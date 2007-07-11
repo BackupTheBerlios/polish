@@ -1,5 +1,6 @@
 package de.enough.polish.predictive;
 
+import java.io.ByteArrayInputStream;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
@@ -18,13 +19,14 @@ import de.enough.polish.util.HashMap;
 
 public class TrieReader {
 	
-	final int V_OFFSET = 0;
-	final int CC_OFFSET = 2;
-	final int CR_OFFSET = 3;
-	final int NODE_SIZE = 5;
-	final int COUNT_SIZE = 1;
+	static final String prefix = "predictive";
 	
-	String prefix = null;
+	static final byte V_OFFSET = 0;
+	static final byte CC_OFFSET = 2;
+	static final byte CR_OFFSET = 3;
+	static final byte NODE_SIZE = 5;
+	static final byte COUNT_SIZE = 1;
+	
 	int lineCount = 0;
 	int chunkSize = 0;
 	
@@ -40,19 +42,29 @@ public class TrieReader {
 
 	StringBuffer[] results = null;
 	
-	public TrieReader(Properties properties) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException
+	public TrieReader(Properties properties) throws RecordStoreException
 	{
 		this.nodes 		= new ArrayList();
 		this.prevNodes 	= new Stack();
 		
 		this.stores = new HashMap();
 		
-		this.prefix 	= (String)properties.getProperty("trie.prefix");
-		this.lineCount 	= ((Integer)properties.getProperty("trie.lineCount")).intValue();
-		this.chunkSize 	= ((Integer)properties.getProperty("trie.lineCount")).intValue();
-		
+		getHeader();
+				
 		this.empty 		= true;
 		this.wordFound	= true;
+	}
+	
+	private void getHeader() throws RecordStoreException
+	{
+		String storeID = prefix + "_0";
+		
+		RecordStore store = RecordStore.openRecordStore(storeID, false);
+		
+		byte[] bytes = store.getRecord(TrieInstaller.HEADER_RECORD);
+		
+		this.chunkSize = byteToInt(bytes, TrieInstaller.CHUNKSIZE_OFFSET);
+		this.lineCount = byteToInt(bytes, TrieInstaller.LINECOUNT_OFFSET);
 	}
 	
 	public StringBuffer[] getResults()
@@ -78,12 +90,15 @@ public class TrieReader {
 		{
 			for(int nodeIndex = 0; nodeIndex < this.nodes.size(); nodeIndex++)
 			{
-				TrieNode node = (TrieNode)this.nodes.get(nodeIndex);
-				
-				if(node.getReference() != 0)
+				if(this.nodes.get(nodeIndex) instanceof TrieNode)
 				{
-					record = this.getRecord(node.getReference(),this.lineCount);
-					addToNodes(this.getNodes(record, keyCode, node.getWord()),newNodes);
+					TrieNode node = (TrieNode)this.nodes.get(nodeIndex);
+					
+					if(node.getReference() != 0)
+					{
+						record = this.getRecord(node.getReference(),this.lineCount);
+						addToNodes(this.getNodes(record, keyCode, node.getWord()),newNodes);
+					}
 				}
 			}
 			
@@ -96,12 +111,14 @@ public class TrieReader {
 			popNodes(true);
 		
 		closeStores();
+		
 		setNodeWords(this.nodes);
 	}
 	
 	public void keyClear() throws RecordStoreException
 	{	
 		popNodes(false);
+		
 		setNodeWords(nodes);
 	}
 			
@@ -119,10 +136,12 @@ public class TrieReader {
 			if(results[i] == null)
 				results[i] = new StringBuffer(1);
 		
-			results[i].append(((TrieNode)nodes.get(i)).getWord());
+			if(nodes.get(i) instanceof TrieNode)
+				results[i].append(((TrieNode)nodes.get(i)).getWord());
+			else if(nodes.get(i) instanceof StringBuffer)
+				results[i].append((StringBuffer)nodes.get(i));
 		}
 	}
-	
 	
 	private void copyNodes(ArrayList source, ArrayList dest)
 	{
@@ -164,12 +183,12 @@ public class TrieReader {
 		}
 	}
 		
-	private byte[] getRecord(int id, int lineCount) throws RecordStoreNotOpenException, InvalidRecordIDException, RecordStoreException
+	private byte[] getRecord(int id, int lineCount) throws RecordStoreException
 	{
-		int recordID 	= ((id-1) / lineCount) + 1; 
-		int partID 		= ((id-1) % lineCount) + 1;
+		int recordID 	= ((id -1) / lineCount) + 1; 
+		int partID 		= ((id -1) % lineCount) + 1;
 		
-		String storeID = this.prefix + ":" + (recordID - (recordID % this.chunkSize));
+		String storeID = this.prefix + "_" + (recordID - (recordID % this.chunkSize));
 		
 		RecordStore store = (RecordStore)stores.get(storeID);
 		
@@ -185,7 +204,7 @@ public class TrieReader {
 			stores.put(storeID, store);
 		}
 		
-		byte[] record = store.getRecord(recordID % this.chunkSize);
+		byte[] record = store.getRecord(recordID + TrieInstaller.OVERHEAD % this.chunkSize);
 		
 		return getRecordPart(record,partID); 
 	}
@@ -262,6 +281,15 @@ public class TrieReader {
 		return getNodes;
 	}
 	
+	private int byteToInt(byte[] bytes, int offset) {
+		int value = 0;
+		for (int i = 0; i < 4; i++) {
+			int shift = (4 - 1 - i) * 8;
+			value += (bytes[i + offset] & 0x000000FF) << shift;
+		}
+		return value;
+    }
+	
 	private char byteToChar(byte[] bytes, int offset)
 	{
 		int high = bytes[offset] & 0xff;
@@ -306,7 +334,12 @@ public class TrieReader {
 	public String getSelectedWord()
 	{
 		if(this.nodes.size() > 0)
-			return ((TrieNode)this.nodes.get(this.selectedWord)).getWord();
+			if(this.nodes.get(this.selectedWord) instanceof TrieNode)
+				return ((TrieNode)this.nodes.get(this.selectedWord)).getWord();
+			else if (this.nodes.get(this.selectedWord) instanceof StringBuffer)
+				return ((StringBuffer)this.nodes.get(this.selectedWord)).toString();
+			else 
+				return "";
 		else
 			return "";
 	}
