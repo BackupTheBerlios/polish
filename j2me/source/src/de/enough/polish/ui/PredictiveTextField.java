@@ -1,8 +1,8 @@
-//#condition polish.usePolishGui
+//#condition polish.usePolishGui && polish.TextField.useDirectInput && !polish.blackberry
 /*
  * Created on 27-Feb-2006 at 7:36:20.
  * 
- * Copyright (c) 2004-2006 Robert Virkus / Enough Software
+ * Copyright (c) 20007 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -727,12 +727,12 @@ public class PredictiveTextField
 			}
 		}
 		
-		/*if((System.currentTimeMillis() - currentTime) > 1000)
+		if((System.currentTimeMillis() - currentTime) > 1000)
 		{
 			memory += 300;
 			currentTime = System.currentTimeMillis();
 			System.out.println(Runtime.getRuntime().freeMemory() + memory );
-		}*/
+		}
 	}
 	
 	protected int getChoicesY()

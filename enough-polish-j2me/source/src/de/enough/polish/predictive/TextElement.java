@@ -1,3 +1,4 @@
+//#condition polish.TextField.useDirectInput && !polish.blackberry
 package de.enough.polish.predictive;
 
 import de.enough.polish.ui.TextField;

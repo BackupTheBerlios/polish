@@ -1,3 +1,4 @@
+//#condition polish.TextField.useDirectInput && !polish.blackberry
 package de.enough.polish.predictive;
 
 import java.io.ByteArrayInputStream;
@@ -190,7 +191,7 @@ public class TrieReader {
 		int recordID 	= ((id -1) / lineCount) + 1; 
 		int partID 		= ((id -1) % lineCount) + 1;
 		
-		String storeID = this.prefix + "_" + (recordID - (recordID % this.chunkSize));
+		String storeID = TrieInstaller.prefix + "_" + (recordID - (recordID % this.chunkSize));
 		
 		RecordStore store = (RecordStore)stores.get(storeID);
 		
@@ -211,7 +212,7 @@ public class TrieReader {
 		
 		if(record == null)
 		{
-			record = store.getRecord(recordMapID);
+			record = store.getRecord(recordMapID.intValue());
 			this.records.put(recordMapID, record);
 		}
 		
