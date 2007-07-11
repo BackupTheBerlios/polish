@@ -34,6 +34,7 @@ public class TrieReader {
 	private Stack prevNodes = null;
 	
 	private HashMap stores = null;
+	private HashMap records = null;
 	
 	private int selectedWord = 0;
 	
@@ -42,12 +43,13 @@ public class TrieReader {
 
 	StringBuffer[] results = null;
 	
-	public TrieReader() throws RecordStoreException
+	public TrieReader(HashMap stores, HashMap records) throws RecordStoreException
 	{
 		this.nodes 		= new ArrayList();
 		this.prevNodes 	= new Stack();
 		
-		this.stores = new HashMap();
+		this.stores = stores;
+		this.records = records;
 		
 		getHeader();
 				
@@ -204,7 +206,14 @@ public class TrieReader {
 			stores.put(storeID, store);
 		}
 		
-		byte[] record = store.getRecord(recordID + TrieInstaller.OVERHEAD % this.chunkSize);
+		Integer recordMapID = new Integer(recordID + TrieInstaller.OVERHEAD % this.chunkSize);
+		byte[] record = (byte[])this.records.get(recordMapID); 
+		
+		if(record == null)
+		{
+			record = store.getRecord(recordMapID);
+			this.records.put(recordMapID, record);
+		}
 		
 		return getRecordPart(record,partID); 
 	}

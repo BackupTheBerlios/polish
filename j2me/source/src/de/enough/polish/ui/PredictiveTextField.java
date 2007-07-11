@@ -43,6 +43,7 @@ import de.enough.polish.predictive.TextBuilder;
 import de.enough.polish.predictive.TrieCustom;
 import de.enough.polish.predictive.TextElement;
 import de.enough.polish.predictive.TrieReader;
+import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Locale;
 import de.enough.polish.util.Properties;
 import de.enough.polish.util.TextUtil;
@@ -81,6 +82,10 @@ public class PredictiveTextField
 	
 	private TextBuilder builder = null;
 	private TrieReader 	currentReader = null;
+	
+	private HashMap stores = null;
+	private HashMap records = null;
+	
 	private Display display = null;
 	private int spaceButton;
 	
@@ -148,6 +153,9 @@ public class PredictiveTextField
 		this.inputMode 		= this.builder.getInputMode();
 		this.spaceButton 	= getSpaceKey();
 		this.status			= status;
+		
+		this.stores 		= new HashMap();
+		this.records		= new HashMap();
 		
 		this.addCommand(this.DISABLE_PREDICTIVE_CMD);
 		predictiveInput = true;
@@ -290,7 +298,7 @@ public class PredictiveTextField
 						this.builder.getCurrentAlign() == TextBuilder.ALIGN_LEFT ||
 						this.builder.getCurrentAlign() == TextBuilder.ALIGN_RIGHT)
 					{
-						currentReader = new TrieReader();
+						currentReader = new TrieReader(stores,records);
 						this.builder.addReader(currentReader);
 					}
 					else if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
