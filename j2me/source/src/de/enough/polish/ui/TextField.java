@@ -950,6 +950,8 @@ public class TextField extends StringItem
 			}
 		//#endif
 			
+		this.realTextLines = new String[0];
+			
 		setConstraints(constraints);
 	}
 	
@@ -1404,7 +1406,7 @@ public class TextField extends StringItem
 			if ( ! this.isInitialized ) {
 				this.doSetCaretPosition = true;
 				this.caretPosition = position;
-			} else if (this.realTextLines == null ){
+			} else if (this.realTextLines.length == 0 ){
 				// ignore position when there is not text present
 			} else {
 				int row = 0;
@@ -2054,7 +2056,7 @@ public class TextField extends StringItem
 					this.caretX = 0;
 					//System.out.println(this + ".initContent()/reset1: caretX=" + this.caretX);
 					this.caretY = 0;
-					this.originalRowText = null;
+					this.originalRowText = "";
 				}		
 			}
 			// set the internal information so that big TextBoxes can still be scrolled
