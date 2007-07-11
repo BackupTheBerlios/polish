@@ -5,13 +5,13 @@ import de.enough.polish.util.ArrayList;
 
 public class TextElement {
 	Object element = null;
-	TrieCustom custom = null;
-	String shift = null;
+	boolean[] shift = null;
+	int shiftPosition = 0;
 	
 	public TextElement(Object object) {
-		this.element = object;
-		this.custom = new TrieCustom();
-		this.shift = "";
+		this.element 		= object;
+		this.shift 			= new boolean[10];
+		this.shiftPosition 	= 0;
 	}
 
 	public int getLength() {
@@ -34,8 +34,8 @@ public class TextElement {
 			results = ((TrieReader) element).getResults();
 
 			for (int i = 0; i < results.length; i++) {
-				for (int j = 0; j < shift.length(); j++) {
-					if (shift.charAt(j) == '1')
+				for (int j = 0; j < shift.length; j++) {
+					if (shift[j] == true)
 						results[i].setCharAt(j, Character.toUpperCase(results[i].charAt(j)));
 				}
 			}
@@ -55,8 +55,8 @@ public class TextElement {
 			
 			char[] resultArray = result.toCharArray();
 
-			for (int j = 0; j < shift.length(); j++) {
-				if (shift.charAt(j) == '1')
+			for (int j = 0; j < shift.length; j++) {
+				if (shift[j] == true)
 					resultArray[j] = Character.toUpperCase(resultArray[j]);
 			}
 				
@@ -72,15 +72,23 @@ public class TextElement {
 	}
 
 	public void pushChar(int shift) {
+		if(this.shiftPosition >= this.shift.length)
+		{
+			boolean[] newShift = new boolean[this.shift.length * 2];
+			System.arraycopy(this.shift, 0, newShift, 0, this.shift.length);
+			this.shift = newShift;
+		}
+		
 		if(shift == TextField.MODE_UPPERCASE || shift == TextField.MODE_FIRST_UPPERCASE)
-			this.shift += '1';
+			this.shift[this.shiftPosition] = true;
 		else
-			this.shift += '0';
+			this.shift[this.shiftPosition] = false;
+		
+		this.shiftPosition++;
 	}
 
 	public void popChar() {
-		if(shift.length() > 0)
-			shift = shift.substring(0,shift.length() - 1);
+		this.shiftPosition--;
 	}
 
 	public Object getElement() {

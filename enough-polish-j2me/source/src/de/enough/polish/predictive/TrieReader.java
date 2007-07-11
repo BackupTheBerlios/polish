@@ -42,7 +42,7 @@ public class TrieReader {
 
 	StringBuffer[] results = null;
 	
-	public TrieReader(Properties properties) throws RecordStoreException
+	public TrieReader() throws RecordStoreException
 	{
 		this.nodes 		= new ArrayList();
 		this.prevNodes 	= new Stack();

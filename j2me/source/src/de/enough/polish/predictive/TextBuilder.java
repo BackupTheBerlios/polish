@@ -323,23 +323,26 @@ public class TextBuilder {
 	 */
 	public void increaseCaret()
 	{	
-		if(currentAlign == ALIGN_LEFT)
+		if(textElements.size() != 0)
 		{
-			if(!isChar(0))
-				currentAlign = ALIGN_FOCUS;
-			else
-				currentAlign = ALIGN_RIGHT;
-		}
-		if(currentAlign == ALIGN_FOCUS)
-		{
-			currentAlign = ALIGN_RIGHT;
-		}
-		else
-			if(currentElement != textElements.size() - 1)
+			if(currentAlign == ALIGN_LEFT)
 			{
-				currentAlign = ALIGN_LEFT;
-				currentElement++;
+				if(!isChar(0))
+					currentAlign = ALIGN_FOCUS;
+				else
+					currentAlign = ALIGN_RIGHT;
 			}
+			if(currentAlign == ALIGN_FOCUS)
+			{
+				currentAlign = ALIGN_RIGHT;
+			}
+			else
+				if(currentElement != textElements.size() - 1)
+				{
+					currentAlign = ALIGN_LEFT;
+					currentElement++;
+				}
+		}
 	}
 
 	/**
@@ -358,32 +361,35 @@ public class TextBuilder {
 	 * </p> 
 	 */
 	public void decreaseCaret()
-	{		
-		switch(currentAlign)
+	{	
+		if(textElements.size() != 0)
 		{
-			case ALIGN_LEFT 	:
-				if(currentElement > 0)
-				{
-					if(!isChar(-1))
-						currentAlign = ALIGN_FOCUS;
-					else
-						currentAlign = ALIGN_LEFT;
-					
-					currentElement--;
-				}
-			break;
-			
-			case ALIGN_FOCUS:
-				currentAlign = ALIGN_LEFT;
-			break;
-			
-			case ALIGN_RIGHT:
-				if(isChar(0))
+			switch(currentAlign)
+			{
+				case ALIGN_LEFT 	:
+					if(currentElement > 0)
+					{
+						if(!isChar(-1))
+							currentAlign = ALIGN_FOCUS;
+						else
+							currentAlign = ALIGN_LEFT;
+						
+						currentElement--;
+					}
+				break;
+				
+				case ALIGN_FOCUS:
 					currentAlign = ALIGN_LEFT;
-				else
-					currentAlign = ALIGN_FOCUS;
-			break;
-		};
+				break;
+				
+				case ALIGN_RIGHT:
+					if(isChar(0))
+						currentAlign = ALIGN_LEFT;
+					else
+						currentAlign = ALIGN_FOCUS;
+				break;
+			};
+		}
 	}
 	
 	/**

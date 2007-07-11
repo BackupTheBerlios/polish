@@ -93,9 +93,8 @@ public class PredictiveTextField
 	private boolean predictiveInput;
 	
 	private StringItem status;
-	StringBuffer memory = new StringBuffer(20);
 	private long currentTime;
-	private Properties properties;
+	private long memory = 0;
 	
 	/**
 	 * Creates a new ChoiceTextField.
@@ -291,7 +290,7 @@ public class PredictiveTextField
 						this.builder.getCurrentAlign() == TextBuilder.ALIGN_LEFT ||
 						this.builder.getCurrentAlign() == TextBuilder.ALIGN_RIGHT)
 					{
-						currentReader = new TrieReader(this.properties);
+						currentReader = new TrieReader();
 						this.builder.addReader(currentReader);
 					}
 					else if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
@@ -722,13 +721,9 @@ public class PredictiveTextField
 		
 		/*if((System.currentTimeMillis() - currentTime) > 1000)
 		{
+			memory += 300;
 			currentTime = System.currentTimeMillis();
-			Runtime runtime = Runtime.getRuntime();
-			this.memory.setLength(0);
-			this.memory.append(runtime.freeMemory());
-			this.memory.append("/");
-			this.memory.append(runtime.totalMemory());
-			System.out.println(memory.toString());
+			System.out.println(Runtime.getRuntime().freeMemory() + memory );
 		}*/
 	}
 	
