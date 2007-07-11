@@ -22,12 +22,13 @@ public class TrieNode {
 		this.word.append(letter);
 	}
 	
-	public void appendToWord(String word)
+	public void appendToWord(StringBuffer word)
 	{
-		this.word.append(word);
+		if(word != null)
+			this.word.append(word);
 	}
 	
-	public String getWord() {
-		return this.word.toString();
+	public StringBuffer getWord() {
+		return this.word;
 	}
 }

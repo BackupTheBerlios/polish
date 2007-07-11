@@ -30,23 +30,18 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.rms.InvalidRecordIDException;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreFullException;
 import javax.microedition.rms.RecordStoreNotFoundException;
-import javax.microedition.rms.RecordStoreNotOpenException;
 
 //#if polish.blackberry
 import de.enough.polish.blackberry.ui.PolishEditField;
 //#endif
 import de.enough.polish.predictive.TextBuilder;
-import de.enough.polish.predictive.TrieCustom;
 import de.enough.polish.predictive.TextElement;
 import de.enough.polish.predictive.TrieReader;
+import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
-import de.enough.polish.util.Locale;
-import de.enough.polish.util.Properties;
-import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Provides a TextField that provides the user with possible matches for the current input.</p>
@@ -67,8 +62,6 @@ public class PredictiveTextField
 {
 
 	private final Container choicesContainer;
-	private StringBuffer[] choices;
-	private String[] lowerCaseChoices;
 	private int numberOfMatches;
 	private boolean isInChoice;
 	private Item[] choiceItems;
@@ -78,7 +71,6 @@ public class PredictiveTextField
 	private int choicesYOffsetAdjustment;
 	private boolean isOpen;
 	private Style choiceItemStyle;
-	private String lastMatchingText;
 	
 	private TextBuilder builder = null;
 	private TrieReader 	currentReader = null;
@@ -97,7 +89,6 @@ public class PredictiveTextField
 	protected static Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 0 );
 	private boolean predictiveInput;
 	
-	private StringItem status;
 	private long currentTime;
 	private long memory = 0;
 	
@@ -152,12 +143,11 @@ public class PredictiveTextField
 		
 		this.inputMode 		= this.builder.getInputMode();
 		this.spaceButton 	= getSpaceKey();
-		this.status			= status;
 		
 		this.stores 		= new HashMap();
 		this.records		= new HashMap();
 		
-		this.addCommand(this.DISABLE_PREDICTIVE_CMD);
+		this.addCommand(DISABLE_PREDICTIVE_CMD);
 		predictiveInput = true;
 		
 		updateInfo();
@@ -180,48 +170,25 @@ public class PredictiveTextField
 	 * 
 	 * @param choices the new choices, null when no choices are given
 	 */
-	private void setChoices( StringBuffer[] choices) {
+	private void setChoices( ArrayList choices) {
 		this.choicesContainer.clear();
 		if  ( choices == null ) {
 			this.choiceItems = new Item[ 0 ];
 			openChoices( false );
 			return;
 		}
-		this.numberOfMatches = choices.length;
-		this.choiceItems = new Item[ choices.length ];
-		for (int i = 0; i < choices.length; i++) {
-			String choiceText = choices[i].toString();
+		this.numberOfMatches = choices.size();
+		this.choiceItems = new Item[ choices.size() ];
+		for (int i = 0; i < choices.size(); i++) {
+			String choiceText = ((StringBuffer)choices.get(i)).toString();
 			Item item = new ChoiceItem( choiceText, null, Choice.IMPLICIT, this.choiceItemStyle );
 			this.choiceItems[i] = item;
 			this.choicesContainer.add( item );
 		}
-		this.choices = choices;
 		if(!isOpen)
-			openChoices( choices.length > 0 );
+			openChoices( choices.size() > 0 );
 	}
 	
-	
-	/**
-	 * Sets the available choices.
-	 * Use this method in conjunction with an ItemStateListener for using complex rules for creating choices.
-	 * The given items should implement the "toString()" method and return the correct string value for the text field.
-	 * 
-	 * @param choices the new choices, null when no choices are available
-	 */
-	private void setChoices( Item[] choices ) {
-		this.choicesContainer.clear();
-		if  ( choices == null ) {
-			this.choiceItems = new Item[ 0 ];
-			openChoices( false );
-			return;
-		}
-		this.choiceItems = choices;
-		for (int i = 0; i < choices.length; i++) {
-			Item item = choices[i];
-			this.choicesContainer.add( item );
-		}
-		openChoices( choices.length > 0 );
-	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextField#defocus(de.enough.polish.ui.Style)
@@ -353,7 +320,7 @@ public class PredictiveTextField
 		
 		try
 		{
-			if(this.builder.getCurrentAlign() == this.builder.ALIGN_LEFT)
+			if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_LEFT)
 				if(this.builder.getCurrentIndex() !=0)
 					this.builder.decreaseCaret();
 				else
@@ -399,7 +366,7 @@ public class PredictiveTextField
 		if ( keyCode == KEY_CHANGE_MODE 
 		//#endif
 		//#if polish.key.shift:defined
-		//#= || keyCode == ${polish.key.shift})
+		//#= || keyCode == ${polish.key.shift}
 		//#endif
 		)
 		{
@@ -437,7 +404,7 @@ public class PredictiveTextField
 				{
 					currentReader = this.builder.getCurrentReader();
 					currentReader.setSelectedWord(this.choicesContainer.getFocusedIndex());
-					this.builder.setCurrentAlign(this.builder.ALIGN_RIGHT);
+					this.builder.setCurrentAlign(TextBuilder.ALIGN_RIGHT);
 					
 					openChoices( false );
 					super.notifyStateChanged();
@@ -451,7 +418,7 @@ public class PredictiveTextField
 			return true;
 		}
 		if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
-				&& this.builder.getCurrentAlign() == this.builder.ALIGN_FOCUS)
+				&& this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
 		{
 			if(this.builder.isChar(0))
 				return true;
@@ -474,10 +441,10 @@ public class PredictiveTextField
 			else if(gameAction == Canvas.RIGHT)
 				this.builder.increaseCaret();
 			
-			if(this.builder.getCurrentAlign() == this.builder.ALIGN_FOCUS)
+			if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
 			{
-				StringBuffer results[] = this.builder.getCurrentElement().getResults();
-				if(results.length > 0)
+				ArrayList results = this.builder.getCurrentElement().getResults();
+				if(results.size() > 0)
 				{
 					setChoices(results);
 				}
@@ -491,7 +458,7 @@ public class PredictiveTextField
 		}
 		else if ( gameAction == Canvas.UP && !this.isInChoice)
 		{
-			int lineCaret = this.builder.getJumpPosition(this.builder.JUMP_PREV, this.textLines);
+			int lineCaret = this.builder.getJumpPosition(TextBuilder.JUMP_PREV, this.textLines);
 			
 			if(lineCaret != -1)
 			{
@@ -505,7 +472,7 @@ public class PredictiveTextField
 		}
 		else if ( gameAction == Canvas.DOWN && !this.isInChoice)
 		{
-			int lineCaret = this.builder.getJumpPosition(this.builder.JUMP_NEXT, this.textLines);
+			int lineCaret = this.builder.getJumpPosition(TextBuilder.JUMP_NEXT, this.textLines);
 			
 			if(lineCaret != -1)
 			{
@@ -521,7 +488,7 @@ public class PredictiveTextField
 			
 			openChoices( false );
 			if(!this.builder.isChar(0))
-				this.builder.setCurrentAlign(this.builder.ALIGN_RIGHT);
+				this.builder.setCurrentAlign(TextBuilder.ALIGN_RIGHT);
 			
 			return true;
 		}
@@ -729,9 +696,9 @@ public class PredictiveTextField
 		
 		if((System.currentTimeMillis() - currentTime) > 1000)
 		{
-			memory += 300;
 			currentTime = System.currentTimeMillis();
-			System.out.println(Runtime.getRuntime().freeMemory() + memory );
+			this.memory += 300;
+			System.out.println(Runtime.getRuntime().freeMemory() + this.memory);
 		}
 	}
 	
@@ -775,18 +742,6 @@ public class PredictiveTextField
 		return 0;
 	}
 	
-	/**
-	 * Checks if the input and the available choice do match.
-	 * 
-	 * @param currentText the current input of the user
-	 * @param choice one of the available choices
-	 * @return true when they match - this depends on this chosen matching, usually the start need to be equal
-	 * @see #setMatchMode(int)
-	 */
-	private boolean matches(String currentText, String choice) {
-			return choice.startsWith( currentText );
-	}
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#notifyStateChanged()
 	 */
@@ -796,53 +751,6 @@ public class PredictiveTextField
 		if (scr != null && scr instanceof Form && ((Form)scr).itemStateListener != null ) {
 			// let the external item state listener do the work
 			super.notifyStateChanged();
-		} else {		
-			// find out possible matches yourself:
-			if ( this.lowerCaseChoices == null ) {
-				return; // no choices are known
-			}
-			if (this.isOpen) {
-				this.choicesContainer.focus(-1);
-			}
-			String currentText = getString();
-			if (currentText != null) {
-				currentText = currentText.toLowerCase();
-				// cycle through available choices and add the ones resulting in matches.
-				// There is one special case, though: when only one of the available choices
-				// can be used (=no free text entry alllowed), we need to ensure that there is at least one match, before updating
-				// the choicesContainer:
-				int foundMatches = 0;
-				for (int i = 0; i < this.lowerCaseChoices.length; i++) {
-					String choice = this.lowerCaseChoices[i];
-					if ( matches( currentText, choice ) ) {
-						// found a match!
-						foundMatches++;
-						Item item = this.choiceItems[i];
-						if (item == null) {
-							// create new ChoiceItem (lazy initialisation)
-							item = new ChoiceItem( this.choices[i].toString(), null, Choice.IMPLICIT, this.choiceItemStyle );
-						}
-						//#debug
-						System.out.println("found match: " + choice);
-						this.choicesContainer.add( item );
-					}
-				}
-				// handle case when there are no matches, but only matches are allowed as the input:
-				if ( foundMatches == 0 ) {
-					// re-set the text to the last match:
-					setString( this.lastMatchingText );
-				} else {
-					// remove all previous matches and remember this text:						
-					this.lastMatchingText = getString();
-					for ( int i = this.numberOfMatches; --i >= 0; ) {
-						System.out.println("size before removal=" + this.choicesContainer.size() );
-						this.choicesContainer.remove( 0 );
-						System.out.println("size after removal=" + this.choicesContainer.size() );
-					}
-					this.numberOfMatches = foundMatches;
-				}
-			}
-			openChoices( this.numberOfMatches > 0 );
 		}
 	}
 

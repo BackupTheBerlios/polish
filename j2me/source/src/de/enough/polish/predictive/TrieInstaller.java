@@ -90,6 +90,7 @@ public class TrieInstaller {
 					}
 					
 					store = RecordStore.openRecordStore(prefix + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
+					System.out.println(prefix + "_" + storeID);
 					
 					if(storeID == 0)
 					{
@@ -105,6 +106,8 @@ public class TrieInstaller {
 				store.addRecord(nodes, 0, nodes.length);
 				
 			}while(stream.available() > 0);
+			
+			System.out.println(count);
 		}	
 		catch(IOException e)
 		{

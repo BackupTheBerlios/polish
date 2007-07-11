@@ -28,16 +28,18 @@ public class TextElement {
 		return -1;
 	}
 
-	public StringBuffer[] getResults() {
-		StringBuffer[] results;
+	public ArrayList getResults() {
+		ArrayList results;
+		StringBuffer string;
 		
 		if (element instanceof TrieReader) {
 			results = ((TrieReader) element).getResults();
 
-			for (int i = 0; i < results.length; i++) {
+			for (int i = 0; i < results.size(); i++) {
+				string = (StringBuffer)results.get(i);
 				for (int j = 0; j < shift.length; j++) {
 					if (shift[j] == true)
-						results[i].setCharAt(j, Character.toUpperCase(results[i].charAt(j)));
+						string.setCharAt(j, Character.toUpperCase(string.charAt(j)));
 				}
 			}
 			
@@ -47,21 +49,17 @@ public class TextElement {
 		return null;
 	}
 	
-	public String getSelectedWord()
+	public StringBuffer getSelectedWord()
 	{
-		String result = "";
+		StringBuffer result = null;
 		
 		if (element instanceof TrieReader) {
 			result = ((TrieReader) element).getSelectedWord();
 			
-			char[] resultArray = result.toCharArray();
-
 			for (int j = 0; j < shift.length; j++) {
 				if (shift[j] == true)
-					resultArray[j] = Character.toUpperCase(resultArray[j]);
+					result.setCharAt(j,Character.toUpperCase(result.charAt(j)));
 			}
-				
-			result = new String(resultArray);
 		}
 		
 		return result;

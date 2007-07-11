@@ -1,19 +1,14 @@
 //#condition polish.TextField.useDirectInput && !polish.blackberry
 package de.enough.polish.predictive;
 
-import java.io.ByteArrayInputStream;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.rms.InvalidRecordIDException;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
-import javax.microedition.rms.RecordStoreFullException;
-import javax.microedition.rms.RecordStoreNotFoundException;
 import javax.microedition.rms.RecordStoreNotOpenException;
 
-import de.enough.polish.util.Properties;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
@@ -37,20 +32,30 @@ public class TrieReader {
 	private HashMap stores = null;
 	private HashMap records = null;
 	
+	private StringBuffer storeID = null;
+	private StringBuffer letters = null;
+	
 	private int selectedWord = 0;
 	
 	private boolean empty;
 	private boolean wordFound;
 
-	StringBuffer[] results = null;
+	ArrayList results = null;
+	
+	int size = 0;
 	
 	public TrieReader(HashMap stores, HashMap records) throws RecordStoreException
 	{
 		this.nodes 		= new ArrayList();
 		this.prevNodes 	= new Stack();
 		
+		this.results	= new ArrayList();
+		
 		this.stores = stores;
 		this.records = records;
+		
+		storeID = new StringBuffer(20);
+		letters = new StringBuffer(10);
 		
 		getHeader();
 				
@@ -70,7 +75,7 @@ public class TrieReader {
 		this.lineCount = byteToInt(bytes, TrieInstaller.LINECOUNT_OFFSET);
 	}
 	
-	public StringBuffer[] getResults()
+	public ArrayList getResults()
 	{
 		return this.results;
 	}
@@ -78,14 +83,18 @@ public class TrieReader {
 	public void keyNum(int keyCode) throws RecordStoreException
 	{	
 		byte[] record = null;
+		
+		int partOffset = 0;
+		
 		ArrayList newNodes = new ArrayList();
 		
 		pushNodes();
 		
 		if(this.nodes.size() == 0)
 		{
-			record = this.getRecord(1,this.lineCount);
-			this.nodes = this.getNodes(record, keyCode, "");
+			record = this.getRecord(1);
+			partOffset = this.getPartOffset(record, getPartID(1));
+			this.nodes = this.getNodes(record, partOffset, keyCode, null);
 			
 			setEmpty(nodes.size() == 0);
 		}
@@ -99,8 +108,9 @@ public class TrieReader {
 					
 					if(node.getReference() != 0)
 					{
-						record = this.getRecord(node.getReference(),this.lineCount);
-						addToNodes(this.getNodes(record, keyCode, node.getWord()),newNodes);
+						record = this.getRecord(node.getReference());
+						partOffset = this.getPartOffset(record, getPartID(node.getReference()));
+						addToNodes(this.getNodes(record, partOffset, keyCode, node.getWord()),newNodes);
 					}
 				}
 			}
@@ -133,17 +143,9 @@ public class TrieReader {
 	
 	public void setNodeWords(ArrayList nodes)
 	{
-		results = new StringBuffer[nodes.size()]; 
+		results.clear(); 
 		for(int i=0; i<nodes.size(); i++)
-		{
-			if(results[i] == null)
-				results[i] = new StringBuffer(1);
-		
-			if(nodes.get(i) instanceof TrieNode)
-				results[i].append(((TrieNode)nodes.get(i)).getWord());
-			else if(nodes.get(i) instanceof StringBuffer)
-				results[i].append((StringBuffer)nodes.get(i));
-		}
+			results.add(((TrieNode)nodes.get(i)).getWord());
 	}
 	
 	private void copyNodes(ArrayList source, ArrayList dest)
@@ -165,18 +167,14 @@ public class TrieReader {
 	{
 		if(!isEmpty())
 		{
-			ArrayList newNodes = null;
-			
 			try
 			{
-				newNodes = (ArrayList)this.prevNodes.pop();
+				this.nodes = (ArrayList)this.prevNodes.pop();
 			}
 			catch(EmptyStackException e)
 			{
-				newNodes = new ArrayList();
+				this.nodes = new ArrayList();
 			}
-			
-			copyNodes(newNodes,this.nodes);
 			
 			if(!undo)
 			{
@@ -185,13 +183,25 @@ public class TrieReader {
 			}
 		}
 	}
-		
-	private byte[] getRecord(int id, int lineCount) throws RecordStoreException
+	
+	private int getRecordID(int id)
 	{
-		int recordID 	= ((id -1) / lineCount) + 1; 
-		int partID 		= ((id -1) % lineCount) + 1;
+		return ((id -1) / this.lineCount) + 1;
+	}
+	
+	private int getPartID(int id)
+	{
+		return ((id -1) % this.lineCount) + 1;
+	}
 		
-		String storeID = TrieInstaller.prefix + "_" + (recordID - (recordID % this.chunkSize));
+	private byte[] getRecord(int id) throws RecordStoreException
+	{
+		int recordID 	= getRecordID(id);
+		
+		storeID.setLength(0);
+		storeID.append(TrieInstaller.prefix);
+		storeID.append("_");
+		storeID.append(recordID - (recordID % this.chunkSize));
 		
 		RecordStore store = (RecordStore)stores.get(storeID);
 		
@@ -203,7 +213,7 @@ public class TrieReader {
 				store = RecordStore.openRecordStore(storeID, false);
 			*/
 			
-			store = RecordStore.openRecordStore(storeID, false);
+			store = RecordStore.openRecordStore(storeID.toString(), false);
 			stores.put(storeID, store);
 		}
 		
@@ -216,10 +226,28 @@ public class TrieReader {
 			this.records.put(recordMapID, record);
 		}
 		
-		return getRecordPart(record,partID); 
+		return record; 
 	}
 	
-	private byte[] getRecordPart(byte[] record, int partID)
+	private int getPartOffset(byte[] record, int partID)
+	{
+		byte partCount 	= 0;
+		int partOffset 	= 0;
+		
+		for(int i=0; i<partID; i++)
+		{
+			partCount = byteToByte(record, partOffset);
+			
+			if(i == (partID - 1))
+				return partOffset;
+			else
+				partOffset += (partCount * NODE_SIZE) + COUNT_SIZE;				
+		}
+		
+		return 0;
+	}
+	
+	/*private byte[] getRecordPart(byte[] record, int partID)
 	{
 		byte partCount 	= 0;
 		int partOffset 	= 0;
@@ -235,11 +263,14 @@ public class TrieReader {
 		}
 		
 		return null;
-	}
+	}*/
 	
-	private byte[]getPart(byte[] bytes, int offset, int partCount)
+	private byte[] getPart(byte[] bytes, int offset, int partCount)
 	{
 		byte[] part = new byte[partCount];
+		
+		size += partCount;
+		System.out.println(size);
 		
 		for(int i=0; i<partCount; i++)
 			part[i] = bytes[offset + i];
@@ -257,16 +288,17 @@ public class TrieReader {
 		stores.clear();
 	}
 	
-	private ArrayList getNodes(byte[] record, int keyCode, String word)
+	private ArrayList getNodes(byte[] record, int partOffset, int keyCode, StringBuffer word)
 	{
 		ArrayList getNodes = new ArrayList();
 		
 		char value 		= ' ';
-		String letters	= "";
-				
-		letters = getLetters(keyCode);
 		
-		for(int i=0; i<record.length; i=i+NODE_SIZE)
+		byte partCount = byteToByte(record,partOffset);
+		
+		setLetters(keyCode);
+		
+		for(int i= (partOffset + COUNT_SIZE); i < (partOffset + COUNT_SIZE) + (partCount * NODE_SIZE); i = i + NODE_SIZE)
 		{
 			value = byteToChar(record, i+V_OFFSET);
 			
@@ -312,46 +344,37 @@ public class TrieReader {
 		return bytes[offset];
 	}
 			
-	private String getLetters(int keyCode)
+	private void setLetters(int keyCode)
 	{
+		this.letters.setLength(0);
 		switch(keyCode)
 		{
-			case Canvas.KEY_NUM1: 	return TextField.CHARACTERS[1];
-			case Canvas.KEY_NUM2: 	return TextField.CHARACTERS[2];
-			case Canvas.KEY_NUM3: 	return TextField.CHARACTERS[3];
-			case Canvas.KEY_NUM4: 	return TextField.CHARACTERS[4];
-			case Canvas.KEY_NUM5: 	return TextField.CHARACTERS[5];
-			case Canvas.KEY_NUM6: 	return TextField.CHARACTERS[6];
-			case Canvas.KEY_NUM7: 	return TextField.CHARACTERS[7];
-			case Canvas.KEY_NUM8: 	return TextField.CHARACTERS[8];
-			case Canvas.KEY_NUM9: 	return TextField.CHARACTERS[9];
-			default: 				return TextField.CHARACTERS[1];
+			case Canvas.KEY_NUM1: 	this.letters.append(TextField.CHARACTERS[1]); break; 
+			case Canvas.KEY_NUM2: 	this.letters.append(TextField.CHARACTERS[2]); break;
+			case Canvas.KEY_NUM3: 	this.letters.append(TextField.CHARACTERS[3]); break;
+			case Canvas.KEY_NUM4: 	this.letters.append(TextField.CHARACTERS[4]); break;
+			case Canvas.KEY_NUM5: 	this.letters.append(TextField.CHARACTERS[5]); break;
+			case Canvas.KEY_NUM6: 	this.letters.append(TextField.CHARACTERS[6]); break;
+			case Canvas.KEY_NUM7: 	this.letters.append(TextField.CHARACTERS[7]); break;
+			case Canvas.KEY_NUM8: 	this.letters.append(TextField.CHARACTERS[8]); break;
+			case Canvas.KEY_NUM9: 	this.letters.append(TextField.CHARACTERS[9]); break;
+			default: 				this.letters.append(TextField.CHARACTERS[1]); break;
 		}
 	}
 	
-	public void reset()
-	{
-		this.nodes.clear();
-		this.prevNodes.removeAllElements();
-		this.setEmpty(true);
-		this.setWordFound(false);
-	}
-
 	public void setSelectedWord(int selectedWord) {
 		this.selectedWord = selectedWord;
 	}
 	
-	public String getSelectedWord()
+	public StringBuffer getSelectedWord()
 	{
 		if(this.nodes.size() > 0)
 			if(this.nodes.get(this.selectedWord) instanceof TrieNode)
 				return ((TrieNode)this.nodes.get(this.selectedWord)).getWord();
-			else if (this.nodes.get(this.selectedWord) instanceof StringBuffer)
-				return ((StringBuffer)this.nodes.get(this.selectedWord)).toString();
-			else 
-				return "";
+			else
+				return null;
 		else
-			return "";
+			return null;
 	}
 
 	public boolean isEmpty() {
