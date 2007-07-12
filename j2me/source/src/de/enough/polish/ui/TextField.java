@@ -949,8 +949,10 @@ public class TextField extends StringItem
 				this.enableDirectInput = true;
 			}
 		//#endif
-			
-		this.realTextLines = new String[0];
+
+		//#if tmp.directInput
+			this.realTextLines = new String[0];
+		//#endif
 			
 		setConstraints(constraints);
 	}
