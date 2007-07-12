@@ -2081,9 +2081,10 @@ public abstract class Item extends Object
 		if (this.defaultCommand == null && this.parent != null) {
 			item = this.parent;
 		}
-		if ((gameAction == Canvas.FIRE) 
+		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
 				&& (item.defaultCommand != null)
-				&& (item.itemCommandListener != null)) {
+				&& (item.itemCommandListener != null)) 
+		{
 			item.itemCommandListener.commandAction(item.defaultCommand, this);
 			return true;
 		}
