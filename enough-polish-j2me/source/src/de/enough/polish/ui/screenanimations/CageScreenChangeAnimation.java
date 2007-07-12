@@ -87,9 +87,8 @@ public class CageScreenChangeAnimation extends ScreenChangeAnimation {
 		return true;
 	}
 
-	public void paint(Graphics g) {
+	public void paintAnimation(Graphics g) {
 		g.drawRGB(this.rgbimage,0,this.width,0,0,this.width,this.height,false);
-		this.display.callSerially( this );
 	}
 
 }

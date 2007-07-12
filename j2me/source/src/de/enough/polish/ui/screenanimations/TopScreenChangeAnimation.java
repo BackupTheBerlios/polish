@@ -118,13 +118,7 @@ public class TopScreenChangeAnimation extends ScreenChangeAnimation {
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	public void paint(Graphics g) {
-		//#if polish.Bugs.fullScreenInPaint
-			if (! this.fullScreenModeSet ) {
-				setFullScreenMode(true);
-				this.fullScreenModeSet = true;
-			}
-		//#endif
+	public void paintAnimation(Graphics g) {
 		int y = 0;
 		//#if polish.css.top-screen-change-animation-move-previous
 			if (this.movePrevious) {
@@ -133,7 +127,6 @@ public class TopScreenChangeAnimation extends ScreenChangeAnimation {
 		//#endif
 		g.drawImage( this.lastCanvasImage, 0, y, Graphics.TOP | Graphics.LEFT );
 		g.drawImage( this.nextCanvasImage, 0, -this.screenHeight +  this.currentY, Graphics.TOP | Graphics.LEFT );
-		this.display.callSerially( this );
 	}
 
 }

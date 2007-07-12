@@ -172,7 +172,30 @@ public abstract class ScreenChangeAnimation
 	 */
 	protected abstract boolean animate();
 	
-	public abstract void paint( Graphics g );
+	/**
+	 * Paints the animation.
+	 * 
+	 * @param g the graphics context
+	 */
+	protected abstract void paintAnimation( Graphics g );
+	
+	public final void paint( Graphics g ) {
+		//#if polish.Bugs.fullScreenInPaint
+			if (! this.fullScreenModeSet ) {
+				setFullScreenMode(true);
+				this.fullScreenModeSet = true;
+			}
+		//#endif
+		try {			
+			if (this.nextCanvasImage != null) {
+				paintAnimation( g );
+				this.display.callSerially( this );
+			}	
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Unable to paint animation" + e );
+		}
+	}
 
 	
 	
@@ -287,13 +310,14 @@ public abstract class ScreenChangeAnimation
 	 */
 	public void run() {
 		if (this.nextCanvas != null && animate()) {
+			System.out.println("triggering repaint");
 			//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 				MasterCanvas.instance.repaint();
 			//#else
 				repaint();
 			//#endif
-		} else if (this.nextCanvas != null) {
-			//#debug
+		} else {
+			// #debug
 			System.out.println("ScreenChangeAnimation: setting next screen");
 			this.lastCanvasImage = null;
 			this.nextCanvasImage = null;

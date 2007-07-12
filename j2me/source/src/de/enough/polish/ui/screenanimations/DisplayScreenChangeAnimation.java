@@ -116,10 +116,8 @@ public class DisplayScreenChangeAnimation extends ScreenChangeAnimation {
 	}
 	
 	
-	public void paint(Graphics g) {
+	public void paintAnimation(Graphics g) {
 			g.drawRGB(this.rgbData,0,this.width,0,0,this.width,this.height,false);
-			// TODO Auto-generated method stub
-			this.display.callSerially( this );
 	}
 
 }

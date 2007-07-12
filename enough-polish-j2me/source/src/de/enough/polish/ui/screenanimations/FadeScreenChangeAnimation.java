@@ -136,17 +136,9 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	public void paint(Graphics g) {
-		//#if polish.Bugs.fullScreenInPaint
-			if (! this.fullScreenModeSet ) {
-				setFullScreenMode(true);
-				this.fullScreenModeSet = true;
-			}
-		//#endif
+	public void paintAnimation(Graphics g) {
 		g.drawImage( this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
 		g.drawRGB(this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
-		
-		this.display.callSerially( this );
 	}
 
 }

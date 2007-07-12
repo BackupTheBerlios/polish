@@ -147,9 +147,8 @@ public class DancingPixelScreenChangeAnimation extends ScreenChangeAnimation {
 		}
 		//#endif
 		
-		public void paint(Graphics g) {
+		public void paintAnimation(Graphics g) {
 			g.drawRGB(this.rgbData,0,this.screenWidth,0,0,this.screenWidth,this.screenHeight,false);
-			this.display.callSerially( this );
 		}
 
 	}

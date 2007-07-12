@@ -118,13 +118,7 @@ public class LeftScreenChangeAnimation extends ScreenChangeAnimation {
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	public void paint(Graphics g) {
-		//#if polish.Bugs.fullScreenInPaint
-			if (! this.fullScreenModeSet ) {
-				setFullScreenMode(true);
-				this.fullScreenModeSet = true;
-			}
-		//#endif
+	public void paintAnimation(Graphics g) {
 		int x = 0;
 		//#if polish.css.left-screen-change-animation-move-previous
 			if (this.movePrevious) {
@@ -133,7 +127,6 @@ public class LeftScreenChangeAnimation extends ScreenChangeAnimation {
 		//#endif
 		g.drawImage( this.lastCanvasImage, x, 0, Graphics.TOP | Graphics.LEFT );
 		g.drawImage( this.nextCanvasImage, - this.screenWidth + this.currentX, 0, Graphics.TOP | Graphics.LEFT );
-		this.display.callSerially( this );
 	}
 
 }

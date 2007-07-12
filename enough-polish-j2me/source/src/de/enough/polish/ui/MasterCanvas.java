@@ -55,7 +55,7 @@ public class MasterCanvas
 	extends Canvas
 //#endif
 {
-	
+	/** the master canvas that actually displays the canvas that should be shown */
 	public static MasterCanvas instance;
 	protected AccessibleCanvas currentCanvas;
 	protected Displayable currentDisplayable;
@@ -164,6 +164,10 @@ public class MasterCanvas
 		System.out.println("MasterCanvas: setCurrent " + nextDisplayable  + ", on display " + display );
 		if (nextDisplayable == null) {
 			display.setCurrent( null );
+			return;
+		}
+		if (instance != null && instance.currentCanvas == nextDisplayable) {
+			instance.repaint();
 			return;
 		}
 		//if ( nextDisplayable == instance ) {

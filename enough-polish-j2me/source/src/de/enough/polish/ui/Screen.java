@@ -374,11 +374,19 @@ implements AccessibleCanvas
 		//#endif
 			
 		//#ifdef tmp.menuFullScreen
-			this.fullScreenHeight = getHeight();
+			//#if polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasHeight:defined
+				//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
+			//#else
+				this.fullScreenHeight = getHeight();
+			//#endif
 		//#endif
 		this.screenHeight = getHeight();
 		this.originalScreenHeight = this.screenHeight;		
-		this.screenWidth = getWidth();
+		//#if tmp.menuFullScreen && polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasWidth:defined
+			//#= this.screenWidth = ${polish.FullCanvasWidth};
+		//#else
+			this.screenWidth = getWidth();
+		//#endif
 
 		
 		boolean startAnimationThread = false;
@@ -689,17 +697,15 @@ implements AccessibleCanvas
 			//#ifdef polish.Screen.showNotifyCode:defined
 				//#include ${polish.Screen.showNotifyCode}
 			//#endif
-//			//#if tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
-//				//# super.setFullScreenMode( true );
-//				//#ifdef polish.FullCanvasHeight:defined
-//					//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
-//				//#else
-//					this.fullScreenHeight = getHeight();
-//				//#endif
-//				this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
-//				this.originalScreenHeight = this.screenHeight;
-//				this.scrollIndicatorY = this.screenHeight + 1; //- this.scrollIndicatorWidth - 1;
-//			//#endif
+			//#if   tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
+				super.setFullScreenMode( true );
+				this.isInitialized = false;
+			//#elif tmp.fullScreen && polish.midp2 && !polish.blackberry && !tmp.fullScreenInPaint && !polish.Bugs.displaySetCurrentFlickers
+				// this is needed on Sony Ericsson for example,
+				// since the fullscreen mode is not resumed automatically
+				// when the previous screen was in the "normal" mode:
+				super.setFullScreenMode( true );
+			//#endif
 			if (!this.isInitialized) {
 				init();
 			}
@@ -765,14 +771,6 @@ implements AccessibleCanvas
 			//#endif
 			//#if tmp.ignoreMotorolaTitleCall
 				this.ignoreMotorolaTitleCall = true;
-			//#endif
-			//#if tmp.fullScreen && polish.midp2 && !polish.blackberry
-				// this is needed on Sony Ericsson for example,
-				// since the fullscreen mode is not resumed automatically
-				// when the previous screen was in the "normal" mode:
-				//#if ! tmp.fullScreenInPaint
-					//# super.setFullScreenMode( true );
-				//#endif
 			//#endif
 		
 			// init components:
@@ -1224,7 +1222,13 @@ implements AccessibleCanvas
 						this.previousScreen.paint(g);
 						//#if !polish.Bugs.noTranslucencyWithDrawRgb
 							if (this.previousScreenOverlayBackground != null) {
-								this.previousScreenOverlayBackground.paint(0, 0, this.screenWidth, this.screenHeight, g);
+								int height;
+								//#if tmp.menuFullScreen
+									height = this.fullScreenHeight;
+								//#else
+									height = this.screenHeight;
+								//#endif
+								this.previousScreenOverlayBackground.paint(0, 0, this.screenWidth, height, g);
 							}
 						//#endif
 						//#if polish.ScreenOrientationCanChange && tmp.usingTitle
@@ -1512,7 +1516,10 @@ implements AccessibleCanvas
 				//#endif
 				//#ifdef tmp.menuFullScreen
 					//#ifdef tmp.useExternalMenuBar
-						//TODO adjust for other menubar positions than bottom
+						//#if polish.MenuBar.Position == right
+							menuLeftX = menuRightX - this.menuBar.getItemWidth( this.screenWidth, this.screenWidth ) - 1;
+							menuY = 0;
+						//#endif
 						this.menuBar.paint(menuLeftX, menuY, menuLeftX, menuRightX, g);
 						//#if tmp.useScrollIndicator
 							if (this.menuBar.isOpened) {
@@ -1654,6 +1661,7 @@ implements AccessibleCanvas
 					}
 				//#endif
 			
+					
 			//#if polish.debug.error
 			} catch (RuntimeException e) {
 				//#debug error
@@ -3076,7 +3084,7 @@ implements AccessibleCanvas
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	public void sizeChanged(int width, int height) {
-		 // # if !polish.Bugs.sizeChangedReportsWrongHeight 
+		 //#if !polish.Bugs.sizeChangedReportsWrongHeight 
 			if (!this.isInitialized) {
 				return;
 			}
@@ -3113,7 +3121,7 @@ implements AccessibleCanvas
 				init();
 				//calculateContentArea( 0, 0, this.screenWidth, this.screenHeight  ); done within init()
 			}
-		// # endif
+		//#endif
 	}
 	//#endif
 	
@@ -3578,6 +3586,8 @@ implements AccessibleCanvas
 	protected boolean isKeyboardAccessible() {
 		//#if polish.key.supportsAsciiKeyMap.condition == open
 			return getWidth() > getHeight();
+		//#elif polish.key.supportsAsciiKeyMap && !polish.key.supportsAsciiKeyMap.condition:defined
+			//# return true;
 		//#else
 			//# return false;
 		//#endif

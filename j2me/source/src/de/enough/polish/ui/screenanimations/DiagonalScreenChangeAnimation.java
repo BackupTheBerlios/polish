@@ -130,13 +130,7 @@ public class DiagonalScreenChangeAnimation extends ScreenChangeAnimation {
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	public void paint(Graphics g) {
-		//#if polish.Bugs.fullScreenInPaint
-			if (! this.fullScreenModeSet ) {
-				setFullScreenMode(true);
-				this.fullScreenModeSet = true;
-			}
-		//#endif
+	public void paintAnimation(Graphics g) {
 		int y = 0;
 		int x = 0;
 		//#if polish.css.diagonal-screen-change-animation-move-previous
@@ -153,7 +147,6 @@ public class DiagonalScreenChangeAnimation extends ScreenChangeAnimation {
 		//#endif
 		g.drawImage( this.lastCanvasImage, x, y, Graphics.TOP | Graphics.LEFT );
 		g.drawImage( this.nextCanvasImage, this.screenWidth - this.currentX, this.screenHeight -  this.currentY, Graphics.TOP | Graphics.LEFT );
-		this.display.callSerially( this );
 	}
 
 }

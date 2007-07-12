@@ -122,16 +122,8 @@ public class BottomShutterScreenChangeAnimation extends ScreenChangeAnimation
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	public void paint(Graphics g)
+	public void paintAnimation(Graphics g)
 	{
-		//#if polish.Bugs.fullScreenInPaint
-		if (! this.fullScreenModeSet)
-		{
-			setFullScreenMode(true);
-			this.fullScreenModeSet = true;
-		}
-		//#endif
-		
 		g.drawImage(this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 		//#if polish.css.bottom-shutter-screen-change-animation-color
 		g.setColor(this.color);
@@ -141,6 +133,5 @@ public class BottomShutterScreenChangeAnimation extends ScreenChangeAnimation
 		g.drawLine(0, this.currentY - 1, this.screenWidth, this.currentY - 1);
 		g.setClip(0, this.currentY, this.screenWidth, this.screenHeight - this.currentY);
 		g.drawImage(this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
-		this.display.callSerially(this);
 	}
 }

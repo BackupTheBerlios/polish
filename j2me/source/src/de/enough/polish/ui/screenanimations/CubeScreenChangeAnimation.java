@@ -207,7 +207,7 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 
 	}
 
-	public void paint(Graphics g) {
+	public void paintAnimation(Graphics g) {
 		// TODO Auto-generated method stub
 		
 		  this.graphics3d.bindTarget(g, true,
@@ -242,6 +242,5 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 			  this.graphics3d.render(this.vbuffer, this.indexbuffer, this.appearance, transform);
 			  this.graphics3d.render(this.vbuffer, this.indexbuffer, this.appearance, transform);
 			  this.graphics3d.releaseTarget();
-			  this.display.callSerially( this );
 	}
 }

@@ -163,6 +163,7 @@ implements ImageConsumer
 			g.setColor( this.color );
 			g.fillRect( x, y, width + 1, height + 1 );
 		}
+		
 		x += this.xOffset;
 		y += this.yOffset;
 		if (this.image != null) {
@@ -219,6 +220,7 @@ implements ImageConsumer
 				} else if ( (this.anchor & Graphics.BOTTOM) == Graphics.BOTTOM) {
 					y += height;
 				}
+
 				for (int j = 0; j <= numberOfXRepeats; j++) {
 					g.drawImage(this.image, x, y, this.anchor );
 					x += imgWidth;

@@ -158,6 +158,20 @@ public class Container extends Item {
 	}
 	
 	/**
+	 * Returns the available height for scrolling eiter from this container or from it's parent container.
+	 * Note that the height available for this container might differ from the returned value.
+	 * 
+	 * @return the available vertical space or -1 when it is not known.
+	 */
+	public int getScrollHeight() {
+		if (this.availableHeight == -1 && this.parent instanceof Container) {
+			return ((Container)this.parent).getScrollHeight();
+		} else {
+			return this.availableHeight;
+		}
+	}
+	
+	/**
 	 * Adds an item to this container.
 	 * 
 	 * @param item the item which should be added.
@@ -793,9 +807,6 @@ public class Container extends Item {
 		}
 		//#debug
 		System.out.println("scroll: direction=" + direction + ", y=" + y + ", availableHeight=" + this.availableHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset );
-		if (y == 0) {
-			new RuntimeException().printStackTrace();
-		}
 		
 		// assume scrolling down when the direction is not known:
 		boolean isDownwards = (direction == Canvas.DOWN || direction == Canvas.RIGHT ||  direction == 0);

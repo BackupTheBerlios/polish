@@ -270,6 +270,10 @@ implements ImageConsumer
 	
 	private static final int MODE_CONTINUOUS = 0; 
 	private static final int MODE_CHUNKED = 1;
+	
+	private static final int POSITION_LEFT = 0;
+	private static final int POSITION_RIGHT = 1;
+	private static final int POSITION_CENTER = 2;
 
 	private int value;
 	private String valueString;
@@ -293,7 +297,6 @@ implements ImageConsumer
 	private boolean isIndefinite;
 	private int indefinitePos;
 	private boolean showValue = true;
-	private boolean isValueLeft = true;
 	private int fontColor;
 	private Font font;
 	private int valueWidth;
@@ -308,7 +311,12 @@ implements ImageConsumer
 	//#if polish.css.gauge-inactive-image
 		private Image inactiveImage;
 	//#endif
+	//#if polish.css.gauge-is-percent
+		private boolean isPercent;
+	//#endif
+	private int valuePosition = POSITION_LEFT;
 	private boolean isShown;
+
 
 	/**
 	 * Creates a new <code>Gauge</code> object with the given
@@ -509,7 +517,12 @@ implements ImageConsumer
 			value = this.maxValue;
 		}
 		this.value = value;
-		this.valueString = "" + value;
+		this.valueString = Integer.toString( value );
+		//#if polish.css.gauge-is-percent
+			if (this.isPercent) {
+				this.valueString += '%';
+			}
+		//#endif
 		//#if polish.css.view-type
 		if (this.view == null) {
 		//#endif		
@@ -726,7 +739,7 @@ implements ImageConsumer
 	 * @see de.enough.polish.ui.Item#paint(int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		if (this.showValue && this.isValueLeft) {
+		if (this.showValue && this.valuePosition == POSITION_LEFT) {
 			g.setFont( this.font );
 			g.setColor( this.fontColor );
 			g.drawString( this.valueString, x, y, Graphics.TOP | Graphics.LEFT );
@@ -766,7 +779,7 @@ implements ImageConsumer
 						int clipWidth = g.getClipWidth();
 						int clipHeight = g.getClipHeight();
 						
-						g.clipRect(x, clipY, width, clipHeight);
+						g.clipRect(x, clipY, width, clipHeight + 1);
 						g.drawImage(this.image, x, y + this.imageYOffset, Graphics.TOP | Graphics.LEFT );
 						
 						g.setClip(clipX, clipY, clipWidth, clipHeight);
@@ -777,10 +790,16 @@ implements ImageConsumer
 		} else {
 			g.drawImage(this.indicatorImage, x, y, Graphics.TOP | Graphics.LEFT );
 		}
-		if (this.showValue && !this.isValueLeft) {
-			g.setFont( this.font );
-			g.setColor( this.fontColor );
-			g.drawString( this.valueString, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
+		if (this.showValue) {
+			if (this.valuePosition == POSITION_RIGHT) {
+				g.setFont( this.font );
+				g.setColor( this.fontColor );
+				g.drawString( this.valueString, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
+			} else if (this.valuePosition == POSITION_CENTER) {
+				g.setFont( this.font );
+				g.setColor( this.fontColor );
+				g.drawString( this.valueString, leftBorder + ((rightBorder - leftBorder) >> 1), y, Graphics.TOP | Graphics.HCENTER );				
+			}
 		}
 	}
 
@@ -982,11 +1001,7 @@ implements ImageConsumer
 			//#ifdef polish.css.gauge-value-align
 				Integer valuePositionInt =  style.getIntProperty( "gauge-value-align" );
 				if (valuePositionInt != null) {
-					if (valuePositionInt.intValue() == 0) {
-						this.isValueLeft = true;
-					} else {
-						this.isValueLeft = false;
-					}
+					this.valuePosition = valuePositionInt.intValue();
 				}
 			//#endif
 		}
@@ -1023,6 +1038,12 @@ implements ImageConsumer
 					//#debug error
 					System.out.println("unable to load gauge-slider-image [" + sliderImageUrl + "]: " + e );
 				}
+			}
+		//#endif
+		//#if polish.css.gauge-is-percent
+			Boolean isPercentBool = style.getBooleanProperty( "gauge-is-percent");
+			if (isPercentBool != null) {
+				this.isPercent = isPercentBool.booleanValue();
 			}
 		//#endif
 	}

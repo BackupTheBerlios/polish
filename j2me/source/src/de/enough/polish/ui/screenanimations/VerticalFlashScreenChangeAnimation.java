@@ -129,16 +129,8 @@ public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	public void paint(Graphics g)
+	public void paintAnimation(Graphics g)
 	{
-		//#if polish.Bugs.fullScreenInPaint
-		if (! this.fullScreenModeSet)
-		{
-			setFullScreenMode(true);
-			this.fullScreenModeSet = true;
-		}
-		//#endif
-		
 		g.drawImage(this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
 		//#if polish.css.vertical-flash-screen-change-animation-color
 		g.setColor(this.color);
@@ -149,6 +141,5 @@ public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation
 		g.drawRect(this.currentX + this.currentSize, 0, 0, this.screenHeight);
 		g.setClip(this.currentX, 0, this.currentSize, this.screenHeight);
 		g.drawImage(this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
-		this.display.callSerially(this);
 	}
 }

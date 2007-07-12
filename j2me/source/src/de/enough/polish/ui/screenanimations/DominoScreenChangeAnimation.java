@@ -191,11 +191,10 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 	}
 	//#endif
 	
-	public void paint(Graphics g) {
+	public void paintAnimation(Graphics g) {
 		g.fillRect(0,0,this.screenWidth,this.screenHeight);
 		g.drawRGB(this.rgbData,0,this.screenWidth,0,0,this.screenWidth,this.screenHeight,false);
 		this.currentX+=1;
-		this.display.callSerially( this );
 	}
 
 }

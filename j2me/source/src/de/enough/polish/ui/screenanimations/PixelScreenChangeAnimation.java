@@ -78,10 +78,8 @@ public class PixelScreenChangeAnimation extends ScreenChangeAnimation {
 		return this.stillRun;
 	}
 
-	public void paint(Graphics g) {
+	public void paintAnimation(Graphics g) {
 		g.drawRGB(this.rgbimage,0,this.width,0,0,this.width,this.height,false);
-		// TODO Auto-generated method stub
-		this.display.callSerially( this );
 	}
 
 }

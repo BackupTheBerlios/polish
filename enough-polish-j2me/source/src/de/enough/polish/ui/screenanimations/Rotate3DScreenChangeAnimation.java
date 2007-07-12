@@ -192,7 +192,7 @@ public class Rotate3DScreenChangeAnimation extends ScreenChangeAnimation {
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	public void paint(Graphics g) {
+	public void paintAnimation(Graphics g) {
 		// Zeichne Szene auf dem Graphics Objekt
 	    this.g3D.bindTarget( g );
 	    // Loesche Hintergrund
@@ -218,8 +218,6 @@ public class Rotate3DScreenChangeAnimation extends ScreenChangeAnimation {
 	    this.g3D.render( this.vertexBuffer, this.triangleStripArray, this.appearance, transform, -1 );
 	    // Graphics Objekt wieder frei geben
 	    this.g3D.releaseTarget();
-	    
-	    this.display.callSerially( this );
 	}
 
 }

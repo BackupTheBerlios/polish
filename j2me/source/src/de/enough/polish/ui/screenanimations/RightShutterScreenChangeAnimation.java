@@ -122,7 +122,7 @@ public class RightShutterScreenChangeAnimation extends ScreenChangeAnimation
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
-	public void paint(Graphics g)
+	public void paintAnimation(Graphics g)
 	{
 		//#if polish.Bugs.fullScreenInPaint
 		if (! this.fullScreenModeSet)
@@ -141,6 +141,5 @@ public class RightShutterScreenChangeAnimation extends ScreenChangeAnimation
 		g.drawLine(this.currentX - 1, 0, this.currentX - 1, this.screenHeight);
 		g.setClip(this.currentX, 0, this.screenWidth - this.currentX, this.screenHeight);
 		g.drawImage(this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
-		this.display.callSerially(this);
 	}
 }

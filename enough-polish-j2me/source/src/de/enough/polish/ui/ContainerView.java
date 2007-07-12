@@ -125,8 +125,7 @@ extends ItemView
 		System.out.println("ContainerView: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
 		//#if polish.Container.allowCycling != false
 			this.allowCycling = parent.allowCycling;
-			if (parent.parent == null ||
-					 ( (parent.parent instanceof Container)  && ((Container)parent.parent).getItems().length>1) )
+			if ( (parent.parent instanceof Container)  && ((Container)parent.parent).getItems().length>1 )
 			{
 				this.allowCycling = false;
 			}
