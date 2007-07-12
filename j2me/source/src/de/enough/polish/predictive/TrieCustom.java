@@ -13,14 +13,17 @@ public class TrieCustom {
 	private static int COUNT_SIZE = 1;
 	private static int CHAR_SIZE = 2;
 	
-	private int[] keyCodes;
 	private StringBuffer[] results;
 	
 	private RecordStore store = null;
 	
 	public TrieCustom()
 	{
-		this.keyCodes = new int[0];
+		results = new StringBuffer[0];
+	}
+	
+	public void reset()
+	{
 		results = new StringBuffer[0];
 	}
 	
@@ -46,25 +49,6 @@ public class TrieCustom {
 			e.printStackTrace();
 			return null;
 		}
-	}
-	
-	public ArrayList keyNum(int keyCode)
-	{	
-		int[] newKeyCodes = new int[this.keyCodes.length + 1];
-		System.arraycopy(this.keyCodes, 0, newKeyCodes, 0, this.keyCodes.length);
-		newKeyCodes[newKeyCodes.length - 1] = keyCode;
-		this.keyCodes = newKeyCodes;
-		
-		return getWords(this.keyCodes);
-	}
-	
-	public ArrayList keyClear()
-	{
-		int[] newKeyCodes = new int[this.keyCodes.length - 1];
-		System.arraycopy(this.keyCodes, 0, newKeyCodes, 0, this.keyCodes.length - 1);
-		this.keyCodes = newKeyCodes;
-		
-		return getWords(this.keyCodes);
 	}
 	
 	public void addWord(String word)
@@ -111,9 +95,8 @@ public class TrieCustom {
 		}
 	}
 	
-	public ArrayList getWords(int[] keyCode)
+	public void getWords(ArrayList words, int[] keyCodes)
 	{
-		ArrayList words = new ArrayList();
 		byte[] array = load();
 		boolean relevant = true;
 		
@@ -121,11 +104,11 @@ public class TrieCustom {
 		{
 			char character;
 			
-			if(keyCode.length <= array[i])
+			if(keyCodes.length <= array[i])
 			{
 				relevant = true;
 				
-				for(int k=0; k < keyCode.length; k++)
+				for(int k=0; k < keyCodes.length; k++)
 				{
 					character = byteToChar(array, i + COUNT_SIZE + (k * CHAR_SIZE));
 						
@@ -142,8 +125,6 @@ public class TrieCustom {
 				}
 			}
 		}
-		
-		return words;
 	}
 	
 	private boolean isInCharset(int keyCode, char character)

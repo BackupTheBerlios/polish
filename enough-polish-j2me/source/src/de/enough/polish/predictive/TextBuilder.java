@@ -52,6 +52,8 @@ public class TextBuilder {
 	int currentInputMode;
 	int currentCaret;
 	
+	TrieCustom custom = null;
+	
 	StringBuffer text = null;
 	
 	/**
@@ -66,6 +68,7 @@ public class TextBuilder {
 		this.currentAlign		= ALIGN_LEFT;
 		this.currentInputMode 	= TextField.MODE_FIRST_UPPERCASE;
 		this.currentCaret		= 0;
+		this.custom				= new TrieCustom();
 		
 		text = new StringBuffer(textSize);
 	}
@@ -407,6 +410,22 @@ public class TextBuilder {
 			return true;
 	}
 	
+	public boolean isReader(int offset)
+	{
+		if(this.textElements.size() > 0 && (currentElement - offset) >= 0)
+			return (getTextElement(currentElement + offset).getElement() instanceof TrieReader);
+		else
+			return true;
+	}
+	
+	public boolean isString(int offset)
+	{
+		if(this.textElements.size() > 0 && (currentElement - offset) >= 0)
+			return (getTextElement(currentElement + offset).getElement() instanceof String);
+		else
+			return true;
+	}
+	
 	/**
 	 * Retrieves the field caret position by adding
 	 * the string length of the elements preceding
@@ -436,7 +455,7 @@ public class TextBuilder {
 	 * concating the string of the elements in <code>textElements</code>
 	 * @return the constructed string
 	 */
-	public String getText()
+	public StringBuffer getText()
 	{
 		this.text.setLength(0);
 		
@@ -450,7 +469,7 @@ public class TextBuilder {
 				text.append(element.getSelectedWord());
 		}
 		
-		return this.text.toString();
+		return this.text;
 	}
 	
 	/**

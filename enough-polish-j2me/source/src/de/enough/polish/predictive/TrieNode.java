@@ -3,7 +3,7 @@ package de.enough.polish.predictive;
 
 public class TrieNode {
 	private StringBuffer word;
-	private int reference;
+	private char reference;
 	
 	public TrieNode() {
 		this.word = new StringBuffer(5);
@@ -13,7 +13,7 @@ public class TrieNode {
 	public int getReference() {
 		return reference;
 	}
-	public void setReference(int reference) {
+	public void setReference(char reference) {
 		this.reference = reference;
 	}
 	

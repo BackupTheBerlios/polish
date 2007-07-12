@@ -29,6 +29,7 @@ package de.enough.polish.ui;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreFullException;
@@ -39,6 +40,7 @@ import de.enough.polish.blackberry.ui.PolishEditField;
 //#endif
 import de.enough.polish.predictive.TextBuilder;
 import de.enough.polish.predictive.TextElement;
+import de.enough.polish.predictive.TrieCustom;
 import de.enough.polish.predictive.TrieReader;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
@@ -60,8 +62,12 @@ public class PredictiveTextField
 	//# extends FakeTextFieldCustomItem
 //#endif
 {
-	protected static Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 0 );
-	protected static Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 0 );
+	protected static final Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 0 );
+	protected static final Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 0 );
+	protected static final Command ADD_WORD_CMD = new Command( "Add new Word", Command.ITEM, 1 );
+	
+	protected Form addWordForm = null;
+	protected TextField addWordField = null;
 
 	private final Container choicesContainer;
 	private int numberOfMatches;
@@ -75,6 +81,7 @@ public class PredictiveTextField
 	private Style choiceItemStyle;
 	
 	private TextBuilder builder = null;
+	private TrieCustom custom = null;
 	private TrieReader 	currentReader = null;
 	
 	private HashMap stores = null;
@@ -137,7 +144,7 @@ public class PredictiveTextField
 		//#endif		
 		
 		this.builder 	= new TextBuilder(maxSize);
-//		this.custom		= new TextCustom();
+		this.custom		= new TrieCustom();
 		this.display 	= display;
 		
 		this.inputMode 		= this.builder.getInputMode();
@@ -147,6 +154,16 @@ public class PredictiveTextField
 		this.records		= new HashMap();
 		
 		this.addCommand(DISABLE_PREDICTIVE_CMD);
+		this.addCommand(ADD_WORD_CMD);
+		
+		
+		this.addWordForm = new Form("Add new word");
+		this.addWordField = new TextField("Word:","",50,TextField.ANY);
+		
+		this.addWordForm.append(addWordField);
+		this.addWordForm.addCommand( StyleSheet.CANCEL_CMD );
+		this.addWordForm.addCommand( StyleSheet.OK_CMD );
+		
 		this.predictiveInput = true;
 		
 		updateInfo();
@@ -266,14 +283,14 @@ public class PredictiveTextField
 					{
 						this.currentReader = new TrieReader(this.stores, this.records);
 						this.builder.addReader(this.currentReader);
+						this.custom.reset();
 					}
 					else if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
 						this.currentReader = this.builder.getCurrentReader();
 					
 					this.currentReader.setSelectedWord(0);
 					
-					this.currentReader.keyNum(keyCode); 
-					//custom.keyNum(keyCode);
+					this.currentReader.keyNum(keyCode);
 				}
 				catch(RecordStoreException e){e.printStackTrace();}
 				
@@ -283,7 +300,7 @@ public class PredictiveTextField
 				}
 				else
 				{
-					this.builder.getCurrentElement().pushChar(this.builder.getInputMode());
+					this.builder.getCurrentElement().pushKeyCode(keyCode,this.builder.getInputMode());
 						
 					if(this.builder.getInputMode() == TextField.MODE_FIRST_UPPERCASE)
 					{
@@ -293,16 +310,17 @@ public class PredictiveTextField
 					}
 				}
 				
+				this.builder.getCurrentElement().setResults(custom);
 				this.setChoices(this.builder.getCurrentElement().getResults());
-//				this.setChoices(this.custom.getResults(),true);
 			}
 			else
 			{
 				this.builder.addChar(' ');
+				this.custom.reset();
 				this.openChoices(false);
 			}
 			
-			setText(this.builder.getText());
+			setText(this.builder.getText().toString()); 
 			setCaretPosition(this.builder.getCaretPosition());
 			this.refreshChoices = true;
 			
@@ -332,7 +350,9 @@ public class PredictiveTextField
 				this.currentReader = this.builder.getCurrentReader();
 				
 				this.currentReader.keyClear();
-				this.builder.getCurrentElement().popChar();
+				
+				this.builder.getCurrentElement().popKeyCode();
+				this.builder.getCurrentElement().setResults(custom);
 				
 				if(this.currentReader.isEmpty())
 				{
@@ -341,7 +361,6 @@ public class PredictiveTextField
 				else
 				{
 					setChoices(this.builder.getCurrentElement().getResults());
-					//setChoices(this.custom.getResults(),true);
 					this.builder.setCurrentAlign(TextBuilder.ALIGN_FOCUS);
 					this.builder.getCurrentElement().setSelectedWord(0);
 				}
@@ -351,7 +370,7 @@ public class PredictiveTextField
 		}
 		catch(RecordStoreException e) {e.printStackTrace();}
 		
-		setText(this.builder.getText());
+		setText(this.builder.getText().toString()); 
 		setCaretPosition(this.builder.getCaretPosition());
 		this.refreshChoices = true;
 		
@@ -401,14 +420,13 @@ public class PredictiveTextField
 				// option has been selected!
 				if(!this.builder.isChar(0))
 				{
-					this.currentReader = this.builder.getCurrentReader();
-					this.currentReader.setSelectedWord(this.choicesContainer.getFocusedIndex());
+					this.builder.getCurrentElement().setSelectedWord(this.choicesContainer.getFocusedIndex());
 					this.builder.setCurrentAlign(TextBuilder.ALIGN_RIGHT);
 					
 					openChoices( false );
 					super.notifyStateChanged();
 					
-					setText(this.builder.getText());
+					setText(this.builder.getText().toString()); 
 					setCaretPosition(this.builder.getCaretPosition());
 					this.refreshChoices = true;
 				}
@@ -513,7 +531,7 @@ public class PredictiveTextField
 			while(this.builder.deleteCurrent());
 				
 			openChoices(false);
-			setText(this.builder.getText());
+			setText(this.builder.getText().toString()); 
 			setCaretPosition(this.builder.getCaretPosition());
 		} else if ( cmd == ENABLE_PREDICTIVE_CMD ) {
 			this.predictiveInput = true;
@@ -530,7 +548,22 @@ public class PredictiveTextField
 			
 			this.removeCommand(DISABLE_PREDICTIVE_CMD);
 			this.addCommand(ENABLE_PREDICTIVE_CMD);
+		} else if ( cmd == ADD_WORD_CMD) {
+			this.addWordForm.setCommandListener( this );
+			StyleSheet.display.setCurrent(this.addWordForm);
+		} 
+	}
+	
+	public void handleCommandAction(Command cmd, Displayable box)
+	{
+		if (cmd == StyleSheet.OK_CMD) 
+		{
+			if(this.addWordField.getText() != "")
+				this.custom.addWord(this.addWordField.getText());
 		}
+		
+		StyleSheet.display.setCurrent(this.screen);
+		
 	}
 	
 	public void enablePredictive()
@@ -552,7 +585,7 @@ public class PredictiveTextField
 	
 	public void disablePredictive()
 	{
-		this.setString(this.builder.getText());
+		setText(this.builder.getText().toString()); 
 		this.setCaretPosition(this.builder.getCaretPosition());
 		
 		openChoices(false);
@@ -562,6 +595,14 @@ public class PredictiveTextField
 	{
 		Alert alert = new Alert("PredictiveDemo");
 		alert.setInfo("Word not found");
+		alert.setTimeout(2000);
+		this.display.setCurrent(alert);
+	}
+	
+	public void showWordAdded()
+	{
+		Alert alert = new Alert("PredictiveDemo");
+		alert.setInfo("Word added");
 		alert.setTimeout(2000);
 		this.display.setCurrent(alert);
 	}
@@ -693,12 +734,12 @@ public class PredictiveTextField
 			}
 		}
 		
-		if((System.currentTimeMillis() - this.currentTime) > 1000)
+		/*if((System.currentTimeMillis() - this.currentTime) > 1000)
 		{
 			currentTime = System.currentTimeMillis();
-			this.memory += 300;
+			memory += 300;
 			System.out.println(Runtime.getRuntime().freeMemory() + this.memory);
-		}
+		}*/
 	}
 	
 	protected int getChoicesY()
