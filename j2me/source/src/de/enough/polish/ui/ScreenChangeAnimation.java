@@ -310,7 +310,6 @@ public abstract class ScreenChangeAnimation
 	 */
 	public void run() {
 		if (this.nextCanvas != null && animate()) {
-			System.out.println("triggering repaint");
 			//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 				MasterCanvas.instance.repaint();
 			//#else

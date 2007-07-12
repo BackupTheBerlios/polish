@@ -529,7 +529,7 @@ implements ImageConsumer
 			if (this.isInitialized) {
 				if (this.isIndefinite) {
 					updateIndefiniteIndicatorImage();
-				} else if (this.image == null){
+				} else if (this.image == null && this.mode != MODE_CONTINUOUS){
 					createIndicatorImage();
 				}
 			}
@@ -778,8 +778,7 @@ implements ImageConsumer
 						int clipY = g.getClipY();
 						int clipWidth = g.getClipWidth();
 						int clipHeight = g.getClipHeight();
-						
-						g.clipRect(x, clipY, width, clipHeight + 1);
+						g.clipRect(x, clipY, width, clipHeight );
 						g.drawImage(this.image, x, y + this.imageYOffset, Graphics.TOP | Graphics.LEFT );
 						
 						g.setClip(clipX, clipY, clipWidth, clipHeight);
@@ -788,7 +787,13 @@ implements ImageConsumer
 				//#endif
 			}
 		} else {
-			g.drawImage(this.indicatorImage, x, y, Graphics.TOP | Graphics.LEFT );
+			if (this.mode == MODE_CONTINUOUS) {
+				g.setColor( 0x00ff00 );
+				int w = (this.contentWidth * this.value) / this.maxValue;
+				g.fillRect(x, y, w + 1, this.contentHeight + 1 );
+			} else {
+				g.drawImage(this.indicatorImage, x, y, Graphics.TOP | Graphics.LEFT );
+			}
 		}
 		if (this.showValue) {
 			if (this.valuePosition == POSITION_RIGHT) {
@@ -900,7 +905,7 @@ implements ImageConsumer
 					//# throw new IllegalArgumentException();
 				//#endif
 			}
-		} else if (this.image == null){ // this is a definite gauge
+		} else if (this.image == null && this.mode != MODE_CONTINUOUS){ // this is a definite gauge
 			createIndicatorImage();
 		}
 	}

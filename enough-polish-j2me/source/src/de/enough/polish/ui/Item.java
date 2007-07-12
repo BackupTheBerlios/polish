@@ -1252,7 +1252,7 @@ public abstract class Item extends Object
 			relX += getAbsoluteX(); // + this.contentX;
 			relY += getAbsoluteY(); // + this.contentY;
 			//System.out.println("item.repaint(" + relX + ", " + relY+ ", " +  width + ", " +  height + ")  for " + this );
-			scr.repaint( relX, relY, width, height );
+			scr.repaint( relX, relY, width, height + 1 );
 		}
 	}
 
