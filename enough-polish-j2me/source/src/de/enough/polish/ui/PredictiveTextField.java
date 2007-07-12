@@ -60,6 +60,8 @@ public class PredictiveTextField
 	//# extends FakeTextFieldCustomItem
 //#endif
 {
+	protected static Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 0 );
+	protected static Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 0 );
 
 	private final Container choicesContainer;
 	private int numberOfMatches;
@@ -84,11 +86,8 @@ public class PredictiveTextField
 	private int elementX = 0;
 	private int elementY = 0;
 	private boolean refreshChoices = true;
-		
-	protected static Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 0 );
-	protected static Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 0 );
+
 	private boolean predictiveInput;
-	
 	private long currentTime;
 	private long memory = 0;
 	
@@ -148,7 +147,7 @@ public class PredictiveTextField
 		this.records		= new HashMap();
 		
 		this.addCommand(DISABLE_PREDICTIVE_CMD);
-		predictiveInput = true;
+		this.predictiveInput = true;
 		
 		updateInfo();
 	}
@@ -185,7 +184,7 @@ public class PredictiveTextField
 			this.choiceItems[i] = item;
 			this.choicesContainer.add( item );
 		}
-		if(!isOpen)
+		if (!this.isOpen)
 			openChoices( choices.size() > 0 );
 	}
 	
@@ -265,20 +264,20 @@ public class PredictiveTextField
 						this.builder.getCurrentAlign() == TextBuilder.ALIGN_LEFT ||
 						this.builder.getCurrentAlign() == TextBuilder.ALIGN_RIGHT)
 					{
-						currentReader = new TrieReader(stores,records);
-						this.builder.addReader(currentReader);
+						this.currentReader = new TrieReader(this.stores, this.records);
+						this.builder.addReader(this.currentReader);
 					}
 					else if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
-						currentReader = this.builder.getCurrentReader();
+						this.currentReader = this.builder.getCurrentReader();
 					
-					currentReader.setSelectedWord(0);
+					this.currentReader.setSelectedWord(0);
 					
-					currentReader.keyNum(keyCode); 
+					this.currentReader.keyNum(keyCode); 
 					//custom.keyNum(keyCode);
 				}
 				catch(RecordStoreException e){e.printStackTrace();}
 				
-				if(!currentReader.isWordFound())
+				if(!this.currentReader.isWordFound())
 				{
 					showWordNotFound();
 				}
@@ -330,12 +329,12 @@ public class PredictiveTextField
 				this.builder.deleteCurrent();
 			else
 			{
-				currentReader = this.builder.getCurrentReader();
+				this.currentReader = this.builder.getCurrentReader();
 				
-				currentReader.keyClear();
+				this.currentReader.keyClear();
 				this.builder.getCurrentElement().popChar();
 				
-				if(currentReader.isEmpty())
+				if(this.currentReader.isEmpty())
 				{
 					this.builder.deleteCurrent();
 				}
@@ -347,7 +346,7 @@ public class PredictiveTextField
 					this.builder.getCurrentElement().setSelectedWord(0);
 				}
 				
-				openChoices(!currentReader.isEmpty());
+				openChoices(!this.currentReader.isEmpty());
 			}	
 		}
 		catch(RecordStoreException e) {e.printStackTrace();}
@@ -402,8 +401,8 @@ public class PredictiveTextField
 				// option has been selected!
 				if(!this.builder.isChar(0))
 				{
-					currentReader = this.builder.getCurrentReader();
-					currentReader.setSelectedWord(this.choicesContainer.getFocusedIndex());
+					this.currentReader = this.builder.getCurrentReader();
+					this.currentReader.setSelectedWord(this.choicesContainer.getFocusedIndex());
 					this.builder.setCurrentAlign(TextBuilder.ALIGN_RIGHT);
 					
 					openChoices( false );
@@ -424,8 +423,8 @@ public class PredictiveTextField
 				return true;
 			else
 			{
-				currentReader = this.builder.getCurrentReader();
-				setChoices(currentReader.getResults());
+				this.currentReader = this.builder.getCurrentReader();
+				setChoices(this.currentReader.getResults());
 				
 				if(this.numberOfMatches > 0)
 					enterChoices( true );
@@ -564,7 +563,7 @@ public class PredictiveTextField
 		Alert alert = new Alert("PredictiveDemo");
 		alert.setInfo("Word not found");
 		alert.setTimeout(2000);
-		display.setCurrent(alert);
+		this.display.setCurrent(alert);
 	}
 		
 	//#ifdef polish.hasPointerEvents
@@ -694,7 +693,7 @@ public class PredictiveTextField
 			}
 		}
 		
-		if((System.currentTimeMillis() - currentTime) > 1000)
+		if((System.currentTimeMillis() - this.currentTime) > 1000)
 		{
 			currentTime = System.currentTimeMillis();
 			this.memory += 300;
