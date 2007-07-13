@@ -41,8 +41,6 @@ public class TrieReader {
 	private boolean empty;
 	private boolean wordFound;
 
-	ArrayList results = null;
-
 	byte[] record = null;
 	
 	public TrieReader(HashMap stores, HashMap records) throws RecordStoreException
@@ -51,9 +49,7 @@ public class TrieReader {
 		this.newNodes 	= new ArrayList();
 		
 		this.prevNodes 	= new Stack();
-		
-		this.results	= new ArrayList();
-		
+				
 		this.stores = stores;
 		this.records = records;
 		
@@ -77,17 +73,10 @@ public class TrieReader {
 		this.chunkSize = byteToInt(bytes, TrieInstaller.CHUNKSIZE_OFFSET);
 		this.lineCount = byteToInt(bytes, TrieInstaller.LINECOUNT_OFFSET);
 	}
-	
-	public ArrayList getResults()
-	{
-		return this.results;
-	}
 		
 	public void keyNum(int keyCode) throws RecordStoreException
 	{	
 		int partOffset = 0;
-		
-		this.results.clear();
 		
 		pushNodes();
 		
@@ -95,7 +84,7 @@ public class TrieReader {
 		{
 			this.record = this.getRecord(1);
 			partOffset = this.getPartOffset(this.record, getPartID(1));
-			this.getNodes(this.record, partOffset, keyCode, null);
+			this.readNodes(this.record, partOffset, keyCode, null);
 			
 			setEmpty(this.newNodes.size() == 0);
 		}
@@ -109,7 +98,7 @@ public class TrieReader {
 				{
 					record = this.getRecord(node.getReference());
 					partOffset = this.getPartOffset(record, getPartID(node.getReference()));
-					this.getNodes(record, partOffset, keyCode, node.getWord());
+					readNodes(record, partOffset, keyCode, node.getWord());
 				}
 			}
 		}
@@ -123,22 +112,16 @@ public class TrieReader {
 			popNodes(true);
 		
 		closeStores();
-		
-		setNodeWords(this.nodes);
 	}
 	
 	public void keyClear() throws RecordStoreException
 	{	
 		popNodes(false);
-		
-		setNodeWords(nodes);
 	}
 	
-	public void setNodeWords(ArrayList nodes)
+	public ArrayList getNodes()
 	{
-		results.clear(); 
-		for(int i=0; i<nodes.size(); i++)
-			results.add(((TrieNode)nodes.get(i)).getWord());
+		return this.nodes;
 	}
 	
 	private void copyNodes(ArrayList source, ArrayList dest)
@@ -252,7 +235,7 @@ public class TrieReader {
 		stores.clear();
 	}
 	
-	private void getNodes(byte[] record, int partOffset, int keyCode, StringBuffer word)
+	private void readNodes(byte[] record, int partOffset, int keyCode, StringBuffer word)
 	{
 		char value 		= ' ';
 		

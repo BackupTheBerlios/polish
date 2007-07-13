@@ -44,6 +44,7 @@ import de.enough.polish.predictive.TrieCustom;
 import de.enough.polish.predictive.TrieReader;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Provides a TextField that provides the user with possible matches for the current input.</p>
@@ -277,7 +278,7 @@ public class PredictiveTextField
 				try
 				{
 					
-					if( this.builder.isChar(0) ||
+					if( this.builder.isStringBuffer(0) ||
 						this.builder.getCurrentAlign() == TextBuilder.ALIGN_LEFT ||
 						this.builder.getCurrentAlign() == TextBuilder.ALIGN_RIGHT)
 					{
@@ -294,28 +295,30 @@ public class PredictiveTextField
 				}
 				catch(RecordStoreException e){e.printStackTrace();}
 				
-				if(!this.currentReader.isWordFound())
+				this.builder.getCurrentElement().pushKeyCode(keyCode,this.builder.getInputMode());
+				this.builder.getCurrentElement().setResults(custom);
+				
+				if(this.builder.getCurrentElement().getResults().size() == 0)
 				{
-					showWordNotFound();
+					this.builder.getCurrentElement().popKeyCode();
+					
+					this.setChoices(null);
 				}
 				else
-				{
-					this.builder.getCurrentElement().pushKeyCode(keyCode,this.builder.getInputMode());
-						
+				{	
 					if(this.builder.getInputMode() == TextField.MODE_FIRST_UPPERCASE)
 					{
 						this.builder.setInputMode(TextField.MODE_LOWERCASE);
 						this.inputMode = this.builder.getInputMode();
 						updateInfo();
 					}
+					
+					this.setChoices(this.builder.getCurrentElement().getResults());
 				}
-				
-				this.builder.getCurrentElement().setResults(custom);
-				this.setChoices(this.builder.getCurrentElement().getResults());
 			}
 			else
 			{
-				this.builder.addChar(' ');
+				this.builder.addStringBuffer(" ");
 				this.custom.reset();
 				this.openChoices(false);
 			}
@@ -343,8 +346,11 @@ public class PredictiveTextField
 				else
 					return true;
 			
-			if(this.builder.isChar(0))
-				this.builder.deleteCurrent();
+			if(this.builder.isStringBuffer(0))
+			{
+				if(!this.builder.decreaseStringBuffer())
+					this.builder.deleteCurrent();
+			}
 			else
 			{
 				this.currentReader = this.builder.getCurrentReader();
@@ -418,7 +424,7 @@ public class PredictiveTextField
 			
 			if (gameAction == Canvas.FIRE) {
 				// option has been selected!
-				if(!this.builder.isChar(0))
+				if(!this.builder.isStringBuffer(0))
 				{
 					this.builder.getCurrentElement().setSelectedWord(this.choicesContainer.getFocusedIndex());
 					this.builder.setCurrentAlign(TextBuilder.ALIGN_RIGHT);
@@ -437,12 +443,11 @@ public class PredictiveTextField
 		if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
 				&& this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
 		{
-			if(this.builder.isChar(0))
+			if(this.builder.isStringBuffer(0))
 				return true;
 			else
 			{
-				this.currentReader = this.builder.getCurrentReader();
-				setChoices(this.currentReader.getResults());
+				setChoices(this.builder.getCurrentElement().getResults());
 				
 				if(this.numberOfMatches > 0)
 					enterChoices( true );
@@ -460,11 +465,7 @@ public class PredictiveTextField
 			
 			if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
 			{
-				ArrayList results = this.builder.getCurrentElement().getResults();
-				if(results.size() > 0)
-				{
-					setChoices(results);
-				}
+				setChoices(this.builder.getCurrentElement().getResults());
 			}
 			else
 				openChoices(false);
@@ -504,7 +505,7 @@ public class PredictiveTextField
 		else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
 			
 			openChoices( false );
-			if(!this.builder.isChar(0))
+			if(!this.builder.isStringBuffer(0))
 				this.builder.setCurrentAlign(TextBuilder.ALIGN_RIGHT);
 			
 			return true;
@@ -557,22 +558,21 @@ public class PredictiveTextField
 	public void handleCommandAction(Command cmd, Displayable box)
 	{
 		if (cmd == StyleSheet.OK_CMD) 
-		{
-			if(this.addWordField.getText() != "")
-				this.custom.addWord(this.addWordField.getText());
-		}
+			this.custom.addWord(this.addWordField.getText());
 		
 		StyleSheet.display.setCurrent(this.screen);
-		
 	}
 	
 	public void enablePredictive()
 	{
 		while(this.builder.deleteCurrent());
 		
-		for(int i=0;i<this.getText().length(); i++)
+		String [] elements = TextUtil.split(getText(), ' ');
+		
+		for(int i=0;i<elements.length; i++)
 		{
-			this.builder.addChar(this.getText().charAt(i));
+			this.builder.addStringBuffer(elements[i]);
+			this.builder.addStringBuffer(" ");
 		}
 		
 		this.setInputMode(MODE_LOWERCASE);

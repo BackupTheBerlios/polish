@@ -53,31 +53,36 @@ public class TrieCustom {
 	
 	public void addWord(String word)
 	{
-		char[] chars	= word.toCharArray();
-		byte[] temp 	= null;
-		
-		byte length = (byte)chars.length;
-		
-		byte[] buffer = new byte[COUNT_SIZE + (length * CHAR_SIZE)];
-		
-		buffer[0] = length;
-		
-		for(int i=0; i<length; i++)
+		if(word.length() > 0)
 		{
-			buffer[(i * CHAR_SIZE) + 1] = (byte) ((chars[i] >> 8) & 0x000000FF);
-			buffer[(i * CHAR_SIZE) + 2] = (byte) (chars[i] & 0x00FF);
+			word = word.toLowerCase();
+			
+			char[] chars	= word.toCharArray();
+			byte[] temp 	= null;
+			
+			byte length = (byte)chars.length;
+			
+			byte[] buffer = new byte[COUNT_SIZE + (length * CHAR_SIZE)];
+			
+			buffer[0] = length;
+			
+			for(int i=0; i<length; i++)
+			{
+				buffer[(i * CHAR_SIZE) + 1] = (byte) ((chars[i] >> 8) & 0x000000FF);
+				buffer[(i * CHAR_SIZE) + 2] = (byte) (chars[i] & 0x00FF);
+			}
+			
+			temp = new byte[bytes.length + buffer.length];
+			
+			System.arraycopy(bytes, 0, temp, 0, bytes.length);
+			System.arraycopy(buffer, 0, temp, bytes.length, buffer.length);
+			
+			bytes = new byte[bytes.length + buffer.length];
+			
+			System.arraycopy(temp, 0, bytes, 0, temp.length);
+			
+			save(bytes);
 		}
-		
-		temp = new byte[bytes.length + buffer.length];
-		
-		System.arraycopy(bytes, 0, temp, 0, bytes.length);
-		System.arraycopy(buffer, 0, temp, bytes.length, buffer.length);
-		
-		bytes = new byte[bytes.length + buffer.length];
-		
-		System.arraycopy(temp, 0, bytes, 0, temp.length);
-		
-		save(bytes);
 	}
 	
 	public void save(byte[] bytes)
@@ -92,6 +97,39 @@ public class TrieCustom {
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean hasWords(int[] keyCodes)
+	{
+		boolean relevant = true;
+		
+		for(int i=0; i<bytes.length; i+= ((bytes[i] * CHAR_SIZE) + COUNT_SIZE))
+		{
+			char character;
+			
+			if(keyCodes.length <= bytes[i])
+			{
+				relevant = true;
+				
+				for(int k=0; k < keyCodes.length; k++)
+				{
+					character = byteToChar(bytes, i + COUNT_SIZE + (k * CHAR_SIZE));
+						
+					if(!isInCharset(keyCodes[k],character))
+					{
+						relevant = false;
+						break;
+					}
+				}
+				
+				if(relevant == true)
+				{
+					return true;
+				}
+			}	
+		}
+		
+		return false;
 	}
 	
 	public void getWords(ArrayList words, int[] keyCodes)

@@ -12,6 +12,7 @@ public class TextElement {
 	
 	ArrayList results;
 	int selectedWord;
+	int customStart;
 	
 	public TextElement(Object object) {
 		this.element 		= object;
@@ -23,12 +24,13 @@ public class TextElement {
 		this.selectedWord	= 0;
 		
 		this.keyCodes 		= new int[0];
+		this.customStart 	= -1;
 	}
 
 	public int getLength() {
 		if (element != null) {
-			if (element instanceof Character) {
-				return 1;
+			if (element instanceof StringBuffer) {
+				return ((StringBuffer)element).length();
 			} else if (element instanceof TrieReader) {
 				return this.getSelectedWord().length();
 			}
@@ -73,15 +75,33 @@ public class TextElement {
 		StringBuffer string;
 		
 		if (element instanceof TrieReader) {
-			this.results = ((TrieReader) element).getResults();
-			
-			custom.getWords(this.results,this.keyCodes);
-			
-			for (int i = 0; i < this.results.size(); i++) {
-				string = (StringBuffer)this.results.get(i);
-				for (int j = 0; j < shift.length; j++) {
-					if (shift[j] == true)
-						string.setCharAt(j, Character.toUpperCase(string.charAt(j)));
+			if(((TrieReader) element).isWordFound() || custom.hasWords(keyCodes))
+			{
+				this.results.clear();
+				
+				if(((TrieReader) element).isWordFound())
+				{
+					ArrayList nodes = ((TrieReader) element).getNodes();
+					
+					for (int i = 0; i < nodes.size(); i++)
+					{
+						TrieNode node = (TrieNode)nodes.get(i);
+						this.results.add(node.getWord());
+					}
+				}
+				
+				this.customStart = this.results.size();
+				
+				custom.getWords(this.results,this.keyCodes);
+				
+				for (int i = 0; i < this.results.size(); i++) {
+					string = (StringBuffer)this.results.get(i);
+					
+					for (int j = 0; j < keyCodes.length; j++)
+					{
+						if (shift[j] == true)
+							string.setCharAt(j, Character.toUpperCase(string.charAt(j)));
+					}
 				}
 			}
 		}
@@ -109,6 +129,10 @@ public class TextElement {
 	public void setSelectedWord(int selectedWord)
 	{
 		this.selectedWord = selectedWord;
+		
+		//convert reader to stringbuffer
+		if(this.selectedWord >= this.customStart)
+			this.element = this.getSelectedWord();
 	}
 
 	public void pushChar(int shift) {

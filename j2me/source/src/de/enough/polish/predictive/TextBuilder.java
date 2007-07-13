@@ -84,6 +84,11 @@ public class TextBuilder {
 		return (TrieReader)getTextElement(currentElement).getElement();
 	}
 	
+	public StringBuffer getCurrentStringBuffer()
+	{
+		return (StringBuffer)getTextElement(currentElement).getElement();
+	}
+	
 	/**
 	 * Returns the current <code>TextElement</code>
 	 * @return the current <code>TextElement</code>
@@ -269,9 +274,9 @@ public class TextBuilder {
 	 * Creates a new <code>TextElement</code> carrying <code>character</code>
 	 * @param character the character the <code>TextElement</code> should carry
 	 */
-	public void addChar(char character)
+	public void addStringBuffer(String string)
 	{
-		addElement(new TextElement(new Character(character)));
+		addElement(new TextElement(new StringBuffer(string)));
 		this.currentAlign = ALIGN_RIGHT;
 	}
 	
@@ -311,6 +316,24 @@ public class TextBuilder {
 		return false;
 	}
 	
+	public boolean decreaseStringBuffer()
+	{
+		if(this.isStringBuffer(0))
+		{
+			StringBuffer element = getCurrentStringBuffer();
+			if(element.length() > 0)
+			{
+				element.setLength(element.length() - 1);
+				setCurrentAlign(ALIGN_RIGHT);
+				return (element.length() > 0);
+			}
+			else
+				return false;
+		}
+		else
+			return true;
+	}
+	
 	/**
 	 * Increases the caret position to set in <code>getCaretPosition()</code> by setting the corresponding align and element index
 	 * <p>
@@ -329,13 +352,6 @@ public class TextBuilder {
 	{	
 		if(textElements.size() != 0)
 		{
-			if(currentAlign == ALIGN_LEFT)
-			{
-				if(!isChar(0))
-					currentAlign = ALIGN_FOCUS;
-				else
-					currentAlign = ALIGN_RIGHT;
-			}
 			if(currentAlign == ALIGN_FOCUS)
 			{
 				currentAlign = ALIGN_RIGHT;
@@ -346,6 +362,9 @@ public class TextBuilder {
 					currentAlign = ALIGN_LEFT;
 					currentElement++;
 				}
+				else
+					currentAlign = ALIGN_RIGHT;
+					
 		}
 	}
 
@@ -373,7 +392,7 @@ public class TextBuilder {
 				case ALIGN_LEFT 	:
 					if(currentElement > 0)
 					{
-						if(!isChar(-1))
+						if(!isStringBuffer(-1))
 							currentAlign = ALIGN_FOCUS;
 						else
 							currentAlign = ALIGN_LEFT;
@@ -387,7 +406,7 @@ public class TextBuilder {
 				break;
 				
 				case ALIGN_RIGHT:
-					if(isChar(0))
+					if(isStringBuffer(0))
 						currentAlign = ALIGN_LEFT;
 					else
 						currentAlign = ALIGN_FOCUS;
@@ -402,30 +421,14 @@ public class TextBuilder {
 	 * @param offset the offset for the element
 	 * @return true, if the element is a character, otherwise false
 	 */
-	public boolean isChar(int offset)
+	public boolean isStringBuffer(int offset)
 	{
 		if(this.textElements.size() > 0 && (currentElement - offset) >= 0)
-			return (getTextElement(currentElement + offset).getElement() instanceof Character);
+			return (getTextElement(currentElement + offset).getElement() instanceof StringBuffer);
 		else
 			return true;
 	}
-	
-	public boolean isReader(int offset)
-	{
-		if(this.textElements.size() > 0 && (currentElement - offset) >= 0)
-			return (getTextElement(currentElement + offset).getElement() instanceof TrieReader);
-		else
-			return true;
-	}
-	
-	public boolean isString(int offset)
-	{
-		if(this.textElements.size() > 0 && (currentElement - offset) >= 0)
-			return (getTextElement(currentElement + offset).getElement() instanceof String);
-		else
-			return true;
-	}
-	
+		
 	/**
 	 * Retrieves the field caret position by adding
 	 * the string length of the elements preceding
@@ -463,8 +466,8 @@ public class TextBuilder {
 			TextElement element = getTextElement(i);
 			Object object = element.getElement();
 			
-			if( object instanceof Character)
-				text.append((Character)object);
+			if( object instanceof StringBuffer)
+				text.append((StringBuffer)object);
 			else if( object instanceof TrieReader)
 				text.append(element.getSelectedWord());
 		}
