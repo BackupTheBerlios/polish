@@ -19,8 +19,8 @@ public class Builder extends Task {
 	private String source;
 	private String directory;
 	
-	private String version;
-	private String prefix;
+	private int magic;
+	private int version;
 	private int chunkSize;
 	private int lineCount;
 	
@@ -29,8 +29,7 @@ public class Builder extends Task {
 	private BufferedReader reader;
 	private FileOutputStream trieWriter;
 	
-	ByteArrayOutputStream trieStream = null;
-	ByteArrayOutputStream headerStream = null;
+	ByteArrayOutputStream stream = null;
 	
 	public void setSource(String source) {
 		this.source = source;
@@ -42,10 +41,7 @@ public class Builder extends Task {
 	
 	public void execute() throws BuildException {
 		try {
-			System.out.println("Building " + this.directory + "/predictive.header ...");
-						
-			Properties properties = buildHeader();
-			properties.store(new FileOutputStream(directory + "/predictive.header"),"predictive.header");
+			byte[] header = getHeader();
 			
 			System.out.println("Reading " + this.source + "...");
 			
@@ -54,13 +50,14 @@ public class Builder extends Task {
 			System.out.println("Building " + this.directory + "/predictive.trie ...");
 			
 			Element base = new Element();
-			trieStream = new ByteArrayOutputStream( 0 );
+			stream = new ByteArrayOutputStream( 0 );
 			
 			buildTrie(base,0);
 			writeTrie(base);
 			
 			trieWriter = new FileOutputStream(directory + "/predictive.trie");
-			trieWriter.write(trieStream.toByteArray());
+			trieWriter.write(header);
+			trieWriter.write(stream.toByteArray());
 			trieWriter.close();			
 			
 		} catch (Exception e) {
@@ -82,19 +79,20 @@ public class Builder extends Task {
 		}
 	}
 	
-	public Properties buildHeader()
+	public byte[] getHeader() throws IOException
 	{
-		if(	this.version == null || this.prefix == null || this.chunkSize == 0 || this.lineCount == 0)
-			throw new BuildException("One or more of the header informations is set : please make sure to set version, prefix, chunkSize and lineCount");
+		if(	this.magic == 0  || this.version == 0 || this.chunkSize == 0 || this.lineCount == 0)
+			throw new BuildException("One or more of the header informations is not set : please make sure to set magic, version, chunkSize and lineCount");
 		
-		Properties properties = new Properties();
-		
-		properties.put("trie.version", this.version);
-		properties.put("trie.prefix", this.prefix);
-		properties.put("trie.chunkSize", "" + this.chunkSize);
-		properties.put("trie.lineCount", "" + this.lineCount);
-		
-		return properties;
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	    DataOutputStream dos = new DataOutputStream(bos);
+	    
+	    dos.writeInt(this.magic);
+	    dos.writeInt(this.version);
+	    dos.writeInt(this.chunkSize);
+	    dos.writeInt(this.lineCount);
+	    
+	    return bos.toByteArray();
 	}
 		
 	public int buildTrie(Element element, int recordID)
@@ -122,21 +120,21 @@ public class Builder extends Task {
 		char referenceID = 0;
 		
 		if(children.size() > 0)
-			trieStream.write(byteToByte(children.size()));
+			stream.write(byteToByte(children.size()));
 		
 		for(int i=0; i < children.size(); i++)
 		{
 			Element child = (Element)children.elementAt(i);
 			
-			trieStream.write(charToByte(child.value));
-			trieStream.write(byteToByte(child.children.size()));
+			stream.write(charToByte(child.value));
+			stream.write(byteToByte(child.children.size()));
 			
 			if(child.children.size() > 0)
 				referenceID = (char)((Element)child.children.elementAt(0)).referenceID;
 			else
 				referenceID = (char)0;
 			
-			trieStream.write(charToByte(referenceID));
+			stream.write(charToByte(referenceID));
 		}
 		
 		for(int i=0; i < children.size(); i++)
@@ -165,7 +163,7 @@ public class Builder extends Task {
 	      dos.flush();
 	      return bos.toByteArray();
 	}
-
+	
 	public int getChunkSize() {
 		return chunkSize;
 	}
@@ -182,19 +180,11 @@ public class Builder extends Task {
 		this.lineCount = lineCount;
 	}
 
-	public String getPrefix() {
-		return prefix;
-	}
-
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
-
-	public String getVersion() {
+	public int getVersion() {
 		return version;
 	}
 
-	public void setVersion(String version) {
+	public void setVersion(int version) {
 		this.version = version;
 	}
 
@@ -204,5 +194,13 @@ public class Builder extends Task {
 
 	public String getSource() {
 		return source;
+	}
+
+	public int getMagic() {
+		return magic;
+	}
+
+	public void setMagic(int magic) {
+		this.magic = magic;
 	}
 }
