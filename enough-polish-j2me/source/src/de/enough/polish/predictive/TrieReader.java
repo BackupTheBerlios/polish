@@ -176,7 +176,7 @@ public class TrieReader {
 		int recordID 	= getRecordID(id);
 		
 		storeID.setLength(0);
-		storeID.append(TrieInstaller.prefix);
+		storeID.append(TrieInstaller.PREFIX);
 		storeID.append("_");
 		storeID.append(recordID - (recordID % this.chunkSize));
 		

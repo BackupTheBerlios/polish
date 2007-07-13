@@ -11,7 +11,9 @@ import javax.microedition.rms.RecordStoreException;
 
 public class TrieInstaller {
 	
-	static final String prefix = "predictive";
+	static final String PREFIX = "predictive";
+	static final int MAGIC = 421;
+	static final int VERSION = 100;
 	
 	static final byte OVERHEAD = 2;
 
@@ -34,7 +36,7 @@ public class TrieInstaller {
 	
 	DataInputStream stream = null;
 	
-	public TrieInstaller() throws IOException
+	public TrieInstaller() throws IOException, IllegalArgumentException
 	{
 		this.stream = new DataInputStream(getClass().getResourceAsStream("/predictive.trie"));
 		
@@ -42,6 +44,12 @@ public class TrieInstaller {
 		this.version = this.stream.readInt();
 		this.chunkSize = this.stream.readInt();
 		this.lineCount = this.stream.readInt();
+		
+		if(this.magic != MAGIC)
+			throw new IllegalArgumentException("The source file predictive.trie is not a dictionary");
+		
+		if(this.version < 100)
+			throw new IllegalArgumentException("The dictionary is an deprecated version, must at least be " + VERSION);
 		
 		this.charBuffer = new byte[2];
 		this.integerBuffer = new byte[4];
@@ -89,8 +97,7 @@ public class TrieInstaller {
 						storeID += this.chunkSize;
 					}
 					
-					store = RecordStore.openRecordStore(prefix + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
-					System.out.println(prefix + "_" + storeID);
+					store = RecordStore.openRecordStore(PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
 					
 					if(storeID == 0)
 					{
@@ -106,8 +113,6 @@ public class TrieInstaller {
 				store.addRecord(nodes, 0, nodes.length);
 				
 			}while(stream.available() > 0);
-			
-			System.out.println(count);
 		}	
 		catch(IOException e)
 		{
@@ -134,7 +139,7 @@ public class TrieInstaller {
 			if(storeList != null)
 			{
 				for(int i=0; i<storeList.length; i++)
-					if(storeList[i].startsWith(prefix))
+					if(storeList[i].startsWith(PREFIX))
 					{
 						RecordStore.deleteRecordStore(storeList[i]);
 					}

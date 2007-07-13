@@ -33,7 +33,7 @@ public class TrieCustom {
 	{
 		try
 		{
-			store = RecordStore.openRecordStore(TrieInstaller.prefix + "_0",false);
+			store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0",false);
 			
 			bytes  = store.getRecord(TrieInstaller.CUSTOM_RECORD);
 			
@@ -89,7 +89,7 @@ public class TrieCustom {
 	{
 		try
 		{
-			store = RecordStore.openRecordStore(TrieInstaller.prefix + "_0", false);
+			store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
 			store.setRecord(TrieInstaller.CUSTOM_RECORD, bytes, 0, bytes.length);
 			store.closeRecordStore();
 		}
