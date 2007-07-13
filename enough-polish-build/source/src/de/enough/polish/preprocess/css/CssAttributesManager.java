@@ -103,14 +103,17 @@ public class CssAttributesManager {
 		List xmlList = document.getRootElement().getChildren( "attribute" );
 		for (Iterator iter = xmlList.iterator(); iter.hasNext();) {
 			Element definition = (Element) iter.next();
-			CssAttribute attribute = createCssAttribute( definition );
-			CssAttribute existingAttribute = (CssAttribute) this.attributesByName.get( attribute.getName() );
-			if (existingAttribute != null) {
-				existingAttribute.add( attribute );
-				//throw new BuildException("Duplicate CSS-attributes-definition: The attribute [" + attribute.getName() + "] is defined twice. Please remove one definition from [custom-css-attributes.xml]." );
-			} else {
-				this.attributesByName.put( attribute.getName(), attribute );
+			String name = definition.getAttributeValue("name");
+			if (name != null) {
+				CssAttribute existingAttribute = (CssAttribute) this.attributesByName.get( name );
+				if (existingAttribute != null) {
+					definition.setAttribute("type", existingAttribute.getType() );
+					existingAttribute.add( createCssAttribute( definition ) );
+					continue;
+				}
 			}
+			CssAttribute attribute = createCssAttribute( definition );
+			this.attributesByName.put( attribute.getName(), attribute );
 		}
 	}
 	

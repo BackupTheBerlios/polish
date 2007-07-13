@@ -155,7 +155,7 @@
 		<capability name="Emulator.Skin.11" value="Nokia_Prototype_SDK_4_0\devices\Prototype_4_0_S60_MIDP_Emulator" />
 		<capability name="Emulator.Skin.12" value="\Devices\Nokia_Prototype_SDK_2_0" />
 		<capability name="Emulator.Control" value="Series60" />
-		<capability name="Bugs" value="ExitCommandAlwaysPresent, drawRgbOrigin, sizeChangedReportsWrongHeight, TransparencyNotWorkingInNokiaUiApi, displaySetCurrentFlickers" />
+		<capability name="Bugs" value="ExitCommandAlwaysPresent, drawRgbOrigin, sizeChangedReportsWrongHeight, TransparencyNotWorkingInNokiaUiApi, displaySetCurrentFlickers, requiresHardcodedCanvasDimensionsInFullScreenMode" />
 	</group>
 
 	<group>
@@ -202,6 +202,9 @@
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="m3g, pdaapi, webservice" />		
 		<capability name="Emulator.Skin" value="S60_2nd_FP3_MIDP_SDK" />
+		<capability name="Bugs" value="" />
+		<!--  add E3 specific bugs 	-->
+		<capability name="Bugs" value="displaySetCurrentFlickers" />
 	</group>
 	
 	<group>
@@ -212,7 +215,7 @@
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="m3g, pdaapi, webservice, sipapi, svgapi, securityapi" />		
 		<capability name="Emulator.Skin" value="S60_3rd_MIDP_SDK" />
-		<capability name="Emulator.Skin.2" value="\Devices\S60_3rd_MIDP_SDK" />
+		<capability name="Emulator.Skin.2" value="\Devices\S60_3rd_MIDP_SDK" />		
 	</group>
 
 	<group>
@@ -232,17 +235,28 @@
 		<capability name="Emulator.Skin.2" value="Series80_MIDP_SDK_1_0b" />
 		<capability name="OS" value="Symbian OS 7.0s" />
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi" />		
+		<capability name="key.supportsAsciiKeyMap" value="true" />
+		<capability name="key.backspace" value="8" />
+		<capability name="key.escape" value="27" />
+		<capability name="key.shift" value="-50" />
+		<capability name="key.enter" value="10" />
+		<capability name="key.MiddleSoftKey" value="-14" />
+		<capability name="key.MiddleSoftKey2" value="-15" />
+		<capability name="MenuBar.Position" value="right" />
+		<capability name="MenuBar.NumberOfSoftKeys" value="4" />
 	</group>
 
 	<group>
 		<name>Series80E1</name>
 		<parent>Series80</parent>
+		<capability name="Bugs" value="displaySetCurrentFlickers, requiresHardcodedCanvasDimensionsInFullScreenMode,sizeChangedReportsWrongHeight" />
 	</group>
 	
 
 	<group>
 		<name>Series80E2</name>
 		<parent>Series80E1</parent>
+		<capability name="Bugs" value="displaySetCurrentFlickers, requiresHardcodedCanvasDimensionsInFullScreenMode,sizeChangedReportsWrongHeight" />
 	</group>
 	
 	

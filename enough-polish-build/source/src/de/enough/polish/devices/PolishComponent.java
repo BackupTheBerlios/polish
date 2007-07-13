@@ -332,6 +332,13 @@ implements Comparable
 			String existingValue = (String) this.capabilities.remove( name );
 			this.features.remove( name + "." + existingValue );
 			this.features.remove(name + ":defined" );
+			if (existingValue != null) {
+				String[] individualValues = StringUtil.splitAndTrim( existingValue.toLowerCase(), ',' );
+				for (int i = 0; i < individualValues.length; i++) {
+					String individualValue = individualValues[i];
+					this.features.remove( name + "." + individualValue );
+				}
+			}
 			return;
 		}
 		String existingValue = getCapability( name );
@@ -457,7 +464,7 @@ implements Comparable
 	 */
 	private void addSingleCapability( String name, String value ) {
 //		String originalName = name;
-		name = name.toLowerCase();
+		name = name.toLowerCase(); 
 		String previousValue = (String) this.capabilities.get(name);
 		if (previousValue != null) {
 			// remove previous values from defined symbols first:

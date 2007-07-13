@@ -335,8 +335,15 @@
 	<bug>
 		<name>sizeChangedReportsWrongHeight</name>
 		<area>ui</area>
-		<description>canvas.sizeChanged(int width, int height) returns the height of the screen in non-fullscreen mode, not matter whether the fullscreen mode is activated or not.</description>
+		<description>canvas.sizeChanged(int width, int height) delivers the height of the screen in non-fullscreen mode, not matter whether the fullscreen mode is activated or not.</description>
 		<solution>Ignore the sizeChanged() call on such devices.</solution>
+	</bug>
+	
+	<bug>
+		<name>requiresHardcodedCanvasDimensionsInFullScreenMode</name>
+		<area>ui</area>
+		<description>canvas.getHeight() returns the height of the screen in non-fullscreen mode, not matter whether the fullscreen mode is activated or not.</description>
+		<solution>Use hardcoded values on such devices when you are using the fullscreen mode.</solution>
 	</bug>
 	
 	<bug>

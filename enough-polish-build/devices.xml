@@ -155,9 +155,9 @@ These namespaces/schemas will be used soon.
 		<identifier>Generic/wmapi20</identifier>
 		<features>isVirtual</features>
 		<description>An  device that supports the MIDP 2.0 and CLDC 1.0 standards along with the Wireless Messaging API 2.0.</description>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
-		<capability name="JavaPackage" value="mmapi,wmapi2.0,jtwi"/>
+		<capability name="JavaPackage" value="mmapi,wmapi2.0"/>
 		<capability name="SoundFormat" value="midi, amr"/>
 	</device>
 
@@ -165,9 +165,9 @@ These namespaces/schemas will be used soon.
 		<identifier>Generic/DefaultColorPhone</identifier>
 		<features>isVirtual</features>
 		<description>A MIDP 2.0 and CLDC 1.1 compatible phone from the Wireless Toolkit.</description>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi,wmapi,pdaapi, jtwi"/>
+		<capability name="JavaPackage" value="mmapi,wmapi,pdaapi"/>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="HeapSize" value="20MB"/>
 		<capability name="Emulator.Skin" value="DefaultColorPhone"/>
@@ -177,9 +177,9 @@ These namespaces/schemas will be used soon.
 		<identifier>Generic/MediaControlSkin</identifier>
 		<features>isVirtual</features>
 		<description>A MIDP 2.0 and CLDC 1.1 compatible phone from the Wireless Toolkit.</description>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi,wmapi, pdaapi, jtwi"/>
+		<capability name="JavaPackage" value="mmapi,wmapi, pdaapi"/>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="Emulator.Skin" value="MediaControlSkin"/>
 	</device>	
@@ -188,9 +188,9 @@ These namespaces/schemas will be used soon.
 		<identifier>Generic/QwertyDevice</identifier>
 		<features>isVirtual</features>
 		<description>A MIDP 2.0 and CLDC 1.1 compatible phone from the Wireless Toolkit.</description>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi,wmapi,pdaapi, jtwi"/>
+		<capability name="JavaPackage" value="mmapi,wmapi,pdaapi"/>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="Emulator.Skin" value="QwertyDevice"/>
 	</device>	
@@ -199,9 +199,9 @@ These namespaces/schemas will be used soon.
 		<identifier>Generic/DefaultGrayPhone</identifier>
 		<features>isVirtual</features>
 		<description>A MIDP 2.0 and CLDC 1.1 compatible phone from the Wireless Toolkit.</description>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi,wmapi,jtwi"/>
+		<capability name="JavaPackage" value="mmapi,wmapi"/>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="Emulator.Skin" value="DefaultGrayPhone"/>
 	</device>	
@@ -212,7 +212,7 @@ These namespaces/schemas will be used soon.
 		<features>isVirtual, hasPointerEvents, hasCommandKeyEvents</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi,wmapi, jtwi"/>
+		<capability name="JavaPackage" value="mmapi,wmapi"/>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="HeapSize" value="20MB"/>
 		<capability name="Emulator.Class" value="MppEmulator"/>
@@ -231,7 +231,7 @@ These namespaces/schemas will be used soon.
 		<features>isVirtual, hasPointerEvents, hasCommandKeyEvents</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi,wmapi, jtwi"/>
+		<capability name="JavaPackage" value="mmapi,wmapi"/>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="HeapSize" value="1MB"/>
 		<capability name="key.LeftSoftKey" value="-6"/>
@@ -424,8 +424,8 @@ These namespaces/schemas will be used soon.
 		<identifier>Siemens/midp2</identifier>
 		<features>isVirtual, hasCommandKeyEvents, isDoubleBuffered</features>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="wmapi, mmapi1.1, jtwi, siemens-color-game, siemens-extension-api"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="wmapi, mmapi1.1, siemens-color-game, siemens-extension-api"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr"/>
 		<capability name="key.LeftSoftKey" value="-1"/>
@@ -578,8 +578,8 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="240x320" />
 		<capability name="CanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi2.0, pdaapi, nokiaui, btapi, webservice, m3g" />
-		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, nokiaui, btapi, webservice, m3g" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
 		<capability name="SoundFormat" value="3ga, 3gp, aac, amr, au, imy, jts, m4a, midi, midi40, mmf,mp3, mp4, mxmf,ra, ram, realaudio, rmf, rng, 				wav, wma, xmf" />
@@ -607,8 +607,8 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="176x220" />
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, pdaapi, btapi, m3g, webservice, mascot" />
-		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, pdaapi, btapi, m3g, webservice, mascot" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
 		<capability name="SoundFormat" value="aac, mp3, mp4, m4a, 3gp, amr, wav, midi, midi40, wave,xmf,e-melody,i-melody" />
@@ -704,8 +704,8 @@ These namespaces/schemas will be used soon.
 			<capability name="FullCanvasSize" value="128x160"/>
 			<capability name="CanvasSize" value="128x160"/>
 			<capability name="BitsPerPixel" value="16"/>
-			<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, m3g, pdaapi, btapi, mascot, webservice"/>
-			<capability name="JavaPlatform" value="MIDP/2.0"/>
+			<capability name="JavaPackage" value="mmapi, wmapi1.1, m3g, pdaapi, btapi, mascot, webservice"/>
+			<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 			<capability name="JavaConfiguration" value="CLDC/1.1"/>
 			<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
 			<capability name="SoundFormat" value="aac,wave,xmf,rhz,mpeg-3,mp4,m4a,3gp,amr,wav,midi40"/>	
@@ -735,8 +735,8 @@ These namespaces/schemas will be used soon.
 			<capability name="FullCanvasSize" value="128x160"/>
 			<capability name="CanvasSize" value="128x142"/>
 			<capability name="BitsPerPixel" value="16"/>
-			<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, m3g, pdaapi"/>
-			<capability name="JavaPlatform" value="MIDP/2.0"/>
+			<capability name="JavaPackage" value="mmapi, wmapi1.1, m3g, pdaapi"/>
+			<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 			<capability name="JavaConfiguration" value="CLDC/1.1"/>
 			<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
 			<capability name="SoundFormat" value="midi, midi40, amr, aac, wav, mp3, mp4"/>
@@ -763,9 +763,9 @@ These namespaces/schemas will be used soon.
 		<!-- needsManualMenu,  -->
 		<features>hasCamera, hasVideo, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
 		<capability name="OS" value="Symbian 9.1"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1, CDC/1.0"/>
-		<capability name="JavaPackage" value="mmapi, wmapi2.0, btapi, jtwi,pdapi,webservice,m3g,nokiaui"/>
+		<capability name="JavaPackage" value="mmapi, wmapi2.0, btapi,pdapi,webservice,m3g,nokiaui"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="ClosedFlipScreenSize" value="240x320"/>
         <capability name="CanvasSize" value="240x320"/>
@@ -799,8 +799,8 @@ These namespaces/schemas will be used soon.
 		<capability name="ClosedFlipScreenSize" value="240x320"/>
         <capability name="CanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="jtwi,pdapi,btapi,wmapi2.0,webservice,mmapi,m3g,nokiaui"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="pdapi,btapi,wmapi2.0,webservice,mmapi,m3g,nokiaui"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1, CDC/1.0"/>
         <capability name="JavaProtocol" value="http, socket, https, ssl, datagram"/>
 		<capability name="SoundFormat" value="amr,mp3,aac,wav,aac-lc,amr-nb,amr-wb,sp-midi,xmf,dls,realaudio"/>
@@ -831,8 +831,8 @@ These namespaces/schemas will be used soon.
 			<capability name="FullCanvasSize" value="128x160"/>
 			<capability name="CanvasSize" value="128x142"/>
 			<capability name="BitsPerPixel" value="16"/>
-			<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, m3g, pdaapi"/>
-			<capability name="JavaPlatform" value="MIDP/2.0"/>
+			<capability name="JavaPackage" value="mmapi, wmapi1.1, m3g, pdaapi"/>
+			<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 			<capability name="JavaConfiguration" value="CLDC/1.1"/>
 			<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
 			<capability name="SoundFormat" value="midi, midi40, amr, aac, wav, mp3, mp4"/>
@@ -861,8 +861,8 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="176x220" />
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, pdaapi, btapi, m3g, nokiaui" />
-		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, pdaapi, btapi, m3g, nokiaui" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
 		<capability name="SoundFormat" value="midi, midi40, aac, wav, mp3, mp4" />
@@ -1242,8 +1242,8 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="CanvasSize" value="176x182"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, m3g"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, m3g"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
 		<capability name="SoundFormat" value="midi, midi72, amr, aac, wav, mp3, mp4"/>
@@ -1281,8 +1281,8 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="CanvasSize" value="176x182"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, m3g, vscl2.0"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, m3g, vscl2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
 		<capability name="SoundFormat" value="midi, midi72, amr, aac, wav, mp3, mp4"/>
@@ -1373,8 +1373,8 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="128x128"/>
 		<capability name="CanvasSize" value="128x110"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, m3g"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, m3g"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
 		<capability name="SoundFormat" value="midi, midi40, amr, aac, wav, mp3, mp4"/>
@@ -1403,8 +1403,8 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="128x128"/>
 		<capability name="CanvasSize" value="128x110"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, m3g"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, m3g"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
 		<capability name="SoundFormat" value="midi, midi40, amr, aac, wav, mp3, mp4"/>
@@ -1452,8 +1452,8 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, pdaapi, btapi, m3g"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, pdaapi, btapi, m3g"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
 		<capability name="SoundFormat" value="midi, midi40, amr, aac, wav, mp3, mp4"/>
@@ -1481,8 +1481,8 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, pdaapi, btapi, m3g"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, pdaapi, btapi, m3g"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
 		<capability name="SoundFormat" value="midi, midi72, amr, aac, wav, mp3, mp4"/>
@@ -1744,8 +1744,8 @@ These namespaces/schemas will be used soon.
 		<capability name="ExternalScreenSize" value="208x208"/>
         <capability name="CanvasSize" value="208x253"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi, jtwi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
         <capability name="JavaProtocol" value="http, socket, https, ssl, datagram"/>
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, rmf"/>
@@ -1774,8 +1774,8 @@ These namespaces/schemas will be used soon.
 		<capability name="NokiaFullCanvasSize" value="176x208"/>
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, 3d-api"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, 3d-api"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, aac"/>
 		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263"/>
@@ -1803,8 +1803,8 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="128x160"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, 3d-api"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, 3d-api"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3"/>
@@ -1866,8 +1866,8 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x266"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi1.1, 3d-api"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, 3d-api"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, wav, tone sequence, aac"/>
@@ -1889,9 +1889,10 @@ These namespaces/schemas will be used soon.
 		<groups/>
 		<features>hasCamera, hasVideo, hasPointerEvents, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="208x320"/>
+		<capability name="FullCanvasSize" value="208x320"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, btapi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="SoundFormat" value="iMelody, iMelody-1.2, midi, midi40, amr, mp3, rmf, au, wav"/>
 		<capability name="VideoFormat" value="mpeg-4, 3gpp"/>
@@ -2057,7 +2058,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxSockets.tcp" value="4"/>
 		<capability name="MaxSockets.http" value="4"/>
 		<capability name="MaxSockets.udp" value="4"/>
-		<capability name="JavaPackage" value="btapi, wmapi, mmapi, 3d, jtwi"/>
+		<capability name="JavaPackage" value="btapi, wmapi, mmapi, 3d"/>
 		<capability name="ImageFormat" value="png, jpeg, gif, bmp"/>
 		<capability name="SoundFormat" value="midi, mp3, mp4, wav, amr, iMelody"/>
 		<capability name="VideoFormat" value="mpeg4"/>
@@ -2146,6 +2147,31 @@ These namespaces/schemas will be used soon.
 		<capability name="key.MiddleSoftKey" value="-23"/>
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	</device>
+	
+	<device>
+		<identifier>Motorola/C261</identifier>
+		<features>doubleBuffering</features>
+		<capability name="OS" value="Motorola"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="BitsPerPixel" value="12"/>
+		<capability name="HeapSize" value="1 mb"/>
+		<capability name="StorageSize" value="1 MB"/>
+		<capability name="MaxJarSize" value="200 kb"/>
+		<capability name="MaxRecordStoreSize" value="64 kb"/>
+		<capability name="JavaProtocol" value="udp, http, serial, socket"/>
+		<capability name="MaxSockets" value="4"/>
+		<capability name="MaxSockets.tcp" value="4"/>
+		<capability name="MaxSockets.http" value="4"/>
+		<capability name="MaxSockets.udp" value="4"/>
+		<capability name="JavaPackage" value="Gaming, sms"/>
+		<capability name="ImageFormat" value="png, jpeg"/>
+		<capability name="key.LeftSoftKey" value="-20"/>
+		<capability name="key.RightSoftKey" value="-21"/>
+		<capability name="key.MiddleSoftKey" value="-22"/>
+		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
+	</device>
 
 	<device>
 		<identifier>Motorola/V1050</identifier>
@@ -2154,6 +2180,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
 		<!--
 		<capability name="ExternalScreenSize" value="96x80" />
 		<capability name="BitsPerPixel" value="18" />
@@ -2400,10 +2427,11 @@ These namespaces/schemas will be used soon.
 		<identifier>Motorola/V980</identifier>
 		<features>doubleBuffering, hasCamera</features>
 		<capability name="OS" value="Motorola"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, 3d, jtwi"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, 3d"/>
 		<capability name="ScreenSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="ExternalScreenSize" value="96x80"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="HeapSize" value="1.5 mb"/>
@@ -2587,9 +2615,9 @@ These namespaces/schemas will be used soon.
 		<identifier>Motorola/A780</identifier>
 		<features>hasPointerEvents, doubleBuffering, hasCamera</features>
 		<capability name="OS" value="Linux"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, 3d, pdaapi, telephony-api, jtwi"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, 3d, pdaapi, telephony-api"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="16"/>
@@ -3154,7 +3182,6 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Class" value="MotorolaEmulatorA3" />
 		<capability name="Emulator.Skin" value="RAZR_V3x.props" />
         <capability name="Bugs" value="ReducedMessageLength" />
-		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 		<capability name="wap.userAgent" value="MOT-RAZRV3x"/>
 		<capability name="wap.userAgent" value="MOT-RAZRV3x/01.2A.01 MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
 		<capability name="wap.userAgent" value="MOT-RAZRV3x/01.2B.02 MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1"/>
@@ -3504,12 +3531,12 @@ These namespaces/schemas will be used soon.
 		<capability name="key.LeftSoftKey" value="-21"/>
 		<capability name="key.MiddleSoftKey" value="-23"/>
 		<capability name="key.RightSoftKey" value="-22"/>
-		<capability name="Bugs" value="ReducedMessageLength, noTranslucencyWithDrawRgb"/>
 		<capability name="Font.small" value="19" />
 		<capability name="Font.medium" value="19" />
 		<capability name="Font.large" value="19" />
 		<capability name="Emulator.Skin" value="RAZR_V3.props" />
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="Bugs" value="ReducedMessageLength"/>
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	<capability name="wap.userAgent" value="MOT-V3"/>
 <capability name="wap.userAgent" value="MOT-V3 RAZR/0E.40.3ER MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.0"/>
@@ -3586,7 +3613,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Motorola/A1000</identifier>
 		<features>doubleBuffering, hasPointerEvents, hasCamera</features>
 		<capability name="OS" value="Symbian 7.0/UIQ 2.1"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="ScreenSize" value="208x320"/>
 		<capability name="CanvasSize" value="208x180"/>
@@ -3597,7 +3624,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="24 MB"/>
 		<capability name="MaxRecordStoreSize" value="24 MB"/>
 		<capability name="JavaProtocol" value="udp, http, https, socket, server-socket, sms"/>
-		<capability name="JavaPackage" value="wmapi, mmapi, bluetooth, jtwi"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, bluetooth"/>
 		<capability name="ImageFormat" value="png, jpeg"/>
 		<capability name="SoundFormat" value="midi, wav, amr"/>
 		<capability name="VideoFormat" value="mpeg-4"/>
@@ -3626,7 +3653,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Motorola/E1000</identifier>
 		<features>doubleBuffering, hasPointerEvents, hasCamera</features>
 		<capability name="OS" value="Motorola"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
@@ -3637,7 +3664,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxJarSize" value="200 kb"/>
 		<capability name="MaxRecordStoreSize" value="512 kb"/>
 		<capability name="JavaProtocol" value="udp, http, http1.1, https, tcp"/>
-		<capability name="JavaPackage" value="wmapi, mmapi, 3d, pdaapi, jtwi"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, 3d, pdaapi"/>
 		<capability name="ImageFormat" value="png, jpeg, gif, bmp"/>
 		<capability name="SoundFormat" value="midi, mp3, wav, amr, wb-amr, aac, wma, RealAudio, xmf, jts, mp4, iMelody"/>
 		<capability name="SoundFormat" value="mpeg-4, h.263"/>
@@ -4573,6 +4600,27 @@ These namespaces/schemas will be used soon.
 	
 <!-- Nokia devices -->
 
+	<device>
+    		<identifier>Nokia/6660</identifier>
+    		<groups>Series60</groups>
+    		<features>hasCamera</features>
+    		<capability name="OS" value="Symbian OS 7.0s"/>
+    		<capability name="ScreenSize" value="176x208"/>
+    		<capability name="BitsPerPixel" value="16"/>
+    		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
+    		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+    		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
+    		<capability name="SoundFormat" value="midi, midi24, true tones, amr, wb-amr"/>
+    		<capability name="HeapSize" value="3mb"/>
+    		<capability name="MaxJarSize" value="dynamic"/>
+    		<capability name="CameraResolution" value="640x480"/>
+    		<capability name="CameraZoom" value="2"/>
+    		<capability name="Font.small" value="15"/>
+    		<capability name="Font.medium" value="16"/>
+    		<capability name="Font.large" value="21"/>
+    		<capability name="Bugs" value="BluetoothRfcommInputStream"/>
+    </device>
+    
     <device>
     	<identifier>Nokia/7360</identifier>
 		<groups>Series40DP2</groups>
@@ -5124,6 +5172,12 @@ These namespaces/schemas will be used soon.
 		<capability name="Frequency" value="850, 900, 1800, 1900, 2100"/>
 		<capability name="AnnouncementDate" value="2007-02-12"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
+		<capability name="key.supportsAsciiKeyMap" value="true" />
+		<capability name="key.backspace" value="8" />
+		<capability name="key.shift" value="-50" />
+		<capability name="key.enter" value="10" />
+		<!--  use Ctrl-i for triggering the symbol table as well: -->
+		<capability name="key.AddSymbolKey2" value="9" />
 	</device>
 	
 	<device>
@@ -5145,6 +5199,12 @@ These namespaces/schemas will be used soon.
 		<capability name="Region" value="Asia-Pacific, Europe, Africa"/>
 		<capability name="AnnouncementDate" value="2005-10-12"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
+		<capability name="key.supportsAsciiKeyMap" value="true" />
+		<capability name="key.backspace" value="8" />
+		<capability name="key.shift" value="-50" />
+		<capability name="key.enter" value="10" />
+		<!--  use Ctrl-i for triggering the symbol table as well: -->
+		<capability name="key.AddSymbolKey2" value="9" />
 	</device>
 	
 	<device>
@@ -5197,6 +5257,8 @@ These namespaces/schemas will be used soon.
 		<capability name="key.backspace" value="8" />
 		<capability name="key.shift" value="-50" />
 		<capability name="key.enter" value="10" />
+		<!--  use Ctrl-i for triggering the symbol table as well: -->
+		<capability name="key.AddSymbolKey2" value="9" />
 	</device>
 	
 	<device>
@@ -6408,13 +6470,13 @@ These namespaces/schemas will be used soon.
 		<groups>Series40DP2</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Nokia OS"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="ScreenSize" value="208x208"/>
 		<capability name="CanvasSize" value="208x156"/>
 		<capability name="FullCanvasSize" value="208x208"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi, btapi, m3g, pdaapi, jtwi"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi, btapi, m3g, pdaapi"/>
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, truetones, mp3, mp4, aac"/>
 		<!--
@@ -6479,8 +6541,8 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ExternalScreenSize" value="96x65"/>
-		<capability name="JavaPackage" value="wmapi, mmapi, pdaapi, jtwi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pdaapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="VideoFormat" value="3gpp, h.263"/>
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, truetones, wb-amr, mp3"/>
@@ -6556,8 +6618,8 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="ExternalScreenSize" value="96x65"/>
-		<capability name="JavaPackage" value="wmapi, mmapi, pdaapi, jtwi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pdaapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="VideoFormat" value="3gpp, h.263"/>
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, truetones, wb-amr, mp3"/>
@@ -6680,8 +6742,8 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Nokia OS"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="wmapi, pdaapi, m3g, jtwi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="wmapi, pdaapi, m3g"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="VideoFormat" value="3gpp, h.263"/>
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, mp3, aac"/>
@@ -6704,8 +6766,8 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Nokia OS"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="wmapi, pdaapi, m3g, jtwi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="wmapi, pdaapi, m3g"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="VideoFormat" value="3gpp, h.263"/>
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, mp3, aac"/>
@@ -6761,8 +6823,8 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Nokia OS"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, jtwi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="VideoFormat" value="3gpp, h.263"/>
 		<capability name="SoundFormat" value="midi, midi16, amr, nb-amr, nrt"/>
@@ -6879,8 +6941,8 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Nokia OS"/>
 		<capability name="ExternalScreenSize" value="96x65"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, jtwi, pdaapi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, pdaapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi40, amr, nb-amr, mp3, aac"/>
@@ -6915,6 +6977,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS v7.0s"/>
 		<capability name="ScreenSize" value="640x200"/>
+		<capability name="FullCanvasSize" value="640x200"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, pdaapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, FP/1.0, PP/1.0"/>
@@ -6938,6 +7001,7 @@ These namespaces/schemas will be used soon.
 		<features/>
 		<capability name="OS" value="Symbian OS v7.0s"/>
 		<capability name="ScreenSize" value="640x200"/>
+		<capability name="FullCanvasSize" value="640x200"/>
 		<capability name="ExternalScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, btapi, pdaapi"/>
@@ -7291,8 +7355,8 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi, wmapi, btapi, jtwi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi24, true tones, amr, wb-amr"/>
 		<capability name="HeapSize" value="3mb"/>
@@ -7638,11 +7702,11 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/6230</identifier>
 		<groups>Series40</groups>
 		<features>hasCamera</features>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi, btapi, jtwi"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi, btapi"/>
 		<capability name="VideoFormat" value="3gpp, h.263"/>
 		<capability name="SoundFormat" value="midi, amr, mp3, aac"/>
 		<capability name="HeapSize" value="512kb"/>
@@ -8904,8 +8968,8 @@ These namespaces/schemas will be used soon.
 		<features>hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="130x130"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="wmapi, location-api, jtwi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="wmapi, location-api"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr"/>
 		<capability name="HeapSize" value="1.5MB"/>
@@ -9001,8 +9065,8 @@ These namespaces/schemas will be used soon.
 		<features>hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="wmapi, mmapi, location-api, jtwi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, location-api"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr"/>
 		<capability name="VideoFormat" value="h263"/>
@@ -9132,8 +9196,8 @@ These namespaces/schemas will be used soon.
 		<features>hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-m55-led-api, jtwi, siemens-extension-api"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-m55-led-api, siemens-extension-api"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr"/>
 		<capability name="VideoFormat" value="h263"/>
@@ -9191,8 +9255,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CanvasSize" value="132x176"/>
 		<capability name="FullCanvasSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="wmapi, mmapi1.1, jtwi, 3dapi, locationapi, btapi, m3gapi, siemens-color-game, siemens-extension-api"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="wmapi, mmapi1.1, 3dapi, locationapi, btapi, m3gapi, siemens-color-game, siemens-extension-api"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr"/>
 		<capability name="VideoFormat" value="mpeg-4, 3gpp"/>
@@ -9254,8 +9318,8 @@ These namespaces/schemas will be used soon.
 		<capability name="CanvasSize" value="132x176"/>
 		<capability name="FullCanvasSize" value="132x176"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="wmapi, mmapi, jtwi, 3dapi, locationapi, btapi, siemens-color-game, siemens-extension-api"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, 3dapi, locationapi, btapi, siemens-color-game, siemens-extension-api"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="SoundFormat" value="midi, midi-0, midi-1, midi40, wav, amr"/>
 		<capability name="VideoFormat" value="mpeg-4"/>
@@ -9436,9 +9500,9 @@ These namespaces/schemas will be used soon.
 		<identifier>Alcatel/One Touch 756</identifier>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
-		<capability name="JavaPackage" value="wmapi-1.1, mmapi, jtwi, mmapi"/>
+		<capability name="JavaPackage" value="wmapi-1.1, mmapi, mmapi"/>
 	</device>
 	
 <!-- Casio devices -->
@@ -9682,6 +9746,65 @@ These namespaces/schemas will be used soon.
 	</device>
 	
 <!-- Samsung devices -->
+
+	<device>
+		<identifier>Samsung/E250</identifier>
+		<features>hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x144"/>
+		<capability name="MenuBarHeight" value="16"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0.4"/>
+		<capability name="SoundFormat" value="midi, midi40"/>
+		<capability name="PolyphonicVoices" value="40"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="HeapSize" value="512 kb"/>
+		<capability name="MaxJarSize" value="200 kb"/>
+		<capability name="Network" value="GPRS"/>
+		<capability name="Region" value="Europe"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+	</device>
+	
+	<device>
+		<identifier>Samsung/SGH-X830</identifier>
+		<features>hasCommandKeyEvents</features>
+		<groups></groups>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="midi, mmf"/>
+		<capability name="SoundFormat" value="mmf, midi, amr"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
+		<capability name="FullCanvasSize" value="128x220"/>
+		<capability name="ScreenSize" value="128x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="128x220"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="HeapSize" value="4 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="700 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="256 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="14"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="20"/>
+		<capability name="AnnouncementDate" value="2006-10-25"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire, getTitleRequiresNull" />
+	</device>
+	
+	
 	<device> 
 		<identifier>Samsung/SGH-E810</identifier> 
 		<features>hasCommandKeyEvents</features>
@@ -13283,8 +13406,8 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Windows Mobile 2003"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, btapi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="HeapSize" value="128 MB"/>
 	</device> 
@@ -13296,8 +13419,8 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Windows Mobile 5"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, btapi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="HeapSize" value="128 MB"/>
 	</device> 
@@ -13366,8 +13489,8 @@ These namespaces/schemas will be used soon.
 		<capability name="OS" value="Windows Mobile 2003"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="jtwi, mmapi, wmapi, btapi"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="HeapSize" value="64 MB"/>
 		<capability name="DRM" value="forward lock"/>
@@ -13450,6 +13573,76 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="DoJa/2.5"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="ImageFormat" value="gif"/>
+		
+		 <device>
+  		<identifier>Imate/JasJar</identifier>
+  		<groups/>
+  		<features>hasPointerEvents, hasCommandKeyEvents</features>
+  		<capability name="OS" value="Windows Mobile 5"/>
+  		<capability name="FullCanvasSize" value="640x480"/>
+  		<capability name="BitsPerPixel" value="16"/>
+  		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
+  		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+  		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+  		<capability name="HeapSize" value="128 MB"/>
+	 </device>
+	 
+	 <device>
+		<identifier>Imate/K-Jam</identifier>
+		<groups/>
+		<features>hasPointerEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="Windows Mobile 5"/>
+		<capability name="FullCanvasSize" value="240x268"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+		<capability name="HeapSize" value="128 MB"/>
+	</device>
+	
+	<device>
+		<identifier>Imate/Jam</identifier>
+		<groups/>
+		<features>hasPointerEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="Windows Mobile 2003"/>
+		<capability name="FullCanvasSize" value="240x247"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+	</device>
+	
+	<device>
+		<identifier>Imate/Jamin</identifier>
+		<groups/>
+		<features>hasPointerEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="Windows Mobile 5"/>
+		<capability name="FullCanvasSize" value="240x247"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+	</device>
+	
+	<device>
+		<identifier>HTC/S620</identifier>
+		<groups/>
+		<features>hasPointerEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="Windows Mobile 2003"/>
+		<capability name="FullCanvasSize" value="320x213"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+	</device>
+	
+	<device>
+		<identifier>Imate/SP3, Imate/SP3K</identifier>
+		<groups/>
+		<features>hasPointerEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="Windows Mobile 2003"/>
+		<capability name="FullCanvasSize" value="176x180"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+	</device>
 	</device>
 	
 </devices>

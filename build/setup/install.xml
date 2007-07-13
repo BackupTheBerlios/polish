@@ -162,6 +162,21 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
             <parsable targetfile="$INSTALL_PATH/samples/rmi/nbproject/project.properties" type="shell" /> 
         </pack>
         
+        <pack name="Fisheye Sample Application" required="no" preselected="yes">
+            <description>A simple application demonstrating the fisheye view-type..</description>
+            <file src="samples/fisheye/source" targetdir="$INSTALL_PATH/samples/fisheye"/>
+            <file src="samples/fisheye/resources" targetdir="$INSTALL_PATH/samples/fisheye"/>
+            <file src="../setup/samples/fisheye/.classpath" targetdir="$INSTALL_PATH/samples/fisheye"/>
+            <file src="../setup/samples/fisheye/.project" targetdir="$INSTALL_PATH/samples/fisheye"/>
+            <file src="../setup/samples/fisheye/build.xml" targetdir="$INSTALL_PATH/samples/fisheye"/>
+            <file src="../setup/samples/fisheye/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/fisheye"/>
+            <file src="../setup/samples/fisheye/nbproject" targetdir="$INSTALL_PATH/samples/fisheye"/>
+            <parsable targetfile="$INSTALL_PATH/samples/fisheye/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/fisheye/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/fisheye/.classpath" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/fisheye/nbproject/project.properties" type="shell" /> 
+        </pack>
+        
         <pack name="Java 5 Syntax Sample Application" required="no" preselected="yes">
             <description>You can use Java 5 syntax elements like generics, autoboxing and enums with J2ME Polish. This project shows you an example.</description>
             <file src="samples/java5/source" targetdir="$INSTALL_PATH/samples/java5"/>
