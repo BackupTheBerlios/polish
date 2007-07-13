@@ -3,7 +3,7 @@
 	<taskdef name="PreditiveBuilder" classname="de.enough.polish.predictive.Builder" classpath="bin/classes;../enough-polish-j2me/bin/classes" />
 		
 	<target name="builder">
-		<PreditiveBuilder source="input/top5000en.txt" directory="./output" version="1" prefix="predictive" chunkSize="100" lineCount="500" />
+		<PreditiveBuilder source="input/top5000en.txt" directory="./output" version="100" magic="421" chunkSize="100" lineCount="500" />
 	</target>
 
 </project>
