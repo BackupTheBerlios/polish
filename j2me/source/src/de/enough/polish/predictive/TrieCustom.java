@@ -14,12 +14,14 @@ public class TrieCustom {
 	private static int CHAR_SIZE = 2;
 	
 	private StringBuffer[] results;
+	byte[] 	bytes = null;
 	
 	private RecordStore store = null;
 	
 	public TrieCustom()
 	{
 		results = new StringBuffer[0];
+		bytes 	= load();
 	}
 	
 	public void reset()
@@ -31,8 +33,6 @@ public class TrieCustom {
 	{
 		try
 		{
-			byte[] bytes = null;
-			
 			store = RecordStore.openRecordStore(TrieInstaller.prefix + "_0",false);
 			
 			bytes  = store.getRecord(TrieInstaller.CUSTOM_RECORD);
@@ -54,7 +54,6 @@ public class TrieCustom {
 	public void addWord(String word)
 	{
 		char[] chars	= word.toCharArray();
-		byte[] bytes 	= load();
 		byte[] temp 	= null;
 		
 		byte length = (byte)chars.length;
@@ -97,20 +96,19 @@ public class TrieCustom {
 	
 	public void getWords(ArrayList words, int[] keyCodes)
 	{
-		byte[] array = load();
 		boolean relevant = true;
 		
-		for(int i=0; i<array.length; i+= ((array[i] * CHAR_SIZE) + COUNT_SIZE))
+		for(int i=0; i<bytes.length; i+= ((bytes[i] * CHAR_SIZE) + COUNT_SIZE))
 		{
 			char character;
 			
-			if(keyCodes.length <= array[i])
+			if(keyCodes.length <= bytes[i])
 			{
 				relevant = true;
 				
 				for(int k=0; k < keyCodes.length; k++)
 				{
-					character = byteToChar(array, i + COUNT_SIZE + (k * CHAR_SIZE));
+					character = byteToChar(bytes, i + COUNT_SIZE + (k * CHAR_SIZE));
 						
 					if(!isInCharset(keyCodes[k],character))
 					{
@@ -121,7 +119,7 @@ public class TrieCustom {
 				
 				if(relevant == true)
 				{
-					words.add(getWord(array, i));
+					words.add(getWord(bytes, i));
 				}
 			}
 		}
