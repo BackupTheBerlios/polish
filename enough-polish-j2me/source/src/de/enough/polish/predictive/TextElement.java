@@ -7,24 +7,28 @@ import de.enough.polish.util.ArrayList;
 public class TextElement {
 	Object element = null;
 	boolean[] shift = null;
-	int shiftPosition = 0;
-	int[] keyCodes = null;
+	int shiftPosition = 0; 
 	
-	ArrayList results;
-	int selectedWord;
+	int[] keyCodes = null; 
+	
+	ArrayList results = null;
+	int selectedWord;		
 	int customStart;
 	
 	public TextElement(Object object) {
 		this.element 		= object;
 		
-		this.shift 			= new boolean[10];
-		this.shiftPosition 	= 0;
-		
-		this.results		= new ArrayList();
-		this.selectedWord	= 0;
-		
-		this.keyCodes 		= new int[0];
-		this.customStart 	= -1;
+		if(this.element instanceof TrieReader)
+		{
+			this.shift 			= new boolean[10];
+			this.shiftPosition 	= 0;
+			
+			this.results		= new ArrayList();
+			this.selectedWord	= 0;
+			
+			this.keyCodes 		= new int[0];
+			this.customStart 	= -1;
+		}
 	}
 
 	public int getLength() {
@@ -113,11 +117,6 @@ public class TextElement {
 		
 		result = (StringBuffer)this.results.get(selectedWord);
 		
-		for (int j = 0; j < shift.length; j++) {
-			if (shift[j] == true)
-				result.setCharAt(j,Character.toUpperCase(result.charAt(j)));
-		}
-		
 		return result;
 	}
 	
@@ -133,26 +132,6 @@ public class TextElement {
 		//convert reader to stringbuffer
 		if(this.selectedWord >= this.customStart)
 			this.element = this.getSelectedWord();
-	}
-
-	public void pushChar(int shift) {
-		if(this.shiftPosition >= this.shift.length)
-		{
-			boolean[] newShift = new boolean[this.shift.length * 2];
-			System.arraycopy(this.shift, 0, newShift, 0, this.shift.length);
-			this.shift = newShift;
-		}
-		
-		if(shift == TextField.MODE_UPPERCASE || shift == TextField.MODE_FIRST_UPPERCASE)
-			this.shift[this.shiftPosition] = true;
-		else
-			this.shift[this.shiftPosition] = false;
-		
-		this.shiftPosition++;
-	}
-
-	public void popChar() {
-		this.shiftPosition--;
 	}
 
 	public Object getElement() {
