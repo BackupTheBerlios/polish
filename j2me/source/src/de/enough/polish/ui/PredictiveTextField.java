@@ -284,7 +284,6 @@ public class PredictiveTextField
 					{
 						this.currentReader = new TrieReader(this.stores, this.records);
 						this.builder.addReader(this.currentReader);
-						this.custom.reset();
 					}
 					else if(this.builder.getCurrentAlign() == TextBuilder.ALIGN_FOCUS)
 						this.currentReader = this.builder.getCurrentReader();
@@ -296,10 +295,11 @@ public class PredictiveTextField
 				catch(RecordStoreException e){e.printStackTrace();}
 				
 				this.builder.getCurrentElement().pushKeyCode(keyCode,this.builder.getInputMode());
-				this.builder.getCurrentElement().setResults(custom);
 				
-				if(this.builder.getCurrentElement().getResults().size() == 0)
+				if(!this.builder.getCurrentElement().setResults(custom))
 				{
+					showWordNotFound();
+					
 					this.builder.getCurrentElement().popKeyCode();
 					
 					this.setChoices(null);
@@ -319,7 +319,6 @@ public class PredictiveTextField
 			else
 			{
 				this.builder.addStringBuffer(" ");
-				this.custom.reset();
 				this.openChoices(false);
 			}
 			

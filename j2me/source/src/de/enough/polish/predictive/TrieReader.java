@@ -325,7 +325,7 @@ public class TrieReader {
 		return empty;
 	}
 
-	public void setEmpty(boolean empty) {
+	private void setEmpty(boolean empty) {
 		this.empty = empty;
 	}
 
@@ -333,7 +333,7 @@ public class TrieReader {
 		return wordFound;
 	}
 
-	public void setWordFound(boolean wordFound) {
+	private void setWordFound(boolean wordFound) {
 		this.wordFound = wordFound;
 	}
 }

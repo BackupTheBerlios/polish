@@ -13,20 +13,15 @@ public class TrieCustom {
 	private static int COUNT_SIZE = 1;
 	private static int CHAR_SIZE = 2;
 	
-	private StringBuffer[] results;
+	private StringBuffer result;
 	byte[] 	bytes = null;
 	
 	private RecordStore store = null;
 	
 	public TrieCustom()
 	{
-		results = new StringBuffer[0];
+		result = new StringBuffer(10);
 		bytes 	= load();
-	}
-	
-	public void reset()
-	{
-		results = new StringBuffer[0];
 	}
 	
 	public byte[] load()
@@ -147,7 +142,7 @@ public class TrieCustom {
 				for(int k=0; k < keyCodes.length; k++)
 				{
 					character = byteToChar(bytes, i + COUNT_SIZE + (k * CHAR_SIZE));
-						
+					
 					if(!isInCharset(keyCodes[k],character))
 					{
 						relevant = false;
@@ -165,6 +160,9 @@ public class TrieCustom {
 	
 	private boolean isInCharset(int keyCode, char character)
 	{
+		if(keyCode > TextElement.SHIFT)
+			keyCode -= TextElement.SHIFT;
+		
 		switch(keyCode)
 		{
 			case Canvas.KEY_NUM0 : return (TextField.CHARACTERS[0].indexOf(character) != -1);
@@ -191,16 +189,10 @@ public class TrieCustom {
 	
 	private StringBuffer getWord(byte[] array, int offset)
 	{
-		StringBuffer result = new StringBuffer();
-
+		result.setLength(0);
 		for(int i=0; i < array[offset] * CHAR_SIZE; i = i + CHAR_SIZE)
 			result.append(byteToChar(array, offset + i + 1));
 		
 		return result;
-	}
-	
-	public StringBuffer[] getResults()
-	{
-		return this.results;
 	}
 }
