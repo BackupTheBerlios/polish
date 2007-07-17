@@ -521,17 +521,21 @@ public class PredictiveTextField
 			this.removeCommand(DISABLE_PREDICTIVE_CMD);
 			this.addCommand(ENABLE_PREDICTIVE_CMD);
 		} else if ( cmd == ADD_WORD_CMD) {
+			this.addWordField.setText("");
+			
 			this.addWordForm.setCommandListener( this );
 			StyleSheet.display.setCurrent(this.addWordForm);
 		} 
 	}
 	
-	public void handleCommandAction(Command cmd, Displayable box)
+	public void commandAction(Command cmd, Displayable box)
 	{
 		if (cmd == StyleSheet.OK_CMD) 
 			this.builder.addWord(this.addWordField.getText());
 		
 		StyleSheet.display.setCurrent(this.screen);
+		
+		return;
 	}
 	
 	public void enablePredictive()

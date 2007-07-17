@@ -3195,37 +3195,6 @@ public class TextField extends StringItem
 			}
 		//#endif
 	}
-	
-	protected void handleCommandAction(Command cmd, Displayable box)
-	{
-		//#if tmp.supportsSymbolEntry
-		if (box instanceof List) {
-			if (cmd != StyleSheet.CANCEL_CMD) {
-				int index = symbolsList.getSelectedIndex();
-				this.caretChar = definedSymbols.charAt(index);
-				StyleSheet.currentScreen = this.screen;
-				insertCharacter();
-				//#if tmp.updateDeleteCommand
-					updateDeleteCommand( this.text );
-				//#endif
-			} else {
-				StyleSheet.currentScreen = this.screen;
-			}
-			StyleSheet.display.setCurrent( this.screen );
-			return;
-		}
-		//#endif
-		//#if  tmp.useNativeTextBox
-			if (cmd == StyleSheet.CANCEL_CMD) {
-				this.midpTextBox.setString( this.text );
-			} else if (!this.isUneditable) {
-				setString( this.midpTextBox.getString() );
-				setCaretPosition( size() );
-				notifyStateChanged();
-			}
-			StyleSheet.display.setCurrent( this.screen );
-		//#endif
-	}
 		
 	//#if !polish.blackberry && tmp.directInput
 	/* (non-Javadoc)
@@ -3434,7 +3403,33 @@ public class TextField extends StringItem
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
 	public void commandAction(Command cmd, Displayable box) {
-		handleCommandAction(cmd, box);
+		//#if tmp.supportsSymbolEntry
+		if (box instanceof List) {
+			if (cmd != StyleSheet.CANCEL_CMD) {
+				int index = symbolsList.getSelectedIndex();
+				this.caretChar = definedSymbols.charAt(index);
+				StyleSheet.currentScreen = this.screen;
+				insertCharacter();
+				//#if tmp.updateDeleteCommand
+					updateDeleteCommand( this.text );
+				//#endif
+			} else {
+				StyleSheet.currentScreen = this.screen;
+			}
+			StyleSheet.display.setCurrent( this.screen );
+			return;
+		}
+		//#endif
+		//#if  tmp.useNativeTextBox
+			if (cmd == StyleSheet.CANCEL_CMD) {
+				this.midpTextBox.setString( this.text );
+			} else if (!this.isUneditable) {
+				setString( this.midpTextBox.getString() );
+				setCaretPosition( size() );
+				notifyStateChanged();
+			}
+			StyleSheet.display.setCurrent( this.screen );
+		//#endif
 	}
 	//#endif
 	
@@ -3469,7 +3464,7 @@ public class TextField extends StringItem
 		 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
 		 */
 		public void commandAction(Command cmd, Item item) {
-			handleCommandAction(cmd,item);
+			
 		}
 	//#endif
 		
