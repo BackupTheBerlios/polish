@@ -59,6 +59,9 @@ public class StringItem extends Item
 		protected int xOffset;
 		private int textWidth;
 		private boolean isHorizontalAnimationDirectionRight;
+		//#if polish.css.text-wrap-animate
+			private boolean animateTextWrap = true;
+		//#endif
 		//private boolean isSkipHorizontalAnimation;
 	//#endif
 	//#ifdef polish.css.text-horizontal-adjustment
@@ -194,25 +197,26 @@ public class StringItem extends Item
 			}
 		//#endif
 		//#if polish.css.text-wrap
-			if (this.useSingleLine && this.clipText) {
-//				if (this.isSkipHorizontalAnimation) {
-//					this.isSkipHorizontalAnimation = false;
-//				} else {
-					if (this.isHorizontalAnimationDirectionRight) {
-						this.xOffset++;
-						if (this.xOffset >= 0) {
-							this.isHorizontalAnimationDirectionRight = false;
+			//#if polish.css.text-wrap-animate
+				if (this.animateTextWrap) {
+			//#endif
+					if (this.useSingleLine && this.clipText) {
+						if (this.isHorizontalAnimationDirectionRight) {
+							this.xOffset++;
+							if (this.xOffset >= 0) {
+								this.isHorizontalAnimationDirectionRight = false;
+							}
+						} else {
+							this.xOffset--;
+							if (this.xOffset + this.textWidth < this.contentWidth) {
+								this.isHorizontalAnimationDirectionRight = true;
+							}
 						}
-					} else {
-						this.xOffset--;
-						if (this.xOffset + this.textWidth < this.contentWidth) {
-							this.isHorizontalAnimationDirectionRight = true;
-						}
+						animated = true;
 					}
-					animated = true;
-					//this.isSkipHorizontalAnimation = true;
-//				}
-			}
+			//#if polish.css.text-wrap-animate
+				}
+			//#endif
 		//#endif
 		return animated;
 	}
@@ -617,7 +621,13 @@ public class StringItem extends Item
 			if (textWrapBool != null) {
 				this.useSingleLine = !textWrapBool.booleanValue();
 			}
-		//#endif	
+			//#if polish.css.text-wrap-animate
+				Boolean animateTextWrapBool = style.getBooleanProperty("text-wrap-animate");
+				if (animateTextWrapBool != null) {
+					this.animateTextWrap = animateTextWrapBool.booleanValue();
+				}
+			//#endif
+		//#endif
 	}
 
 	//#ifdef polish.useDynamicStyles

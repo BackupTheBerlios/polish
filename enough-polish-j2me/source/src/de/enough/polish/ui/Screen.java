@@ -301,6 +301,12 @@ implements AccessibleCanvas
 	private final Object paintLock = new Object();
 	private ArrayList itemCommands;
 	private Object data;
+	/* The last time in ms when the user interacted with this screen. This value is used for stopping
+	 * animations after a period of inactivity. This defaults to 3 minutes, but it can be set with the preprocessing
+	 * variable polish.Animation.MaxIdleTime (integer with the number of ms, 60000 is one minute).
+	 */
+	protected long lastInteractionTime;
+
 
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
@@ -825,6 +831,7 @@ implements AccessibleCanvas
 		//#if polish.ScreenInfo.enable
 			ScreenInfo.setScreen( this );
 		//#endif
+		this.lastInteractionTime = System.currentTimeMillis();
 	}
 	
 	/**
@@ -1992,6 +1999,7 @@ implements AccessibleCanvas
 	 * @param keyCode The code of the pressed key
 	 */
 	public void keyPressed(int keyCode) {
+		this.lastInteractionTime = System.currentTimeMillis();
 		synchronized (this.paintLock) {
 			try {
 				//#debug
@@ -2168,6 +2176,7 @@ implements AccessibleCanvas
 		//synchronized (this.paintLock) {
 			//#debug
 			System.out.println("keyRepeated(" + keyCode + ")");
+			this.lastInteractionTime = System.currentTimeMillis();
 			int gameAction = 0;
 			try {
 				gameAction = getGameAction( keyCode );
@@ -2208,6 +2217,7 @@ implements AccessibleCanvas
 	public void keyReleased(int keyCode) {
 		//#debug
 		System.out.println("keyReleased(" + keyCode + ")");
+		this.lastInteractionTime = System.currentTimeMillis();
 		int gameAction = 0;
 		try {
 			gameAction = getGameAction( keyCode );
@@ -2911,6 +2921,7 @@ implements AccessibleCanvas
 	public void pointerPressed(int x, int y) {
 		//#debug
 		System.out.println("PointerPressed at " + x + ", " + y );
+		this.lastInteractionTime = System.currentTimeMillis();
 		try {
 			// check for scroll-indicator:
 			//#if tmp.useScrollIndicator

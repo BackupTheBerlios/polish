@@ -788,7 +788,7 @@ implements ImageConsumer
 			}
 		} else {
 			if (this.mode == MODE_CONTINUOUS) {
-				g.setColor( 0x00ff00 );
+				g.setColor( this.color );
 				int w = (this.contentWidth * this.value) / this.maxValue;
 				g.fillRect(x, y, w + 1, this.contentHeight + 1 );
 			} else {

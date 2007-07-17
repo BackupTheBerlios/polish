@@ -68,6 +68,11 @@ public class AnimationThread extends Thread
 	//#endif
 	protected static boolean releaseResourcesOnScreenChange;
 	private static ArrayList animationList;
+	//#if polish.Animation.MaxIdleTime:defined
+		//#= private final static long ANIMATION_TIMEOUT = ${polish.Animation.MaxIdleTime};
+	//#else
+		private final static long ANIMATION_TIMEOUT = 3 * 60 * 1000; // after 3 minutes of inactivity stop the animations
+	//#endif
 	
 	/**
 	 * Creates a new animation thread.
@@ -77,12 +82,6 @@ public class AnimationThread extends Thread
 			super("AnimationThread");
 		//#else
 			//# super();
-		//#endif
-		
-		//#if polish.blackberry and false
-			// # Application app = Application.getApplication();
-			// # app.addKeyListener( this );
-			// # app.addTrackwheelListener( this );
 		//#endif
 	}
 	
@@ -98,65 +97,68 @@ public class AnimationThread extends Thread
 				Screen screen = StyleSheet.currentScreen;
 //				System.out.println("AnimationThread: animating " + screen);
 				if (screen != null) {
-					boolean animated = screen.animate();
-					if (animationList != null) {
-						Object[] animationItems = animationList.getInternalArray();
-						if (animated) {
-							for (int i = 0; i < animationItems.length; i++) {
-								Item item = (Item) animationItems[i];
-								if (item == null) {
-									break;
+					long currentTime = System.currentTimeMillis();
+					if ( (currentTime - screen.lastInteractionTime) < ANIMATION_TIMEOUT ) { 
+						boolean animated = screen.animate();
+						if (animationList != null) {
+							Object[] animationItems = animationList.getInternalArray();
+							if (animated) {
+								for (int i = 0; i < animationItems.length; i++) {
+									Item item = (Item) animationItems[i];
+									if (item == null) {
+										break;
+									}
+									item.animate();
 								}
-								item.animate();
-							}
-						} else {
-							int animationX = Integer.MAX_VALUE;
-							int animationY = Integer.MAX_VALUE;
-							int animationEndX = 0;
-							int animationEndY = 0;
-							for (int i = 0; i < animationItems.length; i++) {
-								Item item = (Item) animationItems[i];
-								if (item == null) {
-									break;
+							} else {
+								int animationX = Integer.MAX_VALUE;
+								int animationY = Integer.MAX_VALUE;
+								int animationEndX = 0;
+								int animationEndY = 0;
+								for (int i = 0; i < animationItems.length; i++) {
+									Item item = (Item) animationItems[i];
+									if (item == null) {
+										break;
+									}
+									if ( item.animate() ) {
+										//#debug debug
+										System.out.println("triggering repaint for item " + item + ", absX=" + item.getAbsoluteX() + ", absY=" + item.getAbsoluteY() + ", width=" + item.itemWidth + ", height=" + item.itemHeight );
+										int absX = item.getAbsoluteX();
+										if (absX < animationX ) {
+											animationX = absX;
+										}
+										if (absX + item.itemWidth > animationEndX) {
+											animationEndX = absX + item.itemWidth; 
+										}
+										int absY = item.getAbsoluteY();
+										if (absY < animationY ) {
+											animationY = absY;
+										}
+										if (absY + item.itemHeight > animationEndY) {
+											animationEndY = absY + item.itemHeight; 
+										}
+										
+									}
 								}
-								if ( item.animate() ) {
-									//#debug debug
-									System.out.println("triggering repaint for item " + item + ", absX=" + item.getAbsoluteX() + ", absY=" + item.getAbsoluteY() + ", width=" + item.itemWidth + ", height=" + item.itemHeight );
-									int absX = item.getAbsoluteX();
-									if (absX < animationX ) {
-										animationX = absX;
-									}
-									if (absX + item.itemWidth > animationEndX) {
-										animationEndX = absX + item.itemWidth; 
-									}
-									int absY = item.getAbsoluteY();
-									if (absY < animationY ) {
-										animationY = absY;
-									}
-									if (absY + item.itemHeight > animationEndY) {
-										animationEndY = absY + item.itemHeight; 
-									}
-									
+								if (animationEndX > 0) {
+									screen.repaint( animationX, animationY, animationEndX - animationX, animationEndY - animationY );
 								}
-							}
-							if (animationEndX > 0) {
-								screen.repaint( animationX, animationY, animationEndX - animationX, animationEndY - animationY );
 							}
 						}
-					}
-					if (animated) {
-						//System.out.println("AnimationThread: screen needs repainting");
-						//#debug debug
-						System.out.println("triggering repaint for screen " + screen + ", is shown: " + screen.isShown() );
-						//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-							if ( MasterCanvas.instance != null ) {
-								MasterCanvas.instance.repaint();
-							}
-						//#else
-							screen.repaint();					
-						//#endif
-						
-						sleeptime = ANIMATION_INTERVAL;
+						if (animated) {
+							//System.out.println("AnimationThread: screen needs repainting");
+							//#debug debug
+							System.out.println("triggering repaint for screen " + screen + ", is shown: " + screen.isShown() );
+							//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
+								if ( MasterCanvas.instance != null ) {
+									MasterCanvas.instance.repaint();
+								}
+							//#else
+								screen.repaint();					
+							//#endif
+							
+							sleeptime = ANIMATION_INTERVAL;
+						}
 					}
 
 					if (releaseResourcesOnScreenChange) {

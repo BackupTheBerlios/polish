@@ -1259,8 +1259,8 @@ public class Container extends Item {
 				offset = this.yOffset;
 			}
 		//#endif
-		if ( (gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) 
-				|| (gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
+		if (// (gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) || 
+			   (gameAction == Canvas.DOWN   && keyCode != Canvas.KEY_NUM8)) {
 			if (this.focusedItem != null 
 					&& this.enableScrolling
 					&& ( (offset + this.focusedItem.relativeY + this.focusedItem.itemHeight > this.availableHeight)
@@ -1268,9 +1268,9 @@ public class Container extends Item {
 						    && offset + this.focusedItem.relativeY + this.focusedItem.contentY + this.focusedItem.internalY + this.focusedItem.internalHeight > this.availableHeight)) 
 				       )
 			{
-				if (gameAction == Canvas.RIGHT) {
-					return false;
-				}
+//				if (gameAction == Canvas.RIGHT) {
+//					return false;
+//				}
 				// keep the focus do scroll downwards:
 				//#debug
 				System.out.println("Container(" + this + "): scrolling down: keeping focus, focusedIndex=" + this.focusedIndex );
@@ -1301,15 +1301,15 @@ public class Container extends Item {
 					}
 				//#endif
 			}
-		} else if ( (gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) 
-				|| (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) ) {
+		} else if ( // (gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) || 
+				       (gameAction == Canvas.UP    && keyCode != Canvas.KEY_NUM2) ) {
 			if (this.focusedItem != null 
 					&& this.enableScrolling
 					&& offset + this.focusedItem.relativeY < 0 ) // this.focusedItem.yTopPos < this.yTop ) 
 			{
-				if (gameAction == Canvas.LEFT) {
-					return false;
-				}
+//				if (gameAction == Canvas.LEFT) {
+//					return false;
+//				}
 				// keep the focus do scroll upwards:
 				//#debug
 				System.out.println("Container(" + this + "): scrolling up: keeping focus, focusedIndex=" + this.focusedIndex + ", focusedItem.yTopPos=" + this.focusedItem.relativeY + ", this.availableHeight=" + this.availableHeight + ", targetYOffset=" + this.targetYOffset);

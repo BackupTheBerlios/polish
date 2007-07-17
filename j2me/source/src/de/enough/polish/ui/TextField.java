@@ -949,10 +949,6 @@ public class TextField extends StringItem
 				this.enableDirectInput = true;
 			}
 		//#endif
-
-		//#if tmp.directInput
-			this.realTextLines = new String[0];
-		//#endif
 			
 		setConstraints(constraints);
 	}
@@ -983,9 +979,12 @@ public class TextField extends StringItem
 	public String getString()
 	{
 		//#if tmp.directInput
-		if (this.caretChar != this.editingCaretChar) {
-			insertCharacter();
-		}
+		// 2007-07-16: do NOT insert the currently editing character since the itemStateChanged events are forwarded 
+		// asynchronously - this can result in unwanted input when the ItemStateChangeListener is calling getString()
+		// during processing of this event.
+//		if (this.caretChar != this.editingCaretChar) {
+//			insertCharacter();
+//		}
 		//#endif
 		//#if polish.blackberry
 			if ( this.editField != null ) {
@@ -1408,7 +1407,7 @@ public class TextField extends StringItem
 			if ( ! this.isInitialized ) {
 				this.doSetCaretPosition = true;
 				this.caretPosition = position;
-			} else if (this.realTextLines.length == 0 ){
+			} else if (this.realTextLines == null ){
 				// ignore position when there is not text present
 			} else {
 				int row = 0;
@@ -1788,7 +1787,7 @@ public class TextField extends StringItem
                                             g.drawChar( this.caretChar, leftX, y, Graphics.TOP | Graphics.LEFT );
                                             leftX += this.caretWidth;
                                         } else {
-	                                        g.setColor(0,0,255);
+                                        	g.setColor( this.caretColor );
 	                                        g.drawLine(leftX, y, leftX, y + this.font.getHeight());
                                         }
 										//#if !polish.css.textfield-caret-color
@@ -2058,7 +2057,7 @@ public class TextField extends StringItem
 					this.caretX = 0;
 					//System.out.println(this + ".initContent()/reset1: caretX=" + this.caretX);
 					this.caretY = 0;
-					this.originalRowText = "";
+					this.originalRowText = null;
 				}		
 			}
 			// set the internal information so that big TextBoxes can still be scrolled
@@ -2324,31 +2323,11 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println(this + ": inserting character " + insertChar );
 		String myText;
-//		int width;
 		if (this.isPassword) {
 			myText = this.passwordText;
-//			//#ifdef polish.css.font-bitmap
-//				if (this.bitMapFont != null) {
-//					width = this.bitMapFont.getViewer("*").getWidth();
-//				} else {
-//			//#endif
-//					width = this.font.charWidth('*');
-//			//#ifdef polish.css.font-bitmap
-//				}
-//			//#endif
 		} else {
 			myText = this.text;
-//			//#ifdef polish.css.font-bitmap
-//				if (this.bitMapFont != null) {
-//					width = this.caretViewer.getWidth();
-//				} else {
-//			//#endif
-//					width = this.font.charWidth(insertChar);
-//			//#ifdef polish.css.font-bitmap
-//				}
-//			//#endif
 		}
-		//this.caretX += width;
 		if (this.isEmail) {
 			// check valid input for email addresses:
 			char lowerCaseInsertChar = Character.toLowerCase( insertChar );
@@ -3151,50 +3130,7 @@ public class TextField extends StringItem
 		
 		return false;
 	}
-	
-	protected void handleCommandAction(Command cmd, Item item)
-	{
-		//#debug
-		System.out.println("commandAction( " + cmd.getLabel() + ", " + this + " )");
-		//#if tmp.supportsSymbolEntry
-			if (cmd == ENTER_SYMBOL_CMD ) {
-				showSymbolsList();
-				return;
-			}
-		//#endif
-		//#ifndef tmp.suppressCommands
-			if ( cmd == DELETE_CMD ) {
-				if (this.text != null && this.text.length() > 0) {
-					//#ifdef tmp.directInput
-						//#ifdef tmp.allowDirectInput
-							if (this.enableDirectInput) {
-						//#endif
-							//#ifdef polish.key.ClearKey:defined
-							//#= handleKeyClear(${polish.key.ClearKey},0);
-							//#else
-							handleKeyClear(-8,0);
-							//#endif
-						//#ifdef tmp.allowDirectInput
-							} else {
-								String myText = getString();
-								setString( myText.substring(0, myText.length() - 1));
-								notifyStateChanged();
-							}
-						//#endif
-					//#else
-						String myText = getString();
-						setString( myText.substring(0, myText.length() - 1));
-						notifyStateChanged();
-					//#endif
-				}
-			} else if ( cmd == CLEAR_CMD ) {
-				setString( null );
-				notifyStateChanged();
-			} else if ( this.additionalItemCommandListener != null ) {
-				this.additionalItemCommandListener.commandAction(cmd, item);
-			}
-		//#endif
-	}
+
 		
 	//#if !polish.blackberry && tmp.directInput
 	/* (non-Javadoc)
@@ -3404,21 +3340,21 @@ public class TextField extends StringItem
 	 */
 	public void commandAction(Command cmd, Displayable box) {
 		//#if tmp.supportsSymbolEntry
-		if (box instanceof List) {
-			if (cmd != StyleSheet.CANCEL_CMD) {
-				int index = symbolsList.getSelectedIndex();
-				this.caretChar = definedSymbols.charAt(index);
-				StyleSheet.currentScreen = this.screen;
-				insertCharacter();
-				//#if tmp.updateDeleteCommand
-					updateDeleteCommand( this.text );
-				//#endif
-			} else {
-				StyleSheet.currentScreen = this.screen;
+			if (box instanceof List) {
+				if (cmd != StyleSheet.CANCEL_CMD) {
+					int index = symbolsList.getSelectedIndex();
+					this.caretChar = definedSymbols.charAt(index);
+					StyleSheet.currentScreen = this.screen;
+					insertCharacter();
+					//#if tmp.updateDeleteCommand
+						updateDeleteCommand( this.text );
+					//#endif
+				} else {
+					StyleSheet.currentScreen = this.screen;
+				}
+				StyleSheet.display.setCurrent( this.screen );
+				return;
 			}
-			StyleSheet.display.setCurrent( this.screen );
-			return;
-		}
 		//#endif
 		//#if  tmp.useNativeTextBox
 			if (cmd == StyleSheet.CANCEL_CMD) {
@@ -3464,7 +3400,46 @@ public class TextField extends StringItem
 		 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
 		 */
 		public void commandAction(Command cmd, Item item) {
-			
+			//#debug
+			System.out.println("commandAction( " + cmd.getLabel() + ", " + this + " )");
+			//#if tmp.supportsSymbolEntry
+				if (cmd == ENTER_SYMBOL_CMD ) {
+					showSymbolsList();
+					return;
+				}
+			//#endif
+			//#ifndef tmp.suppressCommands
+				if ( cmd == DELETE_CMD ) {
+					if (this.text != null && this.text.length() > 0) {
+						//#ifdef tmp.directInput
+							//#ifdef tmp.allowDirectInput
+								if (this.enableDirectInput) {
+							//#endif
+								//#ifdef polish.key.ClearKey:defined
+								//#= handleKeyClear(${polish.key.ClearKey},0);
+								//#else
+								handleKeyClear(-8,0);
+								//#endif
+							//#ifdef tmp.allowDirectInput
+								} else {
+									String myText = getString();
+									setString( myText.substring(0, myText.length() - 1));
+									notifyStateChanged();
+								}
+							//#endif
+						//#else
+							String myText = getString();
+							setString( myText.substring(0, myText.length() - 1));
+							notifyStateChanged();
+						//#endif
+					}
+				} else if ( cmd == CLEAR_CMD ) {
+					setString( null );
+					notifyStateChanged();
+				} else if ( this.additionalItemCommandListener != null ) {
+					this.additionalItemCommandListener.commandAction(cmd, item);
+				}
+			//#endif		
 		}
 	//#endif
 		
@@ -3486,6 +3461,12 @@ public class TextField extends StringItem
 		//#elif polish.TextField.showInputInfo != false
 			if (this.screen != null) {
 				this.screen.setInfo(null);
+			}
+		//#endif
+		//#if tmp.directInput
+			if (this.editingCaretChar != this.caretChar) {
+				insertCharacter();
+				notifyStateChanged();
 			}
 		//#endif
 	}

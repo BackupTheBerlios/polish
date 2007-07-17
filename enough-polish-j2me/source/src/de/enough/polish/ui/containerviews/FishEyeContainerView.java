@@ -92,7 +92,6 @@ public class FishEyeContainerView extends ContainerView {
 	 * Creates a new fish eye view
 	 */
 	public FishEyeContainerView() {
-		this.isVertical = false;
 		this.allowsAutoTraversal = false;
 	}
 
@@ -184,6 +183,8 @@ public class FishEyeContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
 	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
+		this.isVertical = false;
+		this.isHorizontal = true;
 		Container parent = (Container) parentContainerItem;		
 		//#debug
 		System.out.println("ContainerView: intialising content for " + this + " with vertical-padding " + this.paddingVertical );

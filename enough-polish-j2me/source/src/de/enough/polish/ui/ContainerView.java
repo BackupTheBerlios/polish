@@ -144,6 +144,8 @@ extends ItemView
 		//#ifdef tmp.useTable
 			if (this.columnsSetting == NO_COLUMNS || myItems.length <= 1) {
 		//#endif
+			this.isHorizontal = false;
+			this.isVertical = true;
 			// look at the layout of the parentContainer, since the SHRINK layout can be set outside of the setStyle method as well:
 			boolean isLayoutShrink = (this.parentContainer.layout & Item.LAYOUT_SHRINK) == Item.LAYOUT_SHRINK;
 			int myContentWidth = 0;
@@ -204,6 +206,7 @@ extends ItemView
 		//#endif
 		
 		//#ifdef tmp.useTable
+			this.isHorizontal = true;
 			// columns are used
 			boolean isNormalWidthColumns = (this.columnsSetting == NORMAL_WIDTH_COLUMNS);
 			//#ifdef polish.css.columns-width.star
@@ -490,6 +493,7 @@ extends ItemView
 			for (int i = 0; i < this.columnsWidths.length; i++) {
 				myContentWidth += this.columnsWidths[i] + this.paddingHorizontal;
 			}
+			this.isVertical = this.numberOfRows > 1;
 			this.contentWidth = myContentWidth;
 			this.contentHeight = myContentHeight;
 			
