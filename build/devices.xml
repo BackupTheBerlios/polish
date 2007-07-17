@@ -13370,6 +13370,7 @@ These namespaces/schemas will be used soon.
 		<capability name="CanvasSize" value="240x200"/>
 		<capability name="FullCanvasSize" value="240x200"/>
 	</device>
+	
 	<device>
 		<identifier>Palm/Treo680</identifier>
 		<groups/>
@@ -13381,6 +13382,22 @@ These namespaces/schemas will be used soon.
 		<capability name="CanvasSize" value="160x144"/>
 		<capability name="FullCanvasSize" value="160x160"/>
 	</device>
+	
+	 <device>
+            <identifier>Palm/Treo650</identifier>
+            <groups></groups>
+            <features>hasCamera, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
+            <capability name="OS" value="PalmOS"/>
+            <capability name="ScreenSize" value="320x320"/>
+            <capability name="BitsPerPixel" value="16"/>
+            <capability name="JavaPlatform" value="MIDP/2.0" />
+            <capability name="JavaConfiguration" value="CLDC/1.0" />
+            <capability name="JavaProtocol" value="http, socket, https, ssl, datagram" />
+            <capability name="HeapSize" value="4 MB" />
+            <capability name="StorageSize" value="51 MB" />
+            <capability name="RMS.MaxRecordSize" value="64 kb" />
+            <capability name="SoundFormat" value="wav" />
+      </device>
 
 	<device>
 		<identifier>Palm/TungstenC</identifier>

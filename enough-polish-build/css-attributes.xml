@@ -2694,6 +2694,15 @@
 		default="false"
 		id="252"
 	/>
+
+	<attribute
+		name="text-wrap-animate"
+		type="boolean"
+		appliesTo="StringItem"
+		description="You can deactivate animations for texts that should not be wrapped and which are too long for a single line."
+		default="true"
+		id="253"
+	/>
 	
 	
 	<!--
