@@ -1787,8 +1787,13 @@ public class TextField extends StringItem
                                             g.drawChar( this.caretChar, leftX, y, Graphics.TOP | Graphics.LEFT );
                                             leftX += this.caretWidth;
                                         } else {
-                                        	g.setColor( this.caretColor );
+                                        	//#ifdef polish.css.textfield-caret-color
+                                        		g.setColor( this.caretColor );
+                                        	//#endif
 	                                        g.drawLine(leftX, y, leftX, y + this.font.getHeight());
+                                        	//#ifdef polish.css.textfield-caret-color
+	                                        	g.setColor( this.textColor );
+	                                        //#endif
                                         }
 										//#if !polish.css.textfield-caret-color
                                     	g.setColor(this.textColor);
