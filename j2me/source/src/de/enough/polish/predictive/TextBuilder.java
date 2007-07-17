@@ -83,7 +83,7 @@ public class TextBuilder {
 		this.text 			= new StringBuffer(textSize);
 	}
 	
-	public boolean keyNum(int keyCode) throws RecordStoreException
+	public void keyNum(int keyCode) throws RecordStoreException
 	{
 		if(	isStringBuffer(0) || this.align == ALIGN_LEFT || this.align == ALIGN_RIGHT )
 			addReader(new TrieReader(this.stores,this.records));
@@ -92,13 +92,20 @@ public class TextBuilder {
 		getElement().keyNum(keyCode, mode);
 		getElement().setResults(custom);
 		
-		return getElement().getTrieResults().size() > 0 || getElement().getCustomResults().size() > 0;
+		if(!getElement().isWordFound())
+			getElement().keyClear();
+		else
+		{
+			if(this.mode == TextField.MODE_FIRST_UPPERCASE)
+				this.mode = TextField.MODE_LOWERCASE;
+		}
 	}
 	
 	public void keySpace()
 	{
-		if(getElement().isSelectedCustom())
-			getElement().convertReader();
+		if(!isStringBuffer(0))
+			if(getElement().isSelectedCustom())
+				getElement().convertReader();
 		
 		addStringBuffer(" ");
 	}

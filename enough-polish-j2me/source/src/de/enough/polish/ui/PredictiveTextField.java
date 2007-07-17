@@ -182,28 +182,36 @@ public class PredictiveTextField
 	 * 
 	 * @param choices the new choices, null when no choices are given
 	 */
-	private void setChoices( ArrayList trieResults, ArrayList customResults) {
+	private void setChoices( TextElement element) {
 		this.choicesContainer.clear();
-		if  ( trieResults.size() == 0 && customResults.size() == 0) {
-			openChoices( false );
-			return;
+		if(element != null && element.getTrieResults() != null && element.getCustomResults() != null )
+		{
+			ArrayList trieResults 	= element.getTrieResults();
+			ArrayList customResults = element.getCustomResults();
+			
+			if  ( trieResults.size() == 0 && customResults.size() == 0) {
+				openChoices( false );
+				return;
+			}
+			
+			this.numberOfMatches = trieResults.size() + customResults.size();
+			
+			for (int i = 0; i < trieResults.size(); i++) {
+				String choiceText = ((StringBuffer)trieResults.get(i)).toString();
+				Item item = new ChoiceItem( choiceText, null, Choice.IMPLICIT, this.choiceItemStyle );
+				this.choicesContainer.add( item );
+			}
+			
+			for (int i = 0; i < customResults.size(); i++) {
+				String choiceText = ((StringBuffer)customResults.get(i)).toString();
+				Item item = new ChoiceItem( choiceText, null, Choice.IMPLICIT, this.choiceItemStyle );
+				this.choicesContainer.add( item );
+			}
+			if (!this.isOpen)
+				openChoices( this.numberOfMatches > 0 );
 		}
-		
-		this.numberOfMatches = trieResults.size() + customResults.size();
-		
-		for (int i = 0; i < trieResults.size(); i++) {
-			String choiceText = ((StringBuffer)trieResults.get(i)).toString();
-			Item item = new ChoiceItem( choiceText, null, Choice.IMPLICIT, this.choiceItemStyle );
-			this.choicesContainer.add( item );
-		}
-		
-		for (int i = 0; i < customResults.size(); i++) {
-			String choiceText = ((StringBuffer)customResults.get(i)).toString();
-			Item item = new ChoiceItem( choiceText, null, Choice.IMPLICIT, this.choiceItemStyle );
-			this.choicesContainer.add( item );
-		}
-		if (!this.isOpen)
-			openChoices( this.numberOfMatches > 0 );
+		else
+			openChoices(false);
 	}
 	
 	
@@ -279,14 +287,18 @@ public class PredictiveTextField
 				{
 					this.builder.keyNum(keyCode);
 					
-					this.setChoices(this.builder.getElement().getTrieResults(),
-									this.builder.getElement().getCustomResults());
-					
 					this.inputMode = this.builder.getMode();
 					updateInfo();
 					
 					if(!this.builder.getElement().isWordFound())
 						showWordNotFound();
+					else
+					{
+						if(this.builder.getAlign() == TextBuilder.ALIGN_FOCUS)
+							this.setChoices(this.builder.getElement());
+						else
+							this.openChoices(false);
+					}
 				}	
 				else
 				{
@@ -318,8 +330,11 @@ public class PredictiveTextField
 		{
 			this.builder.keyClear();
 			
-			this.setChoices(this.builder.getElement().getTrieResults(),
-							this.builder.getElement().getCustomResults());
+			if(!this.builder.isStringBuffer(0) && 
+				this.builder.getAlign() == TextBuilder.ALIGN_FOCUS)
+				this.setChoices(this.builder.getElement());
+			else
+				this.openChoices(false);
 		}
 		catch(RecordStoreException e) {e.printStackTrace();}
 		
@@ -396,8 +411,7 @@ public class PredictiveTextField
 				return true;
 			else
 			{
-				this.setChoices(this.builder.getElement().getTrieResults(),
-								this.builder.getElement().getCustomResults());
+				this.setChoices(this.builder.getElement());
 				
 				if(this.numberOfMatches > 0)
 					enterChoices( true );
@@ -415,8 +429,7 @@ public class PredictiveTextField
 			
 			if(this.builder.getAlign() == TextBuilder.ALIGN_FOCUS)
 			{
-				this.setChoices(this.builder.getElement().getTrieResults(),
-								this.builder.getElement().getCustomResults());
+				this.setChoices(this.builder.getElement());
 			}
 			else
 				openChoices(false);

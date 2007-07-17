@@ -13,14 +13,12 @@ public class TrieCustom {
 	private static int COUNT_SIZE = 1;
 	private static int CHAR_SIZE = 2;
 	
-	private StringBuffer result;
 	byte[] 	bytes = null;
 	
 	private RecordStore store = null;
 	
 	public TrieCustom()
 	{
-		result = new StringBuffer(10);
 		bytes 	= load();
 	}
 	
@@ -189,7 +187,8 @@ public class TrieCustom {
 	
 	private StringBuffer getWord(byte[] array, int offset)
 	{
-		result.setLength(0);
+		StringBuffer result = new StringBuffer();
+		
 		for(int i=0; i < array[offset] * CHAR_SIZE; i = i + CHAR_SIZE)
 			result.append(byteToChar(array, offset + i + 1));
 		

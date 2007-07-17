@@ -99,7 +99,9 @@ public class TextElement {
 				
 				this.trieResults.clear();
 				
-				if(((TrieReader)element).isWordFound() || this.customResults.size() == 0)
+				if(((TrieReader)element).isWordFound() || 
+					!this.isCustomFound() ||
+					this.getKeyCount() == ((TrieReader)element).getKeyCount())
 				{
 					ArrayList nodes = ((TrieReader) element).getNodes();
 					
