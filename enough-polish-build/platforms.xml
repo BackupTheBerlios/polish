@@ -98,6 +98,7 @@
 		<identifier>BlackBerry/4.1</identifier>
 		<parent>BlackBerry</parent>
 		<capability name="build.BootClassPath" value="blackberry-4.1.0.jar" />
+		<capability name="JavaPackage" value="location,wmapi,pim,mmapi" />
 	</platform>
 
 	<platform>
