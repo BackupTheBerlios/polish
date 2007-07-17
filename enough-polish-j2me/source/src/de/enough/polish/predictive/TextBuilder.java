@@ -5,6 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreFullException;
@@ -13,6 +14,7 @@ import javax.microedition.rms.RecordStoreNotFoundException;
 import de.enough.polish.io.Serializer;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Properties;
 
 public class TextBuilder {
@@ -46,92 +48,155 @@ public class TextBuilder {
 	 */
 	public static final int JUMP_NEXT = 1;
 		
-	ArrayList textElements = null;
-	int currentElement;
-	int currentAlign;
-	int currentInputMode;
-	int currentCaret;
+	private ArrayList textElements = null;
 	
-	TrieCustom custom = null;
+	private int element;
+	private int align;
+	private int mode;
+	private int caret;
 	
-	StringBuffer text = null;
+	private TrieCustom custom = null;
+	
+	private HashMap    stores 	= null;
+	private HashMap    records 	= null;
+	
+	private StringBuffer text = null;
 	
 	/**
 	 * Initializes the <code>TextElement</code> array, set the current element to -1, the align
 	 * for the current element to <code>ALIGN_LEFT</code> and the current input mode to 
 	 * <code>MODE_FIRST_UPPERCASE</code>.
 	 */
-	public TextBuilder(int textSize)
+	public TextBuilder(int textSize, HashMap stores, HashMap records)
 	{
-		this.textElements 		= new ArrayList();
-		this.currentElement 	= -1;
-		this.currentAlign		= ALIGN_LEFT;
-		this.currentInputMode 	= TextField.MODE_FIRST_UPPERCASE;
-		this.currentCaret		= 0;
-		this.custom				= new TrieCustom();
+		this.textElements 	= new ArrayList();
+		this.element 		= -1;
+		this.align			= ALIGN_LEFT;
+		this.mode 			= TextField.MODE_FIRST_UPPERCASE;
+		this.caret			= 0;
 		
-		text = new StringBuffer(textSize);
+		this.custom			= new TrieCustom();
+		
+		this.stores			= stores;
+		this.records		= records;
+		
+		this.text 			= new StringBuffer(textSize);
 	}
 	
+	public boolean keyNum(int keyCode) throws RecordStoreException
+	{
+		if(	isStringBuffer(0) || this.align == ALIGN_LEFT || this.align == ALIGN_RIGHT )
+			addReader(new TrieReader(this.stores,this.records));
+		
+		getReader().keyNum(keyCode);
+		getElement().keyNum(keyCode, mode);
+		getElement().setResults(custom);
+		
+		return getElement().getTrieResults().size() > 0 || getElement().getCustomResults().size() > 0;
+	}
+	
+	public void keySpace()
+	{
+		if(getElement().isSelectedCustom())
+			getElement().convertReader();
+		
+		addStringBuffer(" ");
+	}
+	
+	public boolean keyClear() throws RecordStoreException
+	{
+		if(align == ALIGN_LEFT)
+			if(element != 0)
+				decreaseCaret();
+			else
+				return false;
+		
+		if(isStringBuffer(0))
+		{
+			if(!decreaseStringBuffer())
+			{
+				deleteCurrent();
+				return false;
+			}
+			else
+				return true;
+		}
+		else
+		{
+			if(getElement().getKeyCount() == getReader().getKeyCount())
+				getReader().keyClear();
+			
+			getElement().keyClear();
+			getElement().setResults(this.custom);
+			
+			if(getReader().isEmpty())
+			{
+				deleteCurrent();
+				return false;
+			}
+			else
+			{
+				setAlign(ALIGN_FOCUS);
+				getElement().setSelectedWordIndex(0);
+				return (getElement().getTrieResults().size() > 0) || (getElement().getCustomResults().size() > 0);
+			}
+		}
+	}
+	
+	public void addWord(String string)
+	{
+		this.custom.addWord(string);
+	}
 	
 	/**
 	 * Returns the <code>TrieReader</code> carried in the current <code>TextElement</code>. It must be checked previously 
 	 * via <code>isChar()</code> if the current element is a <code>TrieReader</code>
 	 * @return the instance of <code>TrieReader</code> carried in the current <code>TextElement</code> 
 	 */
-	public TrieReader getCurrentReader()
+	public TrieReader getReader()
 	{
-		return (TrieReader)getTextElement(currentElement).getElement();
+		return (TrieReader)getTextElement(element).getElement();
 	}
 	
-	public StringBuffer getCurrentStringBuffer()
+	public StringBuffer getStringBuffer()
 	{
-		return (StringBuffer)getTextElement(currentElement).getElement();
+		return (StringBuffer)getTextElement(element).getElement();
 	}
 	
 	/**
 	 * Returns the current <code>TextElement</code>
 	 * @return the current <code>TextElement</code>
 	 */
-	public TextElement getCurrentElement()
+	public TextElement getElement()
 	{
-		return getTextElement(currentElement);
-	}
-	
-	/**
-	 * Returns the index of the current <code>TextElement</code> 
-	 * @return the index of the current <code>TextElement</code>
-	 */
-	public int getCurrentIndex()
-	{
-		return this.currentElement;
+		return getTextElement(element);
 	}
 	
 	/**
 	 * Returns the align of the current <code>TextElement</code>. 
 	 * @return the align of the current <code>TextElement</code>
 	 */
-	public int getCurrentAlign()
+	public int getAlign()
 	{
-		return this.currentAlign;
+		return this.align;
 	}
 	
 	/**
 	 * Sets the align of the current <code>TextElement</code>
 	 * @param currentAlign the align of the current <code>TextElement</code>
 	 */
-	public void setCurrentAlign(int currentAlign)
+	public void setAlign(int currentAlign)
 	{
-		this.currentAlign = currentAlign;
+		this.align = currentAlign;
 	}
 	
 	/**
 	 * Returns the current caret position
 	 * @return the current caret position
 	 */
-	public int getCurrentCaret()
+	public int getCaret()
 	{
-		return this.currentCaret;
+		return this.caret;
 	}
 	
 	/**
@@ -165,26 +230,26 @@ public class TextBuilder {
 	 * element is inserted at.
 	 * @param the <code>TextElement</code> to add
 	 */
-	private void addElement(TextElement element)
+	private void addElement(TextElement textElement)
 	{
-		if(currentElement >= 0)
+		if(element >= 0)
 		{
-			if(currentAlign == ALIGN_LEFT)
-				this.textElements.add(currentElement, element);
+			if(align == ALIGN_LEFT)
+				this.textElements.add(element, textElement);
 			
-			if(currentAlign == ALIGN_FOCUS)
-				this.textElements.add(currentElement + 1, element);
+			if(align == ALIGN_FOCUS)
+				this.textElements.add(element + 1, textElement);
 			
-			if(currentAlign == ALIGN_RIGHT)
-				this.textElements.add(currentElement + 1, element);
+			if(align == ALIGN_RIGHT)
+				this.textElements.add(element + 1, textElement);
 			
-			if( (currentAlign == ALIGN_FOCUS || currentAlign == ALIGN_RIGHT) && currentElement < textElements.size())
-				currentElement++;
+			if( (align == ALIGN_FOCUS || align == ALIGN_RIGHT) && element < textElements.size())
+				element++;
 		}
 		else
 		{
-			this.textElements.add(0, element);
-			currentElement = 0;
+			this.textElements.add(0, textElement);
+			element = 0;
 		}	
 	}
 	
@@ -195,7 +260,7 @@ public class TextBuilder {
 	 */
 	public int getElementLine(String[] textLines)
 	{
-		int caretPosition = this.getCurrentCaret(); 
+		int caretPosition = this.getCaret(); 
 		int length = 0;
 		int index = 0;
 		
@@ -250,22 +315,22 @@ public class TextBuilder {
 			
 			if(lengthOffset > position)
 			{
-				currentElement = i;
+				element = i;
 				
 				left = lengthOffset - length;
 				right = lengthOffset;
 					
 				if((position - left) > (right - position))
-					currentAlign = ALIGN_RIGHT;
+					align = ALIGN_RIGHT;
 				else
-					currentAlign = ALIGN_LEFT;
+					align = ALIGN_LEFT;
 					
 				return;
 			}
 		}
 		
-		currentElement = textElements.size() - 1;
-		currentAlign = ALIGN_RIGHT;
+		element = textElements.size() - 1;
+		align = ALIGN_RIGHT;
 		
 		return;
 	}
@@ -277,7 +342,7 @@ public class TextBuilder {
 	public void addStringBuffer(String string)
 	{
 		addElement(new TextElement(new StringBuffer(string)));
-		this.currentAlign = ALIGN_RIGHT;
+		this.align = ALIGN_RIGHT;
 	}
 	
 	/**
@@ -287,7 +352,7 @@ public class TextBuilder {
 	public void addReader(TrieReader reader)
 	{
 		addElement(new TextElement(reader));
-		this.currentAlign = ALIGN_FOCUS;
+		this.align = ALIGN_FOCUS;
 	}
 	
 	/**
@@ -298,14 +363,14 @@ public class TextBuilder {
 	{
 		if(this.textElements.size() > 0)
 		{
-			int index = currentElement;
+			int index = element;
 			
-			if(currentElement == 0)
-				this.currentAlign = ALIGN_LEFT;
+			if(element == 0)
+				this.align = ALIGN_LEFT;
 			else
 			{
-				this.currentElement--;
-				this.currentAlign = ALIGN_RIGHT;
+				this.element--;
+				this.align = ALIGN_RIGHT;
 			}
 				
 			this.textElements.remove(index);
@@ -320,11 +385,11 @@ public class TextBuilder {
 	{
 		if(this.isStringBuffer(0))
 		{
-			StringBuffer element = getCurrentStringBuffer();
+			StringBuffer element = getStringBuffer();
 			if(element.length() > 0)
 			{
 				element.setLength(element.length() - 1);
-				setCurrentAlign(ALIGN_RIGHT);
+				setAlign(ALIGN_RIGHT);
 				return (element.length() > 0);
 			}
 			else
@@ -352,18 +417,21 @@ public class TextBuilder {
 	{	
 		if(textElements.size() != 0)
 		{
-			if(currentAlign == ALIGN_FOCUS)
+			if(align == ALIGN_FOCUS)
 			{
-				currentAlign = ALIGN_RIGHT;
+				if(getElement().isSelectedCustom())
+					getElement().convertReader();
+				
+				align = ALIGN_RIGHT;
 			}
 			else
-				if(currentElement != textElements.size() - 1)
+				if(element != textElements.size() - 1)
 				{
-					currentAlign = ALIGN_LEFT;
-					currentElement++;
+					align = ALIGN_LEFT;
+					element++;
 				}
 				else
-					currentAlign = ALIGN_RIGHT;
+					align = ALIGN_RIGHT;
 					
 		}
 	}
@@ -387,29 +455,29 @@ public class TextBuilder {
 	{	
 		if(textElements.size() != 0)
 		{
-			switch(currentAlign)
+			switch(align)
 			{
 				case ALIGN_LEFT 	:
-					if(currentElement > 0)
+					if(element > 0)
 					{
 						if(!isStringBuffer(-1))
-							currentAlign = ALIGN_FOCUS;
+							align = ALIGN_FOCUS;
 						else
-							currentAlign = ALIGN_LEFT;
+							align = ALIGN_LEFT;
 						
-						currentElement--;
+						element--;
 					}
 				break;
 				
 				case ALIGN_FOCUS:
-					currentAlign = ALIGN_LEFT;
+					align = ALIGN_LEFT;
 				break;
 				
 				case ALIGN_RIGHT:
 					if(isStringBuffer(0))
-						currentAlign = ALIGN_LEFT;
+						align = ALIGN_LEFT;
 					else
-						currentAlign = ALIGN_FOCUS;
+						align = ALIGN_FOCUS;
 				break;
 			};
 		}
@@ -423,8 +491,8 @@ public class TextBuilder {
 	 */
 	public boolean isStringBuffer(int offset)
 	{
-		if(this.textElements.size() > 0 && (currentElement - offset) >= 0)
-			return (getTextElement(currentElement + offset).getElement() instanceof StringBuffer);
+		if(this.textElements.size() > 0 && (element - offset) >= 0)
+			return getTextElement(element + offset).isStringBuffer();
 		else
 			return true;
 	}
@@ -442,14 +510,14 @@ public class TextBuilder {
 	{
 		int result = 0;
 		
-		for (int i = 0; i < currentElement; i++) 
+		for (int i = 0; i < element; i++) 
 			result += getTextElement(i).getLength();
 		
 		if(this.textElements.size() > 0)
-			if( (currentAlign == ALIGN_FOCUS || currentAlign == ALIGN_RIGHT) && currentElement >= 0)
-				result += getTextElement(currentElement).getLength();
+			if( (align == ALIGN_FOCUS || align == ALIGN_RIGHT) && element >= 0)
+				result += getTextElement(element).getLength();
 		
-		this.currentCaret = result;
+		this.caret = result;
 		return result;
 	}
 	
@@ -489,15 +557,15 @@ public class TextBuilder {
 	 * Returns the current input mode
 	 * @return the current input mode
 	 */
-	public int getInputMode() {
-		return this.currentInputMode;
+	public int getMode() {
+		return this.mode;
 	}
 
 	/**
 	 * Sets the current input mode
 	 * @param currentInputMode the input mode to set
 	 */
-	public void setInputMode(int currentInputMode) {
-		this.currentInputMode = currentInputMode;
+	public void setMode(int mode) {
+		this.mode = mode;
 	}
 }

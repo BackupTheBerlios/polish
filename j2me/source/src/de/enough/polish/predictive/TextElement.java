@@ -1,6 +1,8 @@
 //#condition polish.TextField.useDirectInput && !polish.blackberry
 package de.enough.polish.predictive;
 
+import javax.microedition.rms.RecordStoreException;
+
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 
@@ -9,10 +11,10 @@ public class TextElement {
 	
 	int[] keyCodes = null; 
 	
-	ArrayList results = null;
+	ArrayList trieResults = null;
+	ArrayList customResults = null;
 	
-	int selectedWord;		
-	int customStart;
+	int selectedWordIndex;		
 	
 	static final int SHIFT = 10000;
 	
@@ -21,11 +23,12 @@ public class TextElement {
 		
 		if(this.element instanceof TrieReader)
 		{
-			this.results		= new ArrayList();
-			this.selectedWord	= 0;
+			this.trieResults		= new ArrayList();
+			this.customResults		= new ArrayList();
 			
-			this.keyCodes 		= new int[0];
-			this.customStart 	= -1;
+			this.selectedWordIndex	= 0;
+			
+			this.keyCodes 			= new int[0];
 		}
 	}
 
@@ -41,7 +44,7 @@ public class TextElement {
 		return -1;
 	}
 	
-	public void pushKeyCode(int keyCode, int shift)
+	public void keyNum(int keyCode, int shift) 
 	{	
 		int[] newKeyCodes = new int[this.keyCodes.length + 1];
 		System.arraycopy(this.keyCodes, 0, newKeyCodes, 0, this.keyCodes.length);
@@ -52,80 +55,134 @@ public class TextElement {
 			this.keyCodes[this.keyCodes.length - 1] += SHIFT;
 	}
 	
-	public void popKeyCode()
+	public void keyClear() 
 	{
 		int[] newKeyCodes = new int[this.keyCodes.length - 1];
 		System.arraycopy(this.keyCodes, 0, newKeyCodes, 0, this.keyCodes.length - 1);
 		this.keyCodes = newKeyCodes;
 	}
-
-	public boolean setResults(TrieCustom custom) {
+	
+	public boolean isStringBuffer()
+	{
+		if(this.element instanceof StringBuffer)
+			return true;
+		else
+			return false;
+	}
 		
-		StringBuffer string;
+	public void shiftResults(ArrayList results)
+	{
+		StringBuffer string = null;
 		
-		if (element instanceof TrieReader) {
-			if(((TrieReader) element).isWordFound() || custom.hasWords(keyCodes))
+		for (int i = 0; i < results.size(); i++) {
+			
+			string = (StringBuffer)results.get(i);
+			
+			for (int j = 0; j < keyCodes.length; j++)
 			{
-				this.results.clear();
+				if (keyCodes[j] > SHIFT)
+					string.setCharAt(j, Character.toUpperCase(string.charAt(j)));
+			}
+		}
+
+	}
+
+	public void setResults(TrieCustom custom) {
+		
+		if (element instanceof TrieReader) 
+		{
+				this.customResults.clear();
 				
-				if(((TrieReader) element).isWordFound())
+				custom.getWords(this.customResults,this.keyCodes);
+				
+				shiftResults(this.customResults);
+				
+				this.trieResults.clear();
+				
+				if(((TrieReader)element).isWordFound() || this.customResults.size() == 0)
 				{
 					ArrayList nodes = ((TrieReader) element).getNodes();
 					
-					for (int i = 0; i < nodes.size(); i++)
+					for(int i=0; i<nodes.size();i++)
 					{
 						TrieNode node = (TrieNode)nodes.get(i);
-						this.results.add(node.getWord());
+						this.trieResults.add(node.getWord());
 					}
+						
+					shiftResults(this.trieResults);
 				}
-				
-				this.customStart = this.results.size();
-				
-				custom.getWords(this.results,this.keyCodes);
-				
-				for (int i = 0; i < this.results.size(); i++) {
-					string = (StringBuffer)this.results.get(i);
-					
-					for (int j = 0; j < keyCodes.length; j++)
-					{
-						if (keyCodes[j] > SHIFT)
-							string.setCharAt(j, Character.toUpperCase(string.charAt(j)));
-					}
-				}
+		}
+	}
+	
+	private StringBuffer getSelectedStringBuffer()
+	{
+		if(this.isSelectedCustom())
+			return (StringBuffer)this.customResults.get(this.selectedWordIndex - this.trieResults.size());
+		else
+			return (StringBuffer)this.trieResults.get(this.selectedWordIndex);
+	}
+	
+	public void setSelectedWordIndex(int selected)
+	{
+		this.selectedWordIndex = selected;
+	}
+	
+	public int getSelectedWordIndex()
+	{
+		return this.selectedWordIndex;
+	}
 
-				return true;
-			}
-			else
-				return false;
+	public String getSelectedWord()
+	{
+		String selectedWord = getSelectedStringBuffer().toString();
+		
+		return selectedWord.substring(0, keyCodes.length);
+	}
+	
+	public boolean isSelectedCustom()
+	{
+		if(this.trieResults.size() > 0)
+			return (this.selectedWordIndex >= this.trieResults.size());
+		else
+			return (this.customResults.size() > 0);
+	}
+	
+	public void convertReader()
+	{
+		this.element = getSelectedStringBuffer();
+	}
+	
+	public ArrayList getTrieResults()
+	{
+		return this.trieResults;
+	}
+	
+	public ArrayList getCustomResults()
+	{
+		return this.customResults;
+	}
+	
+	public boolean isCustomFound()
+	{
+		return this.customResults.size() > 0;
+	}
+	
+	public boolean isWordFound()
+	{
+		if(!isStringBuffer())
+		{
+			return ((TrieReader)this.element).isWordFound() || isCustomFound();
 		}
 		
 		return false;
 	}
-	
-	public StringBuffer getSelectedWord()
-	{
-		StringBuffer result = null;
-		
-		result = (StringBuffer)this.results.get(selectedWord);
-		
-		return result;
-	}
-	
-	public ArrayList getResults()
-	{
-		return this.results;
-	}
-	
-	public void setSelectedWord(int selectedWord)
-	{
-		this.selectedWord = selectedWord;
-		
-		//convert reader to stringbuffer
-		if(this.selectedWord >= this.customStart)
-			this.element = this.getSelectedWord();
-	}
 
 	public Object getElement() {
 		return element;
+	}
+	
+	public int getKeyCount()
+	{
+		return this.keyCodes.length;
 	}
 }

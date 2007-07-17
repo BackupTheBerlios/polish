@@ -40,6 +40,8 @@ public class TrieReader {
 	
 	private boolean empty;
 	private boolean wordFound;
+	
+	int keyCount = 0;
 
 	byte[] record = null;
 	
@@ -60,6 +62,8 @@ public class TrieReader {
 				
 		this.empty 		= true;
 		this.wordFound	= true;
+		
+		
 	}
 	
 	private void getHeader() throws RecordStoreException
@@ -137,6 +141,8 @@ public class TrieReader {
 		
 		copyNodes(this.nodes,newNodes);
 		
+		keyCount++;
+		
 		this.prevNodes.push(newNodes);
 	}
 	
@@ -147,6 +153,7 @@ public class TrieReader {
 			try
 			{
 				this.nodes = (ArrayList)this.prevNodes.pop();
+				keyCount--;
 			}
 			catch(EmptyStackException e)
 			{
@@ -335,5 +342,10 @@ public class TrieReader {
 
 	private void setWordFound(boolean wordFound) {
 		this.wordFound = wordFound;
+	}
+	
+	public int getKeyCount()
+	{
+		return this.keyCount;
 	}
 }
