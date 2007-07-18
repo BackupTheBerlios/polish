@@ -85,70 +85,80 @@ extends Background
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		if (this.buffer == null || width != this.lastWidth || height != this.lastHeight ) {
-			if (width < this.arcWidth || height < this.arcHeight) {
-				return;
-			}
-			Image image = Image.createImage( width, height );
-			Graphics imageG = image.getGraphics();
-			imageG.setColor( 0 );
-			imageG.fillRoundRect(0, 0, width, height, this.arcWidth, this.arcHeight );
-			int[] imageData = new int[ width * height ];
-			image.getRGB(imageData, 0, width, 0, 0, width, height );
-			int targetColor = imageData[ width + width / 2];
-			boolean isLastPixelFullyTransparent = true;
-			int halfTransparentColor = ((this.color >>> 1) | (0x00ffffff)) & (this.color | 0xff000000);
-			for (int i = 0; i < imageData.length; i++) {
-				int col = imageData[i];
-				if (col == targetColor) {
-					if (isLastPixelFullyTransparent) {
-						imageData[i] = halfTransparentColor;
-						isLastPixelFullyTransparent = false;
+		//#if polish.blackberry && polish.usePolishGui
+			net.rim.device.api.ui.Graphics bbGraphics = null;
+			//# bbGraphics = g.g;
+			int alpha = this.color >>> 24;
+			bbGraphics.setGlobalAlpha( alpha );
+			bbGraphics.setColor( this.color );
+			bbGraphics.fillRoundRect(x, y, width, height, this.arcWidth, this.arcHeight );
+			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque
+		//#else
+			if (this.buffer == null || width != this.lastWidth || height != this.lastHeight ) {
+				if (width < this.arcWidth || height < this.arcHeight) {
+					return;
+				}
+				Image image = Image.createImage( width, height );
+				Graphics imageG = image.getGraphics();
+				imageG.setColor( 0 );
+				imageG.fillRoundRect(0, 0, width, height, this.arcWidth, this.arcHeight );
+				int[] imageData = new int[ width * height ];
+				image.getRGB(imageData, 0, width, 0, 0, width, height );
+				int targetColor = imageData[ width + width / 2];
+				boolean isLastPixelFullyTransparent = true;
+				int halfTransparentColor = ((this.color >>> 1) | (0x00ffffff)) & (this.color | 0xff000000);
+				for (int i = 0; i < imageData.length; i++) {
+					int col = imageData[i];
+					if (col == targetColor) {
+						if (isLastPixelFullyTransparent) {
+							imageData[i] = halfTransparentColor;
+							isLastPixelFullyTransparent = false;
+						} else {
+							imageData[i] = this.color;
+						}
 					} else {
-						imageData[i] = this.color;
-					}
-				} else {
-					// the remaining white part has to be fully transparent:
-					imageData[i] = 0x00000000;
-					if (!isLastPixelFullyTransparent) {
-						imageData[i-1] = halfTransparentColor;
-						isLastPixelFullyTransparent = true;
+						// the remaining white part has to be fully transparent:
+						imageData[i] = 0x00000000;
+						if (!isLastPixelFullyTransparent) {
+							imageData[i-1] = halfTransparentColor;
+							isLastPixelFullyTransparent = true;
+						}
 					}
 				}
+				this.buffer = imageData;
+				this.lastWidth = width;
+				this.lastHeight = height;
 			}
-			this.buffer = imageData;
-			this.lastWidth = width;
-			this.lastHeight = height;
-		}
-		//#ifdef polish.Bugs.drawRgbOrigin
-			x += g.getTranslateX();
-			y += g.getTranslateY();
+			//#ifdef polish.Bugs.drawRgbOrigin
+				x += g.getTranslateX();
+				y += g.getTranslateY();
+			//#endif
+			if (x < 0) {
+				width += x;
+				x = 0;
+			}
+			if (width <= 0) {
+				return;
+			}
+			if (y < 0) {
+				height += y;
+				y = 0;
+			}
+			if (height <= 0) {
+				return;
+			}
+			g.drawRGB(this.buffer, 0, width, x, y, width, height, true);
+			// draw border:
+			int border = this.borderWidth;
+			if (border > 0) {
+				g.setColor( this.borderColor );
+				g.drawRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
+				while ( border >= 0) {
+					g.drawRoundRect( x+border, y+border, width - 2*border, height - 2*border, this.arcWidth, this.arcHeight );
+					border--;
+				}
+			}
 		//#endif
-		if (x < 0) {
-			width += x;
-			x = 0;
-		}
-		if (width <= 0) {
-			return;
-		}
-		if (y < 0) {
-			height += y;
-			y = 0;
-		}
-		if (height <= 0) {
-			return;
-		}
-		g.drawRGB(this.buffer, 0, width, x, y, width, height, true);
-		// draw border:
-		int border = this.borderWidth;
-		if (border > 0) {
-			g.setColor( this.borderColor );
-			g.drawRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
-			while ( border >= 0) {
-				g.drawRoundRect( x+border, y+border, width - 2*border, height - 2*border, this.arcWidth, this.arcHeight );
-				border--;
-			}
-		}
 	}
 
 }

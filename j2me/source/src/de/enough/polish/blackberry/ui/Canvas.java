@@ -1075,280 +1075,288 @@ extends Displayable
     
 
 	/* (non-Javadoc)
-	 * @see net.rim.device.api.ui.Screen#onDisplay()
+	 * @see net.rim.device.api.ui.Screen#onExposed()
 	 */
-	protected void onDisplay() {
-		super.onDisplay();
+	protected void onExposed() {
+		super.onExposed();
 		showNotify();
 	}
 
 	/* (non-Javadoc)
-	 * @see net.rim.device.api.ui.Screen#onUndisplay()
+	 * @see net.rim.device.api.ui.Screen#onObscured()
 	 */
-	protected void onUndisplay() {
-		super.onUndisplay();
+	protected void onObscured() {
+		super.onObscured();
 		hideNotify();
 	}
 
-		/* (non-Javadoc)
-         * @see net.rim.device.api.ui.container.FullScreen#sublayout(int, int)
-         */
-        protected void sublayout(int width, int height) {
-                super.sublayout(width, height);
-                int w = net.rim.device.api.ui.Graphics.getScreenWidth();
-                int h = net.rim.device.api.ui.Graphics.getScreenHeight();
-                setExtent( w,  h );
-                sizeChanged( w, h );
-        }
+	/* (non-Javadoc)
+     * @see net.rim.device.api.ui.container.FullScreen#sublayout(int, int)
+     */
+    protected void sublayout(int width, int height) {
+            super.sublayout(width, height);
+            int w = net.rim.device.api.ui.Graphics.getScreenWidth();
+            int h = net.rim.device.api.ui.Graphics.getScreenHeight();
+            setExtent( w,  h );
+            sizeChanged( w, h );
+    }
 
-        /* (non-Javadoc)
-         * @see net.rim.device.api.ui.Screen#onMenu(int)
-         */
-        public boolean onMenu( int instance ) {
-                boolean processed = super.onMenu( instance );
-                if (processed) {
-                        return true;
-                }
-                Object o = this;
-                if (o instanceof Screen) {
-                    Screen screen = (Screen)o;
-                    if (!screen.isMenuOpened()) {
-                        // unfocus the current item
-                        Field nativeFocusedField = super.getFieldWithFocus();
-                        if (nativeFocusedField != this.dummyField) {
-                            Object lock = MIDlet.getEventLock();
-                            synchronized (lock) {
-                                setFocus( this.dummyField, 0, 0, 0, 0 );
-                                this.menuField = nativeFocusedField;
-                            }
-                        }
-                    } else if (this.menuField != null) {
-                        Object lock = MIDlet.getEventLock();
-                        synchronized (lock) {
-                            setFocus( this.menuField, 0, 0, 0, 0 );
-                            this.menuField = null;
-                        }
-                    }
-                }
-                //#if polish.key.LeftSoftKey:defined
-                        //#= keyPressed( $polish.key.LeftSoftKey} );
-                //#else
-                        keyPressed( -6 );
-                //#endif
-                return true;
-        }
-
-        /* (non-Javadoc)
-         * @see net.rim.device.api.ui.Screen#trackwheelRoll(int, int, int)
-         */
-        protected boolean trackwheelRoll( int amount, int status, int time ) {
-        	try {
-            boolean callSuper = false;
-            Screen screen = null;
+    /* (non-Javadoc)
+     * @see net.rim.device.api.ui.Screen#onMenu(int)
+     */
+    public boolean onMenu( int instance ) {
+            boolean processed = super.onMenu( instance );
+            if (processed) {
+            	return true;
+            }
             Object o = this;
             if (o instanceof Screen) {
-                screen = (Screen)o;
-                Item item = screen.getCurrentItem();
-                callSuper = !screen.isMenuOpened() 
-                        && item != null 
-                        && item._bbField != null;
-            }
-            boolean processed = false;
-            if (callSuper) {
-            	try {
-            		processed = super.trackwheelRoll(amount, status, time);
-         	   } catch (Exception e) {
-        		   //#debug error
-        		   System.out.println("super.trackwheelRoll(" + amount + ", " + status + ", " + time + ") failed" + e );        		   
-        	   }
-            	
-            }
-                if (processed) {
-                    if (screen != null) {
-                        Item focusedItem = screen.getCurrentItem();
-                        Field nativeFocusedItem = super.getFieldWithFocus();
-                        if ( focusedItem != null && focusedItem._bbField != nativeFocusedItem) {
-                        	//#debug
-                            System.out.println("Canvas.trackwheel-roll: super changed the focus.");
-                            this.dummyFieldHasFocus = true;
+                Screen screen = (Screen)o;
+                if (!screen.isMenuOpened()) {
+                    // unfocus the current item
+                    Field nativeFocusedField = super.getFieldWithFocus();
+                    if (nativeFocusedField != this.dummyField) {
+                        Object lock = MIDlet.getEventLock();
+                        synchronized (lock) {
                             setFocus( this.dummyField, 0, 0, 0, 0 );
-                            processed = false;
+                            this.menuField = nativeFocusedField;
                         }
                     }
-                    if (processed) {
-                    	//#debug
-                        System.out.println("Canvas.trackwheel-roll: super processed the call.");
-                        return true;
+                } else if (this.menuField != null) {
+                    Object lock = MIDlet.getEventLock();
+                    synchronized (lock) {
+                        setFocus( this.menuField, 0, 0, 0, 0 );
+                        this.menuField = null;
                     }
                 }
-                int keyCode;
-                if ( amount < 0 ) {
-                        amount *= -1;
-                        if ( status == TrackwheelListener.STATUS_ALT ) {
-                                keyCode = KEY_BB_UP;
-                        } else {
-                                keyCode = KEY_BB_LEFT;
-                        }
-                } else {
-                        if ( status == TrackwheelListener.STATUS_ALT ) {
-                                keyCode = KEY_BB_DOWN;
-                        } else {
-                                keyCode = KEY_BB_RIGHT;
-                        }
-                }
-                // for loop outcommented, so that only one scroll step within each event is processed
-                //for (; --amount >= 0; ) {
-                        keyPressed( keyCode );
-                        if ( screen != null ) {
-                                processed |= screen.keyPressedProcessed;
-                        }
-                //}
+            }
+            //#if polish.key.LeftSoftKey:defined
+                    //#= keyPressed( $polish.key.LeftSoftKey} );
+            //#else
+                    keyPressed( -6 );
+            //#endif
+            return true;
+    }
+
+    /* (non-Javadoc)
+     * @see net.rim.device.api.ui.Screen#trackwheelRoll(int, int, int)
+     */
+    protected boolean trackwheelRoll( int amount, int status, int time ) {
+    	try {
+	        boolean callSuper = false;
+	        Screen screen = null;
+	        Object o = this;
+	        if (o instanceof Screen) {
+	            screen = (Screen)o;
+	            Item item = screen.getCurrentItem();
+	            callSuper = !screen.isMenuOpened() 
+	                    && item != null 
+	                    && item._bbField != null;
+	        }
+	        boolean processed = false;
+	        if (callSuper) {
+	        	try {
+	        		processed = super.trackwheelRoll(amount, status, time);
+	     	   } catch (Exception e) {
+	    		   //#debug error
+	    		   System.out.println("super.trackwheelRoll(" + amount + ", " + status + ", " + time + ") failed" + e );        		   
+	    	   }
+	        	
+	        }
+            if (processed) {
                 if (screen != null) {
-                        return processed;
-                } else {
-                        return true;
+                    Item focusedItem = screen.getCurrentItem();
+                    Field nativeFocusedItem = super.getFieldWithFocus();
+                    if ( focusedItem != null && focusedItem._bbField != nativeFocusedItem) {
+                    	//#debug
+                        System.out.println("Canvas.trackwheel-roll: super changed the focus.");
+                        this.dummyFieldHasFocus = true;
+                        setFocus( this.dummyField, 0, 0, 0, 0 );
+                        processed = false;
+                    }
                 }
-        	} catch (Exception e) {
-        		//#debug error
-        		System.out.println("error while processing trackwheel roll" + e);
-        		return true;
-        	}
-        }
-        
-        
-        
-        /* (non-Javadoc)
-         * @see net.rim.device.api.ui.Screen#keyDown(int, int)
-         */
-        protected boolean keyDown(int keyCode, int status) {
-                boolean processFurther = true;
-            	Object o = this;
-            	Screen screen = null;
-                if ( o instanceof Screen ) {
-                   screen = ((Screen)o);
-                   if (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE // 1769472 is the escape button 
-                		   && !screen.isMenuOpened() 
-                		   && !this.dummyFieldHasFocus) 
-                   { 
-                	   try {
-                	   processFurther = super.keyDown(keyCode, status);                	   
-	                       if (!processFurther) {
-	                           return false;
-		                   }
-                	   } catch (Exception e) {
-                		   //#debug error
-                		   System.out.println("super.keyDown(" + keyCode + ", " + status + ") failed" + e );
-                	   }
+                if (processed) {
+                	//#debug
+                    System.out.println("Canvas.trackwheel-roll: super processed the call.");
+                    return true;
+                }
+            }
+            int keyCode;
+            if ( amount < 0 ) {
+                    amount *= -1;
+                    if ( status == TrackwheelListener.STATUS_ALT ) {
+                            keyCode = KEY_BB_UP;
+                    } else {
+                            keyCode = KEY_BB_LEFT;
+                    }
+            } else {
+                    if ( status == TrackwheelListener.STATUS_ALT ) {
+                            keyCode = KEY_BB_DOWN;
+                    } else {
+                            keyCode = KEY_BB_RIGHT;
+                    }
+            }
+            // for loop outcommented, so that only one scroll step within each event is processed
+            //for (; --amount >= 0; ) {
+                    keyPressed( keyCode );
+                    if ( screen != null ) {
+                            processed |= screen.keyPressedProcessed;
+                    }
+            //}
+            if (screen != null) {
+                    return processed;
+            } else {
+                    return true;
+            }
+    	} catch (Exception e) {
+    		//#debug error
+    		System.out.println("error while processing trackwheel roll" + e);
+    		return true;
+    	}
+    }
+    
+    
+    
+    /* (non-Javadoc)
+     * @see net.rim.device.api.ui.Screen#keyDown(int, int)
+     */
+    protected boolean keyDown(int keyCode, int status) {
+        boolean processFurther = true;
+    	Object o = this;
+    	Screen screen = null;
+        if ( o instanceof Screen ) {
+           screen = ((Screen)o);
+           char keyChar = Keypad.map( keyCode );
+           if ( keyChar != Keypad.KEY_ESCAPE // 1769472 is the escape button 
+        		   && !screen.isMenuOpened() 
+        		   && !this.dummyFieldHasFocus) 
+           { 
+        	   try {
+        		   processFurther = super.keyDown(keyCode, status);                	   
+                   if (!processFurther) {
+                       return false;
                    }
-                }
-                //#debug
-                System.out.println("keyDown: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
-
-                switch ( Keypad.map( keyCode, status ) ) {
-                case '0': keyCode = KEY_NUM0; break;
-                case '1': keyCode = KEY_NUM1; break;
-                case '2': keyCode = KEY_NUM2; break;
-                case '3': keyCode = KEY_NUM3; break;
-                case '4': keyCode = KEY_NUM4; break;
-                case '5': keyCode = KEY_NUM5; break;
-                case '6': keyCode = KEY_NUM6; break;
-                case '7': keyCode = KEY_NUM7; break;
-                case '8': keyCode = KEY_NUM8; break;
-                case '9': keyCode = KEY_NUM9; break;
-                }
-                keyPressed( keyCode );
-                if ( screen != null ) {
-                	return ! screen.keyPressedProcessed;
-                } else { 
-                	return true; // consume the key event
-                } 
+        	   } catch (Exception e) {
+        		   //#debug error
+        		   System.out.println("super.keyDown(" + keyCode + ", " + status + ") failed" + e );
+        	   }
+           }
         }
+        //#debug
+        System.out.println("keyDown: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
 
-        /* (non-Javadoc)
-         * @see net.rim.device.api.ui.Screen#keyRepeat(int, int)
-         */
-        protected boolean keyRepeat(int keyCode, int status) {
-                return keyDown( keyCode, status );
+        switch ( Keypad.map( keyCode, status ) ) {
+        case '0': keyCode = KEY_NUM0; break;
+        case '1': keyCode = KEY_NUM1; break;
+        case '2': keyCode = KEY_NUM2; break;
+        case '3': keyCode = KEY_NUM3; break;
+        case '4': keyCode = KEY_NUM4; break;
+        case '5': keyCode = KEY_NUM5; break;
+        case '6': keyCode = KEY_NUM6; break;
+        case '7': keyCode = KEY_NUM7; break;
+        case '8': keyCode = KEY_NUM8; break;
+        case '9': keyCode = KEY_NUM9; break;
         }
+        keyPressed( keyCode );
+        if ( screen != null ) {
+        	return ! screen.keyPressedProcessed;
+        } else { 
+        	return true; // consume the key event
+        } 
+    }
 
-        public void setFocus( Item item ) {
-	        Object lock = MIDlet.getEventLock();
-	        synchronized (lock) {
-		        if ( item._bbField != null ) {
-		            if ( !item._bbFieldAdded ) {
-	                    item._bbFieldAdded = true;
-	                    add( item._bbField );
-	                    //System.out.println("Canvas.focus(): adding field " + item._bbField );
-		            }
-		            setFocus( item._bbField, 0, 0, 0, 0 );
-		            //System.out.println("Canvas.focus(): focusing field " + item._bbField );
-		            this.dummyFieldHasFocus = false;
-		        } else if (!this.dummyFieldHasFocus) {
-		            this.dummyFieldHasFocus = true;
-		            setFocus( this.dummyField, 0, 0, 0, 0 );
-		            //System.out.println("Canvas.focus(): focusing dummy");
-		        }
+    /* (non-Javadoc)
+     * @see net.rim.device.api.ui.Screen#keyRepeat(int, int)
+     */
+    protected boolean keyRepeat(int keyCode, int status) {
+        return keyDown( keyCode, status );
+    }
+
+    /**
+     * Focuses an item and it's corresponding blackberry field if available.
+     * If not native blackberry field is asscociated with the item, the
+     * internal dummy item will be focused.
+     * 
+     * @param item the item that is focused
+     */
+    public void setFocus( Item item ) {
+        Object lock = MIDlet.getEventLock();
+        synchronized (lock) {
+	        if ( item != null && item._bbField != null ) {
+	            if ( !item._bbFieldAdded ) {
+                    item._bbFieldAdded = true;
+                    add( item._bbField );
+                    //System.out.println("Canvas.focus(): adding field " + item._bbField );
+	            }
+	            setFocus( item._bbField, 0, 0, 0, 0 );
+	            //System.out.println("Canvas.focus(): focusing field " + item._bbField );
+	            this.dummyFieldHasFocus = false;
+	        } else if (!this.dummyFieldHasFocus) {
+	            this.dummyFieldHasFocus = true;
+	            setFocus( this.dummyField, 0, 0, 0, 0 );
+	            //System.out.println("Canvas.focus(): focusing dummy");
 	        }
         }
+    }
 
-        //#if polish.hasTrackballEvents
-        /* (non-Javadoc)
-         * @see net.rim.device.api.ui.Screen#navigationClick(int, int)
-         */
-        protected boolean navigationClick(int status, int time)
-        {
-          /* From Blackberry Java Development Guide, might be useful in the future.
-          if ((status & KeypadListener.STATUS_TRACKWHEEL) == KeypadListener.STATUS_TRACKWHEEL)
-          {
-            // TODO: Do something here.
-          }
-          else if ((status & KeypadListener.STATUS_FOUR_WAY) == KeypadListener.STATUS_FOUR_WAY)
-          {
-            // TODO: Do something here.
-          }
-          */
-          return super.navigationClick(status, time);
-        }
+    //#if polish.hasTrackballEvents
+    /* (non-Javadoc)
+     * @see net.rim.device.api.ui.Screen#navigationClick(int, int)
+     */
+    protected boolean navigationClick(int status, int time)
+    {
+      /* From Blackberry Java Development Guide, might be useful in the future.
+      if ((status & KeypadListener.STATUS_TRACKWHEEL) == KeypadListener.STATUS_TRACKWHEEL)
+      {
+        // TODO: Do something here.
+      }
+      else if ((status & KeypadListener.STATUS_FOUR_WAY) == KeypadListener.STATUS_FOUR_WAY)
+      {
+        // TODO: Do something here.
+      }
+      */
+      return super.navigationClick(status, time);
+    }
 
-        /* (non-Javadoc)
-         * @see net.rim.device.api.ui.Screen#navigationMovement(int, int, int, int)
-         */
-        protected boolean navigationMovement(int dx, int dy, int status, int time)
-        {
-          // Trackball up.
-          if (dx == 0 && dy < 0)
-          {
-            keyPressed(Canvas.KEY_BB_UP);
-            return true;
-          }
-          // Trackball down.
-          else if (dx == 0 && dy > 0)
-          {
-            keyPressed(Canvas.KEY_BB_DOWN);
-            return true;
-          }
-          // Trackball left.
-          else if (dx < 0 && dy == 0)
-          {
-            keyPressed(Canvas.KEY_BB_LEFT);
-            return true;
-          }
-          // Trackball right.
-          else if (dx > 0 && dy == 0)
-          {
-            keyPressed(Canvas.KEY_BB_RIGHT);
-            return true;
-          }
+    /* (non-Javadoc)
+     * @see net.rim.device.api.ui.Screen#navigationMovement(int, int, int, int)
+     */
+    protected boolean navigationMovement(int dx, int dy, int status, int time)
+    {
+      // Trackball up.
+      if (dx == 0 && dy < 0)
+      {
+        keyPressed(Canvas.KEY_BB_UP);
+        return true;
+      }
+      // Trackball down.
+      else if (dx == 0 && dy > 0)
+      {
+        keyPressed(Canvas.KEY_BB_DOWN);
+        return true;
+      }
+      // Trackball left.
+      else if (dx < 0 && dy == 0)
+      {
+        keyPressed(Canvas.KEY_BB_LEFT);
+        return true;
+      }
+      // Trackball right.
+      else if (dx > 0 && dy == 0)
+      {
+        keyPressed(Canvas.KEY_BB_RIGHT);
+        return true;
+      }
 
-          return super.navigationMovement(dx, dy, status, time);
-        }
+      return super.navigationMovement(dx, dy, status, time);
+    }
 
-        /* (non-Javadoc)
-         * @see net.rim.device.api.ui.Screen#navigationUnclick(int, int)
-         */
-        protected boolean navigationUnclick(int status, int time)
-        {
-          return super.navigationUnclick(status, time);
-        }
-        //#endif
+    /* (non-Javadoc)
+     * @see net.rim.device.api.ui.Screen#navigationUnclick(int, int)
+     */
+    protected boolean navigationUnclick(int status, int time)
+    {
+      return super.navigationUnclick(status, time);
+    }
+    //#endif
 }

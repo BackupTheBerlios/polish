@@ -52,7 +52,7 @@ public class TranslucentSimpleBackground extends Background {
 		//#define tmp.useNokiaUi
 		private final int[] xCoords;
 		private final int[] yCoords;
-	//#elifdef polish.midp2
+	//#elif polish.midp2 && !polish.blackberry
 		// int MIDP/2.0 the buffer is always used:
 		private int[] buffer;
 		private int lastWidth;
@@ -81,7 +81,15 @@ public class TranslucentSimpleBackground extends Background {
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		//#ifdef tmp.useNokiaUi
+		//#if polish.blackberry && polish.usePolishGui
+			net.rim.device.api.ui.Graphics bbGraphics = null;
+			//# bbGraphics = g.g;
+			int alpha = this.argbColor >>> 24;
+			bbGraphics.setGlobalAlpha( alpha );
+			bbGraphics.setColor( this.argbColor );
+			bbGraphics.fillRect(x, y, width, height);
+			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque		
+		//#elif tmp.useNokiaUi
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
 			if ( this.xCoords[0] != x || this.xCoords[1] != x + width) {
 				this.xCoords[0] = x;
@@ -164,7 +172,7 @@ public class TranslucentSimpleBackground extends Background {
 	 * Releases all (memory intensive) resources such as images or RGB arrays of this background.
 	 */
 	public void releaseResources() {
-		//#if !polish.api.nokia-ui && polish.midp2
+		//#if !tmp.useNokiaUi && !polish.blackberry && polish.midp2
 			// int MIDP/2.0 the buffer is always used:
 			this.buffer = null;
 			this.lastWidth = 0;

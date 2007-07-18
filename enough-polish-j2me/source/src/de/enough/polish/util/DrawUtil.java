@@ -78,6 +78,7 @@ public final class DrawUtil {
 			//# bbGraphics = g.g;
 			int alpha = color >>> 24;
 			bbGraphics.setGlobalAlpha( alpha );
+			bbGraphics.setColor( color );
 			bbGraphics.fillRect(x, y, width, height);
 			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque
 		//#elif tmp.useNokiaUi
@@ -905,6 +906,7 @@ public final class DrawUtil {
 			//# bbGraphics = g.g;
 			int alpha = color >>> 24;
 			bbGraphics.setGlobalAlpha( alpha );
+			bbGraphics.setColor( color );
 			bbGraphics.drawLine(x1, y1, x2, y2);
 			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque
 		//#elif polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi && !polish.Bugs.TransparencyNotWorkingInDrawPolygon

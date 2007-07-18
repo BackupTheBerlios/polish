@@ -1066,10 +1066,16 @@ public class TextField extends StringItem
 			if (this.editField != null && text != this.text ) {
 				Object bbLock = UiApplication.getEventLock();
 				synchronized (bbLock) {
+                    if (this.isFocused) {
+                    	//# this.screen.setFocus( null );
+                    }
                     if (text != null) {
                         this.editField.setText(text);
                     } else {
                         this.editField.setText(""); // setting null triggers an IllegalArgumentException
+                    }
+                    if (this.isFocused) {
+                    	//# this.screen.setFocus( this );
                     }
 				}
 			}
@@ -1507,7 +1513,7 @@ public class TextField extends StringItem
 			} else {
 				this.editField = new PolishEditField( null, getString(), this.maxSize, bbStyle );
 			}
-			//this.editField.setChangeListener( this );
+			//# this.editField.setChangeListener( this );
 			this._bbField = (Field) this.editField;
 		//#elif !tmp.forceDirectInput
 			if (this.midpTextBox != null) {
@@ -3499,6 +3505,11 @@ public class TextField extends StringItem
 	//#endif
 
 	//#if polish.blackberry
+	/**
+	 * Notifies the TextField about changes in its native BlackBerry component.
+	 * @param field the native field
+	 * @param context the context of the change
+	 */
 	public void fieldChanged(Field field, int context) {
 		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialized ) {
 			//#if polish.Bugs.ItemStateListenerCalledTooEarly
