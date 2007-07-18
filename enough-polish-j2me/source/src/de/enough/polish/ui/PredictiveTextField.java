@@ -476,7 +476,7 @@ public class PredictiveTextField
 		return false;
 	}
 	
-	protected void commandAction(Command cmd, Item item)
+	public void commandAction(Command cmd, Item item)
 	{
 		if(!this.predictiveInput && cmd != ENABLE_PREDICTIVE_CMD)
 		{
