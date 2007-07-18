@@ -314,544 +314,544 @@ import de.enough.polish.ui.Screen;
 public abstract class Canvas
 extends Displayable
 {
-        /**
-         * Constant for the <code>UP</code> game action.
-         * 
-         * <P>Constant value <code>1</code> is set to <code>UP</code>.</P>
-         * 
-         */
-        public static final int UP = 1;
+    /**
+     * Constant for the <code>UP</code> game action.
+     * 
+     * <P>Constant value <code>1</code> is set to <code>UP</code>.</P>
+     * 
+     */
+    public static final int UP = 1;
 
-        /**
-         * Constant for the <code>DOWN</code> game action.
-         * 
-         * <P>Constant value <code>6</code> is set to <code>DOWN</code>.</P>
-         * 
-         */
-        public static final int DOWN = 6;
+    /**
+     * Constant for the <code>DOWN</code> game action.
+     * 
+     * <P>Constant value <code>6</code> is set to <code>DOWN</code>.</P>
+     * 
+     */
+    public static final int DOWN = 6;
 
-        /**
-         * Constant for the <code>LEFT</code> game action.
-         * 
-         * <P>Constant value <code>2</code> is set to <code>LEFT</code>.</P>
-         * 
-         */
-        public static final int LEFT = 2;
+    /**
+     * Constant for the <code>LEFT</code> game action.
+     * 
+     * <P>Constant value <code>2</code> is set to <code>LEFT</code>.</P>
+     * 
+     */
+    public static final int LEFT = 2;
 
-        /**
-         * Constant for the <code>RIGHT</code> game action.
-         * 
-         * <P>Constant value <code>5</code> is set to <code>RIGHT</code>.</P>
-         * 
-         */
-        public static final int RIGHT = 5;
+    /**
+     * Constant for the <code>RIGHT</code> game action.
+     * 
+     * <P>Constant value <code>5</code> is set to <code>RIGHT</code>.</P>
+     * 
+     */
+    public static final int RIGHT = 5;
 
-        /**
-         * Constant for the <code>FIRE</code> game action.
-         * 
-         * <P>Constant value <code>8</code> is set to <code>FIRE</code>.</P>
-         * 
-         */
-        public static final int FIRE = 8;
+    /**
+     * Constant for the <code>FIRE</code> game action.
+     * 
+     * <P>Constant value <code>8</code> is set to <code>FIRE</code>.</P>
+     * 
+     */
+    public static final int FIRE = 8;
 
-        /**
-         * Constant for the general purpose &quot;<code>A</code>&quot; game action.
-         * 
-         * <P>Constant value <code>9</code> is set to <code>GAME_A</code>.</P>
-         * 
-         */
-        public static final int GAME_A = 9;
+    /**
+     * Constant for the general purpose &quot;<code>A</code>&quot; game action.
+     * 
+     * <P>Constant value <code>9</code> is set to <code>GAME_A</code>.</P>
+     * 
+     */
+    public static final int GAME_A = 9;
 
-        /**
-         * Constant for the general purpose &quot;<code>B</code>&quot; game action.
-         * 
-         * <P>Constant value <code>10</code> is set to <code>GAME_B</code>.</P>
-         * 
-         */
-        public static final int GAME_B = 10;
+    /**
+     * Constant for the general purpose &quot;<code>B</code>&quot; game action.
+     * 
+     * <P>Constant value <code>10</code> is set to <code>GAME_B</code>.</P>
+     * 
+     */
+    public static final int GAME_B = 10;
 
-        /**
-         * Constant for the general purpose &quot;<code>C</code>&quot; game action.
-         * 
-         * <P>Constant value <code>11</code> is set to <code>GAME_C</code>.</P>
-         * 
-         */
-        public static final int GAME_C = 11;
+    /**
+     * Constant for the general purpose &quot;<code>C</code>&quot; game action.
+     * 
+     * <P>Constant value <code>11</code> is set to <code>GAME_C</code>.</P>
+     * 
+     */
+    public static final int GAME_C = 11;
 
-        /**
-         * Constant for the general purpose &quot;<code>D</code>&quot; game action.
-         * 
-         * <P>Constant value <code>12</code> is set to <code>GAME_D</code>.</P>
-         * 
-         */
-        public static final int GAME_D = 12;
+    /**
+     * Constant for the general purpose &quot;<code>D</code>&quot; game action.
+     * 
+     * <P>Constant value <code>12</code> is set to <code>GAME_D</code>.</P>
+     * 
+     */
+    public static final int GAME_D = 12;
 
-        /**
-         * keyCode for ITU-T key <code>0</code>.
-         * 
-         * <P>Constant value <code>48</code> is set to <code>KEY_NUM0</code>.</P>
-         * 
-         */
-        public static final int KEY_NUM0 = 48;
+    /**
+     * keyCode for ITU-T key <code>0</code>.
+     * 
+     * <P>Constant value <code>48</code> is set to <code>KEY_NUM0</code>.</P>
+     * 
+     */
+    public static final int KEY_NUM0 = 48;
 
-        /**
-         * keyCode for ITU-T key <code>1</code>.
-         * 
-         * <P>Constant value <code>49</code> is set to <code>KEY_NUM1</code>.</P>
-         * 
-         */
-        public static final int KEY_NUM1 = 49;
+    /**
+     * keyCode for ITU-T key <code>1</code>.
+     * 
+     * <P>Constant value <code>49</code> is set to <code>KEY_NUM1</code>.</P>
+     * 
+     */
+    public static final int KEY_NUM1 = 49;
 
-        /**
-         * keyCode for ITU-T key <code>2</code>.
-         * 
-         * <P>Constant value <code>50</code> is set to <code>KEY_NUM2</code>.</P>
-         * 
-         */
-        public static final int KEY_NUM2 = 50;
+    /**
+     * keyCode for ITU-T key <code>2</code>.
+     * 
+     * <P>Constant value <code>50</code> is set to <code>KEY_NUM2</code>.</P>
+     * 
+     */
+    public static final int KEY_NUM2 = 50;
 
-        /**
-         * keyCode for ITU-T key <code>3</code>.
-         * 
-         * <P>Constant value <code>51</code> is set to <code>KEY_NUM3</code>.</P>
-         * 
-         */
-        public static final int KEY_NUM3 = 51;
+    /**
+     * keyCode for ITU-T key <code>3</code>.
+     * 
+     * <P>Constant value <code>51</code> is set to <code>KEY_NUM3</code>.</P>
+     * 
+     */
+    public static final int KEY_NUM3 = 51;
 
-        /**
-         * keyCode for ITU-T key <code>4</code>.
-         * 
-         * <P>Constant value <code>52</code> is set to <code>KEY_NUM4</code>.</P>
-         * 
-         */
-        public static final int KEY_NUM4 = 52;
+    /**
+     * keyCode for ITU-T key <code>4</code>.
+     * 
+     * <P>Constant value <code>52</code> is set to <code>KEY_NUM4</code>.</P>
+     * 
+     */
+    public static final int KEY_NUM4 = 52;
 
-        /**
-         * keyCode for ITU-T key <code>5</code>.
-         * 
-         * <P>Constant value <code>53</code> is set to <code>KEY_NUM5</code>.</P>
-         * 
-         */
-        public static final int KEY_NUM5 = 53;
+    /**
+     * keyCode for ITU-T key <code>5</code>.
+     * 
+     * <P>Constant value <code>53</code> is set to <code>KEY_NUM5</code>.</P>
+     * 
+     */
+    public static final int KEY_NUM5 = 53;
 
-        /**
-         * keyCode for ITU-T key <code>6</code>.
-         * 
-         * <P>Constant value <code>54</code> is set to <code>KEY_NUM6</code>.</P>
-         * 
-         */
-        public static final int KEY_NUM6 = 54;
+    /**
+     * keyCode for ITU-T key <code>6</code>.
+     * 
+     * <P>Constant value <code>54</code> is set to <code>KEY_NUM6</code>.</P>
+     * 
+     */
+    public static final int KEY_NUM6 = 54;
 
-        /**
-         * keyCode for ITU-T key <code>7</code>.
-         * 
-         * <P>Constant value <code>55</code> is set to <code>KEY_NUM7</code>.</P>
-         * 
-         */
-        public static final int KEY_NUM7 = 55;
+    /**
+     * keyCode for ITU-T key <code>7</code>.
+     * 
+     * <P>Constant value <code>55</code> is set to <code>KEY_NUM7</code>.</P>
+     * 
+     */
+    public static final int KEY_NUM7 = 55;
 
-        /**
-         * keyCode for ITU-T key <code>8</code>.
-         * 
-         * <P>Constant value <code>56</code> is set to <code>KEY_NUM8</code>.</P>
-         * 
-         */
-        public static final int KEY_NUM8 = 56;
+    /**
+     * keyCode for ITU-T key <code>8</code>.
+     * 
+     * <P>Constant value <code>56</code> is set to <code>KEY_NUM8</code>.</P>
+     * 
+     */
+    public static final int KEY_NUM8 = 56;
 
-        /**
-         * keyCode for ITU-T key <code>9</code>.
-         * 
-         * <P>Constant value <code>57</code> is set to <code>KEY_NUM09</code>.</P>
-         * 
-         */
-        public static final int KEY_NUM9 = 57;
+    /**
+     * keyCode for ITU-T key <code>9</code>.
+     * 
+     * <P>Constant value <code>57</code> is set to <code>KEY_NUM09</code>.</P>
+     * 
+     */
+    public static final int KEY_NUM9 = 57;
 
-        /**
-         * keyCode for ITU-T key &quot;star&quot; (<code>*</code>).
-         * 
-         * <P>Constant value <code>42</code> is set to <code>KEY_STAR</code>.</P>
-         * 
-         */
-        public static final int KEY_STAR = 42;
+    /**
+     * keyCode for ITU-T key &quot;star&quot; (<code>*</code>).
+     * 
+     * <P>Constant value <code>42</code> is set to <code>KEY_STAR</code>.</P>
+     * 
+     */
+    public static final int KEY_STAR = 42;
 
-        /**
-         * keyCode for ITU-T key &quot;pound&quot; (<code>#</code>).
-         * 
-         * <P>Constant value <code>35</code> is set to <code>KEY_POUND</code>.</P>
-         * 
-         * 
-         */
-        public static final int KEY_POUND = 35;
+    /**
+     * keyCode for ITU-T key &quot;pound&quot; (<code>#</code>).
+     * 
+     * <P>Constant value <code>35</code> is set to <code>KEY_POUND</code>.</P>
+     * 
+     * 
+     */
+    public static final int KEY_POUND = 35;
 
-        public static final int KEY_BB_UP = -1200;
-        public static final int KEY_BB_DOWN = -1201;
-        public static final int KEY_BB_LEFT = -1202;
-        public static final int KEY_BB_RIGHT = -1203;
-        public static final int KEY_BB_0 = 2097152;
-        public static final int KEY_BB_1 = 4521984;
-        public static final int KEY_BB_2 = 5505024;
-        public static final int KEY_BB_3 = 5570560;
-        public static final int KEY_BB_4 = 4456448;
-        public static final int KEY_BB_5 = 4653056;
-        public static final int KEY_BB_6 = 4849664;
-        public static final int KEY_BB_7 = 4390912;
-        public static final int KEY_BB_8 = 4325376;
-        public static final int KEY_BB_9 = 5046272;
-        
-        private final Graphics graphics;
-        private final DummyField dummyField;
-        private Field menuField;
+    public static final int KEY_BB_UP = -1200;
+    public static final int KEY_BB_DOWN = -1201;
+    public static final int KEY_BB_LEFT = -1202;
+    public static final int KEY_BB_RIGHT = -1203;
+    public static final int KEY_BB_0 = 2097152;
+    public static final int KEY_BB_1 = 4521984;
+    public static final int KEY_BB_2 = 5505024;
+    public static final int KEY_BB_3 = 5570560;
+    public static final int KEY_BB_4 = 4456448;
+    public static final int KEY_BB_5 = 4653056;
+    public static final int KEY_BB_6 = 4849664;
+    public static final int KEY_BB_7 = 4390912;
+    public static final int KEY_BB_8 = 4325376;
+    public static final int KEY_BB_9 = 5046272;
+    
+    private final Graphics graphics;
+    private final DummyField dummyField;
+    private Field menuField;
 
-        private boolean dummyFieldHasFocus = true;
+    private boolean dummyFieldHasFocus = true;
 
 
-        /**
-         * Constructs a new <code>Canvas</code> object.
-         * 
-         * 
-         */
-        protected Canvas()
-        {
-                this.graphics = new Graphics();
-                this.dummyField = new DummyField(); 
-                add( this.dummyField );
-        }
+    /**
+     * Constructs a new <code>Canvas</code> object.
+     * 
+     * 
+     */
+    protected Canvas()
+    {
+            this.graphics = new Graphics();
+            this.dummyField = new DummyField(); 
+            add( this.dummyField );
+    }
 
-        /**
-         * Checks if the <code>Canvas</code> is double buffered by the
-         * implementation.
-         * 
-         * @return true if double buffered, false otherwise
-         */
-        public boolean isDoubleBuffered()
-        {
-                return false;
-                //TODO implement isDoubleBuffered
-        }
+    /**
+     * Checks if the <code>Canvas</code> is double buffered by the
+     * implementation.
+     * 
+     * @return true if double buffered, false otherwise
+     */
+    public boolean isDoubleBuffered()
+    {
+            return false;
+            //TODO implement isDoubleBuffered
+    }
 
-        /**
-         * Checks if the platform supports pointer press and release events.
-         * 
-         * @return true if the device supports pointer events
-         */
-        public boolean hasPointerEvents()
-        {
-                return false;
-                //TODO implement hasPointerEvents
-        }
+    /**
+     * Checks if the platform supports pointer press and release events.
+     * 
+     * @return true if the device supports pointer events
+     */
+    public boolean hasPointerEvents()
+    {
+            return false;
+            //TODO implement hasPointerEvents
+    }
 
-        /**
-         * Checks if the platform supports pointer motion events (pointer dragged).
-         * Applications may use this method to determine if the platform is capable
-         * of supporting motion events.
-         * 
-         * @return true if the device supports pointer motion events
-         */
-        public boolean hasPointerMotionEvents()
-        {
-                return false;
-                //TODO implement hasPointerMotionEvents
-        }
+    /**
+     * Checks if the platform supports pointer motion events (pointer dragged).
+     * Applications may use this method to determine if the platform is capable
+     * of supporting motion events.
+     * 
+     * @return true if the device supports pointer motion events
+     */
+    public boolean hasPointerMotionEvents()
+    {
+            return false;
+            //TODO implement hasPointerMotionEvents
+    }
 
-        /**
-         * Checks if the platform can generate repeat events when key
-         * is kept down.
-         * 
-         * @return true if the device supports repeat events
-         */
-        public boolean hasRepeatEvents()
-        {
-                return true;
-        }
+    /**
+     * Checks if the platform can generate repeat events when key
+     * is kept down.
+     * 
+     * @return true if the device supports repeat events
+     */
+    public boolean hasRepeatEvents()
+    {
+            return true;
+    }
 
-        /**
-         * Gets a key code that corresponds to the specified game action on the
-         * device.  The implementation is required to provide a mapping for every
-         * game action, so this method will always return a valid key code for
-         * every game action.  See <a href="#gameactions">above</a> for further
-         * discussion of game actions.  There may be multiple keys associated
-         * with the same game action; however, this method will return only one of
-         * them.  Applications should translate the key code of every key event
-         * into a game action using <A HREF="../../../javax/microedition/lcdui/Canvas.html#getGameAction(int)"><CODE>getGameAction(int)</CODE></A> and then interpret the
-         * resulting game action, instead of generating a table of key codes at
-         * using this method during initialization.
-         * 
-         * <P>The mapping between key codes and game actions
-         * will not change during the execution of the application.</P>
-         * 
-         * @param gameAction - the game action
-         * @return a key code corresponding to this game action
-         * @throws IllegalArgumentException - if gameAction  is not a valid game action
-         */
-        public int getKeyCode(int gameAction)
-        {
-                switch ( gameAction ) {
-                case FIRE: return net.rim.device.api.ui.Keypad.KEY_SPACE;
-                case UP: return -100;
-                case DOWN: return -101;
-                }
-                return 0;
-                //TODO implement getKeyCode
-        }
+    /**
+     * Gets a key code that corresponds to the specified game action on the
+     * device.  The implementation is required to provide a mapping for every
+     * game action, so this method will always return a valid key code for
+     * every game action.  See <a href="#gameactions">above</a> for further
+     * discussion of game actions.  There may be multiple keys associated
+     * with the same game action; however, this method will return only one of
+     * them.  Applications should translate the key code of every key event
+     * into a game action using <A HREF="../../../javax/microedition/lcdui/Canvas.html#getGameAction(int)"><CODE>getGameAction(int)</CODE></A> and then interpret the
+     * resulting game action, instead of generating a table of key codes at
+     * using this method during initialization.
+     * 
+     * <P>The mapping between key codes and game actions
+     * will not change during the execution of the application.</P>
+     * 
+     * @param gameAction - the game action
+     * @return a key code corresponding to this game action
+     * @throws IllegalArgumentException - if gameAction  is not a valid game action
+     */
+    public int getKeyCode(int gameAction)
+    {
+            switch ( gameAction ) {
+            case FIRE: return net.rim.device.api.ui.Keypad.KEY_SPACE;
+            case UP: return -100;
+            case DOWN: return -101;
+            }
+            return 0;
+            //TODO implement getKeyCode
+    }
 
-        /**
-         * Gets an informative key string for a key. The string returned will
-         * resemble the text physically printed on the key.  This string is
-         * suitable for displaying to the user.  For example, on a device
-         * with function keys <code>F1</code> through <code>F4</code>,
-         * calling this method on the <code>keyCode</code> for
-         * the <code>F1</code> key will return the string
-         * &quot;<code>F1</code>&quot;. A typical use for this string
-         * will be to compose help text such as &quot;Press
-         * <code>F1</code> to proceed.&quot;
-         * 
-         * <p> This method will return a non-empty string for every valid key code.
-         * </p>
-         * 
-         * <p> There is no direct mapping from game actions to key names. To get
-         * the string name for a game action <code>GAME_A</code>, the
-         * application must call </p>
-         * 
-         * <TABLE BORDER="2">
-         * <TR>
-         * <TD ROWSPAN="1" COLSPAN="1">
-         * <pre><code>
-         * getKeyName(getKeyCode(GAME_A));    </code></pre>
-         * </TD>
-         * </TR>
-         * </TABLE>
-         * 
-         * @param keyCode - the key code being requested
-         * @return a string name for the key
-         * @throws IllegalArgumentException - if keyCode  is not a valid key code
-         */
-        public String getKeyName(int keyCode)
-        {
-                return null;
-                //TODO implement getKeyName
-        }
+    /**
+     * Gets an informative key string for a key. The string returned will
+     * resemble the text physically printed on the key.  This string is
+     * suitable for displaying to the user.  For example, on a device
+     * with function keys <code>F1</code> through <code>F4</code>,
+     * calling this method on the <code>keyCode</code> for
+     * the <code>F1</code> key will return the string
+     * &quot;<code>F1</code>&quot;. A typical use for this string
+     * will be to compose help text such as &quot;Press
+     * <code>F1</code> to proceed.&quot;
+     * 
+     * <p> This method will return a non-empty string for every valid key code.
+     * </p>
+     * 
+     * <p> There is no direct mapping from game actions to key names. To get
+     * the string name for a game action <code>GAME_A</code>, the
+     * application must call </p>
+     * 
+     * <TABLE BORDER="2">
+     * <TR>
+     * <TD ROWSPAN="1" COLSPAN="1">
+     * <pre><code>
+     * getKeyName(getKeyCode(GAME_A));    </code></pre>
+     * </TD>
+     * </TR>
+     * </TABLE>
+     * 
+     * @param keyCode - the key code being requested
+     * @return a string name for the key
+     * @throws IllegalArgumentException - if keyCode  is not a valid key code
+     */
+    public String getKeyName(int keyCode)
+    {
+            return null;
+            //TODO implement getKeyName
+    }
 
-        /**
-         * Gets the game action associated with the given key code of the
-         * device.  Returns zero if no game action is associated with this key
-         * code.  See <a href="#gameactions">above</a> for further discussion of
-         * game actions.
-         * 
-         * <P>The mapping between key codes and game actions
-         * will not change during the execution of the application.</P>
-         * 
-         * @param keyCode - the key code
-         * @return the game action corresponding to this key, or  0 if none
-         * @throws IllegalArgumentException - if keyCode is not a valid key code
-         */
-        public int getGameAction(int keyCode)
-        {
-                int key = Keypad.key( keyCode );
-                switch ( key ) {
-                case Keypad.KEY_ENTER: return FIRE;
-                case Keypad.KEY_SPACE: return FIRE;
-                case Keypad.KEY_NEXT: return DOWN;
-                }
-                switch (keyCode) {
-                case KEY_BB_UP: return UP;
-                case KEY_BB_DOWN: return DOWN;
-                case KEY_BB_LEFT: return LEFT;
-                case KEY_BB_RIGHT: return RIGHT;
-                case KEY_NUM2: return UP; // 2
-                case KEY_NUM4: return LEFT; // 4
-                case KEY_NUM6: return RIGHT; // 6
-                case KEY_NUM8: return DOWN; // 8
-                }
-              //#if polish.key.LeftSoftKey:defined
-                      //#= if (keyCode == $polish.key.LeftSoftKey} ) { return FIRE; }
-              //#else
-                      if (keyCode == -6) {
+    /**
+     * Gets the game action associated with the given key code of the
+     * device.  Returns zero if no game action is associated with this key
+     * code.  See <a href="#gameactions">above</a> for further discussion of
+     * game actions.
+     * 
+     * <P>The mapping between key codes and game actions
+     * will not change during the execution of the application.</P>
+     * 
+     * @param keyCode - the key code
+     * @return the game action corresponding to this key, or  0 if none
+     * @throws IllegalArgumentException - if keyCode is not a valid key code
+     */
+    public int getGameAction(int keyCode)
+    {
+            int key = Keypad.key( keyCode );
+            switch ( key ) {
+            case Keypad.KEY_ENTER: return FIRE;
+            case Keypad.KEY_SPACE: return FIRE;
+            case Keypad.KEY_NEXT: return DOWN;
+            }
+            switch (keyCode) {
+            case KEY_BB_UP: return UP;
+            case KEY_BB_DOWN: return DOWN;
+            case KEY_BB_LEFT: return LEFT;
+            case KEY_BB_RIGHT: return RIGHT;
+            case KEY_NUM2: return UP; // 2
+            case KEY_NUM4: return LEFT; // 4
+            case KEY_NUM6: return RIGHT; // 6
+            case KEY_NUM8: return DOWN; // 8
+            }
+          //#if polish.key.LeftSoftKey:defined
+                  //#= if (keyCode == $polish.key.LeftSoftKey} ) { return FIRE; }
+          //#else
+                  if (keyCode == -6) {
 //                              return FIRE;
-                      }
-              //#endif
-                if (keyCode == 48) { // = SPACE, the key(48) method returns 0 for some reason... 
-                      return FIRE;
-           }
-                
-                // #if polish.key.EnterKey:defined
-                        // #= if (keyCode == ${polish.key.EnterKey}) { return FIRE; } 
-                // #endif
-                return 0;
-        }
+                  }
+          //#endif
+            if (keyCode == 48) { // = SPACE, the key(48) method returns 0 for some reason... 
+                  return FIRE;
+       }
+            
+            // #if polish.key.EnterKey:defined
+                    // #= if (keyCode == ${polish.key.EnterKey}) { return FIRE; } 
+            // #endif
+            return 0;
+    }
 
-        /**
-         * Controls whether the <code>Canvas</code> is in full-screen mode
-         * or in normal mode.
-         * 
-         * @param mode true if the Canvas is to be in full screen mode, false otherwise
-         * @since  MIDP 2.0
-         */
-        public void setFullScreenMode(boolean mode)
-        {
-                //this.fullScreenMode = mode;
-        }
+    /**
+     * Controls whether the <code>Canvas</code> is in full-screen mode
+     * or in normal mode.
+     * 
+     * @param mode true if the Canvas is to be in full screen mode, false otherwise
+     * @since  MIDP 2.0
+     */
+    public void setFullScreenMode(boolean mode)
+    {
+            //this.fullScreenMode = mode;
+    }
 
-        /**
-         * Called when a key is pressed.
-         * 
-         * <P>The <code>getGameAction()</code> method can be called to
-         * determine what game action, if any, is mapped to the key.
-         * Class <code>Canvas</code> has an empty implementation of this method, and
-         * the subclass has to redefine it if it wants to listen this method.
-         * 
-         * @param keyCode - the key code of the key that was pressed
-         */
-        protected void keyPressed(int keyCode)
-        {
-                // do nothing
-        }
+    /**
+     * Called when a key is pressed.
+     * 
+     * <P>The <code>getGameAction()</code> method can be called to
+     * determine what game action, if any, is mapped to the key.
+     * Class <code>Canvas</code> has an empty implementation of this method, and
+     * the subclass has to redefine it if it wants to listen this method.
+     * 
+     * @param keyCode - the key code of the key that was pressed
+     */
+    protected void keyPressed(int keyCode)
+    {
+            // do nothing
+    }
 
-        /**
-         * Called when a key is repeated (held down).
-         * 
-         * <P>The <code>getGameAction()</code> method can
-         * be called to determine what game action,
-         * if any, is mapped to the key.
-         * Class <code>Canvas</code> has an empty implementation of this method, and
-         * the subclass has to redefine it if it wants to listen this method.
-         * </P>
-         * 
-         * @param keyCode - the key code of the key that was repeated
-         * @see #hasRepeatEvents()
-         */
-        protected void keyRepeated(int keyCode)
-        {
-                // do nothing
-        }
+    /**
+     * Called when a key is repeated (held down).
+     * 
+     * <P>The <code>getGameAction()</code> method can
+     * be called to determine what game action,
+     * if any, is mapped to the key.
+     * Class <code>Canvas</code> has an empty implementation of this method, and
+     * the subclass has to redefine it if it wants to listen this method.
+     * </P>
+     * 
+     * @param keyCode - the key code of the key that was repeated
+     * @see #hasRepeatEvents()
+     */
+    protected void keyRepeated(int keyCode)
+    {
+            // do nothing
+    }
 
-        /**
-         * Called when a key is released.
-         * <P>
-         * The <code>getGameAction()</code> method can be called to
-         * determine what game action, if any, is mapped to the key.
-         * Class <code>Canvas</code> has an empty implementation of this method, and
-         * the subclass has to redefine it if it wants to listen this method.
-         * </P>
-         * 
-         * @param keyCode - the key code of the key that was released
-         */
-        protected void keyReleased(int keyCode)
-        {
-                // do nothing
-        }
+    /**
+     * Called when a key is released.
+     * <P>
+     * The <code>getGameAction()</code> method can be called to
+     * determine what game action, if any, is mapped to the key.
+     * Class <code>Canvas</code> has an empty implementation of this method, and
+     * the subclass has to redefine it if it wants to listen this method.
+     * </P>
+     * 
+     * @param keyCode - the key code of the key that was released
+     */
+    protected void keyReleased(int keyCode)
+    {
+            // do nothing
+    }
 
-        /**
-         * Called when the pointer is pressed.
-         * 
-         * <P>
-         * The <A HREF="../../../javax/microedition/lcdui/Canvas.html#hasPointerEvents()"><CODE>hasPointerEvents()</CODE></A>
-         * method may be called to determine if the device supports pointer events.
-         * Class <code>Canvas</code> has an empty implementation of this method, and
-         * the subclass has to redefine it if it wants to listen this method.
-         * </P>
-         * 
-         * @param x - the horizontal location where the pointer was pressed (relative to the Canvas)
-         * @param y - the vertical location where the pointer was pressed (relative to the Canvas)
-         */
-        protected void pointerPressed(int x, int y)
-        {
-                // do nothing
-        }
+    /**
+     * Called when the pointer is pressed.
+     * 
+     * <P>
+     * The <A HREF="../../../javax/microedition/lcdui/Canvas.html#hasPointerEvents()"><CODE>hasPointerEvents()</CODE></A>
+     * method may be called to determine if the device supports pointer events.
+     * Class <code>Canvas</code> has an empty implementation of this method, and
+     * the subclass has to redefine it if it wants to listen this method.
+     * </P>
+     * 
+     * @param x - the horizontal location where the pointer was pressed (relative to the Canvas)
+     * @param y - the vertical location where the pointer was pressed (relative to the Canvas)
+     */
+    protected void pointerPressed(int x, int y)
+    {
+            // do nothing
+    }
 
-        /**
-         * Called when the pointer is released.
-         * 
-         * <P>
-         * The <A HREF="../../../javax/microedition/lcdui/Canvas.html#hasPointerEvents()"><CODE>hasPointerEvents()</CODE></A>
-         * method may be called to determine if the device supports pointer events.
-         * Class <code>Canvas</code> has an empty implementation of this method, and
-         * the subclass has to redefine it if it wants to listen this method.
-         * </P>
-         * 
-         * @param x - the horizontal location where the pointer was released (relative to the Canvas)
-         * @param y - the vertical location where the pointer was released (relative to the Canvas)
-         */
-        protected void pointerReleased(int x, int y)
-        {
-                // do nothing
-        }
+    /**
+     * Called when the pointer is released.
+     * 
+     * <P>
+     * The <A HREF="../../../javax/microedition/lcdui/Canvas.html#hasPointerEvents()"><CODE>hasPointerEvents()</CODE></A>
+     * method may be called to determine if the device supports pointer events.
+     * Class <code>Canvas</code> has an empty implementation of this method, and
+     * the subclass has to redefine it if it wants to listen this method.
+     * </P>
+     * 
+     * @param x - the horizontal location where the pointer was released (relative to the Canvas)
+     * @param y - the vertical location where the pointer was released (relative to the Canvas)
+     */
+    protected void pointerReleased(int x, int y)
+    {
+            // do nothing
+    }
 
-        /**
-         * Called when the pointer is dragged.
-         * 
-         * <P>
-         * The <A HREF="../../../javax/microedition/lcdui/Canvas.html#hasPointerMotionEvents()"><CODE>hasPointerMotionEvents()</CODE></A>
-         * method may be called to determine if the device supports pointer events.
-         * Class <code>Canvas</code> has an empty implementation of this method, and
-         * the subclass has to redefine it if it wants to listen this method.
-         * </P>
-         * 
-         * @param x - the horizontal location where the pointer was dragged (relative to the Canvas)
-         * @param y - the vertical location where the pointer was dragged (relative to the Canvas)
-         */
-        protected void pointerDragged(int x, int y)
-        {
-                // do nothing
-        }
+    /**
+     * Called when the pointer is dragged.
+     * 
+     * <P>
+     * The <A HREF="../../../javax/microedition/lcdui/Canvas.html#hasPointerMotionEvents()"><CODE>hasPointerMotionEvents()</CODE></A>
+     * method may be called to determine if the device supports pointer events.
+     * Class <code>Canvas</code> has an empty implementation of this method, and
+     * the subclass has to redefine it if it wants to listen this method.
+     * </P>
+     * 
+     * @param x - the horizontal location where the pointer was dragged (relative to the Canvas)
+     * @param y - the vertical location where the pointer was dragged (relative to the Canvas)
+     */
+    protected void pointerDragged(int x, int y)
+    {
+            // do nothing
+    }
 
-        /**
-         * Requests a repaint for the specified region of the
-         * <code>Canvas</code>. Calling
-         * this method may result in subsequent call to
-         * <code>paint()</code>, where the passed
-         * <code>Graphics</code> object's clip region will include at
-         * least the specified
-         * region.
-         * 
-         * <p> If the canvas is not visible, or if width and height are zero or
-         * less, or if the rectangle does not specify a visible region of
-         * the display, this call has no effect. </p>
-         * 
-         * <p> The call to <code>paint()</code> occurs asynchronously of
-         * the call to <code>repaint()</code>.
-         * That is, <code>repaint()</code> will not block waiting for
-         * <code>paint()</code> to finish. The
-         * <code>paint()</code> method will either be called after the
-         * caller of <code>repaint(</code>)
-         * returns
-         * to the implementation (if the caller is a callback) or on another thread
-         * entirely. </p>
-         * 
-         * <p> To synchronize with its <code>paint()</code> routine,
-         * applications can use either
-         * <A HREF="../../../javax/microedition/lcdui/Display.html#callSerially(java.lang.Runnable)"><CODE>Display.callSerially()</CODE></A> or
-         * <A HREF="../../../javax/microedition/lcdui/Canvas.html#serviceRepaints()"><CODE>serviceRepaints()</CODE></A>, or they can code explicit
-         * synchronization into their <code>paint()</code> routine. </p>
-         * 
-         * <p> The origin of the coordinate system is above and to the left of the
-         * pixel in the upper left corner of the displayable area of the
-         * <code>Canvas</code>.
-         * The X-coordinate is positive right and the Y-coordinate is
-         * positive downwards.
-         * </p>
-         * 
-         * @param x - the x coordinate of the rectangle to be repainted
-         * @param y - the y coordinate of the rectangle to be repainted
-         * @param width - the width of the rectangle to be repainted
-         * @param height - the height of the rectangle to be repainted
-         * @see Display#callSerially(Runnable)
-         * @see #serviceRepaints()
-         */
-        public final void repaint(int x, int y, int width, int height)
-        {
+    /**
+     * Requests a repaint for the specified region of the <code>Canvas</code>. 
+     * Calling
+     * this method may result in subsequent call to
+     * <code>paint()</code>, where the passed
+     * <code>Graphics</code> object's clip region will include at
+     * least the specified
+     * region.
+     * 
+     * <p> If the canvas is not visible, or if width and height are zero or
+     * less, or if the rectangle does not specify a visible region of
+     * the display, this call has no effect. </p>
+     * 
+     * <p> The call to <code>paint()</code> occurs asynchronously of
+     * the call to <code>repaint()</code>.
+     * That is, <code>repaint()</code> will not block waiting for
+     * <code>paint()</code> to finish. The
+     * <code>paint()</code> method will either be called after the
+     * caller of <code>repaint(</code>)
+     * returns
+     * to the implementation (if the caller is a callback) or on another thread
+     * entirely. </p>
+     * 
+     * <p> To synchronize with its <code>paint()</code> routine,
+     * applications can use either
+     * <A HREF="../../../javax/microedition/lcdui/Display.html#callSerially(java.lang.Runnable)"><CODE>Display.callSerially()</CODE></A> or
+     * <A HREF="../../../javax/microedition/lcdui/Canvas.html#serviceRepaints()"><CODE>serviceRepaints()</CODE></A>, or they can code explicit
+     * synchronization into their <code>paint()</code> routine. </p>
+     * 
+     * <p> The origin of the coordinate system is above and to the left of the
+     * pixel in the upper left corner of the displayable area of the
+     * <code>Canvas</code>.
+     * The X-coordinate is positive right and the Y-coordinate is
+     * positive downwards.
+     * </p>
+     * 
+     * @param x - the x coordinate of the rectangle to be repainted
+     * @param y - the y coordinate of the rectangle to be repainted
+     * @param width - the width of the rectangle to be repainted
+     * @param height - the height of the rectangle to be repainted
+     * @see Display#callSerially(Runnable)
+     * @see #serviceRepaints()
+     */
+    public final void repaint(int x, int y, int width, int height)
+    {
         invalidate( x, y, width, height );
-        }
+    }
 
-        /**
-         * Requests a repaint for the entire <code>Canvas</code>. The
-         * effect is identical to
-         * <p><code>repaint(0, 0, getWidth(), getHeight());</code>
-         * 
-         */
-        public final void repaint()
-        {
+    /**
+     * Requests a repaint for the entire <code>Canvas</code>. The
+     * effect is identical to
+     * <p><code>repaint(0, 0, getWidth(), getHeight());</code>
+     * 
+     */
+    public final void repaint()
+    {
         invalidate();
-        }
+    }
 
         /**
          * Forces any pending repaint requests to be serviced immediately. This
@@ -1063,20 +1063,42 @@ extends Displayable
 
     protected void paintBackground( net.rim.device.api.ui.Graphics g ) {
         //System.out.println("Canvas.paintBackground(): enter");
-        g.clear();
+        //g.clear();
         this.graphics.g = g;
-        paint( this.graphics );
-        //System.out.println("Canvas.paintBackground(): exit");
+        try {
+        	paint( this.graphics );
+        } catch (Throwable e) {
+        	//#debug error
+        	System.out.println("unable to paint " + e );
+        }
     }
     
-    
 
-        /* (non-Javadoc)
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.ui.Screen#onDisplay()
+	 */
+	protected void onDisplay() {
+		super.onDisplay();
+		showNotify();
+	}
+
+	/* (non-Javadoc)
+	 * @see net.rim.device.api.ui.Screen#onUndisplay()
+	 */
+	protected void onUndisplay() {
+		super.onUndisplay();
+		hideNotify();
+	}
+
+		/* (non-Javadoc)
          * @see net.rim.device.api.ui.container.FullScreen#sublayout(int, int)
          */
         protected void sublayout(int width, int height) {
                 super.sublayout(width, height);
-                setExtent( net.rim.device.api.ui.Graphics.getScreenWidth(),  net.rim.device.api.ui.Graphics.getScreenHeight() );
+                int w = net.rim.device.api.ui.Graphics.getScreenWidth();
+                int h = net.rim.device.api.ui.Graphics.getScreenHeight();
+                setExtent( w,  h );
+                sizeChanged( w, h );
         }
 
         /* (non-Javadoc)

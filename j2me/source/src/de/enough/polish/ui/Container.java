@@ -49,7 +49,7 @@ import de.enough.polish.util.ArrayList;
  * 				</li>
  * 		<li><b>scroll-mode</b>: Either "smooth" (=default) or "normal".</li>
  * </ul>
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2007</p>
 
  * <pre>
  * history
@@ -1259,7 +1259,10 @@ public class Container extends Item {
 				offset = this.yOffset;
 			}
 		//#endif
-		if (// (gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) || 
+		if (
+			//#if polish.blackberry && !polish.hasTrackballEvents
+				(gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) ||
+			//#endif
 			   (gameAction == Canvas.DOWN   && keyCode != Canvas.KEY_NUM8)) {
 			if (this.focusedItem != null 
 					&& this.enableScrolling
@@ -1301,8 +1304,11 @@ public class Container extends Item {
 					}
 				//#endif
 			}
-		} else if ( // (gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) || 
-				       (gameAction == Canvas.UP    && keyCode != Canvas.KEY_NUM2) ) {
+		} else if ( 
+				//#if polish.blackberry && !polish.hasTrackballEvents
+					(gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) ||
+				//#endif
+				    (gameAction == Canvas.UP    && keyCode != Canvas.KEY_NUM2) ) {
 			if (this.focusedItem != null 
 					&& this.enableScrolling
 					&& offset + this.focusedItem.relativeY < 0 ) // this.focusedItem.yTopPos < this.yTop ) 

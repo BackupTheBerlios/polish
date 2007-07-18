@@ -393,7 +393,15 @@ implements AccessibleCanvas
 		//#else
 			this.screenWidth = getWidth();
 		//#endif
-
+		
+		if (this.screenWidth == 0) {
+			//#if polish.FullCanvasSize:defined && tmp.menuFullScreen
+				//#= this.screenWidth = ${polish.FullCanvasWidth};
+				//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
+			//#else
+				return;
+			//#endif
+		} 
 		
 		boolean startAnimationThread = false;
 		if (StyleSheet.animationThread == null) {
@@ -3603,6 +3611,11 @@ implements AccessibleCanvas
 			//# return false;
 		//#endif
 	}
+
+//	public String getDimension() {
+//		// TODO Besitzer implement getDimension
+//		return "D=" + this.screenWidth + "x" + this.fullScreenHeight;
+//	}
 
 
 		

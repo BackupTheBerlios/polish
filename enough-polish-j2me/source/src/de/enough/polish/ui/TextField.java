@@ -3400,13 +3400,13 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#if tmp.implementsItemCommandListener
-		/* (non-Javadoc)
-		 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
-		 */
-		public void commandAction(Command cmd, Item item) {
-			//#debug
-			System.out.println("commandAction( " + cmd.getLabel() + ", " + this + " )");
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
+	 */
+	public void commandAction(Command cmd, Item item) {
+		//#debug
+		System.out.println("commandAction( " + cmd.getLabel() + ", " + this + " )");
+		//#if tmp.implementsItemCommandListener
 			//#if tmp.supportsSymbolEntry
 				if (cmd == ENTER_SYMBOL_CMD ) {
 					showSymbolsList();
@@ -3445,8 +3445,8 @@ public class TextField extends StringItem
 					this.additionalItemCommandListener.commandAction(cmd, item);
 				}
 			//#endif		
-		}
-	//#endif
+		//#endif
+	}
 		
 	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || polish.blackberry || polish.TextField.activateUneditableWithFire
 	protected void defocus(Style originalStyle) {
