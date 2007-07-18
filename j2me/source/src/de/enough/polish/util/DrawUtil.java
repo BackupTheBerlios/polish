@@ -56,7 +56,7 @@ public final class DrawUtil {
 	
 	/**
 	 * Draws a (translucent) filled out rectangle.
-	 * Please note that this method has to create temporary arrays each time it is called, using a TranslucentSimpleBackground
+	 * Please note that this method has to create temporary arrays for pure MIDP 2.0 devices each time it is called, using a TranslucentSimpleBackground
 	 * is probably less resource intensiv.
 	 * 
 	 * @param x the horizontal start position
@@ -73,7 +73,14 @@ public final class DrawUtil {
 			g.fillRect(x, y, width, height);
 			return;
 		}
-		//#ifdef tmp.useNokiaUi
+		//#if polish.blackberry && polish.usePolishGui
+			net.rim.device.api.ui.Graphics bbGraphics = null;
+			//# bbGraphics = g.g;
+			int alpha = color >>> 24;
+			bbGraphics.setGlobalAlpha( alpha );
+			bbGraphics.fillRect(x, y, width, height);
+			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque
+		//#elif tmp.useNokiaUi
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
 			int[] xCoords = new int[4];
 			xCoords[0] = x;
@@ -86,7 +93,7 @@ public final class DrawUtil {
 			yCoords[2] = y + height;
 			yCoords[3] = y + height;
 			dg.fillPolygon( xCoords, 0, yCoords, 0, 4, color );
-		//#elifdef polish.midp2
+		//#elif polish.midp2
 			//#ifdef polish.Bugs.drawRgbOrigin
 				x += g.getTranslateX();
 				y += g.getTranslateY();
@@ -183,20 +190,9 @@ public final class DrawUtil {
 	 */
 	public final static void fillPolygon( int[] xPoints, int[] yPoints, int color, Graphics g ) {
 		//#if polish.blackberry && polish.usePolishGui
-			Object o = g; // this cast is needed, otherwise the compiler will complain
-			              // that javax.microedition.lcdui.Graphics can never be casted
-			              // to de.enough.polish.blackberry.ui.Graphics.
-			//#if polish.useDefaultPackage
-				//# net.rim.device.api.ui.Graphics graphics = g.g;
-				//# graphics.setColor(color);
-		  		//# graphics.drawFilledPath( xPoints, yPoints, null, null);
-			//#else
-				if ( o instanceof de.enough.polish.blackberry.ui.Graphics) {
-					net.rim.device.api.ui.Graphics graphics = ((de.enough.polish.blackberry.ui.Graphics) o).g;
-					graphics.setColor(color);
-					graphics.drawFilledPath( xPoints, yPoints, null, null);
-				}				
-			//#endif
+			net.rim.device.api.ui.Graphics bbGraphics = null;
+			//# bbGraphics = g.g;
+			bbGraphics.drawFilledPath( xPoints, yPoints, null, null);
 		//#elif polish.api.nokia-ui
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
 			if ((color & 0xFF000000) == 0) {
@@ -904,7 +900,14 @@ public final class DrawUtil {
 	 * @param g the graphics context
 	 */
 	public static void drawLine( int color, int x1, int y1, int x2, int y2, Graphics g) {
-		//#if polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi && !polish.Bugs.TransparencyNotWorkingInDrawPolygon
+		//#if polish.blackberry && polish.usePolishGui
+			net.rim.device.api.ui.Graphics bbGraphics = null;
+			//# bbGraphics = g.g;
+			int alpha = color >>> 24;
+			bbGraphics.setGlobalAlpha( alpha );
+			bbGraphics.drawLine(x1, y1, x2, y2);
+			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque
+		//#elif polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi && !polish.Bugs.TransparencyNotWorkingInDrawPolygon
 			int[] xPoints = new int[] { x1, x2 };
 			int[] yPoints = new int[] { y1, y2 };
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);

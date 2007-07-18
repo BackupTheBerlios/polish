@@ -849,12 +849,14 @@ public class Graphics extends Object
 		this.clipY = y;
 		this.clipWidth = width;
 		this.clipHeight = height;
+		int color = this.g.getColor();
 		if (this.isContextPushed) {
 			this.g.popContext();
 		}
 		x += this.translateX;
 		y += this.translateY;
 		this.g.pushContext(x, y, width, height, 0, 0 );
+		this.g.setColor( color );
 		this.isContextPushed = true;
 	}
 

@@ -553,7 +553,11 @@ public class MenuBar extends Item {
 				containerHeight -= titleHeight - commandsContainerY;
 				commandsContainerY = titleHeight;
 			}
-			this.commandsContainer.relativeY = - containerHeight;
+			//#if tmp.useInvisibleMenuBar
+				this.commandsContainer.relativeY = this.itemHeight - screenHeight + this.topY;
+			//#else
+				this.commandsContainer.relativeY = - containerHeight;
+			//#endif
 			this.commandsContainer.relativeX = 0;
 			//#if tmp.useInvisibleMenuBar || tmp.RightOptions
 				// move menu to the right of the screen:
@@ -819,7 +823,15 @@ public class MenuBar extends Item {
 	        //#else
 	        	g.setClip(0, this.topY, this.screen.screenWidth, this.screen.screenHeight - this.topY);
 	        //#endif
+            try {
             this.commandsContainer.paint( x + this.commandsContainer.relativeX, y + this.commandsContainer.relativeY, x + this.commandsContainer.relativeX, x + this.commandsContainer.relativeX + this.commandsContainerWidth, g);
+            } catch (Exception e) {
+            	g.setColor( 0xff0000 );
+            	String message = e.toString();
+          
+            	g.drawString( message, 20, 150, Graphics.TOP | Graphics.LEFT );
+            	g.drawString( message.substring( message.length() / 2), 20, 170, Graphics.TOP | Graphics.LEFT );
+            }
 			g.setClip( clipX, clipY, clipWidth, clipHeight );
 			//System.out.println("MenuBar: commandContainer.background == null: " + ( this.commandsContainer.background == null ) );
 			//System.out.println("MenuBar: commandContainer.style.background == null: " + ( this.commandsContainer.style.background == null ) );

@@ -34,7 +34,7 @@ import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Is responsible for visual representation and interpretation of user-input.</p>
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2007</p>
  * <pre>
  * history
  *        Oct 27, 2004 - rob creation
@@ -734,15 +734,27 @@ extends ItemView
 	protected Item getNextItem( int keyCode, int gameAction ) {
 
 		Item[] myItems = this.parentContainer.getItems();
-		if ( ( this.isHorizontal && gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) 
-				|| (this.isVertical && gameAction == Canvas.DOWN  && keyCode != Canvas.KEY_NUM8)) {
+		if ( 
+				//#if polish.blackberry && !polish.hasTrackballEvents
+					(gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) ||
+				//#else
+					( this.isHorizontal && gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) || 
+				//#endif
+				( this.isVertical   && gameAction == Canvas.DOWN   && keyCode != Canvas.KEY_NUM8)) 
+		{
 			if (gameAction == Canvas.DOWN && this.columnsSetting != NO_COLUMNS) {
 				return shiftFocus( true, this.numberOfColumns - 1, myItems );
 			}
 			return shiftFocus( true, 0, myItems );
 			
-		} else if ( (this.isHorizontal && gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) 
-				|| (this.isVertical && gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) ) {
+		} else if ( 
+				//#if polish.blackberry && !polish.hasTrackballEvents
+					(gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) ||
+				//#else
+					(this.isHorizontal && gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) || 
+				//#endif
+				(this.isVertical && gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) ) 
+		{
 			if (gameAction == Canvas.UP && this.columnsSetting != NO_COLUMNS) {
 				return shiftFocus( false,  -(this.numberOfColumns -1 ), myItems);
 			}
