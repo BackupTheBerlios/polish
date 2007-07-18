@@ -57,8 +57,11 @@ public class TextBuilder {
 	
 	private TrieCustom custom = null;
 	
-	private HashMap    stores 	= null;
-	private HashMap    records 	= null;
+	private RecordStore store = null;
+	private HashMap records   = null; 
+	
+	private int chunkSize = 0;
+	private int lineCount = 0;
 	
 	private StringBuffer text = null;
 	
@@ -67,7 +70,7 @@ public class TextBuilder {
 	 * for the current element to <code>ALIGN_LEFT</code> and the current input mode to 
 	 * <code>MODE_FIRST_UPPERCASE</code>.
 	 */
-	public TextBuilder(int textSize, HashMap stores, HashMap records)
+	public TextBuilder(int textSize) throws RecordStoreException
 	{
 		this.textElements 	= new ArrayList();
 		this.element 		= -1;
@@ -77,16 +80,26 @@ public class TextBuilder {
 		
 		this.custom			= new TrieCustom();
 		
-		this.stores			= stores;
-		this.records		= records;
+		this.store			= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
+		this.records		= new HashMap();
+		
+		getHeader();
 		
 		this.text 			= new StringBuffer(textSize);
+	}
+	
+	private void getHeader() throws RecordStoreException
+	{
+		byte[] bytes = this.store.getRecord(TrieInstaller.HEADER_RECORD);
+		
+		this.chunkSize = TrieUtils.byteToInt(bytes, TrieInstaller.CHUNKSIZE_OFFSET);
+		this.lineCount = TrieUtils.byteToInt(bytes, TrieInstaller.LINECOUNT_OFFSET);
 	}
 	
 	public void keyNum(int keyCode) throws RecordStoreException
 	{
 		if(	isStringBuffer(0) || this.align == ALIGN_LEFT || this.align == ALIGN_RIGHT )
-			addReader(new TrieReader(this.stores,this.records));
+			addReader(new TrieReader(this.store,this.records, this.chunkSize, this.lineCount));
 		
 		getReader().keyNum(keyCode);
 		getElement().keyNum(keyCode, mode);

@@ -14,9 +14,6 @@ import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
 public class TrieReader {
-	
-	static final String prefix = "predictive";
-	
 	static final byte V_OFFSET = 0;
 	static final byte CC_OFFSET = 2;
 	static final byte CR_OFFSET = 3;
@@ -30,7 +27,7 @@ public class TrieReader {
 	private ArrayList 	newNodes = null;
 	private Stack 		prevNodes = null;
 	
-	private HashMap stores = null;
+	private RecordStore store = null;
 	private HashMap records = null;
 	
 	private StringBuffer storeID = null;
@@ -45,37 +42,23 @@ public class TrieReader {
 
 	byte[] record = null;
 	
-	public TrieReader(HashMap stores, HashMap records) throws RecordStoreException
+	public TrieReader(RecordStore store, HashMap records, int chunkSize, int lineCount) throws RecordStoreException
 	{
 		this.nodes 		= new ArrayList();
 		this.newNodes 	= new ArrayList();
 		
 		this.prevNodes 	= new Stack();
 				
-		this.stores = stores;
+		this.store = store;
 		this.records = records;
 		
-		storeID = new StringBuffer(20);
-		letters = new StringBuffer(10);
+		this.chunkSize = chunkSize;
+		this.lineCount = lineCount;
 		
-		getHeader();
+		letters = new StringBuffer(10);
 				
 		this.empty 		= true;
 		this.wordFound	= true;
-		
-		
-	}
-	
-	private void getHeader() throws RecordStoreException
-	{
-		String storeID = prefix + "_0";
-		
-		RecordStore store = RecordStore.openRecordStore(storeID, false);
-		
-		byte[] bytes = store.getRecord(TrieInstaller.HEADER_RECORD);
-		
-		this.chunkSize = byteToInt(bytes, TrieInstaller.CHUNKSIZE_OFFSET);
-		this.lineCount = byteToInt(bytes, TrieInstaller.LINECOUNT_OFFSET);
 	}
 		
 	public void keyNum(int keyCode) throws RecordStoreException
@@ -114,8 +97,6 @@ public class TrieReader {
 		
 		if(!isWordFound())
 			popNodes(true);
-		
-		closeStores();
 	}
 	
 	public void keyClear() throws RecordStoreException
@@ -180,34 +161,15 @@ public class TrieReader {
 		
 	private byte[] getRecord(int id) throws RecordStoreException
 	{
-		int recordID 	= getRecordID(id);
+		int recordID 	= getRecordID(id) + TrieInstaller.OVERHEAD % this.chunkSize;
 		
-		storeID.setLength(0);
-		storeID.append(TrieInstaller.PREFIX);
-		storeID.append("_");
-		storeID.append(recordID - (recordID % this.chunkSize));
-		
-		Integer recordMapID = new Integer(recordID + TrieInstaller.OVERHEAD % this.chunkSize);
+		Integer recordMapID = new Integer(recordID);
 		byte[] record = (byte[])this.records.get(recordMapID); 
 		
 		if(record == null)
 		{
-			System.out.println("open record");
-			RecordStore store = (RecordStore)stores.get(storeID);
-			
-			if(store == null)
-			{	
-				/*if(!)
-					store = RecordStore.openRecordStore(storeID, this.properties.getVendor(), this.properties.getSuite());
-				else
-					store = RecordStore.openRecordStore(storeID, false);
-				*/
-				
-				store = RecordStore.openRecordStore(storeID.toString(), false);
-				stores.put(storeID, store);
-			}
-		
-			record = store.getRecord(recordMapID.intValue());
+			System.out.println("new record");
+			record = store.getRecord(recordID);
 			this.records.put(recordMapID, record);
 		}
 		
@@ -221,7 +183,7 @@ public class TrieReader {
 		
 		for(int i=0; i<partID; i++)
 		{
-			partCount = byteToByte(record, partOffset);
+			partCount = TrieUtils.byteToByte(record, partOffset);
 			
 			if(i == (partID - 1))
 				return partOffset;
@@ -232,27 +194,17 @@ public class TrieReader {
 		return 0;
 	}
 	
-	public void closeStores() throws RecordStoreException
-	{
-		Object[] storeObjects = stores.values();
-		
-		for(int i=0; i<storeObjects.length; i++)
-			((RecordStore)storeObjects[i]).closeRecordStore();
-		
-		stores.clear();
-	}
-	
 	private void readNodes(byte[] record, int partOffset, int keyCode, StringBuffer word)
 	{
 		char value 		= ' ';
 		
-		byte partCount = byteToByte(record,partOffset);
+		byte partCount = TrieUtils.byteToByte(record,partOffset);
 		
 		setLetters(keyCode);
 		
 		for(int i= (partOffset + COUNT_SIZE); i < (partOffset + COUNT_SIZE) + (partCount * NODE_SIZE); i = i + NODE_SIZE)
 		{
-			value = byteToChar(record, i+V_OFFSET);
+			value = TrieUtils.byteToChar(record, i+V_OFFSET);
 			
 			for(int j=0;j<letters.length();j++)
 			{
@@ -263,8 +215,8 @@ public class TrieReader {
 					node.appendToWord(word);
 					node.appendToWord(value);
 					
-					if(byteToByte(record, i+CC_OFFSET) != 0)
-						node.setReference(byteToChar(record, i+CR_OFFSET)); 
+					if(TrieUtils.byteToByte(record, i+CC_OFFSET) != 0)
+						node.setReference(TrieUtils.byteToChar(record, i+CR_OFFSET)); 
 					else
 						node.setReference((char)0);
 					
@@ -272,27 +224,6 @@ public class TrieReader {
 				}
 			}
 		}
-	}
-	
-	private int byteToInt(byte[] bytes, int offset) {
-		int value = 0;
-		for (int i = 0; i < 4; i++) {
-			int shift = (4 - 1 - i) * 8;
-			value += (bytes[i + offset] & 0x000000FF) << shift;
-		}
-		return value;
-    }
-	
-	private char byteToChar(byte[] bytes, int offset)
-	{
-		int high = bytes[offset] & 0xff;
-		int low = bytes[offset+1] & 0xff;
-		return (char)((int)( high << 8 | low ));
-	}
-		
-	private byte byteToByte(byte[] bytes, int offset)
-	{
-		return bytes[offset];
 	}
 			
 	private void setLetters(int keyCode)

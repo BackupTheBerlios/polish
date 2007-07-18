@@ -82,9 +82,6 @@ public class PredictiveTextField
 	
 	private TextBuilder builder = null;
 	
-	private HashMap stores = null;
-	private HashMap records = null;
-	
 	private Display display = null;
 	private int spaceButton;
 	
@@ -131,7 +128,7 @@ public class PredictiveTextField
 	 * @throws RecordStoreNotFoundException 
 	 * @throws RecordStoreFullException 
 	 */
-	public PredictiveTextField(String label, String text, int maxSize, Display display, StringItem status, Style style) throws RecordStoreFullException, RecordStoreNotFoundException, RecordStoreException {
+	public PredictiveTextField(String label, String text, int maxSize, Display display, StringItem status, Style style) throws RecordStoreException {
 		super(label, text, maxSize, TextField.ANY, style);
 		this.choicesContainer = new Container( false );
 		//#if polish.Container.allowCycling != false
@@ -140,10 +137,8 @@ public class PredictiveTextField
 		//#if polish.usePolishGui && !polish.LibraryBuild
 			//# this.choicesContainer.parent = this;
 		//#endif		
-		this.stores 		= new HashMap();
-		this.records		= new HashMap();
 			
-		this.builder 	= new TextBuilder(maxSize,stores,records);
+		this.builder 	= new TextBuilder(maxSize);
 		this.display 	= display;
 		
 		this.inputMode 		= this.builder.getMode();
@@ -312,8 +307,7 @@ public class PredictiveTextField
 			}
 			
 			setText(this.builder.getText().toString()); 
-			setCaretPosition(this.builder.getCaretPosition());
-			this.refreshChoices = true;
+			setCaretPosition(this.builder.getCaretPosition());			this.refreshChoices = true;
 			
 			return true;
 		}
@@ -712,7 +706,7 @@ public class PredictiveTextField
 		/*if((System.currentTimeMillis() - this.currentTime) > 1000)
 		{
 			currentTime = System.currentTimeMillis();
-			memory += 300;
+			memory +=300;
 			System.out.println(Runtime.getRuntime().freeMemory() + this.memory);
 		}*/
 	}

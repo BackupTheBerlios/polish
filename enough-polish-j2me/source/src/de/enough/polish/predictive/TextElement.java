@@ -80,7 +80,7 @@ public class TextElement {
 			
 			for (int j = 0; j < keyCodes.length; j++)
 			{
-				if (keyCodes[j] > SHIFT)
+				if (keyCodes[j] > SHIFT && j < string.length())
 					string.setCharAt(j, Character.toUpperCase(string.charAt(j)));
 			}
 		}
@@ -172,9 +172,7 @@ public class TextElement {
 	public boolean isWordFound()
 	{
 		if(!isStringBuffer())
-		{
 			return ((TrieReader)this.element).isWordFound() || isCustomFound();
-		}
 		
 		return false;
 	}
