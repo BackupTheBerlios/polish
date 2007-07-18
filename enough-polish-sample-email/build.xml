@@ -96,8 +96,9 @@
 				<filter level="info" pattern="de.enough.polish.ui.*"/>
 				<filter level="debug" class="de.enough.polish.ui.ChoiceTextField" />
 				<filter level="debug" class="de.enough.polish.ui.Screen"/>
-				<filter level="debug" class="de.enough.polish.ui.MenuBar"/>
+				<filter level="debug" class="de.enough.polish.ui.Ticker"/>
 				<!--
+				<filter level="debug" class="de.enough.polish.ui.AnimationThread"/>
 				<filter level="debug" class="de.enough.polish.ui.Container" />
 				<filter level="debug" class="de.enough.polish.ui.TreeItem" />
 				-->

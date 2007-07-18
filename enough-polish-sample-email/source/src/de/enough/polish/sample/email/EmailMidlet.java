@@ -117,10 +117,10 @@ implements CommandListener, ItemStateListener
 
 		form.append( tree );
 
-		/*
 		//#style mailTicker
 		Ticker ticker = new Ticker( "Sending mail \"J2ME Polish Test Result\" to sales@mycompany.com" );
 		form.setTicker( ticker );
+		/*
 		*/
 
 		form.setCommandListener( this );
