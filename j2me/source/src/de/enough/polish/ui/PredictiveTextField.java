@@ -476,11 +476,11 @@ public class PredictiveTextField
 		return false;
 	}
 	
-	protected void handleCommandAction(Command cmd, Item item)
+	protected void commandAction(Command cmd, Item item)
 	{
 		if(!this.predictiveInput && cmd != ENABLE_PREDICTIVE_CMD)
 		{
-			super.handleCommandAction(cmd, item);
+			super.commandAction(cmd, item);
 			return;
 		}
 		
