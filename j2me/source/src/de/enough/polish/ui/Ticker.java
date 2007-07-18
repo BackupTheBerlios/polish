@@ -134,15 +134,15 @@ public class Ticker extends IconItem
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		super.initContent( Integer.MAX_VALUE, Integer.MAX_VALUE );
 		this.tickerWidth = this.contentWidth;
-		this.contentWidth = firstLineWidth;
-		this.tickerXOffset = - firstLineWidth;
+		this.contentWidth = lineWidth;
+		this.tickerXOffset = - lineWidth;
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		//System.out.println("painting ticker at " + x);
+		//System.out.println("painting ticker at " + x + " width itemWidth=" + this.itemWidth);
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		int clipHeight = g.getClipHeight();
@@ -163,6 +163,10 @@ public class Ticker extends IconItem
 		}
 		
 		g.setClip(clipX, clipY, clipWidth, clipHeight);
+		
+//		g.setColor(0x00ff00);
+//		g.drawRect( getAbsoluteX() + 1, getAbsoluteY() + 1, this.itemWidth - 2, this.itemHeight -2 );
+
 	}
 
 	//#ifdef polish.useDynamicStyles
