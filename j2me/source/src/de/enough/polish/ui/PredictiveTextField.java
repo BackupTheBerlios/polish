@@ -41,6 +41,7 @@ import de.enough.polish.blackberry.ui.PolishEditField;
 import de.enough.polish.predictive.TextBuilder;
 import de.enough.polish.predictive.TextElement;
 import de.enough.polish.predictive.TrieCustom;
+import de.enough.polish.predictive.TrieProvider;
 import de.enough.polish.predictive.TrieReader;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
@@ -63,6 +64,8 @@ public class PredictiveTextField
 	//# extends FakeTextFieldCustomItem
 //#endif
 {
+	protected static final TrieProvider provider = new TrieProvider(); 
+	
 	protected static final Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 0 );
 	protected static final Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 0 );
 	protected static final Command ADD_WORD_CMD = new Command( "Add new Word", Command.ITEM, 1 );
@@ -138,7 +141,7 @@ public class PredictiveTextField
 			//# this.choicesContainer.parent = this;
 		//#endif		
 			
-		this.builder 	= new TextBuilder(maxSize);
+		this.builder 	= new TextBuilder(maxSize,provider);
 		this.display 	= display;
 		
 		this.inputMode 		= this.builder.getMode();
@@ -146,7 +149,6 @@ public class PredictiveTextField
 		
 		this.addCommand(DISABLE_PREDICTIVE_CMD);
 		this.addCommand(ADD_WORD_CMD);
-		
 		
 		this.addWordForm = new Form("Add new word");
 		this.addWordField = new TextField("Word:","",50,TextField.ANY);
@@ -215,17 +217,6 @@ public class PredictiveTextField
 	 */
 	protected void defocus(Style origStyle) {
 		super.defocus(origStyle);
-		if (this.numberOfMatches > 0) {
-			Item item = this.choicesContainer.get( 0 );
-			if (item instanceof StringItem) {
-				setString( ((StringItem)item).getText() );
-			} else {
-				setString( item.toString() );
-			}			
-		}
-		this.numberOfMatches = 0;
-		this.choicesContainer.clear();
-		openChoices(false);
 	}
 	
 	
@@ -285,12 +276,12 @@ public class PredictiveTextField
 					this.inputMode = this.builder.getMode();
 					updateInfo();
 					
-					if(!this.builder.getElement().isWordFound())
+					if(!this.builder.getTextElement().isWordFound())
 						showWordNotFound();
 					else
 					{
 						if(this.builder.getAlign() == TextBuilder.ALIGN_FOCUS)
-							this.setChoices(this.builder.getElement());
+							this.setChoices(this.builder.getTextElement());
 						else
 							this.openChoices(false);
 					}
@@ -326,7 +317,7 @@ public class PredictiveTextField
 			
 			if(!this.builder.isStringBuffer(0) && 
 				this.builder.getAlign() == TextBuilder.ALIGN_FOCUS)
-				this.setChoices(this.builder.getElement());
+				this.setChoices(this.builder.getTextElement());
 			else
 				this.openChoices(false);
 		}
@@ -382,9 +373,9 @@ public class PredictiveTextField
 				// option has been selected!
 				if(!this.builder.isStringBuffer(0))
 				{
-					this.builder.getElement().setSelectedWordIndex(this.choicesContainer.getFocusedIndex());
-					if(this.builder.getElement().isSelectedCustom())
-						this.builder.getElement().convertReader();
+					this.builder.getTextElement().setSelectedWordIndex(this.choicesContainer.getFocusedIndex());
+					if(this.builder.getTextElement().isSelectedCustom())
+						this.builder.getTextElement().convertReader();
 					this.builder.setAlign(TextBuilder.ALIGN_RIGHT);
 					
 					openChoices( false );
@@ -405,7 +396,7 @@ public class PredictiveTextField
 				return true;
 			else
 			{
-				this.setChoices(this.builder.getElement());
+				this.setChoices(this.builder.getTextElement());
 				
 				if(this.numberOfMatches > 0)
 					enterChoices( true );
@@ -423,7 +414,7 @@ public class PredictiveTextField
 			
 			if(this.builder.getAlign() == TextBuilder.ALIGN_FOCUS)
 			{
-				this.setChoices(this.builder.getElement());
+				this.setChoices(this.builder.getTextElement());
 			}
 			else
 				openChoices(false);
@@ -443,8 +434,11 @@ public class PredictiveTextField
 				setCaretPosition(this.builder.getCaretPosition());
 								
 				openChoices(false);
+
+				return true;
 			}
-			return true;
+			
+			return false;
 		}
 		else if ( gameAction == Canvas.DOWN && !this.isInChoice)
 		{
@@ -457,8 +451,10 @@ public class PredictiveTextField
 				setCaretPosition(this.builder.getCaretPosition());
 								
 				openChoices(false);
+				
+				return true;
 			}
-			return true;
+			return false;
 		}
 		else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
 			
@@ -466,8 +462,8 @@ public class PredictiveTextField
 			if(!this.builder.isStringBuffer(0))
 			{
 				this.builder.setAlign(TextBuilder.ALIGN_RIGHT);
-				if(this.builder.getElement().isSelectedCustom())
-					this.builder.getElement().convertReader();
+				if(this.builder.getTextElement().isSelectedCustom())
+					this.builder.getTextElement().convertReader();
 			}
 			
 			return true;
@@ -476,11 +472,11 @@ public class PredictiveTextField
 		return false;
 	}
 	
-	public void handleCommandAction(Command cmd, Item item)
+	public void commandAction(Command cmd, Item item)
 	{
 		if(!this.predictiveInput && cmd != ENABLE_PREDICTIVE_CMD)
 		{
-			super.handleCommandAction(cmd, item);
+			super.commandAction(cmd, item);
 			return;
 		}
 		
@@ -730,7 +726,7 @@ public class PredictiveTextField
 			for(int i = 0; i < line; i++)
 				charsToLine += this.textLines[i].length() + 1;
 			
-			TextElement element = this.builder.getElement();
+			TextElement element = this.builder.getTextElement();
 			
 			if(element != null)
 			{

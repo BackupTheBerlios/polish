@@ -50,18 +50,12 @@ public class TextBuilder {
 		
 	private ArrayList textElements = null;
 	
+	private TrieProvider provider = null;
+	
 	private int element;
 	private int align;
 	private int mode;
 	private int caret;
-	
-	private TrieCustom custom = null;
-	
-	private RecordStore store = null;
-	private HashMap records   = null; 
-	
-	private int chunkSize = 0;
-	private int lineCount = 0;
 	
 	private StringBuffer text = null;
 	
@@ -70,7 +64,7 @@ public class TextBuilder {
 	 * for the current element to <code>ALIGN_LEFT</code> and the current input mode to 
 	 * <code>MODE_FIRST_UPPERCASE</code>.
 	 */
-	public TextBuilder(int textSize) throws RecordStoreException
+	public TextBuilder(int textSize, TrieProvider provider) throws RecordStoreException
 	{
 		this.textElements 	= new ArrayList();
 		this.element 		= -1;
@@ -78,35 +72,25 @@ public class TextBuilder {
 		this.mode 			= TextField.MODE_FIRST_UPPERCASE;
 		this.caret			= 0;
 		
-		this.custom			= new TrieCustom();
+		this.provider = provider;
 		
-		this.store			= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
-		this.records		= new HashMap();
-		
-		getHeader();
-		
-		this.text 			= new StringBuffer(textSize);
-	}
-	
-	private void getHeader() throws RecordStoreException
-	{
-		byte[] bytes = this.store.getRecord(TrieInstaller.HEADER_RECORD);
-		
-		this.chunkSize = TrieUtils.byteToInt(bytes, TrieInstaller.CHUNKSIZE_OFFSET);
-		this.lineCount = TrieUtils.byteToInt(bytes, TrieInstaller.LINECOUNT_OFFSET);
+		this.text 			= new StringBuffer();
 	}
 	
 	public void keyNum(int keyCode) throws RecordStoreException
 	{
 		if(	isStringBuffer(0) || this.align == ALIGN_LEFT || this.align == ALIGN_RIGHT )
-			addReader(new TrieReader(this.store,this.records, this.chunkSize, this.lineCount));
+			addReader(new TrieReader(	this.provider.getStore(),
+										this.provider.getRecords(), 
+										this.provider.getChunkSize(), 
+										this.provider.getLineCount()));
 		
 		getReader().keyNum(keyCode);
-		getElement().keyNum(keyCode, mode);
-		getElement().setResults(custom);
+		getTextElement().keyNum(keyCode, mode);
+		getTextElement().setResults(this.provider.getCustom());
 		
-		if(!getElement().isWordFound())
-			getElement().keyClear();
+		if(!getTextElement().isWordFound())
+			getTextElement().keyClear();
 		else
 		{
 			if(this.mode == TextField.MODE_FIRST_UPPERCASE)
@@ -117,8 +101,8 @@ public class TextBuilder {
 	public void keySpace()
 	{
 		if(!isStringBuffer(0))
-			if(getElement().isSelectedCustom())
-				getElement().convertReader();
+			if(getTextElement().isSelectedCustom())
+				getTextElement().convertReader();
 		
 		addStringBuffer(" ");
 	}
@@ -143,11 +127,11 @@ public class TextBuilder {
 		}
 		else
 		{
-			if(getElement().getKeyCount() == getReader().getKeyCount())
+			if(getTextElement().getKeyCount() == getReader().getKeyCount())
 				getReader().keyClear();
 			
-			getElement().keyClear();
-			getElement().setResults(this.custom);
+			getTextElement().keyClear();
+			getTextElement().setResults(this.provider.getCustom());
 			
 			if(getReader().isEmpty())
 			{
@@ -157,15 +141,15 @@ public class TextBuilder {
 			else
 			{
 				setAlign(ALIGN_FOCUS);
-				getElement().setSelectedWordIndex(0);
-				return (getElement().getTrieResults().size() > 0) || (getElement().getCustomResults().size() > 0);
+				getTextElement().setSelectedWordIndex(0);
+				return (getTextElement().getTrieResults().size() > 0) || (getTextElement().getCustomResults().size() > 0);
 			}
 		}
 	}
 	
 	public void addWord(String string)
 	{
-		this.custom.addWord(string);
+		this.provider.getCustom().addWord(string);
 	}
 	
 	/**
@@ -175,19 +159,19 @@ public class TextBuilder {
 	 */
 	public TrieReader getReader()
 	{
-		return (TrieReader)getTextElement(element).getElement();
+		return (TrieReader)getTextElement().getElement();
 	}
 	
 	public StringBuffer getStringBuffer()
 	{
-		return (StringBuffer)getTextElement(element).getElement();
+		return (StringBuffer)getTextElement().getElement();
 	}
 	
 	/**
 	 * Returns the current <code>TextElement</code>
 	 * @return the current <code>TextElement</code>
 	 */
-	public TextElement getElement()
+	public TextElement getTextElement()
 	{
 		return getTextElement(element);
 	}
@@ -439,8 +423,8 @@ public class TextBuilder {
 		{
 			if(align == ALIGN_FOCUS)
 			{
-				if(getElement().isSelectedCustom())
-					getElement().convertReader();
+				if(getTextElement().isSelectedCustom())
+					getTextElement().convertReader();
 				
 				align = ALIGN_RIGHT;
 			}

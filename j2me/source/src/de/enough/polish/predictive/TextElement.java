@@ -51,6 +51,8 @@ public class TextElement {
 		newKeyCodes[newKeyCodes.length - 1] = keyCode;
 		this.keyCodes = newKeyCodes;
 		
+		System.out.println("keyNum");
+		
 		if(shift == TextField.MODE_UPPERCASE || shift == TextField.MODE_FIRST_UPPERCASE)
 			this.keyCodes[this.keyCodes.length - 1] += SHIFT;
 	}
@@ -108,6 +110,7 @@ public class TextElement {
 					for(int i=0; i<nodes.size();i++)
 					{
 						TrieNode node = (TrieNode)nodes.get(i);
+						
 						this.trieResults.add(node.getWord());
 					}
 						
@@ -134,11 +137,18 @@ public class TextElement {
 		return this.selectedWordIndex;
 	}
 
-	public String getSelectedWord()
+	public StringBuffer getSelectedWord()
 	{
-		String selectedWord = getSelectedStringBuffer().toString();
+		if(keyCodes.length == getSelectedStringBuffer().length())
+			return getSelectedStringBuffer();
+		else
+		{
+			StringBuffer string = new StringBuffer();
+			string.append(getSelectedStringBuffer());
+			string.setLength(this.keyCodes.length);
+			return string;
+		}
 		
-		return selectedWord.substring(0, keyCodes.length);
 	}
 	
 	public boolean isSelectedCustom()
