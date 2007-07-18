@@ -642,15 +642,6 @@ implements AccessibleCanvas
 			}
 		//#endif
 		y += topHeight;
-		//#ifndef polish.skipTicker			
-			int tickerHeight = 0;
-			if (this.ticker != null) {
-				tickerHeight = this.ticker.getItemHeight( width, width );
-			} 	
-			height -= topHeight + tickerHeight;
-		//#else
-			height -= topHeight;	
-		//#endif
 		//#if tmp.useExternalMenuBar
 			int space;
 			//#if polish.MenuBar.Position:defined
@@ -664,8 +655,17 @@ implements AccessibleCanvas
 				height -= space;
 			//#endif
 				// this is already deducted...
-//			space = this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
-//			height -= space;
+				//			space = this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+				//			height -= space;
+		//#endif
+		//#ifndef polish.skipTicker			
+			int tickerHeight = 0;
+			if (this.ticker != null) {
+				tickerHeight = this.ticker.getItemHeight( width, width );
+			} 	
+			height -= topHeight + tickerHeight;
+		//#else
+			height -= topHeight;	
 		//#endif
 		//#if tmp.useScrollBar
 			if ( this.container != null ) {
@@ -1268,24 +1268,24 @@ implements AccessibleCanvas
 					sHeight = this.screenHeight - this.marginTop - this.marginBottom;
 				//#endif
 				int topBorder = this.marginTop;
-				if (this.isLayoutHorizontalShrink) {
-					//#if tmp.useExternalMenuBar
-						int space;
-						//#if polish.MenuBar.Position:defined
-							space = this.menuBar.getSpaceLeft( this.screenWidth, this.fullScreenHeight );
-							leftBorder += space;
-							sWidth -= space;
-							rightBorder -= space;
-							space = this.menuBar.getSpaceRight( this.screenWidth, this.fullScreenHeight );
-							sWidth -= space;
-							rightBorder -= space;
-							space = this.menuBar.getSpaceTop( this.screenWidth, this.fullScreenHeight );
-							topBorder += space;
-							sHeight -= space;
-						//#endif
-						space = this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+				//#if tmp.useExternalMenuBar
+					int space;
+					//#if polish.MenuBar.Position:defined
+						space = this.menuBar.getSpaceLeft( this.screenWidth, this.fullScreenHeight );
+						leftBorder += space;
+						sWidth -= space;
+						rightBorder -= space;
+						space = this.menuBar.getSpaceRight( this.screenWidth, this.fullScreenHeight );
+						sWidth -= space;
+						rightBorder -= space;
+						space = this.menuBar.getSpaceTop( this.screenWidth, this.fullScreenHeight );
+						topBorder += space;
 						sHeight -= space;
 					//#endif
+					space = this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+					sHeight -= space;
+				//#endif		
+				if (this.isLayoutHorizontalShrink) {
 					int contWidth = this.contentWidth;
 					if (this.container != null) {
 						contWidth = this.container.getItemWidth(sWidth, sWidth); 
@@ -1334,7 +1334,7 @@ implements AccessibleCanvas
 //						//#ifdef tmp.menuFullScreen
 //							topBorder = (this.fullScreenHeight - (this.marginBottom + this.marginBottom))/2 - sHeight/2;
 //						//#else
-							topBorder = (this.screenHeight - (this.marginBottom + this.marginTop + sHeight))/2;
+							topBorder = (this.screenHeight - (this.marginBottom + this.marginTop + sHeight)) >> 1;
 //						//#endif						 
 						//System.out.println("vcenter -> topBorder=" + topBorder + ", contY=>" + (topBorder + this.titleHeight) );
 					}
@@ -1430,13 +1430,12 @@ implements AccessibleCanvas
 	//				}
 	//			//#endif
 //				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() + " before clipRect");
-//				int clipX = g.getClipX();
-//				int clipY = g.getClipY();
-//				int clipWidth = g.getClipWidth();
-//				int clipHeight = g.getClipHeight();
-					//TODO enable only painting of clipped area
-				g.setClip(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
-				//g.clipRect(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
+				int clipX = g.getClipX();
+				int clipY = g.getClipY();
+				int clipWidth = g.getClipWidth();
+				int clipHeight = g.getClipHeight();
+				//g.setClip(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
+				g.clipRect(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
 	
 				// paint content:
 				//System.out.println("starting to paint content of screen");
@@ -1462,12 +1461,12 @@ implements AccessibleCanvas
 				//#endif
 				
 				// allow painting outside of the screen again:
-				//g.setClip( clipX, clipY, clipWidth, clipHeight );
-				//#ifdef tmp.menuFullScreen
-				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
-				//#else
-				 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
-				//#endif
+				g.setClip( clipX, clipY, clipWidth, clipHeight );
+//				//#ifdef tmp.menuFullScreen
+//				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
+//				//#else
+//				 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
+//				//#endif
 				 
 //				 // remove test code
 //				 g.setColor( 0x00ff00 );

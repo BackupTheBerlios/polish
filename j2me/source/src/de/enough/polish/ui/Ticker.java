@@ -143,6 +143,7 @@ public class Ticker extends IconItem
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//System.out.println("painting ticker at " + x + " width itemWidth=" + this.itemWidth);
+		//System.out.println("rightBorder=" + rightBorder + ", screenWidth=" + this.screen.screenWidth);
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		int clipHeight = g.getClipHeight();
@@ -165,7 +166,7 @@ public class Ticker extends IconItem
 		g.setClip(clipX, clipY, clipWidth, clipHeight);
 		
 //		g.setColor(0x00ff00);
-//		g.drawRect( getAbsoluteX() + 1, getAbsoluteY() + 1, this.itemWidth - 2, this.itemHeight -2 );
+//		g.drawRect( clipX + 1, clipY + 1, clipWidth - 2, clipHeight -2 );
 
 	}
 
