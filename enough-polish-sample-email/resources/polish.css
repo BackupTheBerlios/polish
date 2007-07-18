@@ -49,8 +49,8 @@ colors {
 	padding-right: 5;
 	background {
 		type: horizontal-stripes;
-		top: title;
-		bottom: menubar;
+		/* top: title; */
+		/* bottom: menubar; */
 		first-top-color: screenColorTop1;
 		first-bottom-color: screenColorBottom1;
 		second-top-color: screenColorTop2;
@@ -75,8 +75,22 @@ colors {
 }
 
 .mailAlert extends .mailForm {
+	margin-right: 10;
+	margin-left: 10;
 	layout: horizontal-center | bottom | horizontal-shrink | vertical-shrink;
 	repaint-previous-screen: true;
+	//#if polish.midp2 || polish.api.nokia-ui
+		border {
+			type: drop-shadow;
+			width: 6;
+			inner-color: #aff0;
+			outer-color: #2002;
+			orientation: top-right;
+		}
+	//#endif
+	//#if polish.midp2
+		screen-change-animation: fade;
+	//#endif
 }
 
 .mailTree {
@@ -101,7 +115,13 @@ colors {
 }
 
 .mailBox:hover {
+	margin: 2;
 	background-border-color: focusedBorderColor;
+	background-border-width: 0;
+	background {
+		type: round-rect;
+		color: #8800;
+	}
 }
 
 .mailSummary {
@@ -169,8 +189,8 @@ label {
   * really needed.
   */
 screeninfo {
-	margin-top: -24;
-	margin-left: 10;
+	margin-top: 2;
+	margin-left: 5;
 }
 
 /**
@@ -178,12 +198,11 @@ screeninfo {
   */
 info {
 	layout: right;
-	margin-right: 10;
+	/* margin-right: 10; */
 	background-color: argb( 170, 255, 255, 255 );
 }
 
-.addressInput {
-	text-wrap: false;
+.input {
 	padding: 3;
 	padding-left: 5;
 	padding-vertical: 1;
@@ -193,9 +212,27 @@ info {
 	}
 	include-label: true;
 	focused-style: .addressInputFocused;
+	layout: left | expand;
+}
+
+.addressInput {
+	text-wrap: false;
+	padding: 3;
+	padding-left: 5;
+	padding-vertical: 1;
+	include-label: true;
+	focused-style: .addressInputFocused;
 	choicetextfield-choicestyle: .addressChoice;
 	choicetextfield-containerstyle: .addressChoicesContainer;
 	layout: left | expand;
+	/** style of the filter-textfield of a FilteredList/FilteredChoiceGroup */
+	filter-style: filterTextFieldStyle;
+	/** style of the popup screen for a FileredChoiceGroup */
+	popup-style: filterPopupStyle;
+	background {
+		type: round-rect;
+		color: silver;
+	}
 }
 
 .addressInputFocused {
@@ -208,6 +245,24 @@ info {
 		border-width: 2;
 	}
 	layout: left | expand;	
+}
+
+.filterTextFieldStyle {
+	margin-left: 2;
+	margin-right: 2;
+	before: url( search.png );
+	background {
+		color: white;
+		border-color: black;
+	}
+	layout: expand | left;
+}
+
+.filterPopupStyle {
+	repaint-previous-screen: true;
+	margin: 10;
+	padding: 5;
+	background-color: bgColor;
 }
 
 /*
@@ -238,6 +293,24 @@ info {
 .addressChoicesContainer {
 	background-color: argb( 210, 255, 255, 255 );
 	layout: left | expand;
+}
+
+.senderOption {
+	margin: 2;
+	radiobox-plain: none;
+	radiobox-selected: url( checked.png );
+	checkbox-plain: none;
+	checkbox-selected: url( checked.png );
+	font-size: small;
+	font-style: bold;
+}
+
+.senderOption:hover {
+	background {
+		type: round-rect;
+		color: #222;
+	}
+	font-color: white;
 }
 
 /**
@@ -280,7 +353,7 @@ title {
 	padding: 2;
 	font-face: proportional;
 	font-size: large;
-	font-style: bold;
+	font-style: bold | italic;
 	font-color: focusedFontColor;
 	background {
 		type: vertical-gradient;
@@ -307,13 +380,17 @@ menubar
 	margin: 0;
 	padding-top: 3;
 	padding: 2;
-	background {
-		type: vertical-gradient;
-		top-color: #ccc;
-		bottom-color: #fff;
-		start: 10%;
-		end: 90%;
-	}
+	//#if polish.MenuBar.Position == right
+		background-color: silver;
+	//#else
+		background {
+			type: vertical-gradient;
+			top-color: #ccc;
+			bottom-color: #fff;
+			start: 10%;
+			end: 90%;
+		}
+	//#endif
 }
 
 /**
@@ -323,6 +400,7 @@ leftcommand
 {
 	margin: 0;
     margin-horizontal: 10;
+    padding: 2;
 	padding-top: 3;
 	padding-bottom: 0;
 	font-color: fontColor;
@@ -334,6 +412,12 @@ leftcommand
 	*/
 	text-effect: shadow;
 	text-shadow-color: #ff0;
+	/*
+	background {
+		type: round-rect;
+		color: white;
+	}
+	*/
 }
 
 /**
@@ -353,12 +437,17 @@ menu {
 	padding: 2;
 	font-color: focusedFontColor;
 	font-size: small;
-	view-type: slide-up;
+	//#if polish.MenuBar.Position != right && !polish.blackberry
+		view-type: slide-up;
+	//#endif
+	/*
+	view-type: numbered;
+	*/
 	border {
 		type: drop-shadow;
 		width: 4;
-		start-color: #aeee;
-		end-color: #2222;
+		inner-color: #aeee;
+		outer-color: #2222;
 		orientation: top-right;
 	}
 	background {
@@ -384,6 +473,12 @@ menu {
 	 */
 }
 
+.numberStyle {
+	margin: 2;
+	font-size: small;
+	font-color: green;
+	text-effect: shadow;
+}
 
 /** Style for the first layer of subcommands.
 menu1 extends menu {
@@ -404,6 +499,10 @@ menu1 extends menu {
   * the menu style will be used instead. 
   */
 menuItem {
+	/*
+	label-style: .numberStyle;
+	*/
+	include-label: true;
 	padding: 3;
 	padding-left: 10;
 	padding-right: 10;
@@ -452,7 +551,11 @@ menuItem {
 	layout: left | horizontal-expand;
 }
 
-
+.deactiveCommand {
+	background-color: silver;
+	font-color: gray;
+	layout: right;
+}
 
 
 

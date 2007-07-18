@@ -4,6 +4,7 @@
 	<property file="${user.name}.properties" />
 	<property name="polish.home" location="../enough-polish-build" />
 	<property  name="device" value="Nokia/Series60E2" />
+	<property  name="devices" value="${device}, Nokia/Series60E2, Sony-Ericsson/W900" />
 
 
 	<property name="wtk.home" location="C:/WTK22" />
@@ -37,7 +38,7 @@
 <target depends="init" name="j2mepolish">
 	<j2mepolish>
 	    <!-- general settings -->
-		<info copyright="Copyright 2006 Enough Software. All rights reserved." 
+		<info copyright="Copyright 2007 Enough Software. All rights reserved." 
 			description="A TreeItem example." 
 			infoUrl="http://www.enough.de" 
 			jarName="${polish.vendor}-${polish.name}-${polish.locale}-email.jar" 
@@ -46,6 +47,7 @@
 			name="MobileMail" 
 			vendorName="Enough Software" 
 			version="1.0.4"
+			icon="icon.png"
 	    />
 		<!-- selection of supported devices -->
 		<deviceRequirements if="test">
@@ -55,7 +57,7 @@
 			-->
 		</deviceRequirements>
 		<deviceRequirements unless="test">
-			<requirement name="Identifier" value="${device}"/>
+			<requirement name="Identifier" value="${devices}"/>
 		</deviceRequirements>
 	    <!-- build settings -->
 		<build fullscreen="menu" 
@@ -69,13 +71,17 @@
 			<variables>
 				<variable name="polish.TextField.useDirectInput" value="true" />
 				<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+				<variable name="polish.TextField.includeInputInfo" value="true" />
 				<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 				<!--
+				<variable name="polish.TextField.suppressCommands" value="true"/>
 				<variable name="polish.MenuBar.PaddingLeft" value="5" />
 				<variable name="polish.MenuBar.PaddingRight" value="5" />
 				<variable name="polish.MenuBar.PaddingTop" value="5" />
 				<variable name="polish.MenuBar.PaddingBottom" value="1" />
 				<variable name="polish.Container.allowCycling" value="false" />
+				<variable name="polish.MenuBar.OptionsPosition" value="" />
+				<variable name="polish.MenuBar.OkPosition" value="" />
 				-->
 				<variable name="polish.useScrollBar" value="true" />
 				<variable name="polish.ScreenInfo.enable" value="true" />
@@ -85,10 +91,12 @@
 				<keep class="de.enough.polish.example.Dummy" />
 			</obfuscator>
 			<!-- debug settings: only include debug setting when the test-property is true -->
-			<debug if="test" level="error" showLogOnError="false" verbose="true">
+			<debug level="error" showLogOnError="false" verbose="true" if="test">
 				<filter level="debug" package="de.enough.polish.sample.mail"/>
 				<filter level="info" pattern="de.enough.polish.ui.*"/>
 				<filter level="debug" class="de.enough.polish.ui.ChoiceTextField" />
+				<filter level="debug" class="de.enough.polish.ui.Screen"/>
+				<filter level="debug" class="de.enough.polish.ui.MenuBar"/>
 				<!--
 				<filter level="debug" class="de.enough.polish.ui.Container" />
 				<filter level="debug" class="de.enough.polish.ui.TreeItem" />
@@ -100,7 +108,7 @@
 				excludes="readme.txt"
 			>
 				<localization>
-					<locale name="de" encoding="UTF8"/>
+					<locale name="en" encoding="UTF8"/>
 				</localization>
 			</resources>
 		</build>

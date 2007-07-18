@@ -26,11 +26,21 @@
  */
 package de.enough.polish.sample.email;
 
+import java.util.Hashtable;
+
+import javax.microedition.lcdui.Choice;
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.TextField;
 
 import de.enough.polish.ui.ChoiceTextField;
+import de.enough.polish.ui.FilteredChoiceGroup;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.StyleSheet;
+import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.Locale;
 
 /**
  * <p>Provides a form for creating a new mail.</p>
@@ -42,7 +52,10 @@ import de.enough.polish.ui.Style;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CreateMessageForm extends Form  {
+public class CreateMessageForm 
+extends Form
+implements ItemCommandListener
+{
 		
 	private final static String[] RECEIVERS = new String[] {
 		"google.com", "yahoo.com", "msn.com", "somewhere.com"
@@ -50,13 +63,15 @@ public class CreateMessageForm extends Form  {
 //		"beta@j2mepolish.org", "circus@ms.com", "doing@going.com", "info@enough.de", "j2mepolish@enough.de"		
 	};
 	private final static String[] SENDERS = new String[] {
-		"auser@somewhere.net", "buser@other.org", "donkey@p2p.net", "gold@ironr.us", "info@enough.de", "j2mepolish@enough.de", "relative@einstein.net", "uncertainty@heisenberg.net", "you@conquertheworld.com"
+		"auser@somewhere.net", "another@anywhere.com", "after@dark.com", "buser@other.org", "donkey@p2p.net", "doja@japan.jp", "gold@ironr.us", "info@enough.de", "j2mepolish@enough.de", "jamba@europe.eu", "relative@einstein.net", "uncertainty@heisenberg.net", "you@conquertheworld.com"
 	};
 	private final static String DEFAULT_SENDER = "j2me@polish.org";
 	         
 	private final ChoiceTextField receiver;
-	private final ChoiceTextField sender;
+	private final FilteredChoiceGroup sender;
+	private final FilteredChoiceGroup priority;
 	private TextField text;
+	private Command cmdChoose = new Command( "Choose...", Command.ITEM, 2 ); 
 
 	/**
 	 * Creates a new form for writing an email.
@@ -94,15 +109,31 @@ public class CreateMessageForm extends Form  {
 		boolean allowChoicesBeforeChoiceTriggerHasBeenEntered = false;
 		this.receiver.setChoiceTrigger( choiceTriggerChar, allowChoicesBeforeChoiceTriggerHasBeenEntered );
 		append( this.receiver );
-		allowFreeText = false;
 		//#style addressInput
-		this.sender = new ChoiceTextField( "from: ", null, 255, TextField.EMAILADDR, SENDERS, allowFreeText );
+		this.sender = new FilteredChoiceGroup( "from: ", "select sender...", Choice.EXCLUSIVE );
+		this.sender.addCommand(this.cmdChoose);
+		this.sender.setItemCommandListener( this );
+		for (int i = 0; i < SENDERS.length; i++) {
+			String senderAddress = SENDERS[i];
+			//#style senderOption
+			this.sender.append( senderAddress, null );
+		}
 		append( this.sender );
+		//#style addressInput
+		this.priority = new FilteredChoiceGroup( "priority: ", "select priority...", Choice.IMPLICIT );
+		this.priority.addCommand(this.cmdChoose);
+		this.priority.setItemCommandListener( this );
+		//#style senderOption
+		this.priority.append( "low", null );
+		//#style senderOption
+		this.priority.append( "normal", null );
+		//#style senderOption
+		this.priority.append( "important", null );
+		append( this.priority );
+		
+		
 		//#style input, addressInput
 		this.text = new TextField( "message: ", null, 255, TextField.ANY );
-		append( this.text );
-		//#style input, addressInput
-		this.text = new TextField( "message2: ", null, 255, TextField.ANY );
 		append( this.text );
 	}
 	
@@ -121,13 +152,22 @@ public class CreateMessageForm extends Form  {
 	 * @return the sender for the email
 	 */
 	public String getSender() {
-		String address = this.sender.getString();
-		if (address == null || address.length() == 0) {
-			// when the user has not entered the ChoiceTextField it can still be empty,
-			// in that case use the default sender instead:
-			address = DEFAULT_SENDER;
+		int index = this.sender.getSelectedIndex();
+		if (index == -1) {
+			return DEFAULT_SENDER;
+		} else {
+			return this.sender.getString(index );			
 		}
-		return address;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Item)
+	 */
+	public void commandAction(Command cmd, Item item) {
+		if (item == this.sender) {
+			this.sender.showFilteredList( StyleSheet.display );
+		}
 	}
 
 

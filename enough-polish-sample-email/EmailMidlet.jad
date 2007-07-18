@@ -1,0 +1,179 @@
+// Decompiled by Jad v1.5.8c. Copyright 2001 Pavel Kouznetsov.
+// Jad home page: http://www.geocities.com/kpdus/jad.html
+// Decompiler options: packimports(3) 
+// Source File Name:   EmailMidlet.java
+
+package de.enough.polish.sample.email;
+
+import de.enough.polish.ui.*;
+import de.enough.polish.util.Debug;
+import java.io.IOException;
+import java.io.PrintStream;
+import javax.microedition.lcdui.*;
+import javax.microedition.midlet.MIDlet;
+import javax.microedition.midlet.MIDletStateChangeException;
+
+// Referenced classes of package de.enough.polish.sample.email:
+//            CreateMessageForm
+
+public class EmailMidlet extends MIDlet
+    implements CommandListener, ItemStateListener
+{
+
+    public EmailMidlet()
+    {
+        System.out.println("email created");
+    }
+
+    protected void startApp()
+        throws MIDletStateChangeException
+    {
+        StyleSheet.display = Display.getDisplay(this);
+        Form form = new Form("Mobile Mail", StyleSheet.mailformStyle);
+        TreeItem tree = new TreeItem(null, StyleSheet.mailtreeStyle);
+        Item node = tree.appendToRoot("Inbox", null, StyleSheet.mailboxStyle);
+        addMessage(tree, node, "Bill Gates", "What's next?", "After conquering the world, what's left?");
+        addMessage(tree, node, "Stephen Hawkings", "Black Holes", "They are my favourite!");
+        addMessage(tree, node, "David Byrne", "String Theory", "Or is it m-theory with multidimensional branes?!");
+        node = tree.appendToRoot("Outbox", null, StyleSheet.mailboxStyle);
+        addMessage(tree, node, "Enough Software", "J2ME Polish", "Powerful, Flexible, Extensible.");
+        node = tree.appendToRoot("Sent", null, StyleSheet.mailboxStyle);
+        addMessage(tree, node, "Steve Jobs", "iPhone?", "Gimme that phone, please :-)  - and don't forget the Java support!");
+        form.append(tree);
+        form.setCommandListener(this);
+        form.setItemStateListener(this);
+        form.addCommand(createNewCommand);
+        form.addCommand(exitCommand);
+        UiAccess.addSubCommand(createNewMailCommand, createNewCommand, form);
+        UiAccess.addSubCommand(createNewIMCommand, createNewCommand, form);
+        form.addCommand(setStatusCommand);
+        UiAccess.addSubCommand(setStatusOnlineCommand, setStatusCommand, form);
+        UiAccess.addSubCommand(setStatusOfflineCommand, setStatusCommand, form);
+        UiAccess.addSubCommand(setStatusInvisibleCommand, setStatusCommand, form);
+        mainScreen = form;
+        setStatus(0);
+        display = Display.getDisplay(this);
+        StyleSheet.setCurrent(display, form);
+    }
+
+    private void addMessage(TreeItem tree, Item node, String from, String subject, String text)
+    {
+        Item subjectItem = tree.appendToNode(node, from, null, StyleSheet.mailsummaryStyle);
+        Item detailItem = new StringItem("Subject: ", subject, StyleSheet.maildetailStyle);
+        tree.appendToNode(subjectItem, detailItem);
+        detailItem = new StringItem("Text: ", text, StyleSheet.maildetailStyle);
+        tree.appendToNode(subjectItem, detailItem);
+    }
+
+    private void setStatus(int status)
+    {
+        String url;
+        switch(status)
+        {
+        case 1: // '\001'
+            url = "/info_online.png";
+            break;
+
+        case 2: // '\002'
+            url = "/info_invisible.png";
+            break;
+
+        default:
+            url = "/info_offline.png";
+            break;
+        }
+        try
+        {
+            Image img = Image.createImage(url);
+            ScreenInfo.setImage(img);
+        }
+        catch(IOException e)
+        {
+            Debug.debug("error", "de.enough.polish.sample.email.EmailMidlet", 170, "Unable to switch to status " + status + ": " + url + " could not be loaded", e);
+        }
+    }
+
+    protected void pauseApp()
+    {
+    }
+
+    protected void destroyApp(boolean unconditional)
+        throws MIDletStateChangeException
+    {
+        Debug.exit();
+    }
+
+    public void commandAction(Command cmd, Displayable disp)
+    {
+        if(disp == mainScreen)
+        {
+            if(cmd == exitCommand)
+                notifyDestroyed();
+            else
+            if(cmd == createNewMailCommand)
+            {
+                CreateMessageForm form = new CreateMessageForm("Create E-Mail", StyleSheet.createmessageformStyle);
+                form.setCommandListener(this);
+                form.addCommand(okCommand);
+                form.addCommand(abortCommand);
+                createMessageForm = form;
+                StyleSheet.setCurrent(display, form);
+            } else
+            if(cmd == createNewIMCommand)
+            {
+                CreateMessageForm form = new CreateMessageForm("Create Instant Message", StyleSheet.createmessageformStyle);
+                form.setCommandListener(this);
+                form.addCommand(okCommand);
+                form.addCommand(abortCommand);
+                createMessageForm = form;
+                StyleSheet.setCurrent(display, form);
+            } else
+            if(cmd == setStatusOnlineCommand)
+                setStatus(1);
+            else
+            if(cmd == setStatusOfflineCommand)
+                setStatus(0);
+            else
+            if(cmd == setStatusInvisibleCommand)
+            {
+                setStatus(2);
+            } else
+            {
+                Alert alert = new Alert("Not supported", "The action is not yet implemented.", null, AlertType.INFO, StyleSheet.mailalertStyle);
+                Alert.setCurrent(display, alert, mainScreen);
+            }
+        } else
+        if(disp == createMessageForm)
+            if(cmd == okCommand)
+            {
+                Alert alert = new Alert("Creating New Message", "Receiver: " + createMessageForm.getReceiver() + "\nSender: " + createMessageForm.getSender(), null, AlertType.INFO, StyleSheet.mailalertStyle);
+                createMessageForm = null;
+                Alert.setCurrent(display, alert, mainScreen);
+            } else
+            {
+                StyleSheet.setCurrent(display, mainScreen);
+            }
+    }
+
+    public void itemStateChanged(Item item)
+    {
+        System.out.println("ItemStateChanged " + item);
+    }
+
+    private static final int STATUS_OFFLINE = 0;
+    private static final int STATUS_ONLINE = 1;
+    private static final int STATUS_INVISIBLE = 2;
+    private final Command createNewCommand = new Command("New", 1, 1);
+    private final Command createNewMailCommand = new Command("E-Mail", 1, 1);
+    private final Command createNewIMCommand = new Command("Instant Message", 1, 2);
+    private final Command exitCommand = new Command("Exit", 7, 10);
+    private final Command okCommand = new Command("OK", 4, 1);
+    private final Command abortCommand = new Command("Cancel", 2, 2);
+    private final Command setStatusCommand = new Command("Status", 1, 1);
+    private final Command setStatusOnlineCommand = new Command("Online", 1, 1);
+    private final Command setStatusOfflineCommand = new Command("Offline", 1, 2);
+    private final Command setStatusInvisibleCommand = new Command("Invisible", 1, 2);
+    private Form mainScreen;
+    private CreateMessageForm createMessageForm;
+    private Display display;
+}
