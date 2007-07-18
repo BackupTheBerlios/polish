@@ -162,6 +162,7 @@ implements OutputFilter
 					//iconUrl = iconUrl.substring( 1 );
 					// add absolute path for the icon, so that stupid rapcs build before 4.2 can find it:
 					iconUrl = device.getClassesDir() + iconUrl;
+					System.out.println("using icon path " + iconUrl );
 				} else {
 					iconUrl = "";
 				}
@@ -191,6 +192,11 @@ implements OutputFilter
 		}
 		if (!this.verbose) {
 			this.verbose = "true".equals( env.getVariable("polish.blackberry.verbose") );
+		}
+		// delete existing COD file to force a clean rebuild of the COD:
+		File codFile = new File( jadFile.getParent(), codName + ".cod");
+		if (codFile.exists()) {
+			codFile.delete();
 		}
 		ArrayList commands = new ArrayList();
 		try {
@@ -284,7 +290,6 @@ implements OutputFilter
 			// request signature when the "blackberry.certificate.dir" variable is set:
 			if ( env.getVariable("blackberry.certificate.dir") != null) {
 				SignatureRequester requester = new SignatureRequester();
-				File codFile = new File( jarFile.getParent(), codName + ".cod" );
 				try {
 					int signResult = requester.requestSignature(device, locale, new File( blackberryHome ), codFile, env);
 					if (signResult != 0) {
