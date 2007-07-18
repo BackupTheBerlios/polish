@@ -3400,59 +3400,54 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#if tmp.implementsItemCommandListener
-		/* (non-Javadoc)
-		 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
-		 */
-		public void commandAction(Command cmd, Item item) {
-			handleCommandAction(cmd,item);	
-		}
-	//#endif
-		
-	protected void handleCommandAction(Command cmd, Item item)
-	{
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
+	 */
+	public void commandAction(Command cmd, Item item) {
 		//#debug
 		System.out.println("commandAction( " + cmd.getLabel() + ", " + this + " )");
-		//#if tmp.supportsSymbolEntry
-			if (cmd == ENTER_SYMBOL_CMD ) {
-				showSymbolsList();
-				return;
-			}
-		//#endif
-		//#ifndef tmp.suppressCommands
-			if ( cmd == DELETE_CMD ) {
-				if (this.text != null && this.text.length() > 0) {
-					//#ifdef tmp.directInput
-						//#ifdef tmp.allowDirectInput
-							if (this.enableDirectInput) {
-						//#endif
-							//#ifdef polish.key.ClearKey:defined
-							//#= handleKeyClear(${polish.key.ClearKey},0);
-							//#else
-							handleKeyClear(-8,0);
-							//#endif
-						//#ifdef tmp.allowDirectInput
-							} else {
-								String myText = getString();
-								setString( myText.substring(0, myText.length() - 1));
-								notifyStateChanged();
-							}
-						//#endif
-					//#else
-						String myText = getString();
-						setString( myText.substring(0, myText.length() - 1));
-						notifyStateChanged();
-					//#endif
+		//#if tmp.implementsItemCommandListener
+			//#if tmp.supportsSymbolEntry
+				if (cmd == ENTER_SYMBOL_CMD ) {
+					showSymbolsList();
+					return;
 				}
-			} else if ( cmd == CLEAR_CMD ) {
-				setString( null );
-				notifyStateChanged();
-			} else if ( this.additionalItemCommandListener != null ) {
-				this.additionalItemCommandListener.commandAction(cmd, item);
-			}
+			//#endif
+			//#ifndef tmp.suppressCommands
+				if ( cmd == DELETE_CMD ) {
+					if (this.text != null && this.text.length() > 0) {
+						//#ifdef tmp.directInput
+							//#ifdef tmp.allowDirectInput
+								if (this.enableDirectInput) {
+							//#endif
+								//#ifdef polish.key.ClearKey:defined
+								//#= handleKeyClear(${polish.key.ClearKey},0);
+								//#else
+								handleKeyClear(-8,0);
+								//#endif
+							//#ifdef tmp.allowDirectInput
+								} else {
+									String myText = getString();
+									setString( myText.substring(0, myText.length() - 1));
+									notifyStateChanged();
+								}
+							//#endif
+						//#else
+							String myText = getString();
+							setString( myText.substring(0, myText.length() - 1));
+							notifyStateChanged();
+						//#endif
+					}
+				} else if ( cmd == CLEAR_CMD ) {
+					setString( null );
+					notifyStateChanged();
+				} else if ( this.additionalItemCommandListener != null ) {
+					this.additionalItemCommandListener.commandAction(cmd, item);
+				}
+			//#endif		
 		//#endif
 	}
-	
+		
 	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || polish.blackberry || polish.TextField.activateUneditableWithFire
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
