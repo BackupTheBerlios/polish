@@ -6,6 +6,7 @@ package de.enough.polish.blackberry.ui;
 
 import net.rim.device.api.system.Bitmap;
 import net.rim.device.api.ui.DrawStyle;
+import net.rim.device.api.ui.XYRect;
 
 /**
  * Provides simple 2D geometric rendering capability.
@@ -851,7 +852,12 @@ public class Graphics extends Object
 		this.clipHeight = height;
 		int color = this.g.getColor();
 		if (this.isContextPushed) {
-			this.g.popContext();
+			try {
+				this.g.popContext();
+			} catch (Exception e) {
+				//#debug error
+				System.out.println("Unable to pop clipping context" + e);
+			}
 		}
 		x += this.translateX;
 		y += this.translateY;
@@ -1529,6 +1535,23 @@ public class Graphics extends Object
 	{
 		return color;
 		//TODO implement getDisplayColor
+	}
+
+	public void setGraphics(net.rim.device.api.ui.Graphics g) {
+		this.g = g;
+		this.isContextPushed = false;
+		try {
+			XYRect clip = g.getClippingRect();
+			this.clipX = clip.x;
+			this.clipY = clip.y;
+			this.clipWidth = clip.width;
+			this.clipHeight = clip.height;
+		} catch (Exception e) {
+			this.clipX = 0;
+			this.clipY = 0;
+			this.clipWidth = net.rim.device.api.ui.Graphics.getScreenWidth();
+			this.clipHeight = net.rim.device.api.ui.Graphics.getScreenHeight();
+		}
 	}
 
 }

@@ -165,9 +165,6 @@ public class Ticker extends IconItem
 		
 		g.setClip(clipX, clipY, clipWidth, clipHeight);
 		
-//		g.setColor(0x00ff00);
-//		g.drawRect( clipX + 1, clipY + 1, clipWidth - 2, clipHeight -2 );
-
 	}
 
 	//#ifdef polish.useDynamicStyles

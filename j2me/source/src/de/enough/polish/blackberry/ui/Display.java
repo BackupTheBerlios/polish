@@ -766,7 +766,7 @@ implements TrackwheelListener, KeyListener
 	 */
 	public void callSerially( Runnable r)
 	{
-		this.midlet.invokeAndWait( r );
+		this.midlet.invokeLater( r );
 	}
 
 	/**
