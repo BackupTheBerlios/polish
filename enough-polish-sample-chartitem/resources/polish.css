@@ -51,6 +51,12 @@ colors {
 	chart-vertical-bars-shadow-color: gray;
 }
 
+.cakeChart {
+	background-color: white;
+	padding: 3;
+	view-type: chart-cake;
+}
+
 /**
   * The focused style is a predefined style which
   * is used by lists, forms, choice-groups and so on.

@@ -21,6 +21,7 @@ implements CommandListener
 	private Command exitCommand = new Command( "Exit", Command.EXIT, 3 );
 	private Command styleLines = new Command("Lines", Command.SCREEN, 1 );
 	private Command styleVerticalBar = new Command("Vertical Bars", Command.SCREEN, 1 );
+	private Command styleCakeChart = new Command("Cake Chart", Command.SCREEN, 1 );
 
 	public ChartMidlet() {
 		//#style mainScreen
@@ -30,6 +31,7 @@ implements CommandListener
 		this.form.addCommand( parent );
 		UiAccess.addSubCommand(this.styleLines, parent, this.form );
 		UiAccess.addSubCommand(this.styleVerticalBar, parent, this.form );
+		UiAccess.addSubCommand(this.styleCakeChart, parent, this.form );
 		this.form.setCommandListener( this );
 
 
@@ -60,6 +62,9 @@ implements CommandListener
 			updateChart();			
 		} else if (cmd == this.styleVerticalBar) {
 			//#style verticalBarChart
+			updateChart();
+		} else if (cmd == this.styleCakeChart) {
+			//#style cakeChart
 			updateChart();		
 		}
 	}
@@ -76,7 +81,7 @@ implements CommandListener
 				new int[]{ 0, 2, 4, 8, 16, 32 },
 				new int[]{ 1, 42, 7, 12, 16, 1 }
 		};
-		int[] colors = new int[]{ 0xFF0000, 0x00FF00, 0x0000FF };
+		int[] colors = new int[]{ 0xFF0000, 0x00FF00, 0x0000FF, 0x660033, 0x009999, 0xFFCC33, 0x00CC99, 0xFFFF33, 0x996600 };
 		ChartItem chart = new ChartItem( null, dataSequences, colors, style );
 		this.form.append( chart );
 		
