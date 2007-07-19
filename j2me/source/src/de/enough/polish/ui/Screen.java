@@ -1531,7 +1531,7 @@ implements AccessibleCanvas
 				// paint menu in full-screen mode:
 				int menuLeftX = 0;
 				int menuRightX = this.screenWidth;
-				int menuY = this.screenHeight + 1; // + this.marginBottom;
+				int menuY = this.screenHeight; // + this.marginBottom;
 				//#if polish.css.separate-menubar
 					if (!this.separateMenubar) {
 						menuLeftX = leftBorder;

@@ -91,7 +91,7 @@ public class BorderedSimpleBackground extends Background {
 			this.borderColorObj = null;
 		}
 		g.setColor( this.color );
-		g.fillRect( x, y, width + 1, height + 1 );
+		g.fillRect( x, y, width, height );
 		width--;
 		height--;
 		g.setColor( this.borderColor );
