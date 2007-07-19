@@ -87,7 +87,13 @@ public class CakeChartView extends ItemView {
 			//Calculate total amount
 			int total = 0;
 			for (int j = 0; j < dataRow.length; j++) {
-				total += dataRow[j];
+				int value = dataRow[j];
+				
+				//No negative numbers allowed
+				if(value < 0)
+					value = value * -1;
+				
+				total += value;
 			}
 			
 			//Draw arcs
@@ -97,9 +103,15 @@ public class CakeChartView extends ItemView {
 				int color = colors[colorIndex];
 				g.setColor( color );
 				
+				int value = dataRow[j];
+				
+				//No negative numbers allowed
+				if(value < 0)
+					value = value * -1;
+				
 				colorIndex = (colorIndex+1) % colors.length;
 				
-				degrees = (((dataRow[j] * 100) /total) * 360) / 100;
+				degrees = (((value * 100) /total) * 360) / 100;
 				
 				if(j == (dataRow.length -1))
 					g.fillArc(left, top, radius, radius, offset, 360 - offset);
