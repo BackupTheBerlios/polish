@@ -2967,6 +2967,9 @@ public class TextField extends StringItem
 	protected boolean handleKeyNavigation(int keyCode, int gameAction)
 	{
 		//#if tmp.directInput
+		if (this.realTextLines == null) {
+			return false;
+		}
 		char character = this.caretChar;
 		boolean characterInserted = character != this.editingCaretChar;
 		if (characterInserted) {
