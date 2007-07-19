@@ -1980,6 +1980,7 @@ public final class UiAccess {
 	 */
 	public static void setCommandLabel( Screen screen, Command command, String label) {
 		CommandItem item = screen.getCommandItem(command);
+		//#debug
 		System.out.println("setting text=" + label + " for previous " + command.getLabel() + "=" + item );
 		if (item != null) {
 			item.setText(label);

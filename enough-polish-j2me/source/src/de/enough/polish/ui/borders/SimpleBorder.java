@@ -59,12 +59,14 @@ public class SimpleBorder extends Border {
 	 * @see de.enough.polish.ui.Border#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
+		width--;
+		height--;
 		g.setColor( this.color );
 		g.drawRect( x, y, width, height );
 		if (this.borderWidth > 1) {
 			int border = this.borderWidth - 1;
 			while ( border > 0) {
-				g.drawRect( x+border, y+border, width - 2*border, height - 2*border );
+				g.drawRect( x+border, y+border, width - (border<<1), height - (border<<1) );
 				border--;
 			}
 		}

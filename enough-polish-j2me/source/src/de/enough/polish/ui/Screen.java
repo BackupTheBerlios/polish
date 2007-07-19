@@ -1434,34 +1434,40 @@ implements AccessibleCanvas
 				int clipY = g.getClipY();
 				int clipWidth = g.getClipWidth();
 				int clipHeight = g.getClipHeight();
-				//g.setClip(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
-				g.clipRect(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
-	
-				// paint content:
-				//System.out.println("starting to paint content of screen");
-				paintScreen( g );
-				//System.out.println("done painting content of screen");
-//				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() );
-//				g.setColor( 0xff0000 );
-//				g.drawRect(g.getClipX() + 1 , g.getClipY() + 1 , g.getClipWidth() - 2 ,  g.getClipHeight() - 2);
-				
-				//#if tmp.useScrollBar
-					if (this.container != null && this.container.itemHeight > this.contentHeight) {
-						// paint scroll bar: - this.container.yOffset
-						//#debug
-						System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
-						
-						int scrollX = sWidth + this.marginLeft 
-									- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
-						//TODO allow scroll bar on the left side
-						this.scrollBar.relativeX = scrollX;
-						this.scrollBar.relativeY = this.contentY;
-						this.scrollBar.paint( scrollX, this.contentY, scrollX, rightBorder, g);
-					}
-				//#endif
-				
-				// allow painting outside of the screen again:
-				g.setClip( clipX, clipY, clipWidth, clipHeight );
+				if ( !(clipY > this.contentY + this.contentHeight || clipY + clipHeight < this.contentY) ) {
+					//g.setClip(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
+					//g.clipRect(leftBorder, topHeight, sWidth, this.screenHeight - topHeight + 1);
+					g.clipRect(leftBorder, this.contentY, sWidth, this.contentHeight + 1 );
+		
+					// paint content:
+					//System.out.println("starting to paint content of screen");
+					paintScreen( g );
+					//System.out.println("done painting content of screen");
+	//				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() );
+	//				g.setColor( 0xff0000 );
+	//				g.drawRect(g.getClipX() + 1 , g.getClipY() + 1 , g.getClipWidth() - 2 ,  g.getClipHeight() - 2);
+					
+					//#if tmp.useScrollBar
+						if (this.container != null && this.container.itemHeight > this.contentHeight) {
+							// paint scroll bar: - this.container.yOffset
+							//#debug
+							System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
+							
+							int scrollX = sWidth + this.marginLeft 
+										- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
+							//TODO allow scroll bar on the left side
+							this.scrollBar.relativeX = scrollX;
+							this.scrollBar.relativeY = this.contentY;
+							this.scrollBar.paint( scrollX , this.contentY, scrollX, rightBorder, g);
+							//g.setColor( 0x00ff00 );
+							//g.drawRect( this.contentX, this.contentY, this.contentWidth - 3, this.contentHeight );
+							//System.out.println("scrollbar: width=" + scrollBar.itemWidth + ", backgroundWidth=" + scrollBar.backgroundWidth + ", height=" + scrollBar.itemHeight + ", backgroundHeight=" + scrollBar.backgroundHeight + ", contentY=" + contentY + ", contentHeight=" + this.contentHeight );
+						}
+					//#endif
+					
+					// allow painting outside of the screen again:
+					g.setClip( clipX, clipY, clipWidth, clipHeight );
+				}
 //				//#ifdef tmp.menuFullScreen
 //				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 //				//#else
@@ -1525,7 +1531,7 @@ implements AccessibleCanvas
 				// paint menu in full-screen mode:
 				int menuLeftX = 0;
 				int menuRightX = this.screenWidth;
-				int menuY = this.screenHeight; // + this.marginBottom;
+				int menuY = this.screenHeight + 1; // + this.marginBottom;
 				//#if polish.css.separate-menubar
 					if (!this.separateMenubar) {
 						menuLeftX = leftBorder;
@@ -1566,9 +1572,9 @@ implements AccessibleCanvas
 							//#endif
 							}
 							this.menuContainer.setScrollHeight(this.originalScreenHeight-topHeight);
-							g.setClip(0, topHeight, this.screenWidth, this.originalScreenHeight - topHeight );
+							//g.setClip(0, topHeight, this.screenWidth, this.originalScreenHeight - topHeight );
 							this.menuContainer.paint(menuLeftX, y, menuLeftX, menuLeftX + this.screenWidth, g);
-						 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
+						 	//g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 						} 
 						//#if !polish.doja
 							if (this.showTitleOrMenu || this.menuOpened) {
@@ -1576,7 +1582,7 @@ implements AccessibleCanvas
 								if (this.menuBarColor != Item.TRANSPARENT) {
 									g.setColor( this.menuBarColor );
 									//TODO check use menuY instead of this.originalScreenHeight?
-									g.fillRect(menuLeftX, this.originalScreenHeight, menuRightX,  this.menuBarHeight );
+									g.fillRect(menuLeftX, menuY, menuRightX,  this.menuBarHeight );
 								}
 								g.setColor( this.menuFontColor );
 								g.setFont( this.menuFont );

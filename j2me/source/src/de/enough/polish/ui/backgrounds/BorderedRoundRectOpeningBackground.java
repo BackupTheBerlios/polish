@@ -93,12 +93,14 @@ public class BorderedRoundRectOpeningBackground extends Background {
 		if (this.isAnimationRunning) {
 			int difference = height - this.currentHeight;
 			height = this.currentHeight;
-			y += difference / 2;	
+			y += difference >> 1;	
 		}
 		g.setColor( this.color );
 		g.fillRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
 		if (!this.isAnimationRunning) {
 			// draw the border:
+			width--;
+			height--;
 			g.setColor( this.borderColor );
 			g.drawRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
 			if (this.borderWidth > 1) {

@@ -92,12 +92,14 @@ public class BorderedSimpleBackground extends Background {
 		}
 		g.setColor( this.color );
 		g.fillRect( x, y, width + 1, height + 1 );
+		width--;
+		height--;
 		g.setColor( this.borderColor );
 		g.drawRect( x, y, width, height );
 		if (this.borderWidth > 1) {
 			int border = this.borderWidth - 1;
 			while ( border > 0) {
-				g.drawRect( x+border, y+border, width - 2*border, height - 2*border );
+				g.drawRect( x+border, y+border, width - (border<<1), height - (border<<1) );
 				border--;
 			}
 		}

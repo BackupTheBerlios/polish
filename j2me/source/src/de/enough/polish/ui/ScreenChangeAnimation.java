@@ -316,7 +316,7 @@ public abstract class ScreenChangeAnimation
 				repaint();
 			//#endif
 		} else {
-			// #debug
+			//#debug
 			System.out.println("ScreenChangeAnimation: setting next screen");
 			this.lastCanvasImage = null;
 			this.nextCanvasImage = null;

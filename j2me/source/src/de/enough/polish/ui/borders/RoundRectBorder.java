@@ -65,6 +65,8 @@ public class RoundRectBorder extends Border {
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		g.setColor( this.color );
+		width--;
+		height--;
 		g.drawRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
 		if (this.borderWidth > 1) {
 			int border = this.borderWidth - 1;

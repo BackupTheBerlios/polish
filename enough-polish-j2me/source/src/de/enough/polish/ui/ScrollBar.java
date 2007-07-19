@@ -186,7 +186,7 @@ public class ScrollBar extends Item {
 		//#if polish.css.scrollbar-slider-image
 			}
 		//#endif
-		this.contentHeight = this.scrollBarHeight - ( this.paddingTop + this.paddingBottom + this.marginTop + this.marginBottom );
+		this.contentHeight = this.scrollBarHeight - ( this.paddingTop + this.paddingBottom + this.marginTop + this.marginBottom + (this.borderWidth << 1));
 	}
 
 	/* (non-Javadoc)
