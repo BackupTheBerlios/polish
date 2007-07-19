@@ -193,18 +193,6 @@ public class RmsStorage
 		saveData( name, data);
 	}
 
-//	/* (non-Javadoc)
-//	 * @see de.enough.polish.io.Storage#saveAll(de.enough.polish.io.Serializable[], java.lang.String)
-//	 */
-//	public void saveAll(Serializable[] objects, String name) throws IOException {
-//		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
-//		DataOutputStream out = new DataOutputStream( byteOut );
-//		Serializer.serializeArray(objects, out);
-//		byte[] data = byteOut.toByteArray();
-//		out.close();
-//		byteOut.close();
-//		saveData( name, data);
-//	}
 	
 	/**
 	 * Stores the data under the given name.
@@ -290,32 +278,6 @@ public class RmsStorage
 		throw new IOException("Sorry, not supported - might drop this method altogether");
 	}
 
-//	/* (non-Javadoc)
-//	 * @see de.enough.polish.io.Storage#readAll(java.lang.String)
-//	 */
-//	public Serializable[] readAll(String name) throws IOException {
-//		byte[] data;
-//		try {
-//			if (this.masterRecordStore != null) {
-//				int recordId = getRecordSetId(name);
-//				if (recordId == -1) {
-//					throw new IOException( name + " is unknown");
-//				}
-//				data = this.masterRecordStore.getRecord(recordId);
-//			} else {
-//				RecordStore store = RecordStore.openRecordStore(name, false);
-//				RecordEnumeration enumeration = store.enumerateRecords(null, null, false);
-//				data = enumeration.nextRecord();
-//				enumeration.destroy();
-//				store.closeRecordStore();
-//			}
-//		} catch (RecordStoreException e) {
-//			throw new IOException( e.toString() );
-//		}
-//		DataInputStream in = new DataInputStream( new ByteArrayInputStream( data ));
-//		return Serializer.deserializeArray(in);
-//	}
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.io.Storage#list()
 	 */
@@ -334,28 +296,21 @@ public class RmsStorage
 	 * @see de.enough.polish.io.Storage#delete(java.lang.String)
 	 */
 	public void delete(String name)
-    throws IOException
-  {
-	  try
-	  {
-	    if (this.masterRecordStore == null)
-	    {
-        RecordStore.deleteRecordStore(name);
-      }
-	    else if (this.masterRecordSetIdsByName != null
-	      && !this.masterRecordSetIdsByName.isEmpty())
-	    {
-	      Integer id = (Integer) this.masterRecordSetIdsByName.get(name);
-        
-        if (id != null)
-        {
-          this.masterRecordStore.deleteRecord(id.intValue());
-        }
-	    }
-    }
-	  catch (RecordStoreException e)
-	  {
-	    throw new IOException(e.toString());
-	  }
-  }
+	throws IOException
+	{
+		try {
+			if (this.masterRecordStore == null) {
+				RecordStore.deleteRecordStore(name);
+			} else if (this.masterRecordSetIdsByName != null
+	               && !this.masterRecordSetIdsByName.isEmpty())
+			{
+				Integer id = (Integer) this.masterRecordSetIdsByName.remove(name);
+				if (id != null) {
+					this.masterRecordStore.deleteRecord(id.intValue());
+				}
+			}
+		} catch (RecordStoreException e) {
+			throw new IOException(e.toString());
+		}
+	}
 }
