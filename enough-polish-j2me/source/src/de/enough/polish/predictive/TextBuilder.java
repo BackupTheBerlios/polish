@@ -1,4 +1,5 @@
-//#condition polish.TextField.useDirectInput && !polish.blackberry
+//#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui 
+
 package de.enough.polish.predictive;
 
 import java.io.ByteArrayInputStream;

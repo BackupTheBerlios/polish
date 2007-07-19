@@ -1,18 +1,24 @@
-//#condition polish.TextField.useDirectInput && !polish.blackberry
+//#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui
 package de.enough.polish.predictive;
 
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
+import de.enough.polish.ui.Form;
+import de.enough.polish.ui.StyleSheet;
+import de.enough.polish.ui.TextField;
 import de.enough.polish.util.HashMap;
 
 public class TrieProvider {
 	private RecordStore store = null;
-	private TrieCustom custom = null;
 	private HashMap records   = null; 
 	
 	private int chunkSize = 0;
 	private int lineCount = 0;
+	
+	private TrieCustom custom = null;
+	private Form customForm = null;
+	private TextField customField = null;
 	
 	public TrieProvider()
 	{
@@ -23,12 +29,21 @@ public class TrieProvider {
 			this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
 			
 			this.records = new HashMap();
-			this.custom = new TrieCustom();
 			
 			byte[] bytes = this.store.getRecord(TrieInstaller.HEADER_RECORD);
 			
 			this.chunkSize = TrieUtils.byteToInt(bytes, TrieInstaller.CHUNKSIZE_OFFSET);
 			this.lineCount = TrieUtils.byteToInt(bytes, TrieInstaller.LINECOUNT_OFFSET);
+			
+			this.custom = new TrieCustom();
+			
+			this.customForm = new Form("Add new word");
+			
+			this.customField = new TextField("Word:","",50,TextField.ANY);
+			
+			this.customForm.append(customField);
+			this.customForm.addCommand( StyleSheet.CANCEL_CMD );
+			this.customForm.addCommand( StyleSheet.OK_CMD );
 		}
 		catch(RecordStoreException e)
 		{
@@ -55,7 +70,12 @@ public class TrieProvider {
 	public RecordStore getStore() {
 		return store;
 	}
-	
-	
-	
+
+	public Form getCustomForm() {
+		return customForm;
+	}
+
+	public TextField getCustomField() {
+		return customField;
+	}
 }
