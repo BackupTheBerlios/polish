@@ -765,6 +765,7 @@
 		<mapping from="gauge-rotating-arcs" to="new de.enough.polish.ui.gaugeviews.RotatingArcsGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-equalizer" to="new de.enough.polish.ui.gaugeviews.EqualizerGaugeView()" appliesTo="Gauge" />
 		<mapping from="chart-vertical-bars" to="new de.enough.polish.ui.chartviews.VerticalBarChartView()" appliesTo="ChartItem" />
+		<mapping from="chart-cake" to="new de.enough.polish.ui.chartviews.CakeChartView()" appliesTo="ChartItem" />
 		<mapping from="fade-out" to="new de.enough.polish.ui.itemviews.FadeOutItemView()" appliesTo="Item" />
 		<mapping from="fade-in" to="new de.enough.polish.ui.itemviews.FadeInItemView()" appliesTo="Item" />
 		<mapping from="size-increase" to="new de.enough.polish.ui.itemviews.SizeIncreaseItemView()" appliesTo="Item" />
