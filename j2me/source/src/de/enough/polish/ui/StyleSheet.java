@@ -37,6 +37,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.midlet.MIDlet;
 
 import de.enough.polish.ui.tasks.ImageTask;
 import de.enough.polish.util.Locale;
@@ -86,9 +87,13 @@ public final class StyleSheet {
 	
 	// do not change the following line!
 //$$IncludeStyleSheetDefinitionHere$$//
-		
+	/** Access to the currently shown J2ME Polish screen, if any */
 	public static Screen currentScreen;	
+	/** Access to the application's Display */
 	public static Display display;
+	/** Access to the currently running MIDlet */
+	public static MIDlet midlet;
+	/** Access to the AnimationThread responsible for animating all user interface components */
 	public static AnimationThread animationThread;
 	//#ifdef polish.i18n.useDynamicTranslations
 		public static Command OK_CMD = new Command( Locale.get("polish.command.ok"), Command.OK, 2 );
