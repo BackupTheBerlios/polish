@@ -2021,8 +2021,14 @@ public class PolishTask extends ConditionalTask {
 						displayClassName = "de.enough.polish.doja.ui.Display";
 					}
 				}
-				sourceCode.setCurrent( displayVar + " = " + displayClassName + ".getDisplay( this );"
-						+ line );
+				String displayVariableSetting = displayVar + " = " + displayClassName + ".getDisplay( this ); ";
+				if (this.useDefaultPackage) {
+					displayVar = "StyleSheet.midlet";
+				} else {
+					displayVar = "de.enough.polish.ui.StyleSheet.midlet";
+				}
+				displayVariableSetting += displayVar + " = this;";
+				sourceCode.setCurrent( displayVariableSetting + line );
 				return;
 			}
 		}
