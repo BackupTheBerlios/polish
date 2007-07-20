@@ -10,6 +10,8 @@ import de.enough.polish.ui.TextField;
 import de.enough.polish.util.HashMap;
 
 public class TrieProvider {
+	private boolean init = false;
+	
 	private RecordStore store = null;
 	private HashMap records   = null; 
 	
@@ -22,12 +24,14 @@ public class TrieProvider {
 	
 	public TrieProvider()
 	{
+		this.init = false;
+	}
+	
+	public void init()
+	{
 		try
 		{
-			System.out.println("new provider");
-			
 			this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
-			
 			this.records = new HashMap();
 			
 			byte[] bytes = this.store.getRecord(TrieInstaller.HEADER_RECORD);
@@ -39,16 +43,20 @@ public class TrieProvider {
 			
 			this.customForm = new Form("Add new word");
 			
-			this.customField = new TextField("Word:","",50,TextField.ANY);
-			
-			this.customForm.append(customField);
 			this.customForm.addCommand( StyleSheet.CANCEL_CMD );
 			this.customForm.addCommand( StyleSheet.OK_CMD );
+			
+			this.init = true;
 		}
 		catch(RecordStoreException e)
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean isInit()
+	{
+		return this.init;
 	}
 
 	public int getChunkSize() {
@@ -77,5 +85,9 @@ public class TrieProvider {
 
 	public TextField getCustomField() {
 		return customField;
+	}
+
+	public void setCustomField(TextField customField) {
+		this.customField = customField;
 	}
 }

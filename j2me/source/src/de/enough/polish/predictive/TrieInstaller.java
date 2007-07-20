@@ -6,6 +6,7 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 
+import javax.microedition.lcdui.Gauge;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
@@ -35,6 +36,9 @@ public class TrieInstaller {
 	int lineCount 	= 0;
 	
 	DataInputStream stream = null;
+	
+	boolean cancel = false;
+	boolean pause = false;
 	
 	public TrieInstaller() throws IOException, IllegalArgumentException
 	{
@@ -74,84 +78,6 @@ public class TrieInstaller {
 		byte[] bytes = new byte[0];
 		store.addRecord(bytes, 0, bytes.length);
 	}
-	
-	public boolean createStores()
-	{
-		try
-		{
-			byte[] nodes;
-			RecordStore store = null;
-			
-			int count = 0;
-			int storeID = 0;
-			
-			do
-			{
-				nodes = null;
-				
-				if((count % this.chunkSize) == 0)
-				{
-					if(store != null)
-					{
-						store.closeRecordStore();
-						storeID += this.chunkSize;
-					}
-					
-					store = RecordStore.openRecordStore(PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
-					
-					if(storeID == 0)
-					{
-						createHeaderRecord(store);
-						createCustomRecord(store);
-					}
-				}
-					
-				nodes = this.getRecords(stream, this.lineCount);
-				
-				count++;
-				
-				store.addRecord(nodes, 0, nodes.length);
-				
-			}while(stream.available() > 0);
-		}	
-		catch(IOException e)
-		{
-			//#debug
-			e.printStackTrace();
-			return false;
-		}
-		catch(Exception e)
-		{
-			//#debug
-			e.printStackTrace();
-			return false;
-		}
-		
-		return true;
-	}
-	
-	public void deleteAllStores()
-	{
-		try
-		{
-			String[] storeList = RecordStore.listRecordStores();
-			
-			if(storeList != null)
-			{
-				for(int i=0; i<storeList.length; i++)
-					if(storeList[i].startsWith(PREFIX))
-					{
-						RecordStore.deleteRecordStore(storeList[i]);
-					}
-			}
-		}
-		catch(RecordStoreException e)
-		{
-			//#debug
-			e.printStackTrace();
-		}
-	}
-	
 	
 	public byte[] getRecords(DataInputStream dataStream, int lineCount) throws EOFException, IOException
 	{
@@ -199,5 +125,25 @@ public class TrieInstaller {
 		charBuffer[0] = (byte) ((value >> 8) & 0x000000FF);
 		charBuffer[1] = (byte) (value & 0x00FF);
 		return charBuffer;
+	}
+
+	public int getChunkSize() {
+		return chunkSize;
+	}
+
+	public int getLineCount() {
+		return lineCount;
+	}
+
+	public int getMagic() {
+		return magic;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public DataInputStream getStream() {
+		return stream;
 	}
 }
