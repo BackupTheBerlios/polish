@@ -32,7 +32,7 @@ implements CommandListener
 	
 	public InstallerMidlet() {
 		//#style mainScreen
-		this.form = new Form( "PredictiveInstaller");
+		this.form = new Form( "Predictive Setup");
 		
 		this.form.addCommand( this.cancelCommand );
 		this.form.setCommandListener( this );
@@ -71,7 +71,7 @@ implements CommandListener
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
-	public synchronized void commandAction(Command cmd, Displayable disp) {
+	public void commandAction(Command cmd, Displayable disp) {
 		if (cmd == this.cancelCommand) {
 			Alert cancel = new Alert("Cancel");
 			
@@ -83,7 +83,6 @@ implements CommandListener
 			
 			installer.pause();
 			Display.getDisplay(this).setCurrent(cancel);
-			
 		} else if (cmd == this.exitCommand) {
 			notifyDestroyed();
 		} 
@@ -96,8 +95,11 @@ implements CommandListener
 			} 
 			else if(cmd == this.noCommand)
 			{
-				System.out.println("notify");
-				this.notify();
+				synchronized (installer){
+					installer.notify();
+				}
+				
+				Display.getDisplay(this).setCurrent(this.form);
 			}
 		}
 		

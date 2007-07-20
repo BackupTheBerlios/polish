@@ -10,9 +10,8 @@ implements Runnable
 	
 	DataInputStream stream = null;
 	TrieInstaller installer = null;
-	RecordStore store = null;
-	
-	boolean quit = false;
+		
+	boolean pause = false;
 	
 	InstallerThread(InstallerMidlet parent)
 	{
@@ -21,27 +20,94 @@ implements Runnable
 	
 	public void pause()
 	{
-		this.installer.pause();
+		this.pause = true;
 	}
 	
 	public void run()
 	{
 		try {
-			installer = new TrieInstaller();
+			this.installer = new TrieInstaller();
+			this.stream = installer.getStream(); 
 			
 			this.parent.status.setText("Deleting previous installation ...");
 			
-			installer.deleteAllStores();
+			String[] storeList = RecordStore.listRecordStores();
+			
+			if(storeList != null)
+			{
+				for(int i=0; i<storeList.length; i++)
+					if(storeList[i].startsWith(TrieInstaller.PREFIX))
+					{
+						System.out.println("delete");
+						RecordStore.deleteRecordStore(storeList[i]);
+					}
+			}
 			
 			this.parent.status.setText("Installing ...");
 			
-			installer.createStores(this.parent.gauge);
+			int totalBytes = stream.available();
+			this.parent.gauge.setMaxValue(totalBytes);
 			
-			this.parent.status.setText("Finished, the installer will exit in 5 seconds ...");
+			byte[] nodes;
+			RecordStore store = null;
+			
+			int count = 0;
+			int storeID = 0;
+			
+			do
+			{
+				nodes = null;
+				
+				if((count % installer.getChunkSize()) == 0)
+				{
+					if(store != null)
+					{
+						store.closeRecordStore();
+						storeID += installer.getChunkSize();
+					}
+					
+					store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
+					
+					if(storeID == 0)
+					{
+						installer.createHeaderRecord(store);
+						installer.createCustomRecord(store);
+					}
+				}
+					
+				nodes = installer.getRecords(stream, installer.getLineCount());
+				
+				this.parent.gauge.setValue(totalBytes - stream.available());
+				
+				count++;
+				
+				store.addRecord(nodes, 0, nodes.length);
+				
+				if(this.pause)
+				{
+					try
+					{
+						store.closeRecordStore();
+						
+						synchronized (this){
+							this.wait();
+						}
+						
+						store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
+						
+					}catch(InterruptedException e){}
+					this.pause = false;
+				}
+				
+			}while(stream.available() > 0);
+			
+			store.closeRecordStore();
+			
+			this.parent.status.setText("Finished, the installer will exit in 10 seconds ...");
 			this.parent.form.removeCommand( this.parent.cancelCommand );
 			this.parent.form.addCommand( this.parent.exitCommand );
 			
-			Thread.sleep(5000);
+			Thread.sleep(10000);
 			this.parent.notifyDestroyed();
 			
 		} catch (Exception e) {
