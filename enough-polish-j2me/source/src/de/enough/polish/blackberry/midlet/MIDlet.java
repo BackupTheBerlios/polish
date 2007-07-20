@@ -341,10 +341,12 @@ public abstract class MIDlet extends UiApplication
 	 */
 	public final boolean platformRequest( String URL) throws ConnectionNotFoundException
 	{
-		if (URL.startsWith("http")) {
-			Browser.getDefaultSession().displayPage(URL);
-			return false;
-		}
+		//#if polish.BlackBerry.enablePlatformRequest
+			if (URL.startsWith("http")) {
+				Browser.getDefaultSession().displayPage(URL);
+				return false;
+			}
+		//#endif
 		NativeMidlet midlet = new NativeMidlet();
 		return midlet.platformRequest(URL);
 	}
