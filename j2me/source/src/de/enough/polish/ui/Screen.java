@@ -80,10 +80,8 @@ import de.enough.polish.util.Locale;
  * interacting with it.</P>
  * 
  * <P>In MIDP 2.0 the four <code>Screen</code> methods that defined
- * read/write ticker and
- * title properties were moved to <code>Displayable</code>,
- * <code>Screen's</code> superclass.  The
- * semantics of these methods have not changed.</P>
+ * read/write ticker and title properties were moved to <code>Displayable</code>,
+ * <code>Screen's</code> superclass.  The semantics of these methods have not changed.</P>
  * <HR>
  * 
  * @since MIDP 1.0
@@ -1355,7 +1353,7 @@ implements AccessibleCanvas
 							backgroundY += this.titleHeight;
 						}
 					//#endif
-					// System.out.println("Screen (" + this + ": painting background at leftBorder=" + leftBorder + ", backgroundY=" + backgroundY);
+					//System.out.println("Screen (" + this + ": painting background at leftBorder=" + leftBorder + ", backgroundY=" + backgroundY + ", backgroundHeight=" + backgroundHeight + ", screenHeight=" + this.screenHeight + ", fullscreenHeight=" + this.fullScreenHeight + ", titleHeight=" + this.titleHeight + ", excludeTitleForBackground=" + excludeTitleForBackground);
 					this.background.paint(leftBorder, backgroundY, sWidth, backgroundHeight, g);
 				} else {
 					//System.out.println("Screen (" + this + ": clearing area...");
