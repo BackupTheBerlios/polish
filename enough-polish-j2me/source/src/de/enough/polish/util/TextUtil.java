@@ -102,7 +102,7 @@ public final class TextUtil {
 		for (int i = 0; i < valueChars.length; i++) {
 			char c = valueChars[i];
 			if (c == delimiter) {
-				chunks[ chunkIndex ] = value.substring( lastIndex, i - lastIndex );
+				chunks[ chunkIndex ] = value.substring( lastIndex, i );
 				lastIndex = i + 1;
 				chunkIndex++;
 				if (chunkIndex == numberOfChunks ) {
@@ -112,7 +112,7 @@ public final class TextUtil {
 		}
 		if (chunkIndex < numberOfChunks) {
 			// add tail:
-			chunks[chunkIndex] = value.substring( lastIndex, valueChars.length - lastIndex );
+			chunks[chunkIndex] = value.substring( lastIndex, valueChars.length );
 		}
 		return chunks;
 	}
