@@ -736,7 +736,7 @@ public class PolishTask extends ConditionalTask {
 					}
 				}
 				if (!midletFound) {
-					String message = "The MIDlet [" + midlet.getClassName() + "] could not be found. Check your <midlet>-setting in the file [build.xml] or adjust the [sourceDir] attribute of the <build>-element.";
+					String message = "The MIDlet [" + midlet.getClassName() + "] could not be found. Check your <midlet>-setting in the file [build.xml] or adjust the [sourceDir] attribute of the <build>-element. ";
 					if ( midlet.getClassName().indexOf('.') != -1) {
 						if (sources.length > 1) {
 							message += "The MIDlet should be in ${src}" + File.separatorChar + fileName + ", where ${src} is one your source folders.";
@@ -744,7 +744,12 @@ public class PolishTask extends ConditionalTask {
 							message += "The MIDlet should be in " + sources[0].getDir().toString()  + File.separatorChar + fileName;
 						}
 					}
-					throw new BuildException( message );
+					if ("true".equals(getProject().getProperty("polish.build.ignoreMidlet"))) {
+						System.err.println("Warning: " + message);
+					} else {
+						System.out.println("You can ignore this warning by setting the property \"polish.build.ignoreMidlet\" to \"true\" in your build.xml.");
+						throw new BuildException( message );
+					}
 				}
 			}
 		}

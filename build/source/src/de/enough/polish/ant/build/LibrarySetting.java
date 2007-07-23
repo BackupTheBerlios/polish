@@ -197,7 +197,8 @@ public class LibrarySetting extends Setting {
 					// only extract it when the original is newer than the copy:
 					File cacheCopy = new File( jarCacheDir, fileName );
 					if ( (!cacheCopy.exists())
-							|| (lastModified() > cacheCopy.lastModified())) {
+							|| (lastModified() > cacheCopy.lastModified())) 
+					{
 						changed = true;
 						try {
 							// copy the library to the cache:
@@ -216,9 +217,14 @@ public class LibrarySetting extends Setting {
 						// copy the file only when it is newer
 						// than the existing copy: 
 						if ( (!targetFile.exists()) 
-								|| (this.lastModified() > targetFile.lastModified()) ) {
+								|| (this.lastModified() > targetFile.lastModified()) ) 
+						{
 							changed = true;
-							FileUtil.copy(file, targetFile);
+							if (file.isDirectory()) {
+								FileUtil.copyDirectoryContents(file, targetFile, true);
+							} else {
+								FileUtil.copy(file, targetFile);
+							}
 						}
 					} catch (IOException e) {
 						e.printStackTrace();
