@@ -38,7 +38,7 @@ import java.io.InputStream;
  * </pre>
  * @author Simon Schmitt, simon.schmitt@enough.de
  */
-public final class ZipUtil {
+public final class ZipHelper {
 	/**
 	 * This constant triggers the normal deflate compression as described in rfc 1951.
 	 */
@@ -213,7 +213,7 @@ public final class ZipUtil {
 			huffmanData[i]=i;
 		}
 		// reverse all:
-		ZipUtil.revHuffTree(huffmanCode, huffmanCodeLength);
+		ZipHelper.revHuffTree(huffmanCode, huffmanCodeLength);
 		
 		// distHuffCode for non fixed DISTANCE tree
 		for (int j = 0; j < distHuffCode.length; j++) {
@@ -222,7 +222,7 @@ public final class ZipUtil {
 			distHuffCodeLength[j]=5;
 		}
 		// reverse all:
-		ZipUtil.revHuffTree(distHuffCode, distHuffCodeLength);
+		ZipHelper.revHuffTree(distHuffCode, distHuffCodeLength);
 	}
     
 

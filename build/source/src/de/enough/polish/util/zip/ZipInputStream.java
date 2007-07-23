@@ -115,8 +115,8 @@ public class ZipInputStream extends InputStream {
 		this.buffsize=size;
 		this.outBuff=new byte[size+300];
 		
-		if (this.type==ZipUtil.TYPE_GZIP){
-			ZipUtil.skipheader(inputStream);
+		if (this.type==ZipHelper.TYPE_GZIP){
+			ZipHelper.skipheader(inputStream);
 		}
 		
 		this.crc32=0;
@@ -245,7 +245,7 @@ public class ZipInputStream extends InputStream {
 	    				refillSmallCodeBuffer();
 	    			}
 		    		    			
-	    			val=ZipUtil.deHuffNext(this.smallCodeBuffer,this.huffmanTree);
+	    			val=ZipHelper.deHuffNext(this.smallCodeBuffer,this.huffmanTree);
 	    			
 		    		
 		    		// normal single byte
@@ -270,9 +270,9 @@ public class ZipInputStream extends InputStream {
 						
 		    			// cLen
 		    			// 		read some bits
-		    			cLen=popSmallBuffer(ZipUtil.LENGTH_CODE[(val-257)<<1]);
+		    			cLen=popSmallBuffer(ZipHelper.LENGTH_CODE[(val-257)<<1]);
 		    			//		add the offset
-		    			cLen+=ZipUtil.LENGTH_CODE[((val-257)<<1)+1];
+		    			cLen+=ZipHelper.LENGTH_CODE[((val-257)<<1)+1];
 		    			
 		    			// cPos
 		    			//    	resolve the index
@@ -280,12 +280,12 @@ public class ZipInputStream extends InputStream {
 		    				refillSmallCodeBuffer();
 		    			}
 		    			// DISTANCE
-		    			val=ZipUtil.deHuffNext(this.smallCodeBuffer, this.distHuffTree);
+		    			val=ZipHelper.deHuffNext(this.smallCodeBuffer, this.distHuffTree);
 		    			
 		    			//	 	resolve the value
-		    			cPos=popSmallBuffer(ZipUtil.DISTANCE_CODE[val<<1]);
+		    			cPos=popSmallBuffer(ZipHelper.DISTANCE_CODE[val<<1]);
 						
-		    			cPos+=ZipUtil.DISTANCE_CODE[(val<<1)+1];
+		    			cPos+=ZipHelper.DISTANCE_CODE[(val<<1)+1];
 		    			
 		    			
 		    			// process the pointer (the data does always fit)
@@ -335,7 +335,7 @@ public class ZipInputStream extends InputStream {
     			this.allPocessed=(this.allPocessed+this.outEnd-this.lastEnd) & 4294967295L;
     			if (this.hash){
     		    	// lastEnd -> End in CRC32 einbeziehen
-    				this.crc32=ZipUtil.crc32(this.crc32Table, this.crc32, myOutBuff, this.lastEnd, this.outEnd-this.lastEnd);
+    				this.crc32=ZipHelper.crc32(this.crc32Table, this.crc32, myOutBuff, this.lastEnd, this.outEnd-this.lastEnd);
     			}
     			
     			// skip till next byte boundary, read CRC , isize
@@ -362,7 +362,7 @@ public class ZipInputStream extends InputStream {
 	    	this.allPocessed=(this.allPocessed+this.outEnd-this.lastEnd) & 4294967295L;
 	    	if (this.hash){
 		    	// lastEnd -> End in CRC32 einbeziehen
-	    		this.crc32 = ZipUtil.crc32(this.crc32Table, this.crc32, myOutBuff, this.lastEnd, this.outEnd-this.lastEnd);
+	    		this.crc32 = ZipHelper.crc32(this.crc32Table, this.crc32, myOutBuff, this.lastEnd, this.outEnd-this.lastEnd);
 	    	}
     	}
     	
@@ -392,13 +392,13 @@ public class ZipInputStream extends InputStream {
 		} else if (this.BTYPE==1){
 			//System.out.println(this.allPocessed +  ": fixed tree");
 			
-			ZipUtil.genFixedTree(huffmanCode, huffmanCodeLength, huffmanData, distHuffCode, distHuffCodeLength, distHuffData);
+			ZipHelper.genFixedTree(huffmanCode, huffmanCodeLength, huffmanData, distHuffCode, distHuffCodeLength, distHuffData);
 	    	
 			// convert literal table to tree
-			ZipUtil.convertTable2Tree(huffmanCode, huffmanCodeLength, huffmanData, this.huffmanTree);
+			ZipHelper.convertTable2Tree(huffmanCode, huffmanCodeLength, huffmanData, this.huffmanTree);
 			
 	    	// convert distance table to tree
-			ZipUtil.convertTable2Tree(distHuffCode, distHuffCodeLength, distHuffData, this.distHuffTree);
+			ZipHelper.convertTable2Tree(distHuffCode, distHuffCodeLength, distHuffData, this.distHuffTree);
 			
 		} else if(this.BTYPE==2) {
 			//System.out.println(this.allPocessed + ": dynamic tree");
@@ -421,11 +421,11 @@ public class ZipInputStream extends InputStream {
 				miniHuffCodeLength[ miniHuffData[i] ]=(byte) popSmallBuffer(3);
 			}
 			
-			ZipUtil.genHuffTree(miniHuffCode, miniHuffCodeLength);
-			ZipUtil.revHuffTree(miniHuffCode, miniHuffCodeLength);
+			ZipHelper.genHuffTree(miniHuffCode, miniHuffCodeLength);
+			ZipHelper.revHuffTree(miniHuffCode, miniHuffCodeLength);
 
 			short[] miniTree = new short[19*4];
-	    	ZipUtil.convertTable2Tree(miniHuffCode, miniHuffCodeLength, seq, miniTree);
+	    	ZipHelper.convertTable2Tree(miniHuffCode, miniHuffCodeLength, seq, miniTree);
 	    	
 			// parse the length code for the normal Tree and the distance Tree using the miniTree
 			for (int i = 0; i < huffmanCodeLength.length; i++) {
@@ -440,7 +440,7 @@ public class ZipInputStream extends InputStream {
 				if (this.smallCodeBuffer[1]<15){
 					refillSmallCodeBuffer();
 				}
-				val=ZipUtil.deHuffNext(this.smallCodeBuffer, miniTree);
+				val=ZipHelper.deHuffNext(this.smallCodeBuffer, miniTree);
 				
 				// data
 				if (val<16){
@@ -470,13 +470,13 @@ public class ZipInputStream extends InputStream {
 			}
 			
 			// final tree:		 fill this.huffmanCode this.huffmanData
-			ZipUtil.genHuffTree(huffmanCode, huffmanCodeLength);
+			ZipHelper.genHuffTree(huffmanCode, huffmanCodeLength);
 			for (int i = 0; i < huffmanData.length; i++) {
 				huffmanData[i]=i;
 			}
 			// converting literal table to tree
-			ZipUtil.revHuffTree(huffmanCode, huffmanCodeLength);
-			ZipUtil.convertTable2Tree(huffmanCode, huffmanCodeLength, huffmanData, this.huffmanTree);
+			ZipHelper.revHuffTree(huffmanCode, huffmanCodeLength);
+			ZipHelper.convertTable2Tree(huffmanCode, huffmanCodeLength, huffmanData, this.huffmanTree);
 			
 			// Distance Tree
 	    	// distHuffData for non fixed distance tree
@@ -484,9 +484,9 @@ public class ZipInputStream extends InputStream {
 	    	for (int j = 0; j < distHuffCode.length; j++) {
 	    		distHuffData[j]=j;
 			}
-	    	ZipUtil.genHuffTree(distHuffCode, distHuffCodeLength);
-	    	ZipUtil.revHuffTree(distHuffCode, distHuffCodeLength);
-	    	ZipUtil.convertTable2Tree(distHuffCode, distHuffCodeLength, distHuffData, this.distHuffTree);
+	    	ZipHelper.genHuffTree(distHuffCode, distHuffCodeLength);
+	    	ZipHelper.revHuffTree(distHuffCode, distHuffCodeLength);
+	    	ZipHelper.convertTable2Tree(distHuffCode, distHuffCodeLength, distHuffData, this.distHuffTree);
 	    	
 		} else{
 			// just skip bits up to the next boundary
