@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && polish.TextField.useDirectInput && !polish.blackberry
+//#condition !polish.usePolishGui && !polish.TextField.useDirectInput && !polish.blackberry
 /*
  * Created on 27-Feb-2006 at 7:36:20.
  * 
@@ -64,15 +64,6 @@ public class PredictiveTextField
 	//# extends FakeTextFieldCustomItem
 //#endif
 {
-	protected static final TrieProvider provider = new TrieProvider(); 
-	
-	protected static final Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 0 );
-	protected static final Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 0 );
-	protected static final Command ADD_WORD_CMD = new Command( "Add new Word", Command.ITEM, 1 );
-	
-	protected Form addWordForm = null;
-	protected TextField addWordField = null;
-
 	private final Container choicesContainer;
 	private int numberOfMatches;
 	private boolean isInChoice;
@@ -141,7 +132,7 @@ public class PredictiveTextField
 			//# this.choicesContainer.parent = this;
 		//#endif		
 			
-		this.builder 	= new TextBuilder(maxSize,provider);
+		this.builder 	= new TextBuilder(maxSize);
 		this.display 	= display;
 		
 		this.inputMode 		= this.builder.getMode();
@@ -149,13 +140,6 @@ public class PredictiveTextField
 		
 		this.addCommand(DISABLE_PREDICTIVE_CMD);
 		this.addCommand(ADD_WORD_CMD);
-		
-		this.addWordForm = new Form("Add new word");
-		this.addWordField = new TextField("Word:","",50,TextField.ANY);
-		
-		this.addWordForm.append(addWordField);
-		this.addWordForm.addCommand( StyleSheet.CANCEL_CMD );
-		this.addWordForm.addCommand( StyleSheet.OK_CMD );
 		
 		this.predictiveInput = true;
 		
@@ -298,7 +282,8 @@ public class PredictiveTextField
 			}
 			
 			setText(this.builder.getText().toString()); 
-			setCaretPosition(this.builder.getCaretPosition());			this.refreshChoices = true;
+			setCaretPosition(this.builder.getCaretPosition());			
+			this.refreshChoices = true;
 			
 			return true;
 		}
@@ -511,18 +496,14 @@ public class PredictiveTextField
 			this.removeCommand(DISABLE_PREDICTIVE_CMD);
 			this.addCommand(ENABLE_PREDICTIVE_CMD);
 		} else if ( cmd == ADD_WORD_CMD) {
-			this.addWordField.setText("");
 			
-			this.addWordForm.setCommandListener( this );
-			StyleSheet.display.setCurrent(this.addWordForm);
 		} 
 	}
 	
 	public void commandAction(Command cmd, Displayable box)
 	{
 		if (cmd == StyleSheet.OK_CMD) 
-			this.builder.addWord(this.addWordField.getText());
-		
+			
 		StyleSheet.display.setCurrent(this.screen);
 		
 		return;
