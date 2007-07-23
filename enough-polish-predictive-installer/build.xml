@@ -18,7 +18,7 @@
 <!-- Have fun!                                                -->
 
 <project 
-	name="enough-j2mepolish-example" 
+	name="enough-j2mepolish-predictive-setup" 
 	default="emulator">
 	
 	
@@ -75,7 +75,7 @@
 	description="Call this target first to skip the obfuscation step, e.g. ant test j2mepolish"
 	>
 	<property name="debug" value="false" />
-	<property name="test" value="true" />
+	<property name="test" value="false" />
 	<property name="dir.work" value="build/test" />
 </target>
 		
@@ -108,7 +108,7 @@
 			vendorName="Enough Software"
 			infoUrl="http://www.j2mepolish.org"
 			icon="dot.png"
-			jarName="${polish.vendor}-${polish.name}-${polish.locale}-example.jar" 
+			jarName="${polish.vendor}-${polish.name}-${polish.locale}-predictive-setup.jar" 
 			jarUrl="${deploy-url}${polish.jarName}"
 			copyright="Copyright 2004 Enough Software. All rights reserved."
 			deleteConfirm="Do you really want to kill me?" 

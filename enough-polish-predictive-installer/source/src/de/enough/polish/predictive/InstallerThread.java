@@ -38,7 +38,6 @@ implements Runnable
 				for(int i=0; i<storeList.length; i++)
 					if(storeList[i].startsWith(TrieInstaller.PREFIX))
 					{
-						System.out.println("delete");
 						RecordStore.deleteRecordStore(storeList[i]);
 					}
 			}

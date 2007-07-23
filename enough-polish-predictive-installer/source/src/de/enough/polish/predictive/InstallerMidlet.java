@@ -82,6 +82,7 @@ implements CommandListener
 			cancel.setCommandListener(this);
 			
 			installer.pause();
+			
 			Display.getDisplay(this).setCurrent(cancel);
 		} else if (cmd == this.exitCommand) {
 			notifyDestroyed();
