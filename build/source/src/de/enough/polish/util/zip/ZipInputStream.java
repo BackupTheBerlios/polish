@@ -647,7 +647,11 @@ public class ZipInputStream extends InputStream {
     	this.outStart+=copyBytes;
     	
     	// return the number of copied bytes
-    	return copyBytes;
+    	if(copyBytes!=0){
+    		return copyBytes;
+    	} else {
+    		return -1;
+    	}
     }
     
 }
