@@ -1,6 +1,7 @@
 //#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui
 package de.enough.polish.predictive;
 
+import javax.microedition.lcdui.Alert;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
@@ -27,31 +28,26 @@ public class TrieProvider {
 		this.init = false;
 	}
 	
-	public void init()
+	public void init() throws RecordStoreException
 	{
-		try
-		{
-			this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
-			this.records = new HashMap();
-			
-			byte[] bytes = this.store.getRecord(TrieInstaller.HEADER_RECORD);
-			
-			this.chunkSize = TrieUtils.byteToInt(bytes, TrieInstaller.CHUNKSIZE_OFFSET);
-			this.lineCount = TrieUtils.byteToInt(bytes, TrieInstaller.LINECOUNT_OFFSET);
-			
-			this.custom = new TrieCustom();
-			
-			this.customForm = new Form("Add new word");
-			
-			this.customForm.addCommand( StyleSheet.CANCEL_CMD );
-			this.customForm.addCommand( StyleSheet.OK_CMD );
-			
-			this.init = true;
-		}
-		catch(RecordStoreException e)
-		{
-			e.printStackTrace();
-		}
+		this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0","Enough Software","PredictiveSetup");
+		//this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
+		
+		this.records = new HashMap();
+		
+		byte[] bytes = this.store.getRecord(TrieInstaller.HEADER_RECORD);
+		
+		this.chunkSize = TrieUtils.byteToInt(bytes, TrieInstaller.CHUNKSIZE_OFFSET);
+		this.lineCount = TrieUtils.byteToInt(bytes, TrieInstaller.LINECOUNT_OFFSET);
+		
+		this.custom = new TrieCustom();
+		
+		this.customForm = new Form("Add new word");
+		
+		this.customForm.addCommand( StyleSheet.CANCEL_CMD );
+		this.customForm.addCommand( StyleSheet.OK_CMD );
+		
+		this.init = true;
 	}
 	
 	public boolean isInit()

@@ -51,8 +51,6 @@ public class TextBuilder {
 		
 	private ArrayList textElements = null;
 	
-	private TrieProvider provider = null;
-	
 	private int element;
 	private int align;
 	private int mode;
@@ -65,7 +63,7 @@ public class TextBuilder {
 	 * for the current element to <code>ALIGN_LEFT</code> and the current input mode to 
 	 * <code>MODE_FIRST_UPPERCASE</code>.
 	 */
-	public TextBuilder(int textSize, TrieProvider provider) throws RecordStoreException
+	public TextBuilder(int textSize)
 	{
 		this.textElements 	= new ArrayList();
 		this.element 		= -1;
@@ -73,22 +71,22 @@ public class TextBuilder {
 		this.mode 			= TextField.MODE_FIRST_UPPERCASE;
 		this.caret			= 0;
 		
-		this.provider = provider;
-		
 		this.text 			= new StringBuffer();
 	}
 	
 	public void keyNum(int keyCode) throws RecordStoreException
 	{
 		if(	isStringBuffer(0) || this.align == ALIGN_LEFT || this.align == ALIGN_RIGHT )
-			addReader(new TrieReader(	this.provider.getStore(),
-										this.provider.getRecords(), 
-										this.provider.getChunkSize(), 
-										this.provider.getLineCount()));
+		{
+			addReader(new TrieReader(	TextField.PROVIDER.getStore(),
+										TextField.PROVIDER.getRecords(), 
+										TextField.PROVIDER.getChunkSize(), 
+										TextField.PROVIDER.getLineCount()));
+		}
 		
 		getReader().keyNum(keyCode);
 		getTextElement().keyNum(keyCode, mode);
-		getTextElement().setResults(this.provider.getCustom());
+		getTextElement().setResults(TextField.PROVIDER.getCustom());
 		
 		if(!getTextElement().isWordFound())
 			getTextElement().keyClear();
@@ -132,7 +130,7 @@ public class TextBuilder {
 				getReader().keyClear();
 			
 			getTextElement().keyClear();
-			getTextElement().setResults(this.provider.getCustom());
+			getTextElement().setResults(TextField.PROVIDER.getCustom());
 			
 			if(getReader().isEmpty())
 			{
@@ -150,7 +148,7 @@ public class TextBuilder {
 	
 	public void addWord(String string)
 	{
-		this.provider.getCustom().addWord(string);
+		TextField.PROVIDER.getCustom().addWord(string);
 	}
 	
 	/**

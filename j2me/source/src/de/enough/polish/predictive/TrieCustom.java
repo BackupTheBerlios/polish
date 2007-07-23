@@ -26,14 +26,10 @@ public class TrieCustom {
 	{
 		try
 		{
-			store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0",false);
-			
-			bytes  = store.getRecord(TrieInstaller.CUSTOM_RECORD);
+			bytes  = TextField.PROVIDER.getStore().getRecord(TrieInstaller.CUSTOM_RECORD);
 			
 			if(bytes == null)
 				bytes = new byte[0];
-			
-			store.closeRecordStore();
 			
 			return bytes;
 		}
@@ -82,9 +78,7 @@ public class TrieCustom {
 	{
 		try
 		{
-			store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
-			store.setRecord(TrieInstaller.CUSTOM_RECORD, bytes, 0, bytes.length);
-			store.closeRecordStore();
+			TextField.PROVIDER.getStore().setRecord(TrieInstaller.CUSTOM_RECORD, bytes, 0, bytes.length);
 		}
 		catch(RecordStoreException e)
 		{
@@ -92,65 +86,35 @@ public class TrieCustom {
 		}
 	}
 	
-	public boolean hasWords(int[] keyCodes)
-	{
-		boolean relevant = true;
-		
-		for(int i=0; i<bytes.length; i+= ((bytes[i] * CHAR_SIZE) + COUNT_SIZE))
-		{
-			char character;
-			
-			if(keyCodes.length <= bytes[i])
-			{
-				relevant = true;
-				
-				for(int k=0; k < keyCodes.length; k++)
-				{
-					character = byteToChar(bytes, i + COUNT_SIZE + (k * CHAR_SIZE));
-						
-					if(!isInCharset(keyCodes[k],character))
-					{
-						relevant = false;
-						break;
-					}
-				}
-				
-				if(relevant == true)
-				{
-					return true;
-				}
-			}	
-		}
-		
-		return false;
-	}
-	
 	public void getWords(ArrayList words, int[] keyCodes)
 	{
 		boolean relevant = true;
 		
-		for(int i=0; i<bytes.length; i+= ((bytes[i] * CHAR_SIZE) + COUNT_SIZE))
+		if(bytes.length > 0)
 		{
-			char character;
-			
-			if(keyCodes.length <= bytes[i])
+			for(int i=0; i<bytes.length; i+= ((bytes[i] * CHAR_SIZE) + COUNT_SIZE))
 			{
-				relevant = true;
+				char character;
 				
-				for(int k=0; k < keyCodes.length; k++)
+				if(keyCodes.length <= bytes[i])
 				{
-					character = byteToChar(bytes, i + COUNT_SIZE + (k * CHAR_SIZE));
+					relevant = true;
 					
-					if(!isInCharset(keyCodes[k],character))
+					for(int k=0; k < keyCodes.length; k++)
 					{
-						relevant = false;
-						break;
+						character = byteToChar(bytes, i + COUNT_SIZE + (k * CHAR_SIZE));
+						
+						if(!isInCharset(keyCodes[k],character))
+						{
+							relevant = false;
+							break;
+						}
 					}
-				}
-				
-				if(relevant == true)
-				{
-					words.add(getWord(bytes, i));
+					
+					if(relevant == true)
+					{
+						words.add(getWord(bytes, i));
+					}
 				}
 			}
 		}

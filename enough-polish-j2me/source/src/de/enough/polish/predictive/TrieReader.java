@@ -168,7 +168,6 @@ public class TrieReader {
 		
 		if(record == null)
 		{
-			System.out.println("new record");
 			record = store.getRecord(recordID);
 			this.records.put(recordMapID, record);
 		}
