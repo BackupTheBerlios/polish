@@ -183,8 +183,8 @@ public class SnapshotScreen extends Screen implements Runnable {
 
 
 	public void run() {
-		synchronized(Thread.currentThread())
-		{
+	synchronized(Thread.currentThread())
+	{
 			this.wait = true;
 			//#debug info
             System.out.println("Check if player is null " + (new Date()).toString());

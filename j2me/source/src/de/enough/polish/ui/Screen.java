@@ -1432,16 +1432,9 @@ implements AccessibleCanvas
 				int clipY = g.getClipY();
 				int clipWidth = g.getClipWidth();
 				int clipHeight = g.getClipHeight();
-				if ( !(clipY > this.contentY + this.contentHeight || clipY + clipHeight < this.contentY) ) {
-					//g.setClip(leftBorder, topHeight, sWidth, this.screenHeight - topHeight  );
-					//g.clipRect(leftBorder, topHeight, sWidth, this.screenHeight - topHeight + 1);
-					g.clipRect(leftBorder, this.contentY, sWidth, this.contentHeight + 1 );
-		
-					// paint content:
-					//System.out.println("starting to paint content of screen");
-					paintScreen( g );
-					//System.out.println("done painting content of screen");
-	//				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() );
+
+				// paint content:
+				paintScreen( g );
 	//				g.setColor( 0xff0000 );
 	//				g.drawRect(g.getClipX() + 1 , g.getClipY() + 1 , g.getClipWidth() - 2 ,  g.getClipHeight() - 2);
 					
@@ -1465,7 +1458,7 @@ implements AccessibleCanvas
 					
 					// allow painting outside of the screen again:
 					g.setClip( clipX, clipY, clipWidth, clipHeight );
-				}
+				//}
 //				//#ifdef tmp.menuFullScreen
 //				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 //				//#else
@@ -1713,6 +1706,8 @@ implements AccessibleCanvas
 		int x = this.contentX;
 		int height = this.contentHeight;
 		int width = this.contentWidth;
+		
+		g.clipRect(x, y, width, height + 1 );
 		int containerHeight = this.container.getItemHeight( width, width);
 		//#if tmp.useScrollIndicator
 			this.paintScrollIndicator = false; // defaults to false
@@ -1732,17 +1727,9 @@ implements AccessibleCanvas
 			//#debug
 			System.out.println("Screen: adjusting y from [" + y + "] to [" + ( y + (height - containerHeight) / 2) + "] - containerHeight=" + containerHeight);
 			*/
-			if (this.isLayoutVerticalShrink) {
-				y = g.getClipY();
-			} else {
-				y += ((height - containerHeight) >> 1);
-			}
+			y += ((height - containerHeight) >> 1);
 		} else if (this.isLayoutBottom) {
-			if (this.isLayoutVerticalShrink) {
-				y = g.getClipY();
-			} else {
-				y += (height - containerHeight);
-			}
+			y += (height - containerHeight);
 //			System.out.println("content: y=" + y + ", contentY=" + this.contentY + ", contentHeight="+ this.contentHeight + ", containerHeight=" + containerHeight);
 		}
 		int containerWidth = this.container.itemWidth;
@@ -1758,6 +1745,7 @@ implements AccessibleCanvas
 		this.container.relativeX = x;
 		this.container.relativeY = y;
 		//System.out.println("content: x=" + x + ", rightBorder=" + (x + width) );
+		//System.out.println("content: y=" + y + ", bottom=" + (y + height) );
 		this.container.paint( x, y, x, x + width, g );
 	}
 	

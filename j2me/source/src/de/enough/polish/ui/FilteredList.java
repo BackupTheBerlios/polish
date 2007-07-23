@@ -228,9 +228,6 @@ implements ItemStateListener, CommandListener
 	}
 	
 	
-	
-	//TODO override set and delete methods as well
-	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.List#delete(int)
 	 */
@@ -267,6 +264,25 @@ implements ItemStateListener, CommandListener
 			}
 		}
 		return count;
+	}
+	
+	/**
+	 * Determines whether there are any changes compared to the specified boolean array.
+	 * 
+	 * @param flags an array indicating the expected state of this list - true array elements indicate "selected" items of this list
+	 * @return true when there are changes in this list
+	 */
+	public boolean containsChangesTo( boolean[] flags ) {
+		if (this.itemsList.size() != flags.length ) {
+			return true;
+		}
+		for (int i = 0; i < flags.length; i++) {
+			boolean flag = flags[i];
+			if (flag !=  ((ChoiceItem)this.itemsList.get(i)).isSelected ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -500,5 +516,34 @@ implements ItemStateListener, CommandListener
 	}
 	//#endif	
 
+	/**
+	 * Concats all strings from the selected elements together.
+	 * 
+	 * @param delimiter the delimiter between elements
+	 * @return the String including all selected elements or null when none is selected
+	 */
+	public String toSelectionString( String delimiter ) {
+		Object[] elements = this.itemsList.getInternalArray();
+		StringBuffer buffer = null;
+		for (int i = 0; i < elements.length; i++) {
+			ChoiceItem item  = (ChoiceItem) elements[i];
+			if (item == null) {
+				break;
+			}
+			if (item.isSelected) {
+				if (buffer == null) {
+					buffer = new StringBuffer();
+				} else {
+					buffer.append( delimiter );
+				}
+				buffer.append( item.text );
+			}
+		}
+		if (buffer == null) {
+			return null;
+		} else {
+			return buffer.toString();
+		}
+	}
 
 }

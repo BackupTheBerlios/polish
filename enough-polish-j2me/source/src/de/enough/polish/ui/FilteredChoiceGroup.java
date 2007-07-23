@@ -35,7 +35,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Image;
 
 /**
- * <p></p>
+ * <p>Displays the currently selected item(s) and opens up a new FilteredList for selecting an element.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
@@ -43,6 +43,7 @@ import javax.microedition.lcdui.Image;
  *        Jun 26, 2007 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @see FilteredList
  */
 public class FilteredChoiceGroup
 //#if polish.LibraryBuild
@@ -57,24 +58,30 @@ public class FilteredChoiceGroup
 	private final FilteredList filteredList;
 	private boolean[] lastChoices;
 	private String lastFilterText;
+	private String nullText;
+	private String delimiter = ", ";
 	
 	/**
-	 * @param label
-	 * @param text
-	 * @param listType 
+	 * Creates a new FilteredChoiceGroup.
+	 * 
+	 * @param label the label of the group
+	 * @param nullText the text that should be displayed when no item has been selected
+	 * @param listType the type of the list, e.g. Choice.MULTIPLE, Choice.EXCLUSIVE or Choice.IMPLICIT
 	 */
-	public FilteredChoiceGroup(String label, String text, int listType ) {
-		this(label, text, listType, null);
+	public FilteredChoiceGroup(String label, String nullText, int listType ) {
+		this(label, nullText, listType, null);
 	}
 
 	/**
-	 * @param label
-	 * @param text
-	 * @param listType 
-	 * @param style
+	 * Creates a new FilteredChoiceGroup.
+	 * 
+	 * @param label the label of the group
+	 * @param nullText the text that should be displayed when no item has been selected
+	 * @param listType the type of the list, e.g. Choice.MULTIPLE, Choice.EXCLUSIVE or Choice.IMPLICIT
+	 * @param style the style of this group
 	 */
-	public FilteredChoiceGroup(String label, String text, int listType, Style style) {
-		super(label, text, Item.INTERACTIVE, style);
+	public FilteredChoiceGroup(String label, String nullText, int listType, Style style) {
+		super(label, nullText, Item.INTERACTIVE, style);
 		//#style filteredlist?
 		this.filteredList = new FilteredList( label, listType );
 		if (listType == Choice.IMPLICIT) {
@@ -84,6 +91,7 @@ public class FilteredChoiceGroup
 		}
 		this.filteredList.addCommand( StyleSheet.CANCEL_CMD );
 		this.filteredList.setCommandListener( this );
+		this.nullText = nullText;
 	}
 	
 	
@@ -96,13 +104,15 @@ public class FilteredChoiceGroup
 	}
 
 	/**
+	 * Appends an item to this group.
+	 * 
 	 * @param stringPart
 	 * @param imagePart
-	 * @param style
+	 * @param itemStyle
 	 * @return
 	 */
-	public int append(String stringPart, Image imagePart, Style style ) {
-		return this.filteredList.append( stringPart, imagePart, style );
+	public int append(String stringPart, Image imagePart, Style itemStyle ) {
+		return this.filteredList.append( stringPart, imagePart, itemStyle );
 	}
 
 	/* (non-Javadoc)
@@ -209,6 +219,8 @@ public class FilteredChoiceGroup
 	 */
 	public void setSelectedFlags(boolean[] selectedArray) {
 		this.filteredList.setSelectedFlags(selectedArray);
+		this.lastChoices = selectedArray;
+		updateText();
 	}
 
 	/* (non-Javadoc)
@@ -216,6 +228,7 @@ public class FilteredChoiceGroup
 	 */
 	public void setSelectedIndex(int elementNum, boolean selected) {
 		this.filteredList.setSelectedIndex(elementNum, selected);
+		updateText();
 	}
 
 	/* (non-Javadoc)
@@ -242,9 +255,11 @@ public class FilteredChoiceGroup
 	public void commandAction(Command cmd, Displayable disp) {
 		try {
 		if (disp == this.filteredList) {
+			
 			if (cmd == StyleSheet.OK_CMD || cmd == FilteredList.SELECT_COMMAND) {
-				if (this.filteredList.listType == Choice.EXCLUSIVE || this.filteredList.listType == Choice.IMPLICIT) {
-					setText( this.filteredList.getString( this.filteredList.getSelectedIndex() ) );
+				if (this.filteredList.containsChangesTo(this.lastChoices)) {
+			         updateText();
+			         this.notifyStateChanged();					
 				}
 			} else if (cmd == StyleSheet.CANCEL_CMD) {
 				this.filteredList.setFilterText(this.lastFilterText);
@@ -260,6 +275,29 @@ public class FilteredChoiceGroup
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 
+	 */
+	private void updateText() {
+		if (this.filteredList.listType == Choice.MULTIPLE) {
+			String selectionText = this.filteredList.toSelectionString( this.delimiter );
+			if (selectionText == null) {
+				setText( this.nullText );				
+			} else {
+				setText( selectionText );
+			}
+		} else {
+			// exclusive or implicit list
+			int index = this.filteredList.getSelectedIndex();
+			if (index == -1) {
+				setText( this.nullText );
+			} else {
+				setText( this.filteredList.getString( index ) );
+			}
+		}
+
 	}
 
 	public void showFilteredList( Display display ) {
@@ -288,6 +326,25 @@ public class FilteredChoiceGroup
 			}
 		//#endif
 	}
+
+	/**
+	 * Retrieves the delimiter for separating text entries of a MULTIPLE FilteredChoiceGroup
+	 * 
+	 * @return the delimiter
+	 */
+	public String getDelimiter() {
+	return this.delimiter;
+	}
+	
+
+	/**
+	 * Sets the delimiter for separating text entries of a MULTIPLE FilteredChoiceGroup - the default is ", "
+	 * @param delimiter the delimiter to set
+	 */
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
+	}
+	
 	
 	
 

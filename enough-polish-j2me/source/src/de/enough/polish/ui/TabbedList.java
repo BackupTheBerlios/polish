@@ -240,7 +240,6 @@ public class TabbedList extends Screen {
 	 */
 	protected void paintScreen(Graphics g) {
 		this.tabTitles.paint( this.tabTitles.relativeX, this.tabTitles.relativeY, this.contentX, this.contentX + this.contentWidth, g );
-		g.clipRect(this.contentX,this.contentY, this.contentWidth, this.contentHeight );
 		super.paintScreen(g);
 	}
 	
