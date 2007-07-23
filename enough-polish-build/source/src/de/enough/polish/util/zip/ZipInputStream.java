@@ -90,9 +90,6 @@ public class ZipInputStream extends InputStream {
 	
 	short[] distHuffTree;
 	
-	public int debugStore[];
-	public int debugStorepointer=0;
-	
 	/**
 	 * Creates an input stream capable of GZIP and Deflate.
 	 * 
