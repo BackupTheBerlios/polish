@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * <p></p>
+ * <p>Reads and uncompresses GZIP or DEFLATE encoded input streams.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
@@ -40,6 +40,16 @@ import java.io.InputStream;
  * @author Simon Schmitt, simon.schmitt@enough.de
  */
 public class ZipInputStream extends InputStream {
+	/**
+	 * This constant triggers the normal deflate compression as described in rfc 1951.
+	 */
+	public static final int TYPE_DEFLATE=0;
+	/**
+	 * This constant triggers the gzip compression that is the same as deflate with 
+	 * some extra header information (see rfc 1952).
+	 */
+	public static final int TYPE_GZIP=1;
+	
 	private InputStream inStream;
 	private boolean inStreamEnded;
 	
@@ -60,7 +70,7 @@ public class ZipInputStream extends InputStream {
 	private boolean vaildData;
 	
 	private int crc32;
-	public int[] crc32Table=new int[256];
+	private int[] crc32Table=new int[256];
 	
 	private int type;
 	
@@ -69,7 +79,7 @@ public class ZipInputStream extends InputStream {
 	private int BTYPE;// type of compression
 	
 	// Buffer stuff:
-	private byte[] window=new byte[32768]; // every decoder has to support windows up to 32k
+	private byte[] window=new byte[32 * 1024]; // every decoder has to support windows up to 32k
 	private int pProcessed=0;				// data pointer = one after the last processed
 	private long allPocessed=0;				// amount of processed data mod 2^32
 	
@@ -91,19 +101,41 @@ public class ZipInputStream extends InputStream {
 	short[] distHuffTree;
 	
 	/**
+	 * Creates an input stream capable of GZIP and Deflate with a buffer of 1024 bytes.
+	 * 
+	 * @param inputStream 	the stream that contains the compressed data.
+	 * @param compressionType	TYPE_GZIP or TYPE_DEFLATE
+	 * @param hash 		set true for data checking, set false for speed reading
+	 * @throws IOException when the header of a GZIP stream cannot be skipped
+	 * @see #TYPE_DEFLATE
+	 * @see #TYPE_GZIP
+	 */
+	public ZipInputStream(InputStream inputStream, int compressionType, boolean hash) 
+	throws IOException
+	{
+		this(inputStream, 1024, compressionType, hash);
+	}
+	
+	/**
 	 * Creates an input stream capable of GZIP and Deflate.
 	 * 
 	 * @param inputStream 	the stream that contains the compressed data.
-	 * @param compressionType	GZIP or Deflate
-	 * @param dataCheck 		set true for data check, set false for speed reading
+	 * @param size the size of the internally used buffer
+	 * @param compressionType	TYPE_GZIP or TYPE_DEFLATE
+	 * @param hash 		set true for data checking, set false for speed reading
+	 * @throws IOException when the header of a GZIP stream cannot be skipped
+	 * @see #TYPE_DEFLATE
+	 * @see #TYPE_GZIP
 	 */
-	private void init(InputStream inputStream, int size, int compressionType, boolean dataCheck) throws IOException {
+	public ZipInputStream(InputStream inputStream, int size, int compressionType, boolean hash) 
+	throws IOException 
+	{
 		this.inStream=inputStream;
 		
 		this.inStreamEnded=false;
 		this.status=ZipInputStream.EXPECTING_HEADER;
 		
-		this.hash=dataCheck;
+		this.hash=hash;
 		this.type=compressionType;
 		
 		this.smallCodeBuffer=new long[2];
@@ -120,12 +152,6 @@ public class ZipInputStream extends InputStream {
 		}
 		
 		this.crc32=0;
-	}
-	public ZipInputStream(InputStream inputStream, int compressionType, boolean hash) throws IOException{
-		this.init(inputStream, 1024, compressionType, hash);
-	}
-	public ZipInputStream(InputStream inputStream, int size, int compressionType, boolean hash) throws IOException {
-		this.init(inputStream, size, compressionType, hash);
 	}
 	
 
