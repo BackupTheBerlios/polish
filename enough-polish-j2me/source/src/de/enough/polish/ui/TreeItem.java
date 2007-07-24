@@ -54,6 +54,14 @@ public class TreeItem
  
 {
 	
+	//#if polish.css.treeitem-closed-indicator && polish.css.treeitem-opened-indicator
+		//#define tmp.useIndicators
+		private Image closedIndicator;
+		private Image openedIndicator;
+		private int indicatorWidth;
+	//#endif
+
+	
 	/**
 	 * Creates a new tree item.
 	 * 
@@ -255,9 +263,9 @@ public class TreeItem
 				parentContainer = (Container) node.parent;
 			}
 			parentNode = new Node( node );
-			Item[] items = parentContainer.getItems();
-			for (int i = 0; i < items.length; i++) {
-				Item rootItem = items[i];
+			Item[] myItems = parentContainer.getItems();
+			for (int i = 0; i < myItems.length; i++) {
+				Item rootItem = myItems[i];
 				if ( node == rootItem ) {
 					parentContainer.set(i, parentNode);
 					node.parent = parentNode;
@@ -273,7 +281,6 @@ public class TreeItem
 		
 	}
 
-
 	
 	/**
 	 * Clears this list.
@@ -281,11 +288,41 @@ public class TreeItem
 	public void removeAll() {
 		clear();
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeContainerCustomItem#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style) {
+		super.setStyle(style);
+		//#if tmp.useIndicators
+			String closedUrl = style.getProperty("treeitem-closed-indicator");
+			if (closedUrl != null) {
+				try {
+					this.closedIndicator = StyleSheet.getImage(closedUrl, this, true );
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("Unable to load treeitem-closed-indicator " + closedUrl + e );
+				}
+			}
+			String openedUrl = style.getProperty("treeitem-opened-indicator");
+			if (openedUrl != null) {
+				try {
+					this.openedIndicator = StyleSheet.getImage(openedUrl, this, true );
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("Unable to load treeitem-opened-indicator " + openedUrl + e );
+				}
+			}
+		//#endif
+	}
 
-	
-	
-	
-	static class Node extends Item {
+
+
+
+
+
+	class Node extends Item {
 		private Item root;
 		private Container children;
 		private boolean isExpanded;
@@ -295,12 +332,6 @@ public class TreeItem
 		private Style childrenPlainStyle;
 		//private boolean isChildrenFocused;
 		private int availableWidth;
-		//#if polish.css.treeitem-closed-indicator && polish.css.treeitem-opened-indicator
-			//#define tmp.useIndicators
-			private Image closedIndicator;
-			private Image openedIndicator;
-			private int indicatorWidth;
-		//#endif
 		
 		public Node( Item root ) {
 			super( null, 0, INTERACTIVE, null );
@@ -325,16 +356,16 @@ public class TreeItem
 			int rootWidth = this.root.itemWidth;
 			//#if tmp.useIndicators
 				int w = 0;
-				if (this.openedIndicator != null) {
-					w = this.openedIndicator.getWidth();
+				if (TreeItem.this.openedIndicator != null) {
+					w = TreeItem.this.openedIndicator.getWidth();
 				}
-				if (this.closedIndicator != null && this.closedIndicator.getWidth() > w) {
-					w = this.closedIndicator.getWidth();
+				if (TreeItem.this.closedIndicator != null && TreeItem.this.closedIndicator.getWidth() > w) {
+					w = TreeItem.this.closedIndicator.getWidth();
 				}
 				if (w != 0) {
 					rootWidth += w + this.paddingHorizontal;
 				}
-				this.indicatorWidth = w;
+				TreeItem.this.indicatorWidth = w;
 			//#endif
 			if (!this.isExpanded) {
 				this.contentWidth = rootWidth;
@@ -351,16 +382,16 @@ public class TreeItem
 			//#if tmp.useIndicators
 				Image image;
 				if (this.isExpanded) {
-					image = this.openedIndicator;
+					image = TreeItem.this.openedIndicator;
 				} else {
-					image = this.closedIndicator;
+					image = TreeItem.this.closedIndicator;
 				}
 				if (image != null) {
 					int height = image.getHeight();
 					int rootHeight = this.root.itemHeight;
 					g.drawImage(image, x, y + (rootHeight-height)/2, Graphics.TOP | Graphics.RIGHT );
 				}
-				x += this.indicatorWidth;
+				x += TreeItem.this.indicatorWidth;
 			//#endif
 			this.root.paint(x, y, leftBorder, rightBorder, g);
 			if (this.isExpanded) {
@@ -504,9 +535,9 @@ public class TreeItem
 			if (!expand) {
 				this.internalX = -9999;
 				// close down all chidren nodes as well when closing:
-				Item[] items = this.children.getItems();
-				for (int i = 0; i < items.length; i++) {
-					Item item = items[i];
+				Item[] myItems = this.children.getItems();
+				for (int i = 0; i < myItems.length; i++) {
+					Item item = myItems[i];
 					if (item instanceof Node) {
 						((Node)item).setExpanded(false);
 					}
@@ -527,32 +558,6 @@ public class TreeItem
 			}
 		}
 		
-		/* (non-Javadoc)
-		 * @see de.enough.polish.ui.Item#setStyle(de.enough.polish.ui.Style)
-		 */
-		public void setStyle(Style style) {
-			super.setStyle(style);
-			//#if tmp.useIndicators
-				String closedUrl = style.getProperty("treeitem-closed-indicator");
-				if (closedUrl != null) {
-					try {
-						this.closedIndicator = StyleSheet.getImage(closedUrl, this, true );
-					} catch (IOException e) {
-						//#debug error
-						System.out.println("Unable to load treeitem-closed-indicator " + closedUrl + e );
-					}
-				}
-				String openedUrl = style.getProperty("treeitem-opened-indicator");
-				if (openedUrl != null) {
-					try {
-						this.openedIndicator = StyleSheet.getImage(openedUrl, this, true );
-					} catch (IOException e) {
-						//#debug error
-						System.out.println("Unable to load treeitem-opened-indicator " + openedUrl + e );
-					}
-				}
-			//#endif
-		}
 
 		//#if polish.debugEnabled
 		public String toString() {
