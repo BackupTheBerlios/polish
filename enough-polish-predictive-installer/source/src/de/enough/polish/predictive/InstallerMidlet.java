@@ -11,18 +11,20 @@ import javax.microedition.lcdui.StringItem;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import de.enough.polish.util.Locale;
+
 public class InstallerMidlet 
 extends MIDlet
 implements CommandListener
 {
 	protected Form form;
-	protected Command exitCommand = new Command( "Exit", Command.EXIT, 3 );
-	protected Command cancelCommand = new Command( "Cancel", Command.CANCEL, 3 );
+	protected Command exitCommand = new Command( Locale.get("cmd.exit"), Command.EXIT, 3 );
+	protected Command cancelCommand = new Command( Locale.get("cmd.cancel"), Command.CANCEL, 3 );
 	
-	protected Command yesCommand = new Command( "Yes", Command.OK, 0 );
-	protected Command noCommand = new Command( "No", Command.CANCEL, 0 );
+	protected Command yesCommand = new Command( Locale.get("cmd.yes"), Command.OK, 0 );
+	protected Command noCommand = new Command( Locale.get("cmd.no"), Command.CANCEL, 0 );
 	
-	protected StringItem intro = null;
+	protected StringItem info = null;
 	protected StringItem status = null;
 	protected StringItem error = null;
 	protected Gauge gauge = null;
@@ -37,13 +39,13 @@ implements CommandListener
 		this.form.addCommand( this.cancelCommand );
 		this.form.setCommandListener( this );
 		
-		this.intro = new StringItem("","Installing the dictionary used for predictive input. Please wait a moment ...");
+		this.info = new StringItem("",Locale.get("text.info"));
 		this.status = new StringItem("","");
 		this.error = new StringItem("","");
 		this.gauge = new Gauge("",true,100,0);
 
 		//#style introItem
-		this.form.append(intro);
+		this.form.append(info);
 		//#style gauge
 		this.form.append(gauge);
 		//#style statusItem
@@ -73,9 +75,9 @@ implements CommandListener
 	 */
 	public void commandAction(Command cmd, Displayable disp) {
 		if (cmd == this.cancelCommand) {
-			Alert cancel = new Alert("Cancel");
+			Alert cancel = new Alert(Locale.get("text.cancel"));
 			
-			cancel.setString("Do you really want to cancel the installation ? This may result in unwanted effects.");
+			cancel.setString(Locale.get("text.cancel"));
 			cancel.addCommand(this.yesCommand);
 			cancel.addCommand(this.noCommand);
 			

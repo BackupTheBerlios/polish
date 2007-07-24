@@ -108,7 +108,7 @@
 			vendorName="Enough Software"
 			infoUrl="http://www.j2mepolish.org"
 			icon="dot.png"
-			jarName="${polish.vendor}-${polish.name}-${polish.locale}-predictive-setup.jar" 
+			jarName="predictive.${polish.locale}.jar" 
 			jarUrl="${deploy-url}${polish.jarName}"
 			copyright="Copyright 2004 Enough Software. All rights reserved."
 			deleteConfirm="Do you really want to kill me?" 
@@ -198,8 +198,8 @@
 				-->
 				<!-- add the localization element for created localized
 				     versions of your application: -->
-				<localization locales="de_DE, en_US" unless="test" />
-				<localization locales="en_US" if="test" />
+
+				<localization locales="en,de,fr"/>
 			</resources>
 			
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->

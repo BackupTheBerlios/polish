@@ -3,6 +3,8 @@ package de.enough.polish.predictive;
 import java.io.DataInputStream;
 import javax.microedition.rms.RecordStore;
 
+import de.enough.polish.util.Locale;
+
 public class InstallerThread 
 implements Runnable
 {
@@ -29,7 +31,7 @@ implements Runnable
 			this.installer = new TrieInstaller();
 			this.stream = installer.getStream(); 
 			
-			this.parent.status.setText("Deleting previous installation ...");
+			this.parent.status.setText(Locale.get("text.status.delete"));
 			
 			String[] storeList = RecordStore.listRecordStores();
 			
@@ -42,7 +44,7 @@ implements Runnable
 					}
 			}
 			
-			this.parent.status.setText("Installing ...");
+			this.parent.status.setText(Locale.get("text.status.install"));
 			
 			int totalBytes = stream.available();
 			this.parent.gauge.setMaxValue(totalBytes);
@@ -102,7 +104,7 @@ implements Runnable
 			
 			store.closeRecordStore();
 			
-			this.parent.status.setText("Finished, the installer will exit in 10 seconds ...");
+			this.parent.status.setText(Locale.get("text.status.finished"));
 			this.parent.form.removeCommand( this.parent.cancelCommand );
 			this.parent.form.addCommand( this.parent.exitCommand );
 			
@@ -110,7 +112,7 @@ implements Runnable
 			this.parent.notifyDestroyed();
 			
 		} catch (Exception e) {
-			this.parent.status.setText("An error has occured:");
+			this.parent.status.setText(Locale.get("text.error"));
 			this.parent.status.setText(e.getMessage());
 			
 			this.parent.form.removeCommand( this.parent.cancelCommand );

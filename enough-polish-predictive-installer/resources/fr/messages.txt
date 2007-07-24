@@ -1,0 +1,15 @@
+text.info=Installant le dictionnaire utilisé pour l'entrée prédictive. Veuillez attendre un moment ...
+
+text.status.delete=Supprimer l'installation précédente  ...
+text.status.install=Installation ...
+text.status.finished=Fini, l'installation sortira en 10 secondes ...
+
+text.cancel=Voulez-vous vraiment décommander l'installation ? Ceci peut avoir comme conséquence des effets non désirés.
+
+text.error=Une erreur s'est produite:
+
+cmd.cancel=décommander
+cmd.exit=sortir
+
+cmd.yes=Oui
+cmd.no=Non
