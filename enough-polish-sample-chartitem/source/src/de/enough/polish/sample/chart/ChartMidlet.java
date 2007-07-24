@@ -82,7 +82,7 @@ implements CommandListener
 				new int[]{ 1, 42, 7, 12, 16, 1 }
 		};
 		int[] colors = new int[]{ 0xFF0000, 0x00FF00, 0x0000FF, 0x660033, 0x009999, 0xFFCC33, 0x00CC99, 0xFFFF33, 0x996600 };
-		ChartItem chart = new ChartItem( null, dataSequences, colors, style );
+		ChartItem chart = new ChartItem( "Profits:", dataSequences, colors, style );
 		this.form.append( chart );
 		
 		dataSequences = new int[][] {
@@ -90,9 +90,9 @@ implements CommandListener
 				new int[]{ -30, -2, -4, -8, -16, -32, -16, -8, -14 },
 				new int[]{ -19, -42, -7, -12, -16, -9, -22, -10, -35 }
 		};
-		chart = new ChartItem( null, dataSequences, colors, style );
+		chart = new ChartItem( "Losses:", dataSequences, colors, style );
 		chart.setLabelX( "years");
-		chart.setLabelY("profit");
+		chart.setLabelY("losses");
 		this.form.append( chart );
 
 		dataSequences = new int[][] {
@@ -100,7 +100,7 @@ implements CommandListener
 				new int[]{ 0, -2, -4, -8, 16, 32, 16, -8, -4 },
 				new int[]{ 1, -42, 7, 12, -16, -1, 0, -10, 35 }
 		};
-		chart = new ChartItem( null, dataSequences, colors, style );
+		chart = new ChartItem( "Performance Review:", dataSequences, colors, style );
 		this.form.append( chart );
 
 		dataSequences = new int[][] {
@@ -108,7 +108,7 @@ implements CommandListener
 				new int[]{ 0, -2, -4, -8, 16, 32, 16, -8, -4 },
 				new int[]{ 1, -42, 7, 12, -16, -1, 0, -10, 35 }
 		};
-		chart = new ChartItem( null, dataSequences, colors, style );
+		chart = new ChartItem( "Turnover:", dataSequences, colors, style );
 		this.form.append( chart );
 	}
 

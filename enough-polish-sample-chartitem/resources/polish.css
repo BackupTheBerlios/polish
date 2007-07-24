@@ -26,33 +26,44 @@ colors {
 	focusedFontColor: rgb(238,241,229);
 }
 
+backgrounds {
+	chartItemBackground {
+		type: round-rect-translucent;
+		color: #9fff;
+	}
+}
+
 .mainScreen {
 	padding: 5;
 	padding-left: 15;
 	padding-right: 15;
-	background {
-		color: focusedBgColor;
-	}
 	layout: horizontal-expand | horizontal-center | top;
+	background{
+		image: url( tile.png );
+		repeat: repeat;
+		top: title;
+		bottom: menubar;
+		overlap: true;
+	}
 }
 
 
 .lineChart {
-	background-color: white;
+	background: chartItemBackground;
 	padding: 3;
 	font-color: gray;
 	font-size: small;
 }
 
 .verticalBarChart {
-	background-color: white;
+	background: chartItemBackground;
 	padding: 3;
 	view-type: chart-vertical-bars;
 	chart-vertical-bars-shadow-color: gray;
 }
 
 .cakeChart {
-	background-color: white;
+	background: chartItemBackground;
 	padding: 3;
 	view-type: chart-cake;
 }
@@ -86,15 +97,20 @@ focused {
   */
 title {
 	padding: 2;
-	margin-top: 0;
-	margin-bottom: 5;
-	margin-left: 0;
-	margin-right: 0;
+	padding-bottom: 2;
 	font-face: proportional;
 	font-size: large;
 	font-style: bold;
-	font-color: focusedFontColor;
-	background-color: bgColor;
+	font-color: black;
+	text-effect: shadow;
+	text-shadow-color: white;
+	background {
+		type: vertical-gradient;
+		top-color: white;
+		bottom-color: silver;
+		start: 70%;
+		end: 100%;
+	}
 	border: none;
 	layout: horizontal-center | horizontal-expand;	
 }
@@ -106,7 +122,13 @@ menubar
 	margin: 0;
 	padding-top: 3;
 	padding: 2;
-	background-color: bgColor;
+	background {
+		type: vertical-gradient;
+		top-color: silver;
+		bottom-color: white;
+		start: 0%;
+		end: 30%;
+	}
 }
 
 menu {
@@ -128,7 +150,7 @@ menu {
 
 /** Style for the first layer of subcommands: **/
 menu1 extends menu {
-	background-color: yellow;
+	background-color: silver;
 	background-type: simple;
       layout: right;
       margin-bottom: 4;

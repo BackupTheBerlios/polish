@@ -178,6 +178,8 @@
 				-->
 				<variable name="update-url" value="http://www.enough.de/update" />
 				<variable name="title" value="J2ME Polish" />
+				<variable name="polish.useScrollBar" value="true" />
+				<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 			</variables>
 			<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 			<resources
