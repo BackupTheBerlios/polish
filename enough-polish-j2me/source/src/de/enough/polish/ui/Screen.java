@@ -741,6 +741,22 @@ implements AccessibleCanvas
 					}
 					if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas) {
 						Screen screen = currentDisplayable instanceof Screen ? (Screen) currentDisplayable : null;
+						if (screen != null) {
+							// detect circles within previous-screen-queue:
+							Screen previous = screen;
+							while (previous != null) {
+								if (previous.previousScreen instanceof Screen) {
+									previous = (Screen) previous.previousScreen;
+									if (previous == this) {
+										currentDisplayable = (Displayable) previous.previousScreen;
+										screen = currentDisplayable instanceof Screen ? (Screen) currentDisplayable : null;
+										break;
+									}
+								} else {
+									break;
+								}
+							}
+						}
 						//#if polish.ScreenOrientationCanChange && tmp.usingTitle
 							if ( screen != null && this.screenWidth > this.screenHeight ) {
 								Background titleBg = null;
@@ -1343,8 +1359,12 @@ implements AccessibleCanvas
 					int backgroundHeight = sHeight;
 					int backgroundY = topBorder;
 					//#ifdef tmp.menuFullScreen
-						if (this.excludeMenuBarForBackground) {
-							backgroundHeight = this.screenHeight - this.marginTop - this.marginBottom + 1;
+						if (!this.excludeMenuBarForBackground) {
+							//#if tmp.useExternalMenuBar
+								backgroundHeight += this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+							//#else
+								backgroundHeight += this.menuBarHeight;
+							//#endif
 						}
 					//#endif
 					//#ifdef tmp.usingTitle
@@ -1706,8 +1726,10 @@ implements AccessibleCanvas
 		int x = this.contentX;
 		int height = this.contentHeight;
 		int width = this.contentWidth;
+//		g.setColor( 0x00ff00 );
+//		g.drawRect( x, y, width, height);
 		
-		g.clipRect(x, y, width, height + 1 );
+		g.clipRect(x, y, width, height );
 		int containerHeight = this.container.getItemHeight( width, width);
 		//#if tmp.useScrollIndicator
 			this.paintScrollIndicator = false; // defaults to false

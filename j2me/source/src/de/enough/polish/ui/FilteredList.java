@@ -49,7 +49,6 @@ public class FilteredList
 extends List
 implements ItemStateListener, CommandListener
 {
-	
 	private static final int POSITION_TOP = 0;
 	private static final int POSITION_BOTTOM = 1;
 	private static final int FILTER_STARTS_WITH = 0;
@@ -213,8 +212,8 @@ implements ItemStateListener, CommandListener
 	 * @see de.enough.polish.ui.Screen#paintScreen(javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintScreen(Graphics g) {
-		super.paintScreen(g);
 		this.filterTextField.paint( this.contentX, this.filterTextField.relativeY, this.contentX, this.contentX + this.contentWidth, g );
+		super.paintScreen(g);
 	}
 	
 	

@@ -307,12 +307,11 @@ public class FramedForm extends Form {
 	 * @see de.enough.polish.ui.Screen#paintScreen(javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintScreen(Graphics g) {
-		super.paintScreen(g);
-		//#ifdef tmp.menuFullScreen
-		 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
-		//#else
-		 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
-		//#endif
+//		//#ifdef tmp.menuFullScreen
+//		 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
+//		//#else
+//		 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
+//		//#endif
 
 		if (this.leftFrame != null) {
 		 	Style frameStyle = this.leftFrame.style;
@@ -364,6 +363,8 @@ public class FramedForm extends Form {
 			this.bottomFrame.relativeY = this.contentY + this.contentHeight;
 			this.bottomFrame.paint( this.originalContentX, this.contentY + this.contentHeight, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 		}
+		super.paintScreen(g);
+
 	}
 	
 	/* (non-Javadoc)

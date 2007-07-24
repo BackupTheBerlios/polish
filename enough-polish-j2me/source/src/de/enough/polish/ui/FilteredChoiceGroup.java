@@ -54,6 +54,12 @@ public class FilteredChoiceGroup
 	//# implements Choice, CommandListener
 //#endif
 {
+	/** Only a single option can be selected */
+	public final static int EXCLUSIVE = Choice.EXCLUSIVE;
+	/** Several values can be selected */
+	public final static int MULTIPLE = Choice.MULTIPLE;
+	/** Only a single option can be selected - it is selected automatically when pressing FIRE. */
+	public final static int IMPLICIT = Choice.IMPLICIT;
 	
 	private final FilteredList filteredList;
 	private boolean[] lastChoices;
