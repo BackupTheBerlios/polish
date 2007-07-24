@@ -2705,6 +2705,21 @@
 		id="253"
 	/>
 	
+	<attribute
+		name="treeitem-closed-indicator"
+		type="imageurl"
+		appliesTo="TreeItem"
+		description="An image indicating the closed state of a tree node."
+		id="254"
+	/>
+
+	<attribute
+		name="treeitem-opened-indicator"
+		type="imageurl"
+		appliesTo="TreeItem"
+		description="An image indicating the opened state of a tree node."
+		id="255"
+	/>
 	
 	<!--
 	
