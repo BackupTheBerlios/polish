@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * <p></p>
+ * <p>Provides some helper methods for ZipInputStream and ZipOutputStream.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
@@ -116,7 +116,10 @@ public final class ZipHelper {
 	
 	public static final int encodeCode(int[] Code , int distance){
 		int i=0;
-		while(i<Code.length/2 && distance>=Code[i*2+1]){i++;}
+		//while(i<Code.length/2 && distance>=Code[i*2+1]){i++;}
+		while( i < (Code.length>>1) && distance >= Code[(i<<1)+1]){
+			i++;
+		}
 		// now: distance < Code[i*2+1]
 		
 		return i-1;
@@ -124,8 +127,7 @@ public final class ZipHelper {
 	
 	
     /**
-     * This function generates the huffmann codes according to
-     * 		a given set of bitlegth.
+     * This function generates the huffmann codes according to a given set of bitlegth.
      * 
      * @param huffmanCode			will be the resulting code pattern
      * @param huffmanCodeLength		has to be the bitlegth for each code
@@ -135,7 +137,8 @@ public final class ZipHelper {
     	
     	// generate bitlen_count
     	for (int i = 0; i < huffmanCodeLength.length; i++) {
-    		maxbits= maxbits > huffmanCodeLength[i] ? maxbits : huffmanCodeLength[i];
+    		int length = huffmanCodeLength[i];
+    		maxbits= maxbits > length ? maxbits : length;
 		}
     	maxbits++;
     	
@@ -150,14 +153,16 @@ public final class ZipHelper {
     	
     	// find the Codes for each smallest Code within all of the same bitlength
     	for (int bits = 1; bits < maxbits; bits++) {
-    		code=(code + bitlen_count[bits-1])*2;
+    		//code=(code + bitlen_count[bits-1])*2;
+    		code=(code + bitlen_count[bits-1])<<1;
 			next_code[bits]=code;
 		}
     	// generate all codes by adding 1 to the predecessor
     	for (int i = 0; i < huffmanCode.length; i++) {
-    		if (huffmanCodeLength[i]!=0){
-	    		huffmanCode[i]=next_code[huffmanCodeLength[i]];
-	    		next_code[huffmanCodeLength[i]]++;
+    		byte length = huffmanCodeLength[i];
+			if (length!=0){
+	    		huffmanCode[i]=next_code[length];
+	    		next_code[length]++;
     		}
 		}
     	
@@ -166,14 +171,15 @@ public final class ZipHelper {
     public final static void revHuffTree(int[] huffmanCode, byte[] huffmanCodeLength){
     	// reverse all:
     	int tmp;
+    	int reversed;
     	for (int i = 0; i < huffmanCode.length; i++) {
     		tmp=huffmanCode[i];
-    		huffmanCode[i]=0;
+    		reversed=0;
     		for (int j = 0; j < huffmanCodeLength[i]; j++) {
-    			huffmanCode[i]|=((tmp>>>j)&1);
-    			huffmanCode[i]<<=1;
+    			reversed|=((tmp>>>j)&1);
+    			reversed<<=1;
 			}
-    		huffmanCode[i]>>>=1;
+    		huffmanCode[i] = reversed>>>1;
 		}
     }
 
@@ -326,6 +332,7 @@ public final class ZipHelper {
 				
 				// set empty LEAF to data
 				if (pointer<0){
+					//#debug error
 					System.out.println("error pointer=-1");
 				}
 				huffmanTree[pointer*2]=-1;
@@ -346,6 +353,7 @@ public final class ZipHelper {
     public static final int deHuffNext(long[] smallCodeBuffer, short[] huffmanTree) throws IOException{
     	
     	if (smallCodeBuffer[1]<15){
+    		//#debug error
     		System.out.println("smallCodebuffer is too small");
     	}
     	
