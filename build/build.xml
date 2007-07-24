@@ -28,6 +28,7 @@
 	<taskdef name="propertyWriter" classname="de.enough.polish.ant.PropertyWriterTask" classpath="bin/classes"/>
 	<taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="bin/classes:lib/jdom.jar"/>
 	<taskdef name="convertToWindowsLineEndings" classname="de.enough.polish.ant.ConvertToWindowsLineEndingsTask" classpath=".:bin/classes"/>
+	<taskdef name="appendDateToProperties" classname="de.enough.polish.ant.AppendDateToPropertiesTask" classpath="bin/classes"/>
 	<taskdef name="setAttribute" classname="de.enough.polish.ant.SetAttributeTask" classpath=".:bin/classes"/>
 	<taskdef resource="genjar.properties" classpath="import/GenJar.jar" />
 	<taskdef resource="proguard/ant/task.properties" classpath="lib/proguard.jar" />	
@@ -76,6 +77,8 @@
 			>
 			<fileset dir="../enough-polish-j2me/source/src" includes="**/*.java" />
 		</indexWriter>
+		<!-- update the version -->
+		<appendDateToProperties source="version.properties" target="tmp/version.properties" />
 		<!-- compile the legacy code 
 		<javac 
 			srcdir="source/legacy"
@@ -90,9 +93,10 @@
 			 excludes="**/*.html"
 			 index="true"
 		     >
-			<fileset dir="." includes="capabilities.xml,configurations.xml,platforms.xml,extensions.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,css-attributes.xml,build/j2mepolish.index.txt,translations.txt,version.properties,default.css" />
+			<fileset dir="." includes="capabilities.xml,configurations.xml,platforms.xml,extensions.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,css-attributes.xml,build/j2mepolish.index.txt,translations.txt,default.css" />
 			<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
 			<fileset dir="setup" includes="icons/*.*" />
+			<fileset dir="tmp" includes="version.properties" />
 		</jar>	
 	</target>
 
