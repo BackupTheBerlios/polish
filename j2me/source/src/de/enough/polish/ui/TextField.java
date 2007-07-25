@@ -1261,7 +1261,8 @@ public class TextField extends StringItem
 			}
 			
 			setText(this.builder.getText().toString()); 
-			setCaretPosition(this.builder.getCaretPosition());			
+			setCaretPosition(this.builder.getCaretPosition());	
+			getScreen().setItemCommands( this );
 			this.refreshChoices = true;
 			
 			return true;
@@ -1290,6 +1291,7 @@ public class TextField extends StringItem
 		
 		setText(this.builder.getText().toString()); 
 		setCaretPosition(this.builder.getCaretPosition());
+		getScreen().setItemCommands( this );
 		this.refreshChoices = true;
 		
 		return true;
@@ -1312,6 +1314,7 @@ public class TextField extends StringItem
 			updateInfo();
 			
 			this.refreshChoices = true;
+			getScreen().setItemCommands( this );
 			return true;
 		}
 		
