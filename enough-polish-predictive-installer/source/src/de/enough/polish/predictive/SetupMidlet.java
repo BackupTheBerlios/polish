@@ -13,7 +13,7 @@ import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.util.Locale;
 
-public class InstallerMidlet 
+public class SetupMidlet 
 extends MIDlet
 implements CommandListener
 {
@@ -29,10 +29,10 @@ implements CommandListener
 	protected StringItem error = null;
 	protected Gauge gauge = null;
 	
-	protected InstallerThread installer  = null;
+	protected SetupThread installer  = null;
 	protected Thread thread = null;
 	
-	public InstallerMidlet() {
+	public SetupMidlet() {
 		//#style mainScreen
 		this.form = new Form( "Predictive Setup");
 		
@@ -53,7 +53,7 @@ implements CommandListener
 		//#style errorItem
 		this.form.append(error);
 		
-		installer  = new InstallerThread(this);
+		installer  = new SetupThread(this);
 		thread = new Thread(installer);
 	}
 

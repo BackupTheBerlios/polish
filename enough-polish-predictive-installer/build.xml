@@ -109,7 +109,7 @@
 			infoUrl="http://www.j2mepolish.org"
 			icon="dot.png"
 			jarName="predictive.${polish.locale}.jar" 
-			jarUrl="${deploy-url}${polish.jarName}"
+			jarUrl="http://download.j2mepolish.org/${polish.jarName}"
 			copyright="Copyright 2004 Enough Software. All rights reserved."
 			deleteConfirm="Do you really want to kill me?" 
 		/>
@@ -184,30 +184,12 @@
 				defaultexcludes="yes"
 				excludes="readme.txt"
 			>
-				<!-- you can add resources based on complex criterias: 
-				<fileset 
-					dir="resources/multimedia" 
-					includes="*.wav" 
-					if="polish.audio.wav" 
-				/>
-				<fileset 
-					dir="resources/multimedia" 
-					includes="*.mid" 
-					if="polish.audio.midi and not polish.audio.wav" 
-				/>
-				-->
-				<!-- add the localization element for created localized
-				     versions of your application: -->
-
 				<localization locales="en,de,fr"/>
 			</resources>
 			
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-			<obfuscator name="ProGuard" useDefaultPackage="true" unless="test || polish.blackberry" >
-				<!--
-				You can set additional parameters here, e.g.:
-				<parameter name="optimize" value="false" />
-				-->
+			<obfuscator name="ProGuard" useDefaultPackage="false" unless="test || polish.blackberry" >
+
 			</obfuscator>
 			
 			<!-- debug settings: only include debug setting when the test-property is true -->

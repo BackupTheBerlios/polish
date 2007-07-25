@@ -5,17 +5,17 @@ import javax.microedition.rms.RecordStore;
 
 import de.enough.polish.util.Locale;
 
-public class InstallerThread 
+public class SetupThread 
 implements Runnable
 {
-	private InstallerMidlet parent;
+	private SetupMidlet parent;
 	
 	DataInputStream stream = null;
 	TrieInstaller installer = null;
 		
 	boolean pause = false;
 	
-	InstallerThread(InstallerMidlet parent)
+	SetupThread(SetupMidlet parent)
 	{
 		this.parent = parent;
 	}
