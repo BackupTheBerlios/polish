@@ -781,22 +781,22 @@ public class TextField extends StringItem
 		//#ifdef polish.TextField.charactersKey1:defined
 			//#= private static final String charactersKey1 = "${polish.TextField.charactersKey1}";
 		//#else
-			private static final String charactersKey1 = ".,!?:/@_-+1";
+		private static final String charactersKey1 = ".,!?\u00bf:/@_-+1'\";";
 		//#endif
 		//#ifdef polish.TextField.charactersKey2:defined
 			//#= private static final String charactersKey2 = "${polish.TextField.charactersKey2}";
 		//#else
-			private static final String charactersKey2 = "abc2";
+			private static final String charactersKey2 = "abc2\u00e1\u00e2\u00e6\u00e4\u00e0\u00e5";
 		//#endif
 		//#ifdef polish.TextField.charactersKey3:defined
 			//#= private static final String charactersKey3 = "${polish.TextField.charactersKey3}";
 		//#else
-			private static final String charactersKey3 = "def3";
+			private static final String charactersKey3 = "def3\u00e9\u00ea\u00eb\u00e8";
 		//#endif
 		//#ifdef polish.TextField.charactersKey4:defined
 			//#= private static final String charactersKey4 = "${polish.TextField.charactersKey4}";
 		//#else
-			private static final String charactersKey4 = "ghi4";
+			private static final String charactersKey4 = "ghi4\u00ef\u00ee\u00ec\u00ed";
 		//#endif
 		//#ifdef polish.TextField.charactersKey5:defined
 			//#= private static final String charactersKey5 = "${polish.TextField.charactersKey5}";
@@ -806,17 +806,17 @@ public class TextField extends StringItem
 		//#ifdef polish.TextField.charactersKey6:defined
 			//#= private static final String charactersKey6 = "${polish.TextField.charactersKey6}";
 		//#else
-			private static final String charactersKey6 = "mno6";
+			private static final String charactersKey6 = "mno6\u00f1\u00f3\u00f4\u00f6\u00f2";
 		//#endif
 		//#ifdef polish.TextField.charactersKey7:defined
 			//#= private static final String charactersKey7 = "${polish.TextField.charactersKey7}";
 		//#else
-			private static final String charactersKey7 = "pqrs7";
+			private static final String charactersKey7 = "pqrs7\u00df";
 		//#endif
 		//#ifdef polish.TextField.charactersKey8:defined
 			//#= private static final String charactersKey8 = "${polish.TextField.charactersKey8}";
 		//#else
-			private static final String charactersKey8 = "tuv8";
+			private static final String charactersKey8 = "tuv8\u00fc\u00fa\u00fb\u00f9";
 		//#endif
 		//#ifdef polish.TextField.charactersKey9:defined
 			//#= private static final String charactersKey9 = "${polish.TextField.charactersKey9}";
@@ -831,7 +831,7 @@ public class TextField extends StringItem
 		//#ifdef polish.TextField.charactersKeyStar:defined
 			//#= protected static final String charactersKeyStar = "${polish.TextField.charactersKeyStar}";
 		//#else
-			protected static final String charactersKeyStar = ".,!?:/@_-+";
+			protected static final String charactersKeyStar = ".,!?\u00bf:/@_-+1'\";";
 		//#endif
 		//#ifdef polish.TextField.charactersKeyPound:defined
 			//#= protected static final String charactersKeyPound = "${polish.TextField.charactersKeyPound}";
@@ -3902,7 +3902,7 @@ public class TextField extends StringItem
 						//#= if(StyleSheet.midlet.platformRequest("${polish.TextField.predictive.url}"))
 						//#= StyleSheet.midlet.notifyDestroyed();
 						//#else
-						StyleSheet.midlet.platformRequest("http://download.j2mepolish.org/Sony-Ericsson-W800-en_US-example.jad");
+						StyleSheet.midlet.platformRequest("http://dl.j2mepolish.org/predictive/index.jsp");
 						StyleSheet.midlet.notifyDestroyed();
 						//#endif
 					}catch(ConnectionNotFoundException e){}
