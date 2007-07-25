@@ -379,14 +379,14 @@ public class PolishTask extends ConditionalTask {
 			for ( int i=0; i < numberOfDevices; i++) {
 				Device device = this.devices[i];
 				if ( !enableCompilerMode && numberOfDevices > 1) {
-					System.out.println("Building application for [" + device.getIdentifier() + "] (" + (i+1) + "/" + numberOfDevices + "):");
+					System.out.println("building application for [" + device.getIdentifier() + "] (" + (i+1) + "/" + numberOfDevices + "):");
 				}
 				if (this.supportedLocales != null) {
 					for (int j = 0; j < this.supportedLocales.length; j++) {
 						LocaleSetting localeSetting = this.supportedLocales[j];
 						this.currentLocaleSetting = localeSetting;
 						Locale locale = localeSetting.getLocale();
-						System.out.println("Using locale [" + locale.toString() + "]...");
+						System.out.println("using locale [" + locale.toString() + "]...");
 						try {
 							execute(device, locale, hasExtensions);
 							successCount++;
@@ -432,22 +432,22 @@ public class PolishTask extends ConditionalTask {
 				StringBuffer message = new StringBuffer();
 				if (numberOfDevices > 1 || successCount > 1 ) {
 					if ( successCount == numberOfDevices ) {
-						message.append("Successfully processed [").append( numberOfDevices ).append( "] devices");
+						message.append("successfully processed [").append( numberOfDevices ).append( "] devices");
 					} else {
 						if ( numberOfDevices == 1 ) {
-							message.append("Successfully processed one device with [").append( successCount ).append( "] builds");
+							message.append("successfully processed one device with [").append( successCount ).append( "] builds");
 						} else {
-							message.append("Successfully processed [").append( numberOfDevices ).append( "] devices with [" ).append( successCount ).append( "] builds");
+							message.append("successfully processed [").append( numberOfDevices ).append( "] devices with [" ).append( successCount ).append( "] builds");
 						}
 					}
 				} else if (this.devices != null && this.devices.length > 0){
-					message.append("Successfully processed " ).append( this.devices[0]);
+					message.append("successfully processed " ).append( this.devices[0]);
 				}
 				message.append( " on ").append( (new Date()).toString() ).append( " in " ).append( timeInSeconds ).append( " seconds.");
 				System.out.println(message.toString());
 			} else {
 				StringBuffer buffer = new StringBuffer();
-				buffer.append("Processed [" ).append( numberOfDevices ).append( "] devices with [" )
+				buffer.append("processed [" ).append( numberOfDevices ).append( "] devices with [" )
 					.append( successCount ).append( "] successful builds and [" ).append( failures.size() ).append( "] errors:\n" );
 				FailureInfo[] infos  = (FailureInfo[]) failures.toArray( new FailureInfo[ failures.size() ] );
 				for (int i = 0; i < infos.length; i++) {
@@ -2085,13 +2085,13 @@ public class PolishTask extends ConditionalTask {
 	 * @param device
 	 * @param locale
 	 */
-	protected void setUpBinaryLibraries(Device device, Locale locale, File targetDir, String targetDirName ) {
+	protected void copyBinaryLibraries(Device device, Locale locale, File targetDir, String targetDirName ) {
 		// load third party binary libraries, if any.
 		// When there are third party libraries, they will all be extracted
 		// and copied to the build/binary folder for easier integration:
 		this.binaryLibraries = this.buildSetting.getBinaryLibraries();
 		if (this.binaryLibraries != null) {
-			System.out.println("Preparing binary libraries...");
+			System.out.println("preparing binary libraries...");
 			File binaryBaseDir = new File( this.buildSetting.getWorkDir(), "binary");
 			try {
 				this.binaryLibrariesUpdated = this.binaryLibraries.copyToCache( binaryBaseDir );
@@ -2131,6 +2131,9 @@ public class PolishTask extends ConditionalTask {
 			targetDir = new File( targetDirName );
 		}
 		device.setClassesDir( targetDirName );
+
+		// add binary class files, if there are any:
+		copyBinaryLibraries( device, locale, targetDir, targetDirName );
 		
 		if (device.getNumberOfChangedFiles() == 0 && !this.lastRunFailed) {
 			System.out.println("nothing to compile for device [" +  device.getIdentifier() + "]." );
@@ -2139,8 +2142,6 @@ public class PolishTask extends ConditionalTask {
 		
 		Project antProject = getProject();
 		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
-		// add binary class files, if there are any:
-		setUpBinaryLibraries( device, locale, targetDir, targetDirName );
 
 		// invoking all precompilers:
 		precompile( device, locale );
@@ -2532,10 +2533,9 @@ public class PolishTask extends ConditionalTask {
 	 */
 	protected void jar( Device device, Locale locale ) {
 		File classesDir = new File( device.getClassesDir() );
-		
 		// copy resources to final destination:
 		try {
-			FileUtil.copyDirectoryContents( device.getResourceDir(), classesDir, true );
+			FileUtil.copyDirectoryContents( device.getResourceDir(), classesDir, !this.buildSetting.getResourceSetting().isForceUpdate() );
 		} catch (IOException e) {
 			System.out.println("creating JAR for device [" + device.getIdentifier() + "]." );
 			e.printStackTrace();

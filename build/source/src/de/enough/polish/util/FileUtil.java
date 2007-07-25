@@ -458,7 +458,8 @@ public final class FileUtil {
 				if (update) {
 					// update only when the source file is newer:
 					if ( (!targetFile.exists())
-						|| (file.lastModified() > targetFile.lastModified() )) {
+						|| (file.lastModified() > targetFile.lastModified() )) 
+					{
 						copy( file, targetFile );
 					}
 				} else {
@@ -469,6 +470,14 @@ public final class FileUtil {
 		}
 	}
 
+	private static String getPath( File file ) {
+		String path = file.getAbsolutePath();
+		int buildIndex = path.indexOf("build");
+		if (buildIndex != -1) {
+			path = path.substring( buildIndex );
+		}
+		return path;
+	}
 
 	/**
 	 * Deletes a file or a directory.

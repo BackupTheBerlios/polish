@@ -60,6 +60,7 @@ public class ResourceSetting extends Setting {
 	private boolean filterZeroLengthFiles = true;
 	private ArrayList filterSettings;
 	private ArrayList rootSettings;
+	private boolean forceUpdate;
 
 
 	/**
@@ -272,6 +273,31 @@ public class ResourceSetting extends Setting {
 
 	public boolean filterZeroLengthFiles() {
 		return this.filterZeroLengthFiles ;
+	}
+
+
+	/**
+	 * Determines whether resources should be copied in any case.
+	 * This can make sense, for example, when a binary library file contains resources
+	 * that should be overwritten by normal project specific resources.
+	 * 
+	 * @return true when resources should be copied even when newer resources already exist at the target destination
+	 */
+	public boolean isForceUpdate() {
+		return this.forceUpdate;
+	}
+	
+
+
+	/**
+	 * Sets whether resources should be copied in any case.
+	 * This can make sense, for example, when a binary library file contains resources
+	 * that should be overwritten by normal project specific resources.
+	 * 
+	 * @param forceUpdate true when resources should be copied even when newer resources already exist at the target destination
+	 */
+	public void setForceUpdate(boolean forceUpdate) {
+		this.forceUpdate = forceUpdate;
 	}
 
 
