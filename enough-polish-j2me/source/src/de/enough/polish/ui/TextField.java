@@ -905,6 +905,7 @@ public class TextField extends StringItem
 	private boolean refreshChoices = true;
 
 	private boolean predictiveInput;
+	private static String predictiveIndicator = "\u00bb";
 	//#endif
 		
 	/**
@@ -2990,6 +2991,12 @@ public class TextField extends StringItem
 			default:
 				modeStr = "123";
 		}
+		
+		//#if polish.TextField.usePredictiveInput
+		if(this.predictiveInput)
+			modeStr = predictiveIndicator + modeStr;
+		//#endif
+		
 		//#ifdef polish.css.textfield-show-length
 			if (this.showLength) {
 				int length = (this.text == null) ? 0 : this.text.length();
@@ -4078,6 +4085,8 @@ public class TextField extends StringItem
 					this.removeCommand(DISABLE_PREDICTIVE_CMD);
 					this.removeCommand(ADD_WORD_CMD);
 					this.addCommand(ENABLE_PREDICTIVE_CMD);
+					
+					updateInfo();
 				} else if ( cmd == ADD_WORD_CMD) {
 					if(PROVIDER.getCustomField() == null)
 					{
