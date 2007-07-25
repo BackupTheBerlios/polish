@@ -90,7 +90,7 @@ public class Environment {
 	/** holds all temporary defined symbols */
 	private final HashMap temporarySymbols;
 
-	private final ExtensionManager extensionManager;
+	private ExtensionManager extensionManager;
 
 	private final BooleanEvaluator booleanEvaluator;
 
@@ -104,7 +104,7 @@ public class Environment {
 
 	private final HashMap exchangeStore;
 
-	private final Map basicProperties;
+	private Map basicProperties;
 
 	private File baseDir;
 
@@ -806,4 +806,23 @@ public class Environment {
 			set( "project.home", baseDir );
 		}
 	}
-}
+
+	/**
+	 * Sets the extension manager.
+	 * 
+	 * @param manager the manager
+	 */
+	public void setExtensionManager(ExtensionManager manager) {
+		this.extensionManager = manager;
+	}
+	
+	/**
+	 * Sets the basic properties which are available the whole time.
+	 * @param properties the properties
+	 */
+	public void setBaseProperties( Map properties ) {
+		this.variables.putAll(properties);
+		this.basicProperties = properties;
+	}
+	
+ }

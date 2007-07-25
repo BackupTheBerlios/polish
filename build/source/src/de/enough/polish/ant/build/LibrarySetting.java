@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.IOException;
 
 import de.enough.polish.BuildException;
+import de.enough.polish.Environment;
+
 import org.apache.tools.ant.DirectoryScanner;
 
 import de.enough.polish.ant.Setting;
@@ -48,13 +50,12 @@ import de.enough.polish.util.StringUtil;
  */
 public class LibrarySetting extends Setting {
 	
-	public File[] files;
-//	public File file; 
-//	public File dirOrFile;
-	private int id;
+	private File[] files;
 	private File cacheDir;
 	private boolean libraryChanged;
 	private long lastModified;
+	private boolean isDynamic;
+	private String dynamicLibraryPath;
 
 	/**
 	 * Creates a new library binding.
@@ -103,7 +104,14 @@ public class LibrarySetting extends Setting {
 			throw new BuildException("You cannot specify both the \"file\" as well as the \"dir\" attribute or \"files\" attribute in one <library>-element. Please correct this in your build.xml.");
 		}
 		if (!file.exists()) {
-			throw new BuildException("Unable find library " + file.getAbsolutePath() + ": file not found. Check your <library> tags in your build.xml script.");			
+			String filePath = file.getAbsolutePath();
+			if (filePath.indexOf('$') != -1) {
+				this.isDynamic = true;
+				this.dynamicLibraryPath = filePath;
+				return;
+			} else {
+				throw new BuildException("Unable find library " +filePath + ": file not found. Check your <library> tags in your build.xml script.");
+			}
 		}
 		this.files = new File[]{ file };
 		this.lastModified = file.lastModified();
@@ -145,50 +153,28 @@ public class LibrarySetting extends Setting {
 		return this.lastModified;
 	}
 	
-//	/**
-//	 * @return the name of the library file
-//	 */
-//	public String getName() {
-//		return this.dirOrFile.getName();
-//	}
-	
-//	/**
-//	 * @return the absolute path of the library
-//	 */
-//	public String getAbsolutePath() {
-//		return this.dirOrFile.getAbsolutePath();
-//	}
 
 	/**
-	 * @return the id of the library
-	 */
-	public int getId() {
-		return this.id;
-	}
-	
-	/**
-	 * @param id the id of the library
-	 */
-	public void setId( int id ) {
-		this.id = id;
-	}
-	
-	/**
+	 * Copies this libary to it's cache position
 	 * @param cacheBaseDir
-	 * @return
+	 * @param environment the environment
+	 * @return true when any libraries have been copied actually
 	 */
-	public boolean copyToCache( File cacheBaseDir ) {
+	public boolean copyToCache( File cacheBaseDir, String id, Environment environment ) {
 		
 		boolean changed = false;
-		this.cacheDir = new File( cacheBaseDir, "" + this.id );
-		File jarCacheDir = new File( cacheBaseDir, "" + this.id + "jar");
-		//System.out.println(">>>>copyToCache: copying " + this.dirOrFile.getAbsolutePath() + " to " + this.cacheDir );
+		this.cacheDir = new File( cacheBaseDir, id );
+		File jarCacheDir = new File( cacheBaseDir, id + "jar");
+		
+		
+		//System.out.println(">>>>copyToCache: copying " + getPath(environment) + " to " + this.cacheDir );
 		//if ( this.dir != null ) {
 			// a directory can contain library-files (jar, zip) as well
 			// as plain class or resource files. Each library-file
 			// will be extracted whereas other files will just be copied
-			for (int j = 0; j < this.files.length; j++) {
-				File file = this.files[j];
+		File[] myFiles = getFiles( environment );
+			for (int j = 0; j < myFiles.length; j++) {
+				File file = myFiles[j];
 				String fileName = file.getName();
 				//File fileInDir = new File( this.dir, fileName );
 				if (fileName.endsWith(".zip") || fileName.endsWith(".jar")) 
@@ -294,9 +280,15 @@ public class LibrarySetting extends Setting {
 	}
 
 	/**
-	 * @return
+	 * Retrieves the full path(s) of this library.
+	 * 
+	 * @param environment the environment
+	 * @return the full path(s) of this library that can be used as a key. 
 	 */
-	public String getPath() {
+	public String getPath( Environment environment ) {
+		if (this.isDynamic) {
+			return environment.resolveFile( this.dynamicLibraryPath ).getAbsolutePath();
+		}
 		if (this.files == null) {
 			return null;
 		} else if (this.files.length == 1) {
@@ -316,10 +308,28 @@ public class LibrarySetting extends Setting {
 	}
 
 	/**
-	 * @return
+	 * Retrieves all files that are contained in this library.
+	 * 
+	 * @param environment the environment
+	 * @return all files that are contained in this library.
 	 */
-	public File[] getFiles() {
+	public File[] getFiles( Environment environment ) {
+		if (this.isDynamic) {
+			File resolved = environment.resolveFile( this.dynamicLibraryPath );
+			if (!resolved.exists()) {
+				new RuntimeException().printStackTrace();
+				throw new BuildException("Unable to resolve library path [" + this.dynamicLibraryPath + "] /  [" + resolved.getAbsolutePath() + "]: please check your <library> settings.");
+			}
+			return new File[] { resolved };
+		}
 		return this.files;
+	}
+
+	/**
+	 * @return true when settings seem to be correct for this library
+	 */
+	public boolean isValid() {
+		return this.files != null || this.isDynamic;
 	}
 }
 

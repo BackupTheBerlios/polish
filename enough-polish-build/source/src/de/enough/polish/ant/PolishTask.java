@@ -309,7 +309,10 @@ public class PolishTask extends ConditionalTask {
 	 * @return the new build setting.
 	 */
 	public BuildSetting createBuild() {
-		this.buildSetting = new BuildSetting( getProject(), this.antPropertiesEvaluator );
+		if (this.environment == null) {
+			this.environment = new Environment();
+		}
+		this.buildSetting = new BuildSetting( getProject(), this.environment );
 		return this.buildSetting;
 	}
 	
@@ -657,7 +660,7 @@ public class PolishTask extends ConditionalTask {
 			antSymbols.put( key + ":defined", Boolean.TRUE );
 		}
 		this.antPropertiesEvaluator = new BooleanEvaluator( antSymbols, properties );
-
+		this.environment = new Environment();
 	}
 	
 	/**
@@ -691,7 +694,10 @@ public class PolishTask extends ConditionalTask {
 		
 		Map buildProperties = getProject().getProperties();
 		// create environment
-		this.environment = new Environment( this.extensionManager, buildProperties, getProject().getBaseDir() );
+		this.environment.setExtensionManager(this.extensionManager); 
+		this.environment.setBaseDir( getProject().getBaseDir()  );
+		this.environment.setBaseProperties( buildProperties );
+		//= new Environment( this.extensionManager, buildProperties, getProject().getBaseDir() );
 		this.environment.setBuildSetting( this.buildSetting );
 		
 		
@@ -1000,20 +1006,6 @@ public class PolishTask extends ConditionalTask {
 		if (this.buildSetting.usePolishGui() && this.styleSheetSourceFile == null) {
 			throw new BuildException("Did not find the file [StyleSheet.java] of the J2ME Polish GUI framework. Please adjust the \"polishDir\" attribute of the <build> element in the [build.xml] file. The [polishDir]-attribute should point to the directory which contains the J2ME Polish-Java-sources.");
 		}
-		
-		// load third party binary libraries, if any.
-		// When there are third party libraries, they will all be extracted
-		// and copied to the build/binary folder for easier integration:
-		this.binaryLibraries = this.buildSetting.getBinaryLibraries();
-		if (this.binaryLibraries != null) {
-			File binaryBaseDir = new File( this.buildSetting.getWorkDir(), "binary");
-			try {
-				this.binaryLibrariesUpdated = this.binaryLibraries.copyToCache( binaryBaseDir );
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new BuildException("Unable to copy the binary libraries to the internal cache [" + binaryBaseDir.getAbsolutePath() + "]: " + e.toString(), e );
-			}
-		} // done preparing of binary libraries.
 		
 
 		// init precompilers:
@@ -2087,6 +2079,39 @@ public class PolishTask extends ConditionalTask {
 		throw new BuildException("Unable to find destroyApp method in MIDlet [" + className + "].");
 
 	}
+	
+	/**
+	 * Sets up and copies any binary libraries.
+	 * @param device
+	 * @param locale
+	 */
+	protected void setUpBinaryLibraries(Device device, Locale locale, File targetDir, String targetDirName ) {
+		// load third party binary libraries, if any.
+		// When there are third party libraries, they will all be extracted
+		// and copied to the build/binary folder for easier integration:
+		this.binaryLibraries = this.buildSetting.getBinaryLibraries();
+		if (this.binaryLibraries != null) {
+			System.out.println("Preparing binary libraries...");
+			File binaryBaseDir = new File( this.buildSetting.getWorkDir(), "binary");
+			try {
+				this.binaryLibrariesUpdated = this.binaryLibraries.copyToCache( binaryBaseDir );
+			} catch (IOException e) {
+				e.printStackTrace();
+				throw new BuildException("Unable to copy the binary libraries to the internal cache [" + binaryBaseDir.getAbsolutePath() + "]: " + e.toString(), e );
+			}
+			if (this.binaryLibrariesUpdated || (!targetDir.exists() && this.binaryLibraries != null) ) {
+				System.out.println("copying binary libraries to [" + targetDirName + "]...");
+				LibrarySetting[] settings = this.binaryLibraries.getLibraries();
+				for (int i = 0; i < settings.length; i++) {
+					LibrarySetting setting = settings[i];
+					if (setting.isActive( this.environment )) {
+						setting.copyFromCache( targetDir );
+					}
+				}
+			}
+		} // done preparing of binary libraries.		
+	}
+
 
 
 	/**
@@ -2115,24 +2140,8 @@ public class PolishTask extends ConditionalTask {
 		Project antProject = getProject();
 		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
 		// add binary class files, if there are any:
-		if (this.binaryLibrariesUpdated || (!targetDir.exists() && this.binaryLibraries != null) ) {
-			System.out.println("copying binary libraries to [" + targetDirName + "]...");
-			LibrarySetting[] settings = this.binaryLibraries.getLibraries();
-			for (int i = 0; i < settings.length; i++) {
-				LibrarySetting setting = settings[i];
-				if (setting.isActive(evaluator, antProject)) {
-					setting.copyFromCache( targetDir );
-				}
-			}
-			/*
-			try {
-				FileUtil.copyDirectoryContents( this.binaryLibrariesDir, targetDirName, true );
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new BuildException("Unable to copy binary class files: " + e.toString() + ". Please report this error to j2mepolish@enough.de.", e );
-			}
-			*/
-		}
+		setUpBinaryLibraries( device, locale, targetDir, targetDirName );
+
 		// invoking all precompilers:
 		precompile( device, locale );
 		System.out.println("compiling for device [" +  device.getIdentifier() + "]." );
@@ -2249,6 +2258,7 @@ public class PolishTask extends ConditionalTask {
 			this.polishLogger.setCompileMode( false );
 		}
 	}
+	
 	
 	private String getJavacSource() {
 		String source = this.environment.getVariable("javac.source");

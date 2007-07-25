@@ -72,6 +72,7 @@ public class BuildSetting {
 	private final AttributesFilter defaultManifestFilter;
 
 	
+	private Environment environment;
 	private LogSetting debugSetting;
 	private MidletSetting midletSetting; 
 	private ArrayList obfuscatorSettings;
@@ -141,9 +142,12 @@ public class BuildSetting {
 	 * Creates a new build setting.
 	 * 
 	 * @param antProject The corresponding ant-project.
+	 * @param environment the environment
 	 */
-	public BuildSetting( Project antProject, BooleanEvaluator antEvaluator ) {
+	public BuildSetting( Project antProject, Environment environment ) {
 		this.polishHomePath = antProject.getProperty( "polish.home" );
+		this.environment = environment;
+		BooleanEvaluator antEvaluator = environment.getBooleanEvaluator();
 		if (this.polishHomePath != null) {
 			this.polishHomeDir = new File( this.polishHomePath );
 			if (!this.polishHomeDir.isAbsolute()) {
@@ -1212,7 +1216,7 @@ public class BuildSetting {
 			libraryPaths = StringUtil.split( librariesStr, ';' );
 		}
 		if (this.binaryLibraries == null ) {
-			this.binaryLibraries = new LibrariesSetting();
+			this.binaryLibraries = new LibrariesSetting( this.environment );
 		}
 		for (int i = 0; i < libraryPaths.length; i++) {
 			String libPath = libraryPaths[i];
@@ -1241,17 +1245,29 @@ public class BuildSetting {
 	}
 	
 	/**
-	 * Sets the complete library-settings
-	 *  
-	 * @param setting the libraries
+	 * Creates a new &lt;libraries&gt; element or returns an existing one.
+	 * 
+	 * @return a new &lt;libraries&gt; element
 	 */
-	public void addConfiguredLibraries( LibrariesSetting setting ) {
-		if ( this.binaryLibraries == null ) {
-			this.binaryLibraries = setting;
-		} else {
-			this.binaryLibraries.add( setting );
+	public LibrariesSetting createLibraries() {
+		if (this.binaryLibraries == null) {
+			this.binaryLibraries = new LibrariesSetting( this.environment );
 		}
+		return this.binaryLibraries;
 	}
+	
+//	/**
+//	 * Sets the complete library-settings
+//	 *  
+//	 * @param setting the libraries
+//	 */
+//	public void addConfiguredLibraries( LibrariesSetting setting ) {
+//		if ( this.binaryLibraries == null ) {
+//			this.binaryLibraries = setting;
+//		} else {
+//			this.binaryLibraries.add( setting );
+//		}
+//	}
 	
 	/**
 	 * Retrieves third party libraries which are only available in binary form.

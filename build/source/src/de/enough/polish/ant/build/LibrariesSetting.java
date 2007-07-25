@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import de.enough.polish.BuildException;
+import de.enough.polish.Environment;
 
 import de.enough.polish.ant.Setting;
 import de.enough.polish.util.FileUtil;
@@ -49,26 +50,25 @@ import de.enough.polish.util.IntegerIdGenerator;
  */
 public class LibrariesSetting extends Setting {
 	
-	private int currentId;
-	
 	private final ArrayList libraries;
 	private final IntegerIdGenerator integerIdGenerator;
+	private Environment environment;
 
 	/**
 	 * Creates a new libraries setting
+	 * @param environment the environment
 	 */
-	public LibrariesSetting() {
+	public LibrariesSetting( Environment environment ) {
 		super();
+		this.environment = environment;
 		this.libraries = new ArrayList();
 		this.integerIdGenerator = new IntegerIdGenerator();
 	}
 	
 	public void addConfiguredLibrary( LibrarySetting setting ) {
-		if (setting.getFiles() == null ) {
+		if (!setting.isValid() ) {
 			throw new BuildException("Invalid <library>-element: you need to define either the \"file\", \"files\" or the \"dir\" attribute of the <library>-element in your build.xml file.");
 		}
-		setting.setId( this.currentId );
-		this.currentId++;
 		this.libraries.add( setting );
 	}
 	
@@ -106,9 +106,8 @@ public class LibrariesSetting extends Setting {
 		boolean updated = false;
 		for (int i = 0; i < libs.length; i++) {
 			LibrarySetting lib = libs[i];
-			int id = this.integerIdGenerator.getId( lib.getPath(), true );
-			lib.setId( id );
-			updated |= lib.copyToCache(binaryBaseDir);
+			int id = this.integerIdGenerator.getId( lib.getPath(this.environment), true );
+			updated |= lib.copyToCache(binaryBaseDir, Integer.toString(id),  this.environment);
 		}
 		if ( this.integerIdGenerator.hasChanged() ) {
 			Map idsMap = this.integerIdGenerator.getIdsMap();
