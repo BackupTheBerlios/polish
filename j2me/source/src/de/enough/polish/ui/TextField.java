@@ -884,8 +884,10 @@ public class TextField extends StringItem
 	public static Command ENABLE_PREDICTIVE_CMD = new Command( "Enable Predictive" , Command.ITEM, 0 );
 	public static Command DISABLE_PREDICTIVE_CMD = new Command( "Disable Predictive" , Command.ITEM, 0 );
 	public static Command ADD_WORD_CMD = new Command( "Add new Word", Command.ITEM, 1 );
-	public static Command YES_CMD = new Command( "Yes", Command.OK, 0 );
-	public static Command NO_CMD = new Command( "No", Command.CANCEL, 0 );
+	public static Command OK_CMD = new Command( Locale.get("polish.command.ok"), Command.ITEM, 0 );
+	public static Command CANCEL_CMD = new Command( Locale.get("polish.command.cancel"), Command.ITEM, 0 );
+	
+	public String message = null;
 	
 	protected static int SPACE_BUTTON = getSpaceKey();
 	
@@ -988,6 +990,19 @@ public class TextField extends StringItem
 		
 		//#if polish.TextField.usePredictiveInput && tmp.directInput
 
+		if(Locale.LANGUAGE == "de")
+		{
+			message = "Das Wörterbuch konnte nicht gefunden werden. Druecken sie " + Locale.get("polish.command.ok") + " um die Anwendung zu beenden und das Setup herunterzuladen";
+		}
+		else if(Locale.LANGUAGE == "fr")
+		{
+			message = "Le dictionnaire n'a pas pu être trouvé. Serrer " + Locale.get("polish.command.ok") + " pour sortir l'application et pour télécharger l'installation";
+		}
+		else
+		{
+			message = "The dictionary could not be found. Press " + Locale.get("polish.command.ok") + " to exit the application and download the setup";
+		}
+		
 		this.choicesContainer = new Container( false );
 		this.builder 	= new TextBuilder(maxSize);
 		this.inputMode 	= this.builder.getMode();
@@ -3894,7 +3909,7 @@ public class TextField extends StringItem
 			
 			if(box instanceof Alert)
 			{
-				if (cmd == YES_CMD)
+				if (cmd == OK_CMD)
 				{
 					try
 					{
@@ -4013,10 +4028,10 @@ public class TextField extends StringItem
 					{
 						Alert predictiveDowload = new Alert("Predictive Input");
 						
-						predictiveDowload.setString("The dictionary could not be found. Would you like to exit this application and download the setup application ? ");
+						predictiveDowload.setString(message);
 						
-						predictiveDowload.addCommand(YES_CMD);
-						predictiveDowload.addCommand(NO_CMD);
+						predictiveDowload.addCommand(OK_CMD);
+						predictiveDowload.addCommand(CANCEL_CMD);
 						
 						predictiveDowload.setCommandListener(this);
 						
