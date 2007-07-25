@@ -1448,11 +1448,6 @@ implements AccessibleCanvas
 	//				}
 	//			//#endif
 //				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() + " before clipRect");
-				int clipX = g.getClipX();
-				int clipY = g.getClipY();
-				int clipWidth = g.getClipWidth();
-				int clipHeight = g.getClipHeight();
-
 				// paint content:
 				paintScreen( g );
 	//				g.setColor( 0xff0000 );
@@ -1476,8 +1471,7 @@ implements AccessibleCanvas
 						}
 					//#endif
 					
-					// allow painting outside of the screen again:
-					g.setClip( clipX, clipY, clipWidth, clipHeight );
+
 				//}
 //				//#ifdef tmp.menuFullScreen
 //				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
@@ -1722,6 +1716,12 @@ implements AccessibleCanvas
 	 * @see #paintScrollIndicatorDown
 	 */
 	protected void paintScreen( Graphics g ) {
+		
+		int clipX = g.getClipX();
+		int clipY = g.getClipY();
+		int clipWidth = g.getClipWidth();
+		int clipHeight = g.getClipHeight();
+
 		int y = this.contentY;
 		int x = this.contentX;
 		int height = this.contentHeight;
@@ -1730,45 +1730,52 @@ implements AccessibleCanvas
 //		g.drawRect( x, y, width, height);
 		
 		g.clipRect(x, y, width, height );
-		int containerHeight = this.container.getItemHeight( width, width);
-		//#if tmp.useScrollIndicator
-			this.paintScrollIndicator = false; // defaults to false
-		//#endif
-		if (containerHeight > this.container.availableHeight ) {
+		
+		if ( g.getClipHeight() > 0 ) {
+			int containerHeight = this.container.getItemHeight( width, width);
 			//#if tmp.useScrollIndicator
-				this.paintScrollIndicator = true;
-				this.paintScrollIndicatorUp = (this.container.yOffset != 0);
-					//&& (this.container.focusedIndex != 0);
-				this.paintScrollIndicatorDown = (  
-						( (this.container.focusedIndex != this.container.size() - 1) 
-								|| (this.container.focusedItem != null && this.container.focusedItem.itemHeight > this.container.availableHeight) )
-						 && (this.container.getScrollYOffset() + containerHeight > this.container.availableHeight) );
+				this.paintScrollIndicator = false; // defaults to false
 			//#endif
-		} else if (this.isLayoutVCenter) {
-			/*
-			//#debug
-			System.out.println("Screen: adjusting y from [" + y + "] to [" + ( y + (height - containerHeight) / 2) + "] - containerHeight=" + containerHeight);
-			*/
-			y += ((height - containerHeight) >> 1);
-		} else if (this.isLayoutBottom) {
-			y += (height - containerHeight);
-//			System.out.println("content: y=" + y + ", contentY=" + this.contentY + ", contentHeight="+ this.contentHeight + ", containerHeight=" + containerHeight);
+			if (containerHeight > this.container.availableHeight ) {
+				//#if tmp.useScrollIndicator
+					this.paintScrollIndicator = true;
+					this.paintScrollIndicatorUp = (this.container.yOffset != 0);
+						//&& (this.container.focusedIndex != 0);
+					this.paintScrollIndicatorDown = (  
+							( (this.container.focusedIndex != this.container.size() - 1) 
+									|| (this.container.focusedItem != null && this.container.focusedItem.itemHeight > this.container.availableHeight) )
+							 && (this.container.getScrollYOffset() + containerHeight > this.container.availableHeight) );
+				//#endif
+			} else if (this.isLayoutVCenter) {
+				/*
+				//#debug
+				System.out.println("Screen: adjusting y from [" + y + "] to [" + ( y + (height - containerHeight) / 2) + "] - containerHeight=" + containerHeight);
+				*/
+				y += ((height - containerHeight) >> 1);
+			} else if (this.isLayoutBottom) {
+				y += (height - containerHeight);
+	//			System.out.println("content: y=" + y + ", contentY=" + this.contentY + ", contentHeight="+ this.contentHeight + ", containerHeight=" + containerHeight);
+			}
+			int containerWidth = this.container.itemWidth;
+			if (this.isLayoutCenter) {
+				int diff = (width - containerWidth) >> 1;
+				x += diff;
+				width -= (width - containerWidth);
+			} else if (this.isLayoutRight) {
+				int diff = width - containerWidth;
+				x += diff;
+				width -= diff;
+			}
+			this.container.relativeX = x;
+			this.container.relativeY = y;
+			//System.out.println("content: x=" + x + ", rightBorder=" + (x + width) );
+			//System.out.println("content: y=" + y + ", bottom=" + (y + height) );
+			this.container.paint( x, y, x, x + width, g );
 		}
-		int containerWidth = this.container.itemWidth;
-		if (this.isLayoutCenter) {
-			int diff = (width - containerWidth) >> 1;
-			x += diff;
-			width -= (width - containerWidth);
-		} else if (this.isLayoutRight) {
-			int diff = width - containerWidth;
-			x += diff;
-			width -= diff;
-		}
-		this.container.relativeX = x;
-		this.container.relativeY = y;
-		//System.out.println("content: x=" + x + ", rightBorder=" + (x + width) );
-		//System.out.println("content: y=" + y + ", bottom=" + (y + height) );
-		this.container.paint( x, y, x, x + width, g );
+		
+		// allow painting outside of the content area again:
+		g.setClip( clipX, clipY, clipWidth, clipHeight );
+
 	}
 	
 	//#ifdef tmp.usingTitle
