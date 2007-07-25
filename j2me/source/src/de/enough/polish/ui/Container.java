@@ -345,13 +345,12 @@ public class Container extends Item {
 				}
 			}
 		} else if (index < this.focusedIndex) {
-			System.out.println("removed index " + index + ", focused=" + this.focusedIndex);
 			//#if tmp.supportViewType
 				if (this.containerView != null) {
 					this.containerView.focusedIndex--;
 				} else {
 			//#endif
-					int offset = this.yOffset + removedItemHeight;
+					int offset = getScrollYOffset() + removedItemHeight;
 					//System.out.println("new container offset: from " + this.yOffset + " to " + (offset > 0 ? 0 : offset));
 					setScrollYOffset( offset > 0 ? 0 : offset, false );
 			//#if tmp.supportViewType
@@ -359,12 +358,11 @@ public class Container extends Item {
 			//#endif
 			this.focusedIndex--;
 		}
-		if (this.isInitialized) {
-			this.isInitialized = false;
-			repaint();
-		}
+		this.isInitialized = false;
+		repaint();
 		return removedItem;
 	}
+	
 	/**
 	 * Focuses the next focussable item starting at the specified index +/- 1. 
 	 * @param index the index of the item that should be used as a starting point for the search of a new possible focussable item
@@ -617,7 +615,7 @@ public class Container extends Item {
 	 */
 	public void focus( int index, Item item, int direction ) {
 		//#debug
-		System.out.println("Container (" + getClass().getName() + "): Focusing item " + index + " (" + item + ")" );
+		System.out.println("Container (" + super.toString() + "): Focusing item " + index + " (" + item + ")" );
 		
 		//#if polish.blackberry
         	//# getScreen().setFocus( item );
@@ -931,6 +929,11 @@ public class Container extends Item {
 			int height = item.itemHeight; // no need to call getItemHeight() since the item is now initialised...
 			// now the item should have a style, so it can be safely focused
 			// without loosing the style information:
+			//String toString = item.toString();
+			//System.out.println("init of item " + i + ": height=" + height + " of item " + toString.substring( 19, Math.min(120, toString.length() )  ));
+			//if (item.isInvisible && height != 0) {
+			//	System.out.println("*** item.height != 0 even though it is INVISIBLE - isInitialized=" + item.isInitialized );
+			//}
 			if (item.appearanceMode != PLAIN) {
 				hasFocusableItem = true;
 			}
@@ -1109,6 +1112,9 @@ public class Container extends Item {
 //				} else {
 //					System.out.println("skipping " + item);
 				}
+//				if (this.parent == null || ((Container)this.parent).size() == 1) {
+//					System.out.println( i + "=" + item.itemHeight);
+//				}
 				if (item.itemHeight != 0) {
 					y += item.itemHeight + this.paddingVertical;
 				}
@@ -2099,6 +2105,9 @@ public class Container extends Item {
 	 * @return either the currently used offset or the targeted offset in case the targeted one is different.
 	 */
 	public int getScrollYOffset() {
+		if (!this.enableScrolling && this.parent instanceof Container) {
+			return ((Container)this.parent).getScrollYOffset();
+		}
 		int offset = this.targetYOffset;
 		//#ifdef polish.css.scroll-mode
 			if (!this.scrollSmooth) {
@@ -2114,8 +2123,7 @@ public class Container extends Item {
 	 * @param offset either the new offset
 	 */
 	public void setScrollYOffset( int offset) {
-		this.targetYOffset = offset;
-		this.yOffset = offset;
+		setScrollYOffset( offset, false );
 	}
 
 	/**
@@ -2125,6 +2133,10 @@ public class Container extends Item {
 	 * @param smooth scroll to this new offset smooth if allowed
 	 */
 	public void setScrollYOffset( int offset, boolean smooth) {
+		if (!this.enableScrolling && this.parent instanceof Container) {
+			((Container)this.parent).setScrollYOffset(offset, smooth);
+			return;
+		}
 		//#ifdef polish.css.scroll-mode
 			if (!smooth || !this.scrollSmooth) {
 				this.yOffset = offset;			
@@ -2156,6 +2168,37 @@ public class Container extends Item {
 		}
 		return -1;
 	}
+	
+	//#if polish.debug.error || polish.keepToString
+	/**
+	 * Generates a String representation of this item.
+	 * This method is only implemented when the logging framework is active or the preprocessing variable 
+	 * "polish.keepToString" is set to true.
+	 * @return a String representation of this item.
+	 */
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append( super.toString() ).append( ": { ");
+		Item[] myItems = getItems();
+		for (int i = 0; i < myItems.length; i++) {
+			Item item = myItems[i];
+			//#if polish.supportInvisibleItems
+				if (item.isInvisible) {
+					buffer.append( i ).append(":invis./plain:" + ( item.appearanceMode == PLAIN ) + "=[").append( item.toString() ).append("]");
+				} else {
+					buffer.append( i ).append("=").append( item.toString() );
+				}
+			//#else
+				buffer.append( i ).append("=").append( item.toString() );
+			//#endif
+			if (i != myItems.length - 1 ) {
+				buffer.append(", ");
+			}
+		}
+		buffer.append( " }");
+		return buffer.toString();
+	}
+	//#endif
 
 
 //#ifdef polish.Container.additionalMethods:defined

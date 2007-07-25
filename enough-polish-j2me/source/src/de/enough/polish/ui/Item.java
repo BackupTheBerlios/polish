@@ -734,8 +734,6 @@ public abstract class Item extends Object
 	/** The vertical offset for the background, can be used for smoother scrolling, for example */ 
 	protected int backgroundYOffset;
 
-	private HashMap attributes;
-
 	//#ifdef polish.css.view-type
 		protected ItemView view;
 		protected boolean preserveViewType;
@@ -746,6 +744,8 @@ public abstract class Item extends Object
 		private int invisibleAppearanceModeCache;
 		private int invisibleItemHeight;
 	//#endif
+	
+	private HashMap attributes;
 	
 	protected Item() {
 		this( null, LAYOUT_DEFAULT, PLAIN, null );
@@ -1174,9 +1174,19 @@ public abstract class Item extends Object
 		}
 		if (!this.commands.contains( cmd )) {
 			this.commands.add(cmd);
-			if (this.appearanceMode == PLAIN) {
-				this.appearanceMode = HYPERLINK;
-			}
+			//#if tmp.invisible
+				if (this.isInvisible) {
+					if (this.invisibleAppearanceModeCache == PLAIN) {
+						this.invisibleAppearanceModeCache = HYPERLINK;
+					}
+				} else {
+			//#endif
+					if (this.appearanceMode == PLAIN) {
+						this.appearanceMode = HYPERLINK;
+					}
+			//#if tmp.invisible
+				}
+			//#endif
 			if (this.isFocused) {
 				Screen scr = getScreen();
 				if (scr != null) {
@@ -1271,10 +1281,8 @@ public abstract class Item extends Object
 			p.isInitialized = false;
 			p = p.parent;
 		}
-		if (this.isInitialized) {
-			this.isInitialized = false;
-			repaint();
-		}
+		this.isInitialized = false;
+		repaint();
 	}
 	
 	/**
@@ -1785,13 +1793,12 @@ public abstract class Item extends Object
 		//#if tmp.invisible
 			if (this.isInvisible) {
 				//#debug 
-				System.out.println("Aborting init due to invisibility.");
-				//TODO this could lead to scrolling problems for containers when an item within an invisible container should be shown suddenly
+				System.out.println("init: Aborting init due to invisibility for item " + this );
 				this.itemWidth = 0;
 				this.itemHeight = 0;
 				return;
 			}
-		//#endif
+ 		//#endif
 		
 		if (this.style != null && !this.isStyleInitialised) {
 			setStyle( this.style );
@@ -2477,46 +2484,59 @@ public abstract class Item extends Object
 	 */
 	public void setVisible( boolean visible ) {
 		boolean invisible = !visible;
-		if (invisible != this.isInvisible) {
-			if (this.parent instanceof Container) {
-				Container parentContainer = (Container) this.parent;
-				if (invisible && this.isFocused) {
-					// remove any item commands:
-					Screen scr = getScreen();
-					if (scr != null) {
-						scr.removeItemCommands(this);
+		if (invisible == this.isInvisible) {
+			return;
+		}
+//		if (visible) {
+//			System.out.println("+++ SETTING VISIBLE: " + this );
+//		} else {
+//			System.out.println("--- SETTING INVISIBLE: " + this );
+//		}
+		if (this.parent instanceof Container) {
+			Container parentContainer = (Container) this.parent;
+			if (invisible && this.isFocused) {
+				// remove any item commands:
+				Screen scr = getScreen();
+				if (scr != null) {
+					scr.removeItemCommands(this);
+				}
+				int itemIndex = parentContainer.indexOf( this );
+				boolean isFocusSet = parentContainer.focusClosestItemAbove( itemIndex );
+				if (isFocusSet && parentContainer.focusedIndex > itemIndex ) {
+					// focused has moved downwards, since the above item is now invisible,
+					// adjust the scrolling accordingly:
+					int offset = parentContainer.yOffset + this.itemHeight + parentContainer.paddingVertical;
+					parentContainer.setScrollYOffset( offset > 0 ? 0 : offset, false );
+				}
+			} else if (!this.isFocused && parentContainer.focusedIndex > parentContainer.indexOf(this)) {
+				// adjust scrolling so that the focused element of the parent container stays in the current position:
+				if (invisible) {
+					int offset = parentContainer.getScrollYOffset() + this.itemHeight;
+					//System.out.println("invisible: adjusting yScrollOffset with itemHeight=" + this.itemHeight + " to " + (offset > 0 ? 0 : offset) );
+					parentContainer.setScrollYOffset( offset > 0 ? 0 : offset, false );
+				} else {
+					int height = this.invisibleItemHeight;
+					if (height == 0 && this.parent != null) {
+						//System.out.println("visible getting height for available width of " + this.parent.contentWidth );
+						this.isInvisible = false;
+						this.isInitialized = false;
+						height = getItemHeight( this.parent.contentWidth, this.parent.contentWidth );
 					}
-					int itemIndex = parentContainer.indexOf( this );
-					boolean isFocusSet = parentContainer.focusClosestItemAbove( itemIndex );
-					if (isFocusSet && parentContainer.focusedIndex > itemIndex ) {
-						// focused has moved downwards, since the above item is now invisible,
-						// adjust the scrolling accordingly:
-						int offset = parentContainer.yOffset + this.itemHeight + parentContainer.paddingVertical;
-						parentContainer.setScrollYOffset( offset > 0 ? 0 : offset, false );
-					}
-				} else if (!this.isFocused && parentContainer.focusedIndex > parentContainer.indexOf(this)) {
-					// adjust scrolling so that the focused element of the parent container stays in the current position:
-					if (invisible) {
-						int offset = parentContainer.yOffset + this.itemHeight;
-						parentContainer.setScrollYOffset( offset > 0 ? 0 : offset, false );
-					} else {
-						int offset = parentContainer.yOffset - this.invisibleItemHeight;
-						parentContainer.setScrollYOffset( offset, false );						
-					}
+					int offset = parentContainer.getScrollYOffset() - height;
+					//System.out.println("visible: adjusting yScrollOffset with height=" + height + " to " + offset );					
+					parentContainer.setScrollYOffset( offset, false );						
 				}
 			}
-			if ( invisible ) {
-				this.invisibleAppearanceModeCache = this.appearanceMode;
-				this.invisibleItemHeight = this.itemHeight;
-				this.appearanceMode = PLAIN;
-			} else {
-				this.appearanceMode = this.invisibleAppearanceModeCache;
-			}
-			if ( this.isInitialized ) {
-				requestInit();
-			}
+		}
+		if ( invisible ) {
+			this.invisibleAppearanceModeCache = this.appearanceMode;
+			this.invisibleItemHeight = this.itemHeight;
+			this.appearanceMode = PLAIN;
+		} else {
+			this.appearanceMode = this.invisibleAppearanceModeCache;
 		}
 		this.isInvisible = invisible;
+		requestInit();
 	}
 	//#endif
 	//#if tmp.invisible
@@ -2531,7 +2551,22 @@ public abstract class Item extends Object
 	}
 	//#endif
 
-	
+	//#if polish.debug.error || polish.keepToString
+	/**
+	 * Generates a String representation of this item.
+	 * This method is only implemented when the logging framework is active or the preprocessing variable 
+	 * "polish.keepToString" is set to true.
+	 * @return a String representation of this item.
+	 */
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		if (this.label != null && this.label.text != null) {
+			buffer.append( '"' ).append( this.label.text ).append("\": ");
+		}
+		buffer.append( super.toString() );
+		return buffer.toString();
+	}
+	//#endif
 
 //#ifdef polish.Item.additionalMethods:defined
 	//#include ${polish.Item.additionalMethods}
