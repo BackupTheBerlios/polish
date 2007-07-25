@@ -219,7 +219,7 @@ extends ItemView
 						this.columnsWidths[this.starIndex] = lineWidth - combinedWidth;
 						this.starIndex = -1;
 						//#debug
-						System.out.println("width of star column=" + (lineWidth - combinedWidth) );
+						System.out.println("initContent: width of star column=" + (lineWidth - combinedWidth) );
 					}
 				} else {
 			//#else
@@ -312,9 +312,6 @@ extends ItemView
 					}
 				//#endif
 				//System.out.println( i + ": available with: " + availableWidth + ", item.isInitialized=" + item.isInitialised + ", itemWidth=" + item.getItemWidth( availableWidth, availableWidth ));
-				if (item.isInitialized && item.itemWidth > availableWidth) {
-					item.isInitialized = false;
-				}
 				int width = item.getItemWidth( availableWidth, availableWidth );
 				//System.out.println("got item width");
 				int height = item.getItemHeight( availableWidth, availableWidth );
@@ -483,7 +480,11 @@ extends ItemView
 				Item item = myItems[i];
 				item.relativeX = myContentWidth;
 				myContentWidth += this.columnsWidths[columnIndex] + this.paddingHorizontal;
-				columnIndex++;
+				//#if polish.css.colspan
+					columnIndex += item.colSpan;
+				//#else
+					columnIndex++;
+				//#endif
 				if (columnIndex == this.numberOfColumns) {
 					columnIndex = 0;
 					myContentWidth = 0;
@@ -601,6 +602,7 @@ extends ItemView
 						//System.out.println("item " + i + " at " + item.relativeX + "/" + item.relativeY);
 						paintItem(item, i, itemX, itemY, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
 					} 
+					//System.out.println("painting item " + item + " at x=" + itemX + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", relativeX=" + item.relativeX );
 					//#if polish.css.colspan
 						columnIndex += item.colSpan;
 					//#else
