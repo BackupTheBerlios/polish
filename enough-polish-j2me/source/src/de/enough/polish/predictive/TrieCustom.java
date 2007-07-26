@@ -15,8 +15,6 @@ public class TrieCustom {
 	
 	byte[] 	bytes = null;
 	
-	private RecordStore store = null;
-	
 	public TrieCustom()
 	{
 		bytes 	= load();

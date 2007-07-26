@@ -1,7 +1,6 @@
 //#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput
 package de.enough.polish.predictive;
 
-import javax.microedition.lcdui.Alert;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 

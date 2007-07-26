@@ -1008,9 +1008,23 @@ public class TextField extends StringItem
 		this.builder 	= new TextBuilder(maxSize);
 		this.inputMode 	= this.builder.getMode();
 		
-		this.addCommand(ENABLE_PREDICTIVE_CMD);
-		
-		this.predictiveInput = false;
+		try
+		{
+			if(!PROVIDER.isInit())
+			{
+				PROVIDER.init();
+			}
+			
+			this.removeCommand(ENABLE_PREDICTIVE_CMD);
+			this.addCommand(DISABLE_PREDICTIVE_CMD);
+			this.addCommand(ADD_WORD_CMD);
+			this.predictiveInput = true;
+			
+		}catch(RecordStoreException e)
+		{
+			this.addCommand(ENABLE_PREDICTIVE_CMD);
+			this.predictiveInput = false;
+		}
 		//#endif
 	}
 	
@@ -1128,7 +1142,7 @@ public class TextField extends StringItem
 						this.choicesYOffsetAdjustment = 0;
 					}
 				}
-			}			
+			}
 		} else {
 			this.choicesContainer.clear();
 			if (this.choicesYOffsetAdjustment != 0 && this.parent instanceof Container) {
@@ -3050,6 +3064,11 @@ public class TextField extends StringItem
 						}
 					}
 				}
+				//#if polish.TextField.usePredictiveInput
+				if (this.numberOfMatches > 0) {
+					this.choicesContainer.animate();
+				}
+				//#endif
 			//#endif
 			if (!this.flashCaret || this.isUneditable) {
 				//System.out.println("TextField.animate():  flashCaret==false");
@@ -4063,8 +4082,11 @@ public class TextField extends StringItem
 						}
 					}
 					
-					this.setInputMode(MODE_LOWERCASE);
-					this.builder.setMode(MODE_LOWERCASE);
+					if(this.inputMode == MODE_NUMBERS)
+					{
+						this.setInputMode(MODE_LOWERCASE);
+						this.builder.setMode(MODE_LOWERCASE);
+					}
 					
 					updateInfo();
 					
