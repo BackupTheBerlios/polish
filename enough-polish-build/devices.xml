@@ -5165,6 +5165,12 @@ These namespaces/schemas will be used soon.
 		<capability name="Network" value="GSM, GPRS, EGPRS, CSD, HSCSD, WCDMA"/>
 		<capability name="Frequency" value="900, 1800, 1900, 2100"/>
 		<capability name="AnnouncementDate" value="2006-08-16"/>
+		<capability name="key.supportsAsciiKeyMap" value="true" />
+		<capability name="key.backspace" value="8" />
+		<capability name="key.shift" value="-50" />
+		<capability name="key.enter" value="10" />
+		<!--  use Ctrl-i for triggering the symbol table as well: -->
+		<capability name="key.AddSymbolKey2" value="9" />
 	</device>
 	
 	<device>
