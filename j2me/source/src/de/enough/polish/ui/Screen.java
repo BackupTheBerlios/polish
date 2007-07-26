@@ -3295,7 +3295,7 @@ implements AccessibleCanvas
 			System.out.println("Screen: focusing item " + index );
 			this.container.focus( index, item, 0 );
 			if (index == 0) {
-				this.container.yOffset = 0;
+				this.container.setScrollYOffset( 0, false );
 			}
 		} else if (index == -1) {
 			this.container.focus( -1 );

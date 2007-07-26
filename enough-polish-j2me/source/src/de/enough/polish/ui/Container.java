@@ -155,6 +155,13 @@ public class Container extends Item {
 	public void setScrollHeight( int height ) {
 		this.availableHeight = height;
 		this.enableScrolling = (height != -1);
+		Item item = this.focusedItem;
+		if (this.isScrollRequired && this.enableScrolling && item != null) {
+			//#debug
+			System.out.println("setScrollHeight(): scroll is required - scrolling to y=" + item.relativeY + ", height=" + height);
+			scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
+			this.isScrollRequired = false;
+		}
 	}
 	
 	/**
@@ -940,7 +947,7 @@ public class Container extends Item {
 			if (this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
 				this.autoFocusEnabled = false;
 				focus( i, item, 0 );
-				this.isScrollRequired = this.isScrollRequired && (this.autoFocusIndex != 0); // override setting in focus()
+				this.isScrollRequired = (this.isScrollRequired || hasFocusableItem) && (this.autoFocusIndex != 0); // override setting in focus()
 				height = item.getItemHeight(lineWidth, lineWidth);
 				if (!isLayoutShrink) {
 					width = item.itemWidth;  // no need to call getItemWidth() since the item is now initialised...
@@ -982,7 +989,8 @@ public class Container extends Item {
 			}
 			myContentHeight += height != 0 ? height + this.paddingVertical : 0;
 			//System.out.println("item.yTopPos=" + item.yTopPos);
-		}
+		} // cycling through all items
+		
 		if (myContentEndX - myContentStartX > myContentWidth) {
 			// this can happen when there are different layouts like left and right within the same container:
 			myContentWidth = myContentEndX - myContentStartX;
