@@ -3,5 +3,6 @@
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/enough-polish-build/lib/ant.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -4,12 +4,13 @@ package de.enough.polish.predictive;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Properties;
 import java.util.Vector;
+
+import de.enough.polish.ui.TextField;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
@@ -23,7 +24,6 @@ public class Builder extends Task {
 	private int version;
 	private int chunkSize;
 	private int lineCount;
-	
 	
 	private Vector words = new Vector();
 	private BufferedReader reader;
@@ -45,6 +45,7 @@ public class Builder extends Task {
 			
 			System.out.println("Reading " + this.source + "...");
 			
+			readCharacters();
 			readWords();
 			
 			System.out.println("Building " + this.directory + "/predictive.trie ...");
@@ -55,6 +56,8 @@ public class Builder extends Task {
 			buildTrie(base,0);
 			writeTrie(base);
 			
+			(new File(directory)).mkdir();
+			
 			trieWriter = new FileOutputStream(directory + "/predictive.trie");
 			trieWriter.write(header);
 			trieWriter.write(stream.toByteArray());
@@ -62,6 +65,19 @@ public class Builder extends Task {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	public void readCharacters()
+	{
+		for(int i=0; i<TextField.CHARACTERS.length; i++)
+		{
+			String characters = TextField.CHARACTERS[i];
+			
+			for(int j=0; j<characters.length(); j++)
+			{
+				words.add("" + characters.charAt(j));
+			}
 		}
 	}
 	
