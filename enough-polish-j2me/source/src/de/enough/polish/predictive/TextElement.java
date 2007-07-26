@@ -1,8 +1,6 @@
 //#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput 
 package de.enough.polish.predictive;
 
-import javax.microedition.rms.RecordStoreException;
-
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 
@@ -55,6 +53,8 @@ public class TextElement {
 		
 		if(shift == TextField.MODE_UPPERCASE || shift == TextField.MODE_FIRST_UPPERCASE)
 			this.keyCodes[this.keyCodes.length - 1] += SHIFT;
+		
+		this.selectedWordIndex = 0;
 	}
 	
 	public void keyClear() 
@@ -62,6 +62,8 @@ public class TextElement {
 		int[] newKeyCodes = new int[this.keyCodes.length - 1];
 		System.arraycopy(this.keyCodes, 0, newKeyCodes, 0, this.keyCodes.length - 1);
 		this.keyCodes = newKeyCodes;
+		
+		this.selectedWordIndex = 0;
 	}
 	
 	public boolean isStringBuffer()
