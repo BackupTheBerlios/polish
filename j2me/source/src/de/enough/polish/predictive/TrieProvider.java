@@ -29,8 +29,11 @@ public class TrieProvider {
 	
 	public void init() throws RecordStoreException
 	{
+		//#if polish.predictive.localRMS
+		//#= this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
+		//#else
 		this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0","Enough Software","PredictiveSetup");
-		//this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
+		//#endif
 		
 		this.records = new HashMap();
 		

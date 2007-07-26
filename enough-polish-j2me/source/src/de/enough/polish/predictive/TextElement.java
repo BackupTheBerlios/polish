@@ -121,6 +121,10 @@ public class TextElement {
 	
 	private StringBuffer getSelectedStringBuffer()
 	{
+		int totalElements = this.customResults.size() + this.trieResults.size();
+		if(totalElements <= this.selectedWordIndex)
+			this.selectedWordIndex = 0;
+		
 		if(this.isSelectedCustom())
 			return (StringBuffer)this.customResults.get(this.selectedWordIndex - this.trieResults.size());
 		else

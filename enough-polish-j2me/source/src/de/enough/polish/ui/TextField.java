@@ -1137,6 +1137,7 @@ public class TextField extends StringItem
 						int itHeight = this.itemHeight;
 						int ctHeight = this.contentY + this.contentHeight + this.paddingVertical;
 						int max = Math.max( itHeight, ctHeight);
+						
 						this.choicesContainer.setScrollHeight( parentContainer.getContentScrollHeight()  - max );
 					} else {
 						this.choicesYOffsetAdjustment = 0;
@@ -1244,6 +1245,12 @@ public class TextField extends StringItem
 				keyCode == Canvas.KEY_POUND || 
 				keyCode == Canvas.KEY_STAR  )
 		{
+			if(this.isInChoice)
+			{
+				enterChoices(false);
+				openChoices(false);
+			}
+			
 			try
 			{
 				if(keyCode != SPACE_BUTTON)
@@ -1288,6 +1295,12 @@ public class TextField extends StringItem
 	
 	protected boolean predictiveKeyClear(int keyCode, int gameAction)
 	{
+		if(this.isInChoice)
+		{
+			enterChoices(false);
+			openChoices(false);
+		}
+		
 		try
 		{
 			this.builder.keyClear();
@@ -1313,6 +1326,7 @@ public class TextField extends StringItem
 	}
 	
 	protected boolean predictiveKeyMode(int keyCode, int gameAction) {
+		
 		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
 		//#= if ( keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}
 		//#else
@@ -1323,6 +1337,12 @@ public class TextField extends StringItem
 		//#endif
 		)
 		{
+			if(this.isInChoice)
+			{
+				enterChoices(false);
+				openChoices(false);
+			}
+			
 			this.inputMode = (this.inputMode + 1) % 3;
 			this.builder.setMode(this.inputMode);
 					
@@ -1341,6 +1361,8 @@ public class TextField extends StringItem
 			if ( this.choicesContainer.handleKeyPressed(keyCode, gameAction) ) {
 				//#debug
 				System.out.println("keyPressed handled by choices container");
+				
+				this.refreshChoices = true;
 				return true;
 			}
 			//System.out.println("focusing textfield again, isFocused=" + this.isFocused);
@@ -1369,18 +1391,16 @@ public class TextField extends StringItem
 		if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
 				&& this.builder.getAlign() == TextBuilder.ALIGN_FOCUS)
 		{
-			if(this.builder.isStringBuffer(0))
-				return true;
-			else
+			if(!this.builder.isStringBuffer(0))
 			{
 				this.setChoices(this.builder.getTextElement());
 				
 				if(this.numberOfMatches > 0)
-					enterChoices( true );
-			
-				return true;
+					enterChoices( true );	
 			}
 			
+			this.refreshChoices = true;
+			return true;
 		}
 		else if ( gameAction == Canvas.LEFT || gameAction == Canvas.RIGHT )
 		{
@@ -1447,12 +1467,6 @@ public class TextField extends StringItem
 		}
 		
 		return false;
-	}
-	
-	protected void showNotify() {
-		super.showNotify();
-		
-		System.out.println("notify");
 	}
 	
 	//#endif
@@ -2152,6 +2166,8 @@ public class TextField extends StringItem
 			}
 		//#else
         	
+        System.out.println("paint");
+        	
     	int originalX = x;
 		int originalY = y;
 		
@@ -2376,7 +2392,7 @@ public class TextField extends StringItem
 								this.refreshChoices = false;
 							}
 							
-							this.choicesContainer.paint(originalX + this.elementX , originalY + this.paddingVertical + this.elementY, leftBorder + this.elementX, rightBorder, g);
+							this.choicesContainer.paint(originalX + this.elementX , originalY + this.paddingVertical +this.borderWidth + this.elementY, leftBorder + this.elementX, rightBorder, g);
 						}
 					}
 					//#endif
@@ -2832,14 +2848,14 @@ public class TextField extends StringItem
 		//#endif
 		
 		//#if polish.TextField.usePredictiveInput && tmp.directInput
-			//#if polish.css.choicetextfield-containerstyle
-				Style containerstyle = (Style) style.getObjectProperty("choicetextfield-containerstyle");
+			//#if polish.css.predictive-containerstyle
+				Style containerstyle = (Style) style.getObjectProperty("predictive-containerstyle");
 				if (containerstyle != null) {
 					this.choicesContainer.setStyle( containerstyle );
 				}
 			//#endif
-			//#if polish.css.choicetextfield-choicestyle
-				Style choicestyle = (Style) style.getObjectProperty("choicetextfield-choicestyle");
+			//#if polish.css.predictive-choicestyle
+				Style choicestyle = (Style) style.getObjectProperty("predictive-choicestyle");
 				if (choicestyle != null) {
 					this.choiceItemStyle = choicestyle;
 				}
