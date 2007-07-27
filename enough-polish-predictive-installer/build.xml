@@ -74,8 +74,8 @@
 <target name="test" 
 	description="Call this target first to skip the obfuscation step, e.g. ant test j2mepolish"
 	>
-	<property name="debug" value="false" />
-	<property name="test" value="false" />
+	<property name="debug" value="true" />
+	<property name="test" value="true" />
 	<property name="dir.work" value="build/test" />
 </target>
 		
@@ -109,7 +109,7 @@
 			infoUrl="http://www.j2mepolish.org"
 			icon="dot.png"
 			jarName="predictive.${polish.locale}.jar" 
-			jarUrl="http://download.j2mepolish.org/${polish.jarName}"
+			jarUrl="${polish.jarName}"
 			copyright="Copyright 2004 Enough Software. All rights reserved."
 			deleteConfirm="Do you really want to kill me?" 
 		/>
@@ -184,7 +184,7 @@
 				defaultexcludes="yes"
 				excludes="readme.txt"
 			>
-				<localization locales="en,de,fr"/>
+				<localization locales="en"/>
 			</resources>
 			
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
@@ -200,9 +200,9 @@
 			
 			<!-- user defined JAD attributes can also be used: -->
 			<jad>
-				<attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40" />
-			</jad>	
-			
+				<!-- the number of bytes required for the recordstore -->
+				<attribute name="MIDlet-Data-Size" value="${filesize(predictive.trie)}" target="jad"/>
+			</jad>
 			
 		</build>
 		
