@@ -13,3 +13,7 @@ cmd.exit=Exit
 
 cmd.yes=Yes
 cmd.no=No
+
+cmd.update=Update
+cmd.install=Install
+cmd.delete=Delete
