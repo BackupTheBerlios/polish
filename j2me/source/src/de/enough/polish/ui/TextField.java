@@ -2166,8 +2166,6 @@ public class TextField extends StringItem
 			}
 		//#else
         	
-        System.out.println("paint");
-        	
     	int originalX = x;
 		int originalY = y;
 		
