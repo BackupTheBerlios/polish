@@ -1230,19 +1230,20 @@ implements AccessibleCanvas
 				}
 			//#endif
 			//#if !tmp.menuFullScreen
-				int translateY = g.getTranslateY();
-				if (translateY != 0 && this.screenHeight == this.originalScreenHeight) {
-					this.screenHeight -= translateY;
-					//#if tmp.useScrollIndicator 
-						this.scrollIndicatorY -= translateY;
-					//#endif
-					//#debug
-					System.out.println("Adjusting screenheight from " + this.originalScreenHeight + " to " + this.screenHeight );
-					if (this.container != null) {
-						int y = translateY;
-						calculateContentArea( 0, y, this.screenWidth, this.screenHeight - y );
-					}
-				}
+				// not needed since sizeChanged() takes care for that now (robert, 2007-07-28)
+//				int translateY = g.getTranslateY();
+//				if (false && translateY != 0 && this.screenHeight == this.originalScreenHeight) {
+//					this.screenHeight -= translateY;
+//					//#if tmp.useScrollIndicator 
+//						this.scrollIndicatorY -= translateY;
+//					//#endif
+//					//#debug
+//					System.out.println("Adjusting screenheight from " + this.originalScreenHeight + " to " + this.screenHeight );
+//					if (this.container != null) {
+//						int y = translateY;
+//						calculateContentArea( 0, y, this.screenWidth, this.screenHeight - y );
+//					}
+//				}
 			//#endif
 			//#if tmp.fullScreen && polish.FullCanvasSize:defined && polish.Bugs.setClipForFullScreenNeeded
 				g.translate( -g.getTranslateX(), -g.getTranslateY() );
@@ -1691,6 +1692,8 @@ implements AccessibleCanvas
 					}
 				//#endif
 			
+					g.setColor( 0x00ff00 );
+					g.drawRect( 0, 0, this.screenWidth,this.screenHeight );
 					
 			//#if polish.debug.error
 			} catch (RuntimeException e) {
