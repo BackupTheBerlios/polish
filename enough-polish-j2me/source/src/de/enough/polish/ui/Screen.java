@@ -1691,9 +1691,6 @@ implements AccessibleCanvas
 						g.drawImage( this.foregroundImage, this.foregroundX, this.foregroundY, Graphics.TOP | Graphics.LEFT  );
 					}
 				//#endif
-			
-					g.setColor( 0x00ff00 );
-					g.drawRect( 0, 0, this.screenWidth,this.screenHeight );
 					
 			//#if polish.debug.error
 			} catch (RuntimeException e) {
