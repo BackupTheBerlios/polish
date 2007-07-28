@@ -197,9 +197,20 @@ implements ItemStateListener, CommandListener
 			this.filterTextField.setShowInputInfo( false );
 			this.filterTextField.focus( this.filterTextField.getFocusedStyle(), 0 );
 		}
+		//#if polish.blackberry
+			setFocus( this.filterTextField );
+		//#endif
 		itemStateChanged( this.filterTextField );
 		super.showNotify();
 	}
+	
+	//#if !polish.blackberry
+	private void setFocus( Item item ) {
+	//#else
+		//# public void setFocus( Item item ) {
+		//# super.setFocus( this.filterTextField );
+	}
+	//#endif
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#getCurrentItem()
