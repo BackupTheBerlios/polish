@@ -82,6 +82,47 @@ public final class ImageUtil {
 			}
 		}
 	}
+	
+	/**
+	 * Scales the image without filling gaps between single pixels.
+	 * 
+	 * @param factor the zoom factor in percent, must be greater than 100
+	 * @param width the width of the target RGB
+	 * @param height the height of the target RGB
+	 * @param sourceRgb the source RGB data that has the original data
+	 * @param targetRgb the target array for storing the scaled image
+	 */
+	public static void particleScale(int factor, int width, int height, int[] sourceRgb, int[] targetRgb) {
+		for (int i = 0; i < targetRgb.length; i++) {
+			targetRgb[i] = 0;
+		}
+		int centerX = width >> 1;
+		int centerY = height >> 1;
+		int distanceX = (width - (width * 100)/factor) >> 1;
+		int startX = distanceX; 
+		int endX = width - distanceX;
+		int distanceY = (height - (height * 100)/factor) >> 1;
+		int startY = distanceY;
+		int endY = height - distanceY;
+		for (int y = startY; y < endY; y++) {
+			for (int x = startX; x < endX; x++) {
+				distanceX = centerX - x;
+				int targetX = centerX - ( distanceX * factor ) / 100;
+				if (targetX < 0 || targetX >= width) {
+					continue;
+				}
+				distanceY = centerY - y;
+				int targetY = centerY - ( distanceY * factor ) / 100;
+				if (targetY < 0 || targetY >= height) {
+					continue;
+				}
+				int sourceIndex = y * width + x;
+				int targetIndex =  targetY * width + targetX;
+				targetRgb[ targetIndex ] = sourceRgb[ sourceIndex ];
+			}
+		}
+	}
+
 
 	
 	/**

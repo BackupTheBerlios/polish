@@ -1015,6 +1015,7 @@
 		<mapping from="fade" to="new de.enough.polish.ui.screenanimations.FadeScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="fadeoutfadein" to="new de.enough.polish.ui.screenanimations.FadeOutFadeInScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="fadeOutFadeIn" to="new de.enough.polish.ui.screenanimations.FadeOutFadeInScreenChangeAnimation()" condition="polish.midp2"/>
+		<mapping from="particle" to="new de.enough.polish.ui.screenanimations.ParticleScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="scale" to="new de.enough.polish.ui.screenanimations.ScaleScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="bwToColor" to="new de.enough.polish.ui.screenanimations.BwToColorScreenChangeAnimation()">
 			<condition>polish.midp2</condition>
