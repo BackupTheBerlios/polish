@@ -209,8 +209,8 @@ implements ItemStateListener, CommandListener
 	//#else
 		//# public void setFocus( Item item ) {
 		//# super.setFocus( this.filterTextField );
-	}
 	//#endif
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#getCurrentItem()
