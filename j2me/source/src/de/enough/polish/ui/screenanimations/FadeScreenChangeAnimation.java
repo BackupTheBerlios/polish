@@ -59,7 +59,9 @@ import de.enough.polish.ui.Style;
 public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 	private int steps = 6;
 	private int currentStep;
-	private int[] nextScreenRgb;
+	//#if !polish.blackberry
+		private int[] nextScreenRgb;
+	//#endif
 
 	/**
 	 * Creates a new animation 
@@ -81,11 +83,13 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 				this.steps = stepsInt.intValue();
 			}
 		//#endif
-		if ( this.nextScreenRgb == null ) {
-			this.nextScreenRgb = new int[ width * height ];
-		}
-		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
-		addOpacity( 255/this.steps, this.nextScreenRgb );
+		//#if !polish.blackberry
+			if ( this.nextScreenRgb == null ) {
+				this.nextScreenRgb = new int[ width * height ];
+			}
+			nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
+			addOpacity( 255/this.steps, this.nextScreenRgb );
+		//#endif
 		this.currentStep = 0;
 		
 		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
@@ -99,16 +103,21 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 		if (this.currentStep >= this.steps) {
 			//this.steps = 10;
 			this.currentStep = 0;
-			this.nextScreenRgb = null;
+			//#if !polish.blackberry
+				this.nextScreenRgb = null;
+			//#endif
 			return false;
 		}
-		int opacity = (255 * this.currentStep )  / this.steps;
-		addOpacity( opacity, this.nextScreenRgb );
+		//#if !polish.blackberry
+			int opacity = (255 * this.currentStep )  / this.steps;
+			addOpacity( opacity, this.nextScreenRgb );
+		//#endif
 		return true;
 	}
 	
 	
 
+	//#if !polish.blackberry
 	/**
 	 * Adds the specified opacity to the RGB data.
 	 * 
@@ -121,8 +130,10 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 			data[i] = (data[i] | 0xff000000) & opacity;
 		}
 	}
+	//#endif
 
 
+	//#if !polish.blackberry
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
 	 */
@@ -132,13 +143,25 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 			this.nextCanvasImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 		}
 	}
+	//#endif
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
 	public void paintAnimation(Graphics g) {
 		g.drawImage( this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
-		g.drawRGB(this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
+		//#if polish.blackberry
+			net.rim.device.api.ui.Graphics bbGraphics = null;
+			//# bbGraphics = g.g;
+			int opacity = (255 * this.currentStep )  / this.steps;
+			bbGraphics.setGlobalAlpha( opacity );
+			net.rim.device.api.system.Bitmap bitmap = null;
+			//# bitmap = this.nextCanvasImage.getBitmap(); 
+			bbGraphics.drawBitmap(0, 0, this.screenWidth, this.screenHeight, bitmap, 0, 0 ); 
+			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque
+		//#else
+			g.drawRGB(this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
+		//#endif
 	}
 
 }

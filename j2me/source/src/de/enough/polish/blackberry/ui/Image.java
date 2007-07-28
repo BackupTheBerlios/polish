@@ -692,5 +692,14 @@ public class Image extends Object
 	{
 		this.bitmap.getARGB(rgbData, offset, scanlength, x, y, width, height);
 	}
+	
+	/**
+	 * Retrives the native BlackBerry bitmap that is wrapped by this image.
+	 * 
+	 * @return the native BlackBerry bitmap that is wrapped by this image.
+	 */
+	public Bitmap getBitmap() {
+		return this.bitmap;
+	}
 
 }
