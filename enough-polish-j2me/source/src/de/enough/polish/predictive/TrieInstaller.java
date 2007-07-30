@@ -39,9 +39,9 @@ public class TrieInstaller {
 	boolean cancel = false;
 	boolean pause = false;
 	
-	public TrieInstaller() throws IOException, IllegalArgumentException
+	public TrieInstaller(DataInputStream stream) throws IOException, IllegalArgumentException
 	{
-		this.stream = new DataInputStream(getClass().getResourceAsStream("/predictive.trie"));
+		this.stream = stream;
 		
 		this.magic = this.stream.readInt();
 		this.version = this.stream.readInt();

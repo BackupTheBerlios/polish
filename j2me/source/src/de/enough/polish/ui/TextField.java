@@ -24,9 +24,10 @@
  */
 package de.enough.polish.ui;
 
+import java.io.IOException;
+
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -36,6 +37,10 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.rms.RecordStoreException;
 
 //#if polish.TextField.usePredictiveInput
+import de.enough.polish.io.RedirectHttpConnection;
+//#if polish.Bugs.sharedRmsRequiresSigning
+import de.enough.polish.predictive.Setup;
+//#endif
 import de.enough.polish.predictive.TextBuilder;
 import de.enough.polish.predictive.TextElement;
 import de.enough.polish.predictive.TrieProvider;
@@ -1024,6 +1029,10 @@ public class TextField extends StringItem
 		{
 			this.addCommand(ENABLE_PREDICTIVE_CMD);
 			this.predictiveInput = false;
+		}
+		catch(SecurityException e)
+		{
+			this.setText(e.getClass().getName() + ":" + e.getMessage());
 		}
 		//#endif
 	}
@@ -4058,6 +4067,32 @@ public class TextField extends StringItem
 					notifyStateChanged();
 				//#if polish.TextField.usePredictiveInput && tmp.directInput
 				} else if ( cmd == ENABLE_PREDICTIVE_CMD ) {
+					//#if polish.Bugs.sharedRmsRequiresSigning
+					try
+					{
+						if(!PROVIDER.isInit())
+						{
+							PROVIDER.init();
+						}
+					}catch(RecordStoreException rsEx)
+					{
+						RedirectHttpConnection connection = new RedirectHttpConnection("http://dl.j2mepolish.org/predictive/index.jsp?type=local&lang=en");
+						
+						try
+						{
+							Setup setup = new Setup(StyleSheet.midlet,null,connection.openDataInputStream());
+							
+							Thread thread = new Thread(setup);
+							thread.start();
+						}catch(IOException ioEx)
+						{
+							//#debug
+							ioEx.printStackTrace();
+							return;
+						}
+						
+					}
+					//else
 					try
 					{
 						if(!PROVIDER.isInit())
@@ -4082,6 +4117,7 @@ public class TextField extends StringItem
 						
 						return;
 					}
+					//#endif
 					
 					while(this.builder.deleteCurrent());
 					

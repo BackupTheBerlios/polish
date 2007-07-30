@@ -31,7 +31,7 @@ public class TrieProvider {
 	
 	public void init() throws RecordStoreException
 	{
-		//#if polish.predictive.localRMS
+		//#if polish.Bugs.sharedRmsRequiresSigning || polish.predictive.localRMS
 		//#= this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
 		//#else
 		this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0","Enough Software","PredictiveSetup");
