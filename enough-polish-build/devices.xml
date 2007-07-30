@@ -3153,7 +3153,6 @@ These namespaces/schemas will be used soon.
 		<capability name="AnnouncementDate" value="2006-12-18"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA5" />
 		<capability name="Emulator.Skin" value="MOTORAZR_V3xx.props" />
-		<capability name="Bugs" value=""/>
 		<capability name="key.MiddleSoftKey" value="-20" />
 	</device>
 
