@@ -550,7 +550,7 @@
 	</bug>
 	<bug>
 		<name>IncomingCallDoesNotCallPause</name>
-		<area>general</area>
+		<area>system</area>
 		<description>
 			Incoming calls do not call the Midlet.pauseApp() method.
 		</description>
@@ -569,7 +569,26 @@
 			use keyPressed()/keyReleased() instead.
 		</solution>
 	</bug>
-	
+	<bug>
+		<name>sharedRmsRequiresSigning</name>
+		<area>io,rms</area>
+		<description>
+			Shared recordstores require a permission, e.g. &quot;com.jblend.rms.share&quot; on some JBlend handsets. 
+		</description>
+		<solution>
+			Sign your application when you want to share recordstores.
+		</solution>
+	</bug>
+	<bug>
+		<name>unknownSystemPropertiesTrowExceptions</name>
+		<area>system</area>
+		<description>
+			When calling System.getProperty(name) with a property name that is not defined, a NullPointerException will be thrown.
+		</description>
+		<solution>
+			Only access known System properties or catch any exceptions that might occur during System.getProperty(name).
+		</solution>
+	</bug>
 	<!--
 	<bug>
 		<name></name>

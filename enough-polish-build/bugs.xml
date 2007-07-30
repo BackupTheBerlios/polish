@@ -580,7 +580,7 @@
 		</solution>
 	</bug>
 	<bug>
-		<name>unknownSystemPropertiesTrowExceptions</name>
+		<name>unknownSystemPropertiesThrowExceptions</name>
 		<area>system</area>
 		<description>
 			When calling System.getProperty(name) with a property name that is not defined, a NullPointerException will be thrown.
