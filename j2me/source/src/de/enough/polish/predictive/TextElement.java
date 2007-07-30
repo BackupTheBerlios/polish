@@ -49,8 +49,6 @@ public class TextElement {
 		newKeyCodes[newKeyCodes.length - 1] = keyCode;
 		this.keyCodes = newKeyCodes;
 		
-		System.out.println("keyNum");
-		
 		if(shift == TextField.MODE_UPPERCASE || shift == TextField.MODE_FIRST_UPPERCASE)
 			this.keyCodes[this.keyCodes.length - 1] += SHIFT;
 		
@@ -167,6 +165,7 @@ public class TextElement {
 	
 	public void convertReader()
 	{
+		TextField.PROVIDER.releaseRecords();
 		this.element = getSelectedStringBuffer();
 	}
 	

@@ -2,21 +2,10 @@
 
 package de.enough.polish.predictive;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
-import javax.microedition.rms.RecordStoreFullException;
-import javax.microedition.rms.RecordStoreNotFoundException;
 
-import de.enough.polish.io.Serializer;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.HashMap;
-import de.enough.polish.util.Properties;
 
 public class TextBuilder {
 	
@@ -78,10 +67,7 @@ public class TextBuilder {
 	{
 		if(	isStringBuffer(0) || this.align == ALIGN_LEFT || this.align == ALIGN_RIGHT )
 		{
-			addReader(new TrieReader(	TextField.PROVIDER.getStore(),
-										TextField.PROVIDER.getRecords(), 
-										TextField.PROVIDER.getChunkSize(), 
-										TextField.PROVIDER.getLineCount()));
+			addReader(new TrieReader());
 		}
 		
 		getReader().keyNum(keyCode);
@@ -100,8 +86,7 @@ public class TextBuilder {
 	public void keySpace()
 	{
 		if(!isStringBuffer(0))
-			if(getTextElement().isSelectedCustom())
-				getTextElement().convertReader();
+			getTextElement().convertReader();
 		
 		addStringBuffer(" ");
 	}
@@ -378,6 +363,8 @@ public class TextBuilder {
 				
 			this.textElements.remove(index);
 			
+			TextField.PROVIDER.releaseRecords();
+			
 			return true;
 		}
 		
@@ -422,8 +409,7 @@ public class TextBuilder {
 		{
 			if(align == ALIGN_FOCUS)
 			{
-				if(getTextElement().isSelectedCustom())
-					getTextElement().convertReader();
+				getTextElement().convertReader();
 				
 				align = ALIGN_RIGHT;
 			}

@@ -2,7 +2,6 @@
 package de.enough.polish.predictive;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
 import de.enough.polish.ui.TextField;

@@ -7,7 +7,6 @@ import java.util.Stack;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
-import javax.microedition.rms.RecordStoreNotOpenException;
 
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
@@ -20,17 +19,10 @@ public class TrieReader {
 	static final byte NODE_SIZE = 5;
 	static final byte COUNT_SIZE = 1;
 	
-	int lineCount = 0;
-	int chunkSize = 0;
-	
 	private ArrayList 	nodes = null;
 	private ArrayList 	newNodes = null;
 	private Stack 		prevNodes = null;
 	
-	private RecordStore store = null;
-	private HashMap records = null;
-	
-	private StringBuffer storeID = null;
 	private StringBuffer letters = null;
 	
 	private int selectedWord = 0;
@@ -42,18 +34,12 @@ public class TrieReader {
 
 	byte[] record = null;
 	
-	public TrieReader(RecordStore store, HashMap records, int chunkSize, int lineCount) throws RecordStoreException
+	public TrieReader() throws RecordStoreException
 	{
 		this.nodes 		= new ArrayList();
 		this.newNodes 	= new ArrayList();
 		
 		this.prevNodes 	= new Stack();
-				
-		this.store = store;
-		this.records = records;
-		
-		this.chunkSize = chunkSize;
-		this.lineCount = lineCount;
 		
 		letters = new StringBuffer(10);
 				
@@ -151,28 +137,19 @@ public class TrieReader {
 	
 	private int getRecordID(int id)
 	{
-		return ((id -1) / this.lineCount) + 1;
+		return ((id -1) / TextField.PROVIDER.getLineCount()) + 1;
 	}
 	
 	private int getPartID(int id)
 	{
-		return ((id -1) % this.lineCount) + 1;
+		return ((id -1) % TextField.PROVIDER.getLineCount()) + 1;
 	}
 		
 	private byte[] getRecord(int id) throws RecordStoreException
 	{
-		int recordID 	= getRecordID(id) + TrieInstaller.OVERHEAD % this.chunkSize;
+		int recordID 	= getRecordID(id) + TrieInstaller.OVERHEAD % TextField.PROVIDER.getChunkSize();
 		
-		Integer recordMapID = new Integer(recordID);
-		byte[] record = (byte[])this.records.get(recordMapID); 
-		
-		if(record == null)
-		{
-			record = store.getRecord(recordID);
-			this.records.put(recordMapID, record);
-		}
-		
-		return record; 
+		return TextField.PROVIDER.getRecord(recordID, this.hashCode());
 	}
 	
 	private int getPartOffset(byte[] record, int partID)

@@ -6,7 +6,6 @@ import java.io.DataInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 
-import javax.microedition.lcdui.Gauge;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
