@@ -322,7 +322,7 @@
 		appliesTo="Screen,Item"
 		description="The font style of an item or screen element."
 		type="map"
-		values="plain, default, normal, bold, italic, cursive, underlined"
+		values="plain, default, normal, bold, italic, cursive, underlined, underline"
 		allowsCombinations="true"
 		requiresMapping="true"
 		isCaseSensitive="false"
@@ -336,6 +336,7 @@
 		<mapping from="italic"     to="Font.STYLE_ITALIC" />
 		<mapping from="cursive"    to="Font.STYLE_ITALIC" />
 		<mapping from="underlined" to="Font.STYLE_UNDERLINED" />
+		<mapping from="underline" to="Font.STYLE_UNDERLINED" />
 	</attribute>
 	
 
@@ -2722,6 +2723,22 @@
 		id="255"
 	/>
 	
+	<attribute
+		name="predictive-containerstyle"
+		type="style"
+		appliesTo="TextField"
+		description="Defines the style for the menu that contains the possible matches for the current user input."
+		id="256"
+	/>
+	
+	<attribute
+		name="predictive-choicestyle"
+		type="style"
+		appliesTo="TextField"
+		description="Defines the style for single possible matches for the curent user input."
+		id="257"
+	/>
+	
 	<!--
 	
 	<attribute
@@ -2739,9 +2756,7 @@
 		description="The background that is painted over the rest of the screen when the menu is opened. This makes sense only when the &quot;fullscreen&quot; mode is activated." 
 		id="145"
 	/>
-	
-
-	
+		
 	-->
 
 </attributes>
