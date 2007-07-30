@@ -1,19 +1,15 @@
-text.info=Installing the dictionary used for predictive input. Please wait a moment ...
+setup.info=Installing the dictionary used for predictive input. Please wait a moment ...
 
-text.status.delete=Deleting previous installation ...
-text.status.install=Installing ...
-text.status.finished=Finished, the installer will exit in 10 seconds ...
+setup.status.delete=Deleting previous installation ...
+setup.status.install=Installing ...
+setup.status.finished=Finished, the installer will exit in 10 seconds ...
 
-text.cancel=Do you really want to cancel the installation ? This may result in unwanted effects.
+setup.cancel=Do you really want to cancel the installation ? This may result in unwanted effects.
 
-text.error=An error has occured:
+setup.error=An error has occured:
 
-cmd.cancel=Cancel
-cmd.exit=Exit
+setup.cmd.cancel=Cancel
+setup.cmd.exit=Exit
 
-cmd.yes=Yes
-cmd.no=No
-
-cmd.update=Update
-cmd.install=Install
-cmd.delete=Delete
+setup.cmd.yes=Yes
+setup.cmd.no=No

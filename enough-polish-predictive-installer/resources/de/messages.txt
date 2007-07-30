@@ -1,15 +1,15 @@
-text.info=Installiere das Wörterbuch. Bitte warten Sie einen Moment ...
+setup.info=Installiere das Wörterbuch. Bitte warten Sie einen Moment ...
 
-text.status.delete=Entferne vorherige Installation ...
-text.status.install=Installiere ...
-text.status.finished=Installation abgeschlossen, der Installer wird in 10 Sekunden beendet
+setup.status.delete=Entferne vorherige Installation ...
+setup.status.install=Installiere ...
+setup.status.finished=Installation abgeschlossen, der Installer wird in 10 Sekunden beendet
 
-text.cancel=Sind sie sicher, das sie die Installation abbrechen wollen ? Dies kann zu unerwünschten Effekten führen.
+setup.cancel=Sind sie sicher, das sie die Installation abbrechen wollen ? Dies kann zu unerwünschten Effekten führen.
 
-text.error=Es ist ein Fehler aufgetreten:
+setup.error=Es ist ein Fehler aufgetreten:
 
-cmd.cancel=Abbrechen
-cmd.exit=Beenden
+setup.cmd.cancel=Abbrechen
+setup.cmd.exit=Beenden
 
-cmd.yes=Ja
-cmd.no=Nein
+setup.cmd.yes=Ja
+setup.cmd.no=Nein

@@ -37,7 +37,17 @@ colors {
 	layout: horizontal-expand | horizontal-center | top;
 }
 
-.introItem {
+.setupForm {
+	padding: 5;
+	padding-left: 15;
+	padding-right: 15;
+	background {
+		color: focusedBgColor;
+	}
+	layout: horizontal-expand | horizontal-center | top;
+}
+
+.setupIntro {
 	background: none;
 	font-style: plain;
 	font-size: small;
@@ -45,7 +55,7 @@ colors {
 	layout: left;
 }
 
-.statusItem {
+.setupStatus {
 	background: none;
 	font-style: plain;
 	font-size: small;
@@ -53,7 +63,7 @@ colors {
 	layout: left;
 }
 
-.errorItem {
+.setupError {
 	background: none;
 	font-style: plain;
 	font-size: small;
@@ -61,7 +71,7 @@ colors {
 	layout: center;
 }
 
-.gauge{
+.setupGauge {
 	gauge-show-value: false;
 	gauge-gap-width: 0;
 	gauge-height: 20;

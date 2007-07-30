@@ -74,8 +74,8 @@
 <target name="test" 
 	description="Call this target first to skip the obfuscation step, e.g. ant test j2mepolish"
 	>
-	<property name="debug" value="true" />
-	<property name="test" value="true" />
+	<property name="debug" value="false" />
+	<property name="test" value="false" />
 	<property name="dir.work" value="build/test" />
 </target>
 		
@@ -177,6 +177,7 @@
 				<variable name="title" value="J2ME Polish" />
 				<variable name="polish.TextField.useDirectInput" value="true"/>
 				<variable name="polish.TextField.usePredictiveInput" value="true"/>				
+				<variable name="polish.predictive.Setup" value="true"/>								
 			</variables>
 			<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 			<resources
@@ -184,7 +185,7 @@
 				defaultexcludes="yes"
 				excludes="readme.txt"
 			>
-				<localization locales="en"/>
+				<localization locales="en,de,fr"/>
 			</resources>
 			
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
