@@ -23,7 +23,7 @@ public class TrieCustom {
 	{
 		try
 		{
-			bytes  = TextField.PROVIDER.getStore().getRecord(TrieInstaller.CUSTOM_RECORD);
+			bytes  = TextField.PROVIDER.getRecord(TrieInstaller.CUSTOM_RECORD);
 			
 			if(bytes == null)
 				bytes = new byte[0];
@@ -75,7 +75,7 @@ public class TrieCustom {
 	{
 		try
 		{
-			TextField.PROVIDER.getStore().setRecord(TrieInstaller.CUSTOM_RECORD, bytes, 0, bytes.length);
+			TextField.PROVIDER.setRecord(TrieInstaller.CUSTOM_RECORD, bytes);
 		}
 		catch(RecordStoreException e)
 		{

@@ -72,7 +72,7 @@ public class TextBuilder {
 		
 		getReader().keyNum(keyCode);
 		getTextElement().keyNum(keyCode, mode);
-		getTextElement().setResults(TextField.PROVIDER.getCustom());
+		getTextElement().setResults();
 		
 		if(!getTextElement().isWordFound())
 			getTextElement().keyClear();
@@ -115,7 +115,7 @@ public class TextBuilder {
 				getReader().keyClear();
 			
 			getTextElement().keyClear();
-			getTextElement().setResults(TextField.PROVIDER.getCustom());
+			getTextElement().setResults();
 			
 			if(getReader().isEmpty())
 			{

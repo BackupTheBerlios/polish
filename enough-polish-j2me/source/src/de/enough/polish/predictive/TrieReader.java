@@ -149,7 +149,7 @@ public class TrieReader {
 	{
 		int recordID 	= getRecordID(id) + TrieInstaller.OVERHEAD % TextField.PROVIDER.getChunkSize();
 		
-		return TextField.PROVIDER.getRecord(recordID, this.hashCode());
+		return TextField.PROVIDER.getRecord(recordID);
 	}
 	
 	private int getPartOffset(byte[] record, int partID)

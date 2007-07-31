@@ -21,6 +21,8 @@ public class TrieProvider {
 	private int maxRecords = 5;
 	
 	private TrieCustom custom = null;
+	private TrieOrder order = null;
+	
 	private Form customForm = null;
 	private TextField customField = null;
 	
@@ -46,6 +48,8 @@ public class TrieProvider {
 		
 		this.custom = new TrieCustom();
 		
+		this.order = new TrieOrder();
+		
 		this.customForm = new Form("Add new word");
 		
 		this.customForm.addCommand( StyleSheet.CANCEL_CMD );
@@ -59,7 +63,7 @@ public class TrieProvider {
 		return this.init;
 	}
 	
-	public byte[] getRecord(int id, int hash) throws RecordStoreException
+	public byte[] getRecord(int id) throws RecordStoreException
 	{
 		Integer recordMapID = new Integer(id);
 		TrieRecord record = (TrieRecord)this.records.get(recordMapID); 
@@ -74,6 +78,20 @@ public class TrieProvider {
 		record.addReference();
 		
 		return record.getRecord();
+	}
+	
+	public void setRecord(int id, byte[] bytes) throws RecordStoreException
+	{
+		Integer recordMapID = new Integer(id);
+		TrieRecord record = (TrieRecord)this.records.get(recordMapID);
+		
+		if(record == null)
+		{
+			record = new TrieRecord(id,bytes);
+			this.records.put(recordMapID, record);
+		}
+		
+		this.store.setRecord(id, bytes, 0, bytes.length);
 	}
 	
 	public void releaseRecords()
@@ -92,7 +110,7 @@ public class TrieProvider {
 				Integer key = (Integer)keys[i];
 				TrieRecord record = (TrieRecord)this.records.get(key);
 				
-				if(record.getReferences() <= references)
+				if(record.getReferences() <= references && record.getId() != TrieInstaller.CUSTOM_RECORD && record.getId() != TrieInstaller.ORDER_RECORD)
 				{
 					keyToRemove = (Integer)keys[i];
 					references = record.getReferences();
@@ -112,13 +130,13 @@ public class TrieProvider {
 	public TrieCustom getCustom() {
 		return custom;
 	}
+	
+	public TrieOrder getOrder() {
+		return order;
+	}
 
 	public int getLineCount() {
 		return lineCount;
-	}
-
-	public RecordStore getStore() {
-		return store;
 	}
 
 	public Form getCustomForm() {

@@ -1377,13 +1377,12 @@ public class TextField extends StringItem
 			//System.out.println("focusing textfield again, isFocused=" + this.isFocused);
 			enterChoices( false );
 			
-			if (gameAction == Canvas.FIRE) {
+			if (gameAction == Canvas.FIRE || gameAction == Canvas.RIGHT) {
 				// option has been selected!
 				if(!this.builder.isStringBuffer(0))
 				{
 					this.builder.getTextElement().setSelectedWordIndex(this.choicesContainer.getFocusedIndex());
-					if(this.builder.getTextElement().isSelectedCustom())
-						this.builder.getTextElement().convertReader();
+					this.builder.getTextElement().convertReader();
 					this.builder.setAlign(TextBuilder.ALIGN_RIGHT);
 					
 					openChoices( false );
@@ -3969,7 +3968,7 @@ public class TextField extends StringItem
 						//#= if(StyleSheet.midlet.platformRequest("${polish.TextField.predictive.url}"))
 						//#= StyleSheet.midlet.notifyDestroyed();
 						//#else
-						StyleSheet.midlet.platformRequest("http://dl.j2mepolish.org/predictive/index.jsp");
+						StyleSheet.midlet.platformRequest("http://dl.j2mepolish.org/predictive/index.jsp?type=shared");
 						StyleSheet.midlet.notifyDestroyed();
 						//#endif
 					}catch(ConnectionNotFoundException e){}
@@ -4080,7 +4079,7 @@ public class TextField extends StringItem
 						
 						try
 						{
-							Setup setup = new Setup(StyleSheet.midlet,null,connection.openDataInputStream());
+							Setup setup = new Setup(StyleSheet.midlet, null, false, connection.openDataInputStream());
 							
 							Thread thread = new Thread(setup);
 							thread.start();
@@ -4091,8 +4090,9 @@ public class TextField extends StringItem
 							return;
 						}
 						
+						return;
 					}
-					//else
+					//#else
 					try
 					{
 						if(!PROVIDER.isInit())

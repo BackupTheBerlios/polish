@@ -1,4 +1,4 @@
-//#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput && (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.Setup)  
+//#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput && (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.Setup)
 package de.enough.polish.predictive;
 
 import java.io.DataInputStream;
@@ -10,10 +10,12 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Gauge;
+import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.StringItem;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.rms.RecordStore;
 
+import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.util.Locale;
 
 public class Setup 
@@ -31,6 +33,8 @@ implements Runnable, CommandListener
 	protected Command yesCommand = new Command( Locale.get("setup.cmd.yes"), Command.OK, 0 );
 	protected Command noCommand = new Command( Locale.get("setup.cmd.no"), Command.CANCEL, 0 );
 	
+	List list = null;
+	
 	Form form = null;
 	
 	StringItem info = null;
@@ -40,15 +44,19 @@ implements Runnable, CommandListener
 		
 	boolean pause = false;
 	
-	public Setup(MIDlet parentMidlet, Displayable returnTo, DataInputStream stream)
+	public Setup(MIDlet parentMidlet, Displayable returnTo, boolean showGauge, DataInputStream stream)
 	{
 		this.returnTo = returnTo;
 		this.parentMidlet = parentMidlet;
 		
 		this.stream = stream;
 		
+		this.list = new List ("Predictive Setup",List.IMPLICIT);
+		this.list.addCommand(StyleSheet.OK_CMD);
+		this.list.addCommand(StyleSheet.CANCEL_CMD);
+		
 		//#style setupForm
-		this.form = new Form( "Predictive Setup");
+		this.form = new Form( "Predictive Setup" );
 		
 		this.form.addCommand( this.cancelCommand );
 		this.form.setCommandListener( this );
@@ -60,8 +68,13 @@ implements Runnable, CommandListener
 		
 		//#style setupIntro
 		this.form.append(info);
-		//#style setupGauge
-		this.form.append(gauge);
+		
+		if(showGauge)
+		{
+			//#style setupGauge
+			this.form.append(gauge);
+		}
+		
 		//#style setupStatus
 		this.form.append(status);
 		//#style setupError
@@ -116,12 +129,17 @@ implements Runnable, CommandListener
 						storeID += installer.getChunkSize();
 					}
 					
-					store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
+					//#if !polish.Bugs.sharedRmsRequiresSigning
+					//#= store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
+					//#else
+					store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true);
+					//#endif
 					
 					if(storeID == 0)
 					{
 						installer.createHeaderRecord(store);
 						installer.createCustomRecord(store);
+						installer.createOrderRecord(store);
 					}
 				}
 					
@@ -143,7 +161,11 @@ implements Runnable, CommandListener
 							this.wait();
 						}
 						
-						store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
+						//#if !polish.Bugs.sharedRmsRequiresSigning
+						//#= store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
+						//#else
+						store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true);
+						//#endif
 						
 					}catch(InterruptedException e){}
 					this.pause = false;
@@ -171,7 +193,6 @@ implements Runnable, CommandListener
 			this.form.removeCommand( this.cancelCommand );
 			this.form.addCommand( this.exitCommand );
 			
-			//#debug error
 			e.printStackTrace();
 		}
 	}
@@ -203,6 +224,22 @@ implements Runnable, CommandListener
 		if(disp instanceof Alert)
 		{
 			if(cmd == this.yesCommand)
+			{
+				this.parentMidlet.notifyDestroyed();
+			} 
+			else if(cmd == this.noCommand)
+			{
+				synchronized (this){
+					this.notify();
+				}
+				
+				Display.getDisplay(this.parentMidlet).setCurrent(this.form);
+			}
+		}
+		
+		if(disp instanceof List)
+		{
+			if(cmd == StyleSheet.OK_CMD)
 			{
 				this.parentMidlet.notifyDestroyed();
 			} 

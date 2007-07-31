@@ -1,7 +1,14 @@
 //#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput
 package de.enough.polish.predictive;
 
+import java.io.IOException;
+
 public class TrieUtils {
+	
+	static byte charBuffer[] = new byte[2];
+	static byte integerBuffer[] = new byte[4];
+	static byte byteBuffer[] = new byte[1];
+		
 	private TrieUtils(){}
 	
 	public static int byteToInt(byte[] bytes, int offset) {
@@ -23,6 +30,28 @@ public class TrieUtils {
 	public static byte byteToByte(byte[] bytes, int offset)
 	{
 		return bytes[offset];
+	}
+	
+	public static byte[] intToByte (final int value) 
+	{
+		integerBuffer[0] = (byte) ((value >> 24) & 0x000000FF);
+		integerBuffer[1] = (byte) ((value >> 16) & 0x000000FF);
+		integerBuffer[2] = (byte) ((value >> 8) & 0x000000FF);
+		integerBuffer[3] = (byte) (value & 0x00FF);
+		return integerBuffer;
+	} 
+	
+	public static byte[] byteToByte (final byte value) 
+	{
+		byteBuffer[0] = value;
+		return byteBuffer;
+	}   
+	
+	public static byte[] charToByte (final char value)
+	{
+		charBuffer[0] = (byte) ((value >> 8) & 0x000000FF);
+		charBuffer[1] = (byte) (value & 0x00FF);
+		return charBuffer;
 	}
 	
 }

@@ -89,13 +89,13 @@ public class TextElement {
 
 	}
 
-	public void setResults(TrieCustom custom) {
+	public void setResults() {
 		
 		if (element instanceof TrieReader) 
 		{
 				this.customResults.clear();
 				
-				custom.getWords(this.customResults,this.keyCodes);
+				TextField.PROVIDER.getCustom().getWords(this.customResults,this.keyCodes);
 				
 				shiftResults(this.customResults);
 				
@@ -113,6 +113,8 @@ public class TextElement {
 						
 						this.trieResults.add(node.getWord());
 					}
+					
+					TextField.PROVIDER.getOrder().getOrder(this.trieResults, this.keyCodes);
 						
 					shiftResults(this.trieResults);
 				}
@@ -134,6 +136,9 @@ public class TextElement {
 	public void setSelectedWordIndex(int selected)
 	{
 		this.selectedWordIndex = selected;
+		
+		if(selected > 0)
+			TextField.PROVIDER.getOrder().addOrder(this.keyCodes, (byte)selected);
 	}
 	
 	public int getSelectedWordIndex()
