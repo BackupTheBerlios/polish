@@ -24,3 +24,14 @@ polish.command.hide=Hide
 polish.title.input=Input
 # used for showing a screen for selecting symbols within TextFields:
 polish.command.entersymbol=Add Symbol
+# used for predictive setup
+setup.info=Installing the dictionary used for predictive input. Please wait a moment ...
+setup.status.delete=Deleting previous installation ...
+setup.status.install=Installing ...
+setup.status.finished=Finished, the installer will exit in 10 seconds ...
+setup.cancel=Do you really want to cancel the installation ? This may result in unwanted effects.
+setup.error=An error has occured:
+setup.cmd.cancel=Cancel
+setup.cmd.exit=Exit
+setup.cmd.yes=Yes
+setup.cmd.no=No
