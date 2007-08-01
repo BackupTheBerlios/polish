@@ -778,9 +778,6 @@ public class Container extends Item {
 		if (item.internalX != -9999) {
 			int relativeInternalX = item.relativeX + item.contentX + item.internalX;
 			int relativeInternalY = item.relativeY + item.contentY + item.internalY;
-			if (item instanceof Container) {
-				Container cont = (Container) item;
-			}
 			scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
 		} else {
 			scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );			
