@@ -718,10 +718,15 @@ extends ItemView
 	protected void paintItem( Item item, int index,  int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g ) {
 		//#debug
 		System.out.println("ContainerView: painting item at (" +  x + ", " + y + ") " + item );
-		if (y < clipY + clipHeight && y + item.itemHeight > clipY && x < clipX + clipWidth && x + item.itemWidth > clipX) {
+		if ( ( (y < clipY + clipHeight && y + item.itemHeight > clipY)
+			|| (item.internalX != -9999 && y + item.internalY < clipY + clipHeight && y + item.internalY + item.internalHeight > clipY ) )
+			&& (x < clipX + clipWidth && x + item.itemWidth > clipX) ) 
+		{
 			item.paint(x, y, leftBorder, rightBorder, g);
+//		} else {
+//			System.out.println("clipY=" + clipY + ", clipHeight=" + clipHeight + ", y=" + y + ", item.internalY=" + item.internalY + ", item.internalHeight=" + item.internalHeight + ", item.internalX=" + item.internalX);
 		}
-	}
+	} 
 
 	/**
 	 * Interpretes the given user-input and retrieves the nexte item which should be focused.

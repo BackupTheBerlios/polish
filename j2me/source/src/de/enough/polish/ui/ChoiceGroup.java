@@ -1152,8 +1152,13 @@ implements Choice
 			}
 		//#endif
 		if (this.isPopup && this.isPopupClosed) {
+			int availableWidth = rightBorder - leftBorder;
+			if (availableWidth < this.popupItem.contentWidth) {
+				this.popupItem.init(availableWidth, availableWidth);
+			}
 			this.popupItem.paintContent(x, y, leftBorder, rightBorder, g);
 		} else {
+			//System.out.println("painting popup content at y=" + y + ", yScrollOffse=" + this.yOffset + ", clipY=" + g.getClipY() + ", clipHeight=" + g.getClipHeight());
 			super.paintContent(x, y, leftBorder, rightBorder, g );
 		}
 	}
@@ -1223,6 +1228,8 @@ implements Choice
 	private void closePopup() {
 		this.isPopupClosed = true;
 		if (this.parent instanceof Container) {
+			//#debug
+			System.out.println("closing popup and adjusting scroll y offset to " + this.popupParentOpenY);
 			((Container)this.parent).setScrollYOffset( this.popupParentOpenY );
 			this.internalX = -9999;
 		}
@@ -1235,6 +1242,8 @@ implements Choice
 		//this.popupOpenY = this.yTopPos; 
 		if (this.parent instanceof Container) {
 			this.popupParentOpenY = ((Container)this.parent).getScrollYOffset();
+			//#debug
+			System.out.println("opening popup and storing scroll y offset of " + this.popupParentOpenY);
 		}
 		this.isPopupClosed = false;
 		focus( this.selectedIndex );

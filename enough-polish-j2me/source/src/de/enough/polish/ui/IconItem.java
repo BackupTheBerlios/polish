@@ -197,7 +197,7 @@ implements ImageConsumer
 				this.contentWidth = this.imageWidth;
 			}
 		}
-	}
+	} 
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, javax.microedition.lcdui.Graphics)
@@ -245,6 +245,7 @@ implements ImageConsumer
 						scaleY = y - ((sHeight - this.image.getHeight()) / 2) + this.yAdjustImage;
 					} else {
 				//#endif
+				//System.out.println("painting right icon leftBorder=" + leftBorder + ", x=" + x + ", rightBorder=" + rightBorder + ", x+contentWidth=" + (x + this.contentWidth) + " for " + getText());
 				g.drawImage(this.image, x + this.contentWidth, y + this.yAdjustImage, Graphics.TOP | Graphics.RIGHT );
 				//#if polish.midp2 && polish.css.scale-factor
 					}

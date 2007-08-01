@@ -778,11 +778,9 @@ public class Container extends Item {
 		if (item.internalX != -9999) {
 			int relativeInternalX = item.relativeX + item.contentX + item.internalX;
 			int relativeInternalY = item.relativeY + item.contentY + item.internalY;
-//			System.out.println("scrolling to internal y coordinate " + relativeInternalY + ", height=" +  item.internalHeight );
-//			if (item instanceof Container) {
-//				Container cont = (Container) item;
-//				System.out.println( "relY=" + (cont.relativeY + cont.contentY + cont.focusedItem.relativeY + cont.focusedItem.contentY) + ", absY=" + cont.focusedItem.getAbsoluteY() + ", height=" + cont.focusedItem.itemHeight );
-//			}
+			if (item instanceof Container) {
+				Container cont = (Container) item;
+			}
 			scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
 		} else {
 			scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );			
@@ -1087,6 +1085,9 @@ public class Container extends Item {
 				//#debug
 				System.out.println("fowarding paint call to " + this.containerView );
 				this.containerView.paintContent( this, x, y, leftBorder, rightBorder, g);
+				if (setClipping) {
+					g.setClip(clipX, clipY, clipWidth, clipHeight);
+				}
 			} else {
 		//#endif
 			Item[] myItems;
@@ -1116,7 +1117,7 @@ public class Container extends Item {
 				} else if ( y + item.itemHeight >= startY && y < endY ){
 					// the currently focused item is painted last
 					item.paint(x, y, leftBorder, rightBorder, g);
-					//System.out.println("painting item at " + x + ", " + y + " - x+item.relativeX=" + (x+ item.relativeX) + ", y+item.relativeY=" + (originalY + item.relativeY) );
+//					System.out.println("painting item at " + x + ", " + y + " - x+item.relativeX=" + (x+ item.relativeX) + ", y+item.relativeY=" + (y + item.relativeY) );
 //				} else {
 //					System.out.println("skipping " + item);
 				}
@@ -1128,6 +1129,9 @@ public class Container extends Item {
 				}
 			}
 	
+			if (setClipping) {
+				g.setClip(clipX, clipY, clipWidth, clipHeight);
+			}
 			
 			// paint the currently focused item:
 			if (focItem != null) {
@@ -1137,38 +1141,7 @@ public class Container extends Item {
 		//#ifdef tmp.supportViewType
 			}
 		//#endif
-		
-		// outcommented by rob - 2006-07-13 & 2007-06-12 - now positions are determined in the initContent() method already
-//		Item item = this.focusedItem;
-//		if (item != null) {
-//			if (item.internalX != -9999) {
-//				// inherit the internal area of the focused item:
-//				this.internalX =  item.contentX + item.internalX;
-//				this.internalWidth = item.internalWidth;
-//				this.internalY = item.contentY+ item.internalY;
-//				this.internalHeight = item.internalHeight;
-//			} else {
-//				// use the item as my internal area:
-//				this.internalX = item.relativeX ;
-//				this.internalWidth = item.itemWidth;
-//				this.internalY = item.relativeY; //(item.yTopPos - this.yOffset) - this.contentY;
-//				this.internalHeight = item.itemHeight;
-//			}
-//			if (this.isFirstPaint) {
-//				this.isFirstPaint = false;
-//				if (this.enableScrolling) {
-//					if ( this.contentY + this.internalY + this.internalHeight > this.yBottom ) {
-//						//#debug
-//						System.out.println("first paint, now scrolling...");
-//						scroll( true, this.contentX, this.contentY + this.internalY, this.contentWidth, this.internalHeight + 3 ); // + 3 gives room for a focused border etc
-//					}
-//				}
-//			}
-//		}
 
-		if (setClipping) {
-			g.setClip(clipX, clipY, clipWidth, clipHeight);
-		}
 	}
 
 	//#ifdef polish.useDynamicStyles
