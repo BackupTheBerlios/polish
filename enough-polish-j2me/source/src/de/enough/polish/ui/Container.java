@@ -1719,7 +1719,7 @@ public class Container extends Item {
 			int newFocusIndex = this.focusedIndex;
 			//if (this.focusedIndex == -1) {
 			//#if tmp.supportViewType
-				if (this.containerView != null && this.containerView.allowsAutoTraversal) {
+				if ( this.containerView == null || this.containerView.allowsAutoTraversal ) {
 			//#endif
 				Item[] myItems = getItems();
 				// focus the first interactive item...
