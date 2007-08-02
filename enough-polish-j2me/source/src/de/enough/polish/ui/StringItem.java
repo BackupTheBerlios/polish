@@ -498,6 +498,7 @@ public class StringItem extends Item
 		if (this.text == null) {
 			this.contentHeight = 0;
 			this.contentWidth = 0;
+			this.textLines = null;
 			return;
 		}
 		//#ifdef polish.css.font-bitmap
