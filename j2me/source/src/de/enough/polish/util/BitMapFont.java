@@ -74,6 +74,73 @@ public final class BitMapFont {
 		System.out.println("Creating bitmap font " + fontUrl );
 	}
 	
+	private void initFont() {
+		// try to load the *.bmf file:
+		InputStream in = null;
+		try {
+			in = getClass().getResourceAsStream(this.fontUrl);
+			if (in == null) {
+				return;
+			}
+			DataInputStream dataIn = new DataInputStream( in );
+			this.hasMixedCase = dataIn.readBoolean();
+			String map = dataIn.readUTF();
+			this.characterMap = map;
+			this.spaceIndex = map.indexOf(' ');
+			int length = map.length();
+			this.characterWidths = new byte[ length ];
+			this.xPositions = new short[ length ];
+			short xPos = 0;
+			for (int i = 0; i < length; i++ ) {
+				byte width = dataIn.readByte();
+				this.characterWidths[i] = width;
+				this.xPositions[i] = xPos;
+				xPos += width;
+			}
+			//#ifdef polish.midp2
+				this.fontImage = Image.createImage( in );
+			//#else
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				byte[] pngBuffer = new byte[ 3 * 1024 ];
+				int read;
+				while ( (read = in.read(pngBuffer, 0, pngBuffer.length)) != -1) {
+					out.write(pngBuffer, 0, read );
+				}
+				pngBuffer = out.toByteArray();
+				out = null;
+				this.fontImage = Image.createImage(pngBuffer, 0, pngBuffer.length);
+				/*
+				 * in.available() always returns 0 on Nokia and Motorola devices
+				int pngLength = dataIn.available();
+				//#debug
+				System.out.println("BitMapFont: There are " + pngLength + " bytes available in the stream.");
+				byte[] pngBuffer = new byte[ pngLength ];
+				// defensive loading of the buffer, since
+				// not all implementations do read the full
+				// buffer in in.read( byte[] ):
+				dataIn.readFully(pngBuffer);
+				this.fontImage = Image.createImage(pngBuffer, 0, pngBuffer.length);
+				*/
+			//#endif
+			this.fontHeight = this.fontImage.getHeight();
+			this.fontUrl = null;
+		} catch (IOException e) {
+			//#debug error
+			System.out.println("Unable to load bitmap-font [" + this.fontUrl + "]" + e);
+		//#ifndef polish.Bugs.ImageIOStreamAutoClose
+		} finally {
+			if (in != null) {
+				try { 
+					in.close();
+				} catch (IOException e) {
+					//#debug error
+					System.out.println("Unable to close bitmap-font stream" + e);
+				}
+			}
+		//#endif
+		}
+	}
+	
 	/**
 	 * Creates a viewer object for the given string.
 	 * 
@@ -82,70 +149,9 @@ public final class BitMapFont {
 	 */
 	public BitMapFontViewer getViewer( String input ) {
 		if (this.fontImage == null) {
-			// try to load the *.bmf file:
-			InputStream in = null;
-			try {
-				in = getClass().getResourceAsStream(this.fontUrl);
-				if (in == null) {
-					return null;
-				}
-				DataInputStream dataIn = new DataInputStream( in );
-				this.hasMixedCase = dataIn.readBoolean();
-				String map = dataIn.readUTF();
-				this.characterMap = map;
-				this.spaceIndex = map.indexOf(' ');
-				int length = map.length();
-				this.characterWidths = new byte[ length ];
-				this.xPositions = new short[ length ];
-				short xPos = 0;
-				for (int i = 0; i < length; i++ ) {
-					byte width = dataIn.readByte();
-					this.characterWidths[i] = width;
-					this.xPositions[i] = xPos;
-					xPos += width;
-				}
-				//#ifdef polish.midp2
-					this.fontImage = Image.createImage( in );
-				//#else
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
-					byte[] pngBuffer = new byte[ 3 * 1024 ];
-					int read;
-					while ( (read = in.read(pngBuffer, 0, pngBuffer.length)) != -1) {
-						out.write(pngBuffer, 0, read );
-					}
-					pngBuffer = out.toByteArray();
-					out = null;
-					this.fontImage = Image.createImage(pngBuffer, 0, pngBuffer.length);
-					/*
-					 * in.available() always returns 0 on Nokia and Motorola devices
-					int pngLength = dataIn.available();
-					//#debug
-					System.out.println("BitMapFont: There are " + pngLength + " bytes available in the stream.");
-					byte[] pngBuffer = new byte[ pngLength ];
-					// defensive loading of the buffer, since
-					// not all implementations do read the full
-					// buffer in in.read( byte[] ):
-					dataIn.readFully(pngBuffer);
-					this.fontImage = Image.createImage(pngBuffer, 0, pngBuffer.length);
-					*/
-				//#endif
-				this.fontHeight = this.fontImage.getHeight();
-				this.fontUrl = null;
-			} catch (IOException e) {
-				//#debug error
-				System.out.println("Unable to load bitmap-font [" + this.fontUrl + "]" + e);
+			initFont();
+			if (this.fontImage == null) {
 				return null;
-			//#ifndef polish.Bugs.ImageIOStreamAutoClose
-			} finally {
-				if (in != null) {
-					try { 
-						in.close();
-					} catch (IOException e) {
-						//#debug error
-						System.out.println("Unable to close bitmap-font stream" + e);
-					}
-				}
-			//#endif
 			}
 		}
 		//int imageWidth = this.fontImage.getWidth();
@@ -189,5 +195,26 @@ public final class BitMapFont {
 	 */
 	public static void removeInstance(String url) {
 		fontsByUrl.remove( url );
+	}
+
+	/**
+	 * Retrieves the width of the given character
+	 * @param c the character 
+	 * @return -1 if unknown otherwise the width for the given character
+	 */
+	public int charWidth(char c) {
+		if (this.fontImage == null) {
+			initFont();
+			if (this.fontImage == null) {
+				return -1;
+			}
+		}
+		for (int i=0; i<this.characterMap.length(); i++ ) {
+			char cm = this.characterMap.charAt(i);
+			if (cm == c) {
+				return this.characterWidths[i]; 
+			}
+		}
+		return -1;
 	}
 }

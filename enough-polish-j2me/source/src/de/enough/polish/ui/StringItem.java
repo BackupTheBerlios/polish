@@ -59,10 +59,7 @@ public class StringItem extends Item
 		protected int xOffset;
 		private int textWidth;
 		private boolean isHorizontalAnimationDirectionRight;
-		//#if polish.css.text-wrap-animate
-			private boolean animateTextWrap = true;
-		//#endif
-		//private boolean isSkipHorizontalAnimation;
+		protected boolean animateTextWrap = true;
 	//#endif
 	//#ifdef polish.css.text-horizontal-adjustment
 		protected int textHorizontalAdjustment;
@@ -197,26 +194,22 @@ public class StringItem extends Item
 			}
 		//#endif
 		//#if polish.css.text-wrap
-			//#if polish.css.text-wrap-animate
-				if (this.animateTextWrap) {
-			//#endif
-					if (this.useSingleLine && this.clipText) {
-						if (this.isHorizontalAnimationDirectionRight) {
-							this.xOffset++;
-							if (this.xOffset >= 0) {
-								this.isHorizontalAnimationDirectionRight = false;
-							}
-						} else {
-							this.xOffset--;
-							if (this.xOffset + this.textWidth < this.contentWidth) {
-								this.isHorizontalAnimationDirectionRight = true;
-							}
+			if (this.animateTextWrap) {
+				if (this.useSingleLine && this.clipText) {
+					if (this.isHorizontalAnimationDirectionRight) {
+						this.xOffset++;
+						if (this.xOffset >= 0) {
+							this.isHorizontalAnimationDirectionRight = false;
 						}
-						animated = true;
+					} else {
+						this.xOffset--;
+						if (this.xOffset + this.textWidth < this.contentWidth) {
+							this.isHorizontalAnimationDirectionRight = true;
+						}
 					}
-			//#if polish.css.text-wrap-animate
+					animated = true;
 				}
-			//#endif
+			}
 		//#endif
 		return animated;
 	}

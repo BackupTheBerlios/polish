@@ -536,7 +536,7 @@ public class ChoiceTextField
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		super.paintContent(x, y, leftBorder, rightBorder, g);
 		if ( this.isFocused && this.numberOfMatches > 0 ) {
-			// paint containert
+			// paint container:
 			y += this.contentHeight + this.paddingVertical;
 			this.choicesContainer.paint(x, y, leftBorder, rightBorder, g);			
 		}

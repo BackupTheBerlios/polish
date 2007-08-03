@@ -963,6 +963,9 @@ public class Container extends Item {
 					System.out.println("initContent(): scroll is required - scrolling to y=" + myContentHeight + ", height=" + height);
 					scroll( 0, 0, myContentHeight, width, height );
 					this.isScrollRequired = false;
+				} else if (item.internalX != -9999 ) {
+					// ensure that lines of textfields etc are within the visible area:
+					scroll(0, item );
 				}
 			} 
 			if (width > myContentWidth) {
