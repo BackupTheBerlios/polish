@@ -102,6 +102,15 @@
 			<param name="repeat" type="boolean" primitive="true" default="true" />
 			<param name="back-and-forth" type="boolean" primitive="true" default="true" />
 		</mapping>
+		<mapping from="pulsating-round-rect"           to="de.enough.polish.ui.backgrounds.PulsatingRoundRectBackground" >
+			<param name="start-color" type="color" primitive="true" default="white" />
+			<param name="end-color" type="color" primitive="true" default="gray" />
+			<param name="steps" type="integer" primitive="true" default="8" />
+			<param name="repeat" type="boolean" primitive="true" default="true" />
+			<param name="back-and-forth" type="boolean" primitive="true" default="true" />
+			<param name="arc-width" type="integer" primitive="true" default="4" />
+			<param name="arc-height" type="integer" primitive="true" default="4" />			
+		</mapping>
 		<mapping from="pulsating-circle"    to="de.enough.polish.ui.backgrounds.PulsatingCircleBackground" converter="de.enough.polish.preprocess.backgrounds.PulsatingCircleBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
 			<param name="min-diameter" type="integer" primitive="true" default="8" />
@@ -270,6 +279,24 @@
 			<param name="bottom-left" type="image-url" default="none" />
 			<param name="bottom-center" type="image-url" default="none" />
 			<param name="bottom-right" type="image-url" default="none" />
+		</mapping>
+		<mapping from="pulsating-round-rect"           to="de.enough.polish.ui.borders.PulsatingRoundRectBorder" >
+			<param name="width" type="integer" primitive="true" default="1" />
+			<param name="start-color" type="color" primitive="true" default="white" />
+			<param name="end-color" type="color" primitive="true" default="gray" />
+			<param name="steps" type="integer" primitive="true" default="8" />
+			<param name="repeat" type="boolean" primitive="true" default="true" />
+			<param name="back-and-forth" type="boolean" primitive="true" default="true" />
+			<param name="arc-width" type="integer" primitive="true" default="4" />
+			<param name="arc-height" type="integer" primitive="true" default="4" />			
+		</mapping>
+		<mapping from="pulsating"           to="de.enough.polish.ui.borders.PulsatingSimpleBorder" >
+			<param name="width" type="integer" primitive="true" default="1" />
+			<param name="start-color" type="color" primitive="true" default="white" />
+			<param name="end-color" type="color" primitive="true" default="gray" />
+			<param name="steps" type="integer" primitive="true" default="8" />
+			<param name="repeat" type="boolean" primitive="true" default="true" />
+			<param name="back-and-forth" type="boolean" primitive="true" default="true" />
 		</mapping>
 	</attribute>		
 		<!--

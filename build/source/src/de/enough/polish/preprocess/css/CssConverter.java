@@ -480,13 +480,13 @@ public class CssConverter extends Converter {
 		if ( group != null ) {
 			processBorder( style.getSelector(), group, style, codeList, styleSheet, false, environment );
 		} else {
-			codeList.add("\t\tnull\t// no border");
+			codeList.add("\t\tnull, \t// no border");
 		}
 		
 		// now add all additional non standard-properties:
 		String[] groupNames = style.getGroupNames();
 		if (groupNames.length == 0) {
-			codeList.add( "\t\t, null, null\t// no additional attributes have been defined" );
+			codeList.add( "\t\tnull, null\t// no additional attributes have been defined" );
 		} else {
 			// counting the number of special attributes:
 			int numberOfAttributes = 0;
@@ -581,8 +581,8 @@ public class CssConverter extends Converter {
 			}
 			keyList.append("}");
 			valueList.append("}");
-			codeList.add( "\t\t, " + keyList.toString());
-			codeList.add( "\t\t, " + valueList.toString());
+			codeList.add( "\t\t" + keyList.toString() + ",");
+			codeList.add( "\t\t" + valueList.toString());
 		} // if there are any non-standard attribute-groups
 		
 		// close the style definition:
@@ -734,40 +734,57 @@ public class CssConverter extends Converter {
 				if (isStandalone) {
 					codeList.add( STANDALONE_MODIFIER + "Border " + borderName + "Border = null;\t// border:none was specified");
 				} else {
-					codeList.add( "\t\tnull\t// border:none was specified"); // no comma since border is the last argument
+					codeList.add( "\t\tnull,\t// border:none was specified");
 				}
 			} else {
 				// a reference to an existing border is given:
 				if (isStandalone) {
 					codeList.add( STANDALONE_MODIFIER + "Border " + borderName + "Border = " + reference + "Border;");
 				} else {
-					codeList.add( "\t\t" + reference + "Border "); // no comma since border is the last argument
+					codeList.add( "\t\t" + reference + "Border, ");
 				}
 			}
 			return;
 		}
-		String type = (String) group.get("type");
+		String type = getAttributeValue("border", "type", group );
 		String originalType = type;
 		if (type == null) {
 			type = "simple";
 		} else {
 			type = type.toLowerCase();
 		}
-		String className = this.borderAttribute.getValue( type, env );
-		if (className == null) {
-			className = originalType;
-		}
-		try {
-			BorderConverter creator =  (BorderConverter) Class.forName(className).newInstance();
-			creator.setColorConverter(this.colorConverter);
-			creator.addBorder( codeList, group, borderName, style, styleSheet, isStandalone );
-		} catch (ClassNotFoundException e) {
-			throw new BuildException("Invalid CSS: unable to load border-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
-		} catch (BuildException e) {
-			throw e;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new BuildException("Invalid CSS: unable to load border-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
+		CssMapping mapping = this.borderAttribute.getMapping(type);
+		if (mapping != null && mapping.getConverter() == null) {
+			String code = this.parameterizedAttributeConverter.createNewStatement(this.borderAttribute, (ParameterizedCssMapping)mapping, group, env);
+			if (isStandalone) {
+				codeList.add( STANDALONE_MODIFIER + "Border " + borderName + "Border = " + code + ";");
+			} else {
+				codeList.add( code + ", " );
+			}
+		} else {
+			// old style converter is used
+			String className;
+			if (mapping != null) {
+				className = mapping.getConverter();
+			} else {
+				className = this.borderAttribute.getValue( type, env );
+			}
+			if (className == null) {
+				System.out.println("Warning: unable to resolve border-type [" + type + "] - please check your polish.css or register this border-type in ${polish.home}/custom-css-attributes.");
+				className = originalType;
+			}
+			try {
+				BorderConverter creator =  (BorderConverter) Class.forName(className).newInstance();
+				creator.setColorConverter(this.colorConverter);
+				creator.addBorder( codeList, group, borderName, style, styleSheet, isStandalone );
+			} catch (ClassNotFoundException e) {
+				throw new BuildException("Invalid CSS: unable to load border-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
+			} catch (BuildException e) {
+				throw e;
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new BuildException("Invalid CSS: unable to load border-type [" + type + "] with class [" + className + "]:" + e.getMessage() +  " (" + e.getClass().getName() + ")\nMaybe you need to adjust the CLASSPATH setting.", e );
+			}
 		}
 	}
 

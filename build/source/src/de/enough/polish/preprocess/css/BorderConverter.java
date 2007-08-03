@@ -98,8 +98,7 @@ public abstract class BorderConverter extends Converter {
 		if (isStandalone) {
 			newStatement = "\t\t" + newStatement + ";";
 		} else {
-			newStatement = "\t\t" + newStatement; // border is the last argument of a style,
-										  // so no comma needs to be appended
+			newStatement = "\t\t" + newStatement + ","; 
 		}
 		codeList.add( newStatement);
 	}
