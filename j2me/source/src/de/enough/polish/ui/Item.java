@@ -2223,6 +2223,9 @@ public abstract class Item extends Object
 		if (this.background != null) {
 			animated = this.background.animate();
 		}
+		if (this.border != null) {
+			animated |= this.border.animate();
+		}
 		//#if polish.css.view-type
 			if (this.view != null) {
 				animated |= this.view.animate();

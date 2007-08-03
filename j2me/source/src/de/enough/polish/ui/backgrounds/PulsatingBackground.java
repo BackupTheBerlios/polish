@@ -59,9 +59,6 @@ public class PulsatingBackground extends Background {
 	private final boolean backAndForth;
 	private boolean directionUp = true;
 	private boolean animationStopped;
-	private int startColor;
-	private int endColor;
-	private int steps;
 	
 
 	/**
@@ -74,9 +71,6 @@ public class PulsatingBackground extends Background {
 	public PulsatingBackground(int startColor, int endColor, int steps, boolean repeat,  boolean backAndForth) 
 	{
 		this( DrawUtil.getGradient(startColor, endColor, steps), repeat, backAndForth );
-		this.startColor = startColor;
-		this.endColor = endColor;
-		this.steps = steps;
 	}
 
 	/**

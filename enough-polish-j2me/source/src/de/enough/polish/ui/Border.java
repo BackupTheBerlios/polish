@@ -63,4 +63,14 @@ public abstract class Border implements Serializable {
 	 */
 	public abstract void paint( int x, int y, int width, int height, Graphics g );
 	
+	
+	/**
+	 * Animates this border.
+	 * Subclasses can override this method to create animations.
+	 * 
+	 * @return true when this border has been animated and needs a repaint.
+	 */
+	public boolean animate() {
+		return false;
+	}
 }

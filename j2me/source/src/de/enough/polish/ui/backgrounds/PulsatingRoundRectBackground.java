@@ -51,14 +51,18 @@ import javax.microedition.lcdui.Graphics;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class PulsatingBackground extends Background {
+public class PulsatingRoundRectBackground extends Background {
 	private int currentColor;
-	private final int[] colors;
 	private int currentStep;
 	private final boolean repeat;
 	private final boolean backAndForth;
 	private boolean directionUp = true;
 	private boolean animationStopped;
+	private final int startColor;
+	private final int endColor;
+	private final int steps;
+	private final int arcWidth;
+	private final int arcHeight;
 	
 
 	/**
@@ -67,32 +71,28 @@ public class PulsatingBackground extends Background {
 	 * @param steps
 	 * @param repeat
 	 * @param backAndForth
+	 * @param arcWidth the horizontal diameter of the arc at the four corners
+	 * @param arcHeight the vertical diameter of the arc at the four corners
 	 */
-	public PulsatingBackground(int startColor, int endColor, int steps, boolean repeat,  boolean backAndForth) 
+	public PulsatingRoundRectBackground(int startColor, int endColor, int steps, boolean repeat,  boolean backAndForth, int arcWidth, int arcHeight) 
 	{
-		this( DrawUtil.getGradient(startColor, endColor, steps), repeat, backAndForth );
-	}
-
-	/**
-	 * @param colors
-	 * @param repeat
-	 * @param backAndForth
-	 */
-	public PulsatingBackground(int[] colors, boolean repeat, boolean backAndForth) 
-	{
-		super();
-		this.currentColor = colors[0];
-		this.colors = colors;
+		this.startColor = startColor;
+		this.endColor = endColor;
+		this.steps = steps;
 		this.repeat = repeat;
 		this.backAndForth = backAndForth;
+		this.arcWidth = arcWidth;
+		this.arcHeight = arcHeight;
+		this.currentColor = startColor;
 	}
+
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		g.setColor( this.currentColor );
-		g.fillRect(x, y, width + 1, height + 1);
+		g.fillRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
 	}
 	
 	/* (non-Javadoc)
@@ -105,7 +105,7 @@ public class PulsatingBackground extends Background {
 		if (this.backAndForth) {
 			if (this.directionUp) {
 				this.currentStep++;
-				if (this.currentStep == this.colors.length ) {
+				if (this.currentStep > this.steps ) {
 					this.currentStep--;
 					this.directionUp = false;
 				}
@@ -122,7 +122,7 @@ public class PulsatingBackground extends Background {
 			}
 		} else {
 			this.currentStep++;
-			if (this.currentStep == this.colors.length ) {
+			if (this.currentStep > this.steps ) {
 				if (this.repeat) {
 					this.currentStep = 0;
 				} else {
@@ -132,7 +132,7 @@ public class PulsatingBackground extends Background {
 			}
 			
 		}
-		this.currentColor = this.colors[ this.currentStep ];
+		this.currentColor = DrawUtil.getGradientColor(this.startColor, this.endColor, this.currentStep, this.steps );
 		return true;
 	}
 

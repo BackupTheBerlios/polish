@@ -1159,6 +1159,9 @@ implements AccessibleCanvas
 				if (this.background != null) {
 					animated = this.background.animate();
 				}
+				if (this.border != null) {
+					animated |= this.border.animate();
+				}
 				//#ifdef tmp.menuFullScreen
 					//#ifdef tmp.useExternalMenuBar
 						animated = animated | this.menuBar.animate();

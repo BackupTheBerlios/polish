@@ -41,7 +41,7 @@ import javax.microedition.lcdui.Graphics;
  */
 public class RoundRectBorder extends Border {
 
-	private final int color;
+	protected int color;
 	private final int arcWidth;
 	private final int arcHeight;
 
