@@ -9708,6 +9708,21 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
+		<identifier>BlackBerry/Curve, BlackBerry/8300</identifier>
+		<features>hasTrackballEvents,isDoubleBuffered</features>
+		<capability name="ScreenSize" value="320x240"/>
+		<capability name="FullCanvasSize" value="320x240"/>
+		<capability name="CanvasSize" value="320x240"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.2"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
+		<capability name="SoundFormat" value="amr, nb-amr"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
+	</device>
+
+	<device>
 		<identifier>BlackBerry/Pearl, BlackBerry/8100</identifier>
 		<features>hasTrackballEvents</features>
 		<capability name="ScreenSize" value="240x260"/>
@@ -9725,7 +9740,7 @@ These namespaces/schemas will be used soon.
 		<identifier>BlackBerry/5810</identifier>
 		<capability name="ScreenSize" value="160x160"/>
 		<capability name="BitsPerPixel" value="1"/>
-		<capability name="JavaPlatform" value="MIDP/1.0, BlackBerry"/>
+		<capability name="JavaPlatform" value="MIDP/1.0, BlackBerry/4.1"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
@@ -9735,7 +9750,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="240x160"/>
 		<capability name="FullCanvasSize" value="240x160"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.1"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
@@ -9745,7 +9760,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="240x260"/>
 		<capability name="FullCanvasSize" value="240x260"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.1"/>
 		<capability name="JavaPackage" value="wmapi"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
@@ -9753,11 +9768,24 @@ These namespaces/schemas will be used soon.
 	</device>
 	
 	<device>
+		<identifier>BlackBerry/7130g</identifier>
+		<capability name="ScreenSize" value="240x260"/>
+		<capability name="FullCanvasSize" value="240x260"/>
+		<capability name="CanvasSize" value="240x260"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.1"/>
+		<capability name="JavaPackage" value="wmapi"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+	</device>
+
+	<device>
 		<identifier>BlackBerry/7520</identifier>
 		<capability name="ScreenSize" value="240x160"/>
 		<capability name="FullCanvasSize" value="240x160"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.1"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="locationapi, wmapi"/>
 		<capability name="SoundFormat" value="vnf"/>

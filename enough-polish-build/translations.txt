@@ -25,6 +25,13 @@ polish.title.input=Input
 # used for showing a screen for selecting symbols within TextFields:
 polish.command.entersymbol=Add Symbol
 # used for predictive setup
+polish.predictive.command.enable=Enable Predictive Input
+polish.predictive.command.disable=Disable Predictive Input
+polish.predictive.registerNewWord.label=New Word: 
+polish.predictive.registerNewWord.command=Add New Word
+polish.predictive.download.title=Predictive Text
+polish.predictive.download.message=The dictionary could not be found. Press OK to exit the application and download the dictionary.
+
 setup.info=Installing the dictionary used for predictive input. Please wait a moment ...
 setup.status.delete=Deleting previous installation ...
 setup.status.install=Installing ...
