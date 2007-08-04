@@ -2089,11 +2089,18 @@ public abstract class Item extends Object
 			item = this.parent;
 		}
 		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
-				&& (item.defaultCommand != null)
-				&& (item.itemCommandListener != null)) 
+				&& (item.defaultCommand != null) )
 		{
-			item.itemCommandListener.commandAction(item.defaultCommand, this);
-			return true;
+			if (item.itemCommandListener != null) {
+				item.itemCommandListener.commandAction(item.defaultCommand, this);
+				return true;
+			}
+			
+			Screen scr = getScreen();
+			if (scr != null ) {
+				scr.callCommandListener(item.defaultCommand);
+				return true;
+			}
 		}
 		return false;
 	}

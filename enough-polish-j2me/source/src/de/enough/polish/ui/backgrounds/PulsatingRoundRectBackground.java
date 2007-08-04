@@ -92,7 +92,7 @@ public class PulsatingRoundRectBackground extends Background {
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		g.setColor( this.currentColor );
-		g.fillRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
+		g.fillRoundRect( x, y, width - 1, height, this.arcWidth, this.arcHeight );
 	}
 	
 	/* (non-Javadoc)

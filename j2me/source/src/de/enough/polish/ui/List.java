@@ -215,7 +215,6 @@ public class List extends Screen implements Choice
 	protected int listType;
 	private ChoiceGroup choiceGroup;
 	//#ifdef polish.css.show-text-in-title
-		private ArrayList titles;
 		private boolean showTextInTitle;
 	//#endif
 
@@ -522,16 +521,10 @@ public class List extends Screen implements Choice
 	{
 		//#ifdef polish.css.show-text-in-title
 			if (this.showTextInTitle){
+				item.setTextVisible(false);
 				String stringPart = item.getText();
-				if (item.getImage() != null && stringPart != null) {
-					item.setText( null );
-					this.titles.add( stringPart );
-					if (this.titles.size() == 1) {
-						// now set the title of the first item:
-						setTitle( stringPart );
-					}
-				} else {
-					this.titles.add( "" );
+				if (this.choiceGroup.size() == 0) {
+					setTitle( stringPart );
 				}
 			}
 		//#endif
@@ -629,6 +622,11 @@ public class List extends Screen implements Choice
 	public void set(int elementNum, String stringPart, Image imagePart, Style elementStyle )
 	{
 		this.choiceGroup.set(elementNum, stringPart, imagePart, elementStyle);
+		//#ifdef polish.css.show-text-in-title
+			if (this.showTextInTitle && elementNum == this.choiceGroup.getFocusedIndex()) {
+				setTitle( stringPart );
+			}
+		//#endif
 	}
 
 	/**
@@ -654,11 +652,6 @@ public class List extends Screen implements Choice
 	 */
 	public void delete(int elementNum)
 	{
-		//#ifdef polish.css.show-text-in-title
-			if (this.showTextInTitle){
-				this.titles.remove(elementNum);
-			}
-		//#endif
 		this.choiceGroup.delete(elementNum);
 		if (this.choiceGroup.size() == 0 ) {
 			if (this.listType == IMPLICIT && this.selectCommand != null ) {
@@ -676,11 +669,6 @@ public class List extends Screen implements Choice
 	 */
 	public void deleteAll()
 	{
-		//#ifdef polish.css.show-text-in-title
-			if (this.showTextInTitle){
-				this.titles.clear();
-			}
-		//#endif
 		this.choiceGroup.deleteAll();
 		if (this.listType == IMPLICIT && this.selectCommand != null) {
 			super.removeCommand( this.selectCommand );
@@ -974,27 +962,23 @@ public class List extends Screen implements Choice
 		Boolean showTextInTitleBool = style.getBooleanProperty("show-text-in-title");
 		if (showTextInTitleBool != null) { 
 			this.showTextInTitle = showTextInTitleBool.booleanValue();  
-			if (this.showTextInTitle && this.titles == null) {
-				this.titles = new ArrayList();
+			if (this.showTextInTitle ) {
 				// now remove all texts from the embedded items:
 				Item[] items = this.choiceGroup.getItems();
 				for (int i = 0; i < items.length; i++) {
 					ChoiceItem item = (ChoiceItem) items[i];
-					String text = item.getText();
-					if (text != null) {
-						item.setText( null );
-						this.titles.add( text );
-						if (i == 0) {
-							setTitle( text );
-						}
-					} else {
-						this.titles.add( "" );
-					}
+					item.setTextVisible(false);
+				}
+				if (this.choiceGroup.getFocusedIndex() !=  -1) {
+					setTitle( ((ChoiceItem)(items[this.choiceGroup.getFocusedIndex()])).getText() );
+				} else if (items.length > 0) {
+					setTitle( ((ChoiceItem)(items[0])).getText() );
 				}
 			}
 		}
 	}
 	//#endif
+	
 	
 	//#ifdef polish.css.show-text-in-title
 	/* (non-Javadoc)
@@ -1005,11 +989,12 @@ public class List extends Screen implements Choice
 		if (processed && this.showTextInTitle) {
 			int selectedIndex = this.choiceGroup.getSelectedIndex();
 			if (selectedIndex != -1) {
-				setTitle( (String) this.titles.get( selectedIndex ) ); 
+				setTitle( getString( selectedIndex ) ); 
 			}
 		}
 		return processed;
 	}
 	//#endif
+
 	
 }

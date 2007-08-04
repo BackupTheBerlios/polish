@@ -146,9 +146,8 @@ public class TabloidPressScreenChangeAnimation extends ScreenChangeAnimation {
 		}
 	}
 	
-	public void keyPressed(int keyCode) {
-		super.keyPressed(keyCode);
-		this.nextCanvasImage.getRGB( this.rgbbuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
+	public void handleKeyPressed(int keyCode, Image next) {
+		next.getRGB( this.rgbbuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 	}
 
 	//#if polish.hasPointerEvents

@@ -232,6 +232,9 @@ implements AccessibleCanvas
 		//#if polish.css.scrollbar-position
 			protected boolean paintScrollBarOnRightSide = true;
 		//#endif
+		//#if polish.css.show-scrollbar
+			protected boolean scrollBarVisible = true;
+		//#endif
 	//#elif !polish.deactivateScrollIndicator
 		//#define tmp.useScrollIndicator
 		private boolean paintScrollIndicator;
@@ -666,19 +669,25 @@ implements AccessibleCanvas
 			height -= topHeight;	
 		//#endif
 		//#if tmp.useScrollBar
-			if ( this.container != null ) {
-				this.scrollBar.scrollBarHeight = height;
-				//System.out.println("calculateContentArea for " + this + ": container.isInitialised=" + this.container.isInitialised );
-				int scrollBarWidth = this.scrollBar.getItemWidth(width, width);
-				int containerHeight = this.container.getItemHeight(width - scrollBarWidth, width - scrollBarWidth);
-				if (containerHeight > height) {
-					//System.out.println("calculateContentArea for" + this + ": scrollBar is required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
-					width -= scrollBarWidth;
-				} else {
-					//System.out.println("calculateContentArea for" + this + ": scrollBar is NOT required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
-					this.container.requestFullInit();
+			//#if polish.css.show-scrollbar
+				if ( this.scrollBarVisible ) {
+			//#endif
+					if ( this.container != null ) {
+						this.scrollBar.scrollBarHeight = height;
+						//System.out.println("calculateContentArea for " + this + ": container.isInitialised=" + this.container.isInitialised );
+						int scrollBarWidth = this.scrollBar.getItemWidth(width, width);
+						int containerHeight = this.container.getItemHeight(width - scrollBarWidth, width - scrollBarWidth);
+						if (containerHeight > height) {
+							//System.out.println("calculateContentArea for" + this + ": scrollBar is required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
+							width -= scrollBarWidth;
+						} else {
+							//System.out.println("calculateContentArea for" + this + ": scrollBar is NOT required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
+							this.container.requestFullInit();
+						}
+					}
+			//#if polish.css.show-scrollbar
 				}
-			}
+			//#endif
 		//#endif
 			
 		// now set the content coordinates:	
@@ -1055,6 +1064,12 @@ implements AccessibleCanvas
 			}
 			if (scrollBarPositionInt != null) {
 				this.paintScrollBarOnRightSide = (scrollBarPositionInt.intValue() != POSITION_LEFT);
+			}
+		//#endif
+		//#if tmp.useScrollBar && polish.css.show-scrollbar
+			Boolean showScrollBarBool = style.getBooleanProperty("show-scrollbar");
+			if (showScrollBarBool != null) {
+				this.scrollBarVisible = showScrollBarBool.booleanValue();
 			}
 		//#endif
 			
@@ -1458,21 +1473,27 @@ implements AccessibleCanvas
 	//				g.drawRect(g.getClipX() + 1 , g.getClipY() + 1 , g.getClipWidth() - 2 ,  g.getClipHeight() - 2);
 					
 					//#if tmp.useScrollBar
-						if (this.container != null && this.container.itemHeight > this.contentHeight) {
-							// paint scroll bar: - this.container.yOffset
-							//#debug
-							System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
-							
-							int scrollX = sWidth + this.marginLeft 
-										- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
-							//TODO allow scroll bar on the left side
-							this.scrollBar.relativeX = scrollX;
-							this.scrollBar.relativeY = this.contentY;
-							this.scrollBar.paint( scrollX , this.contentY, scrollX, rightBorder, g);
-							//g.setColor( 0x00ff00 );
-							//g.drawRect( this.contentX, this.contentY, this.contentWidth - 3, this.contentHeight );
-							//System.out.println("scrollbar: width=" + scrollBar.itemWidth + ", backgroundWidth=" + scrollBar.backgroundWidth + ", height=" + scrollBar.itemHeight + ", backgroundHeight=" + scrollBar.backgroundHeight + ", contentY=" + contentY + ", contentHeight=" + this.contentHeight );
-						}
+						//#if polish.css.show-scrollbar
+							if ( this.scrollBarVisible ) {
+						//#endif
+								if (this.container != null && this.container.itemHeight > this.contentHeight) {
+									// paint scroll bar: - this.container.yOffset
+									//#debug
+									System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
+									
+									int scrollX = sWidth + this.marginLeft 
+												- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
+									//TODO allow scroll bar on the left side
+									this.scrollBar.relativeX = scrollX;
+									this.scrollBar.relativeY = this.contentY;
+									this.scrollBar.paint( scrollX , this.contentY, scrollX, rightBorder, g);
+									//g.setColor( 0x00ff00 );
+									//g.drawRect( this.contentX, this.contentY, this.contentWidth - 3, this.contentHeight );
+									//System.out.println("scrollbar: width=" + scrollBar.itemWidth + ", backgroundWidth=" + scrollBar.backgroundWidth + ", height=" + scrollBar.itemHeight + ", backgroundHeight=" + scrollBar.backgroundHeight + ", contentY=" + contentY + ", contentHeight=" + this.contentHeight );
+								}
+						//#if polish.css.show-scrollbar
+							}
+						//#endif
 					//#endif
 					
 

@@ -51,7 +51,9 @@ import de.enough.polish.util.TextUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class InitializerSplashScreen
-//#ifdef polish.classes.fullscreen:defined
+//#if polish.midp2
+	//# extends Canvas
+//#elifdef polish.classes.fullscreen:defined
 	//#= extends ${polish.classes.fullscreen}
 //#else
 	extends Canvas
@@ -72,7 +74,7 @@ implements Runnable, AccessibleCanvas
 		//#= private final ${ classname( polish.classes.SplashView) } view;
 	//#else
 		private final Image image;
-		private final String readyMessage;
+		private String readyMessage;
 		private final int messageColor;
 		private final int backgroundColor;
 	//#endif
@@ -104,9 +106,6 @@ implements Runnable, AccessibleCanvas
 	//#endif
 	{
 		super();
-		//#if polish.midp2 && !(polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint)
-			super.setFullScreenMode( true );
-		//#endif
 		this.display = display;
 		this.image = image;
 		this.backgroundColor = backgroundColor;
@@ -162,7 +161,7 @@ implements Runnable, AccessibleCanvas
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(Graphics g) {
-		//#if polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint
+		//#if polish.Bugs.fullScreenInPaint
 			super.setFullScreenMode(true);
 		//#endif
 		//#ifdef polish.FullCanvasSize:defined
@@ -216,12 +215,13 @@ implements Runnable, AccessibleCanvas
 			//#endif
 			this.isInitialized = true;
 			repaint();
-			if (this.nextScreen == null) {
-				return;
-			}
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Unable to call initApp()" + e );
+			//#if !polish.classes.SplashView:defined
+				this.message = "Error: " + e.toString();
+				repaint();
+			//#endif
 		}
 	}
 	
@@ -254,6 +254,9 @@ implements Runnable, AccessibleCanvas
 	//#endif
 	
 	public void showNotify() {
+		//#if polish.midp2
+			super.setFullScreenMode( true );
+		//#endif
 		if (this.isStarted) {
 			return;
 		}
@@ -263,7 +266,9 @@ implements Runnable, AccessibleCanvas
 	}
 	
 	public void hideNotify() {
-		this.isStarted = false;
+		//this.isStarted = false;
+		// when setting isStarted to false and there are security prompts during startup, 
+		// the application will never be able to start.
 	}
 
 	//#if polish.usePolishGui

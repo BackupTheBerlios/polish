@@ -250,57 +250,108 @@ public abstract class ScreenChangeAnimation
 
 	/**
 	 * Handles key repeat events.
-	 * The default implementation forwards this event to the next screen
-	 * and then updates the nextCanvasImage field.
+	 * The implementation forwards this event to the next screen, updates the nextCanvasImage field and then forwards control
+	 * to handleKeyPressed.
 	 * 
 	 * @param keyCode the code of the key
 	 * @see #nextCanvasImage
 	 */
-	public void keyRepeated( int keyCode ) {
+	public final void keyRepeated( int keyCode ) {
 		AccessibleCanvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
-		if (next != null) {
-			next.keyRepeated( keyCode );
-			Graphics g = nextImage.getGraphics();
-			next.paint( g );
+		try {
+			if (next != null) {
+				next.keyRepeated( keyCode );
+				Graphics g = nextImage.getGraphics();
+				next.paint( g );
+			}
+			handleKeyRepated( keyCode, nextImage );
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Error while handling keyRepeated event" + e );
 		}
+	}
+	/**
+	 * Allows subclasses to handle key repeated events.
+	 * The event has already been forwarded to the next screen and the image has been updated.
+	 * 
+	 * @param keyCode the key code
+	 * @param nextImage the updated image of the next screen
+	 */
+	protected void handleKeyRepated( int keyCode, Image nextImage ) {
+		// do nothing
 	}
 
 	/**
 	 * Handles key released events.
-	 * The default implementation forwards this event to the next screen
-	 * and then updates the nextCanvasImage field.
+	 * The implementation forwards this event to the next screen, updates the nextCanvasImage field and then forwards control
+	 * to handleKeyPressed.
 	 * 
 	 * @param keyCode the code of the key
 	 * @see #nextCanvasImage
+	 * @see #handleKeyReleased(int, Image)
 	 */
-	public void keyReleased( int keyCode ) {
+	public final void keyReleased( int keyCode ) {
 		AccessibleCanvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
-		if (next != null) {
-			next.keyReleased( keyCode );
-			Graphics g = nextImage.getGraphics();
-			next.paint( g );
+		try {
+			if (next != null) {
+				next.keyReleased( keyCode );
+				Graphics g = nextImage.getGraphics();
+				next.paint( g );
+			}
+			handleKeyReleased( keyCode, nextImage );
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Error while handling keyReleased event" + e );
 		}
+	}
+	
+	/**
+	 * Allows subclasses to handle key released events.
+	 * The event has already been forwarded to the next screen and the image has been updated.
+	 * 
+	 * @param keyCode the key code
+	 * @param nextImage the updated image of the next screen
+	 */
+	protected void handleKeyReleased( int keyCode, Image nextImage ) {
+		// do nothing
 	}
 
 	/**
 	 * Handles key pressed events.
-	 * The default implementation forwards this event to the next screen
-	 * and then updates the nextCanvasImage field.
+	 * The implementation forwards this event to the next screen, updates the nextCanvasImage field and then forwards control
+	 * to handleKeyPressed.
 	 * 
 	 * @param keyCode the code of the key
 	 * @see #nextCanvasImage
+	 * @see #handleKeyPressed(int, Image)
 	 */
-	public void keyPressed( int keyCode ) {
+	public final void keyPressed( int keyCode ) {
 		AccessibleCanvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
-		if (next != null) {
-			next.keyPressed( keyCode );
-			Graphics g = nextImage.getGraphics();
-			next.paint( g );
+		try {
+			if (next != null) {
+				next.keyPressed( keyCode );
+				Graphics g = nextImage.getGraphics();
+				next.paint( g );
+			}
+			handleKeyPressed( keyCode, nextImage );
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Error while handling keyPressed event" + e );
 		}
-		//this.nextScreenImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
+	}
+	
+	/**
+	 * Allows subclasses to handle key pressed events.
+	 * The event has already been forwarded to the next screen and the image has been updated.
+	 * 
+	 * @param keyCode the key code
+	 * @param nextImage the updated image of the next screen
+	 */
+	protected void handleKeyPressed( int keyCode, Image nextImage ) {
+		// do nothing
 	}
 	
 	/**
@@ -309,24 +360,38 @@ public abstract class ScreenChangeAnimation
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		if (this.nextCanvas != null && animate()) {
-			//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-				MasterCanvas.instance.repaint();
-			//#else
-				repaint();
-			//#endif
-		} else {
-			//#debug
-			System.out.println("ScreenChangeAnimation: setting next screen");
-			this.lastCanvasImage = null;
-			this.nextCanvasImage = null;
-			this.nextCanvas = null;
+		try {
+			if (this.nextCanvas != null && animate()) {
+				//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
+					MasterCanvas.instance.repaint();
+				//#else
+					repaint();
+				//#endif
+			} else {
+				//#debug
+				System.out.println("ScreenChangeAnimation: setting next screen");
+				this.lastCanvasImage = null;
+				this.nextCanvasImage = null;
+				this.nextCanvas = null;
+				Display disp = this.display;
+				this.display = null;
+				Displayable next = this.nextDisplayable;
+				this.nextDisplayable = null;
+				System.gc();
+				if (next != null) {
+					//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
+						MasterCanvas.setCurrent( disp, next );
+					//#else
+						disp.setCurrent( next );
+					//#endif
+				}
+			}
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Unable to animate" + e);
 			Display disp = this.display;
-			this.display = null;
 			Displayable next = this.nextDisplayable;
-			this.nextDisplayable = null;
-			System.gc();
-			if (next != null) {
+			if (disp != null && next != null) {
 				//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 					MasterCanvas.setCurrent( disp, next );
 				//#else

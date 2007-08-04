@@ -3006,7 +3006,7 @@ public class TextField extends StringItem
 			
 			int currentLength = (this.text == null ? 0 : this.text.length());
 			//#if polish.key.supportsAsciiKeyMap
-				if (keyCode >= 32 && this.screen.isKeyboardAccessible()) {
+				if (keyCode >= 32 && this.screen.isKeyboardAccessible() && this.inputMode != MODE_NUMBERS && !this.isNumeric) {
 					this.caretChar = (char) (' ' + (keyCode - 32));
 					if (this.nextCharUppercase || this.inputMode == MODE_UPPERCASE) {
 						this.caretChar = Character.toUpperCase(this.caretChar);
