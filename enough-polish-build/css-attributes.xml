@@ -2765,6 +2765,15 @@
 		description="Defines the style for single possible matches for the curent user input."
 		id="257"
 	/>
+
+	<attribute
+		name="show-scrollbar"
+		type="boolean"
+		appliesTo="Screen"
+		description="Can be used to deactivate the scrollbar for a specific screen. You need to activate scrollbar usage with polish.useScrollBar=true before using this CSS attribute."
+		default="true"
+		id="258"
+	/>
 	
 	<!--
 	
