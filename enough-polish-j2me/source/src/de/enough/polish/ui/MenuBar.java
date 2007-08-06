@@ -97,7 +97,7 @@ public class MenuBar extends Item {
 	private Command singleRightCommand;
 	private final CommandItem singleRightCommandItem;
 	private Command singleMiddleCommand;
-	//#if polish.key.MiddleSoftKey:defined || polish.key.CenterSoftKey:defined || polish.MenuBar.useMiddleCommand || polish.MenuBar.useCenterCommand
+	//#if ((polish.key.MiddleSoftKey:defined || polish.key.CenterSoftKey:defined) && (polish.MenuBar.useMiddleCommand != false) ) || polish.MenuBar.useMiddleCommand || polish.MenuBar.useCenterCommand
 		//#define tmp.useMiddleCommand
 		private final CommandItem singleMiddleCommandItem;
 	//#endif
