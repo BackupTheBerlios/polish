@@ -1569,6 +1569,7 @@ These namespaces/schemas will be used soon.
 		<groups/>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="JavaPackage" value="wmapi, wmapi2.0, mmapi, btapi, pdaapi, webservice, advanced-multimedia, m3g, mascot"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
