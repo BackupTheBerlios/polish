@@ -5,9 +5,11 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Vector;
 
 import de.enough.polish.ui.TextField;
@@ -16,6 +18,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 public class Builder extends Task {
+	public static int TYPE_RMS = 0;
+	public static int TYPE_FILE = 0;
 	
 	private String source;
 	private String directory;
@@ -24,6 +28,7 @@ public class Builder extends Task {
 	private int version;
 	private int chunkSize;
 	private int lineCount;
+	private int type;
 	
 	private Vector words = new Vector();
 	private BufferedReader reader;
@@ -85,11 +90,12 @@ public class Builder extends Task {
 	{
 		String line = "";
 		
-		reader = new BufferedReader(new FileReader(source));
+		reader = new BufferedReader( new InputStreamReader(new FileInputStream(source), "UTF8"));
 
 		while ((line = reader.readLine()) != null)
 		{
 			String word = line.trim().toLowerCase();
+			System.out.println(word);
 			if (!words.contains(word)) 
 				words.add(word);
 		}
@@ -107,6 +113,7 @@ public class Builder extends Task {
 	    dos.writeInt(this.version);
 	    dos.writeInt(this.chunkSize);
 	    dos.writeInt(this.lineCount);
+	    dos.writeInt(this.type);
 	    
 	    return bos.toByteArray();
 	}
@@ -218,5 +225,13 @@ public class Builder extends Task {
 
 	public void setMagic(int magic) {
 		this.magic = magic;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 }
