@@ -537,7 +537,78 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.usePolishGui
+	/**
+	 * Sets a ChoiceItem or a subclass for the given list. 
+	 * @param list the list
+	 * @param index the index of the item that should be exchanged
+	 * @param item the new item
+	 */
+	public static void setListItem( List list, int index, ChoiceItem item ) {
+		list.set(index, item);
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves a ChoiceItem or a subclass for the given list. 
+	 * @param list the list
+	 * @param index the index of the item that should be returned
+	 * @return the item at the given position
+	 */
+	public static ChoiceItem getListItem( List list, int index ) {
+		return list.getItem(index);
+	}
+	//#endif
+
 	
+	//#if polish.usePolishGui
+	/**
+	 * Sets a ChoiceItem or a subclass for the given list. 
+	 * @param list the list
+	 * @param item the new item
+	 */
+	public static void appendListItem( List list, ChoiceItem item ) {
+		list.append( item );
+	}
+	//#endif
+	
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Sets a ChoiceItem or a subclass for the given list. 
+	 * @param list the list
+	 * @param index the index of the item that should be exchanged
+	 * @param item the new item
+	 */
+	public static void setListItem( javax.microedition.lcdui.List list, int index, ChoiceItem item ) {
+		// ignore
+	}
+	//#endif
+
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Retrieves a ChoiceItem or a subclass for the given list. 
+	 * @param list the list
+	 * @param index the index of the item that should be returned
+	 * @return the item at the given position
+	 */
+	public static ChoiceItem getListItem( javax.microedition.lcdui.List list, int index ) {
+		return null;
+	}
+	//#endif
+
+	
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Sets a ChoiceItem or a subclass for the given list. 
+	 * @param list the list
+	 * @param item the new item
+	 */
+	public static void appendListItem( javax.microedition.lcdui.List list, ChoiceItem item ) {
+		// ignore
+	}
+	//#endif
+
 	//#if polish.midp
 	/**
 	 * Applies a style to the given item if used in conjunction with the //#style preprocessing directive.
