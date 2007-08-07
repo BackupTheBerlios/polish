@@ -3631,18 +3631,18 @@ implements AccessibleCanvas
 	 */
 	protected void notifyStateListener() {
 		if (this.stateNotifyQueue != null && this.itemStateListener != null) {
-			Item lastItem = null;
+			//Item lastItem = null;
 			while (this.stateNotifyQueue.size() > 0) {
 				Item item;
 				synchronized (this.stateNotifyQueue) {
 					item = (Item) this.stateNotifyQueue.remove(0);
 				}
-				if (item != lastItem) {
+				//if (item != lastItem) { // 2007-08-06: sometimes there are two subsequent fast changes, so this has to be forwarded correctly:
 					//#debug
 					System.out.println("notifying ItemStateListener for item " + item + " and form " + this ); 
 					this.itemStateListener.itemStateChanged(item);
-					lastItem = item;
-				}
+					//lastItem = item;
+				//}
 			}
 			//#debug
 			System.out.println("done notifying ItemStateListener."); 

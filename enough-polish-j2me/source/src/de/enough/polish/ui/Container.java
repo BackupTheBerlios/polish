@@ -73,6 +73,7 @@ public class Container extends Item {
 	protected int autoFocusIndex;
 	protected Style itemStyle;
 	protected Item focusedItem;
+	/** the index of the currently focused item - please use only for reading, not for setting, unless you know what you are doing */
 	public int focusedIndex = -1;
 	protected boolean enableScrolling;
 	//#if polish.Container.allowCycling != false
@@ -2180,6 +2181,21 @@ public class Container extends Item {
 		return buffer.toString();
 	}
 	//#endif
+
+	/**
+	 * @param matchingItems
+	 */
+	protected void setItemsList(ArrayList itemsList) {
+		if (this.isFocused) {
+			this.autoFocusEnabled = true;
+		}
+		if (this.enableScrolling) {
+			setScrollYOffset(0, false);
+		}
+		this.itemsList = itemsList;
+		this.items = null;
+		requestInit();
+	}
 
 
 //#ifdef polish.Container.additionalMethods:defined

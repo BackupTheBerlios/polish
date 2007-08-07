@@ -58,6 +58,7 @@ implements ItemStateListener, CommandListener
 	protected final TextField filterTextField;
 	private final ArrayList itemsList;
 	private CommandListener originalCommandListener;
+	private String lastFilterText;
 
 	/**
 	 * @param title
@@ -395,6 +396,15 @@ implements ItemStateListener, CommandListener
 	}
 	
 	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.List#isSelected(int)
+	 */
+	public boolean isSelected(int elementNum) {
+		ChoiceItem item = (ChoiceItem) this.itemsList.get( elementNum );
+		return item.isSelected;
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.List#size()
@@ -450,17 +460,46 @@ implements ItemStateListener, CommandListener
 			this.filterTextField.focus(filterStyle, 0);
 		}
 	}
+	
+	/**
+	 * Checks if the given item matches the current input text.
+	 * Subclasses can override this method for implementing specific
+	 * filter strategies.
+	 * 
+	 * @param filterText the current filter text
+	 * @param cItem the ChoiceItem
+	 * @param checkForSelectedRadioItem true when this is an exclusive list
+	 * @return true for choice items that should be appended to the shown list.
+	 * @see #FILTER_STARTS_WITH
+	 * @see #FILTER_INDEX_OF
+	 * @see #setFitPolicy(int)
+	 */
+	protected boolean matches( String filterText, ChoiceItem cItem, boolean checkForSelectedRadioItem ) {
+		if (checkForSelectedRadioItem && cItem.isSelected) {
+			return true;
+		} else if (this.filterMode == FILTER_STARTS_WITH) {
+			return ( cItem.getText().toLowerCase().startsWith(filterText));
+		} else {
+			return ( cItem.getText().toLowerCase().indexOf( filterText ) != -1);
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemStateListener#itemStateChanged(de.enough.polish.ui.Item)
 	 */
 	public void itemStateChanged(Item item) {
 		if (item == this.filterTextField) {
-			String filterText = this.filterTextField.getString().toLowerCase();
-			//System.out.println("filter=" + filterText );
+			String text = this.filterTextField.getString();
+			if (text == this.lastFilterText) {
+				return;
+			}
+			this.lastFilterText = text;
+			String filterText = text.toLowerCase();
+			System.out.println("filter=[" + filterText  + "]");
 			Item focItem = this.container.focusedItem;
-			super.deleteAll();
+			int focIndex = -1;
 			Object[] itemObjects = this.itemsList.getInternalArray();
+			ArrayList matchingItems = new ArrayList( itemObjects.length );
 			boolean checkForSelectedRadioItem = (this.listType == Choice.EXCLUSIVE);
 			for (int i = 0; i < itemObjects.length; i++) {
 				Object object = itemObjects[i];
@@ -468,21 +507,21 @@ implements ItemStateListener, CommandListener
 					break;
 				}
 				ChoiceItem cItem = (ChoiceItem) object;
-				String choiceText = cItem.getText();
-				boolean isMatch;
-				if (checkForSelectedRadioItem && cItem.isSelected) {
-					isMatch = true;
-				} else if (this.filterMode == FILTER_STARTS_WITH) {
-					isMatch = (choiceText.toLowerCase().startsWith(filterText));
-				} else {
-					isMatch = (choiceText.toLowerCase().indexOf( filterText ) != -1);
-				}
+				boolean isMatch = matches( filterText, cItem, checkForSelectedRadioItem );
 				if (isMatch) {
-					int index = super.append(cItem);
+					//int index = super.append(cItem);
+					matchingItems.add(cItem);
 					if (cItem == focItem) {
-						super.focus( index, cItem, false );
+						focIndex = i;
+						//super.focus( index, cItem, false );
 					}
 				}
+			}
+			this.container.setItemsList( matchingItems );
+			if (focIndex != -1) {
+				super.focus( focIndex, focItem, false );
+			} else if (matchingItems.size() > 0) {
+				super.focus( 0, (Item) matchingItems.get(0), false );
 			}
 			// problem: this also adds the delete command
 			setItemCommands( this.filterTextField );

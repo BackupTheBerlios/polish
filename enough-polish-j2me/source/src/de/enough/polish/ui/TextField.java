@@ -2392,7 +2392,7 @@ public class TextField extends StringItem
 				caretRowFirstPart = line;				
 			}
 		} else {
-			caretRowFirstPart = line.substring( 0, this.caretColumn );
+			caretRowFirstPart = line.substring( 0, column );
 			//this.caretRowLastPartWidth = this.font.stringWidth(this.caretRowLastPart);;
 		}
 		this.caretX = this.font.stringWidth(caretRowFirstPart);
@@ -2578,14 +2578,18 @@ public class TextField extends StringItem
 	//#ifdef tmp.directInput
 	
 	protected void commitCurrentCharacter() {
+		//#debug
+		System.out.println("comitting current character: " + this.caretChar);
 		this.caretChar = this.editingCaretChar;
 		this.caretPosition++;
+		this.caretColumn++;
 		this.caretX += this.caretWidth;
+		notifyStateChanged();
 	}
 
-	protected void insertCharacter() {
-		insertCharacter( this.caretChar, true, true );
-	}
+//	protected void insertCharacter() {
+//		insertCharacter( this.caretChar, true, true );
+//	}
 	protected void insertCharacter( char insertChar, boolean append, boolean commit ) {
 		if (this.text != null && this.text.length() >= this.maxSize) {
 			return;
@@ -2802,8 +2806,12 @@ public class TextField extends StringItem
 							) 
 					{
 						if (this.deleteKeyRepeatCount >= 9) {
-							setString(null);
-						} else {
+							String myText = this.text;
+							if (myText != null && myText.length() > 0) {
+								setString(null);
+								notifyStateChanged();
+							}
+						} else if (this.caretPosition > 0){
 							String myText = getString();
 							
 							int nextStop = this.caretPosition - 1;
@@ -3007,17 +3015,17 @@ public class TextField extends StringItem
 			int currentLength = (this.text == null ? 0 : this.text.length());
 			//#if polish.key.supportsAsciiKeyMap
 				if (keyCode >= 32 && this.screen.isKeyboardAccessible() && this.inputMode != MODE_NUMBERS && !this.isNumeric) {
-					this.caretChar = (char) (' ' + (keyCode - 32));
+					char insertChar = (char) (' ' + (keyCode - 32));
 					if (this.nextCharUppercase || this.inputMode == MODE_UPPERCASE) {
-						this.caretChar = Character.toUpperCase(this.caretChar);
+						insertChar = Character.toUpperCase(insertChar);
 					}
-					insertCharacter();
+					insertCharacter( insertChar, true, true );
 					return true;
 				}
 				//#if polish.key.enter:defined
 					//#= if ( keyCode == ${polish.key.enter} ) {
-						this.caretChar = '\n';
-						insertCharacter();
+						//this.caretChar = '\n';
+						insertCharacter('\n', true, true );
 						//# return true;
 					//# }
 				//#endif
@@ -3029,8 +3037,8 @@ public class TextField extends StringItem
 						// ignore this key event - also don't forward it to the parent component:
 						return true;
 					}
-					this.caretChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
-					insertCharacter();
+					char insertChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+					insertCharacter(insertChar, true, true );
 					return true;
 				} else if ( this.isDecimal ) {
 					//System.out.println("handling key for DECIMAL TextField");
@@ -3040,8 +3048,8 @@ public class TextField extends StringItem
 							) 
 					{
 						
-						this.caretChar = Locale.DECIMAL_SEPARATOR;
-						insertCharacter();
+						char insertChar = Locale.DECIMAL_SEPARATOR;
+						insertCharacter(insertChar, true, true );
 						return true;								
 					}
 				}
@@ -3098,6 +3106,7 @@ public class TextField extends StringItem
 					if (this.caretChar != this.editingCaretChar) {
 						//insertCharacter(); (not needed anymore)
 						this.caretPosition++;
+						notifyStateChanged();
 						if (currentLength + 1 >= this.maxSize) {
 							return true;
 						}
@@ -3124,7 +3133,7 @@ public class TextField extends StringItem
 				//#endif
 				this.caretChar = newCharacter;
 				if (alphabetLength == 1) {
-					insertCharacter();
+					insertCharacter( newCharacter, true, true );
 				} else {
 					insertCharacter( newCharacter, appendNewCharacter, false );
 				}
@@ -3269,8 +3278,9 @@ public class TextField extends StringItem
 			}
 		
 			//#if polish.TextField.usePredictiveInput && tmp.directInput
-			if(this.predictiveInput)
-				return predictiveKeyNavigation(keyCode, gameAction);
+				if(this.predictiveInput) {
+					return predictiveKeyNavigation(keyCode, gameAction);
+				}
 			//#endif
 			
 			char character = this.caretChar;
@@ -3349,13 +3359,19 @@ public class TextField extends StringItem
 					return deleteCurrentChar();
 				}
 				//#endif
-				if (this.caretColumn > 0) {
+				int column = this.caretColumn;
+				if (column > 0) {
 					this.caretPosition--;
-					this.caretColumn--;
-					setCaretRow( this.originalRowText, this.caretColumn );
+					column--;
+					if (characterInserted && column > 0) {
+						 this.caretPosition--;
+						 column--;
+					}
+					setCaretRow( this.originalRowText, column );
 					//#if tmp.updateDeleteCommand
 						updateDeleteCommand( this.text );
 					//#endif
+						
 					return true;
 				} else if ( this.caretRow > 0) {
 					// this is just a visual line-break:
@@ -3542,27 +3558,27 @@ public class TextField extends StringItem
 	 */
 	private synchronized boolean deleteCurrentChar() {
 		//#debug
-		System.out.println("deleteCurrentChar: caretColumn=" + this.caretColumn + ", caretPosition=" + this.caretPosition );
+		System.out.println("deleteCurrentChar: caretColumn=" + this.caretColumn + ", caretPosition=" + this.caretPosition + ", caretChar=" + this.caretChar );
 		String myText;
 		if (this.isPassword) {
 			myText = this.passwordText; 
 		} else {
 			myText = this.text;
 		}
+		int position = this.caretPosition;
 		if (this.caretChar != this.editingCaretChar) {
-			myText = myText.substring( 0, this.caretPosition )
-				+ myText.substring( this.caretPosition + 1);
+			myText = myText.substring( 0, position )
+				+ myText.substring( position + 1);
 			this.caretChar = this.editingCaretChar;
+			this.caretPosition = position;
 			setString( myText );
 			return true;
 		}
-		if (this.caretPosition > 0) {
-			
-			this.caretPosition--;
-			System.out.println("delete: new caretPos=" + this.caretPosition + ", start=[" + myText.substring( 0, this.caretPosition ) + "], end=[" + myText.substring( this.caretPosition + 1) + "]." );
-			
-			myText = myText.substring( 0, this.caretPosition )
-				+ myText.substring( this.caretPosition + 1);
+		if (position > 0) {
+			position--;
+			myText = myText.substring( 0, position )
+				+ myText.substring( position + 1);
+			this.caretPosition = position;
 			setString( myText );
 			//#if polish.css.textfield-show-length  && tmp.useInputInfo
 				if (this.showLength) {
