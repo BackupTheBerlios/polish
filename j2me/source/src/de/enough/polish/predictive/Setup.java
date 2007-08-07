@@ -1,4 +1,4 @@
-//#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput && (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.Setup)
+//#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput && (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.useLocalRMS || polish.predictive.Setup)
 package de.enough.polish.predictive;
 
 import java.io.DataInputStream;
@@ -15,7 +15,6 @@ import javax.microedition.lcdui.StringItem;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.rms.RecordStore;
 
-import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.util.Locale;
 
 public class Setup 
@@ -27,11 +26,11 @@ implements Runnable, CommandListener
 	DataInputStream stream = null;
 	TrieInstaller installer = null;
 	
-	protected Command exitCommand = new Command( Locale.get("setup.cmd.exit"), Command.EXIT, 0 );
-	protected Command cancelCommand = new Command( Locale.get("setup.cmd.cancel"), Command.CANCEL, 0 );
+	protected Command exitCommand = new Command( Locale.get("polish.predictive.setup.cmd.exit"), Command.EXIT, 0 );
+	protected Command cancelCommand = new Command( Locale.get("polish.predictive.setup.cmd.cancel"), Command.CANCEL, 0 );
 	
-	protected Command yesCommand = new Command( Locale.get("setup.cmd.yes"), Command.OK, 0 );
-	protected Command noCommand = new Command( Locale.get("setup.cmd.no"), Command.CANCEL, 0 );
+	protected Command yesCommand = new Command( Locale.get("polish.predictive.setup.cmd.yes"), Command.OK, 0 );
+	protected Command noCommand = new Command( Locale.get("polish.predictive.setup.cmd.no"), Command.CANCEL, 0 );
 	
 	List list = null;
 	
@@ -51,17 +50,13 @@ implements Runnable, CommandListener
 		
 		this.stream = stream;
 		
-		this.list = new List ("Predictive Setup",List.IMPLICIT);
-		this.list.addCommand(StyleSheet.OK_CMD);
-		this.list.addCommand(StyleSheet.CANCEL_CMD);
-		
 		//#style setupForm
-		this.form = new Form( "Predictive Setup" );
+		this.form = new Form( Locale.get("polish.predictive.setup.title") );
 		
 		this.form.addCommand( this.cancelCommand );
 		this.form.setCommandListener( this );
 		
-		this.info = new StringItem("",Locale.get("setup.info"));
+		this.info = new StringItem("",Locale.get("polish.predictive.setup.info"));
 		this.status = new StringItem("","");
 		this.error = new StringItem("","");
 		this.gauge = new Gauge("",true,100,0);
@@ -93,7 +88,7 @@ implements Runnable, CommandListener
 		try {
 			this.installer = new TrieInstaller(this.stream);
 			
-			this.status.setText(Locale.get("setup.status.delete"));
+			this.status.setText(Locale.get("polish.predictive.setup.status.delete"));
 			
 			String[] storeList = RecordStore.listRecordStores();
 			
@@ -106,7 +101,7 @@ implements Runnable, CommandListener
 					}
 			}
 			
-			this.status.setText(Locale.get("setup.status.install"));
+			this.status.setText(Locale.get("polish.predictive.setup.status.install"));
 			
 			int totalBytes = stream.available();
 			this.gauge.setMaxValue(totalBytes);
@@ -129,10 +124,10 @@ implements Runnable, CommandListener
 						storeID += installer.getChunkSize();
 					}
 					
-					//#if !polish.Bugs.sharedRmsRequiresSigning
-					//#= store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
+					//#if (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.useLocalRMS)
+					//#= store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true); 
 					//#else
-					store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true);
+					store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
 					//#endif
 					
 					if(storeID == 0)
@@ -161,7 +156,7 @@ implements Runnable, CommandListener
 							this.wait();
 						}
 						
-						//#if !polish.Bugs.sharedRmsRequiresSigning
+						//#if !polish.Bugs.sharedRmsRequiresSigning || !polish.predictive.useLocalRMS
 						//#= store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
 						//#else
 						store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true);
@@ -175,7 +170,7 @@ implements Runnable, CommandListener
 			
 			store.closeRecordStore();
 			
-			this.status.setText(Locale.get("setup.status.finished"));
+			this.status.setText(Locale.get("polish.predictive.setup.status.finished"));
 			this.form.removeCommand( this.cancelCommand );
 			this.form.addCommand( this.exitCommand );
 			
@@ -187,7 +182,7 @@ implements Runnable, CommandListener
 				Display.getDisplay(this.parentMidlet).setCurrent(this.returnTo);
 			
 		} catch (Exception e) {
-			this.status.setText(Locale.get("setup.error"));
+			this.status.setText(Locale.get("polish.predictive.setup.error"));
 			this.status.setText(e.getMessage());
 			
 			this.form.removeCommand( this.cancelCommand );
@@ -208,7 +203,7 @@ implements Runnable, CommandListener
 		if (cmd == this.cancelCommand) {
 			Alert cancel = new Alert("Predictive Setup");
 			
-			cancel.setString(Locale.get("setup.cancel"));
+			cancel.setString(Locale.get("polish.predictive.setup.cancel"));
 			cancel.addCommand(this.yesCommand);
 			cancel.addCommand(this.noCommand);
 			
@@ -218,7 +213,10 @@ implements Runnable, CommandListener
 			
 			Display.getDisplay(this.parentMidlet).setCurrent(cancel);
 		} else if (cmd == this.exitCommand) {
-			this.parentMidlet.notifyDestroyed();
+			if(this.returnTo == null)
+				this.parentMidlet.notifyDestroyed();
+			else
+				Display.getDisplay(this.parentMidlet).setCurrent(this.returnTo);
 		} 
 		
 		if(disp instanceof Alert)
@@ -236,22 +234,5 @@ implements Runnable, CommandListener
 				Display.getDisplay(this.parentMidlet).setCurrent(this.form);
 			}
 		}
-		
-		if(disp instanceof List)
-		{
-			if(cmd == StyleSheet.OK_CMD)
-			{
-				this.parentMidlet.notifyDestroyed();
-			} 
-			else if(cmd == this.noCommand)
-			{
-				synchronized (this){
-					this.notify();
-				}
-				
-				Display.getDisplay(this.parentMidlet).setCurrent(this.form);
-			}
-		}
-		
 	}
 }

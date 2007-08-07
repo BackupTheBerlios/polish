@@ -15,8 +15,9 @@ public class TrieProvider {
 	private RecordStore store = null;
 	private HashMap records   = null; 
 	
-	private int chunkSize = 0;
-	private int lineCount = 0;
+	private int chunkSize 	= 0;
+	private int lineCount 	= 0;
+	private int type		= 0;
 	
 	private int maxRecords = 5;
 	
@@ -33,7 +34,7 @@ public class TrieProvider {
 	
 	public void init() throws RecordStoreException
 	{
-		//#if polish.Bugs.sharedRmsRequiresSigning || polish.predictive.localRMS
+		//#if polish.Bugs.sharedRmsRequiresSigning || polish.predictive.uselocalRMS
 		//#= this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
 		//#else
 		this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0","Enough Software","PredictiveSetup");
@@ -43,8 +44,9 @@ public class TrieProvider {
 		
 		byte[] bytes = this.store.getRecord(TrieInstaller.HEADER_RECORD);
 		
-		this.chunkSize = TrieUtils.byteToInt(bytes, TrieInstaller.CHUNKSIZE_OFFSET);
-		this.lineCount = TrieUtils.byteToInt(bytes, TrieInstaller.LINECOUNT_OFFSET);
+		this.chunkSize 	= TrieUtils.byteToInt(bytes, TrieInstaller.CHUNKSIZE_OFFSET);
+		this.lineCount 	= TrieUtils.byteToInt(bytes, TrieInstaller.LINECOUNT_OFFSET);
+		this.type 		= TrieUtils.byteToInt(bytes, TrieInstaller.TYPE_OFFSET);
 		
 		this.custom = new TrieCustom();
 		

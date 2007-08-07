@@ -25,11 +25,13 @@ public class TrieInstaller {
 	static final byte VERSION_OFFSET = 4;
 	static final byte CHUNKSIZE_OFFSET = 8;
 	static final byte LINECOUNT_OFFSET = 12;
+	static final byte TYPE_OFFSET = 16;
 	
 	int magic 		= 0;
 	int version 	= 0;
 	int chunkSize 	= 0;
 	int lineCount 	= 0;
+	int type		= 0;
 	
 	DataInputStream stream = null;
 	
@@ -40,10 +42,11 @@ public class TrieInstaller {
 	{
 		this.stream = stream;
 		
-		this.magic = this.stream.readInt();
-		this.version = this.stream.readInt();
-		this.chunkSize = this.stream.readInt();
-		this.lineCount = this.stream.readInt();
+		this.magic 		= this.stream.readInt();
+		this.version 	= this.stream.readInt();
+		this.chunkSize 	= this.stream.readInt();
+		this.lineCount 	= this.stream.readInt();
+		this.type		= this.stream.readInt();
 		
 		if(this.magic != MAGIC)
 			throw new IllegalArgumentException("The source file predictive.trie is not a dictionary");
@@ -60,6 +63,7 @@ public class TrieInstaller {
 		byteStream.write(TrieUtils.intToByte(this.version));
 		byteStream.write(TrieUtils.intToByte(this.chunkSize));
 		byteStream.write(TrieUtils.intToByte(this.lineCount));
+		byteStream.write(TrieUtils.intToByte(this.type));
 		
 		byte[] bytes = byteStream.toByteArray();
 		store.addRecord(bytes, 0, bytes.length);

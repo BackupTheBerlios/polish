@@ -32,6 +32,7 @@
  */
 package de.enough.polish.ui;
 
+import java.io.DataInputStream;
 import java.io.IOException;
 
 import javax.microedition.io.ConnectionNotFoundException;
@@ -44,9 +45,12 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.rms.RecordStoreException;
 
-import de.enough.polish.io.RedirectHttpConnection;
-//#if polish.TextField.useDirectInput && !polish.blackberry && polish.TextField.usePredictiveInput 
-	import de.enough.polish.predictive.Setup;
+
+//#if polish.TextField.useDirectInput && !polish.blackberry && polish.TextField.usePredictiveInput
+	//#if (polish.predictive.useLocalRMS || polish.Bugs.sharedRmsRequiresSigning)
+		import de.enough.polish.predictive.Setup;
+	//#endif
+	import de.enough.polish.io.RedirectHttpConnection;
 	import de.enough.polish.predictive.TextBuilder;
 	import de.enough.polish.predictive.TextElement;
 	import de.enough.polish.predictive.TrieProvider;
@@ -881,6 +885,7 @@ public class TextField extends StringItem
 		public static TrieProvider PROVIDER = new TrieProvider(); 
 		
 		private static Command ENABLE_PREDICTIVE_CMD = new Command( Locale.get("polish.predictive.command.enable"), Command.ITEM, 3 );
+		private static Command INSTALL_PREDICTIVE_CMD = new Command( Locale.get("polish.predictive.command.install"), Command.ITEM, 3 );
 		private static Command DISABLE_PREDICTIVE_CMD = new Command( Locale.get("polish.predictive.command.disable"), Command.ITEM, 4 );
 		private static Command ADD_WORD_CMD = new Command( Locale.get("polish.predictive.registerNewWord.command"), Command.ITEM, 5 );
 		
@@ -1010,7 +1015,7 @@ public class TextField extends StringItem
 				
 			}catch(RecordStoreException e)
 			{
-				this.addCommand(ENABLE_PREDICTIVE_CMD);
+				this.addCommand(INSTALL_PREDICTIVE_CMD);
 				this.predictiveInput = false;
 			}
 			catch(SecurityException e)
@@ -1224,8 +1229,8 @@ public class TextField extends StringItem
 	
 	protected void showWordNotFound()
 	{
-		Alert alert = new Alert("Predictive Input");
-		alert.setString("Word not found");
+		Alert alert = new Alert(Locale.get("polish.predictive.title"));
+		alert.setString(Locale.get("polish.predictive.wordNotFound"));
 		alert.setTimeout(2000);
 		StyleSheet.display.setCurrent(alert);
 	}
@@ -3748,33 +3753,6 @@ public class TextField extends StringItem
 					notifyStateChanged();
 				//#if polish.TextField.usePredictiveInput && tmp.directInput
 				} else if ( cmd == ENABLE_PREDICTIVE_CMD ) {
-					//#if polish.Bugs.sharedRmsRequiresSigning
-					try
-					{
-						if(!PROVIDER.isInit())
-						{
-							PROVIDER.init();
-						}
-					}catch(RecordStoreException rsEx)
-					{
-						RedirectHttpConnection connection = new RedirectHttpConnection("http://dl.j2mepolish.org/predictive/index.jsp?type=local&lang=en");
-						
-						try
-						{
-							Setup setup = new Setup(StyleSheet.midlet, null, false, connection.openDataInputStream());
-							
-							Thread thread = new Thread(setup);
-							thread.start();
-						}catch(IOException ioEx)
-						{
-							//#debug
-							ioEx.printStackTrace();
-							return;
-						}
-						
-						return;
-					}
-					//#else
 					try
 					{
 						if(!PROVIDER.isInit())
@@ -3783,8 +3761,32 @@ public class TextField extends StringItem
 						}
 						
 						this.predictiveInput = true;
-						
 					}catch(RecordStoreException e)
+					//#if (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.useLocalRMS)
+					{
+						DataInputStream stream = null;
+						Setup setup = null;
+						//#if !polish.predictive.useLocalRMS && polish.Bugs.sharedRmsRequiresSigning
+							RedirectHttpConnection connection = new RedirectHttpConnection("http://dl.j2mepolish.org/predictive/index.jsp?type=local&lang=en");
+							try
+							{
+								stream = connection.openDataInputStream();
+							}
+							catch(IOException ioEx)
+							{
+								ioEx.printStackTrace();
+							}
+							
+							setup = new Setup(StyleSheet.midlet, null, false, stream);
+						//#else
+							stream = new DataInputStream(getClass().getResourceAsStream("/predictive.trie"));
+							setup = new Setup(StyleSheet.midlet, this.getScreen(), true, stream);
+						//#endif
+						
+						Thread thread = new Thread(setup);
+						thread.start();
+					}
+					//#else
 					{
 						Alert predictiveDowload = new Alert( Locale.get("polish.predictive.download.title"));
 						predictiveDowload.setString( Locale.get("polish.predictive.download.message") );
@@ -3794,51 +3796,27 @@ public class TextField extends StringItem
 						predictiveDowload.setCommandListener(this);
 						
 						StyleSheet.display.setCurrent(predictiveDowload);
-						
-						return;
 					}
 					//#endif
 					
-					while(this.builder.deleteCurrent());
-					
-					String [] elements = TextUtil.split(getText(), ' ');
-					
-					for(int i=0;i<elements.length; i++)
+					if(!this.predictiveInput)
 					{
-						if(elements[i].length() > 0)
-						{
-							this.builder.addStringBuffer(elements[i]);
-							this.builder.addStringBuffer(" ");
-						}
+						return;
 					}
-					
-					if(this.inputMode == MODE_NUMBERS)
+					else
 					{
-						this.setInputMode(MODE_LOWERCASE);
-						this.builder.setMode(MODE_LOWERCASE);
+						enablePredictive();
 					}
-					
-					updateInfo();
-					
-					this.builder.setCurrentElementNear(this.getCaretPosition());
 					
 					this.removeCommand(ENABLE_PREDICTIVE_CMD);
 					this.addCommand(DISABLE_PREDICTIVE_CMD);
 					this.addCommand(ADD_WORD_CMD);
-					
 				} else if ( cmd == DISABLE_PREDICTIVE_CMD ) {
-					this.predictiveInput = false;
-					
-					setText(this.builder.getText().toString()); 
-					this.setCaretPosition(this.builder.getCaretPosition());
-					
-					openChoices(false);
+					disablePredictive();
 					
 					this.removeCommand(DISABLE_PREDICTIVE_CMD);
 					this.removeCommand(ADD_WORD_CMD);
 					this.addCommand(ENABLE_PREDICTIVE_CMD);
-					
-					updateInfo();
 				} else if ( cmd == ADD_WORD_CMD) {
 					if(PROVIDER.getCustomField() == null)
 					{
@@ -3858,7 +3836,49 @@ public class TextField extends StringItem
 			//#endif		
 		//#endif
 	}
+	
+	//#if polish.TextField.usePredictiveInput
+	private void disablePredictive()
+	{
+		this.predictiveInput = false;
 		
+		setText(this.builder.getText().toString()); 
+		this.setCaretPosition(this.builder.getCaretPosition());
+		
+		updateInfo();
+		
+		openChoices(false);
+	}
+	
+	private void enablePredictive()
+	{
+		this.predictiveInput = true;
+		
+		while(this.builder.deleteCurrent());
+		
+		String [] elements = TextUtil.split(getText(), ' ');
+		
+		for(int i=0;i<elements.length; i++)
+		{
+			if(elements[i].length() > 0)
+			{
+				this.builder.addStringBuffer(elements[i]);
+				this.builder.addStringBuffer(" ");
+			}
+		}
+		
+		if(this.inputMode == MODE_NUMBERS)
+		{
+			this.setInputMode(MODE_LOWERCASE);
+			this.builder.setMode(MODE_LOWERCASE);
+		}
+		
+		updateInfo();
+		
+		this.builder.setCurrentElementNear(this.getCaretPosition());
+	}
+	//#endif 
+	
 	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || polish.blackberry || polish.TextField.activateUneditableWithFire
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
