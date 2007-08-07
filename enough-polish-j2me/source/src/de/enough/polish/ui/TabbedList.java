@@ -310,10 +310,11 @@ public class TabbedList extends Screen {
 	 * The <code>elementNum</code> parameter must be within the range
 	 * <code>[0..size()-1]</code>, inclusive.
 	 * 
-	 * @param elementNum - the index of the element to be queried
+	 * @param tabIndex the index of the tab
+	 * @param elementNum the index of the element to be queried
 	 * @return the string part of the element
 	 * @throws IndexOutOfBoundsException - if elementNum is invalid
-	 * @see #getImage(int)
+	 * @see #getImage(int, int)
 	 */
 	public String getString(int tabIndex, int elementNum) {
 		return getTab(tabIndex).getString(elementNum);
@@ -325,10 +326,11 @@ public class TabbedList extends Screen {
 	 * The <code>elementNum</code> parameter must be within the range
 	 * <code>[0..size()-1]</code>, inclusive.
 	 * 
-	 * @param elementNum - the index of the element to be queried
+	 * @param tabIndex the index of the tab
+	 * @param elementNum the index of the element to be queried
 	 * @return the image part of the element, or null if there is no image
 	 * @throws IndexOutOfBoundsException - if elementNum is invalid
-	 * @see #getString(int)
+	 * @see #getString(int, int)
 	 */
 	public Image getImage(int tabIndex, int elementNum) {
 		return getTab(tabIndex).getImage(elementNum);
@@ -340,8 +342,9 @@ public class TabbedList extends Screen {
 	 * element of the <code>Choice</code>. The size of the
 	 * <code>Choice</code> grows by one.
 	 * 
-	 * @param stringPart - the string part of the element to be added
-	 * @param imagePart - the image part of the element to be added,  or null if there is no image part
+	 * @param tabIndex the index of the tab
+	 * @param stringPart the string part of the element to be added
+	 * @param imagePart the image part of the element to be added,  or null if there is no image part
 	 * @return the assigned index of the element
 	 * @throws NullPointerException - if stringPart is null
 	 */
@@ -355,8 +358,9 @@ public class TabbedList extends Screen {
 	 * element of the <code>Choice</code>. The size of the
 	 * <code>Choice</code> grows by one.
 	 * 
-	 * @param stringPart - the string part of the element to be added
-	 * @param imagePart - the image part of the element to be added,  or null if there is no image part
+	 * @param tabIndex the index of the tab
+	 * @param stringPart the string part of the element to be added
+	 * @param imagePart the image part of the element to be added,  or null if there is no image part
 	 * @return the assigned index of the element
 	 * @throws NullPointerException - if stringPart is null
 	 */
@@ -365,7 +369,7 @@ public class TabbedList extends Screen {
 	}
 	
 	/**
-	 * @param tabIndex
+	 * @param tabIndex the index of the tab
 	 * @param item
 	 * @param style
 	 * @return
@@ -375,7 +379,7 @@ public class TabbedList extends Screen {
 	}
 	
 	/**
-	 * @param tabIndex
+	 * @param tabIndex the index of the tab
 	 * @param item
 	 * @param style
 	 * @return
@@ -399,9 +403,10 @@ public class TabbedList extends Screen {
 	 * the last element. In this case, the effect is identical to
 	 * <A HREF="../../../javax/microedition/lcdui/Choice.html#append(java.lang.String, javax.microedition.lcdui.Image)"><CODE>append()</CODE></A>.
 	 * 
-	 * @param elementNum - the index of the element where insertion is to occur
-	 * @param stringPart - the string part of the element to be inserted
-	 * @param imagePart - the image part of the element to be inserted, or null if there is no image part
+	 * @param tabIndex the index of the tab
+	 * @param elementNum the index of the element where insertion is to occur
+	 * @param stringPart the string part of the element to be inserted
+	 * @param imagePart the image part of the element to be inserted, or null if there is no image part
 	 * @throws IndexOutOfBoundsException - if elementNum is invalid
 	 * @throws NullPointerException - if stringPart is null
 	 */
@@ -422,11 +427,12 @@ public class TabbedList extends Screen {
 	 * the last element. In this case, the effect is identical to
 	 * <A HREF="../../../javax/microedition/lcdui/Choice.html#append(java.lang.String, javax.microedition.lcdui.Image)"><CODE>append()</CODE></A>.
 	 * 
-	 * @param elementNum - the index of the element where insertion is to occur
-	 * @param stringPart - the string part of the element to be inserted
-	 * @param imagePart - the image part of the element to be inserted, or null if there is no image part
-	 * @throws IndexOutOfBoundsException - if elementNum is invalid
-	 * @throws NullPointerException - if stringPart is null
+	 * @param tabIndex the index of the tab
+	 * @param elementNum the index of the element where insertion is to occur
+	 * @param stringPart the string part of the element to be inserted
+	 * @param imagePart the image part of the element to be inserted, or null if there is no image part
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
+	 * @throws NullPointerException if stringPart is null
 	 */
 	public void insert(int tabIndex, int elementNum, String stringPart, Image imagePart, Style style) {
 		insert( tabIndex, elementNum, new ChoiceItem( stringPart, imagePart, this.defaultListType, style ), null );		
@@ -445,9 +451,12 @@ public class TabbedList extends Screen {
 	 * the last element. In this case, the effect is identical to
 	 * <A HREF="../../../javax/microedition/lcdui/Choice.html#append(java.lang.String, javax.microedition.lcdui.Image)"><CODE>append()</CODE></A>.
 	 * 
-	 * @param elementNum - the index of the element where insertion is to occur
-	 * @throws IndexOutOfBoundsException - if elementNum is invalid
-	 * @throws NullPointerException - if stringPart is null
+	 * @param tabIndex the index of the tab
+	 * @param elementNum the index of the element where insertion is to occur
+	 * @param item the item
+	 * @param style the style oft the item
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
+	 * @throws NullPointerException if stringPart is null
 	 */
 	public void insert(int tabIndex, int elementNum, ChoiceItem item, Style style) {
 		getTab(tabIndex).insert(elementNum, item, style);		
@@ -460,8 +469,9 @@ public class TabbedList extends Screen {
 	 * The <code>elementNum</code> parameter must be within the range
 	 * <code>[0..size()-1]</code>, inclusive.
 	 * 
-	 * @param elementNum - the index of the element to be deleted
-	 * @throws IndexOutOfBoundsException - if elementNum is invalid
+	 * @param tabIndex the index of the tab
+	 * @param elementNum the index of the element to be deleted
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
 	 */
 	public void delete(int tabIndex, int elementNum) {
 		getTab( tabIndex ).delete(elementNum);
@@ -472,6 +482,7 @@ public class TabbedList extends Screen {
 	 * with zero elements.
 	 * This method does nothing if the <code>Choice</code> is already empty.
 	 * 
+	 * @param tabIndex the index of the tab
 	 * @since  MIDP 2.0
 	 */
 	public void deleteAll(int tabIndex) {
@@ -485,6 +496,7 @@ public class TabbedList extends Screen {
 	 * <code>[0..size()-1]</code>, inclusive.  The font attribute of
 	 * the element is left unchanged.
 	 * 
+	 * @param tabIndex the index of the tab
 	 * @param elementNum the index of the element to be set
 	 * @param stringPart the string part of the new element
 	 * @param imagePart the image part of the element, or  null if there is no image part
@@ -502,9 +514,11 @@ public class TabbedList extends Screen {
 	 * <code>[0..size()-1]</code>, inclusive.  The font attribute of
 	 * the element is left unchanged.
 	 * 
+	 * @param tabIndex the index of the tab
 	 * @param elementNum the index of the element to be set
 	 * @param stringPart the string part of the new element
 	 * @param imagePart the image part of the element, or  null if there is no image part
+	 * @param elementStyle the style of the new element
 	 * @throws IndexOutOfBoundsException if elementNum is invalid
 	 * @throws NullPointerException if stringPart is null
 	 */
@@ -519,9 +533,9 @@ public class TabbedList extends Screen {
 	 * <code>[0..size()-1]</code>, inclusive.  The font attribute of
 	 * the element is left unchanged.
 	 * 
+	 * @param tabIndex the index of the tab
 	 * @param elementNum the index of the element to be set
-	 * @param stringPart the string part of the new element
-	 * @param imagePart the image part of the element, or  null if there is no image part
+	 * @param item the element
 	 * @throws IndexOutOfBoundsException if elementNum is invalid
 	 * @throws NullPointerException if stringPart is null
 	 */
@@ -536,9 +550,10 @@ public class TabbedList extends Screen {
 	 * <code>[0..size()-1]</code>, inclusive.  The font attribute of
 	 * the element is left unchanged.
 	 * 
+	 * @param tabIndex the index of the tab
 	 * @param elementNum the index of the element to be set
-	 * @param stringPart the string part of the new element
-	 * @param imagePart the image part of the element, or  null if there is no image part
+	 * @param item the element
+	 * @param elementStyle the style of the item
 	 * @throws IndexOutOfBoundsException if elementNum is invalid
 	 * @throws NullPointerException if stringPart is null
 	 */
@@ -554,6 +569,7 @@ public class TabbedList extends Screen {
 	 * The <code>elementNum</code> parameter must be within the range
 	 * <code>[0..size()-1]</code>, inclusive.
 	 * 
+	 * @param tabIndex the index of the tab
 	 * @param elementNum the index of the element to be queried
 	 * @return selection state of the element
 	 * @throws IndexOutOfBoundsException if elementNum is invalid
@@ -579,18 +595,16 @@ public class TabbedList extends Screen {
 	 * To get the complete state of a <code>MULTIPLE</code> <code>Choice</code>,
 	 * see <A HREF="../../../javax/microedition/lcdui/Choice.html#getSelectedFlags(boolean[])"><CODE>getSelectedFlags</CODE></A>.</p>
 	 * 
+	 * @param tabIndex the index of the tab
 	 * @return index of selected element, or -1 if none
-	 * @see #setSelectedIndex(int, boolean)
+	 * @see #setSelectedIndex(int, int, boolean)
 	 */
 	public int getSelectedIndex(int tabIndex) {
 		return getTab(tabIndex).getSelectedIndex();
 	}
 
 	/**
-	 * Queries the state of a <code>Choice</code> and returns the
-	 * state of all elements
-	 * in the
-	 * boolean array
+	 * Queries the state of a <code>Choice</code> and returns the state of all elements in the boolean array
 	 * <code>selectedArray_return</code>. <strong>Note:</strong> this
 	 * is a result parameter.
 	 * It must be at least as long as the size
@@ -607,20 +621,19 @@ public class TabbedList extends Screen {
 	 * exactly one element will be selected (unless there are
 	 * zero elements in the <code>Choice</code>). </p>
 	 * 
+	 * @param tabIndex the index of the tab
 	 * @param selectedArray_return - array to contain the results
 	 * @return the number of selected elements in the Choice
 	 * @throws IllegalArgumentException - if selectedArray_return is shorter than the size of the Choice.
 	 * @throws NullPointerException - if selectedArray_return is null
-	 * @see #setSelectedFlags(boolean[])
+	 * @see #setSelectedFlags(int, boolean[])
 	 */
 	public int getSelectedFlags(int tabIndex, boolean[] selectedArray_return) {
 		return getTab(tabIndex).getSelectedFlags(selectedArray_return);
 	}
 
 	/**
-	 * For <code>MULTIPLE</code>, this simply sets an individual
-	 * element's selected
-	 * state.
+	 * For <code>MULTIPLE</code>, this simply sets an individual element's selected state.
 	 * 
 	 * <P>For <code>EXCLUSIVE</code> and <code>POPUP</code>,
 	 * this can be used only to select any
@@ -649,18 +662,18 @@ public class TabbedList extends Screen {
 	 * must be within the range
 	 * <code>[0..size()-1]</code>, inclusive. </p>
 	 * 
-	 * @param elementNum - the index of the element, starting from zero
-	 * @param selected - the state of the element, where true means selected and false means not selected
-	 * @throws IndexOutOfBoundsException - if elementNum is invalid
-	 * @see #getSelectedIndex()
+	 * @param tabIndex the index of the tab
+	 * @param elementNum the index of the element, starting from zero
+	 * @param selected the state of the element, where true means selected and false means not selected
+	 * @throws IndexOutOfBoundsException if elementNum is invalid
+	 * @see #getSelectedIndex(int)
 	 */
 	public void setSelectedIndex(int tabIndex, int elementNum, boolean selected) {
 		getTab(tabIndex).setSelectedIndex(elementNum, selected);
 	}
 
 	/**
-	 * Attempts to set the selected state of every element in the
-	 * <code>Choice</code>.
+	 * Attempts to set the selected state of every element in the <code>Choice</code>.
 	 * The array
 	 * must be at least as long as the size of the
 	 * <code>Choice</code>. If the array is
@@ -684,10 +697,11 @@ public class TabbedList extends Screen {
 	 * implementation will choose the first <code>true</code> element
 	 * and select it. </p>
 	 * 
-	 * @param selectedArray - an array in which the method collect the selection status
-	 * @throws IllegalArgumentException - if selectedArray is shorter than the size of the Choice
-	 * @throws NullPointerException - if selectedArray is null
-	 * @see #getSelectedFlags(boolean[])
+	 * @param tabIndex the index of the tab
+	 * @param selectedArray an array in which the method collect the selection status
+	 * @throws IllegalArgumentException if selectedArray is shorter than the size of the Choice
+	 * @throws NullPointerException if selectedArray is null
+	 * @see #getSelectedFlags(int, boolean[])
 	 */
 	public void setSelectedFlags(int tabIndex, boolean[] selectedArray) {
 		getTab(tabIndex).setSelectedFlags(selectedArray);
