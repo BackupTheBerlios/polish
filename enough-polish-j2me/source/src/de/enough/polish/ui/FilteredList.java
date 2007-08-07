@@ -235,6 +235,10 @@ implements ItemStateListener, CommandListener
 	 */
 	public int append(ChoiceItem item) {
 		this.itemsList.add( item );
+		this.lastFilterText = null;
+		if (isShown()) {
+			itemStateChanged( this.filterTextField );
+		}
 		return this.itemsList.size() - 1;
 	}
 	
@@ -244,7 +248,10 @@ implements ItemStateListener, CommandListener
 	 */
 	public void delete(int elementNum) {
 		this.itemsList.remove(elementNum);
-		itemStateChanged( this.filterTextField );
+		this.lastFilterText = null;
+		if (isShown()) {
+			itemStateChanged( this.filterTextField );
+		}
 	}
 
 	/* (non-Javadoc)
@@ -252,7 +259,10 @@ implements ItemStateListener, CommandListener
 	 */
 	public void deleteAll() {
 		this.itemsList.clear();
-		itemStateChanged( this.filterTextField );
+		this.lastFilterText = null;
+		if (isShown()) {
+			itemStateChanged( this.filterTextField );
+		}
 	}
 
 	/* (non-Javadoc)
@@ -326,7 +336,10 @@ implements ItemStateListener, CommandListener
 	 */
 	public void insert(int elementNum, ChoiceItem item) {
 		this.itemsList.add(elementNum, item);
-		itemStateChanged( this.filterTextField );
+		this.lastFilterText = null;
+		if (isShown()) {
+			itemStateChanged( this.filterTextField );
+		}
 	}
 	
 	/**
@@ -352,7 +365,10 @@ implements ItemStateListener, CommandListener
 		if (elementStyle != null) {
 			item.setStyle(elementStyle);
 		}
-		itemStateChanged( this.filterTextField );
+		this.lastFilterText = null;
+		if (isShown()) {
+			itemStateChanged( this.filterTextField );
+		}
 	}
 
 	/* (non-Javadoc)
@@ -360,7 +376,10 @@ implements ItemStateListener, CommandListener
 	 */
 	public void set(int elementNum, ChoiceItem item) {
 		this.itemsList.set(elementNum, item);
-		itemStateChanged( this.filterTextField );
+		this.lastFilterText = null;
+		if (isShown()) {
+			itemStateChanged( this.filterTextField );
+		}
 	}
 
 	/* (non-Javadoc)
@@ -370,7 +389,9 @@ implements ItemStateListener, CommandListener
 		for (int i = 0; i < selectedArray.length; i++) {
 			((ChoiceItem) this.itemsList.get(i)).select( selectedArray[i] );
 		}
-		itemStateChanged( this.filterTextField );
+		if (isShown()) {
+			itemStateChanged( this.filterTextField );
+		}
 	}
 
 	/* (non-Javadoc)
@@ -392,7 +413,9 @@ implements ItemStateListener, CommandListener
 			ChoiceItem newSelected = (ChoiceItem) this.itemsList.get( elementNum );
 			newSelected.select( true );
 		}
-		itemStateChanged( this.filterTextField );
+		if (isShown()) {
+			itemStateChanged( this.filterTextField );
+		}
 	}
 	
 	
@@ -444,7 +467,9 @@ implements ItemStateListener, CommandListener
 	
 	public void setFilterText( String text ) {
 		this.filterTextField.setString( text );
-		itemStateChanged( this.filterTextField );
+		if (isShown()) {
+			itemStateChanged( this.filterTextField );
+		}
 	}
 	
 	public String getFilterText() {
@@ -495,7 +520,7 @@ implements ItemStateListener, CommandListener
 			}
 			this.lastFilterText = text;
 			String filterText = text.toLowerCase();
-			System.out.println("filter=[" + filterText  + "]");
+			//System.out.println("filter=[" + filterText  + "] - number of elements=" + this.itemsList.size());
 			Item focItem = this.container.focusedItem;
 			int focIndex = -1;
 			Object[] itemObjects = this.itemsList.getInternalArray();
@@ -509,11 +534,9 @@ implements ItemStateListener, CommandListener
 				ChoiceItem cItem = (ChoiceItem) object;
 				boolean isMatch = matches( filterText, cItem, checkForSelectedRadioItem );
 				if (isMatch) {
-					//int index = super.append(cItem);
 					matchingItems.add(cItem);
 					if (cItem == focItem) {
 						focIndex = i;
-						//super.focus( index, cItem, false );
 					}
 				}
 			}
