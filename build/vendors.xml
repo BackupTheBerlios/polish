@@ -234,6 +234,14 @@
 	</vendor>	
 
 	<vendor>
+		<name>Vertu</name>
+	</vendor>	
+
+	<vendor>
+		<name>Imate</name>
+	</vendor>	
+
+	<vendor>
 		<name>NTT-DoCoMo</name>
 		<capability name="vendor.alias" value="NTT DoCoMo" />
 	</vendor>	

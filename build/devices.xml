@@ -218,6 +218,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Class" value="MppEmulator"/>
 		<capability name="key.LeftSoftKey" value="-6"/>
 		<capability name="key.RightSoftKey" value="-7"/>
+		<capability name="key.backspace" value="16"/>
 		<capability name="MenuBar.OptionsPosition" value="right" />
 		<capability name="MenuBar.OkPosition" value="left" />
 		<capability name="polish.debug.commandline"
@@ -13661,8 +13662,9 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="DoJa/2.5"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="ImageFormat" value="gif"/>
+	 </device>
 		
-		 <device>
+	<device>
   		<identifier>Imate/JasJar</identifier>
   		<groups/>
   		<features>hasPointerEvents, hasCommandKeyEvents</features>
@@ -13731,6 +13733,15 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 	</device>
+	
+	<device>
+		<identifier>Vertu/Constellation</identifier>
+		<groups>Series40E2</groups>
+		<capability name="ScreenSize" value="208x208"/>
+		<capability name="FullCanvasSize" value="208x208"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>		
 	</device>
 	
 </devices>
