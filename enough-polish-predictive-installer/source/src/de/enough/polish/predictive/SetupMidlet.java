@@ -17,7 +17,7 @@ extends MIDlet
      protected void startApp() throws MIDletStateChangeException{
     	 DataInputStream stream = new DataInputStream(getClass().getResourceAsStream("/predictive.trie"));
     	 
-    	 setup  = new Setup(this,null,stream);
+    	 setup  = new Setup(this, null, true, stream);
  		 thread = new Thread(setup);
     	 thread.start();
      }
