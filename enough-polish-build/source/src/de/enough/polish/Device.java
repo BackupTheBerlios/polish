@@ -167,6 +167,8 @@ public class Device extends PolishComponent {
     private Device parentDevice;
 	private File resourceDir;
 
+	private DeviceGroupManager groupManager;
+
 
 	public Device(String identifier) {
 		super( null );
@@ -204,6 +206,7 @@ public class Device extends PolishComponent {
 		super( vendor, capabilityManager , definition );
 		this.identifier = identifier;
 		this.name = deviceName;
+		this.groupManager = groupManager;
 		this.vendorName = vendor.getIdentifier();
 		this.classPath = new ClassPath( this, libraryManager );
 
@@ -216,7 +219,6 @@ public class Device extends PolishComponent {
 		
 		// load group features and capabilities:
 		String[] explicitGroupNames = loadGroups(definition, groupManager, INVALID_GROUP_NAME_MESSAGE);
-		
 		// check if this device extends another one:
 		String parentIdentifier = definition.getChildTextTrim( "parent" );
 		if (parentIdentifier == null) {
@@ -637,6 +639,25 @@ public class Device extends PolishComponent {
 		return this.groupNames;
 	}
 
+	/**
+	 * Retrieves the names of the explicit groups to which this device belongs to.
+	 * 
+	 * @return The names of the explicit groups of this device.
+	 */
+	public String[] getExplicitGroupNames() {
+		String[] allNames = this.groupNames;
+		if (allNames == null || this.groupManager == null) {
+			return null;
+		}
+		ArrayList groups = new ArrayList();
+		for (int i = 0; i < allNames.length; i++) {
+			String name = allNames[i];
+			if (this.groupManager.hasGroup(name) ) {
+				groups.add(name);
+			}
+		}
+		return (String[]) groups.toArray( new String[ groups.size() ]);
+	}
 	/**
 	 * Retrieves all groups to which this device belongs to.
 	 * 
