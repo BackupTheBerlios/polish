@@ -2505,6 +2505,7 @@ public abstract class Item extends Object
 		if (this.parent instanceof Container) {
 			Container parentContainer = (Container) this.parent;
 			if (invisible && this.isFocused) {
+				//System.out.println("making focused item invisible: " + this);
 				// remove any item commands:
 				Screen scr = getScreen();
 				if (scr != null) {
@@ -2512,18 +2513,32 @@ public abstract class Item extends Object
 				}
 				int itemIndex = parentContainer.indexOf( this );
 				boolean isFocusSet = parentContainer.focusClosestItemAbove( itemIndex );
-				if (isFocusSet && parentContainer.focusedIndex > itemIndex ) {
-					// focused has moved downwards, since the above item is now invisible,
-					// adjust the scrolling accordingly:
-					int offset = parentContainer.yOffset + this.itemHeight + parentContainer.paddingVertical;
-					parentContainer.setScrollYOffset( offset > 0 ? 0 : offset, false );
+				//System.out.println("new focus set: " + isFocusSet + ", new index=" + parentContainer.focusedIndex + ", this.index=" + itemIndex );
+				if (isFocusSet) {
+					if (parentContainer.focusedIndex > itemIndex ) {
+						// focused has moved downwards, since the above item is now invisible,
+						// adjust the scrolling accordingly:
+						int offset = parentContainer.yOffset + this.itemHeight + parentContainer.paddingVertical;
+						if (offset > 0) {
+							offset = 0;
+						}
+						//System.out.println("setting parent scroll offset to " + offset );
+						parentContainer.setScrollYOffset( offset, false );
+					} else {
+						parentContainer.scroll( 0, parentContainer.focusedItem );
+					}
 				}
+				
 			} else if (!this.isFocused && parentContainer.focusedIndex > parentContainer.indexOf(this)) {
 				// adjust scrolling so that the focused element of the parent container stays in the current position:
+				int offset;
 				if (invisible) {
-					int offset = parentContainer.getScrollYOffset() + this.itemHeight;
+					 offset = parentContainer.getScrollYOffset() + this.itemHeight;
+					 if (offset > 0) {
+						 offset = 0;
+					 }
 					//System.out.println("invisible: adjusting yScrollOffset with itemHeight=" + this.itemHeight + " to " + (offset > 0 ? 0 : offset) );
-					parentContainer.setScrollYOffset( offset > 0 ? 0 : offset, false );
+					parentContainer.setScrollYOffset( offset, false );
 				} else {
 					int height = this.invisibleItemHeight;
 					if (height == 0 && this.parent != null) {
@@ -2532,10 +2547,19 @@ public abstract class Item extends Object
 						this.isInitialized = false;
 						height = getItemHeight( this.parent.contentWidth, this.parent.contentWidth );
 					}
-					int offset = parentContainer.getScrollYOffset() - height;
+					offset = parentContainer.getScrollYOffset() - height;
 					//System.out.println("visible: adjusting yScrollOffset with height=" + height + " to " + offset );					
 					parentContainer.setScrollYOffset( offset, false );						
 				}
+				// adjust the internal Y position:
+				Item parentItem = this;
+				while (parentItem != null) {
+					if (parentItem.internalX != -9999) {
+						parentItem.internalY += this.itemHeight;
+					}
+					parentItem = parentItem.parent;
+				}
+
 			}
 		}
 		if ( invisible ) {

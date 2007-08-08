@@ -1458,46 +1458,36 @@ implements AccessibleCanvas
 				//#endif
 				//System.out.println("topHeight=" + topHeight + ", contentY=" + contentY);
 				
-				// protect the title, ticker and the full-screen-menu area:
-	//			int clipHeight = this.screenHeight - topHeight;
-	//			//#if tmp.menuFullScreen
-	//				int cHeight = this.fullScreenHeight - topHeight - this.marginBottom;
-	//				if (cHeight < clipHeight) {
-	//					clipHeight = cHeight;
-	//				}
-	//			//#endif
-//				System.out.println("paintScreen with clipping " + g.getClipX() + ", " + g.getClipY() + ", " + g.getClipWidth() + ", " + g.getClipHeight() + " before clipRect");
 				// paint content:
 				paintScreen( g );
 	//				g.setColor( 0xff0000 );
 	//				g.drawRect(g.getClipX() + 1 , g.getClipY() + 1 , g.getClipWidth() - 2 ,  g.getClipHeight() - 2);
 					
-					//#if tmp.useScrollBar
-						//#if polish.css.show-scrollbar
-							if ( this.scrollBarVisible ) {
-						//#endif
-								if (this.container != null && this.container.itemHeight > this.contentHeight) {
-									// paint scroll bar: - this.container.yOffset
-									//#debug
-									System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
-									
-									int scrollX = sWidth + this.marginLeft 
-												- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
-									//TODO allow scroll bar on the left side
-									this.scrollBar.relativeX = scrollX;
-									this.scrollBar.relativeY = this.contentY;
-									this.scrollBar.paint( scrollX , this.contentY, scrollX, rightBorder, g);
-									//g.setColor( 0x00ff00 );
-									//g.drawRect( this.contentX, this.contentY, this.contentWidth - 3, this.contentHeight );
-									//System.out.println("scrollbar: width=" + scrollBar.itemWidth + ", backgroundWidth=" + scrollBar.backgroundWidth + ", height=" + scrollBar.itemHeight + ", backgroundHeight=" + scrollBar.backgroundHeight + ", contentY=" + contentY + ", contentHeight=" + this.contentHeight );
-								}
-						//#if polish.css.show-scrollbar
-							}
-						//#endif
+				//#if tmp.useScrollBar
+					//#if polish.css.show-scrollbar
+						if ( this.scrollBarVisible ) {
 					//#endif
+							if (this.container != null && this.container.itemHeight > this.contentHeight) {
+								// paint scroll bar: - this.container.yOffset
+								//#debug
+								System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
+								
+								int scrollX = sWidth + this.marginLeft 
+											- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
+								//TODO allow scroll bar on the left side
+								this.scrollBar.relativeX = scrollX;
+								this.scrollBar.relativeY = this.contentY;
+								this.scrollBar.paint( scrollX , this.contentY, scrollX, rightBorder, g);
+								//g.setColor( 0x00ff00 );
+								//g.drawRect( this.contentX, this.contentY, this.contentWidth - 3, this.contentHeight );
+								//System.out.println("scrollbar: width=" + scrollBar.itemWidth + ", backgroundWidth=" + scrollBar.backgroundWidth + ", height=" + scrollBar.itemHeight + ", backgroundHeight=" + scrollBar.backgroundHeight + ", contentY=" + contentY + ", contentHeight=" + this.contentHeight );
+							}
+					//#if polish.css.show-scrollbar
+						}
+					//#endif
+				//#endif
 					
 
-				//}
 //				//#ifdef tmp.menuFullScreen
 //				 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 //				//#else
@@ -2112,7 +2102,6 @@ implements AccessibleCanvas
 					if (!processed) {
 						//#ifdef tmp.useExternalMenuBar
 							if (this.menuBar.handleKeyPressed(keyCode, gameAction)) {
-								//System.out.println("menubar handled key " + keyCode );
 								repaint();
 								return;
 							}
@@ -3256,13 +3245,7 @@ implements AccessibleCanvas
 	 * @param item the item which is already shown on this screen.
 	 */
 	public void focus(Item item) {
-		int index;
-		if (item == null) {
-			index = -1;
-		} else {
-			index = this.container.itemsList.indexOf(item);
-		}
-		focus( index, item, false );
+		focus( item, false );
 	}
 	
 	/**
@@ -3277,6 +3260,35 @@ implements AccessibleCanvas
 			index = -1;
 		} else {
 			index = this.container.itemsList.indexOf(item);
+			if (index == -1) {
+				ArrayList children = new ArrayList();
+				children.add( item );
+				Item parent = item.parent;
+				while (parent != null) {
+					if (parent.parent == this.container) {
+						index = this.container.itemsList.indexOf(parent);
+						if (index != -1) {
+							// found the item!
+							focus( index, parent, force );
+							//System.out.println("found nested item " + parent + " - number of parents=" + children.size());
+							for (int i=children.size() - 1; i>=0; i--) {
+								Item child = (Item) children.get(i);
+								if (child.appearanceMode != Item.PLAIN || force ) {
+									Container parentContainer = (Container) child.parent;
+									//System.out.println("focusing " + child + " in parent " + parentContainer);
+									parentContainer.focus( parentContainer.indexOf(child), child, 0 );
+								} else {
+									//System.out.println("child is not focussable: " + child);
+									return;
+								}
+							}
+							return;
+						}
+					}
+					children.add( parent );
+					parent = parent.parent;
+				}
+			}
 		}
 		focus( index, item, force );
 	}

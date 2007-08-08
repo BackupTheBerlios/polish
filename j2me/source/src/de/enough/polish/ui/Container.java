@@ -277,7 +277,11 @@ public class Container extends Item {
 			last.defocus(this.itemStyle);
 			if ( item.appearanceMode != PLAIN ) {
 				//this.itemStyle = item.focus( this.focusedStyle, 0 );
-				focus( index, item, 0 );
+				if (this.isFocused) {
+					focus( index, item, 0 );
+				} else {
+					this.focusedItem = item;
+				}
 			} else {
 				focus( -1 );
 			}
@@ -286,7 +290,13 @@ public class Container extends Item {
 			this.items[index] = item;
 		}
 		this.isInitialized = false;
-		repaint();
+		//#if polish.supportInvisibleItems
+			if (!this.isInvisible) {
+				repaint();
+			}
+		//#else
+			repaint();
+		//#endif
 		return last;
 	}
 	
@@ -372,7 +382,7 @@ public class Container extends Item {
 	}
 	
 	/**
-	 * Focuses the next focussable item starting at the specified index +/- 1. 
+	 * Focuses the next focussable item starting at the specified index + 1. 
 	 * @param index the index of the item that should be used as a starting point for the search of a new possible focussable item
 	 * @return true when the focus could be set, when false is returned autofocus will be enabled instead
 	 */
@@ -623,7 +633,7 @@ public class Container extends Item {
 	 */
 	public void focus( int index, Item item, int direction ) {
 		//#debug
-		System.out.println("Container (" + super.toString() + "): Focusing item " + index + " (" + item + ")" );
+		System.out.println("Container (" + this + "): Focusing item " + index + " (" + item + ")" );
 		
 		//#if polish.blackberry
         	//# getScreen().setFocus( item );
@@ -773,14 +783,18 @@ public class Container extends Item {
 	 * @param direction the direction, is used for adjusting the scrolling when the internal area is to large. Either 0 or Canvas.UP, Canvas.DOWN, Canvas.LEFT or Canvas.RIGHT
 	 * @param item the item for which the scrolling should be adjusted
 	 */
-	protected void scroll(int direction, Item item) {
+	public void scroll(int direction, Item item) {
 		//#debug
 		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX +", relativeInternalY=" + ( item.relativeY + item.contentY + item.internalY ));
-		if (item.internalX != -9999) {
+		if (item.internalX != -9999 
+				&& ( (item.itemHeight > getScrollHeight()) || ((item.internalY + item.internalHeight) > item.contentHeight ) ) ) 
+		{
+			// use internal position of item for scrolling:
 			int relativeInternalX = item.relativeX + item.contentX + item.internalX;
 			int relativeInternalY = item.relativeY + item.contentY + item.internalY;
 			scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
 		} else {
+			// use item dimensions for scrolling:
 			scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );			
 		}
 	}
@@ -808,7 +822,6 @@ public class Container extends Item {
 		}
 		//#debug
 		System.out.println("scroll: direction=" + direction + ", y=" + y + ", availableHeight=" + this.availableHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset );
-		
 		// assume scrolling down when the direction is not known:
 		boolean isDownwards = (direction == Canvas.DOWN || direction == Canvas.RIGHT ||  direction == 0);
 		boolean isUpwards = (direction == Canvas.UP );
@@ -964,9 +977,9 @@ public class Container extends Item {
 					System.out.println("initContent(): scroll is required - scrolling to y=" + myContentHeight + ", height=" + height);
 					scroll( 0, 0, myContentHeight, width, height );
 					this.isScrollRequired = false;
-				} else if (item.internalX != -9999 ) {
-					// ensure that lines of textfields etc are within the visible area:
-					scroll(0, item );
+//				} else if (item.internalX != -9999 ) {
+//					// ensure that lines of textfields etc are within the visible area:
+//					scroll(0, item );
 				}
 			} 
 			if (width > myContentWidth) {
@@ -1044,7 +1057,7 @@ public class Container extends Item {
 	}
 	
 	int getContentScrollHeight() {
-		return this.availableHeight - (this.contentX + this.borderWidth + this.paddingBottom + this.marginBottom ); 
+		return getScrollHeight() - (this.contentX + this.borderWidth + this.paddingBottom + this.marginBottom ); 
 	}
 
 	
@@ -1129,13 +1142,21 @@ public class Container extends Item {
 					y += item.itemHeight + this.paddingVertical;
 				}
 			}
+			boolean paintFocusedItemOutside = false;
+			if (focItem != null) {
+				paintFocusedItemOutside = (focItem.internalX != -9999);
+				if (!paintFocusedItemOutside) {
+					focItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
+				}
+			}
 	
 			if (setClipping) {
 				g.setClip(clipX, clipY, clipWidth, clipHeight);
 			}
 			
-			// paint the currently focused item:
-			if (focItem != null) {
+			// paint the currently focused item outside of the clipping area when it has an internal area. This is 
+			// for example useful for popup items that extend the actual container area.
+			if (paintFocusedItemOutside) {
 				//System.out.println("Painting focusedItem " + this.focusedItem + " with width=" + this.focusedItem.itemWidth + " and with increased colwidth of " + (focusedRightBorder - focusedX)  );
 				focItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
 			}
@@ -1171,13 +1192,22 @@ public class Container extends Item {
 					if (this.enableScrolling) {
 						scroll(gameAction, item);
 					} else  {
-						// adjust internal settings for root container:
-						this.internalX = item.relativeX + item.contentX + item.internalX;
-						this.internalY = item.relativeY + item.contentY + item.internalY;
-						this.internalWidth = item.internalWidth;
-						this.internalHeight = item.internalHeight;
-						//#debug
-						System.out.println("Adjusted internal area to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );
+						if (item.itemHeight > getScrollHeight()) {
+							// adjust internal settings for root container:
+							this.internalX = item.relativeX + item.contentX + item.internalX;
+							this.internalY = item.relativeY + item.contentY + item.internalY;
+							this.internalWidth = item.internalWidth;
+							this.internalHeight = item.internalHeight;
+							//#debug
+							System.out.println("Adjusted internal area by internal area of " + item + " to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );						
+						} else {
+							this.internalHeight = item.relativeX;
+							this.internalY = item.relativeY;
+							this.internalWidth = item.itemWidth;
+							this.internalHeight = item.itemHeight;
+							//#debug
+							System.out.println("Adjusted internal area by full area of " + item + " to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );						
+						}
 					}
 				}
 				//#debug
@@ -2151,7 +2181,7 @@ public class Container extends Item {
 		return -1;
 	}
 	
-	//#if polish.debug.error || polish.keepToString
+	//#if (polish.debug.error || polish.keepToString) && polish.debug.container.includeChildren
 	/**
 	 * Generates a String representation of this item.
 	 * This method is only implemented when the logging framework is active or the preprocessing variable 

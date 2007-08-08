@@ -974,7 +974,6 @@ public class MenuBar extends Item {
 						setOpen( false );
 						return true;
 					}
-					//TODO find a way how to handle the hide command on BlackBerry when it is invoked directly...
 				//#endif
 				commandItem.handleKeyPressed( 0, Canvas.FIRE );
 	//			boolean handled = commandItem.handleKeyPressed( 0, Canvas.FIRE );
@@ -1016,6 +1015,7 @@ public class MenuBar extends Item {
 //					return true;
 //				}
 				boolean handled = this.commandsContainer.handleKeyPressed(keyCode, gameAction);
+				//System.out.println("menubar: container handled key " + keyCode + ": " + handled);
 				if (handled) {
 					this.isInitialized = false;
 				} else { 
@@ -1049,7 +1049,7 @@ public class MenuBar extends Item {
 					}
 					setOpen( false );
 				}
-				return handled;				
+				return true;				
 			}
 		} else {
 			//#if tmp.useMiddleCommand

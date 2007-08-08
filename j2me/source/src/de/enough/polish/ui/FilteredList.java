@@ -312,10 +312,9 @@ implements ItemStateListener, CommandListener
 	public int getSelectedIndex() {
 		if (this.listType == Choice.IMPLICIT) {
 			Item focItem = this.container.getFocusedItem();
-			if (focItem == null) {
-				return -1;
+			if (focItem != null) {
+				return this.itemsList.indexOf(focItem);
 			}
-			return this.itemsList.indexOf(focItem);
 		}
 		Object[] items = this.itemsList.getInternalArray();
 		for (int i = 0; i < items.length; i++) {
@@ -520,6 +519,7 @@ implements ItemStateListener, CommandListener
 			}
 			this.lastFilterText = text;
 			String filterText = text.toLowerCase();
+			//System.out.println("caretPos=" + this.filterTextField.getCaretPosition() + ", tex.length=" + text.length());
 			//System.out.println("filter=[" + filterText  + "] - number of elements=" + this.itemsList.size());
 			Item focItem = this.container.focusedItem;
 			int focIndex = -1;
@@ -545,6 +545,9 @@ implements ItemStateListener, CommandListener
 				super.focus( focIndex, focItem, false );
 			} else if (matchingItems.size() > 0) {
 				super.focus( 0, (Item) matchingItems.get(0), false );
+			}
+			if (checkForSelectedRadioItem && this.getSelectedIndex() != -1) {
+				( (ChoiceGroup)this.container ).setSelectedIndex( matchingItems.indexOf( this.itemsList.get( getSelectedIndex() ) ) , true);
 			}
 			// problem: this also adds the delete command
 			setItemCommands( this.filterTextField );

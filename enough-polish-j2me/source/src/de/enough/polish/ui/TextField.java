@@ -776,6 +776,7 @@ public class TextField extends StringItem
 		private int caretPosition; // the position of the caret in the text
 		private int caretColumn; // the current column of the caret, 0 is the first column
 		private int caretRow; // the current row of the caret, 0 is the first row
+		private int caretRowWidth; // the width of the current row
 		private int caretX;
 		private int caretY;
 		private int caretWidth;
@@ -852,7 +853,6 @@ public class TextField extends StringItem
 		public static final String[] CHARACTERS = new String[]{ charactersKey0, charactersKey1, charactersKey2, charactersKey3, charactersKey4, charactersKey5, charactersKey6, charactersKey7, charactersKey8, charactersKey9 };
 		private static final String[] EMAIL_CHARACTERS = new String[]{ VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS + "0", VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS + "1", "abc2", "def3", "ghi4", "jkl5", "mno6", "pqrs7", "tuv8", "wxyz9" };
 		private String[] characters;
-		private boolean caretPositionHasBeenSet;
 		private boolean isNumeric;
 		private boolean isDecimal;
 		private boolean isEmail;
@@ -911,6 +911,7 @@ public class TextField extends StringItem
 	protected boolean flashCaret = true;
 	protected boolean isUneditable;
 	private boolean isShowInputInfo = true;
+
 
 
 
@@ -1618,11 +1619,13 @@ public class TextField extends StringItem
 	private void updateDeleteCommand(String newText) {
 		// remove delete command when the caret is before the first character,
 		// add it when it is after the first character:
+		//#debug
+		System.out.println("updateDeleteCommand: newText=[" + newText + "], caretPos=" + this.caretPosition);
 		Screen scr = getScreen();
 		if ( scr != null && !this.isUneditable ) {
 			if ( newText == null 
 				//#ifdef tmp.directInput
-					|| this.caretPosition == 0
+					|| (this.caretPosition == 0    &&    this.caretChar == this.editingCaretChar)
 				//#else
 					|| newText.length() == 0 
 				//#endif
@@ -2143,8 +2146,14 @@ public class TextField extends StringItem
 				super.paintContent(x, y, leftBorder, rightBorder, g);
 			}
 		//#else
-        	
-		super.paintContent(x, y, leftBorder, rightBorder, g);
+        
+		//#if tmp.includeInputInfo
+    		if (this.isUneditable || !this.isFocused) {
+        //#endif
+    			super.paintContent(x, y, leftBorder, rightBorder, g);
+    	//#if tmp.includeInputInfo
+    		}
+		//#endif
 		
 		if (this.isUneditable || !this.isFocused) {
 			return;
@@ -2168,6 +2177,7 @@ public class TextField extends StringItem
 							leftBorder += infoWidth;
 						}
 					}
+					super.paintContent(x, y, leftBorder, rightBorder, g);
 				//#endif
 
 		  		//#ifdef polish.css.text-wrap
@@ -2183,7 +2193,16 @@ public class TextField extends StringItem
 					//#else
 						g.setColor( this.textColor );
 					//#endif
-					int cX = x + this.caretX;
+					int cX;
+					if (!this.isLayoutCenter && !this.isLayoutRight) {
+						cX = x + this.caretX;
+					} else {
+						if (this.isLayoutCenter) {
+							cX = x + (((rightBorder - leftBorder) - this.caretRowWidth) >> 1 ) + this.caretX;
+						} else  {
+							cX = rightBorder - this.caretRowWidth + this.caretX;
+						}
+					}
 					int cY = y + this.caretY;
                     if (this.caretChar != this.editingCaretChar) {
                     	// draw background rectangle
@@ -2231,7 +2250,7 @@ public class TextField extends StringItem
 				} else if (this.isLayoutRight){
 					x = rightBorder; 
 				} else {
-					x = this.contentWidth + 2;
+					x += this.contentWidth + 2;
 				}
 				g.drawLine( x, y, x, y + this.font.getHeight() );
 			}
@@ -2307,7 +2326,11 @@ public class TextField extends StringItem
 				if (realLines == null || realLines.length != length) {
 					realLines = new String[ length ];
 				}
-				this.caretPositionHasBeenSet = false;
+				boolean caretPositionHasBeenSet = false;
+				int cp = this.caretPosition;
+//				if (this.caretChar != this.editingCaretChar) {
+//					cp++;
+//				}
 				for (int i = 0; i < length; i++) {
 					String line = this.textLines[i];
 					endOfLinePos += line.length();
@@ -2319,18 +2342,17 @@ public class TextField extends StringItem
 						}
 					}
 					realLines[i] = line;
-					if (!this.caretPositionHasBeenSet && ((endOfLinePos > this.caretPosition) || (endOfLinePos == this.caretPosition && i == length -1 )) ) {
+					if (!caretPositionHasBeenSet && ((endOfLinePos > cp) || (endOfLinePos == cp && i == length -1 )) ) {
 						//System.out.println("TextField: caretPos=" + this.caretPosition + ", line=" + line + ", endOfLinePos=" + endOfLinePos );
 						this.caretRow = i;
-						setCaretRow(line, line.length() - (endOfLinePos - this.caretPosition) );
+						setCaretRow(line, line.length() - (endOfLinePos - cp) );
 						this.caretY = this.caretRow * this.rowHeight;
-						this.caretPositionHasBeenSet = true;
+						caretPositionHasBeenSet = true;
 					}
 				} // for each line
 				this.realTextLines = realLines;
-				if (!this.caretPositionHasBeenSet || this.caretPosition > textLength ) {
+				if (!caretPositionHasBeenSet) {
 					//System.out.println("caret position has not been set before");
-					this.caretPositionHasBeenSet = true;
 					//#ifdef polish.css.font-bitmap
 						//if (this.textLines != null) {
 						if (this.bitMapFontViewer == null) {
@@ -2366,6 +2388,10 @@ public class TextField extends StringItem
 			this.internalWidth = this.contentWidth;
 			this.internalHeight = this.rowHeight;
 			this.screen = getScreen();
+			if (this.isFocused && this.parent instanceof Container ) {
+				// ensure that the visible area of this TextField is visible:
+				((Container)this.parent).scroll(0, this); // problem: itemHeight is not yet set
+			}
 		//#endif
 	}
 	
@@ -2390,17 +2416,27 @@ public class TextField extends StringItem
 		this.caretColumn = column;
 		boolean endsInLineBreak = (length >= 1) && (line.charAt(length-1) == '\n'); 
 		String caretRowFirstPart;
+		boolean firstPartIsFullRow = false;
 		if (column == length || ( endsInLineBreak && column == length -1 )) {
 			if ( endsInLineBreak ) {
 				caretRowFirstPart = line.substring( 0, length - 1);								
 			} else {
 				caretRowFirstPart = line;				
 			}
+			firstPartIsFullRow = true;
 		} else {
 			caretRowFirstPart = line.substring( 0, column );
 			//this.caretRowLastPartWidth = this.font.stringWidth(this.caretRowLastPart);;
 		}
 		this.caretX = this.font.stringWidth(caretRowFirstPart);
+		if (this.isLayoutCenter || this.isLayoutRight) {
+			if (firstPartIsFullRow) {
+				this.caretRowWidth = this.caretX;
+			} else {
+				this.caretRowWidth = this.font.stringWidth( line );
+			}
+		}
+		//System.out.println("caretRowWidth=" + this.caretRowWidth + " for line=" + line);
 		//#if polish.css.text-wrap
 			if (this.useSingleLine) {
 				if (this.caretX > this.contentWidth) {
@@ -2582,21 +2618,79 @@ public class TextField extends StringItem
 	
 	//#ifdef tmp.directInput
 	
+	protected boolean isValidInput( char insertChar, String myText ) {
+		if (!this.isEmail) {
+			return true;
+		}
+		// check valid input for email addresses:
+		char lowerCaseInsertChar = Character.toLowerCase( insertChar );
+		boolean isValidInput = (insertChar >= '0' && insertChar <= '9')  || ( lowerCaseInsertChar >= 'a' && lowerCaseInsertChar <= 'z' ) ;
+		if (!isValidInput) {
+			boolean isInLocalPart = true; // are we in the first/local part before the '@' in the address?
+			
+			String emailAddressText = myText;
+			int atPosition = -1;
+			int relativeCaretPosition = this.caretPosition;
+			if (emailAddressText != null) {
+				// extract single email address part when there are several email addresses (this can 
+				// only happen when a ChoiceTextField is used)
+				int separatorPosition;
+				while ( (separatorPosition = emailAddressText.indexOf(this.emailSeparatorChar)) != -1 ) {
+					if (separatorPosition < this.caretPosition) {
+						emailAddressText = emailAddressText.substring( separatorPosition + 1);
+						relativeCaretPosition -= separatorPosition;
+					} else {
+						emailAddressText = emailAddressText.substring( 0, separatorPosition );
+						break;
+					}
+				}
+				// check for the '@' sign as the separator between local part and domain name:
+				atPosition = emailAddressText.indexOf('@');
+				isInLocalPart = ( atPosition == -1 )  ||  ( atPosition >= this.caretPosition );
+			}
+			if (isInLocalPart) {
+				boolean isAtFirstChar = (emailAddressText == null || relativeCaretPosition == 0);
+				isValidInput = ( VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS.indexOf( insertChar ) != -1 ) 
+							&& !( (insertChar == '.') && isAtFirstChar) // the first char must not be a dot.
+							&& !(atPosition != -1 && insertChar == '@') // it's not allowed to enter two @ characters
+							&& !(insertChar == '@' &&  isAtFirstChar ); // the first character must not be the '@' sign
+			} else {
+				isValidInput = VALID_DOMAIN_CHARACTERS.indexOf( insertChar ) != -1;
+			}
+			if (!isValidInput) {
+				//#debug
+				System.out.println("email: invalid input!");
+			}
+		}
+		return isValidInput;
+	}
+	
 	protected void commitCurrentCharacter() {
 		//#debug
 		System.out.println("comitting current character: " + this.caretChar);
+		String myText;
+		if (this.isPassword) {
+			myText = this.passwordText;
+		} else {
+			myText = this.text;
+		}
+		if (!isValidInput( this.caretChar, myText )) {
+			return;
+		}
 		this.caretChar = this.editingCaretChar;
 		this.caretPosition++;
 		this.caretColumn++;
 		this.caretX += this.caretWidth;
 		notifyStateChanged();
+		//#ifdef polish.css.textfield-caret-flash
+			if (!this.flashCaret) {
+				repaint();
+			}
+		//#endif
 	}
 
-//	protected void insertCharacter() {
-//		insertCharacter( this.caretChar, true, true );
-//	}
 	protected void insertCharacter( char insertChar, boolean append, boolean commit ) {
-		if (this.text != null && this.text.length() >= this.maxSize) {
+		if (append && this.text != null && this.text.length() >= this.maxSize ) {
 			return;
 		}
 		//#debug
@@ -2607,49 +2701,9 @@ public class TextField extends StringItem
 		} else {
 			myText = this.text;
 		}
-		if (this.isEmail) {
-			// check valid input for email addresses:
-			char lowerCaseInsertChar = Character.toLowerCase( insertChar );
-			boolean isValidInput = (insertChar >= '0' && insertChar <= '9')  || ( lowerCaseInsertChar >= 'a' && lowerCaseInsertChar <= 'z' ) ;
-			if (!isValidInput) {
-				boolean isInLocalPart = true; // are we in the first/local part before the '@' in the address?
-				
-				String emailAddressText = myText;
-				int atPosition = -1;
-				int relativeCaretPosition = this.caretPosition;
-				if (emailAddressText != null) {
-					// extract single email address part when there are several email addresses (this can 
-					// only happen when a ChoiceTextField is used)
-					int separatorPosition;
-					while ( (separatorPosition = emailAddressText.indexOf(this.emailSeparatorChar)) != -1 ) {
-						if (separatorPosition < this.caretPosition) {
-							emailAddressText = emailAddressText.substring( separatorPosition + 1);
-							relativeCaretPosition -= separatorPosition;
-						} else {
-							emailAddressText = emailAddressText.substring( 0, separatorPosition );
-							break;
-						}
-					}
-					// check for the '@' sign as the separator between local part and domain name:
-					atPosition = emailAddressText.indexOf('@');
-					isInLocalPart = ( atPosition == -1 )  ||  ( atPosition >= this.caretPosition );
-				}
-				if (isInLocalPart) {
-					boolean isAtFirstChar = (emailAddressText == null || relativeCaretPosition == 0);
-					isValidInput = ( VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS.indexOf( insertChar ) != -1 ) 
-								&& !( (insertChar == '.') && isAtFirstChar) // the first char must not be a dot.
-								&& !(atPosition != -1 && insertChar == '@') // it's not allowed to enter two @ characters
-								&& !(insertChar == '@' &&  isAtFirstChar ); // the first character must not be the '@' sign
-				} else {
-					isValidInput = VALID_DOMAIN_CHARACTERS.indexOf( insertChar ) != -1;
-				}
-				if (!isValidInput) {
-					//#debug
-					System.out.println("email: invalid input!");
-					return;
-				}
-			}
-			
+		
+		if (!isValidInput( insertChar, myText )) {
+			return;
 		}
 	
 		int cp = this.caretPosition;
@@ -2660,7 +2714,7 @@ public class TextField extends StringItem
 				+ insertChar + myText.substring( cp );
 		} else {
 			// replace current caret char:
-			StringBuffer buffer = new StringBuffer();
+			StringBuffer buffer = new StringBuffer(myText.length());
 			buffer.append(myText.substring( 0, cp ) ).append( insertChar );
 			if (cp < myText.length() - 1) {
 				buffer.append( myText.substring( this.caretPosition + 1 ) );
@@ -2801,7 +2855,8 @@ public class TextField extends StringItem
 				synchronized ( this.lock ) {
 					if (this.caretChar != this.editingCaretChar) {
 						if ( !this.isKeyDown && (currentTime - this.lastInputTime) >= INPUT_TIMEOUT ) {
-							insertCharacter( this.caretChar, false, true);
+							commitCurrentCharacter();
+							//insertCharacter( this.caretChar, false, true);
 						}
 					} else if (this.isKeyDown && 
 							this.deleteKeyRepeatCount != 0 && 
@@ -3061,7 +3116,7 @@ public class TextField extends StringItem
 			}
 			if ( (!this.isNumeric) //this.inputMode != MODE_NUMBERS 
 					&& !this.isUneditable
-					&& currentLength < this.maxSize 
+					&& ((currentLength < this.maxSize) || ( currentLength == this.maxSize && this.caretChar != this.editingCaretChar && keyCode == this.lastKey)) 
 					&& ( (keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9)
 					  || (keyCode == Canvas.KEY_POUND ) 
 					  || (keyCode == Canvas.KEY_STAR )
@@ -3368,10 +3423,6 @@ public class TextField extends StringItem
 				if (column > 0) {
 					this.caretPosition--;
 					column--;
-					if (characterInserted && column > 0) {
-						 this.caretPosition--;
-						 column--;
-					}
 					setCaretRow( this.originalRowText, column );
 					//#if tmp.updateDeleteCommand
 						updateDeleteCommand( this.text );
@@ -3479,7 +3530,7 @@ public class TextField extends StringItem
 				return false;
 			}
 			int currentLength = (this.text == null ? 0 : this.text.length());
-			if ( !this.isUneditable && currentLength < this.maxSize ) 
+			if ( !this.isUneditable && currentLength <= this.maxSize ) 
 			{	
 				// enter number character:
 				this.lastInputTime = System.currentTimeMillis();

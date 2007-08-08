@@ -941,6 +941,8 @@ implements Choice
 	 */
 	public void setSelectedIndex(int elementNum, boolean selected)
 	{
+		//#debug
+		System.out.println("setSelectedIndex: index="  + elementNum + ", selected=" + selected + ", current selectedIndex=" + this.selectedIndex) ;
 		if (this.isMultiple) {
 			ChoiceItem item = (ChoiceItem) this.itemsList.get( elementNum );
 			item.select( selected );
