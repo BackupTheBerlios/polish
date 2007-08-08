@@ -139,6 +139,7 @@ public class DeviceGroupManager {
 		DeviceGroup group = (DeviceGroup) this.groups.get( name );
 		if (group == null && create) {
 			group = new DeviceGroup( name );
+			group.isVirtual = true;
 			this.groups.put( name, group );
 		}
 		return group;
@@ -173,4 +174,20 @@ public class DeviceGroupManager {
 	public void clear() {
 		this.groups.clear();
 	}
+	
+	public boolean hasGroup( String name ) {
+		return hasGroup( name, true );
+	}
+
+	/**
+	 * @param name
+	 * @param mustNotBeVirtual 
+	 * @return true when the group exists
+	 */
+	public boolean hasGroup(String name, boolean mustNotBeVirtual) {
+		DeviceGroup group = (DeviceGroup) this.groups.get( name );
+		return group != null && (!mustNotBeVirtual || group.isVirtual == false );
+	}
+	
+	
 }

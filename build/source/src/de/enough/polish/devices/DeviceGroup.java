@@ -49,6 +49,7 @@ public class DeviceGroup extends PolishComponent {
 
 
 	private String parentIdentifier;
+	protected boolean isVirtual;
 
 	/**
 	 * Creates a new device group.
