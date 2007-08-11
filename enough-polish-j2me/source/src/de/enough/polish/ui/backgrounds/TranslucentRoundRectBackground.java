@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && polish.midp2
+//#condition polish.usePolishGui
 /*
  * Created on 13-April-2007 at 19:49:13.
  *
@@ -85,7 +85,7 @@ extends Background
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		//#if polish.blackberry && polish.usePolishGui
+		//#if polish.blackberry
 			net.rim.device.api.ui.Graphics bbGraphics = null;
 			//# bbGraphics = g.g;
 			int alpha = this.color >>> 24;
@@ -93,7 +93,7 @@ extends Background
 			bbGraphics.setColor( this.color );
 			bbGraphics.fillRoundRect(x, y, width, height, this.arcWidth, this.arcHeight );
 			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque
-		//#else
+		//#elif polish.midp2
 			if (this.buffer == null || width != this.lastWidth || height != this.lastHeight ) {
 				if (width < this.arcWidth || height < this.arcHeight) {
 					return;
@@ -158,6 +158,9 @@ extends Background
 					border--;
 				}
 			}
+		//#else
+			g.setColor( this.color );
+			g.fillRoundRect(x, y, width, height, this.arcWidth, this.arcHeight);
 		//#endif
 	}
 

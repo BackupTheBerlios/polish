@@ -1567,7 +1567,7 @@ public abstract class Item extends Object
 			scr = getScreen();
 		}
 		if (scr != null) {
-			scr.addToStateNotifyQueue(this);
+			scr.notifyStateListener(this);
 		}
 	}
 	

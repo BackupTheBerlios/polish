@@ -78,6 +78,10 @@ public class FishEyeContainerView extends ContainerView {
 		private int[][] shownRgbData;
 		private int[] shownRgbDataWidths;
 		private int scaleFactor = 50;
+		//#if polish.css.fisheyeview-scale-end
+			//#define tmp.scaleAll
+			private int scaleFactorEnd;
+		//#endif
 	//#endif
 	private int referenceFocusedIndex;
 	private Background focusedBackground;
@@ -102,13 +106,22 @@ public class FishEyeContainerView extends ContainerView {
 		boolean animated = super.animate();
 		if (this.targetXCenterPositions != null) {
 			Item[] myItems = this.parentContainer.getItems();
-			for (int i = 0; i < this.targetXCenterPositions.length; i++) {
+			int length = myItems.length;
+			for (int i = 0; i < length; i++) {
 				int target = this.targetXCenterPositions[i];
 				Item item = myItems[i];
 				int itemWidth = (item.itemWidth >> 1);
+				int factor = this.scaleFactor;
+				int distance = getDistance( i, this.focusedIndex, length );
+				if (distance != 0) {
+					distance--;
+				}
+				//#if tmp.scaleAll
+					factor = factor + ((this.scaleFactorEnd - factor ) * distance) / (length >> 1);
+				//#endif
 				//#if polish.midp2
 					if (i != this.focusedIndex) {
-						itemWidth = (itemWidth * this.scaleFactor) / 100;
+						itemWidth = (itemWidth * factor) / 100;
 					}
 				//#endif
 				int current = item.relativeX + itemWidth;
@@ -118,12 +131,12 @@ public class FishEyeContainerView extends ContainerView {
 					item.relativeX = calculateCurrent( current, target ) - itemWidth;
 				}
 				//#if polish.midp2
-					if (this.scaleFactor != 100) {
+					if (factor != 100) {
 						current = this.shownRgbDataWidths[ i ];
 						if (i == this.focusedIndex) {
 							target = this.originalRgbDataWidths[ i ];
 						} else {
-							target = (this.originalRgbDataWidths[ i ] * this.scaleFactor) / 100;
+							target = (this.originalRgbDataWidths[ i ] * factor) / 100;
 						}
 						if (current != target) {
 							animated = true;
@@ -132,17 +145,7 @@ public class FishEyeContainerView extends ContainerView {
 							int originalHeight = data.length / originalWidth;
 							int newWidth = calculateCurrent( current, target );
 							int newHeight = (newWidth * originalHeight) / originalWidth;
-							int distance = i - this.focusedIndex;
-							if (distance != 0) {
-								if (distance < 0) {
-									distance += myItems.length;
-								}
-								if (distance > myItems.length >> 1) {
-									distance = myItems.length - distance;
-								}
-								distance--;
-							}
-							int alpha = 255 - (255*distance)/(myItems.length>>1);
+							int alpha = 255 - (255*distance)/(length>>1);
 							this.shownRgbData[i] = ImageUtil.scale(alpha, data, newWidth, newHeight, originalWidth, originalHeight );
 							this.shownRgbDataWidths[i] = newWidth;
 						}
@@ -160,6 +163,34 @@ public class FishEyeContainerView extends ContainerView {
 	}
 	
 	
+	/**
+	 * Retrieves the distance between the given index and the focused element witin the list.
+	 *  
+	 * @param i the index
+	 * @param focused the index of the focused element
+	 * @param length the length of the list
+	 * @return the distance between the index and the focused lement
+	 */
+	private static int getDistance(int i, int focused, int length) {
+		/*
+		 * r = Math.max( f, i )
+		 * l = Math.min( f, i )
+		 * distance = Math.min( length - r + l, r -l )
+		 */
+		if (i == focused) {
+			return 0;
+		}
+		int right, left;
+		if (focused > i) {
+			right = focused;
+			left = i;
+		} else {
+			right = i;
+			left = focused;
+		}
+		return Math.min( length - right + left, right - left);
+	}
+
 	private int calculateCurrent(int current, int target) {
 		int speed = Math.max( this.minSpeed, Math.abs( current - target ) / 3 );
 		if (this.maxSpeed != -1 && speed > this.maxSpeed) {
@@ -191,18 +222,19 @@ public class FishEyeContainerView extends ContainerView {
 
 		this.parentContainer = parent;
 		Item[] myItems = parent.getItems();
-		if (this.focusedIndex == -1 && myItems.length != 0) {
+		int length = myItems.length;
+		if (this.focusedIndex == -1 && length != 0) {
 			//this.parentContainer.focus(0);
 			if (parent.focusedIndex != -1) {
 				this.focusedIndex = parent.focusedIndex;
 			} else {
 				this.focusedIndex = 0;
 			}
-			System.out.println("AUTO-FOCUSSING ITEM " + this.focusedIndex );
+			//System.out.println("AUTO-FOCUSSING ITEM " + this.focusedIndex );
 			this.focusedItem = myItems[this.focusedIndex];
 			this.focusedStyle = this.focusedItem.getFocusedStyle();
 		}
-		if (this.referenceXCenterPositions != null && this.referenceXCenterPositions.length == myItems.length) {
+		if (this.referenceXCenterPositions != null && this.referenceXCenterPositions.length == length) {
 			return;
 		}
 
@@ -216,20 +248,20 @@ public class FishEyeContainerView extends ContainerView {
 			}
 		//#endif
 
-		if (this.isRemoveText && (this.labels == null || this.labels.length != myItems.length)) {
-			this.labels = new String[ myItems.length ];
+		if (this.isRemoveText && (this.labels == null || this.labels.length != length)) {
+			this.labels = new String[ length ];
 		}
 
 		int maxWidth = 0;
 		int maxHeight = 0;
 		boolean hasFocusableItem = false;
 		//#if polish.midp2
-			this.originalRgbData = new int[ myItems.length ][];
-			this.originalRgbDataWidths = new int[ myItems.length ];
-			this.shownRgbData = new int[ myItems.length ][];
-			this.shownRgbDataWidths = new int[ myItems.length ];
+			this.originalRgbData = new int[ length ][];
+			this.originalRgbDataWidths = new int[ length ];
+			this.shownRgbData = new int[ length ][];
+			this.shownRgbDataWidths = new int[ length ];
 		//#endif
-		for (int i = 0; i < myItems.length; i++) {
+		for (int i = 0; i < length; i++) {
 			Item item = myItems[i];
 			if (this.isRemoveText) {
 				String text = item.getLabel();
@@ -279,15 +311,15 @@ public class FishEyeContainerView extends ContainerView {
 			this.appearanceMode = Item.PLAIN;
 		}
 		
-		this.referenceXCenterPositions = new int[myItems.length];
+		this.referenceXCenterPositions = new int[length];
 		this.referenceXCenterPositions[this.focusedIndex] = lineWidth >> 1;
 		this.referenceFocusedIndex = this.focusedIndex;
 
 		int completeWidth;
 		//#if polish.midp2
-			completeWidth = maxWidth + ((maxWidth*this.scaleFactor)/100) * (myItems.length - 1) + ( myItems.length -1 ) * this.paddingHorizontal;
+			completeWidth = maxWidth + ((maxWidth*this.scaleFactor)/100) * (length - 1) + ( length -1 ) * this.paddingHorizontal;
 		//#else
-			completeWidth = maxWidth * myItems.length + ( myItems.length -1 ) * this.paddingHorizontal;
+			completeWidth = maxWidth * length + ( length - 1 ) * this.paddingHorizontal;
 		//#endif
 		
 		if (this.focusedStyle != null && this.focusedItem != null) {
@@ -304,16 +336,16 @@ public class FishEyeContainerView extends ContainerView {
 			availableWidth = ((completeWidth - this.focusedWidth) >> 1) - this.paddingHorizontal; 
 		}
 //		System.out.println("available=" + availableWidth + ", lineWidth=" + lineWidth + ", completeWidth=" + completeWidth + ", maxItemWidth=" + maxWidth + ", paddingHorizontal=" + this.paddingHorizontal);
-		int availableWidthPerItem = (availableWidth << 8) / (myItems.length -1);
+		int availableWidthPerItem = (availableWidth << 8) / (length -1);
 		// process items on the left side:
 		int index = this.focusedIndex - 1;
 		int processed = 0;
-		int length = (myItems.length -1) >> 1;
+		int halfLength = (length - 1) >> 1;
 		int startX = availableWidth;
 //		System.out.println("left: startX=" + startX + ", center=" + (lineWidth/2) );
-		while (processed < length ) {
+		while (processed < halfLength ) {
 			if (index < 0) {
-				index = myItems.length - 1;
+				index = length - 1;
 			}
 			this.referenceXCenterPositions[index] = startX - ((processed * availableWidthPerItem) >>> 8); //  - (maxItemWidth >> 1);
 //			System.out.println( index + "=" + this.referenceXCenterPositions[index]);
@@ -323,11 +355,11 @@ public class FishEyeContainerView extends ContainerView {
 		// process items on the right side:
 		index = this.focusedIndex + 1;
 		processed = 0;
-		length = myItems.length >> 1;
+		halfLength = length >> 1;
 		startX =  lineWidth - startX; //(lineWidth >> 1) +  ((lineWidth >> 1) - startX);
 //		System.out.println("right: startX=" + startX + ", center=" + (lineWidth/2) );
-		while (processed < length) {
-			if (index >= myItems.length) {
+		while (processed < halfLength) {
+			if (index >= length) {
 				index = 0;
 			}
 			this.referenceXCenterPositions[index] = startX + ((processed * availableWidthPerItem) >>> 8); //+ (maxWidth >> 1);
@@ -336,7 +368,7 @@ public class FishEyeContainerView extends ContainerView {
 			processed++;
 		}
 		
-		for (int i = 0; i < myItems.length; i++) {
+		for (int i = 0; i < length; i++) {
 			Item item = myItems[i];
 			int itemWidth = (item.getItemWidth(lineWidth, lineWidth) >> 1);
 			//#if polish.midp2
@@ -598,6 +630,20 @@ public class FishEyeContainerView extends ContainerView {
 			Integer scaleInt = style.getIntProperty( "fisheyeview-scale" );
 			if (scaleInt != null) {
 				this.scaleFactor = scaleInt.intValue();
+			}
+		//#endif
+		//#if polish.css.fisheyeview-scale-start && polish.midp2
+			Integer scaleStartInt = style.getIntProperty("fisheyeview-scale-start");
+			if (scaleStartInt != null) {
+				this.scaleFactor = scaleStartInt.intValue();
+			}
+		//#endif
+		//#if polish.css.fisheyeview-scale-end && polish.midp2
+			Integer scaleEndInt = style.getIntProperty("fisheyeview-scale-end");
+			if (scaleEndInt != null) {
+				this.scaleFactorEnd = scaleEndInt.intValue();
+			} else if (this.scaleFactorEnd == 0) {
+				this.scaleFactorEnd = this.scaleFactor;
 			}
 		//#endif
 		//#if polish.css.show-text-in-title

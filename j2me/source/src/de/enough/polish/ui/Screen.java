@@ -1163,11 +1163,7 @@ implements AccessibleCanvas
 		if (!this.isInitialized) {
 			return false;
 		}
-		if ( (this.itemStateListener != null) 
-				&& (this.stateNotifyQueue != null) 
-				&& (this.stateNotifyQueue.size() > 0 ) ) {
-			notifyStateListener();
-		}
+		
 		synchronized (this.paintLock) {
 			try {
 				boolean animated = false;
@@ -2565,18 +2561,19 @@ implements AccessibleCanvas
 		//#endif
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.addCommand(cmd, commandStyle);
+			//TODO adjust for other menubar positions
+			if (this.menuBarHeight == 0 && this.isInitialized) {
+				int availableWidth = this.screenWidth;
+				//#if polish.css.separate-menubar
+					if (!this.separateMenubar) {
+						availableWidth -= (this.marginLeft + this.marginRight);
+					}
+				//#endif
+				this.menuBarHeight = this.menuBar.getSpaceBottom( availableWidth, this.fullScreenHeight );
+				this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
+			}
 			if (super.isShown()) {
-				//TODO adjust for other menubar positions
-				if (this.menuBarHeight == 0 && this.isInitialized) {
-					int availableWidth = this.screenWidth;
-					//#if polish.css.separate-menubar
-						if (!this.separateMenubar) {
-							availableWidth -= (this.marginLeft + this.marginRight);
-						}
-					//#endif
-					this.menuBarHeight = this.menuBar.getSpaceBottom( availableWidth, this.fullScreenHeight );
-					this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
-				}
+				repaint();
 			}
 		//#else
 			if (this.menuCommands == null) {
@@ -3625,41 +3622,45 @@ implements AccessibleCanvas
 	 * 
 	 * @param item the item which contents have been edited.
 	 */
-	protected void addToStateNotifyQueue( Item item ) {
+	protected void notifyStateListener( Item item ) {
 		if (this.itemStateListener != null) {
-			if (this.stateNotifyQueue == null) {
-				this.stateNotifyQueue = new ArrayList();
-			}
-			synchronized (this.stateNotifyQueue) {
-				this.stateNotifyQueue.add( item );
-			}
-			//#debug
-			System.out.println("added item " + item + " to stateNotifyQueue with listener " + this.itemStateListener + ", size of queue=" + this.stateNotifyQueue.size() + " to form " + this  );
+			this.itemStateListener.itemStateChanged(item);
 		}
+
+//		if (this.itemStateListener != null) {
+//			if (this.stateNotifyQueue == null) {
+//				this.stateNotifyQueue = new ArrayList();
+//			}
+//			synchronized (this.stateNotifyQueue) {
+//				this.stateNotifyQueue.add( item );
+//			}
+//			//#debug
+//			System.out.println("added item " + item + " to stateNotifyQueue with listener " + this.itemStateListener + ", size of queue=" + this.stateNotifyQueue.size() + " to form " + this  );
+//		}
 	}
 	
-	/**
-	 * Notifies the ItemStateListener about the changes which occurred to the items.
-	 */
-	protected void notifyStateListener() {
-		if (this.stateNotifyQueue != null && this.itemStateListener != null) {
-			//Item lastItem = null;
-			while (this.stateNotifyQueue.size() > 0) {
-				Item item;
-				synchronized (this.stateNotifyQueue) {
-					item = (Item) this.stateNotifyQueue.remove(0);
-				}
-				//if (item != lastItem) { // 2007-08-06: sometimes there are two subsequent fast changes, so this has to be forwarded correctly:
-					//#debug
-					System.out.println("notifying ItemStateListener for item " + item + " and form " + this ); 
-					this.itemStateListener.itemStateChanged(item);
-					//lastItem = item;
-				//}
-			}
-			//#debug
-			System.out.println("done notifying ItemStateListener."); 
-		}
-	}
+//	/**
+//	 * Notifies the ItemStateListener about the changes which occurred to the items.
+//	 */
+//	protected void notifyStateListener() {
+//		if (this.stateNotifyQueue != null && this.itemStateListener != null) {
+//			//Item lastItem = null;
+//			while (this.stateNotifyQueue.size() > 0) {
+//				Item item;
+//				synchronized (this.stateNotifyQueue) {
+//					item = (Item) this.stateNotifyQueue.remove(0);
+//				}
+//				//if (item != lastItem) { // 2007-08-06: sometimes there are two subsequent fast changes, so this has to be forwarded correctly:
+//					//#debug
+//					System.out.println("notifying ItemStateListener for item " + item + " and form " + this ); 
+//					this.itemStateListener.itemStateChanged(item);
+//					//lastItem = item;
+//				//}
+//			}
+//			//#debug
+//			System.out.println("done notifying ItemStateListener."); 
+//		}
+//	}
 
 	/**
 	 * Checks if the keyboard (if any) is currently accessible by the application.

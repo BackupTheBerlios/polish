@@ -2164,7 +2164,7 @@ public class TextField extends StringItem
 			//#endif
 				// adjust text-start for input info abc|Abc|ABC|123 if it should be shown on the same line:
 				//#if tmp.includeInputInfo
-					if (this.infoItem != null) {
+					if (this.infoItem != null && this.isShowInputInfo) {
 						int infoWidth = this.infoItem.getItemWidth( rightBorder-leftBorder, rightBorder-leftBorder);
 						if (this.infoItem.isLayoutRight) {
 							int newRightBorder = rightBorder - infoWidth;
@@ -2214,7 +2214,7 @@ public class TextField extends StringItem
                         //TODO use bitmap font and text-effect
                         g.drawChar( this.caretChar, cX, cY, Graphics.TOP | Graphics.LEFT );
                     } else {
-                        g.drawLine( cX, cY, cX, cY + this.font.getHeight());
+                        g.drawLine( cX, cY, cX, cY + this.font.getHeight() - 2);
                     }
 				}
 
@@ -2311,6 +2311,7 @@ public class TextField extends StringItem
 				this.caretPosition = 0;
 				this.caretColumn = 0;
 				this.caretRow = 0;
+				this.originalRowText = "";
 				//#if polish.css.text-wrap
 					if (this.useSingleLine) {
 						this.xOffset = 0;
@@ -2678,6 +2679,7 @@ public class TextField extends StringItem
 			return;
 		}
 		this.caretChar = this.editingCaretChar;
+		// increase caret position after notifying itemstatelisteners in case they want to know the current caret position...
 		this.caretPosition++;
 		this.caretColumn++;
 		this.caretX += this.caretWidth;
@@ -2820,6 +2822,7 @@ public class TextField extends StringItem
 			} else {
 				this.infoItem.setText(modeStr);
 			}
+			System.out.println("setting info to [" + modeStr + "]");
 		//#else
 			if (this.screen == null) {
 				this.screen = getScreen();
@@ -3164,10 +3167,8 @@ public class TextField extends StringItem
 				} else {
 					// insert the last character into the text:
 					if (this.caretChar != this.editingCaretChar) {
-						//insertCharacter(); (not needed anymore)
-						this.caretPosition++;
-						notifyStateChanged();
-						if (currentLength + 1 >= this.maxSize) {
+						commitCurrentCharacter();
+						if (currentLength + 1 > this.maxSize) {
 							return true;
 						}
 					}
