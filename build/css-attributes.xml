@@ -2775,6 +2775,15 @@
 		id="258"
 	/>
 	
+	<attribute 
+		name="fisheyeview-scale-end"
+		type="percent"
+		appliesTo="FishEyeContainerView"
+		description="The factor by which the outer most non-focused elements should be scaled - by default they are scaled to 50% of their original size."
+		default="50%"
+		id="259"
+	/>
+	
 	<!--
 	
 	<attribute
