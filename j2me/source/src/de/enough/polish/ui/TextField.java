@@ -2312,6 +2312,7 @@ public class TextField extends StringItem
 				this.caretColumn = 0;
 				this.caretRow = 0;
 				this.originalRowText = "";
+				this.realTextLines = null;
 				//#if polish.css.text-wrap
 					if (this.useSingleLine) {
 						this.xOffset = 0;
@@ -2619,7 +2620,7 @@ public class TextField extends StringItem
 	
 	//#ifdef tmp.directInput
 	
-	protected boolean isValidInput( char insertChar, String myText ) {
+	protected boolean isValidInput( char insertChar, int position, String myText ) {
 		if (!this.isEmail) {
 			return true;
 		}
@@ -2653,7 +2654,7 @@ public class TextField extends StringItem
 				boolean isAtFirstChar = (emailAddressText == null || relativeCaretPosition == 0);
 				isValidInput = ( VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS.indexOf( insertChar ) != -1 ) 
 							&& !( (insertChar == '.') && isAtFirstChar) // the first char must not be a dot.
-							&& !(atPosition != -1 && insertChar == '@') // it's not allowed to enter two @ characters
+							&& !(atPosition != -1 && insertChar == '@' && atPosition != position) // it's not allowed to enter two @ characters
 							&& !(insertChar == '@' &&  isAtFirstChar ); // the first character must not be the '@' sign
 			} else {
 				isValidInput = VALID_DOMAIN_CHARACTERS.indexOf( insertChar ) != -1;
@@ -2675,7 +2676,7 @@ public class TextField extends StringItem
 		} else {
 			myText = this.text;
 		}
-		if (!isValidInput( this.caretChar, myText )) {
+		if (!isValidInput( this.caretChar, this.caretPosition, myText )) {
 			return;
 		}
 		this.caretChar = this.editingCaretChar;
@@ -2704,16 +2705,21 @@ public class TextField extends StringItem
 			myText = this.text;
 		}
 		
-		if (!isValidInput( insertChar, myText )) {
+		int cp = this.caretPosition;
+		if (!isValidInput( insertChar, cp, myText )) {
 			return;
 		}
 	
-		int cp = this.caretPosition;
 		if (myText == null || myText.length() == 0) {
 			myText = "" + insertChar;
 		} else if (append) {
-			myText = myText.substring( 0, cp )
-				+ insertChar + myText.substring( cp );
+			StringBuffer buffer = new StringBuffer( myText.length() + 1 );
+			buffer.append( myText.substring( 0, cp ) )
+				.append( insertChar );
+			if (cp < myText.length() ) {
+				buffer.append( myText.substring( cp ) );
+			}
+			myText = buffer.toString();
 		} else {
 			// replace current caret char:
 			StringBuffer buffer = new StringBuffer(myText.length());
@@ -2822,7 +2828,7 @@ public class TextField extends StringItem
 			} else {
 				this.infoItem.setText(modeStr);
 			}
-			System.out.println("setting info to [" + modeStr + "]");
+			//System.out.println("setting info to [" + modeStr + "]");
 		//#else
 			if (this.screen == null) {
 				this.screen = getScreen();
@@ -3396,10 +3402,6 @@ public class TextField extends StringItem
 	
 				String lastLine = this.originalRowText;
 				int lastLineLength = lastLine.length();
-				//TODO check code
-				if (characterInserted) {
-					lastLineLength++;
-				}
 				this.caretRow++;	
 				this.caretY += this.rowHeight;
 				this.internalY = this.caretY;

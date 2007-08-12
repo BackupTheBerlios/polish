@@ -264,8 +264,8 @@ public abstract class ScreenChangeAnimation
 				next.keyRepeated( keyCode );
 				Graphics g = nextImage.getGraphics();
 				next.paint( g );
+				handleKeyRepated( keyCode, nextImage );
 			}
-			handleKeyRepated( keyCode, nextImage );
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Error while handling keyRepeated event" + e );
@@ -299,8 +299,8 @@ public abstract class ScreenChangeAnimation
 				next.keyReleased( keyCode );
 				Graphics g = nextImage.getGraphics();
 				next.paint( g );
+				handleKeyReleased( keyCode, nextImage );
 			}
-			handleKeyReleased( keyCode, nextImage );
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Error while handling keyReleased event" + e );
@@ -335,8 +335,8 @@ public abstract class ScreenChangeAnimation
 				next.keyPressed( keyCode );
 				Graphics g = nextImage.getGraphics();
 				next.paint( g );
+				handleKeyPressed( keyCode, nextImage );
 			}
-			handleKeyPressed( keyCode, nextImage );
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Error while handling keyPressed event" + e );
@@ -378,12 +378,15 @@ public abstract class ScreenChangeAnimation
 				Displayable next = this.nextDisplayable;
 				this.nextDisplayable = null;
 				System.gc();
-				if (next != null) {
-					//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-						MasterCanvas.setCurrent( disp, next );
-					//#else
-						disp.setCurrent( next );
-					//#endif
+				if (disp != null) {
+					Displayable current = disp.getCurrent();
+					if (current == this && next != null) {
+						//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
+							MasterCanvas.setCurrent( disp, next );
+						//#else
+							disp.setCurrent( next );
+						//#endif
+					}
 				}
 			}
 		} catch (Exception e) {

@@ -631,7 +631,7 @@ implements AccessibleCanvas
 		x += this.marginLeft;
 		width -= this.marginLeft + this.marginRight;
 		y += this.marginTop;
-		height -= this.marginTop; // + this.marginBottom;
+		height -= this.marginTop + this.marginBottom;
 		//#if !polish.css.title-position || !tmp.usingTitle
 			int topHeight = this.titleHeight + this.subTitleHeight + this.infoHeight;
 		//#else
@@ -1344,7 +1344,10 @@ implements AccessibleCanvas
 				if (this.isLayoutVerticalShrink) {
 					int contHeight = this.contentHeight;
 					if (this.container != null) {
-						contHeight = this.container.getItemHeight(sWidth, sWidth); 
+						int height = this.container.getItemHeight(sWidth, sWidth);
+						if (height < contHeight) {
+							contHeight = height;  
+						}
 					}
 //					//#if tmp.menuFullScreen
 //						sHeight = contHeight + this.titleHeight + this.menuBarHeight;
@@ -1740,6 +1743,7 @@ implements AccessibleCanvas
 //		g.drawRect( x, y, width, height);
 		
 		g.clipRect(x, y, width, height );
+		
 		
 		if ( g.getClipHeight() > 0 ) {
 			int containerHeight = this.container.getItemHeight( width, width);
