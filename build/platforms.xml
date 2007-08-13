@@ -87,9 +87,9 @@
 		<!--
 		<capability name="build.BootClassPath" value="${blackberry.home}/lib/net_rim_api.jar" />
 		<capability name="build.Preverifier" value="none" />
+		<capability name="build.Finalizer" value="jar2cod" />
 		-->
 		<capability name="build.BootClassPath" value="blackberry-4.1.0.jar" />
-		<capability name="build.Finalizer" value="jar2cod" />
 		<capability name="build.ImplicitGroups" value="blackberry" />
 		<capability name="Emulator.Class" value="BlackBerryEmulator" />
 	</platform>

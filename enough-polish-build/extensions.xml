@@ -832,6 +832,9 @@
 		<name>jar2cod</name>
 		<class>de.enough.polish.finalize.blackberry.JarToCodFinalizer</class>
 		<classpath>${polish.home}/bin/extensions</classpath>
+		<autostart>
+				polish.blackberry
+		</autostart>
 	</extension>
 	
 	<extension>

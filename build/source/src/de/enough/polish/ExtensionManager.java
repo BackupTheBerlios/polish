@@ -462,6 +462,13 @@ public class ExtensionManager {
 				extension.initialize(device, locale, environment);
 			}
 		}
+		// initialize auto-start extensions:
+		Extension[] autoExtensions = getAutoStartExtensions(null, device, locale, environment);
+		for (int i = 0; i < autoExtensions.length; i++) {
+			Extension extension = autoExtensions[i];
+			extension.initialize(device, locale, environment);
+			activeList.add( extension );
+		}
 		this.activeExtensions = (Extension[]) activeList.toArray( new Extension[ activeList.size() ] );
 		// initialize device specific extensions:
 		initialize( TYPE_PRECOMPILER, device.getCapability( "polish.build.PreCompiler"), device, locale, environment );
@@ -550,9 +557,10 @@ public class ExtensionManager {
 		ArrayList list = new ArrayList();
 		for (Iterator iter = this.autoStartExtensions.iterator(); iter.hasNext();) {
 			ExtensionDefinition definition = (ExtensionDefinition) iter.next();
-			if ( type.equals( definition.getType()) && definition.isConditionFulfilled( environment )) {
+			if ( (type == null || type.equals( definition.getType())) && definition.isConditionFulfilled( environment )) {
+				
 				try {
-					list.add( getTemporaryExtension( type, definition.getName(), environment ) );
+					list.add( getTemporaryExtension( type != null ? type : definition.getType(), definition.getName(), environment ) );
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
