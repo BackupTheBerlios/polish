@@ -14,7 +14,7 @@ import de.enough.polish.util.FileUtil;
 public class BuildListFinalizer
 	extends Finalizer
 {
-	private static final String DEFAULT_OUTPUT_FILENAME = "dist/buildlist.txt";
+	private static final String DEFAULT_OUTPUT_FILENAME = "buildlist.txt";
 	private File outputFile;
 	
 	public void setOutputFile( File outputFile ) {
@@ -65,7 +65,7 @@ public class BuildListFinalizer
 
 		try {
 			if (this.outputFile == null) {
-				this.outputFile = new File( env.getBaseDir(), DEFAULT_OUTPUT_FILENAME );
+				this.outputFile = new File( env.getBuildSetting().getDestDir(env), DEFAULT_OUTPUT_FILENAME );
 			}
 			FileUtil.addLine( this.outputFile, sb.toString() );
 		}
