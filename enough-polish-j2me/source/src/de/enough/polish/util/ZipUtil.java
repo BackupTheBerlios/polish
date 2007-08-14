@@ -48,7 +48,7 @@ public final class ZipUtil {
 		byte[] tmp=new byte[1024];
 		int read;
 		
-		ZipInputStream zipInputStream = new ZipInputStream(new ByteArrayInputStream( data ) ,1024 ,compressionType,true);
+		GZipInputStream zipInputStream = new GZipInputStream(new ByteArrayInputStream( data ) ,1024 ,compressionType,true);
 		
 		ByteArrayOutputStream bout = new ByteArrayOutputStream(1024);
 		
