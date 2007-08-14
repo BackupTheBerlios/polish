@@ -56,7 +56,6 @@ public class GZipOutputStream extends OutputStream {
 	private int[] smallCodeBuffer;
 	int[] huffmanCode;
 	byte[] huffmanCodeLength;
-	int[] huffmanData;
 	int[] distHuffCode;
 	byte[] distHuffCodeLength;
 	
@@ -78,12 +77,7 @@ public class GZipOutputStream extends OutputStream {
 	//private final static int COLLECTING_DATA=2;
 	private final static int STREAMING=4;
 	
-	public int lazy_matching=5;
-	
-	public int debugStore[];
-	public int debugStorepointer=0;
-	public int debugStorepointerCompile=0;
-	public int debugWraps=0;
+	public int lazy_matching;
 	
 	/**
 	 * 
@@ -127,7 +121,7 @@ public class GZipOutputStream extends OutputStream {
 			this.lastBlock=true;
 			// fixed tree: write header, generate huffman codes
 			this.BTYPE=1;
-			newBlock(1);
+			newBlock();
 			this.status=GZipOutputStream.STREAMING;
 		} else {
 			this.BTYPE=2;
@@ -417,14 +411,9 @@ public class GZipOutputStream extends OutputStream {
 			
 		}
 		
-		debugStore[debugStorepointer++]=litlen;
-		debugStore[debugStorepointer++]=di+1000;
-    	
     }
     
     private void encodeChar(int position) throws IOException {
-    	debugStore[debugStorepointer++]=this.inputBuffer[position];
-    	
     	int val = (this.inputBuffer[position] + 256)%256;
     	
     	if(this.outputWindow.length!=0){
@@ -537,7 +526,6 @@ public class GZipOutputStream extends OutputStream {
 						// wrap around
 						if (this.plainPointer==this.plainDataWindow.length){
 							this.plainPointer=0;
-							debugWraps++;
 						}
 						
 						this.HM[(this.plainPointer/(this.plainDataWindow.length/HASHMAP_COUNT)) % HASHMAP_COUNT].clear();
@@ -553,7 +541,7 @@ public class GZipOutputStream extends OutputStream {
     	this.inStart=i;//upTo;
     }
     
-    private void newBlock(int BTYPE) throws IOException{
+    private void newBlock() throws IOException{
     	if(this.status==GZipOutputStream.STREAM_INIT){
 			this.status=GZipOutputStream.STREAMING;
 		} else {
@@ -568,35 +556,24 @@ public class GZipOutputStream extends OutputStream {
 			pushSmallBuffer(0, (byte)1);
 		}
 		
-		pushSmallBuffer(BTYPE, (byte)2);
+		pushSmallBuffer(this.BTYPE, (byte)2);
 		
 		this.huffmanCode = new int[286];
 		this.huffmanCodeLength  = new byte[286];
 		this.distHuffCode  = new int[30];
 		this.distHuffCodeLength  = new byte[30];
 		
-		if (BTYPE==1){
+		if (this.BTYPE==1){
 			// TODO genFixed Tree ohne  data=new int[32]; aufrufen
-			ZipHelper.genFixedTree(this.huffmanCode, this.huffmanCodeLength, new int[286], this.distHuffCode, this.distHuffCodeLength, new int[30]);
-		} else if (BTYPE==2) {
+			ZipHelper.genFixedTree(this.huffmanCode, this.huffmanCodeLength, this.distHuffCode, this.distHuffCodeLength);
+		} else if (this.BTYPE==2) {
 			
 			
-	    	// START FAKE
-	    	/*for (int i = 0; i < litCount.length; i++) {
-	    		if(litCount[i]==0){
-	    			litCount[i]	= 1;
-	    		}
-			}*/
-	    	for (int i = 0; i < 2/* <distCount.length*/; i++) {
-	    		if (distCount[i]==0){
-	    			distCount[i]=1;
+	    	// fake two distance codes, if there are none
+	    	for (int i = 0; i < 2; i++) {
+	    		if (this.distCount[i]==0){
+	    			this.distCount[i]=1;
 				}
-			}
-	    	// END FAKE
-			
-	    	huffmanData= new int[huffmanCodeLength.length];
-	    	for (int i = 0; i < huffmanData.length; i++) {
-	    		huffmanData[i]=i;
 			}
 			
 			// generate dynamic Huffmantree for Literals + Length
@@ -604,35 +581,22 @@ public class GZipOutputStream extends OutputStream {
 			ZipHelper.genTreeLength(this.litCount, this.huffmanCodeLength,15);
 			ZipHelper.genHuffTree(this.huffmanCode, this.huffmanCodeLength);
 			ZipHelper.revHuffTree(this.huffmanCode, this.huffmanCodeLength);
-			System.out.println("  checking literal + legth tree");
-			//ZipHelper.testHuffman(huffmanCode, huffmanCodeLength, huffmanData);
 			
-			int sum=0;
-			for (int i = 0; i < huffmanCodeLength.length; i++) {
-				if (huffmanCodeLength[i]>15){
+			for (int i = 0; i < this.huffmanCodeLength.length; i++) {
+				if (this.huffmanCodeLength[i]>15){
 					System.out.println("Error: wrong tree length at " + i +" generated");
 					if (true) throw new IOException();
 				}
-				sum+=litCount[i];
 			}
-			//System.out.println(""+ sum);
 			
 			// generate dynamic Huffmantree for Distances
 			ZipHelper.genTreeLength(this.distCount, this.distHuffCodeLength,15);
 			ZipHelper.genHuffTree(this.distHuffCode, this.distHuffCodeLength);
 			ZipHelper.revHuffTree(this.distHuffCode, this.distHuffCodeLength);
-			System.out.println(" checking distance tree");
-			//ZipHelper.testHuffman(distHuffCode, distHuffCodeLength, huffmanData);
-			
-
-			
 			
 			// save tree
 			//System.out.println("compressing tree");
 			compressTree(this.huffmanCodeLength, this.distHuffCodeLength);
-			
-			
-			//System.out.println(" tree compressed pushed: " + pushCount);
 			
 			// clear the counter
 			for (int i = 0; i < 286; i++) {
@@ -647,50 +611,23 @@ public class GZipOutputStream extends OutputStream {
 
     }
     
-    int o=0;
 	/**
 	 * This function applies the huffmanencoding on the collected data
 	 * from outputWindow.
 	 * @throws IOException 
 	 */
 	private void compileOutput() throws IOException{
-		System.out.println("  compile Output  debugStorepointerCompile=" + debugStorepointerCompile + "   pushCount: " + pushCount);
-		boolean newBlock=true;
-		/*if(this.status!=STREAM_INIT && !this.flushFinal){
-			// check if new tree is not usefull
-			if(false){
-				newBlock=false;
-			}
-		} else{
-			newBlock=true;
-		}*/
-		
-		// use byte count to construct a huffmann tree
-		// compare with static tree & no compression(if bytecount(n>255)=0)
-		// store the old count + clear/reset count
-		
+		System.out.println("  compile Output  debugStorepointerCompile=" + "   pushCount: " + pushCount);
+		System.out.println(" new Block");
+
 		// generate & store the tree
-		if (newBlock){
-			System.out.println(" new Block o:" + o);
-			newBlock(this.BTYPE);
-						
-		}
+		newBlock();			
 		
 		int litlen,	litextra,di,distExtra;
 		
 		// write the data
 		int val=0;
 		for (int i = 0; i < this.outProcessed; i++) {
-			
-			/*if(pushCount>786561){
-				System.out.println("" + pushCount + ": outWin=" + this.outputWindow[i]);
-			}*/
-			
-			if ((debugStore[debugStorepointerCompile]>255 && this.outputWindow[i]!=-1) && debugStore[debugStorepointerCompile] != this.outputWindow[i]){
-				System.out.println("DIFF found");
-				throw new IOException();
-				
-			}
 			
 			val=this.outputWindow[i];
 			if(val<0){
@@ -717,7 +654,7 @@ public class GZipOutputStream extends OutputStream {
 						// distance information
 						di=this.outputWindow[i];
 						i++;
-						// TODO optimize using if statements ... funktioniert aber!!!!
+						// TODO maybe optimize using if statements ...??
 						distExtra= ((this.outputWindow[i]+256) % 256) | ((this.outputWindow[i+1]+256) % 256)<<8 | ((this.outputWindow[i+2]+256) % 256) <<16;
 						i+=3;
 						//distance=distExtra + ZipUtil.DISTANCE_CODE[di*2+1];
@@ -731,7 +668,6 @@ public class GZipOutputStream extends OutputStream {
 						pushSmallBuffer(distExtra, (byte) ZipHelper.DISTANCE_CODE[di*2],false);
 						
 						i--;
-						debugStorepointerCompile++;
 					} else {
 						System.out.println("Error");
 					}
@@ -739,8 +675,6 @@ public class GZipOutputStream extends OutputStream {
 				}
 				
 			}
-			debugStorepointerCompile++;
-			o++;
 		}
 		this.outProcessed=0;
 		/*if(this.flushFinal){
@@ -780,35 +714,14 @@ public class GZipOutputStream extends OutputStream {
     private void compressTree(byte[] huffmanCodeLength, byte[] distHuffCodeLength) throws IOException{
     	
     	int HLIT=285;
-    	int HDIST=29/*+1*/;
+    	int HDIST=29;
     	
     	while(huffmanCodeLength[HLIT]==0 && HLIT>29){HLIT--;}
     	HLIT++;
     	
-    	// empty distance tree workaround is in newBlock();
+    	// dont worry: empty distance tree workaround is in newBlock();
     	while(distHuffCodeLength[HDIST]==0 && HDIST>0){HDIST--;}
-    	/*
-    	 * Der jetzige Modus funktioniert mit aktivierten pointern, jedoch funktioniert
-    	 * das einfügen von gefakten distance codes nicht.
-    	 * FIXME evtl. gibt es Probleme mit kleinen  HDIST  werten
-    	 * FIXME probleme mit langen Pointern, weil am Ende beim Speichern
-    	 *  -1 gerechnet werden müsste???
-    	 *  FIXME =>> in Wirklichkeit Probleme mit HLIT ???
-    	 */
-    	/*if (HDIST==0 && distHuffCodeLength[0]==0){
-    		distHuffCodeLength[0]=3;
-    	}*/
     	HDIST++; // # of all Distance Symbols
-    	
-    	
-    	/*if(HDIST==1){ // it was zero
-    		// no empty distance code is allowed
-    		distHuffCodeLength[0]=3;
-    	}*/
-    	// keep deactivated ... leads to errors sometimes when encoding diverse trees HDIST=HDIST<29 ? 29: HDIST;
-    	
-    	System.out.println(" OUTPUT STREAM");
-    	
     	
     	// merge Hlit + Hdist
     	byte[] len=new byte[HLIT+HDIST];
@@ -819,14 +732,12 @@ public class GZipOutputStream extends OutputStream {
     		j++;
 		}
     	for (int i = 0; i < HDIST; i++) {
-    		//System.out.println( i + "  " + distHuffCodeLength[i] + "   " + distHuffCode[i]);
     		len[j]=distHuffCodeLength[i];
     		//System.out.println("  " + j + " " + distHuffCode[i] + ", " + distHuffCodeLength[i]);
     		j++;
 		}
     	
     	int[] miniHuffData= { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15};
-    	int[] seq={0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18};
     	
     	// fill repeatcodes in and count them
     	byte[] outLitLenDist=new byte[HLIT+HDIST];
@@ -894,98 +805,21 @@ public class GZipOutputStream extends OutputStream {
 		
 		ZipHelper.genTreeLength(miniCodeCount, miniHuffCodeLength,7);
 		
-		//ZipUtil.genTreeLength(miniCodeCount, miniHuffCodeLength,20);
+		/*
 		for (i = 0; i < miniHuffCodeLength.length; i++) {
 			if (miniHuffCodeLength[i]>7){
 				//break;
 				throw new IOException(" error in fixing tree");
 			}
 		}
-		
-		/*if (i<miniHuffCodeLength.length && miniHuffCodeLength[i]>7){
-			System.out.println(" zzzzzzzzzz advanced 3-Bit Hack  zzzzzzzzzzz");
-			
-			for (int l = 0; l < 13; l++) {
-				miniHuffCodeLength[l]=4;
-			}
-			for (int l = 13; l < 19; l++) {
-				miniHuffCodeLength[l]=5;
-			}
-		}*/
-		
-		
-		/*
-		ZipUtil.genTreeLength(miniCodeCount, miniHuffCodeLength,20);
-		
-		
-		for (i = 0; i < miniHuffCodeLength.length; i++) {
-			if (miniHuffCodeLength[i]>7){
-				break;
-				//throw new IOException(" error in fixed tree");
-			}
-		}
-		
-		if (i<miniHuffCodeLength.length && miniHuffCodeLength[i]>7){
-			System.out.println(" YYYYYYYYYY advanced 3-Bit Hack  YYYYYYYYYYYY");
-			
-			for (i = 0; i < miniCodeCount.length; i++) {
-				if (miniCodeCount[i]<3){
-					miniCodeCount[i]=3;//4
-				}
-			}
-			miniHuffCodeLength=new byte[19];
-			ZipUtil.genTreeLength(miniCodeCount, miniHuffCodeLength,20);
-			
-			// TODO kill this check
-			for (i = 0; i < miniHuffCodeLength.length; i++) {
-				if (miniHuffCodeLength[i]>7)
-					break;
-			}
-			
-			if (i<miniHuffCodeLength.length && miniHuffCodeLength[i]>7){
-				throw new IOException(" advanced 3-Bit Hack does not work yet");
-//				System.out.println(" XXXXXXXXXX advanced 3-Bit Hack  XXXXXXXXXXXX");
-//				for (i = 0; i < miniCodeCount.length; i++) {
-//					miniCodeCount[i]=5;
-//				}
-				// TODO use better way
-			}
-			
-			
-//			System.out.println(" XXXXXXXXXX semi - advanced 3-Bit Hack  XXXXXXXXXXXX");
-//			int counter=0;
-//			byte fakeLen=1;
-//			for (i = 0; i < miniHuffCodeLength.length; i++) {
-//				if (miniHuffCodeLength[i]!=0){
-//					counter++;
-//				}
-//				if (1<<fakeLen<counter){
-//					fakeLen++;
-//				}
-//			}
-//			if (fakeLen>7){
-//				System.out.println(" NO WORKAROUND POSSIBLE");
-//			} 
-//			System.out.println(" FAKE_LEN " + fakeLen);
-//			
-//			for (i = 0; i < miniHuffCodeLength.length; i++) {
-//				if (miniHuffCodeLength[i]!=0){
-//					miniHuffCodeLength[i]=fakeLen; // 7 is max when using 3 bits
-//				}
-//			}
-		} 
 		*/
 		
 		ZipHelper.genHuffTree(miniHuffCode, miniHuffCodeLength);
 		ZipHelper.revHuffTree(miniHuffCode, miniHuffCodeLength);
 		
-		//ZipHelper.testHuffman(miniHuffCode, miniHuffCodeLength, seq);
-		System.out.println("miniTree checked");
-		
-		
 		// write Header-Header
     	pushSmallBuffer(HLIT-257, (byte)5);
-    	pushSmallBuffer(HDIST-1, (byte)5); // UMBEDINGT auf HDIST-1 lassen!!!!
+    	pushSmallBuffer(HDIST-1, (byte)5); 
     	
     	
     	int HCLEN=19-1;
@@ -1001,12 +835,6 @@ public class GZipOutputStream extends OutputStream {
        		pushSmallBuffer(miniHuffCodeLength[miniHuffData[i]], (byte)3);
        		
 		}
-       	/*
-       	for (int i = 0; i < miniHuffCode.length; i++) {
-       		System.out.println(i + " == code " + miniHuffCode[miniHuffData[i]] + ", len " +   miniHuffCodeLength[miniHuffData[i]]);
-		}
-       	System.out.println("----------------------");
-       	*/
        	
        	System.out.println("writing compressed miniTree");
     	System.out.println(" HLIT: " + HLIT);
@@ -1043,6 +871,8 @@ public class GZipOutputStream extends OutputStream {
     }
 	
 	
+    private int pushCount=0;
+    private int pushCountTimes;
 	/**
 	 * This function is able to write bits into the outStream. Please
 	 * mind that is uses a buffer. You should flush it, by giving zeros.
@@ -1051,23 +881,10 @@ public class GZipOutputStream extends OutputStream {
 	 * @param len The number of bits to process.
 	 * @throws IOException in case Errors within the outputStream ocurred
 	 */
-    private int pushCount=0;
-    private int pushCountTimes;
     private void pushSmallBuffer(int val, byte len) throws IOException{
     	pushSmallBuffer(val,len,true);
     }
 	private void pushSmallBuffer(int val, byte len, boolean log) throws IOException{
-		/*if (log && this.huffmanCode!=null && len==this.huffmanCodeLength[256] && val==this.huffmanCode[256]){
-			System.out.println(" 256 = END pushed pushCountTimes = "+ pushCountTimes);
-			
-			//val=0;
-		}*/
-		/*if (log){
-			System.out.println(pushCount +  ":  " + val + " ,  " + len);
-			if (pushCount==425){
-				log=true;
-			}
-		}*/
 		
 		pushCount+=len;
 		pushCountTimes++;
