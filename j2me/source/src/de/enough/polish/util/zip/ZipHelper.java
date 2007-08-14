@@ -194,8 +194,8 @@ public final class ZipHelper {
      * @param distHuffCodeLength
      * @param distHuffData
      */
-    public final static void genFixedTree(int[] huffmanCode, byte[] huffmanCodeLength, int[] huffmanData,
-    		int[] distHuffCode, byte[] distHuffCodeLength, int[] distHuffData){
+    public final static void genFixedTree(int[] huffmanCode, byte[] huffmanCodeLength,
+    		int[] distHuffCode, byte[] distHuffCodeLength){
     	
     	int i;
     	// huffmanCodes
@@ -215,15 +215,11 @@ public final class ZipHelper {
 			huffmanCode[i]=192+i-280; //192==11000000
 			huffmanCodeLength[i]=8;
 		}
-		for (i = 0; i < 286; i++) {
-			huffmanData[i]=i;
-		}
 		// reverse all:
 		ZipHelper.revHuffTree(huffmanCode, huffmanCodeLength);
 		
 		// distHuffCode for non fixed DISTANCE tree
 		for (int j = 0; j < distHuffCode.length; j++) {
-			distHuffData[j]=j;
 			distHuffCode[j]=j;
 			distHuffCodeLength[j]=5;
 		}
