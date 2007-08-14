@@ -211,11 +211,11 @@ public final class ZipHelper {
 			huffmanCode[i]=i-256; //0==0
 			huffmanCodeLength[i]=7;
 		}
-		for (i = 280; i <= 287; i++) {
+		for (i = 280; i < 286; i++) {
 			huffmanCode[i]=192+i-280; //192==11000000
 			huffmanCodeLength[i]=8;
 		}
-		for (i = 0; i <= 287; i++) {
+		for (i = 0; i < 286; i++) {
 			huffmanData[i]=i;
 		}
 		// reverse all:
@@ -232,13 +232,15 @@ public final class ZipHelper {
 	}
     
 
+
     /**
      * Compute the tree length according to the frequency of each code 
      * 
-     * @param count
+     * @param count 
      * @param huffmanCodeLength
+     * @param max_len 
      */
-    public static final void genTreeLength(int[] count, byte[] huffmanCodeLength){
+    public static final void genTreeLength(int[] count, byte[] huffmanCodeLength, int max_len){
     	int[] knotCount = new int[count.length];
     	int[] knotPointer = new int[count.length];
     	
@@ -294,7 +296,76 @@ public final class ZipHelper {
 			}
 			
     	}
+    	
+    	
+    	// check for overflow
+    	int overflowCount=0;
+    	for (int i = 0; i < huffmanCodeLength.length; i++) {
+    		if (huffmanCodeLength[i]>max_len) {
+    			overflowCount++;
+    		}
+		}
+    	// fix the overflow
+    	if (overflowCount!=0){
+    		System.out.println(" fixing " + overflowCount + " overflows  because of max=" + max_len);
+	    	
+    		// list the overflows
+    		short overflows[]= new short[overflowCount];
+	    	overflowCount=0;
+	    	for (short i = 0; i < huffmanCodeLength.length; i++) {
+	    		if (huffmanCodeLength[i]>max_len) {
+	    			overflows[overflowCount++]=i;
+	    		}
+			}
+	    	// find the index of the smalest node
+	    	int minNode=0;
+	    	for (int i = 0; i < huffmanCodeLength.length; i++) {
+				if (huffmanCodeLength[i]!=0 && huffmanCodeLength[minNode]>huffmanCodeLength[i]){
+					minNode=i;
+				}
+			}
+	    	
+	    	// ok lets go and fix it....
+	    	int exendableNode;
+	    	int overflow1, overflow2;
+	    	while(overflowCount!=0){
+	    		exendableNode=minNode;
+	    		// find the largest expandable length
+	    		for (int i = 0; i < huffmanCodeLength.length; i++) {
+	    			if(huffmanCodeLength[i]<max_len && huffmanCodeLength[exendableNode]<huffmanCodeLength[i]){
+	    				exendableNode=i;
+	    			}
+				}
+	    		
+	    		// find the deepest two overflows
+	    		overflow1=0;
+	    		overflow2=0;
+	    		for (int i = 0; i < overflows.length; i++) {
+	    			if(huffmanCodeLength[overflows[i]]> huffmanCodeLength[overflow1]){
+	    				overflow1=overflows[i];
+	    				
+	    			} else if(huffmanCodeLength[overflows[i]]== huffmanCodeLength[overflow1]) {
+	    				overflow2=overflows[i];
+	    			}
+				}
+	    		
+	    		// insert one of them at the best exendableNode
+	    		huffmanCodeLength[exendableNode]++;
+	    		huffmanCodeLength[overflow1]=huffmanCodeLength[exendableNode];
+	    		
+	    		// lift the other one
+	    		huffmanCodeLength[overflow2]--;
+	    		
+	        	// refresh the overflow count
+	        	overflowCount--;
+	        	if (huffmanCodeLength[overflow2]==max_len){
+	        		overflowCount--;
+	        	}
+	    	}
+    	}
+    	
     }
+    
     
     /**
      *  This function converts the representation of a huffman tree from
