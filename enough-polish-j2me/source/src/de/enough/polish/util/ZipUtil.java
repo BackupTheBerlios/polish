@@ -41,9 +41,24 @@ import de.enough.polish.util.zip.*;
  * @author Simon Schmitt, simon.schmitt@enough.de
  */
 public final class ZipUtil {
+	/**
+	 *  This function decompresses a given byte array using the DEFLATE algorithm.
+	 *  
+	 * @param data		the input data to be decompressed
+	 * @return			the resulting uncompressed byte array 
+	 * @throws IOException
+	 */
 	public static byte[] decompress( byte[] data ) throws IOException{
 		return decompress(data,GZipInputStream.TYPE_DEFLATE);
 	}
+	/**
+	 * This function decompresses a given byte array using the DEFLATE or the GZIP algorithm.
+	 * 
+	 * @param data		the input data to be decompressed
+	 * @param compressionType TYPE_GZIP or TYPE_DEFLATE
+	 * @return			the resulting uncompressed byte array 
+	 * @throws IOException
+	 */
 	public static byte[] decompress( byte[] data , int compressionType) throws IOException{
 		byte[] tmp=new byte[1024];
 		int read;
@@ -59,10 +74,24 @@ public final class ZipUtil {
 		
 		return bout.toByteArray();
 	}
-	
+	/**
+	 * This function compresses a given byte array using the DEFLATE algorithm.
+	 * 
+	 * @param data		the input data to be compressed
+	 * @return			the resulting compressed byte array 
+	 * @throws IOException
+	 */
 	public static byte[] compress( byte[] data ) throws IOException{
 		return compress( data, GZipOutputStream.TYPE_DEFLATE );
 	}
+	/**
+	 * This function compresses a given byte array using the DEFLATE algorithm.
+	 * 
+	 * @param data		the input data to be compressed
+	 * @param compressionType	TYPE_GZIP or TYPE_DEFLATE
+	 * @return			the resulting compressed byte array 
+	 * @throws IOException
+	 */
 	public static byte[] compress( byte[] data, int compressionType ) throws IOException{
 		if (data.length>1<<15){ 
 			return compress(data,compressionType,1<<15,1<<15);
@@ -71,8 +100,19 @@ public final class ZipUtil {
 			return compress(data,compressionType,data.length,data.length);
 			
 		}
-		
 	}
+	/**
+	 * This function compresses a given byte array using the DEFLATE algorithm.
+	 * 
+	 * @param data		the input data to be compressed
+	 * @param compressionType	TYPE_GZIP or TYPE_DEFLATE
+	 * @param plainWindowSize	this size is important for the lz77 search. Larger values
+	 * 							will result in better compression. Maximum is 32768.
+	 * @param huffmanWindowSize	this size is important for the huffmanencoding. A large
+	 * 							value will result to a better frequency statistic and therefore to a better compression.
+	 * @return					the resulting compressed byte array 
+	 * @throws IOException
+	 */
 	public static byte[] compress( byte[] data , int compressionType,int plainWindowSize, int huffmanWindowSize) throws IOException{
 		ByteArrayOutputStream bout = new ByteArrayOutputStream(1024);
 		GZipOutputStream zipOutputStream = new GZipOutputStream(bout ,1024 ,compressionType,plainWindowSize,huffmanWindowSize);

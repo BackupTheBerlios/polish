@@ -104,6 +104,7 @@ public class ZipTest extends TestCase {
 		for (int j = 0; j < uncompressed.length; j++) {
 			assertEquals( uncompressed[j], compare[j] );
 		}
+		assertEquals(1,zip.validData());
 		//System.out.println( " vaild Data == " + zip.validData() );
 		
 		

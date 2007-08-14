@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * <p></p>
+ * <p>Generates GZIP or DEFLATE encoded input streams from an InputStream.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
@@ -59,40 +59,48 @@ public class GZipOutputStream extends OutputStream {
 	private final static int HASHMAP_COUNT=4;
 	ZipIntMultShortHashMap[] HM	= new ZipIntMultShortHashMap[HASHMAP_COUNT+1];
 	
-	private byte[] inputBuffer;
+	private byte[] inputBuffer;	// the input data is read in chunks from the inputStream
 	private int inEnd;
 	private int inStart;
 	
-	private int[] smallCodeBuffer;
-	int[] huffmanCode;
+	private int[] smallCodeBuffer; // we have to buffer the output, because it comes in different bitlength
+	
+	int[] huffmanCode;			// all necessary informations to store the trees
 	byte[] huffmanCodeLength;
 	int[] distHuffCode;
 	byte[] distHuffCodeLength;
 	
-	private int[] litCount;		// the # of each processed bytes
-	private int[] distCount;
+	private int[] litCount;		// the frequency of all literal symbols
+	private int[] distCount;	// the frequency of all distance symbols
 	
-	private int isize;
-	private int crc32;
-	public int[] crc32Table=new int[256];
+	private int isize;			// # of all processed bytes from inputStream
+	private int crc32;			// crc32 checksum of  "
+	private int[] crc32Table=new int[256];
 	
 	private int status;
-	private boolean lastBlock;
-	private boolean lz77active;
-	
-	private int BTYPE;
-	
 	private final static int STREAM_INIT=0;
 	private final static int STREAMING=4;
 	
+	private boolean lastBlock;	// needed to set the lastBlock bit in the header
+	private boolean lz77active; // activates the lz77 compression
+	
+	private int BTYPE;	// 	=1 for fixed Tree this happens in case of huffmanwindowsize=0
+						//	=2 in case of dynamix Trees
+	
 	/**
 	 * 
-	 * @param outputStream
-	 * @param size
-	 * @param compressionType
-	 * @param plainWindowSize
-	 * @param huffmanWindowSize
-	 * @throws IOException
+	 * @param outputStream 		stream to write the compressed data in 
+	 * @param size	prefered 	size of the internal buffer
+	 * @param compressionType	TYPE_GZIP or TYPE_DEFLATE
+	 * @param plainWindowSize	this size is important for the lz77 search. Larger values
+	 * 		will result in better compression. Maximum is 32768.
+	 * @param huffmanWindowSize	this size is important for the huffmanencoding. A large
+	 * 		value will result to a better frequency statistic and therefore to a better compression.
+	 * @throws IOException 		might be thrown in case that the inputStream can not be read, 
+	 * 		the outputStream can not be written into or in case of wrong arguments
+	 * 
+	 * @see #TYPE_DEFLATE
+	 * @see #TYPE_GZIP
 	 */
 	public GZipOutputStream(OutputStream outputStream, int size, int compressionType, int plainWindowSize, int huffmanWindowSize) throws IOException {
 		this.outStream = outputStream;
@@ -104,7 +112,7 @@ public class GZipOutputStream extends OutputStream {
 		
 		// check plainWindowSize; this triggers the LZ77 compression
 		if (plainWindowSize > 32768){
-			throw new IOException("plainWindowSize > 32768");
+			throw new IllegalArgumentException("plainWindowSize > 32768");
 		}
 		if (plainWindowSize>=100){
 			this.plainDataWindow = new byte[(plainWindowSize/HASHMAP_COUNT)*HASHMAP_COUNT];
@@ -116,7 +124,7 @@ public class GZipOutputStream extends OutputStream {
 		
 		// check the huffmanWindowSize; this also triggers dynamic/fixed trees
 		if (huffmanWindowSize > 32768){
-			throw new IOException("plainWindowSize > 32768");
+			throw new IllegalArgumentException("plainWindowSize > 32768");
 		}
 		if (huffmanWindowSize<1024 && huffmanWindowSize>0){
 			huffmanWindowSize=1024;
@@ -185,8 +193,8 @@ public class GZipOutputStream extends OutputStream {
 		
 	}
 	/**
-	 * It is recomended not to call flush before close() since 
-	 *  close is able to handle the flushing better itself.
+	 * It is strongly recomended NOT to call flush before close() since 
+	 *  close() is able to handle the flushing better itself.
 	 */
 	public void flush() throws IOException{
 		// flush inputBuffer -> LZ77
@@ -242,8 +250,15 @@ public class GZipOutputStream extends OutputStream {
     	}
     }
     
-    
-    private boolean search4LZ77(int[] bestPointer, int position) throws IOException{
+    /**
+     * This function searches through all hashmaps and returns the best pointer
+     * 		that was found.
+     * 
+     * @param bestPointer	this will hold the resulting distance and lenth pair {distance, length}
+     * @param position		position to look at in the inputbuffer
+     * @return				if there was a pointer found
+     */
+    private boolean search4LZ77(int[] bestPointer, int position){
     	ZipIntMultShortHashMap.Element found = null;
 
     	int[] pointer = new int[2];
@@ -278,9 +293,8 @@ public class GZipOutputStream extends OutputStream {
      * @param found the hashmap result of the thee chars
      * @param pointer  distance and lenth pair {distance, length}
      * @param position  position in the inputbuffer
-     * @throws IOException
      */
-    private void searchHM4LZ77(ZipIntMultShortHashMap.Element found, int[] pointer, int position) throws IOException{
+    private void searchHM4LZ77(ZipIntMultShortHashMap.Element found, int[] pointer, int position) {
     	int length;
     	
 		// check this.plainPointer-found0.values[k] from the end since shortest pointers are at the end
@@ -326,11 +340,12 @@ public class GZipOutputStream extends OutputStream {
     }
     
     /**
-     * This function puts the pointer into the outputwindow 
+     * This function puts the pointer into the outputwindow where it will be taken off
+     * when the huffman compression takes place. 
      * 
-     * @param distance
-     * @param length
-     * @throws IOException 
+     * @param distance		the distance information of the pointer
+     * @param length		the length information of the pointer
+     * @throws IOException 	this might happen, when there occurr errors while writing into the outputStream
      */
     private void encodePointer(int distance, int length) throws IOException{
     	int litlen;
@@ -368,7 +383,7 @@ public class GZipOutputStream extends OutputStream {
 			this.litCount[litlen]++;
 			this.distCount[di]++;
 			
-		} else { // write direct
+		} else { // write direct when dynamic huffman is switched off
 			
 			// write litlen + extra bytes
 			pushSmallBuffer(this.huffmanCode[litlen],this.huffmanCodeLength[litlen]);
@@ -381,7 +396,13 @@ public class GZipOutputStream extends OutputStream {
 		}
 		
     }
-    
+    /**
+     * This method fills a single char into the huffmanwindow or in the outputStream
+     * 		depending on the huffmanmode
+     *  
+     * @param position		take the char from inputbuffer at this postion
+     * @throws IOException	
+     */
     private void encodeChar(int position) throws IOException {
     	int val = (this.inputBuffer[position] + 256)&255;
     	
@@ -507,6 +528,12 @@ public class GZipOutputStream extends OutputStream {
     	this.inStart=i;
     }
     
+    /**
+     * This function generates and writes the header for a new block.
+     * Therefore it has to calculate and compress the huffman trees.
+     * 
+     * @throws IOException
+     */
     private void newBlock() throws IOException{
     	if(this.status==GZipOutputStream.STREAM_INIT){
 			this.status=GZipOutputStream.STREAMING;
@@ -568,8 +595,9 @@ public class GZipOutputStream extends OutputStream {
     }
     
 	/**
-	 * This function applies the huffmanencoding on the collected data
-	 * from outputWindow.
+	 * This function applies the huffmanencoding on the collected data in outputWindow.
+	 * The huffman encoded data is then written into the outputStream.
+	 * 
 	 * @throws IOException 
 	 */
 	private void compileOutput() throws IOException{
@@ -632,12 +660,13 @@ public class GZipOutputStream extends OutputStream {
 			}
 		}
 		this.outProcessed=0;
-		/*if(this.flushFinal){
-			writeFooter();	
-		}*/
-		
 	}
 	
+	/**
+	 * This function finishes the last block and writes the checksums.
+	 * 
+	 * @throws IOException
+	 */
 	private void writeFooter() throws IOException{
 		// write current 256
 		pushSmallBuffer(this.huffmanCode[256],this.huffmanCodeLength[256]);
@@ -668,6 +697,15 @@ public class GZipOutputStream extends OutputStream {
 		System.out.println(" output finished");
 	}
 
+	/**
+	 * This function compresses and writes the literal/length as well as the distance trees. 
+	 * At first repeatcodes are determined, then the miniTree is generated and after all they
+	 * are written into the outputStream.
+	 * 
+	 * @param huffmanCodeLength
+	 * @param distHuffCodeLength
+	 * @throws IOException
+	 */
     private void compressTree(byte[] huffmanCodeLength, byte[] distHuffCodeLength) throws IOException{
     	
     	int HLIT=285;
@@ -762,15 +800,6 @@ public class GZipOutputStream extends OutputStream {
 		
 		ZipHelper.genTreeLength(miniCodeCount, miniHuffCodeLength,7);
 		
-		/*
-		for (i = 0; i < miniHuffCodeLength.length; i++) {
-			if (miniHuffCodeLength[i]>7){
-				//break;
-				throw new IOException(" error in fixing tree");
-			}
-		}
-		*/
-		
 		ZipHelper.genHuffTree(miniHuffCode, miniHuffCodeLength);
 		ZipHelper.revHuffTree(miniHuffCode, miniHuffCodeLength);
 		
@@ -829,7 +858,7 @@ public class GZipOutputStream extends OutputStream {
 	
 	/**
 	 * This function is able to write bits into the outStream. Please
-	 * mind that is uses a buffer. You should flush it, by giving zeros.
+	 * mind that is uses a buffer. You might have to flush it, by giving zeros.
 	 *   
 	 * @param val The bitsequence as an integer.
 	 * @param len The number of bits to process.
