@@ -401,13 +401,13 @@ public class GZipInputStream extends InputStream {
 		int HDIST;// number of distance codes (should somehow lead to the same)
 		int HCLEN;// number of length codes
 
-		int[] distHuffCode=new int[32];
-		int[] distHuffData=new int[32];
-		byte[] distHuffCodeLength=new byte[32];
+		int[] distHuffCode=new int[30];
+		int[] distHuffData=new int[30];
+		byte[] distHuffCodeLength=new byte[30];
 		
-		int[] huffmanCode=new int[288];				// this contains the codes according to the huffman tree/mapping
-		int[] huffmanData=new int[288];				// this contains the data referring to the code.
-		byte[] huffmanCodeLength=new byte[288];
+		int[] huffmanCode=new int[286];				// this contains the codes according to the huffman tree/mapping
+		int[] huffmanData=new int[286];				// this contains the data referring to the code.
+		byte[] huffmanCodeLength=new byte[286];
 		
 		this.BFINAL= (popSmallBuffer(1)==1);
 	
@@ -418,8 +418,14 @@ public class GZipInputStream extends InputStream {
 		} else if (this.BTYPE==1){
 			//System.out.println(this.allPocessed +  ": fixed tree");
 			
-			ZipHelper.genFixedTree(huffmanCode, huffmanCodeLength, huffmanData, distHuffCode, distHuffCodeLength, distHuffData);
-	    	
+			ZipHelper.genFixedTree(huffmanCode, huffmanCodeLength, distHuffCode, distHuffCodeLength);
+			for (int i = 0; i < 286; i++) {
+				huffmanData[i]=i;
+			}
+			for (int i = 0; i < 30; i++) {
+				distHuffData[i]=i;
+			}
+			
 			// convert literal table to tree
 			ZipHelper.convertTable2Tree(huffmanCode, huffmanCodeLength, huffmanData, this.huffmanTree);
 			
