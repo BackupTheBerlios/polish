@@ -39,7 +39,7 @@ import java.io.InputStream;
  * </pre>
  * @author Simon Schmitt, simon.schmitt@enough.de
  */
-public class ZipInputStream extends InputStream {
+public class GZipInputStream extends InputStream {
 	/**
 	 * This constant triggers the normal deflate compression as described in rfc 1951.
 	 */
@@ -110,7 +110,7 @@ public class ZipInputStream extends InputStream {
 	 * @see #TYPE_DEFLATE
 	 * @see #TYPE_GZIP
 	 */
-	public ZipInputStream(InputStream inputStream, int compressionType, boolean hash) 
+	public GZipInputStream(InputStream inputStream, int compressionType, boolean hash) 
 	throws IOException
 	{
 		this(inputStream, 1024, compressionType, hash);
@@ -127,13 +127,13 @@ public class ZipInputStream extends InputStream {
 	 * @see #TYPE_DEFLATE
 	 * @see #TYPE_GZIP
 	 */
-	public ZipInputStream(InputStream inputStream, int size, int compressionType, boolean hash) 
+	public GZipInputStream(InputStream inputStream, int size, int compressionType, boolean hash) 
 	throws IOException 
 	{
 		this.inStream=inputStream;
 		
 		this.inStreamEnded=false;
-		this.status=ZipInputStream.EXPECTING_HEADER;
+		this.status=GZipInputStream.EXPECTING_HEADER;
 		
 		this.hash=hash;
 		this.type=compressionType;
@@ -227,15 +227,15 @@ public class ZipInputStream extends InputStream {
     	
     	
     	// and fill it by parsing the input-stream
-    	while ((myOutBuff.length-this.outEnd>300 && (this.smallCodeBuffer[1]>0  || this.B0len>0)) && this.status!=ZipInputStream.FINISHED){
+    	while ((myOutBuff.length-this.outEnd>300 && (this.smallCodeBuffer[1]>0  || this.B0len>0)) && this.status!=GZipInputStream.FINISHED){
     		
     		// parse block header
-    		if (this.status == ZipInputStream.EXPECTING_HEADER){
+    		if (this.status == GZipInputStream.EXPECTING_HEADER){
     			processHeader();
     		}
     		// deal with the data
     		
-    		if (this.status==ZipInputStream.EXPECTING_DATA){
+    		if (this.status==GZipInputStream.EXPECTING_DATA){
 	    		// just copy data
 	    		if (this.BTYPE==0){
 	    			
@@ -255,9 +255,9 @@ public class ZipInputStream extends InputStream {
 
 	    			}else{
 		    			if(this.BFINAL){
-		    				this.status=ZipInputStream.EXPECTING_CHECK;
+		    				this.status=GZipInputStream.EXPECTING_CHECK;
 		    			} else {
-		    				this.status=ZipInputStream.EXPECTING_HEADER;
+		    				this.status=GZipInputStream.EXPECTING_HEADER;
 		    			}
 		    			if (this.smallCodeBuffer[1]<15){
 		    				refillSmallCodeBuffer();
@@ -343,9 +343,9 @@ public class ZipInputStream extends InputStream {
 		    		else {
 		    			//System.out.println("Block End code=" + huffmanCode[256] + "  pP="+pProcessed + " popC: " + popcount[0]);
 		    			if(this.BFINAL){
-		    				this.status=ZipInputStream.EXPECTING_CHECK;
+		    				this.status=GZipInputStream.EXPECTING_CHECK;
 		    			} else {
-		    				this.status=ZipInputStream.EXPECTING_HEADER;
+		    				this.status=GZipInputStream.EXPECTING_HEADER;
 		    			}
 		    		}
 		    		if (this.smallCodeBuffer[1]<15){
@@ -353,10 +353,10 @@ public class ZipInputStream extends InputStream {
 		    		}
 		    	}
 	    	}
-    		if (this.status == ZipInputStream.EXPECTING_CHECK){
+    		if (this.status == GZipInputStream.EXPECTING_CHECK){
     			//System.out.println(this.allPocessed + " data check");
     			
-    			this.status=ZipInputStream.FINISHED;
+    			this.status=GZipInputStream.FINISHED;
     			
     			this.allPocessed=(this.allPocessed+this.outEnd-this.lastEnd) & 4294967295L;
     			if (this.hash){
@@ -384,7 +384,7 @@ public class ZipInputStream extends InputStream {
     	}
     	
     	// refresh the checksum at once
-    	if (this.status!=ZipInputStream.FINISHED){
+    	if (this.status!=GZipInputStream.FINISHED){
 	    	this.allPocessed=(this.allPocessed+this.outEnd-this.lastEnd) & 4294967295L;
 	    	if (this.hash){
 		    	// lastEnd -> End in CRC32 einbeziehen
@@ -543,7 +543,7 @@ public class ZipInputStream extends InputStream {
 			
 		}
 		
-		this.status=ZipInputStream.EXPECTING_DATA;
+		this.status=GZipInputStream.EXPECTING_DATA;
 		
 		distHuffCode=null;
 		distHuffData=null;
@@ -556,7 +556,7 @@ public class ZipInputStream extends InputStream {
     
     public int validData() throws IOException{
     	inflate();
-    	if (this.status!=ZipInputStream.FINISHED){
+    	if (this.status!=GZipInputStream.FINISHED){
     		return -1;
     	}  else {
     		if (this.vaildData){
@@ -627,7 +627,7 @@ public class ZipInputStream extends InputStream {
     	long skipped=0;
     	byte b[]=new byte[this.buffsize];
     	
-		while(skipped<n && this.status != ZipInputStream.FINISHED){
+		while(skipped<n && this.status != GZipInputStream.FINISHED){
 			skipped+=this.read(b);
 		}
     	
@@ -641,7 +641,7 @@ public class ZipInputStream extends InputStream {
     	if(this.outEnd-this.outStart==0 && this.inStreamEnded){
     		// the input stream ended but we are not finished
     		throw new IOException("4");
-    	} else if (this.status== ZipInputStream.FINISHED){
+    	} else if (this.status== GZipInputStream.FINISHED){
 			return -1;
 		} else {
 			return this.outBuff[this.outStart++];
