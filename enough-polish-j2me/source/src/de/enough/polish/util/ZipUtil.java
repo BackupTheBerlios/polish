@@ -42,7 +42,7 @@ import de.enough.polish.util.zip.*;
  */
 public final class ZipUtil {
 	public static byte[] decompress( byte[] data ) throws IOException{
-		return decompress(data,ZipHelper.TYPE_DEFLATE);
+		return decompress(data,GZipInputStream.TYPE_DEFLATE);
 	}
 	public static byte[] decompress( byte[] data , int compressionType) throws IOException{
 		byte[] tmp=new byte[1024];
@@ -61,7 +61,7 @@ public final class ZipUtil {
 	}
 	
 	public static byte[] compress( byte[] data ) throws IOException{
-		return compress( data, ZipHelper.TYPE_DEFLATE );
+		return compress( data, GZipOutputStream.TYPE_DEFLATE );
 	}
 	public static byte[] compress( byte[] data, int compressionType ) throws IOException{
 		if (data.length>1<<15){ 

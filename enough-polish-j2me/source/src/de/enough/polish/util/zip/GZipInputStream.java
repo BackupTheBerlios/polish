@@ -147,7 +147,7 @@ public class GZipInputStream extends InputStream {
 		this.buffsize=size;
 		this.outBuff=new byte[size+300];
 		
-		if (this.type==ZipHelper.TYPE_GZIP){
+		if (this.type==GZipInputStream.TYPE_GZIP){
 			ZipHelper.skipheader(inputStream);
 		}
 		
@@ -648,7 +648,7 @@ public class GZipInputStream extends InputStream {
     		// the input stream ended
     		return -1;
 		} else {
-			return (this.outBuff[this.outStart++] + 256) % 256;
+			return (this.outBuff[this.outStart++] + 256) & 255;
 		}
 	}
 	

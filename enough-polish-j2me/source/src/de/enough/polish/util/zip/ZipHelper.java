@@ -39,15 +39,6 @@ import java.io.InputStream;
  * @author Simon Schmitt, simon.schmitt@enough.de
  */
 public final class ZipHelper {
-	/**
-	 * This constant triggers the normal deflate compression as described in rfc 1951.
-	 */
-	public static final int TYPE_DEFLATE=0;
-	/**
-	 * This constant triggers the gzip compression that is the same as deflate with 
-	 * some extra header information (see rfc 1952).
-	 */
-	public static final int TYPE_GZIP=1;
 	
 	// constants:
 	public static final int[] LENGTH_CODE=
@@ -189,10 +180,8 @@ public final class ZipHelper {
      * 
      * @param huffmanCode - pointer to where the code shall be inserted
      * @param huffmanCodeLength
-     * @param huffmanData
      * @param distHuffCode
      * @param distHuffCodeLength
-     * @param distHuffData
      */
     public final static void genFixedTree(int[] huffmanCode, byte[] huffmanCodeLength,
     		int[] distHuffCode, byte[] distHuffCodeLength){

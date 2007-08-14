@@ -39,6 +39,16 @@ import java.io.OutputStream;
  * @author Simon Schmitt, simon.schmitt@enough.de
  */
 public class GZipOutputStream extends OutputStream {
+	/**
+	 * This constant triggers the normal deflate compression as described in rfc 1951.
+	 */
+	public static final int TYPE_DEFLATE=0;
+	/**
+	 * This constant triggers the gzip compression that is the same as deflate with 
+	 * some extra header information (see rfc 1952).
+	 */
+	public static final int TYPE_GZIP=1;
+	
 	private OutputStream outStream;
 	
 	private byte[] outputWindow;
@@ -73,11 +83,7 @@ public class GZipOutputStream extends OutputStream {
 	private int BTYPE;
 	
 	private final static int STREAM_INIT=0;
-	//private final static int NEW_BLOCK=1;
-	//private final static int COLLECTING_DATA=2;
 	private final static int STREAMING=4;
-	
-	public int lazy_matching;
 	
 	/**
 	 * 
@@ -88,7 +94,7 @@ public class GZipOutputStream extends OutputStream {
 	 * @param huffmanWindowSize
 	 * @throws IOException
 	 */
-	public GZipOutputStream(OutputStream outputStream, int size, int compressionType, int plainWindowSize, int huffmanWindowSize/*, int lazy_matching*/) throws IOException {
+	public GZipOutputStream(OutputStream outputStream, int size, int compressionType, int plainWindowSize, int huffmanWindowSize) throws IOException {
 		this.outStream = outputStream;
 
 		this.inputBuffer=new byte[size+300];
@@ -127,14 +133,12 @@ public class GZipOutputStream extends OutputStream {
 			this.status=GZipOutputStream.STREAM_INIT;
 		}
 		
-		this.lazy_matching =258;/*= lazy_matching;*/ // TODO implement real lazy matching
-		
 		for (int i = 0; i < HASHMAP_COUNT; i++) {
 			this.HM[i] = new ZipIntMultShortHashMap(2*1024);
 		}
 		
 		// write GZIP header, if wanted 
-		if (compressionType==ZipHelper.TYPE_GZIP){
+		if (compressionType==GZipOutputStream.TYPE_GZIP){
 			/*
 	         +---+---+---+---+---+---+---+---+---+---+
 	         |ID1|ID2|CM |FLG|     MTIME     |XFL|OS | 
@@ -354,9 +358,9 @@ public class GZipOutputStream extends OutputStream {
 			
 			this.outputWindow[this.outProcessed+2]= litextra;// value of extra bits
 			this.outputWindow[this.outProcessed+3]=(byte)(di);// id of Table == code
-			this.outputWindow[this.outProcessed+4]=(byte)(distExtra&0xFF);//
-			this.outputWindow[this.outProcessed+5]=(byte)(distExtra>>8 &0xFF);//
-			this.outputWindow[this.outProcessed+6]=(byte)(distExtra>>16 &0xFF);//
+			this.outputWindow[this.outProcessed+4]=(byte)(distExtra&0xFF);
+			this.outputWindow[this.outProcessed+5]=(byte)(distExtra>>8 &0xFF);
+			this.outputWindow[this.outProcessed+6]=(byte)(distExtra>>16 &0xFF);
 			
 			this.outProcessed+=6; // 7-1
 			
@@ -379,7 +383,7 @@ public class GZipOutputStream extends OutputStream {
     }
     
     private void encodeChar(int position) throws IOException {
-    	int val = (this.inputBuffer[position] + 256)%256;
+    	int val = (this.inputBuffer[position] + 256)&255;
     	
     	if(this.outputWindow.length!=0){
 			// and increase the literal Count
@@ -434,10 +438,12 @@ public class GZipOutputStream extends OutputStream {
     		length=1;
     		distance=0;
     		
+    		// TODO what about lazy matching??
+    		
     		// search for reoccurrence, if there is enough input data left
     		if(this.lz77active && i < upTo-2 && search4LZ77(pointer, i)){
     			
-    			if (pointer[1]>lastpointer[1] &&  pointer[1] < this.lazy_matching){
+    			if (pointer[1]>lastpointer[1]){
     				// put single char of (i-1) and keep searching
     				lastpointer[0]=pointer[0];
     				lastpointer[1]=pointer[1];
@@ -479,7 +485,6 @@ public class GZipOutputStream extends OutputStream {
 					this.plainDataWindow[this.plainPointer] = this.inputBuffer[i+k];
 					
 					// add the bytes to the hashmap
-					// TODO maybe set a max for HM.element.size???  e.g. 500
 		    		this.HM[this.plainPointer/(this.plainDataWindow.length/HASHMAP_COUNT)].put( (128+this.inputBuffer[i+k])<<16 | (128+this.inputBuffer[i+k+1])<<8 | (128+this.inputBuffer[i+k+2]) , (short) this.plainPointer);
 					
 					// clear hashmap
@@ -605,8 +610,7 @@ public class GZipOutputStream extends OutputStream {
 						// distance information
 						di=this.outputWindow[i];
 						i++;
-						// TODO maybe optimize using if statements ...??
-						distExtra= ((this.outputWindow[i]+256) % 256) | ((this.outputWindow[i+1]+256) % 256)<<8 | ((this.outputWindow[i+2]+256) % 256) <<16;
+						distExtra= ((this.outputWindow[i]+256) & 255) | ((this.outputWindow[i+1]+256) &255)<<8 | ((this.outputWindow[i+2]+256) &255) <<16;
 						i+=3;
 						//distance=distExtra + ZipUtil.DISTANCE_CODE[di*2+1];
 
@@ -832,19 +836,23 @@ public class GZipOutputStream extends OutputStream {
 	 * @throws IOException in case Errors within the outputStream ocurred
 	 */
 	private void pushSmallBuffer(int val, byte len) throws IOException{
+		int smallBuffer0 = this.smallCodeBuffer[0];
+		int smallBuffer1 = this.smallCodeBuffer[1];
 		
 		// add the given data
-		this.smallCodeBuffer[0]&= ~( ((1<<len)-1) << this.smallCodeBuffer[1]);
-		this.smallCodeBuffer[0]|= (val<<this.smallCodeBuffer[1]);
-		this.smallCodeBuffer[1]+=len;
+		smallBuffer0 &= ~( ((1<<len)-1) << smallBuffer1);
+		smallBuffer0|= (val<<smallBuffer1);
+		smallBuffer1+=len;
 		
 		// clear the buffer except for a fraction of a reamining byte
-		while(this.smallCodeBuffer[1]>=8){
-			this.outStream.write(this.smallCodeBuffer[0]&255); //TODO slow!! however the hashmap consumes way more time
-			this.smallCodeBuffer[0]>>>=8;
-			this.smallCodeBuffer[1]-=8;
+		while(smallBuffer1>=8){
+			this.outStream.write(smallBuffer0&255);
+			smallBuffer0>>>=8;
+			smallBuffer1-=8;
 		}
 		
+		this.smallCodeBuffer[0]=smallBuffer0;
+		this.smallCodeBuffer[1]=smallBuffer1;
 	}
 	
 }

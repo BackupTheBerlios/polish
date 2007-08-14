@@ -97,7 +97,7 @@ public class ZipTest extends TestCase {
 		compressed = byteOut.toByteArray(); 
 		
 		byteIn = new ByteArrayInputStream( compressed ); 
-		GZipInputStream zip = new GZipInputStream( byteIn, 1024, ZipHelper.TYPE_GZIP , true );
+		GZipInputStream zip = new GZipInputStream( byteIn, 1024, GZipInputStream.TYPE_GZIP , true );
 		DataInputStream in = new DataInputStream( zip ); 
 		in.readFully( compare ); 
 		
@@ -128,7 +128,7 @@ public class ZipTest extends TestCase {
 		out.close();
 		compressed = byteOut.toByteArray(); 
 		
-		compare = ZipUtil.decompress(compressed, ZipHelper.TYPE_GZIP);
+		compare = ZipUtil.decompress(compressed, GZipInputStream.TYPE_GZIP);
 		
 		for (int j = 0; j < uncompressed.length; j++) {
 			assertEquals( uncompressed[j], compare[j] );
@@ -174,7 +174,7 @@ public class ZipTest extends TestCase {
 	
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 		//GZIPOutputStream out = new GZIPOutputStream( byteOut );
-		GZipOutputStream out = new GZipOutputStream( byteOut , 1024, ZipHelper.TYPE_GZIP, huffSize ,lz77Size);
+		GZipOutputStream out = new GZipOutputStream( byteOut , 1024, GZipOutputStream.TYPE_GZIP, huffSize ,lz77Size);
 		
 		out.write( uncompressed, 0, uncompressed.length-1 );
 		out.write(uncompressed[uncompressed.length-1]);
@@ -214,7 +214,7 @@ public class ZipTest extends TestCase {
 			System.arraycopy(random, 0, uncompressed, 1024*i, 1024);
 		}
 		
-		compressed = ZipUtil.compress(uncompressed, ZipHelper.TYPE_GZIP);
+		compressed = ZipUtil.compress(uncompressed, GZipOutputStream.TYPE_GZIP);
 		
 		ByteArrayInputStream compressedDataStream = new ByteArrayInputStream(compressed);
 		DataInputStream in = new DataInputStream( new GZIPInputStream(compressedDataStream)); 
