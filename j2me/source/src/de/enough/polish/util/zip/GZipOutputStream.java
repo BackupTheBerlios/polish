@@ -86,10 +86,9 @@ public class GZipOutputStream extends OutputStream {
 	 * @param compressionType
 	 * @param plainWindowSize
 	 * @param huffmanWindowSize
-	 * @param lazy_matching
 	 * @throws IOException
 	 */
-	public GZipOutputStream(OutputStream outputStream, int size, int compressionType, int plainWindowSize, int huffmanWindowSize, int lazy_matching) throws IOException {
+	public GZipOutputStream(OutputStream outputStream, int size, int compressionType, int plainWindowSize, int huffmanWindowSize/*, int lazy_matching*/) throws IOException {
 		this.outStream = outputStream;
 
 		this.inputBuffer=new byte[size+300];
@@ -102,7 +101,7 @@ public class GZipOutputStream extends OutputStream {
 			throw new IOException("plainWindowSize > 32768");
 		}
 		if (plainWindowSize>=100){
-			this.plainDataWindow = new byte[(plainWindowSize/HASHMAP_COUNT)*HASHMAP_COUNT]; // %HASHMAP_COUNT =0
+			this.plainDataWindow = new byte[(plainWindowSize/HASHMAP_COUNT)*HASHMAP_COUNT];
 			this.lz77active=true;
 		} else {
 			this.plainDataWindow=null;
@@ -128,7 +127,7 @@ public class GZipOutputStream extends OutputStream {
 			this.status=GZipOutputStream.STREAM_INIT;
 		}
 		
-		this.lazy_matching = lazy_matching;
+		this.lazy_matching =258;/*= lazy_matching;*/ // TODO implement real lazy matching
 		
 		for (int i = 0; i < HASHMAP_COUNT; i++) {
 			this.HM[i] = new ZipIntMultShortHashMap(2*1024);
@@ -155,23 +154,21 @@ public class GZipOutputStream extends OutputStream {
 		// append the final tree, in case of dynamic trees
 		if (this.BTYPE==2){
 			
-			// TODO this solution is uncool for small amounts of data
-			// ok lets prepare the last block
-			// TODO remove flushFinal ... is just read here and set=true
-			// TODO set huffmanwindowsize > 300+inputBuffer?
-			// empty the huffmanwindow
-			compileOutput(); // TODO estimate, if this is really necessary,
-							 // 	because we want to avoid too many new blocks
+			// empty the huffmanwindow and force a new block on purpose, if there might
+			// 		occur a new block before the last one. This is to make sure that the 
+			//		final flag is set only for the "very" last one
+			if ((this.outProcessed+8 +(this.inEnd-this.inStart)*8/3 >this.outputWindow.length)){
+				compileOutput();
+			}
 			
 			// compile the few remaining bits into the final block
-			// TODO fixed Tree??
 			LZ77(true);
 			this.lastBlock=true;
 			compileOutput();
 		} else {
-			// no final tree, just flush
+			// no final tree, just flush since there is just one single 
+			//		and therefore final block
 			LZ77(true);
-			compileOutput();
 		}
 		
 		writeFooter();
@@ -183,29 +180,22 @@ public class GZipOutputStream extends OutputStream {
 		this.litCount=null;
 		
 	}
+	/**
+	 * It is recomended not to call flush before close() since 
+	 *  close is able to handle the flushing better itself.
+	 */
 	public void flush() throws IOException{
 		// flush inputBuffer -> LZ77
-		
 		LZ77(false); // do not set to true, since we still need sth. for the last block
-		
 		
 	}
 	/* (non-Javadoc)
 	 * @see java.io.OutputStream#write(int)
 	 */
 	public void write(int b) throws IOException {
-		// TODO test case
-		
-		//shift buffer to the beginning is done in LZ77
-		/*if(this.inStart!=0){
-			System.arraycopy(this.inputBuffer, this.inStart, this.inputBuffer, 0, this.inEnd-this.inStart);
-			this.inEnd-=this.inStart;
-			this.inStart=0;
-		}*/
 		
 		if(this.inputBuffer.length == this.inEnd ){
-    		// we need space
-			// LZ77 the inputBuffer
+    		// process the inputBuffer if we need space 
     		LZ77(false);
 		}
 		
@@ -230,13 +220,6 @@ public class GZipOutputStream extends OutputStream {
     	this.isize+=len;
     	
     	while (processed!=len){
-    		// TODO is done in LZ77
-    		// shift buffer to the beginning
-    		/*if(this.inStart!=0){
-    			System.arraycopy(this.inputBuffer, this.inStart, this.inputBuffer, 0, this.inEnd-this.inStart);
-    			this.inEnd-=this.inStart;
-    			this.inStart=0;
-    		}*/
     		
     		// fill data in 
     		if(this.inputBuffer.length - this.inEnd>=len-processed){
@@ -262,7 +245,6 @@ public class GZipOutputStream extends OutputStream {
     	int[] pointer = new int[2];
     	bestPointer[1]=0;
     	
-    	// TODO die kürzeren zuerst!!! ... ist derzeit egal, da ohnehin alle verglichen werden
     	for (int i = 0; i < HASHMAP_COUNT; i++) {
     		
     		// retrieve and compare the best pointers out of each hashmap
@@ -302,8 +284,7 @@ public class GZipOutputStream extends OutputStream {
 		
 		for (int k = found.size-1; k >=0 ;k--) {
 			
-			//length=3; //TODO we use 0 for safety
-			length=0;
+			length=3;
 			
 			int comparePointer=100000;
 			
@@ -323,10 +304,7 @@ public class GZipOutputStream extends OutputStream {
 				}
 				
 			}
-			if (length<3){
-				System.out.println("Error wrong pointer generated k="+k);
-				throw new IOException();
-			}
+			
 			// compare the recently found pointer pair with the currently best
 			if (length>bestLength){
 				bestK=k;
@@ -341,9 +319,6 @@ public class GZipOutputStream extends OutputStream {
 		pointer[0]= /*distance=*/ (this.plainPointer-found.values[bestK] + this.plainDataWindow.length )% this.plainDataWindow.length;
 		pointer[1]=/*length=*/bestLength;
 
-		if (pointer[0]<0){
-			System.out.println("xxxxxxxxxxxxxxxxxxxxx dist <0");
-		}
     }
     
     /**
@@ -359,33 +334,23 @@ public class GZipOutputStream extends OutputStream {
     	int di;
     	int distExtra;
     	
-		//System.out.println(length +  "-Tupel found  at " + distance + "back   EXTplainPointer=" + (plainPointer+debugWraps*this.plainDataWindow.length) + "  debugStorepointer==" + (debugStorepointer+2));
+    	//#debug fatal
+		//# System.out.println(length +  "-Tupel found  at " + distance + "back");
 		
 		// compute length information
 		di = ZipHelper.encodeCode(ZipHelper.LENGTH_CODE, length);
-		litlen=257+di;//+ZipUtil.LENGTH_CODE[di*2+1];
+		litlen=257+di;
 		litextra=(byte) (length - ZipHelper.LENGTH_CODE[di*2+1]);
 		
 		//compute distance information
 		di = ZipHelper.encodeCode(ZipHelper.DISTANCE_CODE, distance);
-		if (di<0){
-			System.out.println("   zzzzzzzzzzzzzzzzzzzzz  distance could not be encoded");
-		}
 		distExtra = distance -ZipHelper.DISTANCE_CODE[di*2+1];					
-		
-		if (distExtra + ZipHelper.DISTANCE_CODE[di*2+1] != distance){
-			System.out.println("dist encoding error");
-		}
-		
 		
 		// write buffer information for compiler
 		if(this.outputWindow.length!=0){
 			
 			this.outputWindow[this.outProcessed]=(byte)255; // special distance stuff
 			this.outputWindow[this.outProcessed+1]= (byte) (litlen -255); // 0 is reserved!!
-			if (this.outputWindow[this.outProcessed+1]<0){
-				System.out.println("  EOORORO");
-			}
 			
 			this.outputWindow[this.outProcessed+2]= litextra;// value of extra bits
 			this.outputWindow[this.outProcessed+3]=(byte)(di);// id of Table == code
@@ -406,8 +371,8 @@ public class GZipOutputStream extends OutputStream {
 			pushSmallBuffer(litextra, (byte) ZipHelper.LENGTH_CODE[2*(litlen-257)]);
 			
 			// write distance code + extra info
-			pushSmallBuffer(this.distHuffCode[di],this.distHuffCodeLength[di], false);
-			pushSmallBuffer(distExtra, (byte) ZipHelper.DISTANCE_CODE[di*2],false);
+			pushSmallBuffer(this.distHuffCode[di],this.distHuffCodeLength[di]);
+			pushSmallBuffer(distExtra, (byte) ZipHelper.DISTANCE_CODE[di*2]);
 			
 		}
 		
@@ -428,7 +393,7 @@ public class GZipOutputStream extends OutputStream {
 				this.outputWindow[this.outProcessed]=(byte)0;
 			}
     	} else{
-    		pushSmallBuffer(this.huffmanCode[val],this.huffmanCodeLength[val],false);
+    		pushSmallBuffer(this.huffmanCode[val],this.huffmanCodeLength[val]);
     	}
     }
     
@@ -466,7 +431,6 @@ public class GZipOutputStream extends OutputStream {
     	int i;
     	for (i = 0; i < upTo; ) { 
     		
-    		// TODO add new values in hashmap again ... good way to set a MAX for found.values[]
     		length=1;
     		distance=0;
     		
@@ -484,7 +448,6 @@ public class GZipOutputStream extends OutputStream {
     			
     		}
     		
-    		// TODO not perfect implemented ... happens just a few times so we need no real optimization
     		// the pointer is not allowed to exceed the inputBuffer!!
     		if (finish && upTo-i<length){
     			length=upTo-i;
@@ -506,8 +469,6 @@ public class GZipOutputStream extends OutputStream {
 	    		if (this.outProcessed+8>this.outputWindow.length){
 	    			// if outputWindow full : call compileOutput
 	    			compileOutput();
-	    			// TODO sicherstellen, dass wirklich ein lastBlock geschrieben wird!!!
-	    			//this.outProcessed=0;
 	    		}
 	    		
     		}
@@ -518,8 +479,8 @@ public class GZipOutputStream extends OutputStream {
 					this.plainDataWindow[this.plainPointer] = this.inputBuffer[i+k];
 					
 					// add the bytes to the hashmap
+					// TODO maybe set a max for HM.element.size???  e.g. 500
 		    		this.HM[this.plainPointer/(this.plainDataWindow.length/HASHMAP_COUNT)].put( (128+this.inputBuffer[i+k])<<16 | (128+this.inputBuffer[i+k+1])<<8 | (128+this.inputBuffer[i+k+2]) , (short) this.plainPointer);
-	
 					
 					// clear hashmap
 					if (++this.plainPointer%(this.plainDataWindow.length/HASHMAP_COUNT)==0){
@@ -538,7 +499,7 @@ public class GZipOutputStream extends OutputStream {
     		
 		}
     	
-    	this.inStart=i;//upTo;
+    	this.inStart=i;
     }
     
     private void newBlock() throws IOException{
@@ -548,9 +509,9 @@ public class GZipOutputStream extends OutputStream {
 			pushSmallBuffer(this.huffmanCode[256],this.huffmanCodeLength[256]);
 			// write old 256, write blockheader
 		}
-		// if status==FLUSH_FINAL : set final flag
 		if(this.lastBlock){
 			pushSmallBuffer(1, (byte)1);
+			//#debug
 			System.out.println("final block");
 		} else{
 			pushSmallBuffer(0, (byte)1);
@@ -564,7 +525,6 @@ public class GZipOutputStream extends OutputStream {
 		this.distHuffCodeLength  = new byte[30];
 		
 		if (this.BTYPE==1){
-			// TODO genFixed Tree ohne  data=new int[32]; aufrufen
 			ZipHelper.genFixedTree(this.huffmanCode, this.huffmanCodeLength, this.distHuffCode, this.distHuffCodeLength);
 		} else if (this.BTYPE==2) {
 			
@@ -582,20 +542,12 @@ public class GZipOutputStream extends OutputStream {
 			ZipHelper.genHuffTree(this.huffmanCode, this.huffmanCodeLength);
 			ZipHelper.revHuffTree(this.huffmanCode, this.huffmanCodeLength);
 			
-			for (int i = 0; i < this.huffmanCodeLength.length; i++) {
-				if (this.huffmanCodeLength[i]>15){
-					System.out.println("Error: wrong tree length at " + i +" generated");
-					if (true) throw new IOException();
-				}
-			}
-			
 			// generate dynamic Huffmantree for Distances
 			ZipHelper.genTreeLength(this.distCount, this.distHuffCodeLength,15);
 			ZipHelper.genHuffTree(this.distHuffCode, this.distHuffCodeLength);
 			ZipHelper.revHuffTree(this.distHuffCode, this.distHuffCodeLength);
 			
 			// save tree
-			//System.out.println("compressing tree");
 			compressTree(this.huffmanCodeLength, this.distHuffCodeLength);
 			
 			// clear the counter
@@ -606,7 +558,6 @@ public class GZipOutputStream extends OutputStream {
 				this.distCount[i]=0;
 			}
 			
-			System.out.println(" pushCount: " + pushCount);
 		}
 
     }
@@ -617,8 +568,8 @@ public class GZipOutputStream extends OutputStream {
 	 * @throws IOException 
 	 */
 	private void compileOutput() throws IOException{
-		System.out.println("  compile Output  debugStorepointerCompile=" + "   pushCount: " + pushCount);
-		System.out.println(" new Block");
+		//#debug
+		System.out.println("  compile Output; new Block");
 
 		// generate & store the tree
 		newBlock();			
@@ -634,13 +585,13 @@ public class GZipOutputStream extends OutputStream {
 				val+=256;
 			} 
 			if(val!=255){
-				pushSmallBuffer(this.huffmanCode[val],this.huffmanCodeLength[val],false);
+				pushSmallBuffer(this.huffmanCode[val],this.huffmanCodeLength[val]);
 			} else {
 				if (val==255){
 					i++;
 					if (this.outputWindow[i]==0){
 						// 255 char
-						pushSmallBuffer(this.huffmanCode[255],this.huffmanCodeLength[255],false);
+						pushSmallBuffer(this.huffmanCode[255],this.huffmanCodeLength[255]);
 						
 					} else if(this.outputWindow[i]>0) {
 						// compile encoded pointer
@@ -660,16 +611,16 @@ public class GZipOutputStream extends OutputStream {
 						//distance=distExtra + ZipUtil.DISTANCE_CODE[di*2+1];
 
 						// write litlen + extra bytes
-						pushSmallBuffer(this.huffmanCode[litlen],this.huffmanCodeLength[litlen],false);
-						pushSmallBuffer(litextra, (byte) ZipHelper.LENGTH_CODE[2*(litlen-257)],false);
+						pushSmallBuffer(this.huffmanCode[litlen],this.huffmanCodeLength[litlen]);
+						pushSmallBuffer(litextra, (byte) ZipHelper.LENGTH_CODE[2*(litlen-257)]);
 						
 						// write distance code + extra info
-						pushSmallBuffer(this.distHuffCode[di],this.distHuffCodeLength[di], false);
-						pushSmallBuffer(distExtra, (byte) ZipHelper.DISTANCE_CODE[di*2],false);
+						pushSmallBuffer(this.distHuffCode[di],this.distHuffCodeLength[di]);
+						pushSmallBuffer(distExtra, (byte) ZipHelper.DISTANCE_CODE[di*2]);
 						
 						i--;
 					} else {
-						System.out.println("Error");
+						throw new IOException("illegal code decoded");
 					}
 					
 				}
@@ -685,12 +636,13 @@ public class GZipOutputStream extends OutputStream {
 	
 	private void writeFooter() throws IOException{
 		// write current 256
-		pushSmallBuffer(this.huffmanCode[256],this.huffmanCodeLength[256],false);
-		System.out.println(" wrote final 256; pushcount: " + pushCount);
+		pushSmallBuffer(this.huffmanCode[256],this.huffmanCodeLength[256]);
+		//#debug
+		System.out.println(" wrote final 256;");
 		
 		// flush the upto the byte boundrary
 		if ((this.smallCodeBuffer[1]&7) != 0){
-			pushSmallBuffer(0, (byte) (8-(this.smallCodeBuffer[1]&7)),false);
+			pushSmallBuffer(0, (byte) (8-(this.smallCodeBuffer[1]&7)));
 		}
 		
 		//write CRC, count
@@ -708,7 +660,8 @@ public class GZipOutputStream extends OutputStream {
 		this.outStream.flush();
 		this.outStream.close();
 		
-		System.out.println(" flush finish; pushcount: " + pushCount);
+		//#debug
+		System.out.println(" output finished");
 	}
 
     private void compressTree(byte[] huffmanCodeLength, byte[] distHuffCodeLength) throws IOException{
@@ -749,7 +702,7 @@ public class GZipOutputStream extends OutputStream {
 			if( i+3< len.length && len[i]==len[i+1] && len[i]==len[i+2] && len[i]==len[i+3]){
 				if(len[i]==0){
 					outLitLenDist[outCount]=0; // ausgliedern
-					System.out.println("wrinting outCount="+outCount + "   =  0");
+					//System.out.println("wrinting outCount="+outCount + "   =  0");
 					k=4;
 					
 					while(i+k<len.length && len[i]==len[i+k] && k<139){k++;}
@@ -829,17 +782,16 @@ public class GZipOutputStream extends OutputStream {
        	pushSmallBuffer(HCLEN-4, (byte)4);
 		
        	// write Mini-Tree
-       	System.out.println("writing miniTree");
        	for (i = 0; i < HCLEN; i++) {
        		//System.out.println("" + i + "=" +miniHuffData[i] + ":\t" + miniHuffCodeLength[miniHuffData[i]]);
        		pushSmallBuffer(miniHuffCodeLength[miniHuffData[i]], (byte)3);
        		
 		}
-       	
-       	System.out.println("writing compressed miniTree");
+       	//#mdebug
     	System.out.println(" HLIT: " + HLIT);
     	System.out.println(" HDIST: " + HDIST);
     	System.out.println(" HCLEN: " + HCLEN);
+    	//#enddebug
        	
 		// write Huffmanntree
     	for (i = 0; i < outCount; i++) {
@@ -871,8 +823,6 @@ public class GZipOutputStream extends OutputStream {
     }
 	
 	
-    private int pushCount=0;
-    private int pushCountTimes;
 	/**
 	 * This function is able to write bits into the outStream. Please
 	 * mind that is uses a buffer. You should flush it, by giving zeros.
@@ -881,13 +831,8 @@ public class GZipOutputStream extends OutputStream {
 	 * @param len The number of bits to process.
 	 * @throws IOException in case Errors within the outputStream ocurred
 	 */
-    private void pushSmallBuffer(int val, byte len) throws IOException{
-    	pushSmallBuffer(val,len,true);
-    }
-	private void pushSmallBuffer(int val, byte len, boolean log) throws IOException{
+	private void pushSmallBuffer(int val, byte len) throws IOException{
 		
-		pushCount+=len;
-		pushCountTimes++;
 		// add the given data
 		this.smallCodeBuffer[0]&= ~( ((1<<len)-1) << this.smallCodeBuffer[1]);
 		this.smallCodeBuffer[0]|= (val<<this.smallCodeBuffer[1]);
@@ -895,7 +840,7 @@ public class GZipOutputStream extends OutputStream {
 		
 		// clear the buffer except for a fraction of a reamining byte
 		while(this.smallCodeBuffer[1]>=8){
-			this.outStream.write(this.smallCodeBuffer[0]&255); //TODO langsam!! aber die HM ist wesentlich schlimmer
+			this.outStream.write(this.smallCodeBuffer[0]&255); //TODO slow!! however the hashmap consumes way more time
 			this.smallCodeBuffer[0]>>>=8;
 			this.smallCodeBuffer[1]-=8;
 		}
