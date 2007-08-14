@@ -226,6 +226,9 @@ public class ResourceManager {
 	
 	private void copyRootWithSubDirs(Device device, Locale locale, File root, ResourceCopier resourceCopier, File targetDir) throws IOException {
 		File[] files = root.listFiles();
+		if (files == null) {
+			throw new BuildException("<root dir=\"" + root.getAbsolutePath() + "\"> does not exist - please check the <resources> section in your your build.xml script.");
+		}
 		targetDir = new File( targetDir, root.getName() );
 		targetDir.mkdir();
 		Map resourcesByName = new HashMap( files.length );
