@@ -177,7 +177,6 @@ public class ZipTest extends TestCase {
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 		//GZIPOutputStream out = new GZIPOutputStream( byteOut );
 		GZipOutputStream out = new GZipOutputStream( byteOut , 1024, ZipHelper.TYPE_GZIP, huffSize ,lz77Size ,258);
-		out.debugStore=new int[200000];
 		
 		out.write( uncompressed, 0, uncompressed.length );
 		out.close();
