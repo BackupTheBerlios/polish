@@ -30,7 +30,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.Random;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import de.enough.polish.util.zip.*;
 
 import de.enough.polish.util.ZipUtil;
 
@@ -94,7 +97,7 @@ public class ZipTest extends TestCase {
 		compressed = byteOut.toByteArray(); 
 		
 		byteIn = new ByteArrayInputStream( compressed ); 
-		ZipInputStream zip = new ZipInputStream( byteIn, 1024, ZipHelper.TYPE_GZIP , true );
+		GZipInputStream zip = new GZipInputStream( byteIn, 1024, ZipHelper.TYPE_GZIP , true );
 		DataInputStream in = new DataInputStream( zip ); 
 		in.readFully( compare ); 
 		
@@ -132,6 +135,76 @@ public class ZipTest extends TestCase {
 		}
 		
 	}
+	
+	
+	
+	public void testMltOutPutStream(){
+		//long tm=System.currentTimeMillis();
+		try {
+			for (int i = 0; i < 33; i++) {
+				outputStreamTest(1<<15, 1<<15);
+				outputStreamTest(0, 1<<15);
+				outputStreamTest(1<<15, 0);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//System.out.println("mltTest elapsed time: " + (System.currentTimeMillis()-tm)+"ms");
+	}
+	
+	public void outputStreamTest(int huffSize, int lz77Size) throws Exception{
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");	
+	
+		Random rnd = new Random(System.currentTimeMillis());
+		int L=100;
+		byte[] uncompressed = new byte[1024*L/**100*/];
+		byte[] random = new byte[1024];
+		
+		byte[] compressed;
+		byte[] compare = new byte[uncompressed.length];
+		
+		ByteArrayInputStream byteIn;
+		
+		for (int i = 0; i < random.length; i++) {
+			random[i]=1;
+		}
+		
+		for (int i = 0; i < L; i++) {
+			nextBytes(rnd,random , (int) (1024*rnd.nextFloat()));
+			System.arraycopy(random, 0, uncompressed, 1024*i, 1024);
+		}
+	
+		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+		//GZIPOutputStream out = new GZIPOutputStream( byteOut );
+		GZipOutputStream out = new GZipOutputStream( byteOut , 1024, ZipHelper.TYPE_GZIP, huffSize ,lz77Size ,258);
+		out.debugStore=new int[200000];
+		
+		out.write( uncompressed, 0, uncompressed.length );
+		out.close();
+		compressed = byteOut.toByteArray(); 
+		
+		byteIn = new ByteArrayInputStream( compressed ); 
+		
+		GZIPInputStream zip = new GZIPInputStream(byteIn, 1024);
+		
+		//ZipInputStream zip = new ZipInputStream(byteIn, 1024, ZipUtil.TYPE_GZIP, true);
+		
+		DataInputStream in = new DataInputStream( zip );
+		/*int count=0;
+		while(in.available()>0){
+			compare[count++]=(byte)in.read();
+		}*/
+		
+		in.readFully( compare );
+		
+		for (int j = 1; j < compare.length; j++) {
+			assertEquals( uncompressed[j], compare[j] );
+		}
+	}
+	
+	
+	
+	
 	
 	// extended Random.nextBytes function
     public void nextBytes(Random rand, byte[] bytes,int len) {
