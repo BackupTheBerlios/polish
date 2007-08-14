@@ -645,12 +645,10 @@ public class GZipInputStream extends InputStream {
     		inflate();
     	}
     	if(this.outEnd-this.outStart==0 && this.inStreamEnded){
-    		// the input stream ended but we are not finished
-    		throw new IOException("4");
-    	} else if (this.status== GZipInputStream.FINISHED){
-			return -1;
+    		// the input stream ended
+    		return -1;
 		} else {
-			return this.outBuff[this.outStart++];
+			return (this.outBuff[this.outStart++] + 256) % 256;
 		}
 	}
 	
