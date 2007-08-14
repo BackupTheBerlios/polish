@@ -34,7 +34,7 @@ import javax.microedition.lcdui.Image;
 import de.enough.polish.util.ArrayList;
 
 /**
- * <p></p>
+ * <p>Provides several lists in tabs.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
