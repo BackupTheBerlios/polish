@@ -61,7 +61,7 @@ public class ZipTest extends TestCase {
 	public void testMltInputStream(){
 		//long tm=System.currentTimeMillis();
 		try {
-			for (int i = 0; i < 100; i++) {
+			for (int i = 0; i < 30; i++) {
 				testInputStream();
 			}
 		} catch (Exception e) {
@@ -136,12 +136,10 @@ public class ZipTest extends TestCase {
 		
 	}
 	
-	
-	
 	public void testMltOutPutStream(){
 		//long tm=System.currentTimeMillis();
 		try {
-			for (int i = 0; i < 33; i++) {
+			for (int i = 0; i < 10; i++) {
 				outputStreamTest(1<<15, 1<<15);
 				outputStreamTest(0, 1<<15);
 				outputStreamTest(1<<15, 0);
@@ -157,7 +155,7 @@ public class ZipTest extends TestCase {
 	
 		Random rnd = new Random(System.currentTimeMillis());
 		int L=100;
-		byte[] uncompressed = new byte[1024*L/**100*/];
+		byte[] uncompressed = new byte[1024*L];
 		byte[] random = new byte[1024];
 		
 		byte[] compressed;
@@ -176,9 +174,10 @@ public class ZipTest extends TestCase {
 	
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 		//GZIPOutputStream out = new GZIPOutputStream( byteOut );
-		GZipOutputStream out = new GZipOutputStream( byteOut , 1024, ZipHelper.TYPE_GZIP, huffSize ,lz77Size ,258);
+		GZipOutputStream out = new GZipOutputStream( byteOut , 1024, ZipHelper.TYPE_GZIP, huffSize ,lz77Size);
 		
-		out.write( uncompressed, 0, uncompressed.length );
+		out.write( uncompressed, 0, uncompressed.length-1 );
+		out.write(uncompressed[uncompressed.length-1]);
 		out.close();
 		compressed = byteOut.toByteArray(); 
 		
@@ -202,7 +201,31 @@ public class ZipTest extends TestCase {
 	}
 	
 	
-	
+	public void testCompress() throws IOException{
+		Random rnd = new Random(System.currentTimeMillis());
+		byte[] uncompressed = new byte[1024*100];
+		byte[] random = new byte[1024];
+		
+		byte[] compressed;
+		byte[] compare = new byte[uncompressed.length];
+		
+		for (int i = 0; i < 100; i++) {
+			nextBytes(rnd,random , (int) (1024*rnd.nextFloat()));
+			System.arraycopy(random, 0, uncompressed, 1024*i, 1024);
+		}
+		
+		compressed = ZipUtil.compress(uncompressed, ZipHelper.TYPE_GZIP);
+		
+		ByteArrayInputStream compressedDataStream = new ByteArrayInputStream(compressed);
+		DataInputStream in = new DataInputStream( new GZIPInputStream(compressedDataStream)); 
+		
+		in.readFully(compare);
+		
+		for (int j = 0; j < uncompressed.length; j++) {
+			assertEquals( uncompressed[j], compare[j] );
+		}
+		
+	}
 	
 	
 	// extended Random.nextBytes function
