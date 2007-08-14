@@ -60,4 +60,27 @@ public final class ZipUtil {
 		return bout.toByteArray();
 	}
 	
+	public static byte[] compress( byte[] data ) throws IOException{
+		return compress( data, ZipHelper.TYPE_DEFLATE );
+	}
+	public static byte[] compress( byte[] data, int compressionType ) throws IOException{
+		if (data.length>1<<15){ 
+			return compress(data,compressionType,1<<15,1<<15);
+			
+		} else{
+			return compress(data,compressionType,data.length,data.length);
+			
+		}
+		
+	}
+	public static byte[] compress( byte[] data , int compressionType,int plainWindowSize, int huffmanWindowSize) throws IOException{
+		ByteArrayOutputStream bout = new ByteArrayOutputStream(1024);
+		GZipOutputStream zipOutputStream = new GZipOutputStream(bout ,1024 ,compressionType,plainWindowSize,huffmanWindowSize);
+		
+		zipOutputStream.write(data);
+		zipOutputStream.close();
+		
+		return bout.toByteArray();
+	}
+	
 }
