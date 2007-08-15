@@ -1572,7 +1572,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="wmapi, wmapi2.0, mmapi, btapi, pdaapi, webservice, advanced-multimedia, m3g, mascot"/>
+		<capability name="JavaPackage" value="wmapi, wmapi2.0, mmapi, btapi, pdaapi, webservice, advanced-multimedia, m3g, mascot, nokia-ui"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="SoundFormat" value="iMelody, eMelody, midi, sp-midi, amr, mp4, mp3, m4a, 3gpp, wav, RA8, wma, xmf, rhz"/>
@@ -1580,6 +1580,9 @@ These namespaces/schemas will be used soon.
 		<capability name="ImageFormat" value="jpeg, gif, gif87a, gif89a, png, bmp, svg, wbmp"/>
 		<capability name="CameraResolution" value="2 MP"/>
 		<capability name="CameraZoom" value="4"/>
+		<!--
+		<capability name="Bugs" value="TransparencyNotWorkingInNokiaUiApi" />
+		-->
 	</device>
 	
 	<device>
@@ -5304,7 +5307,7 @@ These namespaces/schemas will be used soon.
 		<capability name="key.enter" value="10" />
 		<!--  use Ctrl-i for triggering the symbol table as well: -->
 		<capability name="key.AddSymbolKey2" value="9" />
-		<capability name="dtmf.separator" value="/"/>
+		<!--  <capability name="dtmf.separator" value="/"/> -->
 	</device>
 	
 	<device>
@@ -13530,6 +13533,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="key.LeftSoftKey" value="57345"/>
 		<capability name="key.RightSoftKey" value="57346"/>
+		<capability name="key.ClearKey" value="27"/>
 		<capability name="Font.small" value="16"/>
 		<capability name="Font.medium" value="21"/>
 		<capability name="Font.large" value="27"/>
