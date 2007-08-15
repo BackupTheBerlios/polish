@@ -104,6 +104,7 @@ public final class Serializer {
 	private static final byte TYPE_DOUBLE_ARRAY = 27;
 	private static final byte TYPE_CHAR_ARRAY = 28;
 	private static final byte TYPE_BOOLEAN_ARRAY = 29;
+	private static final byte TYPE_STRING_ARRAY = 30;
 	
 	//#if polish.JavaSE
 	private static Map obfuscationDeserializeMap; // for translating class names while deserializing/reading data
@@ -434,6 +435,14 @@ public final class Serializer {
 					boolean b = bools[i];
 					out.writeBoolean( b );
 				}
+			} else if (object instanceof String[]) {
+				out.writeByte(TYPE_STRING_ARRAY);
+				String[] strings = (String[]) object;
+				out.writeInt( strings.length );
+				for (int i = 0; i < strings.length; i++) {
+					String s = strings[i];
+					out.writeUTF( s );
+				}
 			} else {
 				throw new IOException("Cannot serialize " + object.getClass().getName() );
 			}
@@ -710,6 +719,13 @@ public final class Serializer {
 				bools[i] = in.readBoolean();
 			}
 			return bools;
+		case TYPE_STRING_ARRAY:
+			length = in.readInt();
+			String[] strings = new String[ length ];
+			for (int i = 0; i < length; i++) {
+				strings[i] = in.readUTF();
+			}
+			return strings;
 		default: 
 			throw new IOException("Unknown type: " + type );
 		}

@@ -35,6 +35,14 @@ import de.enough.polish.log.LogHandler;
 
 /**
  * <p>Stores log messages in the record store management system.</p>
+ * <p>
+ * Use the loghandler by specifying the following handler in your build.xml script:
+ * <pre>
+ * &lt;debug ...&gt;
+ *    &lt;handler name=&quot;rms&quot; />
+ * &lt;/debug&gt;
+ * </pre>
+ * </p>
  *
  * <p>Copyright (c) 2005, 2006 Enough Software</p>
  * <pre>

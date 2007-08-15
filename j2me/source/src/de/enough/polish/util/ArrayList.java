@@ -25,6 +25,13 @@
  */
 package de.enough.polish.util;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import de.enough.polish.io.Externalizable;
+import de.enough.polish.io.Serializer;
+
 
 /**
  * <p>Provides an flexible list for storing objects.</p>
@@ -55,6 +62,7 @@ public class ArrayList
 //#if polish.java5
 	<K>
 //#endif
+implements Externalizable
 {
 	private Object[] storedObjects;
 	private int growthFactor;
@@ -404,6 +412,33 @@ public class ArrayList
 	 */
 	public Object[] getInternalArray() {
 		return this.storedObjects;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#read(java.io.DataInputStream)
+	 */
+	public void read(DataInputStream in) throws IOException {
+		int storeSize = in.readInt();
+		int growFactor = in.readInt();
+		Object[] store = new Object[ storeSize ];
+		for (int i = 0; i < store.length; i++) {
+			store[i] = Serializer.deserialize( in );
+		}
+		this.storedObjects = store;
+		this.size = storeSize;
+		this.growthFactor = growFactor;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
+	 */
+	public void write(DataOutputStream out) throws IOException {
+		out.writeInt( this.size );
+		out.writeInt( this.growthFactor );
+		for (int i = 0; i < this.size; i++) {
+			Object o = this.storedObjects[i];
+			Serializer.serialize( o, out);
+		}
 	}
 
 }
