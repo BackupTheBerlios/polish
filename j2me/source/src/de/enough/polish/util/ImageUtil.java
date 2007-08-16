@@ -195,6 +195,8 @@ public final class ImageUtil {
 	// TODO ohne float
 	private static final int INTMAX=1<<10;//1<<15/MAX_SCALE;
 	public static int[] scaleDownHq(int[] src, int srcWidth, int scaleFactor, int scaledWidth, int scaledHeight, int opacity){
+		opacity=255;
+		
 		int[] dest;
 		
 		float scale; 
@@ -231,15 +233,14 @@ public final class ImageUtil {
 		int[] tmp=new int[5];
 		int[] intensityTrace=new int[1];
 		
+		int OVERFLOW_CHECK = (int) (INTMAX * scale*scale);
+		
 		// set all to green
-		/*for (int i = 0; i < src.length; i++) {
+		for (int i = 0; i < src.length; i++) {
 			if(src[i]!=0){
 				src[i]= 255<<24 | 255<<8;
 			}
-		}*/
-		
-		float scaleSquared =  scale*scale;
-		System.out.println(" scaleSquared " + scaleSquared);
+		}
 		
 		for (int scaledY = 0; scaledY < scaledHeight; scaledY++) {
 			for (int scaledX = 0; scaledX < scaledWidth; scaledX++) {
@@ -262,30 +263,32 @@ public final class ImageUtil {
 					}
 					
 					// sum them up
-					tmp=new int[5];
+					tmp[0]=0;
+					tmp[1]=0;
+					tmp[2]=0;
+					tmp[3]=0;
+					tmp[4]=0;
 					intensityTrace[0]=0;
 					
 					// start
-					tmp=helpWithX(src,dest,tmp,srcWidth,srcX, srcY,scale,yIntensityStart,intensityTrace);
+					tmp=helpWithX(src,dest,tmp,srcWidth,srcX, srcY,scale,yIntensityStart,intensityTrace,OVERFLOW_CHECK);
 					// between
 					int smallY;
 					for (smallY = (int) srcY+1; smallY < srcY+scale-1; smallY++) {
-						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,1,intensityTrace);
+						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,1,intensityTrace,OVERFLOW_CHECK);
 					}
 					//end
 					
 					if (smallY<srcHeight){
-						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,yIntensityEnd,intensityTrace);
+						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,yIntensityEnd,intensityTrace,OVERFLOW_CHECK);
 					} else {
 						// TODO there is probably an easier way
 						 //mic transparency in
 						tmp=testMixPixelIn2(tmp, 0 ,(int)( INTMAX  *yIntensityEnd),intensityTrace);
 					}
 					
-					// TODO scale^2 ausgliedern
-					// TODO if intenstiy < .1 -> elegant abbrechen??
 					
-					if(intensityTrace[0]>INTMAX*scaleSquared){
+					if(intensityTrace[0]>OVERFLOW_CHECK){
 						throw new IllegalArgumentException(" overflow");
 					}
 
@@ -293,7 +296,7 @@ public final class ImageUtil {
 					if(tmp[1]==0){
 						dest[destPointer]=0;
 					} else {
-						dest[destPointer]=	(int)(tmp[1]*opacity/(255*tmp[0] * scaleSquared))<<24 |	(int)(tmp[2]/(tmp[1]*scaleSquared))<<16 |  (int)(tmp[3]/(tmp[1]* scaleSquared))<<8 | (int)(tmp[4]/(tmp[1] * scaleSquared));
+						dest[destPointer]=	(tmp[1]*opacity/(255*tmp[0]))<<24 |(tmp[2]/(tmp[1]))<<16 |  (tmp[3]/(tmp[1]))<<8 | (tmp[4]/(tmp[1]));
 						
 						if (tmp[3]/tmp[1]>255){
 							
@@ -311,8 +314,18 @@ public final class ImageUtil {
 		return dest;
 	}
 	
-	private static int[] helpWithX(int[] src, int[] dest, int[] tmp, int srcWidth, float srcX, float Y, float scale, float yIntenstiy,int [] intensityTrace){
+	private static int[] helpWithX(int[] src, int[] dest, int[] tmp, int srcWidth, float srcX, float Y, float scale, float yIntenstiy,int [] intensityTrace, int OVERFLOW_CHECK){
+		// 	TODO if intenstiy < .1 -> elegant abbrechen??
+		// TODO sinnvolle Grenze festlegen (hängt von scale ab!!)
+		// TODO es dürfen keine Lücken entstehen!!
+		if (yIntenstiy*8*INTMAX<OVERFLOW_CHECK){ // TODO evtl wäre 8 besser
+			return tmp;
+		}
+		
+		
 		float xIntensityStart, xIntensityEnd;
+		//int xIntensityStartI, xIntensityEndI;
+		
 		xIntensityStart=1-(srcX-(int)srcX);
 		// xIntensity=1; // in between
 		xIntensityEnd=(srcX+scale-(int)(srcX+scale));
@@ -342,17 +355,22 @@ public final class ImageUtil {
 	//#endif
 	
 	private static int[] testMixPixelIn2(int[] current, int add, int intensity,int[] intensityTrace){
-		intensityTrace[0]+=intensity;
-		int alpha=(add>>>24);
-		current[0]+=intensity;
-		
-		current[1]+= 			( (add>>>24&255)*intensity);
-		
-		current[2]+= 	 	( (add>>>16&255)*intensity*alpha);
-		current[3]+=  	( (add>>>8&255)*intensity*alpha);
-		current[4]+=		( (add&255)*intensity*alpha);
-		
-		return current;
+		if(add==0){
+			return current;
+		} else {
+			
+			intensityTrace[0]+=intensity;
+			int alpha=(add>>>24);
+			current[0]+=intensity;
+			
+			current[1]+= 			( (add>>>24&255)*intensity);
+			
+			current[2]+= 	 	( (add>>>16&255)*intensity*alpha);
+			current[3]+=  	( (add>>>8&255)*intensity*alpha);
+			current[4]+=		( (add&255)*intensity*alpha);
+			
+			return current;
+		}
 	}
 	
 	//#if polish.hasFloatingPoint
