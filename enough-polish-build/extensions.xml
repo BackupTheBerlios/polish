@@ -683,6 +683,12 @@
 		<name>bluetooth</name>
 		<clientClass>de.enough.polish.log.bluetooth.BluetoothLogHandler</clientClass>
 	</extension>
+
+	<extension>
+		<type>loghandler</type>
+		<name>http</name>
+		<clientClass>de.enough.polish.log.http.HttpLogHandler</clientClass>
+	</extension>
 	
 	<!-- Preverifier -->
 	

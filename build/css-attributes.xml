@@ -786,6 +786,7 @@
 		<mapping from="fisheye" to="new de.enough.polish.ui.containerviews.FishEyeContainerView()" />
 		<mapping from="numbered" to="new de.enough.polish.ui.containerviews.NumberedContainerView()" />
 		<mapping from="verticalfixed" to="new de.enough.polish.ui.containerviews.VerticalFixedContainerView()" />
+		<mapping from="horizontal" to="new de.enough.polish.ui.containerviews.HorizontalContainerView()" />
 		<mapping from="plain" to="none" />
 		<mapping from="normal" to="none" />
 		<mapping from="gauge-recline" to="new de.enough.polish.ui.gaugeviews.RecLineGaugeView()"  appliesTo="Gauge" />
@@ -988,6 +989,7 @@
 		type="integer"
 		appliesTo="IconItem, ListItem, ChoiceItem, ChoiceGroup"
 		description="The number of intermediate steps that should be used for scaling an image."
+		default="5"
 		id="61"
 	/>
 
@@ -2783,6 +2785,16 @@
 		default="50%"
 		id="259"
 	/>
+	
+	<attribute
+		name="focus-container"
+		type="boolean"
+		appliesTo="Container"
+		description="Can be used to use focus-styles for containers as well."
+		default="false"
+		id="260"
+	/>
+	
 	
 	<!--
 	
