@@ -2007,18 +2007,29 @@ These namespaces/schemas will be used soon.
 	<device>
 		<identifier>Motorola/Q</identifier>
 		<features>hasCamera</features>
-		<capability name="OS" value="Motorola" />
+		<capability name="OS" value="Windows Mobile 5"/>
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.0" />
-		<capability name="ScreenSize" value="240x320" />       
+		<capability name="ScreenSize" value="320x240" />       
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="HeapSize" value="64 MB" />
 		<capability name="StorageSize" value="128 MB" />
 		<capability name="Region" value="USA, Canada"/>
 		<capability name="AnnouncementDate" value="2006-04-13"/>
-		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
     </device>
 
+	<device>
+		<identifier>Motorola/Q9</identifier>
+		<features>hasCamera</features>
+		<capability name="OS" value="Windows Mobile 6"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="ScreenSize" value="320x240" />       
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="HeapSize" value="64 MB" />
+		<capability name="StorageSize" value="128 MB" />
+		<capability name="Region" value="USA, Canada"/>
+    </device>
 
 	<device>
 		<identifier>Motorola/I870</identifier>
@@ -9577,6 +9588,14 @@ These namespaces/schemas will be used soon.
 	<device>
 		<identifier>Kyocera/C3002K</identifier>
 		<capability name="ScreenSize" value="120x160"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+	</device>
+	
+	<device>
+		<identifier>Kyocera/Cyclops</identifier>
+		<capability name="ScreenSize" value="128x160"/>
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
