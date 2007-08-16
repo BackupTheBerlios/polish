@@ -36,9 +36,11 @@ package de.enough.polish.util;
  * <pre>
  * history
  *        15-May-2005 - rob creation
+ *        15-Aug-2007 - Simon hq-down scaling added
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  * @author Tim Muders, tim.muders@enough.de
+ * @author Simon Schmitt, simon.schmitt@enough.de
  */
 public final class ImageUtil {
 
@@ -190,6 +192,250 @@ public final class ImageUtil {
 	}
 
 	//#if polish.hasFloatingPoint
+	// TODO ohne float
+	public static int[] scaleDownHq(int[] src, int srcWidth, int scaleFactor, int scaledWidth, int scaledHeight, int opacity){
+		int[] dest;
+		
+		float scale; 
+		
+		// parse the scaling parameter
+		int srcHeight = src.length/srcWidth;
+		if (scaleFactor!=0){
+			scale=(float)100/scaleFactor;
+		} else if (scaledWidth!=0){
+			scale=(float)srcWidth/scaledWidth;
+		} else{
+			scale=(float)srcHeight/scaledHeight;
+		}
+		if (scale==1){
+			return src;
+		}else if(scale<1){
+			throw new IllegalArgumentException();
+		}
+		// this prevents precision errors
+		if(scaledHeight==0){
+			scaledHeight=(int)(srcHeight/scale);
+		}
+		if (scaledHeight==0){
+			scaledWidth=(int)(srcWidth/scale);
+		}
+		
+		//TODO maybe without reallocation
+		// prepare the destination
+		dest = new int[scaledWidth*scaledHeight];
+		
+		float srcX, srcY;
+		int destPointer=0;
+		float yIntensityStart, yIntensityEnd;
+		float xIntensityStart, xIntensityEnd;
+		int tmp;
+		int[] intensityTrace=new int[1];
+		
+		/*for (int i = 0; i < src.length; i++) {
+			if(src[i]!=0){
+				src[i]=tmp= 255<<24 | 255<<8;
+			}
+		}*/
+		
+		for (int scaledY = 0; scaledY < scaledHeight; scaledY++) {
+			for (int scaledX = 0; scaledX < scaledWidth; scaledX++) {
+				destPointer=scaledY*scaledWidth + scaledX;
+				
+				srcX=scaledX*scale;
+				srcY=scaledY*scale;
+				
+				if(srcY<srcHeight && srcX<srcWidth){
+					// normal
+					//dest[scaledY*scaledWidth + scaledX]= src[(int)(srcY)*srcWidth  + (int)srcX];
+					
+						
+					// calc the overlap of y
+					yIntensityStart=1-(srcY-(int)srcY);
+					// yIntensity=1; // in between
+					yIntensityEnd=(srcY+scale-(int)(srcY+scale));
+					if(yIntensityEnd==0){
+						yIntensityEnd=1;
+					}
+					
+					
+					xIntensityStart=1-(srcX-(int)srcX);
+					// xIntensity=1; // in between
+					xIntensityEnd=(srcX+scale-(int)(srcX+scale));
+					
+					float intsum=(yIntensityStart*(xIntensityStart+xIntensityEnd)+yIntensityEnd*(xIntensityStart+xIntensityEnd));
+
+					/*if (  scale*scale-intsum > 1){
+						
+						tmp = 255<<24 | 255<<16;
+						System.out.println("intSum " +  intsum);
+						System.out.println("scale^2 " + scale*scale);
+						System.out.println(" diff: " + (scale*scale-intsum));
+					} */
+					
+					// sum them up
+					tmp=0;
+					intensityTrace[0]=0;
+					
+					// start
+					//tmp=testMixPixelIn(tmp,src[(int)(srcY)*srcWidth  	+ (int)srcX],(int)( 100*yIntensityStart/scale ) );
+					tmp=helpWithX(src,dest,tmp,srcWidth,srcX, srcY,scale,yIntensityStart,intensityTrace);
+					// between
+					int smallY;
+					for (smallY = (int) srcY+1; smallY < srcY+scale-1; smallY++) {
+						//tmp=testMixPixelIn(tmp,src[(int)(smallY)*srcWidth  	+ (int)srcX],(int)( 100/scale ) );
+						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,1,intensityTrace);
+					}
+					//end
+					//tmp=testMixPixelIn(tmp,src[(int)(smallY)*srcWidth  	+ (int)srcX],(int)( 100*yIntensityEnd/scale ) );
+					tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,yIntensityEnd,intensityTrace);
+					
+					// numerical after-shave prevents numerical inaccuracies of ~10%
+					int red = (tmp>>>16&255)  *100/intensityTrace[0]  ;
+					int green = (tmp>>>8&255) *100/intensityTrace[0];
+					int blue = (tmp&255)  *100/intensityTrace[0];
+				
+					tmp= (tmp&0xff000000) | red<<16 | green<<8 | blue;
+					
+					
+					// TODO scale^2 ausgliedern
+					// TODO if intenstiy < .1 -> elegant abbrechen??
+					
+					if(intensityTrace[0]>100){
+						throw new IllegalArgumentException(" overflow");
+					}
+					
+					if ( (tmp>>16&255)<200 && intensityTrace[0]<80 && tmp>>>24>20 && ((tmp>>8)&255) <240 && srcY>srcWidth/3){//(tmp!=0 && (tmp>>>24) < 100){
+						
+						//if(dest[destPointer-scaledWidth*2]== (255<<24 | 255<<16) && dest[destPointer-scaledWidth]== (255<<24 | 255<<16)){
+							tmp=0;
+							intensityTrace[0]=0;
+						// start
+						//tmp=testMixPixelIn(tmp,src[(int)(srcY)*srcWidth  	+ (int)srcX],(int)( 100*yIntensityStart/scale ) );
+						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, srcY,scale,yIntensityStart,intensityTrace);
+						// between
+						//int smallY;
+						for (smallY = (int) srcY+1; smallY < srcY+scale-1; smallY++) {
+							//tmp=testMixPixelIn(tmp,src[(int)(smallY)*srcWidth  	+ (int)srcX],(int)( 100/scale ) );
+							tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale, 1 ,intensityTrace);
+						}
+
+						//end
+						//tmp=testMixPixelIn(tmp,src[(int)(smallY)*srcWidth  	+ (int)srcX],(int)( 100*yIntensityEnd/scale ) );
+						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,yIntensityEnd,intensityTrace);
+							 
+							tmp= 255<<24 | 255;
+
+						
+						
+					}
+					
+					
+					//tmp=testMixPixelIn(tmp,src[(int)(srcY)*srcWidth  	+ (int)srcX+1],25 );
+					
+					//tmp=testMixPixelIn(tmp,src[(int)(srcY)*srcWidth+1  	+ (int)srcX+1],25 );*/
+					
+					dest[destPointer]=tmp;//src[(int)(srcY)*srcWidth  + (int)srcX];
+				
+				} else {
+					// not dangerous, but good to know while debugging
+					throw new ArithmeticException (" out of area!");
+				}
+			}
+		}
+		
+		// TODO dont do alpha ... this is done somewhere else
+		/*
+		for (int i = 0; i < dest.length; i++) {
+			if (dest[i]>>>24!=0) {
+				//dest[i]=(dest[i]&0x00ffffff) |  ( (dest[i]>>>24)*opacity/255 )<<24;
+				dest[i]=(dest[i]&0x00ffffff) | (255<<24);
+			}
+		}
+		*/
+		
+		
+		
+		//setTransparencyOnlyForOpaque(opacity, dest);
+		
+		//scale( opacity, src, scaledWidth, scaledHeight,srcWidth, srcHeight, dest);
+		
+		return dest;
+	}
+	
+	private static int helpWithX(int[] src, int[] dest, int tmp, int srcWidth, float srcX, float Y, float scale, float yIntenstiy,int [] intensityTrace){
+		float xIntensityStart, xIntensityEnd;
+		xIntensityStart=1-(srcX-(int)srcX);
+		// xIntensity=1; // in between
+		xIntensityEnd=(srcX+scale-(int)(srcX+scale));
+		if(xIntensityEnd==0){
+			xIntensityEnd=1;
+		}
+		
+		// 	start
+		tmp=testMixPixelIn(tmp,src[(int)(Y)*srcWidth  	+ (int)srcX],(int)( 100*xIntensityStart/scale *yIntenstiy/scale ) ,intensityTrace);
+		// between
+		int smallX=0;
+		for (smallX = (int) srcX+1; smallX < srcX+scale-1 /*&& smallX<srcWidth*/; smallX++) {
+			tmp=testMixPixelIn(tmp,src[(int)(Y)*srcWidth  	+ (int)smallX],(int)( 100/scale  *yIntenstiy/scale) ,intensityTrace);
+		}
+		//end
+		if (smallX<srcWidth){
+			tmp=testMixPixelIn(tmp,src[(int)(Y)*srcWidth  	+ (int)smallX],(int)( 100*xIntensityEnd/scale  *yIntenstiy/scale) ,intensityTrace);
+		} else {
+			// TODO better way for mixing transparency (since this is transparent black!!!)
+			// mic transparancy in
+			tmp=testMixPixelIn(tmp, 0 ,(int)( 100*xIntensityEnd/scale  *yIntenstiy/scale),intensityTrace);
+		}
+		
+		return tmp;
+	}
+	
+	//#endif
+	
+	private static int testMixPixelIn(int current, int add, int intesityA,int[] intensityTrace){
+		intensityTrace[0]+=intesityA;
+		if (current>>>24 >240 && add>>>24>240){ // TODO == 255
+			// no alpha mess .. mix just the colors
+			int red = (current>>>16&255)  	+( (add>>>16&255)*intesityA) / 100;
+			int green = (current>>>8&255)  	+( (add>>>8&255)*intesityA) / 100;
+			int blue = (current&255)  		+( (add&255)*intesityA) / 100;
+		
+			return 255<<24 | red<<16 | green<<8 | blue;
+		} else if(add==0 && current==0){
+			// TODO delete this condition, it is just for debugging
+			return 0;
+		} else if (add==0){
+			return current;
+		}else if(current==0){ //if(add==0 || current==0){
+			// return the color with mixed transparency
+			
+			int red = ( (add>>>16&255)*intesityA) / 100;
+			int green = ( (add>>>8&255)*intesityA) / 100;
+			int blue = ( (add&255)*intesityA) / 100;
+			
+			return 255<<24 | red<<16 | green<<8 | blue;
+			//return (current|add)&0x00ffffff |  ((current>>>24)  	+( (add>>>24)*intesityA) / 100)<<24;
+		} else {
+			return 100<<24 | 255<<16 | 255;
+			// the messy part: mix the colors depending on the transparency
+			// TODO is there an easier way??
+			/*
+			int currentAlpha = current>>>24;
+			int addAlpha = add >>>24;
+			 
+			int alpha =( currentAlpha*currentAlpha  			+ addAlpha*addAlpha*intesityA/100 )/( currentAlpha + addAlpha*intesityA/100) ;
+			
+			int red =( (current>>>16&255)*currentAlpha  		+ (( (add>>>16&255)*intesityA) / 100)*addAlpha*intesityA/100 )/( currentAlpha + addAlpha*intesityA/100) ;
+			int green =( (current>>>8&255)*currentAlpha  		+ (( (add>>>8&255)*intesityA) / 100)*addAlpha*intesityA/100 )/( currentAlpha + addAlpha*intesityA/100) ;
+			int blue =( (current&255)*currentAlpha  			+ (( (add&255)*intesityA) / 100)*addAlpha*intesityA/100 )/( currentAlpha + addAlpha*intesityA/100) ;
+			
+			return alpha<<24 | red<<16 | green<<8 | blue;
+			*/
+		}
+	}
+	
+	
+	//#if polish.hasFloatingPoint
 	/**
 	 * Rotates the given RGB data image and uses the center as the reference point for the rotation.
 	 * 
@@ -227,7 +473,8 @@ public final class ImageUtil {
 		image.setHeight(rotatedHeight);
 	}
 	//#endif
-
+	
+	
 	//#if polish.hasFloatingPoint
 	/**
 	 * Rotates the given rgb data and returns the rotated rgb data array.
