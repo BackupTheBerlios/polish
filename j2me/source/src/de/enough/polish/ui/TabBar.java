@@ -48,11 +48,14 @@ public class TabBar extends Item {
 	private final ImageItem[] tabs;
 	//#if !polish.LibraryBuild
 		//# private final Style activeStyle;
+		//# private final Style activeFocusedStyle;
 		//# private final Style inactiveStyle;
 	//#else
 		private Style activeStyle;
+		private Style activeFocusedStyle;
 		private Style inactiveStyle;
 	//#endif
+	private Style activeStyleUsed;
 	
 	private int activeTabIndex;
 	//#ifdef polish.hasPointerEvents
@@ -102,6 +105,8 @@ public class TabBar extends Item {
 		//#if !polish.LibraryBuild
 			//#style activetab, tab, default
 			//# this.activeStyle = ();
+			//#style activefocusedtab, activetab, tab, default
+			//# this.activeFocusedStyle = ();
 			//#style inactivetab, tab, default
 			//# this.inactiveStyle = ();
 		//#endif
@@ -114,7 +119,8 @@ public class TabBar extends Item {
 			this.tabs[i] = tab;
 		}
 
-		this.tabs[0].style = this.activeStyle;
+		this.activeStyleUsed = this.activeStyle;
+		this.tabs[0].style = this.activeStyleUsed;
 	}
 	
 	/**
@@ -126,12 +132,32 @@ public class TabBar extends Item {
 		// deactivating the old tab:
 		this.tabs[ this.activeTabIndex ].setStyle(this.inactiveStyle);
 		// activating the new tab:
-		this.tabs[ index ].setStyle(this.activeStyle);
 		this.activeTabIndex = index;
+		this.tabs[ index ].setStyle(this.activeStyleUsed);
 		this.isInitialized = false;
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
+	 */
+	protected Style focus(Style newStyle, int direction)
+	{
+		System.out.println("Michael: focussing tabbar");
+		this.activeStyleUsed = this.activeFocusedStyle;
+		this.tabs[ this.activeTabIndex ].setStyle(this.activeFocusedStyle);
+		return super.focus(newStyle, direction);
+	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
+	 */
+	protected void defocus(Style originalStyle)
+	{
+		System.out.println("Michael: de-focussing tabbar");
+		this.activeStyleUsed = this.activeStyle;
+		this.tabs[ this.activeTabIndex ].setStyle(this.activeStyle);
+		super.defocus(originalStyle);
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
@@ -270,6 +296,8 @@ public class TabBar extends Item {
 			//#endif
 			rightBorder -=  this.scrollArrowPadding;
 		}
+
+		System.err.println("Michael: drawing tabbar items");
 
 		// draw the tabs:
 		y -= (cHeight - this.scrollArrowHeight) / 2;

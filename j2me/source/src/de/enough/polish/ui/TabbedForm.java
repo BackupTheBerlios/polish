@@ -26,6 +26,7 @@
  */
 package de.enough.polish.ui;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Image;
 
 /**
@@ -86,12 +87,14 @@ public class TabbedForm extends Form {
 		}
 		this.tabContainers = new Container[ length ];
 		this.tabContainers[0] = this.container;
+		this.tabContainers[0].allowCycling = false;
 		for (int i = 1; i < length; i++) {
-			Container tabContainer = new Container( null, true, null, this.screenHeight );
+			Container tabContainer = new Container( null, false, null, this.screenHeight );
 			if (style != null) {
 				tabContainer.setStyle( style, true );
 			}
 			tabContainer.screen = this;
+			tabContainer.allowCycling = false;
 			this.tabContainers[i] = tabContainer;
 		}
 		setSubTitle( this.tabBar );
@@ -306,6 +309,10 @@ public class TabbedForm extends Form {
 	 * @param tabIndex the index of the tab, the first tab has the index 0.
 	 */
 	public void setActiveTab( int tabIndex ) {
+		setActiveTab(tabIndex, true);
+	}
+
+	public void setActiveTab( int tabIndex, boolean focusTabBar ) {
 		if (!notifyTabbedChangeRequested( this.activeTabIndex, tabIndex )) {
 			return;
 		}
@@ -345,6 +352,9 @@ public class TabbedForm extends Form {
 			repaint();
 		}
 		notifyTabbedChangeCompleted(oldTabIndex, this.activeTabIndex);
+		if (focusTabBar) {
+			focus(this.tabBar);
+		}
 	}
 	
 	/**
@@ -380,22 +390,57 @@ public class TabbedForm extends Form {
 	
 	
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
-		Item focusedItem = this.container.focusedItem;
-//		if (focusedItem instanceof Container) {
-//			focusedItem = ((Container) focusedItem).focusedItem;
-//		}
-		if (focusedItem != null && focusedItem.handleKeyPressed(keyCode, gameAction)) {
-			if (focusedItem.internalX != -9999) {
-				this.container.scroll( gameAction, focusedItem );
+		if (this.focusedItem == null) {
+			int nextTabIndex = this.activeTabIndex;
+			//#if polish.css.tabbar-roundtrip
+				if (gameAction == Canvas.RIGHT) {
+					nextTabIndex = this.activeTabIndex + 1;
+					if (nextTabIndex >= this.tabContainers.length) {
+						nextTabIndex = 0;
+					}
+				} else if (gameAction == Canvas.LEFT) {
+					nextTabIndex = this.activeTabIndex - 1;
+					if (nextTabIndex < 0) {
+						nextTabIndex = this.tabContainers.length - 1;
+					}		
+				}
+			//#else
+				if (gameAction == Canvas.RIGHT && this.activeTabIndex < (this.tabContainers.length - 1)) {
+					nextTabIndex = this.activeTabIndex + 1;
+				}
+				else if (gameAction == Canvas.LEFT && this.activeTabIndex > 0) {
+					nextTabIndex = this.activeTabIndex - 1;
+				}
+			//#endif
+			else if (gameAction == Canvas.DOWN) {
+				this.tabBar.defocus(this.tabBar.style);
+				this.container.focus(this.container.style, Canvas.DOWN);
+				return true;
 			}
+			//#if polish.css.tabbar-roundtrip
+				else if (gameAction == Canvas.UP) {
+					this.tabBar.defocus(this.tabBar.style);
+					this.container.focus(this.container.style, Canvas.UP);
+					return true;
+				}
+			//#endif
 
-			return true;
-		} else if ( this.tabBar.handleKeyPressed(keyCode, gameAction)) {
-			setActiveTab( this.tabBar.getNextTab() );
-			notifyScreenStateChanged();
+			if (this.activeTabIndex != nextTabIndex) {
+				setActiveTab(nextTabIndex);
+				return true;
+			}
+		}
+
+		boolean handled = super.handleKeyPressed(keyCode, gameAction);
+
+		// Focus the tabbar when needed.
+		if (!handled && (gameAction == Canvas.UP || gameAction == Canvas.DOWN)) {
+			this.container.defocus(this.container.style);
+			this.tabBar.focus(this.tabBar.style, gameAction);
 			return true;
 		}
-		return super.handleKeyPressed(keyCode, gameAction);
+
+		return handled;
 	}
 	
 	
@@ -409,6 +454,9 @@ public class TabbedForm extends Form {
 				super.focus(item);
 				return;
 			}
+		}
+		if (item == this.tabBar) {
+			super.focus(item);
 		}
 	}
 	
