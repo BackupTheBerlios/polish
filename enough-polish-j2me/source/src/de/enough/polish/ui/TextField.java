@@ -3517,6 +3517,7 @@ public class TextField extends StringItem
 		return false;
 	}
 	
+	
 			
 	//#if !polish.blackberry && tmp.directInput
 	/* (non-Javadoc)
@@ -4037,7 +4038,19 @@ public class TextField extends StringItem
 	public void setShowInputInfo(boolean show) {
 		this.isShowInputInfo = show;
 		
-	}	
+	}
+
+	//#if  !polish.blackberry && tmp.directInput
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.StringItem#hideNotify()
+		 */
+		protected void hideNotify() {
+			if (this.caretChar != this.editingCaretChar) {
+				commitCurrentCharacter();
+			}
+			super.hideNotify();
+		}	
+	//#endif
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {
