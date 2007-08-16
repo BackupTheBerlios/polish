@@ -142,7 +142,6 @@ public class TabBar extends Item {
 	 */
 	protected Style focus(Style newStyle, int direction)
 	{
-		System.out.println("Michael: focussing tabbar");
 		this.activeStyleUsed = this.activeFocusedStyle;
 		this.tabs[ this.activeTabIndex ].setStyle(this.activeFocusedStyle);
 		return super.focus(newStyle, direction);
@@ -153,7 +152,6 @@ public class TabBar extends Item {
 	 */
 	protected void defocus(Style originalStyle)
 	{
-		System.out.println("Michael: de-focussing tabbar");
 		this.activeStyleUsed = this.activeStyle;
 		this.tabs[ this.activeTabIndex ].setStyle(this.activeStyle);
 		super.defocus(originalStyle);
@@ -296,8 +294,6 @@ public class TabBar extends Item {
 			//#endif
 			rightBorder -=  this.scrollArrowPadding;
 		}
-
-		System.err.println("Michael: drawing tabbar items");
 
 		// draw the tabs:
 		y -= (cHeight - this.scrollArrowHeight) / 2;
