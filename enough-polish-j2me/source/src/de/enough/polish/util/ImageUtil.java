@@ -193,6 +193,7 @@ public final class ImageUtil {
 
 	//#if polish.hasFloatingPoint
 	// TODO ohne float
+	private static final int INTMAX=1<<10;//1<<15/MAX_SCALE;
 	public static int[] scaleDownHq(int[] src, int srcWidth, int scaleFactor, int scaledWidth, int scaledHeight, int opacity){
 		int[] dest;
 		
@@ -227,7 +228,6 @@ public final class ImageUtil {
 		float srcX, srcY;
 		int destPointer=0;
 		float yIntensityStart, yIntensityEnd;
-		float xIntensityStart, xIntensityEnd;
 		int[] tmp=new int[5];
 		int[] intensityTrace=new int[1];
 		
@@ -237,6 +237,9 @@ public final class ImageUtil {
 				src[i]= 255<<24 | 255<<8;
 			}
 		}*/
+		
+		float scaleSquared =  scale*scale;
+		System.out.println(" scaleSquared " + scaleSquared);
 		
 		for (int scaledY = 0; scaledY < scaledHeight; scaledY++) {
 			for (int scaledX = 0; scaledX < scaledWidth; scaledX++) {
@@ -258,71 +261,39 @@ public final class ImageUtil {
 						yIntensityEnd=1;
 					}
 					
-					
-					xIntensityStart=1-(srcX-(int)srcX);
-					// xIntensity=1; // in between
-					xIntensityEnd=(srcX+scale-(int)(srcX+scale));
-					
-					float intsum=(yIntensityStart*(xIntensityStart+xIntensityEnd)+yIntensityEnd*(xIntensityStart+xIntensityEnd));
-
-					/*if (  scale*scale-intsum > 1){
-						
-						tmp = 255<<24 | 255<<16;
-						System.out.println("intSum " +  intsum);
-						System.out.println("scale^2 " + scale*scale);
-						System.out.println(" diff: " + (scale*scale-intsum));
-					} */
-					
 					// sum them up
 					tmp=new int[5];
 					intensityTrace[0]=0;
 					
 					// start
-					//tmp=testMixPixelIn(tmp,src[(int)(srcY)*srcWidth  	+ (int)srcX],(int)( 100*yIntensityStart/scale ) );
 					tmp=helpWithX(src,dest,tmp,srcWidth,srcX, srcY,scale,yIntensityStart,intensityTrace);
 					// between
 					int smallY;
 					for (smallY = (int) srcY+1; smallY < srcY+scale-1; smallY++) {
-						//tmp=testMixPixelIn(tmp,src[(int)(smallY)*srcWidth  	+ (int)srcX],(int)( 100/scale ) );
 						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,1,intensityTrace);
 					}
 					//end
-					//tmp=testMixPixelIn(tmp,src[(int)(smallY)*srcWidth  	+ (int)srcX],(int)( 100*yIntensityEnd/scale ) );
 					
 					if (smallY<srcHeight){
 						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,yIntensityEnd,intensityTrace);
 					} else {
 						// TODO there is probably an easier way
 						 //mic transparency in
-						tmp=testMixPixelIn2(tmp, 0 ,(int)( 100/scale  *yIntensityEnd/scale),intensityTrace);
+						tmp=testMixPixelIn2(tmp, 0 ,(int)( INTMAX  *yIntensityEnd),intensityTrace);
 					}
-					
-					
-					/*// numerical after-shave prevents numerical inaccuracies of ~10%
-					int red = (tmp>>>16&255)  *100/intensityTrace[0]  ;
-					int green = (tmp>>>8&255) *100/intensityTrace[0];
-					int blue = (tmp&255)  *100/intensityTrace[0];
-				
-					tmp= (tmp&0xff000000) | red<<16 | green<<8 | blue;
-					*/
 					
 					// TODO scale^2 ausgliedern
 					// TODO if intenstiy < .1 -> elegant abbrechen??
 					
-					if(intensityTrace[0]>100){
+					if(intensityTrace[0]>INTMAX*scaleSquared){
 						throw new IllegalArgumentException(" overflow");
 					}
 
-					//tmp=testMixPixelIn(tmp,src[(int)(srcY)*srcWidth  	+ (int)srcX+1],25 );
-					
-					//tmp=testMixPixelIn(tmp,src[(int)(srcY)*srcWidth+1  	+ (int)srcX+1],25 );*/
-					
-					//dest[destPointer]=tmp;
 					// 				alpha=alpha/int			red=  redSum/(alpha*int)
 					if(tmp[1]==0){
 						dest[destPointer]=0;
 					} else {
-						dest[destPointer]=	(tmp[1]*opacity/(255*tmp[0]))<<24 |	(tmp[2]/tmp[1])<<16 |  (tmp[3]/tmp[1])<<8 | (tmp[4]/tmp[1]);
+						dest[destPointer]=	(int)(tmp[1]*opacity/(255*tmp[0] * scaleSquared))<<24 |	(int)(tmp[2]/(tmp[1]*scaleSquared))<<16 |  (int)(tmp[3]/(tmp[1]* scaleSquared))<<8 | (int)(tmp[4]/(tmp[1] * scaleSquared));
 						
 						if (tmp[3]/tmp[1]>255){
 							
@@ -337,22 +308,6 @@ public final class ImageUtil {
 			}
 		}
 		
-		// TODO dont do alpha ... this is done somewhere else
-		/*
-		for (int i = 0; i < dest.length; i++) {
-			if (dest[i]>>>24!=0) {
-				//dest[i]=(dest[i]&0x00ffffff) |  ( (dest[i]>>>24)*opacity/255 )<<24;
-				dest[i]=(dest[i]&0x00ffffff) | (255<<24);
-			}
-		}
-		*/
-		
-		
-		
-		//setTransparencyOnlyForOpaque(opacity, dest);
-		
-		//scale( opacity, src, scaledWidth, scaledHeight,srcWidth, srcHeight, dest);
-		
 		return dest;
 	}
 	
@@ -366,20 +321,19 @@ public final class ImageUtil {
 		}
 		
 		// 	start
-		tmp=testMixPixelIn2(tmp,src[(int)(Y)*srcWidth  	+ (int)srcX],(int)( 100*xIntensityStart/scale *yIntenstiy/scale ) ,intensityTrace);
+		tmp=testMixPixelIn2(tmp,src[(int)(Y)*srcWidth  	+ (int)srcX],(int)( INTMAX*xIntensityStart *yIntenstiy ) ,intensityTrace);
 		// between
 		int smallX=0;
-		for (smallX = (int) srcX+1; smallX < srcX+scale-1 /*&& smallX<srcWidth*/; smallX++) {
-			tmp=testMixPixelIn2(tmp,src[(int)(Y)*srcWidth  	+ (int)smallX],(int)( 100/scale  *yIntenstiy/scale) ,intensityTrace);
+		for (smallX = (int) srcX+1; smallX < srcX+scale-1 ; smallX++) {
+			tmp=testMixPixelIn2(tmp,src[(int)(Y)*srcWidth  	+ (int)smallX],(int)( INTMAX  *yIntenstiy) ,intensityTrace);
 		}
 		//end
 		
 		if (smallX<srcWidth){
-			tmp=testMixPixelIn2(tmp,src[(int)(Y)*srcWidth  	+ (int)smallX],(int)( 100*xIntensityEnd/scale  *yIntenstiy/scale) ,intensityTrace);
+			tmp=testMixPixelIn2(tmp,src[(int)(Y)*srcWidth  	+ (int)smallX],(int)( INTMAX*xIntensityEnd  *yIntenstiy) ,intensityTrace);
 		} else {
-			// TODO better way for mixing transparency (since this is transparent black!!!)
 			// mic transparency in
-			tmp=testMixPixelIn2(tmp, 0 ,(int)( 100*xIntensityEnd/scale  *yIntenstiy/scale),intensityTrace);
+			tmp=testMixPixelIn2(tmp, 0 ,(int)( INTMAX*xIntensityEnd  *yIntenstiy),intensityTrace);
 		}
 		
 		return tmp;
@@ -390,7 +344,6 @@ public final class ImageUtil {
 	private static int[] testMixPixelIn2(int[] current, int add, int intensity,int[] intensityTrace){
 		intensityTrace[0]+=intensity;
 		int alpha=(add>>>24);
-		// TODO  /255 is not necessary
 		current[0]+=intensity;
 		
 		current[1]+= 			( (add>>>24&255)*intensity);
@@ -401,50 +354,6 @@ public final class ImageUtil {
 		
 		return current;
 	}
-	
-	private static int testMixPixelIn(int current, int add, int intesityA,int[] intensityTrace){
-		intensityTrace[0]+=intesityA;
-		if (current>>>24 >240 && add>>>24>240){ // TODO == 255
-			// no alpha mess .. mix just the colors
-			int red = (current>>>16&255)  	+( (add>>>16&255)*intesityA) / 100;
-			int green = (current>>>8&255)  	+( (add>>>8&255)*intesityA) / 100;
-			int blue = (current&255)  		+( (add&255)*intesityA) / 100;
-			
-			return 255<<24 | red<<16 | green<<8 | blue;
-		} else if(add==0 && current==0){
-			// TODO delete this condition, it is just for debugging
-			return 0;
-		} else if (add==0){
-			return current;
-		}else if(current==0){ //if(add==0 || current==0){
-			// return the color with mixed transparency
-			
-			int red = ( (add>>>16&255)*intesityA) / 100;
-			int green = ( (add>>>8&255)*intesityA) / 100;
-			int blue = ( (add&255)*intesityA) / 100;
-			
-			return 255<<24 | red<<16 | green<<8 | blue;
-			//return (current|add)&0x00ffffff |  ((current>>>24)  	+( (add>>>24)*intesityA) / 100)<<24;
-		} else {
-			System.out.println(" transparency");
-			return 100<<24 | 255<<16;
-			// the messy part: mix the colors depending on the transparency
-			// TODO is there an easier way??
-			/*
-			int currentAlpha = current>>>24;
-			int addAlpha = add >>>24;
-			 
-			int alpha =( currentAlpha*currentAlpha  			+ addAlpha*addAlpha*intesityA/100 )/( currentAlpha + addAlpha*intesityA/100) ;
-			
-			int red =( (current>>>16&255)*currentAlpha  		+ (( (add>>>16&255)*intesityA) / 100)*addAlpha*intesityA/100 )/( currentAlpha + addAlpha*intesityA/100) ;
-			int green =( (current>>>8&255)*currentAlpha  		+ (( (add>>>8&255)*intesityA) / 100)*addAlpha*intesityA/100 )/( currentAlpha + addAlpha*intesityA/100) ;
-			int blue =( (current&255)*currentAlpha  			+ (( (add&255)*intesityA) / 100)*addAlpha*intesityA/100 )/( currentAlpha + addAlpha*intesityA/100) ;
-			
-			return alpha<<24 | red<<16 | green<<8 | blue;
-			*/
-		}
-	}
-	
 	
 	//#if polish.hasFloatingPoint
 	/**
