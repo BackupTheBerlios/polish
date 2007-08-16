@@ -2676,7 +2676,8 @@ public class TextField extends StringItem
 		} else {
 			myText = this.text;
 		}
-		if (!isValidInput( this.caretChar, this.caretPosition, myText )) {
+		char insertChar  = this.caretChar; 
+		if (!isValidInput( insertChar, this.caretPosition, myText )) {
 			return;
 		}
 		this.caretChar = this.editingCaretChar;
@@ -2684,6 +2685,41 @@ public class TextField extends StringItem
 		this.caretPosition++;
 		this.caretColumn++;
 		this.caretX += this.caretWidth;
+		boolean nextCharInputHasChanged = false;
+		//#if polish.TextField.suppressAutoInputModeChange
+			if ( this.inputMode == MODE_FIRST_UPPERCASE  
+				&& (insertChar == ' ' ||  ( insertChar == '.' && !this.isEmail) )) 
+			{
+				this.nextCharUppercase = true;
+			} else {
+				this.nextCharUppercase = false;
+			}
+		//#else
+			nextCharInputHasChanged = this.nextCharUppercase;
+			if ( ( (this.inputMode == MODE_FIRST_UPPERCASE || this.nextCharUppercase) 
+					&& insertChar == ' ') 
+				|| ( insertChar == '.' && !this.isEmail)) 
+			{
+				this.nextCharUppercase = true;
+			} else {
+				this.nextCharUppercase = false;
+			}
+			nextCharInputHasChanged = (this.nextCharUppercase != nextCharInputHasChanged);
+			if ( this.inputMode == MODE_FIRST_UPPERCASE ) {
+				this.inputMode = MODE_LOWERCASE;
+			}
+		//#endif
+			//#if polish.css.textfield-show-length  && tmp.useInputInfo
+			if (this.showLength || nextCharInputHasChanged) {
+				updateInfo();
+			}
+		//#elif tmp.useInputInfo
+			if (nextCharInputHasChanged) {
+				updateInfo();
+			}
+		//#endif
+
+		
 		notifyStateChanged();
 		//#ifdef polish.css.textfield-caret-flash
 			if (!this.flashCaret) {
@@ -2734,51 +2770,48 @@ public class TextField extends StringItem
 		if (commit) {
 			this.caretPosition++;
 			this.caretColumn++;
-			
+			//#if polish.TextField.suppressAutoInputModeChange
+				if ( this.inputMode == MODE_FIRST_UPPERCASE  
+					&& (insertChar == ' ' ||  ( insertChar == '.' && !this.isEmail) )) 
+				{
+					this.nextCharUppercase = true;
+				} else {
+					this.nextCharUppercase = false;
+				}
+			//#else
+				nextCharInputHasChanged = this.nextCharUppercase;
+				if ( ( (this.inputMode == MODE_FIRST_UPPERCASE || this.nextCharUppercase) 
+						&& insertChar == ' ') 
+					|| ( insertChar == '.' && !this.isEmail)) 
+				{
+					this.nextCharUppercase = true;
+				} else {
+					this.nextCharUppercase = false;
+				}
+				nextCharInputHasChanged = (this.nextCharUppercase != nextCharInputHasChanged);
+				if ( this.inputMode == MODE_FIRST_UPPERCASE ) {
+					this.inputMode = MODE_LOWERCASE;
+				}
+			//#endif
 			this.caretChar = this.editingCaretChar;
 		}
-		
-		//#if polish.TextField.suppressAutoInputModeChange
-			if ( this.inputMode == MODE_FIRST_UPPERCASE  
-				&& (insertChar == ' ' ||  ( insertChar == '.' && !this.isEmail) )) 
-			{
-				this.nextCharUppercase = true;
-			} else {
-				this.nextCharUppercase = false;
-			}
-		//#else
-			nextCharInputHasChanged = this.nextCharUppercase;
-			if ( ( (this.inputMode == MODE_FIRST_UPPERCASE || this.nextCharUppercase) 
-					&& insertChar == ' ') 
-				|| ( insertChar == '.' && !this.isEmail)) 
-			{
-				this.nextCharUppercase = true;
-			} else {
-				this.nextCharUppercase = false;
-			}
-			nextCharInputHasChanged = (this.nextCharUppercase != nextCharInputHasChanged);
-			if ( this.inputMode == MODE_FIRST_UPPERCASE ) {
-				this.inputMode = MODE_LOWERCASE;
-			}
-		//#endif
-		
 		setString( myText );
 		if (!commit) {
 			if (myText.length() == 1) {
 				this.caretPosition = 0;
 			}
+		} else {
+			notifyStateChanged();			
+			//#if polish.css.textfield-show-length  && tmp.useInputInfo
+				if (this.showLength || nextCharInputHasChanged) {
+					updateInfo();
+				}
+			//#elif tmp.useInputInfo
+				if (nextCharInputHasChanged) {
+					updateInfo();
+				}
+			//#endif
 		}
-		
-		notifyStateChanged();			
-		//#if polish.css.textfield-show-length  && tmp.useInputInfo
-			if (this.showLength || nextCharInputHasChanged) {
-				updateInfo();
-			}
-		//#elif tmp.useInputInfo
-			if (nextCharInputHasChanged) {
-				updateInfo();
-			}
-		//#endif
 	}
 	//#endif
 
@@ -3191,9 +3224,7 @@ public class TextField extends StringItem
 						|| this.nextCharUppercase ) 
 				{
 					newCharacter = Character.toUpperCase(newCharacter);
-					
 				}
-				
 				//#ifdef polish.css.font-bitmap
 					if (this.bitMapFont != null) {
 						this.caretWidth = this.bitMapFont.charWidth( newCharacter );
