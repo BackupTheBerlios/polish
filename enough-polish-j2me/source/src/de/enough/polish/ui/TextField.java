@@ -2734,48 +2734,51 @@ public class TextField extends StringItem
 		if (commit) {
 			this.caretPosition++;
 			this.caretColumn++;
-			//#if polish.TextField.suppressAutoInputModeChange
-				if ( this.inputMode == MODE_FIRST_UPPERCASE  
-					&& (insertChar == ' ' ||  ( insertChar == '.' && !this.isEmail) )) 
-				{
-					this.nextCharUppercase = true;
-				} else {
-					this.nextCharUppercase = false;
-				}
-			//#else
-				nextCharInputHasChanged = this.nextCharUppercase;
-				if ( ( (this.inputMode == MODE_FIRST_UPPERCASE || this.nextCharUppercase) 
-						&& insertChar == ' ') 
-					|| ( insertChar == '.' && !this.isEmail)) 
-				{
-					this.nextCharUppercase = true;
-				} else {
-					this.nextCharUppercase = false;
-				}
-				nextCharInputHasChanged = (this.nextCharUppercase != nextCharInputHasChanged);
-				if ( this.inputMode == MODE_FIRST_UPPERCASE ) {
-					this.inputMode = MODE_LOWERCASE;
-				}
-			//#endif
+			
 			this.caretChar = this.editingCaretChar;
 		}
+		
+		//#if polish.TextField.suppressAutoInputModeChange
+			if ( this.inputMode == MODE_FIRST_UPPERCASE  
+				&& (insertChar == ' ' ||  ( insertChar == '.' && !this.isEmail) )) 
+			{
+				this.nextCharUppercase = true;
+			} else {
+				this.nextCharUppercase = false;
+			}
+		//#else
+			nextCharInputHasChanged = this.nextCharUppercase;
+			if ( ( (this.inputMode == MODE_FIRST_UPPERCASE || this.nextCharUppercase) 
+					&& insertChar == ' ') 
+				|| ( insertChar == '.' && !this.isEmail)) 
+			{
+				this.nextCharUppercase = true;
+			} else {
+				this.nextCharUppercase = false;
+			}
+			nextCharInputHasChanged = (this.nextCharUppercase != nextCharInputHasChanged);
+			if ( this.inputMode == MODE_FIRST_UPPERCASE ) {
+				this.inputMode = MODE_LOWERCASE;
+			}
+		//#endif
+		
 		setString( myText );
 		if (!commit) {
 			if (myText.length() == 1) {
 				this.caretPosition = 0;
 			}
-		} else {
-			notifyStateChanged();			
-			//#if polish.css.textfield-show-length  && tmp.useInputInfo
-				if (this.showLength || nextCharInputHasChanged) {
-					updateInfo();
-				}
-			//#elif tmp.useInputInfo
-				if (nextCharInputHasChanged) {
-					updateInfo();
-				}
-			//#endif
 		}
+		
+		notifyStateChanged();			
+		//#if polish.css.textfield-show-length  && tmp.useInputInfo
+			if (this.showLength || nextCharInputHasChanged) {
+				updateInfo();
+			}
+		//#elif tmp.useInputInfo
+			if (nextCharInputHasChanged) {
+				updateInfo();
+			}
+		//#endif
 	}
 	//#endif
 
@@ -3188,7 +3191,9 @@ public class TextField extends StringItem
 						|| this.nextCharUppercase ) 
 				{
 					newCharacter = Character.toUpperCase(newCharacter);
+					
 				}
+				
 				//#ifdef polish.css.font-bitmap
 					if (this.bitMapFont != null) {
 						this.caretWidth = this.bitMapFont.charWidth( newCharacter );
