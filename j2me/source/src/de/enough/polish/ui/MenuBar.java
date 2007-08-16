@@ -1528,6 +1528,15 @@ public class MenuBar extends Item {
 		//#endif
 	}
 
+	/**
+	 * Retrieves the number of commands in this menubar.
+	 * 
+	 * @return the number of commands in this menubar.
+	 */
+	public int size() {
+		return this.allCommands.size();
+	}
+
 	
 	
 	

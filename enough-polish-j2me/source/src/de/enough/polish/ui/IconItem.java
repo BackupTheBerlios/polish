@@ -71,7 +71,7 @@ implements ImageConsumer
 	protected boolean isTextVisible = true;
 	//#if polish.midp2 && polish.css.scale-factor
 		private int scaleFactor;
-		private int scaleSteps;
+		private int scaleSteps = 5;
 		private int currentStep;
 		private int[] rgbData;
 		private boolean scaleDown;
@@ -480,10 +480,7 @@ implements ImageConsumer
 			this.rgbData = null;
 			this.scaleData = null;
 		//#endif
-		if (this.isInitialized) {	
-			this.isInitialized = false;
-			repaint();
-		}
+		requestInit();
 	}
 
 	

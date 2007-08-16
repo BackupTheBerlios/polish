@@ -89,9 +89,13 @@ public class Container extends Item {
 	//#ifdef polish.css.scroll-mode
 		protected boolean scrollSmooth = true;
 	//#endif
+	//#if polish.css.focus-container
+		private boolean isFocusContainer;
+		private Style oldContainerStyle;
+	//#endif
 	private boolean isScrollRequired;
 	/** The height available for scrolling, ignore when set to -1 */
-	protected int availableHeight = -1;	
+	protected int availableHeight = -1;
 
 	
 	/**
@@ -1092,12 +1096,12 @@ public class Container extends Item {
 			//g.clipRect(clipX, y - this.paddingTop, clipWidth, clipHeight - ((y - this.paddingTop) - clipY) );
 			g.clipRect(clipX, y, clipWidth, clipHeight - (y - clipY) );
 		}
-		x = leftBorder;
+		//x = leftBorder;
 		y += this.yOffset;
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
 				//#debug
-				System.out.println("fowarding paint call to " + this.containerView );
+				System.out.println("forwarding paint call to " + this.containerView );
 				this.containerView.paintContent( this, x, y, leftBorder, rightBorder, g);
 				if (setClipping) {
 					g.setClip(clipX, clipY, clipWidth, clipHeight);
@@ -1216,6 +1220,18 @@ public class Container extends Item {
 				return true;
 			}
 		}
+		
+		return handleNavigate(keyCode, gameAction);
+	}
+
+	/**
+	 * Handles a keyPressed or keyRepeated event for navigating in the container.
+	 *  
+	 * @param keyCode the code of the keypress/keyrepeat event
+	 * @param gameAction the associated game action 
+	 * @return true when the key was handled
+	 */
+	protected boolean handleNavigate(int keyCode, int gameAction) {
 		// now allow a navigation within the container:
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
@@ -1223,11 +1239,6 @@ public class Container extends Item {
 				if (handled) {
 					return true;
 				}
-//				Item next = this.view.getNextItem(keyCode, gameAction);
-//				if (next != null) {
-//					focus( this.view.focusedIndex, next, gameAction );
-//					return true;
-//				} else 
 				if (this.enableScrolling) {					
 					if (gameAction == Canvas.UP && this.targetYOffset < 0 ) {
 						// scroll the container view upwards without changing the focused item:
@@ -1411,9 +1422,9 @@ public class Container extends Item {
 				return true;
 			}	
 		}
-		return false;
+		return handleNavigate(keyCode, gameAction);
 		// note: in previous versions a keyRepeat event was just re-asigned to a keyPressed event. However, this resulted
-		// in non-logical behavior when an item wants to ignore keyRepeast events and only press "real" keyPressed events.
+		// in non-logical behavior when an item wants to ignore keyRepeat events and only press "real" keyPressed events.
 		// So now events are ignored by containers when they are ignored by their currently focused item...
 		//return super.handleKeyRepeated(keyCode, gameAction);
 	}
@@ -1692,12 +1703,19 @@ public class Container extends Item {
 			if ( scrollModeInt != null ) {
 				this.scrollSmooth = (scrollModeInt.intValue() == SCROLL_SMOOTH);
 			}
-		//#endif	
+		//#endif
+		//#if polish.css.focus-container
+			Boolean focusContainerBool = style.getBooleanProperty("focus-container");
+			if (focusContainerBool != null) {
+				this.isFocusContainer = focusContainerBool.booleanValue();
+			}
+		//#endif
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
 				this.containerView.setStyle(style);
 			}
 		//#endif
+	
 	}
 
 	/**
@@ -1743,6 +1761,11 @@ public class Container extends Item {
 			if (this.focusedStyle != null) {
 				focusstyle = this.focusedStyle;
 			}
+			//#if polish.css.focus-container
+				if (this.isFocusContainer) {
+					this.oldContainerStyle = super.focus(focusstyle, direction);
+				}
+			//#endif
 			//#if tmp.supportViewType
 				if (this.containerView != null) {
 					this.containerView.focus(focusstyle, direction);
@@ -1839,6 +1862,12 @@ public class Container extends Item {
 		//#endif
 			super.defocus( originalStyle );
 		} else {
+			//#if polish.css.focus-container
+				if (this.isFocusContainer && this.oldContainerStyle != null) {
+					super.defocus( this.oldContainerStyle );
+					this.oldContainerStyle = null;
+				}
+			//#endif
 			this.isFocused = false;
 			Item item = this.focusedItem; //(Item) this.itemsList.get( this.focusedIndex );
 			item.defocus( this.itemStyle );

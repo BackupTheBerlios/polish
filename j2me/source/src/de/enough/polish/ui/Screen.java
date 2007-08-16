@@ -2862,20 +2862,18 @@ implements AccessibleCanvas
 				}
 				// workaround for cases where the very same command has been added to both an item as well as this screen:
 				//System.out.println("scren: add ItemCommand " + command.getLabel() );
+				boolean addCommand;
 				//#ifdef tmp.useExternalMenuBar
-					if  ( !this.menuBar.commandsList.contains( command ) ) {
-						this.menuBar.addCommand(command);
-						this.itemCommands.add( command );
-					}
+					addCommand = !this.menuBar.commandsList.contains( command );
 				//#elif tmp.menuFullScreen
-					if ( ( this.menuCommands == null) ||  !this.menuCommands.contains( command) ) {
-						addCommand(command);
-						this.itemCommands.add( command );
-					}
+					addCommand = ( ( this.menuCommands == null) ||  !this.menuCommands.contains( command) );
 				//#else
+					addCommand = true;
+				//#endif
+				if (addCommand) {
 					addCommand(command);
 					this.itemCommands.add( command );
-				//#endif
+				}
 			}
 		} else if (this.itemCommands != null) {
 			this.itemCommands.clear();
@@ -2905,6 +2903,9 @@ implements AccessibleCanvas
 				}
 				//#ifdef tmp.useExternalMenuBar
 					this.menuBar.removeCommand(command);
+					if (this.menuBar.size() ==0) {
+						this.menuBarHeight = 0;
+					}
 				//#else
 					removeCommand(command);
 				//#endif
