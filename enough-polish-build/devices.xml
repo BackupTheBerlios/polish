@@ -13455,12 +13455,13 @@ These namespaces/schemas will be used soon.
 		<capability name="CanvasSize" value="160x160"/>
 		<capability name="FullCanvasSize" value="320x320"/>
 	</device>
+
 	<device>
-		<identifier>Palm/Treo700wx</identifier>
+		<identifier>Palm/Treo700w, Palm/Treo700wx</identifier>
 		<groups/>
 		<features>hasCamera, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
 		<capability name="build.Finalizer" value="" />
-		<capability name="OS" value="Windows Mobile"/>
+		<capability name="OS" value="Windows Mobile 5"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="ScreenSize" value="240x200"/>
@@ -13468,6 +13469,19 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="240x200"/>
 	</device>
 	
+	<device>
+		<identifier>Palm/Treo750</identifier>
+		<groups/>
+		<features>hasCamera, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
+		<capability name="build.Finalizer" value="" />
+		<capability name="OS" value="Windows Mobile 5"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="ScreenSize" value="240x200"/>
+		<capability name="CanvasSize" value="240x200"/>
+		<capability name="FullCanvasSize" value="240x200"/>
+	</device>
+
 	<device>
 		<identifier>Palm/Treo680</identifier>
 		<groups/>
@@ -13480,21 +13494,33 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="160x160"/>
 	</device>
 	
-	 <device>
-            <identifier>Palm/Treo650</identifier>
-            <groups></groups>
-            <features>hasCamera, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
-            <capability name="OS" value="PalmOS"/>
-            <capability name="ScreenSize" value="320x320"/>
-            <capability name="BitsPerPixel" value="16"/>
-            <capability name="JavaPlatform" value="MIDP/2.0" />
-            <capability name="JavaConfiguration" value="CLDC/1.0" />
-            <capability name="JavaProtocol" value="http, socket, https, ssl, datagram" />
-            <capability name="HeapSize" value="4 MB" />
-            <capability name="StorageSize" value="51 MB" />
-            <capability name="RMS.MaxRecordSize" value="64 kb" />
-            <capability name="SoundFormat" value="wav" />
-      </device>
+	<device>
+	   	<identifier>Palm/Treo650</identifier>
+		<groups></groups>
+		<features>hasCamera, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="PalmOS"/>
+		<capability name="ScreenSize" value="320x320"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaProtocol" value="http, socket, https, ssl, datagram" />
+		<capability name="HeapSize" value="4 MB" />
+		<capability name="StorageSize" value="51 MB" />
+		<capability name="RMS.MaxRecordSize" value="64 kb" />
+		<capability name="SoundFormat" value="wav" />
+	</device>
+
+	<device>
+		<identifier>Palm/Treo755p</identifier>
+		<groups/>
+		<features>hasCamera, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="PalmOS"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="ScreenSize" value="320x320"/>
+		<capability name="CanvasSize" value="160x160"/>
+		<capability name="FullCanvasSize" value="320x320"/>
+	</device>
 
 	<device>
 		<identifier>Palm/TungstenC</identifier>
@@ -13512,6 +13538,22 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="wav"/>
 	</device>
 	
+	<device>
+		<identifier>Palm/TungstenE2</identifier>
+		<groups/>
+		<features>hasCamera, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="PalmOS"/>
+		<capability name="ScreenSize" value="300x300"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+		<capability name="JavaProtocol" value="http, socket, https, ssl, datagram"/>
+		<capability name="HeapSize" value="4 MB"/>
+		<capability name="StorageSize" value="26 MB"/>
+		<capability name="RMS.MaxRecordSize" value="64 kb"/>
+		<capability name="SoundFormat" value="wav"/>
+	</device>
+
 <!-- HTC devices -->
 	<device>
 		<identifier>HTC/Himalaya</identifier>
