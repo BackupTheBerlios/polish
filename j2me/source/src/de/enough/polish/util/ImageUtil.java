@@ -225,8 +225,7 @@ public final class ImageUtil {
 		
 		System.out.println(" scaling requested with scale=" + scale);
 		
-		//TODO turn into parameter
-		boolean doNotSkipFractions=true;//(scale<FRACTION_SCALE);
+
 		
 		// this prevents precision errors
 		if(scaledHeight==0){
@@ -244,7 +243,7 @@ public final class ImageUtil {
 		int destPointer=0;
 		float yIntensityStart, yIntensityEnd;
 		int[] tmp=new int[5];
-		int[] intensityTrace=new int[1];
+		int[] addColorCount=new int[1];
 		
 		int OVERFLOW_CHECK = (int) (INTMAX * scale*scale);
 		
@@ -256,6 +255,17 @@ public final class ImageUtil {
 			}
 		}*/
 		
+		long t =System.currentTimeMillis();
+		
+		//TODO turn into parameter
+		boolean doNotSkipFractions=true;//(scale<FRACTION_SCALE);
+		
+		boolean edgeDetection=true;
+		if (edgeDetection){
+			dest=scale(src, scaledWidth, scaledHeight, srcWidth, srcHeight);
+		}
+		
+		
 		for (int scaledY = 0; scaledY < scaledHeight; scaledY++) {
 			for (int scaledX = 0; scaledX < scaledWidth; scaledX++) {
 				destPointer=scaledY*scaledWidth + scaledX;
@@ -263,59 +273,72 @@ public final class ImageUtil {
 				if(srcY<srcHeight && srcX<srcWidth){
 					// normal
 					//dest[scaledY*scaledWidth + scaledX]= src[(int)(srcY)*srcWidth  + (int)srcX];
-					
-						
-					// calc the overlap of y
-					yIntensityStart=1-(srcY-(int)srcY);
-					// yIntensity=1; // in between
-					yIntensityEnd=(srcY+scale-(int)(srcY+scale));
-					if(yIntensityEnd==0){
-						yIntensityEnd=1;
-					}
-					
-					// sum them up
-					tmp[0]=0;
-					tmp[1]=0;
-					tmp[2]=0;
-					tmp[3]=0;
-					tmp[4]=0;
-					intensityTrace[0]=0;
-					
-					// start
-					if(doNotSkipFractions || yIntensityStart==1){ // we need no fractions, if scale >3
-						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, srcY,scale,INTMAX*yIntensityStart,intensityTrace,OVERFLOW_CHECK,doNotSkipFractions);
-					}
-					// between
-					int smallY;
-					for (smallY = (int) srcY+1; smallY < srcY+scale-1; smallY++) {
-						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,INTMAX*1,intensityTrace,OVERFLOW_CHECK,doNotSkipFractions);
-					}
-					//end
-					
-					if(doNotSkipFractions || yIntensityEnd==1){
-						if (smallY<srcHeight){
-							tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,INTMAX*yIntensityEnd,intensityTrace,OVERFLOW_CHECK,doNotSkipFractions);
-						} else {
-							// TODO there is probably an easier way
-							 //mic transparency in
-							tmp=testMixPixelIn2(tmp, 0 ,(int)( INTMAX  *yIntensityEnd),intensityTrace,OVERFLOW_CHECK);
-						}
-					}
-					
-					
-					if(intensityTrace[0]>OVERFLOW_CHECK){
-						throw new IllegalArgumentException(" overflow");
-					}
 
-					// 				alpha=alpha/int			red=  redSum/(alpha*int)
-					if(tmp[1]==0){
-						dest[destPointer]=0;
-					} else {
-						dest[destPointer]=	(tmp[1]*opacity/(255*tmp[0]))<<24 |(tmp[2]/(tmp[1]))<<16 |  (tmp[3]/(tmp[1]))<<8 | (tmp[4]/(tmp[1]));
-						
-						if (tmp[3]/tmp[1]>255){
+					// TODO think about overflows
+					if(!edgeDetection || // process the pixel if there is no edgedetection activated
+							scaledY == scaledHeight-1 || // process the pixels and do not check the next statements if you are not in the last row
+							scaledY == 0 || 	  		 // same with the fist row
+							(
+							//	if there is a difference to the surrounding pixels								
+							  (dest[destPointer] ^ dest[destPointer+1]) !=0  		// next
+							  || (dest[destPointer] ^ dest[destPointer-1]) !=0		// previous
+							  || (dest[destPointer] ^ dest[destPointer+scaledWidth]) !=0 // below
+							  || (dest[destPointer] ^ dest[destPointer-scaledWidth]) !=0 // above
+							)
+					        // ||  dest[destPointer-scaledWidth]
+					    ) {
 							
-							throw new ArithmeticException(" error in color computation");
+						// calc the overlap of y
+						yIntensityStart=1-(srcY-(int)srcY);
+						// yIntensity=1; // in between
+						yIntensityEnd=(srcY+scale-(int)(srcY+scale));
+						if(yIntensityEnd==0){
+							yIntensityEnd=1;
+						}
+						
+						// sum them up
+						tmp[0]=0;
+						tmp[1]=0;
+						tmp[2]=0;
+						tmp[3]=0;
+						tmp[4]=0;
+						
+						// start
+						if(doNotSkipFractions || yIntensityStart==1){ // we need no fractions, if scale >3
+							tmp=helpWithX(src,dest,tmp,srcWidth,srcX, srcY,scale,INTMAX*yIntensityStart,addColorCount,OVERFLOW_CHECK,doNotSkipFractions);
+						}
+						// between
+						int smallY;
+						for (smallY = (int) srcY+1; smallY < srcY+scale-1; smallY++) {
+							tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,INTMAX*1,addColorCount,OVERFLOW_CHECK,doNotSkipFractions);
+						}
+						//end
+						
+						if(doNotSkipFractions || yIntensityEnd==1){
+							if (smallY<srcHeight){
+								tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,INTMAX*yIntensityEnd,addColorCount,OVERFLOW_CHECK,doNotSkipFractions);
+							} else {
+								// TODO there is probably an easier way
+								 //mic transparency in
+								tmp=testMixPixelIn2(tmp, 0 ,(int)( INTMAX  *yIntensityEnd),addColorCount,OVERFLOW_CHECK);
+							}
+						}
+						
+						
+	//					if(intensityTrace[0]>OVERFLOW_CHECK){
+	//						throw new IllegalArgumentException(" overflow");
+	//					}
+	
+						// 				alpha=alpha/int			red=  redSum/(alpha*int)
+						if(tmp[1]==0){
+							dest[destPointer]=0;
+						} else {
+							dest[destPointer]=	(tmp[1]*opacity/(255*tmp[0]))<<24 |(tmp[2]/(tmp[1]))<<16 |  (tmp[3]/(tmp[1]))<<8 | (tmp[4]/(tmp[1]));
+							
+							if (tmp[3]/tmp[1]>255){
+								
+								throw new ArithmeticException(" error in color computation");
+							}
 						}
 					}
 				
@@ -330,10 +353,12 @@ public final class ImageUtil {
 			srcY+=scale;
 		}
 		
+		System.out.println("  " + addColorCount[0] + " pixels added");
+		System.out.println("" + (System.currentTimeMillis() - t) + " ms");
 		return dest;
 	}
 	
-	private static int[] helpWithX(int[] src, int[] dest, int[] tmp, int srcWidth, float srcX, float Y, float scale, float yIntenstiy,int [] intensityTrace, int OVERFLOW_CHECK, boolean doNotSkipFractions ){
+	private static int[] helpWithX(int[] src, int[] dest, int[] tmp, int srcWidth, float srcX, float Y, float scale, float yIntenstiy,int [] addColorCount, int OVERFLOW_CHECK, boolean doNotSkipFractions ){
 		// 	TODO if intenstiy < .1 -> elegant abbrechen??
 		// TODO sinnvolle Grenze festlegen (hängt von scale ab!!)
 		// TODO es dürfen keine Lücken entstehen!!
@@ -355,20 +380,20 @@ public final class ImageUtil {
 		int Y_srcWidth = (int)(Y)*srcWidth;
 		// 	start
 		if(doNotSkipFractions || xIntensityStart==1){
-			tmp=testMixPixelIn2(tmp,src[Y_srcWidth  	+ (int)srcX],(int)( xIntensityStart *yIntenstiy ) ,intensityTrace,OVERFLOW_CHECK);
+			tmp=testMixPixelIn2(tmp,src[Y_srcWidth  	+ (int)srcX],(int)( xIntensityStart *yIntenstiy ) ,addColorCount,OVERFLOW_CHECK);
 		}
 		// between
 		int smallX=0;
 		for (smallX = (int) srcX+1; smallX < srcX+scale-1 ; smallX++) {
-			tmp=testMixPixelIn2(tmp,src[Y_srcWidth  	+ smallX],(int)( yIntenstiy) ,intensityTrace,OVERFLOW_CHECK);
+			tmp=testMixPixelIn2(tmp,src[Y_srcWidth  	+ smallX],(int)( yIntenstiy) ,addColorCount,OVERFLOW_CHECK);
 		}
 		//end
 		if(doNotSkipFractions || xIntensityEnd==1){
 			if (smallX<srcWidth){
-				tmp=testMixPixelIn2(tmp,src[Y_srcWidth  	+ smallX],(int)( xIntensityEnd  *yIntenstiy) ,intensityTrace,OVERFLOW_CHECK);
+				tmp=testMixPixelIn2(tmp,src[Y_srcWidth  	+ smallX],(int)( xIntensityEnd  *yIntenstiy) ,addColorCount,OVERFLOW_CHECK);
 			} else {
 				// mic transparency in
-				tmp=testMixPixelIn2(tmp, 0 ,(int)( xIntensityEnd  *yIntenstiy),intensityTrace,OVERFLOW_CHECK);
+				tmp=testMixPixelIn2(tmp, 0 ,(int)( xIntensityEnd  *yIntenstiy),addColorCount,OVERFLOW_CHECK);
 			}
 		}
 		
@@ -377,7 +402,7 @@ public final class ImageUtil {
 	
 	//#endif
 	
-	private static int[] testMixPixelIn2(int[] current, int add, int intensity,int[] intensityTrace,int OVERFLOW_CHECK){
+	private static int[] testMixPixelIn2(int[] current, int add, int intensity,int[] addColorCount,int OVERFLOW_CHECK){
 		if(add==0){
 			return current;
 			
@@ -387,7 +412,7 @@ public final class ImageUtil {
 			
 		} else {
 			
-			intensityTrace[0]+=intensity;
+			addColorCount[0]++;
 			int alpha=(add>>>24);
 			current[0]+=intensity;
 			
