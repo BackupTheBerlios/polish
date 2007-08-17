@@ -263,9 +263,25 @@ public final class ImageUtil {
 		boolean doNotSkipFractions=true;//(scale<FRACTION_SCALE);
 		
 		boolean edgeDetection=true;
+		// opt01
 		if (edgeDetection){
+			/*int srcXX=0;
+			int srcYY=0;
+			int scaleS=(int)(scale*(1<<7));
+			for (int scaledY = 0; scaledY < scaledHeight; scaledY++) {
+				for (int scaledX = 0; scaledX < scaledWidth; scaledX++) {
+					dest[scaledY*scaledWidth + scaledX]= src[((srcYY)*srcWidth  + srcXX)>>7];
+					srcXX+=scaleS;
+				}
+				srcXX=0;
+				srcYY+=scaleS;
+			}
+			srcXX=0;
+			srcYY=0;
+			*/
 			dest=scale(src, scaledWidth, scaledHeight, srcWidth, srcHeight);
 		}
+		
 		int currentDestEdge=0;
 		
 		for (int scaledY = 0; scaledY < scaledHeight; scaledY++) {
@@ -274,7 +290,8 @@ public final class ImageUtil {
 				
 				if(srcY<srcHeight && srcX<srcWidth){
 					// normal
-					//dest[scaledY*scaledWidth + scaledX]= src[(int)(srcY)*srcWidth  + (int)srcX];
+					//opt01
+					//dest[destPointer]= src[(int)(srcY)*srcWidth  + (int)srcX];
 					currentDestEdge=dest[destPointer]&EDGEDETECTION_MAP;
 					
 					// TODO think about overflows
@@ -283,9 +300,9 @@ public final class ImageUtil {
 							scaledY == 0 || 	  		 // same with the fist row
 							(
 							//	if there is a difference to the surrounding pixels								
-							  (currentDestEdge ^ (dest[destPointer+1]&EDGEDETECTION_MAP)) !=0  ||		// next
+							  //opt01 (currentDestEdge ^ (dest[destPointer+1]&EDGEDETECTION_MAP)) !=0  ||		// next
 							  (currentDestEdge ^ (dest[destPointer-1]&EDGEDETECTION_MAP)) !=0||		// previous
-							  (currentDestEdge ^ (dest[destPointer+scaledWidth]&EDGEDETECTION_MAP)) !=0 || // below
+							  //opt01 (currentDestEdge ^ (dest[destPointer+scaledWidth]&EDGEDETECTION_MAP)) !=0 || // below
 							  (currentDestEdge ^ (dest[destPointer-scaledWidth]&EDGEDETECTION_MAP)) !=0 // above
 							)
 					        // ||  dest[destPointer-scaledWidth]
