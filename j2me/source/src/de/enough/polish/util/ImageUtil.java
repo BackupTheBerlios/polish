@@ -197,6 +197,8 @@ public final class ImageUtil {
 	private static final int SCALE_THRESHOLD_SHIFT=3; // TODO dynamisch anpassen
 	private static final boolean SKIP_FRACTIONS=false;
 	private static final int FRACTION_SCALE=3;
+	private static final int EDGELEVEL=63;
+	private static final int EDGEDETECTION_MAP=(0xff ^ 15)<<24 | (0xff ^ EDGELEVEL)<<16 | (0xff ^ EDGELEVEL)<<8 | (0xff ^ EDGELEVEL);
 	public static int[] scaleDownHq(int[] src, int srcWidth, int scaleFactor, int scaledWidth, int scaledHeight, int opacity){
 		int[] dest;
 		
@@ -264,7 +266,7 @@ public final class ImageUtil {
 		if (edgeDetection){
 			dest=scale(src, scaledWidth, scaledHeight, srcWidth, srcHeight);
 		}
-		
+		int currentDestEdge=0;
 		
 		for (int scaledY = 0; scaledY < scaledHeight; scaledY++) {
 			for (int scaledX = 0; scaledX < scaledWidth; scaledX++) {
@@ -273,17 +275,18 @@ public final class ImageUtil {
 				if(srcY<srcHeight && srcX<srcWidth){
 					// normal
 					//dest[scaledY*scaledWidth + scaledX]= src[(int)(srcY)*srcWidth  + (int)srcX];
-
+					currentDestEdge=dest[destPointer]&EDGEDETECTION_MAP;
+					
 					// TODO think about overflows
 					if(!edgeDetection || // process the pixel if there is no edgedetection activated
 							scaledY == scaledHeight-1 || // process the pixels and do not check the next statements if you are not in the last row
 							scaledY == 0 || 	  		 // same with the fist row
 							(
 							//	if there is a difference to the surrounding pixels								
-							  (dest[destPointer] ^ dest[destPointer+1]) !=0  		// next
-							  || (dest[destPointer] ^ dest[destPointer-1]) !=0		// previous
-							  || (dest[destPointer] ^ dest[destPointer+scaledWidth]) !=0 // below
-							  || (dest[destPointer] ^ dest[destPointer-scaledWidth]) !=0 // above
+							  (currentDestEdge ^ (dest[destPointer+1]&EDGEDETECTION_MAP)) !=0  ||		// next
+							  (currentDestEdge ^ (dest[destPointer-1]&EDGEDETECTION_MAP)) !=0||		// previous
+							  (currentDestEdge ^ (dest[destPointer+scaledWidth]&EDGEDETECTION_MAP)) !=0 || // below
+							  (currentDestEdge ^ (dest[destPointer-scaledWidth]&EDGEDETECTION_MAP)) !=0 // above
 							)
 					        // ||  dest[destPointer-scaledWidth]
 					    ) {
@@ -403,6 +406,7 @@ public final class ImageUtil {
 	//#endif
 	
 	private static int[] testMixPixelIn2(int[] current, int add, int intensity,int[] addColorCount,int OVERFLOW_CHECK){
+		addColorCount[0]++;
 		if(add==0){
 			return current;
 			
@@ -412,7 +416,6 @@ public final class ImageUtil {
 			
 		} else {
 			
-			addColorCount[0]++;
 			int alpha=(add>>>24);
 			current[0]+=intensity;
 			
