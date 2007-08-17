@@ -9735,6 +9735,19 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
+		<identifier>BlackBerry/8830</identifier>
+		<features>hasTrackballEvents</features>
+		<capability name="ScreenSize" value="320x240"/>
+		<capability name="FullCanvasSize" value="320x240"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.2"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
+		<capability name="SoundFormat" value="amr, nb-amr"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+	</device>
+
+	<device>
 		<identifier>BlackBerry/Curve, BlackBerry/8300</identifier>
 		<features>hasTrackballEvents,isDoubleBuffered</features>
 		<capability name="ScreenSize" value="320x240"/>
