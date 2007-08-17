@@ -194,9 +194,10 @@ public final class ImageUtil {
 	//#if polish.hasFloatingPoint
 	// TODO ohne float
 	private static final int INTMAX=1<<10;//1<<15/MAX_SCALE;
+	private static final int SCALE_THRESHOLD_SHIFT=3; // TODO dynamisch anpassen
+	private static final boolean SKIP_FRACTIONS=false;
+	private static final int FRACTION_SCALE=3;
 	public static int[] scaleDownHq(int[] src, int srcWidth, int scaleFactor, int scaledWidth, int scaledHeight, int opacity){
-		opacity=255;
-		
 		int[] dest;
 		
 		float scale; 
@@ -214,7 +215,19 @@ public final class ImageUtil {
 			return src;
 		}else if(scale<1){
 			throw new IllegalArgumentException();
+		} else if(scale>6){ // TODO max is probably sqrt(32)
+			throw new IllegalArgumentException(" scale >6 may lead to internal overflows");
 		}
+		
+		/*else if(1<<SCALE_THRESHOLD_SHIFT<= scale){
+			throw new IllegalArgumentException(" down scalefactor is to high (>=8) ... use fastscale or set SKIP_FRACTIONS=false ");
+		}*/
+		
+		System.out.println(" scaling requested with scale=" + scale);
+		
+		//TODO turn into parameter
+		boolean doNotSkipFractions=true;//(scale<FRACTION_SCALE);
+		
 		// this prevents precision errors
 		if(scaledHeight==0){
 			scaledHeight=(int)(srcHeight/scale);
@@ -227,7 +240,7 @@ public final class ImageUtil {
 		// prepare the destination
 		dest = new int[scaledWidth*scaledHeight];
 		
-		float srcX, srcY;
+		float srcX=0, srcY=0;
 		int destPointer=0;
 		float yIntensityStart, yIntensityEnd;
 		int[] tmp=new int[5];
@@ -236,18 +249,16 @@ public final class ImageUtil {
 		int OVERFLOW_CHECK = (int) (INTMAX * scale*scale);
 		
 		// set all to green
-		for (int i = 0; i < src.length; i++) {
+		//opacity=255; // TODO delete this, check alpha mode again
+		/*for (int i = 0; i < src.length; i++) {
 			if(src[i]!=0){
 				src[i]= 255<<24 | 255<<8;
 			}
-		}
+		}*/
 		
 		for (int scaledY = 0; scaledY < scaledHeight; scaledY++) {
 			for (int scaledX = 0; scaledX < scaledWidth; scaledX++) {
 				destPointer=scaledY*scaledWidth + scaledX;
-				
-				srcX=scaledX*scale;
-				srcY=scaledY*scale;
 				
 				if(srcY<srcHeight && srcX<srcWidth){
 					// normal
@@ -271,20 +282,24 @@ public final class ImageUtil {
 					intensityTrace[0]=0;
 					
 					// start
-					tmp=helpWithX(src,dest,tmp,srcWidth,srcX, srcY,scale,yIntensityStart,intensityTrace,OVERFLOW_CHECK);
+					if(doNotSkipFractions || yIntensityStart==1){ // we need no fractions, if scale >3
+						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, srcY,scale,INTMAX*yIntensityStart,intensityTrace,OVERFLOW_CHECK,doNotSkipFractions);
+					}
 					// between
 					int smallY;
 					for (smallY = (int) srcY+1; smallY < srcY+scale-1; smallY++) {
-						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,1,intensityTrace,OVERFLOW_CHECK);
+						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,INTMAX*1,intensityTrace,OVERFLOW_CHECK,doNotSkipFractions);
 					}
 					//end
 					
-					if (smallY<srcHeight){
-						tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,yIntensityEnd,intensityTrace,OVERFLOW_CHECK);
-					} else {
-						// TODO there is probably an easier way
-						 //mic transparency in
-						tmp=testMixPixelIn2(tmp, 0 ,(int)( INTMAX  *yIntensityEnd),intensityTrace);
+					if(doNotSkipFractions || yIntensityEnd==1){
+						if (smallY<srcHeight){
+							tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,INTMAX*yIntensityEnd,intensityTrace,OVERFLOW_CHECK,doNotSkipFractions);
+						} else {
+							// TODO there is probably an easier way
+							 //mic transparency in
+							tmp=testMixPixelIn2(tmp, 0 ,(int)( INTMAX  *yIntensityEnd),intensityTrace,OVERFLOW_CHECK);
+						}
 					}
 					
 					
@@ -308,17 +323,21 @@ public final class ImageUtil {
 					// not dangerous, but good to know while debugging
 					throw new ArithmeticException (" out of area!");
 				}
+				
+				srcX+=scale;
 			}
+			srcX=0;
+			srcY+=scale;
 		}
 		
 		return dest;
 	}
 	
-	private static int[] helpWithX(int[] src, int[] dest, int[] tmp, int srcWidth, float srcX, float Y, float scale, float yIntenstiy,int [] intensityTrace, int OVERFLOW_CHECK){
+	private static int[] helpWithX(int[] src, int[] dest, int[] tmp, int srcWidth, float srcX, float Y, float scale, float yIntenstiy,int [] intensityTrace, int OVERFLOW_CHECK, boolean doNotSkipFractions ){
 		// 	TODO if intenstiy < .1 -> elegant abbrechen??
 		// TODO sinnvolle Grenze festlegen (hängt von scale ab!!)
 		// TODO es dürfen keine Lücken entstehen!!
-		if (yIntenstiy*8*INTMAX<OVERFLOW_CHECK){ // TODO evtl wäre 8 besser
+		if (SKIP_FRACTIONS && yIntenstiy<OVERFLOW_CHECK>>SCALE_THRESHOLD_SHIFT){ // == /8 TODO evtl wäre 8 besser
 			return tmp;
 		}
 		
@@ -333,20 +352,24 @@ public final class ImageUtil {
 			xIntensityEnd=1;
 		}
 		
+		int Y_srcWidth = (int)(Y)*srcWidth;
 		// 	start
-		tmp=testMixPixelIn2(tmp,src[(int)(Y)*srcWidth  	+ (int)srcX],(int)( INTMAX*xIntensityStart *yIntenstiy ) ,intensityTrace);
+		if(doNotSkipFractions || xIntensityStart==1){
+			tmp=testMixPixelIn2(tmp,src[Y_srcWidth  	+ (int)srcX],(int)( xIntensityStart *yIntenstiy ) ,intensityTrace,OVERFLOW_CHECK);
+		}
 		// between
 		int smallX=0;
 		for (smallX = (int) srcX+1; smallX < srcX+scale-1 ; smallX++) {
-			tmp=testMixPixelIn2(tmp,src[(int)(Y)*srcWidth  	+ (int)smallX],(int)( INTMAX  *yIntenstiy) ,intensityTrace);
+			tmp=testMixPixelIn2(tmp,src[Y_srcWidth  	+ smallX],(int)( yIntenstiy) ,intensityTrace,OVERFLOW_CHECK);
 		}
 		//end
-		
-		if (smallX<srcWidth){
-			tmp=testMixPixelIn2(tmp,src[(int)(Y)*srcWidth  	+ (int)smallX],(int)( INTMAX*xIntensityEnd  *yIntenstiy) ,intensityTrace);
-		} else {
-			// mic transparency in
-			tmp=testMixPixelIn2(tmp, 0 ,(int)( INTMAX*xIntensityEnd  *yIntenstiy),intensityTrace);
+		if(doNotSkipFractions || xIntensityEnd==1){
+			if (smallX<srcWidth){
+				tmp=testMixPixelIn2(tmp,src[Y_srcWidth  	+ smallX],(int)( xIntensityEnd  *yIntenstiy) ,intensityTrace,OVERFLOW_CHECK);
+			} else {
+				// mic transparency in
+				tmp=testMixPixelIn2(tmp, 0 ,(int)( xIntensityEnd  *yIntenstiy),intensityTrace,OVERFLOW_CHECK);
+			}
 		}
 		
 		return tmp;
@@ -354,9 +377,14 @@ public final class ImageUtil {
 	
 	//#endif
 	
-	private static int[] testMixPixelIn2(int[] current, int add, int intensity,int[] intensityTrace){
+	private static int[] testMixPixelIn2(int[] current, int add, int intensity,int[] intensityTrace,int OVERFLOW_CHECK){
 		if(add==0){
 			return current;
+			
+		}else if(SKIP_FRACTIONS && intensity<OVERFLOW_CHECK>>(SCALE_THRESHOLD_SHIFT<<1-1)){ // *8*8/2
+			// TODO same as with the other one
+			return current;
+			
 		} else {
 			
 			intensityTrace[0]+=intensity;
