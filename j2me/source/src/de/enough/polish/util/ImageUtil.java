@@ -199,6 +199,10 @@ public final class ImageUtil {
 	private static final int FRACTION_SCALE=3;
 	private static final int EDGELEVEL=63;
 	private static final int EDGEDETECTION_MAP=(0xff ^ 15)<<24 | (0xff ^ EDGELEVEL)<<16 | (0xff ^ EDGELEVEL)<<8 | (0xff ^ EDGELEVEL);
+	private static final int PSEUDO_FLOAT=10;//11
+	private static final int PSEUDO_POW2=1<<PSEUDO_FLOAT;//2048;
+	private static final int PSEUDO_POW2M1=(1<<PSEUDO_FLOAT)-1;//2047;
+	
 	public static int[] scaleDownHq(int[] src, int srcWidth, int scaleFactor, int scaledWidth, int scaledHeight, int opacity){
 		int[] dest;
 		
@@ -227,7 +231,7 @@ public final class ImageUtil {
 		
 		System.out.println(" scaling requested with scale=" + scale);
 		
-
+		
 		
 		// this prevents precision errors
 		if(scaledHeight==0){
@@ -243,7 +247,7 @@ public final class ImageUtil {
 		
 		float srcX=0, srcY=0;
 		int destPointer=0;
-		float yIntensityStart, yIntensityEnd;
+		int yIntensityStart, yIntensityEnd;
 		int[] tmp=new int[5];
 		int[] addColorCount=new int[1];
 		
@@ -256,6 +260,13 @@ public final class ImageUtil {
 				src[i]= 255<<24 | 255<<8;
 			}
 		}*/
+		/*for (int i = 0; i < src.length; i++) {
+			if((i&1)==1){
+				src[i]= 255<<24 | 255<<8;
+			} else {
+				src[i]= 255<<24 | 255<<16;
+			}
+		}*/
 		
 		long t =System.currentTimeMillis();
 		
@@ -265,7 +276,8 @@ public final class ImageUtil {
 		boolean edgeDetection=true;
 		// opt01
 		if (edgeDetection){
-			/*int srcXX=0;
+			/*
+			int srcXX=0;
 			int srcYY=0;
 			int scaleS=(int)(scale*(1<<7));
 			for (int scaledY = 0; scaledY < scaledHeight; scaledY++) {
@@ -276,19 +288,24 @@ public final class ImageUtil {
 				srcXX=0;
 				srcYY+=scaleS;
 			}
-			srcXX=0;
-			srcYY=0;
 			*/
 			dest=scale(src, scaledWidth, scaledHeight, srcWidth, srcHeight);
 		}
 		
 		int currentDestEdge=0;
 		
+		int srcXdetailed=0; // TODO delete this
+		int srcYdetailed=0;
+		int srcXrounded=0;
+		int srcYrounded=0;
+		int scaleS=(int)(scale*(1<<PSEUDO_FLOAT)); // TODO min 11 nehmen!!
+		
+		
 		for (int scaledY = 0; scaledY < scaledHeight; scaledY++) {
 			for (int scaledX = 0; scaledX < scaledWidth; scaledX++) {
 				destPointer=scaledY*scaledWidth + scaledX;
 				
-				if(srcY<srcHeight && srcX<srcWidth){
+				//if(srcY<srcHeight && srcX<srcWidth){
 					// normal
 					//opt01
 					//dest[destPointer]= src[(int)(srcY)*srcWidth  + (int)srcX];
@@ -300,21 +317,30 @@ public final class ImageUtil {
 							scaledY == 0 || 	  		 // same with the fist row
 							(
 							//	if there is a difference to the surrounding pixels								
-							  //opt01 (currentDestEdge ^ (dest[destPointer+1]&EDGEDETECTION_MAP)) !=0  ||		// next
+							  //opt01 
+							  //(currentDestEdge ^ (dest[destPointer+1]&EDGEDETECTION_MAP)) !=0  ||		// next
 							  (currentDestEdge ^ (dest[destPointer-1]&EDGEDETECTION_MAP)) !=0||		// previous
-							  //opt01 (currentDestEdge ^ (dest[destPointer+scaledWidth]&EDGEDETECTION_MAP)) !=0 || // below
+							  //opt01 
+							  //(currentDestEdge ^ (dest[destPointer+scaledWidth]&EDGEDETECTION_MAP)) !=0 || // below
 							  (currentDestEdge ^ (dest[destPointer-scaledWidth]&EDGEDETECTION_MAP)) !=0 // above
 							)
 					        // ||  dest[destPointer-scaledWidth]
-					    ) {
+					) {
 							
 						// calc the overlap of y
-						yIntensityStart=1-(srcY-(int)srcY);
+						//yIntensityStart=1-(srcY-(int)srcY);
+						yIntensityStart=PSEUDO_POW2-(srcYdetailed&PSEUDO_POW2M1);//128-(srcYdetailed-(srcYrounded<<7));
+						
 						// yIntensity=1; // in between
-						yIntensityEnd=(srcY+scale-(int)(srcY+scale));
+						//yIntensityEnd=(srcY+scale-(int)(srcY+scale));
+						yIntensityEnd=(srcYdetailed+scaleS)&PSEUDO_POW2M1;//(srcYdetailed+scaleS-(srcYdetailed+scale));
 						if(yIntensityEnd==0){
-							yIntensityEnd=1;
+							//yIntensityEnd=1;
+							yIntensityEnd=PSEUDO_POW2;
 						}
+						//scale down because of different intesity norm
+						yIntensityStart=yIntensityStart>>(PSEUDO_FLOAT-10);
+						yIntensityEnd=yIntensityEnd>>(PSEUDO_FLOAT-10);
 						
 						// sum them up
 						tmp[0]=0;
@@ -324,23 +350,26 @@ public final class ImageUtil {
 						tmp[4]=0;
 						
 						// start
-						if(doNotSkipFractions || yIntensityStart==1){ // we need no fractions, if scale >3
-							tmp=helpWithX(src,dest,tmp,srcWidth,srcX, srcY,scale,INTMAX*yIntensityStart,addColorCount,OVERFLOW_CHECK,doNotSkipFractions);
+						// TODO yIntensityStart==INTMAX per bitshifting: yIntensityStart>>?? ==1 ???
+						if(doNotSkipFractions || yIntensityStart==INTMAX){ // we need no fractions, if scale >3
+							tmp=helpWithXINT(src,dest,tmp,srcWidth,srcXdetailed, srcYdetailed>>PSEUDO_FLOAT,scaleS,yIntensityStart,addColorCount,OVERFLOW_CHECK,doNotSkipFractions);
 						}
 						// between
 						int smallY;
-						for (smallY = (int) srcY+1; smallY < srcY+scale-1; smallY++) {
-							tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,INTMAX*1,addColorCount,OVERFLOW_CHECK,doNotSkipFractions);
+						//for (smallY = (int) srcY+1; smallY < srcY+scale-1; smallY++) {
+						for (smallY = srcYrounded+1; smallY <= ((srcYdetailed+scaleS)>>PSEUDO_FLOAT)-1; smallY++) {
+							
+							tmp=helpWithXINT(src,dest,tmp,srcWidth,srcXdetailed, smallY,scaleS,INTMAX*1,addColorCount,OVERFLOW_CHECK,doNotSkipFractions);
 						}
 						//end
 						
-						if(doNotSkipFractions || yIntensityEnd==1){
+						if(doNotSkipFractions || yIntensityEnd==INTMAX){
 							if (smallY<srcHeight){
-								tmp=helpWithX(src,dest,tmp,srcWidth,srcX, smallY,scale,INTMAX*yIntensityEnd,addColorCount,OVERFLOW_CHECK,doNotSkipFractions);
+								tmp=helpWithXINT(src,dest,tmp,srcWidth,srcXdetailed, smallY,scaleS,yIntensityEnd,addColorCount,OVERFLOW_CHECK,doNotSkipFractions);
 							} else {
 								// TODO there is probably an easier way
 								 //mic transparency in
-								tmp=testMixPixelIn2(tmp, 0 ,(int)( INTMAX  *yIntensityEnd),addColorCount,OVERFLOW_CHECK);
+								tmp=testMixPixelIn2INT(tmp, 0 , yIntensityEnd,addColorCount,OVERFLOW_CHECK);
 							}
 						}
 						
@@ -354,6 +383,11 @@ public final class ImageUtil {
 							dest[destPointer]=0;
 						} else {
 							dest[destPointer]=	(tmp[1]*opacity/(255*tmp[0]))<<24 |(tmp[2]/(tmp[1]))<<16 |  (tmp[3]/(tmp[1]))<<8 | (tmp[4]/(tmp[1]));
+							/*if (  (tmp[2]/(tmp[1]))>140 || (tmp[2]/(tmp[1]))<110 ||
+								  (tmp[3]/(tmp[1]))>140 || (tmp[3]/(tmp[1]))<110
+									){
+								System.out.println("there we are");
+							}*/
 							
 							if (tmp[3]/tmp[1]>255){
 								
@@ -362,15 +396,29 @@ public final class ImageUtil {
 						}
 					}
 				
-				} else {
+				/*} else {
 					// not dangerous, but good to know while debugging
 					throw new ArithmeticException (" out of area!");
-				}
+				}*/
 				
+				// refresh the (pseudo)float
 				srcX+=scale;
+				srcXdetailed+=scaleS;
+				
+				// retrieve an integer
+				srcXrounded=srcXdetailed>>PSEUDO_FLOAT;
+				srcYrounded=srcYdetailed>>PSEUDO_FLOAT;
 			}
-			srcX=0;
+			srcX=0; // TODO remove floats completely
 			srcY+=scale;
+			
+			//	refresh the (pseudo)float
+			srcXdetailed=0;
+			srcYdetailed+=scaleS;
+			
+			// retrieve an integer
+			srcXrounded=srcXdetailed>>PSEUDO_FLOAT;
+			srcYrounded=srcYdetailed>>PSEUDO_FLOAT;
 		}
 		
 		System.out.println("  " + addColorCount[0] + " pixels added");
@@ -378,16 +426,31 @@ public final class ImageUtil {
 		return dest;
 	}
 	
-	private static int[] helpWithX(int[] src, int[] dest, int[] tmp, int srcWidth, float srcX, float Y, float scale, float yIntenstiy,int [] addColorCount, int OVERFLOW_CHECK, boolean doNotSkipFractions ){
+	private static int[] helpWithXINT(int[] src, int[] dest, int[] tmp, int srcWidth, int srcXdetailed, int Yrounded, int scaleS, int yIntenstiy,int [] addColorCount, int OVERFLOW_CHECK, boolean doNotSkipFractions ){
 		// 	TODO if intenstiy < .1 -> elegant abbrechen??
 		// TODO sinnvolle Grenze festlegen (hängt von scale ab!!)
 		// TODO es dürfen keine Lücken entstehen!!
 		if (SKIP_FRACTIONS && yIntenstiy<OVERFLOW_CHECK>>SCALE_THRESHOLD_SHIFT){ // == /8 TODO evtl wäre 8 besser
 			return tmp;
 		}
+		int srcXrounded=srcXdetailed>>PSEUDO_FLOAT;
 		
+	// TODO xIntensityStart, xIntensityEnd ausgliedern!!!
+		int xIntensityStart, xIntensityEnd;
+		xIntensityStart=PSEUDO_POW2-(srcXdetailed&PSEUDO_POW2M1);//128-(srcYdetailed-(srcYrounded<<7));
 		
-		float xIntensityStart, xIntensityEnd;
+		// yIntensity=1; // in between
+		//yIntensityEnd=(srcY+scale-(int)(srcY+scale));
+		xIntensityEnd=(srcXdetailed+scaleS)&PSEUDO_POW2M1;//(srcYdetailed+scaleS-(srcYdetailed+scale));
+		if(xIntensityEnd==0){
+			//yIntensityEnd=1;
+			xIntensityEnd=PSEUDO_POW2;
+		}
+		//TODO scale down in a better way
+		xIntensityStart=xIntensityStart>>(PSEUDO_FLOAT-10);
+		xIntensityEnd=xIntensityEnd>>(PSEUDO_FLOAT-10);
+		
+		/*float xIntensityStart, xIntensityEnd;
 		//int xIntensityStartI, xIntensityEndI;
 		
 		xIntensityStart=1-(srcX-(int)srcX);
@@ -395,26 +458,31 @@ public final class ImageUtil {
 		xIntensityEnd=(srcX+scale-(int)(srcX+scale));
 		if(xIntensityEnd==0){
 			xIntensityEnd=1;
-		}
+		}*/
 		
-		int Y_srcWidth = (int)(Y)*srcWidth;
+		
+		int Y_srcWidth = (Yrounded)*srcWidth;
 		// 	start
-		if(doNotSkipFractions || xIntensityStart==1){
-			tmp=testMixPixelIn2(tmp,src[Y_srcWidth  	+ (int)srcX],(int)( xIntensityStart *yIntenstiy ) ,addColorCount,OVERFLOW_CHECK);
+		if(doNotSkipFractions || xIntensityStart==INTMAX){
+			tmp=testMixPixelIn2INT(tmp,src[Y_srcWidth  	+ srcXrounded],( xIntensityStart *yIntenstiy )>>10 ,addColorCount,OVERFLOW_CHECK);
+			//System.out.println("processing pixel: " +srcXrounded +" , " + Yrounded + "   int= " + (( xIntensityStart *yIntenstiy )>>10) );
 		}
 		// between
 		int smallX=0;
-		for (smallX = (int) srcX+1; smallX < srcX+scale-1 ; smallX++) {
-			tmp=testMixPixelIn2(tmp,src[Y_srcWidth  	+ smallX],(int)( yIntenstiy) ,addColorCount,OVERFLOW_CHECK);
+		//for (smallX = (int) srcX+1; smallX < srcX+scale-1; smallX++) {
+		for (smallX =  srcXrounded+1; smallX <= ((srcXdetailed+scaleS)>>PSEUDO_FLOAT)-1 ; smallX++) {
+			tmp=testMixPixelIn2INT(tmp,src[Y_srcWidth  	+ smallX],( yIntenstiy) ,addColorCount,OVERFLOW_CHECK);
+			//System.out.println("processing pixel: " + smallX+" , " + Yrounded+ "   int= " + (yIntenstiy) );
 		}
 		//end
-		if(doNotSkipFractions || xIntensityEnd==1){
+		if(doNotSkipFractions || xIntensityEnd==INTMAX){
 			if (smallX<srcWidth){
-				tmp=testMixPixelIn2(tmp,src[Y_srcWidth  	+ smallX],(int)( xIntensityEnd  *yIntenstiy) ,addColorCount,OVERFLOW_CHECK);
+				tmp=testMixPixelIn2INT(tmp,src[Y_srcWidth  	+ smallX],( xIntensityEnd  *yIntenstiy)>>10 ,addColorCount,OVERFLOW_CHECK);
 			} else {
 				// mic transparency in
-				tmp=testMixPixelIn2(tmp, 0 ,(int)( xIntensityEnd  *yIntenstiy),addColorCount,OVERFLOW_CHECK);
+				tmp=testMixPixelIn2INT(tmp, 0 ,( xIntensityEnd  *yIntenstiy)>>10,addColorCount,OVERFLOW_CHECK);
 			}
+			//System.out.println("processing pixel: " + smallX+" , " + Yrounded + "   int= " + (( xIntensityEnd *yIntenstiy )>>10));
 		}
 		
 		return tmp;
@@ -422,7 +490,7 @@ public final class ImageUtil {
 	
 	//#endif
 	
-	private static int[] testMixPixelIn2(int[] current, int add, int intensity,int[] addColorCount,int OVERFLOW_CHECK){
+	private static int[] testMixPixelIn2INT(int[] current, int add, int intensity,int[] addColorCount,int OVERFLOW_CHECK){
 		addColorCount[0]++;
 		if(add==0){
 			return current;
