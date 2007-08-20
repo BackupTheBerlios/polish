@@ -144,11 +144,12 @@ public class FishEyeContainerView extends ContainerView {
 							animated = true;
 							int[] data = this.originalRgbData[i];
 							int originalWidth = this.originalRgbDataWidths[i];
-							int originalHeight = data.length / originalWidth;
+							//int originalHeight = data.length / originalWidth;
 							int newWidth = calculateCurrent( current, target );
-							int newHeight = (newWidth * originalHeight) / originalWidth;
+							//int newHeight = (newWidth * originalHeight) / originalWidth;
 							int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length>>1 );
-							this.shownRgbData[i] = ImageUtil.scale(alpha, data, newWidth, newHeight, originalWidth, originalHeight );
+							//this.shownRgbData[i] = ImageUtil.scale(alpha, data, newWidth, newHeight, originalWidth, originalHeight );
+							this.shownRgbData[i] = ImageUtil.scaleDownHq(data, originalWidth, 0, newWidth, 0, alpha);
 							this.shownRgbDataWidths[i] = newWidth;
 						}
 					}
@@ -291,8 +292,10 @@ public class FishEyeContainerView extends ContainerView {
 					this.shownRgbDataWidths[i] = width;
 				} else {
 					int newWidth = (width * this.scaleFactor) / 100;
-					int newHeight = (height * this.scaleFactor) / 100;
-					this.shownRgbData[i] = ImageUtil.scale(data, newWidth, newHeight, width, height );
+					//int newHeight = (height * this.scaleFactor) / 100;
+					//this.shownRgbData[i] = ImageUtil.scale(data, newWidth, newHeight, width, height );
+					int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length>>1 );
+					this.shownRgbData[i] = ImageUtil.scaleDownHq(data,width, 0, newWidth, 0, alpha);
 					this.shownRgbDataWidths[i] = newWidth;
 				}
 			//#endif
@@ -449,36 +452,6 @@ public class FishEyeContainerView extends ContainerView {
 				targetXPositions[i] = this.referenceXCenterPositions[ nextIndex ];
 			}
 			this.targetXCenterPositions = targetXPositions;
-			//#if polish.midp2
-				// process items on the left side:
-				int index = focIndex - 1;
-				int processed = 0;
-				int length = (myItems.length -1) >> 1;
-				while (processed < length ) {
-					if (index < 0) {
-						index = myItems.length - 1;
-					}
-					int[] data = this.shownRgbData[ index ];
-					int alpha = calculateAlpha( processed+1, length );
-					ImageUtil.setTransparencyOnlyForOpaque( alpha, data);
-					index--;
-					processed++;
-				}
-				// process items on the right side:
-				index = focIndex + 1;
-				processed = 0;
-				length = myItems.length >> 1;
-				while (processed < length) {
-					if (index >= myItems.length) {
-						index = 0;
-					}
-					int[] data = this.shownRgbData[ index ];
-					int alpha = calculateAlpha( processed+1, length );
-					ImageUtil.setTransparencyOnlyForOpaque( alpha, data);
-					index++;
-					processed++;
-				}
-			//#endif
 		}
 		
 		Style itemStyle;
