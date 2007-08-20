@@ -26,9 +26,6 @@
 package de.enough.polish.util;
 
 
-
-
-
 /**
  * <p>Helps to transform images</p>
  *
@@ -191,12 +188,9 @@ public final class ImageUtil {
 		return scaledRgbData;
 	}
 
-	//#if polish.hasFloatingPoint
-	// TODO ohne float
 	private static final int INTMAX=1<<10;//1<<15/MAX_SCALE;
 	private static final int SCALE_THRESHOLD_SHIFT=3; // TODO dynamisch anpassen
 	private static final boolean SKIP_FRACTIONS=true;
-	private static final int FRACTION_SCALE=3;
 	private static final int EDGELEVEL=63;
 	private static final int EDGEDETECTION_MAP=(0xff ^ 15)<<24 | (0xff ^ EDGELEVEL)<<16 | (0xff ^ EDGELEVEL)<<8 | (0xff ^ EDGELEVEL);
 	private static final int PSEUDO_FLOAT=10;// do not change this
@@ -206,7 +200,6 @@ public final class ImageUtil {
 	public static int[] scaleDownHq(int[] src, int srcWidth, int scaleFactor, int scaledWidth, int scaledHeight, int opacity){
 		int[] dest;
 		
-		float scale; 
 		int scaleS;
 		// step
 		
@@ -335,7 +328,6 @@ public final class ImageUtil {
 						xIntensityEnd=PSEUDO_POW2;
 					}
 					
-					//TODO scale down in a better way ... remove
 					//xIntensityStart=xIntensityStart>>(PSEUDO_FLOAT-10);
 					//xIntensityEnd=xIntensityEnd>>(PSEUDO_FLOAT-10);
 					//scale down because of different intesity norm
@@ -365,7 +357,7 @@ public final class ImageUtil {
 						tmp=helpWithX(src,tmp,srcWidth,srcXdetailed, smallY,scaleS,yIntensityEnd,xIntensityStart,xIntensityEnd,addColorCount,destPixelItensityMaximum);
 					} else {
 						 //mix transparency in
-						tmp=testMixPixelIn2INT(tmp, 0 , yIntensityEnd,addColorCount,destPixelItensityMaximum);
+						tmp=mixPixelIn(tmp, 0 , yIntensityEnd,addColorCount,destPixelItensityMaximum);
 					}
 					
 					
@@ -427,27 +419,25 @@ public final class ImageUtil {
 		int Y_srcWidth = (Yrounded)*srcWidth;
 		
 		// 	start
-		tmp=testMixPixelIn2INT(tmp,src[Y_srcWidth  	+ srcXrounded],( xIntensityStart *yIntenstiy )>>10 ,addColorCount,OVERFLOW_CHECK);
+		tmp=mixPixelIn(tmp,src[Y_srcWidth  	+ srcXrounded],( xIntensityStart *yIntenstiy )>>10 ,addColorCount,OVERFLOW_CHECK);
 		// between
 		int smallX=0;
 		//for (smallX = (int) srcX+1; smallX < srcX+scale-1; smallX++) {
 		for (smallX =  srcXrounded+1; smallX <= ((srcXdetailed+scaleS)>>PSEUDO_FLOAT)-1 ; smallX++) {
-			tmp=testMixPixelIn2INT(tmp,src[Y_srcWidth  	+ smallX],( yIntenstiy) ,addColorCount,OVERFLOW_CHECK);
+			tmp=mixPixelIn(tmp,src[Y_srcWidth  	+ smallX],( yIntenstiy) ,addColorCount,OVERFLOW_CHECK);
 		}
 		//end
 		if (smallX<srcWidth){
-			tmp=testMixPixelIn2INT(tmp,src[Y_srcWidth  	+ smallX],( xIntensityEnd  *yIntenstiy)>>10 ,addColorCount,OVERFLOW_CHECK);
+			tmp=mixPixelIn(tmp,src[Y_srcWidth  	+ smallX],( xIntensityEnd  *yIntenstiy)>>10 ,addColorCount,OVERFLOW_CHECK);
 		} else {
 			// mic transparency in
-			tmp=testMixPixelIn2INT(tmp, 0 ,( xIntensityEnd  *yIntenstiy)>>10,addColorCount,OVERFLOW_CHECK);
+			tmp=mixPixelIn(tmp, 0 ,( xIntensityEnd  *yIntenstiy)>>10,addColorCount,OVERFLOW_CHECK);
 		}
 		
 		return tmp;
 	}
 	
-	//#endif
-	
-	private static int[] testMixPixelIn2INT(int[] current, int add, int intensity,int[] addColorCount,int OVERFLOW_CHECK){
+	private static int[] mixPixelIn(int[] current, int add, int intensity,int[] addColorCount,int OVERFLOW_CHECK){
 		addColorCount[0]++;
 		if(add==0){
 			return current;
