@@ -1240,7 +1240,7 @@ public class Container extends Item {
 					return true;
 				}
 				if (this.enableScrolling) {					
-					if (gameAction == Canvas.UP && this.targetYOffset < 0 ) {
+					if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2 && this.targetYOffset < 0 ) {
 						// scroll the container view upwards without changing the focused item:
 						//#if polish.Container.ScrollDelta:defined
 							//#= this.targetYOffset += ${polish.Container.ScrollDelta};
@@ -1257,7 +1257,7 @@ public class Container extends Item {
 						//#endif
 						return true;
 					}
-					if (gameAction == Canvas.DOWN
+					if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8
 							&& (this.itemHeight + this.targetYOffset > (this.availableHeight)) ) 
 					{
 						// scroll the container view downwards without changing the focused item:
