@@ -482,19 +482,29 @@ public class CommandItem extends IconItem {
 	}
 
 	/**
-	 * @return
+	 * Returns the command for this item.
+	 * 
+	 * @return the command
 	 */
 	public Command getCommand() {
 		return this.command;
 	}
 
+	
+	/**
+	 * Tells whether this item is open so that the children commands are visible (or not).
+	 * 
+	 * @return true of open, false otherwise
+	 */
 	protected boolean isOpen() {
 		return this.isOpen;
 	}
 
 	/**
-	 * @param index
-	 * @return
+	 * Retrieves a child item for a given index.
+	 * 
+	 * @param index the index
+	 * @return the command item, or null if no child for this index exists
 	 */
 	public CommandItem getChild(int index) {
 		if (index < 0 || this.children == null || index >= this.children.size() ) {

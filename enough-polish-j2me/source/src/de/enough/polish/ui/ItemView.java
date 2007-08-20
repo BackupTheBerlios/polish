@@ -201,8 +201,10 @@ public abstract class ItemView {
 	}
 	
 	/**
-	 * @param item
-	 * @return
+	 * Removes the set border from an item.
+	 * 
+	 * @param item the item to remove the border from
+	 * @return the formerly set border
 	 */
 	protected Border removeItemBorder(Item item) {
 		Border border = item.border;
@@ -211,8 +213,10 @@ public abstract class ItemView {
 	}
 
 	/**
-	 * @param item
-	 * @return
+	 * Removes the set background from an item.
+	 * 
+	 * @param item the item to remove the background from
+	 * @return the formerly set background
 	 */
 	protected Background removeItemBackground(Item item) {
 		Background background = item.background;

@@ -707,7 +707,9 @@ public class TabbedList extends Screen {
 		getTab(tabIndex).setSelectedFlags(selectedArray);
 	}
 	/**
-	 * @return
+	 * Retrieves the index of the currently selected tab.
+	 * 
+	 * @return the index of the current tab
 	 */
 	public int getCurrentTabIndex() {
 		return this.currentTabIndex;

@@ -71,7 +71,7 @@ public class TextBuilder {
 		}
 		
 		getReader().keyNum(keyCode);
-		getTextElement().keyNum(keyCode, mode);
+		getTextElement().keyNum(keyCode, this.mode);
 		getTextElement().setResults();
 		
 		if(!getTextElement().isWordFound())
@@ -93,8 +93,8 @@ public class TextBuilder {
 	
 	public boolean keyClear() throws RecordStoreException
 	{
-		if(align == ALIGN_LEFT)
-			if(element != 0)
+		if(this.align == ALIGN_LEFT)
+			if(this.element != 0)
 				decreaseCaret();
 			else
 				return false;
@@ -157,7 +157,7 @@ public class TextBuilder {
 	 */
 	public TextElement getTextElement()
 	{
-		return getTextElement(element);
+		return getTextElement(this.element);
 	}
 	
 	/**
@@ -220,24 +220,24 @@ public class TextBuilder {
 	 */
 	private void addElement(TextElement textElement)
 	{
-		if(element >= 0)
+		if(this.element >= 0)
 		{
-			if(align == ALIGN_LEFT)
-				this.textElements.add(element, textElement);
+			if(this.align == ALIGN_LEFT)
+				this.textElements.add(this.element, textElement);
 			
-			if(align == ALIGN_FOCUS)
-				this.textElements.add(element + 1, textElement);
+			if(this.align == ALIGN_FOCUS)
+				this.textElements.add(this.element + 1, textElement);
 			
-			if(align == ALIGN_RIGHT)
-				this.textElements.add(element + 1, textElement);
+			if(this.align == ALIGN_RIGHT)
+				this.textElements.add(this.element + 1, textElement);
 			
-			if( (align == ALIGN_FOCUS || align == ALIGN_RIGHT) && element < textElements.size())
-				element++;
+			if( (this.align == ALIGN_FOCUS || this.align == ALIGN_RIGHT) && this.element < this.textElements.size())
+				this.element++;
 		}
 		else
 		{
 			this.textElements.add(0, textElement);
-			element = 0;
+			this.element = 0;
 		}	
 	}
 	
@@ -297,35 +297,36 @@ public class TextBuilder {
 		int left  = 0;
 		int right = 0;
 		
-		for (int i = 0; i < textElements.size(); i++) {
+		for (int i = 0; i < this.textElements.size(); i++) {
 			length = getTextElement(i).getLength();
 			lengthOffset += length;
 			
 			if(lengthOffset > position)
 			{
-				element = i;
+				this.element = i;
 				
 				left = lengthOffset - length;
 				right = lengthOffset;
 					
 				if((position - left) > (right - position))
-					align = ALIGN_RIGHT;
+					this.align = ALIGN_RIGHT;
 				else
-					align = ALIGN_LEFT;
+					this.align = ALIGN_LEFT;
 					
 				return;
 			}
 		}
 		
-		element = textElements.size() - 1;
-		align = ALIGN_RIGHT;
+		this.element = this.textElements.size() - 1;
+		this.align = ALIGN_RIGHT;
 		
 		return;
 	}
 	
 	/**
-	 * Creates a new <code>TextElement</code> carrying <code>character</code>
-	 * @param character the character the <code>TextElement</code> should carry
+	 * Creates a new <code>TextElement</code> carrying <code>string</code>
+	 * 
+	 * @param string the string the <code>TextElement</code> should carry
 	 */
 	public void addStringBuffer(String string)
 	{
@@ -351,9 +352,9 @@ public class TextBuilder {
 	{
 		if(this.textElements.size() > 0)
 		{
-			int index = element;
+			int index = this.element;
 			
-			if(element == 0)
+			if(this.element == 0)
 				this.align = ALIGN_LEFT;
 			else
 			{
@@ -405,22 +406,22 @@ public class TextBuilder {
 	 */
 	public void increaseCaret()
 	{	
-		if(textElements.size() != 0)
+		if(this.textElements.size() != 0)
 		{
-			if(align == ALIGN_FOCUS)
+			if(this.align == ALIGN_FOCUS)
 			{
 				getTextElement().convertReader();
 				
-				align = ALIGN_RIGHT;
+				this.align = ALIGN_RIGHT;
 			}
 			else
-				if(element != textElements.size() - 1)
+				if(this.element != this.textElements.size() - 1)
 				{
-					align = ALIGN_LEFT;
-					element++;
+					this.align = ALIGN_LEFT;
+					this.element++;
 				}
 				else
-					align = ALIGN_RIGHT;
+					this.align = ALIGN_RIGHT;
 					
 		}
 	}
@@ -442,33 +443,33 @@ public class TextBuilder {
 	 */
 	public void decreaseCaret()
 	{	
-		if(textElements.size() != 0)
+		if(this.textElements.size() != 0)
 		{
-			switch(align)
+			switch(this.align)
 			{
 				case ALIGN_LEFT 	:
-					if(element > 0)
+					if(this.element > 0)
 					{
 						if(!isStringBuffer(-1))
-							align = ALIGN_FOCUS;
+							this.align = ALIGN_FOCUS;
 						else
-							align = ALIGN_LEFT;
+							this.align = ALIGN_LEFT;
 						
-						element--;
+						this.element--;
 					}
 				break;
 				
 				case ALIGN_FOCUS:
-					align = ALIGN_LEFT;
+					this.align = ALIGN_LEFT;
 				break;
 				
 				case ALIGN_RIGHT:
 					if(isStringBuffer(0))
-						align = ALIGN_LEFT;
+						this.align = ALIGN_LEFT;
 					else
-						align = ALIGN_FOCUS;
+						this.align = ALIGN_FOCUS;
 				break;
-			};
+			}
 		}
 	}
 	
@@ -480,8 +481,8 @@ public class TextBuilder {
 	 */
 	public boolean isStringBuffer(int offset)
 	{
-		if(this.textElements.size() > 0 && (element - offset) >= 0)
-			return getTextElement(element + offset).isStringBuffer();
+		if(this.textElements.size() > 0 && (this.element - offset) >= 0)
+			return getTextElement(this.element + offset).isStringBuffer();
 		else
 			return true;
 	}
@@ -499,12 +500,12 @@ public class TextBuilder {
 	{
 		int result = 0;
 		
-		for (int i = 0; i < element; i++) 
+		for (int i = 0; i < this.element; i++) 
 			result += getTextElement(i).getLength();
 		
 		if(this.textElements.size() > 0)
-			if( (align == ALIGN_FOCUS || align == ALIGN_RIGHT) && element >= 0)
-				result += getTextElement(element).getLength();
+			if( (this.align == ALIGN_FOCUS || this.align == ALIGN_RIGHT) && this.element >= 0)
+				result += getTextElement(this.element).getLength();
 		
 		this.caret = result;
 		return result;
@@ -519,14 +520,14 @@ public class TextBuilder {
 	{
 		this.text.setLength(0);
 		
-		for (int i = 0; i < textElements.size(); i++) {
+		for (int i = 0; i < this.textElements.size(); i++) {
 			TextElement element = getTextElement(i);
 			Object object = element.getElement();
 			
 			if( object instanceof StringBuffer)
-				text.append((StringBuffer)object);
+				this.text.append((StringBuffer)object);
 			else if( object instanceof TrieReader)
-				text.append(element.getSelectedWord());
+				this.text.append(element.getSelectedWord());
 		}
 		
 		return this.text;
@@ -552,7 +553,7 @@ public class TextBuilder {
 
 	/**
 	 * Sets the current input mode
-	 * @param currentInputMode the input mode to set
+	 * @param mode the input mode to set
 	 */
 	public void setMode(int mode) {
 		this.mode = mode;

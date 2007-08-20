@@ -2242,7 +2242,9 @@ public class Container extends Item {
 	//#endif
 
 	/**
-	 * @param matchingItems
+	 * Sets a list of items for this container.
+	 * 
+	 * @param itemsList the list of items to set
 	 */
 	protected void setItemsList(ArrayList itemsList) {
 		if (this.isFocused) {

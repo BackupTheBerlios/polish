@@ -112,10 +112,11 @@ public class FilteredChoiceGroup
 	/**
 	 * Appends an item to this group.
 	 * 
-	 * @param stringPart
-	 * @param imagePart
-	 * @param itemStyle
-	 * @return
+	 * @param stringPart the string part of the element to be added
+	 * @param imagePart the image part of the element to be added, or null if there is no image part
+	 * @param itemStyle the style for the new list element.
+	 * @return the assigned index of the element
+	 * @throws NullPointerException if stringPart is null
 	 */
 	public int append(String stringPart, Image imagePart, Style itemStyle ) {
 		return this.filteredList.append( stringPart, imagePart, itemStyle );
@@ -262,7 +263,7 @@ public class FilteredChoiceGroup
 		try {
 		if (disp == this.filteredList) {
 			
-			if (cmd == StyleSheet.OK_CMD || cmd == FilteredList.SELECT_COMMAND) {
+			if (cmd == StyleSheet.OK_CMD || cmd == List.SELECT_COMMAND) {
 				if (this.filteredList.containsChangesTo(this.lastChoices)) {
 			         updateText();
 			         this.notifyStateChanged();					
