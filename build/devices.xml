@@ -102,6 +102,16 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi, 3dapi, svg, nokia-ui"/>
 	</device>
+
+	<device supportsPolishGui="true">
+		<identifier>Generic/pda</identifier>
+		<description>This device provides access to JSR75/PDA API..
+		</description>
+		<features>isVirtual</features>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi"/>
+	</device>
 	
 	<device supportsPolishGui="false">
 		<identifier>Generic/PlainMidp2</identifier>
@@ -490,6 +500,24 @@ These namespaces/schemas will be used soon.
 		<identifier>Sony-Ericsson/JavaPlatform6</identifier>
 		<features>isVirtual</features>
 		<groups>SE-JavaPlatform6</groups>
+		<capability name="FullCanvasSize" value="" />
+	</device>
+
+	<device supportsPolishGui="true">
+		<identifier>Sony-Ericsson/JavaPlatform7</identifier>
+		<features>isVirtual</features>
+		<groups>SE-JavaPlatform7</groups>
+		<capability name="ScreenSize" value="" />
+		<capability name="CanvasSize" value="" />
+		<capability name="FullCanvasSize" value="" />
+	</device>
+
+	<device supportsPolishGui="true">
+		<identifier>Sony-Ericsson/JavaPlatform8</identifier>
+		<features>isVirtual</features>
+		<groups>SE-JavaPlatform8</groups>
+		<capability name="ScreenSize" value="" />
+		<capability name="CanvasSize" value="" />
 		<capability name="FullCanvasSize" value="" />
 	</device>
 
