@@ -394,7 +394,7 @@ public class TabbedForm extends Form {
 	
 	
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
-		if (this.focusedItem == null) {
+		if (this.tabBar.isFocused) {
 			int nextTabIndex = this.activeTabIndex;
 			//#if polish.css.tabbar-roundtrip
 				if (gameAction == Canvas.RIGHT) {
