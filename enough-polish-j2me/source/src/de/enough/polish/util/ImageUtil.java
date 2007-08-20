@@ -190,7 +190,7 @@ public final class ImageUtil {
 
 	private static final int INTMAX=1<<10;//1<<15/MAX_SCALE;
 	private static final int SCALE_THRESHOLD_SHIFT=3; // TODO dynamisch anpassen
-	private static final boolean SKIP_FRACTIONS=true;
+	private static final boolean SKIP_FRACTIONS=false;
 	private static final int EDGELEVEL=63;
 	private static final int EDGEDETECTION_MAP=(0xff ^ 15)<<24 | (0xff ^ EDGELEVEL)<<16 | (0xff ^ EDGELEVEL)<<8 | (0xff ^ EDGELEVEL);
 	private static final int PSEUDO_FLOAT=10;// do not change this
@@ -292,15 +292,15 @@ public final class ImageUtil {
 				currentDestEdge=dest[destPointer]&EDGEDETECTION_MAP;
 				
 				if(!edgeDetection || // process the pixel if there is no edgedetection activated
-						//scaledY == scaledHeight-1 || // process the pixels and do not check the next statements if you are not in the last row
+						scaledY == scaledHeight-1 || // process the pixels and do not check the next statements if you are not in the last row
 						scaledY == 0 || 	  		 // same with the fist row
 						(
 						//	if there is a difference to the surrounding pixels								
 						  //opt01 
-						  //(currentDestEdge ^ (dest[destPointer+1]&EDGEDETECTION_MAP)) !=0  ||		// next
+						  (currentDestEdge ^ (dest[destPointer+1]&EDGEDETECTION_MAP)) !=0  ||		// next
 						  (currentDestEdge ^ (dest[destPointer-1]&EDGEDETECTION_MAP)) !=0||		// previous
 						  //opt01 
-						  //(currentDestEdge ^ (dest[destPointer+scaledWidth]&EDGEDETECTION_MAP)) !=0 || // below
+						  (currentDestEdge ^ (dest[destPointer+scaledWidth]&EDGEDETECTION_MAP)) !=0 || // below
 						  (currentDestEdge ^ (dest[destPointer-scaledWidth]&EDGEDETECTION_MAP)) !=0 // above
 						)
 				) {
