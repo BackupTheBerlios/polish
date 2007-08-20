@@ -188,17 +188,56 @@ public final class ImageUtil {
 		return scaledRgbData;
 	}
 
-	private static final int INTMAX=1<<10;//1<<15/MAX_SCALE;
-	private static final int SCALE_THRESHOLD_SHIFT=3; // TODO dynamisch anpassen
-	private static final boolean SKIP_FRACTIONS=false;
-	private static final int EDGELEVEL=63;
-	private static final int EDGEDETECTION_MAP=(0xff ^ 15)<<24 | (0xff ^ EDGELEVEL)<<16 | (0xff ^ EDGELEVEL)<<8 | (0xff ^ EDGELEVEL);
-	private static final int PSEUDO_FLOAT=10;// do not change this
+
+	private static final int INTMAX=1<<10; // do NOT change
+	private static final int PSEUDO_FLOAT=10; // do NOT change
 	private static final int PSEUDO_POW2=1<<PSEUDO_FLOAT;//2048;
 	private static final int PSEUDO_POW2M1=(1<<PSEUDO_FLOAT)-1;//2047;
 	
-	public static int[] scaleDownHq(int[] src, int srcWidth, int scaleFactor, int scaledWidth, int scaledHeight, int opacity){
-		int[] dest;
+	/**
+	 * Changeable constants for the optimized scaling
+	 * 
+	 * SCALE_THRESHOLD_SHIFT: between 1 and 3	
+	 * 		Since the source pixel are weighted it is possible to sort light ones out.
+	 * 		A pixel has to be apx. greater than  1/(1<<(SCALE_THRESHOLD_SHIFT*2-1)) 
+	 * 		compared to the whole weight of the resulting pixel.
+	 * 
+	 * EDGELEVEL: (1<<X)-1  as you prefer
+	 * 		In order to save time it is possible to run an edge Detection over the source
+	 * 		image. The EDGELEVEL is used to generate the bitmask used to compare the pixel 
+	 * 		nearby. A detailed computation is done, in case of differeces that exceed the
+	 * 		mask in one of the Channels. 
+	 */
+	private static final int SCALE_THRESHOLD_SHIFT=3;
+	private static final int EDGELEVEL=63;
+	private static final int EDGEDETECTION_MAP=(0xff ^ 15)<<24 | (0xff ^ EDGELEVEL)<<16 | (0xff ^ EDGELEVEL)<<8 | (0xff ^ EDGELEVEL);
+	/**
+	 * This method provides an algorithm to shrink a given image (given as ARGB-array).
+	 * 	The supported shrink factor is between 20 and 99 percent of the source width.
+	 * 	There are some optimizations in order to speed the computation up, but more speed
+	 * 		implies less quality. Depending on the image and the device it is recomended to
+	 * 		activate edgeDetection and SKIP_FRACTIONS. Those features estimated unimportant
+	 * 		pixel and process them with less compuation time. You can also change some constants
+	 * 		in ImageUtil if you want to finetune the algorithm accoring to your needs.
+	 * 
+	 * 
+	 * @param dest			the preallocated array to store the shrinked image
+	 * @param src			the source image
+	 * @param srcWidth		the width of the source image
+	 * @param scaleFactor	0 or the desired scalefactor in percent
+	 * @param scaledWidth	0 or the resulting width
+	 * @param scaledHeight	0 or the resulting height
+	 * @param opacity		you are able to add opacity information here (value between 1 and 255)
+	 * @param edgeDetection	enables optimization mode
+	 * @param SKIP_FRACTIONS enables optimization mode
+	 */
+	public static void scaleDownHq(int[] dest, int[] src, int srcWidth, int scaleFactor, int scaledWidth, int scaledHeight, int opacity, boolean edgeDetection, boolean SKIP_FRACTIONS){
+		/*// TEST CODE
+		for (int i = 0; i < src.length; i++) {
+			if (src[i]>>24!=0){
+				src[i]=255<<24|255;
+			}
+		}*/
 		
 		int scaleS;
 		// step
@@ -213,11 +252,12 @@ public final class ImageUtil {
 			scaleS=(srcHeight<<PSEUDO_FLOAT)/(scaledHeight);
 		}
 		if (scaleS==1<<PSEUDO_FLOAT){
-			return src;
+			System.arraycopy(src, 0, dest, 0, src.length);
+			return;
 		}else if(scaleS<1<<PSEUDO_FLOAT){
 			throw new IllegalArgumentException();
-		} else if(scaleS>6<<PSEUDO_FLOAT){ // TODO max is probably sqrt(32)
-			throw new IllegalArgumentException(" scale >6 may lead to internal overflows");
+		} else if(scaleS>5<<PSEUDO_FLOAT){ // max is probably sqrt(32)
+			throw new IllegalArgumentException(" scale >5 may lead to internal overflows");
 		}
 		
 		System.out.println(" scaling requested with scale=" + (float)scaleS/(1<<PSEUDO_FLOAT));
@@ -231,18 +271,12 @@ public final class ImageUtil {
 			scaledWidth=((srcWidth<<PSEUDO_FLOAT)/scaleS);
 		}
 		
-		//TODO maybe without reallocation
-		
-		// prepare the destination
-		dest = new int[scaledWidth*scaledHeight];
-		
 		int destPointer=0;
 		int[] tmp=new int[5];
 		
 		// position
 		int srcXdetailed=0;
 		int srcYdetailed=0;
-		int srcXrounded=0;
 		int srcYrounded=0;
 		
 		// intensities
@@ -250,30 +284,18 @@ public final class ImageUtil {
 		int xIntensityStart, xIntensityEnd;
 		
 		
-		int[] addColorCount=new int[1]; // TODO delete
-		
 		// used
-		int destPixelItensityMaximum = (INTMAX * scaleS*scaleS)>>20;
+		int destPixelItensityMinimum;
+		if (SKIP_FRACTIONS){
+			destPixelItensityMinimum = (INTMAX * scaleS*scaleS)>>20;
+		} else {
+			destPixelItensityMinimum =0;
+		}
 		
+		//long t =System.currentTimeMillis();
 		
-		long t =System.currentTimeMillis();
-		
-		
-		boolean edgeDetection=true;
 		// opt01
 		if (edgeDetection){
-			
-			/*int srcXX=0;
-			int srcYY=0;
-			int scaleS=(int)(scale*(1<<7));
-			for (int scaledY = 0; scaledY < scaledHeight; scaledY++) {
-				for (int scaledX = 0; scaledX < scaledWidth; scaledX++) {
-					dest[scaledY*scaledWidth + scaledX]= src[((srcYY>>7)*srcWidth)  + (srcXX>>7)];
-					srcXX+=scaleS;
-				}
-				srcXX=0;
-				srcYY+=scaleS;
-			}*/
 			
 			scale(src, scaledWidth, scaledHeight, srcWidth, srcHeight, dest);
 		}
@@ -343,23 +365,21 @@ public final class ImageUtil {
 					tmp[4]=0;
 					
 					// start
-					tmp=helpWithX(src,tmp,srcWidth,srcXdetailed, srcYdetailed>>PSEUDO_FLOAT,scaleS,yIntensityStart,xIntensityStart,xIntensityEnd,addColorCount,destPixelItensityMaximum);
+					tmp=helpWithX(src,tmp,srcWidth,srcXdetailed, srcYdetailed>>PSEUDO_FLOAT,scaleS,yIntensityStart,xIntensityStart,xIntensityEnd,destPixelItensityMinimum);
 					// between
 					int smallY;
 					//for (smallY = (int) srcY+1; smallY < srcY+scale-1; smallY++) {
 					for (smallY = srcYrounded+1; smallY <= ((srcYdetailed+scaleS)>>PSEUDO_FLOAT)-1; smallY++) {
 						
-						tmp=helpWithX(src,tmp,srcWidth,srcXdetailed, smallY,scaleS,INTMAX*1,xIntensityStart,xIntensityEnd,addColorCount,destPixelItensityMaximum);
+						tmp=helpWithX(src,tmp,srcWidth,srcXdetailed, smallY,scaleS,INTMAX*1,xIntensityStart,xIntensityEnd,destPixelItensityMinimum);
 					}
 					//end
-					
 					if (smallY<srcHeight){
-						tmp=helpWithX(src,tmp,srcWidth,srcXdetailed, smallY,scaleS,yIntensityEnd,xIntensityStart,xIntensityEnd,addColorCount,destPixelItensityMaximum);
+						tmp=helpWithX(src,tmp,srcWidth,srcXdetailed, smallY,scaleS,yIntensityEnd,xIntensityStart,xIntensityEnd,destPixelItensityMinimum);
 					} else {
 						 //mix transparency in
-						tmp=mixPixelIn(tmp, 0 , yIntensityEnd,addColorCount,destPixelItensityMaximum);
+						tmp=mixPixelIn(tmp, 0 , yIntensityEnd,destPixelItensityMinimum);
 					}
-					
 					
 					// 				alpha=alpha/int			red=  redSum/(alpha*int)
 					if(tmp[1]==0){
@@ -373,7 +393,6 @@ public final class ImageUtil {
 				srcXdetailed+=scaleS;
 				
 				// retrieve an integer
-				srcXrounded=srcXdetailed>>PSEUDO_FLOAT;
 				srcYrounded=srcYdetailed>>PSEUDO_FLOAT;
 			}
 			
@@ -382,68 +401,49 @@ public final class ImageUtil {
 			srcYdetailed+=scaleS;
 			
 			// retrieve an integer
-			srcXrounded=srcXdetailed>>PSEUDO_FLOAT;
 			srcYrounded=srcYdetailed>>PSEUDO_FLOAT;
 		}
 		
 		
-		System.out.println("  " + addColorCount[0] + " pixels added");
-		System.out.println("" + (System.currentTimeMillis() - t) + " ms");
-		return dest;
+		//System.out.println("" + (System.currentTimeMillis() - t) + " ms");
 	}
 	/**
 	 * This function adds a weighted (by yIntesity) row of source pixels to the related destination pixel.  
-	 * 
-	 * @param src			source image
-	 * @param tmp
-	 * @param srcWidth
-	 * @param srcXdetailed
-	 * @param Yrounded
-	 * @param scaleS
-	 * @param yIntenstiy
-	 * @param xIntensityStart
-	 * @param xIntensityEnd
-	 * @param addColorCount
-	 * @param OVERFLOW_CHECK
-	 * @param doNotSkipFractions
-	 * @return
 	 */
-	private static int[] helpWithX(int[] src, int[] tmp, int srcWidth, int srcXdetailed, int Yrounded, int scaleS, int yIntenstiy, int xIntensityStart, int xIntensityEnd ,int [] addColorCount, int OVERFLOW_CHECK ){
-		// 	TODO if intenstiy < .1 -> elegant abbrechen??
-		// TODO sinnvolle Grenze festlegen (hängt von scale ab!!)
-		// TODO es dürfen keine Lücken entstehen!!
-		if (SKIP_FRACTIONS && yIntenstiy<OVERFLOW_CHECK>>SCALE_THRESHOLD_SHIFT){ // == /8 TODO evtl wäre 8 besser
+	private static int[] helpWithX(int[] src, int[] tmp, int srcWidth, int srcXdetailed, int Yrounded, int scaleS, int yIntenstiy, int xIntensityStart, int xIntensityEnd , int destPixelItensityMinimum ){
+		if (yIntenstiy<destPixelItensityMinimum>>SCALE_THRESHOLD_SHIFT){
 			return tmp;
 		}
 		int srcXrounded=srcXdetailed>>PSEUDO_FLOAT;
 		int Y_srcWidth = (Yrounded)*srcWidth;
 		
 		// 	start
-		tmp=mixPixelIn(tmp,src[Y_srcWidth  	+ srcXrounded],( xIntensityStart *yIntenstiy )>>10 ,addColorCount,OVERFLOW_CHECK);
+		tmp=mixPixelIn(tmp,src[Y_srcWidth  	+ srcXrounded],( xIntensityStart *yIntenstiy )>>10 ,destPixelItensityMinimum);
 		// between
 		int smallX=0;
 		//for (smallX = (int) srcX+1; smallX < srcX+scale-1; smallX++) {
 		for (smallX =  srcXrounded+1; smallX <= ((srcXdetailed+scaleS)>>PSEUDO_FLOAT)-1 ; smallX++) {
-			tmp=mixPixelIn(tmp,src[Y_srcWidth  	+ smallX],( yIntenstiy) ,addColorCount,OVERFLOW_CHECK);
+			tmp=mixPixelIn(tmp,src[Y_srcWidth  	+ smallX],( yIntenstiy) ,destPixelItensityMinimum);
 		}
 		//end
 		if (smallX<srcWidth){
-			tmp=mixPixelIn(tmp,src[Y_srcWidth  	+ smallX],( xIntensityEnd  *yIntenstiy)>>10 ,addColorCount,OVERFLOW_CHECK);
+			tmp=mixPixelIn(tmp,src[Y_srcWidth  	+ smallX],( xIntensityEnd  *yIntenstiy)>>10 ,destPixelItensityMinimum);
 		} else {
 			// mic transparency in
-			tmp=mixPixelIn(tmp, 0 ,( xIntensityEnd  *yIntenstiy)>>10,addColorCount,OVERFLOW_CHECK);
+			tmp=mixPixelIn(tmp, 0 ,( xIntensityEnd  *yIntenstiy)>>10,destPixelItensityMinimum);
 		}
 		
 		return tmp;
 	}
-	
-	private static int[] mixPixelIn(int[] current, int add, int intensity,int[] addColorCount,int OVERFLOW_CHECK){
-		addColorCount[0]++;
+	/**
+	 * This method is able to mix several colors including transparency information. 
+	 * 
+	 */
+	private static int[] mixPixelIn(int[] current, int add, int intensity,int destPixelItensityMinimum){
 		if(add==0){
 			return current;
 			
-		}else if(SKIP_FRACTIONS && intensity<OVERFLOW_CHECK>>(SCALE_THRESHOLD_SHIFT<<1-1)){ // *8*8/2
-			// TODO same as with the other one
+		}else if(intensity<destPixelItensityMinimum>>(SCALE_THRESHOLD_SHIFT<<1-1)){ // *8*8/2
 			return current;
 			
 		} else {
