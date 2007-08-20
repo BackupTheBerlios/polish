@@ -5237,6 +5237,8 @@ These namespaces/schemas will be used soon.
 		<capability name="AnnouncementDate" value="2007-02-12"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
 		<capability name="dtmf.separator" value="/"/>
+		<capability name="wap.userAgent" value="NokiaE65-1"/>
+		
 	</device>
 	
 	<device>
@@ -5347,6 +5349,7 @@ These namespaces/schemas will be used soon.
 		<!--  use Ctrl-i for triggering the symbol table as well: -->
 		<capability name="key.AddSymbolKey2" value="9" />
 		<!--  <capability name="dtmf.separator" value="/"/> -->
+		<capability name="wap.userAgent" value="NokiaE70"/>
 	</device>
 	
 	<device>
@@ -5445,6 +5448,7 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="2582x1944"/>
 		<capability name="AnnouncementDate" value="2006-09-26"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
+		<capability name="wap.userAgent" value="NokiaN95"/>
 	</device>
 
 	<device>
@@ -9741,6 +9745,8 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="amr, nb-amr"/>
 		<capability name="Emulator.Skin" value="8700r"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+		<capability name="wap.userAgent" value="BlackBerry8700/4.1.0"/>
+		
 	</device>
 
 	<device>
@@ -12356,6 +12362,7 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraZoom" value="4"/>
 		<capability name="key.ReturnKey" value="-11"/>
 		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin, SoftKeyMappedToFire"/>
+		<capability name="wap.userAgent" value="SAMSUNG-SGH-D900"/>
 	</device> 
  
         <device> 
