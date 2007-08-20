@@ -82,6 +82,8 @@ public class FishEyeContainerView extends ContainerView {
 			//#define tmp.scaleAll
 			private int scaleFactorEnd;
 		//#endif
+		private int startTranslucency = 180;
+		private int endTranslucency = 80;
 	//#endif
 	private int referenceFocusedIndex;
 	private Background focusedBackground;
@@ -145,7 +147,7 @@ public class FishEyeContainerView extends ContainerView {
 							int originalHeight = data.length / originalWidth;
 							int newWidth = calculateCurrent( current, target );
 							int newHeight = (newWidth * originalHeight) / originalWidth;
-							int alpha = 255 - (255*distance)/(length>>1);
+							int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length>>1 );
 							this.shownRgbData[i] = ImageUtil.scale(alpha, data, newWidth, newHeight, originalWidth, originalHeight );
 							this.shownRgbDataWidths[i] = newWidth;
 						}
@@ -347,7 +349,8 @@ public class FishEyeContainerView extends ContainerView {
 			if (index < 0) {
 				index = length - 1;
 			}
-			this.referenceXCenterPositions[index] = startX - ((processed * availableWidthPerItem) >>> 8); //  - (maxItemWidth >> 1);
+			//TODO add padding-horizontal
+			this.referenceXCenterPositions[index] = startX - ((processed * availableWidthPerItem) >>> 8) - (processed * this.paddingHorizontal); //  - (maxItemWidth >> 1);
 //			System.out.println( index + "=" + this.referenceXCenterPositions[index]);
 			index--;
 			processed++;
@@ -362,7 +365,8 @@ public class FishEyeContainerView extends ContainerView {
 			if (index >= length) {
 				index = 0;
 			}
-			this.referenceXCenterPositions[index] = startX + ((processed * availableWidthPerItem) >>> 8); //+ (maxWidth >> 1);
+			//TODO add padding-horizontal
+			this.referenceXCenterPositions[index] = startX + ((processed * availableWidthPerItem) >>> 8) + (processed * this.paddingHorizontal); //+ (maxWidth >> 1);
 //			System.out.println( index + "=" + this.referenceXCenterPositions[index]);
 			index++;
 			processed++;
@@ -455,7 +459,7 @@ public class FishEyeContainerView extends ContainerView {
 						index = myItems.length - 1;
 					}
 					int[] data = this.shownRgbData[ index ];
-					int alpha = 255 - (255*processed)/length;
+					int alpha = calculateAlpha( processed+1, length );
 					ImageUtil.setTransparencyOnlyForOpaque( alpha, data);
 					index--;
 					processed++;
@@ -469,7 +473,7 @@ public class FishEyeContainerView extends ContainerView {
 						index = 0;
 					}
 					int[] data = this.shownRgbData[ index ];
-					int alpha = 255 - (255*processed)/length;
+					int alpha = calculateAlpha( processed+1, length );
 					ImageUtil.setTransparencyOnlyForOpaque( alpha, data);
 					index++;
 					processed++;
@@ -505,6 +509,20 @@ public class FishEyeContainerView extends ContainerView {
 	}
 
 	
+
+	/**
+	 * @param distance
+	 * @param length
+	 * @return
+	 */
+	private int calculateAlpha(int distance, int length) {
+		if (distance == 0) {
+			return 255;
+		}
+		int alpha = this.startTranslucency - ((this.startTranslucency - this.endTranslucency) * distance) / length;
+		//System.out.println("alpha for processed=" + distance + ", length=" + length + "=" + alpha);
+		return alpha;
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#paintContent(de.enough.polish.ui.Container, de.enough.polish.ui.Item[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)

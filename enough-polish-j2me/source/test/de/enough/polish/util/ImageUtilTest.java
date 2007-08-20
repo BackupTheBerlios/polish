@@ -45,7 +45,7 @@ public class ImageUtilTest extends TestCase {
 	
 	public void testParticleScale() {
 		// was jsut used to test the performance of different implementations, is now obsolete
-		int rounds = 30 * 1000;
+		int rounds = 100; //30 * 1000;
 		int width = 100;
 		int height = 100;
 		int startFactor = 120;
@@ -67,6 +67,25 @@ public class ImageUtilTest extends TestCase {
 		time -= seconds * 1000;
 		buffer.append( time ).append("ms ");
 		return buffer.toString();
+	}
+	
+	public void testMergePixels() {
+		int[] pixels;
+		int[] percentages;
+		int result;
+		
+		pixels = new int[]{ 0xff00ff00, 0xffff0000 };
+		percentages = new int[] {255, 255};
+		result = ImageUtil.merge(pixels, percentages);
+		System.out.println(Integer.toHexString( result));
+		assertEquals( 0xff7f7f00, result);
+		
+		pixels = new int[]{ 0xff00ff00, 0xffff0000 };
+		percentages = new int[] {255, 0};
+		result = ImageUtil.merge(pixels, percentages);
+		System.out.println(Integer.toHexString( result));
+		assertEquals( 0xff00ff00, result);
+
 	}
 
 }

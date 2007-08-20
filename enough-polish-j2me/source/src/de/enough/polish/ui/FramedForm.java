@@ -122,10 +122,12 @@ public class FramedForm extends Form {
         }
     }
 	
+
+	
 	/**
 	 * Removes all items from the specifid frame.
 	 * 
-	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT. Use -1 for the content frame.
 	 */
 	public void deleteAll( int frameOrientation ) {
 		Container frame = getFrame( frameOrientation );

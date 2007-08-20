@@ -225,7 +225,11 @@ public final class StyleSheet {
 	 * 	       name has been defined.
 	 */
 	public static Style getStyle( String name ) {
-		return (Style) stylesByName.get( name );
+		Style style =  (Style) stylesByName.get( name );
+		if (style == null) {
+			style =  (Style) stylesByName.get( name.toLowerCase() );
+		}
+		return style;
 	}
 	
 	//#ifdef polish.useDynamicStyles
