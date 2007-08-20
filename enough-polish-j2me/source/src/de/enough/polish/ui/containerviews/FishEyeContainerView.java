@@ -77,6 +77,7 @@ public class FishEyeContainerView extends ContainerView {
 		private int[] originalRgbDataWidths;
 		private int[][] shownRgbData;
 		private int[] shownRgbDataWidths;
+		private int[] shownRgbDataHeight;
 		private int scaleFactor = 50;
 		//#if polish.css.fisheyeview-scale-end
 			//#define tmp.scaleAll
@@ -109,7 +110,7 @@ public class FishEyeContainerView extends ContainerView {
 		if (this.targetXCenterPositions != null) {
 			Item[] myItems = this.parentContainer.getItems();
 			int length = myItems.length;
-			for (int i = 0; i < length; i++) {
+			for (int i = 0; i <length; i++) {
 				int target = this.targetXCenterPositions[i];
 				Item item = myItems[i];
 				int itemWidth = (item.itemWidth >> 1);
@@ -144,15 +145,16 @@ public class FishEyeContainerView extends ContainerView {
 							animated = true;
 							int[] data = this.originalRgbData[i];
 							int originalWidth = this.originalRgbDataWidths[i];
-							//int originalHeight = data.length / originalWidth;
+							int originalHeight = data.length / originalWidth;
 							int newWidth = calculateCurrent( current, target );
-							//int newHeight = (newWidth * originalHeight) / originalWidth;
+							int newHeight = (newWidth * originalHeight) / originalWidth;
 							int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length>>1 );
 							//this.shownRgbData[i] = ImageUtil.scale(alpha, data, newWidth, newHeight, originalWidth, originalHeight );
-							this.shownRgbData[i] = ImageUtil.scaleDownHq(data, originalWidth, 0, newWidth, 0, alpha);
+							ImageUtil.scaleDownHq(this.shownRgbData[i],data, originalWidth, 0, newWidth, 0, alpha, true, false);
 							this.shownRgbDataWidths[i] = newWidth;
+							this.shownRgbDataHeight[i] = newHeight;
 						}
-					}
+					} 
 				//#endif
 			}
 		}
@@ -263,6 +265,7 @@ public class FishEyeContainerView extends ContainerView {
 			this.originalRgbDataWidths = new int[ length ];
 			this.shownRgbData = new int[ length ][];
 			this.shownRgbDataWidths = new int[ length ];
+			this.shownRgbDataHeight= new int[ length ];
 		//#endif
 		for (int i = 0; i < length; i++) {
 			Item item = myItems[i];
@@ -290,13 +293,16 @@ public class FishEyeContainerView extends ContainerView {
 				if (this.scaleFactor == 100) {
 					this.shownRgbData[i] = data;
 					this.shownRgbDataWidths[i] = width;
+					this.shownRgbDataHeight[i] = height;
 				} else {
 					int newWidth = (width * this.scaleFactor) / 100;
-					//int newHeight = (height * this.scaleFactor) / 100;
+					int newHeight = (height * this.scaleFactor) / 100;
 					//this.shownRgbData[i] = ImageUtil.scale(data, newWidth, newHeight, width, height );
 					int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length>>1 );
-					this.shownRgbData[i] = ImageUtil.scaleDownHq(data,width, 0, newWidth, 0, alpha);
+					this.shownRgbData[i]=new int[data.length];
+					ImageUtil.scaleDownHq(this.shownRgbData[i], data,width, 0, newWidth, 0, alpha, true, false);
 					this.shownRgbDataWidths[i] = newWidth;
+					this.shownRgbDataHeight[i] = newHeight;
 				}
 			//#endif
 			if (item.appearanceMode != Item.PLAIN) {
@@ -591,7 +597,8 @@ public class FishEyeContainerView extends ContainerView {
 		//#if polish.midp2
 			int[] data = this.shownRgbData[ index ];
 			int width = this.shownRgbDataWidths[ index ];
-			int height = data.length / width;
+			int height = this.shownRgbDataHeight[ index ];///data.length / width;
+			
 			int itemLayout = item.getLayout();
 			if ( (itemLayout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {
 				y += (this.maxItemHeight - height) >> 1;
