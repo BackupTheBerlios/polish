@@ -87,14 +87,18 @@ public class TabbedForm extends Form {
 		}
 		this.tabContainers = new Container[ length ];
 		this.tabContainers[0] = this.container;
-		this.tabContainers[0].allowCycling = false;
+		//#if polish.Container.allowCycling != false
+			this.tabContainers[0].allowCycling = false;
+		//#endif
 		for (int i = 1; i < length; i++) {
 			Container tabContainer = new Container( null, false, null, this.screenHeight );
 			if (style != null) {
 				tabContainer.setStyle( style, true );
 			}
 			tabContainer.screen = this;
-			tabContainer.allowCycling = false;
+			//#if polish.Container.allowCycling != false
+				tabContainer.allowCycling = false;
+			//#endif
 			this.tabContainers[i] = tabContainer;
 		}
 		setSubTitle( this.tabBar );
