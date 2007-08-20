@@ -2388,7 +2388,7 @@
 		description="Defines if a style that extends this style should inherit all attributes."
 		default="true"
 		id="209"
-	/>
+	/>	
 	
 	<attribute
 		name="chart-vertical-bars-shadow-color"
@@ -2794,6 +2794,16 @@
 		default="false"
 		id="260"
 	/>
+	
+	<attribute
+		name="always-include"
+		type="boolean"
+		appliesTo="Item, Screen"
+		description="Defines if a style should always be included, even if not used."
+		default="false"
+		id="261"
+	/>
+	
 	
 	
 	<!--

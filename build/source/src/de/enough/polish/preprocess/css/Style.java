@@ -463,4 +463,21 @@ public class Style {
 			return (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ]);
 		}
 	}
+
+	/**
+	 * @param attributeName 
+	 * @return
+	 */
+	public String getAttributeValue(String attributeName) {
+		int splitPos = attributeName.indexOf('-');
+		if (splitPos == -1) {
+			return (String) this.properties.get( attributeName );
+		}
+		String groupName = attributeName.substring(0, splitPos );
+		HashMap group = getGroup(groupName);
+		if (group == null) {
+			return null;
+		}
+		return (String) group.get( attributeName.substring( splitPos + 1 ) );
+	}
 }

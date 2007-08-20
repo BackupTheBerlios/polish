@@ -154,18 +154,6 @@ public class CssConverter extends Converter {
 			HashMap group = (HashMap) borders.get( groupName );
 			processBorder(groupName, group, null, codeList, styleSheet, true, env );
 		}
-		String test = env.getVariable("polish.license");
-//		if ( "GPL".equals(test) ) {
-//			// GPL license is fine.
-//		} else if (test == null || test.length() != 12) {
-//			throw new BuildException("Encountered invalid license.");
-//		} else {
-//			try {
-//				Long.parseLong(test, 0x10);
-//			} catch (Exception e) {
-//				throw new BuildException("Encountered invalid license.");
-//			}
-//		}
 		ArrayList staticCodeList = new ArrayList();
 		// add the default style:
 		processDefaultStyle( defaultFontDefined,  
@@ -188,7 +176,6 @@ public class CssConverter extends Converter {
 			defaultStyleNames.add( "menu");
 			defaultStyleNames.add( "menuitem");
 		}
-		
 		String[] defaultNames = (String[]) defaultStyleNames.toArray( new String[ defaultStyleNames.size() ]);
 		Style[] styles = styleSheet.getUsedAndReferencedStyles(defaultNames);
 		boolean isLabelStyleReferenced = false;
@@ -202,7 +189,6 @@ public class CssConverter extends Converter {
 				processStyle( style, codeList, staticCodeList, styleSheet, device, env );
 			}
 		}
-		codeList.add( STANDALONE_MODIFIER + "String lic=\"" + test +"\";");
 		
 		/*
 		String[] styleNames = styleSheet.getUsedStyleNames();
@@ -277,9 +263,15 @@ public class CssConverter extends Converter {
 		
 		// register referenced and dynamic styles:
 		codeList.add("\tstatic final Hashtable stylesByName = new Hashtable(" + styles.length + ");");
-		if (this.referencedStyles.size() > 0) {
-			styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
+		
+		//if (this.referencedStyles.size() > 0) {
 			codeList.add("\tstatic { \t//register referenced and dynamic styles:");
+			for (int i = 0; i < styles.length; i++) {
+				Style style = styles[i];
+				String name = style.getSelector();
+				codeList.add("\t\tstylesByName.put( \"" + name + "\", " + style.getStyleName() + "Style );");
+			}
+			styles = (Style[]) this.referencedStyles.toArray( new Style[ this.referencedStyles.size() ] );
 			for (int i = 0; i < styles.length; i++) {
 				Style style = styles[i];
 				String name = style.getAbbreviation();
@@ -288,12 +280,13 @@ public class CssConverter extends Converter {
 				}
 				codeList.add("\t\tstylesByName.put( \"" + name + "\", " + style.getStyleName() + "Style );");
 			}
+			
 			for (Iterator iter = staticCodeList.iterator(); iter.hasNext();) {
 				String line  = (String) iter.next();
 				codeList.add( line );
 			}
 			codeList.add("\t}");
-		}
+		//}
 
 		
 		// create focused style if necessary:

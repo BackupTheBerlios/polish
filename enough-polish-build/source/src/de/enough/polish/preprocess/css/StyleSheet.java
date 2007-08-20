@@ -31,8 +31,6 @@ import de.enough.polish.util.StringUtil;
 import de.enough.polish.BuildException;
 
 import java.util.*;
-import java.util.HashMap;
-import java.util.Set;
 
 /**
  * <p>Represents a StyleSheet for a specific application.</p>
@@ -286,6 +284,17 @@ public class StyleSheet {
 				markReferences(style, referencedStylesByName);
 			}
 		}
+		// always include styles:
+		Style[] allStyles = getAllStyles();
+		for (int i = 0; i < allStyles.length; i++) {
+			Style style = allStyles[i];
+			if ( !stylesList.contains(style) && "true".equals(style.getAttributeValue( "always-include" ) ) ) 
+			{
+				stylesList.add( style );
+				markReferences(style, referencedStylesByName);				
+			}
+		}
+
 		// dynamic styles:
 		if (this.containsDynamicStyles) {
 			Style[] dynamicStyles = getDynamicStyles();
