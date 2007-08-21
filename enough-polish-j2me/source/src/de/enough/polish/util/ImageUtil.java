@@ -459,6 +459,112 @@ public final class ImageUtil {
 	}
 	
 	//#if polish.hasFloatingPoint
+	public static int [] perspectiveShear(int [] src, int originalWidth, int newWidth, int rightHeight,int leftHeight){
+		int opacity=255;
+		
+		//System.out.println(" scaleCover requested with height="+ leftHeight + " width" + newWidth);
+		/*for (int i = 0; i < src.length; i++) {
+			if(src[i]!=0){
+				src[i] = 255<<24 | 255;
+			}
+		}*/
+			
+		int originalHeight= src.length/originalWidth;
+		/*for (int y = 0; y <originalHeight; y++) {
+			for (int x = 0; x < originalWidth; x++) {
+				if (src[y*originalWidth+ x] !=0){
+					if ((x&1)==0){
+						src[y*originalWidth+ x]= 255<<24 | 255<<16;
+					} else {
+						src[y*originalWidth+ x]= 255<<24 | 255<<8;
+					}
+					//src[y*originalWidth+ x]=255<<24 | (y*3)<<8;
+				}
+					
+			}
+		}*/
+		
+		
+		float scaleX =  (float)originalWidth/newWidth; 
+		//int originalHeight=leftHeight;
+		int [] dest = new int[newWidth*originalHeight];
+		float srcX=0;
+		float srcY=0;
+		int h;
+		float shrinkY=((float)originalHeight-rightHeight)/originalWidth/2; // TODO: maxHeight-minHeight 
+		float scaleY;
+		float yIntensityStart, yIntensityEnd;
+		
+		int destPointer;
+		int tmp[]=new int[5];
+		
+		try {
+		for (int destX = 0; destX < newWidth; destX++) {
+			srcX=(int)(scaleX*destX);
+			
+			h=(int)(shrinkY*destX);
+			scaleY=(float)originalHeight/(originalHeight-2*h);
+			for (int destY = 0; destY < originalHeight-2*h; destY++) {
+				srcY=(scaleY*destY); //TODO genauer rechnen?
+				
+				destPointer=(destY+h)*newWidth +destX;
+				
+				// process the pixel 
+				tmp[0]=0;
+				tmp[1]=0;
+				tmp[2]=0;
+				tmp[3]=0;
+				tmp[4]=0;
+				
+				yIntensityStart=1-(srcY-(int)srcY);
+				yIntensityEnd=(srcY+scaleY-(int)(srcY+scaleY));
+				if(yIntensityEnd==0 && scaleY!=(int)scaleY){
+					yIntensityEnd=1;
+				}
+				
+				//tmp=mixPixelIn(tmp, src[srcY*originalWidth + srcX], 255, 0);
+				
+				// start
+				tmp=mixPixelIn(tmp,src[(int)srcY*originalWidth + (int)srcX],(int)(yIntensityStart*(1<<10)) ,0);
+				// between
+				int smallY;
+				for (smallY = (int) srcY+1; smallY < srcY+scaleY-1; smallY++) {
+					tmp=mixPixelIn(tmp,src[smallY*originalWidth + (int)srcX],1<<10 ,0);
+				}
+				// end
+				
+				if (smallY<originalHeight){
+					tmp=mixPixelIn(tmp,src[smallY*originalWidth + (int)srcX],(int)(yIntensityEnd*(1<<10)) ,0);
+				} else {
+					 //mix transparency in
+					tmp=mixPixelIn(tmp, 0 , (int)(yIntensityEnd*(1<<10)),0);
+				}
+				
+				// assemble the pixel 
+				if(tmp[1]==0){
+					dest[destPointer]=0;
+				} else {
+					dest[destPointer]=	(tmp[1]*opacity/(255*tmp[0]))<<24 |(tmp[2]/(tmp[1]))<<16 |  (tmp[3]/(tmp[1]))<<8 | (tmp[4]/(tmp[1]));
+				}
+				
+				// this is the fast mode 
+				//dest[destPointer]=src[(int)srcY*originalWidth + (int)srcX];
+			}
+			
+		}
+		
+		} catch (Exception e) {
+			// TODO: handle exception
+			/*System.out.println( "oWidth " + originalWidth + "  oHeight " + originalHeight);
+			System.out.println( srcY + "Y  X" + srcX);
+			System.out.println(" scaleCover requested with height="+ rightHeight + " width" + newWidth);
+			*/e.printStackTrace();
+		}
+		return dest;
+	}
+	//#endif
+	
+	//#if polish.hasFloatingPoint
 	/**
 	 * Rotates the given RGB data image and uses the center as the reference point for the rotation.
 	 * 
