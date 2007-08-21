@@ -260,9 +260,6 @@ public final class ImageUtil {
 			throw new IllegalArgumentException(" scale >5 may lead to internal overflows");
 		}
 		
-		System.out.println(" scaling requested with scale=" + (float)scaleS/(1<<PSEUDO_FLOAT));
-		
-		
 		// recomputation of the size prevents precision errors
 		if(scaledHeight==0){
 			scaledHeight=((srcHeight<<PSEUDO_FLOAT)/scaleS);
