@@ -446,121 +446,267 @@ public final class ImageUtil {
 		} else {
 			
 			int alpha=(add>>>24);
-			current[0]+=intensity;
+			current[0]+=intensity;									// intensity channel
 			
-			current[1]+= 			( (add>>>24&255)*intensity);
+			current[1]+= 			( (add>>>24&255)*intensity);	// alpha channel
 			
-			current[2]+= 	 	( (add>>>16&255)*intensity*alpha);
-			current[3]+=  	( (add>>>8&255)*intensity*alpha);
-			current[4]+=		( (add&255)*intensity*alpha);
+			current[2]+= 	 	( (add>>>16&255)*intensity*alpha);	// red
+			current[3]+=  	( (add>>>8&255)*intensity*alpha);		// green
+			current[4]+=		( (add&255)*intensity*alpha);		// blue
 			
 			return current;
 		}
 	}
 	
 	//#if polish.hasFloatingPoint
-	public static int [] perspectiveShear(int [] src, int originalWidth, int newWidth, int rightHeight,int leftHeight){
-		int opacity=255;
+	// TODO test
+	// TODO scaling on the left and on the right side
+	public static int [] perspectiveShearSimple(int [] src, int originalWidth, int newWidth, int rightHeight,int leftHeight, int opacity){
 		
-		//System.out.println(" scaleCover requested with height="+ leftHeight + " width" + newWidth);
 		/*for (int i = 0; i < src.length; i++) {
-			if(src[i]!=0){
-				src[i] = 255<<24 | 255;
+			if(src[i]==0){
+				src[i] = 255<<24 | 0<<16;
 			}
 		}*/
-			
+		
+		float scaleX = (float)originalWidth/newWidth; 
 		int originalHeight= src.length/originalWidth;
-		/*for (int y = 0; y <originalHeight; y++) {
+		int [] dest = new int[originalWidth*originalHeight];
+		float srcX=0;
+		float srcY=0;
+		int h;
+		float scaleY;
+		
+		int destPointer;
+		
+		int smallHeight;
+		int largeHeight;
+		if (leftHeight>rightHeight) {
+			smallHeight=rightHeight;
+			largeHeight=leftHeight;
+		} else {
+			smallHeight=leftHeight;
+			largeHeight=rightHeight;
+		}
+		float shrinkY=((float)largeHeight-smallHeight)/originalWidth/2; 
+		
+		try {
+			
+		for (int destX = 0; destX < newWidth; destX++) {
+			srcX=(int)(scaleX*destX); // TODO does (int lead to an error??)
+			
+			if (leftHeight>rightHeight) {
+				h=(originalHeight-largeHeight)/2+(int)(shrinkY*srcX); // TODO making a float out of this would increase the quality a bit
+			} else{
+				h=(originalHeight-smallHeight)/2-(int)(shrinkY*srcX);
+			}
+			
+			scaleY=(float)originalHeight/(originalHeight-2*h);
+			for (int destY = 0; destY < originalHeight-2*h; destY++) {
+				srcY=(scaleY*destY); //TODO genauer rechnen?
+				
+				destPointer=(destY+h)*originalWidth +destX;
+				
+				// this is the fast mode 
+				dest[destPointer]=src[(int)srcY*originalWidth + (int)srcX];
+			}
+		}
+		
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		return dest;
+		
+	}
+	public static int [] perspectiveShear(int [] src, int originalWidth, int newWidth,int leftHeight, int rightHeight, int opacity){
+		
+		System.out.println(" perspectiveShear requested with height="+ rightHeight + " width" + newWidth);
+		//System.out.println( "oWidth " + leftHeight + "  oHeight " + leftHeight);
+		
+		for (int i = 0; i < src.length; i++) {
+			if(src[i]==0){
+				src[i] = 255<<24 | 0<<16;
+			}
+		}
+	
+		
+		int originalHeight= src.length/originalWidth;
+		int smallHeight;
+		int largeHeight;
+		if (leftHeight>rightHeight) {
+			smallHeight=rightHeight;
+			largeHeight=leftHeight;
+		} else {
+			smallHeight=leftHeight;
+			largeHeight=rightHeight;
+		}
+		
+		/*
+		for (int y = 0; y <originalHeight; y++) {
 			for (int x = 0; x < originalWidth; x++) {
-				if (src[y*originalWidth+ x] !=0){
+				//if (src[y*originalWidth+ x] !=0){
 					if ((x&1)==0){
 						src[y*originalWidth+ x]= 255<<24 | 255<<16;
 					} else {
 						src[y*originalWidth+ x]= 255<<24 | 255<<8;
 					}
 					//src[y*originalWidth+ x]=255<<24 | (y*3)<<8;
-				}
+				//}
 					
 			}
 		}*/
 		
+		long t = System.currentTimeMillis();
 		
-		float scaleX =  (float)originalWidth/newWidth; 
 		//int originalHeight=leftHeight;
-		int [] dest = new int[newWidth*originalHeight];
+		// TODO loeschen und stattdessen nullen schreiben (aber kontrolliert!)
+		int [] dest = new int[originalWidth*originalHeight];// new int[newWidth*originalHeight];
+		
 		float srcX=0;
 		float srcY=0;
 		int h;
-		float shrinkY=((float)originalHeight-rightHeight)/originalWidth/2; // TODO: maxHeight-minHeight 
+		float shrinkY=((float)largeHeight-smallHeight)/originalWidth/2; // TODO: maxHeight-minHeight 
 		float scaleY;
 		float yIntensityStart, yIntensityEnd;
 		
 		int destPointer;
 		int tmp[]=new int[5];
 		
-		try {
-		for (int destX = 0; destX < newWidth; destX++) {
-			srcX=(int)(scaleX*destX);
+		try{
 			
-			h=(int)(shrinkY*destX);
+		// partial vertical scaling 
+		int smallY;
+		for (srcX = 0; srcX < originalWidth; srcX++) { // there is no scaling in x direction here
+			
+			if (leftHeight>rightHeight) {
+				h=(originalHeight-largeHeight)/2+(int)(shrinkY*srcX); // TODO making a float out of this would increase the quality a bit
+			} else{
+				h=(originalHeight-smallHeight)/2-(int)(shrinkY*srcX);
+			}
+			
 			scaleY=(float)originalHeight/(originalHeight-2*h);
 			for (int destY = 0; destY < originalHeight-2*h; destY++) {
 				srcY=(scaleY*destY); //TODO genauer rechnen?
 				
-				destPointer=(destY+h)*newWidth +destX;
+				destPointer=(destY+h)*originalWidth + (int)srcX; // there is no scaling in x direction here          
 				
-				// process the pixel 
-				tmp[0]=0;
-				tmp[1]=0;
-				tmp[2]=0;
-				tmp[3]=0;
-				tmp[4]=0;
-				
-				yIntensityStart=1-(srcY-(int)srcY);
-				yIntensityEnd=(srcY+scaleY-(int)(srcY+scaleY));
-				if(yIntensityEnd==0 && scaleY!=(int)scaleY){
-					yIntensityEnd=1;
+				if((int)srcY!=originalHeight-1 && ((src[(int)srcY*originalWidth + (int)srcX]^src[(int)(srcY+1)*originalWidth + (int)srcX]) & EDGEDETECTION_MAP) ==0){
+					dest[destPointer]=src[(int)srcY*originalWidth + (int)srcX];
+					
+				} else{
+					
+					// process the pixel 
+					tmp[0]=0;
+					tmp[1]=0;
+					tmp[2]=0;
+					tmp[3]=0;
+					tmp[4]=0;
+					
+					yIntensityStart=1-(srcY-(int)srcY);
+					yIntensityEnd=(srcY+scaleY-(int)(srcY+scaleY));
+					if(yIntensityEnd==0 && scaleY!=(int)scaleY){
+						yIntensityEnd=1;
+					}
+					
+					// start
+					tmp=mixPixelIn(tmp,src[(int)srcY*originalWidth + (int)srcX],(int)(yIntensityStart*(1<<10)) ,0);
+					// between
+					for (smallY = (int) srcY+1; smallY < srcY+scaleY-1; smallY++) {
+						tmp=mixPixelIn(tmp,src[smallY*originalWidth + (int)srcX],1<<10 ,0);
+					}
+					// end
+					
+					if (smallY<originalHeight){
+						tmp=mixPixelIn(tmp,src[smallY*originalWidth + (int)srcX],(int)(yIntensityEnd*(1<<10)) ,0);
+					} else {
+						 //mix transparency in
+						tmp=mixPixelIn(tmp, 0 , (int)(yIntensityEnd*(1<<10)),0);
+					}
+					
+					// assemble the pixel 
+					if(tmp[1]==0){
+						dest[destPointer]=0;
+					} else {
+						dest[destPointer]=	(tmp[1]*opacity/(255*tmp[0]))<<24 |(tmp[2]/(tmp[1]))<<16 |  (tmp[3]/(tmp[1]))<<8 | (tmp[4]/(tmp[1]));
+					}
 				}
-				
-				//tmp=mixPixelIn(tmp, src[srcY*originalWidth + srcX], 255, 0);
-				
-				// start
-				tmp=mixPixelIn(tmp,src[(int)srcY*originalWidth + (int)srcX],(int)(yIntensityStart*(1<<10)) ,0);
-				// between
-				int smallY;
-				for (smallY = (int) srcY+1; smallY < srcY+scaleY-1; smallY++) {
-					tmp=mixPixelIn(tmp,src[smallY*originalWidth + (int)srcX],1<<10 ,0);
-				}
-				// end
-				
-				if (smallY<originalHeight){
-					tmp=mixPixelIn(tmp,src[smallY*originalWidth + (int)srcX],(int)(yIntensityEnd*(1<<10)) ,0);
-				} else {
-					 //mix transparency in
-					tmp=mixPixelIn(tmp, 0 , (int)(yIntensityEnd*(1<<10)),0);
-				}
-				
-				// assemble the pixel 
-				if(tmp[1]==0){
-					dest[destPointer]=0;
-				} else {
-					dest[destPointer]=	(tmp[1]*opacity/(255*tmp[0]))<<24 |(tmp[2]/(tmp[1]))<<16 |  (tmp[3]/(tmp[1]))<<8 | (tmp[4]/(tmp[1]));
-				}
-				
 				// this is the fast mode 
 				//dest[destPointer]=src[(int)srcY*originalWidth + (int)srcX];
 			}
 			
+		}
+
+		// horizontal shrinking
+		// TODO exceptions for scale > 1
+		float scaleX= (float)originalWidth/newWidth; 
+		int smallX;
+		if (true && scaleX!=1){
+			float xIntensityStart, xIntensityEnd;
+			//newWidth=originalWidth;
+			h=(originalHeight-largeHeight)/2;
+			for (int y = h; y < originalHeight-h; y++) {
+				for (int destX = 0; destX < newWidth; destX++) {
+					srcX=(scaleX*destX);
+					destPointer=y*originalWidth +destX; // TODO y*originalWidth ausgliedern
+					
+					if( y!=originalHeight-1 && ((dest[y*originalWidth + (int)srcX]^dest[y*originalWidth + (int)srcX+1])&EDGEDETECTION_MAP)==0){
+						dest[destPointer]= dest[y*originalWidth + (int)srcX];
+					} else{
+						
+						tmp[0]=0;
+						tmp[1]=0;
+						tmp[2]=0;
+						tmp[3]=0;
+						tmp[4]=0;
+						
+						xIntensityStart=1-(srcX-(int)srcX);
+						xIntensityEnd=(srcX+scaleX-(int)(srcX+scaleX));
+						if(xIntensityEnd==0){
+							xIntensityEnd=1;
+						}
+						
+						
+						//	start
+						tmp=mixPixelIn(tmp,dest[y*originalWidth + (int)srcX],(int)(xIntensityStart*(1<<10)) ,0);
+						// between
+						for (smallX = (int) srcX+1; smallX < srcX+scaleX-1; smallX++) {
+							tmp=mixPixelIn(tmp,dest[y*originalWidth + smallX],1<<10 ,0); // TODO destPixelIntensityMinimum
+						}
+						// end
+						if (smallX<originalWidth){
+							tmp=mixPixelIn(tmp,dest[y*originalWidth + smallX],(int)(xIntensityEnd*(1<<10)) ,0);
+						} else {
+							 //mix transparency in
+							tmp=mixPixelIn(tmp, 0 , (int)(xIntensityEnd*(1<<10)),0);
+						}
+						
+						// assemble the pixel 
+						if(tmp[1]==0){
+							dest[destPointer]=0;
+						} else {
+							dest[destPointer]=	(tmp[1]*opacity/(255*tmp[0]))<<24 |(tmp[2]/(tmp[1]))<<16 |  (tmp[3]/(tmp[1]))<<8 | (tmp[4]/(tmp[1]));
+						}
+					} 
+					
+				}
+				// TODO clear the rest
+				for (int x = newWidth; x < originalWidth; x++) {
+					dest[y*originalWidth +x]=0;
+				}
+			}
 		}
 		
 		} catch (Exception e) {
 			// TODO: handle exception
 			/*System.out.println( "oWidth " + originalWidth + "  oHeight " + originalHeight);
 			System.out.println( srcY + "Y  X" + srcX);
-			System.out.println(" scaleCover requested with height="+ rightHeight + " width" + newWidth);
-			*/e.printStackTrace();
+			System.out.println(" scaleCover requested with height="+ rightHeight + " width" + newWidth);*/
+			e.printStackTrace();
 		}
+		System.out.println(" time for perspective: " + (System.currentTimeMillis() - t));
 		return dest;
+		
 	}
 	//#endif
 	
