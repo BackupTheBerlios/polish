@@ -520,7 +520,7 @@ public final class ImageUtil {
 		
 	}
 	public static int [] perspectiveShear(int [] src, int originalWidth, int newWidth,int leftHeight, int rightHeight, int opacity){
-		
+		//#debug
 		System.out.println(" perspectiveShear requested with height="+ rightHeight + " width" + newWidth);
 		//System.out.println( "oWidth " + leftHeight + "  oHeight " + leftHeight);
 		
@@ -529,7 +529,7 @@ public final class ImageUtil {
 				src[i] = 255<<24 | 0<<16;
 			}
 		}
-	
+		
 		
 		int originalHeight= src.length/originalWidth;
 		int smallHeight;
@@ -563,12 +563,15 @@ public final class ImageUtil {
 		// TODO loeschen und stattdessen nullen schreiben (aber kontrolliert!)
 		int [] dest = new int[originalWidth*originalHeight];// new int[newWidth*originalHeight];
 		
-		float srcX=0;
-		float srcY=0;
+		int srcX=0;
+		int srcY=0;
+		int srcYdetailed=0;
+		
+		
 		int h;
-		float shrinkY=((float)largeHeight-smallHeight)/originalWidth/2; // TODO: maxHeight-minHeight 
-		float scaleY;
-		float yIntensityStart, yIntensityEnd;
+		int shrinkY=(1<<PSEUDO_FLOAT)*(largeHeight-smallHeight)/originalWidth/2; // TODO: maxHeight-minHeight 
+		int scaleY;
+		int yIntensityStart, yIntensityEnd;
 		
 		int destPointer;
 		int tmp[]=new int[5];
@@ -580,19 +583,21 @@ public final class ImageUtil {
 		for (srcX = 0; srcX < originalWidth; srcX++) { // there is no scaling in x direction here
 			
 			if (leftHeight>rightHeight) {
-				h=(originalHeight-largeHeight)/2+(int)(shrinkY*srcX); // TODO making a float out of this would increase the quality a bit
+				h=(originalHeight-largeHeight)/2+((shrinkY*srcX)>>PSEUDO_FLOAT);
 			} else{
-				h=(originalHeight-smallHeight)/2-(int)(shrinkY*srcX);
+				h=(originalHeight-smallHeight)/2-((shrinkY*srcX)>>PSEUDO_FLOAT);
 			}
 			
-			scaleY=(float)originalHeight/(originalHeight-2*h);
+			scaleY=(1<<PSEUDO_FLOAT)*originalHeight/(originalHeight-2*h);
 			for (int destY = 0; destY < originalHeight-2*h; destY++) {
-				srcY=(scaleY*destY); //TODO genauer rechnen?
+				srcYdetailed=((scaleY*destY)); //TODO genauer rechnen?
 				
-				destPointer=(destY+h)*originalWidth + (int)srcX; // there is no scaling in x direction here          
+				srcY=srcYdetailed>>PSEUDO_FLOAT;
 				
-				if((int)srcY!=originalHeight-1 && ((src[(int)srcY*originalWidth + (int)srcX]^src[(int)(srcY+1)*originalWidth + (int)srcX]) & EDGEDETECTION_MAP) ==0){
-					dest[destPointer]=src[(int)srcY*originalWidth + (int)srcX];
+				destPointer=(destY+h)*originalWidth + srcX; // there is no scaling in x direction here          
+				
+				if(srcY!=originalHeight-1 && ((src[srcY*originalWidth + srcX]^src[(srcY+1)*originalWidth + srcX]) & EDGEDETECTION_MAP) ==0){
+					dest[destPointer]=src[srcY*originalWidth + srcX];
 					
 				} else{
 					
@@ -603,25 +608,30 @@ public final class ImageUtil {
 					tmp[3]=0;
 					tmp[4]=0;
 					
-					yIntensityStart=1-(srcY-(int)srcY);
-					yIntensityEnd=(srcY+scaleY-(int)(srcY+scaleY));
-					if(yIntensityEnd==0 && scaleY!=(int)scaleY){
-						yIntensityEnd=1;
+//					 CALC THE OVERLAP OF Y
+					yIntensityStart=PSEUDO_POW2-(srcYdetailed&PSEUDO_POW2M1);
+					
+					// yIntensity=1; // in between
+					yIntensityEnd=(srcYdetailed+scaleY)&PSEUDO_POW2M1;
+					if(yIntensityEnd==0){
+						//yIntensityEnd=1;
+						yIntensityEnd=PSEUDO_POW2;
 					}
 					
+					
 					// start
-					tmp=mixPixelIn(tmp,src[(int)srcY*originalWidth + (int)srcX],(int)(yIntensityStart*(1<<10)) ,0);
+					tmp=mixPixelIn(tmp,src[srcY*originalWidth + srcX],(yIntensityStart) ,0);
 					// between
-					for (smallY = (int) srcY+1; smallY < srcY+scaleY-1; smallY++) {
-						tmp=mixPixelIn(tmp,src[smallY*originalWidth + (int)srcX],1<<10 ,0);
+					for (smallY = srcY+1; smallY <= ((srcYdetailed+scaleY)>>PSEUDO_FLOAT)-1; smallY++) {
+						tmp=mixPixelIn(tmp,src[smallY*originalWidth + srcX],PSEUDO_POW2 ,0);
 					}
 					// end
 					
 					if (smallY<originalHeight){
-						tmp=mixPixelIn(tmp,src[smallY*originalWidth + (int)srcX],(int)(yIntensityEnd*(1<<10)) ,0);
+						tmp=mixPixelIn(tmp,src[smallY*originalWidth + srcX],(yIntensityEnd) ,0);
 					} else {
 						 //mix transparency in
-						tmp=mixPixelIn(tmp, 0 , (int)(yIntensityEnd*(1<<10)),0);
+						tmp=mixPixelIn(tmp, 0 , (yIntensityEnd),0);
 					}
 					
 					// assemble the pixel 
@@ -631,15 +641,14 @@ public final class ImageUtil {
 						dest[destPointer]=	(tmp[1]*opacity/(255*tmp[0]))<<24 |(tmp[2]/(tmp[1]))<<16 |  (tmp[3]/(tmp[1]))<<8 | (tmp[4]/(tmp[1]));
 					}
 				}
-				// this is the fast mode 
-				//dest[destPointer]=src[(int)srcY*originalWidth + (int)srcX];
 			}
 			
 		}
-
+		
 		// horizontal shrinking
 		// TODO exceptions for scale > 1
-		float scaleX= (float)originalWidth/newWidth; 
+		int scaleX= (1<<PSEUDO_FLOAT)*originalWidth/newWidth; 
+		int srcXdetailed;
 		int smallX;
 		if (true && scaleX!=1){
 			float xIntensityStart, xIntensityEnd;
@@ -647,11 +656,14 @@ public final class ImageUtil {
 			h=(originalHeight-largeHeight)/2;
 			for (int y = h; y < originalHeight-h; y++) {
 				for (int destX = 0; destX < newWidth; destX++) {
-					srcX=(scaleX*destX);
+					srcXdetailed=(scaleX*destX);
+					
+					srcX=srcXdetailed>>PSEUDO_FLOAT;
+				
 					destPointer=y*originalWidth +destX; // TODO y*originalWidth ausgliedern
 					
-					if( y!=originalHeight-1 && ((dest[y*originalWidth + (int)srcX]^dest[y*originalWidth + (int)srcX+1])&EDGEDETECTION_MAP)==0){
-						dest[destPointer]= dest[y*originalWidth + (int)srcX];
+					if( y!=originalHeight-1 && ((dest[y*originalWidth + srcX]^dest[y*originalWidth + srcX+1])&EDGEDETECTION_MAP)==0){
+						dest[destPointer]= dest[y*originalWidth + srcX];
 					} else{
 						
 						tmp[0]=0;
@@ -660,25 +672,30 @@ public final class ImageUtil {
 						tmp[3]=0;
 						tmp[4]=0;
 						
-						xIntensityStart=1-(srcX-(int)srcX);
-						xIntensityEnd=(srcX+scaleX-(int)(srcX+scaleX));
+						// CALC THE OVERLAP OF X
+						xIntensityStart=PSEUDO_POW2-(srcXdetailed&PSEUDO_POW2M1);
+						
+						// yIntensity=1; // in between
+						//yIntensityEnd=(srcY+scale-(int)(srcY+scale));
+						xIntensityEnd=(srcXdetailed+scaleX)&PSEUDO_POW2M1;
 						if(xIntensityEnd==0){
-							xIntensityEnd=1;
+							//yIntensityEnd=1;
+							xIntensityEnd=PSEUDO_POW2;
 						}
 						
 						
 						//	start
-						tmp=mixPixelIn(tmp,dest[y*originalWidth + (int)srcX],(int)(xIntensityStart*(1<<10)) ,0);
+						tmp=mixPixelIn(tmp,dest[y*originalWidth + srcX],(int)(xIntensityStart) ,0);
 						// between
-						for (smallX = (int) srcX+1; smallX < srcX+scaleX-1; smallX++) {
-							tmp=mixPixelIn(tmp,dest[y*originalWidth + smallX],1<<10 ,0); // TODO destPixelIntensityMinimum
+						for (smallX =  srcX+1; smallX <= ((srcXdetailed+scaleX)>>PSEUDO_FLOAT)-1; smallX++) {
+							tmp=mixPixelIn(tmp,dest[y*originalWidth + smallX],PSEUDO_POW2 ,0); // TODO destPixelIntensityMinimum
 						}
 						// end
 						if (smallX<originalWidth){
-							tmp=mixPixelIn(tmp,dest[y*originalWidth + smallX],(int)(xIntensityEnd*(1<<10)) ,0);
+							tmp=mixPixelIn(tmp,dest[y*originalWidth + smallX],(int)(xIntensityEnd) ,0);
 						} else {
 							 //mix transparency in
-							tmp=mixPixelIn(tmp, 0 , (int)(xIntensityEnd*(1<<10)),0);
+							tmp=mixPixelIn(tmp, 0 , (int)(xIntensityEnd),0);
 						}
 						
 						// assemble the pixel 
@@ -704,6 +721,7 @@ public final class ImageUtil {
 			System.out.println(" scaleCover requested with height="+ rightHeight + " width" + newWidth);*/
 			e.printStackTrace();
 		}
+		//#debug
 		System.out.println(" time for perspective: " + (System.currentTimeMillis() - t));
 		return dest;
 		
