@@ -242,6 +242,10 @@
 	</vendor>	
 
 	<vendor>
+		<name>Verizon</name>
+	</vendor>	
+
+	<vendor>
 		<name>NTT-DoCoMo</name>
 		<capability name="vendor.alias" value="NTT DoCoMo" />
 	</vendor>	
