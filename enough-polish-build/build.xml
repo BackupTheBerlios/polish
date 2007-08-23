@@ -826,7 +826,7 @@
 		    	nodeprecated="false" 
 		    	packagenames="de.enough.*" 
 		    	sourcepath="../enough-polish-j2me/source/src" 
-		    	classpath="../enough-polish-j2me/bin/classes:import/midp2.jar" 
+		    	classpath="../enough-polish-j2me/bin/classes:import/cldc-1.1.jar:import/midp-2.0.jar" 
 		    	doctitle="The J2ME Polish Client Framework, Version ${Version}"
 		/>	
 		<!-- copy the whole website to the documentation -->
