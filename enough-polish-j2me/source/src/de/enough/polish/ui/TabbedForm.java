@@ -396,26 +396,26 @@ public class TabbedForm extends Form {
 		if (this.tabBar.isFocused) {
 			int nextTabIndex = this.activeTabIndex;
 			//#if polish.css.tabbar-roundtrip
-				if (gameAction == Canvas.RIGHT) {
+				if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) {
 					nextTabIndex = this.activeTabIndex + 1;
 					if (nextTabIndex >= this.tabContainers.length) {
 						nextTabIndex = 0;
 					}
-				} else if (gameAction == Canvas.LEFT) {
+				} else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
 					nextTabIndex = this.activeTabIndex - 1;
 					if (nextTabIndex < 0) {
 						nextTabIndex = this.tabContainers.length - 1;
 					}		
 				}
 			//#else
-				if (gameAction == Canvas.RIGHT && this.activeTabIndex < (this.tabContainers.length - 1)) {
+				if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6 && this.activeTabIndex < (this.tabContainers.length - 1)) {
 					nextTabIndex = this.activeTabIndex + 1;
 				}
-				else if (gameAction == Canvas.LEFT && this.activeTabIndex > 0) {
+				else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4 && this.activeTabIndex > 0) {
 					nextTabIndex = this.activeTabIndex - 1;
 				}
 			//#endif
-			else if (gameAction == Canvas.DOWN) {
+			else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
 				this.tabBar.defocus(this.tabBar.style);
 				this.container.focus(this.container.style, Canvas.DOWN);
 		        //#if polish.blackberry
@@ -424,7 +424,7 @@ public class TabbedForm extends Form {
 				return true;
 			}
 			//#if polish.css.tabbar-roundtrip
-				else if (gameAction == Canvas.UP) {
+				else if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
 					this.tabBar.defocus(this.tabBar.style);
 					this.container.focus(this.container.style, Canvas.UP);
 			        //#if polish.blackberry
@@ -435,7 +435,7 @@ public class TabbedForm extends Form {
 			//#endif
 
 			if (this.activeTabIndex != nextTabIndex) {
-				setActiveTab(nextTabIndex, true );
+				setActiveTab(nextTabIndex, true);
 				return true;
 			}
 		}
@@ -443,10 +443,19 @@ public class TabbedForm extends Form {
 		boolean handled = super.handleKeyPressed(keyCode, gameAction);
 
 		// Focus the tabbar when needed.
-		if (!handled && (gameAction == Canvas.UP || gameAction == Canvas.DOWN)) {
-			this.container.defocus(this.container.style);
-			this.tabBar.focus(this.tabBar.style, gameAction);
-			return true;
+		if (!handled) {
+			if (gameAction == Canvas.UP || gameAction == Canvas.DOWN) {
+				this.container.defocus(this.container.style);
+				this.tabBar.focus(this.tabBar.style, gameAction);
+				return true;
+			}
+			//#if polish.blackberry and !polish.hasTrackballEvents
+				else if (gameAction == Canvas.LEFT | gameAction == Canvas.RIGHT) {
+					this.container.defocus(this.container.style);
+					this.tabBar.focus(this.tabBar.style, gameAction);
+					return true;
+				}
+			//#endif
 		}
 
 		return handled;
