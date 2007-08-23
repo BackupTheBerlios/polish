@@ -339,16 +339,14 @@ public class TabbedForm extends Form {
 		if (!tabContainer.isInitialized) {
 			tabContainer.init( this.contentWidth, this.contentWidth );
 		}
-		if (tabContainer.appearanceMode != Item.PLAIN) {
+		if (!focusTabBar && tabContainer.appearanceMode != Item.PLAIN) {
 			//#debug
 			System.out.println("Focusing tab [" + tabIndex + "].");
 			tabContainer.focus( tabContainer.style, 0 );
+	        //#if polish.blackberry
+		        //# setFocus( tabContainer );
+		    //#endif
 		}
-        //#if polish.blackberry
-	        else {
-	            //# setFocus( tabContainer );
-	        }
-	    //#endif
 		tabContainer.background = null;
 		tabContainer.border = null;
 		if (isShown()) {
@@ -356,8 +354,9 @@ public class TabbedForm extends Form {
 			repaint();
 		}
 		notifyTabbedChangeCompleted(oldTabIndex, this.activeTabIndex);
-		if (focusTabBar) {
-			focus(this.tabBar);
+		if (focusTabBar && !this.tabBar.isFocused) {
+			tabContainer.defocus( tabContainer.style );
+			this.tabBar.focus( this.tabBar.getFocusedStyle(), 0);
 		}
 	}
 	
@@ -419,18 +418,24 @@ public class TabbedForm extends Form {
 			else if (gameAction == Canvas.DOWN) {
 				this.tabBar.defocus(this.tabBar.style);
 				this.container.focus(this.container.style, Canvas.DOWN);
+		        //#if polish.blackberry
+			        //# setFocus( this.container );
+			    //#endif
 				return true;
 			}
 			//#if polish.css.tabbar-roundtrip
 				else if (gameAction == Canvas.UP) {
 					this.tabBar.defocus(this.tabBar.style);
 					this.container.focus(this.container.style, Canvas.UP);
+			        //#if polish.blackberry
+				        //# setFocus( this.container );
+				    //#endif
 					return true;
 				}
 			//#endif
 
 			if (this.activeTabIndex != nextTabIndex) {
-				setActiveTab(nextTabIndex);
+				setActiveTab(nextTabIndex, true );
 				return true;
 			}
 		}
@@ -449,6 +454,12 @@ public class TabbedForm extends Form {
 	
 	
 	public void focus(Item item) {
+		if (item == this.tabBar) {
+			item.focus( item.getFocusedStyle(), 0);
+			// defocus current container:
+			this.container.defocus( this.container.style );
+			return;
+		}
 		for (int i = 0; i < this.tabContainers.length; i++) {
 			Container tabContainer = this.tabContainers[i];
 			if ( tabContainer.itemsList.contains(item)) {
@@ -458,9 +469,6 @@ public class TabbedForm extends Form {
 				super.focus(item);
 				return;
 			}
-		}
-		if (item == this.tabBar) {
-			super.focus(item);
 		}
 	}
 	
