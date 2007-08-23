@@ -202,23 +202,39 @@ public final class ImageUtil {
 	 * 		A pixel has to be apx. greater than  1/(1<<(SCALE_THRESHOLD_SHIFT*2-1)) 
 	 * 		compared to the whole weight of the resulting pixel.
 	 * 
-	 * EDGELEVEL: (1<<X)-1  as you prefer
-	 * 		In order to save time it is possible to run an edge Detection over the source
-	 * 		image. The EDGELEVEL is used to generate the bitmask used to compare the pixel 
-	 * 		nearby. A detailed computation is done, in case of differeces that exceed the
-	 * 		mask in one of the Channels. 
 	 */
 	private static final int SCALE_THRESHOLD_SHIFT=3;
-	private static final int EDGELEVEL=63;
-	private static final int EDGEDETECTION_MAP=(0xff ^ 15)<<24 | (0xff ^ EDGELEVEL)<<16 | (0xff ^ EDGELEVEL)<<8 | (0xff ^ EDGELEVEL);
+	public static final int EDGEDETECTION_MAP_HIGHEST_QUALITY=-1; 	// highest quality ... never use this!!
+	public static final int EDGEDETECTION_MAP_HIGH_QUALITY=(0xff ^ 1)<<24 | (0xff ^ 1)<<16 | (0xff ^ 1)<<8 | (0xff ^ 1);
+	public static final int EDGEDETECTION_MAP_MEDIUM=(0xff ^ 15)<<24 | (0xff ^ 31)<<16 | (0xff ^ 15)<<8 | (0xff ^ 31);
+	public static final int EDGEDETECTION_MAP_FAST=(0xff ^ 15)<<24 | (0xff ^ 63)<<16 | (0xff ^ 63)<<8 | (0xff ^ 63);
+	public static final int EDGEDETECTION_MAP_FAST_AND_SIMPLE=0; 	// just the simple copy mode
+	
+	
+	/**
+	 * EDGEDETECTION_MAP_CUSTOM
+	 * 		In order to save time it is possible to run an edge Detection over the source
+	 * 		image.
+	 * 		You have the possibility to specify your own edge detection mask. The bitmask
+	 * 		is used to compare the pixel nearby. A detailed computation is done, in case
+	 * 		of differeces that exceed the mask in one of the Channels. 
+	 * 		
+	 *			private static final int EDGELEVEL=63;
+	 * 			public static final int EDGEDETECTION_MAP_CUSTOM=(0xff ^ 15)<<24 | (0xff ^ EDGELEVEL)<<16 | (0xff ^ EDGELEVEL)<<8 | (0xff ^ EDGELEVEL);
+	 */
+	
 	/**
 	 * This method provides an algorithm to shrink a given image (given as ARGB-array).
-	 * 	The supported shrink factor is between 20 and 99 percent of the source width.
+	 * In a lot of cases you can also use perspectiveShear with leftHeigt=rightHeight since
+	 * this might be faster.
+	 * 
+	 * 	However, the supported shrink factor is between 20 and 99 percent of the source width.
 	 * 	There are some optimizations in order to speed the computation up, but more speed
 	 * 		implies less quality. Depending on the image and the device it is recomended to
-	 * 		activate edgeDetection and SKIP_FRACTIONS. Those features estimated unimportant
-	 * 		pixel and process them with less compuation time. You can also change some constants
-	 * 		in ImageUtil if you want to finetune the algorithm accoring to your needs.
+	 * 		activate edgeDetection by passing an edgeDetection map and SKIP_FRACTIONS. 
+	 * 		Those features estimated unimportant pixel and process them with less compuation
+	 *  	time. You can also change some constants in ImageUtil if you want to finetune 
+	 *  	the algorithm accoring to your needs.
 	 * 
 	 * 
 	 * @param dest			the preallocated array to store the shrinked image
@@ -228,10 +244,10 @@ public final class ImageUtil {
 	 * @param scaledWidth	0 or the resulting width
 	 * @param scaledHeight	0 or the resulting height
 	 * @param opacity		you are able to add opacity information here (value between 1 and 255)
-	 * @param edgeDetection	enables optimization mode
+	 * @param EDGEDETECTION_MAP you can specify the level of edgeDetection using constants from ImageUtil
 	 * @param SKIP_FRACTIONS enables optimization mode
 	 */
-	public static void scaleDownHq(int[] dest, int[] src, int srcWidth, int scaleFactor, int scaledWidth, int scaledHeight, int opacity, boolean edgeDetection, boolean SKIP_FRACTIONS){
+	public static void scaleDownHq(int[] dest, int[] src, int srcWidth, int scaleFactor, int scaledWidth, int scaledHeight, int opacity,  int EDGEDETECTION_MAP, boolean SKIP_FRACTIONS){
 		/*// TEST CODE
 		for (int i = 0; i < src.length; i++) {
 			if (src[i]>>24!=0){
@@ -288,11 +304,11 @@ public final class ImageUtil {
 		} else {
 			destPixelItensityMinimum =0;
 		}
-		
-		//long t =System.currentTimeMillis();
+		//#debug
+		long t =System.currentTimeMillis();
 		
 		// opt01
-		if (edgeDetection){
+		if (EDGEDETECTION_MAP!=EDGEDETECTION_MAP_HIGHEST_QUALITY){
 			
 			scale(src, scaledWidth, scaledHeight, srcWidth, srcHeight, dest);
 		}
@@ -310,7 +326,7 @@ public final class ImageUtil {
 				
 				currentDestEdge=dest[destPointer]&EDGEDETECTION_MAP;
 				
-				if(!edgeDetection || // process the pixel if there is no edgedetection activated
+				if(EDGEDETECTION_MAP==EDGEDETECTION_MAP_HIGHEST_QUALITY || // process the pixel if there is no edgedetection activated
 						scaledY == scaledHeight-1 || // process the pixels and do not check the next statements if you are not in the last row
 						scaledY == 0 || 	  		 // same with the fist row
 						(
@@ -384,7 +400,7 @@ public final class ImageUtil {
 					} else {
 						dest[destPointer]=	(tmp[1]*opacity/(255*tmp[0]))<<24 |(tmp[2]/(tmp[1]))<<16 |  (tmp[3]/(tmp[1]))<<8 | (tmp[4]/(tmp[1]));
 					}
-				}
+				} 
 				
 				// refresh the (pseudo)float
 				srcXdetailed+=scaleS;
@@ -401,8 +417,8 @@ public final class ImageUtil {
 			srcYrounded=srcYdetailed>>PSEUDO_FLOAT;
 		}
 		
-		
-		//System.out.println("" + (System.currentTimeMillis() - t) + " ms");
+		//#debug
+		System.out.println("" + (System.currentTimeMillis() - t) + " ms");
 	}
 	/**
 	 * This function adds a weighted (by yIntesity) row of source pixels to the related destination pixel.  
@@ -458,78 +474,39 @@ public final class ImageUtil {
 		}
 	}
 	
-	//#if polish.hasFloatingPoint
-	// TODO test
-	// TODO scaling on the left and on the right side
-	public static int [] perspectiveShearSimple(int [] src, int originalWidth, int newWidth, int rightHeight,int leftHeight, int opacity){
-		
-		/*for (int i = 0; i < src.length; i++) {
-			if(src[i]==0){
-				src[i] = 255<<24 | 0<<16;
-			}
-		}*/
-		
-		float scaleX = (float)originalWidth/newWidth; 
-		int originalHeight= src.length/originalWidth;
-		int [] dest = new int[originalWidth*originalHeight];
-		float srcX=0;
-		float srcY=0;
-		int h;
-		float scaleY;
-		
-		int destPointer;
-		
-		int smallHeight;
-		int largeHeight;
-		if (leftHeight>rightHeight) {
-			smallHeight=rightHeight;
-			largeHeight=leftHeight;
-		} else {
-			smallHeight=leftHeight;
-			largeHeight=rightHeight;
-		}
-		float shrinkY=((float)largeHeight-smallHeight)/originalWidth/2; 
-		
-		try {
-			
-		for (int destX = 0; destX < newWidth; destX++) {
-			srcX=(int)(scaleX*destX); // TODO does (int lead to an error??)
-			
-			if (leftHeight>rightHeight) {
-				h=(originalHeight-largeHeight)/2+(int)(shrinkY*srcX); // TODO making a float out of this would increase the quality a bit
-			} else{
-				h=(originalHeight-smallHeight)/2-(int)(shrinkY*srcX);
-			}
-			
-			scaleY=(float)originalHeight/(originalHeight-2*h);
-			for (int destY = 0; destY < originalHeight-2*h; destY++) {
-				srcY=(scaleY*destY); //TODO genauer rechnen?
-				
-				destPointer=(destY+h)*originalWidth +destX;
-				
-				// this is the fast mode 
-				dest[destPointer]=src[(int)srcY*originalWidth + (int)srcX];
-			}
-		}
-		
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-		return dest;
-		
-	}
-	public static int [] perspectiveShear(int [] src, int originalWidth, int newWidth,int leftHeight, int rightHeight, int opacity){
-		//#debug
-		System.out.println(" perspectiveShear requested with height="+ rightHeight + " width" + newWidth);
-		//System.out.println( "oWidth " + leftHeight + "  oHeight " + leftHeight);
-		
-		for (int i = 0; i < src.length; i++) {
-			if(src[i]==0){
-				src[i] = 255<<24 | 0<<16;
-			}
-		}
-		
+	
+	/**
+	 * This function enables scaling a given image with differnt scaling factors in vertical and horizontal direction.
+	 * Futhermore you can specify a different scaling on the left and on the right side
+	 * as needed for implementing a coverflow. 
+	 * 
+	 * The resulting shrinked image will be located in the dest array that has the
+	 * same size and scanlength as the source array. It will be placed on the left 
+	 * side and vertically in the middle. So the offset will be 
+	 * dx=0, dy=(originalHeight-max(leftHeight,rightHeight))/2
+	 * The scanlength will remain the same!
+	 * 
+	 * 
+	 * @param src				The array containing the source image to be sheared.
+	 * @param dest				The array that will conatain the resulting image in 
+	 * 								a certered position. It has	to be the same size
+	 * 								as the source array. Scanlength = originalWidth
+	 * @param originalWidth		The width of the source image
+	 * @param newWidth			The desired new width of the image. Attention: the
+	 * 								destination image will still have the same size
+	 *								as the source image, but contain the new image
+	 *								centered within.
+	 * @param leftHeight		The hight of the left image border after scaling.
+	 * @param rightHeight		The hight of the right image border after scaling.
+	 * @param opacity			The opacity of the image all in all.
+	 * @param EDGEDETECTION_MAP	if !=0 this enables edge detection which will speed 
+	 * 								up the compuation. Please read the documentation
+	 * 								of scaleDownHq for details.
+	 * @see scaleDownHq
+	 */
+	public static void perspectiveShear(int [] src,int[] dest, int originalWidth, int newWidth,int leftHeight, int rightHeight, int opacity, int EDGEDETECTION_MAP){
+		// #debug
+		System.out.println(" perspectiveShear requested with height="+ rightHeight + " width" + newWidth  + " opacity " + opacity);
 		
 		int originalHeight= src.length/originalWidth;
 		int smallHeight;
@@ -542,8 +519,11 @@ public final class ImageUtil {
 			largeHeight=rightHeight;
 		}
 		
-		/*
-		for (int y = 0; y <originalHeight; y++) {
+		if(largeHeight>originalHeight || newWidth>originalWidth){
+			throw new IllegalArgumentException("just downscaling possible");
+		}
+		
+		/*for (int y = 0; y <originalHeight; y++) {
 			for (int x = 0; x < originalWidth; x++) {
 				//if (src[y*originalWidth+ x] !=0){
 					if ((x&1)==0){
@@ -556,12 +536,11 @@ public final class ImageUtil {
 					
 			}
 		}*/
-		
 		long t = System.currentTimeMillis();
 		
-		//int originalHeight=leftHeight;
-		// TODO loeschen und stattdessen nullen schreiben (aber kontrolliert!)
-		int [] dest = new int[originalWidth*originalHeight];// new int[newWidth*originalHeight];
+		for (int i = 0; i < dest.length; i++) {
+			dest[i]=0;
+		}
 		
 		int srcX=0;
 		int srcY=0;
@@ -569,15 +548,13 @@ public final class ImageUtil {
 		
 		
 		int h;
-		int shrinkY=(1<<PSEUDO_FLOAT)*(largeHeight-smallHeight)/originalWidth/2; // TODO: maxHeight-minHeight 
+		int shrinkY=(1<<PSEUDO_FLOAT)*(largeHeight-smallHeight)/originalWidth/2;
 		int scaleY;
 		int yIntensityStart, yIntensityEnd;
 		
 		int destPointer;
 		int tmp[]=new int[5];
 		
-		try{
-			
 		// partial vertical scaling 
 		int smallY;
 		for (srcX = 0; srcX < originalWidth; srcX++) { // there is no scaling in x direction here
@@ -588,16 +565,18 @@ public final class ImageUtil {
 				h=(originalHeight-smallHeight)/2-((shrinkY*srcX)>>PSEUDO_FLOAT);
 			}
 			
-			scaleY=(1<<PSEUDO_FLOAT)*originalHeight/(originalHeight-2*h);
-			for (int destY = 0; destY < originalHeight-2*h; destY++) {
-				srcYdetailed=((scaleY*destY)); //TODO genauer rechnen?
+			scaleY=(1<<PSEUDO_FLOAT)*originalHeight/(originalHeight-(h<<1));
+			for (int destY = 0; destY < originalHeight-(h<<1); destY++) {
+				srcYdetailed=((scaleY*destY)); 
 				
 				srcY=srcYdetailed>>PSEUDO_FLOAT;
 				
 				destPointer=(destY+h)*originalWidth + srcX; // there is no scaling in x direction here          
 				
-				if(srcY!=originalHeight-1 && ((src[srcY*originalWidth + srcX]^src[(srcY+1)*originalWidth + srcX]) & EDGEDETECTION_MAP) ==0){
-					dest[destPointer]=src[srcY*originalWidth + srcX];
+				int srcY_width = srcY*originalWidth;
+				if(EDGEDETECTION_MAP!= EDGEDETECTION_MAP_HIGHEST_QUALITY && srcY!=originalHeight-1 && ((src[srcY_width + srcX]^src[(srcY+1)*originalWidth + srcX]) & EDGEDETECTION_MAP) ==0){
+					dest[destPointer]=src[srcY_width + srcX];
+					dest[destPointer]=(dest[destPointer]&0x00ffffff)|((opacity*(dest[destPointer]>>>24)/255)<<24);
 					
 				} else{
 					
@@ -620,7 +599,7 @@ public final class ImageUtil {
 					
 					
 					// start
-					tmp=mixPixelIn(tmp,src[srcY*originalWidth + srcX],(yIntensityStart) ,0);
+					tmp=mixPixelIn(tmp,src[srcY_width + srcX],(yIntensityStart) ,0);
 					// between
 					for (smallY = srcY+1; smallY <= ((srcYdetailed+scaleY)>>PSEUDO_FLOAT)-1; smallY++) {
 						tmp=mixPixelIn(tmp,src[smallY*originalWidth + srcX],PSEUDO_POW2 ,0);
@@ -646,7 +625,6 @@ public final class ImageUtil {
 		}
 		
 		// horizontal shrinking
-		// TODO exceptions for scale > 1
 		int scaleX= (1<<PSEUDO_FLOAT)*originalWidth/newWidth; 
 		int srcXdetailed;
 		int smallX;
@@ -655,15 +633,17 @@ public final class ImageUtil {
 			//newWidth=originalWidth;
 			h=(originalHeight-largeHeight)/2;
 			for (int y = h; y < originalHeight-h; y++) {
+				int y_width = y*originalWidth;
 				for (int destX = 0; destX < newWidth; destX++) {
 					srcXdetailed=(scaleX*destX);
 					
 					srcX=srcXdetailed>>PSEUDO_FLOAT;
 				
-					destPointer=y*originalWidth +destX; // TODO y*originalWidth ausgliedern
+					destPointer=y_width +destX;
 					
-					if( y!=originalHeight-1 && ((dest[y*originalWidth + srcX]^dest[y*originalWidth + srcX+1])&EDGEDETECTION_MAP)==0){
-						dest[destPointer]= dest[y*originalWidth + srcX];
+					if(EDGEDETECTION_MAP!= EDGEDETECTION_MAP_HIGHEST_QUALITY && y!=originalHeight-1 && ((dest[y_width + srcX]^dest[y_width + srcX+1])&EDGEDETECTION_MAP)==0){
+						dest[destPointer]= dest[y_width + srcX];
+						
 					} else{
 						
 						tmp[0]=0;
@@ -683,16 +663,15 @@ public final class ImageUtil {
 							xIntensityEnd=PSEUDO_POW2;
 						}
 						
-						
 						//	start
-						tmp=mixPixelIn(tmp,dest[y*originalWidth + srcX],(int)(xIntensityStart) ,0);
+						tmp=mixPixelIn(tmp,dest[y_width + srcX],(int)(xIntensityStart) ,0);
 						// between
 						for (smallX =  srcX+1; smallX <= ((srcXdetailed+scaleX)>>PSEUDO_FLOAT)-1; smallX++) {
-							tmp=mixPixelIn(tmp,dest[y*originalWidth + smallX],PSEUDO_POW2 ,0); // TODO destPixelIntensityMinimum
+							tmp=mixPixelIn(tmp,dest[y_width + smallX],PSEUDO_POW2 ,0);
 						}
 						// end
 						if (smallX<originalWidth){
-							tmp=mixPixelIn(tmp,dest[y*originalWidth + smallX],(int)(xIntensityEnd) ,0);
+							tmp=mixPixelIn(tmp,dest[y_width + smallX],(int)(xIntensityEnd) ,0);
 						} else {
 							 //mix transparency in
 							tmp=mixPixelIn(tmp, 0 , (int)(xIntensityEnd),0);
@@ -702,31 +681,22 @@ public final class ImageUtil {
 						if(tmp[1]==0){
 							dest[destPointer]=0;
 						} else {
-							dest[destPointer]=	(tmp[1]*opacity/(255*tmp[0]))<<24 |(tmp[2]/(tmp[1]))<<16 |  (tmp[3]/(tmp[1]))<<8 | (tmp[4]/(tmp[1]));
+							dest[destPointer]=	(tmp[1]/tmp[0])<<24 |(tmp[2]/(tmp[1]))<<16 |  (tmp[3]/(tmp[1]))<<8 | (tmp[4]/(tmp[1]));
 						}
 					} 
 					
 				}
-				// TODO clear the rest
+				// clear the rest
 				for (int x = newWidth; x < originalWidth; x++) {
-					dest[y*originalWidth +x]=0;
+					dest[y_width +x]=0;
 				}
 			}
 		}
 		
-		} catch (Exception e) {
-			// TODO: handle exception
-			/*System.out.println( "oWidth " + originalWidth + "  oHeight " + originalHeight);
-			System.out.println( srcY + "Y  X" + srcX);
-			System.out.println(" scaleCover requested with height="+ rightHeight + " width" + newWidth);*/
-			e.printStackTrace();
-		}
-		//#debug
+		// #debug
 		System.out.println(" time for perspective: " + (System.currentTimeMillis() - t));
-		return dest;
 		
 	}
-	//#endif
 	
 	//#if polish.hasFloatingPoint
 	/**
