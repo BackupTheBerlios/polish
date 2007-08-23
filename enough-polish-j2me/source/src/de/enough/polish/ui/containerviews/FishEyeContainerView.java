@@ -150,7 +150,7 @@ public class FishEyeContainerView extends ContainerView {
 							int newHeight = (newWidth * originalHeight) / originalWidth;
 							int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length>>1 );
 							//this.shownRgbData[i] = ImageUtil.scale(alpha, data, newWidth, newHeight, originalWidth, originalHeight );
-							ImageUtil.scaleDownHq(this.shownRgbData[i],data, originalWidth, 0, newWidth, 0, alpha, true, false);
+							ImageUtil.scaleDownHq(this.shownRgbData[i],data, originalWidth, 0, newWidth, 0, alpha, ImageUtil.EDGEDETECTION_MAP_FAST, false);
 							this.shownRgbDataWidths[i] = newWidth;
 							this.shownRgbDataHeight[i] = newHeight;
 						}
@@ -300,7 +300,7 @@ public class FishEyeContainerView extends ContainerView {
 					//this.shownRgbData[i] = ImageUtil.scale(data, newWidth, newHeight, width, height );
 					int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length>>1 );
 					this.shownRgbData[i]=new int[data.length];
-					ImageUtil.scaleDownHq(this.shownRgbData[i], data,width, 0, newWidth, 0, alpha, true, false);
+					ImageUtil.scaleDownHq(this.shownRgbData[i], data,width, 0, newWidth, 0, alpha, ImageUtil.EDGEDETECTION_MAP_FAST, false);
 					this.shownRgbDataWidths[i] = newWidth;
 					this.shownRgbDataHeight[i] = newHeight;
 				}
