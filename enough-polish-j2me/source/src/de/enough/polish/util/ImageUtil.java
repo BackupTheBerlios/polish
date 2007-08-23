@@ -273,7 +273,7 @@ public final class ImageUtil {
 		}else if(scaleS<1<<PSEUDO_FLOAT){
 			throw new IllegalArgumentException();
 		} else if(scaleS>5<<PSEUDO_FLOAT){ // max is probably sqrt(32)
-			throw new IllegalArgumentException(" scale >5 may lead to internal overflows");
+			throw new IllegalArgumentException(" scale >5 may lead to internal overflows use perspectiveShear instead");
 		}
 		
 		// recomputation of the size prevents precision errors
