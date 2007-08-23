@@ -57,7 +57,7 @@
 	    	nodeprecated="false" 
 	    	packagenames="de.enough.*" 
 	    	sourcepath="source/src:source/extensions" 
-	    	classpath="bin/classes:import/ant.jar:import/junit.jar" 
+	    	classpath="bin/classes:lib/ant.jar:lib/junit.jar" 
 	    	doctitle="J2ME Polish build framework"
 	    />
 	</target>
