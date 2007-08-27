@@ -51,7 +51,7 @@ public class TrieInstaller {
 		if(this.magic != MAGIC)
 			throw new IllegalArgumentException("The source file predictive.trie is not a dictionary");
 		
-		if(this.version < 100)
+		if(this.version != VERSION)
 			throw new IllegalArgumentException("The dictionary is an deprecated version, must at least be " + VERSION);
 	}
 	

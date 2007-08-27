@@ -1019,9 +1019,10 @@ public class TextField extends StringItem
 				this.addCommand(INSTALL_PREDICTIVE_CMD);
 				this.predictiveInput = false;
 			}
-			catch(SecurityException e)
+			catch(Exception e)
 			{
-				this.setText(e.getClass().getName() + ":" + e.getMessage());
+				//#debug error
+				System.out.println("unable to load predictive dictionary " + e);
 			}
 		//#endif
 	}

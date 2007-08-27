@@ -15,9 +15,9 @@ public class TrieProvider {
 	private RecordStore store = null;
 	private HashMap records   = null; 
 	
+	private int version		= 0;
 	private int chunkSize 	= 0;
 	private int lineCount 	= 0;
-	private int type		= 0;
 	
 	private int maxRecords = 5;
 	
@@ -44,9 +44,15 @@ public class TrieProvider {
 		
 		byte[] bytes = this.store.getRecord(TrieInstaller.HEADER_RECORD);
 		
+		this.version	= TrieUtils.byteToInt(bytes, TrieInstaller.VERSION_OFFSET);
+		
+		if(this.version != TrieInstaller.VERSION)
+		{
+			throw new RecordStoreException("");
+		}
+		
 		this.chunkSize 	= TrieUtils.byteToInt(bytes, TrieInstaller.CHUNKSIZE_OFFSET);
 		this.lineCount 	= TrieUtils.byteToInt(bytes, TrieInstaller.LINECOUNT_OFFSET);
-		this.type 		= TrieUtils.byteToInt(bytes, TrieInstaller.TYPE_OFFSET);
 		
 		this.custom = new TrieCustom();
 		
