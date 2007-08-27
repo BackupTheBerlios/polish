@@ -441,6 +441,9 @@ public class TabbedForm extends Form {
 				setActiveTab(nextTabIndex, true);
 				return true;
 			}
+
+			// Don't continue processing events when tabbar is focused.
+			return false;
 		}
 
 		boolean handled = super.handleKeyPressed(keyCode, gameAction);
