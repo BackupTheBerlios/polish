@@ -5238,6 +5238,8 @@ These namespaces/schemas will be used soon.
 		<capability name="AnnouncementDate" value="2007-02-12"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
 		<capability name="dtmf.separator" value="/"/>
+		<capability name="wap.userAgent" value="NokiaE65-1"/>
+		
 	</device>
 	
 	<device>
@@ -5348,6 +5350,7 @@ These namespaces/schemas will be used soon.
 		<!--  use Ctrl-i for triggering the symbol table as well: -->
 		<capability name="key.AddSymbolKey2" value="9" />
 		<!--  <capability name="dtmf.separator" value="/"/> -->
+		<capability name="wap.userAgent" value="NokiaE70"/>
 	</device>
 	
 	<device>
@@ -9635,6 +9638,14 @@ These namespaces/schemas will be used soon.
 
 <!-- LG Electronics devices -->
 	<device>
+		<identifier>LG/CU500, LG/CU500v, LG/TU500</identifier>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
+	</device>
+
+	<device>
 		<identifier>LG/KG800</identifier>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="18"/>
@@ -9739,12 +9750,13 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="320x240"/>
 		<capability name="FullCanvasSize" value="320x240"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.1"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
 		<capability name="SoundFormat" value="amr, nb-amr"/>
 		<capability name="Emulator.Skin" value="8700r"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+		<capability name="wap.userAgent" value="BlackBerry8700/4.1.0"/>
 	</device>
 
 	<device>
@@ -9888,6 +9900,23 @@ These namespaces/schemas will be used soon.
 	</device>
 	
 <!-- Samsung devices -->
+
+	<device>
+		<identifier>Samsung/Blackjack</identifier>
+		<capability name="OS" value="Windows Mobile 5"/>
+		<capability name="ScreenSize" value="320x240"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="key.LeftSoftKey" value="57345"/>
+		<capability name="key.RightSoftKey" value="57346"/>
+		<capability name="Font.small" value="16"/>
+		<capability name="Font.medium" value="21"/>
+		<capability name="Font.large" value="27"/>
+		<capability name="mmapi.protocol.http" value="audio/basic, audio/midi, audio/x-wav"/>
+		<capability name="mmapi.protocol.https" value="audio/basic, audio/midi, audio/x-wav"/>
+		<capability name="mmapi.protocol.device" value="audio/x-tone-seq"/>
+		<capability name="Property.microedition.platform" value="intent JTE"/>
+	</device>
 
 	<device>
 		<identifier>Samsung/E250</identifier>
@@ -10062,6 +10091,42 @@ These namespaces/schemas will be used soon.
 		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 		
+	<device> 
+		<identifier>Samsung/SPH-A900</identifier> 
+		<features>hasCommandKeyEvents</features>
+		<groups></groups>
+		<capability name="Region" value="Europe, Asia Pacific, Africa"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf, midi"/>
+		<capability name="SoundFormat" value="mmf, amr, midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="MenuBarHeight" value="34"/>
+		<capability name="CanvasSize" value="240x286"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="4 MB"/>
+		<capability name="VideoHeapSize" value="0 KB"/>
+		<capability name="MaxJarSize" value="700 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="256 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="16"/>
+		<capability name="Font.medium" value="20"/>
+		<capability name="Font.large" value="24"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+	</device>
 				
 	<device> 
 		<identifier>Samsung/SGH-E900</identifier> 
@@ -10214,6 +10279,43 @@ These namespaces/schemas will be used soon.
 		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
 				
+	<device> 
+		<identifier>Samsung/SPH-I600</identifier> 
+		<features>hasCommandKeyEvents</features>
+		<groups></groups>
+		<capability name="Region" value="Americas"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="SamsungSoundFormat" value="mmf"/>
+		<capability name="SoundFormat" value="mmf, midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value=""/>
+		<capability name="mmapi.AudioPlayback" value="true"/>
+		<capability name="mmapi.AudioStreaming" value="false"/>
+		<capability name="mmapi.VideoCapture" value="false"/>
+		<capability name="mmapi.VideoPlayback" value="false"/>
+		<capability name="mmapi.VideoStreaming" value="false"/>
+		<capability name="mmapi.VideoResizing" value="false"/>
+		<capability name="mmapi.VideoPositioning" value="false"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="23"/>
+		<capability name="CanvasSize" value="176x197"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="HeapSize" value="2.2 MB"/>
+		<capability name="VideoHeapSize" value="1.3 MB"/>
+		<capability name="MaxJarSize" value="500 KB"/>
+		<capability name="StorageSize" value="4 MB"/>
+		<capability name="MaxRecordStoreSize" value="100 KB"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Font.small" value="12"/>
+		<capability name="Font.medium" value="16"/>
+		<capability name="Font.large" value="18"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire" />
+	</device>
+
 	<device> 
 		<identifier>Samsung/SGH-T509</identifier> 
 		<features>hasCommandKeyEvents</features>
@@ -12360,6 +12462,7 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraZoom" value="4"/>
 		<capability name="key.ReturnKey" value="-11"/>
 		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin, SoftKeyMappedToFire"/>
+		<capability name="wap.userAgent" value="SAMSUNG-SGH-D900"/>
 	</device> 
  
         <device> 
@@ -13671,7 +13774,37 @@ These namespaces/schemas will be used soon.
 		<capability name="Property.microedition.platform" value="intent JTE"/>
 	</device> 
 
-	
+	<device>
+		<identifier>HTC/Titan</identifier>
+		<capability name="OS" value="Windows Mobile 6"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x266"/>
+		<capability name="FullCanvasSize" value="240x266"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="key.LeftSoftKey" value="57345"/>
+		<capability name="key.RightSoftKey" value="57346"/>
+		<capability name="Font.small" value="16"/>
+		<capability name="Font.medium" value="21"/>
+		<capability name="Font.large" value="27"/>
+		<capability name="mmapi.protocol.http" value="audio/basic, audio/midi, audio/x-wav"/>
+		<capability name="mmapi.protocol.https" value="audio/basic, audio/midi, audio/x-wav"/>
+		<capability name="mmapi.protocol.device" value="audio/x-tone-seq"/>
+		<capability name="Property.microedition.platform" value="intent JTE"/>
+	</device>
+
+	<device>
+		<identifier>HTC/S620</identifier>
+		<groups/>
+		<features>hasPointerEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="Windows Mobile 2003"/>
+		<capability name="FullCanvasSize" value="320x213"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+	</device>
+
 <!-- Qtek devices -->
 	<device>
 		<identifier>Qtek/8310</identifier>
@@ -13761,7 +13894,7 @@ These namespaces/schemas will be used soon.
 	</device> 
 	
 	
-	<!-- DoJa device definitions -->
+<!-- DoJa device definitions -->
 	<device supportsPolishGui="false">
 		<identifier>DoJa/os15</identifier>
 		<features>isVirtual</features>
@@ -13777,6 +13910,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ImageFormat" value="gif"/>
 	 </device>
 		
+<!-- Imate device definitions -->
 	<device>
   		<identifier>Imate/JasJar</identifier>
   		<groups/>
@@ -13826,17 +13960,6 @@ These namespaces/schemas will be used soon.
 	</device>
 	
 	<device>
-		<identifier>HTC/S620</identifier>
-		<groups/>
-		<features>hasPointerEvents, hasCommandKeyEvents</features>
-		<capability name="OS" value="Windows Mobile 2003"/>
-		<capability name="FullCanvasSize" value="320x213"/>
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-	</device>
-	
-	<device>
 		<identifier>Imate/SP3, Imate/SP3K</identifier>
 		<groups/>
 		<features>hasPointerEvents, hasCommandKeyEvents</features>
@@ -13847,6 +13970,14 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 	</device>
 	
+<!-- Verizon device definitions -->
+
+	<device>
+		<identifier>Verizon/XV8600</identifier>
+		<parent>HTC/Titan</parent>
+	</device>
+
+<!-- Vertu device definitions -->
 	<device>
 		<identifier>Vertu/Constellation</identifier>
 		<groups>Series40E2</groups>
