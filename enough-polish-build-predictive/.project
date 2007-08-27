@@ -3,6 +3,7 @@
 	<name>enough-polish-build-predictive</name>
 	<comment></comment>
 	<projects>
+		<project>enough-polish-j2me</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

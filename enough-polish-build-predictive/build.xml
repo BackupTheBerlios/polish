@@ -3,7 +3,9 @@
 	<taskdef name="PreditiveBuilder" classname="de.enough.polish.predictive.Builder" classpath="bin/classes;../enough-polish-j2me/bin/classes;../enough-polish-j2me/import/midp2.jar" />
 		
 	<target name="builder">
-		<PreditiveBuilder source="input/mvv.txt" directory="./output/mvv" type="1" version="100" magic="421" chunkSize="10000" lineCount="100" />
+		<PreditiveBuilder source="input/top5000de.txt" directory="./output/de" type="1" version="100" magic="421" chunkSize="10000" lineCount="100" />
+		<PreditiveBuilder source="input/top5000en.txt" directory="./output/en" type="1" version="100" magic="421" chunkSize="10000" lineCount="100" />
+		<PreditiveBuilder source="input/top5000fr.txt" directory="./output/fr" type="1" version="100" magic="421" chunkSize="10000" lineCount="100" />
 	</target>
 
 </project>
