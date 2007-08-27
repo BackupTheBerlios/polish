@@ -1209,6 +1209,13 @@ implements AccessibleCanvas
 		}
 	}
 	
+	//#if polish.enableSmileySupport
+	//# public void paint(javax.microedition.lcdui.Graphics g) {
+	//#	de.enough.polish.ui.smiley.Graphics graphics = new de.enough.polish.ui.smiley.Graphics( g );
+	//#	paint (graphics);
+	//# }
+	//#endif
+	
 	/**
 	 * Paints the screen.
 	 * When you subclass Screen you should override paintScreen(Graphics g) instead, if possible.
