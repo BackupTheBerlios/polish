@@ -211,6 +211,10 @@ public final class ImageUtil {
 	public static final int EDGEDETECTION_MAP_FAST_AND_SIMPLE=0; 	// just the simple copy mode
 	
 	
+	public static void scaleDownHq(int[] dest, int[] src, int srcWidth, int scaledWidth, int scaledHeight, int opacity, boolean SKIP_FRACTIONS){
+		scaleDownHq(dest, src, srcWidth, 0, scaledWidth, scaledHeight, opacity, EDGEDETECTION_MAP_HIGH_QUALITY, SKIP_FRACTIONS);
+	}
+
 	/**
 	 * EDGEDETECTION_MAP_CUSTOM
 	 * 		In order to save time it is possible to run an edge Detection over the source
