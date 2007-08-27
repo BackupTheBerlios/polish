@@ -3732,15 +3732,15 @@ public class TextField extends StringItem
 		//#if polish.TextField.usePredictiveInput && tmp.directInput
 			if(box instanceof Form)
 			{
-				if (cmd == StyleSheet.OK_CMD) 
+				if (cmd == StyleSheet.OK_CMD)  {
 					this.builder.addWord(PROVIDER.getCustomField().getText());
-				
+				}
 				StyleSheet.display.setCurrent(this.screen);
 				return;
 			}
 			
 			if(box instanceof Alert)
-			{
+			{ 	// this is the installation dialog for predictive text:
 				if (cmd == StyleSheet.OK_CMD)
 				{
 					try
@@ -3758,7 +3758,7 @@ public class TextField extends StringItem
 			
 		//#endif
 			
-		//#if  tmp.useNativeTextBox
+		//#if tmp.useNativeTextBox
 			if (cmd == StyleSheet.CANCEL_CMD) {
 				this.midpTextBox.setString( this.text );
 			} else if (!this.isUneditable) {
@@ -3834,6 +3834,7 @@ public class TextField extends StringItem
 							setString( myText.substring(0, myText.length() - 1));
 							notifyStateChanged();
 						//#endif
+						return;
 					}
 				} else if ( cmd == CLEAR_CMD ) {
 					//#if polish.TextField.usePredictiveInput && tmp.directInput
@@ -3842,7 +3843,10 @@ public class TextField extends StringItem
 					//#endif
 					setString( null );
 					notifyStateChanged();
+					return;
 				//#if polish.TextField.usePredictiveInput && tmp.directInput
+				} else if ( cmd == INSTALL_PREDICTIVE_CMD ) {
+					showPredictiveInstallDialog();
 				} else if ( cmd == ENABLE_PREDICTIVE_CMD ) {
 					try
 					{
@@ -3876,17 +3880,12 @@ public class TextField extends StringItem
 						
 						Thread thread = new Thread(setup);
 						thread.start();
+						//# return;
 					}
 					//#else
 					{
-						Alert predictiveDowload = new Alert( Locale.get("polish.predictive.download.title"));
-						predictiveDowload.setString( Locale.get("polish.predictive.download.message") );
-						predictiveDowload.addCommand(StyleSheet.OK_CMD);
-						predictiveDowload.addCommand(StyleSheet.CANCEL_CMD);
-						
-						predictiveDowload.setCommandListener(this);
-						
-						StyleSheet.display.setCurrent(predictiveDowload);
+						showPredictiveInstallDialog();
+						//# return;
 					}
 					//#endif
 					
@@ -3902,12 +3901,14 @@ public class TextField extends StringItem
 					this.removeCommand(ENABLE_PREDICTIVE_CMD);
 					this.addCommand(DISABLE_PREDICTIVE_CMD);
 					this.addCommand(ADD_WORD_CMD);
+					return;
 				} else if ( cmd == DISABLE_PREDICTIVE_CMD ) {
 					disablePredictive();
 					
 					this.removeCommand(DISABLE_PREDICTIVE_CMD);
 					this.removeCommand(ADD_WORD_CMD);
 					this.addCommand(ENABLE_PREDICTIVE_CMD);
+					return;
 				} else if ( cmd == ADD_WORD_CMD) {
 					if(PROVIDER.getCustomField() == null)
 					{
@@ -3920,15 +3921,41 @@ public class TextField extends StringItem
 					}
 					PROVIDER.getCustomForm().setCommandListener( this );
 					StyleSheet.display.setCurrent(PROVIDER.getCustomForm());
+					return;
 				//#endif
 				} else if ( this.additionalItemCommandListener != null ) {
 					this.additionalItemCommandListener.commandAction(cmd, item);
+				} else {
+					// forward command to the screen's orginal command listener:
+					Screen scr = getScreen();
+					if (scr != null) {
+						CommandListener listener = scr.getCommandListener();
+						if (listener != null) {
+							listener.commandAction(cmd, scr);
+						}
+					}
 				}
 			//#endif		
 		//#endif
 	}
 	
 	//#if polish.TextField.usePredictiveInput
+	/**
+	 * 
+	 */
+	private void showPredictiveInstallDialog() {
+		//#style predictiveInstallDialog?
+		Alert predictiveDowload = new Alert( Locale.get("polish.predictive.download.title"));
+		predictiveDowload.setString( Locale.get("polish.predictive.download.message") );
+		
+		predictiveDowload.addCommand(StyleSheet.CANCEL_CMD);
+		predictiveDowload.addCommand(StyleSheet.OK_CMD);
+		
+		predictiveDowload.setCommandListener(this);
+		
+		StyleSheet.display.setCurrent(predictiveDowload);
+	}
+
 	private void disablePredictive()
 	{
 		this.predictiveInput = false;

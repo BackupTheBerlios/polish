@@ -379,8 +379,10 @@ public abstract class ScreenChangeAnimation
 				this.nextDisplayable = null;
 				System.gc();
 				if (disp != null) {
-					Displayable current = disp.getCurrent();
-					if (current == this && next != null) {
+					// checking out if the animation is still shown is sweet in theory but it fails when there are security dialogs and the like in the way..
+					//Displayable current = disp.getCurrent();
+					//if (current == this && next != null) {
+					if (next != null) {
 						//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 							MasterCanvas.setCurrent( disp, next );
 						//#else

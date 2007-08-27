@@ -298,7 +298,7 @@ implements AccessibleCanvas
 	protected ScreenStateListener screenStateListener;
 	private boolean isScreenChangeDirtyFlag;
 	protected ItemStateListener itemStateListener;
-	private ArrayList stateNotifyQueue;
+//	private ArrayList stateNotifyQueue;
 	private final Object paintLock = new Object();
 	private ArrayList itemCommands;
 	private Object data;
@@ -1243,6 +1243,10 @@ implements AccessibleCanvas
 					//#endif
 				}
 			//#endif
+				// test code for JP8 preview
+//			//#if tmp.menuFullScreen
+//				g.setClip( 0, 0, this.screenWidth, this.fullScreenHeight );
+//			//#endif
 			//#if !tmp.menuFullScreen
 				// not needed since sizeChanged() takes care for that now (robert, 2007-07-28)
 //				int translateY = g.getTranslateY();
@@ -2185,10 +2189,10 @@ implements AccessibleCanvas
 				//#if tmp.menuFullScreen && polish.key.ReturnKey:defined
 					if (!processed) {
 						//#= if ( (keyCode == ${polish.key.ReturnKey}) && (this.backCommand != null) ) {
-								//#debug
-								System.out.println("keyPressed: invoking commandListener for " + this.backCommand.getLabel() );
-								callCommandListener( this.backCommand );
-								processed = true;
+							//#debug
+							System.out.println("keyPressed: invoking commandListener for " + this.backCommand.getLabel() );
+							callCommandListener( this.backCommand );
+							processed = true;
 						//# }
 					}
 				//#endif

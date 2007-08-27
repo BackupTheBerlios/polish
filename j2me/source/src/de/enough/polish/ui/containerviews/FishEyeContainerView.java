@@ -85,6 +85,8 @@ public class FishEyeContainerView extends ContainerView {
 		//#endif
 		private int startTranslucency = 180;
 		private int endTranslucency = 80;
+		private int[] targetTranslucencies;
+		private int[] currentTranslucencies;
 	//#endif
 	private int referenceFocusedIndex;
 	private Background focusedBackground;
@@ -134,6 +136,14 @@ public class FishEyeContainerView extends ContainerView {
 					item.relativeX = calculateCurrent( current, target ) - itemWidth;
 				}
 				//#if polish.midp2
+					int currentAlpha = this.currentTranslucencies[i];
+					int targetAlpha = this.targetTranslucencies[i];
+					boolean adjustAlpha = (currentAlpha != targetAlpha);
+					if (adjustAlpha) {
+						currentAlpha = calculateCurrent( currentAlpha, targetAlpha);
+						this.currentTranslucencies[i] = currentAlpha;
+					}
+					boolean isScaled = false;
 					if (factor != 100) {
 						current = this.shownRgbDataWidths[ i ];
 						if (i == this.focusedIndex) {
@@ -141,20 +151,26 @@ public class FishEyeContainerView extends ContainerView {
 						} else {
 							target = (this.originalRgbDataWidths[ i ] * factor) / 100;
 						}
-						if (current != target) {
+						if (current != target && (distance < (length >> 2) || (Math.abs(current - target)*100/target > 5) ) ) {
 							animated = true;
+							isScaled = true;
 							int[] data = this.originalRgbData[i];
 							int originalWidth = this.originalRgbDataWidths[i];
 							int originalHeight = data.length / originalWidth;
 							int newWidth = calculateCurrent( current, target );
 							int newHeight = (newWidth * originalHeight) / originalWidth;
-							int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length>>1 );
+							//int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length );
 							//this.shownRgbData[i] = ImageUtil.scale(alpha, data, newWidth, newHeight, originalWidth, originalHeight );
-							ImageUtil.scaleDownHq(this.shownRgbData[i],data, originalWidth, 0, newWidth, 0, alpha, ImageUtil.EDGEDETECTION_MAP_FAST, false);
+							ImageUtil.scaleDownHq(this.shownRgbData[i],data, originalWidth, 0, newWidth, 0, currentAlpha, true, false);
 							this.shownRgbDataWidths[i] = newWidth;
 							this.shownRgbDataHeight[i] = newHeight;
 						}
 					} 
+					if (adjustAlpha && !isScaled) {
+						// adjust only the translucency:
+						animated = true;
+						ImageUtil.setTransparencyOnlyForOpaque( currentAlpha,this.shownRgbData[i] );
+					}
 				//#endif
 			}
 		}
@@ -298,9 +314,9 @@ public class FishEyeContainerView extends ContainerView {
 					int newWidth = (width * this.scaleFactor) / 100;
 					int newHeight = (height * this.scaleFactor) / 100;
 					//this.shownRgbData[i] = ImageUtil.scale(data, newWidth, newHeight, width, height );
-					int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length>>1 );
+					int alpha = this.endTranslucency; // calculateAlpha( getDistance( i, this.focusedIndex, length ), length );
 					this.shownRgbData[i]=new int[data.length];
-					ImageUtil.scaleDownHq(this.shownRgbData[i], data,width, 0, newWidth, 0, alpha, ImageUtil.EDGEDETECTION_MAP_FAST, false);
+					ImageUtil.scaleDownHq(this.shownRgbData[i], data,width, 0, newWidth, 0, alpha, true, false);
 					this.shownRgbDataWidths[i] = newWidth;
 					this.shownRgbDataHeight[i] = newHeight;
 				}
@@ -443,10 +459,22 @@ public class FishEyeContainerView extends ContainerView {
 			int difference = this.referenceFocusedIndex - focIndex;
 			Item[] myItems = this.parentContainer.getItems();
 			int[] targetXPositions;
+			//#if polish.midp2
+				int[] targetAlphas;
+				int[] currentAlphas;
+			//#endif
 			if (this.targetXCenterPositions == null || this.targetXCenterPositions.length != myItems.length) {
 				targetXPositions = new int[ myItems.length ];
+				//#if polish.midp2
+					targetAlphas = new int[ myItems.length ];
+					currentAlphas = new int[ myItems.length ];
+				//#endif
 			} else {
 				targetXPositions = this.targetXCenterPositions;
+				//#if polish.midp2
+					targetAlphas = this.targetTranslucencies;
+					currentAlphas = this.currentTranslucencies;
+				//#endif
 			}
 			for (int i = 0; i < myItems.length; i++) {
 				int nextIndex = i + difference;
@@ -456,8 +484,17 @@ public class FishEyeContainerView extends ContainerView {
 					nextIndex -= myItems.length;
 				}
 				targetXPositions[i] = this.referenceXCenterPositions[ nextIndex ];
+				//#if polish.midp2
+					targetAlphas[i] = calculateAlpha( getDistance(i, focIndex, myItems.length), myItems.length );
+					//System.out.println("targetAlpha[" + i + "]=" + targetAlphas[i]);
+					currentAlphas[i] = this.endTranslucency;
+				//#endif
 			}
 			this.targetXCenterPositions = targetXPositions;
+			//#if polish.midp2
+				this.targetTranslucencies = targetAlphas;
+				this.currentTranslucencies = currentAlphas;
+			//#endif
 		}
 		
 		Style itemStyle;
@@ -492,13 +529,13 @@ public class FishEyeContainerView extends ContainerView {
 	/**
 	 * @param distance
 	 * @param length
-	 * @return
+	 * @return the target alpha value for the item
 	 */
 	private int calculateAlpha(int distance, int length) {
 		if (distance == 0) {
 			return 255;
 		}
-		int alpha = this.startTranslucency - ((this.startTranslucency - this.endTranslucency) * distance) / length;
+		int alpha = this.startTranslucency - ((this.startTranslucency - this.endTranslucency) * distance) / (length >> 1);
 		//System.out.println("alpha for processed=" + distance + ", length=" + length + "=" + alpha);
 		return alpha;
 	}

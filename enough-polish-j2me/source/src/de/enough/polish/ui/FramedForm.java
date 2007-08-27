@@ -400,10 +400,12 @@ public class FramedForm extends Form {
 						break;
 					}
 				}
-			} else {
+			} else if (this.container.appearanceMode != Item.PLAIN){
 				//System.out.println("Changing back to default container");
 				newFrame = this.container;
-			}
+			} else {
+				this.container.handleKeyPressed(keyCode, gameAction);
+			}	
 			if ( newFrame != null && newFrame != this.currentlyActiveContainer ) {
 				setActiveFrame(newFrame);
 				handled = true;
@@ -414,6 +416,24 @@ public class FramedForm extends Form {
 		return handled;
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int)
+	 */
+	protected boolean handleKeyReleased(int keyCode, int gameAction) {
+		boolean handled = this.currentlyActiveContainer.handleKeyReleased(keyCode, gameAction);
+		return handled || super.handleKeyReleased(keyCode, gameAction);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handleKeyRepeated(int, int)
+	 */
+	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
+		boolean handled = this.currentlyActiveContainer.handleKeyRepeated(keyCode, gameAction);
+		return handled || super.handleKeyRepeated(keyCode, gameAction);
+	}
+
 	/**
 	 * Retrieves the currently focused item.
 	 * 
@@ -427,11 +447,22 @@ public class FramedForm extends Form {
 	}
 	
 	/**
+	 * Focuses the specified frame.
+	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT, Graphics.RIGHT or -1 for the main/scrollable frame
+	 */
+	public void setActiveFrame( int frameOrientation ) {
+		setActiveFrame( getFrame(frameOrientation) );
+	}
+	
+	/**
 	 * Activates another frame.
 	 * 
 	 * @param newFrame the next frame
 	 */
 	private void  setActiveFrame(Container newFrame) {
+		if (newFrame == null) {
+			return;
+		}
 		this.currentlyActiveContainer.defocus( this.currentlyActiveContainer.style );
 		newFrame.focus( StyleSheet.focusedStyle, 0 );
 		this.currentlyActiveContainer = newFrame;
@@ -476,5 +507,41 @@ public class FramedForm extends Form {
 			| ( this.bottomFrame != null && this.bottomFrame.animate() );
 		return animated;
 	}
+
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getRootItems()
+	 */
+	protected Item[] getRootItems() {
+		Container[] frames = new Container[4];
+		int index = 0;
+		if (this.topFrame != null) {
+			frames[index] = this.topFrame;
+			index++;
+		}
+		if (this.bottomFrame != null) {
+			frames[index] = this.bottomFrame;
+			index++;
+		}
+		if (this.leftFrame != null) {
+			frames[index] = this.leftFrame;
+			index++;
+		}
+		if (this.rightFrame != null) {
+			frames[index] = this.rightFrame;
+			index++;
+		}
+		if (index < 4) {
+			Container[] activeFrames = new Container[ index ];
+			System.arraycopy( frames, 0, activeFrames, 0, index );
+			frames = activeFrames;
+		}
+		return frames;
+	}
+	
+	
+	
+	
+	
 	
 }

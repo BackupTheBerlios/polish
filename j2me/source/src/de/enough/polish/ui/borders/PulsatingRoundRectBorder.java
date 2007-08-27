@@ -1,3 +1,5 @@
+//#condition polish.usePolishGui
+
 /*
  * Created on Aug 3, 2007 at 5:33:07 PM.
  * 
@@ -112,7 +114,7 @@ public class PulsatingRoundRectBorder extends RoundRectBorder {
 			}
 		} else {
 			this.currentStep++;
-			if (this.currentStep > steps ) {
+			if (this.currentStep > this.steps ) {
 				if (this.repeat) {
 					this.currentStep = 0;
 				} else {

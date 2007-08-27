@@ -334,7 +334,7 @@ public class CommandItem extends IconItem {
 		} else if ( gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5  && this.appearanceMode != PLAIN ){ // has no children:
 			// fire command action event:
 			//#debug
-			System.out.println( this + " invoking command " + this.command.getLabel() );
+			System.out.println( this + " invoking command " + this.command.getLabel() + " on screen " + getScreen() );
 			Screen scr = getScreen();
 			//#if polish.debug.error
 			if (scr == null) {
