@@ -613,7 +613,7 @@ implements AccessibleCanvas
 		System.out.println("calculateContentArea(" + x + ", " + y + ", " + width + ", " + height + ")");
 		if (width < 1 || height < 1 ) {
 			//#debug info
-			System.out.println("inavlid content dimension, width=" + width + ", height=" + height);
+			System.out.println("invalid content dimension, width=" + width + ", height=" + height);
 			return;
 		}
 		
