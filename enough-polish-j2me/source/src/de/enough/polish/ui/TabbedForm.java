@@ -356,6 +356,9 @@ public class TabbedForm extends Form {
 		notifyTabbedChangeCompleted(oldTabIndex, this.activeTabIndex);
 		if (focusTabBar) {
 			tabContainer.defocus( tabContainer.style );
+			//TODO check again when allowing tab-specific styles
+			tabContainer.background = null;
+			tabContainer.border = null;
 			this.tabBar.focus( this.tabBar.getFocusedStyle(), 0);
 		}
 	}
