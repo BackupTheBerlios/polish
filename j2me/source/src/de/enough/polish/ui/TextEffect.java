@@ -44,7 +44,7 @@ import de.enough.polish.util.DrawUtil;
  */
 public abstract class TextEffect {
 
-
+	protected Style style;
 
 	/**
 	 * Creates a new effect
@@ -61,7 +61,7 @@ public abstract class TextEffect {
 	 * @throws NullPointerException when style is null
 	 */
 	public void setStyle( Style style ) {
-		// the default implementation does nothing
+		this.style = style;
 	}
 	
 	/**
@@ -311,5 +311,37 @@ public abstract class TextEffect {
 	public void releaseResources() {
 		// do nothing
 	}
+
+	/**
+	 * Calculates the width of the given text.
+	 * By default getFont().stringWidth(text) is returned.
+	 * 
+	 * @param str the text of which the width should be determined
+	 * @return the width of the text
+	 */
+	public int stringWidth(String str) {
+		return getFont().stringWidth(str);
+	}
+	
+	/**
+	 * Retrieves the font height by default.
+	 * @return the height of the font
+	 */
+	public int getFontHeight() {
+		return getFont().getHeight();
+	}
+	/**
+	 * Retrieves the font that should be used.
+	 * 
+	 * @return the font
+	 */
+	protected Font getFont() {
+		if (this.style != null && this.style.font != null) {
+			return this.style.font;
+		}
+		return Font.getDefaultFont();
+	}
+
+	
 
 }

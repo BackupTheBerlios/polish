@@ -351,6 +351,14 @@ public class StringItem extends Item
 	 */
 	public Font getFont()
 	{
+		if (this.font == null) {
+			if (this.style != null) {
+				this.font = this.style.font;
+			}
+			if (this.font == null) {
+				this.font = Font.getDefaultFont();
+			}
+		}
 		return this.font;
 	}
 
@@ -479,6 +487,60 @@ public class StringItem extends Item
 				}
 			//#endif
 		}
+	}
+	
+	/**
+	 * Calculates the width of the given text.
+	 * When a bitmap font is used, the calculation is forwarded to it.
+	 * When a texteffect is used, the calculation is forwared to it.
+	 * In other cases font.stringWidth(text) is returned.
+	 * 
+	 * @param str the text of which the width should be determined
+	 * @return the width of the text
+	 */
+	public int stringWidth( String str ) {
+		//#ifdef polish.css.font-bitmap
+			if (this.bitMapFont != null) {
+				return this.bitMapFont.stringWidth( str );
+			} else {
+		//#endif
+			//#if polish.css.text-effect
+				if (this.textEffect != null) {
+					return this.textEffect.stringWidth( str );
+				} else {
+					return getFont().stringWidth(str);
+			//#endif
+			//#if polish.css.text-effect
+				}
+			//#endif
+		//#ifdef polish.css.font-bitmap
+			}
+		//#endif
+	}
+	/**
+	 * Retrieves the height necessary for displaying a row of text without the padding-vertical.
+	 * 
+	 * @return the font height (either from the bitmap, the text-effect or the font used)
+	 */
+	public int getFontHeight() {
+		//#ifdef polish.css.font-bitmap
+			if (this.bitMapFont != null) {
+				return this.bitMapFont.getFontHeight();
+			} else {
+		//#endif
+			//#if polish.css.text-effect
+				if (this.textEffect != null) {
+					return this.textEffect.getFontHeight();
+				} else {
+					return getFont().getHeight();
+			//#endif
+			//#if polish.css.text-effect
+				}
+			//#endif
+		//#ifdef polish.css.font-bitmap
+			}
+		//#endif
+		
 	}
 
 	/* (non-Javadoc)

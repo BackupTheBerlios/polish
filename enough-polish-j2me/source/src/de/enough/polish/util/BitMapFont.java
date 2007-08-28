@@ -217,4 +217,45 @@ public final class BitMapFont {
 		}
 		return -1;
 	}
+
+	/**
+	 * Retrieves the width of the given text
+	 * @param str the text 
+	 * @return -1 if unknown otherwise the width for the given text
+	 */
+	public int stringWidth(String str) {
+		if (this.fontImage == null) {
+			initFont();
+			if (this.fontImage == null) {
+				return -1;
+			}
+		}
+		int width = 0;
+		for (int i = 0; i < str.length(); i++) {
+			char c = str.charAt(i);
+			for (int j=0; j<this.characterMap.length(); j++ ) {
+				char cm = this.characterMap.charAt(j);
+				if (cm == c) {
+					width += this.characterWidths[j];
+					break;
+				}
+			}
+			
+		}
+		return width;
+	}
+
+	/**
+	 * Retrieves the height of this bitmap font
+	 * @return the height of the font
+	 */
+	public int getFontHeight() {
+		if (this.fontImage == null) {
+			initFont();
+			if (this.fontImage == null) {
+				return -1;
+			}
+		}
+		return this.fontHeight;
+	}
 }

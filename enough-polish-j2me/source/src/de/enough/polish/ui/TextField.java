@@ -1937,7 +1937,7 @@ public class TextField extends StringItem
 				} else {
 					firstPart = textLine;
 				}
-				this.caretX = this.font.stringWidth( firstPart );
+				this.caretX = stringWidth( firstPart );
 				this.internalY = this.caretRow * this.rowHeight;
 				this.caretY = this.internalY;
 				repaint();
@@ -2208,14 +2208,14 @@ public class TextField extends StringItem
                     if (this.caretChar != this.editingCaretChar) {
                     	// draw background rectangle
                         int w = this.caretWidth;
-                        int h = this.font.getHeight();
+                        int h = getFontHeight();
                         g.fillRect( cX, cY, w, h);
                         //display highlighted text in white color
                         g.setColor( DrawUtil.getComplementaryColor(g.getColor()) );
                         //TODO use bitmap font and text-effect
                         g.drawChar( this.caretChar, cX, cY, Graphics.TOP | Graphics.LEFT );
                     } else {
-                        g.drawLine( cX, cY, cX, cY + this.font.getHeight() - 2);
+                        g.drawLine( cX, cY, cX, cY + getFontHeight() - 2);
                     }
 				}
 
@@ -2253,7 +2253,7 @@ public class TextField extends StringItem
 				} else {
 					x += this.contentWidth + 2;
 				}
-				g.drawLine( x, y, x, y + this.font.getHeight() );
+				g.drawLine( x, y, x, y + getFontHeight() );
 			}
 		//#endif	
 		
@@ -2281,8 +2281,8 @@ public class TextField extends StringItem
 		} 
 		if (this.contentHeight < this.minimumHeight) {
 			this.contentHeight = this.minimumHeight;
-		} else  if (this.contentHeight < this.font.getHeight()) {
-			this.contentHeight = this.font.getHeight();
+		} else  if (this.contentHeight < getFontHeight()) {
+			this.contentHeight = getFontHeight();
 		}
 		//#if polish.blackberry
 			if (!this.isFocused) {
@@ -2294,18 +2294,9 @@ public class TextField extends StringItem
 			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
 			XYRect rect = this.editField.getExtent();
 			this.contentWidth = rect.width;
-			this.contentHeight = rect.height >= this.font.getHeight() ? rect.height : this.font.getHeight();
+			this.contentHeight = rect.height >= getFontHeight() ? rect.height : getFontHeight();
 		//#elif tmp.directInput
-			//#ifdef polish.css.font-bitmap
-				if (this.bitMapFontViewer != null) {
-					this.rowHeight = this.bitMapFontViewer.getFontHeight() + this.paddingVertical;
-				} else {
-					this.rowHeight = this.font.getHeight() + this.paddingVertical;
-				}
-			//#else
-				this.rowHeight = this.font.getHeight() + this.paddingVertical;
-			//#endif
-			
+			this.rowHeight = getFontHeight() + this.paddingVertical;			
 			if (this.textLines == null || this.text.length() == 0) {
 				this.caretX = 0;
 				this.caretY = 0;
@@ -2431,12 +2422,12 @@ public class TextField extends StringItem
 			caretRowFirstPart = line.substring( 0, column );
 			//this.caretRowLastPartWidth = this.font.stringWidth(this.caretRowLastPart);;
 		}
-		this.caretX = this.font.stringWidth(caretRowFirstPart);
+		this.caretX = stringWidth(caretRowFirstPart);
 		if (this.isLayoutCenter || this.isLayoutRight) {
 			if (firstPartIsFullRow) {
 				this.caretRowWidth = this.caretX;
 			} else {
-				this.caretRowWidth = this.font.stringWidth( line );
+				this.caretRowWidth = stringWidth( line );
 			}
 		}
 		//System.out.println("caretRowWidth=" + this.caretRowWidth + " for line=" + line);
