@@ -1288,6 +1288,7 @@
 		description="Sets a text effect."
 		id="88"
 	>
+		<mapping from="smiley" to="new de.enough.polish.ui.texteffects.SmileyTextEffect()" />
 		<mapping from="shadow" to="new de.enough.polish.ui.texteffects.ShadowTextEffect()" />
 		<mapping from="outline" to="new de.enough.polish.ui.texteffects.OutlineTextEffect()" />
 		<mapping from="segment" to="new de.enough.polish.ui.texteffects.SegmentTextEffect()" />
@@ -2802,6 +2803,33 @@
 		description="Defines if a style should always be included, even if not used."
 		default="false"
 		id="261"
+	/>
+	
+	<attribute
+		name="smiley-regular"
+		type="imageurl"
+		appliesTo="SmileyTextEffect"
+		description="Defines a regular smiley."
+		default="false"
+		id="262"
+	/>
+	
+	<attribute
+		name="smiley-wink"
+		type="imageurl"
+		appliesTo="SmileyTextEffect"
+		description="Defines a winking smiley."
+		default="false"
+		id="263"
+	/>
+	
+	<attribute
+		name="smiley-sad"
+		type="imageurl"
+		appliesTo="SmileyTextEffect"
+		description="Defines a sad smiley."
+		default="false"
+		id="264"
 	/>
 	
 	
