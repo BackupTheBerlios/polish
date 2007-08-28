@@ -614,7 +614,17 @@ public class StringItem extends Item
 				this.contentHeight = this.font.getHeight();
 			} else {
 		//#endif
-				String[] lines = TextUtil.wrap(this.text, this.font, firstLineWidth, lineWidth);
+				String[] lines;
+				//#ifdef polish.css.text-effect
+					if (this.textEffect != null) {
+						lines = this.textEffect.wrap( this.text, this.font, firstLineWidth, lineWidth );
+					} else {
+				//#endif
+						lines = TextUtil.wrap(this.text, this.font, firstLineWidth, lineWidth);
+				//#ifdef polish.css.text-effect
+					}
+				//#endif
+						
 				int fontHeight = this.font.getHeight();
 				this.contentHeight = (lines.length * (fontHeight + this.paddingVertical)) - this.paddingVertical;
 				int maxWidth = 0;

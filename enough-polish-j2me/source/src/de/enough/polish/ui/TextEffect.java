@@ -31,6 +31,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.util.DrawUtil;
+import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Allows text effects for StringItems, IconItems and ChoiceItems.</p>
@@ -340,6 +341,19 @@ public abstract class TextEffect {
 			return this.style.font;
 		}
 		return Font.getDefaultFont();
+	}
+
+	/**
+	 * Wraps the text into several lines.
+	 * 
+	 * @param text the text
+	 * @param font used font
+	 * @param firstLineWidth width of the first line
+	 * @param lineWidth width of following lines
+	 * @return an arrays with strings all fitting into the specified dimensions
+	 */
+	public String[] wrap(String text, Font font, int firstLineWidth, int lineWidth) {
+		return TextUtil.wrap(text, font, firstLineWidth, lineWidth);
 	}
 
 	
