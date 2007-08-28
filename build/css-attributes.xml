@@ -2804,7 +2804,7 @@
 		default="false"
 		id="261"
 	/>
-	
+
 	<attribute
 		name="smiley-regular"
 		type="imageurl"
@@ -2831,6 +2831,16 @@
 		default="false"
 		id="264"
 	/>
+	
+	<attribute
+		name="icon-image-align-next"
+		type="boolean"
+		appliesTo="IconItem"
+		description="Specifies if a horizontal aligned image should be painted at the border (=default) or next to the content when the item has an expand layout."
+		default="false"
+		id="265"
+	/>
+	
 	
 	
 	
