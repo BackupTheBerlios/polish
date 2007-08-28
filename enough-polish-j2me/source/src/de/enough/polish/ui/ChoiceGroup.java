@@ -858,10 +858,11 @@ implements Choice
 	{
 		if (this.isMultiple || this.itemsList.size() == 0) {
 			return -1;
-		} else if (this.isImplicit) {
-			return this.focusedIndex;
-		} else {
+		} else if (!this.isImplicit || this.focusedIndex == -1) {
 			return this.selectedIndex;
+		} else {
+			// this is an implicit/focused choice:
+			return this.focusedIndex;
 		}
 	}
 
