@@ -502,19 +502,17 @@ public class StringItem extends Item
 		//#ifdef polish.css.font-bitmap
 			if (this.bitMapFont != null) {
 				return this.bitMapFont.stringWidth( str );
-			} else {
-		//#endif
+			} 
+		//#else
 			//#if polish.css.text-effect
 				if (this.textEffect != null) {
 					return this.textEffect.stringWidth( str );
 				} else {
 					return getFont().stringWidth(str);
-			//#endif
-			//#if polish.css.text-effect
 				}
+			//#else
+			//# return getFont().stringWidth(str);
 			//#endif
-		//#ifdef polish.css.font-bitmap
-			}
 		//#endif
 	}
 	/**
@@ -526,21 +524,18 @@ public class StringItem extends Item
 		//#ifdef polish.css.font-bitmap
 			if (this.bitMapFont != null) {
 				return this.bitMapFont.getFontHeight();
-			} else {
-		//#endif
+			} 
+		//#else
 			//#if polish.css.text-effect
 				if (this.textEffect != null) {
 					return this.textEffect.getFontHeight();
 				} else {
 					return getFont().getHeight();
-			//#endif
-			//#if polish.css.text-effect
 				}
+			//#else
+			//# return getFont().getHeight();
 			//#endif
-		//#ifdef polish.css.font-bitmap
-			}
 		//#endif
-		
 	}
 
 	/* (non-Javadoc)
