@@ -792,7 +792,7 @@ public class TextField extends StringItem
 		//#ifdef polish.TextField.charactersKey1:defined
 			//#= private static final String charactersKey1 = "${polish.TextField.charactersKey1}";
 		//#else
-		private static final String charactersKey1 = ".,!?\u00bf:/@_-+1'\";";
+		private static final String charactersKey1 = ".,!?\u00bf:/()@_-+1'\";";
 		//#endif
 		//#ifdef polish.TextField.charactersKey2:defined
 			//#= private static final String charactersKey2 = "${polish.TextField.charactersKey2}";

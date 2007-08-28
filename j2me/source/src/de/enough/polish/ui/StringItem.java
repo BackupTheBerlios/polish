@@ -596,7 +596,7 @@ public class StringItem extends Item
 		//#if polish.css.text-wrap
 			if ( this.useSingleLine ) {
 				this.textLines = new String[]{ this.text };
-				int myTextWidth = this.font.stringWidth(this.text);
+				int myTextWidth = this.stringWidth(this.text);
 				if (myTextWidth > lineWidth) {
 					this.clipText = true;
 					this.textWidth = myTextWidth;
@@ -630,7 +630,7 @@ public class StringItem extends Item
 				int maxWidth = 0;
 				for (int i = 0; i < lines.length; i++) {
 					String line = lines[i];
-					int width = this.font.stringWidth(line);
+					int width = this.stringWidth(line);
 					if (width > maxWidth) {
 						maxWidth = width;
 					}
