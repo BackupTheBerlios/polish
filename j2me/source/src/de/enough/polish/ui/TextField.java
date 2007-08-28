@@ -1214,8 +1214,14 @@ public class TextField extends StringItem
 				int result = 0;
 				
 				int elementStart = this.builder.getCaret() - element.getLength();
+				
+				StringBuffer stringToLine = new StringBuffer();
 				for(int i=charsToLine; i< elementStart; i++)
-					result += this.font.charWidth(this.builder.getTextChar(i));
+				{
+					stringToLine.append(this.builder.getTextChar(i));
+				}
+				
+				result += this.stringWidth(stringToLine.toString());
 				
 				int overlap = (rightBorder) - (leftBorder + result + itemWidth);
 				
