@@ -416,7 +416,7 @@ public class StringItem extends Item
 			g.setFont( this.font );
 			g.setColor( this.textColor );
 			
-			int lineHeight = this.font.getHeight() + this.paddingVertical; 
+			int lineHeight = getFontHeight() + this.paddingVertical; 
 			int centerX = 0;
 			if (this.isLayoutCenter) {
 				centerX = leftBorder + (rightBorder - leftBorder) / 2;
@@ -502,17 +502,19 @@ public class StringItem extends Item
 		//#ifdef polish.css.font-bitmap
 			if (this.bitMapFont != null) {
 				return this.bitMapFont.stringWidth( str );
-			} 
-		//#else
+			} else {
+		//#endif
 			//#if polish.css.text-effect
 				if (this.textEffect != null) {
 					return this.textEffect.stringWidth( str );
 				} else {
-					return getFont().stringWidth(str);
-				}
-			//#else
-			//# return getFont().stringWidth(str);
 			//#endif
+					return getFont().stringWidth(str);
+			//#if polish.css.text-effect
+				}
+			//#endif
+		//#ifdef polish.css.font-bitmap
+			}
 		//#endif
 	}
 	/**
@@ -524,18 +526,21 @@ public class StringItem extends Item
 		//#ifdef polish.css.font-bitmap
 			if (this.bitMapFont != null) {
 				return this.bitMapFont.getFontHeight();
-			} 
-		//#else
+			} else {
+		//#endif
 			//#if polish.css.text-effect
 				if (this.textEffect != null) {
 					return this.textEffect.getFontHeight();
 				} else {
-					return getFont().getHeight();
-				}
-			//#else
-			//# return getFont().getHeight();
 			//#endif
+					return getFont().getHeight();
+			//#if polish.css.text-effect
+				}
+			//#endif
+		//#ifdef polish.css.font-bitmap
+			}
 		//#endif
+		
 	}
 
 	/* (non-Javadoc)
@@ -591,7 +596,7 @@ public class StringItem extends Item
 		//#if polish.css.text-wrap
 			if ( this.useSingleLine ) {
 				this.textLines = new String[]{ this.text };
-				int myTextWidth = this.stringWidth(this.text);
+				int myTextWidth = stringWidth(this.text);
 				if (myTextWidth > lineWidth) {
 					this.clipText = true;
 					this.textWidth = myTextWidth;
@@ -606,7 +611,7 @@ public class StringItem extends Item
 					this.clipText = false;
 					this.contentWidth = myTextWidth;
 				}
-				this.contentHeight = this.font.getHeight();
+				this.contentHeight = getFontHeight();
 			} else {
 		//#endif
 				String[] lines;
@@ -620,12 +625,12 @@ public class StringItem extends Item
 					}
 				//#endif
 						
-				int fontHeight = this.font.getHeight();
+				int fontHeight = getFontHeight();
 				this.contentHeight = (lines.length * (fontHeight + this.paddingVertical)) - this.paddingVertical;
 				int maxWidth = 0;
 				for (int i = 0; i < lines.length; i++) {
 					String line = lines[i];
-					int width = this.stringWidth(line);
+					int width = stringWidth(line);
 					if (width > maxWidth) {
 						maxWidth = width;
 					}

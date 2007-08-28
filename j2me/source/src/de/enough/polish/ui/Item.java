@@ -1838,6 +1838,8 @@ public abstract class Item extends Object
 			System.out.println("INVALID NONE CONTENT WIDTH=" + noneContentWidth);
 		}
 		*/
+		int firstLineContentWidth;
+		int availableContentWidth;
 		//#ifdef polish.css.max-width
 			int firstLineAdjustedWidth = firstLineWidth;
 			int lineAdjustedWidth = lineWidth;
@@ -1849,11 +1851,11 @@ public abstract class Item extends Object
 					lineAdjustedWidth = this.maximumWidth;
 				}
 			}
-			int firstLineContentWidth = firstLineAdjustedWidth - noneContentWidth;
-			int availableContentWidth = lineAdjustedWidth - noneContentWidth;
+			firstLineContentWidth = firstLineAdjustedWidth - noneContentWidth;
+			availableContentWidth = lineAdjustedWidth - noneContentWidth;
 		//#else
-			//# int firstLineContentWidth = firstLineWidth - noneContentWidth;
-			//# int availableContentWidth = lineWidth - noneContentWidth;
+			firstLineContentWidth = firstLineWidth - noneContentWidth;
+			availableContentWidth = lineWidth - noneContentWidth;
 		//#endif
 		
 		// initialise content by subclass:

@@ -578,7 +578,7 @@ implements AccessibleCanvas
 		int availableWidth = this.screenWidth - this.marginLeft + this.marginRight;
 		//#if tmp.usingTitle
 			if (this.title != null) {
-				this.titleHeight = this.title.getItemHeight( availableWidth, availableWidth );
+				this.titleHeight = this.title.getItemHeight( availableWidth, availableWidth ); 
 			}
 		//#endif
 		//#if !tmp.menuFullScreen
@@ -1928,7 +1928,9 @@ implements AccessibleCanvas
 			//#else
 				int width = this.screenWidth - (this.marginLeft + this.marginRight);
 			//#endif
-			this.titleHeight = this.title.getItemHeight( width, width );
+			if (width > 1) {
+				this.titleHeight = this.title.getItemHeight( width, width );
+			}
 			item.screen = this;
 		} else {
 			this.titleHeight = 0;
