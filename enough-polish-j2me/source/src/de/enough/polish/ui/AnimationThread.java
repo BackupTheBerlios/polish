@@ -90,6 +90,7 @@ public class AnimationThread extends Thread
 	 */
 	public void run() {
 		long sleeptime = ANIMATION_INTERVAL;
+		ClippingRegion repaintRegion = new ClippingRegion();
 //		int animationCounter = 0;
 		while ( true ) {
 			try {
@@ -99,64 +100,30 @@ public class AnimationThread extends Thread
 				if (screen != null) {
 					long currentTime = System.currentTimeMillis();
 					if ( (currentTime - screen.lastInteractionTime) < ANIMATION_TIMEOUT ) { 
-						boolean animated = screen.animate();
+						screen.animate( currentTime, repaintRegion );
 						if (animationList != null) {
 							Object[] animationItems = animationList.getInternalArray();
-							if (animated) {
-								for (int i = 0; i < animationItems.length; i++) {
-									Item item = (Item) animationItems[i];
-									if (item == null) {
-										break;
-									}
-									item.animate();
+							for (int i = 0; i < animationItems.length; i++) {
+								Item item = (Item) animationItems[i];
+								if (item == null) {
+									break;
 								}
-							} else {
-								int animationX = Integer.MAX_VALUE;
-								int animationY = Integer.MAX_VALUE;
-								int animationEndX = 0;
-								int animationEndY = 0;
-								for (int i = 0; i < animationItems.length; i++) {
-									Item item = (Item) animationItems[i];
-									if (item == null) {
-										break;
-									}
-									if ( item.animate() ) {
-										//#debug debug
-										System.out.println("triggering repaint for item " + item + ", absX=" + item.getAbsoluteX() + ", absY=" + item.getAbsoluteY() + ", width=" + item.itemWidth + ", height=" + item.itemHeight );
-										int absX = item.getAbsoluteX();
-										if (absX < animationX ) {
-											animationX = absX;
-										}
-										if (absX + item.itemWidth > animationEndX) {
-											animationEndX = absX + item.itemWidth; 
-										}
-										int absY = item.getAbsoluteY();
-										if (absY < animationY ) {
-											animationY = absY;
-										}
-										if (absY + item.itemHeight > animationEndY) {
-											animationEndY = absY + item.itemHeight; 
-										}
-										
-									}
-								}
-								if (animationEndX > 0) {
-									screen.repaint( animationX, animationY, animationEndX - animationX, animationEndY - animationY );
-								}
+								item.animate(currentTime, repaintRegion);
 							}
 						}
-						if (animated) {
+						if (repaintRegion.containsRegion()) {
 							//System.out.println("AnimationThread: screen needs repainting");
 							//#debug debug
 							System.out.println("triggering repaint for screen " + screen + ", is shown: " + screen.isShown() );
 							//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 								if ( MasterCanvas.instance != null ) {
-									MasterCanvas.instance.repaint();
+									MasterCanvas.instance.repaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
 								}
 							//#else
-								screen.repaint();					
+								//System.out.println("repainting area " + repaintRegion.getX() + " , " + repaintRegion.getY() + ", " + repaintRegion.getWidth() + ", " + repaintRegion.getHeight());
+								screen.repaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );					
 							//#endif
-							
+							repaintRegion.reset();
 							sleeptime = ANIMATION_INTERVAL;
 						}
 					}

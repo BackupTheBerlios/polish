@@ -764,24 +764,21 @@ implements CommandListener
 //	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#animate()
+	 * @see de.enough.polish.ui.Screen#animate(long,ClippingRegion)
 	 */
-	public boolean animate() {
-		boolean animated = super.animate();
-		//System.out.println("Alert: super.animate()=" + animated );
+	public void animate( long currentTime, ClippingRegion repaintRegion ) {
+		super.animate(currentTime,  repaintRegion);
 		if (this.iconItem != null) {
-			animated |= this.iconItem.animate();
+			this.iconItem.animate(currentTime,  repaintRegion);
 		}
 		if (this.indicator != null) {
-			animated |= this.indicator.animate();
+			this.indicator.animate(currentTime,  repaintRegion);
 		}
 		if (this.timeout != FOREVER ) {
-			if (System.currentTimeMillis() - this.showTime > this.timeout) {
+			if (currentTime- this.showTime > this.timeout) {
 				commandAction(DISMISS_COMMAND, this);
-				return false;
 			}
 		}
-		return animated; 
 	}
 
 	/* (non-Javadoc)

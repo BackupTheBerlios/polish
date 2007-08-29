@@ -225,9 +225,31 @@ public abstract class ItemView {
 	}
 	
 	/**
-	 * Animates this view.
+	 * Animates this item.
+	 * Subclasses can override this method to create animations.
+	 * The default implementation animates the background and the item view if present.
+	 * 
+	 * @param currentTime the current time in milliseconds
+	 * @param repaintRegion the repaint area that needs to be updated when this item is animated
+	 * @see Item#getAbsoluteX()
+	 * @see Item#getAbsoluteY()
+	 */
+	public void animate(long currentTime, ClippingRegion repaintRegion) {
+		if (animate()) {
+			repaintRegion.addRegion( this.parentItem.getAbsoluteX(), 
+					this.parentItem.getAbsoluteY(), 
+					this.parentItem.itemWidth,
+					this.parentItem.itemHeight 
+			);
+		}
+	}
+
+	
+	/**
+	 * Animates this view - please use animate(long, ClippingRegion), if possible
 	 * 
 	 * @return true when the view was actually animated.
+	 * @see #animate(long, ClippingRegion)
 	 */
 	public boolean animate() {
 		return false;

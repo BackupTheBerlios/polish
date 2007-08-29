@@ -1902,10 +1902,10 @@ public class Container extends Item {
 	}
 	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#animate()
+	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)
 	 */
-	public boolean animate() {
-		boolean animated = super.animate();
+	public void animate(long currentTime, ClippingRegion repaintRegion) {
+		super.animate(currentTime, repaintRegion);
 		// scroll the container:
 		int target = this.targetYOffset;
 		int current = this.yOffset;
@@ -1935,17 +1935,16 @@ public class Container extends Item {
 //			}
 			// # debug
 			//System.out.println("animate(): adjusting yOffset to " + this.yOffset );
-			animated = true;
+			repaintRegion.addRegion( getAbsoluteX(), getAbsoluteY(), this.itemWidth, this.itemHeight );
 		}
 		if (this.focusedItem != null) {
-			animated |= this.focusedItem.animate();
+			this.focusedItem.animate(currentTime, repaintRegion);
 		}
 		//#ifdef tmp.supportViewType
 			if ( this.containerView != null ) {
-				animated |= this.containerView.animate();
+				this.containerView.animate(currentTime, repaintRegion);
 			}
 		//#endif
-		return animated;
 	}
 	
 	/**

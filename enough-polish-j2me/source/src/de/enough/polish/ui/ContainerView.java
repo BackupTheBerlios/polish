@@ -1187,14 +1187,6 @@ extends ItemView
 		return null;
 	}
 	
-	/**
-	 * Animates this view.
-	 * 
-	 * @return true when the view was actually animated.
-	 */
-	public boolean animate() {
-		return false;
-	}
 
 	/**
 	 * Notifies this view that it is about to be shown (again).
@@ -1327,8 +1319,6 @@ extends ItemView
 		this.focusedItem = item;
 		return item.focus(focusedStyle, direction);
 	}
-
-	
 
 
 }

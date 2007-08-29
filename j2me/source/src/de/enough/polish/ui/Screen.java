@@ -339,12 +339,6 @@ implements AccessibleCanvas
 	 */
 	public Screen( String title, Style style, boolean createDefaultContainer ) {
 		super();
-			
-		// get the screen dimensions:
-		// this is a bit complicated, since Nokia's FullCanvas fucks
-		// up when calling super.getHeight(), so we need to use hardcoded values...
-		
-
 		//#if tmp.useScrollBar
 			this.scrollBar.screen = this;
 		//#endif
@@ -1154,14 +1148,16 @@ implements AccessibleCanvas
 	}
 	
 	/**
-	 * Animates this Screen.
+	 * Animates this screen.
+	 * Subclasses can override this method to create animations.
 	 * All embedded items are also animated.
 	 * 
-	 * @return true when at least one animated item needs a redraw/repaint.
+	 * @param currentTime the current time in milliseconds
+	 * @param repaintRegion the repaint area that needs to be updated when this item is animated
 	 */
-	public boolean animate() {
+	public void animate( long currentTime, ClippingRegion repaintRegion) {
 		if (!this.isInitialized) {
-			return false;
+			return;
 		}
 		
 		synchronized (this.paintLock) {
@@ -1173,40 +1169,54 @@ implements AccessibleCanvas
 				if (this.border != null) {
 					animated |= this.border.animate();
 				}
+				// for ensured backward compatibility call the standard animate method:
+				animated |= animate();
+				if (animated) {
+					//#ifdef tmp.menuFullScreen
+						repaintRegion.addRegion( 0,0, this.screenWidth, this.fullScreenHeight );
+					//#else
+						repaintRegion.addRegion( 0,0, this.screenWidth, this.screenHeight );
+					//#endif
+				}
 				//#ifdef tmp.menuFullScreen
 					//#ifdef tmp.useExternalMenuBar
-						animated = animated | this.menuBar.animate();
+						this.menuBar.animate( currentTime, repaintRegion );
 					//#else
 						if (this.menuOpened) {
-							animated = animated | this.menuContainer.animate();
+							this.menuContainer.animate( currentTime, repaintRegion );
 						} else
 					//#endif
 				//#endif
 				if (this.container != null) {
-					animated = animated | this.container.animate();
+					this.container.animate( currentTime, repaintRegion );
 				}
 				//#ifdef tmp.usingTitle
 					if (this.title != null) {
-						animated = animated | this.title.animate();
+						this.title.animate( currentTime, repaintRegion );
 					}
-				//#endif
-				//#ifndef polish.skipTicker
-//					if (this.ticker != null) {
-//						animated = animated | this.ticker.animate();
-//					}
 				//#endif
 				//#if polish.ScreenInfo.enable
 					if (ScreenInfo.item != null && ScreenInfo.isVisible()) {
-						animated = animated | ScreenInfo.item.animate();
+						ScreenInfo.item.animate( currentTime, repaintRegion );
 					}
 				//#endif
-				return animated;
 			} catch (Exception e) {
 				//#debug error
-				System.out.println("animate() threw an exception" + e );
-				return false;
+				System.out.println("animate(currentTime, repaintRegion) threw an exception" + e );
 			}
-		}
+		}	
+	}
+
+	
+	/**
+	 * Animates this Screen.
+	 * It's recommended to use animate( long, ClippingRegion ) instead for performance reasons.
+	 * 
+	 * @return true when at least one animated item needs a redraw/repaint.
+	 * @see #animate(long, ClippingRegion)
+	 */
+	public boolean animate() {
+		return false;
 	}
 	
 	//#if polish.enableSmileySupport
@@ -1383,6 +1393,7 @@ implements AccessibleCanvas
 					}
 				}
 
+				int clipY = g.getClipY();
 				// paint background:
 				if (this.background != null) {
 					int backgroundHeight = sHeight;
@@ -1430,7 +1441,13 @@ implements AccessibleCanvas
 					//#endif
 							// paint title:
 							if (this.title != null && this.showTitleOrMenu) {
-								this.title.paint( leftBorder, topBorder, leftBorder, rightBorder, g);
+								if (clipY < topBorder + this.titleHeight) {
+									this.title.paint( leftBorder, topBorder, leftBorder, rightBorder, g);
+//									System.out.println("clipY=" + clipY + ", topBorder=" + topBorder + ", titleHeight=" + this.titleHeight);
+//								} else {
+//									g.setColor( 0x00ff00 );
+//									g.fillRect( 10, clipY, 10, 10 );
+								}
 								topHeight += this.titleHeight;
 							}
 					//#if polish.css.title-position
@@ -1716,6 +1733,8 @@ implements AccessibleCanvas
 					}
 				//#endif
 					
+//					g.setColor( 0xff);
+//					g.drawRect( g.getClipX(), g.getClipY(), g.getClipWidth() - 2, g.getClipHeight() - 2 );
 			//#if polish.debug.error
 			} catch (RuntimeException e) {
 				//#debug error
@@ -1795,9 +1814,15 @@ implements AccessibleCanvas
 			}
 			this.container.relativeX = x;
 			this.container.relativeY = y;
-			//System.out.println("content: x=" + x + ", rightBorder=" + (x + width) );
+			//System.out.println("screen: content: x=" + x + ", rightBorder=" + (x + width) );
 			//System.out.println("content: y=" + y + ", bottom=" + (y + height) );
 			this.container.paint( x, y, x, x + width, g );
+//			g.setColor(0x00ff00);
+//			g.drawString( Integer.toString(g.getClipHeight()), x, y, Graphics.TOP | Graphics.LEFT );
+//		} else {
+//			g.setClip( clipX, clipY, clipWidth, clipHeight );
+//			g.setColor(0x00ff00);
+//			g.fillRect( clipX, clipY, 10, 10 );
 		}
 		
 		// allow painting outside of the content area again:

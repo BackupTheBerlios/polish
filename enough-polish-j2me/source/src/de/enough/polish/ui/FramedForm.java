@@ -497,15 +497,22 @@ public class FramedForm extends Form {
 	
 	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#animate()
+	 * @see de.enough.polish.ui.Screen#animate(long,ClippingRegion)
 	 */
-	public boolean animate() {
-		boolean animated = super.animate()
-			| ( this.leftFrame != null && this.leftFrame.animate() )
-			| ( this.rightFrame != null && this.rightFrame.animate() )
-			| ( this.topFrame != null && this.topFrame.animate() )
-			| ( this.bottomFrame != null && this.bottomFrame.animate() );
-		return animated;
+	public void animate( long currentTime, ClippingRegion repaintRegion ) {
+		super.animate(currentTime,  repaintRegion);
+		if ( this.leftFrame != null ) {
+			this.leftFrame.animate(currentTime,  repaintRegion);
+		}
+		if ( this.rightFrame != null ) {
+			this.rightFrame.animate(currentTime,  repaintRegion);
+		}
+		if ( this.topFrame != null ) {
+			this.topFrame.animate(currentTime,  repaintRegion);
+		}
+		if ( this.bottomFrame != null ) {
+			this.bottomFrame.animate(currentTime,  repaintRegion);
+		}
 	}
 
 	

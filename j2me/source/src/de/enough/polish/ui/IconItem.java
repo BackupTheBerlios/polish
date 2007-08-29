@@ -90,7 +90,9 @@ implements ImageConsumer
 	//#if polish.css.icon-horizontal-adjustment
 		private int horizontalAdjustment;
 	//#endif
-	private int yAdjustImage;
+	//private int yAdjustImage;
+	private int relativeIconX;
+	private int relativeIconY;
 
 	/**
 	 * Creates a new icon.
@@ -146,6 +148,7 @@ implements ImageConsumer
 		} 
 		this.imageWidth = this.image.getWidth();
 		this.imageHeight = this.image.getHeight();
+		int yAdjustImage = 0;
 		if (this.imageAlign == Graphics.LEFT || this.imageAlign == Graphics.RIGHT ) {
 			this.imageWidth += this.paddingHorizontal;
 			firstLineWidth -= this.imageWidth;
@@ -158,7 +161,6 @@ implements ImageConsumer
 			}
 			// this.originalContentWidth = this.contentWidth;
 			if (this.imageHeight > this.contentHeight) {
-				this.yAdjustImage = 0;
 				int verticalAlign = this.layout & LAYOUT_VCENTER;
 				if ( verticalAlign == LAYOUT_VCENTER || verticalAlign == 0 ) {
 					this.yAdjustText = (this.imageHeight - this.contentHeight) / 2;
@@ -173,15 +175,11 @@ implements ImageConsumer
 				this.yAdjustText = 0;
 				int verticalAlign = this.layout & LAYOUT_VCENTER;
 				if ( verticalAlign == LAYOUT_VCENTER || verticalAlign == 0 ) {
-					this.yAdjustImage = (this.contentHeight - this.imageHeight) / 2;
+					yAdjustImage = (this.contentHeight - this.imageHeight) / 2;
 				} else if ( verticalAlign == LAYOUT_BOTTOM ) {
-					this.yAdjustImage = (this.contentHeight - this.imageHeight);
-				} else {
-					// top layout:
-					this.yAdjustImage = 0;
+					yAdjustImage = (this.contentHeight - this.imageHeight);
 				}	
 			} else {
-				this.yAdjustImage = 0;
 				this.yAdjustText = 0;
 			}
 			//#ifdef polish.css.icon-image-align-next
@@ -206,7 +204,45 @@ implements ImageConsumer
 				this.contentWidth = this.imageWidth;
 			}
 		}
+		
+		// calculate icon positions:
+		int iconLeftX = 0;
+		int iconTopY = yAdjustImage;
+		if (this.imageAlign == Graphics.LEFT ) {
+			//#ifdef polish.css.icon-image-align-next
+				if (this.imageAlignNext && this.isLayoutExpand) {
+					if (this.isLayoutCenter) {
+						iconLeftX = (firstLineWidth + this.imageWidth - this.contentWidth) >> 1;
+					} else if (this.isLayoutRight) {
+						iconLeftX = firstLineWidth  + this.imageWidth - this.contentWidth;
+					}
+				}
+			//#endif
+		} else if (this.imageAlign == Graphics.RIGHT ) {
+			iconLeftX = firstLineWidth; // - this.imageWidth (imageWidth is already subtracted);
+			//#ifdef polish.css.icon-image-align-next
+				if (this.imageAlignNext && this.isLayoutExpand) {
+					if (this.isLayoutCenter) {
+						iconLeftX -= (firstLineWidth + this.imageWidth - this.contentWidth) >> 1;
+					} else if (!this.isLayoutRight) {
+						iconLeftX = this.contentWidth - this.imageWidth;
+					}
+				}
+			//#endif
+		} else {
+			if (this.isLayoutExpand) {
+				iconLeftX = (firstLineWidth - this.imageWidth) >> 1;
+			} else {
+				iconLeftX = (this.contentWidth - this.imageWidth) >> 1;
+			}
+			if (this.imageAlign == Graphics.BOTTOM ){
+				iconTopY += this.contentHeight - this.imageHeight;
+			}
+		}
+		this.relativeIconX = iconLeftX;
+		this.relativeIconY = iconTopY;
 	} 
+	
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, javax.microedition.lcdui.Graphics)
@@ -221,110 +257,13 @@ implements ImageConsumer
 			//#endif
 			//#if polish.midp2 && polish.css.scale-factor
 				Object[] localeScaleData = this.scaleData;
-				int[] sData = null;
-				int sWidth = 0;
-				int sHeight = 0;
-				int scaleX = x;
-				int scaleY = y;
 				boolean useScaledImage = this.isFocused && (localeScaleData != null) && !this.scaleFinished;
 				if (useScaledImage) {
-					sData = (int[]) localeScaleData[0];
-					sWidth = ((Integer) localeScaleData[1]).intValue();
-					sHeight = sData.length / sWidth;
-				}
-			//#endif
-			if (this.imageAlign == Graphics.LEFT ) {
-				int leftX = x;
-				//#ifdef polish.css.icon-image-align-next
-					if (this.imageAlignNext) {
-						if (this.isLayoutCenter) {
-							leftX += ((rightBorder - leftBorder) - this.contentWidth) >> 1;
-						} else if (this.isLayoutRight) {
-							leftX += (rightBorder - leftBorder) - this.contentWidth;
-						}
-					}
-				//#endif
-				//#if polish.midp2 && polish.css.scale-factor
-					if (useScaledImage) { 
-						scaleX = leftX  -  ((sWidth - this.image.getWidth()) >> 1);
-						scaleY = y - ((sHeight - this.image.getHeight()) >> 1) + this.yAdjustImage;
-					} else {
-				//#endif
-						g.drawImage(this.image, leftX, y + this.yAdjustImage, Graphics.TOP | Graphics.LEFT );
-				//#if polish.midp2 && polish.css.scale-factor
-					}
-				//#endif
-				x += this.imageWidth;
-				leftBorder += this.imageWidth;
-				y += this.yAdjustText;
-			} else if (this.imageAlign == Graphics.RIGHT ) {
-				int rightX = x + this.contentWidth;
-				//#ifdef polish.css.icon-image-align-next
-					if (this.imageAlignNext) {
-						if (this.isLayoutCenter) {
-							rightX += ((rightBorder - leftBorder) - this.contentWidth) >> 1;
-						} else if (this.isLayoutRight) {
-							rightX += (rightBorder - leftBorder) - this.contentWidth;
-						}
-					}
-				//#endif
-				//#if polish.midp2 && polish.css.scale-factor
-					if (useScaledImage) {
-						scaleX = rightX  -  ((this.image.getWidth()  + sWidth) >> 1);
-						scaleY = y - ((sHeight - this.image.getHeight()) >> 1) + this.yAdjustImage;
-					} else {
-				//#endif
-						g.drawImage(this.image, rightX, y + this.yAdjustImage, Graphics.TOP | Graphics.RIGHT );
-				//#if polish.midp2 && polish.css.scale-factor
-					}
-				//#endif
-				rightBorder -= this.imageWidth;
-				y += this.yAdjustText;
-			} else if (this.imageAlign == Graphics.TOP ) {
-				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
-				//System.out.println("left: " + leftBorder + "  right: " + rightBorder + "  contentWidth: " + this.contentWidth);
-				//System.out.println("x: " + x + "  centerX: " + centerX );
-				//#if polish.midp2 && polish.css.scale-factor
-					if (useScaledImage) {
-						scaleX = centerX - (sWidth / 2);
-						scaleY = y - ((sHeight - this.image.getHeight()) / 2);
-					} else {
-				//#endif
-				g.drawImage(this.image, centerX, y, Graphics.TOP | Graphics.HCENTER );
-				//#if polish.midp2 && polish.css.scale-factor
-					}
-				//#endif
-				y += this.imageHeight;
-			} else if (this.imageAlign == Graphics.BOTTOM ){
-				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
-				int bottomY = y + this.contentHeight;
-				//#if polish.midp2 && polish.css.scale-factor
-					if (useScaledImage) {
-						scaleX = centerX  - (sWidth / 2);
-						scaleY = bottomY - sHeight;
-					} else {
-				//#endif
-				g.drawImage(this.image, centerX, bottomY, Graphics.BOTTOM | Graphics.HCENTER );
-				//#if polish.midp2 && polish.css.scale-factor
-					}
-				//#endif
-			} else {
-				// imageAlign == Graphics.HCENTER | Graphics.VCENTER 
-				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
-				int centerY = y + this.contentHeight / 2;
-				//#if polish.midp2 && polish.css.scale-factor
-					if (useScaledImage) {
-						scaleX = centerX  - (sWidth / 2);
-						scaleY = centerY - (sHeight / 2);
-					} else {
-				//#endif
-				g.drawImage(this.image, centerX, centerY,  Graphics.HCENTER | Graphics.VCENTER);
-				//#if polish.midp2 && polish.css.scale-factor
-					}
-				//#endif
-			}
-			//#if polish.midp2 && polish.css.scale-factor
-				if (useScaledImage) {
+					int[] sData = (int[]) localeScaleData[0];
+					int sWidth = ((Integer) localeScaleData[1]).intValue();
+					int sHeight = sData.length / sWidth;
+					int scaleX = x + this.relativeIconX + ((this.imageWidth - sWidth) >> 1);
+					int scaleY = y + this.relativeIconY + ((this.imageHeight - sHeight) >> 1);
 					//#ifdef polish.Bugs.drawRgbOrigin
 						scaleX += g.getTranslateX();
 						scaleY += g.getTranslateY();						
@@ -336,8 +275,103 @@ implements ImageConsumer
 						scaleY = 0;
 					}
 					g.drawRGB(sData, 0, sWidth, scaleX, scaleY, sWidth, sHeight, true );
+				} else {
+			//#endif
+				g.drawImage( this.image, x + this.relativeIconX, y + this.relativeIconY, Graphics.TOP | Graphics.LEFT );
+			//#if polish.midp2 && polish.css.scale-factor
 				}
-			//#endif		
+			//#endif
+			if (this.imageAlign == Graphics.LEFT ) {
+//				int leftX = x;
+//				//#ifdef polish.css.icon-image-align-next
+//					if (this.imageAlignNext) {
+//						if (this.isLayoutCenter) {
+//							leftX += ((rightBorder - leftBorder) - this.contentWidth) >> 1;
+//						} else if (this.isLayoutRight) {
+//							leftX += (rightBorder - leftBorder) - this.contentWidth;
+//						}
+//					}
+//				//#endif
+//				//#if polish.midp2 && polish.css.scale-factor
+//					if (useScaledImage) { 
+//						scaleX = leftX  -  ((sWidth - this.image.getWidth()) >> 1);
+//						scaleY = y - ((sHeight - this.image.getHeight()) >> 1) + this.yAdjustImage;
+//					} else {
+//				//#endif
+//						g.drawImage(this.image, leftX, y + this.yAdjustImage, Graphics.TOP | Graphics.LEFT );
+//				//#if polish.midp2 && polish.css.scale-factor
+//					}
+//				//#endif
+				x += this.imageWidth;
+				leftBorder += this.imageWidth;
+				y += this.yAdjustText;
+			} else if (this.imageAlign == Graphics.RIGHT ) {
+//				int rightX = x + this.contentWidth;
+//				//#ifdef polish.css.icon-image-align-next
+//					if (this.imageAlignNext) {
+//						if (this.isLayoutCenter) {
+//							rightX += ((rightBorder - leftBorder) - this.contentWidth) >> 1;
+//						} else if (this.isLayoutRight) {
+//							rightX += (rightBorder - leftBorder) - this.contentWidth;
+//						}
+//					}
+//				//#endif
+//				//#if polish.midp2 && polish.css.scale-factor
+//					if (useScaledImage) {
+//						scaleX = rightX  -  ((this.image.getWidth()  + sWidth) >> 1);
+//						scaleY = y - ((sHeight - this.image.getHeight()) >> 1) + this.yAdjustImage;
+//					} else {
+//				//#endif
+//						g.drawImage(this.image, rightX, y + this.yAdjustImage, Graphics.TOP | Graphics.RIGHT );
+//				//#if polish.midp2 && polish.css.scale-factor
+//					}
+//				//#endif
+				rightBorder -= this.imageWidth;
+				y += this.yAdjustText;
+			} else if (this.imageAlign == Graphics.TOP ) {
+//				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
+//				//System.out.println("left: " + leftBorder + "  right: " + rightBorder + "  contentWidth: " + this.contentWidth);
+//				//System.out.println("x: " + x + "  centerX: " + centerX );
+//				//#if polish.midp2 && polish.css.scale-factor
+//					if (useScaledImage) {
+//						scaleX = centerX - (sWidth / 2);
+//						scaleY = y - ((sHeight - this.image.getHeight()) / 2);
+//					} else {
+//				//#endif
+//						g.drawImage(this.image, centerX, y, Graphics.TOP | Graphics.HCENTER );
+//				//#if polish.midp2 && polish.css.scale-factor
+//					}
+//				//#endif
+				y += this.imageHeight;
+//			} else if (this.imageAlign == Graphics.BOTTOM ){
+//				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
+//				int bottomY = y + this.contentHeight;
+//				//#if polish.midp2 && polish.css.scale-factor
+//					if (useScaledImage) {
+//						scaleX = centerX  - (sWidth / 2);
+//						scaleY = bottomY - sHeight;
+//					} else {
+//				//#endif
+//						g.drawImage(this.image, centerX, bottomY, Graphics.BOTTOM | Graphics.HCENTER );
+//				//#if polish.midp2 && polish.css.scale-factor
+//					}
+//				//#endif
+//			} else {
+//				// imageAlign == Graphics.HCENTER | Graphics.VCENTER 
+//				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
+//				int centerY = y + this.contentHeight / 2;
+//				//#if polish.midp2 && polish.css.scale-factor
+//					if (useScaledImage) {
+//						scaleX = centerX  - (sWidth / 2);
+//						scaleY = centerY - (sHeight / 2);
+//					} else {
+//				//#endif
+//						g.drawImage(this.image, centerX, centerY,  Graphics.HCENTER | Graphics.VCENTER);
+//				//#if polish.midp2 && polish.css.scale-factor
+//					}
+//				//#endif
+			}
+		
 			//#if polish.css.icon-horizontal-adjustment
 				x -= this.horizontalAdjustment;
 			//#endif
@@ -530,13 +564,13 @@ implements ImageConsumer
 	
 	//#if polish.midp2 && polish.css.scale-factor
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#hideNotify()
+	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)
 	 */
-	public boolean animate() {
-		boolean animated = super.animate();
+	public void animate(long currentTime, ClippingRegion repaintRegion) {
+		super.animate(currentTime, repaintRegion);
 		if (this.scaleFactor != 0) {
 			if (this.scaleFinished || this.image == null) {
-				return animated;
+				return;
 			}
 			int imgWidth = this.image.getWidth();
 			int imgHeight = this.image.getHeight();
@@ -550,13 +584,13 @@ implements ImageConsumer
 				if (step <= 0) {
 					this.scaleFinished =  true;
 					this.scaleData = null;
-					return true;
+					return;
 				}
 			} else {
 				step++;
 				if (step > this.scaleSteps) {
 					this.scaleDown = true;
-					return false;
+					return;
 				}
 			}
 			this.currentStep = step;
@@ -566,13 +600,30 @@ implements ImageConsumer
 			int[] scaledRgbData = ImageUtil.scale( scaleWidth, scaleHeight, imgWidth, 
 					imgWidth, imgHeight, this.rgbData);
 			Object[] localeScaleData = new Object[]{ scaledRgbData, new Integer( scaleWidth ) };
+			// read the last scale data for repainting the correctly sized area:
+			Object[] lastScaleData = this.scaleData;
+			if (lastScaleData != null) {
+				int[] sData = (int[]) lastScaleData[0];
+				int lastScaleWidth = ((Integer) lastScaleData[1]).intValue();
+				int lastScaleHeight = sData.length / lastScaleWidth;
+				if (lastScaleWidth > scaleWidth) {
+					scaleWidth = lastScaleWidth;
+				}
+				if (lastScaleHeight > scaleHeight) {
+					scaleHeight = lastScaleHeight;
+				}
+			}
 			// this operation is atomic:
 			this.scaleData = localeScaleData;
-			return true;
-		}
-		return animated;
-		
-	}		
+			// add repaint area:
+			addRelativeRegion( repaintRegion, 
+								this.relativeIconX + ((this.imageWidth - scaleWidth) >> 1), 
+								this.relativeIconY + ((this.imageHeight - scaleHeight) >> 1),
+								scaleWidth,
+								scaleHeight 
+			);
+		}	
+	}
 	//#endif
 
 	//#if polish.midp2 && polish.css.scale-factor
@@ -607,11 +658,18 @@ implements ImageConsumer
 		this.isStyleInitialised = false;
 	}
 
-
+	/**
+	 * Determines if the text of this icon item is visible
+	 * @return true when the text is shown
+	 */
 	public boolean isTextVisible() {
 		return this.isTextVisible;
 	}
 	
+	/**
+	 * Toggles the visibility of this icon's text
+	 * @param isTextVisible true when the text should be shown
+	 */
 	public void setTextVisible( boolean isTextVisible ) {
 		this.isTextVisible = isTextVisible;
 		if (!isTextVisible) {
@@ -619,6 +677,8 @@ implements ImageConsumer
 		}
 		this.isInitialized = false;
 	}
+
+	
 	
 //#ifdef polish.IconItem.additionalMethods:defined
 	//#include ${polish.IconItem.additionalMethods}

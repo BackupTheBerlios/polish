@@ -163,12 +163,11 @@ implements ItemStateListener, CommandListener
 	
 	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#animate()
+	 * @see de.enough.polish.ui.Screen#animate(long,ClippingRegion)
 	 */
-	public boolean animate() {
-		boolean animated = super.animate();
-		animated |= this.filterTextField.animate();
-		return animated;
+	public void animate( long currentTime, ClippingRegion repaintRegion ) {
+		super.animate(currentTime,  repaintRegion);
+		this.filterTextField.animate(currentTime,  repaintRegion);
 	}
 
 	/* (non-Javadoc)

@@ -266,11 +266,11 @@ public class TabbedList extends Screen {
 	
 	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#animate()
+	 * @see de.enough.polish.ui.Screen#animate(long,ClippingRegion)
 	 */
-	public boolean animate() {
-		//System.out.println("syso: animating container " + this.container + " with view " + this.container.containerView );
-		return super.animate() | this.tabTitles.animate();
+	public void animate( long currentTime, ClippingRegion repaintRegion ) {
+		super.animate(currentTime,  repaintRegion);
+		this.tabTitles.animate(currentTime,  repaintRegion);
 	}
 	
 	/* (non-Javadoc)

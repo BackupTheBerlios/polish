@@ -116,11 +116,13 @@ public class FishEyeContainerView extends ContainerView {
 				int target = this.targetXCenterPositions[i];
 				Item item = myItems[i];
 				int itemWidth = (item.itemWidth >> 1);
-				int factor = this.scaleFactor;
 				int distance = getDistance( i, this.focusedIndex, length );
 				if (distance != 0) {
 					distance--;
 				}
+				//#if polish.midp2
+					int factor = this.scaleFactor;
+				//#endif
 				//#if tmp.scaleAll
 					factor = factor + ((this.scaleFactorEnd - factor ) * distance) / (length >> 1);
 				//#endif
@@ -525,6 +527,7 @@ public class FishEyeContainerView extends ContainerView {
 	}
 
 	
+	//#if polish.midp2
 
 	/**
 	 * @param distance
@@ -539,6 +542,7 @@ public class FishEyeContainerView extends ContainerView {
 		//System.out.println("alpha for processed=" + distance + ", length=" + length + "=" + alpha);
 		return alpha;
 	}
+	//#endif
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#paintContent(de.enough.polish.ui.Container, de.enough.polish.ui.Item[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)

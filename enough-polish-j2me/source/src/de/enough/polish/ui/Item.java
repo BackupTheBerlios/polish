@@ -1589,6 +1589,7 @@ public abstract class Item extends Object
 				return;
 			}
 		//#endif
+
 		// initialise this item if necessary:
 		int availableWidth = rightBorder - leftBorder;
 		if (!this.isInitialized || (availableWidth < this.itemWidth )) {
@@ -1858,6 +1859,9 @@ public abstract class Item extends Object
 			availableContentWidth = lineWidth - noneContentWidth;
 		//#endif
 		
+		this.contentX = this.marginLeft + this.borderWidth + this.paddingLeft;
+		this.contentY = this.marginTop + this.borderWidth + this.paddingTop; 
+		
 		// initialise content by subclass:
 		//#ifdef polish.css.view-type
 			if (this.view != null) {
@@ -1871,8 +1875,6 @@ public abstract class Item extends Object
 			}
 		//#endif
 		
-		this.contentX = this.marginLeft + this.borderWidth + this.paddingLeft;
-		this.contentY = this.marginTop + this.borderWidth + this.paddingTop; 
 		if (this.contentWidth == 0 && this.contentHeight == 0) {
 			this.itemWidth = labelWidth;
 			this.itemHeight = labelHeight;
@@ -1930,7 +1932,7 @@ public abstract class Item extends Object
 			}
 			if (this.useSingleRow) {
 				this.itemWidth += labelWidth;
-				this.contentX = labelWidth;
+				this.contentX += labelWidth;
 			}
 			if ( cHeight + noneContentHeight < labelHeight ) {
 				cHeight = labelHeight - noneContentHeight;
@@ -2221,6 +2223,39 @@ public abstract class Item extends Object
 	//#endif
 	
 	/**
+	 * Adds a region relative to this item's content x/y start position.
+	 * @param repaintRegion the clipping region
+	 * @param x horizontal start relative to this item's content position
+	 * @param y vertical start relative to this item's content position
+	 * @param width width
+	 * @param height height
+	 */
+	protected void addRelativeRegion(ClippingRegion repaintRegion, int x, int y, int width, int height) {
+		repaintRegion.addRegion( 
+				getAbsoluteX() + this.contentX + x, 
+				getAbsoluteY() + this.contentY + y,
+				width,
+				height 
+				);
+	}
+	
+	/**
+	 * Animates this item.
+	 * Subclasses can override this method to create animations.
+	 * The default implementation animates the background and the item view if present.
+	 * 
+	 * @param currentTime the current time in milliseconds
+	 * @param repaintRegion the repaint area that needs to be updated when this item is animated
+	 * @see #addRelativeRegion(ClippingRegion, int, int, int, int)
+	 */
+	public void animate( long currentTime, ClippingRegion repaintRegion) {
+		if (animate()) {
+			repaintRegion.addRegion( getAbsoluteX(), getAbsoluteY(), this.itemWidth, this.itemHeight );
+		}
+	}
+	
+	
+	/**
 	 * Animates this item.
 	 * Subclasses can override this method to create animations.
 	 * The default implementation animates the background and the item view if present.
@@ -2442,7 +2477,7 @@ public abstract class Item extends Object
 	 */
 	public int getAbsoluteX() {
 		int absX = this.relativeX;
-		if (!this.isLayoutCenter && !this.isLayoutRight) {
+		if (this.label != null && this.useSingleRow && !this.isLayoutCenter && !this.isLayoutRight) {
 			// hack for left align with additional label:
 			absX += this.contentX;
 		}
@@ -2476,6 +2511,24 @@ public abstract class Item extends Object
 			item = item.parent;
 		}
 		return absY;
+	}
+	
+	/**
+	 * Retrieves the start of the content relative to this item's absolute x position.
+	 * @return the horizontal start of the content
+	 * @see #getAbsoluteX()
+	 */
+	public int getContentX() {
+		return this.contentX;
+	}
+	
+	/**
+	 * Retrieves the start of the content relative to this item's absolute y position.
+	 * @return the vertical start of the content
+	 * @see #getAbsoluteY()
+	 */
+	public int getContentY() {
+		return this.contentY;
 	}
 
 	/**

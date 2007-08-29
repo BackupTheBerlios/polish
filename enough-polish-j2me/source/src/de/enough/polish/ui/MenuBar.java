@@ -1291,21 +1291,20 @@ public class MenuBar extends Item {
 	}
 	
 	
-	public boolean animate() {
-		boolean animated = false;
-		if (this.background != null) {
-			animated = animated | this.background.animate();
-		}
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)
+	 */
+	public void animate(long currentTime, ClippingRegion repaintRegion) {
+		super.animate(currentTime, repaintRegion);
 		if (this.isOpened) {
-			animated = animated | this.commandsContainer.animate();
+			this.commandsContainer.animate(currentTime, repaintRegion);
 		}
 		if (this.singleLeftCommandItem != null) {
-			animated = animated | this.singleLeftCommandItem.animate();
+			this.singleLeftCommandItem.animate(currentTime, repaintRegion);
 		}
 		if (this.singleRightCommandItem != null) {
-			animated = animated | this.singleRightCommandItem.animate();
-		}
-		return animated;
+			this.singleRightCommandItem.animate(currentTime, repaintRegion);
+		}		
 	}
 
 	/**
