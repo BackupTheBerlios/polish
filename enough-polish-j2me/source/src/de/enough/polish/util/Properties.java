@@ -49,7 +49,7 @@ import de.enough.polish.io.Externalizable;
  * @author Robert Virkus (optimizations)
  */
 public class Properties 
-extends Hashtable
+extends HashMap
 implements Externalizable
 {
 	private boolean isIntegerValues;
@@ -168,7 +168,7 @@ implements Externalizable
 	 * Returns an enumeration of all the keys in this property list 
 	 * @return an enumeration of all the keys in this property list
 	 */
-	public Enumeration propertyNames()
+	public Object[] propertyNames()
 	{
 		return this.keys();
 	}
@@ -198,9 +198,10 @@ implements Externalizable
 		int size = size();
 		out.writeInt( size );
 		out.writeBoolean( this.isIntegerValues );
-		Enumeration keys = keys();
-		while (keys.hasMoreElements()) {
-			String key = (String) keys.nextElement();
+		Object[] keys = keys();
+		for(int i=0; i<keys.length; i++)
+		{
+			String key = (String)keys[i];
 			out.writeUTF( key );
 			if (this.isIntegerValues) {
 				Integer value = (Integer) get( key );
