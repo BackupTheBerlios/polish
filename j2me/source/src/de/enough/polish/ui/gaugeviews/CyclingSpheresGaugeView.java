@@ -124,26 +124,29 @@ public class CyclingSpheresGaugeView extends ItemView {
 	protected void paintContent(Item parent, int x, int y, int leftBorder,
 			int rightBorder, Graphics g) 
 	{
-		
-		int centerX 	= this.contentWidth/2 + x;
-		int centerY 	= this.contentWidth/2 + y;
-		double alpha 	= 0;
-		double radius 	= ((double)this.contentWidth)/2d - ((double)this.sphereWidth)/2d;
-		int sphereX 	= 0;
-		int sphereY 	= 0;
-		
-		for(int i=0; i < this.sphereCount; i++)
-		{
-			setSphereColor(g, i);
+		//#if !polish.hasFloatingPoint
+			super.paintContentByParent(parent, x, y, leftBorder, rightBorder, g);
+		//#else
+			int centerX 	= (this.contentWidth - this.sphereWidth) / 2  + x;
+			int centerY 	= (this.contentWidth - this.sphereWidth) / 2  + y;
+			double alpha 	= 0;
+			double radius 	= (this.contentWidth - this.sphereWidth)/2d;
+			int sphereX 	= 0;
+			int sphereY 	= 0;
 			
-			alpha = (360d / this.sphereCount) * i;
-			alpha = (alpha / 180) * Math.PI;
-			
-			sphereX = (int)(centerX + radius * Math.cos(alpha));
-			sphereY = (int)(centerY - radius * Math.sin(alpha));
-			
-			g.fillArc( sphereX, sphereY, this.sphereWidth, this.sphereWidth, 0, 360);
-		}
+			for(int i=0; i < this.sphereCount; i++)
+			{
+				setSphereColor(g, i);
+				
+				alpha = (360d / this.sphereCount) * i;
+				alpha = (alpha / 180) * Math.PI;
+				
+				sphereX = (int)(centerX + radius * Math.cos(alpha));
+				sphereY = (int)(centerY - radius * Math.sin(alpha));
+				
+				g.fillArc( sphereX, sphereY, this.sphereWidth, this.sphereWidth, 0, 360);
+			}
+		//#endif
 	}
 	
 	private void setSphereColor(Graphics g, int i)

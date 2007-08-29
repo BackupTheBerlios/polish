@@ -163,7 +163,11 @@ public class FishEyeContainerView extends ContainerView {
 							int newHeight = (newWidth * originalHeight) / originalWidth;
 							//int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length );
 							//this.shownRgbData[i] = ImageUtil.scale(alpha, data, newWidth, newHeight, originalWidth, originalHeight );
-							ImageUtil.scaleDownHq(this.shownRgbData[i],data, originalWidth, newWidth, 0, currentAlpha, false);
+							//#if polish.FishEye.scaleHq
+								ImageUtil.scaleDownHq(this.shownRgbData[i],data, originalWidth, newWidth, 0, currentAlpha, false);
+							//#else
+								ImageUtil.scale(currentAlpha, data, newWidth, newHeight, originalWidth, originalHeight, this.shownRgbData[i] );
+							//#endif
 							this.shownRgbDataWidths[i] = newWidth;
 							this.shownRgbDataHeight[i] = newHeight;
 						}
@@ -318,7 +322,12 @@ public class FishEyeContainerView extends ContainerView {
 					//this.shownRgbData[i] = ImageUtil.scale(data, newWidth, newHeight, width, height );
 					int alpha = this.endTranslucency; // calculateAlpha( getDistance( i, this.focusedIndex, length ), length );
 					this.shownRgbData[i]=new int[data.length];
-					ImageUtil.scaleDownHq(this.shownRgbData[i], data,width, newWidth, 0, alpha, false);
+					//#if polish.FishEye.scaleHq
+						ImageUtil.scaleDownHq(this.shownRgbData[i], data,width, newWidth, 0, alpha, false);
+					//#else
+						ImageUtil.scale(alpha, data, newWidth, newHeight, width, height, this.shownRgbData[i] );
+					//#endif
+					
 					this.shownRgbDataWidths[i] = newWidth;
 					this.shownRgbDataHeight[i] = newHeight;
 				}

@@ -1204,7 +1204,7 @@ public final class ImageUtil {
 		int verticalShrinkFactorPercent = ((newHeight*100) / oldHeight);
 		int horizontalScaleFactorPercent = ((newWidth*100) / oldWidth);
 		int alpha = (opacity << 24); // is now 0xtt000000
-		for(int i = 0; i < newLength;i++){
+		for(int i = 0; i < newLength; i++){
 			currentX = (currentX + 1) % newWidth;
 			if(currentX == 0){
 				currentY++;	
