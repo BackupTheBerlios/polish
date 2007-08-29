@@ -1562,6 +1562,9 @@ public class TextField extends StringItem
 		//#if polish.blackberry
 			if (this.editField != null && text != this.text ) {
 				Object bbLock = UiApplication.getEventLock();
+				if (this.screen == null) {
+					this.screen = getScreen();
+				}
 				synchronized (bbLock) {
                     if (this.isFocused) {
                     	//# this.screen.setFocus( null );

@@ -395,6 +395,7 @@ public class TabbedForm extends Form {
 	
 	
 	
+	
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		if (this.tabBar.isFocused) {
 			int nextTabIndex = this.activeTabIndex;
@@ -421,18 +422,12 @@ public class TabbedForm extends Form {
 			else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
 				this.tabBar.defocus(this.tabBar.style);
 				this.container.focus(this.container.style, Canvas.DOWN);
-		        //#if polish.blackberry
-			        //# setFocus( this.container );
-			    //#endif
 				return true;
 			}
 			//#if polish.css.tabbar-roundtrip
 				else if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
 					this.tabBar.defocus(this.tabBar.style);
 					this.container.focus(this.container.style, Canvas.UP);
-			        //#if polish.blackberry
-				        //# setFocus( this.container );
-				    //#endif
 					return true;
 				}
 			//#endif
@@ -541,6 +536,13 @@ public class TabbedForm extends Form {
 	 */
 	public void setTabbedFormListener( TabbedFormListener listener ) {
 		this.tabbedFormListener = listener;
+	}
+
+	public Item getCurrentItem() {
+		if (this.tabBar.isFocused) {
+			return this.tabBar;
+		}
+		return super.getCurrentItem();
 	}
 
 }

@@ -3209,7 +3209,7 @@ implements AccessibleCanvas
 					this.screenHeight = height;
 				}
 			//#endif
-			System.out.println("sizeChanged - doInit=" + doInit);
+			//System.out.println("sizeChanged - doInit=" + doInit);
 			if (doInit) {
 				if (this.container != null) {
 					this.container.requestFullInit();
