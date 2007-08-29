@@ -2812,6 +2812,7 @@
 		type="color"
 		appliesTo="CyclingSpheresGaugeView"
 		description="The color of the normal spheres."
+		default="white"
 		id="262"
 	/>
 	
@@ -2820,6 +2821,7 @@
 		type="color"
 		appliesTo="CyclingSpheresGaugeView"
 		description="The color of the hightlighted spheres."
+		default="black"
 		id="263"
 	/>
 	
@@ -2828,6 +2830,7 @@
 		type="integer"
 		appliesTo="CyclingSpheresGaugeView"
 		description="The count of all spheres."
+		default="8"
 		id="264"
 	/>
 	
@@ -2836,6 +2839,7 @@
 		type="integer"
 		appliesTo="CyclingSpheresGaugeView"
 		description="The count of the highlighted spheres."
+		default="3"
 		id="265"
 	/>
 	
@@ -2844,6 +2848,7 @@
 		type="integer"
 		appliesTo="CyclingSpheresGaugeView"
 		description="The width of the spheres."
+		default="10"
 		id="266"
 	/>
 	
@@ -2852,6 +2857,7 @@
 		type="color"
 		appliesTo="HorizontalSpheresGaugeView"
 		description="The color of the normal spheres."
+		default="white"
 		id="267"
 	/>
 	
@@ -2860,6 +2866,7 @@
 		type="color"
 		appliesTo="HorizontalSpheresGaugeView"
 		description="The color of the hightlighted spheres."
+		default="black"
 		id="268"
 	/>
 	
@@ -2868,6 +2875,7 @@
 		type="integer"
 		appliesTo="HorizontalSpheresGaugeView"
 		description="The count of all spheres."
+		default="8"
 		id="269"
 	/>
 	
@@ -2876,6 +2884,7 @@
 		type="integer"
 		appliesTo="HorizontalSpheresGaugeView"
 		description="The count of the highlighted spheres."
+		default="3"
 		id="270"
 	/>
 	
@@ -2885,6 +2894,15 @@
 		appliesTo="HorizontalSpheresGaugeView"
 		description="The width of the spheres."
 		id="271"
+	/>
+	
+	<attribute
+		name="icon-image-align-next"
+		type="boolean"
+		appliesTo="IconItem"
+		description="Specifies if a horizontal aligned image should be painted at the border (=default) or next to the content when the item has an expand layout."
+		default="false"
+		id="272"
 	/>
 	
 	<!--
