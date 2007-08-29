@@ -728,7 +728,8 @@ public class TextField extends StringItem
 			//#if polish.TextField.Symbols:defined
 				//#= private static String definedSymbols = "${ escape(polish.TextField.Symbols)}"; 
 			//#else
-				private static String definedSymbols = "@/\\<>(){}.,+-*:_\"#$%";
+				private static String[] definedSymbols = {"@","/","\\","<",">","(",")","{","}",".","+","-","*",":","_","\"","#","$","%",":)",":(",";)",":x",":D",":P"};
+				//private static String definedSymbols = "@/\\<>(){}.,+-*:_\"#$%";
 			//#endif
 			//#ifdef polish.i18n.useDynamicTranslations
 		  		private static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.ITEM, 3 );
@@ -3713,7 +3714,17 @@ public class TextField extends StringItem
 			if (box instanceof List) {
 				if (cmd != StyleSheet.CANCEL_CMD) {
 					int index = symbolsList.getSelectedIndex();
-					insertCharacter( definedSymbols.charAt(index), true, true );
+					
+					//#if polish.TextField.usePredictiveInput
+						builder.addStringBuffer(definedSymbols[index]);
+						
+						setText(this.builder.getText().toString()); 
+						setCaretPosition(this.builder.getCaretPosition());
+					//#else
+						insert(definedSymbols[index],this.caretPosition);
+					//#endif
+					
+					//insertCharacter( definedSymbols.charAt(index), true, true );
 					StyleSheet.currentScreen = this.screen;
 					//#if tmp.updateDeleteCommand
 						updateDeleteCommand( this.text );
@@ -3783,9 +3794,9 @@ public class TextField extends StringItem
 		if (symbolsList == null) {
 			//#style textFieldSymbolList?, textFieldSymbolTable?
 			symbolsList = new List( ENTER_SYMBOL_CMD.getLabel(), Choice.IMPLICIT );
-			for (int i = 0; i < definedSymbols.length(); i++) {
+			for (int i = 0; i < definedSymbols.length; i++) {
 				//#style textFieldSymbolItem?
-				symbolsList.append( definedSymbols.substring(i, i+1), null );
+				symbolsList.append( definedSymbols[i], null );
 			}
 			//TODO check localization when using dynamic localization
 			symbolsList.addCommand( StyleSheet.CANCEL_CMD );

@@ -26,7 +26,9 @@
  */
 package de.enough.polish.ui.texteffects;
 
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -36,6 +38,7 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.Properties;
 import de.enough.polish.util.TextUtil;
 
 /**
@@ -59,6 +62,12 @@ import de.enough.polish.util.TextUtil;
  */
 public class SmileyTextEffect extends TextEffect {
 	
+	//#ifdef smileys:defined
+	//#= protected static String[][] smileys = ${smileys};
+	//#else
+	protected static String[][] smileys;
+	//#endif
+	
 	protected final HashMap smileyMap;
 	protected Object[] smileyKeys;
 	protected String currentSmiley;
@@ -72,8 +81,35 @@ public class SmileyTextEffect extends TextEffect {
 		super();
 		
 		this.smileyMap 		= new HashMap();
-		this.smileyWidth 	= 0;
-		this.smileyHeight	= 0;
+		
+		Image img = null;
+		
+		for(int i=0; i<smileys.length; i++)
+		{
+			try
+			{
+				img = Image.createImage(smileys[i][1]);
+				this.smileyMap.put(smileys[i][0],img);
+			}
+			catch(IOException e)
+			{
+				//#debug error
+				System.out.println("unable to load smiley image " + e);
+			}
+		}
+		
+		this.smileyKeys = this.smileyMap.keys();
+		
+		if(img != null)
+		{
+			this.smileyWidth	= img.getWidth();
+			this.smileyHeight	= img.getHeight();
+		}
+		else
+		{
+			this.smileyWidth 	= 0;
+			this.smileyHeight	= 0;
+		}
 	}
 	
 
@@ -92,9 +128,7 @@ public class SmileyTextEffect extends TextEffect {
 			
 			if(this.currentSmiley != null)
 			{
-				Image img = (Image)this.smileyMap.get(this.currentSmiley);
-				
-				stringWidth += img.getWidth();
+				stringWidth += this.smileyWidth;
 				
 				position += currentSmiley.length();
 			}
@@ -270,54 +304,6 @@ public class SmileyTextEffect extends TextEffect {
 		return null;
 	}
 
-	public void setStyle(Style style) {
-		super.setStyle(style);
-		
-		//#ifdef polish.css.smiley-regular
-		try
-		{
-			this.smileyMap.put(":)", Image.createImage(style.getProperty("smiley-regular")));
-		}
-		catch(IOException e)
-		{
-			System.out.print("unable to load smiley " + e);
-		}
-		//#endif
-		
-		//#ifdef polish.css.smiley-wink
-		try
-		{
-			this.smileyMap.put(";)", Image.createImage(style.getProperty("smiley-wink")));
-		}
-		catch(IOException e)
-		{
-			System.out.print("unable to load smiley " + e);
-		}
-		//#endif
-		
-		//#ifdef polish.css.smiley-sad
-		try
-		{
-			this.smileyMap.put(":(", Image.createImage(style.getProperty("smiley-sad")));
-		}
-		catch(IOException e)
-		{
-			System.out.print("unable to load smiley " + e);
-		}
-		//#endif
-		
-		this.smileyKeys = this.smileyMap.keys();
-		
-		if(this.smileyKeys.length > 0)
-		{
-			Image smiley = (Image)this.smileyMap.get(this.smileyKeys[0]);
-			
-			this.smileyWidth  = smiley.getWidth();
-			this.smileyHeight = smiley.getHeight();
-		}
-	}
-
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
@@ -343,7 +329,7 @@ public class SmileyTextEffect extends TextEffect {
 				
 				g.drawImage(img, x + offset, y, Graphics.TOP | Graphics.LEFT);
 				
-				offset += img.getWidth();
+				offset += this.smileyWidth;
 				
 				position += currentSmiley.length();
 			}
