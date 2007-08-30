@@ -39,6 +39,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -72,10 +73,10 @@ public class ChooseTargetPanel extends IzPanel {
 	public ChooseTargetPanel(InstallerFrame parent, InstallData idata) {
 		super(parent, idata);
 		
-		String installPath = idata.getInstallPath();
-		if (installPath == null) {
-			setDefaultPath( parent, idata );
-		}
+//		System.err.println("choose target, existing install path=" + idata.getInstallPath());
+//		if (idata.getInstallPath() == null) {
+//			setDefaultPath( parent, idata );
+//		}
 		
 		JPanel subPanel = new JPanel( new BorderLayout() );
 		
@@ -98,9 +99,11 @@ public class ChooseTargetPanel extends IzPanel {
 	}
 	
 	private void setDefaultPath(InstallerFrame parent, InstallData idata) {
-		PathInputPanel.loadDefaultInstallDir( parent,  idata);
-		String defaultInstallDir = PathInputPanel.getDefaultInstallDir();
-		idata.setInstallPath( defaultInstallDir );
+		Preferences prefs = Preferences.userRoot().node( "J2ME-Polish" );
+		String polishHome = prefs.get("polish.home",  null );
+		if (polishHome != null) {
+			idata.setInstallPath( polishHome );
+		}
 	}
 
 	/** Called when the panel becomes active. */
@@ -108,6 +111,7 @@ public class ChooseTargetPanel extends IzPanel {
     {
         // Resolve the default for chosenPath
         super.panelActivate();
+        setDefaultPath(this.parent, this.idata);
         this.polishHomePanel.setValue( this.idata.getInstallPath() );
     }
 

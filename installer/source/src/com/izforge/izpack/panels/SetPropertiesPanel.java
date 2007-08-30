@@ -27,32 +27,20 @@ package com.izforge.izpack.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FileDialog;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import com.izforge.izpack.installer.InstallData;
 import com.izforge.izpack.installer.InstallerFrame;
@@ -204,8 +192,8 @@ public class SetPropertiesPanel extends IzPanel {
 			if (underlinePos != -1) {
 				key = key.substring( underlinePos + 1 );
 			}
-			String knownValue = null;
-			if (knownProperties != null) {
+			String knownValue = System.getProperty(key);
+			if (knownValue == null && knownProperties != null) {
 				knownValue = (String) knownProperties.remove( key );
 			}
 			addPropertyPanel( parent, key, value, knownValue, lookupPaths, panelsList );

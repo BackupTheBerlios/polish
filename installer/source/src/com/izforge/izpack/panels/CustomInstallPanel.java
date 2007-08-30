@@ -28,6 +28,8 @@ package com.izforge.izpack.panels;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -71,9 +73,18 @@ implements Runnable
 	 * @see com.izforge.izpack.panels.InstallPanel#panelActivate()
 	 */
 	public void panelActivate() {
-		// make a clean installation by removing the existing installation first:
 		File existingInstallationDir = new File( this.idata.getInstallPath() );
+		// store install path to preferences (in windows: registry):
+		Preferences prefs = Preferences.userRoot().node( "J2ME-Polish" );
+		prefs.put( "polish.home",  existingInstallationDir.getAbsolutePath() );
+		try {
+			prefs.flush();
+		} catch (BackingStoreException e) {
+			System.err.println("Unable to store polish.home into preferences");
+			e.printStackTrace();
+		}
 		if (existingInstallationDir.exists()) {
+			// make a clean installation by removing the existing installation first:
 			this.deletingInfoLabel = LabelFactory.create("Please stand by while clearing previous installation...",
 		                this.parent.icons.getImageIcon("information"), LEADING);
 			add(this.deletingInfoLabel, IzPanelLayout.getDefaultConstraint(FULL_LINE_CONTROL_CONSTRAINT));
