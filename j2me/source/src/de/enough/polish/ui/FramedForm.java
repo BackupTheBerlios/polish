@@ -374,7 +374,7 @@ public class FramedForm extends Form {
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		boolean handled = this.currentlyActiveContainer.handleKeyPressed(keyCode, gameAction);
-		if (! handled ) {
+		if (! handled && !isSoftKey(keyCode)) {
 			Container newFrame = null;
 			if (this.currentlyActiveContainer == this.container ) {
 				Container[] nextFrames;
@@ -413,7 +413,7 @@ public class FramedForm extends Form {
 		//} else {
 		//	System.out.println("currently active container has handled the key press event");
 		}
-		return handled;
+		return handled || super.handleKeyPressed(keyCode, gameAction);
 	}
 	
 	
@@ -460,7 +460,7 @@ public class FramedForm extends Form {
 	 * @param newFrame the next frame
 	 */
 	private void  setActiveFrame(Container newFrame) {
-		if (newFrame == null) {
+		if (newFrame == null || newFrame == this.currentlyActiveContainer) {
 			return;
 		}
 		this.currentlyActiveContainer.defocus( this.currentlyActiveContainer.style );

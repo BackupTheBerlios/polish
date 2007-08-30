@@ -3787,6 +3787,11 @@ public class TextField extends StringItem
 		public void setItemCommandListener(ItemCommandListener l) {
 			this.additionalItemCommandListener = l;
 		}
+		
+		public ItemCommandListener getItemCommandListener()
+		{
+			return this.additionalItemCommandListener;
+		}
 	//#endif
 	
 	//#if tmp.supportsSymbolEntry

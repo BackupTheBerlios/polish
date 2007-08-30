@@ -1373,6 +1373,21 @@ public abstract class Item extends Object
 	{
 		this.itemCommandListener = l;
 	}
+	
+	/**
+	 * Gets the listener for <code>Commands</code> to this <code>Item</code>.
+	 * 
+	 * When no listener is registered, null is returned
+	 * 
+	 * <p>It is illegal to call this method if this <code>Item</code>
+	 * is contained within an <code>Alert</code>.</p>
+	 * 
+	 * @return the ItemCommandListener associated with this item
+	 */
+	public ItemCommandListener getItemCommandListener()
+	{
+		return this.itemCommandListener;
+	}
 
 	/**
 	 * Gets the preferred width of this <code>Item</code>.
@@ -2656,6 +2671,16 @@ public abstract class Item extends Object
 		return buffer.toString();
 	}
 	//#endif
+
+	/**
+	 * Determines whether this item contains the given command.
+	 * 
+	 * @param command the command
+	 * @return true when this item contains this command
+	 */
+	public boolean containsCommand(Command command) {
+		return this.commands != null && this.commands.contains(command);
+	}
 
 //#ifdef polish.Item.additionalMethods:defined
 	//#include ${polish.Item.additionalMethods}

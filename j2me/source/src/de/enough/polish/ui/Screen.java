@@ -111,6 +111,18 @@ implements AccessibleCanvas
 	private final static int POSITION_TOP = 0;
 	private final static int POSITION_LEFT = 1;
 	
+	//#ifdef polish.key.LeftSoftKey:defined
+		//#= private final static int LEFT_SOFT_KEY = ${polish.key.LeftSoftKey};
+	//#else
+		private final static int LEFT_SOFT_KEY = -6;
+	//#endif
+	//#ifdef polish.key.RightSoftKey:defined
+		//#= private final static int RIGHT_SOFT_KEY = ${polish.key.RightSoftKey};
+	//#else
+		private final static int RIGHT_SOFT_KEY = -7;
+	//#endif
+
+	
 	//#if tmp.fullScreen || polish.midp1 || (polish.usePolishTitle == true)
 		//#define tmp.usingTitle
 		protected Item title;
@@ -192,16 +204,6 @@ implements AccessibleCanvas
 			//#endif
 			//#define tmp.useExternalMenuBar
 		//#else
-			//#ifdef polish.key.LeftSoftKey:defined
-				//#= private final static int LEFT_SOFT_KEY = ${polish.key.LeftSoftKey};
-			//#else
-				private final static int LEFT_SOFT_KEY = -6;
-			//#endif
-			//#ifdef polish.key.RightSoftKey:defined
-				//#= private final static int RIGHT_SOFT_KEY = ${polish.key.RightSoftKey};
-			//#else
-				private final static int RIGHT_SOFT_KEY = -7;
-			//#endif
 			private Command menuSingleLeftCommand;
 			private String menuLeftString;
 			private Command menuSingleRightCommand;
@@ -3499,6 +3501,21 @@ implements AccessibleCanvas
 	}
 	
 	/**
+	 * Closes the commands menu of this screen.
+	 * This can only be done when the fullscreen mode is set to "menu" in your build.xml script.
+	 */
+	public void closeMenu() {
+		//#if tmp.menuFullScreen
+			//#if tmp.useExternalMenuBar
+				this.menuBar.setOpen(false);
+		//#else
+			openMenu( false );
+		//#endif
+
+	}
+
+	
+	/**
 	 * Releases all (memory intensive) resources such as images or RGB arrays of this item.
 	 * The default implementation does release any background resources.
 	 */
@@ -3642,6 +3659,24 @@ implements AccessibleCanvas
 		this.itemStateListener = iListener;
 	}
 	
+	/**
+	 * Determines if the given keycode belongs to a softkey
+	 * 
+	 * @param keyCode the keycode
+	 * @return true when the key code represents a softkey
+	 */
+	public boolean isSoftKey( int keyCode ) {
+		if (keyCode == LEFT_SOFT_KEY
+				|| keyCode == RIGHT_SOFT_KEY
+				//#if polish.key.MiddleSoftKey:defined
+					//#= || keyCode == ${polish.key.MiddleSoftKey}
+				//#endif
+				) 
+		{
+			return true;
+		}
+		return false;
+	}
 	
 	//#if polish.LibraryBuild
 	/**
