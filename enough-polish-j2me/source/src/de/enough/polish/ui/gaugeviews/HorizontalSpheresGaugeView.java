@@ -77,11 +77,13 @@ public class HorizontalSpheresGaugeView extends ItemView {
 		}
 		
 		this.contentWidth = lineWidth;
+		this.sphereWidth = (this.contentWidth - this.paddingHorizontal) / this.sphereCount;
 		this.contentHeight = this.sphereWidth;
 	}
 
 	protected void setStyle(Style style) {
 		super.setStyle(style);
+		System.out.println("setStyle");
 		
 		Color colorObj;
 		Integer countObj;
