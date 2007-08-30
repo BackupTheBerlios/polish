@@ -2903,6 +2903,7 @@
 		type="integer"
 		appliesTo="HorizontalSpheresGaugeView"
 		description="The width of the spheres."
+		default="10"
 		id="271"
 	/>
 	
@@ -2913,6 +2914,24 @@
 		description="Specifies if a horizontal aligned image should be painted at the border (=default) or next to the content when the item has an expand layout."
 		default="false"
 		id="272"
+	/>
+	
+	<attribute
+		name="gauge-cycling-spheres-highlight-center-color"
+		type="color"
+		appliesTo="CyclingSpheresGaugeView"
+		description="The color of the centered hightlighted spheres."
+		default="black"
+		id="273"
+	/>
+	
+	<attribute
+		name="gauge-horizontal-spheres-highlight-center-color"
+		type="color"
+		appliesTo="HorizontalSpheresGaugeView"
+		description="The color of the centered hightlighted spheres."
+		default="black"
+		id="274"
 	/>
 	
 	<!--
