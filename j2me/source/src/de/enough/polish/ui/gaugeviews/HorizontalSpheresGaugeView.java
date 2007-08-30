@@ -58,7 +58,7 @@ public class HorizontalSpheresGaugeView extends ItemView {
 	private int sphereHighlightCenterIndex = -1;
 	private int sphereHighlightCenterSpan = -1;
 	
-	private int sphereWidth = 10;
+	private int sphereWidth = 0;
 	
 	private boolean isContinuousRunning;
 	private int maxSpheres;
@@ -77,7 +77,12 @@ public class HorizontalSpheresGaugeView extends ItemView {
 		}
 		
 		this.contentWidth = lineWidth;
-		this.sphereWidth = (this.contentWidth - this.paddingHorizontal) / this.sphereCount;
+		
+		if(this.sphereWidth == 0)
+		{
+			this.sphereWidth = (this.contentWidth - this.paddingHorizontal) / this.sphereCount;
+		}
+		
 		this.contentHeight = this.sphereWidth;
 	}
 
