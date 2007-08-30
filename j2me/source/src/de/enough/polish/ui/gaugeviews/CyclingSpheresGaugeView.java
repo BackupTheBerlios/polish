@@ -36,14 +36,14 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.util.DrawUtil;
 
 /**
- * <p>Shows an animation of rotating arcs for visualizing an CONTINUOUS_RUNNING indefinite gauge.</p>
+ * <p>Shows an animation of cyclic aligned spheres for visualizing an CONTINUOUS_RUNNING indefinite gauge.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2007</p>
  * <pre>
  * history
- *        Jan 31, 2007 - rob creation
+ *        Aug 30, 2007 - asc creation
  * </pre>
- * @author Robert Virkus, j2mepolish@enough.de
+ * @author Andre Schmidt, andre@enough.de
  */
 public class CyclingSpheresGaugeView extends ItemView {
 	private int sphereCount = 8;
