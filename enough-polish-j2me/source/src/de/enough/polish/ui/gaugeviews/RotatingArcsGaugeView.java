@@ -29,6 +29,7 @@ package de.enough.polish.ui.gaugeviews;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Style;
@@ -121,6 +122,16 @@ public class RotatingArcsGaugeView extends ItemView {
 			}
 		//#endif
 	}
+
+	/**
+	 * Determines whether this view is valid for the given item.
+	 * @return true when this view can be applied
+	 */
+	protected boolean isValid(Item parent, Style style) {
+		return parent instanceof Gauge;
+	}
+	
+	
 	
 	
 

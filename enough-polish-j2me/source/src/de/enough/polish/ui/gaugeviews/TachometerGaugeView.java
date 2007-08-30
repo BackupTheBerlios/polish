@@ -274,6 +274,14 @@ public class TachometerGaugeView extends ItemView {
 		//#endif
 	}
 	
+	/**
+	 * Determines whether this view is valid for the given item.
+	 * @return true when this view can be applied
+	 */
+	protected boolean isValid(Item parent, Style style) {
+		return parent instanceof Gauge;
+	}
+	
 	
 
 }

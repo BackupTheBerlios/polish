@@ -29,6 +29,7 @@ package de.enough.polish.ui.gaugeviews;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Style;
@@ -45,13 +46,17 @@ import de.enough.polish.util.DrawUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class HorizontalSpheresGaugeView extends ItemView {
-	int sphereColor = 0xFFFFFF;
-	int sphereHighlightColor = 0x000000;
-	
 	int sphereCount = 8;
+	int sphereColor = 0xFFFFFF;
+	
 	int sphereHighlightCount = 3;
+	int sphereHighlightColor = 0xAAAAAA;
+	int sphereHighlightCenterColor = 0x000000;
 	
 	int sphereHighlightIndex = 0;
+	
+	int sphereHighlightCenterIndex = -1;
+	int sphereHighlightCenterSpan = -1;
 	
 	int sphereWidth = 10;
 	
@@ -94,6 +99,19 @@ public class HorizontalSpheresGaugeView extends ItemView {
 		countObj = style.getIntProperty("gauge-horizontal-spheres-highlight-count");
 		if (countObj != null) {
 			this.sphereHighlightCount = countObj.intValue();
+		}
+		//#endif
+		
+		//#if polish.css.gauge-horizontal-spheres-highlight-center-color
+		colorObj = style.getColorProperty("gauge-horizontal-spheres-highlight-center-color");
+		if (colorObj != null) {
+			this.sphereHighlightCenterColor = colorObj.getColor();
+			
+			if(this.sphereHighlightCount > 2)
+			{
+				this.sphereHighlightCenterIndex = 1;
+				this.sphereHighlightCenterSpan = this.sphereHighlightCount - 2;
+			}
 		}
 		//#endif
 		
@@ -141,12 +159,18 @@ public class HorizontalSpheresGaugeView extends ItemView {
 	private void setSphereColor(Graphics g, int i)
 	{
 		int startIndex = this.sphereHighlightIndex;
-		int endIndex = ((this.sphereHighlightIndex + this.sphereHighlightCount) % this.sphereCount) - 1;
-		
-		if(startIndex < endIndex)
+		int endIndex = ((this.sphereHighlightIndex + this.sphereHighlightCount - 1) % this.sphereCount);
+				
+		if(startIndex <= endIndex)
 		{
 			if(i >= startIndex && i <= endIndex)
 			{
+				if(this.sphereHighlightCenterIndex != -1)
+				{
+					if(setCenterSphereColor(startIndex, g, i))
+						return;
+				}
+				
 				g.setColor( this.sphereHighlightColor );
 				return;
 			}
@@ -155,6 +179,12 @@ public class HorizontalSpheresGaugeView extends ItemView {
 		{
 			if(i >= startIndex || i <= endIndex)
 			{
+				if(this.sphereHighlightCenterIndex != -1)
+				{
+					if(setCenterSphereColor(startIndex, g, i))
+						return;
+				}
+				
 				g.setColor( this.sphereHighlightColor );
 				return;
 			}			
@@ -162,4 +192,38 @@ public class HorizontalSpheresGaugeView extends ItemView {
 		
 		g.setColor( this.sphereColor );
 	}
+	
+	public boolean setCenterSphereColor(int startIndex, Graphics g, int i)
+	{
+		int centerStartIndex = (startIndex + this.sphereHighlightCenterIndex) % this.sphereCount;
+		int centerEndIndex = (startIndex + this.sphereHighlightCenterIndex + (this.sphereHighlightCenterSpan - 1)) % this.sphereCount;
+				
+		if(centerStartIndex <= centerEndIndex)
+		{
+			if(i >= centerStartIndex && i <= centerEndIndex)
+			{
+				g.setColor( this.sphereHighlightCenterColor  );
+				return true;
+			}
+		}
+		else
+		{
+			if(i >= centerStartIndex || i <= centerEndIndex)
+			{
+				g.setColor( this.sphereHighlightCenterColor );
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Determines whether this view is valid for the given item.
+	 * @return true when this view can be applied
+	 */
+	protected boolean isValid(Item parent, Style style) {
+		return parent instanceof Gauge;
+	}
+	
 }

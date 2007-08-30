@@ -29,6 +29,7 @@ package de.enough.polish.ui.gaugeviews;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Color;
+import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Style;
@@ -45,20 +46,36 @@ import de.enough.polish.util.DrawUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class CyclingSpheresGaugeView extends ItemView {
-	int sphereColor = 0xFFFFFF;
-	int sphereHighlightColor = 0x000000;
-	
 	int sphereCount = 8;
+	int sphereColor = 0xFFFFFF;
+	
 	int sphereHighlightCount = 3;
+	int sphereHighlightColor = 0xAAAAAA;
+	int sphereHighlightCenterColor = 0x000000;
 	
 	int sphereHighlightIndex = 0;
 	
+	int sphereHighlightCenterIndex = -1;
+	int sphereHighlightCenterSpan = -1;
+	
 	int sphereWidth = 10;
+	
+	private boolean isContinuousRunning;
+	private int maxSpheres;
+	
+	private Gauge gauge;
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
 	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
+		this.gauge = (Gauge)parent;
+		this.isContinuousRunning = this.gauge.getMaxValue() == Gauge.INDEFINITE && this.gauge.getValue() == Gauge.CONTINUOUS_RUNNING;
+		
+		if(!this.isContinuousRunning){
+			this.maxSpheres = this.sphereCount - this.sphereHighlightCount;
+		}
+		
 		this.contentWidth = Math.max( lineWidth/4, 24 );
 		this.contentHeight = this.contentWidth;
 	}
@@ -97,6 +114,19 @@ public class CyclingSpheresGaugeView extends ItemView {
 		}
 		//#endif
 		
+		//#if polish.css.gauge-cycling-spheres-highlight-center-color
+		colorObj = style.getColorProperty("gauge-cycling-spheres-highlight-center-color");
+		if (colorObj != null) {
+			this.sphereHighlightCenterColor = colorObj.getColor();
+			
+			if(this.sphereHighlightCount > 2)
+			{
+				this.sphereHighlightCenterIndex = 1;
+				this.sphereHighlightCenterSpan = this.sphereHighlightCount - 2;
+			}
+		}
+		//#endif
+		
 		//#if polish.css.gauge-cycling-spheres-width
 		countObj = style.getIntProperty("gauge-cycling-spheres-width");
 		if (countObj != null) {
@@ -110,12 +140,13 @@ public class CyclingSpheresGaugeView extends ItemView {
 	 * @see de.enough.polish.ui.ItemView#animate()
 	 */
 	public boolean animate() {
-		super.animate();
-		
-		this.sphereHighlightIndex++;
-		this.sphereHighlightIndex = this.sphereHighlightIndex % this.sphereCount;
-		
-		return true;
+		boolean handled = super.animate();
+		if (this.isContinuousRunning) {
+			this.sphereHighlightIndex++;
+			this.sphereHighlightIndex = this.sphereHighlightIndex % this.sphereCount;
+			return true;
+		}
+		return handled;
 	}
 	
 	/* (non-Javadoc)
@@ -127,6 +158,11 @@ public class CyclingSpheresGaugeView extends ItemView {
 		//#if !polish.hasFloatingPoint
 			super.paintContentByParent(parent, x, y, leftBorder, rightBorder, g);
 		//#else
+			if(!this.isContinuousRunning)
+			{
+				this.sphereHighlightIndex = ((this.gauge.getValue() * 100 / this.gauge.getMaxValue()) * this.maxSpheres) / 100;
+			}
+			
 			int centerX 	= (this.contentWidth - this.sphereWidth) / 2  + x;
 			int centerY 	= (this.contentWidth - this.sphereWidth) / 2  + y;
 			double alpha 	= 0;
@@ -152,12 +188,18 @@ public class CyclingSpheresGaugeView extends ItemView {
 	private void setSphereColor(Graphics g, int i)
 	{
 		int startIndex = this.sphereHighlightIndex;
-		int endIndex = ((this.sphereHighlightIndex + this.sphereHighlightCount) % this.sphereCount) - 1;
-		
-		if(startIndex < endIndex)
+		int endIndex = ((this.sphereHighlightIndex + this.sphereHighlightCount - 1) % this.sphereCount);
+				
+		if(startIndex <= endIndex)
 		{
 			if(i >= startIndex && i <= endIndex)
 			{
+				if(this.sphereHighlightCenterIndex != -1)
+				{
+					if(setCenterSphereColor(startIndex, g, i))
+						return;
+				}
+				
 				g.setColor( this.sphereHighlightColor );
 				return;
 			}
@@ -166,6 +208,12 @@ public class CyclingSpheresGaugeView extends ItemView {
 		{
 			if(i >= startIndex || i <= endIndex)
 			{
+				if(this.sphereHighlightCenterIndex != -1)
+				{
+					if(setCenterSphereColor(startIndex, g, i))
+						return;
+				}
+				
 				g.setColor( this.sphereHighlightColor );
 				return;
 			}			
@@ -173,4 +221,38 @@ public class CyclingSpheresGaugeView extends ItemView {
 		
 		g.setColor( this.sphereColor );
 	}
+	
+	public boolean setCenterSphereColor(int startIndex, Graphics g, int i)
+	{
+		int centerStartIndex = (startIndex + this.sphereHighlightCenterIndex) % this.sphereCount;
+		int centerEndIndex = (startIndex + this.sphereHighlightCenterIndex + (this.sphereHighlightCenterSpan - 1)) % this.sphereCount;
+				
+		if(centerStartIndex <= centerEndIndex)
+		{
+			if(i >= centerStartIndex && i <= centerEndIndex)
+			{
+				g.setColor( this.sphereHighlightCenterColor  );
+				return true;
+			}
+		}
+		else
+		{
+			if(i >= centerStartIndex || i <= centerEndIndex)
+			{
+				g.setColor( this.sphereHighlightCenterColor );
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Determines whether this view is valid for the given item.
+	 * @return true when this view can be applied
+	 */
+	protected boolean isValid(Item parent, Style style) {
+		return parent instanceof Gauge;
+	}
+	
 }
