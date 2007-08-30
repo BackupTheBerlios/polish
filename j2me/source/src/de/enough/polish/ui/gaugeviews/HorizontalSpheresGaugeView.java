@@ -46,24 +46,36 @@ import de.enough.polish.util.DrawUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class HorizontalSpheresGaugeView extends ItemView {
-	int sphereCount = 8;
-	int sphereColor = 0xFFFFFF;
+	private int sphereCount = 8;
+	private int sphereColor = 0xFFFFFF;
 	
-	int sphereHighlightCount = 3;
-	int sphereHighlightColor = 0xAAAAAA;
-	int sphereHighlightCenterColor = 0x000000;
+	private int sphereHighlightCount = 3;
+	private int sphereHighlightColor = 0xAAAAAA;
+	private int sphereHighlightCenterColor = 0x000000;
 	
-	int sphereHighlightIndex = 0;
+	private int sphereHighlightIndex = 0;
 	
-	int sphereHighlightCenterIndex = -1;
-	int sphereHighlightCenterSpan = -1;
+	private int sphereHighlightCenterIndex = -1;
+	private int sphereHighlightCenterSpan = -1;
 	
-	int sphereWidth = 10;
+	private int sphereWidth = 10;
+	
+	private boolean isContinuousRunning;
+	private int maxSpheres;
+	
+	private Gauge gauge;
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
 	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
+		this.gauge = (Gauge)parent;
+		this.isContinuousRunning = this.gauge.getMaxValue() == Gauge.INDEFINITE && this.gauge.getValue() == Gauge.CONTINUOUS_RUNNING;
+		
+		if(!this.isContinuousRunning){
+			this.maxSpheres = this.sphereCount - this.sphereHighlightCount;
+		}
+		
 		this.contentWidth = lineWidth;
 		this.contentHeight = this.sphereWidth;
 	}
@@ -129,12 +141,13 @@ public class HorizontalSpheresGaugeView extends ItemView {
 	 * @see de.enough.polish.ui.ItemView#animate()
 	 */
 	public boolean animate() {
-		super.animate();
-		
-		this.sphereHighlightIndex++;
-		this.sphereHighlightIndex = this.sphereHighlightIndex % this.sphereCount;
-		
-		return true;
+		boolean handled = super.animate();
+		if (this.isContinuousRunning) {
+			this.sphereHighlightIndex++;
+			this.sphereHighlightIndex = this.sphereHighlightIndex % this.sphereCount;
+			return true;
+		}
+		return handled;
 	}
 	
 	/* (non-Javadoc)
@@ -143,17 +156,26 @@ public class HorizontalSpheresGaugeView extends ItemView {
 	protected void paintContent(Item parent, int x, int y, int leftBorder,
 			int rightBorder, Graphics g) 
 	{	
-		int stepX = this.contentWidth / this.sphereCount; 
-		int offsetX = 0; 
+		//#if !polish.hasFloatingPoint
+			super.paintContentByParent(parent, x, y, leftBorder, rightBorder, g);
+		//#else
+			if(!this.isContinuousRunning)
+			{
+				this.sphereHighlightIndex = ((this.gauge.getValue() * 100 / this.gauge.getMaxValue()) * this.maxSpheres) / 100;
+			}
 			
-		for(int i=0; i < this.sphereCount; i++)
-		{
-			setSphereColor(g, i);
-			
-			offsetX = stepX * i;
-			
-			g.fillArc( x + offsetX, y, this.sphereWidth, this.sphereWidth, 0, 360);
-		}
+			int stepX = this.contentWidth / this.sphereCount; 
+			int offsetX = 0; 
+				
+			for(int i=0; i < this.sphereCount; i++)
+			{
+				setSphereColor(g, i);
+				
+				offsetX = stepX * i;
+				
+				g.fillArc( x + offsetX, y, this.sphereWidth, this.sphereWidth, 0, 360);
+			}
+		//#endif
 	}
 	
 	private void setSphereColor(Graphics g, int i)

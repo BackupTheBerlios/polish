@@ -46,19 +46,19 @@ import de.enough.polish.util.DrawUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class CyclingSpheresGaugeView extends ItemView {
-	int sphereCount = 8;
-	int sphereColor = 0xFFFFFF;
+	private int sphereCount = 8;
+	private int sphereColor = 0xFFFFFF;
 	
-	int sphereHighlightCount = 3;
-	int sphereHighlightColor = 0xAAAAAA;
-	int sphereHighlightCenterColor = 0x000000;
+	private int sphereHighlightCount = 3;
+	private int sphereHighlightColor = 0xAAAAAA;
+	private int sphereHighlightCenterColor = 0x000000;
 	
-	int sphereHighlightIndex = 0;
+	private int sphereHighlightIndex = 0;
 	
-	int sphereHighlightCenterIndex = -1;
-	int sphereHighlightCenterSpan = -1;
+	private int sphereHighlightCenterIndex = -1;
+	private int sphereHighlightCenterSpan = -1;
 	
-	int sphereWidth = 10;
+	private int sphereWidth = 10;
 	
 	private boolean isContinuousRunning;
 	private int maxSpheres;
