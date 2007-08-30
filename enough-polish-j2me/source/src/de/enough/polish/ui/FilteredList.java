@@ -208,7 +208,11 @@ implements ItemStateListener, CommandListener
 	private void setFocus( Item item ) {
 	//#else
 		//# public void setFocus( Item item ) {
-		//# super.setFocus( this.filterTextField );
+		if (isMenuOpened()) {
+			//# super.setFocus( item );
+		} else {
+			//# super.setFocus( this.filterTextField );
+		}
 	//#endif
 	}
 

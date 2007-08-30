@@ -83,8 +83,8 @@ public class FishEyeContainerView extends ContainerView {
 			//#define tmp.scaleAll
 			private int scaleFactorEnd;
 		//#endif
-		private int startTranslucency = 180;
-		private int endTranslucency = 80;
+		private int startTranslucency = 200;
+		private int endTranslucency = 120;
 		private int[] targetTranslucencies;
 		private int[] currentTranslucencies;
 	//#endif

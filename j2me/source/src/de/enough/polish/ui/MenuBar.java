@@ -945,18 +945,20 @@ public class MenuBar extends Item {
 	protected void setOpen( boolean open ) {
 		if (!open && this.isOpened) {
 			this.commandsContainer.hideNotify();
+			this.isInitialized = (open == this.isOpened);
+			this.isOpened = open;
 			//#if polish.blackberry
 				//# this.screen.setFocus( this.screen.getCurrentItem() );
 			//#endif
 		} else if (open && !this.isOpened) {
+			this.isInitialized = (open == this.isOpened);
+			this.isOpened = open;
 			//#if !polish.MenuBar.focusFirstAfterClose
 				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
 				this.commandsContainer.focus(0);
 			//#endif
 			this.commandsContainer.showNotify();
 		}
-		this.isInitialized = (open == this.isOpened);
-		this.isOpened = open;
 	}
 	
 
