@@ -2682,6 +2682,13 @@ public abstract class Item extends Object
 		return this.commands != null && this.commands.contains(command);
 	}
 
+	/**
+	 * @return
+	 */
+	public Command getDefaultCommand() {
+		return this.defaultCommand;
+	}
+
 //#ifdef polish.Item.additionalMethods:defined
 	//#include ${polish.Item.additionalMethods}
 //#endif

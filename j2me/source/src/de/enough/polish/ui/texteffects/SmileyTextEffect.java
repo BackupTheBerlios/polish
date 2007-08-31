@@ -26,46 +26,46 @@
  */
 package de.enough.polish.ui.texteffects;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextEffect;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
-import de.enough.polish.util.Properties;
-import de.enough.polish.util.TextUtil;
 
 /**
- * <p>Paints a shadow behind a text.</p>
- * <p>Activate the shadow text effect by specifying <code>text-effect: shadow;</code> in your polish.css file.
+ * <p>Renders textual smileys with images.</p>
+ * <p>Activate the smiley text effect by specifying <code>text-effect: smiley;</code> in your polish.css file.
+ * <!--
  *    You can finetune the effect with following attributes:
+ *    -->
  * </p>
+ * <!--
  * <ul>
  * 	 <li><b>text-shadow-color</b>: the color of the shadow, defaults to black.</li>
  * 	 <li><b>text-shadow-orientation</b>: the orientation of the shadow, either bottom-right, bottom-left, top-right, top-left, bottom, top, right or left. Defaults to bottom-right.</li>
  * 	 <li><b>text-shadow-x</b>: use this for finetuning the shadow's horizontal position. Negative values move the shadow to the left.</li>
  * 	 <li><b>text-shadow-y</b>: use this for finetuning the shadow's vertical position. Negative values move the shadow to the top.</li>
  * </ul>
+ *    -->
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) 2007 Enough Software</p>
  * <pre>
  * history
- *        16-Nov-2005 - rob creation
+ *        16-July-2007 - Andre creation
  * </pre>
+ * @author Andre Schmidt, j2mepolish@enough.de
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class SmileyTextEffect extends TextEffect {
 	
 	//#ifdef smileys:defined
-	//#= protected static String[][] smileys = ${smileys};
+		//#= protected static String[][] smileys = ${smileys};
 	//#else
-	protected static String[][] smileys;
+		protected static String[][] smileys = new String[][]{ { ":-)", "/smiley_happy.png"}, {":)", "/smiley_happy.png"} };
 	//#endif
 	
 	protected final HashMap smileyMap;
@@ -331,7 +331,7 @@ public class SmileyTextEffect extends TextEffect {
 				
 				offset += this.smileyWidth;
 				
-				position += currentSmiley.length();
+				position += this.currentSmiley.length();
 			}
 			
 			text = text.substring(position,text.length());	
