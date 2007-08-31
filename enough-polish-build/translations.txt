@@ -32,6 +32,8 @@ polish.predictive.registerNewWord.label=New Word:
 polish.predictive.registerNewWord.command=Add New Word
 polish.predictive.download.title=Predictive Text
 polish.predictive.download.message=The predictive dictionary has the wrong version or could not be found. Press OK to exit the application and download the dictionary.
+polish.predictive.local.title=Predictive Text
+polish.predictive.local.message=The predictive dictionary has the wrong version or could not be found. Press OK to install the dictionary.
 polish.predictive.title=Predictive Input
 polish.predictive.wordNotFound=Word not found
 
