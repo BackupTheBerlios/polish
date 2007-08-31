@@ -3508,11 +3508,10 @@ implements AccessibleCanvas
 		//#if tmp.menuFullScreen
 			//#if tmp.useExternalMenuBar
 				this.menuBar.setOpen(false);
+			//#else
+				openMenu( false );
 			//#endif
-		//#else
-			openMenu( false );
 		//#endif
-
 	}
 
 	
