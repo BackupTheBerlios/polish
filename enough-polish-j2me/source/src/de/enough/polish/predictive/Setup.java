@@ -53,7 +53,7 @@ implements Runnable, CommandListener
 		
 		this.stream = stream;
 		
-		//#style setupForm
+		//#style setupForm?
 		this.form = new Form( Locale.get("polish.predictive.setup.title") );
 		
 		this.form.addCommand( this.cancelCommand );
@@ -64,19 +64,19 @@ implements Runnable, CommandListener
 		this.error = new StringItem("","");
 		this.gauge = new Gauge("",true,100,0);
 		
-		//#style setupIntro
-		this.form.append(info);
+		//#style setupIntro?
+		this.form.append(this.info);
 		
 		if(showGauge)
 		{
-			//#style setupGauge
-			this.form.append(gauge);
+			//#style setupGauge?
+			this.form.append(this.gauge);
 		}
 		
-		//#style setupStatus
-		this.form.append(status);
-		//#style setupError
-		this.form.append(error);
+		//#style setupStatus?
+		this.form.append(this.status);
+		//#style setupError?
+		this.form.append(this.error);
 		
 		Display.getDisplay(this.parentMidlet).setCurrent(this.form);
 	}
@@ -106,7 +106,7 @@ implements Runnable, CommandListener
 			
 			this.status.setText(Locale.get("polish.predictive.setup.status.install"));
 			
-			int totalBytes = stream.available();
+			int totalBytes = this.stream.available();
 			this.gauge.setMaxValue(totalBytes);
 			
 			byte[] nodes;
@@ -119,12 +119,12 @@ implements Runnable, CommandListener
 			{
 				nodes = null;
 				
-				if((count % installer.getChunkSize()) == 0)
+				if((count % this.installer.getChunkSize()) == 0)
 				{
 					if(store != null)
 					{
 						store.closeRecordStore();
-						storeID += installer.getChunkSize();
+						storeID +=this. installer.getChunkSize();
 					}
 					
 					//#if (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.useLocalRMS)
@@ -135,15 +135,15 @@ implements Runnable, CommandListener
 					
 					if(storeID == 0)
 					{
-						installer.createHeaderRecord(store);
-						installer.createCustomRecord(store);
-						installer.createOrderRecord(store);
+						this.installer.createHeaderRecord(store);
+						this.installer.createCustomRecord(store);
+						this.installer.createOrderRecord(store);
 					}
 				}
 					
-				nodes = installer.getRecords(stream, installer.getLineCount());
+				nodes = this.installer.getRecords(this.stream, this.installer.getLineCount());
 				
-				this.gauge.setValue(totalBytes - stream.available());
+				this.gauge.setValue(totalBytes - this.stream.available());
 				
 				count++;
 				
@@ -169,7 +169,7 @@ implements Runnable, CommandListener
 					this.pause = false;
 				}
 				
-			}while(stream.available() > 0);
+			}while(this.stream.available() > 0);
 			
 			store.closeRecordStore();
 			
@@ -193,7 +193,7 @@ implements Runnable, CommandListener
 	}
 
 	public Form getForm() {
-		return form;
+		return this.form;
 	}
 	
 	/* (non-Javadoc)
