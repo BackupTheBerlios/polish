@@ -16,11 +16,13 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.rms.RecordStore;
 
 import de.enough.polish.util.Locale;
+import de.enough.polish.ui.TextField;
 
 public class Setup 
 implements Runnable, CommandListener
 {
 	private Displayable returnTo;
+	private TextField parent;
 	private MIDlet parentMidlet;
 	
 	DataInputStream stream = null;
@@ -43,10 +45,11 @@ implements Runnable, CommandListener
 		
 	boolean pause = false;
 	
-	public Setup(MIDlet parentMidlet, Displayable returnTo, boolean showGauge, DataInputStream stream)
+	public Setup(MIDlet parentMidlet, Displayable returnTo, TextField field, boolean showGauge, DataInputStream stream)
 	{
 		this.returnTo = returnTo;
 		this.parentMidlet = parentMidlet;
+		this.parent = field;
 		
 		this.stream = stream;
 		
@@ -176,10 +179,7 @@ implements Runnable, CommandListener
 			
 			Thread.sleep(10000);
 			
-			if(this.returnTo == null)
-				this.parentMidlet.notifyDestroyed();
-			else
-				Display.getDisplay(this.parentMidlet).setCurrent(this.returnTo);
+			exit();
 			
 		} catch (Exception e) {
 			this.status.setText(Locale.get("polish.predictive.setup.error"));
@@ -213,10 +213,7 @@ implements Runnable, CommandListener
 			
 			Display.getDisplay(this.parentMidlet).setCurrent(cancel);
 		} else if (cmd == this.exitCommand) {
-			if(this.returnTo == null)
-				this.parentMidlet.notifyDestroyed();
-			else
-				Display.getDisplay(this.parentMidlet).setCurrent(this.returnTo);
+			exit();
 		} 
 		
 		if(disp instanceof Alert)
@@ -233,6 +230,21 @@ implements Runnable, CommandListener
 				
 				Display.getDisplay(this.parentMidlet).setCurrent(this.form);
 			}
+		}
+	}
+	
+	public void exit()
+	{
+		
+		if(this.returnTo == null)
+			this.parentMidlet.notifyDestroyed();
+		else
+		{
+			//#if polish.predictive.useLocalRMS
+				this.parent.initPredictiveInput();
+			//#endif
+				
+			Display.getDisplay(this.parentMidlet).setCurrent(this.returnTo);			
 		}
 	}
 }

@@ -1003,31 +1003,9 @@ public class TextField extends StringItem
 			this.builder 	= new TextBuilder(maxSize);
 			this.inputMode 	= this.builder.getMode();
 			
-			try
-			{
-				if(!PROVIDER.isInit())
-				{
-					PROVIDER.init();
-				}
-				
-				this.removeCommand(ENABLE_PREDICTIVE_CMD);
-				this.addCommand(DISABLE_PREDICTIVE_CMD);
-				this.addCommand(ADD_WORD_CMD);
-				this.predictiveInput = true;
-				
-			}catch(RecordStoreException e)
-			{
-				this.addCommand(INSTALL_PREDICTIVE_CMD);
-				this.predictiveInput = false;
-			}
-			catch(Exception e)
-			{
-				//#debug error
-				System.out.println("unable to load predictive dictionary " + e);
-			}
+			initPredictiveInput();
 		//#endif
 	}
-	
 	
 	//#if tmp.useNativeTextBox
 	/**
@@ -1045,6 +1023,34 @@ public class TextField extends StringItem
 	//#endif
 	
 	//#if polish.TextField.usePredictiveInput && tmp.directInput
+	public void initPredictiveInput()
+	{
+		try
+		{
+			if(!PROVIDER.isInit())
+			{
+				PROVIDER.init();
+			}
+			
+			this.removeCommand(ENABLE_PREDICTIVE_CMD);
+			this.removeCommand(INSTALL_PREDICTIVE_CMD);
+			
+			this.addCommand(DISABLE_PREDICTIVE_CMD);
+			this.addCommand(ADD_WORD_CMD);
+			this.predictiveInput = true;
+			
+		}catch(RecordStoreException e)
+		{
+			this.addCommand(INSTALL_PREDICTIVE_CMD);
+			this.predictiveInput = false;
+		}
+		catch(Exception e)
+		{
+			//#debug error
+			System.out.println("unable to load predictive dictionary " + e);
+		}
+	}
+	
 	public void disablePredictiveInput()
 	{
 		this.removeCommand(ENABLE_PREDICTIVE_CMD);
@@ -3755,17 +3761,28 @@ public class TextField extends StringItem
 			{ 	// this is the installation dialog for predictive text:
 				if (cmd == StyleSheet.OK_CMD)
 				{
-					try
-					{
-						StyleSheet.midlet.platformRequest("http://dl.j2mepolish.org/predictive/index.jsp?type=shared");
-						StyleSheet.midlet.notifyDestroyed();
-					}catch(ConnectionNotFoundException e){
-						// ignore???
-					}
+					//#if polish.predictive.useLocalRMS
+					DataInputStream stream = null;
+					Setup setup = null;
+					
+					stream = new DataInputStream(getClass().getResourceAsStream("/predictive.trie"));
+					setup = new Setup(StyleSheet.midlet, this.getScreen(), this, true, stream);
+					
+					Thread thread = new Thread(setup);
+					thread.start();
+					return;
+					
+					//#else
+					//# try
+					//# {
+					//#	StyleSheet.midlet.platformRequest("http://dl.j2mepolish.org/predictive/index.jsp?type=shared");
+					//#	StyleSheet.midlet.notifyDestroyed();
+					//# }catch(ConnectionNotFoundException e){}
+					//# StyleSheet.display.setCurrent(this.screen);
+					//# return;
+					//#endif
 				}
 				
-				StyleSheet.display.setCurrent(this.screen);
-				return;
 			}
 			
 		//#endif
@@ -3863,7 +3880,7 @@ public class TextField extends StringItem
 					return;
 				//#if polish.TextField.usePredictiveInput && tmp.directInput
 				} else if ( cmd == INSTALL_PREDICTIVE_CMD ) {
-					showPredictiveInstallDialog();
+					showPredictiveInstallDialog();					
 				} else if ( cmd == ENABLE_PREDICTIVE_CMD ) {
 					try
 					{
@@ -3889,10 +3906,10 @@ public class TextField extends StringItem
 								ioEx.printStackTrace();
 							}
 							
-							setup = new Setup(StyleSheet.midlet, null, false, stream);
+							setup = new Setup(StyleSheet.midlet, null, null, false, stream);
 						//#else
 							stream = new DataInputStream(getClass().getResourceAsStream("/predictive.trie"));
-							setup = new Setup(StyleSheet.midlet, this.getScreen(), true, stream);
+							setup = new Setup(StyleSheet.midlet, this.getScreen(), this, true, stream);
 						//#endif
 						
 						Thread thread = new Thread(setup);
@@ -3961,9 +3978,15 @@ public class TextField extends StringItem
 	 * 
 	 */
 	private void showPredictiveInstallDialog() {
-		//#style predictiveInstallDialog?
-		Alert predictiveDowload = new Alert( Locale.get("polish.predictive.download.title"));
-		predictiveDowload.setString( Locale.get("polish.predictive.download.message") );
+		//#if polish.predictive.useLocalRMS
+			//#style predictiveInstallDialog?
+			Alert predictiveDowload = new Alert( Locale.get("polish.predictive.local.title"));
+			predictiveDowload.setString( Locale.get("polish.predictive.local.message") ); 
+		//#else
+			//#style predictiveInstallDialog?
+			//# Alert predictiveDowload = new Alert( Locale.get("polish.predictive.download.title"));
+			//# predictiveDowload.setString( Locale.get("polish.predictive.download.message") );
+		//#endif
 		
 		predictiveDowload.addCommand(StyleSheet.CANCEL_CMD);
 		predictiveDowload.addCommand(StyleSheet.OK_CMD);
