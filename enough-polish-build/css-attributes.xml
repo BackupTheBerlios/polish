@@ -210,7 +210,7 @@
 			<param name="end" type="integer" primitive="true" default="100" />
 			<param name="is-percent" type="boolean" primitive="true" default="true" />
 		</mapping>
-		<mapping from="vertical-double-gradient"   to="de.enough.polish.ui.backgrounds.GradientVerticalBackground" converter="de.enough.polish.preprocess.backgrounds.DoubleGradientVerticalBackgroundConverter" >
+		<mapping from="vertical-double-gradient"   to="de.enough.polish.ui.backgrounds.DoubleGradientVerticalBackground" converter="de.enough.polish.preprocess.backgrounds.DoubleGradientVerticalBackgroundConverter" >
 			<param name="first-top-color" type="color" primitive="true" default="white" />
 			<param name="first-bottom-color" type="color" primitive="true" default="gray" />
 			<param name="second-top-color" type="color" primitive="true" default="white" />
