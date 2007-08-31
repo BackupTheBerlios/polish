@@ -566,6 +566,9 @@ public class Device extends PolishComponent {
 	 */
 	public void setClassesDir(String classesDir) {
 		this.classesDir = classesDir;
+
+		// Force re-creation of new ClassLoader.
+		this.classLoader = null;
 	}
 
 	/**
