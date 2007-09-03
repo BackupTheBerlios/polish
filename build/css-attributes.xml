@@ -3026,6 +3026,16 @@
 		id="284"
 	/>
 	
+	<attribute
+		name="predictive-choice-orientation"
+		type="integer"
+		appliesTo="TextField"
+		description="Sets the orientation of a shadow for the shadow font-effect."
+		default="bottom"
+		values="bottom, top"
+		id="285"
+	/>
+	
 	<!--
 	
 	<attribute
