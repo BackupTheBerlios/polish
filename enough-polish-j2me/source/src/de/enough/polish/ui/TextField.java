@@ -1103,13 +1103,29 @@ public class TextField extends StringItem
 			for (int i = 0; i < trieResults.size(); i++) {
 				String choiceText = ((StringBuffer)trieResults.get(i)).toString();
 				Item item = new ChoiceItem( choiceText, null, Choice.IMPLICIT, this.choiceItemStyle );
-				this.choicesContainer.add( item );
+				
+				if(this.choiceOrientation == ORIENTATION_BOTTOM)
+				{
+					this.choicesContainer.add( item );
+				}
+				else
+				{
+					this.choicesContainer.add(0, item);
+				}
 			}
 			
 			for (int i = 0; i < customResults.size(); i++) {
 				String choiceText = ((StringBuffer)customResults.get(i)).toString();
 				Item item = new ChoiceItem( choiceText, null, Choice.IMPLICIT, this.choiceItemStyle );
-				this.choicesContainer.add( item );
+				
+				if(this.choiceOrientation == ORIENTATION_BOTTOM)
+				{
+					this.choicesContainer.add( item );
+				}
+				else
+				{
+					this.choicesContainer.add(0, item);
+				}
 			}
 			if (!this.isOpen)
 				openChoices( this.numberOfMatches > 0 );
@@ -1169,7 +1185,12 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println("enter choices: " + enter + ", have been entered already: " + this.isInChoice);
 		if (enter) {
-			this.choicesContainer.focus(0);
+			
+			if(this.choiceOrientation == ORIENTATION_BOTTOM)
+				this.choicesContainer.focus(0);
+			else
+				this.choicesContainer.focus(this.choicesContainer.size() - 1);
+			
 			//#if polish.usePolishGui && !polish.LibraryBuild
 				this.showCaret = false;
 				if (!this.isInChoice) {
@@ -1396,7 +1417,16 @@ public class TextField extends StringItem
 				// option has been selected!
 				if(!this.builder.isStringBuffer(0))
 				{
-					this.builder.getTextElement().setSelectedWordIndex(this.choicesContainer.getFocusedIndex());
+					if(this.choiceOrientation == ORIENTATION_BOTTOM)
+					{
+						this.builder.getTextElement().setSelectedWordIndex(this.choicesContainer.getFocusedIndex());
+					}
+					else
+					{
+						int index = (this.choicesContainer.size() - 1) - this.choicesContainer.getFocusedIndex();
+						this.builder.getTextElement().setSelectedWordIndex(index);
+					}
+					
 					this.builder.getTextElement().convertReader();
 					this.builder.setAlign(TextBuilder.ALIGN_RIGHT);
 					
@@ -1412,7 +1442,23 @@ public class TextField extends StringItem
 			return true;
 		}
 		if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
-				&& this.builder.getAlign() == TextBuilder.ALIGN_FOCUS)
+				&& this.builder.getAlign() == TextBuilder.ALIGN_FOCUS 
+				&& this.choiceOrientation == ORIENTATION_BOTTOM)
+		{
+			if(!this.builder.isStringBuffer(0))
+			{
+				this.setChoices(this.builder.getTextElement());
+				
+				if(this.numberOfMatches > 0)
+					enterChoices( true );	
+			}
+			
+			this.refreshChoices = true;
+			return true;
+		}
+		else if ( (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM8)
+				&& this.builder.getAlign() == TextBuilder.ALIGN_FOCUS 
+				&& this.choiceOrientation == ORIENTATION_TOP)
 		{
 			if(!this.builder.isStringBuffer(0))
 			{
