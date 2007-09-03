@@ -883,6 +883,9 @@ public class TextField extends StringItem
 
 	//#if polish.TextField.usePredictiveInput && tmp.directInput
 		/** the provider of dictionary contents for predictive text input */
+		public static final int ORIENTATION_BOTTOM = 0;
+		public static final int ORIENTATION_TOP = 1;
+		
 		public static TrieProvider PROVIDER = new TrieProvider(); 
 		
 		private static Command ENABLE_PREDICTIVE_CMD = new Command( Locale.get("polish.predictive.command.enable"), Command.ITEM, 3 );
@@ -898,6 +901,7 @@ public class TextField extends StringItem
 		private int choicesYOffsetAdjustment;
 		private boolean isOpen;
 		private Style choiceItemStyle;
+		private int choiceOrientation;
 		
 		private TextBuilder builder = null;
 		
@@ -1195,13 +1199,22 @@ public class TextField extends StringItem
 		this.isInChoice = enter;
 	}
 	
-	protected int getChoicesY()
+	protected int getChoicesY(int paddingVertical, int borderWidth)
 	{
-		if(this.builder.getAlign() == TextBuilder.ALIGN_FOCUS)
-			return 	(this.contentHeight / this.textLines.length) * 
-				   	(this.builder.getElementLine(this.textLines) + 1);
+		if(this.choiceOrientation == ORIENTATION_BOTTOM)
+		{
+			int resultY = (this.contentHeight / this.textLines.length) * 
+					   		  (this.builder.getElementLine(this.textLines) + 1);
+				
+			return (resultY + paddingVertical + borderWidth);
+		}
 		else
-			return 0;
+		{
+			int resultY = 	(this.contentHeight / this.textLines.length) * 
+			   					(this.builder.getElementLine(this.textLines));
+				
+			return (resultY - this.choicesContainer.itemHeight - paddingVertical - borderWidth);
+		}
 	}
 	
 	protected int getChoicesX(int leftBorder, int rightBorder, int itemWidth)
@@ -2241,10 +2254,10 @@ public class TextField extends StringItem
 						if ( this.refreshChoices )
 						{
 							this.elementX = getChoicesX(leftBorder,rightBorder,this.choicesContainer.getItemWidth(this.itemWidth, this.itemWidth));
-							this.elementY = getChoicesY();
+							this.elementY = getChoicesY(this.paddingVertical,this.borderWidth);
 							this.refreshChoices = false;
 						}
-						this.choicesContainer.paint(x + this.elementX , y + this.paddingVertical + this.borderWidth + this.elementY, leftBorder + this.elementX, rightBorder, g);
+						this.choicesContainer.paint(x + this.elementX , y + this.elementY, leftBorder + this.elementX, rightBorder, g);
 					}
 				//#endif
 				return;
@@ -2621,6 +2634,12 @@ public class TextField extends StringItem
 				Style choicestyle = (Style) style.getObjectProperty("predictive-choicestyle");
 				if (choicestyle != null) {
 					this.choiceItemStyle = choicestyle;
+				}
+			//#endif
+			//#if polish.css.predictive-choice-orientation
+				Integer choiceorientation = style.getIntProperty("predictive-choice-orientation");
+				if (choiceorientation != null) {
+					this.choiceOrientation = choiceorientation.intValue();
 				}
 			//#endif
 		//#endif			
