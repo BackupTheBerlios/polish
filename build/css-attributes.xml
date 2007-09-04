@@ -220,6 +220,7 @@
 			<param name="end" type="integer" primitive="true" default="100" />
 			<param name="is-percent" type="boolean" primitive="true" default="true" />
 		</mapping>
+		<mapping from="repaint-test"   to="de.enough.polish.ui.backgrounds.RepaintTestBackground"  />
 	</attribute>
 
 	<attribute
@@ -3025,7 +3026,7 @@
 		default="black"
 		id="284"
 	/>
-	
+
 	<attribute
 		name="predictive-choice-orientation"
 		type="integer"
@@ -3035,6 +3036,17 @@
 		values="bottom, top"
 		id="285"
 	/>
+
+	
+	<attribute
+		name="icon-padding"
+		type="integer"
+		appliesTo="IconItem"
+		description="The padding between the image and the text of an icon."
+		default="1"
+		id="286"
+	/>
+	
 	
 	<!--
 	

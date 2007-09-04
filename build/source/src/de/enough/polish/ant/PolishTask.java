@@ -652,15 +652,17 @@ public class PolishTask extends ConditionalTask {
 	
 	public void init() {
 		super.init();
-		Map antSymbols = new HashMap();
-		Hashtable properties = getProject().getProperties();
-		Object[] keys = properties.keySet().toArray();
-		for (int i = 0; i < keys.length; i++) {
-			Object key = keys[i];
-			antSymbols.put( key + ":defined", Boolean.TRUE );
+		if (this.environment == null) {
+			Map antSymbols = new HashMap();
+			Hashtable properties = getProject().getProperties();
+			Object[] keys = properties.keySet().toArray();
+			for (int i = 0; i < keys.length; i++) {
+				Object key = keys[i];
+				antSymbols.put( key + ":defined", Boolean.TRUE );
+			}
+			this.antPropertiesEvaluator = new BooleanEvaluator( antSymbols, properties );
+			this.environment = new Environment();
 		}
-		this.antPropertiesEvaluator = new BooleanEvaluator( antSymbols, properties );
-		this.environment = new Environment();
 	}
 	
 	/**
