@@ -590,6 +590,18 @@ implements AccessibleCanvas
 			StyleSheet.animationThread.start();
 		}
 	}
+	
+	/**
+	 * Reinitializes this screen and it's content area.
+	 */
+	protected void requestInit() {
+		this.isInitialized = false;
+		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+		if (isShown()) {
+			repaint();
+		}
+	}
+
 		
 	/**
 	 * Calculates and sets the content area for this screen.

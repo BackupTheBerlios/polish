@@ -107,19 +107,24 @@ public class FramedForm extends Form {
         if (this.leftFrame != null)
         {
             this.leftFrame.clear();
+            this.leftFrame = null;
         }
         if (this.rightFrame != null)
         {
             this.rightFrame.clear();
+            this.rightFrame = null;
         }
         if (this.topFrame != null)
         {
             this.topFrame.clear();
+            this.topFrame = null;
         }
         if (this.bottomFrame != null)
         {
             this.bottomFrame.clear();
+            this.bottomFrame = null;
         }
+        requestInit();
     }
 	
 
@@ -208,6 +213,8 @@ public class FramedForm extends Form {
 			frame.remove(itemNum);
 			if (frame.size() == 0) {
 				deleteFrame( frameOrientation );
+			} else {
+				requestInit();
 			}
 		}
 	}
@@ -246,6 +253,7 @@ public class FramedForm extends Form {
 			setActiveFrame( this.container );
 		}
 		frame.hideNotify();
+		requestInit();
 		return true;
 	}
 
@@ -283,18 +291,25 @@ public class FramedForm extends Form {
 				}
 				frame = this.leftFrame;
 				break;
-			default:
+			case Graphics.RIGHT:
 				if (this.rightFrame == null) {
 					//#style rightframe, frame, default
 					this.rightFrame = new Container( false );
 				}
 				frame = this.rightFrame;
+				break;
+			default:
+				super.append(item, itemStyle);
+				return;
 		}
 		frame.screen = this;
 		//#if polish.Container.allowCycling != false
 			frame.allowCycling = false;
 		//#endif
 		frame.add( item );
+		if (isShown()) {
+			requestInit();
+		}
 	}
 	
 	
