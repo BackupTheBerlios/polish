@@ -240,7 +240,7 @@ public class SerializationVisitor
         access &= ~ ACC_FINAL;
       }
     
-    // Only do serialication for non-transient fields.
+    // Only do serialization for non-transient fields.
     if ((access & ACC_TRANSIENT) != ACC_TRANSIENT
         && (access & ACC_STATIC) != ACC_STATIC)
       {
@@ -337,7 +337,7 @@ public class SerializationVisitor
         return;
       }
 
-    int maxStack = 0;
+    int maxStack = 2;
     int maxVars = 2;
     
     MethodVisitor mv = 
@@ -357,8 +357,6 @@ public class SerializationVisitor
 
     for (int i = 0; i < fields.length; i++)
       {
-        maxStack = Math.max(maxStack, 2);
-        
         String name = fields[i];
         String desc = (String) this.fields.get(name); 
         
@@ -552,7 +550,7 @@ public class SerializationVisitor
         return;
       }
 
-    int maxStack = 0;
+    int maxStack = 2;
     int maxVars = 2;
     
     MethodVisitor mv =
@@ -572,8 +570,6 @@ public class SerializationVisitor
 
     for (int i = 0; i < fields.length; i++)
       {
-        maxStack = Math.max(maxStack, 2);
-        
         String name = fields[i];
         String desc = (String) this.fields.get(name);
         
