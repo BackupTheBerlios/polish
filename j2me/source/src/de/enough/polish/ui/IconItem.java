@@ -90,6 +90,10 @@ implements ImageConsumer
 	//#if polish.css.icon-horizontal-adjustment
 		private int horizontalAdjustment;
 	//#endif
+	//#if polish.css.icon-padding
+		private int paddingIcon;
+	//#endif
+
 	//private int yAdjustImage;
 	private int relativeIconX;
 	private int relativeIconY;
@@ -192,7 +196,11 @@ implements ImageConsumer
 			}
 			this.contentWidth += this.imageWidth;
 		} else {
-			this.imageHeight += this.paddingVertical;
+			//#if polish.css.icon-padding
+				this.imageHeight += this.paddingIcon;
+			//#else
+				this.imageHeight += this.paddingVertical;
+			//#endif
 			if (this.isTextVisible) {
 				super.initContent(firstLineWidth, lineWidth);
 			} else {
@@ -282,94 +290,14 @@ implements ImageConsumer
 				}
 			//#endif
 			if (this.imageAlign == Graphics.LEFT ) {
-//				int leftX = x;
-//				//#ifdef polish.css.icon-image-align-next
-//					if (this.imageAlignNext) {
-//						if (this.isLayoutCenter) {
-//							leftX += ((rightBorder - leftBorder) - this.contentWidth) >> 1;
-//						} else if (this.isLayoutRight) {
-//							leftX += (rightBorder - leftBorder) - this.contentWidth;
-//						}
-//					}
-//				//#endif
-//				//#if polish.midp2 && polish.css.scale-factor
-//					if (useScaledImage) { 
-//						scaleX = leftX  -  ((sWidth - this.image.getWidth()) >> 1);
-//						scaleY = y - ((sHeight - this.image.getHeight()) >> 1) + this.yAdjustImage;
-//					} else {
-//				//#endif
-//						g.drawImage(this.image, leftX, y + this.yAdjustImage, Graphics.TOP | Graphics.LEFT );
-//				//#if polish.midp2 && polish.css.scale-factor
-//					}
-//				//#endif
 				x += this.imageWidth;
 				leftBorder += this.imageWidth;
 				y += this.yAdjustText;
 			} else if (this.imageAlign == Graphics.RIGHT ) {
-//				int rightX = x + this.contentWidth;
-//				//#ifdef polish.css.icon-image-align-next
-//					if (this.imageAlignNext) {
-//						if (this.isLayoutCenter) {
-//							rightX += ((rightBorder - leftBorder) - this.contentWidth) >> 1;
-//						} else if (this.isLayoutRight) {
-//							rightX += (rightBorder - leftBorder) - this.contentWidth;
-//						}
-//					}
-//				//#endif
-//				//#if polish.midp2 && polish.css.scale-factor
-//					if (useScaledImage) {
-//						scaleX = rightX  -  ((this.image.getWidth()  + sWidth) >> 1);
-//						scaleY = y - ((sHeight - this.image.getHeight()) >> 1) + this.yAdjustImage;
-//					} else {
-//				//#endif
-//						g.drawImage(this.image, rightX, y + this.yAdjustImage, Graphics.TOP | Graphics.RIGHT );
-//				//#if polish.midp2 && polish.css.scale-factor
-//					}
-//				//#endif
 				rightBorder -= this.imageWidth;
 				y += this.yAdjustText;
 			} else if (this.imageAlign == Graphics.TOP ) {
-//				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
-//				//System.out.println("left: " + leftBorder + "  right: " + rightBorder + "  contentWidth: " + this.contentWidth);
-//				//System.out.println("x: " + x + "  centerX: " + centerX );
-//				//#if polish.midp2 && polish.css.scale-factor
-//					if (useScaledImage) {
-//						scaleX = centerX - (sWidth / 2);
-//						scaleY = y - ((sHeight - this.image.getHeight()) / 2);
-//					} else {
-//				//#endif
-//						g.drawImage(this.image, centerX, y, Graphics.TOP | Graphics.HCENTER );
-//				//#if polish.midp2 && polish.css.scale-factor
-//					}
-//				//#endif
 				y += this.imageHeight;
-//			} else if (this.imageAlign == Graphics.BOTTOM ){
-//				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
-//				int bottomY = y + this.contentHeight;
-//				//#if polish.midp2 && polish.css.scale-factor
-//					if (useScaledImage) {
-//						scaleX = centerX  - (sWidth / 2);
-//						scaleY = bottomY - sHeight;
-//					} else {
-//				//#endif
-//						g.drawImage(this.image, centerX, bottomY, Graphics.BOTTOM | Graphics.HCENTER );
-//				//#if polish.midp2 && polish.css.scale-factor
-//					}
-//				//#endif
-//			} else {
-//				// imageAlign == Graphics.HCENTER | Graphics.VCENTER 
-//				int centerX = leftBorder + ((rightBorder - leftBorder) / 2);
-//				int centerY = y + this.contentHeight / 2;
-//				//#if polish.midp2 && polish.css.scale-factor
-//					if (useScaledImage) {
-//						scaleX = centerX  - (sWidth / 2);
-//						scaleY = centerY - (sHeight / 2);
-//					} else {
-//				//#endif
-//						g.drawImage(this.image, centerX, centerY,  Graphics.HCENTER | Graphics.VCENTER);
-//				//#if polish.midp2 && polish.css.scale-factor
-//					}
-//				//#endif
 			}
 		
 			//#if polish.css.icon-horizontal-adjustment
@@ -488,6 +416,14 @@ implements ImageConsumer
 				} else {
 					this.appearanceMode = Item.INTERACTIVE;								
 				}
+			}
+		//#endif
+		//#if polish.css.icon-padding
+			Integer paddingIconInt = style.getIntProperty("icon-padding");
+			if (paddingIconInt != null) {
+				this.paddingIcon = paddingIconInt.intValue();
+			} else if (this.paddingIcon == 0) {
+				this.paddingIcon = this.paddingVertical;
 			}
 		//#endif
 

@@ -409,7 +409,7 @@ extends ItemView
 					// okay, the table is fine just how it is
 					this.columnsWidths = maxColumnWidths;
 				} else {
-					System.out.println("container-view: too wide");
+					//System.out.println("container-view: too wide");
 					// okay, some columns need to be adjusted:
 					// re-initialise the table:
 					int leftAvailableColumnWidth = (availableRowWidth - usedUpWidth) / leftColumns;

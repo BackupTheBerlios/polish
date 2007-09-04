@@ -3229,6 +3229,19 @@ implements AccessibleCanvas
 	//#endif
 	
 	/**
+	 * @return the usable screen height
+	 */
+	public int getScreenHeight() {
+		int result;
+		//#ifdef tmp.menuFullScreen
+			result = this.fullScreenHeight;
+		//#else
+			result = this.screenHeight;
+		//#endif
+		return result;
+	}
+	
+	/**
 	 * <p>A command listener which forwards commands to the item command listener in case it encounters an item command.</p>
 	 *
 	 * <p>Copyright Enough Software 2004, 2005</p>
@@ -3755,6 +3768,8 @@ implements AccessibleCanvas
 			//# return false;
 		//#endif
 	}
+
+	
 
 
 		

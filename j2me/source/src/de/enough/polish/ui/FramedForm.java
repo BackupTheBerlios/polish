@@ -133,6 +133,7 @@ public class FramedForm extends Form {
 		Container frame = getFrame( frameOrientation );
 		if (frame != null) {
 			frame.clear();
+			deleteFrame(frameOrientation);
 		}
 	}
 
@@ -205,7 +206,47 @@ public class FramedForm extends Form {
 		Container frame = getFrame( frameOrientation );
 		if (frame != null) {
 			frame.remove(itemNum);
+			if (frame.size() == 0) {
+				deleteFrame( frameOrientation );
+			}
 		}
+	}
+
+	/**
+	 * Deletes a complete frame.
+	 * 
+	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT 
+	 * @return true when the frame could be deleted
+	 */
+	public boolean deleteFrame(int frameOrientation) {
+		Container frame;
+		switch (frameOrientation) {
+		case  Graphics.TOP:
+			frame = this.topFrame;
+			this.topFrame = null;
+			break;
+		case  Graphics.BOTTOM:
+			frame = this.bottomFrame;
+			this.bottomFrame = null;
+			break;
+		case  Graphics.LEFT:
+			frame = this.leftFrame;
+			this.leftFrame = null;
+			break;
+		case  Graphics.RIGHT:
+			frame = this.rightFrame;
+			this.rightFrame = null;
+			break;
+		default: return false;
+		}		
+		if (frame == null) {
+			return false;
+		}
+		if (frame == this.currentlyActiveContainer) {
+			setActiveFrame( this.container );
+		}
+		frame.hideNotify();
+		return true;
 	}
 
 	/**
@@ -468,7 +509,9 @@ public class FramedForm extends Form {
 			return;
 		}
 		this.currentlyActiveContainer.defocus( this.currentlyActiveContainer.style );
-		newFrame.focus( StyleSheet.focusedStyle, 0 );
+		if (newFrame.appearanceMode != Item.PLAIN) {
+			newFrame.focus( StyleSheet.focusedStyle, 0 );
+		}
 		this.currentlyActiveContainer = newFrame;
 		if (this.screenStateListener != null) {
 			this.screenStateListener.screenStateChanged( this );

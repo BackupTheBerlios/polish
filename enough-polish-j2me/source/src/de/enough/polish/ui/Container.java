@@ -236,6 +236,7 @@ public class Container extends Item {
 				}
 			//#endif
 		}
+		
 		this.isInitialized = false;
 		repaint();
 	}
@@ -381,6 +382,7 @@ public class Container extends Item {
 			this.focusedIndex--;
 		}
 		this.isInitialized = false;
+		removedItem.hideNotify();
 		repaint();
 		return removedItem;
 	}
@@ -517,6 +519,14 @@ public class Container extends Item {
 	 * Removes all items from this container.
 	 */
 	public void clear() {
+		Object[] myItems = this.itemsList.getInternalArray();
+		for (int i = 0; i < myItems.length; i++) {
+			Item item = (Item) myItems[i];
+			if (item == null) {
+				break;
+			}
+			item.hideNotify();
+		}
 		this.itemsList.clear();
 		this.items = new Item[0];
 		if (this.focusedIndex != -1) {

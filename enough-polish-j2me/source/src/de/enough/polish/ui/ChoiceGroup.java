@@ -1346,15 +1346,12 @@ implements Choice
 				if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {
 					int index = keyCode - Canvas.KEY_NUM1;
 					if (index < this.itemsList.size()) {
-						if (!this.isPopup || !this.isPopupClosed) {
+						Item item = getItem(index);
+						if ((!this.isPopup || !this.isPopupClosed) && (item.appearanceMode != PLAIN) ) {
 							// either this is not a POPUP or the POPUP is opened:
 							setSelectedIndex( index, true );
 							if (this.isPopup) {
 								closePopup();
-							}
-							if ( (this.choiceType != IMPLICIT) 
-									&& (this.getScreen() instanceof Form) ) {
-								notifyStateChanged();
 							}
 							if (this.isImplicit) {
 								// call command listener:
@@ -1366,6 +1363,8 @@ implements Choice
 									}
 									scr.callCommandListener( selectCmd );
 								}
+							} else {
+								notifyStateChanged();
 							}
 							return true;
 						}
@@ -1409,21 +1408,21 @@ implements Choice
 			} else if ( (keyCode >= Canvas.KEY_NUM1) && (keyCode <= Canvas.KEY_NUM9) ) {
 				int index = keyCode - Canvas.KEY_NUM1;
 				if (index < this.itemsList.size()) {
-					setSelectedIndex( index, true );
-					if ((this.choiceType != IMPLICIT) 
-						&& (this.getScreen() instanceof Form) ) 
-					{
-						notifyStateChanged();
-					}
-					if (this.isImplicit) {
-						// call command listener:
-						Screen scr = getScreen();
-						if (scr != null) {
-							Command selectCmd = this.selectCommand;
-							if (selectCmd == null) {
-								selectCmd = List.SELECT_COMMAND;
+					Item item = getItem(index);
+					if (item.appearanceMode != PLAIN) {
+						setSelectedIndex( index, true );
+						if (this.isImplicit) {
+							// call command listener:
+							Screen scr = getScreen();
+							if (scr != null) {
+								Command selectCmd = this.selectCommand;
+								if (selectCmd == null) {
+									selectCmd = List.SELECT_COMMAND;
+								}
+								scr.callCommandListener( selectCmd );
 							}
-							scr.callCommandListener( selectCmd );
+						} else {
+							notifyStateChanged();
 						}
 					}
 					return true;

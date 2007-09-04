@@ -468,7 +468,7 @@ public final class StyleSheet {
 				int height;
 				if (currentScreen != null) {
 					width = currentScreen.getWidth();
-					height = currentScreen.getHeight();
+					height = currentScreen.getScreenHeight();
 				} else {
 					//#if polish.FullCanvasSize:defined
 						//#= width = ${polish.FullCanvasWidth};
@@ -510,6 +510,7 @@ public final class StyleSheet {
 				g = nextScreenImage.getGraphics();
 				AccessibleCanvas nextCanvas = (AccessibleCanvas) nextDisplayable;
 				nextCanvas.showNotify();
+				nextCanvas.sizeChanged(width, height);
 				nextCanvas.paint( g );
 				//#debug
 				System.out.println("StyleSheet: showing screen animation " + screenAnimation.getClass().getName() );
