@@ -1593,7 +1593,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Sony-Ericsson/V630</identifier>
-		<groups/>
+		<groups>SE-JavaPlatform5</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="FullCanvasSize" value="176x220"/>
@@ -1607,7 +1607,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Sony-Ericsson/K610i</identifier>
-		<groups/>
+		<groups>SE-JavaPlatform5</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="176x220"/>
 		<capability name="FullCanvasSize" value="176x220"/>
