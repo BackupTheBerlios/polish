@@ -1688,6 +1688,13 @@ public class TextField extends StringItem
 				}
 		    //#endif
 		//#endif
+				
+		//#if polish.TextField.usePredictiveInput
+			if(this.predictiveInput) {
+				this.openChoices(false);
+				loadBuilder();
+			}
+		//#endif
 
 	}
 	 	
@@ -4093,29 +4100,39 @@ public class TextField extends StringItem
 	private void enablePredictive()
 	{
 		this.predictiveInput = true;
-		
+
+		loadBuilder();
+	}
+	
+	public void loadBuilder()
+	{
 		while(this.builder.deleteCurrent());
 		
-		String [] elements = TextUtil.split(getText(), ' ');
+		String text = getText();
 		
-		for(int i=0;i<elements.length; i++)
+		if(text != null)
 		{
-			if(elements[i].length() > 0)
+			String [] elements = TextUtil.split(getText(), ' ');
+			
+			for(int i=0;i<elements.length; i++)
 			{
-				this.builder.addStringBuffer(elements[i]);
-				this.builder.addStringBuffer(" ");
+				if(elements[i].length() > 0)
+				{
+					this.builder.addStringBuffer(elements[i]);
+					this.builder.addStringBuffer(" ");
+				}
 			}
+			
+			if(this.inputMode == MODE_NUMBERS)
+			{
+				this.setInputMode(MODE_LOWERCASE);
+				this.builder.setMode(MODE_LOWERCASE);
+			}
+			
+			updateInfo();
+			
+			this.builder.setCurrentElementNear(this.getCaretPosition());
 		}
-		
-		if(this.inputMode == MODE_NUMBERS)
-		{
-			this.setInputMode(MODE_LOWERCASE);
-			this.builder.setMode(MODE_LOWERCASE);
-		}
-		
-		updateInfo();
-		
-		this.builder.setCurrentElementNear(this.getCaretPosition());
 	}
 	//#endif 
 	

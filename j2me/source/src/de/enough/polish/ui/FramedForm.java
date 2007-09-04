@@ -315,6 +315,9 @@ public class FramedForm extends Form {
 //		 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
 //		//#endif
 
+		if (this.currentlyActiveContainer != this.container) {
+			super.paintScreen(g);
+		}
 		if (this.leftFrame != null) {
 		 	Style frameStyle = this.leftFrame.style;
 			if (this.expandLeftFrame) {
@@ -365,8 +368,9 @@ public class FramedForm extends Form {
 			this.bottomFrame.relativeY = this.contentY + this.contentHeight;
 			this.bottomFrame.paint( this.originalContentX, this.contentY + this.contentHeight, this.originalContentX, this.originalContentX + this.originalContentWidth, g );
 		}
-		super.paintScreen(g);
-
+		if (this.currentlyActiveContainer == this.container) {
+			super.paintScreen(g);
+		}
 	}
 	
 	/* (non-Javadoc)

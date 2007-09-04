@@ -41,7 +41,7 @@ public class TrieReader {
 		
 		this.prevNodes 	= new Stack();
 		
-		letters = new StringBuffer(10);
+		this.letters = new StringBuffer(10);
 				
 		this.empty 		= true;
 		this.wordFound	= true;
