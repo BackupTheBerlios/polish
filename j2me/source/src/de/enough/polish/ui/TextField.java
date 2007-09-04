@@ -3028,10 +3028,26 @@ public class TextField extends StringItem
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		//#ifndef tmp.directInput
-			if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
-					|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
-					|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
-					|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) 
+			//#if polish.bugs.inversedGameActions
+				if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM8)
+					|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM2)
+					|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM6)
+					|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM4)
+				//#if polish.key.LeftSoftKey:defined
+					//#= || (keyCode == ${polish.key.LeftSoftKey} )
+				//#endif
+				//#if polish.key.RightSoftKey:defined
+					//#= || (keyCode == ${polish.key.RightSoftKey} )
+				//#endif
+				) 
+				{
+					return false;
+				}
+			//#else
+				if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
+						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
+						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
+						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
 					//#if polish.key.LeftSoftKey:defined
 						//#= || (keyCode == ${polish.key.LeftSoftKey} )
 					//#endif
@@ -3039,9 +3055,10 @@ public class TextField extends StringItem
 						//#= || (keyCode == ${polish.key.RightSoftKey} )
 					//#endif
 					) 
-			{
-				return false;
-			}
+				{
+					return false;
+				}
+			//#endif
 		//#elif !polish.blackberry
 			if (this.inputMode == MODE_NATIVE) {
 				if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
