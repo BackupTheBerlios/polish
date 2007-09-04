@@ -589,6 +589,18 @@
 			Only access known System properties or catch any exceptions that might occur during System.getProperty(name).
 		</solution>
 	</bug>
+
+	<bug>
+		<name>inversedGameActions</name>
+		<area>ui</area>
+		<description>
+			On some phones the game actions UP and DOWN are mapped to the keys 8 and 2, instead of 2 and 8. 
+		</description>
+		<solution>
+			Check for game action and according keycode.
+		</solution>
+	</bug>
+
 	<!--
 	<bug>
 		<name></name>
