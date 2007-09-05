@@ -1821,12 +1821,20 @@ public class TextField extends StringItem
 	public void insert( String src, int position)
 	{
 		String txt = this.text;
+		if(txt == null)
+			txt = "";
+		
 		if (this.isPassword) {
 			txt = this.passwordText;
 		}
 		String start = txt.substring( 0, position );
 		String end = txt.substring( position );
 		setString( start + src + end );
+		
+		//#if polish.TextField.usePredictiveInput
+			if(this.predictiveInput)
+				this.loadBuilder();
+		//#endif
 	}
 
 	/**
