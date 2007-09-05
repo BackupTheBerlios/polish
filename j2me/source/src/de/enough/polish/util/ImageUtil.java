@@ -632,8 +632,8 @@ public final class ImageUtil {
 		int scaleX= (1<<PSEUDO_FLOAT)*originalWidth/newWidth; 
 		int srcXdetailed;
 		int smallX;
-		if (true && scaleX!=1){
-			float xIntensityStart, xIntensityEnd;
+		if (scaleX!=1){
+			int xIntensityStart, xIntensityEnd;
 			//newWidth=originalWidth;
 			h=(originalHeight-largeHeight)/2;
 			for (int y = h; y < originalHeight-h; y++) {
