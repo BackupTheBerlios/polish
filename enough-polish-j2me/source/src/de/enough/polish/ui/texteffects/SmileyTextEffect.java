@@ -65,7 +65,7 @@ public class SmileyTextEffect extends TextEffect {
 	//#ifdef smileys:defined
 		//#= public static String[][] smileys = ${smileys};
 	//#else
-		public static String[][] smileys = new String[][]{ { ":-)", "/smiley_happy.png"}, {":)", "/smiley_happy.png"} };
+		public static String[][] smileys = new String[][]{ { ":-)", "/smiley_happy.png","happy"}, {":)", "/smiley_happy.png","happy"} };
 	//#endif
 	
 	protected HashMap smileyMap;
@@ -162,6 +162,8 @@ public class SmileyTextEffect extends TextEffect {
 			return this.smileyHeight;
 		}
 	}
+	
+	
 
 
 	public String[] wrap(String text, Font font, int firstLineWidth, int lineWidth) {
