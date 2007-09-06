@@ -61,6 +61,7 @@ public class EmulatorSetting extends ExtensionSetting {
 	private boolean isTransient;
 	private List debuggers;
 	private int transientPort = 9090;
+	private String ignore;
 	
 	/**
 	 * Creates an empty uninitialised run setting.
@@ -310,5 +311,21 @@ public class EmulatorSetting extends ExtensionSetting {
 	 */
 	public int getTransientPort() {
 		return this.transientPort;
+	}
+
+	/**
+	 * Gets the text that should  be supressed when being printed
+	 * @return the start-pattern of messages that should be ignored
+	 */
+	public String getIgnore() {
+		return this.ignore;
+	}
+
+	/**
+	 * Sets the text that should  be supressed when being printed
+	 * @param ignore the start-pattern of messages that should be ignored
+	 */
+	public void setIgnore(String ignore) {
+		this.ignore = ignore;
 	}
 }

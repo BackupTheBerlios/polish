@@ -73,6 +73,7 @@ implements Runnable, OutputFilter
 	protected Device device;
 	private boolean decompilerInstalled;
 	private String header;
+	private String ignoreMessagePattern;
 	
 	/**
 	 * Creates a new emulator instance.
@@ -390,6 +391,7 @@ implements Runnable, OutputFilter
 		emulator.init(null, null, setting, null, extensionManager, environment); // extension call
 		// for some reason the environment is not set correctly in the init() method... weird.
 		emulator.environment = environment;
+		emulator.ignoreMessagePattern = setting.getIgnore();
 		//System.out.println( "emulator.environment == null: " + (emulator.environment == null) );
 		boolean okToStart = emulator.init(device, setting, environment);
 		if (!okToStart) {
@@ -433,6 +435,16 @@ implements Runnable, OutputFilter
 	 * @param output the stream to which the message should be written (if not filtered)
 	 */
 	public void filter( String logMessage, PrintStream output ) {
+		if (this.ignoreMessagePattern != null) {
+			int startIndex = logMessage.indexOf(':');
+			String msg = logMessage;
+			if (startIndex != -1) {
+				msg = logMessage.substring( startIndex + 2 );
+			}
+			if (msg.startsWith( this.ignoreMessagePattern)) {				
+				return;
+			}
+		}
 		output.println( logMessage );
 		if (this.decompilerInstalled
 				&& (logMessage.indexOf('+') != -1) 
