@@ -13845,7 +13845,7 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
-		<identifier>HTC/S620</identifier>
+		<identifier>HTC/Excalibur, HTC/S620, HTC/S621</identifier>
 		<groups/>
 		<features>hasPointerEvents, hasCommandKeyEvents</features>
 		<capability name="OS" value="Windows Mobile 2003"/>
@@ -13943,6 +13943,10 @@ These namespaces/schemas will be used soon.
 		<capability name="Bugs" value="needsAbsoluteUrlToJar"/>
 	</device> 
 	
+	<device>
+		<identifier>T-Mobile/Dash</identifier>
+		<parent>HTC/Excalibur</parent>
+	</device>
 	
 <!-- DoJa device definitions -->
 	<device supportsPolishGui="false">
