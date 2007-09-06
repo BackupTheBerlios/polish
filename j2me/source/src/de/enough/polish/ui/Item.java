@@ -2329,7 +2329,9 @@ public abstract class Item extends Object
 		}
 		if (this.focusedStyle != null) {
 			newStyle = this.focusedStyle;
-		} 
+		} else if (newStyle == null) {
+			newStyle = getFocusedStyle();
+		}
 		//#if polish.css.view-type
 			this.preserveViewType = true;
 		//#endif

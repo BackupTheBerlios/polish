@@ -970,6 +970,7 @@ public class Container extends Item {
 			}
 			if (this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
 				this.autoFocusEnabled = false;
+				//System.out.println("Container.initContent: auto-focusing " + i + ": " + item );
 				focus( i, item, 0 );
 				this.isScrollRequired = (this.isScrollRequired || hasFocusableItem) && (this.autoFocusIndex != 0); // override setting in focus()
 				height = item.getItemHeight(lineWidth, lineWidth);
@@ -2253,13 +2254,19 @@ public class Container extends Item {
 
 	/**
 	 * Sets a list of items for this container.
+	 * Use this direct access only when you know what you are doing.
 	 * 
 	 * @param itemsList the list of items to set
 	 */
-	protected void setItemsList(ArrayList itemsList) {
+	public void setItemsList(ArrayList itemsList) {
+		//System.out.println("Container.setItemsList");
 		if (this.isFocused) {
+			//System.out.println("enabling auto focus for index=" + this.focusedIndex);
 			this.autoFocusEnabled = true;
+			this.autoFocusIndex = this.focusedIndex;
 		}
+		this.focusedIndex = -1;
+		this.focusedItem = null;
 		if (this.enableScrolling) {
 			setScrollYOffset(0, false);
 		}
