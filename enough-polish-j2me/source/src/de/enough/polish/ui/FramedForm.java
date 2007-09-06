@@ -323,7 +323,7 @@ public class FramedForm extends Form {
 		y = this.contentY;
 		width = this.contentWidth;
 		height = this.contentHeight;
-		this.originalContentWidth = width;
+		this.originalContentWidth = width + getScrollBarWidth();
 		this.originalContentHeight = height;
 		this.originalContentY = this.contentY;
 		this.originalContentX = this.contentX;
@@ -358,9 +358,21 @@ public class FramedForm extends Form {
 		this.contentWidth = width;
 		this.contentHeight = height;
 		this.container.setScrollHeight( height );
+	}	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#checkForRequestInit(Item)
+	 */
+	protected boolean checkForRequestInit(Item source) {
+		return super.checkForRequestInit(source)
+			|| source == this.topFrame
+			|| source == this.bottomFrame
+			|| source == this.leftFrame
+			|| source == this.rightFrame
+		;
 	}
-	
-	
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#paintScreen(javax.microedition.lcdui.Graphics)
 	 */

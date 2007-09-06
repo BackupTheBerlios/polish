@@ -63,16 +63,17 @@ import de.enough.polish.util.HashMap;
 public class SmileyTextEffect extends TextEffect {
 	
 	//#ifdef smileys:defined
-		//#= protected static String[][] smileys = ${smileys};
+		//#= public static String[][] smileys = ${smileys};
 	//#else
-		protected static String[][] smileys = new String[][]{ { ":-)", "/smiley_happy.png"}, {":)", "/smiley_happy.png"} };
+		public static String[][] smileys = new String[][]{ { ":-)", "/smiley_happy.png"}, {":)", "/smiley_happy.png"} };
 	//#endif
 	
-	protected final HashMap smileyMap;
+	protected HashMap smileyMap;
 	protected Object[] smileyKeys;
 	protected String currentSmiley;
 	private int smileyWidth;
 	private int smileyHeight;
+	private boolean isInitialized;
 	
 	/**
 	 * Creates a text with smileys
@@ -80,6 +81,10 @@ public class SmileyTextEffect extends TextEffect {
 	public SmileyTextEffect() {
 		super();
 		
+	}
+	
+	protected void init() {
+
 		this.smileyMap 		= new HashMap();
 		
 		Image img = null;
@@ -110,11 +115,13 @@ public class SmileyTextEffect extends TextEffect {
 			this.smileyWidth 	= 0;
 			this.smileyHeight	= 0;
 		}
+		this.isInitialized = true;
 	}
-	
 
 	public int stringWidth(String str) {
-		
+		if (!this.isInitialized) {
+			init();
+		}
 		int position 	= 0;
 		int stringWidth = 0;
 		
@@ -140,6 +147,9 @@ public class SmileyTextEffect extends TextEffect {
 	}
 	
 	public int getFontHeight() {
+		if (!this.isInitialized) {
+			init();
+		}
 		
 		int fontHeight = super.getFontHeight();
 		
@@ -155,6 +165,9 @@ public class SmileyTextEffect extends TextEffect {
 
 
 	public String[] wrap(String text, Font font, int firstLineWidth, int lineWidth) {
+		if (!this.isInitialized) {
+			init();
+		}
 		if (firstLineWidth <= 0 || lineWidth <= 0) {
 			//#debug error
 			System.out.println("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth + " ( for string " + text + ")");
@@ -219,6 +232,9 @@ public class SmileyTextEffect extends TextEffect {
 			int completeWidth, int firstLineWidth, int lineWidth, 
 			ArrayList list ) 
 	{
+		if (!this.isInitialized) {
+			init();
+		}
 		char[] valueChars = value.toCharArray();
 		int startPos = 0;
 		int lastSpacePos = -1;
@@ -271,7 +287,7 @@ public class SmileyTextEffect extends TextEffect {
 		list.add( new String( valueChars, startPos, valueChars.length - startPos ) );
 	}
 	
-	public String isSmileyNext(char[] chars, int offset)
+	private String isSmileyNext(char[] chars, int offset)
 	{
 		String smiley;
 		for(int i=0; i<smileyKeys.length; i++)
@@ -310,6 +326,9 @@ public class SmileyTextEffect extends TextEffect {
 	public void drawString(String text, int textColor, int x, int y, int orientation,
 			Graphics g) 
 	{
+		if (!this.isInitialized) {
+			init();
+		}
 		int position 	= 0;
 		int offset 		= 0;
 		
@@ -326,8 +345,8 @@ public class SmileyTextEffect extends TextEffect {
 				offset += super.stringWidth(linePart);
 				
 				Image img = (Image)this.smileyMap.get(this.currentSmiley);
-				
-				g.drawImage(img, x + offset, y, Graphics.TOP | Graphics.LEFT);
+			
+				g.drawImage(img, x + offset, y, orientation);
 				
 				offset += this.smileyWidth;
 				

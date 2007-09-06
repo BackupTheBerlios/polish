@@ -1282,6 +1282,12 @@ public abstract class Item extends Object
 			p = p.parent;
 		}
 		this.isInitialized = false;
+		Screen scr = getScreen();
+		if (scr != null) {
+			//if (scr.checkForRequestInit(this)) {
+				scr.requestInit();
+			//}
+		}
 		repaint();
 	}
 	
@@ -1291,17 +1297,14 @@ public abstract class Item extends Object
 	 * @return either the corresponding screen or null when no screen could be found 
 	 */
 	public Screen getScreen() {
-		if (this.screen != null) {
-			return this.screen;
-		} else if (this.parent != null) {
-			Item p = this.parent;
-			while (p.parent != null) {
-				p = p.parent;
+		Item p = this;
+		while (p != null) {
+			if (p.screen != null) {
+				return p.screen;
 			}
-			return p.screen;
-		} else {
-			return null;
+			p = p.parent;
 		}
+		return null;
 	}
 
 	/**

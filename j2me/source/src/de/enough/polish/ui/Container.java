@@ -519,6 +519,7 @@ public class Container extends Item {
 	 * Removes all items from this container.
 	 */
 	public void clear() {
+		//System.out.println("clearing container - focusedItem=" + this.focusedItem + ", isFocused="  + this.isFocused + ", itemStyle=" + this.itemStyle );
 		Object[] myItems = this.itemsList.getInternalArray();
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = (Item) myItems[i];
@@ -538,14 +539,14 @@ public class Container extends Item {
 			//#endif			
 			this.focusedIndex = -1;
 			if (this.focusedItem != null) {
-				if (this.focusedItem.commands != null) {
+				if (this.itemStyle != null) {
+					//System.out.println("Container: defocusing current item");
+					this.focusedItem.defocus(this.itemStyle);
+				} else if (this.focusedItem.commands != null) {
 					Screen scr = getScreen();
 					if (scr != null) {
 						scr.removeItemCommands(this.focusedItem);
 					}
-				}
-				if (this.itemStyle != null) {
-					this.focusedItem.defocus(this.itemStyle);
 				}
 			}
 			this.focusedItem = null;
@@ -2142,11 +2143,11 @@ public class Container extends Item {
 	 * Requests the initialization of this container and all of its children items.
 	 */
 	public void requestFullInit() {
-		requestInit();
 		for (int i = 0; i < this.itemsList.size(); i++) {
 			Item item = (Item) this.itemsList.get(i);
 			item.isInitialized = false;
 		}
+		requestInit();
 	}
 
 	/**

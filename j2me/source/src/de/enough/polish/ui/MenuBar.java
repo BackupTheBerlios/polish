@@ -252,6 +252,9 @@ public class MenuBar extends Item {
 						cmd = oldLeftCommand;
 						item = (CommandItem) this.allCommands.get( cmd );
 						priority = oldLeftCommand.getPriority();
+						if (item == null) {
+							System.out.println("1cmd " + cmd.getLabel() + " HAS NO COMMAND ITEM!!");
+						}
 						//System.out.println("MenuBar: now adding previous singleleft command " + cmd.getLabel() );
 					}
 				}
@@ -1378,10 +1381,15 @@ public class MenuBar extends Item {
 	 * @param item the command item
 	 */
 	private void addCommand(CommandItem item ) {
+		if (item == null) {
+			//#debug error
+			System.out.println("MenuBar.addCommand(CommandItem): Unable to add null CommandItem");
+			return;
+		}
 		Command cmd = item.command;
 		int priority = cmd.getPriority();
-		//#debug
-		System.out.println("Adding command " + cmd.getLabel() + " to the commands list...");
+//		//#debug
+//		System.out.println("Adding command " + cmd.getLabel() + " to the commands list...");
 		if ( this.commandsList.size() == 0 ) {
 			this.commandsList.add( cmd );
 			this.commandsContainer.add( item );

@@ -269,10 +269,8 @@ public class ImageItem extends Item
 	public void setImage( Image image)
 	{
 		this.image = image;
-		if (this.isInitialized) {
-			this.isInitialized = false;
-			repaint();
-		}
+		requestInit();
+		repaint();
 	}
 
 	/**

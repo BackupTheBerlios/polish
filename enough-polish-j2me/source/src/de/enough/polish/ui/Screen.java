@@ -309,6 +309,7 @@ implements AccessibleCanvas
 	 * variable polish.Animation.MaxIdleTime (integer with the number of ms, 60000 is one minute).
 	 */
 	protected long lastInteractionTime;
+	private boolean isInRequestInit;
 
 
 	/**
@@ -592,15 +593,41 @@ implements AccessibleCanvas
 	}
 	
 	/**
-	 * Reinitializes this screen and it's content area.
+	 * Reinitializes this screen's content area.
 	 */
 	protected void requestInit() {
-		this.isInitialized = false;
-		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
-		if (isShown()) {
-			repaint();
+		//this.isInitialized = false;
+		if (isShown() && !this.isInRequestInit && this.isInitialized) {
+			//System.out.println("screen: now doing a re-init");
+			this.isInRequestInit = true;
+			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+			//repaint();
+			this.isInRequestInit = false;
 		}
 	}
+	
+	/**
+	 * Checks if this screen's content area should be refreshed when the specified item has changed it's size.
+	 * 
+	 * @param source the source of the event
+	 * @return true when the source is a directly visible element (default container or title, for example)
+	 */
+	protected boolean checkForRequestInit(Item source) {
+		if (		source == this.container 
+			//#if tmp.usingTitle
+				|| 	source == this.title
+			//#endif
+			//#if tmp.useExternalMenuBar
+				|| 	source == this.menuBar
+			//#endif
+				) 
+		{
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 
 		
 	/**
@@ -3272,35 +3299,41 @@ implements AccessibleCanvas
 		 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 		 */
 		public void commandAction(Command cmd, Displayable thisScreen) {
-			//check if the given command is from the currently focused item:
-			Item item = Screen.this.getCurrentItem();
-			//#debug
-			System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + Screen.this.focusedItem + " and screen " + Screen.this );
-			if ((item != null) && (item.itemCommandListener != null) && (item.commands != null)) {
-				if ( item.commands.contains(cmd)) {
-					//System.out.println("forwarding straight to ItemCommandListener " + item.itemCommandListener);
-					item.itemCommandListener.commandAction(cmd, item);
-					return;
-				}
-			} else if (item instanceof Container) {
-				item = ((Container) item).getFocusedItem();
-				while (item != null) {
-					if ((item.itemCommandListener != null) && (item.commands != null) && item.commands.contains(cmd) ) {
-						//System.out.println("forwarding at last  to ItemCommandListener " + item.itemCommandListener);
+			Screen.this.isInRequestInit = true;
+			try {
+				//check if the given command is from the currently focused item:
+				Item item = Screen.this.getCurrentItem();
+				//#debug
+				System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + Screen.this.focusedItem + " and screen " + Screen.this );
+				if ((item != null) && (item.itemCommandListener != null) && (item.commands != null)) {
+					if ( item.commands.contains(cmd)) {
+						//System.out.println("forwarding straight to ItemCommandListener " + item.itemCommandListener);
 						item.itemCommandListener.commandAction(cmd, item);
 						return;
 					}
-					//System.out.println("did not find command or command listener in item " + item + ", listener=" + item.itemCommandListener );
-					if (item instanceof Container) {
-						item = ((Container) item).getFocusedItem();						
-					} else {
-						item = null;
+				} else if (item instanceof Container) {
+					item = ((Container) item).getFocusedItem();
+					while (item != null) {
+						if ((item.itemCommandListener != null) && (item.commands != null) && item.commands.contains(cmd) ) {
+							//System.out.println("forwarding at last  to ItemCommandListener " + item.itemCommandListener);
+							item.itemCommandListener.commandAction(cmd, item);
+							return;
+						}
+						//System.out.println("did not find command or command listener in item " + item + ", listener=" + item.itemCommandListener );
+						if (item instanceof Container) {
+							item = ((Container) item).getFocusedItem();						
+						} else {
+							item = null;
+						}
 					}
 				}
-			}
-			// now invoke the usual command listener:
-			if (this.realCommandListener != null) {
-				this.realCommandListener.commandAction(cmd, thisScreen);
+				// now invoke the usual command listener:
+				if (this.realCommandListener != null) {
+					this.realCommandListener.commandAction(cmd, thisScreen);
+				}
+			} finally {
+				Screen.this.isInRequestInit = false;
+				Screen.this.requestInit();
 			}
 		}
 		
@@ -3782,6 +3815,19 @@ implements AccessibleCanvas
 	}
 
 	
+	protected int getScrollBarWidth() {
+		int width = 0;
+		//#if tmp.useScrollBar
+			//#if polish.css.show-scrollbar
+				if ( this.scrollBarVisible ) {
+			//#endif
+					width = this.scrollBar.itemWidth;
+			//#if polish.css.show-scrollbar
+				}
+			//#endif
+		//#endif
+		return width;
+	}
 
 
 		

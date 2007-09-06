@@ -104,12 +104,15 @@ public class TrieProvider {
 	
 	public void releaseRecords()
 	{
+		if (this.records == null) {
+			return;
+		}
 		Object[] keys = this.records.keys();
 		
 		Integer keyToRemove = null;
 		int	references = 0;
 		
-		while(keys.length > maxRecords)
+		while(keys.length > this.maxRecords)
 		{
 			references = 1000;
 			
