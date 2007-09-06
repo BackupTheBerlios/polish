@@ -5399,6 +5399,7 @@ These namespaces/schemas will be used soon.
 		<capability name="key.AddSymbolKey2" value="9" />
 		<!--  <capability name="dtmf.separator" value="/"/> -->
 		<capability name="wap.userAgent" value="NokiaE70"/>
+		<capability name="wap.userAgent" value="Mozilla/5.0 (SymbianOS/9.1; U; en-us) AppleWebKit/413 (KHTML, like Gecko) Safari/413 es70"/>
 	</device>
 	
 	<device>
