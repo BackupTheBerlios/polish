@@ -4159,7 +4159,7 @@ public class TextField extends StringItem
 				}
 			//#endif
 			this.editField.focusRemove();
-		//#elif polish.TextField.showInputInfo != false
+		//#elif polish.TextField.showInputInfo != false && !tmp.includeInputInfo
 			if (this.screen != null) {
 				this.screen.setInfo(null);
 			}

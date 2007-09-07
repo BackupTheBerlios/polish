@@ -1208,13 +1208,13 @@ public abstract class Item extends Object
 	 * @see #repaint(int, int, int, int)
 	 */
 	protected void repaintFully() {
-		repaint( this.relativeX, this.relativeY, this.itemWidth, this.itemHeight );
-		if (this.parent instanceof Container) {
-			((Container) this.parent).isInitialized = false;
-		}
+		//repaint( this.relativeX, this.relativeY, this.itemWidth, this.itemHeight );
+		//if (this.parent instanceof Container) {
+		//	((Container) this.parent).isInitialized = false;
+		//}
 		Screen scr = getScreen();
 		if (scr != null && scr == StyleSheet.currentScreen) {
-			scr.repaint(  );
+			scr.requestRepaint( );
 		}
 	}
 	
@@ -1262,7 +1262,7 @@ public abstract class Item extends Object
 			relX += getAbsoluteX(); // + this.contentX;
 			relY += getAbsoluteY(); // + this.contentY;
 			//System.out.println("item.repaint(" + relX + ", " + relY+ ", " +  width + ", " +  height + ")  for " + this );
-			scr.repaint( relX, relY, width, height + 1 );
+			scr.requestRepaint( relX, relY, width, height + 1 );
 		}
 	}
 

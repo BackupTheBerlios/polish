@@ -1944,6 +1944,7 @@ public class Container extends Item {
 			if ( ( speed > 0 && current > target) || (speed < 0 && current < target ) ) {
 				current = target;
 			}
+			System.out.println("animate: setting yOffset to " + current);
 			this.yOffset = current;
 //			if (this.focusedItem != null && this.focusedItem.backgroundYOffset != 0) {
 //				this.focusedItem.backgroundYOffset = (this.targetYOffset - this.yOffset);
@@ -2188,6 +2189,7 @@ public class Container extends Item {
 	 * @param smooth scroll to this new offset smooth if allowed
 	 */
 	public void setScrollYOffset( int offset, boolean smooth) {
+		//System.out.println("SET SCROLL Y OFFSET TO " + offset );
 		if (!this.enableScrolling && this.parent instanceof Container) {
 			((Container)this.parent).setScrollYOffset(offset, smooth);
 			return;

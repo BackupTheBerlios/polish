@@ -310,6 +310,7 @@ implements AccessibleCanvas
 	 */
 	protected long lastInteractionTime;
 	private boolean isInRequestInit;
+	protected boolean ignoreRepaintRequests;
 
 
 	/**
@@ -605,6 +606,34 @@ implements AccessibleCanvas
 			this.isInRequestInit = false;
 		}
 	}
+	
+	/**
+	 * Forwards a repaint request only when those requests should not be ignored.
+	 * Requests should be usually ignored during the event handling, for example. 
+	 * @see #ignoreRepaintRequests
+	 */
+	public void requestRepaint() {
+		if (!this.ignoreRepaintRequests) {
+			super.repaint();
+		}
+	}
+	
+	/**
+	 * Forwards a repaint request only when those requests should not be ignored.
+	 * Requests should be usually ignored during the event handling, for example. 
+	 * @param x the x coordinate of the area that needs to be refreshed
+	 * @param y the y coordinate of the area that needs to be refreshed
+	 * @param width the width of the area that needs to be refreshed
+	 * @param height the height of the area that needs to be refreshed
+	 * @see #ignoreRepaintRequests
+	 */
+	public void requestRepaint( int x, int y, int width, int height ) {
+		if (!this.ignoreRepaintRequests) {
+			super.repaint( x, y, width, height );
+		}
+	}
+	
+	
 	
 	/**
 	 * Checks if this screen's content area should be refreshed when the specified item has changed it's size.
@@ -1275,6 +1304,7 @@ implements AccessibleCanvas
 	 * @see #paintScreen(Graphics)
 	 */
 	public void paint(Graphics g) {
+		//System.out.println("..paint");
 		//System.out.println("Painting screen "+ this + ", background == null: " + (this.background == null) + ", clipping=" + g.getClipX() + "/" + g.getClipY() + " - " + g.getClipWidth() + "/" + g.getClipHeight() );
 		if (!this.isInitialized) {
 			init();
@@ -2026,6 +2056,7 @@ implements AccessibleCanvas
 		} else {
 			this.infoItem.setText( infoText );
 		}
+		int previousHeight = this.infoHeight;
 		if (infoText == null) {
 			this.infoHeight = 0;
 			this.showInfoItem = false;
@@ -2033,17 +2064,25 @@ implements AccessibleCanvas
 			this.infoHeight = this.infoItem.getItemHeight(this.screenWidth, this.screenWidth);
 			this.showInfoItem = true;
 		}
-		
-		if (this.isInitialized && this.container != null) {
-			int previousContentHeight = this.contentHeight;
-			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
-			int differentce = this.contentHeight - previousContentHeight;
-			//System.out.println("ADJUSTING CONTAINER.YOFFSET BY " + differentce + " PIXELS FOR CONTAINER " + this.container );
-			this.container.yOffset += differentce;
-		} else {
-			//System.out.println("!!!NOT ADJUSTING CONTAINER.YOFFSET for container " + this.container );
-			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight ); 
+		if (this.infoHeight != previousHeight) {
+			requestInit();
 		}
+//		if (this.isInitialized && this.container != null) {
+//			int difference = this.infoHeight - previousHeight;
+//			int newOffset = this.container.yOffset + difference;
+//			System.out.println("ADJUSTING CONTAINER.YOFFSET BY " + difference + " PIXELS FOR CONTAINER " + this.container + " TO " + newOffset );
+//			this.container.setScrollYOffset(newOffset);
+////			int previousContentHeight = this.contentHeight;
+////			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+////			int difference = this.contentHeight - previousContentHeight;
+////			//
+////			try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
+////			int newOffset = this.container.yOffset + difference;
+////			this.container.yOffset += difference;
+//		} else {
+//			//System.out.println("!!!NOT ADJUSTING CONTAINER.YOFFSET for container " + this.container );
+//			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight ); 
+//		}
 		
 	}
 	//#ifndef polish.skipTicker
@@ -2132,6 +2171,7 @@ implements AccessibleCanvas
 		this.lastInteractionTime = System.currentTimeMillis();
 		synchronized (this.paintLock) {
 			try {
+				this.ignoreRepaintRequests = true;
 				//#debug
 				System.out.println("keyPressed: [" + keyCode + "].");
 				int gameAction = -1;
@@ -2290,6 +2330,7 @@ implements AccessibleCanvas
 				//#debug error
 				System.out.println("keyPressed() threw an exception" + e );
 			} finally {
+				this.ignoreRepaintRequests = false;
 				this.isScreenChangeDirtyFlag = false;
 			}
 		}
@@ -2303,6 +2344,8 @@ implements AccessibleCanvas
 	 */
 	public void keyRepeated(int keyCode) {
 		//synchronized (this.paintLock) {
+		try {
+			this.ignoreRepaintRequests = true;
 			//#debug
 			System.out.println("keyRepeated(" + keyCode + ")");
 			this.lastInteractionTime = System.currentTimeMillis();
@@ -2336,6 +2379,9 @@ implements AccessibleCanvas
 				repaint();
 			}
 		//}
+		} finally {
+			this.ignoreRepaintRequests = false;
+		}
 	}
 
 	/**
@@ -2344,37 +2390,42 @@ implements AccessibleCanvas
 	 * @param keyCode the code of the key, which has been released
 	 */
 	public void keyReleased(int keyCode) {
-		//#debug
-		System.out.println("keyReleased(" + keyCode + ")");
-		this.lastInteractionTime = System.currentTimeMillis();
-		int gameAction = 0;
 		try {
-			gameAction = getGameAction( keyCode );
-		} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
-			//#debug warn
-			System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
-		}
-		//#if tmp.menuFullScreen
-			//#ifdef tmp.useExternalMenuBar
-				if (this.menuBar.handleKeyReleased(keyCode, gameAction)) {
-					repaint();
-					return;
-				} else if (this.menuBar.isOpened) {
-					return;
-				}
-			//#else
-				if (this.menuOpened  && this.menuContainer != null ) {
-					if (this.menuContainer.handleKeyReleased(keyCode, gameAction)) {
+			this.ignoreRepaintRequests = true;
+			//#debug
+			System.out.println("keyReleased(" + keyCode + ")");
+			this.lastInteractionTime = System.currentTimeMillis();
+			int gameAction = 0;
+			try {
+				gameAction = getGameAction( keyCode );
+			} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
+				//#debug warn
+				System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
+			}
+			//#if tmp.menuFullScreen
+				//#ifdef tmp.useExternalMenuBar
+					if (this.menuBar.handleKeyReleased(keyCode, gameAction)) {
 						repaint();
+						return;
+					} else if (this.menuBar.isOpened) {
+						return;
 					}
-					return;
-				}
-
+				//#else
+					if (this.menuOpened  && this.menuContainer != null ) {
+						if (this.menuContainer.handleKeyReleased(keyCode, gameAction)) {
+							repaint();
+						}
+						return;
+					}
+	
+				//#endif
 			//#endif
-		//#endif
-		boolean handled = handleKeyReleased( keyCode, gameAction );
-		if ( handled ) {
-			repaint();
+			boolean handled = handleKeyReleased( keyCode, gameAction );
+			if ( handled ) {
+				repaint();
+			}
+		} finally {
+			this.ignoreRepaintRequests = false;
 		}
 	}
 

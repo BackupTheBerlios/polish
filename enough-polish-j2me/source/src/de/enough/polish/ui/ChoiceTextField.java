@@ -468,8 +468,7 @@ public class ChoiceTextField
 			setStyle( this.focusingStyle );
 			this.flashCaret = this.reenableCaretFlashing;
 			this.showCaret = true;
-			this.choicesContainer.yOffset = 0;
-			this.choicesContainer.targetYOffset = 0;
+			this.choicesContainer.setScrollYOffset(0, false );
 			// move focus to TextField input again
 			this.choicesContainer.defocus( this.originalStyle );
 			if (this.isInChoice) {
