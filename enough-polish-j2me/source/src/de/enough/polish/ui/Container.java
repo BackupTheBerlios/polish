@@ -519,14 +519,16 @@ public class Container extends Item {
 	 * Removes all items from this container.
 	 */
 	public void clear() {
-		//System.out.println("clearing container - focusedItem=" + this.focusedItem + ", isFocused="  + this.isFocused + ", itemStyle=" + this.itemStyle );
-		Object[] myItems = this.itemsList.getInternalArray();
-		for (int i = 0; i < myItems.length; i++) {
-			Item item = (Item) myItems[i];
-			if (item == null) {
-				break;
+		//System.out.println("clearing container - focusedItem=" + this.focusedItem + ", isFocused="  + this.isFocused + ", focusedIndex=" + this.focusedIndex + ",  size=" + this.size() + ", itemStyle=" + this.itemStyle );
+		if (this.isShown) {
+			Object[] myItems = this.itemsList.getInternalArray();
+			for (int i = 0; i < myItems.length; i++) {
+				Item item = (Item) myItems[i];
+				if (item == null) {
+					break;
+				}
+				item.hideNotify();
 			}
-			item.hideNotify();
 		}
 		this.itemsList.clear();
 		this.items = new Item[0];
@@ -540,9 +542,10 @@ public class Container extends Item {
 			this.focusedIndex = -1;
 			if (this.focusedItem != null) {
 				if (this.itemStyle != null) {
-					//System.out.println("Container: defocusing current item");
+					//System.out.println("Container.clear(): defocusing current item " + this.focusedItem);
 					this.focusedItem.defocus(this.itemStyle);
-				} else if (this.focusedItem.commands != null) {
+				} 
+				if (this.focusedItem.commands != null) {
 					Screen scr = getScreen();
 					if (scr != null) {
 						scr.removeItemCommands(this.focusedItem);
@@ -2260,6 +2263,7 @@ public class Container extends Item {
 	 */
 	public void setItemsList(ArrayList itemsList) {
 		//System.out.println("Container.setItemsList");
+		clear();
 		if (this.isFocused) {
 			//System.out.println("enabling auto focus for index=" + this.focusedIndex);
 			this.autoFocusEnabled = true;
@@ -2272,6 +2276,16 @@ public class Container extends Item {
 		}
 		this.itemsList = itemsList;
 		this.items = null;
+		if (this.isShown) {
+			Object[] myItems = this.itemsList.getInternalArray();
+			for (int i = 0; i < myItems.length; i++) {
+				Item item = (Item) myItems[i];
+				if (item == null) {
+					break;
+				}
+				item.showNotify();
+			}
+		}
 		requestInit();
 	}
 

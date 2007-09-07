@@ -744,7 +744,7 @@ public abstract class Item extends Object
 		private int invisibleAppearanceModeCache;
 		private int invisibleItemHeight;
 	//#endif
-	
+	protected boolean isShown;
 	private HashMap attributes;
 	
 	protected Item() {
@@ -2386,11 +2386,11 @@ public abstract class Item extends Object
 	 * The item may receive <code>paint()</code> calls after
 	 * <code>showNotify()</code> has been called.
 	 * 
-	 * <p>The default implementation of this method does nothing.</p>
+	 * <p>The default implementation of this method sets the isShown field to true.</p>
 	 */
 	protected void showNotify()
 	{
-		//default implementation does nothing
+		this.isShown = true;
 	}
 
 	/**
@@ -2399,11 +2399,11 @@ public abstract class Item extends Object
 	 * further <code>paint()</code> calls will be made on this item
 	 * until after a <code>showNotify()</code> has been called again.
 	 * 
-	 * <p>The default implementation of this method does nothing.</p>
+	 * <p>The default implementation of this method sets the isShown field to false.</p>
 	 */
 	protected void hideNotify()
 	{
-		//default implementation does nothing
+		this.isShown = false;
 	}
 	
 	/**
