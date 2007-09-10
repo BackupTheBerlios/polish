@@ -1,5 +1,5 @@
 //#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput 
-package de.enough.polish.predictive;
+package de.enough.polish.predictive.trie;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.rms.RecordStoreException;
@@ -119,8 +119,8 @@ public class TrieCustom {
 	
 	private boolean isInCharset(int keyCode, char character)
 	{
-		if(keyCode > TextElement.SHIFT)
-			keyCode -= TextElement.SHIFT;
+		if(keyCode > TrieTextElement.SHIFT)
+			keyCode -= TrieTextElement.SHIFT;
 		
 		switch(keyCode)
 		{

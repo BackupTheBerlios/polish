@@ -1,5 +1,5 @@
 //#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput 
-package de.enough.polish.predictive;
+package de.enough.polish.predictive.trie;
 
 public class TrieRecord {
 	private int id;

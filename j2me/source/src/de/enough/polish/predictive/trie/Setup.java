@@ -1,5 +1,5 @@
 //#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput && (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.useLocalRMS || polish.predictive.Setup)
-package de.enough.polish.predictive;
+package de.enough.polish.predictive.trie;
 
 import java.io.DataInputStream;
 
@@ -235,13 +235,12 @@ implements Runnable, CommandListener
 	
 	public void exit()
 	{
-		
 		if(this.returnTo == null)
 			this.parentMidlet.notifyDestroyed();
 		else
 		{
 			//#if polish.predictive.useLocalRMS
-				this.parent.initPredictiveInput();
+				this.parent.initPredictiveInput(TextField.TYPE_TRIE);
 			//#endif
 				
 			Display.getDisplay(this.parentMidlet).setCurrent(this.returnTo);			

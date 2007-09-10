@@ -1,5 +1,5 @@
 //#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput
-package de.enough.polish.predictive;
+package de.enough.polish.predictive.trie;
 
 import java.util.EmptyStackException;
 import java.util.Stack;
@@ -8,11 +8,12 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
+import de.enough.polish.predictive.Reader;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
-public class TrieReader {
+public class TrieReader extends Reader {
 	static final byte V_OFFSET = 0;
 	static final byte CC_OFFSET = 2;
 	static final byte CR_OFFSET = 3;
@@ -23,28 +24,15 @@ public class TrieReader {
 	private ArrayList 	newNodes = null;
 	private Stack 		prevNodes = null;
 	
-	private StringBuffer letters = null;
-	
-	private int selectedWord = 0;
-	
-	private boolean empty;
-	private boolean wordFound;
-	
-	int keyCount = 0;
-
 	byte[] record = null;
 	
 	public TrieReader() throws RecordStoreException
 	{
+		super();
+		
 		this.nodes 		= new ArrayList();
 		this.newNodes 	= new ArrayList();
-		
 		this.prevNodes 	= new Stack();
-		
-		this.letters = new StringBuffer(10);
-				
-		this.empty 		= true;
-		this.wordFound	= true;
 	}
 		
 	public void keyNum(int keyCode) throws RecordStoreException
@@ -201,28 +189,6 @@ public class TrieReader {
 			}
 		}
 	}
-			
-	private void setLetters(int keyCode)
-	{
-		this.letters.setLength(0);
-		switch(keyCode)
-		{
-			case Canvas.KEY_NUM1: 	this.letters.append(TextField.CHARACTERS[1]); break; 
-			case Canvas.KEY_NUM2: 	this.letters.append(TextField.CHARACTERS[2]); break;
-			case Canvas.KEY_NUM3: 	this.letters.append(TextField.CHARACTERS[3]); break;
-			case Canvas.KEY_NUM4: 	this.letters.append(TextField.CHARACTERS[4]); break;
-			case Canvas.KEY_NUM5: 	this.letters.append(TextField.CHARACTERS[5]); break;
-			case Canvas.KEY_NUM6: 	this.letters.append(TextField.CHARACTERS[6]); break;
-			case Canvas.KEY_NUM7: 	this.letters.append(TextField.CHARACTERS[7]); break;
-			case Canvas.KEY_NUM8: 	this.letters.append(TextField.CHARACTERS[8]); break;
-			case Canvas.KEY_NUM9: 	this.letters.append(TextField.CHARACTERS[9]); break;
-			default: 				this.letters.append(TextField.CHARACTERS[1]); break;
-		}
-	}
-	
-	public void setSelectedWord(int selectedWord) {
-		this.selectedWord = selectedWord;
-	}
 	
 	public StringBuffer getSelectedWord()
 	{
@@ -235,24 +201,5 @@ public class TrieReader {
 			return null;
 	}
 
-	public boolean isEmpty() {
-		return empty;
-	}
 
-	private void setEmpty(boolean empty) {
-		this.empty = empty;
-	}
-
-	public boolean isWordFound() {
-		return wordFound;
-	}
-
-	private void setWordFound(boolean wordFound) {
-		this.wordFound = wordFound;
-	}
-	
-	public int getKeyCount()
-	{
-		return this.keyCount;
-	}
 }

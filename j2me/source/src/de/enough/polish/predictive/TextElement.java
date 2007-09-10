@@ -4,37 +4,29 @@ package de.enough.polish.predictive;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 
-public class TextElement {
-	Object element = null; 
+public abstract class TextElement {
+	protected Object element = null; 
 	
-	int[] keyCodes = null; 
+	protected int[] keyCodes = null; 
 	
-	ArrayList trieResults = null;
-	ArrayList customResults = null;
+	protected int selectedWordIndex;		
 	
-	int selectedWordIndex;		
+	public static final int SHIFT = 10000;
 	
-	static final int SHIFT = 10000;
-	
-	public TextElement(Object object) {
+	public TextElement(Object object) 
+	{
 		this.element 		= object;
 		
-		if(this.element instanceof TrieReader)
-		{
-			this.trieResults		= new ArrayList();
-			this.customResults		= new ArrayList();
-			
-			this.selectedWordIndex	= 0;
-			
-			this.keyCodes 			= new int[0];
-		}
+		this.selectedWordIndex	= 0;
+		
+		this.keyCodes 			= new int[0];
 	}
 
 	public int getLength() {
 		if (element != null) {
 			if (element instanceof StringBuffer) {
 				return ((StringBuffer)element).length();
-			} else if (element instanceof TrieReader) {
+			} else if (element instanceof Reader) {
 				return this.getSelectedWord().length();
 			}
 		}
@@ -57,11 +49,14 @@ public class TextElement {
 	
 	public void keyClear() 
 	{
-		int[] newKeyCodes = new int[this.keyCodes.length - 1];
-		System.arraycopy(this.keyCodes, 0, newKeyCodes, 0, this.keyCodes.length - 1);
-		this.keyCodes = newKeyCodes;
-		
-		this.selectedWordIndex = 0;
+		if(this.keyCodes.length > 0)
+		{
+			int[] newKeyCodes = new int[this.keyCodes.length - 1];
+			System.arraycopy(this.keyCodes, 0, newKeyCodes, 0, this.keyCodes.length - 1);
+			this.keyCodes = newKeyCodes;
+			
+			this.selectedWordIndex = 0;
+		}
 	}
 	
 	public boolean isStringBuffer()
@@ -89,63 +84,20 @@ public class TextElement {
 
 	}
 
-	public void setResults() {
-		
-		if (element instanceof TrieReader) 
-		{
-				this.customResults.clear();
-				
-				TextField.PROVIDER.getCustom().getWords(this.customResults,this.keyCodes);
-				
-				shiftResults(this.customResults);
-				
-				this.trieResults.clear();
-				
-				if(((TrieReader)element).isWordFound() || 
-					!this.isCustomFound() ||
-					this.getKeyCount() == ((TrieReader)element).getKeyCount())
-				{
-					ArrayList nodes = ((TrieReader) element).getNodes();
-					
-					for(int i=0; i<nodes.size();i++)
-					{
-						TrieNode node = (TrieNode)nodes.get(i);
-						
-						this.trieResults.add(node.getWord());
-					}
-					
-					TextField.PROVIDER.getOrder().getOrder(this.trieResults, this.keyCodes);
-						
-					shiftResults(this.trieResults);
-				}
-		}
-	}
+	public abstract void setResults();
 	
-	private StringBuffer getSelectedStringBuffer()
-	{
-		int totalElements = this.customResults.size() + this.trieResults.size();
-		if(totalElements <= this.selectedWordIndex)
-			this.selectedWordIndex = 0;
-		
-		if(this.isSelectedCustom())
-			return (StringBuffer)this.customResults.get(this.selectedWordIndex - this.trieResults.size());
-		else
-			return (StringBuffer)this.trieResults.get(this.selectedWordIndex);
-	}
+	protected abstract StringBuffer getSelectedStringBuffer();
 	
-	public void setSelectedWordIndex(int selected)
-	{
-		this.selectedWordIndex = selected;
-		
-		if(selected > 0)
-			TextField.PROVIDER.getOrder().addOrder(this.keyCodes, (byte)selected);
-	}
+	public abstract void setSelectedWordIndex(int selected);
+	
+
 	
 	public int getSelectedWordIndex()
 	{
 		return this.selectedWordIndex;
 	}
 
+	
 	public StringBuffer getSelectedWord()
 	{
 		if(keyCodes.length == getSelectedStringBuffer().length())
@@ -160,45 +112,18 @@ public class TextElement {
 		
 	}
 	
-	public boolean isSelectedCustom()
-	{
-		if(this.trieResults.size() > 0)
-			return (this.selectedWordIndex >= this.trieResults.size());
-		else
-			return (this.customResults.size() > 0);
-	}
+	public abstract boolean isSelectedCustom();
 	
-	public void convertReader()
-	{
-		TextField.PROVIDER.releaseRecords();
-		this.element = getSelectedStringBuffer();
-	}
+	public abstract void convertReader();
 	
-	public ArrayList getTrieResults()
-	{
-		return this.trieResults;
-	}
+	public abstract ArrayList getResults();
 	
-	public ArrayList getCustomResults()
-	{
-		return this.customResults;
-	}
-	
-	public boolean isCustomFound()
-	{
-		return this.customResults.size() > 0;
-	}
-	
-	public boolean isWordFound()
-	{
-		if(!isStringBuffer())
-			return ((TrieReader)this.element).isWordFound() || isCustomFound();
+	public abstract ArrayList getCustomResults();
 		
-		return false;
-	}
+	public abstract boolean isWordFound();
 
 	public Object getElement() {
-		return element;
+		return this.element;
 	}
 	
 	public int getKeyCount()

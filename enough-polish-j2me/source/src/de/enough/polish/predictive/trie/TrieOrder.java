@@ -1,5 +1,5 @@
 //#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput 
-package de.enough.polish.predictive;
+package de.enough.polish.predictive.trie;
 
 import javax.microedition.rms.RecordStoreException;
 
@@ -46,7 +46,7 @@ public class TrieOrder {
 		
 		for(int i=0; i<keyCodes.length; i++ )
 		{
-			buffer[i + COUNT_SIZE] = (byte)(keyCodes[i] % TextElement.SHIFT);
+			buffer[i + COUNT_SIZE] = (byte)(keyCodes[i] % TrieTextElement.SHIFT);
 		}
 		
 		buffer[buffer.length - 1] = index;

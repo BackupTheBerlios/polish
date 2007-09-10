@@ -1,5 +1,5 @@
 //#condition !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput
-package de.enough.polish.predictive;
+package de.enough.polish.predictive.trie;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
+
 
 public class TrieInstaller {
 	
