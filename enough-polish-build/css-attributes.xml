@@ -3047,6 +3047,53 @@
 		id="286"
 	/>
 	
+	<attribute
+		name="predictive-type"
+		type="integer"
+		appliesTo="TextField"
+		description="Sets the type of the predictive field."
+		default="trie"
+		values="trie, array"
+		id="287"
+	/>
+	
+	<attribute
+		name="gauge-cycling-spheres-interval"
+		type="integer"
+		appliesTo="CyclingSpheresGaugeView"
+		description="The interval of the animation in ms."
+		default="1000"
+		id="288"
+	/>
+	
+	<attribute
+		name="gauge-cycling-icons-interval"
+		type="integer"
+		appliesTo="CyclingIconsGaugeView"
+		description="The interval of the animation in ms."
+		default="1000"
+		id="289"
+	/>
+	
+	<attribute
+		name="gauge-horizontal-spheres-interval"
+		type="integer"
+		appliesTo="HorizontalSpheresGaugeView"
+		description="The interval of the animation in ms."
+		default="1000"
+		id="290"
+	/>
+	
+	<attribute
+		name="gauge-horizontal-icons-interval"
+		type="integer"
+		appliesTo="HorizontalIconsGaugeView"
+		description="The interval of the animation in ms."
+		default="1000"
+		id="291"
+	/>
+	
+	
 	
 	<!--
 	
