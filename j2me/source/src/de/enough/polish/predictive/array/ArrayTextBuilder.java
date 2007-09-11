@@ -29,9 +29,9 @@ public class ArrayTextBuilder extends TextBuilder {
 			} else
 				return true;
 		} else {
-			if (getTextElement().getKeyCount() == getReader().getKeyCount())
+			if (getTextElement().getKeyCount() <= getReader().getKeyCount())
 				getReader().keyClear();
-
+			
 			getTextElement().keyClear();
 			getTextElement().setResults();
 

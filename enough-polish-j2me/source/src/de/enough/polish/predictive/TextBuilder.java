@@ -72,14 +72,15 @@ public abstract class TextBuilder {
 		}
 
 		getReader().keyNum(keyCode);
-		getTextElement().keyNum(keyCode, this.mode);
-		getTextElement().setResults();
+		
 
-		if (!getTextElement().isWordFound())
-			getTextElement().keyClear();
-		else {
+		if (getTextElement().isWordFound())
+		{
 			if (this.mode == TextField.MODE_FIRST_UPPERCASE)
 				this.mode = TextField.MODE_LOWERCASE;
+			
+			getTextElement().keyNum(keyCode, this.mode);
+			getTextElement().setResults();
 		}
 	}
 	

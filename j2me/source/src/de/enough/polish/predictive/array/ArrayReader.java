@@ -58,7 +58,7 @@ public class ArrayReader extends Reader {
 	}
 	
 	public void setResults()
-	{
+	{	
 		ArrayList buffer = new ArrayList();
 
 		if (this.results == null) {
@@ -67,7 +67,7 @@ public class ArrayReader extends Reader {
 		}
 
 		for (int k = 0; k < this.results.size(); k++) {
-			boolean add = true;
+			boolean add = false;
 
 			String word = ((StringBuffer) this.results.get(k)).toString();
 			for (int i = 0; i < this.keys.size(); i++) {
@@ -88,6 +88,10 @@ public class ArrayReader extends Reader {
 						}
 					}
 				}
+				else
+				{
+					add = false;
+				}
 				
 				if(!add)
 				{
@@ -96,7 +100,7 @@ public class ArrayReader extends Reader {
 			}
 
 			if (add) {
-				buffer.add((StringBuffer)this.results.get(k));
+				buffer.add(new StringBuffer(((StringBuffer)this.results.get(k)).toString()));
 			}
 		}
 		
