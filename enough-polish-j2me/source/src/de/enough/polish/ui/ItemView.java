@@ -236,12 +236,16 @@ public abstract class ItemView {
 	 */
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		if (animate()) {
-			repaintRegion.addRegion( this.parentItem.getAbsoluteX(), 
-					this.parentItem.getAbsoluteY(), 
-					this.parentItem.itemWidth,
-					this.parentItem.itemHeight 
-			);
+			addFullRepaintRegion(this.parentItem, repaintRegion);
 		}
+	}
+	
+	protected void addFullRepaintRegion( Item item, ClippingRegion repaintRegion ) {
+		repaintRegion.addRegion( item.getAbsoluteX(), 
+				item.getAbsoluteY(), 
+				item.itemWidth,
+				item.itemHeight 
+		);
 	}
 
 	

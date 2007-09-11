@@ -1692,6 +1692,7 @@ implements AccessibleCanvas
 							this.menuContainer.setScrollHeight(this.originalScreenHeight-topHeight);
 							//g.setClip(0, topHeight, this.screenWidth, this.originalScreenHeight - topHeight );
 							this.menuContainer.paint(menuLeftX, y, menuLeftX, menuLeftX + this.screenWidth, g);
+							this.menuContainer.relativeY = y;
 						 	//g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 						} 
 						//#if !polish.doja
