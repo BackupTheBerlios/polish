@@ -186,7 +186,7 @@ public class ResourceManager {
 			resourceCopier.copyResources(device, locale, resources, targetDir);
 			for (int i = 0; i < includeSubDirsRoots.length; i++) {
 				RootSetting rootSetting = includeSubDirsRoots[i];
-				copyRootWithSubDirs( device, locale, rootSetting.resolveDir( this.environment ), resourceCopier, targetDir );
+				copyRootWithSubDirs( rootSetting, device, locale, rootSetting.resolveDir( this.environment ), resourceCopier, targetDir );
 			}
 		} else {
 			// copy resources using user- or device-defined resource copiers:
@@ -210,7 +210,7 @@ public class ResourceManager {
 				}
 				resourceCopier.copyResources(device, locale, resources, tempTargetDir);
 				for (int j = 0; j < subDirs.length; j++) {
-					copyRootWithSubDirs( device, locale, subDirs[j], resourceCopier, tempTargetDir );
+					copyRootWithSubDirs( includeSubDirsRoots[j], device, locale, subDirs[j], resourceCopier, tempTargetDir );
 				}
 				if (!lastRound) {
 					resources = tempTargetDir.listFiles( this.excludeDirFilter  );
@@ -224,20 +224,26 @@ public class ResourceManager {
 		}
 	}
 	
-	private void copyRootWithSubDirs(Device device, Locale locale, File root, ResourceCopier resourceCopier, File targetDir) throws IOException {
+	private void copyRootWithSubDirs(RootSetting rootSetting, Device device, Locale locale, File root, ResourceCopier resourceCopier, File targetDir) throws IOException {
 		File[] files = root.listFiles();
 		if (files == null) {
 			throw new BuildException("<root dir=\"" + root.getAbsolutePath() + "\"> does not exist - please check the <resources> section in your your build.xml script.");
 		}
-		targetDir = new File( targetDir, root.getName() );
-		targetDir.mkdir();
+		if (rootSetting.isIncludeBaseDir()) {
+			targetDir = new File( targetDir, root.getName() );
+			targetDir.mkdir();
+		}
 		Map resourcesByName = new HashMap( files.length );
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
-			if (file.isDirectory()) {
-				copyRootWithSubDirs(device, locale, file, resourceCopier, targetDir );
-			} else {
-				resourcesByName.put( file.getName(),file );
+			if (rootSetting.include( file.getName())) {
+				if (file.isDirectory()) {
+					File tmpTargetDir = new File( targetDir, file.getName() );
+					tmpTargetDir.mkdir();
+					copyRootWithSubDirs(rootSetting, device, locale, file, resourceCopier, tmpTargetDir );
+				} else {
+					resourcesByName.put( file.getName(), file );
+				}
 			}
 		}
 		files = filterResources(resourcesByName);

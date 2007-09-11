@@ -31,6 +31,7 @@ import de.enough.polish.BuildException;
 
 import de.enough.polish.Environment;
 import de.enough.polish.ant.Setting;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Adds a base directory for the J2ME Polish resource assembling step.</p>
@@ -49,6 +50,9 @@ public class RootSetting extends Setting {
 	private String dirDefinition;
 	private File dir;
 	private boolean isIncludeSubDirs;
+	private String[] excludes;
+	private String[] includes;
+	private boolean isIncludeBaseDir=true;
 
 	/**
 	 * Creates a new directory setting.
@@ -134,6 +138,93 @@ public class RootSetting extends Setting {
 	 */
 	public void setIncludesubdirs(boolean include) {
 		this.isIncludeSubDirs = include;
+	}
+
+
+	/**
+	 * @return the excludes
+	 */
+	public String[] getExcludes() {
+	return this.excludes;}
+	
+	/**
+	 * @param exclude the excludes to set
+	 */
+	public void setExclude(String exclude) {
+		setExcludes(exclude);
+	}
+
+
+	/**
+	 * @param excludes the excludes to set
+	 */
+	public void setExcludes(String excludes) {
+		this.excludes = StringUtil.splitAndTrim(excludes, ',');
+	}
+
+
+	/**
+	 * @return the includes
+	 */
+	public String[] getIncludes() {
+	return this.includes;}
+	
+
+	/**
+	 * @param include the includes to set
+	 */
+	public void setInclude(String include) {
+		setIncludes(include);
+	}
+
+	/**
+	 * @param includes the includes to set
+	 */
+	public void setIncludes(String includes) {
+		this.includes = StringUtil.splitAndTrim(includes, ',');
+	}
+
+
+	/**
+	 * @return the isIncludeBaseDir
+	 */
+	public boolean isIncludeBaseDir() {
+	return this.isIncludeBaseDir;}
+	
+
+
+	/**
+	 * @param isIncludeBaseDir the isIncludeBaseDir to set
+	 */
+	public void setIncludeBaseDir(boolean isIncludeBaseDir) {
+		this.isIncludeBaseDir = isIncludeBaseDir;
+	}
+
+
+	/**
+	 * Determines if the specified file should be included in this root.
+	 * 
+	 * @param fileName the name of the file
+	 * @return true when the corresponding file should be included
+	 */
+	public boolean include(String fileName) {
+		if (this.includes != null) {
+			for (int i = 0; i < this.includes.length; i++) {
+				String include = this.includes[i];
+				if ( !fileName.startsWith(include)) {
+					return false;
+				}
+			}
+		}
+		if (this.excludes != null) {
+			for (int i = 0; i < this.excludes.length; i++) {
+				String exclude = this.excludes[i];
+				if ( fileName.startsWith(exclude)) {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 
 }
