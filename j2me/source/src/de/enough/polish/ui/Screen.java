@@ -1689,11 +1689,15 @@ implements AccessibleCanvas
 								this.paintScrollIndicator = false;
 							//#endif
 							}
-							this.menuContainer.setScrollHeight(this.originalScreenHeight-topHeight);
-							//g.setClip(0, topHeight, this.screenWidth, this.originalScreenHeight - topHeight );
+							//this.menuContainer.setScrollHeight(this.originalScreenHeight-topHeight);
+							this.menuContainer.setScrollHeight(y-topHeight);
+							// set clip so that submenu items do know where they should be painted.
+							// ATTENTION: this leads to situations in which items are repainted that
+							// need no refresh...
+							g.setClip(0, topHeight, this.screenWidth, this.originalScreenHeight - topHeight );
 							this.menuContainer.paint(menuLeftX, y, menuLeftX, menuLeftX + this.screenWidth, g);
 							this.menuContainer.relativeY = y;
-						 	//g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
+						 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 						} 
 						//#if !polish.doja
 							if (this.showTitleOrMenu || this.menuOpened) {

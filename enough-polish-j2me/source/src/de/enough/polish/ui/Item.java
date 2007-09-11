@@ -2270,6 +2270,11 @@ public abstract class Item extends Object
 		if (animate()) {
 			repaintRegion.addRegion( getAbsoluteX(), getAbsoluteY(), this.itemWidth, this.itemHeight );
 		}
+		//#if polish.css.view-type
+			if (this.view != null) {
+				this.view.animate(currentTime, repaintRegion);
+			}
+		//#endif
 	}
 	
 	
@@ -2288,11 +2293,6 @@ public abstract class Item extends Object
 		if (this.border != null) {
 			animated |= this.border.animate();
 		}
-		//#if polish.css.view-type
-			if (this.view != null) {
-				animated |= this.view.animate();
-			}
-		//#endif
 		return animated;
 	}
 	
