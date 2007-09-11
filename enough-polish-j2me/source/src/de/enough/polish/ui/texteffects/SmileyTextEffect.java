@@ -63,9 +63,10 @@ import de.enough.polish.util.HashMap;
 public class SmileyTextEffect extends TextEffect {
 	
 	//#ifdef smileys:defined
-		//#= public static String[][] smileys = ${smileys};
+		//#= public static String[][] smileys = new String[][]${smileys};
 	//#else
-		public static String[][] smileys = new String[][]{ { ":-)", "/smiley_happy.png","happy"}, {":)", "/smiley_happy.png","happy"} };
+		public static String[][] smileys = new String[0][0];
+		
 	//#endif
 	
 	protected HashMap smileyMap;
