@@ -60,13 +60,14 @@ public class CyclingSpheresGaugeView extends ItemView {
 	private int sphereHighlightCenterSpan = -1;
 	
 	private int sphereWidth = 10;
+
+	private long interval = 1000;
 	
 	private boolean isContinuousRunning;
 	private int maxSpheres;
 	
 	private Gauge gauge;
 	private long lastAnimationTime;
-	private long animationInterval;
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
@@ -130,22 +131,33 @@ public class CyclingSpheresGaugeView extends ItemView {
 		}
 		//#endif
 		
-		//#if polish.css.gauge-cycling-spheres-width
-		countObj = style.getIntProperty("gauge-cycling-spheres-width");
+		//#if polish.css.gauge-cycling-spheres-highlight-center-color
+		countObj = style.getIntProperty("gauge-cycling-spheres-interval");
 		if (countObj != null) {
-			this.sphereWidth= countObj.intValue();
+			this.sphereHighlightCenterColor = colorObj.getColor();
+			
+			if(this.sphereHighlightCount > 2)
+			{
+				this.sphereHighlightCenterIndex = 1;
+				this.sphereHighlightCenterSpan = this.sphereHighlightCount - 2;
+			}
+		}
+		//#endif
+		
+		//#if polish.css.gauge-cycling-spheres-interval
+		countObj = style.getIntProperty("gauge-cycling-spheres-interval");
+		if (countObj != null) {
+			this.interval = countObj.intValue();
 		}
 		//#endif
 		
 	}
 	
-	
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#animate(long, de.enough.polish.ui.ClippingRegion)
 	 */
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
-		if (this.isContinuousRunning && (currentTime - this.lastAnimationTime) > this.animationInterval) {
+		if (this.isContinuousRunning && (currentTime - this.lastAnimationTime) > this.interval) {
 			this.sphereHighlightIndex++;
 			this.sphereHighlightIndex = this.sphereHighlightIndex % this.sphereCount;
 			this.lastAnimationTime = currentTime;

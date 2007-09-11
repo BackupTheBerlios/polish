@@ -31,6 +31,7 @@ import java.io.IOException;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
@@ -67,6 +68,8 @@ public class HorizontalIconsGaugeView extends ItemView {
 	private int maxIcons;
 	
 	private Gauge gauge;
+	private long lastAnimationTime;
+	private long interval = 1000;
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
@@ -154,19 +157,26 @@ public class HorizontalIconsGaugeView extends ItemView {
 			}
 		}
 		//#endif
+		
+		//#if polish.css.gauge-horizontal-icons-interval
+		countObj = style.getIntProperty("gauge-horizontal-icons-interval");
+		if (countObj != null) {
+			this.interval = countObj.intValue();
+		}
+		//#endif
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#animate()
 	 */
-	public boolean animate() {
-		boolean handled = super.animate();
-		if (this.isContinuousRunning) {
+	
+	public void animate(long currentTime, ClippingRegion repaintRegion) {
+		if (this.isContinuousRunning && (currentTime - this.lastAnimationTime) > this.interval) {
 			this.iconHighlightIndex++;
 			this.iconHighlightIndex = this.iconHighlightIndex % this.iconCount;
-			return true;
+			this.lastAnimationTime = currentTime;
+			addFullRepaintRegion( this.parentItem, repaintRegion );
 		}
-		return handled;
 	}
 	
 	/* (non-Javadoc)

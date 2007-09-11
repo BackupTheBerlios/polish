@@ -28,6 +28,7 @@ package de.enough.polish.ui.gaugeviews;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
@@ -64,6 +65,8 @@ public class HorizontalSpheresGaugeView extends ItemView {
 	private int maxSpheres;
 	
 	private Gauge gauge;
+	private long lastAnimationTime;
+	private long interval = 1000;
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
@@ -142,20 +145,24 @@ public class HorizontalSpheresGaugeView extends ItemView {
 		}
 		//#endif
 		
+		//#if polish.css.gauge-horizontal-spheres-interval
+		countObj = style.getIntProperty("gauge-horizontal-icons-interval");
+		if (countObj != null) {
+			this.interval = countObj.intValue();
+		}
+		//#endif
+		
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#animate()
-	 */
-	public boolean animate() {
-		boolean handled = super.animate();
-		if (this.isContinuousRunning) {
+	public void animate(long currentTime, ClippingRegion repaintRegion) {
+		if (this.isContinuousRunning && (currentTime - this.lastAnimationTime) > this.interval) {
 			this.sphereHighlightIndex++;
 			this.sphereHighlightIndex = this.sphereHighlightIndex % this.sphereCount;
-			return true;
+			this.lastAnimationTime = currentTime;
+			addFullRepaintRegion( this.parentItem, repaintRegion );
 		}
-		return handled;
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#paintContent(de.enough.polish.ui.Item, int, int, int, int, javax.microedition.lcdui.Graphics)
