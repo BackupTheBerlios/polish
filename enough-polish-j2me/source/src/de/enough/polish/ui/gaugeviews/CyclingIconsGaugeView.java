@@ -159,7 +159,7 @@ public class CyclingIconsGaugeView extends ItemView {
 		}
 		//#endif
 		
-		//#if polish.css.gauge-cycling-spheres-interval
+		//#if polish.css.gauge-cycling-icons-interval
 		countObj = style.getIntProperty("gauge-cycling-icons-interval");
 		if (countObj != null) {
 			this.interval = countObj.intValue();
