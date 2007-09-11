@@ -1251,7 +1251,7 @@ implements Choice
 		this.isPopupClosed = false;
 		focus( this.selectedIndex );
 		// recalculate the internal positions of the selected choice:
-		Item item = this.items[ this.selectedIndex ];
+		Item item = (Item) this.itemsList.get( this.selectedIndex );
 		if (item.isInitialized) {
 			this.internalY = item.relativeY;
 			this.internalHeight = item.itemHeight;

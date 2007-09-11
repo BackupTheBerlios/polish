@@ -792,7 +792,7 @@ extends ItemView
 				//System.out.println("ShiftFocus: steps=" + steps + ", forward=" + forwardFocus);
 				int doneSteps = 0;
 				steps = Math.abs( steps ) + 1;
-				Item item = this.parentContainer.items[i];
+				Item item = items[i]; //(Item) this.parentContainer.itemsList.get(i);
 				while( doneSteps <= steps ) {
 					doneSteps += item.colSpan;
 					if (doneSteps >= steps) {

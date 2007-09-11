@@ -68,7 +68,7 @@ public class Container extends Item {
 	public static final int SCROLL_SMOOTH = 1;
 	
 	protected ArrayList itemsList;
-	protected Item[] items;
+	//protected Item[] items;
 	protected boolean autoFocusEnabled;
 	protected int autoFocusIndex;
 	protected Style itemStyle;
@@ -96,6 +96,7 @@ public class Container extends Item {
 	private boolean isScrollRequired;
 	/** The height available for scrolling, ignore when set to -1 */
 	protected int availableHeight = -1;
+	private Item[] containerItems;
 
 	
 	/**
@@ -291,9 +292,9 @@ public class Container extends Item {
 				focus( -1 );
 			}
 		}
-		if (this.items != null) {
-			this.items[index] = item;
-		}
+//		if (this.items != null) {
+//			this.items[index] = item;
+//		}
 		this.isInitialized = false;
 		//#if polish.supportInvisibleItems
 			if (!this.isInvisible) {
@@ -328,7 +329,7 @@ public class Container extends Item {
 		//#debug
 		System.out.println("Container: removing item " + index + " " + removedItem.toString()  );
 		// adjust y-positions of following items:
-		this.items = null;
+		//this.items = null;
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		int removedItemHeight = removedItem.itemHeight + this.paddingVertical;
 		//#if tmp.supportViewType
@@ -531,7 +532,8 @@ public class Container extends Item {
 			}
 		}
 		this.itemsList.clear();
-		this.items = new Item[0];
+		this.containerItems = new Item[0];
+		//this.items = new Item[0];
 		if (this.focusedIndex != -1) {
 			this.autoFocusEnabled = this.isFocused;
 			//#if polish.Container.clearResetsFocus != false
@@ -592,10 +594,10 @@ public class Container extends Item {
 	 * @return an array of all items, can be empty but not null.
 	 */
 	public Item[] getItems() {
-		if (!this.isInitialized || this.items == null) {
-			this.items = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
+		if (!this.isInitialized || this.containerItems == null) {
+			this.containerItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		}
-		return this.items;
+		return this.containerItems;
 	}
 	
 	/**
@@ -902,7 +904,7 @@ public class Container extends Item {
 		int myContentWidth = 0;
 		int myContentHeight = 0;
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
-		this.items = myItems;
+		this.containerItems = myItems;
 		if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
 			this.autoFocusIndex = 0;
 		}
@@ -1123,10 +1125,7 @@ public class Container extends Item {
 				}
 			} else {
 		//#endif
-			Item[] myItems;
-			//synchronized (this.itemsList) {
-				myItems = this.items;
-			//}
+			Item[] myItems = this.containerItems;
 //			if (!(this.isLayoutCenter || this.isLayoutRight)) {
 //				// adjust the right border:
 //				rightBorder = leftBorder + this.contentWidth;
@@ -1454,7 +1453,8 @@ public class Container extends Item {
 	 * @return true when the focus could be moved to either the next or the previous item.
 	 */
 	private boolean shiftFocus(boolean forwardFocus, int steps ) {
-		if ( this.items == null ) {
+		Item[] items = getItems();
+		if ( items == null || items.length == 0) {
 			//#debug
 			System.out.println("shiftFocus fails: this.items==null");
 			return false;
@@ -1467,7 +1467,7 @@ public class Container extends Item {
 				//System.out.println("ShiftFocus: steps=" + steps + ", forward=" + forwardFocus);
 				int doneSteps = 0;
 				steps = Math.abs( steps ) + 1;
-				Item item = this.items[i];
+				Item item = items[i];
 				while( doneSteps <= steps) {
 					doneSteps += item.colSpan;
 					if (doneSteps >= steps) {
@@ -1476,11 +1476,11 @@ public class Container extends Item {
 					}
 					if (forwardFocus) {
 						i++;
-						if (i == this.items.length - 1 ) {
-							i = this.items.length - 2;
+						if (i == items.length - 1 ) {
+							i = items.length - 2;
 							break;
-						} else if (i == this.items.length) {
-							i = this.items.length - 1;
+						} else if (i == items.length) {
+							i = items.length - 1;
 							break;
 						}
 					} else {
@@ -1490,26 +1490,26 @@ public class Container extends Item {
 							break;
 						}
 					}
-					item = this.items[i];
+					item = items[i];
 					//System.out.println("focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
 				}
 				if (doneSteps >= steps && item.colSpan != 1) {
 					if (forwardFocus) {
 						i--;
 						if (i < 0) {
-							i = this.items.length - 1;
+							i = items.length - 1;
 						}
 						//System.out.println("forward: Adjusting startIndex to " + i );
 					} else {
-						i = (i + 1) % this.items.length;
+						i = (i + 1) % items.length;
 						//System.out.println("backward: Adjusting startIndex to " + i );
 					}
 				}
 			}
 		//#else			
 			//# int i = this.focusedIndex + steps;
-			if (i > this.items.length) {
-				i = this.items.length - 2;
+			if (i > items.length) {
+				i = items.length - 2;
 			}
 			if (i < 0) {
 				i = 1;
@@ -1565,7 +1565,7 @@ public class Container extends Item {
 		while (true) {
 			if (forwardFocus) {
 				i++;
-				if (i >= this.items.length) {
+				if (i >= items.length) {
 					//#if polish.Container.allowCycling != false
 						if (allowCycle) {
 							allowCycle = false;
@@ -1585,7 +1585,7 @@ public class Container extends Item {
 					//#if polish.Container.allowCycling != false
 						if (allowCycle) {
 							allowCycle = false;
-							i = this.items.length - 1;
+							i = items.length - 1;
 							//#debug
 							System.out.println("allowCycle: Restarting at the end");
 						} else {
@@ -1596,7 +1596,7 @@ public class Container extends Item {
 					//#endif
 				}
 			}
-			item = this.items[i];
+			item = items[i];
 			if (item.appearanceMode != Item.PLAIN) {
 				break;
 			}
@@ -2213,7 +2213,7 @@ public class Container extends Item {
 	 * @return the index of the item; -1 when the item is not part of this container
 	 */
 	public int indexOf(Item item) {
-		Object[] myItems = this.items != null ? this.items :  this.itemsList.getInternalArray();
+		Object[] myItems = this.itemsList.getInternalArray();
 		for (int i = 0; i < myItems.length; i++) {
 			Object object = myItems[i];
 			if (object == null) {
@@ -2277,7 +2277,7 @@ public class Container extends Item {
 			setScrollYOffset(0, false);
 		}
 		this.itemsList = itemsList;
-		this.items = null;
+		this.containerItems = null;
 		if (this.isShown) {
 			Object[] myItems = this.itemsList.getInternalArray();
 			for (int i = 0; i < myItems.length; i++) {
