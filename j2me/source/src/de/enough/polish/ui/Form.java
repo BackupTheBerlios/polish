@@ -635,8 +635,7 @@ public class Form extends Screen
 	}
 
 	/**
-	 * Inserts an item into the <code>Form</code> just prior to
-	 * the item specified.
+	 * Inserts an item into the <code>Form</code> just prior to the item specified.
 	 * The size of the <code>Form</code> grows by one.  The
 	 * <code>itemNum</code> parameter must be
 	 * within the range <code>[0..size()]</code>, inclusive.

@@ -1581,7 +1581,7 @@ public abstract class Item extends Object
 	{
 		
 		Screen scr = StyleSheet.currentScreen;
-		if (scr == null || !(scr instanceof Form)) {
+		if (scr == null) {
 			scr = getScreen();
 		}
 		if (scr != null) {

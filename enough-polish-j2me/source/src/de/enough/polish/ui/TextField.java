@@ -887,6 +887,7 @@ public class TextField extends StringItem
 	//#endif
 
 	//#if polish.TextField.usePredictiveInput && tmp.directInput
+		//#define tmp.usePredictiveInput
 		/** the provider of dictionary contents for predictive text input */
 		public static final int ORIENTATION_BOTTOM = 0;
 		public static final int ORIENTATION_TOP = 1;
@@ -3189,10 +3190,10 @@ public class TextField extends StringItem
 						}  
 						
 						// Set the input mode
-							boolean handled =  handleKeyMode(keyCode, gameAction);
-							if (handled) {
-								return true;
-							}
+						boolean handled =  handleKeyMode(keyCode, gameAction);
+						if (handled) {
+							return true;
+						}
 						
 						// Insert a character
 						handled = handleKeyInsert(keyCode, gameAction);
@@ -4329,13 +4330,18 @@ public class TextField extends StringItem
 		}	
 	//#endif
 
+	//#if tmp.usePredictiveInput
 		public int getPredictiveType() {
 			return predictiveType;
 		}
+	//#endif
 
+		
+	//#if tmp.usePredictiveInput
 		public void setPredictiveType(int predictiveType) {
 			this.predictiveType = predictiveType;
 		}
+	//#endif
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {
