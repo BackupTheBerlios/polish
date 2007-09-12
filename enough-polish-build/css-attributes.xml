@@ -274,7 +274,7 @@
 			<param name="outer-color" type="color" primitive="true" translucent="true" default="0x77333333" />
 			<param name="border-width" type="integer" default="4" />
 			<param name="offset" type="integer" default="4" />
-			<param name="orientation" type="integer" default="bottom-right" values="bottom-right,top-right,bottom-left,top-left" />
+			<param name="orientation" type="integer" default="bottom-right" values="bottom-right,top-right,bottom-left,top-left,all" />
 		</mapping>
 		<mapping from="image"			to="de.enough.polish.ui.borders.ImageBorder" converter="de.enough.polish.preprocess.borders.ImageBorderConverter" >
 			<param name="border-width" type="integer" default="1" />

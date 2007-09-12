@@ -91,6 +91,8 @@ public class DropShadowBorderConverter extends BorderConverter {
 			orientation = BORDERS_PACKAGE + "DropShadowBorder.TOP_LEFT";
 		} else if ("bottom-left".equals(orientationStr) || "left-bottom".equals(orientationStr)) {
 			orientation = BORDERS_PACKAGE + "DropShadowBorder.BOTTOM_LEFT";
+		} else if ("all".equals(orientationStr) || "all-sides".equals(orientationStr)) {
+			orientation = BORDERS_PACKAGE + "DropShadowBorder.ALL";
 		}
 		return "new " + BORDERS_PACKAGE + "DropShadowBorder( " 
 				+ innerColorStr + ", " 

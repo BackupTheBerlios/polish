@@ -43,25 +43,30 @@ import de.enough.polish.util.DrawUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class DropShadowBorder extends Border {
-	
+	/** paints the border at the bottom and the right sides of the corresponding item */
 	public final static int BOTTOM_RIGHT = 0;
+	/** paints the border at the top and the right sides of the corresponding item */
 	public final static int TOP_RIGHT = 1;
+	/** paints the border at the bottom and the left sides of the corresponding item */
 	public final static int BOTTOM_LEFT = 2;
+	/** paints the border at the top and the left sides of the corresponding item */
 	public final static int TOP_LEFT = 3;
+	/** paints the border at all sides of the corresponding item */
+	public final static int ALL = 4;
 	
 	private final int[] shadowColors;
 	private final int orientation;
 	private final int offset;
-	private int innerColor;
-	private int outerColor;
+//	private int innerColor;
+//	private int outerColor;
 
 	public DropShadowBorder( int innerColor, int outerColor, int width, int offset, int orientation ) {
 		super();
 		this.borderWidth = width;
 		this.offset = offset;
 		this.orientation = orientation;
-		this.innerColor = innerColor;
-		this.outerColor = outerColor;
+//		this.innerColor = innerColor;
+//		this.outerColor = outerColor;
 		this.shadowColors = DrawUtil.getGradient(innerColor, outerColor, width);
 	}
 
@@ -98,6 +103,15 @@ public class DropShadowBorder extends Border {
 				// top:
 				DrawUtil.drawLine(color, left - i, top - i, right - i, top - i, g);
 				break;
+			case ALL:
+				// left:
+				DrawUtil.drawLine(color, left - i, top + i, left - i, bottom - i, g);
+				// right:
+				DrawUtil.drawLine(color, right + i, top + i, right + i, bottom - i, g);
+				// bottom:
+				DrawUtil.drawLine(color, left + i, bottom + i, right - i, bottom + i, g);
+				// top:
+				DrawUtil.drawLine(color, left + i, top - i, right - i, top - i, g);
 
 			}
 		}	

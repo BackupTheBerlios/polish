@@ -1944,7 +1944,6 @@ public class Container extends Item {
 			if ( ( speed > 0 && current > target) || (speed < 0 && current < target ) ) {
 				current = target;
 			}
-			System.out.println("animate: setting yOffset to " + current);
 			this.yOffset = current;
 //			if (this.focusedItem != null && this.focusedItem.backgroundYOffset != 0) {
 //				this.focusedItem.backgroundYOffset = (this.targetYOffset - this.yOffset);
