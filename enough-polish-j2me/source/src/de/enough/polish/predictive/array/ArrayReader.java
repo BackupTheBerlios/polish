@@ -66,7 +66,14 @@ public class ArrayReader extends PredictiveReader {
 
 		if (this.results == null) {
 			this.results = new ArrayList();
+			
 			copyArrayList(this.words, this.results);
+		}
+		
+		if(this.keyCount == 0)
+		{
+			this.results.clear();
+			return;
 		}
 
 		for (int k = 0; k < this.results.size(); k++) {

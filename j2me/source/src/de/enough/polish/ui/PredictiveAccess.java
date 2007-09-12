@@ -463,6 +463,7 @@ public class PredictiveAccess {
 			this.parent.setText(this.builder.getText().toString());
 			this.parent.setCaretPosition(this.builder.getCaretPosition());
 			this.parent.getScreen().setItemCommands(this.parent);
+			this.parent.notifyStateChanged();
 			this.refreshChoices = true;
 
 			return true;
@@ -566,6 +567,7 @@ public class PredictiveAccess {
 				}
 			}
 			
+			this.parent.notifyStateChanged();
 			return true;
 		}
 		if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
@@ -581,6 +583,7 @@ public class PredictiveAccess {
 			}
 			
 			this.refreshChoices = true;
+			this.parent.notifyStateChanged();
 			return true;
 		}
 		else if ( (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM8)
@@ -596,6 +599,7 @@ public class PredictiveAccess {
 			}
 			
 			this.refreshChoices = true;
+			this.parent.notifyStateChanged();
 			return true;
 		}
 		else if ( gameAction == Canvas.LEFT || gameAction == Canvas.RIGHT )
@@ -613,7 +617,8 @@ public class PredictiveAccess {
 				openChoices(false);
 			
 			this.parent.setCaretPosition(this.builder.getCaretPosition());
-									
+		
+			this.parent.notifyStateChanged();
 			return true;
 		}
 		else if ( gameAction == Canvas.UP && !this.isInChoice)
@@ -628,9 +633,11 @@ public class PredictiveAccess {
 								
 				openChoices(false);
 
+				this.parent.notifyStateChanged();
 				return true;
 			}
 			
+			this.parent.notifyStateChanged();
 			return false;
 		}
 		else if ( gameAction == Canvas.DOWN && !this.isInChoice)
@@ -645,8 +652,11 @@ public class PredictiveAccess {
 								
 				openChoices(false);
 				
+				this.parent.notifyStateChanged();
 				return true;
 			}
+			
+			this.parent.notifyStateChanged();
 			return false;
 		}
 		else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
@@ -659,9 +669,11 @@ public class PredictiveAccess {
 					this.builder.getTextElement().convertReader();
 			}
 			
+			this.parent.notifyStateChanged();
 			return true;
 		}
 		
+		this.parent.notifyStateChanged();
 		return false;
 	}
 
@@ -869,5 +881,13 @@ public class PredictiveAccess {
 
 	public void setPredictiveType(int predictiveType) {
 		this.predictiveType = predictiveType;
+	}
+
+	public Container getChoicesContainer() {
+		return choicesContainer;
+	}
+
+	public void setChoicesContainer(Container choicesContainer) {
+		this.choicesContainer = choicesContainer;
 	}
 }
