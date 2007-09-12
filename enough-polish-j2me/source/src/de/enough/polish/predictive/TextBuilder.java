@@ -65,7 +65,7 @@ public abstract class TextBuilder {
 		this.text = new StringBuffer();
 	}
 
-	public void keyNum(int keyCode,Reader reader) throws RecordStoreException {
+	public void keyNum(int keyCode,PredictiveReader reader) throws RecordStoreException {
 		if (isStringBuffer(0) || this.align == ALIGN_LEFT
 				|| this.align == ALIGN_RIGHT) {
 			addReader(reader);
@@ -104,8 +104,8 @@ public abstract class TextBuilder {
 	 * @return the instance of <code>TrieReader</code> carried in the current
 	 *         <code>TextElement</code>
 	 */
-	public Reader getReader() {
-		return (Reader) getTextElement().getElement();
+	public PredictiveReader getReader() {
+		return (PredictiveReader) getTextElement().getElement();
 	}
 
 	public StringBuffer getStringBuffer() {
@@ -156,9 +156,13 @@ public abstract class TextBuilder {
 	 */
 	private TextElement getTextElement(int index) {
 		if (this.textElements.size() > 0)
+		{
 			return (TextElement) this.textElements.get(index);
+		}
 		else
+		{
 			return null;
+		}
 	}
 
 	/**
@@ -301,7 +305,7 @@ public abstract class TextBuilder {
 	 *            the instance of <code>TrieReader</code> the
 	 *            <code>TextElement</code> should carry
 	 */
-	public abstract void addReader(Reader reader);
+	public abstract void addReader(PredictiveReader reader);
 
 	/**
 	 * Deletes the current element
@@ -412,9 +416,16 @@ public abstract class TextBuilder {
 	 */
 	public boolean isStringBuffer(int offset) {
 		if (this.textElements.size() > 0 && (this.element - offset) >= 0)
+		{
 			return getTextElement(this.element + offset).isStringBuffer();
+		}
 		else
-			return true;
+		{	
+			// old code by andre:
+			//return true;
+			//TODO andre: check following line:
+			return (this.textElements.size() > 0); // JUST A GUESS
+		}
 	}
 
 	/**
@@ -455,7 +466,7 @@ public abstract class TextBuilder {
 
 			if (object instanceof StringBuffer)
 				this.text.append((StringBuffer) object);
-			else if (object instanceof Reader)
+			else if (object instanceof PredictiveReader)
 				this.text.append(element.getSelectedWord());
 		}
 

@@ -26,7 +26,7 @@ public abstract class TextElement {
 		if (element != null) {
 			if (element instanceof StringBuffer) {
 				return ((StringBuffer)element).length();
-			} else if (element instanceof Reader) {
+			} else if (element instanceof PredictiveReader) {
 				return this.getSelectedWord().length();
 			}
 		}

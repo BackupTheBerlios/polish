@@ -8,12 +8,12 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
-import de.enough.polish.predictive.Reader;
+import de.enough.polish.predictive.PredictiveReader;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
-public class TrieReader extends Reader {
+public class TrieReader extends PredictiveReader {
 	static final byte V_OFFSET = 0;
 	static final byte CC_OFFSET = 2;
 	static final byte CR_OFFSET = 3;

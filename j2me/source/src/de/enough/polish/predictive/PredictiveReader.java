@@ -6,7 +6,7 @@ import javax.microedition.rms.RecordStoreException;
 
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
-public abstract class Reader {
+public abstract class PredictiveReader {
 	
 	protected StringBuffer letters = null;
 	
@@ -17,7 +17,7 @@ public abstract class Reader {
 	
 	protected int keyCount = 0;
 	
-	public Reader()
+	public PredictiveReader()
 	{
 		this.letters = new StringBuffer(10);
 				

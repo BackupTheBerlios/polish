@@ -54,7 +54,7 @@ import de.enough.polish.predictive.TextBuilder;
 import de.enough.polish.predictive.TextElement;
 import de.enough.polish.predictive.array.ArrayReader;
 import de.enough.polish.predictive.array.ArrayTextBuilder;
-import de.enough.polish.predictive.trie.Setup;
+import de.enough.polish.predictive.trie.TrieSetup;
 import de.enough.polish.predictive.trie.TrieReader;
 import de.enough.polish.predictive.trie.TrieTextBuilder;
 import de.enough.polish.predictive.trie.TrieTextElement;
@@ -697,11 +697,11 @@ public class TextField extends StringItem
 	  	//#endif
 	//#endif
 	//#ifdef polish.i18n.useDynamicTranslations
-  		protected static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), Command.ITEM, 2 );
+  		protected static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), Command.ITEM, 8 );
 	//#elifdef polish.command.clear:defined
-		//#= protected static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, 2 );
+		//#= protected static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, 8 );
 	//#else
-		//# protected static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, 2 ); 
+		//# protected static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, 8 ); 
 	//#endif
 	
   	/** valid input characters for local parts of email addresses, apart from 0..9 and a..z. */
@@ -737,11 +737,11 @@ public class TextField extends StringItem
 				//private static String definedSymbols = "@/\\<>(){}.,+-*:_\"#$%";
 			//#endif
 			//#ifdef polish.i18n.useDynamicTranslations
-		  		private static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.ITEM, 3 );
+		  		private static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.ITEM, 9 );
 			//#elifdef polish.command.entersymbol:defined
-				//#= private static final Command ENTER_SYMBOL_CMD = new Command( "${polish.command.entersymbol}", Command.ITEM, 3 );
+				//#= private static final Command ENTER_SYMBOL_CMD = new Command( "${polish.command.entersymbol}", Command.ITEM, 9 );
 			//#else
-				//# private static final Command ENTER_SYMBOL_CMD = new Command( "Add Symbol", Command.ITEM, 3 ); 
+				//# private static final Command ENTER_SYMBOL_CMD = new Command( "Add Symbol", Command.ITEM, 9 ); 
 			//#endif
 		//#endif
 		private boolean isKeyDown;
@@ -892,15 +892,15 @@ public class TextField extends StringItem
 		public static final int ORIENTATION_BOTTOM = 0;
 		public static final int ORIENTATION_TOP = 1;
 		
-		public static final int TYPE_TRIE = 0;
-		public static final int TYPE_ARRAY = 1;
+		public static final int PREDICTIVE_TYPE_TRIE = 0;
+		public static final int PREDICTIVE_TYPE_ARRAY = 1;
 		
 		public static TrieProvider PROVIDER = new TrieProvider(); 
 		
-		private static Command ENABLE_PREDICTIVE_CMD = new Command( Locale.get("polish.predictive.command.enable"), Command.ITEM, 3 );
-		private static Command INSTALL_PREDICTIVE_CMD = new Command( Locale.get("polish.predictive.command.install"), Command.ITEM, 3 );
-		private static Command DISABLE_PREDICTIVE_CMD = new Command( Locale.get("polish.predictive.command.disable"), Command.ITEM, 4 );
-		private static Command ADD_WORD_CMD = new Command( Locale.get("polish.predictive.registerNewWord.command"), Command.ITEM, 5 );
+		private static Command ENABLE_PREDICTIVE_CMD = new Command( Locale.get("polish.predictive.command.enable"), Command.ITEM, 10 );
+		private static Command INSTALL_PREDICTIVE_CMD = new Command( Locale.get("polish.predictive.command.install"), Command.ITEM, 10 );
+		private static Command DISABLE_PREDICTIVE_CMD = new Command( Locale.get("polish.predictive.command.disable"), Command.ITEM, 10 );
+		private static Command ADD_WORD_CMD = new Command( Locale.get("polish.predictive.registerNewWord.command"), Command.ITEM, 11 );
 		
 		private static int SPACE_BUTTON = getSpaceKey();
 		
@@ -913,7 +913,7 @@ public class TextField extends StringItem
 		private boolean isOpen;
 		private Style choiceItemStyle;
 		private int choiceOrientation;
-		private int predictiveType = TYPE_TRIE;
+		private int predictiveType = PREDICTIVE_TYPE_TRIE;
 		
 		private TextBuilder builder = null;
 		
@@ -1044,11 +1044,10 @@ public class TextField extends StringItem
 	//#if polish.TextField.usePredictiveInput && tmp.directInput
 	public TextBuilder initPredictiveInput(int type)
 	{
+		this.predictiveType = type;
 		try
 		{	
-			this.predictiveType = type;
-			
-			if(type == TYPE_TRIE)
+			if(type == PREDICTIVE_TYPE_TRIE)
 			{
 				if(!PROVIDER.isInit())
 				{
@@ -1077,11 +1076,11 @@ public class TextField extends StringItem
 			System.out.println("unable to load predictive dictionary " + e);
 		}
 		
-		if(type == TYPE_TRIE)
+		if(type == PREDICTIVE_TYPE_TRIE)
 		{
 			return new TrieTextBuilder(maxSize);
 		}
-		else if(type == TYPE_ARRAY)
+		else if(type == PREDICTIVE_TYPE_ARRAY)
 		{
 			return new ArrayTextBuilder(maxSize);
 		}
@@ -1103,17 +1102,28 @@ public class TextField extends StringItem
 		updateInfo();
 	}
 	
-	public void setPredicitiveArray(ArrayList words)
+	/**
+	 * Sets the allowed input words for a simple predictive input mode. 
+	 * @param allowedWords the allowed words - note that you should not use a large number of words
+	 */
+	public void setPredicitiveArray(ArrayList allowedWords)
 	{
-		if(this.builder != null)
-		{
-			while(this.builder.deleteCurrent());
+		if (allowedWords == null || allowedWords.size() == 0) {
+			this.predictiveType = PREDICTIVE_TYPE_TRIE;
+			disablePredictive();
+		} else {
+			if(this.builder != null)
+			{
+				while(this.builder.deleteCurrent());
+			}
+			
+			openChoices(false);
+			
+			this.words = allowedWords;
+			this.builder = initPredictiveInput(PREDICTIVE_TYPE_ARRAY);
+			this.predictiveInput = true;
+			updateInfo();
 		}
-		
-		openChoices(false);
-		
-		this.words = words;
-		this.builder = initPredictiveInput(TYPE_ARRAY);
 	}
 	
 	public void setPredicitiveTrie()
@@ -1125,7 +1135,7 @@ public class TextField extends StringItem
 		
 		openChoices(false);
 		
-		this.builder = initPredictiveInput(TYPE_TRIE);
+		this.builder = initPredictiveInput(PREDICTIVE_TYPE_TRIE);
 	}
 	
 	private static int getSpaceKey()
@@ -1359,7 +1369,7 @@ public class TextField extends StringItem
 			{
 				if(keyCode != SPACE_BUTTON)
 				{
-					if(this.predictiveType == TYPE_TRIE)
+					if(this.predictiveType == PREDICTIVE_TYPE_TRIE)
 					{
 						this.builder.keyNum(keyCode, new TrieReader());
 					}
@@ -1420,9 +1430,13 @@ public class TextField extends StringItem
 			
 			if(!this.builder.isStringBuffer(0) && 
 				this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS)
+			{
 				this.setChoices(this.builder.getTextElement());
+			}
 			else
+			{
 				this.openChoices(false);
+			}
 		}
 		catch(RecordStoreException e) 
 		{
@@ -1434,7 +1448,7 @@ public class TextField extends StringItem
 		setCaretPosition(this.builder.getCaretPosition());
 		getScreen().setItemCommands( this );
 		this.refreshChoices = true;
-		
+		notifyStateChanged();		
 		return true;
 	}
 	
@@ -3912,7 +3926,7 @@ public class TextField extends StringItem
 			}
 		//#endif
 			
-		//#if polish.TextField.usePredictiveInput && tmp.directInput
+		//#if tmp.usePredictiveInput
 			if(box instanceof Form)
 			{
 				if (cmd == StyleSheet.OK_CMD)  {
@@ -3927,25 +3941,29 @@ public class TextField extends StringItem
 				if (cmd == StyleSheet.OK_CMD)
 				{
 					//#if polish.predictive.useLocalRMS
-					DataInputStream stream = null;
-					Setup setup = null;
-					
-					stream = new DataInputStream(getClass().getResourceAsStream("/predictive.trie"));
-					setup = new Setup(StyleSheet.midlet, this.getScreen(), this, true, stream);
-					
-					Thread thread = new Thread(setup);
-					thread.start();
-					return;
+						DataInputStream stream = null;
+						TrieSetup setup = null;
+						
+						stream = new DataInputStream(getClass().getResourceAsStream("/predictive.trie"));
+						setup = new TrieSetup(StyleSheet.midlet, this.getScreen(), this, true, stream);
+						
+						Thread thread = new Thread(setup);
+						thread.start();
 					
 					//#else
-					//# try
-					//# {
-					//#	StyleSheet.midlet.platformRequest("http://dl.j2mepolish.org/predictive/index.jsp?type=shared");
-					//#	StyleSheet.midlet.notifyDestroyed();
-					//# }catch(ConnectionNotFoundException e){}
-					//# StyleSheet.display.setCurrent(this.screen);
-					//# return;
+						try
+						{
+							StyleSheet.midlet.platformRequest("http://dl.j2mepolish.org/predictive/index.jsp?type=shared");
+							StyleSheet.midlet.notifyDestroyed();
+						} 
+						catch (ConnectionNotFoundException e)
+						{
+							//#debug error
+							System.out.println("Unable to load dictionary app" + e);
+						}
+						StyleSheet.display.setCurrent(this.screen);
 					//#endif
+					return;
 				}
 				
 			}
@@ -4017,9 +4035,9 @@ public class TextField extends StringItem
 								if (this.enableDirectInput) {
 							//#endif
 								//#ifdef polish.key.ClearKey:defined
-								//#= handleKeyClear(${polish.key.ClearKey},0);
+									//#= handleKeyClear(${polish.key.ClearKey},0);
 								//#else
-								handleKeyClear(-8,0);
+									handleKeyClear(-8,0);
 								//#endif
 							//#ifdef tmp.allowDirectInput
 								} else {
@@ -4059,7 +4077,7 @@ public class TextField extends StringItem
 					//#if (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.useLocalRMS)
 					{
 						DataInputStream stream = null;
-						Setup setup = null;
+						TrieSetup setup = null;
 						//#if !polish.predictive.useLocalRMS && polish.Bugs.sharedRmsRequiresSigning
 							RedirectHttpConnection connection = new RedirectHttpConnection("http://dl.j2mepolish.org/predictive/index.jsp?type=local&lang=en");
 							try
@@ -4071,10 +4089,10 @@ public class TextField extends StringItem
 								ioEx.printStackTrace();
 							}
 							
-							setup = new Setup(StyleSheet.midlet, null, null, false, stream);
+							setup = new TrieSetup(StyleSheet.midlet, null, null, false, stream);
 						//#else
 							stream = new DataInputStream(getClass().getResourceAsStream("/predictive.trie"));
-							setup = new Setup(StyleSheet.midlet, this.getScreen(), this, true, stream);
+							setup = new TrieSetup(StyleSheet.midlet, this.getScreen(), this, true, stream);
 						//#endif
 						
 						Thread thread = new Thread(setup);
@@ -4342,6 +4360,8 @@ public class TextField extends StringItem
 			this.predictiveType = predictiveType;
 		}
 	//#endif
+
+		
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {

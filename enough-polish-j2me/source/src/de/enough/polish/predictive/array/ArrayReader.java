@@ -3,10 +3,10 @@ package de.enough.polish.predictive.array;
 
 import javax.microedition.rms.RecordStoreException;
 
-import de.enough.polish.predictive.Reader;
+import de.enough.polish.predictive.PredictiveReader;
 import de.enough.polish.util.ArrayList;
 
-public class ArrayReader extends Reader {
+public class ArrayReader extends PredictiveReader {
 
 	ArrayList results;
 
@@ -25,9 +25,13 @@ public class ArrayReader extends Reader {
 
 	public StringBuffer getSelectedWord() {
 		if (this.results.size() > 0)
+		{
 			return (StringBuffer) this.results.get(this.selectedWord);
+		}
 		else
+		{
 			return null;
+		}
 	}
 
 	public void keyClear() throws RecordStoreException {
@@ -68,7 +72,8 @@ public class ArrayReader extends Reader {
 
 		for (int k = 0; k < this.results.size(); k++) {
 			boolean add = false;
-
+			Object result = this.results.get(k);
+			//System.out.println("got result: " + result + ", class=" + result.getClass() );
 			String word = ((StringBuffer) this.results.get(k)).toString();
 			for (int i = 0; i < this.keys.size(); i++) {
 				int key = ((Integer) this.keys.get(i)).intValue();
@@ -124,6 +129,7 @@ public class ArrayReader extends Reader {
 	}
 
 	public void setWords(ArrayList words) {
+		//TODO Andre: why is everything 1) an arraylist (instead: String[]), 2) a StringBuffer (instead: String) ?
 		this.words = words;
 	}
 }

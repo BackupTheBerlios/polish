@@ -18,7 +18,7 @@ import javax.microedition.rms.RecordStore;
 import de.enough.polish.util.Locale;
 import de.enough.polish.ui.TextField;
 
-public class Setup 
+public class TrieSetup 
 implements Runnable, CommandListener
 {
 	private Displayable returnTo;
@@ -45,7 +45,7 @@ implements Runnable, CommandListener
 		
 	boolean pause = false;
 	
-	public Setup(MIDlet parentMidlet, Displayable returnTo, TextField field, boolean showGauge, DataInputStream stream)
+	public TrieSetup(MIDlet parentMidlet, Displayable returnTo, TextField field, boolean showGauge, DataInputStream stream)
 	{
 		this.returnTo = returnTo;
 		this.parentMidlet = parentMidlet;
@@ -240,7 +240,7 @@ implements Runnable, CommandListener
 		else
 		{
 			//#if polish.predictive.useLocalRMS
-				this.parent.initPredictiveInput(TextField.TYPE_TRIE);
+				this.parent.initPredictiveInput(TextField.PREDICTIVE_TYPE_TRIE);
 			//#endif
 				
 			Display.getDisplay(this.parentMidlet).setCurrent(this.returnTo);			

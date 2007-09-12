@@ -4,7 +4,7 @@ package de.enough.polish.predictive.array;
 
 import javax.microedition.rms.RecordStoreException;
 
-import de.enough.polish.predictive.Reader;
+import de.enough.polish.predictive.PredictiveReader;
 import de.enough.polish.predictive.TextBuilder;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
@@ -16,21 +16,32 @@ public class ArrayTextBuilder extends TextBuilder {
 	}
 	
 	public boolean keyClear() throws RecordStoreException {
-		if (this.align == ALIGN_LEFT)
+		if (this.align == ALIGN_LEFT) 
+		{
 			if (this.element != 0)
+			{
 				decreaseCaret();
+			}
 			else
+			{
 				return false;
-
+			}
+		}
 		if (isStringBuffer(0)) {
-			if (!decreaseStringBuffer()) {
+			if (!decreaseStringBuffer()) 
+			{
 				deleteCurrent();
 				return false;
-			} else
+			} 
+			else
+			{
 				return true;
+			}
 		} else {
 			if (getTextElement().getKeyCount() <= getReader().getKeyCount())
+			{
 				getReader().keyClear();
+			}
 			
 			getTextElement().keyClear();
 			getTextElement().setResults();
@@ -47,6 +58,7 @@ public class ArrayTextBuilder extends TextBuilder {
 		}
 	}
 
+	//TODO: andre: wtf?
 	public void addWord(String string) {}
 
 	public void addStringBuffer(String string) {
@@ -54,7 +66,7 @@ public class ArrayTextBuilder extends TextBuilder {
 		this.align = ALIGN_RIGHT;
 	}
 
-	public void addReader(Reader reader) {
+	public void addReader(PredictiveReader reader) {
 		addElement(new ArrayTextElement(reader));
 		this.align = ALIGN_FOCUS;
 	}

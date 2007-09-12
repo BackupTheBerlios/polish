@@ -4,7 +4,7 @@ package de.enough.polish.predictive.trie;
 
 import javax.microedition.rms.RecordStoreException;
 
-import de.enough.polish.predictive.Reader;
+import de.enough.polish.predictive.PredictiveReader;
 import de.enough.polish.predictive.TextBuilder;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
@@ -69,7 +69,7 @@ public class TrieTextBuilder extends TextBuilder {
 	 *            the instance of <code>TrieReader</code> the
 	 *            <code>TextElement</code> should carry
 	 */
-	public void addReader(Reader reader) {
+	public void addReader(PredictiveReader reader) {
 		addElement(new TrieTextElement(reader));
 		this.align = ALIGN_FOCUS;
 	}
