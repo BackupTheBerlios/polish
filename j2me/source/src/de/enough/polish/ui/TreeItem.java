@@ -546,15 +546,15 @@ public class TreeItem
 				if (this.children.isFocused) {
 					focusRoot();
 				}
-			} else if (!this.isExpanded) {
+//			} else if (!this.isExpanded) {
 				// trick so that the parent container can scroll correctly when this node is expanded:
-				this.internalX = 0;
-				this.internalY = 0;
-				this.internalHeight = this.root.itemHeight + this.children.getItemHeight(this.availableWidth, this.availableWidth);
+//				this.internalX = 0;
+//				this.internalY = 0;
+//				this.internalHeight = this.root.itemHeight + this.children.getItemHeight(this.availableWidth, this.availableWidth);
 			}
 			if (expand != this.isExpanded) {
-				requestInit();
 				this.isExpanded = expand;
+				requestInit();
 			}
 		}
 		
