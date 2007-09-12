@@ -9,6 +9,7 @@ import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
 import de.enough.polish.predictive.PredictiveReader;
+import de.enough.polish.ui.PredictiveAccess;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
@@ -125,19 +126,19 @@ public class TrieReader extends PredictiveReader {
 	
 	private int getRecordID(int id)
 	{
-		return ((id -1) / TextField.PROVIDER.getLineCount()) + 1;
+		return ((id -1) / PredictiveAccess.PROVIDER.getLineCount()) + 1;
 	}
 	
 	private int getPartID(int id)
 	{
-		return ((id -1) % TextField.PROVIDER.getLineCount()) + 1;
+		return ((id -1) % PredictiveAccess.PROVIDER.getLineCount()) + 1;
 	}
 		
 	private byte[] getRecord(int id) throws RecordStoreException
 	{
-		int recordID 	= getRecordID(id) + TrieInstaller.OVERHEAD % TextField.PROVIDER.getChunkSize();
+		int recordID 	= getRecordID(id) + TrieInstaller.OVERHEAD % PredictiveAccess.PROVIDER.getChunkSize();
 		
-		return TextField.PROVIDER.getRecord(recordID);
+		return PredictiveAccess.PROVIDER.getRecord(recordID);
 	}
 	
 	private int getPartOffset(byte[] record, int partID)
@@ -170,9 +171,9 @@ public class TrieReader extends PredictiveReader {
 		{
 			value = TrieUtils.byteToChar(record, i+V_OFFSET);
 			
-			for(int j=0;j<letters.length();j++)
+			for(int j=0;j< this.letters.length();j++)
 			{
-				if(value == letters.charAt(j))
+				if(value == this.letters.charAt(j))
 				{
 					TrieNode node = new TrieNode();
 					
@@ -190,11 +191,14 @@ public class TrieReader extends PredictiveReader {
 		}
 	}
 	
-	public StringBuffer getSelectedWord()
+	public String getSelectedWord()
 	{
 		if(this.nodes.size() > 0)
 			if(this.nodes.get(this.selectedWord) instanceof TrieNode)
-				return ((TrieNode)this.nodes.get(this.selectedWord)).getWord();
+			{
+				TrieNode node = ((TrieNode)this.nodes.get(this.selectedWord));
+				return node.getWord().toString();
+			}
 			else
 				return null;
 		else

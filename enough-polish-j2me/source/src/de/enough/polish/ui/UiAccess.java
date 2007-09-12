@@ -33,6 +33,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.predictive.array.ArrayTextBuilder;
 import de.enough.polish.util.HashMap;
 
 /**
@@ -2328,7 +2329,7 @@ public final class UiAccess {
 	}
 	//#endif
 
-	//#if polish.usePolishGui
+ 	//#if polish.usePolishGui
 	public static int[] getRgbDataOfContent( Item item ) {
 		//#if polish.midp2
 			Image image = Image.createImage( item.contentWidth, item.contentHeight );
@@ -2355,4 +2356,30 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
+	public static void setPredictiveDictionary(javax.microedition.lcdui.TextField field, String[] words)
+	{
+		// ignore
+	}
+	//#endif
+
+ 	//#if polish.usePolishGui
+	public static void setPredictiveDictionary(TextField field, String[] words)
+	{
+			PredictiveAccess predictive = field.getPredictiveAccess();
+			predictive.initPredictiveInput(words);
+			
+			field.setString("");
+			predictive.synchronize();
+			
+			if(words == null)
+			{
+				predictive.setPredictiveType(PredictiveAccess.TRIE);
+			}
+			else
+			{
+				predictive.setPredictiveType(PredictiveAccess.ARRAY);
+			}
+	}
+	//#endif
 }

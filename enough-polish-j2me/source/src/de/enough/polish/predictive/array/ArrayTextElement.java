@@ -3,6 +3,7 @@ package de.enough.polish.predictive.array;
 
 import de.enough.polish.predictive.TextElement;
 import de.enough.polish.predictive.trie.TrieReader;
+import de.enough.polish.ui.PredictiveAccess;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 
@@ -23,16 +24,16 @@ public class ArrayTextElement extends TextElement {
 		this.results = ((ArrayReader)this.element).getResults();
 	}
 	
-	protected StringBuffer getSelectedStringBuffer()
+	protected String getSelectedString()
 	{
 		int totalElements = this.customResults.size() + this.results.size();
 		if(totalElements <= this.selectedWordIndex)
 			this.selectedWordIndex = 0;
 		
 		if(this.isSelectedCustom())
-			return (StringBuffer)this.customResults.get(this.selectedWordIndex - this.results.size());
+			return (String)this.customResults.get(this.selectedWordIndex - this.results.size());
 		else
-			return (StringBuffer)this.results.get(this.selectedWordIndex);
+			return (String)this.results.get(this.selectedWordIndex);
 	}
 	
 	public void setSelectedWordIndex(int selected)
@@ -51,8 +52,8 @@ public class ArrayTextElement extends TextElement {
 	
 	public void convertReader()
 	{
-		TextField.PROVIDER.releaseRecords();
-		this.element = getSelectedStringBuffer();
+		PredictiveAccess.PROVIDER.releaseRecords();
+		this.element = getSelectedString();
 	}
 	
 	public ArrayList getResults()
@@ -71,7 +72,7 @@ public class ArrayTextElement extends TextElement {
 	
 	public boolean isWordFound()
 	{
-		if(!isStringBuffer())
+		if(!isString())
 			return ((ArrayReader)this.element).isWordFound() || isCustomFound();
 		
 		return false;

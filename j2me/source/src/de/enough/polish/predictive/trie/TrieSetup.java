@@ -16,13 +16,14 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.rms.RecordStore;
 
 import de.enough.polish.util.Locale;
+import de.enough.polish.ui.PredictiveAccess;
 import de.enough.polish.ui.TextField;
 
 public class TrieSetup 
 implements Runnable, CommandListener
 {
 	private Displayable returnTo;
-	private TextField parent;
+	private PredictiveAccess parent;
 	private MIDlet parentMidlet;
 	
 	DataInputStream stream = null;
@@ -45,11 +46,11 @@ implements Runnable, CommandListener
 		
 	boolean pause = false;
 	
-	public TrieSetup(MIDlet parentMidlet, Displayable returnTo, TextField field, boolean showGauge, DataInputStream stream)
+	public TrieSetup(MIDlet parentMidlet, Displayable returnTo, PredictiveAccess access, boolean showGauge, DataInputStream stream)
 	{
 		this.returnTo = returnTo;
 		this.parentMidlet = parentMidlet;
-		this.parent = field;
+		this.parent = access;
 		
 		this.stream = stream;
 		
@@ -176,11 +177,6 @@ implements Runnable, CommandListener
 			this.status.setText(Locale.get("polish.predictive.setup.status.finished"));
 			this.form.removeCommand( this.cancelCommand );
 			this.form.addCommand( this.exitCommand );
-			
-			Thread.sleep(10000);
-			
-			exit();
-			
 		} catch (Exception e) {
 			this.status.setText(Locale.get("polish.predictive.setup.error"));
 			this.status.setText(e.getMessage());
@@ -240,7 +236,7 @@ implements Runnable, CommandListener
 		else
 		{
 			//#if polish.predictive.useLocalRMS
-				this.parent.initPredictiveInput(TextField.PREDICTIVE_TYPE_TRIE);
+				this.parent.initPredictiveInput(null);
 			//#endif
 				
 			Display.getDisplay(this.parentMidlet).setCurrent(this.returnTo);			

@@ -27,8 +27,8 @@ public class ArrayTextBuilder extends TextBuilder {
 				return false;
 			}
 		}
-		if (isStringBuffer(0)) {
-			if (!decreaseStringBuffer()) 
+		if (isString(0)) {
+			if (!decreaseString()) 
 			{
 				deleteCurrent();
 				return false;
@@ -59,10 +59,11 @@ public class ArrayTextBuilder extends TextBuilder {
 	}
 
 	//TODO: andre: wtf?
+	//TODO: robert: ftw!
 	public void addWord(String string) {}
 
-	public void addStringBuffer(String string) {
-		addElement(new ArrayTextElement(new StringBuffer(string)));
+	public void addString(String string) {
+		addElement(new ArrayTextElement(string));
 		this.align = ALIGN_RIGHT;
 	}
 

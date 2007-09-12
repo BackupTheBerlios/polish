@@ -66,7 +66,7 @@ public abstract class TextBuilder {
 	}
 
 	public void keyNum(int keyCode,PredictiveReader reader) throws RecordStoreException {
-		if (isStringBuffer(0) || this.align == ALIGN_LEFT
+		if (isString(0) || this.align == ALIGN_LEFT
 				|| this.align == ALIGN_RIGHT) {
 			addReader(reader);
 		}
@@ -85,10 +85,10 @@ public abstract class TextBuilder {
 	}
 	
 	public void keySpace() {
-		if (!isStringBuffer(0))
+		if (!isString(0))
 			getTextElement().convertReader();
 
-		addStringBuffer(" ");
+		addString(" ");
 	}
 	
 	public abstract boolean keyClear() throws RecordStoreException;
@@ -108,8 +108,8 @@ public abstract class TextBuilder {
 		return (PredictiveReader) getTextElement().getElement();
 	}
 
-	public StringBuffer getStringBuffer() {
-		return (StringBuffer) getTextElement().getElement();
+	public String getString() {
+		return (String) getTextElement().getElement();
 	}
 
 	/**
@@ -296,7 +296,7 @@ public abstract class TextBuilder {
 	 * @param string
 	 *            the string the <code>TextElement</code> should carry
 	 */
-	public abstract void addStringBuffer(String string);
+	public abstract void addString(String string);
 
 	/**
 	 * Creates a new <code>TextElement</code> carrying <code>reader</code>
@@ -314,11 +314,12 @@ public abstract class TextBuilder {
 	 */
 	public abstract boolean deleteCurrent();
 
-	public boolean decreaseStringBuffer() {
-		if (this.isStringBuffer(0)) {
-			StringBuffer element = getStringBuffer();
+	public boolean decreaseString() {
+		if (this.isString(0)) {
+			String element = getString();
 			if (element.length() > 0) {
-				element.setLength(element.length() - 1);
+				element = element.substring(0,element.length() - 1);
+				getTextElement().setElement(element);
 				setAlign(ALIGN_RIGHT);
 				return (element.length() > 0);
 			} else
@@ -383,7 +384,7 @@ public abstract class TextBuilder {
 			switch (this.align) {
 			case ALIGN_LEFT:
 				if (this.element > 0) {
-					if (!isStringBuffer(-1))
+					if (!isString(-1))
 						this.align = ALIGN_FOCUS;
 					else
 						this.align = ALIGN_LEFT;
@@ -397,7 +398,7 @@ public abstract class TextBuilder {
 				break;
 
 			case ALIGN_RIGHT:
-				if (isStringBuffer(0))
+				if (isString(0))
 					this.align = ALIGN_LEFT;
 				else
 					this.align = ALIGN_FOCUS;
@@ -414,17 +415,17 @@ public abstract class TextBuilder {
 	 *            the offset for the element
 	 * @return true, if the element is a character, otherwise false
 	 */
-	public boolean isStringBuffer(int offset) {
+	public boolean isString(int offset) {
 		if (this.textElements.size() > 0 && (this.element - offset) >= 0)
 		{
-			return getTextElement(this.element + offset).isStringBuffer();
+			return getTextElement(this.element + offset).isString();
 		}
 		else
 		{	
 			// old code by andre:
 			//return true;
 			//TODO andre: check following line:
-			return (this.textElements.size() > 0); // JUST A GUESS
+			return true; // JUST A GUESS
 		}
 	}
 
@@ -464,8 +465,8 @@ public abstract class TextBuilder {
 			TextElement element = getTextElement(i);
 			Object object = element.getElement();
 
-			if (object instanceof StringBuffer)
-				this.text.append((StringBuffer) object);
+			if (object instanceof String)
+				this.text.append((String) object);
 			else if (object instanceof PredictiveReader)
 				this.text.append(element.getSelectedWord());
 		}

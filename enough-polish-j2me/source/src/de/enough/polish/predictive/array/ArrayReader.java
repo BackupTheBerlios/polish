@@ -8,11 +8,10 @@ import de.enough.polish.util.ArrayList;
 
 public class ArrayReader extends PredictiveReader {
 
-	ArrayList results;
-
-	ArrayList words;
-
 	ArrayList keys;
+	
+	ArrayList results;
+	String[] words;
 
 	public ArrayReader() {
 		super();
@@ -23,10 +22,10 @@ public class ArrayReader extends PredictiveReader {
 		return this.results;
 	}
 
-	public StringBuffer getSelectedWord() {
+	public String getSelectedWord() {
 		if (this.results.size() > 0)
 		{
-			return (StringBuffer) this.results.get(this.selectedWord);
+			return (String)this.results.get(this.selectedWord);
 		}
 		else
 		{
@@ -74,7 +73,7 @@ public class ArrayReader extends PredictiveReader {
 			boolean add = false;
 			Object result = this.results.get(k);
 			//System.out.println("got result: " + result + ", class=" + result.getClass() );
-			String word = ((StringBuffer) this.results.get(k)).toString();
+			String word = (String)this.results.get(k);
 			for (int i = 0; i < this.keys.size(); i++) {
 				int key = ((Integer) this.keys.get(i)).intValue();
 				setLetters(key);
@@ -105,7 +104,7 @@ public class ArrayReader extends PredictiveReader {
 			}
 
 			if (add) {
-				buffer.add(new StringBuffer(((StringBuffer)this.results.get(k)).toString()));
+				buffer.add((String)this.results.get(k));
 			}
 		}
 		
@@ -123,12 +122,19 @@ public class ArrayReader extends PredictiveReader {
 			dest.add(i, source.get(i));
 		}
 	}
+	
+	public void copyArrayList(String[] source, ArrayList dest) {
+		dest.clear();
+		for (int i = 0; i < source.length; i++) {
+			dest.add(i, source[i]);
+		}
+	}
 
-	public ArrayList getWords() {
+	public String[] getWords() {
 		return this.words;
 	}
 
-	public void setWords(ArrayList words) {
+	public void setWords(String[] words) {
 		//TODO Andre: why is everything 1) an arraylist (instead: String[]), 2) a StringBuffer (instead: String) ?
 		this.words = words;
 	}

@@ -4,6 +4,7 @@ package de.enough.polish.predictive.trie;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.rms.RecordStoreException;
 
+import de.enough.polish.ui.PredictiveAccess;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 
@@ -16,14 +17,14 @@ public class TrieCustom {
 	
 	public TrieCustom()
 	{
-		bytes 	= load();
+		this.bytes 	= load();
 	}
 	
 	public byte[] load()
 	{
 		try
 		{
-			bytes  = TextField.PROVIDER.getRecord(TrieInstaller.CUSTOM_RECORD);
+			bytes  = PredictiveAccess.PROVIDER.getRecord(TrieInstaller.CUSTOM_RECORD);
 			
 			if(bytes == null)
 				bytes = new byte[0];
@@ -75,7 +76,7 @@ public class TrieCustom {
 	{
 		try
 		{
-			TextField.PROVIDER.setRecord(TrieInstaller.CUSTOM_RECORD, bytes);
+			PredictiveAccess.PROVIDER.setRecord(TrieInstaller.CUSTOM_RECORD, bytes);
 		}
 		catch(RecordStoreException e)
 		{
@@ -146,12 +147,12 @@ public class TrieCustom {
 		return (char)((int)( high << 8 | low ));
 	}
 	
-	private StringBuffer getWord(byte[] array, int offset)
+	private String getWord(byte[] array, int offset)
 	{
-		StringBuffer result = new StringBuffer();
+		String result = "";
 		
 		for(int i=0; i < array[offset] * CHAR_SIZE; i = i + CHAR_SIZE)
-			result.append(byteToChar(array, offset + i + 1));
+			result += (byteToChar(array, offset + i + 1));
 		
 		return result;
 	}

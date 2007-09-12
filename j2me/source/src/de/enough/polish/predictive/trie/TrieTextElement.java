@@ -2,6 +2,7 @@
 package de.enough.polish.predictive.trie;
 
 import de.enough.polish.predictive.TextElement;
+import de.enough.polish.ui.PredictiveAccess;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 
@@ -25,7 +26,7 @@ public class TrieTextElement extends TextElement {
 		{
 				this.customResults.clear();
 				
-				TextField.PROVIDER.getCustom().getWords(this.customResults,this.keyCodes);
+				PredictiveAccess.PROVIDER.getCustom().getWords(this.customResults,this.keyCodes);
 				
 				shiftResults(this.customResults);
 				
@@ -41,26 +42,26 @@ public class TrieTextElement extends TextElement {
 					{
 						TrieNode node = (TrieNode)nodes.get(i);
 						
-						this.trieResults.add(node.getWord());
+						this.trieResults.add(node.getWord().toString());
 					}
 					
-					TextField.PROVIDER.getOrder().getOrder(this.trieResults, this.keyCodes);
+					PredictiveAccess.PROVIDER.getOrder().getOrder(this.trieResults, this.keyCodes);
 						
 					shiftResults(this.trieResults);
 				}
 		}
 	}
 	
-	protected StringBuffer getSelectedStringBuffer()
+	protected String getSelectedString()
 	{
 		int totalElements = this.customResults.size() + this.trieResults.size();
 		if(totalElements <= this.selectedWordIndex)
 			this.selectedWordIndex = 0;
 		
 		if(this.isSelectedCustom())
-			return (StringBuffer)this.customResults.get(this.selectedWordIndex - this.trieResults.size());
+			return (String)this.customResults.get(this.selectedWordIndex - this.trieResults.size());
 		else
-			return (StringBuffer)this.trieResults.get(this.selectedWordIndex);
+			return (String)this.trieResults.get(this.selectedWordIndex);
 	}
 	
 	public void setSelectedWordIndex(int selected)
@@ -68,26 +69,12 @@ public class TrieTextElement extends TextElement {
 		this.selectedWordIndex = selected;
 		
 		if(selected > 0)
-			TextField.PROVIDER.getOrder().addOrder(this.keyCodes, (byte)selected);
+			PredictiveAccess.PROVIDER.getOrder().addOrder(this.keyCodes, (byte)selected);
 	}
 	
 	public int getSelectedWordIndex()
 	{
 		return this.selectedWordIndex;
-	}
-
-	public StringBuffer getSelectedWord()
-	{
-		if(keyCodes.length == getSelectedStringBuffer().length())
-			return getSelectedStringBuffer();
-		else
-		{
-			StringBuffer string = new StringBuffer();
-			string.append(getSelectedStringBuffer());
-			string.setLength(this.keyCodes.length);
-			return string;
-		}
-		
 	}
 	
 	public boolean isSelectedCustom()
@@ -100,8 +87,8 @@ public class TrieTextElement extends TextElement {
 	
 	public void convertReader()
 	{
-		TextField.PROVIDER.releaseRecords();
-		this.element = getSelectedStringBuffer();
+		PredictiveAccess.PROVIDER.releaseRecords();
+		this.element = getSelectedString();
 	}
 	
 	public ArrayList getResults()
@@ -121,7 +108,7 @@ public class TrieTextElement extends TextElement {
 	
 	public boolean isWordFound()
 	{
-		if(!isStringBuffer())
+		if(!isString())
 			return ((TrieReader)this.element).isWordFound() || isCustomFound();
 		
 		return false;

@@ -23,10 +23,10 @@ public abstract class TextElement {
 	}
 
 	public int getLength() {
-		if (element != null) {
-			if (element instanceof StringBuffer) {
-				return ((StringBuffer)element).length();
-			} else if (element instanceof PredictiveReader) {
+		if (this.element != null) {
+			if (this.element instanceof String) {
+				return ((String)this.element).length();
+			} else if (this.element instanceof PredictiveReader) {
 				return this.getSelectedWord().length();
 			}
 		}
@@ -59,9 +59,9 @@ public abstract class TextElement {
 		}
 	}
 	
-	public boolean isStringBuffer()
+	public boolean isString()
 	{
-		if(this.element instanceof StringBuffer)
+		if(this.element instanceof String)
 			return true;
 		else
 			return false;
@@ -69,45 +69,51 @@ public abstract class TextElement {
 		
 	public void shiftResults(ArrayList results)
 	{
-		StringBuffer string = null;
+		StringBuffer buffer = null;
 		
 		for (int i = 0; i < results.size(); i++) {
 			
-			string = (StringBuffer)results.get(i);
+			buffer = new StringBuffer((String)results.get(i));
 			
-			for (int j = 0; j < keyCodes.length; j++)
+			for (int j = 0; j < this.keyCodes.length; j++)
 			{
-				if (keyCodes[j] > SHIFT && j < string.length())
-					string.setCharAt(j, Character.toUpperCase(string.charAt(j)));
+				if (this.keyCodes[j] > SHIFT && j < buffer.length())
+					buffer.setCharAt(j, Character.toUpperCase(buffer.charAt(j)));
 			}
+			
+			results.set(i, buffer.toString());
 		}
 
 	}
 
 	public abstract void setResults();
 	
-	protected abstract StringBuffer getSelectedStringBuffer();
+	protected abstract String getSelectedString();
 	
 	public abstract void setSelectedWordIndex(int selected);
-	
-
-	
+		
 	public int getSelectedWordIndex()
 	{
 		return this.selectedWordIndex;
 	}
 
 	
-	public StringBuffer getSelectedWord()
+	public String getSelectedWord()
 	{
-		if(keyCodes.length == getSelectedStringBuffer().length())
-			return getSelectedStringBuffer();
+		String word = getSelectedString();
+		if(this.keyCodes.length == word.length())
+			return getSelectedString();
 		else
 		{
-			StringBuffer string = new StringBuffer();
-			string.append(getSelectedStringBuffer());
-			string.setLength(this.keyCodes.length);
-			return string;
+			if(word.length() > this.keyCodes.length)
+			{
+				word = word.substring(0, this.keyCodes.length);
+				return word;
+			}
+			else
+			{
+				return word;
+			}
 		}
 		
 	}
@@ -125,9 +131,15 @@ public abstract class TextElement {
 	public Object getElement() {
 		return this.element;
 	}
+
+	public void setElement(Object element)
+	{
+		this.element = element;
+	}
 	
 	public int getKeyCount()
 	{
 		return this.keyCodes.length;
 	}
+	
 }

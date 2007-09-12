@@ -29,7 +29,7 @@ public abstract class PredictiveReader {
 	
 	public abstract void keyClear() throws RecordStoreException;
 	
-	public abstract StringBuffer getSelectedWord();
+	public abstract String getSelectedWord();
 	
 	protected void setLetters(int keyCode)
 	{

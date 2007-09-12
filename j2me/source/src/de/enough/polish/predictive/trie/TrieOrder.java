@@ -3,6 +3,7 @@ package de.enough.polish.predictive.trie;
 
 import javax.microedition.rms.RecordStoreException;
 
+import de.enough.polish.ui.PredictiveAccess;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 
@@ -23,7 +24,7 @@ public class TrieOrder {
 	{
 		try
 		{
-			bytes  = TextField.PROVIDER.getRecord(TrieInstaller.ORDER_RECORD);
+			bytes  = PredictiveAccess.PROVIDER.getRecord(TrieInstaller.ORDER_RECORD);
 			
 			if(bytes == null)
 				bytes = new byte[0];
@@ -67,7 +68,7 @@ public class TrieOrder {
 	{
 		try
 		{
-			TextField.PROVIDER.setRecord(TrieInstaller.ORDER_RECORD, bytes);
+			PredictiveAccess.PROVIDER.setRecord(TrieInstaller.ORDER_RECORD, bytes);
 		}
 		catch(RecordStoreException e)
 		{
@@ -88,7 +89,7 @@ public class TrieOrder {
 					
 					if(index > 0 && index < words.size())
 					{
-						StringBuffer word = (StringBuffer)words.get(index);
+						String word = (String)words.get(index);
 						words.remove(index);
 						words.add(0, word);
 					}

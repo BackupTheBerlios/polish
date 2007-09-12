@@ -6,6 +6,7 @@ import javax.microedition.rms.RecordStoreException;
 
 import de.enough.polish.predictive.PredictiveReader;
 import de.enough.polish.predictive.TextBuilder;
+import de.enough.polish.ui.PredictiveAccess;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 
@@ -22,8 +23,8 @@ public class TrieTextBuilder extends TextBuilder {
 			else
 				return false;
 
-		if (isStringBuffer(0)) {
-			if (!decreaseStringBuffer()) {
+		if (isString(0)) {
+			if (!decreaseString()) {
 				deleteCurrent();
 				return false;
 			} else
@@ -48,7 +49,7 @@ public class TrieTextBuilder extends TextBuilder {
 	}
 
 	public void addWord(String string) {
-		TextField.PROVIDER.getCustom().addWord(string);
+		PredictiveAccess.PROVIDER.getCustom().addWord(string);
 	}
 
 	/**
@@ -57,8 +58,8 @@ public class TrieTextBuilder extends TextBuilder {
 	 * @param string
 	 *            the string the <code>TextElement</code> should carry
 	 */
-	public void addStringBuffer(String string) {
-		addElement(new TrieTextElement(new StringBuffer(string)));
+	public void addString(String string) {
+		addElement(new TrieTextElement(string));
 		this.align = ALIGN_RIGHT;
 	}
 
@@ -92,7 +93,7 @@ public class TrieTextBuilder extends TextBuilder {
 
 			this.textElements.remove(index);
 
-			TextField.PROVIDER.releaseRecords();
+			PredictiveAccess.PROVIDER.releaseRecords();
 
 			return true;
 		}
