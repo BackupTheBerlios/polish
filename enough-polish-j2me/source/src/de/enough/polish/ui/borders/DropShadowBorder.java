@@ -71,8 +71,8 @@ public class DropShadowBorder extends Border {
 	}
 
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		int left = x;
-		int top = y;
+		int left = x - 1;
+		int top = y - 1;
 		int right = x + width;
 		int bottom = y + height;
 		for (int i = 0; i < this.borderWidth; i++ ) {
