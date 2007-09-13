@@ -168,6 +168,17 @@ public abstract class ItemView {
 		}		
 	}
 	
+
+	/**
+	 * Requests the re-initialization of this item view.
+	 * This should be called when this view type changes its size.
+	 */
+	public void requestInit(){
+		if (this.parentItem != null) {
+			this.parentItem.requestInit();
+		}
+	}
+	
 	/**
 	 * Removes the background from the parent container so that the view implementation can paint it itself.
 	 * 

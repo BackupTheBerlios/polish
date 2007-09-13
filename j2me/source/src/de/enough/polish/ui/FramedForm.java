@@ -372,17 +372,21 @@ public class FramedForm extends Form {
 			|| source == this.rightFrame
 		;
 	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#requestInit()
+	 */
+	protected void requestInit() {
+		super.requestInit();
+		this.isInitRequested = true;
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#paintScreen(javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintScreen(Graphics g) {
-//		//#ifdef tmp.menuFullScreen
-//		 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
-//		//#else
-//		 	g.setClip(0, 0, this.screenWidth, this.originalScreenHeight );
-//		//#endif
-
 		if (this.currentlyActiveContainer != this.container) {
 			super.paintScreen(g);
 		}

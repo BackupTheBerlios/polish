@@ -311,6 +311,8 @@ implements AccessibleCanvas
 	protected long lastInteractionTime;
 	private boolean isInRequestInit;
 	protected boolean ignoreRepaintRequests;
+	/** requests a call to calcuateContentArea() the next time this screen is being painted */
+	protected boolean isInitRequested;
 
 
 	/**
@@ -595,15 +597,13 @@ implements AccessibleCanvas
 	
 	/**
 	 * Reinitializes this screen's content area.
+	 * 
+	 * This call returns immediately and results in a run of the initialization at some later point in some screen subclasses
+	 * or when this screen has a shrink layout.
 	 */
 	protected void requestInit() {
-		//this.isInitialized = false;
-		if (isShown() && !this.isInRequestInit && this.isInitialized) {
-			//System.out.println("screen: now doing a re-init");
-			this.isInRequestInit = true;
-			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
-			//repaint();
-			this.isInRequestInit = false;
+		if (this.isLayoutHorizontalShrink || this.isLayoutVerticalShrink) {
+			this.isInitRequested = true;
 		}
 	}
 	
@@ -1308,7 +1308,11 @@ implements AccessibleCanvas
 		//System.out.println("Painting screen "+ this + ", background == null: " + (this.background == null) + ", clipping=" + g.getClipX() + "/" + g.getClipY() + " - " + g.getClipWidth() + "/" + g.getClipHeight() );
 		if (!this.isInitialized) {
 			init();
+		} else  if (this.isInitRequested) {
+			calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
+			this.isInitRequested = false;
 		}
+
 		synchronized (this.paintLock ) {
 			//#if polish.Bugs.losesFullScreen
 				//# super.setFullScreenMode( true );

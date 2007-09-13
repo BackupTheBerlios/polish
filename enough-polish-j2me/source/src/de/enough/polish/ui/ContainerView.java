@@ -1113,18 +1113,6 @@ extends ItemView
 	
 	}
 	
-	
-	
-	/**
-	 * Requests the re-initialization of this container view.
-	 * This should be called when this view type radically changes
-	 * its size.
-	 */
-	public void requestInit(){
-		if (this.parentContainer != null) {
-			this.parentContainer.requestInit();
-		}
-	}
 
 	
 	/**

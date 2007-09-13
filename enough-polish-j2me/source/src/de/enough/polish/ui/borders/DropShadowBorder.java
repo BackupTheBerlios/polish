@@ -71,10 +71,10 @@ public class DropShadowBorder extends Border {
 	}
 
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		int left = x - 1;
-		int top = y - 1;
-		int right = x + width;
-		int bottom = y + height;
+		int left = x - 1 + this.borderWidth;
+		int top = y - 1 + this.borderWidth;
+		int right = x + width - this.borderWidth;
+		int bottom = y + height - this.borderWidth;
 		for (int i = 0; i < this.borderWidth; i++ ) {
 			int color = this.shadowColors[i];
 			
@@ -105,13 +105,13 @@ public class DropShadowBorder extends Border {
 				break;
 			case ALL:
 				// left:
-				DrawUtil.drawLine(color, left - i, top + i, left - i, bottom - i, g);
+				DrawUtil.drawLine(color, left - i, top + 1 + i, left - i, bottom - i, g);
 				// right:
-				DrawUtil.drawLine(color, right + i, top + i, right + i, bottom - i, g);
+				DrawUtil.drawLine(color, right + 1 + i, top + 1 + i, right + i, bottom - i, g);
 				// bottom:
-				DrawUtil.drawLine(color, left + i, bottom + i, right - i, bottom + i, g);
+				DrawUtil.drawLine(color, left + 1 + i, bottom + i, right - i, bottom + i, g);
 				// top:
-				DrawUtil.drawLine(color, left + i, top - i, right - i, top - i, g);
+				DrawUtil.drawLine(color, left + 1 + i, top - i, right - i, top - i, g);
 
 			}
 		}	

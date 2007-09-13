@@ -1628,12 +1628,7 @@ public abstract class Item extends Object
 				int height = this.itemHeight - this.marginTop - this.marginBottom;
 				int bX = x + this.marginLeft;
 				int bY = y + this.marginTop + this.backgroundYOffset;
-				if ( this.background != null ) {
-					this.background.paint(bX, bY, width, height, g);
-				}
-				if ( this.border != null ) {
-					this.border.paint(bX, bY, width, height, g);
-				}
+				paintBackgroundAndBorder( bX, bY, width, height, g );
 			}
 		//#endif
 		
@@ -1687,13 +1682,7 @@ public abstract class Item extends Object
 		//#if polish.css.include-label
 			if (!this.includeLabel) {
 		//#endif
-				if (this.background != null) {
-					this.background.paint(x, y + this.backgroundYOffset, this.backgroundWidth, this.backgroundHeight, g);
-				}
-				// paint border:
-				if (this.border != null) {
-					this.border.paint(x, y + this.backgroundYOffset, this.backgroundWidth, this.backgroundHeight, g);
-				}
+				paintBackgroundAndBorder(x, y, this.backgroundWidth, this.backgroundHeight, g);
 		//#if polish.css.include-label
 			}
 		//#endif
@@ -1794,6 +1783,35 @@ public abstract class Item extends Object
 		//#endif
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param g
+	 */
+	private void paintBackgroundAndBorder(int x, int y, int width, int height, Graphics g) {
+		if ( this.background != null ) {
+			int bWidth = this.borderWidth;
+			if ( this.border != null ) {
+				x += bWidth;
+				y += bWidth;
+				width -= (bWidth << 1);
+				height -= (bWidth << 1);
+			}
+			this.background.paint(x, y, width, height, g);
+			if (this.border != null) {
+				x -= bWidth;
+				y -= bWidth;
+				width += (bWidth << 1);
+				height += (bWidth << 1);				
+			}
+		}
+		if ( this.border != null ) {
+			this.border.paint(x, y, width, height, g);
+		}
+	}
+
 	/**
 	 * Initialises this item.
 	 * You should always call super.init( firstLineWidth, lineWidth) when overriding this method.

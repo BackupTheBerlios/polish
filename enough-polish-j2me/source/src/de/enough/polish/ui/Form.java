@@ -664,6 +664,41 @@ public class Form extends Screen
 			this.container.add( itemNum, item );
 		}
 	}
+	
+	/**
+	 * Inserts an item into the <code>Form</code> just prior to the item specified.
+	 * The size of the <code>Form</code> grows by one.  The
+	 * <code>itemNum</code> parameter must be
+	 * within the range <code>[0..size()]</code>, inclusive.
+	 * The index of the last item is <code>size()-1</code>, and
+	 * so there is actually no item whose index is
+	 * <code>size()</code>. If this value
+	 * is used for <code>itemNum</code>, the new item is inserted
+	 * immediately after
+	 * the last item. In this case, the effect is identical to
+	 * <A HREF="../../../javax/microedition/lcdui/Form.html#append(javax.microedition.lcdui.Item)"><CODE>append(Item)</CODE></A>.
+	 * 
+	 * <p> The semantics are otherwise identical to
+	 * <A HREF="../../../javax/microedition/lcdui/Form.html#append(javax.microedition.lcdui.Item)"><CODE>append(Item)</CODE></A>. </p>
+	 * 
+	 * @param itemNum the index where insertion is to occur
+	 * @param item the item to be inserted
+	 * @param itemStyle the style of the item
+	 * @throws IndexOutOfBoundsException if itemNum is invalid
+	 * @throws IllegalStateException if the item is already owned by a container
+	 * @throws NullPointerException if item is null
+	 */
+	public void insert(int itemNum, Item item, Style itemStyle)
+	{
+		if (itemNum == this.container.size()) {
+			this.container.add(item, itemStyle);
+		} else {
+			if (itemStyle != null) {
+				item.setStyle(itemStyle);
+			}
+			this.container.add( itemNum, item );
+		}
+	}
 
 	/**
 	 * Deletes the <code>Item</code> referenced by
@@ -702,8 +737,7 @@ public class Form extends Screen
 	}
 
 	/**
-	 * Sets the item referenced by <code>itemNum</code> to the
-	 * specified item,
+	 * Sets the item referenced by <code>itemNum</code> to the specified item,
 	 * replacing the previous item. The previous item is removed
 	 * from this <code>Form</code>.
 	 * The <code>itemNum</code> parameter must be
@@ -723,6 +757,30 @@ public class Form extends Screen
 	public void set(int itemNum, Item item)
 	{
 		this.container.set( itemNum, item );
+	}
+	
+	/**
+	 * Sets the item referenced by <code>itemNum</code> to the specified item,
+	 * replacing the previous item. The previous item is removed
+	 * from this <code>Form</code>.
+	 * The <code>itemNum</code> parameter must be
+	 * within the range <code>[0..size()-1]</code>, inclusive.
+	 * 
+	 * <p>The end result is equal to
+	 * <code>insert(n, item); delete(n+1);</code><br>
+	 * although the implementation may optimize the repainting
+	 * and usage of the array that stores the items. <P>
+	 * 
+	 * @param itemNum the index of the item to be replaced
+	 * @param item the new item to be placed in the Form
+	 * @param itemStyle the style of the item
+	 * @throws IndexOutOfBoundsException if itemNum is invalid
+	 * @throws IllegalStateException if the item is already owned by a container
+	 * @throws NullPointerException if item is null
+	 */
+	public void set(int itemNum, Item item, Style itemStyle)
+	{
+		this.container.set( itemNum, item, itemStyle );
 	}
 
 	/**

@@ -1548,11 +1548,12 @@ implements Choice
 	 */
 	public void defocus(Style originalStyle) {
 		if (this.isPopup) {
+			boolean requestInit = false;
 			if (this.isPopupClosed) {
 				this.popupItem.setStyle( originalStyle );
 			} else {
 				this.isPopupClosed = true;
-				requestInit();
+				requestInit = true;
 			}
 			setStyle( originalStyle );
 			// now remove any commands which are associated with this item:
@@ -1573,6 +1574,9 @@ implements Choice
 					this.label.setStyle( tmpLabelStyle );
 				}
 			//#endif
+			if (requestInit) {
+				requestInit();
+			}
 		} else {
 			super.defocus(originalStyle);
 		}
