@@ -14,7 +14,7 @@
 	</p>
 	<ul>
 	<li><b>size</b>: small, normal/medium, large/big</li>
-	<li><b>style</b>: normal/plain, bold, italic/cursive, underlined or a mixture of it</li>
+	<li><b>style</b>: normal/plain, bold, italic/cursive, underlined or a mixture of these elements like <code>bold | italic</code></li>
 	<li><b>face</b>: system/default, monospace, proportional</li>
 	</ul>
 	<p>
@@ -98,5 +98,23 @@ focused {
 }
 </pre>
 	</p>
+	<p>Note that animated text effects are only animated for the currently focused item, the title and the ScreenInfo element.</p>
+	<h2 id="text-wrapping">Text Wrapping</h2>
+	<p>
+	Usually text is wrapped automatically when it is too long for a single row. You can deactivate this default behavior by setting the
+	<code>text-wrap</code> CSS attribute to false. In TextFields with enabled direct input mode the cursor will be kept in the visible
+	area, for other texts only parts remain visible. You could use this feature to show only the beginning of a message when an item is not
+	focused and show the complete text (by turning on text-wrap again) when an item is focused, for example:
+<pre>
+.messageItem {
+	text-wrap: false;
+}
+.messageItem:hover {
+	text-wrap: true;
+}
+
+</pre>
+	</p>	
+	
 
 <%include end.txt %>

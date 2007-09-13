@@ -169,10 +169,16 @@ rightcommand extends leftcommand
 		</td>
 	</tr>
 	<tr>
-		<td>polish.color.overlay</td><td>#a000</td><td>ARGB color definition</td><td><code>colors</code> section</td>
+		<td>overlay</td><td>#a000</td><td>ARGB color definition</td><td><code>colors</code> section</td>
 		<td>
-		When the extended menubar is opened, it will dim the screen's contents with the <code>polish.color.overlay</code> color defined within the 
+		When the extended menubar is opened, it will dim the screen's contents with the <code>overlay</code> color defined within the 
 		<code>colors</code> section of your polish.css file.
+<pre>
+colors {
+	/* create a white translucent overlay: */
+	overlay: argb( 80, 255, 255, 255 );
+}
+</pre>
 		</td>
 	</tr>
 	<tr>
@@ -199,6 +205,30 @@ rightcommand extends leftcommand
 		<td>
 		When there are images like <code>menubar-options-image</code> defined, you can choose with this attribute whether only the images
 		or the images as well as the text should be shown.
+		</td>
+	</tr>
+	<tr>
+		<td>leftcommand-style</td><td>leftcommand</td><td>style reference</td><td><code>menubar</code> style</td>
+		<td>
+		Changes the style of the command drawn on the left side of the menubar.
+		</td>
+	</tr>
+	<tr>
+		<td>rightcommand-style</td><td>rightcommand</td><td>style reference</td><td><code>menubar</code> style</td>
+		<td>
+		Changes the style of the command drawn on the right side of the menubar.
+		</td>
+	</tr>
+	<tr>
+		<td>middlecommand-style</td><td>middlecommand</td><td>style reference</td><td><code>menubar</code> style</td>
+		<td>
+		Changes the style of the command drawn in the middle of the menubar (when the device has a defined <code>key.MiddleSoftKey</code>).
+		</td>
+	</tr>
+	<tr>
+		<td>menubar-style</td><td>menubar</td><td>style reference</td><td>screen's style</td>
+		<td>
+		Changes the style of the menubar for the affected screens.
 		</td>
 	</tr>
 	</table>
