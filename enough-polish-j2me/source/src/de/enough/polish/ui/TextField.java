@@ -3503,8 +3503,6 @@ public class TextField extends StringItem
 
 		updateInfo();
 	}
-	//#endif
-
 	public PredictiveAccess getPredictiveAccess() {
 		return this.predictiveAccess;
 	}
@@ -3512,6 +3510,7 @@ public class TextField extends StringItem
 	public void setPredictiveAccess(PredictiveAccess predictive) {
 		this.predictiveAccess = predictive;
 	}
+	//#endif
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {

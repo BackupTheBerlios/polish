@@ -33,7 +33,6 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.predictive.array.ArrayTextBuilder;
 import de.enough.polish.util.HashMap;
 
 /**
@@ -2356,14 +2355,14 @@ public final class UiAccess {
 	}
 	//#endif
 
-	//#if polish.midp
+	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.midp && polish.TextField.usePredictiveInput
 	public static void setPredictiveDictionary(javax.microedition.lcdui.TextField field, String[] words)
 	{
 		// ignore
 	}
 	//#endif
 
- 	//#if polish.usePolishGui
+ 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput
 	public static void setPredictiveDictionary(TextField field, String[] words)
 	{
 			PredictiveAccess predictive = field.getPredictiveAccess();
