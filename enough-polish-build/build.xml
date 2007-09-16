@@ -42,7 +42,9 @@
 	 </target>
 	
 	<!-- Creates the Source Code documentation -->
-	<target name="javadoc">
+	<target name="javadoc"
+		description="generates the javadoc documentation for the build framework"
+		>
 	    <javadoc 
 	    	destdir="doc" 
 	    	access="protected" 

@@ -953,7 +953,7 @@ public class PolishTask extends ConditionalTask {
 					file = new File( getProject().getBaseDir(), polishSourceDirPath );
 				}
 				if (!file.exists()) {
-					throw new BuildException("The property \"polish.client.source\" points to the invalid location \"" + polishSourceDirPath + "\". Please correct this proerty within your build.xml or ${user.name}.properties." );
+					throw new BuildException("The property \"polish.client.source\" points to the invalid location \"" + polishSourceDirPath + "\". Please correct this property within your build.xml or ${user.name}.properties." );
 				}
 				this.polishSourceDir = file;
 			} else {

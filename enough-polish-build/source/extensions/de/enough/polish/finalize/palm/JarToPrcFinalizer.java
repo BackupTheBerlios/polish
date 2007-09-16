@@ -35,12 +35,24 @@ import de.enough.polish.Environment;
 import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.util.ProcessUtil;
 
+/**
+ * <p>Uses the jartoprc.exe for converting JAR files to Palm PRC files.</p>
+ *
+ * <p>Copyright Enough Software 2007</p>
+ * @author Robert Virkus, j2mepolish@enough.de
+ */
 public class JarToPrcFinalizer extends Finalizer {
 
+	/**
+	 * Creates a new instance
+	 */
 	public JarToPrcFinalizer() {
 		super();
 	}
 
+	/**
+	 * Try to convert the JAR to the PRC format.
+	 */
 	public void finalize(File jadFile, File jarFile, Device device,
 			Locale locale, Environment env) 
 	{
@@ -50,7 +62,7 @@ public class JarToPrcFinalizer extends Finalizer {
 			propertyName = "palm.home";
 			palmHomeStr = env.getVariable( propertyName );
 			if (palmHomeStr == null) {
-				System.err.println("You need to specify the \"palm.home\" property, so that J2ME Polish can convert JARs automatically to PRCs for Palm platforms. This is required when you want to use the full screen size, for example.");
+				System.err.println("You need to specify the \"palm.home\" property, so that J2ME Polish can convert JARs automatically to PRCs for Palm platforms. This is required when you want to use the full screen size, for example. Note that you can install normal JAR files only via OTA.");
 				return;
 			}
 		}
@@ -58,12 +70,16 @@ public class JarToPrcFinalizer extends Finalizer {
 		if ( !palmHome.exists() ) {
 			palmHome = new File( this.antProject.getBaseDir(), palmHomeStr );
 			if ( !palmHome.exists() ) {
-				throw new BuildException("The \"" + propertyName + "\" property points to the non-existing directory [" + palmHome.getAbsolutePath() + "]." );
+				System.err.println("ERROR: The \"" + propertyName + "\" property points to the non-existing directory [" + palmHome.getAbsolutePath() + "]." );
+				System.err.println("You need to specify the \"palm.home\" property, so that J2ME Polish can convert JARs automatically to PRCs for Palm platforms. This is required when you want to use the full screen size, for example. Note that you can install normal JAR files only via OTA.");
+				return;
 			}
 		}
 		File jarToPrcExecutable = new File( palmHome, "Tools" + File.separatorChar + "bin" + File.separatorChar + "jartoprc.exe" );
 		if ( !jarToPrcExecutable.exists() ) {
-			throw new BuildException("The \"" + propertyName + "\" property points to the wrong directory [" + palmHome.getAbsolutePath() + "] - this directory does not contain [Tools/bin/jartoprc.exe]!" );
+			System.err.println("ERROR: The \"" + propertyName + "\" property points to the wrong directory [" + palmHome.getAbsolutePath() + "] - this directory does not contain [Tools/bin/jartoprc.exe]!" );
+			System.err.println("You need to specify the \"palm.home\" property, so that J2ME Polish can convert JARs automatically to PRCs for Palm platforms. This is required when you want to use the full screen size, for example. Note that you can install normal JAR files only via OTA.");
+			return;
 		}
 		ArrayList arguments = new ArrayList();
 		if ( File.separatorChar == '/') {
