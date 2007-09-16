@@ -26,25 +26,18 @@
 package de.enough.polish.util;
 
 /**
- * <p>Provides the functionality of the J2SE java.util.HashMap for J2ME applications and uses reference checks for comparing keys.</p>
- * <p>WARNING: Only use this implementation when you can ensure that you always
- *    use the original keys! (see below)
- * </p>
+ * <p>Provides the functionality of the J2SE java.util.HashMap for J2ME applications and uses int keys.</p>
  * <p>In contrast to the java.util.Hashtable (which is available on J2ME platforms),
  *    this implementation is not synchronized and faster. This implementation
- *    also uses only reference checks (==) for testing keys and values on
- *    equality instead of calling equals() for comparing them. This is considerably
- *    faster, but you need to ensure that you only use references (=the original) keys when
- *    storing or retrieving values.
+ *    also uses only integer (int) keys for testing keys and and reference checks for testing values on
+ *    equality instead of calling equals() for comparing them. 
  * </p>
  * <p>This implementation uses chains for resolving collisions, that means
- *    when a key-value pair has the same hash code as a previous inserted item,
- *    the new item is linked to the previous item. Depending on your situation
- *    The OpenAddressingHashMap implementation might be better, especially when you
- *    do not have many collisions (items with the same hash code).
+ *    when a key is used more than once,
+ *    the new item is linked to the previous item. 
  * </p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
  * <pre>
  * history
  *        30-Nov-2005 - rob creation
@@ -65,14 +58,14 @@ public class IntHashMap
 	private int size;
 
 	/**
-	 * Creates a new HashMap with the default initial capacity 16 and a load factor of 75%. 
+	 * Creates a new IntHashMap with the default initial capacity 16 and a load factor of 75%. 
 	 */
 	public IntHashMap() {
 		this( DEFAULT_INITIAL_CAPACITY, DEFAULT_LOAD_FACTOR );
 	}
 	
 	/**
-	 * Creates a new HashMap with the specified initial capacity.
+	 * Creates a new IntHashMap with the specified initial capacity.
 	 * 
 	 * @param initialCapacity the initial number of elements that this map can hold without needing to 
 	 *        increase it's internal size.
@@ -85,7 +78,7 @@ public class IntHashMap
 
 
 	/**
-	 * Creates a new HashMap with the specified initial capacity and the specified load factor.
+	 * Creates a new IntHashMap with the specified initial capacity and the specified load factor.
 	 * 
 	 * @param initialCapacity the initial number of elements that this map can hold without needing to 
 	 *        increase it's internal size.
@@ -105,8 +98,11 @@ public class IntHashMap
 		this.loadFactor = loadFactor;
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.util.Map#put(java.lang.Object, java.lang.Object)
+	/**
+	 * Adds a new value to this map.
+	 * @param key the integer key
+	 * @param value the value
+	 * @return a value that has been previously stored under this key
 	 */
 	public Object put( int key, Object value ) {
 		if (value == null ) {
@@ -147,8 +143,11 @@ public class IntHashMap
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.util.Map#get(java.lang.Object)
+	/**
+	 * Retrieves the value that has been stored for the given key.
+	 *
+	 * @param key the integer key
+	 * @return the value for this key, might be null
 	 */
 	public Object get( int key ) {
 		int index;
@@ -170,8 +169,11 @@ public class IntHashMap
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.util.Map#remove(java.lang.Object)
+	/**
+	 * Removes a value from this map.
+	 * 
+	 * @param key the integer key
+	 * @return the object that has been stored for this key
 	 */
 	public Object remove( int key ) {
 		int index;
@@ -203,29 +205,38 @@ public class IntHashMap
 		return null;
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.util.Map#isEmpty()
+	/**
+	 * Checks if this map does not contain any values
+	 * @return true when this map does not contain any values
 	 */
 	public boolean isEmpty() {
 		return (this.size == 0);
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.util.Map#size()
+	/**
+	 * Retrieves the size of this map.
+	 * @return the number of values stored
 	 */
 	public int size() {
 		return this.size;
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.util.Map#containsKey(java.lang.Object)
+	/**
+	 * Checks if the given key is already used
+	 * @param key the integer key
+	 * @return true when a value is stored in this map for the given key
 	 */
 	public boolean containsKey( int key ) {
 		return get( key ) != null;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.util.Map#containsValue(java.lang.Object)
+	/**
+	 * Checks if the value is already stored in this map.
+	 * WARNING: this method uses reference checks for testing - you need to ensure to use the identical object that might have been
+	 * stored in this map for testing.
+	 * 
+	 * @param value the value
+	 * @return true when this value is stored in this map
 	 */
 	public boolean containsValue( Object value ) {
 		for (int i = 0; i < this.buckets.length; i++) {
@@ -240,8 +251,8 @@ public class IntHashMap
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.util.Map#clear()
+	/**
+	 * Removes all values from this map
 	 */
 	public void clear() {
 		for (int i = 0; i < this.buckets.length; i++) {
@@ -250,15 +261,18 @@ public class IntHashMap
 		this.size = 0;
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.util.Map#values()
+	/**
+	 * Retrieves all stored values
+	 * @return an array of all stored values - might be empty but not null
 	 */
 	public Object[] values() {
 		return values( new Object[ this.size ] );
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.util.Map#values(java.lang.Object[])
+	/**
+	 * Stores all values in the given array
+	 * @param objects the array of the desired type
+	 * @return the given array
 	 */
 	public Object[] values(Object[] objects) {
 		int index = 0;
@@ -273,8 +287,9 @@ public class IntHashMap
 		return objects;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.util.Map#keys()
+	/**
+	 * Retrieves all keys that are used in this map
+	 * @return an array of all keys, might be empty but not null
 	 */
 	public int[] keys() {
 		int[] keys = new int[ this.size ];
@@ -309,7 +324,7 @@ public class IntHashMap
 
 	
 	/**
-	 * Increaases the internal capacity of this map.
+	 * Increases the internal capacity of this map.
 	 */
 	private void increaseSize() {
 		int newCapacity;

@@ -328,26 +328,53 @@ public class CommandItem extends IconItem {
 			return true;
 		} else if ( this.hasChildren && this.appearanceMode != PLAIN ) { // has children but is not open
 			if ( (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) || (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) ) {
-				open( true );
-				return true;
+				return notifyItemPressedStart();
 			}
 		} else if ( gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5  && this.appearanceMode != PLAIN ){ // has no children:
-			// fire command action event:
-			//#debug
-			System.out.println( this + " invoking command " + this.command.getLabel() + " on screen " + getScreen() );
-			Screen scr = getScreen();
-			//#if polish.debug.error
-			if (scr == null) {
-				//#debug error
-				System.out.println("Unable to retrieve screen for " + this + ", parent=" + this.parent );
-			}
-			//#endif
-			scr.callCommandListener( this.command );
-			return true;
+			// press this item:
+			return notifyItemPressedStart();
 		}
-		return false;
+		return super.handleKeyPressed(keyCode, gameAction);
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
+	 */
+	protected boolean handleKeyReleased(int keyCode, int gameAction) {
+		//#debug
+		System.out.println( this + " handleKeyReleased, isOpen=" + this.isOpen);
+		if (this.isOpen) {
+			return this.children.handleKeyReleased(keyCode, gameAction);
+		}
+		else
+		{
+			if ( this.hasChildren && this.appearanceMode != PLAIN ) { // has children but is not open
+				if ( (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) || (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) ) {
+					notifyItemPressedEnd();
+					open( true );
+					return true;
+				}
+			} else if (  gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && this.appearanceMode != PLAIN ){ // has no children:
+				notifyItemPressedEnd();
+				// fire command action event:
+				//#debug
+				System.out.println( this + " invoking command " + this.command.getLabel() + " on screen " + getScreen() );
+				Screen scr = getScreen();
+				//#if polish.debug.error
+				if (scr == null) {
+					//#debug error
+					System.out.println("Unable to retrieve screen for " + this + ", parent=" + this.parent );
+				}
+				//#endif
+				scr.callCommandListener( this.command );
+				return true;
+			}
+		}
+		return super.handleKeyReleased(keyCode, gameAction);
+	}
+
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)

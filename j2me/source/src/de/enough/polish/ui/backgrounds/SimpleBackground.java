@@ -83,4 +83,16 @@ extends Background
 		g.fillRect( x, y, width, height );
 	}
 
+	/**
+	 * @return the associated color of this background
+	 */
+	public int getColor() {
+		if (!this.isInitialized) {
+			this.color = this.colorObj.getColor();
+			this.isInitialized = true;
+			this.colorObj = null;
+		}
+		return this.color;
+	}
+
 }

@@ -69,7 +69,7 @@ public class CyclingIconsGaugeView extends ItemView {
 	
 	private Gauge gauge;
 	private long lastAnimationTime;
-	private long interval = 1000;
+	private long interval = 0;
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)

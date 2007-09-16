@@ -2323,12 +2323,29 @@ public final class UiAccess {
 	//#endif
 
 	//#if polish.midp
+	/**
+	 * Retrieves the RGB data of the specified item's content without using a view-type/ItemView.
+	 * This is often used by ItemView that want to change the original RGB data.
+	 * In ItemView please ensure to call initContentByParent( item ) before using this function.
+	 * 
+	 * @param item the item
+	 * @return an int array containing the RGB data of that item
+	 */
 	public static int[] getRgbDataOfContent( javax.microedition.lcdui.Item item ) {
 		return null;
 	}
 	//#endif
 
+	
  	//#if polish.usePolishGui
+	/**
+	 * Retrieves the RGB data of the specified item's content without using a view-type/ItemView.
+	 * This is often used by ItemView that want to change the original RGB data.
+	 * In ItemView please ensure to call initContentByParent( item ) before using this function.
+	 * 
+	 * @param item the item
+	 * @return an int array containing the RGB data of that item (null on MIDP 1.0 devices)
+	 */
 	public static int[] getRgbDataOfContent( Item item ) {
 		//#if polish.midp2
 			Image image = Image.createImage( item.contentWidth, item.contentHeight );
@@ -2354,6 +2371,67 @@ public final class UiAccess {
 		//#endif
 	}
 	//#endif
+	
+ 	//#if polish.usePolishGui
+	/**
+	 * Retrieves the RGB data of the specified item's content without using a view-type/ItemView.
+	 * This is often used by ItemView that want to change the original RGB data.
+	 * In ItemView please ensure to call initContentByParent( item ) before using this function.
+	 * 
+	 * @param item the item
+	 * @param rgbData an int array in which the RGB data of the item's content is written
+	 * @param x the horizontal start position for the RGB data
+	 * @param y the vertical start position for the RGB data
+	 * @param width the width of a single row in the rgbData
+	 */
+	public static void getRgbDataOfContent(Item item, int[] rgbData, int x, int y, int width) {
+		//#if polish.midp2
+			int contentWidth = item.contentWidth;
+			int contentHeight = item.contentHeight;
+			Image image = Image.createImage( contentWidth, contentHeight );
+			int transparentColor = 0x12345678;
+			Graphics g = image.getGraphics();
+			g.setColor(transparentColor);
+			g.fillRect(0, 0, contentWidth, contentHeight );
+			int[] transparentColorRgb = new int[1];
+			image.getRGB(transparentColorRgb, 0, 1, 0, 0, 1, 1 );
+			transparentColor = transparentColorRgb[0];
+			item.paintContent( 0, 0, 0, contentWidth, g );
+			int[] itemRgbData = new int[  contentWidth * contentHeight ];
+			image.getRGB(itemRgbData, 0, contentWidth, 0, 0, contentWidth, contentHeight );
+			// ensure transparent parts are indeed transparent and copy to target array:
+			for (int row = 0; row < contentHeight; row++ ) {
+				for (int column = 0; column < contentWidth; column++ ) {
+					int index = row * contentWidth + column;
+					int pixel = itemRgbData[index];
+					if ( pixel == transparentColor ) {
+						pixel = 0;
+					}
+					int target = y * width + row * width + x + column;
+					rgbData[ target ] = pixel;
+				}
+			}
+		//#endif		
+	}
+	//#endif
+	
+ 	//#if polish.midp
+	/**
+	 * Retrieves the RGB data of the specified item's content without using a view-type/ItemView.
+	 * This is often used by ItemView that want to change the original RGB data.
+	 * In ItemView please ensure to call initContentByParent( item ) before using this function.
+	 * 
+	 * @param item the item
+	 * @param rgbData an int array in which the RGB data of the item's content is written
+	 * @param x the horizontal start position for the RGB data
+	 * @param y the vertical start position for the RGB data
+	 * @param width the width of a single row in the rgbData
+	 */
+	public static void getRgbDataOfContent(javax.microedition.lcdui.Item item, int[] rgbData, int x, int y, int width) {
+		// ignore
+	}
+	//#endif
+
 
 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.midp && polish.TextField.usePredictiveInput
 	public static void setPredictiveDictionary(javax.microedition.lcdui.TextField field, String[] words)

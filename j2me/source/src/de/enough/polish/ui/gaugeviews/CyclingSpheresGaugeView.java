@@ -61,7 +61,7 @@ public class CyclingSpheresGaugeView extends ItemView {
 	
 	private int sphereWidth = 10;
 
-	private long interval = 1000;
+	private long interval = 0;
 	
 	private boolean isContinuousRunning;
 	private int maxSpheres;

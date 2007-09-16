@@ -1280,19 +1280,23 @@ implements Choice
 		if (this.itemsList.size() == 0) {
 			return super.handleKeyPressed(keyCode, gameAction);
 		}
+		//#debug
+		System.out.println("handleKeyPressed( " + keyCode + ", " + gameAction + " ) for " + this);
 		//#if polish.ChoiceGroup.handleDefaultCommandFirst == true
-			if (gameAction == Canvas.FIRE) {
+			if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
 				//#ifdef polish.usePopupItem
 					if (!this.isPopup || this.isPopupClosed) {
 				//#endif
 				//#ifndef tmp.suppressAllCommands
 					if (this.defaultCommand != null && this.additionalItemCommandListener != null) {
 						this.additionalItemCommandListener.commandAction( this.defaultCommand, this );
+						notifyItemPressedStart();
 						return true;
 					}
 				//#else
 					if (this.defaultCommand != null && this.itemCommandListener != null) {
 						this.itemCommandListener.commandAction( this.defaultCommand, this );
+						notifyItemPressedStart();
 						return true;
 					}
 				//#endif
@@ -1303,95 +1307,137 @@ implements Choice
 		//#endif
 		boolean processed = false;
 		//#ifdef polish.usePopupItem
-		if (!(this.isPopup && this.isPopupClosed)) {
+			if (!(this.isPopup && this.isPopupClosed)) {
+				processed = super.handleKeyPressed(keyCode, gameAction);
+			}
+		//#else
 			processed = super.handleKeyPressed(keyCode, gameAction);
-			//#debug
-			System.out.println("ChoiceGroup: container handled keyPressEvent: " + processed);
-		}
+		//#endif
+		//#debug
+		System.out.println("ChoiceGroup: container handled keyPressEvent: " + processed);
 		if (!processed) {
-			if ( gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 ) {
+			ChoiceItem choiceItem = (ChoiceItem) this.focusedItem;
+			//#ifdef polish.usePopupItem
+				if (this.isPopup && this.isPopupClosed && gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
+					notifyItemPressedStart();
+					return true;
+				} else
+			//#endif
+			if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && choiceItem != null ) {
+				choiceItem.notifyItemPressedStart();
 				if (this.isMultiple) {
-					ChoiceItem item = (ChoiceItem) this.focusedItem;
-					item.toggleSelect();
-				} else if (this.isPopup){
-					if (this.isPopupClosed) {
-						openPopup();
-					} else {
-						setSelectedIndex(this.focusedIndex, true);
-						closePopup();
-					}
-					requestInit();
+					choiceItem.toggleSelect();
 				} else {
 					setSelectedIndex(this.focusedIndex, true);
-					if (this.isImplicit) {
-						// call command listener:
-						Screen scr = getScreen();
-						if (scr != null) {
-							Command selectCmd = this.selectCommand;
-							if (selectCmd == null) {
-								selectCmd = List.SELECT_COMMAND;
-							}
-							scr.callCommandListener( selectCmd );
-						}
-					}
 				}
-				if ( (this.choiceType != IMPLICIT) 
-						&& !(this.isPopup && !this.isPopupClosed)
-						&& (this.getScreen() instanceof Form) ) {
+				if ( this.choiceType != IMPLICIT ) 
+				{
 					notifyStateChanged();
 				}
 				return true;
 			} else {
 				//#if polish.Container.dontUseNumberKeys != true
-				if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {
-					int index = keyCode - Canvas.KEY_NUM1;
-					if (index < this.itemsList.size()) {
-						Item item = getItem(index);
-						if ((!this.isPopup || !this.isPopupClosed) && (item.appearanceMode != PLAIN) ) {
-							// either this is not a POPUP or the POPUP is opened:
-							setSelectedIndex( index, true );
-							if (this.isPopup) {
-								closePopup();
-							}
-							if (this.isImplicit) {
-								// call command listener:
-								Screen scr = getScreen();
-								if (scr != null) {
-									Command selectCmd = this.selectCommand;
-									if (selectCmd == null) {
-										selectCmd = List.SELECT_COMMAND;
+					if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {
+						int index = keyCode - Canvas.KEY_NUM1;
+						if (index < this.itemsList.size()) {
+							Item item = getItem(index);
+							if (
+							//#ifdef polish.usePopupItem
+									(!this.isPopup || !this.isPopupClosed) && 
+							//#endif
+									(item.appearanceMode != PLAIN) ) 
+							{
+								// either this is not a POPUP or the POPUP is opened:
+								setSelectedIndex( index, true );
+								//#ifdef polish.usePopupItem
+									if (this.isPopup) {
+										closePopup();
 									}
-									scr.callCommandListener( selectCmd );
+								//#endif
+								if (this.isImplicit) {
+									// call command listener:
+									Screen scr = getScreen();
+									if (scr != null) {
+										Command selectCmd = this.selectCommand;
+										if (selectCmd == null) {
+											selectCmd = List.SELECT_COMMAND;
+										}
+										scr.callCommandListener( selectCmd );
+									}
+								} else {
+									notifyStateChanged();
 								}
-							} else {
-								notifyStateChanged();
+								notifyItemPressedStart();
+								return true;
 							}
-							return true;
 						}
 					}
-				} else if (this.isPopup && (this.isPopupClosed == false)) {
-					closePopup();
-					return true;
-				}
+				//#endif
+				//#ifdef polish.usePopupItem
+					if (this.isPopup && (this.isPopupClosed == false)) {
+						closePopup();
+						return true;
+					}
 				//#endif
 			}
 		}
-		//#else
-		// no popup item is used by this application:
-		processed = super.handleKeyPressed(keyCode, gameAction);
-		if (!processed) {
-			if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && this.focusedIndex != -1 ) {
-				if (this.isMultiple) {
-					ChoiceItem item = (ChoiceItem) this.focusedItem;
-					item.toggleSelect();
-				} else {
-					setSelectedIndex(this.focusedIndex, true);
-				}
-				if ( (this.choiceType != IMPLICIT) 
-						&& (this.getScreen() instanceof Form) ) 
-				{
-					notifyStateChanged();
-				}
+//		//#else
+//		// no popup item is used by this application:
+//		processed = super.handleKeyPressed(keyCode, gameAction);
+//		if (!processed) {
+//			if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && this.focusedIndex != -1 ) {
+//				ChoiceItem item = (ChoiceItem) this.focusedItem;
+//				item.notifyItemPressedStart();
+//				if (this.isMultiple) {
+//					item.toggleSelect();
+//				} else {
+//					setSelectedIndex(this.focusedIndex, true);
+//				}
+//				if ( this.choiceType != IMPLICIT ) 
+//				{
+//					notifyStateChanged();
+//				}
+//				return true;
+//			//#if polish.Container.dontUseNumberKeys != true
+//			} else if ( (keyCode >= Canvas.KEY_NUM1) && (keyCode <= Canvas.KEY_NUM9) ) {
+//				int index = keyCode - Canvas.KEY_NUM1;
+//				if (index < this.itemsList.size()) {
+//					Item item = getItem(index);
+//					if (item.appearanceMode != PLAIN) {
+//						setSelectedIndex( index, true );
+//						if (this.isImplicit) {
+//							// call command listener:
+//							Screen scr = getScreen();
+//							if (scr != null) {
+//								Command selectCmd = this.selectCommand;
+//								if (selectCmd == null) {
+//									selectCmd = List.SELECT_COMMAND;
+//								}
+//								scr.callCommandListener( selectCmd );
+//							}
+//						} else {
+//							notifyStateChanged();
+//						}
+//					}
+//					return true;
+//				}
+//			//#endif
+//			}
+//		}
+//		//#endif
+		return processed;
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Container#handleKeyReleased(int, int)
+	 */
+	protected boolean handleKeyReleased(int keyCode, int gameAction) {
+		//#debug
+		System.out.println("handleKeyReleased( " + keyCode + ", " + gameAction + " ) for " + this);
+		if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
+			ChoiceItem item = (ChoiceItem) this.focusedItem;
+			if (item != null) {
+				item.notifyItemPressedEnd();
 				if (this.isImplicit) {
 					// call command listener:
 					Screen scr = getScreen();
@@ -1401,40 +1447,25 @@ implements Choice
 							selectCmd = List.SELECT_COMMAND;
 						}
 						scr.callCommandListener( selectCmd );
+						return true;
 					}
+				}
+			}
+			//#ifdef polish.usePopupItem
+			if (this.isPopup) {
+				if (this.isPopupClosed) {
+					notifyItemPressedEnd();
+					openPopup();
+				} else {
+					closePopup();
 				}
 				return true;
-			//#if polish.Container.dontUseNumberKeys != true
-			} else if ( (keyCode >= Canvas.KEY_NUM1) && (keyCode <= Canvas.KEY_NUM9) ) {
-				int index = keyCode - Canvas.KEY_NUM1;
-				if (index < this.itemsList.size()) {
-					Item item = getItem(index);
-					if (item.appearanceMode != PLAIN) {
-						setSelectedIndex( index, true );
-						if (this.isImplicit) {
-							// call command listener:
-							Screen scr = getScreen();
-							if (scr != null) {
-								Command selectCmd = this.selectCommand;
-								if (selectCmd == null) {
-									selectCmd = List.SELECT_COMMAND;
-								}
-								scr.callCommandListener( selectCmd );
-							}
-						} else {
-							notifyStateChanged();
-						}
-					}
-					return true;
-				}
-			//#endif
 			}
+			//#endif
 		}
-		//#endif
-		return processed;
+		return super.handleKeyReleased(keyCode, gameAction);
 	}
-	
-	
+
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)

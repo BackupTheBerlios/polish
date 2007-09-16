@@ -2187,8 +2187,6 @@ implements AccessibleCanvas
 				//#if polish.blackberry
 					this.keyPressedProcessed = true;
 				//#endif
-	
-
 				try {
 					gameAction = getGameAction(keyCode);
 				} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
@@ -2400,38 +2398,42 @@ implements AccessibleCanvas
 	 */
 	public void keyReleased(int keyCode) {
 		try {
-			this.ignoreRepaintRequests = true;
-			//#debug
-			System.out.println("keyReleased(" + keyCode + ")");
-			this.lastInteractionTime = System.currentTimeMillis();
-			int gameAction = 0;
-			try {
-				gameAction = getGameAction( keyCode );
-			} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
-				//#debug warn
-				System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
-			}
-			//#if tmp.menuFullScreen
-				//#ifdef tmp.useExternalMenuBar
-					if (this.menuBar.handleKeyReleased(keyCode, gameAction)) {
-						repaint();
-						return;
-					} else if (this.menuBar.isOpened) {
-						return;
-					}
-				//#else
-					if (this.menuOpened  && this.menuContainer != null ) {
-						if (this.menuContainer.handleKeyReleased(keyCode, gameAction)) {
+			synchronized (this.paintLock) {
+				this.ignoreRepaintRequests = true;
+				//#debug
+				System.out.println("keyReleased(" + keyCode + ")");
+				this.lastInteractionTime = System.currentTimeMillis();
+				int gameAction = 0;
+				try {
+					gameAction = getGameAction( keyCode );
+				} catch (Exception e) { // can happen when code is a  LEFT/RIGHT softkey on SE devices, for example
+					//#debug warn
+					System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
+				}
+				//#if tmp.menuFullScreen
+					//#ifdef tmp.useExternalMenuBar
+						if (this.menuBar.handleKeyReleased(keyCode, gameAction)) {
 							repaint();
+							return;
+						} else if (this.menuBar.isOpened) {
+							return;
 						}
-						return;
-					}
-	
+					//#else
+						if (this.menuOpened  && this.menuContainer != null ) {
+							if (this.menuContainer.handleKeyReleased(keyCode, gameAction)) {
+								repaint();
+							}
+							return;
+						}
+		
+					//#endif
 				//#endif
-			//#endif
-			boolean handled = handleKeyReleased( keyCode, gameAction );
-			if ( handled ) {
-				repaint();
+				boolean handled = handleKeyReleased( keyCode, gameAction );
+				//#debug
+				System.out.println("keyReleased handled=" + handled);
+				if ( handled ) {
+					repaint();
+				}
 			}
 		} finally {
 			this.ignoreRepaintRequests = false;

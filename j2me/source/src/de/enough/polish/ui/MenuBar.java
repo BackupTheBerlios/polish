@@ -987,11 +987,11 @@ public class MenuBar extends Item {
 	//				setOpen( false );
 	//			}				
 				return true;
-			//#if polish.key.ReturnKey:defined
-				//#= } else  if (keyCode == this.closeOptionsMenuKey || keyCode == ${polish.key.ReturnKey}) {
-			//#else
-				} else  if (keyCode == this.closeOptionsMenuKey) {
-			//#endif
+		//#if polish.key.ReturnKey:defined
+			//#= } else  if (keyCode == this.closeOptionsMenuKey || keyCode == ${polish.key.ReturnKey}) {
+		//#else
+			} else  if (keyCode == this.closeOptionsMenuKey) {
+		//#endif
 				this.isSoftKeyPressed = true;
 				int selectedIndex = this.commandsContainer.getFocusedIndex();
 				if (!this.commandsContainer.handleKeyPressed(0, Canvas.LEFT)
@@ -1002,9 +1002,6 @@ public class MenuBar extends Item {
 				//System.out.println("MenuBar is closing due to key " + keyCode);
 				return true;
 			} else {
-				if (keyCode != 0) {
-					gameAction = this.screen.getGameAction(keyCode);
-				}
 				//#if tmp.useInvisibleMenuBar
 					// handle hide command specifically:
 					if (  gameAction == Canvas.FIRE && ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
@@ -1052,7 +1049,7 @@ public class MenuBar extends Item {
 							}
 						}
 					}
-					setOpen( false );
+					//setOpen( false );
 				}
 				return true;				
 			}
@@ -1103,6 +1100,26 @@ public class MenuBar extends Item {
 		return false;
 	}
 	
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
+	 */
+	protected boolean handleKeyReleased(int keyCode, int gameAction) {
+		//#debug
+		System.out.println("MenuBar: handleKeyReleased(" + keyCode + ", " + gameAction + ")" );
+		if (this.isOpened) {
+			if (keyCode == this.selectOptionsMenuKey) {
+				return this.commandsContainer.handleKeyReleased(0, Canvas.FIRE);
+			} else {
+				return this.commandsContainer.handleKeyReleased(keyCode, gameAction);
+			}
+		}
+		return super.handleKeyReleased(keyCode, gameAction);
+	}
+
+	
+
 	//#ifdef polish.hasPointerEvents
 	protected boolean handlePointerPressed(int relX, int relY) {
 		// check if one of the command buttons has been pressed:

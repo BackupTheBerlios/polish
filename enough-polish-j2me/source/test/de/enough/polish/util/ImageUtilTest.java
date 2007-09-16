@@ -43,7 +43,7 @@ public class ImageUtilTest extends TestCase {
 		super( name );
 	}
 	
-	public void testParticleScale() {
+	public void xtestParticleScale() {
 		// was jsut used to test the performance of different implementations, is now obsolete
 		int rounds = 100; //30 * 1000;
 		int width = 100;
@@ -58,6 +58,24 @@ public class ImageUtilTest extends TestCase {
 			ImageUtil.particleScale( factor, width, height, source, target);
 		}
 		System.out.println("    optimized used time=" + getTime(System.currentTimeMillis() - startTime));
+	}
+	
+	public void testParticleScale2() {
+		// testing particle scale with different source/target arrays:
+		int rounds = 100; //30 * 1000;
+		int width = 100;
+		int height = 100;
+		int startFactor = 120;
+		int endFactor = 260;
+		int[] source = new int[ width * height ];
+		int[] target = new int[ ((width * height) * endFactor) / 100 ];
+		for (int i=0; i<rounds; i++) {
+			int factor = startFactor + ((endFactor - startFactor) * i) / rounds;
+			int w = (width * factor) / 100;
+			int h = (height * factor) / 100;
+			//ImageUtil.particleScale( factor, width, height, source, w, h, target);
+			ImageUtil.particleScale( factor, w, h, source, target);
+		}
 	}
 	
 	private String getTime( long time ) {

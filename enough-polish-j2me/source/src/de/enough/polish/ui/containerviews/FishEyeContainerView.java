@@ -153,7 +153,7 @@ public class FishEyeContainerView extends ContainerView {
 						} else {
 							target = (this.originalRgbDataWidths[ i ] * factor) / 100;
 						}
-						if (current != target && (distance < (length >> 2) || (Math.abs(current - target)*100/target > 5) ) ) {
+						if (current != target && ( distance < (length >> 2) || i == this.focusedIndex || (Math.abs(current - target)*100/target > 5) ) ) {
 							animated = true;
 							isScaled = true;
 							int[] data = this.originalRgbData[i];
@@ -645,9 +645,13 @@ public class FishEyeContainerView extends ContainerView {
 	 */
 	protected void paintItem(Item item, int index, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
 		//#if polish.midp2
-			int[] data = this.shownRgbData[ index ];
 			int width = this.shownRgbDataWidths[ index ];
-			int height = this.shownRgbDataHeight[ index ];///data.length / width;
+			int height = this.shownRgbDataHeight[ index ];
+			if (index == this.focusedIndex && (width == this.originalRgbDataWidths[index]) && (this.currentTranslucencies[index]==this.targetTranslucencies[index]) ) {
+				super.paintItem(item, index, x, y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
+				return;
+			}
+			int[] data = this.shownRgbData[ index ];
 			
 			int itemLayout = item.getLayout();
 			if ( (itemLayout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {

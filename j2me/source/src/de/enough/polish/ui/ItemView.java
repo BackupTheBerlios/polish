@@ -29,6 +29,8 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.event.EventManager;
+
 /**
  * <p>An item view can take over the rendering of an item.</p>
  *
@@ -251,6 +253,13 @@ public abstract class ItemView {
 		}
 	}
 	
+	/**
+	 * Adds the complete item's dimensions to the repaint region.
+	 * This is usually used within the animate method.
+	 * 
+	 * @param item the item
+	 * @param repaintRegion the region to which the item's positions are added
+	 */
 	protected void addFullRepaintRegion( Item item, ClippingRegion repaintRegion ) {
 		repaintRegion.addRegion( item.getAbsoluteX(), 
 				item.getAbsoluteY(), 
@@ -261,7 +270,7 @@ public abstract class ItemView {
 
 	
 	/**
-	 * Animates this view - please use animate(long, ClippingRegion), if possible
+	 * Animates this view - please use animate(long, ClippingRegion) instead, if possible
 	 * 
 	 * @return true when the view was actually animated.
 	 * @see #animate(long, ClippingRegion)
@@ -300,7 +309,7 @@ public abstract class ItemView {
 	}
 	
 	/**
-	 * Handles the given keyPressed event when the currently focused item was not able to handle it.
+	 * Handles the given keyPressed event.
 	 * The default implementation just calls getNextItem() and focuses the returned item.
 	 * 
 	 * @param keyCode the key code
@@ -308,6 +317,18 @@ public abstract class ItemView {
 	 * @return true when the key was handled.
 	 */
 	public boolean handleKeyPressed( int keyCode, int gameAction) {
+		return false;
+	}
+	
+	/**
+	 * Handles the given keyReleased event when the currently focused item was not able to handle it.
+	 * The default implementation just calls getNextItem() and focuses the returned item.
+	 * 
+	 * @param keyCode the key code
+	 * @param gameAction the game action like Canvas.UP etc
+	 * @return true when the key was handled.
+	 */
+	public boolean handleKeyReleased( int keyCode, int gameAction) {
 		return false;
 	}
 
@@ -349,6 +370,24 @@ public abstract class ItemView {
 	 */
 	protected void removeViewFromParent() {
 		this.parentItem.view = null;
+	}
+	
+	/**
+	 * Is called when an item is pressed using the FIRE game action.
+	 * The default implementation fowards this to the parent item.
+	 * 
+	 * @return true when the item contains an action associated with FIRE
+	 */
+	protected boolean notifyItemPressedStart() {
+		return this.parentItem.notifyItemPressedStart();
+	}
+	
+	/**
+	 * Is called when pressing an item is finished, usually when the FIRE key is released
+	 * The default implementation fowards this to the parent item.
+	 */
+	protected void notifyItemPressedEnd() {
+		this.parentItem.notifyItemPressedEnd();
 	}
 
 

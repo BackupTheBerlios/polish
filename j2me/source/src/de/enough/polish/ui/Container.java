@@ -1200,6 +1200,8 @@ public class Container extends Item {
 		if (this.itemsList.size() == 0) {
 			return false;
 		}
+		//#debug
+		System.out.println("handleKePressed( " + keyCode + ", " + gameAction + " ) for " + this);
 		if (this.focusedItem != null) {
 			Item item = this.focusedItem;
 			if (!item.isInitialized) {
@@ -1404,6 +1406,8 @@ public class Container extends Item {
 		if (this.itemsList.size() == 0) {
 			return false;
 		}
+		//#debug
+		System.out.println("handleKeyReleased( " + keyCode + ", " + gameAction + " ) for " + this);
 		if (this.focusedItem != null) {
 			Item item = this.focusedItem;
 			if ( item.handleKeyReleased( keyCode, gameAction ) ) {

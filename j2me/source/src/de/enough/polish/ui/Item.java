@@ -36,6 +36,8 @@ import javax.microedition.lcdui.Image;
 	import net.rim.device.api.ui.Field;
 //#endif
 
+import de.enough.polish.event.EventManager;
+import de.enough.polish.ui.backgrounds.SimpleBackground;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
@@ -721,6 +723,9 @@ public abstract class Item extends Object
 		public boolean _bbFieldAdded;
 	//#endif
 	protected Style focusedStyle;
+	//#if polish.css.pressed-style
+		private Style pressedStyle;
+	//#endif
 
 	//#if polish.css.colspan
 		protected int colSpan = 1;
@@ -746,6 +751,8 @@ public abstract class Item extends Object
 	//#endif
 	protected boolean isShown;
 	private HashMap attributes;
+
+	private Style normalStyle;
 	
 	protected Item() {
 		this( null, LAYOUT_DEFAULT, PLAIN, null );
@@ -904,7 +911,7 @@ public abstract class Item extends Object
 	 */
 	public void setStyle( Style style ) {
 		//#debug
-		System.out.println("setting style - with background: " + (style.background != null));
+		System.out.println("setting style " + style.name + " - with background: " + (style.background) );
 		this.isInitialized = false;
 		this.isStyleInitialised = true;
 		this.style = style;
@@ -1045,6 +1052,13 @@ public abstract class Item extends Object
 //				}
 			}
 		//#endif
+		//#if polish.css.pressed-style
+			Style pressed = (Style) style.getObjectProperty("pressed-style");
+			if (pressed != null) {
+				this.pressedStyle = pressed;
+			}
+		//#endif
+
 		//#if polish.css.colspan
 			Integer colSpanInt = style.getIntProperty("colspan");
 			if ( colSpanInt != null ) {
@@ -2124,23 +2138,9 @@ public abstract class Item extends Object
 	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
 		//#debug
 		System.out.println("item " + this + ": handling keyPressed for keyCode=" + keyCode + ", gameAction=" + gameAction);
-		Item item = this;
-		if (this.defaultCommand == null && this.parent != null) {
-			item = this.parent;
-		}
-		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
-				&& (item.defaultCommand != null) )
+		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) && this.appearanceMode != PLAIN )
 		{
-			if (item.itemCommandListener != null) {
-				item.itemCommandListener.commandAction(item.defaultCommand, this);
-				return true;
-			}
-			
-			Screen scr = getScreen();
-			if (scr != null ) {
-				scr.callCommandListener(item.defaultCommand);
-				return true;
-			}
+			return notifyItemPressedStart();
 		}
 		return false;
 	}
@@ -2174,10 +2174,78 @@ public abstract class Item extends Object
 	 * @see #handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
+		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
+				&& this.appearanceMode != PLAIN )
+		{
+			notifyItemPressedEnd();
+			Item item = this;
+			if (this.defaultCommand == null && this.parent != null) {
+				item = this.parent;
+			}
+			if (item.defaultCommand != null) {
+				if (item.itemCommandListener != null) {
+					item.itemCommandListener.commandAction(item.defaultCommand, this);
+				} else {			
+					Screen scr = getScreen();
+					if (scr != null ) {
+						scr.callCommandListener(item.defaultCommand);
+					}
+				}
+			}
+			return true;
+		}
+
 		return false;
 	}
 
 	
+	/**
+	 * Is called when an item is pressed using the FIRE game action
+	 * 
+	 * @return true when the item requests a repaint after this action
+	 */
+	protected boolean notifyItemPressedStart() {
+		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
+		boolean handled = false;
+		//#if polish.css.pressed-style
+			//System.out.println("notifyItemPressedStart for " + this + ", pressedStyle=" + this.pressedStyle);
+			if (this.pressedStyle != null && this.style != this.pressedStyle) {
+				this.normalStyle = this.style;
+				setStyle( this.pressedStyle );
+				handled = true;
+			}
+		//#endif
+		//#if polish.handleEvents
+			EventManager.getInstance().triggerEventStart( EventManager.EVENT_PRESSED, this, null); 
+		//#endif
+		return handled;
+	}
+	
+	/**
+	 * Is called when an item is pressed
+	 */
+	protected void notifyItemPressedEnd() {
+		//#if polish.css.pressed-style
+			Style previousStyle = this.normalStyle;
+			if (previousStyle != null && this.style != previousStyle) {
+				//#ifdef polish.css.view-type
+					boolean removeViewType = ( this.style.getObjectProperty("view-type") != null  && previousStyle.getObjectProperty( "view-type") == null); 
+				//#endif
+				setStyle( previousStyle );
+				this.normalStyle = null;
+				//#ifdef polish.css.view-type
+					if (removeViewType) {
+						this.view = null;
+					}
+				//#endif
+			}
+		//#endif
+		//#if polish.handleEvents
+			EventManager.getInstance().triggerEventEnd( EventManager.EVENT_PRESSED, this, null); 
+		//#endif
+	}
+
+
 	/**
 	 * Determines whether the given relative x/y position is inside of this item's content area.
 	 * Subclasses which extend their area over the declared/official content area, which is determined
