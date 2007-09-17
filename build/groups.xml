@@ -66,6 +66,7 @@
 		<capability name="Font.medium" value="12" />
 		<capability name="Font.large" value="16" />
 		<capability name="Bugs" value="ImageCaptureNotWithVideo" />
+		<capability name="dtmf.separator" value="p"/>
 	</group>
 
 	<group>
@@ -156,6 +157,7 @@
 		<capability name="Emulator.Skin.12" value="\Devices\Nokia_Prototype_SDK_2_0" />
 		<capability name="Emulator.Control" value="Series60" />
 		<capability name="Bugs" value="ExitCommandAlwaysPresent, drawRgbOrigin, sizeChangedReportsWrongHeight, TransparencyNotWorkingInNokiaUiApi, displaySetCurrentFlickers, requiresHardcodedCanvasDimensionsInFullScreenMode" />
+		<capability name="dtmf.separator" value="/"/>
 	</group>
 
 	<group>
