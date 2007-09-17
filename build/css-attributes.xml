@@ -3107,6 +3107,15 @@
 		id="292"
 	/>
 	
+	<attribute
+		name="fisheyeview-transparency"
+		type="boolean"
+		appliesTo="FishEyeContainerView"
+		description="Sets transparency to true or false."
+		default="true"
+		id="293"
+	/>
+	
 	
 	<!--
 	
