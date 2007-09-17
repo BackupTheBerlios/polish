@@ -1433,10 +1433,10 @@ implements Choice
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		//#debug
-		System.out.println("handleKeyReleased( " + keyCode + ", " + gameAction + " ) for " + this);
+		System.out.println("handleKeyReleased( " + keyCode + ", " + gameAction + " ) for " + this + ", isPressed="+ this.isPressed);
 		if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
 			ChoiceItem item = (ChoiceItem) this.focusedItem;
-			if (item != null) {
+			if (item != null && item.isPressed) {
 				item.notifyItemPressedEnd();
 				if (this.isImplicit) {
 					// call command listener:

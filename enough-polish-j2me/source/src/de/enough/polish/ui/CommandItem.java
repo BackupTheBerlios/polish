@@ -309,7 +309,7 @@ public class CommandItem extends IconItem {
 		if ( this.isOpen ) {
 			if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
 				// close menu:
-				open( false );
+				notifyItemPressedStart();
 			} else {
 				boolean handled = this.children.handleKeyPressed(keyCode, gameAction);
 				if (!handled) {
@@ -317,12 +317,10 @@ public class CommandItem extends IconItem {
 						int index = keyCode - Canvas.KEY_NUM1;
 						if (index <= this.children.size()) {
 							CommandItem item = (CommandItem) this.children.get(index);
-							if (item.appearanceMode != Item.PLAIN) {
-								return item.handleKeyPressed(0, Canvas.FIRE);
-							}
+							return item.notifyItemPressedStart();
 						}
 					}
-					open( false );
+					notifyItemPressedStart();
 				}
 			}
 			return true;
@@ -344,9 +342,37 @@ public class CommandItem extends IconItem {
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		//#debug
-		System.out.println( this + " handleKeyReleased, isOpen=" + this.isOpen);
+		System.out.println( this + " handleKeyReleased, isOpen=" + this.isOpen + ", isPressed=" + this.isPressed);
+		if (!this.isPressed && !this.isOpen) {
+			return super.handleKeyReleased(keyCode, gameAction);
+		}
 		if (this.isOpen) {
-			return this.children.handleKeyReleased(keyCode, gameAction);
+			if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
+				// close menu:
+				open( false );
+				notifyItemPressedEnd();
+			} else {
+				boolean handled = this.children.handleKeyReleased(keyCode, gameAction);
+				if (!handled) {
+					 if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {
+						int index = keyCode - Canvas.KEY_NUM1;
+						if (index <= this.children.size()) {
+							CommandItem item = (CommandItem) this.children.get(index);
+							if (item.appearanceMode != Item.PLAIN) {
+								item.notifyItemPressedEnd();
+								item.handleKeyReleased(0, Canvas.FIRE);
+								return true;
+							}
+						}
+						return false;
+					} else if (gameAction == Canvas.UP || gameAction == Canvas.DOWN ) {
+						return false;
+					}
+					open(false);
+					notifyItemPressedEnd();
+				}
+			}
+			return true;
 		}
 		else
 		{
@@ -396,6 +422,7 @@ public class CommandItem extends IconItem {
 	protected void open(boolean open) {
 		//#debug
 		System.out.println( this + ": opening children: " + open);
+		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 		this.isOpen = open;
 		if ( open ) {
 			// move focus to first child:

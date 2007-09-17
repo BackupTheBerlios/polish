@@ -28,6 +28,9 @@ package de.enough.polish.ui.containerviews;
 
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Border;
+import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
 
 /**
@@ -40,7 +43,7 @@ import de.enough.polish.ui.Item;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class SlideUpView extends BackgroundContainerView {
+public class SlideUpView extends ContainerView {
 
 	private boolean isAnimationFinished;
 	private int yOffset;
@@ -70,10 +73,6 @@ public class SlideUpView extends BackgroundContainerView {
 		return animated;
 	}
 	
-	
-	
-	
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#showNotify()
 	 */
@@ -86,10 +85,6 @@ public class SlideUpView extends BackgroundContainerView {
 			this.isAnimationFinished = false;
 		}
 	}
-
-
-
-
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Item, int, int)
@@ -106,8 +101,6 @@ public class SlideUpView extends BackgroundContainerView {
 		}
 	}
 
-
-
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
@@ -116,8 +109,19 @@ public class SlideUpView extends BackgroundContainerView {
 		super.paintContent(parent, x, y, leftBorder, rightBorder, g);
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#paintBackground(de.enough.polish.ui.Background, int, int, int, int, javax.microedition.lcdui.Graphics)
+	 */
+	public void paintBackground(Background background, int x, int y, int width, int height, Graphics g) {
+		super.paintBackground(background, x, y + this.yOffset, width, height, g);
+	}
 
-
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#paintBorder(de.enough.polish.ui.Border, int, int, int, int, javax.microedition.lcdui.Graphics)
+	 */
+	public void paintBorder(Border border, int x, int y, int width, int height, Graphics g) {
+		super.paintBorder(border, x, y + this.yOffset, width, height, g);
+	}
 	
 
 }

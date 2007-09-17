@@ -725,6 +725,7 @@ public abstract class Item extends Object
 	protected Style focusedStyle;
 	//#if polish.css.pressed-style
 		private Style pressedStyle;
+		private Style normalStyle;
 	//#endif
 
 	//#if polish.css.colspan
@@ -752,7 +753,8 @@ public abstract class Item extends Object
 	protected boolean isShown;
 	private HashMap attributes;
 
-	private Style normalStyle;
+	protected boolean isPressed;
+
 	
 	protected Item() {
 		this( null, LAYOUT_DEFAULT, PLAIN, null );
@@ -1804,7 +1806,7 @@ public abstract class Item extends Object
 	 * @param height
 	 * @param g
 	 */
-	private void paintBackgroundAndBorder(int x, int y, int width, int height, Graphics g) {
+	protected void paintBackgroundAndBorder(int x, int y, int width, int height, Graphics g) {
 		if ( this.background != null ) {
 			int bWidth = this.borderWidth;
 			if ( this.border != null ) {
@@ -1813,7 +1815,15 @@ public abstract class Item extends Object
 				width -= (bWidth << 1);
 				height -= (bWidth << 1);
 			}
-			this.background.paint(x, y, width, height, g);
+			//#if polish.css.view-type
+				if (this.view != null) {
+					this.view.paintBackground( this.background, x, y, width, height, g );
+				} else {
+			//#endif
+					this.background.paint(x, y, width, height, g);
+			//#if polish.css.view-type
+				}
+			//#endif
 			if (this.border != null) {
 				x -= bWidth;
 				y -= bWidth;
@@ -1822,7 +1832,15 @@ public abstract class Item extends Object
 			}
 		}
 		if ( this.border != null ) {
-			this.border.paint(x, y, width, height, g);
+			//#if polish.css.view-type
+				if (this.view != null) {
+					this.view.paintBorder( this.border, x, y, width, height, g );
+				} else {
+			//#endif
+					this.border.paint(x, y, width, height, g);
+			//#if polish.css.view-type
+				}
+			//#endif
 		}
 	}
 
@@ -2175,7 +2193,7 @@ public abstract class Item extends Object
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
 		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
-				&& this.appearanceMode != PLAIN )
+				&& this.appearanceMode != PLAIN && this.isPressed )
 		{
 			notifyItemPressedEnd();
 			Item item = this;
@@ -2191,8 +2209,8 @@ public abstract class Item extends Object
 						scr.callCommandListener(item.defaultCommand);
 					}
 				}
+				return true;
 			}
-			return true;
 		}
 
 		return false;
@@ -2206,6 +2224,9 @@ public abstract class Item extends Object
 	 */
 	protected boolean notifyItemPressedStart() {
 		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
+		//#debug
+		System.out.println("notifyItemPressedStart");
+		this.isPressed = true;
 		boolean handled = false;
 		//#if polish.css.pressed-style
 			//System.out.println("notifyItemPressedStart for " + this + ", pressedStyle=" + this.pressedStyle);
@@ -2225,6 +2246,9 @@ public abstract class Item extends Object
 	 * Is called when an item is pressed
 	 */
 	protected void notifyItemPressedEnd() {
+		//#debug
+		System.out.println("notifyItemPressedEnd");
+		this.isPressed = false;
 		//#if polish.css.pressed-style
 			Style previousStyle = this.normalStyle;
 			if (previousStyle != null && this.style != previousStyle) {

@@ -390,5 +390,29 @@ public abstract class ItemView {
 		this.parentItem.notifyItemPressedEnd();
 	}
 
+	/**
+	 * @param background
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param g
+	 */
+	public void paintBackground(Background background, int x, int y, int width, int height, Graphics g) {
+		background.paint(x, y, width, height, g);
+	}
+
+	/**
+	 * @param border
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param g
+	 */
+	public void paintBorder(Border border, int x, int y, int width, int height, Graphics g) {
+		border.paint(x, y, width, height, g);
+	}
+
 
 }

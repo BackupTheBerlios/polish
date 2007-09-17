@@ -2259,6 +2259,7 @@ implements AccessibleCanvas
 							} else if (keyCode == RIGHT_SOFT_KEY) {
 								if (!this.menuOpened && this.menuSingleRightCommand != null) {
 									callCommandListener( this.menuSingleRightCommand );
+									repaint();
 									return;
 								}
 							}
@@ -2419,6 +2420,9 @@ implements AccessibleCanvas
 						}
 					//#else
 						if (this.menuOpened  && this.menuContainer != null ) {
+							if (keyCode == LEFT_SOFT_KEY) {
+								gameAction = FIRE;
+							}
 							if (this.menuContainer.handleKeyReleased(keyCode, gameAction)) {
 								repaint();
 							}
@@ -3365,7 +3369,7 @@ implements AccessibleCanvas
 				//check if the given command is from the currently focused item:
 				Item item = Screen.this.getCurrentItem();
 				//#debug
-				System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + Screen.this.focusedItem + " and screen " + Screen.this );
+				System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + item + " and screen " + Screen.this + ", itemCommandListener=" + (item == null ? null : item.itemCommandListener));
 				if ((item != null) && (item.itemCommandListener != null) && (item.commands != null)) {
 					if ( item.commands.contains(cmd)) {
 						//System.out.println("forwarding straight to ItemCommandListener " + item.itemCommandListener);

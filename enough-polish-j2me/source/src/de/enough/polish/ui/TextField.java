@@ -2775,14 +2775,14 @@ public class TextField extends StringItem
 	protected boolean handleKeyClear(int keyCode, int gameAction)
 	{
 		//#if tmp.directInput
-			//#if polish.TextField.usePredictiveInput && tmp.directInput
-			if(this.predictiveInput)
-				return this.predictiveAccess.keyClear(keyCode, gameAction);
-			//#endif
-			
 			if (this.isUneditable) {
 				return false;
 			}
+			//#if polish.TextField.usePredictiveInput && tmp.directInput
+				if(this.predictiveInput) {
+					return this.predictiveAccess.keyClear(keyCode, gameAction);
+				}
+			//#endif			
 			if ( this.text != null && this.text.length() > 0) {			
 				return deleteCurrentChar();
 			}
@@ -3312,13 +3312,14 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
 	 */
 	public void commandAction(Command cmd, Item item) {
+		//#debug
+		System.out.println("TextField.commandAction( " + cmd.getLabel() + ", " + this + " )");
 		//#if polish.TextField.usePredictiveInput && tmp.directInput
-		if(this.predictiveAccess.commandAction(cmd, item))
-			return;
+			if(this.predictiveAccess.commandAction(cmd, item)) {			
+				return;
+			}
 		//#endif
 		
-		//#debug
-		System.out.println("commandAction( " + cmd.getLabel() + ", " + this + " )");
 		//#if tmp.implementsItemCommandListener
 			//#if tmp.supportsSymbolEntry
 				if (cmd == ENTER_SYMBOL_CMD ) {
@@ -3333,11 +3334,11 @@ public class TextField extends StringItem
 							//#ifdef tmp.allowDirectInput
 								if (this.enableDirectInput) {
 							//#endif
-								//#ifdef polish.key.ClearKey:defined
-									//#= handleKeyClear(${polish.key.ClearKey},0);
-								//#else
-									handleKeyClear(-8,0);
-								//#endif
+									//#ifdef polish.key.ClearKey:defined
+										//#= handleKeyClear(${polish.key.ClearKey},0);
+									//#else
+										handleKeyClear(-8,0);
+									//#endif
 							//#ifdef tmp.allowDirectInput
 								} else {
 									String myText = getString();
@@ -3352,6 +3353,8 @@ public class TextField extends StringItem
 						//#endif
 						return;
 					}
+				} else if ( cmd == CLEAR_CMD ) {
+					setString( null );
 				} else if ( this.additionalItemCommandListener != null ) {
 					this.additionalItemCommandListener.commandAction(cmd, item);
 				} else {

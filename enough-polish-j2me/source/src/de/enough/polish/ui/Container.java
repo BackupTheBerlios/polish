@@ -1183,6 +1183,39 @@ public class Container extends Item {
 		//#endif
 
 	}
+	
+	//#if polish.css.view-type
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Item#paintBackgroundAndBorder(int, int, int, int, javax.microedition.lcdui.Graphics)
+		 */
+		protected void paintBackgroundAndBorder(int x, int y, int width, int height, Graphics g) {
+			if (this.containerView == null) {
+				super.paintBackgroundAndBorder(x, y, width, height, g);
+			} else {
+				// this is only necessary since ContainerViews are integrated differently from
+				// normal ItemViews - we should consider abonding this approach!
+				if ( this.background != null ) {
+					int bWidth = this.borderWidth;
+					if ( this.border != null ) {
+						x += bWidth;
+						y += bWidth;
+						width -= (bWidth << 1);
+						height -= (bWidth << 1);
+					}
+					this.containerView.paintBackground( this.background, x, y, width, height, g );
+					if (this.border != null) {
+						x -= bWidth;
+						y -= bWidth;
+						width += (bWidth << 1);
+						height += (bWidth << 1);				
+					}
+				}
+				if ( this.border != null ) {
+					this.containerView.paintBorder( this.border, x, y, width, height, g );
+				}
+			}
+		}
+	//#endif
 
 	//#ifdef polish.useDynamicStyles
 	/* (non-Javadoc)
@@ -1319,6 +1352,7 @@ public class Container extends Item {
 //				if (gameAction == Canvas.RIGHT) {
 //					return false;
 //				}
+				//System.out.println("offset=" + offset + ", foc.relativeY=" + this.focusedItem.relativeY + ", foc.height=" + this.focusedItem.itemHeight + ", available=" + this.availableHeight);
 				// keep the focus do scroll downwards:
 				//#debug
 				System.out.println("Container(" + this + "): scrolling down: keeping focus, focusedIndex=" + this.focusedIndex );
