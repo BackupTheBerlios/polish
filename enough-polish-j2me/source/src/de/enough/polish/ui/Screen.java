@@ -1693,8 +1693,7 @@ implements AccessibleCanvas
 								this.paintScrollIndicator = false;
 							//#endif
 							}
-							//this.menuContainer.setScrollHeight(this.originalScreenHeight-topHeight);
-							this.menuContainer.setScrollHeight(y-topHeight);
+							this.menuContainer.setScrollHeight( this.originalScreenHeight - y );
 							// set clip so that submenu items do know where they should be painted.
 							// ATTENTION: this leads to situations in which items are repainted that
 							// need no refresh...
