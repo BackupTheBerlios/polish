@@ -96,6 +96,7 @@ public class FishEyeContainerView extends ContainerView {
 	private int focusedWidth;
 	private int maxItemHeight;
 	private boolean isShowTextInTitle;
+	private boolean transparency;
 	
 	/**
 	 * Creates a new fish eye view
@@ -705,6 +706,14 @@ public class FishEyeContainerView extends ContainerView {
 				if (this.isShowTextInTitle) {
 					this.isRemoveText = true;
 				}
+			}
+		//#endif
+		//#if polish.css.fisheyeview-transparency
+			Boolean tranparencyBool = style.getBooleanProperty("fisheyeview-transparency");
+			if (tranparencyBool != null) {
+				this.startTranslucency = 255;
+				this.endTranslucency = 255;
+				System.out.println("trnas");
 			}
 		//#endif
 			
