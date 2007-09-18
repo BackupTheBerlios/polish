@@ -96,7 +96,7 @@ public class FishEyeContainerView extends ContainerView {
 	private int focusedWidth;
 	private int maxItemHeight;
 	private boolean isShowTextInTitle;
-	private boolean transparency;
+	private boolean useTransparency = true;
 	
 	/**
 	 * Creates a new fish eye view

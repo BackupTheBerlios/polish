@@ -1128,8 +1128,10 @@ extends Displayable
             }
             //#if polish.key.LeftSoftKey:defined
                     //#= keyPressed( $polish.key.LeftSoftKey} );
+            		//#= keyReleased( $polish.key.LeftSoftKey} );
             //#else
-                    keyPressed( -6 );
+            		keyPressed( -6 );
+                    keyReleased( -6 );
             //#endif
             return true;
     }

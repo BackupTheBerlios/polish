@@ -37,7 +37,6 @@ import javax.microedition.lcdui.Image;
 //#endif
 
 import de.enough.polish.event.EventManager;
-import de.enough.polish.ui.backgrounds.SimpleBackground;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
@@ -622,10 +621,13 @@ public abstract class Item extends Object
 		protected int maximumHeight;
 	//#endif
 	protected boolean isInitialized;
+	/** the background of this item  */
 	public Background background;
 	protected Border border;
 	protected Style style;
+	/** the width of this item - only for read access */
 	public int itemWidth;
+	/** the height of this item - only for read access */
 	public int itemHeight;
 	protected int paddingLeft;
 	protected int paddingTop;
@@ -719,7 +721,9 @@ public abstract class Item extends Object
 	protected StringItem label;
 	private boolean useSingleRow;
 	//#if polish.blackberry
+		/** a blackberry specific internal field */
 		public Field _bbField;
+		/** a blackberry specific internal field */
 		public boolean _bbFieldAdded;
 	//#endif
 	protected Style focusedStyle;
