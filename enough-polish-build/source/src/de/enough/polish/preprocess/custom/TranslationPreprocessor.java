@@ -59,6 +59,7 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 	
 	private TranslationManager translationManager;
 	private boolean useDynamicTranslation;
+	private boolean ignoreMissingTranslations;
 	
 	/**
 	 * Creates a new empty preprocessor for translations.
@@ -76,6 +77,15 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 		this.useDynamicTranslation = translationManager.isDynamic();
 	}
 	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.CustomPreprocessor#notifyDevice(de.enough.polish.Device, boolean)
+	 */
+	public void notifyDevice(Device device, boolean usesPolishGui) {
+		super.notifyDevice(device, usesPolishGui);
+		this.ignoreMissingTranslations = device.getEnvironment().hasSymbol("polish.translations.ignoremissing");
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.CustomPreprocessor#notifyDeviceEnd(de.enough.polish.Device, boolean)
@@ -113,6 +123,10 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 					String key = call.substring( keyStart + 1, keyEnd );
 					Translation translation = this.translationManager.getTranslation(key);
 					if (translation == null) {
+						if (this.ignoreMissingTranslations) {
+							line = StringUtil.replace( line, call, '"' + key + '"' );
+							continue;
+						} 
 						throw new BuildException( getErrorStart(className, lines) + "Found no translation for key [" + key + "].");
 					}
 					if (this.useDynamicTranslation) {
