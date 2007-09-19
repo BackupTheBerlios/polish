@@ -759,6 +759,8 @@ public abstract class Item extends Object
 
 	protected boolean isPressed;
 
+	private ItemStateListener itemStateListener;
+
 	
 	protected Item() {
 		this( null, LAYOUT_DEFAULT, PLAIN, null );
@@ -1397,6 +1399,7 @@ public abstract class Item extends Object
 		this.itemCommandListener = l;
 	}
 	
+	
 	/**
 	 * Gets the listener for <code>Commands</code> to this <code>Item</code>.
 	 * 
@@ -1410,6 +1413,28 @@ public abstract class Item extends Object
 	public ItemCommandListener getItemCommandListener()
 	{
 		return this.itemCommandListener;
+	}
+	
+	/**
+	 * Sets an ItemStateListener specifically for this item.
+	 * Change events are forwarded to both this listener as well as a possibly set listener of the
+	 * corresponding screen.
+	 * 
+	 * @param listener the listener which is set specifically for this item.
+	 */
+	public void setItemStateListener(ItemStateListener listener ) {
+		this.itemStateListener = listener;
+	}
+	
+	/**
+	 * Gets an ItemStateListener specifically for this item.
+	 * Change events are forwarded to both this listener as well as a possibly set listener of the
+	 * corresponding screen.
+	 * 
+	 * @return the listener which has been set specifically for this item.
+	 */
+	public ItemStateListener getItemStateListener() {
+		return this.itemStateListener;
 	}
 
 	/**
@@ -1599,7 +1624,14 @@ public abstract class Item extends Object
 	 */
 	public void notifyStateChanged()
 	{
-		
+		if (this.itemStateListener != null) {
+			try {
+				this.itemStateListener.itemStateChanged( this );
+			} catch (Exception e) {
+				//#debug error
+				System.out.println("Unable to forward ItemStateChanged event to listener " + this.itemStateListener + e );
+			}
+		}
 		Screen scr = StyleSheet.currentScreen;
 		if (scr == null) {
 			scr = getScreen();
@@ -2807,6 +2839,7 @@ public abstract class Item extends Object
 	public Command getDefaultCommand() {
 		return this.defaultCommand;
 	}
+
 
 //#ifdef polish.Item.additionalMethods:defined
 	//#include ${polish.Item.additionalMethods}

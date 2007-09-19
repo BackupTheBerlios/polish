@@ -3825,7 +3825,12 @@ implements AccessibleCanvas
 	 */
 	protected void notifyStateListener( Item item ) {
 		if (this.itemStateListener != null) {
-			this.itemStateListener.itemStateChanged(item);
+			try {
+				this.itemStateListener.itemStateChanged(item);
+			} catch (Exception e) {
+				//#debug error
+				System.out.println("Unable to forward itemStateChanged event for listener " + this.itemStateListener + e );
+			}
 		}
 
 //		if (this.itemStateListener != null) {

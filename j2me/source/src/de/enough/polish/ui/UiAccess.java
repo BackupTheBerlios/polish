@@ -831,18 +831,107 @@ public final class UiAccess {
 	//#endif
 	
 	//#if polish.usePolishGui
+	/**
+	 * Forwards a key event to the specified item.
+	 * The handleKeyPressed call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param keyCode the code of the key
+	 * @param gameAction the associated game action
+	 * @return true when the event has been consumed by the item
+	 */
 	public static boolean handleKeyPressed( Item item, int keyCode, int gameAction ) {
 		return item.handleKeyPressed(keyCode, gameAction);
 	}
 	//#endif
 	
 	//#if polish.midp
+	/**
+	 * Forwards a key event to the specified item.
+	 * The handleKeyPressed call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param keyCode the code of the key
+	 * @param gameAction the associated game action
+	 * @return true when the event has been consumed by the item
+	 */
 	public static boolean handleKeyPressed( javax.microedition.lcdui.Item item, int keyCode, int gameAction ) {
 		return false;
 	}
 	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Forwards a key event to the specified item.
+	 * The handleKeyReleased call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param keyCode the code of the key
+	 * @param gameAction the associated game action
+	 * @return true when the event has been consumed by the item
+	 */
+	public static boolean handleKeyReleased( Item item, int keyCode, int gameAction ) {
+		return item.handleKeyReleased(keyCode, gameAction);
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Forwards a key event to the specified item.
+	 * The handleKeyPressed call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param keyCode the code of the key
+	 * @param gameAction the associated game action
+	 * @return true when the event has been consumed by the item
+	 */
+	public static boolean handleKeyReleased( javax.microedition.lcdui.Item item, int keyCode, int gameAction ) {
+		return false;
+	}
+	//#endif
+	
+	
+	//#if polish.usePolishGui
+	/**
+	 * Forwards a key event to the specified item.
+	 * The handleKeyRepeated call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param keyCode the code of the key
+	 * @param gameAction the associated game action
+	 * @return true when the event has been consumed by the item
+	 */
+	public static boolean handleKeyRepeated( Item item, int keyCode, int gameAction ) {
+		return item.handleKeyRepeated(keyCode, gameAction);
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Forwards a key event to the specified item.
+	 * The handleKeyPressed call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param keyCode the code of the key
+	 * @param gameAction the associated game action
+	 * @return true when the event has been consumed by the item
+	 */
+	public static boolean handleKeyRepeated( javax.microedition.lcdui.Item item, int keyCode, int gameAction ) {
+		return false;
+	}
+	//#endif
+	
 
 	//#if polish.usePolishGui
+	/**
+	 * Forwards a key event to the specified item.
+	 * The handlePointerPressed call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param x the x position of the pointer pressing relative to this item's left position
+	 * @param y the y position of the pointer pressing relative to this item's top position
+	 * @return true when the event has been consumed by the item
+	 */
 	public static boolean handlePointerPressed( Item item, int x, int y ) {
 		//#if polish.hasPointerEvents
 			return item.handlePointerPressed(x, y);
@@ -2459,4 +2548,35 @@ public final class UiAccess {
 			}
 	}
 	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Sets an ItemStateListener specifically for this item.
+	 * Change events are forwarded to both this listener as well as a possibly set listener of the
+	 * corresponding screen.
+	 * 
+	 * @param item the item
+	 * @param listener the listener
+	 */
+	public static void setItemStateListener(Item item, ItemStateListener listener) {
+		item.setItemStateListener( listener );
+		
+	}
+	//#endif
+
+	//#if polish.midp2
+	/**
+	 * Sets an ItemStateListener specifically for this item.
+	 * Change events are forwarded to both this listener as well as a possibly set listener of the
+	 * corresponding screen.
+	 * 
+	 * @param item the item
+	 * @param listener the listener
+	 */
+	public static void setItemStateListener(javax.microedition.lcdui.Item item, javax.microedition.lcdui.ItemStateListener listener) {
+		// ignore
+		
+	}
+	//#endif
+
 }
