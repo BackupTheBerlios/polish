@@ -307,7 +307,13 @@ public class CommandItem extends IconItem {
 		//#debug
 		System.out.println( this + " handleKeyPressed, isOpen=" + this.isOpen);
 		if ( this.isOpen ) {
-			if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
+			if (
+			//#if !polish.blackberry || polish.hasTrackBallEvents
+				(gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
+			//#else
+				//# false
+			//#endif
+			) {
 				// close menu:
 				notifyItemPressedStart();
 			} else {
@@ -325,7 +331,11 @@ public class CommandItem extends IconItem {
 			}
 			return true;
 		} else if ( this.hasChildren && this.appearanceMode != PLAIN ) { // has children but is not open
-			if ( (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) || (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) ) {
+			if ( (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
+				//#if !polish.blackberry || polish.hasTrackBallEvents
+					|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
+				//#endif
+			) {
 				return notifyItemPressedStart();
 			}
 		} else if ( gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5  && this.appearanceMode != PLAIN ){ // has no children:
@@ -347,7 +357,13 @@ public class CommandItem extends IconItem {
 			return super.handleKeyReleased(keyCode, gameAction);
 		}
 		if (this.isOpen) {
-			if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
+			if (
+				//#if !polish.blackberry || polish.hasTrackBallEvents
+					(gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
+				//#else
+					//# false
+				//#endif
+			) {
 				// close menu:
 				open( false );
 				notifyItemPressedEnd();
@@ -365,7 +381,12 @@ public class CommandItem extends IconItem {
 							}
 						}
 						return false;
-					} else if (gameAction == Canvas.UP || gameAction == Canvas.DOWN ) {
+					} else if (
+							(gameAction == Canvas.UP || gameAction == Canvas.DOWN)
+                        //#if polish.blackberry && !polish.hasTrackBallEvents
+                            || (gameAction == Canvas.RIGHT || gameAction == Canvas.LEFT)
+                        //#endif
+					) {
 						return false;
 					}
 					open(false);
@@ -377,7 +398,11 @@ public class CommandItem extends IconItem {
 		else
 		{
 			if ( this.hasChildren && this.appearanceMode != PLAIN ) { // has children but is not open
-				if ( (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) || (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) ) {
+				if ( (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
+					//#if !polish.blackberry || polish.hasTrackBallEvents
+						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
+					//#endif
+				) {
 					notifyItemPressedEnd();
 					open( true );
 					return true;

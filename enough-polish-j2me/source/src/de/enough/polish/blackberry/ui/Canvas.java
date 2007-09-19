@@ -1200,6 +1200,7 @@ extends Displayable
                     if ( screen != null ) {
                             processed |= screen.keyPressedProcessed;
                     }
+                    keyReleased( keyCode );
             //}
             if (screen != null) {
                     return processed;
@@ -1220,12 +1221,14 @@ extends Displayable
      */
     protected boolean keyDown(int keyCode, int status) {
         boolean processFurther = true;
-    	Object o = this;
-    	Screen screen = null;
+        Object o = this;
+        Screen screen = null;
+        boolean isEscapeKey = false;
         if ( o instanceof Screen ) {
            screen = ((Screen)o);
            char keyChar = Keypad.map( keyCode );
-           if ( keyChar != Keypad.KEY_ESCAPE // 1769472 is the escape button 
+           isEscapeKey =  (keyChar == Keypad.KEY_ESCAPE); // 1769472 is the escape button 
+           if ( !isEscapeKey // 1769472 is the escape button 
         		   && !screen.isMenuOpened() 
         		   && !this.dummyFieldHasFocus) 
            { 
@@ -1256,14 +1259,67 @@ extends Displayable
         case '9': keyCode = KEY_NUM9; break;
         }
         keyPressed( keyCode );
+        if (isEscapeKey) {
+        	keyReleased( keyCode );
+        }
         if ( screen != null ) {
         	return ! screen.keyPressedProcessed;
         } else { 
         	return true; // consume the key event
         } 
     }
+    
+    
 
     /* (non-Javadoc)
+     * @see net.rim.device.api.ui.Screen#keyUp(int, int)
+     */ 
+	protected boolean keyUp(int keyCode, int status) {
+        boolean processFurther = true;
+    	Object o = this;
+    	Screen screen = null;
+        if ( o instanceof Screen ) {
+           screen = ((Screen)o);
+           char keyChar = Keypad.map( keyCode );
+           if ( keyChar != Keypad.KEY_ESCAPE // 1769472 is the escape button 
+        		   && !screen.isMenuOpened() 
+        		   && !this.dummyFieldHasFocus) 
+           { 
+        	   try {
+        		   processFurther = super.keyUp(keyCode, status);                	   
+                   if (!processFurther) {
+                       return false;
+                   }
+        	   } catch (Exception e) {
+        		   //#debug error
+        		   System.out.println("super.keyUp(" + keyCode + ", " + status + ") failed" + e );
+        	   }
+           }
+        }
+        //#debug
+        System.out.println("keyUp: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
+
+        switch ( Keypad.map( keyCode, status ) ) {
+        case '0': keyCode = KEY_NUM0; break;
+        case '1': keyCode = KEY_NUM1; break;
+        case '2': keyCode = KEY_NUM2; break;
+        case '3': keyCode = KEY_NUM3; break;
+        case '4': keyCode = KEY_NUM4; break;
+        case '5': keyCode = KEY_NUM5; break;
+        case '6': keyCode = KEY_NUM6; break;
+        case '7': keyCode = KEY_NUM7; break;
+        case '8': keyCode = KEY_NUM8; break;
+        case '9': keyCode = KEY_NUM9; break;
+        }
+        keyReleased( keyCode );
+        if ( screen != null ) {
+        	return ! screen.keyPressedProcessed;
+        } else { 
+        	return true; // consume the key event
+        } 
+   }
+
+	/* (non-Javadoc)
      * @see net.rim.device.api.ui.Screen#keyRepeat(int, int)
      */
     protected boolean keyRepeat(int keyCode, int status) {
