@@ -2579,4 +2579,50 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.usePolishGui
+	/**
+	 * Calls show notify on the specified item.
+	 * 
+	 * @param item the item
+	 */
+	public static void showNotify(Item item) {
+		item.showNotify();
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Calls show notify on the specified item.
+	 * 
+	 * @param item the item
+	 */
+	public static void showNotify(javax.microedition.lcdui.Item item) {
+		// ignore
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Calls hide notify on the specified item.
+	 * 
+	 * @param item the item
+	 */
+	public static void hideNotify(Item item) {
+		item.hideNotify();
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Calls hide notify on the specified item.
+	 * 
+	 * @param item the item
+	 */
+	public static void hideNotify(javax.microedition.lcdui.Item item) {
+		// ignore
+	}
+	//#endif
+
+	
+
 }

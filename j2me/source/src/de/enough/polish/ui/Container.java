@@ -77,6 +77,7 @@ public class Container extends Item {
 	public int focusedIndex = -1;
 	protected boolean enableScrolling;
 	//#if polish.Container.allowCycling != false
+		/** specifies whether this container is allowed to cycle to the beginning when the last item has been reached */
 		public boolean allowCycling = true;
 	//#endif
 	protected int yOffset;
@@ -1341,7 +1342,8 @@ public class Container extends Item {
 			//#if polish.blackberry && !polish.hasTrackballEvents
 				(gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) ||
 			//#endif
-			   (gameAction == Canvas.DOWN   && keyCode != Canvas.KEY_NUM8)) {
+			   (gameAction == Canvas.DOWN   && keyCode != Canvas.KEY_NUM8)) 
+		{
 			if (this.focusedItem != null 
 					&& this.enableScrolling
 					&& ( (offset + this.focusedItem.relativeY + this.focusedItem.itemHeight > this.availableHeight)
@@ -1349,9 +1351,6 @@ public class Container extends Item {
 						    && offset + this.focusedItem.relativeY + this.focusedItem.contentY + this.focusedItem.internalY + this.focusedItem.internalHeight > this.availableHeight)) 
 				       )
 			{
-//				if (gameAction == Canvas.RIGHT) {
-//					return false;
-//				}
 				//System.out.println("offset=" + offset + ", foc.relativeY=" + this.focusedItem.relativeY + ", foc.height=" + this.focusedItem.itemHeight + ", available=" + this.availableHeight);
 				// keep the focus do scroll downwards:
 				//#debug
@@ -1392,9 +1391,6 @@ public class Container extends Item {
 					&& this.enableScrolling
 					&& offset + this.focusedItem.relativeY < 0 ) // this.focusedItem.yTopPos < this.yTop ) 
 			{
-//				if (gameAction == Canvas.LEFT) {
-//					return false;
-//				}
 				// keep the focus do scroll upwards:
 				//#debug
 				System.out.println("Container(" + this + "): scrolling up: keeping focus, focusedIndex=" + this.focusedIndex + ", focusedItem.yTopPos=" + this.focusedItem.relativeY + ", this.availableHeight=" + this.availableHeight + ", targetYOffset=" + this.targetYOffset);
