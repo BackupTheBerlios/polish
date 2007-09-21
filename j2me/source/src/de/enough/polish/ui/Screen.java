@@ -613,9 +613,9 @@ implements AccessibleCanvas
 	 * @see #ignoreRepaintRequests
 	 */
 	public void requestRepaint() {
-		if (!this.ignoreRepaintRequests) {
+		//if (!this.ignoreRepaintRequests) {
 			super.repaint();
-		}
+		//}
 	}
 	
 	/**
@@ -628,9 +628,9 @@ implements AccessibleCanvas
 	 * @see #ignoreRepaintRequests
 	 */
 	public void requestRepaint( int x, int y, int width, int height ) {
-		if (!this.ignoreRepaintRequests) {
+		//if (!this.ignoreRepaintRequests) {
 			super.repaint( x, y, width, height );
-		}
+		//}
 	}
 	
 	

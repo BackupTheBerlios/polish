@@ -2600,6 +2600,31 @@ public final class UiAccess {
 		// ignore
 	}
 	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Calls show notify on the specified item.
+	 * 
+	 * @param screen the corresponding screen of that item
+	 * @param item the item
+	 */
+	public static void showNotify(Screen screen, Item item) {
+		item.screen = screen;
+		item.showNotify();
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Calls show notify on the specified item.
+	 * 
+	 * @param screen the corresponding screen of that item
+	 * @param item the item
+	 */
+	public static void showNotify(javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Item item) {
+		// ignore
+	}
+	//#endif
 
 	//#if polish.usePolishGui
 	/**
@@ -2622,6 +2647,8 @@ public final class UiAccess {
 		// ignore
 	}
 	//#endif
+
+	
 
 	
 
