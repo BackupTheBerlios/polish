@@ -33,7 +33,12 @@ public class ArrayTextElement extends TextElement {
 		if(this.isSelectedCustom())
 			return (String)this.customResults.get(this.selectedWordIndex - this.results.size());
 		else
-			return (String)this.results.get(this.selectedWordIndex);
+		{
+			if(this.selectedWordIndex < this.results.size())
+				return (String)this.results.get(this.selectedWordIndex);
+			else
+				return null;
+		}
 	}
 	
 	public void setSelectedWordIndex(int selected)

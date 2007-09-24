@@ -101,6 +101,10 @@ public abstract class TextElement {
 	public String getSelectedWord()
 	{
 		String word = getSelectedString();
+		
+		if(word == null)
+			return "";
+		
 		if(this.keyCodes.length == word.length())
 			return getSelectedString();
 		else
