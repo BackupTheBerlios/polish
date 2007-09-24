@@ -473,7 +473,7 @@ public class ChoiceTextField
 			this.choicesContainer.defocus( this.originalStyle );
 			if (this.isInChoice) {
 				//#if polish.usePolishGui  && !polish.LibraryBuild
-					//# getScreen().setItemCommands( this );
+					showCommands();
 				//#endif
 			}
 			//#if polish.blackberry

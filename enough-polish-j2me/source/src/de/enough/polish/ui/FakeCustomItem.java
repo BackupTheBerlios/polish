@@ -36,28 +36,355 @@ import javax.microedition.lcdui.Image;
 	import net.rim.device.api.ui.Field;
 //#endif
 
+import de.enough.polish.event.EventManager;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
 
 /**
- * Meant for classes that want to be compatible with javax.microedition.lcdui.CustomItem for IDEs only while extending de.enough.polish.ui.Item in reality.
- * <p>Subclasses can change the hierarchy with preprocessing like this:
- * <pre>
- * public class MyCustomItem
- * //#if polish.LibraryBuild
- * 		 extends FakeCustomItem
- * //#else
- * 		//# extends Item
- * //#endif	 
- * </pre>
- * </p>
- * <p>This allows subclasses to access all fields and methods of the J2ME Polish item class.</p>
- * <p>Note that this class can never be used in reality. Ever.</p>
+ * A superclass for components that can be added to a Form.
  * 
- * @since J2ME Polish 1.3
- * @author Robert Virkus, robert@enough.de
- * @see Item
+ * <p>Items support following CSS attributes:
+ * </p>
+ * <ul>
+ * 		<li><b>margin, margin-left, margin-right, margin-top, margin-bottom, margin-vertical, margin-horizontal</b>: margins between border and next item.</li>
+ * 		<li><b>padding, padding-left, padding-right, padding-top, padding-bottom, padding-vertical, padding-horizontal</b>: paddings between border and content.</li>
+ * 		<li><b>background</b>: The background of this item.</li>
+ * 		<li><b>border</b>: The border of this item.</li>
+ * 		<li><b>min-width</b>: The minimum width of this item.</li>
+ * 		<li><b>max-width</b>: The maximum width of this item.</li>
+ * 		<li><b>min-height</b>: The minimum height of this item.</li>
+ * 		<li><b>max-height</b>: The maximum height of this item.</li>
+ * 		<li><b>before</b>: URL of image that should be placed before this item.</li>
+ * 		<li><b>after</b>: URL of image that should be placed after this item.</li>
+ * 		<li><b>include-label</b>: set to true when the background and border should include the label of this item as well.</li>
+ * 		<li><b>colspan</b>: when this item is embedded in a table, you can span it over several cells, e.g. colspan: 2;.</li>
+ * 		<li><b>label-style</b>: The name of the specialized label style for this item, e.g. "label-style: funnyLabel;"</li>
+ * 		<li><b>focused-style</b>: The name of the specialized focused style for this item, e.g. "focused-style: funnyFocused;"</li>
+ * 		<li><b>view-type</b>: The view of this item.</li>
+ * </ul>
+ * 
+ * A superclass for components that can be added to a <A HREF="../../../javax/microedition/lcdui/Form.html"><CODE>Form</CODE></A>. All <code>Item</code> objects have a label field,
+ * which is a string that is
+ * attached to the item. The label is typically displayed near the component
+ * when it is displayed within a screen.  The label should be positioned on
+ * the same horizontal row as the item or
+ * directly above the item.  The implementation should attempt to distinguish
+ * label strings from other textual content, possibly by displaying the label
+ * in a different font, aligning it to a different margin, or appending a
+ * colon to it if it is placed on the same line as other string content.
+ * If the screen is scrolling, the implementation should try
+ * to keep the label visible at the same time as the <code>Item</code>.
+ * 
+ * <p>In some cases,
+ * when the user attempts to interact with an <code>Item</code>,
+ * the system will switch to
+ * a system-generated screen where the actual interaction takes place. If
+ * this occurs, the label will generally be carried along and displayed within
+ * this new screen in order to provide the user with some context for the
+ * operation. For this reason it is recommended that applications supply a
+ * label to all interactive Item objects. However, this is not required, and
+ * a <code>null</code> value for a label is legal and specifies
+ * the absence of a label.
+ * </p>
+ * 
+ * <h3>Item Layout</h3>
+ * 
+ * <p>An <code>Item's</code> layout within its container is
+ * influenced through layout directives:</p>
+ * 
+ * <ul>
+ * <li> <code>LAYOUT_DEFAULT</code> </li>
+ * <li> <code>LAYOUT_LEFT</code> </li>
+ * <li> <code>LAYOUT_RIGHT</code> </li>
+ * <li> <code>LAYOUT_CENTER</code> </li>
+ * <li> <code>LAYOUT_TOP</code> </li>
+ * <li> <code>LAYOUT_BOTTOM</code> </li>
+ * <li> <code>LAYOUT_VCENTER</code> </li>
+ * <li> <code>LAYOUT_NEWLINE_BEFORE</code> </li>
+ * <li> <code>LAYOUT_NEWLINE_AFTER</code> </li>
+ * <li> <code>LAYOUT_SHRINK</code> </li>
+ * <li> <code>LAYOUT_VSHRINK</code> </li>
+ * <li> <code>LAYOUT_EXPAND</code> </li>
+ * <li> <code>LAYOUT_VEXPAND</code> </li>
+ * <li> <code>LAYOUT_2</code> </li>
+ * </ul>
+ * 
+ * <p>The <code>LAYOUT_DEFAULT</code> directive indicates
+ * that the container's default
+ * layout policy is to be used for this item.
+ * <code>LAYOUT_DEFAULT</code> has the value
+ * zero and has no effect when combined with other layout directives.  It is
+ * useful within programs in order to document the programmer's intent.</p>
+ * 
+ * <p>The <code>LAYOUT_LEFT</code>, <code>LAYOUT_RIGHT</code>, and
+ * <code>LAYOUT_CENTER</code> directives indicate
+ * horizontal alignment and are mutually exclusive.  Similarly, the
+ * <code>LAYOUT_TOP</code>, <code>LAYOUT_BOTTOM</code>, and
+ * <code>LAYOUT_VCENTER</code> directives indicate vertical
+ * alignment and are mutually exclusive.</p>
+ * 
+ * <p>A horizontal alignment directive, a vertical alignment directive, and
+ * any combination of other layout directives may be combined using the
+ * bit-wise <code>OR</code> operator (<code>|</code>) to compose a
+ * layout directive value.  Such a value
+ * is used as the parameter to the <A HREF="../../../javax/microedition/lcdui/Item.html#setLayout(int)"><CODE>setLayout(int)</CODE></A> method and is the return
+ * value from the <A HREF="../../../javax/microedition/lcdui/Item.html#getLayout()"><CODE>getLayout()</CODE></A> method.</p>
+ * 
+ * <p>Some directives have no defined behavior in some contexts.  A layout
+ * directive is ignored if its behavior is not defined for the particular
+ * context within which the <code>Item</code> resides.</p>
+ * 
+ * <p>A complete specification of the layout of <code>Items</code>
+ * within a <code>Form</code> is given
+ * <a href="Form.html#layout">here</a>.</p>
+ * 
+ * <a name="sizes"></a>
+ * <h3>Item Sizes</h3>
+ * 
+ * <p><code>Items</code> have two explicit size concepts: the <em>minimum</em>
+ * size and the
+ * <em>preferred</em> size.  Both the minimum and the preferred sizes refer to
+ * the total area of the <code>Item</code>, which includes space for the
+ * <code>Item's</code> contents,
+ * the <code>Item's</code> label, as well as other space that is
+ * significant to the layout
+ * policy.  These sizes do not include space that is not significant for
+ * layout purposes.  For example, if the addition of a label to an
+ * <code>Item</code> would
+ * cause other <code>Items</code> to move in order to make room,
+ * then the space occupied by
+ * this label is significant to layout and is counted as part of
+ * the <code>Item's</code>
+ * minimum and preferred sizes.  However, if an implementation were to place
+ * the label in a margin area reserved exclusively for labels, this would not
+ * affect the layout of neighboring <code>Items</code>.
+ * In this case, the space occupied
+ * by the label would not be considered part of the minimum and preferred
+ * sizes.</p>
+ * 
+ * <p>The minimum size is the smallest size at which the
+ * <code>Item</code> can function and
+ * display its contents, though perhaps not optimally.  The minimum size
+ * may be recomputed whenever the <code>Item's</code> contents changes.</p>
+ * 
+ * <p>The preferred size is generally a size based on the
+ * <code>Item's</code> contents and
+ * is the smallest size at which no information is clipped and text wrapping
+ * (if any) is kept to a tolerable minimum.  The preferred size may be
+ * recomputed whenever the <code>Item's</code> contents changes.
+ * The application can
+ * <em>lock</em> the preferred width or preferred height (or both) by
+ * supplying specific values for parameters to the <A HREF="../../../javax/microedition/lcdui/Item.html#setPreferredSize(int, int)"><CODE>setPreferredSize</CODE></A> method.  The manner in which an
+ * <code>Item</code> fits its contents
+ * within an application-specified preferred size is implementation-specific.
+ * However, it is recommended that textual content be word-wrapped to fit the
+ * preferred size set by the application.  The application can <em>unlock</em>
+ * either or both dimensions by supplying the value <code>-1</code>
+ * for parameters to the <code>setPreferredSize</code> method.</p>
+ * 
+ * <p>When an <code>Item</code> is created, both the preferred width
+ * and height are
+ * unlocked.  In this state, the implementation computes the preferred width
+ * and height based on the <code>Item's</code> contents, possibly
+ * including other relevant
+ * factors such as the <code>Item's</code> graphic design and the
+ * screen dimensions.
+ * After having locked either the preferred width or height, the application
+ * can restore the initial, unlocked state by calling
+ * <code>setPreferredSize(-1,&nbsp;-1)</code>.</p>
+ * 
+ * <p>The application can lock one dimension of the preferred size and leave
+ * the other unlocked.  This causes the system to compute an appropriate value
+ * for the unlocked dimension based on arranging the contents to fit the
+ * locked dimension.  If the contents changes, the size on the unlocked
+ * dimension is recomputed to reflect the new contents, but the size on the
+ * locked dimension remains unchanged.  For example, if the application called
+ * <code>setPreferredSize(50,&nbsp;-1)</code>, the preferred width would be
+ * locked at <code>50</code> pixels and the preferred height would
+ * be computed based on the
+ * <code>Item's</code> contents.  Similarly, if the application called
+ * <code>setPreferredSize(-1,&nbsp;60)</code>, the preferred height would be
+ * locked at <code>60</code> pixels and the preferred width would be
+ * computed based on the
+ * <code>Item's</code> contents.  This feature is particularly useful
+ * for <code>Items</code> with
+ * textual content that can be line wrapped.</p>
+ * 
+ * <p>The application can also lock both the preferred width and height to
+ * specific values.  The <code>Item's</code> contents are truncated or padded
+ * as necessary to honor this request.  For <code>Items</code> containing
+ * text, the text should be wrapped to the specified width, and any truncation
+ * should occur at the end of the text.</p>
+ * 
+ * <p><code>Items</code> also have an implicit maximum size provided by the
+ * implementation.  The maximum width is typically based on the width of the
+ * screen space available to a <code>Form</code>.  Since <code>Forms</code>
+ * can scroll vertically, the maximum height should typically not be based on
+ * the height of the available screen space.</p>
+ * 
+ * <p>If the application attempts to lock a preferred size dimension to a
+ * value smaller than the minimum or larger than the maximum, the
+ * implementation may disregard the requested value and instead use either the
+ * minimum or maximum as appropriate.  If this occurs, the actual values used
+ * must be visible to the application via the values returned from the
+ * <A HREF="../../../javax/microedition/lcdui/Item.html#getPreferredWidth()"><CODE>getPreferredWidth</CODE></A> and
+ * <A HREF="../../../javax/microedition/lcdui/Item.html#getPreferredHeight()"><CODE>getPreferredHeight</CODE></A> methods.
+ * </p>
+ * 
+ * <h3>Commands</h3>
+ * 
+ * <p>A <code>Command</code> is said to be present on an <code>Item</code>
+ * if the <code>Command</code> has been
+ * added to this <code>Item</code> with a prior call to <A HREF="../../../javax/microedition/lcdui/Item.html#addCommand(javax.microedition.lcdui.Command)"><CODE>addCommand(javax.microedition.lcdui.Command)</CODE></A>
+ * or <A HREF="../../../javax/microedition/lcdui/Item.html#setDefaultCommand(javax.microedition.lcdui.Command)"><CODE>setDefaultCommand(javax.microedition.lcdui.Command)</CODE></A> and if
+ * the <code>Command</code> has not been removed with a subsequent call to
+ * <A HREF="../../../javax/microedition/lcdui/Item.html#removeCommand(javax.microedition.lcdui.Command)"><CODE>removeCommand(javax.microedition.lcdui.Command)</CODE></A>.  <code>Commands</code> present on an
+ * item should have a command
+ * type of <code>ITEM</code>.  However, it is not an error for a
+ * command whose type is
+ * other than <code>ITEM</code> to be added to an item.
+ * For purposes of presentation and
+ * placement within its user interface, the implementation is allowed to
+ * treat a command's items as if they were of type <code>ITEM</code>. </p>
+ * 
+ * <p><code>Items</code> may have a <em>default</em> <code>Command</code>.
+ * This state is
+ * controlled by the <A HREF="../../../javax/microedition/lcdui/Item.html#setDefaultCommand(javax.microedition.lcdui.Command)"><CODE>setDefaultCommand(javax.microedition.lcdui.Command)</CODE></A> method.  The default
+ * <code>Command</code> is eligible to be bound to a special
+ * platform-dependent user
+ * gesture.  The implementation chooses which gesture is the most
+ * appropriate to initiate the default command on that particular
+ * <code>Item</code>.
+ * For example, on a device that has a dedicated selection key, pressing
+ * this key might invoke the item's default command.  Or, on a
+ * stylus-based device, tapping on the <code>Item</code> might
+ * invoke its default
+ * command.  Even if it can be invoked through a special gesture, the
+ * default command should also be invokable in the same fashion as
+ * other item commands.</p>
+ * 
+ * <p>It is possible that on some devices there is no special gesture
+ * suitable for invoking the default command on an item.  In this case
+ * the default command must be accessible to the user in the same
+ * fashion as other item commands.  The implementation may use the state
+ * of a command being the default in deciding where to place the command
+ * in its user interface.</p>
+ * 
+ * <p>It is possible for an <code>Item</code> not to have a default command.
+ * In this
+ * case, the implementation may bind its special user gesture (if any)
+ * for another purpose, such as for displaying a menu of commands.  The
+ * default state of an <code>Item</code> is not to have a default command.
+ * An <code>Item</code>
+ * may be set to have no default <code>Command</code> by removing it from
+ * the <code>Item</code> or
+ * by passing <code>null</code> to the <code>setDefaultCommand()</code>
+ * method.</p>
+ * 
+ * <p>The same command may occur on more than one
+ * <code>Item</code> and also on more than
+ * one <code>Displayable</code>.  If this situation occurs, the user
+ * must be provided with
+ * distinct gestures to invoke that command on each <code>Item</code> or
+ * <code>Displayable</code> on
+ * which it occurs, while those <code>Items</code> or <code>Displayables</code>
+ * are visible on the
+ * display.  When the user invokes the command, the listener
+ * (<code>CommandListener</code>
+ * or <code>ItemCommandListener</code> as appropriate) of just the
+ * object on which the
+ * command was invoked will be called.</p>
+ * 
+ * <p>Adding commands to an <code>Item</code> may affect its appearance, the
+ * way it is laid out, and the traversal behavior.  For example, the presence
+ * of commands on an <code>Item</code> may cause row breaks to occur, or it
+ * may cause additional graphical elements (such as a menu icon) to appear.
+ * In particular, if a <code>StringItem</code> whose appearance mode is
+ * <code>PLAIN</code> (see below) is given one or more <code>Commands</code>,
+ * the implementation is allowed to treat it as if it had a different
+ * appearance mode.</p>
+ * 
+ * <p>J2ME Polish notifies the command-listener of the current screen,
+ * when an item-command has been selected and no item-command-listener
+ * has been registered.
+ * </p>
+ * 
+ * <a name="appearance"></a>
+ * <h3>Appearance Modes</h3>
+ * 
+ * <p>The <code>StringItem</code> and <code>ImageItem</code> classes have an
+ * <em>appearance mode</em> attribute that can be set in their constructors.
+ * This attribute can have one of the values <A HREF="../../../javax/microedition/lcdui/Item.html#PLAIN"><CODE>PLAIN</CODE></A>,
+ * <A HREF="../../../javax/microedition/lcdui/Item.html#HYPERLINK"><CODE>HYPERLINK</CODE></A>, or <A HREF="../../../javax/microedition/lcdui/Item.html#BUTTON"><CODE>BUTTON</CODE></A>.
+ * An appearance mode of <code>PLAIN</code> is typically used
+ * for non-interactive
+ * display of textual or graphical material.  The appearance
+ * mode values do not have any side effects on the interactivity of the item.
+ * In order to be interactive, the item must have one or more
+ * <code>Commands</code>
+ * (preferably with a default command assigned), and it must have a
+ * <code>CommandListener</code> that receives notification of
+ * <code>Command</code> invocations.  The
+ * appearance mode values also do not have any effect on the semantics of
+ * <code>Command</code> invocation on the item.  For example,
+ * setting the appearance mode
+ * of a <code>StringItem</code> to be <code>HYPERLINK</code>
+ * requests that the implementation display
+ * the string contents as if they were a hyperlink in a browser.  It is the
+ * application's responsibility to attach a <code>Command</code>
+ * and a listener to the
+ * <code>StringItem</code> that provide behaviors that the user
+ * would expect from invoking
+ * an operation on a hyperlink, such as loading the referent of the link or
+ * adding the link to the user's set of bookmarks.</p>
+ * 
+ * <p>Setting the appearance mode of an <code>Item</code> to be other than
+ * <code>PLAIN</code> may affect its minimum, preferred, and maximum sizes, as
+ * well as the way it is laid out.  For example, a <code>StringItem</code>
+ * with an appearance mode of <code>BUTTON</code> should not be wrapped across
+ * rows.  (However, a <code>StringItem</code> with an appearance mode of
+ * <code>HYPERLINK</code> should be wrapped the same way as if its appearance
+ * mode is <code>PLAIN</code>.)</p>
+ * 
+ * <p>A <code>StringItem</code> or <code>ImageItem</code>
+ * in <code>BUTTON</code> mode can be used to create a
+ * button-based user interface.  This can easily lead to applications that are
+ * inconvenient to use.  For example, in a traversal-based system, users must
+ * navigate to a button before they can invoke any commands on it.  If buttons
+ * are spread across a long <code>Form</code>, users may be required
+ * to perform a
+ * considerable amount of navigation in order to discover all the available
+ * commands.  Furthermore, invoking a command from a button at the
+ * other end of the <code>Form</code> can be quite cumbersome.
+ * Traversal-based systems
+ * often provide a means of invoking commands from anywhere (such as from a
+ * menu), without the need to traverse to a particular item.  Instead of
+ * adding a command to a button and placing that button into a
+ * <code>Form</code>, it would
+ * often be more appropriate and convenient for users if that command were
+ * added directly to the <code>Form</code>.  Buttons should be used
+ * only in cases where
+ * direct user interaction with the item's string or image contents is
+ * essential to the user's understanding of the commands that can be invoked
+ * from that item.</p>
+ * 
+ * <h3>Default State</h3>
+ * 
+ * <p>Unless otherwise specified by a subclass, the default state of newly
+ * created <code>Items</code> is as follows:</p>
+ * 
+ * <ul>
+ * <li>the <code>Item</code> is not contained within
+ * (&quot;owned by&quot;) any container;</li>
+ * <li>there are no <code>Commands</code> present;</li>
+ * <li>the default <code>Command</code> is <code>null</code>;</li>
+ * <li>the <code>ItemCommandListener</code> is <code>null</code>;</li>
+ * <li>the layout directive value is <code>LAYOUT_DEFAULT</code>; and</li>
+ * <li>both the preferred width and preferred height are unlocked.</li>
+ * </ul>
+ * 
+ * @since MIDP 1.0
  */
 public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 {
@@ -115,7 +442,6 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 
 	
 	//////////////  END DEFAULT IMPLEMENTATION OF CUSTOM ITEM METHODS  /////////////////////////////
-
 	
 	/**
 	 * A J2ME Polish constant defining a transparent/invisible color.
@@ -336,6 +662,8 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	public static final int INTERACTIVE = 3;
 	
+	private static final ArrayList COMMANDS = new ArrayList();
+	
 	protected int layout;
 	protected ItemCommandListener itemCommandListener;
 	protected Command defaultCommand;
@@ -350,10 +678,13 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		protected int maximumHeight;
 	//#endif
 	protected boolean isInitialized;
+	/** the background of this item  */
 	public Background background;
 	protected Border border;
 	protected Style style;
+	/** the width of this item - only for read access */
 	public int itemWidth;
+	/** the height of this item - only for read access */
 	public int itemHeight;
 	protected int paddingLeft;
 	protected int paddingTop;
@@ -405,9 +736,9 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	protected boolean isLayoutRight;
 	// the current positions of this item:
 	/** the horizontal start position relative to it's parent's item left content edge */
-	protected int relativeX;
+	public int relativeX;
 	/** the vertical start position of this item relative to it's parent item top content edge */
-	public int relativeY; // relativ to parent item
+	public int relativeY; 
 	/** the horizontal position of this item's content relative to it's left edge */
 	protected int contentX;
 	/** the vertical position of this item's content relative to it's top edge */
@@ -447,10 +778,16 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	protected StringItem label;
 	private boolean useSingleRow;
 	//#if polish.blackberry
+		/** a blackberry specific internal field */
 		public Field _bbField;
+		/** a blackberry specific internal field */
 		public boolean _bbFieldAdded;
 	//#endif
 	protected Style focusedStyle;
+	//#if polish.css.pressed-style
+		private Style pressedStyle;
+		private Style normalStyle;
+	//#endif
 
 	//#if polish.css.colspan
 		protected int colSpan = 1;
@@ -464,11 +801,22 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	/** The vertical offset for the background, can be used for smoother scrolling, for example */ 
 	protected int backgroundYOffset;
 
-	private HashMap attributes;
-
 	//#ifdef polish.css.view-type
 		protected ItemView view;
+		protected boolean preserveViewType;
 	//#endif
+	//#if polish.supportInvisibleItems
+		//#define tmp.invisible
+		protected boolean isInvisible;
+		private int invisibleAppearanceModeCache;
+		private int invisibleItemHeight;
+	//#endif
+	protected boolean isShown;
+	private HashMap attributes;
+
+	protected boolean isPressed;
+
+	private ItemStateListener itemStateListener;
 
 	
 	protected FakeCustomItem() {
@@ -522,7 +870,6 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	{
 		if (this.label == null) {
 			this.label = new StringItem( null, label, this.labelStyle );
-			this.label.parent = this.parent;
 		} else {
 			this.label.setText( label );
 		}
@@ -582,7 +929,13 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	public void setLayout(int layout)
 	{
-		this.layout = layout;
+		if (layout != this.layout) {
+			this.layout = layout;
+			if (this.isInitialized) {
+				this.isInitialized = false;
+				repaint();
+			}
+		}
 	}
 
 	/**
@@ -623,13 +976,13 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	public void setStyle( Style style ) {
 		//#debug
-		System.out.println("setting style - with background: " + (style.background != null));
+		System.out.println("setting style " + style.name + " - with background: " + (style.background) );
 		this.isInitialized = false;
 		this.isStyleInitialised = true;
 		this.style = style;
-		if (style != StyleSheet.defaultStyle) {
+		//if (style != StyleSheet.defaultStyle) {
 			this.layout = style.layout;
-		}
+		//}
 		// horizontal styles: center -> right -> left
 		if ( ( this.layout & LAYOUT_CENTER ) == LAYOUT_CENTER ) {
 			this.isLayoutCenter = true;
@@ -642,7 +995,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				this.isLayoutRight = false;
 			}
 		}
-		//System.out.println(" style [" + style.name + "]: right: " + this.isLayoutRight + " center: " + this.isLayoutCenter);
+		
 		// vertical styles: vcenter -> bottom -> top
 		// expanding layouts:
 		if ( ( this.layout & LAYOUT_EXPAND ) == LAYOUT_EXPAND ) {
@@ -650,6 +1003,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		} else {
 			this.isLayoutExpand = false;
 		}
+		//System.out.println( this + " style [" + style.name + "]: right: " + this.isLayoutRight + " center: " + this.isLayoutCenter + " expand: " + this.isLayoutExpand + " layout=" + Integer.toHexString(this.layout));
 		this.background = style.background;
 		this.border = style.border;
 		if (this.border != null) {
@@ -763,6 +1117,13 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 //				}
 			}
 		//#endif
+		//#if polish.css.pressed-style
+			Style pressed = (Style) style.getObjectProperty("pressed-style");
+			if (pressed != null) {
+				this.pressedStyle = pressed;
+			}
+		//#endif
+
 		//#if polish.css.colspan
 			Integer colSpanInt = style.getIntProperty("colspan");
 			if ( colSpanInt != null ) {
@@ -780,22 +1141,12 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 //			if (this instanceof ChoiceGroup) {
 //				System.out.println("SET.STYLE / CHOICEGROUP: found view-type (1): " + (viewType != null) + " for " + this);
 //			}
-			if (viewType != null) {
-				if (this.view == null || this.view.getClass() != viewType.getClass()) {
-					try {
-						if (viewType.parentItem != null) {
-							viewType = (ItemView) viewType.getClass().newInstance();
-						}
-						viewType.parentItem = null;
-						this.view = viewType;
-					} catch (Exception e) {
-						//#debug error
-						System.out.println("Container: Unable to init view-type " + e );
-						viewType = null;
-					}
-				}
+		//#endif
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.setStyle(style);
 			}
-		//#endif		
+		//#endif
 	}
 	
 	/**
@@ -825,6 +1176,9 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	public int getItemHeight( int firstLineWidth, int lineWidth ) {
 		if (!this.isInitialized || this.itemWidth > lineWidth) {
+//			if (this.itemWidth > lineWidth) {
+//				System.out.println("trigger re-initialise lineWidth=" + lineWidth + ", itemWidth=" + itemWidth);
+//			}
 			init( firstLineWidth, lineWidth );
 		}
 		return this.itemHeight;
@@ -851,16 +1205,52 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @throws NullPointerException if cmd is null
 	 * @since  MIDP 2.0
 	 */
-	public void addCommand( Command cmd)
+	public void addCommand( Command cmd) {
+		addCommand( cmd, null );
+	}
+	
+	/**
+	 * Adds a context sensitive <code>Command</code> to the item.
+	 * The semantic type of
+	 * <code>Command</code> should be <code>ITEM</code>. The implementation
+	 * will present the command
+	 * only when the item is active, for example, highlighted.
+	 * <p>
+	 * If the added command is already in the item (tested by comparing the
+	 * object references), the method has no effect. If the item is
+	 * actually visible on the display, and this call affects the set of
+	 * visible commands, the implementation should update the display as soon
+	 * as it is feasible to do so.
+	 * 
+	 * <p>It is illegal to call this method if this <code>Item</code>
+	 * is contained within an <code>Alert</code>.</p>
+	 * 
+	 * @param cmd the command to be added
+	 * @param commandStyle the style of the command, for the moment this is ignored
+	 * @throws IllegalStateException if this Item is contained within an Alert
+	 * @throws NullPointerException if cmd is null
+	 * @since  MIDP 2.0
+	 */
+	public void addCommand( Command cmd, Style commandStyle )
 	{
 		if (this.commands == null) {
 			this.commands = new ArrayList();
 		}
 		if (!this.commands.contains( cmd )) {
 			this.commands.add(cmd);
-			if (this.appearanceMode == PLAIN) {
-				this.appearanceMode = HYPERLINK;
-			}
+			//#if tmp.invisible
+				if (this.isInvisible) {
+					if (this.invisibleAppearanceModeCache == PLAIN) {
+						this.invisibleAppearanceModeCache = HYPERLINK;
+					}
+				} else {
+			//#endif
+					if (this.appearanceMode == PLAIN) {
+						this.appearanceMode = HYPERLINK;
+					}
+			//#if tmp.invisible
+				}
+			//#endif
 			if (this.isFocused) {
 				Screen scr = getScreen();
 				if (scr != null) {
@@ -873,7 +1263,27 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		}
 	}
 
+	/**
+	 * Repaints the complete screen to which this item belongs to.
+	 * Subclasses can call this method whenever their contents
+	 * have changed and they need an immediate refresh.
+	 *  
+	 * @see #repaint()
+	 * @see #repaint(int, int, int, int)
+	 */
+	protected void repaintFully() {
+		//repaint( this.relativeX, this.relativeY, this.itemWidth, this.itemHeight );
+		//if (this.parent instanceof Container) {
+		//	((Container) this.parent).isInitialized = false;
+		//}
+		Screen scr = getScreen();
+		if (scr != null && scr == StyleSheet.currentScreen) {
+			scr.requestRepaint( );
+		}
+	}
 	
+	
+
 	
 	/**
 	 * Requests that this item and all its parents are to be re-initialised at the next repainting.
@@ -882,17 +1292,16 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * usual.
 	 * When the item already has been initialised, a repaint() is requested, too.
 	 */
-	protected void requestInit() {
+	public void requestInit() {
 		//System.out.println("requestInit called by class " + getClass().getName() + " - screen.class=" + getScreen().getClass().getName()  );
-		Item p = this.parent;
-		while ( p != null) {
-			p.isInitialized = false;
-			p = p.parent;
+		this.isInitialized = false;
+		Screen scr = getScreen();
+		if (scr != null) {
+			//if (scr.checkForRequestInit(this)) {
+				scr.requestInit();
+			//}
 		}
-		if (this.isInitialized) {
-			this.isInitialized = false;
-			repaint();
-		}
+		repaint();
 	}
 	
 	/**
@@ -901,17 +1310,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @return either the corresponding screen or null when no screen could be found 
 	 */
 	public Screen getScreen() {
-		if (this.screen != null) {
-			return this.screen;
-		} else if (this.parent != null) {
-			Item p = this.parent;
-			while (p.parent != null) {
-				p = p.parent;
-			}
-			return p.screen;
-		} else {
-			return null;
-		}
+		return null;
 	}
 
 	/**
@@ -982,6 +1381,44 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	public void setItemCommandListener( ItemCommandListener l)
 	{
 		this.itemCommandListener = l;
+	}
+	
+	
+	/**
+	 * Gets the listener for <code>Commands</code> to this <code>Item</code>.
+	 * 
+	 * When no listener is registered, null is returned
+	 * 
+	 * <p>It is illegal to call this method if this <code>Item</code>
+	 * is contained within an <code>Alert</code>.</p>
+	 * 
+	 * @return the ItemCommandListener associated with this item
+	 */
+	public ItemCommandListener getItemCommandListener()
+	{
+		return this.itemCommandListener;
+	}
+	
+	/**
+	 * Sets an ItemStateListener specifically for this item.
+	 * Change events are forwarded to both this listener as well as a possibly set listener of the
+	 * corresponding screen.
+	 * 
+	 * @param listener the listener which is set specifically for this item.
+	 */
+	public void setItemStateListener(ItemStateListener listener ) {
+		this.itemStateListener = listener;
+	}
+	
+	/**
+	 * Gets an ItemStateListener specifically for this item.
+	 * Change events are forwarded to both this listener as well as a possibly set listener of the
+	 * corresponding screen.
+	 * 
+	 * @return the listener which has been set specifically for this item.
+	 */
+	public ItemStateListener getItemStateListener() {
+		return this.itemStateListener;
 	}
 
 	/**
@@ -1171,21 +1608,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	public void notifyStateChanged()
 	{
-		
-		Screen scr = StyleSheet.currentScreen;
-		if (scr == null) {
-			scr = getScreen();
-		}
-		//#ifndef polish.skipArgumentCheck
-			if ( (!(scr instanceof Form)) || (scr == null)) {
-				//#ifdef polish.verboseDebug
-					throw new IllegalStateException("notifyStateChanged() is valid only for items in Forms.");
-				//#else
-					//# throw new IllegalStateException();
-				//#endif
-			}
-		//#endif
-//		((Form) scr).addToStateNotifyQueue(this);
+		// ignore
 	}
 	
 	/**
@@ -1201,10 +1624,14 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @param g the Graphics on which this item should be painted.
 	 */
 	public void paint( int x, int y, int leftBorder, int rightBorder, Graphics g ) {
+		//#if tmp.invisible
+			if (this.isInvisible) {
+				return;
+			}
+		//#endif
+
 		// initialise this item if necessary:
 		int availableWidth = rightBorder - leftBorder;
-		int originalX = x;
-		int originalY = y;
 		if (!this.isInitialized || (availableWidth < this.itemWidth )) {
 			//#if polish.debug.info
 			if (availableWidth < this.itemWidth ) {
@@ -1215,7 +1642,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			init( rightBorder - x, availableWidth );
 		}
 		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
-		
+
 		// paint background and border when the label should be included in this:
 		//#if polish.css.include-label
 			if (this.includeLabel) {
@@ -1223,12 +1650,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				int height = this.itemHeight - this.marginTop - this.marginBottom;
 				int bX = x + this.marginLeft;
 				int bY = y + this.marginTop + this.backgroundYOffset;
-				if ( this.background != null ) {
-					this.background.paint(bX, bY, width, height, g);
-				}
-				if ( this.border != null ) {
-					this.border.paint(bX, bY, width, height, g);
-				}
+				paintBackgroundAndBorder( bX, bY, width, height, g );
 			}
 		//#endif
 		
@@ -1256,7 +1678,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 
 		//System.out.println( this.style.name + ":  decreasing rightBorder by " + (this.marginRight + this.borderWidth + this.paddingRight));
 		if ( this.isLayoutCenter  && availableWidth > this.itemWidth) {
-			int difference = (availableWidth - this.itemWidth) / 2; 
+			int difference = (availableWidth - this.itemWidth) >> 1; 
 			x += difference;
 			if (isLayoutShrink) {
 				leftBorder += difference;
@@ -1282,13 +1704,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#if polish.css.include-label
 			if (!this.includeLabel) {
 		//#endif
-				if (this.background != null) {
-					this.background.paint(x, y + this.backgroundYOffset, this.backgroundWidth, this.backgroundHeight, g);
-				}
-				// paint border:
-				if (this.border != null) {
-					this.border.paint(x, y + this.backgroundYOffset, this.backgroundWidth, this.backgroundHeight, g);
-				}
+				paintBackgroundAndBorder(x, y, this.backgroundWidth, this.backgroundHeight, g);
 		//#if polish.css.include-label
 			}
 		//#endif
@@ -1309,7 +1725,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 				if ( isVerticalCenter ) {
 //					System.out.println("vertical: adjusting contY by " + ((this.minimumHeight - this.contentHeight) / 2)
 //							+ ", contentHeight=" + this.contentHeight + ", minHeight=" + this.minimumHeight );
-					y += (minHeight - this.contentHeight) / 2; 
+					y += ((minHeight - this.contentHeight) >> 1); 
 				} else if ( isBottom ) {
 					//System.out.println("bottom: adjusting contY by " + (this.minimumHeight - this.contentHeight) );
 					y += (minHeight - this.contentHeight);
@@ -1326,7 +1742,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 					} else if (isBottom) {
 						beforeY += yAdjustment;
 					} else {
-						beforeY -= yAdjustment / 2;
+						beforeY -= (yAdjustment >> 1);
 					}
 				} else {
 					if (isTop) {
@@ -1334,7 +1750,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 					} else if (isBottom) {
 						y += yAdjustment;
 					} else {
-						y += yAdjustment / 2;
+						y += (yAdjustment >> 1);
 					}
 					//contY += (this.beforeHeight - this.contentHeight) / 2;
 				}
@@ -1354,7 +1770,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 					} else if (isBottom) {
 						afterY += yAdjustment;
 					} else {
-						afterY -= yAdjustment / 2;
+						afterY -= (yAdjustment >> 1);
 					}
 					//afterY += (this.contentHeight - this.afterHeight) / 2;
 				} else {
@@ -1366,7 +1782,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 						} else if (isBottom) {
 							y = originalContentY + yAdjustment;
 						} else {
-							y = originalContentY + yAdjustment / 2;
+							y = originalContentY + (yAdjustment >> 1);
 						}
 						//contY = originalContentY + (this.afterHeight - this.contentHeight) / 2;
 					//#ifdef polish.css.before
@@ -1377,21 +1793,55 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			}
 		//#endif
 		
-
 		// paint content:
-		this.contentX = x - originalX;
-		this.contentY = y - originalY;
-		//#ifdef polish.css.view-type
-			if (this.view != null) {
-//				this.view.paintContent( this, x, y, leftBorder, rightBorder, g);
-			} else {
-		//#endif
-				paintContent( x, y, leftBorder, rightBorder, g );				
-		//#ifdef polish.css.view-type
-			}
-		//#endif
+		
 	}
 	
+	/**
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param g
+	 */
+	protected void paintBackgroundAndBorder(int x, int y, int width, int height, Graphics g) {
+		if ( this.background != null ) {
+			int bWidth = this.borderWidth;
+			if ( this.border != null ) {
+				x += bWidth;
+				y += bWidth;
+				width -= (bWidth << 1);
+				height -= (bWidth << 1);
+			}
+			//#if polish.css.view-type
+				if (this.view != null) {
+					this.view.paintBackground( this.background, x, y, width, height, g );
+				} else {
+			//#endif
+					this.background.paint(x, y, width, height, g);
+			//#if polish.css.view-type
+				}
+			//#endif
+			if (this.border != null) {
+				x -= bWidth;
+				y -= bWidth;
+				width += (bWidth << 1);
+				height += (bWidth << 1);				
+			}
+		}
+		if ( this.border != null ) {
+			//#if polish.css.view-type
+				if (this.view != null) {
+					this.view.paintBorder( this.border, x, y, width, height, g );
+				} else {
+			//#endif
+					this.border.paint(x, y, width, height, g);
+			//#if polish.css.view-type
+				}
+			//#endif
+		}
+	}
+
 	/**
 	 * Initialises this item.
 	 * You should always call super.init( firstLineWidth, lineWidth) when overriding this method.
@@ -1406,7 +1856,17 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	protected void init( int firstLineWidth, int lineWidth ) {
 		//#debug
-		System.out.println("intialising item " + this.getClass().getName() + " (" + this + ")");
+		System.out.println("intialising item " + this.getClass().getName() + " (" + this + ") with lineWidths " + firstLineWidth + "/" + lineWidth);
+		//#if tmp.invisible
+			if (this.isInvisible) {
+				//#debug 
+				System.out.println("init: Aborting init due to invisibility for item " + this );
+				this.itemWidth = 0;
+				this.itemHeight = 0;
+				return;
+			}
+ 		//#endif
+		
 		if (this.style != null && !this.isStyleInitialised) {
 			setStyle( this.style );
 		}
@@ -1445,6 +1905,8 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			System.out.println("INVALID NONE CONTENT WIDTH=" + noneContentWidth);
 		}
 		*/
+		int firstLineContentWidth;
+		int availableContentWidth;
 		//#ifdef polish.css.max-width
 			int firstLineAdjustedWidth = firstLineWidth;
 			int lineAdjustedWidth = lineWidth;
@@ -1456,25 +1918,18 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 					lineAdjustedWidth = this.maximumWidth;
 				}
 			}
-			int firstLineContentWidth = firstLineAdjustedWidth - noneContentWidth;
-			int availableContentWidth = lineAdjustedWidth - noneContentWidth;
+			firstLineContentWidth = firstLineAdjustedWidth - noneContentWidth;
+			availableContentWidth = lineAdjustedWidth - noneContentWidth;
 		//#else
-			//# int firstLineContentWidth = firstLineWidth - noneContentWidth;
-			//# int availableContentWidth = lineWidth - noneContentWidth;
+			firstLineContentWidth = firstLineWidth - noneContentWidth;
+			availableContentWidth = lineWidth - noneContentWidth;
 		//#endif
 		
+		this.contentX = this.marginLeft + this.borderWidth + this.paddingLeft;
+		this.contentY = this.marginTop + this.borderWidth + this.paddingTop; 
+		
 		// initialise content by subclass:
-		//#ifdef polish.css.view-type
-			if (this.view != null) {
-//				this.view.initContent(this, firstLineContentWidth, availableContentWidth);
-				this.contentWidth = this.view.contentWidth;
-				this.contentHeight = this.view.contentHeight;
-			} else {
-		//#endif
-				initContent( firstLineContentWidth, availableContentWidth );
-		//#ifdef polish.css.view-type
-			}
-		//#endif
+		
 		
 		if (this.contentWidth == 0 && this.contentHeight == 0) {
 			this.itemWidth = labelWidth;
@@ -1484,11 +1939,17 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			this.isInitialized = true;
 			return;
 		}
+		
 		this.itemWidth = noneContentWidth + this.contentWidth;
 		//#ifdef polish.css.min-width
-		if (this.itemWidth < this.minimumWidth ) {
-			this.itemWidth = this.minimumWidth;
-		}
+			if (this.itemWidth < this.minimumWidth ) {
+				this.itemWidth = this.minimumWidth;
+			}
+		//#endif
+		//#ifdef polish.css.max-width
+			if (this.maximumWidth != 0 && this.itemWidth > this.maximumWidth ) {
+				this.itemWidth = this.maximumWidth;
+			}
 		//#endif
 		int cHeight = this.contentHeight;
 		//#ifdef polish.css.before
@@ -1503,15 +1964,31 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//#endif
 		int noneContentHeight = this.marginTop + this.borderWidth + this.paddingTop 
 			  + this.paddingBottom + this.borderWidth + this.marginBottom;
+		//#if polish.css.before || polish.css.after || polish.css.min-height  || polish.css.max-height
+			boolean isVerticalCenter = (this.layout & LAYOUT_VCENTER) == LAYOUT_VCENTER; 
+			//boolean isTop = !isVerticalCenter && (this.layout & LAYOUT_TOP) == LAYOUT_TOP; 
+			boolean isBottom = !isVerticalCenter && (this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM;
+			if (cHeight > this.contentHeight) {
+				if (isVerticalCenter) {
+					this.contentY = ( (cHeight - this.contentHeight) >> 1);
+				} else if (isBottom) {
+					this.contentY = ( cHeight - this.contentHeight );
+				}
+			}
+		//#endif
 		if (this.itemWidth + labelWidth <= lineWidth) {
 			// label and content fit on one row:
-			this.itemWidth += labelWidth;
 			this.useSingleRow = true;
 			if (this.label != null) {
 				if ( (this.label.layout & LAYOUT_NEWLINE_AFTER) != 0 || ((this.layout & LAYOUT_NEWLINE_BEFORE) == LAYOUT_NEWLINE_BEFORE )) {
 					this.useSingleRow = false;
 					cHeight += labelHeight;
+					this.contentY += labelHeight;
 				}
+			}
+			if (this.useSingleRow) {
+				this.itemWidth += labelWidth;
+				this.contentX += labelWidth;
 			}
 			if ( cHeight + noneContentHeight < labelHeight ) {
 				cHeight = labelHeight - noneContentHeight;
@@ -1519,6 +1996,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		} else {
 			this.useSingleRow = false;
 			cHeight += labelHeight;
+			this.contentY += labelHeight;
 		}
 		if ( this.isLayoutExpand ) {
 			this.itemWidth = lineWidth;
@@ -1553,6 +2031,12 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 							  - this.marginBottom
 							  - labelHeight;
 		}
+		//#if tmp.invisible
+			if (this.isInvisible) {
+				this.itemWidth = 0;
+				this.itemHeight = 0;
+			}
+		//#endif
 		this.isInitialized = true;
 		//#debug
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
@@ -1575,7 +2059,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			this.cssSelector = createCssSelector();
 			//#debug
 			System.out.println("getting style for item [" + this.cssSelector + "].");
-//			setStyle( StyleSheet.getStyle( this ) );
+
 		} else {
 			//System.out.println("item has already style [" + this.style.name + "].");
 			this.cssSelector = this.style.name;
@@ -1654,11 +2138,9 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
 		//#debug
 		System.out.println("item " + this + ": handling keyPressed for keyCode=" + keyCode + ", gameAction=" + gameAction);
-		if ((gameAction == Canvas.FIRE) 
-				&& (this.defaultCommand != null)
-				&& (this.itemCommandListener != null)) {
-//			this.itemCommandListener.commandAction(this.defaultCommand, this);
-			return true;
+		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) && this.appearanceMode != PLAIN )
+		{
+			return notifyItemPressedStart();
 		}
 		return false;
 	}
@@ -1692,10 +2174,70 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @see #handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
+		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
+				&& this.appearanceMode != PLAIN && this.isPressed )
+		{
+			notifyItemPressedEnd();
+
+		}
+
 		return false;
 	}
 
 	
+	/**
+	 * Is called when an item is pressed using the FIRE game action
+	 * 
+	 * @return true when the item requests a repaint after this action
+	 */
+	protected boolean notifyItemPressedStart() {
+		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
+		//#debug
+		System.out.println("notifyItemPressedStart");
+		this.isPressed = true;
+		boolean handled = false;
+		//#if polish.css.pressed-style
+			//System.out.println("notifyItemPressedStart for " + this + ", pressedStyle=" + this.pressedStyle);
+			if (this.pressedStyle != null && this.style != this.pressedStyle) {
+				this.normalStyle = this.style;
+				setStyle( this.pressedStyle );
+				handled = true;
+			}
+		//#endif
+		//#if polish.handleEvents
+			EventManager.getInstance().triggerEventStart( EventManager.EVENT_PRESSED, this, null); 
+		//#endif
+		return handled;
+	}
+	
+	/**
+	 * Is called when an item is pressed
+	 */
+	protected void notifyItemPressedEnd() {
+		//#debug
+		System.out.println("notifyItemPressedEnd");
+		this.isPressed = false;
+		//#if polish.css.pressed-style
+			Style previousStyle = this.normalStyle;
+			if (previousStyle != null && this.style != previousStyle) {
+				//#ifdef polish.css.view-type
+					boolean removeViewType = ( this.style.getObjectProperty("view-type") != null  && previousStyle.getObjectProperty( "view-type") == null); 
+				//#endif
+				setStyle( previousStyle );
+				this.normalStyle = null;
+				//#ifdef polish.css.view-type
+					if (removeViewType) {
+						this.view = null;
+					}
+				//#endif
+			}
+		//#endif
+		//#if polish.handleEvents
+			EventManager.getInstance().triggerEventEnd( EventManager.EVENT_PRESSED, this, null); 
+		//#endif
+	}
+
+
 	/**
 	 * Determines whether the given relative x/y position is inside of this item's content area.
 	 * Subclasses which extend their area over the declared/official content area, which is determined
@@ -1710,12 +2252,18 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	public boolean isInContentArea( int relX, int relY ) {
 		int contTop = this.contentY;
 		if ( relY < contTop || relY > contTop + this.contentHeight ) {
+			//#debug
+			System.out.println("isInContentArea(" + relX + "," + relY + ") = false: contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
 			return false;
 		}
 		int contLeft = this.contentX;
 		if (relX < contLeft || relX > contLeft + this.contentWidth) {
+			//#debug
+			System.out.println("isInContentArea(" + relX + "," + relY + ") = false: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + " (" + this +")");
 			return false;
 		}
+		//#debug
+		System.out.println("isInContentArea(" + relX + "," + relY + ") = true: contentX=" + this.contentX + ", contentX + contentWidth=" + (contLeft + this.contentWidth) + ", contentY=" + this.contentY + ", contentY + contentHeight=" + (contTop + this.contentHeight) + " (" + this +")");
 		return true;
 	}
 
@@ -1733,10 +2281,12 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	public boolean isInItemArea( int relX, int relY ) {
 		// problem:
 		// itemWidth can be smaller than the available width - when then a center or right layout is used, then this fucks up...
-		if (relY < 0 || relY > this.itemHeight || relX < 0 || relX > this.itemWidth) {
+		if (relY < 0 || relY > this.itemHeight || relX < 0 || relX > Math.max(this.itemWidth, this.contentX + this.contentWidth)) {
+			//#debug
 			System.out.println("isInItemArea(" + relX + "," + relY + ") = false: itemWidth=" + this.itemWidth + ", itemHeight=" + this.itemHeight + " (" + this + ")");
 			return false;
 		}
+		//#debug
 		System.out.println("isInItemArea(" + relX + "," + relY + ") = true: itemWidth=" + this.itemWidth + ", itemHeight=" + this.itemHeight + " (" + this + ")");
 		return true;
 	}
@@ -1757,6 +2307,8 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @see #isInItemArea(int, int) this method is used for determining whether the event belongs to this item
 	 * @see #isInContentArea(int, int) for a helper method for determining whether the event took place into the actual content area
 	 * @see #handleKeyPressed(int, int) 
+	 * @see #contentX for calculating the horizontal position relative to the content (relX - contentX)
+	 * @see #contentY for calculating the vertical position relative to the content (relY - contentY)
 	 */
 	protected boolean handlePointerPressed( int relX, int relY ) {
 		if ( isInItemArea(relX, relY)) {
@@ -1767,17 +2319,76 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	//#endif
 	
 	/**
+	 * Adds a region relative to this item's content x/y start position.
+	 * @param repaintRegion the clipping region
+	 * @param x horizontal start relative to this item's content position
+	 * @param y vertical start relative to this item's content position
+	 * @param width width
+	 * @param height height
+	 */
+	protected void addRelativeRegion(ClippingRegion repaintRegion, int x, int y, int width, int height) {
+		repaintRegion.addRegion( 
+				getAbsoluteX() + this.contentX + x, 
+				getAbsoluteY() + this.contentY + y,
+				width,
+				height 
+				);
+	}
+	
+	/**
 	 * Animates this item.
 	 * Subclasses can override this method to create animations.
-	 * The default implementation just animates the background if present.
+	 * The default implementation animates the background and the item view if present.
+	 * 
+	 * @param currentTime the current time in milliseconds
+	 * @param repaintRegion the repaint area that needs to be updated when this item is animated
+	 * @see #addRelativeRegion(ClippingRegion, int, int, int, int)
+	 */
+	public void animate( long currentTime, ClippingRegion repaintRegion) {
+		if (animate()) {
+			repaintRegion.addRegion( getAbsoluteX(), getAbsoluteY(), this.itemWidth, this.itemHeight );
+		}
+		//#if polish.css.view-type
+			if (this.view != null) {
+				this.view.animate(currentTime, repaintRegion);
+			}
+		//#endif
+	}
+	
+	
+	/**
+	 * Animates this item.
+	 * Subclasses can override this method to create animations.
+	 * The default implementation animates the background and the item view if present.
 	 * 
 	 * @return true when this item has been animated.
 	 */
 	public boolean animate() {
+		boolean animated = false;
 		if (this.background != null) {
-			return this.background.animate();
+			animated = this.background.animate();
 		}
-		return false;
+		if (this.border != null) {
+			animated |= this.border.animate();
+		}
+		return animated;
+	}
+	
+	/**
+	 * Retrieves the approriate style for focusing this item.
+	 * This is either a item specific one or one inherit by its parents.
+	 * When no parent has a specific focus style, the StyleSheet.focusedStyle is used.
+	 * 
+	 * @return the style used for focussing this item.
+	 */
+	public Style getFocusedStyle() {
+		if (this.focusedStyle != null) {
+			return this.focusedStyle;
+		} else if (this.parent != null) {
+			return this.parent.getFocusedStyle();
+		} else {
+			return StyleSheet.focusedStyle;
+		}
 	}
 
 	/**
@@ -1791,27 +2402,72 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	protected Style focus( Style newStyle, int direction ) {
 		Style oldStyle = this.style;
+		if (!this.isStyleInitialised && oldStyle != null) {
+			setStyle( oldStyle );
+		}
 		if (this.focusedStyle != null) {
 			newStyle = this.focusedStyle;
-		} 
+		} else if (newStyle == null) {
+			newStyle = getFocusedStyle();
+		}
+		//#if polish.css.view-type
+			this.preserveViewType = true;
+		//#endif
 		setStyle( newStyle );
+		//#if polish.css.view-type
+			this.preserveViewType = false;
+		//#endif
 		this.isFocused = true;
 		// now set any commands of this item:
 		if (this.commands != null) {
-			Screen scr = getScreen();
-			if (scr != null) {
-//				scr.setItemCommands(this);
-			}
+			showCommands();
 		}
 		// when an item is focused, it usually grows bigger, so
 		// increase the bottom position a bit:
-		this.itemHeight += 5;
+		//this.itemHeight += 5;
 		if (oldStyle == null) {
 			oldStyle = StyleSheet.defaultStyle;
 		}
 		return oldStyle;
 	}
 	
+	/**
+	 * Shows the commands on the screen.
+	 */
+	public void showCommands() {
+		COMMANDS.clear();
+		showCommands( COMMANDS );
+	}
+	/**
+	 * Shows the commands on the screen.
+	 * 
+	 * @param commandsList an ArrayList with the commands from this item.
+	 */
+	protected void showCommands(ArrayList commandsList) {
+		if (this.commands != null) {
+			commandsList.addAll( this.commands );
+		}
+		if (this.parent != null) {
+			this.parent.showCommands(commandsList);
+					
+		}
+	}
+	
+	/**
+	 * Tries to handle the specified command.
+	 * The item checks if the command belongs to this item and if it has an associated ItemCommandListener.
+	 * Only then it handles the command.
+	 * @param cmd the command
+	 * @return true when the command has been handled by this item
+	 */
+	protected boolean handleCommand( Command cmd ) {
+		if (this.commands == null || this.itemCommandListener == null || !this.commands.contains(cmd) ) {
+			return false;
+		}
+		
+		return false;
+	}
+
 	/**
 	 * Removes the focus from this item.
 	 * 
@@ -1828,12 +2484,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		}
 		this.isFocused = false;
 		// now remove any commands which are associated with this item:
-		if (this.commands != null) {
-			Screen scr = getScreen();
-			if (scr != null) {
-//				scr.removeItemCommands(this);
-			}
-		}
+		
 	}
 
 	/**
@@ -1842,11 +2493,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * The item may receive <code>paint()</code> calls after
 	 * <code>showNotify()</code> has been called.
 	 * 
-	 * <p>The default implementation of this method does nothing.</p>
+	 * <p>The default implementation of this method sets the isShown field to true.</p>
 	 */
 	protected void showNotify()
 	{
-		//default implementation does nothing
+		this.isShown = true;
 	}
 
 	/**
@@ -1855,11 +2506,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * further <code>paint()</code> calls will be made on this item
 	 * until after a <code>showNotify()</code> has been called again.
 	 * 
-	 * <p>The default implementation of this method does nothing.</p>
+	 * <p>The default implementation of this method sets the isShown field to false.</p>
 	 */
 	protected void hideNotify()
 	{
-		//default implementation does nothing
+		this.isShown = false;
 	}
 	
 	/**
@@ -1876,7 +2527,6 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 			return;
 		}
 		
-//		myScreen.focus( this );
 		display.setCurrent( myScreen );
 	}
 	
@@ -1916,13 +2566,156 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		return this.attributes.get( key );
 	}
   
-  /**
-   * Returns a HashMap object with all registered attributes.
-   * 
-   * @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
-   */
-  public HashMap getAttributes() {
-    return this.attributes;
-  }
+	/**
+	* Returns a HashMap object with all registered attributes.
+	* 
+	* @return a HashMap object with all attribute key/value pairs, null if no attribute was stored before.
+	*/
+	public HashMap getAttributes() {
+		return this.attributes;
+	}
+	
+	/**
+	 * Determines if this item or one of it's children is within the specified point.
+	 * The default implementation returns this item or this item's label when the position fits.
+	 * 
+	 * @param relX the x position of the point relative to this item's left position
+	 * @param relY the y position of the point relative to this item's top position
+	 * @return this item or one of it's children, when the position fits, otherwise null is returned 
+	 */
+	public Item getItemAt( int relX, int relY ) {
+		return null;
+	}
+	
+	/**
+	 * Retrieves this item's current absolute horizontal position
+	 * 
+	 * @return the absolute x position of this item in pixel.
+	 */
+	public int getAbsoluteX() {
+		int absX = this.relativeX;
+		if (this.label != null && this.useSingleRow && !this.isLayoutCenter && !this.isLayoutRight) {
+			// hack for left align with additional label:
+			absX += this.contentX;
+		}
+		return absX;
+	}
+	
+	/**
+	 * Retrieves this item's current absolute horizontal position
+	 * 
+	 * @return the absolute x position of this item in pixel.
+	 */
+	public int getAbsoluteY() {
+		int absY = this.relativeY; // + this.contentY; in that case no label is included anymore
+		return absY;
+	}
+	
+	/**
+	 * Retrieves the start of the content relative to this item's absolute x position.
+	 * @return the horizontal start of the content
+	 * @see #getAbsoluteX()
+	 */
+	public int getContentX() {
+		return this.contentX;
+	}
+	
+	/**
+	 * Retrieves the start of the content relative to this item's absolute y position.
+	 * @return the vertical start of the content
+	 * @see #getAbsoluteY()
+	 */
+	public int getContentY() {
+		return this.contentY;
+	}
+
+	/**
+	 * Retrieves the parent of this item.
+	 * 
+	 * @return this item's parent.
+	 */
+	public Item getParent() {
+		return this.parent;
+	}
+	
+	//#if tmp.invisible
+	/**
+	 * Sets the visible status of this item.
+	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
+	 * Note that you can call this method ONLY when the preprocessing variable polish.supportInvisibleItems is true.
+	 * @param visible true when this item should become visible.
+	 */
+	public void setVisible( boolean visible ) {
+		boolean invisible = !visible;
+		if (invisible == this.isInvisible) {
+			return;
+		}
+//		if (visible) {
+//			System.out.println("+++ SETTING VISIBLE: " + this );
+//		} else {
+//			System.out.println("--- SETTING INVISIBLE: " + this );
+//		}
+
+		if ( invisible ) {
+			this.invisibleAppearanceModeCache = this.appearanceMode;
+			this.invisibleItemHeight = this.itemHeight;
+			this.appearanceMode = PLAIN;
+		} else {
+			this.appearanceMode = this.invisibleAppearanceModeCache;
+		}
+		this.isInvisible = invisible;
+		requestInit();
+	}
+	//#endif
+	//#if tmp.invisible
+	/**
+	 * Gets the visible status of this item.
+	 * Invisible items occupy no space on the UI screen and cannot be focused/traversed. 
+	 * Note that you can call this method ONLY when the preprocessing variable polish.supportInvisibleItems is true.
+	 * @return true when this item is visible.
+	 */
+	public boolean isVisible() {
+		return !this.isInvisible;
+	}
+	//#endif
+
+	//#if polish.debug.error || polish.keepToString
+	/**
+	 * Generates a String representation of this item.
+	 * This method is only implemented when the logging framework is active or the preprocessing variable 
+	 * "polish.keepToString" is set to true.
+	 * @return a String representation of this item.
+	 */
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		if (this.label != null && this.label.text != null) {
+			buffer.append( '"' ).append( this.label.text ).append("\": ");
+		}
+		buffer.append( super.toString() );
+		return buffer.toString();
+	}
+	//#endif
+
+	/**
+	 * Determines whether this item contains the given command.
+	 * 
+	 * @param command the command
+	 * @return true when this item contains this command
+	 */
+	public boolean containsCommand(Command command) {
+		return this.commands != null && this.commands.contains(command);
+	}
+
+	/**
+	 * @return
+	 */
+	public Command getDefaultCommand() {
+		return this.defaultCommand;
+	}
+
+
+//#ifdef polish.Item.additionalMethods:defined
+	//#include ${polish.Item.additionalMethods}
+//#endif
 
 }

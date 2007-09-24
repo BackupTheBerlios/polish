@@ -538,7 +538,7 @@ public class List extends Screen implements Choice
 					//#endif
 				} else {
 					//#if polish.List.suppressMarkCommands != true
-						setItemCommands(this.choiceGroup);
+						setItemCommands(this.choiceGroup.commands, this.choiceGroup);
 					//#endif
 				}
 			}

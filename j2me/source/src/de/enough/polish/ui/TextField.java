@@ -1589,7 +1589,7 @@ public class TextField extends StringItem
 			//#endif
 			this.itemCommandListener = this;
 			if (this.isFocused) {
-				getScreen().setItemCommands( this );
+				showCommands();
 			}
 
 		//#endif

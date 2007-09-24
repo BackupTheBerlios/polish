@@ -340,7 +340,7 @@ public class PredictiveAccess {
 			//#if polish.usePolishGui && !polish.LibraryBuild
 			this.parent.showCaret = false;
 			if (!this.isInChoice) {
-				//# this.parent.getScreen().removeItemCommands( this.parent );
+				this.parent.getScreen().removeItemCommands( this.parent );
 			}
 			//#endif
 			//#if polish.blackberry
@@ -355,7 +355,7 @@ public class PredictiveAccess {
 			// move focus to TextField input again
 			if (this.isInChoice) {
 				//#if polish.usePolishGui && !polish.LibraryBuild
-				//# this.parent.getScreen().setItemCommands( this.parent );
+				this.parent.showCommands();
 				//#endif
 			}
 			//#if polish.blackberry
@@ -464,7 +464,7 @@ public class PredictiveAccess {
 
 			this.parent.setText(this.builder.getText().toString());
 			this.parent.setCaretPosition(this.builder.getCaretPosition());
-			this.parent.getScreen().setItemCommands(this.parent);
+			this.parent.showCommands(); //getScreen().setItemCommands(this.parent);
 			this.parent.notifyStateChanged();
 			this.refreshChoices = true;
 
@@ -496,7 +496,7 @@ public class PredictiveAccess {
 
 		this.parent.setText(this.builder.getText().toString());
 		this.parent.setCaretPosition(this.builder.getCaretPosition());
-		this.parent.getScreen().setItemCommands(this.parent);
+		this.parent.showCommands();//this.parent.getScreen().setItemCommands(this.parent);
 		this.refreshChoices = true;
 		this.parent.notifyStateChanged();
 		return true;
@@ -524,7 +524,7 @@ public class PredictiveAccess {
 			this.parent.updateInfo();
 
 			this.refreshChoices = true;
-			this.parent.getScreen().setItemCommands(this.parent);
+			this.parent.showCommands();//this.parent.getScreen().setItemCommands(this.parent);
 			return true;
 		}
 

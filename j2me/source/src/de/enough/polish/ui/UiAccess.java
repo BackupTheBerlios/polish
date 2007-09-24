@@ -942,7 +942,42 @@ public final class UiAccess {
 	//#endif
 
 	//#if polish.midp
+	/**
+	 * Forwards a key event to the specified item.
+	 * The handlePointerPressed call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param x the x position of the pointer pressing relative to this item's left position
+	 * @param y the y position of the pointer pressing relative to this item's top position
+	 * @return true when the event has been consumed by the item
+	 */
 	public static boolean handlePointerPressed( javax.microedition.lcdui.Item item, int x, int y ) {
+		return false;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Asks the specified item to handle the command.
+	 * 
+	 * @param item the item
+	 * @param cmd the command that the item should handle
+	 * @return true when the item has handled that command
+	 */
+	public static boolean handleCommand(Item item, Command cmd) {
+		return item.handleCommand(cmd);
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Asks the specified item to handle the command.
+	 * 
+	 * @param item the item
+	 * @param cmd the command that the item should handle
+	 * @return true when the item has handled that command
+	 */
+	public static boolean handleCommand(javax.microedition.lcdui.Item item, Command cmd) {
 		return false;
 	}
 	//#endif

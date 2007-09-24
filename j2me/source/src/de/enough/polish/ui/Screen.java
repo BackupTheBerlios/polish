@@ -2986,14 +2986,15 @@ implements AccessibleCanvas
 	
 	/**
 	 * Sets the commands of the given item
+	 * @param commandsList 
 	 * 
 	 * @param item the item which has at least one command 
 	 * @see #removeItemCommands(Item)
 	 */
-	protected void setItemCommands( Item item ) {
+	protected void setItemCommands( ArrayList commandsList, Item item ) {
 		this.focusedItem = item;
-		if (item.commands != null) {
-			Object[] commands = item.commands.getInternalArray();
+		if (commandsList != null) {
+			Object[] commands = commandsList.getInternalArray();
 			// register item commands, so that later onwards only commands that have been actually added
 			// will be removed:
 			if (this.itemCommands == null) {
@@ -3345,64 +3346,6 @@ implements AccessibleCanvas
 		return result;
 	}
 	
-	/**
-	 * <p>A command listener which forwards commands to the item command listener in case it encounters an item command.</p>
-	 *
-	 * <p>Copyright Enough Software 2004, 2005</p>
-
-	 * <pre>
-	 * history
-	 *        09-Jun-2004 - rob creation
-	 * </pre>
-	 * @author Robert Virkus, robert@enough.de
-	 */
-	class ForwardCommandListener implements CommandListener {
-		/** the original command listener set by the programmer */
-		public CommandListener realCommandListener;
-
-		/* (non-Javadoc)
-		 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
-		 */
-		public void commandAction(Command cmd, Displayable thisScreen) {
-			Screen.this.isInRequestInit = true;
-			try {
-				//check if the given command is from the currently focused item:
-				Item item = Screen.this.getCurrentItem();
-				//#debug
-				System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + item + " and screen " + Screen.this + ", itemCommandListener=" + (item == null ? null : item.itemCommandListener));
-				if ((item != null) && (item.itemCommandListener != null) && (item.commands != null)) {
-					if ( item.commands.contains(cmd)) {
-						//System.out.println("forwarding straight to ItemCommandListener " + item.itemCommandListener);
-						item.itemCommandListener.commandAction(cmd, item);
-						return;
-					}
-				} else if (item instanceof Container) {
-					item = ((Container) item).getFocusedItem();
-					while (item != null) {
-						if ((item.itemCommandListener != null) && (item.commands != null) && item.commands.contains(cmd) ) {
-							//System.out.println("forwarding at last  to ItemCommandListener " + item.itemCommandListener);
-							item.itemCommandListener.commandAction(cmd, item);
-							return;
-						}
-						//System.out.println("did not find command or command listener in item " + item + ", listener=" + item.itemCommandListener );
-						if (item instanceof Container) {
-							item = ((Container) item).getFocusedItem();						
-						} else {
-							item = null;
-						}
-					}
-				}
-				// now invoke the usual command listener:
-				if (this.realCommandListener != null) {
-					this.realCommandListener.commandAction(cmd, thisScreen);
-				}
-			} finally {
-				Screen.this.isInRequestInit = false;
-				Screen.this.requestInit();
-			}
-		}
-		
-	}
 	
 	/**
 	 * Focuses the specified item.
@@ -3884,7 +3827,13 @@ implements AccessibleCanvas
 		//#endif
 	}
 
-	
+	/**
+	 * Retrieves the width of the scrollbar
+	 * Note that you need to activate the usage of the scrollbar
+	 * by setting polish.useScrollbar=true
+	 * 
+	 * @return the width of the scrollbar, 0 when none is used
+	 */
 	protected int getScrollBarWidth() {
 		int width = 0;
 		//#if tmp.useScrollBar
@@ -3900,6 +3849,46 @@ implements AccessibleCanvas
 	}
 
 
+
+	/**
+	 * <p>A command listener which forwards commands to the item command listener in case it encounters an item command.</p>
+	 *
+	 * <p>Copyright Enough Software 2004, 2005</p>
+
+	 * <pre>
+	 * history
+	 *        09-Jun-2004 - rob creation
+	 * </pre>
+	 * @author Robert Virkus, robert@enough.de
+	 */
+	class ForwardCommandListener implements CommandListener {
+		/** the original command listener set by the programmer */
+		public CommandListener realCommandListener;
+
+		/* (non-Javadoc)
+		 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+		 */
+		public void commandAction(Command cmd, Displayable thisScreen) {
+			Screen.this.isInRequestInit = true;
+			try {
+				//check if the given command is from the currently focused item:
+				Item item = Screen.this.getCurrentItem();
+				//#debug
+				System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + item + " and screen " + Screen.this + ", itemCommandListener=" + (item == null ? null : item.itemCommandListener));
+				if ( item != null && item.handleCommand(cmd)) {
+					return;
+				}
+				// now invoke the usual command listener:
+				if (this.realCommandListener != null) {
+					this.realCommandListener.commandAction(cmd, thisScreen);
+				}
+			} finally {
+				Screen.this.isInRequestInit = false;
+				Screen.this.requestInit();
+			}
+		}
+		
+	}
 		
 	
 //#ifdef polish.Screen.additionalMethods:defined

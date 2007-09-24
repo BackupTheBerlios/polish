@@ -607,6 +607,8 @@ public abstract class Item extends Object
 	 */
 	public static final int INTERACTIVE = 3;
 	
+	private static final ArrayList COMMANDS = new ArrayList();
+	
 	protected int layout;
 	protected ItemCommandListener itemCommandListener;
 	protected Command defaultCommand;
@@ -2380,7 +2382,7 @@ public abstract class Item extends Object
 	 */
 	protected boolean handlePointerPressed( int relX, int relY ) {
 		if ( isInItemArea(relX, relY)) {
-			return handleKeyPressed( -1, Canvas.FIRE );
+			return handleKeyPressed( -1, Canvas.FIRE ) | handleKeyReleased( -1, Canvas.FIRE );
 		}
 		return false;
 	}
@@ -2488,10 +2490,7 @@ public abstract class Item extends Object
 		this.isFocused = true;
 		// now set any commands of this item:
 		if (this.commands != null) {
-			Screen scr = getScreen();
-			if (scr != null) {
-				scr.setItemCommands(this);
-			}
+			showCommands();
 		}
 		// when an item is focused, it usually grows bigger, so
 		// increase the bottom position a bit:
@@ -2502,6 +2501,53 @@ public abstract class Item extends Object
 		return oldStyle;
 	}
 	
+	/**
+	 * Shows the commands on the screen.
+	 */
+	public void showCommands() {
+		COMMANDS.clear();
+		showCommands( COMMANDS );
+	}
+	/**
+	 * Shows the commands on the screen.
+	 * 
+	 * @param commandsList an ArrayList with the commands from this item.
+	 */
+	protected void showCommands(ArrayList commandsList) {
+		if (this.commands != null) {
+			commandsList.addAll( this.commands );
+		}
+		if (this.parent != null) {
+			this.parent.showCommands(commandsList);
+		} else {
+			Screen scr = getScreen();
+			if (scr != null) {
+				scr.setItemCommands( commandsList, this );
+			}			
+		}
+	}
+	
+	/**
+	 * Tries to handle the specified command.
+	 * The item checks if the command belongs to this item and if it has an associated ItemCommandListener.
+	 * Only then it handles the command.
+	 * @param cmd the command
+	 * @return true when the command has been handled by this item
+	 */
+	protected boolean handleCommand( Command cmd ) {
+		if (this.commands == null || this.itemCommandListener == null || !this.commands.contains(cmd) ) {
+			return false;
+		}
+		try {
+			this.itemCommandListener.commandAction( cmd, this );
+			return true;
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Unable to handle command " + cmd.getLabel() + e );
+		}
+		return false;
+	}
+
 	/**
 	 * Removes the focus from this item.
 	 * 
@@ -2838,6 +2884,13 @@ public abstract class Item extends Object
 	 */
 	public Command getDefaultCommand() {
 		return this.defaultCommand;
+	}
+
+	/**
+	 * @return the commands associated with this item in an arraylist - might be null!
+	 */
+	public ArrayList getItemCommands() {
+		return this.commands;
 	}
 
 

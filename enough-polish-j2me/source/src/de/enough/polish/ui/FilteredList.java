@@ -553,7 +553,7 @@ implements ItemStateListener, CommandListener
 				( (ChoiceGroup)this.container ).setSelectedIndex( matchingItems.indexOf( this.itemsList.get( getSelectedIndex() ) ) , true);
 			}
 			// problem: this also adds the delete command
-			setItemCommands( this.filterTextField );
+			this.filterTextField.showCommands();
 			//#if !polish.TextField.suppressCommands
 			if (this.filterTextField.getCaretPosition() == 0) {
 				removeCommand( TextField.DELETE_CMD );

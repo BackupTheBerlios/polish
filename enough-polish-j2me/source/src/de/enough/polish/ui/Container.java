@@ -27,6 +27,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.util.ArrayList;
@@ -98,6 +99,7 @@ public class Container extends Item {
 	/** The height available for scrolling, ignore when set to -1 */
 	protected int availableHeight = -1;
 	private Item[] containerItems;
+	private boolean showCommandsHasBeenCalled;
 
 	
 	/**
@@ -1879,13 +1881,18 @@ public class Container extends Item {
 //			if (previousStyle == null) {
 //				previousStyle = StyleSheet.defaultStyle;
 //			}
+			this.showCommandsHasBeenCalled = false;
 			focus( this.focusedIndex, item, direction );
-			if (item.commands == null && this.commands != null) {
-				Screen scr = getScreen();
-				if (scr != null) {
-					scr.setItemCommands(this);
-				}
+			// item command handling is now done within showCommands and handleCommand
+			if (!this.showCommandsHasBeenCalled && this.commands != null) {
+				showCommands();
 			}
+//			if (item.commands == null && this.commands != null) {
+//				Screen scr = getScreen();
+//				if (scr != null) {
+//					scr.setItemCommands(this);
+//				}
+//			}
 			// change the label-style of this container:
 			//#ifdef polish.css.label-style
 				if (this.label != null) {
@@ -1950,6 +1957,29 @@ public class Container extends Item {
 		}
 	}
 	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#showCommands(de.enough.polish.util.ArrayList)
+	 */
+	protected void showCommands(ArrayList commandsList) {
+		this.showCommandsHasBeenCalled = true;
+		super.showCommands(commandsList);
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handleCommand(javax.microedition.lcdui.Command)
+	 */
+	protected boolean handleCommand(Command cmd) {
+		boolean handled = super.handleCommand(cmd);
+		if (!handled && this.focusedItem != null) {
+			return this.focusedItem.handleCommand(cmd);
+		}
+		return handled;
+	}
+
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)
 	 */

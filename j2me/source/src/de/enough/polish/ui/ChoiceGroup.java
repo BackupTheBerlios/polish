@@ -1627,10 +1627,11 @@ implements Choice
 			this.popupItem.setStyle( focusStyle );
 			setStyle( focusStyle );
 			// now remove any commands which are associated with this item:
-			Screen scr = getScreen();
-			if (scr != null) {
-				scr.setItemCommands(this);
-			}
+			showCommands();
+//			Screen scr = getScreen();
+//			if (scr != null) {
+//				scr.setItemCommands(this);
+//			}
 			// change the label-style of this container:
 			//#ifdef polish.css.label-style
 				if (this.label != null) {
