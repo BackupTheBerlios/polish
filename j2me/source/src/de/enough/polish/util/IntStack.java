@@ -79,7 +79,10 @@ public class IntStack extends IntList {
 	 * @return the last element
 	 */
 	public int peek() {
-		return get( size() - 1 );
+		if(size() == 0)
+			return -1;
+		else
+			return get( size() - 1 );
 	}
 
 	/**
