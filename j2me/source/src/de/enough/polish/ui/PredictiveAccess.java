@@ -86,6 +86,8 @@ public class PredictiveAccess {
 	
 	private String[] words;
 	
+	private ArrayList results;
+	
 	public void init(TextField parent) {
 		this.parent = parent;
 
@@ -246,8 +248,13 @@ public class PredictiveAccess {
 					this.choicesContainer.add(0, item);
 				}
 			}
-			if (!this.isOpen)
+			if (!this.isOpen && this.predictiveType != ARRAY)
+			{
 				openChoices(this.numberOfMatches > 0);
+			}
+			
+			this.results = element.getResults();
+			
 		} else
 			openChoices(false);
 	}
@@ -445,7 +452,12 @@ public class PredictiveAccess {
 					this.parent.updateInfo();
 
 					if (!this.builder.getTextElement().isWordFound())
-						showWordNotFound();
+					{
+						if(this.predictiveType != ARRAY)
+						{
+							showWordNotFound();
+						}
+					}
 					else {
 						if (this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS)
 							this.setChoices(this.builder.getTextElement());
@@ -891,5 +903,10 @@ public class PredictiveAccess {
 
 	public void setChoicesContainer(Container choicesContainer) {
 		this.choicesContainer = choicesContainer;
+	}
+	
+	public ArrayList getResults()
+	{
+		return this.results;
 	}
 }
