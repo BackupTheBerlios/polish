@@ -613,7 +613,7 @@ These namespaces/schemas will be used soon.
 	<device>
 		<identifier>Sony-Ericsson/W950i</identifier>
 		<groups>SE-JavaPlatform6</groups>
-		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<features>hasPointerEvents, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="OS" value="Symbian 9.1" />
 		<capability name="ScreenSize" value="240x320" />
 		<capability name="FullCanvasSize" value="240x320" />
@@ -802,7 +802,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Sony-Ericsson/P990i</identifier>
 		<groups/>
 		<!-- needsManualMenu,  -->
-		<features>hasCamera, hasVideo, hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
+		<features>hasCamera, hasVideo, O, hasPointerMotionEvents, hasCommandKeyEvents</features>
 		<capability name="OS" value="Symbian 9.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1, CDC/1.0"/>
