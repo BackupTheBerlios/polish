@@ -26,6 +26,7 @@
  */
 package de.enough.polish.ui;
 
+import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -508,6 +509,21 @@ public class FramedForm extends Form {
 	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
 		boolean handled = this.currentlyActiveContainer.handleKeyRepeated(keyCode, gameAction);
 		return handled || super.handleKeyRepeated(keyCode, gameAction);
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handleCommand(javax.microedition.lcdui.Command)
+	 */
+	protected boolean handleCommand(Command cmd) {
+		if (this.currentlyActiveContainer != this.container 
+			&& this.currentlyActiveContainer != null
+			&& this.currentlyActiveContainer.handleCommand(cmd) ) 
+		{
+			return true;
+		}
+		return super.handleCommand(cmd);
 	}
 
 	/**

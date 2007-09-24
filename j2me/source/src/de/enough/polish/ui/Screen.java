@@ -313,6 +313,7 @@ implements AccessibleCanvas
 	protected boolean ignoreRepaintRequests;
 	/** requests a call to calcuateContentArea() the next time this screen is being painted */
 	protected boolean isInitRequested;
+	private CommandListener realCommandListener;
 
 
 	/**
@@ -2549,7 +2550,7 @@ implements AccessibleCanvas
 	 * @see javax.microedition.lcdui.Displayable#setCommandListener(javax.microedition.lcdui.CommandListener)
 	 */
 	public void setCommandListener(CommandListener listener) {
-		this.forwardCommandListener.realCommandListener = listener;
+		this.realCommandListener = listener;
 	}
 	
 	/**
@@ -2558,7 +2559,7 @@ implements AccessibleCanvas
 	 * @return the command listener or null when none has been registered before.
 	 */
 	public CommandListener getCommandListener() {
-		return this.forwardCommandListener.realCommandListener;
+		return this.realCommandListener;
 	}
 
 	//#if tmp.menuFullScreen && !tmp.useExternalMenuBar
@@ -3263,6 +3264,38 @@ implements AccessibleCanvas
 	}
 	//#endif
 	
+	/**
+	 * Tries to handle the specified command.
+	 * The default implementation forwards the call to the container. When the container is unable to process the command,
+	 * it will be forwarded to an external command listener that has been set using setCommandListener(..)
+	 * 
+	 * @param cmd the command
+	 * @return true when the command has been handled by this screen
+	 */	
+	protected boolean handleCommand( Command cmd ) {
+		this.isInRequestInit = true;
+		try {
+			//check if the given command is from the currently focused item:
+			Item item = this.container;
+			if (item == null) {
+				item = getCurrentItem();
+			}
+			//#debug
+			System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + item + " and screen " + Screen.this + ", itemCommandListener=" + (item == null ? null : item.itemCommandListener));
+			if ( item != null && item.handleCommand(cmd)) {
+				return true;
+			}
+			// now invoke the usual command listener:
+			if (this.realCommandListener != null) {
+				this.realCommandListener.commandAction(cmd, this);
+				return true;
+			}
+		} finally {
+			this.isInRequestInit = false;
+			this.requestInit();
+		}
+		return false;
+	}
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#setFullScreenMode(boolean)
@@ -3869,26 +3902,7 @@ implements AccessibleCanvas
 		 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 		 */
 		public void commandAction(Command cmd, Displayable thisScreen) {
-			Screen.this.isInRequestInit = true;
-			try {
-				//check if the given command is from the currently focused item:
-				Item item = Screen.this.container;
-				if (item == null) {
-					item = Screen.this.getCurrentItem();
-				}
-				//#debug
-				System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + item + " and screen " + Screen.this + ", itemCommandListener=" + (item == null ? null : item.itemCommandListener));
-				if ( item != null && item.handleCommand(cmd)) {
-					return;
-				}
-				// now invoke the usual command listener:
-				if (this.realCommandListener != null) {
-					this.realCommandListener.commandAction(cmd, thisScreen);
-				}
-			} finally {
-				Screen.this.isInRequestInit = false;
-				Screen.this.requestInit();
-			}
+			handleCommand( cmd );
 		}
 		
 	}
