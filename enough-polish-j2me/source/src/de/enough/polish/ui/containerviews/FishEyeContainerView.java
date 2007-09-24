@@ -713,7 +713,6 @@ public class FishEyeContainerView extends ContainerView {
 			if (tranparencyBool != null) {
 				this.startTranslucency = 255;
 				this.endTranslucency = 255;
-				System.out.println("trnas");
 			}
 		//#endif
 			
