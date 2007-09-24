@@ -3872,7 +3872,10 @@ implements AccessibleCanvas
 			Screen.this.isInRequestInit = true;
 			try {
 				//check if the given command is from the currently focused item:
-				Item item = Screen.this.getCurrentItem();
+				Item item = Screen.this.container;
+				if (item == null) {
+					item = Screen.this.getCurrentItem();
+				}
 				//#debug
 				System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + item + " and screen " + Screen.this + ", itemCommandListener=" + (item == null ? null : item.itemCommandListener));
 				if ( item != null && item.handleCommand(cmd)) {
