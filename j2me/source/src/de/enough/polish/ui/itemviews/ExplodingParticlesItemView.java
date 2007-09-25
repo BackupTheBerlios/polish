@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui
 /*
  * Created on Sep 16, 2007 at 3:09:31 PM.
  * 
@@ -81,19 +82,21 @@ public class ExplodingParticlesItemView extends ItemView {
 	 */
 	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
 		initContentByParent(parent, firstLineWidth, lineWidth);
-		int width = (this.contentWidth * this.scaleFactor) / 100;
-		int height = (this.contentHeight * this.scaleFactor) / 100;
-		int[] rgbData = new int[ width * height];
-		int x = (width - this.contentWidth) >> 1;
-		int y = (height - this.contentHeight) >> 1;
-		UiAccess.getRgbDataOfContent(parent, rgbData, x, y, width );
-		int[] target = new int[ rgbData.length ];
-		System.arraycopy( rgbData, 0, target, 0,  rgbData.length );
-		this.paintWidth = width;
-		this.paintHeight = height;
-		this.isDirectionUp = true;
-		this.originalRgb = rgbData;
-		this.scaledRgb = target;
+		//#if polish.midp2
+			int width = (this.contentWidth * this.scaleFactor) / 100;
+			int height = (this.contentHeight * this.scaleFactor) / 100;
+			int[] rgbData = new int[ width * height];
+			int x = (width - this.contentWidth) >> 1;
+			int y = (height - this.contentHeight) >> 1;
+			UiAccess.getRgbDataOfContent(parent, rgbData, x, y, width );
+			int[] target = new int[ rgbData.length ];
+			System.arraycopy( rgbData, 0, target, 0,  rgbData.length );
+			this.paintWidth = width;
+			this.paintHeight = height;
+			this.isDirectionUp = true;
+			this.originalRgb = rgbData;
+			this.scaledRgb = target;
+		//#endif
 	}
 	
 
@@ -139,6 +142,10 @@ public class ExplodingParticlesItemView extends ItemView {
 	protected void paintContent(Item parent, int x, int y, int leftBorder,
 			int rightBorder, Graphics g) 
 	{
+		if (this.scaledRgb == null) {
+			super.paintContentByParent(parent, x, y, leftBorder, rightBorder, g);
+			return;
+		}
 		g.drawRGB(this.scaledRgb, 0, this.paintWidth, 
 				x - ((this.paintWidth - this.contentWidth)>>1), 
 				y - ((this.paintHeight - this.contentHeight)>>1), 
