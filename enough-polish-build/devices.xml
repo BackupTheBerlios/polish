@@ -2039,18 +2039,23 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="240x320" />       
 		<capability name="CanvasSize" value="240x240" />       
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="pimapi, 3dapi, mmapi1.1, wmapi1.1, btapi" />
+		<capability name="JavaPackage" value="pimapi, 3dapi, mmapi1.1, wmapi1.1, btapi, webservice" />
 		<capability name="SoundFormat" value="aac, aac+, enh aac+, ra8, midi, wma, wma9, mp3" />
 		<capability name="ImageFormat" value="png, jpeg, bmp, wbmp, gif, ems" />
 		<capability name="JavaProtocol" value="HTTP, Socket, UDP" />
 		<capability name="StorageSize" value="32 MB" />
-		<capability name="MaxRecordStoreSize" value="64kb" />
+		<capability name="MaxRecordStoreSize" value="976kb" />
+		<capability name="MaxRecordStoreNumber" value="8" />
 		<capability name="HeapSize" value="2 MB" />
 		<capability name="Region" value="Global"/>
 		<capability name="AnnouncementDate" value="2006-17-06"/>
 		<capability name="key.LeftSoftKey" value="-21" />
 		<capability name="key.MiddleSoftKey" value="-20" />
 		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="Font.small" value="20" />
+		<capability name="Font.medium" value="23" />
+		<capability name="Font.large" value="26" />
+		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	</device>
 
 	<device>
@@ -2062,7 +2067,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="240x320" />       
 		<capability name="ExternalScreenSize" value="96x80"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="JavaPackage" value="pimapi, 3dapi, mmapi1.1, wmapi1.1, btapi" />
+		<capability name="JavaPackage" value="pimapi, 3dapi, mmapi1.1, wmapi2.0, btapi" />
 		<capability name="SoundFormat" value="aac, aac+, enh aac+, ra8, midi, wma, wma9, mp3" />
 		<capability name="ImageFormat" value="png, jpeg, bmp, wbmp, gif, ems" />
 		<capability name="JavaProtocol" value="HTTP, Socket, UDP" />
@@ -2141,7 +2146,7 @@ These namespaces/schemas will be used soon.
 		<capability name="FullCanvasSize" value="176x206"/>
 		<capability name="CanvasSize" value="176x188"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, wmapi2.0, pdaapi, bluetooth,bluetooth-obex-api,M3G,location,webservices" />
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, wmapi2.0, pdaapi, bluetooth,bluetooth-obex-api,M3G,location,webservice" />
 		<capability name="SoundFormat" value="amr,mpeg,,x-tone-seq,midi,x-wav,basic,x-idenvselp,x-idenambe,mp4v-es,quicktime" />
 		<capability name="VideoFormat" value="mpeg, mp4v-es, quicktime" />
 		<capability name="ImageFormat" value="wbmp, png,PNG w/ Transparency and Alpha, jpeg, x-rgb565" />
@@ -9551,6 +9556,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Siemens/S55, Siemens/S56, Siemens/S57</identifier>
+		<groups>x55</groups>
 		<capability name="ScreenSize" value="101x80"/>
 		<capability name="BitsPerPixel" value="8"/>
 		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-bmp-encoding-api, siemens-extension-api"/>
@@ -9567,6 +9573,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Siemens/SL55, Siemens/SL56</identifier>
+		<groups>x55</groups>
 		<capability name="ScreenSize" value="101x80"/>
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="siemens-game-api, siemens-color-game-api, siemens-bmp-encoding-api, siemens-extension-api"/>
@@ -9583,6 +9590,7 @@ These namespaces/schemas will be used soon.
 	</device>
 		<device>
 		<identifier>Siemens/SL75</identifier>
+		<groups>x75</groups>
 		<capability name="ScreenSize" value="132x176"/>
 		<capability name="CanvasSize" value="132x176"/>
 		<capability name="FullCanvasSize" value="132x176"/>
