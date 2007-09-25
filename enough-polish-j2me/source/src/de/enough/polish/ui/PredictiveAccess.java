@@ -553,33 +553,9 @@ public class PredictiveAccess {
 				return true;
 			}
 			// System.out.println("focusing textfield again, isFocused=" + this.isFocused);
+			// HERE WAS THE PLACE FORMERLY KNOWN AS FIRE HANDLING
 			enterChoices( false );
-			
-			if (gameAction == Canvas.FIRE || gameAction == Canvas.RIGHT) {
-				// option has been selected!
-				if(!this.builder.isString(0))
-				{
-					if(this.choiceOrientation == ORIENTATION_BOTTOM)
-					{
-						this.builder.getTextElement().setSelectedWordIndex(this.choicesContainer.getFocusedIndex());
-					}
-					else
-					{
-						int index = (this.choicesContainer.size() - 1) - this.choicesContainer.getFocusedIndex();
-						this.builder.getTextElement().setSelectedWordIndex(index);
-					}
-					
-					this.builder.getTextElement().convertReader();
-					this.builder.setAlign(TrieTextBuilder.ALIGN_RIGHT);
-					
-					openChoices( false );
-					this.parent.notifyStateChanged();
-					
-					this.parent.setText(this.builder.getText().toString()); 
-					this.parent.setCaretPosition(this.builder.getCaretPosition());
-					this.refreshChoices = true;
-				}
-			}
+		
 			
 			this.parent.notifyStateChanged();
 			return true;
@@ -863,14 +839,15 @@ public class PredictiveAccess {
 	}
 
 	private void showPredictiveInstallDialog() {
+		Alert predictiveDowload;
 		//#if polish.predictive.useLocalRMS
-		//#style predictiveInstallDialog?
-		Alert predictiveDowload = new Alert(Locale.get("polish.predictive.local.title"));
-		predictiveDowload.setString(Locale.get("polish.predictive.local.message"));
+			//#style predictiveInstallDialog?
+			predictiveDowload = new Alert(Locale.get("polish.predictive.local.title"));
+			predictiveDowload.setString(Locale.get("polish.predictive.local.message"));
 		//#else
-		//#style predictiveInstallDialog?
-		//# Alert predictiveDowload = new Alert(Locale.get("polish.predictive.download.title"));
-		//# predictiveDowload.setString(Locale.get("polish.predictive.download.message") );
+			//#style predictiveInstallDialog?
+			predictiveDowload = new Alert(Locale.get("polish.predictive.download.title"));
+			predictiveDowload.setString(Locale.get("polish.predictive.download.message") );
 		//#endif
 
 		predictiveDowload.addCommand(StyleSheet.CANCEL_CMD);
@@ -908,5 +885,44 @@ public class PredictiveAccess {
 	public ArrayList getResults()
 	{
 		return this.results;
+	}
+
+	/**
+	 * Handles the key-released event.
+	 * Please note, that implementation should first try to handle the
+	 * given key-code, before the game-action is processed.
+	 * 
+	 * @param keyCode the code of the pressed key, e.g. Canvas.KEY_NUM2
+	 * @param gameAction the corresponding game-action, e.g. Canvas.UP
+	 * @return true when the key has been handled / recognized
+	 */
+	public boolean handleKeyReleased(int keyCode, int gameAction) {
+		if (gameAction == Canvas.FIRE || gameAction == Canvas.RIGHT) {
+			// option has been selected!
+			if(!this.builder.isString(0))
+			{
+				if(this.choiceOrientation == ORIENTATION_BOTTOM)
+				{
+					this.builder.getTextElement().setSelectedWordIndex(this.choicesContainer.getFocusedIndex());
+				}
+				else
+				{
+					int index = (this.choicesContainer.size() - 1) - this.choicesContainer.getFocusedIndex();
+					this.builder.getTextElement().setSelectedWordIndex(index);
+				}
+				
+				this.builder.getTextElement().convertReader();
+				this.builder.setAlign(TrieTextBuilder.ALIGN_RIGHT);
+				
+				openChoices( false );
+				this.parent.notifyStateChanged();
+				
+				this.parent.setText(this.builder.getText().toString()); 
+				this.parent.setCaretPosition(this.builder.getCaretPosition());
+				this.refreshChoices = true;
+				return true;
+			}
+		}
+		return false;
 	}
 }

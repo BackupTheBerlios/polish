@@ -1474,20 +1474,21 @@ implements Choice
 		//#debug
 		System.out.println("ChoiceGroup.handlePointerPressed(" + relX + ", " + relY + ") for " + this );
 		//#ifdef polish.usePopupItem
-		if (this.isPopup && this.isPopupClosed) {
-			if (isInContentArea(relX, relY)) {
-				openPopup();
-				return true;
-			} else {
-				return false;
+			if (this.isPopup && this.isPopupClosed) {
+				if (isInContentArea(relX, relY)) {
+					openPopup();
+					return true;
+				} else {
+					return false;
+				}
 			}
-		}
 		//#endif
-		boolean success = super.handlePointerPressed(relX, relY); // focuses the appropriate item
-		if (success || isInItemArea(relX, relY)) {
-			success |= handleKeyPressed( -1, Canvas.FIRE );
+		int index = this.focusedIndex;
+		boolean handled = super.handlePointerPressed(relX, relY); // focuses the appropriate item
+		if ((handled || isInItemArea(relX, relY)) && index == this.focusedIndex) {
+			handled |= handleKeyPressed( -1, Canvas.FIRE ) | handleKeyReleased( -1, Canvas.FIRE );
 		}
-		return success;
+		return handled;
 	}
 	//#endif
 	

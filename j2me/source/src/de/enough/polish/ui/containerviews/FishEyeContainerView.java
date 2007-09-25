@@ -116,7 +116,7 @@ public class FishEyeContainerView extends ContainerView {
 			for (int i = 0; i <length; i++) {
 				int target = this.targetXCenterPositions[i];
 				Item item = myItems[i];
-				int itemWidth = (item.itemWidth >> 1);
+				int halfItemWidth = (item.itemWidth >> 1);
 				int distance = getDistance( i, this.focusedIndex, length );
 				if (distance != 0) {
 					distance--;
@@ -129,14 +129,14 @@ public class FishEyeContainerView extends ContainerView {
 				//#endif
 				//#if polish.midp2
 					if (i != this.focusedIndex) {
-						itemWidth = (itemWidth * factor) / 100;
+						halfItemWidth = (halfItemWidth * factor) / 100;
 					}
 				//#endif
-				int current = item.relativeX + itemWidth;
+				int current = item.relativeX + halfItemWidth;
 				//System.out.println(i + ": current=" + current + ", target=" + target);
 				if (current != target) {
 					animated = true;
-					item.relativeX = calculateCurrent( current, target ) - itemWidth;
+					item.relativeX = calculateCurrent( current, target ) - halfItemWidth;
 				}
 				//#if polish.midp2
 					int currentAlpha = this.currentTranslucencies[i];
@@ -171,6 +171,8 @@ public class FishEyeContainerView extends ContainerView {
 							//#endif
 							this.shownRgbDataWidths[i] = newWidth;
 							this.shownRgbDataHeight[i] = newHeight;
+							item.itemWidth = newWidth;
+							item.itemHeight = newHeight;
 						}
 					} 
 					if (adjustAlpha && !isScaled) {

@@ -2110,6 +2110,7 @@ public class Container extends Item {
 		relY -= this.yOffset;
 		relX -= this.contentX;
 		relY -= this.contentY;
+		//System.out.println("Container.handlePointerPressed: adjusted to (" + relX + ", " + relY + ") for " + this );
 		Item item = this.focusedItem;
 		if (item != null) {
 			// the focused item can extend the parent container, e.g. subcommands, 
@@ -2119,10 +2120,14 @@ public class Container extends Item {
 				//#debug
 				System.out.println("pointer event at " + relX + "," + relY + " consumed by focusedItem.");
 				return true;
+			} else if ( item.isInItemArea(relX - item.relativeX, relY - item.relativeY )) {
+				//#debug
+				System.out.println("pointer event not handled by focused item but within that item's area");
+				return false;
 			}
 		}
 		if (!isInItemArea(relX, relY)) {
-			//System.out.println("Container.handlePointerPressed(): out of range, xLeft=" + this.xLeftPos + ", xRight="  + this.xRightPos + ", contentHeight=" + this.contentHeight );
+			//System.out.println("Container.handlePointerPressed(): out of range, relativeX=" + this.relativeX + ", relativeY="  + this.relativeY + ", contentHeight=" + this.contentHeight );
 			return false;
 		}
 		//#ifdef tmp.supportViewType
@@ -2138,6 +2143,7 @@ public class Container extends Item {
 			item = myItems[i];
 			itemRelX = relX - item.relativeX;
 			itemRelY = relY - item.relativeY;
+			//System.out.println( item + ".relativeX=" + item.relativeX + ", .relativeY=" + item.relativeY + ", pointer event relatively at " + itemRelX + ", " + itemRelY);
 			if ( i == this.focusedIndex || (item.appearanceMode == Item.PLAIN) || !item.isInItemArea(itemRelX, itemRelY)) {
 				// this item is not in the range or not suitable:
 				continue;

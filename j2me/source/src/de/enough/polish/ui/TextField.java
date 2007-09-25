@@ -2906,7 +2906,7 @@ public class TextField extends StringItem
 				return false;
 			}
 		
-			//#if polish.TextField.usePredictiveInput && tmp.directInput
+			//#if tmp.usePredictiveInput
 				if(this.predictiveInput) {
 					return this.predictiveAccess.keyNavigation(keyCode, gameAction);
 				}
@@ -3143,6 +3143,11 @@ public class TextField extends StringItem
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
 		this.isKeyDown = false;
 		this.deleteKeyRepeatCount = 0;
+		//#if tmp.usePredictiveInput
+			if (this.predictiveAccess.handleKeyReleased( keyCode, gameAction )) {
+				return true;
+			}
+		//#endif
 		return super.handleKeyReleased( keyCode, gameAction );
 	}
 	//#endif

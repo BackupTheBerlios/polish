@@ -2222,7 +2222,7 @@ public abstract class Item extends Object
 	 * Please note, that implementation should first try to handle the
 	 * given key-code, before the game-action is processed.
 	 * 
-	 * The default does nothing.
+	 * The default implementation invokes the default command if one is present
 	 * 
 	 * @param keyCode the code of the pressed key, e.g. Canvas.KEY_NUM2
 	 * @param gameAction the corresponding game-action, e.g. Canvas.UP
