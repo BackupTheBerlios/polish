@@ -596,7 +596,7 @@ public class FishEyeContainerView extends ContainerView {
 		if (index < 0) {
 			index += myItems.length;
 		}
-		// draw left titems:
+		// draw left items:
 		while (processed > 0) {
 			Item item = myItems[index];
 			//System.out.println("left: " + index + " at " + item.relativeX );
@@ -633,7 +633,7 @@ public class FishEyeContainerView extends ContainerView {
 			if (this.isRemoveText && this.focusedLabel != null) {
 				//System.out.println("painting focused label with style " + this.focusedLabel.getStyle() );
 				int labelX = x + ((rightBorder - leftBorder) >> 1) - (this.focusedLabel.getItemWidth( lineWidth, lineWidth ) >> 1);
-				int labelY = itemY + item.itemHeight + itemLabelDiff;
+				int labelY = itemY + this.contentHeight - this.focusedLabel.itemHeight;  // item.itemHeight + itemLabelDiff;
 				this.focusedLabel.paint( labelX, labelY, labelX, labelX + this.focusedLabel.itemWidth, g);
 			}
 		}		
