@@ -337,6 +337,9 @@ public class TextField extends StringItem
 	//#define tmp.directInput
 	//#define tmp.allowDirectInput
 //#endif
+//#if polish.TextField.usePredictiveInput
+	//#define tmp.usePredictiveInput
+//#endif
 //#if polish.TextField.supportSymbolsEntry && tmp.directInput
 	//#define tmp.supportsSymbolEntry
 	//#if !polish.css.style.textFieldSymbolTable && !polish.css.style.textFieldSymbolList 
@@ -869,6 +872,8 @@ public class TextField extends StringItem
 	protected boolean flashCaret = true;
 	protected boolean isUneditable;
 	private boolean isShowInputInfo = true;
+	
+	private boolean suppressCommands = false;
 
 	/**
 	 * Creates a new <code>TextField</code> object with the given label, initial
@@ -1556,13 +1561,28 @@ public class TextField extends StringItem
 				updateInfo();
 			//#endif
 		//#endif
+				
+		//#if (polish.TextField.suppressDeleteCommand != true)
+		removeCommand( DELETE_CMD );
+		//#endif
 		
+		//#if polish.TextField.suppressClearCommand != true
+		removeCommand( CLEAR_CMD );
+		//#endif
+		
+		//#if tmp.directInput && tmp.supportsSymbolEntry && polish.TextField.suppressAddSymbolCommand != true
+		removeCommand( ENTER_SYMBOL_CMD );
+		//#endif
+		
+		if(!this.suppressCommands)
+		{
 		// set item commands:
 		//#if !tmp.suppressCommands
+			
 			if (this.isFocused) {
 				getScreen().removeItemCommands( this );
 			}
-			removeCommand( DELETE_CMD );
+			
 			// add default text field item-commands:
 			//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
 				if (!this.isUneditable)  {
@@ -1572,11 +1592,11 @@ public class TextField extends StringItem
 							DELETE_CMD = new Command( delLabel, Command.CANCEL, 1 );
 						}
 					//#endif
+					System.out.println("add delete");
 					this.addCommand(DELETE_CMD);
 				}
 			//#endif
 			//#if polish.TextField.suppressClearCommand != true
-				removeCommand( CLEAR_CMD );
 				if (!this.isUneditable) {
 					//#ifdef polish.i18n.useDynamicTranslations
 						String clearLabel = Locale.get("polish.command.clear");
@@ -1591,12 +1611,11 @@ public class TextField extends StringItem
 			if (this.isFocused) {
 				showCommands();
 			}
-
+		
 		//#endif
 			
 		//#if tmp.directInput && tmp.supportsSymbolEntry && polish.TextField.suppressAddSymbolCommand != true
 			if (!this.isNumeric) {
-				removeCommand( ENTER_SYMBOL_CMD );
 				if (!this.isUneditable) {
 					//#ifdef polish.i18n.useDynamicTranslations
 						String enterSymbolLabel = Locale.get("polish.command.entersymbol");
@@ -1608,6 +1627,8 @@ public class TextField extends StringItem
 				}
 			}
 		//#endif	
+			
+		}
 			
 			
 //		if ( (constraints & UNEDITABLE) == UNEDITABLE) {
@@ -3519,6 +3540,14 @@ public class TextField extends StringItem
 		this.predictiveAccess = predictive;
 	}
 	//#endif
+
+	public boolean isSuppressCommands() {
+		return suppressCommands;
+	}
+
+	public void setSuppressCommands(boolean suppressCommands) {
+		this.suppressCommands = suppressCommands;
+	}
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {

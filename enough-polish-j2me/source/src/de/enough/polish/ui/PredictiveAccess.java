@@ -102,41 +102,45 @@ public class PredictiveAccess {
 	}
 
 	public void initPredictiveInput(String[] words) {
+		this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
+		this.parent.removeCommand(INSTALL_PREDICTIVE_CMD);
+		this.parent.removeCommand(ADD_WORD_CMD);
+		this.parent.removeCommand(DISABLE_PREDICTIVE_CMD);
+		
 		if(words != null)
 		{
-			this.builder = new ArrayTextBuilder(this.parent.getMaxSize());
-			
-			this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
-			this.parent.removeCommand(INSTALL_PREDICTIVE_CMD);
-			this.parent.removeCommand(INSTALL_PREDICTIVE_CMD);
-			
-			this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
-
 			this.parent.predictiveInput = true;
 			this.predictiveType = ARRAY;
+			
+			this.builder = new ArrayTextBuilder(this.parent.getMaxSize());
+			
+			this.words = words;
 		}
 		else
 		{
 			try {
+				this.parent.predictiveInput = true;
+				this.predictiveType = TRIE;
+				
 				if (!PROVIDER.isInit()) {
 					PROVIDER.init();
 				}
-
-				this.parent.addCommand(ADD_WORD_CMD);
-	
-				this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
-				this.parent.removeCommand(INSTALL_PREDICTIVE_CMD);
-	
-				this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
-	
-				this.parent.predictiveInput = true;
-				this.predictiveType = TRIE;
-								
+				
+				if(!this.parent.isSuppressCommands())
+				{
+					this.parent.addCommand(ADD_WORD_CMD);
+					this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
+				}
+				
 				this.builder = new TrieTextBuilder(this.parent.getMaxSize());
 	
 			} catch (RecordStoreException e) {
-				this.parent.removeCommand(DISABLE_PREDICTIVE_CMD);
-				this.parent.addCommand(INSTALL_PREDICTIVE_CMD);
+				
+				if(!this.parent.isSuppressCommands())
+				{
+					this.parent.addCommand(INSTALL_PREDICTIVE_CMD);
+				}
+								
 				this.parent.predictiveInput = false;
 			} catch (Exception e) {
 				//#debug error
@@ -144,7 +148,7 @@ public class PredictiveAccess {
 			}
 		}
 		
-		this.words = words;
+		this.parent.notifyStateChanged();
 	}
 
 	public static int getSpaceKey() {
@@ -185,28 +189,31 @@ public class PredictiveAccess {
 	public void synchronize() {
 		openChoices(false);
 
-		while (this.builder.deleteCurrent());
-
-		String text = this.parent.getText();
-
-		if (text != null) {
-			String[] elements = TextUtil.split(this.parent.getText(), ' ');
-
-			for (int i = 0; i < elements.length; i++) {
-				if (elements[i].length() > 0) {
-					this.builder.addString(elements[i]);
-					this.builder.addString(" ");
+		if(this.builder != null)
+		{
+			while (this.builder.deleteCurrent());
+	
+			String text = this.parent.getText();
+	
+			if (text != null) {
+				String[] elements = TextUtil.split(this.parent.getText(), ' ');
+	
+				for (int i = 0; i < elements.length; i++) {
+					if (elements[i].length() > 0) {
+						this.builder.addString(elements[i]);
+						this.builder.addString(" ");
+					}
 				}
+	
+				if (this.parent.inputMode == TextField.MODE_NUMBERS) {
+					this.parent.setInputMode(TextField.MODE_LOWERCASE);
+					this.builder.setMode(TextField.MODE_LOWERCASE);
+				}
+	
+				this.parent.updateInfo();
+	
+				this.builder.setCurrentElementNear(this.parent.getCaretPosition());
 			}
-
-			if (this.parent.inputMode == TextField.MODE_NUMBERS) {
-				this.parent.setInputMode(TextField.MODE_LOWERCASE);
-				this.builder.setMode(TextField.MODE_LOWERCASE);
-			}
-
-			this.parent.updateInfo();
-
-			this.builder.setCurrentElementNear(this.parent.getCaretPosition());
 		}
 	}
 
@@ -260,6 +267,7 @@ public class PredictiveAccess {
 	}
 
 	void openChoices(boolean open) {
+		System.out.println(open);
 		//#debug
 		System.out.println("open choices: " + open
 				+ ", have been opened already:" + this.isOpen);
@@ -897,7 +905,9 @@ public class PredictiveAccess {
 	 * @return true when the key has been handled / recognized
 	 */
 	public boolean handleKeyReleased(int keyCode, int gameAction) {
-		if (gameAction == Canvas.FIRE || gameAction == Canvas.RIGHT) {
+		if ((gameAction == Canvas.FIRE || gameAction == Canvas.RIGHT) &&
+			!(keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9)) {
+			
 			// option has been selected!
 			if(!this.builder.isString(0))
 			{
@@ -920,9 +930,11 @@ public class PredictiveAccess {
 				this.parent.setText(this.builder.getText().toString()); 
 				this.parent.setCaretPosition(this.builder.getCaretPosition());
 				this.refreshChoices = true;
-				return true;
 			}
+			
+			return true;
 		}
+		
 		return false;
 	}
 }

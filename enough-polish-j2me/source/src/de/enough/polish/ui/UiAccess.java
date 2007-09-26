@@ -2583,6 +2583,21 @@ public final class UiAccess {
 			}
 	}
 	//#endif
+	
+	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.midp && polish.TextField.usePredictiveInput
+	public static void setSuppressCommands(javax.microedition.lcdui.TextField field, boolean suppress)
+	{
+		// ignore
+	}
+	//#endif
+
+ 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput
+	public static void setSuppressCommands(TextField field, boolean suppress)
+	{
+		field.setSuppressCommands(suppress);
+		field.setConstraints(field.getConstraints());
+	}
+	//#endif
 
 	//#if polish.usePolishGui
 	/**
