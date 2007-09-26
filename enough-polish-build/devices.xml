@@ -4030,7 +4030,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Class" value="MotorolaEmulatorM3" />
 		<capability name="Emulator.Skin" value="A910.props" />
 	</device>
-			
+
+	<!--
 	<device>
 		<identifier>Motorola/A1200</identifier>
 		<features>doubleBuffering, hasCamera, hasPointerEvents</features>
@@ -4054,6 +4055,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Class" value="MotorolaEmulatorM3" />
 		<capability name="Emulator.Skin" value="MOTOMING_A1200_A1200i_A1200r.props" />
 	</device>
+	-->
 		
 	<device>
 		<identifier>Motorola/C980</identifier>
