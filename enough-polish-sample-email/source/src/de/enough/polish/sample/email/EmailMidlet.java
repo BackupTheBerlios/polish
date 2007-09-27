@@ -29,7 +29,6 @@ import java.io.IOException;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
-import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -37,14 +36,12 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.Item;
-import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.ItemStateListener;
 import javax.microedition.lcdui.StringItem;
 import javax.microedition.lcdui.Ticker;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-import de.enough.polish.ui.ListItem;
 import de.enough.polish.ui.ScreenInfo;
 import de.enough.polish.ui.TreeItem;
 import de.enough.polish.ui.UiAccess;
@@ -120,8 +117,6 @@ implements CommandListener, ItemStateListener
 		//#style mailTicker
 		Ticker ticker = new Ticker( "Sending mail \"J2ME Polish Test Result\" to sales@mycompany.com" );
 		form.setTicker( ticker );
-		/*
-		*/
 
 		form.setCommandListener( this );
 		form.setItemStateListener( this );
