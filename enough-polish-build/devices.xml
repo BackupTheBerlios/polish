@@ -9725,6 +9725,13 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 	</device>
+	<device>
+		<identifier>LG/CU400</identifier>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+	</device>
 
 	<device>
 		<identifier>LG/KG800</identifier>
