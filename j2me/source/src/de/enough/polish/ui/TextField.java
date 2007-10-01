@@ -1574,11 +1574,13 @@ public class TextField extends StringItem
 		removeCommand( ENTER_SYMBOL_CMD );
 		//#endif
 		
-		if(!this.suppressCommands)
-		{
 		// set item commands:
 		//#if !tmp.suppressCommands
-			
+		
+		//#ifdef !polish.key.ClearKey:defined
+		if(!this.suppressCommands)
+		//#endif
+		{
 			if (this.isFocused) {
 				getScreen().removeItemCommands( this );
 			}
@@ -1592,10 +1594,13 @@ public class TextField extends StringItem
 							DELETE_CMD = new Command( delLabel, Command.CANCEL, 1 );
 						}
 					//#endif
-					System.out.println("add delete");
 					this.addCommand(DELETE_CMD);
 				}
 			//#endif
+		}
+				
+		if(!this.suppressCommands)
+		{
 			//#if polish.TextField.suppressClearCommand != true
 				if (!this.isUneditable) {
 					//#ifdef polish.i18n.useDynamicTranslations

@@ -36,6 +36,7 @@ import de.enough.polish.blackberry.ui.PolishEditField;
 public class PredictiveAccess {
 	private TextField parent;
 
+	
 	public static final int ORIENTATION_BOTTOM = 0;
 
 	public static final int ORIENTATION_TOP = 1;
@@ -44,20 +45,43 @@ public class PredictiveAccess {
 
 	public static final int ARRAY = 1;
 
+	/**
+	 * The provider for retrieving rms records, implemented as a static variable
+	 * for use of a single provider in multiple textfields    
+	 */
 	public static TrieProvider PROVIDER = new TrieProvider();
 
+	/**
+	 * The command for enabling the predictive input
+	 */
 	static Command ENABLE_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.enable"), Command.ITEM, 10);
 
+	/**
+	 * The command for starting the setup dialog of the predictive input
+	 */
 	private static Command INSTALL_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.install"), Command.ITEM, 10);
 
+	/**
+	 * The command for disabling the predictive input and returning to the standard input method
+	 */
 	static Command DISABLE_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.disable"), Command.ITEM, 10);
 
+	/**
+	 * The command to start the dialog to add a custom word to the predictive dictionary
+	 */
 	static Command ADD_WORD_CMD = new Command(Locale.get("polish.predictive.registerNewWord.command"), Command.ITEM, 11);
 
+	/**
+	 * Holds the key code for the space key of the model running the application
+	 */
 	private static int SPACE_BUTTON = getSpaceKey();
-
+	
+	/**
+	 * The indicator which is shown in the info box of a textfield indication the predictive
+	 * mode is activated
+	 */
 	public static String INDICATOR = "\u00bb";
-
+	
 	Container choicesContainer;
 
 	private int numberOfMatches;
@@ -88,6 +112,13 @@ public class PredictiveAccess {
 	
 	private ArrayList results;
 	
+
+	/**
+	 * Initializes the predictive input for a textfield by creating objects for the choices container
+	 * and setting the input mode
+	 * 
+	 * @param parent the textfield which likes to use the predictive input
+	 */
 	public void init(TextField parent) {
 		this.parent = parent;
 
@@ -101,11 +132,27 @@ public class PredictiveAccess {
 		}
 	}
 
+	/**
+	 * Initializes the predictive input. If <code>words</code> is not null,
+	 * the predictive type <code>ARRAY</code> is set and the dictionary
+	 * for this type is <code>words</code>. Otherwise, the method tries
+	 * to read from the dictionary located in the RMS by calling 
+	 * <code>PROVIDER.init()</code>. Based on the outcome of this operation, 
+	 * commands are set for the parent textfield like 
+	 * <code>INSTALL_PREDICTIVE_CMD</code> if the dictionary is not installed.
+	 * If the dictionary is already installed, the predictive input is activated and
+	 * the commands <code>DISABLE_PREDICTIVE_CMD</code> and 
+	 * <code>ADD_WORD_CMD</code> is added to the textfield.   
+	 * 
+	 * @param words the words array
+	 */
 	public void initPredictiveInput(String[] words) {
 		this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
 		this.parent.removeCommand(INSTALL_PREDICTIVE_CMD);
 		this.parent.removeCommand(ADD_WORD_CMD);
 		this.parent.removeCommand(DISABLE_PREDICTIVE_CMD);
+		
+		System.out.println("initPredictiveInput : " + this.parent);
 		
 		if(words != null)
 		{
@@ -126,31 +173,24 @@ public class PredictiveAccess {
 					PROVIDER.init();
 				}
 				
-				if(!this.parent.isSuppressCommands())
-				{
-					this.parent.addCommand(ADD_WORD_CMD);
-					this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
-				}
+				this.parent.addCommand(ADD_WORD_CMD);
+				this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
 				
 				this.builder = new TrieTextBuilder(this.parent.getMaxSize());
 	
 			} catch (RecordStoreException e) {
-				
-				if(!this.parent.isSuppressCommands())
-				{
-					this.parent.addCommand(INSTALL_PREDICTIVE_CMD);
-				}
-								
+				this.parent.addCommand(INSTALL_PREDICTIVE_CMD);
 				this.parent.predictiveInput = false;
 			} catch (Exception e) {
 				//#debug error
 				System.out.println("unable to load predictive dictionary " + e);
 			}
 		}
-		
-		this.parent.notifyStateChanged();
 	}
 
+	/**
+	 * Returns the key code for the space key of the model running the application
+	 */
 	public static int getSpaceKey() {
 		if (TextField.charactersKeyPound != null)
 			if (TextField.charactersKeyPound.charAt(0) == ' ')
@@ -167,6 +207,9 @@ public class PredictiveAccess {
 		return -1;
 	}
 
+	/**
+	 * Disables the predictive input.
+	 */
 	private void disablePredictive() {
 		this.predictiveInput = false;
 		this.parent.predictiveInput = false;
@@ -179,6 +222,10 @@ public class PredictiveAccess {
 		openChoices(false);
 	}
 
+	/**
+	 * Enables the predictive input. This implies that the initialisation of the 
+	 * predictive input is already finished.
+	 */
 	private void enablePredictive() {
 		this.predictiveInput = true;
 		this.parent.predictiveInput = true;
@@ -186,6 +233,12 @@ public class PredictiveAccess {
 		synchronize();
 	}
 
+	/**
+	 * Synchronizes the <code>TextBuilder</code> object used for the predictive input
+	 * by deleting all current entries of the builder, splitting the current text at 
+	 * spaces, inserting the resulting chunks as objects of <code>TextElement</code>
+	 * to the builder and finally setting the caret position 
+	 */
 	public void synchronize() {
 		openChoices(false);
 
@@ -217,7 +270,10 @@ public class PredictiveAccess {
 		}
 	}
 
-	
+	/**
+	 * Sets the choices of the textfield based on the current 
+	 * active <code>TextElement</code>.  
+	 */
 	private void setChoices(TextElement element) {
 		this.choicesContainer.clear();
 		if (element != null && element.getResults() != null
@@ -266,6 +322,11 @@ public class PredictiveAccess {
 			openChoices(false);
 	}
 
+	/**
+	 * Opens or closes the choices list.
+	 * 
+	 * @param open true, if the list should be opened, to close false
+	 */
 	void openChoices(boolean open) {
 		System.out.println(open);
 		//#debug
@@ -341,6 +402,12 @@ public class PredictiveAccess {
 		this.refreshChoices = open;
 	}
 
+	/**
+	 * Sets the focus to the first item of the choices or resets the focus to the
+	 * textfield.
+	 * 
+	 * @param enter true, if the list should be entered, to leave the choices false
+	 */
 	private void enterChoices(boolean enter) {
 		//#debug
 		System.out.println("enter choices: " + enter
@@ -381,6 +448,14 @@ public class PredictiveAccess {
 		this.isInChoice = enter;
 	}
 
+	/**
+	 * Retrieves the y offset for the choices list based on the currently
+	 * active <code>TextElement</code>.
+	 * 
+	 * @param paddingVertical the vertical padding between the textfield lines
+	 * @param borderWidth the width of the border of the textfield
+	 * @return the y offset
+	 */
 	protected int getChoicesY(int paddingVertical, int borderWidth) {
 		if (this.choiceOrientation == ORIENTATION_BOTTOM) {
 			int resultY = (this.parent.contentHeight / this.parent.textLines.length)
@@ -396,6 +471,15 @@ public class PredictiveAccess {
 		}
 	}
 
+	/**
+	 * Returns the x offset for the choices list based on the currently
+	 * active <code>TextElement</code>.
+	 * 
+	 * @param leftBorder the width of the left border
+	 * @param rightBorder the width of the right border
+	 * @param itemWidth the width of the textfield
+	 * @return the x offset
+	 */
 	protected int getChoicesX(int leftBorder, int rightBorder, int itemWidth) {
 		if (this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS) {
 			int line = this.builder.getElementLine(this.parent.textLines);
@@ -552,126 +636,130 @@ public class PredictiveAccess {
 	}
 
 	protected boolean keyNavigation(int keyCode, int gameAction) {
-		if (this.isInChoice) {
-			if ( this.choicesContainer.handleKeyPressed(keyCode, gameAction) ) {
-				//#debug
-				System.out.println("keyPressed handled by choices container");
+		if(this.predictiveType != ARRAY)
+		{
+			if (this.isInChoice) {
+				if ( this.choicesContainer.handleKeyPressed(keyCode, gameAction) ) {
+					//#debug
+					System.out.println("keyPressed handled by choices container");
+					
+					this.refreshChoices = true;
+					return true;
+				}
+				// System.out.println("focusing textfield again, isFocused=" + this.isFocused);
+				// HERE WAS THE PLACE FORMERLY KNOWN AS FIRE HANDLING
+				enterChoices( false );
+			
+				
+				this.parent.notifyStateChanged();
+				return true;
+			}
+			if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
+					&& this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS 
+					&& this.choiceOrientation == ORIENTATION_BOTTOM)
+			{
+				if(!this.builder.isString(0))
+				{
+					this.setChoices(this.builder.getTextElement());
+					
+					if(this.numberOfMatches > 0)
+						enterChoices( true );	
+				}
 				
 				this.refreshChoices = true;
+				this.parent.notifyStateChanged();
 				return true;
 			}
-			// System.out.println("focusing textfield again, isFocused=" + this.isFocused);
-			// HERE WAS THE PLACE FORMERLY KNOWN AS FIRE HANDLING
-			enterChoices( false );
-		
-			
-			this.parent.notifyStateChanged();
-			return true;
-		}
-		if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
-				&& this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS 
-				&& this.choiceOrientation == ORIENTATION_BOTTOM)
-		{
-			if(!this.builder.isString(0))
+			else if ( (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM8)
+					&& this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS 
+					&& this.choiceOrientation == ORIENTATION_TOP)
 			{
-				this.setChoices(this.builder.getTextElement());
+				if(!this.builder.isString(0))
+				{
+					this.setChoices(this.builder.getTextElement());
+					
+					if(this.numberOfMatches > 0)
+						enterChoices( true );	
+				}
 				
-				if(this.numberOfMatches > 0)
-					enterChoices( true );	
+				this.refreshChoices = true;
+				this.parent.notifyStateChanged();
+				return true;
 			}
-			
-			this.refreshChoices = true;
-			this.parent.notifyStateChanged();
-			return true;
-		}
-		else if ( (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM8)
-				&& this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS 
-				&& this.choiceOrientation == ORIENTATION_TOP)
-		{
-			if(!this.builder.isString(0))
+			else if ( gameAction == Canvas.LEFT || gameAction == Canvas.RIGHT )
 			{
-				this.setChoices(this.builder.getTextElement());
+				if(gameAction == Canvas.LEFT)
+					this.builder.decreaseCaret();
+				else if(gameAction == Canvas.RIGHT)
+					this.builder.increaseCaret();
 				
-				if(this.numberOfMatches > 0)
-					enterChoices( true );	
-			}
-			
-			this.refreshChoices = true;
-			this.parent.notifyStateChanged();
-			return true;
-		}
-		else if ( gameAction == Canvas.LEFT || gameAction == Canvas.RIGHT )
-		{
-			if(gameAction == Canvas.LEFT)
-				this.builder.decreaseCaret();
-			else if(gameAction == Canvas.RIGHT)
-				this.builder.increaseCaret();
-			
-			if(this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS)
-			{
-				this.setChoices(this.builder.getTextElement());
-			}
-			else
-				openChoices(false);
-			
-			this.parent.setCaretPosition(this.builder.getCaretPosition());
-		
-			this.parent.notifyStateChanged();
-			return true;
-		}
-		else if ( gameAction == Canvas.UP && !this.isInChoice)
-		{
-			int lineCaret = this.builder.getJumpPosition(TrieTextBuilder.JUMP_PREV, this.parent.textLines);
-			
-			if(lineCaret != -1)
-			{
-				this.builder.setCurrentElementNear(lineCaret);
+				if(this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS)
+				{
+					this.setChoices(this.builder.getTextElement());
+				}
+				else
+					openChoices(false);
 				
 				this.parent.setCaretPosition(this.builder.getCaretPosition());
-								
-				openChoices(false);
+			
+				this.parent.notifyStateChanged();
+				return true;
+			}
+			else if ( gameAction == Canvas.UP && !this.isInChoice)
+			{
+				int lineCaret = this.builder.getJumpPosition(TrieTextBuilder.JUMP_PREV, this.parent.textLines);
+				
+				if(lineCaret != -1)
+				{
+					this.builder.setCurrentElementNear(lineCaret);
+					
+					this.parent.setCaretPosition(this.builder.getCaretPosition());
+									
+					openChoices(false);
+	
+					this.parent.notifyStateChanged();
+					return true;
+				}
+				
+				this.parent.notifyStateChanged();
+				return false;
+			}
+			else if ( gameAction == Canvas.DOWN && !this.isInChoice)
+			{
+				int lineCaret = this.builder.getJumpPosition(TrieTextBuilder.JUMP_NEXT, this.parent.textLines);
+				
+				if(lineCaret != -1)
+				{
+					this.builder.setCurrentElementNear(lineCaret);
+					
+					this.parent.setCaretPosition(this.builder.getCaretPosition());
+									
+					openChoices(false);
+					
+					this.parent.notifyStateChanged();
+					return true;
+				}
+				
+				this.parent.notifyStateChanged();
+				return false;
+			}
+			else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
+				
+				openChoices( false );
+				if(!this.builder.isString(0))
+				{
+					this.builder.setAlign(TrieTextBuilder.ALIGN_RIGHT);
+					if(this.builder.getTextElement().isSelectedCustom())
+						this.builder.getTextElement().convertReader();
+				}
+				
+				this.parent.notifyStateChanged();
+				return true;
+			}
 
-				this.parent.notifyStateChanged();
-				return true;
-			}
-			
 			this.parent.notifyStateChanged();
-			return false;
-		}
-		else if ( gameAction == Canvas.DOWN && !this.isInChoice)
-		{
-			int lineCaret = this.builder.getJumpPosition(TrieTextBuilder.JUMP_NEXT, this.parent.textLines);
-			
-			if(lineCaret != -1)
-			{
-				this.builder.setCurrentElementNear(lineCaret);
-				
-				this.parent.setCaretPosition(this.builder.getCaretPosition());
-								
-				openChoices(false);
-				
-				this.parent.notifyStateChanged();
-				return true;
-			}
-			
-			this.parent.notifyStateChanged();
-			return false;
-		}
-		else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
-			
-			openChoices( false );
-			if(!this.builder.isString(0))
-			{
-				this.builder.setAlign(TrieTextBuilder.ALIGN_RIGHT);
-				if(this.builder.getTextElement().isSelectedCustom())
-					this.builder.getTextElement().convertReader();
-			}
-			
-			this.parent.notifyStateChanged();
-			return true;
 		}
 		
-		this.parent.notifyStateChanged();
 		return false;
 	}
 

@@ -1237,7 +1237,8 @@ public class Container extends Item {
 			return false;
 		}
 		//#debug
-		System.out.println("handleKePressed( " + keyCode + ", " + gameAction + " ) for " + this);
+		System.out.println("handleKeyPressed( " + keyCode + ", " + gameAction + " ) for " + this);
+		
 		if (this.focusedItem != null) {
 			Item item = this.focusedItem;
 			if (!item.isInitialized) {
@@ -2347,13 +2348,14 @@ public class Container extends Item {
 		}
 		this.itemsList = itemsList;
 		this.containerItems = null;
-		if (this.isShown) {
-			Object[] myItems = this.itemsList.getInternalArray();
-			for (int i = 0; i < myItems.length; i++) {
-				Item item = (Item) myItems[i];
-				if (item == null) {
-					break;
-				}
+		Object[] myItems = this.itemsList.getInternalArray();
+		for (int i = 0; i < myItems.length; i++) {
+			Item item = (Item) myItems[i];
+			if (item == null) {
+				break;
+			}
+			item.parent = this;
+			if (this.isShown) {
 				item.showNotify();
 			}
 		}
