@@ -4780,6 +4780,34 @@ These namespaces/schemas will be used soon.
     		<capability name="Bugs" value="BluetoothRfcommInputStream"/>
     </device>
     
+	<device>
+		<identifier>Nokia/5070</identifier>
+		<groups>Series40DP2</groups>
+		<features>hasCamera</features>
+		<capability name="OS" value="Nokia OS"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="mmapi, wmapi, pdapi"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="ScreenSize" value="128x160"/>
+		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="CanvasSize" value="128x160"/>
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png,png1.0,wbmp" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
+		<capability name="StorageSize" value="4 MB" />
+		<capability name="HeapSize" value="800 kb" />
+		<capability name="VideoHeapSize" value="500 kb" />
+		<capability name="DRM" value="OMA Phase 1" />
+		<capability name="CameraZoom" value="4" />
+		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_6230i"/>
+		<capability name="DebugInterface" value="KDWP" />
+		<capability name="Bugs" value="drawRgbOrigin,ImageIOStreamAutoClose, needsNokiaUiForSystemAlerts" />
+		<capability name="Font.small" value="15" />
+		<capability name="Font.medium" value="18" />
+		<capability name="Font.large" value="22" />
+	</device>
+
     <device>
     	<identifier>Nokia/7360</identifier>
 		<groups>Series40DP2</groups>
