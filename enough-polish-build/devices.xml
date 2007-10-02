@@ -9758,10 +9758,16 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 	</device>
-	<device>
+	
+	<device supportsPolishGui="true">
 		<identifier>LG/CU400</identifier>
 		<capability name="ScreenSize" value="176x220"/>
+		<capability name="CanvasSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="16"/>
+		<capability name="key.ClearKey" value="-16"/>
+		<capability name="key.ReturnKey" value="-16"/>
+		<capability name="JavaPackage" value="mmapi1.1, pimapi, wmapi1.1, fileconnection" /> 
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 	</device>
