@@ -243,6 +243,11 @@ These namespaces/schemas will be used soon.
 		<capability name="key.backspace" value="16"/>
 		<capability name="MenuBar.OptionsPosition" value="right" />
 		<capability name="MenuBar.OkPosition" value="left" />
+		<capability name="key.supportsAsciiKeyMap" value="true" />
+		<capability name="key.backspace" value="8" />
+		<capability name="key.shift" value="-50" />
+		<capability name="key.enter" value="10" />
+
 		<capability name="polish.debug.commandline"
 					value="-Xdebug;;-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=${polish.debug.port}" />
 		
@@ -10018,8 +10023,43 @@ These namespaces/schemas will be used soon.
 <!-- Samsung devices -->
 
 	<device>
+	       <identifier>Samsung/SGH-U700</identifier>
+	       <features>hasCommandKeyEvents, hasCamera</features>
+	       <capability name="FullCanvasSize" value="240x297"/>
+	       <capability name="CanvasSize" value="240x279"/>
+	       <capability name="ScreenSize" value="240x320"/>
+	       <capability name="MenuBarHeight" value="34"/>
+	       <capability name="CanvasSize" value="240x286"/>
+	       <capability name="BitsPerPixel" value="18"/>
+	       <capability name="VideoHeapSize" value="0 KB"/>
+	       <capability name="key.ClearKey" value="-8"/>
+	       <capability name="Font.small" value="16"/>
+	       <capability name="Font.medium" value="20"/>
+	       <capability name="Font.large" value="24"/>
+	       <capability name="JavaPlatform" value="MIDP/2.0"/>
+	       <capability name="JavaConfiguration" value="CLDC/1.1"/>
+	       <capability name="SoundFormat" value="midi,x-tone-seq,mpeg,mp3,3gpp,amr,aac,m4a,"/>
+	       <capability name="PolyphonicVoices" value="40"/>
+	       <capability name="JavaPackage" value="wmapi-1.1,mmapi-1.1,pdaapi,btapi"/>
+	       <capability name="ImageFormat" value="png"/>
+	       <capability name="CaptureImageFormat" value="jpeg"/>
+	       <capability name="StorageSize" value="32 MB"/>
+	       <capability name="HeapSize" value="1.5 MB"/>
+	       <capability name="MaxJarSize" value="700 kb"/>
+	       <capability name="DRM" value="OMA v1.0"/>
+	       <capability name="Region" value="global"/>
+	       <capability name="Network" value="GSM, GPRS, UMTS"/>
+	       <capability name="Frequency" value="900,1800,1900"/>
+	       <capability name="DebugInterface" value="KDWP"/>
+	       <capability name="CameraResolution" value="3.2 MP"/>
+	       <capability name="CameraZoom" value="4"/>
+	       <capability name="key.ReturnKey" value="-11"/>
+	       <capability name="Bugs" value="SoftKeyMappedToFire, getTitleRequiresNull" />
+	</device>
+
+	<device>
 	       <identifier>Samsung/SGH-U600</identifier>
-	       <features>hasCommandKeyEvents, hasnokeyc</features>
+	       <features>hasCommandKeyEvents, hasCamera</features>
 	       <capability name="FullCanvasSize" value="240x320"/>
 	       <capability name="ScreenSize" value="240x320"/>
 	       <capability name="MenuBarHeight" value="34"/>

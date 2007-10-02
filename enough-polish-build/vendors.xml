@@ -87,6 +87,12 @@
 		<capability name="key.LeftSoftKey" value="-6" />
 		<capability name="key.RightSoftKey" value="-7" />
 		<capability name="Bugs" value="SoftKeyMappedToFire" />
+		<!--  use '*' to switch between input modes on TextFields: -->
+		<capability name="key.ChangeInputModeKey" value="42" />
+		<!--  use '#' to enter spaces on TextFields: -->
+		<capability name="polish.TextField.charactersKeyPound" value=" " />
+		<!--  use '#' to open Symbol Table on TextFields: -->
+		<capability name="key.OpenSymbolTable" value="35" />
 	</vendor>
 
 	<vendor>
