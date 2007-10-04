@@ -152,8 +152,6 @@ public class PredictiveAccess {
 		this.parent.removeCommand(ADD_WORD_CMD);
 		this.parent.removeCommand(DISABLE_PREDICTIVE_CMD);
 		
-		System.out.println("initPredictiveInput : " + this.parent);
-		
 		if(words != null)
 		{
 			this.parent.predictiveInput = true;

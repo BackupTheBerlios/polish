@@ -37,6 +37,24 @@ public class TrieProvider {
 		this.init = false;
 	}
 	
+	public static boolean isPredictiveInstalled()
+	{
+		try
+		{
+			//#if polish.Bugs.sharedRmsRequiresSigning || polish.predictive.uselocalRMS
+			//#= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
+			//#else
+			RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0","Enough Software","PredictiveSetup");
+			//#endif
+			
+			return true;
+		}
+		catch(RecordStoreException e)
+		{
+			return false;
+		}
+	}
+	
 	public void init() throws RecordStoreException
 	{	
 		//#if polish.Bugs.sharedRmsRequiresSigning || polish.predictive.uselocalRMS

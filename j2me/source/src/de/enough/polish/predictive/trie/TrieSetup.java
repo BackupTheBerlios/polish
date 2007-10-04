@@ -55,7 +55,7 @@ implements Runnable, CommandListener
 		this.stream = stream;
 		
 		//#style setupForm?
-		this.form = new Form( Locale.get("polish.predictive.setup.title") );
+		this.form = new Form( null );
 		
 		this.form.addCommand( this.cancelCommand );
 		this.form.setCommandListener( this );
@@ -197,7 +197,8 @@ implements Runnable, CommandListener
 	 */
 	public void commandAction(Command cmd, Displayable disp) {
 		if (cmd == this.cancelCommand) {
-			Alert cancel = new Alert("Predictive Setup");
+			//#style setupForm?
+			Alert cancel = new Alert( null );
 			
 			cancel.setString(Locale.get("polish.predictive.setup.cancel"));
 			cancel.addCommand(this.yesCommand);
@@ -236,7 +237,10 @@ implements Runnable, CommandListener
 		else
 		{
 			//#if polish.predictive.useLocalRMS
-				this.parent.initPredictiveInput(null);
+				if(this.parent != null)
+				{
+					this.parent.initPredictiveInput(null);
+				}
 			//#endif
 				
 			Display.getDisplay(this.parentMidlet).setCurrent(this.returnTo);			
