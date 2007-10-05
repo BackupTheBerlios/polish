@@ -3428,6 +3428,7 @@ public class TextField extends StringItem
 				notifyStateChanged();
 			}
 		//#endif
+
 	}
 	//#endif
 	
@@ -3523,6 +3524,11 @@ public class TextField extends StringItem
 			if (this.caretChar != this.editingCaretChar) {
 				commitCurrentCharacter();
 			}
+			//#if tmp.updateDeleteCommand
+				if (this.screen != null) {
+					this.screen.removeCommand( DELETE_CMD );
+				}
+			//#endif
 			super.hideNotify();
 		}	
 	//#endif
