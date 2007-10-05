@@ -1627,6 +1627,10 @@ public class PolishTask extends ConditionalTask {
 		// to the build.xml script).
 		this.environment.addVariable( "polish.home", this.polishHomeDir.getAbsolutePath() );
 		
+		// initialize resource manager:
+		// get the resource manager:
+		this.resourceManager.initialize( this.environment );
+		
 		//TODO call initialialize on all active extensions
 		// add settings of active postcompilers:
 		// let postcompilers adjust the bootclasspath:

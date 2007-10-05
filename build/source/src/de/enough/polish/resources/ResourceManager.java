@@ -103,20 +103,7 @@ public class ResourceManager {
 		this.environment = environment;
 		this.booleanEvaluator = environment.getBooleanEvaluator();
 		this.resourceDirsByDevice = new HashMap();
-		RootSetting[] resDirs = setting.getRootDirectories(environment);
-		if (resDirs == null || resDirs.length == 0) {
-			throw new IllegalStateException("Found no root directories");
-		}
-		this.resourceDirectories = resDirs;
-		for (int i = 0; i < resDirs.length; i++) {
-			File resDir = resDirs[i].resolveDir(environment);
-			if (!resDir.exists()) {
-				System.err.println("Warning: the resources-directory [" + resDir.getAbsolutePath() + "] did not exist, J2ME Polish created it automatically now.");
-				resDir.mkdir();
-			} else if (!resDir.isDirectory()) {
-				throw new BuildException("The resources-directory [" + resDir.getAbsolutePath() + "] is not a directory. Please adjust either your \"resources\"-attribute of the <build>-element or the \"dir\"-attribute of the <resources>-element.");
-			}
-		}		
+
 
 		// get localization setting:
 		this.localizationSetting = this.resourceSetting.getLocalizationSetting(this.environment);
@@ -649,6 +636,26 @@ public class ResourceManager {
 		sheet.setLastModified(lastCssModification);
 		preprocessor.setReplacePropertiesWithoutDirective( replaceWithoutDirective );
 		return sheet;
+	}
+
+	/**
+	 * @param env
+	 */
+	public void initialize(Environment env) {
+		RootSetting[] resDirs = this.resourceSetting.getRootDirectories(env);
+		if (resDirs == null || resDirs.length == 0) {
+			throw new IllegalStateException("Found no root directories");
+		}
+		this.resourceDirectories = resDirs;
+		for (int i = 0; i < resDirs.length; i++) {
+			File resDir = resDirs[i].resolveDir(env);
+			if (!resDir.exists()) {
+				System.err.println("Warning: the resources-directory [" + resDir.getAbsolutePath() + "] did not exist, J2ME Polish created it automatically now.");
+				resDir.mkdir();
+			} else if (!resDir.isDirectory()) {
+				throw new BuildException("The resources-directory [" + resDir.getAbsolutePath() + "] is not a directory. Please adjust either your \"resources\"-attribute of the <build>-element or the \"dir\"-attribute of the <resources>-element.");
+			}
+		}		
 	}
 	
 }
