@@ -3038,7 +3038,7 @@ implements AccessibleCanvas
 	 * @see #setItemCommands(Item)
 	 */
 	protected void removeItemCommands( Item item ) {
-		if (item.commands != null && this.itemCommands != null) {
+		if (this.itemCommands != null) {
 			// use the Screen's itemCommands list, since in this list only commands that are only present on the item
 			// are listed (not commands that are also present on the screen).
 			Object[] commands = this.itemCommands.getInternalArray();

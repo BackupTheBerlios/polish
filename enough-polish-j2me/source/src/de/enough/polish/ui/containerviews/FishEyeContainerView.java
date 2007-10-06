@@ -31,6 +31,7 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Border;
+import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.IconItem;
@@ -104,6 +105,22 @@ public class FishEyeContainerView extends ContainerView {
 	public FishEyeContainerView() {
 		this.allowsAutoTraversal = false;
 	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.ItemView#animate(long, de.enough.polish.ui.ClippingRegion)
+	 */
+	public void animate(long currentTime, ClippingRegion repaintRegion) {
+		super.animate(currentTime, repaintRegion);
+		repaintRegion.addRegion( this.parentContainer.getAbsoluteX() - 5, 
+				this.parentContainer.getAbsoluteY(), 
+				this.parentContainer.itemWidth + 10,
+				this.parentContainer.itemHeight 
+		);
+	}
+
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#animate()
@@ -133,10 +150,13 @@ public class FishEyeContainerView extends ContainerView {
 					}
 				//#endif
 				int current = item.relativeX + halfItemWidth;
+				//System.out.println("animate: itemWidth of " + i + " with distance " + distance + " =" + halfItemWidth);
 				//System.out.println(i + ": current=" + current + ", target=" + target);
 				if (current != target) {
 					animated = true;
+					//System.out.println(i + ": animate:  with distance " + distance + ", halfItemWidth=" + halfItemWidth + ", current=" + current + ", target=" + target + ", focusedIndex=" + this.focusedIndex);
 					item.relativeX = calculateCurrent( current, target ) - halfItemWidth;
+					//System.out.println( i + ": relativeX=" + item.relativeX);
 				}
 				//#if polish.midp2
 					int currentAlpha = this.currentTranslucencies[i];
@@ -171,8 +191,10 @@ public class FishEyeContainerView extends ContainerView {
 							//#endif
 							this.shownRgbDataWidths[i] = newWidth;
 							this.shownRgbDataHeight[i] = newHeight;
-							item.itemWidth = newWidth;
-							item.itemHeight = newHeight;
+							//item.itemWidth = newWidth;
+							//item.itemHeight = newHeight;
+							//item.relativeX += (originalWidth - newWidth) >> 1;
+							//System.out.println("animate: new item width of " + i + " = " + newWidth + ", difference=" + (originalWidth - newWidth));
 						}
 					} 
 					if (adjustAlpha && !isScaled) {
@@ -248,7 +270,7 @@ public class FishEyeContainerView extends ContainerView {
 		this.isHorizontal = true;
 		Container parent = (Container) parentContainerItem;		
 		//#debug
-		System.out.println("ContainerView: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
+		System.out.println("FishEye: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
 
 		this.parentContainer = parent;
 		Item[] myItems = parent.getItems();
@@ -388,7 +410,6 @@ public class FishEyeContainerView extends ContainerView {
 			if (index < 0) {
 				index = length - 1;
 			}
-			//TODO add padding-horizontal
 			this.referenceXCenterPositions[index] = startX - ((processed * availableWidthPerItem) >>> 8) - (processed * this.paddingHorizontal); //  - (maxItemWidth >> 1);
 //			System.out.println( index + "=" + this.referenceXCenterPositions[index]);
 			index--;
@@ -398,13 +419,12 @@ public class FishEyeContainerView extends ContainerView {
 		index = this.focusedIndex + 1;
 		processed = 0;
 		halfLength = length >> 1;
-		startX =  lineWidth - startX; //(lineWidth >> 1) +  ((lineWidth >> 1) - startX);
+		startX =  lineWidth -  availableWidth - (this.paddingHorizontal >> 1); //(lineWidth >> 1) +  ((lineWidth >> 1) - startX);
 //		System.out.println("right: startX=" + startX + ", center=" + (lineWidth/2) );
 		while (processed < halfLength) {
 			if (index >= length) {
 				index = 0;
 			}
-			//TODO add padding-horizontal
 			this.referenceXCenterPositions[index] = startX + ((processed * availableWidthPerItem) >>> 8) + (processed * this.paddingHorizontal); //+ (maxWidth >> 1);
 //			System.out.println( index + "=" + this.referenceXCenterPositions[index]);
 			index++;
@@ -413,14 +433,26 @@ public class FishEyeContainerView extends ContainerView {
 		
 		for (int i = 0; i < length; i++) {
 			Item item = myItems[i];
-			int itemWidth = (item.getItemWidth(lineWidth, lineWidth) >> 1);
+			int distance = getDistance( i, this.focusedIndex, length );
+			if (distance != 0) {
+				distance--;
+			}
+			int halfItemWidth = (item.getItemWidth(lineWidth, lineWidth) >> 1);
+			//#if polish.midp2
+				int factor = this.scaleFactor;
+			//#endif
+			//#if tmp.scaleAll
+				factor = factor + ((this.scaleFactorEnd - factor ) * distance) / (length >> 1);
+			//#endif
 			//#if polish.midp2
 				if (i != this.focusedIndex) {
-					itemWidth = (itemWidth * this.scaleFactor) / 100;
-//					System.out.println("adjusted item-width=" + itemWidth + ", original=" + item.itemWidth + ", max=" + maxWidth + ", scale-factor=" + this.scaleFactor);
+					halfItemWidth = (halfItemWidth * factor) / 100;
 				}
 			//#endif
-			item.relativeX = this.referenceXCenterPositions[i] - itemWidth;
+			//System.out.println(i + ": initContent:  with distance " + distance + ", halfItemWidth=" + halfItemWidth + ", focusedIndex=" + this.focusedIndex);
+			item.relativeX = this.referenceXCenterPositions[i] - halfItemWidth;
+			//System.out.println( i + ": relativeX=" + item.relativeX);
+
 //			System.out.println("item.relativeX for " + i + "=" + item.relativeX);
 		}
 		if (this.focusedStyle != null) {
@@ -636,7 +668,19 @@ public class FishEyeContainerView extends ContainerView {
 				int labelY = itemY + this.contentHeight - this.focusedLabel.itemHeight;  // item.itemHeight + itemLabelDiff;
 				this.focusedLabel.paint( labelX, labelY, labelX, labelX + this.focusedLabel.itemWidth, g);
 			}
-		}		
+		}	
+//		g.setColor( 0xff0000 );
+//		g.drawRect( x, y, this.contentWidth, this.contentHeight );
+//		for (int i=0; i<myItems.length; i++) {
+//			g.setColor( 0xff0000 );
+//			int referenceX = this.referenceXCenterPositions[i];
+//			g.drawLine( x + referenceX, y, x+referenceX, y+this.contentHeight);
+//			g.setColor( 0x00ff00 );
+//			referenceX = this.targetXCenterPositions[i];
+//			g.drawLine( x + referenceX, y, x+referenceX, y+this.contentHeight);
+//
+//		}
+		
 	}
 	
 
@@ -663,6 +707,9 @@ public class FishEyeContainerView extends ContainerView {
 				y += (this.maxItemHeight - height);
 			} 
 			g.drawRGB(data, 0, width, x, y, width, height, true );
+//			g.setColor( 0xffff00);
+//			g.drawRect( x, y, item.itemWidth, item.itemHeight );
+//			g.drawLine( x, y, x + item.itemWidth, y + item.itemHeight );
 		//#else
 			super.paintItem(item, index, x, y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
 		//#endif
