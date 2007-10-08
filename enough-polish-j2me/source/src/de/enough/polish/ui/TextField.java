@@ -2682,6 +2682,12 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
+	/**
+	 * Tries to interpret a key pressed event for inserting a character into this TextField.
+	 * @param keyCode the key code of the event
+	 * @param gameAction the associated game action
+	 * @return true when the key could be interpreted as a character
+	 */
 	protected boolean handleKeyInsert(int keyCode, int gameAction)
 	{
 		//#if tmp.directInput
@@ -2692,7 +2698,17 @@ public class TextField extends StringItem
 			
 			int currentLength = (this.text == null ? 0 : this.text.length());
 			//#if polish.key.supportsAsciiKeyMap
-				if (keyCode >= 32 && this.screen.isKeyboardAccessible() && this.inputMode != MODE_NUMBERS && !this.isNumeric) {
+				if (keyCode >= 32 
+						&& this.screen.isKeyboardAccessible() 
+						&& this.inputMode != MODE_NUMBERS 
+						&& !this.isNumeric
+						&& !( 	(gameAction == Canvas.UP     &&  keyCode != Canvas.KEY_NUM2)	|| 
+								(gameAction == Canvas.DOWN   &&  keyCode != Canvas.KEY_NUM8) ||
+								(gameAction == Canvas.LEFT   &&  keyCode != Canvas.KEY_NUM4)	||
+								(gameAction == Canvas.RIGHT  &&  keyCode != Canvas.KEY_NUM6) ||
+								(gameAction == Canvas.FIRE   &&  keyCode != Canvas.KEY_NUM5)   )
+						) 
+				{
 					char insertChar = (char) (' ' + (keyCode - 32));
 					if (this.nextCharUppercase || this.inputMode == MODE_UPPERCASE) {
 						insertChar = Character.toUpperCase(insertChar);

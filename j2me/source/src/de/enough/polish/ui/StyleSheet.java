@@ -510,7 +510,9 @@ public final class StyleSheet {
 				g = nextScreenImage.getGraphics();
 				AccessibleCanvas nextCanvas = (AccessibleCanvas) nextDisplayable;
 				nextCanvas.showNotify();
-				nextCanvas.sizeChanged(width, height);
+				//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
+					nextCanvas.sizeChanged(width, height);
+				//#endif
 				nextCanvas.paint( g );
 				//#debug
 				System.out.println("StyleSheet: showing screen animation " + screenAnimation.getClass().getName() );

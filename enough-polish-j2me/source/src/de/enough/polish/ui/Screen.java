@@ -577,6 +577,9 @@ implements AccessibleCanvas
 			this.container.screen = this;
 		}
 		int availableWidth = this.screenWidth - this.marginLeft + this.marginRight;
+		if (this.border != null) {
+			availableWidth -= this.border.borderWidth << 1;
+		}
 		//#if tmp.usingTitle
 			if (this.title != null) {
 				this.titleHeight = this.title.getItemHeight( availableWidth, availableWidth ); 
@@ -683,6 +686,9 @@ implements AccessibleCanvas
 		}
 		
 		int availableWidth = this.screenWidth - this.marginLeft - this.marginRight;
+		if (this.border != null) {
+			availableWidth -= this.border.borderWidth << 1;
+		}
 		//#if tmp.usingTitle
 			if (this.title != null) {
 				this.titleHeight = this.title.getItemHeight( availableWidth, availableWidth );
@@ -697,6 +703,13 @@ implements AccessibleCanvas
 		width -= this.marginLeft + this.marginRight;
 		y += this.marginTop;
 		height -= this.marginTop + this.marginBottom;
+		if (this.border != null) {
+			int borderWidth = this.border.borderWidth; 
+			width  -= borderWidth << 1;
+			height -= borderWidth << 1;
+			x += borderWidth;
+			y += borderWidth;
+		}
 		//#if !polish.css.title-position || !tmp.usingTitle
 			int topHeight = this.titleHeight + this.subTitleHeight + this.infoHeight;
 		//#else
@@ -1018,7 +1031,7 @@ implements AccessibleCanvas
 		this.marginLeft = style.marginRight;
 		this.marginRight = style.marginRight;
 		if (this.container != null) {
-			// use the same style for the container - but ignore the background and border settings:
+			// use the same style for the container - but ignore the background, border and margin settings:
 			this.container.setStyle(style, true);
 		}
 		this.isLayoutVCenter = (( style.layout & Item.LAYOUT_VCENTER ) == Item.LAYOUT_VCENTER);
@@ -1384,16 +1397,20 @@ implements AccessibleCanvas
 						//#endif
 					}
 				//#endif
-				int sWidth = this.screenWidth - this.marginLeft - this.marginRight;
-				int leftBorder = this.marginLeft;
-				int rightBorder = leftBorder + sWidth;
+				int borderWidth = 0;
+				if (this.border != null) {
+					borderWidth = this.border.borderWidth;
+				}
+				int sWidth = this.screenWidth - this.marginLeft - this.marginRight - (borderWidth << 1);
+				int leftBorder = this.marginLeft + borderWidth;
+				int rightBorder = leftBorder + sWidth - borderWidth;
 				int sHeight;
 				//#ifdef tmp.menuFullScreen
-					sHeight = this.fullScreenHeight - this.marginTop - this.marginBottom;
+					sHeight = this.fullScreenHeight - this.marginTop - this.marginBottom - (borderWidth << 1);
 				//#else
-					sHeight = this.screenHeight - this.marginTop - this.marginBottom;
+					sHeight = this.screenHeight - this.marginTop - this.marginBottom - (borderWidth << 1);
 				//#endif
-				int topBorder = this.marginTop;
+				int topBorder = this.marginTop + borderWidth;
 				//#if tmp.useExternalMenuBar
 					int space;
 					//#if polish.MenuBar.Position:defined
@@ -1471,10 +1488,10 @@ implements AccessibleCanvas
 
 				int clipY = g.getClipY();
 				// paint background:
-				int backgroundHeight = sHeight;
-				int backgroundY = topBorder;
+				int backgroundHeight = sHeight - (borderWidth << 1);
+				int backgroundY = topBorder + borderWidth;
 				//#ifdef tmp.menuFullScreen
-					if (!this.excludeMenuBarForBackground) {
+					if (!this.excludeMenuBarForBackground && this.marginBottom == 0) {
 						//#if tmp.useExternalMenuBar
 							backgroundHeight += this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
 						//#else
@@ -1630,7 +1647,7 @@ implements AccessibleCanvas
 				
 				// paint border:
 				if (this.border != null) {
-					this.border.paint(leftBorder, topBorder-1, sWidth, sHeight, g );
+					this.border.paint(leftBorder - borderWidth, topBorder - borderWidth, sWidth + (borderWidth <<1), sHeight + (borderWidth <<1), g );
 				}
 				
 				//#if polish.ScreenInfo.enable
@@ -1880,6 +1897,8 @@ implements AccessibleCanvas
 			}
 			this.container.relativeX = x;
 			this.container.relativeY = y;
+//			g.setColor(0xffff00);
+//			g.drawRect( x, y, containerWidth, containerHeight);
 			//System.out.println("screen: content: x=" + x + ", rightBorder=" + (x + width) );
 			//System.out.println("content: y=" + y + ", bottom=" + (y + height) );
 			this.container.paint( x, y, x, x + width, g );
@@ -1995,6 +2014,9 @@ implements AccessibleCanvas
 		if (this.isInitialized && super.isShown()) {
 			if (this.title != null) {
 				int width = this.screenWidth - this.marginLeft - this.marginRight;
+				if (this.border != null) {
+					width -= this.border.borderWidth << 1;
+				}
 				this.titleHeight = this.title.getItemHeight( width, width );
 			}
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
