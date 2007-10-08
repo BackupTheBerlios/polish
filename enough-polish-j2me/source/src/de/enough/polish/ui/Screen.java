@@ -1471,41 +1471,27 @@ implements AccessibleCanvas
 
 				int clipY = g.getClipY();
 				// paint background:
+				int backgroundHeight = sHeight;
+				int backgroundY = topBorder;
+				//#ifdef tmp.menuFullScreen
+					if (!this.excludeMenuBarForBackground) {
+						//#if tmp.useExternalMenuBar
+							backgroundHeight += this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
+						//#else
+							backgroundHeight += this.menuBarHeight;
+						//#endif
+					}
+				//#endif
+				//#ifdef tmp.usingTitle
+					if (this.excludeTitleForBackground) {
+						backgroundHeight -= this.titleHeight;
+						backgroundY += this.titleHeight;
+					}
+				//#endif
 				if (this.background != null) {
-					int backgroundHeight = sHeight;
-					int backgroundY = topBorder;
-					//#ifdef tmp.menuFullScreen
-						if (!this.excludeMenuBarForBackground) {
-							//#if tmp.useExternalMenuBar
-								backgroundHeight += this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
-							//#else
-								backgroundHeight += this.menuBarHeight;
-							//#endif
-						}
-					//#endif
-					//#ifdef tmp.usingTitle
-						if (this.excludeTitleForBackground) {
-							backgroundHeight -= this.titleHeight;
-							backgroundY += this.titleHeight;
-						}
-					//#endif
 					//System.out.println("Screen (" + this + ": painting background at leftBorder=" + leftBorder + ", backgroundY=" + backgroundY + ", backgroundHeight=" + backgroundHeight + ", screenHeight=" + this.screenHeight + ", fullscreenHeight=" + this.fullScreenHeight + ", titleHeight=" + this.titleHeight + ", excludeTitleForBackground=" + excludeTitleForBackground);
 					this.background.paint(leftBorder, backgroundY, sWidth, backgroundHeight, g);
 				} else {
-					//System.out.println("Screen (" + this + ": clearing area...");
-					int backgroundHeight = sHeight;
-					int backgroundY = topBorder;
-					//#ifdef tmp.menuFullScreen
-						if (this.excludeMenuBarForBackground) {
-							backgroundHeight = this.screenHeight - this.marginTop - this.marginBottom + 1;
-						}
-					//#endif
-					//#ifdef tmp.usingTitle
-						if (this.excludeTitleForBackground) {
-							backgroundHeight -= this.titleHeight;
-							backgroundY += this.titleHeight;
-						}
-					//#endif
 					g.setColor( 0xFFFFFF );
 					g.fillRect( leftBorder, backgroundY, sWidth, backgroundHeight );
 				}
