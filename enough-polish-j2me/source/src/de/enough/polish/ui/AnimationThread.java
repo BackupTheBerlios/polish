@@ -121,7 +121,11 @@ public class AnimationThread extends Thread
 								}
 							//#else
 								//System.out.println("repainting area " + repaintRegion.getX() + " , " + repaintRegion.getY() + ", " + repaintRegion.getWidth() + ", " + repaintRegion.getHeight());
-								screen.repaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );					
+								//#if polish.Bugs.fullRepaintRequired
+									screen.repaint();
+								//#else
+									screen.repaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
+								//#endif
 							//#endif
 							repaintRegion.reset();
 							sleeptime = ANIMATION_INTERVAL;

@@ -1254,13 +1254,17 @@ public abstract class Item extends Object
 	 * @see #repaint(int, int, int, int)
 	 */
 	protected void repaint() {
-		//System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
-		if (this.isInitialized) {
-			// note: -contentX, -contentY fails for right or center layouts
-			repaint( - (this.paddingLeft + this.marginLeft + this.borderWidth), -(this.paddingTop + this.marginTop + this.borderWidth), this.itemWidth, this.itemHeight );
-		} else {
+		//#if polish.Bugs.fullRepaintRequired
 			repaintFully();
-		}
+		//#else
+			//System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
+			if (this.isInitialized) {
+				// note: -contentX, -contentY fails for right or center layouts
+				repaint( - (this.paddingLeft + this.marginLeft + this.borderWidth), -(this.paddingTop + this.marginTop + this.borderWidth), this.itemWidth, this.itemHeight );
+			} else {
+				repaintFully();
+			}
+		//#endif
 	}
 	
 	/**
