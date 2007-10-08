@@ -51,25 +51,49 @@ public class PredictiveAccess {
 	 */
 	public static TrieProvider PROVIDER = new TrieProvider();
 
-	/**
-	 * The command for enabling the predictive input
-	 */
-	static Command ENABLE_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.enable"), Command.ITEM, 10);
-
+	//#ifdef polish.predictive.command.install.priority:defined
+	//#= private static int INSTALL_PRIORITY = ${polish.predictive.command.install.priority};
+	//#else
+		private static int INSTALL_PRIORITY = 10;
+	//#endif
+	
 	/**
 	 * The command for starting the setup dialog of the predictive input
 	 */
-	private static Command INSTALL_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.install"), Command.ITEM, 10);
+	private static Command INSTALL_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.install"), Command.ITEM, INSTALL_PRIORITY);
 
+	//#ifdef polish.predictive.command.enable.priority:defined
+	//#= private static int ENABLE_PRIORITY = ${polish.predictive.command.enable.priority};
+	//#else
+		private static int ENABLE_PRIORITY = 10;
+	//#endif
+	
+	/**
+	 * The command for enabling the predictive input
+	 */
+	static Command ENABLE_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.enable"), Command.ITEM, ENABLE_PRIORITY);
+	
+	//#ifdef polish.predictive.command.disable.priority:defined
+	//#= private static int DISABLE_PRIORITY = ${polish.predictive.command.disable.priority};
+	//#else
+		private static int DISABLE_PRIORITY = 10;
+	//#endif
+	
 	/**
 	 * The command for disabling the predictive input and returning to the standard input method
 	 */
-	static Command DISABLE_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.disable"), Command.ITEM, 10);
+	static Command DISABLE_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.disable"), Command.ITEM, DISABLE_PRIORITY);
 
+	//#ifdef polish.predictive.command.addword.priority:defined
+	//#= private static int ADDWORD_PRIORITY = ${polish.predictive.command.addword.priority};
+	//#else
+		private static int ADDWORD_PRIORITY = 10;
+	//#endif
+	
 	/**
 	 * The command to start the dialog to add a custom word to the predictive dictionary
 	 */
-	static Command ADD_WORD_CMD = new Command(Locale.get("polish.predictive.registerNewWord.command"), Command.ITEM, 11);
+	static Command ADD_WORD_CMD = new Command(Locale.get("polish.predictive.registerNewWord.command"), Command.ITEM, ADDWORD_PRIORITY);
 
 	/**
 	 * Holds the key code for the space key of the model running the application
