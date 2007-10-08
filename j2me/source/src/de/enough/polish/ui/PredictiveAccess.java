@@ -60,7 +60,7 @@ public class PredictiveAccess {
 	/**
 	 * The command for starting the setup dialog of the predictive input
 	 */
-	private static Command INSTALL_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.install"), Command.ITEM, INSTALL_PRIORITY);
+	static Command INSTALL_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.install"), Command.ITEM, INSTALL_PRIORITY);
 
 	//#ifdef polish.predictive.command.enable.priority:defined
 	//#= private static int ENABLE_PRIORITY = ${polish.predictive.command.enable.priority};

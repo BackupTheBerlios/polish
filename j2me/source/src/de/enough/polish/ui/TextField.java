@@ -3548,6 +3548,15 @@ public class TextField extends StringItem
 			//#if tmp.updateDeleteCommand
 				if (this.screen != null) {
 					this.screen.removeCommand( DELETE_CMD );
+					this.screen.removeCommand( CLEAR_CMD );
+					this.screen.removeCommand( ENTER_SYMBOL_CMD );
+
+					//#if polish.TextField.usePredictiveInput
+					this.screen.removeCommand( PredictiveAccess.ENABLE_PREDICTIVE_CMD );
+					this.screen.removeCommand( PredictiveAccess.DISABLE_PREDICTIVE_CMD );
+					this.screen.removeCommand( PredictiveAccess.INSTALL_PREDICTIVE_CMD );
+					this.screen.removeCommand( PredictiveAccess.ADD_WORD_CMD );
+					//#endif
 				}
 			//#endif
 			super.hideNotify();
