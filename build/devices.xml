@@ -10097,7 +10097,7 @@ These namespaces/schemas will be used soon.
 	       <capability name="CameraResolution" value="3.2 MP"/>
 	       <capability name="CameraZoom" value="4"/>
 	       <capability name="key.ReturnKey" value="-11"/>
-	       <capability name="Bugs" value="SoftKeyMappedToFire, getTitleRequiresNull" />
+	       <capability name="Bugs" value="SoftKeyMappedToFire, ignoreTitleCall" />
 	</device>
 
 	<device>
