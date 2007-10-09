@@ -241,7 +241,7 @@ public class RemoteHttpServlet extends HttpServlet {
 					flag <<= 1;
 				}
 			}
-			// idee: server kšnnte beim ersten call eine int-ID zurŸckgeben, damit der Methoden-Name nicht jedes Mal Ÿbermittelt werden muss und das lookup schneller geht... (ist allerdings potentielles memory leak)
+			// idee: server koennte beim ersten call eine int-ID zurueckgeben, damit der Methoden-Name nicht jedes Mal uebermittelt werden muss und das lookup schneller geht... (ist allerdings potentielles memory leak)
 			Method method = this.implementation.getClass().getMethod( methodName, signature );
 			Object returnValue = method.invoke(this.implementation, parameters); // for void methods null is returned...
 			out.writeInt( Remote.STATUS_OK );
