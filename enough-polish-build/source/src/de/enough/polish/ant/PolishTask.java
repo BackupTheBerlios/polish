@@ -2607,6 +2607,10 @@ public class PolishTask extends ConditionalTask {
 								new Attribute(key, info) );
 					this.environment.setVariable( key, info );
 				} else {
+					if (this.useDefaultPackage) {
+						Midlet midlet = new Midlet( midletDefinition );
+						midletDefinition =  midlet.getMidletInfo(null, this.useDefaultPackage );
+					}
 					attributesByName.put( key, 
 							new Attribute(key, midletDefinition) );	
 				}
