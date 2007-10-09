@@ -45,7 +45,7 @@ import javax.microedition.lcdui.Graphics;
  * or CustomItem.NONE, when the direction is not known).
  * 
  * <br/><br/><b>Interaction Modes</b><br/>
- * The J2ME Polish implementation supports the interaction modes KEY_PRESS,  
+ * The J2ME Polish implementation supports the interaction modes KEY_PRESS,  
  * TRAVERSE_HORIZONTAL and TRAVERSE_VERTICAL.
  * </p>
  * 
