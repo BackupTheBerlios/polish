@@ -44,8 +44,15 @@ public class BrowserScreen
     this.htmlItem.go(url);
   }
   
-  public boolean handleCommand(Command command)
+  public boolean processCommand(Command command)
   {
     return this.htmlItem.handleCommand(command);
   }
+
+/**
+ * @return
+ */
+public boolean canGoBack() {
+	return this.htmlItem.canGoBack();
+}
 }

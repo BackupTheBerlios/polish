@@ -1,1 +1,0 @@
-cmd.select=Select RSS Item

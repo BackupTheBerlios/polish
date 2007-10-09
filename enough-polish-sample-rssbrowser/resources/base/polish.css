@@ -1,0 +1,334 @@
+colors {
+	borderColor: #1e5556;
+	browserFontColor: #1e5556;
+	focusedBorderColor: #000000;
+	fontColor: #1e5556;
+	focusedBgColor: #ffffff;
+	browserFontColorFocused: #142850;
+	focusedFontColor: #000000;
+	bgColor: #eeeeee;
+}
+
+browser {
+	margin: 0;
+	padding: 1;
+}
+browserchoicegroup {
+	margin: 0;
+	padding: 1;
+}
+browserchoiceitem {
+	margin: 0;
+	padding: 1;
+}
+browserdownloadindicator {
+	layout: vertical-shrink | horizontal-shrink | top | right;
+	margin: 0;
+	padding: 1;
+}
+browserinput {
+	layout: expand | left;
+	margin: 0;
+	padding: 2;
+}
+browserinputfocused {
+	layout: expand | left;
+	margin: 0;
+	padding: 1;
+}
+browserlink {
+	margin: 0;
+	padding: 1;
+	font {
+		face: system;
+		size: medium;
+		style: bold;
+		color: #ff4f4fe3;
+	}
+}
+browserlinkfocused {
+	margin: 0;
+	padding: 1;
+	font {
+		face: system;
+		size: medium;
+		style: bold;
+		color: #ff0000;
+	}
+}
+browseroption {
+	layout: left | expand;
+	margin: 0;
+	padding: 1;
+}
+browseroptionitem {
+	margin: 0;
+	padding: 1;
+}
+browsertext {
+	margin: 0;
+	padding: 1;
+}
+browsertextbold {
+	margin: 0;
+	padding: 1;
+}
+browsertextboldfocused {
+	margin: 0;
+	padding: 1;
+}
+browsertextbolditalic {
+	margin: 0;
+	padding: 1;
+}
+browsertextbolditalicfocused {
+	margin: 0;
+	padding: 1;
+}
+browsertextfocused {
+	margin: 0;
+	padding: 1;
+}
+browsertextitalic {
+	margin: 0;
+	padding: 1;
+}
+browsertextitalicfocused {
+	margin: 0;
+	padding: 1;
+}
+focused {
+	layout: expand | left;
+	margin: 0;
+	padding: 1;
+	font {
+		face: system;
+		size: medium;
+		style: bold;
+		color: #000000;
+	}
+	background {
+		type: round-rect-translucent;
+		color: #adffffff;
+		arc-width: 8;
+		arc-height: 8;
+	}
+}
+label {
+	layout: left | top | newline-after;
+	margin: 0;
+	padding: 1;
+	font {
+		face: system;
+		size: small;
+		style: plain;
+	}
+}
+leftcommand {
+	layout: left;
+	margin: 0;
+	padding: 1;
+	font {
+		face: system;
+		size: medium;
+		style: bold;
+		color: #000000;
+	}
+}
+menu {
+	margin: 0;
+	padding: 2;
+	background {
+		type: round-rect;
+		color: focusedBgColor;
+		arc-width: 4;
+		arc-height: 4;
+	}
+	min-width: 100;
+}
+menu1 {
+	layout: right;
+	margin: 0;
+	padding: 1;
+	background {
+		type: simple;
+		color: argb(150, 255, 255, 0 );
+	}
+}
+menubar {
+	margin: 0;
+	padding: 1;
+	background {
+		type: simple;
+		color: bgColor;
+	}
+}
+menufocused {
+	layout: left | horizontal-expand;
+	margin: 0;
+	padding: 1;
+	background {
+		type: simple;
+		color: bgColor;
+	}
+}
+menuitem {
+	layout: left;
+	margin: 0;
+	padding: 1;
+}
+aboutAlert {
+	layout: horizontal-center | vertical-center;
+	margin: 0;
+	padding: 1;
+	background {
+		type: horizontal-stripes;
+		first-top-color: #ffff66;
+		first-bottom-color: #008000;
+		second-top-color: #ffffff;
+		second-bottom-color: #33ff00;
+	}
+    screen-change-animation: zoomInAndHide;
+}
+
+alertcontent {
+	font-color: white;
+	text-effect: shadow;
+	text-shadow-color: #222;
+}
+
+.rssDescriptionAlert extends aboutAlert {
+	title-style: .rssDescriptionAlertTitle;
+	content-style: .rssDescriptionAlertContent;
+	screen-change-animation: none;
+}
+
+.rssDescriptionAlertTitle extends title {
+	text-wrap: false;
+}
+
+.rssDescriptionAlertContent {
+	font-color: black;
+}
+
+mychoicegroup {
+   margin: 0;
+   padding: 1;
+   view-type: exclusive
+}
+mychoiceitem {
+	margin: 0;
+	padding: 1;
+}
+rssBrowserForm {
+	margin: 0;
+	padding-left: 10;
+	padding-right: 10;
+	padding-top: 10;
+	padding-bottom: 1;
+	padding-horizontal: 1;
+	padding-vertical: 1;
+	background {
+		type: horizontal-stripes;
+		first-top-color: #ffff66;
+		first-bottom-color: #008000;
+		second-top-color: #ffffff;
+		second-bottom-color: #33ff00;
+	}
+}
+
+.rssBrowserTitle extends title {
+	text-wrap: false;
+	text-wrap-animate: false;
+}
+
+.mylist {
+	layout: horizontal-center | vertical-center;
+	margin: 0;
+	padding: 10;
+	background {
+		type: horizontal-stripes;
+		first-top-color: #ffff66;
+		first-bottom-color: #008000;
+		second-top-color: #ffffff;
+		second-bottom-color: #33ff00;
+	}        
+	screen-change-animation: fade;
+}
+.mytextfield {
+	layout: left | top | horizontal-expand;
+	margin: 0;
+	padding: 2;
+	background {
+		type: simple;
+		color: #ffffff;
+	}
+}
+rightcommand {
+	layout: right;
+	margin: 0;
+	padding: 1;
+	font {
+		face: system;
+		size: medium;
+		style: bold;
+		color: #000000;
+	}
+}
+scrollbar {
+	margin: 0;
+	padding: 1;
+}
+.textfieldsymbolitem {
+	layout: center;
+	margin: 1;
+	padding: 2;
+}
+.textfieldsymbollist {
+	layout: vertical-shrink | horizontal-shrink | center | vertical-center;
+	margin: 0;
+	padding: 10;
+	background {
+		type: simple;
+		color: white;
+	}
+}
+textfieldsymbollistfocused {
+	layout: center;
+	margin: 0;
+	padding: 2;
+}
+tffocused {
+	layout: left | top | horizontal-expand;
+	margin: 0;
+	padding: 1;
+	font {
+		face: system;
+		size: medium;
+		style: bold;
+		color: #000000;
+	}
+	background {
+		type: simple-bordered;
+		color: #ffffff;
+		border-color: #000000;
+		border-width: 1;
+	}
+}
+title {
+	layout: horizontal-center | horizontal-expand;
+	margin: 0;
+	padding: 1;
+	font {
+		face: proportional;
+		size: large;
+		style: bold;
+		color: #000000;
+	}
+	text-effect: alien-glow;
+	background {
+		type: simple;
+		color: #ffffff;
+	}
+}
+
