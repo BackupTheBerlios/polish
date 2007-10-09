@@ -402,9 +402,11 @@ implements Comparable
 	}
 
 	/**
-	 * @param parameterClass
-	 * @param parameter
-	 * @return
+	 * Retrieves the value of a field.
+	 * 
+	 * @param parameterClass unused
+	 * @param parameter the name of the field to resolve, including class name
+	 * @return the value of the field
 	 */
 	protected Object resolveField(Class parameterClass, String parameter) {
 		int dotPos = parameter.indexOf('.'); 
@@ -592,8 +594,10 @@ implements Comparable
 	}
 	
 	/**
+	 * Retrieves mapping by its name.
+	 * 
 	 * @param toName the name to which the mapping is usally converted, e.g. a class name
-	 * @return
+	 * @return the mapping
 	 */
 	public CssMapping getMappingByTo(String toName) {
 		if (this.mappingsByName == null) {
@@ -642,7 +646,9 @@ implements Comparable
 	}
 
 	/**
-	 * @return
+	 * Retrieves all mappings for this attribute.
+	 * 
+	 * @return an array of mappings
 	 */
 	public CssMapping[] getMappings() {
 		if (this.mappingsByName == null) {
@@ -661,8 +667,10 @@ implements Comparable
 	}
 
 	/**
-	 * @param environment
-	 * @return
+	 * Retrieves the default value for the attribute.
+	 * 
+	 * @param environment the environment
+	 * @return the default value
 	 */
 	public Object instantiateDefault(Environment environment) {
 		if (getDefaultValue() == null) {
@@ -710,9 +718,11 @@ implements Comparable
 	}
 
 	/**
-	 * @param valueStr
-	 * @param environment 
-	 * @return
+	 * Parses and instantiates a value in the attribute.
+	 * 
+	 * @param valueStr the value string to parse
+	 * @param environment the enviroment
+	 * @return the instantiated value
 	 */
 	public Object parseAndInstantiateValue(String valueStr, Environment environment ) {
 		String sourceCodeValue = getValue(valueStr, environment);
@@ -720,7 +730,10 @@ implements Comparable
 	}
 
 	/**
-	 * @return
+	 * Tells whether this attribute is a base attribute.
+	 * 
+	 * @return <code>true</code> if this is a base attribute,
+	 * <code>false</code> otherwise
 	 */
 	public boolean isBaseAttribute() {
 		return this.isBaseAttribute;

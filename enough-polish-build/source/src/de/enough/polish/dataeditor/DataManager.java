@@ -270,8 +270,10 @@ public class DataManager {
 	}
 
 	/**
-	 * @param name
-	 * @return
+	 * Retrieves a data type by its name.
+	 * 
+	 * @param name the name of the data type
+	 * @return the data type
 	 */
 	public DataType getDataType(String name ) {
 		return (DataType) this.typesByName.get( name );
@@ -286,29 +288,35 @@ public class DataManager {
 	}
 
 	/**
-	 * @return
+	 * Retrieves the user-defined data types.
+	 * 
+	 * @return an array of data types
 	 */
 	public DataType[] getUserDefinedTypes() {
 		return (DataType[]) this.types.toArray( new DataType[ this.types.size() ] );
 	}
 
 	/**
-	 * @return
+	 * Retrieves the number of entries managed by this manager.
+	 * 
+	 * @return the number of entries in this manager
 	 */
 	public int getNumberOfEntries() {
 		return this.entries.size();
 	}
 
 	/**
-	 * @param index
-	 * @return
+	 * Retrieves a specific data entry given by an index.
+	 * 
+	 * @param index the index
+	 * @return the data entry
 	 */
 	public DataEntry getDataEntry(int index) {
 		return (DataEntry) this.entries.get( index );
 	}
 
 	/**
-	 * 
+	 * Clears the manager.
 	 */
 	public void clear() {
 		this.types.clear();
@@ -537,7 +545,8 @@ public class DataManager {
 	 * which the definition was loaded/saved.
 	 * When no definition has been loaded or saved, the current directory
 	 * for this application is returned.
-	 * @return
+	 * 
+	 * @return the current directory
 	 */
 	public File getCurrentDirectory() {
 		if (this.dataFile != null) {
