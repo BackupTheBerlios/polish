@@ -600,6 +600,17 @@
 			Check for game action and according keycode.
 		</solution>
 	</bug>
+	
+	<bug>
+		<name>fullRepaintRequired</name>
+		<area>ui</area>
+		<description>
+			Canvas.reqpaint(x,y,w,h) does not work reliable. 
+		</description>
+		<solution>
+			Use Canvas.repaint() instead.
+		</solution>
+	</bug>
 
 	<!--
 	<bug>

@@ -10739,7 +10739,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="20"/>
 		<capability name="AnnouncementDate" value="2006-10-25"/>
-		<capability name="Bugs" value="SoftKeyMappedToFire, getTitleRequiresNull" />
+		<capability name="Bugs" value="SoftKeyMappedToFire, getTitleRequiresNull, fullRepaintRequired" />
 	</device>
 		
 	<device> 

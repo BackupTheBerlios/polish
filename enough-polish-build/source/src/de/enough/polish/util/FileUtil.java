@@ -307,7 +307,7 @@ public final class FileUtil {
 		for (int i = 0; i < lines.length; i++) {
 			Object key = keys[i];
 			Object value = properties.get( key );
-			lines[i] = key.toString() + "=" + value.toString();
+			lines[i] = key.toString() + delimiter + value.toString();
 		}
 		writeTextFile( file, lines );
 	}
