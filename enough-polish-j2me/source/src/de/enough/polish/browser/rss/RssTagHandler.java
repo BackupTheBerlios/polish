@@ -76,14 +76,14 @@ public class RssTagHandler
 	private Command linkCommand;
 	private ItemCommandListener itemListener;
 
-        //#if polish.midp2
+	//#if polish.midp2
 	public RssTagHandler(Command linkCommand, javax.microedition.lcdui.ItemCommandListener listener)
 	{
 		//#debug error
 		System.out.println("This constructor should not be used after preprocessing.");
 		this.linkCommand = linkCommand;
 	}
-        //#endif
+	//#endif
 
 	public RssTagHandler(Command linkCommand, ItemCommandListener listener)
 	{

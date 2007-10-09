@@ -102,7 +102,7 @@ public class SplashScreen extends Screen {
      * @return timeout value
      */
     public int getTimeout() {
-        return timeout;
+        return this.timeout;
     }
     
     /**
@@ -121,7 +121,7 @@ public class SplashScreen extends Screen {
      * @return true if user can interrupt it, false otherwise
      */
     public boolean isAllowTimeoutInterrupt() {
-        return allowTimeoutInterrupt;
+        return this.allowTimeoutInterrupt;
     }
     
     
@@ -132,7 +132,7 @@ public class SplashScreen extends Screen {
      * @param keyCode
      */
     public void keyPressed(int keyCode) {
-        if (allowTimeoutInterrupt) {
+        if (this.allowTimeoutInterrupt) {
             doDismiss();
         }
     }
@@ -144,7 +144,7 @@ public class SplashScreen extends Screen {
      * @param y
      */
     public void pointerPressed(int x, int y) {
-        if (allowTimeoutInterrupt) {
+        if (this.allowTimeoutInterrupt) {
             doDismiss();
         }
     }
@@ -155,9 +155,9 @@ public class SplashScreen extends Screen {
     public void showNotify() {
         super.showNotify();
         // start watchdog task - only when applicable
-        currentDisplayTimestamp = System.currentTimeMillis();
-        if (timeout > 0) {
-            Watchdog w = new Watchdog(timeout, currentDisplayTimestamp);
+        this.currentDisplayTimestamp = System.currentTimeMillis();
+        if (this.timeout > 0) {
+            Watchdog w = new Watchdog(this.timeout, this.currentDisplayTimestamp);
             w.start();
         }
     }
@@ -165,7 +165,7 @@ public class SplashScreen extends Screen {
     
     public void hideNotify() {
         super.hideNotify();
-        currentDisplayTimestamp = System.currentTimeMillis();
+        this.currentDisplayTimestamp = System.currentTimeMillis();
     }
     
     
@@ -175,6 +175,7 @@ public class SplashScreen extends Screen {
     private void doDismiss() {
         CommandListener commandListener = getCommandListener();
         if (commandListener == null) {
+        	//#debug
             System.out.println("no command listener set");
         } else {
             commandListener.commandAction(DISMISS_COMMAND,this);

@@ -83,16 +83,13 @@ public class RssBrowser
 	public boolean handleCommand(Command command)
 	{
 		if (this.rssItemCommandListener != null
-			&& command == RssTagHandler.CMD_GO_TO_ARTICLE) {
+			&& command == RssTagHandler.CMD_GO_TO_ARTICLE) 
+		{
 			this.rssItemCommandListener.commandAction(command, getFocusedItem());
 			return true;
 		}
 
-		if (super.handleCommand(command)) {
-			return true;
-		}
-
-		return false;
+		return super.handleCommand(command);
 	}
 
 	public void commandAction(Command command, Displayable displayable)

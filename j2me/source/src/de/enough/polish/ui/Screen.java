@@ -3081,7 +3081,7 @@ implements AccessibleCanvas
 	 * @param cmd the command wich should be issued to the listener
 	 */
 	protected void callCommandListener( Command cmd ) {
-		//System.out.println("Screen.callCommandListener() for command " + cmd.getLabel() );
+		//System.out.println("Screen.callCommandListener() for command " + cmd.getLabel() + ", forwardCommandListener=" + this.forwardCommandListener );
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.setOpen(false);
 		//#elif tmp.menuFullScreen
@@ -3289,8 +3289,9 @@ implements AccessibleCanvas
 				item = getCurrentItem();
 			}
 			//#debug
-			System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + item + " and screen " + Screen.this + ", itemCommandListener=" + (item == null ? null : item.itemCommandListener));
+			System.out.println("FowardCommandListener: processing command " + cmd.getLabel() + " for item " + item + " and screen " + Screen.this + ", itemCommandListener=" + (item == null ? null : item.itemCommandListener) + ", real commandListener=" + this.realCommandListener);
 			if ( item != null && item.handleCommand(cmd)) {
+				//System.out.println("command processed by item (or subitem) " + item);
 				return true;
 			}
 			// now invoke the usual command listener:

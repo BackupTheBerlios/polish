@@ -199,6 +199,12 @@ public class Container extends Item {
 		item.parent = this;
 		this.itemsList.add( item );
 		this.isInitialized = false;
+		if (this.parent != null) {
+			this.parent.isInitialized = false;
+		}
+		if (this.isShown) {
+			item.showNotify();
+		}
 		repaint();
 	}
 	
@@ -242,6 +248,12 @@ public class Container extends Item {
 		}
 		
 		this.isInitialized = false;
+		if (this.parent != null) {
+			this.parent.isInitialized = false;
+		}
+		if (this.isShown) {
+			item.showNotify();
+		}
 		repaint();
 	}
 	
@@ -386,6 +398,9 @@ public class Container extends Item {
 			this.focusedIndex--;
 		}
 		this.isInitialized = false;
+		if (this.parent != null) {
+			this.parent.isInitialized = false;
+		}
 		removedItem.hideNotify();
 		repaint();
 		return removedItem;
@@ -730,6 +745,7 @@ public class Container extends Item {
 		if  (this.isInitialized) {
 			// this container has been initialised already,
 			// so the dimensions are known.
+			//System.out.println("focus: contentWidth=" + this.contentWidth + ", of container " + this);
 			int wAfter = item.getItemWidth( this.contentWidth, this.contentWidth );
 			int hAfter = item.itemHeight;
 			int layoutAfter = item.layout;
@@ -903,7 +919,8 @@ public class Container extends Item {
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		//#debug
-		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled);
+		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled + ", firstLineWidth=" + firstLineWidth + ", lineWidth=" + lineWidth);
+
 		int myContentWidth = 0;
 		int myContentHeight = 0;
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
@@ -1077,7 +1094,9 @@ public class Container extends Item {
 
 		}
 		this.contentHeight = myContentHeight;
-		this.contentWidth = myContentWidth;	
+		this.contentWidth = myContentWidth;
+		//#debug
+		System.out.println("initContent(): Container " + this + " has a content-width of " + this.contentWidth + ", parent=" + this.parent);
 	}
 	
 	int getContentScrollHeight() {
@@ -1245,6 +1264,7 @@ public class Container extends Item {
 				item.init( this.contentWidth, this.contentWidth );
 			}
 			if ( item.handleKeyPressed(keyCode, gameAction) ) {
+				//System.out.println("key pressed handled by focused item " + item);
 				if (item.internalX != -9999) {
 					if (this.enableScrolling) {
 						scroll(gameAction, item);

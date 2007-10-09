@@ -660,7 +660,7 @@ implements Runnable
       }
     }
     
-    return false;
+    return super.handleCommand(command);
   }
   
   protected void goImpl(String url)
@@ -716,7 +716,7 @@ implements Runnable
   protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g)
   {
     super.paintContent(x, y, leftBorder, rightBorder, g);
-
+    
     if (this.isWorking)
     {
     	int originalY = y;

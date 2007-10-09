@@ -237,6 +237,8 @@ implements CommandListener
 
 	private int numberOfCommands;
 
+	private Style contentStyle;
+
 	/**
 	 * Constructs a new, empty <code>Alert</code> object with the given title. 
 	 * If <code>null</code> is
@@ -541,6 +543,9 @@ implements CommandListener
 	 */
 	public void setString( String str, Style style )
 	{
+		if (style == null) {
+			style = this.contentStyle;
+		}
 		if (this.iconItem == null) {
 			createItem(str, null, style);
 		} else if (style != null) {
@@ -646,6 +651,9 @@ implements CommandListener
 	 */
 	public void setImage( Image img, Style style )
 	{
+		if (style == null) {
+			style = this.contentStyle;
+		}
 		if (this.iconItem == null) {
 			createItem(null, img, style);
 		} else if (style != null) {
@@ -855,6 +863,15 @@ implements CommandListener
 				if (!this.showDismissCommand && this.timeout != FOREVER) {
 					super.removeCommand(DISMISS_COMMAND);
 				}
+			}
+		//#endif
+		//#if polish.css.content-style
+			Style contentStyle = (Style) style.getObjectProperty("content-style");
+			if (contentStyle != null) {
+				if (this.iconItem != null) {
+					this.iconItem.setStyle( contentStyle );
+				} 
+				this.contentStyle = contentStyle;
 			}
 		//#endif
 	}
