@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 
@@ -443,8 +444,6 @@ implements OutputFilter
 		
 		
 		Environment env = new Environment(polishHome);
-		env.addVariable("polish.home", polishHome.getAbsolutePath() );
-		env.addVariable("blackberry.home", blackberryHome.getAbsolutePath() );
 		File midletClassFile = new File( tmp, "MIDlet.class");
 		if (midletClassFile.exists()) 
 		{
@@ -461,6 +460,20 @@ implements OutputFilter
 			env.addVariable(key, value);
 		}
 		env.set( Packager.KEY_ENVIRONMENT, new JarPackager() );
+		try {
+			Properties props = System.getProperties();
+			keys = props.keySet().toArray();
+			for (int i = 0; i < keys.length; i++) {
+				String key = (String) keys[i];
+				String value = props.getProperty(key);
+				env.addVariable(key, value);
+			}
+		} catch (SecurityException e) {
+			env.addVariable("polish.home", polishHome.getAbsolutePath() );
+			env.addVariable("blackberry.home", blackberryHome.getAbsolutePath() );
+			addOptionalProperty("blackberry.certificate.dir", env );
+			addOptionalProperty("blackberry.certificate.password", env );
+		}
 		
 		// now convert the JAD/JAR to a JAD/COD:
 		JarToCodFinalizer finalizer = new JarToCodFinalizer();
@@ -470,6 +483,15 @@ implements OutputFilter
 		System.exit(0);
 	}
 	
+	/**
+	 * @param string
+	 * @param env
+	 */
+	private static void addOptionalProperty(String string, Environment env) {
+		// TODO robertvirkus implement addOptionalProperty
+		
+	}
+
 	private static String getString(String name) {
 		String value = System.getProperty(name);
 		if (value == null) {
@@ -504,6 +526,8 @@ implements OutputFilter
 		System.out.println("jad: jad file that should be used");
 		System.out.println("Optional environment variables:");
 		System.out.println("tmp: optional location of the tempory folder used for the conversion [default is ./tmp]");
+		System.out.println("blackberry.certificate.dir: directory that contains the CSK certificate file");
+		System.out.println("blackberry.certificate.password: password for signing the application");
 	}
 	
 
