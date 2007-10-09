@@ -178,6 +178,7 @@ public class Container extends Item {
 	 * Note that the height available for this container might differ from the returned value.
 	 * 
 	 * @return the available vertical space or -1 when it is not known.
+	 * @see #getContentScrollHeight()
 	 */
 	public int getScrollHeight() {
 		if (this.availableHeight == -1 && this.parent instanceof Container) {
@@ -187,6 +188,16 @@ public class Container extends Item {
 		}
 	}
 	
+	/**
+	 * Retrieves the available height available for the content of this container
+	 *  
+	 * @return the available vertical space minus paddings/margins etc or -1 when it is not known.
+	 * @see #getScrollHeight()
+	 */
+	int getContentScrollHeight() {
+		return getScrollHeight() - (this.contentY + this.borderWidth + this.paddingBottom + this.marginBottom ); 
+	}
+
 	/**
 	 * Adds an item to this container.
 	 * 
@@ -1099,9 +1110,6 @@ public class Container extends Item {
 		System.out.println("initContent(): Container " + this + " has a content-width of " + this.contentWidth + ", parent=" + this.parent);
 	}
 	
-	int getContentScrollHeight() {
-		return getScrollHeight() - (this.contentX + this.borderWidth + this.paddingBottom + this.marginBottom ); 
-	}
 
 	
 	/* (non-Javadoc)

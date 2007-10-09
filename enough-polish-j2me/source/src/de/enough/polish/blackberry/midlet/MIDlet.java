@@ -244,7 +244,10 @@ public abstract class MIDlet extends UiApplication
 			}
 		}
 		
-		String value = (String) this.appProperties.get( key );
+		String value = System.getProperty(key);
+		if (value == null) {
+			value = (String) this.appProperties.get( key );
+		}
 		//#debug
 		System.out.println("got value [" + value + "] for key [" + key + "]");
 		return value;
