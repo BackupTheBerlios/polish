@@ -198,7 +198,7 @@ implements AccessibleCanvas
 		private Command okCommand;
 		//#if polish.MenuBar.useExtendedMenuBar || polish.classes.MenuBar:defined
 			//#if polish.classes.MenuBar:defined
-				//#= private final ${polish.classes.MenuBar} menuBar;
+				//#= public final ${polish.classes.MenuBar} menuBar;
 			//#else
 				private final MenuBar menuBar;
 			//#endif
@@ -362,8 +362,13 @@ implements AccessibleCanvas
 			super.setCommandListener(this.forwardCommandListener);
 		//#endif
 		//#ifdef tmp.useExternalMenuBar
-			//#style menubar, menu, default
-			this.menuBar = new MenuBar( this );
+			//#if polish.classes.MenuBar:defined
+				//#style menubar, menu, default
+				//#= this.menuBar = new ${polish.classes.MenuBar}( this );
+			//#else
+	 			//#style menubar, menu, default
+	 			this.menuBar = new MenuBar( this );
+	 		//#endif
 		//#endif
 		//#if tmp.fullScreen && polish.midp2 && !(polish.Bugs.fullScreenInPaint || tmp.needsNokiaUiForSystemAlerts)
 			super.setFullScreenMode( true );

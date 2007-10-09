@@ -105,19 +105,18 @@ public class MenuBar extends Item {
 	private int commandsContainerWidth;
 	protected boolean isSoftKeyPressed;
 	
-	
 	protected boolean canScrollDownwards; // indicator for parent screen
 	protected boolean canScrollUpwards; // indicator for parent screen
 	protected boolean paintScrollIndicator; // indicator for parent screen
-	private Image optionsImage;
-	private boolean showImageAndText;
-	private Image selectImage;
-	private Image cancelImage;
+	protected Image optionsImage;
+	protected boolean showImageAndText;
+	protected Image selectImage;
+	protected Image cancelImage;
 	//#if !polish.Bugs.noTranslucencyWithDrawRgb
-		private Background overlayBackground;
+		protected Background overlayBackground;
 	//#endif
-	private final Hashtable allCommands;
-	private boolean isOrientationVertical;
+	protected final Hashtable allCommands;
+	protected boolean isOrientationVertical;
 
 	/**
 	 * Creates a new menu bar

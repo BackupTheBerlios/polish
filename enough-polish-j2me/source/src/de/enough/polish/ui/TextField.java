@@ -1583,18 +1583,20 @@ public class TextField extends StringItem
 			//#endif
 		//#endif
 				
-		//#if (polish.TextField.suppressDeleteCommand != true)
-		removeCommand( DELETE_CMD );
-		//#endif
+		//#if !tmp.suppressCommands
+			//#if (polish.TextField.suppressDeleteCommand != true)
+				removeCommand( DELETE_CMD );
+			//#endif
 		
-		//#if polish.TextField.suppressClearCommand != true
-		removeCommand( CLEAR_CMD );
-		//#endif
+			//#if polish.TextField.suppressClearCommand != true
+				removeCommand( CLEAR_CMD );
+			//#endif
 		
-		//#if tmp.directInput && tmp.supportsSymbolEntry && polish.TextField.suppressAddSymbolCommand != true
-		removeCommand( ENTER_SYMBOL_CMD );
+			//#if tmp.directInput && tmp.supportsSymbolEntry && polish.TextField.suppressAddSymbolCommand != true
+				removeCommand( ENTER_SYMBOL_CMD );
+			//#endif
 		//#endif
-		
+				
 		// set item commands:
 		//#if !tmp.suppressCommands
 		
