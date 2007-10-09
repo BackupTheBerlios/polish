@@ -636,8 +636,8 @@ public class ExtensionManager {
 	/**
 	 * @param polishHome
 	 * @param resourceUtil
-	 * @return
-	 * @throws IOException 
+	 * @return the extension manager instance
+	 * @throws IOException if an I/O error occured
 	 * @throws InvalidComponentException 
 	 */
 	public static ExtensionManager getInstance(File polishHome, ResourceUtil resourceUtil) 

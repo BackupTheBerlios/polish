@@ -174,7 +174,9 @@ implements Comparable
 	}
 
 	/**
-	 * @return
+	 * Retrieves the class name of the class this mapping maps to.
+	 * 
+	 * @return the class name
 	 */
 	public String getToClassName() {
 		if (this.to == null) {
@@ -193,7 +195,9 @@ implements Comparable
 	}
 
 	/**
-	 * @param className
+	 * Sets the class name of the class this mapping applies to.
+	 * 
+	 * @param className the class name
 	 * @return true when the attribute can be used for the given class.
 	 */
 	public boolean appliesTo(String className) {
@@ -217,7 +221,10 @@ implements Comparable
 	}
 
 	/**
-	 * @return
+	 * Tells whether this mapping has an appliesTo attribute, or no.
+	 * 
+	 * @return <code>true</code> if this mapping has an appliesTo attribute,
+	 * <code>false</code> otherwise 
 	 */
 	public boolean hasAppliesTo() {
 		// TODO robertvirkus implement getApplicableTo

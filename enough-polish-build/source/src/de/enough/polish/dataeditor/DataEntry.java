@@ -261,7 +261,10 @@ public class DataEntry {
 	}
 
 	/**
-	 * @return
+	 * Retrieves the XML representation for this <code>DataEntry</code>. This is useful
+	 * e.g. for saving it into a file.
+	 * 
+	 * @return the XML representation
 	 */
 	public String getXmlRepresentation() {
 		StringBuffer  buffer = new StringBuffer();

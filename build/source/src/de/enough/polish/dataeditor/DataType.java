@@ -285,17 +285,21 @@ public class DataType {
 	}
 
 	/**
-	 * @return
+	 * Retrieves the name of this <code>DataType</code>.
+	 * 
+	 * @return the name
 	 */
 	public String getName() {
 		return this.name;
 	}
 
 	/**
-	 * @param data
-	 * @return
+	 * Retrieves the INT representation for a given object.
+	 * 
+	 * @param data the data object to represent
+	 * @return the INT representation
 	 */
-	public int getIntRepresentation( Object data) {
+	public int getIntRepresentation(Object data) {
 		switch (this.type) {
 			case BYTE_ID:
 				return ((Byte)data).intValue();
@@ -325,7 +329,10 @@ public class DataType {
 	}
 	
 	/**
-	 * @return
+	 * Retrieves the XML representation for this <code>DataEntry</code>. This is useful
+	 * e.g. for saving it into a file.
+	 * 
+	 * @return the XML representation
 	 */
 	public String getXmlRepresentation() {
 		StringBuffer buffer = new StringBuffer();

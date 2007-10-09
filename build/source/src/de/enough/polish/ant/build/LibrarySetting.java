@@ -147,7 +147,9 @@ public class LibrarySetting extends Setting {
 //	}
 
 	/**
-	 * @return
+	 * Returns the timestamp of the last modification.
+	 * 
+	 * @return the timestamp
 	 */
 	public long lastModified() {
 		return this.lastModified;
@@ -273,7 +275,7 @@ public class LibrarySetting extends Setting {
 	}
 	
 	/**
-	 * @return
+	 * @return true if library was changed, false otherwise
 	 */
 	public boolean isLibraryChanged() {
 		return this.libraryChanged;

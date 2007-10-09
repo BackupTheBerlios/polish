@@ -642,7 +642,7 @@ implements Comparable
 	}
 
 	/**
-	 * 
+	 * @return
 	 */
 	public CssMapping[] getMappings() {
 		if (this.mappingsByName == null) {
@@ -652,7 +652,9 @@ implements Comparable
 	}
 
 	/**
-	 * @return
+	 * Retrieves the type of the attribute
+	 * 
+	 * @return the type of the attribute
 	 */
 	public String getType() {
 		return this.type;
@@ -670,8 +672,10 @@ implements Comparable
 	}
 
 	/**
-	 * @param class1
-	 * @return
+	 * Retrieves the mappings that are appliable to a given class.
+	 * 
+	 * @param targetClass the class to return mappings for
+	 * @return an array of mappings
 	 */
 	public CssMapping[] getApplicableMappings(Class targetClass) {
 		ArrayList fullClassNamesList = new ArrayList();

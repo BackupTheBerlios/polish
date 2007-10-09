@@ -470,8 +470,10 @@ public class Style {
 	}
 
 	/**
-	 * @param attributeName 
-	 * @return
+	 * Retrieves the value for a given named attribute.
+	 * 
+	 * @param attributeName the name of the attribute
+	 * @return the value of the attribute
 	 */
 	public String getAttributeValue(String attributeName) {
 		int splitPos = attributeName.indexOf('-');

@@ -117,7 +117,7 @@ public class CountTerm {
 	}
 
 	/**
-	 * @return
+	 * @return the string representation
 	 */
 	public String toCodeString() {
 		StringBuffer buffer = new StringBuffer();
@@ -142,9 +142,9 @@ public class CountTerm {
 	}
 	
 	/**
-	 * @param term
-	 * @param manager
-	 * @return
+	 * @param term the term string
+	 * @param manager the data manager
+	 * @return the term object
 	 */
 	public static CountTerm createTerm(String term, DataManager manager) {
 		char devider = '+';
@@ -184,8 +184,9 @@ public class CountTerm {
 	}
 
 	/**
-	 * @return
+	 * @return the data
 	 */
+//	public DataEntry[] getOperands() {
 	public DataEntry[] getOperants() {
 		return this.operants;
 	}
