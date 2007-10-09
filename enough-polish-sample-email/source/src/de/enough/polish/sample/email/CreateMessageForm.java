@@ -26,8 +26,6 @@
  */
 package de.enough.polish.sample.email;
 
-import java.util.Hashtable;
-
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Form;
@@ -39,8 +37,6 @@ import de.enough.polish.ui.ChoiceTextField;
 import de.enough.polish.ui.FilteredChoiceGroup;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
-import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.Locale;
 
 /**
  * <p>Provides a form for creating a new mail.</p>
