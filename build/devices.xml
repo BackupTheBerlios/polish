@@ -826,8 +826,8 @@ These namespaces/schemas will be used soon.
 		<capability name="Network" value="GSM, GPRS, UMTS"/>
 		<capability name="Frequency" value="900,1800,1900,2100"/>
 		<capability name="Emulator.Skin" value="SonyEricsson_P900"/>
-		<capability name="key.LeftSoftKey" value="-7"/>
-		<capability name="key.RightSoftKey" value="-6"/>
+		<capability name="key.LeftSoftKey" value="-6"/>
+		<capability name="key.RightSoftKey" value="-7"/>
 		<capability name="Bugs" value="fullScreenInPaint, drawRgbOrigin, displaySetCurrentFlickers"/>
 		<capability name="Font.small" value="15"/>
 		<capability name="Font.medium" value="18"/>
@@ -3251,6 +3251,9 @@ These namespaces/schemas will be used soon.
 		<capability name="AnnouncementDate" value="2007-01-18"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA6" />
 		<capability name="Emulator.Skin" value="MOTORIZR_Z3.props" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="key.FireKey" value="-20" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	</device>
 
@@ -3280,6 +3283,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Class" value="MotorolaEmulatorA5" />
 		<capability name="Emulator.Skin" value="MOTORAZR_V3xx.props" />
 		<capability name="key.MiddleSoftKey" value="-20" />
+		<capability name="key.FireKey" value="-20" />
 	</device>
 
 	<device>
@@ -3490,6 +3494,9 @@ These namespaces/schemas will be used soon.
 		<capability name="AnnouncementDate" value="2006-12-18"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA6" />
 		<capability name="Emulator.Skin" value="MOTOKRZR_K1.props" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="key.FireKey" value="-20" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	</device>
 
@@ -3606,8 +3613,9 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="640x480"/>
 		<capability name="CameraZoom" value="4"/>
 		<capability name="key.LeftSoftKey" value="-21" />
-		<capability name="key.MiddleSoftKey" value="-20" />
+		<capability name="key.MiddleSoftKey" value="-23" />
 		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="key.FireKey" value="-20" />
 		<capability name="Font.small" value="18" />
 		<capability name="Font.medium" value="18" />
 		<capability name="Font.large" value="18" />
@@ -3667,6 +3675,10 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="SLVR_L7.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.MiddleSoftKey" value="-23" />
+		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="key.FireKey" value="-20" />
 	</device>
 
 	<device>
@@ -4034,6 +4046,9 @@ These namespaces/schemas will be used soon.
 		<capability name="AnnouncementDate" value="2006-12-18"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorM3" />
 		<capability name="Emulator.Skin" value="A910.props" />
+		<capability name="key.LeftSoftKey" value="-21" />
+		<capability name="key.RightSoftKey" value="-22" />
+		<capability name="key.FireKey" value="-5" />
 	</device>
 
 	<!--

@@ -66,6 +66,7 @@ implements OutputFilter
 	private boolean doOptimize;
 	private File proGuardJarFile;
 	private boolean dontObfuscate;
+	private String includeFileName;
 
 	/**
 	 * Creates a new pro guard obfuscator.
@@ -100,6 +101,9 @@ implements OutputFilter
 		argsList.add( "java" );
 		argsList.add( "-jar" );
 		argsList.add( this.proGuardJarFile.getAbsolutePath() );
+		if (this.includeFileName!=null) {
+			argsList.add("-include " + this.includeFileName);
+		}
 		// the input jar file:
 		argsList.add( "-injars" );
 		argsList.add( quote( sourceFile.getAbsolutePath() ) );
@@ -368,6 +372,15 @@ implements OutputFilter
 	 */
 	public void setDontObfuscate(boolean dontObfuscate) {
 		this.dontObfuscate = dontObfuscate;
+	}
+	
+	/**
+	 * Allows to include a specific ProGuard configuration file which is provided to ProGuard using the -include command line option.
+	 * @param filename the name of the ProGuard configuration file.
+	 */
+	public void setInclude(String filename)
+	{
+		this.includeFileName=filename;
 	}
 
 }
