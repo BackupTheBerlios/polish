@@ -10,7 +10,6 @@ import de.enough.polish.doja.midlet.MIDlet;
 import de.enough.polish.ui.Alert;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
-import de.enough.polish.ui.StyleSheet;
 
 /**
  * <code>Display</code> represents the manager of the display and

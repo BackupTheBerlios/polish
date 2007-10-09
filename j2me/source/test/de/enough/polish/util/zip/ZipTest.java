@@ -33,8 +33,6 @@ import java.util.Random;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import de.enough.polish.util.zip.*;
-
 import de.enough.polish.util.ZipUtil;
 
 import junit.framework.TestCase;

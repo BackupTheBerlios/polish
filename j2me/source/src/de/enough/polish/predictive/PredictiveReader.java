@@ -5,7 +5,7 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.rms.RecordStoreException;
 
 import de.enough.polish.ui.TextField;
-import de.enough.polish.util.ArrayList;
+
 public abstract class PredictiveReader {
 	
 	protected StringBuffer letters = null;

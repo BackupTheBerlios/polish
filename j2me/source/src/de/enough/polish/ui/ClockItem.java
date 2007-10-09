@@ -30,8 +30,6 @@ package de.enough.polish.ui;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.microedition.lcdui.Graphics;
-
 /**
  * <p>Display the current time digitally.</p>
  *
