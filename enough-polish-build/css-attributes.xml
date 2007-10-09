@@ -3116,6 +3116,14 @@
 		id="293"
 	/>
 	
+	<attribute
+		name="content-style"
+		type="style"
+		appliesTo="Alert"
+		description="The style for the text of an alert."
+		id="294"
+	/>
+	
 	
 	<!--
 	
