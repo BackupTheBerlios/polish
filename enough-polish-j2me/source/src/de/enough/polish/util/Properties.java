@@ -29,8 +29,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.Hashtable;
 
 import de.enough.polish.io.Externalizable;
 

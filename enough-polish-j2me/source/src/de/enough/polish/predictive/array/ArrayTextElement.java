@@ -2,9 +2,7 @@
 package de.enough.polish.predictive.array;
 
 import de.enough.polish.predictive.TextElement;
-import de.enough.polish.predictive.trie.TrieReader;
 import de.enough.polish.ui.PredictiveAccess;
-import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
 
 public class ArrayTextElement extends TextElement {

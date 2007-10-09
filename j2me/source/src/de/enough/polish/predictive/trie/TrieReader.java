@@ -4,15 +4,11 @@ package de.enough.polish.predictive.trie;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 
 import de.enough.polish.predictive.PredictiveReader;
 import de.enough.polish.ui.PredictiveAccess;
-import de.enough.polish.ui.TextField;
 import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.HashMap;
 
 public class TrieReader extends PredictiveReader {
 	static final byte V_OFFSET = 0;

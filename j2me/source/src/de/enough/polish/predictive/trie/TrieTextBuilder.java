@@ -7,8 +7,6 @@ import javax.microedition.rms.RecordStoreException;
 import de.enough.polish.predictive.PredictiveReader;
 import de.enough.polish.predictive.TextBuilder;
 import de.enough.polish.ui.PredictiveAccess;
-import de.enough.polish.ui.TextField;
-import de.enough.polish.util.ArrayList;
 
 public class TrieTextBuilder extends TextBuilder {
 

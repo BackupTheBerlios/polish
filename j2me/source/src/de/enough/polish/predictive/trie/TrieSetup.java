@@ -17,7 +17,6 @@ import javax.microedition.rms.RecordStore;
 
 import de.enough.polish.util.Locale;
 import de.enough.polish.ui.PredictiveAccess;
-import de.enough.polish.ui.TextField;
 
 public class TrieSetup 
 implements Runnable, CommandListener

@@ -1,8 +1,6 @@
 //#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput
 package de.enough.polish.predictive.trie;
 
-import java.io.IOException;
-
 public class TrieUtils {
 	
 	static byte charBuffer[] = new byte[2];
