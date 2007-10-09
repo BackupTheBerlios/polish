@@ -195,7 +195,6 @@ public class ResourceSetting extends Setting {
 	/**
 	 * Retrieves an array of file-sets which should either include or exclude files.
 	 * 
-	 * @param evaluator the evaluator for complex terms
 	 * @param env the environment
 	 * @return an array of the appropriate ResourcesFileSet, can be empty but not null
 	 */

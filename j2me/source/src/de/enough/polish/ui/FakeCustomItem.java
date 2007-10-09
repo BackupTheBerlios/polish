@@ -2707,7 +2707,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	}
 
 	/**
-	 * @return
+	 * @return the default command
 	 */
 	public Command getDefaultCommand() {
 		return this.defaultCommand;

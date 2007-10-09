@@ -183,8 +183,7 @@ public abstract class TextBuilder {
 	 * The index of the current element is set eventually to the position the
 	 * new element is inserted at.
 	 * 
-	 * @param the
-	 *            <code>TextElement</code> to add
+	 * @param textElement the <code>TextElement</code> to add
 	 */
 	protected void addElement(TextElement textElement) {
 		if (this.element >= 0) {

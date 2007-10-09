@@ -506,7 +506,7 @@ public final class ImageUtil {
 	 * @param EDGEDETECTION_MAP	if !=0 this enables edge detection which will speed 
 	 * 								up the compuation. Please read the documentation
 	 * 								of scaleDownHq for details.
-	 * @see scaleDownHq
+	 * @see #scaleDownHq
 	 */
 	public static void perspectiveShear(int [] src,int[] dest, int originalWidth, int newWidth,int leftHeight, int rightHeight, int opacity, int EDGEDETECTION_MAP){
 		// #debug

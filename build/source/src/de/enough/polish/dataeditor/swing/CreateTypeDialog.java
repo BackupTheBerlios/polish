@@ -174,7 +174,7 @@ implements ActionListener
 	}
 
 	/**
-	 * @return
+	 * @return the data type
 	 */
 	public DataType getDataType() {
 		DataType[] subtypes = this.tableModel.getSubtypes();

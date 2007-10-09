@@ -3043,7 +3043,7 @@ implements AccessibleCanvas
 	 * Removes the commands of the given item.
 	 *  
 	 * @param item the item which has at least one command 
-	 * @see #setItemCommands(Item)
+	 * @see #setItemCommands(ArrayList,Item)
 	 */
 	protected void removeItemCommands( Item item ) {
 		if (this.itemCommands != null) {

@@ -255,9 +255,11 @@ public class CssAttributesManager {
 	}
 
 	/**
-	 * @param polishHome
+	 * Retrieves an attribute manager instance for the given arguments.
+	 * 
+	 * @param polishHome the J2ME Polish installation directory
 	 * @param resourceUtil
-	 * @return
+	 * @return the attribute manager instance
 	 */
 	public static CssAttributesManager getInstance(File polishHome, ResourceUtil resourceUtil) 
 	{

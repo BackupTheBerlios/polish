@@ -592,8 +592,8 @@ public final class ReflectionUtil {
 
 	/**
 	 * @param object
-	 * @param fieldName
-	 * @return
+	 * @param fieldName the name of the field
+	 * @return the value of the field
 	 * @throws NoSuchFieldException 
 	 * @throws IllegalAccessException 
 	 * @throws IllegalArgumentException 
@@ -608,7 +608,7 @@ public final class ReflectionUtil {
 	/**
 	 * @param parameterClass
 	 * @param fieldName
-	 * @return
+	 * @return the value of the static field
 	 * @throws IllegalAccessException 
 	 * @throws IllegalArgumentException 
 	 * @throws NoSuchFieldException 

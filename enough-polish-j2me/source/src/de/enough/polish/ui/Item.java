@@ -2884,7 +2884,7 @@ public abstract class Item extends Object
 	}
 
 	/**
-	 * @return
+	 * @return the default command
 	 */
 	public Command getDefaultCommand() {
 		return this.defaultCommand;
