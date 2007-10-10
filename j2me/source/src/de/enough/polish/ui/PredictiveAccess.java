@@ -136,6 +136,15 @@ public class PredictiveAccess {
 	
 	private ArrayList results;
 	
+	Alert alert;
+	
+	public PredictiveAccess() {
+		//#style predictiveWordNotFound?
+		this.alert = new Alert(null);
+		//#style predictiveWordNotFoundText?
+		this.alert.setString(Locale.get("polish.predictive.wordNotFound"));
+		this.alert.setTimeout(2000);
+	}
 
 	/**
 	 * Initializes the predictive input for a textfield by creating objects for the choices container
@@ -538,10 +547,7 @@ public class PredictiveAccess {
 	}
 
 	protected void showWordNotFound() {
-		Alert alert = new Alert(Locale.get("polish.predictive.title"));
-		alert.setString(Locale.get("polish.predictive.wordNotFound"));
-		alert.setTimeout(2000);
-		StyleSheet.display.setCurrent(alert);
+		StyleSheet.display.setCurrent(this.alert);
 	}
 
 	protected boolean keyInsert(int keyCode, int gameAction) {

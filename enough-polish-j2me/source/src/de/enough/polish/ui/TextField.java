@@ -1600,7 +1600,7 @@ public class TextField extends StringItem
 		// set item commands:
 		//#if !tmp.suppressCommands
 		
-		//#ifdef !polish.key.ClearKey:defined
+		//#ifndef polish.key.ClearKey:defined
 		if(!this.suppressCommands)
 		//#endif
 		{
@@ -1614,7 +1614,7 @@ public class TextField extends StringItem
 					//#ifdef polish.i18n.useDynamicTranslations
 						String delLabel = Locale.get("polish.command.delete");
 						if ( delLabel != DELETE_CMD.getLabel()) {
-							DELETE_CMD = new Command( delLabel, Command.CANCEL, 1 );
+							DELETE_CMD = new Command( delLabel, Command.CANCEL, DELETE_PRIORITY );
 						}
 					//#endif
 					this.addCommand(DELETE_CMD);
@@ -1629,7 +1629,7 @@ public class TextField extends StringItem
 					//#ifdef polish.i18n.useDynamicTranslations
 						String clearLabel = Locale.get("polish.command.clear");
 						if ( clearLabel != CLEAR_CMD.getLabel()) {
-							CLEAR_CMD = new Command( clearLabel, Command.ITEM, 2 );
+							CLEAR_CMD = new Command( clearLabel, Command.ITEM, CLEAR_PRIORITY );
 						}
 					//#endif
 					this.addCommand(CLEAR_CMD);
@@ -1648,7 +1648,7 @@ public class TextField extends StringItem
 					//#ifdef polish.i18n.useDynamicTranslations
 						String enterSymbolLabel = Locale.get("polish.command.entersymbol");
 						if ( enterSymbolLabel != ENTER_SYMBOL_CMD.getLabel()) {
-							ENTER_SYMBOL_CMD = new Command( enterSymbolLabel, Command.ITEM, 3 );
+							ENTER_SYMBOL_CMD = new Command( enterSymbolLabel, Command.ITEM, ENTER_SYMBOL_PRIORITY );
 						}
 					//#endif
 					this.addCommand(ENTER_SYMBOL_CMD);
