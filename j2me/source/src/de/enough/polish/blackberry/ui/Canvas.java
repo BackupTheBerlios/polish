@@ -1233,16 +1233,32 @@ extends Displayable
         }
     	return false;
 	}
+    
+    
+/*
+	protected boolean keyChar(char c, int arg1, int arg2) {
+		boolean processed = super.keyChar(c, arg1, arg2);
+		System.out.println("keyChar: char=" + c + ", processed=" + processed);
+		return processed;
+	}
+
+	protected boolean keyCharUnhandled(char c, int arg1, int arg2) {
+		boolean processed = super.keyCharUnhandled(c, arg1, arg2);
+		System.out.println("keyCharUnhandled: char=" + c + ", processed=" + processed);
+		return processed;
+	}
+	*/
 
 	/* (non-Javadoc)
      * @see net.rim.device.api.ui.Screen#keyDown(int, int)
      */
     protected boolean keyDown(int keyCode, int status) {
     	// note: the BlackBerry JavaDocs say that true is returned, when the event is consumed.
-    	// This is bullshit, false is and needs to be returned.
-    	// Funnily enough we need to return true for some other events like
-    	// trackwheel or trackball events. Sad, really.
-        boolean processed = false;
+    	// This is correct, but it seems that native components do not return true,
+    	// even though they (should have) handled the event. Text entry, for example, works
+    	// only ok, when we return false, so that the Blackberry is forwarding the event
+    	// to the corresponding consumer. Weird, really. This means that text input seems
+    	// to be handled differently from keyDown. And it's not keyChar.
         Object o = this;
         Screen screen = null;
         if ( o instanceof Screen ) {
@@ -1251,10 +1267,7 @@ extends Displayable
         		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
            {
         	   try {
-        		   processed = super.keyDown(keyCode, status);                	   
-                   if (!processed) {
-                       return false;
-                   }
+        		   return super.keyDown(keyCode, status);                	   
         	   } catch (Exception e) {
         		   //#debug error
         		   System.out.println("super.keyDown(" + keyCode + ", " + status + ") failed" + e );
@@ -1279,9 +1292,9 @@ extends Displayable
         keyPressed( keyCode );
        	keyReleased( keyCode );
         if ( screen != null ) {
-        	return !(screen.keyPressedProcessed || screen.keyReleasedProcessed);
+        	return (screen.keyPressedProcessed || screen.keyReleasedProcessed);
         } else { 
-        	return false; // consume the key event
+        	return true; // consume the key event
         } 
     }
     

@@ -562,13 +562,13 @@ public class MenuBar extends Item {
 				containerHeight -= titleHeight - commandsContainerY;
 				commandsContainerY = titleHeight;
 			}
-			//#if tmp.useInvisibleMenuBar
+			//#if tmp.useInvisibleMenuBar && !polish.hasTrackballEvents
 				this.commandsContainer.relativeY = this.itemHeight - screenHeight + this.topY;
 			//#else
 				this.commandsContainer.relativeY = - containerHeight;
 			//#endif
 			this.commandsContainer.relativeX = 0;
-			//#if tmp.useInvisibleMenuBar || tmp.RightOptions
+			//#if tmp.RightOptions || (tmp.useInvisibleMenuBar && !polish.hasTrackballEvents)
 				// move menu to the right of the screen:
 				this.commandsContainer.relativeX = lineWidth - this.commandsContainerWidth;
 			//#endif
@@ -832,15 +832,15 @@ public class MenuBar extends Item {
 	        //#else
 	        	g.setClip(0, this.topY, this.screen.screenWidth, this.screen.screenHeight - this.topY);
 	        //#endif
-            try {
+//            try {
             this.commandsContainer.paint( x + this.commandsContainer.relativeX, y + this.commandsContainer.relativeY, x + this.commandsContainer.relativeX, x + this.commandsContainer.relativeX + this.commandsContainerWidth, g);
-            } catch (Exception e) {
-            	g.setColor( 0xff0000 );
-            	String message = e.toString();
-          
-            	g.drawString( message, 20, 150, Graphics.TOP | Graphics.LEFT );
-            	g.drawString( message.substring( message.length() / 2), 20, 170, Graphics.TOP | Graphics.LEFT );
-            }
+//            } catch (Exception e) {
+//            	g.setColor( 0xff0000 );
+//            	String message = e.toString();
+//          
+//            	g.drawString( message, 20, 150, Graphics.TOP | Graphics.LEFT );
+//            	g.drawString( message.substring( message.length() / 2), 20, 170, Graphics.TOP | Graphics.LEFT );
+//            }
 			g.setClip( clipX, clipY, clipWidth, clipHeight );
 			//System.out.println("MenuBar: commandContainer.background == null: " + ( this.commandsContainer.background == null ) );
 			//System.out.println("MenuBar: commandContainer.style.background == null: " + ( this.commandsContainer.style.background == null ) );
