@@ -1600,7 +1600,7 @@ public class TextField extends StringItem
 		// set item commands:
 		//#if !tmp.suppressCommands
 		
-		//#ifndef polish.key.ClearKey:defined
+		//#ifdef polish.key.ClearKey:defined
 		if(!this.suppressCommands)
 		//#endif
 		{
@@ -3557,31 +3557,35 @@ public class TextField extends StringItem
 		
 	}
 
+	protected void showNotify() {
+		
+		if(this.screen != null)
+		{
+			for(int i=0; i<this.commands.size(); i++)
+			{	
+				this.screen.addCommand((Command)this.commands.get(i));
+			}
+		}
+		
+		super.showNotify();
+	}
+
 	//#if  !polish.blackberry && tmp.directInput
-		/* (non-Javadoc)
-		 * @see de.enough.polish.ui.StringItem#hideNotify()
-		 */
-		protected void hideNotify() {
-			if (this.caretChar != this.editingCaretChar) {
-				commitCurrentCharacter();
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.StringItem#hideNotify()
+	 */
+	protected void hideNotify() {
+		if (this.caretChar != this.editingCaretChar) {
+			commitCurrentCharacter();
+		}
+		if (this.screen != null) {
+			for(int i=0; i<this.commands.size(); i++)
+			{
+				this.screen.removeCommand((Command)this.commands.get(i));
 			}
-			if (this.screen != null) {
-				//#if tmp.updateDeleteCommand
-					this.screen.removeCommand( DELETE_CMD );
-				//#endif
-				//this.screen.removeCommand( CLEAR_CMD );
-				//#if tmp.supportsSymbolEntry
-					this.screen.removeCommand( ENTER_SYMBOL_CMD );
-				//#endif
-				//#if polish.TextField.usePredictiveInput
-					this.screen.removeCommand( PredictiveAccess.ENABLE_PREDICTIVE_CMD );
-					this.screen.removeCommand( PredictiveAccess.DISABLE_PREDICTIVE_CMD );
-					this.screen.removeCommand( PredictiveAccess.INSTALL_PREDICTIVE_CMD );
-					this.screen.removeCommand( PredictiveAccess.ADD_WORD_CMD );
-				//#endif
-			}
-			super.hideNotify();
-		}	
+		}
+		super.hideNotify();
+	}	
 	//#endif
 		
 	//#if polish.TextField.usePredictiveInput && tmp.directInput
