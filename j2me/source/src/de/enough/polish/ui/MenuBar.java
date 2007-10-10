@@ -61,6 +61,13 @@ public class MenuBar extends Item {
 	//#else
 		private final static int RIGHT_SOFT_KEY = -7;
 	//#endif
+	//#if polish.key.Menu:defined
+		//#if false
+			private final static int MENU_KEY = 268566528;
+		//#else
+			//#= private final static int MENU_KEY = ${polish.key.Menu};
+		//#endif
+	//#endif
 	//#if (polish.MenuBar.Position == invisible) || (polish.blackberry && (polish.BlackBerry.useStandardMenuBar != true))
 		//#define tmp.useInvisibleMenuBar
 		private Command hideCommand;
@@ -970,6 +977,12 @@ public class MenuBar extends Item {
 		System.out.println("MenuBar: handleKeyPressed(" + keyCode + ", " + gameAction + ")" );
 		this.isSoftKeyPressed = false;
 		if (this.isOpened) {
+			//#if polish.key.Menu:defined
+				if (keyCode == MENU_KEY) {
+					setOpen(false);
+					return true;
+				}
+			//#endif
 			if (keyCode == this.selectOptionsMenuKey) {
 				this.isSoftKeyPressed = true;			
 				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
@@ -1052,7 +1065,15 @@ public class MenuBar extends Item {
 				}
 				return true;				
 			}
-		} else {
+		} else { // menu is currently closed:
+			//#if polish.key.Menu:defined
+				if (keyCode == MENU_KEY) {
+					setOpen(true);
+					return true;
+				}
+			//#endif
+
+			
 			//#if tmp.useMiddleCommand
 				//#if polish.key.MiddleSoftKey:defined
 					//#= if ( keyCode == ${polish.key.MiddleSoftKey}

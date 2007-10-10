@@ -1083,7 +1083,7 @@ public class TextField extends StringItem
 			}
 		//#endif
 		//#if polish.blackberry
-			if (this.editField != null && text != this.text ) {
+			if (this.editField != null && !this.editField.getText().equals(text) ) {
 				Object bbLock = UiApplication.getEventLock();
 				if (this.screen == null) {
 					this.screen = getScreen();
@@ -3449,7 +3449,7 @@ public class TextField extends StringItem
 				String newText = this.editField.getText();
 				String oldText = this.isPassword ? this.passwordText : this.text;
 				
-				if (( this.lastFieldChangedEvent != 0) || !newText.equals(oldText ) ) {
+				if (( this.lastFieldChangedEvent != 0) || (!newText.equals(oldText ) && !(oldText == null && newText.length()==0) )) {
 					this.lastFieldChangedEvent = 0;
 					setString( newText );
 					notifyStateChanged();

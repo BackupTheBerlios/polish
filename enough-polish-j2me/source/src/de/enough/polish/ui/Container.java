@@ -2390,6 +2390,17 @@ public class Container extends Item {
 		requestInit();
 	}
 
+	//#ifdef polish.css.view-type
+	public void releaseResources() {
+		super.releaseResources();
+		if (this.containerView != null) {
+			this.containerView.releaseResources();
+		}
+	}
+	//#endif
+	
+	
+
 
 //#ifdef polish.Container.additionalMethods:defined
 	//#include ${polish.Container.additionalMethods}

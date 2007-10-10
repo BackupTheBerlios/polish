@@ -273,7 +273,10 @@ implements AccessibleCanvas
 		private boolean clipScreenInfo;
 	//#endif	
 	//#if polish.blackberry
+		/** flag for key pressed events - only for internal usage on BlackBerry platforms! */
 		public boolean keyPressedProcessed;
+		/** flag for key released events - only for internal usage on BlackBerry platforms! */
+		public boolean keyReleasedProcessed;
 	//#endif
 	protected int contentX;
 	protected int contentY;
@@ -2411,6 +2414,7 @@ implements AccessibleCanvas
 	 * @param keyCode the code of the key, which has been released
 	 */
 	public void keyReleased(int keyCode) {
+		boolean processed = false;
 		try {
 			synchronized (this.paintLock) {
 				this.ignoreRepaintRequests = true;
@@ -2426,7 +2430,8 @@ implements AccessibleCanvas
 				}
 				//#if tmp.menuFullScreen
 					//#ifdef tmp.useExternalMenuBar
-						if (this.menuBar.handleKeyReleased(keyCode, gameAction)) {
+						processed = this.menuBar.handleKeyReleased(keyCode, gameAction);
+						if (processed) {
 							repaint();
 							return;
 						} else if (this.menuBar.isOpened) {
@@ -2437,7 +2442,8 @@ implements AccessibleCanvas
 							if (keyCode == LEFT_SOFT_KEY) {
 								gameAction = FIRE;
 							}
-							if (this.menuContainer.handleKeyReleased(keyCode, gameAction)) {
+							processed = this.menuContainer.handleKeyReleased(keyCode, gameAction);
+							if (processed) {
 								repaint();
 							}
 							return;
@@ -2445,15 +2451,19 @@ implements AccessibleCanvas
 		
 					//#endif
 				//#endif
-				boolean handled = handleKeyReleased( keyCode, gameAction );
+				processed = handleKeyReleased( keyCode, gameAction );
 				//#debug
-				System.out.println("keyReleased handled=" + handled);
-				if ( handled ) {
+				System.out.println("keyReleased handled=" + processed);
+				if ( processed ) {
 					repaint();
 				}
 			}
 		} finally {
 			this.ignoreRepaintRequests = false;
+			//#if polish.blackberry
+				this.keyReleasedProcessed = processed;
+			//#endif
+
 		}
 	}
 

@@ -488,6 +488,8 @@ extends Displayable
     public static final int KEY_BB_DOWN = -1201;
     public static final int KEY_BB_LEFT = -1202;
     public static final int KEY_BB_RIGHT = -1203;
+	private static final int KEY_BB_FIRE = -1204;
+
     public static final int KEY_BB_0 = 2097152;
     public static final int KEY_BB_1 = 4521984;
     public static final int KEY_BB_2 = 5505024;
@@ -498,12 +500,15 @@ extends Displayable
     public static final int KEY_BB_7 = 4390912;
     public static final int KEY_BB_8 = 4325376;
     public static final int KEY_BB_9 = 5046272;
+
     
     private final Graphics graphics;
     private final DummyField dummyField;
     private Field menuField;
 
     private boolean dummyFieldHasFocus = true;
+
+	private boolean isObscured;
 
     /**
      * Constructs a new <code>Canvas</code> object.
@@ -643,37 +648,45 @@ extends Displayable
      */
     public int getGameAction(int keyCode)
     {
-            int key = Keypad.key( keyCode );
-            switch ( key ) {
-            case Keypad.KEY_ENTER: return FIRE;
-            case Keypad.KEY_SPACE: return FIRE;
-            case Keypad.KEY_NEXT: return DOWN;
-            }
-            switch (keyCode) {
-            case KEY_BB_UP: return UP;
-            case KEY_BB_DOWN: return DOWN;
-            case KEY_BB_LEFT: return LEFT;
-            case KEY_BB_RIGHT: return RIGHT;
-            case KEY_NUM2: return UP; // 2
-            case KEY_NUM4: return LEFT; // 4
-            case KEY_NUM6: return RIGHT; // 6
-            case KEY_NUM8: return DOWN; // 8
-            }
-          //#if polish.key.LeftSoftKey:defined
-                  //#= if (keyCode == $polish.key.LeftSoftKey} ) { return FIRE; }
-          //#else
-                  if (keyCode == -6) {
+        switch (keyCode) {
+        case KEY_BB_UP: 	return UP;
+        case KEY_BB_DOWN:	return DOWN;
+        case KEY_BB_LEFT: 	return LEFT;
+        case KEY_BB_RIGHT: 	return RIGHT;
+        case KEY_BB_FIRE: 	return FIRE;
+        case KEY_NUM2: 		return UP; // 2
+        case KEY_NUM4: 		return LEFT; // 4
+        case KEY_NUM6: 		return RIGHT; // 6
+        case KEY_NUM8: 		return DOWN; // 8
+        }
+        int key = Keypad.key( keyCode );
+        switch ( key ) {
+        case Keypad.KEY_ENTER: return FIRE;
+        case Keypad.KEY_SPACE: return FIRE;
+        case Keypad.KEY_NEXT: return DOWN;
+        }
+      //#if polish.key.LeftSoftKey:defined
+              //#= if (keyCode == $polish.key.LeftSoftKey} ) { return FIRE; }
+      //#else
+              if (keyCode == -6) {
 //                              return FIRE;
-                  }
-          //#endif
-            if (keyCode == 48) { // = SPACE, the key(48) method returns 0 for some reason... 
-                  return FIRE;
-       }
+              }
+      //#endif
+        if (keyCode == 48) { // = SPACE, the key(48) method returns 0 for some reason... 
+        	return FIRE;
+        }
             
-            // #if polish.key.EnterKey:defined
-                    // #= if (keyCode == ${polish.key.EnterKey}) { return FIRE; } 
-            // #endif
-            return 0;
+        //#if polish.key.EnterKey:defined
+        	//#if false
+        		int enterKey = 999;
+        	//#else
+        		//#= int enterKey = ${polish.key.EnterKey};
+        	//#endif
+            if (keyCode == enterKey) { 
+            	return FIRE; 
+            } 
+        //#endif
+        return 0;
     }
 
     /**
@@ -1069,21 +1082,20 @@ extends Displayable
     	}
     }
     
-
 	/* (non-Javadoc)
 	 * @see net.rim.device.api.ui.Screen#onExposed()
 	 */
 	protected void onExposed() {
+		this.isObscured = false;
 		super.onExposed();
-		showNotify();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see net.rim.device.api.ui.Screen#onObscured()
 	 */
 	protected void onObscured() {
+		this.isObscured = true;
 		super.onObscured();
-		hideNotify();
 	}
 
 	/* (non-Javadoc)
@@ -1155,30 +1167,21 @@ extends Displayable
 	        if (callSuper) {
 	        	try {
 	        		processed = super.trackwheelRoll(amount, status, time);
+	        		if (processed) {
+		        		if (focusChangeDetected(screen)) {
+		        			processed = false;
+		        		} else {
+		                	//#debug
+		                    System.out.println("Canvas.trackwheel-roll: super processed the call.");
+		        			return true;
+		        		}
+	        		}
 	     	   } catch (Exception e) {
 	    		   //#debug error
 	    		   System.out.println("super.trackwheelRoll(" + amount + ", " + status + ", " + time + ") failed" + e );        		   
 	    	   }
 	        	
 	        }
-            if (processed) {
-                if (screen != null) {
-                    Item focusedItem = screen.getCurrentItem();
-                    Field nativeFocusedItem = super.getFieldWithFocus();
-                    if ( focusedItem != null && focusedItem._bbField != nativeFocusedItem) {
-                    	//#debug
-                        System.out.println("Canvas.trackwheel-roll: super changed the focus.");
-                        this.dummyFieldHasFocus = true;
-                        setFocus( this.dummyField, 0, 0, 0, 0 );
-                        processed = false;
-                    }
-                }
-                if (processed) {
-                	//#debug
-                    System.out.println("Canvas.trackwheel-roll: super processed the call.");
-                    return true;
-                }
-            }
             int keyCode;
             if ( amount < 0 ) {
                     amount *= -1;
@@ -1216,25 +1219,40 @@ extends Displayable
     
     
     
-    /* (non-Javadoc)
+    private boolean focusChangeDetected(Screen screen) {
+    	if (screen != null) {
+            Item focusedItem = screen.getCurrentItem();
+            Field nativeFocusedItem = super.getFieldWithFocus();
+            if ( focusedItem != null && focusedItem._bbField != nativeFocusedItem) {
+            	//#debug
+                System.out.println("Canvas: super event processing changed the focus.");
+                this.dummyFieldHasFocus = true;
+                setFocus( this.dummyField, 0, 0, 0, 0 );
+                return true;
+            }
+        }
+    	return false;
+	}
+
+	/* (non-Javadoc)
      * @see net.rim.device.api.ui.Screen#keyDown(int, int)
      */
     protected boolean keyDown(int keyCode, int status) {
-        boolean processFurther = true;
+    	// note: the BlackBerry JavaDocs say that true is returned, when the event is consumed.
+    	// This is bullshit, false is and needs to be returned.
+    	// Funnily enough we need to return true for some other events like
+    	// trackwheel or trackball events. Sad, really.
+        boolean processed = false;
         Object o = this;
         Screen screen = null;
-        boolean isEscapeKey = false;
         if ( o instanceof Screen ) {
            screen = ((Screen)o);
-           char keyChar = Keypad.map( keyCode );
-           isEscapeKey =  (keyChar == Keypad.KEY_ESCAPE); // 1769472 is the escape button 
-           if ( !isEscapeKey // 1769472 is the escape button 
-        		   && !screen.isMenuOpened() 
-        		   && !this.dummyFieldHasFocus) 
-           { 
+           if (forwardEventToNativeField( screen, keyCode) 
+        		   && (Keypad.map( keyCode ) != Keypad.KEY_ESCAPE))
+           {
         	   try {
-        		   processFurther = super.keyDown(keyCode, status);                	   
-                   if (!processFurther) {
+        		   processed = super.keyDown(keyCode, status);                	   
+                   if (!processed) {
                        return false;
                    }
         	   } catch (Exception e) {
@@ -1259,22 +1277,34 @@ extends Displayable
         case '9': keyCode = KEY_NUM9; break;
         }
         keyPressed( keyCode );
-        if (isEscapeKey) {
-        	keyReleased( keyCode );
-        }
+       	keyReleased( keyCode );
         if ( screen != null ) {
-        	return ! screen.keyPressedProcessed;
+        	return !(screen.keyPressedProcessed || screen.keyReleasedProcessed);
         } else { 
-        	return true; // consume the key event
+        	return false; // consume the key event
         } 
     }
     
     
 
-    /* (non-Javadoc)
+    /**
+     * Decides if a key command should be forwarded to the currently focused native BlackBerry field of this screen.
+     * @param screen this canvas as a J2ME Polish Screen
+     * @param keyCode the blackberry key code
+     * @return true when the event should be forwarded
+     */
+    protected boolean forwardEventToNativeField(Screen screen, int keyCode) {
+		return !( this.dummyFieldHasFocus || screen.isMenuOpened()); 
+	}
+
+	/* (non-Javadoc)
      * @see net.rim.device.api.ui.Screen#keyUp(int, int)
      */ 
 	protected boolean keyUp(int keyCode, int status) {
+		return keyDown( keyCode, status );
+    	// note: this seems to be only a notification triggered for the CAPS key,
+		// not a keyReleased action
+		/*
         boolean processFurther = true;
     	Object o = this;
     	Screen screen = null;
@@ -1287,7 +1317,7 @@ extends Displayable
            { 
         	   try {
         		   processFurther = super.keyUp(keyCode, status);                	   
-                   if (!processFurther) {
+                   if (processFurther) {
                        return false;
                    }
         	   } catch (Exception e) {
@@ -1312,11 +1342,15 @@ extends Displayable
         case '9': keyCode = KEY_NUM9; break;
         }
         keyReleased( keyCode );
-        if ( screen != null ) {
-        	return ! screen.keyPressedProcessed;
-        } else { 
-        	return true; // consume the key event
-        } 
+        // handle every release event:
+        return false;
+//        if ( screen != null ) {
+//        	return !screen.keyReleasedProcessed;
+//        } else { 
+//        	return false; // consume the key event
+//        } 
+ *
+ */
    }
 
 	/* (non-Javadoc)
@@ -1334,6 +1368,9 @@ extends Displayable
      * @param item the item that is focused
      */
     public void setFocus( Item item ) {
+    	if (this.isObscured) {
+    		return;
+    	}
         Object lock = MIDlet.getEventLock();
         synchronized (lock) {
 	        if ( item != null && item._bbField != null ) {
@@ -1359,17 +1396,43 @@ extends Displayable
      */
     protected boolean navigationClick(int status, int time)
     {
-      /* From Blackberry Java Development Guide, might be useful in the future.
-      if ((status & KeypadListener.STATUS_TRACKWHEEL) == KeypadListener.STATUS_TRACKWHEEL)
-      {
-        // TODO: Do something here.
-      }
-      else if ((status & KeypadListener.STATUS_FOUR_WAY) == KeypadListener.STATUS_FOUR_WAY)
-      {
-        // TODO: Do something here.
-      }
-      */
-      return super.navigationClick(status, time);
+		/* From Blackberry Java Development Guide, might be useful in the future.
+		  if ((status & KeypadListener.STATUS_TRACKWHEEL) == KeypadListener.STATUS_TRACKWHEEL)
+		  {
+		    // TODO: Do something here.
+		  }
+		  else if ((status & KeypadListener.STATUS_FOUR_WAY) == KeypadListener.STATUS_FOUR_WAY)
+		  {
+		    // TODO: Do something here.
+		  }
+		*/
+    	boolean processed = super.navigationClick(status, time);
+    	if (!processed) {
+    		keyPressed( Canvas.KEY_BB_FIRE );
+    		if ( (Object)this instanceof Screen ) {
+    			processed = ((Screen)((Object)this)).keyPressedProcessed;
+    		} else {
+    			processed = true;
+    		}
+    	}
+    	return processed;
+    }
+    
+    /* (non-Javadoc)
+     * @see net.rim.device.api.ui.Screen#navigationUnclick(int, int)
+     */
+    protected boolean navigationUnclick(int status, int time)
+    {
+    	boolean processed = super.navigationUnclick(status, time);
+    	if (!processed) {
+    		keyReleased( Canvas.KEY_BB_FIRE );
+    		if ( (Object)this instanceof Screen ) {
+    			processed = ((Screen)((Object)this)).keyReleasedProcessed;
+    		} else {
+    			processed = true;
+    		}
+    	}
+    	return processed;
     }
 
     /* (non-Javadoc)
@@ -1377,40 +1440,70 @@ extends Displayable
      */
     protected boolean navigationMovement(int dx, int dy, int status, int time)
     {
-      // Trackball up.
-      if (dx == 0 && dy < 0)
-      {
-        keyPressed(Canvas.KEY_BB_UP);
-        return true;
-      }
-      // Trackball down.
-      else if (dx == 0 && dy > 0)
-      {
-        keyPressed(Canvas.KEY_BB_DOWN);
-        return true;
-      }
-      // Trackball left.
-      else if (dx < 0 && dy == 0)
-      {
-        keyPressed(Canvas.KEY_BB_LEFT);
-        return true;
-      }
-      // Trackball right.
-      else if (dx > 0 && dy == 0)
-      {
-        keyPressed(Canvas.KEY_BB_RIGHT);
-        return true;
-      }
-
-      return super.navigationMovement(dx, dy, status, time);
+    	boolean processed = false;
+        Object o = this;
+        Screen screen = null;
+        boolean superImplementationCalled = false;
+        if ( o instanceof Screen ) {
+           screen = ((Screen)o);
+           if ( !screen.isMenuOpened() 
+        		&& !this.dummyFieldHasFocus) 
+           { 
+        	   try {
+        		   processed = super.navigationMovement(dx, dy, status, time);                	   
+                   if (processed) {
+                	   if (focusChangeDetected(screen)) {
+                		   processed = false;
+                	   } else {
+                		   //#debug 
+                		   System.out.println("super implementation handled navigationMovement()");
+                		   return true;
+                	   }
+                   }
+                   superImplementationCalled = true;
+        	   } catch (Exception e) {
+        		   //#debug error
+        		   System.out.println("super.navigationMovement(" + dx+ ", " + dy+ ", " + status+ ", " + time + ") failed" + e );
+        	   }
+           }
+        }
+    	int keyCode = 0;
+		// Trackball up.
+		if (dx == 0 && dy < 0)
+		{
+			keyCode = Canvas.KEY_BB_UP;
+		}
+		// Trackball down.
+		else if (dx == 0 && dy > 0)
+		{
+			keyCode = Canvas.KEY_BB_DOWN;
+		}
+		// Trackball left.
+		else if (dx < 0 && dy == 0)
+		{
+			keyCode = Canvas.KEY_BB_LEFT;
+		}
+		// Trackball right.
+		else if (dx > 0 && dy == 0)
+		{
+			keyCode = Canvas.KEY_BB_RIGHT;
+		}
+		if (keyCode != 0) {
+			keyPressed( keyCode );
+			keyReleased( keyCode );
+			if ( (Object)this instanceof Screen) {
+				Screen scr = (Screen) (Object) this;
+				return scr.keyPressedProcessed || scr.keyReleasedProcessed;
+			} else {
+				return true;
+			}
+		}
+    	if (!superImplementationCalled) {
+    		processed = super.navigationMovement(dx, dy, status, time);
+    	}
+		return processed;
     }
 
-    /* (non-Javadoc)
-     * @see net.rim.device.api.ui.Screen#navigationUnclick(int, int)
-     */
-    protected boolean navigationUnclick(int status, int time)
-    {
-      return super.navigationUnclick(status, time);
-    }
+    
     //#endif
 }

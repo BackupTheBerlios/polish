@@ -414,5 +414,12 @@ public abstract class ItemView {
 		border.paint(x, y, width, height, g);
 	}
 
-
+	/**
+	 * Releases all resources that are not required to keep the state of this view.
+	 * The default implementation does free nothing and only sets the "isInitialized" flag if the parent item.
+	 */
+	public void releaseResources(){
+		// do nothing
+		this.parentItem.isInitialized = false;
+	}
 }

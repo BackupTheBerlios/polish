@@ -2628,6 +2628,11 @@ public abstract class Item extends Object
 		if (this.background != null) {
 			this.background.releaseResources();
 		}
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.releaseResources();
+			}
+		//#endif
 	}
 
 	/**

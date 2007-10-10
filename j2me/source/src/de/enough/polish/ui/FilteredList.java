@@ -206,6 +206,7 @@ implements ItemStateListener, CommandListener
 	
 	//#if !polish.blackberry
 	private void setFocus( Item item ) {
+		forwardEventToNativeField(this, 0); // just a dummy call, so that the method is flagged as being used by an IDE
 	//#else
 		//# public void setFocus( Item item ) {
 		if (isMenuOpened()) {
@@ -215,6 +216,18 @@ implements ItemStateListener, CommandListener
 		}
 	//#endif
 	}
+
+	//#if !polish.blackberry
+    private boolean forwardEventToNativeField(Screen screen, int keyCode) {
+    	//# return false;
+    //#else
+    	//# protected boolean forwardEventToNativeField(Screen screen, int keyCode) {
+    	boolean forward = true;
+    	//# forward = super.forwardEventToNativeField( screen, keyCode );
+    	return forward && (getGameAction( keyCode ) != FIRE);
+	//#endif
+    }
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#getCurrentItem()

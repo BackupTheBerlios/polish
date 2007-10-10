@@ -767,5 +767,19 @@ public class FishEyeContainerView extends ContainerView {
 			
 	}
 
+
+	/* see ItemView.releaseResources() */
+	public void releaseResources() {
+		super.releaseResources();
+		//#if polish.midp2
+			this.originalRgbData = null;
+			this.originalRgbDataWidths = null;
+			this.shownRgbData = null;
+			this.shownRgbDataWidths = null;
+			this.shownRgbDataHeight= null;
+		//#endif
+	}
+
+	
 	
 }
