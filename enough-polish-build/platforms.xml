@@ -105,6 +105,9 @@
 		<identifier>BlackBerry/4.2</identifier>
 		<parent>BlackBerry</parent>
 		<capability name="build.BootClassPath" value="blackberry-4.2.0.jar" />
+		<!-- key for opening/closing the menu -->
+		<capability name="key.Menu" value="268566528" />
+	
 	</platform>
 
 	<platform>
