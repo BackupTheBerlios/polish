@@ -3538,6 +3538,8 @@ public class TextField extends StringItem
 	
 	/**
 	 * Returns the current input mode.
+	 * 
+	 * @return the current input mode
 	 */
 	public int getInputMode() {
 		return this.inputMode;
@@ -3602,7 +3604,7 @@ public class TextField extends StringItem
 	//#endif
 
 	public boolean isSuppressCommands() {
-		return suppressCommands;
+		return this.suppressCommands;
 	}
 
 	public void setSuppressCommands(boolean suppressCommands) {
