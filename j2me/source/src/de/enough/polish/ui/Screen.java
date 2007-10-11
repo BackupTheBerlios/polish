@@ -3930,7 +3930,33 @@ implements AccessibleCanvas
 		}
 		
 	}
-		
+
+
+
+	/**
+	 * Retrieves the height of the content area.
+	 * 
+	 * @return the height available for the content
+	 */ 
+	public int getContentHeight() {
+		if (this.contentHeight == 0) {
+			calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
+		}
+		return this.contentHeight;
+	}
+
+	/**
+	 * Retrieves the width of the content area.
+	 * 
+	 * @return the width available for the content
+	 */ 
+	public int getContentWidth() {
+		if (this.contentHeight == 0) {
+			calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
+		}
+		return this.contentWidth;
+	}
+
 	
 //#ifdef polish.Screen.additionalMethods:defined
 	//#include ${polish.Screen.additionalMethods}
