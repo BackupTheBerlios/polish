@@ -57,7 +57,6 @@ implements Runnable
 	protected World world;
 	protected Command replayCommand = new Command( Locale.get("cmd.Replay"), Command.SCREEN, 1 );
 	protected Command returnCommand = new Command( Locale.get("cmd.Return"), Command.SCREEN, 2 );
-	private final RoadRunner midlet;
 
 	/**
 	 * Creates a new game screen.
@@ -75,7 +74,6 @@ implements Runnable
 			this.addCommand( this.replayCommand );
 			this.addCommand( this.returnCommand );
 		// #endif
-		this.midlet = midlet;
 	}
 
 	/**
