@@ -220,6 +220,20 @@
 			<param name="end" type="integer" primitive="true" default="100" />
 			<param name="is-percent" type="boolean" primitive="true" default="true" />
 		</mapping>
+		<mapping from="round-rect-vertical-double-gradient"   to="de.enough.polish.ui.backgrounds.RoundRectDoubleGradientVerticalBackground"  >
+			<param name="first-top-color" type="color" primitive="true" default="white" />
+			<param name="first-bottom-color" type="color" primitive="true" default="gray" />
+			<param name="second-top-color" type="color" primitive="true" default="gray" />
+			<param name="second-bottom-color" type="color" primitive="true" default="white" />
+			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" />
+			<param name="start" type="integer" primitive="true" default="0" />
+			<param name="end" type="integer" primitive="true" default="100" />
+			<param name="is-percent" type="boolean" primitive="true" default="true" />
+			<param name="arc-width" type="integer" primitive="true" default="4" />
+			<param name="arc-height" type="integer" primitive="true" default="4" />			
+			<param name="border-color" type="color" primitive="true" default="black" />
+			<param name="border-width" type="integer" primitive="true" default="1" />
+		</mapping>
 		<mapping from="repaint-test"   to="de.enough.polish.ui.backgrounds.RepaintTestBackground"  />
 	</attribute>
 
@@ -801,8 +815,8 @@
 		<mapping from="fully-animated" to="new de.enough.polish.ui.containerviews.AnimationContainerView()" />
 		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideUpView()"  appliesTo="Item" />
 		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideUpView()" />
-		<mapping from="carousel" to="new de.enough.polish.ui.containerviews.CarrouselContainerView()" />
-		<mapping from="carrousel" to="new de.enough.polish.ui.containerviews.CarrouselContainerView()" />
+		<mapping from="carousel" to="new de.enough.polish.ui.containerviews.CarouselContainerView()" />
+		<mapping from="carrousel" to="new de.enough.polish.ui.containerviews.CarouselContainerView()" />
 		<mapping from="fisheye" to="new de.enough.polish.ui.containerviews.FishEyeContainerView()" />
 		<mapping from="numbered" to="new de.enough.polish.ui.containerviews.NumberedContainerView()" />
 		<mapping from="verticalfixed" to="new de.enough.polish.ui.containerviews.VerticalFixedContainerView()" />
@@ -3108,12 +3122,39 @@
 	/>
 	
 	<attribute
+		name="fisheyeview-scale-start"
+		type="percent"
+		default="50%"
+		appliesTo="FishEyeContainerView"
+		description="The factor by which the non-focused elements should be scaled - by default they are scaled to 50% of their original size."
+		id="293"
+	/>
+	
+	<attribute
+		name="fisheyeview-alpha-start"
+		type="integer"
+		default="200"
+		appliesTo="FishEyeContainerView"
+		description="the translucency between 0 and 255 for items directly next to the central item of the view. Higher values indicate more opaqness, lower ones make it more translucent."
+		id="294"
+	/>
+
+	<attribute
+		name="fisheyeview-alpha-end"
+		type="integer"
+		default="120"
+		appliesTo="FishEyeContainerView"
+		description="the translucency between 0 and 255 for items at the outer edges of the view. Higher values indicate more opaqness, lower ones make it more translucent."
+		id="295"
+	/>
+	
+	<attribute
 		name="fisheyeview-transparency"
 		type="boolean"
 		appliesTo="FishEyeContainerView"
 		description="Sets transparency to true or false."
 		default="true"
-		id="293"
+		id="296"
 	/>
 	
 	<attribute
@@ -3121,7 +3162,7 @@
 		type="style"
 		appliesTo="Alert"
 		description="The style for the text of an alert."
-		id="294"
+		id="297"
 	/>
 	
 	
