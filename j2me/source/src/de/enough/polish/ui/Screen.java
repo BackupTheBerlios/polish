@@ -3938,7 +3938,7 @@ implements AccessibleCanvas
 	 * 
 	 * @return the height available for the content
 	 */ 
-	public int getContentHeight() {
+	public int getScreenContentHeight() {
 		if (this.contentHeight == 0) {
 			calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
 		}
@@ -3950,7 +3950,7 @@ implements AccessibleCanvas
 	 * 
 	 * @return the width available for the content
 	 */ 
-	public int getContentWidth() {
+	public int getScreenContentWidth() {
 		if (this.contentHeight == 0) {
 			calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
 		}

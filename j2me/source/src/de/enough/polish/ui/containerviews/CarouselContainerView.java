@@ -91,7 +91,7 @@ public class CarouselContainerView extends FishEyeContainerView {
 		int lineHeight = 100;
 		Screen scr = getScreen();
 		if (scr != null) {
-			lineHeight = scr.getContentHeight() - 10;
+			lineHeight = scr.getScreenContentHeight() - 10;
 		}
 		if (this.maximumHeight != -1 && lineHeight > this.maximumHeight) {
 			lineHeight = this.maximumHeight;
@@ -203,7 +203,7 @@ public class CarouselContainerView extends FishEyeContainerView {
 		int lineHeight = 100;
 		Screen scr = getScreen();
 		if (scr != null) {
-			lineHeight = scr.getContentHeight() - 10;
+			lineHeight = scr.getScreenContentHeight() - 10;
 		}
 		if (this.maximumHeight != -1 && lineHeight > this.maximumHeight) {
 			lineHeight = this.maximumHeight;
