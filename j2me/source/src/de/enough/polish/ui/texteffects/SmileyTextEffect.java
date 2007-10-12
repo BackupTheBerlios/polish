@@ -62,12 +62,31 @@ import de.enough.polish.util.HashMap;
  */
 public class SmileyTextEffect extends TextEffect {
 	
-	//#ifdef smileys:defined
-		//#= public static String[][] smileys = new String[][]${smileys};
-	//#else
-		public static String[][] smileys = new String[0][0];
+	public class Smiley
+	{		
+		public String[] smileys;
+		public Image image;
+		public String description;
 		
-	//#endif
+		public Smiley(String[] smileys, String image, String description)
+		{
+			this.smileys = smileys;
+			
+			try
+			{
+				this.image = Image.createImage(image);
+			}
+			catch(IOException e)
+			{
+				//#debug error
+				System.out.println("unable to load smiley image " + e);
+			}
+			
+			this.description = description;
+		}
+	}
+	
+	public static Smiley[] smileyList = null;		
 	
 	protected HashMap smileyMap;
 	protected Object[] smileyKeys;
@@ -82,34 +101,35 @@ public class SmileyTextEffect extends TextEffect {
 	public SmileyTextEffect() {
 		super();
 		
+		//#ifdef smileys:defined
+			//#= smileyList = new Smiley[]${smileys};
+		//#else
+			smileyList = new Smiley[0];		
+		//#endif
 	}
 	
 	protected void init() {
 
 		this.smileyMap 		= new HashMap();
 		
-		Image img = null;
+		Image image = null;
 		
-		for(int i=0; i<smileys.length; i++)
+		for(int i=0; i<smileyList.length; i++)
 		{
-			try
+			Smiley smiley = smileyList[i];
+			
+			for(int j=0; j< smiley.smileys.length; j++)
 			{
-				img = Image.createImage(smileys[i][1]);
-				this.smileyMap.put(smileys[i][0],img);
-			}
-			catch(IOException e)
-			{
-				//#debug error
-				System.out.println("unable to load smiley image " + e);
+				this.smileyMap.put(smiley.smileys[j],smiley.image);
 			}
 		}
 		
 		this.smileyKeys = this.smileyMap.keys();
 		
-		if(img != null)
+		if(image != null)
 		{
-			this.smileyWidth	= img.getWidth();
-			this.smileyHeight	= img.getHeight();
+			this.smileyWidth	= image.getWidth();
+			this.smileyHeight	= image.getHeight();
 		}
 		else
 		{
