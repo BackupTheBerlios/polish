@@ -1,3 +1,4 @@
+# slang, leetspeak etc.
 hello
 dude
 fuck
@@ -23,12 +24,44 @@ n8
 evar
 grr
 yeah
-:(
-:)
+# smileys
+:-)
+(-:
+:))
+((: 
 ;)
-:x
-:p
-:d
+(;
+;-)
+(-; 
+:-O
+:O
+:o
+:-o
+O-:
+O:
+o:
+o-:
+:-P
+:P
+:-p
+:p 
+:-(
+:(
+):
+)-; 
+:-S
+:-s
+:S
+:s
+S-:
+s-:
+S:
+s:
+B)
+B;)
+(h)
+(H) 
+# special character
 "
 '
 -
@@ -37,6 +70,7 @@ yeah
 ;
 !
 ?
+# common words
 the
 of
 to

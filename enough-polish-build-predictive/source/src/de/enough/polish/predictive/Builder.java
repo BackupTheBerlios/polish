@@ -95,9 +95,13 @@ public class Builder extends Task {
 		while ((line = reader.readLine()) != null)
 		{
 			String word = line.trim().toLowerCase();
-			System.out.println(word);
-			if (!words.contains(word)) 
-				words.add(word);
+			
+			if(!word.startsWith("#"))
+			{
+				System.out.println(word);
+				if (!words.contains(word)) 
+					words.add(word);
+			}
 		}
 	}
 	
