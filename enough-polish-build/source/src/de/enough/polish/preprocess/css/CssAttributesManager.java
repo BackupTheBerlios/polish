@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import de.enough.polish.BuildException;
+import de.enough.polish.preprocess.css.attributes.ArrayCssAttribute;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -57,6 +58,7 @@ import org.jdom.input.SAXBuilder;
  */
 public class CssAttributesManager {
 	private static CssAttributesManager INSTANCE;
+	private final HashMap typesClassesByName;
 	private final HashMap typesByName;
 	private final HashMap attributesByName;
 
@@ -67,11 +69,16 @@ public class CssAttributesManager {
 	 */
 	public CssAttributesManager( InputStream is ) {
 		this.attributesByName = new HashMap();
+		this.typesClassesByName = new HashMap();
 		this.typesByName = new HashMap();
 		INSTANCE = this;
 		addCssAttributes( is );
 	}
 	
+	/**
+	 * Retrieves the instance of this manager.
+	 * @return an previously created instance, might be null
+	 */
 	public static CssAttributesManager getInstance() {
 		return INSTANCE;
 	}
@@ -121,25 +128,37 @@ public class CssAttributesManager {
 	 * Adds a new CSS attribute.
 	 * 
 	 * @param definition the XML definition of the CSS attribute.
+	 * @return a new CSS attribute
 	 */
 	public CssAttribute createCssAttribute(Element definition) {
 		String type = definition.getAttributeValue("type");
 		if (type == null) {
 			System.out.println("Warning: CSS attribute definition has no \"type\" attribute - now assuming \"string\" type for " + definition.getAttributeValue("name") );
 			type = "string";
+		} else if (type.endsWith("[]")) {
+			CssAttribute arrayAttribute = new ArrayCssAttribute();
+			arrayAttribute.setDefinition(definition);
+			return arrayAttribute;
 		}
-		Class attributeClass = (Class) this.typesByName.get( type );
-		if (attributeClass == null) {
-			throw new BuildException("Invalid CSS attribute: unable to instantiate type " + type + ": no definition found.");
-		}
-		CssAttribute attribute;
-		try {
-			attribute = (CssAttribute) attributeClass.newInstance();
-			attribute.setDefinition(definition);
-			return attribute;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new BuildException("Invalid CSS attribute: unable to instantiate type " + type + ": " + e.toString() );
+		Class attributeClass = (Class) this.typesClassesByName.get( type );
+		if (attributeClass != null) {
+			// traditional CSS attribute type:
+			CssAttribute attribute;
+			try {
+				attribute = (CssAttribute) attributeClass.newInstance();
+				attribute.setDefinition(definition);
+				return attribute;
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new BuildException("Invalid CSS attribute: unable to instantiate type " + type + ": " + e.toString() );
+			}
+		} else {
+			// previously defined CSS attribute type:
+			CssAttribute previousAttribute = getAttribute(type);
+			if (previousAttribute == null) {
+				throw new BuildException( " Invalid CSS attribute: unable to instantiate CSS attribute type \"" + type + "\": no definition found. Check your custom-css-attributes.xml.");				
+			}
+			return previousAttribute;
 		}
 	}
 
@@ -170,9 +189,16 @@ public class CssAttributesManager {
 				Class typeClass = Class.forName( className );
 				for (int i = 0; i < names.length; i++) {
 					name = names[i];
-					this.typesByName.put( name, typeClass );
+					this.typesClassesByName.put( name, typeClass );
+					this.typesByName.put( name, typeClass.newInstance() );
 				}
 			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				throw new BuildException("Invalid CSS type definition: class attribute " + className + " points to invalid class: " + e.toString() );
+			} catch (InstantiationException e) {
+				e.printStackTrace();
+				throw new BuildException("Invalid CSS type definition: class attribute " + className + " points to invalid class: " + e.toString() );
+			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 				throw new BuildException("Invalid CSS type definition: class attribute " + className + " points to invalid class: " + e.toString() );
 			}
@@ -188,6 +214,17 @@ public class CssAttributesManager {
 	public CssAttribute getAttribute( String name ) {
 		return (CssAttribute) this.attributesByName.get( name );
 	}
+	
+	/**
+	 * Retrieves the specified attribute.
+	 * 
+	 * @param name the name of the attribute
+	 * @return either the attribute or null, when the specified attribute has not been defined within the appropriate XML files.
+	 */
+	public CssAttribute getType( String name ) {
+		return (CssAttribute) this.typesByName.get( name );
+	}
+	
 
 	/**
 	 * @return all registered CSS attributes

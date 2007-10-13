@@ -775,7 +775,7 @@ public class PolishTask extends ConditionalTask {
 		}
 		
 		// create project settings:
-		this.polishProject = new PolishProject( this.buildSetting.usePolishGui(), isDebugEnabled, debugManager );
+		this.polishProject = new PolishProject( usePolishGui(null), isDebugEnabled, debugManager );
 		this.polishProject.addDirectCapability("polish.buildVersion", VERSION);
 		this.polishProject.addDirectFeature( "polish.active" );
 		if ( isDebugEnabled) {
@@ -860,8 +860,10 @@ public class PolishTask extends ConditionalTask {
 				
 		// load CSS attributes:
 		// create CSS attributes manager:
-		if (this.buildSetting.usePolishGui()) {
-			this.cssAttributesManager = new CssAttributesManager( this.buildSetting.openStandardCssAttributes() );
+		// note: we create an css attribute manager in any case, since it usage of the J2ME Polish UI might
+		// be later enabled by having a configuration variable
+		this.cssAttributesManager = new CssAttributesManager( this.buildSetting.openStandardCssAttributes() );
+		if (usePolishGui(null)) {
 			InputStream is = this.buildSetting.openCustomCssAttributes();
 			if (is != null) {
 				this.cssAttributesManager.addCssAttributes(is);
@@ -1239,6 +1241,26 @@ public class PolishTask extends ConditionalTask {
 	}
 
 	/**
+	 * @return true when the J2ME Polish UI should be activated
+	 */
+	private boolean usePolishGui( Device device ) {
+		String usePolishGuiVariable;
+		if (this.environment == null) {
+			usePolishGuiVariable = getProject().getProperty("polish.usePolishGui");
+		} else {
+			usePolishGuiVariable = this.environment.getVariable("polish.usePolishGui");
+			if (usePolishGuiVariable == null) {
+				usePolishGuiVariable = getProject().getProperty("polish.usePolishGui");
+			}
+		}
+		boolean usePolishGui = (this.buildSetting.usePolishGui()
+		  && ( device == null || device.supportsPolishGui() || this.buildSetting.alwaysUsePolishGui()))
+		  || (( "true".equals( usePolishGuiVariable) || "yes".equals( usePolishGuiVariable ) || "always".equals( usePolishGuiVariable )) );
+//		System.out.println("enabling J2ME Polish UI=" + usePolishGui);
+		return usePolishGui;
+	}
+
+	/**
 	 * Retrieves the license for J2ME Polish
 	 * 
 	 * @return the license name
@@ -1458,11 +1480,7 @@ public class PolishTask extends ConditionalTask {
 				
 		// enable the support for the J2ME Polish GUI, part 1: 
 		// check if a preprocessing variable is set for using the Polish GUI:
-		String usePolishGuiVariable = this.environment.getVariable("polish.usePolishGui");
-		boolean usePolishGui = (this.buildSetting.usePolishGui()
-		  && ( device.supportsPolishGui() || this.buildSetting.alwaysUsePolishGui()))
-		  || (( "true".equals( usePolishGuiVariable) || "yes".equals( usePolishGuiVariable ) || "always".equals( usePolishGuiVariable )) );
-		  
+		boolean usePolishGui = usePolishGui(device);
 		if ( usePolishGui) {
 			this.environment.addSymbol("polish.usePolishGui");
 		}
@@ -1533,15 +1551,12 @@ public class PolishTask extends ConditionalTask {
 		}
 				
 		// set support for the J2ME Polish GUI, part 2:
-		usePolishGuiVariable = this.environment.getVariable("polish.usePolishGui");
-		if (usePolishGuiVariable != null) {
-			if ("true".equalsIgnoreCase(usePolishGuiVariable) || "yes".equalsIgnoreCase(usePolishGuiVariable) || "always".equalsIgnoreCase(usePolishGuiVariable)) {
-				usePolishGui = true;					
-				this.environment.addSymbol("polish.usePolishGui");
-			} else {
-				usePolishGui = false;					
-				this.environment.removeSymbol("polish.usePolishGui");
-			}
+		if (usePolishGui(device)) {
+			usePolishGui = true;					
+			this.environment.addSymbol("polish.usePolishGui");
+		} else {
+			usePolishGui = false;					
+			this.environment.removeSymbol("polish.usePolishGui");
 		}
 		
 		// set the temporary build path used for preprocessing, compilation, preverification, etc:
