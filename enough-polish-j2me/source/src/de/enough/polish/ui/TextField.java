@@ -1158,8 +1158,8 @@ public class TextField extends StringItem
 	protected void updateDeleteCommand(String newText) {
 		// remove delete command when the caret is before the first character,
 		// add it when it is after the first character:
-		//#debug
-		System.out.println("updateDeleteCommand: newText=[" + newText + "], caretPos=" + this.caretPosition);
+		// #debug
+		// System.out.println("updateDeleteCommand: newText=[" + newText + "], caretPos=" + this.caretPosition);
 		Screen scr = getScreen();
 		if ( scr != null && !this.isUneditable ) {
 			if ( newText == null 
