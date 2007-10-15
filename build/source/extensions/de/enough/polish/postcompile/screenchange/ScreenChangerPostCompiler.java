@@ -38,8 +38,6 @@ import de.enough.bytecode.MethodInvocationMapping;
 import de.enough.bytecode.MethodMapper;
 import de.enough.polish.Device;
 import de.enough.polish.postcompile.BytecodePostCompiler;
-import de.enough.polish.postcompile.PostCompiler;
-import de.enough.polish.util.FileUtil;
 
 /**
  * <p>Moves calls to Display.setCurrent( Displayable ) to StyleSheet.setCurrent( Display, Displayable ) when screen change effects are activated.</p>
