@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && polish.midp2
+//#condition polish.usePolishGui
 /*
  * Created on Sep 16, 2007 at 3:09:31 PM.
  * 
@@ -146,10 +146,12 @@ public class ExplodingParticlesItemView extends ItemView {
 			super.paintContentByParent(parent, x, y, leftBorder, rightBorder, g);
 			return;
 		}
-		g.drawRGB(this.scaledRgb, 0, this.paintWidth, 
+		//#if polish.midp2
+			g.drawRGB(this.scaledRgb, 0, this.paintWidth, 
 				x - ((this.paintWidth - this.contentWidth)>>1), 
 				y - ((this.paintHeight - this.contentHeight)>>1), 
-				this.paintWidth, this.paintHeight, true );	
+				this.paintWidth, this.paintHeight, true );
+		//#endif
 	}
 
 }
