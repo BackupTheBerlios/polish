@@ -126,14 +126,6 @@ public class MasterCanvasPostCompiler extends BytecodePostCompiler
                                                       "getCurrent",
                                                       "(Ljavax/microedition/lcdui/Display;)Ljavax/microedition/lcdui/Displayable;"));
 
-        /*
-         String accessibleCanvasClassName;
-         if ( useDefaultPackage ) {
-         accessibleCanvasClassName = "AccessibleCanvas";
-         } else {
-         accessibleCanvasClassName = "de/enough/polish/ui/AccessibleCanvas";
-         }
-         */
         // mapping of isShown(), please note the different signature ()Z instead of ()V, since
         // a boolean value is returned:
         mapper.addMapping(new MethodInvocationMapping(true,
@@ -219,21 +211,6 @@ public class MasterCanvasPostCompiler extends BytecodePostCompiler
     else
       {
         accessibleCanvasClassName = "de/enough/polish/ui/StyleSheet";
-      }
-    return accessibleCanvasClassName;
-  }
-  
-  private String getAccessibleCanvasClassName()
-  {
-    boolean useDefaultPackage = this.environment.hasSymbol("polish.useDefaultPackage");
-    String accessibleCanvasClassName;
-    if ( useDefaultPackage )
-      {
-        accessibleCanvasClassName = "AccessibleCanvas";
-      }
-    else
-      {
-        accessibleCanvasClassName = "de/enough/polish/ui/AccessibleCanvas";
       }
     return accessibleCanvasClassName;
   }
