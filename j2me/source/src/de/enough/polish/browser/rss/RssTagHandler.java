@@ -27,14 +27,18 @@
  */
 package de.enough.polish.browser.rss;
 
+import java.io.IOException;
+
 import de.enough.polish.browser.Browser;
 import de.enough.polish.browser.TagHandler;
 import de.enough.polish.browser.html.HtmlTagHandler;
+import de.enough.polish.io.StringReader;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.TextUtil;
 import de.enough.polish.xml.SimplePullParser;
 
 import javax.microedition.lcdui.Command;
@@ -118,6 +122,12 @@ public class RssTagHandler
 		browser.addTagHandler(TAG_DIGG_COMMENTCOUNT, this);
 	}
 	
+	private static String decodeHtml(String encodedHtml) {
+		String tmp = TextUtil.replace(encodedHtml, "&lt;", "<");
+		tmp = TextUtil.replace(tmp, "&gt;", ">");
+		return TextUtil.replace(tmp, "&quot;", "\"");
+	}
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.browser.TagHandler#handleTag(de.enough.polish.ui.Container, de.enough.polish.xml.SimplePullParser, java.lang.String, boolean, de.enough.polish.util.HashMap)
 	 */
@@ -165,6 +175,16 @@ public class RssTagHandler
 					if (opening) {
 						parser.next();
 						this.description = parser.getText();
+
+						// Description can be encoded HTML. Decode it.
+						this.description = decodeHtml(this.description);
+
+						try {
+							this.browser.loadPartialPage(new StringReader(this.description));
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 
 					return true;

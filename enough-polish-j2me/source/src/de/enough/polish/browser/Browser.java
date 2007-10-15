@@ -308,7 +308,15 @@ implements Runnable
     // Really free memory.
     System.gc();
     
-    while (parser.next() != SimplePullParser.END_DOCUMENT)
+    parsePartialPage(parser);
+  }
+
+  /**
+   * @param parser the parser to read the page from
+   */
+  private void parsePartialPage(SimplePullParser parser)
+  {
+	while (parser.next() != SimplePullParser.END_DOCUMENT)
     {
       if (parser.getType() == SimplePullParser.START_TAG
           || parser.getType() == SimplePullParser.END_TAG)
@@ -398,6 +406,20 @@ implements Runnable
     XmlPullParser xmlReader = new XmlPullParser(reader);
     xmlReader.relaxed = true;
     parsePage(xmlReader);
+  }
+
+  /**
+   * Loads a page from a given <code>Reader</code>.
+   * 
+   * @param reader the reader to load the page from
+   * @throws IOException of an error occurs
+   */
+  public void loadPartialPage(Reader reader)
+    throws IOException
+  {
+    XmlPullParser xmlReader = new XmlPullParser(reader);
+    xmlReader.relaxed = true;
+    parsePartialPage(xmlReader);
   }
 
   /**
@@ -508,7 +530,7 @@ implements Runnable
   }
 
   public void loadPage(InputStream in)
-  throws IOException
+  	throws IOException
   {
 	  if (in == null)
 	  {
