@@ -28,7 +28,6 @@ package de.enough.polish.preprocess.css.attributes;
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.css.CssAttribute;
-import de.enough.polish.util.ReflectionUtil;
 
 /**
  * <p>A attribute referring to a style.</p>

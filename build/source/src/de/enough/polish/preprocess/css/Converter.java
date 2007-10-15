@@ -27,8 +27,6 @@ package de.enough.polish.preprocess.css;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;

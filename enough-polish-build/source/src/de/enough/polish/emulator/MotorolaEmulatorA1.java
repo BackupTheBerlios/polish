@@ -26,13 +26,10 @@
 package de.enough.polish.emulator;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
-import de.enough.polish.ant.emulator.EmulatorSetting;
 
 /**
  * <p>Launches Motorola A.1 emulators</p>

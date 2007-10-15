@@ -37,7 +37,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import de.enough.polish.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 
 import de.enough.polish.BooleanEvaluator;
@@ -55,7 +54,6 @@ import de.enough.polish.preprocess.css.CssReader;
 import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.util.DirectoryFileFilter;
 import de.enough.polish.util.FileUtil;
-import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 
 /**

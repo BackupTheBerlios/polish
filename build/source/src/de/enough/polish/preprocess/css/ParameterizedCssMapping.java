@@ -32,9 +32,6 @@ import java.util.List;
 import de.enough.polish.BuildException;
 import org.jdom.Element;
 
-import de.enough.polish.BooleanEvaluator;
-import de.enough.polish.util.StringUtil;
-
 /**
  * <p>Maps a short CSS name to any string.</p>
  *

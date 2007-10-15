@@ -29,13 +29,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
-import de.enough.polish.BuildException;
-
 import de.enough.polish.Attribute;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
-import de.enough.polish.ant.Jad;
-import de.enough.polish.util.FileUtil;
 
 /**
  * <p>Writes no JAD file.</p>

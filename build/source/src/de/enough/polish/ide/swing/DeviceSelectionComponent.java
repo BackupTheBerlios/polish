@@ -53,7 +53,6 @@ import de.enough.polish.devices.DeviceTreeItem;
 import de.enough.polish.devices.Library;
 import de.enough.polish.devices.Platform;
 import de.enough.polish.devices.PolishComponent;
-import de.enough.polish.swing.CheckBoxList;
 
 /**
  * <p>Can be used for an easy selection of target devices.</p>

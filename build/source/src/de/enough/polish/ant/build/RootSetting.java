@@ -27,13 +27,9 @@ package de.enough.polish.ant.build;
 
 import java.io.File;
 
-import org.apache.tools.ant.Project;
-
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 
-import de.enough.polish.Environment;
 import de.enough.polish.ant.Setting;
 import de.enough.polish.util.StringUtil;
 

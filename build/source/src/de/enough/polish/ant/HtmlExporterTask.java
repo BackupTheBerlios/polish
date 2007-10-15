@@ -48,7 +48,6 @@ import de.enough.polish.devices.Bug;
 import de.enough.polish.devices.BugManager;
 import de.enough.polish.devices.Configuration;
 import de.enough.polish.devices.DeviceDatabase;
-import de.enough.polish.devices.DeviceTree;
 import de.enough.polish.devices.IdentifierComparator;
 import de.enough.polish.devices.Library;
 import de.enough.polish.devices.LibraryManager;

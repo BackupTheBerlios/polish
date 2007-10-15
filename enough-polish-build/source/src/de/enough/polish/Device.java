@@ -26,10 +26,8 @@
 package de.enough.polish;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-//import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.AntClassLoader;
 import org.jdom.Element;
 
@@ -49,7 +47,6 @@ import de.enough.polish.devices.PolishComponent;
 import de.enough.polish.devices.Vendor;
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.CastUtil;
-import de.enough.polish.util.PathClassLoader;
 import de.enough.polish.util.StringUtil;
 
 /**

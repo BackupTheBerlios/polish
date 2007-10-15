@@ -31,8 +31,6 @@ import java.io.IOException;
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
 
-import org.apache.tools.ant.DirectoryScanner;
-
 import de.enough.polish.ant.Setting;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;

@@ -32,7 +32,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tools.ant.types.CommandlineJava.SysProperties;
 import org.jdom.Element;
 
 import de.enough.polish.Variable;

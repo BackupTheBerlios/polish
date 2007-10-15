@@ -29,7 +29,6 @@ import java.util.HashMap;
 
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
-import de.enough.polish.preprocess.css.attributes.ParameterizedCssAttribute;
 
 /**
  * <p>Converts parameterized CSS attributes like backgrounds and borders without specific converter classes.</p>

@@ -26,7 +26,6 @@
 package de.enough.polish;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
@@ -34,13 +33,9 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jdom.JDOMException;
-
 import de.enough.polish.ant.build.BuildSetting;
 import de.enough.polish.devices.LibraryManager;
-import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.propertyfunctions.PropertyFunction;
-import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 

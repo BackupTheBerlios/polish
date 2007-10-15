@@ -25,7 +25,6 @@
  */
 package de.enough.polish.ant.requirements;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
