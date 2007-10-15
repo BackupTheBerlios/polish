@@ -469,6 +469,7 @@ implements ItemStateListener, CommandListener
 	 * @see de.enough.polish.ui.Screen#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
 	public void commandAction(Command command, Displayable screen) {
+		this.filterTextField.commandAction(command, this.filterTextField);
 		if (this.container.itemCommandListener != null && this.container.commands != null && this.container.commands.contains(command)) {
 			this.container.itemCommandListener.commandAction(command, this.container);
 		} else if (this.originalCommandListener != null) {

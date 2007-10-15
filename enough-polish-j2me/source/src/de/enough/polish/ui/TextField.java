@@ -3425,6 +3425,7 @@ public class TextField extends StringItem
 					}
 				} else if ( cmd == CLEAR_CMD ) {
 					setString( null );
+					notifyStateChanged();
 				} else if ( this.additionalItemCommandListener != null ) {
 					this.additionalItemCommandListener.commandAction(cmd, item);
 				} else {
