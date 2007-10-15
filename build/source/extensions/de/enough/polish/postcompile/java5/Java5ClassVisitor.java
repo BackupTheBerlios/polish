@@ -45,7 +45,6 @@ public class Java5ClassVisitor
   private boolean isEnumClass;
   private String className;
   private String classDesc;
-  private String classArrayDesc;
   private String signature_values;
   private String name_values;
   
@@ -64,7 +63,6 @@ public class Java5ClassVisitor
     this.isEnumClass = EnumManager.getInstance().isEnumClass(name);
     this.className = name;
     this.classDesc = "L" + this.className + ";";
-    this.classArrayDesc = "[" + this.classDesc;
     this.signature_values = "()[L" + this.className + ";"; 
   }
 
