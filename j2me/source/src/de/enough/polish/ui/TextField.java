@@ -3567,7 +3567,9 @@ public class TextField extends StringItem
 				this.screen.addCommand((Command)this.commands.get(i));
 			}
 		}
-		
+		//#if tmp.updateDeleteCommand
+			updateDeleteCommand(this.text);
+		//#endif
 		super.showNotify();
 	}
 
