@@ -11,7 +11,6 @@ import de.enough.polish.ui.splash.ApplicationInitializer;
 import de.enough.polish.ui.splash.InitializerSplashScreen;
 
 import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
