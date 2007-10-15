@@ -43,7 +43,6 @@
 		<type  name="converter" class="de.enough.polish.preprocess.css.attributes.ConverterCssAttribute" />
 		<type  name="parameterized" class="de.enough.polish.preprocess.css.attributes.ParameterizedCssAttribute" />
 		<type  name="point" class="de.enough.polish.preprocess.css.attributes.PointCssAttribute" />
-		<type  name="points" class="de.enough.polish.preprocess.css.attributes.PointsCssAttribute" />
 	</types>
 
 	<attribute
@@ -138,11 +137,10 @@
 		<!-- 
 		to="de.enough.polish.ui.backgrounds.ImageBackground" 
 		 -->
-		<mapping from="image"               converter="de.enough.polish.preprocess.backgrounds.ImageBackgroundConverter" >
+		<mapping from="image"               to="de.enough.polish.ui.backgrounds.ImageBackground" converter="de.enough.polish.preprocess.backgrounds.ImageBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
 			<param name="image" type="image-url" default="none" />
-			<!--  not yet supported... <param name="anchor" type="anchor" default="0" />  -->
-			<param name="anchor" type="integer" primitive="true" default="0" />
+			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" />
 			<param name="x-offset" type="integer" primitive="true" default="0" />
 			<param name="y-offset" type="integer" primitive="true" default="0" />
 		</mapping>
@@ -306,8 +304,8 @@
 		<mapping from="polygon"   to="de.enough.polish.ui.backgrounds.PolygonBackground" >
 			<param name="color" type="color" primitive="true" default="white" />
 			<param name="points" type="point[]" array-type="Point" default="0,50 50,0 100,50 50,100" />
-			<param name="max-x" type="integer" primitive="true" default="100" />
-			<param name="max-y" type="integer" primitive="true" default="100" />
+			<param name="reference-width"  type="integer" primitive="true" default="100" />
+			<param name="reference-height" type="integer" primitive="true" default="100" />
 			<param name="scale-mode" type="integer" primitive="true" default="none" values="none,scale,proportional,expand" />
 			<param name="anchor" type="anchor" primitive="true" default="0" />
 		</mapping>
@@ -401,7 +399,16 @@
 			<param name="repeat" type="boolean" primitive="true" default="true" />
 			<param name="back-and-forth" type="boolean" primitive="true" default="true" />
 		</mapping>
-	</attribute>		
+	</attribute>
+	
+	<attribute
+		name="background"
+	>
+		<mapping from="combined"              to="de.enough.polish.ui.backgrounds.CombinedBackground" >
+			<param name="backgrounds" type="background[]" array-type="Background" separator=","/>
+		</mapping>
+	</attribute>
+	
 		<!--
 		<mapping from="" converter="" />
 		-->
