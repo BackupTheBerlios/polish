@@ -47,7 +47,7 @@ import de.enough.polish.util.ArrayList;
  */
 public class FilteredList 
 extends List
-implements ItemStateListener, CommandListener
+implements ItemStateListener //, CommandListener
 {
 	private static final int POSITION_TOP = 0;
 	private static final int POSITION_BOTTOM = 1;
@@ -124,14 +124,17 @@ implements ItemStateListener, CommandListener
 		this.filterTextField.screen = this;
 		setItemStateListener( this );
 		this.itemsList = new ArrayList();
-		super.setCommandListener( this );
+		//super.setCommandListener( this );
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.List#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
-		boolean handled = this.filterTextField.handleKeyPressed(keyCode, gameAction);
+		boolean handled = false;
+		if (!(gameAction == FIRE && keyCode != KEY_NUM5)) {
+			handled = this.filterTextField.handleKeyPressed(keyCode, gameAction);
+		}
 		if (!handled) {
 			handled = super.handleKeyPressed(keyCode, gameAction);
 		}
@@ -143,7 +146,10 @@ implements ItemStateListener, CommandListener
 	 * @see de.enough.polish.ui.List#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
-		boolean handled = this.filterTextField.handleKeyReleased(keyCode, gameAction);
+		boolean handled = false;
+		if (!(gameAction == FIRE && keyCode != KEY_NUM5)) {
+			handled = this.filterTextField.handleKeyReleased(keyCode, gameAction);
+		}
 		if (!handled) {
 			handled = super.handleKeyReleased(keyCode, gameAction);
 		}
@@ -154,7 +160,10 @@ implements ItemStateListener, CommandListener
 	 * @see de.enough.polish.ui.List#handleKeyRepeated(int, int)
 	 */
 	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
-		boolean handled = this.filterTextField.handleKeyRepeated(keyCode, gameAction);
+		boolean handled = false;
+		if (!(gameAction == FIRE && keyCode != KEY_NUM5)) {
+			handled = this.filterTextField.handleKeyRepeated(keyCode, gameAction);
+		}
 		if (!handled) {
 			handled = super.handleKeyRepeated(keyCode, gameAction);
 		}
@@ -451,30 +460,43 @@ implements ItemStateListener, CommandListener
 		return this.itemsList.size();
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#getCommandListener()
-	 */
-	public CommandListener getCommandListener() {
-		return this.originalCommandListener;
-	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Screen#getCommandListener()
+//	 */
+//	public CommandListener getCommandListener() {
+//		return this.originalCommandListener;
+//	}
+//
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Screen#setCommandListener(javax.microedition.lcdui.CommandListener)
+//	 */
+//	public void setCommandListener(CommandListener listener) {
+//		this.originalCommandListener = listener;
+//	}
+//	
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Screen#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+//	 */
+//	public void commandAction(Command command, Displayable screen) {
+//		System.out.println("commandAction: " + command.getLabel() );
+//		this.filterTextField.commandAction(command, this.filterTextField);
+//		if (this.container.itemCommandListener != null && this.container.commands != null && this.container.commands.contains(command)) {
+//			this.container.itemCommandListener.commandAction(command, this.container);
+//		} else if (this.originalCommandListener != null) {
+//			this.originalCommandListener.commandAction(command, this);
+//		}
+//	}
+	
+	
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#setCommandListener(javax.microedition.lcdui.CommandListener)
+	 * @see de.enough.polish.ui.Screen#handleCommand(javax.microedition.lcdui.Command)
 	 */
-	public void setCommandListener(CommandListener listener) {
-		this.originalCommandListener = listener;
-	}
-	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
-	 */
-	public void commandAction(Command command, Displayable screen) {
-		this.filterTextField.commandAction(command, this.filterTextField);
-		if (this.container.itemCommandListener != null && this.container.commands != null && this.container.commands.contains(command)) {
-			this.container.itemCommandListener.commandAction(command, this.container);
-		} else if (this.originalCommandListener != null) {
-			this.originalCommandListener.commandAction(command, this);
+	protected boolean handleCommand(Command cmd) {
+		if (this.filterTextField.handleCommand(cmd)) {
+			return true;
 		}
+		return super.handleCommand(cmd);
 	}
 
 	public void setFilterLabel( String label ) {
