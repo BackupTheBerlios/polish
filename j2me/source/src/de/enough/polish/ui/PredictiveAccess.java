@@ -782,7 +782,7 @@ public class PredictiveAccess {
 				}
 				
 				this.parent.notifyStateChanged();
-				return true;
+				return false;
 			}
 
 			this.parent.notifyStateChanged();

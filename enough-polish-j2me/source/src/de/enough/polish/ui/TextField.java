@@ -1599,7 +1599,7 @@ public class TextField extends StringItem
 				
 		// set item commands:
 		//#if !tmp.suppressCommands
-		
+			
 		//#ifdef polish.key.ClearKey:defined
 		if(!this.suppressCommands)
 		//#endif
@@ -1617,7 +1617,14 @@ public class TextField extends StringItem
 							DELETE_CMD = new Command( delLabel, Command.CANCEL, DELETE_PRIORITY );
 						}
 					//#endif
-					this.addCommand(DELETE_CMD);
+					
+					//#ifdef polish.TextField.handleClearCommand:defined
+						//#ifndef polish.key.ClearKey:defined
+							this.addCommand(DELETE_CMD);
+						//#endif
+					//#else
+						this.addCommand(DELETE_CMD);
+					//#endif
 				}
 			//#endif
 		}
