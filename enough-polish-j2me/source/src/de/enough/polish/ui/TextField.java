@@ -3566,14 +3566,6 @@ public class TextField extends StringItem
 	}
 
 	protected void showNotify() {
-		
-		if(this.screen != null)
-		{
-			for(int i=0; i<this.commands.size(); i++)
-			{	
-				this.screen.addCommand((Command)this.commands.get(i));
-			}
-		}
 		//#if tmp.updateDeleteCommand
 			updateDeleteCommand(this.text);
 		//#endif
@@ -3588,12 +3580,7 @@ public class TextField extends StringItem
 		if (this.caretChar != this.editingCaretChar) {
 			commitCurrentCharacter();
 		}
-		if (this.screen != null) {
-			for(int i=0; i<this.commands.size(); i++)
-			{
-				this.screen.removeCommand((Command)this.commands.get(i));
-			}
-		}
+		
 		super.hideNotify();
 	}	
 	//#endif
