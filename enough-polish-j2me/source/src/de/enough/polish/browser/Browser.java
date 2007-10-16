@@ -579,8 +579,8 @@ implements Runnable
       {
         // TODO: Implement proper error handling.
         
-        //#debug debug
-        e.printStackTrace();
+        //#debug error
+        System.out.println("Unable to load image " + url + e);
         
         return null;
       }
@@ -955,6 +955,7 @@ implements Runnable
   public void clearHistory()
   {
     this.history.removeAllElements();
+    this.imageCache.clear();
     this.currentDocumentBase = null;
   }
 

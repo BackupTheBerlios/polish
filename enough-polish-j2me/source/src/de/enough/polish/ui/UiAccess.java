@@ -2556,17 +2556,17 @@ public final class UiAccess {
 	}
 	//#endif
 
-
-	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.midp && polish.TextField.usePredictiveInput
+ 	//#if polish.midp
 	public static void setPredictiveDictionary(javax.microedition.lcdui.TextField field, String[] words)
 	{
 		// ignore
 	}
 	//#endif
 
- 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput
+	//#if polish.usePolishGui
 	public static void setPredictiveDictionary(TextField field, String[] words)
 	{
+	 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.TextField.usePredictiveInput
 			PredictiveAccess predictive = field.getPredictiveAccess();
 			predictive.initPredictiveInput(words);
 			
@@ -2581,6 +2581,7 @@ public final class UiAccess {
 			{
 				predictive.setPredictiveType(PredictiveAccess.ARRAY);
 			}
+		//#endif
 	}
 	//#endif
 	
@@ -2698,6 +2699,15 @@ public final class UiAccess {
 	}
 	//#endif
 
+	
+	//#if polish.midp
+	public static void setWordNotFound(javax.microedition.lcdui.TextField field, Alert alert)
+	{
+		// ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
 	/**
 	 * Set the word-not-found box in the textfield
 	 * 
@@ -2706,6 +2716,9 @@ public final class UiAccess {
 	 */
 	public static void setWordNotFound(TextField field, Alert alert)
 	{
-		field.getPredictiveAccess().setAlert(alert);
+	 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.TextField.usePredictiveInput
+			field.getPredictiveAccess().setAlert(alert);
+		//#endif
 	}
+	//#endif
 }
