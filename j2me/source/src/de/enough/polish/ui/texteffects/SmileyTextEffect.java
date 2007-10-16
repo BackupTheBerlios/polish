@@ -121,6 +121,7 @@ public class SmileyTextEffect extends TextEffect {
 			for(int j=0; j< smiley.smileys.length; j++)
 			{
 				this.smileyMap.put(smiley.smileys[j],smiley.image);
+				image = smiley.image;
 			}
 		}
 		
