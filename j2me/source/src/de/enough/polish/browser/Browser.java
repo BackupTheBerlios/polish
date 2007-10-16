@@ -819,7 +819,9 @@ implements Runnable
             	add(item);
             } finally {
             	//#if polish.Browser.MemorySaver
-        			memorySaver = null;
+	            	if (memorySaver != null) {
+	        			memorySaver = null;
+	            	}
             	//#endif
             }
         }
@@ -900,6 +902,7 @@ implements Runnable
       {
       	this.history.push(this.currentDocumentBase);
       }
+  	//System.out.println("Browser: going to [" + url + "]" );
       schedule(url);
   }
   
@@ -917,6 +920,7 @@ implements Runnable
     
     if (document != null)
     {
+    	//System.out.println("Browser: going back to [" + document + "]" );
       goImpl(document);
     }
   }

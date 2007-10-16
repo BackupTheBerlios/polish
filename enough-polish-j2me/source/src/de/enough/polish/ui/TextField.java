@@ -1598,8 +1598,9 @@ public class TextField extends StringItem
 		//#endif
 				
 		// set item commands:
+				
 		//#if !tmp.suppressCommands
-			
+		
 		//#ifdef polish.key.ClearKey:defined
 		if(!this.suppressCommands)
 		//#endif
@@ -1617,14 +1618,7 @@ public class TextField extends StringItem
 							DELETE_CMD = new Command( delLabel, Command.CANCEL, DELETE_PRIORITY );
 						}
 					//#endif
-					
-					//#ifdef polish.TextField.handleClearCommand:defined
-						//#ifndef polish.key.ClearKey:defined
-							this.addCommand(DELETE_CMD);
-						//#endif
-					//#else
-						this.addCommand(DELETE_CMD);
-					//#endif
+					this.addCommand(DELETE_CMD);
 				}
 			//#endif
 		}
@@ -1647,7 +1641,6 @@ public class TextField extends StringItem
 				showCommands();
 			}
 		
-		//#endif
 			
 		//#if tmp.directInput && tmp.supportsSymbolEntry && polish.TextField.suppressAddSymbolCommand != true
 			if (!this.isNumeric) {
@@ -1662,8 +1655,10 @@ public class TextField extends StringItem
 				}
 			}
 		//#endif	
-			
 		}
+		
+		// end of if !tmp.suppressCommands:
+		//#endif
 			
 			
 //		if ( (constraints & UNEDITABLE) == UNEDITABLE) {
@@ -3565,12 +3560,12 @@ public class TextField extends StringItem
 		
 	}
 
+	//#if tmp.updateDeleteCommand
 	protected void showNotify() {
-		//#if tmp.updateDeleteCommand
-			updateDeleteCommand(this.text);
-		//#endif
+		updateDeleteCommand(this.text);
 		super.showNotify();
 	}
+	//#endif
 
 	//#if  !polish.blackberry && tmp.directInput
 	/* (non-Javadoc)
@@ -3580,7 +3575,6 @@ public class TextField extends StringItem
 		if (this.caretChar != this.editingCaretChar) {
 			commitCurrentCharacter();
 		}
-		
 		super.hideNotify();
 	}	
 	//#endif

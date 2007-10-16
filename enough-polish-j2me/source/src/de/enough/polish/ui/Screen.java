@@ -643,9 +643,11 @@ implements AccessibleCanvas
 	 * @see #ignoreRepaintRequests
 	 */
 	public void requestRepaint( int x, int y, int width, int height ) {
-		//if (!this.ignoreRepaintRequests) {
+		//#if polish.Screen.callSuperEvents
+			//# super.requestRepaint( x, y, width, height );
+		//#else
 			super.repaint( x, y, width, height );
-		//}
+		//#endif
 	}
 	
 	
