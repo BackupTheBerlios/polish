@@ -1120,6 +1120,10 @@ public abstract class Item extends Object
 	 */
 	public int getItemWidth( int firstLineWidth, int lineWidth ) {
 		if (!this.isInitialized || this.itemWidth > lineWidth) {
+//			if (this.itemWidth > lineWidth) {
+//				System.out.println("itemWidth=" + this.itemWidth + ", lineWidth=" + lineWidth + ", this=" + this);
+//				try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
+//			}
 			init( firstLineWidth, lineWidth );
 		}
 		return this.itemWidth;

@@ -99,10 +99,6 @@ implements Runnable
   private String nextUrl;
   private BrowserListener browserListener;
 
-  //#if polish.Browser.MemorySaver
-  private byte[] memorySaver;
-  //#endif
-
   /**
    * Creates a new Browser without any protocol handlers, tag handlers or style.
    */
@@ -805,7 +801,7 @@ implements Runnable
         if (this.isCancelRequested != true)
         {
             //#if polish.Browser.MemorySaver
-        		this.memorySaver = new byte[50000];
+        		byte[] memorySaver = new byte[50000];
         	//#endif
 
             try {
@@ -814,13 +810,17 @@ implements Runnable
         	}
             catch (OutOfMemoryError e) {
             	//#if polish.Browser.MemorySaver
-            		this.memorySaver = null;
+            		memorySaver = null;
             		System.gc();
             	//#endif
 
             	// Signal stopped parsing.
             	StringItem item = new StringItem(null, "parsing stopped");
             	add(item);
+            } finally {
+            	//#if polish.Browser.MemorySaver
+        			memorySaver = null;
+            	//#endif
             }
         }
         

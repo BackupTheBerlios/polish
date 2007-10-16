@@ -95,7 +95,10 @@ public abstract class Screen
 	//#define tmp.hasCommandKeyEvents
 //#endif
 //#if polish.useFullScreen
-	//#if (polish.midp2 && !tmp.needsNokiaUiForSystemAlerts) && (!polish.useMenuFullScreen || tmp.hasCommandKeyEvents)
+	//#if polish.Screen.base:defined
+		//#define tmp.fullScreen
+		//#= extends ${polish.Screen.base}
+	//#elif (polish.midp2 && !tmp.needsNokiaUiForSystemAlerts) && (!polish.useMenuFullScreen || tmp.hasCommandKeyEvents)
 		//#define tmp.fullScreen
 		//# extends Canvas
 	//#elif polish.classes.fullscreen:defined
@@ -1326,6 +1329,10 @@ implements AccessibleCanvas
 	 * @see #paintScreen(Graphics)
 	 */
 	public void paint(Graphics g) {
+		//#if polish.Screen.callSuperEvents
+			//# super.paint(g);
+		//#endif
+
 		//System.out.println("..paint");
 		//System.out.println("Painting screen "+ this + ", background == null: " + (this.background == null) + ", clipping=" + g.getClipX() + "/" + g.getClipY() + " - " + g.getClipWidth() + "/" + g.getClipHeight() );
 		if (!this.isInitialized) {
@@ -2193,6 +2200,10 @@ implements AccessibleCanvas
 	 * @param keyCode The code of the pressed key
 	 */
 	public void keyPressed(int keyCode) {
+		//#if polish.Screen.callSuperEvents
+			super.keyPressed(keyCode);
+		//#endif
+		
 		this.lastInteractionTime = System.currentTimeMillis();
 		synchronized (this.paintLock) {
 			try {
@@ -3140,6 +3151,9 @@ implements AccessibleCanvas
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int, int)
 	 */
 	public void pointerPressed(int x, int y) {
+		//#if polish.Screen.callSuperEvents
+			super.pointerPressed(x, y);
+		//#endif
 		//#debug
 		System.out.println("PointerPressed at " + x + ", " + y );
 		this.lastInteractionTime = System.currentTimeMillis();

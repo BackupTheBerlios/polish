@@ -311,7 +311,7 @@ extends ItemView
 						}
 					}
 				//#endif
-				//System.out.println( i + ": available with: " + availableWidth + ", item.isInitialized=" + item.isInitialised + ", itemWidth=" + item.getItemWidth( availableWidth, availableWidth ));
+				//System.out.println( i + ": available with: " + availableWidth + ", itemWidth=" + item.getItemWidth( availableWidth, availableWidth ));
 				int width = item.getItemWidth( availableWidth, availableWidth );
 				//System.out.println("got item width");
 				int height = item.getItemHeight( availableWidth, availableWidth );
@@ -424,28 +424,32 @@ extends ItemView
 						Item item = myItems[i];
 						int width = item.itemWidth;
 						int height = item.itemHeight;
-						if (maxColumnWidths[ columnIndex ] <= availableColumnWidth) {
-							newMaxColumnWidths[ columnIndex ] = maxColumnWidths[ columnIndex ];
-						} else {
-							// re-initialise this item,
-							// if it is wider than the left-available-column-width
-							if ( width > leftAvailableColumnWidth ) {
-								item.isInitialized = false;
-								width = item.getItemWidth( leftAvailableColumnWidth, leftAvailableColumnWidth );
-								height = item.getItemHeight( leftAvailableColumnWidth, leftAvailableColumnWidth );
-							}
-							if (width > newMaxColumnWidths[ columnIndex ]) {
-								newMaxColumnWidths[ columnIndex ] = width;
-							}
-						}
-						if (height > maxRowHeight) {
-							maxRowHeight = height;
-						}
+						int maxColumnWidth = maxColumnWidths[ columnIndex ];
 						//#if polish.css.colspan
+							if (item.colSpan == 1) {
+						//#endif
+								if ( maxColumnWidth <= availableColumnWidth) {
+									newMaxColumnWidths[ columnIndex ] = maxColumnWidths[ columnIndex ];
+								} else {
+									// re-initialise this item,
+									// if it is wider than the left-available-column-width
+									if ( width > leftAvailableColumnWidth ) {
+										width = item.getItemWidth( leftAvailableColumnWidth, leftAvailableColumnWidth );
+										height = item.getItemHeight( leftAvailableColumnWidth, leftAvailableColumnWidth );
+									}
+									if (width > newMaxColumnWidths[ columnIndex ]) {
+										newMaxColumnWidths[ columnIndex ] = width;
+									}
+								}
+						//#if polish.css.colspan
+							}
 							columnIndex += item.colSpan;
 						//#else
 							columnIndex++;
 						//#endif
+						if (height > maxRowHeight) {
+							maxRowHeight = height;
+						}
 						item.relativeY = myContentHeight;
 						//System.out.println( i + ": yTopPos=" + item.yTopPos );
 						if (columnIndex == this.numberOfColumns) {

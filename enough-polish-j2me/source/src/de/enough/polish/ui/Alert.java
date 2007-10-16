@@ -410,6 +410,11 @@ implements CommandListener
 		} else {
 			this.iconItem = new IconItem( alertText, alertImage, itemStyle );				
 		}
+		//#if polish.css.content-style
+			if (this.contentStyle != null) {
+				this.iconItem.setStyle( this.contentStyle );
+			}
+		//#endif
 		this.iconItem.appearanceMode = Item.PLAIN;
 		this.container.add( this.iconItem );		
 		
@@ -866,12 +871,12 @@ implements CommandListener
 			}
 		//#endif
 		//#if polish.css.content-style
-			Style contentStyle = (Style) style.getObjectProperty("content-style");
-			if (contentStyle != null) {
+			Style contentStyleObj = (Style) style.getObjectProperty("content-style");
+			if (contentStyleObj != null) {
 				if (this.iconItem != null) {
-					this.iconItem.setStyle( contentStyle );
-				} 
-				this.contentStyle = contentStyle;
+					this.iconItem.setStyle( contentStyleObj );
+				}
+				this.contentStyle = contentStyleObj;
 			}
 		//#endif
 	}
