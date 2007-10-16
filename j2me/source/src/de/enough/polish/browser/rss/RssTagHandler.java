@@ -175,14 +175,14 @@ public class RssTagHandler
 					if (opening) {
 						parser.next();
 						this.description = parser.getText();
-
 						// Description can be encoded HTML. Decode it.
 						this.description = decodeHtml(this.description);
 
 						try {
 							this.browser.loadPartialPage(new StringReader(this.description));
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
+							//#debug error
+							System.out.println("Unable to load description " + this.description + e );
 							e.printStackTrace();
 						}
 					}

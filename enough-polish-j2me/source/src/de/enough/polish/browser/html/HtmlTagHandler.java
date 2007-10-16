@@ -203,15 +203,36 @@ public class HtmlTagHandler
       {
         String href = (String) attributeMap.get(ATTR_HREF);
         parser.next();
-        StringItem linkItem;
+        Item linkItem;
         if (href != null)
         {
-	     	  //#style browserLink
-  	      linkItem = new StringItem(null, parser.getText());
+        	String anchorText = parser.getText();
+        	// hack for image links:
+        	if ("".equals(anchorText) && TAG_IMG.equals(parser.getName())) {
+        		// this is an image link:
+        		attributeMap.clear();
+        		for (int i = 0; i < parser.getAttributeCount(); i++)
+        	    {
+        	      String attributeName = parser.getAttributeName(i);
+        	      String attributeValue = parser.getAttributeValue(i);
+        	      attributeMap.put(attributeName, attributeValue);
+        	    }
+                String src = (String) attributeMap.get("src");
+                String url = this.browser.makeAbsoluteURL(src);
+                Image image = this.browser.loadImage(url);
+                //#style browserLink
+                linkItem = new ImageItem(null, image, 0, (String) attributeMap.get("alt") );
+        		
+        		//this.browser.loadImageLater( url, (ImageItem) linkItem );
+        		
+        	} else {
+        		//#style browserLink
+        		linkItem = new StringItem(null, anchorText);
+        	}
     	    linkItem.setDefaultCommand(CMD_LINK);
     	    linkItem.setItemCommandListener( this );
-      	  linkItem.setAttribute(ATTR_HREF, href != null ? href : "");
-      	  addCommands(TAG_A, linkItem);
+    	    linkItem.setAttribute(ATTR_HREF, href != null ? href : "");
+    	    addCommands(TAG_A, linkItem);
 
 // TODO
 //          if (!this.firstInteractiveElementAdded

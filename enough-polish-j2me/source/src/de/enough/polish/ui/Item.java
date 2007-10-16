@@ -1086,6 +1086,9 @@ public abstract class Item extends Object
 //			if (this instanceof ChoiceGroup) {
 //				System.out.println("SET.STYLE / CHOICEGROUP: found view-type (1): " + (viewType != null) + " for " + this);
 //			}
+			if (this instanceof Container) {
+				System.out.println("!!!! GOT ITEM VIEW " + viewType +" for  " + this );
+			}
 			if (viewType != null && viewType.isValid(this, style)) {
 				if (this.view == null || this.view.getClass() != viewType.getClass()) {
 					try {

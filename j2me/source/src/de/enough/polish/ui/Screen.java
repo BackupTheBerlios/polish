@@ -395,6 +395,8 @@ implements AccessibleCanvas
 		//#ifdef tmp.menuFullScreen
 			//#if polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasHeight:defined
 				//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
+			//#elif polish.Screen.base:defined
+				//# this.fullScreenHeight = getCanvasHeight();
 			//#else
 				this.fullScreenHeight = getHeight();
 			//#endif

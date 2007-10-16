@@ -1538,6 +1538,8 @@ public class Graphics extends Object
 	}
 
 	public void setGraphics(net.rim.device.api.ui.Graphics g) {
+		this.translateX = 0;
+		this.translateY = 0;
 		this.g = g;
 		this.isContextPushed = false;
 		try {

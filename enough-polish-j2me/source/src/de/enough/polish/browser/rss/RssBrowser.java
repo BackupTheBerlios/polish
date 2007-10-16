@@ -47,7 +47,7 @@ public class RssBrowser
 	}
 
 	public RssBrowser(Style style) {
-		this(new DefaultRssItemCommandListener(), null); 
+		this(new DefaultRssItemCommandListener(), style); 
 	}
 
 	//#if polish.midp2

@@ -124,7 +124,11 @@ public class AnimationThread extends Thread
 								//#if polish.Bugs.fullRepaintRequired
 									screen.repaint();
 								//#else
+									//#if polish.Screen.base:defined
+									screen.requestRepaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
+									//#else
 									screen.repaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
+									//#endif
 								//#endif
 							//#endif
 							repaintRegion.reset();

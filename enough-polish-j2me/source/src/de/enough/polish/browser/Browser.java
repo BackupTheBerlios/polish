@@ -54,6 +54,7 @@ import de.enough.polish.xml.XmlPullParser;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 
@@ -994,4 +995,27 @@ implements Runnable
   {
 	this.browserListener = browserListener;
   }
+
+/* (non-Javadoc)
+ * @see de.enough.polish.ui.FakeContainerCustomItem#setStyle(de.enough.polish.ui.Style, boolean)
+ */
+public void setStyle(Style style, boolean ignoreBackground) {
+	// TODO robertvirkus implement setStyle
+	System.out.println("SET STYLE/ignoreBackground FOR " + this);
+	super.setStyle(style, ignoreBackground);
+}
+
+/* (non-Javadoc)
+ * @see de.enough.polish.ui.FakeContainerCustomItem#setStyle(de.enough.polish.ui.Style)
+ */
+public void setStyle(Style style) {
+	// TODO robertvirkus implement setStyle
+	System.out.println("SET STYLE FOR " + this);
+	ItemView viewType = (ItemView) style.getObjectProperty("view-type");
+	System.out.println(">>>>>>>>!!!! GOT ITEM VIEW " + viewType +" for  " + this + " from style "  + style.name);
+
+	super.setStyle(style);
+}
+  
+  
 }
