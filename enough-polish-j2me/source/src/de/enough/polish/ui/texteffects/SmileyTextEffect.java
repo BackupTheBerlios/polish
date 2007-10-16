@@ -112,7 +112,8 @@ public class SmileyTextEffect extends TextEffect {
 
 		this.smileyMap 		= new HashMap();
 		
-		Image image = null;
+		this.smileyWidth	= smileyList[0].image.getWidth();
+		this.smileyHeight	= smileyList[0].image.getHeight();
 		
 		for(int i=0; i<smileyList.length; i++)
 		{
@@ -121,22 +122,11 @@ public class SmileyTextEffect extends TextEffect {
 			for(int j=0; j< smiley.smileys.length; j++)
 			{
 				this.smileyMap.put(smiley.smileys[j],smiley.image);
-				image = smiley.image;
 			}
 		}
 		
 		this.smileyKeys = this.smileyMap.keys();
 		
-		if(image != null)
-		{
-			this.smileyWidth	= image.getWidth();
-			this.smileyHeight	= image.getHeight();
-		}
-		else
-		{
-			this.smileyWidth 	= 0;
-			this.smileyHeight	= 0;
-		}
 		this.isInitialized = true;
 	}
 
