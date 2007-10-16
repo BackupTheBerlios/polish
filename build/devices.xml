@@ -108,6 +108,7 @@ These namespaces/schemas will be used soon.
 		<description>A device that merely supports the MIDP 2.0 and CLDC 1.1 standards and has a pointer based user interface.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="ScreenSize" value="240x320"/>
 		<capability name="key.LeftSoftKey" value="-6"/>
 		<capability name="key.RightSoftKey" value="-7"/>
 		<capability name="key.backspace" value="16"/>
