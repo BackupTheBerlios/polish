@@ -215,7 +215,7 @@
 			<param name="arc-width" type="integer" primitive="true" default="4" />
 			<param name="arc-height" type="integer" primitive="true" default="4" />			
 		</mapping>
-		<mapping from="round-tab-bordered"  to="de.enough.polish.ui.backgrounds.BorderedRoundTabBackground" converter="de.enough.polish.preprocess.backgrounds.BorderedRoundTabBackgroundConverter" >
+		<mapping from="round-tab-bordered"  to="de.enough.polish.ui.backgrounds.BorderedRoundTabBackground" converter="de.enough.polish.preprocess.backgrounds.RoundTabBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
 			<param name="arc-width" type="integer" primitive="true"  default="4" />
 			<param name="arc-height" type="integer" primitive="true" default="4" />			
@@ -288,6 +288,20 @@
 			<param name="is-percent" type="boolean" primitive="true" default="true" />
 		</mapping>
 		<mapping from="round-rect-vertical-double-gradient"   to="de.enough.polish.ui.backgrounds.RoundRectDoubleGradientVerticalBackground"  >
+			<param name="first-top-color" type="color" primitive="true" default="white" />
+			<param name="first-bottom-color" type="color" primitive="true" default="gray" />
+			<param name="second-top-color" type="color" primitive="true" default="gray" />
+			<param name="second-bottom-color" type="color" primitive="true" default="white" />
+			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" />
+			<param name="start" type="integer" primitive="true" default="0" />
+			<param name="end" type="integer" primitive="true" default="100" />
+			<param name="is-percent" type="boolean" primitive="true" default="true" />
+			<param name="arc-width" type="integer" primitive="true" default="4" />
+			<param name="arc-height" type="integer" primitive="true" default="4" />			
+			<param name="border-color" type="color" primitive="true" default="black" />
+			<param name="border-width" type="integer" primitive="true" default="1" />
+		</mapping>
+		<mapping from="round-rect-double-gradient"   to="de.enough.polish.ui.backgrounds.RoundRectDoubleGradientVerticalBackground"  >
 			<param name="first-top-color" type="color" primitive="true" default="white" />
 			<param name="first-bottom-color" type="color" primitive="true" default="gray" />
 			<param name="second-top-color" type="color" primitive="true" default="gray" />
