@@ -39,4 +39,5 @@ public interface BrowserListener
 
 	public void notifyDownloadStart(String url);
 	public void notifyDownloadEnd();
+	public void notifyPageError(String url, Exception e);
 }

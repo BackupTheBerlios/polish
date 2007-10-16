@@ -684,7 +684,6 @@ implements Runnable
   
   protected void goImpl(String url)
   {
-	  notifyPageStart(url);
 	 String previousDocumentBase = this.currentDocumentBase; 
     try
     {
@@ -696,8 +695,10 @@ implements Runnable
       
       if (connection != null)
       {
-        loadPage(connection.openInputStream());
-        connection.close();
+    	  notifyPageStart(url);
+    	  loadPage(connection.openInputStream());
+    	  connection.close();
+    	  notifyPageEnd();
       }
     }
     catch (IOException e)
@@ -705,8 +706,8 @@ implements Runnable
       //#debug error
       System.out.println("Unable to load page " + url + e );
       this.currentDocumentBase = previousDocumentBase;
+      notifyPageError(url, e);
     }
-    notifyPageEnd();
   }
   
   //////////////// download indicator handling /////////////
@@ -959,6 +960,13 @@ implements Runnable
     this.currentDocumentBase = null;
   }
 
+  protected void notifyPageError(String url, Exception e)
+  {
+	  if (this.browserListener != null) {
+		  this.browserListener.notifyPageError(url, e);
+	  }
+  }
+  
   protected void notifyPageStart(String url)
   {
 	  if (this.browserListener != null) {
@@ -997,26 +1005,5 @@ implements Runnable
 	this.browserListener = browserListener;
   }
 
-/* (non-Javadoc)
- * @see de.enough.polish.ui.FakeContainerCustomItem#setStyle(de.enough.polish.ui.Style, boolean)
- */
-public void setStyle(Style style, boolean ignoreBackground) {
-	// TODO robertvirkus implement setStyle
-	System.out.println("SET STYLE/ignoreBackground FOR " + this);
-	super.setStyle(style, ignoreBackground);
-}
-
-/* (non-Javadoc)
- * @see de.enough.polish.ui.FakeContainerCustomItem#setStyle(de.enough.polish.ui.Style)
- */
-public void setStyle(Style style) {
-	// TODO robertvirkus implement setStyle
-	System.out.println("SET STYLE FOR " + this);
-	ItemView viewType = (ItemView) style.getObjectProperty("view-type");
-	System.out.println(">>>>>>>>!!!! GOT ITEM VIEW " + viewType +" for  " + this + " from style "  + style.name);
-
-	super.setStyle(style);
-}
-  
   
 }
