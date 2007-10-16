@@ -2698,8 +2698,14 @@ public final class UiAccess {
 	}
 	//#endif
 
-	
-
-	
-
+	/**
+	 * Set the word-not-found box in the textfield
+	 * 
+	 * @param field the textfield
+	 * @param alert the alert
+	 */
+	public static void setWordNotFound(TextField field, Alert alert)
+	{
+		field.getPredictiveAccess().setAlert(alert);
+	}
 }

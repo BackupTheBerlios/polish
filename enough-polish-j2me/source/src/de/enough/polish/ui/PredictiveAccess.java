@@ -6,7 +6,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 
 import javax.microedition.io.ConnectionNotFoundException;
-import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
@@ -547,7 +546,10 @@ public class PredictiveAccess {
 	}
 
 	protected void showWordNotFound() {
-		StyleSheet.display.setCurrent(this.alert);
+		if(this.alert != null)
+		{
+			StyleSheet.display.setCurrent(this.alert);
+		}
 	}
 
 	protected boolean keyInsert(int keyCode, int gameAction) {
@@ -1052,5 +1054,10 @@ public class PredictiveAccess {
 		}
 		
 		return false;
+	}
+	
+	public void setAlert(Alert alert)
+	{
+		this.alert = alert;
 	}
 }
