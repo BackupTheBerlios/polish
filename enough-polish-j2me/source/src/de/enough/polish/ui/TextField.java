@@ -665,19 +665,19 @@ public class TextField extends StringItem
 		// because CANCEL will be mapped on special keys like the return key on Sony Ericsson devices.
 		//#if polish.MenuBar.useExtendedMenuBar && polish.key.ReturnKey:defined
 			//#ifdef polish.i18n.useDynamicTranslations
-				//#	protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.ITEM, DELETE_PRIORITY );
+				//#	public static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.ITEM, DELETE_PRIORITY );
 			//#elifdef polish.command.delete:defined
-				//#= protected static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.ITEM, DELETE_PRIORITY );
+				//#= public static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.ITEM, DELETE_PRIORITY );
 			//#else
-				//# protected static final Command DELETE_CMD = new Command( "Delete", Command.ITEM, DELETE_PRIORITY ); 
+				//# public static final Command DELETE_CMD = new Command( "Delete", Command.ITEM, DELETE_PRIORITY ); 
 			//#endif
 		//#else
 			//#ifdef polish.i18n.useDynamicTranslations
-		  		protected static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.CANCEL, DELETE_PRIORITY );
+				public static Command DELETE_CMD = new Command( Locale.get("polish.command.delete"), Command.CANCEL, DELETE_PRIORITY );
 			//#elifdef polish.command.delete:defined
-				//#= protected static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.CANCEL, DELETE_PRIORITY );
+				//#= public static final Command DELETE_CMD = new Command( "${polish.command.delete}", Command.CANCEL, DELETE_PRIORITY );
 			//#else
-				//# protected static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, DELETE_PRIORITY ); 
+				//# public static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, DELETE_PRIORITY ); 
 			//#endif
 	  	//#endif
 	//#endif
@@ -689,11 +689,11 @@ public class TextField extends StringItem
 	//#endif
 	
 	//#ifdef polish.i18n.useDynamicTranslations
-  		protected static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), Command.ITEM, CLEAR_PRIORITY );
+  		public static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), Command.ITEM, CLEAR_PRIORITY );
 	//#elifdef polish.command.clear:defined
-		//#= protected static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, CLEAR_PRIORITY );
+		//#= public static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, CLEAR_PRIORITY );
 	//#else
-		//# protected static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, CLEAR_PRIORITY ); 
+		//# public static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, CLEAR_PRIORITY ); 
 	//#endif
 	
   	/** valid input characters for local parts of email addresses, apart from 0..9 and a..z. */
@@ -736,11 +736,11 @@ public class TextField extends StringItem
 			//#endif
 				
 			//#ifdef polish.i18n.useDynamicTranslations
-		  		private static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.ITEM, ENTER_SYMBOL_PRIORITY );
+				public static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.ITEM, ENTER_SYMBOL_PRIORITY );
 			//#elifdef polish.command.entersymbol:defined
-				//#= private static final Command ENTER_SYMBOL_CMD = new Command( "${polish.command.entersymbol}", Command.ITEM, ENTER_SYMBOL_PRIORITY );
+				//#= public static final Command ENTER_SYMBOL_CMD = new Command( "${polish.command.entersymbol}", Command.ITEM, ENTER_SYMBOL_PRIORITY );
 			//#else
-				//# private static final Command ENTER_SYMBOL_CMD = new Command( "Add Symbol", Command.ITEM, ENTER_SYMBOL_PRIORITY ); 
+				//# public static final Command ENTER_SYMBOL_CMD = new Command( "Add Symbol", Command.ITEM, ENTER_SYMBOL_PRIORITY ); 
 			//#endif
 		//#endif
 		private boolean isKeyDown;

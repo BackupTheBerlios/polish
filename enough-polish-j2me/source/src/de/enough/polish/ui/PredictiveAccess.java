@@ -60,7 +60,7 @@ public class PredictiveAccess {
 	/**
 	 * The command for starting the setup dialog of the predictive input
 	 */
-	static Command INSTALL_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.install"), Command.ITEM, INSTALL_PRIORITY);
+	public static Command INSTALL_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.install"), Command.ITEM, INSTALL_PRIORITY);
 
 	//#ifdef polish.predictive.command.enable.priority:defined
 	//#= private static int ENABLE_PRIORITY = ${polish.predictive.command.enable.priority};
@@ -71,7 +71,7 @@ public class PredictiveAccess {
 	/**
 	 * The command for enabling the predictive input
 	 */
-	static Command ENABLE_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.enable"), Command.ITEM, ENABLE_PRIORITY);
+	public static Command ENABLE_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.enable"), Command.ITEM, ENABLE_PRIORITY);
 	
 	//#ifdef polish.predictive.command.disable.priority:defined
 	//#= private static int DISABLE_PRIORITY = ${polish.predictive.command.disable.priority};
@@ -82,7 +82,7 @@ public class PredictiveAccess {
 	/**
 	 * The command for disabling the predictive input and returning to the standard input method
 	 */
-	static Command DISABLE_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.disable"), Command.ITEM, DISABLE_PRIORITY);
+	public static Command DISABLE_PREDICTIVE_CMD = new Command(Locale.get("polish.predictive.command.disable"), Command.ITEM, DISABLE_PRIORITY);
 
 	//#ifdef polish.predictive.command.addword.priority:defined
 	//#= private static int ADDWORD_PRIORITY = ${polish.predictive.command.addword.priority};
@@ -93,7 +93,7 @@ public class PredictiveAccess {
 	/**
 	 * The command to start the dialog to add a custom word to the predictive dictionary
 	 */
-	static Command ADD_WORD_CMD = new Command(Locale.get("polish.predictive.registerNewWord.command"), Command.ITEM, ADDWORD_PRIORITY);
+	public static Command ADD_WORD_CMD = new Command(Locale.get("polish.predictive.registerNewWord.command"), Command.ITEM, ADDWORD_PRIORITY);
 
 	/**
 	 * Holds the key code for the space key of the model running the application
