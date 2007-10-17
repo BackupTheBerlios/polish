@@ -294,6 +294,8 @@ implements OutputFilter
 			FileUtil.writeTextFile(alxFile, lines);
 			
 			// now rewrite JAD file so that it is ready for OTA download:
+			// (first backup JAD file:)
+			FileUtil.copy(jadFile,  new File(jadFile.getParent(), jadFile.getName() + ".bak") );
 			Map jadProperties = FileUtil.readPropertiesFile( jadFile, ':' );	
 			Object[] keys = jadProperties.keySet().toArray();
 			for (int i = 0; i < keys.length; i++) {
