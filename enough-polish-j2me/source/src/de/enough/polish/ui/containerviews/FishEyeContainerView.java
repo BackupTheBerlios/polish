@@ -122,7 +122,6 @@ public class FishEyeContainerView extends ContainerView {
 	 */
 	public FishEyeContainerView() {
 		this.allowsAutoTraversal = false;
-		try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); };
 	}
 	
 	
