@@ -122,6 +122,7 @@ public class FishEyeContainerView extends ContainerView {
 	 */
 	public FishEyeContainerView() {
 		this.allowsAutoTraversal = false;
+		try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); };
 	}
 	
 	
@@ -302,7 +303,7 @@ public class FishEyeContainerView extends ContainerView {
 		this.isVertical = false;
 		this.isHorizontal = true;
 		Container parent = (Container) parentContainerItem;		
-		//#debug
+		// #debug
 		System.out.println("FishEye: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
 
 		this.parentContainer = parent;
@@ -864,6 +865,8 @@ public class FishEyeContainerView extends ContainerView {
 			this.shownRgbData = null;
 			this.shownRgbDataWidths = null;
 			this.shownRgbDataHeights= null;
+			this.referenceXCenterPositions = null;
+			this.referenceYCenterPositions = null;
 		//#endif
 	}
 
