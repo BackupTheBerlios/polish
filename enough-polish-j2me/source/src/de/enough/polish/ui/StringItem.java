@@ -413,6 +413,10 @@ public class StringItem extends Item
 				}
 			//#endif
 				
+			//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+				y += this.font.getHeight();
+			//#endif
+
 			g.setFont( this.font );
 			g.setColor( this.textColor );
 			
@@ -454,14 +458,26 @@ public class StringItem extends Item
 						// adjust the painting according to the layout:
 						if (this.isLayoutRight) {
 							lineX = rightBorder;
-							orientation = Graphics.TOP | Graphics.RIGHT;
+							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+								orientation = Graphics.BOTTOM | Graphics.RIGHT;
+							//#else
+								orientation = Graphics.TOP | Graphics.RIGHT;
+							//#endif
 							//g.drawString( line, rightBorder, y, Graphics.TOP | Graphics.RIGHT );
 						} else if (this.isLayoutCenter) {
 							lineX = centerX;
-							orientation = Graphics.TOP | Graphics.HCENTER;
+							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+								orientation = Graphics.BOTTOM | Graphics.HCENTER;
+							//#else
+								orientation = Graphics.TOP | Graphics.HCENTER;
+							//#endif
 							//g.drawString( line, centerX, y, Graphics.TOP | Graphics.HCENTER );
 						} else {
-							orientation = Graphics.TOP | Graphics.LEFT;
+							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+								orientation = Graphics.BOTTOM | Graphics.LEFT;
+							//#else
+								orientation = Graphics.TOP | Graphics.LEFT;
+							//#endif
 							// left layout (default)
 							//g.drawString( line, x, y, Graphics.TOP | Graphics.LEFT );
 						}	
@@ -470,7 +486,11 @@ public class StringItem extends Item
 								// when clipping (and therefore a scrolling animation) is needed,
 								// center and right layouts don't really make sense - this would
 								// start and stop the scrolling at wrong places outside of the clipping area: 
-								orientation = Graphics.TOP | Graphics.LEFT;
+								//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+									orientation = Graphics.BOTTOM | Graphics.LEFT;
+								//#else
+									orientation = Graphics.TOP | Graphics.LEFT;
+								//#endif
 								lineX = x + this.xOffset;
 							}
 						//#endif

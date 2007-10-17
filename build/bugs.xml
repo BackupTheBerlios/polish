@@ -612,6 +612,18 @@
 		</solution>
 	</bug>
 
+	<bug>
+		<name>needsBottomOrientiationForStringDrawing</name>
+		<area>ui</area>
+		<description>
+			Graphics.drawString(str,x,y,orientation) does not position the string correctly
+			if orientation includes Graphics.TOP.
+		</description>
+		<solution>
+			Always use Graphics.BOTTOM and calculate the y-position accordingly.
+		</solution>
+	</bug>
+
 	<!--
 	<bug>
 		<name></name>

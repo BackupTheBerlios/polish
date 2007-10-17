@@ -218,6 +218,7 @@
 		<capability name="JavaPackage" value="m3g, pdaapi, webservice, sipapi, svgapi, securityapi" />		
 		<capability name="Emulator.Skin" value="S60_3rd_MIDP_SDK" />
 		<capability name="Emulator.Skin.2" value="\Devices\S60_3rd_MIDP_SDK" />		
+		<capability name="Bugs" value="needsBottomOrientiationForStringDrawing" />
 	</group>
 
 	<group>
