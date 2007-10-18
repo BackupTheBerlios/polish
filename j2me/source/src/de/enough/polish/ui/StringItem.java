@@ -441,7 +441,11 @@ public class StringItem extends Item
 					//#if polish.css.text-wrap
 						if (this.useSingleLine && this.clipText ) {
 							x += this.xOffset;
-							this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, Graphics.LEFT | Graphics.TOP, g );
+							//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+								this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, Graphics.LEFT | Graphics.BOTTOM, g );
+							//#else
+								this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, Graphics.LEFT | Graphics.TOP, g );
+							//#endif
 						} else {
 					//#endif
 							this.textEffect.drawStrings( this.textLines, this.textColor, x, y, leftBorder, rightBorder, lineHeight, this.contentWidth, this.layout, g );
