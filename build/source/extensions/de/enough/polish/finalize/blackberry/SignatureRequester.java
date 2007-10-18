@@ -105,18 +105,21 @@ implements Runnable
 		}
 				
 		// execute BlackBerry's SignatureTool.jar:
+		String signToolPath = new File( jdeBin, "SignatureTool.jar" ).getAbsolutePath();
 		ArrayList arguments = new ArrayList();
 		arguments.add( "java" );
 		arguments.add( "-jar" );
-		arguments.add( new File( jdeBin, "SignatureTool.jar" ).getAbsolutePath() );
-		arguments.add( "-a" );
-		arguments.add( "-C" );
-		arguments.add( codFile.getAbsolutePath() );
+		arguments.add( signToolPath );
+		arguments.add( "-a" ); // automatically request for signatures.
+		arguments.add( "-s" ); //  display the number of signatures requested and the number that were signed
+		arguments.add( "-C" ); //  close regardless of its success. 
+		arguments.add( codFile.getAbsolutePath() ); // cod file to be signed
 		if ( pw != null ) {
 			this.password = pw;
 			Thread thread = new Thread( this );
 			thread.start();
 		}
+		System.out.println("Signing COD file: launching " + signToolPath );
 		int result =  ProcessUtil.exec( arguments, "SignatureTool: ", true, null, certificateDir );
 		if (result != 0 && pw != null) {
 			System.err.println("BlackBerry signing failed with result [" + result + "].");

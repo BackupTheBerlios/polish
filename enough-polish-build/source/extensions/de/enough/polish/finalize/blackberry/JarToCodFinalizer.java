@@ -247,11 +247,11 @@ implements OutputFilter
 				throw new BuildException("rapc failed and returned " + result );
 			}
 
-			File csoFile = new File( distDir, codName + ".cso" );
-			File debugFile = new File( distDir, codName + ".debug" );
-
-			csoFile.delete();
-			debugFile.delete();
+			// CSO file is required for signing
+//			File csoFile = new File( distDir, codName + ".cso" );
+//			File debugFile = new File( distDir, codName + ".debug" );
+//			csoFile.delete();
+//			debugFile.delete();
 			
 			// now create an ALX file for deployment using the BlackBerry Desktop Manager:
 			ArrayList lines = new ArrayList();
@@ -310,6 +310,7 @@ implements OutputFilter
 				}
 			}
 			FileUtil.writePropertiesFile(jadFile, ':', jadProperties );
+
 			
 			// request signature when the "blackberry.certificate.dir" variable is set:
 			if ( env.getVariable("blackberry.certificate.dir") != null) {

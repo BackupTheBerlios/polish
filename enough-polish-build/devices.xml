@@ -974,7 +974,7 @@ These namespaces/schemas will be used soon.
 		<groups>SE-JavaPlatform6</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="240x320" />
-		<capability name="CanvasSize" value="320x266"/>
+		<capability name="CanvasSize" value="240x266"/>
 		<capability name="FullCanvasSize" value="240x320" />
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, nokiaui" />
@@ -1000,6 +1000,36 @@ These namespaces/schemas will be used soon.
 		<capability name="key.ReturnKey" value="-11" />
 	</device>
 
+	<device>
+		<identifier>Sony-Ericsson/K850i, Sony-Ericsson/K850</identifier>
+		<groups>SE-JavaPlatform8</groups>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="240x320" />
+		<capability name="CanvasSize" value="240x266"/>
+		<capability name="FullCanvasSize" value="240x320" />
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, nokiaui, webservices,location,sip,security,msa,contenthandler,svg,i18n,sensor" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
+		<capability name="SoundFormat" value="midi, midi40, aac, wav, mp3, mp4" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263, xmf, svgt" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, png, png1.0, bmp, bmp3, wbmp" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="StorageSize" value="dynamic" />
+		<capability name="HeapSize" value="dynamic" />
+		<capability name="VideoHeapSize" value="500 kb" />
+		<capability name="DRM" value="OMA DRM 2.0" />
+		<capability name="CameraZoom" value="4x" />
+		<capability name="CameraResolution" value="2 MP" />
+		<capability name="Region" value="EMEA" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900,1800,1900,2100" />
+		<capability name="Emulator.Skin" value="SonyEricsson_K850" />
+		<capability name="Emulator.Skin.2" value="SonyEricsson_K850i"/>
+		<capability name="DebugInterface" value="KDWP" />
+		<capability name="key.ReturnKey" value="-11" />
+	</device>
 	<device>
 		<identifier>Sony-Ericsson/K800i, Sony-Ericsson/K800</identifier>
 		<groups>SE-JavaPlatform7</groups>
