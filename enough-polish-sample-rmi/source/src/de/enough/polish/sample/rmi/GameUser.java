@@ -30,7 +30,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import de.enough.polish.io.Externalizable;
-import de.enough.polish.io.Serializable;
 
 /**
  * <p>Represents a player of the game.</p>
@@ -110,6 +109,4 @@ public class GameUser implements Externalizable {
 		out.writeUTF( this.userName );
 		out.writeInt( this.accountPoints );
 	}
-	
-
 }
