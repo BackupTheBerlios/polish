@@ -87,7 +87,7 @@ implements Runnable
 		}
 		
 		String pw = env.getVariable( "blackberry.certificate.password" );
-		if (!"true".equals( env.getVariable("blackberry.certificate.donotusetab") )) {
+		if (jdeHome.getAbsolutePath().indexOf("4.1") != -1 ) {
 			pw = '\t' + pw;
 		}
 		
@@ -131,7 +131,7 @@ implements Runnable
 
 	public void run() {
 		GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		long delay = 2500;
+		long delay = 4500;
 		String signatureWaitTimeStr = this.environment.getVariable("blackberry.certifcate.inputdelay");
 		if (signatureWaitTimeStr != null) {
 			try {
