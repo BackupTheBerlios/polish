@@ -2409,7 +2409,17 @@ public class TextField extends StringItem
 		
 		//#if polish.TextField.usePredictiveInput
 		if(this.predictiveInput)
-			modeStr = PredictiveAccess.INDICATOR + modeStr;
+		{
+			if(this.infoItem.getStyle().layout == Graphics.RIGHT)
+			{
+				modeStr = PredictiveAccess.INDICATOR + modeStr;
+			}
+			else
+			{
+				modeStr = modeStr + PredictiveAccess.INDICATOR;
+			}
+			
+		}
 		//#endif
 		
 		//#ifdef polish.css.textfield-show-length
