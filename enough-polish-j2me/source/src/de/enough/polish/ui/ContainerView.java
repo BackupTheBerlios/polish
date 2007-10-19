@@ -122,7 +122,9 @@ extends ItemView
 	protected void initContent( Item parentContainerItem, int firstLineWidth, int lineWidth ) {
 		Container parent = (Container) parentContainerItem;		
 		//#debug
-		System.out.println("ContainerView: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
+		System.out.println("ContainerView: intialising content for " + this + " with vertical-padding " + this.paddingVertical + ", focusedIndex=" + this.focusedIndex + ", parent.focusedIndex=" + parent.getFocusedIndex() );
+		this.focusedIndex = parent.getFocusedIndex();
+		this.focusedItem = parent.getFocusedItem();
 		//#if polish.Container.allowCycling != false
 			this.allowCycling = parent.allowCycling;
 			if ( (parent.parent instanceof Container)  && ((Container)parent.parent).getItems().length>1 )
@@ -199,7 +201,6 @@ extends ItemView
 				this.contentHeight = myContentHeight;
 			//#endif
 			this.contentWidth = myContentWidth;
-			//System.out.println("ContainerView.initContent(): contentWidth=" + this.contentWidth );
 			return;
 		//#ifdef tmp.useTable
 		}
@@ -502,6 +503,9 @@ extends ItemView
 			this.contentWidth = myContentWidth;
 			this.contentHeight = myContentHeight;
 			
+//			System.out.println("ContainerView.initContent(): contentWidth=" + this.contentWidth + ", focusedIndex=" + this.focusedIndex);
+
+			
 		//#endif
 	}
 		
@@ -742,8 +746,9 @@ extends ItemView
 	 * @return the next item which will be focused, null when there is
 	 * 			no such element.
 	 */
-	protected Item getNextItem( int keyCode, int gameAction ) {
-
+	protected Item getNextItem( int keyCode, int gameAction ) 
+	{
+//		System.out.println("getNextItem for "+ getScreen().getKeyName( keyCode ));
 		Item[] myItems = this.parentContainer.getItems();
 		if ( 
 				//#if polish.blackberry && !polish.hasTrackballEvents
@@ -772,6 +777,7 @@ extends ItemView
 			return shiftFocus( false, 0, myItems );
 		}
 		
+//		System.out.println("getNextItem: returning null for " + getScreen().getKeyName( keyCode )	);
 		
 		return null;
 		
@@ -789,7 +795,8 @@ extends ItemView
 	 */
 	protected Item shiftFocus(boolean forwardFocus, int steps, Item[] items) {
 		//#debug
-		System.out.println("ContainerView.shiftFocus( forward=" + forwardFocus + ", steps=" + steps + ", focusedIndex=" + this.focusedIndex );
+		System.out.println("ContainerView.shiftFocus( forward=" + forwardFocus + ", steps=" + steps + ", focusedIndex=" + this.focusedIndex + ")" );
+//		System.out.println("parent.focusedIndex=" + this.parentContainer.getFocusedIndex() );
 		//#if polish.css.colspan
 			int i = this.focusedIndex;
 			if ( i != -1 && steps != 0) {
@@ -800,7 +807,7 @@ extends ItemView
 				while( doneSteps <= steps ) {
 					doneSteps += item.colSpan;
 					if (doneSteps >= steps) {
-						//System.out.println("bailing out at too many steps: focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
+//						System.out.println("bailing out at too many steps: focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
 						break;
 					}
 					if (forwardFocus) {
@@ -812,7 +819,7 @@ extends ItemView
 								if (!this.allowCycling) {
 									return null;
 								}
-								//System.out.println("reached items.length -1, breaking at -2");
+//								System.out.println("reached items.length -1, breaking at -2");
 								i = items.length - 2;
 								break;
 							//#endif
@@ -823,7 +830,7 @@ extends ItemView
 								if (!this.allowCycling) {
 									return null;
 								}
-								//System.out.println("reached items.length, breaking at -1");
+//								System.out.println("reached items.length, breaking at -1");
 								i = items.length - 1;
 								break;
 							//#endif
@@ -838,6 +845,7 @@ extends ItemView
 					item = items[i];
 //					System.out.println("focusedIndex=" + this.focusedIndex + ", startIndex=" + i + ", steps=" + steps + ", doneSteps=" + doneSteps);
 				}
+//				System.out.println("item is now " + i + ": " + item);
 				if (doneSteps >= steps && item.colSpan != 1 && i != this.focusedIndex)  {
 					if (forwardFocus) {
 						i--;
@@ -858,10 +866,10 @@ extends ItemView
 					if (i < 0) {
 						i = items.length + i;
 					}
-	//				System.out.println("forward: Adjusting startIndex to " + i );
+//					System.out.println("forward: Adjusting startIndex to " + i );
 				} else {
 					i = i % items.length;
-	//				System.out.println("backward: Adjusting startIndex to " + i );
+//					System.out.println("backward: Adjusting startIndex to " + i );
 				}
 			}
 		//#endif
@@ -1307,6 +1315,7 @@ extends ItemView
 	 * @return the previous style of the focussed item
 	 */
 	public Style focusItem(int index, Item item, int direction, Style focusedStyle) {
+//		System.out.println("focusItem: index=" + index);
 		this.focusedIndex = index;
 		this.focusedItem = item;
 		return item.focus(focusedStyle, direction);

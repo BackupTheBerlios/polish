@@ -423,6 +423,8 @@ public class Container extends Item {
 	 * @return true when the focus could be set, when false is returned autofocus will be enabled instead
 	 */
 	public boolean focusClosestItemAbove( int index) {
+		//#debug
+		System.out.println("focusClosestItemAbove(" + index + ")");
 		Item[] myItems = getItems();
 		Item newFocusedItem = null;
 		int newFocusedIndex = -1;
@@ -480,6 +482,8 @@ public class Container extends Item {
 	 * @return true when the focus could be set, when false is returned autofocus will be enabled instead
 	 */
 	protected boolean focusClosestItem( int index, Item[] myItems ) {
+		//#debug
+		System.out.println("focusClosestItem(" + index + ")");
 		int i = 1;
 		Item newFocusedItem = null;
 		Item item;
@@ -683,7 +687,6 @@ public class Container extends Item {
 	public void focus( int index, Item item, int direction ) {
 		//#debug
 		System.out.println("Container (" + this + "): Focusing item " + index + " (" + item + ")" );
-		
 		//#if polish.blackberry
         	//# getScreen().setFocus( item );
 		//#endif
@@ -958,8 +961,8 @@ public class Container extends Item {
 									requireScrolling = (this.autoFocusIndex != 0);
 									focus( i, item, 0 );
 									this.isScrollRequired = this.isScrollRequired && requireScrolling; // override setting in focus()
-									this.containerView.focusedIndex = i;
-									this.containerView.focusedItem = item;
+									//this.containerView.focusedIndex = i; is done within focus(i, item, 0) already
+									//this.containerView.focusedItem = item;
 									//System.out.println("autofocus: found item " + i );
 									break;
 								}							
@@ -969,7 +972,7 @@ public class Container extends Item {
 						}
 					}
 				}
-				
+//				System.out.println("ABOUT TO CALL INIT CONTENT - focusedIndex of Container=" + this.focusedIndex);
 				this.containerView.initContent( this, firstLineWidth, lineWidth);
 				this.appearanceMode = this.containerView.appearanceMode;
 				this.contentWidth = this.containerView.contentWidth;

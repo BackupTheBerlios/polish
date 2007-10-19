@@ -539,30 +539,30 @@ implements Runnable
 
   private Image loadImageInternal(String url)
   {
-    Image image = (Image) this.imageCache.get(url);
+	  Image image = (Image) this.imageCache.get(url);
 
-    if (image == null)
-    {
-      try
-      {
-    	  notifyDownloadStart(url);
-        ProtocolHandler handler = getProtocolHandlerForURL(url);
+	  if (image == null)
+	  {
+		  StreamConnection connection = null;
+		  InputStream is  = null;
+		  try
+		  {
+			  notifyDownloadStart(url);
+			  ProtocolHandler handler = getProtocolHandlerForURL(url);
         
-        StreamConnection connection = handler.getConnection(url);
-        InputStream is = connection.openInputStream();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        byte[] buf = new byte[1024];
-        int bytesRead;
-
-        do
-        {
-          bytesRead = is.read(buf);
-          
-          if (bytesRead > 0)
-          {
-            bos.write(buf, 0, bytesRead);
-          }
-        }
+			  connection = handler.getConnection(url);
+			  is = connection.openInputStream();
+			  ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			  byte[] buf = new byte[1024];
+			  int bytesRead;
+			  do
+			  {
+				  bytesRead = is.read(buf);
+				  if (bytesRead > 0)
+				  {
+					  bos.write(buf, 0, bytesRead);
+				  }
+			  }
         while (bytesRead >= 0);
         
         notifyDownloadEnd();
@@ -583,6 +583,23 @@ implements Runnable
         System.out.println("Unable to load image " + url + e);
         
         return null;
+      } finally {
+    	  if (is != null) {
+    		  try {
+    			  is.close();
+    		  } catch (Exception e) {
+    			  //#debug error
+    			  System.out.println("unable to close inputstream " + e );
+    		  }
+    	  }
+    	  if (connection != null) {
+    		  try {
+    			  connection.close();
+    		  } catch (Exception e) {
+    			  //#debug error
+    			  System.out.println("unable to close connection " + e );
+    		  }
+    	  }
       }
     }
     
@@ -684,20 +701,22 @@ implements Runnable
   
   protected void goImpl(String url)
   {
-	 String previousDocumentBase = this.currentDocumentBase; 
+	 String previousDocumentBase = this.currentDocumentBase;
+	 StreamConnection connection = null;
+	 InputStream is = null;
     try
     {
       // Throws an exception if no handler found.
       ProtocolHandler handler = getProtocolHandlerForURL(url);
 
       this.currentDocumentBase = url;
-      StreamConnection connection = handler.getConnection(url);
+      connection = handler.getConnection(url);
       
       if (connection != null)
       {
     	  notifyPageStart(url);
-    	  loadPage(connection.openInputStream());
-    	  connection.close();
+    	  is = connection.openInputStream();
+    	  loadPage(is);
     	  notifyPageEnd();
       }
     }
@@ -707,6 +726,24 @@ implements Runnable
       System.out.println("Unable to load page " + url + e );
       this.currentDocumentBase = previousDocumentBase;
       notifyPageError(url, e);
+    } finally {
+	  	  if (is != null) {
+			  try {
+				  is.close();
+			  } catch (Exception e) {
+				  //#debug error
+				  System.out.println("unable to close inputstream " + e );
+			  }
+		  }
+    	if (connection != null) {
+    		try {
+    			connection.close();
+    		} catch (Exception e) {
+    			//#debug error
+    			System.out.println("Unable to close connection " + e);
+    		}
+    	}
+
     }
   }
   
@@ -817,6 +854,7 @@ implements Runnable
             	//#endif
 
             	// Signal stopped parsing.
+            	//#style browserText?
             	StringItem item = new StringItem(null, "parsing stopped");
             	add(item);
             } finally {
@@ -957,6 +995,7 @@ implements Runnable
   {
     this.history.removeAllElements();
     this.imageCache.clear();
+    clear();
     this.currentDocumentBase = null;
   }
 

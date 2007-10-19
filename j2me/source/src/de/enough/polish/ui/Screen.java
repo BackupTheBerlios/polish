@@ -393,10 +393,10 @@ implements AccessibleCanvas
 		//#endif
 			
 		//#ifdef tmp.menuFullScreen
-			//#if polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasHeight:defined
-				//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
-			//#elif polish.Screen.base:defined
+			//#if polish.Screen.base:defined
 				//# this.fullScreenHeight = getCanvasHeight();
+			//#elif polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasHeight:defined
+				//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
 			//#else
 				this.fullScreenHeight = getHeight();
 			//#endif
@@ -810,6 +810,10 @@ implements AccessibleCanvas
 	 * Initialises this screen and informs all items about being painted soon.
 	 */
 	public void showNotify() {
+		//#if polish.Screen.callSuperEvents
+			super.showNotify();
+		//#endif
+
 		//#debug
 		System.out.println("showNotify " + this + " isInitialised=" + this.isInitialized);
 		try {
@@ -967,6 +971,9 @@ implements AccessibleCanvas
 	 * Unregisters this screen and notifies all items that they will not be shown anymore.
 	 */
 	public void hideNotify() {
+		//#if polish.Screen.callSuperEvents
+			super.showNotify();
+		//#endif
 		//#if polish.css.repaint-previous-screen
 			//TODO when the previousScreen reference is removed, there is no way how several popus can be handled correctly
 			// e.g. an input form with a TextField as a popup that allows to enter symbols in another popup.
