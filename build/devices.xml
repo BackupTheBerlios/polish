@@ -3541,6 +3541,8 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="ScreenSize" value="176x220"/>
+		<capability name="CanvasSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ExternalScreenSize" value="96x80" />
 		<capability name="HeapSize" value="900KB"/>
