@@ -1388,7 +1388,7 @@ public class Container extends Item {
 				//System.out.println("offset=" + offset + ", foc.relativeY=" + this.focusedItem.relativeY + ", foc.height=" + this.focusedItem.itemHeight + ", available=" + this.availableHeight);
 				// keep the focus do scroll downwards:
 				//#debug
-				System.out.println("Container(" + this + "): scrolling down: keeping focus, focusedIndex=" + this.focusedIndex );
+				System.out.println("Container(" + this + "): scrolling down: keeping focus, focusedIndex=" + this.focusedIndex + ", focus.relativeY=" + this.focusedItem.relativeX + ", focus.height=" + this.focusedItem.itemHeight + "focus.internalX=" + this.focusedItem.internalX + ", focus.internalY=" + this.focusedItem.internalY + ", focus.internalHeight=" + this.focusedItem.internalHeight );
 			} else {
 				processed = shiftFocus( true, 0 );
 			}

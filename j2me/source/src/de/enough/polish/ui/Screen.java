@@ -3321,6 +3321,13 @@ implements AccessibleCanvas
 	 * @return true when the command has been handled by this screen
 	 */	
 	protected boolean handleCommand( Command cmd ) {
+		//#if polish.Screen.callSuperEvents
+			boolean handled = false;
+			//# handled = super.handleCommand(cmd);
+			if (handled) {
+				return true;
+			}
+		//#endif
 		this.isInRequestInit = true;
 		try {
 			//check if the given command is from the currently focused item:

@@ -1208,6 +1208,7 @@ implements Choice
 								+ this.marginRight + this.borderWidth + this.paddingRight;
 					this.popupItem.init(firstLineWidth + noneContentWidth, lineWidth + noneContentWidth);
 				}
+				this.internalX = -9999;
 			} else {
 				this.originalContentWidth = this.contentWidth;
 				this.originalContentHeight = this.contentHeight;
