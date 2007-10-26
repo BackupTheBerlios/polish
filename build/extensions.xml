@@ -419,6 +419,12 @@
 
 	<extension>
 		<type>propertyfunction</type>
+		<name>stringarray</name>
+		<class>de.enough.polish.propertyfunctions.StringArrayFunction</class>
+	</extension>
+
+	<extension>
+		<type>propertyfunction</type>
 		<name>localefilename</name>
 		<class>de.enough.polish.propertyfunctions.LocaleFileNameFunction</class>
 	</extension>

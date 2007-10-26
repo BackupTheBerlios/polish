@@ -2093,6 +2093,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.medium" value="23" />
 		<capability name="Font.large" value="26" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
+		<capability name="MenuBar.OptionsPosition" value="left" />
 	</device>
 
 	<device>
