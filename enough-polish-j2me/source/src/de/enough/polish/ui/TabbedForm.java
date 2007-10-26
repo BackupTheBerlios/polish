@@ -339,14 +339,19 @@ public class TabbedForm extends Form {
 		if (!tabContainer.isInitialized) {
 			tabContainer.init( this.contentWidth, this.contentWidth );
 		}
-		if (!focusTabBar && tabContainer.appearanceMode != Item.PLAIN) {
-			//#debug
-			System.out.println("Focusing tab [" + tabIndex + "].");
-			tabContainer.focus( tabContainer.style, 0 );
-	        //#if polish.blackberry
-		        //# setFocus( tabContainer );
-		    //#endif
-		}
+		if (
+		//#if polish.TabbedForm.allowTabSelection
+			!focusTabBar && 
+		//#endif
+			tabContainer.appearanceMode != Item.PLAIN) 
+		{
+				//#debug
+				System.out.println("Focusing tab [" + tabIndex + "].");
+				tabContainer.focus( tabContainer.style, 0 );
+		        //#if polish.blackberry
+			        //# setFocus( tabContainer );
+			    //#endif
+			}
 		tabContainer.background = null;
 		tabContainer.border = null;
 		if (isShown()) {
@@ -354,13 +359,15 @@ public class TabbedForm extends Form {
 			repaint();
 		}
 		notifyTabbedChangeCompleted(oldTabIndex, this.activeTabIndex);
-		if (focusTabBar) {
-			tabContainer.defocus( tabContainer.style );
-			//TODO check again when allowing tab-specific styles
-			tabContainer.background = null;
-			tabContainer.border = null;
-			this.tabBar.focus( this.tabBar.getFocusedStyle(), 0);
-		}
+		//#if polish.TabbedForm.allowTabSelection
+			if (focusTabBar) {
+				tabContainer.defocus( tabContainer.style );
+				//TODO check again when allowing tab-specific styles
+				tabContainer.background = null;
+				tabContainer.border = null;
+				this.tabBar.focus( this.tabBar.getFocusedStyle(), 0);
+			}
+		//#endif
 	}
 	
 	/**
@@ -397,6 +404,7 @@ public class TabbedForm extends Form {
 	
 	
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		//#if polish.TabbedForm.allowTabSelection
 		if (this.tabBar.isFocused) {
 			int nextTabIndex = this.activeTabIndex;
 			//#if polish.css.tabbar-roundtrip
@@ -440,24 +448,56 @@ public class TabbedForm extends Form {
 			// Don't continue processing events when tabbar is focused.
 			return false;
 		}
+		//#endif
 
 		boolean handled = super.handleKeyPressed(keyCode, gameAction);
 
-		// Focus the tabbar when needed.
-		if (!handled) {
-			if (gameAction == Canvas.UP || gameAction == Canvas.DOWN) {
-				this.container.defocus(this.container.style);
-				this.tabBar.focus(this.tabBar.style, gameAction);
-				return true;
+		//#if !polish.TabbedForm.allowTabSelection
+			if (!handled) {
+				int nextTabIndex = this.activeTabIndex;
+				//#if polish.css.tabbar-roundtrip
+					if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) {
+						nextTabIndex = this.activeTabIndex + 1;
+						if (nextTabIndex >= this.tabContainers.length) {
+							nextTabIndex = 0;
+						}
+					} else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
+						nextTabIndex = this.activeTabIndex - 1;
+						if (nextTabIndex < 0) {
+							nextTabIndex = this.tabContainers.length - 1;
+						}		
+					}
+				//#else
+					if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6 && this.activeTabIndex < (this.tabContainers.length - 1)) {
+						nextTabIndex = this.activeTabIndex + 1;
+					}
+					else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4 && this.activeTabIndex > 0) {
+						nextTabIndex = this.activeTabIndex - 1;
+					}
+				//#endif
+				if (this.activeTabIndex != nextTabIndex) {
+					setActiveTab(nextTabIndex, true);
+					return true;
+				}
+
 			}
-			//#if polish.blackberry and !polish.hasTrackballEvents
-				else if (gameAction == Canvas.LEFT | gameAction == Canvas.RIGHT) {
+		//#else
+			// Focus the tabbar when needed.
+			if (!handled) {
+				if (gameAction == Canvas.UP || gameAction == Canvas.DOWN) {
 					this.container.defocus(this.container.style);
 					this.tabBar.focus(this.tabBar.style, gameAction);
 					return true;
 				}
-			//#endif
-		}
+				//#if polish.blackberry and !polish.hasTrackballEvents
+					else if (gameAction == Canvas.LEFT || gameAction == Canvas.RIGHT) {
+						this.container.defocus(this.container.style);
+						this.tabBar.focus(this.tabBar.style, gameAction);
+						return true;
+					}
+				//#endif
+			}
+		//#endif
 
 		return handled;
 	}
