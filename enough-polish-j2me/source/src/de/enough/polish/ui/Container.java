@@ -837,9 +837,6 @@ public class Container extends Item {
 	 * @param item the item for which the scrolling should be adjusted
 	 */
 	public void scroll(int direction, Item item) {
-		if ( !this.isInitialized && this.contentWidth > 0 ) {
-			initContent( this.contentWidth, this.contentWidth );
-		}
 		//#debug
 		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX +", relativeInternalY=" + ( item.relativeY + item.contentY + item.internalY ));
 		if (item.internalX != -9999 
