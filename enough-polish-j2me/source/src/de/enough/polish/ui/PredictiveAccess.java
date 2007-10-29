@@ -382,8 +382,7 @@ public class PredictiveAccess {
 					int parentYOffset = parentContainer.getScrollYOffset();
 					int overlap = choicesBottomY
 							- (parentContainer.getContentScrollHeight() - (this.parent.relativeY + parentYOffset));
-					// System.out.println("overlap=" + overlap );
-					if (overlap > 0) {
+					/*if (overlap > 0) {
 						// try to scroll up this item, so that the user sees all
 						// matches:
 						int yOffsetAdjustment = Math.min(this.parent.relativeY
@@ -414,7 +413,7 @@ public class PredictiveAccess {
 								- max);
 					} else {
 						this.choicesYOffsetAdjustment = 0;
-					}
+					}*/
 				}
 			}
 		} else {
@@ -795,6 +794,7 @@ public class PredictiveAccess {
 
 	public void paintChoices(int x, int y, int leftBorder, int rightBorder,
 			Graphics g) {
+		
 		if (this.numberOfMatches > 0 && this.isOpen) {
 			if (this.refreshChoices) {
 				this.elementX = getChoicesX(leftBorder, rightBorder,
