@@ -187,6 +187,10 @@ public class FishEyeContainerView extends ContainerView {
 					}
 					boolean isScaled = false;
 					if (factor != 100) {
+						
+						if(this.shownRgbDataWidths == null)
+							return;
+							
 						current = this.shownRgbDataWidths[ i ];
 						if (i == this.focusedIndex) {
 							target = this.originalRgbDataWidths[ i ];
