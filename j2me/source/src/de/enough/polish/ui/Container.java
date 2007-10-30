@@ -852,6 +852,7 @@ public class Container extends Item {
 			scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
 		} else {
 			// use item dimensions for scrolling:
+			//TODO what happens when relativeY == 0 - defer scrolling to init at a later stage
 			scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );			
 		}
 	}

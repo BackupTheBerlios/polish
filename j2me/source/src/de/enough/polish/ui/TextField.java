@@ -39,6 +39,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.Locale;
 
@@ -1156,6 +1157,15 @@ public class TextField extends StringItem
 	}
 	 	
 	//#if tmp.updateDeleteCommand
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#showCommands(de.enough.polish.util.ArrayList)
+	 */
+	protected void showCommands(ArrayList commandsList)
+	{
+		super.showCommands(commandsList);
+		updateDeleteCommand( getString() );
+	}
 	protected void updateDeleteCommand(String newText) {
 		// remove delete command when the caret is before the first character,
 		// add it when it is after the first character:
@@ -3616,6 +3626,8 @@ public class TextField extends StringItem
 	public void setSuppressCommands(boolean suppressCommands) {
 		this.suppressCommands = suppressCommands;
 	}
+
+	
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {
