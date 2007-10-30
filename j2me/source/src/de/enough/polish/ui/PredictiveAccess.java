@@ -358,7 +358,6 @@ public class PredictiveAccess {
 	 * @param open true, if the list should be opened, to close false
 	 */
 	void openChoices(boolean open) {
-		System.out.println(open);
 		//#debug
 		System.out.println("open choices: " + open
 				+ ", have been opened already:" + this.isOpen);
