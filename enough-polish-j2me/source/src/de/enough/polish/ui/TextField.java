@@ -1116,6 +1116,7 @@ public class TextField extends StringItem
 				text = buffer.toString();
 			}
 		}
+				
 		//#ifdef tmp.directInput
 			if (text == null) {
 				this.caretPosition = 0;
@@ -1171,8 +1172,7 @@ public class TextField extends StringItem
 		// add it when it is after the first character:
 		// #debug
 		// System.out.println("updateDeleteCommand: newText=[" + newText + "], caretPos=" + this.caretPosition);
-		Screen scr = getScreen();
-		if ( scr != null && !this.isUneditable ) {
+		if ( !this.isUneditable ) {
 			if ( newText == null 
 				//#ifdef tmp.directInput
 					|| (this.caretPosition == 0    &&    this.caretChar == this.editingCaretChar)
@@ -1180,13 +1180,13 @@ public class TextField extends StringItem
 					|| newText.length() == 0 
 				//#endif
 			) {
-				scr.removeCommand( DELETE_CMD );
+				removeCommand( DELETE_CMD );
 			} else if ((this.text == null || this.text.length() == 0)
 				//#ifdef tmp.directInput
 					|| this.caretPosition == 1
 				//#endif						
 			) {
-				scr.addCommand( DELETE_CMD );
+				addCommand( DELETE_CMD );
 			}
 		}
 	}
