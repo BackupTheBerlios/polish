@@ -205,7 +205,7 @@
 		<capability name="JavaPackage" value="m3g, pdaapi, webservice" />		
 		<capability name="Emulator.Skin" value="S60_2nd_FP3_MIDP_SDK" />
 		<capability name="Bugs" value="" />
-		<!--  add E3 specific bugs 	-->
+		<!--  add E2FP3 specific bugs 	-->
 		<capability name="Bugs" value="displaySetCurrentFlickers" />
 	</group>
 	
