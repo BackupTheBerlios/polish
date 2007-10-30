@@ -2423,6 +2423,9 @@ public abstract class Item extends Object
 	 * @see #addRelativeRegion(ClippingRegion, int, int, int, int)
 	 */
 	public void animate( long currentTime, ClippingRegion repaintRegion) {
+		if (this.label != null) {
+			this.label.animate( currentTime, repaintRegion );
+		}
 		if (animate()) {
 			repaintRegion.addRegion( getAbsoluteX(), getAbsoluteY(), this.itemWidth, this.itemHeight );
 		}
