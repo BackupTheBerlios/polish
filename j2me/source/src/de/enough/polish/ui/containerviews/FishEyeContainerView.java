@@ -131,6 +131,10 @@ public class FishEyeContainerView extends ContainerView {
 	 */
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		super.animate(currentTime, repaintRegion);
+
+		if(this.shownRgbDataWidths == null)
+			return;
+			
 		boolean animated = false;
 		if (this.targetXCenterPositions != null) {
 			Item[] myItems = this.parentContainer.getItems();
@@ -302,7 +306,7 @@ public class FishEyeContainerView extends ContainerView {
 		this.isVertical = false;
 		this.isHorizontal = true;
 		Container parent = (Container) parentContainerItem;		
-		// #debug
+		//#debug
 		System.out.println("FishEye: intialising content for " + this + " with vertical-padding " + this.paddingVertical );
 
 		this.parentContainer = parent;
