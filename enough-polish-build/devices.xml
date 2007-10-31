@@ -14191,6 +14191,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 	</device>
 
+<!-- 
 	<device>
 		<identifier>HTC/Vox, HTC/S720</identifier>
 		<groups/>
@@ -14201,7 +14202,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 	</device>
-
+ -->
 	<device>
 		<identifier>HTC/Vox</identifier>
 		<capability name="OS" value="Windows Mobile 6"/>
