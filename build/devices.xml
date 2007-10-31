@@ -14386,7 +14386,7 @@ These namespaces/schemas will be used soon.
 	</device>
 	
 	<device>
-		<identifier>Imate/SP5/identifier>
+		<identifier>Imate/SP5</identifier>
 		<parent>HTC/Tornado</parent>
 	</device>
 
