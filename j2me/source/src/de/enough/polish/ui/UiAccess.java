@@ -2701,7 +2701,7 @@ public final class UiAccess {
 
 	
 	//#if polish.midp
-	public static void setWordNotFound(javax.microedition.lcdui.TextField field, Alert alert)
+	public static void setWordNotFound(javax.microedition.lcdui.TextField field, javax.microedition.lcdui.Alert alert)
 	{
 		// ignore
 	}
