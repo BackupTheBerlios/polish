@@ -1,3 +1,5 @@
+//#condition polish.usePolishGui
+
 /*
  * Created on Oct 28, 2007 at 8:55:24 PM.
  * 
