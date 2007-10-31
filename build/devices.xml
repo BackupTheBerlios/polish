@@ -676,6 +676,37 @@ These namespaces/schemas will be used soon.
 		<capability name="DebugInterface" value="KDWP" />
 		<capability name="key.ReturnKey" value="-11" />
 	</device>
+
+	<device>
+		<identifier>Sony-Ericsson/Z550i, Sony-Ericsson/Z550</identifier>
+		<groups>SE-JavaPlatform6</groups>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="176x220" />
+		<capability name="FullCanvasSize" value="176x220" />
+		<capability name="CanvasSize" value="176x176"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="mmapi, wmapi1.1, pdaapi, btapi, m3g, webservice, mascot" />
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
+		<capability name="SoundFormat" value="aac, mp3, mp4, m4a, 3gp, amr, wav, midi, midi40, wave,xmf,e-melody,i-melody" />
+		<capability name="VideoFormat" value="mpeg-4, 3gpp,sdp" />		
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, jpeg, bmp, wbmp, png, svg" />
+		<capability name="CaptureImageFormat" value="jpeg" />
+		<capability name="StorageSize" value="38 MB" />
+		<capability name="HeapSize" value="1.5 MB" />
+		<capability name="VideoHeapSize" value="500 kb" />
+		<capability name="DRM" value="OMA Phase 1" />
+		<capability name="CameraZoom" value="4x" />
+		<capability name="CameraResolution" value="2 MP" />
+		<capability name="Region" value="EMEA,AP,China" />
+		<capability name="Network" value="GSM, GPRS" />
+		<capability name="Frequency" value="900,1800,1900" />
+		<capability name="Emulator.Skin" value="SonyEricsson_W710i" />
+		<capability name="Bugs" value="displaySetCurrentFlickers, ImageIOStreamAutoClose, NoPermanentBacklight" />
+		<capability name="DebugInterface" value="KDWP" />
+		<capability name="key.ReturnKey" value="-11" />
+	</device>
 	
 	<device>
 		<identifier>Sony-Ericsson/Z525</identifier>
@@ -871,7 +902,7 @@ These namespaces/schemas will be used soon.
 	
 
 	<device>
-			<identifier>Sony-Ericsson/K310</identifier>
+			<identifier>Sony-Ericsson/K310i, Sony-Ericsson/K310</identifier>
 			<groups>SE-JavaPlatform3</groups>
 			<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 			<capability name="ScreenSize" value="128x160"/>
@@ -1186,7 +1217,7 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
-		<identifier>Sony-Ericsson/W800</identifier>
+		<identifier>Sony-Ericsson/W800i, Sony-Ericsson/W800</identifier>
 		<groups>SE-JavaPlatform5</groups>
 		<features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="176x208"/>
@@ -1281,6 +1312,43 @@ These namespaces/schemas will be used soon.
 		<capability name="DebugInterface" value="KDWP"/>
 		<capability name="CameraResolution" value="1.3 MP"/>
 		<capability name="CameraZoom" value="4"/>
+		<capability name="key.ReturnKey" value="-11"/>
+	</device>
+
+	<device>
+		<identifier>Sony-Ericsson/W580i, Sony-Ericsson/W580</identifier>
+		<groups>SE-JavaPlatform7</groups>
+		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x266"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="JavaPackage" value="mmapi, wmapi2.0, m3g, mascot, btapi, nokia-ui, pdaapi, webservice"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp"/>
+		<capability name="SoundFormat" value="mp3, mp4, m4a, aac, amr, wav, midi, midi40"/>
+		<capability name="VideoFormat" value="mpeg-4, 3gpp, h.263, xmf, svgt" />
+		<capability name="ImageFormat" value="gif, gif87a, gif89a, jpeg, png, png1.0, bmp, bmp3, wbmp"/>
+		<capability name="CaptureImageFormat" value="jpeg"/>
+		<capability name="StorageSize" value="64 MB"/>
+		<capability name="HeapSize" value="1.5 MB"/>
+		<capability name="VideoHeapSize" value="500 kb"/>
+		<capability name="MaxJarSize" value="dynamic"/>
+		<capability name="DRM" value="OMA v1.0"/>
+		<capability name="Region" value="global"/>
+		<capability name="Network" value="GSM, GPRS, UMTS"/>
+		<capability name="Frequency" value="900,1800,1900"/>
+		<capability name="Emulator.Skin" value="SonyEricsson_K800"/>
+		<capability name="Emulator.Skin.2" value="SonyEricsson_K800i"/>
+		<capability name="DebugInterface" value="KDWP"/>
+		<capability name="CameraResolution" value="3 MP"/>
+		<capability name="CameraZoom" value="4"/>
+		<capability name="Font.small" value="18" />
+        <capability name="Font.medium" value="22" />
+        <capability name="Font.large" value="26" />
+        <capability name="IconSize" value="16x16, 24x24" />
+   		<capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin, NoPermanentBacklight"/>
 		<capability name="key.ReturnKey" value="-11"/>
 	</device>
 
@@ -3315,6 +3383,41 @@ These namespaces/schemas will be used soon.
 		<capability name="key.LeftSoftKey" value="-21" />
 		<capability name="key.RightSoftKey" value="-22" />
 		<capability name="key.FireKey" value="-20" />
+		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
+	</device>
+
+    <device>
+		<identifier>Motorola/Motorazr_Z8</identifier>
+		<features>doubleBuffering, hasCamera</features>
+		<capability name="OS" value="Motorola"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+        <capability name="ScreenSize" value="240x320" />
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="ExternalScreenSize" value="96x80" />
+		<capability name="HeapSize" value="800 kb"/>
+		<capability name="StorageSize" value="64 MB"/>
+		<capability name="MaxRecordStoreSize" value="64 kb"/>
+        <capability name="MaxJarSize" value="600 kb" />
+		<capability name="JavaProtocol" value="http, socket, serial, udp"/>
+		<capability name="MaxSockets" value="4"/>
+		<capability name="JavaPackage" value="btapi, pdaapi, jsr84, wmapi1.0, wmapi2.0, mmapi"/>
+		<capability name="ImageFormat" value="png, jpeg"/>
+		<capability name="SoundFormat" value="midi, mp3, wav, realaudio, ra9, xmf, aac, aac+"/>
+		<capability name="Region" value="Global"/>
+		<capability name="Network" value="GSM, GPRS"/>
+		<capability name="Frequency" value="850, 900, 1800, 1900"/>
+		<capability name="CameraResolution" value="640x480, 2 MP"/>
+		<capability name="CameraZoom" value="4, 8"/>
+        <capability name="key.LeftSoftKey" value="-10" />
+		<capability name="key.MiddleSoftKey" value="-5" />
+        <capability name="key.RightSoftKey" value="-11" />
+        <capability name="key.FireKey" value="32" />
+        <capability name="key.ClearKey" value="8" />
+        <capability name="Font.small" value="18" />
+        <capability name="Font.medium" value="20" />
+        <capability name="Font.large" value="22" />
+		<capability name="Emulator.Class" value="MotorolaEmulatorA6" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	</device>
 
@@ -14088,6 +14191,31 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 	</device>
 
+	<device>
+		<identifier>HTC/Vox, HTC/S720</identifier>
+		<groups/>
+		<features>hasPointerEvents, hasCommandKeyEvents</features>
+		<capability name="OS" value="Windows Mobile 2003"/>
+		<capability name="FullCanvasSize" value="320x213"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+	</device>
+
+	<device>
+		<identifier>HTC/Vox</identifier>
+		<capability name="OS" value="Windows Mobile 6"/>
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="CanvasSize" value="240x266"/>
+		<capability name="FullCanvasSize" value="240x266"/>
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="Font.small" value="19"/>
+		<capability name="Font.medium" value="21"/>
+		<capability name="Font.large" value="23"/>
+	</device>
+
 <!-- Qtek devices -->
 	<device>
 		<identifier>Qtek/8310</identifier>
@@ -14257,6 +14385,11 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 	</device>
 	
+	<device>
+		<identifier>Imate/SP5/identifier>
+		<parent>HTC/Tornado</parent>
+	</device>
+
 <!-- Verizon device definitions -->
 
 	<device>
