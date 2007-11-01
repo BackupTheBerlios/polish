@@ -14191,20 +14191,9 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 	</device>
 
-<!-- 
 	<device>
 		<identifier>HTC/Vox, HTC/S720</identifier>
-		<groups/>
 		<features>hasPointerEvents, hasCommandKeyEvents</features>
-		<capability name="OS" value="Windows Mobile 2003"/>
-		<capability name="FullCanvasSize" value="320x213"/>
-		<capability name="BitsPerPixel" value="16"/>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-	</device>
- -->
-	<device>
-		<identifier>HTC/Vox</identifier>
 		<capability name="OS" value="Windows Mobile 6"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x266"/>
