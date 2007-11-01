@@ -32,12 +32,10 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.ClippingRegion;
-import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Style;
-import de.enough.polish.util.DrawUtil;
 
 /**
  * <p>Shows an animation of cyclic aligned icons for visualizing an CONTINUOUS_RUNNING indefinite gauge.</p>
