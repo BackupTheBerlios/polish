@@ -28,6 +28,7 @@ package de.enough.polish.xml;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Hashtable;
 
 /**
  * <p>Copyright Enough Software 2006, 2007</p>
@@ -55,7 +56,6 @@ public class XmlDomParser
 
         XmlDomNode root = new XmlDomNode(null, null, -1);
         XmlDomNode currentNode = root;
-        int depth = -1;
         String newName;
         int newType;
         
@@ -65,13 +65,22 @@ public class XmlDomParser
                 newType = parser.getType();
                 
                 if(newType == XmlPullParser.START_TAG) {
-                    depth++;
-                    XmlDomNode newNode = new XmlDomNode(currentNode,newName,newType);
+                	Hashtable attributes = null;
+                	int attributeCount = parser.getAttributeCount(); 
+
+                	if (attributeCount > 0) {
+                		attributes = new Hashtable();
+
+                		for (int i = 0; i < attributeCount; i++) {
+                			attributes.put(parser.getAttributeName(i), parser.getAttributeValue(i));
+                		}
+                	}
+
+                    XmlDomNode newNode = new XmlDomNode(currentNode, newName, attributes, newType);
                     currentNode = newNode;
                 }
                 
                 else if(newType == XmlPullParser.END_TAG) {
-                    depth--;
                     currentNode = currentNode.getParent();
                 }
                 

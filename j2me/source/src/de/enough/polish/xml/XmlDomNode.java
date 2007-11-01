@@ -25,6 +25,8 @@
  */
 package de.enough.polish.xml;
 
+import java.util.Hashtable;
+
 import de.enough.polish.util.ArrayList;
 
 /**
@@ -41,6 +43,7 @@ public class XmlDomNode
 {
     private XmlDomNode parent;
     private ArrayList childList;
+    private Hashtable attributes;
     private String name;
     private int type;
     private String text;
@@ -51,12 +54,26 @@ public class XmlDomNode
      * @param name
      * @param type
      */
-    public XmlDomNode(XmlDomNode parent,String name,int type) {
+    public XmlDomNode(XmlDomNode parent, String name, int type) {
+    	this(parent, name, null, type);
+    }
+
+    /**
+     * 
+     * @param parent
+     * @param name
+     * @param attributes
+     * @param type
+     */
+    public XmlDomNode(XmlDomNode parent, String name, Hashtable attributes, int type) {
         this.parent = parent;
+
         if(this.parent != null) {
             this.parent.addChild(this);
         }
+
         this.name = name;
+        this.attributes = attributes;
         this.type = type;
         this.childList = new ArrayList(); 
     }
@@ -68,50 +85,28 @@ public class XmlDomNode
      */
     public XmlDomNode getChild(String childName) {
         XmlDomNode child;
+
         for(int i = 0; i < this.childList.size();i++) {
-            child = (XmlDomNode)this.childList.get(i);
+            child = (XmlDomNode) this.childList.get(i);
+
             if(childName.equals(child.getName())) {
                 return child;
             }
         }
+
         childName = childName.toLowerCase();
+
         for(int i = 0; i < this.childList.size();i++) {
             child = (XmlDomNode)this.childList.get(i);
+
             if(childName.equals(child.getName())) {
                 return child;
             }
         }
+
         return null;
     }
    
-    /**
-     * 
-     * @param index the child which has selected
-     * @return the value of the child
-     */
-    public String getChildText( int index ) {
-    	XmlDomNode child = (XmlDomNode) this.childList.get( index );
-    	if (child == null) {
-    		return null;
-    	} else {
-    		return child.text;
-    	}
-    }
-    
-    /**
-     * 
-     * @param childName
-     * @return the value of the child
-     */
-    public String getChildText( String childName ) {
-    	XmlDomNode child = getChild( childName );
-    	if (child == null) {
-    		return null;
-    	} else {
-    		return child.text;
-    	}
-    }
-
     /**
      * 
      * @param i 
@@ -169,4 +164,12 @@ public class XmlDomNode
     public void setType(int type) {
         this.type = type;
     }
+
+	public Hashtable getAttributes() {
+		return this.attributes;
+	}
+	
+	public void setAttributes(Hashtable attributes) {
+		this.attributes = attributes;
+	}
 }
