@@ -854,7 +854,7 @@ public class PredictiveAccess {
 				stream = new DataInputStream(getClass().getResourceAsStream(
 						"/predictive.trie"));
 				setup = new TrieSetup(StyleSheet.midlet, this.parent.getScreen(),
-						this, true, stream);
+						this, true, stream, false);
 
 				Thread thread = new Thread(setup);
 				thread.start();
@@ -910,12 +910,12 @@ public class PredictiveAccess {
 				}
 
 				setup = new TrieSetup(StyleSheet.midlet, null, null, false,
-						stream);
+						stream, false);
 				//#else
 				stream = new DataInputStream(getClass().getResourceAsStream(
 						"/predictive.trie"));
 				setup = new TrieSetup(StyleSheet.midlet, this.parent.getScreen(),
-						this, true, stream);
+						this, true, stream, false);
 				//#endif
 
 				Thread thread = new Thread(setup);

@@ -25,6 +25,8 @@ implements Runnable, CommandListener
 	private PredictiveAccess parent;
 	private MIDlet parentMidlet;
 	
+	private boolean moveOn;
+	
 	DataInputStream stream = null;
 	TrieInstaller installer = null;
 	
@@ -45,7 +47,7 @@ implements Runnable, CommandListener
 		
 	boolean pause = false;
 	
-	public TrieSetup(MIDlet parentMidlet, Displayable returnTo, PredictiveAccess access, boolean showGauge, DataInputStream stream)
+	public TrieSetup(MIDlet parentMidlet, Displayable returnTo, PredictiveAccess access, boolean showGauge, DataInputStream stream, boolean moveOn)
 	{
 		this.returnTo = returnTo;
 		this.parentMidlet = parentMidlet;
@@ -77,6 +79,8 @@ implements Runnable, CommandListener
 		this.form.append(this.status);
 		//#style setupError?
 		this.form.append(this.error);
+		
+		this.moveOn = moveOn;
 		
 		Display.getDisplay(this.parentMidlet).setCurrent(this.form);
 	}
@@ -176,6 +180,18 @@ implements Runnable, CommandListener
 			this.status.setText(Locale.get("polish.predictive.setup.status.finished"));
 			this.form.removeCommand( this.cancelCommand );
 			this.form.addCommand( this.exitCommand );
+			
+			if(this.moveOn)
+			{
+				//#if polish.predictive.useLocalRMS
+				if(this.parent != null)
+				{
+					this.parent.initPredictiveInput(null);
+				}
+				//#endif
+				
+				Display.getDisplay(this.parentMidlet).setCurrent(this.returnTo);
+			}
 		} catch (Exception e) {
 			this.status.setText(Locale.get("polish.predictive.setup.error"));
 			this.status.setText(e.getMessage());
