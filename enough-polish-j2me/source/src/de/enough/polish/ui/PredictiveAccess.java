@@ -137,6 +137,8 @@ public class PredictiveAccess {
 	
 	Alert alert;
 	
+	String info;
+	
 	public PredictiveAccess() {
 		//#style predictiveWordNotFound?
 		this.alert = new Alert(null);
@@ -1058,5 +1060,15 @@ public class PredictiveAccess {
 	public void setAlert(Alert alert)
 	{
 		this.alert = alert;
+	}
+	
+	public void setInfo(String info)
+	{
+		this.info = info;
+	}
+	
+	public String getInfo()
+	{
+		return this.info;
 	}
 }

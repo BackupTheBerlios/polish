@@ -2421,6 +2421,11 @@ public class TextField extends StringItem
 		//#if polish.TextField.usePredictiveInput
 		if(this.predictiveInput)
 		{
+			if(this.predictiveAccess.getInfo() != null)
+			{
+				modeStr = this.predictiveAccess.getInfo();
+			}
+			
 			if(this.infoItem.getStyle().layout == Graphics.RIGHT)
 			{
 				modeStr = PredictiveAccess.INDICATOR + modeStr;

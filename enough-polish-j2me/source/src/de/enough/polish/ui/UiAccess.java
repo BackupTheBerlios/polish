@@ -2585,6 +2585,23 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.midp
+	public static void setTextfieldInfo(javax.microedition.lcdui.TextField field, String info)
+	{
+		// ignore
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	public static void setTextfieldInfo(TextField field, String info)
+	{
+	 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.TextField.usePredictiveInput
+			PredictiveAccess predictive = field.getPredictiveAccess();
+			predictive.setInfo(info);
+		//#endif
+	}
+	//#endif
+	
 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.midp && polish.TextField.usePredictiveInput
 	public static void setSuppressCommands(javax.microedition.lcdui.TextField field, boolean suppress)
 	{
