@@ -172,4 +172,8 @@ public class XmlDomNode
 	public void setAttributes(Hashtable attributes) {
 		this.attributes = attributes;
 	}
+
+	public String getAttribute(String name) {
+		return (String) this.attributes.get(name);
+	}
 }
