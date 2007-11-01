@@ -27,6 +27,7 @@ package de.enough.polish.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Hashtable;
 
@@ -42,11 +43,16 @@ import java.util.Hashtable;
  */
 public class XmlDomParser
 {
-    public static XmlDomNode parseTree(String document)
+	public static XmlDomNode parseTree(String document)
+	{
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(document.getBytes());
+		return parseTree(byteArrayInputStream);
+	}
+
+	public static XmlDomNode parseTree(InputStream in)
     {
     	XmlPullParser parser;
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(document.getBytes());
-        InputStreamReader inputStreamReader = new InputStreamReader(byteArrayInputStream);
+        InputStreamReader inputStreamReader = new InputStreamReader(in);
 
         try {
             parser = new XmlPullParser(inputStreamReader);
