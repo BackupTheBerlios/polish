@@ -1023,8 +1023,8 @@ public class PredictiveAccess {
 	 */
 	public boolean handleKeyReleased(int keyCode, int gameAction) {
 		if ((gameAction == Canvas.FIRE || gameAction == Canvas.RIGHT) &&
-			!(keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9)) {
-			
+			!(keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9) &&
+			this.predictiveType != ARRAY) {
 			// option has been selected!
 			if(!this.builder.isString(0))
 			{
@@ -1051,7 +1051,7 @@ public class PredictiveAccess {
 			
 			return true;
 		}
-		
+			
 		return false;
 	}
 	
