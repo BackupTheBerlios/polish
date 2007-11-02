@@ -897,7 +897,12 @@ public class TextField extends StringItem
 	private boolean isShowInputInfo = true;
 	
 	private boolean suppressCommands = false;
-
+	
+	//#if polish.TextField.showHelpText
+	private StringItem helpItem;
+	private boolean helpProvided;
+	//#endif
+	
 	/**
 	 * Creates a new <code>TextField</code> object with the given label, initial
 	 * contents, maximum size in characters, and constraints.
@@ -977,11 +982,22 @@ public class TextField extends StringItem
 		//#endif
 			
 		setConstraints(constraints);
-		setString( text );
-		
+				
 		//#if polish.TextField.usePredictiveInput && tmp.directInput
 			this.predictiveAccess = new PredictiveAccess();
 			this.predictiveAccess.init(this);
+		//#endif
+			
+		//#if polish.TextField.showHelpText
+			
+			//#style help?
+			this.helpItem = new StringItem("","");
+			
+			//#ifdef polish.TextField.help:defined
+				//#= this.helpItem.setText("${polish.TextField.help}");
+			//#else
+				this.helpItem.setText("type text here");
+			//#endif
 		//#endif
 	}
 	
@@ -1721,6 +1737,8 @@ public class TextField extends StringItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paint(int, int, javax.microedition.lcdui.Graphics)
 	 */
+	
+	
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
         	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened() ) {
@@ -1730,14 +1748,14 @@ public class TextField extends StringItem
 			}
 		//#else
         
-		//#if tmp.includeInputInfo
+        //#if tmp.includeInputInfo
     		if (this.isUneditable || !this.isFocused) {
         //#endif
     			super.paintContent(x, y, leftBorder, rightBorder, g);
     	//#if tmp.includeInputInfo
     		}
 		//#endif
-		
+    		
 		if (this.isUneditable || !this.isFocused) {
 			return;
 		}
@@ -1762,6 +1780,14 @@ public class TextField extends StringItem
 					}
 					super.paintContent(x, y, leftBorder, rightBorder, g);
 				//#endif
+
+				//#if polish.TextField.showHelpText
+				if(getString() == null || getString().equals("") && !isHelpProvided())
+				{
+					this.helpItem.paint(x, y, leftBorder, rightBorder, g);
+				}
+				//#endif
+				
 
 		  		//#ifdef polish.css.text-wrap
 		        	if (this.useSingleLine) {
@@ -1831,7 +1857,6 @@ public class TextField extends StringItem
 				g.drawLine( x, y, x, y + getFontHeight() );
 			}
 		//#endif	
-		
 		// end of non-blackberry block
 		//#endif
 	}
@@ -2720,6 +2745,10 @@ public class TextField extends StringItem
 	 */
 	protected boolean handleKeyInsert(int keyCode, int gameAction)
 	{
+		//#if polish.TextField.showHelpText
+			setHelpProvided(true);
+		//#endif
+		
 		//#if tmp.directInput
 			//#if polish.TextField.usePredictiveInput && tmp.directInput
 			if(this.predictiveInput)
@@ -3607,11 +3636,12 @@ public class TextField extends StringItem
 		
 	//#if polish.TextField.usePredictiveInput && tmp.directInput
 	public void disablePredictiveInput() {
-		removeCommand(PredictiveAccess.ENABLE_PREDICTIVE_CMD);
+		addCommand(PredictiveAccess.ENABLE_PREDICTIVE_CMD);
 		removeCommand(PredictiveAccess.DISABLE_PREDICTIVE_CMD);
 		removeCommand(PredictiveAccess.ADD_WORD_CMD);
 
 		this.predictiveInput = false;
+		this.getPredictiveAccess().disablePredictive();
 
 		updateInfo();
 	}
@@ -3632,7 +3662,20 @@ public class TextField extends StringItem
 		this.suppressCommands = suppressCommands;
 	}
 
+	//#if polish.TextField.showHelpText
+	public boolean isHelpProvided() {
+		return this.helpProvided;
+	}
+
+	public void setHelpProvided(boolean helpProvided) {
+		this.helpProvided = helpProvided;
+	}
 	
+	public void setHelpText(String text)
+	{
+		this.helpItem.setText(text);
+	}
+	//#endif
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {

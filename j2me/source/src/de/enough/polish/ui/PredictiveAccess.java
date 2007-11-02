@@ -242,7 +242,7 @@ public class PredictiveAccess {
 	/**
 	 * Disables the predictive input.
 	 */
-	private void disablePredictive() {
+	public void disablePredictive() {
 		this.predictiveInput = false;
 		this.parent.predictiveInput = false;
 
