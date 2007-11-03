@@ -287,6 +287,21 @@
 			<param name="end" type="integer" primitive="true" default="100" />
 			<param name="is-percent" type="boolean" primitive="true" default="true" />
 		</mapping>
+		<mapping from="masked-vertical-gradient"   to="de.enough.polish.ui.backgrounds.MaskedGradientVerticalBackground" converter="de.enough.polish.preprocess.backgrounds.MaskedGradientVerticalBackgroundConverter" >
+			<param name="mask" type="imageurl" default="none"/>
+			<param name="maskColor" type="color" primitive="true" default="blue"/>
+			<param name="singleGradient" type="boolean" primitive="true" default="false"/>
+			<param name="first-top-color" type="color" primitive="true" default="transparent"/>
+			<param name="first-bottom-color" type="color" primitive="true" default="transparent"/>
+			<param name="second-top-color" type="color" primitive="true" default="transparent"/>
+			<param name="second-bottom-color" type="color" primitive="true" default="transparent"/>
+			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" />
+			<param name="x-offset" type="integer" primitive="true" default="0" />
+			<param name="y-offset" type="integer" primitive="true" default="0" />
+			<param name="start" type="integer" primitive="true" default="0" />
+			<param name="end" type="integer" primitive="true" default="100" />
+			<param name="is-percent" type="boolean" primitive="true" default="true" />
+		</mapping>
 		<mapping from="round-rect-vertical-double-gradient"   to="de.enough.polish.ui.backgrounds.RoundRectDoubleGradientVerticalBackground"  >
 			<param name="first-top-color" type="color" primitive="true" default="white" />
 			<param name="first-bottom-color" type="color" primitive="true" default="gray" />
@@ -1388,7 +1403,6 @@
 		<mapping from="outline" to="new de.enough.polish.ui.texteffects.OutlineTextEffect()" />
 		<mapping from="segment" to="new de.enough.polish.ui.texteffects.SegmentTextEffect()" />
 		<mapping from="typewriter" to="new de.enough.polish.ui.texteffects.TypeWriterTextEffect()" />
-		<mapping from="flash" to="new de.enough.polish.ui.texteffects.FlashTextEffect()" />
 		<mapping from="lighthouse" to="new de.enough.polish.ui.texteffects.LighthouseTextEffect()" />
 		<mapping from="gradient" to="new de.enough.polish.ui.texteffects.VerticalGradientTextEffect()"/>
 		<mapping from="vertical-gradient" to="new de.enough.polish.ui.texteffects.VerticalGradientTextEffect()" />
@@ -3227,16 +3241,38 @@
 	/>
 	
 	<attribute
+		name="mask"
+		type="imageurl"
+		appliesTo="Alert"
+		description="The mask for the masked double vertical background"
+		id="298"
+	/>
+	
+	<attribute
+		name="mask-color"
+		type="color"
+		appliesTo="Alert"
+		description="The masking color for the masked double vertical background"
+		id="299"
+	/>
+	
+	<attribute
+		name="single-gradient"
+		type="boolean"
+		appliesTo="Alert"
+		description="single or double gradient?"
+		id="300"
+	/>
+	
+	
+	<attribute
 		name="text-flash-interval"
 		type="integer"
 		default="700"
 		appliesTo="FlashTextEffect"
 		description="the interval in milliseconds for the flashing."
-		id="298"
+		id="301"
 	/>
-	
-	
-	
 	<!--
 	
 	<attribute
