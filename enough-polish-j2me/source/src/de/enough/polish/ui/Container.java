@@ -100,6 +100,7 @@ public class Container extends Item {
 	protected int availableHeight = -1;
 	private Item[] containerItems;
 	private boolean showCommandsHasBeenCalled;
+	private Item scrollItem;
 
 	
 	/**
@@ -352,6 +353,9 @@ public class Container extends Item {
 	 */
 	public Item remove( int index ) {
 		Item removedItem = (Item) this.itemsList.remove(index);
+		if (removedItem == this.scrollItem) {
+			this.scrollItem = null;
+		}
 		//#debug
 		System.out.println("Container: removing item " + index + " " + removedItem.toString()  );
 		// adjust y-positions of following items:
@@ -554,6 +558,7 @@ public class Container extends Item {
 	 */
 	public void clear() {
 		//System.out.println("clearing container - focusedItem=" + this.focusedItem + ", isFocused="  + this.isFocused + ", focusedIndex=" + this.focusedIndex + ",  size=" + this.size() + ", itemStyle=" + this.itemStyle );
+		this.scrollItem = null;
 		if (this.isShown) {
 			Object[] myItems = this.itemsList.getInternalArray();
 			for (int i = 0; i < myItems.length; i++) {
@@ -837,10 +842,6 @@ public class Container extends Item {
 	 * @param item the item for which the scrolling should be adjusted
 	 */
 	public void scroll(int direction, Item item) {
-		// causes stack overflows since this can be called from within init/initContent itself
-//		if ( !this.isInitialized && this.contentWidth > 0 ) {
-//			initContent( this.contentWidth, this.contentWidth);
-//		}
 		//#debug
 		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX +", relativeInternalY=" + ( item.relativeY + item.contentY + item.internalY ));
 		if (item.internalX != -9999 
@@ -852,8 +853,11 @@ public class Container extends Item {
 			scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
 		} else {
 			// use item dimensions for scrolling:
-			//TODO what happens when relativeY == 0 - defer scrolling to init at a later stage
-			scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );			
+			scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
+			//  defer scrolling to init at a later stage:
+			if (!this.isInitialized && item.relativeY == 0) {
+				this.scrollItem = item;
+			}
 		}
 	}
 	
@@ -989,6 +993,10 @@ public class Container extends Item {
 					Item item = this.focusedItem;
 					scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
 				}
+				else if (this.scrollItem != null) {
+					scroll( 0, this.scrollItem );
+					this.scrollItem = null;
+				}
 				return;
 			}
 		//#endif
@@ -1110,7 +1118,10 @@ public class Container extends Item {
 					//myContentHeight += item.getItemHeight( lineWidth, lineWidth );
 				}
 			}
-
+		}
+		if (this.scrollItem != null) {
+			scroll( 0, this.scrollItem );
+			this.scrollItem = null;
 		}
 		this.contentHeight = myContentHeight;
 		this.contentWidth = myContentWidth;
