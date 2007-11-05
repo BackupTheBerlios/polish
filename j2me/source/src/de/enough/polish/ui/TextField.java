@@ -900,7 +900,6 @@ public class TextField extends StringItem
 	
 	//#if polish.TextField.showHelpText
 	private StringItem helpItem;
-	private boolean helpProvided;
 	//#endif
 	
 	/**
@@ -1782,7 +1781,7 @@ public class TextField extends StringItem
 				//#endif
 
 				//#if polish.TextField.showHelpText
-				if(getString() == null || getString().equals("") && !isHelpProvided())
+				if(getString() == null || getString().equals(""))
 				{
 					this.helpItem.paint(x, y, leftBorder, rightBorder, g);
 				}
@@ -2744,11 +2743,7 @@ public class TextField extends StringItem
 	 * @return true when the key could be interpreted as a character
 	 */
 	protected boolean handleKeyInsert(int keyCode, int gameAction)
-	{
-		//#if polish.TextField.showHelpText
-			setHelpProvided(true);
-		//#endif
-		
+	{		
 		//#if tmp.directInput
 			//#if polish.TextField.usePredictiveInput && tmp.directInput
 			if(this.predictiveInput)
@@ -3663,14 +3658,6 @@ public class TextField extends StringItem
 	}
 
 	//#if polish.TextField.showHelpText
-	public boolean isHelpProvided() {
-		return this.helpProvided;
-	}
-
-	public void setHelpProvided(boolean helpProvided) {
-		this.helpProvided = helpProvided;
-	}
-	
 	public void setHelpText(String text)
 	{
 		this.helpItem.setText(text);
