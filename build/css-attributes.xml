@@ -3273,6 +3273,16 @@
 		description="the interval in milliseconds for the flashing."
 		id="301"
 	/>
+	
+	<attribute
+		name="fisheyeview-max-visible"
+		type="integer"
+		default="0"
+		appliesTo="FishEyeContainerView"
+		description="the maximum number of visible items, set to 0 for displaying all items."
+		id="302"
+	/>
+	
 	<!--
 	
 	<attribute
