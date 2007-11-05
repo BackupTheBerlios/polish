@@ -19,6 +19,7 @@ import de.enough.polish.predictive.array.ArrayReader;
 import de.enough.polish.predictive.array.ArrayTextBuilder;
 import de.enough.polish.predictive.trie.TrieProvider;
 import de.enough.polish.predictive.trie.TrieReader;
+import de.enough.polish.predictive.trie.TrieSetupCallback;
 import de.enough.polish.predictive.trie.TrieTextBuilder;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Locale;
@@ -32,7 +33,7 @@ import de.enough.polish.predictive.trie.TrieSetup;
 import de.enough.polish.blackberry.ui.PolishEditField;
 //#endif
 
-public class PredictiveAccess {
+public class PredictiveAccess implements TrieSetupCallback{
 	private TextField parent;
 
 	
@@ -855,8 +856,8 @@ public class PredictiveAccess {
 
 				stream = new DataInputStream(getClass().getResourceAsStream(
 						"/predictive.trie"));
-				setup = new TrieSetup(StyleSheet.midlet, this.parent.getScreen(),
-						this, true, stream, false);
+				setup = new TrieSetup(StyleSheet.midlet, this, true, stream);
+				setup.registerListener(this);
 
 				Thread thread = new Thread(setup);
 				thread.start();
@@ -911,13 +912,14 @@ public class PredictiveAccess {
 					ioEx.printStackTrace();
 				}
 
-				setup = new TrieSetup(StyleSheet.midlet, null, null, false,
-						stream, false);
+				setup = new TrieSetup(StyleSheet.midlet, null, false,
+						stream);
+				setup.registerListener(this);
 				//#else
 				stream = new DataInputStream(getClass().getResourceAsStream(
 						"/predictive.trie"));
-				setup = new TrieSetup(StyleSheet.midlet, this.parent.getScreen(),
-						this, true, stream, false);
+				setup = new TrieSetup(StyleSheet.midlet, this, true, stream);
+				setup.registerListener(this);
 				//#endif
 
 				Thread thread = new Thread(setup);
@@ -1070,5 +1072,9 @@ public class PredictiveAccess {
 	public String getInfo()
 	{
 		return this.info;
+	}
+
+	public void setupFinished(boolean finishedGraceful) {
+		StyleSheet.display.setCurrent(this.parent.getScreen());
 	}
 }

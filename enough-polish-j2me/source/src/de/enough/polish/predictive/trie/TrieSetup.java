@@ -2,6 +2,7 @@
 package de.enough.polish.predictive.trie;
 
 import java.io.DataInputStream;
+import java.util.Vector;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Command;
@@ -25,7 +26,7 @@ implements Runnable, CommandListener
 	private PredictiveAccess parent;
 	private MIDlet parentMidlet;
 	
-	private boolean moveOn;
+	private Vector listeners;
 	
 	DataInputStream stream = null;
 	TrieInstaller installer = null;
@@ -47,9 +48,8 @@ implements Runnable, CommandListener
 		
 	boolean pause = false;
 	
-	public TrieSetup(MIDlet parentMidlet, Displayable returnTo, PredictiveAccess access, boolean showGauge, DataInputStream stream, boolean moveOn)
+	public TrieSetup(MIDlet parentMidlet, PredictiveAccess access, boolean showGauge, DataInputStream stream)
 	{
-		this.returnTo = returnTo;
 		this.parentMidlet = parentMidlet;
 		this.parent = access;
 		
@@ -58,8 +58,10 @@ implements Runnable, CommandListener
 		//#style setupForm?
 		this.form = new Form( null );
 		
+		//#if polish.predictive.setup.showCommands
 		this.form.addCommand( this.cancelCommand );
 		this.form.setCommandListener( this );
+		//#endif
 		
 		this.info = new StringItem("",Locale.get("polish.predictive.setup.info"));
 		this.status = new StringItem("","");
@@ -79,10 +81,6 @@ implements Runnable, CommandListener
 		this.form.append(this.status);
 		//#style setupError?
 		this.form.append(this.error);
-		
-		this.moveOn = moveOn;
-		
-		Display.getDisplay(this.parentMidlet).setCurrent(this.form);
 	}
 	
 	public void pause()
@@ -90,8 +88,31 @@ implements Runnable, CommandListener
 		this.pause = true;
 	}
 	
+	public void registerListener(TrieSetupCallback listener)
+	{
+		if(this.listeners == null)
+		{
+			this.listeners = new Vector();
+		}
+		
+		this.listeners.addElement(listener);
+	}
+	
+	public void runCallback(boolean finishedGraceful)
+	{
+		if(this.listeners != null)
+		{
+			for (int i = 0; i < this.listeners.size(); i++) {
+				TrieSetupCallback callback = (TrieSetupCallback)this.listeners.elementAt(i);
+				callback.setupFinished(finishedGraceful);
+			}
+		}
+	}
+	
 	public void run()
 	{
+		Display.getDisplay(this.parentMidlet).setCurrent(this.form);
+		
 		try {
 			this.installer = new TrieInstaller(this.stream);
 			
@@ -178,28 +199,34 @@ implements Runnable, CommandListener
 			store.closeRecordStore();
 			
 			this.status.setText(Locale.get("polish.predictive.setup.status.finished"));
+			
+			//#if polish.predictive.setup.showCommands
 			this.form.removeCommand( this.cancelCommand );
 			this.form.addCommand( this.exitCommand );
+			//#endif
 			
-			if(this.moveOn)
+			//#if polish.predictive.useLocalRMS
+			if(this.parent != null)
 			{
-				//#if polish.predictive.useLocalRMS
-				if(this.parent != null)
-				{
-					this.parent.initPredictiveInput(null);
-				}
-				//#endif
-				
-				Display.getDisplay(this.parentMidlet).setCurrent(this.returnTo);
+				this.parent.initPredictiveInput(null);
 			}
+			//#endif
+			
+			//#if !polish.predictive.setup.showCommands
+			runCallback(true);
+			//#endif
 		} catch (Exception e) {
 			this.status.setText(Locale.get("polish.predictive.setup.error"));
 			this.status.setText(e.getMessage());
 			
+			//#if polish.predictive.setup.showCommands
 			this.form.removeCommand( this.cancelCommand );
 			this.form.addCommand( this.exitCommand );
+			//#endif
 			
 			e.printStackTrace();
+			
+			runCallback(false);
 		}
 	}
 
@@ -225,14 +252,14 @@ implements Runnable, CommandListener
 			
 			Display.getDisplay(this.parentMidlet).setCurrent(cancel);
 		} else if (cmd == this.exitCommand) {
-			exit();
+			runCallback(true);
 		} 
 		
 		if(disp instanceof Alert)
 		{
 			if(cmd == this.yesCommand)
 			{
-				this.parentMidlet.notifyDestroyed();
+				runCallback(false);
 			} 
 			else if(cmd == this.noCommand)
 			{
@@ -242,23 +269,6 @@ implements Runnable, CommandListener
 				
 				Display.getDisplay(this.parentMidlet).setCurrent(this.form);
 			}
-		}
-	}
-	
-	public void exit()
-	{
-		if(this.returnTo == null)
-			this.parentMidlet.notifyDestroyed();
-		else
-		{
-			//#if polish.predictive.useLocalRMS
-				if(this.parent != null)
-				{
-					this.parent.initPredictiveInput(null);
-				}
-			//#endif
-				
-			Display.getDisplay(this.parentMidlet).setCurrent(this.returnTo);			
 		}
 	}
 }
