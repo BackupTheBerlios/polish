@@ -44,10 +44,10 @@
 			description="A simple menu screen." 
 			icon="iconlarge0.png" 
 			infoUrl="http://www.enough.de/dictionary" 
-			jarName="${polish.vendor}-${polish.name}-${polish.locale}-example.jar" 
+			jarName="${polish.vendor}-${polish.name}-${polish.locale}-fisheye.jar" 
 			jarUrl="${deploy-url}${polish.jarName}" 
 			license="GPL" 
-			name="J2ME Polish Example" 
+			name="FishEye" 
 			vendorName="Enough Software" 
 			version="1.3.4"
 	    />
@@ -72,7 +72,7 @@
 				<source dir="../enough-polish-j2me-incubator/source/src" />
 			</sources>
 			<!-- midlets definition -->
-			<midlet class="de.enough.polish.example.MenuMidlet" name="J2ME Polish"/>
+			<midlet class="de.enough.polish.example.MenuMidlet" name="FishEye"/>
 			<!-- project-wide variables - used for preprocessing  -->
 			<variables>
 				<variable name="polish.TextField.useDirectInput" value="true" />
@@ -90,16 +90,16 @@
 			</obfuscator>
 			<!-- debug settings: only include debug setting when the test-property is true -->
 			<debug if="test" level="error" showLogOnError="true" verbose="true">
+				<filter level="info" pattern="de.enough.polish.ui.*"/>
 				<!--
+				<filter level="debug" class="de.enough.polish.ui.Container"/>
 				<filter level="debug" class="de.enough.polish.ui.MasterCanvas"/>
 				<filter level="debug" class="de.enough.polish.ui.Alert"/>
 				<filter level="debug" class="de.enough.polish.ui.StyleSheet"/>
-				<filter level="info" class="de.enough.polish.ui.Container"/>
 				<filter level="debug" class="de.enough.polish.ui.Screen"/>
 				<filter level="debug" pattern="de.enough.polish.example.*"/>
 				<filter level="debug" class="de.enough.polish.ui.ContainerView"/>
 				-->
-				<filter level="info" pattern="de.enough.polish.ui.*"/>
 			</debug>
 			<!-- play around with an additional preprocessor: 
 			<preprocessor 

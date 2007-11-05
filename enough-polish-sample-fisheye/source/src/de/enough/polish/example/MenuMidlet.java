@@ -129,9 +129,10 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 				}
 			} else if (cmd == this.startGameCmd) {
 				startGame();
-			} else if (cmd == this.quitCmd) {
-				quit();
 			}
+		} 
+		if (cmd == this.quitCmd) {
+			quit();
 		}
 	}
 	
@@ -156,5 +157,6 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 	private void quit() {
 		notifyDestroyed();
 	}
+	
 	
 }

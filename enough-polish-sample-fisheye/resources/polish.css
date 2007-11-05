@@ -98,9 +98,18 @@ title {
 	font-size: large;
 	font-style: bold;
 	font-color: brightFontColor;
-	background-color: bgColor;
 	border: none;
 	layout: horizontal-center | horizontal-expand;
+	/*	
+	background-color: bgColor;
+	*/
+	background {
+		type: polygon;
+		points: 10,50 50,10 90,50 50,90;
+		color: #d0f;
+		scale-mode: proportional;
+		anchor: right | vcenter;
+	}
 }
 
 /**
@@ -148,9 +157,20 @@ focused {
 		second-bottom-color: black;
 	}
 	layout: horizontal-expand | horizontal-center | vertical-center;
+	/*
 	view-type: fisheye;
-	fisheyeview-scale: 50%;
-	fisheyeview-remove-text: true;	
+	fisheyeview-scale: 60%;
+	fisheyeview-scale-end: 20%;
+	fisheyeview-remove-text: true;		
+	view-type: carousel;
+	*/
+	view-type: fisheye;
+	fisheyeview-scale-start: 70%;
+	fisheyeview-scale-end: 40%;
+	fisheyeview-alpha-start: 200;
+	fisheyeview-alpha-end: 80;
+	fisheyeview-remove-text: true;		
+	fisheyeview-max-visible: 3;
 	//#if polish.midp2
 		screen-change-animation: fade;
 	//#endif
@@ -167,22 +187,24 @@ focused {
   * "icon0.png", the second "icon1.png" and so on. 
   */
 .mainCommand {
-	margin: 2; /* for the missing border of the focused style */
-	padding: 4;
+	padding: 0;
 	padding-vertical: 0;
 	/*
 	background-color: yellow;
-	*/
-	font-style: bold;
-	font-size: small;
 	layout: center | vertical-center;
+	*/
 	icon-image: url( iconlarge%INDEX%.png );
 }
 
 .mainCommand:hover {
-	margin: 2;
+	font-style: bold;
+	font-size: small;
 	font-color: white;
 	text-effect: shadow;
+}
+
+.mainCommand:pressed {
+	view-type: particle;
 }
 
 
@@ -249,8 +271,9 @@ leftcommand
 {
 	margin: 0;
     margin-horizontal: 10;
-    //#if polish.key.MiddleSoftKey:defined
-	padding-top: 7;
+    //#if polish.key.MiddleSoftKey:defined or polish.MenuBar.useMiddleCommand
+    	/* the middle command is used, so lower the left and right commands relatively */
+		padding-top: 7;
 	//#endif
 	padding-bottom: 0;
 	font-color: fontColor;
