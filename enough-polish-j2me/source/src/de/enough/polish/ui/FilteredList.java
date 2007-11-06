@@ -557,25 +557,30 @@ implements ItemStateListener //, CommandListener
 				return;
 			}
 			this.lastFilterText = text;
-			String filterText = text.toLowerCase();
-			//System.out.println("caretPos=" + this.filterTextField.getCaretPosition() + ", tex.length=" + text.length());
-			//System.out.println("filter=[" + filterText  + "] - number of elements=" + this.itemsList.size());
-			Item focItem = this.container.focusedItem;
-			int focIndex = -1;
 			Object[] itemObjects = this.itemsList.getInternalArray();
 			ArrayList matchingItems = new ArrayList( itemObjects.length );
+			int focIndex = -1;
+			Item focItem = this.container.focusedItem;
 			boolean checkForSelectedRadioItem = (this.listType == Choice.EXCLUSIVE);
-			for (int i = 0; i < itemObjects.length; i++) {
-				Object object = itemObjects[i];
-				if (object == null) {
-					break;
-				}
-				ChoiceItem cItem = (ChoiceItem) object;
-				boolean isMatch = matches( filterText, cItem, checkForSelectedRadioItem );
-				if (isMatch) {
-					matchingItems.add(cItem);
-					if (cItem == focItem) {
-						focIndex = i;
+			if (text.length() == 0) {
+				matchingItems.addAll( this.itemsList );
+				focIndex = getSelectedIndex();
+			} else {
+				String filterText = text.toLowerCase();
+				//System.out.println("caretPos=" + this.filterTextField.getCaretPosition() + ", tex.length=" + text.length());
+				//System.out.println("filter=[" + filterText  + "] - number of elements=" + this.itemsList.size());
+				for (int i = 0; i < itemObjects.length; i++) {
+					Object object = itemObjects[i];
+					if (object == null) {
+						break;
+					}
+					ChoiceItem cItem = (ChoiceItem) object;
+					boolean isMatch = matches( filterText, cItem, checkForSelectedRadioItem );
+					if (isMatch) {
+						matchingItems.add(cItem);
+						if (cItem == focItem) {
+							focIndex = i;
+						}
 					}
 				}
 			}

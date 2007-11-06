@@ -54,6 +54,8 @@ public interface PolishTextField {
 	
 	public XYRect getExtent();
 	
+	public void layout( int width, int height );
+	
 	public void setPaintPosition( int x, int y );
 	
 	public void setCursorPosition( int pos );

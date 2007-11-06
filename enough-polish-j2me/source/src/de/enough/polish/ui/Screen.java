@@ -1880,12 +1880,14 @@ implements AccessibleCanvas
 		int width = this.contentWidth;
 //		g.setColor( 0x00ff00 );
 //		g.drawRect( x, y, width, height);
+		// initialising the container here prevents clipping problems on BlackBerry for some
+		// screens like FilteredList. Why this makes a difference is beyond me, but well... it works.
+		int containerHeight = this.container.getItemHeight( width, width);		
 		
 		g.clipRect(x, y, width, height );
 		
 		
 		if ( g.getClipHeight() > 0 ) {
-			int containerHeight = this.container.getItemHeight( width, width);
 			//#if tmp.useScrollIndicator
 				this.paintScrollIndicator = false; // defaults to false
 			//#endif

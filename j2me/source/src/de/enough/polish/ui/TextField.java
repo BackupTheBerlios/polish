@@ -1741,7 +1741,7 @@ public class TextField extends StringItem
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
         	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened() ) {
-				this.editField.setPaintPosition( x, y );
+				this.editField.setPaintPosition( x + g.getTranslateX(), y + g.getTranslateY() );
 			} else {
 				super.paintContent(x, y, leftBorder, rightBorder, g);
 			}
@@ -1888,12 +1888,10 @@ public class TextField extends StringItem
 				return;
 			}
 			this.editField.setFont( this.font, this.textColor );
-			// allow extra pixels for the cursor:
-			//this.editField.layout( this.contentWidth+8, this.contentHeight );
-			//System.out.println("TextField: editField.getText()="+ this.editField.getText() );
-			XYRect rect = this.editField.getExtent();
-			this.contentWidth = rect.width;
-			this.contentHeight = rect.height >= getFontHeight() ? rect.height : getFontHeight();
+			// alowing native field to expand to the fully available width,
+			// the content size does not need to be changed as the same font is being
+			// used.
+			this.editField.layout( lineWidth, this.contentHeight );
 		//#elif tmp.directInput
 			this.rowHeight = getFontHeight() + this.paddingVertical;			
 			if (this.textLines == null || this.text.length() == 0) {

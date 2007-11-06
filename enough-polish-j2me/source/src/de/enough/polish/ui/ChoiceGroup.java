@@ -31,6 +31,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Locale;
 
 /**
@@ -1793,5 +1794,13 @@ implements Choice
 	}
 	//#endif
 
+	/* overrding Container.setItemsList() */
+	public void setItemsList(ArrayList itemsList) {
+		this.selectedIndex = -1;
+		super.setItemsList(itemsList);
+	}
+
+	
+	
 
 }

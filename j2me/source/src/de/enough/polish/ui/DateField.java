@@ -593,7 +593,7 @@ public class DateField extends StringItem
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
 	    	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened() ) {
-				this.blackberryDateField.setPaintPosition( x, y );
+				this.blackberryDateField.setPaintPosition( x + g.getTranslateX(), y + g.getTranslateY() );
 			} else {
 				super.paintContent(x, y, leftBorder, rightBorder, g);
 			}
