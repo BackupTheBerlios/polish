@@ -2754,4 +2754,17 @@ public final class UiAccess {
 		//#endif
 	}
 	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Set the container to support cycling or not
+	 * 
+	 * @param container the container
+	 * @param cycling true, if cycling should be allowed, otherwise false
+	 */
+	public static void setCycling(Container container, boolean cycling)
+	{
+	 	container.allowCycling = cycling;
+	}
+	//#endif
 }

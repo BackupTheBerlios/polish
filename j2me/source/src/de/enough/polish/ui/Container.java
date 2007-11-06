@@ -77,9 +77,11 @@ public class Container extends Item {
 	/** the index of the currently focused item - please use only for reading, not for setting, unless you know what you are doing */
 	public int focusedIndex = -1;
 	protected boolean enableScrolling;
-	//#if polish.Container.allowCycling != false
+	//#if polish.Container.allowCycling
 		/** specifies whether this container is allowed to cycle to the beginning when the last item has been reached */
 		public boolean allowCycling = true;
+	//#else
+	//#	public boolean allowCycling = false;
 	//#endif
 	protected int yOffset;
 	protected int targetYOffset;
@@ -1600,7 +1602,6 @@ public class Container extends Item {
 			}
 		//#endif
 		Item item = null;
-		//#if polish.Container.allowCycling != false
 			boolean allowCycle = this.enableScrolling && this.allowCycling;
 			if (allowCycle) {
 				//#if polish.css.scroll-mode
@@ -1621,7 +1622,6 @@ public class Container extends Item {
 							allowCycle = (this.yOffset == 0);
 						}						
 					} else {
-				//#endif
 						if (forwardFocus) {
 							// when you scroll to the bottom and
 							// there is still space, do
@@ -1637,20 +1637,15 @@ public class Container extends Item {
 							// last item:
 							allowCycle = (this.targetYOffset == 0) || (this.targetYOffset == 1);
 						}
-				//#if polish.css.scroll-mode
 					}
 				//#endif
 			}
-			//#if polish.Container.allowCycling != false
-				//#debug
-				System.out.println("shiftFocus of " + this + ": allowCycle(local)=" + allowCycle + ", allowCycle(global)=" + this.allowCycling + ", isFoward=" + forwardFocus + ", enableScrolling=" + this.enableScrolling + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset + ", focusedIndex=" + this.focusedIndex + ", start=" + i );
-			//#endif
-		//#endif
+			//#debug
+			System.out.println("shiftFocus of " + this + ": allowCycle(local)=" + allowCycle + ", allowCycle(global)=" + this.allowCycling + ", isFoward=" + forwardFocus + ", enableScrolling=" + this.enableScrolling + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset + ", focusedIndex=" + this.focusedIndex + ", start=" + i );
 		while (true) {
 			if (forwardFocus) {
 				i++;
 				if (i >= items.length) {
-					//#if polish.Container.allowCycling != false
 						if (allowCycle) {
 							allowCycle = false;
 							i = 0;
@@ -1659,14 +1654,10 @@ public class Container extends Item {
 						} else {
 							break;
 						}
-					//#else
-						break;
-					//#endif
 				}
 			} else {
 				i--;
 				if (i < 0) {
-					//#if polish.Container.allowCycling != false
 						if (allowCycle) {
 							allowCycle = false;
 							i = items.length - 1;
@@ -1675,9 +1666,6 @@ public class Container extends Item {
 						} else {
 							break;
 						}
-					//#else
-						break;
-					//#endif
 				}
 			}
 			item = items[i];
@@ -1769,11 +1757,7 @@ public class Container extends Item {
 				this.view = null; // set to null so that this container can control the view completely. This is necessary for scrolling, for example.
 				viewType.parentContainer = this;
 				viewType.focusFirstElement = this.autoFocusEnabled;
-				//#if polish.Container.allowCycling != false
-					viewType.allowCycling = this.allowCycling;
-				//#else
-					viewType.allowCycling = false;
-				//#endif
+				viewType.allowCycling = this.allowCycling;
 			} else if (!this.preserveViewType) {
 				this.containerView = null;
 			}
@@ -1787,11 +1771,7 @@ public class Container extends Item {
 						this.containerView = new ContainerView();  
 						this.containerView.parentContainer = this;
 						this.containerView.focusFirstElement = this.autoFocusEnabled;
-						//#if polish.Container.allowCycling != false
-							this.containerView.allowCycling = this.allowCycling;
-						//#else
-							this.containerView.allowCycling = false;
-						//#endif
+						this.containerView.allowCycling = this.allowCycling;
 					}
 				}
 			}

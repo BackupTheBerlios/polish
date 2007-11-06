@@ -195,6 +195,18 @@ implements PlayerListener
 
 		return null;
 	}
+	
+	public boolean isPlaying()
+	{
+		if(this.player == null)
+		{
+			return false;
+		}
+		else
+		{
+			return this.player.getState() == Player.STARTED;
+		}
+	}
 
 	private static final void addTypes( String[] types ) {
 		Hashtable nestedMap = new Hashtable();
