@@ -428,7 +428,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 						+ this.choicesYOffsetAdjustment, true);
 				this.choicesYOffsetAdjustment = 0;
 			}
+			this.isInChoice = false;
 		}
+		
 		this.isOpen = open;
 		this.refreshChoices = open;
 	}
@@ -680,7 +682,6 @@ public class PredictiveAccess implements TrieSetupCallback{
 				// System.out.println("focusing textfield again, isFocused=" + this.isFocused);
 				// HERE WAS THE PLACE FORMERLY KNOWN AS FIRE HANDLING
 				enterChoices( false );
-			
 				
 				this.parent.notifyStateChanged();
 				return true;
@@ -1028,8 +1029,10 @@ public class PredictiveAccess implements TrieSetupCallback{
 	public boolean handleKeyReleased(int keyCode, int gameAction) {
 		if ((gameAction == Canvas.FIRE || gameAction == Canvas.RIGHT) &&
 			!(keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9) &&
+			this.isOpen &&
 			this.predictiveType != ARRAY) {
 			// option has been selected!
+			System.out.println("predictive");
 			if(!this.builder.isString(0))
 			{
 				if(this.choiceOrientation == ORIENTATION_BOTTOM)
