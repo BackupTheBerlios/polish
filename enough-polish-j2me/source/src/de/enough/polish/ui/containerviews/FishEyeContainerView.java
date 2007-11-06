@@ -116,9 +116,6 @@ public class FishEyeContainerView extends ContainerView {
 	protected int focusedWidth;
 	protected int maxItemHeight;
 	protected boolean isShowTextInTitle;
-	//#if polish.css.fisheyeview-max-visible
-		protected int maxVisibleItems;
-	//#endif
 	
 	/**
 	 * Creates a new fish eye view
@@ -135,22 +132,13 @@ public class FishEyeContainerView extends ContainerView {
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		super.animate(currentTime, repaintRegion);
 
-		if (this.shownRgbDataWidths == null) {
-			//#debug error
-			System.out.println("FishEyeContainerView is animated before initContent has been called");
+		if(this.shownRgbDataWidths == null)
 			return;
-		}
-		
+			
 		boolean animated = false;
 		if (this.targetXCenterPositions != null) {
 			Item[] myItems = this.parentContainer.getItems();
 			int length = myItems.length;
-			//#if polish.css.fisheyeview-max-visible
-				int maxDistance = length;
-				if (this.maxVisibleItems != 0) {
-					maxDistance = this.maxVisibleItems >> 1;
-				}
-			//#endif
 			for (int i = 0; i <length; i++) {
 				int target = this.targetXCenterPositions[i];
 				Item item = myItems[i];
@@ -193,11 +181,6 @@ public class FishEyeContainerView extends ContainerView {
 						item.relativeY = calculateCurrent( current, target ) - halfItemHeight;						
 					}
 				}
-				//#if polish.css.fisheyeview-max-visible
-					if (distance >= maxDistance ) {
-						continue;
-					}
-				//#endif
 				//#if polish.midp2
 					int currentAlpha = this.currentTranslucencies[i];
 					int targetAlpha = this.targetTranslucencies[i];
@@ -728,13 +711,6 @@ public class FishEyeContainerView extends ContainerView {
 		int itemX;
 		int itemY;
 		
-		//#if polish.css.fisheyeview-max-visible
-			int length  = myItems.length;
-			int maxDistance = length;
-			if (this.maxVisibleItems != 0) {
-				maxDistance = this.maxVisibleItems >> 1;
-			}
-		//#endif
 		int processed = ((myItems.length - 1) >> 1);
 		int index = this.focusedIndex - processed;
 		if (index < 0) {
@@ -742,21 +718,11 @@ public class FishEyeContainerView extends ContainerView {
 		}
 		// draw left items:
 		while (processed > 0) {
-			//#if polish.css.fisheyeview-max-visible
-				int distance = getDistance( index, this.focusedIndex, length);
-				if (distance != 0) {
-					distance--;
-				}
-				if (distance < maxDistance ) {
-			//#endif
-					Item item = myItems[index];
-					//System.out.println("left: " + index + " at " + item.relativeX );
-					itemX = x + item.relativeX;
-					itemY = y + item.relativeY;
-					paintItem(item, index, itemX, itemY, itemX, itemX + item.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
-			//#if polish.css.fisheyeview-max-visible
-				}
-			//#endif
+			Item item = myItems[index];
+			//System.out.println("left: " + index + " at " + item.relativeX );
+			itemX = x + item.relativeX;
+			itemY = y + item.relativeY;
+			paintItem(item, index, itemX, itemY, itemX, itemX + item.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
 			processed--;
 			index++;
 			if (index == myItems.length) {
@@ -767,21 +733,11 @@ public class FishEyeContainerView extends ContainerView {
 		processed = (myItems.length >> 1);
 		index = (this.focusedIndex + (myItems.length >> 1))  % myItems.length;
 		while (processed > 0) {
-			//#if polish.css.fisheyeview-max-visible
-				int distance = getDistance( index, this.focusedIndex, length);
-				if (distance != 0) {
-					distance--;
-				}
-				if (distance < maxDistance ) {
-			//#endif
-					Item item = myItems[index];			
-					//System.out.println("right: " + index + " at " + item.relativeX );
-					itemX = x + item.relativeX;
-					itemY = y + item.relativeY;
-					paintItem(item, index, itemX, itemY, itemX, itemX + item.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
-			//#if polish.css.fisheyeview-max-visible
-				}
-			//#endif
+			Item item = myItems[index];			
+			//System.out.println("right: " + index + " at " + item.relativeX );
+			itemX = x + item.relativeX;
+			itemY = y + item.relativeY;
+			paintItem(item, index, itemX, itemY, itemX, itemX + item.itemWidth, clipX, clipY, clipWidth, clipHeight, g);
 			processed--;
 			index--;
 			if (index == -1) {
@@ -897,12 +853,6 @@ public class FishEyeContainerView extends ContainerView {
 			if (tranparencyBool != null) {
 				this.startTranslucency = 255;
 				this.endTranslucency = 255;
-			}
-		//#endif
-		//#if polish.css.fisheyeview-max-visible
-			Integer maxVisibleItemsInt = style.getIntProperty("fisheyeview-max-visible");
-			if (maxVisibleItemsInt != null) {
-				this.maxVisibleItems = maxVisibleItemsInt.intValue();
 			}
 		//#endif
 			
