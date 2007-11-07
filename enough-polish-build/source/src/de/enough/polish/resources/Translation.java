@@ -119,7 +119,9 @@ public class Translation {
 			this.valueChunks[i] = value.substring( lastEnd );
 			this.id = idGeneratorMultipleParameters.getId(key, true);
 		}
-		//System.out.println("NEW TRANSLATION: " + key + " => ID = " + this.id );
+//		if (key.startsWith("polish.") ) {
+//			System.out.println("NEW TRANSLATION: " + key + " => ID = " + this.id +", isDynamic=" + useDynamicTranslations);
+//		}
 	}
 
 	/**
@@ -243,4 +245,5 @@ public class Translation {
 	public void setId(int id) {
 		this.id = id;
 	}
+
 }

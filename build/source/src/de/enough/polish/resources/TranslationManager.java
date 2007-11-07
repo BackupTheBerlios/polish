@@ -71,6 +71,7 @@ import de.enough.polish.util.StringList;
 public class TranslationManager
 implements Comparator
 {
+	/** key for retrieving the translation manager from the Environment */
 	public static final String ENVIRONMENT_KEY = "polish.TranslationManager";
 	protected final Map translationsByKey;
 	protected final Map preprocessingVariablesByKey;
@@ -296,7 +297,7 @@ implements Comparator
 				this.preprocessingVariablesByKey.put( key, value );
 				// create final translation:
 				Translation translation = new Translation( key, value, 
-						false, null, null, null );
+						this.isDynamic, this.idGeneratorPlain, this.idGeneratorSingleParameter, this.idGeneratorMultipleParameters );
 				this.translationsByKey.put( key, translation );
 				if (!this.isDynamic || !key.startsWith("polish.")) {
 					rawTranslations.remove( originalKey );
@@ -317,10 +318,13 @@ implements Comparator
 				value = PropertyUtil.writeProperties(value, variables);
 			}
 			// create final translation:
-			Translation translation = new Translation( key, value, 
-					this.isDynamic, this.idGeneratorPlain, this.idGeneratorSingleParameter, this.idGeneratorMultipleParameters );
-			//Translation translation = new Translation( key, value, this.idGeneratorMultipleParameters );
-			this.translationsByKey.put( key, translation );
+			Translation translation = (Translation) this.translationsByKey.get(key);
+			if (translation == null) {
+				translation = new Translation( key, value, 
+						this.isDynamic, this.idGeneratorPlain, this.idGeneratorSingleParameter, this.idGeneratorMultipleParameters );
+				//Translation translation = new Translation( key, value, this.idGeneratorMultipleParameters );
+				this.translationsByKey.put( key, translation );
+			}
 			if (translation.hasSeveralParameters()) {
 				this.multipleParametersTranslations.add( translation );
 			} else if (translation.hasOneParameter()) {

@@ -131,6 +131,9 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 					}
 					if (this.useDynamicTranslation) {
 						// replace String-key with integer ID:
+						if (translation.getId() <= 0) {
+							throw new BuildException(getErrorStart(className, lines) + "Translation for key [" + key + "] has no assigned ID. Please report this error to j2mepolish@enough.de along with the error message and messages.txt file.");
+						}
 						String id = "" + (translation.getId() - 1);
 						String quotedKey = '"' + key + '"';
 						String callReplacement = StringUtil.replace( call, quotedKey, id );
