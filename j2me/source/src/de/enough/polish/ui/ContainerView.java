@@ -956,6 +956,7 @@ extends ItemView
 			}
 		}
 		if (nextItem == null || nextItem.appearanceMode == Item.PLAIN || nextItem == this.focusedItem) {
+			//System.out.println("returning null: allowCycling=" + this.parentContainer.allowCycling + ", local-cycle=" + allowCycle);
 			return null;
 		}
 //		int direction = Canvas.UP;

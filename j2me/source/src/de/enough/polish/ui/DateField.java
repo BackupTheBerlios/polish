@@ -33,7 +33,7 @@ import javax.microedition.lcdui.Graphics;
 //#if polish.blackberry
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
-import net.rim.device.api.ui.UiApplication;
+	import net.rim.device.api.ui.UiApplication;
 	import net.rim.device.api.ui.XYRect;
 	import de.enough.polish.blackberry.ui.PolishDateField;
 //#endif
@@ -78,11 +78,15 @@ import java.util.TimeZone;
  * @since MIDP 1.0
  */
 public class DateField extends StringItem
+implements
 //#if polish.DateField.useDirectInput == true || polish.Bugs.dateFieldBroken || polish.blackberry
 	//#define tmp.directInput
-	implements ItemCommandListener
+	ItemCommandListener
 //#else
-	//# implements CommandListener
+	//#if false
+	,
+	//#endif
+	CommandListener
 //#endif
 //#if polish.blackberry
 	, FieldChangeListener
@@ -593,7 +597,7 @@ public class DateField extends StringItem
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		//#if polish.blackberry
 	    	if (this.isFocused && !StyleSheet.currentScreen.isMenuOpened() ) {
-				this.blackberryDateField.setPaintPosition( x + g.getTranslateX(), y + g.getTranslateY() );
+				this.blackberryDateField.setPaintPosition( x, y );
 			} else {
 				super.paintContent(x, y, leftBorder, rightBorder, g);
 			}

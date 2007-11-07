@@ -1954,6 +1954,7 @@ public final class UiAccess {
 	 * 
 	 * @param list the list 
 	 * @param itemIndex the index of the list
+	 * @param isAccessible true when the item should be accessible/selectable
 	 */
 	public static void setAccessible(javax.microedition.lcdui.List list, int itemIndex, boolean isAccessible) {
 		// ignore
@@ -2734,6 +2735,12 @@ public final class UiAccess {
 
 	
 	//#if polish.midp
+	/**
+	 * Set the word-not-found box in the textfield
+	 * 
+	 * @param field the textfield
+	 * @param alert the alert
+	 */
 	public static void setWordNotFound(javax.microedition.lcdui.TextField field, javax.microedition.lcdui.Alert alert)
 	{
 		// ignore
@@ -2757,14 +2764,16 @@ public final class UiAccess {
 	
 	//#if polish.usePolishGui
 	/**
-	 * Set the container to support cycling or not
+	 * Specifies if the given contain is allowed to cycle through its items.
 	 * 
 	 * @param container the container
 	 * @param cycling true, if cycling should be allowed, otherwise false
 	 */
 	public static void setCycling(Container container, boolean cycling)
 	{
-	 	container.allowCycling = cycling;
+		//#if polish.Container.allowCycling != false
+	 		container.allowCycling = cycling;
+	 	//#endif
 	}
 	//#endif
 }

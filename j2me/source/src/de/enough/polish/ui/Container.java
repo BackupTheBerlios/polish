@@ -77,11 +77,11 @@ public class Container extends Item {
 	/** the index of the currently focused item - please use only for reading, not for setting, unless you know what you are doing */
 	public int focusedIndex = -1;
 	protected boolean enableScrolling;
-	//#if polish.Container.allowCycling
+	//#if polish.Container.allowCycling != false
 		/** specifies whether this container is allowed to cycle to the beginning when the last item has been reached */
 		public boolean allowCycling = true;
 	//#else
-	//#	public boolean allowCycling = false;
+		//#	public boolean allowCycling = false;
 	//#endif
 	protected int yOffset;
 	protected int targetYOffset;
