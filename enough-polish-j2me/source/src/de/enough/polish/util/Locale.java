@@ -184,7 +184,7 @@ public final class Locale {
 			//#endif
 			isLoaded = true;
 			isLoadError = false;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			isLoadError = true;
 			//#debug error
 			System.out.println("Unable to load localizations " + e );
@@ -214,7 +214,17 @@ public final class Locale {
 		}
 		// all simple translations are usually directly embedded into the source-code,
 		// so this method does only need to be implemenented when dynamic translations are used:
+		//#if debug.error
+		try {
+		//#endif
 		return plainTranslations[ keyId ];
+		//#if debug.error
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Locale: no translation for ID " + keyId + " in " + ( plainTranslations == null ? "null" : "" + plainTranslations.length ));
+			return "<unknown>";
+		}
+		//#endif
 	}
 	//#endif
 	
@@ -445,6 +455,7 @@ public final class Locale {
 	public static void loadTranslations( DataInputStream in ) 
 	throws IOException 
 	{
+		try {
 		// read plain translations without any parameters:
 		int numberOfPlainTranslations = in.readInt();
 		String[] plainTs = new String[ numberOfPlainTranslations ];
@@ -514,6 +525,12 @@ public final class Locale {
 		}
 		isLoaded = true;
 		isLoadError = false;
+		} catch (IOException e) {
+			throw e;
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("error while loading translations: " + e );
+		}
 	}
 	//#endif
 
