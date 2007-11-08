@@ -54,8 +54,8 @@ public class Translation {
 	private final static Pattern PARAMETER_PATTERN = Pattern.compile( PARAMETER_PATTERN_STR );
 	
 	private final String key;
-	private final String value;
-	private final int type;
+	private String value;
+	private int type;
 	private int parameterIndex;
 	private String oneValueStart;
 	private String oneValueEnd;
@@ -79,46 +79,22 @@ public class Translation {
 			IntegerIdGenerator idGeneratorMultipleParameters) 
 	{
 		this.key = key;
-		this.value = value;
-		// split the value along the "{0}" etc patterns:
-		Matcher matcher = PARAMETER_PATTERN.matcher( value );
-		int numberOfParameters = 0;
-		while (matcher.find()) {
-			numberOfParameters++;
-		}
-		matcher.reset();
-		//System.out.println("value: [" + value + "]  number of references: " + numberOfParameters );
-		if (numberOfParameters == 0) {
-			this.type = PLAIN;
-			if (useDynamicTranslations) {
+		setValue( value );
+		if (useDynamicTranslations) {
+			switch (this.type) {
+			case SINGLE_PARAMETER:
+				this.id = idGeneratorSingleParameters.getId(key, true);
+				break;
+			case MULTIPLE_PARAMETERS:
+				this.id = idGeneratorMultipleParameters.getId(key, true);
+				break;
+			default:
 				this.id = idGeneratorPlain.getId(key, true);
 			}
-		} else if (numberOfParameters == 1) {
-			this.type = SINGLE_PARAMETER;
-			matcher.find();
-			String param = matcher.group();
-			this.parameterIndex = Integer.parseInt( param.substring(1 , param.length()-1) );
-			this.oneValueStart = value.substring( 0, matcher.start() );
-			this.oneValueEnd = value.substring( matcher.end() );
-			if (useDynamicTranslations) {
-				this.id = idGeneratorSingleParameters.getId(key, true);
-			}
-		} else {
-			this.type = MULTIPLE_PARAMETERS;
-			this.parameterIndices = new int[ numberOfParameters ];
-			this.valueChunks = new String[ numberOfParameters + 1 ];
-			int i = 0;
-			int lastEnd = 0;
-			while (matcher.find()) {
-				String param = matcher.group();
-				this.parameterIndices[i] = Integer.parseInt( param.substring(1 , param.length()-1) );
-				this.valueChunks[i] = value.substring( lastEnd, matcher.start() );
-				lastEnd = matcher.end();
-				i++;
-			}
-			this.valueChunks[i] = value.substring( lastEnd );
-			this.id = idGeneratorMultipleParameters.getId(key, true);
+		} else if (this.type == MULTIPLE_PARAMETERS) {
+			this.id = idGeneratorMultipleParameters.getId(key, true);			
 		}
+
 //		if (key.startsWith("polish.") ) {
 //			System.out.println("NEW TRANSLATION: " + key + " => ID = " + this.id +", isDynamic=" + useDynamicTranslations);
 //		}
@@ -245,5 +221,45 @@ public class Translation {
 	public void setId(int id) {
 		this.id = id;
 	}
+
+	/**
+	 * Sets a new value for an existing translation
+	 * @param value
+	 */
+	public void setValue(String value)
+	{
+		this.value = value;
+		// split the value along the "{0}" etc patterns:
+		Matcher matcher = PARAMETER_PATTERN.matcher( value );
+		int numberOfParameters = 0;
+		while (matcher.find()) {
+			numberOfParameters++;
+		}
+		matcher.reset();
+		//System.out.println("value: [" + value + "]  number of references: " + numberOfParameters );
+		if (numberOfParameters == 0) {
+			this.type = PLAIN;
+		} else if (numberOfParameters == 1) {
+			this.type = SINGLE_PARAMETER;
+			matcher.find();
+			String param = matcher.group();
+			this.parameterIndex = Integer.parseInt( param.substring(1 , param.length()-1) );
+			this.oneValueStart = value.substring( 0, matcher.start() );
+			this.oneValueEnd = value.substring( matcher.end() );
+		} else {
+			this.type = MULTIPLE_PARAMETERS;
+			this.parameterIndices = new int[ numberOfParameters ];
+			this.valueChunks = new String[ numberOfParameters + 1 ];
+			int i = 0;
+			int lastEnd = 0;
+			while (matcher.find()) {
+				String param = matcher.group();
+				this.parameterIndices[i] = Integer.parseInt( param.substring(1 , param.length()-1) );
+				this.valueChunks[i] = value.substring( lastEnd, matcher.start() );
+				lastEnd = matcher.end();
+				i++;
+			}
+			this.valueChunks[i] = value.substring( lastEnd );
+		}	}
 
 }

@@ -34,6 +34,7 @@
 	<!-- the device for the test mode - you can define it on the command-line
 	     using the -D switch, e.g. ant -Ddevice=Generic/midp2 emulator -->
 	<property name="device" value="Nokia/Series60E2" />
+	<property name="devices" value="Generic/jtwi,Generic/midp1,Generic/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6" />
 	
 	
 
@@ -108,7 +109,7 @@
 				<requirement name="Identifier" value="${device}" />
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Generic/jtwi,Generic/midp1,Generic/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6" />
+				<requirement name="Identifier" value="${devices}" />
 				<!-- on could use other devices for real builds, e.g. :
 				<or>
 					<and>
@@ -133,6 +134,8 @@
 				<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 				<variables includeAntProperties="true" >
 					<variable name="polish.TextField.useDirectInput" value="true" />
+					<variable name="polish.TextField.usePredictiveInput" value="true" />
+					<variable name="polish.TextField.includeInputInfo" value="true" />
 					<variable name="polish.TextField.supportSymbolsEntry" value="true" />
 					<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 					<variable name="polish.useScrollBar" value="true" />

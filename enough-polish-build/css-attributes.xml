@@ -144,6 +144,14 @@
 			<param name="x-offset" type="integer" primitive="true" default="0" />
 			<param name="y-offset" type="integer" primitive="true" default="0" />
 		</mapping>
+		<mapping from="scaling-image"               to="de.enough.polish.ui.backgrounds.ScalingImageBackground"  >
+			<param name="color" type="color" primitive="true" default="white" />
+			<param name="image" type="image-url" default="none" />
+			<param name="scale-mode" type="integer" primitive="true" default="none" values="none,scale,proportional,expand" />
+			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" />
+			<param name="x-offset" type="integer" primitive="true" default="0" />
+			<param name="y-offset" type="integer" primitive="true" default="0" />
+		</mapping>
 		<mapping from="roundrect"           converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" />
 		<mapping from="round-rect"          to="de.enough.polish.ui.backgrounds.RoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />

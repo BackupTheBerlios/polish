@@ -283,30 +283,27 @@ implements Comparator
 			if (key.startsWith("polish.")) {
 				variableFound = true;
 			} else if (key.startsWith("var:")) {
+				rawTranslations.remove(key);
 				key = key.substring( "var:".length() );
 				variableFound = true;
+				if (key.startsWith("polish.")) {
+					rawTranslations.put(key, value);
+				}
 			} else if (key.startsWith("variable:")) {
+				rawTranslations.remove(key);
 				key = key.substring( "variable:".length() );
 				variableFound = true;
+				if (key.startsWith("polish.")) {
+					rawTranslations.put(key, value);
+				}
 			} else if (key.startsWith("MIDlet-")) {
+				rawTranslations.remove(key);
 				variableFound = true;
 			}
 			if ( variableFound ) {
 				//System.out.println("found variable: [" + key + "=" + value + "]" );
 				this.environment.addVariable(key, value );
 				this.preprocessingVariablesByKey.put( key, value );
-				// create final translation:
-				Translation translation = new Translation( key, value, 
-						this.isDynamic, this.idGeneratorPlain, this.idGeneratorSingleParameter, this.idGeneratorMultipleParameters );
-				this.translationsByKey.put( key, translation );
-				if (!this.isDynamic || !key.startsWith("polish.")) {
-					rawTranslations.remove( originalKey );
-				}
-				// the following can never be true, or could it?
-				// every variable usually only has one single value without any i18n parameters
-				if (translation.hasSeveralParameters()) {
-					this.multipleParametersTranslations.add( translation );
-				}
 			}
 		}		
 		// in the second round set the actual translations as well:
@@ -318,13 +315,9 @@ implements Comparator
 				value = PropertyUtil.writeProperties(value, variables);
 			}
 			// create final translation:
-			Translation translation = (Translation) this.translationsByKey.get(key);
-			if (translation == null) {
-				translation = new Translation( key, value, 
+			Translation translation = new Translation( key, value, 
 						this.isDynamic, this.idGeneratorPlain, this.idGeneratorSingleParameter, this.idGeneratorMultipleParameters );
-				//Translation translation = new Translation( key, value, this.idGeneratorMultipleParameters );
-				this.translationsByKey.put( key, translation );
-			}
+			this.translationsByKey.put( key, translation );
 			if (translation.hasSeveralParameters()) {
 				this.multipleParametersTranslations.add( translation );
 			} else if (translation.hasOneParameter()) {
@@ -991,6 +984,27 @@ implements Comparator
 	 */
 	public Map getPreprocessingVariables() {
 		return this.preprocessingVariablesByKey;
+	}
+
+	/**
+	 * Retrieves the number of translation known for the given type
+	 * @param type the type
+	 * @return the number of translation known for the given type
+	 * @see Translation#PLAIN
+	 * @see Translation#SINGLE_PARAMETER
+	 * @see Translation#MULTIPLE_PARAMETERS
+	 */
+	public int numberOfTranslations(int type)
+	{
+		switch (type) {
+		case Translation.PLAIN:
+			return this.plainTranslations.size();
+		case Translation.SINGLE_PARAMETER:
+			return this.singleParameterTranslations.size();
+		case Translation.MULTIPLE_PARAMETERS:
+			return this.multipleParametersTranslations.size();
+		}
+		return 0;
 	}
 
 }

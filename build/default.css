@@ -208,3 +208,23 @@ centercommand {
 	background: none;
 	layout: right | horizontal-shrink;
 }
+
+.predictiveInstallDialog {
+	layout: vertical-shrink | bottom;
+}
+
+.predictiveInstallMessage {
+	font-color: black;
+}
+
+.predictiveWordNotFound {
+	layout: vertical-shrink | bottom;
+}
+
+.predictiveWordNotFoundText {
+	font-color: black;
+}
+
+.predictiveChoice {
+	background-color: white;
+}

@@ -8,6 +8,7 @@
 	<!-- You can call Ant from the command line with another      -->
 	<!-- device like this: ant -Ddevice=Generic/midp2 emulator    -->
 	<property  name="device" value="Nokia/Series60E2" />
+	<property  name="devices" value="Generic/jtwi,Generic/midp1,Generic/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6" />
 
 	<!-- The polish.home property needs to point to the directory -->
 	<!-- containing the J2ME Polish installation.                 -->
@@ -61,7 +62,7 @@
 				<requirement name="Identifier" value="${device}"/>
 			</deviceRequirements>
 			<deviceRequirements unless="test">
-				<requirement name="Identifier" value="Generic/jtwi,Generic/midp1,Generic/Midp2Cldc11,Nokia/Series40E3,Nokia/Series60E2,Nokia/Series60E3,Sony-Ericsson/JavaPlatform6"/>
+				<requirement name="Identifier" value="${devices}"/>
 			</deviceRequirements>
 		    <!-- build settings -->
 			<build	fullscreen="menu" 
