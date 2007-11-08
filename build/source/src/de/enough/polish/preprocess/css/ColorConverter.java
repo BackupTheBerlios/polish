@@ -130,18 +130,27 @@ public class ColorConverter {
 	 */
 	public String parseColor( String definition ) {
 		String dynamicValue = (String) DYNAMIC_COLORS.get(definition);
+		if (dynamicValue == null) {
+			dynamicValue = (String) DYNAMIC_COLORS.get(definition.toLowerCase());
+		}
 		if (dynamicValue != null) {
 			return dynamicValue;
 		}
 		
 		// the definition could be a color which has been defined earlier:
 		String value = (String) this.tempColors.get( definition );
+		if (value == null) {
+			value = (String) this.tempColors.get( definition.toLowerCase() );
+		}
 		if (value != null) {
 			return value;
 		}
 		
 		// the definition could be a standard VGA color:
 		value = (String) COLORS.get( definition );
+		if (value == null) {
+			value = (String) COLORS.get( definition.toLowerCase() );
+		}
 		if (value != null) {
 			return value;
 		}
@@ -279,16 +288,27 @@ public class ColorConverter {
 	 {
 		this.tempColors = new HashMap();
 		HashSet set = new HashSet( 5 );
-		Set keys = newColors.keySet();
-		for (Iterator iter = keys.iterator(); iter.hasNext();)
+		String[] keys = (String[]) newColors.keySet().toArray( new String[newColors.size() ] );
+		// add all color definitions in lowercase as well:
+		for (int i = 0; i < keys.length; i++)
 		{
-			String color = (String)iter.next();
+			String key = keys[i];
+			HashMap map = (HashMap) newColors.get(key);
+			String lowercase = key.toLowerCase();
+			map.put(lowercase, map.get(key));
+			newColors.put( lowercase, map);
+		}
+		// now parse colors:
+		for (int i = 0; i < keys.length; i++)
+		{
+			String color = keys[i];
 			if ( ! this.tempColors.containsKey( color ) )
 			{
 				//System.out.println( "color: " + color );
 				set.clear();
 				while( color.matches( "[a-zA-Z_][a-zA-Z0-9_-]*[a-zA-Z0-9_]" ) )
 				{
+					//System.out.println("resolving color " + color);
 					if ( this.tempColors.containsKey( color ) ) {
 						break;
 					} else {
@@ -298,11 +318,18 @@ public class ColorConverter {
 						}
 						set.add( color );
 						HashMap map = (HashMap) newColors.get( color );
-						if ( map == null || map.get(color) == null ) {
+						if (map == null) {
+							map  = (HashMap) newColors.get( color.toLowerCase() );
+						}
+						String colorValue = map == null ? null : (String) map.get(color);
+						if (colorValue == null && map != null) {
+							colorValue = (String) map.get(color.toLowerCase());
+						}
+						if ( map == null || colorValue == null ) {
 							throw new BuildException( "Invalid color definition in CSS: [" +
 									color + "] is not a valid value." );
 						}
-						color = (String) map.get(color);
+						color = colorValue;
 					 	if ( COLORS.get( color ) != null ) {
 					 		//System.out.println("ColorConvert: found color " + color);
 					 		break;
@@ -318,8 +345,10 @@ public class ColorConverter {
 					for (Iterator iter1 = set.iterator(); iter1.hasNext();)
 					{
 						String keycolor = (String)iter1.next();
+						String keycolorLowercase = keycolor.toLowerCase();
 						//System.out.println( keycolor + "=" + color );
 						this.tempColors.put( keycolor, color );
+						this.tempColors.put( keycolorLowercase, color );
 					}
 				}
 			}
