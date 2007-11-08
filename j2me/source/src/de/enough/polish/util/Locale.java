@@ -214,11 +214,11 @@ public final class Locale {
 		}
 		// all simple translations are usually directly embedded into the source-code,
 		// so this method does only need to be implemenented when dynamic translations are used:
-		//#if debug.error
+		//#if polish.debug.error
 		try {
 		//#endif
-		return plainTranslations[ keyId ];
-		//#if debug.error
+			return plainTranslations[ keyId ];
+		//#if polish.debug.error
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Locale: no translation for ID " + keyId + " in " + ( plainTranslations == null ? "null" : "" + plainTranslations.length ));

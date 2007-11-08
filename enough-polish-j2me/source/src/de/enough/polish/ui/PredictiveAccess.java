@@ -158,7 +158,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 		this.parent = parent;
 
 		initPredictiveInput(null);
-
+		//#style predictiveChoice?
 		this.choicesContainer = new Container(false);
 
 		if(this.builder != null)
@@ -865,9 +865,11 @@ public class PredictiveAccess implements TrieSetupCallback{
 
 				//#else
 				try {
-					StyleSheet.midlet
+					boolean exitRequired = StyleSheet.midlet
 							.platformRequest("http://dl.j2mepolish.org/predictive/index.jsp?type=shared");
-					StyleSheet.midlet.notifyDestroyed();
+					if (exitRequired) {
+						StyleSheet.midlet.notifyDestroyed();
+					}
 				} catch (ConnectionNotFoundException e) {
 					//#debug error
 					System.out.println("Unable to load dictionary app" + e);
@@ -909,23 +911,35 @@ public class PredictiveAccess implements TrieSetupCallback{
 						"http://dl.j2mepolish.org/predictive/index.jsp?type=local&lang=en");
 				try {
 					stream = connection.openDataInputStream();
+
+					setup = new TrieSetup(StyleSheet.midlet, null, false,
+							stream);
+					setup.registerListener(this);
+					//#else
+					stream = new DataInputStream(getClass().getResourceAsStream(
+							"/predictive.trie"));
+					setup = new TrieSetup(StyleSheet.midlet, this, true, stream);
+					setup.registerListener(this);
+					//#endif
+	
+					Thread thread = new Thread(setup);
+					thread.start();
 				} catch (IOException ioEx) {
-					ioEx.printStackTrace();
+					//#debug error
+					System.out.println("Unable to download dictionary " + ioEx);
+				} finally {
+					try {
+						stream.close();
+					} catch (IOException e1) {
+						// ignore
+					}
+					try {
+						connection.close();
+					} catch (IOException e1) {
+						// ignore
+					}
 				}
-
-				setup = new TrieSetup(StyleSheet.midlet, null, false,
-						stream);
-				setup.registerListener(this);
-				//#else
-				stream = new DataInputStream(getClass().getResourceAsStream(
-						"/predictive.trie"));
-				setup = new TrieSetup(StyleSheet.midlet, this, true, stream);
-				setup.registerListener(this);
-				//#endif
-
-				Thread thread = new Thread(setup);
-				thread.start();
-				//# return true;
+				return true;
 			}
 			//#else
 			{
@@ -973,10 +987,12 @@ public class PredictiveAccess implements TrieSetupCallback{
 		//#if polish.predictive.useLocalRMS
 			//#style predictiveInstallDialog?
 			predictiveDowload = new Alert(Locale.get("polish.predictive.local.title"));
+			//#style predictiveInstallMessage?
 			predictiveDowload.setString(Locale.get("polish.predictive.local.message"));
 		//#else
 			//#style predictiveInstallDialog?
 			predictiveDowload = new Alert(Locale.get("polish.predictive.download.title"));
+			//#style predictiveInstallMessage?
 			predictiveDowload.setString(Locale.get("polish.predictive.download.message") );
 		//#endif
 

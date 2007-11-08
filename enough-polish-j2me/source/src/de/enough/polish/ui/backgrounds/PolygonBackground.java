@@ -44,7 +44,7 @@ import javax.microedition.lcdui.Graphics;
  * 			points: 0,50 50,0 100,50 50,100;
  * 			max-x: 100; 
  *			max-y: 100;
- *			proportional: false;
+ *			scale-mode: proportional; // none, scale, proportional, expand 
  *			expand: false;
  * 		}
  * }

@@ -422,7 +422,7 @@ public final class ImageUtil {
 		}
 		
 		//#debug
-		System.out.println("" + (System.currentTimeMillis() - t) + " ms");
+		System.out.println("hq scale down took " + (System.currentTimeMillis() - t) + " ms");
 	}
 	/**
 	 * This function adds a weighted (by yIntesity) row of source pixels to the related destination pixel.  
@@ -963,9 +963,9 @@ public final class ImageUtil {
 	 * @return the scaled rgb data.
 	 */
 	public static final int[] scale(int[]rgbData,int newWidth,int newHeight,int oldWidth, int oldHeight){
-		int[]newrgbData = new int[newWidth*newHeight];
-		scale( rgbData, newWidth,newHeight, oldWidth, oldHeight, newrgbData);
-		return newrgbData;
+		int[]newRgbData = new int[newWidth*newHeight];
+		scale( rgbData, newWidth,newHeight, oldWidth, oldHeight, newRgbData);
+		return newRgbData;
 	}
 	
 	/**

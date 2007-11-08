@@ -50,8 +50,7 @@ import de.enough.polish.util.Locale;
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
 	import net.rim.device.api.ui.UiApplication;
-	import net.rim.device.api.ui.XYRect;
-import net.rim.device.api.ui.component.BasicEditField;
+	import net.rim.device.api.ui.component.BasicEditField;
 //#endif
 
 /**
@@ -2448,15 +2447,18 @@ public class TextField extends StringItem
 				modeStr = this.predictiveAccess.getInfo();
 			}
 			
-			if(this.infoItem.getStyle().layout == Graphics.RIGHT)
-			{
+			//#if polish.TextField.includeInputInfo
+				if(this.infoItem.getStyle().layout == Graphics.RIGHT)
+				{
+					modeStr = PredictiveAccess.INDICATOR + modeStr;
+				}
+				else
+				{
+					modeStr = modeStr + PredictiveAccess.INDICATOR;
+				}
+			//#else
 				modeStr = PredictiveAccess.INDICATOR + modeStr;
-			}
-			else
-			{
-				modeStr = modeStr + PredictiveAccess.INDICATOR;
-			}
-			
+			//#endif
 		}
 		//#endif
 		
@@ -3358,8 +3360,9 @@ public class TextField extends StringItem
 	 */
 	public void commandAction(Command cmd, Displayable box) {
 		//#if polish.TextField.usePredictiveInput && tmp.directInput
-		if(this.predictiveAccess.commandAction(cmd, box))
-			return;
+			if(this.predictiveAccess.commandAction(cmd, box)) {
+				return;
+			}
 		//#endif
 		
 		
