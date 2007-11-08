@@ -109,12 +109,24 @@ public abstract class TextEffect {
 			// adjust the painting according to the layout:
 			if (isLayoutRight) {
 				lineX = rightBorder;
-				orientation = Graphics.TOP | Graphics.RIGHT;
+				//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+					orientation = Graphics.BOTTOM | Graphics.RIGHT;
+				//#else
+					orientation = Graphics.TOP | Graphics.RIGHT;
+				//#endif
 			} else if (isLayoutCenter) {
 				lineX = centerX;
-				orientation = Graphics.TOP | Graphics.HCENTER;
+				//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+					orientation = Graphics.BOTTOM | Graphics.HCENTER;
+				//#else
+					orientation = Graphics.TOP | Graphics.HCENTER;
+				//#endif
 			} else {
-				orientation = Graphics.TOP | Graphics.LEFT;
+				//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+					orientation = Graphics.BOTTOM | Graphics.LEFT;
+				//#else
+					orientation = Graphics.TOP | Graphics.LEFT;
+				//#endif
 			}
 			drawString( line, textColor, lineX, lineY, orientation, g );
 			x = leftBorder;
