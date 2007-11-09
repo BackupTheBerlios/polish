@@ -1,5 +1,5 @@
 /*
- * Created on Apr 15, 2007 at 10:12:36 PM.
+ * Created on Nov 8, 2007 at 10:12:36 PM.
  * 
  * Copyright (c) 2007 Robert Virkus / Enough Software
  *
@@ -25,49 +25,52 @@
  */
 package de.enough.polish.preprocess.css.attributes;
 
+import de.enough.polish.BuildException;
+import de.enough.polish.Environment;
+import de.enough.polish.preprocess.css.CssAttribute;
 
 /**
- * <p>An attribute pointing to an image.</p>
+ * <p>An attribute pointing to a resource url.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
  * history
- *        Apr 15, 2007 - rob creation
+ *        Nov 8, 2007 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class ImageUrlCssAttribute extends ResourceUrlCssAttribute {
+public class ResourceUrlCssAttribute extends CssAttribute {
 	
 	/**
 	 * Creates a new instance.
 	 */
-	public ImageUrlCssAttribute() {
+	public ResourceUrlCssAttribute() {
 		super();
 	}
 
-//	/**
-//	 * Checks and transforms the given CSS value for this attribute.
-//	 * 
-//	 * @param value the attribute value
-//	 * @param environment the environment
-//	 * @return the transformed value or the same value if no transformation is required.
-//	 * @throws BuildException when a condition is not met or when the value contains conflicting values
-//	 */
-//	public String getValue(String value, Environment environment ) {
-//		if ("none".equals(value)) {
-//			return "null";
-//		}
-//		value = super.getValue(value, environment);
-//		if ( value.startsWith("url") ) {
-//			int startPos = value.indexOf('(');
-//			int endPos = value.lastIndexOf(')');
-//			if (startPos != -1 && endPos != -1) {
-//				value = value.substring( startPos + 1, endPos ).trim();
-//			}
-//		}
-//		if ( value.charAt(0) != '/' ) {
-//			value = "/" + value;
-//		}
-//		return "\"" + value + "\"";
-//	}
+	/**
+	 * Checks and transforms the given CSS value for this attribute.
+	 * 
+	 * @param value the attribute value
+	 * @param environment the environment
+	 * @return the transformed value or the same value if no transformation is required.
+	 * @throws BuildException when a condition is not met or when the value contains conflicting values
+	 */
+	public String getValue(String value, Environment environment ) {
+		if ("none".equals(value)) {
+			return "null";
+		}
+		value = super.getValue(value, environment);
+		if ( value.startsWith("url") ) {
+			int startPos = value.indexOf('(');
+			int endPos = value.lastIndexOf(')');
+			if (startPos != -1 && endPos != -1) {
+				value = value.substring( startPos + 1, endPos ).trim();
+			}
+		}
+		if ( value.charAt(0) != '/' ) {
+			value = "/" + value;
+		}
+		return "\"" + value + "\"";
+	}
 }

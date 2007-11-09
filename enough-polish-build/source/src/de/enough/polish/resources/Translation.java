@@ -101,6 +101,54 @@ public class Translation {
 	}
 
 	/**
+	 * Creates a new plain translation.
+	 * @param key the key
+	 * @param value the translation
+	 * @param id the integer ID
+	 */
+	public Translation(String key, String value, int id)
+	{
+		this.key = key;
+		this.value = value;
+		this.id = id;
+		this.type = PLAIN;
+	}
+	
+
+	/**
+	 * Creates a new single param translation.
+	 * @param key the key
+	 * @param start the first part of the translation
+	 * @param end the last part of the translation
+	 * @param id the integer ID
+	 */
+	public Translation(String key, String start, String end, int id)
+	{
+		this.key = key;
+		this.oneValueStart = start;
+		this.oneValueEnd = end;
+		this.id = id;
+		this.type = SINGLE_PARAMETER;
+	}
+	
+
+	/**
+	 * Creates a new multiple param translation.
+	 * @param key the key
+	 * @param chunks the value chunks 
+	 * @param indeces  the indeces of the parameters
+	 * @param id the integer ID
+	 */
+	public Translation(String key, String[] chunks, int[] indeces, int id)
+	{
+		this.key = key;
+		this.valueChunks = chunks;
+		this.parameterIndices = indeces;
+		this.id = id;
+		this.type = MULTIPLE_PARAMETERS;
+	}
+
+	/**
 	 * @return Returns the id.
 	 */
 	public int getId() {

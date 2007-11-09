@@ -112,7 +112,7 @@ implements Comparator
 		this.singleParameterTranslations = new ArrayList();
 		this.plainTranslations = new ArrayList();
 		Map rawTranslations = loadRawTranslations(resourceDirs);
-		// load IDs for variables with multiple parameters:
+		// load IDs for variables with multiple parameters or when dynamic translations are used:
 		loadIdsMap();
 		processRawTranslations( rawTranslations );
 		
@@ -181,7 +181,7 @@ implements Comparator
 	 * @return the file that stores those IDs
 	 */
 	protected File getMultipleParametersIdsFile() {
-		return new File( this.device.getBaseDir() + File.separator + "LocaleIds_" + this.locale.toString() + ".txt");
+		return new File( this.environment.getProjectHome(), ".polishSettings/LocaleIdsMultiple.txt"); // this.device.getBaseDir() + File.separator + "LocaleIds_" + this.locale.toString() + ".txt");
 	}
 
 	/**
@@ -190,7 +190,8 @@ implements Comparator
 	 * @return the file that stores those IDs
 	 */
 	protected File getSingleParameterIdsFile() {
-		return new File( this.device.getBaseDir() + File.separator + "SingleLocaleIds_" + this.locale.toString() + ".txt");
+		return new File( this.environment.getProjectHome(), ".polishSettings/LocaleIdsSingle.txt"); 
+		//return new File( this.device.getBaseDir() + File.separator + "SingleLocaleIds_" + this.locale.toString() + ".txt");
 	}
 
 	/**
@@ -199,7 +200,8 @@ implements Comparator
 	 * @return the file that stores those IDs
 	 */
 	protected File getPlainIdsFile() {
-		return new File( this.device.getBaseDir() + File.separator + "PlainLocaleIds_" + this.locale.toString() + ".txt");
+		return new File( this.environment.getProjectHome(), ".polishSettings/LocaleIdsPlain.txt"); 
+		//return new File( this.device.getBaseDir() + File.separator + "PlainLocaleIds_" + this.locale.toString() + ".txt");
 	}
 
 	/**
@@ -272,7 +274,7 @@ implements Comparator
 		// in the first round only set variables:
 		for (int i = 0; i < keys.length; i++) {
 			String key = keys[i];
-			String originalKey = key;
+			//String originalKey = key;
 			String value = (String) rawTranslations.get( key );
 			if (value.indexOf('$') != -1) {
 				value = PropertyUtil.writeProperties(value, variables);
@@ -325,6 +327,69 @@ implements Comparator
 			} else {
 				this.plainTranslations.add( translation );
 			}
+		}
+		if (this.isDynamic) {
+			// check if any translations have been removed - in that case empty strings need to be included,
+			// otherwise the dynamic translations are not backwards compatible anymore:
+			if (this.plainTranslations.size() < this.idGeneratorPlain.getIdsMap().size()) {
+//				System.out.println("it appears that a translation is not used anymore");
+				Translation[] translations = getPlainTranslations();
+				int index = 0;
+				for (int i = 0; i < translations.length; i++)
+				{
+					Translation translation = translations[i];
+//					System.out.println(translation.getId() + "=" +  (index+1) );
+					while (translation.getId() != (index+1)) {
+						String key = this.idGeneratorPlain.getKey(index);
+//						System.out.println("adding empty translation for " + index + "=" + key );
+						Translation plain = new Translation(key, "", index);
+						this.translationsByKey.put(key, plain);
+						this.plainTranslations.add(plain);
+						index++;
+					}
+					index++;
+				}
+			}
+			if (this.singleParameterTranslations.size() < this.idGeneratorSingleParameter.getIdsMap().size()) {
+				Translation[] translations = getSingleParameterTranslations();
+				int index = 0;
+				for (int i = 0; i < translations.length; i++)
+				{
+					Translation translation = translations[i];
+					while (translation.getId() != (index+1)) {
+						String key = this.idGeneratorSingleParameter.getKey(index);
+						Translation single = new Translation(key, "", "", index);
+						this.translationsByKey.put(key, single);
+						this.singleParameterTranslations.add(single);
+						index++;
+					}
+					index++;
+				}
+			}
+			if (this.multipleParametersTranslations.size() < this.idGeneratorMultipleParameters.getIdsMap().size()) {
+				Translation[] translations = getMultipleParametersTranslations();
+				int index = 0;
+				for (int i = 0; i < translations.length; i++)
+				{
+					Translation translation = translations[i];
+					while (translation.getId() != (index+1)) {
+						String key = this.idGeneratorMultipleParameters.getKey(index);
+						Translation single = new Translation(key, "", "", index);
+						this.translationsByKey.put(key, single);
+						this.multipleParametersTranslations.add(single);
+						index++;
+					}
+					index++;
+				}
+			}
+
+//			System.out.println("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
+//			Translation[] translations = getPlainTranslations();
+//			for (int i = 0; i < translations.length; i++)
+//			{
+//				Translation translation = translations[i];
+//				System.out.println( (i+1) + "=" + translation.getId() + "=" + translation.getKey() );
+//			}
 		}
 	}
 
@@ -874,7 +939,7 @@ implements Comparator
 	{
 		Locale dynamicLocale = dynamicLocaleSetting.getLocale();
 		File file = new File( targetDir, dynamicLocale.toString() + ".loc" );
-		//System.out.println("Writing translations to " + file.getAbsolutePath() );
+//		System.out.println("Writing translations to " + file.getAbsolutePath() );
 		DataOutputStream out = new DataOutputStream( new FileOutputStream( file ) );
 		// plain translations:
 		Translation[] translations = getPlainTranslations();
@@ -882,7 +947,7 @@ implements Comparator
 		out.writeInt( translations.length );
 		for (int i = 0; i < translations.length; i++) {
 			Translation translation = translations[i];
-			//System.out.println( i + "=" + translation.getValue() );
+//			System.out.println( i + "=" + translation.getKey() + "=" + translation.getValue() );
 			out.writeUTF( translation.getValue() );
 		}
 		// translations with a single parameter:

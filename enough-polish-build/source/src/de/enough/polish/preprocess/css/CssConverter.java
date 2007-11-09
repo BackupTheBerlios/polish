@@ -631,6 +631,9 @@ public class CssConverter extends Converter {
 		String abbreviation = this.abbreviationGenerator.getAbbreviation(reference, true );
 		Style style = styleSheet.getStyle(reference);
 		if (style == null) {
+			if (reference.equals("null")) {
+				return "null";
+			}
 			throw new BuildException("Invalid CSS: the style-reference to \"" + value + "\" in style [" + parent.getSelector() + "] refers to a non-existing style.");
 		}
 		style.setAbbreviation( abbreviation );

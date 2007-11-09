@@ -33,6 +33,7 @@
 		<type names="integer, int" class="de.enough.polish.preprocess.css.attributes.IntegerCssAttribute" />
 		<type  name="percent" class="de.enough.polish.preprocess.css.attributes.PercentCssAttribute" />
 		<type  name="percentorabsolute" class="de.enough.polish.preprocess.css.attributes.PercentOrAbsoluteCssAttribute" />
+		<type names="resourceurl,resource-url" class="de.enough.polish.preprocess.css.attributes.ResourceUrlCssAttribute" />
 		<type names="imageurl,image-url" class="de.enough.polish.preprocess.css.attributes.ImageUrlCssAttribute" />
 		<type  name="imageurlornone" class="de.enough.polish.preprocess.css.attributes.ImageUrlOrNoneCssAttribute" />
 		<type  name="object" class="de.enough.polish.preprocess.css.attributes.ObjectCssAttribute" />
@@ -346,7 +347,23 @@
 			<param name="scale-mode" type="integer" primitive="true" default="none" values="none,scale,proportional,expand" />
 			<param name="anchor" type="anchor" primitive="true" default="0" />
 		</mapping>
-		
+		<mapping from="video"               to="de.enough.polish.ui.backgrounds.VideoBackground"  >
+			<param name="color" type="color" primitive="true" default="white" />
+			<param name="video" type="resource-url" default="none" />
+			<param name="mime-type" type="string" default="video/mp4" />
+			<param name="loops" type="integer" primitive="true" default="-1" />
+			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" />
+			<param name="x-offset" type="integer" primitive="true" default="0" />
+			<param name="y-offset" type="integer" primitive="true" default="0" />
+		</mapping>
+		<mapping from="animated-gif"               to="de.enough.polish.ui.backgrounds.AnimatedGifBackground"  >
+			<param name="color" type="color" primitive="true" default="white" />
+			<param name="image" type="image-url" default="none" />
+			<param name="loops" type="integer" primitive="true" default="-1" />
+			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" />
+			<param name="x-offset" type="integer" primitive="true" default="0" />
+			<param name="y-offset" type="integer" primitive="true" default="0" />
+		</mapping>
 		<mapping from="repaint-test"   to="de.enough.polish.ui.backgrounds.RepaintTestBackground"  />
 	</attribute>
 

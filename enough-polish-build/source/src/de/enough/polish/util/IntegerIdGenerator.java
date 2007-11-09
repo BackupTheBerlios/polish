@@ -147,4 +147,23 @@ public class IntegerIdGenerator {
 	public boolean hasChanged() {
 		return this.hasChanged;
 	}
+
+	/**
+	 * Retrieves an key for the given ID
+	 * @param id the ID 
+	 * @return the corresponding key, null when none is known
+	 */
+	public String getKey(int id)
+	{
+		Object[] keys = this.idsByKey.keySet().toArray();
+		for (int i = 0; i < keys.length; i++)
+		{
+			Object key = keys[i];
+			Integer value = (Integer) this.idsByKey.get(key);
+			if (value.intValue() == id) {
+				return (String) key;
+			}
+		}
+		return null;
+	}
 }
