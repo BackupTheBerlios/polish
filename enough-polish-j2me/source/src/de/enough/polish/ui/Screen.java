@@ -810,6 +810,11 @@ implements AccessibleCanvas
 	 * Initialises this screen and informs all items about being painted soon.
 	 */
 	public void showNotify() {
+		if (this.isShown()) {
+			//#debug 
+			System.out.println("ignoring showNotify, as this screen is shown already");
+			return;
+		}
 		//#if polish.Screen.callSuperEvents
 			super.showNotify();
 		//#endif
@@ -939,13 +944,19 @@ implements AccessibleCanvas
 				this.container.init( width, width );
 			}
 			//#ifdef tmp.usingTitle
-				if (this.title != null && !this.title.isInitialized) {
-					this.title.init( width, width );
+				if (this.title != null) {
+					if (!this.title.isInitialized) {
+						this.title.init( width, width );
+					}
+					this.title.showNotify();
 				}
 			//#endif
 			//#ifndef polish.skipTicker
-				if (this.ticker != null && !this.ticker.isInitialized) {
-					this.ticker.init( width, width );					
+				if (this.ticker != null) {
+					if (!this.ticker.isInitialized) {
+						this.ticker.init( width, width );
+					}
+					this.ticker.showNotify();
 				}
 			//#endif
 			calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
@@ -964,6 +975,10 @@ implements AccessibleCanvas
 		//#if polish.ScreenInfo.enable
 			ScreenInfo.setScreen( this );
 		//#endif
+		if (this.background != null) {
+			this.background.showNotify();
+		}
+
 		this.lastInteractionTime = System.currentTimeMillis();
 	}
 	
@@ -1023,6 +1038,11 @@ implements AccessibleCanvas
 				this.ticker.hideNotify();
 			}
 		//#endif
+		//#ifdef tmp.usingTitle
+			if (this.title != null) {
+				this.title.hideNotify();
+			}
+		//#endif
 		//#ifdef tmp.ignoreMotorolaTitleCall
 			this.ignoreMotorolaTitleCall = true;
 		//#endif
@@ -1032,6 +1052,9 @@ implements AccessibleCanvas
 				ScreenInfo.setScreen( null );
 			}
 		//#endif
+		if (this.background != null) {
+			this.background.hideNotify();
+		}
 	}
 	
 	/**

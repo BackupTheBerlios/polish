@@ -271,6 +271,12 @@ extends Background
 			this.isLoaded = false;
 			this.image = null;
 		}
+		//#if polish.midp2
+			this.rgbData = null;
+			this.rgbDataScaled = null;
+			this.lastWidth = 0;
+			this.lastHeight = 0;
+		//#endif
 	}
 
 

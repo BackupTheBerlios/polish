@@ -2589,11 +2589,14 @@ public abstract class Item extends Object
 	 * The item may receive <code>paint()</code> calls after
 	 * <code>showNotify()</code> has been called.
 	 * 
-	 * <p>The default implementation of this method sets the isShown field to true.</p>
+	 * <p>The default implementation of this method sets the isShown field to true and calls showNotify on style elements.</p>
 	 */
 	protected void showNotify()
 	{
 		this.isShown = true;
+		if (this.background != null) {
+			this.background.showNotify();
+		}
 	}
 
 	/**
@@ -2602,11 +2605,14 @@ public abstract class Item extends Object
 	 * further <code>paint()</code> calls will be made on this item
 	 * until after a <code>showNotify()</code> has been called again.
 	 * 
-	 * <p>The default implementation of this method sets the isShown field to false.</p>
+	 * <p>The default implementation of this method sets the isShown field to false and calls hideNotify on style elements.</p>
 	 */
 	protected void hideNotify()
 	{
 		this.isShown = false;
+		if (this.background != null) {
+			this.background.hideNotify();
+		}
 	}
 	
 	/**

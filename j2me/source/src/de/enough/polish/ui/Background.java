@@ -83,5 +83,19 @@ public abstract class Background implements Serializable {
 	public void releaseResources() {
 		// do nothing
 	}
+	
+	/**
+	 * Informs the background that it is being hidden shortly
+	 */
+	public void hideNotify() {
+		// do nothing
+	}
+	
+	/**
+	 * Informs the background that it is being shown shortly
+	 */
+	public void showNotify() {
+		// do nothing
+	}
 
 }

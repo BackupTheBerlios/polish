@@ -284,7 +284,4 @@ public class ScreenInfo {
 		}
 	}
 	
-	public static void setCurrentScreenInfo( int id ) {
-		
-	}
 }
