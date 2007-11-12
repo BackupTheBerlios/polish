@@ -107,7 +107,7 @@
 		<capability name="build.BootClassPath" value="blackberry-4.2.0.jar" />
 		<!-- key for opening/closing the menu -->
 		<capability name="key.Menu" value="268566528" />
-	
+		<capability name="JavaPackage" value="location,wmapi,pim,mmapi" />	
 	</platform>
 
 	<platform>

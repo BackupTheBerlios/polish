@@ -726,7 +726,7 @@ public class CssConverter extends Converter {
 		//System.out.println("processing border " + borderName + " = "+ group.toString() );
 		String reference = (String) group.get("border");
 		if (reference != null && group.size() == 1) {
-			if ("none".equals(reference)) {
+			if ("none".equals(reference) || "null".equals(reference)) {
 				if (isStandalone) {
 					codeList.add( STANDALONE_MODIFIER + "Border " + borderName + "Border = null;\t// border:none was specified");
 				} else {
@@ -801,7 +801,7 @@ public class CssConverter extends Converter {
 		// check if the background is just a reference to another background:
 		String reference = (String) group.get("background");
 		if (reference != null && group.size() == 1) {
-			if ("none".equals(reference)) {
+			if ("none".equals(reference) || "null".equals(reference)) {
 				if (isStandalone) {
 					codeList.add( STANDALONE_MODIFIER + "Background " + backgroundName + "Background = null;\t// background:none was specified");
 				} else {
