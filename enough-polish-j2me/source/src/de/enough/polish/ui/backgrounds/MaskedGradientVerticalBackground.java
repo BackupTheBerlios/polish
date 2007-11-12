@@ -37,6 +37,7 @@ import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.util.DrawUtil;
+import de.enough.polish.util.ImageUtil;
 /**
  * DoubleGradientVerticalBackground generates an nice Backgroundscreen,
  * with two gradients, each taking half of the available height.
@@ -109,7 +110,7 @@ public class MaskedGradientVerticalBackground  extends Background {
 			System.out.println("unable to load mask " + e);
 		}
 		
-		this.maskColor = maskColor;
+		this.maskColor = ImageUtil.getDeviceColor(maskColor);
 		
 		this.firstTopColor = firstTopColor;
 		this.firstBottomColor = firstBottomColor;

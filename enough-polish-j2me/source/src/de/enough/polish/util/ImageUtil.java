@@ -25,6 +25,9 @@
  */
 package de.enough.polish.util;
 
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
+
 
 /**
  * <p>Helps to transform images</p>
@@ -1256,6 +1259,29 @@ public final class ImageUtil {
 				data[i] = (pixel & 0x00ffffff) | transparency;
 			}
 		}
+	}
+	
+	/**
+	 * Returns the transformed color for the running device. Some devices
+	 * tend to transform color to a brighter or darker color due
+	 * to the changes in device palettes.   
+	 * 
+	 * @param color the original color
+	 * @return the transformed color
+	 */
+	public static int getDeviceColor(int color)
+	{
+		Graphics graphicsBuffer;
+		Image imageBuffer = Image.createImage( 1, 1); 
+		graphicsBuffer = imageBuffer.getGraphics();
+		
+		graphicsBuffer.setColor(color);
+		graphicsBuffer.fillRect(0, 0, 1, 1);
+		
+		int[] rgbData = new int[ 1 * 1 ];
+		imageBuffer.getRGB( rgbData,0,1, 0, 0, 1, 1);
+		
+		return rgbData[0];
 	}
 
 }
