@@ -330,7 +330,7 @@ public class BitMapFontViewer {
 	 * @param growFactor the grow factor.
 	 * @return the increased array.
 	 */
-	private short[] increaseShortArraySize(short src[], byte growFactor)
+	private short[] increaseShortArraySize(short[] src, byte growFactor)
 	{
 		short dest[] = new short[src.length + growFactor];
 		System.arraycopy(src, 0, dest, 0, src.length);
