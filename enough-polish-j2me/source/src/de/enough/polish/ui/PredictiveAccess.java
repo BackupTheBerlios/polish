@@ -895,6 +895,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 			showPredictiveInstallDialog();
 			return true;
 		} else if (cmd == ENABLE_PREDICTIVE_CMD) {
+			System.out.println("enable predictive");
 			try {
 				if (!PROVIDER.isInit()) {
 					PROVIDER.init();
@@ -906,10 +907,13 @@ public class PredictiveAccess implements TrieSetupCallback{
 			{
 				DataInputStream stream = null;
 				TrieSetup setup = null;
-				//#if !polish.predictive.useLocalRMS && polish.Bugs.sharedRmsRequiresSigning
-				RedirectHttpConnection connection = new RedirectHttpConnection(
-						"http://dl.j2mepolish.org/predictive/index.jsp?type=local&lang=en");
+				RedirectHttpConnection connection = null;
+				
 				try {
+					//#if !polish.predictive.useLocalRMS && polish.Bugs.sharedRmsRequiresSigning
+					connection = new RedirectHttpConnection(
+							"http://dl.j2mepolish.org/predictive/index.jsp?type=local&lang=en");
+
 					stream = connection.openDataInputStream();
 
 					setup = new TrieSetup(StyleSheet.midlet, null, false,
@@ -924,7 +928,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	
 					Thread thread = new Thread(setup);
 					thread.start();
-				} catch (IOException ioEx) {
+				} catch (Exception ioEx) {
 					//#debug error
 					System.out.println("Unable to download dictionary " + ioEx);
 				} finally {
@@ -939,13 +943,13 @@ public class PredictiveAccess implements TrieSetupCallback{
 						// ignore
 					}
 				}
-				return true;
+
 			}
 			//#else
-			{
-				showPredictiveInstallDialog();
-				//# return true;
-			}
+			//#{
+			//#	showPredictiveInstallDialog();
+			//# return true;
+			//#}
 			//#endif
 
 			if (!this.predictiveInput) {
