@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui && polish.api.mmapi
 /*
  * Created on Nov 8, 2007 at 8:52:39 PM.
  * 
