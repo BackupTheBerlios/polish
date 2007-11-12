@@ -50,7 +50,7 @@ import de.enough.polish.util.Locale;
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
 	import net.rim.device.api.ui.UiApplication;
-	import net.rim.device.api.ui.component.BasicEditField;
+import net.rim.device.api.ui.component.BasicEditField;
 //#endif
 
 /**

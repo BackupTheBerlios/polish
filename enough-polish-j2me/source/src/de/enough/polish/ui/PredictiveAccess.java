@@ -895,7 +895,6 @@ public class PredictiveAccess implements TrieSetupCallback{
 			showPredictiveInstallDialog();
 			return true;
 		} else if (cmd == ENABLE_PREDICTIVE_CMD) {
-			System.out.println("enable predictive");
 			try {
 				if (!PROVIDER.isInit()) {
 					PROVIDER.init();
@@ -946,10 +945,10 @@ public class PredictiveAccess implements TrieSetupCallback{
 
 			}
 			//#else
-			//#{
-			//#	showPredictiveInstallDialog();
-			//# return true;
-			//#}
+			{
+				showPredictiveInstallDialog();
+				//# return true;
+			}
 			//#endif
 
 			if (!this.predictiveInput) {

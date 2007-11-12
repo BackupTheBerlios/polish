@@ -319,6 +319,10 @@ public class ChoiceTextField
 			if ( this.choicesContainer.handleKeyPressed(keyCode, gameAction) ) {
 				//#debug
 				System.out.println("keyPressed handled by choices container");
+				if (this.choicesContainer.internalX != Item.NO_POSITION_SET) {
+					this.internalX = this.choicesContainer.relativeX + this.choicesContainer.internalX;
+					this.internalY = this.choicesContainer.relativeY + this.choicesContainer.internalY;
+				}
 				return true;
 			}
 			//System.out.println("focusing textfield again, isFocused=" + this.isFocused);
@@ -465,6 +469,7 @@ public class ChoiceTextField
 				field.processKeyEvents = false;
 			//#endif
 		} else {
+			this.internalX = Item.NO_POSITION_SET;
 			setStyle( this.focusingStyle );
 			this.flashCaret = this.reenableCaretFlashing;
 			this.showCaret = true;

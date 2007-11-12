@@ -150,7 +150,7 @@ public final class TextUtil {
 			//#debug error
 			System.out.println("INVALID LINE WIDTH FOR SPLITTING " + firstLineWidth + " / " + lineWidth + " ( for string " + value + ")");
 			//#if polish.debug.error
-				new RuntimeException().printStackTrace();
+				try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }	
 			//#endif
 			return new String[]{ value };
 		}

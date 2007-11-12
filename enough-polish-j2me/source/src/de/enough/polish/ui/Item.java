@@ -690,13 +690,15 @@ public abstract class Item extends Object
 	protected int contentY; // absolute top vertical position of the content 
 	// the current positions of an internal element relative to the content origin 
 	// which should be visible:
+	/** no internal position has been set for this item */
+	public final static int NO_POSITION_SET = -9999;
 	/** 
 	 * The internal horizontal position of this item's content relative to it's left edge. 
 	 * When it is equal -9999 this item's internal position is not known.
 	 * The internal position is useful for items that have a large content which
 	 * needs to be scrolled, e.g. containers.  
 	 */
-	protected int internalX = -9999;
+	protected int internalX = NO_POSITION_SET;
 	/** the vertical position of this item's internal content relative to it's top edge */
 	protected int internalY;
 	/** The internal width of this item's content.  */

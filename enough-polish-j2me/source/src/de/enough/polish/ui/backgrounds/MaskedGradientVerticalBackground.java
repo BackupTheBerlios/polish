@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui
+//#condition polish.usePolishGui && polish.midp2
 
 /*
  * Created on 09.06.2006 at 15:41:12.
@@ -29,13 +29,10 @@ package de.enough.polish.ui.backgrounds;
 
 import java.io.IOException;
 
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+
 import de.enough.polish.ui.Background;
-import de.enough.polish.ui.Color;
-import de.enough.polish.ui.Item;
-import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.ImageUtil;
 /**
@@ -76,11 +73,16 @@ public class MaskedGradientVerticalBackground  extends Background {
 	/**
 	 * Creates a new double gradient background
 	 * 
+	 * @param maskUrl 
+	 * @param maskColor 
+	 * @param singleGradient 
 	 * @param firstTopColor the color at the top of the first gradient
 	 * @param firstBottomColor the color at the bottom of the first gradient
 	 * @param secondTopColor the color at the top of the second gradient
 	 * @param secondBottomColor the color at the bottom of the second gradient
-	 * @param stroke the line stroke style
+	 * @param xOffset 
+	 * @param yOffset 
+	 * @param anchor 
 	 */
 	public MaskedGradientVerticalBackground(String maskUrl, int maskColor, boolean singleGradient,  int firstTopColor, int firstBottomColor, int secondTopColor, int secondBottomColor, int xOffset, int yOffset, int anchor) {
 		this( maskUrl, maskColor, singleGradient, firstTopColor, firstBottomColor, secondTopColor, secondBottomColor, xOffset, yOffset, anchor, 0, 0, false );
@@ -90,11 +92,16 @@ public class MaskedGradientVerticalBackground  extends Background {
 	/**
 	 * Creates a new double gradient background
 	 * 
+	 * @param maskUrl 
+	 * @param maskColor 
+	 * @param singleGradient 
 	 * @param firstTopColor the color at the top of the first gradient
 	 * @param firstBottomColor the color at the bottom of the first gradient
 	 * @param secondTopColor the color at the top of the second gradient
 	 * @param secondBottomColor the color at the bottom of the second gradient
-	 * @param stroke the line stroke style
+	 * @param xOffset 
+	 * @param yOffset 
+	 * @param anchor 
 	 * @param start the line counted from the top at which the gradient starts, either in pixels or in percent
 	 * @param end the line counted from the top at which the gradient ends, either in pixels or in percent
 	 * @param isPercent true when the start and end settings should be counted in percent

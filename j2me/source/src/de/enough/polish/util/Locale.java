@@ -462,7 +462,7 @@ public final class Locale {
 		//System.out.println("Loading " + numberOfPlainTranslations + " translations...");
 		for (int i = 0; i < numberOfPlainTranslations; i++) {
 			plainTs[i] = in.readUTF();
-			System.out.println(i + "=" + plainTs[i]);
+			//System.out.println(i + "=" + plainTs[i]);
 		}
 		plainTranslations = plainTs;
 		

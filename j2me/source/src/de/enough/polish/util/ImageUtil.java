@@ -25,8 +25,10 @@
  */
 package de.enough.polish.util;
 
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
+//#if polish.midp2 || (!polish.midp && polish.usePolishGui)
+	import javax.microedition.lcdui.Graphics;
+	import javax.microedition.lcdui.Image;
+//#endif
 
 
 /**
@@ -1271,17 +1273,21 @@ public final class ImageUtil {
 	 */
 	public static int getDeviceColor(int color)
 	{
-		Graphics graphicsBuffer;
-		Image imageBuffer = Image.createImage( 1, 1); 
-		graphicsBuffer = imageBuffer.getGraphics();
-		
-		graphicsBuffer.setColor(color);
-		graphicsBuffer.fillRect(0, 0, 1, 1);
-		
-		int[] rgbData = new int[ 1 * 1 ];
-		imageBuffer.getRGB( rgbData,0,1, 0, 0, 1, 1);
-		
-		return rgbData[0];
+		//#if polish.midp2 || (!polish.midp && polish.usePolishGui)
+			Graphics graphicsBuffer;
+			Image imageBuffer = Image.createImage( 1, 1); 
+			graphicsBuffer = imageBuffer.getGraphics();
+			
+			graphicsBuffer.setColor(color);
+			graphicsBuffer.fillRect(0, 0, 1, 1);
+			
+			int[] rgbData = new int[ 1 * 1 ];
+			imageBuffer.getRGB( rgbData,0,1, 0, 0, 1, 1);
+			
+			return rgbData[0];
+		//#else
+			//# return color;
+		//#endif
 	}
 
 }

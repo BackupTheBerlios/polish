@@ -891,9 +891,9 @@ public class FishEyeContainerView extends ContainerView {
 				}
 			}
 		//#endif
-		//#if polish.css.fisheyeview-transparency
-			Boolean tranparencyBool = style.getBooleanProperty("fisheyeview-transparency");
-			if (tranparencyBool != null) {
+		//#if polish.css.fisheyeview-transparency && polish.midp2
+			Boolean transparencyBool = style.getBooleanProperty("fisheyeview-transparency");
+			if (transparencyBool != null && !transparencyBool.booleanValue()) {
 				this.startTranslucency = 255;
 				this.endTranslucency = 255;
 			}
