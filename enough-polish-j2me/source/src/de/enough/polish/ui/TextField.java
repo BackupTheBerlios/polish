@@ -39,6 +39,9 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.predictive.TextBuilder;
+import de.enough.polish.predictive.trie.TrieProvider;
+import de.enough.polish.predictive.trie.TrieSetup;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.Locale;
@@ -47,6 +50,7 @@ import de.enough.polish.util.Locale;
 	import de.enough.polish.blackberry.ui.PolishTextField;
 	import de.enough.polish.blackberry.ui.PolishEditField;
 	import de.enough.polish.blackberry.ui.PolishPasswordEditField;
+import de.enough.polish.doja.rms.RecordStoreException;
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
 	import net.rim.device.api.ui.UiApplication;
@@ -889,6 +893,10 @@ public class TextField extends StringItem
 	//#if polish.TextField.usePredictiveInput && tmp.directInput
 		boolean predictiveInput = false;
 		private PredictiveAccess predictiveAccess;
+		
+		long lastTimePressed = -1;
+		boolean nextMode 	 = this.predictiveInput;
+		public static int SWITCH_DELAY 	 = 1000;
 	//#endif		
 		
 	protected boolean flashCaret = true;
@@ -2641,18 +2649,45 @@ public class TextField extends StringItem
 	//					else 
 						if (this.isUneditable) {
 							return false;
-						}  
-						
-						// Set the input mode
-						boolean handled =  handleKeyMode(keyCode, gameAction);
-						if (handled) {
-							return true;
 						}
 						
-						// Insert a character
-						handled = handleKeyInsert(keyCode, gameAction);
-						if (handled) {
-							return true;
+						boolean handled = false;
+						
+						//#if polish.TextField.usePredictiveInput
+						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+						//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
+						//#else
+						if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable)
+						//#endif
+						{
+							if(this.lastTimePressed == -1)
+							{
+								this.nextMode = !this.predictiveInput;
+								this.lastTimePressed = System.currentTimeMillis();
+							}
+							else
+							{
+								if((System.currentTimeMillis() - this.lastTimePressed) > SWITCH_DELAY)
+								{
+									if(this.nextMode != this.predictiveInput)
+									{
+										this.predictiveInput = !this.predictiveInput;
+										
+										this.nextMode = this.predictiveInput;
+										updateInfo();
+										
+										this.predictiveInput = !this.predictiveInput;
+									}
+								}
+							}
+							
+							handled = true;
+						}
+						//#endif
+						
+						if(!handled)
+						{
+							handled = handleKeyInsert(keyCode, gameAction);
 						}
 						
 						// Backspace
@@ -2664,22 +2699,25 @@ public class TextField extends StringItem
 						//#if polish.key.backspace:defined
 							//#= || keyCode == ${polish.key.backspace}
 						//#endif
-							) 
+							&& !handled) 
 						{
-							return handleKeyClear(keyCode, gameAction);
+							handled = handleKeyClear(keyCode, gameAction);
 						}
-						
+							
 						// Navigate the caret
-						if ( 	gameAction == Canvas.UP 	|| 
+						if (   (gameAction == Canvas.UP 	|| 
 								gameAction == Canvas.DOWN 	||
 								gameAction == Canvas.LEFT 	||
 								gameAction == Canvas.RIGHT  ||
-								gameAction == Canvas.FIRE     ) 
+								gameAction == Canvas.FIRE)  &&
+								!handled) 
 						{
-							return handleKeyNavigation(keyCode, gameAction);
+							handled = handleKeyNavigation(keyCode, gameAction);
 						}
-						if (true) {
-							return false;
+						
+						if(true)
+						{
+							return handled;
 						}
 					}
 				//#endif
@@ -2717,6 +2755,8 @@ public class TextField extends StringItem
 				return false;
 			}
 		//#endif
+		
+		
 		if ( (keyCode >= Canvas.KEY_NUM0 
 			&& keyCode <= Canvas.KEY_NUM9)
 			//#ifdef polish.key.ClearKey:defined
@@ -2733,6 +2773,7 @@ public class TextField extends StringItem
 		} else {
 			return false;
 		}
+		
 	}
 	//#endif
 	
@@ -3203,6 +3244,7 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#handleKeyRepeated(int, int)
 	 */
 	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
+		System.out.println("repeated");
 		//#debug
 		System.out.println("TextField.handleKeyRepeated( " + keyCode + ")");
 		if (keyCode >= Canvas.KEY_NUM0 
@@ -3228,8 +3270,32 @@ public class TextField extends StringItem
 					}
 				//#endif
 				if (newCharacter != this.caretChar) {
-					this.caretChar = newCharacter;
-					insertCharacter( newCharacter, false, false );
+					
+					//#if polish.TextField.usePredictiveInput
+						if(this.predictiveInput)
+						{
+							TextBuilder builder = this.predictiveAccess.getBuilder();
+							
+							try
+							{
+								builder.keyClear();
+								this.predictiveAccess.openChoices(false);
+								
+								builder.addString("" + newCharacter);
+							}catch(Exception e)
+							{
+								System.out.println("unable to clear " + e);
+							}
+							
+							setText(builder.getText().toString());
+							setCaretPosition(builder.getCaretPosition());
+						}
+						else
+					//#endif
+					{
+						this.caretChar = newCharacter;
+						insertCharacter( newCharacter, false, false );
+					}
 				}
 				return true;
 			}
@@ -3258,13 +3324,50 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
+		System.out.println("released");
 		this.isKeyDown = false;
 		this.deleteKeyRepeatCount = 0;
+		
 		//#if tmp.usePredictiveInput
-			if (this.predictiveAccess.handleKeyReleased( keyCode, gameAction )) {
-				return true;
-			}
+		if (this.predictiveAccess.handleKeyReleased( keyCode, gameAction )) {
+			return true;
+		}
 		//#endif
+
+		//#if polish.TextField.usePredictiveInput
+		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
+		//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
+		//#else
+		if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable)
+		//#endif
+		{
+			if((System.currentTimeMillis() - this.lastTimePressed) > SWITCH_DELAY)
+			{
+				this.lastTimePressed = -1;
+				
+				if(this.predictiveInput)
+				{
+					getPredictiveAccess().disablePredictiveInput();
+				}
+				else
+				{
+					if(TrieProvider.isPredictiveInstalled())
+					{
+						getPredictiveAccess().enablePredictiveInput();
+					}
+				}
+				
+				updateInfo();
+			}
+			else
+			{
+				this.lastTimePressed = -1;
+				
+				return handleKeyMode(keyCode, gameAction);
+			}
+		}
+		//#endif
+		
 		return super.handleKeyReleased( keyCode, gameAction );
 	}
 	//#endif
@@ -3631,16 +3734,7 @@ public class TextField extends StringItem
 	//#endif
 		
 	//#if polish.TextField.usePredictiveInput && tmp.directInput
-	public void disablePredictiveInput() {
-		addCommand(PredictiveAccess.ENABLE_PREDICTIVE_CMD);
-		removeCommand(PredictiveAccess.DISABLE_PREDICTIVE_CMD);
-		removeCommand(PredictiveAccess.ADD_WORD_CMD);
-
-		this.predictiveInput = false;
-		this.getPredictiveAccess().disablePredictive();
-
-		updateInfo();
-	}
+	
 	public PredictiveAccess getPredictiveAccess() {
 		return this.predictiveAccess;
 	}

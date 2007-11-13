@@ -273,12 +273,16 @@ public abstract class TextBuilder {
 
 				left = lengthOffset - length;
 				right = lengthOffset;
-
+								
 				if ((position - left) > (right - position))
+				{
 					this.align = ALIGN_RIGHT;
+				}
 				else
+				{
 					this.align = ALIGN_LEFT;
-
+				}				
+				
 				return;
 			}
 		}

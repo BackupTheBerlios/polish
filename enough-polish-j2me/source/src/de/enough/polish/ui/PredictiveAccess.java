@@ -190,6 +190,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 		if(words != null)
 		{
 			this.parent.predictiveInput = true;
+			
 			this.predictiveType = ARRAY;
 			
 			this.builder = new ArrayTextBuilder(this.parent.getMaxSize());
@@ -239,11 +240,12 @@ public class PredictiveAccess implements TrieSetupCallback{
 
 		return -1;
 	}
+	
+	public void disablePredictiveInput() {
+		this.parent.addCommand(PredictiveAccess.ENABLE_PREDICTIVE_CMD);
+		this.parent.removeCommand(PredictiveAccess.DISABLE_PREDICTIVE_CMD);
+		this.parent.removeCommand(PredictiveAccess.ADD_WORD_CMD);
 
-	/**
-	 * Disables the predictive input.
-	 */
-	public void disablePredictive() {
 		this.predictiveInput = false;
 		this.parent.predictiveInput = false;
 
@@ -253,17 +255,78 @@ public class PredictiveAccess implements TrieSetupCallback{
 		this.parent.updateInfo();
 
 		openChoices(false);
+
+		this.parent.updateInfo();
 	}
+	
+	public void enablePredictiveInput()
+	{
 
-	/**
-	 * Enables the predictive input. This implies that the initialisation of the 
-	 * predictive input is already finished.
-	 */
-	private void enablePredictive() {
-		this.predictiveInput = true;
-		this.parent.predictiveInput = true;
+		try {
+			if (!PROVIDER.isInit()) {
+				PROVIDER.init();
+			}
 
-		synchronize();
+			this.predictiveInput = true;
+		} catch (RecordStoreException e)
+		//#if (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.useLocalRMS)
+		{
+			DataInputStream stream = null;
+			TrieSetup setup = null;
+			RedirectHttpConnection connection = null;
+			
+			try {
+				//#if !polish.predictive.useLocalRMS && polish.Bugs.sharedRmsRequiresSigning
+				connection = new RedirectHttpConnection(
+						"http://dl.j2mepolish.org/predictive/index.jsp?type=local&lang=en");
+
+				stream = connection.openDataInputStream();
+
+				setup = new TrieSetup(StyleSheet.midlet, null, false,
+						stream);
+				setup.registerListener(this);
+				//#else
+				stream = new DataInputStream(getClass().getResourceAsStream(
+						"/predictive.trie"));
+				setup = new TrieSetup(StyleSheet.midlet, this, true, stream);
+				setup.registerListener(this);
+				//#endif
+
+				Thread thread = new Thread(setup);
+				thread.start();
+			} catch (Exception ioEx) {
+				//#debug error
+				System.out.println("Unable to download dictionary " + ioEx);
+			} finally {
+				try {
+					stream.close();
+				} catch (IOException e1) {
+					// ignore
+				}
+				try {
+					connection.close();
+				} catch (IOException e1) {
+					// ignore
+				}
+			}
+
+		}
+		//#else
+		{
+			showPredictiveInstallDialog();
+			//# return true;
+		}
+		//#endif
+
+		if (this.predictiveInput) {
+			this.predictiveInput = true;
+			this.parent.predictiveInput = true;
+			synchronize();
+		}
+
+		this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
+		this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
+		this.parent.addCommand(ADD_WORD_CMD);
 	}
 
 	/**
@@ -280,6 +343,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 			while (this.builder.deleteCurrent());
 	
 			String text = this.parent.getText();
+			System.out.println(text);
 	
 			if (text != null) {
 				String[] elements = TextUtil.split(this.parent.getText(), ' ');
@@ -433,6 +497,11 @@ public class PredictiveAccess implements TrieSetupCallback{
 		
 		this.isOpen = open;
 		this.refreshChoices = open;
+	}
+	
+	private void replaceCurrent()
+	{
+		this.builder.deleteCurrent();
 	}
 
 	/**
@@ -896,83 +965,15 @@ public class PredictiveAccess implements TrieSetupCallback{
 			showPredictiveInstallDialog();
 			return true;
 		} else if (cmd == ENABLE_PREDICTIVE_CMD) {
-			try {
-				if (!PROVIDER.isInit()) {
-					PROVIDER.init();
-				}
-
-				this.predictiveInput = true;
-			} catch (RecordStoreException e)
-			//#if (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.useLocalRMS)
-			{
-				DataInputStream stream = null;
-				TrieSetup setup = null;
-				RedirectHttpConnection connection = null;
-				
-				try {
-					//#if !polish.predictive.useLocalRMS && polish.Bugs.sharedRmsRequiresSigning
-					connection = new RedirectHttpConnection(
-							"http://dl.j2mepolish.org/predictive/index.jsp?type=local&lang=en");
-
-					stream = connection.openDataInputStream();
-
-					setup = new TrieSetup(StyleSheet.midlet, null, false,
-							stream);
-					setup.registerListener(this);
-					//#else
-					stream = new DataInputStream(getClass().getResourceAsStream(
-							"/predictive.trie"));
-					setup = new TrieSetup(StyleSheet.midlet, this, true, stream);
-					setup.registerListener(this);
-					//#endif
-	
-					Thread thread = new Thread(setup);
-					thread.start();
-				} catch (Exception ioEx) {
-					//#debug error
-					System.out.println("Unable to download dictionary " + ioEx);
-				} finally {
-					try {
-						stream.close();
-					} catch (IOException e1) {
-						// ignore
-					}
-					try {
-						connection.close();
-					} catch (IOException e1) {
-						// ignore
-					}
-				}
-
-			}
-			//#else
-			{
-				showPredictiveInstallDialog();
-				//# return true;
-			}
-			//#endif
-
-			if (!this.predictiveInput) {
-				return true;
-			} else {
-				enablePredictive();
-			}
-
-			this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
-			this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
-			this.parent.addCommand(ADD_WORD_CMD);
+			enablePredictiveInput();
 			return true;
 		} else if (cmd == DISABLE_PREDICTIVE_CMD) {
-			disablePredictive();
-
-			this.parent.removeCommand(DISABLE_PREDICTIVE_CMD);
-			this.parent.removeCommand(ADD_WORD_CMD);
-			this.parent.addCommand(ENABLE_PREDICTIVE_CMD);
+			disablePredictiveInput();
 			return true;
 		} else if (cmd == ADD_WORD_CMD) {
 			if (PROVIDER.getCustomField() == null) {
 				TextField field = new TextField(Locale.get("polish.predictive.registerNewWord.label"), "",50, TextField.ANY);
-				field.disablePredictiveInput();
+				field.getPredictiveAccess().disablePredictiveInput();
 				PROVIDER.setCustomField(field);
 				PROVIDER.getCustomForm().append(PROVIDER.getCustomField());
 			} else {
