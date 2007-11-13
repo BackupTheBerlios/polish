@@ -11,6 +11,10 @@ import de.enough.polish.util.HashMap;
 
 public class TrieProvider {
 	
+	//#if polish.Bugs.sharedRmsRequiresSigning || polish.predictive.uselocalRMS || polish.midp1
+		//#define tmp.useLocalRMS
+	//#endif
+	
 	private int type;
 	private boolean init = false;
 	
@@ -41,10 +45,10 @@ public class TrieProvider {
 	{
 		try
 		{
-			//#if polish.Bugs.sharedRmsRequiresSigning || polish.predictive.uselocalRMS
-			//#= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
+			//#if tmp.useLocalRMS
+				RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
 			//#else
-			RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0","Enough Software","PredictiveSetup");
+				RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0","Enough Software","PredictiveSetup");
 			//#endif
 			
 			return true;
@@ -57,10 +61,10 @@ public class TrieProvider {
 	
 	public void init() throws RecordStoreException
 	{	
-		//#if polish.Bugs.sharedRmsRequiresSigning || polish.predictive.uselocalRMS
-		//#= this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
+		//#if tmp.useLocalRMS
+			this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
 		//#else
-		this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0","Enough Software","PredictiveSetup");
+			this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0","Enough Software","PredictiveSetup");
 		//#endif
 		
 		this.records = new HashMap();

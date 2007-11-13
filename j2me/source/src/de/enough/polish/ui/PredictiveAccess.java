@@ -852,29 +852,30 @@ public class PredictiveAccess implements TrieSetupCallback{
 											// for predictive text:
 			if (cmd == StyleSheet.OK_CMD) {
 				//#if polish.predictive.useLocalRMS
-				DataInputStream stream = null;
-				TrieSetup setup = null;
-
-				stream = new DataInputStream(getClass().getResourceAsStream(
-						"/predictive.trie"));
-				setup = new TrieSetup(StyleSheet.midlet, this, true, stream);
-				setup.registerListener(this);
-
-				Thread thread = new Thread(setup);
-				thread.start();
-
+					DataInputStream stream = null;
+					TrieSetup setup = null;
+	
+					stream = new DataInputStream(getClass().getResourceAsStream(
+							"/predictive.trie"));
+					setup = new TrieSetup(StyleSheet.midlet, this, true, stream);
+					setup.registerListener(this);
+	
+					Thread thread = new Thread(setup);
+					thread.start();
+				//#elif  polish.Bugs.sharedRmsRequiresSigning || polish.midp1
+					//TODO ANDRE: how to install dictionary for those devices?
 				//#else
-				try {
-					boolean exitRequired = StyleSheet.midlet
-							.platformRequest("http://dl.j2mepolish.org/predictive/index.jsp?type=shared");
-					if (exitRequired) {
-						StyleSheet.midlet.notifyDestroyed();
+					try {
+						boolean exitRequired = StyleSheet.midlet
+								.platformRequest("http://dl.j2mepolish.org/predictive/index.jsp?type=shared");
+						if (exitRequired) {
+							StyleSheet.midlet.notifyDestroyed();
+						}
+					} catch (ConnectionNotFoundException e) {
+						//#debug error
+						System.out.println("Unable to load dictionary app" + e);
 					}
-				} catch (ConnectionNotFoundException e) {
-					//#debug error
-					System.out.println("Unable to load dictionary app" + e);
-				}
-				StyleSheet.display.setCurrent(this.parent.getScreen());
+					StyleSheet.display.setCurrent(this.parent.getScreen());
 				//#endif
 				return true;
 			}

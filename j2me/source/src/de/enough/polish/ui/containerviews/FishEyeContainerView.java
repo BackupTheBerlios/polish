@@ -133,12 +133,13 @@ public class FishEyeContainerView extends ContainerView {
 	 */
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		super.animate(currentTime, repaintRegion);
-
+		//#if polish.midp2
 		if (this.shownRgbDataWidths == null) {
 			//#debug error
 			System.out.println("FishEyeContainerView is animated before initContent has been called");
 			return;
 		}
+		//#endif
 		
 		boolean animated = false;
 		if (this.targetXCenterPositions != null) {
