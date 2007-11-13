@@ -1293,9 +1293,9 @@ public class Container extends Item {
 				item.init( this.contentWidth, this.contentWidth );
 			}
 			if ( item.handleKeyPressed(keyCode, gameAction) ) {
-				System.out.println("key pressed handled by focused item " + item);
 				if (item.internalX != -9999) {
 					if (this.enableScrolling) {
+						//#debug
 						System.out.println("scrolling to item.internalY=" + item.internalY );
 						scroll(gameAction, item);
 					} else  {
