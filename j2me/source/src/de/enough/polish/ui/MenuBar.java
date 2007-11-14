@@ -1619,6 +1619,10 @@ public class MenuBar extends Item {
 			item.repaint();
 		}
 	}
+
+	public Container getCommandsContainer() {
+		return commandsContainer;
+	}
 	
 //#ifdef polish.MenuBar.additionalMethods:defined
 	//#include ${polish.MenuBar.additionalMethods}

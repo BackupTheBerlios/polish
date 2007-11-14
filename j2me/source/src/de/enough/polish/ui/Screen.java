@@ -4027,6 +4027,11 @@ implements AccessibleCanvas
 		this.menuBar.setMenuItemStyle(style);
 	}
 	
+	public MenuBar getMenuBar()
+	{
+		return this.menuBar;
+	}
+	
 //#ifdef polish.Screen.additionalMethods:defined
 	//#include ${polish.Screen.additionalMethods}
 //#endif
