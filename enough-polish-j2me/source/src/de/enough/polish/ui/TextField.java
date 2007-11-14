@@ -3324,7 +3324,6 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
-		System.out.println("released");
 		this.isKeyDown = false;
 		this.deleteKeyRepeatCount = 0;
 		

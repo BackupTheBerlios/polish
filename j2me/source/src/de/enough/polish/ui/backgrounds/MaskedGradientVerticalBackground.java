@@ -33,6 +33,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.IconItem;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.ImageUtil;
 /**
@@ -67,6 +68,8 @@ public class MaskedGradientVerticalBackground  extends Background {
 	private Image mask;
 	private int maskColor;
 	private Image finalImage;
+	
+	private transient IconItem logoItem;
 	
 	private int data[];
 
@@ -140,6 +143,8 @@ public class MaskedGradientVerticalBackground  extends Background {
 	 * Paints the screen 
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
+		int originalX = x;
+		int originalY = y;
 		if (this.finalImage == null) {
 			int delta = this.mask.getHeight() % 2;
 						
@@ -190,7 +195,17 @@ public class MaskedGradientVerticalBackground  extends Background {
 				g.drawImage(this.finalImage, x, y, this.anchor );
 			}
 		}
+		
+		if(this.logoItem != null)
+		{
+			int leftBorder = originalX + this.finalImage.getWidth() - this.logoItem.getItemWidth(this.finalImage.getWidth(), this.finalImage.getWidth());
+			int rightBorder = originalX + this.finalImage.getWidth();
+			
+			this.logoItem.paint(leftBorder, originalY , leftBorder, rightBorder, g);
+		}
 	}
+	
+	
 	
 	public void getMaskData()
 	{
@@ -229,5 +244,13 @@ public class MaskedGradientVerticalBackground  extends Background {
 		}
 		
 		return DrawUtil.getGradient( topColor, bottomColor, steps );
+	}
+
+	public IconItem getLogoItem() {
+		return logoItem;
+	}
+
+	public void setLogoItem(IconItem logoItem) {
+		this.logoItem = logoItem;
 	}
 }
