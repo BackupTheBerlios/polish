@@ -25,12 +25,9 @@
  */
 package com.izforge.izpack.panels;
 
-import java.awt.BorderLayout;
-import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -43,7 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * <p></p>
+ * <p>Allows the user to enter a single property that relates to a path or file.</p>
  *
  * <p>Copyright Enough Software 2006</p>
  * <pre>
@@ -85,7 +82,7 @@ public class FilePropertyPanel extends JPanel implements ActionListener {
 	    GridBagConstraints constraints = new GridBagConstraints();
 	    constraints.insets.top = 2; constraints.insets.left=1; constraints.insets.bottom=0; constraints.insets.right=1;
 	    constraints.fill = GridBagConstraints.HORIZONTAL;
-	    constraints.anchor = GridBagConstraints.SOUTHWEST;
+	    constraints.anchor = GridBagConstraints.LINE_START;
 
 		
 		// init view:
