@@ -207,8 +207,10 @@ public class PredictiveAccess implements TrieSetupCallback{
 					PROVIDER.init();
 				}
 				
+				//#if polish.TextField.predictive.showCommands
 				this.parent.addCommand(ADD_WORD_CMD);
 				this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
+				//#endif
 				
 				this.builder = new TrieTextBuilder(this.parent.getMaxSize());
 	
@@ -242,9 +244,11 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 	
 	public void disablePredictiveInput() {
+		//#if polish.TextField.predictive.showCommands
 		this.parent.addCommand(PredictiveAccess.ENABLE_PREDICTIVE_CMD);
 		this.parent.removeCommand(PredictiveAccess.DISABLE_PREDICTIVE_CMD);
 		this.parent.removeCommand(PredictiveAccess.ADD_WORD_CMD);
+		//#endif
 
 		this.predictiveInput = false;
 		this.parent.predictiveInput = false;
@@ -324,9 +328,11 @@ public class PredictiveAccess implements TrieSetupCallback{
 			synchronize();
 		}
 
+		//#if polish.TextField.predictive.showCommands
 		this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
 		this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
 		this.parent.addCommand(ADD_WORD_CMD);
+		//#endif
 	}
 
 	/**

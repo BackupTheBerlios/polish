@@ -28,6 +28,7 @@ package de.enough.polish.ui;
 
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 import javax.microedition.lcdui.Canvas;
@@ -124,6 +125,8 @@ public class MenuBar extends Item {
 	//#endif
 	protected final Hashtable allCommands;
 	protected boolean isOrientationVertical;
+	
+	protected Style menuItemStyle;
 
 	/**
 	 * Creates a new menu bar
@@ -168,8 +171,15 @@ public class MenuBar extends Item {
 	}
 
 	public void addCommand(Command cmd) {
-		//#style menuitem, menu, default
-		addCommand( cmd );		
+		if(this.menuItemStyle != null)
+		{
+			addCommand(cmd, this.menuItemStyle);
+		}
+		else
+		{
+			//#style menuitem, menu, default
+			addCommand( cmd );
+		}
 	}
 	
 	public void addCommand(Command cmd, Style commandStyle) {
@@ -1329,6 +1339,7 @@ public class MenuBar extends Item {
 					this.commandsContainer.setStyle(menuStyle);
 				}
 			//#endif
+				
 		//#endif
 	}
 	
@@ -1358,8 +1369,16 @@ public class MenuBar extends Item {
 	 * @see #addSubCommand(Command, Command, Style)
 	 */
 	public void addSubCommand(Command childCommand, Command parentCommand) {
-		//#style menuitem, menu, default
-		addSubCommand(childCommand, parentCommand);		
+		System.out.println("addCommand");
+		if(this.menuItemStyle != null)
+		{
+			addSubCommand(childCommand, parentCommand, this.menuItemStyle);
+		}
+		else
+		{
+			//#style menuitem, menu, default
+			addSubCommand(childCommand, parentCommand);
+		}		
 	}
 
 	/**
@@ -1582,9 +1601,24 @@ public class MenuBar extends Item {
 	public int size() {
 		return this.allCommands.size();
 	}
+	
+	public Style getMenuItemStyle()
+	{
+		return this.menuItemStyle;
+	}
 
-	
-	
+	public void setMenuItemStyle(Style menuItemStyle) {
+		this.menuItemStyle = menuItemStyle;
+		Enumeration enumerator = this.allCommands.elements();
+		
+		while(enumerator.hasMoreElements())
+		{
+			CommandItem item = (CommandItem) enumerator.nextElement();
+			System.out.println(item);
+			item.setStyle(menuItemStyle);
+			item.repaint();
+		}
+	}
 	
 //#ifdef polish.MenuBar.additionalMethods:defined
 	//#include ${polish.MenuBar.additionalMethods}

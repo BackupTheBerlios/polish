@@ -2741,8 +2741,16 @@ implements AccessibleCanvas
 	 * @see javax.microedition.lcdui.Displayable#addCommand(javax.microedition.lcdui.Command)
 	 */
 	public void addCommand(Command cmd) {
-		//#style menuitem, menu, default
-		addCommand( cmd );
+		Style menuItemStyle = this.menuBar.getMenuItemStyle();
+		if(menuItemStyle != null)
+		{
+			addCommand(cmd, menuItemStyle);
+		}
+		else
+		{
+			//#style menuitem, menu, default
+			addCommand( cmd );
+		}
 	}
 	//#endif
 	
@@ -4013,7 +4021,11 @@ implements AccessibleCanvas
 		}
 		return this.contentWidth;
 	}
-
+	
+	public void setMenuItemStyle(Style style)
+	{
+		this.menuBar.setMenuItemStyle(style);
+	}
 	
 //#ifdef polish.Screen.additionalMethods:defined
 	//#include ${polish.Screen.additionalMethods}
