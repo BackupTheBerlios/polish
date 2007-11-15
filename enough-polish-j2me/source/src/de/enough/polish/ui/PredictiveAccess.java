@@ -25,12 +25,12 @@ import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Locale;
 import de.enough.polish.util.TextUtil;
 
-//#if polish.predictive.useLocalRMS
-import de.enough.polish.predictive.trie.TrieSetup;
+//#if polish.predictive.useLocalRMS || polish.Bugs.sharedRmsRequiresSigning || polish.predictive.Setup
+	import de.enough.polish.predictive.trie.TrieSetup;
 //#endif
 
 //#if polish.blackberry
-import de.enough.polish.blackberry.ui.PolishEditField;
+	import de.enough.polish.blackberry.ui.PolishEditField;
 //#endif
 
 public class PredictiveAccess implements TrieSetupCallback{

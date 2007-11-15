@@ -2655,7 +2655,7 @@ public class TextField extends StringItem
 						
 						//#if polish.TextField.usePredictiveInput
 						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-						//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
+						//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) 
 						//#else
 						if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable)
 						//#endif
@@ -3335,7 +3335,7 @@ public class TextField extends StringItem
 
 		//#if polish.TextField.usePredictiveInput
 		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-		//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) {
+		//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) )
 		//#else
 		if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable)
 		//#endif
