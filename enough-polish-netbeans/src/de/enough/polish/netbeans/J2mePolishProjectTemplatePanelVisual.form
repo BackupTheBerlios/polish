@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+<Form version="1.3" maxVersion="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="2"/>
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
@@ -14,27 +17,22 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="projectNameLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="projectNameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="projectLocationLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="createdFolderLabel" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="projectNameTextField" alignment="1" pref="246" max="32767" attributes="0"/>
-                          <Component id="projectLocationTextField" alignment="1" pref="246" max="32767" attributes="0"/>
-                          <Component id="createdFolderTextField" alignment="1" pref="246" max="32767" attributes="0"/>
-                          <Component id="j2mePolishLocationTextField" pref="246" max="32767" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="browseButton" min="-2" max="-2" attributes="0"/>
-                          <Component id="browseForJ2mePolishButton" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Component id="downloadJ2mePolishButton" alignment="1" min="-2" max="-2" attributes="0"/>
+                  <Component id="projectNameLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="projectNameLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="projectLocationLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="createdFolderLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="projectNameTextField" alignment="1" pref="246" max="32767" attributes="0"/>
+                  <Component id="projectLocationTextField" alignment="1" pref="246" max="32767" attributes="0"/>
+                  <Component id="createdFolderTextField" alignment="1" pref="246" max="32767" attributes="0"/>
+                  <Component id="j2mePolishLocationTextField" pref="246" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="browseButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="browseForJ2mePolishButton" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -65,9 +63,7 @@
                   <Component id="browseForJ2mePolishButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="j2mePolishLocationTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="downloadJ2mePolishButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="151" max="32767" attributes="0"/>
+              <EmptySpace pref="180" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -142,11 +138,6 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="browseForJ2mePolishButtonActionPerformed"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="downloadJ2mePolishButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Download J2ME Polish"/>
-      </Properties>
     </Component>
   </SubComponents>
 </Form>
