@@ -4022,15 +4022,19 @@ implements AccessibleCanvas
 		return this.contentWidth;
 	}
 	
+	//#ifdef tmp.useExternalMenuBar
 	public void setMenuItemStyle(Style style)
 	{
 		this.menuBar.setMenuItemStyle(style);
 	}
+	//#endif
 	
+	//#ifdef tmp.useExternalMenuBar
 	public MenuBar getMenuBar()
 	{
 		return this.menuBar;
 	}
+	//#endif
 	
 //#ifdef polish.Screen.additionalMethods:defined
 	//#include ${polish.Screen.additionalMethods}
