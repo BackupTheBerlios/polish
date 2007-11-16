@@ -2741,16 +2741,20 @@ implements AccessibleCanvas
 	 * @see javax.microedition.lcdui.Displayable#addCommand(javax.microedition.lcdui.Command)
 	 */
 	public void addCommand(Command cmd) {
-		Style menuItemStyle = this.menuBar.getMenuItemStyle();
-		if(menuItemStyle != null)
-		{
-			addCommand(cmd, menuItemStyle);
-		}
-		else
-		{
+		//#if tmp.useExternalMenuBar 
+			Style menuItemStyle = this.menuBar.getMenuItemStyle();
+			if(menuItemStyle != null)
+			{
+				addCommand(cmd, menuItemStyle);
+			}
+			else
+			{
+		//#endif
 			//#style menuitem, menu, default
 			addCommand( cmd );
-		}
+		//#if tmp.useExternalMenuBar 
+			}
+		//#endif
 	}
 	//#endif
 	
