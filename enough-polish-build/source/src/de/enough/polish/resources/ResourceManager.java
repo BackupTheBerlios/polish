@@ -344,7 +344,12 @@ public class ResourceManager {
 		if (directories != null) {
 			return directories;
 		}
+		if (this.resourceDirectories == null) {
+			System.out.println("Error: resourceDirectories == null, resourceSetting=" + this.resourceSetting + ", resourceSetting.getRootDirs=" +  (this.resourceSetting == null ? "null" : "" + this.resourceSetting.getRootDirectories(this.environment)));
+			this.resourceDirectories = this.resourceSetting.getRootDirectories(this.environment);
+		}
 		ArrayList dirs = new ArrayList();
+		
 		for (int j = 0; j < this.resourceDirectories.length; j++) {
 			RootSetting rootSetting = this.resourceDirectories[j];
 			if (rootSetting.isIncludeSubDirs()) {

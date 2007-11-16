@@ -368,7 +368,7 @@ public class Environment {
 		// this.temporarySymbols.get(name) != null) );
 		// }
 		return (this.symbols.get(name) != null || this.temporarySymbols
-				.get(name) != null);
+				.get(name) != null) || "true".equals(getVariable(name));
 	}
 
 	public void addTemporarySymbol(String name) {

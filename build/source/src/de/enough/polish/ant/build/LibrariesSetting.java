@@ -72,6 +72,24 @@ public class LibrariesSetting extends Setting {
 		this.libraries.add( setting );
 	}
 	
+	/**
+	 * Adds a library to this setting.
+	 * @param path the path to the library
+	 */
+	public void addLibrary(File path)
+	{
+		if (!path.exists()) {
+			throw new BuildException("Library path \"" + path.getAbsolutePath() + "\" does not exist.");
+		}
+		LibrarySetting setting = new LibrarySetting();
+		if (path.isDirectory()) { 
+			setting.setDir( path );
+		} else {
+			setting.setFile( path );
+		}
+		addConfiguredLibrary(setting);
+	}
+	
 	public LibrarySetting[] getLibraries() {
 		LibrarySetting[] libs = new LibrarySetting[ this.libraries.size() ];
 		this.libraries.toArray( libs );
@@ -115,5 +133,7 @@ public class LibrariesSetting extends Setting {
 		}
 		return updated;
 	}
+
+
 
 }

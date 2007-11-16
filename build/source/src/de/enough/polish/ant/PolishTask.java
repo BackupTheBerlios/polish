@@ -57,6 +57,7 @@ import org.apache.tools.ant.types.Path;
 
 import de.enough.polish.Attribute;
 import de.enough.polish.BooleanEvaluator;
+import de.enough.polish.ConfigurationManager;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
@@ -250,6 +251,7 @@ public class PolishTask extends ConditionalTask {
 	private StringList styleCacheCode;
 
 	private Map licensingInformation;
+	private ConfigurationManager configurationManager;
 
 
 	
@@ -1204,6 +1206,13 @@ public class PolishTask extends ConditionalTask {
 			System.err.println("Warning: unable to replace Ant-logger. Compile errors will point to the preprocessed files instead of the original sources.");
 		}		
 		
+		// initialize configurations:
+		String configurationClassName = getProject().getProperty("polish.build.configuration.class");
+		if (configurationClassName != null) {
+			this.configurationManager = new ConfigurationManager();
+			this.configurationManager.addConfiguration( configurationClassName, getProject().getProperty("polish.build.configuration.path"), this, this.environment );
+		}
+		
 		// initialize polish build listeners:
 		ArrayList polishBuildListenersList = new ArrayList();
 		String classDefs = getProject().getProperty( PolishBuildListener.ANT_PROPERTY_NAME );
@@ -1438,6 +1447,9 @@ public class PolishTask extends ConditionalTask {
 	
 	
 	public void initialize( Device device, Locale locale ) {
+		if (this.configurationManager != null) {
+			this.configurationManager.preInitialize( device, locale, this.environment );
+		}
 		this.extensionManager.preInitialize(device, locale);
 		// intialise the environment
 		this.environment.initialize(device, locale);
@@ -1646,6 +1658,9 @@ public class PolishTask extends ConditionalTask {
 		// get the resource manager:
 		this.resourceManager.initialize( this.environment );
 		
+		if (this.configurationManager != null) {
+			this.configurationManager.postInitialize( device, locale, this.environment );
+		}
 		//TODO call initialialize on all active extensions
 		// add settings of active postcompilers:
 		// let postcompilers adjust the bootclasspath:
@@ -2963,6 +2978,40 @@ public class PolishTask extends ConditionalTask {
 				}
 			}
 		}
+	}
+
+	/**
+	 * @param path
+	 */
+	public void addBinaryLibrary(File path)
+	{
+		if (this.buildSetting.getBinaryLibraries() == null) {
+			this.buildSetting.createLibraries();
+		}
+		this.buildSetting.getBinaryLibraries().addLibrary( path );
+		this.binaryLibrariesUpdated = true;
+	}
+
+	/**
+	 * @param path
+	 */
+	public void addSourceDir(File path)
+	{
+		DirectoryScanner dirScanner = new DirectoryScanner();
+		dirScanner.setBasedir(path);
+		dirScanner.scan();
+		TextFile[][] newSourceFiles = new TextFile[ this.sourceFiles.length + 1][];
+		System.arraycopy( this.sourceFiles, 0, newSourceFiles, 0, this.sourceFiles.length );
+		newSourceFiles[ this.sourceFiles.length ] = getTextFiles( path,  dirScanner.getIncludedFiles(), this.preprocessor.getTextFileManager() );
+		this.sourceFiles = newSourceFiles;
+		
+		SourceSetting[] newSourceSettings = new SourceSetting[ this.sourceSettings.length + 1];
+		System.arraycopy( this.sourceSettings, 0, newSourceSettings, 0, this.sourceSettings.length);
+		SourceSetting setting = new SourceSetting();
+		setting.setDir(path);
+		newSourceSettings[this.sourceSettings.length] = setting;
+		this.sourceSettings = newSourceSettings;
+		
 	}
 	
 
