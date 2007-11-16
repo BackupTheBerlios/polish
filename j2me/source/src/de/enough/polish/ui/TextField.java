@@ -38,10 +38,11 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-
-import de.enough.polish.predictive.TextBuilder;
-import de.enough.polish.predictive.trie.TrieProvider;
-import de.enough.polish.predictive.trie.TrieSetup;
+//#if polish.TextField.useDirectInput && polish.TextField.usePredictiveInput
+	import de.enough.polish.predictive.TextBuilder;
+	import de.enough.polish.predictive.trie.TrieProvider;
+	//import de.enough.polish.predictive.trie.TrieSetup;
+//#endif
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.Locale;
@@ -50,7 +51,7 @@ import de.enough.polish.util.Locale;
 	import de.enough.polish.blackberry.ui.PolishTextField;
 	import de.enough.polish.blackberry.ui.PolishEditField;
 	import de.enough.polish.blackberry.ui.PolishPasswordEditField;
-import de.enough.polish.doja.rms.RecordStoreException;
+	import de.enough.polish.doja.rms.RecordStoreException;
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
 	import net.rim.device.api.ui.UiApplication;
