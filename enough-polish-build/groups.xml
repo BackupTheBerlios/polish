@@ -224,6 +224,7 @@
 	<group>
 		<name>Series60E3FP1</name>
 		<parent>Series60E3</parent>
+		<capability name="IconSize" value="32x32" />
 		<capability name="Emulator.Skin" value="S60_3rd_MIDP_SDK_FP1" />
 		<capability name="Emulator.Skin.2" value="\Devices\S60_3rd_MIDP_SDK_FP1" />
 	</group>
@@ -391,6 +392,7 @@
 		<capability name="FullCanvasSize" value="176x220" />
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="Bugs" value="usesVideoRam" />
+		<capability name="key.ReturnKey" value="-11"/>
 		<capability name="key.ReturnKey" value="-11"/>
 	</group>
 
