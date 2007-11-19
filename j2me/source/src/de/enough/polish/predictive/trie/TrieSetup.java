@@ -1,9 +1,11 @@
-//#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput && (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.useLocalRMS || polish.predictive.Setup)
+//#condition polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput
 package de.enough.polish.predictive.trie;
 
 import java.io.DataInputStream;
+import java.io.IOException;
 import java.util.Vector;
 
+import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -16,19 +18,17 @@ import javax.microedition.lcdui.StringItem;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.rms.RecordStore;
 
+import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.util.Locale;
 import de.enough.polish.ui.PredictiveAccess;
+import de.enough.polish.ui.StyleSheet;
 
 public class TrieSetup 
 implements Runnable, CommandListener
 {
-	private Displayable returnTo;
 	private PredictiveAccess parent;
-	private MIDlet parentMidlet;
-	
 	private Vector listeners;
 	
-	DataInputStream stream = null;
 	TrieInstaller installer = null;
 	
 	protected Command exitCommand = new Command( Locale.get("polish.predictive.setup.cmd.exit"), Command.EXIT, 0 );
@@ -39,28 +39,31 @@ implements Runnable, CommandListener
 	
 	List list = null;
 	
-	Form form = null;
+	Form setupForm = null;
 	
 	StringItem info = null;
 	StringItem status = null;
 	StringItem error = null;
 	Gauge gauge = null;
 		
+	Alert infoAlert = null;
+	Alert cancelAlert = null;
+	
 	boolean pause = false;
 	
-	public TrieSetup(MIDlet parentMidlet, PredictiveAccess access, boolean showGauge, DataInputStream stream)
+	public TrieSetup(PredictiveAccess access)
 	{
-		this.parentMidlet = parentMidlet;
 		this.parent = access;
-		
-		this.stream = stream;
-		
+	}
+	
+	public void initForm()
+	{
 		//#style setupForm?
-		this.form = new Form( null );
+		this.setupForm = new Form( null );
 		
 		//#if polish.predictive.setup.showCommands
-		this.form.addCommand( this.cancelCommand );
-		this.form.setCommandListener( this );
+		this.setupForm.addCommand( this.cancelCommand );
+		this.setupForm.setCommandListener( this );
 		//#endif
 		
 		this.info = new StringItem("",Locale.get("polish.predictive.setup.info"));
@@ -69,18 +72,37 @@ implements Runnable, CommandListener
 		this.gauge = new Gauge("",true,100,0);
 		
 		//#style setupIntro?
-		this.form.append(this.info);
+		this.setupForm.append(this.info);
 		
-		if(showGauge)
-		{
+		//#if !polish.Bugs.sharedRmsRequiresSigning
 			//#style setupGauge?
-			this.form.append(this.gauge);
-		}
+			this.setupForm.append(this.gauge);
+		//#endif
 		
 		//#style setupStatus?
-		this.form.append(this.status);
+		this.setupForm.append(this.status);
 		//#style setupError?
-		this.form.append(this.error);
+		this.setupForm.append(this.error);
+	}
+	
+	public DataInputStream getStream()
+	{
+		RedirectHttpConnection connection = null;
+		
+		try {
+			//#if !polish.predictive.useLocalRMS && polish.Bugs.sharedRmsRequiresSigning
+			connection = new RedirectHttpConnection(
+					"http://dl.j2mepolish.org/predictive/index.jsp?type=local&lang=en");
+
+			return connection.openDataInputStream();
+			//#else
+			//# return new DataInputStream(getClass().getResourceAsStream("/predictive.trie"));
+			//#endif
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("Unable to download dictionary " + e);
+			return null;
+		} 
 	}
 	
 	public void pause()
@@ -111,10 +133,12 @@ implements Runnable, CommandListener
 	
 	public void run()
 	{
-		Display.getDisplay(this.parentMidlet).setCurrent(this.form);
+		initForm();
+		StyleSheet.display.setCurrent(this.setupForm);
 		
 		try {
-			this.installer = new TrieInstaller(this.stream);
+			DataInputStream stream = getStream();
+			this.installer = new TrieInstaller(stream);
 			
 			this.status.setText(Locale.get("polish.predictive.setup.status.delete"));
 			
@@ -131,7 +155,7 @@ implements Runnable, CommandListener
 			
 			this.status.setText(Locale.get("polish.predictive.setup.status.install"));
 			
-			int totalBytes = this.stream.available();
+			int totalBytes = stream.available();
 			this.gauge.setMaxValue(totalBytes);
 			
 			byte[] nodes;
@@ -166,9 +190,9 @@ implements Runnable, CommandListener
 					}
 				}
 					
-				nodes = this.installer.getRecords(this.stream, this.installer.getLineCount());
+				nodes = this.installer.getRecords(stream, this.installer.getLineCount());
 				
-				this.gauge.setValue(totalBytes - this.stream.available());
+				this.gauge.setValue(totalBytes - stream.available());
 				
 				count++;
 				
@@ -184,8 +208,8 @@ implements Runnable, CommandListener
 							this.wait();
 						}
 						
-						//#if !polish.Bugs.sharedRmsRequiresSigning || !polish.predictive.useLocalRMS
-						//#= store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
+						//#if !polish.Bugs.sharedRmsRequiresSigning && !polish.predictive.useLocalRMS
+						//# store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true, RecordStore.AUTHMODE_ANY, true);
 						//#else
 						store = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_" + storeID, true);
 						//#endif
@@ -194,15 +218,15 @@ implements Runnable, CommandListener
 					this.pause = false;
 				}
 				
-			}while(this.stream.available() > 0);
+			}while(stream.available() > 0);
 			
 			store.closeRecordStore();
 			
 			this.status.setText(Locale.get("polish.predictive.setup.status.finished"));
 			
 			//#if polish.predictive.setup.showCommands
-			this.form.removeCommand( this.cancelCommand );
-			this.form.addCommand( this.exitCommand );
+			this.setupForm.removeCommand( this.cancelCommand );
+			this.setupForm.addCommand( this.exitCommand );
 			//#endif
 			
 			//#if polish.predictive.useLocalRMS
@@ -220,9 +244,20 @@ implements Runnable, CommandListener
 			this.status.setText(e.getMessage());
 			
 			//#if polish.predictive.setup.showCommands
-			this.form.removeCommand( this.cancelCommand );
-			this.form.addCommand( this.exitCommand );
+			this.setupForm.removeCommand( this.cancelCommand );
+			this.setupForm.addCommand( this.exitCommand );
 			//#endif
+			
+			Alert alert = new Alert("error");
+			alert.setString(e.getMessage());
+			StyleSheet.display.setCurrent(alert);
+			
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			
 			
 			e.printStackTrace();
 			
@@ -230,8 +265,29 @@ implements Runnable, CommandListener
 		}
 	}
 
-	public Form getForm() {
-		return this.form;
+	public Form getSetupForm() {
+		return this.setupForm;
+	}
+	
+	public void showInfo()
+	{
+		//#style predictiveInstallDialog?
+		this.infoAlert = new Alert(Locale.get("polish.predictive.download.title"));
+		
+		//#if polish.predictive.useLocalRMS
+			//#style predictiveInstallMessage?
+			this.infoAlert.setString(Locale.get("polish.predictive.local.message"));
+		//#else
+			//#style predictiveInstallMessage?
+			this.infoAlert.setString(Locale.get("polish.predictive.download.message") );
+		//#endif
+
+		this.infoAlert.addCommand(StyleSheet.CANCEL_CMD);
+		this.infoAlert.addCommand(StyleSheet.OK_CMD);
+
+		this.infoAlert.setCommandListener(this);
+
+		StyleSheet.display.setCurrent(this.infoAlert);
 	}
 	
 	/* (non-Javadoc)
@@ -240,22 +296,22 @@ implements Runnable, CommandListener
 	public void commandAction(Command cmd, Displayable disp) {
 		if (cmd == this.cancelCommand) {
 			//#style setupForm?
-			Alert cancel = new Alert( null );
+			this.cancelAlert = new Alert( null );
 			
-			cancel.setString(Locale.get("polish.predictive.setup.cancel"));
-			cancel.addCommand(this.yesCommand);
-			cancel.addCommand(this.noCommand);
+			this.cancelAlert.setString(Locale.get("polish.predictive.setup.cancel"));
+			this.cancelAlert.addCommand(this.yesCommand);
+			this.cancelAlert.addCommand(this.noCommand);
 			
-			cancel.setCommandListener(this);
+			this.cancelAlert.setCommandListener(this);
 			
 			this.pause();
 			
-			Display.getDisplay(this.parentMidlet).setCurrent(cancel);
+			StyleSheet.display.setCurrent(this.cancelAlert);
 		} else if (cmd == this.exitCommand) {
 			runCallback(true);
 		} 
 		
-		if(disp instanceof Alert)
+		if(disp == this.cancelAlert)
 		{
 			if(cmd == this.yesCommand)
 			{
@@ -267,7 +323,32 @@ implements Runnable, CommandListener
 					this.notify();
 				}
 				
-				Display.getDisplay(this.parentMidlet).setCurrent(this.form);
+				StyleSheet.display.setCurrent(this.setupForm);
+			}
+		}
+		
+		if(disp == this.infoAlert)
+		{
+			if(cmd == StyleSheet.OK_CMD)
+			{
+				//#if polish.predictive.useLocalRMS || polish.Bugs.sharedRmsRequiresSigning || polish.midp1
+					registerListener(this.parent);
+					Thread thread = new Thread(this);
+					thread.start();
+				//#else
+					try {
+						StyleSheet.midlet.platformRequest("http://dl.j2mepolish.org/predictive/index.jsp?type=shared");
+						StyleSheet.midlet.notifyDestroyed();
+					} catch (ConnectionNotFoundException e) {
+						//#debug error
+						System.out.println("Unable to load dictionary app" + e);
+					}
+					StyleSheet.display.setCurrent(this.parent.getParent().getScreen());
+				//#endif
+			} 
+			else if(cmd == StyleSheet.CANCEL_CMD)
+			{
+				StyleSheet.display.setCurrent(this.parent.getParent().getScreen());
 			}
 		}
 	}

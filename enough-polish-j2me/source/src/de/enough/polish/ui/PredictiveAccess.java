@@ -24,10 +24,7 @@ import de.enough.polish.predictive.trie.TrieTextBuilder;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Locale;
 import de.enough.polish.util.TextUtil;
-
-//#if polish.predictive.useLocalRMS || polish.Bugs.sharedRmsRequiresSigning || polish.predictive.Setup
-	import de.enough.polish.predictive.trie.TrieSetup;
-//#endif
+import de.enough.polish.predictive.trie.TrieSetup;
 
 //#if polish.blackberry
 	import de.enough.polish.blackberry.ui.PolishEditField;
@@ -35,7 +32,6 @@ import de.enough.polish.util.TextUtil;
 
 public class PredictiveAccess implements TrieSetupCallback{
 	private TextField parent;
-
 	
 	public static final int ORIENTATION_BOTTOM = 0;
 
@@ -140,6 +136,8 @@ public class PredictiveAccess implements TrieSetupCallback{
 	
 	String info;
 	
+	TrieSetup setup;
+	
 	public PredictiveAccess() {
 		//#style predictiveWordNotFound?
 		this.alert = new Alert(null);
@@ -207,8 +205,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 					PROVIDER.init();
 				}
 				
-				//#if polish.TextField.predictive.showCommands
 				this.parent.addCommand(ADD_WORD_CMD);
+				
+				//#if polish.TextField.predictive.showCommands
 				this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
 				//#endif
 				
@@ -247,8 +246,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 		//#if polish.TextField.predictive.showCommands
 		this.parent.addCommand(PredictiveAccess.ENABLE_PREDICTIVE_CMD);
 		this.parent.removeCommand(PredictiveAccess.DISABLE_PREDICTIVE_CMD);
-		this.parent.removeCommand(PredictiveAccess.ADD_WORD_CMD);
 		//#endif
+		
+		this.parent.removeCommand(PredictiveAccess.ADD_WORD_CMD);
 
 		this.predictiveInput = false;
 		this.parent.predictiveInput = false;
@@ -265,7 +265,6 @@ public class PredictiveAccess implements TrieSetupCallback{
 	
 	public void enablePredictiveInput()
 	{
-
 		try {
 			if (!PROVIDER.isInit()) {
 				PROVIDER.init();
@@ -273,54 +272,10 @@ public class PredictiveAccess implements TrieSetupCallback{
 
 			this.predictiveInput = true;
 		} catch (RecordStoreException e)
-		//#if (polish.Bugs.sharedRmsRequiresSigning || polish.predictive.useLocalRMS)
 		{
-			DataInputStream stream = null;
-			TrieSetup setup = null;
-			RedirectHttpConnection connection = null;
-			
-			try {
-				//#if !polish.predictive.useLocalRMS && polish.Bugs.sharedRmsRequiresSigning
-				connection = new RedirectHttpConnection(
-						"http://dl.j2mepolish.org/predictive/index.jsp?type=local&lang=en");
-
-				stream = connection.openDataInputStream();
-
-				setup = new TrieSetup(StyleSheet.midlet, null, false,
-						stream);
-				setup.registerListener(this);
-				//#else
-				stream = new DataInputStream(getClass().getResourceAsStream(
-						"/predictive.trie"));
-				setup = new TrieSetup(StyleSheet.midlet, this, true, stream);
-				setup.registerListener(this);
-				//#endif
-
-				Thread thread = new Thread(setup);
-				thread.start();
-			} catch (Exception ioEx) {
-				//#debug error
-				System.out.println("Unable to download dictionary " + ioEx);
-			} finally {
-				try {
-					stream.close();
-				} catch (IOException e1) {
-					// ignore
-				}
-				try {
-					connection.close();
-				} catch (IOException e1) {
-					// ignore
-				}
-			}
-
+			System.out.println("unable to enable predictive input");
+			return;
 		}
-		//#else
-		{
-			showPredictiveInstallDialog();
-			//# return true;
-		}
-		//#endif
 
 		if (this.predictiveInput) {
 			this.predictiveInput = true;
@@ -331,8 +286,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 		//#if polish.TextField.predictive.showCommands
 		this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
 		this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
-		this.parent.addCommand(ADD_WORD_CMD);
 		//#endif
+		
+		this.parent.addCommand(ADD_WORD_CMD);
 	}
 
 	/**
@@ -923,38 +879,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 			}
 			StyleSheet.display.setCurrent(this.parent.getScreen());
 			return true;
-		} else if (box instanceof Alert) { // this is the installation dialog
-											// for predictive text:
-			if (cmd == StyleSheet.OK_CMD) {
-				//#if polish.predictive.useLocalRMS
-					DataInputStream stream = null;
-					TrieSetup setup = null;
-	
-					stream = new DataInputStream(getClass().getResourceAsStream(
-							"/predictive.trie"));
-					setup = new TrieSetup(StyleSheet.midlet, this, true, stream);
-					setup.registerListener(this);
-	
-					Thread thread = new Thread(setup);
-					thread.start();
-				//#elif  polish.Bugs.sharedRmsRequiresSigning || polish.midp1
-					//TODO ANDRE: how to install dictionary for those devices?
-				//#else
-					try {
-						boolean exitRequired = StyleSheet.midlet
-								.platformRequest("http://dl.j2mepolish.org/predictive/index.jsp?type=shared");
-						if (exitRequired) {
-							StyleSheet.midlet.notifyDestroyed();
-						}
-					} catch (ConnectionNotFoundException e) {
-						//#debug error
-						System.out.println("Unable to load dictionary app" + e);
-					}
-					StyleSheet.display.setCurrent(this.parent.getScreen());
-				//#endif
-				return true;
-			}
-		}
+		} 
 
 		return false;
 	}
@@ -968,7 +893,8 @@ public class PredictiveAccess implements TrieSetupCallback{
 			this.parent.notifyStateChanged();
 			return true;
 		} else if (cmd == INSTALL_PREDICTIVE_CMD) {
-			showPredictiveInstallDialog();
+			this.setup = new TrieSetup(this);
+			this.setup.showInfo();
 			return true;
 		} else if (cmd == ENABLE_PREDICTIVE_CMD) {
 			enablePredictiveInput();
@@ -991,28 +917,6 @@ public class PredictiveAccess implements TrieSetupCallback{
 		}
 
 		return false;
-	}
-
-	private void showPredictiveInstallDialog() {
-		Alert predictiveDowload;
-		//#if polish.predictive.useLocalRMS
-			//#style predictiveInstallDialog?
-			predictiveDowload = new Alert(Locale.get("polish.predictive.local.title"));
-			//#style predictiveInstallMessage?
-			predictiveDowload.setString(Locale.get("polish.predictive.local.message"));
-		//#else
-			//#style predictiveInstallDialog?
-			predictiveDowload = new Alert(Locale.get("polish.predictive.download.title"));
-			//#style predictiveInstallMessage?
-			predictiveDowload.setString(Locale.get("polish.predictive.download.message") );
-		//#endif
-
-		predictiveDowload.addCommand(StyleSheet.CANCEL_CMD);
-		predictiveDowload.addCommand(StyleSheet.OK_CMD);
-
-		predictiveDowload.setCommandListener(this.parent);
-
-		StyleSheet.display.setCurrent(predictiveDowload);
 	}
 
 	public TextBuilder getBuilder() {
@@ -1105,6 +1009,21 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 
 	public void setupFinished(boolean finishedGraceful) {
+		if(finishedGraceful)
+		{
+			System.out.println("finished gracefully");
+			initPredictiveInput(null);
+			enablePredictiveInput();
+		}
+		
 		StyleSheet.display.setCurrent(this.parent.getScreen());
+	}
+
+	public TextField getParent() {
+		return parent;
+	}
+
+	public void setParent(TextField parent) {
+		this.parent = parent;
 	}
 }

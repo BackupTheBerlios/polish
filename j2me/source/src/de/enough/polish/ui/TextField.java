@@ -3245,7 +3245,6 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#handleKeyRepeated(int, int)
 	 */
 	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
-		System.out.println("repeated");
 		//#debug
 		System.out.println("TextField.handleKeyRepeated( " + keyCode + ")");
 		if (keyCode >= Canvas.KEY_NUM0 
@@ -3734,7 +3733,6 @@ public class TextField extends StringItem
 	//#endif
 		
 	//#if polish.TextField.usePredictiveInput && tmp.directInput
-	
 	public PredictiveAccess getPredictiveAccess() {
 		return this.predictiveAccess;
 	}
