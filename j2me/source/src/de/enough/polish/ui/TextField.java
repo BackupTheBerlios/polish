@@ -51,7 +51,6 @@ import de.enough.polish.util.Locale;
 	import de.enough.polish.blackberry.ui.PolishTextField;
 	import de.enough.polish.blackberry.ui.PolishEditField;
 	import de.enough.polish.blackberry.ui.PolishPasswordEditField;
-	import de.enough.polish.doja.rms.RecordStoreException;
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
 	import net.rim.device.api.ui.UiApplication;
