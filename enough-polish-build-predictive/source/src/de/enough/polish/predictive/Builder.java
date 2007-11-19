@@ -7,7 +7,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Vector;
@@ -22,7 +21,7 @@ public class Builder extends Task {
 	public static int TYPE_FILE = 0;
 	
 	private String source;
-	private String directory;
+	private String language;
 	
 	private int magic;
 	private int version;
@@ -40,8 +39,8 @@ public class Builder extends Task {
 		this.source = source;
 	}
 	
-	public void setDirectory(String directory) {
-		this.directory = directory;
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 	
 	public void execute() throws BuildException {
@@ -53,20 +52,22 @@ public class Builder extends Task {
 			readCharacters();
 			readWords();
 			
-			System.out.println("Building " + this.directory + "/predictive.trie ...");
+			String file = "./output/predictive." + this.language + ".trie";
+			
+			System.out.println("Building " + file + " ...");
 			
 			Element base = new Element();
-			stream = new ByteArrayOutputStream( 0 );
+			this.stream = new ByteArrayOutputStream( 0 );
 			
 			buildTrie(base,0);
 			writeTrie(base);
 			
-			(new File(directory)).mkdir();
+			(new File("./output")).mkdir();
 			
-			trieWriter = new FileOutputStream(directory + "/predictive.trie");
-			trieWriter.write(header);
-			trieWriter.write(stream.toByteArray());
-			trieWriter.close();			
+			this.trieWriter = new FileOutputStream(file);
+			this.trieWriter.write(header);
+			this.trieWriter.write(this.stream.toByteArray());
+			this.trieWriter.close();			
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -81,7 +82,7 @@ public class Builder extends Task {
 			
 			for(int j=0; j<characters.length(); j++)
 			{
-				words.add("" + characters.charAt(j));
+				this.words.add("" + characters.charAt(j));
 			}
 		}
 	}
@@ -90,17 +91,16 @@ public class Builder extends Task {
 	{
 		String line = "";
 		
-		reader = new BufferedReader( new InputStreamReader(new FileInputStream(source), "UTF8"));
+		this.reader = new BufferedReader( new InputStreamReader(new FileInputStream(this.source), "UTF8"));
 
-		while ((line = reader.readLine()) != null)
+		while ((line = this.reader.readLine()) != null)
 		{
 			String word = line.trim().toLowerCase();
 			
 			if(!word.startsWith("#"))
 			{
-				System.out.println(word);
-				if (!words.contains(word)) 
-					words.add(word);
+				if (!this.words.contains(word)) 
+					this.words.add(word);
 			}
 		}
 	}
@@ -124,7 +124,7 @@ public class Builder extends Task {
 		
 	public int buildTrie(Element element, int recordID)
 	{
-		Vector children = element.findChildren(words);
+		Vector children = element.findChildren(this.words);
 		
 		element.referenceID = recordID;
 		
@@ -147,21 +147,21 @@ public class Builder extends Task {
 		char referenceID = 0;
 		
 		if(children.size() > 0)
-			stream.write(byteToByte(children.size()));
+			this.stream.write(byteToByte(children.size()));
 		
 		for(int i=0; i < children.size(); i++)
 		{
 			Element child = (Element)children.elementAt(i);
 			
-			stream.write(charToByte(child.value));
-			stream.write(byteToByte(child.children.size()));
+			this.stream.write(charToByte(child.value));
+			this.stream.write(byteToByte(child.children.size()));
 			
 			if(child.children.size() > 0)
 				referenceID = (char)((Element)child.children.elementAt(0)).referenceID;
 			else
 				referenceID = (char)0;
 			
-			stream.write(charToByte(referenceID));
+			this.stream.write(charToByte(referenceID));
 		}
 		
 		for(int i=0; i < children.size(); i++)
@@ -192,7 +192,7 @@ public class Builder extends Task {
 	}
 	
 	public int getChunkSize() {
-		return chunkSize;
+		return this.chunkSize;
 	}
 
 	public void setChunkSize(int chunkSize) {
@@ -200,7 +200,7 @@ public class Builder extends Task {
 	}
 
 	public int getLineCount() {
-		return lineCount;
+		return this.lineCount;
 	}
 
 	public void setLineCount(int lineCount) {
@@ -208,23 +208,23 @@ public class Builder extends Task {
 	}
 
 	public int getVersion() {
-		return version;
+		return this.version;
 	}
 
 	public void setVersion(int version) {
 		this.version = version;
 	}
 
-	public String getDirectory() {
-		return directory;
+	public String getLanguage() {
+		return this.language;
 	}
 
 	public String getSource() {
-		return source;
+		return this.source;
 	}
 
 	public int getMagic() {
-		return magic;
+		return this.magic;
 	}
 
 	public void setMagic(int magic) {
@@ -232,7 +232,7 @@ public class Builder extends Task {
 	}
 
 	public int getType() {
-		return type;
+		return this.type;
 	}
 
 	public void setType(int type) {
