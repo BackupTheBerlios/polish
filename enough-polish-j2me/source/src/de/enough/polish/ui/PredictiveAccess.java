@@ -305,8 +305,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 			while (this.builder.deleteCurrent());
 	
 			String text = this.parent.getText();
-			System.out.println(text);
-	
+			
 			if (text != null) {
 				String[] elements = TextUtil.split(this.parent.getText(), ' ');
 	
@@ -963,7 +962,6 @@ public class PredictiveAccess implements TrieSetupCallback{
 			this.isOpen &&
 			this.predictiveType != ARRAY) {
 			// option has been selected!
-			System.out.println("predictive");
 			if(!this.builder.isString(0))
 			{
 				if(this.choiceOrientation == ORIENTATION_BOTTOM)
@@ -1011,7 +1009,6 @@ public class PredictiveAccess implements TrieSetupCallback{
 	public void setupFinished(boolean finishedGraceful) {
 		if(finishedGraceful)
 		{
-			System.out.println("finished gracefully");
 			initPredictiveInput(null);
 			enablePredictiveInput();
 		}

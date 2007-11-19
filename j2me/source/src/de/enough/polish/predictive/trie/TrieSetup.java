@@ -248,16 +248,11 @@ implements Runnable, CommandListener
 			this.setupForm.addCommand( this.exitCommand );
 			//#endif
 			
-			Alert alert = new Alert("error");
-			alert.setString(e.getMessage());
-			StyleSheet.display.setCurrent(alert);
-			
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			
 			
 			e.printStackTrace();
 			
