@@ -38,10 +38,9 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-//#if polish.TextField.useDirectInput && polish.TextField.usePredictiveInput
+//#if polish.TextField.useDirectInput && polish.TextField.usePredictiveInput && !polish.blackberry
 	import de.enough.polish.predictive.TextBuilder;
 	import de.enough.polish.predictive.trie.TrieProvider;
-	//import de.enough.polish.predictive.trie.TrieSetup;
 //#endif
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DrawUtil;
@@ -1172,7 +1171,7 @@ public class TextField extends StringItem
 		    //#endif
 		//#endif
 				
-		//#if polish.TextField.usePredictiveInput
+		//#if polish.TextField.usePredictiveInput && !polish.blackberry
 			if(this.predictiveInput) {
 				this.predictiveAccess.synchronize();
 			}
@@ -1320,7 +1319,7 @@ public class TextField extends StringItem
 		String end = txt.substring( position );
 		setString( start + src + end );
 		
-		//#if polish.TextField.usePredictiveInput
+		//#if polish.TextField.usePredictiveInput && !polish.blackberry
 			if(this.predictiveInput)
 				this.predictiveAccess.synchronize();
 		//#endif
