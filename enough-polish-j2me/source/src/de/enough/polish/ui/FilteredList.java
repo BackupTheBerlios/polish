@@ -411,7 +411,16 @@ implements ItemStateListener //, CommandListener
 	 */
 	public void setSelectedFlags(boolean[] selectedArray) {
 		for (int i = 0; i < selectedArray.length; i++) {
-			((ChoiceItem) this.itemsList.get(i)).select( selectedArray[i] );
+			boolean selected = selectedArray[i];
+			ChoiceItem item = ((ChoiceItem) this.itemsList.get(i));
+			item.select( selected );
+			if (selected) {
+				item.addCommand(ChoiceGroup.MARK_COMMAND);
+				item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+			} else {
+				item.addCommand(ChoiceGroup.MARK_COMMAND);
+				item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+			}
 		}
 		if (isShown()) {
 			itemStateChanged( this.filterTextField );
@@ -425,6 +434,13 @@ implements ItemStateListener //, CommandListener
 		if ( this.listType == Choice.MULTIPLE ) {
 			ChoiceItem item = (ChoiceItem) this.itemsList.get( elementNum );
 			item.select( selected );
+			if (selected) {
+				item.addCommand(ChoiceGroup.MARK_COMMAND);
+				item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+			} else {
+				item.addCommand(ChoiceGroup.MARK_COMMAND);
+				item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+			}
 		} else {
 			if (selected == false) {
 				return; // ignore this call

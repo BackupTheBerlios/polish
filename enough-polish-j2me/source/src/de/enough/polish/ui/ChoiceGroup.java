@@ -610,6 +610,12 @@ implements Choice
 			}
 			this.selectedIndex = itemIndex;
 		}
+		//#if ! tmp.suppressMarkCommands
+			if (this.isMultiple) {
+				selectChoiceItem(item, item.isSelected);
+				item.setItemCommandListener( this );
+			}
+		//#endif
 		//#ifdef polish.usePopupItem
 			if (this.isPopup && this.isPopupClosed && this.selectedIndex == -1) {
 				this.popupItem.setText( item.text );
@@ -947,7 +953,7 @@ implements Choice
 		System.out.println("setSelectedIndex: index="  + elementNum + ", selected=" + selected + ", current selectedIndex=" + this.selectedIndex) ;
 		if (this.isMultiple) {
 			ChoiceItem item = (ChoiceItem) this.itemsList.get( elementNum );
-			item.select( selected );
+			selectChoiceItem(item, selected);
 		} else {
 			if (selected == false) {
 				return; // ignore this call
@@ -1028,7 +1034,8 @@ implements Choice
 			ChoiceItem[] myItems = (ChoiceItem[]) this.itemsList.toArray( new ChoiceItem[ this.itemsList.size() ] );
 			for (int i = 0; i < myItems.length; i++) {
 				ChoiceItem item = myItems[i];
-				item.select( selectedArray[i]);
+				boolean isSelected = selectedArray[i];
+				selectChoiceItem(item, isSelected);
 			}
 		} else {
 			int index = 0;
@@ -1328,7 +1335,7 @@ implements Choice
 			if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && choiceItem != null ) {
 				choiceItem.notifyItemPressedStart();
 				if (this.isMultiple) {
-					choiceItem.toggleSelect();
+					selectChoiceItem( choiceItem, !choiceItem.isSelected);
 				} else {
 					setSelectedIndex(this.focusedIndex, true);
 				}
@@ -1430,6 +1437,27 @@ implements Choice
 		return processed;
 	}
 	
+	/**
+	 * Selects a choice item.
+	 * @param item the item
+	 * @param isSelected true when it should be marked as selected
+	 */
+	private void selectChoiceItem(ChoiceItem item, boolean isSelected)
+	{
+		item.select(isSelected);
+		//#if !tmp.suppressMarkCommands
+			if (this.isMultiple) {
+				if (isSelected) {
+					item.removeCommand(ChoiceGroup.MARK_COMMAND);
+					item.setDefaultCommand(ChoiceGroup.UNMARK_COMMAND);
+				} else {
+					item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+					item.setDefaultCommand(ChoiceGroup.MARK_COMMAND);
+				}
+			}
+		//#endif
+	}
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Container#handleKeyReleased(int, int)
 	 */
@@ -1487,7 +1515,13 @@ implements Choice
 		//#endif
 		int index = this.focusedIndex;
 		boolean handled = super.handlePointerPressed(relX, relY); // focuses the appropriate item
-		if ((handled || isInItemArea(relX, relY)) && index == this.focusedIndex) {
+		if (! this.isMultiple 
+				&& (handled || isInItemArea(relX, relY))
+				//#if polish.css.view-type
+				&& (index == this.focusedIndex || this.containerView == null || this.containerView.allowsDirectSelectionByPointerEvent) 
+				//#endif
+		)
+		{
 			handled |= handleKeyPressed( -1, Canvas.FIRE ) | handleKeyReleased( -1, Canvas.FIRE );
 		}
 		return handled;
@@ -1545,7 +1579,7 @@ implements Choice
 	//#ifndef tmp.suppressAllCommands
 	/**
 	 * Sets the command for selecting this (and opening this POPUP) choicegroup.
-	 * This implementation only works like described when not all ChoiceGroup command are deactivated
+	 * This implementation only works like described when not all ChoiceGroup commands are deactivated
 	 * by specifying the <variable name="polish.ChoiceGroup.suppressMarkCommands" value="true"/>
 	 * and <variable name="polish.ChoiceGroup.suppressSelectCommand" value="true"/>
 	 * preprocessing variables. When all commands are deactivated by the mentioned preprocessing variables,
@@ -1705,8 +1739,8 @@ implements Choice
 						UNMARK_COMMAND = new Command( cmdLabel, Command.ITEM, 10 );
 					}
 				//#endif					
-				addCommand( MARK_COMMAND );
-				addCommand( UNMARK_COMMAND );
+				//addCommand( MARK_COMMAND );
+				//addCommand( UNMARK_COMMAND );
 			//#endif
 		} else if (this.choiceType == EXCLUSIVE){
 			//#if !tmp.suppressSelectCommand

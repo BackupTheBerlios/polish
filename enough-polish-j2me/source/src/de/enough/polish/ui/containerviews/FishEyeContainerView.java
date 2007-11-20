@@ -125,6 +125,7 @@ public class FishEyeContainerView extends ContainerView {
 	 */
 	public FishEyeContainerView() {
 		this.allowsAutoTraversal = false;
+		this.allowsDirectSelectionByPointerEvent = false;
 	}
 	
 

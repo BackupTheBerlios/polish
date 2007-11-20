@@ -273,6 +273,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 			this.predictiveInput = true;
 		} catch (RecordStoreException e)
 		{
+			//#debug error
 			System.out.println("unable to enable predictive input");
 			return;
 		}
@@ -284,8 +285,8 @@ public class PredictiveAccess implements TrieSetupCallback{
 		}
 
 		//#if polish.TextField.predictive.showCommands
-		this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
-		this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
+			this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
+			this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
 		//#endif
 		
 		this.parent.addCommand(ADD_WORD_CMD);
@@ -483,14 +484,14 @@ public class PredictiveAccess implements TrieSetupCallback{
 				this.choicesContainer.focus(this.choicesContainer.size() - 1);
 
 			//#if polish.usePolishGui && !polish.LibraryBuild
-			this.parent.showCaret = false;
-			if (!this.isInChoice) {
-				this.parent.getScreen().removeItemCommands( this.parent );
-			}
+				this.parent.showCaret = false;
+				if (!this.isInChoice) {
+					this.parent.getScreen().removeItemCommands( this.parent );
+				}
 			//#endif
 			//#if polish.blackberry
-			PolishEditField field = (PolishEditField) this.parent._bbField;
-			field.processKeyEvents = false;
+				PolishEditField field = (PolishEditField) this.parent._bbField;
+				field.processKeyEvents = false;
 			//#endif
 		} else {
 

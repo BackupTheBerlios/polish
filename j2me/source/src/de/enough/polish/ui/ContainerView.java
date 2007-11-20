@@ -98,6 +98,8 @@ extends ItemView
 	protected boolean allowsAutoTraversal = true;
 	protected boolean isHorizontal = true;
 	protected boolean isVertical = true;
+	/** indicates whether elements in this container view can be selected directly by pointer events */
+	protected boolean allowsDirectSelectionByPointerEvent = true;
 
 
 	/**
