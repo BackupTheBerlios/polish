@@ -62,6 +62,7 @@ public class WrappedCssAttribute extends CssAttribute
 	{
 		this.parent = parent;
 		this.name = definition.getAttributeValue("name");
+		this.type = definition.getAttributeValue("type");
 	}
 	
 	
@@ -111,7 +112,6 @@ public class WrappedCssAttribute extends CssAttribute
 	 */
 	public String getAppliesTo()
 	{
-		// TODO robertvirkus implement getAppliesTo
 		return this.parent.getAppliesTo();
 	}
 
@@ -172,13 +172,13 @@ public class WrappedCssAttribute extends CssAttribute
 	}
 
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.preprocess.css.CssAttribute#getType()
-	 */
-	public String getType()
-	{
-		return this.parent.getType();
-	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.preprocess.css.CssAttribute#getType()
+//	 */
+//	public String getType()
+//	{
+//		return this.parent.getType();
+//	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.css.CssAttribute#getValue(java.lang.String, de.enough.polish.Environment)

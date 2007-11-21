@@ -157,7 +157,7 @@ public class CssAttributesManager {
 			// previously defined CSS attribute type:
 			CssAttribute previousAttribute = getAttribute(type);
 			if (previousAttribute == null) {
-				throw new BuildException( " Invalid CSS attribute: unable to instantiate CSS attribute type \"" + type + "\": no definition found. Check your custom-css-attributes.xml.");				
+				throw new BuildException( "Invalid CSS attribute: unable to instantiate CSS attribute type \"" + type + "\": no definition found. Check your custom-css-attributes.xml.");				
 			}
 			if (definition.getAttributeValue("name").equals(previousAttribute.getName())) {
 				return previousAttribute;

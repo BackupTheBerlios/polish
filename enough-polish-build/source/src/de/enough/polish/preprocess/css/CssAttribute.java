@@ -71,7 +71,7 @@ implements Comparable
 	protected boolean isCaseSensitive;
 	protected boolean allowsCombinations;
 	protected boolean requiresMapping;
-	private String type;
+	protected String type;
 	
 	protected CssAttribute() {
 		// do nothing

@@ -26,6 +26,7 @@
 package de.enough.polish.preprocess.css;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -35,6 +36,7 @@ import de.enough.polish.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.preprocess.Preprocessor;
+import de.enough.polish.preprocess.css.attributes.ParameterizedCssAttribute;
 import de.enough.polish.preprocess.css.attributes.StyleCssAttribute;
 import de.enough.polish.util.AbbreviationsGenerator;
 import de.enough.polish.util.StringList;
@@ -85,6 +87,14 @@ public class CssConverter extends Converter {
 	}
 	
 
+	/**
+	 * Converts a stylesheet to Java source code.
+	 * @param sourceCode the source code to which the generated code is appended
+	 * @param styleSheet the style sheet
+	 * @param device the current device
+	 * @param preprocessor a preprocessor
+	 * @param env the environment
+	 */
 	public void convertStyleSheet( StringList sourceCode, 
 								   StyleSheet styleSheet, 
 								   Device device,
@@ -133,8 +143,11 @@ public class CssConverter extends Converter {
 		boolean defaultBackgroundDefined = false;
 		HashMap backgrounds = styleSheet.getBackgrounds();
 		keys = backgrounds.keySet();
-		for (Iterator iter = keys.iterator(); iter.hasNext();) {
-			String groupName = (String) iter.next();
+		Object[] backgroundKeys = keys.toArray();
+		Arrays.sort( backgroundKeys, new BackgroundComparator( backgrounds, (ParameterizedCssAttribute) this.backgroundAttribute ));
+		for (int i = 0; i < backgroundKeys.length; i++)
+		{
+			String groupName = (String) backgroundKeys[i];
 			if ("default".equals(groupName)) {
 				defaultBackgroundDefined = true;
 			} 
@@ -310,6 +323,7 @@ public class CssConverter extends Converter {
 		sourceCode.insert(code);
 		sourceCode.forward( code.length );
 	}
+
 
 
 	/**

@@ -60,11 +60,24 @@ public class CombinedBackgroundConverter extends BackgroundConverter
 	protected String createNewStatement(HashMap background, Style style,
 			StyleSheet styleSheet) throws BuildException
 	{
-		String top = (String) background.get("top-background") + "Background";
-		String bottom  = (String) background.get("bottom-background")  + "Background";
-		styleSheet.getBackgrounds().get( top );
+		String foregroundReference = (String) background.get("foreground");
+		if (foregroundReference == null) {
+			throw new BuildException( "Invalid CSS: a \"combined\" background is missing the \"foreground\" CSS attribute which needs to refer to a background defined within the backgrounds section of your polish.css file.");
+		}
+		if (styleSheet.getBackgrounds().get(foregroundReference) == null) {
+			throw new BuildException( "Invalid CSS: a \"combined\" background contains the invalid \"foreground: " + foregroundReference +";\" CSS attribute. Please refer to a background defined within the backgrounds section of your polish.css file.");
+		}
+		foregroundReference += "Background";
+		String backgroundReference  = (String) background.get("background");
+		if (backgroundReference == null) {
+			throw new BuildException( "Invalid CSS: a \"combined\" background is missing the \"background\" CSS attribute which needs to refer to a background defined within the backgrounds section of your polish.css file.");
+		}
+		if (styleSheet.getBackgrounds().get(backgroundReference) == null) {
+			throw new BuildException( "Invalid CSS: a \"combined\" background contains the invalid \"background: " + backgroundReference +";\" CSS attribute. Please refer to a background defined within the backgrounds section of your polish.css file.");
+		}
+		backgroundReference += "Background";
 		String result = "new " + BACKGROUNDS_PACKAGE + "CombinedBackground(" 
-		+ top + ", " + bottom + ")";
+		+ foregroundReference + ", " + backgroundReference + ")";
 	
 		return result;
 

@@ -34,7 +34,7 @@ import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;
 
 /**
- * <p>Converts a combined background</p>
+ * <p>Converts a mask background</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
@@ -43,13 +43,13 @@ import de.enough.polish.preprocess.css.StyleSheet;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class CombinedBackgroundConverter extends BackgroundConverter
+public class MaskBackgroundConverter extends BackgroundConverter
 {
 
 	/**
 	 * 
 	 */
-	public CombinedBackgroundConverter()
+	public MaskBackgroundConverter()
 	{
 		// no initialization needed
 	}
@@ -60,24 +60,39 @@ public class CombinedBackgroundConverter extends BackgroundConverter
 	protected String createNewStatement(HashMap background, Style style,
 			StyleSheet styleSheet) throws BuildException
 	{
-		String foregroundReference = (String) background.get("foreground");
-		if (foregroundReference == null) {
-			throw new BuildException( "Invalid CSS: a \"combined\" background is missing the \"foreground\" CSS attribute which needs to refer to a background defined within the backgrounds section of your polish.css file.");
+		String maskReference = (String) background.get("mask");
+		if (maskReference == null) {
+			throw new BuildException( "Invalid CSS: a \"mask\" background is missing the \"mask\" CSS attribute which needs to refer to a background defined within the backgrounds section of your polish.css file.");
 		}
-		if (styleSheet.getBackgrounds().get(foregroundReference) == null) {
-			throw new BuildException( "Invalid CSS: a \"combined\" background contains the invalid \"foreground: " + foregroundReference +";\" CSS attribute. Please refer to a background defined within the backgrounds section of your polish.css file.");
+		if (styleSheet.getBackgrounds().get(maskReference) == null) {
+			throw new BuildException( "Invalid CSS: a \"mask\" background contains the invalid \"mask: " + maskReference +";\" CSS attribute. Please refer to a background defined within the backgrounds section of your polish.css file.");
 		}
-		foregroundReference += "Background";
+		maskReference += "Background";
+		
+		String maskColor = (String) background.get("mask-color");
+		if (maskColor == null) {
+			maskColor = "0x000000";
+		} else {
+			maskColor = parseColor(maskColor);
+		}
+		
 		String backgroundReference  = (String) background.get("background");
 		if (backgroundReference == null) {
-			throw new BuildException( "Invalid CSS: a \"combined\" background is missing the \"background\" CSS attribute which needs to refer to a background defined within the backgrounds section of your polish.css file.");
+			throw new BuildException( "Invalid CSS: a \"mask\" background is missing the \"background\" CSS attribute which needs to refer to a background defined within the backgrounds section of your polish.css file.");
 		}
 		if (styleSheet.getBackgrounds().get(backgroundReference) == null) {
-			throw new BuildException( "Invalid CSS: a \"combined\" background contains the invalid \"background: " + backgroundReference +";\" CSS attribute. Please refer to a background defined within the backgrounds section of your polish.css file.");
+			throw new BuildException( "Invalid CSS: a \"mask\" background contains the invalid \"background: " + backgroundReference +";\" CSS attribute. Please refer to a background defined within the backgrounds section of your polish.css file.");
 		}
 		backgroundReference += "Background";
-		String result = "new " + BACKGROUNDS_PACKAGE + "CombinedBackground(" 
-		+ foregroundReference + ", " + backgroundReference + ")";
+		
+		String opacity  = (String) background.get("opacity");
+		if (opacity == null) {
+			opacity = "255";
+		} else {
+			opacity = Integer.toString( parseInt("opacity", opacity) );
+		}
+		String result = "new " + BACKGROUNDS_PACKAGE + "MaskBackground(" 
+		+ maskReference + ", " + maskColor + ", " + backgroundReference  + ", " + opacity + ")";
 	
 		return result;
 

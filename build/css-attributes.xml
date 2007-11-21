@@ -355,8 +355,15 @@
 	<!--  backgrounds that require a background attribute themselves   -->
 	<attribute name="background">
 		<mapping from="combined"               to="de.enough.polish.ui.backgrounds.CombinedBackground"  converter="de.enough.polish.preprocess.backgrounds.CombinedBackgroundConverter">
-			<param name="top-background" type="background" />
-			<param name="bottom-background" type="background" />		
+			<param name="foreground" type="background" />
+			<param name="background" type="background" />		
+		</mapping>
+		<mapping from="mask"                   to="de.enough.polish.ui.backgrounds.MaskBackground"  converter="de.enough.polish.preprocess.backgrounds.MaskBackgroundConverter">
+			<param name="mask" type="background" />
+			<param name="mask-color" type="color" primitive="true" default="black" />
+			<param name="background" type="background" />		
+			<param name="anti-alising" type="boolean" primitive="true" default="false" />
+			<param name="opacity" type="integer" primitive="true" default="255" />
 		</mapping>
 	</attribute>
 	
