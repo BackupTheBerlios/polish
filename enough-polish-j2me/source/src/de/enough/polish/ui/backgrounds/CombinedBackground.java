@@ -30,7 +30,58 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.ui.Background;
 
 /**
- * <p></p>
+ * <p>Provides a background consisting of two other backgrounds.</p>
+ * <p>You can combine more by two backgrounds by using nested further combined backgrounds.</p>
+ * <p>Usage:
+ * <pre>
+backgrounds {
+	titleTop {
+		type: polygon;
+		points: 10,50 50,10 90,50 50,90;
+		color: #d0f;
+		scale-mode: proportional;
+		anchor: right | vcenter;
+	}
+	titleBottom {
+		type: combined;
+		foreground: titlePolygonLeft;
+		background: titleGradient;
+	}
+	titlePolygonLeft {
+		type: polygon;
+		points: 10,50 50,10 90,50 50,90;
+		color: #d0f;
+		scale-mode: proportional;
+		anchor: left | vcenter;
+	}
+	titleGradient {
+		type: vertical-gradient;
+		top-color: white;
+		bottom-color: blue;
+	}
+}
+
+title {
+	padding: 2;
+	margin-top: 0;
+	margin-bottom: 5;
+	margin-left: 0;
+	margin-right: 0;
+	font-face: proportional;
+	font-size: large;
+	font-style: bold;
+	font-color: brightFontColor;
+	border: none;
+	layout: horizontal-center | horizontal-expand;
+	
+	<b>background {
+		type: combined;
+		foreground: titleTop;
+		background: titleBottom;
+	}</b>
+}
+ * </pre>
+ * </p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
@@ -42,18 +93,20 @@ import de.enough.polish.ui.Background;
 public class CombinedBackground extends Background
 {
 
-	private final Background top;
-	private final Background bottom;
+	private final Background foreground;
+	private final Background background;
 
 	/**
-	 * @param top 
-	 * @param bottom 
+	 * Creates a new combiend background.
+	 * 
+	 * @param foreground the background painted last
+	 * @param background  the background painted in the background
 	 * 
 	 */
-	public CombinedBackground( Background top, Background bottom )
+	public CombinedBackground( Background foreground, Background background )
 	{
-		this.top = top;
-		this.bottom = bottom;
+		this.foreground = foreground;
+		this.background = background;
 	}
 
 	/* (non-Javadoc)
@@ -61,8 +114,8 @@ public class CombinedBackground extends Background
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g)
 	{
-		this.bottom.paint(x, y, width, height, g);
-		this.top.paint(x, y, width, height, g);
+		this.background.paint(x, y, width, height, g);
+		this.foreground.paint(x, y, width, height, g);
 	}
 
 	/* (non-Javadoc)
@@ -70,7 +123,7 @@ public class CombinedBackground extends Background
 	 */
 	public boolean animate()
 	{
-		return this.top.animate() || this.bottom.animate();
+		return this.foreground.animate() || this.background.animate();
 	}
 
 	/* (non-Javadoc)
@@ -78,8 +131,8 @@ public class CombinedBackground extends Background
 	 */
 	public void hideNotify()
 	{
-		this.top.hideNotify();
-		this.bottom.hideNotify();
+		this.foreground.hideNotify();
+		this.background.hideNotify();
 	}
 
 	/* (non-Javadoc)
@@ -87,8 +140,8 @@ public class CombinedBackground extends Background
 	 */
 	public void releaseResources()
 	{
-		this.top.releaseResources();
-		this.bottom.releaseResources();
+		this.foreground.releaseResources();
+		this.background.releaseResources();
 	}
 
 	/* (non-Javadoc)
@@ -96,8 +149,8 @@ public class CombinedBackground extends Background
 	 */
 	public void showNotify()
 	{
-		this.top.showNotify();
-		this.bottom.showNotify();
+		this.foreground.showNotify();
+		this.background.showNotify();
 	}
 	
 	
