@@ -94,7 +94,7 @@ public class DoubleGradientVerticalBackgroundConverter extends BackgroundConvert
 			isPercent = parseBoolean("is-percent", isPercentStr);
 		}
 
-		String result = "new de.enough.polish.ui.backgrounds.DoubleGradientVerticalBackground(" 
+		String result = "new " + BACKGROUNDS_PACKAGE + "DoubleGradientVerticalBackground(" 
 			+ firstTopColor + ", " + firstBottomColor + "," + secondTopColor + ", " + secondBottomColor + ","+ stroke 
 			+ "," + start + "," + end + "," + isPercent + ")";
 		

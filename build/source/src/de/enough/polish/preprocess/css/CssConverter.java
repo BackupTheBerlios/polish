@@ -582,7 +582,7 @@ public class CssConverter extends Converter {
 		codeList.add("\t);");
 		
 		// add the selector of the style, but only when dynamic styles are used:
-		//TODO: hack for WYSIWG editor:
+		//TODO: hack for WYSIWYG designer:
 		//if (styleSheet.containsDynamicStyles()) {
 			staticCodeList.add("\t" + styleName + "Style.name = \"" + style.getSelector() + "\"; \t// the selector of the above style");
 		//}

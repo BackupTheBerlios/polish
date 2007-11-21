@@ -64,6 +64,14 @@ public class ParameterizedAttributeConverter extends Converter {
 			if (paramValue == null) {
 				paramValue = parameter.getDefaultValue();
 			}
+			if (paramValue == null) {
+				System.out.println("Parameters of " + attribute.getName() + ":");
+				for (int j = 0; j < parameters.length; j++) {
+					System.out.println( j + "=" + parameters[j] + "=" + parameters[j].getName() );
+				}
+				System.out.println("CSS values for parameter " + i + ": " + cssValues.get(paramName));
+				throw new BuildException("Error: unable to get value for " + mapping.getFrom() + "-"  + paramName + " - please report this error to j2mepolish@enough.de along with your polish.css settings and possibly your custom-css-attributes.xml file.");
+			}
 			buffer.append( parameter.getValue(paramValue, environment));
 			if (i != parameters.length -1) {
 				buffer.append(", ");

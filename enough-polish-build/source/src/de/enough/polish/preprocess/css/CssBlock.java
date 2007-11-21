@@ -31,6 +31,8 @@ import de.enough.polish.BuildException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>Interpretes a single CSS block.</p>
@@ -47,6 +49,13 @@ import java.util.HashMap;
  */
 public class CssBlock {
 	
+	protected static final String ATTRIBUTE_NAME_STR = "[\\w|\\.|_|-]+";
+	protected static final String ATTRIBUTE_SELECTOR_STR = ATTRIBUTE_NAME_STR + "(\\s+extends\\s+" + ATTRIBUTE_NAME_STR + ")?";
+	protected static final String ATTRIBUTE_VALUE_STR = "[\\w|\\.|_|\\-|\\(|\\)|\\s|#|%|\\|]+";
+	//protected static final String ATTRIBUTE_VALUE_STR = ".+;?";
+	private static final String INNER_BLOCK_PATTERN_STR = ATTRIBUTE_SELECTOR_STR + "\\s*\\{\\s*(\\s*" + CssBlock.ATTRIBUTE_NAME_STR + "\\s*\\:\\s*" + CssBlock.ATTRIBUTE_VALUE_STR + "\\s*\\;?\\s*)+\\s*\\}";
+	//private static final String INNER_BLOCK_PATTERN_STR = ATTRIBUTE_SELECTOR_STR + "\\s*\\{\\s*(\\s*" + CssBlock.ATTRIBUTE_NAME_STR + "\\s*\\:\\s*" + CssBlock.ATTRIBUTE_VALUE_STR + "\\s*)+\\s*\\}";
+	protected static final Pattern INNER_BLOCK_PATTERN = Pattern.compile(INNER_BLOCK_PATTERN_STR);
 	private String selector;
 	private HashMap declarationsByName;
 	private HashMap groupsByNames;
@@ -59,6 +68,7 @@ public class CssBlock {
 	 * @throws BuildException when the code contains errors.
 	 */
 	public CssBlock( String cssCode ) {
+		//System.out.println("CssBlock for block \n\"" + cssCode + "\"...");
 		this.declarationsByName = new HashMap();
 		this.groupsByNames = new HashMap();
 		this.groups = new ArrayList();
@@ -66,6 +76,26 @@ public class CssBlock {
 		this.selector = cssCode.substring(0, parenthesisPos ).trim();
 		cssCode = cssCode.substring( parenthesisPos + 1, cssCode.length() -1 ).trim();
 		// now read any inner blocks:
+//		Matcher matcher = INNER_BLOCK_PATTERN.matcher(cssCode);
+//		while (matcher.find()) {
+//			String innerBlock = matcher.group();
+//			System.out.println("INNER BLOCK FOUND: " + innerBlock);
+//			String prepend = cssCode.substring(0, cssCode.indexOf(innerBlock));
+//			int endIndex = prepend.lastIndexOf('{');
+//			String blockName = null;
+//			if (endIndex != -1) {
+//				prepend = prepend.substring(0, endIndex - 1).trim();
+//				int startIndex = prepend.lastIndexOf(' ');
+//				if (startIndex < 0) {
+//					startIndex = 0;
+//				}
+//				blockName = prepend.substring(startIndex);
+//			}
+//			
+//			parseInnerBlock( blockName, innerBlock );
+//			cssCode = StringUtil.replace( cssCode, innerBlock, "" );
+//			matcher = INNER_BLOCK_PATTERN.matcher(cssCode);
+//		}
 		while ( (parenthesisPos = cssCode.indexOf('{')) != -1) {
 			int start = cssCode.lastIndexOf(';', parenthesisPos);
 			if (start == -1) {
@@ -86,7 +116,12 @@ public class CssBlock {
 		for (int i = 0; i < declarations.length; i++) {
 			String declaration = declarations[i];
 			if (declaration.length() > 0) {
-				addDeclaration( declaration );
+				try {
+					addDeclaration( declaration );
+				} catch (BuildException e) {
+					System.err.println("Invalid CSS code in black \"" + cssCode + "\":");
+					throw e;
+				}
 			}
 		}
 	}
@@ -99,7 +134,7 @@ public class CssBlock {
 	private void addDeclaration(String declaration) {
 		int colonPos = declaration.indexOf(':');
 		if (colonPos == -1) {
-			throw new BuildException("Invalid CSS code: unable to parse declaration [" + declaration + ";] - found no colon between attribute and value.");
+			throw new BuildException("Invalid CSS code: unable to parse declaration \"" + declaration + ";\" - found no colon between attribute and value.");
 		}
 		String attribute = declaration.substring(0, colonPos).trim();
 		String value = declaration.substring(colonPos + 1).trim();
@@ -141,6 +176,31 @@ public class CssBlock {
 	}
 	
 
+
+	/**
+	 * @param code the CSS code
+	 */
+	private void parseInnerBlock(String blockName, String code) {
+		int parenthesisPos = code.indexOf('{');
+		String innerBlockName = code.substring(0, parenthesisPos ).trim() + '-';
+		if (blockName == null) {
+			blockName = innerBlockName;
+		} else {
+			blockName = blockName + "-" + innerBlockName;
+		}
+		String declarationBlock = code.substring( parenthesisPos + 1, code.length() -1 ).trim();
+		String[] declarations = StringUtil.splitAndTrim( declarationBlock, ';' );
+		try {
+			for (int i = 0; i < declarations.length; i++) {
+				String declaration = declarations[i];
+				if (declaration.length() > 0) {
+					addDeclaration( blockName + declaration );
+				}
+			}
+		} catch (BuildException e ) {
+			throw new BuildException( "Invalid CSS code: inner block [" + code + "] contains an invalid declaration: " + e.getMessage(), e );
+		}
+	}
 	
 	/**
 	 * @return Returns the name of the selector of this block.

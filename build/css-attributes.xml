@@ -351,7 +351,15 @@
 		</mapping>
 		<mapping from="repaint-test"   to="de.enough.polish.ui.backgrounds.RepaintTestBackground"  />
 	</attribute>
-
+	
+	<!--  backgrounds that require a background attribute themselves   -->
+	<attribute name="background">
+		<mapping from="combined"               to="de.enough.polish.ui.backgrounds.CombinedBackground"  converter="de.enough.polish.preprocess.backgrounds.CombinedBackgroundConverter">
+			<param name="top-background" type="background" />
+			<param name="bottom-background" type="background" />		
+		</mapping>
+	</attribute>
+	
 	<attribute
 		name="border"
 		type="parameterized"
@@ -439,14 +447,7 @@
 			<param name="back-and-forth" type="boolean" primitive="true" default="true" />
 		</mapping>
 	</attribute>
-	
-	<attribute
-		name="background"
-	>
-		<mapping from="combined"              to="de.enough.polish.ui.backgrounds.CombinedBackground" >
-			<param name="backgrounds" type="background[]" array-type="Background" separator=","/>
-		</mapping>
-	</attribute>
+
 	
 		<!--
 		<mapping from="" converter="" />

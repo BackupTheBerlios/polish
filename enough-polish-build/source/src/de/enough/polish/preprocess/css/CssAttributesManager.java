@@ -37,6 +37,7 @@ import java.util.List;
 
 import de.enough.polish.BuildException;
 import de.enough.polish.preprocess.css.attributes.ArrayCssAttribute;
+import de.enough.polish.preprocess.css.attributes.WrappedCssAttribute;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -158,7 +159,11 @@ public class CssAttributesManager {
 			if (previousAttribute == null) {
 				throw new BuildException( " Invalid CSS attribute: unable to instantiate CSS attribute type \"" + type + "\": no definition found. Check your custom-css-attributes.xml.");				
 			}
-			return previousAttribute;
+			if (definition.getAttributeValue("name").equals(previousAttribute.getName())) {
+				return previousAttribute;
+			} else {
+				return new WrappedCssAttribute( previousAttribute, definition );
+			}
 		}
 	}
 
