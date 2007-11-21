@@ -228,7 +228,6 @@ implements CommandListener
 	private IconItem iconItem;
 	private Gauge indicator;
 
-	//private AlertType alertType;
 	protected Displayable nextDisplayable;
 	
 	//#if polish.css.show-dismiss-command
@@ -788,7 +787,7 @@ implements CommandListener
 			this.indicator.animate(currentTime,  repaintRegion);
 		}
 		if (this.timeout != FOREVER ) {
-			if (currentTime- this.showTime > this.timeout) {
+			if (currentTime - this.showTime > this.timeout) {
 				commandAction(DISMISS_COMMAND, this);
 			}
 		}
@@ -817,7 +816,7 @@ implements CommandListener
 	public void commandAction(Command cmd, Displayable thisScreen) {
 		if (this.nextDisplayable == null) {
 			//#debug error
-			System.out.println("unablet to handle command " + cmd.getLabel() + ": nextDisplayable == null.");
+			System.out.println("unable to handle command " + cmd.getLabel() + ": nextDisplayable == null.");
 			//throw new IllegalStateException();
 			return;
 		}
