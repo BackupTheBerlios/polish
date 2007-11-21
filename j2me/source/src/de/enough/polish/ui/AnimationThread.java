@@ -97,7 +97,7 @@ public class AnimationThread extends Thread
 				Thread.sleep(sleeptime);
 				Screen screen = StyleSheet.currentScreen;
 //				System.out.println("AnimationThread: animating " + screen);
-				if (screen != null) {
+				if (screen != null && screen.isShown()) {
 					long currentTime = System.currentTimeMillis();
 					if ( (currentTime - screen.lastInteractionTime) < ANIMATION_TIMEOUT ) { 
 						screen.animate( currentTime, repaintRegion );
