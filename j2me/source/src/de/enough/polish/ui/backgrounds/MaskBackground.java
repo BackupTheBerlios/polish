@@ -128,7 +128,7 @@ public class MaskBackground extends Background
 					if (maskCol == targetColor) {
 						int pixel = this.backgroundBuffer[i];
 						int pixelAlpha = pixel >>> 24;
-						int maxAlpha = Math.max( maskAlpha, this.opacity );
+						int maxAlpha = Math.min( maskAlpha, this.opacity );
 						if (pixelAlpha > maxAlpha) {
 							pixel = (pixel | 0xff000000)  & ((maxAlpha << 24) | 0x00ffffff);
 						}
