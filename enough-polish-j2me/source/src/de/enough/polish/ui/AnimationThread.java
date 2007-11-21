@@ -98,7 +98,7 @@ public class AnimationThread extends Thread
 				Screen screen = StyleSheet.currentScreen;
 //				System.out.println("AnimationThread: animating " + screen);
 				if (screen != null 
-						//#if !polish.css.repaint-previous-screen
+						//#if polish.css.repaint-previous-screen
 						&& screen.isShown()
 						//#endif
 				) {
