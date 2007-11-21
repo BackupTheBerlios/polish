@@ -3611,7 +3611,7 @@ implements AccessibleCanvas
 	 * @see javax.microedition.lcdui.Displayable#isShown()
 	 */
 	public boolean isShown() {
-		return (StyleSheet.currentScreen == this);
+		return (StyleSheet.currentScreen == this && MasterCanvas.instance != null && MasterCanvas.instance.isShown());
 	}
 	//#endif
 	
