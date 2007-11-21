@@ -26,6 +26,33 @@ colors {
 	translucentBgColor:  argb(130, 165,190,247);
 }
 
+backgrounds {
+	titleTop {
+		type: polygon;
+		points: 10,50 50,10 90,50 50,90;
+		color: #d0f;
+		scale-mode: proportional;
+		anchor: right | vcenter;
+	}
+	titleBottom {
+		type: combined;
+		top-background: titlePolygonLeft;
+		bottom-background: titleGradient;
+	}
+	titlePolygonLeft {
+		type: polygon;
+		points: 10,50 50,10 90,50 50,90;
+		color: #d0f;
+		scale-mode: proportional;
+		anchor: left | vcenter;
+	}
+	titleGradient {
+		type: vertical-gradient;
+		top-color: white;
+		bottom-color: blue;
+	}
+}
+
 /**
   * the menu style is a predefined style for
   * designing the fullscreen-menu.
@@ -103,12 +130,11 @@ title {
 	/*	
 	background-color: bgColor;
 	*/
+	
 	background {
-		type: polygon;
-		points: 10,50 50,10 90,50 50,90;
-		color: #d0f;
-		scale-mode: proportional;
-		anchor: right | vcenter;
+		type: combined;
+		top-background: titleTop;
+		bottom-background: titleBottom;
 	}
 }
 
@@ -170,7 +196,7 @@ focused {
 	fisheyeview-alpha-start: 200;
 	fisheyeview-alpha-end: 80;
 	fisheyeview-remove-text: true;		
-	fisheyeview-max-visible: 3;
+	/* fisheyeview-max-visible: 3; */
 	//#if polish.midp2
 		screen-change-animation: fade;
 	//#endif
