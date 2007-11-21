@@ -201,7 +201,7 @@ public class MasterCanvas
 			if (nextDisplayable instanceof Alert && instance.currentDisplayable != nextDisplayable) {
 				Alert alert = (Alert)nextDisplayable;
 				if (alert.nextDisplayable == null) {
-					alert.nextDisplayable = instance.currentDisplayable;
+					alert.nextDisplayable = (instance.currentDisplayable != null ? instance.currentDisplayable : display.getCurrent() );
 				}
 			}
 		//#endif
