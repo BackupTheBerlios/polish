@@ -414,13 +414,18 @@ implements ItemStateListener //, CommandListener
 			boolean selected = selectedArray[i];
 			ChoiceItem item = ((ChoiceItem) this.itemsList.get(i));
 			item.select( selected );
-			if (selected) {
-				item.addCommand(ChoiceGroup.MARK_COMMAND);
-				item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
-			} else {
-				item.addCommand(ChoiceGroup.MARK_COMMAND);
-				item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
-			}
+			
+			//#if !polish.ChoiceGroup.suppressMarkCommands
+				if (this.listType == MULTIPLE) {
+					if (selected) {
+						item.addCommand(ChoiceGroup.MARK_COMMAND);
+						item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+					} else {
+						item.addCommand(ChoiceGroup.MARK_COMMAND);
+						item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+					}
+				}
+			//#endif
 		}
 		if (isShown()) {
 			itemStateChanged( this.filterTextField );
@@ -434,13 +439,15 @@ implements ItemStateListener //, CommandListener
 		if ( this.listType == Choice.MULTIPLE ) {
 			ChoiceItem item = (ChoiceItem) this.itemsList.get( elementNum );
 			item.select( selected );
-			if (selected) {
-				item.addCommand(ChoiceGroup.MARK_COMMAND);
-				item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
-			} else {
-				item.addCommand(ChoiceGroup.MARK_COMMAND);
-				item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
-			}
+			//#if !polish.ChoiceGroup.suppressMarkCommands
+				if (selected) {
+					item.addCommand(ChoiceGroup.MARK_COMMAND);
+					item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+				} else {
+					item.addCommand(ChoiceGroup.MARK_COMMAND);
+					item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+				}
+			//#endif
 		} else {
 			if (selected == false) {
 				return; // ignore this call
