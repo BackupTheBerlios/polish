@@ -14,9 +14,8 @@
 	padding: 10;
 	columns: 5;
 	columns-width: equal;
-	layout: vertical-shrink | horizontal-shrink | center | vertical-center;
+	layout: center | vertical-center;
 	background-color: white;
-	repaint-previous-screen: true;
 	focused-style: .textFieldSymbolListFocused;
 }
 
