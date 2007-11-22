@@ -1445,6 +1445,7 @@
 		<mapping from="rotating" to="new de.enough.polish.ui.texteffects.RotatingTextEffect()" >
 			<condition>polish.midp2 and polish.hasFloatingPoint</condition>
 		</mapping>
+		<mapping from="flash" to="new de.enough.polish.ui.texteffects.FlashTextEffect()"/>		
 	</attribute>
 	
 	<attribute
