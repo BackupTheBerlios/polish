@@ -2161,7 +2161,6 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.medium" value="23" />
 		<capability name="Font.large" value="26" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
-		<capability name="MenuBar.OptionsPosition" value="left" />
 	</device>
 
 	<device>
@@ -3579,6 +3578,7 @@ These namespaces/schemas will be used soon.
 		<capability name="AnnouncementDate" value="2006-12-11"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
 		<capability name="Emulator.Skin" value="V3i_V3e_V3t.props" />
+		<capability name="MenuBar.OptionsPosition" value="right" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	</device>
 
@@ -3635,6 +3635,7 @@ These namespaces/schemas will be used soon.
 		<capability name="AnnouncementDate" value="2006-12-11"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorA5" />
 		<capability name="Emulator.Skin" value="MOTORAZR_maxx_V6.props" />
+		<capability name="MenuBar.OptionsPosition" value="right" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	</device>
 
@@ -3881,6 +3882,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.large" value="19" />
 		<capability name="Emulator.Skin" value="RAZR_V3.props" />
 		<capability name="Emulator.Class" value="MotorolaEmulatorA4" />
+		<capability name="MenuBar.OptionsPosition" value="right" />
 		<capability name="Bugs" value="ReducedMessageLength"/>
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	<capability name="wap.userAgent" value="MOT-V3"/>
