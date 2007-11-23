@@ -43,25 +43,28 @@ public class TrieProvider {
 	
 	public static boolean isPredictiveInstalled()
 	{
+		RecordStore rms = null;
 		try
 		{
-			//#if tmp.useLocalRMS
-				RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
+			//#if tmp.useLocalRMS || polish.Bugs.sharedRmsRequiresSigning
+				rms = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
 			//#else
-				RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0","Enough Software","PredictiveSetup");
+				rms = RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0","Enough Software","PredictiveSetup");
 			//#endif
-			
-			return true;
+				
+			rms.closeRecordStore();
 		}
 		catch(RecordStoreException e)
 		{
 			return false;
 		}
+		
+		return true;
 	}
 	
 	public void init() throws RecordStoreException
 	{	
-		//#if tmp.useLocalRMS
+		//#if tmp.useLocalRMS || polish.Bugs.sharedRmsRequiresSigning 
 			this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0", false);
 		//#else
 			this.store 	= RecordStore.openRecordStore(TrieInstaller.PREFIX + "_0","Enough Software","PredictiveSetup");
