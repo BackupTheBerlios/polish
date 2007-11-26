@@ -48,13 +48,11 @@ import de.enough.polish.xml.XmlPullParser;
 
 //#if polish.LibraryBuild
 	import de.enough.polish.ui.FakeContainerCustomItem;
-//#else
-	//# import de.enough.polish.ui.Container;
 //#endif
+
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
-import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 
