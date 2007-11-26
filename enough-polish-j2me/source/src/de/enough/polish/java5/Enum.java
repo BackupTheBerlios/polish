@@ -1,3 +1,5 @@
+//#condition polish.java5
+
 package de.enough.polish.java5;
 
 import java.util.Hashtable;
