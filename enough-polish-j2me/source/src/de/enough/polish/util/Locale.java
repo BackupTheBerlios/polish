@@ -27,20 +27,31 @@
  */
 package de.enough.polish.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 
+//#if polish.usePolishGui || polish.midp
+	import javax.microedition.rms.RecordEnumeration;
+	import javax.microedition.rms.RecordStore;
+	import javax.microedition.rms.RecordStoreException;
+//#endif
+	
+import de.enough.polish.io.RecordingDataInputStream;
+
+
 //#if polish.Locale.imports:defined
 	//#include ${polish.Locale.imports}
 //#endif
 
 /**
- * <p>Is used for internationalisation.</p>
+ * <p>Locale provides translations and format dates and currencies depending on the chosen localization.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004, 2005, 2006, 2007</p>
 
  * <pre>
  * history
@@ -174,21 +185,64 @@ public final class Locale {
 	private static void initialize() {
 		//#if polish.Locale.initializeMethod:defined
 			//#include ${polish.Locale.initializeMethod}
-		
 		//#else
-		try {
-			//#if polish.locale:defined
-				//#= loadTranslations( "/${polish.locale}.loc" );
-			//#else
-				loadTranslations( "/default.loc" );
+			//#if polish.i18n.useExternalTranslations && (polish.midp || polish.usePolishGui)
+				RecordStore store = null;
+				try
+				{
+					store = RecordStore.openRecordStore("_translations", false);
+					RecordEnumeration enumeration = store.enumerateRecords(null, null, false);
+					if (enumeration.hasNextElement()) {
+						// store does already exist:
+						byte[] data = enumeration.nextRecord();
+						loadTranslations( new DataInputStream( new ByteArrayInputStream( data ) ) );
+						isLoaded = true;
+						isLoadError = false;
+						//#debug
+						System.out.println("loaded translations successfully from RMS.");
+						return;
+					}
+				} catch (Exception e)
+				{
+					//#debug info
+					System.out.println("Unable to load translations from rms" + e );
+				} finally {
+					try
+					{
+						store.closeRecordStore();
+					} catch (RecordStoreException e)
+					{
+						// ignore
+					}
+				}
 			//#endif
-			isLoaded = true;
-			isLoadError = false;
-		} catch (Exception e) {
-			isLoadError = true;
-			//#debug error
-			System.out.println("Unable to load localizations " + e );
-		}
+			try {
+				String loc = "/" + System.getProperty("microedition.locale") + ".loc";
+				InputStream in = loc.getClass().getResourceAsStream(loc);
+				if (in == null) {
+					//#if polish.locale:defined
+						//#= loc = "/${polish.locale}.loc";
+					//#else
+						loc = "/default.loc";
+					//#endif
+					in = loc.getClass().getResourceAsStream(loc);
+				}
+				if (in != null) {
+					loadTranslations( new DataInputStream( in ) );
+					isLoaded = true;
+					isLoadError = false;
+					//#debug
+					System.out.println("sucessfully loaded translations from " + loc);
+				} else {
+					//#debug warn
+					System.out.println("unable to load translations from " + loc + ": no input stream");
+					isLoadError = true;
+				}
+			} catch (Exception e) {
+				isLoadError = true;
+				//#debug error
+				System.out.println("Unable to load localizations " + e );
+			}
 		//#endif		
 	}
 	//#endif
@@ -435,8 +489,60 @@ public final class Locale {
 			buffer.append( day );
 		//#endif	
 	}
+	
+	//#if polish.i18n.useDynamicTranslations || polish.LibraryBuild
+	/**
+	 * Loads translations from the specified file which is embedded in the JAR file.
+	 * Attention: only when the preprocessing symbol "polish.i18n.useExternalTranslations" is defined,
+	 * J2ME Polish will automatically load the stored translations at the next startup of the application.
+	 * In other cases you need to manually check if the "_translations" recordstore exists and load the data
+	 * from the first recordset using Locale.loadTranslations( DataIn ).
+	 * 
+	 * @param in the data input stream
+	 * @throws IOException when there was an error reading the translations 
+	 */
+	public static void loadAndStoreTranslations( InputStream in ) 
+	throws IOException 
+	{
+		RecordingDataInputStream dataIn = new RecordingDataInputStream( in );
+		loadTranslations( dataIn );
+		byte[] data = dataIn.getRecordedData();
+		//#if polish.midp || polish.usePolishGui
+			RecordStore store = null;
+			try
+			{
+				store = RecordStore.openRecordStore("_translations", true);
+				RecordEnumeration enumeration = store.enumerateRecords(null, null, false);
+				if (enumeration.hasNextElement()) {
+					// store does already exist:
+					store.setRecord( enumeration.nextRecordId(), data, 0, data.length );
+				} else {
+					store.addRecord(data, 0, data.length );
+				}
+			} catch (RecordStoreException e)
+			{
+				//#debug error
+				System.out.println("Unable to store translations into rms" + e );
+			} finally {
+				try
+				{
+					store.closeRecordStore();
+				} catch (RecordStoreException e)
+				{
+					// ignore
+				}
+			}
+		//#endif
+	}
+	//#endif
 
 	//#if polish.i18n.useDynamicTranslations || polish.LibraryBuild
+	/**
+	 * Loads translations from the specified file which is embedded in the JAR file.
+	 * 
+	 * @param url the URL of the file, e.g. "/en.loc" or "/es.loc"  - do not forget the required forward slash at the beginning of the URL
+	 * @throws IOException when there was an error reading the translations 
+	 */
 	public static void loadTranslations( String url ) 
 	throws IOException 
 	{
@@ -452,7 +558,13 @@ public final class Locale {
 	//#endif
 
 	//#if polish.i18n.useDynamicTranslations || polish.LibraryBuild
-	public static void loadTranslations( DataInputStream in ) 
+	/**
+	 * Loads translations from the specified input stream.
+	 * 
+	 * @param in the data input stream
+	 * @throws IOException when there was an error reading the translations 
+	 */
+	public static void loadTranslations( DataInput in ) 
 	throws IOException 
 	{
 		try {

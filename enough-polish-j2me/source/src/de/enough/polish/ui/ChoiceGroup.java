@@ -1768,12 +1768,24 @@ implements Choice
 	 * @see de.enough.polish.ui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, de.enough.polish.ui.Item)
 	 */
 	public void commandAction(Command c, Item item) {
+		if (item == this) {
+			handleCommand( c );
+		}
+	}
+	//#endif
+	
+	//#ifndef tmp.suppressAllCommands
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Container#handleCommand(javax.microedition.lcdui.Command)
+	 */
+	protected boolean handleCommand(Command cmd)
+	{
 		//#if tmp.allowSelectCommand && tmp.allowMarkCommands
-		if (c == List.SELECT_COMMAND || c == MARK_COMMAND || c == this.selectCommand  ) {
+			if (cmd == List.SELECT_COMMAND || cmd == MARK_COMMAND || cmd == this.selectCommand  ) {
 		//#elif tmp.allowSelectCommand
-			//# if (c == List.SELECT_COMMAND || c == this.selectCommand ) {
+			//# if (cmd == List.SELECT_COMMAND || cmd == this.selectCommand ) {
 		//#elif tmp.allowMarkCommands
-			//# if (c == MARK_COMMAND || c == this.selectCommand ) {
+			//# if (cmd == MARK_COMMAND || cmd == this.selectCommand ) {
 		//#else
 			//#abort Invalid combination of suppressed commands for a ChoiceGroup!
 			//# if (false) {
@@ -1784,7 +1796,7 @@ implements Choice
 						//#ifdef polish.usePopupItem
 						&& !(this.isPopup && !this.isPopupClosed)
 						//#endif
-						&& (this.getScreen() instanceof Form) ) {
+				) {
 					notifyStateChanged();
 				}
 				//#ifdef polish.usePopupItem
@@ -1797,30 +1809,36 @@ implements Choice
 						repaint();
 					}
 				//#endif
+				return true;
 			}
 			//#ifdef polish.usePopupItem
 				else if (this.isPopup && this.isPopupClosed) {
-					openPopup();				
+					openPopup();
+					return true;
 				}
 			//#endif
 		//#ifdef tmp.allowMarkCommands
-		} else if (c == UNMARK_COMMAND ) {
+		} else if (cmd == UNMARK_COMMAND ) {
 			if (this.focusedIndex != -1) {
 				setSelectedIndex( this.focusedIndex, false );
 				if ( (this.choiceType != IMPLICIT) 
 						//#ifdef polish.usePopupItem
 						&& !(this.isPopup && !this.isPopupClosed)
 						//#endif
-						&& (this.getScreen() instanceof Form) ) {
+				) {
 					notifyStateChanged();
 				}
+				return true;
 			}
 		//#endif
 		} else if (this.additionalItemCommandListener != null) {
-			this.additionalItemCommandListener.commandAction(c, item);
+			this.additionalItemCommandListener.commandAction(cmd, this);
+			return true;
 		}
+		return super.handleCommand(cmd);
 	}
 	//#endif
+	
 	
 	//#ifndef tmp.suppressAllCommands
 	public void setItemCommandListener(ItemCommandListener l) {
