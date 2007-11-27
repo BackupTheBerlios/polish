@@ -326,7 +326,7 @@
 		<capability name="SoundFormat" value="mpeg4, mp4, 3gpp" />
 	</group>
 	
-	<group>
+	<group>;postd=p
 		<name>SE-JavaPlatform1</name>
 		<capability name="OS" value="Sony-Ericsson OS" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
@@ -334,6 +334,7 @@
 		<capability name="JavaPackage" value="mmapi" />
 		<capability name="ScreenSize" value="128x160" />
 		<capability name="Bugs" value="usesVideoRam" />
+		<capability name="dtmf.separator" value=";postd=p" />
 	</group>
 	
 	<group>
@@ -346,6 +347,7 @@
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="FullCanvasSize" value="176x220" />
 		<capability name="Bugs" value="usesVideoRam" />
+		<capability name="dtmf.separator" value=";postd=p" />
 	</group>
 	
 	<group>
@@ -355,6 +357,7 @@
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi, wmapi, nokia-ui, m3g" />
 		<capability name="Bugs" value="usesVideoRam" />
+		<capability name="dtmf.separator" value=";postd=p" />
 	</group>
 
 	<group>
@@ -367,6 +370,7 @@
 		<capability name="FullCanvasSize" value="176x220" />
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="Bugs" value="usesVideoRam" />
+		<capability name="dtmf.separator" value=";postd=p" />
 	</group>
 
 	<group>
@@ -380,6 +384,7 @@
 		<capability name="CanvasSize" value="176x176"/>
 		<capability name="Bugs" value="usesVideoRam" />
 		<capability name="key.ReturnKey" value="-11"/>
+		<capability name="dtmf.separator" value=";postd=p" />
 	</group>
 
 	<group>
@@ -394,6 +399,7 @@
 		<capability name="Bugs" value="usesVideoRam" />
 		<capability name="key.ReturnKey" value="-11"/>
 		<capability name="key.ReturnKey" value="-11"/>
+		<capability name="dtmf.separator" value=";postd=p" />
 	</group>
 
 	<group>
@@ -407,6 +413,7 @@
 		<capability name="ScreenSize" value="" />
 		<capability name="FullCanvasSize" value="" />
 		<capability name="CanvasSize" value=""/>
+		<capability name="dtmf.separator" value=";postd=p" />
 	</group>
 
 	<group>
@@ -424,6 +431,7 @@
 		<capability name="MenuBar.OptionsPosition" value="left" />
 		<capability name="MenuBar.OkPosition" value="" />
 		<capability name="command.options" value="Options" />
+		<capability name="dtmf.separator" value=";postd=p" />
 	</group>
 		
 	<group>
