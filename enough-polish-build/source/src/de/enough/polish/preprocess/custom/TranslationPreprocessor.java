@@ -94,7 +94,7 @@ public class TranslationPreprocessor extends CustomPreprocessor {
 		super.notifyDeviceEnd(device, usesPolishGui);
 		try {
 			// now save the found messages-IDs to the disk:
-			this.translationManager.writeIdsMap();
+			this.translationManager.writeIdsMaps();
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to store IDs-map of translations: " + e.toString(), e );

@@ -102,6 +102,7 @@ public class ResourceFilter {
 		this.excludesByName.remove( fileName );
 	}
 	
+	
 	/**
 	 * Filters the given file names.
 	 * 

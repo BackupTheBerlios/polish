@@ -68,7 +68,7 @@ import de.enough.polish.util.StringUtil;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class ResourceManager {
-	private final static String[] DEFAULT_EXCLUDES = new String[]{ "polish.css", "*~", "*.bak", "Thumbs.db", ".DS_Store" };
+	private final static String[] DEFAULT_EXCLUDES = new String[]{ "polish.css", "*~", "*.bak", "Thumbs.db", ".DS_Store", "messages_*" };
 	private final ResourceSetting resourceSetting;
 	private final BooleanEvaluator booleanEvaluator;
 	private final Map resourceDirsByDevice;
@@ -82,6 +82,8 @@ public class ResourceManager {
 	private RootSetting[] resourceDirectories;
 	private FileFilter excludeDirFilter = new DirectoryFileFilter(false);
 	private FileFilter includeDirFilter = new DirectoryFileFilter(true);
+	
+	private Map translationManagersByLocaleAndDevice;
 
 	/**
 	 * Creates a new resource manager.
@@ -109,40 +111,48 @@ public class ResourceManager {
 		// creates resources-filter:
 		this.resourceFilter = new ResourceFilter( setting.getExcludes(), DEFAULT_EXCLUDES, setting.useDefaultExcludes() );
 		if (this.localizationSetting != null) {
-			String messagesFileName = this.localizationSetting.getMessagesFileName() ;
-			this.resourceFilter.addExclude( messagesFileName );
-			// add filters for messages_de.txt etc! 
-			int splitPos = messagesFileName.lastIndexOf('.');
-			String start = null;
-			String end = null;
-			if (splitPos != -1) {
-				start = messagesFileName.substring(0, splitPos) + "_";
-				end = messagesFileName.substring(splitPos);
-			}
-			LocaleSetting[] locales = this.localizationSetting.getSupportedLocales( environment  );
-			for (int i = 0; i < locales.length; i++) {
-				Locale locale = locales[i].getLocale();
-				if (splitPos != -1) {
-					this.resourceFilter.addExclude( start + locale.toString() + end );
-					//System.out.println("excluding [" + start + locale.toString() + end + "]");
-				} else {
-					this.resourceFilter.addExclude(messagesFileName + locale.toString() );
-				}
-				if (locale.getCountry().length() > 0) {
-					// okay, this locale has also a country defined,
-					// so we need to look at the language-resources as well:
-					if (splitPos != -1) {
-						this.resourceFilter.addExclude( start + locale.getLanguage() + end );
-						//System.out.println("excluding [" + start + locale.getLanguage() + end + "]");
-					} else {
-						this.resourceFilter.addExclude(messagesFileName + locale.getLanguage() );
-					}
-				}
-
-			}
+			addLocaleExcludes( this.localizationSetting.getMessagesFileName() );
+			addLocaleExcludes( this.localizationSetting.getExternalMessagesFileName() );
 		}
 	}
 	
+	/**
+	 * @param messagesFileName
+	 */
+	private void addLocaleExcludes(String messagesFileName)
+	{
+		this.resourceFilter.addExclude( messagesFileName );
+		// add filters for messages_de.txt etc! 
+		int splitPos = messagesFileName.lastIndexOf('.');
+		String start = null;
+		String end = null;
+		if (splitPos != -1) {
+			start = messagesFileName.substring(0, splitPos) + "_";
+			end = messagesFileName.substring(splitPos);
+		}
+		LocaleSetting[] locales = this.localizationSetting.getSupportedLocales( this.environment  );
+		for (int i = 0; i < locales.length; i++) {
+			Locale locale = locales[i].getLocale();
+			if (splitPos != -1) {
+				this.resourceFilter.addExclude( start + locale.toString() + end );
+				//System.out.println("excluding [" + start + locale.toString() + end + "]");
+			} else {
+				this.resourceFilter.addExclude(messagesFileName + locale.toString() );
+			}
+			if (locale.getCountry().length() > 0) {
+				// okay, this locale has also a country defined,
+				// so we need to look at the language-resources as well:
+				if (splitPos != -1) {
+					this.resourceFilter.addExclude( start + locale.getLanguage() + end );
+					//System.out.println("excluding [" + start + locale.getLanguage() + end + "]");
+				} else {
+					this.resourceFilter.addExclude(messagesFileName + locale.getLanguage() );
+				}
+			}
+
+		}
+	}
+
 	/**
 	 * Copies all resources to the specified target directory.
 	 * 
@@ -205,7 +215,21 @@ public class ResourceManager {
 			}
 		}
 		if (this.localizationSetting != null && this.localizationSetting.isDynamic()) {
-			saveDynamicTranslations( targetDir, device );
+			saveDynamicTranslations( targetDir, device, false );
+		}
+	}
+	
+	/**
+	 * @param destDir
+	 * @param device
+	 * @param locale
+	 * @param env
+	 * @throws IOException 
+	 */
+	public void copyDynamicTranslations(File destDir, Device device, Locale locale, Environment env) throws IOException
+	{
+		if (this.localizationSetting != null && this.localizationSetting.isDynamic()) {
+			saveDynamicTranslations( destDir, device, true );
 		}
 	}
 	
@@ -256,16 +280,17 @@ public class ResourceManager {
 	 * 
 	 * @param targetDir the target directory
 	 * @param device the current device
+	 * @param isForExternalUsage 
 	 * @throws IOException when an error occurred
 	 */
-	private void saveDynamicTranslations(File targetDir, Device device ) 
+	private void saveDynamicTranslations(File targetDir, Device device, boolean isForExternalUsage ) 
 	throws IOException 
 	{
 		LocaleSetting[] locales = this.localizationSetting.getSupportedLocales( this.environment );
 		for (int i = 0; i < locales.length; i++) {
 			LocaleSetting locale = locales[i];
 			TranslationManager manager = getTranslationManager( device, locale );
-			manager.saveTranslations( targetDir, device, locale );
+			manager.saveTranslations( targetDir, device, locale, isForExternalUsage );
 		}
 	}
 
@@ -538,20 +563,25 @@ public class ResourceManager {
 	public TranslationManager getTranslationManager( Device device, LocaleSetting locale ) 
 	throws IOException
 	{
-		if ( !this.localizationSetting.isDynamic()  
-				|| this.translationManager == null  
-				|| !this.translationManager.getLocale().equals( locale ) ) 
+		if (this.translationManagersByLocaleAndDevice == null) {
+			this.translationManagersByLocaleAndDevice = new HashMap();
+		}
+		String key = locale.toString() + device.getIdentifier(); 
+		TranslationManager manager = (TranslationManager) this.translationManagersByLocaleAndDevice.get( key );
+		if ( manager == null ) 
 		{
-			this.translationManager = 
+			manager = 
 				createTranslationManager( device, 
 						locale, 
 						this.environment, 
 						getResourceDirs(device, locale.getLocale()), 
-						this.localizationSetting ); 
+						this.localizationSetting );
+			this.translationManagersByLocaleAndDevice.put( key, manager );
+			this.translationManager = manager;
 		}
 		// resetting preprocessing variables:
 		this.environment.addVariables( this.translationManager.getPreprocessingVariables() );
-		return this.translationManager;
+		return manager;
 	}
 
 	/**
@@ -660,5 +690,6 @@ public class ResourceManager {
 			}
 		}		
 	}
+
 	
 }

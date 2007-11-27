@@ -51,6 +51,7 @@ import de.enough.polish.util.StringUtil;
 public class LocalizationSetting extends Setting {
 	
 	private String messages = "messages.txt";
+	private String messagesLater = "messages_external.txt";
 	private boolean includeAllLocales;
 	private final ArrayList supportedLocales;
 	private final Map localesByName;
@@ -70,6 +71,10 @@ public class LocalizationSetting extends Setting {
 		this.localesByName = new HashMap();
 	}
 	
+	/**
+	 * Adds a specific setting for a locale, this can be used for allowing different locale dependent encodings, for example.
+	 * @param setting the setting
+	 */
 	public void addConfiguredLocaleSetting( LocaleSetting setting ) {
 		Locale[] locales = setting.getLocales();
 		if (locales == null) {
@@ -84,6 +89,10 @@ public class LocalizationSetting extends Setting {
 			}
 		}
 	}
+	/**
+	 * Adds a specific setting for a locale, this can be used for allowing different locale dependent encodings, for example.
+	 * @param setting the setting
+	 */
 	private void add(LocaleSetting setting) {
 		LocaleSetting existingSetting = (LocaleSetting) this.localesByName.get( setting.getLocale().toString() );
 		if ( existingSetting != null && (setting.getCondition() == null || (existingSetting.getCondition() == null)) ) {
@@ -92,9 +101,18 @@ public class LocalizationSetting extends Setting {
 		this.supportedLocales.add( setting );
 	}
 
+	/**
+	 * Adds a specific setting for a locale, this can be used for allowing different locale dependent encodings, for example.
+	 * @param setting the setting
+	 */
 	public void addConfiguredLocalesetting( LocaleSetting setting ) {
 		addConfiguredLocaleSetting(setting);
 	}
+	
+	/**
+	 * Adds a specific setting for a locale, this can be used for allowing different locale dependent encodings, for example.
+	 * @param setting the setting
+	 */
 	public void addConfiguredLocale( LocaleSetting setting ) {
 		addConfiguredLocaleSetting(setting);
 	}
@@ -171,6 +189,25 @@ public class LocalizationSetting extends Setting {
 	 */
 	public String getMessagesFileName() {
 		return this.messages;
+	}
+	
+	/**
+	 * Sets the name of messages-files which can be loaded later after application start, e.g. by downloading the dist/en.loc via HTTP later onwards.
+	 * The default name is "messages_external.txt".
+	 * 
+	 * @param messages the name of files containing the messages.
+	 */
+	public void setExternalMessages( String messages ) {
+		this.messagesLater = messages;
+	}
+	
+	/**
+	 * Retrieves the file-name containing the messages for localizations which should be loaded at a later stage.
+	 * 
+	 * @return "messages_external.txt" or similar
+	 */
+	public String getExternalMessagesFileName() {
+		return this.messagesLater;
 	}
 	
 	/**
@@ -281,6 +318,11 @@ public class LocalizationSetting extends Setting {
 		this.translationManagerClassName = translationManagerClassName;
 	}
 
+	/**
+	 * Retrieves all supported locale as a comma separated string, e.g. "de,en,fr"
+	 * @param env the environment
+	 * @return all supported locale as a comma separated string
+	 */
 	public String getSupportedLocalesAsString( Environment env ) {
 		StringBuffer buffer = new StringBuffer();
 		if (this.defaultLocale == null) {
@@ -297,6 +339,10 @@ public class LocalizationSetting extends Setting {
 		return buffer.toString();
 	}
 
+	/**
+	 * Checks if this localization setting is valid
+	 * @return true when it is valid
+	 */
 	public boolean isValid() {
 		if (!this.includeAllLocales && this.supportedLocales.size() == 0) {
 			return false;

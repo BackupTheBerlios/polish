@@ -188,8 +188,7 @@ public class PolishTask extends ConditionalTask {
 		Pattern.compile("\\s*void\\s+startApp\\s*\\(\\s*\\)");
 	private static final Pattern DESTROY_APP_PATTERN = 
 		Pattern.compile("\\s*void\\s+destroyApp\\s*\\(\\s*(final)?\\s*boolean\\s+\\w+\\s*\\)");
-	
-	
+
 	private LibraryManager libraryManager;
 	private File errorLock;
 	private boolean lastRunFailed;
@@ -1698,6 +1697,7 @@ public class PolishTask extends ConditionalTask {
 		try {
 			// copy resources:
 			this.resourceManager.copyResources(resourceDir, device, locale);
+			this.resourceManager.copyDynamicTranslations( this.buildSetting.getDestDir( this.environment ), device, locale, this.environment );
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to assemble resources: " + e.toString(), e );
@@ -2589,8 +2589,7 @@ public class PolishTask extends ConditionalTask {
 
 		// retrieve the name of the jar-file:
 		String jarName = this.environment.getVariable("polish.jarName");
-		File jarFile = new File( this.buildSetting.getDestDir( this.environment ).getAbsolutePath() 
-						+ File.separatorChar + jarName );
+		File jarFile = new File( this.buildSetting.getDestDir( this.environment ), jarName );
 		device.setJarFile( jarFile );
 		String test = this.polishProject.getCapability("polish.license");
 		if ( !getLicense().equals(test)) {

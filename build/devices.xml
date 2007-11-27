@@ -10229,7 +10229,6 @@ These namespaces/schemas will be used soon.
 	       <capability name="MenuBarHeight" value="34"/>
 	       <capability name="BitsPerPixel" value="18"/>
 	       <capability name="VideoHeapSize" value="0 KB"/>
-	       <capability name="key.ClearKey" value="-8"/>
 	       <capability name="Font.small" value="16"/>
 	       <capability name="Font.medium" value="20"/>
 	       <capability name="Font.large" value="24"/>
@@ -10250,7 +10249,6 @@ These namespaces/schemas will be used soon.
 	       <capability name="DebugInterface" value="KDWP"/>
 	       <capability name="CameraResolution" value="3.2 MP"/>
 	       <capability name="CameraZoom" value="4"/>
-	       <capability name="key.ReturnKey" value="-11"/>
 	       <capability name="Bugs" value="SoftKeyMappedToFire, getTitleRequiresNull" />
 	</device>
 
@@ -10263,7 +10261,6 @@ These namespaces/schemas will be used soon.
 	       <capability name="CanvasSize" value="240x286"/>
 	       <capability name="BitsPerPixel" value="18"/>
 	       <capability name="VideoHeapSize" value="0 KB"/>
-	       <capability name="key.ClearKey" value="-8"/>
 	       <capability name="Font.small" value="16"/>
 	       <capability name="Font.medium" value="20"/>
 	       <capability name="Font.large" value="24"/>
@@ -10284,7 +10281,6 @@ These namespaces/schemas will be used soon.
 	       <capability name="DebugInterface" value="KDWP"/>
 	       <capability name="CameraResolution" value="3.2 MP"/>
 	       <capability name="CameraZoom" value="4"/>
-	       <capability name="key.ReturnKey" value="-11"/>
 	       <capability name="Bugs" value="SoftKeyMappedToFire, ignoreTitleCall" />
 	</device>
 

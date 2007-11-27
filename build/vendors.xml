@@ -60,7 +60,7 @@
 		<capability name="TextField.charactersKeyStar" value=" " />		
 		<capability name="IconSize" value="15x15" />		
 		<capability name="Property.imsi" value="IMSI" />
-		<capability name="MenuBar.OptionsPosition" value="right" />
+		<capability name="MenuBar.OptionsPosition" value="left" />
 		<capability name="Bugs" value="ignoreTitleCall,sharedRmsRequiresSigning"/>
 		<capability name="Emulator.Class" value="MotorolaEmulator" />
 	</vendor>
