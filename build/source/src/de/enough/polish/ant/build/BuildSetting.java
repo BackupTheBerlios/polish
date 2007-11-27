@@ -124,6 +124,7 @@ public class BuildSetting {
 	private String encoding = DEFAULT_ENCODING;
 	private boolean doPreverify = true;
 	private ArrayList postCompilers;
+	private ArrayList serializers;
 	private ArrayList finalizers;
 	private File projectBaseDir;
 	private File polishHomeDir;
@@ -137,6 +138,7 @@ public class BuildSetting {
 	private ArrayList preCompilers;
 	private ClassSetting mainClassSetting;
 	private ClassSetting dojaClassSetting;
+	private boolean doStyleSerialize = false;
 	
 	/**
 	 * Creates a new build setting.
@@ -329,6 +331,14 @@ public class BuildSetting {
 		this.postCompilers.add( setting );
 	}
 	
+	public void addConfiguredSerializer(SerializerSetting setting)
+	{
+		if(this.serializers == null){
+			this.serializers = new ArrayList();
+		}
+		
+		this.serializers.add( setting );
+	}
 	
 	public PreprocessorSetting[] getPreprocessors() {
 		if (this.preprocessors == null) { 
@@ -948,7 +958,7 @@ public class BuildSetting {
 	public boolean doPreverify() {
 		return this.doPreverify;
 	}
-
+	
 	/**
 	 * Retrieves all the defined MIDlet-class-names.
 	 * 
@@ -1526,6 +1536,26 @@ public class BuildSetting {
 	 */
 	public boolean doPostCompile() {
 		return (this.postCompilers != null);
+	}
+	
+	/**
+	 * Returns an array of the style serializers
+	 * 
+	 * @return the style serializers as an array
+	 */
+	public SerializerSetting[] getSerializers() {
+		if (this.serializers == null) {
+			return new SerializerSetting[0]; // { screenChangerSetting }; 
+		} else {
+			return (SerializerSetting[]) this.serializers.toArray( new SerializerSetting[this.serializers.size()] );
+		}
+	}
+
+	/**
+	 * @return true when there are style serializers
+	 */
+	public boolean doStyleSerialize() {
+		return (this.serializers != null);
 	}
 
 	/**

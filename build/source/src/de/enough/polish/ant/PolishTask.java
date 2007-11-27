@@ -82,6 +82,7 @@ import de.enough.polish.ant.build.PreCompilerSetting;
 import de.enough.polish.ant.build.PreprocessorSetting;
 import de.enough.polish.ant.build.PreverifierSetting;
 import de.enough.polish.ant.build.SourceSetting;
+import de.enough.polish.ant.build.SerializerSetting;
 import de.enough.polish.ant.build.Variables;
 import de.enough.polish.ant.buildlistener.BuildListenerExtensionSetting;
 import de.enough.polish.ant.emulator.EmulatorSetting;
@@ -187,7 +188,8 @@ public class PolishTask extends ConditionalTask {
 		Pattern.compile("\\s*void\\s+startApp\\s*\\(\\s*\\)");
 	private static final Pattern DESTROY_APP_PATTERN = 
 		Pattern.compile("\\s*void\\s+destroyApp\\s*\\(\\s*(final)?\\s*boolean\\s+\\w+\\s*\\)");
-
+	
+	
 	private LibraryManager libraryManager;
 	private File errorLock;
 	private boolean lastRunFailed;
@@ -562,6 +564,13 @@ public class PolishTask extends ConditionalTask {
 			callExtensions( device, locale );
 		}
 		finalize( device, locale );
+
+		//run style serializers:
+		if(this.buildSetting.doStyleSerialize())
+		{
+			serialize( device, locale );
+		}
+		
 		notifyPolishBuildListeners( PolishBuildListener.EVENT_BUILD_FINISHED, this.environment );
 		if (this.emulatorSettings != null) {
 			runEmulator( device, locale );
@@ -2827,6 +2836,21 @@ public class PolishTask extends ConditionalTask {
 			finalizer.execute(device, locale, this.environment);
 		}
 		device.resetEnvironment();
+	}
+	
+	protected void serialize( Device device, Locale locale)
+	{
+		SerializerSetting[] serializerSettings = this.buildSetting.getSerializers();
+		
+		for(int i=0; i<serializerSettings.length; i++)
+		{
+			SerializerSetting serializer = serializerSettings[i];
+			
+			serializer.setClassesDir(device.getBaseDir() + File.separator + "classes");
+			serializer.setDevice(device);
+			
+			serializer.execute();
+		}
 	}
 
 	/**
