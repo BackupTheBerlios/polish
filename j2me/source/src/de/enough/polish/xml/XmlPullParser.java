@@ -19,8 +19,9 @@
  * IN THE SOFTWARE. */
 package de.enough.polish.xml;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Hashtable;
 
 /** A minimalistic XML pull parser, similar to kXML, but
     not supporting namespaces or legacy events. If you need
