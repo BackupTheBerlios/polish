@@ -112,6 +112,9 @@ public final class Serializer {
 	static {
 		try {
 			InputStream in = Serializer.class.getResourceAsStream( "/obfuscation-map.txt" );
+			if (in == null) {
+				in = new java.io.FileInputStream( new java.io.File( ".polishSettings/obfuscation-map.txt") );
+			}
 			if (in != null) {
 				obfuscationDeserializeMap = new HashMap();
 				obfuscationSerializeMap = new HashMap();
