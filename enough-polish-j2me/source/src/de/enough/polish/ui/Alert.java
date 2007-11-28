@@ -342,6 +342,9 @@ implements CommandListener
 	public Alert( String title, String alertText, Image alertImage, AlertType alertType, Style style )
 	{
 		super( title, style, true );
+		
+		setStyle(style);
+		
 		if ( alertText != null || alertImage != null ) {
 			createItem( alertText, alertImage, null );
 		}
@@ -353,7 +356,12 @@ implements CommandListener
 			}
 		//#endif
 		//this.alertType = alertType;
-		addCommand( DISMISS_COMMAND );
+			
+		if(this.showDismissCommand)
+		{
+			addCommand( DISMISS_COMMAND );
+		}
+		
 		super.setCommandListener( this );
 	}
 	
@@ -381,13 +389,16 @@ implements CommandListener
 		super.removeCommand(cmd);
 		this.numberOfCommands--;
 		if (this.numberOfCommands == 0) {
-			//#if polish.css.show-dismiss-command
+			if(this.showDismissCommand)
+			{
 				if (this.showDismissCommand || this.timeout == FOREVER) {
 					super.addCommand( DISMISS_COMMAND );
 				}
-			//#else
+			}
+			else
+			{
 				super.addCommand( DISMISS_COMMAND );
-			//#endif
+			}
 		}
 	}
 

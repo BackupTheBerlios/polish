@@ -30,6 +30,8 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.io.Serializable;
+
 
 /**
  * <p>Style defines the design of any widget.</p>
@@ -42,7 +44,7 @@ import javax.microedition.lcdui.Image;
  *        04-Jan-2004 - rob creation
  * </pre>
  */
-public class Style
+public class Style implements Serializable
 {
 	//#if polish.cldc1.1
 		//# public final static Boolean TRUE = Boolean.TRUE;
