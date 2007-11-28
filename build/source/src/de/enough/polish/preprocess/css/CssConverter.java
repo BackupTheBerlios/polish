@@ -192,10 +192,7 @@ public class CssConverter extends Converter {
 		String[] defaultNames = (String[]) defaultStyleNames.toArray( new String[ defaultStyleNames.size() ]);
 		Style[] styles = styleSheet.getUsedAndReferencedStyles(defaultNames);
 		boolean isLabelStyleReferenced = false;
-		
-		int indexToInsertColors = codeList.size();
 		codeList.add("\t//static and referenced styles:");
-		
 		for (int i = 0; i < styles.length; i++) {
 			Style style = styles[i];
 			if (!"default".equals(style.getSelector())) {
@@ -205,8 +202,6 @@ public class CssConverter extends Converter {
 				processStyle( style, codeList, staticCodeList, styleSheet, device, env );
 			}
 		}
-		
-		
 		
 		/*
 		String[] styleNames = styleSheet.getUsedStyleNames();
@@ -277,7 +272,6 @@ public class CssConverter extends Converter {
 				this.referencedStyles.add( style );
 			}
 		}
-			
 		
 		
 		// register referenced and dynamic styles:
@@ -306,8 +300,6 @@ public class CssConverter extends Converter {
 			}
 			codeList.add("\t}");
 		//}
-			
-			
 
 		
 		// create focused style if necessary:
@@ -325,12 +317,11 @@ public class CssConverter extends Converter {
 			System.out.println("Warning: CSS style [title] not found, you should define it for designing the titles of screens.");
 		}
 		
-		codeList.add(indexToInsertColors, colorConverter.generateColorsList());
 		
 		// now insert the created source code into the source of the polish-StyleSheet.java:
 		String[] code = (String[]) codeList.toArray( new String[ codeList.size()]);
 		sourceCode.insert(code);
-		sourceCode.forward( code.length );		
+		sourceCode.forward( code.length );
 	}
 
 
@@ -953,10 +944,9 @@ public class CssConverter extends Converter {
 		} else {
 			if (fontColor != null) {
 				String color = this.colorConverter.parseColor(fontColor);
-//				boolean isDynamic = this.colorConverter.isDynamic(fontColor);
+				boolean isDynamic = this.colorConverter.isDynamic(fontColor);
 				codeList.add( "\t\t" + color + ",\t// " + groupName + "-color");
-				codeList.add("\t\t" + colorConverter.generateColorConstructor(color) + ",\t//" + groupName + "-color");
-//				codeList.add( "\t\tnew Color(" + color + ", " + isDynamic + "),\t// " + groupName + "-color");
+				codeList.add( "\t\tnew Color(" + color + ", " + isDynamic + "),\t// " + groupName + "-color");
 			} else {
 				codeList.add( "\t\t0x000000,\t// " + groupName + "-color (default is black)");
 			}

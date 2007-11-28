@@ -378,51 +378,15 @@ public class ColorConverter {
 		return DYNAMIC_COLORS.get(value) != null;
 	}
 	
-	
-	private ArrayList colors = new ArrayList();
-	private int reusableCount = 0;
-	
 	/**
 	 * Generates a new de.enough.polish.ui.Color constructor for the given color value.
 	 * @param value the color value like red or COLOR_FOREGROUND
 	 * @return source code that generates a new Color object
 	 */
-	public String generateColorConstructor(String value) {		
-		if (colors.contains(value)) {
-			reusableCount++;
-			//System.out.print("==Reusing color: " + value + " reused: " + reusableCount);
-		} else {
-			//System.out.print("==New color: " + value);
-			colors.add(value);
-		}	
-		//System.out.println(" ------------- " + colors.indexOf(value));
-		return  "colors["+colors.indexOf(value)+"]";
+	public String generateColorConstructor(String value) {
+		boolean isDynamic = isDynamic( value );
+		return  "new Color( " + parseColor(value) + ", " + isDynamic + ")";
 	}
-	
-	public String generateColorsList() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("private static Color[] colors = new Color[");
-		sb.append(colors.size());
-		sb.append("];");
-		
-		sb.append('\n');
-		
-		sb.append("static {\n");
-		for (int i=0; i<colors.size(); i++) {
-			String value = (String) colors.get(i);
-			boolean isDynamic = isDynamic( value );		
-			sb.append("colors[");
-			sb.append(i);
-			sb.append("] = new Color( ");
-			sb.append(parseColor(value));
-			sb.append(", ");
-			sb.append(isDynamic);
-			sb.append(");\n");
-		}
-		
-		sb.append(" } \n");
-		//System.out.println("Created colors init:\n " + sb.toString());
-		return sb.toString();
-	}
+
 	
 }
