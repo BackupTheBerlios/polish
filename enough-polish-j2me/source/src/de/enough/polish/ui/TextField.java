@@ -340,7 +340,7 @@ public class TextField extends StringItem
 	//#define tmp.directInput
 	//#define tmp.allowDirectInput
 //#endif
-//#if polish.TextField.usePredictiveInput
+//#if tmp.directInput && polish.TextField.usePredictiveInput && !polish.blackberry
 	//#define tmp.usePredictiveInput
 //#endif
 //#if polish.TextField.supportSymbolsEntry && tmp.directInput
@@ -889,13 +889,13 @@ public class TextField extends StringItem
 		private javax.microedition.lcdui.TextBox midpTextBox;
 	//#endif
 		
-	//#if polish.TextField.usePredictiveInput && tmp.directInput
+	//#if tmp.usePredictiveInput
 		boolean predictiveInput = false;
 		private PredictiveAccess predictiveAccess;
 		
 		long lastTimePressed = -1;
 		boolean nextMode 	 = this.predictiveInput;
-		public static int SWITCH_DELAY 	 = 1000;
+		public static final int SWITCH_DELAY 	 = 1000;
 	//#endif		
 		
 	protected boolean flashCaret = true;
@@ -988,7 +988,7 @@ public class TextField extends StringItem
 			
 		setConstraints(constraints);
 				
-		//#if polish.TextField.usePredictiveInput && tmp.directInput
+		//#if tmp.usePredictiveInput
 			this.predictiveAccess = new PredictiveAccess();
 			this.predictiveAccess.init(this);
 		//#endif
@@ -1171,7 +1171,7 @@ public class TextField extends StringItem
 		    //#endif
 		//#endif
 				
-		//#if polish.TextField.usePredictiveInput && !polish.blackberry
+		//#if tmp.usePredictiveInput
 			if(this.predictiveInput) {
 				this.predictiveAccess.synchronize();
 			}
@@ -1319,7 +1319,7 @@ public class TextField extends StringItem
 		String end = txt.substring( position );
 		setString( start + src + end );
 		
-		//#if polish.TextField.usePredictiveInput && !polish.blackberry
+		//#if tmp.usePredictiveInput
 			if(this.predictiveInput)
 				this.predictiveAccess.synchronize();
 		//#endif
@@ -1833,7 +1833,7 @@ public class TextField extends StringItem
 				}
 
 				
-				//#if polish.TextField.usePredictiveInput && tmp.directInput
+				//#if tmp.usePredictiveInput
 					this.predictiveAccess.paintChoices(x, y, leftBorder, rightBorder, g);
 				//#endif
 					
@@ -2197,7 +2197,7 @@ public class TextField extends StringItem
 			}
 		//#endif	
 		
-		//#if polish.TextField.usePredictiveInput && tmp.directInput
+		//#if tmp.usePredictiveInput
 			//#if polish.css.predictive-containerstyle
 				Style containerstyle = (Style) style.getObjectProperty("predictive-containerstyle");
 				if (containerstyle != null) {
@@ -2446,7 +2446,7 @@ public class TextField extends StringItem
 				modeStr = "123";
 		}
 		
-		//#if polish.TextField.usePredictiveInput
+		//#if tmp.usePredictiveInput
 		if(this.predictiveInput)
 		{
 			if(this.predictiveAccess.getInfo() != null)
@@ -2548,7 +2548,7 @@ public class TextField extends StringItem
 						}
 					}
 				}
-				//#if polish.TextField.usePredictiveInput
+				//#if tmp.usePredictiveInput
 					this.predictiveAccess.animateChoices();
 				//#endif
 			//#endif
@@ -2652,7 +2652,7 @@ public class TextField extends StringItem
 						
 						boolean handled = false;
 						
-						//#if polish.TextField.usePredictiveInput
+						//#if tmp.usePredictiveInput
 						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
 						//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) 
 						//#else
@@ -2785,9 +2785,10 @@ public class TextField extends StringItem
 	protected boolean handleKeyInsert(int keyCode, int gameAction)
 	{		
 		//#if tmp.directInput
-			//#if polish.TextField.usePredictiveInput && tmp.directInput
-			if(this.predictiveInput)
-				return this.predictiveAccess.keyInsert(keyCode, gameAction);
+			//#if tmp.usePredictiveInput
+				if (this.predictiveInput) {
+					return this.predictiveAccess.keyInsert(keyCode, gameAction);
+				}
 			//#endif
 			
 			int currentLength = (this.text == null ? 0 : this.text.length());
@@ -2935,8 +2936,8 @@ public class TextField extends StringItem
 			if (this.isUneditable) {
 				return false;
 			}
-			//#if polish.TextField.usePredictiveInput && tmp.directInput
-				if(this.predictiveInput) {
+			//#if tmp.usePredictiveInput
+				if (this.predictiveInput) {
 					return this.predictiveAccess.keyClear(keyCode, gameAction);
 				}
 			//#endif			
@@ -2951,9 +2952,10 @@ public class TextField extends StringItem
 	protected boolean handleKeyMode(int keyCode, int gameAction)
 	{
 		//#if tmp.directInput
-			//#if polish.TextField.usePredictiveInput && tmp.directInput
-			if(this.predictiveInput)
-				return this.predictiveAccess.keyMode(keyCode, gameAction);
+			//#if tmp.usePredictiveInput
+				if (this.predictiveInput) {
+					return this.predictiveAccess.keyMode(keyCode, gameAction);
+				}
 			//#endif
 			
 			//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
@@ -3269,8 +3271,8 @@ public class TextField extends StringItem
 				//#endif
 				if (newCharacter != this.caretChar) {
 					
-					//#if polish.TextField.usePredictiveInput
-						if(this.predictiveInput)
+					//#if tmp.usePredictiveInput
+						if (this.predictiveInput)
 						{
 							TextBuilder builder = this.predictiveAccess.getBuilder();
 							
@@ -3331,7 +3333,7 @@ public class TextField extends StringItem
 		}
 		//#endif
 
-		//#if polish.TextField.usePredictiveInput
+		//#if tmp.usePredictiveInput
 		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
 		//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) )
 		//#else
@@ -3459,8 +3461,8 @@ public class TextField extends StringItem
 	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 	 */
 	public void commandAction(Command cmd, Displayable box) {
-		//#if polish.TextField.usePredictiveInput && tmp.directInput
-			if(this.predictiveAccess.commandAction(cmd, box)) {
+		//#if tmp.usePredictiveInput
+			if (this.predictiveInput && this.predictiveAccess.commandAction(cmd, box)) {
 				return;
 			}
 		//#endif
@@ -3537,8 +3539,8 @@ public class TextField extends StringItem
 	public void commandAction(Command cmd, Item item) {
 		//#debug
 		System.out.println("TextField.commandAction( " + cmd.getLabel() + ", " + this + " )");
-		//#if polish.TextField.usePredictiveInput && tmp.directInput
-			if(this.predictiveAccess.commandAction(cmd, item)) {			
+		//#if tmp.usePredictiveInput
+			if (this.predictiveInput && this.predictiveAccess.commandAction(cmd, item)) {			
 				return;
 			}
 		//#endif
@@ -3730,7 +3732,7 @@ public class TextField extends StringItem
 	}	
 	//#endif
 		
-	//#if polish.TextField.usePredictiveInput && tmp.directInput
+	//#if tmp.usePredictiveInput
 	public PredictiveAccess getPredictiveAccess() {
 		return this.predictiveAccess;
 	}

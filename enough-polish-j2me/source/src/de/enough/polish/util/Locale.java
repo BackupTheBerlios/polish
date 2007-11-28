@@ -207,12 +207,14 @@ public final class Locale {
 					//#debug info
 					System.out.println("Unable to load translations from rms" + e );
 				} finally {
-					try
-					{
-						store.closeRecordStore();
-					} catch (RecordStoreException e)
-					{
-						// ignore
+					if (store != null) {
+						try
+						{
+							store.closeRecordStore();
+						} catch (Exception e)
+						{
+							// ignore
+						}
 					}
 				}
 			//#endif
