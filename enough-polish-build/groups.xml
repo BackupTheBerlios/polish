@@ -326,7 +326,7 @@
 		<capability name="SoundFormat" value="mpeg4, mp4, 3gpp" />
 	</group>
 	
-	<group>;postd=p
+	<group>
 		<name>SE-JavaPlatform1</name>
 		<capability name="OS" value="Sony-Ericsson OS" />
 		<capability name="JavaPlatform" value="MIDP/1.0" />
