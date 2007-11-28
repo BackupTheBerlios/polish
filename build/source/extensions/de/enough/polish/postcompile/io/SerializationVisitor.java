@@ -146,6 +146,7 @@ public class SerializationVisitor
       this.serializableObjectTypes.add("java/lang/String");
       this.serializableObjectTypes.add("java/lang/StringBuffer");
       this.serializableObjectTypes.add("java/lang/Boolean");
+      this.serializableObjectTypes.add("java/lang/Object");
       this.serializableObjectTypes.add("java/util/Date");
       this.serializableObjectTypes.add("java/util/Calendar");
       this.serializableObjectTypes.add("java/util/Random");
@@ -362,6 +363,15 @@ public class SerializationVisitor
         
         if (PrimitiveTypesHelper.isArrayType(desc))
           {
+        	if (desc.equals("[Ljava/lang/Object;")) {
+        		mv.visitVarInsn(ALOAD, 0);
+        		mv.visitVarInsn(ALOAD, 1);
+        		mv.visitMethodInsn(INVOKESTATIC, getClassName(SERIALIZER, this.environment), "deserialize", "(Ljava/io/DataInputStream;)Ljava/lang/Object;");
+        		mv.visitTypeInsn(CHECKCAST, desc);
+        		mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
+        		continue;
+        	}
+
             if (PrimitiveTypesHelper.isMultiDimensionalArrayType(desc))
               {
                 throw new RuntimeException("Multidimensional arrays are not supported by the serialization framework");
@@ -575,6 +585,14 @@ public class SerializationVisitor
         
         if (PrimitiveTypesHelper.isArrayType(desc))
           {
+        	if (desc.equals("[Ljava/lang/Object;")) {
+        		mv.visitVarInsn(ALOAD, 0);
+                mv.visitFieldInsn(GETFIELD, this.className, name, desc);
+                mv.visitVarInsn(ALOAD, 1);
+        		mv.visitMethodInsn(INVOKESTATIC, getClassName(SERIALIZER, this.environment), "serialize", "(Ljava/lang/Object;Ljava/io/DataOutputStream;)V");
+        		continue;
+        	}
+
             if (PrimitiveTypesHelper.isMultiDimensionalArrayType(desc))
               {
                 throw new RuntimeException("Multidimensional arrays are not supported by the serialization framework");
