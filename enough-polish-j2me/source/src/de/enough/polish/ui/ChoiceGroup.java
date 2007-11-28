@@ -1809,7 +1809,7 @@ implements Choice
 						repaint();
 					}
 				//#endif
-				return true;
+				return !this.isImplicit;
 			}
 			//#ifdef polish.usePopupItem
 				else if (this.isPopup && this.isPopupClosed) {
