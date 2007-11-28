@@ -842,6 +842,15 @@ implements CommandListener
 		super.showNotify();
 	}
 
+	/**
+	 * Makes the specified alert followed by the specified displayable visible.
+	 * This is a replacement for Display.setCurrent(Alert, Displayable), since the J2ME Polish alert
+	 * is extending de.enough.polish.ui.Screen and not javax.microedition.lcdui.Alert.
+	 * 
+	 * @param display the display
+	 * @param alert the alert that should be shown, must not be null
+	 * @param nextDisplayable the displayable that should be shown after the alert, can be null
+	 */
 	public static void setCurrent( Display display, Alert alert, Displayable nextDisplayable ) {
 		//#debug
 		System.out.println("Alert.setCurrent() of " + alert + " with nextDisplayable=" + nextDisplayable);
