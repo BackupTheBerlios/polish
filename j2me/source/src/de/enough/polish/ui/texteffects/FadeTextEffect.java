@@ -35,7 +35,14 @@ import de.enough.polish.util.DrawUtil;
  */
 public class FadeTextEffect extends TextEffect {
 	
-	private DrawUtil.FadeUtil fader=new DrawUtil.FadeUtil();
+	private transient final DrawUtil.FadeUtil fader;
+	
+	/**
+	 * Creates a new instance.
+	 */
+	public FadeTextEffect() {
+		this.fader = new DrawUtil.FadeUtil();
+	}
 	
 	private String lastText;
 	
