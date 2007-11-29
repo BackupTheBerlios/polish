@@ -10116,9 +10116,31 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location"/>
 		<capability name="SoundFormat" value="amr, nb-amr"/>
-		<capability name="Emulator.Skin" value="8100"/>
+		<capability name="Emulator.Skin" value="8130"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
+	
+	<device>
+		<identifier>BlackBerry/8130</identifier>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.3"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location"/>
+		<capability name="SoundFormat" value="amr, nb-amr"/>
+		<capability name="Emulator.Skin" value="8130"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+	</device>
+	
+	<device>
+		<identifier>BlackBerry/8120</identifier>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.3"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location"/>
+		<capability name="SoundFormat" value="amr, nb-amr"/>
+		<capability name="Emulator.Skin" value="8120"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+	</device>
+	
+	
 
 	<device>
 		<identifier>BlackBerry/8700</identifier>
