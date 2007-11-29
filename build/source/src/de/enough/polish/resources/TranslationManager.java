@@ -1171,15 +1171,29 @@ implements Comparator
 	 */
 	public int numberOfTranslations(int type)
 	{
+		List first;
+		List second;
 		switch (type) {
 		case Translation.PLAIN:
-			return this.plainTranslations.size();
+			first = this.plainTranslations;
+			second = this.plainTranslationsExternal;
+			break;
 		case Translation.SINGLE_PARAMETER:
-			return this.singleParameterTranslations.size();
+			first = this.singleParameterTranslations;
+			second = this.singleParameterTranslationsExternal;
+			break;
 		case Translation.MULTIPLE_PARAMETERS:
-			return this.multipleParametersTranslations.size();
+			first = this.multipleParametersTranslations;
+			second = this.multipleParametersTranslationsExternal;
+			break;
+		default:
+			return 0;
 		}
-		return 0;
+		if (first != null && second == null) {
+			return first.size();
+		} else {
+			return Math.max( first.size(), second.size() );
+		}
 	}
 
 }
