@@ -2133,10 +2133,34 @@ These namespaces/schemas will be used soon.
 	
 	
 <!-- Motorola devices -->
+	<device>
+		<identifier>Motorola/Motoslvr_L7i,Motorola/L7i,Motorola/Motoslvr_L7e,Motorola/L7e</identifier>
+		<features>doubleBuffering, hasCamera</features>
+		<capability name="OS" value="Motorola"/>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="ScreenSize" value="176x220" />       
+		<capability name="BitsPerPixel" value="16"/>
+		<capability name="HeapSize" value="1.1 MB"/>
+		<capability name="StorageSize" value="20 MB"/>
+		<capability name="MaxRecordStoreSize" value="512 kb"/>
+		<capability name="JavaProtocol" value="udp, http, socket, serial, ssl"/>
+		<capability name="MaxSockets" value="4"/>
+		<capability name="JavaPackage" value="btapi, pdaapi, security, wmapi1.0, wmapi2.0, mmapi, mot3dapi, mot-drm, moto-pim, moto-flex, moto-image"/>
+		<capability name="ImageFormat" value="png, jpeg, wbmp, gif, bmp, ems"/>
+		<capability name="SoundFormat" value="midi, mp3, amr, aac, imelody, aac+"/>
+		<capability name="Region" value="Global"/>
+		<capability name="Network" value="GSM, GPRS"/>
+		<capability name="Frequency" value="850, 900, 1800, 1900"/>
+		<capability name="CameraResolution" value="640x480"/>
+		<capability name="CameraZoom" value="4"/>
+		<capability name="Emulator.Class" value="MotorolaEmulatorA6" />
+		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
+	</device>
 
 
 	<device>
-	<identifier>Motorola/MotoRazr2V8,Motorola/Razr2V8</identifier>
+		<identifier>Motorola/MotoRazr2V8,Motorola/Razr2V8</identifier>
 		<features>hasCamera</features>
 		<capability name="OS" value="Linux" />
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
@@ -3796,7 +3820,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Skin" value="L2_L6_L6i.props" />
 		<capability name="Bugs" value="noTranslucencyWithDrawRgb"/>
 	</device>
-
+	
 	<device>
 		<identifier>Motorola/L6i</identifier>
 		<features>doubleBuffering, hasCamera</features>
@@ -3852,6 +3876,7 @@ These namespaces/schemas will be used soon.
 		<capability name="key.MiddleSoftKey" value="-23" />
 		<capability name="key.RightSoftKey" value="-22" />
 		<capability name="key.FireKey" value="-20" />
+		<capability name="MenuBar.OptionsPosition" value="right" />
 	</device>
 
 	<device>
@@ -10064,6 +10089,37 @@ These namespaces/schemas will be used soon.
 </device>
 	
 <!-- Research In Motion devices -->
+
+	<device>
+		<identifier>BlackBerry/4.1</identifier>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.1"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
+		<capability name="SoundFormat" value="amr, nb-amr"/>
+		<capability name="Emulator.Skin" value="8700r"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+	</device>
+
+	<device>
+		<identifier>BlackBerry/4.2</identifier>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.2"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
+		<capability name="SoundFormat" value="amr, nb-amr"/>
+		<capability name="Emulator.Skin" value="8100"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+	</device>
+
+	<device>
+		<identifier>BlackBerry/4.3</identifier>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.3"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location"/>
+		<capability name="SoundFormat" value="amr, nb-amr"/>
+		<capability name="Emulator.Skin" value="8100"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+	</device>
+
 	<device>
 		<identifier>BlackBerry/8700</identifier>
 		<capability name="ScreenSize" value="320x240"/>

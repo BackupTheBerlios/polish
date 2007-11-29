@@ -105,17 +105,39 @@ implements OutputFilter
 		if ( !rapcJarFile.exists() ) {
 			// try to sort out the correct JDE automatically:
 			File[] files = blackberryHomeDir.listFiles();
-			boolean requires41JDE = !device.hasFeature("polish.hasTrackballEvents");
+			String recommendedJdeVersion = env.getVariable("polish.build.BlackBery.JDE-Version");
+			if (recommendedJdeVersion == null) {
+				if (!device.hasFeature("polish.hasTrackballEvents")) {
+					recommendedJdeVersion = "4.1";
+				}
+			}
 			Arrays.sort( files );
 			for (int i = files.length -1; i >= 0; i--) {
 				File file = files[i];
 				if (file.isDirectory() && file.getName().indexOf("JDE") != -1) {
-					if (!requires41JDE || file.getName().indexOf("4.1") != -1) {
+					if (recommendedJdeVersion == null || file.getName().indexOf(recommendedJdeVersion) != -1) {
 						blackberryHomeDir = file;
 						blackberryHome = file.getAbsolutePath();
 						rapcJarFile = new File( blackberryHomeDir, "/bin/rapc.jar" );
 						if (rapcJarFile.exists()) {
 							System.out.println("Using blackberry.home " + blackberryHome);
+							break;
+						}
+					}
+				}
+			}
+			if ( !rapcJarFile.exists() && recommendedJdeVersion != null) { 
+				for (int i = files.length -1; i >= 0; i--) {
+					File file = files[i];
+					if (file.isDirectory() && file.getName().indexOf("JDE") != -1) {
+						blackberryHomeDir = file;
+						blackberryHome = file.getAbsolutePath();
+						rapcJarFile = new File( blackberryHomeDir, "/bin/rapc.jar" );
+						if (rapcJarFile.exists()) {
+							System.out.println("WARNING: a " + recommendedJdeVersion + " JDE is recommended for " 
+									+ device.getIdentifier() + ", however such a JDE cannot be found in " 
+									+ blackberryHomeDir.getParentFile().getAbsolutePath() 
+									+ ". Now using blackberry.home " + blackberryHome );
 							break;
 						}
 					}
@@ -167,8 +189,10 @@ implements OutputFilter
 				if (iconUrl != null && iconUrl.length() > 1) {
 					//iconUrl = iconUrl.substring( 1 );
 					// add absolute path for the icon, so that stupid rapcs build before 4.2 can find it:
-					iconUrl = device.getClassesDir() + iconUrl;
-					System.out.println("using icon path " + iconUrl );
+					if (File.pathSeparatorChar == '\\') {
+						iconUrl = device.getClassesDir() + iconUrl;
+						System.out.println("using icon path " + iconUrl );
+					}
 				} else {
 					iconUrl = "";
 				}

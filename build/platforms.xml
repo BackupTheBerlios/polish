@@ -98,6 +98,7 @@
 		<identifier>BlackBerry/4.1</identifier>
 		<parent>BlackBerry</parent>
 		<capability name="build.BootClassPath" value="blackberry-4.1.0.jar" />
+		<capability name="build.BlackBery.JDE-Version" value="4.1" />
 		<capability name="JavaPackage" value="location,wmapi,pim,mmapi" />
 	</platform>
 
@@ -105,6 +106,17 @@
 		<identifier>BlackBerry/4.2</identifier>
 		<parent>BlackBerry</parent>
 		<capability name="build.BootClassPath" value="blackberry-4.2.0.jar" />
+		<capability name="build.BlackBery.JDE-Version" value="4.2" />
+		<!-- key for opening/closing the menu -->
+		<capability name="key.Menu" value="268566528" />
+		<capability name="JavaPackage" value="location,wmapi,pim,mmapi" />	
+	</platform>
+
+	<platform>
+		<identifier>BlackBerry/4.3</identifier>
+		<parent>BlackBerry</parent>
+		<capability name="build.BootClassPath" value="blackberry-4.3.0.jar" />
+		<capability name="build.BlackBery.JDE-Version" value="4.3" />
 		<!-- key for opening/closing the menu -->
 		<capability name="key.Menu" value="268566528" />
 		<capability name="JavaPackage" value="location,wmapi,pim,mmapi" />	
