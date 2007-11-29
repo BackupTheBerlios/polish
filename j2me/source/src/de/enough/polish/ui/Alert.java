@@ -873,7 +873,7 @@ implements CommandListener
 			Boolean showDismissCommandBool = style.getBooleanProperty("show-dismiss-command");
 			if (showDismissCommandBool != null) {
 				this.showDismissCommand = showDismissCommandBool.booleanValue();
-				if (!this.showDismissCommand && this.timeout != FOREVER) {
+				if (!this.showDismissCommand) {
 					super.removeCommand(DISMISS_COMMAND);
 				}
 			}
