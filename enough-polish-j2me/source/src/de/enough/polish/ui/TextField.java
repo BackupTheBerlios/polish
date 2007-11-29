@@ -2763,6 +2763,9 @@ public class TextField extends StringItem
 			//#else
 				|| (keyCode == -8)
 			//#endif
+			//#if ${ isOS( Windows ) }
+				|| (gameAction != Canvas.DOWN && gameAction != Canvas.UP && gameAction != Canvas.LEFT && gameAction != Canvas.RIGHT)
+			//#endif
 			|| (gameAction == Canvas.FIRE ) )
 		{	
 			//#if !(polish.blackberry || tmp.forceDirectInput)
