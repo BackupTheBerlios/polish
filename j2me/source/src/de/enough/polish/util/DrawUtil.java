@@ -776,10 +776,10 @@ public final class DrawUtil {
 	 * @author Simon Schmitt
 	 */
 	public static class FadeUtil{
-		public final int FADE_IN =1;
-		public final int FADE_OUT=2;
-		public final int FADE_LOOP=3;
-		public final int FADE_BREAK=0;
+		public final static int FADE_IN =1;
+		public final static int FADE_OUT=2;
+		public final static int FADE_LOOP=3;
+		public final static int FADE_BREAK=0;
 		
 		public int[] gradient;
 		public boolean changed;
