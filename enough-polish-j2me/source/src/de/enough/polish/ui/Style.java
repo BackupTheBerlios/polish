@@ -44,7 +44,10 @@ import de.enough.polish.io.Serializable;
  *        04-Jan-2004 - rob creation
  * </pre>
  */
-public class Style implements Serializable
+public class Style 
+//#if polish.Style.flagSerializable
+implements Serializable
+//#endif
 {
 	//#if polish.cldc1.1
 		//# public final static Boolean TRUE = Boolean.TRUE;
