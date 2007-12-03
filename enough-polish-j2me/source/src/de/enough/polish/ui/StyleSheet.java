@@ -232,6 +232,11 @@ public final class StyleSheet {
 		return style;
 	}
 	
+	public static Hashtable getStyles()
+	{
+		return stylesByName;
+	}
+	
 	//#ifdef polish.useDynamicStyles
 	/**
 	 * Retrieves the style for the given item.
