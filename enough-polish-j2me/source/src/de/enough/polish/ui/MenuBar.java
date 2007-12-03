@@ -994,7 +994,8 @@ public class MenuBar extends Item {
 				}
 			//#endif
 			if (keyCode == this.selectOptionsMenuKey) {
-				this.isSoftKeyPressed = true;			
+				this.isSoftKeyPressed = true;	
+				notifyKeyPressed();
 				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
 				//#if tmp.useInvisibleMenuBar
 					if (commandItem.command == this.hideCommand ) {
@@ -1015,6 +1016,7 @@ public class MenuBar extends Item {
 			} else  if (keyCode == this.closeOptionsMenuKey) {
 		//#endif
 				this.isSoftKeyPressed = true;
+				notifyKeyPressed();
 				int selectedIndex = this.commandsContainer.getFocusedIndex();
 				if (!this.commandsContainer.handleKeyPressed(0, Canvas.LEFT)
 						|| selectedIndex != this.commandsContainer.getFocusedIndex() ) 
@@ -1097,20 +1099,24 @@ public class MenuBar extends Item {
 						//#if polish.key.MiddleSoftKey:defined
 							this.isSoftKeyPressed = true;			
 						//#endif
+						notifyKeyPressed();
 						this.screen.callCommandListener(this.singleMiddleCommand);
 						return true;			
 					}
 			//#endif
 			if (keyCode == LEFT_SOFT_KEY && this.singleLeftCommand != null && this.singleLeftCommandItem.getAppearanceMode() != PLAIN) {
-				this.isSoftKeyPressed = true;			
+				this.isSoftKeyPressed = true;	
+				notifyKeyPressed();
 				this.screen.callCommandListener(this.singleLeftCommand);
 				return true;			
 			} else if (keyCode == RIGHT_SOFT_KEY && this.singleRightCommand != null && this.singleRightCommandItem.getAppearanceMode() != PLAIN) {
-				this.isSoftKeyPressed = true;			
+				this.isSoftKeyPressed = true;	
+				notifyKeyPressed();
 				this.screen.callCommandListener(this.singleRightCommand);
 				return true;			
 			} else if (keyCode == this.openOptionsMenuKey ) {
-				this.isSoftKeyPressed = true;			
+				this.isSoftKeyPressed = true;	
+				notifyKeyPressed();
 				//#if tmp.useInvisibleMenuBar
 					if ( !this.isOpened && this.positiveCommand != null 
 //							&& ((this.singleRightCommand != null && this.commandsContainer.size() == 3) ) )
@@ -1130,7 +1136,15 @@ public class MenuBar extends Item {
 		return false;
 	}
 	
-	
+	/**
+	 * Commits different actions depending on the device using a menubar
+	 */
+	public static void notifyKeyPressed()
+	{
+		//#if polish.softkey-vibrate && polish.midp2
+			StyleSheet.display.vibrate(50);
+		//#endif
+	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
