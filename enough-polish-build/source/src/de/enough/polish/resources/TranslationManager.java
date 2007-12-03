@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Currency;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -118,21 +119,96 @@ implements Comparator
 		this.singleParameterTranslations = new ArrayList();
 		this.plainTranslations = new ArrayList();
 		Map rawTranslations = loadRawTranslations(resourceDirs, localizationSetting.getMessagesFileName(), false);
+		Map externalRawTranslations = null;
 		// load IDs for variables with multiple parameters or when dynamic translations are used:
 		loadIdsMap( false );
-		processRawTranslations( rawTranslations, this.plainTranslations, this.singleParameterTranslations, this.multipleParametersTranslations, this.idGeneratorPlain, this.idGeneratorSingleParameter, this.idGeneratorMultipleParameters );
 		if (this.isDynamic) {
 			// load translations that can be loaded at a later stage, e.g. via HTTP:
-			rawTranslations = loadRawTranslations(resourceDirs, localizationSetting.getExternalMessagesFileName(), true);
-			if (rawTranslations.size() > 0) {
+			externalRawTranslations = loadRawTranslations(resourceDirs, localizationSetting.getExternalMessagesFileName(), true);
+			if (externalRawTranslations.size() == 0) {
+				externalRawTranslations = null;
+			} else {
 				environment.addSymbol("polish.i18n.useExternalTranslations");
 				loadIdsMap( true );
 				this.plainTranslationsExternal = new ArrayList();
 				this.singleParameterTranslationsExternal = new ArrayList();
 				this.multipleParametersTranslationsExternal = new ArrayList();
-				processRawTranslations( rawTranslations, this.plainTranslationsExternal, this.singleParameterTranslationsExternal, this.multipleParametersTranslationsExternal, this.idGeneratorPlainExternal, this.idGeneratorSingleParameterExternal, this.idGeneratorMultipleParametersExternal );
 			}
 		}
+		if (externalRawTranslations == null) {
+			processRawTranslations( rawTranslations, this.plainTranslations, this.singleParameterTranslations, this.multipleParametersTranslations, this.idGeneratorPlain, this.idGeneratorSingleParameter, this.idGeneratorMultipleParameters );
+		} else {
+			// there are external translations - now find out translations that are used both internally as well as externally
+			// and ensure that they use the very same lookup IDs:
+			HashMap sharedInternalTranslations = new HashMap();
+			HashMap sharedExternalTranslations = new HashMap();
+			ArrayList sharedTranslations = new ArrayList();
+			Object[] internalKeys = rawTranslations.keySet().toArray();
+			for (int i = 0; i < internalKeys.length; i++)
+			{
+				String internalKey = (String) internalKeys[i];
+				Object externalValue = externalRawTranslations.get(internalKey); 
+				if (externalValue != null) {
+					sharedInternalTranslations.put( internalKey, rawTranslations.get(internalKey) );
+					sharedExternalTranslations.put( internalKey, externalValue );
+					rawTranslations.remove(internalKey);
+					externalRawTranslations.remove(internalKey);
+					if (internalKey.startsWith("var:")) {
+						internalKey = internalKey.substring("var:".length() );
+					} else if (internalKey.startsWith("variable:")) {
+						internalKey = internalKey.substring("variable:".length() );
+					}
+					sharedTranslations.add( internalKey );
+				}
+			}
+			//System.out.println("found " + sharedTranslations.size() + " shared translations");
+			// process shared keys:
+			processRawTranslations( sharedInternalTranslations, this.plainTranslations, this.singleParameterTranslations, this.multipleParametersTranslations, this.idGeneratorPlain, this.idGeneratorSingleParameter, this.idGeneratorMultipleParameters );
+			for (Iterator iter = sharedTranslations.iterator(); iter.hasNext();)
+			{
+				String sharedKey = (String) iter.next();
+				int id = this.idGeneratorPlain.getId(sharedKey, false );
+				if (id != -1) {
+					int externalId = this.idGeneratorPlainExternal.getId(sharedKey, false);
+					if (externalId == -1) {
+						this.idGeneratorPlainExternal.addId(sharedKey, id);
+					} else if (externalId != id) {
+						throw new BuildException("Invalid translations setup: Shared key \"" + sharedKey + "\" used different IDs. Please remove all .polishSettings/LocaleIds*.txt and restart the build.");
+					}
+				} else {
+					id = this.idGeneratorSingleParameter.getId(sharedKey, false );
+					if (id != -1) {
+						int externalId = this.idGeneratorSingleParameterExternal.getId(sharedKey, false);
+						if (externalId == -1) {
+							this.idGeneratorSingleParameterExternal.addId(sharedKey, id);
+						} else if (externalId != id) {
+							throw new BuildException("Invalid translations setup: Shared key \"" + sharedKey + "\" used different IDs. Please remove all .polishSettings/LocaleIds*.txt and restart the build.");
+						}
+					} else {
+						id = this.idGeneratorMultipleParameters.getId(sharedKey, false );
+						if (id != -1) {
+							int externalId = this.idGeneratorMultipleParametersExternal.getId(sharedKey, false);
+							if (externalId == -1) {
+								this.idGeneratorMultipleParametersExternal.addId(sharedKey, id);
+							} else if (externalId != id) {
+								throw new BuildException("Invalid translations setup: Shared key \"" + sharedKey + "\" used different IDs. Please remove all .polishSettings/LocaleIds*.txt and restart the build.");
+							}
+						} else {
+							System.out.println("Warning: your translation setup might be inconsistent: Shared key \"" + sharedKey + "\" did not obtain an ID. In case of problems please remove all .polishSettings/LocaleIds*.txt and restart the build.");
+							//throw new BuildException("Invalid translations setup: Shared key \"" + sharedKey + "\" was not processed at all: please remove all .polishSettings/LocaleIds*.txt and restart the build.");
+						}
+					}
+				}
+			}
+			//System.out.println("processing externally shared translations");
+			processRawTranslations( sharedExternalTranslations, this.plainTranslationsExternal, this.singleParameterTranslationsExternal, this.multipleParametersTranslationsExternal, this.idGeneratorPlainExternal, this.idGeneratorSingleParameterExternal, this.idGeneratorMultipleParametersExternal );
+			// process all other keys:
+			//System.out.println("processing raw translations internal: " + rawTranslations.size() );
+			processRawTranslations( rawTranslations, this.plainTranslations, this.singleParameterTranslations, this.multipleParametersTranslations, this.idGeneratorPlain, this.idGeneratorSingleParameter, this.idGeneratorMultipleParameters );
+			//System.out.println("processing raw translations external: "+ externalRawTranslations.size() );
+			processRawTranslations( externalRawTranslations, this.plainTranslationsExternal, this.singleParameterTranslationsExternal, this.multipleParametersTranslationsExternal, this.idGeneratorPlainExternal, this.idGeneratorSingleParameterExternal, this.idGeneratorMultipleParametersExternal );
+		}
+		//System.out.println("done handling external translations");
 		
 		// now set DateFormat variables according to current locale:
 		String dateFormat = environment.getVariable("polish.DateFormat"); 
@@ -362,16 +438,16 @@ implements Comparator
 				rawTranslations.remove(key);
 				key = key.substring( "var:".length() );
 				variableFound = true;
-				if (key.startsWith("polish.")) {
+				//if (key.startsWith("polish.")) {
 					rawTranslations.put(key, value);
-				}
+				//}
 			} else if (key.startsWith("variable:")) {
 				rawTranslations.remove(key);
 				key = key.substring( "variable:".length() );
 				variableFound = true;
-				if (key.startsWith("polish.")) {
+				//if (key.startsWith("polish.")) {
 					rawTranslations.put(key, value);
-				}
+				//}
 			} else if (key.startsWith("MIDlet-")) {
 				rawTranslations.remove(key);
 				variableFound = true;
