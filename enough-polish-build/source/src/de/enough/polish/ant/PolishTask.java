@@ -82,7 +82,6 @@ import de.enough.polish.ant.build.PreCompilerSetting;
 import de.enough.polish.ant.build.PreprocessorSetting;
 import de.enough.polish.ant.build.PreverifierSetting;
 import de.enough.polish.ant.build.SourceSetting;
-import de.enough.polish.ant.build.SerializerSetting;
 import de.enough.polish.ant.build.Variables;
 import de.enough.polish.ant.buildlistener.BuildListenerExtensionSetting;
 import de.enough.polish.ant.emulator.EmulatorSetting;
@@ -563,12 +562,6 @@ public class PolishTask extends ConditionalTask {
 			callExtensions( device, locale );
 		}
 		finalize( device, locale );
-
-		//run style serializers:
-		if(this.buildSetting.doStyleSerialize())
-		{
-			serialize( device, locale );
-		}
 		
 		notifyPolishBuildListeners( PolishBuildListener.EVENT_BUILD_FINISHED, this.environment );
 		if (this.emulatorSettings != null) {
@@ -2419,13 +2412,14 @@ public class PolishTask extends ConditionalTask {
 			// ignore - this is just because there is no compiled Debug class yet...
 		}
 		
+		this.extensionManager.postCompile( device, locale, this.environment );
+		
 		// execute active postcompilers:
 		PostCompiler[] compilers = getActivePostCompilers();
 		for (int i = 0; i < compilers.length; i++) {
 			PostCompiler postCompiler = compilers[i];
 			postCompiler.execute( device, locale, this.environment );
 		}
-		this.extensionManager.postCompile( device, locale, this.environment );
 	}
 
 
@@ -2837,21 +2831,6 @@ public class PolishTask extends ConditionalTask {
 		device.resetEnvironment();
 	}
 	
-	protected void serialize( Device device, Locale locale)
-	{
-		SerializerSetting[] serializerSettings = this.buildSetting.getSerializers();
-		
-		for(int i=0; i<serializerSettings.length; i++)
-		{
-			SerializerSetting serializer = serializerSettings[i];
-			
-			serializer.setClassesDir(device.getBaseDir() + File.separator + "classes");
-			serializer.setDevice(device);
-			
-			serializer.execute();
-		}
-	}
-
 	/**
 	 * Launches the emulator if the user wants to.
 	 * 

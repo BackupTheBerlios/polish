@@ -331,15 +331,6 @@ public class BuildSetting {
 		this.postCompilers.add( setting );
 	}
 	
-	public void addConfiguredSerializer(SerializerSetting setting)
-	{
-		if(this.serializers == null){
-			this.serializers = new ArrayList();
-		}
-		
-		this.serializers.add( setting );
-	}
-	
 	public PreprocessorSetting[] getPreprocessors() {
 		if (this.preprocessors == null) { 
 			return new PreprocessorSetting[0];
@@ -1538,19 +1529,6 @@ public class BuildSetting {
 		return (this.postCompilers != null);
 	}
 	
-	/**
-	 * Returns an array of the style serializers
-	 * 
-	 * @return the style serializers as an array
-	 */
-	public SerializerSetting[] getSerializers() {
-		if (this.serializers == null) {
-			return new SerializerSetting[0]; // { screenChangerSetting }; 
-		} else {
-			return (SerializerSetting[]) this.serializers.toArray( new SerializerSetting[this.serializers.size()] );
-		}
-	}
-
 	/**
 	 * @return true when there are style serializers
 	 */

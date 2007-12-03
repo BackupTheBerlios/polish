@@ -593,7 +593,7 @@
 		<type>postcompiler</type>
 		<name>screenchanger</name>
 		<class>de.enough.polish.postcompile.screenchange.ScreenChangerPostCompiler</class>
-		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
+		<classpath>${polish.home}/lib/asm-all-3.1.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 		<autostart>
 			polish.usePolishGui 
 			and not polish.Bugs.displaySetCurrentFlickers
@@ -609,7 +609,7 @@
 		<type>postcompiler</type>
 		<name>mastercanvas</name>
 		<class>de.enough.polish.postcompile.mastercanvas.MasterCanvasPostCompiler</class>
-		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
+		<classpath>${polish.home}/lib/asm-all-3.1.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 		<autostart>polish.usePolishGui and polish.Bugs.displaySetCurrentFlickers</autostart>
 	</extension>
 	
@@ -617,7 +617,7 @@
 		<type>postcompiler</type>
 		<name>serialization</name>
 		<class>de.enough.polish.postcompile.io.SerializationPostCompiler</class>
-		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
+		<classpath>${polish.home}/lib/asm-all-3.1.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 		<autostart>true</autostart>
 	</extension>
 	
@@ -625,7 +625,7 @@
 		<type>postcompiler</type>
 		<name>classrenaming</name>
 		<class>de.enough.polish.postcompile.renaming.ClassRenamingPostCompiler</class>
-		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
+		<classpath>${polish.home}/lib/asm-all-3.1.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 		<autostart>true</autostart>
 	</extension>
 	
@@ -660,7 +660,7 @@
 		<type>postcompiler</type>
 		<name>java5</name>
 		<class>de.enough.polish.postcompile.java5.Java5PostCompiler</class>
-		<classpath>${polish.home}/lib/retroweaver-all.jar:${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
+		<classpath>${polish.home}/lib/retroweaver-all.jar:${polish.home}/lib/asm-all-3.1.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 	</extension>
 
 	<extension>
@@ -668,6 +668,13 @@
 		<name>j2se</name>
 		<class>de.enough.polish.postcompile.j2se.JavaSEPostCompiler</class>
 		<classpath>${polish.home}/bin/extensions</classpath>
+	</extension>
+	
+	<extension>
+		<type>postcompiler</type>
+		<name>dataserializer</name>
+		<class>de.enough.polish.postcompile.serialization.DataSerializerPostCompiler</class>
+		<classpath>${polish.home}/lib/asm-all-3.1.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
 	</extension>
 	
 	<!-- Log Handler -->
@@ -882,6 +889,13 @@
 		<type>finalizer</type>
 		<name>buildlist</name>
 		<class>de.enough.polish.finalize.buildlist.BuildListFinalizer</class>
+		<classpath>${polish.home}/bin/extensions;./bin/classes</classpath>
+	</extension>
+	
+	<extension>
+		<type>finalizer</type>
+		<name>dataserializer</name>
+		<class>de.enough.polish.finalize.serialization.DataSerializerFinalizer</class>
 		<classpath>${polish.home}/bin/extensions</classpath>
 	</extension>
 
