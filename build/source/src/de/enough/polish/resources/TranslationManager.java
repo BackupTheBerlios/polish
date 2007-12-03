@@ -26,6 +26,7 @@
 package de.enough.polish.resources;
 
 
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,6 +58,7 @@ import de.enough.polish.util.IntegerIdGenerator;
 import de.enough.polish.util.PropertyUtil;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringList;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Manages translations.</p>
@@ -1269,6 +1271,56 @@ implements Comparator
 			return first.size();
 		} else {
 			return Math.max( first.size(), second.size() );
+		}
+	}
+	
+	public static void main(String[] args) throws Exception
+	{
+		if (args.length < 2) {
+			System.out.println("Usage: java de.enough.polish.resources.TranslationManager translation-key/ID locfile [locfile2, locfile3...]");
+			System.exit(1);
+		}
+		Map idsExternalMap = FileUtil.readProperties( new File(".polishSettings/LocaleIdsPlainExternal.txt"));
+		
+		String idOrKey = args[0];
+		ArrayList translations = new ArrayList();
+		for (int i = 1; i < args.length ; i++)
+		{
+			String fileName = args[i];
+			File locFile = new File( fileName );
+			DataInputStream in = new DataInputStream( new FileInputStream( locFile ));
+			int numberOfTranslation = in.readInt();
+			String[] plainTranslations = new String[ numberOfTranslation ];
+			for (int j = 0; j < plainTranslations.length; j++)
+			{
+				plainTranslations[j] = in.readUTF();
+			}
+			translations.add( plainTranslations );
+		}
+		int id = -1;
+		String key = null;
+		if (StringUtil.isNumeric(idOrKey)) {
+			// is the ID
+			id = Integer.parseInt(idOrKey);
+			Object[] keys = idsExternalMap.keySet().toArray();
+			for (int i = 0; i < keys.length; i++)
+			{
+				Object tmpKey = keys[i];
+				int value = Integer.parseInt( (String) idsExternalMap.get(tmpKey) );
+				if (value == id) {
+					key = (String) tmpKey;
+					break;
+				}
+			}
+		} else {
+			// this is the key:
+			key = idOrKey;
+			id = Integer.parseInt( (String)idsExternalMap.get(key) ); 
+		}
+		System.out.println( "id  =  key  = translation");
+		for (int i = 0; i < translations.size(); i++)
+		{
+			System.out.println( id + " = " + key + " = " +  ( id < 1 ? "<invalid>" : ((String[])translations.get(i))[ id - 1 ] ) + "   (from " + args[i+1] + ")" );
 		}
 	}
 
