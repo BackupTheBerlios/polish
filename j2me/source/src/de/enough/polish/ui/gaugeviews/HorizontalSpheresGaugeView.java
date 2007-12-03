@@ -64,7 +64,7 @@ public class HorizontalSpheresGaugeView extends ItemView {
 	private boolean isContinuousRunning;
 	private int maxSpheres;
 	
-	private Gauge gauge;
+	private transient Gauge gauge;
 	private long lastAnimationTime;
 	private long interval = 0;
 	

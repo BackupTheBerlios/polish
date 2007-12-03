@@ -49,11 +49,11 @@ import de.enough.polish.ui.Style;
  */
 public class BinaryTextClockView extends ItemView {
 
-	protected final Date date;
-	protected final Calendar calendar;
-	protected final StringItem clockText;
-	protected long lastTimeUpdate;
-	protected ClockItem clockItem;
+	protected transient final Date date;
+	protected transient final Calendar calendar;
+	protected transient final StringItem clockText;
+	protected transient long lastTimeUpdate;
+	protected transient ClockItem clockItem;
 	
 	/**
 	 * Creates a new item view.

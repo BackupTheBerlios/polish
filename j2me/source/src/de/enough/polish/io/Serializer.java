@@ -143,10 +143,13 @@ public final class Serializer {
 	}
 	//#endif
 	
-	private Serializer() {
+	/*private Serializer() {
 		// no instantiation allowed
-	}
+	}*/
 	
+	public Serializer() {
+		// no instantiation allowed except when used in reflection
+	}
 
 	/**
 	 * Serializes the specified object.

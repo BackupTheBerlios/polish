@@ -30,6 +30,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.io.Serializable;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.TextUtil;
 
@@ -43,9 +44,9 @@ import de.enough.polish.util.TextUtil;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class TextEffect {
+public abstract class TextEffect implements Serializable{
 
-	protected Style style;
+	protected transient Style style;
 
 	/**
 	 * Creates a new effect

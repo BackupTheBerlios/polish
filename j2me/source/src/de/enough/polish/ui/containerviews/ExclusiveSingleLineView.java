@@ -80,7 +80,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	//#endif	
 	private int arrowWidth = 10;
 	private int currentItemIndex;
-	private ChoiceItem currentItem;
+	private transient ChoiceItem currentItem;
 	private int leftArrowStartX;
 	private int leftArrowEndX;
 	private int rightArrowStartX;

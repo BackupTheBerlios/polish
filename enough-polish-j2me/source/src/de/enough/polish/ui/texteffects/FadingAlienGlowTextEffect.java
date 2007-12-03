@@ -36,7 +36,7 @@ import de.enough.polish.util.DrawUtil;
  */
 public class FadingAlienGlowTextEffect extends TextEffect {
 	
-	private DrawUtil.FadeUtil outerFader=new DrawUtil.FadeUtil();
+	private transient final DrawUtil.FadeUtil outerFader;
 	
 	private final static int CLEAR_COLOR = 0xFF000123;
 	private int clearColor;
@@ -47,6 +47,13 @@ public class FadingAlienGlowTextEffect extends TextEffect {
 	private int innerColor = 0xFFFFFFFF;
 	private int outerColor; // is determined by outerFader
 	
+	/**
+	 * Creates a new FadingAlienGlowTextEffect 
+	 */
+	public FadingAlienGlowTextEffect()
+	{
+		this.outerFader =new DrawUtil.FadeUtil();
+	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)

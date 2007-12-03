@@ -91,11 +91,11 @@ public class FishEyeContainerView extends ContainerView {
 	protected boolean isRemoveText = true;
 	protected boolean includeAllItems = true;
 	protected String[] labels;
-	protected StringItem focusedLabel;
+	protected transient StringItem focusedLabel;
 	//#if polish.midp2
-		protected int[][] originalRgbData;
+		protected transient int[][] originalRgbData;
 		protected int[] originalRgbDataWidths;
-		protected int[][] shownRgbData;
+		protected transient int[][] shownRgbData;
 		protected int[] shownRgbDataWidths;
 		protected int[] shownRgbDataHeights;
 		protected int scaleFactor = 50;

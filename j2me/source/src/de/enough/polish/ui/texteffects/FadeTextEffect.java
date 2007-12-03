@@ -37,14 +37,15 @@ public class FadeTextEffect extends TextEffect {
 	
 	private transient final DrawUtil.FadeUtil fader;
 	
-	/**
-	 * Creates a new instance.
-	 */
-	public FadeTextEffect() {
-		this.fader = new DrawUtil.FadeUtil();
-	}
-	
 	private String lastText;
+	
+	/**
+	 * Creates a new FadeTextEffect 
+	 */
+	public FadeTextEffect()
+	{
+		this.fader=new DrawUtil.FadeUtil();
+	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)

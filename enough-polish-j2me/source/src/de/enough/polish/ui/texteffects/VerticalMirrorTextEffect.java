@@ -75,8 +75,8 @@ public class VerticalMirrorTextEffect extends TextEffect {
 	private int[] rgbData;
 	private int rgbWidth;
 	private int rgbHeight;
-	private Graphics bufferGraphics;
-	private Image bufferImage;
+	private transient Graphics bufferGraphics;
+	private transient Image bufferImage;
 	private int clearColor;
 	private String lastText;
 

@@ -29,6 +29,7 @@ package de.enough.polish.ui;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.polish.io.Serializable;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.TextUtil;
 
@@ -42,7 +43,7 @@ import de.enough.polish.util.TextUtil;
  * @author Robert Virkus, robert@enough.de
  */
 public class ContainerView 
-extends ItemView 
+extends ItemView
 {
 	//#if polish.css.columns || polish.useTable
 		//#define tmp.useTable
@@ -60,12 +61,12 @@ extends ItemView
 	protected int yOffset;
 	protected int focusedIndex = -1;
 	/** this field is set automatically, so that subclasses can use it for referencing the parent-container */
-	protected Container parentContainer;
+	protected transient Container parentContainer;
 	/** determines whether any animation of this view should be (re) started at the next possibility. this is set to "true" in each showNotify() method. */
 	protected boolean restartAnimation;
 	protected boolean focusFirstElement;
 	protected int appearanceMode;
-	protected Item focusedItem;
+	protected transient Item focusedItem;
 	
 	// table support:
 	protected int columnsSetting = NO_COLUMNS;

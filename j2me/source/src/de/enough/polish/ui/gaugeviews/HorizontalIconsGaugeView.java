@@ -67,7 +67,7 @@ public class HorizontalIconsGaugeView extends ItemView {
 	private boolean isContinuousRunning;
 	private int maxIcons;
 	
-	private Gauge gauge;
+	private transient Gauge gauge;
 	private long lastAnimationTime;
 	private long interval = 0;
 	

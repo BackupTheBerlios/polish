@@ -57,7 +57,7 @@ public class RotatingTextEffect extends TextEffect {
 	
 	private String lastText;
 	private int angle;
-	private RgbImage rotatedImage;
+	private transient RgbImage rotatedImage;
 	private int xPos;
 	private int yPos;
 	private int startAngle = 0;

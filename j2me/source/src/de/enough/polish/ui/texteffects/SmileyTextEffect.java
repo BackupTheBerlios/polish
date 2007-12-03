@@ -27,11 +27,14 @@
 package de.enough.polish.ui.texteffects;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.io.Serializable;
 import de.enough.polish.ui.TextEffect;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
@@ -88,8 +91,7 @@ public class SmileyTextEffect extends TextEffect {
 	
 	public static Smiley[] smileyList = null;		
 	
-	protected HashMap smileyMap;
-	protected Object[] smileyKeys;
+	protected Hashtable smileyMap;
 	protected String currentSmiley;
 	private int smileyWidth;
 	private int smileyHeight;
@@ -110,7 +112,7 @@ public class SmileyTextEffect extends TextEffect {
 	
 	protected void init() {
 
-		this.smileyMap 		= new HashMap();
+		this.smileyMap 		= new Hashtable();
 		
 		this.smileyWidth	= smileyList[0].image.getWidth();
 		this.smileyHeight	= smileyList[0].image.getHeight();
@@ -124,8 +126,6 @@ public class SmileyTextEffect extends TextEffect {
 				this.smileyMap.put(smiley.smileys[j],smiley.image);
 			}
 		}
-		
-		this.smileyKeys = this.smileyMap.keys();
 		
 		this.isInitialized = true;
 	}
@@ -303,10 +303,17 @@ public class SmileyTextEffect extends TextEffect {
 	
 	private String isSmileyNext(char[] chars, int offset)
 	{
+		Enumeration smileys = this.smileyMap.keys();
 		String smiley;
-		for(int i=0; i<smileyKeys.length; i++)
+		
+		while(smileys.hasMoreElements())
 		{
-			 smiley = (String)smileyKeys[i];
+			smiley = (String)smileys.nextElement(); 
+		}
+		
+		while(smileys.hasMoreElements())
+		{
+			smiley = (String)smileys.nextElement();
 			 
 			 if(offset + smiley.length() > chars.length)
 			 {
@@ -373,12 +380,14 @@ public class SmileyTextEffect extends TextEffect {
 	
 	protected int getSmiley(String line)
 	{
+		Enumeration smileys = this.smileyMap.keys();
+		
 		int first = line.length();
 		this.currentSmiley = null;
 		
-		for(int i=0; i < this.smileyKeys.length; i++)
+		while(smileys.hasMoreElements())
 		{
-			String smiley = (String)this.smileyKeys[i];
+			String smiley = (String)smileys.nextElement();
 			
 			int position = 0;
 			if((position = line.indexOf(smiley)) > -1)

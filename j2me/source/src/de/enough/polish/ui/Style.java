@@ -26,11 +26,17 @@
  */
 package de.enough.polish.ui;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.io.Externalizable;
 import de.enough.polish.io.Serializable;
+import de.enough.polish.io.Serializer;
 
 
 /**
@@ -44,10 +50,7 @@ import de.enough.polish.io.Serializable;
  *        04-Jan-2004 - rob creation
  * </pre>
  */
-public class Style 
-//#if polish.Style.flagSerializable
-implements Serializable
-//#endif
+public class Style implements Externalizable
 {
 	//#if polish.cldc1.1
 		//# public final static Boolean TRUE = Boolean.TRUE;
@@ -56,11 +59,12 @@ implements Serializable
 		public final static Boolean TRUE = new Boolean( true );
 		public final static Boolean FALSE = new Boolean( false );
 	//#endif
+
 	/**
 	 * The name of this style.
 	 */
-	public String name;
-	public String dynamicName;
+	public transient String name;
+	public transient String dynamicName;
 
 	public Background background;
 	public Border border;
@@ -422,6 +426,54 @@ implements Serializable
 		values[ this.attributeKeys.length ] = value;
 		this.attributeKeys = keys;
 		this.attributeValues = values;
+	}
+
+
+	public void read(DataInputStream in) throws IOException {
+		this.background = (Background)Serializer.deserialize(in);
+		this.border 	= (Border)Serializer.deserialize(in);
+		this.font 		= (Font)Serializer.deserialize(in);
+		
+		this.fontColor = in.readInt();
+		this.fontColorObj = (Color)Serializer.deserialize(in);
+		this.paddingLeft = in.readInt();
+		this.paddingRight = in.readInt();
+		this.paddingTop = in.readInt();
+		this.paddingBottom = in.readInt();
+		this.paddingVertical = in.readInt();
+		this.paddingHorizontal = in.readInt();
+		this.marginLeft = in.readInt();
+		this.marginRight = in.readInt();
+		this.marginTop = in.readInt();
+		this.marginBottom = in.readInt();
+		this.layout = in.readInt();
+		
+		this.attributeKeys 	 = (short[])Serializer.deserialize(in);
+		this.attributeValues = (Object[])Serializer.deserialize(in);
+	}
+
+
+	public void write(DataOutputStream out) throws IOException {
+		Serializer.serialize(this.background, out);
+		Serializer.serialize(this.border, out);
+		Serializer.serialize(this.font, out);
+		
+		out.writeInt(this.fontColor);
+		Serializer.serialize(fontColorObj, out);
+		out.writeInt(this.paddingLeft);
+		out.writeInt(this.paddingRight);
+		out.writeInt(this.paddingTop);
+		out.writeInt(this.paddingBottom);
+		out.writeInt(this.paddingVertical);
+		out.writeInt(this.paddingHorizontal);
+		out.writeInt(this.marginLeft);
+		out.writeInt(this.marginRight);
+		out.writeInt(this.marginTop);
+		out.writeInt(this.marginBottom);
+		out.writeInt(this.layout);
+		
+		Serializer.serialize(this.attributeKeys, out);
+		Serializer.serialize(this.attributeValues, out);
 	}
 	
 //#ifdef polish.Style.additionalMethods:defined

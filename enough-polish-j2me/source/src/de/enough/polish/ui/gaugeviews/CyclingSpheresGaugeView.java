@@ -66,7 +66,7 @@ public class CyclingSpheresGaugeView extends ItemView {
 	private boolean isContinuousRunning;
 	private int maxSpheres;
 	
-	private Gauge gauge;
+	private transient Gauge gauge;
 	private long lastAnimationTime;
 	
 	/* (non-Javadoc)
