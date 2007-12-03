@@ -15,6 +15,10 @@ import de.enough.polish.blackberry.ui.Display;
 import de.enough.polish.util.TextUtil;
 
 import net.rim.blackberry.api.browser.Browser;
+import net.rim.blackberry.api.invoke.Invoke;
+import net.rim.blackberry.api.invoke.PhoneArguments;
+import net.rim.blackberry.api.phone.Phone;
+import net.rim.blackberry.api.phone.PhoneCall;
 import net.rim.device.api.ui.UiApplication;
 
 /**
@@ -348,10 +352,28 @@ public abstract class MIDlet extends UiApplication
 			if (URL.startsWith("http")) {
 				Browser.getDefaultSession().displayPage(URL);
 				return false;
+			} else if (URL.startsWith("tel:")) {
+				String msisdn = URL.substring( "tel:".length() );
+				String dtmf = null;
+				int postCallArgumentsIndex = msisdn.indexOf('/');
+				if (postCallArgumentsIndex == -1) {
+					postCallArgumentsIndex = msisdn.indexOf('p');
+				}
+				if (postCallArgumentsIndex != -1) {
+					dtmf = msisdn.substring(postCallArgumentsIndex + 1);
+					msisdn = msisdn.substring(0, postCallArgumentsIndex);
+				}
+				PhoneArguments call = new PhoneArguments(PhoneArguments.ARG_CALL, msisdn);
+				Invoke.invokeApplication(Invoke.APP_TYPE_PHONE, call);
+				if (dtmf != null) {
+					PhoneCall phoneCall = Phone.getActiveCall();
+					phoneCall.sendDTMFTones( dtmf );
+				}
+				return false;
 			}
+		//#else
+			throw new RuntimeException("Set \"polish.BlackBerry.platformRequest\" to true.");
 		//#endif
-		NativeMidlet midlet = new NativeMidlet();
-		return midlet.platformRequest(URL);
 	}
 
 	/**
