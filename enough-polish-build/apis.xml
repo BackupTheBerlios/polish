@@ -383,6 +383,17 @@
 		<path>import/opengl-1.0.jar</path>
 	</api>
 	
+	<api>
+		<name>Samsung API</name>
+		<description>
+		Classes for sms, audio, light etc. for Samsung devices
+		</description>
+		<names>samsung-vibration, samsung-backlight, samsung-sms, samsung-audio</names>
+		<symbol>samsung-api</symbol>
+		<files>samsung-api.jar</files>
+		<path>import/samsung-api.jar</path>
+	</api>
+	
 <!--
 	You can use this block to define a new API
 	( remove these XML-comments ):

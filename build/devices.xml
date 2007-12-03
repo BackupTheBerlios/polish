@@ -1061,6 +1061,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Emulator.Skin.2" value="SonyEricsson_K850i"/>
 		<capability name="DebugInterface" value="KDWP" />
 		<capability name="key.ReturnKey" value="-11" />
+		<capability name="softkey-vibrate" value="true" />
 	</device>
 	<device>
 		<identifier>Sony-Ericsson/K800i, Sony-Ericsson/K800</identifier>
