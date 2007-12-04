@@ -37,6 +37,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
+import de.enough.polish.ui.effect.Vibration;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Locale;
 
@@ -183,6 +184,7 @@ public class MenuBar extends Item {
 	}
 	
 	public void addCommand(Command cmd, Style commandStyle) {
+		System.out.println(cmd);
 		//System.out.println("adding cmd " + cmd.getLabel() + " with style " + commandStyle );
 		if (cmd == this.singleLeftCommand || cmd == this.singleRightCommand || cmd == this.singleMiddleCommand || this.commandsList.contains(cmd)) {
 			// do not add an existing command again...
@@ -1141,8 +1143,8 @@ public class MenuBar extends Item {
 	 */
 	public static void notifyKeyPressed()
 	{
-		//#if polish.softkey-vibrate && polish.midp2
-			StyleSheet.display.vibrate(50);
+		//#if polish.softkey-vibrate
+			Vibration.run(25);
 		//#endif
 	}
 	

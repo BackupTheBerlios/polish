@@ -29,10 +29,10 @@ public class Backlight extends Thread implements Runnable{
 	
 	public static void on()
 	{
-		//#elif polish.vendor == Nokia
+		//#if polish.vendor == Nokia
 			DeviceControl.setLights(0,100);
 		//#elif polish.Vendor == Samsung
-			 LCDLight.on(10000);
+			 LCDLight.on(500);
 		//#elif polish.vendor == Sony-Ericsson || polish.midp2 
 			StyleSheet.display.flashBacklight(100);
 		//#endif
