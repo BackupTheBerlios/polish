@@ -1,6 +1,8 @@
 package de.enough.polish.util;
 
-import de.enough.polish.ui.StyleSheet;
+//#if polish.usePolishGui
+	import de.enough.polish.ui.StyleSheet;
+//#endif
 
 /**
  * 
@@ -21,8 +23,6 @@ public class DeviceControl extends Thread {
 	
 	public void run()
 	{
-		
-		this.lightOff = false;
 		long sleeptime = 5000;
 		while(!this.lightOff)
 		{
@@ -32,7 +32,7 @@ public class DeviceControl extends Thread {
 				// ignore
 			}
 			if (!this.lightOff) {
-				switchLightOnFor( (int) (sleeptime >> 1) );
+				switchLightOnFor( (int) ((sleeptime >> 1) + (sleeptime >> 2)) );
 			}
 		}
 	}
@@ -40,7 +40,7 @@ public class DeviceControl extends Thread {
 	private void switchLightOnFor( int durationInMs ) {
 		//#if polish.api.samsung
 			com.samsung.util.LCDLight.on(durationInMs);
-		//#elif polish.midp2
+		//#elif polish.midp2  && polish.usePolishGui
 			StyleSheet.display.flashBacklight(durationInMs);
 		//#endif
 	}
@@ -50,7 +50,7 @@ public class DeviceControl extends Thread {
 		this.lightOff = true;
 		//#if polish.api.samsung
 			com.samsung.util.LCDLight.off();
-		//#elif polish.midp2
+		//#elif polish.midp2 && polish.usePolishGui
 			StyleSheet.display.flashBacklight(0);
 		//#endif
 	}
@@ -62,22 +62,22 @@ public class DeviceControl extends Thread {
 	 */
 	public static boolean lightOn()
 	{
+		boolean success = false;
 		//#if polish.api.nokia-ui && !polish.api.midp2
 			com.nokia.mid.ui.DeviceControl.setLights(0,100);
-			//# return true;
-		//#else
+			success = true;
+		//#elif polish.usePolishGui || polish.api.samsung-api
 			if (thread == null) {
 				if (isLightSupported()) {
 					DeviceControl dc = new DeviceControl();
 					dc.start();
-					return true;
-				} else {
-					return false;
+					success = true;
 				}
 			} else {
-				return true;
+				success = true;
 			}
 		//#endif
+		return success;
 	}
 	
 	/**
@@ -122,20 +122,25 @@ public class DeviceControl extends Thread {
 	 * Vibrates the device for the given duration
 	 * 
 	 * @param duration the duration in milliseconds
+	 * @return true when the vibration was activated successfully
 	 */
-	public static void vibrate(int duration)
+	public static boolean vibrate(int duration)
 	{
-		//#if polish.midp2
-			StyleSheet.display.vibrate(duration);
+		boolean success = false;
+		//#if polish.midp2 && polish.usePolishGui
+			success = StyleSheet.display.vibrate(duration);
 		//#elif polish.api.nokia-ui
 			try {
 				com.nokia.mid.ui.DeviceControl.startVibra(80, duration);
+				success = true;
 			} catch (IllegalStateException e) {
 				// no vibration support
 			}
 		//#elif polish.api.samsung
 			com.samsung.util.Vibration.start(duration, 100);
+			success = com.samsung.util.Vibration.isSupported();
 		//#endif
+		return success;
 	}
 	
 	/**
