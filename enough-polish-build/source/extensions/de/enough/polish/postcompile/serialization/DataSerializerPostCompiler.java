@@ -34,13 +34,9 @@ import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
-import java.util.Vector;
 
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
@@ -49,16 +45,9 @@ import de.enough.bytecode.ASMClassLoader;
 import de.enough.bytecode.DirClassLoader;
 import de.enough.polish.BuildException;
 
-import de.enough.polish.BuildException;
 import de.enough.polish.Device;
-import de.enough.polish.Environment;
 import de.enough.polish.Variable;
-import de.enough.polish.ant.build.SignSetting;
-import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.postcompile.BytecodePostCompiler;
-import de.enough.polish.postcompile.PostCompiler;
-import de.enough.polish.postcompile.io.SerializationVisitor;
-import de.enough.polish.util.ProcessUtil;
 import de.enough.polish.util.ReflectionUtil;
 
 /**
@@ -185,7 +174,7 @@ public class DataSerializerPostCompiler extends BytecodePostCompiler {
 		try
 		{
 			ClassNode classNode = asmLoader.loadClass(this.target);
-			ClassWriter writer = new ClassWriter(false);
+			ClassWriter writer = new ClassWriter(0);
 			
 			DataSerializationVisitor visitor = new DataSerializationVisitor(writer, unwanted);
             classNode.accept(visitor);

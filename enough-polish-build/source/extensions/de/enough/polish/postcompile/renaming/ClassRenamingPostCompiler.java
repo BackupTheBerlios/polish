@@ -56,7 +56,7 @@ public class ClassRenamingPostCompiler
         try
           {
             ClassNode classNode = asmLoader.loadClass(className);
-            ClassWriter writer = new ClassWriter(false);
+            ClassWriter writer = new ClassWriter(0);
             ClassRenamingClassVisitor visitor =
               new ClassRenamingClassVisitor(writer, this.renamingMap);
             classNode.accept(visitor);

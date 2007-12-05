@@ -28,13 +28,16 @@ package de.enough.polish.postcompile.retroweaver;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 
-import com.rc.retroweaver.RetroWeaver;
-import com.rc.retroweaver.event.WeaveListener;
+import net.sourceforge.retroweaver.RetroWeaver;
+import net.sourceforge.retroweaver.event.WeaveListener;
+import net.sourceforge.retroweaver.translator.NameSpace;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
@@ -80,10 +83,12 @@ public class RetroWeaverPostCompiler extends PostCompiler {
 		int version = ( (Integer)versionMap.get( this.target)).intValue();
 		RetroWeaver task = new RetroWeaver( version );
 		task.setStripSignatures( true );
-		task.setAutoboxClass("de.enough.polish.java5.Autobox");
-		task.setEnumClass("de.enough.polish.java5.Enum");
-		task.addClassTranslation("java.lang.NoSuchFieldError", "java.lang.Throwable");
-		task.addClassTranslation("java.lang.NoSuchMethodError", "java.lang.Throwable");
+		List nameSpaces = new LinkedList();
+		nameSpaces.add(new NameSpace("java.lang.Autobox", "de.enough.polish.java5.Autobox"));
+		nameSpaces.add(new NameSpace("java.lang.Enum", "de.enough.polish.java5.Enum"));
+		nameSpaces.add(new NameSpace("java.lang.NoSuchFieldError", "java.lang.Throwable"));
+		nameSpaces.add(new NameSpace("java.lang.NoSuchMethodError", "java.lang.Throwable"));
+		task.addNameSpaces(nameSpaces);
 		task.setListener( new WeaveListener() {
 			public void weavingStarted(String msg) {
 				System.out.println(msg);
@@ -97,6 +102,10 @@ public class RetroWeaverPostCompiler extends PostCompiler {
 				if (RetroWeaverPostCompiler.this.isVerbose) {
 					System.out.println("Weaving " + pPath);
 				}
+			}
+
+			public void weavingError(String msg) {
+				System.out.println(msg);
 			}
 		});
 		try {
