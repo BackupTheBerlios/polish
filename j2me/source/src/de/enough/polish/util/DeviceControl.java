@@ -12,7 +12,15 @@ package de.enough.polish.util;
  * @author Andre Schmidt
  * @author Robert Virkus
  */
-public class DeviceControl extends Thread {
+public class DeviceControl
+//#if polish.api.nokia-ui && !polish.Bugs.NoPermanentBacklight
+	//#define tmp.useNokiaUi
+//#endif
+//#if (!tmp.useNokiaUi && polish.usePolishGui && polish.midp2) || polish.api.samsung-api
+	//#define tmp.useThread
+	extends Thread 
+//#endif
+{
 	
 	private static DeviceControl thread;
 	private boolean lightOff = false; 
@@ -23,16 +31,16 @@ public class DeviceControl extends Thread {
 	
 	public void run()
 	{
-		long sleeptime = 5000;
+		int displaytime = 10000;
+		long sleeptime = ((displaytime >> 1) + (displaytime >> 2));
+		
 		while(!this.lightOff)
 		{
+			switchLightOnFor( displaytime );
 			try {
 				Thread.sleep(sleeptime);
 			} catch (InterruptedException e) {
 				// ignore
-			}
-			if (!this.lightOff) {
-				switchLightOnFor( (int) ((sleeptime >> 1) + (sleeptime >> 2)) );
 			}
 		}
 	}
@@ -40,6 +48,11 @@ public class DeviceControl extends Thread {
 	private void switchLightOnFor( int durationInMs ) {
 		//#if polish.api.samsung
 			com.samsung.util.LCDLight.on(durationInMs);
+		//#elif polish.api.nokia-ui
+			//#if polish.Bugs.BacklightRequiresLightOff
+				com.nokia.mid.ui.DeviceControl.setLights(0,0);
+			//#endif
+			com.nokia.mid.ui.DeviceControl.setLights(0,100);
 		//#elif polish.midp2  && polish.usePolishGui
 			StyleSheet.display.flashBacklight(durationInMs);
 		//#endif
@@ -63,10 +76,10 @@ public class DeviceControl extends Thread {
 	public static boolean lightOn()
 	{
 		boolean success = false;
-		//#if polish.api.nokia-ui && !polish.api.midp2
+		//#if tmp.useNokiaUi
 			com.nokia.mid.ui.DeviceControl.setLights(0,100);
 			success = true;
-		//#elif polish.usePolishGui || polish.api.samsung-api
+		//#elif tmp.useThread
 			if (thread == null) {
 				if (isLightSupported()) {
 					DeviceControl dc = new DeviceControl();
@@ -86,9 +99,9 @@ public class DeviceControl extends Thread {
 	 */
 	public static void lightOff()
 	{
-		//#if polish.api.nokia-ui && !polish.api.midp2
+		//#if tmp.useNokiaUi
 			com.nokia.mid.ui.DeviceControl.setLights(0,0);
-		//#else
+		//#elif tmp.useThread
 			DeviceControl dc = thread;
 			if (dc != null) {
 				dc.switchLightOff();
@@ -105,11 +118,11 @@ public class DeviceControl extends Thread {
 	public static boolean isLightSupported()
 	{
 		boolean isSupported = false;
-		//#if polish.api.nokia-ui && !polish.api.midp2
+		//#if tmp.useNokiaUi
 			isSupported = true;
 		//#elif polish.api.samsung
 			isSupported = com.samsung.util.LCDLight.isSupported();
-		//#elif polish.midp2
+		//#elif polish.midp2 && polish.usePolishGui
 			isSupported = StyleSheet.display.flashBacklight(0);
 		//#endif
 		return isSupported;
