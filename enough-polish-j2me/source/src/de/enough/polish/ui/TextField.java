@@ -2444,6 +2444,7 @@ public class TextField extends StringItem
 				break;
 			default:
 				modeStr = "123";
+				break;
 		}
 		
 		//#if tmp.usePredictiveInput

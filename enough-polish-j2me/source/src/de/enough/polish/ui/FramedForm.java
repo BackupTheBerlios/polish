@@ -467,6 +467,7 @@ public class FramedForm extends Form {
 						break;
 					case RIGHT:
 						nextFrames = new Container[]{ this.rightFrame, this.topFrame, this.bottomFrame, this.leftFrame };
+						break;
 					default:
 						return false;
 				}

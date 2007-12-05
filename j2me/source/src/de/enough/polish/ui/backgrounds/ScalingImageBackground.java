@@ -197,6 +197,7 @@ extends Background
 					default:
 						newWidth = this.image.getWidth();
 						newHeight = this.image.getHeight();
+						break;
 					}
 					this.rgbDataScaled = ImageUtil.scale( this.rgbData, newWidth, newHeight, this.image.getWidth(), this.image.getHeight() );
 					this.lastWidth = width;

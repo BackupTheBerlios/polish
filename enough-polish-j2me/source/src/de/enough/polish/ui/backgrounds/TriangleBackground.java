@@ -102,6 +102,7 @@ extends Background
 			y2 = y;
 			x3 = x;
 			y3 = y + height;
+			break;
 		}
 		//#if polish.midp2
 			g.fillTriangle( x1, y1, x2, y2, x3, y3 );

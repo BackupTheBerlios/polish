@@ -112,7 +112,7 @@ public class DropShadowBorder extends Border {
 				DrawUtil.drawLine(color, left + 1 + i, bottom + i, right - i, bottom + i, g);
 				// top:
 				DrawUtil.drawLine(color, left + 1 + i, top - i, right - i, top - i, g);
-
+				break;
 			}
 		}	
 	}

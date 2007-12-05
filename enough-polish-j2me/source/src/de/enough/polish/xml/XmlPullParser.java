@@ -253,6 +253,7 @@ public class XmlPullParser implements SimplePullParser {
 
                 case -1 :
                     exception(UNEXPECTED_EOF);
+                    break;
 
                 case '<' :
                     nesting++;
