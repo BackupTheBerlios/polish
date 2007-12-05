@@ -39,7 +39,11 @@ import de.enough.polish.io.Serializable;
  *        04-Jan-2004 - rob creation
  * </pre>
  */
-public abstract class Background implements Serializable {
+public abstract class Background 
+//#if !polish.blackberry
+implements Serializable 
+//#endif
+{
 	
 	/**
 	 * Defines the width of this Background.

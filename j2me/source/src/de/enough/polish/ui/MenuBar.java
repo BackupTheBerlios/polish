@@ -37,8 +37,8 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
-import de.enough.polish.ui.effect.Vibration;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.Locale;
 
 /**
@@ -1144,7 +1144,7 @@ public class MenuBar extends Item {
 	public static void notifyKeyPressed()
 	{
 		//#if polish.softkey-vibrate
-			Vibration.run(25);
+			DeviceControl.vibrate(25);
 		//#endif
 	}
 	
