@@ -65,8 +65,9 @@ import javax.microedition.lcdui.Image;
  */
 public class BitMapFontViewer {
 
-	public final static byte	ABSOLUTE_LINE_BREAK = -2;
-	public final static byte	ARTIFICAL_LINE_BREAK = -3;
+	public final static int ABSOLUTE_LINE_BREAK = -2;
+	public final static int ARTIFICAL_LINE_BREAK = -3;
+
 	private final Image image;
 	private final short[] xPositions;
 	private final byte[] usedCharactersWidths;
