@@ -86,7 +86,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	private int rightArrowStartX;
 	private int rightArrowEndX;
 	private int xStart;
-	private Background parentBackground;
+	private transient Background parentBackground;
 	//private boolean isInitialized;
 
 	/**

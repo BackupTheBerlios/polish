@@ -102,7 +102,7 @@ public class HorizontalChoiceView extends ContainerView {
 	private int rightArrowStartX;
 	//private int rightArrowEndX;
 	private int xStart;
-	private Background parentBackground;
+	private transient Background parentBackground;
 	//private boolean isInitialized;
 	private int xOffset;
 

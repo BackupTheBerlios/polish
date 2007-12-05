@@ -109,7 +109,7 @@ public class FishEyeContainerView extends ContainerView {
 		protected int[] currentTranslucencies;
 	//#endif
 	protected int referenceFocusedIndex;
-	protected Background focusedBackground;
+	protected transient Background focusedBackground;
 	protected Border focusedBorder;
 	protected Style focusedStyle;
 	protected int focusedDirection;
