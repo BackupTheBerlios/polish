@@ -389,7 +389,7 @@
 		Classes for sms, audio, light etc. for Samsung devices
 		</description>
 		<names>samsung-vibration, samsung-backlight, samsung-sms, samsung-audio</names>
-		<symbol>samsung-api</symbol>
+		<symbol>samsung</symbol>
 		<files>samsung-api.jar</files>
 		<path>import/samsung-api.jar</path>
 	</api>

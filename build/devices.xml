@@ -10408,7 +10408,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi, mmf"/>
 		<capability name="SoundFormat" value="mmf, midi, amr"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10484,7 +10484,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10523,7 +10523,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="mmf, amr, midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10561,7 +10561,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="mmf, amr, midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10598,7 +10598,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="mmf, amr, midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10636,7 +10636,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10673,7 +10673,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10711,7 +10711,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10749,7 +10749,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10786,7 +10786,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10824,7 +10824,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10862,7 +10862,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10900,7 +10900,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10938,7 +10938,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -10976,7 +10976,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi, mmf"/>
 		<capability name="SoundFormat" value="mmf, midi, amr"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11087,7 +11087,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value=""/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, wmapi2.0, samsung-acceleration, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11163,7 +11163,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11201,7 +11201,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-acceleration, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-acceleration, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11239,7 +11239,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11277,7 +11277,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11320,7 +11320,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket"/>
-		<capability name="JavaPackage" value="pdaapi, m3g, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="pdaapi, m3g, mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="mmf, midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11358,7 +11358,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11396,7 +11396,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11434,7 +11434,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11472,7 +11472,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11510,7 +11510,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket"/>
-		<capability name="JavaPackage" value="pdaapi, mmapi1.1, wmapi1.0, m3g, samsung-vibration, samsung-backlight, samsung-audio"/>
+		<capability name="JavaPackage" value="pdaapi, mmapi1.1, wmapi1.0, m3g, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="mmf, midi, amr"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11548,7 +11548,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11586,7 +11586,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11624,7 +11624,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11662,7 +11662,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure-socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11700,7 +11700,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11738,7 +11738,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf, midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11774,7 +11774,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11813,7 +11813,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -11853,7 +11853,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SamsungSoundFormat" value="mmf"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="ImageFormat" value="png"/>
@@ -12725,7 +12725,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.1"/> 
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="wmapi1.0, mmapi1.1, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/> 
+		<capability name="JavaPackage" value="wmapi1.0, mmapi1.1, samsung"/> 
 		<capability name="SamsungSoundFormat" value="mmf"/> 
 		<capability name="SoundFormat" value="mmf, midi, midi64"/> 
 		<capability name="mmapi.AudioPlayback" value="true"/>
@@ -12781,7 +12781,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/> 
 		<capability name="JavaConfiguration" value="CLDC/1.1"/> 
-		<capability name="JavaPackage" value="wmapi1.0, mmapi1.1, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/> 
+		<capability name="JavaPackage" value="wmapi1.0, mmapi1.1, samsung"/> 
 		<capability name="SoundFormat" value="mmf, midi, midi64, wav"/> 
 		<capability name="mmapi.AudioPlayback" value="true"/>
 		<capability name="mmapi.AudioStreaming" value="false"/>
@@ -12821,7 +12821,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung-vibration, samsung-backlight, samsung-sms"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, samsung"/>
 		<capability name="SoundFormat" value="midi, mmf"/>
 		<capability name="ImageFormat" value="png"/>
 		<capability name="VideoFormat" value=""/>
@@ -12887,7 +12887,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaProtocol" value="http, https, Socket, Secure Socket"/>
-		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, samsung-vibration, samsung-backlight, samsung-sms, samsung-audio"/>
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi1.1, wmapi1.1, samsung"/>
 		<capability name="SamsungSoundFormat" value="midi"/>
 		<capability name="SoundFormat" value="midi,x-tone-seq,mpeg,mp3,3gpp,amr,aac,m4a"/>
 		<capability name="ImageFormat" value="png"/>

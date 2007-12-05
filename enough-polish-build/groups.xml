@@ -163,7 +163,7 @@
 	<group>
 		<name>Series60E1</name>
 		<parent>Series60</parent>
-		<capability name="Bugs" value="dateFieldAcceptsNoNullDate, dateFieldBroken, displaySetCurrentFlickers" />	
+		<capability name="Bugs" value="dateFieldAcceptsNoNullDate, dateFieldBroken, displaySetCurrentFlickers, NoBacklight" />	
 	</group>
 
 	<group>
@@ -175,7 +175,7 @@
 		<capability name="VideoFormat" value="3gpp" />
 		<capability name="SoundFormat" value="midi, amr" />
 		<capability name="JavaPackage" value="btapi" />		
-		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts, GameCanvasGetGraphicsNotInConstructor, displaySetCurrentFlickers" />
+		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts, GameCanvasGetGraphicsNotInConstructor, displaySetCurrentFlickers, NoBacklight" />
 		<!--
 		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts, GameCanvasGetGraphicsNotInConstructor" />
 		<capability name="Bugs" value="GaugeNoProgessIndicatorOnAlerts, GameCanvasGetGraphicsNotInConstructor, displaySetCurrentFlickers" />
@@ -206,7 +206,7 @@
 		<capability name="Emulator.Skin" value="S60_2nd_FP3_MIDP_SDK" />
 		<capability name="Bugs" value="" />
 		<!--  add E2FP3 specific bugs 	-->
-		<capability name="Bugs" value="displaySetCurrentFlickers" />
+		<capability name="Bugs" value="displaySetCurrentFlickers, NoBacklight" />
 	</group>
 	
 	<group>
@@ -218,7 +218,7 @@
 		<capability name="JavaPackage" value="m3g, pdaapi, webservice, sipapi, svgapi, securityapi" />		
 		<capability name="Emulator.Skin" value="S60_3rd_MIDP_SDK" />
 		<capability name="Emulator.Skin.2" value="\Devices\S60_3rd_MIDP_SDK" />		
-		<capability name="Bugs" value="needsBottomOrientiationForStringDrawing" />
+		<capability name="Bugs" value="needsBottomOrientiationForStringDrawing, NoBacklight" />
 	</group>
 
 	<group>
@@ -253,7 +253,7 @@
 	<group>
 		<name>Series80E1</name>
 		<parent>Series80</parent>
-		<capability name="Bugs" value="displaySetCurrentFlickers, requiresHardcodedCanvasDimensionsInFullScreenMode,sizeChangedReportsWrongHeight" />
+		<capability name="Bugs" value="displaySetCurrentFlickers, requiresHardcodedCanvasDimensionsInFullScreenMode,sizeChangedReportsWrongHeight, NoBacklight" />
 	</group>
 	
 

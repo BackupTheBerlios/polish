@@ -395,6 +395,14 @@
 		<description>The backlight cannot be turned on permanently.</description>
 		<solution>Run a thread for turning the light on every 60 seconds or so.</solution>
 	</bug>
+	
+	<bug>
+		<name>NoBacklight</name>
+		<area>ui</area>
+		<description>The backlight cannot be turned on at all.</description>
+		<solution>Add native application that controls backlight.</solution>
+	</bug>
+	
 
 	<bug>
 		<name>ReservedKeywordSerializable</name>
