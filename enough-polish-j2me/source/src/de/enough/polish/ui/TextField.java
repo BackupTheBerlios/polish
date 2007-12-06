@@ -888,12 +888,13 @@ public class TextField extends StringItem
 		//#define tmp.useNativeTextBox
 		private javax.microedition.lcdui.TextBox midpTextBox;
 	//#endif
-		
+	
+	long lastTimePressed = -1;
+	
 	//#if tmp.usePredictiveInput
 		boolean predictiveInput = false;
 		private PredictiveAccess predictiveAccess;
 		
-		long lastTimePressed = -1;
 		boolean nextMode 	 = this.predictiveInput;
 		public static final int SWITCH_DELAY 	 = 1000;
 	//#endif		
@@ -2660,6 +2661,7 @@ public class TextField extends StringItem
 						if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable)
 						//#endif
 						{
+							System.out.println("key mode");
 							if(this.lastTimePressed == -1)
 							{
 								this.nextMode = !this.predictiveInput;
@@ -2667,7 +2669,7 @@ public class TextField extends StringItem
 							}
 							else
 							{
-								if((System.currentTimeMillis() - this.lastTimePressed) > SWITCH_DELAY)
+								if((System.currentTimeMillis() - this.lastTimePressed) > SWITCH_DELAY && TrieProvider.isPredictiveInstalled())
 								{
 									if(this.nextMode != this.predictiveInput)
 									{
@@ -2685,7 +2687,7 @@ public class TextField extends StringItem
 						}
 						//#endif
 						
-						if(!handled)
+						if(!handled && keyCode != KEY_CHANGE_MODE)
 						{
 							handled = handleKeyInsert(keyCode, gameAction);
 						}
@@ -3337,39 +3339,34 @@ public class TextField extends StringItem
 		}
 		//#endif
 
-		//#if tmp.usePredictiveInput
 		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
 		//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) )
 		//#else
 		if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable)
 		//#endif
 		{
-			if((System.currentTimeMillis() - this.lastTimePressed) > SWITCH_DELAY)
+			//#if tmp.usePredictiveInput
+			if((System.currentTimeMillis() - this.lastTimePressed) > SWITCH_DELAY && TrieProvider.isPredictiveInstalled())
 			{
 				this.lastTimePressed = -1;
-				
 				if(this.predictiveInput)
 				{
 					getPredictiveAccess().disablePredictiveInput();
 				}
 				else
 				{
-					if(TrieProvider.isPredictiveInstalled())
-					{
-						getPredictiveAccess().enablePredictiveInput();
-					}
+					getPredictiveAccess().enablePredictiveInput();
 				}
 				
 				updateInfo();
 			}
 			else
+			//#endif
 			{
 				this.lastTimePressed = -1;
-				
 				return handleKeyMode(keyCode, gameAction);
 			}
 		}
-		//#endif
 		
 		return super.handleKeyReleased( keyCode, gameAction );
 	}
@@ -3466,7 +3463,7 @@ public class TextField extends StringItem
 	 */
 	public void commandAction(Command cmd, Displayable box) {
 		//#if tmp.usePredictiveInput
-			if (this.predictiveInput && this.predictiveAccess.commandAction(cmd, box)) {
+			if (this.predictiveAccess.commandAction(cmd, box)) {
 				return;
 			}
 		//#endif
@@ -3544,7 +3541,7 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println("TextField.commandAction( " + cmd.getLabel() + ", " + this + " )");
 		//#if tmp.usePredictiveInput
-			if (this.predictiveInput && this.predictiveAccess.commandAction(cmd, item)) {			
+			if (this.predictiveAccess.commandAction(cmd, item)) {			
 				return;
 			}
 		//#endif
