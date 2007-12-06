@@ -846,6 +846,7 @@ public class GZipOutputStream extends OutputStream {
 				default: // 18
 					pushSmallBuffer(outLitLenDist[i+1], (byte)7);
 					i++;
+					break;
 				}
     			
     		}
