@@ -620,11 +620,11 @@ public class ChoiceTextField
 					} else {
 						// remove all previous matches and remember this text:						
 						this.lastMatchingText = getString();
+						
 						for ( int i = this.numberOfMatches; --i >= 0; ) {
-							System.out.println("size before removal=" + this.choicesContainer.size() );
 							this.choicesContainer.remove( 0 );
-							System.out.println("size after removal=" + this.choicesContainer.size() );
 						}
+						//TODO: why not using this.choicesContainer.clear(); ?
 						this.numberOfMatches = foundMatches;
 					}
 					
