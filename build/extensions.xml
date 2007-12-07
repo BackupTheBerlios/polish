@@ -335,7 +335,6 @@
 		<name>antcallinit</name>
 		<class>de.enough.polish.preprocess.custom.AntCallInitializerPreprocessor</class>
 	</extension>
-
 	
 	<!-- Property Functions -->
 	
@@ -670,13 +669,6 @@
 		<classpath>${polish.home}/bin/extensions</classpath>
 	</extension>
 	
-	<extension>
-		<type>postcompiler</type>
-		<name>dataserializer</name>
-		<class>de.enough.polish.postcompile.serialization.DataSerializerPostCompiler</class>
-		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
-	</extension>
-	
 	<!-- Log Handler -->
 	
 	<extension>
@@ -891,12 +883,4 @@
 		<class>de.enough.polish.finalize.buildlist.BuildListFinalizer</class>
 		<classpath>${polish.home}/bin/extensions;./bin/classes</classpath>
 	</extension>
-	
-	<extension>
-		<type>finalizer</type>
-		<name>dataserializer</name>
-		<class>de.enough.polish.finalize.serialization.DataSerializerFinalizer</class>
-		<classpath>${polish.home}/bin/extensions</classpath>
-	</extension>
-
 </extensions>
