@@ -60,7 +60,7 @@ import de.enough.polish.util.ReflectionUtil;
  * </pre>
  * @author Andre Schmidt, andre@enough.de
  */
-public class DataSerializerPostCompiler extends BytecodePostCompiler {
+public class RagSerializerPostCompiler extends BytecodePostCompiler {
 	
 	private String file;
 	private String regex;
@@ -72,7 +72,7 @@ public class DataSerializerPostCompiler extends BytecodePostCompiler {
 	/**
 	 * Creates a new data serialization post compiler.
 	 */
-	public DataSerializerPostCompiler() {
+	public RagSerializerPostCompiler() {
 		super();
 	}
 
@@ -116,8 +116,6 @@ public class DataSerializerPostCompiler extends BytecodePostCompiler {
 				}
 			}
 			
-			removeEntries(classesDir, loader, this.table.keySet());
-			
 			if(this.table.size() > 0)
 			{
 				File result = new File(	device.getBaseDir() + 
@@ -159,36 +157,8 @@ public class DataSerializerPostCompiler extends BytecodePostCompiler {
 			}
 		}
 		catch (Exception e) {
-			throw new BuildException(e.getMessage());
-		}
-	}
-	
-	/**
-	 * Removes the externalized entries from the style sheet
-	 * @param classesDir the classpath
-	 * @param loader the classloader
-	 */
-	private void removeEntries(File classesDir, DirClassLoader loader, Set unwanted)
-	{
-		ASMClassLoader asmLoader = new ASMClassLoader(loader);
-		try
-		{
-			ClassNode classNode = asmLoader.loadClass(this.target);
-			ClassWriter writer = new ClassWriter(0);
-			
-			DataSerializationVisitor visitor = new DataSerializationVisitor(writer, unwanted);
-            classNode.accept(visitor);
-            
-            writeClass(classesDir, this.target, writer.toByteArray());
-		}
-		catch (ClassNotFoundException e) {
-			System.out.println(this.target + " could not be found " + e);
-		}
-		catch (IOException e) {
-			System.out.println("unable to write class " + e);
-		}
-		catch (Exception e) {
 			e.printStackTrace();
+			throw new BuildException(e.getMessage());
 		}
 	}
 	
