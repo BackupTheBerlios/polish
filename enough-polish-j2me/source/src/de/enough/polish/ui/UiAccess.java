@@ -2776,4 +2776,93 @@ public final class UiAccess {
 	 	//#endif
 	}
 	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Retrieves the horizontal content start for the given screen.
+	 * @param screen the screen
+	 * @return the horizontal start position in pixels from the left, -1 when it is unknown 
+	 */
+	public static int getContentX( javax.microedition.lcdui.Screen screen ) {
+		return -1;
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Retrieves the vertical content start for the given screen.
+	 * @param screen the screen
+	 * @return the vertical start position in pixels from the top, -1 when it is unknown 
+	 */
+	public static int getContentY( javax.microedition.lcdui.Screen screen ) {
+		return -1;
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Retrieves the horizontal content width for the given screen.
+	 * @param screen the screen
+	 * @return the horizontal content width in pixels, -1 when it is unknown 
+	 */
+	public static int getContentWidth( javax.microedition.lcdui.Screen screen ) {
+		return -1;
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Retrieves the vertical content width for the given screen.
+	 * @param screen the screen
+	 * @return the vertical content width in pixels, -1 when it is unknown 
+	 */
+	public static int getContentHeight( javax.microedition.lcdui.Screen screen ) {
+		return -1;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the horizontal content start for the given screen.
+	 * @param screen the screen
+	 * @return the horizontal start position in pixels from the left, -1 when it is unknown 
+	 */
+	public static int getContentX( Screen screen ) {
+		return screen.contentX;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the vertical content start for the given screen.
+	 * @param screen the screen
+	 * @return the vertical start position in pixels from the top, -1 when it is unknown 
+	 */
+	public static int getContentY( Screen screen ) {
+		return screen.contentY;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the horizontal content width for the given screen.
+	 * @param screen the screen
+	 * @return the horizontal content width in pixels, -1 when it is unknown 
+	 */
+	public static int getContentWidth( Screen screen ) {
+		return screen.contentWidth;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the vertical content width for the given screen.
+	 * @param screen the screen
+	 * @return the vertical content width in pixels, -1 when it is unknown 
+	 */
+	public static int getContentHeight( Screen screen ) {
+		return screen.contentHeight;
+	}
+	//#endif
+
 }
