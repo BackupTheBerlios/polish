@@ -2661,7 +2661,7 @@ public class TextField extends StringItem
 						if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable)
 						//#endif
 						{
-							System.out.println("key mode");
+							//System.out.println("key mode");
 							if(this.lastTimePressed == -1)
 							{
 								this.nextMode = !this.predictiveInput;
