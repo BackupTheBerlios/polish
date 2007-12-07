@@ -514,7 +514,7 @@ public class CommandItem extends IconItem {
 			}
 			if (this.hasChildren && this.childIndicator == null) {
 		//#endif			
-				this.childIndicatorWidth = this.font.getHeight();
+				this.childIndicatorWidth = this.childIndicatorHeight;
 				this.childIndicatorHeight = this.childIndicatorWidth;
 		//#if polish.css.command-child-indicator
 			}
