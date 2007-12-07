@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="source/src"/>
-	<classpathentry output="bin/test" kind="src" path="source/test"/>
+	<classpathentry kind="src" output="bin/test" path="source/test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="import/bluetooth.zip"/>
 	<classpathentry kind="lib" path="import/junit.jar"/>
@@ -12,7 +12,8 @@
 	<classpathentry kind="lib" path="import/siemens-extension-api.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/m3g.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/pdaapi.jar"/>
-	<classpathentry kind="lib" path="/enough-polish-build/import/blackberry-4.0.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/doja-2.5.jar"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/blackberry-4.2.0.jar"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/samsung-api.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
