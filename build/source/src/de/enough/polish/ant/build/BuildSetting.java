@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 
 import de.enough.polish.BuildException;
 import org.apache.tools.ant.Project;
@@ -42,6 +43,8 @@ import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Environment;
 import de.enough.polish.ExtensionManager;
 import de.enough.polish.finalize.Finalizer;
+import de.enough.polish.rag.FileSetting;
+import de.enough.polish.rag.SerializeSetting;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -124,7 +127,6 @@ public class BuildSetting {
 	private String encoding = DEFAULT_ENCODING;
 	private boolean doPreverify = true;
 	private ArrayList postCompilers;
-	private ArrayList serializers;
 	private ArrayList finalizers;
 	private File projectBaseDir;
 	private File polishHomeDir;
@@ -138,7 +140,8 @@ public class BuildSetting {
 	private ArrayList preCompilers;
 	private ClassSetting mainClassSetting;
 	private ClassSetting dojaClassSetting;
-	private boolean doStyleSerialize = false;
+	private ArrayList serializers;
+	private FileSetting fileSetting;
 	
 	/**
 	 * Creates a new build setting.
@@ -329,6 +332,34 @@ public class BuildSetting {
 			this.postCompilers = new ArrayList();
 		}
 		this.postCompilers.add( setting );
+	}
+	
+	/**
+	 * Adds a serializer to a rag task, not used in the j2mepolish task
+	 */
+	public void addConfiguredSerialize(SerializeSetting setting) {
+		if (setting.getRegex() == null) {
+			throw new BuildException("The nested element <serialize> requires the attribute [regex] which defines a regular expression to choose the fields to serialize.");
+		}
+		if (setting.getTarget() == null) {
+			throw new BuildException("The nested element <serialize> requires the attribute [target] which defines one of the classes to compile for serialization etc.");
+		}
+		if (this.serializers == null) {
+			this.serializers = new ArrayList();
+			
+		}
+		this.serializers.add( setting );
+	}
+	
+	/**
+	 * Adds the filename to a rag task, not used in the j2mepolish task
+	 */
+	public void addConfiguredFile( FileSetting setting ) {
+		if (setting.getName() == null) {
+			throw new BuildException("The nested element <file> requires the attribute [name] which defines the name for the resource assembly to generate.");
+		}
+		
+		this.fileSetting = setting;
 	}
 	
 	public PreprocessorSetting[] getPreprocessors() {
@@ -1530,13 +1561,6 @@ public class BuildSetting {
 	}
 	
 	/**
-	 * @return true when there are style serializers
-	 */
-	public boolean doStyleSerialize() {
-		return (this.serializers != null);
-	}
-
-	/**
 	 * @param manager
 	 * @param environment
 	 * @return an array of initialized finalizers
@@ -1761,6 +1785,14 @@ public class BuildSetting {
 			throw new BuildException("Invalid <main> element: the \"class\" attribute is required.");
 		}
 		this.mainClassSetting = setting;
+	}
+
+	public FileSetting getFileSetting() {
+		return fileSetting;
+	}
+
+	public ArrayList getSerializers() {
+		return serializers;
 	}
 
 

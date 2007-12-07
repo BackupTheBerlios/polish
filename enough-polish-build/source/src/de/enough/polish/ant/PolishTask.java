@@ -105,6 +105,7 @@ import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssAttributesManager;
 import de.enough.polish.preprocess.css.CssConverter;
+import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.preprocess.custom.TranslationPreprocessor;
 import de.enough.polish.preverify.CldcPreverifier;
@@ -151,26 +152,26 @@ public class PolishTask extends ConditionalTask {
     VERSION = tmp;
   }
   
-	private static final String VERSION;
+	protected static final String VERSION;
 
-	private BuildSetting buildSetting;
+	protected BuildSetting buildSetting;
 	private InfoSetting infoSetting;
-	private List deviceRequirements;
+	protected List deviceRequirements;
 	private List emulatorSettings;
 	
 	/** the project settings */ 
 	private PolishProject polishProject;
 	/** the manager of all devices */
 	private DeviceDatabase deviceDatabase;
-	private ExtensionManager extensionManager;
-	private Environment environment;
+	protected ExtensionManager extensionManager;
+	protected Environment environment;
 
 	/** the actual devices which are supported by this project */
-	private Device[] devices;
-	private Preprocessor preprocessor;
+	protected Device[] devices;
+	protected Preprocessor preprocessor;
 	//private File[] sourceDirs;
 	private SourceSetting[] sourceSettings;
-	private TextFile[][] sourceFiles;
+	protected TextFile[][] sourceFiles;
 	private String javacTarget;
 	/** the source-compatibility-switch for the javac-compiler defaults to "1.3" */
 	private String sourceCompatibility = "1.3";
@@ -178,8 +179,8 @@ public class PolishTask extends ConditionalTask {
 	private boolean doObfuscate;
 	private String[] preserveClasses;
 	private ImportConverter importConverter;
-	private TextFile styleSheetSourceFile;
-	private TextFile styleCacheSourceFile;
+	protected TextFile styleSheetSourceFile;
+	protected TextFile styleCacheSourceFile;
 	private ResourceUtil resourceUtil;
 	private String wtkHome;
 	private HashMap midletClassesByName;
@@ -189,13 +190,13 @@ public class PolishTask extends ConditionalTask {
 		Pattern.compile("\\s*void\\s+destroyApp\\s*\\(\\s*(final)?\\s*boolean\\s+\\w+\\s*\\)");
 
 	private LibraryManager libraryManager;
-	private File errorLock;
-	private boolean lastRunFailed;
+	protected File errorLock;
+	protected boolean lastRunFailed;
 	private StringList styleSheetCode;
 	private int numberOfChangedFiles;
 	private File polishSourceDir;
 	private TextFile[] polishSourceFiles;
-	private Variables variables;
+	protected Variables variables;
 
 	//private Variable[] conditionalVariables;
 
@@ -208,11 +209,11 @@ public class PolishTask extends ConditionalTask {
 	private PolishLogger polishLogger;
 	private ArrayList runningEmulators;
 
-	private ResourceManager resourceManager;
+	protected ResourceManager resourceManager;
 
-	private LocaleSetting[] supportedLocales;
+	protected LocaleSetting[] supportedLocales;
 
-	private TranslationPreprocessor translationPreprocessor;
+	protected TranslationPreprocessor translationPreprocessor;
 
 	private TextFile localeSourceFile;
 
@@ -220,13 +221,13 @@ public class PolishTask extends ConditionalTask {
 	
 	// move all classes into the default package
 	// during the preprocessing phase:
-	private boolean useDefaultPackage;
+	protected boolean useDefaultPackage;
 
-	private LocalizationSetting localizationSetting;
+	protected LocalizationSetting localizationSetting;
 
 	private String polishHomePath;
 
-	private File polishHomeDir;
+	protected File polishHomeDir;
 
 	private ArrayList customPreprocessors;
 
@@ -237,7 +238,7 @@ public class PolishTask extends ConditionalTask {
 	private LibrariesSetting binaryLibraries;
 
 
-	private boolean isInitialized;
+	protected boolean isInitialized;
 
 	private PreCompiler[] preCompilers;
 
@@ -246,12 +247,12 @@ public class PolishTask extends ConditionalTask {
 	private ArrayList polishBuildListenerSettingsList;
 	private PolishBuildListener[] polishBuildListeners;
 
-	private LocaleSetting currentLocaleSetting;
+	protected LocaleSetting currentLocaleSetting;
 
 	private StringList styleCacheCode;
 
 	private Map licensingInformation;
-	private ConfigurationManager configurationManager;
+	protected ConfigurationManager configurationManager;
 
 
 	
@@ -501,7 +502,7 @@ public class PolishTask extends ConditionalTask {
 	}
 
 
-  private void clearDeviceDatabase() {
+  protected void clearDeviceDatabase() {
     this.deviceDatabase.clear();
   }
 	
@@ -1253,7 +1254,7 @@ public class PolishTask extends ConditionalTask {
 	/**
 	 * @return true when the J2ME Polish UI should be activated
 	 */
-	private boolean usePolishGui( Device device ) {
+	protected boolean usePolishGui( Device device ) {
 		String usePolishGuiVariable;
 		if (this.environment == null) {
 			usePolishGuiVariable = getProject().getProperty("polish.usePolishGui");
@@ -1326,7 +1327,7 @@ public class PolishTask extends ConditionalTask {
 	 * 
 	 * @return the full licensing information
 	 */
-	private String getLicenseInfo() {
+	protected String getLicenseInfo() {
 		String license = getLicense();
 		if ("GPL".equals(license)) {
 			return "GPL License";

@@ -627,6 +627,15 @@ public class StyleSheet {
 	}
 	
 	/**
+	 * Removes the style of the given index
+	 * @param name the index of the style
+	 */
+	public void removeStyle(int index)
+	{
+		this.styles.remove(index);
+	}
+	
+	/**
 	 * Sets the parents of the styles.
 	 * This method is automatically called when the sourcecode 
 	 * will be retrieved.
