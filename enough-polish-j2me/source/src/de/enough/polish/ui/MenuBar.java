@@ -184,7 +184,6 @@ public class MenuBar extends Item {
 	}
 	
 	public void addCommand(Command cmd, Style commandStyle) {
-		System.out.println(cmd);
 		//System.out.println("adding cmd " + cmd.getLabel() + " with style " + commandStyle );
 		if (cmd == this.singleLeftCommand || cmd == this.singleRightCommand || cmd == this.singleMiddleCommand || this.commandsList.contains(cmd)) {
 			// do not add an existing command again...
