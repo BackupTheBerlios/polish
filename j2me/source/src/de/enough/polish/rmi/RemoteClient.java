@@ -213,8 +213,6 @@ public class RemoteClient implements Runnable {
 			if (connection != null) {
 				try {
 					connection.close();
-					// on some SE devices it happens fairly regularly that no further HttpConnection can be established - possibly because former ones have not been garbage collected yet.
-					System.gc();
 				} catch (Exception e) {
 					// ignore
 				}
