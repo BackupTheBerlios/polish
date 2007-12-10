@@ -106,27 +106,27 @@ public class StringReader extends Reader
       if (this.index >= this.len)
         return -1;
 
-      return ((int) this.str.charAt(this.index++)) & 0xffff;
+      return (this.str.charAt(this.index++)) & 0xffff;
     }
   }
 
   /* (non-Javadoc)
    * @see java.io.Reader#read(char[], int, int)
    */
-  public int read(char[] cbuf, int off, int len) throws IOException
+  public int read(char[] cbuf, int off, int length) throws IOException
   {
     synchronized (this.lock)
     {
       if (this.str == null)
         throw new IOException("stream closed");
       
-      if (off < 0 || len < 0 || off + len > cbuf.length)
+      if (off < 0 || length < 0 || off + length > cbuf.length)
         throw new ArrayIndexOutOfBoundsException();
       
       if (this.index >= this.len)
         return -1;
  
-      int lastChar = Math.min(this.len, this.index + len);
+      int lastChar = Math.min(this.len, this.index + length);
       this.str.getChars(this.index, lastChar, cbuf, off);
       int numChars = lastChar - this.index;
       this.index = lastChar;
@@ -166,7 +166,7 @@ public class StringReader extends Reader
   {
     synchronized (this.lock)
     {
-      long skipped = Math.min((long) (this.len - this.index), n < 0 ? 0L : n);
+      long skipped = Math.min((this.len - this.index), n < 0 ? 0L : n);
       this.index += skipped;
       return skipped;
     }

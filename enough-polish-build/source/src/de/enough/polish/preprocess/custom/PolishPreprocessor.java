@@ -580,12 +580,18 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			// this class does not extend Remote:
 			return false;
 		}
-		boolean callSynchronly = "true".equals( this.environment.getVariable("polish.rmi.synchrone") );
+		//boolean callSynchronly = "true".equals( this.environment.getVariable("polish.rmi.synchrone") );
+		boolean useXmlRpc = "true".equals( this.environment.getVariable("polish.rmi.xmlrpc"));
 		String newImplements = sourceClass.getClassName();
 		sourceClass.setClassName(newImplements + "RemoteClient");
 		sourceClass.setImplementedInterfaces( new String[]{ newImplements } );
-		sourceClass.setExtendsStatement("RemoteClient");
-		sourceClass.addImport("de.enough.polish.rmi.RemoteClient");
+		if (useXmlRpc) {
+			sourceClass.setExtendsStatement("XmlRpcRemoteClient");
+			sourceClass.addImport("de.enough.polish.rmi.xmlrpc.XmlRpcRemoteClient");
+		} else {
+			sourceClass.setExtendsStatement("RemoteClient");
+			sourceClass.addImport("de.enough.polish.rmi.RemoteClient");			
+		}
 		sourceClass.setClass( true );
 		
 		
@@ -593,7 +599,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		JavaSourceMethod[] methods = sourceClass.getMethods();
 		for (int i = 0; i < methods.length; i++) {
 			JavaSourceMethod method = methods[i];
-			createRemoteMethodImplementation( method, callSynchronly );
+			createRemoteMethodImplementation( method );
 		}
 
 		// add URL constructor:
@@ -630,16 +636,16 @@ public class PolishPreprocessor extends CustomPreprocessor {
 
 
 
-	private void createRemoteMethodImplementation(JavaSourceMethod method, boolean callSynchronly ) {
+	private void createRemoteMethodImplementation(JavaSourceMethod method ) {
 		if (!(method.throwsException("RemoteException") || method.throwsException("de.enough.polish.rmi.RemoteException")) ) {
 			throw new BuildException("RMI method " + method.getName() + " does not throw RemoteException. Please correct this in your class " + method.getSourceClass().getClassName() );
 		}
 		String methodCall;
-		if (callSynchronly) {
+		//if (callSynchronly) {
 			methodCall = "callMethodSynchrone";
-		} else {
-			methodCall = "callMethodAsynchrone";
-		}
+		//} else {
+		//	methodCall = "callMethodAsynchrone";
+		//}
 		ArrayList methodCode = new ArrayList();
 		methodCode.add("String _methodName= \"" + method.getName() + "\";" );
 		if (method.getParameterNames() == null) {

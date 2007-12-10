@@ -59,6 +59,10 @@ public class RmiFinalizer extends Finalizer {
 	public void finalize(File jadFile, File jarFile, Device device,
 			Locale locale, Environment env) 
 	{
+		boolean useXmlRpc = "true".equals(env.getVariable("polish.rmi.xmlrpc"));
+		if (useXmlRpc) {
+			return;
+		}
 		File sourceDir = (File) this.environment.get("rmi-classes-dir" );
 	    List rmiClasses = (List) this.environment.get("rmi-classes" );
 	    if (rmiClasses != null) {

@@ -230,7 +230,8 @@ public class ZipTest extends TestCase {
 	// extended Random.nextBytes function
     public void nextBytes(Random rand, byte[] bytes,int len) {
     	for (int i = 0; i < len; )
-    	    for (int rnd = rand.nextInt(),  n = Math.min(len - i, Integer.SIZE/Byte.SIZE); n-- > 0; rnd >>= Byte.SIZE)
+    	    //for (int rnd = rand.nextInt(),  n = Math.min(len - i, Integer.SIZE/Byte.SIZE); n-- > 0; rnd >>= Byte.SIZE)
+    		for (int rnd = rand.nextInt(),  n = Math.min(len - i, 32/8); n-- > 0; rnd >>= 8)
     	    	bytes[i++] = (byte)rnd;
     }
 	

@@ -427,7 +427,6 @@ public final class Locale {
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get( Calendar.MONTH );
 		int day = calendar.get( Calendar.DAY_OF_MONTH );
-		//TODO rob set DateFormat variable in TranslationManager
 		//#if polish.DateFormat == mdy
 			if (month < 9) {
 				buffer.append('0');

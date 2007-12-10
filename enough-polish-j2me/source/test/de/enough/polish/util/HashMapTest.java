@@ -416,8 +416,8 @@ public class HashMapTest extends TestCase {
 		System.gc();
 		time = System.currentTimeMillis();
 		for (int i = 0; i < TEST_RUNS/10; i++) {
-			Object value = this.stringKeysMixed[i];			
-			assertTrue( table.containsValue( value ));
+			Object value = this.stringKeysMixed[i];		
+			assertTrue( table.get( value ) != null);
 		}
 		neededTime = System.currentTimeMillis() - time;
 		System.out.println("needed " + neededTime + "ms for checking " + TEST_RUNS/10 + " keys/values in java.util.Hashtable.");

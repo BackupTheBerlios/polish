@@ -143,7 +143,7 @@ public final class Serializer {
 	}
 	//#endif
 	
-	public Serializer() {
+	private Serializer() {
 		// no instantiation allowed
 	}
 	
@@ -327,7 +327,11 @@ public final class Serializer {
 					// we are within a Java SE environment. When the J2ME Polish runtime librarby is used, we can 
 					// store the image in PNG format instead of in the much more verbose RGB format:
 					try {
-						Field bufferedImageField = object.getClass().getDeclaredField("bufferedImage");
+						//#if false
+							Field bufferedImageField = null;
+						//#else
+							//# Field bufferedImageField = object.getClass().getDeclaredField("bufferedImage");
+						//#endif
 						bufferedImageField.setAccessible( true );
 						BufferedImage bufferedImage = (BufferedImage) bufferedImageField.get( object );
 						ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
@@ -451,9 +455,6 @@ public final class Serializer {
 			}
 		}
 		
-		/*
-		 * Special case is the javax.microedition.lcdui.Image – we use getRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height) and createRGBImage(int[] rgb, int width, int height, boolean processAlpha) for serialization.
-		 */
 	}
 
 
@@ -522,7 +523,11 @@ public final class Serializer {
 				externalizables = new Externalizable[ length ];
 			//#else
 				try {
-					externalizables = (Externalizable[]) Array.newInstance(Class.forName( cn ), length);
+					//#if false
+						externalizables = null;
+					//#else
+						//# externalizables = (Externalizable[]) Array.newInstance(Class.forName( cn ), length);
+					//#endif
 				} catch (Exception e) {
 					//#debug error
 					System.out.println("Unable to instantiate Serializable \"" + cn + "\"" + e);

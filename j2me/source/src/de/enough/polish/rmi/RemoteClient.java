@@ -59,10 +59,10 @@ public class RemoteClient implements Runnable {
 	//public static final int RMI_VERSION = 101; // = 1.0.1 (support of primitives)
 	public static final int RMI_VERSION = 102; // = 1.0.2 (support of dynamic obfuscation)
 	
-	private final boolean useObfuscation;
-	private final Vector callQueue;
-	private String url;
-	private String cookie;
+	protected final boolean useObfuscation;
+	protected final Vector callQueue;
+	protected String url;
+	protected String cookie;
 	
 	/**
 	 * Createsa new client.
@@ -160,6 +160,7 @@ public class RemoteClient implements Runnable {
 			if (status != HttpConnection.HTTP_OK) {
 				throw new RemoteException("Server responded with response code " + status );
 			} else {
+				out.flush();
 				// okay, call succeeded at least partially:
 				// check for cookie:
 				String newCookie = connection.getHeaderField("Set-cookie");
@@ -212,7 +213,7 @@ public class RemoteClient implements Runnable {
 			if (connection != null) {
 				try {
 					connection.close();
-					// on SE devices it happens fairly regularly that no further HttpConnection can be established - possibly because former ones have not been garbage collected yet.
+					// on some SE devices it happens fairly regularly that no further HttpConnection can be established - possibly because former ones have not been garbage collected yet.
 					System.gc();
 				} catch (Exception e) {
 					// ignore

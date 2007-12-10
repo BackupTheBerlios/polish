@@ -29,7 +29,7 @@ package de.enough.polish.rmi;
  * <p>Wraps information about a remote call that should be/is being processed.</p>
  * 
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006, 2007</p>
  * <pre>
  * history
  *        Dec 20, 2006 - rob creation
@@ -59,28 +59,28 @@ public class RemoteCall {
 	}
 
 	/**
-	 * @return the raisedException
+	 * @return  the checked exception that has been thrown by the remote method
 	 */
 	public RemoteException getRaisedException() {
 		return this.raisedException;
 	}
 
 	/**
-	 * @param raisedException the raisedException to set
+	 * @param raisedException the checked exception that has been thrown by the remote method
 	 */
 	public void setRaisedException(RemoteException raisedException) {
 		this.raisedException = raisedException;
 	}
 
 	/**
-	 * @return the returnValue
+	 * @return the the return value of the remote method
 	 */
 	public Object getReturnValue() {
 		return this.returnValue;
 	}
 
 	/**
-	 * @param returnValue the returnValue to set
+	 * @param returnValue the return value of the remote method
 	 */
 	public void setReturnValue(Object returnValue) {
 		this.returnValue = returnValue;
@@ -93,6 +93,10 @@ public class RemoteCall {
 		return this.name;
 	}
 	
+	/**
+	 * Retrieves the flag indicating usage of primitive types for the first 64 parameters
+	 * @return a long with a 1 for each parameter that is primitive
+	 */
 	public long getPrimitivesFlag() {
 		return this.primitivesFlag;
 	}

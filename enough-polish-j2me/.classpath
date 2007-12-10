@@ -2,18 +2,23 @@
 <classpath>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="src" output="bin/test" path="source/test"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/midp-2.0.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/home/mkoch/local/WTK2.2/docs/api/midp/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/enough-polish-build/import/cldc-1.1.jar"/>
 	<classpathentry kind="lib" path="import/bluetooth.zip"/>
 	<classpathentry kind="lib" path="import/junit.jar"/>
 	<classpathentry kind="lib" path="import/mma.zip"/>
 	<classpathentry kind="lib" path="import/nokiaui.zip"/>
 	<classpathentry kind="lib" path="import/wma.zip"/>
-	<classpathentry kind="lib" path="import/midp2.jar"/>
 	<classpathentry kind="lib" path="import/siemens-extension-api.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/m3g.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/pdaapi.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/doja-2.5.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/blackberry-4.2.0.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/samsung-api.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

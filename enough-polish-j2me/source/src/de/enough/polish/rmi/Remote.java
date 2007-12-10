@@ -28,7 +28,7 @@ package de.enough.polish.rmi;
 /**
  * <p>The base interface for any remote services. Defined methods need to declare to throw at least a RemoteException.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006, 2007</p>
  * <pre>
  * history
  *        Dec 18, 2006 - rob creation
@@ -36,8 +36,11 @@ package de.enough.polish.rmi;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public interface Remote {
+	/** indicates the method call finished normally */
 	public static final int STATUS_OK = 0;
+	/** indicates the method call threw a checked exception */
 	public static final int STATUS_CHECKED_EXCEPTION = 1;
+	/** indicates the method call threw an unchecked exception */
 	public static final int STATUS_UNCHECKED_EXCEPTION = 2;
 	
 	// no method definitions...
