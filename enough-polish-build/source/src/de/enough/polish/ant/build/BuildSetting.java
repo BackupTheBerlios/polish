@@ -355,7 +355,7 @@ public class BuildSetting {
 	 * Adds the filename to a rag task, not used in the j2mepolish task
 	 */
 	public void addConfiguredFile( FileSetting setting ) {
-		if (setting.getName() == null) {
+		if (setting.getFile() == null) {
 			throw new BuildException("The nested element <file> requires the attribute [name] which defines the name for the resource assembly to generate.");
 		}
 		

@@ -46,13 +46,22 @@ import java.util.ArrayList;
  */
 public class FileSetting {
 	
-	private String name;
+	private String file;
+	private String path;
 	
-	public String getName() {
-		return name;
+	public String getFile() {
+		return file;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFile(String name) {
+		this.file = name;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 }

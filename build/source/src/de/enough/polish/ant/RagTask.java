@@ -60,8 +60,8 @@ import de.enough.polish.util.StringUtil;
 
 /**
  * <p>
- * Manages a J2ME project from the preprocessing to the packaging and
- * obfuscation.
+ * Stores resources and serialized objects to a
+ * .rag file. 
  * </p>
  * 
  * <p>
@@ -70,14 +70,18 @@ import de.enough.polish.util.StringUtil;
  * 
  * <pre>
  * history
- *        21-Jan-2003 - rob creation
+ *        10-Dec-2007	- asc creation
  * </pre>
  * 
- * @author Robert Virkus, robert@enough.de
+ * @author Andre Schmidt, andre@enough.de
  */
 public class RagTask extends PolishTask {
 	private URLClassLoader loader; 
 
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ant.PolishTask#initialize(de.enough.polish.Device, java.util.Locale)
+	 */
 	public void initialize(Device device, Locale locale) {
 		if (this.configurationManager != null) {
 			this.configurationManager.preInitialize(device, locale,
@@ -257,88 +261,112 @@ public class RagTask extends PolishTask {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ant.PolishTask#checkSettings()
+	 */
 	public void checkSettings() {
 		if (this.deviceRequirements == null) {
 			log("Nested element [deviceRequirements] is missing, now the project will be optimized for all known devices.");
 		}
+		if (this.buildSetting == null) {
+			throw new BuildException("Nested element [build] is required.");
+		}
+		if (this.buildSetting.getFileSetting() == null)
+		{
+			throw new BuildException("Nested element [file] is required.");
+		}
 	}
 	
+	/**
+	 * Clears the class and source path of classes used in the serialization
+	 * to ensure that they're rebuild before parsing and serializing their fields.
+	 * @param device the device to build for
+	 * @param locale the locale to build for
+	 */
 	protected void clear(Device device, Locale locale) {
 		ArrayList serializers = this.buildSetting.getSerializers();
 		for (int i = 0; i < serializers.size(); i++) {
 			SerializeSetting setting = (SerializeSetting)serializers.get(i);
 			
+			//Rewrite the target classname to a directory structure
 			String classpath = setting.getTarget().replace(".","\\");
 			
+			//Get the File objects for the class and source file of the target to serialize
 			File sourceFile = new File(device.getSourceDir() + File.separator + classpath + ".java");
 			File classFile = new File(device.getBaseDir() + File.separator + "classes" + File.separator +  classpath + ".class");
 			
 			System.out.println("Removing source files of " + setting.getTarget());
 			
+			//Delete the files
 			sourceFile.delete();
 			classFile.delete();
 		}
 	}
 
+	/**
+	 * Packages the resources and serialized fields to a .rag file.
+	 * @param device the device to build for
+	 * @param locale the locale to build for
+	 */
 	protected void bundle(Device device, Locale locale) {
-		String filename = this.buildSetting.getFileSetting().getName();
+		String file = this.buildSetting.getFileSetting().getFile();
+		String path = this.buildSetting.getFileSetting().getPath();
+		
+		//If path == null, use the device base directory
+		if(path == null)
+		{
+			path = device.getBaseDir();
+		}
+		
 		Vector containers = new Vector();
 		
-		File result = new File(	device.getBaseDir() + 
-				File.separator + 
-				filename);
+		File result = new File(path + File.separator + file);
 		
 		try
-		{	
+		{
+			//Get the resources and serializers
 			File[] resources = this.resourceManager.getResources(device, locale);
-			
 			ArrayList serializers = this.buildSetting.getSerializers();
+			
 			for (int i = 0; i < serializers.size(); i++) {
 				SerializeSetting setting = (SerializeSetting)serializers.get(i);
-				Object object = serialize(setting, device, locale);
-				RagContainer container = getContainer(setting.getTarget(),object);
-				containers.add(container);
+				
+				//Get the fields of the class
+				Field[] fields = this.loader.loadClass(setting.getTarget()).getDeclaredFields();
+				
+				//Iterate over fields 
+				for (int j = 0; j < fields.length; j++) {
+					
+					Field field = fields[j];
+					String fieldName = field.getName();
+					
+					//Does the field name match the regular expression of the current serializer ?
+					if(fieldName.matches(setting.getRegex()))
+					{
+						//Create a container for the field object
+						RagContainer container = getContainer(setting.getTarget(),field.getName(),field.get(null));
+						containers.add(container);
+					}
+				}
 			}
 			
+			//Add all resources to the container vector
 			for (int i = 0; i < resources.length; i++) {
 				RagContainer container = getContainer(resources[i]);
 				containers.add(container);
 			}
 			
+			//Write the containers to the file
 			writeToFile(result, containers);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			throw new BuildException("unable to stream contents to " + filename);
+			throw new BuildException("unable to stream contents to " + result.getAbsolutePath());
 		}
-	}
-	
-	protected Hashtable serialize(SerializeSetting setting, Device device, Locale locale) throws SecurityException, ClassNotFoundException, MalformedURLException, IllegalArgumentException, IllegalAccessException {
-		this.loader = getURLs(device);
-		
-		Field[] fields = this.loader.loadClass(setting.getTarget()).getDeclaredFields();
-		
-		Hashtable result = new Hashtable();
-		
-		//Iterate over fields 
-		for (int i = 0; i < fields.length; i++) {
-			
-			Field styleField = fields[i];
-			String fieldName = styleField.getName();
-			
-			if(fieldName.matches(setting.getRegex()))
-			{
-				//name of field matches the regular expression
-				result.put(fieldName, styleField.get(null));
-			}
-		}
-		
-		return result;
 	}
 	
 	/**
 	 * Returns the classloader with the classpath and needed libaries for serialization etc.  
-	 * 
 	 * @param classesDir the classpath
 	 * @param device the device to serialize for
 	 * @return the resulting classloader
@@ -411,14 +439,23 @@ public class RagTask extends PolishTask {
 		return classes;
 	}
 	
+	/**
+	 * Returns a <code>RagContainer</code> for a file.
+	 * @param file the file
+	 * @return a <code>RagContainer</code>
+	 * @throws IOException
+	 */
 	private RagContainer getContainer(File file) throws IOException
 	{
 		System.out.println("Creating rag container from " + file.getAbsolutePath());
 		
+		//Create a container
 		RagContainer container = new RagContainer();
 		DataInputStream stream = new DataInputStream(new FileInputStream(file));
 		
 		byte[] buffer = new byte[(int)file.length()];
+		
+		//Read the file contents to the buffer
 		stream.readFully(buffer);
 		
 		container.setName(file.getName());
@@ -428,9 +465,20 @@ public class RagTask extends PolishTask {
 		return container;
 	}
 	
-	private RagContainer getContainer(String name, Object object) throws IOException, NoSuchMethodException
+	/**
+	 * Returns a <code>RagContainer</code> for a single field of a class.
+	 * 
+	 * @param className the class containing the field
+	 * @param fieldName the name of the field
+	 * @param object the value of the field
+	 * @return a <code>RagContainer</code>
+	 * @throws IOException
+	 * @throws NoSuchMethodException
+	 */
+	private RagContainer getContainer(String className, String fieldName, Object object) throws IOException, NoSuchMethodException
 	{
-		System.out.println("Creating rag container from " + name + object);
+		String fullName = className + "." + fieldName;
+		System.out.println("Creating rag container from " + fullName + "(" + object + ")");
 		
 		RagContainer container = new RagContainer();
 		
@@ -445,13 +493,19 @@ public class RagTask extends PolishTask {
 		//serialize
 		ReflectionUtil.callMethod("serialize", serializer, signatures, parameters);
 		
-		container.setName(name);
+		container.setName(fullName.toLowerCase());
 		container.setSize(byteStream.size());
 		container.setData(byteStream.toByteArray());
 		
 		return container;
 	}
 	
+	/**
+	 * Writes the resulting containers to a file
+ 	 * @param file the file to write to 
+	 * @param containers the containers
+	 * @throws IOException
+	 */
 	private void writeToFile(File file, Vector containers) throws IOException
 	{
 		System.out.println("Writing containers to " + file.getAbsolutePath());
@@ -469,13 +523,27 @@ public class RagTask extends PolishTask {
 		stream.close();
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ant.PolishTask#execute(de.enough.polish.Device, java.util.Locale, boolean)
+	 */
 	protected void execute(Device device, Locale locale, boolean hasExtensions) {
+		
 		initialize(device, locale);
 		clear(device,locale);
 		assembleResources(device, locale);
 		preprocess(device, locale);
 		compile(device, locale);
 		postCompile(device, locale);
+		
+		try
+		{
+			this.loader = getURLs(device);
+		}
+		catch (Exception e) {
+			System.out.println("unhable to initialize classloader " + e);
+			e.printStackTrace();
+		}
+		
 		bundle(device, locale);
 	}
 }
