@@ -47,7 +47,6 @@ import java.util.ArrayList;
 public class FileSetting {
 	
 	private String file;
-	private String path;
 	
 	public String getFile() {
 		return file;
@@ -55,13 +54,5 @@ public class FileSetting {
 
 	public void setFile(String name) {
 		this.file = name;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
+	}	
 }

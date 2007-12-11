@@ -55,6 +55,7 @@ import de.enough.polish.ant.build.FullScreenSetting;
 import de.enough.polish.io.Serializer;
 import de.enough.polish.rag.RagContainer;
 import de.enough.polish.rag.SerializeSetting;
+import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.ReflectionUtil;
 import de.enough.polish.util.StringUtil;
 
@@ -206,6 +207,8 @@ public class RagTask extends PolishTask {
 		File resourceDir = new File(buildPath + File.separatorChar
 				+ "resources");
 		device.setResourceDir(resourceDir);
+		File ragDir = new File( buildPath + File.separatorChar + "rag" );
+		device.setRagDir( ragDir );
 		this.environment.addVariable("polish.resources.dir", resourceDir
 				.getAbsolutePath());
 
@@ -278,49 +281,22 @@ public class RagTask extends PolishTask {
 	}
 	
 	/**
-	 * Clears the class and source path of classes used in the serialization
-	 * to ensure that they're rebuild before parsing and serializing their fields.
-	 * @param device the device to build for
-	 * @param locale the locale to build for
-	 */
-	protected void clear(Device device, Locale locale) {
-		ArrayList serializers = this.buildSetting.getSerializers();
-		for (int i = 0; i < serializers.size(); i++) {
-			SerializeSetting setting = (SerializeSetting)serializers.get(i);
-			
-			//Rewrite the target classname to a directory structure
-			String classpath = setting.getTarget().replace(".","\\");
-			
-			//Get the File objects for the class and source file of the target to serialize
-			File sourceFile = new File(device.getSourceDir() + File.separator + classpath + ".java");
-			File classFile = new File(device.getBaseDir() + File.separator + "classes" + File.separator +  classpath + ".class");
-			
-			System.out.println("Removing source files of " + setting.getTarget());
-			
-			//Delete the files
-			sourceFile.delete();
-			classFile.delete();
-		}
-	}
-
-	/**
 	 * Packages the resources and serialized fields to a .rag file.
 	 * @param device the device to build for
 	 * @param locale the locale to build for
 	 */
 	protected void bundle(Device device, Locale locale) {
 		String file = this.buildSetting.getFileSetting().getFile();
-		String path = this.buildSetting.getFileSetting().getPath();
+		File ragPath = new File(device.getRagDir().getAbsolutePath());
 		
-		//If path == null, use the device base directory
-		if(path == null)
-		{
-			path = device.getBaseDir();
+		
+		if (!ragPath.exists()) {
+			ragPath.mkdirs();
 		}
 		
 		Vector containers = new Vector();
 		
-		File result = new File(path + File.separator + file);
+		File result = new File(ragPath.getAbsolutePath() + File.separator + file);
 		
 		try
 		{
@@ -363,6 +339,22 @@ public class RagTask extends PolishTask {
 			e.printStackTrace();
 			throw new BuildException("unable to stream contents to " + result.getAbsolutePath());
 		}
+	}
+	
+	/**
+	 * Removes the classes, sources and resources folder from a device folder.
+	 * @param device the device
+	 * @param locale the locale
+	 */
+	private void clear(Device device, Locale locale) {
+		System.out.println("Removing classes, sources and resources");
+		
+		//Delete sources directory for the device
+		FileUtil.delete(new File(device.getSourceDir()));
+		//Delete resources directory for the device
+		FileUtil.delete(device.getResourceDir());
+		//Delete classes directory for the device
+		FileUtil.delete(new File(device.getBaseDir() + File.separator + "classes"));
 	}
 	
 	/**
@@ -569,7 +561,6 @@ public class RagTask extends PolishTask {
 	protected void execute(Device device, Locale locale, boolean hasExtensions) {
 		
 		initialize(device, locale);
-		clear(device,locale);
 		assembleResources(device, locale);
 		preprocess(device, locale);
 		compile(device, locale);
@@ -585,5 +576,6 @@ public class RagTask extends PolishTask {
 		}
 		
 		bundle(device, locale);
+		clear(device,locale);
 	}
 }

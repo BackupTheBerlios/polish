@@ -1589,6 +1589,8 @@ public class PolishTask extends ConditionalTask {
 		this.environment.addVariable("polish.source.dir", sourceDir);
 		File resourceDir = new File( buildPath + File.separatorChar + "resources" );
 		device.setResourceDir( resourceDir );
+		File ragDir = new File( buildPath + File.separatorChar + "rag" );
+		device.setRagDir( ragDir );
 		this.environment.addVariable("polish.resources.dir", resourceDir.getAbsolutePath() );
 
 
@@ -1687,7 +1689,7 @@ public class PolishTask extends ConditionalTask {
 	 */
 	protected void assembleResources( Device device, Locale locale ) {
 		System.out.println("assembling resources for device [" +  device.getIdentifier() + "]." );
-		File resourceDir = device.getResourceDir(); 
+		File resourceDir = device.getResourceDir();
 		try {
 			// copy resources:
 			this.resourceManager.copyResources(resourceDir, device, locale);
@@ -2576,6 +2578,12 @@ public class PolishTask extends ConditionalTask {
 		// copy resources to final destination:
 		try {
 			FileUtil.copyDirectoryContents( device.getResourceDir(), classesDir, !this.buildSetting.getResourceSetting().isForceUpdate() );
+			
+			//If .rag files for this build have been build, copy the files
+			if(device.getRagDir().exists())
+			{
+				FileUtil.copyDirectoryContents( device.getRagDir(), classesDir, !this.buildSetting.getResourceSetting().isForceUpdate() );
+			}
 		} catch (IOException e) {
 			System.out.println("creating JAR for device [" + device.getIdentifier() + "]." );
 			e.printStackTrace();
