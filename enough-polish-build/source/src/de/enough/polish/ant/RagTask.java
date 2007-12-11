@@ -459,7 +459,7 @@ public class RagTask extends PolishTask {
 		stream.readFully(buffer);
 		
 		container.setName(file.getName());
-		container.setSize(file.length());
+		container.setSize((int)file.length());
 		container.setData(buffer);
 		
 		return container;
@@ -512,15 +512,55 @@ public class RagTask extends PolishTask {
 		
 		DataOutputStream stream = new DataOutputStream(new FileOutputStream(file));
 		
+		int offset = getIndexLength(containers);
+		
+		//Write the index length
+		stream.writeInt(containers.size());
+		
 		for (int i = 0; i < containers.size(); i++) {
 			RagContainer container = (RagContainer) containers.get(i);
 			
 			stream.writeUTF(container.getName());
-			stream.writeLong(container.getSize());
+			stream.writeInt(offset);
+			stream.writeInt(container.getSize());
+			
+			//Calculate the offset for the next data
+			offset += container.getSize();
+		}
+		
+		for (int i = 0; i < containers.size(); i++) {
+			RagContainer container = (RagContainer) containers.get(i);
+			
+			//Write the data
 			stream.write(container.getData());
 		}
 		
 		stream.close();
+	}
+	
+	/**
+	 * Simulates the creation of the index of a resource assembly and returns the length of it.
+	 * This is used to get the offset for the data part of the resulting .rag file.
+	 * @param containers the containers that form the index
+	 * @return the length of the index
+	 * @throws IOException
+	 */
+	private int getIndexLength(Vector containers) throws IOException
+	{
+		DataOutputStream stream = new DataOutputStream(new ByteArrayOutputStream());
+		
+		//Write a dummy
+		stream.writeInt(1);
+		
+		for (int i = 0; i < containers.size(); i++) {
+			RagContainer container = (RagContainer) containers.get(i);
+			
+			stream.writeUTF(container.getName());
+			stream.writeInt(1);
+			stream.writeInt(1);
+		}
+		
+		return stream.size();
 	}
 
 	/* (non-Javadoc)
