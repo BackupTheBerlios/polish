@@ -19,7 +19,8 @@ import de.enough.polish.util.ArrayList;
 
 public class RagContainer implements Serializable{
 	private String name;
-	private long size;
+	private int size;
+	private int offset;
 	private byte[] data;
 	
 	/**
@@ -55,7 +56,7 @@ public class RagContainer implements Serializable{
 	/**
 	 * @return the size
 	 */
-	public long getSize() {
+	public int getSize() {
 		return this.size;
 	}
 	
@@ -63,7 +64,22 @@ public class RagContainer implements Serializable{
 	 * Sets the size. Must be the length of the byte array.
 	 * @param size the size
 	 */
-	public void setSize(long size) {
+	public void setSize(int size) {
 		this.size = size;
+	}
+
+	/**
+	 * @return the offset
+	 */
+	public int getOffset() {
+		return offset;
+	}
+
+	/**
+	 * Sets the offset.
+	 * @param offset the offset
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
 	}
 }	
