@@ -792,7 +792,7 @@ public final class DrawUtil {
 		public int stepsIn=5,stepsOut=5;  	// fading duration
 		public int sWaitTimeIn=10; 		// time to stay faded in
 		public int sWaitTimeOut=0; 		// time to stay faded out
-		public int mode=this.FADE_LOOP;
+		public int mode=FADE_LOOP;
 		
 		public int cColor;
 		public int cStep;
