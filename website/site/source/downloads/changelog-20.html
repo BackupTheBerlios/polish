@@ -122,8 +122,124 @@ rightcommand extends leftcommand
 		<li><b>+ Screen Orientation Change</b>: Devices that can change their screen orientation are now supported</li>
 		<li><b>+ Right Aligned Menubar</b>: On Nokia communicator the menubar is positioned on the right side of the screen</li>
 		<li><b>+ FilteredList/FilteredChoiceGroup</b>: the FilteredList and FilteredChoiceGroup allows you to narrow down searches by entering input</li>
+		<li><b>+ Animations</b>: improved animation handling, now only animated parts are refreshed in the next paint cycle</li>
+		<li><b>+ Predictive Text Input</b>: You can use predictive text input when setting both polish.TextField.useDirectInput and polish.TextField.usePredictiveInput to true in your build.xml:
+<pre>
+&lt;variables&gt;
+	&lt;variable name=&quot;polish.TextField.useDirectInput&quot; value==&quot;true&quot;/&gt;
+	&lt;variable name=&quot;polish.TextField.usePredictiveInput&quot; value==&quot;true&quot;/&gt;
+&lt;/variables&gt;
+</pre>		
+		</li>
+		<li><b>+ String[] Based Predictive Input</b>: When activating predictive input you can even limit input to a specified String array by using UiAccess:
+<pre>
+TextField field = new TextField(&quot;What do you target&quot;, null, 30, TextField.ANY);
+String[] allowedWords = new String[]{ &quot;J2ME&quot;, &quot;Java&quot;, &quot;Windows Mobile&quot;, &quot;Linux&quot;, &quot;OS X&quot; };
+UiAccess.setPredictiveDictionary( field, allowedWords)
+</pre>
+		 </li>
+		<li><b>+ Smiley Support</b>: you can now use the &quot;smiley&quot; text effect for showing smileys within StringItems and TextFields (more information to follow). </li>
+		<li><b>+ Various View Types</b>: added new view-types like <b>fisheye</b> for Lists or Containers, <b>gauge-cycling-spheres</b> for Gauges, <b>verticalfixed</b> for Forms and Lists and so on.</li>
+		<li><b>+ Resource Assembling</b>: you can now choose to include all subfolders but not the root directory itself. It's also possible to exclude files:
+<pre>
+&lt;resources
+	dir=&quot;resources&quot;
+	excludes=&quot;readme.txt&quot;
+&gt;
+	<b>&lt;root dir=&quot;resources/templates&quot; includeSubDirs=&quot;true&quot; includeBaseDir=&quot;false&quot; exclude=&quot;CVS&quot; /&gt;</b>
+&lt;/resources&gt;
+</pre>
+		</li>
+		<li><b>+ 'combined' Background</b>: combine any number of backgrounds using the <code>combined</code> background:
+<pre>
+
+backgrounds {
+	titleForeground {
+		type: polygon;
+		points: 10,50 50,10 90,50 50,90;
+		color: #00f;
+		scale-mode: proportional;
+		anchor: right | vcenter;
+	}
+	titleBackground {
+		type: combined;
+		foreground: titlePolygonLeft;
+		background: titleGradient;
+	}
+	
+	titlePolygonLeft {
+		type: polygon;
+		points: 10,50 50,10 90,50 50,90;
+		color: #00f;
+		scale-mode: proportional;
+		anchor: left | vcenter;
+	}
+	titleGradient {
+		type: vertical-gradient;
+		top-color: white;
+		bottom-color: blue;
+	}
+}
+
+title {
+	padding: 2;
+	margin-top: 0;
+	margin-bottom: 5;
+	margin-left: 0;
+	margin-right: 0;
+	font-face: proportional;
+	font-size: large;
+	font-style: bold;
+	font-color: brightFontColor;
+	border: none;
+	layout: horizontal-center | horizontal-expand;
+	
+	<b>background {
+		type: combined;
+		foreground: titleForeground;
+		background: titleBackground;
+	}</b>
+}
+
+</pre>
+		</li>
+		<li><b>'mask' Background</b>: You can bring any background in any shape and optionally make it 
+		translucent by using the <code>mask</code> background:
+<pre>
+
+backgrounds {
+	
+	maskBackground {
+		type: polygon;
+		points: 5,90 55,0 105,90 155,0 205,90;
+		reference-width: 210;
+		reference-height: 100;
+		scale-mode: scale;
+		color: maskColor;
+	}
+	
+	gradientBackground {
+		type: vertical-gradient;
+		top-color: white;
+		bottom-color: blue;
+	}
+	
+}
+menubar {
+	margin: 0;
+	padding-top: 3;
+	padding: 2;
+	<b>background {
+		type: mask;
+		mask: maskBackground;
+		mask-color: maskColor;
+		background: gradientBackground;
+		opacity: 150;
+	}</b>
+}
+</pre>
+		</li>
 		<!-- 
-		<li><b></b>: </li>
 		<li><b></b>: </li>
 		<li><b></b>: </li>
 		<li><b></b>: </li>

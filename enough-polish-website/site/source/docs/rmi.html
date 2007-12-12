@@ -177,24 +177,35 @@ this.server = (GameServer) RemoteClient.open(
 </pre>
 	</p>
 	<p>
-	You can now access the server just by calling the methods of the interface. Since the RMI framework accesses the server in a separate thread
-	in the default configuration, you can even access your server in the <code>commandAction()</code> method of your MIDlet without
-	causing a deadlock:
+	You can now access the server just by calling the methods of the interface. For avoiding deadlocks you should
+	call remote methods in a separate thread. You can use <code>de.enough.polish.event.ThreadedCommandListener</code> 
+	for doing calls in the <code>commandAction()</code> method itself:
 <pre>// an example for using the instantiated GameServer server within a MIDlet:
-public void commandAction( Command cmd, Displayable disp ) {
-	if (cmd == this.cmdRegisterUser) {
-		try {
-			String name = getRegistrationName();
-			String msisdn = getRegistrationMsisdn();
-			String password = getRegistrationPassword();
-			GameUser user =
-				this.server.registerUser( name, msisdn, password );
-			storeUser( user );
-			showRegistrationSuccessScreen( user );
-		} catch (RegistrationException e) {
-			showRegistrationFailureScreen( e );
-		} catch (RemoteException e) {
-			showCommunicationFailureScreen( e );
+import de.enough.polish.event.ThreadedCommandListener;
+import javax.microedition.lcdui.*;
+
+public class MyEventHandler 
+implements CommandListener
+{
+	public MyEventHandler( Screen screen ) {
+		screen.setCommandListener( new ThreadedCommandListener( this ) );
+	}
+	
+	public void commandAction( Command cmd, Displayable disp ) {
+		if (cmd == this.cmdRegisterUser) {
+			try {
+				String name = getRegistrationName();
+				String msisdn = getRegistrationMsisdn();
+				String password = getRegistrationPassword();
+				GameUser user =
+					this.server.registerUser( name, msisdn, password );
+				storeUser( user );
+				showRegistrationSuccessScreen( user );
+			} catch (RegistrationException e) {
+				showRegistrationFailureScreen( e );
+			} catch (RemoteException e) {
+				showCommunicationFailureScreen( e );
+			}
 		}
 	}
 }
@@ -456,9 +467,9 @@ INFO: Deploying web application archive gameserver.war
 		</li>
 		<li><b>Redirects</b>: By default the RMI framework is handling redirects automatically by using the
 		<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/io/RedirectHttpConnection.html">de.enough.polish.io.RedirectHttpConnection</a>.
-		If you server is directly accessible you can save this overhead by setting <code>polish.rmi.redirect</code> to <code>false</code>:
+		If you server is directly accessible you can save this overhead by setting <code>polish.rmi.redirects</code> to <code>false</code>:
 <pre>
-&lt;variable name=&quot;polish.rmi.redirect&quot; value=&quot;false&quot; /&gt;
+&lt;variable name=&quot;polish.rmi.redirects&quot; value=&quot;false&quot; /&gt;
 </pre>
 		</li>
 	</ul>
