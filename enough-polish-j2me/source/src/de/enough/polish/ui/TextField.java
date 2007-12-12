@@ -998,6 +998,12 @@ public class TextField extends StringItem
 			
 			//#style help?
 			this.helpItem = new StringItem("","");
+			this.helpItem.style.font = this.style.font;
+			
+			/*Font font = this.helpItem.getFont();
+			Font newFont = Font.getFont(font.getFace(), font.getStyle(), this.getFont().getSize());
+			
+			this.helpItem.setFont(newFont);*/
 			
 			//#ifdef polish.TextField.help:defined
 				//#= this.helpItem.setText("${polish.TextField.help}");
