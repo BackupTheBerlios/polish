@@ -29,21 +29,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Hashtable;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
 import de.enough.polish.io.RedirectHttpConnection;
-import de.enough.polish.io.Serializer;
 import de.enough.polish.io.xmlrpc.XmlRpcSerializer;
-import de.enough.polish.rmi.Remote;
 import de.enough.polish.rmi.RemoteClient;
 import de.enough.polish.rmi.RemoteException;
 import de.enough.polish.xml.XmlDomNode;
 import de.enough.polish.xml.XmlDomParser;
 
 /**
- * <p></p>
+ * <p>Allows to communicate with XML-RPC servers</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
@@ -56,12 +55,13 @@ public class XmlRpcRemoteClient extends RemoteClient
 {
 
 	/**
-	 * @param url
+	 * Creates a new XML-RPC client.
+	 * 
+	 * @param url the URL of the server
 	 */
 	public XmlRpcRemoteClient(String url)
 	{
 		super(url);
-		// TODO robertvirkus implement XmlRpcRemoteClient
 	}
 
 	/**
@@ -152,16 +152,21 @@ public class XmlRpcRemoteClient extends RemoteClient
 					byteOut.write(readBuffer, 0, read);
 				}
 				String response = new String( byteOut.toByteArray() );
-				System.out.println("got response=" + response);
 				XmlDomNode node = XmlDomParser.parseTree(response).getChild("methodResponse").getChild(0);
 				if (node.getName().equals("fault")) {
-					System.out.println("GOT FAULT: " + node.toString() ) ;
+					node = node.getChild("value");
+					Hashtable struct = (Hashtable) XmlRpcSerializer.deserialize(node);
+					int faultCode = -1;
+					Integer faultCodeInt = (Integer) struct.get( "faultCode");
+					if (faultCodeInt != null) {
+						faultCode = faultCodeInt.intValue();
+					}
+					String message = (String) struct.get( "faultString" );
+					throw new XmlRpcRemoteException( faultCode, message );
 				} else {
 					node = node.getChild("param").getChild("value");
 					return XmlRpcSerializer.deserialize(node);
 				}
-				
-				return response;
 			}
 		} catch (IOException e) {
 			// create new RemoteException for this:

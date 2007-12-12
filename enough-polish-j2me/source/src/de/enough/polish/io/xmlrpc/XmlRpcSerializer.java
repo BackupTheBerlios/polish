@@ -47,6 +47,12 @@ import de.enough.polish.xml.XmlDomNode;
  */
 public class XmlRpcSerializer
 {
+	/**
+	 * Serializes an object into an XML-RPC value
+	 * @param buffer a StringBuffer to which the value should be added
+	 * @param object the object that should be serialized
+	 * @throws IOException when the object could not get serialized
+	 */
 	public static void serialize( StringBuffer buffer, Object object ) 
 	throws IOException 
 	{
@@ -145,6 +151,12 @@ public class XmlRpcSerializer
 		}
 	}
 	
+	/**
+	 * Deserializes an XML-RPC value
+	 * @param node the XML DOM node that contains the value definition, e.g. <i4>12</i4>
+	 * @return the deserialized object
+	 * @throws IOException when the object could not get deserialized
+	 */
 	public static Object deserialize(XmlDomNode node) throws IOException {
 		XmlDomNode nextNode = node.getChild( 0 );
 		String nextElement = nextNode.getName();
@@ -193,7 +205,6 @@ public class XmlRpcSerializer
 			calendar.set( Calendar.MINUTE, minute );
 			calendar.set( Calendar.SECOND, seconds );
 			return  calendar;
-			//TODO parse dateTime
 		} else if (nextElement.equals("array")) {
 			XmlDomNode dataNode = nextNode.getChild("data");
 			Object[] results = new Object[dataNode.getChildCount()];
