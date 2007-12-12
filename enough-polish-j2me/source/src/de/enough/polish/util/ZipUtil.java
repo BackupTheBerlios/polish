@@ -24,11 +24,13 @@
  * http://www.j2mepolish.org for details.
  */
 package de.enough.polish.util;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import de.enough.polish.util.zip.*;
+import de.enough.polish.util.zip.GZipInputStream;
+import de.enough.polish.util.zip.GZipOutputStream;
 
 /**
  * <p></p>
