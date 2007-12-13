@@ -416,7 +416,7 @@ implements ItemStateListener //, CommandListener
 			item.select( selected );
 			
 			//#if !polish.ChoiceGroup.suppressMarkCommands
-				if (this.listType == MULTIPLE) {
+				if (this.listType == Choice.MULTIPLE) {
 					if (selected) {
 						item.addCommand(ChoiceGroup.MARK_COMMAND);
 						item.removeCommand(ChoiceGroup.UNMARK_COMMAND);

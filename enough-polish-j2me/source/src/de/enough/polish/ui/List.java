@@ -532,7 +532,7 @@ public class List extends Screen implements Choice
 		//#if polish.List.suppressCommands != true
 			if (number == 0) {
 				// the first item has been inserted:
-				if (this.listType == IMPLICIT && this.selectCommand != null ) {
+				if (this.listType == Choice.IMPLICIT && this.selectCommand != null ) {
 					//#if polish.List.suppressSelectCommand != true
 						addCommand( this.selectCommand );
 					//#endif
@@ -654,7 +654,7 @@ public class List extends Screen implements Choice
 	{
 		this.choiceGroup.delete(elementNum);
 		if (this.choiceGroup.size() == 0 ) {
-			if (this.listType == IMPLICIT && this.selectCommand != null ) {
+			if (this.listType == Choice.IMPLICIT && this.selectCommand != null ) {
 				super.removeCommand( this.selectCommand );
 			} else {
 				removeItemCommands(this.choiceGroup);
@@ -670,7 +670,7 @@ public class List extends Screen implements Choice
 	public void deleteAll()
 	{
 		this.choiceGroup.deleteAll();
-		if (this.listType == IMPLICIT && this.selectCommand != null) {
+		if (this.listType == Choice.IMPLICIT && this.selectCommand != null) {
 			super.removeCommand( this.selectCommand );
 		} else {
 			removeItemCommands(this.choiceGroup);
@@ -844,7 +844,7 @@ public class List extends Screen implements Choice
 	 */
 	public void setSelectCommand( Command command)
 	{
-		if (this.listType == IMPLICIT) {
+		if (this.listType == Choice.IMPLICIT) {
 			if (this.selectCommand != null) {
 				super.removeCommand( this.selectCommand );
 			}

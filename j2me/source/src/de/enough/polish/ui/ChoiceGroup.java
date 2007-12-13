@@ -604,7 +604,7 @@ implements Choice
 			item.setStyle( elementStyle );
 		}
 		int itemIndex = this.itemsList.size() - 1;
-		if (this.choiceType == EXCLUSIVE && item.isSelected) {
+		if (this.choiceType == Choice.EXCLUSIVE && item.isSelected) {
 			if (this.selectedIndex != -1) {
 				((ChoiceItem)get( this.selectedIndex )).select( false );
 			}
@@ -1339,7 +1339,7 @@ implements Choice
 				} else {
 					setSelectedIndex(this.focusedIndex, true);
 				}
-				if ( this.choiceType != IMPLICIT ) 
+				if ( this.choiceType != Choice.IMPLICIT ) 
 				{
 					notifyStateChanged();
 				}
@@ -1588,7 +1588,7 @@ implements Choice
 	 * @param cmd the new command for selecting this choice group
 	 */
 	public void setDefaultCommand(Command cmd) {
-		if (this.choiceType == MULTIPLE) {
+		if (this.choiceType == Choice.MULTIPLE) {
 			//#ifndef tmp.suppressMarkCommands
 				removeCommand( MARK_COMMAND );
 			//#endif
@@ -1715,7 +1715,7 @@ implements Choice
 					}
 				//#endif
 				//#if ! tmp.suppressSelectCommand && tmp.supportViewType
-					if (!this.isSelectCommandAdded && this.choiceType == EXCLUSIVE && this.containerView == null) {
+					if (!this.isSelectCommandAdded && this.choiceType == Choice.EXCLUSIVE && this.containerView == null) {
 						if (this.selectCommand != null) {
 							addCommand( this.selectCommand );
 						} else {
@@ -1727,7 +1727,7 @@ implements Choice
 			}
 		//#endif
 		//#ifndef tmp.suppressAllCommands
-		if (this.choiceType == MULTIPLE) {
+		if (this.choiceType == Choice.MULTIPLE) {
 			//#ifndef tmp.suppressMarkCommands
 				//#ifdef polish.i18n.useDynamicTranslations
 					String cmdLabel = Locale.get("polish.command.mark");
@@ -1742,7 +1742,7 @@ implements Choice
 				//addCommand( MARK_COMMAND );
 				//addCommand( UNMARK_COMMAND );
 			//#endif
-		} else if (this.choiceType == EXCLUSIVE){
+		} else if (this.choiceType == Choice.EXCLUSIVE){
 			//#if !tmp.suppressSelectCommand
 				//#if tmp.supportViewType
 					if (this.containerView == null) {
@@ -1792,7 +1792,7 @@ implements Choice
 		//#endif
 			if (this.focusedIndex != -1) {
 				setSelectedIndex( this.focusedIndex, true );
-				if ( (this.choiceType != IMPLICIT) 
+				if ( (this.choiceType != Choice.IMPLICIT) 
 						//#ifdef polish.usePopupItem
 						&& !(this.isPopup && !this.isPopupClosed)
 						//#endif
@@ -1821,7 +1821,7 @@ implements Choice
 		} else if (cmd == UNMARK_COMMAND ) {
 			if (this.focusedIndex != -1) {
 				setSelectedIndex( this.focusedIndex, false );
-				if ( (this.choiceType != IMPLICIT) 
+				if ( (this.choiceType != Choice.IMPLICIT) 
 						//#ifdef polish.usePopupItem
 						&& !(this.isPopup && !this.isPopupClosed)
 						//#endif
