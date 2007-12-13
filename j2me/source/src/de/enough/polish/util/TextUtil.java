@@ -1,4 +1,3 @@
-//#condition polish.midp || polish.usePolishGui || polish.usePolishGui
 
 /*
  * Created on 20-Apr-2004 at 01:30:49.
@@ -27,7 +26,9 @@
  */
 package de.enough.polish.util;
 
-import javax.microedition.lcdui.Font;
+//#if polish.midp || polish.usePolishGui
+	import javax.microedition.lcdui.Font;
+//#endif
 
 
 /**
@@ -117,6 +118,7 @@ public final class TextUtil {
 		return chunks;
 	}
 
+	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Wraps the given string so it fits on the specified lines.
 	 * First of al it is splitted at the line-breaks ('\n'), subsequently the substrings
@@ -133,7 +135,9 @@ public final class TextUtil {
 	public static String[] split( String value, Font font, int firstLineWidth, int lineWidth ) {
 		return wrap(value, font, firstLineWidth, lineWidth);
 	}
+	//#endif
 
+	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Wraps the given string so it fits on the specified lines.
 	 * First of al it is splitted at the line-breaks ('\n'), subsequently the substrings
@@ -205,7 +209,9 @@ public final class TextUtil {
 		System.out.println("Wrapped [" + value + "] into " + lines.size() + " rows.");
 		return (String[]) lines.toArray( new String[ lines.size() ]);
 	}
+	//#endif
 	
+	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Wraps the given string so that the substrings fit into the the given line-widths.
 	 * It is expected that the specified lineWidth >= firstLineWidth.
@@ -232,7 +238,9 @@ public final class TextUtil {
 	{
 		wrap(value, font, completeWidth, firstLineWidth, lineWidth, list);
 	}
+	//#endif
 	
+	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Wraps the given string so that the substrings fit into the the given line-widths.
 	 * It is expected that the specified lineWidth >= firstLineWidth.
@@ -330,6 +338,7 @@ public final class TextUtil {
 		}
 		*/
 	}
+	//#endif
 	
 //	 Unreserved punctuation mark/symbols
 
