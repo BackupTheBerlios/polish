@@ -560,6 +560,12 @@ public class GZipInputStream extends InputStream {
 		huffmanData=null;
 	} 
     
+    /**
+     * Checks if the current status is valid
+     * 
+     * @return -1 if the stream is finished, 1 if the current data is valid, 0 if not
+     * @throws IOException
+     */
     public int validData() throws IOException{
     	inflate();
     	if (this.status!=GZipInputStream.FINISHED){
