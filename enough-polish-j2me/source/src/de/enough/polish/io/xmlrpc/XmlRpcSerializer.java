@@ -33,6 +33,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import de.enough.polish.util.TextUtil;
+import de.enough.polish.util.base64.Base64;
 import de.enough.polish.xml.XmlDomNode;
 
 /**
@@ -108,6 +109,11 @@ public class XmlRpcSerializer
 			}
 			buffer.append(second);
 			buffer.append("</dateTime.iso8601>");
+		} else if (object instanceof byte[] ){
+			String value = Base64.encodeBytes( (byte[])object );
+			buffer.append("<base64>")
+				.append(value)
+				.append("</base64>");
 		} else if (object instanceof Vector) {
 			buffer.append("<array><data>");
 			Vector vector = (Vector)object;
@@ -205,6 +211,9 @@ public class XmlRpcSerializer
 			calendar.set( Calendar.MINUTE, minute );
 			calendar.set( Calendar.SECOND, seconds );
 			return  calendar;
+		} else if (nextElement.equals("base64")) {
+			String dataStr = nextNode.getText();
+			return Base64.decode(dataStr);
 		} else if (nextElement.equals("array")) {
 			XmlDomNode dataNode = nextNode.getChild("data");
 			Object[] results = new Object[dataNode.getChildCount()];
