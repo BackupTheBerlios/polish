@@ -143,7 +143,7 @@ public final class Serializer {
 	}
 	//#endif
 	
-	public Serializer() {
+	private Serializer() {
 		// no instantiation allowed
 	}
 	
