@@ -472,11 +472,24 @@ INFO: Deploying web application archive gameserver.war
 	<p>The rest of the usage is the same as for the default RMI usage - you define an interface and
 	get it using <code>RemoteClient.open(String interfaceClassName, String url )</code> in your J2ME client application.
 	</p>
+	<p>If the XML-RPC server uses dots in method names like <code>shop.addToCart</code> you can write 2 underline characters
+	instead of a dot in your interface definition, as Java does not allow dots in method names:
+	</p>
+<pre>
+public interface MyShop {
+	public boolean shop__addToChart( String order, int number )
+	throws RemoteException;
+}
+</pre>
+	<p>In case you don't want to use 2 underline characters you can specify your own dot-replacement string using the
+	<code>polish.rmi.xmlrpc.methodname.dot</code> preprocessing variable.
+	</p>
 	<p>
 	Since XML-RPC is very simple you can use any server side language
 	for implementing the server. Here are a couple of libraries for some languages:
 	</p>
 	<ul>
+		<li><b>.NET</b>: Use <a href="http://www.xml-rpc.net" target="_blank">XML-RPC.NET</a> for realizing a server with any .NET language like C# or VB.NET.</li>
 		<li><b>Perl</b>: <a href="http://search.cpan.org/~mkutter/SOAP-Lite/lib/XMLRPC/Lite.pm">XMLRPC::Lite</a> is a Perl implementation</li>
 		<li><b>PHP</b>: PHP contains an <a href="http://php.net/xmlrpc" target="_blank">experimental XML-RPC</a> library</li>
 		<li><b>Python</b>: The <a href="http://docs.python.org/lib/module-xmlrpclib.html" target="_blank">xmlrpclib</a> is part of Python.</li>
@@ -529,7 +542,7 @@ INFO: Deploying web application archive gameserver.war
 	that allows you to get more information about server errors:
 	</p>
 <pre>
-public interface TestServer {
+public interface TestServer extends Remote {
 	public Hashtable getValues( String userName, String password, int maxNumber )
 	throws RemoteException;
 }
@@ -579,6 +592,13 @@ public class TestClient {
 &lt;variable name=&quot;polish.rmi.xmlrpc&quot; value=&quot;true&quot; /&gt;
 </pre>
 		</li>
+		<li><b>XML-RPC Dot Replacement</b>: In case you don't want to use 2 underline characters for simulating dots in XML-RPC method 
+		names, you can specify your own dot-replacement string using the
+	<code>polish.rmi.xmlrpc.methodname.dot</code> preprocessing variable:
+<pre>
+&lt;variable name=&quot;polish.rmi.xmlrpc.methodname.dot&quot; value=&quot;_dot_&quot; /&gt;
+</pre>
+		</li>
 	</ul>
 	
 	<h2 id="troubleshooting">Troubleshooting</h2>
@@ -591,6 +611,8 @@ public class TestClient {
 	When there is no <i>dist/client-rmi-classes.jar</i> it means that J2ME Polish has not recognized that you have extended <code>Remote</code>.
 	Make sure that you have the line <code>extends Remote</code> in your code, so use an import statement for <code>de.enough.polish.rmi.Remote</code>
 	and leave a single space between <code>extends</code> and <code>Remote</code>.
+	<br />
+	Note that this file is not generated when you are accessing an XML-RPC server.
 	</p>
 	<h3 id="troubleshooting-obfuscation">Obfuscation Problems</h3>
 	<p>
@@ -626,6 +648,20 @@ public class TestClient {
 	<p>
 	The J2ME&nbsp;Polish RMI implementation is a proprietary mechanism optimized for the mobile environment.  It is not compatible with
 	the RMI mechanism of Java SE/EE.
+	</p>
+	
+	<h3 id="troubleshooting-xmlrpcdotsinmethodnames">Cannot Access XML-RPC Methods With a Dot in the Method Name</h3>
+	<p>If the XML-RPC server uses dots in method names like <code>shop.addToCart</code> you can write 2 underline characters
+	instead of a dot in your interface definition, as Java does not allow dots in method names:
+	</p>
+<pre>
+public interface MyShop {
+	public boolean shop__addToChart( String order, int number )
+	throws RemoteException;
+}
+</pre>
+	<p>In case you don't want to use 2 underline characters you can specify your own dot-replacement string using the
+	<code>polish.rmi.xmlrpc.methodname.dot</code> preprocessing variable.
 	</p>
 	<!-- 
 	<h3 id="troubleshooting-serialization fails">Serialization Fails</h3>
