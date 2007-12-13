@@ -417,15 +417,15 @@ public class OAIdentityHashMap
 			if (element != null) {
 				int index;
 				if (this.isPowerOfTwo) {
-					index = element.hashCode & (newCapacity - 1);
+					index = element.hashCodeValue & (newCapacity - 1);
 				} else {
-					index = element.hashCode % newCapacity;
+					index = element.hashCodeValue % newCapacity;
 				}
 				Element existingElement = newBuckets[ index ];
 				if (existingElement == null ) {
 					newBuckets[ index ] = element;
 				} else {
-					put( element, existingElement.key, existingElement.value, newBuckets, index, existingElement, element.hashCode );
+					put( element, existingElement.key, existingElement.value, newBuckets, index, existingElement, element.hashCodeValue );
 				}
 			}
 		}
@@ -434,10 +434,10 @@ public class OAIdentityHashMap
 
 	private static final class Element {
 		public final Object key;
-		public final int hashCode;
+		public final int hashCodeValue;
 		public Object value;
 		public Element ( int hashCode, Object key, Object value ) {
-			this.hashCode = hashCode;
+			this.hashCodeValue = hashCode;
 			this.key = key;
 			this.value = value;
 		}

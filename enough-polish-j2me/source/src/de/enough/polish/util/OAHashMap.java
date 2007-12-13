@@ -220,7 +220,7 @@ public class OAHashMap
 				elements[index] = element;
 				return null;
 			}
-			if ( newElement == null && element.hashCode == hashCode && element.key.equals( key )) {
+			if ( newElement == null && element.hashCodeValue == hashCode && element.key.equals( key )) {
 				Object oldValue = element.value;
 				element.value = value;
 				return oldValue;
@@ -263,7 +263,7 @@ public class OAHashMap
 			interval = 3;
 		}
 		while (true) {
-			if (element.hashCode == hashCode && element.key.equals( key )) {
+			if (element.hashCodeValue == hashCode && element.key.equals( key )) {
 				return element.value;
 			}
 			index += interval;
@@ -414,15 +414,15 @@ public class OAHashMap
 			if (element != null) {
 				int index;
 				if (this.isPowerOfTwo) {
-					index = element.hashCode & (newCapacity - 1);
+					index = element.hashCodeValue & (newCapacity - 1);
 				} else {
-					index = element.hashCode % newCapacity;
+					index = element.hashCodeValue % newCapacity;
 				}
 				Element existingElement = newBuckets[ index ];
 				if (existingElement == null ) {
 					newBuckets[ index ] = element;
 				} else {
-					put( element, existingElement.key, existingElement.value, newBuckets, index, existingElement, element.hashCode );
+					put( element, existingElement.key, existingElement.value, newBuckets, index, existingElement, element.hashCodeValue );
 				}
 			}
 		}
@@ -431,10 +431,10 @@ public class OAHashMap
 
 	private static final class Element {
 		public final Object key;
-		public final int hashCode;
+		public final int hashCodeValue;
 		public Object value;
 		public Element ( int hashCode, Object key, Object value ) {
-			this.hashCode = hashCode;
+			this.hashCodeValue = hashCode;
 			this.key = key;
 			this.value = value;
 		}

@@ -336,9 +336,9 @@ public class HashMap
 			while (element != null) {				
 				int index;
 				if (this.isPowerOfTwo) {
-					index = (element.hashCode & 0x7FFFFFFF) & (newCapacity - 1);
+					index = (element.hashCodeValue & 0x7FFFFFFF) & (newCapacity - 1);
 				} else {
-					index = (element.hashCode & 0x7FFFFFFF) % newCapacity;
+					index = (element.hashCodeValue & 0x7FFFFFFF) % newCapacity;
 				}
 				Element newElement = newBuckets[ index ];
 				if (newElement == null ) {
@@ -366,11 +366,11 @@ public class HashMap
 
 	private static final class Element {
 		public final Object key;
-		public final int hashCode;
+		public final int hashCodeValue;
 		public Object value;
 		public Element next;
 		public Element ( int hashCode, Object key, Object value ) {
-			this.hashCode = hashCode;
+			this.hashCodeValue = hashCode;
 			this.key = key;
 			this.value = value;
 		}
