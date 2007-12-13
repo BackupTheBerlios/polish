@@ -288,23 +288,23 @@ public class XmlPullParser implements SimplePullParser {
     private final int peekType() {
         switch (this.peek0) {
             case -1 :
-                return END_DOCUMENT;
+                return SimplePullParser.END_DOCUMENT;
             case '&' :
-                return ENTITY_REF;
+                return SimplePullParser.ENTITY_REF;
             case '<' :
                 switch (this.peek1) {
                     case '/' :
-                        return END_TAG;
+                        return SimplePullParser.END_TAG;
                     case '[' :
-                        return CDSECT;
+                        return SimplePullParser.CDSECT;
                     case '?' :
                     case '!' :
-                        return LEGACY;
+                        return SimplePullParser.LEGACY;
                     default :
-                        return START_TAG;
+                        return SimplePullParser.START_TAG;
                 }
             default :
-                return TEXT;
+                return SimplePullParser.TEXT;
         }
     }
 
@@ -505,9 +505,9 @@ public class XmlPullParser implements SimplePullParser {
 
         buf.append(" @" + this.line + ":" + this.column + ": ");
 
-        if (this.type == START_TAG || this.type == END_TAG) {
+        if (this.type == SimplePullParser.START_TAG || this.type == SimplePullParser.END_TAG) {
             buf.append('<');
-            if (this.type == END_TAG)
+            if (this.type == SimplePullParser.END_TAG)
                 buf.append('/');
 
             buf.append(this.name);
@@ -608,7 +608,7 @@ public class XmlPullParser implements SimplePullParser {
         {
       
         if (this.degenerated) {
-            this.type = END_TAG;
+            this.type = SimplePullParser.END_TAG;
             this.degenerated = false;
             this.depth--;
             return this.type;
@@ -626,46 +626,46 @@ public class XmlPullParser implements SimplePullParser {
 
             switch (this.type) {
 
-                case ENTITY_REF :
+                case SimplePullParser.ENTITY_REF :
                     this.isWhitespace &= pushEntity();
-                    this.type = TEXT;
+                    this.type = SimplePullParser.TEXT;
                     break;
 
-                case START_TAG :
+                case SimplePullParser.START_TAG :
                     parseStartTag();
                     break;
 
-                case END_TAG :
+                case SimplePullParser.END_TAG :
                     parseEndTag();
                     break;
 
-                case END_DOCUMENT :
+                case SimplePullParser.END_DOCUMENT :
                     break;
 
-                case TEXT :
+                case SimplePullParser.TEXT :
                     this.isWhitespace &= pushText('<');
                     break;
 
-                case CDSECT :
+                case SimplePullParser.CDSECT :
                     parseLegacy(true);
                     this.isWhitespace = false;
-                    this.type = TEXT;
+                    this.type = SimplePullParser.TEXT;
                     break;
 
                 default :
                     parseLegacy(false);
             }
         }
-        while (this.type > TEXT
-            || this.type == TEXT
-            && peekType() >= TEXT);
+        while (this.type > SimplePullParser.TEXT
+            || this.type == SimplePullParser.TEXT
+            && peekType() >= SimplePullParser.TEXT);
 
-        this.isWhitespace &= this.type == TEXT;
+        this.isWhitespace &= this.type == SimplePullParser.TEXT;
         
         }
         catch (IOException e)
         {
-          this.type = END_DOCUMENT;
+          this.type = SimplePullParser.END_DOCUMENT;
         }
         
         return this.type;
@@ -697,7 +697,7 @@ public class XmlPullParser implements SimplePullParser {
     public void require(int type, String name)
         throws IOException {
 
-        if (this.type == TEXT && type != TEXT && isWhitespace())
+        if (this.type == SimplePullParser.TEXT && type != SimplePullParser.TEXT && isWhitespace())
             next();
 
         if (type != this.type
@@ -723,7 +723,7 @@ public class XmlPullParser implements SimplePullParser {
 
     public String readText() throws IOException {
 
-        if (this.type != TEXT)
+        if (this.type != SimplePullParser.TEXT)
             return "";
 
         String result = getText();

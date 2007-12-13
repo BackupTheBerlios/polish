@@ -66,11 +66,11 @@ public class XmlDomParser
         int newType;
         
         try {
-            while ((parser.next()) != XmlPullParser.END_DOCUMENT) {
+            while ((parser.next()) != SimplePullParser.END_DOCUMENT) {
                 newName = parser.getName();
                 newType = parser.getType();
                 
-                if(newType == XmlPullParser.START_TAG) {
+                if(newType == SimplePullParser.START_TAG) {
                 	Hashtable attributes = null;
                 	int attributeCount = parser.getAttributeCount(); 
 
@@ -86,11 +86,11 @@ public class XmlDomParser
                     currentNode = newNode;
                 }
                 
-                else if(newType == XmlPullParser.END_TAG) {
+                else if(newType == SimplePullParser.END_TAG) {
                     currentNode = currentNode.getParent();
                 }
                 
-                else if(newType == XmlPullParser.TEXT) {
+                else if(newType == SimplePullParser.TEXT) {
                     String text = parser.getText();
                     currentNode.setText(text);
                 }
