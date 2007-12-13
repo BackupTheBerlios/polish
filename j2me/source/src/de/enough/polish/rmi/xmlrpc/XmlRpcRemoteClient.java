@@ -40,6 +40,7 @@ import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.io.xmlrpc.XmlRpcSerializer;
 import de.enough.polish.rmi.RemoteClient;
 import de.enough.polish.rmi.RemoteException;
+import de.enough.polish.util.TextUtil;
 import de.enough.polish.xml.XmlDomNode;
 import de.enough.polish.xml.XmlDomParser;
 
@@ -80,10 +81,15 @@ public class XmlRpcRemoteClient extends RemoteClient
 	protected Object callMethodSynchrone(String name, long primitivesFlag, Object[] parameters) throws RemoteException
 	{
 		// prepare call:
+		String dot = "__";
+		//#if polish.rmi.xmlrpc.methodname.dot:defined
+			//#= dot = "${polish.rmi.xmlrpc.methodname.dot}";
+		//#endif
+		name = TextUtil.replace(name, dot, ".");
 		StringBuffer methodBuffer = new StringBuffer();
 		methodBuffer.append("<?xml version=\"1.0\"?>")
-		.append("<methodCall>")
-		.append("<methodName>").append(name).append("</methodName>");
+			.append("<methodCall>")
+			.append("<methodName>").append(name).append("</methodName>");
 		if (parameters != null && parameters.length > 0) {
 			methodBuffer.append("<params>");
 			for (int i = 0; i < parameters.length; i++)
