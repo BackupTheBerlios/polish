@@ -4,7 +4,7 @@
 <%set basedir = ../ %>
 <%include start.txt %>
 	
-	<h1 id="top">Remote Method Invocation (RMI)</h1>
+	<h1 id="top">Remote Method Invocation (RMI) and XML-RPC</h1>
 	<ul class="relatedtechnologies">
 	<li class="relatedtechnologiesheader">Related Technologies:</li>
 	<li><a href="serialization.html">Serialization</a></li>
@@ -23,6 +23,10 @@
 	</p>
 	
 	<h2 id="overview">Overview</h2>
+	<p>
+	The J2ME&nbsp;Polish RMI implementation either uses a slim binary protocol or the <a href="#xmlrpc">XML-RPC</a> protocol for 
+	accessing server functionality from within your mobile application.
+	</p>
 	<p>It's very easy to use the RMI framework - here are the required steps. You will learn about them in detail in the following sections.
 	</p>
 	<ul>
@@ -33,10 +37,13 @@
 		</li>
 		<li><b>Implement the server</b>: Implement the server by extending 
 		<a href="<%= javadocdir %>../javadoc/build/de/enough/polish/rmi/RemoteHttpServlet.html">de.enough.polish.rmi.RemoteHttpServlet</a>
-		and implementing your server interface.</li>
+		and implementing your server interface - or implement an XML-RPC server using any programming language like PHP, Ruby or Perl.</li>
 		<li><b>Package and deploy</b>: Create a WAR file that contains your servlet and deploy it on your server.</li>
 		<li><b>Build and run your mobile application</b>: Create your application and run it, that's it!</li>
 	</ul>
+	<p>
+	You can also access an <a href="#xmlrpc">XML-RPC</a> server using this technology, see below for details.
+	</p>
 	<p>
 	You can also configure and tweak the RMI framework according to your needs. Now let's have a look at the details!
 	</p>
@@ -213,6 +220,9 @@ implements CommandListener
 	</p>
 	
 	<h2 id="implementingtheinterface">Implementing the Remote Interface In Your Server Application</h2>
+	<p>
+	Note: If you cannot use Java on your server, please have a look at the <a href="#xmlrpc">XML-RPC</a> section.
+	</p>
 	<p>
 	Now we can realize the server side funtionalities by implementing the defined Remote interface. For simple cases,
 	it is sufficient to extend Object, if you want to access HTTP sessions, you need to extend the 
@@ -450,26 +460,123 @@ INFO: Deploying web application archive gameserver.war
 	</p>
 	<p>Congratulations, you have now done all steps necessary for creating an application that interacts with your remote server!</p>
 	
+	<h2 id="xmlrpc">Accessing XML-RPC Servers</h2>
+	<p>
+	<a href="http://www.xmlrpc.com/" target="_blank">XML-RPC or XML-Remote Procedure Calls</a> is a specification 
+	that allows to make procedure calls using a simple XML notation over HTTP/HTTPS. You can activate XML-RPC usage
+	in J2ME&nbsp;Polish by specifying the <code>polish.rmi.xmlrpc</code> variable in your <i>build.xml</i> script:
+	</p>
+<pre>
+&lt;variable name=&quot;polish.rmi.xmlrpc&quot; value=&quot;true&quot; /&gt;
+</pre>
+	<p>The rest of the usage is the same as for the default RMI usage - you define an interface and
+	get it using <code>RemoteClient.open(String interfaceClassName, String url )</code> in your J2ME client application.
+	</p>
+	<p>
+	Since XML-RPC is very simple you can use any server side language
+	for implementing the server. Here are a couple of libraries for some languages:
+	</p>
+	<ul>
+		<li><b>Perl</b>: <a href="http://search.cpan.org/~mkutter/SOAP-Lite/lib/XMLRPC/Lite.pm">XMLRPC::Lite</a> is a Perl implementation</li>
+		<li><b>PHP</b>: PHP contains an <a href="http://php.net/xmlrpc" target="_blank">experimental XML-RPC</a> library</li>
+		<li><b>Python</b>: The <a href="http://docs.python.org/lib/module-xmlrpclib.html" target="_blank">xmlrpclib</a> is part of Python.</li>
+		<li><b>Ruby</b>: <a href="http://www.ntecs.de/projects/xmlrpc4r/" target="_blank">xmlrpc4r</a> provides Ruby support</li>
+		<li><b>Java</b>: We recommend using RMI when you have access to Java on your server, but you can use <a href="http://ws.apache.org/xmlrpc/" target="_blank">Apache XML-RPC</a>, for example.</li>
+		<!-- 
+		<li><b></b>: </li>
+		 -->
+	</ul>
+	<h3 id="xmlrpc-datatypes">Supported XML-RPC Data Types</h3>
+	<p>
+	XML-RPC defines some basic data types that can be exchanged - the following table lists the XML-RPC and the corresponding Java 
+	data types:
+	</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>XML-RPC&nbsp;&nbsp;</th><th>Java</th><th>Notes</th></tr>
+	<tr>
+		<td>&lt;i4&gt; or &lt;int&gt;</td><td>int</td><td>-</td>
+	</tr>
+	<tr>
+		<td>&lt;i8&gt;</td><td>long</td><td>A non standard extension for accomodating longs, do not use when the server cannot handle this.</td>
+	</tr>
+	<tr>
+		<td>&lt;double&gt;</td><td>double</td><td>Only available on CLDC 1.1 or when you are using the J2ME Polish Floater tool.</td>
+	</tr>
+	<tr>
+		<td>&lt;boolean&gt;</td><td>boolean</td><td>-</td>
+	</tr>
+	<tr>
+		<td>&lt;string&gt;</td><td>String</td><td>-</td>
+	</tr>
+	<tr>
+		<td>&lt;dateTime.iso8601&gt;</td><td>java.util.Calendar</td><td>Makes no assumptions about the timezone, for input/method parameters you can also use <code>java.util.Date</code>.</td>
+	</tr>
+	<tr>
+		<td>&lt;base64&gt;</td><td>byte[]</td><td>-</td>
+	</tr>
+	<tr>
+		<td>&lt;array&gt;</td><td>Object[]</td><td>Primitive arrays are not supported, for input/method parameters you can also use <code>java.util.Vector</code>.</td>
+	</tr>
+	<tr>
+		<td>&lt;struct&gt;</td><td>java.util.Hashtable</td><td>The Hashtable uses Strings for the keys.</td>
+	</tr>
+	</table>
+	
+	<h3 id="xmlrpc-exceptions">XML-RPC Exception Handling</h3>
+	<p>
+	Since XML-RPC only provides rudimentary exception handling, there is a specific 
+	<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/rmi/xmlrpc/XmlRpcRemoteException.html">XmlRpcRemoteException</a>
+	that allows you to get more information about server errors:
+	</p>
+<pre>
+public interface TestServer {
+	public Hashtable getValues( String userName, String password, int maxNumber )
+	throws RemoteException;
+}
+
+
+import de.enough.polish.rmi.xmlrpc.XmlRpcRemoteException;
+...
+public class TestClient {
+	private TestServer server;
+...
+
+	public Hashtable callRemoteServer() 
+	throws RemoteException
+	{
+		if (this.server == null) {
+			this.server = RemoteClient.open("TestServer", "http://myserver.com/test" );
+		}
+		try {
+			return this.server.getValues( "MyUserName", "secret", 100);
+		<b>} catch (XmlRpcRemoteException e) {
+			int errorCode = e.getFaultCode();
+			String message = e.getMessage();</b>
+			System.out.println("Server answered with error " + errorCode ": " + message );
+			throw e;
+		}
+	}
+}
+</pre>
+	
+	
 	<h2 id="configuration">Configuring the RMI Framework</h2>
 	<p>
 	The RMI framework can be tweaked towards your needs by setting preprocessing variables in the &lt;variables&gt; section of your
 	build.xml script.
 	</p>
 	<ul>
-		<li><b>Threading</b>: The RMI framework uses a separate thread for connecting to your server by default. This allows you to call
-		remote services without risking deadlocks in your application. However, when you are calling remote methods only in separate thread
-		anyhow, you save some overhead by disabling the default behavior. A separate thread means that you do not call remote methods within
-		the commandAction(), keyPressed() or similar event notification threads. Set the <code>polish.rmi.synchrone</code> variable to <code>true</code>, 
-		when the RMI framework should not use an additional thread:
-<pre>
-&lt;variable name=&quot;polish.rmi.synchrone&quot; value=&quot;true&quot; /&gt;
-</pre>
-		</li>
 		<li><b>Redirects</b>: By default the RMI framework is handling redirects automatically by using the
 		<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/io/RedirectHttpConnection.html">de.enough.polish.io.RedirectHttpConnection</a>.
 		If you server is directly accessible you can save this overhead by setting <code>polish.rmi.redirects</code> to <code>false</code>:
 <pre>
 &lt;variable name=&quot;polish.rmi.redirects&quot; value=&quot;false&quot; /&gt;
+</pre>
+		</li>
+		<li><b>XML-RPC Support</b>: To access XML-RPC servers instead of J2ME&nbsp;Polish RMI servers, you need to set the 
+		<code>polish.rmi.xmlrpc</code> variable to true:
+<pre>
+&lt;variable name=&quot;polish.rmi.xmlrpc&quot; value=&quot;true&quot; /&gt;
 </pre>
 		</li>
 	</ul>
@@ -487,14 +594,10 @@ INFO: Deploying web application archive gameserver.war
 	</p>
 	<h3 id="troubleshooting-obfuscation">Obfuscation Problems</h3>
 	<p>
-	Either your server or your client might not understand obfuscated class names. You will see a message like 
+	Either your server might not understand obfuscated class names. You will see a message like 
 	&quot;Class not found: a&quot; when this happens. The most common causes for this problem are the following:
 	</p>
 	<ul>
-		<li><b>Your server uses obfuscation but your client does not</b>: You might run into this problem,
-		when you enable obfuscation only for production, but not for testing. Check the &lt;obfuscator&gt; tag in your build.xml script,
-		does it use the <code>unless=&quot;test&quot;</code> setting? For a quick fix, just remove this setting (details follow below).
-		</li>
 		<li><b>You client uses obfuscation but your server does not know about it</b>: This can be a problem when you have deployed the server
 		at a time when you have never used obfuscation before. Check for the file <i>${project.home}/.polishSettings/obfuscation-map.txt</i>. This
 		should now exists - just rebuild and deploy your server again.
@@ -518,17 +621,11 @@ INFO: Deploying web application archive gameserver.war
 	<p>
 	Both goals are achieved with a obfuscation map, which is stored in <i>${project.home}/.polishSettings/obfuscation-map.txt</i>.
 	This obfuscation map translates any classnames to their obfuscated names, so that the server can understand the client. 
-	So if you want to test your server with an application client that does not use obfuscation, you need to do following things:
 	</p>
-	<ol>
-		<li>rename <i>${project.home}/.polishSettings/obfuscation-map.txt</i></li>
-		<li>disable the obfuscator in your build.xml script, if you haven't done so yet (add an <code>if=&quot;false&quot;</code>, for example)</li>
-		<li>build the client code by calling J2ME Polish</li>
-		<li>build and deploy the server</li>
-		<li>run the client application</li>
-	</ol>
+	<h3 id="troubleshooting-rmicompatibility">Cannot Access a Standard Java RMI Server</h3>
 	<p>
-	After you have finished your tests, make sure to rename the <i>obfuscation-map.txt</i> file again to <i>${project.home}/.polishSettings/obfuscation-map.txt</i>.
+	The J2ME&nbsp;Polish RMI implementation is a proprietary mechanism optimized for the mobile environment.  It is not compatible with
+	the RMI mechanism of Java SE/EE.
 	</p>
 	<!-- 
 	<h3 id="troubleshooting-serialization fails">Serialization Fails</h3>
@@ -537,9 +634,11 @@ INFO: Deploying web application archive gameserver.war
 	</p>
 	 -->
 	
-	<h2 id="sampleapp">RMI Sample Application</h2>
+	<h2 id="sampleapp">RMI Sample Applications</h2>
 	<p>
 	There is a sample application that demonstrates the usage of the RMI framework in <i>${polish.home}/samples/rmi</i>.
+	<br />
+	For a XML-RPC sample please look at <i>${polish.home}/samples/rmi-xmlrpc</i>.
 	</p>
 	
 </div>

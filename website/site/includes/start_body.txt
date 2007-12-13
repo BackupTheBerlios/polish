@@ -259,9 +259,9 @@
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/persistence.html">Persistence</a></div>
 			<%endif %>			
 			<%ifdef inDocumentationSection.rmi %>
-				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/rmi.html">RMI/RPC</a></div>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/rmi.html">RMI &amp; XML-RPC</a></div>
 			<%else %>
-				<div class="secondLevelLink"><a href="<%= basedir %>docs/rmi.html">RMI/RPC</a></div>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/rmi.html">RMI &amp; XML-RPC</a></div>
 			<%endif %>			
 			<%ifdef inDocumentationSection.build %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/build.html">Building</a></div>
