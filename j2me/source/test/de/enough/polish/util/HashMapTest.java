@@ -468,23 +468,23 @@ public class HashMapTest extends TestCase {
 		neededTime = System.currentTimeMillis() - time;
 		System.out.println("needed " + neededTime + "ms for extracting " + TEST_RUNS + " values from java.util.HashMap.");
 
-		Hashtable table = new Hashtable();
-		col = table.values();
-		values = col.toArray();
-		assertEquals( 0, values.length  );
-		for (int i = 0; i < TEST_RUNS; i++) {
-			Object key = this.integerKeys[i];
-			Object value = this.stringKeys[i];
-			table.put( key, value );
-		}
-		System.gc();
-		time = System.currentTimeMillis();
-		col = table.values();
-		values = col.toArray();
-		assertNotNull( values );
-		assertEquals( table.size(), values.length );
-		neededTime = System.currentTimeMillis() - time;
-		System.out.println("needed " + neededTime + "ms for extracting " + TEST_RUNS + " values from java.util.Hashtable.");
+//		Hashtable table = new Hashtable();
+//		col = table.values();
+//		values = col.toArray();
+//		assertEquals( 0, values.length  );
+//		for (int i = 0; i < TEST_RUNS; i++) {
+//			Object key = this.integerKeys[i];
+//			Object value = this.stringKeys[i];
+//			table.put( key, value );
+//		}
+//		System.gc();
+//		time = System.currentTimeMillis();
+//		col = table.values();
+//		values = col.toArray();
+//		assertNotNull( values );
+//		assertEquals( table.size(), values.length );
+//		neededTime = System.currentTimeMillis() - time;
+//		System.out.println("needed " + neededTime + "ms for extracting " + TEST_RUNS + " values from java.util.Hashtable.");
 	}
 	
 }

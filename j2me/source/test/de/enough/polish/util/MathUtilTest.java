@@ -33,19 +33,19 @@ public class MathUtilTest extends TestCase {
 		super(name);
 	}
 	
-	public void testDoubleRound() {
-		for (int i = 0; i < 360; i++) {
-			double d = java.lang.Math.sin(i);
-			assertEquals( java.lang.Math.round(d), MathUtil.round(d) );
-		}		
-	}
-
-	public void testFloatRound() {
-		for (int i = 0; i < 360; i++) {
-			float f = (float) java.lang.Math.sin(i);
-			assertEquals( java.lang.Math.round(f), MathUtil.round(f) );
-		}		
-	}
+//	public void testDoubleRound() {
+//		for (int i = 0; i < 360; i++) {
+//			double d = java.lang.Math.sin(i);
+//			assertEquals( java.lang.Math.round(d), MathUtil.round(d) );
+//		}		
+//	}
+//
+//	public void testFloatRound() {
+//		for (int i = 0; i < 360; i++) {
+//			float f = (float) java.lang.Math.sin(i);
+//			assertEquals( java.lang.Math.round(f), MathUtil.round(f) );
+//		}		
+//	}
 	
 	public void testApxSin() {
 		for (int i = -2000; i < 1400; i++) {
