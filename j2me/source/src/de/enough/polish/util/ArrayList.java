@@ -421,14 +421,14 @@ implements Externalizable
 	 * @throws NullPointerException when the specified list is null
 	 */
 	public void addAll(ArrayList list) {
-		int addedSize = this.size + list.size;
+		int addedSize = this.size + list.size();
 		if (addedSize > this.storedObjects.length) {
 			Object[] newStore = new Object[ addedSize ];
 			System.arraycopy( this.storedObjects, 0, newStore, 0, this.size );
-			System.arraycopy( list.storedObjects, 0, newStore, this.size, list.size );
+			System.arraycopy( list.storedObjects, 0, newStore, this.size, list.size() );
 			this.storedObjects = newStore;
 		} else {
-			System.arraycopy( list.storedObjects, 0, this.storedObjects, this.size, list.size );
+			System.arraycopy( list.storedObjects, 0, this.storedObjects, this.size, list.size() );
 		}
 		this.size = addedSize;		
 	}
