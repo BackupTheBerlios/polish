@@ -77,11 +77,11 @@ public class Base64
     
     
     /** The equals sign (=) as a byte. */
-    private final static byte EQUALS_SIGN = (byte)'=';
+    private final static int EQUALS_SIGN = '=';
     
     
     /** The new line character (\n) as a byte. */
-    protected final static byte NEW_LINE = (byte)'\n';
+    protected final static int NEW_LINE = '\n';
     
     
     /** Preferred encoding. */
@@ -469,8 +469,16 @@ public class Base64
         }   // end switch
     }   // end encode3to4
     
+    /**
+     * Encodes the specified string in base64 notation
+     * @param data the data in String format
+     * @return the encoded data in String format
+     */
+    public static String encode( String data ) {
+    	return encodeBytes( data.getBytes() );
+    }
     
-
+ 
     /**
      * Encodes a byte array into Base64 notation.
      *
@@ -563,7 +571,7 @@ public class Base64
                 e++;
                 lineLength = 0;
             }   // end if: end of line
-        }   // en dfor: each piece of array
+        }   // end for: each piece of array
 
         if( d < len )
         {

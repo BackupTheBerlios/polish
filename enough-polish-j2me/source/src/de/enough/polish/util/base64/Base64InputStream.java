@@ -192,4 +192,68 @@ public class Base64InputStream extends InputStream
            return i;
        }   // end read
 
+
+   	/* (non-Javadoc)
+   	 * @see java.io.InputStream#read(byte[])
+   	 */
+   	public int read(byte[] data) throws IOException
+   	{
+   		return read( data, 0, data.length );
+   	}
+
+	/* (non-Javadoc)
+	 * @see java.io.InputStream#available()
+	 */
+	public int available() throws IOException
+	{
+		return 0;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.io.InputStream#close()
+	 */
+	public void close() throws IOException
+	{
+		this.in.close();
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.io.InputStream#mark(int)
+	 */
+	public void mark(int readLimit)
+	{
+		// ignore
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.io.InputStream#markSupported()
+	 */
+	public boolean markSupported()
+	{
+		return false;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.io.InputStream#reset()
+	 */
+	public void reset() throws IOException
+	{
+		throw new IOException();
+	}
+
+
+	/* (non-Javadoc)
+	 * @see java.io.InputStream#skip(long)
+	 */
+	public long skip(long n) throws IOException
+	{
+		return this.in.skip(n);
+	}
+       
+       
+
 }

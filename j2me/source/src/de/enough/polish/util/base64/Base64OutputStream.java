@@ -40,14 +40,14 @@ import java.io.OutputStream;
  */
 public class Base64OutputStream extends OutputStream
 {
-	private static final int     bufferLength = 4;
+	private static final int     BUFFER_LENGTH = 3;
     private int     position;
     private byte[]  buffer;
     private int     lineLength;
     private boolean breakLines;
     private byte[]  b4; // Scratch used in a few places
     private boolean suspendEncoding;
-	private byte[]  decodabet;		// Local copies to avoid extra method calls
+	private byte[]  alphabet;		// Local copies to avoid extra method calls
 	private OutputStream out;
     
     /**
@@ -85,12 +85,12 @@ public class Base64OutputStream extends OutputStream
         super();
 		this.out = out;
         this.breakLines   = (options & Base64.DONT_BREAK_LINES) != Base64.DONT_BREAK_LINES;
-        this.buffer       = new byte[ bufferLength ];
+        this.buffer       = new byte[ BUFFER_LENGTH ];
         this.position     = 0;
         this.lineLength   = 0;
         this.suspendEncoding = false;
         this.b4           = new byte[4];
-		this.decodabet    = Base64.getDecodabet(options);
+		this.alphabet    = Base64.getAlphabet(options);
     }   // end constructor
     
     
@@ -112,11 +112,12 @@ public class Base64OutputStream extends OutputStream
         {
             this.out.write( theByte );
             return;
-        }   // end if: supsended
+        }   // end if: suspended
         this.buffer[ this.position++ ] = (byte)theByte;
-        if( this.position >= bufferLength )  // Enough to encode.
+        if( this.position >= BUFFER_LENGTH )  // Enough to encode.
         {
-            this.out.write( Base64.encode3to4( this.b4, this.buffer, bufferLength, this.decodabet ) );
+        	byte[] data = Base64.encode3to4( this.b4, this.buffer, BUFFER_LENGTH, this.alphabet );
+            this.out.write( data );
 
             this.lineLength += 4;
             if( this.breakLines && this.lineLength >= Base64.MAX_LINE_LENGTH )
@@ -146,7 +147,7 @@ public class Base64OutputStream extends OutputStream
         {
             this.out.write( theBytes, off, len );
             return;
-        }   // end if: supsended
+        }   // end if: suspended
         
         for( int i = 0; i < len; i++ )
         {
@@ -173,11 +174,22 @@ public class Base64OutputStream extends OutputStream
     {
         if( this.position > 0 )
         {
-            this.out.write( Base64.encode3to4( this.b4, this.buffer, this.position, this.decodabet ) );
+            this.out.write( Base64.encode3to4( this.b4, this.buffer, this.position, this.alphabet ) );
             this.position = 0;
         }   // end if: buffer partially full
 
     }   // end flush
+
+
+	/* (non-Javadoc)
+	 * @see java.io.OutputStream#flush()
+	 */
+	public void flush() throws IOException
+	{
+		flushBase64();
+		this.out.flush();
+	}
+
 
     
     /** 
@@ -222,15 +234,4 @@ public class Base64OutputStream extends OutputStream
         this.suspendEncoding = false;
     }   // end resumeEncoding
 
-
-	/* (non-Javadoc)
-	 * @see java.io.OutputStream#flush()
-	 */
-	public void flush() throws IOException
-	{
-		this.out.flush();
-	}
-
-
-	
 }
