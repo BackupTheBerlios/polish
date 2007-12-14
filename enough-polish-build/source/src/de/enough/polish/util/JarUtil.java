@@ -339,17 +339,9 @@ public final class JarUtil {
 			JarEntry entry = (JarEntry) enumeration.nextElement();
 			String name = entry.getName();
 			if (name.endsWith(".class")) {
-				int endPos = name.lastIndexOf('/');
-				boolean isWindows = false;
-				if (endPos == -1) {
-					endPos = name.lastIndexOf('\\');
-					isWindows = true;
-				}
+				int endPos = name.lastIndexOf(File.separatorChar);
 				name = name.substring( 0, endPos );
-				name = name.replace('/', '.');
-				if (isWindows) {
-					name = name.replace('\\', '.');
-				}
+				name = name.replace(File.separatorChar, '.');
 				packageNames.put( name, name );
 			}
 		}
