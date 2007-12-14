@@ -108,7 +108,10 @@ public class Style {
 	 * @param parent the parent of this style.
 	 */
 	public void setParent( Style parent ) {
-		//System.out.println("setting parent [" + parent.getSelector() + "] for style [" + this.selector + "].");
+//		if (this.selector.startsWith("rolldown")) {
+//			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//			System.out.println("setting parent [" + parent.getSelector() + "] for style [" + this.selector + "].");
+//		}
 		// set the standard properties:
 		Set set = parent.properties.keySet();
 		for (Iterator iter = set.iterator(); iter.hasNext();) {
@@ -121,24 +124,39 @@ public class Style {
 		String[] groupNames = parent.getGroupNames();
 		for (int i = 0; i < groupNames.length; i++) {
 			String groupName = groupNames[i];
-			//System.out.println("group-name=" + groupName);
+//			if (this.selector.startsWith("rolldown")) {
+//				System.out.println("group-name=" + groupName);
+//			}
 			// check for cases, in which a style extends another style which uses this style as its focused style:
 			HashMap parentGroup = parent.getGroup(groupName);
 			String referencedStyleName = (String) parentGroup.get("style");
 			if (referencedStyleName != null) {
-				//System.out.println("detected style reference in CSS attribute: " + parentGroup + ", child.selector=" + this.selector );
+//				System.out.println("detected style reference in CSS attribute: " + parentGroup + ", child.selector=" + this.selector + ", referencedStyleName.toLowerCase()=" + referencedStyleName.toLowerCase() + ", parent.selector=" + parent.selector);
 				if (referencedStyleName.startsWith(".")) {
 					referencedStyleName = referencedStyleName.substring(1);
 				}
-				if ( referencedStyleName.toLowerCase().startsWith( parent.selector) 
-						|| this.selector.equalsIgnoreCase( referencedStyleName )) 
+				
+				if ( 	// first test: this is the easy case: I am referencing myself - don't do this!
+						this.selector.equalsIgnoreCase( referencedStyleName ) 
+						||
+						// second test: check if we have the same parent and I (=this style) am referenced by my parent,
+						// if both is true then we have found a circular reference:
+						    // Same parent: fake test by comparing name:
+						(   referencedStyleName.toLowerCase().startsWith( parent.selector)
+							// check if parent references me:
+							&&  parent.referencesStyle( this.selector )
+						)
+						 
+						) 
 				{
 					//System.out.println("!!!found style circular reference in child style " + this.selector + ", affected referenced style=" + referencedStyleName + ", parent=" + parent.selector);
 					if (parentGroup.size() == 1) {
+//						System.out.println("parent size == 1");
 						// this is just a focused-style: thisStyle reference - ignore
 						// and continue with rest:
 						continue;
 					} else {
+//						System.out.println("removing focused-style reference");
 						// there is more than the "style" attribute in the "focused" group,
 						// so remove
 						HashMap parentGroupCopy = new HashMap( parentGroup.size() );
@@ -174,6 +192,36 @@ public class Style {
 				}
 			}
 		}
+//		if (this.selector.startsWith("rolldown")) {
+//			System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+//		}
+	}
+
+	/**
+	 * Checks if the specified style is referenced by this style
+	 * @param styleSelector the selector of the possibly referenced style
+	 * @return true when it is referenced
+	 */
+	public boolean referencesStyle(String styleSelector)
+	{
+		String[] names = getGroupNames();
+		for (int i = 0; i < names.length; i++)
+		{
+			String name = names[i];
+			Map group = getGroup(name);
+			String styleReference = (String) group.get("style");
+			if (styleReference != null) {
+				if (styleReference.charAt(0) == '.') {
+					styleReference = styleReference.substring(1); 
+				}
+			}
+			if (styleSelector.equalsIgnoreCase(styleReference)) {
+//				System.out.println(">>> " + this.selector + " references style " + styleSelector);
+				return true;
+			}
+		}
+//		System.out.println(this.selector + " does NOT reference style " + styleSelector);
+		return false;
 	}
 
 	/**
