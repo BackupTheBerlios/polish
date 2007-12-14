@@ -78,7 +78,7 @@ public class RmiFinalizer extends Finalizer {
 							Map sourceFilesByNameMap = (Map) this.environment.get("polish.sourcefiles.byClassName");
 							if (sourceFilesByNameMap == null) {
 								sourceFilesByNameMap = buildSourceFilesByNameMap();
-									this.environment.set("polish.sourcefiles.byClassName", sourceFilesByNameMap );
+								this.environment.set("polish.sourcefiles.byClassName", sourceFilesByNameMap );
 							}
 							Map obfuscationMap = FileUtil.readProperties( obfuscationMapFile );
 							Object[] keys = obfuscationMap.keySet().toArray();
