@@ -1516,7 +1516,7 @@ implements Choice
 		int index = this.focusedIndex;
 		boolean handled = super.handlePointerPressed(relX, relY); // focuses the appropriate item
 		if (! this.isMultiple 
-				&& (handled || isInItemArea(relX, relY))
+				&& (handled || isInItemArea(relX, relY, this.focusedItem))
 				//#if polish.css.view-type
 				&& (index == this.focusedIndex || this.containerView == null || this.containerView.allowsDirectSelectionByPointerEvent) 
 				//#endif
