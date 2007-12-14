@@ -27,9 +27,6 @@
  */
 package de.enough.polish.ui;
 
-import java.io.IOException;
-
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -93,9 +90,13 @@ public class ScrollBar extends Item {
 	//#if polish.css.scrollbar-slider-mode
 		protected int sliderMode = MODE_PAGE;
 	//#endif
+	protected boolean hideSlider = true;
 	protected int sliderY;
 	protected int sliderHeight;
 	protected int scrollBarHeight;
+	//#if polish.css.opacity && polish.midp2
+		private int startOpacity;
+	//#endif
 	private boolean isVisible;
 
 	/**
@@ -134,6 +135,8 @@ public class ScrollBar extends Item {
 			this.isVisible = false;
 			return 0;
 		}
+		int lastSliderY = this.sliderY;
+		int lastSliderHeight = this.sliderHeight;
 		this.isVisible = true;
 		this.scrollBarHeight = screenAvailableHeight;
 		//#if polish.css.scrollbar-slider-mode
@@ -170,23 +173,65 @@ public class ScrollBar extends Item {
 		if (!this.isInitialized) {	
 			init( screenWidth, screenWidth );
 		}
+		//#if polish.css.opacity && polish.midp2
+			if (lastSliderY != this.sliderY || lastSliderHeight != this.sliderHeight) {
+				this.opacityRgbData = null;
+				this.opacity = this.startOpacity;
+			}
+		//#endif
 		return this.itemWidth;
+	}
+	
+	/**
+	 * Resets the animation status - when the opcaity is defined, it will be set to the start opacity again
+	 *
+	 */
+	public void resetAnimation() {
+		//#if polish.css.opacity && polish.midp2
+			this.opacity = this.startOpacity;
+		//#endif
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#animate()
+	 */
+	public boolean animate()
+	{
+		boolean animated = false;
+		//#if polish.css.opacity && polish.midp2
+			int[] rgbData = this.opacityRgbData;
+			if (rgbData != null && this.opacity >= 0)  {
+				this.opacity -= 10;
+				if (this.opacity <= 0) {
+					this.opacity = 0;
+				} else {
+					int alpha = (this.opacity << 24) ;
+					for (int i = 0; i < rgbData.length; i++)
+					{
+						rgbData[i] = rgbData[i] & 0x00ffffff | alpha;
+					}
+				}
+				animated = true;
+			}
+		//#endif
+		return animated | super.animate();
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
-		//#if polish.css.scrollbar-slider-image
-			if (this.sliderImage != null) {
-				this.contentWidth = this.sliderImage.getWidth();
-			} else {
-		//#endif
-				this.contentWidth = this.sliderWidth;
-		//#if polish.css.scrollbar-slider-image
-			}
-		//#endif
+//		//#if polish.css.scrollbar-slider-hide
+//			if (!this.hideSlider) {
+//			} else {
+//				this.contentHeight = 0;
+//				this.contentWidth = 0;
+//			}
+//		//#endif
+		this.contentWidth = this.sliderWidth;
 		this.contentHeight = this.scrollBarHeight - ( this.paddingTop + this.paddingBottom + this.marginTop + this.marginBottom + (this.borderWidth << 1));
+
 	}
 
 	/* (non-Javadoc)
@@ -194,8 +239,17 @@ public class ScrollBar extends Item {
 	 */
 	public void paint(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (!this.isVisible) {
+			//System.out.println("scrollbar is not visible - aborting paint");
 			return;
 		}
+		//System.out.println("painting scrollbar at y=" + y + " width=" + this.itemWidth + ", height=" + this.itemHeight + " pixel=" + Integer.toHexString( this.opacityRgbData[ this.itemWidth * this.itemHeight / 2] ) ) ;
+		//#if polish.css.scrollbar-slider-hide
+			if (this.hideSlider) {
+		//#endif
+				//x -= this.itemWidth;
+		//#if polish.css.scrollbar-slider-hide
+			}
+		//#endif
 		super.paint(x, y, leftBorder, rightBorder, g);
 	}
 
@@ -219,8 +273,9 @@ public class ScrollBar extends Item {
 				//#endif
 			} else {
 		//#endif
+				//System.out.println("Painting slider at " + x + "," + (y + this.sliderY) + ", width=" + this.sliderWidth + ", height=" + this.sliderHeight);
 				g.setColor( this.sliderColor );
-				g.fillRect(x, y + this.sliderY, this.contentWidth, this.sliderHeight);
+				g.fillRect(x, y + this.sliderY, this.sliderWidth, this.sliderHeight);
 		//#if polish.css.scrollbar-slider-image
 			}
 		//#endif
@@ -246,7 +301,8 @@ public class ScrollBar extends Item {
 			if (url != null) {
 				try {
 					this.sliderImage = StyleSheet.getImage(url, url, false);
-				} catch (IOException e) {
+					this.sliderWidth = this.sliderImage.getWidth();
+				} catch (Exception e) {
 					//#debug error
 					System.out.println("Unable to load scrollbar slider image " + url + e );
 				}
@@ -275,6 +331,12 @@ public class ScrollBar extends Item {
 			Integer sliderModeInt = style.getIntProperty("scrollbar-slider-mode");
 			if (sliderModeInt != null) {
 				this.sliderMode = sliderModeInt.intValue();
+			}
+		//#endif
+		//#if polish.css.opacity && polish.midp2
+			Integer opacityInt = style.getIntProperty("opacity");
+			if (opacityInt != null) {
+				this.startOpacity = opacityInt.intValue();
 			}
 		//#endif
 	}

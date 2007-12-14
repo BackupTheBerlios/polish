@@ -773,7 +773,7 @@ implements AccessibleCanvas
 						if (containerHeight > height) {
 							//System.out.println("calculateContentArea for" + this + ": scrollBar is required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
 							width -= scrollBarWidth;
-						} else {
+						} else if (scrollBarWidth != 0) {
 							//System.out.println("calculateContentArea for" + this + ": scrollBar is NOT required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
 							this.container.requestFullInit();
 						}
@@ -1328,6 +1328,9 @@ implements AccessibleCanvas
 					if (ScreenInfo.item != null && ScreenInfo.isVisible()) {
 						ScreenInfo.item.animate( currentTime, repaintRegion );
 					}
+				//#endif
+				//#if tmp.useScrollBar
+					this.scrollBar.animate(currentTime, repaintRegion); 
 				//#endif
 			} catch (Exception e) {
 				//#debug error
@@ -2391,6 +2394,11 @@ implements AccessibleCanvas
 					}
 				//#endif
 				if (processed) {
+					//#if tmp.useScrollBar
+						if (gameAction == Canvas.UP || gameAction == Canvas.DOWN) {
+							this.scrollBar.resetAnimation();
+						}
+					//#endif
 					notifyScreenStateChanged();
 					repaint();
 				}
