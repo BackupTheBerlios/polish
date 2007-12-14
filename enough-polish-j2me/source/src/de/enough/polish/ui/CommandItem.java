@@ -30,6 +30,7 @@ import java.io.IOException;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -514,7 +515,11 @@ public class CommandItem extends IconItem {
 			}
 			if (this.hasChildren && this.childIndicator == null) {
 		//#endif			
-				this.childIndicatorWidth = this.childIndicatorHeight;
+				// use font height for the child indicator width and height
+				if (this.font == null) {
+					this.font = Font.getDefaultFont();
+				}
+				this.childIndicatorWidth = this.font.getHeight();
 				this.childIndicatorHeight = this.childIndicatorWidth;
 		//#if polish.css.command-child-indicator
 			}
