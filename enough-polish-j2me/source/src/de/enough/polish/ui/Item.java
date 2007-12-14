@@ -705,6 +705,7 @@ public abstract class Item extends Object
 	protected int internalWidth;
 	/** The internal height of this item's content.  */
 	protected int internalHeight;
+	/** flag indicating whether this item is focused */
 	public boolean isFocused;
 	
 	//#ifdef polish.css.before
@@ -731,6 +732,7 @@ public abstract class Item extends Object
 		public boolean _bbFieldAdded;
 	//#endif
 	protected Style focusedStyle;
+	protected boolean isPressed;
 	//#if polish.css.pressed-style
 		private Style pressedStyle;
 		private Style normalStyle;
@@ -761,8 +763,11 @@ public abstract class Item extends Object
 	protected boolean isShown;
 	private HashMap attributes;
 
-	protected boolean isPressed;
-
+	//#if polish.css.opacity && polish.midp2
+		protected int opacity = 255;
+		protected int[] opacityRgbData;
+		protected boolean opacityPaintNormally;
+	//#endif
 	private ItemStateListener itemStateListener;
 
 	
@@ -1107,6 +1112,12 @@ public abstract class Item extends Object
 		//#ifdef polish.css.view-type
 			if (this.view != null) {
 				this.view.setStyle(style);
+			}
+		//#endif
+		//#if polish.css.opacity && polish.midp2
+			Integer opacityInt = style.getIntProperty("opacity");
+			if (opacityInt != null) {
+				this.opacity = opacityInt.intValue();
 			}
 		//#endif
 	}
@@ -1683,6 +1694,26 @@ public abstract class Item extends Object
 			//#endif
 			init( rightBorder - x, availableWidth );
 		}
+		//#if polish.css.opacity && polish.midp2
+			if (this.opacity != 255 && !this.opacityPaintNormally) {
+				if (this.opacity == 0) {
+					return;
+				}
+				int[] rgbData = this.opacityRgbData;
+				if ( rgbData == null ) {
+					this.opacityPaintNormally = true;
+					rgbData = UiAccess.getRgbData( this, this.opacity );
+					this.opacityRgbData = rgbData;
+					this.opacityPaintNormally = false;
+				} 
+				//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));
+				g.drawRGB(rgbData, 0,this.itemWidth, x, y, this.itemWidth, this.itemHeight, true );
+				return;
+			}
+		//#endif
+	
+
+		
 		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
 
 		// paint background and border when the label should be included in this:
@@ -2097,6 +2128,9 @@ public abstract class Item extends Object
 				this.itemHeight = 0;
 			}
 		//#endif
+		//#if polish.css.opacity && polish.midp2
+			this.opacityRgbData = null;
+		//#endif
 		this.isInitialized = true;
 		//#debug
 		System.out.println("Item.init(): contentWidth=" + this.contentWidth + ", itemWidth=" + this.itemWidth + ", backgroundWidth=" + this.backgroundWidth);
@@ -2369,6 +2403,25 @@ public abstract class Item extends Object
 		//#debug
 		System.out.println("isInItemArea(" + relX + "," + relY + ") = true: itemWidth=" + this.itemWidth + ", itemHeight=" + this.itemHeight + " (" + this + ")");
 		return true;
+	}
+	
+	/**
+	 * Determines whether the given relative x/y position is inside of the specified child item's area including paddings, margins and label.
+	 * Subclasses which extend their area over the declared/official content area, which is determined
+	 * in the initContent() method (like popup items), might want to override this method.
+	 * It is assumed that the item has been initialized before.
+	 * 
+	 * @param relX the x position relative to this item's left position
+	 * @param relY the y position relative to this item's top position
+	 * @param child the child
+	 * @return true when the relX/relY coordinate is within the child item's area.
+	 */
+	public boolean isInItemArea( int relX, int relY, Item child ) {
+		if (child != null) {
+			return child.isInItemArea(relX - child.relativeX, relY - child.relativeY);
+		}
+		return false;
+		
 	}
 	
 	//#ifdef polish.hasPointerEvents
