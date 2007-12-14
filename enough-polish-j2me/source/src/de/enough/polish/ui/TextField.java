@@ -997,9 +997,10 @@ public class TextField extends StringItem
 		//#if polish.TextField.showHelpText
 			
 			//#style help?
-			this.helpItem = new StringItem("","");
-			this.helpItem.style.font = this.style.font;
-			
+			this.helpItem = new StringItem(null,null);
+			if (style != null && this.helpItem.style != null) {
+				this.helpItem.style.font = style.font;
+			}
 			/*Font font = this.helpItem.getFont();
 			Font newFont = Font.getFont(font.getFace(), font.getStyle(), this.getFont().getSize());
 			

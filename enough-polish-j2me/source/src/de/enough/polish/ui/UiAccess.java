@@ -2415,13 +2415,55 @@ public final class UiAccess {
 	//#endif
 	
 	//#if polish.midp
+	/**
+	 * Retrieves the RGB data of the specified item.
+	 * This method only works on MIDP 2.0+ devices.
+	 * 
+	 * @param item the item
+	 * @return the RGB data as an int array.
+	 */
 	public static int[] getRgbData( javax.microedition.lcdui.Item item ) {
+		return null;
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Retrieves the RGB data of the specified item.
+	 * This method only works on MIDP 2.0+ devices.
+	 * 
+	 * @param item the item
+	 * @param opacity The opacity of the item between 0 (fully transparent) and 255 (fully opaque)
+	 * @return the RGB data as an int array.
+	 */
+	public static int[] getRgbData( javax.microedition.lcdui.Item item, int opacity ) {
 		return null;
 	}
 	//#endif
 
 	//#if polish.usePolishGui
+	/**
+	 * Retrieves the RGB data of the specified item.
+	 * This method only works on MIDP 2.0+ devices.
+	 * 
+	 * @param item the item
+	 * @return the RGB data as an int array.
+	 */
 	public static int[] getRgbData( Item item ) {
+		return getRgbData(item, 255);
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves the RGB data of the specified item.
+	 * This method only works on MIDP 2.0+ devices.
+	 * 
+	 * @param item the item
+	 * @param opacity The opacity of the item between 0 (fully transparent) and 255 (fully opaque)
+	 * @return the RGB data as an int array.
+	 */
+	public static int[] getRgbData( Item item, int opacity ) {
 		//#if polish.midp2
 			Image image = Image.createImage( item.itemWidth, item.itemHeight );
 			int transparentColor = 0x12345678;
@@ -2434,10 +2476,15 @@ public final class UiAccess {
 			item.paint( 0, 0, 0, item.itemWidth, g );
 			int[] itemRgbData = new int[  item.itemWidth * item.itemHeight ];
 			image.getRGB(itemRgbData, 0, item.itemWidth, 0, 0, item.itemWidth, item.itemHeight );
+			boolean addOpacity = (opacity != 255);
+			opacity = (opacity << 24) | (0x00ffffff);
 			// ensure transparent parts are indeed transparent
 			for (int i = 0; i < itemRgbData.length; i++) {
-				if( itemRgbData[i] == transparentColor ) {
+				int data = itemRgbData[i];
+				if( data == transparentColor ) {
 					itemRgbData[i] = 0;
+				} else if (addOpacity) {
+					itemRgbData[i] = data & opacity;
 				}
 			}
 			return itemRgbData;
