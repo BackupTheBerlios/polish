@@ -797,6 +797,16 @@
 	/>
 
 	<attribute
+		name="opacity"
+		type="integer"
+		appliesTo="Item"
+		description="The opacity of an item between 0 (fully transparent) and 255 (fully opaque)."
+		default="255"
+		id="31"
+	/>
+	
+	<!-- 
+	<attribute
 		name="textfield-caret-char"
 		type="char"
 		appliesTo="TextField, TextBox"
@@ -804,6 +814,7 @@
 		default="|"
 		id="31"
 	/>
+	 -->
 
 	<attribute
 		name="textfield-show-length"
