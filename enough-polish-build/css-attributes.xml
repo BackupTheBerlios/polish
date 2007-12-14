@@ -3288,6 +3288,16 @@
 		id="302"
 	/>
 	
+	<attribute
+		name="scrollbar-fadeout"
+		type="boolean"
+		default="false"
+		appliesTo="ScrollBar"
+		description="Defines if the scrollbar should automatically fade out - additionally you have to define the opacity attribute."
+		id="303"
+	/>
+	
+	
 	<!--
 	
 	<attribute
