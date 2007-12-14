@@ -176,7 +176,7 @@ public class PolishTask extends ConditionalTask {
 	/** the source-compatibility-switch for the javac-compiler defaults to "1.3" */
 	private String sourceCompatibility = "1.3";
 	private Obfuscator[] obfuscators;
-	private boolean doObfuscate;
+	protected boolean doObfuscate;
 	private String[] preserveClasses;
 	private ImportConverter importConverter;
 	protected TextFile styleSheetSourceFile;

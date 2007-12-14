@@ -34,7 +34,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -54,6 +56,7 @@ import de.enough.polish.ant.build.ClassSetting;
 import de.enough.polish.ant.build.FullScreenSetting;
 import de.enough.polish.io.Serializer;
 import de.enough.polish.rag.RagContainer;
+import de.enough.polish.rag.RagObfuscationMap;
 import de.enough.polish.rag.SerializeSetting;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.ReflectionUtil;
@@ -78,207 +81,7 @@ import de.enough.polish.util.StringUtil;
  */
 public class RagTask extends PolishTask {
 	private URLClassLoader loader; 
-
-	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ant.PolishTask#initialize(de.enough.polish.Device, java.util.Locale)
-	 */
-	public void initialize(Device device, Locale locale) {
-		if (this.configurationManager != null) {
-			this.configurationManager.preInitialize(device, locale,
-					this.environment);
-		}
-		this.extensionManager.preInitialize(device, locale);
-		// intialise the environment
-		this.environment.initialize(device, locale);
-		device.setEnvironment(this.environment);
-		this.environment.set("ant.project", getProject());
-		this.environment.set("polish.sourcefiles", this.sourceFiles);
-
-		// set variables and symbols:
-		// this.environment.setSymbols( device.getFeatures() );
-		// this.environment.setVariables( device.getCapabilities() );
-		this.environment.addVariable("polish.identifier", device
-				.getIdentifier());
-		this.environment.addVariable(device.getIdentifier(), "true");
-		this.environment.addSymbol(device.getIdentifier());
-		this.environment.addVariable("polish.name", device.getName());
-		this.environment.addVariable("polish.vendor", device.getVendorName());
-		// set localization-variables:
-		if (locale != null
-				|| (this.localizationSetting != null && this.localizationSetting
-						.isDynamic())) {
-			if (locale == null) {
-				locale = this.localizationSetting.getDefaultLocale()
-						.getLocale();
-				this.environment
-						.addSymbol("polish.i18n.useDynamicTranslations");
-				this.environment.setLocale(locale);
-			}
-			this.environment.addVariable("polish.SupportedLocales",
-					this.localizationSetting
-							.getSupportedLocalesAsString(this.environment));
-			this.environment.addVariable("polish.locale", locale.toString());
-			this.environment.addVariable("polish.language", locale
-					.getLanguage());
-			String country = locale.getCountry();
-			if (country == null || country.length() == 0) {
-				this.environment.removeVariable("polish.country");
-			} else {
-				this.environment.addVariable("polish.country", country);
-			}
-		}
-
-		// enable the support for the J2ME Polish GUI, part 1:
-		// check if a preprocessing variable is set for using the Polish GUI:
-		boolean usePolishGui = usePolishGui(device);
-		if (usePolishGui) {
-			this.environment.addSymbol("polish.usePolishGui");
-		}
-
-		// set conditional variables:
-		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
-		Project antProject = getProject();
-		Variable[] vars = this.variables.getVariables(this.environment);
-		for (int i = 0; i < vars.length; i++) {
-			Variable var = vars[i];
-			this.environment.addVariable(var.getName(), var.getValue());
-		}
-		ClassSetting dojaSetting = this.buildSetting.getDojaClassSetting();
-		if (dojaSetting != null && dojaSetting.isActive(evaluator, antProject)) {
-			this.environment.addVariable("polish.classes.iapplication",
-					dojaSetting.getClassName());
-		}
-		ClassSetting mainSetting = this.buildSetting.getMainClassSetting();
-		if (mainSetting != null && mainSetting.isActive(evaluator, antProject)) {
-			this.environment.addVariable("polish.classes.main", mainSetting
-					.getClassName());
-		}
-
-		// now set the full-screen-settings:
-		String value = this.environment.getVariable("polish.FullScreen");
-		if (value != null) {
-			if ("menu".equalsIgnoreCase(value)) {
-				this.environment.addSymbol("polish.useMenuFullScreen");
-				this.environment.addSymbol("polish.useFullScreen");
-			} else if ("yes".equalsIgnoreCase(value)
-					|| "true".equalsIgnoreCase(value)) {
-				this.environment.addSymbol("polish.useFullScreen");
-			}
-		} else {
-			FullScreenSetting fullScreenSetting = this.buildSetting
-					.getFullScreenSetting();
-			if (fullScreenSetting != null) {
-				if (fullScreenSetting.isMenu()) {
-					this.environment.addSymbol("polish.useMenuFullScreen");
-					this.environment.addSymbol("polish.useFullScreen");
-				} else if (fullScreenSetting.isEnabled()) {
-					this.environment.addSymbol("polish.useFullScreen");
-				}
-			}
-		}
-
-		// set support for the J2ME Polish GUI, part 2:
-		if (usePolishGui(device)) {
-			usePolishGui = true;
-			this.environment.addSymbol("polish.usePolishGui");
-		} else {
-			usePolishGui = false;
-			this.environment.removeSymbol("polish.usePolishGui");
-		}
-
-		// set the temporary build path used for preprocessing, compilation,
-		// preverification, etc:
-		String deviceSpecificBuildPath = File.separatorChar
-				+ device.getVendorName() + File.separatorChar
-				+ device.getName();
-		deviceSpecificBuildPath = deviceSpecificBuildPath.replace(' ', '_');
-		String buildPath = this.buildSetting.getWorkDir().getAbsolutePath()
-				+ deviceSpecificBuildPath;
-		if (locale != null) {
-			buildPath += File.separatorChar + locale.toString();
-		}
-		device.setBaseDir(buildPath);
-		this.environment.addVariable("polish.base.dir", buildPath);
-		String sourceDir = buildPath + File.separatorChar + "source";
-		device.setSourceDir(sourceDir);
-		this.environment.addVariable("polish.sourcedir", sourceDir);
-		this.environment.addVariable("polish.source.dir", sourceDir);
-		File resourceDir = new File(buildPath + File.separatorChar
-				+ "resources");
-		device.setResourceDir(resourceDir);
-		File ragDir = new File( buildPath + File.separatorChar + "rag" );
-		device.setRagDir( ragDir );
-		this.environment.addVariable("polish.resources.dir", resourceDir
-				.getAbsolutePath());
-
-		// okay, now initialize extension manager:
-		this.extensionManager.initialize(device, locale, this.environment);
-
-		// check if there is an active obfuscator with the "useDefaultPackage"
-		// option:
-		this.useDefaultPackage = "true".equals(this.environment
-				.getVariable("polish.useDefaultPackage"));
-		if (this.useDefaultPackage
-				&& this.environment.hasSymbol("polish.api.j2mepolish")) {
-			this.useDefaultPackage = false;
-			this.environment.removeVariable("polish.useDefaultPackage");
-			this.environment.removeSymbol("polish.useDefaultPackage");
-		}
-		this.preprocessor.setUseDefaultPackage(this.useDefaultPackage);
-		// adjust polish.classes.ImageLoader in case the default package is
-		// used:
-		if (this.useDefaultPackage) {
-			String imageLoaderClass = this.environment
-					.getVariable("polish.classes.ImageLoader");
-			if (imageLoaderClass != null) {
-				int classStartIndex = imageLoaderClass.lastIndexOf('.');
-				if (classStartIndex != -1) {
-					imageLoaderClass = imageLoaderClass
-							.substring(classStartIndex + 1);
-					this.environment.addVariable("polish.classes.ImageLoader",
-							imageLoaderClass);
-				}
-			}
-		}
-
-		this.extensionManager.postInitialize(device, locale, this.environment);
-
-		this.environment.set("polish.home", this.polishHomeDir);
-		this.environment.set("polish.apidir", this.buildSetting.getApiDir());
-
-		// set the absolute path to polish.home - this minimizes problems
-		// resolving paths
-		// relative to polish.home (since the polish.home can be relative
-		// to the build.xml script).
-		this.environment.addVariable("polish.home", this.polishHomeDir
-				.getAbsolutePath());
-
-		// initialize resource manager:
-		// get the resource manager:
-		this.resourceManager.initialize(this.environment);
-
-		if (this.configurationManager != null) {
-			this.configurationManager.postInitialize(device, locale,
-					this.environment);
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ant.PolishTask#checkSettings()
-	 */
-	public void checkSettings() {
-		if (this.deviceRequirements == null) {
-			log("Nested element [deviceRequirements] is missing, now the project will be optimized for all known devices.");
-		}
-		if (this.buildSetting == null) {
-			throw new BuildException("Nested element [build] is required.");
-		}
-		if (this.buildSetting.getFileSetting() == null)
-		{
-			throw new BuildException("Nested element [file] is required.");
-		}
-	}
+	private RagObfuscationMap list;
 	
 	/**
 	 * Packages the resources and serialized fields to a .rag file.
@@ -300,6 +103,12 @@ public class RagTask extends PolishTask {
 		
 		try
 		{
+			// load ProGuard obfuscation map
+			File obfuscationMap = new File( device.getBaseDir() + File.separatorChar + "obfuscation-map.txt");
+			if (obfuscationMap.exists() && this.doObfuscate) {
+				this.list = new RagObfuscationMap(obfuscationMap);
+			}
+			
 			//Get the resources and serializers
 			File[] resources = this.resourceManager.getResources(device, locale);
 			ArrayList serializers = this.buildSetting.getSerializers();
@@ -307,8 +116,20 @@ public class RagTask extends PolishTask {
 			for (int i = 0; i < serializers.size(); i++) {
 				SerializeSetting setting = (SerializeSetting)serializers.get(i);
 				
-				//Get the fields of the class
-				Field[] fields = this.loader.loadClass(setting.getTarget()).getDeclaredFields();
+				Field[] fields;
+				String target = setting.getTarget();
+				
+				if(this.doObfuscate)
+				{
+					target = this.list.getClassName(target, false);
+					//Get the obfuscated fields of the obfuscated class 
+					fields = this.loader.loadClass(target).getDeclaredFields();
+				}
+				else
+				{
+					//Get the fields of the class
+					fields = this.loader.loadClass(target).getDeclaredFields();
+				}
 				
 				//Iterate over fields 
 				for (int j = 0; j < fields.length; j++) {
@@ -316,11 +137,16 @@ public class RagTask extends PolishTask {
 					Field field = fields[j];
 					String fieldName = field.getName();
 					
+					if(this.doObfuscate)
+					{
+						fieldName = this.list.getFieldName(fieldName, true);
+					}
+					
 					//Does the field name match the regular expression of the current serializer ?
 					if(fieldName.matches(setting.getRegex()))
 					{
 						//Create a container for the field object
-						RagContainer container = getContainer(setting.getTarget(),field.getName(),field.get(null));
+						RagContainer container = getContainer(setting.getTarget(),fieldName,field.get(null));
 						containers.add(container);
 					}
 				}
@@ -388,15 +214,35 @@ public class RagTask extends PolishTask {
 	private Object getSerializer()
 	{
 		Class serializerClass = null;
+		String serializerClassPath = "de.enough.polish.io.Serializer";
 		try {
-			serializerClass = this.loader.loadClass("de.enough.polish.io.Serializer");
-			return serializerClass.newInstance();
+			if(this.doObfuscate)
+			{
+				serializerClassPath = this.list.getClassName("de.enough.polish.io.Serializer", false);
+			}
+			
+			serializerClass = this.loader.loadClass(serializerClassPath);
+			Constructor[] constr = serializerClass.getDeclaredConstructors();
+			constr[0].setAccessible(true);
+			return constr[0].newInstance( null );
 		} catch (ClassNotFoundException e) {
 			System.out.println("unable to load serializer " + e);
+			e.printStackTrace();
 		} catch (InstantiationException e) {
 			System.out.println("unable to load serializer " + e);
+			e.printStackTrace();
 		} catch (IllegalAccessException e) {
 			System.out.println("unable to load serializer " + e);
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			System.out.println("unable to load serializer " + e);
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			System.out.println("unable to load serializer " + e);
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			System.out.println("unable to load serializer " + e);
+			e.printStackTrace();
 		}
 		
 		return null;
@@ -482,8 +328,15 @@ public class RagTask extends PolishTask {
 		Object[] 	parameters = getParameters(object,stream);
 		Class[] 	signatures = getSignatures();
 		
+		String methodName = "serialize";
+		
+		if(this.doObfuscate)
+		{
+			methodName = this.list.getMethodName("serialize", false);
+		}
+		
 		//serialize
-		ReflectionUtil.callMethod("serialize", serializer, signatures, parameters);
+		ReflectionUtil.callMethod(methodName, serializer, signatures, parameters);
 		
 		container.setName(fullName.toLowerCase());
 		container.setSize(byteStream.size());
@@ -559,12 +412,14 @@ public class RagTask extends PolishTask {
 	 * @see de.enough.polish.ant.PolishTask#execute(de.enough.polish.Device, java.util.Locale, boolean)
 	 */
 	protected void execute(Device device, Locale locale, boolean hasExtensions) {
-		
-		initialize(device, locale);
-		assembleResources(device, locale);
-		preprocess(device, locale);
-		compile(device, locale);
+		initialize( device, locale );
+		assembleResources( device, locale );
+		preprocess( device, locale );
+		compile( device, locale );
 		postCompile(device, locale);
+		if (this.doObfuscate) {
+			obfuscate( device, locale );
+		}
 		
 		try
 		{
