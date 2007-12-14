@@ -94,10 +94,12 @@ public class ScrollBar extends Item {
 	protected int sliderY;
 	protected int sliderHeight;
 	protected int scrollBarHeight;
-	//#if polish.css.opacity && polish.midp2
+	//#if polish.css.opacity && polish.midp2 && polish.css.scrollbar-fadeout
+		//#define tmp.fadeout
 		private int startOpacity;
 	//#endif
 	private boolean isVisible;
+	protected boolean overlap;
 
 	/**
 	 * Creates a new default scrollbar
@@ -180,43 +182,52 @@ public class ScrollBar extends Item {
 			}
 		//#endif
 		return this.itemWidth;
+//		int w = this.itemWidth;
+//		//#if tmp.fadeout
+//			if (this.fadeOut) {
+//				w = 0;
+//			}
+//		//#endif
+//		return w;
 	}
+	
+	
 	
 	/**
 	 * Resets the animation status - when the opcaity is defined, it will be set to the start opacity again
 	 *
 	 */
 	public void resetAnimation() {
-		//#if polish.css.opacity && polish.midp2
+		//#if tmp.fadeout
 			this.opacity = this.startOpacity;
 		//#endif
 	}
 	
 
+	//#if tmp.fadeout
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate()
 	 */
 	public boolean animate()
 	{
 		boolean animated = false;
-		//#if polish.css.opacity && polish.midp2
-			int[] rgbData = this.opacityRgbData;
-			if (rgbData != null && this.opacity >= 0)  {
-				this.opacity -= 10;
-				if (this.opacity <= 0) {
-					this.opacity = 0;
-				} else {
-					int alpha = (this.opacity << 24) ;
-					for (int i = 0; i < rgbData.length; i++)
-					{
-						rgbData[i] = rgbData[i] & 0x00ffffff | alpha;
-					}
+		int[] rgbData = this.opacityRgbData;
+		if (this.overlap && rgbData != null && this.opacity >= 0)  {
+			this.opacity -= 10;
+			if (this.opacity <= 0) {
+				this.opacity = 0;
+			} else {
+				int alpha = (this.opacity << 24) ;
+				for (int i = 0; i < rgbData.length; i++)
+				{
+					rgbData[i] = rgbData[i] & 0x00ffffff | alpha;
 				}
-				animated = true;
 			}
-		//#endif
+			animated = true;
+		}
 		return animated | super.animate();
 	}
+	//#endif
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#initContent(int, int)
@@ -333,10 +344,14 @@ public class ScrollBar extends Item {
 				this.sliderMode = sliderModeInt.intValue();
 			}
 		//#endif
-		//#if polish.css.opacity && polish.midp2
+		//#if tmp.fadeout
 			Integer opacityInt = style.getIntProperty("opacity");
 			if (opacityInt != null) {
 				this.startOpacity = opacityInt.intValue();
+			}
+			Boolean fadeOutBool = style.getBooleanProperty("scrollbar-fadeout");
+			if (fadeOutBool != null) {
+				this.overlap = fadeOutBool.booleanValue();
 			}
 		//#endif
 	}

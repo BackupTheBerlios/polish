@@ -37,7 +37,7 @@ import de.enough.polish.ui.tasks.ImageTask;
 import de.enough.polish.util.Locale;
 
 /**
- * <p>Manages all defined styles of a specific project	.</p>
+ * <p>Manages all defined styles of a specific project - THIS IS AN INTERNAL CLASS AND NOT MEANT FOR USAGE.</p>
  * <p>This class is actually pre-processed to get the styles specific for the project and the device.</p>
  *
  * @author Robert Virkus, robert@enough.de

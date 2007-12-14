@@ -769,6 +769,9 @@ implements AccessibleCanvas
 						this.scrollBar.scrollBarHeight = height;
 						//System.out.println("calculateContentArea for " + this + ": container.isInitialised=" + this.container.isInitialised );
 						int scrollBarWidth = this.scrollBar.getItemWidth(width, width);
+						if (this.scrollBar.overlap) {
+							scrollBarWidth = 0;
+						}
 						int containerHeight = this.container.getItemHeight(width - scrollBarWidth, width - scrollBarWidth);
 						if (containerHeight > height) {
 							//System.out.println("calculateContentArea for" + this + ": scrollBar is required for containerHeight of " + containerHeight + ", availableHeight=" + height );					
