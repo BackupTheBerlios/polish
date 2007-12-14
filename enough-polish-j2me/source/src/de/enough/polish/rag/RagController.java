@@ -134,7 +134,8 @@ public class RagController {
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			//#debug error
+			System.out.println("Unable to load " + container.getName() + e );
 		}
 		
 		return data;

@@ -1,10 +1,7 @@
 //#condition polish.usePolishGui && polish.useRAG
 package de.enough.polish.rag;
 
-import java.io.InputStream;
-
 import de.enough.polish.io.Serializable;
-import de.enough.polish.util.ArrayList;
 
 /**
  * <p>Stores a byte array with name and size to store or load from a RAG file</p>
