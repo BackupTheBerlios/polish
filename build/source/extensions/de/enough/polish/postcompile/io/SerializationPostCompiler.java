@@ -127,7 +127,7 @@ public class SerializationPostCompiler extends BytecodePostCompiler
         
         if (asmClassLoader.inherits(serializableClassName, className))
           {
-        	this.serializableAndExternalizableClassNames.add( className.replace('/', '.') );
+        	this.serializableAndExternalizableClassNames.add( className.replace(File.separatorChar, '.') );
         	if (rmiClassFiles != null) {
         		rmiClassFiles.add( new File( sourceDir, className + ".class" ) );
         	}
