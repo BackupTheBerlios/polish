@@ -94,7 +94,6 @@
 </pre>
 		</td>
 		 -->
-	</tr>
 	</table>
 	<p>
 	The following example shows the use of the TextField attributes:
@@ -124,26 +123,43 @@
 &lt;variable name=&quot;polish.TextField.suppressCommands&quot; value=&quot;true&quot;/&gt;
 </pre>
 	<p>You can also supress the &quot;Delete&quot; command only:
+	</p>
 <pre>
 &lt;variable name=&quot;polish.TextField.suppressDeleteCommand&quot; value=&quot;true&quot;/&gt;
 </pre>
-	<h2 id="DirectInputMode">Direct Input Mode</h2>
+	<p>When using the direct input mode and in case you allow the input of symbols, you can suppress the &quot;Add Symbol&quot;
+	command as well:
+	</p>
+<pre>
+&lt;variable name=&quot;polish.TextField.supportSymbolsEntry&quot; value=&quot;true&quot;/&gt;
+&lt;variable name=&quot;polish.TextField.suppressAddSymbolCommand&quot; value=&quot;true&quot; if=&quot;polish.key.AddSymbolKey:defined&quot; /&gt;
+</pre>
+	<h2 id="textfield-DirectInputMode">Direct Input Mode</h2>
 <p>
 The direct input mode can be activated for TextFields as well as for TextBoxes using the CSS-attribute &quot;textfield-direct-input&quot; or by defining the preprocessing-variable &quot;polish.TextField.useDirectInput&quot; in the build.xml file:
+</p>
 <pre>
 &lt;variable name=&quot;polish.TextField.useDirectInput&quot; value=&quot;true&quot;/&gt;
 </pre>
-</p><p>
+<p>
 When the direct input mode is used, no extra screen will be used for editing the text and all  designing possibilities of J2ME Polish can be used. When the TextField is used within a Form, the associated ItemStateListener will be notified after each change of the text.
-</p><p>
+</p>
+<p>
 On stylus-based devices, this mode should not be used since these devices often rely on native input methods like handwriting recognition. This can be ensured by setting the preprocessing variable only for devices which have no pointer-events:
+</p>
 <pre>
 &lt;variable name=&quot;polish.TextField.useDirectInput&quot; value=&quot;true&quot; unless=&quot;polish.hasPointerEvents or isOS(Windows)&quot;/&gt;
 </pre>
-</p><p>
+<p>
 The direct input should not be used for editing longs texts (i.e. TextBoxes), since T9 and similar input helpers cannot be used in this mode.
-</p><p>
-The user can change the input mode from lowercase (&quot;abc&quot;) to initial-letter uppercase (&quot;Abc&quot;)  to uppercase (&quot;ABC&quot;) and to numeric (&quot;123&quot;). The current input mode is shown below the title in an extra StringItem. This item can be designed using the predefined CSS-style &quot;info&quot;:
+</p>
+<h3 id="textfield-info">The Input Mode Information Indicator</h3>
+<p>
+The user can change the input mode from lowercase (&quot;abc&quot;), to initial-letter uppercase (&quot;Abc&quot;),
+  to uppercase (&quot;ABC&quot;) and to numeric (&quot;123&quot;). 
+  The current input mode is shown below the title in an extra StringItem. 
+  This item can be designed using the predefined CSS-style &quot;info&quot;:
+</p>
 <pre>
 info {
 	padding-right: 10;
@@ -156,35 +172,162 @@ info {
 	layout: right;
 }
 </pre>
-</p><p>
-The info-item can be deactivated globally by setting the &quot;polish.TextField.showInputInfo&quot;-variable to &quot;false&quot;:
+<p>You can include the info item in the TextField instead of showing it at the top of the screen by specifying 
+<code>polish.TextField.includeInputInfo</code> in your <i>build.xml</i> script:
+</p>
+<pre>
+&lt;variable name=&quot;polish.TextField.includeInputInfo&quot; value=&quot;true&quot; /&gt;
+</pre>
+<p>
+The info item can be deactivated globally by setting the &quot;polish.TextField.showInputInfo&quot; variable to &quot;false&quot;:
+</p>
 <pre>
 &lt;variable name=&quot;polish.TextField.showInputInfo&quot; value=&quot;false&quot; /&gt;
 </pre>
-</p><p>
+<p>
 Next to using the CSS-attributes &quot;textfield-caret-color&quot; and &quot;textfield-show-length&quot; 
 you can adjust the behavior of the direct input mode with several preprocessing variables. 
-Especially the available character can be changed, which can be necessary for localizing the direct input.
-</p><p>
-Following variables can be set:
 </p>
+<h3 id="textfield-symbols">Adding Symbols in the TextField</h3>
+<p>
+The user can also add special symbols into a TextField, when the <code>polish.TextField.supportSymbolsEntry</code> preprocessing
+variable is set to <code>true</code>:
+</p>
+<pre>
+&lt;variable name=&quot;polish.TextField.supportSymbolsEntry&quot; value=&quot;true&quot; /&gt;
+</pre>
+<p>You can define your own set of symbols by defining the variable <code>polish.TextField.Symbols</code>.
+</p>
+
+	<h2 id="textfield-PredictiveInputMode">Predictive Input Mode</h2>
+	<p>
+	</p>
+<pre>
+&lt;variable name=&quot;&quot; value=&quot;&quot; /&gt;
+</pre>
+	
+	<h2 id="textfield-Programming">Programming</h2>
+	<p>
+	You can use 
+	<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess</a> for accessing J2ME Polish specific 
+	functionalities of the TextField:
+	</p>
+	
+	<ul>
+		<li><code>UiAccess.setCaretPosition( TextField field, int position )</code>: sets the position of the input caret</li>
+		<li><code>UiAccess.</code>: </li>
+		<li><code>UiAccess.setInputMode( javax.microedition.lcdui.TextField field, int inputMode )</code>: Sets the input mode : either 
+			<code>UiAccess.MODE_NUMBERS</code>, <code>UiAccess.MODE_LOWERCASE</code>, <code>UiAccess.MODE_UPPERCASE</code>, 
+			<code>UiAccess.MODE_FIRST_UPPERCASE</code>,  or <code>UiAccess.MODE_NATIVE</code>.
+		</li>
+		<li><code>int UiAccess.getInputMode( TextField field )</code>: Gets the current input mode.</li>
+		<li><code>String UiAccess.getDotSeparatedDecimalString( TextField field )</code>: Retrieves the 
+			contents of a DECIMAL TextField as a number with floating numbers separated by a dot, no matter what locale is being used.
+		</li>
+		<li><code>UiAccess.setPredictiveDictionary(TextField field, String[] words)</code>: Allows the user only to enter any 
+			of the given words - can only be used when the predictive mode has been anabled.
+		</li>
+		<li><code>UiAccess.setTextfieldHelp(TextField field, String text)</code>: Sets the helper text that is being shown 
+			when the text of a TextField is empty - can only be used when <code>polish.TextField.showHelp</code> is <code>true</code>.
+		</li>
+		<li><code>UiAccess.</code>: </li>
+		<li><code>UiAccess.</code>: </li>
+		<li><code>UiAccess.</code>: </li>
+		<li><code>UiAccess.</code>: </li>
+		<li><code>UiAccess.</code>: </li>
+		<li><code>UiAccess.</code>: </li>
+		<li><code>UiAccess.</code>: </li>
+		<li><code>UiAccess.</code>: </li>
+	</ul>
+	<h2 id="textfield-Configuration">Configuration</h2>
+	<p>As explained in the above sections, following configurations can be done within the &lt;variables&gt; variables section
+	of your build.xml script:
+	</p>
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>Variable&nbsp;&nbsp;</th><th>Default&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
-	 <td>polish.TextField.InputTimeout</td>
-	 <td>&quot;1000&quot;</td>
-	 <td>The timeout in milliseconds after which a chosen character is inserted into the text automatically.</td>
+	 <td>polish.command.clear</td>
+	 <td>Clear</td>
+	 <td>Command text for deleting the complete text.</td>
 	</tr>
 	<tr>
-	 <td>polish.TextField.showInputInfo</td>
-	 <td>&quot;true&quot;</td>
-	 <td>Defines whether the box showing the current input mode (e.g. &quot;123&quot;, &quot;Abc&quot;, &quot;abc&quot;, &quot;ABC&quot;) should be shown at all. You can deactivate the box globally by setting the &quot;polish.TextField.showInputInfo&quot; variable to &quot;false&quot;.</td>
+	 <td>polish.command.clear.priority</td>
+	 <td>8</td>
+	 <td>Priority of the clear command.</td>
+	</tr>
+	<tr>
+	 <td>polish.command.delete</td>
+	 <td>Delete</td>
+	 <td>Command text for deleting a single character.</td>
+	</tr>
+	<tr>
+	 <td>polish.command.delete.priority</td>
+	 <td>1</td>
+	 <td>Priority of the delete command.</td>
+	</tr>
+	<tr>
+	 <td>polish.command.entersymbol</td>
+	 <td>Add Symbol</td>
+	 <td>Command text for adding symbols, only applicable when <code>polish.TextField.supportSymbolsEntry</code> is <code>true</code>.</td>
+	</tr>
+	<tr>
+	 <td>polish.command.entersymbol.priority</td>
+	 <td>9</td>
+	 <td>Priority of the command for adding symbols.</td>
+	</tr>
+	<tr>
+	 <td>polish.key.AddSymbolKey, polish.key.AddSymbolKey2</td>
+	 <td>Device dependent</td>
+	 <td>Device key that triggers the symbols entry screen when pressed longer.</td>
+	</tr>
+	<tr>
+	 <td>polish.key.backspace</td>
+	 <td>Device dependent</td>
+	 <td>Alternativ key for deleting a character.</td>
 	</tr>
 	<tr>
 	 <td>polish.key.ChangeInputModeKey</td>
-	 <td>Varying</td>
+	 <td>Device dependent</td>
 	 <td>The key which is used for changing the input mode between lowercase (&quot;abc&quot;), uppercase (&quot;ABC&quot;), initial-letter uppercase (&quot;Abc&quot;) and numeric (&quot;123&quot;). On Sony-Ericsson devices Canvas.KEY_STAR (42), on Motorola devices Canvas.KEY_NUM0 (48) and on all other devices Canvas.KEY_POUND (35) is used.</td>
 	</tr>
+	<tr>
+	 <td>polish.key.ChangeNumericalAlphaInputModeKey</td>
+	 <td>Device dependent</td>
+	 <td>Device key for switching between numerical and alphabet input, usually only used on Motorola handsets.</td>
+	</tr>
+	<tr>
+	 <td>polish.key.ClearKey</td>
+	 <td>Device dependent</td>
+	 <td>Device key for deleting a character, it is often -8.</td>
+	</tr>
+	<tr>
+	 <td>polish.key.enter</td>
+	 <td>Device dependent</td>
+	 <td>Device key for entering new lines.</td>
+	</tr>
+	<tr>
+	 <td>polish.key.shift</td>
+	 <td>Device dependent</td>
+	 <td>Device key for entering upper case character.</td>
+	</tr>
+	<tr>
+	 <td>polish.key.supportsAsciiKeyMap</td>
+	 <td>Device dependent</td>
+	 <td>If true the user can use a keyboard for entering characters.</td>
+	</tr>
+	<!-- 
+	<tr>
+	 <td></td>
+	 <td></td>
+	 <td>.</td>
+	</tr>
+	 -->
+	<tr>
+	 <td>polish.TextField.allowNativeModeSwitch</td>
+	 <td>false</td>
+	 <td>Allows to switch back to the native mode when the <code>polish.TextField.useDirectInput</code> is being used.</td>
+	</tr>
+	
 	<tr>
 	 <td>polish.TextField.charactersKey1</td>
 	 <td>&quot;.,!?:/@_-+1&quot;</td>
@@ -245,25 +388,86 @@ Following variables can be set:
 	 <td>(none)</td>
 	 <td>The characters which are available when the key &quot;#&quot; is pressed. On Sony-Ericsson devices this key is used for entering spaces (&quot; &quot;).</td>
 	</tr>
-</table>
-
-
-	<h2 id="PredictiveInputMode">Predictive Input Mode</h2>
-	<p>
-	</p>
-<pre>
-&lt;variable name=&quot;&quot; value=&quot;&quot; /&gt;
-</pre>
+	<tr>
+	 <td>polish.TextField.help</td>
+	 <td>type text here</td>
+	 <td>Text that is being shown when the TextField is empty - the <code>polish.TextField.showHelpText</code> variable needs to be set as well.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.includeInputInfo</td>
+	 <td>false</td>
+	 <td>Includes the input mode indicator into the TextField instead of showing it at the top of the screen, only applicable when the <code>polish.TextField.useDirectInput</code> is active.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.InputTimeout</td>
+	 <td>&quot;1000&quot;</td>
+	 <td>The timeout in milliseconds after which a chosen character is inserted into the text automatically.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.showInputInfo</td>
+	 <td>&quot;true&quot;</td>
+	 <td>Defines whether the box showing the current input mode (e.g. &quot;123&quot;, &quot;Abc&quot;, &quot;abc&quot;, &quot;ABC&quot;) should be shown at all. You can deactivate the box globally by setting the &quot;polish.TextField.showInputInfo&quot; variable to &quot;false&quot;.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.suppressAddSymbolCommand</td>
+	 <td>false</td>
+	 <td>Surpresses the command for adding symbols when <code>polish.TextField.supportSymbolsEntry</code> is <code>true</code>.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.suppressAutoInputModeChange</td>
+	 <td>false</td>
+	 <td>If <code>true</code> the TextField will not change the input mode automatically, e.g. after the user enters a dot (in that case the TextField switches into the 'Abc' mode by default.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.suppressCommands</td>
+	 <td>false</td>
+	 <td>Deactivates all TextField commands.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.suppressDeleteCommand</td>
+	 <td>false</td>
+	 <td>Deactivates the &quot;Delete&quot; command of a TextField.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.supportSymbolsEntry</td>
+	 <td>false</td>
+	 <td>Allows users to enter special symbols from within a TextField, only applicable when the direct input mode is activated using <code>polish.TextField.useDirectInput</code>.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.Symbols</td>
+	 <td>&amp;@/\&lt;&gt;(){}[].,+-*:_\#$%</td>
+	 <td>A string with of symbols that the user can select when symbol entry has been activated using <code>polish.TextField.supportSymbolsEntry</code>.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.showHelpText</td>
+	 <td>false</td>
+	 <td>Displays a text for empty TextFields - defaults to &quot;type text here&quot;.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.useDirectInput</td>
+	 <td>false</td>
+	 <td>Activates the direct input mode.</td>
+	</tr>
+	<tr>
+	 <td>polish.TextField.usePredictiveInput</td>
+	 <td>false</td>
+	 <td>Enables the predictive input mode, the <code>polish.TextField.useDirectInput</code> mode needs to be active, too.</td>
+	</tr>
+	<!-- 
 	
-	<h2 id="Programming">Programming</h2>
-	<p>
-	You can use 
-	<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess</a> for accessing J2ME Polish specific 
-	functionalities.
-	
-	</p>
-	
-	<h2 id="JavaDoc">JavaDoc</h2>
+	<tr>
+	 <td></td>
+	 <td>false</td>
+	 <td>.</td>
+	</tr>
+	<tr>
+	 <td></td>
+	 <td>false</td>
+	 <td>.</td>
+	</tr>
+	 -->
+</table>	
+	<h2 id="textfield-JavaDoc">JavaDoc</h2>
 	<p>
 		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/TextField.html">TextField</a>.
 		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess</a>.
