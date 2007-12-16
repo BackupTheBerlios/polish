@@ -11,6 +11,8 @@
 		<li><a href="extending-itemview.html">Item Views</a></li>
 		<li><a href="extending-border.html">Borders</a></li>
 		<li><a href="extending-background.html">Backgrounds</a></li>
+		<li><<a href="gui-visualguide.html#text-effects">Existing TextEffects</a></li>
+		<li><<a href="gui-item-stringitem.html">StringItem</a></li>
 	</ul>
 	<%index %>
 	<p>
@@ -34,135 +36,187 @@
 	
 	<h2 id="implementation">Implementing your TextEffect</h2>
 	<p>
-	Create your own visualization by extending <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ItemView.html">de.enough.polish.ui.ItemView</a> or an item-specific ItemView subclass.
-	You need to implement <code>initContent(Item parent, int firstLineWidth, int lineWidth)</code>
-	and <code>paintContent( Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g )</code>. 
-	In the <code>initContent</code> you need to calculate required dimensions for visualization and set the fields
-	<code>contentWidth</code> and <code>contentHeight</code>.
+	Create your own efft by extending <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/TextEffect.html">de.enough.polish.ui.TextEffect</a> 
+	or an existing TextEffect subclass.
+	For simple effects you only need to implement <code>public drawString( String text, int textColor, int x, int y, int orientation, Graphics g )</code>,
+	which renders a single line of text at the specified position.
 	<br />
-	You can override the <code>isValid( Item parent, Style style )</code> method for ensuring that your view
-	is only used for specify classes.
+	You can animate your effect by overriding one of <code>animate</code> methods (see below).
 	<br />
-	You can also animate your view by overriding the <code>animate()</code> method.
+	If you want to design your text-effect using CSS, you need to implement the <code>public void setStyle( Style style )</code> 
+	method, too.
 	</p>
-	<p>In this example we provide a view for <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ClockItem.html">de.enough.polish.ui.ClockItem</a> that
-	uses binary instead of decimal numbers for the visualization. 
-	<br />
-<img src="../images/extending-itemview-clock.png" width="218" height="77" alt="the binary text view in action" />	
+	<p>Additionally, you can take over full control over the layout process by overriding or using following methods:
 	</p>
-	<p>
+	<ul>
+		<li><code>public boolean animate()</code>: Animates this effect - return true when you need a repaint.</li>
+		<li><code>public void animate(Item parent, long currentTime, ClippingRegion repaintRegion)</code>: 
+			Animates this effect - use this method if you need a repaint outside of the actual content area of 
+			the parent item.
+		</li>
+		<li><code>public void drawStrings( String[] textLines, int textColor, int x, int y, int leftBorder, int rightBorder, int lineHeight, int maxWidth, int layout, Graphics g )</code>: 
+			Use this method for drawing all rows of a StringItem at once - by default this method calls the above described <code>drawString()</code> method
+			for each row.
+		</li>
+		<li><code>public int getLeftX( int x, int orientation, int textWidth  )</code>: 
+			Calculates the horizontal start position - this is useful in case you need to draw RGB integer arrays, for example.
+		</li>
+		<li><code>public int getTopY( int y, int orientation, Font font ), getTopY( int y, int orientation, int height, int baseLine )</code>: 
+			Calculates the vertical top position.
+		</li>
+		<li><code>public static int[] getRgbData( String text, int textColor, Font font )</code>,
+			<code>public static int[] getRgbData(String text, int textColor, Font font, int x, int y, int width, int height )</code>,
+			<code>public static int[] getRgbData(String text, int textColor, Font font, int x, int y, int width, int height, int transparentColor)</code>: 
+			Converts a font and a text into an RGB integer array.
+		</li>
+		<li><code>public void showNotify()</code>: Notifies the effect that it is about to being shown.</li>
+		<li><code>public void hideNotify()</code>: Notifies this effect that the corresponding item is to be hidden.</li>
+		<li><code>public void releaseResources()</code>: Notifies this effect that it should release all releases like oaded 
+			images etc to free memory.
+		</li>
+		<li><code>public int stringWidth(String str)</code>: Calculates the width that is required for the text.</li>
+		<li><code>public int getFontHeight()</code>: Gets the height of the font / a single row of the text effect.</li>
+		<li><code>protected Font getFont()</code>: Gets the used font.</li>
+		<li><code>public String[] wrap(String text, Font font, int firstLineWidth, int lineWidth)</code>: 
+			Wraps the text into several lines.
+		</li>
+		<!-- 
+		<li><code></code>: </li>
+		<li><code></code>: </li>
+		 -->
+	</ul>
+	<p>In the following example we explain the existing <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/texteffects/ShadowTextEffect.html">de.enough.polish.ui.texteffects.ShadowTextEffect</a> 
+	that renders a shadow around a text:
+	<br />
+<img src="../images/gui-texteffect-shadow.png" width="314" height="48" alt="the shadow text-effect in action" />	
+	</p>
 <pre>
 //#condition polish.usePolishGui
-package de.enough.polish.ui.clockviews;
-
-import java.util.Calendar;
-import java.util.Date;
+package de.enough.polish.ui.texteffects;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.ui.ClockItem;
-import de.enough.polish.ui.Item;
-import de.enough.polish.ui.ItemView;
-import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.TextEffect;
 
 /**
- * Visualizes the clock as a binary string, e.g. 101:111 instead of 4:11.
+ * Paints a shadow behind a text.
+ * Activate the shadow text effect by specifying <b>text-effect: shadow;</b> in your polish.css file.
+ * You can finetune the effect with following attributes:
+ * 	 <b>text-shadow-color</b>: the color of the shadow, defaults to black.
+ * 	 <b>text-shadow-orientation</b>: the orientation of the shadow, either bottom-right, bottom-left, 
+ *		top-right, top-left, bottom, top, right or left. Defaults to bottom-right.
+ * 	 <b>text-shadow-x</b>: use this for finetuning the shadow's horizontal position. Negative values move the shadow to the left.
+ * 	 <b>text-shadow-y</b>: use this for finetuning the shadow's vertical position. Negative values move the shadow to the top.
  */
-public class BinaryTextClockView extends ItemView {
-
-	private final Date date;
-	private final Calendar calendar;
-	private final StringItem clockText;
-	private long lastTimeUpdate;
-	private ClockItem clockItem;
+public class ShadowTextEffect extends TextEffect {
 	
+	public static final int ORIENTATION_BOTTOM_RIGHT = 0;
+	public static final int ORIENTATION_BOTTOM_LEFT = 1;
+	public static final int ORIENTATION_TOP_RIGHT = 2;
+	public static final int ORIENTATION_TOP_LEFT = 3;
+	public static final int ORIENTATION_BOTTOM = 4;
+	public static final int ORIENTATION_TOP = 5;
+	public static final int ORIENTATION_RIGHT = 6;
+	public static final int ORIENTATION_LEFT = 7;
+	
+	public int shadowColor;
+	public int xOffset = 1;
+	public int yOffset = 1;
+
 	/**
-	 * Creates a new item view.
+	 * Creates a shadow effect.
 	 */
-	public BinaryTextClockView() {
-		this.date = new Date();
-		this.calendar = Calendar.getInstance();
-		this.clockText = new StringItem( null, null );
+	<b>public ShadowTextEffect()</b> {
+		super();
 	}
 	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#animate()
-	 */
-	public boolean animate() {
-		boolean animated = super.animate();
-		long time = System.currentTimeMillis();
-		if ( (this.clockItem.includeSeconds() 
-				&& time/1000 > this.lastTimeUpdate/1000)
-			|| (!this.clockItem.includeSeconds() 
-					&& time/(1000*60) > this.lastTimeUpdate/(1000*60)) ) 
-		{
-			this.clockText.setText( updateTime( time ) );
-			animated = true;
-		}
-		return animated;
-	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
-	 */
-	protected void initContent(Item parent, int firstLineWidth, int lineWidth) 
-	{
-		// cast to object is required since ClockItem officially extends javax.microedition.lcdui.CustomItem:
-		this.clockItem = (ClockItem)(Object)parent; 
-		this.clockText.setText( updateTime( System.currentTimeMillis() ) );
-		this.contentWidth = this.clockText.getItemWidth(firstLineWidth, lineWidth);
-		this.contentHeight = this.clockText.getItemHeight(firstLineWidth, lineWidth);
-	}
 	
-	/**
-	 * Updates the shown time.
-	 * @param time the currently shown time
-	 * @return the time as a binary string
-	 */
-	protected String updateTime( long time ) {
-		this.lastTimeUpdate = time;
-		this.date.setTime(time);
-		this.calendar.setTime(this.date);
-		String hour = Integer.toBinaryString( this.calendar.get( Calendar.HOUR_OF_DAY ) );
-		String minute = Integer.toBinaryString( this.calendar.get( Calendar.MINUTE ) );
-		String seconds = null;
-		if (this.clockItem.includeSeconds()) {
-			seconds = Integer.toBinaryString( this.calendar.get( Calendar.SECOND ) );
-		}
-		return this.clockItem.updateTime(hour, minute, seconds); 
-	}
-
+	//#if polish.css.text-shadow-color || polish.css.text-shadow-x || polish.css.text-shadow-y || polish.css.text-shadow-orientation
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#paintContent(de.enough.polish.ui.Item, int, int, int, int, javax.microedition.lcdui.Graphics)
+	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
 	 */
-	protected void paintContent(Item parent, int x, int y, int leftBorder,
-			int rightBorder, Graphics g) 
-	{
-		this.clockText.paint(x, y, leftBorder, rightBorder, g);
-	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#isValid(de.enough.polish.ui.Item, de.enough.polish.ui.Style)
-	 */
-	protected boolean isValid(Item parent, Style style) {
-		// cast to object is required since ClockItem officially extends javax.microedition.lcdui.CustomItem:
-		return ((Object)parent instanceof ClockItem); 
-	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#setStyle(de.enough.polish.ui.Style)
-	 */
-	protected void setStyle(Style style) {
+	<b>public void setStyle(Style style)</b> {
 		super.setStyle(style);
-		this.clockText.setStyle(style);
-		// remove parent background and border, so that only the clock text contains them:
-		removeParentBackground();
-		removeParentBorder();
-	}	
+		//#ifdef polish.css.text-shadow-color
+			Integer colorInt = style.getIntProperty("text-shadow-color");
+			if (colorInt != null) {
+				this.shadowColor = colorInt.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.text-shadow-orientation
+			Integer orientationInt = style.getIntProperty("text-shadow-orientation");
+			if (orientationInt != null) {
+				switch ( orientationInt.intValue() ) {
+				case ORIENTATION_BOTTOM_RIGHT: 
+					this.xOffset = 1;
+					this.yOffset = 1;
+					break;
+				case ORIENTATION_BOTTOM_LEFT: 
+					this.xOffset = -1;
+					this.yOffset = 1;
+					break;
+				case ORIENTATION_TOP_RIGHT: 
+					this.xOffset = 1;
+					this.yOffset = -1;
+					break;
+				case ORIENTATION_TOP_LEFT: 
+					this.xOffset = -1;
+					this.yOffset = -1;
+					break;
+				case ORIENTATION_BOTTOM: 
+					this.xOffset = 0;
+					this.yOffset = 1;
+					break;
+				case ORIENTATION_TOP: 
+					this.xOffset = 0;
+					this.yOffset = -1;
+					break;
+				case ORIENTATION_RIGHT: 
+					this.xOffset = 1;
+					this.yOffset = 0;
+					break;
+				case ORIENTATION_LEFT: 
+					this.xOffset = -1;
+					this.yOffset = 0;
+				}
+			}
+		//#endif
+		//#ifdef polish.css.text-shadow-x
+			Integer xInt = style.getIntProperty("text-shadow-x");
+			if (xInt != null) {
+				this.xOffset = xInt.intValue();
+			}
+		//#endif
+		//#ifdef polish.css.text-shadow-y
+			Integer yInt = style.getIntProperty("text-shadow-y");
+			if (yInt != null) {
+				this.yOffset = yInt.intValue();
+			}
+		//#endif
+		//#debug
+		System.out.println("ShadowTextEffect.setStyle(): color=" 
+			+ Integer.toHexString(this.shadowColor) + ", x=" + this.xOffset + ", y=" + this.yOffset );
+	}
+	//#endif
+
+
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)
+	 */
+	<b>public void drawString(String text, int textColor, int x, int y, int orientation, Graphics g) </b>
+	{
+		g.setColor( this.shadowColor );
+		g.drawString(text, x + this.xOffset, y + this.yOffset, orientation);
+		g.setColor( textColor );
+		g.drawString(text, x, y, orientation);
+	}
 
 }
+
 </pre>
+	<p>
 	</p>
 	
 	<h2 id="registration">Registering Your ItemView</h2>
