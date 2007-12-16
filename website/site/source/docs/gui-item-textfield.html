@@ -36,8 +36,31 @@
 	<p>
 	Since J2ME Polish' TextFields internally extend <a href="gui-item-stringitem.html">StringItems</a> you can use any
 	StringItem design settings as well, for example text-effects. 
-	<img src="<%= basedir%>images/gui-item-textfield1.png"  width="353" height="415" alt="A textfield in action" />	
+	<br /><img src="<%= basedir%>images/gui-item-textfield2.png"  width="228" height="163" alt="A textfield in action" />
 	</p>
+	<p>
+	The above TextField has been designed with following styles:
+	</p>
+<pre>
+.itemTextInput {
+	font-color: black;
+	text-effect: smiley;
+}
+.itemTextInput:hover {
+	background-color: #7196B7;
+}
+info {
+	font-color: gray;
+}
+</pre>	
+	<p>Additionally following settings have been made:
+	</p>
+<pre>
+&lt;variable name=&quot;polish.TextField.useDirectInput&quot; value=&quot;true&quot;/&gt;
+&lt;variable name=&quot;polish.TextField.usePredictiveInput&quot; value=&quot;true&quot;/&gt;
+&lt;variable name=&quot;polish.TextField.includeInputInfo&quot; value=&quot;true&quot;/&gt;
+&lt;variable name=&quot;smileys&quot; value=&quot;{new Smiley(new String[]{":-)",":)"},"/smiley_1.png","smile"),new Smiley(new String[]{":-P",":P"},"/smiley_2.png","cheekie"),new Smiley(new String[]{":-(",":("},"/smiley_3.png","ouch")}&quot;/&gt;
+</pre>	
 	<p>
 	Specific design attributes:
 	</p>

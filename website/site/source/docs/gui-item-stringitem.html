@@ -9,7 +9,7 @@
 		<li class="relatedtechnologiesheader">Related Topics:</li>
 		<li><a href="gui-concepts.html">GUI Concepts</a></li>
 		<li><a href="gui-css-basics.html">CSS Basics</a></li>
-		<li><a href="l"></a></li>
+		<li><a href=""></a></li>
 	</ul>
 	<%index %>
 	<p>
@@ -19,54 +19,184 @@
 	</p>
 	<h2 id="StringItem-Design">Design</h2>
 	<p>
-	<img src="<%= basedir%>images/.png"  width="" height="" alt="" />	
+	<img src="<%= basedir%>images/gui-texteffect-alienglow.png"  width="145" height="24" alt="A StringItem with an alien-glow text-effect" />	
 	</p>
 	<p>
-	Specific design attributes of StringItem:
+	You can vary the design of StringItems greatly by using bitmapfonts or text-effects, the above design uses following settings:
+	</p>
+<pre>
+title {
+        //#if polish.midp2 and polish.hasFloatingPoint
+                text-effect: alien-glow;
+        //#endif
+        layout: horizontal-center | horizontal-expand;
+        font {
+                face: proportional;
+                size: large;
+                style: bold;
+                color: #fff;
+        }
+        background-color: #fff;
+}
+</pre>
+	<p>
+	Here's a list of all StringItem specific design attributes:
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Applies To&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Explanation</th></tr>
 	<tr>
-		<td></td><td></td><td></td><td></td>
+		<td>font-color</td>
+		<td>black</td>
+		<td>color definition</td>
 		<td>
-		</td>
-	</tr>
-	<tr>
-		<td></td><td></td><td></td><td></td>
-		<td>
-		</td>
-	</tr>
-	<tr>
-		<td></td><td></td><td></td><td></td>
-		<td>
+		Either a direct definition or a reference to a color from the <code>colors</code> section of your <i>polish.css</i> file.
 <pre>
+font-color: #a00;
 </pre>
 		</td>
 	</tr>
 	<tr>
-		<td></td><td></td><td></td><td></td>
+		<td>font-style</td>
+		<td>normal</td>
+		<td>normal/default/plain, bold, italic/cursive, underlined/underline</td>
+		<td>
+		The style of the font - you can mix different styles:
+<pre>
+font-style: bold | italic;
+</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>font-size</td>
+		normal</td>
+		<td><td>small/little, normal/default/medium, large/big</td>
+		<td>The size of the font.
+		</td>
+	</tr>
+	<tr>
+		<td>font-face</td>
+		<td>normal</td>
+		<td>system/default/normal, proportional, monospace</td>
+		<td>
+		The font face - often there are only two faces available: proportional and monospace - the system font face is
+		usually the proportional one.
+<pre>
+font-face: monospace;
+</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>font-bitmap</td>
+		<td>-</td>
+		<td>URL</td>
+		<td>URL of the bitmapfont that should be used:
+<pre>
+font-bitmap: url( arial.bmf );
+</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>text-horizontal-adjustment</td>
+		<td>0</td>
+		<td>integer</td>
+		<td>
+		Adjusts the text by the specified number of pixels horizontally. Negative values move the text to the left.
+<pre>
+text-horizontal-adjustment: -5;
+</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>text-vertical-adjustment</td>
+		<td>0</td>
+		<td>integer</td>
+		<td>Adjusts the text by the specified number of pixels vertically. Negative values move the text to the top.
+		</td>
+	</tr>
+	<tr>
+		<td>text-effect</td>
+		<td>-</td>
+		<td>see <a href="#StringItem-texteffects">text-effects</a></td>
 		<td>
 <pre>
+text-effect: shadow;
+</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>text-wrap</td>
+		<td>true</td>
+		<td>true, false</td>
+		<td>Defines whether the text should be wrapped into the next row if it is too long for the current one.
+<pre>
+text-wrap: false;
+</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>text-wrap-animate</td>
+		<td>true</td>
+		<td>true, false</td>
+		<td>You can deactivate animations for texts that should not be wrapped and which are too long for a single line by setting 
+		<code>text-wrap-animate</code> to <code>false</code>.
+<pre>
+text-wrap-animate: false;
 </pre>
 		</td>
 	</tr>
 	</table>
-	
-	<h2 id="StringItem-Configuration">Configuration</h2>
+	<h2 id="StringItem-bitmapfonts">Bitmap Fonts</h2>
 	<p>
+	Bitmap fonts allow you to use any True Type Font in your application. Use the <i>font-editor</i> situated in the 
+	<i>${polish.home}/bin</i> folder to create bitmap fonts (*.bmf) out of any true type fonts.  Such
+bitmap fonts can be used by the J2ME Polish GUI with the <code>font-bitmap</code> CSS-attribute or directly with the 
+<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/BitMapFont.html" target="_blank">de.enough.polish.util.BitMapFont</a> 
+utiliy class.
+<br /><br />
+<img src="../images/fonteditor-osx.png" alt="The font editor in action." />
+</p>
+<p>
+Since the font-editor does no yet optimize the generated font-images, you might want to optimize the images outside 
+of the editor: Just select &quot;File -> Save PNG-Image As...&quot; and edit the image in your favorite image editing 
+program, e.g. The Gimp. You might also want to use PNG-image optimizer like PNG-Crush (http://pmt.sourceforge.net/pngcrush/) 
+or PNG-Out (http://advsys.net/ken/utils.htm#pngout). When you're done, just reload the PNG-image by 
+selecting &quot;File -> Open PNG-Image&quot;.
+</p><p>
+You can also fine-tune every aspect of the bitmap-font by opening it in the BinaryEditor: 
+select &quot;File -> Open in Binary Editor&quot; to do so.
+</p>
+<p>While editing bitmap fonts you have to take into account any character that you may need to render with that font. You need
+to include these characters in the font editor.
+</p>
 <pre>
-&lt;variable name=&quot;&quot; value=&quot;&quot; /&gt;
+font-bitmap: url( fantasy.bmf );
 </pre>
+	
+	<h2 id="StringItem-texteffects">Text Effects</h2>
+	<p>
+	Text effects provide you with an easy way to spice up your fonts without needing to care
+	about sizes and availability of characters like for bitmap fonts. You can even go
+	and <a href="extending-texteffect.html">code your own text-effect</a>!
 	</p>
+	<p>Please look here for a <a href="gui-visualguide.html#text-effects">complete list of available text-effects</a>.</p>
 	
 	<h2 id="StringItem-Programming">Programming</h2>
 	<p>
-	Please compare the  sample application.
+	Program J2ME Polish like normal MIDP 2.0 StringItems, e.g.
+<pre>
+//#style itemText
+StringItem item = new StringItem(&quot;info: &quot;, &quot;Welcome to J2ME Polish!&quot;);
+form.append( item );
+</pre>
 	</p>
 	
 	<h2 id="StringItem-JavaDoc">JavaDoc</h2>
 	<p>
-		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/StringItem.html"></a>.
+		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/StringItem.html">StringItem</a>
+		<br />
+		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/TextEffect.html">TextEffect</a>
+		<br />
+		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/util/BitMapFont.html">BitMapFont</a>
 	</p>
 
 <%include end.txt %>
