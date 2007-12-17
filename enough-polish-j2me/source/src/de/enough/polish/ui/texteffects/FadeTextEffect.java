@@ -131,11 +131,11 @@ public class FadeTextEffect extends TextEffect {
 			String tmpStr = style.getProperty("text-fade-mode");
 			if (tmpStr!=null){
 				if (tmpStr.equals("fadein")){
-					this.fader.mode=this.fader.FADE_IN;
+					this.fader.mode=DrawUtil.FadeUtil.FADE_IN;
 				} else if (tmpStr.equals("fadeout")){
-					this.fader.mode=this.fader.FADE_OUT;
+					this.fader.mode=DrawUtil.FadeUtil.FADE_OUT;
 				} else {
-					this.fader.mode=this.fader.FADE_LOOP;
+					this.fader.mode=DrawUtil.FadeUtil.FADE_LOOP;
 				}
 			}
 		//#endif	
