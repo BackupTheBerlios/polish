@@ -142,15 +142,15 @@
 				</variables>
 				<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 				<resources
-					dir="${resource.dir}"
+					dir="resources/base"
 					defaultexcludes="yes"
 					excludes="readme.txt"
 				>
+					<root dir="resources/base/images" />
+					<root dir="resources/base/sounds" />
 					<!-- add the localization element for created localized
-					     versions of your application: 
-					<localization locales="de_DE, en_US" unless="test" />
-					<localization locales="en_US" if="test" />
-					-->
+					     versions of your application: -->
+					<localization locales="en_US" unless="test" />
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test or polish.blackberry" >
