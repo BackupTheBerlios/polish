@@ -158,8 +158,9 @@ public class RedirectHttpConnection
         if (resultCode == HttpConnection.HTTP_MOVED_TEMP ||  resultCode == HttpConnection.HTTP_MOVED_PERM || resultCode == HttpConnection.HTTP_SEE_OTHER || resultCode == HttpConnection.HTTP_TEMP_REDIRECT)
         {
           url = tmpHttpConnection.getHeaderField("Location");
+          tmpIn.close(); // close input stream - needed for moto devices, for example
           tmpHttpConnection.close();
-
+          tmpHttpConnection = null; // setting to null is needed for some series 40 devices
           if (++redirects > MAX_REDIRECTS)
           {
             // Too many redirects - give up.
@@ -174,8 +175,8 @@ public class RedirectHttpConnection
     }
     catch (IOException e)
     {
-      //debug
-      e.printStackTrace();
+    	//#debug error
+    	System.out.println("Unable to redirect" + e);
     }
     
     this.httpConnection = tmpHttpConnection;
@@ -430,6 +431,24 @@ public class RedirectHttpConnection
     // Check if there is a connection to actually close.
     if (this.httpConnection != null)
     {
+    	if (this.inputStream != null) {
+    		try {
+    			this.inputStream.close();
+    		} catch (Exception e) {
+    			//#debug error
+    			System.out.println("Error while closing input stream" + e);
+    		}
+    		this.inputStream = null;
+    	}
+    	if (this.byteArrayOutputStream != null) {
+    		try {
+    			this.byteArrayOutputStream.close();
+    		} catch (Exception e) {
+    			//#debug error
+    			System.out.println("Error while closing output stream" + e);
+    		}
+    		this.byteArrayOutputStream = null;
+    	}
       this.httpConnection.close();
       this.httpConnection = null;
     }
