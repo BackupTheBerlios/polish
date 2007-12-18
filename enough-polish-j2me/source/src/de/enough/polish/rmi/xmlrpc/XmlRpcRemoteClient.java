@@ -200,8 +200,9 @@ public class XmlRpcRemoteClient extends RemoteClient
 			if (connection != null) {
 				try {
 					connection.close();
-					// on some SE devices it happens fairly regularly that no further HttpConnection can be established - possibly because former ones have not been garbage collected yet.
-					System.gc();
+					// on some Series 40 devices we need to set the connection to null,
+					// which is weird, to say the least.  Nokia, anyone?
+					connection = null;
 				} catch (Exception e) {
 					// ignore
 				}

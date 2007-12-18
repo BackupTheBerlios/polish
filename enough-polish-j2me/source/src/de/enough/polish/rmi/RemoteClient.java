@@ -213,6 +213,9 @@ public class RemoteClient implements Runnable {
 			if (connection != null) {
 				try {
 					connection.close();
+					// on some Series 40 devices we need to set the connection to null,
+					// which is weird, to say the least.  Nokia, anyone?
+					connection = null;
 				} catch (Exception e) {
 					// ignore
 				}
