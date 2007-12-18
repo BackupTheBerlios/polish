@@ -478,6 +478,7 @@ public class PathClassLoader extends ClassLoader {
      */
     public void addPathFile(File pathComponent) throws IOException {
     	if (!pathComponent.exists()) {
+    		System.out.println("Warning: unable to find JAR " + pathComponent.getAbsolutePath() );
     		return;
     	}
         this.pathComponents.addElement(pathComponent);

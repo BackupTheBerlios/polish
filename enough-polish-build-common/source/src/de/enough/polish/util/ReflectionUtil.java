@@ -462,6 +462,23 @@ public final class ReflectionUtil {
 		}
 	}
 
+	public static Object callMethod(String methodName, Object object, Object value) 
+	throws NoSuchMethodException 
+	{
+		Class[] signature = new Class[]{ value.getClass() };
+		return callMethod( methodName, object, signature, new Object[]{ value } );
+	}
+
+	public static Object callMethod(String methodName, Object object, Object[] values) 
+	throws NoSuchMethodException 
+	{
+		Class[] signature = new Class[ values.length ];
+		for (int i = 0; i < signature.length; i++) {
+			signature[i] = values[i].getClass();
+		}
+		return callMethod( methodName, object, signature, values );
+	}
+
 	public static Object callMethod(String methodName, Object object, Class[] signature, Object[] values) 
 	throws NoSuchMethodException 
 	{
