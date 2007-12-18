@@ -682,6 +682,16 @@
 			<fileset dir="setup/samples/browser" excludes="**/macosx/**, **/CVS" />
 			<fileset dir="../enough-polish-sample-browser" includes="resources/**/*.*" excludes="**/CVS"/>
 		</copy>
+		<!-- copy rss sample application -->
+		<mkdir dir="tmp/samples/rss/source/src" />
+		<copy todir="tmp/samples/rss/source/src">
+			<fileset dir="../enough-polish-sample-rssbrowser/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/rss/" 
+			>
+			<fileset dir="setup/samples/rss" excludes="**/macosx/**, **/CVS" />
+			<fileset dir="../enough-polish-sample-rssbrowser" includes="resources/**/*.*" excludes="**/CVS"/>
+		</copy>
 		<!-- copy chartitem sample application -->
 		<mkdir dir="tmp/samples/chartitem/source/src" />
 		<copy todir="tmp/samples/chartitem/source/src">
