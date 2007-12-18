@@ -729,7 +729,7 @@ public class TextField extends StringItem
 				//#message polish.TextField.Symbols=${polish.TextField.Symbols}=${ stringarray(polish.TextField.Symbols)}
 				//#= private static String[] definedSymbols = ${ stringarray(polish.TextField.Symbols)}; 
 			//#else
-				protected static String[] definedSymbols = {"@","/","\\","<",">","(",")","{","}",".","+","-","*",":","_","\"","#","$","%",":)",":(",";)",":x",":D",":P"};
+				protected static String[] definedSymbols = {"&","@","/","\\","<",">","(",")","{","}","[","]",".","+","-","*",":","_","\"","#","$","%",":)",":(",";)",":x",":D",":P"};
 				//private static String definedSymbols = "@/\\<>(){}.,+-*:_\"#$%";
 			//#endif
 				
