@@ -222,11 +222,11 @@ public class FadingAlienGlowTextEffect extends TextEffect {
 			String tmpStr = style.getProperty("text-fading-alien-glow-mode");
 			if (tmpStr!=null){
 				if (tmpStr.equals("fadein")){
-					this.outerFader.mode=this.outerFader.FADE_IN;
+					this.outerFader.mode = DrawUtil.FadeUtil.FADE_IN;
 				} else if (tmpStr.equals("fadeout")){
-					this.outerFader.mode=this.outerFader.FADE_OUT;
+					this.outerFader.mode = DrawUtil.FadeUtil.FADE_OUT;
 				} else {
-					this.outerFader.mode=this.outerFader.FADE_LOOP;
+					this.outerFader.mode = DrawUtil.FadeUtil.FADE_LOOP;
 				}
 			}
 		//#endif	
