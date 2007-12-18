@@ -11,8 +11,8 @@
 		<li><a href="extending-itemview.html">Item Views</a></li>
 		<li><a href="extending-border.html">Borders</a></li>
 		<li><a href="extending-background.html">Backgrounds</a></li>
-		<li><<a href="gui-visualguide.html#text-effects">Existing TextEffects</a></li>
-		<li><<a href="gui-item-stringitem.html">StringItem</a></li>
+		<li><a href="gui-visualguide.html#text-effects">Existing TextEffects</a></li>
+		<li><a href="gui-item-stringitem.html">StringItem</a></li>
 	</ul>
 	<%index %>
 	<p>
@@ -67,7 +67,7 @@
 		<li><code>public static int[] getRgbData( String text, int textColor, Font font )</code>,
 			<code>public static int[] getRgbData(String text, int textColor, Font font, int x, int y, int width, int height )</code>,
 			<code>public static int[] getRgbData(String text, int textColor, Font font, int x, int y, int width, int height, int transparentColor)</code>: 
-			Converts a font and a text into an RGB integer array.
+			Converts a font and a text into an RGB integer array on MIDP 2.0+ devices.
 		</li>
 		<li><code>public void showNotify()</code>: Notifies the effect that it is about to being shown.</li>
 		<li><code>public void hideNotify()</code>: Notifies this effect that the corresponding item is to be hidden.</li>
@@ -101,15 +101,11 @@ import de.enough.polish.ui.TextEffect;
 
 /**
  * Paints a shadow behind a text.
- * Activate the shadow text effect by specifying <b>text-effect: shadow;</b> in your polish.css file.
- * You can finetune the effect with following attributes:
- * 	 <b>text-shadow-color</b>: the color of the shadow, defaults to black.
- * 	 <b>text-shadow-orientation</b>: the orientation of the shadow, either bottom-right, bottom-left, 
- *		top-right, top-left, bottom, top, right or left. Defaults to bottom-right.
- * 	 <b>text-shadow-x</b>: use this for finetuning the shadow's horizontal position. Negative values move the shadow to the left.
- * 	 <b>text-shadow-y</b>: use this for finetuning the shadow's vertical position. Negative values move the shadow to the top.
+ * @author your name here
  */
-public class ShadowTextEffect extends TextEffect {
+public class MyShadowTextEffect 
+<b>extends TextEffect</b>
+{
 	
 	public static final int ORIENTATION_BOTTOM_RIGHT = 0;
 	public static final int ORIENTATION_BOTTOM_LEFT = 1;
@@ -127,25 +123,24 @@ public class ShadowTextEffect extends TextEffect {
 	/**
 	 * Creates a shadow effect.
 	 */
-	<b>public ShadowTextEffect()</b> {
+	<b>public MyShadowTextEffect()</b> {
 		super();
 	}
 	
 	
-	//#if polish.css.text-shadow-color || polish.css.text-shadow-x || polish.css.text-shadow-y || polish.css.text-shadow-orientation
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.TextEffect#setStyle(de.enough.polish.ui.Style)
 	 */
 	<b>public void setStyle(Style style)</b> {
 		super.setStyle(style);
-		//#ifdef polish.css.text-shadow-color
-			Integer colorInt = style.getIntProperty("text-shadow-color");
+		//#ifdef polish.css.text-myshadow-color
+			Integer colorInt = style.getIntProperty("text-myshadow-color");
 			if (colorInt != null) {
 				this.shadowColor = colorInt.intValue();
 			}
 		//#endif
-		//#ifdef polish.css.text-shadow-orientation
-			Integer orientationInt = style.getIntProperty("text-shadow-orientation");
+		//#ifdef polish.css.text-myshadow-orientation
+			Integer orientationInt = style.getIntProperty("text-myshadow-orientation");
 			if (orientationInt != null) {
 				switch ( orientationInt.intValue() ) {
 				case ORIENTATION_BOTTOM_RIGHT: 
@@ -182,14 +177,14 @@ public class ShadowTextEffect extends TextEffect {
 				}
 			}
 		//#endif
-		//#ifdef polish.css.text-shadow-x
-			Integer xInt = style.getIntProperty("text-shadow-x");
+		//#ifdef polish.css.text-myshadow-x
+			Integer xInt = style.getIntProperty("text-myshadow-x");
 			if (xInt != null) {
 				this.xOffset = xInt.intValue();
 			}
 		//#endif
-		//#ifdef polish.css.text-shadow-y
-			Integer yInt = style.getIntProperty("text-shadow-y");
+		//#ifdef polish.css.text-myshadow-y
+			Integer yInt = style.getIntProperty("text-myshadow-y");
 			if (yInt != null) {
 				this.yOffset = yInt.intValue();
 			}
@@ -198,7 +193,6 @@ public class ShadowTextEffect extends TextEffect {
 		System.out.println("ShadowTextEffect.setStyle(): color=" 
 			+ Integer.toHexString(this.shadowColor) + ", x=" + this.xOffset + ", y=" + this.yOffset );
 	}
-	//#endif
 
 
 
@@ -219,34 +213,78 @@ public class ShadowTextEffect extends TextEffect {
 	<p>
 	</p>
 	
-	<h2 id="registration">Registering Your ItemView</h2>
+	<h2 id="registration">Registering Your Text Effect</h2>
 	<p>
 	You can now register your implementation for easier usage in <i>${polish.home}/custom-css-attributes.xml</i>:
+	</p>
 <pre>
-&lt;attribute name=&quot;view-type&quot;&gt;
-	&lt;mapping from=&quot;clock-binary-text&quot; 
-	            to=&quot;new de.enough.polish.ui.clockviews.BinaryTextClockView()&quot; 
-	            appliesTo=&quot;ClockItem&quot; /&gt;
+&lt;attribute name=&quot;text-effect&quot;&gt;
+	&lt;mapping from=&quot;myshadow&quot; 
+	            to=&quot;new de.enough.polish.ui.texteffects.MyShadowTextEffect()&quot; 
+	/&gt;
 &lt;/attribute&gt;
 </pre>
+	<p>Since you are supporting some additional CSS attributes within the <code>setStyle</code> method, you need
+	to register these attributes within <i>${polish.home}/custom-css-attributes.xml</i> as well:
 	</p>
-	
-	<h2 id="usage">Using Your ItemView</h2>
-	<p>
-	You use the corresponding item just like normal in your source code:
 <pre>
-//#style myClock
-ClockItem clockItem = new ClockItem( "time: " );
-form.append( clockItem );
+	&lt;attribute
+		name=&quot;text-myshadow-color&quot;
+		type=&quot;color&quot;
+		appliesTo=&quot;MyShadowTextEffect&quot;
+		description=&quot;Sets the color of a shadow for the shadow font-effect.&quot;
+		default=&quot;black&quot;
+		id=&quot;89&quot;
+	/&gt;
+	
+	&lt;attribute
+		name=&quot;text-myshadow-orientation&quot;
+		type=&quot;integer&quot;
+		appliesTo=&quot;MyShadowTextEffect&quot;
+		description=&quot;Sets the orientation of a shadow for the shadow font-effect.&quot;
+		default=&quot;bottom-right&quot;
+		values=&quot;bottom-right, bottom-left, top-right, top-left, bottom, top, right, left&quot;
+		id=&quot;90&quot;
+	/&gt;
+
+	&lt;attribute
+		name=&quot;text-myshadow-x&quot;
+		type=&quot;integer&quot;
+		appliesTo=&quot;MyShadowTextEffect&quot;
+		description=&quot;Sets the x-orientation in pixels of a shadow for the shadow font-effect.&quot;
+		default=&quot;1&quot;
+		id=&quot;91&quot;
+	/&gt;
+	
+	&lt;attribute
+		name=&quot;text-myshadow-y&quot;
+		type=&quot;integer&quot;
+		appliesTo=&quot;MyShadowTextEffect&quot;
+		description=&quot;Sets the y-orientation in pixels of a shadow for the shadow font-effect.&quot;
+		default=&quot;1&quot;
+		id=&quot;92&quot;
+	/&gt;
+</pre>
+
+	<h2 id="usage">Using Your Text Effect</h2>
+	<p>
+	You use the corresponding effect just for all items and screen elements that are based on 
+	<a href="gui-item-stringitem.html">StringItem</a>, for example 
+	<a href="gui-item-textfield.html">TextFields</a>, <a href="gui-screenelement-title.html">screen titles</a>, 
+	<a href="gui-screenelement-ticker.html">screen tickers</a>, or <a href="gui-css-basics.html#label">item labels</a>.
+<pre>
+//#style myShadow
+StringItem stringItem = new StringItem( "label: ", "hello world" );
+form.append( stringItem );
 </pre>
 	</p>
 	<p>
-	Now use your ItemView by specifying it in the appropriate style of your <i>polish.css</i> file:
+	Now use your effect by specifying it in the appropriate style of your <i>polish.css</i> file:
 <pre>
-.myClock {
+.myShadow {
 	border-type: round-rect;
 	border-color: gray;
-	<b>view-type: clock-binary-text;</b>
+	<b>text-effect: myshadow;</b>
 }
 </pre>
 	</p>
@@ -254,25 +292,21 @@ form.append( clockItem );
 	In case you skipped the registration of your implementation in <i>${polish.home}/custom-css-attributes.xml</i> you can
 	also reference your implementation directly:
 <pre>
-.myClock {
+.myShadow {
 	border-type: round-rect;
 	border-color: gray;
-	<b>view-type: new de.enough.polish.ui.clockviews.BinaryTextClockView();</b>
+	<b>text-effect: new de.enough.polish.ui.texteffects.MyShadowTextEffect();</b>
 }
 </pre>
 	</p>
 	
 	<p>
 	That's it - you've done it!
-	<br />
-<img src="../images/extending-itemview-clock.png" width="218" height="77" alt="the binary text view in action" />	
 	</p>
 
 	<h2 id="JavaDoc">JavaDoc</h2>
 	<p>
-		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ItemView.html">ItemView</a>
-		<br />
-		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ContainerView.html">ContainerView</a>
+		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/TextEffect.html">TextEffect</a>
 	</p>
 
 <%include end.txt %>
