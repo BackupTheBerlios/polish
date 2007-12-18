@@ -1,0 +1,63 @@
+<documentation>
+	<page file="install.html" title="Installation">
+		<page file="migration.html" title="Migration" />
+		<page file="integration.html" title="Ide Integration">
+			<page file="netbeans.html" title="Netbeans">
+				<page file="netbeans-install.html" title="Installation" />
+				<page file="netbeans-newproject.html" title="Creating Projects" />
+				<page file="netbeans-running.html" title="Running and Debugging" />
+			</page>
+			<page file="mepose.html" title="Eclipse">
+				<page file="mepose-features.html" title="Features" />
+				<page file="mepose-install.html" title="Installation" />
+				<page file="mepose-wizard.html" title="Creating Projects" />
+				<page file="mepose-convert.html" title="Converting Projects" />
+				<page file="mepose-running.html" title="Running and Debugging" />
+			</page>
+		</page>
+	</page>
+	<page file="gui-concepts.html" title="Design">
+		<page file="gui-visualguide.html" title="Visual Guide" />
+		<page file="gui-css-basics.html" title="CSS Basics" />
+		<page file="gui-programming.html" title="Programming Concepts" />
+		<page file="gui-localization.html" title="GUI Localozation" />
+		<page file="gui-configuration.html" title="Configuration Options" />
+	</page>
+	<page file="customization.html" title="Customization" />
+	<page file="localization.html" title="Localization" />
+	<page file="persistence.html" title="Persistence" />
+	<page file="rmi.html" title="RMI/RPC" />
+	<page file="build.html" title="Building" >
+		<page file="" title="Resource Handling:" >
+			<page file="resource-assembling.html" title="Resource Assembling" />
+			<page file="resource-conversions.html" title="Resource Conversions" />
+		</page>
+		<page file="" title="Preprocessing:" >
+			<page file="preprocessing-directives.html" title="Directives" />
+			<page file="preprocessing-propertyfunctions.html" title="Property Functions" />
+			<page file="preprocessing-variables.html" title="Variables &amp; Symbols" />
+		</page>
+		<page file="" title="build.xml:" >
+			<page file="build-taskdef.html" title="Task Definition" />
+			<page file="build-info.html" title="Info Section" />
+			<page file="build-deviceRequirements.html" title="Device Requirements Section" />
+			<page file="build-build.html" title="Build Section" />
+			<page file="build-emulator.html" title="Emulator Section" />
+		</page>
+		
+	</page>
+	<page file="programming.html" title="Programming" >
+		<page file="utilities.html" title="Utility Classes" />
+		<page file="serialization.html" title="Serialization" />
+		<page file="java5.html" title="Java 5 Syntax" />
+		<page file="porting.html" title="Porting" />
+	</page>
+	<page file="platform.html" title="Platforms" >
+		<page file="platform-midp.html" title="MIDP" />
+		<page file="platform-blackberry.html" title="BlackBerry" />
+		<page file="platform-doja.html" title="DoJa" />
+		<page file="platform-javase.html" title="Java SE" />
+		<page file="platform-palm.html" title="Palm" />
+	</page>
+	<page file="javadoc.html" title="JavaDoc" />
+</documentation>
