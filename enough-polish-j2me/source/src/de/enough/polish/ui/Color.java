@@ -231,11 +231,11 @@ public class Color implements Serializable {
 	/**
 	 * Retrieves a string representation of this color.
 	 * 
-	 * @return the color as a string, when an IllegalStateException occurs, the super.toString() implementation will be used instead
+	 * @return the color as a hex string, when an IllegalStateException occurs, the super.toString() implementation will be used instead
 	 */
 	public String toString() {
 		try {
-			return "" + getColor();
+			return Integer.toHexString( getColor() );
 		} catch (IllegalStateException e) {
 			return super.toString();
 		}
