@@ -103,7 +103,7 @@ public class SmileyTextEffect extends TextEffect {
 	public SmileyTextEffect() {
 		super();
 		
-		//#ifdef smileys:defined
+		//#if smileys:defined
 			//#= smileyList = new Smiley[]${smileys};
 		//#else
 			smileyList = new Smiley[0];		
@@ -149,7 +149,7 @@ public class SmileyTextEffect extends TextEffect {
 			{
 				stringWidth += this.smileyWidth;
 				
-				position += currentSmiley.length();
+				position += this.currentSmiley.length();
 			}
 			
 			str = str.substring(position,str.length());	

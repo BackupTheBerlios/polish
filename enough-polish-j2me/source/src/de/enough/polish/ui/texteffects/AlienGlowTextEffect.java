@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && polish.midp2 && polish.cldc1.1
+//#condition polish.usePolishGui && polish.midp2 && polish.hasFloatingPoint
 /**
  * 
  */
