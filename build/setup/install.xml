@@ -161,6 +161,21 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
             <parsable targetfile="$INSTALL_PATH/samples/rmi/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/rmi/nbproject/project.properties" type="shell" /> 
         </pack>
+
+        <pack name="XML-RPC Sample Application" required="no" preselected="yes">
+            <description>A sample application that shows how to call XML-RPC servers using the RMI (remote method invocation) framework of J2ME Polish.</description>
+            <file src="samples/rmi-xmlrpc/source" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
+            <file src="samples/rmi-xmlrpc/resources" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
+            <file src="../setup/samples/rmi-xmlrpc/build.xml" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
+            <file src="../setup/samples/rmi-xmlrpc/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
+            <file src="../setup/samples/rmi-xmlrpc/nbproject" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
+            <file src="../setup/samples/rmi-xmlrpc/.classpath" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
+            <file src="../setup/samples/rmi-xmlrpc/.project" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
+            <parsable targetfile="$INSTALL_PATH/samples/rmi-xmlrpc/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/rmi-xmlrpc/.classpath" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/rmi-xmlrpc/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/rmi-xmlrpc/nbproject/project.properties" type="shell" /> 
+        </pack>
         
         <pack name="Fisheye Sample Application" required="no" preselected="yes">
             <description>A simple application demonstrating the fisheye view-type..</description>

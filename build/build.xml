@@ -652,6 +652,16 @@
 			<fileset dir="setup/samples/rmi" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-rmi" includes="resources/**/*.*" excludes="**/CVS"/>
 		</copy>
+		<!-- copy rmi-xmlrpc sample application -->
+		<mkdir dir="tmp/samples/rmi-xmlrpc/source" />
+		<copy todir="tmp/samples/rmi-xmlrpc/source">
+			<fileset dir="../enough-polish-sample-rmi-xmlrpc/source" includes="**/*.java,**/*.xml" excludes="**/macosx/**,**/CVS" />
+		</copy>
+		<copy todir="tmp/samples/rmi-xmlrpc/" 
+			>
+			<fileset dir="setup/samples/rmi-xmlrpc" excludes="**/macosx/**,**/CVS" />
+			<fileset dir="../enough-polish-sample-rmi-xmlrpc" includes="resources/**/*.*" excludes="**/CVS"/>
+		</copy>
 		<!-- copy java5 sample application -->
 		<mkdir dir="tmp/samples/java5/source/src" />
 		<copy todir="tmp/samples/java5/source/src">
