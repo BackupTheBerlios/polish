@@ -79,6 +79,7 @@ public class RssTagHandler
 	private String url;
 	private Command linkCommand;
 	private ItemCommandListener itemListener;
+	private boolean includeDescriptions;
 
 	//#if polish.midp2
 	public RssTagHandler(Command linkCommand, javax.microedition.lcdui.ItemCommandListener listener)
@@ -177,13 +178,13 @@ public class RssTagHandler
 						this.description = parser.getText();
 						// Description can be encoded HTML. Decode it.
 						this.description = decodeHtml(this.description);
-
-						try {
-							this.browser.loadPartialPage(new StringReader(this.description));
-						} catch (IOException e) {
-							//#debug error
-							System.out.println("Unable to load description " + this.description + e );
-							e.printStackTrace();
+						if (this.includeDescriptions) {
+							try {
+								this.browser.loadPartialPage(new StringReader(this.description));
+							} catch (IOException e) {
+								//#debug error
+								System.out.println("Unable to load description " + this.description + e );
+							}
 						}
 					}
 
@@ -229,5 +230,24 @@ public class RssTagHandler
 		}
 
 		this.browser.add(item);
+	}
+
+	/**
+	 * Determines whether RSS descriptions should be included directly on the overview page
+	 * 
+	 * @return true when descriptions should be included
+	 */
+	public boolean isIncludeDescriptions() {
+		return this.includeDescriptions;
+	}
+	
+
+	/**
+	 * Specifies whether RSS descriptions should be included directly on the overview page
+	 * @param includeDescriptions true when descriptions should be included
+	 */
+	public void setIncludeDescriptions(boolean includeDescriptions)
+	{
+		this.includeDescriptions = includeDescriptions;
 	}
 }

@@ -41,6 +41,7 @@ public class RssBrowser
 	implements CommandListener
 {
 	private ItemCommandListener rssItemCommandListener;
+	private RssTagHandler rssTagHandler;
 
 	public RssBrowser() {
 		this((Style) null);
@@ -59,7 +60,8 @@ public class RssBrowser
 	//#if polish.midp2
 	public RssBrowser(javax.microedition.lcdui.ItemCommandListener listener, Style style ) {
 		super( style );
-		new RssTagHandler(HtmlTagHandler.CMD_LINK, (ItemCommandListener) null).register(this);
+		this.rssTagHandler = new RssTagHandler(HtmlTagHandler.CMD_LINK, (ItemCommandListener) null); 
+		this.rssTagHandler.register(this);
 	}
 	//#endif
 	
@@ -72,7 +74,8 @@ public class RssBrowser
 	{
 		super(style);
 		this.rssItemCommandListener = listener;
-		new RssTagHandler(HtmlTagHandler.CMD_LINK, listener).register(this);
+		this.rssTagHandler = new RssTagHandler(HtmlTagHandler.CMD_LINK, listener); 
+		this.rssTagHandler.register(this);
 		if (listener instanceof DefaultRssItemCommandListener) {
 			DefaultRssItemCommandListener rssListener = (DefaultRssItemCommandListener) listener;
 			rssListener.setRssBrowser(this);
@@ -95,5 +98,31 @@ public class RssBrowser
 	public void commandAction(Command command, Displayable displayable)
 	{
 		handleCommand(command);
+	}
+	
+
+	/**
+	 * Determines whether RSS descriptions should be included directly on the overview page
+	 * 
+	 * @return true when descriptions should be included
+	 */
+	public boolean isIncludeDescriptions() {
+		if (this.rssTagHandler != null) {
+			return this.rssTagHandler.isIncludeDescriptions();
+		} else {
+			return false;
+		}
+	}
+	
+
+	/**
+	 * Specifies whether RSS descriptions should be included directly on the overview page
+	 * @param includeDescriptions true when descriptions should be included
+	 */
+	public void setIncludeDescriptions(boolean includeDescriptions)
+	{
+		if (this.rssTagHandler != null) {
+			this.rssTagHandler.setIncludeDescriptions(includeDescriptions);
+		}
 	}
 }
