@@ -1012,6 +1012,8 @@ public class TextField extends StringItem
 				this.helpItem.setText("type text here");
 			//#endif
 		//#endif
+
+		setString(text);
 	}
 	
 	//#if tmp.useNativeTextBox
