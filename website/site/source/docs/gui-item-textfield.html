@@ -236,7 +236,7 @@ variable is set to <code>true</code>:
 	
 	<p>
 	To use the predictive input in the application, the dictionary must be installed first. To do this,
-	please select "Install Predictive" from the menu:
+	please select "Install Predictive" from the menu of the application using predictive input:
 	</p>
 	
 	<img src="predictive.install.jpg"></img> 
@@ -247,7 +247,7 @@ variable is set to <code>true</code>:
 	<li>
 	The first mode installs the dictionary in a shared record store for all applications to use the same unique dictionary.
 	This mode is available to most of the devices supporting MIDP2 (exceptions are listed in the second mode).
-	The dictionary is contained with in a setup that will be downloaded and installed as an j2me application to the
+	The dictionary is contained within a setup that will be downloaded and installed as an j2me application to the
 	user's device. The user just needs to follow the instructions. (NOTE : Some devices will download the application
 	but will not automatically launch the setup. In this case, just start the setup manually)
 	</li>
@@ -266,6 +266,8 @@ variable is set to <code>true</code>:
 	<p>
 	<img src="predictive.install.jpg"></img> 
 	</p>
+	
+	<h3>Usage</h3>
 	
 	<p>
 	After the installation of the dictionary has finished, the predictive mode can be used.
@@ -287,6 +289,17 @@ variable is set to <code>true</code>:
 	<p>
 	The user can choose different input modes the enter the words, like "abc", "ABC" ... To indicate the predictive
 	mode a double arrow is heading the input mode in the info box:
+	</p>
+	
+	<p>
+	To disable and enable the predictive input of a single textfield, the commands "Disable Predicitive Input" and 
+	"Enable Predicitive Input" can be used. The user can also add new words to the dictionary be using the "Add Word" command in the menu. The added words
+	will be available in all applications using the predictive input unless the 
+	second installation mode was used (see above).
+	</p>
+	
+	<p>
+	
 	</p>
 	
 	<p>
@@ -351,6 +364,49 @@ variable is set to <code>true</code>:
 }
 	</pre>	
 	
+	<h3>Array mode</h3>
+	
+	<p>
+	Rather than using the dictionary the predictive input can be used with a simple array of words. These words
+	are checked if they match the predictive input of the user and the matches are returned with a method call.
+	</p>
+	
+	<p>
+	To initialize the array mode, the method <code>setPredictiveDictionary(TextField field, String[] words)</code>
+	of <code>UIAccess</code> must be called. The method takes two arguments : the array of <code>String</code> objects
+	and the textfield that should be used to provide the input to filter strings. A call with <code>null</code> as the array
+	resets the source for the given textfield to the dictionary.
+	</p>
+	
+	<pre>
+	TextField myField = new TextField("title","content",100,TextField.ANY);
+
+	String[] cities = new String[5];
+
+	cities[0] = "Amsterdam";
+	cities[1] = "Bombay";
+	cities[2] = "Bremen";
+	cities[3] = "Paris";
+	cities[4] = "New York";
+	
+	UIAccess.setPredictiveDictionary(myField,cities);</pre>
+	
+	<p>
+	If the user enters a sequence of numbers (similar to the normal dictionary mode) the predictive input mode internally
+	filters out the strings that don't match. To obtain the results the method <code>getResults()</code> of the
+	<code>PredicitveAccess</code> object inside the textfield must be called which returns an <code>ArrayList</code> of strings. 
+	</p>
+	
+	<pre>
+	ArrayList results = mytextfield.getPredictiveAccess().getResults();</pre>
+	
+	<p>
+	The method to obtain the results is usually called in the <code>itemStateChanged()</code> callback of the interface 
+	<code>ItemStateListener</code> so that everytime the user enters a number the results are obtained and processed.
+	The source set of strings for the array mode can be changed everytime by calling 
+	<code>setPredictiveDictionary(TextField field, String[] words)</code>.
+	</p>
+	
 	<h2 id="textfield-Programming">Programming</h2>
 	<p>
 	You can use 
@@ -374,10 +430,18 @@ variable is set to <code>true</code>:
 		<li><code>UiAccess.setTextfieldHelp(TextField field, String text)</code>: Sets the helper text that is being shown 
 			when the text of a TextField is empty - can only be used when <code>polish.TextField.showHelp</code> is <code>true</code>.
 		</li>
+		<li><code>UiAccess.setTextfieldInfo(TextField field, String info)</code>: 
+			Sets the strings that should be displayed to guide the user what to do with the textfield (like "type text here").
+			A value of <code>null</code> shows no info in the field.
+		</li>
+		<li><code>UiAccess.setSuppressCommands(TextField field, boolean suppress)</code>: Suppresses the textfields standard 
+		and predictive commands like Clear, Add Word etc.
+		</li>
+		<li><code>UiAccess.setWordNotFound(TextField field, Alert alert)</code>: 
+		Sets an custom alert to show the "Word not found" message of the predictive input.
+		</li>
+		
 		<!-- 
-		<li><code>UiAccess.</code>: </li>
-		<li><code>UiAccess.</code>: </li>
-		<li><code>UiAccess.</code>: </li>
 		<li><code>UiAccess.</code>: </li>
 		<li><code>UiAccess.</code>: </li>
 		<li><code>UiAccess.</code>: </li>
