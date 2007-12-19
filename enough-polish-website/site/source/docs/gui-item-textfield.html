@@ -224,10 +224,132 @@ variable is set to <code>true</code>:
 
 	<h2 id="textfield-PredictiveInputMode">Predictive Input Mode</h2>
 	<p>
+	The predictive input mode can be activated by setting the variable <code>polish.TextField.usePredictiveInput</code> to true.
+	<br/>
+	NOTE : The predictive input mode is not available for BlackBerry.
 	</p>
 <pre>
-&lt;variable name=&quot;&quot; value=&quot;&quot; /&gt;
+&lt;variable name=&quot;polish.TextField.usePredictiveInput&quot; value=&quot;true&quot; /&gt;
 </pre>
+
+	<h3>Installation</h3>
+	
+	<p>
+	To use the predictive input in the application, the dictionary must be installed first. To do this,
+	please select "Install Predictive" from the menu:
+	</p>
+	
+	<img src="predictive.install.jpg"></img> 
+	
+	<p>
+	There are two different installation modes depending on the device using the application: 
+	</p>
+	<li>
+	The first mode installs the dictionary in a shared record store for all applications to use the same unique dictionary.
+	This mode is available to most of the devices supporting MIDP2 (exceptions are listed in the second mode).
+	The dictionary is contained with in a setup that will be downloaded and installed as an j2me application to the
+	user's device. The user just needs to follow the instructions. (NOTE : Some devices will download the application
+	but will not automatically launch the setup. In this case, just start the setup manually)
+	</li>
+	
+	<p>
+	<img src="predictive.install.jpg"></img> 
+	</p>
+	
+	<li>
+	The second mode is used for devices that need signing or are just not capable to use a shared record store.
+	These devices include all MIDP1 and Motorola devices.
+	In this case, the dictionary is downloaded directly to the application without a setup and installed in a local record store. 
+	Every application using the predictive mode has to install its own dictionary.
+	</li>
+	
+	<p>
+	<img src="predictive.install.jpg"></img> 
+	</p>
+	
+	<p>
+	After the installation of the dictionary has finished, the predictive mode can be used.
+	The user just types the numbers equivalent to the letters of the word he would like to see in the textfield.
+	For each typed number the predictive mode will display the words suitable. For example, the combination
+	668437 will return the results "mother" and "videos" to choose from:
+	</p>
+	
+	<p>
+	<img src="predictive.install.jpg"></img> 
+	</p>
+	
+	<p>
+	To choose one of the possibilities, just press UP and select the desired word by pressing FIRE. The dictionary
+	remembers the most used selected words and resorts the list the next time the results are shown. For example, if 
+	you choose "videos" in the example above, the next time you type 668437 "videos" will be the first option.
+	</p>
+	
+	<p>
+	The user can choose different input modes the enter the words, like "abc", "ABC" ... To indicate the predictive
+	mode a double arrow is heading the input mode in the info box:
+	</p>
+	
+	<p>
+	<img src="predictive.install.jpg"></img> 
+	</p>
+	
+	<h3>Styling</h3>
+	
+	<p>
+	There are predefined styles to design the list of your predictive results to set in the CSS style of the textfield. 
+	If a style is missing the default will be used:
+	</p>
+	
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>predictive-containerstyle</td>
+	 <td>Points to a style to design the list of predictive results itself.
+	 </td>
+	</tr>
+	<tr>
+	 <td>predictive-choicestyle</td>
+	 <td>Points to a style to design the entry in a list of predictive results.
+	 </td>
+	</tr>
+	<tr>
+	 <td>predictive-choice-orientation</td>
+	 <td>Sets the orientation of the list of predictive results. Two values are permitted: "top" and "bottom".
+	 The default is "bottom" which draw the list in an descending order below the textfield. "top" draws
+	 the list in an ascending order above the textfield. This can be useful for textfields that 
+	 don't provide enough space below them to display the list.
+	 </td>
+	</tr>
+	</table>
+	
+	<p>
+	Here's an example how to style a predictive textfield:
+	</p>
+	
+	<pre>
+.myTextfield {
+	font-color: blue;
+	font-size: small;
+	predictive-containerstyle: myTextFieldContainer;
+	predictive-choicestyle:	myTextFieldChoice;
+	predictive-choicestyle: top;	
+}
+	</pre>
+
+	<pre>
+.myTextFieldContainer {
+	border-color: blue;
+	border-size: 1;
+}
+	</pre>
+	
+	<pre>
+.myTextfieldChoice {
+	font-color: blue;
+	font-size: small;
+	font-style: bold;
+}
+	</pre>	
 	
 	<h2 id="textfield-Programming">Programming</h2>
 	<p>
