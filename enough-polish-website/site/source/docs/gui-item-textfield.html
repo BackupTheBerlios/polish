@@ -238,9 +238,7 @@ variable is set to <code>true</code>:
 	To use the predictive input in the application, the dictionary must be installed first. To do this,
 	please select "Install Predictive" from the menu of the application using predictive input:
 	</p>
-	
-	<img src="predictive.install.jpg"></img> 
-	
+		
 	<p>
 	There are two different installation modes depending on the device using the application: 
 	</p>
@@ -252,34 +250,24 @@ variable is set to <code>true</code>:
 	but will not automatically launch the setup. In this case, just start the setup manually)
 	</li>
 	
-	<p>
-	<img src="predictive.install.jpg"></img> 
-	</p>
-	
+	<br/><br/>
+		
 	<li>
 	The second mode is used for devices that need signing or are just not capable to use a shared record store.
 	These devices include all MIDP1 and Motorola devices.
 	In this case, the dictionary is downloaded directly to the application without a setup and installed in a local record store. 
 	Every application using the predictive mode has to install its own dictionary.
 	</li>
-	
-	<p>
-	<img src="predictive.install.jpg"></img> 
-	</p>
-	
+		
 	<h3>Usage</h3>
 	
 	<p>
 	After the installation of the dictionary has finished, the predictive mode can be used.
 	The user just types the numbers equivalent to the letters of the word he would like to see in the textfield.
-	For each typed number the predictive mode will display the words suitable. For example, the combination
-	668437 will return the results "mother" and "videos" to choose from:
+	For each typed number the predictive mode will display the matching words. For example, the combination
+	668437 will return the results "mother" and "videos" to choose from.
 	</p>
-	
-	<p>
-	<img src="predictive.install.jpg"></img> 
-	</p>
-	
+		
 	<p>
 	To choose one of the possibilities, just press UP and select the desired word by pressing FIRE. The dictionary
 	remembers the most used selected words and resorts the list the next time the results are shown. For example, if 
@@ -288,29 +276,20 @@ variable is set to <code>true</code>:
 	
 	<p>
 	The user can choose different input modes the enter the words, like "abc", "ABC" ... To indicate the predictive
-	mode a double arrow is heading the input mode in the info box:
+	mode a double arrow is heading the input mode in the info box.
 	</p>
 	
 	<p>
 	To disable and enable the predictive input of a single textfield, the commands "Disable Predicitive Input" and 
-	"Enable Predicitive Input" can be used. The user can also add new words to the dictionary be using the "Add Word" command in the menu. The added words
-	will be available in all applications using the predictive input unless the 
+	"Enable Predicitive Input" can be used. The user can also add new words to the dictionary by using the "Add Word" 
+	command in the menu. The added words will be available in all applications using the predictive input unless the 
 	second installation mode was used (see above).
 	</p>
-	
-	<p>
-	
-	</p>
-	
-	<p>
-	<img src="predictive.install.jpg"></img> 
-	</p>
-	
+			
 	<h3>Styling</h3>
 	
 	<p>
-	There are predefined styles to design the list of your predictive results to set in the CSS style of the textfield. 
-	If a style is missing the default will be used:
+	There are predefined styles to design the list of your predictive results in a textfield. 
 	</p>
 	
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
@@ -375,7 +354,7 @@ variable is set to <code>true</code>:
 	To initialize the array mode, the method <code>setPredictiveDictionary(TextField field, String[] words)</code>
 	of <code>UIAccess</code> must be called. The method takes two arguments : the array of <code>String</code> objects
 	and the textfield that should be used to provide the input to filter strings. A call with <code>null</code> as the array
-	resets the source for the given textfield to the dictionary.
+	resets the source for the given textfield to the RMS dictionary.
 	</p>
 	
 	<pre>
