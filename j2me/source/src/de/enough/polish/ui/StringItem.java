@@ -182,17 +182,28 @@ public class StringItem extends Item
 	}
 	
 	
-	//#if polish.css.text-effect || polish.css.text-wrap
+	
+	//#if polish.css.text-effect
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)
+	 */
+	public void animate(long currentTime, ClippingRegion repaintRegion)
+	{
+		super.animate(currentTime, repaintRegion);
+		//#if polish.css.text-effect
+			if (this.textEffect != null) {
+				this.textEffect.animate( this, currentTime, repaintRegion );
+			}
+		//#endif
+	}
+	//#endif
+
+	//#if polish.css.text-wrap
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate()
 	 */
 	public boolean animate() {
 		boolean animated = super.animate();
-		//#if polish.css.text-effect 
-			if (this.textEffect != null) {
-				animated |= this.textEffect.animate();
-			}
-		//#endif
 		//#if polish.css.text-wrap
 			if (this.animateTextWrap) {
 				if (this.useSingleLine && this.clipText) {

@@ -269,9 +269,6 @@ extends ItemView
 			//System.out.println("starting init of " + myItems.length + " container items.");
 			for (int i=0; i< myItems.length; i++) {
 				Item item = myItems[i];
-				if (item.appearanceMode != Item.PLAIN) {
-					hasFocusableItem = true;
-				}
 				int availableWidth = this.columnsWidths[columnIndex];
 				//#if polish.css.colspan
 					int itemColSpan = item.colSpan;
@@ -319,6 +316,9 @@ extends ItemView
 				int width = item.getItemWidth( availableWidth, availableWidth );
 				//System.out.println("got item width");
 				int height = item.getItemHeight( availableWidth, availableWidth );
+				if (item.appearanceMode != Item.PLAIN) {
+					hasFocusableItem = true;
+				}
 								
 				if (height > maxRowHeight) {
 					maxRowHeight = height;

@@ -25,6 +25,7 @@
  */
 package de.enough.polish.ui;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -80,7 +81,6 @@ import javax.microedition.lcdui.Image;
 public class ImageItem extends Item
 {
 
-	//following variables are implicitely defined by getter- or setter-methods:
 	private Image image;
 	//#if polish.api.svg
 		
@@ -90,6 +90,8 @@ public class ImageItem extends Item
 	private Font font;
 	private int yOffset;
 	private int height = -1;
+	private int xOffset;
+	private int xOverlap;
 
 	/**
 	 * Creates a new <code>ImageItem</code> with the given label, image, layout
@@ -269,6 +271,7 @@ public class ImageItem extends Item
 	public void setImage( Image image)
 	{
 		this.image = image;
+		this.xOffset = 0;
 		requestInit();
 		repaint();
 	}
@@ -307,7 +310,19 @@ public class ImageItem extends Item
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.image != null) {
+			int clipX = 0;
+			int clipY = 0;
+			int clipWidth = 0;
+			int clipHeight = 0;
+			if (this.xOverlap != 0) {
+				clipX = g.getClipX();
+				clipY = g.getClipY();
+				clipWidth = g.getClipWidth();
+				clipHeight = g.getClipHeight();
+				g.clipRect( x, clipY, this.contentWidth, clipHeight );
+			}
 			y += this.yOffset;
+			x += this.xOffset;
 			if (this.isLayoutExpand) {
 				if (this.isLayoutCenter) {
 					g.drawImage( this.image, x + (rightBorder - x)/2 , y, Graphics.TOP | Graphics.HCENTER );
@@ -318,6 +333,9 @@ public class ImageItem extends Item
 				}
 			} else {
 				g.drawImage( this.image, x, y, Graphics.TOP | Graphics.LEFT );
+			}
+			if (this.xOverlap != 0) {
+				g.setClip(clipX, clipY, clipWidth, clipHeight);
 			}
 		} else if (this.altText != null) {
 			g.setColor( this.textColor );
@@ -330,9 +348,15 @@ public class ImageItem extends Item
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
+		this.xOverlap = 0;
 		if (this.image != null) {
 			this.contentHeight = this.image.getHeight();
 			this.contentWidth = this.image.getWidth();
+			if (this.contentWidth > lineWidth) {
+				this.xOverlap = this.contentWidth - lineWidth;
+				this.contentWidth = lineWidth;
+				this.appearanceMode = INTERACTIVE;
+			}
 		} else if (this.altText != null) {
 			if (this.font == null) {
 				this.font = Font.getDefaultFont();
@@ -377,4 +401,51 @@ public class ImageItem extends Item
 			}
 		//#endif
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
+	 */
+	protected boolean handleKeyPressed(int keyCode, int gameAction)
+	{
+		if (this.xOverlap != 0) {
+			if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6 && (this.xOffset + this.xOverlap > 0)) {
+				int offset = this.xOffset - 10;
+				if (offset + this.xOverlap < 0) {
+					offset = - this.xOverlap;
+				}
+				this.xOffset = offset;
+				return true;
+			} else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4 && (this.xOffset < 0)) {
+				int offset = this.xOffset + 10;
+				if (offset > 0) {
+					offset = 0;
+				}
+				this.xOffset = offset;
+				return true;
+			}
+		}
+		return super.handleKeyPressed(keyCode, gameAction);
+	}
+
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
+	 */
+	protected boolean handlePointerPressed(int relX, int relY)
+	{
+		if (this.xOverlap != 0) {
+			int offset = this.xOffset + ((this.contentWidth >> 1) - relX);
+			if (offset + this.xOverlap < 0) {
+				offset = - this.xOverlap;
+			} else if (offset > 0) {
+				offset = 0;
+			}
+			this.xOffset = offset;
+			return true;
+		}
+		return super.handlePointerPressed(relX, relY);
+	}
+	//#endif
+	
+	
 }

@@ -108,17 +108,17 @@ public class MIDP2LayoutView extends ContainerView {
                 this.currentContentHeight = 0;
                 for (int i = 0; i < myItems.length; i++) {
                     Item item = myItems[i];
-                    if (item.appearanceMode != Item.PLAIN) {
-                            hasFocusableItem = true;
-                    }
                     appendItemToRow(i, item, firstLineWidth, lineWidth);
+                    if (item.appearanceMode != Item.PLAIN) {
+                        hasFocusableItem = true;
+                    }
                 }
                 // Make the remaining items a final line
                 rowBreak(lineWidth, 0 );
-                if (!hasFocusableItem) {
-                	this.appearanceMode = Item.PLAIN;
+                if (hasFocusableItem) {
+                	this.appearanceMode = Item.INTERACTIVE;
                 } else {
-                    this.appearanceMode = Item.INTERACTIVE;
+                	this.appearanceMode = Item.PLAIN;
                 }
         }
 
@@ -135,6 +135,8 @@ public class MIDP2LayoutView extends ContainerView {
 	        	if (isExpand) {
 	        		item.setLayout( itemLayout ^ Item.LAYOUT_EXPAND );
 	        	}
+	        	// ensure that the style is set, so that style:hover styles are correctly applied:
+	        	item.getItemWidth(firstLineWidth, lineWidth);
                 if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
                         focusItem(index, item);
                         this.focusFirstElement = false;
@@ -187,9 +189,9 @@ public class MIDP2LayoutView extends ContainerView {
                                 - ((this.currentRow.size() - 1) * this.paddingHorizontal);
 //                RowItem[] requiredExpanded = null;
                 //Item[] requiredExpanded = null;
-                int requiredExpandedIndex = 0;
+                //int requiredExpandedIndex = 0;
                 int top = this.currentContentHeight;
-                int bottom = top + this.rowHeight;
+                //int bottom = top + this.rowHeight;
                 this.currentContentHeight += this.rowHeight + this.paddingVertical;
                 int currentWidth = 0;
                 for (int i = 0; i < this.currentRow.size(); i++) {

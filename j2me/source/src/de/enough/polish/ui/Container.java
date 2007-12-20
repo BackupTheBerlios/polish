@@ -944,7 +944,7 @@ public class Container extends Item {
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		//#debug
-		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled + ", firstLineWidth=" + firstLineWidth + ", lineWidth=" + lineWidth);
+		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled + ", autoFocusIndex=" + this.autoFocusIndex + ", firstLineWidth=" + firstLineWidth + ", lineWidth=" + lineWidth);
 
 		int myContentWidth = 0;
 		int myContentHeight = 0;
@@ -957,35 +957,33 @@ public class Container extends Item {
 			if (this.containerView != null) {
 				// additional initialization is necessary when a view is used for this container:
 				boolean requireScrolling = this.isScrollRequired;
-				synchronized (this) {
-					if (this.autoFocusEnabled) {
-						//#debug
-						System.out.println("Container/View: autofocusing element " + this.autoFocusIndex);
-						if (this.autoFocusIndex >= 0 ) {
-							for (int i = this.autoFocusIndex; i < myItems.length; i++) {
-								Item item = myItems[i];
-								if (item.appearanceMode != Item.PLAIN) {
-									// make sure that the item has applied it's own style first:
-									item.getItemHeight( firstLineWidth, lineWidth );
-									// now focus the item:
-									this.autoFocusEnabled = false;
-									requireScrolling = (this.autoFocusIndex != 0);
-									focus( i, item, 0 );
-									this.isScrollRequired = this.isScrollRequired && requireScrolling; // override setting in focus()
-									//this.containerView.focusedIndex = i; is done within focus(i, item, 0) already
-									//this.containerView.focusedItem = item;
-									//System.out.println("autofocus: found item " + i );
-									break;
-								}							
-							}
-						} else {
-							this.autoFocusEnabled = false;
-						}
-					}
-				}
 //				System.out.println("ABOUT TO CALL INIT CONTENT - focusedIndex of Container=" + this.focusedIndex);
 				this.containerView.initContent( this, firstLineWidth, lineWidth);
 				this.appearanceMode = this.containerView.appearanceMode;
+				if (this.autoFocusEnabled) {
+					//#debug
+					System.out.println("Container/View: autofocusing element starting at " + this.autoFocusIndex);
+					if (this.autoFocusIndex >= 0 && this.appearanceMode != Item.PLAIN) {
+						for (int i = this.autoFocusIndex; i < myItems.length; i++) {
+							Item item = myItems[i];
+							if (item.appearanceMode != Item.PLAIN) {
+								// make sure that the item has applied it's own style first (not needed since it has been initialized by the container view already):
+								//item.getItemHeight( firstLineWidth, lineWidth );
+								// now focus the item:
+								this.autoFocusEnabled = false;
+								requireScrolling = (this.autoFocusIndex != 0);
+								focus( i, item, 0 );
+								this.isScrollRequired = this.isScrollRequired && requireScrolling; // override setting in focus()
+								//this.containerView.focusedIndex = i; is done within focus(i, item, 0) already
+								//this.containerView.focusedItem = item;
+								//System.out.println("autofocus: found item " + i );
+								break;
+							}							
+						}
+					} else {
+						this.autoFocusEnabled = false;
+					}
+				}
 				this.contentWidth = this.containerView.contentWidth;
 				this.contentHeight = this.containerView.contentHeight;
 				
