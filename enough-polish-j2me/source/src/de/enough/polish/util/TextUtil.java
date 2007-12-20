@@ -49,7 +49,7 @@ public final class TextUtil {
 	/**
 	 * Splits the given String around the matches defined by the given delimiter into an array.
 	 * Example:
-	 * <code>TextUtil.split("one;two;three", ';', 3)</code> results into the array
+	 * <code>TextUtil.split("one;two;three", ';')</code> results into the array
 	 * <code>{"one", "two", "three"}</code>.<br />
 	 *
 	 * @param value the String which should be split into an array
@@ -76,6 +76,28 @@ public final class TextUtil {
 		// add tail:
 		strings.add( new String( valueChars, lastIndex, valueChars.length - lastIndex ) );
 		return (String[]) strings.toArray( new String[ strings.size() ] );
+	}
+	
+
+	/**
+	 * Splits the given String around the matches defined by the given delimiter into an array.
+	 * Example:
+	 * <code>TextUtil.splitAndTrim(" one; two; three", ';')</code> results into the array
+	 * <code>{"one", "two", "three"}</code>.<br />
+	 *
+	 * @param value the String which should be split into an array
+	 * @param delimiter the delimiter which marks the boundaries of the array 
+	 * @return an array, when the delimiter was not found, the array will only have a single element.
+	 */
+	public static String[] splitAndTrim(String value, char delimiter) 
+	{
+		String[] result = split(value, delimiter);
+		for (int i = 0; i < result.length; i++)
+		{
+			result[i] = result[i].trim();
+			
+		}
+		return result;
 	}
 	
 	/**
@@ -512,4 +534,5 @@ public final class TextUtil {
     return str1.toLowerCase().equals(str2.toLowerCase());
     //#endif
   }
+
 }
