@@ -33,6 +33,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 
 /**
@@ -2605,6 +2606,14 @@ public final class UiAccess {
 	//#endif
 
  	//#if polish.midp
+	/**
+	 * Allows the given words for the specified textfield.
+	 * Note that you need to enable the predictive input mode using the preprocessing variable
+	 * <code>polish.TextField.usePredictiveInputMode</code>.
+	 * 
+	 * @param field the textfield
+	 * @param words array of allowed words - use null to reset the allowed words to the default RMS dictionary
+	 */
 	public static void setPredictiveDictionary(javax.microedition.lcdui.TextField field, String[] words)
 	{
 		// ignore
@@ -2612,6 +2621,14 @@ public final class UiAccess {
 	//#endif
 
 	//#if polish.usePolishGui
+	/**
+	 * Allows the given words for the specified textfield.
+	 * Note that you need to enable the predictive input mode using the preprocessing variable
+	 * <code>polish.TextField.usePredictiveInputMode</code>.
+	 * 
+	 * @param field the textfield
+	 * @param words array of allowed words - use null to reset the allowed words to the default RMS dictionary
+	 */
 	public static void setPredictiveDictionary(TextField field, String[] words)
 	{
 	 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.TextField.usePredictiveInput
@@ -2629,6 +2646,41 @@ public final class UiAccess {
 			{
 				predictive.setPredictiveType(PredictiveAccess.ARRAY);
 			}
+		//#endif
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Retrieves matching words for the specified textfield.
+	 * Note that you need to enable the predictive input mode using the preprocessing variable
+	 * <code>polish.TextField.usePredictiveInputMode</code>.
+	 * 
+	 * @param field the textfield
+	 * @return ArrayList<String> of allowed words - null when no preditive mode is used
+	 */
+	public static ArrayList getPredictiveMatchingWords(javax.microedition.lcdui.TextField field)
+	{
+		return null;
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves matching words for the specified textfield.
+	 * Note that you need to enable the predictive input mode using the preprocessing variable
+	 * <code>polish.TextField.usePredictiveInputMode</code>.
+	 * 
+	 * @param field the textfield
+	 * @return ArrayList<String> of allowed words - null when no preditive mode is used
+	 */
+	public static ArrayList getPredictiveMatchingWords(TextField field)
+	{
+	 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.TextField.usePredictiveInput
+			PredictiveAccess predictive = field.getPredictiveAccess();
+			return predictive.getResults();
+		//#else
+			//# return null;
 		//#endif
 	}
 	//#endif
