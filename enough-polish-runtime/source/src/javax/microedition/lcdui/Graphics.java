@@ -3,6 +3,7 @@ package javax.microedition.lcdui;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import de.enough.polish.runtime.ImageListener;
@@ -537,6 +538,7 @@ public class Graphics extends Object
 		this.simulation = simulation;
 		setFont( Font.getDefaultFont() );
 		setClip( 0, 0, simulation.getCanvasWidth(), simulation.getCanvasHeight() );
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
 	/**

@@ -95,7 +95,7 @@ implements MouseListener
 			int y = event.getY();
 			Item item = screen.getItemAt( x, y );
 			if (item != null) {
-				//System.out.println("SelectionOverlay: got item " + item + ", parent=" + item.getParent() );
+				System.out.println("SelectionOverlay: got item " + item + ", parent=" + item.getParent() + ", absX=" + item.getAbsoluteX() + ", absY=" + item.getAbsoluteY()  );
 				setSelectionArea( item.getAbsoluteX(), item.getAbsoluteY(), item.itemWidth, item.itemHeight );
 			} else {
 				setSelectionArea( 0, 0, screen.getWidth(), screen.getHeight() );

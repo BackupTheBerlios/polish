@@ -438,7 +438,7 @@ implements MouseListener, KeyListener
 	 */
 	public void requestRepaint(Displayable displayable ) {
 		if (displayable != this.currentDisplayable ) {
-			System.out.println("Simulator: ignoring repaint request for " + displayable);
+			System.out.println("Simulation: ignoring repaint request for " + displayable + ", currentDisyplayable=" + this.currentDisplayable);
 			return;
 		}
 		

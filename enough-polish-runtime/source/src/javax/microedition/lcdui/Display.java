@@ -574,8 +574,8 @@ public class Display extends Object
 			this.current._callHideNotify();
 		}
 		this.current = nextDisplayable;
-		nextDisplayable._display = this;
 		nextDisplayable._callShowNotify();
+		nextDisplayable._display = this;
 		this.simulator.display( nextDisplayable );
 	}
 
