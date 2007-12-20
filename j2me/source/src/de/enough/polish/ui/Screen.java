@@ -813,7 +813,7 @@ implements AccessibleCanvas
 	 * Initialises this screen and informs all items about being painted soon.
 	 */
 	public void showNotify() {
-		if (this.isShown()) {
+		if (StyleSheet.currentScreen == this && this.isShown()) {
 			//#debug 
 			System.out.println("ignoring showNotify, as this screen is shown already");
 			return;
@@ -970,6 +970,8 @@ implements AccessibleCanvas
 		}
 
 		// register this screen:
+		//#debug
+		System.out.println("registering screen at StyleSheet");
 		StyleSheet.currentScreen = this;
 
 		//#ifdef polish.Vendor.Siemens
@@ -1025,6 +1027,8 @@ implements AccessibleCanvas
 		//#if !polish.css.repaint-previous-screen
 			// un-register this screen:
 			if (StyleSheet.currentScreen == this) {
+				//#debug
+				System.out.println("de-registering screen at StyleSheet");
 				StyleSheet.currentScreen = null;
 			}
 		//#endif
