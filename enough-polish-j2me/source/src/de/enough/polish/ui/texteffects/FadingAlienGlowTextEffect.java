@@ -219,15 +219,9 @@ public class FadingAlienGlowTextEffect extends TextEffect {
 			}
 		//#endif
 		//#if polish.css.text-fading-alien-glow-mode
-			String tmpStr = style.getProperty("text-fading-alien-glow-mode");
-			if (tmpStr!=null){
-				if (tmpStr.equals("fadein")){
-					this.outerFader.mode = DrawUtil.FadeUtil.FADE_IN;
-				} else if (tmpStr.equals("fadeout")){
-					this.outerFader.mode = DrawUtil.FadeUtil.FADE_OUT;
-				} else {
-					this.outerFader.mode = DrawUtil.FadeUtil.FADE_LOOP;
-				}
+			Integer glowModeInt = style.getIntProperty("text-fading-alien-glow-mode");
+			if (glowModeInt!=null){
+				this.outerFader.mode = glowModeInt.intValue();
 			}
 		//#endif	
 	}
