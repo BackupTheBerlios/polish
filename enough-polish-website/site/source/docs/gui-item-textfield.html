@@ -59,8 +59,14 @@ info {
 &lt;variable name=&quot;polish.TextField.useDirectInput&quot; value=&quot;true&quot;/&gt;
 &lt;variable name=&quot;polish.TextField.usePredictiveInput&quot; value=&quot;true&quot;/&gt;
 &lt;variable name=&quot;polish.TextField.includeInputInfo&quot; value=&quot;true&quot;/&gt;
-&lt;variable name=&quot;smileys&quot; value=&quot;{new Smiley(new String[]{":-)",":)"},"/smiley_1.png","smile"),new Smiley(new String[]{":-P",":P"},"/smiley_2.png","cheekie"),new Smiley(new String[]{":-(",":("},"/smiley_3.png","ouch")}&quot;/&gt;
+&lt;variable file=&quot;configuration/smileys.properties&quot; /&gt;
 </pre>	
+	<p>In the corresponding <i>configuration/smileys.properties</i> following settings are made:
+	</p>
+<pre>
+smileys={new Smiley(new String[]{":-)",":)"},"/smiley_1.png","smile"),new Smiley(new String[]{":-P",":P"},"/smiley_2.png","cheekie"),new Smiley(new String[]{":-(",":("},"/smiley_3.png","ouch")}
+</pre>
+
 	<p>
 	Specific design attributes:
 	</p>
@@ -226,13 +232,13 @@ variable is set to <code>true</code>:
 	<p>
 	The predictive input mode can be activated by setting the variable <code>polish.TextField.usePredictiveInput</code> to true.
 	<br/>
-	NOTE : The predictive input mode is not available for BlackBerry.
+	NOTE: On BlackBerry phones native EditFields are used which provide predictive input.
 	</p>
 <pre>
 &lt;variable name=&quot;polish.TextField.usePredictiveInput&quot; value=&quot;true&quot; /&gt;
 </pre>
 
-	<h3>Installation</h3>
+	<h3 id="textfield-predictive-install">Installation</h3>
 	
 	<p>
 	To use the predictive input in the application, the dictionary must be installed first. To do this,
@@ -242,6 +248,7 @@ variable is set to <code>true</code>:
 	<p>
 	There are two different installation modes depending on the device using the application: 
 	</p>
+	<ul>
 	<li>
 	The first mode installs the dictionary in a shared record store for all applications to use the same unique dictionary.
 	This mode is available to most of the devices supporting MIDP2 (exceptions are listed in the second mode).
@@ -249,17 +256,15 @@ variable is set to <code>true</code>:
 	user's device. The user just needs to follow the instructions. (NOTE : Some devices will download the application
 	but will not automatically launch the setup. In this case, just start the setup manually)
 	</li>
-	
-	<br/><br/>
-		
 	<li>
 	The second mode is used for devices that need signing or are just not capable to use a shared record store.
 	These devices include all MIDP1 and Motorola devices.
 	In this case, the dictionary is downloaded directly to the application without a setup and installed in a local record store. 
 	Every application using the predictive mode has to install its own dictionary.
 	</li>
-		
-	<h3>Usage</h3>
+	</ul>
+	
+	<h3 id="textfield-predictive-usage">Usage</h3>
 	
 	<p>
 	After the installation of the dictionary has finished, the predictive mode can be used.
@@ -286,7 +291,7 @@ variable is set to <code>true</code>:
 	second installation mode was used (see above).
 	</p>
 			
-	<h3>Styling</h3>
+	<h3 id="textfield-predictive-design">Design</h3>
 	
 	<p>
 	There are predefined styles to design the list of your predictive results in a textfield. 
@@ -343,7 +348,7 @@ variable is set to <code>true</code>:
 }
 	</pre>	
 	
-	<h3>Array mode</h3>
+	<h3 id="textfield-predictive-arraymode">Array mode</h3>
 	
 	<p>
 	Rather than using the dictionary the predictive input can be used with a simple array of words. These words
@@ -358,32 +363,35 @@ variable is set to <code>true</code>:
 	</p>
 	
 	<pre>
-	TextField myField = new TextField("title","content",100,TextField.ANY);
+TextField myField = new TextField("city: ","",100,TextField.ANY);
 
-	String[] cities = new String[5];
+String[] cities = new String[] {
+ "Amsterdam",
+ "Bombay",
+ "Bremen",
+ "London",
+ "Paris",
+ "New York"
+ };
 
-	cities[0] = "Amsterdam";
-	cities[1] = "Bombay";
-	cities[2] = "Bremen";
-	cities[3] = "Paris";
-	cities[4] = "New York";
-	
-	UIAccess.setPredictiveDictionary(myField,cities);</pre>
+UIAccess.setPredictiveDictionary(myField,cities);
+</pre>
 	
 	<p>
 	If the user enters a sequence of numbers (similar to the normal dictionary mode) the predictive input mode internally
 	filters out the strings that don't match. To obtain the results the method <code>getResults()</code> of the
-	<code>PredicitveAccess</code> object inside the textfield must be called which returns an <code>ArrayList</code> of strings. 
+	<code>UiAccess</code>  must be called which returns an <code>ArrayList</code> of strings. 
 	</p>
 	
-	<pre>
-	ArrayList results = mytextfield.getPredictiveAccess().getResults();</pre>
+<pre>
+ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
+</pre>
 	
 	<p>
 	The method to obtain the results is usually called in the <code>itemStateChanged()</code> callback of the interface 
 	<code>ItemStateListener</code> so that everytime the user enters a number the results are obtained and processed.
 	The source set of strings for the array mode can be changed everytime by calling 
-	<code>setPredictiveDictionary(TextField field, String[] words)</code>.
+	<code>UiAccess.setPredictiveDictionary(TextField field, String[] words)</code>.
 	</p>
 	
 	<h2 id="textfield-Programming">Programming</h2>

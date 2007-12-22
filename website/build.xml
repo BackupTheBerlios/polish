@@ -1,8 +1,8 @@
 <project 
 	name="enough-webprocessor" 
 	default="website">
-
-<taskdef name="webprocessor" classname="de.enough.webprocessor.WebProcessorTask" classpath="../enough-webprocessor/bin/classes" />
+<property name="polish.home" value="../enough-polish-build" />
+<taskdef name="webprocessor" classname="de.enough.webprocessor.WebProcessorTask" classpath="../enough-webprocessor/bin/classes:${polish.home}/bin/website:${polish.home}/bin/classes:${polish.home}/lib/jdom.jar:../enough-polish-j2me/bin/classes" />
 <taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="../enough-polish-build/bin/classes:../enough-polish-build/lib/jdom.jar"/>
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 
@@ -71,20 +71,20 @@
 <target name="device-export" description="exports the device database">
 		<deviceExport />
 		<webprocessor 
-				srcdir="../enough-polish-website/tmp"
-			 	includedir="../enough-polish-website/site/includes"
-				destdir="dist"
-				clean="false"
-				>
-				<variable name="PolishVersion" value="${Version}" />
-				<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
-				<variable name="Author" value="Robert Virkus" />
-				<variable name="basedir" value="" />
-				<variable name="javadocdir" value="" />
-				<variable name="index.h1" value="h1index" />
-				<variable name="index.h2" value="h2index" />
-				<variable name="index.h3" value="h3index" />
-				<variable name="index.h4" value="h4index" />
+			srcdir="../enough-polish-website/tmp"
+		 	includedir="../enough-polish-website/site/includes"
+			destdir="dist"
+			clean="false"
+			>
+			<variable name="PolishVersion" value="${Version}" />
+			<variable name="LatestDownload" value="j2mepolish_${Version}.html" />
+			<variable name="Author" value="Robert Virkus" />
+			<variable name="basedir" value="" />
+			<variable name="javadocdir" value="" />
+			<variable name="index.h1" value="h1index" />
+			<variable name="index.h2" value="h2index" />
+			<variable name="index.h3" value="h3index" />
+			<variable name="index.h4" value="h4index" />
 		</webprocessor>
 </target>
 	
@@ -111,6 +111,7 @@
 		<variable name="index.h3" value="h3index" />
 		<variable name="index.h4" value="h4index" />
 		<variable name="index.h5" value="h5index" />
+		<directive name="cssattributes" class="de.enough.polish.website.CssDirectiveHandler" />
 	</webprocessor>
 </target>
 
