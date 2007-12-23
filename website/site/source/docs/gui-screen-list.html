@@ -23,9 +23,9 @@
 	
 <h2 id="design">Design</h2>
 
-<p>The List in the screenshot above utilized the <a href="gui-viewtype-fisheye.html">fisheye</a> <code>view-type</code> 
-and has been realized using following CSS settings (without <a href="gui-screenelement-title">title</a> 
-and <a href="gui-screenelement-menubar">menubar</a> settings):</p>
+<p>The List in the screenshot above utilizes the <a href="gui-viewtype-fisheye.html">fisheye</a> <code>view-type</code> 
+and has been realized using following CSS settings (without <a href="gui-screenelement-title.html">title</a> 
+and <a href="gui-screenelement-menubar.html">menubar</a> settings):</p>
 <pre>
 .mainScreen {
 	padding: 2;
@@ -181,6 +181,17 @@ section of your <i>build.xml</i> script.
  -->
 
 </table>
+<p>You can also change or translate the default commands used in a List with following settings
+in either <i>messages.txt</i> or using variables in your <i>build.xml</i> script.
+For more information about translations please refer to the <a href="localization.html">localization section</a>.
+</p>
+<pre>
+# text for the 'Select' command:
+polish.command.select=Choose;
+# texts for'Mark' and 'Unmark' commands:
+polish.command.mark=Select
+polish.command.unmark=Deselect
+</pre>
 
 	<h2 id="JavaDoc">JavaDoc</h2>
 	<ul>

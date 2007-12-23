@@ -2,7 +2,7 @@
 	name="enough-webprocessor" 
 	default="website">
 <property name="polish.home" value="../enough-polish-build" />
-<taskdef name="webprocessor" classname="de.enough.webprocessor.WebProcessorTask" classpath="../enough-webprocessor/bin/classes:${polish.home}/bin/website:${polish.home}/bin/classes:${polish.home}/lib/jdom.jar:../enough-polish-j2me/bin/classes:../enough-polish-runtime/bin/classes" />
+<taskdef name="webprocessor" classname="de.enough.webprocessor.WebProcessorTask" classpath="../enough-webprocessor/bin/classes:${polish.home}/bin/website:${polish.home}/bin/classes:${polish.home}/lib/jdom.jar:../enough-polish-j2me/bin/classes:../enough-polish-runtime/bin/classes:../enough-polish-build/import/mmapi.jar" />
 <taskdef name="deviceExport" classname="de.enough.polish.ant.HtmlExporterTask" classpath="../enough-polish-build/bin/classes:../enough-polish-build/lib/jdom.jar"/>
 <!-- build targets, each target can be called via "ant [name]", e.g. "ant clean" -->
 

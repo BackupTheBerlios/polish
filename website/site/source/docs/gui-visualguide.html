@@ -11,7 +11,6 @@
 		<li><a href="gui-css-basics.html">CSS Basics</a></li>
 		<li><a href="customization.html">Customization</a></li>
 	</ul>
-	<p>NOTE: This is work in progress - please check back soon for more design information!</p>
 	<%index %>
 	<p>
 	This guide shows you the available screens, items and effects that you can use with J2ME Polish. Click on the GUI components to
@@ -110,10 +109,10 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	<p>
 	J2ME Polish caters standard as well as advanced screens:
 	</p>
-	<h3 id="gui-screen-list">List</h3>
+	<h3 id="gui-screen-alert">Alert</h3>
 	<table><tr>
-		<td><a href="gui-screen-list.html"><img src="<%= basedir%>images/gui-screen-list.png" width="352" height="414" alt="A List with a fisheye view-type."/></a></td>
-		<td valign="top">Use <a href="gui-screen-list.html">Lists</a> for displaying a menu or for selecting options.</td>
+		<td><a href="gui-screen-alert.html"><img src="<%= basedir%>images/gui-screen-alert.png" width="352" height="413" alt="showing an Alert as popup"/></a></td>
+		<td valign="top">Use the <a href="gui-screen-alert.html">Alert</a> to notify your user about anything important.</td>
 	</tr></table>
 	<h3 id="gui-screen-list">FilteredList</h3>
 	<table><tr>
@@ -127,39 +126,44 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 		<td><a href="gui-screen-form.html"><img src="<%= basedir%>images/gui-screen-form.png" width="354" height="416" alt="A Form in action."/></a></td>
 		<td valign="top">In a <a href="gui-screen-form.html">form</a> you can embedd any kind of items for building a rich UI.</td>
 	</tr></table>
-	<h3 id="gui-screen-tabbedform">TabbedForm</h3>
-	<table><tr>
-		<td><a href="gui-screen-TabbedForm.html"><img src="<%= basedir%>images/gui-screen-TabbedForm.png" alt="TabbedForm" width="354" heigth="419" /></a></td>
-		<td valign="center">The <a href="gui-screen-tabbedform.html">TabbedForm</a> can contain any kind of items in several tabs.</td>
-	</tr></table>
 	<h3 id="gui-screen-framedform">FramedForm</h3>
 	<table><tr>
 		<td><a href="gui-screen-framedform.html"><img src="<%= basedir%>images/gui-screen-framedform.png" width="354" height="421" alt="FramedForm"/></a></td>
 		<td valign="center">The <a href="gui-screen-framedform.html">FramedForm</a> allows you to use one scrollable main area and several fixed frames.</td>
 	</tr></table>
-	<h3 id="gui-screen-snapshotscreen">SnapshotScreen</h3>
+	<h3 id="gui-screen-list">List</h3>
 	<table><tr>
-		<td></td>
-		<td valign="top"></td>
-	</tr></table>
-	<h3 id="gui-screen-alert">Alert</h3>
-	<table><tr>
-		<td></td>
-		<td valign="top">Use the alert to notify your user about anything important.</td>
-	</tr></table>
-	<h3 id="gui-screen-textbox">TextBox</h3>
-	<table><tr>
-		<td></td>
-		<td valign="top">The TextBox is used for text input.</td>
+		<td><a href="gui-screen-list.html"><img src="<%= basedir%>images/gui-screen-list.png" width="352" height="414" alt="A List with a fisheye view-type."/></a></td>
+		<td valign="top">Use <a href="gui-screen-list.html">Lists</a> for displaying a menu or for selecting options.</td>
 	</tr></table>
 	<h3 id="gui-screen-popup">Popup Screens</h3>
 	<table><tr>
 		<td><a href="gui-screen-popup.html"><img src="<%= basedir%>images/gui-screen-popup.png" width="352" height="418" alt="showing an Alert as popup"/></a></td>
 		<td valign="center">Use any screen as a <a href="gui-screen-popup.html">popup screen</a>.</td>
 	</tr></table>
+	<h3 id="gui-screen-snapshotscreen">SnapshotScreen</h3>
+	<table><tr>
+		<td><a href="gui-screen-snapshotscreen.html"><img src="<%= basedir%>images/gui-screen-snapshotscreen.png" width="351" height="414" alt="SnapshotScreen"/></a></td>
+		<td valign="top">Take camera photos on your phone with the <a href="gui-screen-snapshotscreen.html">SnapshotScreen</a>.</td>
+	</tr></table>
+	<h3 id="gui-screen-tabbedform">TabbedForm</h3>
+	<table><tr>
+		<td><a href="gui-screen-TabbedForm.html"><img src="<%= basedir%>images/gui-screen-TabbedForm.png" alt="TabbedForm" width="354" heigth="419" /></a></td>
+		<td valign="center">The <a href="gui-screen-tabbedform.html">TabbedForm</a> can contain any kind of items in several tabs.</td>
+	</tr></table>
+	<h3 id="gui-screen-textbox">TextBox</h3>
+	<table><tr>
+		<td></td>
+		<td valign="top">The TextBox is used for text input, refer to <a href="#gui-item-textfield">TextField</a> for more information.</td>
+	</tr></table>
 	
 
 <h2 id="gui-items">Items</h2>
+	<h3 id="gui-item-choicegroup">ChoiceGroup</h3>
+	<table><tr>
+		<td><a href="gui-item-choicegroup.html"><img src="<%= basedir%>images/gui-item-choicegroup.png"  width="327" height="86" alt="A ChoiceGroup with an exclusive-single-line view-type" /></a></td>
+		<td valign="center">Let the user select from a number of choices with a <a href="gui-item-choicegroup.html">ChoiceGroup</a>.</td>
+	</tr></table>
 	<h3 id="gui-item-stringitem">StringItem</h3>
 	<table><tr>
 		<td><a href="gui-item-stringitem.html"><img src="<%= basedir%>images/gui-texteffect-alienglow.png"  width="137" height="24" alt="A StringItem with an alien-glow text-effect" /></a></td>
@@ -298,7 +302,7 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	
 	<h4 id="gui-texteffect-extend">Your Own Text-Effect</h4>
 	<table><tr>
-		<td><a href="extending-texteffect.html"><img src="<%= basedir%>images/extend.png"  width="89" height="79" alt="Create Your Own Text-Effect" /></a></td>
+		<td><a href="extending-texteffect.html"><img src="<%= basedir%>images/extend.png"  width="76" height="68" alt="Create Your Own Text-Effect" /></a></td>
 		<td valign="center">Create Your <a href="extending-texteffect.html">Own Text-Effect</a></td>
 	</tr></table>
 	
@@ -337,7 +341,7 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	</tr></table>
 <h3 id="gui-background-extend">Your Own Background</h3>
 	<table><tr>
-		<td><a href="extending-background.html"><img src="<%= basedir%>images/extend.png"  width="89" height="79" alt="Create Your Own Background" /></a></td>
+		<td><a href="extending-background.html"><img src="<%= basedir%>images/extend.png"  width="76" height="68" alt="Create Your Own Background" /></a></td>
 		<td valign="center">Create Your <a href="extending-background.html">Own Background</a></td>
 	</tr></table>
 
