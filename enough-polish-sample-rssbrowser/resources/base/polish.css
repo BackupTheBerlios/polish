@@ -9,34 +9,34 @@ colors {
 	bgColor: #eeeeee;
 }
 
-browser {
+.browser {
 	margin: 0;
 	padding: 1;
 }
-browserchoicegroup {
+.browserchoicegroup {
 	margin: 0;
 	padding: 1;
 }
-browserchoiceitem {
+.browserchoiceitem {
 	margin: 0;
 	padding: 1;
 }
-browserdownloadindicator {
+.browserdownloadindicator {
 	layout: vertical-shrink | horizontal-shrink | top | right;
 	margin: 0;
 	padding: 1;
 }
-browserinput {
+.browserinput {
 	layout: expand | left;
 	margin: 0;
 	padding: 2;
 }
-browserinputfocused {
+.browserinputfocused {
 	layout: expand | left;
 	margin: 0;
 	padding: 1;
 }
-browserlink {
+.browserlink {
 	margin: 0;
 	padding: 1;
 	font {
@@ -46,7 +46,7 @@ browserlink {
 		color: #ff4f4fe3;
 	}
 }
-browserlinkfocused {
+.browserlinkfocused {
 	margin: 0;
 	padding: 1;
 	font {
@@ -56,44 +56,44 @@ browserlinkfocused {
 		color: #ff0000;
 	}
 }
-browseroption {
+.browseroption {
 	layout: left | expand;
 	margin: 0;
 	padding: 1;
 }
-browseroptionitem {
+.browseroptionitem {
 	margin: 0;
 	padding: 1;
 }
-browsertext {
+.browsertext {
 	margin: 0;
 	padding: 1;
 }
-browsertextbold {
+.browsertextbold {
 	margin: 0;
 	padding: 1;
 }
-browsertextboldfocused {
+.browsertextboldfocused {
 	margin: 0;
 	padding: 1;
 }
-browsertextbolditalic {
+.browsertextbolditalic {
 	margin: 0;
 	padding: 1;
 }
-browsertextbolditalicfocused {
+.browsertextbolditalicfocused {
 	margin: 0;
 	padding: 1;
 }
-browsertextfocused {
+.browsertextfocused {
 	margin: 0;
 	padding: 1;
 }
-browsertextitalic {
+.browsertextitalic {
 	margin: 0;
 	padding: 1;
 }
-browsertextitalicfocused {
+.browsertextitalicfocused {
 	margin: 0;
 	padding: 1;
 }
@@ -124,45 +124,8 @@ label {
 		style: plain;
 	}
 }
-leftcommand {
-	layout: left;
-	margin: 0;
-	padding: 1;
-	font {
-		face: system;
-		size: medium;
-		style: bold;
-		color: #000000;
-	}
-}
-menu {
-	margin: 0;
-	padding: 2;
-	background {
-		type: round-rect;
-		color: focusedBgColor;
-		arc-width: 4;
-		arc-height: 4;
-	}
-	min-width: 100;
-}
-menu1 {
-	layout: right;
-	margin: 0;
-	padding: 1;
-	background {
-		type: simple;
-		color: argb(150, 255, 255, 0 );
-	}
-}
-menubar {
-	margin: 0;
-	padding: 1;
-	background {
-		type: simple;
-		color: bgColor;
-	}
-}
+
+
 menufocused {
 	layout: left | horizontal-expand;
 	margin: 0;
@@ -171,11 +134,6 @@ menufocused {
 		type: simple;
 		color: bgColor;
 	}
-}
-menuitem {
-	layout: left;
-	margin: 0;
-	padding: 1;
 }
 aboutAlert {
 	layout: horizontal-center | vertical-center;
@@ -211,16 +169,16 @@ alertcontent {
 	font-color: black;
 }
 
-mychoicegroup {
+.mychoicegroup {
    margin: 0;
    padding: 1;
    view-type: exclusive
 }
-mychoiceitem {
+.mychoiceitem {
 	margin: 0;
 	padding: 1;
 }
-rssBrowserForm {
+.rssBrowserForm {
 	margin: 0;
 	padding-left: 10;
 	padding-right: 10;
@@ -240,6 +198,10 @@ rssBrowserForm {
 .rssBrowserTitle extends title {
 	text-wrap: false;
 	text-wrap-animate: false;
+}
+
+.rssBrowser {
+	view-type: midp2;
 }
 
 .mylist {
@@ -330,5 +292,53 @@ title {
 		type: simple;
 		color: #ffffff;
 	}
+}
+
+
+/****************   menu          **********************************************************************************************/
+leftcommand {
+	layout: left;
+	margin: 0;
+	padding: 1;
+	font {
+		face: system;
+		size: medium;
+		style: bold;
+		color: #000000;
+	}
+}
+menu {
+	margin: 0;
+	padding: 2;
+	background {
+		type: round-rect;
+		color: focusedBgColor;
+		arc-width: 4;
+		arc-height: 4;
+	}
+	min-width: 100;
+}
+menu1 {
+	layout: right;
+	margin: 0;
+	padding: 1;
+	background {
+		type: simple;
+		color: argb(150, 255, 255, 0 );
+	}
+}
+menubar {
+	margin: 0;
+	padding: 1;
+	background {
+		type: simple;
+		color: bgColor;
+	}
+}
+
+menuitem {
+	layout: left;
+	margin: 0;
+	padding: 1;
 }
 
