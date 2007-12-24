@@ -7,10 +7,11 @@
 	<h1 id="top">TextField</h1>
 	<ul class="relatedtechnologies">
 		<li class="relatedtechnologiesheader">Related Topics:</li>
-		<li><a href="gui-item-choicetextfield">ChoiceTextField</a></li>
+		<li><a href="gui-item-choicetextfield.html">ChoiceTextField</a></li>
 		<li><a href="gui-item-stringitem.html">StringItem</a></li>
-		<li><a href="gui-item-filteredchoicegroup">FilteredChoiceGroup</a></li>
-		<li><a href="gui-screen-filteredlist">FilteredList</a></li>
+		<li><a href="gui-item-filteredchoicegroup.html">FilteredChoiceGroup</a></li>
+		<li><a href="gui-screen-filteredlist.html">FilteredList</a></li>
+		<li><a href="gui-item-datefield.html">DateField</a></li>
 		<li><a href="gui-concepts.html">GUI Concepts</a></li>
 		<li><a href="gui-css-basics.html">CSS Basics</a></li>
 	</ul>
@@ -68,62 +69,10 @@ smileys={new Smiley(new String[]{":-)",":)"},"/smiley_1.png","smile"),new Smiley
 </pre>
 
 	<p>
-	Specific design attributes:
+	Specific CSS attributes:
 	</p>
-	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Applies To&nbsp;&nbsp;</th><th>Explanation</th></tr>
-	<tr>
-	 <td>textfield-direct-input</td>
-	 <td>false</td>
-	 <td>false, true</td>
-	<td>TextField</td>
-	 <td>Defines whether the direct input mode should be activated. By default the direct input mode is deactivated (&quot;false&quot;). 
-	 	You can also activate the direct input mode globally for all TextFields and TextBoxes using the 
-	 	<code>polish.TextField.useDirectInputMode</code> preprocessing variable (see below).
-	 </td>
-	</tr>
-	<tr>
-	 <td>textfield-caret-color</td>
-	 <td>same as font-color</td>
-	 <td>color definition</td>
-	<td>TextField</td>
-	 <td>The color of the caret which indicates the editing position. This defaults to the color of the used font.</td>
-	</tr>
-	<tr>
-	 <td>textfield-show-length</td>
-	 <td>false</td>
-	 <td>false, true</td>
-	<td>TextField</td>
-	 <td>Determines whether the length of the entered text should be shown during the editing of this field. This has an effect only when the direct input mode is used.</td>
-	</tr>	
-	<tr>
-		<td>textfield-caret-flash</td>
-		<td>true</td>
-		<td>true, false</td>
-		<td>TextField</td>
-		<td>Defines whether the current length of the input should be shown.</td>
-	</tr>
-	<!-- 
-	<tr>
-		<td></td><td></td><td></td><td></td>
-		<td>
-		</td>
-	</tr>
-	<tr>
-		<td></td><td></td><td></td><td></td>
-		<td>
-<pre>
-</pre>
-		</td>
-	</tr>
-	<tr>
-		<td></td><td></td><td></td><td></td>
-		<td>
-<pre>
-</pre>
-		</td>
-		 -->
-	</table>
+	<%cssattributes de.enough.polish.ui.TextField %>
+	
 	<p>
 	The following example shows the use of the TextField attributes:
 	</p>
@@ -665,10 +614,10 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 	 -->
 </table>	
 	<h2 id="textfield-JavaDoc">JavaDoc</h2>
-	<p>
-		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/TextField.html">TextField</a>.
-		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess</a>.
-	</p>
+	<ul>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/TextField.html">TextField</a></li>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess</a></li>
+	</ul>
 
 <%include end.txt %>
 
