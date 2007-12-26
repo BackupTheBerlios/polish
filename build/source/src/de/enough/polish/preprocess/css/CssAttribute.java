@@ -571,7 +571,12 @@ implements Comparable
 			return false;
 		} else {
 			//System.out.println("CssAttribute.appliesTo=[" + this.appliesTo + "], to [" + className + "] = " + (this.appliesToMap.get( className ) != null));
-			return (this.appliesToMap.get( className ) != null);
+			String shortClassName = className;
+			int lastDotIndex = className.lastIndexOf('.');
+			if (lastDotIndex != -1) {
+				shortClassName = className.substring(lastDotIndex + 1);
+			}
+			return (this.appliesToMap.get( shortClassName ) != null) || (this.appliesToMap.get( className ) != null);
 		}
 	}
 

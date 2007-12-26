@@ -245,7 +245,6 @@ public class CssAttributesManager {
 	 * @return all applicable attributes for the given class
 	 */
 	public CssAttribute[] getApplicableAttributes( Class targetClass ) {
-		ArrayList list = new ArrayList();
 		CssAttribute[] attributes = getAttributes();
 		ArrayList fullClassNamesList = new ArrayList();
 		while (targetClass != null) {
@@ -262,6 +261,8 @@ public class CssAttributesManager {
 			}
 			classNames[i] = name;
 		}
+		ArrayList firstClassAttributes = new ArrayList();
+		ArrayList secondClassAttributes = new ArrayList();
 		for (int i = 0; i < attributes.length; i++) {
 			CssAttribute attribute = attributes[i];
 			if (attribute.isBaseAttribute) {
@@ -269,14 +270,23 @@ public class CssAttributesManager {
 			}
 			for (int j = 0; j < classNames.length; j++) {
 				if ( attribute.appliesTo( classNames[j] ) || attribute.appliesTo( fullClassNames[j] ) ) {
-					list.add( attribute );
+					if (j == 0) {
+						firstClassAttributes.add( attribute );
+					} else {
+						secondClassAttributes.add( attribute );
+					}
 					break;
 				}
 			}
 		}
-		attributes = (CssAttribute[]) list.toArray( new CssAttribute[ list.size() ] ); 
+		CssAttribute[] firstAttributes = (CssAttribute[]) firstClassAttributes.toArray( new CssAttribute[ firstClassAttributes.size() ] );
+		Arrays.sort( firstAttributes );
+		attributes = (CssAttribute[]) secondClassAttributes.toArray( new CssAttribute[ secondClassAttributes.size() ] ); 
 		Arrays.sort( attributes );
-		return attributes;
+		CssAttribute[] combined = new CssAttribute[ firstAttributes.length + attributes.length ];
+		System.arraycopy( firstAttributes, 0, combined, 0, firstAttributes.length );
+		System.arraycopy( attributes, 0, combined, firstAttributes.length, attributes.length );
+		return combined;
 	}
 
 	/**

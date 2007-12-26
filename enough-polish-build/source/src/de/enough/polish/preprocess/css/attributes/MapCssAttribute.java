@@ -112,4 +112,18 @@ public class MapCssAttribute extends CssAttribute {
 		}
 	}
 
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.preprocess.css.CssAttribute#getAllowedValues()
+//	 */
+//	public String[] getAllowedValues()
+//	{
+//		if (this.mappingsByName == null) {
+//			return null;
+//		} else {
+//			return (String[]) this.mappingsByName.keySet().toArray( new String[ this.mappingsByName.size() ] );
+//		}
+//	}
+	
+	
+
 }
