@@ -315,7 +315,7 @@ implements ImageConsumer
 		private boolean isPercent;
 	//#endif
 	private int valuePosition = POSITION_LEFT;
-	private boolean isShown;
+	//private boolean isShown;
 
 
 	/**

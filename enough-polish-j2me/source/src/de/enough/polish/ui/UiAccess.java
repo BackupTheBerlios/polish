@@ -642,6 +642,38 @@ public final class UiAccess {
 	}
 	//#endif
 
+	//#if polish.midp
+	/**
+	 * Applies a style to the given alert if used in conjunction with the //#style preprocessing directive.
+	 * 
+	 * Example:
+	 * <pre>
+	 * //#style myStyle
+	 * UiAccess.setStyle( myAlert );
+	 * </pre>
+	 * @param screen the alert which should get the new style
+	 */
+	public static void setStyle( javax.microedition.lcdui.Alert screen ) {
+		// ignore
+	}
+	//#endif
+
+	//#if polish.midp && polish.usePolishGui
+	/**
+	 * Applies a style to the given alert if used in conjunction with the //#style preprocessing directive.
+	 * 
+	 * Example:
+	 * <pre>
+	 * //#style myStyle
+	 * UiAccess.setStyle( myAlert );
+	 * </pre>
+	 * @param screen the alert which should get the new style
+	 */
+	public static void setStyle( javax.microedition.lcdui.Alert screen, Style style ) {
+		// ignore
+	}
+	//#endif
+
 
 	//#if polish.usePolishGui
 	/**
@@ -1951,7 +1983,7 @@ public final class UiAccess {
 	
 	//#if polish.midp
 	/**
-	 * Applies a style to the specified list item.
+	 * Makes the specified List item selectable or inaccessible - can be used in combination with a #style preprocessing directive.
 	 * 
 	 * @param list the list 
 	 * @param itemIndex the index of the list
@@ -1964,7 +1996,7 @@ public final class UiAccess {
 
 	//#if polish.usePolishGui
 	/**
-	 * Applies a style to the specified list item.
+	 * Makes the specified List item selectable or inaccessible - can be used in combination with a #style preprocessing directive.
 	 * 
 	 * @param list the list 
 	 * @param itemIndex the index of the list
@@ -1977,7 +2009,7 @@ public final class UiAccess {
 
 	//#if polish.usePolishGui
 	/**
-	 * Applies a style to the specified list item.
+	 * Makes the specified List item selectable or inaccessible.
 	 * 
 	 * @param list the list 
 	 * @param itemIndex the index of the list

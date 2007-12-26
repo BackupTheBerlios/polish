@@ -651,13 +651,28 @@ public class TextField extends StringItem
 	 * <code>CONSTRAINT_MASK</code>.</P>
 	 */
 	public static final int CONSTRAINT_MASK = 0xFFFF;
+
+	// clear command is used in DateField, too:
+	//#ifdef polish.command.clear.priority:defined
+	//#= private final static int CLEAR_PRIORITY = ${polish.command.clear.priority};
+	//#else
+		private final static int CLEAR_PRIORITY = 8;
+	//#endif
+	//#ifdef polish.i18n.useDynamicTranslations
+			public static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), Command.ITEM, CLEAR_PRIORITY );
+	//#elifdef polish.command.clear:defined
+		//#= public static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, CLEAR_PRIORITY );
+	//#else
+		//# public static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, CLEAR_PRIORITY ); 
+	//#endif
+
 		
 	//#ifndef tmp.suppressCommands
 	
 		//#ifdef polish.command.delete.priority:defined
-		//#= private static int DELETE_PRIORITY = ${polish.command.delete.priority};
+		//#= private final static int DELETE_PRIORITY = ${polish.command.delete.priority};
 		//#else
-			private static int DELETE_PRIORITY = 1;
+			private final static int DELETE_PRIORITY = 1;
 		//#endif
 			
 		//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
@@ -683,21 +698,7 @@ public class TextField extends StringItem
 				//# public static final Command DELETE_CMD = new Command( "Delete", Command.CANCEL, DELETE_PRIORITY ); 
 			//#endif
 	  	//#endif
-	//#endif
-	
-	//#ifdef polish.command.clear.priority:defined
-	//#= private static int CLEAR_PRIORITY = ${polish.command.clear.priority};
-	//#else
-		private static int CLEAR_PRIORITY = 8;
-	//#endif
-	
-	//#ifdef polish.i18n.useDynamicTranslations
-  		public static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), Command.ITEM, CLEAR_PRIORITY );
-	//#elifdef polish.command.clear:defined
-		//#= public static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, CLEAR_PRIORITY );
-	//#else
-		//# public static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, CLEAR_PRIORITY ); 
-	//#endif
+	//#endif	
 	
   	/** valid input characters for local parts of email addresses, apart from 0..9 and a..z. */
   	private static final String VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS = ".-_@!#$%&'*+/=?^`{|}~";

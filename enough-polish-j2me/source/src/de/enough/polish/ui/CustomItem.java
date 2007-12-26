@@ -457,11 +457,11 @@ public abstract class CustomItem extends Item
 	 */
 	protected static final int NONE = 0;
 
+	private static final int INTERACTION_MODES = KEY_PRESS | KEY_RELEASE | KEY_REPEAT | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL
 	//#ifdef polish.hasPointerEvents
-		private static final int INTERACTION_MODES = KEY_PRESS | KEY_RELEASE | POINTER_PRESS | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL;
-	//#else
-		//# private static final int INTERACTION_MODES = KEY_PRESS | KEY_RELEASE | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL;
+	 	| POINTER_PRESS
 	//#endif
+	 ;
 	//#if polish.css.skip-set-clip
 		protected boolean skipClipping;
 	//#endif

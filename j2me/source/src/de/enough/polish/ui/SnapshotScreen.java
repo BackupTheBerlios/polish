@@ -140,7 +140,7 @@ public class SnapshotScreen extends Screen implements Runnable {
 			this.isHiding = true;
 			//#if !polish.Bugs.SingleCapturePlayer
                 //#debug info
-                System.out.println("This device has SingleCapturePlayer Bug");
+                System.out.println("This device has no SingleCapturePlayer Bug");
 				Thread thread = new Thread( this );
 				if (!this.wait) {
 					thread.start();
@@ -329,7 +329,7 @@ public class SnapshotScreen extends Screen implements Runnable {
 	 * Retrieves the supported snapshot encodings available on the current device.
 	 *
 	 * @return an array of encodings.
-	 *         When the "video.snapshot.encodings" system property is null, null is returned.
+	 *         When the "video.snapshot.encodings" system property is null, an empty array is returned.
 	 */
 	public static String[] getSnapshotEncodings(){
 		String supportedEncodingsStr = System.getProperty("video.snapshot.encodings");

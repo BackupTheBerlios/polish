@@ -527,19 +527,22 @@ public class TabbedForm extends Form {
 	 * Retrieves the index of the currently active tab.
 	 * 
 	 * @return the index of the currently active tab, 0 is the first tab. 
+	 * @deprecated
+	 * @see #getActiveTab()
 	 */
 	public int getSelectedTab() {
 		return this.activeTabIndex;
 	}
 	
 	/**
-	 * Sets the screen listener for this TabbedForm.
+	 * Retrieves the index of the currently active tab.
 	 * 
-	 * @param listener the listener that is notified whenever the user selects another tab,
+	 * @return the index of the currently active tab, 0 is the first tab. 
 	 */
-	public void setScreenStateListener( ScreenStateListener listener ) {
-		this.screenStateListener = listener;
+	public int getActiveTab() {
+		return this.activeTabIndex;
 	}
+
 
 	/**
 	 * Notifies the <code>TabbedFormListener</code> that a tab change was requested. Then

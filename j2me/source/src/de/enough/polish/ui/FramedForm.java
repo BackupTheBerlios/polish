@@ -177,6 +177,7 @@ public class FramedForm extends Form {
 
 
 	/**
+	 * 
 	 * Adds the given item to the specifid frame.
 	 * 
 	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
