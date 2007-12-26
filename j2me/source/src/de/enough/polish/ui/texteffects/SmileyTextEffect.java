@@ -71,13 +71,16 @@ public class SmileyTextEffect extends TextEffect {
 		public Image image;
 		public String description;
 		
-		public Smiley(String[] smileys, String image, String description)
+		public Smiley(String[] smileys, String imageUrl) {
+			this( smileys, imageUrl, null);
+		}
+		public Smiley(String[] smileys, String imageUrl, String description)
 		{
 			this.smileys = smileys;
 			
 			try
 			{
-				this.image = Image.createImage(image);
+				this.image = Image.createImage(imageUrl);
 			}
 			catch(IOException e)
 			{
