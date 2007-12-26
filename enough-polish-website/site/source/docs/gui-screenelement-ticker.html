@@ -40,23 +40,8 @@ colors {
 	<p>
 	Specific design attributes:
 	</p>
-	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Applies To&nbsp;&nbsp;</th><th>Explanation</th></tr>
-	<tr>
-		<td>ticker-step</td><td>integer</td><td>2</td><td>ticker style</td>
-		<td>
-		The number of pixels that the ticker is moved forward in each animation phase.
-		</td>
-	</tr>
-	<tr>
-		<td>ticker-position</td><td>bottom</td><td>top, bottom</td><td>ticker or screen style</td>
-		<td>
-		The position of the ticker - <code>bottom</code> places the ticker above the menubar, <code>top</code> puts
-		the ticker under the title of a screen.
-		</td>
-	</tr>
-	</table>
-	<p>The J2ME Polish ticker also provides all design options of the <a href="gui-item-IconItem.html">IconItem</a>.
+	<%cssattributes Ticker %>
+
 		
 	<h2 id="Programming">Programming</h2>
 	<p>
@@ -68,11 +53,14 @@ colors {
 form.setTicker( ticker );
 </pre>
 	</p>
+	<p>You can also add Ticker as a normal, yet constantly animated item by calling 
+	<code>UiAccess.appendTicker( Ticker ticker, Form form )</code>.
+	</p>
 	
 	<h2 id="JavaDoc">JavaDoc</h2>
-	<p>
-		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess</a>
-		<br /><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/Ticker.html">Ticker</a>
-	</p>
+	<ul>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess</a></li>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/Ticker.html">Ticker</a></li>
+	</ul>
 
 <%include end.txt %>

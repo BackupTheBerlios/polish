@@ -1,0 +1,313 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.gui %>
+<%set title = J2ME Polish: HtmlBrowser %>
+<%set basedir = ../ %>
+<%include start.txt %>
+
+	<h1 id="top">HtmlBrowser</h1>
+	<ul class="relatedtechnologies">
+		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-item-rssbrowser.html">RssBrowser</a></li>
+		<li><a href="rmi.html">RMI &amp; XML-RPC</a></li>
+		<li><a href="gui-concepts.html">GUI Concepts</a></li>
+		<li><a href="gui-css-basics.html">CSS Basics</a></li>
+	</ul>
+	<%index %>
+	<p>
+	<img src="<%= basedir%>images/gui-item-htmlbrowser.png"  width="334" height="260" alt="The HtmlBrowser with search results from Wikipedia." />
+	<br />
+	Use the <code>HtmlBrowser</code> to display simple HTML pages.
+	</p>
+	<h2 id="Design">Design</h2>
+	<p>
+	The above design has been realized using following CSS settings:
+	</p>
+<pre>
+.htmlBrowser {
+	view-type: midp2;
+}
+
+.browserText {
+	font-size: small;
+	font-color: black;
+}
+
+.browserLink {
+	font-color: blue;
+	font-style: bold;
+}
+
+.browserLink:hover {
+	font-color: red;
+}
+</pre>
+	<p>
+	The design of HTML elements is realized with default CSS styles unless the elements define their own <code>class</code> or
+	<code>id</code> attributes.
+	<br />
+	The following list shows the default styles names that are being used for the design of browser items:
+	</p>
+	<ul>
+		<li><code>browserText</code>: standard text within a <code>p</code> element.</li>
+		<li><code>browserTextBold</code>: bold text.</li>
+		<li><code>browserTextItalic</code>: cursive text.</li>
+		<li><code>browserTextBoldItalic</code>: bold cursive text.</li>
+		<li><code>browserLink</code>: address anchor</li>
+		<li><code>browserInput</code>: textfield</li>
+		<li><code>browserDownloadIndicator</code>: continuous running gauge</li>
+		<li><code>browserChoiceGroup</code>: multiple choice group</li>
+		<li><code>browserChoiceItem</code>: multiple choice group item</li>
+		<li><code>browserOption</code>:  exclusive choice group</li>
+		<li><code>browserOptionItem</code>: exclusive choice group item</li>
+	</ul>
+	<p>
+	The following example shows how to reference an existing CSS style - if both <code>class</code> and
+	<code>id</code> attributes are defined, the <code>id</code> attribute takes precedence.
+	</p>
+<pre>
+&lt;div class=&quot;chart&quot; <b>id=&quot;verticalBarChart&quot;</b>&gt;
+	&lt;span class=&quot;chartdata&quot;&gt;50,15,5,0,5,15,50&lt;/span&gt;
+	&lt;span class=&quot;chartdata&quot;&gt;0,35,45,50,45,35,0&lt;/span&gt;
+	&lt;span class=&quot;chartdata&quot;&gt;25,25,25,25,25,25,25&lt;/span&gt;
+&lt;/div&gt;
+</pre>
+	<p>
+	J2ME&nbsp;Polish removes all references of unused styles by default - you can use
+	the <code>always-include</code> CSS attribute for ensuring that a style will be 
+	available by calling <code>StyleSheet.getStyle(styleName)</code>, even though it is not
+	referenced by a <code>#style</code> preprocessing directive:
+	</p>
+<pre>
+.<b>verticalBarChart</b> {
+	/* include this style even though it is not referenced in the source code: */
+	<b>always-include: true;</b>
+	padding: 3;
+	view-type: chart-vertical-bars;
+	chart-vertical-bars-shadow-color: gray;
+	background {
+		type: round-rect;
+		color: silver;
+	}
+}
+</pre>
+	
+
+	<h3 id="attribute-htmlbrowser">CSS Attributes for the HtmlBrowser</h3>
+	<p>
+	You can use following attributes for designing a <code>HtmlBrowser</code>:
+	</p>
+	<%cssattributes de.enough.polish.browser.html.HtmlBrowser %>
+	
+	<h2 id="htmlbrowser-Programming">Programming</h2>
+	<p>
+	Using the <code>HtmlBrowser</code> is not difficult.
+	The following code snippet shows how to create an <code>HtmlBrowser</code>:
+	</p>
+<pre>
+//#style htmlBrowserForm
+Form form = new Form("Browser");
+//#style htmlBrowser
+this.htmlBrowser = new HtmlBrowser(); 
+form.append( this.htmlBrowser );
+</pre>	
+	<p>
+	If you want to view a content, call <code>HtmlBrowser.go(String url):</code>.
+	</p>
+<pre>
+this.htmlBrowser.go( "http://www.digg.com" );
+</pre>
+	<h3 id="htmlbrowser-Programming-taghandler">Registering Your Own Tags</h2>
+	<p>
+	You can easily extend the <code>HtmlBrowser</code> by registering your own 
+	<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/browser/html/HtmlTagHandler.html">HtmlTagHandler</a>.
+	<br />You then need to register the browser in your tag handler:
+	</p>
+<pre>
+myChartTagHandler.register( this.htmlBrowser );
+</pre>
+	<p>The following code is taken from the &quot;browser&quot; sampe application and shows how you can
+	extend the browser by adding support for  a custom <code>chart</code> micro format:
+	</p>
+<pre>
+&lt;div class=&quot;chart&quot;&gt;
+	&lt;span class=&quot;chartdata&quot;&gt;50,15,5,0,5,15,50&lt;/span&gt;
+	&lt;span class=&quot;chartdata&quot;&gt;0,35,45,50,45,35,0&lt;/span&gt;
+	&lt;span class=&quot;chartdata&quot;&gt;25,25,25,25,25,25,25&lt;/span&gt;
+&lt;/div&gt;
+</pre>
+	<p>The processing of other tags is handled by the default <code>HtmlTagHandler</code>.
+<pre>
+package de.enough.polish.sample.browser;
+
+import de.enough.polish.browser.Browser;
+import de.enough.polish.browser.TagHandler;
+import de.enough.polish.ui.ChartItem;
+import de.enough.polish.ui.Container;
+import de.enough.polish.ui.Style;
+import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.HashMap;
+import de.enough.polish.util.StringTokenizer;
+import de.enough.polish.util.TextUtil;
+import de.enough.polish.xml.SimplePullParser;
+
+public class ChartTagHandler
+  extends TagHandler
+{
+  private boolean collectData;
+  private ArrayList strDataSequences = new ArrayList();
+  private String strColors;
+  private Style chartStyle;
+
+  public void register(Browser browser)
+  {
+    browser.addTagHandler(&quot;div&quot;, this);
+    browser.addTagHandler(&quot;span&quot;, this);
+  }
+  
+  public boolean handleTag(Container parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap, Style style)
+  {
+    if (TextUtil.equalsIgnoreCase(&quot;div&quot;, tagName))
+    {
+      if (opening)
+      {
+        // collect chart data until tag is being closed...
+        this.strDataSequences.clear();
+        this.strColors = null;
+        this.collectData = true;
+        this.chartStyle = style;
+      }
+      else
+      {
+        int[][] dataSequences = parseDataSequences();
+        int[] colors = new int[]{ 0xFF0000, 0x00FF00, 0x0000FF };
+        
+        //#style browserChart
+        ChartItem item = new ChartItem(&quot;label&quot;, dataSequences, colors);
+        if (this.chartStyle != null) {
+        	item.setStyle(this.chartStyle);
+        } 
+        parentItem.add(item);
+        return true;
+      }
+    }
+    else if (TextUtil.equalsIgnoreCase(&quot;span&quot;, tagName) && this.collectData)
+    {
+       String cssClass = (String) attributeMap.get(&quot;class&quot;);
+       
+       if (cssClass != null && TextUtil.equalsIgnoreCase(&quot;chartdata&quot;, cssClass) && opening)
+       {
+         parser.next();
+         String data = parser.getText();
+         this.strDataSequences.add(data);
+         return true;
+       }
+       else if (TextUtil.equalsIgnoreCase(&quot;charcolors&quot;, cssClass))
+       {
+         parser.next();
+         this.strColors = parser.getText();
+       }
+    }
+    
+    return false;
+  }
+
+  private int[][] parseDataSequences()
+  {
+    int num = this.strDataSequences.size();
+    int[][] result = new int[num][];
+    
+    for (int i = 0; i < num; i++)
+    {
+      String sequence = (String) this.strDataSequences.get(i);
+      StringTokenizer st = new StringTokenizer(sequence, ',');
+      int[] array = new int[st.countTokens()];
+      
+      for (int index = 0; st.hasMoreTokens(); index++)
+      {
+        array[index] = Integer.parseInt(st.nextToken());
+      }
+      
+      result[i] = array;
+    }
+    
+    return result;
+  }
+}
+</pre>	
+	<p>
+	Please refer to the &quot;browser&quot; sample application for a complete example.
+	</p>
+	
+	
+<h3 id="htmlbrowser-Programming-browserlistener">Waiting for Browser Events</h2>
+		<p>
+		You can get informed about internal browser events by impplementing <code>BrowserListener</code>
+		and by calling <code>this.htmlBrowser.setListener( listener )</code>:
+		</p>
+<pre>
+public interface BrowserListener
+{
+	public void notifyPageStart(String url);
+	public void notifyPageEnd();
+
+	public void notifyDownloadStart(String url);
+	public void notifyDownloadEnd();
+	public void notifyPageError(String url, Exception e);
+}
+</pre>
+	
+	
+	
+	<h2 id="htmlbrowser-configuration">Configuration</h2>
+	<p>You can configure many aspects of the <code>HtmlBrowser</code> using preprocessing variables defined 
+	in your <i>build.xml</i> script:
+	</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>Variable&nbsp;&nbsp;</th><th>Default&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>polish.Browser.PaintDownloadIndicator</td>
+	 <td>false</td>
+	 <td>Paints an indicator whenever the browser downloads data, design the continously running 
+	 <a href="gui-item-gauge.html">Gauge></a> using the <code>browserDownloadIndicator</code>.
+	 Alternatively register your own <code>BrowserListener</code>.
+	 </td>
+	</tr>
+	<tr>
+	 <td>polish.Browser.MemorySaver</td>
+	 <td>false</td>
+	 <td>Ensures that there will be at least 50 kb or <code>polish.Browser.MemorySaver.Amount</code> (in bytes) left free
+	 when downloading and processing data.
+	 </td>
+	</tr>
+	<tr>
+	 <td>polish.Browser.UserAgent</td>
+	 <td><code>&quot;J2ME-Polish/&quot; + System.getProperty(&quot;microedition.platform&quot;)</code></td>
+	 <td>The user agent that the browser uses for .</td>
+	</tr>
+	<!-- 
+	<tr>
+	 <td>polish.Browser.</td>
+	 <td>false</td>
+	 <td>.</td>
+	</tr>
+	<tr>
+	 <td>polish.Browser.</td>
+	 <td>false</td>
+	 <td>.</td>
+	</tr>
+	 -->
+	</table>
+	
+
+	<h2 id="htmlbrowser-JavaDoc">JavaDoc</h2>
+	<ul>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/browser/html/HtmlBrowser.html">HtmlBrowser</a></li>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/browser/html/HtmlTagHandler.html">HtmlTagHandler</a></li>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/browser/Browser.html">Browser</a></li>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/browser/BrowserListener.html">BrowserListener</a></li>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/browser/TagHandler.html">TagHandler</a></li>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess</a></li>
+	</ul>
+
+<%include end.txt %>
+
