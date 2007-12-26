@@ -35,6 +35,8 @@ import de.enough.polish.ui.ImageItem;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StringItem;
+import de.enough.polish.ui.Style;
+import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.TextUtil;
@@ -121,14 +123,14 @@ public class HtmlTagHandler
   }
 
   /* (non-Javadoc)
-   * @see de.enough.polish.browser.TagHandler#handleTag(de.enough.polish.ui.Container, de.enough.polish.xml.PullParser, java.lang.String, boolean, de.enough.polish.util.HashMap)
+   * @see de.enough.polish.browser.TagHandler#handleTag(de.enough.polish.ui.Container, de.enough.polish.xml.PullParser, java.lang.String, boolean, de.enough.polish.util.HashMap, de.enough.polish.ui.Style)
    */
-  public boolean handleTag(Container parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap)
+  public boolean handleTag(Container parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap, Style style)
   {
 	  //#debug
 	  System.out.println("checking tag " + tagName );
 	  tagName = tagName.toLowerCase();
-
+	  
 	  if (TAG_SELECT.equals(tagName)) {
     	  if (opening) {
     		  if (this.currentSelect != null) {
@@ -147,7 +149,7 @@ public class HtmlTagHandler
     		  }
 
     		  String name = parser.getAttributeValue(ATTR_NAME);
-    		  this.currentSelect = new HtmlSelect(name);
+    		  this.currentSelect = new HtmlSelect(name, style);
     	  } else {
     		  if (this.currentSelect != null) {
     			  ChoiceGroup choiceGroup = this.currentSelect.getChoiceGroup();
@@ -180,7 +182,7 @@ public class HtmlTagHandler
     			  value = name;
     		  }
 
-    		  this.currentSelect.addOption(name, value, selected != null);
+    		  this.currentSelect.addOption(name, value, selected != null, style);
     	  }
     	  return true;
       }
@@ -222,7 +224,6 @@ public class HtmlTagHandler
                 Image image = this.browser.loadImage(url);
                 //#style browserLink
                 linkItem = new ImageItem(null, image, 0, (String) attributeMap.get("alt") );
-        		
         		//this.browser.loadImageLater( url, (ImageItem) linkItem );
         		
         	} else {
@@ -247,7 +248,10 @@ public class HtmlTagHandler
         	//#style browserText
         	linkItem = new StringItem(null, parser.getText());
         }
-        this.browser.add(linkItem);
+		if (style != null) {
+			linkItem.setStyle(style);
+		}
+       this.browser.add(linkItem);
         return true;
       }
       else if (TAG_BR.equals(tagName))
@@ -271,7 +275,12 @@ public class HtmlTagHandler
         String url = this.browser.makeAbsoluteURL(src);
         Image image = this.browser.loadImage(url);
         if (image != null) {
-        	this.browser.add(new ImageItem(null, image, Item.LAYOUT_DEFAULT, ""));
+        	ImageItem item = new ImageItem(null, image, Item.LAYOUT_DEFAULT, "");
+    		if (style != null) {
+    			item.setStyle(style);
+    		}
+
+        	this.browser.add(item);
         }
         return true;
       }
@@ -296,6 +305,9 @@ public class HtmlTagHandler
 
             //#style browserInput
             TextField textField = new TextField(null, value, 100, TextField.ANY);
+            if (style != null) {
+            	textField.setStyle(style);
+            }
             this.browser.add(textField);
             
             this.currentForm.addItem(textField);
@@ -321,6 +333,9 @@ public class HtmlTagHandler
 
             //#style browserLink
             StringItem buttonItem = new StringItem(null, value);
+            if (style != null) {
+            	buttonItem.setStyle(style);
+            }
             buttonItem.setDefaultCommand(CMD_SUBMIT);
             buttonItem.setItemCommandListener(this);
             addCommands(TAG_INPUT, INPUT_TYPE, INPUTTYPE_SUBMIT, buttonItem);

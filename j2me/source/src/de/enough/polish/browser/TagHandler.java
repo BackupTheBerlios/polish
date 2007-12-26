@@ -29,6 +29,7 @@ package de.enough.polish.browser;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Style;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.xml.SimplePullParser;
 
@@ -64,9 +65,10 @@ public abstract class TagHandler
    * @param tagName the name of the tag to handle
    * @param opening <code>true</code> if this is an opening tag, <code>false</code> otherwise
    * @param attributeMap all attributes for the tag
+   * @param style the style for the next item, can be null
    * @return <code>true</code> if the tag was handled, <code>false</code> otherwise
    */
-  public abstract boolean handleTag(Container parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap);
+  public abstract boolean handleTag(Container parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap, Style style);
   
   //#if polish.LibraryBuild
   /**
@@ -77,11 +79,12 @@ public abstract class TagHandler
    * @param tagName the name of the tag to handle
    * @param opening <code>true</code> if this is an opening tag, <code>false</code> otherwise
    * @param attributeMap all attributes for the tag
+   * @param style the style for the next item, can be null
    * @return <code>true</code> if the tag was handled, <code>false</code> otherwise
    * 
    * @see #handleTag(Container, SimplePullParser, String, boolean, HashMap)
    */
-  public boolean handleTag(FakeContainerCustomItem parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap)
+  public boolean handleTag(FakeContainerCustomItem parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap, Style style)
   {
     return false;
   }

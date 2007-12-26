@@ -55,6 +55,7 @@ import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.StyleSheet;
 
 /**
  * TODO: Write good docs.
@@ -68,6 +69,8 @@ import de.enough.polish.ui.Style;
  * @see HttpProtocolHandler
  * @see ResourceProtocolHandler
  * @see RedirectHttpConnection
+ * 
+ * @author Michael Koch
  */
 public abstract class Browser
 //#if polish.LibraryBuild
@@ -328,8 +331,19 @@ implements Runnable
         {
           //#debug
           System.out.println("Calling handler: " + parser.getName() + " " + attributeMap);
+    	  String styleName = (String) attributeMap.get("class");
+    	  Style itemStyle = null;
+    	  if (styleName != null) {
+    		  itemStyle = StyleSheet.getStyle(styleName);
+    	  }
+    	  if (itemStyle == null || styleName == null) {
+    		  styleName = (String) attributeMap.get("id");
+    	  }
+    	  if (styleName != null) {
+    		  itemStyle = StyleSheet.getStyle(styleName);
+    	  }
 
-          handler.handleTag(this, parser, parser.getName(), openingTag, attributeMap);
+          handler.handleTag(this, parser, parser.getName(), openingTag, attributeMap, itemStyle);
         }
         else
         {
@@ -383,7 +397,7 @@ implements Runnable
   }
   
   /**
-   * Handles norml text.
+   * Handles normal text.
    *  
    * @param text the text
    */
@@ -841,7 +855,11 @@ implements Runnable
         if (this.isCancelRequested != true)
         {
             //#if polish.Browser.MemorySaver
-        		byte[] memorySaver = new byte[50000];
+        		int size = 50 * 1024;
+        		//#if polish.Browser.MemorySaver.Amount:defined
+        			//#= size = ${polish.Browser.MemorySaver.Amount};
+        		//#endif
+        		byte[] memorySaver = new byte[size];
         	//#endif
 
             try {

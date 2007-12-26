@@ -37,6 +37,7 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StringItem;
+import de.enough.polish.ui.Style;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.TextUtil;
 import de.enough.polish.xml.SimplePullParser;
@@ -130,9 +131,9 @@ public class RssTagHandler
 	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.browser.TagHandler#handleTag(de.enough.polish.ui.Container, de.enough.polish.xml.SimplePullParser, java.lang.String, boolean, de.enough.polish.util.HashMap)
+	 * @see de.enough.polish.browser.TagHandler#handleTag(de.enough.polish.ui.Container, de.enough.polish.xml.SimplePullParser, java.lang.String, boolean, de.enough.polish.util.HashMap, de.enough.polish.ui.Style)
 	 */
-	public boolean handleTag(Container parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap)
+	public boolean handleTag(Container parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap, Style style)
 	{
 		if (TAG_CHANNEL.equals(tagName)) {
 			this.inChannelTag = opening;

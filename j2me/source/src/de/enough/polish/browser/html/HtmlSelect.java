@@ -29,25 +29,33 @@ package de.enough.polish.browser.html;
 
 import de.enough.polish.ui.Choice;
 import de.enough.polish.ui.ChoiceGroup;
+import de.enough.polish.ui.Style;
+import de.enough.polish.util.ArrayList;
 
 import java.util.Vector;
 
 public class HtmlSelect
 {
+	private final static Style NO_STYLE = new Style();
 	public static final String SELECT = "select";
 
-	private String name;
+	private final String name;
 	private int selectedIndex;
-	private Vector optionNames;
-	private Vector optionValues;
+	private final ArrayList optionNames;
+	private final ArrayList optionValues;
+	private final ArrayList optionStyles;
 
-	public HtmlSelect(String name)
+	private Style style;
+
+	public HtmlSelect(String name, Style style)
 	{
 		this.name = name;
+		this.style = style;
 
 		this.selectedIndex = -1;
-		this.optionNames = new Vector();
-		this.optionValues = new Vector();
+		this.optionNames = new ArrayList();
+		this.optionValues = new ArrayList();
+		this.optionStyles = new ArrayList();
 	}
 
 	public String getName()
@@ -57,22 +65,27 @@ public class HtmlSelect
 
 	public String getValue(int index)
 	{
-		return (String) this.optionValues.elementAt(index);
+		return (String) this.optionValues.get(index);
 	}
 	
 	public void addOption(String name)
 	{
-		addOption(name, name, false);
+		addOption(name, name, false, null);
 	}
 
-	public void addOption(String name, String value, boolean selected)
+	public void addOption(String name, String value, boolean selected, Style optionStyle)
 	{
-		this.optionNames.addElement(name);
-		this.optionValues.addElement(value);
-
 		if (selected) {
-			this.selectedIndex = this.optionNames.size() - 1;
+			this.selectedIndex = this.optionNames.size();
 		}
+		this.optionNames.add(name);
+		this.optionValues.add(value);
+		if (optionStyle != null) {
+			this.optionStyles.add(optionStyle);
+		} else {
+			this.optionStyles.add( NO_STYLE );
+		}
+
 	}
 	
 	public ChoiceGroup getChoiceGroup()
@@ -81,10 +94,12 @@ public class HtmlSelect
 		{
 			//#style browserOption
 			ChoiceGroup choiceGroup = new ChoiceGroup(null, Choice.EXCLUSIVE);
-
+			if (this.style != null) {
+				choiceGroup.setStyle(this.style);
+			}
 			for (int i = 0; i < this.optionNames.size(); i++) {
 				//#style browserOptionItem
-				choiceGroup.append((String) this.optionNames.elementAt(i), null);
+				choiceGroup.append((String) this.optionNames.get(i), null);
 			}
 
 			if (this.selectedIndex != -1) {
@@ -98,7 +113,8 @@ public class HtmlSelect
 		catch (Exception e)
 		{
 			// TODO: handle exception
-			e.printStackTrace();
+			//#debug error
+			System.out.println("Unable to create choice group" + e);
 			return null;
 		}
 	}

@@ -46,7 +46,7 @@ import javax.microedition.io.StreamConnection;
 public class HttpProtocolHandler extends ProtocolHandler
 {
   //#ifndef polish.Browser.UserAgent:defined
-  private static final String USER_AGENT = System.getProperty("microedition.platform");
+  private static final String USER_AGENT = "J2ME-Polish/" + System.getProperty("microedition.platform");
   //#else
   //#= private static final String USER_AGENT = "${polish.Browser.UserAgent}";
   //#endif
