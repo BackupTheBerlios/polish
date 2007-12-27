@@ -77,6 +77,24 @@ public abstract class TextEffect implements Serializable{
 	}
 	
 	/**
+	 * Animates this effect.
+	 * Subclasses can override this method to create animations.
+	 * The default implementation calls the animate() method and adds the full content area to the repaint region.
+	 * 
+	 * @param parent the parent item
+	 * @param currentTime the current time in milliseconds
+	 * @param repaintRegion the repaint area that needs to be updated when this item is animated
+	 * @see Item#addRelativeRegion(ClippingRegion, int, int, int, int)
+	 */
+	public void animate(Item parent, long currentTime, ClippingRegion repaintRegion) 
+	{
+		if (animate()) {
+			parent.addRelativeRegion( repaintRegion, 0, 0, parent.contentWidth, parent.contentHeight );
+		}
+	}
+
+	
+	/**
 	 * Paints the text and applies the text effect.
 	 * The default implementation calls drawText( String, int, int, int, int, int, Graphics)
 	 * 
