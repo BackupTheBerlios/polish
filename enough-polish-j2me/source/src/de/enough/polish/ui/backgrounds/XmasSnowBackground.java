@@ -31,6 +31,7 @@ import java.util.Random;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.Item;
 
 public class XmasSnowBackground extends Background {
 	private boolean isRunning = true;
@@ -78,9 +79,10 @@ public class XmasSnowBackground extends Background {
 	}
 	
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		// TODO Auto-generated method stub
-		g.setColor(this.color);
-		g.fillRect(0,0,width,height);
+		if (this.color != Item.TRANSPARENT) {
+			g.setColor(this.color);
+			g.fillRect(x,y,width,height);
+		}
 		g.setColor(this.flakeColor );
 		int i = 0;
 		while(i < this.numberOfFlakes){
@@ -97,7 +99,7 @@ public class XmasSnowBackground extends Background {
 			}
 //			System.out.print("X:"+this.x[i]+";Y:"+this.y[i]+";Z:"+this.z[i]+";width"+width+";height"+height+"\n");
 			int size = this.z[i];
-			g.fillRoundRect(this.x[i],this.y[i],size,size,size,size);
+			g.fillRoundRect( x + this.x[i], y + this.y[i],size,size,size,size);
 			i++;
 		}
 	}
