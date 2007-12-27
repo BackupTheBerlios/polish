@@ -10,14 +10,19 @@
 		<li><a href="gui-visualguide.html#gui-backgrounds">Backgrounds</a></li>
 	</ul>
 	<p>
-	Cut any background into shape and/or add transparency to it using the <code>mask</code> background.
+	Bring any background into your desired shape and/or add transparency to it using the <code>mask</code> background.
 	</p>
 	<h2 id="Design">Design</h2>
 	<p>
 	The above <code>mask</code> background has been realized with following design settings:
 	<br />
-	<img src="<%= basedir%>images/background-mask.png" width="350" height="32" />
+	<img src="<%= basedir%>images/background-mask.png" width="350" height="32" alt="MaskBackground" />
+	</p>
 <pre>
+colors {
+	maskColor: red;
+}
+
 backgrounds {
 	maskBackground {
 		type: polygon;
@@ -40,11 +45,6 @@ menubar {
 	padding-top: 3;
 	padding: 2;
 	background {
-		type: vertical-gradient;
-		top-color: blue;
-		bottom-color: #fff;
-	}
-	background {
 		<b>type: mask;
 		mask: maskBackground;
 		mask-color: maskColor;
@@ -53,18 +53,85 @@ menubar {
 	}
 }
 
+.mainScreen {
+	padding: 2;
+	padding-left: 10;
+	padding-right: 10;
+	background {
+		type: horizontal-stripes;
+		first-top-color: rgb(165,190,247);
+		second-top-color: white;
+		first-bottom-color: blue;
+		second-bottom-color: black;
+	}
+	layout: horizontal-expand | horizontal-center | vertical-center;
+	//#if polish.midp2
+		screen-change-animation: fade;
+	//#endif
+}
 </pre>
+	<p>
+	The principle of the masked background is simple:
+	You can take any background, including a <a href="gui-background-combined.html">combined</a> background or even
+	a masked background as the source, and another background as mask.
+	<br />
+	The <code>MaskBackground</code> will show only parts of the source background that are covered with the mask color in the
+	mask background. The following images illustrate this:
 	</p>
+	<table class="table" cellspacing="0" cellpadding="3" border="0">
+	<tr>
+	<td valign="center">
+	<img src="<%= basedir%>images/background-mask-background.png" width="241" height="239" alt="Source" />
+	</td>
+	<td valign="center"><b>+</b></td>
+	<td valign="center">
+	<img src="<%= basedir%>images/background-mask-mask.png" width="239" height="217" alt="Mask" />
+	</td>
+	<td valign="center"><b>=</b></td>
+	<td>
+	<img src="<%= basedir%>images/background-mask-result.png" width="237" height="217" alt="Result" />
+	</td>
+	</tr>
+	<tr>
+	<td valign="center">
+<pre>
+maskGradient {
+	type: vertical-gradient;
+	top-color: white;
+	bottom-color: blue;
+}	
+</pre>
+	</td>
+	<td valign="center">&nbsp;</td>
+	<td valign="center">
+<pre>
+maskBackground {
+	type: polygon;
+	points: 5,90 55,0 105,90 155,0 205,90;
+	reference-width: 210;
+	reference-height: 100;
+	scale-mode: scale;
+	color: red;
+}
+</pre>
+	</td>
+	<td valign="center">&nbsp;</td>
+	<td valign="center">
+<pre>
+background {
+	type: mask;
+	mask: maskBackground;
+	mask-color: red;
+	background: titleGradient;
+	opacity: 150;
+}
+</pre>
+	</td>
+	</tr>
+	</table>
 	<p>
 	CSS attributes:
 	</p>
-	<!-- 
-				<param name="mask" type="background" />
-			<param name="mask-color" type="color" primitive="true" default="black" />
-			<param name="background" type="background" />		
-			<param name="anti-alising" type="boolean" primitive="true" default="false" />
-			<param name="opacity" type="integer" primitive="true" default="255" />
-	 -->
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Explanation</th></tr>
 	<tr>
@@ -76,7 +143,7 @@ menubar {
 	<tr>
 		<td>mask-color</td><td>n/a</td><td>color definition</td>
 		<td>
-		Color that is deemed transparent.
+		The mask color - every pixel in this color will considered visible in the backround.
 		</td>
 	</tr>
 	<tr>
@@ -88,7 +155,7 @@ menubar {
 	<tr>
 		<td>opacity</td><td>255</td><td>definition</td>
 		<td>
-		Opacity between 0 (transparent) and 255 (opacque).
+		Opacity between 0 (transparent) and 255 (opaque).
 		</td>
 	</tr>
 	</table>

@@ -17,6 +17,7 @@
 	The above background has been realized with following design settings:
 	<br />
 	<img src="<%= basedir%>images/background-combined.png" width="352" height="40" />
+	</p>
 <pre>
 backgrounds {
 	titleForeground {
@@ -65,7 +66,57 @@ title {
 }
 
 </pre>
+	<p>You can also combine animated background as shown in this example:
 	</p>
+	<p>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/background-combined.mov">
+	        <param name='autoplay' value="true">
+	        <param name='controller' value="false">
+	        <param name='loop' value="true">
+	        <param name='width' value="240">
+	        <param name='height' value="240">
+	        <embed src="<%= basedir%>images/background-combined.mov" autoplay="true" 
+	        controller="false" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="240" height="240"
+	        >
+	        </embed>
+		</object>		
+		<br />
+		The above animation has been realized with following settings:
+	</p>
+<pre>
+backgrounds {
+	skyline {
+		image: url( skyline.png );
+		anchor: bottom;
+	}
+	snow {
+		type: combined;
+		foreground: snowflakes;
+		background: gradient;
+	}
+	snowflakes {
+		type: snowflakes;
+		color: transparent;
+		flake-color: white;
+		max-flake-size: 12;
+		number-of-flakes: 15;		
+	}
+	gradient {
+		type: vertical-gradient;
+		top-color: black;
+		bottom-color: red;
+	}
+}
+
+.myItem {
+	background {
+		type: combined;
+		foreground: skyline;
+		background: snow;
+}
+</pre>	
 	<p>
 	CSS attributes:
 	</p>
