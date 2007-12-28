@@ -202,7 +202,7 @@ public final class TextUtil {
 			char c =' ';
 			for (int i = 0; i < valueChars.length; i++) {
 				c = valueChars[i];
-				if (c == '\n' || i == valueChars.length -1 ) {
+				if (c == '\n' || i == valueChars.length -1 || (c == 10 && valueChars[i +1] == 13) ) {
 					String line = null;
 					if (i == valueChars.length -1) {
 						line = new String( valueChars, lastIndex, (i + 1) - lastIndex );
@@ -217,13 +217,16 @@ public final class TextUtil {
 					} else {
 						wrap(line, font, completeWidth, firstLineWidth, lineWidth, lines);
 					}
+					if (c == 10) {
+						i++;
+					}
 					lastIndex = i + 1;
 					// after the first line all line widths are the same:
 					firstLineWidth = lineWidth;
 				} // for each line
 			} // for all chars
 			// special case for lines that end with \n: add a further line
-			if (c == '\n') {
+			if (c == '\n' || c == 10) {
 				lines.add("");
 			}
 		}
