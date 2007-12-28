@@ -35,8 +35,6 @@ import de.enough.polish.ui.Item;
 
 public class XmasSnowBackground extends Background {
 	private boolean isRunning = true;
-	private boolean plus = true;
-//	private transient Image imgSnowflake;
 	private int[] x,y,z;
 	private int numberOfFlakes,color,maxFlakeSize;
 	private transient final Random rand = new Random();
@@ -65,16 +63,9 @@ public class XmasSnowBackground extends Background {
 			this.z[i] = Math.abs( this.rand.nextInt() % maxSnowFlakeSize );
 			i++;
 		}
-//		try {
-//			this.imgSnowflake = Image.createImage(url);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 	}
 	
 	public boolean animate() {
-		// TODO Auto-generated method stub	
 		return this.isRunning;
 	}
 	
