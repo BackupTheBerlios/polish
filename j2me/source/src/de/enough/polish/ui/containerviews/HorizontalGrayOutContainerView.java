@@ -24,7 +24,7 @@ public class HorizontalGrayOutContainerView extends ContainerView {
 	private int offset = -1;
 	private boolean animateItems;
 	
-	int[][] inactiveIcons = null;
+	private transient int[][] inactiveIcons = null;
 	private boolean isInitialized;
 	
 	/**
