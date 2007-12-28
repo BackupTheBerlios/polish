@@ -202,7 +202,8 @@ public final class TextUtil {
 			char c =' ';
 			for (int i = 0; i < valueChars.length; i++) {
 				c = valueChars[i];
-				if (c == '\n' || i == valueChars.length -1 || (c == 10 && valueChars[i +1] == 13) ) {
+				boolean isCRLF = (c == 0x0D && i < valueChars.length -1 &&  valueChars[i +1] == 0x0A);
+				if (c == '\n' || i == valueChars.length -1 || isCRLF ) {
 					String line = null;
 					if (i == valueChars.length -1) {
 						line = new String( valueChars, lastIndex, (i + 1) - lastIndex );
@@ -217,7 +218,7 @@ public final class TextUtil {
 					} else {
 						wrap(line, font, completeWidth, firstLineWidth, lineWidth, lines);
 					}
-					if (c == 10) {
+					if (isCRLF) {
 						i++;
 					}
 					lastIndex = i + 1;
