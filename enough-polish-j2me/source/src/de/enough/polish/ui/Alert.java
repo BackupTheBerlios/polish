@@ -166,6 +166,7 @@ import de.enough.polish.util.Locale;
  * <code>Alert</code>, however it may not be displayed due to
  * implementation restrictions.
  * 
+ * <p>copyright Enough Software 2005 - 2008</p>
  * @since MIDP 1.0
  */
 public class Alert 

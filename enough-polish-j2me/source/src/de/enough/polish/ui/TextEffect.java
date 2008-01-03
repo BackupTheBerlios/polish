@@ -37,7 +37,7 @@ import de.enough.polish.util.TextUtil;
 /**
  * <p>Allows text effects for StringItems, IconItems and ChoiceItems.</p>
  *
- * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        16-Nov-2005 - rob creation

@@ -33,11 +33,8 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Paints a plain border in one color at the bottom of the item.</p>
  *
+ * <p>Copyright Enough Software 2005 - 2008</p>
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        06-Jan-2005 - rob creation
- * </pre>
  */
 public class BottomBorder extends Border {
 

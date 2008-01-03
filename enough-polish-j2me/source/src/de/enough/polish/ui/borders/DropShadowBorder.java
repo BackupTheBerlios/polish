@@ -35,7 +35,7 @@ import de.enough.polish.util.DrawUtil;
 /**
  * <p>Paints a translucent shadow on MIDP 2.0 and Nokia-UI-API devices.</p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        22-Aug-2005 - rob creation

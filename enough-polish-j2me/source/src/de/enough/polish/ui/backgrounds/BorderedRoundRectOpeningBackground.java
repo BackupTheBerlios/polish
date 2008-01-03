@@ -33,7 +33,7 @@ import de.enough.polish.ui.Background;
 /**
  * <p>Draws an expanding backround which will show a border when it is fully expanded.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history

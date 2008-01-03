@@ -44,7 +44,7 @@ import de.enough.polish.ui.TextEffect;
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Oct 28, 2007 - rob creation

@@ -15,7 +15,7 @@ import de.enough.polish.ui.UiAccess;
  * <p>Shows  the available items of a Container in a horizontal list.</p>
  * <p>Apply this view by specifying "view-type: horizontal;" in your polish.css file.</p>
  *
- * <p>Copyright (c) 2007 Enough Software</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * @author Andre Schmidt
  */
 public class HorizontalGrayOutContainerView extends ContainerView {

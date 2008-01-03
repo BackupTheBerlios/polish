@@ -30,11 +30,7 @@ import java.util.Vector;
 /**
  * <p>Is used to traverse through vectors.</p>
  *
- * <p>Copyright (c) 2006 Enough Software</p>
- * <pre>
- * history
- *        17-Aug-2006 - mkoch creation
- * </pre>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * @author Michael Koch, michael.koch@enough.de
  */
 public class VectorIterator

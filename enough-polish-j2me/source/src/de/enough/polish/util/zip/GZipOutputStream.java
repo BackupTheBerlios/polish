@@ -31,7 +31,7 @@ import java.io.OutputStream;
 /**
  * <p>Generates GZIP or DEFLATE encoded input streams from an InputStream.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Jun 28, 2007 - Simon creation

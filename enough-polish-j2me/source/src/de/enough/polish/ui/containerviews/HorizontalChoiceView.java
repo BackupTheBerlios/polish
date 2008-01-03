@@ -55,7 +55,7 @@ import de.enough.polish.ui.StyleSheet;
  * <p>Shows  the available items of an ChoiceGroup or a horizontal list.</p>
  * <p>Apply this view by specifying "view-type: horizontal-choice;" in your polish.css file.</p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        02-March-2006 - rob creation

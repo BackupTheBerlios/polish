@@ -33,11 +33,8 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Paints a border which is like shadow, which is seen on the bottom and on the right of the bordered Item.</p>
  *
+ * <p>Copyright Enough Software 2004 - 2008</p>
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        06-Jan-2004 - rob creation
- * </pre>
  */
 public class BottomRightShadowBorder extends Border {
 	private final int color;

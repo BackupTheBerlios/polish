@@ -28,7 +28,7 @@ package de.enough.polish.ui;
 /**
  * <p>Manages a region that is increased when further regions are added.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Aug 18, 2007 - rob creation

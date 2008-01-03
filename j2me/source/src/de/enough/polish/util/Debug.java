@@ -43,7 +43,7 @@ import de.enough.polish.log.LogHandler;
 /**
  * <p>Is used for debugging of information.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history

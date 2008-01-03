@@ -29,7 +29,7 @@ package de.enough.polish.ui.backgrounds;
 /**
  * <p>Plays back animated gifs in GIF89a format.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Nov 8, 2007 - rob creation

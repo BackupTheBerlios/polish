@@ -39,7 +39,7 @@ import de.enough.polish.xml.XmlDomNode;
 /**
  * <p>Serializes and deserializes some objects using the XML-RPC notation</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Dec 9, 2007 - rob creation

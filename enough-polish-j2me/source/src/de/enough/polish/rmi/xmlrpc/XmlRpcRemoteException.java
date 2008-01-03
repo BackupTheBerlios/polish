@@ -30,7 +30,7 @@ import de.enough.polish.rmi.RemoteException;
 /**
  * <p>Provides access to XML RPC specific faults</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Dec 12, 2007 - rob creation

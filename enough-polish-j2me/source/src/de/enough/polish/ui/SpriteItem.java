@@ -36,7 +36,7 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Allows to use sprites within normal forms.</p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        15-Feb-2005 - rob creation

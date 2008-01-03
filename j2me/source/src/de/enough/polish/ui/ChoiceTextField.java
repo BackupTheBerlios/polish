@@ -37,7 +37,7 @@ import de.enough.polish.util.TextUtil;
 /**
  * <p>Provides a TextField that provides the user with possible matches for the current input.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        27-Feb-2006 - rob creation

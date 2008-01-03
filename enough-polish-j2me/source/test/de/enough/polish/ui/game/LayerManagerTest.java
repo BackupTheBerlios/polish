@@ -32,7 +32,7 @@ import junit.framework.TestCase;
 /**
  * <p>Tests the LayerManager implementation</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history

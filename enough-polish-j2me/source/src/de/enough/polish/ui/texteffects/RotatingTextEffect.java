@@ -46,7 +46,7 @@ import de.enough.polish.util.RgbImage;
  * 	 <li><b>text-rotating-steps</b>: The number of degrees by which the rotation should be increased in each animation step, defaults to 2 degrees.</li>
  * </ul>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Nov 29, 2006 - rob creation

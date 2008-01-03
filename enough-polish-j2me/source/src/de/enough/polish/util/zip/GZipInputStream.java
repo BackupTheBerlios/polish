@@ -32,7 +32,7 @@ import java.io.InputStream;
 /**
  * <p>Reads and uncompresses GZIP or DEFLATE encoded input streams.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Jun 25, 2007 - Simon creation

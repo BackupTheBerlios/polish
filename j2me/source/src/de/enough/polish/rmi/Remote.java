@@ -28,7 +28,7 @@ package de.enough.polish.rmi;
 /**
  * <p>The base interface for any remote services. Defined methods need to declare to throw at least a RemoteException.</p>
  *
- * <p>Copyright Enough Software 2006, 2007</p>
+ * <p>Copyright Enough Software 2006, 2007 - 2008</p>
  * <pre>
  * history
  *        Dec 18, 2006 - rob creation

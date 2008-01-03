@@ -88,7 +88,7 @@ import java.util.Date;
  * //#endif
  * </pre>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Sep 8, 2006 - rob creation

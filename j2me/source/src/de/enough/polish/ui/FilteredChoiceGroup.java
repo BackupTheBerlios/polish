@@ -37,7 +37,7 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Displays the currently selected item(s) and opens up a new FilteredList for selecting an element.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Jun 26, 2007 - rob creation

@@ -38,11 +38,7 @@ import javax.microedition.lcdui.game.Sprite;
 /**
  * <p>Paints an border with customizable images for each edge and each side.</p>
  *
- * <p>Copyright (c) 2007 Enough Software</p>
- * <pre>
- * history
- *        9-May-2007 - mkoch creation
- * </pre>
+ * <p>Copyright (c) Enough Software 2007 - 2008</p>
  * @author Michael Koch, michael.koch@enough.de
  */
 public class ImageBorder extends Border

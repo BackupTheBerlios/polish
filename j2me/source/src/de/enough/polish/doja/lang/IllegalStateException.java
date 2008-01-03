@@ -30,7 +30,7 @@ package de.enough.polish.doja.lang;
 /**
  * <p>Mapping for java.lang.IllegalStateException which is part of the MIDP standard.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Dec 31, 2006 - rob creation

@@ -45,7 +45,7 @@ import de.enough.polish.ui.Item;
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Jul 10, 2007 - rob creation

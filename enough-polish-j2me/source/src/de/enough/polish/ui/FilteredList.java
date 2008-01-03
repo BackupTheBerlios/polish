@@ -35,7 +35,7 @@ import de.enough.polish.util.ArrayList;
 /**
  * <p>Displays a list of choices that can be limited by the user by entering some input.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Jun 21, 2007 - michael creation

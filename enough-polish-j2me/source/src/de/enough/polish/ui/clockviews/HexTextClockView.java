@@ -31,7 +31,7 @@ import java.util.Calendar;
 /**
  * <p>Visualizes the clock as a hexadecimal string, e.g. 04:0b instead of 4:11.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        May 30, 2007 - rob creation

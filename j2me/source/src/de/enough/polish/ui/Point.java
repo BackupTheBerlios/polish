@@ -30,7 +30,7 @@ import de.enough.polish.io.Serializable;
 /**
  * <p>Represents a point within a scale</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Oct 12, 2007 - rob creation

@@ -384,6 +384,7 @@ import de.enough.polish.util.HashMap;
  * <li>both the preferred width and preferred height are unlocked.</li>
  * </ul>
  * 
+ * <p>copyright Enough Software 2004 - 2008</p>
  * @since MIDP 1.0
  */
 public abstract class Item extends Object

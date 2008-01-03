@@ -40,7 +40,7 @@ import de.enough.polish.ui.Background;
  * 	<li><b>max-diameter</b>: the minimum diameter of the circle.</li>
  * </ul>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history

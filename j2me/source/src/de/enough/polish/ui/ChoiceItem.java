@@ -103,7 +103,7 @@ import javax.microedition.lcdui.Image;
  * }
  * </PRE>
  * <b><i>(Example and JavaDoc provided by Pierre G. Richard)</i></b> 
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
  * <pre>
  * history
  *        05-May-2004 - rob creation

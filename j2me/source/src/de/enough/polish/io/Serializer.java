@@ -62,7 +62,7 @@ import javax.microedition.lcdui.Image;
  * <p>The serializer class is used for serializing and de-serializing objects in a unified way.</p>
  * <p>High level serialization components like the RmsStorage use this helper class for the actual serialization.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Mar 31, 2006 - rob creation

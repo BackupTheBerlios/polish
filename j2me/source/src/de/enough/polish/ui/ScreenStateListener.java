@@ -30,7 +30,7 @@ package de.enough.polish.ui;
  * <p>Is used to detect internal changes of Screens, e.g. when the user changes the tab of a TabbedForm.</p>
  * <p>This is a J2ME Polish specific mechanism and not supported by the MIDP standard.</p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        01-May-2005 - rob creation

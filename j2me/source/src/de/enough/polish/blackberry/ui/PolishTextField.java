@@ -34,7 +34,7 @@ import net.rim.device.api.ui.XYRect;
 /**
  * <p>Provides common funcitonality of the PolishEditField and the PolishPasswordEditField.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Mar 13, 2007 - rob creation

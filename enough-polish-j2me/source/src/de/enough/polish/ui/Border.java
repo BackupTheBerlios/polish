@@ -33,15 +33,13 @@ import de.enough.polish.io.Serializable;
 /**
  * <p>Provides an abstract  border.</p>
  *
- * <p>copyright Enough Software 2003, 2004</p>
- * <pre>
- * history
- *        04-Jan-2004 - rob creation
- * </pre>
+ * <p>copyright Enough Software 2004 - 2008</p>
  * @author Robert Virkus, robert@enough.de
  */
-public abstract class Border implements Serializable {
+public abstract class Border //implements Serializable 
+{
 	
+	/** general width of the border */
 	public int borderWidth;
 
 	/**

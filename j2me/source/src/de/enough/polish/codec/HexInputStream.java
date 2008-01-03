@@ -33,7 +33,7 @@ import java.io.InputStream;
 /**
  * <p>Decodes hex encoded data on the fly.</p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        24-Oct-2005 - rob creation

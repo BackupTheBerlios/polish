@@ -33,7 +33,7 @@ import de.enough.polish.io.Serializable;
 /**
  * <p>Wraps an (A)RGB color and can also contain dynamic references like Display.COLOR_BACKGROUND.</p>
  * <p>For compatibility with MIDP 1.0 devices, the color class also defines COLOR_BACKGROUND etc with the very same values.</p>
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        06-Jun-2006 - rob creation

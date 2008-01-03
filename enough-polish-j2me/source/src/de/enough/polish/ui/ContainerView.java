@@ -35,7 +35,7 @@ import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Is responsible for visual representation and interpretation of user-input.</p>
- * <p>Copyright Enough Software 2004 - 2007</p>
+ * <p>Copyright Enough Software 2004 - 2007 - 2008</p>
  * <pre>
  * history
  *        Oct 27, 2004 - rob creation

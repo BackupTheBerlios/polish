@@ -138,7 +138,7 @@ import javax.microedition.lcdui.Image;
  * origin.  The rendered region
  * may be controlled by setting the clip region of the Graphics object
  * accordingly.
- * <HR>
+ * <p>Copyright Enough Software 2005 - 2008</p>
  * 
  * @author Robert Virkus (initial implementation)
  * @author Jan Peknik (Optimizations)

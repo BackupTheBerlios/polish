@@ -29,6 +29,7 @@ package de.enough.polish.util;
  * Arrays is used for sorting array elements.
  * When no comparator is specified, the default toString() comparator is used. That comparator
  * just compares the string values of the elements using the toString() method.
+ * <p>Copyright (c) Enough Software 2006 - 2008</p>
  * 
  * @author Tim Muders
  * @author Robert Virkus

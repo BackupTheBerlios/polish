@@ -43,7 +43,7 @@ import de.enough.polish.util.TextUtil;
 /**
  * <p>Provides a SplashScreen that intialises the real application in a background thread.</p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        23-Mar-2005 - rob creation

@@ -45,7 +45,7 @@ import de.enough.polish.ui.StyleSheet;
  * <p>Shows only the currently selected item of an exclusive ChoiceGroup or an exclusive List.</p>
  * <p>Apply this view by specifying "view-type: exclusive-single-line;" in your polish.css file.</p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        08-Apr-2005 - rob creation

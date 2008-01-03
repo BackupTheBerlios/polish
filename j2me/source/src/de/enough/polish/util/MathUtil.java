@@ -28,7 +28,7 @@ package de.enough.polish.util;
 /**
  * <p>Provides some helper methods missing in java.lang.Math</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        02-May-2006 - rob creation

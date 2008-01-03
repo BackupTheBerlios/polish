@@ -10,6 +10,7 @@ import de.enough.polish.ui.Background;
 /**
  * 
  * @author Tim Muders
+ * <p>Copyright Enough Software 2005 - 2008</p>
  *
  */
 public class TigerStripesBackground extends Background {

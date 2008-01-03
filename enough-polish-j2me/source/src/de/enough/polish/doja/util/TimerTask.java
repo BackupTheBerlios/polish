@@ -30,7 +30,7 @@ package de.enough.polish.doja.util;
 /**
  * <p>Maps the MIDP java.lang.TimerTask for DoJa devices.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Dec 31, 2006 - rob creation

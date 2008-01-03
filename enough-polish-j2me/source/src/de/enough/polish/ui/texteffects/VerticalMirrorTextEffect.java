@@ -51,7 +51,7 @@ import de.enough.polish.util.DrawUtil;
  *    Also note that this effect requires MIDP 2.0 support.
  * </p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Jun 20, 2006 - rob creation

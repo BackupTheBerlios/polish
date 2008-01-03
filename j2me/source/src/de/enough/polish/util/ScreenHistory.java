@@ -33,7 +33,7 @@ import javax.microedition.lcdui.Displayable;
  * <p>Manages a history of screens in a stack, when a previous screen is shown all following screens are removed from the history.</p>
  * <p>ScreenHistory is thread safe.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Jan 14, 2007 - rob creation

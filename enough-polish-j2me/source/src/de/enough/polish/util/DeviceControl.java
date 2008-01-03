@@ -8,7 +8,7 @@ package de.enough.polish.util;
  * 
  * <p>Controls backlight and vibration in an device-independent manner</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * @author Andre Schmidt
  * @author Robert Virkus
  */

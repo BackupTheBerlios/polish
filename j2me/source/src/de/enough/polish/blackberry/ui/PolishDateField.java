@@ -60,7 +60,7 @@ import net.rim.device.api.ui.component.DateField;
 /**
  * <p>A field used by de.enough.polish.ui.DateField for input of dates on blackberry platforms.</p>
  *
- * <p>copyright Enough Software 2006</p>
+ * <p>copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        18.09.2006 - rob creation

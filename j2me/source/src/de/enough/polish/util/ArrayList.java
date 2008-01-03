@@ -52,11 +52,8 @@ import de.enough.polish.io.Serializer;
  * </ul>
  * </p>
  * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the ArrayList, e.g. ArrayList&lt;Integer&gt; = new ArrayList&lt;Integer&gt;(10); 
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        03-Jan-2004 - rob creation
- * </pre>
  */
 public class ArrayList
 //#if polish.java5

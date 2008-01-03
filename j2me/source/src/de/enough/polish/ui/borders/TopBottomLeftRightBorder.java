@@ -52,11 +52,8 @@ import javax.microedition.lcdui.Graphics;
  * </pre>
  * </p>
  *
+ * <p>Copyright Enough Software 2005 - 2008</p>
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        06-Jan-2005 - rob creation
- * </pre>
  */
 public class TopBottomLeftRightBorder extends Border {
 

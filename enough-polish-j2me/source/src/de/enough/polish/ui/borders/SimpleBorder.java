@@ -33,11 +33,8 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Paints a plain border in one color.</p>
  *
+ * <p>Copyright Enough Software 2004 - 2008</p>
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        06-Jan-2004 - rob creation
- * </pre>
  */
 public class SimpleBorder extends Border {
 

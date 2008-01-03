@@ -36,7 +36,7 @@ import de.enough.polish.util.ArrayList;
 /**
  * <p>Provides several lists in tabs.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Jun 27, 2007 - rob creation

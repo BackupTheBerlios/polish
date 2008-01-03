@@ -42,7 +42,7 @@ import de.enough.polish.util.HashMap;
  *    the screen changes its focus or another internal state (like changing a tab in the TabbedForm).
  * </p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        31-Jan-2006 - rob creation

@@ -43,7 +43,7 @@ import de.enough.polish.ui.StyleSheet;
  * <p>Plays a video in an background.</p>
  * <p>Note that you can use this background only when you target device supports the MMAPI 1.1 or higher.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Nov 8, 2007 - rob creation

@@ -30,7 +30,7 @@ import java.util.Hashtable;
 import de.enough.polish.util.ArrayList;
 
 /**
- * <p>Copyright Enough Software 2006, 2007</p>
+ * <p>Copyright Enough Software 2006, 2007 - 2008</p>
  * 
  * <pre>
  * history

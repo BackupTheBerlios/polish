@@ -63,7 +63,7 @@ package de.enough.polish.util;
  *    operations need to be done, which might be beneficial depending on the hash codes of your keys.  
  * </p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        30-Nov-2005 - rob creation

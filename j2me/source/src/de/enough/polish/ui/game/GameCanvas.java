@@ -92,6 +92,7 @@ import de.enough.polish.ui.MasterCanvas;
  * </pre>
  * </code>
  * 
+ * <p>Copyright Enough Software 2005 - 2008</p>
  * @author Robert Virkus (initial implementation)
  * @author Jan Peknik (Optimizations)
  * @author Thomas Broyer (Optimizations)

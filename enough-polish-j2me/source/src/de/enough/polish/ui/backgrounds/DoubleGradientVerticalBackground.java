@@ -35,6 +35,7 @@ import de.enough.polish.util.DrawUtil;
  * DoubleGradientVerticalBackground generates an nice Backgroundscreen,
  * with two gradients, each taking half of the available height.
  * 
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * @author Andre Schmidt
  */
 public class DoubleGradientVerticalBackground  extends Background {

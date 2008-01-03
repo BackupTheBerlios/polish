@@ -29,7 +29,7 @@ package de.enough.polish.rmi;
  * <p>Wraps information about a remote call that should be/is being processed.</p>
  * 
  *
- * <p>Copyright Enough Software 2006, 2007</p>
+ * <p>Copyright Enough Software 2006, 2007 - 2008</p>
  * <pre>
  * history
  *        Dec 20, 2006 - rob creation

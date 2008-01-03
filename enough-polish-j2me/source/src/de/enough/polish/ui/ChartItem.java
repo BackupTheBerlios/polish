@@ -35,7 +35,7 @@ import de.enough.polish.util.RgbImage;
 /**
  * <p>The ChartItem renders numerical integer based data in a diagram.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Nov 28, 2006 - rob creation

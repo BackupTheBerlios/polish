@@ -31,7 +31,7 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Provides a queue for loading images in the background.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history

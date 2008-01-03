@@ -39,7 +39,7 @@ import de.enough.polish.util.ArrayList;
  *    can use the AsynchronousCommandListener.
  * </p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Feb 22, 2007 - rob creation

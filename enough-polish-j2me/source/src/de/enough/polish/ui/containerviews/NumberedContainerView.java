@@ -33,7 +33,7 @@ import de.enough.polish.ui.Item;
 /**
  * <p>Sets a sequential number for each embedded item-label.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Jun 27, 2007 - rob creation

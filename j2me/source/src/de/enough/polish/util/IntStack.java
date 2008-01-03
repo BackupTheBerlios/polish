@@ -28,7 +28,7 @@ package de.enough.polish.util;
 /**
  * <p>Provides a lifo stack for primitive int types</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Aug 30, 2007 - rob creation

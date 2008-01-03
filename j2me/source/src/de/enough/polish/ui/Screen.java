@@ -3990,7 +3990,7 @@ implements AccessibleCanvas
 	/**
 	 * <p>A command listener which forwards commands to the item command listener in case it encounters an item command.</p>
 	 *
-	 * <p>Copyright Enough Software 2004, 2005</p>
+	 * <p>Copyright Enough Software 2004 - 2008</p>
 
 	 * <pre>
 	 * history

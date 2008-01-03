@@ -34,7 +34,7 @@ import java.io.IOException;
 /**
  * <p>Contains one log entry.</p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        23-Apr-2005 - rob creation

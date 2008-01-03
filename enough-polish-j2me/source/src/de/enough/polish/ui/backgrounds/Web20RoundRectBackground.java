@@ -34,11 +34,8 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Paints a rectangle with round corners as a background.</p>
  *
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        06-Jan-2004 - rob creation
- * </pre>
  */
 public class Web20RoundRectBackground 
 extends Background 

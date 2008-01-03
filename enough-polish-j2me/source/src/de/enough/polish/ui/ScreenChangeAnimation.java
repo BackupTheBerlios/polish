@@ -79,7 +79,7 @@ import javax.microedition.lcdui.Image;
  * </pre>
  * </p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        27-May-2005 - rob creation

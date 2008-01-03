@@ -35,7 +35,7 @@ import java.util.NoSuchElementException;
  * If you need to obtain empty tokens as well, please use StringUtil.split(...) instead. 
  * </p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        Mar 1, 2006 - rob creation

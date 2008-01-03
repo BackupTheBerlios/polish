@@ -39,7 +39,7 @@ import de.enough.polish.util.ImageUtil;
 /**
  * <p>Fades out the item.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Apr 25, 2007 - rob creation

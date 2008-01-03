@@ -38,7 +38,7 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Wraps a javax.microedition.lcdui.Command object and allows to add subcommands, specific styles etc to single commands.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Mar 4, 2006 - rob creation

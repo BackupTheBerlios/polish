@@ -37,7 +37,7 @@ import de.enough.polish.ui.Style;
 /**
  * <p>Visualizes the chart as a cake diagram.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Jul 19, 2007 - asc creation

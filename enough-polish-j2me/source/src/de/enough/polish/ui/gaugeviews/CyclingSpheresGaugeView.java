@@ -39,7 +39,7 @@ import de.enough.polish.util.DrawUtil;
 /**
  * <p>Shows an animation of cyclic aligned spheres for visualizing an CONTINUOUS_RUNNING indefinite gauge.</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Aug 30, 2007 - asc creation

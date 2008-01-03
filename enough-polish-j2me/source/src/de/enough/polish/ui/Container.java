@@ -50,7 +50,7 @@ import de.enough.polish.util.ArrayList;
  * 				</li>
  * 		<li><b>scroll-mode</b>: Either "smooth" (=default) or "normal".</li>
  * </ul>
- * <p>Copyright Enough Software 2004 - 2007</p>
+ * <p>Copyright Enough Software 2004 - 2007 - 2008</p>
 
  * <pre>
  * history

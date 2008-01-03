@@ -51,7 +51,7 @@ import de.enough.polish.ui.Style;
 /**
  * <p></p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        29-May-2005 - rob creation

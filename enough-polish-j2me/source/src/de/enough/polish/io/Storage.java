@@ -31,7 +31,7 @@ import java.util.Enumeration;
 /**
  * <p>Base interface for storage systems.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        13-Mar-2006 - rob creation

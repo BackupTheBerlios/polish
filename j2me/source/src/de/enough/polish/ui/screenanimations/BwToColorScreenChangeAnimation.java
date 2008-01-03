@@ -48,7 +48,7 @@ import de.enough.polish.util.DrawUtil;
  * </pre>
  * </p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Apr 15, 2007 - rob creation

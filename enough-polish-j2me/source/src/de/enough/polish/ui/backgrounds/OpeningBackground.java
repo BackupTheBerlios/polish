@@ -33,7 +33,7 @@ import de.enough.polish.ui.Background;
 /**
  * <p>Paints a background which expands to its full size whenever the background is moved.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history

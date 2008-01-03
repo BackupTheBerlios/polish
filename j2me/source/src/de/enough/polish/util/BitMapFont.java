@@ -42,12 +42,7 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Can be used to use any kind of bitmap fonts.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
-
- * <pre>
- * history
- *        08-Nov-2004 - rob creation
- * </pre>
+ * <p>Copyright Enough Software 2004 - 2008</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public final class BitMapFont {

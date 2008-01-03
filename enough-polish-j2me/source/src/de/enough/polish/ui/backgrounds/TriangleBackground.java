@@ -34,11 +34,8 @@ import de.enough.polish.util.DrawUtil;
 /**
  * <p>Paints a filled rectangle as a background in a specific color.</p>
  *
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        06-Jan-2007 - rob creation
- * </pre>
  */
 public class TriangleBackground 
 extends Background 

@@ -44,7 +44,7 @@ import de.enough.polish.util.RgbImage;
  * 	 <li><b>text-rotate-angle</b>: The angle by which the text should be rotated.</li>
  * </ul>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Nov 29, 2006 - rob creation

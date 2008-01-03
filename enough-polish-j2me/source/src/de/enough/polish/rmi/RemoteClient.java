@@ -47,7 +47,7 @@ import de.enough.polish.io.Serializer;
  * </pre>
  * </p> 
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Dec 20, 2006 - rob creation

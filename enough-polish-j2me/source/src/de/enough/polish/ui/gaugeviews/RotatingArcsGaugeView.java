@@ -38,7 +38,7 @@ import de.enough.polish.util.DrawUtil;
 /**
  * <p>Shows an animation of rotating arcs for visualizing an CONTINUOUS_RUNNING indefinite gauge.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Jan 31, 2007 - rob creation

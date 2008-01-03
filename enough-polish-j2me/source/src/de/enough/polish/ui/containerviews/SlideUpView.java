@@ -36,7 +36,7 @@ import de.enough.polish.ui.Item;
 /**
  * <p>Slides the parent container upwards, an animation used for menus for example.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Aug 21, 2006 - rob creation

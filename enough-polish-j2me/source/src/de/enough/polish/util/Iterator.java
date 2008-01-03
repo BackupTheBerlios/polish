@@ -31,7 +31,7 @@ package de.enough.polish.util;
  *    of the parent map/list, so no memory overhead occurs.
  * </p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        12-Jan-2006 - rob creation

@@ -35,7 +35,7 @@ import java.io.IOException;
  *    to provide a default constructor without any parameters.
  *    This is turn means that no final instance fields are allowed.
  * </p>
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        13-Mar-2006 - rob creation

@@ -30,6 +30,7 @@ package de.enough.polish.browser;
 /**
  * Interface to be able to listen to the status of the browser.
  * 
+ * <p>copyright Enough Software 2006 - 2008</p>
  * @see Browser
  */
 public interface BrowserListener

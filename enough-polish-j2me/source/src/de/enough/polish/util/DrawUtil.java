@@ -41,7 +41,7 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Provides functions for drawing shadows, polygons, gradients, etc.</p>
  *
- * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <p>
  * The implementation for filling a polygon on devices without Nokia-UI-API and without the BlackBerry API is based
  * upon JMicroPolygon: http://sourceforge.net/projects/jmicropolygon, which is licensed under the Apache Software License

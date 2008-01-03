@@ -43,6 +43,7 @@ import javax.microedition.lcdui.Graphics;
  * system.  The initial location of a Layer is (0,0).
  * 
  * <p>
+ * <p>Copyright Enough Software 2005 - 2008</p>
  * 
  * @since MIDP 2.0
  */

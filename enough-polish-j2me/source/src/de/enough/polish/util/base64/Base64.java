@@ -31,7 +31,7 @@ import java.io.UnsupportedEncodingException;
  * <p>A Base64 Encoder/Decoder based on Robert's Harder Java SE implementation available at <a href="http://iharder.net/base64">http://iharder.net/base64</a>.</p>
  * 
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Dec 13, 2007 - rob creation

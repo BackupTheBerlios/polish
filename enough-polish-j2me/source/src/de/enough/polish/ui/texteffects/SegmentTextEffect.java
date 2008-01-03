@@ -43,7 +43,7 @@ import de.enough.polish.ui.TextEffect;
  * 	 <li><b>text-segment-gap</b>: The gap between segment lines, defaults to 3.</li>
  * </ul>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        16-Nov-2005 - rob creation

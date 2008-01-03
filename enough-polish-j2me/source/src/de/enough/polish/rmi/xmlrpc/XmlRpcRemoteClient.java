@@ -47,7 +47,7 @@ import de.enough.polish.xml.XmlDomParser;
 /**
  * <p>Allows to communicate with XML-RPC servers</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Dec 9, 2007 - rob creation

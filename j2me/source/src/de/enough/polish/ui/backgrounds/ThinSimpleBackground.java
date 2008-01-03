@@ -33,7 +33,7 @@ import de.enough.polish.ui.Background;
 /**
  * <p>Renders a simple background with a maxium width.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Jul 29, 2006 - rob creation

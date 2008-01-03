@@ -45,7 +45,7 @@ import de.enough.polish.util.ArrayList;
  *  sets the interval to 200 ms. When not specified, the default interval
  *  of 100 ms will be used. 
  * </p>
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history

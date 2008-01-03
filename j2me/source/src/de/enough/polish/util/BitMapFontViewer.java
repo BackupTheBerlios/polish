@@ -32,7 +32,7 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Is used for a performant showing of String with a bitmap font.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history

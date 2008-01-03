@@ -56,7 +56,7 @@ import de.enough.polish.ui.Background;
  * }
  * </pre>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Dec 28, 2007 - rob creation

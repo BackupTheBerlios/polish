@@ -71,7 +71,7 @@ import de.enough.polish.ui.UiAccess;
  * }
  * </pre>
  * </p>
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Oct 11, 2007 - rob creation

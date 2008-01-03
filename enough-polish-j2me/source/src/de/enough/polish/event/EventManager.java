@@ -30,7 +30,7 @@ import java.util.Hashtable;
 /**
  * <p>Manages events and forwards them to appropriate listeners</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Sep 15, 2007 - rob creation

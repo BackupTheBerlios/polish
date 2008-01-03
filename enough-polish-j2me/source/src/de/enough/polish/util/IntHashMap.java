@@ -37,7 +37,7 @@ package de.enough.polish.util;
  *    the new item is linked to the previous item. 
  * </p>
  *
- * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        30-Nov-2005 - rob creation

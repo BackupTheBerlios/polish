@@ -44,7 +44,7 @@ import de.enough.polish.log.LogHandler;
  * </pre>
  * </p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
  * history
  *        26-Apr-2005 - rob creation

@@ -36,11 +36,8 @@ import javax.microedition.lcdui.Graphics;
  *       when used instead of the RoundRectBackground and a RoundRectBorder together.
  * </p>
  *
+ * <p>Copyright Enough Software 2005 - 2008</p>
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        06-Jan-2004 - rob creation
- * </pre>
  */
 public class BorderedRoundRectBackground extends Background {
 

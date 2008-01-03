@@ -32,7 +32,7 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Allows to manipulate image data.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Jun 14, 2006 - rob creation

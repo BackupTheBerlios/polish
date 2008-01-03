@@ -33,11 +33,8 @@ import javax.microedition.lcdui.Graphics;
 /**
  * <p>Paints a rectangle with top round corners and a border.</p>
  *
+ * <p>Copyright Enough Software 2005 - 2008</p>
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        24-Jan-2005 - rob creation
- * </pre>
  */
 public class BorderedRoundTabBackground extends Background {
 

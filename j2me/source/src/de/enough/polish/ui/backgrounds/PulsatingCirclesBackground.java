@@ -43,7 +43,7 @@ import de.enough.polish.ui.Background;
  * 	<li><b>step</b>: the number of pixels each circle should grow in every animation.</li>
  * </ul>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history

@@ -38,7 +38,7 @@ import javax.microedition.media.PlayerListener;
 /**
  * <p>Plays back audio files - at the moment this is only supported for MIDP 2.0 and devices that support the MMAPI</p>
  *
- * <p>Copyright Enough Software 2006, 2007</p>
+ * <p>Copyright Enough Software 2006, 2007 - 2008</p>
  * <pre>
  * history
  *        Nov 21, 2006 - rob creation

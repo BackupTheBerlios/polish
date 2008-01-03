@@ -40,7 +40,7 @@ import de.enough.polish.util.ArrayList;
  *    can use the ThreadedCommandListener.
  * </p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        March 12, 2007 - rob creation

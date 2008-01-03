@@ -37,11 +37,8 @@ import javax.microedition.lcdui.Graphics;
  *       when used instead of the SimpleBackground and a SimpleBorder together.
  * </p>
  *
+ * <p>Copyright Enough Software 2004 - 2008</p>
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        06-Jan-2004 - rob creation
- * </pre>
  */
 public class BorderedSimpleBackground extends Background {
 	

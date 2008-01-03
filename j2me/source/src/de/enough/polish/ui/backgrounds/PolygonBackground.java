@@ -51,12 +51,8 @@ import javax.microedition.lcdui.Graphics;
  * </pre>
  * </p>
  * 
- *
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        12-Oct-2007 - rob creation
- * </pre>
  */
 public class PolygonBackground 
 extends Background 

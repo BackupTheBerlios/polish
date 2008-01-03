@@ -51,7 +51,7 @@ import de.enough.polish.io.RecordingDataInputStream;
 /**
  * <p>Locale provides translations and format dates and currencies depending on the chosen localization.</p>
  *
- * <p>Copyright Enough Software 2004, 2005, 2006, 2007</p>
+ * <p>Copyright Enough Software 2004, 2005, 2006, 2007 - 2008</p>
 
  * <pre>
  * history

@@ -37,7 +37,7 @@ import de.enough.polish.ui.Background;
 /**
  * <p>Paints a simple translucent background.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history

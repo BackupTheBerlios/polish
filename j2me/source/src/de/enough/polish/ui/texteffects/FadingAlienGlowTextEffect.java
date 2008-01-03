@@ -26,7 +26,7 @@ import de.enough.polish.util.DrawUtil;
  *   <li><b>font-color:</b>: You should set the font-color black in order to get an nice alien glow effect. </li>
  * </ul>
  * <p>Choosing the same inner and outer color and varying the transparency is recommended. Dropshadow just works, if the Text is opaque.</p>
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        14-Jul-2006

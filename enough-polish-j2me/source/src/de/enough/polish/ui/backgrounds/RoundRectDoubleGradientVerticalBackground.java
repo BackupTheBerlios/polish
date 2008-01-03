@@ -33,11 +33,8 @@ import javax.microedition.lcdui.Image;
 /**
  * <p>Paints a translucent rectangle with round corners as a background.</p>
  *
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        13-April-2007 - rob creation
- * </pre>
  */
 public class RoundRectDoubleGradientVerticalBackground 
 extends DoubleGradientVerticalBackground 

@@ -28,7 +28,7 @@ import de.enough.polish.util.DrawUtil;
  * </ul>
  * 
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  *    
  * @author Simon Schmitt
  *

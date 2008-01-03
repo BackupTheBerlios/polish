@@ -44,7 +44,7 @@ import java.io.InputStream;
  *  }
  * </p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
  * history
  *        Nov 27, 2007 - rob creation
