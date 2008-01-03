@@ -1,7 +1,5 @@
 package de.enough.polish.sample.browser;
 
-import javax.microedition.lcdui.Command;
-
 import de.enough.polish.browser.html.HtmlBrowser;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.Style;
@@ -9,7 +7,7 @@ import de.enough.polish.ui.Style;
 public class BrowserScreen
 extends Form
 {
-  private HtmlBrowser htmlItem;
+  private HtmlBrowser htmlBrowser;
 
   public BrowserScreen(String title)
   {
@@ -21,9 +19,9 @@ extends Form
     super(title, style);
 
     //#style browser
-    this.htmlItem = new HtmlBrowser();
-    new ChartTagHandler().register(this.htmlItem);
-    append(this.htmlItem);
+    this.htmlBrowser = new HtmlBrowser();
+    new ChartTagHandler( this.htmlBrowser.getTagHandler("div")).register(this.htmlBrowser);
+    append(this.htmlBrowser);
   }
 
   /* (non-Javadoc)
@@ -36,16 +34,12 @@ extends Form
 
   public void goBack()
   {
-    this.htmlItem.goBack();
+    this.htmlBrowser.goBack();
   }
 
   public void go(String url)
   {
-    this.htmlItem.go(url);
+    this.htmlBrowser.go(url);
   }
   
-  public boolean handleCommand(Command command)
-  {
-    return this.htmlItem.handleCommand(command);
-  }
 }

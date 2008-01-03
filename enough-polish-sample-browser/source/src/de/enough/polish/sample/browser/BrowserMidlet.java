@@ -38,13 +38,9 @@ implements CommandListener
           // just exit
      }
 
-	public void commandAction(Command cmd, Displayable arg1) {
+	public void commandAction(Command cmd, Displayable disp) {
 	    //#debug
-		System.out.println("browserMidlet, cmd=" + cmd.getLabel() );
-	    if (this.browserScreen.handleCommand(cmd))
-	    {
-	      return;
-	    }
+		System.out.println("BrowserMidlet.commandAction for cmd=" + cmd.getLabel() );
 		if (cmd == this.cmdBack) {
 			this.browserScreen.goBack();
 		} else if (cmd == this.cmdExit) {

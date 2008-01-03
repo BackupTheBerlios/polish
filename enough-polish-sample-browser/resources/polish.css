@@ -38,6 +38,11 @@ colors {
 
 /*************   Browser specific styles - the outcommented styles just replicate the default behavior  *************/
 
+.illustrate {
+	always-include: true; /* include this style even though it is not referenced in the source code */
+	font-color: #333;
+	font-style: italic;
+}
 
 .browserScreen {
 	padding: 0;
@@ -48,12 +53,29 @@ colors {
 	}
 	layout: horizontal-expand | horizontal-center | top;
 }
+ 
+.browserChart {
+	background-color: white;
+	padding: 3;
+	font-color: gray;
+	font-size: small;
+}
 
+.verticalBarChart {
+	always-include: true; /* include this style even though it is not referenced in the source code */
+	padding: 3;
+	view-type: chart-vertical-bars;
+	chart-vertical-bars-shadow-color: gray;
+	background {
+		type: round-rect;
+		color: silver;
+	}
+}
 
-/*
 .browser {
 	view-type: midp2;
 }
+/*
 
 .browserText {
 	inherit: false;
@@ -166,12 +188,6 @@ colors {
 }
 */
 
-.browserChart {
-	background-color: white;
-	padding: 3;
-	font-color: gray;
-	font-size: small;
-}
 
 /*************   Other styles  *************/
 
