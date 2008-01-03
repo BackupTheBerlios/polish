@@ -182,7 +182,7 @@ public class RssTagHandler
 						if (this.includeDescriptions) {
 							try {
 								this.browser.loadPartialPage(new StringReader(this.description));
-							} catch (IOException e) {
+							} catch (Exception e) {
 								//#debug error
 								System.out.println("Unable to load description " + this.description + e );
 							}

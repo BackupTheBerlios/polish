@@ -127,8 +127,10 @@ public class HtmlBrowser
         String str = st.nextToken();
         str = TextUtil.replace(str, "&nbsp;", " ");
         StringItem stringItem = null;
-
-        if (this.htmlTagHandler.textBold && this.htmlTagHandler.textItalic)
+        if (this.htmlTagHandler.textStyle != null) {
+        	stringItem = new StringItem(null, str, this.htmlTagHandler.textStyle);
+        } 
+        else if (this.htmlTagHandler.textBold && this.htmlTagHandler.textItalic)
         {
           //#style browserTextBoldItalic
           stringItem = new StringItem(null, str);

@@ -314,6 +314,7 @@ implements Runnable
    */
   private void parsePartialPage(SimplePullParser parser)
   {
+	  HashMap attributeMap = new HashMap();
 	while (parser.next() != SimplePullParser.END_DOCUMENT)
     {
       if (parser.getType() == SimplePullParser.START_TAG
@@ -323,8 +324,7 @@ implements Runnable
 
         //#debug
         System.out.println( "looking for handler for " + parser.getName()  + ", openingTag=" + openingTag );
-        
-        HashMap attributeMap = new HashMap();
+        attributeMap.clear();
         TagHandler handler = getTagHandler(parser, attributeMap);
         
         if (handler != null)
@@ -332,18 +332,18 @@ implements Runnable
           //#debug
           System.out.println("Calling handler: " + parser.getName() + " " + attributeMap);
     	  String styleName = (String) attributeMap.get("class");
-    	  Style itemStyle = null;
+    	  Style tagStyle = null;
     	  if (styleName != null) {
-    		  itemStyle = StyleSheet.getStyle(styleName);
+    		  tagStyle = StyleSheet.getStyle(styleName);
     	  }
-    	  if (itemStyle == null || styleName == null) {
+    	  if (tagStyle == null || styleName == null) {
     		  styleName = (String) attributeMap.get("id");
     	  }
     	  if (styleName != null) {
-    		  itemStyle = StyleSheet.getStyle(styleName);
+    		  tagStyle = StyleSheet.getStyle(styleName);
     	  }
 
-          handler.handleTag(this, parser, parser.getName(), openingTag, attributeMap, itemStyle);
+          handler.handleTag(this, parser, parser.getName(), openingTag, attributeMap, tagStyle);
         }
         else
         {
@@ -735,7 +735,7 @@ implements Runnable
     	  notifyPageEnd();
       }
     }
-    catch (IOException e)
+    catch (Exception e)
     {
       //#debug error
       System.out.println("Unable to load page " + url + e );
@@ -955,6 +955,10 @@ implements Runnable
   
   //////////////////////////// History //////////////////////////////
   
+  /**
+   * Schedules the given URL for loading.
+   * @param url the URL that should be loaded
+   */
   public void go(String url)
   {
       if (this.currentDocumentBase != null)
@@ -965,8 +969,11 @@ implements Runnable
       schedule(url);
   }
   
-
-  
+  /**
+   * Schedules the given history document for loading.
+   * 
+   * @param historySteps the steps that should go back, e.g. 1 for the last page that has been shown
+   */
   public void go(int historySteps)
   {
     String document = null;
@@ -980,7 +987,8 @@ implements Runnable
     if (document != null)
     {
     	//System.out.println("Browser: going back to [" + document + "]" );
-      goImpl(document);
+        schedule(document);
+      //goImpl(document); (dont go directly or commandAction methods may block!)
     }
   }
   
@@ -995,6 +1003,12 @@ implements Runnable
     }
   }
   
+  /**
+   * Goes back one history step.
+   * 
+   * @return true when the browser has a previous document in its history
+   * @see #go(int)
+   */
   public boolean goBack()
   {
 	  if (this.history.size() > 0) {
@@ -1005,11 +1019,21 @@ implements Runnable
 	  }
   }
   
+  /**
+   * Checks if the browser can go back
+   * @return true when there is a known previous document
+   * @see #goBack()
+   */
   public boolean canGoBack()
   {
     return this.history.size() > 0;
   }
-  
+
+  /**
+   * Clears the history
+   * @see #goBack()
+   * @see #go(int)
+   */
   public void clearHistory()
   {
     this.history.removeAllElements();

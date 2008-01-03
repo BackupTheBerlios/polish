@@ -34,6 +34,7 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ImageItem;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
+import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
@@ -53,39 +54,69 @@ public class HtmlTagHandler
   extends TagHandler
   implements ItemCommandListener
 {
+	/** title tag */
   public static final String TAG_TITLE = "title";
+	/** style tag */
   public static final String TAG_STYLE = "style";
+	/** br tag */
   public static final String TAG_BR = "br";
+	/** p tag */
   public static final String TAG_P = "p";
+	/** img tag */
   public static final String TAG_IMG = "img";
+	/** div tag */
   public static final String TAG_DIV = "div";
+	/** span tag */
   public static final String TAG_SPAN = "span";
+	/** a tag */
   public static final String TAG_A = "a";
+	/** b tag */
   public static final String TAG_B = "b";
+	/** strong tag */
   public static final String TAG_STRONG = "strong";
+	/** i tag */
   public static final String TAG_I = "i";
+	/** em tag */
   public static final String TAG_EM = "em";
+	/** form tag */
   public static final String TAG_FORM = "form";
+	/** input tag */
   public static final String TAG_INPUT = "input";
+	/** select tag */
   public static final String TAG_SELECT = "select";
+	/** option tag */
   public static final String TAG_OPTION = "option";
+	/** script tag */
   public static final String TAG_SCRIPT = "script";
   
+	/** type attribute */
   public static final String INPUT_TYPE = "type";
+	/** name attribute */
   public static final String INPUT_NAME = "name";
+	/** value attribute */
   public static final String INPUT_VALUE = "value";
 
+	/** text type-value */
   public static final String INPUTTYPE_TEXT = "text";
+	/** submit type-value */
   public static final String INPUTTYPE_SUBMIT = "submit";
   
+	/** href attribute */
   public static final String ATTR_HREF = "href";
+	/** form attribute */
   public static final String ATTR_FORM = "polish_form";
+	/** type attribute */
   public static final String ATTR_TYPE = "type";
+	/** value attribute */
   public static final String ATTR_VALUE = "value";
+	/** name attribute */
   public static final String ATTR_NAME = "name";
 
+	/** default link command */
   public static final Command CMD_LINK = new Command("Go To", Command.ITEM, 1);
+	/** default submit command */
   public static final Command CMD_SUBMIT = new Command("Submit", Command.ITEM, 2);
+	/** default back command */
   public static final Command CMD_BACK = new Command("Back", Command.BACK, 10);
   
   private HtmlForm currentForm;
@@ -93,8 +124,12 @@ public class HtmlTagHandler
 
   protected HtmlBrowser browser;
 
+  /* next text should be added in bold font style */
   public boolean textBold;
+  /* next text should be added in italic font style */
   public boolean textItalic;
+  /* style for the forthcoming text */
+  public Style textStyle;
   
   public void register(Browser browser)
   {
@@ -130,8 +165,13 @@ public class HtmlTagHandler
 	  //#debug
 	  System.out.println("checking tag " + tagName );
 	  tagName = tagName.toLowerCase();
-	  
-	  if (TAG_SELECT.equals(tagName)) {
+	  if (TextUtil.equalsIgnoreCase(TAG_DIV, tagName) || TextUtil.equalsIgnoreCase(TAG_SPAN, tagName)) {
+		  if (opening) {
+			  this.textStyle = style;
+ 		  } else {
+			  this.textStyle = null;
+		  }
+	  } else if (TAG_SELECT.equals(tagName)) {
     	  if (opening) {
     		  if (this.currentSelect != null) {
     			  //#debug error
@@ -150,7 +190,7 @@ public class HtmlTagHandler
 
     		  String name = parser.getAttributeValue(ATTR_NAME);
     		  this.currentSelect = new HtmlSelect(name, style);
-    	  } else {
+    	  } else { // tag is closed
     		  if (this.currentSelect != null) {
     			  ChoiceGroup choiceGroup = this.currentSelect.getChoiceGroup();
     			  this.browser.add(choiceGroup);
@@ -172,7 +212,7 @@ public class HtmlTagHandler
       }
       else if (TAG_OPTION.equals(tagName)) {
     	  if (this.currentSelect != null && opening) {
-    		  // TODO: handle "seclected" attribute.
+    		  // TODO: handle "selected" attribute.
     		  String value = parser.getAttributeValue(ATTR_VALUE);
     		  String selected = parser.getAttributeValue("selected");
     		  parser.next();
@@ -193,7 +233,12 @@ public class HtmlTagHandler
       {
         // Hack to read title.
         parser.next();
-        return true;
+        String name = parser.getText();
+        Screen myScreen = this.browser.getScreen();
+        if (name != null && myScreen != null) {
+        	myScreen.setTitle( name );
+        }
+        return true; 
       }
       else if (TAG_STYLE.equals(tagName))
       {
@@ -234,14 +279,6 @@ public class HtmlTagHandler
     	    linkItem.setItemCommandListener( this );
     	    linkItem.setAttribute(ATTR_HREF, href != null ? href : "");
     	    addCommands(TAG_A, linkItem);
-
-// TODO
-//          if (!this.firstInteractiveElementAdded
-//              && this.browser.getScreen() != null)
-//          {
-//            UiAccess.focus(this.browser.getScreen(), this.browser);
-//            this.firstInteractiveElementAdded = true;
-//          }
         }
         else
         {
@@ -267,6 +304,9 @@ public class HtmlTagHandler
         StringItem stringItem = new StringItem(null, null);
         stringItem.setLayout(Item.LAYOUT_NEWLINE_BEFORE);
         this.browser.add(stringItem);
+        if (opening) {
+        	this.textStyle = style;
+        }
         return true;
       }
       else if (TAG_IMG.equals(tagName))
@@ -358,13 +398,6 @@ public class HtmlTagHandler
           }
           //#endif
         }
-
-//        if (!this.firstInteractiveElementAdded
-//            && this.browser.getScreen() != null)
-//        {
-//          UiAccess.focus(this.browser.getScreen(), this.browser);
-//          this.firstInteractiveElementAdded = true;
-//        }
 
         return true;
       }
