@@ -54,12 +54,14 @@ import de.enough.polish.util.ArrayList;
  * 
  * @author Kin Wong
  */
-public class MIDP2LayoutView extends ContainerView {
-        static private final int LAYOUT_HORIZONTAL = Item.LAYOUT_LEFT
-                        | Item.LAYOUT_CENTER | Item.LAYOUT_RIGHT;
+public class MIDP2LayoutView 
+extends ContainerView 
+{
+    static private final int LAYOUT_HORIZONTAL = Item.LAYOUT_LEFT
+                    | Item.LAYOUT_CENTER | Item.LAYOUT_RIGHT;
 
-        static private final int LAYOUT_VERTICAL = Item.LAYOUT_TOP
-                        | Item.LAYOUT_VCENTER | Item.LAYOUT_BOTTOM;
+    static private final int LAYOUT_VERTICAL = Item.LAYOUT_TOP
+                    | Item.LAYOUT_VCENTER | Item.LAYOUT_BOTTOM;
 
 //        class RowItem {
 //                int x;
@@ -68,150 +70,153 @@ public class MIDP2LayoutView extends ContainerView {
 //                int height;
 //                Item item;
 //        }
-        private ArrayList allRows;
-        private ArrayList currentRow;
-        private int rowWidth;
-        private int rowHeight;
-        //private Style style;
-        private int horizontalOffset = -1;
+    private ArrayList allRows;
+    private ArrayList currentRow;
+    private int rowWidth;
+    private int rowHeight;
+    //private Style style;
+    private int horizontalOffset = -1;
 
-		private int currentContentHeight;
+	private int currentContentHeight;
 
-        /**
-         * Constructs an instance of <code>MIDP2LayoutView</code>.
-         * <p>
-         */
-        public MIDP2LayoutView() {
-        	// just creating a default instance
+    /**
+     * Constructs an instance of <code>MIDP2LayoutView</code>.
+     * <p>
+     */
+    public MIDP2LayoutView() {
+    	// just creating a default instance
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container,
+     *      int, int)
+     */
+    protected void initContent(Item parent, int firstLineWidth,
+                    int lineWidth) 
+    {
+    	Container parContainer = (Container) parent;
+    	this.parentContainer = parContainer;
+        Item[] myItems = parContainer.getItems();
+    	//#if polish.Container.allowCycling != false
+        	this.allowCycling = parContainer.allowCycling;
+        //#endif
+        this.contentHeight = this.contentWidth = this.rowWidth = this.rowHeight = 0;
+        this.currentRow = new ArrayList();
+        this.allRows = new ArrayList();
+
+        boolean hasFocusableItem = false;
+        this.currentContentHeight = 0;
+        for (int i = 0; i < myItems.length; i++) {
+            Item item = myItems[i];
+            appendItemToRow(i, item, firstLineWidth, lineWidth);
+            if (item.appearanceMode != Item.PLAIN) {
+                hasFocusableItem = true;
+            }
         }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container,
-         *      int, int)
-         */
-        protected void initContent(Item parent, int firstLineWidth,
-                        int lineWidth) 
-        {
-        	Container parContainer = (Container) parent;
-        	this.parentContainer = parContainer;
-                Item[] myItems = parContainer.getItems();
-            	//#if polish.Container.allowCycling != false
-                	this.allowCycling = parContainer.allowCycling;
-                //#endif
-                this.contentHeight = this.contentWidth = this.rowWidth = this.rowHeight = 0;
-                this.currentRow = new ArrayList();
-                this.allRows = new ArrayList();
-
-                boolean hasFocusableItem = false;
-                this.currentContentHeight = 0;
-                for (int i = 0; i < myItems.length; i++) {
-                    Item item = myItems[i];
-                    appendItemToRow(i, item, firstLineWidth, lineWidth);
-                    if (item.appearanceMode != Item.PLAIN) {
-                        hasFocusableItem = true;
-                    }
-                }
-                // Make the remaining items a final line
-                rowBreak(lineWidth, 0 );
-                if (hasFocusableItem) {
-                	this.appearanceMode = Item.INTERACTIVE;
-                } else {
-                	this.appearanceMode = Item.PLAIN;
-                }
+        // Make the remaining items a final line
+        rowBreak(lineWidth, 0 );
+        if (hasFocusableItem) {
+        	this.appearanceMode = Item.INTERACTIVE;
+        } else {
+        	this.appearanceMode = Item.PLAIN;
         }
+        //#debug
+        System.out.println("MIDP2LayoutView: finished initContent: hasFocusableItem=" + hasFocusableItem + ", focusedItem=" + this.focusedItem + ", focusedIndex=" + this.focusedIndex + ", size=" + myItems.length);
+    }
 
-        /*
-        protected void setStyle(Style style) {
-                super.setStyle(style);
-                this.style = style;
-        }
-        */
+    /*
+    protected void setStyle(Style style) {
+            super.setStyle(style);
+            this.style = style;
+    }
+    */
 
-        void appendItemToRow(int index, Item item, int firstLineWidth, int lineWidth) {
-	        	int itemLayout = item.getLayout();
-	        	boolean isExpand = (itemLayout & Item.LAYOUT_EXPAND) == Item.LAYOUT_EXPAND;
-	        	if (isExpand) {
-	        		item.setLayout( itemLayout ^ Item.LAYOUT_EXPAND );
-	        	}
-	        	// ensure that the style is set, so that style:hover styles are correctly applied:
-	        	item.getItemWidth(firstLineWidth, lineWidth);
-                if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
-                        focusItem(index, item);
-                        this.focusFirstElement = false;
-                }
-                int width = item.getItemWidth(firstLineWidth, lineWidth);
-                int height = item.getItemHeight(firstLineWidth, lineWidth);
-                if (isExpand) {
-                	item.setLayout(itemLayout);
-                }
-                
+    void appendItemToRow(int index, Item item, int firstLineWidth, int lineWidth) {
+        	int itemLayout = item.getLayout();
+        	boolean isExpand = (itemLayout & Item.LAYOUT_EXPAND) == Item.LAYOUT_EXPAND;
+        	if (isExpand) {
+        		item.setLayout( itemLayout ^ Item.LAYOUT_EXPAND );
+        	}
+        	// ensure that the style is set, so that style:hover styles are correctly applied:
+        	item.getItemWidth(firstLineWidth, lineWidth);
+            if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
+                focusItem(index, item);
+                this.focusFirstElement = false;
+            }
+            int width = item.getItemWidth(firstLineWidth, lineWidth);
+            int height = item.getItemHeight(firstLineWidth, lineWidth);
+            if (isExpand) {
+            	item.setLayout(itemLayout);
+            }
+            //System.out.println("appendItemToRow: newline=" + (Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE)) + ", item=" + item);
 
-                if ((Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE) || isExpand )
-                                || (this.rowWidth + this.paddingHorizontal + width > lineWidth)) 
-                {
-                        // Break if the NEWLINE_BEFORE is specified or not enough
-                        // room in the current row
-                        rowBreak(lineWidth, itemLayout);
-                }
+            if ((Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE) 
+            		|| isExpand )
+                    || (this.rowWidth + this.paddingHorizontal + width > lineWidth)) 
+            {
+                    // Break if the NEWLINE_BEFORE is specified or not enough
+                    // room in the current row
+                    rowBreak(lineWidth, itemLayout);
+            }
 
-                this.rowWidth += width;
-                if (this.currentRow.size() == 0) {
-                    this.rowHeight = height;
-                } else {
-                	if (this.rowHeight < height) {
-                		this.rowHeight = height;
-                    }
-                    this.rowWidth += this.paddingHorizontal;
+            this.rowWidth += width;
+            if (this.currentRow.size() == 0) {
+                this.rowHeight = height;
+            } else {
+            	if (this.rowHeight < height) {
+            		this.rowHeight = height;
                 }
+                this.rowWidth += this.paddingHorizontal;
+            }
 
 //                RowItem rowItem = new RowItem();
 //                rowItem.width = width;
 //                rowItem.height = height;
 //                rowItem.item = item;
-                this.currentRow.add(item);
+            this.currentRow.add(item);
 
-                if (Item.LAYOUT_NEWLINE_AFTER == (itemLayout & Item.LAYOUT_NEWLINE_AFTER)) {
-                        rowBreak(lineWidth, itemLayout);
-                }
+            if (Item.LAYOUT_NEWLINE_AFTER == (itemLayout & Item.LAYOUT_NEWLINE_AFTER)) {
+                    rowBreak(lineWidth, itemLayout);
+            }
+    }
+
+    private void rowBreak(int lineWidth, int itemLayout) {
+        if (this.currentRow.size() == 0) {
+                return; // Current row is empty
         }
-
-        private void rowBreak(int lineWidth, int itemLayout) {
-                if (this.currentRow.size() == 0) {
-                        return; // Current row is empty
-                }
-                /**
-                 * Horizontal Layout Starts Here!
-                 */
-                // Take away all the horizontal paddings
-                int remainingWidth = lineWidth
-                                - ((this.currentRow.size() - 1) * this.paddingHorizontal);
+        /**
+         * Horizontal Layout Starts Here!
+         */
+        // Take away all the horizontal paddings
+        int remainingWidth = lineWidth
+                        - ((this.currentRow.size() - 1) * this.paddingHorizontal);
 //                RowItem[] requiredExpanded = null;
-                //Item[] requiredExpanded = null;
-                //int requiredExpandedIndex = 0;
-                int top = this.currentContentHeight;
-                //int bottom = top + this.rowHeight;
-                this.currentContentHeight += this.rowHeight + this.paddingVertical;
-                int currentWidth = 0;
-                for (int i = 0; i < this.currentRow.size(); i++) {
+        //Item[] requiredExpanded = null;
+        //int requiredExpandedIndex = 0;
+        int top = this.currentContentHeight;
+        //int bottom = top + this.rowHeight;
+        this.currentContentHeight += this.rowHeight + this.paddingVertical;
+        int currentWidth = 0;
+        for (int i = 0; i < this.currentRow.size(); i++) {
 //                    RowItem rowItem = (RowItem) this.currentRow.get(i);
-                    Item rowItem = (Item) this.currentRow.get(i);
-                    rowItem.relativeY = top;
-                    rowItem.relativeX = currentWidth;
-                    if (Item.LAYOUT_EXPAND == (itemLayout & Item.LAYOUT_EXPAND)) {
-                    	rowItem.getItemWidth( lineWidth - currentWidth, lineWidth - currentWidth );
+            Item rowItem = (Item) this.currentRow.get(i);
+            rowItem.relativeY = top;
+            rowItem.relativeX = currentWidth;
+            if (Item.LAYOUT_EXPAND == (itemLayout & Item.LAYOUT_EXPAND)) {
+            	rowItem.getItemWidth( lineWidth - currentWidth, lineWidth - currentWidth );
 //                        if (requiredExpanded == null) {
 ////                            requiredExpanded = new RowItem[this.currentRow.size() - i];
 //                        	requiredExpanded = new Item[this.currentRow.size() - i];
 //                        }
 //                        requiredExpanded[requiredExpandedIndex++] = rowItem;
-                    	
-                    }
-                    currentWidth += rowItem.itemWidth;
-                    remainingWidth -= rowItem.itemWidth;
-                }
-                // Distribute the remaining width to the items that require expanding
+            	
+            }
+            currentWidth += rowItem.itemWidth;
+            remainingWidth -= rowItem.itemWidth;
+        }
+        // Distribute the remaining width to the items that require expanding
 //                if (requiredExpanded != null) {
 //                    int expansion = remainingWidth / requiredExpandedIndex;
 //                    remainingWidth = remainingWidth % requiredExpandedIndex;
@@ -226,33 +231,33 @@ public class MIDP2LayoutView extends ContainerView {
 //                    }
 //                }
 
-                // Horizontal Positioning determined by the first item in a row
+        // Horizontal Positioning determined by the first item in a row
 //                RowItem rowItem = (RowItem) this.currentRow.get(0);
-                Item rowItem = (Item) this.currentRow.get(0);
-                int rowHorizontalLayout = (itemLayout & LAYOUT_HORIZONTAL);
+        Item rowItem = (Item) this.currentRow.get(0);
+        int rowHorizontalLayout = (itemLayout & LAYOUT_HORIZONTAL);
 //                if (requiredExpanded != null) {
 //                	rowHorizontalLayout = Item.LAYOUT_LEFT;
 //                }
 
-                int x = 0;
-                switch (rowHorizontalLayout) {
-                    case Item.LAYOUT_CENTER :
-                        x = (remainingWidth >> 1);
-                        break;
+        int x = 0;
+        switch (rowHorizontalLayout) {
+            case Item.LAYOUT_CENTER :
+                x = (remainingWidth >> 1);
+                break;
 
-                    case Item.LAYOUT_RIGHT :
-                        x = remainingWidth;
-                        break;
-                }
+            case Item.LAYOUT_RIGHT :
+                x = remainingWidth;
+                break;
+        }
 
-                for (int i = 0; i < this.currentRow.size(); i++) {
+        for (int i = 0; i < this.currentRow.size(); i++) {
 //	                rowItem = (RowItem) this.currentRow.get(i);
 //	                rowItem.x = x;
 //	                x += rowItem.width + this.paddingHorizontal; // Next Item
 
-	                /**
-	                 * Vertical Layout starts here
-	                 */
+            /**
+             * Vertical Layout starts here
+             */
 //	                int layout = rowItem.item.getLayout();
 //	                rowItem.y = this.contentHeight;
 //	                if (Item.LAYOUT_VEXPAND == (layout & Item.LAYOUT_VEXPAND)) {
@@ -269,104 +274,107 @@ public class MIDP2LayoutView extends ContainerView {
 //                                break;
 //                        }
 //	                }
-                	rowItem = (Item) this.currentRow.get(i);
-                	rowItem.relativeX = x;
-                	x += rowItem.itemWidth + this.paddingHorizontal; // Next Item
+        	rowItem = (Item) this.currentRow.get(i);
+        	rowItem.relativeX = x;
+        	x += rowItem.itemWidth + this.paddingHorizontal; // Next Item
 
-                	if (Item.LAYOUT_VEXPAND == (itemLayout & Item.LAYOUT_VEXPAND)) {
-		                rowItem.relativeY = this.contentHeight;
-		                if (Item.LAYOUT_VEXPAND == (itemLayout & Item.LAYOUT_VEXPAND)) {
-	                        // Vertical expansion is required, ignore all other
-	                        //rowItem.height = this.rowHeight;
-		                } else {
-		                	itemLayout = (itemLayout & LAYOUT_VERTICAL);
-	                        switch (itemLayout) {
-		                        case Item.LAYOUT_VCENTER :
-		                            rowItem.relativeY += ((this.rowHeight - rowItem.itemHeight) >> 1);
-		                            break;
-	                            case Item.LAYOUT_BOTTOM :
-	                                rowItem.relativeY += this.rowHeight - rowItem.itemHeight;
-	                                break;
-	                        }
-		                }
-                	}
-                }
-
-                if (this.allRows.size() == 0) {
-	                // Adding first row
-	                this.contentHeight += this.rowHeight;
+        	if (Item.LAYOUT_VEXPAND == (itemLayout & Item.LAYOUT_VEXPAND)) {
+                rowItem.relativeY = this.contentHeight;
+                if (Item.LAYOUT_VEXPAND == (itemLayout & Item.LAYOUT_VEXPAND)) {
+                    // Vertical expansion is required, ignore all other
+                    //rowItem.height = this.rowHeight;
                 } else {
-                    this.contentHeight += this.paddingVertical + this.rowHeight;
-                }
-                if ( this.rowWidth > this.contentWidth ) {
-	                this.contentWidth = this.rowWidth;
-                }
-
-                // Get ready for next row
-                this.allRows.add(this.currentRow);
-                this.rowHeight = this.rowWidth = 0;
-                this.currentRow = new ArrayList();
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int,
-         *      javax.microedition.lcdui.Graphics)
-         */
-        protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder,
-                        Graphics g) 
-        {
-			int clipX = g.getClipX();
-			int clipY = g.getClipY();
-			int clipWidth = g.getClipWidth();
-			int clipHeight = g.getClipHeight();
-                for (int i = 0; i < this.allRows.size(); i++) {
-                    ArrayList row = (ArrayList) this.allRows.get(i);
-                    for (int j = 0; j < row.size(); j++) {
-                        Item rowItem = (Item) row.get(j);
-                        int xItem = x + rowItem.relativeX;
-                        paintItem(rowItem, i, xItem,  y + rowItem.relativeY, 
-                        		Math.max(leftBorder, xItem), Math.min(rightBorder, xItem + rowItem.itemWidth),
-                        		clipX, clipY, clipWidth, clipHeight, g);
+                	itemLayout = (itemLayout & LAYOUT_VERTICAL);
+                    switch (itemLayout) {
+                        case Item.LAYOUT_VCENTER :
+                            rowItem.relativeY += ((this.rowHeight - rowItem.itemHeight) >> 1);
+                            break;
+                        case Item.LAYOUT_BOTTOM :
+                            rowItem.relativeY += this.rowHeight - rowItem.itemHeight;
+                            break;
                     }
                 }
+        	}
         }
-        /*
-         * (non-Javadoc)
-         * 
-         * @see de.enough.polish.ui.ContainerView#getNextItem(int, int)
-         */
-        protected Item getNextItem(int keyCode, int gameAction) {
-                if (this.allRows.size() == 0)
-                        return null;
-                Item[] items = this.parentContainer.getItems();
-                if (this.focusedIndex >= items.length || this.focusedIndex == -1) {
-                        for(int i=0; i < items.length; i++) {
-                                if(items[i].appearanceMode != Item.PLAIN) {
-                                        focusItem(i, items[i], gameAction );
-                                        return items[i];
-                                }
-                        }
-                }
 
-                // Find out where the current focused item is.
-                Item focusedItem = items[this.focusedIndex];
-                int rowIndex = 0;
-                //int colIndex = 0;
-                int xOffset = 0;
-                for (int i = 0; i < this.allRows.size(); i++) {
-                        ArrayList row = (ArrayList) this.allRows.get(i);
-                        for (int j = 0; j < row.size(); j++) {
-                            Item rowItem = (Item) row.get(j);
-                            if (rowItem == focusedItem) {
-                                    rowIndex = i;
-                                    //colIndex = j;
-                                    xOffset = rowItem.relativeX + (rowItem.itemWidth >> 1);
-                                    i = 10000;
-                                    break;
-                            }
+        if (this.allRows.size() == 0) {
+            // Adding first row
+            this.contentHeight += this.rowHeight;
+        } else {
+            this.contentHeight += this.paddingVertical + this.rowHeight;
+        }
+        if ( this.rowWidth > this.contentWidth ) {
+            this.contentWidth = this.rowWidth;
+        }
+
+        // Get ready for next row
+        this.allRows.add(this.currentRow);
+        this.rowHeight = this.rowWidth = 0;
+        this.currentRow = new ArrayList();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int,
+     *      javax.microedition.lcdui.Graphics)
+     */
+    protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder,
+                    Graphics g) 
+    {
+		int clipX = g.getClipX();
+		int clipY = g.getClipY();
+		int clipWidth = g.getClipWidth();
+		int clipHeight = g.getClipHeight();
+            for (int i = 0; i < this.allRows.size(); i++) {
+                ArrayList row = (ArrayList) this.allRows.get(i);
+                for (int j = 0; j < row.size(); j++) {
+                    Item rowItem = (Item) row.get(j);
+                    int xItem = x + rowItem.relativeX;
+                    paintItem(rowItem, i, xItem,  y + rowItem.relativeY, 
+                    		Math.max(leftBorder, xItem), Math.min(rightBorder, xItem + rowItem.itemWidth),
+                    		clipX, clipY, clipWidth, clipHeight, g);
+                }
+            }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.enough.polish.ui.ContainerView#getNextItem(int, int)
+     */
+    protected Item getNextItem(int keyCode, int gameAction) {
+        if (this.allRows.size() == 0) {
+            return null;
+        }
+        Item[] items = this.parentContainer.getItems();
+        if (this.focusedIndex >= items.length || this.focusedIndex == -1) {
+            for (int i=0; i < items.length; i++) {
+                if(items[i].appearanceMode != Item.PLAIN) {
+                    focusItem(i, items[i], gameAction );
+                    return items[i];
+                }
+            }
+            return null;
+        }
+
+        // Find out where the current focused item is.
+        Item focItem = items[this.focusedIndex];
+        int rowIndex = 0;
+        //int colIndex = 0;
+        int xOffset = 0;
+        for (int i = 0; i < this.allRows.size(); i++) {
+                ArrayList row = (ArrayList) this.allRows.get(i);
+                for (int j = 0; j < row.size(); j++) {
+                    Item rowItem = (Item) row.get(j);
+                    if (rowItem == focItem) {
+                            rowIndex = i;
+                            //colIndex = j;
+                            xOffset = rowItem.relativeX + (rowItem.itemWidth >> 1);
+                            i = 10000;
+                            break;
                     }
+            }
 //                        for (int j = 0; j < row.size(); j++) {
 //                                RowItem rowItem = (RowItem) row.get(j);
 //                                if (rowItem.item == focusedItem) {
@@ -377,97 +385,97 @@ public class MIDP2LayoutView extends ContainerView {
 //                                        break;
 //                                }
 //                        }
-                }
-
-                Item item = null;
-                if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
-                        // Going Up
-                        if (this.horizontalOffset == -1) {
-                        	this.horizontalOffset = xOffset;
-                        }
-                        while (rowIndex > 0) {
-                                rowIndex--;
-                                item = getItemByHorizontalOffset((ArrayList) this.allRows
-                                                .get(rowIndex), this.horizontalOffset);
-                                if(item != null) break;
-                        }
-                        if(item == null){
-                                // Can't go up any more
-                        }
-
-                } else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
-                        // Going Down
-                        if (this.horizontalOffset == -1) {
-                        	this.horizontalOffset = xOffset;
-                        }
-                        
-                        while(rowIndex < (this.allRows.size() - 1)) {
-                                rowIndex++;
-                                item = getItemByHorizontalOffset((ArrayList) this.allRows
-                                                .get(rowIndex), this.horizontalOffset);
-                                if(item != null) break;
-                        } 
-                        
-                        if(item == null){
-                                // Can't go Down any more
-                        }
-
-                } else if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) {
-                        // Going Right
-                	this.horizontalOffset = -1; // Reset vertical movement position
-                        item = getNextFocusableItem(items, true, 1, false);
-
-                } else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
-                        // Going Left
-                		this.horizontalOffset = -1; // Reset vertical movement position
-                        item = getNextFocusableItem(items, false, 1, false);
-                }
-                
-                // Finally set the focus if it has been found
-                if (item != null) {
-                        for (int i = 0; i < items.length; i++) {
-                                if (items[i] == item) {
-                                        focusItem(i, item, gameAction);
-                                        break;
-                                }
-                        }
-                }
-                else {
-                        if (this.focusedIndex >= items.length) {
-                                for(int i=0; i < items.length; i++) {
-                                        Item focItem = items[i];
-										if(focItem.appearanceMode != Item.PLAIN) {
-                                                focusItem(i, focItem, gameAction );
-                                                return focItem;
-                                        }
-                                }
-                        }
-                }
-                return item;
         }
 
-        private Item getItemByHorizontalOffset(ArrayList row, int xOffset) {
-            Item item = null;
-            Item rowItem = null;
-            int distance = 60000;
-            int itemOffset = 0;
-            int itemDistance = 0;
-            for (int i = 0; i < row.size(); i++) {
-                    rowItem = (Item) row.get(i);
-                    if (rowItem.appearanceMode != Item.PLAIN) {
-                            itemOffset = rowItem.relativeX + (rowItem.itemWidth >> 1);
-                            itemDistance = xOffset - itemOffset;
-                            if(itemDistance < 0) {
-                            	itemDistance = -itemDistance;
-                            }
-
-                            if (itemDistance < distance) {
-                                    distance = itemDistance;
-                                    item = rowItem;
-                            }
-                    }
+        Item item = null;
+        if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
+            // Going Up
+            if (this.horizontalOffset == -1) {
+            	this.horizontalOffset = xOffset;
             }
-            return item;
+            while (rowIndex > 0) {
+                    rowIndex--;
+                    item = getItemByHorizontalOffset((ArrayList) this.allRows
+                                    .get(rowIndex), this.horizontalOffset);
+                    if(item != null) break;
+            }
+            if(item == null){
+                    // Can't go up any more
+            }
+
+        } else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
+            // Going Down
+            if (this.horizontalOffset == -1) {
+            	this.horizontalOffset = xOffset;
+            }
+            
+            while(rowIndex < (this.allRows.size() - 1)) {
+                    rowIndex++;
+                    item = getItemByHorizontalOffset((ArrayList) this.allRows
+                                    .get(rowIndex), this.horizontalOffset);
+                    if(item != null) break;
+            } 
+            
+            if(item == null){
+                    // Can't go Down any more
+            }
+
+        } else if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) {
+            // Going Right
+        	this.horizontalOffset = -1; // Reset vertical movement position
+            item = getNextFocusableItem(items, true, 1, false);
+
+        } else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
+            // Going Left
+    		this.horizontalOffset = -1; // Reset vertical movement position
+            item = getNextFocusableItem(items, false, 1, false);
+        }
+        
+        // Finally set the focus if it has been found
+        if (item != null) {
+            for (int i = 0; i < items.length; i++) {
+                if (items[i] == item) {
+                    focusItem(i, item, gameAction);
+                    break;
+                }
+            }
+    }
+        else {
+            if (this.focusedIndex >= items.length) {
+                for(int i=0; i < items.length; i++) {
+                    Item toBeFocused = items[i];
+					if(toBeFocused.appearanceMode != Item.PLAIN) {
+                        focusItem(i, toBeFocused, gameAction );
+                        return toBeFocused;
+                    }
+                }
+            }
+        }
+        return item;
+    }
+
+    private Item getItemByHorizontalOffset(ArrayList row, int xOffset) {
+        Item item = null;
+        Item rowItem = null;
+        int distance = 60000;
+        int itemOffset = 0;
+        int itemDistance = 0;
+        for (int i = 0; i < row.size(); i++) {
+                rowItem = (Item) row.get(i);
+                if (rowItem.appearanceMode != Item.PLAIN) {
+                        itemOffset = rowItem.relativeX + (rowItem.itemWidth >> 1);
+                        itemDistance = xOffset - itemOffset;
+                        if(itemDistance < 0) {
+                        	itemDistance = -itemDistance;
+                        }
+
+                        if (itemDistance < distance) {
+                                distance = itemDistance;
+                                item = rowItem;
+                        }
+                }
+        }
+        return item;
 
 //                Item item = null;
 //                RowItem rowItem = null;
@@ -488,5 +496,5 @@ public class MIDP2LayoutView extends ContainerView {
 //                        }
 //                }
 //                return item;
-        }
+    }
 }
