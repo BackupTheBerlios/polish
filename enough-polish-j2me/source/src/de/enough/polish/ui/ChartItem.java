@@ -264,6 +264,9 @@ public class ChartItem
 	 * @return the y position of the baseline
 	 */
 	public int paintGrid(int x, int y, int leftBorder, int rightBorder, int[] inout_params, Graphics g) {
+		if (this.dataSequences == null || this.dataSequences.length == 0) {
+			return y;
+		}
 		int dataLength = this.dataSequences[0].length - 1;
 		int xAxisWidth = (dataLength*this.scaleFactorX)/100;
 		int yAxisHeight = (Math.abs( this.dataMaximum - this.dataMinimum )  * this.scaleFactorY) /100;

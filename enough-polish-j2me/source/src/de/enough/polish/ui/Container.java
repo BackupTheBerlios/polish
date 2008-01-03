@@ -208,16 +208,18 @@ public class Container extends Item {
 	 * @throws IllegalArgumentException when the given item is null
 	 */
 	public void add( Item item ) {
-		item.relativeY =  0;
-		item.internalX = -9999;
-		item.parent = this;
-		this.itemsList.add( item );
-		this.isInitialized = false;
-		if (this.parent != null) {
-			this.parent.isInitialized = false;
-		}
-		if (this.isShown) {
-			item.showNotify();
+		synchronized (this.itemsList) {
+			item.relativeY =  0;
+			item.internalX = Item.NO_POSITION_SET;
+			item.parent = this;
+			this.itemsList.add( item );
+			this.isInitialized = false;
+			if (this.parent != null) {
+				this.parent.isInitialized = false;
+			}
+			if (this.isShown) {
+				item.showNotify();
+			}
 		}
 		repaint();
 	}
@@ -227,13 +229,13 @@ public class Container extends Item {
 	 * Adds an item to this container.
 	 * 
 	 * @param item the item which should be added.
-	 * @param itemStyle the style for the item
+	 * @param itemAddStyle the style for the item
 	 * @throws IllegalArgumentException when the given item is null
 	 */
-	public void add( Item item, Style itemStyle ) {
+	public void add( Item item, Style itemAddStyle ) {
 		add( item );
-		if (itemStyle != null) {
-			item.setStyle( itemStyle );
+		if (itemAddStyle != null) {
+			item.setStyle( itemAddStyle );
 		}
 	}
 
@@ -248,25 +250,27 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public void add( int index, Item item ) {
-		item.relativeY = 0;
-		item.internalX = -9999;
-		item.parent = this;
-		this.itemsList.add( index, item );
-		if (index <= this.focusedIndex) {
-			this.focusedIndex++;
-			//#if tmp.supportViewType
-				if (this.containerView != null) {
-					this.containerView.focusedIndex = this.focusedIndex;
-				}
-			//#endif
-		}
-		
-		this.isInitialized = false;
-		if (this.parent != null) {
-			this.parent.isInitialized = false;
-		}
-		if (this.isShown) {
-			item.showNotify();
+		synchronized (this.itemsList) {
+			item.relativeY = 0;
+			item.internalX = -9999;
+			item.parent = this;
+			this.itemsList.add( index, item );
+			if (index <= this.focusedIndex) {
+				this.focusedIndex++;
+				//#if tmp.supportViewType
+					if (this.containerView != null) {
+						this.containerView.focusedIndex = this.focusedIndex;
+					}
+				//#endif
+			}
+			
+			this.isInitialized = false;
+			if (this.parent != null) {
+				this.parent.isInitialized = false;
+			}
+			if (this.isShown) {
+				item.showNotify();
+			}
 		}
 		repaint();
 	}
@@ -354,71 +358,76 @@ public class Container extends Item {
 	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
 	 */
 	public Item remove( int index ) {
-		Item removedItem = (Item) this.itemsList.remove(index);
-		if (removedItem == this.scrollItem) {
-			this.scrollItem = null;
-		}
-		//#debug
-		System.out.println("Container: removing item " + index + " " + removedItem.toString()  );
-		// adjust y-positions of following items:
-		//this.items = null;
-		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
-		int removedItemHeight = removedItem.itemHeight + this.paddingVertical;
-		//#if tmp.supportViewType
-			if (this.containerView == null) {
-		//#endif
-				for (int i = index; i < myItems.length; i++) {
-					Item item = myItems[i];
-					item.relativeY -= removedItemHeight;
-				}
-		//#if tmp.supportViewType
+		Item removedItem = null;
+		synchronized (this.itemsList) {
+			removedItem = (Item) this.itemsList.remove(index);
+			if (removedItem == this.scrollItem) {
+				this.scrollItem = null;
 			}
-		//#endif
-		// check if the currenlty focused item has been removed:
-		if (index == this.focusedIndex) {
-			this.focusedItem = null;
+			//#debug
+			System.out.println("Container: removing item " + index + " " + removedItem.toString()  );
+			// adjust y-positions of following items:
+			//this.items = null;
+			Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
+			int removedItemHeight = removedItem.itemHeight + this.paddingVertical;
 			//#if tmp.supportViewType
-				if (this.containerView != null) {
-					this.containerView.focusedIndex = -1;
-					this.containerView.focusedItem = null;
-				}
+				if (this.containerView == null) {
 			//#endif
-			// remove any item commands:
-			Screen scr = getScreen();
-			if (scr != null) {
-				scr.removeItemCommands(removedItem);
-			}
-			// focus the first possible item:
-			if (index >= myItems.length) {
-				index = myItems.length - 1;
-			}
-			if (index != -1) { 
-				Item item = myItems[ index ];
-				if (item.appearanceMode != PLAIN) {
-					focus( index, item, Canvas.DOWN );
-				} else {
-					focusClosestItem(index, myItems);
-				}
-			}
-		} else if (index < this.focusedIndex) {
-			//#if tmp.supportViewType
-				if (this.containerView != null) {
-					this.containerView.focusedIndex--;
-				} else {
-			//#endif
-					int offset = getScrollYOffset() + removedItemHeight;
-					//System.out.println("new container offset: from " + this.yOffset + " to " + (offset > 0 ? 0 : offset));
-					setScrollYOffset( offset > 0 ? 0 : offset, false );
+					for (int i = index; i < myItems.length; i++) {
+						Item item = myItems[i];
+						item.relativeY -= removedItemHeight;
+					}
 			//#if tmp.supportViewType
 				}
 			//#endif
-			this.focusedIndex--;
+			// check if the currenlty focused item has been removed:
+			if (index == this.focusedIndex) {
+				this.focusedItem = null;
+				//#if tmp.supportViewType
+					if (this.containerView != null) {
+						this.containerView.focusedIndex = -1;
+						this.containerView.focusedItem = null;
+					}
+				//#endif
+				// remove any item commands:
+				Screen scr = getScreen();
+				if (scr != null) {
+					scr.removeItemCommands(removedItem);
+				}
+				// focus the first possible item:
+				if (index >= myItems.length) {
+					index = myItems.length - 1;
+				}
+				if (index != -1) { 
+					Item item = myItems[ index ];
+					if (item.appearanceMode != PLAIN) {
+						focus( index, item, Canvas.DOWN );
+					} else {
+						focusClosestItem(index, myItems);
+					}
+				}
+			} else if (index < this.focusedIndex) {
+				//#if tmp.supportViewType
+					if (this.containerView != null) {
+						this.containerView.focusedIndex--;
+					} else {
+				//#endif
+						int offset = getScrollYOffset() + removedItemHeight;
+						//System.out.println("new container offset: from " + this.yOffset + " to " + (offset > 0 ? 0 : offset));
+						setScrollYOffset( offset > 0 ? 0 : offset, false );
+				//#if tmp.supportViewType
+					}
+				//#endif
+				this.focusedIndex--;
+			}
+			this.isInitialized = false;
+			if (this.parent != null) {
+				this.parent.isInitialized = false;
+			}
+			if (this.isShown) {
+				removedItem.hideNotify();
+			}
 		}
-		this.isInitialized = false;
-		if (this.parent != null) {
-			this.parent.isInitialized = false;
-		}
-		removedItem.hideNotify();
 		repaint();
 		return removedItem;
 	}
@@ -559,62 +568,71 @@ public class Container extends Item {
 	 * Removes all items from this container.
 	 */
 	public void clear() {
-		//System.out.println("clearing container - focusedItem=" + this.focusedItem + ", isFocused="  + this.isFocused + ", focusedIndex=" + this.focusedIndex + ",  size=" + this.size() + ", itemStyle=" + this.itemStyle );
-		this.scrollItem = null;
-		if (this.isShown) {
-			Object[] myItems = this.itemsList.getInternalArray();
-			for (int i = 0; i < myItems.length; i++) {
-				Item item = (Item) myItems[i];
-				if (item == null) {
-					break;
+		synchronized (this.itemsList) {
+			//#if tmp.supportViewType
+				if (this.containerView != null) {
+					this.containerView.focusedIndex = -1;
+					this.containerView.focusedItem = null;
 				}
-				item.hideNotify();
+			//#endif
+			//System.out.println("clearing container - focusedItem=" + this.focusedItem + ", isFocused="  + this.isFocused + ", focusedIndex=" + this.focusedIndex + ",  size=" + this.size() + ", itemStyle=" + this.itemStyle );
+			this.scrollItem = null;
+			if (this.isShown) {
+				Object[] myItems = this.itemsList.getInternalArray();
+				for (int i = 0; i < myItems.length; i++) {
+					Item item = (Item) myItems[i];
+					if (item == null) {
+						break;
+					}
+					item.hideNotify();
+				}
 			}
-		}
-		this.itemsList.clear();
-		this.containerItems = new Item[0];
-		//this.items = new Item[0];
-		if (this.focusedIndex != -1) {
-			this.autoFocusEnabled = this.isFocused;
-			//#if polish.Container.clearResetsFocus != false
-				this.autoFocusIndex = 0;
-			//#else
-				this.autoFocusIndex = this.focusedIndex;
-			//#endif			
-			this.focusedIndex = -1;
-			if (this.focusedItem != null) {
-				if (this.itemStyle != null) {
-					//System.out.println("Container.clear(): defocusing current item " + this.focusedItem);
-					this.focusedItem.defocus(this.itemStyle);
-				} 
-				if (this.focusedItem.commands != null) {
-					Screen scr = getScreen();
-					if (scr != null) {
-						scr.removeItemCommands(this.focusedItem);
+			this.itemsList.clear();
+			this.containerItems = new Item[0];
+			//this.items = new Item[0];
+			if (this.focusedIndex != -1) {
+				this.autoFocusEnabled = this.isFocused;
+				//#if polish.Container.clearResetsFocus != false
+					this.autoFocusIndex = 0;
+				//#else
+					this.autoFocusIndex = this.focusedIndex;
+				//#endif			
+				this.focusedIndex = -1;
+				if (this.focusedItem != null) {
+					if (this.itemStyle != null) {
+						//System.out.println("Container.clear(): defocusing current item " + this.focusedItem);
+						this.focusedItem.defocus(this.itemStyle);
+					} 
+					if (this.focusedItem.commands != null) {
+						Screen scr = getScreen();
+						if (scr != null) {
+							scr.removeItemCommands(this.focusedItem);
+						}
 					}
 				}
+				this.focusedItem = null;
 			}
-			this.focusedItem = null;
-		}
-		this.yOffset = 0;
-		this.targetYOffset = 0;
-		if (this.internalX != -9999) {
-			this.internalX = -9999;
-			this.internalY = 0;
-			// adjust scrolling:
-			if ( this.isFocused && this.parent instanceof Container ) {
-				Container parentContainer = (Container) this.parent;
-				int scrollOffset = - parentContainer.getScrollYOffset();
-				if (scrollOffset > this.relativeY) {
-					int diff = scrollOffset - this.relativeY;
-					parentContainer.setScrollYOffset( diff - scrollOffset,  false );
+			this.yOffset = 0;
+			this.targetYOffset = 0;
+			if (this.internalX != NO_POSITION_SET) {
+				this.internalX = NO_POSITION_SET;
+				this.internalY = 0;
+			}
+				// adjust scrolling:
+				if ( this.isFocused && this.parent instanceof Container ) {
+					Container parentContainer = (Container) this.parent;
+					int scrollOffset = - parentContainer.getScrollYOffset();
+					if (scrollOffset > this.relativeY) {
+						int diff = scrollOffset - this.relativeY;
+						parentContainer.setScrollYOffset( diff - scrollOffset,  false );
+					}
 				}
+			//}
+			if (this.isInitialized) {
+				this.isInitialized = false;
+				//this.yBottom = this.yTop = 0;
+				repaint();
 			}
-		}
-		if (this.isInitialized) {
-			this.isInitialized = false;
-			//this.yBottom = this.yTop = 0;
-			repaint();
 		}
 	}
 	
@@ -944,189 +962,192 @@ public class Container extends Item {
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		//#debug
-		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled + ", autoFocusIndex=" + this.autoFocusIndex + ", firstLineWidth=" + firstLineWidth + ", lineWidth=" + lineWidth);
-
-		int myContentWidth = 0;
-		int myContentHeight = 0;
-		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
-		this.containerItems = myItems;
-		if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
-			this.autoFocusIndex = 0;
-		}
-		//#if tmp.supportViewType
-			if (this.containerView != null) {
-				// additional initialization is necessary when a view is used for this container:
-				boolean requireScrolling = this.isScrollRequired;
-//				System.out.println("ABOUT TO CALL INIT CONTENT - focusedIndex of Container=" + this.focusedIndex);
-				this.containerView.initContent( this, firstLineWidth, lineWidth);
-				this.appearanceMode = this.containerView.appearanceMode;
-				if (this.autoFocusEnabled) {
-					//#debug
-					System.out.println("Container/View: autofocusing element starting at " + this.autoFocusIndex);
-					if (this.autoFocusIndex >= 0 && this.appearanceMode != Item.PLAIN) {
-						for (int i = this.autoFocusIndex; i < myItems.length; i++) {
-							Item item = myItems[i];
-							if (item.appearanceMode != Item.PLAIN) {
-								// make sure that the item has applied it's own style first (not needed since it has been initialized by the container view already):
-								//item.getItemHeight( firstLineWidth, lineWidth );
-								// now focus the item:
-								this.autoFocusEnabled = false;
-								requireScrolling = (this.autoFocusIndex != 0);
-								focus( i, item, 0 );
-								this.isScrollRequired = this.isScrollRequired && requireScrolling; // override setting in focus()
-								//this.containerView.focusedIndex = i; is done within focus(i, item, 0) already
-								//this.containerView.focusedItem = item;
-								//System.out.println("autofocus: found item " + i );
-								break;
-							}							
+		System.out.println("Container: intialising content for " + this + ": autofocus=" + this.autoFocusEnabled + ", autoFocusIndex=" + this.autoFocusIndex + ", firstLineWidth=" + firstLineWidth + ", lineWidth=" + lineWidth + ", size=" + this.itemsList.size() );
+		synchronized (this.itemsList) {
+			int myContentWidth = 0;
+			int myContentHeight = 0;
+			Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
+			this.containerItems = myItems;
+			if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
+				this.autoFocusIndex = 0;
+			}
+			//#if tmp.supportViewType
+				if (this.containerView != null) {
+					// additional initialization is necessary when a view is used for this container:
+					boolean requireScrolling = this.isScrollRequired;
+	//				System.out.println("ABOUT TO CALL INIT CONTENT - focusedIndex of Container=" + this.focusedIndex);
+					this.containerView.initContent( this, firstLineWidth, lineWidth);
+					this.appearanceMode = this.containerView.appearanceMode;
+					if (this.autoFocusEnabled) {
+						//#debug
+						System.out.println("Container/View: autofocusing element starting at " + this.autoFocusIndex);
+						if (this.autoFocusIndex >= 0 && this.appearanceMode != Item.PLAIN) {
+							for (int i = this.autoFocusIndex; i < myItems.length; i++) {
+								Item item = myItems[i];
+								if (item.appearanceMode != Item.PLAIN) {
+									// make sure that the item has applied it's own style first (not needed since it has been initialized by the container view already):
+									//item.getItemHeight( firstLineWidth, lineWidth );
+									// now focus the item:
+									this.autoFocusEnabled = false;
+									requireScrolling = (this.autoFocusIndex != 0);
+									focus( i, item, 0 );
+									this.isScrollRequired = this.isScrollRequired && requireScrolling; // override setting in focus()
+									//this.containerView.focusedIndex = i; is done within focus(i, item, 0) already
+									//this.containerView.focusedItem = item;
+									//System.out.println("autofocus: found item " + i );
+									break;
+								}							
+							}
+						// when deactivating the auto focus the container won't initialize correctly after it has
+						// been cleared and items are added subsequently one after another (e.g. like within the Browser).
+	//					} else {
+	//						this.autoFocusEnabled = false;
 						}
-					} else {
-						this.autoFocusEnabled = false;
 					}
+					this.contentWidth = this.containerView.contentWidth;
+					this.contentHeight = this.containerView.contentHeight;
+					
+					if (requireScrolling && this.enableScrolling && this.focusedItem != null) {
+						//#debug
+						System.out.println("initContent(): scrolling autofocused or scroll-required item for view");
+						Item item = this.focusedItem;
+						scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
+					}
+					else if (this.scrollItem != null) {
+						scroll( 0, this.scrollItem );
+						this.scrollItem = null;
+					}
+					return;
 				}
-				this.contentWidth = this.containerView.contentWidth;
-				this.contentHeight = this.containerView.contentHeight;
-				
-				if (requireScrolling && this.enableScrolling && this.focusedItem != null) {
-					//#debug
-					System.out.println("initContent(): scrolling autofocused or scroll-required item for view");
-					Item item = this.focusedItem;
-					scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
-				}
-				else if (this.scrollItem != null) {
-					scroll( 0, this.scrollItem );
-					this.scrollItem = null;
-				}
-				return;
-			}
-		//#endif
-	
-		boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
-		boolean hasFocusableItem = false;
-		int myContentStartX = Integer.MAX_VALUE;
-		int myContentEndX = Integer.MIN_VALUE;
-		for (int i = 0; i < myItems.length; i++) {
-			Item item = myItems[i];
-			//System.out.println("initalising " + item.getClass().getName() + ":" + i);
-			int width = item.getItemWidth( lineWidth, lineWidth );
-			int height = item.itemHeight; // no need to call getItemHeight() since the item is now initialised...
-			// now the item should have a style, so it can be safely focused
-			// without loosing the style information:
-			//String toString = item.toString();
-			//System.out.println("init of item " + i + ": height=" + height + " of item " + toString.substring( 19, Math.min(120, toString.length() )  ));
-			//if (item.isInvisible && height != 0) {
-			//	System.out.println("*** item.height != 0 even though it is INVISIBLE - isInitialized=" + item.isInitialized );
-			//}
-			if (item.appearanceMode != PLAIN) {
-				hasFocusableItem = true;
-			}
-			if (this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
-				this.autoFocusEnabled = false;
-				//System.out.println("Container.initContent: auto-focusing " + i + ": " + item );
-				focus( i, item, 0 );
-				this.isScrollRequired = (this.isScrollRequired || hasFocusableItem) && (this.autoFocusIndex != 0); // override setting in focus()
-				height = item.getItemHeight(lineWidth, lineWidth);
-				if (!isLayoutShrink) {
-					width = item.itemWidth;  // no need to call getItemWidth() since the item is now initialised...
-				} else {
-					width = 0;
-				}
-				if (this.enableScrolling && this.autoFocusIndex != 0) {
-					//#debug
-					System.out.println("initContent(): scrolling autofocused item, autofocus-index=" + this.autoFocusIndex + ", i=" + i  );
-					scroll( 0, 0, myContentHeight, width, height );
-				}
-			} else if (i == this.focusedIndex) {
-				if (isLayoutShrink) {
-					width = 0;
-				}
-				if (this.isScrollRequired) {
-					//#debug
-					System.out.println("initContent(): scroll is required - scrolling to y=" + myContentHeight + ", height=" + height);
-					scroll( 0, 0, myContentHeight, width, height );
-					this.isScrollRequired = false;
-//				} else if (item.internalX != -9999 ) {
-//					// ensure that lines of textfields etc are within the visible area:
-//					scroll(0, item );
-				}
-			} 
-			if (width > myContentWidth) {
-				myContentWidth = width; 
-			}
-			item.relativeY = myContentHeight;
-			if  ( (item.layout & LAYOUT_CENTER) == LAYOUT_CENTER) {
-				item.relativeX = (lineWidth - width) / 2;
-			} else if ( (item.layout & LAYOUT_RIGHT) == LAYOUT_RIGHT) {
-				item.relativeX = (lineWidth - width);
-			} else {
-				item.relativeX = 0;
-			}
-			if (item.relativeX < myContentStartX ) {
-				myContentStartX = item.relativeX;
-			}
-			if (item.relativeX + width > myContentEndX ) {
-				myContentEndX = item.relativeX + width;
-			}
-			myContentHeight += height != 0 ? height + this.paddingVertical : 0;
-			//System.out.println("item.yTopPos=" + item.yTopPos);
-		} // cycling through all items
+			//#endif
 		
-		if (myContentEndX - myContentStartX > myContentWidth) {
-			// this can happen when there are different layouts like left and right within the same container:
-			myContentWidth = myContentEndX - myContentStartX;
-		}
-		if (!hasFocusableItem) {
-			this.appearanceMode = PLAIN;
-		} else {
-			this.appearanceMode = INTERACTIVE;
-			if (this.focusedItem != null) {
-				Item item = this.focusedItem;
-				if (item.internalX != -9999) {
-					this.internalX =  item.relativeX + item.contentX + item.internalX;
-					this.internalY = item.relativeY + item.contentY + item.internalY;
-					this.internalWidth = item.internalWidth;
-					this.internalHeight = item.internalHeight;
-					//#debug
-					System.out.println("Container (" + getClass().getName() + "): internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.relativeY=" + item.relativeY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight + ", item.isInitialized=" + item.isInitialized);
-				} else {
-					this.internalX = item.relativeX;
-					this.internalY = item.relativeY;
-					this.internalWidth = item.itemWidth;
-					this.internalHeight = item.itemHeight;
-					//#debug
-					System.out.println("Container (" + getClass().getName() + "): NO internal area found in item " + item + ": setting internalY=" + this.internalY + ", internalHeight=" + this.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight + ", this.availableHeight=" + this.availableHeight);
+			boolean isLayoutShrink = (this.layout & LAYOUT_SHRINK) == LAYOUT_SHRINK;
+			boolean hasFocusableItem = false;
+			int myContentStartX = Integer.MAX_VALUE;
+			int myContentEndX = Integer.MIN_VALUE;
+			for (int i = 0; i < myItems.length; i++) {
+				Item item = myItems[i];
+				//System.out.println("initalising " + item.getClass().getName() + ":" + i);
+				int width = item.getItemWidth( lineWidth, lineWidth );
+				int height = item.itemHeight; // no need to call getItemHeight() since the item is now initialised...
+				// now the item should have a style, so it can be safely focused
+				// without loosing the style information:
+				//String toString = item.toString();
+				//System.out.println("init of item " + i + ": height=" + height + " of item " + toString.substring( 19, Math.min(120, toString.length() )  ));
+				//if (item.isInvisible && height != 0) {
+				//	System.out.println("*** item.height != 0 even though it is INVISIBLE - isInitialized=" + item.isInitialized );
+				//}
+				if (item.appearanceMode != PLAIN) {
+					hasFocusableItem = true;
 				}
-				if (isLayoutShrink) {
-					//System.out.println("container has shrinking layout and contains focuse item " + item);
-					item.isInitialized = false;
-					boolean doExpand = item.isLayoutExpand;
-					int width;
-					if (doExpand) {
-						item.isLayoutExpand = false;
-						width = item.getItemWidth( lineWidth, lineWidth );
-						item.isInitialized = false;
-						item.isLayoutExpand = true;
+				if (this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
+					this.autoFocusEnabled = false;
+					//System.out.println("Container.initContent: auto-focusing " + i + ": " + item );
+					focus( i, item, 0 );
+					this.isScrollRequired = (this.isScrollRequired || hasFocusableItem) && (this.autoFocusIndex != 0); // override setting in focus()
+					height = item.getItemHeight(lineWidth, lineWidth);
+					if (!isLayoutShrink) {
+						width = item.itemWidth;  // no need to call getItemWidth() since the item is now initialised...
 					} else {
-						width = item.itemWidth;
+						width = 0;
 					}
-					if (width > myContentWidth) {
-						myContentWidth = width;
+					if (this.enableScrolling && this.autoFocusIndex != 0) {
+						//#debug
+						System.out.println("initContent(): scrolling autofocused item, autofocus-index=" + this.autoFocusIndex + ", i=" + i  );
+						scroll( 0, 0, myContentHeight, width, height );
 					}
-					if ( this.minimumWidth != 0 && myContentWidth < this.minimumWidth ) {
-						myContentWidth = this.minimumWidth;
+				} else if (i == this.focusedIndex) {
+					if (isLayoutShrink) {
+						width = 0;
 					}
-					//myContentHeight += item.getItemHeight( lineWidth, lineWidth );
+					if (this.isScrollRequired) {
+						//#debug
+						System.out.println("initContent(): scroll is required - scrolling to y=" + myContentHeight + ", height=" + height);
+						scroll( 0, 0, myContentHeight, width, height );
+						this.isScrollRequired = false;
+	//				} else if (item.internalX != -9999 ) {
+	//					// ensure that lines of textfields etc are within the visible area:
+	//					scroll(0, item );
+					}
+				} 
+				if (width > myContentWidth) {
+					myContentWidth = width; 
+				}
+				item.relativeY = myContentHeight;
+				if  ( (item.layout & LAYOUT_CENTER) == LAYOUT_CENTER) {
+					item.relativeX = (lineWidth - width) / 2;
+				} else if ( (item.layout & LAYOUT_RIGHT) == LAYOUT_RIGHT) {
+					item.relativeX = (lineWidth - width);
+				} else {
+					item.relativeX = 0;
+				}
+				if (item.relativeX < myContentStartX ) {
+					myContentStartX = item.relativeX;
+				}
+				if (item.relativeX + width > myContentEndX ) {
+					myContentEndX = item.relativeX + width;
+				}
+				myContentHeight += height != 0 ? height + this.paddingVertical : 0;
+				//System.out.println("item.yTopPos=" + item.yTopPos);
+			} // cycling through all items
+			
+			if (myContentEndX - myContentStartX > myContentWidth) {
+				// this can happen when there are different layouts like left and right within the same container:
+				myContentWidth = myContentEndX - myContentStartX;
+			}
+			if (!hasFocusableItem) {
+				this.appearanceMode = PLAIN;
+			} else {
+				this.appearanceMode = INTERACTIVE;
+				if (this.focusedItem != null) {
+					Item item = this.focusedItem;
+					if (item.internalX != -9999) {
+						this.internalX =  item.relativeX + item.contentX + item.internalX;
+						this.internalY = item.relativeY + item.contentY + item.internalY;
+						this.internalWidth = item.internalWidth;
+						this.internalHeight = item.internalHeight;
+						//#debug
+						System.out.println("Container (" + getClass().getName() + "): internal area found in item " + item + ": setting internalY=" + this.internalY + ", item.relativeY=" + item.relativeY + ", item.contentY=" + item.contentY + ", this.contentY=" + this.contentY + ", item.internalY=" + item.internalY+ ", this.yOffset=" + this.yOffset + ", item.internalHeight=" + item.internalHeight + ", item.isInitialized=" + item.isInitialized);
+					} else {
+						this.internalX = item.relativeX;
+						this.internalY = item.relativeY;
+						this.internalWidth = item.itemWidth;
+						this.internalHeight = item.itemHeight;
+						//#debug
+						System.out.println("Container (" + getClass().getName() + "): NO internal area found in item " + item + ": setting internalY=" + this.internalY + ", internalHeight=" + this.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight + ", this.availableHeight=" + this.availableHeight);
+					}
+					if (isLayoutShrink) {
+						//System.out.println("container has shrinking layout and contains focuse item " + item);
+						item.isInitialized = false;
+						boolean doExpand = item.isLayoutExpand;
+						int width;
+						if (doExpand) {
+							item.isLayoutExpand = false;
+							width = item.getItemWidth( lineWidth, lineWidth );
+							item.isInitialized = false;
+							item.isLayoutExpand = true;
+						} else {
+							width = item.itemWidth;
+						}
+						if (width > myContentWidth) {
+							myContentWidth = width;
+						}
+						if ( this.minimumWidth != 0 && myContentWidth < this.minimumWidth ) {
+							myContentWidth = this.minimumWidth;
+						}
+						//myContentHeight += item.getItemHeight( lineWidth, lineWidth );
+					}
 				}
 			}
+			if (this.scrollItem != null) {
+				scroll( 0, this.scrollItem );
+				this.scrollItem = null;
+			}
+			this.contentHeight = myContentHeight;
+			this.contentWidth = myContentWidth;
+			//#debug
+			System.out.println("initContent(): Container " + this + " has a content-width of " + this.contentWidth + ", parent=" + this.parent);
 		}
-		if (this.scrollItem != null) {
-			scroll( 0, this.scrollItem );
-			this.scrollItem = null;
-		}
-		this.contentHeight = myContentHeight;
-		this.contentWidth = myContentWidth;
-		//#debug
-		System.out.println("initContent(): Container " + this + " has a content-width of " + this.contentWidth + ", parent=" + this.parent);
 	}
 	
 
@@ -1135,6 +1156,7 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
+		//System.out.println("paintContent, size=" + this.itemsList.size() + ", isInitialized=" + this.isInitialized);
 		// paints all items,
 		// the layout will be done according to this containers'
 		// layout or according to the items layout, when specified.
@@ -1211,7 +1233,7 @@ public class Container extends Item {
 			}
 			boolean paintFocusedItemOutside = false;
 			if (focItem != null) {
-				paintFocusedItemOutside = (focItem.internalX != -9999);
+				paintFocusedItemOutside = (focItem.internalX != NO_POSITION_SET);
 				if (!paintFocusedItemOutside) {
 					focItem.paint(focusedX, focusedY, focusedX, focusedRightBorder, g);
 				}
@@ -2063,6 +2085,7 @@ public class Container extends Item {
 	 */
 	protected void showNotify()
 	{
+		super.showNotify();
 		if (this.style != null && !this.isStyleInitialised) {
 			setStyle( this.style );
 		}

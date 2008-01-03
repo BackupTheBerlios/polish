@@ -690,7 +690,9 @@ public abstract class Item extends Object
 	protected int contentY; // absolute top vertical position of the content 
 	// the current positions of an internal element relative to the content origin 
 	// which should be visible:
-	/** no internal position has been set for this item */
+	/** no internal position has been set for this item, value is -9999. 
+	 * This is used as a value for internalX to describe that the item has no intenal position set 
+	 */
 	public final static int NO_POSITION_SET = -9999;
 	/** 
 	 * The internal horizontal position of this item's content relative to it's left edge. 
@@ -932,28 +934,28 @@ public abstract class Item extends Object
 		this.isInitialized = false;
 		this.isStyleInitialised = true;
 		this.style = style;
-		//if (style != StyleSheet.defaultStyle) {
+		if (style != StyleSheet.defaultStyle) {
 			this.layout = style.layout;
-		//}
-		// horizontal styles: center -> right -> left
-		if ( ( this.layout & LAYOUT_CENTER ) == LAYOUT_CENTER ) {
-			this.isLayoutCenter = true;
-			this.isLayoutRight = false;
-		} else {
-			this.isLayoutCenter = false;
-			if ( ( this.layout & LAYOUT_RIGHT ) == LAYOUT_RIGHT ) {
-				this.isLayoutRight = true;
-			} else {
+			// horizontal styles: center -> right -> left
+			if ( ( this.layout & LAYOUT_CENTER ) == LAYOUT_CENTER ) {
+				this.isLayoutCenter = true;
 				this.isLayoutRight = false;
+			} else {
+				this.isLayoutCenter = false;
+				if ( ( this.layout & LAYOUT_RIGHT ) == LAYOUT_RIGHT ) {
+					this.isLayoutRight = true;
+				} else {
+					this.isLayoutRight = false;
+				}
 			}
-		}
-		
-		// vertical styles: vcenter -> bottom -> top
-		// expanding layouts:
-		if ( ( this.layout & LAYOUT_EXPAND ) == LAYOUT_EXPAND ) {
-			this.isLayoutExpand = true;
-		} else {
-			this.isLayoutExpand = false;
+			
+			// vertical styles: vcenter -> bottom -> top
+			// expanding layouts:
+			if ( ( this.layout & LAYOUT_EXPAND ) == LAYOUT_EXPAND ) {
+				this.isLayoutExpand = true;
+			} else {
+				this.isLayoutExpand = false;
+			}
 		}
 		//System.out.println( this + " style [" + style.name + "]: right: " + this.isLayoutRight + " center: " + this.isLayoutCenter + " expand: " + this.isLayoutExpand + " layout=" + Integer.toHexString(this.layout));
 		this.background = style.background;
@@ -1135,7 +1137,6 @@ public abstract class Item extends Object
 		if (!this.isInitialized || this.itemWidth > lineWidth) {
 //			if (this.itemWidth > lineWidth) {
 //				System.out.println("itemWidth=" + this.itemWidth + ", lineWidth=" + lineWidth + ", this=" + this);
-//				try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
 //			}
 			init( firstLineWidth, lineWidth );
 		}
@@ -1229,129 +1230,18 @@ public abstract class Item extends Object
 				}
 			//#endif
 			if (this.isFocused) {
-				Screen scr = getScreen();
-				if (scr != null) {
-					scr.addCommand( cmd );
-				}
+				showCommands();
+//				Screen scr = getScreen();
+//				if (scr != null) {
+//					scr.addCommand( cmd );
+//				}
 			}
 			if (this.isInitialized) {
 				repaint();
 			}
 		}
 	}
-
-	/**
-	 * Repaints the complete screen to which this item belongs to.
-	 * Subclasses can call this method whenever their contents
-	 * have changed and they need an immediate refresh.
-	 *  
-	 * @see #repaint()
-	 * @see #repaint(int, int, int, int)
-	 */
-	protected void repaintFully() {
-		//repaint( this.relativeX, this.relativeY, this.itemWidth, this.itemHeight );
-		//if (this.parent instanceof Container) {
-		//	((Container) this.parent).isInitialized = false;
-		//}
-		Screen scr = getScreen();
-		if (scr != null && scr == StyleSheet.currentScreen) {
-			scr.requestRepaint( );
-		}
-	}
 	
-	/**
-	 * Repaints the screen to which this item belongs to depending on the isInitialized field
-	 * When this item is initialized, only the area covered by this item is repainted (unless other repaint requests are queued).
-	 * When this item is not initialized (isInitialized == false), a repaint for the complete screen is triggered, as there might be
-	 * a size change involved.
-	 * Subclasses can call this method whenever their contents have changed and they need an immediate refresh.
-	 * 
-	 * @see #isInitialized 
-	 * @see #repaintFully()
-	 * @see #repaint(int, int, int, int)
-	 */
-	protected void repaint() {
-		//#if polish.Bugs.fullRepaintRequired
-			repaintFully();
-		//#else
-			//System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
-			if (this.isInitialized) {
-				// note: -contentX, -contentY fails for right or center layouts
-				repaint( - (this.paddingLeft + this.marginLeft + this.borderWidth), -(this.paddingTop + this.marginTop + this.borderWidth), this.itemWidth, this.itemHeight );
-			} else {
-				repaintFully();
-			}
-		//#endif
-	}
-	
-	/**
-	 * Repaints the specified relative area of this item.
-	 * The area is specified relative to the <code>Item's</code>
-	 * content area.
-	 * 
-	 * @param relX horizontal start position relative to this item's content area
-	 * @param relY vertical start position relative to this item's content area
-	 * @param width the width of the area
-	 * @param height the height of the area
-	 * 
-	 * @see #repaint()
-	 * @see #repaintFully()
-	 */
-	protected void repaint( int relX, int relY, int width, int height ) {
-		//System.out.println("repaint called by class " + getClass().getName() );
-		if (this.parent instanceof Container) {
-			((Container) this.parent).isInitialized = false;
-		}
-		Screen scr = getScreen();
-		if (scr != null && scr == StyleSheet.currentScreen) {
-			relX += getAbsoluteX(); // + this.contentX;
-			relY += getAbsoluteY(); // + this.contentY;
-			//System.out.println("item.repaint(" + relX + ", " + relY+ ", " +  width + ", " +  height + ")  for " + this );
-			scr.requestRepaint( relX, relY, width, height + 1 );
-		}
-	}
-
-	
-	/**
-	 * Requests that this item and all its parents are to be re-initialised at the next repainting.
-	 * All parents of this item are notified, too.
-	 * This method should be called when an item changes its size more than
-	 * usual.
-	 * When the item already has been initialised, a repaint() is requested, too.
-	 */
-	public void requestInit() {
-		//System.out.println("requestInit called by class " + getClass().getName() + " - screen.class=" + getScreen().getClass().getName()  );
-		Item p = this.parent;
-		while ( p != null) {
-			p.isInitialized = false;
-			p = p.parent;
-		}
-		this.isInitialized = false;
-		Screen scr = getScreen();
-		if (scr != null) {
-			//if (scr.checkForRequestInit(this)) {
-				scr.requestInit();
-			//}
-		}
-		repaint();
-	}
-	
-	/**
-	 * Retrieves the screen to which this item belongs to.
-	 * 
-	 * @return either the corresponding screen or null when no screen could be found 
-	 */
-	public Screen getScreen() {
-		Item p = this;
-		while (p != null) {
-			if (p.screen != null) {
-				return p.screen;
-			}
-			p = p.parent;
-		}
-		return null;
-	}
-
 	/**
 	 * Removes the context sensitive command from item. If the command is not
 	 * in the <code>Item</code> (tested by comparing the object references),
@@ -1398,6 +1288,118 @@ public abstract class Item extends Object
 				}
 			}
 		}
+	}
+
+	/**
+	 * Repaints the complete screen to which this item belongs to.
+	 * Subclasses can call this method whenever their contents
+	 * have changed and they need an immediate refresh.
+	 *  
+	 * @see #repaint()
+	 * @see #repaint(int, int, int, int)
+	 */
+	protected void repaintFully() {
+		//repaint( this.relativeX, this.relativeY, this.itemWidth, this.itemHeight );
+		//if (this.parent instanceof Container) {
+		//	((Container) this.parent).isInitialized = false;
+		//}
+		Screen scr = getScreen();
+		if (scr != null && scr == StyleSheet.currentScreen) {
+			scr.repaint();
+		}
+	}
+	
+	/**
+	 * Repaints the screen to which this item belongs to depending on the isInitialized field
+	 * When this item is initialized, only the area covered by this item is repainted (unless other repaint requests are queued).
+	 * When this item is not initialized (isInitialized == false), a repaint for the complete screen is triggered, as there might be
+	 * a size change involved.
+	 * Subclasses can call this method whenever their contents have changed and they need an immediate refresh.
+	 * 
+	 * @see #isInitialized 
+	 * @see #repaintFully()
+	 * @see #repaint(int, int, int, int)
+	 */
+	protected void repaint() {
+		//#if polish.Bugs.fullRepaintRequired
+			repaintFully();
+		//#else
+			//System.out.println("repaint(): " + this.relativeX + ", " + this.relativeY + ", " + this.itemWidth + ", " + this.itemHeight);
+			if (this.isInitialized) {
+				// note: -contentX, -contentY fails for right or center layouts
+				repaint( - (this.paddingLeft + this.marginLeft + this.borderWidth), -(this.paddingTop + this.marginTop + this.borderWidth), this.itemWidth, this.itemHeight );
+			} else {
+				repaintFully();
+			}
+		//#endif
+	}
+	
+	/**
+	 * Repaints the specified relative area of this item.
+	 * The area is specified relative to the <code>Item's</code>
+	 * content area.
+	 * 
+	 * @param relX horizontal start position relative to this item's content area
+	 * @param relY vertical start position relative to this item's content area
+	 * @param width the width of the area
+	 * @param height the height of the area
+	 * 
+	 * @see #repaint()
+	 * @see #repaintFully()
+	 */
+	protected void repaint( int relX, int relY, int width, int height ) {
+		//System.out.println("repaint called by class " + getClass().getName() );
+//		if (this.parent instanceof Container) {
+//			((Container) this.parent).isInitialized = false;
+//		}
+		Screen scr = getScreen();
+		if (scr != null && scr == StyleSheet.currentScreen) {
+			relX += getAbsoluteX(); // + this.contentX;
+			relY += getAbsoluteY(); // + this.contentY;
+			//System.out.println("item.repaint(" + relX + ", " + relY+ ", " +  width + ", " +  height + ")  for " + this );
+			scr.repaint( relX, relY, width, height + 1 );
+		}
+	}
+
+	
+	/**
+	 * Requests that this item and all its parents are to be re-initialised at the next repainting.
+	 * All parents of this item are notified, too.
+	 * This method should be called when an item changes its size more than
+	 * usual.
+	 * When the item already has been initialised, a repaint() is requested, too.
+	 */
+	public void requestInit() {
+		//System.out.println("requestInit called by class " + getClass().getName() + " - screen.class=" + getScreen().getClass().getName()  );
+		Item p = this.parent;
+		while ( p != null) {
+			p.isInitialized = false;
+			p = p.parent;
+		}
+		this.isInitialized = false;
+		Screen scr = getScreen();
+		if (scr != null) {
+			//if (scr.checkForRequestInit(this)) {
+				scr.requestInit();
+			//}
+		}
+		repaint();
+	}
+	
+	/**
+	 * Retrieves the screen to which this item belongs to.
+	 * 
+	 * @return either the corresponding screen or null when no screen could be found 
+	 */
+	public Screen getScreen() {
+		Item p = this;
+		while (p != null) {
+			if (p.screen != null) {
+				return p.screen;
+			}
+			p = p.parent;
+		}
+		return null;
 	}
 
 	/**
@@ -2481,6 +2483,12 @@ public abstract class Item extends Object
 		if (this.label != null) {
 			this.label.animate( currentTime, repaintRegion );
 		}
+		if (this.background != null) {
+			this.background.animate( this.screen, this, currentTime, repaintRegion );
+		}
+		if (this.border != null) {
+			this.border.animate( this.screen, this, currentTime, repaintRegion );
+		}
 		if (animate()) {
 			repaintRegion.addRegion( getAbsoluteX(), getAbsoluteY(), this.itemWidth, this.itemHeight );
 		}
@@ -2495,19 +2503,13 @@ public abstract class Item extends Object
 	/**
 	 * Animates this item.
 	 * Subclasses can override this method to create animations.
-	 * The default implementation animates the background and the item view if present.
+	 * The default implementation returns false
 	 * 
 	 * @return true when this item has been animated.
+	 * @see #animate(long, ClippingRegion)
 	 */
 	public boolean animate() {
-		boolean animated = false;
-		if (this.background != null) {
-			animated = this.background.animate();
-		}
-		if (this.border != null) {
-			animated |= this.border.animate();
-		}
-		return animated;
+		return false;
 	}
 	
 	/**
@@ -2574,6 +2576,7 @@ public abstract class Item extends Object
 		COMMANDS.clear();
 		showCommands( COMMANDS );
 	}
+	
 	/**
 	 * Shows the commands on the screen.
 	 * 

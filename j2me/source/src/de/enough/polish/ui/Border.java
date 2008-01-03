@@ -63,12 +63,34 @@ public abstract class Border implements Serializable {
 	 */
 	public abstract void paint( int x, int y, int width, int height, Graphics g );
 	
+	/**
+	 * Animates this background.
+	 * Subclasses can override this method to create animations.
+	 * The default implementation calls the animate() method and adds the full content area to the repaint region.
+	 * 
+	 * @param screen the parent screen
+	 * @param parent the parent item, can be null when the background belongs to a screen
+	 * @param currentTime the current time in milliseconds
+	 * @param repaintRegion the repaint area that needs to be updated when this item is animated
+	 * @see Item#addRelativeRegion(ClippingRegion, int, int, int, int)
+	 */
+	public void animate(Screen screen, Item parent, long currentTime, ClippingRegion repaintRegion) 
+	{
+		if (animate()) {
+			if (parent != null) {
+				parent.addRelativeRegion( repaintRegion, 0, 0, parent.contentWidth, parent.contentHeight );
+			} else {
+				repaintRegion.addRegion(0, 0, screen.getWidth(), screen.getScreenHeight() );
+			}
+		}
+	}
 	
 	/**
 	 * Animates this border.
 	 * Subclasses can override this method to create animations.
 	 * 
 	 * @return true when this border has been animated and needs a repaint.
+	 * @see #animate(Screen, Item, long, ClippingRegion)
 	 */
 	public boolean animate() {
 		return false;

@@ -171,7 +171,10 @@ public class ChoiceItem extends IconItem
 		this.isMultiple = (choiceType == Choice.MULTIPLE);
 		this.appearanceMode = INTERACTIVE;
 	}
-	
+	/**
+	 * Changes the type of this ChoiceItem
+	 * @param choiceType eithe Choice.EXCLUSIVE, Choice.MULTPIPLE or Choice.IMPLICIT
+	 */
 	public void setChoiceType( int choiceType ) {
 		this.choiceType = choiceType;
 		this.drawBox = (choiceType == Choice.EXCLUSIVE) || (choiceType == Choice.MULTIPLE);
@@ -515,6 +518,5 @@ public class ChoiceItem extends IconItem
 	public Image getSelectedImage() {
 		return this.selected;
 	}
-
 
 }

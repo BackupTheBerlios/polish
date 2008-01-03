@@ -1278,7 +1278,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		//}
 		Screen scr = getScreen();
 		if (scr != null && scr == StyleSheet.currentScreen) {
-			scr.requestRepaint( );
+			scr.repaint( );
 		}
 	}
 	

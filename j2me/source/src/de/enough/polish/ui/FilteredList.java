@@ -27,8 +27,6 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
@@ -57,31 +55,34 @@ implements ItemStateListener //, CommandListener
 	protected int filterMode = FILTER_STARTS_WITH;
 	protected final TextField filterTextField;
 	private final ArrayList itemsList;
-	private CommandListener originalCommandListener;
+	//private CommandListener originalCommandListener;
 	private String lastFilterText;
 
 	/**
-	 * @param title
-	 * @param listType
+	 * Creates a new FilteredList 
+	 * @param title the title
+	 * @param listType the type, either Choice.MULTIPLE, Choice.IMPLICIT or Choice.EXCLUSIVE
 	 */
 	public FilteredList(String title, int listType) {
 		this( title, listType, (ChoiceItem[])null, (Style) null );
 	}
 	
 	/**
-	 * @param title
-	 * @param listType
-	 * @param style
+	 * Creates a new FilteredList 
+	 * @param title the title
+	 * @param listType the type, either Choice.MULTIPLE, Choice.IMPLICIT or Choice.EXCLUSIVE
+	 * @param style style for the list
 	 */
 	public FilteredList(String title, int listType, Style style) {
 		this( title, listType, (ChoiceItem[])null, style );
 	}
 
 	/**
-	 * @param title
-	 * @param listType
-	 * @param stringElements
-	 * @param imageElements
+	 * Creates a new FilteredList 
+	 * @param title the title
+	 * @param listType the type, either Choice.MULTIPLE, Choice.IMPLICIT or Choice.EXCLUSIVE
+	 * @param stringElements list item texts
+	 * @param imageElements list item images
 	 */
 	public FilteredList(String title, int listType, String[] stringElements, Image[] imageElements) {
 		this( title, listType, stringElements, imageElements, null );
@@ -89,11 +90,12 @@ implements ItemStateListener //, CommandListener
 
 
 	/**
-	 * @param title
-	 * @param listType
-	 * @param stringElements
-	 * @param imageElements
-	 * @param style
+	 * Creates a new FilteredList 
+	 * @param title the title
+	 * @param listType the type, either Choice.MULTIPLE, Choice.IMPLICIT or Choice.EXCLUSIVE
+	 * @param stringElements list item texts
+	 * @param imageElements list item images
+	 * @param style style for the list
 	 */
 	public FilteredList(String title, int listType, String[] stringElements, Image[] imageElements, Style style) {
 		this( title, listType, ChoiceGroup.buildChoiceItems(stringElements, imageElements, listType, style), style );
@@ -101,9 +103,10 @@ implements ItemStateListener //, CommandListener
 
 
 	/**
-	 * @param title
-	 * @param listType
-	 * @param items
+	 * Creates a new FilteredList 
+	 * @param title the title
+	 * @param listType the type, either Choice.MULTIPLE, Choice.IMPLICIT or Choice.EXCLUSIVE
+	 * @param items items of the list
 	 */
 	public FilteredList(String title, int listType, ChoiceItem[] items) {
 		this(title, listType, items, null);
@@ -112,10 +115,11 @@ implements ItemStateListener //, CommandListener
 
 	
 	/**
-	 * @param title
-	 * @param listType
-	 * @param items
-	 * @param style
+	 * Creates a new FilteredList 
+	 * @param title the title
+	 * @param listType the type, either Choice.MULTIPLE, Choice.IMPLICIT or Choice.EXCLUSIVE
+	 * @param items items of the list
+	 * @param style style for the list
 	 */
 	public FilteredList(String title, int listType, ChoiceItem[] items, Style style) {
 		super(title, listType, items, style);
@@ -178,6 +182,17 @@ implements ItemStateListener //, CommandListener
 		super.animate(currentTime,  repaintRegion);
 		this.filterTextField.animate(currentTime,  repaintRegion);
 	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#setItemCommands( ArrayList,Item)
+	 */
+	protected void setItemCommands( ArrayList commandsList, Item item ) {
+		if (item != this.filterTextField) {
+			this.filterTextField.showCommands(commandsList);
+		}
+		super.setItemCommands(commandsList, item);
+	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#calculateContentArea(int, int, int, int)
@@ -259,6 +274,10 @@ implements ItemStateListener //, CommandListener
 	 * @see de.enough.polish.ui.List#append(de.enough.polish.ui.ChoiceItem)
 	 */
 	public int append(ChoiceItem item) {
+		if (this.listType == Choice.MULTIPLE) {
+			this.choiceGroup.selectChoiceItem(item, item.isSelected);
+			item.setItemCommandListener( this.choiceGroup );
+		}
 		this.itemsList.add( item );
 		this.lastFilterText = null;
 		if (isShown()) {
@@ -619,9 +638,9 @@ implements ItemStateListener //, CommandListener
 			// problem: this also adds the delete command
 			this.filterTextField.showCommands();
 			//#if !polish.TextField.suppressCommands
-			if (this.filterTextField.getCaretPosition() == 0) {
-				removeCommand( TextField.DELETE_CMD );
-			}
+//			if (this.filterTextField.getCaretPosition() == 0) {
+//				removeCommand( TextField.DELETE_CMD );
+//			}
 			//#endif
 		}
 	}

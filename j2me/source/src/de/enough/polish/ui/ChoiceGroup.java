@@ -1442,7 +1442,7 @@ implements Choice
 	 * @param item the item
 	 * @param isSelected true when it should be marked as selected
 	 */
-	private void selectChoiceItem(ChoiceItem item, boolean isSelected)
+	protected void selectChoiceItem(ChoiceItem item, boolean isSelected)
 	{
 		item.select(isSelected);
 		//#if !tmp.suppressMarkCommands
@@ -1515,8 +1515,10 @@ implements Choice
 		//#endif
 		int index = this.focusedIndex;
 		boolean handled = super.handlePointerPressed(relX, relY); // focuses the appropriate item
-		if (! this.isMultiple 
-				&& (handled || isInItemArea(relX, relY, this.focusedItem))
+		//#debug
+		System.out.println("handled=" + handled + ", index=" + index + ", focusedIndex=" + this.focusedIndex + ", focusedItem=" + this.focusedItem  + ", isInItemArea(relX, relY, this.focusedItem)=" + isInItemArea(relX, relY, this.focusedItem));
+		if (    
+				(handled || isInItemArea(relX, relY, this.focusedItem))
 				//#if polish.css.view-type
 				&& (index == this.focusedIndex || this.containerView == null || this.containerView.allowsDirectSelectionByPointerEvent) 
 				//#endif

@@ -624,17 +624,18 @@ implements AccessibleCanvas
 		}
 	}
 	
-	/**
-	 * Forwards a repaint request only when those requests should not be ignored.
-	 * Requests should be usually ignored during the event handling, for example. 
-	 * @see #ignoreRepaintRequests
-	 */
-	public void requestRepaint() {
-		//if (!this.ignoreRepaintRequests) {
-			super.repaint();
-		//}
-	}
-	
+//	/**
+//	 * Forwards a repaint request only when those requests should not be ignored.
+//	 * Requests should be usually ignored during the event handling, for example. 
+//	 * @see #ignoreRepaintRequests
+//	 */
+//	public void requestRepaint() {
+//		//if (!this.ignoreRepaintRequests) {
+//			super.repaint();
+//		//}
+//	}
+//	
+	//#if !polish.Screen.callSuperEvents
 	/**
 	 * Forwards a repaint request only when those requests should not be ignored.
 	 * Requests should be usually ignored during the event handling, for example. 
@@ -644,13 +645,10 @@ implements AccessibleCanvas
 	 * @param height the height of the area that needs to be refreshed
 	 * @see #ignoreRepaintRequests
 	 */
-	public void requestRepaint( int x, int y, int width, int height ) {
-		//#if polish.Screen.callSuperEvents
-			//# super.requestRepaint( x, y, width, height );
-		//#else
-			super.repaint( x, y, width, height );
-		//#endif
+	protected void requestRepaint( int x, int y, int width, int height ) {
+		super.repaint( x, y, width, height );
 	}
+	//#endif
 	
 	
 	
@@ -1298,21 +1296,19 @@ implements AccessibleCanvas
 		
 		synchronized (this.paintLock) {
 			try {
-				boolean animated = false;
-				if (this.background != null) {
-					animated = this.background.animate();
-				}
-				if (this.border != null) {
-					animated |= this.border.animate();
-				}
 				// for ensured backward compatibility call the standard animate method:
-				animated |= animate();
-				if (animated) {
+				if (animate()) {
 					//#ifdef tmp.menuFullScreen
 						repaintRegion.addRegion( 0,0, this.screenWidth, this.fullScreenHeight );
 					//#else
 						repaintRegion.addRegion( 0,0, this.screenWidth, this.screenHeight );
 					//#endif
+				}
+				if (this.background != null) {
+					this.background.animate( this, null, currentTime, repaintRegion );
+				}
+				if (this.border != null) {
+					this.border.animate( this, null, currentTime, repaintRegion );
 				}
 				//#ifdef tmp.menuFullScreen
 					//#ifdef tmp.useExternalMenuBar

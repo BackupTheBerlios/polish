@@ -121,6 +121,17 @@ public class FilteredChoiceGroup
 	public int append(String stringPart, Image imagePart, Style itemStyle ) {
 		return this.filteredList.append( stringPart, imagePart, itemStyle );
 	}
+	
+	/**
+	 * Appends an item to this group.
+	 * 
+	 * @param item the choice item to be added
+	 * @return the assigned index of the element
+	 * @throws NullPointerException if item is null
+	 */
+	public int append(ChoiceItem item) {
+		return this.filteredList.append(item);
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Choice#delete(int)

@@ -213,7 +213,7 @@ public class List extends Screen implements Choice
 
 	private Command selectCommand = SELECT_COMMAND;
 	protected int listType;
-	private ChoiceGroup choiceGroup;
+	protected ChoiceGroup choiceGroup;
 	//#ifdef polish.css.show-text-in-title
 		private boolean showTextInTitle;
 	//#endif

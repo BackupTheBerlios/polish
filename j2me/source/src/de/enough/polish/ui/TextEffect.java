@@ -30,21 +30,23 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.io.Serializable;
+//import de.enough.polish.io.Serializable;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.TextUtil;
 
 /**
  * <p>Allows text effects for StringItems, IconItems and ChoiceItems.</p>
  *
- * <p>Copyright (c) 2005, 2006 Enough Software</p>
+ * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
  * <pre>
  * history
  *        16-Nov-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class TextEffect implements Serializable{
+public abstract class TextEffect 
+//implements Serializable
+{
 
 	protected transient Style style;
 
