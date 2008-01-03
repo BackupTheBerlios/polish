@@ -25,6 +25,7 @@
  */
 package de.enough.polish.ui;
 
+import de.enough.polish.ui.containerviews.MIDP2LayoutView;
 import junit.framework.TestCase;
 
 public class ContainerTest extends TestCase {
@@ -60,6 +61,47 @@ public class ContainerTest extends TestCase {
 		assertEquals( "icon3", result );
 		result = container.parseIndexUrl("%INDEX%icon", item4);
 		assertEquals( "3icon", result );
+	}
+	
+	public void testMIDP2LayoutContainerView() {
+		Container container = new Container(true);
+		Container nested = new Container( false );
+		container.add(nested);
+		nested.containerView = new MIDP2LayoutView();
+		StringItem button = new StringItem(null, "button", StringItem.BUTTON );
+		nested.add( button );
+		container.getItemHeight( 200, 200 );
+		assertEquals( nested, container.getFocusedItem() );
+		assertEquals( button, nested.getFocusedItem() );
+		
+		container = new Container(true);
+		nested = new Container( false );
+		nested.containerView = new MIDP2LayoutView();
+		button = new StringItem(null, "button", StringItem.BUTTON );
+		nested.add( button );
+		container.add(nested);		
+		container.getItemHeight( 200, 200 );
+		assertEquals( nested, container.getFocusedItem() );
+		assertEquals( button, nested.getFocusedItem() );
+		
+		
+		container = new Container(true);
+		nested = new Container( false );
+		container.add(nested);
+		nested.containerView = new MIDP2LayoutView();
+		StringItem item = new StringItem(null, "One");
+		nested.add( item );
+		item = new StringItem(null, "Two");
+		nested.add( item );
+		button = new StringItem(null, "button", StringItem.BUTTON );
+		nested.add( button );
+		item = new StringItem(null, "Three");
+		nested.add( item );
+		container.getItemHeight( 200, 200 );
+		assertEquals( nested, container.getFocusedItem() );
+		assertEquals( button, nested.getFocusedItem() );
+
+		
 	}
 
 }
