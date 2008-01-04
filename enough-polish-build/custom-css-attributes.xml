@@ -22,5 +22,12 @@
 		description="The name of the style for the currently focused item."
 		default="focused"
 	/>
+	<attribute
+		name="myitem-color"
+		type="color"
+		appliesTo="com.company.ui.MyCustomItem"
+		description="The color of a custom item part."
+		default="blue"
+	/>
 	-->
 </attributes>

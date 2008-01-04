@@ -286,6 +286,18 @@
 			<param name="end" type="integer" primitive="true" default="100" />
 			<param name="is-percent" type="boolean" primitive="true" default="true" />
 		</mapping>
+		<mapping from="partial-gradient"   to="de.enough.polish.ui.backgrounds.PartialGradientBackground" >
+			<param name="top-color" type="color" primitive="true" default="white" />
+			<param name="bottom-color" type="color" primitive="true" default="gray" />
+			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" />
+			<param name="start" type="percent" primitive="true" default="30" />
+			<param name="end" type="percent" primitive="true" default="70" />
+		</mapping>
+		<mapping from="partial"   to="de.enough.polish.ui.backgrounds.PartialSimpleBackground" >
+			<param name="color" type="color" primitive="true" default="white" />
+			<param name="start" type="percent" primitive="true" default="30" />
+			<param name="end" type="percent" primitive="true" default="70" />
+		</mapping>
 		<mapping from="vertical-double-gradient"   to="de.enough.polish.ui.backgrounds.DoubleGradientVerticalBackground" converter="de.enough.polish.preprocess.backgrounds.DoubleGradientVerticalBackgroundConverter" >
 			<param name="first-top-color" type="color" primitive="true" default="white" />
 			<param name="first-bottom-color" type="color" primitive="true" default="gray" />
@@ -362,7 +374,9 @@
 			<param name="mask" type="background" />
 			<param name="mask-color" type="color" primitive="true" default="black" />
 			<param name="background" type="background" />		
+			<!-- 
 			<param name="anti-alising" type="boolean" primitive="true" default="false" />
+			 -->
 			<param name="opacity" type="integer" primitive="true" default="255" />
 		</mapping>
 	</attribute>
@@ -538,7 +552,7 @@
 		name="focused-style"
 		type="style"
 		appliesTo="Screen, Item"
-		description="The name of the style for the currently focused item."
+		description="The name of the style for the currently focused item, usually applied with a [style-name]:hover construct."
 		default="focused"
 		id="1"
 	/>
@@ -573,7 +587,7 @@
 	<attribute
 		name="columns-width"
 		type="columns-width"
-		appliesTo="Screen, Container"
+		appliesTo="Screen, Container, FakeContainerCustomItem"
 		description="Either &quot;normal&quot;, &quot;equal&quot; or the width for each column in a comma separated list (e.g. &quot;columns-width: 60,60,10&quot;)."
 		default="normal"
 		id="5"
@@ -766,16 +780,16 @@
 	<attribute
 		name="textfield-width"
 		type="integer"
-		appliesTo="TextField, TextBox"
-		description="The minimum width of the textfield-element in pixels."
+		appliesTo=""
+		description="The minimum width of the textfield-element in pixels. (deprecated)"
 		id="27"
 	/>
 
 	<attribute
 		name="textfield-height"
 		type="integer"
-		appliesTo="TextField, TextBox"
-		description="The minimum height of the textfield-element in pixels. Defaults to the height of the used font."
+		appliesTo=""
+		description="The minimum height of the textfield-element in pixels. Defaults to the height of the used font. (deprecated)"
 		id="28"
 	/>
 
@@ -837,16 +851,16 @@
 	<attribute
 		name="datefield-width"
 		type="integer"
-		appliesTo="DateField"
-		description="The minimum width of the datefield-element in pixels."
+		appliesTo=""
+		description="The minimum width of the datefield-element in pixels. (deprecated)"
 		id="33"
 	/>
 
 	<attribute
 		name="datefield-height"
 		type="integer"
-		appliesTo="DateField"
-		description="The minimum height of the datefield-element in pixels. Defaults to the height of the used font."
+		appliesTo=""
+		description="The minimum height of the datefield-element in pixels. Defaults to the height of the used font. (deprecated)"
 		id="34"
 	/>
 
@@ -889,7 +903,7 @@
 		name="view-type"
 		type="map"
 		appliesTo="Screen,Item"
-		description="Defines which view should be used for showing the items of a Form, List, etc."
+		description="Defines another visualization for an Item or a Screen."
 		id="39"
 	>
 		<!--  for any Items: -->
@@ -901,12 +915,12 @@
 		<mapping from="size-decrease" to="new de.enough.polish.ui.itemviews.SizeDecreaseItemView()" appliesTo="Item" />
 		<mapping from="particle" to="new de.enough.polish.ui.itemviews.ExplodingParticlesItemView()" appliesTo="Item" />
 		<!--  for Containers:  -->
-		<mapping from="shuffle" to="new de.enough.polish.ui.containerviews.ShuffleView()" appliesTo="Screen" />
+		<mapping from="shuffle" to="new de.enough.polish.ui.containerviews.ShuffleView()" appliesTo="Screen, Container, FakeContainerCustomItem" />
 		<mapping from="ShuffleView" to="new de.enough.polish.ui.containerviews.ShuffleView()" />
 		<mapping from="dropping" to="new de.enough.polish.ui.containerviews.DroppingView()" appliesTo="Screen"  />
 		<mapping from="DroppingView" to="new de.enough.polish.ui.containerviews.DroppingView()" />
 		<mapping from="midp2" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
-		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" appliesTo="Screen,Container" />
+		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" appliesTo="Screen,Container, FakeContainerCustomItem" />
 		<mapping from="relative" to="new de.enough.polish.ui.containerviews.RelativeLayoutView()" />
 		<mapping from="exclusive" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
 		<mapping from="exclusive-choice" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" appliesTo="ChoiceGroup" />
@@ -919,12 +933,14 @@
 		<mapping from="fully-animated" to="new de.enough.polish.ui.containerviews.AnimationContainerView()" />
 		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideUpView()"  appliesTo="Item" />
 		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideUpView()" />
-		<mapping from="carousel" to="new de.enough.polish.ui.containerviews.CarouselContainerView()" />
+		<mapping from="carousel" to="new de.enough.polish.ui.containerviews.CarouselContainerView()"  appliesTo="List,Container, FakeContainerCustomItem"/>
 		<mapping from="carrousel" to="new de.enough.polish.ui.containerviews.CarouselContainerView()" />
-		<mapping from="fisheye" to="new de.enough.polish.ui.containerviews.FishEyeContainerView()" />
-		<mapping from="numbered" to="new de.enough.polish.ui.containerviews.NumberedContainerView()" />
+		<mapping from="fisheye" to="new de.enough.polish.ui.containerviews.FishEyeContainerView()" appliesTo="List,Container, FakeContainerCustomItem"/>
+		<mapping from="gray-out" to="new de.enough.polish.ui.containerviews.HorizontalGrayOutContainerView()"  appliesTo="List,Container, FakeContainerCustomItem"/>
+		<mapping from="horizontal-gray-out" to="new de.enough.polish.ui.containerviews.HorizontalGrayOutContainerView()" />
+		<mapping from="numbered" to="new de.enough.polish.ui.containerviews.NumberedContainerView()"  appliesTo="List,Container, FakeContainerCustomItem"/>
 		<mapping from="verticalfixed" to="new de.enough.polish.ui.containerviews.VerticalFixedContainerView()" />
-		<mapping from="horizontal" to="new de.enough.polish.ui.containerviews.HorizontalContainerView()" />
+		<mapping from="horizontal" to="new de.enough.polish.ui.containerviews.HorizontalContainerView()"  appliesTo="List,Container, FakeContainerCustomItem"/>
 		<!--  for Gauges: -->
 		<mapping from="gauge-recline" to="new de.enough.polish.ui.gaugeviews.RecLineGaugeView()"  appliesTo="Gauge" />
 		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" appliesTo="Gauge" />
@@ -1135,7 +1151,7 @@
 	<attribute
 		name="screen-change-animation"
 		type="map"
-		appliesTo="Screen, List, Form, FramedForm, TabbedForm"
+		appliesTo="Screen"
 		description="An effect that should be shown whenever the screen is changed."
 		id="62"
 	>
@@ -1178,6 +1194,9 @@
 		<mapping from="zoomInAndHide" to="new de.enough.polish.ui.screenanimations.ZoomInAndHideScreenChangeAnimation()">
 			<condition>polish.midp2</condition>
 		</mapping>
+		<mapping from="zoomboth" to="new de.enough.polish.ui.screenanimations.ZoomBothScreenChangeAnimation()">
+			<condition>polish.midp2</condition>
+		</mapping>
 		<mapping from="zoomBoth" to="new de.enough.polish.ui.screenanimations.ZoomBothScreenChangeAnimation()">
 			<condition>polish.midp2</condition>
 		</mapping>
@@ -1190,24 +1209,24 @@
 			<condition>polish.midp2</condition>
 		</mapping>
 		
-		<mapping from="Cube" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()"  condition="polish.midp2" />
 		<mapping from="cube" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()" condition="polish.midp2" />
-		<mapping from="Cage" to="new de.enough.polish.ui.screenanimations.CageScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="Cube" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()"  condition="polish.midp2" />
 		<mapping from="cage" to="new de.enough.polish.ui.screenanimations.CageScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="Card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()" condition="polish.midp2" />
+		<mapping from="Cage" to="new de.enough.polish.ui.screenanimations.CageScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="Paper" to="new de.enough.polish.ui.screenanimations.PaperScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="Card" to="new de.enough.polish.ui.screenanimations.CardScreenChangeAnimation()" condition="polish.midp2" />
 		<mapping from="paper" to="new de.enough.polish.ui.screenanimations.PaperScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="Pixel" to="new de.enough.polish.ui.screenanimations.PixelScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="Paper" to="new de.enough.polish.ui.screenanimations.PaperScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="pixel" to="new de.enough.polish.ui.screenanimations.PixelScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="Domino" to="new de.enough.polish.ui.screenanimations.DominoScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="Pixel" to="new de.enough.polish.ui.screenanimations.PixelScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="domino" to="new de.enough.polish.ui.screenanimations.DominoScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="TabloidPress" to="new de.enough.polish.ui.screenanimations.TabloidPressScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="squash" to="new de.enough.polish.ui.screenanimations.TabloidPressScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="Rain" to="new de.enough.polish.ui.screenanimations.RainScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="Domino" to="new de.enough.polish.ui.screenanimations.DominoScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="squash" to="new de.enough.polish.ui.screenanimations.SqueezeScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="squeeze" to="new de.enough.polish.ui.screenanimations.SqueezeScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="rain" to="new de.enough.polish.ui.screenanimations.RainScreenChangeAnimation()"  condition="polish.midp2"/>
-		<mapping from="NewWave" to="new de.enough.polish.ui.screenanimations.NewWaveScreenChangeAnimation()" condition="polish.midp2"/>
+		<mapping from="Rain" to="new de.enough.polish.ui.screenanimations.RainScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="newWave" to="new de.enough.polish.ui.screenanimations.NewWaveScreenChangeAnimation()" condition="polish.midp2"/>
+		<mapping from="NewWave" to="new de.enough.polish.ui.screenanimations.NewWaveScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="DanceBabyDance" to="new de.enough.polish.ui.screenanimations.DancingPixelScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="gradient" to="new de.enough.polish.ui.screenanimations.GradientScreenChangeAnimation()"  condition="polish.midp2"/>
 	</attribute>
@@ -1359,7 +1378,7 @@
 	<attribute
 		name="icon-horizontal-adjustment"
 		type="integer"
-		appliesTo="IconItem, ImageItem, ListItem"
+		appliesTo="IconItem, ListItem"
 		description="Adjusts the icon by the specified number of pixels horizontally. Negative values move the icon-image to the left."
 		default="0"
 		id="81"
@@ -1368,7 +1387,7 @@
 	<attribute
 		name="icon-vertical-adjustment"
 		type="integer"
-		appliesTo="IconItem, ImageItem, ListItem"
+		appliesTo="IconItem,  ListItem"
 		description="Adjusts the icon by the specified number of pixels vertically. Negative values move the icon-image to the top."
 		default="0"
 		id="82"
@@ -1377,7 +1396,7 @@
 	<attribute
 		name="text-horizontal-adjustment"
 		type="integer"
-		appliesTo="StringItem, IconItem, ImageItem, ListItem"
+		appliesTo="StringItem, IconItem, ListItem"
 		description="Adjusts the text by the specified number of pixels horizontally. Negative values move the text to the left."
 		default="0"
 		id="83"
@@ -1386,7 +1405,7 @@
 	<attribute
 		name="text-vertical-adjustment"
 		type="integer"
-		appliesTo="StringItem, IconItem, ImageItem, ListItem"
+		appliesTo="StringItem, IconItem, ListItem"
 		description="Adjusts the text by the specified number of pixels vertically. Negative values move the text to the top."
 		default="0"
 		id="84"
@@ -1395,7 +1414,7 @@
 	<attribute
 		name="scroll-mode"
 		type="integer"
-		appliesTo="Container, Screen"
+		appliesTo="Container, FakeContainerCustomItem, Screen"
 		description="Enables or disables the smooth scrolling function."
 		default="smooth"
 		values="normal,smooth"
@@ -1574,7 +1593,7 @@
 		name="text-vertical-gradient-steps"
 		type="integer"
 		appliesTo="VerticalGradientTextEffect"
-		description="Sets number of steps for the font gradient. This defaults to the height of the standard font (Font.getDefaultFont())."
+		description="Sets number of steps for the font gradient. This defaults to the height of the used font."
 		id="101"
 	/>
 	
@@ -1635,7 +1654,7 @@
 	<attribute
 		name="view-type-left-x-offset"
 		type="integer"
-		appliesTo="CCContainerView"
+		appliesTo="ContainerView"
 		description="The number of pixels the left border of the a view-type is shifted to the right (inside), negative values move the left border to the left (outside)."
 		default="0"
 		id="108"
@@ -1644,7 +1663,7 @@
 	<attribute
 		name="view-type-right-x-offset"
 		type="integer"
-		appliesTo="CCContainerView"
+		appliesTo="ContainerView"
 		description="The number of pixels the right border of the a view-type is shifted to the left (inside), negative values move the right border to the right (outside)."
 		default="0"
 		id="109"
@@ -1653,7 +1672,7 @@
 	<attribute
 		name="view-type-top-y-offset"
 		type="integer"
-		appliesTo="CCContainerView"
+		appliesTo="ContainerView"
 		description="The number of pixels the top border of the a view-type is shifted downwards, negative values move the top border to the upwards."
 		default="0"
 		id="110"
@@ -2154,7 +2173,7 @@
 		appliesTo="VerticalMirrorTextEffect"
 		description="The opaqueness of the last row of the shadow in percent: between 0 (fully transparent) and 100 (fully opaque)"
 		default="0"
-		id="165"
+		id="166"
 	/>
 
 	<attribute
@@ -2163,7 +2182,7 @@
 		appliesTo="ClockItem"
 		description="The time format for the DigitalClockItem with following identifiers: hh=hours, mm=minutes, ss=seconds, am or pm=for using the 12 hour system instead of the 24 hour one. Examples: &quot;hh:mm am&quot;, &quot;hh/mm/ss&quot;."
 		default="hh:mm:ss"
-		id="166"
+		id="167"
 	/>
 	
 	<attribute
@@ -2172,7 +2191,7 @@
 		appliesTo="DropShadowTextEffect"
 		description="The size of the shadow (in all directions)."
 		default="6"
-		id="167"
+		id="168"
 	/>
 	<attribute
 		name="text-drop-shadow-offsetx"
@@ -2180,7 +2199,7 @@
 		appliesTo="DropShadowTextEffect"
 		description="The x offset of the shadow (negative values are possible)"
 		default="1"
-		id="168"
+		id="169"
 	/>
 	<attribute
 		name="text-drop-shadow-offsety"
@@ -2188,7 +2207,7 @@
 		appliesTo="DropShadowTextEffect"
 		description="The y offset of the shadow (negative values are possible)"
 		default="2"
-		id="169"
+		id="170"
 	/>
 	<attribute
 		name="text-drop-shadow-inner-color"
@@ -2197,7 +2216,7 @@
 		appliesTo="DropShadowTextEffect"
 		description="The color of the inner shadow. The color must not be fully opaque!"
 		default="#A0909090"
-		id="170"
+		id="171"
 	/>
 	<attribute
 		name="text-drop-shadow-outer-color"
@@ -2206,7 +2225,7 @@
 		appliesTo="DropShadowTextEffect"
 		description="The color of the outer shadow, which must be less opaque than the start-color and the difference between them should be at least size."
 		default="#20909090"
-		id="171"
+		id="172"
 	/>
 	<attribute
 		name="text-alien-glow-inner-color"
@@ -2215,7 +2234,7 @@
 		appliesTo="AlienGlowTextEffect"
 		description="The inner parts color of the glow."
 		default="#FFFFFFFF"
-		id="172"
+		id="173"
 	/>
 	<attribute
 		name="text-alien-glow-outer-color"
@@ -2224,7 +2243,7 @@
 		appliesTo="AlienGlowTextEffect"
 		description="The outer parts color of the glow."
 		default="#FF00FF00"
-		id="173"
+		id="174"
 	/>
 	<attribute
 		name="text-fade-in-color"
@@ -2233,7 +2252,7 @@
 		appliesTo="FadeTextEffect"
 		description="The color, which the text has, if it is faded in."
 		default="#FF000000"
-		id="174"
+		id="175"
 	/>
 	<attribute
 		name="text-fade-out-color"
@@ -2242,7 +2261,7 @@
 		appliesTo="FadeTextEffect"
 		description="The color, which the text has, if it is faded out."
 		default="#FF00FF00"
-		id="175"
+		id="176"
 	/>
 	<attribute
 		name="text-fade-delay"
@@ -2250,7 +2269,7 @@
 		appliesTo="FadeTextEffect"
 		description="The delay (in animation steps) before the animation starts."
 		default="0"
-		id="176"
+		id="177"
 	/>
 	<attribute
 		name="text-fade-duration-in"
@@ -2258,7 +2277,7 @@
 		appliesTo="FadeTextEffect"
 		description="The time (in animation steps), which the text stays faded in."
 		default="10"
-		id="177"
+		id="178"
 	/>
 	<attribute
 		name="text-fade-duration-out"
@@ -2266,7 +2285,7 @@
 		appliesTo="FadeTextEffect"
 		description="The time (in animation steps), which the text stays faded out."
 		default="0"
-		id="178"
+		id="179"
 	/>
 	<attribute
 		name="text-fade-steps"
@@ -2274,7 +2293,7 @@
 		appliesTo="FadeTextEffect"
 		description="The time (in animation teps), which the fade-effect lasts."
 		default="5"
-		id="179"
+		id="180"
 	/>
 	<attribute
 		name="text-fade-mode"
@@ -2282,7 +2301,7 @@
 		appliesTo="FadeTextEffect"
 		description="The fade mode can be fadein, fadeout or loop."
 		default="loop"
-		id="180"
+		id="181"
 	/>
 	
 	
@@ -2293,7 +2312,7 @@
 		appliesTo="FadingAlienGlowTextEffect"
 		description="The inner parts color of the glow."
 		default="#FFFFFFFF"
-		id="181"
+		id="182"
 	/>
 	<attribute
 		name="text-fading-alien-glow-outer-out-color"
@@ -2302,7 +2321,7 @@
 		appliesTo="FadingAlienGlowTextEffect"
 		description="The outer parts color of the glow, if the state is faded out."
 		default="#FF0080FF"
-		id="182"
+		id="183"
 	/>
 	<attribute
 		name="text-fading-alien-glow-outer-in-color"
@@ -2311,7 +2330,7 @@
 		appliesTo="FadingAlienGlowTextEffect"
 		description="The outer parts color of the glow, if the state is faded in."
 		default="#FF80FF00"
-		id="183"
+		id="184"
 	/>
 	<attribute
 		name="text-fading-alien-glow-delay"
@@ -2319,7 +2338,7 @@
 		appliesTo="FadingAlienGlowTextEffect"
 		description="The delay (in steps) before the animation starts."
 		default="0"
-		id="184"
+		id="185"
 	/>
 	<attribute
 		name="text-fading-alien-glow-duration-in"
@@ -2350,9 +2369,10 @@
 	
 	<attribute
 		name="text-fading-alien-glow-mode"
-		type="string"
+		type="integer"
 		appliesTo="FadingAlienGlowTextEffect"
 		description="The fade mode can be fadein, fadeout or loop."
+		values="fadein,fadeout,loop"
 		default="loop"
 		id="189"
 	/>
@@ -2930,7 +2950,7 @@
 	<attribute
 		name="focus-container"
 		type="boolean"
-		appliesTo="Container"
+		appliesTo="Container, FakeContainerCustomItem"
 		description="Can be used to use focus-styles for containers as well."
 		default="false"
 		id="260"
@@ -2939,7 +2959,7 @@
 	<attribute
 		name="always-include"
 		type="boolean"
-		appliesTo="Item, Screen"
+		appliesTo="Item, Screen, FakeCustomItem"
 		description="Defines if a style should always be included, even if not used."
 		default="false"
 		id="261"
@@ -3222,7 +3242,7 @@
 		name="pressed-style"
 		type="style"
 		appliesTo="Item"
-		description="The style which indicates that an item (e.g. a button) is being pressed."
+		description="The style which indicates that an item (e.g. a button) is being pressed, usually applied with a [style-name]:pressed construct."
 		id="292"
 	/>
 	

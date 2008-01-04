@@ -794,10 +794,16 @@
 		<taskdef name="izpack" 
 			classpath="${izpack.dir}/lib/compiler.jar"
 			classname="com.izforge.izpack.ant.IzPackTask"/>
+		<property name="polish.home" value="." />
 		<taskdef name="webprocessor" 
 			classname="de.enough.webprocessor.WebProcessorTask" 
-			classpath="../enough-webprocessor/bin/classes:dist/enough-webprocessor.jar"
+			classpath="../enough-webprocessor/bin/classes:${polish.home}/bin/website:${polish.home}/bin/classes:${polish.home}/lib/jdom.jar:${polish.home}/dist/enough-j2mepolish-client.jar:${polish.home}/import/enough-j2mepolish-client.jar:${polish.home}/import/cldc-1.1.jar:${polish.home}/import/midp-2.0.jar:${polish.home}/import/mmapi.jar" />
+		<!--
+		<taskdef name="webprocessor" 
+			classname="de.enough.webprocessor.WebProcessorTask" 
+			classpath="bin/website:../enough-webprocessor/bin/classes:dist/enough-webprocessor.jar:${polish.home}/bin/website:${polish.home}/bin/classes:${polish.home}/lib/jdom.jar:../enough-polish-j2me/bin/classes"
 		/>
+		-->
 
 		<!-- copy source of J2ME Polish -->
 		<mkdir dir="tmp/j2mepolish-src/build" />
@@ -874,6 +880,7 @@
 			<variable name="index.h3" value="h3index" />
 			<variable name="index.h4" value="h4index" />
 			<variable name="index.h5" value="h5index" />
+			<directive name="cssattributes" class="de.enough.polish.website.CssDirectiveHandler" />
 		</webprocessor>
 		<!-- created & copy the device database -->
 		<echo message="starting device export" />
@@ -917,6 +924,7 @@
 			<variable name="index.h3" value="h3index" />
 			<variable name="index.h4" value="h4index" />
 			<variable name="index.h5" value="h5index" />
+			<directive name="cssattributes" class="de.enough.polish.website.CssDirectiveHandler" />
 		</webprocessor>
 		<echo message="updating installation settings" />
 		<!-- update installation settings -->
@@ -987,6 +995,8 @@
 			<variable name="index.h1" value="h1index" />
 			<variable name="index.h2" value="h2index" />
 			<variable name="index.h3" value="h3index" />
+			<variable name="index.h4" value="h4index" />
+			<directive name="cssattributes" class="de.enough.polish.website.CssDirectiveHandler" />
 		</webprocessor>
 	</target>
 		

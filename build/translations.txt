@@ -24,6 +24,13 @@ polish.command.hide=Hide
 polish.title.input=Input
 # used for showing a screen for selecting symbols within TextFields:
 polish.command.entersymbol=Add Symbol
+# used by the HtmlBrowser for a links:
+polish.command.followlink=Go
+# used by the HtmlBrowser for submitting a form:
+polish.command.submit=Submit
+# used by the RssBrowser for returning to the previous page:
+polish.command.back=Back
+
 # used for predictive setup
 polish.predictive.command.enable=Enable Predictive Input
 polish.predictive.command.disable=Disable Predictive Input
