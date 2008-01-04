@@ -959,6 +959,14 @@ public abstract class Item extends Object
 			}
 		}
 		//System.out.println( this + " style [" + style.name + "]: right: " + this.isLayoutRight + " center: " + this.isLayoutCenter + " expand: " + this.isLayoutExpand + " layout=" + Integer.toHexString(this.layout));
+		if (this.isShown && this.background != style.background) {
+			if (this.background != null) {
+				this.background.hideNotify();
+			}
+			if (style.background != null) {
+				style.background.showNotify();
+			}
+		}
 		this.background = style.background;
 		this.border = style.border;
 		if (this.border != null) {
