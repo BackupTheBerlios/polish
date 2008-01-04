@@ -103,7 +103,7 @@ public class RightShutterScreenChangeAnimation extends ScreenChangeAnimation
 				adjust =  this.speed;
 			} else {
 		//#endif
-				adjust = (this.screenWidth - this.currentX) / 3;
+				adjust = this.currentX / 3;
 				if (adjust < 2) {
 					adjust = 2;
 				}

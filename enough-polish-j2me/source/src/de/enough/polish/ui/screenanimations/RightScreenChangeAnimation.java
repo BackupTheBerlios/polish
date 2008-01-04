@@ -108,7 +108,7 @@ public class RightScreenChangeAnimation extends ScreenChangeAnimation {
 				adjust =  this.speed;
 			} else {
 		//#endif
-				adjust = (this.screenWidth - this.currentX) / 3;
+				adjust = this.currentX / 3;
 				if (adjust < 2) {
 					adjust = 2;
 				}
@@ -134,20 +134,20 @@ public class RightScreenChangeAnimation extends ScreenChangeAnimation {
 		int x = 0;
 		//#if polish.css.right-screen-change-animation-move-previous
 			if (this.movePrevious) {
-				x = this.currentX;
+				x = this.currentX - this.screenWidth;
 			}
 		//#endif
 		Image first;
 		Image second;
 		if (this.isForwardAnimation) {
-			first = this.nextCanvasImage;
-			second = this.lastCanvasImage;
-		} else {
 			first = this.lastCanvasImage;
 			second = this.nextCanvasImage;
+		} else {
+			first = this.nextCanvasImage;
+			second = this.lastCanvasImage;
 		}
 		g.drawImage( first, x, 0, Graphics.TOP | Graphics.LEFT );
-		g.drawImage( second, - this.screenWidth + this.currentX, 0, Graphics.TOP | Graphics.LEFT );
+		g.drawImage( second, this.currentX, 0, Graphics.TOP | Graphics.LEFT );
 	}
 
 }

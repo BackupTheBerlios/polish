@@ -27,17 +27,14 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
 /**
- * <p>Moves the new screen from the left to the front.</p>
+ * <p>Moves the new screen from the bottom to the front.</p>
  *
  * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
@@ -50,7 +47,7 @@ public class BottomShutterScreenChangeAnimation extends ScreenChangeAnimation
 {	
 	private int currentY;
 	//#if polish.css.bottom-shutter-screen-change-animation-speed
-	private int speed = 2;
+	private int speed = -1;
 	//#endif
 	//#if polish.css.bottom-shutter-screen-change-animation-color
 	private int color = 0;
@@ -79,6 +76,8 @@ public class BottomShutterScreenChangeAnimation extends ScreenChangeAnimation
 			if (speedInt != null)
 			{
 				this.speed = speedInt.intValue();
+			} else {
+				this.speed = -1;
 			}
 		//#endif
 		//#if polish.css.bottom-shutter-screen-change-animation-color
@@ -96,44 +95,31 @@ public class BottomShutterScreenChangeAnimation extends ScreenChangeAnimation
 	 */
 	protected boolean animate()
 	{
+		int adjust;
+		//#if polish.css.bottom-shutter-screen-change-animation-speed
+			if (this.speed != -1) {
+				adjust = this.speed;
+			} else {
+		//#endif
+				adjust = this.currentY / 3;
+				if (adjust < 2) {
+					adjust = 2;
+				}
+		//#if polish.css.bottom-shutter-screen-change-animation-speed
+			}
+		//#endif			
+		
 		if (this.isForwardAnimation) {
 			if (this.currentY > 0)
 			{
-				//#if polish.css.bottom-shutter-screen-change-animation-speed
-					if (this.speed != -1) {
-						this.currentY -= this.speed;
-					} else {
-				//#endif
-						int adjust = (this.screenHeight - this.currentY) / 3;
-						if (adjust < 2) {
-							adjust = 2;
-						}
-						this.currentY -= adjust;
-				//#if polish.css.bottom-shutter-screen-change-animation-speed
-					}
-				//#endif			
+				this.currentY -= adjust;
 				return true;
 			}
 		}
-		else
+		else if (this.currentY < this.screenHeight)
 		{
-			if (this.currentY < this.screenHeight)
-			{
-				//#if polish.css.bottom-shutter-screen-change-animation-speed
-					if (this.speed != -1) {
-						this.currentY += this.speed;
-					} else {
-				//#endif
-						int adjust = (this.screenHeight - this.currentY) / 3;
-						if (adjust < 2) {
-							adjust = 2;
-						}
-						this.currentY += adjust;
-				//#if polish.css.bottom-shutter-screen-change-animation-speed
-					}
-				//#endif			
-				return true;
-			}			
+			this.currentY += adjust;
+			return true;
 		}
 		return false;
 	}

@@ -27,17 +27,14 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
 /**
- * <p>Moves the new screen from the left to the front.</p>
+ * <p>Moves the new screen from the top to the front.</p>
  *
  * <p>Copyright (c) Enough Software 2005 - 2008</p>
  * <pre>
@@ -50,7 +47,7 @@ public class TopShutterScreenChangeAnimation extends ScreenChangeAnimation
 {	
 	private int currentY;
 	//#if polish.css.top-shutter-screen-change-animation-speed
-	private int speed = 2;
+	private int speed = -1;
 	//#endif
 	//#if polish.css.top-shutter-screen-change-animation-color
 	private int color = 0;
@@ -63,58 +60,68 @@ public class TopShutterScreenChangeAnimation extends ScreenChangeAnimation
 	{
 		// Do nothing here.
 	}
-
-	//#if polish.css.top-shutter-screen-change-animation-speed || polish.css.top-shutter-screen-change-animation-color
+	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
+	 * @see de.enough.polish.ui.ScreenChangeAnimation#setStyle(de.enough.polish.ui.Style)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-		Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
+	protected void setStyle(Style style)
 	{
+		if (this.isForwardAnimation) {
+			this.currentY = 0;
+		} else {
+			this.currentY = this.screenHeight;
+		}
 		//#if polish.css.top-shutter-screen-change-animation-speed
-		Integer speedInt = style.getIntProperty("top-shutter-screen-change-animation-speed");
-		
-		if (speedInt != null)
-		{
-			this.speed = speedInt.intValue();
-		}
+			Integer speedInt = style.getIntProperty("top-shutter-screen-change-animation-speed");
+			if (speedInt != null)
+			{
+				this.speed = speedInt.intValue();
+			} else {
+				this.speed = -1;
+			}
 		//#endif
-		
 		//#if polish.css.top-shutter-screen-change-animation-color
-		Integer colorInt = style.getIntProperty("top-shutter-screen-change-animation-color");
-		
-		if (colorInt != null)
-		{
-			this.color = colorInt.intValue();
-		}
+			Integer colorInt = style.getIntProperty("top-shutter-screen-change-animation-color");
+			if (colorInt != null)
+			{
+				this.color = colorInt.intValue();
+			}
 		//#endif
-		
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward);
+		super.setStyle(style);
 	}
-	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate()
 	{
-		if (this.currentY < this.screenHeight)
+		int adjust;
+		//#if polish.css.top-shutter-screen-change-animation-speed
+			if (this.speed != -1) {
+				adjust = this.speed;
+			} else {
+		//#endif
+				adjust = (this.screenHeight - this.currentY) / 3;
+				if (adjust < 2) {
+					adjust = 2;
+				}
+		//#if polish.css.top-shutter-screen-change-animation-speed
+			}
+		//#endif			
+		
+		if (this.isForwardAnimation) {
+			if (this.currentY < this.screenHeight)
+			{
+				this.currentY += adjust;
+				return true;
+			}
+		}
+		else if  (this.currentY > 0)
 		{
-			//#if polish.css.top-shutter-screen-change-animation-speed
-			this.currentY += this.speed;
-			//#else
-			this.currentY += 2;
-			//#endif
-
+			this.currentY -= adjust;
 			return true;
 		}
-		else
-		{
-			// Reset values.
-			this.currentY = 0;
-
-			return false;
-		}
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -122,14 +129,25 @@ public class TopShutterScreenChangeAnimation extends ScreenChangeAnimation
 	 */
 	public void paintAnimation(Graphics g)
 	{
-		g.drawImage(this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+		Image first;
+		Image second;
+		if (this.isForwardAnimation) {
+			first = this.nextCanvasImage;
+			second = this.lastCanvasImage;
+		} else {
+			first = this.lastCanvasImage;
+			second = this.nextCanvasImage;
+		}
+		g.drawImage(first, 0, 0, Graphics.TOP | Graphics.LEFT);
 		//#if polish.css.top-shutter-screen-change-animation-color
 		g.setColor(this.color);
 		//#else
 		g.setColor(0);
 		//#endif
-		g.drawLine(0, this.currentY, this.screenWidth, this.currentY);
-		g.setClip(0, 0, this.screenWidth, this.currentY);
-		g.drawImage(this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+		g.drawLine(0, this.currentY - 1, this.screenWidth, this.currentY - 1);
+		g.setClip(0, this.currentY, this.screenWidth, this.screenHeight - this.currentY);
+		g.drawImage(second, 0, 0, Graphics.TOP | Graphics.LEFT);
 	}
 }
+
+	

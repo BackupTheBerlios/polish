@@ -60,7 +60,6 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 	private int scaleFactor = 200;
 	private int steps = 6;
 	private int currentStep;
-	private int[] nextScreenRgb;
 	private int[] scaledScreenRgb;
 
 	/**
@@ -77,49 +76,58 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
-		if ( this.nextScreenRgb == null ) {
-			this.nextScreenRgb = new int[ width * height ];
-			this.scaledScreenRgb = new int[ width * height ];
+		if (isForward) {
+			this.useLastCanvasRgb = false;
+			this.useNextCanvasRgb = true;
+			this.currentStep = this.steps;
+		} else {
+			this.currentStep = 0;
+			this.useLastCanvasRgb = true;
+			this.useNextCanvasRgb = false;			
 		}
-		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
-		this.currentStep = this.steps;
-		ImageUtil.scale( 255/this.steps, this.scaleFactor, width, height, this.nextScreenRgb, this.scaledScreenRgb);
 		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
+		this.scaledScreenRgb = new int[ width * height ];
+		animate();
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate() {
-		this.currentStep--;
-		if (this.currentStep <= 0) {
-			this.steps = 6;
-			this.scaleFactor = 200;
-			this.nextScreenRgb = null;
-			this.scaledScreenRgb = null;
-			return false;
+		int[] rgb;
+		if (this.isForwardAnimation) {
+			this.currentStep--;
+			if (this.currentStep <= 0) {
+				this.scaledScreenRgb = null;
+				return false;
+			}	
+			rgb = this.nextCanvasRgb;
+		} else { 
+			this.currentStep++;
+			if (this.currentStep >= this.steps ) {
+				this.scaledScreenRgb = null;
+				return false;
+			}
+			rgb = this.lastCanvasRgb;
 		}
 		int factor = 100 + ( (this.scaleFactor - 100) * this.currentStep ) / this.steps;
 		int opacity = 255 / this.steps * ( this.steps - this.currentStep );
-		ImageUtil.scale( opacity, factor, this.screenWidth, this.screenHeight, this.nextScreenRgb, this.scaledScreenRgb);
+		ImageUtil.scale( opacity, factor, this.screenWidth, this.screenHeight, rgb, this.scaledScreenRgb);
 		
 		return true;
-	}
-	
-	
-
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
-	 */
-	public void handleKeyPressed(int keyCode, Image next) {
-		next.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
 	}
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
 	public void paintAnimation(Graphics g) {
-		g.drawImage( this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+		Image canvasImage;
+		if (this.isForwardAnimation) {
+			canvasImage = this.lastCanvasImage;
+		} else {
+			canvasImage = this.nextCanvasImage;
+		}
+		g.drawImage( canvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
 		g.drawRGB(this.scaledScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
 	}
 

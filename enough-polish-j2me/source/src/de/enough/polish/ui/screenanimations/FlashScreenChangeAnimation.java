@@ -27,12 +27,9 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -51,10 +48,10 @@ public class FlashScreenChangeAnimation extends ScreenChangeAnimation
 	private int currentY;
 	private int currentSize;
 	//#if polish.css.flash-screen-change-animation-speed
-	private int speed = -1;
+		private int speed = -1;
 	//#endif
 	//#if polish.css.flash-screen-change-animation-color
-	private int color = 0;
+		private int color = 0;
 	//#endif
 
 	/**
@@ -85,6 +82,8 @@ public class FlashScreenChangeAnimation extends ScreenChangeAnimation
 			if (speedInt != null)
 			{
 				this.speed = speedInt.intValue();
+			} else {
+				this.speed = -1;
 			}
 		//#endif
 		
@@ -127,9 +126,6 @@ public class FlashScreenChangeAnimation extends ScreenChangeAnimation
 			this.currentSize -= adjust << 1;
 			return true;
 		}
-		//#if polish.css.flash-screen-change-animation-speed
-			this.speed = -1;
-		//#endif
 		return false;
 	}
 

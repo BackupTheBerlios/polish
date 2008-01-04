@@ -27,12 +27,9 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -51,10 +48,10 @@ public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation
 	private int currentX;
 	private int currentSize;
 	//#if polish.css.vertical-flash-screen-change-animation-speed
-	private int speed = 2;
+		private int speed = -1;
 	//#endif
 	//#if polish.css.vertical-flash-screen-change-animation-color
-	private int color = 0;
+		private int color = 0;
 	//#endif
 
 	/**
@@ -65,65 +62,71 @@ public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation
 		// Do nothing here.
 	}
 
+	
+	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
+	 * @see de.enough.polish.ui.ScreenChangeAnimation#setStyle(de.enough.polish.ui.Style)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-						Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
+	protected void setStyle(Style style)
 	{
-		this.currentX = width / 2;
-		//#if polish.css.vertical-flash-screen-change-animation-speed
-		Integer speedInt = style.getIntProperty("vertical-flash-screen-change-animation-speed");
-		
-		if (speedInt != null)
-		{
-			this.speed = speedInt.intValue();
+		super.setStyle(style);
+		if (this.isForwardAnimation) {
+			this.currentX = this.screenWidth / 2;
+			this.currentSize = 0;
+		} else {
+			this.currentX = 0;
+			this.currentSize = this.screenWidth;
 		}
+		//#if polish.css.vertical-flash-screen-change-animation-speed
+			Integer speedInt = style.getIntProperty("vertical-flash-screen-change-animation-speed");
+			if (speedInt != null)
+			{
+				this.speed = speedInt.intValue();
+			} else {
+				this.speed = -1;
+			}
 		//#endif
 		
 		//#if polish.css.vertical-flash-screen-change-animation-color
-		Integer colorInt = style.getIntProperty("vertical-flash-screen-change-animation-color");
-		
-		if (colorInt != null)
-		{
-			this.color = colorInt.intValue();
-		}
+			Integer colorInt = style.getIntProperty("vertical-flash-screen-change-animation-color");
+			if (colorInt != null)
+			{
+				this.color = colorInt.intValue();
+			}
 		//#endif
-		
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate()
 	{
-		if (this.currentX > 0)
-		{
-			//#if polish.css.vertical-flash-screen-change-animation-speed
-			this.currentX -= this.speed;
-			this.currentSize += this.speed * 2;
-			//#else
-			this.currentX -= 2;
-			this.currentSize += 4;
-			//#endif
-			
-			if (this.currentX < 0)
-			{
-				this.currentX = 0;
-				this.currentSize = this.screenWidth;
+		int adjust;
+		//#if polish.css.vertical-flash-screen-change-animation-speed
+			if (this.speed != -1) {
+				adjust = this.speed;
+			} else {
+		//#endif
+				adjust = this.currentX / 3;
+				if (adjust < 2) {
+					adjust = 2;
+				}
+		//#if polish.css.vertical-flash-screen-change-animation-speed
 			}
-
+		//#endif		
+		if (this.isForwardAnimation) {
+			if (this.currentX > 0)
+			{
+				this.currentX -= adjust;
+				this.currentSize += adjust << 1;
+				return true;
+			}
+		} else if (this.currentSize > 0) {
+			this.currentX += adjust;
+			this.currentSize -= adjust << 1;
 			return true;
 		}
-		else
-		{
-			// Reset values.
-			this.currentX = this.screenWidth / 2;
-			this.currentSize = 0;
-
-			return false;
-		}
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -131,15 +134,25 @@ public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation
 	 */
 	public void paintAnimation(Graphics g)
 	{
-		g.drawImage(this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
-		//#if polish.css.vertical-flash-screen-change-animation-color
-		g.setColor(this.color);
+		Image first;
+		Image second;
+		if (this.isForwardAnimation) {
+			first = this.lastCanvasImage;
+			second = this.nextCanvasImage;
+		} else {
+			first = this.nextCanvasImage;
+			second = this.lastCanvasImage;
+		}
+
+		g.drawImage(first, 0, 0, Graphics.TOP | Graphics.LEFT);
+		//#if polish.css.flash-screen-change-animation-color
+			g.setColor(this.color);
 		//#else
-		g.setColor(0);
+			g.setColor(0);
 		//#endif
-		g.drawRect(this.currentX - 1, 0, 0, this.screenHeight);
-		g.drawRect(this.currentX + this.currentSize, 0, 0, this.screenHeight);
-		g.setClip(this.currentX, 0, this.currentSize, this.screenHeight);
-		g.drawImage(this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+		g.drawLine( this.currentX - 1, 0, this.currentX - 1, this.screenHeight );
+		g.drawLine( this.currentX + this.currentSize, 0,  this.currentX + this.currentSize, this.screenHeight );
+		g.setClip( this.currentX, 0, this.currentSize, this.screenHeight );
+		g.drawImage(second, 0, 0, Graphics.TOP | Graphics.LEFT);
 	}
 }

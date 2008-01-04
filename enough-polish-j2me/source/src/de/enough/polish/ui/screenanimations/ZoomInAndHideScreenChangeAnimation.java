@@ -60,7 +60,6 @@ public class ZoomInAndHideScreenChangeAnimation extends ScreenChangeAnimation {
 	private int scaleFactor = 260;
 	private int steps = 10;
 	private int currentStep;
-	private int[] lastScreenRgb;
 	private int[] scaledScreenRgb;
 
 	/**
@@ -77,34 +76,49 @@ public class ZoomInAndHideScreenChangeAnimation extends ScreenChangeAnimation {
 	protected void show(Style style, Display dsplay, int width, int height,
 			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward ) 
 	{
-		if ( this.lastScreenRgb == null ) {
-			this.lastScreenRgb = new int[ width * height ];
-			this.scaledScreenRgb = new int[ width * height ];
+		if (isForward) {
+			this.useLastCanvasRgb = true;
+			this.useNextCanvasRgb = false;			
+			this.currentStep = 0;
+		} else {
+			this.useLastCanvasRgb = false;
+			this.useNextCanvasRgb = true;
+			this.currentStep = this.steps;
 		}
-		lstScreenImage.getRGB( this.lastScreenRgb, 0, width, 0, 0, width, height );		
-		System.arraycopy( this.lastScreenRgb, 0, this.scaledScreenRgb, 0,  width * height );
-		//ImageUtil.scale( 200, this.scaleFactor, this.screenWidth, this.screenHeight, this.lastScreenRgb, this.scaledScreenRgb);
 		super.show(style, dsplay, width, height, lstScreenImage,
 				nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
+		this.scaledScreenRgb = new int[ width * height ];
+		if (isForward) {
+			System.arraycopy( this.lastCanvasRgb, 0, this.scaledScreenRgb, 0,  width * height );
+		} else {
+			animate();
+		}
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate() {
-		this.currentStep++;
-		if (this.currentStep >= this.steps) {
-			this.scaleFactor = 200;
-			this.steps = 10;
-			this.currentStep = 0;
-			this.scaledScreenRgb = null;
-			this.lastScreenRgb = null;
-			return false;
+		int[] rgb;
+		if (this.isForwardAnimation) {
+			this.currentStep++;
+			if (this.currentStep >= this.steps) {
+				this.scaledScreenRgb = null;
+				return false;
+			}
+			rgb = this.lastCanvasRgb;
+		} else {
+			this.currentStep--;
+			if (this.currentStep <= 0) {
+				this.scaledScreenRgb = null;
+				return false;
+			}
+			rgb = this.nextCanvasRgb;
 		}
 		int factor = 100 + (this.scaleFactor - 100) * this.currentStep / this.steps;
 		int opacity = (255 * ( this.steps - this.currentStep ))  / this.steps;
 
-		ImageUtil.scale(opacity, factor, this.screenWidth, this.screenHeight, this.lastScreenRgb, this.scaledScreenRgb);
+		ImageUtil.scale(opacity, factor, this.screenWidth, this.screenHeight, rgb, this.scaledScreenRgb);
 		return true;
 	}
 	
@@ -112,7 +126,13 @@ public class ZoomInAndHideScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
 	public void paintAnimation(Graphics g) {
-		g.drawImage( this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+		Image canvasImage;
+		if (this.isForwardAnimation) {
+			canvasImage = this.nextCanvasImage;
+		} else {
+			canvasImage = this.lastCanvasImage;
+		}
+		g.drawImage( canvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
 		g.drawRGB(this.scaledScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
 	}
 
