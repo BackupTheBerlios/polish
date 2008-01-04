@@ -33,6 +33,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Stack;
 
+import javax.microedition.io.HttpConnection;
 import javax.microedition.io.StreamConnection;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
@@ -43,6 +44,7 @@ import de.enough.polish.browser.protocols.ResourceProtocolHandler;
 import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.io.StringReader;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.zip.GZipInputStream;
 import de.enough.polish.xml.SimplePullParser;
 import de.enough.polish.xml.XmlPullParser;
 
@@ -203,7 +205,17 @@ implements Runnable
    * @see ResourceProtocolHandler
    */
   protected static ProtocolHandler[] getDefaultProtocolHandlers() {
-	  return new ProtocolHandler[] { new HttpProtocolHandler("http"), new HttpProtocolHandler("https"), new ResourceProtocolHandler("resource") };  
+	  HashMap httpRequestProperties = new HashMap();
+
+  	//#if polish.Browser.Gzip
+ 		httpRequestProperties.put("Accept-Encoding", "gzip");
+  	//#endif
+
+  	return new ProtocolHandler[] {
+  		new HttpProtocolHandler("http", httpRequestProperties),
+		new HttpProtocolHandler("https", httpRequestProperties),
+		new ResourceProtocolHandler("resource")
+  	};  
   }
 
   public void addTagCommand(String tagName, Command command)
@@ -729,7 +741,21 @@ implements Runnable
       
       if (connection != null)
       {
-    	  notifyPageStart(url);
+    	//#if polish.Browser.Gzip
+	  	    try {
+	  	    	if (connection instanceof HttpConnection) {
+	    	    	String contentEncoding = ((HttpConnection) connection).getHeaderField("Content-Encoding");
+	    	    	if (contentEncoding != null && contentEncoding.indexOf("gzip") != -1) {
+	    	    		is = new GZipInputStream(is, GZipInputStream.TYPE_GZIP, false);
+	    	    	}
+	  	    	}
+	  		}
+	  	    catch (IOException e) {
+	  	    	//#debug error
+	  	    	System.out.println("Unable to use GzipInputStream" + e);
+	  		}
+  	    //#endif
+  	    notifyPageStart(url);
     	  is = connection.openInputStream();
     	  loadPage(is);
     	  notifyPageEnd();
