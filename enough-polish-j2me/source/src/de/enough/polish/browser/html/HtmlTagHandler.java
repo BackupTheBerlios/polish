@@ -40,6 +40,7 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.Locale;
 import de.enough.polish.util.TextUtil;
 import de.enough.polish.xml.SimplePullParser;
 
@@ -112,12 +113,30 @@ public class HtmlTagHandler
 	/** name attribute */
   public static final String ATTR_NAME = "name";
 
-	/** default link command */
-  public static final Command CMD_LINK = new Command("Go To", Command.ITEM, 1);
+  /** default link command */
+	//#ifdef polish.i18n.useDynamicTranslations
+		public static Command CMD_LINK = new Command( Locale.get("polish.command.followlink"), Command.OK, 2 );
+	//#elifdef polish.command.followlink:defined
+		//#= public static final Command CMD_LINK = new Command("${polish.command.followlink}", Command.OK, 1 );
+	//#else
+		//# public static final Command CMD_LINK = new Command("Go", Command.OK, 1);
+	//#endif
 	/** default submit command */
-  public static final Command CMD_SUBMIT = new Command("Submit", Command.ITEM, 2);
+	//#ifdef polish.i18n.useDynamicTranslations
+		public static Command CMD_SUBMIT = new Command( Locale.get("polish.command.submit"), Command.ITEM, 2 );
+	//#elifdef polish.command.submit:defined
+		//#= public static final Command CMD_SUBMIT = new Command("${polish.command.submit}", Command.ITEM, 2 );
+	//#else
+		//# public static final Command CMD_SUBMIT = new Command("Submit", Command.ITEM, 2);
+	//#endif
 	/** default back command */
-  public static final Command CMD_BACK = new Command("Back", Command.BACK, 10);
+	//#ifdef polish.i18n.useDynamicTranslations
+		public static Command CMD_BACK = new Command( Locale.get("polish.command.back"), Command.BACK, 10 );
+	//#elifdef polish.command.back:defined
+		//#= public static final Command CMD_BACK = new Command("${polish.command.back}", Command.BACK, 10 );
+	//#else
+		//# public static final Command CMD_BACK = new Command("Back", Command.BACK, 10);
+	//#endif
   
   private HtmlForm currentForm;
   private HtmlSelect currentSelect;
