@@ -28,21 +28,14 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.io.Serializable;
 
 /**
  * <p>Background is the base class for any backgrounds of widgets or forms.</p>
  *
  * @author Robert Virkus, robert@enough.de
- * <pre>
- * history
- *        04-Jan-2004 - rob creation
- * </pre>
+ * <p>copyright Enough Software 2004 - 2008</p>
  */
-public abstract class Background 
-//#if !polish.blackberry
-implements Serializable 
-//#endif
+public abstract class Background //implements Serializable 
 {
 	
 	/**
@@ -59,11 +52,36 @@ implements Serializable
 		this.borderWidth = 0;
 	}
 	
+	
+	/**
+	 * Animates this background.
+	 * Subclasses can override this method to create animations.
+	 * The default implementation calls the animate() method and adds the full content area to the repaint region.
+	 * 
+	 * @param screen the parent screen
+	 * @param parent the parent item, can be null when the background belongs to a screen
+	 * @param currentTime the current time in milliseconds
+	 * @param repaintRegion the repaint area that needs to be updated when this item is animated
+	 * @see Item#addRelativeRegion(ClippingRegion, int, int, int, int)
+	 */
+	public void animate(Screen screen, Item parent, long currentTime, ClippingRegion repaintRegion) 
+	{
+		if (animate()) {
+			if (parent != null) {
+				parent.addRelativeRegion( repaintRegion, 0, 0, parent.contentWidth, parent.contentHeight );
+			} else {
+				repaintRegion.addRegion(0, 0, screen.getWidth(), screen.getScreenHeight() );
+			}
+		}
+	}
+
+	
 	/**
 	 * Animates this background.
 	 * Subclasses can override this method to create animations.
 	 * 
 	 * @return true when this background has been animated.
+	 * @see #animate(Screen, Item, long, ClippingRegion)
 	 */
 	public boolean animate() {
 		return false;

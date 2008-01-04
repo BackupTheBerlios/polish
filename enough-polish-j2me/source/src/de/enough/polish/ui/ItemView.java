@@ -30,19 +30,18 @@ package de.enough.polish.ui;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.event.EventManager;
-import de.enough.polish.io.Serializable;
 
 /**
  * <p>An item view can take over the rendering of an item.</p>
  *
- * <p>Copyright Enough Software 2006</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
  *        Nov 27, 2006 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class ItemView implements Serializable{
+public abstract class ItemView {
 	
 	protected int contentWidth;
 	protected int contentHeight;
@@ -51,7 +50,7 @@ public abstract class ItemView implements Serializable{
 	protected int layout;
 	protected boolean isLayoutCenter;
 	protected boolean isLayoutRight;
-	protected transient Item parentItem;
+	protected Item parentItem;
 	protected boolean isFocused;
 	
 	/**
