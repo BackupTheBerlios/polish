@@ -60,7 +60,6 @@ public class ParticleScreenChangeAnimation extends ScreenChangeAnimation {
 	private int scaleFactor = 260;
 	private int steps = 10;
 	private int currentStep;
-	private int[] lastScreenRgb;
 	private int[] scaledScreenRgb;
 
 	/**
@@ -75,36 +74,55 @@ public class ParticleScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
-		if ( this.lastScreenRgb == null ) {
-			this.lastScreenRgb = new int[ width * height ];
-			this.scaledScreenRgb = new int[ width * height ];
+		if (isForward) {
+			this.currentStep = 0;
+			this.useLastCanvasRgb = true;
+			this.useNextCanvasRgb = false;
+		} else {
+			this.currentStep = 10;
+			this.useLastCanvasRgb = false;
+			this.useNextCanvasRgb = true;
 		}
-		lstScreenImage.getRGB( this.lastScreenRgb, 0, width, 0, 0, width, height );		
-		System.arraycopy( this.lastScreenRgb, 0, this.scaledScreenRgb, 0,  width * height );
 		super.show(style, dsplay, width, height, lstScreenImage,
-				nxtScreenImage, nxtCanvas, nxtDisplayable );
+				nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
+		this.scaledScreenRgb = new int[ width * height ];
+		if (isForward) {
+			System.arraycopy( this.lastCanvasRgb, 0, this.scaledScreenRgb, 0,  width * height );
+		} else {
+			System.arraycopy( this.nextCanvasRgb, 0, this.scaledScreenRgb, 0,  width * height );
+		}
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate() {
-		this.currentStep++;
-		if (this.currentStep >= this.steps) {
-			this.scaleFactor = 260;
-			this.steps = 10;
-			this.currentStep = 0;
-			this.scaledScreenRgb = null;
-			this.lastScreenRgb = null;
-			return false;
+		int[] originalRgb;
+		if (this.isForwardAnimation) {
+			this.currentStep++;
+			if (this.currentStep >= this.steps) {
+	//			this.scaleFactor = 260;
+	//			this.steps = 10;
+	//			this.currentStep = 0;
+				this.scaledScreenRgb = null;
+				return false;
+			}
+			originalRgb = this.lastCanvasRgb;
+		} else {
+			this.currentStep--;
+			if (this.currentStep <= 0) {
+				this.scaledScreenRgb = null;
+				return false;
+			}
+			originalRgb = this.nextCanvasRgb;
 		}
 		// increase factor similar to exponential:
 		int factor = 100 + (this.scaleFactor - 100) * (this.currentStep * this.currentStep) / ( (this.steps - 1) * (this.steps - 1));
 		// linear scale:
 		//int factor = 100 + (this.scaleFactor - 100) * this.currentStep / (this.steps - 1);
-		ImageUtil.particleScale(factor, this.screenWidth, this.screenHeight, this.lastScreenRgb, this.scaledScreenRgb);
+		ImageUtil.particleScale(factor, this.screenWidth, this.screenHeight, originalRgb, this.scaledScreenRgb);
 		return true;
 	}
 	
@@ -113,7 +131,11 @@ public class ParticleScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */
 	public void paintAnimation(Graphics g) {
-		g.drawImage( this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+		if (this.isForwardAnimation) {
+			g.drawImage( this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );
+		} else {
+			g.drawImage( this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT );			
+		}
 		g.drawRGB(this.scaledScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
 	}
 

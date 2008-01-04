@@ -50,7 +50,7 @@ public class PaperScreenChangeAnimation extends ScreenChangeAnimation {
 	}
 
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 			int size = nxtScreenImage.getWidth() * nxtScreenImage.getHeight();
 			this.row = 0;
@@ -65,7 +65,7 @@ public class PaperScreenChangeAnimation extends ScreenChangeAnimation {
 			this.scaleableHeight[1]=1;
 			nxtScreenImage.getRGB(this.rgbNew, 0, width, 0, 0, width, height );
 			lstScreenImage.getRGB(this.rgbimage, 0, width, 0, 0, width, height );
-			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 	}
 	
 	protected boolean animate() {

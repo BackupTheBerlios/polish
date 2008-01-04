@@ -51,7 +51,7 @@ public class FlashScreenChangeAnimation extends ScreenChangeAnimation
 	private int currentY;
 	private int currentSize;
 	//#if polish.css.flash-screen-change-animation-speed
-	private int speed = 2;
+	private int speed = -1;
 	//#endif
 	//#if polish.css.flash-screen-change-animation-color
 	private int color = 0;
@@ -65,65 +65,72 @@ public class FlashScreenChangeAnimation extends ScreenChangeAnimation
 		// Do nothing here.
 	}
 
+	
+	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
+	 * @see de.enough.polish.ui.ScreenChangeAnimation#setStyle(de.enough.polish.ui.Style)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-											Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+	protected void setStyle(Style style)
 	{
-		this.currentY = height / 2;
-		//#if polish.css.flash-screen-change-animation-speed
-		Integer speedInt = style.getIntProperty("flash-screen-change-animation-speed");
-		
-		if (speedInt != null)
-		{
-			this.speed = speedInt.intValue();
+		super.setStyle(style);
+		if (this.isForwardAnimation) {
+			this.currentY = this.screenHeight / 2;
+			this.currentSize = 0;
+		} else {
+			this.currentY = 0;
+			this.currentSize = this.screenHeight;
 		}
+		//#if polish.css.flash-screen-change-animation-speed
+			Integer speedInt = style.getIntProperty("flash-screen-change-animation-speed");
+			if (speedInt != null)
+			{
+				this.speed = speedInt.intValue();
+			}
 		//#endif
 		
 		//#if polish.css.flash-screen-change-animation-color
-		Integer colorInt = style.getIntProperty("flash-screen-change-animation-color");
-		
-		if (colorInt != null)
-		{
-			this.color = colorInt.intValue();
-		}
+			Integer colorInt = style.getIntProperty("flash-screen-change-animation-color");
+			if (colorInt != null)
+			{
+				this.color = colorInt.intValue();
+			}
 		//#endif
-		
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate()
 	{
-		if (this.currentY > 0)
-		{
-			//#if polish.css.flash-screen-change-animation-speed
-			this.currentY -= this.speed;
-			this.currentSize += this.speed * 2;
-			//#else
-			this.currentY -= 2;
-			this.currentSize += 4;
-			//#endif
-			
-			if (this.currentY < 0)
-			{
-				this.currentY = 0;
-				this.currentSize = this.screenHeight;
+		int adjust;
+		//#if polish.css.flash-screen-change-animation-speed
+			if (this.speed != -1) {
+				adjust = this.speed;
+			} else {
+		//#endif
+				adjust = this.currentY / 3;
+				if (adjust < 2) {
+					adjust = 2;
+				}
+		//#if polish.css.flash-screen-change-animation-speed
 			}
-
+		//#endif		
+		if (this.isForwardAnimation) {
+			if (this.currentY > 0)
+			{
+				this.currentY -= adjust;
+				this.currentSize += adjust << 1;
+				return true;
+			}
+		} else if (this.currentSize > 0) {
+			this.currentY += adjust;
+			this.currentSize -= adjust << 1;
 			return true;
 		}
-		else
-		{
-			// Reset values.
-			this.currentY = this.screenHeight / 2;
-			this.currentSize = 0;
-
-			return false;
-		}
+		//#if polish.css.flash-screen-change-animation-speed
+			this.speed = -1;
+		//#endif
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -131,15 +138,25 @@ public class FlashScreenChangeAnimation extends ScreenChangeAnimation
 	 */
 	public void paintAnimation(Graphics g)
 	{
-		g.drawImage(this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+		Image first;
+		Image second;
+		if (this.isForwardAnimation) {
+			first = this.lastCanvasImage;
+			second = this.nextCanvasImage;
+		} else {
+			first = this.nextCanvasImage;
+			second = this.lastCanvasImage;
+		}
+
+		g.drawImage(first, 0, 0, Graphics.TOP | Graphics.LEFT);
 		//#if polish.css.flash-screen-change-animation-color
-		g.setColor(this.color);
+			g.setColor(this.color);
 		//#else
-		g.setColor(0);
+			g.setColor(0);
 		//#endif
-		g.drawRect(0, this.currentY - 1, this.screenWidth, 0);
-		g.drawRect(0, this.currentY + this.currentSize, this.screenWidth, 0);
+		g.drawLine(0, this.currentY - 1, this.screenWidth, this.currentY - 1);
+		g.drawLine(0, this.currentY + this.currentSize, this.screenWidth, this.currentY + this.currentSize);
 		g.setClip(0, this.currentY, this.screenWidth, this.currentSize);
-		g.drawImage(this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+		g.drawImage(second, 0, 0, Graphics.TOP | Graphics.LEFT);
 	}
 }

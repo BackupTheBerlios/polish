@@ -36,28 +36,25 @@ import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
-public class TabloidPressScreenChangeAnimation extends ScreenChangeAnimation {
+public class SquezeScreenChangeAnimation extends ScreenChangeAnimation {
 	private boolean stillRun = true;
-	//the start degrees of the images
-	//the nxtImage to start in screen
 	private int row ;
 	private int[] left ,right ,up,down;
 	//the rgb - images
 	private int[] rgbData ;
-	private int[] rgbbuffer ;
-	private int[] lstrgbbuffer ;
 	//the height of the columns
 	private int[] scaleableHeight;
 	private int[] scaleableWidth;
 	
-	public TabloidPressScreenChangeAnimation() {
+	public SquezeScreenChangeAnimation() {
 		super();
+		this.useLastCanvasRgb = true;
+		this.useNextCanvasRgb = true;
 	}
 	
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
-			System.gc();
 			this.row = 0;
 			this.stillRun = true;
 			int size = width * height;
@@ -77,13 +74,9 @@ public class TabloidPressScreenChangeAnimation extends ScreenChangeAnimation {
 				this.up[i] = 0;
 				this.down[i] = height;
 			}
-			this.rgbbuffer = new int[size];
-			this.lstrgbbuffer = new int [size];
+			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 			this.rgbData = new int [size];
-			nxtScreenImage.getRGB(this.rgbbuffer, 0, width, 0, 0, width, height );
-			lstScreenImage.getRGB(this.lstrgbbuffer, 0, width, 0, 0, width, height );
-			lstScreenImage.getRGB(this.rgbData, 0, width, 0, 0, width, height );
-			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+			System.arraycopy(this.lastCanvasRgb, 0, this.rgbData, 0, this.lastCanvasRgb.length );
 	}
 	
 	
@@ -105,7 +98,7 @@ public class TabloidPressScreenChangeAnimation extends ScreenChangeAnimation {
 			sH = this.scaleableHeight[row];
 			
 			if(left > row || right < row || this.down[row] < column || this.up[row] > column){
-				this.rgbData[i] = this.rgbbuffer[i];
+				this.rgbData[i] = this.nextCanvasRgb[i];
 			}
 			else{
 				c = column - (this.screenHeight - sH);
@@ -129,33 +122,25 @@ public class TabloidPressScreenChangeAnimation extends ScreenChangeAnimation {
 				if(newI >= length)newI = length;
 				if(newI < 0)newI = 0;
 
-				this.rgbData[i] = this.lstrgbbuffer[newI];
+				this.rgbData[i] = this.lastCanvasRgb[newI];
 			}
 		
 		}
-		this.cubeEffect();
-		if(this.scaleableHeight[0] <= 0)this.stillRun = false;
+		squeezeEffect();
+		if(this.scaleableHeight[0] <= 0) {
+			this.stillRun = false;
+		}
 		return this.stillRun;
 	}
 	
 	
-	private void cubeEffect(){		
+	private void squeezeEffect(){		
 		for(int i = 0; i < this.scaleableHeight.length;i++){
 			this.scaleableHeight[i]-=18;
 			this.up[i]+=18;
 		}
 	}
 	
-	public void handleKeyPressed(int keyCode, Image next) {
-		next.getRGB( this.rgbbuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-	}
-
-	//#if polish.hasPointerEvents
-	public void pointerPressed(int x, int y) {
-		super.pointerPressed(x, y);
-		this.nextCanvasImage.getRGB( this.rgbbuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-	}
-	//#endif
 	
 	public void paintAnimation(Graphics g) {
 		g.drawRGB(this.rgbData,0,this.screenWidth,0,0,this.screenWidth,this.screenHeight,false);

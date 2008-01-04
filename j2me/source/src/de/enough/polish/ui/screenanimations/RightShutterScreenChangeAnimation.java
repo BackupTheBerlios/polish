@@ -27,12 +27,9 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -49,10 +46,10 @@ import de.enough.polish.ui.Style;
 public class RightShutterScreenChangeAnimation extends ScreenChangeAnimation
 {	
 	private int currentX;
-	//#if polish.css.right-shutter-screen-change-animation-speed
-	private int speed = 2;
+	//#if polish.css.left-shutter-screen-change-animation-speed
+	private int speed = -1;
 	//#endif
-	//#if polish.css.right-shutter-screen-change-animation-color
+	//#if polish.css.left-shutter-screen-change-animation-color
 	private int color = 0;
 	//#endif
 
@@ -64,59 +61,65 @@ public class RightShutterScreenChangeAnimation extends ScreenChangeAnimation
 		// Do nothing here.
 	}
 
-	//#if polish.css.right-shutter-screen-change-animation-speed || polish.css.right-shutter-screen-change-animation-color
+
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
+	 * @see de.enough.polish.ui.ScreenChangeAnimation#setStyle(de.enough.polish.ui.Style)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-											Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+	protected void setStyle(Style style)
 	{
-		//#if polish.css.right-shutter-screen-change-animation-speed
-		Integer speedInt = style.getIntProperty("right-shutter-screen-change-animation-speed");
-		
-		if (speedInt != null)
-		{
-			this.speed = speedInt.intValue();
+		super.setStyle(style);
+		if (this.isForwardAnimation) {
+			this.currentX = this.screenWidth;
+		} else {
+			this.currentX = 0;
 		}
+		//#if polish.css.left-shutter-screen-change-animation-speed
+			Integer speedInt = style.getIntProperty("left-shutter-screen-change-animation-speed");
+			if (speedInt != null)
+			{
+				this.speed = speedInt.intValue();
+			} else {
+				this.speed = -1;
+			}
 		//#endif
 		
-		//#if polish.css.right-shutter-screen-change-animation-color
-		Integer colorInt = style.getIntProperty("right-shutter-screen-change-animation-color");
-		
-		if (colorInt != null)
-		{
-			this.color = colorInt.intValue();
-		}
-		//#endif
-		
-		this.currentX = this.screenWidth;
-		
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+		//#if polish.css.left-shutter-screen-change-animation-color
+			Integer colorInt = style.getIntProperty("left-shutter-screen-change-animation-color");
+			if (colorInt != null)
+			{
+				this.color = colorInt.intValue();
+			}
+		//#endif	
 	}
-	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate()
 	{
-		if (this.currentX > 0)
-		{
-			//#if polish.css.right-shutter-screen-change-animation-speed
-			this.currentX -= this.speed;
-			//#else
-			this.currentX -= 2;
-			//#endif
-
+		int adjust;
+		//#if polish.css.left-screen-change-animation-speed
+			if (this.speed != -1) {
+				adjust =  this.speed;
+			} else {
+		//#endif
+				adjust = (this.screenWidth - this.currentX) / 3;
+				if (adjust < 2) {
+					adjust = 2;
+				}
+		//#if polish.css.left-screen-change-animation-speed
+			}
+		//#endif
+		if (this.isForwardAnimation) {
+			if (this.currentX > 0) {
+				this.currentX -= adjust;
+				return true;
+			}
+		} else if (this.currentX < this.screenWidth) {
+			this.currentX += adjust;
 			return true;
 		}
-		else
-		{
-			// Reset values.
-			this.currentX = 0;
-
-			return false;
-		}
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -124,22 +127,25 @@ public class RightShutterScreenChangeAnimation extends ScreenChangeAnimation
 	 */
 	public void paintAnimation(Graphics g)
 	{
-		//#if polish.Bugs.fullScreenInPaint
-		if (! this.fullScreenModeSet)
-		{
-			setFullScreenMode(true);
-			this.fullScreenModeSet = true;
+		Image first;
+		Image second;
+		if (this.isForwardAnimation) {
+			first = this.nextCanvasImage;
+			second = this.lastCanvasImage;
+		} else {
+			first = this.lastCanvasImage;
+			second = this.nextCanvasImage;
 		}
-		//#endif
-		
-		g.drawImage(this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
-		//#if polish.css.right-shutter-screen-change-animation-color
-		g.setColor(this.color);
+		g.drawImage(first, 0, 0, Graphics.TOP | Graphics.LEFT);
+		//#if polish.css.left-shutter-screen-change-animation-color
+			g.setColor(this.color);
 		//#else
-		g.setColor(0);
+			g.setColor(0);
 		//#endif
-		g.drawLine(this.currentX - 1, 0, this.currentX - 1, this.screenHeight);
-		g.setClip(this.currentX, 0, this.screenWidth - this.currentX, this.screenHeight);
-		g.drawImage(this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+		g.drawLine(this.currentX, 0, this.currentX, this.screenHeight);
+		g.setClip(0, 0, this.currentX, this.screenHeight);
+		g.drawImage(second, 0, 0, Graphics.TOP | Graphics.LEFT);
 	}
+
+	
 }

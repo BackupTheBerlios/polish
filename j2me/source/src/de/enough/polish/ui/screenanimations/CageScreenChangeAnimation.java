@@ -27,68 +27,46 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
-import de.enough.polish.ui.Style;
 
 public class CageScreenChangeAnimation extends ScreenChangeAnimation {
 	//row = wo sich das neue image befindet am display
-	private int row = 0;
-	private int[] rgbNew ;
-	private int[] rgbimage ;
-	private int width, height;
+	private int currentColumn = 0;
 	
 	
 	public CageScreenChangeAnimation() {
 		super();
+		this.useLastCanvasRgb = true;
+		this.useNextCanvasRgb = true;
 	}
-	
-	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
-	{
-			this.row = 0;
-			int size = width * height;
-			this.width = width;
-			this.height = height;
-			this.rgbNew = new int [size];
-			this.rgbimage = new int[size];
-			nxtScreenImage.getRGB(this.rgbNew, 0, width, 0, 0, width, height );
-			lstScreenImage.getRGB(this.rgbimage, 0, width, 0, 0, width, height );
-			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
-	}
-
-	
 	
 	protected boolean animate() {
 		boolean doSwitchRow = true;
-		int currentRow = 0;
-		for(int i = 0; i < this.rgbimage.length;i++){		
-			if(doSwitchRow && currentRow <= this.row){
-				this.rgbimage[i] = this.rgbNew[i];
+		int column = 0;
+		for(int i = 0; i < this.lastCanvasRgb.length;i++){		
+			if(doSwitchRow && column <= this.currentColumn){
+				this.lastCanvasRgb[i] = this.nextCanvasRgb[i];
 			}
-			else if(!doSwitchRow && currentRow >= this.width-this.row ){
-				this.rgbimage[i] = this.rgbNew[i];
+			else if(!doSwitchRow && column >= this.screenWidth-this.currentColumn ){
+				this.lastCanvasRgb[i] = this.nextCanvasRgb[i];
 			}	
-			currentRow = (currentRow + 1) % this.width;
-			if(currentRow == 0){
+			column = (column + 1) % this.screenWidth;
+			if(column == 0){
 				doSwitchRow = !doSwitchRow;
 			}
 		}
-		this.row+=4;
-		if(this.row >= this.width) {
-			this.row = 0;
+		this.currentColumn+=4;
+		if(this.currentColumn >= this.screenWidth) {
+			this.currentColumn = 0;
 			return false;
 		}
 		return true;
 	}
 
 	public void paintAnimation(Graphics g) {
-		g.drawRGB(this.rgbimage,0,this.width,0,0,this.width,this.height,false);
+		g.drawRGB(this.lastCanvasRgb,0,this.screenWidth,0,0,this.screenWidth,this.screenHeight,false);
 	}
 
 }

@@ -69,7 +69,7 @@ public class TopShutterScreenChangeAnimation extends ScreenChangeAnimation
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-											Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+		Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 		//#if polish.css.top-shutter-screen-change-animation-speed
 		Integer speedInt = style.getIntProperty("top-shutter-screen-change-animation-speed");
@@ -89,7 +89,7 @@ public class TopShutterScreenChangeAnimation extends ScreenChangeAnimation
 		}
 		//#endif
 		
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable);
+		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward);
 	}
 	//#endif
 	

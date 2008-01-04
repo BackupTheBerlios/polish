@@ -60,7 +60,7 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 	private int steps = 6;
 	private int currentStep;
 	//#if !polish.blackberry
-		private int[] nextScreenRgb;
+		private int[] nextCanvasRgb;
 	//#endif
 
 	/**
@@ -75,7 +75,7 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 		//#if polish.css.fade-screen-change-animation-steps
 			Integer stepsInt = style.getIntProperty("fade-screen-change-animation-steps");
@@ -84,16 +84,17 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 			}
 		//#endif
 		//#if !polish.blackberry
-			if ( this.nextScreenRgb == null ) {
-				this.nextScreenRgb = new int[ width * height ];
+			if ( this.nextCanvasRgb == null ) {
+				this.nextCanvasRgb = new int[ width * height ];
 			}
-			nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
-			addOpacity( 255/this.steps, this.nextScreenRgb );
+			nxtScreenImage.getRGB( this.nextCanvasRgb, 0, width, 0, 0, width, height );
+			addOpacity( 255/this.steps, this.nextCanvasRgb );
 		//#endif
 		this.currentStep = 0;
 		
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 	}
+	
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
@@ -104,13 +105,13 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 			//this.steps = 10;
 			this.currentStep = 0;
 			//#if !polish.blackberry
-				this.nextScreenRgb = null;
+				this.nextCanvasRgb = null;
 			//#endif
 			return false;
 		}
 		//#if !polish.blackberry
 			int opacity = (255 * this.currentStep )  / this.steps;
-			addOpacity( opacity, this.nextScreenRgb );
+			addOpacity( opacity, this.nextCanvasRgb );
 		//#endif
 		return true;
 	}
@@ -132,15 +133,6 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 	}
 	//#endif
 
-
-	//#if !polish.blackberry
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
-	 */
-	public void handleKeyPressed(int keyCode, Image next) {
-		next.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-	}
-	//#endif
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
@@ -157,7 +149,7 @@ public class FadeScreenChangeAnimation extends ScreenChangeAnimation {
 			bbGraphics.drawBitmap(0, 0, this.screenWidth, this.screenHeight, bitmap, 0, 0 ); 
 			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque
 		//#else
-			g.drawRGB(this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
+			g.drawRGB(this.nextCanvasRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight, true );
 		//#endif
 	}
 

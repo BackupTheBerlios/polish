@@ -851,6 +851,11 @@ implements AccessibleCanvas
 					if (currentDisplayable == this) {
 						currentDisplayable = StyleSheet.currentScreen;
 					}
+					//#if polish.css.screen-change-animation
+						if (currentDisplayable instanceof ScreenChangeAnimation) {
+							currentDisplayable = ((ScreenChangeAnimation)currentDisplayable).nextDisplayable;
+						}
+					//#endif
 					if ( currentDisplayable != this && currentDisplayable instanceof AccessibleCanvas) {
 						Screen screen = currentDisplayable instanceof Screen ? (Screen) currentDisplayable : null;
 						if (screen != null) {

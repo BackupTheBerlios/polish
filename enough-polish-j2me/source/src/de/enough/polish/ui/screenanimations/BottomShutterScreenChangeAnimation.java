@@ -63,60 +63,79 @@ public class BottomShutterScreenChangeAnimation extends ScreenChangeAnimation
 	{
 		// Do nothing here.
 	}
-
-	//#if polish.css.bottom-shutter-screen-change-animation-speed || polish.css.bottom-shutter-screen-change-animation-color
+	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
+	 * @see de.enough.polish.ui.ScreenChangeAnimation#setStyle(de.enough.polish.ui.Style)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-											Image lstScreenImage, Image nxtScreenImage,AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+	protected void setStyle(Style style)
 	{
+		if (this.isForwardAnimation) {
+			this.currentY = this.screenHeight;
+		} else {
+			this.currentY = 0;
+		}
 		//#if polish.css.bottom-shutter-screen-change-animation-speed
-		Integer speedInt = style.getIntProperty("bottom-shutter-screen-change-animation-speed");
-		
-		if (speedInt != null)
-		{
-			this.speed = speedInt.intValue();
-		}
+			Integer speedInt = style.getIntProperty("bottom-shutter-screen-change-animation-speed");
+			if (speedInt != null)
+			{
+				this.speed = speedInt.intValue();
+			}
 		//#endif
-		
 		//#if polish.css.bottom-shutter-screen-change-animation-color
-		Integer colorInt = style.getIntProperty("bottom-shutter-screen-change-animation-color");
-		
-		if (colorInt != null)
-		{
-			this.color = colorInt.intValue();
-		}
+			Integer colorInt = style.getIntProperty("bottom-shutter-screen-change-animation-color");
+			if (colorInt != null)
+			{
+				this.color = colorInt.intValue();
+			}
 		//#endif
-		
-		this.currentY = this.screenHeight;
-		
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+		super.setStyle(style);
 	}
-	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate()
 	{
-		if (this.currentY > 0)
-		{
-			//#if polish.css.bottom-shutter-screen-change-animation-speed
-			this.currentY -= this.speed;
-			//#else
-			this.currentY -= 2;
-			//#endif
-
-			return true;
+		if (this.isForwardAnimation) {
+			if (this.currentY > 0)
+			{
+				//#if polish.css.bottom-shutter-screen-change-animation-speed
+					if (this.speed != -1) {
+						this.currentY -= this.speed;
+					} else {
+				//#endif
+						int adjust = (this.screenHeight - this.currentY) / 3;
+						if (adjust < 2) {
+							adjust = 2;
+						}
+						this.currentY -= adjust;
+				//#if polish.css.bottom-shutter-screen-change-animation-speed
+					}
+				//#endif			
+				return true;
+			}
 		}
 		else
 		{
-			// Reset values.
-			this.currentY = 0;
-
-			return false;
+			if (this.currentY < this.screenHeight)
+			{
+				//#if polish.css.bottom-shutter-screen-change-animation-speed
+					if (this.speed != -1) {
+						this.currentY += this.speed;
+					} else {
+				//#endif
+						int adjust = (this.screenHeight - this.currentY) / 3;
+						if (adjust < 2) {
+							adjust = 2;
+						}
+						this.currentY += adjust;
+				//#if polish.css.bottom-shutter-screen-change-animation-speed
+					}
+				//#endif			
+				return true;
+			}			
 		}
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -124,7 +143,16 @@ public class BottomShutterScreenChangeAnimation extends ScreenChangeAnimation
 	 */
 	public void paintAnimation(Graphics g)
 	{
-		g.drawImage(this.lastCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+		Image first;
+		Image second;
+		if (this.isForwardAnimation) {
+			first = this.lastCanvasImage;
+			second = this.nextCanvasImage;
+		} else {
+			first = this.nextCanvasImage;
+			second = this.lastCanvasImage;
+		}
+		g.drawImage(first, 0, 0, Graphics.TOP | Graphics.LEFT);
 		//#if polish.css.bottom-shutter-screen-change-animation-color
 		g.setColor(this.color);
 		//#else
@@ -132,6 +160,8 @@ public class BottomShutterScreenChangeAnimation extends ScreenChangeAnimation
 		//#endif
 		g.drawLine(0, this.currentY - 1, this.screenWidth, this.currentY - 1);
 		g.setClip(0, this.currentY, this.screenWidth, this.screenHeight - this.currentY);
-		g.drawImage(this.nextCanvasImage, 0, 0, Graphics.TOP | Graphics.LEFT);
+		g.drawImage(second, 0, 0, Graphics.TOP | Graphics.LEFT);
 	}
 }
+
+	

@@ -48,7 +48,7 @@ public class PixelScreenChangeAnimation extends ScreenChangeAnimation {
 	}
 
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 			this.stillRun = true;
 			this.row = 25;
@@ -59,7 +59,7 @@ public class PixelScreenChangeAnimation extends ScreenChangeAnimation {
 			this.rgbimage = new int[size];
 			nxtScreenImage.getRGB(this.rgbNew, 0, width, 0, 0, width, height );
 			lstScreenImage.getRGB(this.rgbimage, 0, width, 0, 0, width, height );
-			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 	}
 
 	

@@ -27,12 +27,9 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.Color;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
@@ -60,7 +57,7 @@ public class DiagonalScreenChangeAnimation extends ScreenChangeAnimation {
 	private int currentX;
 	private int currentY;
 	//#if polish.css.diagonal-screen-change-animation-speed
-		private int speed = 3;
+		private int speed = -1;
 	//#endif
 	//#if polish.css.diagonal-screen-change-animation-move-previous
 		private boolean movePrevious;
@@ -76,13 +73,20 @@ public class DiagonalScreenChangeAnimation extends ScreenChangeAnimation {
 		super();
 	}
 
-
+	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
+	 * @see de.enough.polish.ui.ScreenChangeAnimation#setStyle(de.enough.polish.ui.Style)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable ) 
+	protected void setStyle(Style style)
 	{
+		super.setStyle(style);
+		if (this.isForwardAnimation) {
+			this.currentX = 0;
+			this.currentY = 0;
+		} else {
+			this.currentX = this.screenWidth;
+			this.currentY = this.screenHeight;
+		}
 		//#if polish.css.diagonal-screen-change-animation-speed
 			Integer speedInt = style.getIntProperty( "diagonal-screen-change-animation-speed" );
 			if (speedInt != null ) {
@@ -100,31 +104,56 @@ public class DiagonalScreenChangeAnimation extends ScreenChangeAnimation {
 			if (color != null) {
 				this.backgroundColor = color.getColor();
 			}
-		//#endif
-		super.show(style, dsplay, width, height, lstScreenImage,
-				nxtScreenImage, nxtCanvas, nxtDisplayable );
+		//#endif	
 	}
-	
+
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate() {
-		if (this.currentY < this.screenHeight) {
-			//#if polish.css.diagonal-screen-change-animation-speed
-				this.currentY += this.speed;
-			//#else
-				this.currentY += 3;
-			//#endif
-			this.currentX = ( this.currentY * this.screenWidth ) / this.screenHeight;
-			return true;
+		if (this.isForwardAnimation) {
+			if (this.currentY < this.screenHeight) {
+				//#if polish.css.diagonal-screen-change-animation-speed
+					if (this.speed != -1) {
+						this.currentY += this.speed;
+					} else {
+				//#endif
+						int adjust = (this.screenHeight - this.currentY) / 3;
+						if (adjust < 3) {
+							adjust = 3;
+						}
+						this.currentY += adjust;
+				//#if polish.css.diagonal-screen-change-animation-speed
+					}
+				//#endif
+				this.currentX = ( this.currentY * this.screenWidth ) / this.screenHeight;
+				return true;
+			} 
 		} else {
-			//#if polish.css.diagonal-screen-change-animation-speed
-				this.speed = 3;
-			//#endif
-			this.currentY = 0;
-			this.currentX = 0;
-			return false;
+			if (this.currentY > 0) {
+				//#if polish.css.diagonal-screen-change-animation-speed
+					if (this.speed != -1) {
+						this.currentY -= this.speed;
+					} else {
+				//#endif
+						int adjust = (this.screenHeight - this.currentY) / 3;
+						if (adjust < 3) {
+							adjust = 3;
+						}
+						this.currentY -= adjust;
+				//#if polish.css.diagonal-screen-change-animation-speed
+					}
+				//#endif
+				this.currentX = ( this.currentY * this.screenWidth ) / this.screenHeight;
+				return true;
+			} 
+
 		}
+		//#if polish.css.diagonal-screen-change-animation-speed
+			this.speed = -1;
+		//#endif
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -145,8 +174,18 @@ public class DiagonalScreenChangeAnimation extends ScreenChangeAnimation {
 				y = -this.currentY;
 			}
 		//#endif
-		g.drawImage( this.lastCanvasImage, x, y, Graphics.TOP | Graphics.LEFT );
-		g.drawImage( this.nextCanvasImage, this.screenWidth - this.currentX, this.screenHeight -  this.currentY, Graphics.TOP | Graphics.LEFT );
+		Image first;
+		Image second;
+		if (this.isForwardAnimation) {
+			first = this.lastCanvasImage;
+			second = this.nextCanvasImage;
+		} else {
+			first = this.nextCanvasImage;
+			second = this.lastCanvasImage;
+			
+		}
+		g.drawImage( first, x, y, Graphics.TOP | Graphics.LEFT );
+		g.drawImage( second, this.screenWidth - this.currentX, this.screenHeight -  this.currentY, Graphics.TOP | Graphics.LEFT );
 	}
 
 }

@@ -56,7 +56,7 @@ import de.enough.polish.ui.Style;
  * history
  *        29-May-2005 - rob creation
  * </pre>
- * @author Robert Virkus, j2mepolish@enough.de
+ * @author Tim Muders, j2mepolish@enough.de
  */
 public class Rotate3DScreenChangeAnimation extends ScreenChangeAnimation {
 	
@@ -82,10 +82,10 @@ public class Rotate3DScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 		super.show(style, dsplay, width, height, lstScreenImage,
-				nxtScreenImage, nxtCanvas, nxtDisplayable );
+				nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 		// initialization of 3D settings:
 	    // Hole grafischen Context Graphics3D
 		this.g3D = Graphics3D.getInstance();

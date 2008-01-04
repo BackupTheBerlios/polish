@@ -59,11 +59,12 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 	
 	private int currentY;
 	//#if polish.css.bottom-screen-change-animation-speed
-		private int speed = 2;
+		private int speed = -1;
 	//#endif
 	//#if polish.css.bottom-screen-change-animation-move-previous
 		private boolean movePrevious;
 	//#endif
+	
 
 	/**
 	 * Creates a new animation 
@@ -71,14 +72,19 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 	public BottomScreenChangeAnimation() {
 		super();
 	}
-
-
+	
+	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
+	 * @see de.enough.polish.ui.ScreenChangeAnimation#setStyle(de.enough.polish.ui.Style)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable ) 
+	protected void setStyle(Style style)
 	{
+		super.setStyle(style);
+		if (this.isForwardAnimation) {
+			this.currentY = 0;
+		} else {
+			this.currentY = this.screenHeight;
+		}
 		//#if polish.css.bottom-screen-change-animation-speed
 			Integer speedInt = style.getIntProperty( "bottom-screen-change-animation-speed" );
 			if (speedInt != null ) {
@@ -91,28 +97,52 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 				this.movePrevious = movePreviousBool.booleanValue();
 			}
 		//#endif
-		super.show(style, dsplay, width, height, lstScreenImage,
-				nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
-	
+
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate() {
-		if (this.currentY < this.screenHeight) {
-			//#if polish.css.bottom-screen-change-animation-speed
-				this.currentY += this.speed;
-			//#else
-				this.currentY += 2;
-			//#endif
-			return true;
+		if (this.isForwardAnimation) {
+			if (this.currentY < this.screenHeight) {
+				//#if polish.css.bottom-screen-change-animation-speed
+					if (this.speed != -1) {
+						this.currentY += this.speed;
+					} else {
+				//#endif
+						int adjust = (this.screenHeight - this.currentY) / 3;
+						if (adjust < 2) {
+							adjust = 2;
+						}
+						this.currentY += adjust;
+				//#if polish.css.bottom-screen-change-animation-speed
+					}
+				//#endif
+				return true;
+			}
 		} else {
-			//#if polish.css.bottom-screen-change-animation-speed
-				this.speed = 2;
-			//#endif
-			this.currentY = 0;
-			return false;
+			if (this.currentY > 0) {
+				//#if polish.css.bottom-screen-change-animation-speed
+					if (this.speed != -1) {
+						this.currentY -= this.speed;
+					} else {
+				//#endif
+						int adjust = (this.screenHeight - this.currentY) / 3;
+						if (adjust < 2) {
+							adjust = 2;
+						}
+						this.currentY -= adjust;
+				//#if polish.css.bottom-screen-change-animation-speed
+					}
+				//#endif
+				return true;
+			}			
 		}
+		//#if polish.css.bottom-screen-change-animation-speed
+			this.speed = -1;
+		//#endif
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -125,8 +155,17 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 				y = -this.currentY;
 			}
 		//#endif
-		g.drawImage( this.lastCanvasImage, 0, y, Graphics.TOP | Graphics.LEFT );
-		g.drawImage( this.nextCanvasImage, 0, this.screenHeight -  this.currentY, Graphics.TOP | Graphics.LEFT );
+		Image first;
+		Image second;
+		if (this.isForwardAnimation) {
+			first = this.lastCanvasImage;
+			second = this.nextCanvasImage;
+		} else {
+			first = this.nextCanvasImage;
+			second = this.lastCanvasImage;
+		}
+		g.drawImage( first, 0, y, Graphics.TOP | Graphics.LEFT );
+		g.drawImage( second, 0, this.screenHeight -  this.currentY, Graphics.TOP | Graphics.LEFT );
 	}
 
 }

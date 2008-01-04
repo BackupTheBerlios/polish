@@ -59,8 +59,6 @@ public class GradientScreenChangeAnimation
 extends ScreenChangeAnimation 
 {
 	
-	private int[] lastScreenRgb;
-	private int[] nextScreenRgb;
 	private int[] currentScreenRgb;
 	private int steps = 5;
 	private int currentStep;
@@ -70,39 +68,21 @@ extends ScreenChangeAnimation
 	 */
 	public GradientScreenChangeAnimation() {
 		super();
+		this.useLastCanvasRgb = true;
+		this.useNextCanvasRgb = true;
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
-		if ( this.nextScreenRgb == null ) {
-			this.nextScreenRgb = new int[ width * height ];
-			this.currentScreenRgb = new int[ width * height ];
-			this.lastScreenRgb = new int[ width * height ];
-		}
-		lstScreenImage.getRGB( this.lastScreenRgb, 0, width, 0, 0, width, height );
-		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
-		System.arraycopy( this.lastScreenRgb, 0, this.currentScreenRgb, 0, width * height);
+		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
+		this.currentScreenRgb = new int[ width * height ];
+		System.arraycopy( this.lastCanvasRgb, 0, this.currentScreenRgb, 0, width * height);
 		this.currentStep = 0;
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
-	
-	
-	
-	public void handleKeyPressed(int keyCode, Image next) {
-		next.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-	}
-
-	//#if polish.hasPointerEvents
-	public void pointerPressed(int x, int y) {
-		super.pointerPressed(x, y);
-		this.nextCanvasImage.getRGB( this.nextScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-	}
-	//#endif
-
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
@@ -113,8 +93,8 @@ extends ScreenChangeAnimation
 			int targetColor;
 			int permille = 1000 * this.currentStep / this.steps;
 			for (int i = 0; i < this.currentScreenRgb.length; i++) {
-				lastColor = this.lastScreenRgb[i];
-				targetColor = this.nextScreenRgb[i];
+				lastColor = this.lastCanvasRgb[i];
+				targetColor = this.nextCanvasRgb[i];
 				if (lastColor != targetColor) {
 					this.currentScreenRgb[i] = DrawUtil.getGradientColor( lastColor, targetColor, permille );
 				}
@@ -122,9 +102,9 @@ extends ScreenChangeAnimation
 			this.currentStep++;
 			return true;
 		} else {
-			this.lastScreenRgb = null;
+			this.lastCanvasRgb = null;
 			this.currentScreenRgb = null;
-			this.nextScreenRgb = null;
+			this.nextCanvasRgb = null;
 			this.currentStep = 0;
 			return false;
 		}

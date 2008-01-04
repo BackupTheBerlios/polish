@@ -29,11 +29,10 @@ public class DancingPixelScreenChangeAnimation extends ScreenChangeAnimation {
 //		private boolean first = true;
 		public DancingPixelScreenChangeAnimation() {
 			super();
-			// TODO Auto-generated constructor stub
 		}
 		
 		protected void show(Style style, Display dsplay, int width, int height,
-				Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+				Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 		{
 				System.gc();
 				this.id = 20;
@@ -62,7 +61,7 @@ public class DancingPixelScreenChangeAnimation extends ScreenChangeAnimation {
 				nxtScreenImage.getRGB(this.rgbbuffer, 0, width, 0, 0, width, height );
 				lstScreenImage.getRGB(this.lstrgbbuffer, 0, width, 0, 0, width, height );
 				lstScreenImage.getRGB(this.rgbData, 0, width, 0, 0, width, height );
-				super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+				super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 		}
 		
 		

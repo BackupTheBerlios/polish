@@ -50,11 +50,10 @@ public class DisplayScreenChangeAnimation extends ScreenChangeAnimation {
 	private boolean letsGo = false;
 	public DisplayScreenChangeAnimation() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 			int size = nxtScreenImage.getWidth() * nxtScreenImage.getHeight();
 			this.height = height;
@@ -64,15 +63,12 @@ public class DisplayScreenChangeAnimation extends ScreenChangeAnimation {
 			for(int i = 0;i < this.scaler.length;i++){
 				this.scaler[i] = height;
 			}
-			System.out.print("tim\n");
 			this.rgbbuffer = new int[size];
 			this.lstrgbbuffer = new int [size];
 			this.rgbData = new int [size];
 			nxtScreenImage.getRGB(this.rgbbuffer, 0, width, 0, 0, width, height );
 			lstScreenImage.getRGB(this.lstrgbbuffer, 0, width, 0, 0, width, height );
-			System.out.print("tim\n");
-			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
-			System.out.print("tim\n");
+			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 	}
 
 

@@ -61,9 +61,13 @@ public final class StyleSheet {
 		private static Timer timer;
 	//#endif
 	//#ifdef polish.LibraryBuild
+		/** default style */
 		public static Style defaultStyle = new Style( 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0x000000, Font.getDefaultFont(), null, null, null, null );
+		/** default style for focused/hovered items */
 		public static Style focusedStyle = new Style( 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0xFF0000, Font.getDefaultFont(), null, null, null, null );
+		/** default style for labels */
 		public static Style labelStyle = new Style( 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, Item.LAYOUT_NEWLINE_AFTER, 0x000000, Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_SMALL ), null, null, null, null );
+		/** default style for the commands menu */
 		public static Style menuStyle = new Style( 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, Item.LAYOUT_NEWLINE_AFTER, 0x000000, Font.getFont(Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_SMALL ), null, null, null, null );
 		private static Hashtable stylesByName = new Hashtable();
 	//#endif
@@ -95,6 +99,7 @@ public final class StyleSheet {
 	public static MIDlet midlet;
 	/** Access to the AnimationThread responsible for animating all user interface components */
 	public static AnimationThread animationThread;
+	/** default OK command */
 	//#ifdef polish.i18n.useDynamicTranslations
 		public static Command OK_CMD = new Command( Locale.get("polish.command.ok"), Command.OK, 2 );
 	//#elifdef polish.command.ok:defined
@@ -102,6 +107,7 @@ public final class StyleSheet {
 	//#else
 		//# public static final Command OK_CMD = new Command("OK", Command.OK, 2 );
 	//#endif
+	/** default CANCEL command */
 	//#ifdef polish.i18n.useDynamicTranslations
 		public static Command CANCEL_CMD = new Command(Locale.get("polish.command.cancel"), Command.CANCEL, 2 );
 	//#elifdef polish.command.cancel:defined
@@ -110,7 +116,11 @@ public final class StyleSheet {
 		//# public static final Command CANCEL_CMD = new Command("Cancel", Command.CANCEL, 3 );
 	//#endif
 
-	//#if polish.ScreenChangeAnimation.allowConfiguration == true
+	//#if polish.ScreenChangeAnimation.allowConfiguration
+		/** Allows you to disable or enable screen change animations.
+		 *  This can only be used when you have set the preprocessing variable
+		 *  <code>polish.ScreenChangeAnimation.allowConfiguration</code> to <code>true</code>.
+		 */
 		public static boolean enableScreenChangeAnimations = true;
 	//#endif
 
@@ -232,6 +242,11 @@ public final class StyleSheet {
 		return style;
 	}
 	
+	/**
+	 * Retrieves all registered styles in a Hashtable.
+	 * 
+	 * @return all registered styles in a Hashtable.
+	 */
 	public static Hashtable getStyles()
 	{
 		return stylesByName;
@@ -377,14 +392,19 @@ public final class StyleSheet {
 		Displayable lastDisplayable = null;
 		//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 			if ( MasterCanvas.instance != null ) {
-				//# lastDisplayable = MasterCanvas.instance.currentDisplayable;
+				lastDisplayable = MasterCanvas.instance.currentDisplayable;
 			}
 		//#else
 			lastDisplayable = display.getCurrent();
 		//#endif
+		if (lastDisplayable instanceof ScreenChangeAnimation) {
+			lastDisplayable = (Displayable) ((ScreenChangeAnimation)lastDisplayable).nextCanvas;
+		}
+		//System.out.println("last=" + lastDisplayable + ", next=" + nextDisplayable);
 		if (nextDisplayable instanceof Alert) {
 			Alert alert = (Alert) nextDisplayable;
-			if (alert.nextDisplayable == null) {
+			//System.out.println("alert.nextDisplayable=" + alert.nextDisplayable);
+			if (alert.nextDisplayable == null ) {
 				alert.nextDisplayable = lastDisplayable;
 			}
 		}
@@ -413,6 +433,7 @@ public final class StyleSheet {
 					nextScreen = (Screen) nextDisplayable;
 				}
 				ScreenChangeAnimation screenAnimation = null;
+				boolean isForwardAnimation = true;
 	
 				Screen lastScreen = null;
 				Style screenstyle = null;
@@ -423,6 +444,7 @@ public final class StyleSheet {
 						if (lastCommand != null && lastCommand.getCommandType() == Command.BACK ) {
 							screenAnimation = backwardAnimation;
 							screenstyle = lastScreen.style;
+							isForwardAnimation = false;
 						}
 					}
 					if ( screenAnimation == null ) {
@@ -448,6 +470,7 @@ public final class StyleSheet {
 						if (screenAnimation == null && lastScreen.style != null) {
 							screenstyle = lastScreen.style;
 							screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
+							isForwardAnimation = false;
 							//#debug
 							System.out.println("StyleSheet: Using screen animation of last screen");
 						}
@@ -524,7 +547,7 @@ public final class StyleSheet {
 				if ( screenstyle == null ) {
 					screenstyle = defaultStyle;
 				}
-				screenAnimation.show( screenstyle, display, width, height, lastScreenImage, nextScreenImage, nextCanvas, nextDisplayable );
+				screenAnimation.show( screenstyle, display, width, height, lastScreenImage, nextScreenImage, nextCanvas, nextDisplayable, isForwardAnimation );
 			} catch (Exception e) {
 				//#debug error
 				System.out.println("Screen: unable to start screen change animation" + e );

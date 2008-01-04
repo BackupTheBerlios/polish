@@ -67,14 +67,14 @@ public class ScaleScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 		this.nextScreenRgb = new int[ width * height ];
 		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
 		this.scaledScreenRgb = new int[ width * height ];
 		System.arraycopy(this.nextScreenRgb, 0, this.scaledScreenRgb, 0, width * height );
 		super.show(style, dsplay, width, height, lstScreenImage,
-				nxtScreenImage, nxtCanvas, nxtDisplayable );
+				nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 	}
 	
 	/* (non-Javadoc)

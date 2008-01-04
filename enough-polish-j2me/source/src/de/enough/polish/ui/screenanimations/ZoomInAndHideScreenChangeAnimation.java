@@ -75,7 +75,7 @@ public class ZoomInAndHideScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward ) 
 	{
 		if ( this.lastScreenRgb == null ) {
 			this.lastScreenRgb = new int[ width * height ];
@@ -85,7 +85,7 @@ public class ZoomInAndHideScreenChangeAnimation extends ScreenChangeAnimation {
 		System.arraycopy( this.lastScreenRgb, 0, this.scaledScreenRgb, 0,  width * height );
 		//ImageUtil.scale( 200, this.scaleFactor, this.screenWidth, this.screenHeight, this.lastScreenRgb, this.scaledScreenRgb);
 		super.show(style, dsplay, width, height, lstScreenImage,
-				nxtScreenImage, nxtCanvas, nxtDisplayable );
+				nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 	}
 	
 	/* (non-Javadoc)

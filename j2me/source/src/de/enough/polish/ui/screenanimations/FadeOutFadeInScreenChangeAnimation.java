@@ -77,7 +77,7 @@ public class FadeOutFadeInScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 		//#if polish.css.fadeOutFadeIn-screen-change-animation-steps
 			Integer stepsInt = style.getIntProperty("fade-screen-change-animation-steps");
@@ -94,13 +94,13 @@ public class FadeOutFadeInScreenChangeAnimation extends ScreenChangeAnimation {
 		if ( this.shownScreenRgb == null ) {
 			this.shownScreenRgb = new int[ width * height ];
 		}
-		nxtScreenImage.getRGB( this.shownScreenRgb, 0, width, 0, 0, width, height );
+		//nxtScreenImage.getRGB( this.shownScreenRgb, 0, width, 0, 0, width, height );
 		lstScreenImage.getRGB( this.shownScreenRgb, 0, width, 0, 0, width, height );
 		this.isFadingPreviousScreen = true;
 		//addOpacity( 255/this.steps, this.shownScreenRgb );
 		this.currentStep = 0;
 		
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 	}
 	
 	/* (non-Javadoc)
@@ -149,15 +149,6 @@ public class FadeOutFadeInScreenChangeAnimation extends ScreenChangeAnimation {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
-	 */
-	public void handleKeyPressed(int keyCode, Image next) {
-		if (!this.isFadingPreviousScreen) {
-			next.getRGB( this.shownScreenRgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-		}
-	}
-	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
 	 */

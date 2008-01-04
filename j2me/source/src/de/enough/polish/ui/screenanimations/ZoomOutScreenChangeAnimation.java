@@ -75,7 +75,7 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
 		if ( this.nextScreenRgb == null ) {
 			this.nextScreenRgb = new int[ width * height ];
@@ -84,7 +84,7 @@ public class ZoomOutScreenChangeAnimation extends ScreenChangeAnimation {
 		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
 		this.currentStep = this.steps;
 		ImageUtil.scale( 255/this.steps, this.scaleFactor, width, height, this.nextScreenRgb, this.scaledScreenRgb);
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 	}
 	
 	/* (non-Javadoc)

@@ -44,8 +44,6 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 	private int xSplitPosition = 0;
 	//the rgb - images
 	private int[] rgbData ;
-	private int[] nextScreenRgbBuffer ;
-	private int[] lastScreenRgbBuffer ;
 	//the height of the columns
 	private int[] scaleableHeights;
 	//the scale from the row
@@ -56,18 +54,20 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 	
 	public CardScreenChangeAnimation() {
 		super();
+		this.useLastCanvasRgb = true;
+		this.useNextCanvasRgb = true;
 	}
 	
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
+		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 		//#if polish.css.cube-screen-change-animation-background-color
 		Integer colorInt = style.getIntProperty( "cube-screen-change-animation-background-color" ); 
 		if (colorInt != null ) { 
 			this.backGroundColor = colorInt.intValue(); 
 		}
 		//#endif
-		System.gc();
 		//System.out.print("width:"+width+":height:"+height);
 		this.xSplitPosition = 0;
 //			this.row = width;
@@ -82,14 +82,9 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 		for(int i = 0;i < this.scaleableHeights.length;i++){
 			this.scaleableHeights[i] = height;
 		}
-		this.nextScreenRgbBuffer = new int[size];
-		this.lastScreenRgbBuffer = new int [size];
 		this.rgbData = new int [size];
-		nxtScreenImage.getRGB(this.nextScreenRgbBuffer, 0, width, 0, 0, width, height );
-		lstScreenImage.getRGB(this.lastScreenRgbBuffer, 0, width, 0, 0, width, height );
-		System.arraycopy( this.lastScreenRgbBuffer, 0, this.rgbData, 0, size);
+		System.arraycopy( this.lastCanvasRgb, 0, this.rgbData, 0, size);
 		//lstScreenImage.getRGB(this.rgbData, 0, width, 0, 0, width, height );
-		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
 	
 
@@ -105,14 +100,16 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 				currentY++;	
 			}
 			currentScalableHeight = this.scaleableHeights[currentX];
-			if(currentScalableHeight < currentY || (this.screenHeight - currentScalableHeight) > currentY ){// || row > (this.screenWidth-this.row) || row < this.row){
+			if(currentScalableHeight < currentY || (this.screenHeight - currentScalableHeight) > currentY )// || row > (this.screenWidth-this.row) || row < this.row)
+			{
 				//#if polish.css.cube-screen-change-animation-background-color
 					this.rgbData[i] = this.backGroundColor;
 				//#else
 					this.rgbData[i] = 0;
 				//#endif
 			}
-			else{
+			else
+			{
 				targetY = currentY - (this.screenHeight - currentScalableHeight);
 //				if(c <= 0)c = 1;
 				verticalShrinkFactorPercent = (((this.screenHeight-((this.screenHeight-currentScalableHeight)*2))*100)/this.screenHeight);
@@ -131,9 +128,9 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 				if(targetArrayIndex < 0)targetArrayIndex = 0;
 //				this.rgbData[i] = this.rgbbuffer[newI];
 				if( this.xSplitPosition > currentX){
-					this.rgbData[i] = this.nextScreenRgbBuffer[targetArrayIndex];
+					this.rgbData[i] = this.nextCanvasRgb[targetArrayIndex];
 				}else{
-					this.rgbData[i] = this.lastScreenRgbBuffer[targetArrayIndex];
+					this.rgbData[i] = this.lastCanvasRgb[targetArrayIndex];
 				}
 			}
 //			else if( this.row > row){
@@ -142,25 +139,12 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 //				this.rgbData[i] = getColorRGB(false,row,column);
 //			}
 		}
-		this.cubeEffect();
-		if(this.lstdegree <= 1)this.stillRun = false;
+		cubeEffect();
+		if(this.lstdegree <= 1) {
+			this.stillRun = false;
+		}
 		return this.stillRun;
 	}
-	
-	
-//	private void newDirection(){
-//		//scaling for the lstImage
-//		int sum = this.screenWidth-1;
-//		for(int i = 0; i < sum;i++){	
-//			this.scaleableHeight[i] = this.screenHeight;
-//			if(i != 0)this.scaleableHeight[i -1] = this.screenHeight;
-//		}
-//		this.scaleableWidth = this.screenWidth;
-//		this.row = 0;
-//		this.degree = 0;
-////		this.first = true;
-//	}
-	
 	
 	
 	private void cubeEffect(){		
@@ -214,17 +198,6 @@ public class CardScreenChangeAnimation extends ScreenChangeAnimation {
 				this.scaleableHeights[i] = newScale;			
 			}
 	}
-	
-	public void handleKeyPressed(int keyCode, Image next) {
-		next.getRGB( this.nextScreenRgbBuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-	}
-
-	//#if polish.hasPointerEvents
-	public void pointerPressed(int x, int y) {
-		super.pointerPressed(x, y);
-		this.nextCanvasImage.getRGB( this.nextScreenRgbBuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-	}
-	//#endif
 	
 	public void paintAnimation(Graphics g) {
 		g.drawRGB(this.rgbData,0,this.screenWidth,0,0,this.screenWidth,this.screenHeight,false);

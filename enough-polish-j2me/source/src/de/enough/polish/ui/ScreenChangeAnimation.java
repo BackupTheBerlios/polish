@@ -51,13 +51,11 @@ import javax.microedition.lcdui.Image;
  * <ol>
  * 	<li>Extend de.enough.polish.ui.ScreenChangeAnimation</li>
  *  <li>Implement the animate() method for doing the animation, use the fields lastCanvasImage 
- *      and nextCanvasImage for your manipulation</li>
- *  <li>Implement the paint() method and call &quot;this.display.callSerially( this );&quot; 
- *      at the end of the paint() method.</li>
+ *      and nextCanvasImage for your manipulation and consider the isForwardAnimation field.</li>
+ *  <li>Implement the paintAnimation(Graphics) method.</li>
  *  <li>Override the show() method if you need to get parameters from the style.</li>
- *  <li>In case you want to manipulate the RGB data, you also shoudl override the show() method 
- *      for getting the RGB values once. Consider to override the keyPressed(), keyReleased() and
- *      keyRepeated() methods as well. 
+ *  <li>In case you want to manipulate the RGB data, you should set the useNextCanvasRgb and/or useLastCanvasRgb fields
+ *  to true - you can then access the nextCanvasRgb and lastCanvasRgb fields for manupulating the data. 
  *  </li>
  * </ol>
  * <p>You can now use your animation by specifying the <code>screen-change-animation</code> CSS attribute 
@@ -85,7 +83,7 @@ import javax.microedition.lcdui.Image;
  *        27-May-2005 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
- * @see #show(Style, Display, int, int, Image, Image, AccessibleCanvas, Displayable)
+ * @see #show(Style, Display, int, int, Image, Image, AccessibleCanvas, Displayable, boolean)
  * @see #animate()
  */
 public abstract class ScreenChangeAnimation
@@ -105,13 +103,21 @@ public abstract class ScreenChangeAnimation
 	protected Display display;
 	protected AccessibleCanvas nextCanvas;
 	protected Image lastCanvasImage;
+	protected int[] lastCanvasRgb;
+	/** set to true in constructor of subclasses for populating lastCanvasRgb */
+	protected boolean useLastCanvasRgb;
 	protected Image nextCanvasImage;
+	protected int[] nextCanvasRgb;
+	/** set to true in constructor of subclasses for populating nextCanvasRgb */
+	protected boolean useNextCanvasRgb;
 	protected int screenWidth;
 	protected int screenHeight;
 	//#if polish.Bugs.fullScreenInPaint
 		protected boolean fullScreenModeSet;
 	//#endif
 	protected Displayable nextDisplayable;
+	protected boolean isForwardAnimation;
+	
 
 	/**
 	 * Creates a new ScreenChangeAnimation.
@@ -136,34 +142,44 @@ public abstract class ScreenChangeAnimation
 	 * @param nxtScreenImage an image of the next screen
 	 * @param nxtCanvas the next screen that should be displayed when this animation finishes (as an AccessibleCanvas)
 	 * @param nxtDisplayable the next screen that should be displayed when this animation finishes (as a Displayable)
+	 * @param isForward true when the animation should run in the normal direction/mode - false if it should run backwards
 	 */
-	protected void show( Style style, Display dsplay, final int width, final int height, Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable ) {
+	protected void show( Style style, Display dsplay, final int width, final int height, Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward ) {
 		this.screenWidth = width;
 		this.screenHeight = height;
 		this.display = dsplay;
 		this.nextCanvas = nxtCanvas;
 		this.nextDisplayable = nxtDisplayable;
 		this.lastCanvasImage = lstScreenImage;
-		/*
-		this.lastScreenRgb = new int[ width * height ];
-		lstScreenImage.getRGB( this.lastScreenRgb, 0, width, 0, 0, width, height );
-		*/
+		if (this.useLastCanvasRgb) {
+			this.lastCanvasRgb = new int[ width * height ];
+			lstScreenImage.getRGB(this.lastCanvasRgb, 0, width, 0, 0, width, height );
+		}
 		this.nextCanvasImage = nxtScreenImage;
-		/*
-		this.nextScreenRgb = new int[ width * height ];
-		nxtScreenImage.getRGB( this.nextScreenRgb, 0, width, 0, 0, width, height );
-		*/
+		if (this.useNextCanvasRgb) {
+			this.nextCanvasRgb = new int[ width * height ];
+			nxtScreenImage.getRGB(this.nextCanvasRgb, 0, width, 0, 0, width, height );
+		}
+		this.isForwardAnimation = isForward;
+		setStyle( style );
 		//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
 			MasterCanvas.setCurrent( dsplay, this );
 		//#else
 			dsplay.setCurrent( this );
 		//#endif
-		
-		//nxtScreen.showNotify();
-		//Thread thread = new Thread( this );
-		//thread.start();
 	}
 	
+	/**
+	 * Sets the style for this animation.
+	 * Subclasses can override this for adapting to different design settings.
+	 * 
+	 * @param style the style
+	 */
+	protected void setStyle(Style style)
+	{
+		// let subclasses override this
+	}
+
 	/**
 	 * Animates this animation.
 	 * 
@@ -205,14 +221,14 @@ public abstract class ScreenChangeAnimation
 	 * 
 	 * @param x the horizontal coordinate of the clicked pixel
 	 * @param y the vertical coordinate of the clicked pixel
+	 * @see #updateNextScreen(AccessibleCanvas, Image, int[])
 	 */
 	public void pointerPressed( int x, int y ) {
 		AccessibleCanvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		if (next != null) {
 			next.pointerPressed( x, y );
-			Graphics g = nextImage.getGraphics();
-			next.paint( g );
+			updateNextScreen(next, nextImage, this.nextCanvasRgb);
 		}
 	}
 	//#endif
@@ -250,92 +266,63 @@ public abstract class ScreenChangeAnimation
 
 	/**
 	 * Handles key repeat events.
-	 * The implementation forwards this event to the next screen, updates the nextCanvasImage field and then forwards control
-	 * to handleKeyPressed.
+	 * The implementation forwards this event to the next screen and then updates the nextCanvasImage field.
 	 * 
 	 * @param keyCode the code of the key
 	 * @see #nextCanvasImage
+	 * @see #updateNextScreen(AccessibleCanvas, Image, int[])
 	 */
-	public final void keyRepeated( int keyCode ) {
+	public void keyRepeated( int keyCode ) {
 		AccessibleCanvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		try {
 			if (next != null) {
 				next.keyRepeated( keyCode );
-				Graphics g = nextImage.getGraphics();
-				next.paint( g );
-				handleKeyRepated( keyCode, nextImage );
+				updateNextScreen( next, nextImage, this.nextCanvasRgb );
 			}
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Error while handling keyRepeated event" + e );
 		}
 	}
-	/**
-	 * Allows subclasses to handle key repeated events.
-	 * The event has already been forwarded to the next screen and the image has been updated.
-	 * 
-	 * @param keyCode the key code
-	 * @param nextImage the updated image of the next screen
-	 */
-	protected void handleKeyRepated( int keyCode, Image nextImage ) {
-		// do nothing
-	}
 
 	/**
 	 * Handles key released events.
-	 * The implementation forwards this event to the next screen, updates the nextCanvasImage field and then forwards control
-	 * to handleKeyPressed.
+	 * The implementation forwards this event to the next screen and then updates the nextCanvasImage field.
 	 * 
 	 * @param keyCode the code of the key
 	 * @see #nextCanvasImage
-	 * @see #handleKeyReleased(int, Image)
+	 * @see #updateNextScreen(AccessibleCanvas, Image, int[])
 	 */
-	public final void keyReleased( int keyCode ) {
+	public void keyReleased( int keyCode ) {
 		AccessibleCanvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		try {
 			if (next != null) {
 				next.keyReleased( keyCode );
-				Graphics g = nextImage.getGraphics();
-				next.paint( g );
-				handleKeyReleased( keyCode, nextImage );
+				updateNextScreen( next, nextImage, this.nextCanvasRgb );
 			}
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("Error while handling keyReleased event" + e );
 		}
 	}
-	
-	/**
-	 * Allows subclasses to handle key released events.
-	 * The event has already been forwarded to the next screen and the image has been updated.
-	 * 
-	 * @param keyCode the key code
-	 * @param nextImage the updated image of the next screen
-	 */
-	protected void handleKeyReleased( int keyCode, Image nextImage ) {
-		// do nothing
-	}
 
 	/**
 	 * Handles key pressed events.
-	 * The implementation forwards this event to the next screen, updates the nextCanvasImage field and then forwards control
-	 * to handleKeyPressed.
+	 * The implementation forwards this event to the next screen and then updates the nextCanvasImage field.
 	 * 
 	 * @param keyCode the code of the key
 	 * @see #nextCanvasImage
-	 * @see #handleKeyPressed(int, Image)
+	 * @see #updateNextScreen(AccessibleCanvas, Image, int[])
 	 */
-	public final void keyPressed( int keyCode ) {
+	public void keyPressed( int keyCode ) {
 		AccessibleCanvas next = this.nextCanvas;
 		Image nextImage = this.nextCanvasImage;
 		try {
 			if (next != null) {
 				next.keyPressed( keyCode );
-				Graphics g = nextImage.getGraphics();
-				next.paint( g );
-				handleKeyPressed( keyCode, nextImage );
+				updateNextScreen( next, nextImage, this.nextCanvasRgb );
 			}
 		} catch (Exception e) {
 			//#debug error
@@ -343,15 +330,20 @@ public abstract class ScreenChangeAnimation
 		}
 	}
 	
+	
 	/**
-	 * Allows subclasses to handle key pressed events.
-	 * The event has already been forwarded to the next screen and the image has been updated.
+	 * Updates the image and possibly the RGB data of the next screen.
 	 * 
-	 * @param keyCode the key code
-	 * @param nextImage the updated image of the next screen
+	 * @param next the next screen
+	 * @param nextImage the image to which the screen should be painted
+	 * @param rgb the RGB data, can be null
 	 */
-	protected void handleKeyPressed( int keyCode, Image nextImage ) {
-		// do nothing
+	protected void updateNextScreen( AccessibleCanvas next, Image nextImage, int[] rgb ) {
+		Graphics g = nextImage.getGraphics();
+		next.paint( g );
+		if (rgb != null) {
+			nextImage.getRGB(rgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
+		}		
 	}
 	
 	/**
@@ -371,7 +363,9 @@ public abstract class ScreenChangeAnimation
 				//#debug
 				System.out.println("ScreenChangeAnimation: setting next screen");
 				this.lastCanvasImage = null;
+				this.lastCanvasRgb = null;
 				this.nextCanvasImage = null;
+				this.nextCanvasRgb = null;
 				this.nextCanvas = null;
 				Display disp = this.display;
 				this.display = null;

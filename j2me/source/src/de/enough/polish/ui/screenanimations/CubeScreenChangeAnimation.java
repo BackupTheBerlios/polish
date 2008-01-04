@@ -54,25 +54,23 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 	private Camera   camera;
 	private Light   light;
 	private float   angle = 0.0f,angle2 = 0.0f;
-	private Transform  transform = new Transform();
+	//private Transform  transform = new Transform();
 	private javax.microedition.m3g.Background  background = new javax.microedition.m3g.Background();
 	private VertexBuffer vbuffer;
 	private IndexBuffer  indexbuffer;
 	private Appearance  appearance;
 	private Material  material = new Material();
-	private int height, width;
 	private float fHeight,fWidth;
+	
 	public CubeScreenChangeAnimation() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
 	 */
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
-		this.width = width; this.height = height;
 		float wPercent = width / 256.0f;
 		float hPercent = height / 256.0f;
 		this.fWidth = (5.0f*wPercent); this.fHeight = (5.0f*hPercent);
@@ -194,21 +192,16 @@ public class CubeScreenChangeAnimation extends ScreenChangeAnimation {
 		  this.material.setShininess(100.0f);
 		  this.background.setColor(0xFFFFFFcc);
 		
-		  super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+		  super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable, isForward );
 
 	}
 	
 	
 	protected boolean animate() {
-		
-		// TODO Auto-generated method stub
-
-			return true;
-
+		return true;
 	}
 
 	public void paintAnimation(Graphics g) {
-		// TODO Auto-generated method stub
 		
 		  this.graphics3d.bindTarget(g, true,
 			      Graphics3D.DITHER |

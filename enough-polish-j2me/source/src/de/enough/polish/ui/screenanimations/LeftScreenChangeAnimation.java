@@ -27,12 +27,9 @@
  */
 package de.enough.polish.ui.screenanimations;
 
-import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.AccessibleCanvas;
 import de.enough.polish.ui.ScreenChangeAnimation;
 import de.enough.polish.ui.Style;
 
@@ -42,7 +39,7 @@ import de.enough.polish.ui.Style;
  * <pre>
  * .myAlert {
  * 		screen-change-animation: left;
- * 		left-screen-change-animation-speed: 4; ( 2 is default )
+ * 		left-screen-change-animation-speed: 4; ( -1 is default )
  * 		left-screen-change-animation-move-previous: true; ( false is default )
  * }
  * </pre>
@@ -59,7 +56,7 @@ public class LeftScreenChangeAnimation extends ScreenChangeAnimation {
 	
 	private int currentX;
 	//#if polish.css.left-screen-change-animation-speed
-		private int speed = 2;
+		private int speed = -1;
 	//#endif
 	//#if polish.css.left-screen-change-animation-move-previous
 		private boolean movePrevious;
@@ -74,15 +71,22 @@ public class LeftScreenChangeAnimation extends ScreenChangeAnimation {
 
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ScreenChangeAnimation#show(de.enough.polish.ui.Style, javax.microedition.lcdui.Display, int, int, javax.microedition.lcdui.Image, javax.microedition.lcdui.Image, de.enough.polish.ui.Screen)
+	 * @see de.enough.polish.ui.ScreenChangeAnimation#setStyle(de.enough.polish.ui.Style)
 	 */
-	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable ) 
+	protected void setStyle(Style style)
 	{
+		super.setStyle(style);
+		if (this.isForwardAnimation) {
+			this.currentX = 0; 
+		} else {
+			this.currentX = this.screenWidth;
+		}
 		//#if polish.css.left-screen-change-animation-speed
 			Integer speedInt = style.getIntProperty( "left-screen-change-animation-speed" );
 			if (speedInt != null ) {
 				this.speed = speedInt.intValue();
+			} else {
+				this.speed = -1;
 			}
 		//#endif
 		//#if polish.css.left-screen-change-animation-move-previous
@@ -91,28 +95,36 @@ public class LeftScreenChangeAnimation extends ScreenChangeAnimation {
 				this.movePrevious = movePreviousBool.booleanValue();
 			}
 		//#endif
-		super.show(style, dsplay, width, height, lstScreenImage,
-				nxtScreenImage, nxtCanvas, nxtDisplayable );
 	}
-	
+
+
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ScreenChangeAnimation#animate()
 	 */
 	protected boolean animate() {
-		if (this.currentX < this.screenWidth) {
-			//#if polish.css.left-screen-change-animation-speed
-				this.currentX += this.speed;
-			//#else
-				this.currentX += 2;
-			//#endif
+		int adjust;
+		//#if polish.css.left-screen-change-animation-speed
+			if (this.speed != -1) {
+				adjust =  this.speed;
+			} else {
+		//#endif
+				adjust = (this.screenWidth - this.currentX) / 3;
+				if (adjust < 2) {
+					adjust = 2;
+				}
+		//#if polish.css.left-screen-change-animation-speed
+			}
+		//#endif
+		if (this.isForwardAnimation) {
+			if (this.currentX < this.screenWidth) {
+				this.currentX += adjust;
+				return true;
+			}
+		} else if (this.currentX > 0) {
+			this.currentX -= adjust;
 			return true;
-		} else {
-			//#if polish.css.left-screen-change-animation-speed
-				this.speed = 2;
-			//#endif
-			this.currentX = 0;	
-			return false;
 		}
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -125,8 +137,17 @@ public class LeftScreenChangeAnimation extends ScreenChangeAnimation {
 				x = this.currentX;
 			}
 		//#endif
-		g.drawImage( this.lastCanvasImage, x, 0, Graphics.TOP | Graphics.LEFT );
-		g.drawImage( this.nextCanvasImage, - this.screenWidth + this.currentX, 0, Graphics.TOP | Graphics.LEFT );
+		Image first;
+		Image second;
+		if (this.isForwardAnimation) {
+			first = this.lastCanvasImage;
+			second = this.nextCanvasImage;
+		} else {
+			first = this.nextCanvasImage;
+			second = this.lastCanvasImage;
+		}
+		g.drawImage( first, x, 0, Graphics.TOP | Graphics.LEFT );
+		g.drawImage( second, - this.screenWidth + this.currentX, 0, Graphics.TOP | Graphics.LEFT );
 	}
 
 }

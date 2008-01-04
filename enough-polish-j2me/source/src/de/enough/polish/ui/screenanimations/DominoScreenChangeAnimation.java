@@ -45,8 +45,6 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 	private int[] left ,right ,up,down;
 	//the rgb - images
 	private int[] rgbData ;
-	private int[] rgbbuffer ;
-	private int[] lstrgbbuffer ;
 	//the height of the columns
 	private int[] scaleableHeight;
 	private int[] scaleableWidth;
@@ -56,54 +54,47 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 //	private boolean first = true;
 	public DominoScreenChangeAnimation() {
 		super();
-		// TODO Auto-generated constructor stub
+		this.useLastCanvasRgb = true;
+		this.useNextCanvasRgb = true;
 	}
 	
 	protected void show(Style style, Display dsplay, int width, int height,
-			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable  ) 
+			Image lstScreenImage, Image nxtScreenImage, AccessibleCanvas nxtCanvas, Displayable nxtDisplayable, boolean isForward  ) 
 	{
-			System.gc();
-			System.out.print("width:"+width+":height:"+height);
-			this.row = 0;
-			this.id = 0;
-//			this.row = width;
-			this.degree = 1;
-			this.lstdegree = 89;
-			this.stillRun = true;
-			this.wayForScale = (width *100)/ 90;
-			this.heightScale = ((height-((height * 12)/100))*100)/90;
-			int size = width * height;
-			this.left = new int [height];
-			this.right = new int [height];
-			this.scaleableWidth = new int [height];
-			for(int i = 0; i < this.scaleableWidth.length;i++){
-				this.scaleableWidth[i] = width;
-				this.left[i] = 0;
-				this.right[i] = width;
-			}
-			this.up = new int [width];
-			this.down = new int [width];
-			this.scaleableHeight = new int [width];
-			for(int i = 0;i < this.scaleableHeight.length;i++){
-				this.scaleableHeight[i] = height;
-				this.up[i] = 0;
-				this.down[i] = height;
-			}
-			this.rgbbuffer = new int[size];
-			this.lstrgbbuffer = new int [size];
-			this.rgbData = new int [size];
-			nxtScreenImage.getRGB(this.rgbbuffer, 0, width, 0, 0, width, height );
-			lstScreenImage.getRGB(this.lstrgbbuffer, 0, width, 0, 0, width, height );
-			lstScreenImage.getRGB(this.rgbData, 0, width, 0, 0, width, height );
-			super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable );
+		super.show(style, dsplay, width, height, lstScreenImage, nxtScreenImage, nxtCanvas, nxtDisplayable , isForward);
+		this.row = 0;
+		this.id = 0;
+		this.degree = 1;
+		this.lstdegree = 89;
+		this.stillRun = true;
+		this.wayForScale = (width *100)/ 90;
+		this.heightScale = ((height-((height * 12)/100))*100)/90;
+		this.left = new int [height];
+		this.right = new int [height];
+		this.scaleableWidth = new int [height];
+		for(int i = 0; i < this.scaleableWidth.length;i++){
+			this.scaleableWidth[i] = width;
+			this.left[i] = 0;
+			this.right[i] = width;
+		}
+		this.up = new int [width];
+		this.down = new int [width];
+		this.scaleableHeight = new int [width];
+		for(int i = 0;i < this.scaleableHeight.length;i++){
+			this.scaleableHeight[i] = height;
+			this.up[i] = 0;
+			this.down[i] = height;
+		}
+		this.rgbData = new int [width * height];
+		//lstScreenImage.getRGB(this.rgbData, 0, width, 0, 0, width, height );
+		System.arraycopy( this.lastCanvasRgb, 0, this.rgbData, 0, this.lastCanvasRgb.length );
 	}
 	
 	
 	
 	protected boolean animate() {
-		// TODO Auto-generated method stub
-//		System.out.print("bishier.1\n");
-		int row = 0,column = 0;
+		int row = 0;
+		int column = 0;
 		int length = this.rgbData.length-1;
 		int sH,c,scalePercentH,scalePercentWidth,r,newI,sW = 0,left = 0,right = this.screenWidth;
 		scalePercentWidth = this.screenWidth;
@@ -118,7 +109,7 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 			}
 			sH = this.scaleableHeight[row];
 			if(left > row || right < row || this.down[row] < column || this.up[row] > column){
-				this.rgbData[i] = this.rgbbuffer[i];
+				this.rgbData[i] = this.nextCanvasRgb[i];
 			}
 			else{
 				c = column - (this.screenHeight - sH);
@@ -142,7 +133,7 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 				if(newI >= length)newI = length;
 				if(newI < 0)newI = 0;
 
-				this.rgbData[i] = this.lstrgbbuffer[newI];
+				this.rgbData[i] = this.lastCanvasRgb[newI];
 			}
 		}
 //		System.out.print("bishier.2\n");
@@ -178,18 +169,7 @@ public class DominoScreenChangeAnimation extends ScreenChangeAnimation {
 			this.left[i]+= 4;
 		}
 	}
-	
-	public void handleKeyPressed(int keyCode, Image next) {
-		next.getRGB( this.rgbbuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-	}
-
-	//#if polish.hasPointerEvents
-	public void pointerPressed(int x, int y) {
-		super.pointerPressed(x, y);
-		this.nextCanvasImage.getRGB( this.rgbbuffer, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-	}
-	//#endif
-	
+		
 	public void paintAnimation(Graphics g) {
 		g.fillRect(0,0,this.screenWidth,this.screenHeight);
 		g.drawRGB(this.rgbData,0,this.screenWidth,0,0,this.screenWidth,this.screenHeight,false);
