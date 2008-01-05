@@ -554,7 +554,7 @@ public class CssConverter extends Converter {
 						// the attribute is not registered anywhere:
 						System.out.println("Recommendation: It is advised to register the CSS-attribute [" + attributeName + "] in the [custom-css-attributes.xml].");
 						if ( attributeName.endsWith("-color")) {
-							value = this.colorConverter.generateColorConstructor(value);
+							value = Integer.toString( Integer.parseInt( this.colorConverter.parseColor(value).substring(2), 16) );
 						}
 					}
 					// process columns-width value:
