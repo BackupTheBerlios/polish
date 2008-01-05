@@ -94,6 +94,8 @@ public class BottomScreenChangeAnimation extends ScreenChangeAnimation {
 			Boolean movePreviousBool = style.getBooleanProperty("bottom-screen-change-animation-move-previous");
 			if (movePreviousBool != null) {
 				this.movePrevious = movePreviousBool.booleanValue();
+			} else {
+				this.movePrevious = false;
 			}
 		//#endif
 	}

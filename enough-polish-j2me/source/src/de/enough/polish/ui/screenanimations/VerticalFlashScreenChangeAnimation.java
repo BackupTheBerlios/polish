@@ -45,12 +45,12 @@ import de.enough.polish.ui.Style;
  */
 public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation
 {	
-	private int currentX;
+	private int currentY;
 	private int currentSize;
-	//#if polish.css.vertical-flash-screen-change-animation-speed
+	//#if polish.css.flash-screen-change-animation-speed
 		private int speed = -1;
 	//#endif
-	//#if polish.css.vertical-flash-screen-change-animation-color
+	//#if polish.css.flash-screen-change-animation-color
 		private int color = 0;
 	//#endif
 
@@ -71,14 +71,14 @@ public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation
 	{
 		super.setStyle(style);
 		if (this.isForwardAnimation) {
-			this.currentX = this.screenWidth / 2;
+			this.currentY = this.screenHeight / 2;
 			this.currentSize = 0;
 		} else {
-			this.currentX = 0;
-			this.currentSize = this.screenWidth;
+			this.currentY = 0;
+			this.currentSize = this.screenHeight;
 		}
-		//#if polish.css.vertical-flash-screen-change-animation-speed
-			Integer speedInt = style.getIntProperty("vertical-flash-screen-change-animation-speed");
+		//#if polish.css.flash-screen-change-animation-speed
+			Integer speedInt = style.getIntProperty("flash-screen-change-animation-speed");
 			if (speedInt != null)
 			{
 				this.speed = speedInt.intValue();
@@ -87,8 +87,8 @@ public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation
 			}
 		//#endif
 		
-		//#if polish.css.vertical-flash-screen-change-animation-color
-			Integer colorInt = style.getIntProperty("vertical-flash-screen-change-animation-color");
+		//#if polish.css.flash-screen-change-animation-color
+			Integer colorInt = style.getIntProperty("flash-screen-change-animation-color");
 			if (colorInt != null)
 			{
 				this.color = colorInt.intValue();
@@ -102,27 +102,27 @@ public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation
 	protected boolean animate()
 	{
 		int adjust;
-		//#if polish.css.vertical-flash-screen-change-animation-speed
+		//#if polish.css.flash-screen-change-animation-speed
 			if (this.speed != -1) {
 				adjust = this.speed;
 			} else {
 		//#endif
-				adjust = this.currentX / 3;
+				adjust = this.currentY / 3;
 				if (adjust < 2) {
 					adjust = 2;
 				}
-		//#if polish.css.vertical-flash-screen-change-animation-speed
+		//#if polish.css.flash-screen-change-animation-speed
 			}
 		//#endif		
 		if (this.isForwardAnimation) {
-			if (this.currentX > 0)
+			if (this.currentY > 0)
 			{
-				this.currentX -= adjust;
+				this.currentY -= adjust;
 				this.currentSize += adjust << 1;
 				return true;
 			}
 		} else if (this.currentSize > 0) {
-			this.currentX += adjust;
+			this.currentY += adjust;
 			this.currentSize -= adjust << 1;
 			return true;
 		}
@@ -150,9 +150,9 @@ public class VerticalFlashScreenChangeAnimation extends ScreenChangeAnimation
 		//#else
 			g.setColor(0);
 		//#endif
-		g.drawLine( this.currentX - 1, 0, this.currentX - 1, this.screenHeight );
-		g.drawLine( this.currentX + this.currentSize, 0,  this.currentX + this.currentSize, this.screenHeight );
-		g.setClip( this.currentX, 0, this.currentSize, this.screenHeight );
+		g.drawLine(0, this.currentY - 1, this.screenWidth, this.currentY - 1);
+		g.drawLine(0, this.currentY + this.currentSize, this.screenWidth, this.currentY + this.currentSize);
+		g.setClip(0, this.currentY, this.screenWidth, this.currentSize);
 		g.drawImage(second, 0, 0, Graphics.TOP | Graphics.LEFT);
 	}
 }

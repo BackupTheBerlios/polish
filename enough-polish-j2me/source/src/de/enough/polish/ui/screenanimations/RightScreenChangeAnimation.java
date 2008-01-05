@@ -93,6 +93,8 @@ public class RightScreenChangeAnimation extends ScreenChangeAnimation {
 			Boolean movePreviousBool = style.getBooleanProperty("right-screen-change-animation-move-previous");
 			if (movePreviousBool != null) {
 				this.movePrevious = movePreviousBool.booleanValue();
+			} else {
+				this.movePrevious = false;
 			}
 		//#endif
 	}

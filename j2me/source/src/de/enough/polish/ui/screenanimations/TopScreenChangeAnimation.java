@@ -94,6 +94,8 @@ public class TopScreenChangeAnimation extends ScreenChangeAnimation {
 			Boolean movePreviousBool = style.getBooleanProperty("top-screen-change-animation-move-previous");
 			if (movePreviousBool != null) {
 				this.movePrevious = movePreviousBool.booleanValue();
+			} else {
+				this.movePrevious = false;
 			}
 		//#endif
 	}

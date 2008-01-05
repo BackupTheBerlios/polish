@@ -91,7 +91,7 @@ public class ParticleScreenChangeAnimation extends ScreenChangeAnimation {
 		if (isForward) {
 			System.arraycopy( this.lastCanvasRgb, 0, this.scaledScreenRgb, 0,  width * height );
 		} else {
-			System.arraycopy( this.nextCanvasRgb, 0, this.scaledScreenRgb, 0,  width * height );
+			animate();
 		}
 	}
 	
