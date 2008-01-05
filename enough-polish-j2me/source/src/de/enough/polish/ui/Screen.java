@@ -986,6 +986,9 @@ implements AccessibleCanvas
 		if (this.background != null) {
 			this.background.showNotify();
 		}
+		if (this.border != null) {
+			this.border.showNotify();
+		}
 
 		this.lastInteractionTime = System.currentTimeMillis();
 	}
@@ -1064,6 +1067,9 @@ implements AccessibleCanvas
 		//#endif
 		if (this.background != null) {
 			this.background.hideNotify();
+		}
+		if (this.border != null) {
+			this.border.hideNotify();
 		}
 	}
 	

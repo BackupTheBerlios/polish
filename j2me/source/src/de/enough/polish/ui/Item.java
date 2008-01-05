@@ -959,12 +959,22 @@ public abstract class Item extends Object
 			}
 		}
 		//System.out.println( this + " style [" + style.name + "]: right: " + this.isLayoutRight + " center: " + this.isLayoutCenter + " expand: " + this.isLayoutExpand + " layout=" + Integer.toHexString(this.layout));
-		if (this.isShown && this.background != style.background) {
-			if (this.background != null) {
-				this.background.hideNotify();
+		if (this.isShown) {
+			if (this.background != style.background) {
+				if (this.background != null) {
+					this.background.hideNotify();
+				}
+				if (style.background != null) {
+					style.background.showNotify();
+				}
 			}
-			if (style.background != null) {
-				style.background.showNotify();
+			if (this.border != style.border) {
+				if (this.border != null) {
+					this.border.hideNotify();
+				}
+				if (style.border != null) {
+					style.border.showNotify();
+				}
 			}
 		}
 		this.background = style.background;
@@ -1111,6 +1121,12 @@ public abstract class Item extends Object
 							viewType = (ItemView) viewType.getClass().newInstance();
 						}
 						viewType.parentItem = this;
+						if (this.isShown) {
+							if (this.view != null) {
+								this.view.hideNotify();
+							}
+							viewType.showNotify();
+						}
 						this.view = viewType;
 					} catch (Exception e) {
 						//#debug error
@@ -2664,6 +2680,14 @@ public abstract class Item extends Object
 		if (this.background != null) {
 			this.background.showNotify();
 		}
+		if (this.border != null) {
+			this.border.showNotify();
+		}
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.showNotify();
+			}
+		//#endif
 	}
 
 	/**
@@ -2680,6 +2704,14 @@ public abstract class Item extends Object
 		if (this.background != null) {
 			this.background.hideNotify();
 		}
+		if (this.border != null) {
+			this.border.hideNotify();
+		}
+		//#ifdef polish.css.view-type
+			if (this.view != null) {
+				this.view.hideNotify();
+			}
+		//#endif
 	}
 	
 	/**

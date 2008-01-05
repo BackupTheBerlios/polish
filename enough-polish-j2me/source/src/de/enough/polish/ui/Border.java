@@ -28,8 +28,6 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.io.Serializable;
-
 /**
  * <p>Provides an abstract  border.</p>
  *
@@ -93,4 +91,21 @@ public abstract class Border //implements Serializable
 	public boolean animate() {
 		return false;
 	}
+	
+	/**
+	 * Informs the border that it is being hidden shortly.
+	 * The default implementation is empty.
+	 */
+	public void hideNotify() {
+		// do nothing
+	}
+	
+	/**
+	 * Informs the border that it is being shown shortly or that it is now applied to a new visible item.
+	 * The default implementation is empty.
+	 */
+	public void showNotify() {
+		// do nothing
+	}
+
 }

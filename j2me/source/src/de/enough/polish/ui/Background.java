@@ -107,14 +107,16 @@ public abstract class Background //implements Serializable
 	}
 	
 	/**
-	 * Informs the background that it is being hidden shortly
+	 * Informs the background that it is being hidden shortly.
+	 * The default implementation is empty.
 	 */
 	public void hideNotify() {
 		// do nothing
 	}
 	
 	/**
-	 * Informs the background that it is being shown shortly
+	 * Informs the background that it is being shown shortly or that it is now applied to a new visible item.
+	 * The default implementation is empty.
 	 */
 	public void showNotify() {
 		// do nothing

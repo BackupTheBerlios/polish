@@ -94,21 +94,20 @@ public abstract class ScreenChangeAnimation
 //#else
 	//#= extends Canvas 
 //#endif
+implements Runnable
 //#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-	implements Runnable, AccessibleCanvas
-//#else
-	//# implements Runnable	
+	, AccessibleCanvas
 //#endif
 {
 	protected Display display;
 	protected AccessibleCanvas nextCanvas;
 	protected Image lastCanvasImage;
 	protected int[] lastCanvasRgb;
-	/** set to true in constructor of subclasses for populating lastCanvasRgb */
+	/** set to true in subclasses for populating lastCanvasRgb */
 	protected boolean useLastCanvasRgb;
 	protected Image nextCanvasImage;
 	protected int[] nextCanvasRgb;
-	/** set to true in constructor of subclasses for populating nextCanvasRgb */
+	/** set to true in subclasses for populating nextCanvasRgb */
 	protected boolean useNextCanvasRgb;
 	protected int screenWidth;
 	protected int screenHeight;
@@ -153,12 +152,16 @@ public abstract class ScreenChangeAnimation
 		this.lastCanvasImage = lstScreenImage;
 		if (this.useLastCanvasRgb) {
 			this.lastCanvasRgb = new int[ width * height ];
-			lstScreenImage.getRGB(this.lastCanvasRgb, 0, width, 0, 0, width, height );
+			//#if polish.midp2
+				lstScreenImage.getRGB(this.lastCanvasRgb, 0, width, 0, 0, width, height );
+			//#endif
 		}
 		this.nextCanvasImage = nxtScreenImage;
 		if (this.useNextCanvasRgb) {
 			this.nextCanvasRgb = new int[ width * height ];
-			nxtScreenImage.getRGB(this.nextCanvasRgb, 0, width, 0, 0, width, height );
+			//#if polish.midp2
+				nxtScreenImage.getRGB(this.nextCanvasRgb, 0, width, 0, 0, width, height );
+			//#endif
 		}
 		this.isForwardAnimation = isForward;
 		setStyle( style );
@@ -341,9 +344,11 @@ public abstract class ScreenChangeAnimation
 	protected void updateNextScreen( AccessibleCanvas next, Image nextImage, int[] rgb ) {
 		Graphics g = nextImage.getGraphics();
 		next.paint( g );
-		if (rgb != null) {
-			nextImage.getRGB(rgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
-		}		
+		//#if polish.midp2
+			if (rgb != null) {
+				nextImage.getRGB(rgb, 0, this.screenWidth, 0, 0, this.screenWidth, this.screenHeight );
+			}
+		//#endif
 	}
 	
 	/**
