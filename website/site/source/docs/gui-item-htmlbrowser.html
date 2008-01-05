@@ -16,11 +16,13 @@
 	<p>
 	<img src="<%= basedir%>images/gui-item-htmlbrowser.png"  width="334" height="260" alt="The HtmlBrowser with search results from Wikipedia." />
 	<br />
-	Use the <code>HtmlBrowser</code> to display simple HTML pages.
+	Use the <code>HtmlBrowser</code> to display simple HTML pages within any <a href="gui-screen-form.html">Form</a>,
+	<a href="gui-screen-framedform.html">FramedForm</a> or <a href="gui-screen-tabbedform.html">TabbedForm</a>.
 	</p>
 	<h2 id="Design">Design</h2>
 	<p>
-	The above design has been realized using following CSS settings:
+	The above design has been realized using following CSS settings - note that we use the <code>midp2</code> view for allowing
+	several items within a single row of the browser:
 	</p>
 <pre>
 .htmlBrowser {
@@ -129,10 +131,12 @@ myChartTagHandler.register( this.htmlBrowser );
 	extend the browser by adding support for  a custom <code>chart</code> micro format:
 	</p>
 <pre>
-&lt;div class=&quot;chart&quot;&gt;
+&lt;div class=&quot;chart&quot; id=&quot;verticalBarChart&quot; &gt;
 	&lt;span class=&quot;chartdata&quot;&gt;50,15,5,0,5,15,50&lt;/span&gt;
 	&lt;span class=&quot;chartdata&quot;&gt;0,35,45,50,45,35,0&lt;/span&gt;
 	&lt;span class=&quot;chartdata&quot;&gt;25,25,25,25,25,25,25&lt;/span&gt;
+	&lt;span class=&quot;chartdata&quot;&gt;50,25,75,25,-25,-25,0&lt;/span&gt;
+	&lt;span class=&quot;chartcolors&quot;&gt;#ff0000,#00ff00,#0000ff,#ffff00&lt;/span&gt;
 &lt;/div&gt;
 </pre>
 	<p>The processing of other tags is handled by the default <code>HtmlTagHandler</code>.
@@ -150,88 +154,152 @@ import de.enough.polish.util.StringTokenizer;
 import de.enough.polish.util.TextUtil;
 import de.enough.polish.xml.SimplePullParser;
 
+/**
+ * Handles each &lt;div&gt; element with a <code>chart</code> class.
+ */
 public class ChartTagHandler
-  extends TagHandler
+extends TagHandler
 {
-  private boolean collectData;
-  private ArrayList strDataSequences = new ArrayList();
-  private String strColors;
-  private Style chartStyle;
-
-  public void register(Browser browser)
-  {
-    browser.addTagHandler(&quot;div&quot;, this);
-    browser.addTagHandler(&quot;span&quot;, this);
-  }
+	private static final String CLASS_CHART = "chart";
+	private static final String CLASS_CHART_DATA = "chartdata";
+	private static final String CLASS_CHART_COLORS = "chartcolors";
+	private boolean collectData;
+	private ArrayList strDataSequences = new ArrayList();
+	private String strColors;
+	private Style chartStyle;
+	private TagHandler parent;
   
-  public boolean handleTag(Container parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap, Style style)
-  {
-    if (TextUtil.equalsIgnoreCase(&quot;div&quot;, tagName))
-    {
-      if (opening)
-      {
-        // collect chart data until tag is being closed...
-        this.strDataSequences.clear();
-        this.strColors = null;
-        this.collectData = true;
-        this.chartStyle = style;
-      }
-      else
-      {
-        int[][] dataSequences = parseDataSequences();
-        int[] colors = new int[]{ 0xFF0000, 0x00FF00, 0x0000FF };
-        
-        //#style browserChart
-        ChartItem item = new ChartItem(&quot;label&quot;, dataSequences, colors);
-        if (this.chartStyle != null) {
-        	item.setStyle(this.chartStyle);
-        } 
-        parentItem.add(item);
-        return true;
-      }
-    }
-    else if (TextUtil.equalsIgnoreCase(&quot;span&quot;, tagName) && this.collectData)
-    {
-       String cssClass = (String) attributeMap.get(&quot;class&quot;);
-       
-       if (cssClass != null && TextUtil.equalsIgnoreCase(&quot;chartdata&quot;, cssClass) && opening)
-       {
-         parser.next();
-         String data = parser.getText();
-         this.strDataSequences.add(data);
-         return true;
-       }
-       else if (TextUtil.equalsIgnoreCase(&quot;charcolors&quot;, cssClass))
-       {
-         parser.next();
-         this.strColors = parser.getText();
-       }
-    }
-    
-    return false;
-  }
+	/**
+	 * Creates a new handler for "chart" div tags
+	 * @param parent the default handler for div tags to which unprocessed
+	 *        tags are forwarded, can be null
+	 */
+	public ChartTagHandler( TagHandler parent ) {
+		this.parent = parent;
+	}
 
-  private int[][] parseDataSequences()
-  {
-    int num = this.strDataSequences.size();
-    int[][] result = new int[num][];
-    
-    for (int i = 0; i < num; i++)
-    {
-      String sequence = (String) this.strDataSequences.get(i);
-      StringTokenizer st = new StringTokenizer(sequence, ',');
-      int[] array = new int[st.countTokens()];
+	public void register(Browser browser)
+	{
+		browser.addTagHandler("div", this);
+		browser.addTagHandler("span", this);
+	}
+  
+	public boolean handleTag(Container parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap, Style style)
+	{
+		String elementClass = (String) attributeMap.get("class");
+		if (TextUtil.equalsIgnoreCase("div", tagName) 
+    		&& 
+    		( (!opening && this.collectData) 
+    				|| TextUtil.equalsIgnoreCase(CLASS_CHART, elementClass)) 
+    		)
+		{
+			if (opening)
+			{
+				// collect chart data until tag is being closed...
+				this.strDataSequences.clear();
+				this.strColors = null;
+				this.collectData = true;
+				this.chartStyle = style;
+			}
+			else
+			{
+				int[][] dataSequences = parseDataSequences();
+				int[] colors = parseChartColors();
+				
+				//#style browserChart?
+				ChartItem item = new ChartItem(null, dataSequences, colors);
+				if (this.chartStyle != null) {
+					item.setStyle(this.chartStyle);
+					this.chartStyle = null;
+				} 
+				//#debug
+				System.out.println("adding chartitem" + item);
+				parentItem.add(item);
+				this.collectData = false;
+				this.strDataSequences.clear();
+				this.strColors = null;
+				return true;
+			}
+		}
+		else if (TextUtil.equalsIgnoreCase("span", tagName) && this.collectData) 
+		{
+			if (opening && TextUtil.equalsIgnoreCase(CLASS_CHART_DATA, elementClass))
+			{
+				parser.next();
+				String data = parser.getText();
+				this.strDataSequences.add(data);
+				return true;
+			}
+			else if (opening && TextUtil.equalsIgnoreCase(CLASS_CHART_COLORS, elementClass))
+			{
+				parser.next();
+				this.strColors = parser.getText();
+			}
+		}
+		if (this.parent == null) {
+			return false;
+		} else {
+			return this.parent.handleTag(parentItem, parser, tagName, opening, attributeMap, style);
+		}
+	}
+
+	/**
+	 * Parses and retrieves the colors for the chart.
+	 * 
+	 * @return the colors given in the "chartcolors" span element
+	 */
+	private int[] parseChartColors()
+	{
+		if (this.strColors == null) {
+			return new int[]{ 0xFF0000, 0x00FF00, 0x0000FF };
+		}
+		String[] colorStrings = TextUtil.splitAndTrim(this.strColors, ',');
+		int[] colors = new int[ colorStrings.length ];
+		for (int i = 0; i < colors.length; i++)
+		{
+			String colorString = colorStrings[i];
+			int color = 0xff0000;
+			try {
+				if (colorString.charAt(0) == '#') {
+					color = Integer.parseInt(colorString.substring(1), 16);
+				} else if (colorString.startsWith("0x")) {
+					color = Integer.parseInt(colorString.substring(2), 16);
+				} else {
+					color = Integer.parseInt(colorString, 16);
+				}
+			} catch (Exception e) {
+				//#debug error
+				System.out.println("Unable to parse color definition " + colorString + e);
+			}
+			colors[i] = color;
+		}
+		return colors;
+	}
+
+	/**
+	 * Parses and returns the data sequences used for the chart.
+	 * 
+	 * @return an array of integer arrays with the chart data
+	 */
+	private int[][] parseDataSequences()
+	{
+		int num = this.strDataSequences.size();
+		int[][] result = new int[num][];
+		
+		for (int i = 0; i < num; i++)
+		{
+			String sequence = (String) this.strDataSequences.get(i);
+			StringTokenizer st = new StringTokenizer(sequence, ',');
+			int[] array = new int[st.countTokens()];
       
-      for (int index = 0; st.hasMoreTokens(); index++)
-      {
-        array[index] = Integer.parseInt(st.nextToken());
-      }
-      
-      result[i] = array;
-    }
-    
-    return result;
-  }
+			for (int index = 0; st.hasMoreTokens(); index++)
+			{
+				array[index] = Integer.parseInt(st.nextToken());
+			}
+			result[i] = array;
+		}
+		return result;
+	}
 }
 </pre>	
 	<p>
@@ -255,6 +323,7 @@ public interface BrowserListener
 	public void notifyPageError(String url, Exception e);
 }
 </pre>
+	<p>This allows you to show an acitivity indicator while the user is accessing data, for example.</p>
 	
 	
 	
@@ -284,12 +353,14 @@ public interface BrowserListener
 	 <td><code>&quot;J2ME-Polish/&quot; + System.getProperty(&quot;microedition.platform&quot;)</code></td>
 	 <td>The user agent that the browser uses for .</td>
 	</tr>
-	<!-- 
 	<tr>
-	 <td>polish.Browser.</td>
+	 <td>polish.Browser.Gzip</td>
 	 <td>false</td>
-	 <td>.</td>
+	 <td>Adds GZIP compression support for loading webpages from a server - depending on the pages this might not only
+	 limit the transmitted data, but also speed up the loading. However, additional resources are required for unzipping the
+	 pages.</td>
 	</tr>
+	<!-- 
 	<tr>
 	 <td>polish.Browser.</td>
 	 <td>false</td>
@@ -297,7 +368,34 @@ public interface BrowserListener
 	</tr>
 	 -->
 	</table>
+
 	
+	<h2 id="htmlbrowser-commands">Commands</h2>
+	<p>The HtmlBrowser uses some commands that you can translate using preprocessing variables
+	or J2ME&nbsp;Polish' <a href="localization.html">Localization framework</a>:
+	</p>
+	<ul>
+		<li><code>polish.command.followlink</code>: A command that is added automatically to text or image links - default value is &quot;Go&quot;,</li>
+		<li><code>polish.command.submit</code>: A command that is added automatically to submit buttons of forms - default value is &quot;Submit&quot;,</li>
+		<li><code>polish.command.back</code>: A command that is used for returning from internal views like the alert that is being used for the <a href="gui-item-rssbrowser.html">RssBrowser</a> - default value is &quot;Back&quot;,</li>
+	</ul>
+	<p>The following snippet from a <i>resources/messages.txt</i> file shows you the default values for these commands:
+	</p>
+<pre>
+# used by the HtmlBrowser for a links:
+polish.command.followlink=Go
+# used by the HtmlBrowser for submitting a form:
+polish.command.submit=Submit
+# used by the RssBrowser for returning to the overview after showing details of an RSS-Item:
+polish.command.back=Back
+</pre>
+		
+	<h2 id="htmlbrowser-limitations">Current Limitations</h2>
+	<p>
+	Currently you cannot use lists like <code>&lt;ol&gt;</code> or <code>&lt;ul&gt;</code>.
+	<br />
+	In forms you can only use <code>GET</code> as a possible action, not <code>POST</code>.
+	</p>
 
 	<h2 id="htmlbrowser-JavaDoc">JavaDoc</h2>
 	<ul>

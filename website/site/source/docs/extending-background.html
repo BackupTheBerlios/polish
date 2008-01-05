@@ -260,6 +260,26 @@ extends Background
 	<br />
 	<img src="../images/extending-background.png" width="282" height="273" alt="the finished triangle background" />
 	</p>
+	
+	<h2 id="advancedtopics">Animations in Backgrounds</h2>
+	<p>
+	You can realize animations by overriding either <code>public boolean animated()</code> or 
+	<code>public void animate(Screen screen, Item parent, long currentTime, ClippingRegion repaintRegion)</code>
+	in your implementation:
+	</p>
+	<ul>
+		<li><code>public boolean animate()</code> causes a refresh of the whole background area when you return true.</li>
+		<li><code>public void animate(Screen screen, Item parent, long currentTime, ClippingRegion repaintRegion)</code> 
+		allows you to refresh only parts of your background or an area that is outside of the parent item's original area.
+		You have to specify the area that requires a refresh by calling <code>repaintRegion.addRegion( int x, int y, int width, int height )</code>
+		or by calling <code>parent.addRelativeRegion( repaintRegion, x, y, width, height )</code>.
+		You can request a full refresh by calling <code>parent.addRelativeRegion( repaintRegion, 0, 0, parent.contentWidth, parent.contentHeight )</code>.		
+		</li>
+	</ul>
+	<p>If you want to trigger your animation only when the corresponding item or screen is made visible or when a
+	focused/hover style along with your background moves to a new item, you can override
+	<code>public void showNotify()</code> and <code>public void hideNotify()</code> in your implementation.
+	</p>
 
 	<h2 id="JavaDoc">JavaDoc</h2>
 	<p>

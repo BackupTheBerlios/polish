@@ -11,13 +11,14 @@
 		<li><a href="extending-itemview.html">Item Views</a></li>
 		<li><a href="extending-border.html">Borders</a></li>
 		<li><a href="extending-background.html">Backgrounds</a></li>
+		<li><a href="extending-screenchangeanimation.html">ScreenChangeAnimation</a></li>
 		<li><a href="gui-visualguide.html#text-effects">Existing TextEffects</a></li>
 		<li><a href="gui-item-stringitem.html">StringItem</a></li>
 	</ul>
 	<%index %>
 	<p>
 	Text effects provide you with an easy way to spice up your fonts without needing to care
-	about sizes and availability of characters like for bitmap fonts. Wile there are
+	about sizes and availability of characters like for bitmap fonts. While there are
 	 <a href="gui-visualguide.html#text-effects">various text-effects</a> available, you might encounter a 
 	 situation in which you want to create your own effect - read on for learning how.</p>
 	</p>
@@ -36,7 +37,7 @@
 	
 	<h2 id="implementation">Implementing your TextEffect</h2>
 	<p>
-	Create your own efft by extending <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/TextEffect.html">de.enough.polish.ui.TextEffect</a> 
+	Create your own effect by extending <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/TextEffect.html">de.enough.polish.ui.TextEffect</a> 
 	or an existing TextEffect subclass.
 	For simple effects you only need to implement <code>public drawString( String text, int textColor, int x, int y, int orientation, Graphics g )</code>,
 	which renders a single line of text at the specified position.
@@ -268,7 +269,7 @@ public class MyShadowTextEffect
 
 	<h2 id="usage">Using Your Text Effect</h2>
 	<p>
-	You use the corresponding effect just for all items and screen elements that are based on 
+	You can use your effect for all items and screen elements that are based on 
 	<a href="gui-item-stringitem.html">StringItem</a>, for example 
 	<a href="gui-item-textfield.html">TextFields</a>, <a href="gui-screenelement-title.html">screen titles</a>, 
 	<a href="gui-screenelement-ticker.html">screen tickers</a>, or <a href="gui-css-basics.html#label">item labels</a>.

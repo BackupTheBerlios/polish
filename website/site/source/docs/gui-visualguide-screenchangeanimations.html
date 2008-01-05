@@ -1,0 +1,563 @@
+<%define inDocumentationSection %>
+<%define inDocumentationSection.gui %>
+<%set title = J2ME Polish: Visual Guide to screen-change-animation %>
+<%set basedir = ../ %>
+
+<%include start.txt %>
+
+	<h1 id="top">Visual Guide to screen-change-animation</h1>
+	<ul class="relatedtechnologies">
+		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-visualguide.html">Visual Guide</a></li>
+		<li><a href="gui-concepts.html">GUI Concepts</a></li>
+		<li><a href="gui-css-basics.html">CSS Basics</a></li>
+		<li><a href="customization.html">Customization</a></li>
+	</ul>
+	<%index %>
+	<p>
+	This guide shows you the available screen-change-animations.
+	<br />You can apply any screen transition by setting the <code>screen-change-animation</code> attribute
+	within the screen's CSS style, e.g.:
+	</p>
+<pre>
+.screenAlert {
+	padding: 2;
+	background-color: #a999;
+	layout: horizontal-shrink | vertical-shrink | center | bottom;
+	<b>screen-change-animation: left;</b>
+}
+</pre>
+	<p>The following movies show the main menu as the last screen and the
+	popup alert as the next screen.
+	</p>
+
+<h2 id="screenchangeanimation-bottom">bottom Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-bottom.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-bottom.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Move in the next screen from the bottom with the 
+		<a href="gui-screenchangeanimation-bottom.html">bottom screen-change-animation</a>.
+		</td>
+	</tr></table>
+
+<h2 id="screenchangeanimation-bottomshutter">bottomshutter Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-bottomshutter.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-bottomshutter.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Move in the next screen from the bottom using a shutter
+		with the  <a href="gui-screenchangeanimation-bottomshutter.html">bottomshutter screen-change-animation</a>.</td>
+	</tr></table>
+	
+	
+	<h2 id="screenchangeanimation-bwToColor">bwToColor Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-bwToColor.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-bwToColor.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Fade the next screen from black/white to the original color
+		with the  <a href="gui-screenchangeanimation-bwToColor.html">bwToColor screen-change-animation</a>.</td>
+	</tr></table>
+
+<h2 id="screenchangeanimation-cage">cage Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-cage.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-cage.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Make every second pixel row visible in a linear movement 
+		with the  <a href="gui-screenchangeanimation-cage.html">cage screen-change-animation</a>.</td>
+	</tr></table>
+
+
+<h2 id="screenchangeanimation-diagonal">diagonal Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-diagonal.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-diagonal.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Move in the next screen diagonally using
+		the  <a href="gui-screenchangeanimation-diagonal.html">diagonal screen-change-animation</a>.</td>
+	</tr></table>
+
+
+<h2 id="screenchangeanimation-domino">domino Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-domino.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-domino.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Zoom out the last screen in a somewhat weird animation
+		with the  <a href="gui-screenchangeanimation-domino.html">domino screen-change-animation</a>.</td>
+	</tr></table>
+
+
+
+<h2 id="screenchangeanimation-fade">fade Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-fade.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-fade.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Fade in the next screen smoothely
+		with the  <a href="gui-screenchangeanimation-fade.html">fade screen-change-animation</a>.</td>
+	</tr></table>
+	
+	
+<h2 id="screenchangeanimation-fadeOutFadeIn">fadeOutFadeIn Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-fadeOutFadeIn.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-fadeOutFadeIn.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Fade out the last screen, then fade in the next screen using
+		the  <a href="gui-screenchangeanimation-fadeOutFadeIn.html">fadeOutFadeIn screen-change-animation</a>.</td>
+	</tr></table>
+	
+
+<h2 id="screenchangeanimation-flash">flash Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-flash.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-flash.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Tear the last screen horizontally open from within its center
+		with the  <a href="gui-screenchangeanimation-flash.html">flash screen-change-animation</a>.</td>
+	</tr></table>	
+	
+		
+<h2 id="screenchangeanimation-left">left Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-left.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-left.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Move in the next screen from the left
+		with the  <a href="gui-screenchangeanimation-left.html">left screen-change-animation</a>.</td>
+	</tr></table>
+	
+		
+<h2 id="screenchangeanimation-leftshutter">leftshutter Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-leftshutter.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-leftshutter.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Move in the next screen from the left with a shutter
+		using the  <a href="gui-screenchangeanimation-leftshutter.html">leftshutter screen-change-animation</a>.</td>
+	</tr></table>
+	
+		
+<h2 id="screenchangeanimation-newWave">newWave Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-newWave.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-newWave.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Splash in the next screen using something like a zipper
+		with the  <a href="gui-screenchangeanimation-newWave.html">newWave screen-change-animation</a>.</td>
+	</tr></table>
+	
+		
+<h2 id="screenchangeanimation-particle">particle Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-particle.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-particle.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Zoom into single pixels of the last screen to show the next screen 
+		with the  <a href="gui-screenchangeanimation-particle.html">particle screen-change-animation</a>.</td>
+	</tr></table>
+	
+		
+<h2 id="screenchangeanimation-rain">rain Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-rain.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-rain.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Splash in the next screen in a rain-like fashion
+		with the  <a href="gui-screenchangeanimation-rain.html">rain screen-change-animation</a>.</td>
+	</tr></table>
+	
+		
+<h2 id="screenchangeanimation-right">right Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-right.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-right.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Move in the next screen from the right
+		with the  <a href="gui-screenchangeanimation-right.html">right screen-change-animation</a>.</td>
+	</tr></table>
+	
+		
+<h2 id="screenchangeanimation-rightshutter">rightshutter Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-rightshutter.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-rightshutter.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Move in the next screen from the right with a shutter using
+		the  <a href="gui-screenchangeanimation-rightshutter.html">rightshutter screen-change-animation</a>.</td>
+	</tr></table>
+	
+		
+<h2 id="screenchangeanimation-scale">scale Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-scale.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-scale.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Scale in the next screen
+		with the  <a href="gui-screenchangeanimation-scale.html">scale screen-change-animation</a>.</td>
+	</tr></table>
+	
+		
+<h2 id="screenchangeanimation-squeeze">squeeze Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-squeeze.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-squeeze.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Squeeze out the last screen
+		with the  <a href="gui-screenchangeanimation-squeeze.html">squeeze screen-change-animation</a>.</td>
+	</tr></table>
+	
+	
+<h2 id="screenchangeanimation-top">top Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-top.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-top.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Move in the next screen from the top
+		with the  <a href="gui-screenchangeanimation-top.html">top screen-change-animation</a>.</td>
+	</tr></table>
+
+
+	
+<h2 id="screenchangeanimation-topshutter">topshutter Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-topshutter.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-topshutter.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Move in the next screen from the top with a shutter using 
+		the  <a href="gui-screenchangeanimation-topshutter.html">topshutter screen-change-animation</a>.</td>
+	</tr></table>
+	
+
+<h2 id="screenchangeanimation-verticalflash">verticalflash Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-verticalflash.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-verticalflash.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Tear the last screen vertically open from within its center
+		with the  <a href="gui-screenchangeanimation-verticalflash.html">verticalflash screen-change-animation</a>.</td>
+	</tr></table>	
+
+
+
+<h2 id="screenchangeanimation-zoomboth">zoomboth Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-zoomboth.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-zoomboth.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Zoom both the previous as well as the next screen 
+		with the  <a href="gui-screenchangeanimation-zoomboth.html">zoomboth screen-change-animation</a>.</td>
+	</tr></table>
+
+	
+<h2 id="screenchangeanimation-zoomin">zoomin Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-zoomin.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-zoomin.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Zoom in the next screen
+		with the  <a href="gui-screenchangeanimation-zoomin.html">zoomin screen-change-animation</a>.</td>
+	</tr></table>
+
+
+<h2 id="screenchangeanimation-zoomout">zoomout Animation</h2>
+	<table><tr>
+		<td>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-zoomout.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-zoomout.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+		</td>
+		<td>Zoom out the next screen
+		with the  <a href="gui-screenchangeanimation-zoomout.html">zoomout screen-change-animation</a>.</td>
+	</tr></table>
+
+<%include end.txt %>

@@ -7,6 +7,7 @@
 	<h1 id="top">Visual Guide</h1>
 	<ul class="relatedtechnologies">
 		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-visualguide-screenchangeanimations.html">Visual Guide to screen-change-animation</a></li>
 		<li><a href="gui-concepts.html">GUI Concepts</a></li>
 		<li><a href="gui-css-basics.html">CSS Basics</a></li>
 		<li><a href="customization.html">Customization</a></li>
@@ -112,19 +113,19 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	<h3 id="gui-screen-alert">Alert</h3>
 	<table><tr>
 		<td><a href="gui-screen-alert.html"><img src="<%= basedir%>images/gui-screen-alert.png" width="352" height="413" alt="showing an Alert as popup"/></a></td>
-		<td valign="top">Use the <a href="gui-screen-alert.html">Alert</a> to notify your user about anything important.</td>
+		<td valign="center">Use the <a href="gui-screen-alert.html">Alert</a> to notify your user about anything important.</td>
 	</tr></table>
 	<h3 id="gui-screen-list">FilteredList</h3>
 	<table><tr>
 		<td><a href="gui-screen-filteredlist.html"><img src="<%= basedir%>images/gui-screen-filteredlist.png" width="352" height="417" alt="A FilteredList."/></a></td>
-		<td valign="top">The <a href="gui-screen-filteredlist.html">FilteredList</a> allows you to limit the number of shown entries 
+		<td valign="center">The <a href="gui-screen-filteredlist.html">FilteredList</a> allows you to limit the number of shown entries 
 		by entering some text. This speeds up the time for finding a specific entry in a long result list, for example.
 		</td>
 	</tr></table>
 	<h3 id="gui-screen-form">Form</h3>
 	<table><tr>
 		<td><a href="gui-screen-form.html"><img src="<%= basedir%>images/gui-screen-form.png" width="354" height="416" alt="A Form in action."/></a></td>
-		<td valign="top">In a <a href="gui-screen-form.html">form</a> you can embedd any kind of items for building a rich UI.</td>
+		<td valign="center">In a <a href="gui-screen-form.html">form</a> you can embedd any kind of items for building a rich UI.</td>
 	</tr></table>
 	<h3 id="gui-screen-framedform">FramedForm</h3>
 	<table><tr>
@@ -134,7 +135,7 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	<h3 id="gui-screen-list">List</h3>
 	<table><tr>
 		<td><a href="gui-screen-list.html"><img src="<%= basedir%>images/gui-screen-list.png" width="352" height="414" alt="A List with a fisheye view-type."/></a></td>
-		<td valign="top">Use <a href="gui-screen-list.html">Lists</a> for displaying a menu or for selecting options.</td>
+		<td valign="center">Use <a href="gui-screen-list.html">Lists</a> for displaying a menu or for selecting options.</td>
 	</tr></table>
 	<h3 id="gui-screen-popup">Popup Screens</h3>
 	<table><tr>
@@ -144,7 +145,7 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	<h3 id="gui-screen-snapshotscreen">SnapshotScreen</h3>
 	<table><tr>
 		<td><a href="gui-screen-snapshotscreen.html"><img src="<%= basedir%>images/gui-screen-snapshotscreen.png" width="351" height="414" alt="SnapshotScreen"/></a></td>
-		<td valign="top">Take camera photos on your phone with the <a href="gui-screen-snapshotscreen.html">SnapshotScreen</a>.</td>
+		<td valign="center">Take camera photos on your phone with the <a href="gui-screen-snapshotscreen.html">SnapshotScreen</a>.</td>
 	</tr></table>
 	<h3 id="gui-screen-tabbedform">TabbedForm</h3>
 	<table><tr>
@@ -163,8 +164,16 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	</tr></table>
 	<h3 id="gui-screen-textbox">TextBox</h3>
 	<table><tr>
-		<td></td>
-		<td valign="top">The TextBox is used for text input, refer to <a href="#gui-item-textfield">TextField</a> for more information.</td>
+		<td>&nbsp;</td>
+		<td valign="center">The TextBox is used for text input, refer to <a href="#gui-item-textfield">TextField</a> for more information.
+		<br />
+		In case you want to use a native TextBox within a J2ME Polish UI based application, just use the class name fully qualified, e.g.:
+<pre>
+javax.microedition.lcdui.TextBox box = new javax.microedition.lcdui.TextBox("Message", null, 120, TextField.ANY );
+</pre>	
+	Note that you should not use this approach for non MIDP platforms like BlackBerry.
+		</td>
+		
 	</tr></table>
 	
 
@@ -249,21 +258,21 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	</tr></table>
 	<h3 id="gui-item-spriteitem">SpriteItem</h3>
 	<table><tr>
-		<td><a href="gui-item-spriteitem.html">
+		<td>
 		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
 	        <param name='src' value="<%= basedir%>images/gui-item-spriteitem.mov">
-	        <param name='autoplay' value="true">
-	        <param name='controller' value="false">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
 	        <param name='loop' value="true">
 	        <param name='width' value="72">
 	        <param name='height' value="75">
-	        <embed src="<%= basedir%>images/gui-item-spriteitem.mov" autoplay="true" 
-	        controller="false" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="72" height="75"
+	        <embed src="<%= basedir%>images/gui-item-spriteitem.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="72" height="95"
 	        >
 	        </embed>
 		</object>
-		</a></td>
+		</td>
 		<td valign="center">Show an animated <code>javax.microedition.lcdui.game.Sprite</code> 
 			with the <a href="gui-item-spriteitem.html">SpriteItem</a>.</td>
 	</tr></table>
@@ -314,59 +323,59 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	</tr></table>
 	<h4 id="gui-texteffect-fading-alienglow">fading-alien-glow</h4>
 	<table><tr>
-		<td><a href="gui-texteffect-fading-alienglow.html">
+		<td>
 		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
 	        <param name='src' value="<%= basedir%>images/gui-texteffect-fading-alien-glow.mov">
-	        <param name='autoplay' value="true">
-	        <param name='controller' value="false">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
 	        <param name='loop' value="true">
 	        <param name='width' value="148">
 	        <param name='height' value="24">
-	        <embed src="<%= basedir%>images/gui-texteffect-fading-alien-glow.mov" autoplay="true" 
-	        controller="false" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="148" height="24"
+	        <embed src="<%= basedir%>images/gui-texteffect-fading-alien-glow.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="148" height="44"
 	        >
 	        </embed>
 		</object>
-		</a></td>
+		</td>
 		<td valign="center"><a href="gui-texteffect-fading-alienglow.html">fading-alien-glow</a> text-effect</td>
 	</tr></table>
 	<h4 id="gui-texteffect-flash">flash</h4>
 	<table><tr>
-		<td><a href="gui-texteffect-flash.html">
+		<td>
 		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
 	        <param name='src' value="<%= basedir%>images/gui-texteffect-flash.mov">
-	        <param name='autoplay' value="true">
-	        <param name='controller' value="false">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
 	        <param name='loop' value="true">
 	        <param name='width' value="148">
 	        <param name='height' value="24">
-	        <embed src="<%= basedir%>images/gui-texteffect-flash.mov" autoplay="true" 
-	        controller="false" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-            width="148" height="24"
+	        <embed src="<%= basedir%>images/gui-texteffect-flash.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+            width="148" height="44"
 	        >
 	        </embed>
 		</object>
-		</a></td>
+		</td>
 		<td valign="center"><a href="gui-texteffect-flash.html">flash</a> text-effect</td>
 	</tr></table>
 	<h4 id="gui-texteffect-lighthouse">lighthouse</h4>
 	<table><tr>
-		<td><a href="gui-texteffect-lighthouse.html">
+		<td>
 		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
 	        <param name='src' value="<%= basedir%>images/gui-texteffect-lighthouse.mov">
-	        <param name='autoplay' value="true">
-	        <param name='controller' value="false">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
 	        <param name='loop' value="true">
 	        <param name='width' value="148">
 	        <param name='height' value="24">
-	        <embed src="<%= basedir%>images/gui-texteffect-lighthouse.mov" autoplay="true" 
-	        controller="false" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-            width="148" height="24"
+	        <embed src="<%= basedir%>images/gui-texteffect-lighthouse.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+            width="148" height="44"
 	        >
 	        </embed>
 		</object>
-		</a></td>
+		</td>
 		<td valign="center"><a href="gui-texteffect-lighthouse.html">lighthouse</a> text-effect</td>
 	</tr></table>	
 	<h4 id="gui-texteffect-mirrorshadow">mirror-shadow</h4>
@@ -386,21 +395,21 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	</tr></table>
 	<h4 id="gui-texteffect-rotating">rotating</h4>
 	<table><tr>
-		<td><a href="gui-texteffect-rotating.html">
+		<td>
 		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
 	        <param name='src' value="<%= basedir%>images/gui-texteffect-rotating.mov">
-	        <param name='autoplay' value="true">
-	        <param name='controller' value="false">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
 	        <param name='loop' value="true">
 	        <param name='width' value="148">
 	        <param name='height' value="67">
-	        <embed src="<%= basedir%>images/gui-texteffect-rotating.mov" autoplay="true" 
-	        controller="false" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="148" height="67"
+	        <embed src="<%= basedir%>images/gui-texteffect-rotating.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="148" height="87"
 	        >
 	        </embed>
 		</object>
-		</a></td>
+		</td>
 		<td valign="center"><a href="gui-texteffect-rotating.html">rotating</a> text-effect</td>
 	</tr></table>	
 	<h4 id="gui-texteffect-segment">segment</h4>
@@ -415,21 +424,21 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	</tr></table>
 	<h4 id="gui-texteffect-typewriter">typewriter</h4>
 	<table><tr>
-		<td><a href="gui-texteffect-typewriter.html">
+		<td>
 		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
 	        <param name='src' value="<%= basedir%>images/gui-texteffect-typewriter.mov">
-	        <param name='autoplay' value="true">
-	        <param name='controller' value="false">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
 	        <param name='loop' value="true">
 	        <param name='width' value="148">
 	        <param name='height' value="24">
-	        <embed src="<%= basedir%>images/gui-texteffect-typewriter.mov" autoplay="true" 
-	        controller="false" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="148" height="24"
+	        <embed src="<%= basedir%>images/gui-texteffect-typewriter.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="148" height="44"
 	        >
 	        </embed>
 		</object>
-		</a></td>
+		</td>
 		<td valign="center"><a href="gui-texteffect-typewriter.html">typewriter</a> text-effect</td>
 	</tr></table>	
 	<h4 id="gui-texteffect-vertical-gradient">vertical-gradient</h4>
@@ -445,10 +454,33 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	</tr></table>
 	
 	
-	
-	
 	<h3 id="screen-change-animation">Screen Transitions</h3>
-	<p></p>
+	<p>You can animate transition from one screen to another by using the <code>screen-change-animation</code> attribute
+	within the corresponding screen's style.
+	</p>
+	<p>
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-zoomin.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="175">
+	        <param name='height' value="225">
+	        <embed src="<%= basedir%>images/gui-screenchangeanimation-zoomin.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="225"
+	        >
+	        </embed>
+		</object>
+	</p>
+	<p>Please refer to the <a href="gui-visualguide-screenchangeanimations.html">Visual Guide to screen-change-animation</a>
+	for a full list of available animations.
+	</p>
+	<h4 id="gui-screenchangeanimation-extend">Your Own Screen-Change-Animation</h4>
+	<table><tr>
+		<td><a href="extending-texteffect.html"><img src="<%= basedir%>images/extend.png" width="76" height="68" alt="Create Your Own Screen-Change-Animation" /></a></td>
+		<td valign="center">Create Your <a href="extending-screenchangeanimation.html">Own Screen-Change-Animation</a></td>
+	</tr></table>
 	
 <h2 id="gui-backgrounds">Backgrounds</h2>
 <p>Note: there are many more backgrounds, please stay tuned for more definitions.</p>
@@ -458,14 +490,14 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 		<br />
 		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
 	        <param name='src' value="<%= basedir%>images/background-combined.mov">
-	        <param name='autoplay' value="true">
-	        <param name='controller' value="false">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
 	        <param name='loop' value="true">
 	        <param name='width' value="240">
 	        <param name='height' value="240">
-	        <embed src="<%= basedir%>images/background-combined.mov" autoplay="true" 
-	        controller="false" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="240" height="240"
+	        <embed src="<%= basedir%>images/background-combined.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="240" height="260"
 	        >
 	        </embed>
 		</object>		
@@ -510,21 +542,21 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	</tr></table>
 <h3 id="background-snowflakes">Snowflakes Background</h3>
 	<table><tr>
-		<td><a href="gui-background-snowflakes.html">
+		<td>
 		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
 	        <param name='src' value="<%= basedir%>images/background-snowflakes.mov">
-	        <param name='autoplay' value="true">
-	        <param name='controller' value="false">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
 	        <param name='loop' value="true">
 	        <param name='width' value="240">
 	        <param name='height' value="240">
-	        <embed src="<%= basedir%>images/background-snowflakes.mov" autoplay="true" 
-	        controller="false" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="240" height="240"
+	        <embed src="<%= basedir%>images/background-snowflakes.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="240" height="260"
 	        >
 	        </embed>
 		</object>
-		</a></td>
+		</td>
 		<td valign="center">Show a some winter feeling with the <a href="gui-background-snowflakes.html">snowflakes background</a>.</td>
 	</tr></table>	
 <h3 id="background-vertical-gradient">Vertical Gradient Background</h3>
