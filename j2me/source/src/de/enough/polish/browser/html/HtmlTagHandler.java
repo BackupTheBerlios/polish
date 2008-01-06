@@ -150,6 +150,19 @@ public class HtmlTagHandler
   /* style for the forthcoming text */
   public Style textStyle;
   
+  /**
+   * Creates a new html tag handler
+   */
+  public HtmlTagHandler() {
+	  //#ifdef polish.i18n.useDynamicTranslations
+	  	if (Locale.get("polish.command.followlink") != CMD_LINK.getLabel()) {
+	  		CMD_LINK = new Command( Locale.get("polish.command.followlink"), Command.OK, 2 );
+	  		CMD_SUBMIT = new Command( Locale.get("polish.command.submit"), Command.ITEM, 2 );
+	  		CMD_BACK = new Command( Locale.get("polish.command.back"), Command.BACK, 10 );
+	  	}
+	  //#endif
+  }
+  
   public void register(Browser browser)
   {
     this.browser = (HtmlBrowser) browser;
@@ -483,6 +496,7 @@ public class HtmlTagHandler
     else if (command == CMD_BACK)
     {
       handleBackCommand();
+      return true;
     }
     
     return false;

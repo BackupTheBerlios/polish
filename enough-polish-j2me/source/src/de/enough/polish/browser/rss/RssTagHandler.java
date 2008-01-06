@@ -27,7 +27,7 @@
  */
 package de.enough.polish.browser.rss;
 
-import java.io.IOException;
+import javax.microedition.lcdui.Command;
 
 import de.enough.polish.browser.Browser;
 import de.enough.polish.browser.TagHandler;
@@ -39,10 +39,9 @@ import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.Locale;
 import de.enough.polish.util.TextUtil;
 import de.enough.polish.xml.SimplePullParser;
-
-import javax.microedition.lcdui.Command;
 
 public class RssTagHandler
 	extends TagHandler
@@ -66,11 +65,27 @@ public class RssTagHandler
 	private static final String TAG_DIGG_CATEGORY = "digg:category";
 	private static final String TAG_DIGG_COMMENTCOUNT = "digg:commentCount";
 
+	/** item attribute for storing the RSS item */
 	public static final String ATTR_RSS_ITEM = "RSS_ITEM";
 
-//	public static final Command CMD_RSS_ITEM_SELECT = new Command(Locale.get("cmd.select"), Command.SCREEN, 1);
-	public static final Command CMD_RSS_ITEM_SELECT = new Command("Select", Command.SCREEN, 1);
-	public static final Command CMD_GO_TO_ARTICLE = new Command("Go to article", Command.SCREEN, 1);
+	  /** default select command */
+	//#ifdef polish.i18n.useDynamicTranslations
+		public static Command CMD_RSS_ITEM_SELECT = new Command( Locale.get("polish.rss.command.select"), Command.OK, 1 );
+	//#elifdef polish.rss.command.select:defined
+		//#= public static final Command CMD_RSS_ITEM_SELECT = new Command("${polish.rss.command.select}", Command.OK, 1 );
+	//#else
+		//# public static final Command CMD_RSS_ITEM_SELECT = new Command("Select", Command.OK, 1);
+	//#endif
+	/** default go to article command */
+	//#ifdef polish.i18n.useDynamicTranslations
+		public static Command CMD_GO_TO_ARTICLE = new Command( Locale.get("polish.rss.command.followlink"), Command.SCREEN, 2 );
+	//#elifdef polish.rss.command.followlink:defined
+		//#= public static final Command CMD_GO_TO_ARTICLE = new Command("${polish.rss.command.followlink}", Command.SCREEN, 2 );
+	//#else
+		//# public static final Command CMD_GO_TO_ARTICLE = new Command("Go", Command.SCREEN, 2);
+	//#endif
+	
+	
 
 	private Browser browser;
 	private boolean inChannelTag;
@@ -95,6 +110,12 @@ public class RssTagHandler
 	{
 		this.linkCommand = linkCommand;
 		this.itemListener = listener;
+		//#ifdef polish.i18n.useDynamicTranslations
+			if ( Locale.get("polish.rss.command.select") != CMD_RSS_ITEM_SELECT.getLabel()) {
+				CMD_RSS_ITEM_SELECT = new Command( Locale.get("polish.rss.command.select"), Command.OK, 1 );
+				CMD_GO_TO_ARTICLE = new Command( Locale.get("polish.rss.command.followlink"), Command.SCREEN, 2 );
+			}
+		//#endif
 	}
 
 	/* (non-Javadoc)
