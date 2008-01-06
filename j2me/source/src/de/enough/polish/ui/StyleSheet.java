@@ -467,9 +467,11 @@ public final class StyleSheet {
 						//#debug
 						System.out.println("StyleSheet: last displayble is a Screen");
 						lastScreen = (Screen) lastDisplayable;
-						if (screenAnimation == null && lastScreen.style != null) {
-							screenstyle = lastScreen.style;
-							screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
+						if ( (screenAnimation == null || lastScreen instanceof Alert) && lastScreen.style != null) {
+							if (screenAnimation == null || lastScreen.style.getObjectProperty("screen-change-animation") != null) {
+								screenstyle = lastScreen.style;
+								screenAnimation = (ScreenChangeAnimation) screenstyle.getObjectProperty("screen-change-animation");
+							}
 							isForwardAnimation = false;
 							//#debug
 							System.out.println("StyleSheet: Using screen animation of last screen");

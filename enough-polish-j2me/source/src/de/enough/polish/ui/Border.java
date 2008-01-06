@@ -68,13 +68,13 @@ public abstract class Border //implements Serializable
 	 * @param parent the parent item, can be null when the background belongs to a screen
 	 * @param currentTime the current time in milliseconds
 	 * @param repaintRegion the repaint area that needs to be updated when this item is animated
-	 * @see Item#addRelativeRegion(ClippingRegion, int, int, int, int)
+	 * @see Item#addRelativeToContentRegion(ClippingRegion, int, int, int, int)
 	 */
 	public void animate(Screen screen, Item parent, long currentTime, ClippingRegion repaintRegion) 
 	{
 		if (animate()) {
 			if (parent != null) {
-				parent.addRelativeRegion( repaintRegion, 0, 0, parent.contentWidth, parent.contentHeight );
+				parent.addRelativeToContentRegion( repaintRegion, 0, 0, parent.contentWidth, parent.contentHeight );
 			} else {
 				repaintRegion.addRegion(0, 0, screen.getWidth(), screen.getScreenHeight() );
 			}

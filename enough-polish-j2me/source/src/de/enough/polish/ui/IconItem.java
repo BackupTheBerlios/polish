@@ -552,7 +552,7 @@ implements ImageConsumer
 			// this operation is atomic:
 			this.scaleData = localeScaleData;
 			// add repaint area:
-			addRelativeRegion( repaintRegion, 
+			addRelativeToContentRegion( repaintRegion, 
 								this.relativeIconX + ((this.imageWidth - scaleWidth) >> 1), 
 								this.relativeIconY + ((this.imageHeight - scaleHeight) >> 1),
 								scaleWidth,

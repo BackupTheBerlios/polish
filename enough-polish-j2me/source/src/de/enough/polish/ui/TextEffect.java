@@ -86,12 +86,12 @@ public abstract class TextEffect
 	 * @param parent the parent item
 	 * @param currentTime the current time in milliseconds
 	 * @param repaintRegion the repaint area that needs to be updated when this item is animated
-	 * @see Item#addRelativeRegion(ClippingRegion, int, int, int, int)
+	 * @see Item#addRelativeToContentRegion(ClippingRegion, int, int, int, int)
 	 */
 	public void animate(Item parent, long currentTime, ClippingRegion repaintRegion) 
 	{
 		if (animate()) {
-			parent.addRelativeRegion( repaintRegion, 0, 0, parent.contentWidth, parent.contentHeight );
+			parent.addRelativeToContentRegion( repaintRegion, 0, 0, parent.contentWidth, parent.contentHeight );
 		}
 	}
 

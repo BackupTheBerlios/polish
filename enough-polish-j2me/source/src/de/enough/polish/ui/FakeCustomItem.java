@@ -2325,13 +2325,34 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 * @param y vertical start relative to this item's content position
 	 * @param width width
 	 * @param height height
+	 * @see #getContentWidth()
+	 * @see #getContentHeight()
 	 */
-	protected void addRelativeRegion(ClippingRegion repaintRegion, int x, int y, int width, int height) {
+	public void addRelativeToContentRegion(ClippingRegion repaintRegion, int x, int y, int width, int height) {
 		repaintRegion.addRegion( 
 				getAbsoluteX() + this.contentX + x, 
 				getAbsoluteY() + this.contentY + y,
 				width,
 				height 
+				);
+	}
+	
+	/**
+	 * Adds a region relative to this item's background x/y start position.
+	 * @param repaintRegion the clipping region
+	 * @param x horizontal start relative to this item's background position
+	 * @param y vertical start relative to this item's background position
+	 * @param width width
+	 * @param height height
+	 * @see #getBackgroundWidth()
+	 * @see #getBackgroundHeight()
+	 */
+	public void addRelativeToBackgroundRegion(ClippingRegion repaintRegion, int x, int y, int width, int height) {
+		repaintRegion.addRegion( 
+				getAbsoluteX() + getBackgroundX() + x - 1, 
+				getAbsoluteY() + getBackgroundY() + y - 1,
+				width + 2,
+				height + 2
 				);
 	}
 	
@@ -2628,7 +2649,76 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	public int getContentY() {
 		return this.contentY;
 	}
+	
+	/**
+	 * Retrieves the width of the content.
+	 * @return the content width in pixels
+	 */
+	public int getContentWidth()
+	{
+		return this.contentWidth;
+	}
+	
+	/**
+	 * Retrieves the height of the content.
+	 * @return the content height in pixels
+	 */
+	public int getContentHeight()
+	{
+		return this.contentHeight;
+	}
 
+	/**
+	 * Retrieves the start of the background relative to this item's origin.
+	 * 
+	 * @return the horizontal background start in pixels.
+	 */
+	public int getBackgroundX() {
+		//#if polish.css.include-label
+			if (this.includeLabel) {
+				return this.marginLeft;
+			} else {
+		//#endif
+				return this.contentX - this.paddingLeft;
+		//#if polish.css.include-label
+			} 
+		//#endif
+	}
+	
+	/**
+	 * Retrieves the start of the background relative to this item's origin.
+	 * 
+	 * @return the horizontal background start in pixels.
+	 */
+	public int getBackgroundY() {
+		//#if polish.css.include-label
+			if (this.includeLabel) {
+				return this.marginTop;
+			} else {
+		//#endif
+				return this.contentY - this.paddingTop;
+		//#if polish.css.include-label
+			} 
+		//#endif
+	}
+	
+	/**
+	 * Retrieves the width of this item's background.
+	 * @return the width in pixels
+	 */
+	public int getBackgroundWidth() {
+		return this.backgroundWidth;
+	}
+
+
+	/**
+	 * Retrieves the height of this item's background.
+	 * @return the height in pixels
+	 */
+	public int getBackgroundHeight() {
+		return this.backgroundHeight;
+	}
+	
 	/**
 	 * Retrieves the parent of this item.
 	 * 
@@ -2637,6 +2727,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	public Item getParent() {
 		return this.parent;
 	}
+	
 	
 	//#if tmp.invisible
 	/**

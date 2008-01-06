@@ -1906,6 +1906,7 @@ public abstract class Item extends Object
 	}
 	
 	/**
+	 * Paints the background and the border of this item.
 	 * @param x
 	 * @param y
 	 * @param width
@@ -2485,8 +2486,10 @@ public abstract class Item extends Object
 	 * @param y vertical start relative to this item's content position
 	 * @param width width
 	 * @param height height
+	 * @see #getContentWidth()
+	 * @see #getContentHeight()
 	 */
-	protected void addRelativeRegion(ClippingRegion repaintRegion, int x, int y, int width, int height) {
+	public void addRelativeToContentRegion(ClippingRegion repaintRegion, int x, int y, int width, int height) {
 		repaintRegion.addRegion( 
 				getAbsoluteX() + this.contentX + x, 
 				getAbsoluteY() + this.contentY + y,
@@ -2496,13 +2499,33 @@ public abstract class Item extends Object
 	}
 	
 	/**
+	 * Adds a region relative to this item's background x/y start position.
+	 * @param repaintRegion the clipping region
+	 * @param x horizontal start relative to this item's background position
+	 * @param y vertical start relative to this item's background position
+	 * @param width width
+	 * @param height height
+	 * @see #getBackgroundWidth()
+	 * @see #getBackgroundHeight()
+	 */
+	public void addRelativeToBackgroundRegion(ClippingRegion repaintRegion, int x, int y, int width, int height) {
+		repaintRegion.addRegion( 
+				getAbsoluteX() + getBackgroundX() + x - 1, 
+				getAbsoluteY() + getBackgroundY() + y - 1,
+				width + 2,
+				height + 2
+				);
+	}
+
+	
+	/**
 	 * Animates this item.
 	 * Subclasses can override this method to create animations.
 	 * The default implementation animates the background and the item view if present.
 	 * 
 	 * @param currentTime the current time in milliseconds
 	 * @param repaintRegion the repaint area that needs to be updated when this item is animated
-	 * @see #addRelativeRegion(ClippingRegion, int, int, int, int)
+	 * @see #addRelativeToContentRegion(ClippingRegion, int, int, int, int)
 	 */
 	public void animate( long currentTime, ClippingRegion repaintRegion) {
 		if (this.label != null) {
@@ -2863,6 +2886,75 @@ public abstract class Item extends Object
 	public int getContentY() {
 		return this.contentY;
 	}
+	
+	/**
+	 * Retrieves the width of the content.
+	 * @return the content width in pixels
+	 */
+	public int getContentWidth()
+	{
+		return this.contentWidth;
+	}
+	
+	/**
+	 * Retrieves the height of the content.
+	 * @return the content height in pixels
+	 */
+	public int getContentHeight()
+	{
+		return this.contentHeight;
+	}
+	
+	/**
+	 * Retrieves the start of the background relative to this item's origin.
+	 * 
+	 * @return the horizontal background start in pixels.
+	 */
+	public int getBackgroundX() {
+		//#if polish.css.include-label
+			if (this.includeLabel) {
+				return this.marginLeft;
+			} else {
+		//#endif
+				return this.contentX - this.paddingLeft;
+		//#if polish.css.include-label
+			} 
+		//#endif
+	}
+	
+	/**
+	 * Retrieves the start of the background relative to this item's origin.
+	 * 
+	 * @return the horizontal background start in pixels.
+	 */
+	public int getBackgroundY() {
+		//#if polish.css.include-label
+			if (this.includeLabel) {
+				return this.marginTop;
+			} else {
+		//#endif
+				return this.contentY - this.paddingTop;
+		//#if polish.css.include-label
+			} 
+		//#endif
+	}
+	
+	/**
+	 * Retrieves the width of this item's background.
+	 * @return the width in pixels
+	 */
+	public int getBackgroundWidth() {
+		return this.backgroundWidth;
+	}
+
+
+	/**
+	 * Retrieves the height of this item's background.
+	 * @return the height in pixels
+	 */
+	public int getBackgroundHeight() {
+		return this.backgroundHeight;
+	}
 
 	/**
 	 * Retrieves the parent of this item.
@@ -3013,6 +3105,7 @@ public abstract class Item extends Object
 	public ArrayList getItemCommands() {
 		return this.commands;
 	}
+
 
 
 //#ifdef polish.Item.additionalMethods:defined
