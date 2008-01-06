@@ -9,278 +9,21 @@ colors {
 	bgColor: #eeeeee;
 }
 
-.browser {
-	margin: 0;
-	padding: 1;
-}
-.browserchoicegroup {
-	margin: 0;
-	padding: 1;
-}
-.browserchoiceitem {
-	margin: 0;
-	padding: 1;
-}
-.browserdownloadindicator {
-	layout: vertical-shrink | horizontal-shrink | top | right;
-	margin: 0;
-	padding: 1;
-}
-.browserinput {
-	layout: expand | left;
-	margin: 0;
-	padding: 2;
-}
-.browserinputfocused {
-	layout: expand | left;
-	margin: 0;
-	padding: 1;
-}
-.browserlink {
-	margin: 0;
-	padding: 1;
-	font {
-		face: system;
-		size: medium;
-		style: bold;
-		color: #ff4f4fe3;
-	}
-}
-.browserlinkfocused {
-	margin: 0;
-	padding: 1;
-	font {
-		face: system;
-		size: medium;
-		style: bold;
-		color: #ff0000;
-	}
-}
-.browseroption {
-	layout: left | expand;
-	margin: 0;
-	padding: 1;
-}
-.browseroptionitem {
-	margin: 0;
-	padding: 1;
-}
-.browsertext {
-	margin: 0;
-	padding: 1;
-}
-.browsertextbold {
-	margin: 0;
-	padding: 1;
-}
-.browsertextboldfocused {
-	margin: 0;
-	padding: 1;
-}
-.browsertextbolditalic {
-	margin: 0;
-	padding: 1;
-}
-.browsertextbolditalicfocused {
-	margin: 0;
-	padding: 1;
-}
-.browsertextfocused {
-	margin: 0;
-	padding: 1;
-}
-.browsertextitalic {
-	margin: 0;
-	padding: 1;
-}
-.browsertextitalicfocused {
-	margin: 0;
-	padding: 1;
-}
-focused {
-	layout: expand | left;
-	margin: 0;
-	padding: 1;
-	font {
-		face: system;
-		size: medium;
-		style: bold;
-		color: #000000;
-	}
-	background {
-		type: round-rect-translucent;
-		color: #adffffff;
-		arc-width: 8;
-		arc-height: 8;
-	}
-}
-label {
-	layout: left | top | newline-after;
-	margin: 0;
-	padding: 1;
-	font {
-		face: system;
-		size: small;
-		style: plain;
-	}
-}
-
-
-menufocused {
-	layout: left | horizontal-expand;
-	margin: 0;
-	padding: 1;
-	background {
-		type: simple;
-		color: bgColor;
-	}
-}
-aboutAlert {
-	layout: horizontal-center | vertical-center;
-	margin: 0;
-	padding: 1;
-	background {
+backgrounds {
+	mainBackground {
 		type: horizontal-stripes;
 		first-top-color: #ffff66;
 		first-bottom-color: #008000;
 		second-top-color: #ffffff;
 		second-bottom-color: #33ff00;
 	}
-    screen-change-animation: zoomInAndHide;
+	
 }
 
-alertcontent {
-	font-color: white;
-	text-effect: shadow;
-	text-shadow-color: #222;
-}
+/************************** general styles  ********************************************************************************/
 
-.rssDescriptionAlert extends aboutAlert {
-	title-style: .rssDescriptionAlertTitle;
-	content-style: .rssDescriptionAlertContent;
-	screen-change-animation: none;
-}
-
-.rssDescriptionAlertTitle extends title {
-	text-wrap: false;
-}
-
-.rssDescriptionAlertContent {
-	font-color: black;
-}
-
-.mychoicegroup {
-   margin: 0;
-   padding: 1;
-   view-type: exclusive
-}
-.mychoiceitem {
-	margin: 0;
-	padding: 1;
-}
-.rssBrowserForm {
-	margin: 0;
-	padding-left: 10;
-	padding-right: 10;
-	padding-top: 10;
-	padding-bottom: 1;
-	padding-horizontal: 1;
-	padding-vertical: 1;
-	background {
-		type: horizontal-stripes;
-		first-top-color: #ffff66;
-		first-bottom-color: #008000;
-		second-top-color: #ffffff;
-		second-bottom-color: #33ff00;
-	}
-}
-
-.rssBrowserTitle extends title {
-	text-wrap: false;
-	text-wrap-animate: false;
-}
-
-.rssBrowser {
-	view-type: midp2;
-}
-
-.mylist {
-	layout: horizontal-center | vertical-center;
-	margin: 0;
-	padding: 10;
-	background {
-		type: horizontal-stripes;
-		first-top-color: #ffff66;
-		first-bottom-color: #008000;
-		second-top-color: #ffffff;
-		second-bottom-color: #33ff00;
-	}        
-	screen-change-animation: fade;
-}
-.mytextfield {
-	layout: left | top | horizontal-expand;
-	margin: 0;
-	padding: 2;
-	background {
-		type: simple;
-		color: #ffffff;
-	}
-}
-rightcommand {
-	layout: right;
-	margin: 0;
-	padding: 1;
-	font {
-		face: system;
-		size: medium;
-		style: bold;
-		color: #000000;
-	}
-}
-scrollbar {
-	margin: 0;
-	padding: 1;
-}
-.textfieldsymbolitem {
-	layout: center;
-	margin: 1;
-	padding: 2;
-}
-.textfieldsymbollist {
-	layout: vertical-shrink | horizontal-shrink | center | vertical-center;
-	margin: 0;
-	padding: 10;
-	background {
-		type: simple;
-		color: white;
-	}
-}
-textfieldsymbollistfocused {
-	layout: center;
-	margin: 0;
-	padding: 2;
-}
-tffocused {
-	layout: left | top | horizontal-expand;
-	margin: 0;
-	padding: 1;
-	font {
-		face: system;
-		size: medium;
-		style: bold;
-		color: #000000;
-	}
-	background {
-		type: simple-bordered;
-		color: #ffffff;
-		border-color: #000000;
-		border-width: 1;
-	}
-}
 title {
 	layout: horizontal-center | horizontal-expand;
-	margin: 0;
-	padding: 1;
 	font {
 		face: proportional;
 		size: large;
@@ -294,21 +37,184 @@ title {
 	}
 }
 
+focused {
+	layout: expand | left;
+	font-style: bold;
+	background {
+		type: round-rect-translucent;
+		color: #adffffff;
+		arc-width: 8;
+		arc-height: 8;
+	}
+}
 
-/****************   menu          **********************************************************************************************/
-leftcommand {
-	layout: left;
+label {
+	layout: left | top | newline-after;
+	font {
+		size: small;
+		style: plain;
+	}
+}
+
+/************************** main screen  **********************************************************************************/
+.screenMain {
+	layout: horizontal-center | vertical-center;
+	margin: 0;
+	padding: 10;
+	background: mainBackground;
+}
+
+.itemMain {
+	border {
+		type: pulsating;
+		start-color: #0f0;
+		end-color: #000;
+		back-and-forth: true;
+		repeat: true;
+	}
+}
+
+.itemMain:hover {
+	layout: expand | left;
+	font-style: bold;
+	background {
+		type: round-rect-translucent;
+		color: #adffffff;
+		arc-width: 8;
+		arc-height: 8;
+	}
+}
+
+/************************** about screen  *********************************************************************************/
+
+.aboutAlert {
+	layout: horizontal-center | vertical-center;
 	margin: 0;
 	padding: 1;
+	background {
+		type: horizontal-stripes;
+		first-top-color: #ffff66;
+		first-bottom-color: #008000;
+		second-top-color: #ffffff;
+		second-bottom-color: #33ff00;
+	}
+	//#if polish.midp2
+	    screen-change-animation: zoomInAndHide;
+	//#else
+	    screen-change-animation: right;
+	//#endif
+}
+
+alertcontent {
+	font-color: white;
+	text-effect: shadow;
+	text-shadow-color: #222;
+}
+
+/************************** settings screen  ******************************************************************************/
+.screenSettings extends screenMain {
+	screen-change-animation: right;
+}
+
+.itemInput {
+	layout: left | top | horizontal-expand;
+	margin: 0;
+	padding: 2;
+	background {
+		type: simple;
+		color: #ffffff;
+	}
+}
+
+/************************** RSS browser screen ****************************************************************************/
+
+
+.rssBrowserForm {
+	padding-left: 10;
+	padding-right: 10;
+	padding-top: 10;
+	background-color: #cec;
+	title-style: rssBrowserTitle;
+	screen-change-animation: right;	
+}
+
+.rssBrowserTitle extends title {
+	text-wrap: false;
+	text-wrap-animate: false;
+}
+
+.rssBrowser {
+	view-type: midp2;
+}
+
+.browserdownloadindicator {
+	layout: vertical-shrink | horizontal-shrink | top | right;
+}
+
+.browserlink {
 	font {
 		face: system;
 		size: medium;
 		style: bold;
-		color: #000000;
+		color: #ff4f4fe3;
 	}
 }
+.browserlink:hover {
+	font {
+		color: #ff0000;
+	}
+}
+
+/************************** RSS item alert screen ****************************************************************************/
+
+.rssDescriptionAlert extends aboutAlert {
+	title-style: .rssDescriptionAlertTitle;
+	content-style: .rssDescriptionAlertContent;
+	screen-change-animation: right;
+}
+
+.rssDescriptionAlertTitle extends title {
+	text-wrap: false;
+}
+
+.rssDescriptionAlertContent {
+	font-color: black;
+}
+
+
+
+
+/*************    Scrollbar          ***************************************************************************************************/
+scrollbar {
+	scrollbar-slider-color: #2d2;
+	scrollbar-slider-width: 6;
+	scrollbar-fadeout: true;
+	opacity: 180;
+	background-color: white;
+}
+
+
+/****************   menu          **********************************************************************************************/
+menubar {
+	background {
+		type: simple;
+		color: bgColor;
+	}
+}
+
+
+leftcommand {
+	layout: left;
+	font {
+		style: bold;
+		color: black;
+	}
+}
+rightcommand extends leftcommand {
+	layout: right;
+}
+
 menu {
-	margin: 0;
 	padding: 2;
 	background {
 		type: round-rect;
@@ -318,27 +224,18 @@ menu {
 	}
 	min-width: 100;
 }
-menu1 {
-	layout: right;
-	margin: 0;
-	padding: 1;
-	background {
-		type: simple;
-		color: argb(150, 255, 255, 0 );
-	}
+
+menuItem {
+	layout: left;
 }
-menubar {
-	margin: 0;
-	padding: 1;
+
+
+menuItem:hover {
+	layout: left | horizontal-expand;
 	background {
 		type: simple;
 		color: bgColor;
 	}
 }
 
-menuitem {
-	layout: left;
-	margin: 0;
-	padding: 1;
-}
 

@@ -33,6 +33,7 @@ public class RssMidlet
 	extends MIDlet
 	implements CommandListener, ItemCommandListener, ApplicationInitializer
 {
+	private static final Command CMD_MAIN_MENU = new Command("Main Menu", Command.BACK, 5 );
 	private static final Command CMD_BACK = new Command("Back", Command.BACK, 5 );
 	private static final Command CMD_EXIT = new Command("Exit", Command.EXIT, 10);
 	private static final Command CMD_GO = new Command("Go", Command.OK, 2 );
@@ -66,15 +67,15 @@ public class RssMidlet
  	 * @see de.enough.polish.ui.splash.ApplicationInitializer#initApp()
  	 */
  	public Displayable initApp() {
- 		 //#style myList
+ 		 //#style screenMain
          List menu = new List("RSS Menu", Choice.IMPLICIT);
-         //#style myChoiceItem
+         //#style itemMain
          menu.append("Quick Launch", null);
-         //#style myChoiceItem
+         //#style itemMain
          menu.append("Go to URL", null);
-         //#style myChoiceItem
+         //#style itemMain
          menu.append("About", null);
-         //#style myChoiceItem
+         //#style itemMain
          menu.append("Exit", null);
          menu.addCommand( CMD_EXIT );
          menu.setCommandListener(this);
@@ -87,6 +88,7 @@ public class RssMidlet
          this.browserScreen.append( this.rssBrowser );
          this.browserScreen.addCommand(CMD_BACK);
          this.browserScreen.addCommand(CMD_EXIT);
+         this.browserScreen.addCommand(CMD_MAIN_MENU);
          this.browserScreen.setCommandListener( new ThreadedCommandListener(this) );
          
          try { Thread.sleep(500); } catch (Exception e) { // just wait a little bit so that the splash screen can be recognized 
@@ -131,13 +133,16 @@ public class RssMidlet
 			if (this.rssBrowser.handleCommand(command)) {
 				return;
 			}
-	
 			if (command == CMD_BACK) {
 				if (this.rssBrowser.canGoBack()) {
 					this.rssBrowser.goBack();
 				} else {
+					this.rssBrowser.clearHistory();
 					this.display.setCurrent( this.mainMenu );
 				}
+			} else if (command == CMD_MAIN_MENU) {
+				this.rssBrowser.clearHistory();
+				this.display.setCurrent( this.mainMenu );
 			} else if (command == RssTagHandler.CMD_RSS_ITEM_SELECT || command.getLabel().equals("Select")) {
 				Item item = this.rssBrowser.getFocusedItem();
 				RssItem rssItem = (RssItem) item.getAttribute(RssTagHandler.ATTR_RSS_ITEM);
@@ -176,6 +181,7 @@ public class RssMidlet
 	
 	private void showRssNewsItem( RssItem rssItem ) {
 		if (rssItem != null) {
+			//#debug
 			System.out.println("showing " + rssItem.getTitle());
 			//#style rssDescriptionAlert
 			Alert alert = new Alert( rssItem.getTitle(), rssItem.getDescription(), null, null );
@@ -206,9 +212,9 @@ public class RssMidlet
 	 */
 	private void showSettings() {
 		if (this.settingsForm == null) {
-			//#style myList
+			//#style screenSettings
 			Form form = new Form("Enter URL");
-			//#style myTextField
+			//#style itemInput
 			TextField textField = new TextField("URL: ", "http://", 80, TextField.ANY );
 			form.append(textField);
 			form.setCommandListener( this );
