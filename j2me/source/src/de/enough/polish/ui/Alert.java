@@ -864,7 +864,6 @@ implements CommandListener
 	}
 	
 	
-	//#if polish.css.show-dismiss-command
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#setStyle(de.enough.polish.ui.Style)
 	 */
@@ -889,6 +888,5 @@ implements CommandListener
 			}
 		//#endif
 	}
-	//#endif
 
 }
