@@ -94,7 +94,7 @@ public class HttpProtocolHandler extends ProtocolHandler
     if (requestProperties != null) {
 	    if ( (requestProperties.get("User-Agent") == null) )
 	    {
-	      requestProperties.put("User-Agent", HttpProtocolHandler.USER_AGENT != null ? HttpProtocolHandler.USER_AGENT : "J2ME-Polish");
+	      requestProperties.put("User-Agent", USER_AGENT );
 	    }
     }
   }
