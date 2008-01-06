@@ -76,7 +76,6 @@ public class ImageBorder extends Border
 	
 	private Image getImagePart(Image image, int index, int borderWidth)
 	{
-		System.out.println("Michael: " + image + ", " + index + ", " + borderWidth);
 		return Image.createImage(image, 0, index * borderWidth, borderWidth, borderWidth, Sprite.TRANS_NONE);
 	}
 
