@@ -30,6 +30,9 @@ polish.command.followlink=Go
 polish.command.submit=Submit
 # used by the RssBrowser for returning to the previous page:
 polish.command.back=Back
+# RSS commands:
+polish.rss.command.select=Show
+polish.rss.command.followlink=Go
 
 # used for predictive setup
 polish.predictive.command.enable=Enable Predictive Input

@@ -74,7 +74,7 @@ public class RssTagHandler
 	//#elifdef polish.rss.command.select:defined
 		//#= public static final Command CMD_RSS_ITEM_SELECT = new Command("${polish.rss.command.select}", Command.OK, 1 );
 	//#else
-		//# public static final Command CMD_RSS_ITEM_SELECT = new Command("Select", Command.OK, 1);
+		//# public static final Command CMD_RSS_ITEM_SELECT = new Command("Show", Command.OK, 1);
 	//#endif
 	/** default go to article command */
 	//#ifdef polish.i18n.useDynamicTranslations
