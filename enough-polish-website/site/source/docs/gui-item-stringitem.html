@@ -43,6 +43,9 @@ title {
 	<p>
 	Here's a list of all StringItem specific design attributes:
 	</p>
+	<%cssattributes de.enough.polish.ui.StringItem %>
+	
+	<!-- 
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Explanation</th></tr>
 	<tr>
@@ -146,6 +149,7 @@ text-wrap-animate: false;
 		</td>
 	</tr>
 	</table>
+	-->
 	<h2 id="StringItem-bitmapfonts">Bitmap Fonts</h2>
 	<p>
 	Bitmap fonts allow you to use any True Type Font in your application. Use the <i>font-editor</i> situated in the 
@@ -190,6 +194,22 @@ StringItem item = new StringItem(&quot;info: &quot;, &quot;Welcome to J2ME Polis
 form.append( item );
 </pre>
 	</p>
+	
+	<h2 id="text-wrapping">Text Wrapping</h2>
+	<p>
+	Usually text is wrapped automatically when it is too long for a single row. You can deactivate this default behavior by setting the
+	<code>text-wrap</code> CSS attribute to false. In TextFields with enabled direct input mode the cursor will be kept in the visible
+	area, for other texts only parts remain visible. You could use this feature to show only the beginning of a message when an item is not
+	focused and show the complete text (by turning on text-wrap again) when an item is focused, for example:
+	</p>	
+<pre>
+.messageItem {
+	text-wrap: false;
+}
+.messageItem:hover {
+	text-wrap: true;
+}
+</pre>
 	
 	<h2 id="StringItem-JavaDoc">JavaDoc</h2>
 	<ul>

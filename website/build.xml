@@ -112,6 +112,7 @@
 		<variable name="index.h4" value="h4index" />
 		<variable name="index.h5" value="h5index" />
 		<directive name="cssattributes" class="de.enough.polish.website.CssDirectiveHandler" />
+		<directive name="cssmappings" class="de.enough.polish.website.CssMappingsDirectiveHandler" />
 	</webprocessor>
 </target>
 

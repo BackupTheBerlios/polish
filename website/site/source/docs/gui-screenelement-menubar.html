@@ -10,7 +10,7 @@
 		<li><a href="gui-screenelement-scrollbar.html">Scrollbar</a></li>
 		<li><a href="gui-screenelement-screenbackground.html">Screen Background</a></li>
 		<li><a href="gui-visualguide.html#gui-backgrounds">Backgrounds</a></li>
-		<li><a href="gui-css-text.html">Text Design</a></li>
+		<li><a href="gui-item-stringitem.html">Text Design</a></li>
 		<li><a href="gui-css-basics.html">CSS Basics</a></li>
 	</ul>
 	<%index %>
@@ -47,8 +47,9 @@ menu {
 </pre>
 	<p>
 	The font of the default menubar is defined in the &quot;menu&quot; style, which is also responsible for the command popup screen.
-	Additionally you can specify the menubar-color in eithe the &quot;menu&quot; style or in the corresponding screen's style:
+	Additionally you can specify the menubar-color in either the &quot;menu&quot; style or in the corresponding screen's style:
 	</p>
+	
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Applies To&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
@@ -76,6 +77,7 @@ menu {
 		</td>
 	</tr>
 	</table>
+	
 	
 	<h3 id="Configuration-Default-Menubar">Configuration of the Default Menubar</h3>
 	<p>
@@ -160,14 +162,13 @@ rightcommand extends leftcommand
 	no effect, when using the extended menubar, as you can now use any background. The text on the left side within the menubar is 
 	designed with the <code>leftcommand</code>, the one on the right side accordingly with the <code>rightcommand</code> style.
 	</p>
+	
+	<%cssattributes de.enough.polish.ui.MenuBar %>
+		 
+	<p>Following further CSS attributes can be used to adjust the menubar design:
+	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Applies To&nbsp;&nbsp;</th><th>Explanation</th></tr>
-	<tr>
-		<td>background</td><td>none</td><td><a href="gui-visualguide.html#gui-backgrounds">background</a> definition</td><td><code>menubar</code> style</td>
-		<td>
-		The background of the menubar.
-		</td>
-	</tr>
 	<tr>
 		<td>overlay</td><td>#a000</td><td>ARGB color definition</td><td><code>colors</code> section</td>
 		<td>
@@ -182,50 +183,6 @@ colors {
 		</td>
 	</tr>
 	<tr>
-		<td>menubar-options-image</td><td>-</td><td>image URL</td><td><code>menubar</code> style</td>
-		<td>
-		The image that should be displayed when there are more than one command available.
-		</td>
-	</tr>
-	<tr>
-		<td>menubar-select-image</td><td>-</td><td>image URL</td><td><code>menubar</code> style</td>
-		<td>
-		The image that should be displayed to allow the user to select the currently focused command.
-		</td>
-	</tr>
-	<tr>
-		<td>menubar-cancel-image</td><td>-</td><td>image URL</td><td><code>menubar</code> style</td>
-		<td>
-		The image that should be displayed to close the menu. Note that the corresponding <code>Cancel</code> command is not shown
-		on Sony-Ericsson devices.
-		</td>
-	</tr>
-	<tr>
-		<td>menubar-show-image-and-text</td><td>true</td><td>true, false</td><td><code>menubar</code> style</td>
-		<td>
-		When there are images like <code>menubar-options-image</code> defined, you can choose with this attribute whether only the images
-		or the images as well as the text should be shown.
-		</td>
-	</tr>
-	<tr>
-		<td>leftcommand-style</td><td>leftcommand</td><td>style reference</td><td><code>menubar</code> style</td>
-		<td>
-		Changes the style of the command drawn on the left side of the menubar.
-		</td>
-	</tr>
-	<tr>
-		<td>rightcommand-style</td><td>rightcommand</td><td>style reference</td><td><code>menubar</code> style</td>
-		<td>
-		Changes the style of the command drawn on the right side of the menubar.
-		</td>
-	</tr>
-	<tr>
-		<td>middlecommand-style</td><td>middlecommand</td><td>style reference</td><td><code>menubar</code> style</td>
-		<td>
-		Changes the style of the command drawn in the middle of the menubar (when the device has a defined <code>key.MiddleSoftKey</code>).
-		</td>
-	</tr>
-	<tr>
 		<td>menubar-style</td><td>menubar</td><td>style reference</td><td>screen's style</td>
 		<td>
 		Changes the style of the menubar for the affected screens.
@@ -234,7 +191,7 @@ colors {
 	</table>
 	<p>
 	For the design options for <code>leftcommand</code> and <code>rightcommand</code>, please refer to the design guide for 
-	<a href="gui-css-text.html">Text Design</a> and <a href="gui-item-StringItem.html">StringItem</a>.
+	<a href="gui-item-StringItem.html">StringItem</a>.
 	</p>
 	
 	<h3 id="Configuration-Extended-Menubar">Configuration of the Extended Menubar</h3>
@@ -354,27 +311,9 @@ menuItem {
 	</p>
 	<p>All comand- / menu-items do support normal text design. Additionally you can design the indicators that show the availability of subcommands with
 	the <code>child-indicator</code> CSS attributes:
-<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Applies To&nbsp;&nbsp;</th><th>Explanation</th></tr>
-	<tr>
-		<td>command-child-indicator</td><td>-</td><td>image URL</td><td><code>menuitem</code> or <code>menu</code> style</td>
-		<td>
-		The image that indicates the presence of subcommands for the command.
-		</td>
-	</tr>
-	<tr>
-		<td>command-child-width</td><td>-</td><td>font height</td><td><code>menuitem</code> or <code>menu</code> style</td>
-		<td>
-		The width of the arrow indicating the presence of subcommands for the command. Is ignored when an image is defined.
-		</td>
-	</tr>
-	<tr>
-		<td>command-child-height</td><td>-</td><td>font height</td><td><code>menuitem</code> or <code>menu</code> style</td>
-		<td>
-		The height of the arrow indicating the presence of subcommands for the command. Is ignored when an image is defined.
-		</td>
-	</tr>
-</table>
+	</p>
+	
+		<%cssattributes de.enough.polish.ui.CommandItem %>
 	
 	<h3 id="Menu-Animation">Animating the Menu</h3>
 	<p>

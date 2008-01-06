@@ -45,6 +45,22 @@
 	You can use following attributes for designing a <code>RssBrowser</code>:
 	</p>
 	<%cssattributes de.enough.polish.browser.rss.RssBrowser %>
+
+	<h2 id="rssbrowser-commands">RSS Commands</h2>
+	<p>
+	The RssBrowser uses two commands for letting the user interact with RSS feeds. You can use
+	following preprocessing variables or translations within <i>resources/messages.txt</i> for
+	adjusting these commands:
+	</p>
+	<ul>
+		<li><code>polish.rss.command.select</code>: Lets the user view the description of an RSS item.</li>
+		<li><code>polish.rss.command.followlink</code>: Allows the user to open the linked RSS article page.</li>
+	</ul>
+	<p>These are the default translations:</p>
+<pre>
+polish.rss.command.select=Show
+polish.rss.command.followlink=Go
+</pre>
 	
 	<h2 id="rssbrowser-Programming">Programming</h2>
 	<p>

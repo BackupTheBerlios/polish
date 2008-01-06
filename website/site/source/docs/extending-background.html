@@ -8,14 +8,15 @@
 <h1 id="top">Create New Backgrounds</h1>
 	<ul class="relatedtechnologies">
 		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-visualguide.html#gui-backgrounds">Existing Backgrounds</a></li>
 		<li><a href="extending-border.html">Borders</a></li>
 		<li><a href="extending-itemview.html">Item Views</a></li>
 		<li><a href="extending-texteffect.html">Text Effects</a></li>
 	</ul>
 	<%index %>
 	<p>
-	You can extends the J2ME Polish UI by implementing your own backgrounds. 
-	Such backgrounds can be used for the background of any item, container or screen.
+	Realize your vision by creating a background. You can use your own background
+	for any item or screen.
 	</p>
 	
 	<h2 id="concepts">Concepts of Backgrounds</h2>
@@ -34,8 +35,6 @@
 	You only need to implement  the <code>paint( int x, int y, int width, int height, Graphics g )</code> method. 
 	<br />
 	You can override the <code>releaseResources()</code> method for freeing any scarce resources when your background is not used anymore.
-	<br />
-	You can also animate your background by overriding the <code>animate()</code> method.
 	</p>
 	<p>In this example we implement a very simple background that paints a triangle. 
 	<br />
@@ -211,13 +210,6 @@ extends Background
 	 <td>A string value.</td>
 	</tr>
 	<tr>
-	 <td>string</td>
-	 <td>false</td>
-	 <td>n/a</td>
-	 <td><code>&lt;param name=&quot;format&quot; type=&quot;string&quot; default=&quot;hh:mm:ss&quot; /&gt;</code></td>
-	 <td>A string value.</td>
-	</tr>
-	<tr>
 	 <td>char</td>
 	 <td>true</td>
 	 <td>n/a</td>
@@ -272,18 +264,23 @@ extends Background
 		<li><code>public void animate(Screen screen, Item parent, long currentTime, ClippingRegion repaintRegion)</code> 
 		allows you to refresh only parts of your background or an area that is outside of the parent item's original area.
 		You have to specify the area that requires a refresh by calling <code>repaintRegion.addRegion( int x, int y, int width, int height )</code>
-		or by calling <code>parent.addRelativeRegion( repaintRegion, x, y, width, height )</code>.
-		You can request a full refresh by calling <code>parent.addRelativeRegion( repaintRegion, 0, 0, parent.contentWidth, parent.contentHeight )</code>.		
+		or by calling <code>parent.addRelativeToBackgroundRegion( repaintRegion, x, y, width, height )</code>.
+		You can request a full refresh by calling <code>parent.addRelativeToBackgroundRegion( repaintRegion, 0, 0, parent.getBackgroundWidth(), parent.getBackgroundHeight() )</code>.		
 		</li>
 	</ul>
 	<p>If you want to trigger your animation only when the corresponding item or screen is made visible or when a
 	focused/hover style along with your background moves to a new item, you can override
 	<code>public void showNotify()</code> and <code>public void hideNotify()</code> in your implementation.
 	</p>
+	<p>
+	For a complete animation sample, please refer to the <a href="extending-border.html">border documentation</a>.
+	</p>
 
 	<h2 id="JavaDoc">JavaDoc</h2>
-	<p>
-		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/Background.html">Background</a>
-	</p>
+	<ul>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/Background.html">Background</a></li>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ClippingRegion.html">ClippingRegion</a></li>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/Item.html">Item</a></li>
+	</ul>
 
 <%include end.txt %>

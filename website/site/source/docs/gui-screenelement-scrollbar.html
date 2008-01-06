@@ -24,6 +24,7 @@
 	<h3 id="default-scrollindicators">Default Scroll Indicators</h3>
 	<p>
 	By default scroll arrows are painted in the menubar to indicate possible scrolling. You can specify the color or the images used for the indicators:
+	<br />
 	<img src="<%= basedir%>images/gui-screenelement-scrollindicator.png"  width="240" height="320" alt="Default Scroll Indicators" />	
 	</p>
 	<p>The example above is realized with two images and following CSS code:
@@ -52,6 +53,7 @@
 	<p>
 	Specific design attributes:
 	</p>
+	
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Applies To&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
@@ -94,6 +96,7 @@
 	<img src="<%= basedir%>images/gui-screenelement-scrollbar.png"  width="240" height="320" alt="ScrollBar" />	
 	</p>
 	<p>You can design the scrollbar by using the <code>scrollbar</code> CSS selector:
+	</p>
 <pre>
 scrollbar {
 	scrollbar-slider-color: #333;
@@ -101,10 +104,39 @@ scrollbar {
 	/* You can also define background, border, padding, etc */
 }
 </pre>
+	<p>You can also automatically hide the scrollbar so that it does not occopy screen space. The scrollbar will then be
+	made visible each time the user scrolls on the screen:
+		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+	        <param name='src' value="<%= basedir%>images/gui-screenelement-scrollbar.mov">
+	        <param name='autoplay' value="false">
+	        <param name='controller' value="true">
+	        <param name='loop' value="true">
+	        <param name='width' value="176">
+	        <param name='height' value="227">
+	        <embed src="<%= basedir%>images/gui-screenelement-scrollbar.mov" autoplay="false" 
+	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+	        width="176" height="227"
+	        >
+	        </embed>
+		</object>
 	</p>
+<pre>
+scrollbar {
+	scrollbar-slider-color: #2d2;
+	scrollbar-slider-width: 6;
+	<b>scrollbar-fadeout: true;
+	opacity: 180;</b>
+	background-color: white;
+}
+</pre>
 	<p>
 	Specific design attributes:
 	</p>
+	
+	<%cssattributes de.enough.polish.ui.ScrollBar %>
+	
+	<!-- 
+	
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Applies To&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
@@ -136,13 +168,24 @@ scrollbar {
 		<td>
 		The mode of the scrollbar (see above).
 		</td>
-	</tr>	</table>
+	</tr>	
+	</table>
+	 -->
+	
 	
 	<h3 id="deactivate-scrollindicators">Deactivate Scroll Indicators</h3>
 	<p>
 	You can deactivates scroll indicators completely by setting the variable 
 	&quot;polish.deactivateScrollIndicator&quot; to &quot;true&quot; in your <i>build.xml</i> script.
 	</p>
+	<p>When using the scrollbar, you can also hide the scrollbar for specific screens by using the
+	<code>show-scrollbar</code> CSS attribute within the corresponding screen's style:
+	</p>
+<pre>
+.screenMain {
+	show-scrollbar: false;
+}
+</pre>
 	
 	<h2 id="Configuration">Configuration</h2>
 	<ul>
