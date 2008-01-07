@@ -241,7 +241,7 @@ public class FishEyeContainerView extends ContainerView {
 					if (adjustAlpha && !isScaled) {
 						// adjust only the translucency:
 						animated = true;
-						ImageUtil.setTransparencyOnlyForOpaque( currentAlpha,this.shownRgbData[i] );
+						ImageUtil.setTransparencyOnlyForOpaque( currentAlpha, this.shownRgbData[i], true );
 					}
 				//#endif
 			}

@@ -47,8 +47,7 @@ import de.enough.polish.ui.Style;
  */
 public class ShuffleView extends ContainerView {
 	
-	private final static int SPEED = 10;
-	private int speed = SPEED;
+	private int speed = -1;
 	private boolean animationInitialised;
 	private boolean isAnimationRunning;
 	private int[] xAdjustments;
@@ -71,8 +70,8 @@ public class ShuffleView extends ContainerView {
 	{
 		super.initContent(parentItm, firstLineWidth, lineWidth);
 		
-		Container parent = (Container) parentItm;
 		if (!this.animationInitialised) {
+			Container parent = (Container) parentItm;
 			Item[] myItems = parent.getItems();
 			this.xAdjustments = new int[ myItems.length ];
 			initAnimation(myItems, this.xAdjustments);
@@ -109,6 +108,8 @@ public class ShuffleView extends ContainerView {
 			Integer speedInt = style.getIntProperty("shuffleview-speed");
 			if (speedInt != null) {
 				this.speed = speedInt.intValue();
+			} else {
+				this.speed = -1;
 			}
 		//#endif
 	}
@@ -156,12 +157,26 @@ public class ShuffleView extends ContainerView {
 			for (int i = 0; i < this.xAdjustments.length; i++ ) {
 				int x = this.xAdjustments[i];
 				if ( x < 0 ) {
-					x += this.speed;
+					int adjustment = this.speed;
+					if (adjustment == -1) {
+						adjustment = -x/3;
+						if (adjustment < 3) {
+							adjustment = 3;
+						}
+					}
+					x += adjustment;
 					if ( x > 0 ) {
 						x = 0;
 					}
 				} else if ( x > 0 ) {
-					x -= this.speed;
+					int adjustment = this.speed;
+					if (adjustment == -1) {
+						adjustment = x/3;
+						if (adjustment < 3) {
+							adjustment = 3;
+						}
+					}
+					x -= adjustment;
 					if ( x < 0 ) {
 						x = 0;
 					}
@@ -176,4 +191,6 @@ public class ShuffleView extends ContainerView {
 			return false;
 		}
 	}
+
+	
 }
