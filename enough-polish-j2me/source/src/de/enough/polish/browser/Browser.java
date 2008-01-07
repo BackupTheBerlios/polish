@@ -741,6 +741,8 @@ implements Runnable
       
       if (connection != null)
       {
+	    notifyPageStart(url);
+	    is = connection.openInputStream();
     	//#if polish.Browser.Gzip
 	  	    try {
 	  	    	if (connection instanceof HttpConnection) {
@@ -755,10 +757,8 @@ implements Runnable
 	  	    	System.out.println("Unable to use GzipInputStream" + e);
 	  		}
   	    //#endif
-  	    notifyPageStart(url);
-    	  is = connection.openInputStream();
-    	  loadPage(is);
-    	  notifyPageEnd();
+    	loadPage(is);
+    	notifyPageEnd();
       }
     }
     catch (Exception e)
