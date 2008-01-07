@@ -87,4 +87,37 @@ public class ImageUtilTest extends TestCase {
 		return buffer.toString();
 	}
 	
+	public void testAlphaHandling() {
+		int originalOpacity = 0x6f;
+		int[] data = createRgb( originalOpacity, 100 * 100 );
+		int opacity = 0x8f;
+		int[] scaled = new int[ data.length ];
+		ImageUtil.scale(opacity, data, 60, 60, 100, 100, scaled );
+		for (int i = 0; i < scaled.length; i++)
+		{
+			int pixelAlpha = scaled[i] >>> 24;
+			assertEquals( originalOpacity, pixelAlpha );
+		}
+		
+		opacity = 0x0f;
+		scaled = new int[ data.length ];
+		ImageUtil.scale(opacity, data, 60, 60, 100, 100, scaled );
+		for (int i = 0; i < scaled.length; i++)
+		{
+			int pixelAlpha = scaled[i] >>> 24;
+			assertEquals( opacity, pixelAlpha );
+		}
+
+	}
+	
+	private int[] createRgb( int opacity, int size ) {
+		int[] data = new int[ size ];
+		int alpha = opacity << 24;
+		for (int i = 0; i < data.length; i++)
+		{
+			data[i] = i | alpha;
+		}
+		return data;
+	}
+	
 }
