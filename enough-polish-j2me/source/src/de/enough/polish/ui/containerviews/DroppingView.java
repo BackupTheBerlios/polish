@@ -27,7 +27,6 @@
 package de.enough.polish.ui.containerviews;
 
 
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Container;
@@ -51,18 +50,14 @@ public class DroppingView extends ContainerView {
 	private final static int START_MAXIMUM = 30;
 	private final static int MAX_PERIODE = 5;
 	private final static int DEFAULT_DAMPING = 10;
-	private final static int SPEED = 10;
 	private boolean isDownwardsAnimation;
 	private int damping = DEFAULT_DAMPING;
 	private int currentPeriode;
 	private int maxPeriode = MAX_PERIODE;
 	private int currentMaximum;
 	private int startMaximum = START_MAXIMUM;
-	private int speed = SPEED;
+	private int speed = -1;
 	private boolean animationInitialised;
-	
-	
-
 	private boolean isAnimationRunning;
 	private int[] yAdjustments;
 	
@@ -185,7 +180,14 @@ public class DroppingView extends ContainerView {
 				for (int i = 0; i < this.yAdjustments.length; i++ ) {
 					int y = this.yAdjustments[i] ;
 					if (y > max) {
-						y -= this.speed;
+						int adjustment = this.speed;
+						if (adjustment == -1) {
+							adjustment = y / 3;
+							if (adjustment < 10) {
+								adjustment = 10;
+							}
+						}
+						y -= adjustment;
 						if (y < max) {
 							y = max;
 						}
@@ -205,7 +207,14 @@ public class DroppingView extends ContainerView {
 				for (int i = 0; i < this.yAdjustments.length; i++ ) {
 					int y = this.yAdjustments[i];
 					if (y < max) {
-						y += this.speed;
+						int adjustment = this.speed;
+						if (adjustment == -1) {
+							adjustment = y / 3;
+							if (adjustment < 10) {
+								adjustment = 10;
+							}
+						}
+						y += adjustment;
 						if (y > max) {
 							y = max;
 						} 

@@ -46,9 +46,7 @@ import de.enough.polish.ui.Style;
 public class RightShutterScreenChangeAnimation extends ScreenChangeAnimation
 {	
 	private int currentX;
-	//#if polish.css.left-shutter-screen-change-animation-speed
 	private int speed = -1;
-	//#endif
 	//#if polish.css.left-shutter-screen-change-animation-color
 	private int color = 0;
 	//#endif
