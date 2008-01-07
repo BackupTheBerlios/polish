@@ -43,13 +43,11 @@ import de.enough.polish.ui.Background;
  */
 public class OpeningBackground extends Background {
 	
-	private int oldX;
-	private int oldY;
 	private boolean isAnimationRunning;
 	private int currentHeight;
 	private final int color;
 	private final int startHeight;
-	private final int steps;
+	private final int speed;
 	private int maxHeight;
 	
 
@@ -58,32 +56,26 @@ public class OpeningBackground extends Background {
 	 * 
 	 * @param color the color of the background.
 	 * @param startHeight the start height, default is 1
-	 * @param steps the number of pixels by which the background-height should be increased 
-	 * 			at each animation-step, default is 4
+	 * @param speed the number of pixels by which the background-height should be increased 
+	 * 			at each animation-step, default is -1
 	 * 
 	 */
-	public OpeningBackground( int color, int startHeight, int steps ) {
+	public OpeningBackground( int color, int startHeight, int speed ) {
 		super();
 		this.color = color;
 		this.startHeight = startHeight;
-		this.steps = steps;
+		this.speed = speed;
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		if (x != this.oldX || y != this.oldY ) {
-			this.oldX = x;
-			this.oldY = y;
-			this.currentHeight = this.startHeight;
-			this.maxHeight = height;
-			this.isAnimationRunning = true;
-		} 
+		this.maxHeight = height; 
 		if (this.isAnimationRunning) {
 			int difference = height - this.currentHeight;
 			height = this.currentHeight;
-			y += difference / 2;	
+			y += difference >> 1;	
 		}
 		g.setColor( this.color );
 		g.fillRect( x, y, width, height );
@@ -94,7 +86,14 @@ public class OpeningBackground extends Background {
 	 */
 	public boolean animate() {
 		if (this.isAnimationRunning) {
-			this.currentHeight += this.steps;
+			int adjust = this.speed;
+			if (adjust == -1) {
+				adjust = (this.maxHeight - this.currentHeight) / 3;
+				if (adjust < 2) {
+					adjust = 2;
+				}
+			}
+			this.currentHeight += adjust;
 			if (this.currentHeight >= this.maxHeight) {
 				this.isAnimationRunning = false;
 			}
@@ -103,4 +102,16 @@ public class OpeningBackground extends Background {
 			return false;
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#showNotify()
+	 */
+	public void showNotify()
+	{
+		super.showNotify();
+		this.currentHeight = this.startHeight;
+		this.isAnimationRunning = true;
+	}
+	
+	
 }

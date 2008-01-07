@@ -42,13 +42,11 @@ import de.enough.polish.ui.Background;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class BorderedRoundRectOpeningBackground extends Background {
-	private int oldX;
-	private int oldY;
 	private boolean isAnimationRunning;
 	private int currentHeight;
 	private final int color;
 	private final int startHeight;
-	private final int steps;
+	private final int speed;
 	private int maxHeight;
 	private final int arcWidth;
 	private final int arcHeight;
@@ -59,19 +57,19 @@ public class BorderedRoundRectOpeningBackground extends Background {
 	 * 
 	 * @param color the color of the background.
 	 * @param startHeight the start height, default is 1
-	 * @param steps the number of pixels by which the background-height should be increased 
-	 * 			at each animation-step, default is 4
+	 * @param speed the constant speed in of pixels by which the background-height should be increased 
+	 * 			at each animation-step, use -1 to accelerate
 	 * @param arcWidth the horizontal diameter of the arc at the four corners
 	 * @param arcHeight the vertical diameter of the arc at the four corners
 	 * @param borderColor the color of the border
 	 * @param borderWidth the width of the border
 	 * 
 	 */
-	public BorderedRoundRectOpeningBackground( int color, int startHeight, int steps, int arcWidth, int arcHeight, int borderColor, int borderWidth ) {
+	public BorderedRoundRectOpeningBackground( int color, int startHeight, int speed, int arcWidth, int arcHeight, int borderColor, int borderWidth ) {
 		super();
 		this.color = color;
 		this.startHeight = startHeight;
-		this.steps = steps;
+		this.speed = speed;
 		this.arcHeight = arcHeight;
 		this.arcWidth = arcWidth;
 		this.borderColor = borderColor;
@@ -83,13 +81,7 @@ public class BorderedRoundRectOpeningBackground extends Background {
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		if (x != this.oldX || y != this.oldY ) {
-			this.oldX = x;
-			this.oldY = y;
-			this.currentHeight = this.startHeight;
-			this.maxHeight = height;
-			this.isAnimationRunning = true;
-		} 
+		this.maxHeight = height;
 		if (this.isAnimationRunning) {
 			int difference = height - this.currentHeight;
 			height = this.currentHeight;
@@ -97,7 +89,7 @@ public class BorderedRoundRectOpeningBackground extends Background {
 		}
 		g.setColor( this.color );
 		g.fillRoundRect( x, y, width, height, this.arcWidth, this.arcHeight );
-		if (!this.isAnimationRunning) {
+		if (!this.isAnimationRunning && this.borderWidth > 0) {
 			// draw the border:
 			width--;
 			height--;
@@ -106,7 +98,7 @@ public class BorderedRoundRectOpeningBackground extends Background {
 			if (this.borderWidth > 1) {
 				int border = this.borderWidth - 1;
 				while ( border > 0) {
-					g.drawRoundRect( x+border, y+border, width - 2*border, height - 2*border, this.arcWidth, this.arcHeight );
+					g.drawRoundRect( x+border, y+border, width - (border<<1), height - (border<<1), this.arcWidth, this.arcHeight );
 					border--;
 				}
 			}
@@ -118,7 +110,14 @@ public class BorderedRoundRectOpeningBackground extends Background {
 	 */
 	public boolean animate() {
 		if (this.isAnimationRunning) {
-			this.currentHeight += this.steps;
+			int adjust = this.speed;
+			if (adjust == -1) {
+				adjust = (this.maxHeight - this.currentHeight) / 3;
+				if (adjust < 2) {
+					adjust = 2;
+				}
+			}
+			this.currentHeight += adjust;
 			if (this.currentHeight >= this.maxHeight) {
 				this.isAnimationRunning = false;
 			}
@@ -128,4 +127,13 @@ public class BorderedRoundRectOpeningBackground extends Background {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#showNotify()
+	 */
+	public void showNotify()
+	{
+		super.showNotify();
+		this.currentHeight = this.startHeight;
+		this.isAnimationRunning = true;
+	}
 }

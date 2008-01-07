@@ -29,6 +29,9 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.ClippingRegion;
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Screen;
 
 /**
  * <p>Paints an animated background filled with several ever-growing circles.</p>
@@ -61,10 +64,6 @@ public class PulsatingCirclesBackground extends Background {
 	private final int preciseMaxDiameter;
 	private final int[] preciseDiameters; 
 	private final int diameterGrowth;
-	private int minDiameter;
-	private int maxDiameter;
-	private int numberOfCircles;
-	private int step;
 	
 	/**
 	 * Creates a new pulsating-circle background.
@@ -86,21 +85,11 @@ public class PulsatingCirclesBackground extends Background {
 		this.startColor = firstColor;
 		this.firstColor = firstColor;
 		this.secondColor = secondColor;
-		this.minDiameter = minDiameter;
-		this.maxDiameter = maxDiameter;
-		this.numberOfCircles = numberOfCircles;
-		this.step = step;
-		this.preciseMinDiameter = minDiameter * 100;
-		this.preciseMaxDiameter = maxDiameter * 100;
+		step <<= 8;
+		this.preciseMinDiameter = minDiameter << 8;
+		this.preciseMaxDiameter = maxDiameter << 8;
 		this.diameters = new short[ numberOfCircles ];
 		this.preciseDiameters = new int[ numberOfCircles ];
-		int difference = ((maxDiameter - minDiameter) * 100) / numberOfCircles;
-		while (numberOfCircles > 0) {
-			int diameter = difference * numberOfCircles;
-			numberOfCircles--;
-			this.diameters[ numberOfCircles ] = (short) (diameter/100);
-			this.preciseDiameters[ numberOfCircles ] = diameter;
-		}
 		this.diameterGrowth = step;
 	}
 
@@ -114,13 +103,13 @@ public class PulsatingCirclesBackground extends Background {
 	 * @param g the Graphics instance for rendering this background
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		int centerX = x + width / 2;
-		int centerY = y + height / 2;
+		int centerX = x + (width >> 1);
+		int centerY = y + (height >> 1);
 		int color = this.startColor;
 		int i = this.diameters.length - 1;
 		while (i >= 0) {
 			int diameter = this.diameters[i];
-			int offset = diameter/2;
+			int offset = diameter>>1;
 			g.setColor( color );
 			g.fillArc( centerX - offset, centerY - offset, diameter, diameter, 0, 360 );
 			if (color == this.firstColor) {
@@ -131,24 +120,25 @@ public class PulsatingCirclesBackground extends Background {
 			i--;
 		}
 	}
+	
+	
 
-	/**
-	 * Animates this background.
-	 * 
-	 * @return always true, since a redraw is needed after each animation.
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#animate(de.enough.polish.ui.Screen, de.enough.polish.ui.Item, long, de.enough.polish.ui.ClippingRegion)
 	 */
-	public boolean animate() {
+	public void animate(Screen screen, Item parent, long currentTime, ClippingRegion repaintRegion)
+	{
 		int i = this.preciseDiameters.length - 1;
 		int diameter = this.preciseDiameters[ i ] + this.diameterGrowth;
 		if (diameter > this.preciseMaxDiameter) {
 			while ( i > 0 ) {
 				diameter = this.preciseDiameters[ i -1 ] + this.diameterGrowth;
 				this.preciseDiameters[i] = diameter;
-				this.diameters[i] = (short)(diameter / 100);
+				this.diameters[i] = (short)(diameter >>> 8);
 				i--;
  			}
 			this.preciseDiameters[0] = this.preciseMinDiameter;
-			this.diameters[0] = (short)(this.preciseMinDiameter/100);
+			this.diameters[0] = (short)(this.preciseMinDiameter >>> 8);
 			if (this.startColor == this.firstColor) {
 				this.startColor = this.secondColor;
 			} else {
@@ -158,10 +148,39 @@ public class PulsatingCirclesBackground extends Background {
 			while ( i >= 0 ) {
 				diameter = this.preciseDiameters[ i ] + this.diameterGrowth;
 				this.preciseDiameters[i] = diameter;
-				this.diameters[i] = (short)(diameter / 100);
+				this.diameters[i] = (short)(diameter >>> 8);
 				i--;
  			}
 		}
-		return true;
+		if (parent != null) {
+			int w = parent.getBackgroundWidth();
+			int h = parent.getBackgroundHeight();
+			diameter = this.preciseMaxDiameter >>> 8;
+			int x = (w - diameter) >> 1;
+			int y = (h - diameter) >> 1;
+			parent.addRelativeToBackgroundRegion(repaintRegion, x, y, diameter, diameter); 
+		} else {
+			repaintRegion.addRegion(0, 0, screen.getWidth(), screen.getScreenHeight() );
+		}
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#showNotify()
+	 */
+	public void showNotify()
+	{
+		super.showNotify();
+		int numberOfCircles = this.diameters.length;
+		int difference = (this.preciseMaxDiameter - this.preciseMinDiameter) / numberOfCircles;
+		while (numberOfCircles > 0) {
+			int diameter = difference * numberOfCircles;
+			numberOfCircles--;
+			this.diameters[ numberOfCircles ] = (short) (diameter >>> 8);
+			this.preciseDiameters[ numberOfCircles ] = diameter;
+		}	
+		this.startColor = this.firstColor;
+	}
+	
+	
+	
 }

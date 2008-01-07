@@ -138,8 +138,12 @@ extends Background
 					   width - (this.paddingLeft + this.paddingRight), 
 					   (height - (this.paddingTop + this.paddingBottom))<<1, 180, 180 );
 			break;
-		case Graphics.BOTTOM:
-			g.fillArc(x, y + height, width, -height, 180, 180 );
+		default:
+			g.fillArc(	x + this.paddingLeft, 
+						y + this.paddingTop, 
+						width - (this.paddingLeft + this.paddingRight), 
+						(height - (this.paddingTop + this.paddingBottom))<<1, 
+						180, -180 );
 			break;
 		}
 		

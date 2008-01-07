@@ -66,14 +66,20 @@ public class FadeInBackground extends Background {
 			private int lastHeight;
 		//#endif
 	//#endif
-	private final boolean restartOnPositionChange;
+	private final boolean restartOnShowNotify;
 	private final boolean restartOnTime;
 	
-	public FadeInBackground( int targetArgbColor, boolean restartOnTime, boolean restartOnPositionChange ) {
+	/**
+	 * Creates a new fade-in background
+	 * @param targetArgbColor the target color
+	 * @param restartOnTime true when the animation should restart after 5 seconds in showNotify
+	 * @param restartOnShowNotify true when the animation should be restarted every time showNotify is called
+	 */
+	public FadeInBackground( int targetArgbColor, boolean restartOnTime, boolean restartOnShowNotify ) {
 		super();
 		this.targetArgbColor = targetArgbColor;
 		this.restartOnTime = restartOnTime;
-		this.restartOnPositionChange = restartOnPositionChange;
+		this.restartOnShowNotify = restartOnShowNotify;
 		this.currentColor = 0x00FFFFFF & targetArgbColor;
 		//#if polish.api.nokia-ui
 			this.xCoords = new int[4];
@@ -85,19 +91,6 @@ public class FadeInBackground extends Background {
 
 	public void paint(int x, int y, int width, int height, Graphics g) {
 		// System.out.println("FadeInBackround: currentColor=" + Integer.toHexString(this.currentColor));
-		if ( this.restartOnTime ) {
-			long updateTime = System.currentTimeMillis();
-			if (!this.animationRunning) {
-				boolean restart = (updateTime - this.lastUpdateTime) > 5 * 1000; // restart after 5 seconds
-				this.lastUpdateTime = updateTime;
-				if (restart) {
-					this.currentColor = 0x00FFFFFF & this.targetArgbColor;
-					this.animationRunning = true;
-					return;
-				}
-			}
-			this.lastUpdateTime = updateTime;
-		}
 		//#ifdef polish.api.nokia-ui
 			// in drawPolygon no x or y value must be 0 or less...
 			if (x < 1) {
@@ -110,11 +103,6 @@ public class FadeInBackground extends Background {
 				this.xCoords[1] = x + width;
 				this.xCoords[2] = x + width;
 				this.xCoords[3] = x;
-				if (this.restartOnPositionChange) {
-					this.animationRunning = true;
-					this.currentColor = 0x00FFFFFF & this.targetArgbColor;
-					return;
-				}
 			}
 			// in drawPolygon no x or y value must be 0 or less...
 			if (y < 1) {
@@ -127,11 +115,6 @@ public class FadeInBackground extends Background {
 				this.yCoords[1] = y;
 				this.yCoords[2] = y + height;
 				this.yCoords[3] = y + height;
-				if (this.restartOnPositionChange) {
-					this.animationRunning = true;
-					this.currentColor = 0x00FFFFFF & this.targetArgbColor;
-					return;
-				}
 			}
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
 //			try {
@@ -161,11 +144,6 @@ public class FadeInBackground extends Background {
 						newBuffer[i] = this.currentColor;
 					}
 					this.buffer = newBuffer;
-					if (this.restartOnPositionChange) {
-						this.animationRunning = true;
-						this.currentColor = 0x00FFFFFF & this.targetArgbColor;
-						return;
-					}
 				}
 			//#else
 				if (width != this.lastWidth) {
@@ -175,21 +153,11 @@ public class FadeInBackground extends Background {
 						newBuffer[i] = this.currentColor;
 					}
 					this.buffer = newBuffer;
-					if (this.restartOnPositionChange) {
-						this.animationRunning = true;
-						this.currentColor = 0x00FFFFFF & this.targetArgbColor;
-						return;
-					}
 				}
 			//#endif
 			if (x != this.lastX || y != this.lastY ) {
 				this.lastX = x;
 				this.lastY = y;
-				if (this.restartOnPositionChange) {
-					this.animationRunning = true;
-					this.currentColor = 0x00FFFFFF & this.targetArgbColor;
-					return;
-				}
 			}
 			if (x < 0) {
 				width += x;
@@ -220,6 +188,9 @@ public class FadeInBackground extends Background {
 	}
 	
 	public boolean animate() {
+		if (!this.animationRunning) {
+			return false;
+		}
 		if (this.restartOnTime) {
 			this.lastUpdateTime = System.currentTimeMillis();
 		} 
@@ -253,8 +224,31 @@ public class FadeInBackground extends Background {
 				
 				//System.out.println("FadeInBackground.animate()=" + this.animationRunning);
 
-		return this.animationRunning;
+		return true;
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#showNotify()
+	 */
+	public void showNotify()
+	{
+		super.showNotify();
+		boolean restart = false;
+		if (this.restartOnShowNotify) {
+			restart = true;
+		} else if ( this.restartOnTime ) {
+			long updateTime = System.currentTimeMillis();
+			restart = (updateTime - this.lastUpdateTime) > 5 * 1000; // restart after 5 seconds
+			this.lastUpdateTime = updateTime;
+		}
+		if (restart) {
+			this.currentColor = 0x00FFFFFF & this.targetArgbColor;
+			this.animationRunning = true;
+			animate();
+		}
+	}
+	
+	
 
 }
  
