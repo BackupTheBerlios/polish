@@ -385,6 +385,11 @@ public class ChoiceTextField
 			enterChoices( true );
 			return true;
 		} else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
+			if (this.isOpen) {
+				this.numberOfMatches = 0;
+				openChoices( false );
+				return true;
+			}
 			// open all available choices:
 			if (this.choiceTriggerEnabled && !this.choiceTriggerAllowInputBeforeTrigger) {
 				String currentText = getString();
