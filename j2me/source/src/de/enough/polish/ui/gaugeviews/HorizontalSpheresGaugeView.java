@@ -91,7 +91,6 @@ public class HorizontalSpheresGaugeView extends ItemView {
 
 	protected void setStyle(Style style) {
 		super.setStyle(style);
-		System.out.println("setStyle");
 		
 		Color colorObj;
 		Integer countObj;
