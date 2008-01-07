@@ -1193,7 +1193,7 @@ public final class ImageUtil {
 	/**
 	 * Scales an rgb data unproportional in every new size you want bigger or smaller than the given original.
 	 * 
-	 * @param opacity the alpha value, 255 (0xFF) means fully opaque, 0 fully transparent
+	 * @param opacity the maximum alpha value, 255 (0xFF) means fully opaque, 0 fully transparent. Lower alpha values will be preserved.
 	 * @param rgbData the original rgbdata
 	 * @param newWidth the new width for the new rgbdata
 	 * @param newHeight the new height for the new rgbdata
@@ -1208,7 +1208,7 @@ public final class ImageUtil {
 		int targetArrayIndex;
 		int verticalShrinkFactorPercent = ((newHeight*100) / oldHeight);
 		int horizontalScaleFactorPercent = ((newWidth*100) / oldWidth);
-		int alpha = (opacity << 24); // is now 0xtt000000
+		int alpha = (opacity << 24); // is now 0xAA000000
 		for(int i = 0; i < newLength; i++){
 			currentX = (currentX + 1) % newWidth;
 			if(currentX == 0){
@@ -1221,15 +1221,14 @@ public final class ImageUtil {
 			if(targetArrayIndex < 0) {
 				targetArrayIndex = 0;
 			}
-			if (opacity == 255) {
-				newRgbData[i] = rgbData[targetArrayIndex];
-			} else {
-				int pixel = rgbData[targetArrayIndex];
-				if ((pixel & 0xff000000) != 0) {
+			int pixel = rgbData[targetArrayIndex];
+			if (opacity != 255) {
+				int pixelAlpha = (pixel & 0xff000000) >>> 24;
+				if (pixelAlpha > opacity) {
 					pixel = (pixel & 0x00ffffff) | alpha;
 				}
-				newRgbData[i] = pixel;
 			}
+			newRgbData[i] = pixel;
 		}
 	}
 	
@@ -1262,6 +1261,27 @@ public final class ImageUtil {
 			}
 		}
 	}
+	
+	/**
+	 * Sets the specified transparency to the RGB data, but only for pixels that are not full transparent already.
+	 * 
+	 * @param transparency the transparency between 0 (fully transparent) and 255 (fully opaque)
+	 * @param data the RGB data
+	 * @param onlyForPixelsWithGreaterAlphas true when the given transparency should be only applied to pixels that have a greater alpha value
+	 */
+	public static void setTransparencyOnlyForOpaque(int transparency, int[] data, boolean onlyForPixelsWithGreaterAlphas) {
+		int alpha = (transparency << 24); // is now 0xtt000000
+		for (int i = 0; i < data.length; i++) {
+			int pixel = data[i];
+			int pixelApha = (pixel & 0xff000000) >>> 24;
+			if ( (pixelApha > transparency)
+				|| (!onlyForPixelsWithGreaterAlphas && (pixelApha != 0) )) 
+			{
+				data[i] = (pixel & 0x00ffffff) | alpha;
+			}
+		}
+	}
+
 	
 	/**
 	 * Returns the transformed color for the running device. Some devices
