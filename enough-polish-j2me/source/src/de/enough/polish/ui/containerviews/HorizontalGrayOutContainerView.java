@@ -1,3 +1,5 @@
+//#condition polish.usePolishGui && midp2
+
 package de.enough.polish.ui.containerviews;
 
 import javax.microedition.lcdui.Canvas;
