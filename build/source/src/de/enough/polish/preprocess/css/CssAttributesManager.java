@@ -159,11 +159,7 @@ public class CssAttributesManager {
 			if (previousAttribute == null) {
 				throw new BuildException( "Invalid CSS attribute: unable to instantiate CSS attribute type \"" + type + "\": no definition found. Check your custom-css-attributes.xml.");				
 			}
-			if (definition.getAttributeValue("name").equals(previousAttribute.getName())) {
-				return previousAttribute;
-			} else {
-				return new WrappedCssAttribute( previousAttribute, definition );
-			}
+			return new WrappedCssAttribute( previousAttribute, definition );
 		}
 	}
 

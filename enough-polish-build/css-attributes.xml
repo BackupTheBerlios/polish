@@ -1387,7 +1387,13 @@
 		id="78"
 	/>
 	
- <!--  free slot: 79 -->
+	<attribute
+		name="complete-background"
+		type="background"
+		appliesTo="Item"
+		description="A background reference from the backgrounds section. The background includes the label of the item and is independent of the item's normal background."
+		id="79"
+	/>
 	
 	<attribute
 		name="textfield-caret-flash"

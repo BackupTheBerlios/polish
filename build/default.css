@@ -59,7 +59,9 @@ centercommand {
 
 
 .browser {
+	/*
 	view-type: midp2;
+	*/
 }
 
 .browserText {
@@ -192,7 +194,9 @@ centercommand {
 
 .browserOption {
 	inherit: false;
+	/*
 	view-type: exclusive;
+	*/
 	layout: left | expand;
 }
 

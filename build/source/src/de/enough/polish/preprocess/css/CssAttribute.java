@@ -60,13 +60,13 @@ implements Comparable
 	
 	protected String name;
 	protected String[] allowedValues;
-	private String defaultValue;
-	private String appliesTo;
-	private String description;
-	private int id;
+	protected String defaultValue;
+	protected String appliesTo;
+	protected String description;
+	protected int id;
 	private Map appliesToMap;
 	protected Map mappingsByName;
-	private String group;
+	protected String group;
 	protected boolean isBaseAttribute;
 	protected boolean isCaseSensitive;
 	protected boolean allowsCombinations;

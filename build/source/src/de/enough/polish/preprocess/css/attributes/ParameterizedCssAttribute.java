@@ -66,7 +66,10 @@ public class ParameterizedCssAttribute extends CssAttribute {
 			mapping.checkCondition( this.name, value, environment.getBooleanEvaluator() );
 			return mapping.getConverter();
 		} else {
-			return null;
+			// should be a reference to the corresponding polish.css section, e.g. backgrounds/borders,
+			// so return the alleged reference name:
+			return value + Character.toUpperCase( this.name.charAt(0) ) + this.name.substring(1);
+			//return null;
 		}
 	}
 

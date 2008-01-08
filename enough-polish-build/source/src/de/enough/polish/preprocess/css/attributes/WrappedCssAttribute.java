@@ -63,6 +63,13 @@ public class WrappedCssAttribute extends CssAttribute
 		this.parent = parent;
 		this.name = definition.getAttributeValue("name");
 		this.type = definition.getAttributeValue("type");
+		this.description = definition.getAttributeValue("description");
+		String idStr = definition.getAttributeValue("id");
+		if (idStr == null) {
+			this.id = parent.getId();
+		} else {
+			this.id = Integer.parseInt(idStr);
+		}
 	}
 	
 	
@@ -128,6 +135,9 @@ public class WrappedCssAttribute extends CssAttribute
 	 */
 	public String getDescription()
 	{
+		if (this.description != null) {
+			return this.description;
+		}
 		return this.parent.getDescription();
 	}
 
@@ -139,13 +149,13 @@ public class WrappedCssAttribute extends CssAttribute
 		return this.parent.getGroup();
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.preprocess.css.CssAttribute#getId()
-	 */
-	public int getId()
-	{
-		return this.parent.getId();
-	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.preprocess.css.CssAttribute#getId()
+//	 */
+//	public int getId()
+//	{
+//		return this.parent.getId();
+//	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.css.CssAttribute#getMapping(java.lang.String)
@@ -252,13 +262,13 @@ public class WrappedCssAttribute extends CssAttribute
 		this.parent.setDefinition(definition);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.preprocess.css.CssAttribute#setId(int)
-	 */
-	public void setId(int id)
-	{
-		this.parent.setId(id);
-	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.preprocess.css.CssAttribute#setId(int)
+//	 */
+//	public void setId(int id)
+//	{
+//		this.parent.setId(id);
+//	}
 	
 	
 
