@@ -5,18 +5,22 @@
 <%include start.txt %>
 
 	<h1 id="top">Visual Guide</h1>
+	<p>
+	This guide shows you the available screens, items and screen components that you can use with J2ME Polish. 
+	Click on the UI components to learn more about them.
+	</p>
 	<ul class="relatedtechnologies">
 		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-visualguide-backgrounds.html">Visual Guide to background</a></li>
+		<li><a href="gui-visualguide-borders.html">Visual Guide to border</a></li>
+		<li><a href="gui-visualguide-texteffects.html">Visual Guide to text-effect</a></li>
+		<li><a href="gui-visualguide-viewtypes.html">Visual Guide to view-type</a></li>
 		<li><a href="gui-visualguide-screenchangeanimations.html">Visual Guide to screen-change-animation</a></li>
 		<li><a href="gui-concepts.html">GUI Concepts</a></li>
 		<li><a href="gui-css-basics.html">CSS Basics</a></li>
 		<li><a href="customization.html">Customization</a></li>
 	</ul>
 	<%index %>
-	<p>
-	This guide shows you the available screens, items and effects that you can use with J2ME Polish. Click on the GUI components to
-	learn more about them.
-</p>
 <h2 id="gui-overview">Screen Elements</h2>
 	<!--  CSS for image map below, original from http://www.frankmanno.com/ideas/css-imagemap/ -->
 <style type="text/css" media="screen">
@@ -108,7 +112,7 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 </tr></table>
 <h2 id="gui-screens">Screens</h2>
 	<p>
-	J2ME Polish caters standard as well as advanced screens:
+	J2ME Polish provides standard as well as advanced screens:
 	</p>
 	<h3 id="gui-screen-alert">Alert</h3>
 	<table><tr>
@@ -178,7 +182,67 @@ javax.microedition.lcdui.TextBox box = new javax.microedition.lcdui.TextBox("Mes
 	
 
 <h2 id="gui-items">Items</h2>
-	<h3 id="gui-item-chartitem">ChartItem</h3>
+	<p>
+	You can include Items in any Form-based screens like the <a href="gui-screen-tabbedform.html">TabbedForm</a> in J2ME Polish.
+	</p>
+	<h3 id="gui-item-label">Item Label</h3>
+	<p>
+	Most Items support labels which are drawn in front or on top of the actual content of an item.
+	In J2ME Polish a label is internally a <a href="gui-item-stringitem.html">StringItem</a>, so you can apply
+	all text attributes like <code>font-color</code>, <code>text-effect</code> etc.
+	</p>
+	<p>
+	By default labels are designed using the predefined <code>label</code> style:
+	</p>
+<pre>
+label {
+	font-color: silver;
+	font-size: small;
+	layout: newline-after;
+}
+</pre>
+	<p>
+	<img src="<%= basedir%>images/gui-item-label.png" width="347" height="73" alt="A label" />
+	</p>
+	<p>You can, however, apply your own specific label styles using the <code>label-style</code> CSS attribute in your
+	item's style:
+	</p>
+<pre>
+.myItem {
+	background-type: round-rect;
+	background-color: white;
+	<b>label-style: .myItemLabel;</b>
+}
+.myItemLabel {
+	font-color: white;
+	font-style: italic | bold;
+}
+</pre>
+	<p>
+		<img src="<%= basedir%>images/gui-item-label2.png" width="347" height="52" alt="A label" />
+	</p>
+	<p>
+	Last but not least you should know that a background and a border usually does not include the label of an Item.
+	In case you want to extend the reach of the background and border to the label as well, you need to set the 
+	<code>include-label</code> CSS attribute to true:
+	</p>
+<pre>
+.myItem {
+	background-type: round-rect;
+	background-color: white;
+	<b>include-label: true;</b>
+	label-style: .myItemLabel;
+}
+.myItemLabel {
+	font-color: gray;
+	font-style: bold | italic;
+}
+</pre>
+	<p>
+		<img src="<%= basedir%>images/gui-item-label3.png" width="347" height="52" alt="A label with include-label" />
+	</p>
+	
+<h3 id="gui-item-chartitem">ChartItem</h3>
 	<table><tr>
 		<td><a href="gui-item-chartitem.html"><img src="<%= basedir%>images/gui-item-chartitem.png" width="313" height="209" alt="A ChartItem" /></a></td>
 		<td valign="center">Visualize numerical data with the <a href="gui-item-chartitem.html">ChartItem</a>.</td>
@@ -298,645 +362,5 @@ javax.microedition.lcdui.TextBox box = new javax.microedition.lcdui.TextBox("Mes
 		</a></td>
 		<td valign="center">Interact with hierarchical data with the <a href="gui-item-treeitem.html">TreeItem</a>.</td>
 	</tr></table>
-	
-	
-	
-<h2 id="gui-effects">Effects and Animations</h2>
-	<h3 id="text-effects">Text Effects</h3>
-	<p>Text effects can be applied to all items that display text like <a href="#gui-item-stringitem">StringItems</a>, <a href="#menu">Commands</a> or
-	<a href="#title">screen titles</a>.
-	</p>
-	<h4 id="gui-texteffect-shadow">shadow</h4>
-	<table><tr>
-		<td><a href="gui-texteffect-shadow.html"><img src="<%= basedir%>images/gui-texteffect-shadow.png"  width="144" height="24" alt="the shadow text-effect" /></a></td>
-		<td valign="center"><a href="gui-texteffect-shadow.html">shadow</a> text-effect</td>
-	</tr></table>
-	<h4 id="gui-texteffect-dropshadow">drop-shadow</h4>
-	<table><tr>
-		<td><a href="gui-texteffect-dropshadow.html"><img src="<%= basedir%>images/gui-texteffect-drop-shadow.png"  width="141" height="23" alt="the drop-shadow text-effect" /></a></td>
-		<td valign="center"><a href="gui-texteffect-dropshadow.html">drop-shadow</a> text-effect</td>
-	</tr></table>
-	<h4 id="gui-texteffect-alienglow">alien-glow</h4>
-	<table><tr>
-		<td><a href="gui-texteffect-alienglow.html"><img src="<%= basedir%>images/gui-texteffect-alienglow.png"  width="137" height="24" alt="the alien-glow text-effect" /></a></td>
-		<td valign="center"><a href="gui-texteffect-alienglow.html">alien-glow</a> text-effect</td>
-	</tr></table>
-	<h4 id="gui-texteffect-fading-alienglow">fading-alien-glow</h4>
-	<table><tr>
-		<td>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/gui-texteffect-fading-alien-glow.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="148">
-	        <param name='height' value="24">
-	        <embed src="<%= basedir%>images/gui-texteffect-fading-alien-glow.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="148" height="44"
-	        >
-	        </embed>
-		</object>
-		</td>
-		<td valign="center"><a href="gui-texteffect-fading-alienglow.html">fading-alien-glow</a> text-effect</td>
-	</tr></table>
-	<h4 id="gui-texteffect-flash">flash</h4>
-	<table><tr>
-		<td>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/gui-texteffect-flash.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="148">
-	        <param name='height' value="24">
-	        <embed src="<%= basedir%>images/gui-texteffect-flash.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-            width="148" height="44"
-	        >
-	        </embed>
-		</object>
-		</td>
-		<td valign="center"><a href="gui-texteffect-flash.html">flash</a> text-effect</td>
-	</tr></table>
-	<h4 id="gui-texteffect-lighthouse">lighthouse</h4>
-	<table><tr>
-		<td>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/gui-texteffect-lighthouse.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="148">
-	        <param name='height' value="24">
-	        <embed src="<%= basedir%>images/gui-texteffect-lighthouse.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-            width="148" height="44"
-	        >
-	        </embed>
-		</object>
-		</td>
-		<td valign="center"><a href="gui-texteffect-lighthouse.html">lighthouse</a> text-effect</td>
-	</tr></table>	
-	<h4 id="gui-texteffect-mirrorshadow">mirror-shadow</h4>
-	<table><tr>
-		<td><a href="gui-texteffect-mirror-shadow.html"><img src="<%= basedir%>images/gui-texteffect-mirror-shadow.png"  width="131" height="47" alt="the mirror-shadow text-effect" /></a></td>
-		<td valign="center"><a href="gui-texteffect-mirror-shadow.html">mirror-shadow</a> text-effect</td>
-	</tr></table>
-	<h4 id="gui-texteffect-outline">outline</h4>
-	<table><tr>
-		<td><a href="gui-texteffect-outline.html"><img src="<%= basedir%>images/gui-texteffect-outline.png"  width="135" height="24" alt="the outline text-effect" /></a></td>
-		<td valign="center"><a href="gui-texteffect-outline.html">outline</a> text-effect</td>
-	</tr></table>
-	<h4 id="gui-texteffect-rotate">rotate</h4>
-	<table><tr>
-		<td><a href="gui-texteffect-rotate.html"><img src="<%= basedir%>images/gui-texteffect-rotate.png"  width="135" height="35" alt="the rotate text-effect" /></a></td>
-		<td valign="center"><a href="gui-texteffect-rotate.html">rotate</a> text-effect</td>
-	</tr></table>
-	<h4 id="gui-texteffect-rotating">rotating</h4>
-	<table><tr>
-		<td>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/gui-texteffect-rotating.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="148">
-	        <param name='height' value="67">
-	        <embed src="<%= basedir%>images/gui-texteffect-rotating.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="148" height="87"
-	        >
-	        </embed>
-		</object>
-		</td>
-		<td valign="center"><a href="gui-texteffect-rotating.html">rotating</a> text-effect</td>
-	</tr></table>	
-	<h4 id="gui-texteffect-segment">segment</h4>
-	<table><tr>
-		<td><a href="gui-texteffect-segment.html"><img src="<%= basedir%>images/gui-texteffect-segment.png"  width="125" height="24" alt="the segment text-effect" /></a></td>
-		<td valign="center"><a href="gui-texteffect-segment.html">segment</a> text-effect</td>
-	</tr></table>
-	<h4 id="gui-texteffect-smiley">smiley</h4>
-	<table><tr>
-		<td><a href="gui-texteffect-smiley.html"><img src="<%= basedir%>images/gui-texteffect-smiley.png"  width="123" height="26" alt="the smiley text-effect" /></a></td>
-		<td valign="center"><a href="gui-texteffect-smiley.html">smiley</a> text-effect</td>
-	</tr></table>
-	<h4 id="gui-texteffect-typewriter">typewriter</h4>
-	<table><tr>
-		<td>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/gui-texteffect-typewriter.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="148">
-	        <param name='height' value="24">
-	        <embed src="<%= basedir%>images/gui-texteffect-typewriter.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="148" height="44"
-	        >
-	        </embed>
-		</object>
-		</td>
-		<td valign="center"><a href="gui-texteffect-typewriter.html">typewriter</a> text-effect</td>
-	</tr></table>	
-	<h4 id="gui-texteffect-vertical-gradient">vertical-gradient</h4>
-	<table><tr>
-		<td><a href="gui-texteffect-vertical-gradient.html"><img src="<%= basedir%>images/gui-texteffect-vertical-gradient.png"  width="139" height="24" alt="the vertical-gradient text-effect" /></a></td>
-		<td valign="center"><a href="gui-texteffect-vertical-gradient.html">vertical-gradient</a> text-effect</td>
-	</tr></table>
-	
-	<h4 id="gui-texteffect-extend">Your Own Text-Effect</h4>
-	<table><tr>
-		<td><a href="extending-texteffect.html"><img src="<%= basedir%>images/extend.png" width="76" height="68" alt="Create Your Own Text-Effect" /></a></td>
-		<td valign="center">Create Your <a href="extending-texteffect.html">Own Text-Effect</a></td>
-	</tr></table>
-	
-	
-	<h3 id="screen-change-animation">Screen Transitions</h3>
-	<p>You can animate transition from one screen to another by using the <code>screen-change-animation</code> attribute
-	within the corresponding screen's style.
-	</p>
-	<p>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/gui-screenchangeanimation-zoomin.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="175">
-	        <param name='height' value="225">
-	        <embed src="<%= basedir%>images/gui-screenchangeanimation-zoomin.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="176" height="225"
-	        >
-	        </embed>
-		</object>
-	</p>
-	<p>Please refer to the <a href="gui-visualguide-screenchangeanimations.html">Visual Guide to screen-change-animation</a>
-	for a full list of available animations.
-	</p>
-	<h4 id="gui-screenchangeanimation-extend">Your Own Screen-Change-Animation</h4>
-	<table><tr>
-		<td><a href="extending-texteffect.html"><img src="<%= basedir%>images/extend.png" width="76" height="68" alt="Create Your Own Screen-Change-Animation" /></a></td>
-		<td valign="center">Create Your <a href="extending-screenchangeanimation.html">Own Screen-Change-Animation</a></td>
-	</tr></table>
-	
-<h2 id="gui-backgrounds">Backgrounds</h2>
-<p>You can apply backgrounds to any item or screen using the <code>background</code> CSS attribute..</p>
-<h3 id="background-circle" >circle Background</h3>
-	<table><tr>
-		<td><a href="gui-background-circle.html"><img src="<%= basedir%>images/gui-background-circle.png" width="197" height="49" alt="circle background"/></a></td>
-		<td>The <a href="gui-background-circle.html">circle background</a> displays a circle or an ellipse background.</td>
-	</tr></table>
-<h3 id="background-combined">combined Background</h3>
-	<table><tr>
-		<td><a href="gui-background-combined.html"><img src="<%= basedir%>images/background-combined.png" width="352" height="40" /></a>
-		<br />
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/background-combined.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="240">
-	        <param name='height' value="240">
-	        <embed src="<%= basedir%>images/background-combined.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="240" height="260"
-	        >
-	        </embed>
-		</object>		
-		</td>
-		<td>Mix different backgrounds together using the <a href="gui-background-combined.html">combined background</a>.</td>
-	</tr></table>
-<h3 id="background-diagonal-gradient" >diagonal-gradient Background</h3>
-	<table><tr>
-		<td><a href="gui-background-diagonal-gradient.html"><img src="<%= basedir%>images/gui-background-diagonal-gradient.png" width="196" height="52" alt="diagonal-gradient background"/></a></td>
-		<td>The <a href="gui-background-diagonal-gradient.html">diagonal-gradient background</a> displays a background with a smooth gradient running from the top-left to the bottom-right corner.</td>
-	</tr></table>
-<h3 id="background-fade-in">fade-in Background</h3>
-	<table><tr>
-		<td>
-	<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-        <param name='src' value="<%= basedir%>images/gui-background-fade-in.mov">
-        <param name='autoplay' value="false">
-        <param name='controller' value="true">
-        <param name='loop' value="true">
-        <param name='width' value="161">
-        <param name='height' value="49">
-        <embed src="<%= basedir%>images/gui-background-fade-in.mov" autoplay="false" 
-        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-        width="161" height="49"
-        >
-        </embed>
-	</object>
-		</td>
-		<td valign="center">Fade in a background on MIDP 2.0 handsets with the <a href="gui-background-fade-in.html">fade-in background</a>.</td>
-	</tr></table>	
-<h3 id="background-gif89a" >gif89a Background</h3>
-	<table><tr>
-		<td>
-		<!-- 
-		<a href="gui-background-gif89a.html"><img src="<%= basedir%>images/gui-background-gif89a.png" width="" height="" alt="gif89a background"/></a>
-		 -->
-		 (video follows)
-		 </td>
-		<td>The <a href="gui-background-gif89a.html">gif89a background</a> displays an animated GIF image.</td>
-	</tr></table>
-<h3 id="background-image">image Background</h3>
-	<table><tr>
-		<td><a href="gui-background-image.html"><img src="<%= basedir%>images/background-image.png" width="248" height="248" /></a>
-		</td>
-		<td>The <a href="gui-background-image.html">image background</a> displays an image in the background.</td>
-	</tr></table>
-<h3 id="background-horizontal-stripes">horizontal-stripes Background</h3>
-	<table><tr>
-		<td><a href="gui-background-horizontal-stripes.html"><img src="<%= basedir%>images/background-horizontal-stripes.png" width="253" height="248" /></a></td>
-		<td>The <a href="gui-background-horizontal-stripes.html">horizontal-stripes background</a> displays horizontal stripes in the background.</td>
-	</tr></table>
-<h3 id="background-mask">mask Background</h3>
-	<table><tr>
-		<td><a href="gui-background-mask.html"><img src="<%= basedir%>images/background-mask.png" width="350" height="32" /></a></td>
-		<td>Mask an existing background and add transparency using a  <a href="gui-background-mask.html">mask background</a>.</td>
-	</tr></table>
-<h3 id="background-opening">opening Background</h3>
-	<table><tr>
-		<td>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/gui-background-opening.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="164">
-	        <param name='height' value="48">
-	        <embed src="<%= basedir%>images/gui-background-opening.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="164" height="48"
-	        >
-	        </embed>
-		</object>
-		</td>
-		<td valign="center">Increase the size of the background each time a new item is selected with the <a href="gui-background-opening.html">opening background</a>.</td>
-	</tr></table>
-<h3 id="background-opening-round-rect">opening-round-rect Background</h3>
-	<table><tr>
-		<td>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/gui-background-opening-round-rect.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="164">
-	        <param name='height' value="48">
-	        <embed src="<%= basedir%>images/gui-background-opening-round-rect.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="164" height="48"
-	        >
-	        </embed>
-		</object>
-		</td>
-		<td valign="center">Increase the height of a round-rect background when the corresponding item is shown with the <a href="gui-background-opening-round-rect.html">opening-round-rect background</a>.</td>
-	</tr></table>
-<h3 id="background-partial">partial Background</h3>
-	<table><tr>
-		<td><a href="gui-background-partial.html"><img src="<%= basedir%>images/background-partial.png" width="350" height="38" /></a></td>
-		<td>The <a href="gui-background-partial.html">partial background</a> fills a part of the background.</td>
-	</tr></table>
-<h3 id="background-partial-gradient">partial-gradient Background</h3>
-	<table><tr>
-		<td><a href="gui-background-partial-gradient.html"><img src="<%= basedir%>images/background-partial-gradient.png" width="239" height="239" /></a></td>
-		<td>The <a href="gui-background-partial-gradient.html">partial-gradient background</a> displays a gradient in a part of the background.</td>
-	</tr></table>
-
-<h3 id="background-polygon" >polygon Background</h3>
-	<table><tr>
-		<td><a href="gui-background-polygon.html"><img src="<%= basedir%>images/gui-background-polygon.png" width="230" height="52" alt="polygon background"/></a></td>
-		<td>The <a href="gui-background-polygon.html">polygon background</a> renders a filled polygon.</td>
-	</tr></table>
-	
-<h3 id="background-pulsating">pulsating Background</h3>
-	<table><tr>
-		<td>
-	<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-        <param name='src' value="<%= basedir%>images/gui-background-pulsating.mov">
-        <param name='autoplay' value="false">
-        <param name='controller' value="true">
-        <param name='loop' value="true">
-        <param name='width' value="164">
-        <param name='height' value="83">
-        <embed src="<%= basedir%>images/gui-background-pulsating.mov" autoplay="false" 
-        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-        width="164" height="83"
-        >
-        </embed>
-	</object>
-		</td>
-		<td valign="center">Use a background that changes its color with the <a href="gui-background-pulsating.html">pulsating background</a>.</td>
-	</tr></table>	
-	
-<h3 id="background-pulsating-circle">pulsating-circle Background</h3>
-	<table><tr>
-		<td>
-	<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-        <param name='src' value="<%= basedir%>images/gui-background-pulsating-circle.mov">
-        <param name='autoplay' value="false">
-        <param name='controller' value="true">
-        <param name='loop' value="true">
-        <param name='width' value="164">
-        <param name='height' value="83">
-        <embed src="<%= basedir%>images/gui-background-pulsating-circle.mov" autoplay="false" 
-        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-        width="164" height="83"
-        >
-        </embed>
-	</object>
-		</td>
-		<td valign="center">Use a breathing circular background with the <a href="gui-background-pulsating-circle.html">pulsating-circle background</a>.</td>
-	</tr></table>
-	
-<h3 id="background-pulsating-circles">pulsating-circles Background</h3>
-	<table><tr>
-		<td>
-	<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-        <param name='src' value="<%= basedir%>images/gui-background-pulsating-circles.mov">
-        <param name='autoplay' value="false">
-        <param name='controller' value="true">
-        <param name='loop' value="true">
-        <param name='width' value="164">
-        <param name='height' value="83">
-        <embed src="<%= basedir%>images/gui-background-pulsating-circles.mov" autoplay="false" 
-        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-        width="164" height="83"
-        >
-        </embed>
-	</object>
-		</td>
-		<td valign="center">Paint several ever growing circles with the <a href="gui-background-pulsating-circles.html">pulsating-circles background</a>.</td>
-	</tr></table>		
-
-<h3 id="background-pulsating-round-rect">pulsating-round-rect Background</h3>
-	<table><tr>
-		<td>
-	<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-        <param name='src' value="<%= basedir%>images/gui-background-pulsating-round-rect.mov">
-        <param name='autoplay' value="false">
-        <param name='controller' value="true">
-        <param name='loop' value="true">
-        <param name='width' value="164">
-        <param name='height' value="43">
-        <embed src="<%= basedir%>images/gui-background-pulsating-round-rect.mov" autoplay="false" 
-        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-        width="164" height="43"
-        >
-        </embed>
-	</object>
-		</td>
-		<td valign="center">Use a rounded corner background that changes its color with the <a href="gui-background-pulsating-round-rect.html">pulsating-round-rect background</a>.</td>
-	</tr></table>
-	
-<h3 id="background-round-rect">round-rect Background</h3>
-	<table><tr>
-		<td><a href="gui-background-round-rect.html"><img src="<%= basedir%>images/background-round-rect.png" width="255" height="255" /></a></td>
-		<td>The <a href="gui-background-round-rect.html">round-rect background</a> displays a monocolored background with rounded corners.</td>
-	</tr></table>
-
-<h3 id="background-round-tab" >round-tab Background</h3>
-	<table><tr>
-		<td><a href="gui-background-round-tab.html"><img src="<%= basedir%>images/gui-background-round-tab.png" width="196" height="52" alt="round-tab background"/></a></td>
-		<td>The <a href="gui-background-round-tab.html">round-tab background</a> displays a background with rounded corners at the top.</td>
-	</tr></table>
-
-<h3 id="background-round-tab-bordered" >round-tab-bordered Background</h3>
-	<table><tr>
-		<td><a href="gui-background-round-tab-bordered.html"><img src="<%= basedir%>images/gui-background-round-tab-bordered.png" width="196" height="52" alt="round-tab-bordered background"/></a></td>
-		<td>The <a href="gui-background-round-tab-bordered.html">round-tab-bordered background</a> displays a background with rounded corners at the top and a border.</td>
-	</tr></table>
-
-<h3 id="background-scaling-image">scaling-image Background</h3>
-	<table><tr>
-		<td><a href="gui-background-scaling-image.html"><img src="<%= basedir%>images/gui-background-scaling-image.png" width="351" height="416" /></a></td>
-		<td>The <a href="gui-background-scaling-image.html">scaling-image background</a> scales images automatically to the required size.</td>
-	</tr></table>
-	
-<h3 id="background-simple">simple Background</h3>
-	<table><tr>
-		<td><a href="gui-background-simple.html"><img src="<%= basedir%>images/background-simple.png" width="240" height="241" /></a></td>
-		<td>The <a href="gui-background-simple.html">simple background</a> displays a monocolored and possibly translucent background.</td>
-	</tr></table>
-	
-<h3 id="background-snowflakes">snowflakes Background</h3>
-	<table><tr>
-		<td>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/background-snowflakes.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="240">
-	        <param name='height' value="240">
-	        <embed src="<%= basedir%>images/background-snowflakes.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="240" height="260"
-	        >
-	        </embed>
-		</object>
-		</td>
-		<td valign="center">Show a some winter feeling with the <a href="gui-background-snowflakes.html">snowflakes background</a>.</td>
-	</tr></table>	
-<h3 id="background-vertical-gradient">vertical-gradient Background</h3>
-	<table><tr>
-		<td><a href="gui-background-vertical-gradient.html"><img src="<%= basedir%>images/background-vertical-gradient.png" width="252" height="250" /></a></td>
-		<td>The <a href="gui-background-vertical-gradient.html">vertical-gradient background</a> displays an gradient in the background.</td>
-	</tr></table>
-	
-<h3 id="background-video" >video Background</h3>
-	<table><tr>
-		<td>
-		(video follows)
-		</td>
-		<td>The <a href="gui-background-video.html">video background</a> displays a video on the background.</td>
-	</tr></table>
-	
-<h3 id="background-web20" >web20 Background</h3>
-	<table><tr>
-		<td><a href="gui-background-web20.html"><img src="<%= basedir%>images/gui-background-web20.png" width="326" height="52" alt="web20 background"/></a></td>
-		<td>The <a href="gui-background-web20.html">web20 background</a> displays a rounded corner background with an inner circular background.</td>
-	</tr></table>
-	
-<h3 id="gui-background-extend">Your Own Background</h3>
-	<table><tr>
-		<td><a href="extending-background.html"><img src="<%= basedir%>images/extend.png"  width="76" height="68" alt="Create Your Own Background" /></a></td>
-		<td valign="center">Create Your <a href="extending-background.html">Own Background</a></td>
-	</tr></table>
-
-<!--
-
-<h3 id="background-xx" >xx Background</h3>
-	<table><tr>
-		<td><a href="gui-background-xx.html"><img src="<%= basedir%>images/gui-background-xx.png" width="" height="" alt="xx background"/></a></td>
-		<td>The <a href="gui-background-xx.html">xx background</a> displays a  background.</td>
-	</tr></table>
- -->
-
-
-
-<h2 id="gui-borders">Borders</h2>
-
-<h3 id="border-bottom">bottom Border</h3>
-	<table><tr>
-		<td><a href="gui-border-bottom.html"><img src="<%= basedir%>images/gui-border-bottom.png" width="98" height="31" /></a></td>
-		<td>The <a href="gui-border-bottom.html">bottom border</a> paints a line underneath a UI component.</td>
-	</tr></table>
-
-<h3 id="border-bottom-right-shadow">bottom-right-shadow Border</h3>
-	<table><tr>
-		<td><a href="gui-border-bottom-right-shadow.html"><img src="<%= basedir%>images/gui-border-bottom-right-shadow.png" width="98" height="31" /></a></td>
-		<td>The <a href="gui-border-bottom-right-shadow.html">bottom-right-shadow border</a> paints a straight border at bottom and right of the UI component.</td>
-	</tr></table>
-
-<h3 id="border-circle">circle Border</h3>
-	<table><tr>
-		<td><a href="gui-border-circle.html"><img src="<%= basedir%>images/gui-border-circle.png" width="105" height="31" /></a></td>
-		<td>The <a href="gui-border-circle.html">circle border</a> paints a circle around the UI component.</td>
-	</tr></table>
-	
-<h3 id="border-drop-shadow">drop-shadow Border</h3>
-	<table><tr>
-		<td><a href="gui-border-drop-shadow.html">
-		<img src="<%= basedir%>images/gui-border-drop-shadow.png" width="98" height="31" />
-		<br />
-		<img src="<%= basedir%>images/gui-border-drop-shadow2.png" width="320" height="49" alt="drop-shadow border" />	
-		</a></td>
-		<td>The <a href="gui-border-drop-shadow.html">drop-shadow border</a> paints a soft and translucent shadow around the UI component.</td>
-	</tr></table>
-	
-
-<h3 id="border-left">left Border</h3>
-	<table><tr>
-		<td><a href="gui-border-left.html"><img src="<%= basedir%>images/gui-border-left.png" width="98" height="31" /></a></td>
-		<td>The <a href="gui-border-left.html">left border</a> paints a line on the left side of an UI component.</td>
-	</tr></table>
-
-<h3 id="border-pulsating">pulsating Border</h3>
-	<table><tr>
-		<td>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/gui-border-pulsating.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="173">
-	        <param name='height' value="55">
-	        <embed src="<%= basedir%>images/gui-border-pulsating.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="173" height="55"
-	        >
-	        </embed>
-		</object>
-		</td>
-		<td>The <a href="gui-border-pulsating.html">pulsating border</a> paints an animated rectangluar border around the UI component.</td>
-	</tr></table>
-	
-<h3 id="border-pulsating-round-rect">pulsating-round-rect Border</h3>
-	<table><tr>
-		<td>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/gui-border-pulsating-round-rect.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="173">
-	        <param name='height' value="55">
-	        <embed src="<%= basedir%>images/gui-border-pulsating-round-rect.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="173" height="55"
-	        >
-	        </embed>
-		</object>
-		</td>
-		<td>The <a href="gui-border-pulsating-round-rect.html">pulsating-round-rect border</a> paints an animated border with rounded corners around the UI component.</td>
-	</tr></table>
-
-<h3 id="border-right">right Border</h3>
-	<table><tr>
-		<td><a href="gui-border-right.html"><img src="<%= basedir%>images/gui-border-right.png" width="98" height="31" /></a></td>
-		<td>The <a href="gui-border-right.html">right border</a> paints a line right of the UI component.</td>
-	</tr></table>
-
-<h3 id="border-round-rect">round-rect Border</h3>
-	<table><tr>
-		<td><a href="gui-border-round-rect.html"><img src="<%= basedir%>images/gui-border-round-rect.png" width="98" height="31" /></a></td>
-		<td>Surround an item or a screen with a rectangle with rounded corners using the <a href="gui-border-round-rect.html">round-rect border</a>.</td>
-	</tr></table>
-
-
-<h3 id="border-simple">simple Border</h3>
-	<table><tr>
-		<td><a href="gui-border-simple.html"><img src="<%= basedir%>images/gui-border-simple.png" width="98" height="28" /></a></td>
-		<td>The <a href="gui-border-simple.html">simple border</a> paints a rectangular border around the UI component.</td>
-	</tr></table>
-
-
-<h3 id="border-square-sonar">square-sonar Border</h3>
-	<table><tr>
-		<td>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/gui-border-square-sonar.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="173">
-	        <param name='height' value="55">
-	        <embed src="<%= basedir%>images/gui-border-square-sonar.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="173" height="55"
-	        >
-	        </embed>
-		</object>
-		</td>
-		<td valign="center">Surround a UI element with moving rectangular lines using  the <a href="gui-border-square-sonar.html">square-sonar border</a>.</td>
-	</tr></table>	
-
-<h3 id="border-top">top Border</h3>
-	<table><tr>
-		<td><a href="gui-border-top.html"><img src="<%= basedir%>images/gui-border-top.png" width="98" height="31" /></a></td>
-		<td>The <a href="gui-border-top.html">top border</a> paints a line over the UI component.</td>
-	</tr></table>
-
-
-<h3 id="gui-border-extend">Your Own Border</h3>
-	<table><tr>
-		<td><a href="extending-border.html"><img src="<%= basedir%>images/extend.png"  width="76" height="68" alt="Create Your Own Border" /></a></td>
-		<td valign="center">Create Your <a href="extending-border.html">Own Border</a></td>
-	</tr></table>
-
-<!-- 
-id="border-xx"
-<h3 >xx Border</h3>
-	<table><tr>
-		<td><a href="gui-border-xx.html"><img src="<%= basedir%>images/gui-border-xx.png" width="98" height="31" /></a></td>
-		<td>The <a href="gui-border-xx.html">xx border</a> paints a border around the UI component.</td>
-	</tr></table>
-id="border-xx"
-<h3 >xx Border</h3>
-	<table><tr>
-		<td>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/gui-border-xx.mov">
-	        <param name='autoplay' value="false">
-	        <param name='controller' value="true">
-	        <param name='loop' value="true">
-	        <param name='width' value="173">
-	        <param name='height' value="55">
-	        <embed src="<%= basedir%>images/gui-border-xx.mov" autoplay="false" 
-	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="173" height="55"
-	        >
-	        </embed>
-		</object>
-		</td>
-		<td valign="center">Surround a UI element with a using  the <a href="gui-border-xx.html">xx border</a>.</td>
-	</tr></table>	
- -->
 
 <%include end.txt %>
