@@ -127,7 +127,21 @@
 		<parent>Series40E3FP1</parent>
 	</group>
 
+	<group>
+		<name>Series40E5</name>
+		<parent>Series40</parent>
+	</group>
 
+	<group>
+		<name>Series40E5FP1</name>
+		<parent>Series40E5</parent>
+	</group>	
+
+	<group>
+		<name>Series40E5DP1</name>
+		<parent>Series40E3</parent>
+	</group>
+	
 	<group>
 		<name>Series60</name>
 		<parent>Nokia-UI</parent>
