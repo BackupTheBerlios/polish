@@ -27,7 +27,6 @@
 package de.enough.polish.ui.itemviews;
 
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.AnimationThread;
 import de.enough.polish.ui.Item;
@@ -37,7 +36,7 @@ import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.ImageUtil;
 
 /**
- * <p>Fades out the item.</p>
+ * <p>Increases the size of the item.</p>
  *
  * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
@@ -50,9 +49,6 @@ public class SizeIncreaseItemView extends ItemView {
 	
 	private int[] rgbData;
 	private int[] scaledRgbData;
-	//#if polish.css.fade-in-next-style
-		private Style nextStyle;
-	//#endif
 	
 	private int targetHeight;
 	private int currentHeight;
@@ -65,7 +61,6 @@ public class SizeIncreaseItemView extends ItemView {
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
 	protected void initContent(Item parent, int firstLineWidth, int lineWidth) {
-		//TODO  question: should the view handle focused states and do this stuff or is it more appropriate for the application to do this?
 		if (this.parentItem == parent && this.parentItem.getStyle() == parent.getStyle() && this.isInitialized) {
 			return;
 		}
@@ -77,6 +72,7 @@ public class SizeIncreaseItemView extends ItemView {
 		
 		int[] itemRgbData = UiAccess.getRgbDataOfContent( parent );
 		this.rgbData = itemRgbData;
+		initAnimation(this.rgbData, this.currentHeight);
 		AnimationThread.addAnimationItem(parent);
 		this.isInitialized = true;
 	}
@@ -158,7 +154,14 @@ public class SizeIncreaseItemView extends ItemView {
 	 * @see de.enough.polish.ui.ItemView#showNotify()
 	 */
 	public void showNotify() {
+		initAnimation(this.rgbData, this.currentHeight);
 		super.showNotify();
+	}
+	
+	private void initAnimation(int[] data, int height) { 
+		if (data != null) {
+			this.scaledRgbData = ImageUtil.scale(255, data, this.contentWidth, height, this.contentWidth, this.targetHeight);
+		}
 	}
 
 
@@ -171,7 +174,7 @@ public class SizeIncreaseItemView extends ItemView {
 		if (this.currentHeight == 0) {
 			// do not paint anything
 		} else if (this.currentHeight != this.targetHeight && data != null) {
-			if(sizeIncreaseTop)
+			if(this.sizeIncreaseTop)
 			{
 				g.drawRGB( data, 0, this.contentWidth, x, y, this.contentWidth, this.currentHeight, true );
 			}
