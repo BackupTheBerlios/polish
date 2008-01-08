@@ -29,13 +29,11 @@ package de.enough.polish.ui.chartviews;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.ChartItem;
-import de.enough.polish.ui.Color;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
-import de.enough.polish.ui.Style;
 
 /**
- * <p>Visualizes the chart as a cake diagram.</p>
+ * <p>Visualizes the chart as a pie chart.</p>
  *
  * <p>Copyright Enough Software 2007 - 2008</p>
  * <pre>
@@ -44,7 +42,7 @@ import de.enough.polish.ui.Style;
  * </pre>
  * @author Andre Schmidt, j2mepolish@enough.de
  */
-public class CakeChartView extends ItemView {
+public class PieChartView extends ItemView {
 		
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
@@ -123,14 +121,6 @@ public class CakeChartView extends ItemView {
 		}
 
 	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ItemView#setStyle(de.enough.polish.ui.Style)
-	 */
-	protected void setStyle(Style style) {
-		super.setStyle(style);
-	}
-	
 	
 
 }

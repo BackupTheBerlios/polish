@@ -42,15 +42,6 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 
-//TODO implement horizontal view type:
-/*
- * 1. set appropriate style when item is unselected
- * 2. xOffset, xTargetOffset
- * 3. getNextItem > modify xOffset
- * 4. Allow checkboxes
- * 
- */
-
 /**
  * <p>Shows  the available items of an ChoiceGroup or a horizontal list.</p>
  * <p>Apply this view by specifying "view-type: horizontal-choice;" in your polish.css file.</p>
@@ -94,7 +85,7 @@ public class HorizontalChoiceView extends ContainerView {
 	//#ifdef polish.css.horizontalview-expand-background
 		private Background background;
 		private boolean expandBackground;
-	//#endif	
+	//#endif
 	private int arrowWidth = 10;
 	private int currentItemIndex;
 	private int leftArrowStartX;
@@ -231,6 +222,7 @@ public class HorizontalChoiceView extends ContainerView {
 				}
 			}
 		}
+	
 		this.contentHeight = height;
 		this.contentWidth = lineWidth + completeArrowWidth;
 		
@@ -343,7 +335,6 @@ public class HorizontalChoiceView extends ContainerView {
 				this.allowRoundTrip = allowRoundTripBool.booleanValue();
 			}
 		//#endif
-
 	}
 	
 	
