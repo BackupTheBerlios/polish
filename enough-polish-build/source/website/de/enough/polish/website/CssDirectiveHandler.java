@@ -56,9 +56,14 @@ import de.enough.webprocessor.util.StringList;
 public class CssDirectiveHandler extends DirectiveHandler
 {
 	
-	private CssAttributesManager cssManager;
+	protected CssAttributesManager cssManager;
 
+	/**
+	 * Creates a new handler
+	 *
+	 */
 	public CssDirectiveHandler() {
+		// the handler
 	}
 	
 	public void init( Project project ) {
@@ -105,86 +110,116 @@ public class CssDirectiveHandler extends DirectiveHandler
 		{
 			uiElementClass = Class.forName(uiElementClassName);
 			CssAttribute[] attributes = this.cssManager.getApplicableAttributes( uiElementClass );
-			if (attributes.length == 0) {
-				return "";
-			}
-			StringBuffer html = new StringBuffer();
-			html.append("<table class=\"borderedTable\"  cellspacing=\"0\" cellpadding=\"3\" border=\"1\">\n");
-			html.append( "<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Explanation</th></tr>\n");
-			boolean isInFirstClassMatches = true;
-			for (int i = 0; i < attributes.length; i++)
-			{
-				CssAttribute attribute = attributes[i];
-				if (isInFirstClassMatches && !attribute.appliesTo(uiElementClassName)) {
-					isInFirstClassMatches = false;
-					if (i != 0) {
-						html.append( "<tr><th>Further CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Explanation</th></tr>\n");
-					}
-				}
-				html.append("	<tr>\n");
-				html.append("		<td>").append( attribute.getName() ).append("</td>\n");
-				if (attribute.getDefaultValue() != null) {
-					html.append( "		<td>").append( attribute.getDefaultValue() ).append("</td>\n");
-				} else {
-					html.append( "		<td>-</td>\n");
-				}
-				if (attribute.getAllowedValues() == null) {
-					if (attribute instanceof ColorCssAttribute) {
-						boolean isArgb = ((ColorCssAttribute) attribute).isTranslucentSupported();
-						if (isArgb) {
-							html.append( "		<td>ARGB color</td>\n");
-						} else {
-							html.append( "		<td>color</td>\n");
-						}
-					} else if (attribute instanceof BooleanCssAttribute) {
-						html.append( "		<td>true, false</td>\n");
-					} else if (attribute instanceof MapCssAttribute) {
-						html.append( "		<td>");
-						CssMapping[] mappings = attribute.getApplicableMappings(uiElementClass);
-						for (int j = 0; j < mappings.length; j++)
-						{
-							CssMapping mapping = mappings[j];
-							html.append( mapping.getFrom() );
-							if (j != mappings.length - 1) {
-								html.append(", ");
-							}
-						}
-						html.append( "</td>\n");
-					} else if (attribute instanceof ParameterizedCssAttribute) {
-						html.append( "		<td>").append( attribute.getName() ).append(" definition</td>\n");
-					} else {
-						html.append( "		<td>").append( attribute.getType() ).append("</td>\n");
-					}
-				} else {
-					html.append( "		<td>");
-					String[] values = attribute.getAllowedValues();
-					for (int j = 0; j < values.length; j++)
-					{
-						String value = values[j];
-						html.append( value );
-						if (j != values.length -1) {
-							html.append(", ");
-						}
-					}
-					html.append("</td>\n");
-				}
-				html.append( "		<td>").append( attribute.getDescription() ).append("</td>\n");
-				html.append("	</tr>\n");
-				/*
-		The inner parts color of the glow.
-<pre>
-text-alien-glow-inner-color: #c00f;
-</pre>
-*/
-			}
-			html.append("</table>");
-			return html.toString();
+			return processAttributes(attributes, uiElementClassName, uiElementClass);
 		} catch (ClassNotFoundException e)
 		{
 			e.printStackTrace();
 			System.err.println("Unable to get attributes for class " + uiElementClassName + ": " + e);
 			return "";
 		}
+	}
+
+	/**
+	 * @param attributes
+	 * @param uiElementClassName
+	 * @param uiElementClass
+	 * @return
+	 */
+	protected String processAttributes(CssAttribute[] attributes, String uiElementClassName, Class uiElementClass)
+	{
+		if (attributes.length == 0) {
+			return "";
+		}
+		StringBuffer html = new StringBuffer();
+		addAttributes(attributes, html, uiElementClassName, uiElementClass);
+		return html.toString();
+	}
+
+	/**
+	 * @param attributes
+	 * @param html
+	 * @param uiElementClassName
+	 * @param uiElementClass
+	 */
+	protected void addAttributes(CssAttribute[] attributes, StringBuffer html, String uiElementClassName, Class uiElementClass)
+	{
+		html.append("<table class=\"borderedTable\"  cellspacing=\"0\" cellpadding=\"3\" border=\"1\">\n");
+		html.append( "<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Explanation</th></tr>\n");
+		boolean isInFirstClassMatches = true;
+		for (int i = 0; i < attributes.length; i++)
+		{
+			CssAttribute attribute = attributes[i];
+			if (isInFirstClassMatches && !attribute.appliesTo(uiElementClassName)) {
+				isInFirstClassMatches = false;
+				if (i != 0) {
+					html.append( "<tr><th>Further CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Explanation</th></tr>\n");
+				}
+			}
+			addAttribute(html, attribute, uiElementClass);
+		}
+		html.append("</table>");
+	}
+
+	/**
+	 * @param html
+	 * @param attribute
+	 * @param uiElementClass
+	 */
+	protected void addAttribute(StringBuffer html, CssAttribute attribute, Class uiElementClass)
+	{
+		html.append("	<tr>\n");
+		html.append("		<td>").append( attribute.getName() ).append("</td>\n");
+		if (attribute.getDefaultValue() != null) {
+			html.append( "		<td>").append( attribute.getDefaultValue() ).append("</td>\n");
+		} else {
+			html.append( "		<td>-</td>\n");
+		}
+		if (attribute.getAllowedValues() == null) {
+			if (attribute instanceof ColorCssAttribute) {
+				boolean isArgb = ((ColorCssAttribute) attribute).isTranslucentSupported();
+				if (isArgb) {
+					html.append( "		<td>ARGB color</td>\n");
+				} else {
+					html.append( "		<td>color</td>\n");
+				}
+			} else if (attribute instanceof BooleanCssAttribute) {
+				html.append( "		<td>true, false</td>\n");
+			} else if (attribute instanceof MapCssAttribute) {
+				html.append( "		<td>");
+				CssMapping[] mappings = attribute.getApplicableMappings(uiElementClass);
+				for (int j = 0; j < mappings.length; j++)
+				{
+					CssMapping mapping = mappings[j];
+					html.append( mapping.getFrom() );
+					if (j != mappings.length - 1) {
+						html.append(", ");
+					}
+				}
+				html.append( "</td>\n");
+			} else if (attribute instanceof ParameterizedCssAttribute) {
+				html.append( "		<td>").append( attribute.getName() ).append(" definition</td>\n");
+			} else {
+				html.append( "		<td>").append( attribute.getType() ).append("</td>\n");
+			}
+		} else {
+			html.append( "		<td>");
+			String[] values = attribute.getAllowedValues();
+			for (int j = 0; j < values.length; j++)
+			{
+				String value = values[j];
+				html.append( value );
+				if (j != values.length -1) {
+					html.append(", ");
+				}
+			}
+			html.append("</td>\n");
+		}
+		if (attribute.getDescription() == null) {
+			html.append( "		<td>-</td>\n");
+		} else {
+			html.append( "		<td>").append( attribute.getDescription() ).append("</td>\n");
+		}
+		html.append("	</tr>\n");
 	}
 
 }

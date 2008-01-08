@@ -79,7 +79,7 @@ public class Web20RoundRectBackgroundConverter extends BackgroundConverter {
 		if ( circleColorStr != null ) {
 			circleColorStr = parseColor( circleColorStr );
 		} else {
-			circleColorStr = "0xFFFF00";
+			circleColorStr = "0x999999";
 		}
 		String circleAnchorStr = (String) background.get("circle-anchor");
 		if (circleAnchorStr != null) {

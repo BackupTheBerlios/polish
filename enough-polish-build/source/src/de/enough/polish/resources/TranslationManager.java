@@ -334,34 +334,47 @@ implements Comparator
 	 * Saves the IDs-map for the complex translations to disk.
 	 * When dynamic translations are used, also IDs of plain and single-parameter translations are saved, too.
 	 * 
-	 * @param isForLaterTranslations true when the id generators should be loaded for later phases
+	 * @param isForExternalTranslations true when the id generators should be loaded for later phases
 	 * @throws IOException when the file(s) could not be written
 	 */
-	public void writeIdsMap(boolean isForLaterTranslations)
+	public void writeIdsMap(boolean isForExternalTranslations)
 	throws IOException
 	{
-		File idsFile = getMultipleParametersIdsFile(isForLaterTranslations);
-		if (isForLaterTranslations) {
-			FileUtil.writePropertiesFile(idsFile, this.idGeneratorMultipleParametersExternal.getIdsMap() );
+		File idsFile = getMultipleParametersIdsFile(isForExternalTranslations);
+		if (isForExternalTranslations) {
+			writeIdMap( idsFile, this.idGeneratorMultipleParametersExternal );
 		} else {
-			FileUtil.writePropertiesFile(idsFile, this.idGeneratorMultipleParameters.getIdsMap() );			
+			writeIdMap( idsFile, this.idGeneratorMultipleParameters );
 		}
 		if (this.isDynamic) {
-			idsFile = getPlainIdsFile(isForLaterTranslations);
-			if (isForLaterTranslations) {
-				FileUtil.writePropertiesFile(idsFile, this.idGeneratorPlainExternal.getIdsMap() );				
+			idsFile = getPlainIdsFile(isForExternalTranslations);
+			if (isForExternalTranslations) {
+				writeIdMap( idsFile, this.idGeneratorPlainExternal );
 			} else {
-				FileUtil.writePropertiesFile(idsFile, this.idGeneratorPlain.getIdsMap() );
+				writeIdMap( idsFile, this.idGeneratorPlain );
 			}
-			idsFile = getSingleParameterIdsFile(isForLaterTranslations);
-			if (isForLaterTranslations) {
-				FileUtil.writePropertiesFile(idsFile, this.idGeneratorSingleParameterExternal.getIdsMap() );
+			idsFile = getSingleParameterIdsFile(isForExternalTranslations);
+			if (isForExternalTranslations) {
+				writeIdMap( idsFile, this.idGeneratorSingleParameterExternal );
 			} else {
-				FileUtil.writePropertiesFile(idsFile, this.idGeneratorSingleParameter.getIdsMap() );				
+				writeIdMap( idsFile, this.idGeneratorSingleParameter );
 			}
 		}
 	}
 	
+	/**
+	 * Writes a single IDs map to a file
+	 * @param idsFile
+	 * @param idGenerator
+	 * @throws IOException 
+	 */
+	private void writeIdMap(File idsFile, IntegerIdGenerator idGenerator) throws IOException
+	{
+		if (idGenerator.hasChanged()) {
+			FileUtil.writePropertiesFile(idsFile, idGenerator.getIdsMap() );
+		}
+	}
+
 	/**
 	 * Loads the IDs-map for the complex translations to disk.
 	 * When dynamic translations are used, also IDs of plain and single-parameter translations are loaded as well.
@@ -423,6 +436,7 @@ implements Comparator
 		// changed in the messages-file can be used by other translations.
 		Map variables = this.environment.getVariables();
 		String[] keys = (String[]) rawTranslations.keySet().toArray( new String[ rawTranslations.size()] );
+		Arrays.sort( keys );
 		// in the first round only set variables:
 		for (int i = 0; i < keys.length; i++) {
 			String key = keys[i];
@@ -462,6 +476,7 @@ implements Comparator
 		}		
 		// in the second round set the actual translations as well:
 		keys = (String[]) rawTranslations.keySet().toArray( new String[ rawTranslations.size()] );
+		Arrays.sort( keys );
 		for (int i = 0; i < keys.length; i++) {
 			String key = keys[i];
 			String value = (String) rawTranslations.get( key );

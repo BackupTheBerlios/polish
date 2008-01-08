@@ -44,6 +44,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 
 /**
  * <p>Provides some often used methods for handling files.</p>
@@ -303,6 +304,7 @@ public final class FileUtil {
 	throws IOException 
 	{
 		Object[] keys = properties.keySet().toArray();
+		Arrays.sort(keys);
 		String[] lines = new String[ keys.length ];
 		for (int i = 0; i < lines.length; i++) {
 			Object key = keys[i];

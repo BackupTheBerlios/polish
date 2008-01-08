@@ -146,18 +146,18 @@
 			<param name="y-offset" type="integer" primitive="true" default="0" />
 		</mapping>
 		<mapping from="scaling-image"               to="de.enough.polish.ui.backgrounds.ScalingImageBackground"  >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="image" type="image-url" default="none" />
-			<param name="scale-mode" type="integer" primitive="true" default="none" values="none,scale,proportional,expand" />
-			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" />
-			<param name="x-offset" type="integer" primitive="true" default="0" />
-			<param name="y-offset" type="integer" primitive="true" default="0" />
+			<param name="color" type="color" primitive="true" default="white" description="The color of the background or transparent." />
+			<param name="image" type="image-url" default="none" description="URL of the image that might require scaling." />
+			<param name="scale-mode" type="integer" primitive="true" default="none" values="none,scale,proportional,expand" description="The scaling mode. Scale scales the image unproportionally. Proportional scales the image so that it completely fits into the given dimensions. Expand scales it maximally for either the width or the height of the background."/>
+			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" description="Anchor for the scaled image."/>
+			<param name="x-offset" type="integer" primitive="true" default="0"  description="Horizontal adjustment in pixels. A negative value moves the image to the left." />
+			<param name="y-offset" type="integer" primitive="true" default="0" description="Vertical adjustment in pixels. A negative value moves the image to the top." />
 		</mapping>
 		<mapping from="roundrect"           converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" />
 		<mapping from="round-rect"          to="de.enough.polish.ui.backgrounds.RoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="arc-width" type="integer" primitive="true" default="4" />
-			<param name="arc-height" type="integer" primitive="true" default="4" />			
+			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
+			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
 		</mapping>
 		<mapping from="round-rect-bordered"          to="de.enough.polish.ui.backgrounds.BorderedRoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
 			<param name="color" type="color" primitive="true" default="white" />
@@ -172,69 +172,70 @@
 			<param name="arc-height" type="integer" primitive="true" default="4" />			
 		</mapping>
 		<mapping from="pulsating"           to="de.enough.polish.ui.backgrounds.PulsatingBackground" converter="de.enough.polish.preprocess.backgrounds.PulsatingBackgroundConverter" >
-			<param name="start-color" type="color" primitive="true" default="white" />
-			<param name="end-color" type="color" primitive="true" default="gray" />
-			<param name="steps" type="integer" primitive="true" default="8" />
-			<param name="repeat" type="boolean" primitive="true" default="true" />
-			<param name="back-and-forth" type="boolean" primitive="true" default="true" />
+			<param name="start-color" type="color" primitive="true" default="white" description="The color at the beginning of the animation sequence." />
+			<param name="end-color" type="color" primitive="true" default="gray" description="The color at the end of the animation sequence." />
+			<param name="steps" type="integer" primitive="true" default="8" description="The number of animation phases." />
+			<param name="repeat" type="boolean" primitive="true" default="true" description="Indicates if the animation should start again." />
+			<param name="back-and-forth" type="boolean" primitive="true" default="true" description="Set to true if the color should move back from the end-color to the start-color when the animation reaches the end-color." />
 		</mapping>
 		<mapping from="pulsating-round-rect"           to="de.enough.polish.ui.backgrounds.PulsatingRoundRectBackground" >
-			<param name="start-color" type="color" primitive="true" default="white" />
-			<param name="end-color" type="color" primitive="true" default="gray" />
-			<param name="steps" type="integer" primitive="true" default="8" />
-			<param name="repeat" type="boolean" primitive="true" default="true" />
-			<param name="back-and-forth" type="boolean" primitive="true" default="true" />
-			<param name="arc-width" type="integer" primitive="true" default="4" />
-			<param name="arc-height" type="integer" primitive="true" default="4" />			
+			<param name="start-color" type="color" primitive="true" default="white" description="The color at the beginning of the animation sequence." />
+			<param name="end-color" type="color" primitive="true" default="gray" description="The color at the end of the animation sequence." />
+			<param name="steps" type="integer" primitive="true" default="8" description="The number of animation phases." />
+			<param name="repeat" type="boolean" primitive="true" default="true" description="Indicates if the animation should start again." />
+			<param name="back-and-forth" type="boolean" primitive="true" default="true" description="Set to true if the color should move back from the end-color to the start-color when the animation reaches the end-color." />
+			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
 		</mapping>
-		<mapping from="pulsating-circle"    to="de.enough.polish.ui.backgrounds.PulsatingCircleBackground" converter="de.enough.polish.preprocess.backgrounds.PulsatingCircleBackgroundConverter" >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="min-diameter" type="integer" primitive="true" default="8" />
-			<param name="max-diameter" type="integer" primitive="true" default="40" />
+		<mapping from="pulsating-circle"    to="de.enough.polish.ui.backgrounds.PulsatingCircleBackground" >
+			<param name="color" type="color" primitive="true" default="white" description="Color of the background"/>
+			<param name="min-diameter" type="integer" primitive="true" default="8" description="Minimum diameter of the background in pixels." />
+			<param name="max-diameter" type="integer" primitive="true" default="-1" description="Maximum diameter of the background in pixels - use -1 to adapt automatically to the dimensions of the parent item/screen." />
+			<param name="speed" type="integer" primitive="true" default="-1" description="Constant speed of the animation - use -1 to use an accelerated speed pattern." />
 		</mapping>
-		<mapping from="pulsating-circles"   to="de.enough.polish.ui.backgrounds.PulsatingCirclesBackground" converter="de.enough.polish.preprocess.backgrounds.PulsatingCirclesBackgroundConverter" >
-			<param name="first-color" type="color" primitive="true" default="white" />
-			<param name="second-color" type="color" primitive="true" default="gray" />
-			<param name="min-diameter" type="integer" primitive="true" default="8" />
-			<param name="max-diameter" type="integer" primitive="true" default="40" />
-			<param name="number-of-circles" type="integer" primitive="true" default="3" />
-			<param name="step" type="integer" primitive="true" default="350" />
+		<mapping from="pulsating-circles"   to="de.enough.polish.ui.backgrounds.PulsatingCirclesBackground" >
+			<param name="first-color" type="color" primitive="true" default="white" description="First circle color." />
+			<param name="second-color" type="color" primitive="true" default="gray" description="Second circle color." />
+			<param name="min-diameter" type="integer" primitive="true" default="8" description="Minimum diameter of the background in pixels." />
+			<param name="max-diameter" type="integer" primitive="true" default="40" description="Maximum diameter of the background in pixels." />
+			<param name="number-of-circles" type="integer" primitive="true" default="3" description="Number of circles." />
+			<param name="step" type="integer" primitive="true" default="3" description="Number of pixels by which the diameter of the circles is increased in each animation phase." />
 		</mapping>
-		<mapping from="circle"              to="de.enough.polish.ui.backgrounds.CircleBackground" converter="de.enough.polish.preprocess.backgrounds.CircleBackgroundConverter" >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="diameter" type="integer" primitive="true" default="-1" />			
+		<mapping from="circle"              to="de.enough.polish.ui.backgrounds.CircleBackground" >
+			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
+			<param name="diameter" type="integer" primitive="true" default="-1" description="Diameter of the background - use -1 to adjust it to the item's size."/>			
 		</mapping>
-		<mapping from="opening"             to="de.enough.polish.ui.backgrounds.OpeningBackground" converter="de.enough.polish.preprocess.backgrounds.OpeningBackgroundConverter" >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="start-height" type="integer" primitive="true" default="1" />			
-			<param name="steps" type="integer" primitive="true" default="8" />			
+		<mapping from="opening"             to="de.enough.polish.ui.backgrounds.OpeningBackground" >
+			<param name="color" type="color" primitive="true" default="white"  description="Color of the background." />
+			<param name="start-height" type="integer" primitive="true" default="1" description="Starting height of the background."/>			
+			<param name="speed" type="integer" primitive="true" default="-1" description="Constant speed of the animation - use -1 to use an acceleration mode."/>			
 		</mapping>
-		<mapping from="round-rect-opening"  to="de.enough.polish.ui.backgrounds.BorderedRoundRectOpeningBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter" >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="start-height" type="integer" primitive="true" default="1" />			
-			<param name="steps" type="integer" primitive="true" default="8" />			
-			<param name="arc-width" type="integer" primitive="true" default="4" />
-			<param name="arc-height" type="integer" primitive="true" default="4" />			
-			<param name="border-color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" primitive="true" default="0" />
+		<mapping from="round-rect-opening"  to="de.enough.polish.ui.backgrounds.BorderedRoundRectOpeningBackground" >
+			<param name="color" type="color" primitive="true" default="white"  description="Color of the background." />
+			<param name="start-height" type="integer" primitive="true" default="1" description="Starting height of the background."/>			
+			<param name="speed" type="integer" primitive="true" default="-1" description="Constant speed of the animation - use -1 to use an acceleration mode."/>			
+			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+			<param name="border-color" type="color" primitive="true" default="black" description="Color of the border." />
+			<param name="border-width" type="integer" primitive="true" default="0" description="Width of the border." />
 		</mapping>
 		<mapping from="opening-round-rect"  converter="de.enough.polish.preprocess.backgrounds.RoundRectOpeningBackgroundConverter" />
 		<mapping from="round-tab"           to="de.enough.polish.ui.backgrounds.RoundTabBackground" converter="de.enough.polish.preprocess.backgrounds.RoundTabBackgroundConverter" >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="arc-width" type="integer" primitive="true" default="4" />
-			<param name="arc-height" type="integer" primitive="true" default="4" />			
+			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
+			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
 		</mapping>
 		<mapping from="round-tab-bordered"  to="de.enough.polish.ui.backgrounds.BorderedRoundTabBackground" converter="de.enough.polish.preprocess.backgrounds.RoundTabBackgroundConverter" >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="arc-width" type="integer" primitive="true"  default="4" />
-			<param name="arc-height" type="integer" primitive="true" default="4" />			
-			<param name="border-color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" primitive="true" default="1" />
+			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
+			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+			<param name="border-color" type="color" primitive="true" default="black" description="Color of the border." />
+			<param name="border-width" type="integer" primitive="true" default="0" description="Width of the border." />
 		</mapping>
-		<mapping from="fade-in"             to="de.enough.polish.ui.backgrounds.FadeInBackground" converter="de.enough.polish.preprocess.backgrounds.FadeInBackgroundConverter" >
-			<param name="target-argb-color" type="color" primitive="true" translucent="true" default="white" />
-			<param name="restart-on-time" type="boolean" primitive="true" default="false" />
-			<param name="restart-on-position-change" type="boolean" primitive="true" default="false" />
+		<mapping from="fade-in"             to="de.enough.polish.ui.backgrounds.FadeInBackground"  >
+			<param name="target-argb-color" type="color" primitive="true" translucent="true" default="white" description="The color of the background when the animation has finished."/>
+			<param name="restart-on-time" type="boolean" primitive="true" default="false" description="Defines if the animation should be restarted when showNotify is called and the last animation is longer than 5 seconds ago." />
+			<param name="restart-on-show" type="boolean" primitive="true" default="true" description="Defines if the animation should be restarted every time when showNotify is called." />
 		</mapping>
 		<mapping from="ball-games"           converter="de.enough.polish.preprocess.backgrounds.BallBackgroundConverter" >
 			<!--  to="de.enough.polish.ui.backgrounds.BallBackground" deactivated because of required game-API support -->
@@ -248,9 +249,9 @@
 		<mapping from="tiger-stripes"       converter="de.enough.polish.preprocess.backgrounds.TigerStripesBackgroundConverter" />
 		<mapping from="smooth-color"        converter="de.enough.polish.preprocess.backgrounds.SmoothColorBackgroundConverter" />
 		<mapping from="diagonal-gradient"   to="de.enough.polish.ui.backgrounds.SmoothColorBackground" >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="target-color" type="color" primitive="true" default="gray" />
-			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" />
+			<param name="color" type="color" primitive="true" default="white" description="Start color of the background at the top-left corner." />
+			<param name="target-color" type="color" primitive="true" default="gray" description="End color at the bottom-right corner of the background" />
+			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" description="Stroke style of each diagonal background line." />
 		</mapping>
 		<mapping from="snowflakes"          to="de.enough.polish.ui.backgrounds.XmasSnowBackground"  >
 			<param name="color" type="color" primitive="true" default="red" />
@@ -259,16 +260,15 @@
 			<param name="number-of-flakes" type="integer" primitive="true" default="5" />
 		</mapping>
 		<mapping from="web20"          		to="de.enough.polish.ui.backgrounds.Web20RoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.Web20RoundRectBackgroundConverter" >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="arc-width" type="integer" primitive="true" default="4" />
-			<param name="arc-height" type="integer" primitive="true" default="4" />			
-			<param name="circle-color" type="color" primitive="true" default="yellow" />
-			<!--  todo: add anchor support -->
-			<param name="circle-anchor" type="integer" primitive="true"  default="16" />			
-			<param name="padding-left" type="integer" primitive="true" default="0" />			
-			<param name="padding-right" type="integer" primitive="true" default="0" />			
-			<param name="padding-top" type="integer" primitive="true" default="0" />			
-			<param name="padding-bottom" type="integer" primitive="true" default="0" />			
+			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
+			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+			<param name="circle-color" type="color" primitive="true" default="silver" description="Color of the inner ellipse shaped background."/>
+			<param name="circle-anchor" type="anchor" primitive="true"  default="top" description="Position of the inner ellipse background"/>			
+			<param name="padding-left" type="integer" primitive="true" default="0" description="Padding between outer and inner background." />
+			<param name="padding-right" type="integer" primitive="true" default="0" description="Padding between outer and inner background." />
+			<param name="padding-top" type="integer" primitive="true" default="0" description="Padding between outer and inner background." />	
+			<param name="padding-bottom" type="integer" primitive="true" default="0" description="Padding between outer and inner background." />
 		</mapping>
 		<mapping from="stripes"          	converter="de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" />
 		<mapping from="horizontal-stripes"	to="de.enough.polish.ui.backgrounds.HorizontalStripesBackground" converter="de.enough.polish.preprocess.backgrounds.HorizontalStripesBackgroundConverter" >
@@ -337,29 +337,37 @@
 			<param name="border-width" type="integer" primitive="true" default="1" />
 		</mapping>
 		<mapping from="polygon"   to="de.enough.polish.ui.backgrounds.PolygonBackground" >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="points" type="point[]" array-type="Point" default="0,50 50,0 100,50 50,100" />
-			<param name="reference-width"  type="integer" primitive="true" default="100" />
-			<param name="reference-height" type="integer" primitive="true" default="100" />
-			<param name="scale-mode" type="integer" primitive="true" default="none" values="none,scale,proportional,expand" />
-			<param name="anchor" type="anchor" primitive="true" default="0" />
+			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
+			<param name="points" type="point[]" array-type="Point" default="0,50 50,0 100,50 50,100" description="Space separated x,y pairs of points with 0,0 being the bottom-left origin." />
+			<param name="reference-width"  type="integer" primitive="true" default="100" description="The width of the polygon which is used for scaling it accordingly." />
+			<param name="reference-height" type="integer" primitive="true" default="100" description="The height of the polygon which is used for scaling it accordingly." />
+			<param name="scale-mode" type="integer" primitive="true" default="none" values="none,scale,proportional,expand" description="The scaling mode. None deactivates scaling. Scale scales it unproportionally. Proportional scales it proportionally so that it fits completely into the item's area. Expand scales it proportionally so that it covers the complete area." />
+			<param name="anchor" type="anchor" primitive="true" default="left | top" description="Position of the polygon within the item's area." />
 		</mapping>
 		<mapping from="video"               to="de.enough.polish.ui.backgrounds.VideoBackground"  >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="video" type="resource-url" default="none" />
-			<param name="mime-type" type="string" default="video/mp4" />
-			<param name="loops" type="integer" primitive="true" default="-1" />
-			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" />
-			<param name="x-offset" type="integer" primitive="true" default="0" />
-			<param name="y-offset" type="integer" primitive="true" default="0" />
+			<param name="color" type="color" primitive="true" default="white" description="Color of the background, can be transparent." />
+			<param name="video" type="resource-url" default="none" description="URL of the video." />
+			<param name="mime-type" type="string" default="video/mp4" description="MIME type of the video." />
+			<param name="loops" type="integer" primitive="true" default="-1" description="Number of loops, use -1 for not limiting the number." />
+			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" description="Position of the image within the background area." />
+			<param name="x-offset" type="integer" primitive="true" default="0" description="Horizontal adjustment in pixels, negative values move the background to the left." />
+			<param name="y-offset" type="integer" primitive="true" default="0" description="Vertical adjustment in pixels, negative values move the background to the top" />
 		</mapping>
 		<mapping from="animated-gif"               to="de.enough.polish.ui.backgrounds.AnimatedGifBackground"  >
-			<param name="color" type="color" primitive="true" default="white" />
-			<param name="image" type="image-url" default="none" />
-			<param name="loops" type="integer" primitive="true" default="-1" />
-			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" />
-			<param name="x-offset" type="integer" primitive="true" default="0" />
-			<param name="y-offset" type="integer" primitive="true" default="0" />
+			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
+			<param name="image" type="image-url" default="none" description="URL of the gif89a image." />
+			<param name="loops" type="integer" primitive="true" default="-1" description="Number of loops, use -1 for not limiting the number." />
+			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" description="Position of the image within the background area." />
+			<param name="x-offset" type="integer" primitive="true" default="0" description="Horizontal adjustment in pixels, negative values move the background to the left." />
+			<param name="y-offset" type="integer" primitive="true" default="0" description="Vertical adjustment in pixels, negative values move the background to the top" />
+		</mapping>
+		<mapping from="gif89a"               to="de.enough.polish.ui.backgrounds.AnimatedGifBackground"  >
+			<param name="color" type="color" primitive="true" default="white" description="Color of the background, can be transparent." />
+			<param name="image" type="image-url" default="none" description="URL of the gif89a image." />
+			<param name="loops" type="integer" primitive="true" default="-1" description="Number of loops, use -1 for not limiting the number." />
+			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" description="Position of the image within the background area." />
+			<param name="x-offset" type="integer" primitive="true" default="0" description="Horizontal adjustment in pixels, negative values move the background to the left." />
+			<param name="y-offset" type="integer" primitive="true" default="0" description="Vertical adjustment in pixels, negative values move the background to the top" />
 		</mapping>
 		<mapping from="repaint-test"   to="de.enough.polish.ui.backgrounds.RepaintTestBackground"  />
 	</attribute>
@@ -388,58 +396,58 @@
 		description="The border of an item or screen. The default border is &quot;none&quot;."
 	>
 		<mapping from="simple" 				to="de.enough.polish.ui.borders.SimpleBorder" converter="de.enough.polish.preprocess.borders.SimpleBorderConverter" >
-			<param name="color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" default="1" />
+			<param name="color" type="color" primitive="true" default="black" description="The border color." />
+			<param name="width" type="integer" primitive="true" default="1" description="The width of the border." />
 		</mapping>
 		<mapping from="plain" 				converter="de.enough.polish.preprocess.borders.SimpleBorderConverter" />
 		<mapping from="bottom-right-shadow" to="de.enough.polish.ui.borders.BottomRightShadowBorder" converter="de.enough.polish.preprocess.borders.ShadowBorderConverter" >
-			<param name="color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" default="1" />			
-			<param name="offset" type="integer" default="1" />			
+			<param name="color" type="color" primitive="true" default="black" description="The border color." />
+			<param name="width" type="integer" primitive="true" default="1" description="The width of the border." />
+			<param name="offset" type="integer" default="1" primitive="true" description="The distance between item and border in pixels." />		
 		</mapping>
 		<mapping from="right-bottom-shadow" converter="de.enough.polish.preprocess.borders.ShadowBorderConverter" />
 		<mapping from="shadow" 				converter="de.enough.polish.preprocess.borders.ShadowBorderConverter" />
 		<mapping from="round-rect" 			to="de.enough.polish.ui.borders.RoundRectBorder" converter="de.enough.polish.preprocess.borders.RoundRectBorderConverter" >
-			<param name="color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" default="1" />
-			<param name="arc-width" type="integer" default="4" />
-			<param name="arc-height" type="integer" default="4" />			
+			<param name="color" type="color" primitive="true" default="black" description="The border color." />
+			<param name="width" type="integer" primitive="true" default="1" description="The width of the border." />
+			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the border corners." />
+			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the border corners." />
 		</mapping>
 		<mapping from="roundrect" 			converter="de.enough.polish.preprocess.borders.RoundRectBorderConverter" />
 		<mapping from="circle" 				to="de.enough.polish.ui.borders.CircleBorder" converter="de.enough.polish.preprocess.borders.CircleBorderConverter" >
-			<param name="color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" default="1" />
-			<param name="stroke-style" type="integer" default="solid" values="solid,dotted" />
+			<param name="color" type="color" primitive="true" default="black" description="The border color." />
+			<param name="width" type="integer" primitive="true" default="1" description="The width of the border." />
+			<param name="stroke-style" type="integer" default="solid" values="solid,dotted" description="The stroke style of the circle." />
 		</mapping>
 		<mapping from="bottom"				to="de.enough.polish.ui.borders.BottomBorder" converter="de.enough.polish.preprocess.borders.BottomBorderConverter" >
-			<param name="color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" default="1" />
+			<param name="color" type="color" primitive="true" default="black" description="The border color." />
+			<param name="width" type="integer" primitive="true" default="1" description="The width of the border." />
 		</mapping>
 		<mapping from="top" 				to="de.enough.polish.ui.borders.TopBorder" converter="de.enough.polish.preprocess.borders.TopBorderConverter" >
-			<param name="color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" default="1" />
+			<param name="color" type="color" primitive="true" default="black" description="The border color." />
+			<param name="width" type="integer" default="1" description="The width of the border." />
 		</mapping>
 		<mapping from="left" 				to="de.enough.polish.ui.borders.LeftBorder" converter="de.enough.polish.preprocess.borders.LeftBorderConverter" >
-			<param name="color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" default="1" />
+			<param name="color" type="color" primitive="true" default="black" description="The border color." />
+			<param name="width" type="integer" primitive="true" default="1" description="The width of the border." />
 		</mapping>
 		<mapping from="right" 				to="de.enough.polish.ui.borders.RightBorder" converter="de.enough.polish.preprocess.borders.RightBorderConverter" >
-			<param name="color" type="color" primitive="true" default="black" />
-			<param name="border-width" type="integer" default="1" />
+			<param name="color" type="color" primitive="true" default="black" description="The border color." />
+			<param name="width" type="integer" primitive="true" default="1" description="The width of the border." />
 		</mapping>
 		<mapping from="drop-shadow" 		to="de.enough.polish.ui.borders.DropShadowBorder" converter="de.enough.polish.preprocess.borders.DropShadowBorderConverter" >
-			<param name="inner-color" type="color" primitive="true" translucent="true" default="0xbb000000" />
-			<param name="outer-color" type="color" primitive="true" translucent="true" default="0x77333333" />
-			<param name="border-width" type="integer" default="4" />
-			<param name="offset" type="integer" default="4" />
-			<param name="orientation" type="integer" default="bottom-right" values="bottom-right,top-right,bottom-left,top-left,all" />
+			<param name="inner-color" type="color" primitive="true" translucent="true" default="0xbb000000" description="The color closest to the content." />
+			<param name="outer-color" type="color" primitive="true" translucent="true" default="0x77333333" description="The color farthest away to the content." />
+			<param name="width" type="integer" primitive="true" default="4" description="The width of the border." />
+			<param name="offset" type="integer" default="4" primitive="true" description="The distance between item and border in pixels." />		
+			<param name="orientation" type="integer" default="bottom-right" values="bottom-right,top-right,bottom-left,top-left,all" description="Position of the border." />
 		</mapping>
 		<mapping from="image"			to="de.enough.polish.ui.borders.ImageBorder" converter="de.enough.polish.preprocess.borders.ImageBorderConverter" >
-			<param name="border-width" type="integer" default="1" />
-			<param name="image" type="image-url" default="none" />
+			<param name="width" type="integer" default="1" description="The width of the border." />
+			<param name="image" type="image-url" default="none" description="The URL of the image." />
 		</mapping>
 		<mapping from="multi-image"			to="de.enough.polish.ui.borders.MultiImageBorder" converter="de.enough.polish.preprocess.borders.MultiImageBorderConverter" >
-			<param name="border-width" type="integer" default="1" />
+			<param name="width" type="integer" primitive="true" default="1" description="The width of the border." />
 			<param name="top-left" type="image-url" default="none" />
 			<param name="top-center" type="image-url" default="none" />
 			<param name="top-right" type="image-url" default="none" />
@@ -450,23 +458,33 @@
 			<param name="bottom-right" type="image-url" default="none" />
 		</mapping>
 		<mapping from="pulsating-round-rect"           to="de.enough.polish.ui.borders.PulsatingRoundRectBorder" >
-			<param name="width" type="integer" primitive="true" default="1" />
-			<param name="start-color" type="color" primitive="true" default="white" />
-			<param name="end-color" type="color" primitive="true" default="gray" />
-			<param name="steps" type="integer" primitive="true" default="8" />
-			<param name="repeat" type="boolean" primitive="true" default="true" />
-			<param name="back-and-forth" type="boolean" primitive="true" default="true" />
-			<param name="arc-width" type="integer" primitive="true" default="4" />
-			<param name="arc-height" type="integer" primitive="true" default="4" />			
+			<param name="width" type="integer" primitive="true" default="1" description="The width of the border." />
+			<param name="start-color" type="color" primitive="true" default="white" description="The color at the beginning of the animation sequence." />
+			<param name="end-color" type="color" primitive="true" default="gray" description="The color at the end of the animation sequence." />
+			<param name="steps" type="integer" primitive="true" default="8" description="The number of animation phases." />
+			<param name="repeat" type="boolean" primitive="true" default="true" description="Indicates if the animation should start again." />
+			<param name="back-and-forth" type="boolean" primitive="true" default="true" description="Set to true if the color should move back from the end-color to the start-color when the animation reaches the end-color." />
+			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the border corners." />
+			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the border corners." />
 		</mapping>
 		<mapping from="pulsating"           to="de.enough.polish.ui.borders.PulsatingSimpleBorder" >
-			<param name="width" type="integer" primitive="true" default="1" />
-			<param name="start-color" type="color" primitive="true" default="white" />
-			<param name="end-color" type="color" primitive="true" default="gray" />
-			<param name="steps" type="integer" primitive="true" default="8" />
-			<param name="repeat" type="boolean" primitive="true" default="true" />
-			<param name="back-and-forth" type="boolean" primitive="true" default="true" />
+			<param name="width" type="integer" primitive="true" default="1" description="The width of the border." />
+			<param name="start-color" type="color" primitive="true" default="white" description="The color at the beginning of the animation sequence." />
+			<param name="end-color" type="color" primitive="true" default="gray" description="The color at the end of the animation sequence." />
+			<param name="steps" type="integer" primitive="true" default="8" description="The number of animation phases." />
+			<param name="repeat" type="boolean" primitive="true" default="true" description="Indicates if the animation should start again." />
+			<param name="back-and-forth" type="boolean" primitive="true" default="true" description="Set to true if the color should move back from the end-color to the start-color when the animation reaches the end-color." />
 		</mapping>
+		<mapping from="square-sonar"           to="de.enough.polish.ui.borders.SquareSonarBorder" >
+			<param name="inner-color" type="color" primitive="true" translucent="true" default="#e999" description="The color at the inner starting point." />
+			<param name="outer-color" type="color" primitive="true" translucent="true" default="#9333" description="The color at the outer end point." />
+			<param name="steps" type="integer" primitive="true" default="5" description="The number of animation steps required for moving from the inner point to the outer point" />
+			<param name="distance" type="integer" primitive="true" default="10" description="The distance from the inner point to the outer point in pixels. Is ignored when the speed is not -1." />
+			<param name="pause" type="integer" primitive="true" default="300" description="The pause in ms between different sonar signals" />
+			<param name="signals" type="integer" primitive="true" default="3" description="The number of signals that are send out. Use -1 for not limiting the number." />
+			<param name="speed" type="integer" primitive="true" default="2" description="The constant speed by which signals move from the inner to the outer point - use -1 for moving fast in the beginning and then slowing down." />
+		</mapping>
+		
 	</attribute>
 
 	
@@ -840,15 +858,6 @@
 	/>
 	
 	<attribute
-		name="textfield-caret-flash"
-		type="boolean"
-		appliesTo="TextField, TextBox"
-		description="Defines whether the cursor should blink/flash."
-		default="true"
-		id="85"
-	/>
-
-	<attribute
 		name="datefield-width"
 		type="integer"
 		appliesTo=""
@@ -915,12 +924,14 @@
 		<mapping from="size-decrease" to="new de.enough.polish.ui.itemviews.SizeDecreaseItemView()" appliesTo="Item" />
 		<mapping from="particle" to="new de.enough.polish.ui.itemviews.ExplodingParticlesItemView()" appliesTo="Item" />
 		<!--  for Containers:  -->
+		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideUpView()"  appliesTo="Item" />
+		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideUpView()" />
 		<mapping from="shuffle" to="new de.enough.polish.ui.containerviews.ShuffleView()" appliesTo="Screen, Container, FakeContainerCustomItem" />
 		<mapping from="ShuffleView" to="new de.enough.polish.ui.containerviews.ShuffleView()" />
 		<mapping from="dropping" to="new de.enough.polish.ui.containerviews.DroppingView()" appliesTo="Screen"  />
 		<mapping from="DroppingView" to="new de.enough.polish.ui.containerviews.DroppingView()" />
-		<mapping from="midp2" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
-		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" appliesTo="Screen,Container, FakeContainerCustomItem" />
+		<mapping from="midp2" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" appliesTo="Screen,Container, FakeContainerCustomItem" />
+		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
 		<mapping from="relative" to="new de.enough.polish.ui.containerviews.RelativeLayoutView()" />
 		<mapping from="exclusive" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" />
 		<mapping from="exclusive-choice" to="new de.enough.polish.ui.containerviews.ExclusiveSingleLineView()" appliesTo="ChoiceGroup" />
@@ -931,28 +942,30 @@
 		<mapping from="dinner" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
 		<mapping from="DinnerForOne" to="new de.enough.polish.ui.containerviews.DinnerForOneView()" />
 		<mapping from="fully-animated" to="new de.enough.polish.ui.containerviews.AnimationContainerView()" />
-		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideUpView()"  appliesTo="Item" />
-		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideUpView()" />
 		<mapping from="carousel" to="new de.enough.polish.ui.containerviews.CarouselContainerView()"  appliesTo="List,Container, FakeContainerCustomItem"/>
 		<mapping from="carrousel" to="new de.enough.polish.ui.containerviews.CarouselContainerView()" />
-		<mapping from="fisheye" to="new de.enough.polish.ui.containerviews.FishEyeContainerView()" appliesTo="List,Container, FakeContainerCustomItem"/>
-		<mapping from="gray-out" to="new de.enough.polish.ui.containerviews.HorizontalGrayOutContainerView()"  appliesTo="List,Container, FakeContainerCustomItem"/>
+		<mapping from="fisheye" to="new de.enough.polish.ui.containerviews.FishEyeContainerView()" appliesTo="Screen,Container, FakeContainerCustomItem"/>
+		<mapping from="grayout" to="new de.enough.polish.ui.containerviews.HorizontalGrayOutContainerView()"  appliesTo="Screen,Container, FakeContainerCustomItem"/>
+		<mapping from="gray-out" to="new de.enough.polish.ui.containerviews.HorizontalGrayOutContainerView()"  />
 		<mapping from="horizontal-gray-out" to="new de.enough.polish.ui.containerviews.HorizontalGrayOutContainerView()" />
-		<mapping from="numbered" to="new de.enough.polish.ui.containerviews.NumberedContainerView()"  appliesTo="List,Container, FakeContainerCustomItem"/>
-		<mapping from="verticalfixed" to="new de.enough.polish.ui.containerviews.VerticalFixedContainerView()" />
-		<mapping from="horizontal" to="new de.enough.polish.ui.containerviews.HorizontalContainerView()"  appliesTo="List,Container, FakeContainerCustomItem"/>
+		<mapping from="numbered" to="new de.enough.polish.ui.containerviews.NumberedContainerView()"  appliesTo="Screen,Container, FakeContainerCustomItem"/>
+		<mapping from="verticalfixed" to="new de.enough.polish.ui.containerviews.VerticalFixedContainerView()" appliesTo="Screen,Container, FakeContainerCustomItem" />
+		<mapping from="horizontal" to="new de.enough.polish.ui.containerviews.HorizontalContainerView()"  />
 		<!--  for Gauges: -->
 		<mapping from="gauge-recline" to="new de.enough.polish.ui.gaugeviews.RecLineGaugeView()"  appliesTo="Gauge" />
-		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-rotating-arcs" to="new de.enough.polish.ui.gaugeviews.RotatingArcsGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-cycling-spheres" to="new de.enough.polish.ui.gaugeviews.CyclingSpheresGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-horizontal-spheres" to="new de.enough.polish.ui.gaugeviews.HorizontalSpheresGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-cycling-icons" to="new de.enough.polish.ui.gaugeviews.CyclingIconsGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-horizontal-icons" to="new de.enough.polish.ui.gaugeviews.HorizontalIconsGaugeView()" appliesTo="Gauge" />		
+		<!-- 
+		<mapping from="gauge-tachometer" to="new de.enough.polish.ui.gaugeviews.TachometerGaugeView()" appliesTo="Gauge" />
 		<mapping from="gauge-equalizer" to="new de.enough.polish.ui.gaugeviews.EqualizerGaugeView()" appliesTo="Gauge" />
+		 -->
 		<!--  for ChartItems: -->
 		<mapping from="chart-vertical-bars" to="new de.enough.polish.ui.chartviews.VerticalBarChartView()" appliesTo="ChartItem" />
-		<mapping from="chart-cake" to="new de.enough.polish.ui.chartviews.CakeChartView()" appliesTo="ChartItem" />
+		<mapping from="chart-pie" to="new de.enough.polish.ui.chartviews.PieChartView()" appliesTo="ChartItem" />
+		<mapping from="chart-cake" to="new de.enough.polish.ui.chartviews.PieChartView()" appliesTo="ChartItem" />
 		<!--  for ClockItems: -->
 		<mapping from="clock-binary-text" to="new de.enough.polish.ui.clockviews.BinaryTextClockView()" appliesTo="ClockItem" />
 		<mapping from="clock-hex-text" to="new de.enough.polish.ui.clockviews.HexTextClockView()" appliesTo="ClockItem" />
@@ -1235,7 +1248,8 @@
 		name="left-screen-change-animation-speed"
 		type="integer"
 		appliesTo="LeftScreenChangeAnimation"
-		description="The speed of the animation."
+		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		default="-1"
 		id="63"
 	/>
 
@@ -1243,7 +1257,8 @@
 		name="right-screen-change-animation-speed"
 		type="integer"
 		appliesTo="RightScreenChangeAnimation"
-		description="The speed of the animation."
+		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		default="-1"
 		id="64"
 	/>
 	
@@ -1251,7 +1266,8 @@
 		name="top-screen-change-animation-speed"
 		type="integer"
 		appliesTo="TopScreenChangeAnimation"
-		description="The speed of the animation."
+		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		default="-1"
 		id="65"
 	/>
 
@@ -1259,7 +1275,8 @@
 		name="bottom-screen-change-animation-speed"
 		type="integer"
 		appliesTo="BottomScreenChangeAnimation"
-		description="The speed of the animation."
+		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		default="-1"
 		id="66"
 	/>
 	
@@ -1267,7 +1284,8 @@
 		name="left-shutter-screen-change-animation-speed"
 		type="integer"
 		appliesTo="LeftShutterScreenChangeAnimation"
-		description="The speed of the animation."
+		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		default="-1"
 		id="67"
 	/>
 	
@@ -1275,7 +1293,8 @@
 		name="left-shutter-screen-change-animation-color"
 		type="color"
 		appliesTo="LeftShutterScreenChangeAnimation"
-		description="The color of the animation."
+		description="The color of the shutter."
+		default="black"
 		id="68"
 	/>
 	
@@ -1283,7 +1302,8 @@
 		name="right-shutter-screen-change-animation-speed"
 		type="integer"
 		appliesTo="RightShutterScreenChangeAnimation"
-		description="The speed of the animation."
+		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		default="-1"
 		id="69"
 	/>
 	
@@ -1291,7 +1311,8 @@
 		name="right-shutter-screen-change-animation-color"
 		type="color"
 		appliesTo="RightShutterScreenChangeAnimation"
-		description="The color of the animation."
+		description="The color of the shutter"
+		default="black"
 		id="70"
 	/>
 	
@@ -1299,7 +1320,8 @@
 		name="top-shutter-screen-change-animation-speed"
 		type="integer"
 		appliesTo="TopShutterScreenChangeAnimation"
-		description="The speed of the animation."
+		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		default="-1"
 		id="71"
 	/>
 	
@@ -1307,7 +1329,8 @@
 		name="top-shutter-screen-change-animation-color"
 		type="color"
 		appliesTo="TopShutterScreenChangeAnimation"
-		description="The color of the animation."
+		description="The color of the shutter."
+		default="black"
 		id="72"
 	/>
 	
@@ -1315,7 +1338,8 @@
 		name="bottom-shutter-screen-change-animation-speed"
 		type="integer"
 		appliesTo="BottomShutterScreenChangeAnimation"
-		description="The speed of the animation."
+		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		default="-1"
 		id="73"
 	/>
 	
@@ -1323,7 +1347,8 @@
 		name="bottom-shutter-screen-change-animation-color"
 		type="color"
 		appliesTo="BottomShutterScreenChangeAnimation"
-		description="The color of the animation."
+		description="The color of the shutter."
+		default="black"
 		id="74"
 	/>
 	
@@ -1331,7 +1356,8 @@
 		name="flash-screen-change-animation-speed"
 		type="integer"
 		appliesTo="FlashScreenChangeAnimation"
-		description="The speed of the animation."
+		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		default="-1"
 		id="75"
 	/>
 	
@@ -1339,7 +1365,8 @@
 		name="flash-screen-change-animation-color"
 		type="color"
 		appliesTo="FlashScreenChangeAnimation"
-		description="The color of the animation."
+		description="The color of the shutter"
+		default="black"
 		id="76"
 	/>
 	
@@ -1347,7 +1374,8 @@
 		name="vertical-flash-screen-change-animation-speed"
 		type="integer"
 		appliesTo="VerticalFlashScreenChangeAnimation"
-		description="The speed of the animation."
+		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		default="-1"
 		id="77"
 	/>
 	
@@ -1355,23 +1383,18 @@
 		name="vertical-flash-screen-change-animation-color"
 		type="color"
 		appliesTo="VerticalFlashScreenChangeAnimation"
-		description="The color of the animation."
+		description="The color of the shutter"
 		id="78"
 	/>
 	
-	<attribute
-		name="scrollup-screen-change-animation-speed"
-		type="integer"
-		appliesTo="ScrollUpScreenChangeAnimation"
-		description="The speed of the animation."
-		id="79"
-	/>
+ <!--  free slot: 79 -->
 	
 	<attribute
-		name="scrollup-screen-change-animation-color"
-		type="color"
-		appliesTo="ScrollUpScreenChangeAnimation"
-		description="The color of the animation."
+		name="textfield-caret-flash"
+		type="boolean"
+		appliesTo="TextField, TextBox"
+		description="Defines whether the cursor should blink/flash."
+		default="true"
 		id="80"
 	/>
 	
@@ -1803,7 +1826,7 @@
 		name="scrollbar-slider-up-image"
 		type="imageurl"
 		appliesTo="Screen, ScrollBar"
-		description="The image used for signaling that the user can scoll upwards. By default nothing is painted."
+		description="The image used for signaling that the user can scroll upwards. By default nothing is painted."
 		id="124"
 	/>
 
@@ -1811,7 +1834,7 @@
 		name="scrollbar-slider-down-image"
 		type="imageurl"
 		appliesTo="Screen, ScrollBar"
-		description="The image used for signaling that the user can scoll downwards. By default nothing is painted."
+		description="The image used for signaling that the user can scroll downwards. By default nothing is painted."
 		id="125"
 	/>
 	
@@ -2028,7 +2051,7 @@
 	<attribute
 		name="text-wrap"
 		type="boolean"
-		appliesTo="StringItem, Command, CommandItem"
+		appliesTo="StringItem"
 		description="Determines wether the text should be wrapped (=default) or whether it should be kept on one single line, even when it is larger than the available width."
 		default="true"
 		id="150"
@@ -2643,8 +2666,8 @@
 		name="diagonal-screen-change-animation-speed"
 		type="int"
 		appliesTo="DiagonalScreenChangeAnimation"
-		description="The speed of the animation."
-		default="2"
+		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		default="-1"
 		id="221"
 	/>
 	<attribute
@@ -2666,7 +2689,7 @@
 	<attribute
 		name="fadeOutFadeIn-screen-change-animation-steps"
 		type="int"
-		appliesTo="ScreenChangeAnimation,FadeOutFadeInScreenChangeAnimation"
+		appliesTo="FadeOutFadeInScreenChangeAnimation"
 		description="The number of steps of the animation."
 		default="6"
 		id="224"
