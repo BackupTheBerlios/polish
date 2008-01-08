@@ -538,13 +538,7 @@ public class CssConverter extends Converter {
 					}
 					
 					CssAttribute attribute = this.attributesManager.getAttribute( attributeName );
-					if (attributeName.equals("complete-background")) {
-						System.out.println("complete-background: attribute=" + attribute + ", id=" + (attribute == null ? "null" : "" + attribute.getId() ));
-					}
 					if (attribute != null) {
-						if (attribute.getId() == 79) {
-							System.out.println("complete-background: value=" + value + ", getValue()=" + attribute.getValue( value, environment ));
-						}
 						value = attribute.getValue( value, environment );
 						if ("none".equals(value) && !"plain".equals(key)) {
 							// note: !"plain".equals(key) is an ugly hack for
