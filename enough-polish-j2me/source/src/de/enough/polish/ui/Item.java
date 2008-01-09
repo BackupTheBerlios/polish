@@ -2599,7 +2599,10 @@ public abstract class Item extends Object
 		//#endif
 		if (addAbsolute) {
 			//System.out.println("adding absolute repaint: bgX=" + getBackgroundX() + ", bgY=" + getBackgroundY() + ", itemHeight-bgHeight=" + (this.itemHeight - this.backgroundHeight) + ", itemWidth-bgWidth=" + (this.itemWidth - this.backgroundWidth));
-			int padding = this.completeBackgroundPadding;
+			int padding = 0;
+			//#if polish.css.complete-background || polish.css.complete-border
+				padding = this.completeBackgroundPadding;
+			//#endif
 			repaintRegion.addRegion( 
 					getAbsoluteX() + x - 1 - padding, 
 					getAbsoluteY() + y - 1 - padding,
