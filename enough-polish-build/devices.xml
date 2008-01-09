@@ -14856,26 +14856,6 @@ These namespaces/schemas will be used soon.
 		<capability name="Network" value="CSD, HSD"/>
 		<capability name="Frequency" value="850, 1900"/>
 	</device>
-	
-	<device>
-		<identifier>Sony-Ericsson/K530</identifier>
-		<groups>SE-JavaPlatform7</groups>
-		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, wmapi2.0, m3g, pdaapi, btapi, webservice, securityapi"/>
-		<capability name="BitsPerPixel" value="18"/>
-		<capability name="ScreenSize" value="176x220"/>
-		<capability name="FullCanvasSize" value="176x220"/>
-		<capability name="VideoFormat" value="wmv, h.263, h.264, mpeg-4"/>
-		<capability name="SoundFormat" value="aac, aac+, eaac, eaac+, mp3, mp4, nb-amr, wav, midi, midi64, truetone, wb-amr, sp-midi, wma"/>
-		<capability name="ImageFormat" value="jpeg, bmp, bmp3, wbmp, gif, gif87a, gif89a, png, png1.0, m3g, svg"/>
-		<capability name="HeapSize" value="1.5 MB"/>
-		<capability name="MaxJarSize" value="dynamic"/>
-		<capability name="StorageSize" value="16 MB"/>
-		<capability name="DRM" value="OMA Phase 1"/>
-		<capability name="Frequency" value="900,1800,1900"/>
-	</device>
 
 	<device>
 		<identifier>Sony-Ericsson/K530</identifier>
