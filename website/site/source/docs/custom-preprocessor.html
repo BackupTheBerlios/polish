@@ -9,7 +9,7 @@
 <%index %>
 <p>
 You can easily use your own preprocessing directives by extending the de.enough.polish.preprocess.CustomPreprocessor 
-class and by integrating your preprocessor with the &lt;preprocessor&gt;-element 
+class and by integrating your preprocessor with the &lt;preprocessor&gt; element 
 in the &quot;build.xml&quot; file.
 </p>
 <h2 id="prepare">Preparations</h2>
@@ -122,8 +122,8 @@ For more complex situations, you can override the processClass()-method which al
 </pre></p>
 <h2 id="integrate">Integrating the Preprocessor into the build.xml</h2>
 <p>
-You can integrate your preprocessor with the usual &lt;preprocessor&gt;-element in the 
-build.xml file (compare the <a href="build-build.html#preprocessor">&lt;preprocessor&gt;-documentation</a>).
+You can integrate your preprocessor with the usual &lt;preprocessor&gt; element in the 
+build.xml file (compare the <a href="build-build.html#preprocessor">&lt;preprocessor&gt; documentation</a>).
 <pre>
 &lt;preprocessor 
 	class=&quot;com.company.preprocess.MyPreprocessor&quot;
@@ -138,7 +138,7 @@ The &quot;class&quot;-attribute needs to be set to the new class. The classPath-
 
 <h2 id="parameter">Configuring the Preprocessor with Parameters</h2>
 <p>
-The preprocessor can be configured using &lt;parameter&gt;-subelements in the build.xml. 
+The preprocessor can be configured using &lt;parameter&gt; subelements in the build.xml. 
 For each &lt;parameter&gt; a corresponding
 &quot;set[parameter-name]&quot;-method needs to be implemented, which either needs to have one File parameter, one boolean or one String parameter:
 <pre>

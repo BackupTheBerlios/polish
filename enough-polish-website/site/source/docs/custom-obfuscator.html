@@ -65,9 +65,9 @@ When there is an exception, abort the build by throwing a org.apache.tools.ant.B
 
 <h2 id="integrate">Integrating the Obfuscator into the build.xml</h2>
 <p></p>
-You can integrate any thirdparty obfuscator with the usual &lt;obfuscator&gt;-element in 
+You can integrate any thirdparty obfuscator with the usual &lt;obfuscator&gt; element in 
 the build.xml file 
-(compare the <a href="build-build.html#obfuscator">&lt;obfuscator&gt;-documentation</a>).
+(compare the <a href="build-build.html#obfuscator">&lt;obfuscator&gt; documentation</a>).
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; 	
 	class=&quot;com.company.obfuscate.MyObfuscator&quot;
@@ -83,7 +83,7 @@ The &quot;class&quot;-attribute needs to be set to the new class. The classPath-
 </p>
 <h2 id="parameters">Configuring the Obfuscator with Parameters</h2>
 <p>
-The obfuscator can be configured using &lt;parameter&gt;-subelements in the build.xml. For each &lt;parameter&gt; a corresponding 
+The obfuscator can be configured using &lt;parameter&gt; subelements in the build.xml. For each &lt;parameter&gt; a corresponding 
 &quot;set[parameter-name]&quot;-method needs to be implemented, which either needs to have one File parameter, one boolean or one String parameter:
 <pre>
 	&lt;parameter name=&quot;scriptFile&quot; value=&quot;../scripts/obfuscate.script&quot; /&gt;

@@ -11,7 +11,7 @@
 <h3 id="howto-sourcefolders">How to Use Several Source Folders</h3>
 <p>
 You can use several source folders by defining the &quot;source&quot;-attribute 
-of the &lt;build&gt;-element in the &quot;build.xml&quot; file. Just separate 
+of the &lt;build&gt; element in the &quot;build.xml&quot; file. Just separate 
 the folders with colons or semicolons:
 <pre>
 &lt;build
@@ -25,7 +25,7 @@ the folders with colons or semicolons:
 In the above example the &quot;source/src&quot; folder of the current project and the &quot;source/src&quot; folder of the &quot;extensions&quot; project are included. The notation is OS-independent by the way. So you can separate different source-paths with either a colon ':' or a semicolon ';' and you can separate folders with a slash '/' or a backslash '\'.
 </p>
 <p>
-You can also use the nested &lt;sources&gt;-element for including source-directories based on conditions. In this example the directory &quot;source/test&quot; is only included when the Ant-property &quot;test&quot; is true:
+You can also use the nested &lt;sources&gt; element for including source-directories based on conditions. In this example the directory &quot;source/test&quot; is only included when the Ant-property &quot;test&quot; is true:
 <pre>
 &lt;build
 	fullscreen=&quot;menu&quot;
@@ -46,7 +46,7 @@ Sometimes a third party API is needed in a project. You have to distinguish betw
 <h4 id="howto-api-source">How to Integrate a Source Code Third Party API</h4>
 <p>
 When a third party API is available in source code, you can integrate it by modifying the &quot;sourceDir&quot; 
-attribute of the &lt;build&gt;-element in the &quot;build.xml&quot; file. 
+attribute of the &lt;build&gt; element in the &quot;build.xml&quot; file. 
 Consider the case where your normal application code is placed in the &quot;source/src&quot; 
 directory and the source code of the third party  API in the &quot;source/thirdparty&quot; 
 folder. You can now add the third party API by setting the &quot;sourcDir&quot; 
@@ -67,7 +67,7 @@ The notation is OS-independent by the way. So you can separate different source-
 <h4 id="howto-api-binary">How to Integrate a Binary Third Party API</h4>
 <p>
 When a third party API is only available in binary form, they can be integrated with the &quot;binaryLibraries&quot; attribute 
-of the &lt;build&gt;-element in the &quot;build.xml&quot; file. This attribute can point to jar- or zip-files or to a directory containing third party libraries (either jar-files, zip-files or class-files). Several libraries can be separated by colons ':' or semicolons ';'. When the libraries are situated in the &quot;import&quot; folder, only the name of the libraries need to be given (instead of specifying the full path). 
+of the &lt;build&gt; element in the &quot;build.xml&quot; file. This attribute can point to jar- or zip-files or to a directory containing third party libraries (either jar-files, zip-files or class-files). Several libraries can be separated by colons ':' or semicolons ';'. When the libraries are situated in the &quot;import&quot; folder, only the name of the libraries need to be given (instead of specifying the full path). 
 </p>
 <p>
 In the following example the binary library &quot;tinyline&quot; is integrated. The corresponding library file &quot;tinylinegzip.zip&quot; is situated in the &quot;import&quot; folder:
@@ -118,7 +118,7 @@ for specifying different library-names, paths or aliases.
 <h3 id="howto-obfuscator">How to Use Several Obfuscators Combined</h3>
 <p>
 You can combine several obfuscators just by adding several 
-<a href="build-build.html#obfuscator">&lt;obfuscator&gt;-elements</a> to 
+<a href="build-build.html#obfuscator">&lt;obfuscator&gt; elements</a> to 
 your &quot;build.xml&quot; file. Please note that combining RetroGuard and ProGuard 
 actually results in bigger classes than when ProGuard is used alone. 
 </p><p>
@@ -163,7 +163,7 @@ the &quot;verbose&quot; attribute of the
 When you use the J2ME Polish GUI, select the &quot;foreground&quot; image loading strategy 
 for removing 
 the overhead of loading images in a background thread. 
-The &quot;imageLoadStrategy&quot; attribute of the <a href="build-build.html">&lt;build&gt;-element</a>
+The &quot;imageLoadStrategy&quot; attribute of the <a href="build-build.html">&lt;build&gt; element</a>
 can either 
 be &quot;foreground&quot; or &quot;background&quot;.
 </p>
@@ -433,9 +433,9 @@ attributes which are different, this makes subsequent changes easier.
 
 <h3 id="howto-gui-differentdesigns">How to Apply Different Designs to One Application</h3>
 <p>
-You can alter the appearance of an application easily by using different resources like images, sound files and design-definitions. You can use one application source code for creating several different applications with this technique. The &quot;dir&quot;-attribute of the &lt;resources&gt;-element in the &quot;build.xml&quot; file defaults to the &quot;resources&quot; folder, but you can change this to any other folder. Alternatively you can also set the &quot;resDir&quot;-attribute of the &lt;build&gt;-element, when no &lt;resources&gt;-element is used.
+You can alter the appearance of an application easily by using different resources like images, sound files and design-definitions. You can use one application source code for creating several different applications with this technique. The &quot;dir&quot;-attribute of the &lt;resources&gt; element in the &quot;build.xml&quot; file defaults to the &quot;resources&quot; folder, but you can change this to any other folder. Alternatively you can also set the &quot;resDir&quot;-attribute of the &lt;build&gt; element, when no &lt;resources&gt; element is used.
 </p><p>
-Best practice is to create one Ant-&lt;target&gt; for each end-application in the &quot;build.xml&quot; file. In each target the &lt;j2mepolish&gt;-task is copied and changes are made to the &quot;dir&quot;-attribute of the &lt;resources&gt;-element and to the &quot;workDir&quot;-attributes of the &lt;build&gt;-element:
+Best practice is to create one Ant-&lt;target&gt; for each end-application in the &quot;build.xml&quot; file. In each target the &lt;j2mepolish&gt; task is copied and changes are made to the &quot;dir&quot;-attribute of the &lt;resources&gt; element and to the &quot;workDir&quot;-attributes of the &lt;build&gt; element:
 <pre>
 &lt;target name=&quot;girlgame&quot; &gt;
 	&lt;j2mepolish&gt;
@@ -479,7 +479,7 @@ Best practice is to create one Ant-&lt;target&gt; for each end-application in th
 You can even define or alter 
 <a href="build-build.html#variables">&lt;variables&gt;</a> to make further adjustments with 
 the help of preprocessing. You could define sprite-dimensions for example each 
-or some of the &lt;j2mepolish&gt;-tasks:
+or some of the &lt;j2mepolish&gt; tasks:
 <pre>
 &lt;variable name=&quot;player-width&quot; value=&quot;12&quot; &gt;
 &lt;variable name=&quot;player-height&quot; value=&quot;12&quot; &gt;
@@ -534,7 +534,7 @@ Open devices.xml and search the device in question. Now set the &quot;supportsPo
 </pre>
 </p>
 <p>
-You can also override the settings in the device-database by setting the &quot;usePolishGui&quot;-attribute of the <a href="build-build.html">&lt;build&gt;-element</a> to &quot;always&quot;. In that case the GUI will be used for all devices, regardless of the settings in the device database.
+You can also override the settings in the device-database by setting the &quot;usePolishGui&quot;-attribute of the <a href="build-build.html">&lt;build&gt; element</a> to &quot;always&quot;. In that case the GUI will be used for all devices, regardless of the settings in the device database.
 </p>
 
 <h2 id="trouble">Trouble Shooting</h2>

@@ -4,10 +4,10 @@
 <%set basedir = ../ %>
 <%include start.txt %>
 	
-	<h1 id="top">The &lt;emulator&gt;-Section</h1>
+	<h1 id="top">The &lt;emulator&gt; Section</h1>
 	<%index %>
 	<p>
-The &lt;emulator&gt;-element is responsible for launching any emulators after the application has been build.
+The &lt;emulator&gt; element is responsible for launching any emulators after the application has been build.
 	<pre>
 &lt;emulator
 	wait=&quot;true&quot;
@@ -30,7 +30,7 @@ The &lt;emulator&gt;-element is responsible for launching any emulators after th
 	<p>In the above example the emulator is only started, when the &quot;test&quot;-property is &quot;true&quot;.</p>
 	
 	<h2 id="emulator-attributes">Supported Attributes</h2>
-	<p>Following attributes are supported by the &lt;emulator&gt;-element:
+	<p>Following attributes are supported by the &lt;emulator&gt; element:
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>emulator-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -76,17 +76,17 @@ The &lt;emulator&gt;-element is responsible for launching any emulators after th
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; when the &lt;emulator&gt;-element should be executed.</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; when the &lt;emulator&gt; element should be executed.</td>
 	</tr>
 	<tr><td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; when the &lt;emulator&gt;-element should be executed.</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; when the &lt;emulator&gt; element should be executed.</td>
 	</tr>
 	</table>
 	
 	<h2 id="emulator-parameter">The &lt;parameter&gt; Subelement</h2>
 	<p>
-	The &lt;emulator&gt;-element supports the nested subelement &lt;parameter&gt; for defining additional command line parameters:
+	The &lt;emulator&gt; element supports the nested subelement &lt;parameter&gt; for defining additional command line parameters:
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>parameter-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -186,9 +186,9 @@ In cases when J2ME Polish is not able to locate the position in the source code,
 </p><p>
 In the first line the actual directive is given and in the following lines the binary equivalent compiled java code is listed. The second number from the left is the number which is given in the original error message (e.g. <code>package.class.method(+179)</code>).
 </p><p>
-When the &quot;showDecompiledStackTrace&quot;-attribute of the &lt;emulator&gt;-element is set to &quot;true&quot; or &quot;yes&quot;, a decompiled code fragment will be given out for each stack-trace, even when the source-code position could be located.
+When the &quot;showDecompiledStackTrace&quot;-attribute of the &lt;emulator&gt; element is set to &quot;true&quot; or &quot;yes&quot;, a decompiled code fragment will be given out for each stack-trace, even when the source-code position could be located.
 </p><p>
-Please note that the source-code position can only be located, when the debugging-mode is activated. This is done by setting the &quot;enable&quot;-attribute of the <a href="build-build.html#debug">&lt;debug&gt;-element</a> to &quot;true&quot;. In the default-setup this is done when the &quot;test&quot;-target of the build.xml is called first: 
+Please note that the source-code position can only be located, when the debugging-mode is activated. This is done by setting the &quot;enable&quot;-attribute of the <a href="build-build.html#debug">&lt;debug&gt; element</a> to &quot;true&quot;. In the default-setup this is done when the &quot;test&quot;-target of the build.xml is called first: 
 <pre>
 &quot;ant test j2mepolish&quot;.
 </pre>

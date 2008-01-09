@@ -12,7 +12,7 @@
 	</p>
 <ul>
 	<li><b>Resource Assembling</b>:
-	The <a href="../docs/build-build.html#resources">&lt;resources&gt;-element</a> (a subelement of &lt;build&gt;) can now be 
+	The <a href="../docs/build-build.html#resources">&lt;resources&gt; element</a> (a subelement of &lt;build&gt;) can now be 
 	used to finetune the automatic resource assembling:
 <pre>
 &lt;resources
@@ -51,7 +51,7 @@
 	</li>
 	<li><b>Emulator</b>: 
 	J2ME Polish can now run emulators as well. These are configured 
-	with the <a href="../docs/build-emulator.html">&lt;emulator&gt;-element</a>, which is a direct subelement of the &lt;j2mepolish&gt;-task.
+	with the <a href="../docs/build-emulator.html">&lt;emulator&gt; element</a>, which is a direct subelement of the &lt;j2mepolish&gt; task.
 	So far only emulators based on the Wirless Toolkit are supported.
 <pre>
 &lt;emulator
@@ -86,7 +86,7 @@
 	<li><b>Compilation</b>: 
 	<ul>
 		<li><i>javacTarget</i>:
-		The &lt;build&gt;-element now supports the &quot;javacTarget&quot;-attribute for setting the
+		The &lt;build&gt; element now supports the &quot;javacTarget&quot;-attribute for setting the
 		compiler-target. By default the &quot;1.2&quot; target is used, unless a WTK 1.x or Mac OS X is used, in which case the target &quot;1.1&quot; is used.
 		Prior versions of J2ME Polish always used the &quot;1.1&quot; target.
 <pre>
@@ -128,7 +128,7 @@
 		</li>
 		<li><i>Debug Information</i>:
 		Full Debug Information is now added to the classes,
-		when the &lt;debug&gt;-element is activated.
+		when the &lt;debug&gt; element is activated.
 		</li>
 	</ul>
 	<hr />
@@ -197,7 +197,7 @@
 	All user-defined attributes are now added to both the
 	manifest as well as the JAD file by default. This behaviour
 	can be changed by setting the &quot;target&quot;-attribute
-	of the &lt;attribute&gt;-element:
+	of the &lt;attribute&gt; element:
 <pre>
 &lt;attribute name=&quot;UDP-Server-Port&quot; value=&quot;5000&quot; target=&quot;jad&quot; /&gt;
 </pre>
@@ -223,7 +223,7 @@
 	value=&quot;${ bytes(polish.DataSize) }&quot; 
 	if=&quot;polish.DataSize:defined&quot; /&gt;
 </pre>		
-		This also applies to attributes defined in the &lt;info&gt;-section.
+		This also applies to attributes defined in the &lt;info&gt; section.
 		</li>
 	</ul>
 	<hr />
@@ -282,7 +282,7 @@
 	<li><b>Bugs</b>: 
 	<ul>	
 	<li><i>Obfuscator</i>: 
-	The &lt;keep&gt;-elements were ignored in the 1.1.1 release, this is fixed
+	The &lt;keep&gt; elements were ignored in the 1.1.1 release, this is fixed
 	in the current release.
 	<hr /></li>
 	<li><i>J2SE 1.5 Support</i>: 

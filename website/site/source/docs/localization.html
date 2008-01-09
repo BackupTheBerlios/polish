@@ -30,10 +30,10 @@ The localization framework extends the concepts of the
 <a href="resource-assembling.html">resource assembling</a>, 
 so that you can for example provide one Nokia specific resource for each 
 supported locale. The localization is controlled by the 
-<a href="build-build.html#localization">&lt;localization&gt;-element</a>, 
-which is a subelement of the <a href="build-build.html#resources">&lt;resources&gt;-element</a>. 
+<a href="build-build.html#localization">&lt;localization&gt; element</a>, 
+which is a subelement of the <a href="build-build.html#resources">&lt;resources&gt; element</a>. 
 </p>
-<h2 id="localization-element">The &lt;localization&gt;-Element and Localized Resource Assembling</h2>
+<h2 id="localization-element">The &lt;localization&gt; Element and Localized Resource Assembling</h2>
 <p>
 <pre>
 &lt;resources
@@ -45,7 +45,7 @@ which is a subelement of the <a href="build-build.html#resources">&lt;resources&
 &lt;/resources&gt;
 </pre>
 </p><p>
-The &lt;localization&gt;-element is responsible for defining which locales should be 
+The &lt;localization&gt; element is responsible for defining which locales should be 
 supported. In the above example the locales &quot;de&quot; (German) and &quot;en&quot; 
 (English) are used, unless the test-mode is active, in which case the application 
 is only build for the English locale.
@@ -143,7 +143,7 @@ retrieval of the resource in question.
 </p>
 <h3 id="dynamictranslations">Dynamic Translations</h3>
 <p>
-You can also use dynamic translations that can be changed during the runtime of your application. You have to activate dynamic translations by setting the &quot;dynamic&quot;-attribute of the &lt;localization&gt;-element to &quot;true&quot; and specifying the &quot;defaultLocale&quot;:
+You can also use dynamic translations that can be changed during the runtime of your application. You have to activate dynamic translations by setting the &quot;dynamic&quot;-attribute of the &lt;localization&gt; element to &quot;true&quot; and specifying the &quot;defaultLocale&quot;:
 <pre>
 &lt;resources
 	dir=&quot;resources&quot;
@@ -172,7 +172,7 @@ resources in &quot;resources/fr_CA/messages.txt&quot;. You can also use the
 files &quot;resources/messages.txt&quot;, &quot;resources/messages_de.txt&quot; 
 and &quot;resources/messages_fr_CA.txt&quot; if you prefer to have all translations in 
 one folder. The name of the messages-files can be adjusted with the 
-&quot;messages&quot;-attribute of the &lt;localization&gt;-element by the way.
+&quot;messages&quot;-attribute of the &lt;localization&gt; element by the way.
 </p><p>
 The translations can be adjusted by the usual hierarchy of the resource assembling, so 
 if you have Nokia-specific translations, these can be defined in the 
@@ -241,7 +241,7 @@ MIDlet-attributes in the appropriate messages-file:
 MIDlet-Description=A game where you need to tickle your enemies!
 MIDlet-Name=Tickle-Fight
 </pre></p><p>
-Please compare the documentation of the <a href="build-info.html">&lt;info&gt;-section</a>
+Please compare the documentation of the <a href="build-info.html">&lt;info&gt; section</a>
 for learning the names of the MIDlet-attributes.
 </p>
 <h2 id="utilities">Coping with Dates and Currencies</h2>
@@ -260,7 +260,7 @@ The <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/Locale.html"
 <h2 id="easymistakes">Common Traps</h2>
 <h3 id="jarname">Adjusting the JAR-name</h3>
 <p>
-You need to remember to adjust the JAR-name of the application in the &lt;info&gt;-section of the build.xml, so that the locale is included, otherwise only the last localized application is actually written to the &quot;dist&quot; folder. You can use the variables ${polish.locale} e.g. &quot;fr_CA&quot;, ${polish.language} e.g. &quot;fr&quot;, and ${polish.country} e.g. &quot;CA&quot;  in the jarName-attribute.
+You need to remember to adjust the JAR-name of the application in the &lt;info&gt; section of the build.xml, so that the locale is included, otherwise only the last localized application is actually written to the &quot;dist&quot; folder. You can use the variables ${polish.locale} e.g. &quot;fr_CA&quot;, ${polish.language} e.g. &quot;fr&quot;, and ${polish.country} e.g. &quot;CA&quot;  in the jarName-attribute.
 </p><p>
 An example jarName-attribute is the following:
 <pre>

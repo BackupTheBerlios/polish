@@ -32,7 +32,7 @@
 	  This mechanism helps you to manage your own definitions without needing to merge these files
 	  with every update of J2ME Polish.
 	  </li>
-  	  <li><b>&lt;compiler&gt;-element</b>:
+  	  <li><b>&lt;compiler&gt; element</b>:
 	  The <a href="../docs/build-build.html#compiler">&lt;compiler&gt;</a>-element now allows 
 	  you to use finetune the compiler-settings.
 	  </li>
@@ -123,12 +123,12 @@
 </pre>
 You can then switch to the German translation by calling <code>Locale.loadTranslations( &quot;/de.loc&quot; )</code>, for example.  	
 	  </li>
-	  <li><b>configuration and platform Settings of the &lt;info&gt;-Element</b>:
+	  <li><b>configuration and platform Settings of the &lt;info&gt; Element</b>:
 	  The <a href="../docs/build-info.html">&lt;info&gt;</a>-element now 
 	  supports the setting of the &quot;MicroEdition-Configuration&quot; as well as 
 	  &quot;MicroEdition-Profile&quot;. Usually these values are derived from the target
 	  device. By setting the &quot;configuration&quot; and &quot;platform&quot;-attributes of the 
-	  &lt;info&gt;-element you can now override this for all target devices.
+	  &lt;info&gt; element you can now override this for all target devices.
 	  </li>
 	  <li><b>Dynamic ScreenSize, CanvasSize and FullCanvasSize resources</b>:
 	  You can now use &quot;resources/ScreenSize.170+x200+&quot; etc for your
@@ -136,7 +136,7 @@ You can then switch to the German translation by calling <code>Locale.loadTransl
 	  </li>
 	  <li><b>ChoiceGroup.setDefaultCommand()</b>: now switches the command for selecting items in the choice group as well as opening a POPUP group. The original &quot;Select&quot;-command is replaced in that case. This feature is not available when all ChoiceGroup-commands are deactivated with the preprocessing variables &quot;polish.ChoiceGroup.suppressMarkCommands&quot; and &quot;polish.ChoiceGroup.suppressSelectCommand&quot;.</li>
 	  <li><b>useDefaultPackge</b>: when the default package is used 
-	  (which can be set with the &lt;obfuscator&gt;-element, the preprocessing symbol &quot;polish.useDefaultPackage&quot; will be defined.</li>
+	  (which can be set with the &lt;obfuscator&gt; element, the preprocessing symbol &quot;polish.useDefaultPackage&quot; will be defined.</li>
 	  <li><b>Many Thanks</b> to:
 	  Waldemar Baraldi, Kin Wong, Andrew Ebling, Mark Schrijver, Nikolay Klimchuk, Jon Malmquist, Johannes Simon,
 	  and Thorsten Pr&ouml;lss!

@@ -29,17 +29,17 @@
 	   for exclusive ChoiceGroups. This view only shows the currently selected item and allows
 	   to choose other items by using the left and right arrows.
 	  </li>
-	  <li><b>Preprocessor</b>: &lt;preprocessor&gt;-elements can now use preprocessing
+	  <li><b>Preprocessor</b>: &lt;preprocessor&gt; elements can now use preprocessing
 	  terms as if- or unless-conditions.
 	  </li>
-	  <li><b>Obfuscator</b>: &lt;obfuscator&gt;-elements can now use preprocessing
+	  <li><b>Obfuscator</b>: &lt;obfuscator&gt; elements can now use preprocessing
 	  terms as if- or unless-conditions.
 	  </li>
-	  <li><b>Source</b>: &lt;source&gt;-elements can now use preprocessing
+	  <li><b>Source</b>: &lt;source&gt; elements can now use preprocessing
 	  terms as if- or unless-conditions. This allows you for example to use different base classes
 	  without using preprocessing in your source code.
 	  </li>
-	  <li><b>Third Party Libraries</b>: Thanks to the new &lt;libraries&gt;- and &lt;library&gt;-elements, 
+	  <li><b>Third Party Libraries</b>: Thanks to the new &lt;libraries&gt;  and &lt;library&gt; elements, 
 	  you can now use different third party libraries depending
 	  on conditions:
 <pre>
@@ -50,7 +50,7 @@
 &lt;/libraries&gt;
 </pre>
 	  </li>
-	  <li><b>Copier</b>: The &lt;resources&gt;-element now support the setting of &lt;copier&gt;-elements
+	  <li><b>Copier</b>: The &lt;resources&gt; element now support the setting of &lt;copier&gt; elements
 	  that are responsible for copying the resources after they have been assembled. The following examples
 	  removes all characters that are surrounded by curly braces in resource names. The resource 
 	  <i>bg{background-Series60}.png</i> will be renamed to <i>bg.png</i>, for example:
@@ -297,7 +297,7 @@ int i = 0;
 	  This mechanism helps you to manage your own definitions without needing to merge these files
 	  with every update of J2ME Polish.
 	  </li>
-  	  <li><b>&lt;compiler&gt;-element</b>:
+  	  <li><b>&lt;compiler&gt; element</b>:
 	  The <a href="../docs/build-build.html#compiler">&lt;compiler&gt;</a>-element now allows 
 	  you to use finetune the compiler-settings.
 	  </li>
@@ -388,12 +388,12 @@ int i = 0;
 </pre>
 You can then switch to the German translation by calling <code>Locale.loadTranslations( &quot;/de.loc&quot; )</code>, for example.  	
 	  </li>
-	  <li><b>configuration and platform Settings of the &lt;info&gt;-Element</b>:
+	  <li><b>configuration and platform Settings of the &lt;info&gt; Element</b>:
 	  The <a href="../docs/build-info.html">&lt;info&gt;</a>-element now 
 	  supports the setting of the &quot;MicroEdition-Configuration&quot; as well as 
 	  &quot;MicroEdition-Profile&quot;. Usually these values are derived from the target
 	  device. By setting the &quot;configuration&quot; and &quot;platform&quot;-attributes of the 
-	  &lt;info&gt;-element you can now override this for all target devices.
+	  &lt;info&gt; element you can now override this for all target devices.
 	  </li>
 	  <li><b>Dynamic ScreenSize, CanvasSize and FullCanvasSize resources</b>:
 	  You can now use &quot;resources/ScreenSize.170+x200+&quot; etc for your
@@ -401,7 +401,7 @@ You can then switch to the German translation by calling <code>Locale.loadTransl
 	  </li>
 	  <li><b>ChoiceGroup.setDefaultCommand()</b>: now switches the command for selecting items in the choice group as well as opening a POPUP group. The original &quot;Select&quot;-command is replaced in that case. This feature is not available when all ChoiceGroup-commands are deactivated with the preprocessing variables &quot;polish.ChoiceGroup.suppressMarkCommands&quot; and &quot;polish.ChoiceGroup.suppressSelectCommand&quot;.</li>
 	  <li><b>useDefaultPackge</b>: when the default package is used 
-	  (which can be set with the &lt;obfuscator&gt;-element, the preprocessing symbol &quot;polish.useDefaultPackage&quot; will be defined.</li>
+	  (which can be set with the &lt;obfuscator&gt; element, the preprocessing symbol &quot;polish.useDefaultPackage&quot; will be defined.</li>
 	  <li><b>Many Thanks</b> to:
 	  Waldemar Baraldi, Kin Wong, Andrew Ebling, Mark Schrijver, Nikolay Klimchuk, Jon Malmquist, Johannes Simon,
 	  and Thorsten Pr&ouml;lss!

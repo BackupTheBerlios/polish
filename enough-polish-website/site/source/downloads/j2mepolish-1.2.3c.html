@@ -9,7 +9,7 @@
 	<h2 id="improvements123c">Improvements of J2ME Polish 1.2.3c</h2>
 	<p>
 	J2ME Polish 1.2.3c just fixes the broken &quot;useDefaultPackage&quot;-option of
-	the &lt;obfuscator&gt;-element. In case this option makes trouble in your project,
+	the &lt;obfuscator&gt; element. In case this option makes trouble in your project,
 	please make sure that you only use import-statements rather than using classes
 	fully qualified.</p>
 	<p>This example breaks (don't do it like this):
@@ -30,7 +30,7 @@
 	</p>
 	<ul>
 	<li><b>sample build.xml</b>: 
-		The &quot;useDefaultPackage&quot;-attribute of the &lt;obfuscator&gt;-element
+		The &quot;useDefaultPackage&quot;-attribute of the &lt;obfuscator&gt; element
 		was spelled wrong in the sample application of the 1.2.3a release.
 		<hr />
 	</li>
@@ -110,7 +110,7 @@
 		for you. This includes the MIDlet-classes as well and can result
 		in a smaller jar-size. Please note that you are responsible for
 		preventing name-clashes of classes. You do not need to adjust
-		your &lt;midlet&gt;-settings, this is done automatically by J2ME Polish.
+		your &lt;midlet&gt; settings, this is done automatically by J2ME Polish.
 
 <pre>
 &lt;obfuscator name=&quot;ProGuard&quot; useDefaultPackage=&quot;true&quot; unless=&quot;test&quot; /&gt;
@@ -161,7 +161,7 @@ focused {
 		<hr />
 	</li>
 	<li><b>&lt;obfuscator&gt; and &lt;debug&gt;</b>: 
-		The &lt;obfuscator&gt;- and &lt;debug&gt;-elements do not need
+		The &lt;obfuscator&gt;  and &lt;debug&gt; elements do not need
 		the &quot;enable&quot; attribute any more - this is now always true and
 		is deprecated. Please use the &quot;if&quot; and &quot;unless&quot; attributes in
 		case you need to control those elements from now on.
@@ -203,7 +203,7 @@ focused {
 	The full-screen mode is now supported for MIDP/2.0 devices as well. 
 	The mode can be set with the &quot;polish.FullScreen&quot;-variable as well, which allows
 	a finer grained control than using the &quot;usePolishGui&quot;-attribute of the 
-	&lt;build&gt;-element:
+	&lt;build&gt; element:
 <pre>
 &lt;build
 	usePolishGui=&quot;true&quot;
@@ -231,7 +231,7 @@ focused {
 	</li>
 	<li><b>Packaging</b>: 
 	J2ME Polish can now use different packagers as well, which can be specified with
-	the <a href="../docs/build-build.html#packager">&lt;packager&gt;-element</a>:
+	the <a href="../docs/build-build.html#packager">&lt;packager&gt; element</a>:
 <pre>
 &lt;packager
  executable=&quot;jar&quot;

@@ -44,7 +44,7 @@ by defining specific <a href="build-build.html#variables">variables</a> in the &
 </p>
 <h3 id="fullscreen">Using a Fullscreen-GameCanvas</h3>
 <p>
-The GameCanvas normally uses the &quot;fullscreen&quot;-attribute of the &lt;build&gt;-element to 
+The GameCanvas normally uses the &quot;fullscreen&quot;-attribute of the &lt;build&gt; element to 
 determine whether it should use a fullscreen-canvas. This behavior can be overridden 
 with defining the &quot;polish.GameCanvas.useFullScreen&quot; variable. 
 Allowed value are &quot;yes&quot;, &quot;no&quot; and &quot;menu&quot;. Please note that the &quot;menu&quot; 
@@ -53,7 +53,7 @@ is only supported when the J2ME Polish GUI is used. Another limitation of the &q
 is that the paint()-method of the GameCanvas cannot be overridden.
 </p>
 <ul>
- <li><b>polish.GameCanvas.useFullScreen</b>: Defines whether the fullscreen mode is used, overrides the &quot;fullscreen&quot;-attribute of the &lt;build&gt;-element. Possible values are &quot;yes&quot;, &quot;no&quot; or &quot;menu&quot;.
+ <li><b>polish.GameCanvas.useFullScreen</b>: Defines whether the fullscreen mode is used, overrides the &quot;fullscreen&quot;-attribute of the &lt;build&gt; element. Possible values are &quot;yes&quot;, &quot;no&quot; or &quot;menu&quot;.
  </li>
 </ul>
 <p>
@@ -155,7 +155,7 @@ To build the existing game we need to copy the sample-build.xml file, which resi
 The build.xml includes all the necessary information about the project like the MIDlet-classes, the target-devices, the version of the game and so on. Many IDEs support syntax highlighting and auto-completion for this file, but it can also be edited with any decent text-editor.
 </p>
 <p>
-The J2ME Polish task is divided in 3 subsections: &lt;info&gt;, &lt;deviceRequirements&gt; and &lt;build&gt;. The &lt;info&gt;-section contains general information about the project:
+The J2ME Polish task is divided in 3 subsections: &lt;info&gt;, &lt;deviceRequirements&gt; and &lt;build&gt;. The &lt;info&gt; section contains general information about the project:
 <pre>
 &lt;info
   license=&quot;GPL&quot;
@@ -176,14 +176,14 @@ The J2ME Polish task is divided in 3 subsections: &lt;info&gt;, &lt;deviceRequir
 This information can be changed arbitrarily. The name of the application can also contain the name and vendor of the target-device. The above example &quot;${polish.vendor}-${polish.name}-example.jar&quot; results in the name &quot;Nokia-6600-example.jar&quot;, when the application is build for the Nokia/6600 device for example. The above property &quot;${deploy-url}&quot; is defined above in the sample build.xml script and is usually empty.
 </p>
 <p>
-In the following &lt;deviceRequirements&gt;-section the target-devices are selected. Since we want to build the application for a MIDP/2.0 device first, we enter any MIDP/2.0 capable device into the requirements, e.g. &quot;Nokia/6600&quot; or &quot;Nokia/Series60Midp2&quot;. The &quot;Series60Midp2&quot; device is a virtual device representing a typical Series 60 phone with MIDP/2.0 support. Such is phone supports additionally the Mobile Media API (mmapi) and the Wireless Messaging API (wmapi). The device selection is very flexible and can select all MIDP/2.0 devices which support the Mobile Media API as well, for example. For keeping this example easy to manage, we use only the selection by the device's identifier:
+In the following &lt;deviceRequirements&gt; section the target-devices are selected. Since we want to build the application for a MIDP/2.0 device first, we enter any MIDP/2.0 capable device into the requirements, e.g. &quot;Nokia/6600&quot; or &quot;Nokia/Series60Midp2&quot;. The &quot;Series60Midp2&quot; device is a virtual device representing a typical Series 60 phone with MIDP/2.0 support. Such is phone supports additionally the Mobile Media API (mmapi) and the Wireless Messaging API (wmapi). The device selection is very flexible and can select all MIDP/2.0 devices which support the Mobile Media API as well, for example. For keeping this example easy to manage, we use only the selection by the device's identifier:
 <pre>
 &lt;deviceRequirements&gt;
   &lt;requirement name=&quot;Identifier&quot; value=&quot;Nokia/Series60Midp2&quot; /&gt;
 &lt;/deviceRequirements&gt;
 </pre>
 </p><p>
-The &lt;build&gt;-section controls the actual build process. For keeping this example easy, we choose not to use the GUI of J2ME Polish and set the &quot;usePolishGui&quot; attribute to &quot;false&quot;. We also need to adjust the &lt;midlet&gt;-subelement and enter the full name of our game-class:
+The &lt;build&gt; section controls the actual build process. For keeping this example easy, we choose not to use the GUI of J2ME Polish and set the &quot;usePolishGui&quot; attribute to &quot;false&quot;. We also need to adjust the &lt;midlet&gt; subelement and enter the full name of our game-class:
 <pre>
 &lt;build
   usePolishGui=&quot;false&quot;
@@ -195,7 +195,7 @@ The &lt;build&gt;-section controls the actual build process. For keeping this ex
 &lt;/build&gt;
 </pre>
 </p><p>
-The &lt;build&gt;-section has many subelements and can automate many tasks from the inclusion of the debugging framework to the signing of the application. These settings are outside of the scope or this article, though. 
+The &lt;build&gt; section has many subelements and can automate many tasks from the inclusion of the debugging framework to the signing of the application. These settings are outside of the scope or this article, though. 
 </p>
 
 <h4 id="resources">Managing the Resources</h4>
@@ -282,7 +282,7 @@ this.sprite = new Sprite( spriteImage, frameWidth, frameHeight );
 </pre>
 </p>
 <p>
-For an even more flexible approach you can use preprocessing <a href="build-build.html#variables">variables</a>. These variables can be defined in the &lt;variables&gt;-subelement of the build.xml file:
+For an even more flexible approach you can use preprocessing <a href="build-build.html#variables">variables</a>. These variables can be defined in the &lt;variables&gt; subelement of the build.xml file:
 <pre>
 &lt;variables&gt;
   &lt;variable 

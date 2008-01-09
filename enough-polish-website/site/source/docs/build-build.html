@@ -4,14 +4,19 @@
 <%set basedir = ../ %>
 <%include start.txt %>
 
-	<h1 id="top">The &lt;build&gt;-Section</h1>
+	<h1 id="top">The &lt;build&gt; Section</h1>
+	<ul class="relatedtechnologies">
+	<li class="relatedtechnologiesheader">Related Topics:</li>
+	<li><a href="resource-assembling.html">Resource Assembling</a></li>
+	<li><a href="customization.html">Customization</a></li>
+	<li><a href="localization.html">Localization</a></li>
+	<li><a href="preprocessing.html">Preprocessing</a></li>
+	</ul>
 	<%index %>
 	<p>
-With the &lt;build&gt;-section the actual build process is controlled: 
+With the &lt;build&gt; section the actual build process is controlled: 
 <pre>
 &lt;build
-     symbols=&quot;ExampleSymbol, AnotherExample&quot;
-     imageLoadStrategy=&quot;foreground&quot;
      fullscreen=&quot;menu&quot;
      usePolishGui=&quot;true&quot;
      &gt;
@@ -19,12 +24,11 @@ With the &lt;build&gt;-section the actual build process is controlled:
      &lt;midlet class=&quot;de.enough.polish.example.MenuMidlet&quot; name=&quot;Example&quot; /&gt;
      &lt;!-- project-wide variables - used for preprocessing  --&gt;
      &lt;variables&gt;
-       &lt;variable name=&quot;update-url&quot; value=&quot;http://www.enough.de/update&quot; /&gt;
+       &lt;variable file=&quot;configs/all.properties&quot; /&gt;
+       &lt;variable file=&quot;configs/${polish.vendor}.properties&quot; /&gt;
      &lt;/variables&gt;
      &lt;!-- obfuscator settings --&gt;
-     &lt;obfuscator name=&quot;ProGuard&quot;
-                    useDefaultPacakge=&quot;true&quot; 
-                    unless=&quot;test&quot;  /&gt;
+     &lt;obfuscator name=&quot;ProGuard&quot; unless=&quot;test or polish.blackberry&quot;  /&gt;
      &lt;!-- debug settings --&gt;
      &lt;debug showLogOnError=&quot;true&quot; 
                verbose=&quot;true&quot; 
@@ -43,7 +47,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<tr><td>sourceDir</td>
  	 <td>No</td>
 	 <td>The path to the source directory. The default path is either &quot;source/src&quot;, &quot;source&quot; or &quot;src&quot;. You can define several paths by separating them with a colon ':' or a semicolon ';': 
-[path1]:[path2]. You can also include source-directories based on conditions when the nested <a href="#sources">&lt;sources&gt;-element</a> is used instead.
+[path1]:[path2]. You can also include source-directories based on conditions when the nested <a href="#sources">&lt;sources&gt; element</a> is used instead.
 </td>
 	</tr>
 	<tr><td>binaryLibraries or binaryLibrary</td>
@@ -84,13 +88,9 @@ With the &lt;build&gt;-section the actual build process is controlled:
 </pre>
 	 </td>
 	</tr>
-	<tr><td>imageLoadStrategy</td>
- 	 <td>No</td>
-	 <td>The strategy for loading pictures. Possible values are either &quot;foreground&quot; or &quot;background&quot;. The &quot;foreground&quot; strategy loads images directly when they are requested. The &quot;background&quot; strategy loads the images in a background-thread. With the background strategy the felt performance of an application can be increased, but not all pictures might be shown right away when the user enters a screen. The definition of the imageLoadStrategy makes only sense when the J2ME&nbsp;Polish GUI is used (usePolishGui=&quot;true&quot;). Default strategy is &quot;foreground&quot;. When the &quot;foreground&quot; strategy is used, the preprocessing symbol &quot;polish.images.directLoad&quot; will be defined. When using the &quot;background&quot; strategy, the symbol &quot;polish.images.backgroundLoad&quot; is defined.</td>
-	</tr>
 	<tr><td>javacTarget</td>
  	 <td>No</td>
-	 <td>The target for the java-compiler. By default the &quot;1.2&quot; target is used, unless a WTK 1.x or Mac OS X is used, in which case the target &quot;1.1&quot; is used.</td>
+	 <td>The target for the java-compiler. By default the &quot;1.2&quot; target is used, unless a WTK 1.x is used, in which case the target &quot;1.1&quot; is used.</td>
 	</tr>
 	<tr><td>preverify</td>
  	 <td>No</td>
@@ -139,7 +139,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<tr><td>resDir</td>
  	 <td>No</td>
 	 <td>The folder which contains all design definitions and other resources like images, movies etc. By setting a different folder, completely different designs can be demonstrated. Default folder is &quot;resources&quot;.
-	 You can also use the &lt;resources&gt;-subelement which allows to fine-tune the
+	 You can also use the &lt;resources&gt; subelement which allows to fine-tune the
 	 resource-assembling process as well.
 	 </td>
 	</tr>
@@ -184,7 +184,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	</p>
 	<h3 id="sources">&lt;sources&gt;</h3>
 	<p>
-	The &lt;sources&gt;-element can be used for a finer grained control of the source-directories. This can be useful to include test classes, for example:
+	The &lt;sources&gt; element can be used for a finer grained control of the source-directories. This can be useful to include test classes, for example:
 	<pre>
 &lt;sources&gt;
 	&lt;source dir=&quot;source/src&quot; /&gt;
@@ -224,7 +224,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	</table>
 
 	<h3 id="midlet">&lt;midlet&gt; and &lt;midlets&gt;</h3>
-	<p>The &lt;midlet&gt;-element defines the actual MIDlet class:
+	<p>The &lt;midlet&gt; element defines the actual MIDlet class:
 	
 <br/><code>&lt;midlet class=&quot;de.enough.polish.example.ExampleMidlet&quot; /&gt;</code>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
@@ -240,7 +240,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	</tr>
 	<tr><td>icon</td>
  	 <td>No</td>
-	 <td>The icon of this MIDlet. When none is defined, the icon defined in the &lt;info&gt;-section will be used.</td>
+	 <td>The icon of this MIDlet. When none is defined, the icon defined in the &lt;info&gt; section will be used.</td>
 	</tr>
 	<tr><td>number</td>
  	 <td>No</td>
@@ -258,7 +258,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	</tr>
 	</table>
 	<p>
-	The optional &lt;midlets&gt;-element is used as a container for several &lt;midlet&gt;-elements and also supports the if/unless attributes:
+	The optional &lt;midlets&gt; element is used as a container for several &lt;midlet&gt; elements and also supports the if/unless attributes:
 <pre>
 &lt;midlets&gt;
 	&lt;midlet class=&quot;de.enough.polish.example.ExampleMidlet&quot; /&gt;
@@ -316,7 +316,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 </pre>
 	</p>
 	<p>
-	The &lt;resources&gt;-element can be used to fine tune the resources assembling as well as the localization of the application. When it is used, the &quot;resDir&quot;-attribute of the &lt;build&gt;-section should not be used. The &lt;resources&gt;-element supports following attributes:
+	The &lt;resources&gt; element can be used to fine tune the resources assembling as well as the localization of the application. When it is used, the &quot;resDir&quot;-attribute of the &lt;build&gt; section should not be used. The &lt;resources&gt; element supports following attributes:
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>resources-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -335,7 +335,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	<tr>
 	 <td>locales</td>
 	 <td>No</td>
-	 <td>The locales which should be supported in a comma-separated list. Alternatively the nested &lt;localization&gt;-element can be used.  The standard Java locale-abbreviations are used, e.g. &quot;de&quot; for German, &quot;en&quot; for English and &quot;fr_CA&quot; for Canadian French. 
+	 <td>The locales which should be supported in a comma-separated list. Alternatively the nested &lt;localization&gt; element can be used.  The standard Java locale-abbreviations are used, e.g. &quot;de&quot; for German, &quot;en&quot; for English and &quot;fr_CA&quot; for Canadian French. 
 	 </td>
 	</tr>
 	<tr>
@@ -352,7 +352,7 @@ With the &lt;build&gt;-section the actual build process is controlled:
 	</tr>
 	</table>
 	<p>
-	The &lt;resources&gt;-elements accepts the nested elements &lt;filter&gt;, &lt;fileset&gt; and &lt;localization&gt;:
+	The &lt;resources&gt; elements accepts the nested elements &lt;filter&gt;, &lt;fileset&gt; and &lt;localization&gt;:
 	</p>	
 <h4 id="filter">The &lt;filter&gt; Subelement</h4>
 <p>
@@ -377,10 +377,102 @@ Sometimes it is easier to exclude resources for specific devices rather than to 
 	</tr>
 	</table>	
 
+	<h4 id="resources_root">The &lt;root&gt; Subelement</h4>
+	<p>
+	By default you only have the single root directory <i>resources</i> in your project. You can, however, define as many
+	roots and even conditional roots using the <code>&lt;root&gt;</code> element:
+	</p>
+<pre>
+&lt;resources
+	dir=&quot;resources/base&quot;
+	defaultexcludes=&quot;yes&quot;
+	excludes=&quot;readme.txt&quot;
+&gt;
+	&lt;root dir=&quot;resources/base/design&quot; /&gt;
+	&lt;root dir=&quot;resources/base/sounds&quot; /&gt;
+	&lt;root dir=&quot;resources/base/images&quot; /&gt;
+	&lt;root dir=&quot;resources/base/images/largescreens&quot; 
+		if=&quot;polish.ScreenWidth &amp;gt;= 240 and polish.ScreenHeight &amp;gt;= 300&quot; 
+	/&gt;
+	&lt;root dir=&quot;resources/base/images/i18n&quot; 
+		includeSubDirs=&quot;true&quot; includeBaseDir=&quot;true&quot; excludes=&quot;CVS, readme*&quot; 
+	/&gt;
+&lt;/resources&gt;
+</pre>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>root-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>dir</td>
+ 	 <td>Yes</td>
+	 <td>The base directory of this resource root. This directory needs to exist unless you use variables in it like ${polish.vendor}, ${polish.name}, ${polish.language}, ${polish.country} and so on. You can use any J2ME Polish preprocessing variable or Ant property in the dir attribute.</td>
+	</tr>
+	<tr><td>includeSubDirs</td>
+ 	 <td>No</td>
+	 <td>Set to true if you want to include all subdirectories instead of using the root directory as a starting point for the 
+	 normal resource assembling. This allows you to include resources with the same name in different folder, which can
+	 be useful for dynamic localizations, for example:
+<pre>
+resources/base/images/i18n/en/flag.png
+resources/base/images/i18n/de/flag.png
+resources/base/images/i18n/dk/flag.png
+resources/base/images/i18n/fr/flag.png
+resources/base/images/i18n/es/flag.png
+resources/base/images/i18n/cn/flag.png
+</pre>
+	 </td>
+	</tr>
+	<tr><td>includeBaseDir</td>
+ 	 <td>No</td>
+	 <td>Set to true if you want to include the directory specified in the <code>dir</code> attribute as well.
+	 	Is only applicable when you have set the <code>includeSubDirs</code> attribute to <code>true</code>.
+	 </td>
+	</tr>
+	<tr><td>excludes</td>
+ 	 <td>No</td>
+	 <td>Comma separated list of files that should be excluded, e.g. <code>excludes=&quot;CVS, readme*&quot;</code>.</td>
+	</tr>
+	<tr><td>includes</td>
+ 	 <td>No</td>
+	 <td>Comma separated list of files that should be included, e.g. <code>includes=&quot;*.mid&quot;</code>.</td>
+	</tr>
+	<tr><td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this root to be used.</td>
+	</tr>
+	<tr><td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this root to be used.</td>
+	</tr>
+	</table>	
+
 	<h4 id="fileset">The &lt;fileset&gt; Subelement</h4>
 	<p>
+	You can use &lt;fileset&gt; for fine tuning the resource assembling. Nowadays we recommend using 
+	<a href="#resources_root">&lt;root&gt; instead.
+	<br />
 	The &lt;fileset&gt; behaves like any <a href="http://ant.apache.org/manual/CoreTypes/fileset.html" target="_blank">Ant fileset</a>, but it offers the additional &quot;if&quot; and &quot;unless&quot;-attributes for allowing a fine grained control. The most important attributes are:
 	</p>
+<pre>
+&lt;resources
+	dir=&quot;resources&quot;
+	excludes=&quot;readme*&quot; 
+&gt;
+	&lt;fileset 
+		dir=&quot;resources/multimedia&quot; 
+		includes=&quot;*.mp3&quot; 
+		if=&quot;polish.audio.mp3&quot; 
+	/&gt;
+	&lt;fileset 
+		dir=&quot;resources/multimedia&quot; 
+		includes=&quot;*.mid&quot; 
+		if=&quot;polish.audio.midi and not polish.audio.mp3&quot; 
+	/&gt;
+&lt;/resources&gt;
+</pre>
+<p>
+In the above example MIDI files are only included when two conditions are met:
+<br />1) The device supports MIDI sound
+<br />2) The device does not support MP3 sound.
+</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>fileset-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>dir</td>
@@ -402,7 +494,7 @@ Sometimes it is easier to exclude resources for specific devices rather than to 
 	</table>	
 	<h4 id="localization">The &lt;localization&gt; Subelement</h4>
 	<p>
-	With the &lt;localization&gt;-element the internationalization of the application can be controlled. It supports following attributes:
+	With the &lt;localization&gt; element the internationalization of the application can be controlled. It supports following attributes:
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>localization-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -435,7 +527,7 @@ Sometimes it is easier to exclude resources for specific devices rather than to 
 	</table>
 
 <h3 id="copier">The &lt;copier&gt; Subelement</h3>
-<p>Use the &lt;copier&gt;-element to transform the resources before they are packaged in the final JAR file. You can chain several copiers together just by defining several &lt;copier&gt; elements.
+<p>Use the &lt;copier&gt; element to transform the resources before they are packaged in the final JAR file. You can chain several copiers together just by defining several &lt;copier&gt; elements.
 </p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>copier-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -505,7 +597,7 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 </p>
 	<h3 id="compiler">&lt;compiler&gt;</h3>
 	<p>
-	The optional &lt;compiler&gt;-element can be used for specifying any compiler-arguments. J2ME Polish normally calls the Java compiler normally with the appropriate classpath as well as bootclasspath for the current target device. In some cases you might want to adjust the compiler settings, however, so you can use the nested &lt;compiler&gt;-element. Along to all attributes of the standard &lt;javac&gt;-task, the &lt;compiler&gt;-element also supports the &quot;if&quot; and &quot;unless&quot; attributes for selecting to appropriate compiler setting:
+	The optional &lt;compiler&gt; element can be used for specifying any compiler-arguments. J2ME Polish normally calls the Java compiler normally with the appropriate classpath as well as bootclasspath for the current target device. In some cases you might want to adjust the compiler settings, however, so you can use the nested &lt;compiler&gt; element. Along to all attributes of the standard &lt;javac&gt; task, the &lt;compiler&gt; element also supports the &quot;if&quot; and &quot;unless&quot; attributes for selecting to appropriate compiler setting:
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>localization-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -587,7 +679,7 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	<tr>
 	 <td>debug</td>
  	 <td>No</td>
-	 <td>Indicates whether source should be compiled with debug information; defaults to off. If set to off, -g:none will be passed on the command line for compilers that support it (for other compilers, no command line argument will be used). If set to true, the value of the debuglevel attribute determines the command line argument. J2ME Polish only enables the debugging when the &lt;debug&gt;-element is active for the current target device.</td>
+	 <td>Indicates whether source should be compiled with debug information; defaults to off. If set to off, -g:none will be passed on the command line for compilers that support it (for other compilers, no command line argument will be used). If set to true, the value of the debuglevel attribute determines the command line argument. J2ME Polish only enables the debugging when the &lt;debug&gt; element is active for the current target device.</td>
 	</tr>
 	<tr>
 	 <td>debuglevel</td>
@@ -607,7 +699,7 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	<tr>
 	 <td>target</td>
  	 <td>No</td>
-	 <td>Generate class files for specific VM version (e.g., 1.1 or 1.2). J2ME Polish uses 1.2 by default when the WTK 2.x is used. The target can also be set with the &quot;javacTarget&quot;-attribute of the &lt;build&gt;-element.</td>
+	 <td>Generate class files for specific VM version (e.g., 1.1 or 1.2). J2ME Polish uses 1.2 by default when the WTK 2.x is used. The target can also be set with the &quot;javacTarget&quot;-attribute of the &lt;build&gt; element.</td>
 	</tr>
 	<tr>
 	 <td>verbose</td>
@@ -718,7 +810,7 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	
 	<h3 id="obfuscator">&lt;obfuscator&gt;</h3>
 	<p>
-	The optional &lt;obfuscator&gt;-element controls the obfuscating of the application bundle, which decreases the jar-size and makes it difficult to reverse engineer the application.
+	The optional &lt;obfuscator&gt; element controls the obfuscating of the application bundle, which decreases the jar-size and makes it difficult to reverse engineer the application.
 	<pre>
 &lt;obfuscator name=&quot;ProGuard&quot; useDefaultPackage=&quot;true&quot; unless=&quot;test&quot; /&gt;
 </pre>
@@ -737,7 +829,7 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	</tr>
 	<tr><td>useDefaultPackage</td>
  	 <td>No</td>
-	 <td>J2ME Polish can move all classes to the default package for you. This includes the MIDlet-classes as well and can result in a smaller jar-size. Please note that you are responsible for preventing name-clashes of classes. You do not need to adjust your &lt;midlet&gt;-settings, this is done automatically by J2ME Polish. This defaults to &quot;false&quot;.</td>
+	 <td>J2ME Polish can move all classes to the default package for you. This includes the MIDlet-classes as well and can result in a smaller jar-size. Please note that you are responsible for preventing name-clashes of classes. You do not need to adjust your &lt;midlet&gt; settings, this is done automatically by J2ME Polish. This defaults to &quot;false&quot;.</td>
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
@@ -757,7 +849,7 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	 <td>The classpath for this obfuscator. This is useful for integrating a third party obfuscator.</td>
 	</tr>
 	</table>
-	<p>Any number of &lt;obfuscator&gt;-elements  can be used in a project. 
+	<p>Any number of &lt;obfuscator&gt; elements  can be used in a project. 
 	All active obfuscators are combined by J2ME Polish.
 	</p>
 	<p>
@@ -765,7 +857,7 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	</p>
 	<h4 id="obfuscator-keep">The &lt;keep&gt; Subelement</h4>
 	<p>
-	The &lt;keep&gt;-element is used to define classes which are loaded dynamically (e.g. with Class.forName(...) ) and should not be obfuscated:
+	The &lt;keep&gt; element is used to define classes which are loaded dynamically (e.g. with Class.forName(...) ) and should not be obfuscated:
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;ProGuard&quot; &gt;
 	&lt;keep class=&quot;com.company.dynamic.SomeDynamicClass&quot; /&gt;
@@ -777,7 +869,7 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	
 	<h4 id="obfuscator-parameter">The &lt;parameter&gt; Subelement</h4>
 	<p>
-	The &lt;parameter&gt;-element is used to specify parameters for the obfuscator. This can be useful for integrating third party obfuscators which require additional settings:
+	The &lt;parameter&gt; element is used to specify parameters for the obfuscator. This can be useful for integrating third party obfuscators which require additional settings:
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;ProGuard&quot; &gt;
 	&lt;keep class=&quot;com.company.dynamic.SomeDynamicClass&quot; /&gt;
@@ -806,7 +898,7 @@ If you want to use ProGuard as an obfuscator, please make sure that the proguard
 		<b>${polish.home}/import/proguard.jar</b>&quot;/&gt;
 </pre>
 </p><p>
-You can use ProGuard by setting the name-attribute of the &lt;obfuscator&gt;-element to &quot;ProGuard&quot;.
+You can use ProGuard by setting the name-attribute of the &lt;obfuscator&gt; element to &quot;ProGuard&quot;.
 </p><p>
 ProGuard 3.x offers an additional optimization of the bytecode, which is disabled by default. The optimization can be enabled by setting the &quot;optimize&quot;-parameter to &quot;true&quot;:
 <pre>
@@ -829,7 +921,7 @@ If you want to use yGuard as an obfuscator, please make sure that either the ygu
 		${polish.home}/import/jdom.jar:
 		<b>${polish.home}/import/yguard-lib.jar</b>&quot;/&gt;
 </pre></p><p>
-The yGuard obfuscator can be used by setting the name-attribute of the &lt;obfuscator&gt;-element to &quot;YGuard&quot;:
+The yGuard obfuscator can be used by setting the name-attribute of the &lt;obfuscator&gt; element to &quot;YGuard&quot;:
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;YGuard&quot; /&gt;
 </pre></p>
@@ -928,7 +1020,7 @@ Maybe someone with more experience with JODE can provide help here - please get 
 	
 	<h3 id="variables">&lt;variables&gt;</h3>
 	<p>
-	The optional &lt;variables&gt;-element contains several variable definitions, which can be used for the preprocessing. This mechanism can be used for example to define configuration values:
+	The optional &lt;variables&gt; element contains several variable definitions, which can be used for the preprocessing. This mechanism can be used for example to define configuration values:
 <pre>
 &lt;variables includeAntProperties=&quot;true&quot;&gt;
 	&lt;variable name=&quot;update-url&quot; value=&quot;http://www.enough.de/update&quot; /&gt;
@@ -947,7 +1039,7 @@ Maybe someone with more experience with JODE can provide help here - please get 
 	</tr>
 	</table>
 	<p>
-	The &lt;variables&gt;-element contains an arbitrary number of &lt;variable&gt;-elements, which define the actual variables. Each variable needs the attributes name and value:
+	The &lt;variables&gt; element contains an arbitrary number of &lt;variable&gt; elements, which define the actual variables. Each variable needs the attributes name and value:
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>variable-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>name</td>
@@ -988,7 +1080,7 @@ Maybe someone with more experience with JODE can provide help here - please get 
 
 	<h3 id="debug">&lt;debug&gt;</h3>
 	<p>
-	The optional &lt;debug&gt;-element controls the inclusion of debugging messages for specific classes or packages. The debugging messages will be activated or deactivated in the source code, so the performance will not be decreased, when the debugging is deactivated. 
+	The optional &lt;debug&gt; element controls the inclusion of debugging messages for specific classes or packages. The debugging messages will be activated or deactivated in the source code, so the performance will not be decreased, when the debugging is deactivated. 
 <pre>
 &lt;debug showLogOnError=&quot;true&quot; verbose=&quot;false&quot; level=&quot;error&quot; if=&quot;test&quot; &gt;
 	&lt;filter pattern=&quot;com.company.package.*&quot; level=&quot;info&quot; /&gt;
@@ -1040,7 +1132,7 @@ Debug.debug( String message, Throwable exception ) method is called.
 	<tr><td>if</td>
  	 <td>No</td>
 	 <td>The name of the Ant-property which needs to be &quot;true&quot; or &quot;yes&quot; to use this &lt;debug&gt;.
-	 When the &lt;debug&gt;-element is activated, the preprocessing symbol &quot;polish.debugEnabled&quot; will be defined.
+	 When the &lt;debug&gt; element is activated, the preprocessing symbol &quot;polish.debugEnabled&quot; will be defined.
 	 </td>
 	</tr>
 	<tr><td>unless</td>
@@ -1258,7 +1350,7 @@ This can be used for allowing new preprocessing directives for example.
 	
 <h3 id="sign">&lt;sign&gt;</h3>
 <p>
-The &lt;sign&gt;-element signs your application for all MIDP 2.0 devices. 
+The &lt;sign&gt; element signs your application for all MIDP 2.0 devices. 
 Please note that you need a valid certificate for example from Verisign or Thawte. Some devices do not contain
 &quot;open&quot; certificates. In that case you either need to manually install a root certificate (only possible on some devices), use the 
 java verified program or cooperate with a device vendor or an operator.
@@ -1305,12 +1397,12 @@ ant -Dpassword=secret
 
 <h3 id="java">&lt;java&gt;</h3>
 <p>
-The &lt;java&gt;-element can be used to extend J2ME Polish with any Java utility. It accepts all attributes and nested elements like the Ant-&lt;java&gt;-element 
+The &lt;java&gt; element can be used to extend J2ME Polish with any Java utility. It accepts all attributes and nested elements like the Ant-&lt;java&gt; element 
 (compare <a href="http://ant.apache.org/manual/CoreTasks/java.html" target="_blank">http://ant.apache.org/manual/CoreTasks/java.html</a>)
-as well as the additional attribute &quot;if&quot;, &quot;unless&quot; and &quot;message&quot;. J2ME Polish variables can be used in the nested &lt;arg&gt;-elements, so that the call can be adjusted for the current device.
+as well as the additional attribute &quot;if&quot;, &quot;unless&quot; and &quot;message&quot;. J2ME Polish variables can be used in the nested &lt;arg&gt; elements, so that the call can be adjusted for the current device.
 </p><p>
-Each defined &lt;java&gt;-element is called after the successful creation of an application-bundle.
- A possible use of the &lt;java&gt;-element is the signing of MIDlets, which is 
+Each defined &lt;java&gt; element is called after the successful creation of an application-bundle.
+ A possible use of the &lt;java&gt; element is the signing of MIDlets, which is 
  described in the <a href="how-tos.html#howto-signing">signing-how-to</a>.
 </p><p>
 The following example calls the JadUtil.jar of the Wireless Toolkit for signing a JAD file:
@@ -1331,7 +1423,7 @@ The following example calls the JadUtil.jar of the Wireless Toolkit for signing 
 	&lt;arg line=&quot;-jarfile dist/${polish.jarName}&quot;/&gt;
 &lt;/java&gt;	
 </pre></p><p>
-Following variables can be used in the &lt;arg&gt;-element and the &quot;message&quot;-attribute:
+Following variables can be used in the &lt;arg&gt; element and the &quot;message&quot;-attribute:
 </p>
 <ul>
 	<li><i>polish.vendor</i>: The vendor of the current device, e.g. &quot;Siemens&quot; or &quot;Nokia&quot;.</li>
@@ -1342,7 +1434,7 @@ Following variables can be used in the &lt;arg&gt;-element and the &quot;message
 	<li><i>polish.jadName</i>: The name of the jad-file as defined in the <a href="build-info.html">info-section</a>.</li>
 </ul>
 <p>
-The most important attributes of the &lt;java&gt;-element are:
+The most important attributes of the &lt;java&gt; element are:
 </p>
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>java-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -1364,20 +1456,20 @@ The most important attributes of the &lt;java&gt;-element are:
 	<tr>
 	 <td>message</td>
  	 <td>No</td>
-	 <td>A message which will be printed out on the standard output when this &lt;java&gt;-element is executed. The message can contain J2ME Polish variables, such as ${ polish.identifier }.</td>
+	 <td>A message which will be printed out on the standard output when this &lt;java&gt; element is executed. The message can contain J2ME Polish variables, such as ${ polish.identifier }.</td>
 	</tr>
 	<tr>
 	 <td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true when this &lt;java&gt;-element should be executed.</td>
+	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true when this &lt;java&gt; element should be executed.</td>
 	</tr>
 	<tr>
 	 <td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false when this &lt;java&gt;-element should be executed.</td>
+	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false when this &lt;java&gt; element should be executed.</td>
 	</tr>
 </table>
-<p>The most important nested element is the &lt;arg&gt;-element:</p>
+<p>The most important nested element is the &lt;arg&gt; element:</p>
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>arg-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
@@ -1388,12 +1480,12 @@ The most important attributes of the &lt;java&gt;-element are:
 </table>
 <p>Please refer to the Ant-documentation at
  <a href="http://ant.apache.org/manual/CoreTasks/java.html" target="_blank">http://ant.apache.org/manual/CoreTasks/java.html</a>
- for more information about the &lt;java&gt;-element.
+ for more information about the &lt;java&gt; element.
 </p>
 
 <h3 id="packager">&lt;packager&gt;</h3>
 <p>
-Usually the efficient internal J2ME Polish packager is used for creating the final application bundles. For using a different packaging-program, the &lt;packager&gt;-element can be used:
+Usually the efficient internal J2ME Polish packager is used for creating the final application bundles. For using a different packaging-program, the &lt;packager&gt; element can be used:
 </p>
 <p>
 <pre>
@@ -1414,7 +1506,7 @@ A possible alternative might be the Open Source tool &quot;7-Zip&quot;, which ca
 <a href="http://www.7-zip.org" target="_blank">http://www.7-zip.org</a>.
 </p>
 <p>
-The &lt;packager&gt;-element supports following attributes:
+The &lt;packager&gt; element supports following attributes:
 </p>
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>packager-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -1448,7 +1540,7 @@ The &lt;packager&gt;-element supports following attributes:
  	 <td>No</td>
 	 <td>The name of the class which extends the 
 	 <a href="<%= javadocdir %>../javadoc/build/de/enough/polish/jar/Packager.html" target="_blank">de.enough.polish.jar.Packager</a>-class. This mechanism can be used for extending the packaging capabilities of J2ME Polish.
-In that case further parameters can be set using nested &lt;parameter&gt;-elements.</td>
+In that case further parameters can be set using nested &lt;parameter&gt; elements.</td>
 	</tr>
 </table>
 	
