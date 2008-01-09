@@ -75,8 +75,8 @@ public class ExclusiveSingleLineView extends ContainerView {
 	//#endif
 	private boolean allowRoundTrip;
 	//#ifdef polish.css.exclusiveview-expand-background
-		private Background background;
-		private boolean expandBackground;
+		private Background expandBackground;
+		private boolean isExpandBackground = true;
 	//#endif	
 	private int arrowWidth = 10;
 	private int currentItemIndex;
@@ -86,7 +86,6 @@ public class ExclusiveSingleLineView extends ContainerView {
 	private int rightArrowStartX;
 	private int rightArrowEndX;
 	private int xStart;
-	private transient Background parentBackground;
 	//private boolean isInitialized;
 
 	/**
@@ -105,14 +104,6 @@ public class ExclusiveSingleLineView extends ContainerView {
 		//#debug
 		System.out.println("Initalizing ExclusiveSingleLineView");
 		Container parent = (Container) parentItm;
-		if (this.isFocused && this.parentBackground == null) {
-			Background bg = parent.background;
-			if (bg != null) {
-				this.parentBackground = bg; 
-				parent.background = null;
-			}
-			//System.out.println("EXCLUSIVE:   INIT CONTENT WITH NO PARENT BG, now parentBackround != null: " + (this.parentBackground != null));
-		}
 		int selectedItemIndex = ((ChoiceGroup) parent).getSelectedIndex();
 		if (selectedItemIndex == -1) {
 			selectedItemIndex = 0;
@@ -229,10 +220,10 @@ public class ExclusiveSingleLineView extends ContainerView {
 		//#ifdef polish.css.exclusiveview-expand-background
 			Boolean expandBackgroundBool = style.getBooleanProperty("exclusiveview-expand-background");
 			if (expandBackgroundBool != null) {
-				this.expandBackground = expandBackgroundBool.booleanValue(); 
+				this.isExpandBackground = expandBackgroundBool.booleanValue(); 
 			}
-			if (this.expandBackground) {
-				this.background = style.background;				
+			if (this.isExpandBackground) {
+				this.expandBackground = style.background;				
 			}
 		//#endif
 		super.setStyle(style);
@@ -298,40 +289,36 @@ public class ExclusiveSingleLineView extends ContainerView {
 		System.out.println("ExclusiveView.start: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
 		this.xStart = x;
 		int modifiedX = x;
-		//#ifdef polish.css.exclusiveview-expand-background
-			if (this.expandBackground && this.background != null) {
-				if (this.currentItem != null && this.currentItem.background == this.background) {
-					this.currentItem.background = null;
-				}
-				//this.background.paint(x, y, this.contentWidth, this.contentHeight, g);
-				this.background.paint(leftBorder, y, rightBorder-leftBorder, this.contentHeight, g);
-			}
-		//#endif
+//		//#ifdef polish.css.exclusiveview-expand-background
+//			if (!this.isExpandBackground && this.expandBackground != null) {
+//				if (this.currentItem != null && this.currentItem.background == this.expandBackground) {
+//					this.currentItem.background = null;
+//				}
+//				//this.background.paint(x, y, this.contentWidth, this.contentHeight, g);
+//				this.expandBackground.paint(leftBorder, y, rightBorder-leftBorder, this.contentHeight, g);
+//			}
+//		//#endif
 
 		//#ifdef polish.css.exclusiveview-arrow-position
 			if (this.arrowPosition == POSITION_BOTH_SIDES ) {
 		//#endif
 				modifiedX += this.arrowWidth + this.paddingHorizontal;
 				leftBorder += this.arrowWidth + this.paddingHorizontal;
+				rightBorder -= this.arrowWidth + this.paddingHorizontal;
 		//#ifdef polish.css.exclusiveview-arrow-position
 			} else if (this.arrowPosition == POSITION_LEFT ) {
 				modifiedX += (this.arrowWidth + this.paddingHorizontal) << 1;
 				leftBorder += (this.arrowWidth + this.paddingHorizontal) << 1;
-			}
-		//#endif	
-				
-
-		//#ifdef polish.css.exclusiveview-arrow-position
-			if (this.arrowPosition == POSITION_BOTH_SIDES ) {
-		//#endif
-				rightBorder -= this.arrowWidth + this.paddingHorizontal;
-		//#ifdef polish.css.exclusiveview-arrow-position
-			} else if (this.arrowPosition == POSITION_RIGHT ) {
 				rightBorder -= (this.arrowWidth + this.paddingHorizontal) << 1;
 			}
-		//#endif
+		//#endif	
 
-		
+		//#ifdef polish.css.horizontalview-expand-background
+			if (!this.isExpandBackground && this.expandBackground != null) {
+				this.expandBackground.paint(modifiedX, y, rightBorder-leftBorder, this.contentHeight, g);
+			}
+		//#endif
+			
 		//#debug
 		System.out.println("ExclusiveView.item: x=" + modifiedX + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", availableWidth=" + (rightBorder - leftBorder) + ", itemWidth=" + this.currentItem.itemWidth  );
 		if (this.currentItem != null) {
@@ -509,35 +496,34 @@ public class ExclusiveSingleLineView extends ContainerView {
 	}
 	//#endif
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#defocus(de.enough.polish.ui.Style)
-	 */
-	protected void defocus(Style originalStyle) {
-		//System.out.println("DEFOCUSING ExclusiveSingleLineView " + this.parentContainer.getLabel());
-		if (this.parentBackground != null ) {
-			this.parentContainer.background = this.parentBackground;
-			this.parentBackground = null;
-		}
-		//#ifdef polish.css.exclusiveview-expand-background
-			if (this.expandBackground) {
-				this.background = null;
+	//#ifdef polish.css.exclusiveview-expand-background
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.ContainerView#defocus(de.enough.polish.ui.Style)
+		 */
+		protected void defocus(Style originalStyle) {
+			if (this.expandBackground != null ) {
+				this.parentContainer.background = this.expandBackground;
+				this.expandBackground = null;
 			}
-		//#endif		
-		super.defocus(originalStyle);
-	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#focus(de.enough.polish.ui.Style, int)
-	 */
-	public void focus(Style focusstyle, int direction) {
-		//System.out.println("FOCUSING ExclusiveSingleLineView " + this.parentContainer.getLabel());
-		Background bg = this.parentContainer.background;
-		if (bg != null) {
-			this.parentBackground = bg; 
-			this.parentContainer.background = null;
+			super.defocus(originalStyle);
 		}
-		super.focus(focusstyle, direction);
-	}
+	//#endif		
+
+	//#ifdef polish.css.exclusiveview-expand-background
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.ContainerView#focus(de.enough.polish.ui.Style, int)
+		 */
+		public void focus(Style focusstyle, int direction) {
+			if (!this.isExpandBackground) {
+				Background bg = this.parentContainer.background;
+				if (bg != null) {
+					this.expandBackground = bg; 
+					this.parentContainer.background = null;
+				}
+			}
+			super.focus(focusstyle, direction);
+		}
+	//#endif
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#isValid(de.enough.polish.ui.Item, de.enough.polish.ui.Style)

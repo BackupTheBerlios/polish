@@ -1948,8 +1948,8 @@
 		name="horizontalview-expand-background"
 		type="boolean"
 		appliesTo="HorizontalChoiceView"
-		description="Defines whether the background should be painted under the arrows as well."
-		default="false"
+		description="Defines whether the background should be painted under the arrows as well. When you set it to false, the include-label attribute will be ignored."
+		default="true"
 		id="137"
 	/>
 	
@@ -3344,6 +3344,22 @@
 		appliesTo="ScrollBar"
 		description="Defines if the scrollbar should automatically fade out - additionally you have to define the opacity attribute."
 		id="303"
+	/>
+	
+	<attribute
+		name="complete-border"
+		type="border"
+		appliesTo="Item"
+		description="A border reference from the borders section. The border includes the label of the item and is independent of the item's normal border."
+		id="304"
+	/>
+
+	<attribute
+		name="complete-background-padding"
+		type="integer"
+		appliesTo="Item"
+		description="The padding that is added to the complete-background and/or complete-border. Note that this does not change the size of the item, so you might need to adapt margins or normal paddings for your design."
+		id="305"
 	/>
 	
 	

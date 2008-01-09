@@ -161,7 +161,7 @@ public class SquareSonarBorder extends Border
 			maxDist = this.distances[ this.steps - 1];
 			this.isAnimationStopped = true;
 		}
-		parent.addRelativeToBackgroundRegion(repaintRegion, -maxDist, -maxDist, parent.getBackgroundWidth() + (maxDist << 1), parent.getBackgroundHeight() + (maxDist << 1));
+		parent.addRelativeToBackgroundRegion(null, this, repaintRegion, -maxDist, -maxDist, parent.getBackgroundWidth() + (maxDist << 1), parent.getBackgroundHeight() + (maxDist << 1));
 	}
 
 

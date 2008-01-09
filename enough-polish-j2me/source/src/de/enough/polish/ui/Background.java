@@ -68,7 +68,12 @@ public abstract class Background //implements Serializable
 	{
 		if (animate()) {
 			if (parent != null) {
-				parent.addRelativeToBackgroundRegion( repaintRegion, 0, 0, parent.backgroundWidth, parent.backgroundHeight );
+				parent.addRelativeToBackgroundRegion(
+						//#if polish.css.complete-background
+							this, null, // provide references to this background so that the correct background dimensions are selected 
+						//#endif
+						repaintRegion, 0, 0, parent.backgroundWidth, parent.backgroundHeight 
+				);
 			} else {
 				repaintRegion.addRegion(0, 0, screen.getWidth(), screen.getScreenHeight() );
 			}

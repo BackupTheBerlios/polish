@@ -134,7 +134,7 @@ public class PulsatingCircleBackground extends Background {
 			int h = parent.getBackgroundHeight();
 			int x = (w - current) >> 1;
 			int y = (h - current) >> 1;
-			parent.addRelativeToBackgroundRegion(repaintRegion, x, y, current, current );
+			parent.addRelativeToBackgroundRegion( this, null, repaintRegion, x, y, current, current );
 		} else {
 			repaintRegion.addRegion(0, 0, screen.getWidth(), screen.getScreenHeight() );
 		}

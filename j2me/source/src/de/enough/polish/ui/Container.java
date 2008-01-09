@@ -93,16 +93,17 @@ public class Container extends Item {
 	//#ifdef polish.css.scroll-mode
 		protected boolean scrollSmooth = true;
 	//#endif
-	//#if polish.css.focus-container
-		private boolean isFocusContainer;
-		private Style oldContainerStyle;
-	//#endif
+//	//#if polish.css.focus-container
+//		private boolean isFocusContainer;
+//		private Style oldContainerStyle;
+//	//#endif
 	private boolean isScrollRequired;
 	/** The height available for scrolling, ignore when set to -1 */
 	protected int availableHeight = -1;
 	private Item[] containerItems;
 	private boolean showCommandsHasBeenCalled;
 	private Item scrollItem;
+	protected Style plainStyle;
 
 	
 	/**
@@ -1804,12 +1805,12 @@ public class Container extends Item {
 				this.scrollSmooth = (scrollModeInt.intValue() == SCROLL_SMOOTH);
 			}
 		//#endif
-		//#if polish.css.focus-container
-			Boolean focusContainerBool = style.getBooleanProperty("focus-container");
-			if (focusContainerBool != null) {
-				this.isFocusContainer = focusContainerBool.booleanValue();
-			}
-		//#endif
+//		//#if polish.css.focus-container
+//			Boolean focusContainerBool = style.getBooleanProperty("focus-container");
+//			if (focusContainerBool != null) {
+//				this.isFocusContainer = focusContainerBool.booleanValue();
+//			}
+//		//#endif
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
 				this.containerView.setStyle(style);
@@ -1851,21 +1852,21 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
 	 */
 	protected Style focus(Style focusstyle, int direction ) {
-		//#if polish.css.include-label
-			if ( this.includeLabel || this.itemsList.size() == 0) {
-		//#else
-			//# if ( this.itemsList.size() == 0) {
-		//#endif
+		this.plainStyle = null;
+		if ( this.itemsList.size() == 0) {
 			return super.focus( this.focusedStyle, direction );
 		} else {
-			if (this.focusedStyle != null) {
-				focusstyle = this.focusedStyle;
+			focusstyle = getFocusedStyle();
+			Style result = this.style;
+			if ((focusstyle != StyleSheet.focusedStyle && focusstyle != null)  
+				//#if polish.css.include-label
+				|| this.includeLabel 
+				//#endif
+			) {
+				result = super.focus( focusstyle, direction );
+				this.plainStyle = result;
 			}
-			//#if polish.css.focus-container
-				if (this.isFocusContainer) {
-					this.oldContainerStyle = super.focus(focusstyle, direction);
-				}
-			//#endif
+			
 			//#if tmp.supportViewType
 				if (this.containerView != null) {
 					this.containerView.focus(focusstyle, direction);
@@ -1952,7 +1953,7 @@ public class Container extends Item {
 					}
 				}
 			//#endif
-			return this.style;
+			return result;
 		}
 	}
 	
@@ -1960,19 +1961,14 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
 	 */
 	public void defocus(Style originalStyle) {
-		//#if polish.css.include-label
-			if ( this.includeLabel || this.itemsList.size() == 0 || this.focusedIndex == -1) {
-		//#else
-			//# if ( this.itemsList.size() == 0 || this.focusedIndex == -1) {
-		//#endif
+		if ( this.itemsList.size() == 0 || this.focusedIndex == -1 
+		) {
 			super.defocus( originalStyle );
 		} else {
-			//#if polish.css.focus-container
-				if (this.isFocusContainer && this.oldContainerStyle != null) {
-					super.defocus( this.oldContainerStyle );
-					this.oldContainerStyle = null;
-				}
-			//#endif
+			if (this.plainStyle != null) {
+				super.defocus( this.plainStyle );
+				this.plainStyle = null;
+			}
 			this.isFocused = false;
 			Item item = this.focusedItem; //(Item) this.itemsList.get( this.focusedIndex );
 			item.defocus( this.itemStyle );

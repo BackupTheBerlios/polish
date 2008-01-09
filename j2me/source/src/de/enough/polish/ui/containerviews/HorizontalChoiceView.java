@@ -83,8 +83,8 @@ public class HorizontalChoiceView extends ContainerView {
 		private boolean allowRoundTrip;
 	//#endif
 	//#ifdef polish.css.horizontalview-expand-background
-		private Background background;
-		private boolean expandBackground;
+		private Background expandBackground;
+		private boolean isExpandBackground = true;
 	//#endif
 	private int arrowWidth = 10;
 	private int currentItemIndex;
@@ -112,16 +112,8 @@ public class HorizontalChoiceView extends ContainerView {
 			int lineWidth) 
 	{
 		//#debug
-		System.out.println("Initalizing ExclusiveSingleLineView");
+		System.out.println("Initalizing HorizontalChoiceView");
 		Container parent = (Container) parentItm;
-		if (this.isFocused && this.parentBackground == null) {
-			Background bg = parent.background;
-			if (bg != null) {
-				this.parentBackground = bg; 
-				parent.background = null;
-			}
-			//System.out.println("EXCLUSIVE:   INIT CONTENT WITH NO PARENT BG, now parentBackround != null: " + (this.parentBackground != null));
-		}
 		//TODO allow no selection for MULTIPLE
 		int selectedItemIndex = ((ChoiceGroup) parent).getSelectedIndex();
 		if (selectedItemIndex == -1) {
@@ -269,10 +261,12 @@ public class HorizontalChoiceView extends ContainerView {
 		//#ifdef polish.css.horizontalview-expand-background
 			Boolean expandBackgroundBool = style.getBooleanProperty("horizontalview-expand-background");
 			if (expandBackgroundBool != null) {
-				this.expandBackground = expandBackgroundBool.booleanValue(); 
+				this.isExpandBackground = expandBackgroundBool.booleanValue(); 
 			}
-			if (this.expandBackground) {
-				this.background = style.background;				
+			if (!this.isExpandBackground) {
+				this.expandBackground = style.background;				
+			} else {
+				this.expandBackground = null;
 			}
 		//#endif
 		super.setStyle(style);
@@ -359,35 +353,27 @@ public class HorizontalChoiceView extends ContainerView {
 		System.out.println("HorizontalView.start: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
 		this.xStart = x;
 		int modifiedX = x;
-		//#ifdef polish.css.horizontalview-expand-background
-			if (this.expandBackground && this.background != null && this.focusedItem != null) {
-				this.focusedItem.background = null;
-				this.background.paint(x, y, this.contentWidth, this.contentHeight, g);
-			}
-		//#endif
 
 		//#ifdef polish.css.horizontalview-arrow-position
 			if (this.arrowPosition == POSITION_BOTH_SIDES ) {
 		//#endif
 				modifiedX += this.arrowWidth + this.paddingHorizontal;
 				leftBorder += this.arrowWidth + this.paddingHorizontal;
+				rightBorder -= this.arrowWidth + this.paddingHorizontal;
 		//#ifdef polish.css.horizontalview-arrow-position
 			} else if (this.arrowPosition == POSITION_LEFT ) {
 				modifiedX += (this.arrowWidth + this.paddingHorizontal) << 1;
 				leftBorder += (this.arrowWidth + this.paddingHorizontal) << 1;
+				rightBorder -= (this.arrowWidth + this.paddingHorizontal) << 1;
 			}
 		//#endif	
 				
-
-		//#ifdef polish.css.horizontalview-arrow-position
-			if (this.arrowPosition == POSITION_BOTH_SIDES ) {
-		//#endif
-				rightBorder -= this.arrowWidth + this.paddingHorizontal;
-		//#ifdef polish.css.horizontalview-arrow-position
-			} else if (this.arrowPosition == POSITION_RIGHT ) {
-				rightBorder -= (this.arrowWidth + this.paddingHorizontal) << 1;
+		//#ifdef polish.css.horizontalview-expand-background
+			if (!this.isExpandBackground && this.expandBackground != null) {
+				this.expandBackground.paint(modifiedX, y, rightBorder-leftBorder, this.contentHeight, g);
 			}
 		//#endif
+
 
 		
 		//#debug
@@ -605,10 +591,16 @@ public class HorizontalChoiceView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#defocus(de.enough.polish.ui.Style)
 	 */
 	protected void defocus(Style originalStyle) {
-		if (this.parentBackground != null ) {
-			this.parentContainer.background = this.parentBackground;
-			this.parentBackground = null;
-		}
+		//#ifdef polish.css.horizontalview-expand-background
+			if (this.expandBackground != null) {
+				this.parentContainer.background = this.expandBackground;
+				this.expandBackground = null;
+			}
+		//#endif
+//		if (this.parentBackground != null ) {
+//			this.parentContainer.background = this.parentBackground;
+//			this.parentBackground = null;
+//		}
 		super.defocus(originalStyle);
 		//System.out.println("EXCLUSIVE:   DEFOCUS!");
 	}
@@ -617,11 +609,15 @@ public class HorizontalChoiceView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#focus(de.enough.polish.ui.Style, int)
 	 */
 	public void focus(Style focusstyle, int direction) {
-		Background bg = this.parentContainer.background;
-		if (bg != null) {
-			this.parentBackground = bg; 
-			this.parentContainer.background = null;
-		}
+		//#ifdef polish.css.horizontalview-expand-background
+			if (!this.isExpandBackground) {
+				Background bg = this.parentContainer.background;
+				if (bg != null) {
+					this.expandBackground = bg; 
+					this.parentContainer.background = null;
+				}
+			}
+		//#endif
 		//System.out.println("EXCLUSIVE:   FOCUS, parentBackround != null: " + (this.parentBackground != null));
 		super.focus(focusstyle, direction);
 	}

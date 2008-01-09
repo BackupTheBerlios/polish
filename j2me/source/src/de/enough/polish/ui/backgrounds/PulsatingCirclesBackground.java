@@ -158,7 +158,7 @@ public class PulsatingCirclesBackground extends Background {
 			diameter = this.preciseMaxDiameter >>> 8;
 			int x = (w - diameter) >> 1;
 			int y = (h - diameter) >> 1;
-			parent.addRelativeToBackgroundRegion(repaintRegion, x, y, diameter, diameter); 
+			parent.addRelativeToBackgroundRegion(this, null, repaintRegion, x, y, diameter, diameter); 
 		} else {
 			repaintRegion.addRegion(0, 0, screen.getWidth(), screen.getScreenHeight() );
 		}

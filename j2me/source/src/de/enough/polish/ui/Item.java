@@ -750,6 +750,15 @@ public abstract class Item extends Object
 	//#if polish.css.include-label
 		protected boolean includeLabel;
 	//#endif
+	//#if polish.css.complete-background
+		protected Background completeBackground;
+	//#endif
+	//#if polish.css.complete-border
+		protected Border completeBorder;
+	//#endif
+	//#if polish.css.complete-background || polish.css.complete-border
+		protected int completeBackgroundPadding;
+	//#endif
 	/** The vertical offset for the background, can be used for smoother scrolling, for example */ 
 	protected int backgroundYOffset;
 
@@ -1109,6 +1118,39 @@ public abstract class Item extends Object
 				this.includeLabel = includeLabelBool.booleanValue();
 			}
 		//#endif
+		//#if polish.css.complete-background
+			Background bg = (Background) style.getObjectProperty("complete-background");
+			if (this.isShown && this.completeBackground != bg) {
+				if (this.completeBackground != null) {
+					this.completeBackground.hideNotify();
+				}
+				if (bg != null) {
+					bg.showNotify();
+				}
+			}
+			this.completeBackground = bg;
+		//#endif
+		//#if polish.css.complete-border
+			Border brd = (Border) style.getObjectProperty("complete-border");
+			if (this.isShown && this.completeBorder != brd) {
+				if (this.completeBorder != null) {
+					this.completeBorder.hideNotify();
+				}
+				if (brd != null) {
+					brd.showNotify();
+				}
+			}
+			this.completeBorder = brd;
+		//#endif
+		//#if polish.css.complete-background || polish.css.complete-border 
+			//#if polish.css.complete-background-padding
+				Integer completeBackgroundPaddingInt = style.getIntProperty("complete-background-padding");
+				if (completeBackgroundPaddingInt != null) {
+					this.completeBackgroundPadding = completeBackgroundPaddingInt.intValue();
+				}
+			//#endif
+		//#endif
+
 		//#ifdef polish.css.view-type
 			ItemView viewType = (ItemView) style.getObjectProperty("view-type");
 //			if (this instanceof ChoiceGroup) {
@@ -1753,6 +1795,23 @@ public abstract class Item extends Object
 				paintBackgroundAndBorder( bX, bY, width, height, g );
 			}
 		//#endif
+		//#if polish.css.complete-background || polish.css.complete-border
+			int width = this.itemWidth - this.marginLeft - this.marginRight + (this.completeBackgroundPadding << 1);
+			int height = this.itemHeight - this.marginTop - this.marginBottom + (this.completeBackgroundPadding << 1);
+			int bX = x + this.marginLeft - this.completeBackgroundPadding;
+			int bY = y + this.marginTop + this.backgroundYOffset - this.completeBackgroundPadding;
+			//#if polish.css.complete-background
+				if (this.completeBackground != null) {
+					this.completeBackground.paint(bX, bY, width, height, g);
+				}
+			//#endif
+			//#if polish.css.complete-border
+				if (this.completeBorder!= null) {
+					this.completeBorder.paint(bX, bY, width, height, g);
+				}
+			//#endif
+		//#endif
+
 		
 		// paint label:
 		if (this.label != null) {
@@ -2508,13 +2567,53 @@ public abstract class Item extends Object
 	 * @see #getBackgroundWidth()
 	 * @see #getBackgroundHeight()
 	 */
-	public void addRelativeToBackgroundRegion(ClippingRegion repaintRegion, int x, int y, int width, int height) {
+	public void addRelativeToBackgroundRegion( ClippingRegion repaintRegion, int x, int y, int width, int height) {
 		repaintRegion.addRegion( 
 				getAbsoluteX() + getBackgroundX() + x - 1, 
 				getAbsoluteY() + getBackgroundY() + y - 1,
 				width + 2,
 				height + 2
 				);
+	}
+	
+	/**
+	 * Adds a region relative to this item's background x/y start position.
+	 * 
+	 * @param animatedBackground the background that requests the repaint (could be a complete-background), can be null
+	 * @param animatedBorder the border that requests the repaint (could be a complete-border), can be null
+	 * @param repaintRegion the clipping region
+	 * @param x horizontal start relative to this item's background position
+	 * @param y vertical start relative to this item's background position
+	 * @param width width
+	 * @param height height
+	 * @see #getBackgroundWidth()
+	 * @see #getBackgroundHeight()
+	 */
+	public void addRelativeToBackgroundRegion( Background animatedBackground, Border animatedBorder,  ClippingRegion repaintRegion, int x, int y, int width, int height) {
+		boolean addAbsolute = false;
+		//#if polish.css.complete-background
+			addAbsolute = (this.completeBackground != null && animatedBackground == this.completeBackground);
+		//#endif
+		//#if polish.css.complete-border
+			addAbsolute |= (this.completeBorder != null && animatedBorder == this.completeBorder);
+		//#endif
+		if (addAbsolute) {
+			//System.out.println("adding absolute repaint: bgX=" + getBackgroundX() + ", bgY=" + getBackgroundY() + ", itemHeight-bgHeight=" + (this.itemHeight - this.backgroundHeight) + ", itemWidth-bgWidth=" + (this.itemWidth - this.backgroundWidth));
+			int padding = this.completeBackgroundPadding;
+			repaintRegion.addRegion( 
+					getAbsoluteX() + x - 1 - padding, 
+					getAbsoluteY() + y - 1 - padding,
+					width + 2 + (padding << 1),
+					height + 2 + (this.itemHeight - this.backgroundHeight) + (padding << 1)
+					);
+		} else {
+			repaintRegion.addRegion( 
+					getAbsoluteX() + getBackgroundX() + x - 1, 
+					getAbsoluteY() + getBackgroundY() + y - 1,
+					width + 2,
+					height + 2
+					);
+		}
 	}
 
 	
@@ -2537,6 +2636,16 @@ public abstract class Item extends Object
 		if (this.border != null) {
 			this.border.animate( this.screen, this, currentTime, repaintRegion );
 		}
+		//#if polish.css.complete-background
+			if (this.completeBackground != null) {
+				this.completeBackground.animate( this.screen, this, currentTime, repaintRegion );
+			}
+		//#endif
+		//#if polish.css.complete-border
+			if (this.completeBorder != null) {
+				this.completeBorder.animate( this.screen, this, currentTime, repaintRegion );
+			}
+		//#endif
 		if (animate()) {
 			repaintRegion.addRegion( getAbsoluteX(), getAbsoluteY(), this.itemWidth, this.itemHeight );
 		}
@@ -2711,6 +2820,16 @@ public abstract class Item extends Object
 				this.view.showNotify();
 			}
 		//#endif
+		//#if polish.css.complete-background
+			if (this.completeBackground != null) {
+				this.completeBackground.showNotify();
+			}
+		//#endif
+		//#if polish.css.complete-border
+			if (this.completeBorder != null) {
+				this.completeBorder.showNotify();
+			}
+		//#endif
 	}
 
 	/**
@@ -2733,6 +2852,16 @@ public abstract class Item extends Object
 		//#ifdef polish.css.view-type
 			if (this.view != null) {
 				this.view.hideNotify();
+			}
+		//#endif
+		//#if polish.css.complete-background
+			if (this.completeBackground != null) {
+				this.completeBackground.hideNotify();
+			}
+		//#endif
+		//#if polish.css.complete-border
+			if (this.completeBorder != null) {
+				this.completeBorder.hideNotify();
 			}
 		//#endif
 	}

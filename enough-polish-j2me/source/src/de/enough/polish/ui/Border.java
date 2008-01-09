@@ -74,7 +74,12 @@ public abstract class Border //implements Serializable
 	{
 		if (animate()) {
 			if (parent != null) {
-				parent.addRelativeToBackgroundRegion( repaintRegion, 0, 0, parent.backgroundWidth, parent.backgroundHeight );
+				parent.addRelativeToBackgroundRegion( 
+						//#if polish.css.complete-border
+							null, this, // provide references to this border so that the correct background dimensions are selected
+						//#endif
+						repaintRegion, 0, 0, parent.backgroundWidth, parent.backgroundHeight 
+				);
 			} else {
 				repaintRegion.addRegion(0, 0, screen.getWidth(), screen.getScreenHeight() );
 			}
