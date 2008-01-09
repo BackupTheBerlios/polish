@@ -30,7 +30,7 @@
 	        </embed>
 		</object>
 	<br />
-	You can only design standard stuff like background, padding, etc with a SpriteItem: 
+	You can only design basic concepts like background, padding, etc with a SpriteItem: 
 	</p>
 	<%cssattributes de.enough.polish.ui.SpriteItem %>
 	
@@ -56,7 +56,7 @@ try {
 }
 </pre>
 	<p>
-	The SpriteItem constructor accepts following parameters:
+	The SpriteItem constructor accepts the following parameters:
 	</p>
 <pre>
 	SpriteItem(String label, Sprite sprite, long animationInterval, int defaultFrameIndex, boolean repeatAnimation )
@@ -64,9 +64,9 @@ try {
 	<ul>
 		<li><code>String label</code>: the label</li>
 		<li><code>Sprite sprit</code>: the sprite that should be painted</li>
-		<li><code>long animationInterval</code>: animationInterval the interval in milliseconds for animating this item</li>
+		<li><code>long animationInterval</code>: the interval in milliseconds for animating this item</li>
 		<li><code>int defaultFrameIndex</code>: the frame that is shown when the SpriteItem is not focused</li>
-		<li><code>boolean repeatAnimation</code>: defines whether the animation should be repeated when the last frame of the frame-sequence has been reached.</li>
+		<li><code>boolean repeatAnimation</code>: defines whether the animation should be repeated when the last frame of the frame sequence has been reached.</li>
 	</ul>
 	<p>You can set the animation sequence on the Sprite itself. Thanks to J2ME Polish' gaming API you can use Sprite on MIDP 1.0 
 	devices as well.

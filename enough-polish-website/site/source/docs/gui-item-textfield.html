@@ -21,9 +21,9 @@
 	</p>
 	<ul>
 		<li><b>Native Input Mode</b>: When the native mode  is activated, 
-			a new input screen will pop up for the user and special input modes like T9 or handwriting recognition can be used. 
-			This allows your user to use all native input mechanisms that the target device supports but it does interrupt
-			the flow within the application. The Native Input Mode is used by default.
+			a new input screen will pop up for the user and special input modes like native T9 or handwriting recognition can be used. 
+			This allows your user to utilize all native input mechanisms that the target device supports but it does interrupt
+			the visual flow within the application. The Native Input Mode is used by default.
 		</li>
 		<li><b>Direct Input Mode</b>: With the Direct Input Mode J2ME Polish accepts input directly without showing a new popup screen. 
 			Unless the device contains a full keyboard, the user
@@ -35,12 +35,12 @@
 	</ul>
 	<h2 id="Design">Design</h2>
 	<p>
-	Since J2ME Polish' TextFields internally extend <a href="gui-item-stringitem.html">StringItems</a> you can use any
+	Since J2ME Polish's TextFields internally extend <a href="gui-item-stringitem.html">StringItems</a> you can use any
 	StringItem design settings as well, for example text-effects. 
 	<br /><img src="<%= basedir%>images/gui-item-textfield2.png"  width="228" height="163" alt="A textfield in action" />
 	</p>
 	<p>
-	The above TextField has been designed with following styles:
+	The above TextField has been designed with the following styles:
 	</p>
 <pre>
 .itemTextInput {
@@ -54,7 +54,7 @@ info {
 	font-color: gray;
 }
 </pre>	
-	<p>Additionally following settings have been made:
+	<p>Additionally, the following variables can be set:
 	</p>
 <pre>
 &lt;variable name=&quot;polish.TextField.useDirectInput&quot; value=&quot;true&quot;/&gt;
@@ -62,7 +62,7 @@ info {
 &lt;variable name=&quot;polish.TextField.includeInputInfo&quot; value=&quot;true&quot;/&gt;
 &lt;variable file=&quot;configuration/smileys.properties&quot; /&gt;
 </pre>	
-	<p>In the corresponding <i>configuration/smileys.properties</i> following settings are made:
+	<p>In the corresponding <i>configuration/smileys.properties</i> the following settings are made:
 	</p>
 <pre>
 smileys={new Smiley(new String[]{":-)",":)"},"/smiley_1.png","smile"),new Smiley(new String[]{":-P",":P"},"/smiley_2.png","cheekie"),new Smiley(new String[]{":-(",":("},"/smiley_3.png","ouch")}
@@ -100,7 +100,7 @@ smileys={new Smiley(new String[]{":-)",":)"},"/smiley_1.png","smile"),new Smiley
 <pre>
 &lt;variable name=&quot;polish.TextField.suppressCommands&quot; value=&quot;true&quot;/&gt;
 </pre>
-	<p>You can also supress the &quot;Delete&quot; command only:
+	<p>You can also solely supress the &quot;Delete&quot; command:
 	</p>
 <pre>
 &lt;variable name=&quot;polish.TextField.suppressDeleteCommand&quot; value=&quot;true&quot;/&gt;
@@ -351,8 +351,8 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 	</p>
 	
 	<ul>
-		<li><code>UiAccess.setCaretPosition( TextField field, int position )</code>: sets the position of the input caret</li>
-		<li><code>UiAccess.setInputMode( javax.microedition.lcdui.TextField field, int inputMode )</code>: Sets the input mode : either 
+		<li><code>UiAccess.setCaretPosition( TextField field, int position )</code>: Sets the position of the input caret.</li>
+		<li><code>UiAccess.setInputMode( javax.microedition.lcdui.TextField field, int inputMode )</code>: Sets the input mode to either 
 			<code>UiAccess.MODE_NUMBERS</code>, <code>UiAccess.MODE_LOWERCASE</code>, <code>UiAccess.MODE_UPPERCASE</code>, 
 			<code>UiAccess.MODE_FIRST_UPPERCASE</code>,  or <code>UiAccess.MODE_NATIVE</code>.
 		</li>

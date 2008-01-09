@@ -1822,7 +1822,7 @@
 		name="scrollbar-slider-mode"
 		type="integer"
 		appliesTo="Screen, ScrollBar"
-		description="The mode of the slider, either &quot;area&quot;, &quot;item&quot; or &quot;page&quot;. In the &quot;area&quot; mode the slider represents the position of the current selection relativ to the complete width and height. In the &quot;item&quot; mode the index of currently selected item is taken into account relative to the number of items. In the &quot;page&quot; The default mode is &quot;page&quot;."
+		description="The mode of the slider, either &quot;area&quot;, &quot;item&quot; or &quot;page&quot;. In the &quot;area&quot; mode the slider represents the position of the current selection relativ to the complete width and height. In the &quot;item&quot; mode the index of the currently selected item is taken into account relative to the number of items. In the &quot;page&quot; The default mode is &quot;page&quot;."
 		default="page"
 		values="area, item, page"
 		id="123"
@@ -2083,7 +2083,7 @@
 		name="background-bottom"
 		type="integer"
 		appliesTo="Screen"
-		description="The bottom border of the background for this screen. Usually the background reaches to the very bottom of the screen which includes the menubar. By setting background-bottom: menubar; this background only reaches until the menubar." 
+		description="The bottom border of the background for this screen. Usually the background reaches to the very bottom of the screen which includes the menubar. By setting background-bottom: menubar; this background only reaches to the menubar." 
 		id="153"
 		values="bottom,menubar"
 	/>

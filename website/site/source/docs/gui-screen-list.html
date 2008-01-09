@@ -24,7 +24,7 @@
 <h2 id="design">Design</h2>
 
 <p>The List in the screenshot above utilizes the <a href="gui-viewtype-fisheye.html">fisheye</a> <code>view-type</code> 
-and has been realized using following CSS settings (without <a href="gui-screenelement-title.html">title</a> 
+and has been realized using the following CSS settings (without <a href="gui-screenelement-title.html">title</a> 
 and <a href="gui-screenelement-menubar.html">menubar</a> settings):</p>
 <pre>
 .mainScreen {
@@ -53,11 +53,11 @@ and <a href="gui-screenelement-menubar.html">menubar</a> settings):</p>
 }
 </pre>
 <h3 id="design-List">CSS Attributes for Lists</h3>
-<p>You can use following CSS attributes for Lists:</p>
+<p>You can use the following CSS attributes for Lists:</p>
 <%cssattributes de.enough.polish.ui.List %>
 
 <h3 id="design-ListItems">CSS Attributes for List-Items</h3>
-<p>For styles of List items you can use following CSS attributes:</p>
+<p>For styles of List items you can use the following CSS attributes:</p>
 <%cssattributes de.enough.polish.ui.ListItem %>
 
 <h2 id="programming">Programming</h2>
@@ -106,8 +106,8 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 </pre>
 <p>For accessing J2ME Polish specific List functionalities use following static <code>de.enough.polish.ui.UiAccess</code> methods:</p>
 <ul>
-	<li><code>addItemCommand( List list, int index, Command command )</code>: adds a command to the specifed List item</li>
-	<li><code>setCurrentListIndex( Display display, List list, int index )</code>: selects the specified List item and shows the List</li>
+	<li><code>addItemCommand( List list, int index, Command command )</code>: Adds a command to the specifed List item.</li>
+	<li><code>setCurrentListIndex( Display display, List list, int index )</code>: Selects the specified List item and shows the List.</li>
 	<li><code>setListItem( List list, int index, ChoiceItem item )</code>: Sets a <code>de.enough.polish.ui.ChoiceItem</code> or a subclass for the given List.</li>
 	<li><code>ChoiceItem getListItem( List list, int index )</code>: Retrieves the specified <code>de.enough.polish.ui.ChoiceItem</code> from the List.</li>
 	<li><code>appendListItem( List list, ChoiceItem item )</code>:  Appends a <code>ChoiceItem</code> to the List.</li>
@@ -181,7 +181,7 @@ section of your <i>build.xml</i> script.
  -->
 
 </table>
-<p>You can also change or translate the default commands used in a List with following settings
+<p>You can also change or translate the default commands used in a List with the following settings
 in either <i>messages.txt</i> or using variables in your <i>build.xml</i> script.
 For more information about translations please refer to the <a href="localization.html">localization section</a>.
 </p>
