@@ -7,6 +7,7 @@
 	<h1 id="top">ChoiceGroup</h1>
 	<ul class="relatedtechnologies">
 		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-visualguide-viewtypes.html#gui-viewtypes-choicegroup">ChoiceGroup View Types</a></li>
 		<li><a href="gui-screen-list.html">List</a></li>
 		<li><a href="gui-item-filteredchoicegroup.html">FilteredChoiceGroup</a></li>
 		<li><a href="gui-visualguide.html#text-effects">Text Effects</a></li>
@@ -22,22 +23,40 @@
 	</p>
 	<h2 id="ChoiceGroup-Design">Design</h2>
 	<p>
-	<img src="<%= basedir%>images/gui-item-choicegroup.png"  width="327" height="86" alt="A ChoiceGroup with a exclusive-single-line view-type" />	
+	<img src="<%= basedir%>images/gui-viewtype-horizontalchoice.png" width="316" height="79" alt="A ChoiceGroup with a horizontal-choice view-type" />		
 	<br />
 	The above design has been realized with these CSS settings:
 	</p>
 <pre>
-.exclusiveChoice {
-	view-type: exclusive;
-	exclusiveview-arrow-color: highlightedFontColor;
-	exclusiveview-arrow-position: bothsides;
-	exclusiveview-expand-background: false;
-	layout: expand | center;
+.horizontalChoice {
+	label-style: choiceGroupLabel;
+	background-type: round-rect;
+	background-color: focusedBgColor;
+	include-label: true;
+	layout: expand;
+	<b>view-type: horizontal-choice;
+	horizontalview-left-arrow: url( arrow-left.png );
+	horizontalview-right-arrow: url( arrow-right.png );</b>
 }
-.exclusiveChoiceItem {
-	font-color: #99f;
+
+.horizontalChoice:hover {
+	background-color: white;
 }
-.exclusiveChoiceItem:hover {
+
+.choiceItem {
+	font-color: gray;
+	font-style: bold;
+	text-wrap: false;
+}
+
+.choiceItem:hover {
+	font-color: black;
+}
+
+.choiceGroupLabel {
+	font-style: italic;
+	font-size: small;
+	layout: newline-after;
 }
 </pre>
 	<h3 id="attributes-choicegroup">ChoiceGroup CSS Attributes</h3>
@@ -57,17 +76,21 @@
 	Use ChoiceGroups normally in your programming:
 	</p>
 <pre>
-//#style exclusiveChoice
-ChoiceGroup group = new ChoiceGroup(&quot;Enable Sound: &quot;, ChoiceGroup.EXCLUSIVE);
-//#style exclusiveChoiceItem
-group.append("no", null);
-//#style exclusiveChoiceItem
-group.append("yes", null);
-//#style exclusiveChoiceItem
-group.append("effects", null);
+//#style horizontalChoice
+ChoiceGroup group = new ChoiceGroup("Limit search to:", ChoiceGroup.EXCLUSIVE, style );
+//#style choiceItem
+group.append( "All", null );
+//#style choiceItem
+group.append( "Events", null );
+//#style choiceItem
+group.append( "Concerts", null );
+//#style choiceItem
+group.append( "Cinema", null );
+//#style choiceItem
+group.append( "Plays", null );
 form.append( group );
 </pre>
-<p>You can focus a ChoiceGroup item by calling 
+<p>You can focus a ChoiceGroup item without selecting it by calling 
 <code>de.enough.polish.ui.UiAccess.focus( ChoiceGroup choiceGroup, int index )</code>.
 </p>
 

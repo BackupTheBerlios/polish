@@ -5,40 +5,69 @@
 <%include start.txt %>
 
 	<h1 id="top">Assembling of Resources</h1>
+	<ul class="relatedtechnologies">
+	<li class="relatedtechnologiesheader">Related Topics:</li>
+	<li><a href="customization.html">Customization</a></li>
+	<li><a href="localization.html">Localization</a></li>
+	<li><a href="preprocessing.html">Preprocessing</a></li>
+	</ul>
 	<%index %>
+	<p>
+	<img src="<%= basedir%>images/build-resource-assembling-structure.png"  width="321" height="453" alt="Example Resource Structure" />
+	</p>
 	<h2 id="concepts">Concepts</h2>
 	<p>
 	During the build process resources like images, sound files etc. 
 	are assembled autmatically for each device.
 	</p><p>
-Resources for all devices will be placed into 
-the &quot;resources&quot; folder (when no other directory has been specified 
-in the <a href="build-build.html#resources">&lt;resources&gt;-element</a> or with the 
-&quot;resDir&quot;-attribute of the <a href="build-build.html">&lt;build&gt;-element</a> in the &quot;build.xml&quot; file).
+Place all your resources into the <i>${project.home}/resources</i> folder (when no other directory has been specified 
+in the <a href="build-build.html#resources">&lt;resources&gt; element</a> or with the 
+&quot;resDir&quot;-attribute of the <a href="build-build.html">&lt;build&gt; element</a> in your <i>build.xml</i> script).
+	</p>
+	<p>
+	In case you have specific resource that only should be added for some devices, you can put these into
+	correspondingly names subfolders of the <i>resources</i> directory.
+	<br />
+	You can have the resource <i>bg.png</i> in both the <i>resources</i> as well as the <i>resources/ScreenSize.240+x320+</i>
+	folders, for example. When you now build your application for a device with a screen size of at least
+	240 pixels wide and 320 pixels high, the resources from <i>resources/ScreenSize.240+x320+</i> will
+	be included in your application - they will overwrite generic resources with the same name that are
+	placed in the <i>resources</i> directory.
+	</p>
+	<p>
+Resources for devices of specific vendors  can be placed into the &quot;resources/[vendor-name]&quot; folder, e.g. the &quot;resources/Nokia&quot; folder for Nokia devices. Resources for a specific device can be placed into the &quot;resources/[vendor-name]/[device-name]&quot; folder, e.g. the folder &quot;resources/Nokia/N95&quot; for Nokia/N95 devices. 
 	</p><p>
-Resources for devices of specific vendors  can be placed into the &quot;resources/[vendor-name]&quot; folder, e.g. the &quot;resources/Nokia&quot; folder for Nokia devices. Resources for a specific device can be placed into the &quot;resources/[vendor-name]/[device-name]&quot; folder, e.g. the folder &quot;resources/Nokia/3650&quot; for Nokia/3650 devices. 
-	</p><p>
-For more general resources the groups can be used to which a device belongs to. High-color images can be be put into the &quot;resources/BitsPerColor.16+&quot; folder, for example. The groups can be used very efficiently to include only those resources which are actually relevant for a specific device. A device can belong to many different groups, which are defined either implicitly by the capabilities of that device (compare the section &quot;Device Capabilities&quot; on page 12) or explicitly by setting the &lt;groups&gt;-element of a device in the device-database.
+	You can refer to any device capability that has been defined in the device database for 
 	</p><p>
 All resources will be copied to the root of the application and more specific resources will overwrite the common resources: If you have a picture named &quot;hello.png&quot; in the &quot;resources&quot; folder as well as in the &quot;resources/Nokia&quot; and in the &quot;resources/Nokia/6600&quot; folder, the version in the &quot;resources&quot; folder will be used for all non-Nokia devices, the version contained in the &quot;resources/Nokia&quot; folder will be used for all Nokia devices, but the image &quot;resources/Nokia/6600/hello.png&quot; will be used for the application which is build for the Nokia/6600 phone. 
 <br/>
 In the application code you can load this image as any other resource from the root: 
+</p>
 <pre>
 Image.createImage( &quot;/hello.png&quot; );
 </pre>
-	</p><p>
+	<p>In case you want to include subfoldersin your application's JAR file, you need to use a <a href="#root">root directory</a>
+	with enabled <code>includeSubDirs</code> attribute. Please see below for more details.
+	</p>
+	<p>
 	The adjustments of designs for different devices is described in the 
 	<a href="css-groups.html">CSS-documentation</a>.
 	</p>
-	<h2 id="groups">Often Used Groups</h2>
+	<h2 id="groups">Often Used Directories</h2>
 	<p>
-For a complete list of groups for a specific device, please refer to the 
-<a href="../devices-overview.html">Device Database</a>.
-<br />Here are some examples:
+	Here are some examples for commonly used directory names:
 	</p>
 	
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>Group</th><th>Type</th><th>Default Folder</th><th>Explanation</th></tr>
+	<tr>
+	 <td>IconSize.16x16</td>
+	 <td>Capability</td>
+	 <td>resources/IconSize.16x16</td>
+	 <td>Folder for different icon sizes of the target devices, e.g. <i>IconSize.16x16</i> or <i>IconSize.56x56</i> and so on. You can use
+	 the <i>IconSize.0x0</i> for storing icon resources for devices with an unknown <code>IconSize</code> capability.
+	 </td>
+	</tr>
 	<tr>
 	 <td>ScreenSize.176x208</td>
 	 <td>Screen</td>
@@ -46,10 +75,10 @@ For a complete list of groups for a specific device, please refer to the
 	 <td>Folder for different screen sizes of the target devices, e.g. ScreenSize.176x208 or ScreenSize.128x128 and so on. </td>
 	</tr>
 	<tr>
-	 <td>ScreenSize.170+x200+</td>
+	 <td>ScreenSize.240+x320+</td>
 	 <td>Screen</td>
-	 <td>resources/ScreenSize.170+x200+</td>
-	 <td>Folder for devices with screens that are as large or larger than the specified screen size. In the example the screen needs to be at least 170 pixels wide and 200 pixel high so that resources from that folder are included.</td>
+	 <td>resources/ScreenSize.240+x320+</td>
+	 <td>Folder for devices with screens that are as large or larger than the specified screen size. In the example the screen needs to be at least 240 pixels wide and 320 pixel high so that resources from that folder are included.</td>
 	</tr>
 	<tr>
 	 <td>CanvasSize.176x208</td>
@@ -76,54 +105,6 @@ For a complete list of groups for a specific device, please refer to the
 	 <td>Folder for devices with canvassses that are as large or larger than the specified canvas size in fullscreen-mode. In the example the canvas needs to be at least 170 pixels wide and 200 pixel high in the fullscreen-mode so that resources from that folder are included.</td>
 	</tr>
 	<tr>
-	 <td>midp1</td>
-	 <td>Platform</td>
-	 <td>resources/midp1</td>
-	 <td>When a device supports the MIDP/1.0 platform, resources for this device can be placed into the &quot;resources/midp1&quot; folder.</td>
-	</tr>
-	<tr>
-	 <td>midp2</td>
-	 <td>Platform</td>
-	 <td>resources/midp2</td>
-	 <td>For devices supporting the MIDP/2.0 platform.</td>
-	</tr>
-	<tr>
-	 <td>cldc1.0</td>
-	 <td>Configuration</td>
-	 <td>resources/cldc1.0</td>
-	 <td>For devices supporting the CLDC/1.0 configuration.</td>
-	</tr>
-	<tr>
-	 <td>cldc1.1</td>
-	 <td>Configuration</td>
-	 <td>resources/cldc1.1</td>
-	 <td>For devices supporting the CLDC/1.1 configuration.</td>
-	</tr>
-	<tr>
-	 <td>mmapi</td>
-	 <td>api</td>
-	 <td>resources/mmapi</td>
-	 <td>When a device supports the Mobile Media API, resources which need this API can be placed into the &quot;resources/mmapi&quot; folder.</td>
-	</tr>
-	<tr>
-	 <td>motorola-lwt</td>
-	 <td>api</td>
-	 <td>resources/motorola-lwt</td>
-	 <td>For devices which support Motorola's Lightweight Windowing Toolkit-API.</td>
-	</tr>
-	<tr>
-	 <td>nokia-ui</td>
-	 <td>api</td>
-	 <td>resourcesnokia-ui</td>
-	 <td>For devices which support Nokia's User Interface API.</td>
-	</tr>
-	<tr>
-	 <td>wav</td>
-	 <td>audio</td>
-	 <td>resources/wav</td>
-	 <td>For devices which support the WAV sound format.</td>
-	</tr>
-	<tr>
 	 <td>mp3</td>
 	 <td>audio</td>
 	 <td>resources/mp3</td>
@@ -142,16 +123,16 @@ For a complete list of groups for a specific device, please refer to the
 	 <td>For devices which support the MIDI sound format.</td>
 	</tr>
 	<tr>
+	 <td>polish.audio.mp3 and not polish.audio.amr</td>
+	 <td>Preprocessing Term</td>
+	 <td>resources/polish.audio.mp3 and not polish.audio.amr</td>
+	 <td>You can use any preprocessing term as a directory name as well.</td>
+	</tr>
+	<tr>
 	 <td>mpeg-4</td>
 	 <td>video</td>
 	 <td>resources/mpeg-4</td>
 	 <td>For devices which support the MPEG-4 video format.</td>
-	</tr>
-	<tr>
-	 <td>h.263</td>
-	 <td>video</td>
-	 <td>resources/h.263</td>
-	 <td>For devices which support the h.263 video format.</td>
 	</tr>
 	<tr>
 	 <td>3gpp</td>
@@ -159,19 +140,64 @@ For a complete list of groups for a specific device, please refer to the
 	 <td>resources/3gpp</td>
 	 <td>For devices which support the 3GPP video format.</td>
 	</tr>
-	<tr>
-	 <td>BitsPerColor.12+</td>
-	 <td>colors</td>
-	 <td>resources/BitsPerColor.12+</td>
-	 <td>For devices with a color depth of at least 12 bits per color.</td>
-	</tr>
-	<tr>
-	 <td>BitsPerColor.16</td>
-	 <td>colors</td>
-	 <td>resources/BitsPerColor.16</td>
-	 <td>For devices with a color depth of exactly 16 bits per color.</td>
-	</tr>
 	</table>
+
+	<h2 id="root">Structure Your Resources with Root Directories</h2>
+	<p>
+	While the default resource assembling mechanism is quite powerful, you might want to structure
+	your resources a bit better or include subdirectories in your application as well. 
+	Your can easily achieve this by defining <code>&lt;root&gt;</code> elements in your 
+	<i>build.xml</i> script:
+	</p>
+<pre>
+&lt;resources
+	dir=&quot;resources/base&quot;
+	defaultexcludes=&quot;yes&quot;
+	excludes=&quot;readme.txt&quot;
+&gt;
+	&lt;root dir=&quot;resources/base/design&quot; /&gt;
+	&lt;root dir=&quot;resources/base/sounds&quot; /&gt;
+	&lt;root dir=&quot;resources/base/images&quot; /&gt;
+	&lt;root dir=&quot;resources/base/images/largescreens&quot; 
+		if=&quot;polish.ScreenWidth &amp;gt;= 240 and polish.ScreenHeight &amp;gt;= 300&quot; 
+	/&gt;
+	&lt;root dir=&quot;resources/base/images/i18n&quot; 
+		includeSubDirs=&quot;true&quot; includeBaseDir=&quot;true&quot; excludes=&quot;CVS, readme*&quot; 
+	/&gt;
+&lt;/resources&gt;
+</pre>
+	<p>
+	Now you can put all sounds, images and the polish.css design into their own subfolder hierarchy. 
+	Each <code>&lt;root /&gt;</code> provides another starting point for the normal resource assembling
+	mechanism described above.
+	</p>
+	<p>Sometimes you will want to keep subfolders for your resources as well. You might want to add all
+	<a href="localization.html">localization</a> dependent
+	resources, for example, and allow your user to switch the localization dynamically. Image following
+	resource structure with the language dependent <i>flag.png</i> resource:
+	</p>
+<pre>
+resources/base/images/i18n/en/flag.png
+resources/base/images/i18n/de/flag.png
+resources/base/images/i18n/dk/flag.png
+resources/base/images/i18n/fr/flag.png
+resources/base/images/i18n/es/flag.png
+resources/base/images/i18n/cn/flag.png
+</pre>
+	<p>You can include the complete <i>i18n</i> directory with all its subfolders with this
+	<code>&lt;root /&gt;</code> definition with activated <code>includeSubDirs=&quot;true&quot;</code> setting:
+	<p>
+<pre>
+&lt;root dir=&quot;resources/base/images/i18n&quot; 
+	includeSubDirs=&quot;true&quot; includeBaseDir=&quot;true&quot; excludes=&quot;CVS, readme*&quot; 
+/&gt;
+</pre>
+	<p>
+	You can now load the language dependent resource with this code:
+	</p>
+<pre>
+Image flag = Image.createImage( "i18n/" + Locale.LANGUAGE + "/flag.png" );
+</pre>
 
 	<h2 id="finetune">Fine Tuning the Resource Assembling</h2>
 	<p>

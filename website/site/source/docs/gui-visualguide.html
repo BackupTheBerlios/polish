@@ -109,6 +109,23 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 		<dt id="ticker">8. Ticker</dt><dd id="tickerDef"><a href="gui-screenelement-ticker.html"><span>8. A ticker scrolls information over a screen and can include images in J2ME Polish.</span></a></dd>
 	</dld>
 </td>
+<td>
+	<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
+        <param name='src' value="<%= basedir%>images/gui-viewtype-particle.mov">
+        <param name='autoplay' value="false">
+        <param name='controller' value="true">
+        <param name='loop' value="true">
+        <param name='width' value="176">
+        <param name='height' value="231">
+        <embed src="<%= basedir%>images/gui-viewtype-particle.mov" autoplay="false" 
+        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
+        width="176" height="231"
+        >
+        </embed>
+	</object>
+	<br />
+	You can optionally give users a <a href="gui-screenelement-pressed.html">visual feedback when they press an item</a> using the <code>[style-name]:pressed</code> construct.
+</td>
 </tr></table>
 <h2 id="gui-screens">Screens</h2>
 	<p>
@@ -185,103 +202,57 @@ javax.microedition.lcdui.TextBox box = new javax.microedition.lcdui.TextBox("Mes
 	<p>
 	You can include Items in any Form-based screens like the <a href="gui-screen-tabbedform.html">TabbedForm</a> in J2ME Polish.
 	</p>
-	<h3 id="gui-item-label">Item Label</h3>
-	<p>
-	Most Items support labels which are drawn in front or on top of the actual content of an item.
-	In J2ME Polish a label is internally a <a href="gui-item-stringitem.html">StringItem</a>, so you can apply
-	all text attributes like <code>font-color</code>, <code>text-effect</code> etc.
-	</p>
-	<p>
-	By default labels are designed using the predefined <code>label</code> style:
-	</p>
-<pre>
-label {
-	font-color: silver;
-	font-size: small;
-	layout: newline-after;
-}
-</pre>
-	<p>
-	<img src="<%= basedir%>images/gui-item-label.png" width="347" height="73" alt="A label" />
-	</p>
-	<p>You can, however, apply your own specific label styles using the <code>label-style</code> CSS attribute in your
-	item's style:
-	</p>
-<pre>
-.myItem {
-	background-type: round-rect;
-	background-color: white;
-	<b>label-style: .myItemLabel;</b>
-}
-.myItemLabel {
-	font-color: white;
-	font-style: italic | bold;
-}
-</pre>
-	<p>
-		<img src="<%= basedir%>images/gui-item-label2.png" width="347" height="52" alt="A label" />
-	</p>
-	<p>
-	Last but not least you should know that a background and a border usually does not include the label of an Item.
-	In case you want to extend the reach of the background and border to the label as well, you need to set the 
-	<code>include-label</code> CSS attribute to true:
-	</p>
-<pre>
-.myItem {
-	background-type: round-rect;
-	background-color: white;
-	<b>include-label: true;</b>
-	label-style: .myItemLabel;
-}
-.myItemLabel {
-	font-color: gray;
-	font-style: bold | italic;
-}
-</pre>
-	<p>
-		<img src="<%= basedir%>images/gui-item-label3.png" width="347" height="52" alt="A label with include-label" />
-	</p>
 	
 <h3 id="gui-item-chartitem">ChartItem</h3>
 	<table><tr>
 		<td><a href="gui-item-chartitem.html"><img src="<%= basedir%>images/gui-item-chartitem.png" width="313" height="209" alt="A ChartItem" /></a></td>
 		<td valign="center">Visualize numerical data with the <a href="gui-item-chartitem.html">ChartItem</a>.</td>
 	</tr></table>
+	
 	<h3 id="gui-item-choicegroup">ChoiceGroup</h3>
 	<table><tr>
-		<td><a href="gui-item-choicegroup.html"><img src="<%= basedir%>images/gui-item-choicegroup.png"  width="327" height="86" alt="A ChoiceGroup with an exclusive-single-line view-type" /></a></td>
+		<td><a href="gui-item-choicegroup.html">
+		<img src="<%= basedir%>images/gui-viewtype-horizontalchoice.png" width="316" height="79" alt="A ChoiceGroup with a horizontal-choice view-type" />		
+		</a></td>
 		<td valign="center">Let the user select from a number of choices with a <a href="gui-item-choicegroup.html">ChoiceGroup</a>.</td>
 	</tr></table>
+	
 	<h3 id="gui-item-choicetextfield">ChoiceTextField</h3>
 	<table><tr>
 		<td><a href="gui-item-choicetextfield.html"><img src="<%= basedir%>images/gui-item-choicetextfield.png"  width="343" height="222" alt="A ChoiceTextField" /></a></td>
 		<td valign="center">The <a href="gui-item-choicetextfield.html">ChoiceTextField</a> helps you to enter correct data.</td>
 	</tr></table>
+	
 	<h3 id="gui-item-clockitem">ClockItem</h3>
 	<table><tr>
 		<td><a href="gui-item-clockitem.html"><img src="<%= basedir%>images/gui-item-clockitem.png"  width="245" height="52" alt="A ClockItem" /></a></td>
 		<td valign="center">The <a href="gui-item-clockitem.html">ClockItem</a> displays the time.</td>
 	</tr></table>
+	
 	<h3 id="gui-item-custom">CustomItem</h3>
 	<table><tr>
 		<td><a href="gui-item-customitem.html"><img src="<%= basedir%>images/extend.png" width="76" height="68" alt="Create Your Own CustomItem" /></a></td>
 		<td valign="center">Realize your own vision with a <a href="gui-item-customitem.html">CustomItem</a>.</td>
 	</tr></table>
+	
 	<h3 id="gui-item-datefield">DateField</h3>
 	<table><tr>
 		<td><a href="gui-item-datefield.html"><img src="<%= basedir%>images/gui-item-datefield.png"  width="235" height="85" alt="A DateField" /></a></td>
 		<td valign="center">Enter dates and times with a <a href="gui-item-datefield.html">DateField</a>.</td>
 	</tr></table>
+	
 	<h3 id="gui-item-filteredchoicegroup">FilteredChoiceGroup</h3>
 	<table><tr>
 		<td><a href="gui-item-filteredchoicegroup.html"><img src="<%= basedir%>images/gui-item-filteredchoicegroup.png" width="341" height="86" alt="A closed FilteredChoiceGroup" /></a></td>
 		<td valign="center">Let the user select easily from a large number of choices with a <a href="gui-item-filteredchoicegroup.html">FilteredChoiceGroup</a>.</td>
 	</tr></table>
+	
 	<h3 id="gui-item-gauge">Gauge</h3>
 	<table><tr>
 		<td><a href="gui-item-gauge.html"><img src="<%= basedir%>images/gui-viewtype-gauge-cycling-icons.png"  width="61" height="59" alt="A Gauge" /></a></td>
 		<td valign="center">The <a href="gui-item-gauge.html">Gauge</a> visualizes activity or let the user select a value from a given range.</td>
 	</tr></table>	
+	
 	<h3 id="gui-item-htmlbrowser">HtmlBrowser</h3>
 	<table><tr>
 		<td><a href="gui-item-htmlbrowser.html"><img src="<%= basedir%>images/gui-item-htmlbrowser.png"  width="334" height="260" alt="The HtmlBrowser with search results from Wikipedia." /></a></td>
@@ -293,11 +264,19 @@ label {
 		<td><a href="gui-item-iconcustomitem.html"><img src="<%= basedir%>images/gui-item-iconcustomitem.png"  width="137" height="94" alt="An IconCustomItem" /></a></td>
 		<td valign="center">Display an image together with text using the <a href="gui-item-iconcustomitem.html">IconCustomItem</a>.</td>
 	</tr></table>
+	
 	<h3 id="gui-item-imageitem">ImageItem</h3>
 	<table><tr>
 		<td><a href="gui-item-imageitem.html"><img src="<%= basedir%>images/gui-item-imageitem.png"  width="70" height="58" alt="An ImageItem" /></a></td>
 		<td valign="center">The <a href="gui-item-imageitem.html">ImageItem</a> displays an image or an alternative text.</td>
 	</tr></table>
+	
+	<h3 id="gui-item-label">Label</h3>
+	<table><tr>
+		<td><a href="gui-item-label.html"><img src="<%= basedir%>images/gui-item-label-completebackground.png" width="325" height="94" alt="A choice group with complete-background" /></a></td>
+		<td valign="center">Most items support <a href="gui-item-label.html">labels</a> which are drawn in front or on top of the actual content of an item.</td>
+	</tr></table>
+	
 	<h3 id="gui-item-messageitem">MessageItem</h3>
 	<table><tr>
 		<td><a href="gui-item-messageitem.html"><img src="<%= basedir%>images/gui-item-messageitem.png"  width="290" height="94" alt="A MessageItem" /></a></td>

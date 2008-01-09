@@ -4,25 +4,30 @@
 <%set basedir = ../ %>
 <%include start.txt %>
 
-	<h1 id="top">The Focused Element</h1>
+	<h1 id="top">Designing the Focused Element</h1>
 	<ul class="relatedtechnologies">
 		<li class="relatedtechnologiesheader">Related Topics:</li>
+		<li><a href="gui-screenelements-pressed.html">Pressed Style</a></li>
 		<li><a href="gui-concepts.html">GUI Concepts</a></li>
 		<li><a href="gui-css-basics.html">CSS Basics</a></li>
 	</ul>
 	
 	<p>
 	In most screens the user is able to focus various items. The <code>focused</code> style is used
-	to highlight the current item. You can, however, use item-specific styles for each element as well.
+	to highlight the current item. You can, however, use item-specific styles for each element as well by
+	defining a <code>[style-name]:hover</code> style.
 	</p>
 	<p>You are not limited in the design, typically you will use a different background or a different border
-	for the focused state of an item, but depending on the item you can also exchange icon-images, font-styles, animations and so on. Please refer
-	to the <a href="gui-visualguide.html">visual guide</a> for details on the design possibilities for each item and screen.
+	for the focused state of an item, but depending on the item you can also exchange icon-images, font-styles, 
+	effects, animations and so on. Please refer to the <a href="gui-visualguide.html">visual guide</a> for 
+	details on the design possibilities for each item.
 	</p>
 	<p>
 	<img src="<%= basedir%>images/gui-screenelement-ticker.png"  width="240" height="320" alt="A focused element" />	
 	<br />
-	In the above screenshot we just exchange the orange border against a black border for the currently focused mail box:
+	In the above screenshot we just exchange the orange border against a black border for the currently focused mail box by using
+	the <code>mailbox:hover</code> CSS style:
+	</p>
 <pre>
 colors {
 	focusedFontColor: #111;
@@ -49,11 +54,10 @@ colors {
 	layout: expand | left;
 }
 
-.mailBox:hover {
+<b>.mailBox:hover</b> {
 	background-border-color: focusedBorderColor;
 }
 </pre>
-	</p>
 	<p>
 	As you can see in the above example, you can modify the focused state of a CSS style by using the <code>[style-name]:hover</code> selector (same
 	as on normal webpages). You also should consider to implement the <code>focused</code> style, because this style is used whenever there is
@@ -78,6 +82,7 @@ colors {
 	</ul>
 	<p>The following example shows the above example in which we increase the border width in the focused state. We accordingly adjust
 	the margins, so that there is no wobbling when the user moves to the next item:
+	</p>
 <pre>
 .mailBox {
 	<b>margin: 1;</b>
@@ -103,7 +108,6 @@ colors {
 	background-border-color: focusedBorderColor;
 }
 </pre>
-	</p>
 	
 	
 	<h2 id="Programming">Programming</h2>
@@ -120,9 +124,9 @@ colors {
 	</p>
 	
 	<h2 id="JavaDoc">JavaDoc</h2>
-	<p>
-		<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess</a>
-		<br /><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ScreenStateListener.html">ScreenStateListener</a>
-	</p>
+	<ul>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess</a></li>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ScreenStateListener.html">ScreenStateListener</a></li>
+	</ul>
 
 <%include end.txt %>
