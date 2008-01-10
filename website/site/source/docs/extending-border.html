@@ -35,7 +35,7 @@
 	Create your own border by extending <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/Border.html">de.enough.polish.ui.Border</a>.
 	You only need to implement  the <code>paint( int x, int y, int width, int height, Graphics g )</code> method. 
 	<br />
-	You can override the <code>releaseResources()</code> method for freeing any scarce resources when your border is not used anymore.
+	You can override the <code>releaseResources()</code> method for freeing any stray resources when your border is not used anymore.
 	</p>
 	<p>We use the existing <a href="gui-border-square-sonar.html">square-sonar</a> border for demonstrating
 	the usage as well as the animation options for a border. 
@@ -54,7 +54,7 @@
 	        </embed>
 		</object>
 	<br />
-	Note that the <code>square-sonar</code> border is actually painting itself is outside of the item's area,
+	Note that the <code>square-sonar</code> border is actually painting itself outside of the item's area,
 	so we have to use the <code>public void animate(Screen screen, Item parent, long currentTime, ClippingRegion repaintRegion)</code> 
 	method (see below for more details).
 	</p>
@@ -270,7 +270,7 @@ public class SquareSonarBorder extends Border
 	<p>
 	<code>integer</code> paramters can be additionally populated using strings, when only some strings are allowed. In that case you have
 	to specify the allowed values - the first value will be tranformed to <code>0</code>, the second one to <code>1</code> and so on. This
-	technology helps to minimize the memory and performance impact of UI elements:
+	approach helps to minimize the memory and performance impact of UI elements:
 <pre>
 &lt;param name=&quot;orientation&quot; type=&quot;integer&quot; values=&quot;top,bottom,left,right&quot; primitive=&quot;true&quot; default=&quot;top&quot; /&gt;
 </pre>

@@ -17,10 +17,10 @@
 	</ul>
 	<%index %>
 	<p>
-	Text effects provide you with an easy way to spice up your fonts without needing to care
-	about sizes and availability of characters like for bitmap fonts. While there are
+	Text effects provide you with an easy way to spice up your fonts without caring
+	about sizes and availability of characters in bitmap fonts. While there are
 	 <a href="gui-visualguide.html#text-effects">various text-effects</a> available, you might encounter a 
-	 situation in which you want to create your own effect - read on for learning how.</p>
+	 situation in which you want to create your own effect.</p>
 	</p>
 	
 	<h2 id="concepts">Concepts of TextEffect</h2>
@@ -42,12 +42,12 @@
 	For simple effects you only need to implement <code>public drawString( String text, int textColor, int x, int y, int orientation, Graphics g )</code>,
 	which renders a single line of text at the specified position.
 	<br />
-	You can animate your effect by overriding one of <code>animate</code> methods (see below).
+	You can animate your effect by overriding one of the <code>animate</code> methods (see below).
 	<br />
 	If you want to design your text-effect using CSS, you need to implement the <code>public void setStyle( Style style )</code> 
 	method, too.
 	</p>
-	<p>Additionally, you can take over full control over the layout process by overriding or using following methods:
+	<p>Additionally, you can take over full control over the layout process by overriding or using the following methods:
 	</p>
 	<ul>
 		<li><code>public boolean animate()</code>: Animates this effect - return true when you need a repaint.</li>
@@ -72,7 +72,7 @@
 		</li>
 		<li><code>public void showNotify()</code>: Notifies the effect that it is about to being shown.</li>
 		<li><code>public void hideNotify()</code>: Notifies this effect that the corresponding item is to be hidden.</li>
-		<li><code>public void releaseResources()</code>: Notifies this effect that it should release all releases like oaded 
+		<li><code>public void releaseResources()</code>: Notifies this effect that it should release all resources like loaded 
 			images etc to free memory.
 		</li>
 		<li><code>public int stringWidth(String str)</code>: Calculates the width that is required for the text.</li>
