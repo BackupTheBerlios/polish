@@ -162,7 +162,20 @@ public final class StyleSheet {
 			//#ifdef polish.classes.ImageLoader:defined
 				//#= Image image = ${ classname( polish.classes.ImageLoader ) }.loadImage( url );
 			//#else
-				Image image = Image.createImage( url );
+				Image image = null; 
+				//#if polish.i18n.loadResources
+					try {
+				//#endif
+						image = Image.createImage( url );
+				//#if polish.i18n.loadResources
+					} catch (IOException e) {
+						if (Locale.LANGUAGE == null || Locale.LANGUAGE.length() == 0) {
+							throw e;
+						}
+						String localeUrl = "/" + Locale.LANGUAGE + url.substring(1);
+						image = Image.createImage( localeUrl );
+					}
+				//#endif
 			//#endif
 			//#if polish.allowImageCaching != false
 				if (cache) {
