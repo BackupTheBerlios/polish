@@ -610,31 +610,28 @@ public final class Locale {
 		multipleParameterOrders = orders;
 		multipleParameterTranslations = translationChunks;
 		
-		// now load language name etc, but only when no other language has been loaded before,
-		// because otherwise the default locae settings are intialized anyhow:
-		if (isLoaded) {
-			LANGUAGE = in.readUTF();
-			DISPLAY_LANGUAGE = in.readUTF();
-			MINUS_SIGN = in.readChar();
-			ZERO_DIGIT = in.readChar();
-			DECIMAL_SEPARATOR = in.readChar();
-			MONETARY_DECIMAL_SEPARATOR = in.readChar();
-			GROUPING_SEPARATOR = in.readChar();
-			PERCENT = in.readChar();
-			PERMILL = in.readChar();
-			INFINITY = in.readUTF();
-			String country = in.readUTF();
-			if (country.length() > 0) {
-				COUNTRY = country;
-				DISPLAY_COUNTRY = in.readUTF();
-				CURRENCY_SYMBOL = in.readUTF();
-				CURRENCY_CODE = in.readUTF();
-			} else {
-				COUNTRY = null;
-				DISPLAY_COUNTRY = null;
-				CURRENCY_SYMBOL = null;
-				CURRENCY_CODE = null;
-			}
+		// now load language name etc:
+		LANGUAGE = in.readUTF();
+		DISPLAY_LANGUAGE = in.readUTF();
+		MINUS_SIGN = in.readChar();
+		ZERO_DIGIT = in.readChar();
+		DECIMAL_SEPARATOR = in.readChar();
+		MONETARY_DECIMAL_SEPARATOR = in.readChar();
+		GROUPING_SEPARATOR = in.readChar();
+		PERCENT = in.readChar();
+		PERMILL = in.readChar();
+		INFINITY = in.readUTF();
+		String country = in.readUTF();
+		if (country.length() > 0) {
+			COUNTRY = country;
+			DISPLAY_COUNTRY = in.readUTF();
+			CURRENCY_SYMBOL = in.readUTF();
+			CURRENCY_CODE = in.readUTF();
+		} else {
+			COUNTRY = null;
+			DISPLAY_COUNTRY = null;
+			CURRENCY_SYMBOL = null;
+			CURRENCY_CODE = null;
 		}
 		isLoaded = true;
 		isLoadError = false;
@@ -643,6 +640,7 @@ public final class Locale {
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("error while loading translations: " + e );
+			throw new IOException( e.toString() );
 		}
 	}
 	//#endif
