@@ -13,8 +13,10 @@
 	<li><a href="preprocessing.html">Preprocessing</a></li>
 	</ul>
 	<%index %>
+	<p class="pullquote">Control your build process with the &lt;build&gt; section!</p>
 	<p>
-With the &lt;build&gt; section the actual build process is controlled: 
+	The &lt;build&gt; section is the main configuration point of J2ME Polish.
+	</p>
 <pre>
 &lt;build
      fullscreen=&quot;menu&quot;
@@ -38,12 +40,15 @@ With the &lt;build&gt; section the actual build process is controlled:
         &lt;filter package=&quot;de.enough.polish.example&quot; level=&quot;debug&quot; /&gt;
         &lt;filter class=&quot;de.enough.polish.ui.Gauge&quot; level=&quot;info&quot; /&gt;
      &lt;/debug&gt;
-&lt;/build&gt;</pre></p>
+&lt;/build&gt;
+</pre>
 	<h2 id="attributes">Supported Attributes</h2>
-	<p>Following attributes are supported by the build section:
+	<p>
+	The build section has... well... <i>some</i> options that you can use. Thankfully most of the settings
+	are optional. For a good starting point have a look at the <i>build.xml</i> scripts of the sample applications.
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>build-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>build Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>sourceDir</td>
  	 <td>No</td>
 	 <td>The path to the source directory. The default path is either &quot;source/src&quot;, &quot;source&quot; or &quot;src&quot;. You can define several paths by separating them with a colon ':' or a semicolon ';': 
@@ -54,20 +59,27 @@ With the &lt;build&gt; section the actual build process is controlled:
  	 <td>No</td>
 	 <td>Either the name of the directory which contains binary-only libraries or the name(s) of the libraries. Several libraries can be separated by colons ':' or by semicolons ';'. When no path is defined, the libraries will be searched within the &quot;import&quot; folder by default.
 	 This mechanism can only be used for third party APIs, which are not available on the phone itself. Device-APIs are automatically included, after they have been defined in the <code>${j2mepolish.home}/apis.xml</code> file. Please compare the <a href="how-tos.html#howto-api">how-to about including APIs</a>.
+	 Alternatively you can used a nested <a href="libraries">&lt;libraries&gt;</a> element.
 	 </td>
 	</tr>
 	<tr><td>symbols</td>
  	 <td>No</td>
-	 <td>Project specific symbols, e.g. &quot;showSplash&quot; which can be checked with &quot;//#ifdef showSplash&quot; in the source code. Several symbols need to be separated by comma.</td>
+	 <td>Project specific preprocessing symbols, e.g. &quot;showSplash&quot; which can be checked with &quot;//#ifdef showSplash&quot; in the source code. Several symbols need to be separated by comma.
+	 </td>
 	</tr>
 	<tr><td>usePolishGui</td>
  	 <td>No</td>
-	 <td>Defines whether the J2ME Polish GUI should be used at all. Possible values are &quot;true&quot;/&quot;yes&quot;, &quot;false&quot;/&quot;no&quot; or &quot;always&quot;. When &quot;true&quot; is given the GUI will be used only for devices which have the recommended capabilities (e.g. a color depth of at least 8 bits). When &quot;always&quot; is given, the GUI will be used for all devices. Default value is &quot;true&quot;.</td>
+	 <td>Defines whether the J2ME Polish GUI should be used at all. Possible values are <code>true</code>, <code>false</code> and
+	 <code>always</code>. When you set it to <code>true</code> 
+	 the GUI will be used only for devices which have the recommended capabilities (e.g. a color depth of at least 8 bits). 
+	 Use <code>always</code> for using the GUI for all devices. Default value is <code>true</code>.
+	 Use the preprocessing variable <code>polish.usePolishGui</code> for a more finegrained control.
+	 </td>
 	</tr>
 	<tr><td>fullscreen</td>
  	 <td>No</td>
 	 <td>Defines whether the complete screen should be used for devices which support 
-	 a full screen mode. Currently these include all MIDP/2.0 devices as well as devices, 
+	 a full screen mode. Currently these include all MIDP 2.0 devices as well as devices, 
 	 which support the Nokia-UI API. Possible values are either &quot;no&quot;, &quot;yes&quot; and &quot;menu&quot;. With &quot;yes&quot; the complete screen is used but no commands are supported. With &quot;menu&quot; commands can be used as well. Default setting is &quot;no&quot;. Remember that you need to target a specific device that has known Softkeys for this option. Otherwise always the default (&quot;unpolishable&quot;) commands menu is used.
 	 <br />
 	 Alternatively the preprocessing-variable &quot;polish.FullScreen&quot; can be set. This allows a finer grained
@@ -177,35 +189,33 @@ With the &lt;build&gt; section the actual build process is controlled:
 	</tr>
 	</table>
 	<h2 id="nested">Nested Elements</h2>
-	<p>The build section supports several nested elements: &lt;sources&gt;, &lt;midlet&gt;, 
-	&lt;midlets&gt;, &lt;resources&gt;, &lt;obfuscator&gt;, &lt;variables&gt;, 
-	&lt;debug&gt;, &lt;jad&gt;, &lt;manifestFilter&gt; , 
-	&lt;preprocessor&gt; and &lt;java&gt;.	
+	<p>The build section supports very few nested elements that are described below in detail.	
 	</p>
 	<h3 id="sources">&lt;sources&gt;</h3>
 	<p>
 	The &lt;sources&gt; element can be used for a finer grained control of the source-directories. This can be useful to include test classes, for example:
+	</p>
 	<pre>
 &lt;sources&gt;
 	&lt;source dir=&quot;source/src&quot; /&gt;
 	&lt;source dir=&quot;source/test&quot; if=&quot;test&quot; /&gt;
 &lt;/sources&gt;
-</pre></p>
+</pre>
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>sources-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>sources Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
 	 <td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; for the nested source directories to be used.</td>
+	 <td>The Ant-property which needs to be <code>true</code>; for the nested source directories to be used.</td>
 	</tr>
 	<tr>
 	 <td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; for the nested source directories to be used.</td>
+	 <td>The Ant-property which needs to be <code>false</code>; for the nested source directories to be used.</td>
 	</tr>
 	</table>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>source-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>source Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
 	 <td>dir</td>
  	 <td>Yes</td>
@@ -214,21 +224,32 @@ With the &lt;build&gt; section the actual build process is controlled:
 	<tr>
 	 <td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; for this source directory to be used.</td>
+	 <td>The Ant-property  or preprocessing term which needs to be <code>true</code>; for this source directory to be used.</td>
 	</tr>
 	<tr>
 	 <td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; for this source directory to be used.</td>
+	 <td>The Ant-property  or preprocessing term which needs to be <code>false</code>; for this source directory to be used.</td>
 	</tr>
 	</table>
+
+	<h3 id="libraries">&lt;libraries&gt;</h3>
+	<p>
+	Add compiled libraries to your project with the &lt;libraries&gt; element:
+	</p>
+	<pre>
+&lt;libraries&gt;
+	&lt;library file=&quot;libraries/tinyline.gz&quot; /&gt;
+	&lt;library file=&quot;libraries/svghelper.jar&quot; if=&quot;polish.api.svg&quot; /&gt;
+&lt;/libraries&gt;
+</pre>
 
 	<h3 id="midlet">&lt;midlet&gt; and &lt;midlets&gt;</h3>
 	<p>The &lt;midlet&gt; element defines the actual MIDlet class:
 	
 <br/><code>&lt;midlet class=&quot;de.enough.polish.example.ExampleMidlet&quot; /&gt;</code>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>midlet-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>midlet Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>class</td>
  	 <td>Yes</td>
 	 <td>The complete package and class-name of the MIDlet.</td>
@@ -249,12 +270,12 @@ With the &lt;build&gt; section the actual build process is controlled:
 	<tr>
 	 <td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property or preprocessing directive which needs to be &quot;true&quot; for this MIDlet to be used.</td>
+	 <td>The Ant-property or preprocessing directive which needs to be <code>true</code>; for this MIDlet to be used.</td>
 	</tr>
 	<tr>
 	 <td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property or preprocessing directive which needs to be &quot;false&quot; for this MIDlet to be used.</td>
+	 <td>The Ant-property or preprocessing directive which needs to be <code>false</code>; for this MIDlet to be used.</td>
 	</tr>
 	</table>
 	<p>
@@ -272,7 +293,7 @@ With the &lt;build&gt; section the actual build process is controlled:
 	This is only applicable when you are targeting this platform.
 	</p>
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>iappli-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>iappli Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>class</td>
  	 <td>Yes</td>
 	 <td>The complete package and class-name of the main IApplication.</td>
@@ -319,14 +340,14 @@ With the &lt;build&gt; section the actual build process is controlled:
 	The &lt;resources&gt; element can be used to fine tune the resources assembling as well as the localization of the application. When it is used, the &quot;resDir&quot;-attribute of the &lt;build&gt; section should not be used. The &lt;resources&gt; element supports following attributes:
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>resources-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>resources Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>dir</td>
  	 <td>No</td>
 	 <td>The directory containing all resources, defaults to the &quot;resources&quot; folder.</td>
 	</tr>
 	<tr><td>defaultexcludes</td>
  	 <td>No</td>
-	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. Defines whether typical  files should not be copied in the application-jar-bundle during packaging. The files &quot;polish.css&quot;, &quot;Thumbs.db&quot;, any backup-files (*.bak and *~) and the messages-files used in the localization are excluded by default.</td>
+	 <td>Either <code>true</code> or <code>false</code>. Defines whether typical  files should not be copied in the application-jar-bundle during packaging. The files &quot;polish.css&quot;, &quot;Thumbs.db&quot;, any backup-files (*.bak and *~) and the messages-files used in the localization are excluded by default.</td>
 	</tr>
 	<tr><td>excludes</td>
  	 <td>No</td>
@@ -335,7 +356,7 @@ With the &lt;build&gt; section the actual build process is controlled:
 	<tr>
 	 <td>locales</td>
 	 <td>No</td>
-	 <td>The locales which should be supported in a comma-separated list. Alternatively the nested &lt;localization&gt; element can be used.  The standard Java locale-abbreviations are used, e.g. &quot;de&quot; for German, &quot;en&quot; for English and &quot;fr_CA&quot; for Canadian French. 
+	 <td>The locales which should be supported in a comma-separated list. Alternatively the nested &lt;localization&gt; element can be used for finetuning the settings.  The standard Java locale-abbreviations are used, e.g. &quot;de&quot; for German, &quot;en&quot; for English and &quot;fr_CA&quot; for Canadian French. 
 	 </td>
 	</tr>
 	<tr>
@@ -352,30 +373,14 @@ With the &lt;build&gt; section the actual build process is controlled:
 	</tr>
 	</table>
 	<p>
-	The &lt;resources&gt; elements accepts the nested elements &lt;filter&gt;, &lt;fileset&gt; and &lt;localization&gt;:
+	The &lt;resources&gt; elements accepts the nested elements 
+	<a href="#resources_root">&lt;root&gt;</a>, 
+	<a href="#localization">&lt;localization&gt;</a>
+	<a href="#filter">&lt;filter&gt;</a>,  
+	<a href="#fileset">&lt;fileset&gt;</a> and
+	<a href="#copier">&lt;copier&gt;</a>.
 	</p>	
-<h4 id="filter">The &lt;filter&gt; Subelement</h4>
-<p>
-Sometimes it is easier to exclude resources for specific devices rather than to include it for the other devices. You can use any number of &lt;filter&gt; elements for this purpose. The following element removes all *.mid files when the target device supports both MIDI as well as AMR files:
-<pre>
-&lt;filter excludes=&quot;*.mid&quot; if=&quot;polish.audio.midi and polish.audio.amr&quot; /&gt;
-</pre>
-</p>
-	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>filter-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
-	<tr><td>excludes</td>
- 	 <td>Yes</td>
-	 <td>Defines which files should be excluded, e.g. &quot;*.mid&quot;. You can also use regular expressions in this attribute.</td>
-	</tr>
-	<tr><td>if</td>
- 	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this filter to be used.</td>
-	</tr>
-	<tr><td>unless</td>
- 	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this filter to be used.</td>
-	</tr>
-	</table>	
+
 
 	<h4 id="resources_root">The &lt;root&gt; Subelement</h4>
 	<p>
@@ -400,7 +405,7 @@ Sometimes it is easier to exclude resources for specific devices rather than to 
 &lt;/resources&gt;
 </pre>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>root-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>root Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>dir</td>
  	 <td>Yes</td>
 	 <td>The base directory of this resource root. This directory needs to exist unless you use variables in it like ${polish.vendor}, ${polish.name}, ${polish.language}, ${polish.country} and so on. You can use any J2ME Polish preprocessing variable or Ant property in the dir attribute.</td>
@@ -436,14 +441,108 @@ resources/base/images/i18n/cn/flag.png
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this root to be used.</td>
+	 <td>The Ant-property which needs to be <code>true</code>; or the preprocessing term which needs result <code>true</code> for this root to be used.</td>
 	</tr>
 	<tr><td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this root to be used.</td>
+	 <td>The Ant-property which needs to be <code>false</code>; or the preprocessing term which needs result <code>false</code> for this root to be used.</td>
 	</tr>
 	</table>	
-
+	
+		<h4 id="localization">The &lt;localization&gt; Subelement</h4>
+	<p>
+	Control the <a href="localization.html">internationalization</a> of your application with the
+	the &lt;localization&gt; element: 
+	</p>
+<pre>
+&lt;localization dynamic=&quot;true&quot; defaultLocale=&quot;en&quot;&gt;
+	&lt;locale name=&quot;en&quot; encoding=&quot;UTF-8&quot; /&gt;
+	&lt;locale name=&quot;de&quot; encoding=&quot;UTF-8&quot; /&gt;
+	&lt;locale name=&quot;cn&quot; encoding=&quot;GB2312&quot; /&gt;
+&lt;/localization&gt;
+</pre>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>localization Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>locales</td>
+ 	 <td>No</td>
+	 <td>The locales which should be supported in a comma-separated list - alternatively you can use nested <code>&lt;locale&gt;</code> elements.  The standard Java locale-abbreviations are used, e.g. &quot;de&quot; for German, &quot;en&quot; for English and &quot;fr_CA&quot; for Canadian French.</td>
+	</tr>
+	<tr><td>messages</td>
+ 	 <td>No</td>
+	 <td>The file which contains the translations. This defaults to <i>messages.txt</i>.</td>
+	</tr>
+	<tr>
+	 <td>dynamic</td>
+ 	 <td>No</td>
+	 <td>Defines whether dynamic translations should be enabled. Dynamic translations can be changed during runtime but require additional resources. This defaults to &quot;false&quot;.</td>
+	</tr>
+	<tr>
+	 <td>default</td>
+ 	 <td>No</td>
+	 <td>The default localization - this makes only sense when dynamic translations are enabled.</td>
+	</tr>
+	<tr><td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be <code>true</code>; or the preprocessing term which needs result <code>true</code> for this localization to be used.</td>
+	</tr>
+	<tr><td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be <code>false</code>; or the preprocessing term which needs result <code>false</code> for this localization to be used.</td>
+	</tr>
+	</table>
+	
+	<h5 id="localization-locale">Use Locale Dependent Encodings with &lt;locale&gt;</h5>
+	<p>Use nested <code>&lt;locale&gt;</code> elements for configuring settings for each locale that you support:
+	</p>
+<pre>
+&lt;locale name=&quot;cn&quot; encoding=&quot;GB2312&quot; if=&quot;polish.vendor == Motorola&quot; /&gt;
+</pre>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>locale Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>name, names</td>
+ 	 <td>Yes</td>
+	 <td>The name of the locale e.g. &quot;de&quot; for German, &quot;en&quot; for English and &quot;fr_CA&quot; for Canadian French. You can specify several locales by separating them with commas:
+	 <code>names=&quot;de, en&quot;</code>.
+	 </td>
+	</tr>
+	<tr><td>encoding</td>
+ 	 <td>No</td>
+	 <td>The encoding of the corresponding <i>messages_${locale}.txt</i> file.</td>
+	</tr>
+	<tr><td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be <code>true</code>; or the preprocessing term which needs result <code>true</code> for this locale to be used.</td>
+	</tr>
+	<tr><td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be <code>false</code>; or the preprocessing term which needs result <code>false</code> for this locale to be used.</td>
+	</tr>
+	</table>
+	
+	
+	<h4 id="filter">The &lt;filter&gt; Subelement</h4>
+	<p>
+	Sometimes it is easier to exclude resources for specific devices rather than to include it for the other devices. You can use any number of &lt;filter&gt; elements for this purpose. The following element removes all *.mid files when the target device supports both MIDI as well as AMR files:
+	</p>
+<pre>
+&lt;filter excludes=&quot;*.mid&quot; if=&quot;polish.audio.midi and polish.audio.amr&quot; /&gt;
+</pre>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>filter Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><td>excludes</td>
+ 	 <td>Yes</td>
+	 <td>Defines which files should be excluded, e.g. &quot;*.mid&quot;. You can also use regular expressions in this attribute.</td>
+	</tr>
+	<tr><td>if</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be <code>true</code>; or the preprocessing term which needs result <code>true</code> for this filter to be used.</td>
+	</tr>
+	<tr><td>unless</td>
+ 	 <td>No</td>
+	 <td>The Ant-property which needs to be <code>false</code>; or the preprocessing term which needs result <code>false</code> for this filter to be used.</td>
+	</tr>
+	</table>	
+	
 	<h4 id="fileset">The &lt;fileset&gt; Subelement</h4>
 	<p>
 	You can use &lt;fileset&gt; for fine tuning the resource assembling. Nowadays we recommend using 
@@ -474,7 +573,7 @@ In the above example MIDI files are only included when two conditions are met:
 <br />2) The device does not support MP3 sound.
 </p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>fileset-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>fileset Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>dir</td>
  	 <td>Yes</td>
 	 <td>The base directory of this fileset. This directory needs to exist unless you use variables in it like ${polish.vendor}, ${polish.name}, ${polish.language}, ${polish.country} and so on. You can use any J2ME Polish preprocessing variable or Ant property in the dir attribute.</td>
@@ -485,52 +584,21 @@ In the above example MIDI files are only included when two conditions are met:
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this fileset to be included.</td>
+	 <td>The Ant-property which needs to be <code>true</code>; or the preprocessing term which needs result <code>true</code> for this fileset to be included.</td>
 	</tr>
 	<tr><td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this fileset to be included.</td>
+	 <td>The Ant-property which needs to be <code>false</code>; or the preprocessing term which needs result <code>false</code> for this fileset to be included.</td>
 	</tr>
 	</table>	
-	<h4 id="localization">The &lt;localization&gt; Subelement</h4>
-	<p>
-	With the &lt;localization&gt; element the internationalization of the application can be controlled. It supports following attributes:
-	</p>
-	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>localization-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
-	<tr><td>locales</td>
- 	 <td>Yes</td>
-	 <td>The locales which should be supported in a comma-separated list.  The standard Java locale-abbreviations are used, e.g. &quot;de&quot; for German, &quot;en&quot; for English and &quot;fr_CA&quot; for Canadian French.</td>
-	</tr>
-	<tr><td>messages</td>
- 	 <td>No</td>
-	 <td>The file which contains the translations. This defaults to &quot;messages.txt&quot;.</td>
-	</tr>
-	<tr>
-	 <td>dynamic</td>
- 	 <td>No</td>
-	 <td>Defines whether dynamic translations should be enabled. Dynamic translations can be changed during runtime but require additional resources. This defaults to &quot;false&quot;.</td>
-	</tr>
-	<tr>
-	 <td>default</td>
- 	 <td>No</td>
-	 <td>The default localization - this makes only sense when dynamic translations are enabled.</td>
-	</tr>
-	<tr><td>if</td>
- 	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this localization to be used.</td>
-	</tr>
-	<tr><td>unless</td>
- 	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this localization to be used.</td>
-	</tr>
-	</table>
+	
 
-<h3 id="copier">The &lt;copier&gt; Subelement</h3>
+
+<h4 id="copier">The &lt;copier&gt; Subelement</h3>
 <p>Use the &lt;copier&gt; element to transform the resources before they are packaged in the final JAR file. You can chain several copiers together just by defining several &lt;copier&gt; elements.
 </p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>copier-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>copier Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>name</td>
  	 <td>Yes, unless class is set</td>
 	 <td>The name of the resource copier, e.g. &quot;antcall&quot;, &quot;renamer&quot; or &quot;svgconverter&quot;. You can register your own resource copier in ${polish.home}/custom-extensions with the type &quot;resourcecopier&quot;.</td>
@@ -549,11 +617,11 @@ In the above example MIDI files are only included when two conditions are met:
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this copier to be used.</td>
+	 <td>The Ant-property which needs to be <code>true</code>; or the preprocessing term which needs result <code>true</code> for this copier to be used.</td>
 	</tr>
 	<tr><td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this copier to be used.</td>
+	 <td>The Ant-property which needs to be <code>false</code>; or the preprocessing term which needs result <code>false</code> for this copier to be used.</td>
 	</tr>
 	</table>
 
@@ -597,10 +665,14 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 </p>
 	<h3 id="compiler">&lt;compiler&gt;</h3>
 	<p>
-	The optional &lt;compiler&gt; element can be used for specifying any compiler-arguments. J2ME Polish normally calls the Java compiler normally with the appropriate classpath as well as bootclasspath for the current target device. In some cases you might want to adjust the compiler settings, however, so you can use the nested &lt;compiler&gt; element. Along to all attributes of the standard &lt;javac&gt; task, the &lt;compiler&gt; element also supports the &quot;if&quot; and &quot;unless&quot; attributes for selecting to appropriate compiler setting:
+	The optional &lt;compiler&gt; element can be used for specifying any compiler-arguments. 
+	J2ME Polish normally calls the Java compiler normally with the appropriate classpath as well as bootclasspath for the 
+	current target device. In some cases you might want to adjust the compiler settings, however, so you can use the 
+	nested &lt;compiler&gt; element. Along to all attributes of the standard &lt;javac&gt; task, the &lt;compiler&gt; element 
+	also supports the &quot;if&quot; and &quot;unless&quot; attributes for selecting to appropriate compiler setting:
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>localization-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>localization Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
 	 <td>srcdir</td>
  	 <td>No</td>
@@ -769,12 +841,12 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	<tr>
 	 <td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this compiler-setting to be used.</td>
+	 <td>The Ant-property which needs to be <code>true</code>; or the preprocessing term which needs result <code>true</code> for this compiler-setting to be used.</td>
 	</tr>
 	<tr>
 	 <td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this compiler-setting to be used.</td>
+	 <td>The Ant-property which needs to be <code>false</code>; or the preprocessing term which needs result <code>false</code> for this compiler-setting to be used.</td>
 	</tr>
 	</table>
 
@@ -783,7 +855,7 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	You can specify additional command line arguments for the compiler with nested &lt;compilerarg&gt; elements. These elements are specified like Command-line Arguments but have an additional attribute that can be used to enable arguments only if a given compiler implementation will be used.
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>compilerargs-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>compilerargs Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
 	 <td>value</td>
  	 <td>Either value, line, file or path</td>
@@ -808,15 +880,35 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	</tr>
 	</table>
 	
+	<h3 id="postcompiler">&lt;postcompiler&gt;</h3>
+	<p>
+	Use a &lt;postcompiler&gt; for adjusting the class files after they have been compiled.
+	</p>
+	<p>Prime example of the power of postcompiling are the <a href="java5.html">Java 5 Syntax Support</a> and the 
+	<a href="floater.html">Floater Tool</a>, which allows you to use floating point calculations on CLDC 1.0 devices.
+	</p>
+<pre>
+&lt;postcompiler name=&quot;java5&quot; /&gt;
+</pre>
+	<p>
+	You can also call an Ant target in your <i>build.xml</i> script for post-processing class files:
+	</p>
+<pre>
+&lt;postcompiler name=&quot;antcall&quot; target=&quot;AntPostcompileTarget&quot; /&gt;
+</pre>
+	<p>Next to all device capabilities you can access the <code>polish.postcompile.dir</code> Ant property
+	in your target.
+	</p>
+	
 	<h3 id="obfuscator">&lt;obfuscator&gt;</h3>
 	<p>
 	The optional &lt;obfuscator&gt; element controls the obfuscating of the application bundle, which decreases the jar-size and makes it difficult to reverse engineer the application.
+	</p>
 	<pre>
 &lt;obfuscator name=&quot;ProGuard&quot; useDefaultPackage=&quot;true&quot; unless=&quot;test&quot; /&gt;
 </pre>
-</p>	
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>obfuscator-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>obfuscator Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>name</td>
  	 <td>No</td>
 	 <td>The name of the obfuscator which should be used. Defaults to <a href="http://proguard.sourceforge.net" target="_blank">&quot;ProGuard&quot;</a>. 
@@ -833,11 +925,11 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The name of the Ant-property which needs to be &quot;true&quot; or &quot;yes&quot; to use this &lt;obfuscator&gt;.</td>
+	 <td>The name of the Ant-property which needs to be <code>true</code>; or &quot;yes&quot; to use this &lt;obfuscator&gt;.</td>
 	</tr>
 	<tr><td>unless</td>
  	 <td>No</td>
-	 <td>The name of the Ant-property which needs to be &quot;false&quot; or &quot;no&quot; to use this &lt;obfuscator&gt;.</td>
+	 <td>The name of the Ant-property which needs to be <code>false</code>; or &quot;no&quot; to use this &lt;obfuscator&gt;.</td>
 	</tr>
 	<tr><td>class</td>
  	 <td>No</td>
@@ -858,18 +950,19 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	<h4 id="obfuscator-keep">The &lt;keep&gt; Subelement</h4>
 	<p>
 	The &lt;keep&gt; element is used to define classes which are loaded dynamically (e.g. with Class.forName(...) ) and should not be obfuscated:
+	</p>
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;ProGuard&quot; &gt;
 	&lt;keep class=&quot;com.company.dynamic.SomeDynamicClass&quot; /&gt;
 	&lt;keep class=&quot;com.company.dynamic.AnotherDynamicClass&quot; /&gt;
 &lt;/obfuscator&gt;
 </pre>
-	</p>
 	<p>The used MIDlet classes do not need to be set with the &lt;keep&gt; element, since they are saved from obfuscation automatically.</p>
 	
 	<h4 id="obfuscator-parameter">The &lt;parameter&gt; Subelement</h4>
 	<p>
 	The &lt;parameter&gt; element is used to specify parameters for the obfuscator. This can be useful for integrating third party obfuscators which require additional settings:
+	</p>
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;ProGuard&quot; &gt;
 	&lt;keep class=&quot;com.company.dynamic.SomeDynamicClass&quot; /&gt;
@@ -877,7 +970,6 @@ Use the &quot;svgconverter&quot; for modifying SVG images of the resources befor
 	&lt;parameter name=&quot;scriptFile&quot; value=&quot;../scripts/obfuscate.script&quot; /&gt;
 &lt;/obfuscator&gt;
 </pre>
-	</p>
 	
 	<h4 id="obfuscator-combining">Combining Several Obfuscators</h4>
 	<p>
@@ -890,6 +982,7 @@ ProGuard is an excellent obfuscator, shrinker and optimizer by Eric Lafortune. I
 <a href="http://proguard.sourceforge.net" target="_blank">http://proguard.sourceforge.net</a>. 
 </p><p>
 If you want to use ProGuard as an obfuscator, please make sure that the proguard.jar-file is listed in the classpath of the J2ME Polish task-definition (build.xml):
+</p>
 <pre>
 &lt;taskdef name=&quot;j2mepolish&quot; 
 	classname=&quot;de.enough.polish.ant.PolishTask&quot; 
@@ -897,15 +990,17 @@ If you want to use ProGuard as an obfuscator, please make sure that the proguard
 		${polish.home}/import/jdom.jar:
 		<b>${polish.home}/import/proguard.jar</b>&quot;/&gt;
 </pre>
-</p><p>
+<p>
 You can use ProGuard by setting the name-attribute of the &lt;obfuscator&gt; element to &quot;ProGuard&quot;.
 </p><p>
 ProGuard 3.x offers an additional optimization of the bytecode, which is disabled by default. The optimization can be enabled by setting the &quot;optimize&quot;-parameter to &quot;true&quot;:
+</p>
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;ProGuard&quot; &gt;
 	&lt;parameter name=&quot;optimize&quot; value=&quot;true&quot; /&gt;
 &lt;/obfuscator&gt;
-</pre></p><p>
+</pre>
+<p>
 A text-file which lists all renaming operations is written to build/[vendor]/[device]/[locale]/obfuscation-map.txt. This file is useful if you get exceptions in the obfuscated application.
 </p>
 <h5 id="obfuscator-yguard">yGuard</h5>
@@ -914,13 +1009,15 @@ The yGuard obfuscator by the yWorks GmbH is another interesting obfuscator and c
 <a href="http://www.yworks.de" target="_blank">http://www.yworks.de</a>. 
 </p><p>
 If you want to use yGuard as an obfuscator, please make sure that either the yguard-lib.jar or the original yguard.jar is listed in the classpath of the J2ME Polish task-definition (build.xml):
+</p>
 <pre>
 &lt;taskdef name=&quot;j2mepolish&quot; 
 	classname=&quot;de.enough.polish.ant.PolishTask&quot; 
 	classpath=&quot;${polish.home}/import/enough-j2mepolish-build.jar:
 		${polish.home}/import/jdom.jar:
 		<b>${polish.home}/import/yguard-lib.jar</b>&quot;/&gt;
-</pre></p><p>
+</pre>
+<p>
 The yGuard obfuscator can be used by setting the name-attribute of the &lt;obfuscator&gt; element to &quot;YGuard&quot;:
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;YGuard&quot; /&gt;
@@ -931,10 +1028,10 @@ RetroGuard is the basis of both yGuard and ProGuard and was developed by Retrolo
 <a href="http://www.retrologic.com" target="_blank">http://www.retrologic.com</a>. 
 </p><p>
 You can use RetroGuard just by setting the &quot;name&quot;-attribute to &quot;RetroGuard&quot;:
+</p>
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;RetroGuard&quot; /&gt;
 </pre>
-<p>
 <h5 id="obfuscator-klassmaster">Zelix KlassMaster</h5>
 <p>
 KlassMaster is a commercial obfuscator available from Zelix Pty Ltd. A free evaluation 
@@ -942,13 +1039,15 @@ version can be requested at
 <a href="http://www.zelix.com" target="_blank">http://www.zelix.com</a>. 
 </p><p>
 The KlassMaster integration is based on the WTK-mechanism for calling obfuscators, therefore both the ZKM.jar as well as the kenv.zip needs to be on the classpath:
+</p>
 <pre>
 &lt;taskdef name=&quot;j2mepolish&quot; 
 	classname=&quot;de.enough.polish.ant.PolishTask&quot; 
 	classpath=&quot;${polish.home}/import/enough-j2mepolish-build.jar:
 		${polish.home}/import/jdom.jar:
 		<b>${polish.home}/import/ZKM.jar:${wtk.home}/wtklib/kenv.zip</b>&quot;/&gt;
-</pre></p><p>
+</pre>
+<p>
 The KlassMaster-integration allows several parameters to be set:
 </p>
 <ul>
@@ -958,12 +1057,12 @@ The KlassMaster-integration allows several parameters to be set:
 </ul>
 <p>
 The following example shows a possible invocation of KlassMaster:
+</p>
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;KlassMaster&quot; &gt;
 	&lt;parameter name=&quot;ObfuscateFlowLevel&quot; value=&quot;none&quot; /&gt;
 &lt;/obfuscator&gt;
 </pre>
-</p>
 <h5 id="obfuscator-dasho">DashO Pro</h5>
 <p>
 DashO Pro is a commercial obfuscator by Preemptive Solutions. A free evaluation version can be requested at 
@@ -987,25 +1086,28 @@ The DashO Pro obfuscator supports following parameters:
 A report about the renamed clases as well as methods will be written to build/[vendor]/[device]/[locale]/obfuscation-map.txt. This file is useful for resolving stacktraces in the obfuscated application.
 </p><p>
 This example shows the integration of DashO Pro:
+</p>
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;Dasho&quot; &gt;
 	&lt;parameter name=&quot;DashoHome&quot; value=&quot;/home/user/DashOPro_3.1&quot; /&gt;
 	&lt;parameter name=&quot;Version&quot; value=&quot;3.1&quot; /&gt;
 &lt;/obfuscator&gt;
 </pre>
-</p>
 <h5 id="obfuscator-jode">JODE</h5>
 <p>
 JODE is quite a powerful optimizer, shrinker and obfuscator by Jochen Hoenicke. It is licensed under the GNU General Public License and is available at http://jode.sourceforge.net free of charge.
-</p><p>
+</p>
+<p>
 If you want to use JODE, please make sure that the jode-jar-file is on the classpath:
+</p>
 <pre>
 &lt;taskdef name=&quot;j2mepolish&quot; 
 	classname=&quot;de.enough.polish.ant.PolishTask&quot; 
 	classpath=&quot;${polish.home}/import/enough-j2mepolish-build.jar:
 		${polish.home}/import/jdom.jar:
 		<b>${polish.home}/import/Jode-1.1.2-pre1.jar</b>&quot;/&gt;
-</pre></p><p>
+</pre>
+<p>
 JODE supports the &quot;ScriptFile&quot;-parameter which can be used to specify the obfuscator-script. Please note that the source-jar-file is always the &quot;build/source.jar&quot; and the target-file is the &quot;build/dest.jar&quot;:
 <pre>
 &lt;obfuscator unless=&quot;test&quot; enable=&quot;true&quot; name=&quot;Jode&quot; &gt;
@@ -1021,6 +1123,7 @@ Maybe someone with more experience with JODE can provide help here - please get 
 	<h3 id="variables">&lt;variables&gt;</h3>
 	<p>
 	The optional &lt;variables&gt; element contains several variable definitions, which can be used for the preprocessing. This mechanism can be used for example to define configuration values:
+	</p>	
 <pre>
 &lt;variables includeAntProperties=&quot;true&quot;&gt;
 	&lt;variable name=&quot;update-url&quot; value=&quot;http://www.enough.de/update&quot; /&gt;
@@ -1030,9 +1133,8 @@ Maybe someone with more experience with JODE can provide help here - please get 
 
 &lt;/variables&gt;
 </pre>
-</p>	
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>variables-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>variables Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>includeAntProperties</td>
  	 <td>No</td>
 	 <td>Either &quot;true&quot; or &quot;false&quot;. When &quot;true&quot; all Ant-properties will be included and can be used in the preprocessing. Defaults to &quot;false&quot;.</td>
@@ -1041,7 +1143,7 @@ Maybe someone with more experience with JODE can provide help here - please get 
 	<p>
 	The &lt;variables&gt; element contains an arbitrary number of &lt;variable&gt; elements, which define the actual variables. Each variable needs the attributes name and value:
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>variable-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>variable Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>name</td>
  	 <td>Yes unless file is used</td>
 	 <td>The name of the variable.</td>
@@ -1056,16 +1158,17 @@ Maybe someone with more experience with JODE can provide help here - please get 
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this variable to be included.</td>
+	 <td>The Ant-property which needs to be <code>true</code>; or the preprocessing term which needs result <code>true</code> for this variable to be included.</td>
 	</tr>
 	<tr><td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this variable to be included.</td>
+	 <td>The Ant-property which needs to be <code>false</code>; or the preprocessing term which needs result <code>false</code> for this variable to be included.</td>
 	</tr>
 	</table>
 	<p>
 	Variables which have been defined in this way can be included into the source code with the 
 	&quot;<code>//#=</code>&quot; preprocessing directive and can be checked with the &quot;<code>[variable-name]:defined</code>&quot; symbol:
+	</p>
 <pre>
 //#ifdef update-url:defined
 	//#= String url = &quot;${ update-url }&quot;;
@@ -1073,7 +1176,6 @@ Maybe someone with more experience with JODE can provide help here - please get 
 	String url = &quot;http://www.default.com/update&quot;;
 //#endif
 </pre>
-	</p>
 	<p>
 	Variables can also be compared, please refer to the description of the <a href="directives.html#preprocessing-if">#if-directive</a> for more information.
 	</p>
@@ -1081,13 +1183,16 @@ Maybe someone with more experience with JODE can provide help here - please get 
 	<h3 id="debug">&lt;debug&gt;</h3>
 	<p>
 	The optional &lt;debug&gt; element controls the inclusion of debugging messages for specific classes or packages. The debugging messages will be activated or deactivated in the source code, so the performance will not be decreased, when the debugging is deactivated. 
+	</p>
 <pre>
 &lt;debug showLogOnError=&quot;true&quot; verbose=&quot;false&quot; level=&quot;error&quot; if=&quot;test&quot; &gt;
 	&lt;filter pattern=&quot;com.company.package.*&quot; level=&quot;info&quot; /&gt;
 	&lt;filter pattern=&quot;com.company.package.MyClass&quot; level=&quot;debug&quot; /&gt;
 &lt;/debug&gt;
-</pre></p><p>
-In the source code any debug messages must be accompanied by a //#debug-directive:
+</pre>
+	<p>
+	In the source code any debug messages must be accompanied by a //#debug-directive:
+	</p>
 <pre>
 //#debug
 System.out.println(&quot;initialization done.&quot;);
@@ -1097,13 +1202,13 @@ System.out.println(&quot;could not load something...&quot;);
 or
 //#debug error
 System.out.println("could not load something: " + e);
-</pre></p>
+</pre>
 <p>You will find more information about the debugging
 possibilities in the <a href="tutorial.html#debug">introduction</a> as well as in the
 <a href="directives.html#preprocessing-debug">preprocessing</a> documentation.
 </p>	
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>debug-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>debug Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>level</td>
  	 <td>No</td>
 	 <td>The general debug level which is needed for debug messages. Possible values are &quot;debug&quot;, &quot;info&quot;, &quot;warn&quot;, &quot;error&quot;, &quot;fatal&quot; or a user-defined level. Default level is &quot;debug&quot;, so all debugging messages will be included.</td>
@@ -1131,13 +1236,13 @@ Debug.debug( String message, Throwable exception ) method is called.
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The name of the Ant-property which needs to be &quot;true&quot; or &quot;yes&quot; to use this &lt;debug&gt;.
+	 <td>The name of the Ant-property which needs to be <code>true</code>; or &quot;yes&quot; to use this &lt;debug&gt;.
 	 When the &lt;debug&gt; element is activated, the preprocessing symbol &quot;polish.debugEnabled&quot; will be defined.
 	 </td>
 	</tr>
 	<tr><td>unless</td>
  	 <td>No</td>
-	 <td>The name of the Ant-property which needs to be &quot;false&quot; or &quot;no&quot; to use this &lt;debug&gt;.</td>
+	 <td>The name of the Ant-property which needs to be <code>false</code>; or &quot;no&quot; to use this &lt;debug&gt;.</td>
 	</tr>
 	</table>
 	<p>
@@ -1145,7 +1250,7 @@ Debug.debug( String message, Throwable exception ) method is called.
 	&lt;filter&gt;, which defines the debug-level for specific classes or packages.
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>filter-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>filter Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>pattern</td>
  	 <td>Yes</td>
 	 <td>The name of the class or of the package. When the pattern ends with a star, all classes of that package will be included, e.g. &quot;com.company.mypackage.*&quot;</td>
@@ -1157,7 +1262,8 @@ Debug.debug( String message, Throwable exception ) method is called.
 	</table>
 	
 	<h3 id="jad">&lt;jad&gt;</h3>
-	<p>With the <jad>-element user-defined attributes can be added to the JAD-file (Java Application Descriptor) as well as the MANIFEST-file which is contained in the created JAR-file. The <jad> element contains a number of <attribute>-sub-elements which define the actual attributes:
+	<p>With the &lt;jad&gt; element user-defined attributes can be added to the JAD-file (Java Application Descriptor) as well as the MANIFEST-file which is contained in the created JAR-file. The <jad> element contains a number of <attribute>-sub-elements which define the actual attributes:
+	</p>
 <pre>
 &lt;jad&gt;
  &lt;attribute 	name=&quot;Nokia-MIDlet-Category&quot; 
@@ -1168,9 +1274,8 @@ Debug.debug( String message, Throwable exception ) method is called.
 		if=&quot;polish.midp2&quot; /&gt;
 &lt;/jad&gt;	
 </pre>
-</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>attribute-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>attribute Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>name</td>
  	 <td>Yes unless file is used</td>
 	 <td>The name of the attribute, e.g. &quot;Nokia-MIDlet-Category&quot;</td>
@@ -1185,18 +1290,19 @@ Debug.debug( String message, Throwable exception ) method is called.
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true for this variable to be included.</td>
+	 <td>The Ant-property which needs to be <code>true</code>; or the preprocessing term which needs result <code>true</code> for this variable to be included.</td>
 	</tr>
 	<tr><td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false for this variable to be included.</td>
+	 <td>The Ant-property which needs to be <code>false</code>; or the preprocessing term which needs result <code>false</code> for this variable to be included.</td>
 	</tr>
 	</table>
 	<p>Attributes which are defined in this way can be loaded in the application with the MIDlet.getAppProperty( String name ) method, which needs the name of the attribute as an argument and returns the value of that argument. Often it is advisable to use the variable-mechanism of J2ME Polish instead, since such values are actually hard-coded into the application and are, therefore, much faster than the getAppProperty(...)-mechanism.</p>
 
 	<h4 id="jad-sorting">Sorting and Filtering JAD attributes</h4>
 	<p>
-The JAD-attributes can filtered and sorted using the &lt;jadFilter&gt; subelement:
+	The JAD-attributes can filtered and sorted using the &lt;jadFilter&gt; subelement:
+	</p>
 <pre>
 &lt;jad&gt;
  &lt;attribute 
@@ -1212,21 +1318,20 @@ The JAD-attributes can filtered and sorted using the &lt;jadFilter&gt; subelemen
  &lt;/filter&gt;
 &lt;/jad&gt;
 </pre>
-</p>
 <p>
 The &lt;jadfilter&gt; element contains all allowed attribute names in the desired order and separated by commas. You can use different filters by using the &quot;if&quot; or &quot;unless&quot; attributes:
 </p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>jadFilter-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>jadFilter Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
 	 <td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true so that this filter is used.</td>
+	 <td>The Ant-property which needs to be <code>true</code>; or the preprocessing term which needs result <code>true</code> so that this filter is used.</td>
 	</tr>
 	<tr>
 	 <td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false so that this filter is used.</td>
+	 <td>The Ant-property which needs to be <code>false</code>; or the preprocessing term which needs result <code>false</code> so that this filter is used.</td>
 	</tr>
 	</table>
 <p>
@@ -1270,16 +1375,16 @@ The manifest filter element can be used to sort and filter manifest attributes. 
 The &lt;manifestFilter&gt; element contains all allowed attribute names in the desired order and separated by commas. You can use different filters by using the &quot;if&quot; or &quot;unless&quot; attributes:
 </p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>manifestFilter-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>manifestFilter Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
 	 <td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true so that this filter is used.</td>
+	 <td>The Ant-property which needs to be <code>true</code>; or the preprocessing term which needs result <code>true</code> so that this filter is used.</td>
 	</tr>
 	<tr>
 	 <td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false so that this filter is used.</td>
+	 <td>The Ant-property which needs to be <code>false</code>; or the preprocessing term which needs result <code>false</code> so that this filter is used.</td>
 	</tr>
 	</table>
 
@@ -1325,7 +1430,7 @@ This can be used for allowing new preprocessing directives for example.
 &lt;/preprocessor&gt;	
 </pre></p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>preprocessor-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>preprocessor Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>class</td>
  	 <td>Yes</td>
 	 <td>The class of the preprocessor.</td>
@@ -1337,16 +1442,76 @@ This can be used for allowing new preprocessing directives for example.
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The name of the Ant-property, which needs to be &quot;true&quot; or &quot;yes&quot;, when this &lt;preprocessor&gt; element should be used.</td>
+	 <td>The name of the Ant-property, which needs to be <code>true</code>; or &quot;yes&quot;, when this &lt;preprocessor&gt; element should be used.</td>
 	</tr>
 	<tr><td>unless</td>
  	 <td>No</td>
-	 <td>The name of the Ant-property, which needs to be &quot;false&quot; or &quot;no&quot;, when this &lt;preprocessor &gt; element should be used..</td>
+	 <td>The name of the Ant-property, which needs to be <code>false</code>; or &quot;no&quot;, when this &lt;preprocessor &gt; element should be used..</td>
 	</tr>
 	</table>
 	<p>
 	The preprocessor can be configured using a number &lt;parameter&gt; subelements. Each &lt;parameter&gt; subelement needs to define the attributes &quot;name&quot; and &quot;value&quot;.
 	</p>
+	
+	
+<h3 id="packager">&lt;packager&gt;</h3>
+<p>
+Usually the efficient internal J2ME Polish packager is used for creating the final application bundles. For using a different packaging-program, the &lt;packager&gt; element can be used:
+</p>
+<pre>
+&lt;packager
+	executable=&quot;jar&quot;
+	arguments=&quot;cvfM;;${polish.jarPath};;-C;;${polish.packageDir};;.&quot;
+/&gt;
+</pre>
+<p>
+A much simpler but equally valid call is this:
+<pre>
+&lt;packager name=&quot;jar&quot; /&gt;
+</pre>
+</p>
+<p>
+A possible alternative might be the Open Source tool &quot;7-Zip&quot;, which can create smaller files compared to the standard ZIP mechanism. This might result in problems on the actual device, though, so use with care. The 7-Zip tool can be obtained free of charge at 
+<a href="http://www.7-zip.org" target="_blank">http://www.7-zip.org</a>.
+</p>
+<p>
+The &lt;packager&gt; element supports following attributes:
+</p>
+<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+	<tr><th>packager Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr>
+	 <td>name</td>
+ 	 <td>Yes, unless executable or class is defined</td>
+	 <td>The name of the packager, e.g. &quot;jar&quot;, &quot;antcall&quot;, &quot;7zip&quot; or &quot;kzip&quot;. You can register your own packager in ${polish.home}/custom-extensions.xml by using the &quot;packager&quot; type.</td>
+	</tr>
+	<tr>
+	 <td>target</td>
+ 	 <td>No</td>
+	 <td>The Ant target that should be used for the packaging step. Only relevant when the &quot;antcall&quot; packager is used.</td>
+	</tr>
+	<tr>
+	 <td>executable</td>
+ 	 <td>No</td>
+	 <td>The name of the program, e.g. &quot;jar&quot; or &quot;7za.exe&quot;.</td>
+	</tr>
+	<tr>
+	 <td>arguments</td>
+ 	 <td>Yes, unless class is used</td>
+	 <td>The arguments for the packager. Several arguments can be separated by using double-semicolons (;;). Any Ant-properties as well as J2ME Polish variables can be used. Often needed variables are:
+	 <ul>
+	 	<li><code>${polish.jarPath}</code>: the full path to the jar-file which should be created.</li>
+		<li><code>${polish.packageDir}</code>: the directory which contains the classes and the resources which should be &quot;jared&quot;.</li>
+	 </ul>
+	 </td>
+	</tr>
+	<tr>
+	 <td>class</td>
+ 	 <td>No</td>
+	 <td>The name of the class which extends the 
+	 <a href="<%= javadocdir %>../javadoc/build/de/enough/polish/jar/Packager.html" target="_blank">de.enough.polish.jar.Packager</a>-class. This mechanism can be used for extending the packaging capabilities of J2ME Polish.
+In that case further parameters can be set using nested &lt;parameter&gt; elements.</td>
+	</tr>
+</table>	
 	
 <h3 id="sign">&lt;sign&gt;</h3>
 <p>
@@ -1371,7 +1536,7 @@ ant -Dpassword=secret
 </pre>
 </p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>sign-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>sign Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>key</td>
  	 <td>Yes</td>
 	 <td>The name of the key used for signing.</td>
@@ -1387,11 +1552,11 @@ ant -Dpassword=secret
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The name of the Ant-property, which needs to be &quot;true&quot; or &quot;yes&quot;, when this &lt;sign&gt; element should be used.</td>
+	 <td>The name of the Ant-property, which needs to be <code>true</code>; or &quot;yes&quot;, when this &lt;sign&gt; element should be used.</td>
 	</tr>
 	<tr><td>unless</td>
  	 <td>No</td>
-	 <td>The name of the Ant-property, which needs to be &quot;false&quot; or &quot;no&quot;, when this &lt;sign &gt; element should be used..</td>
+	 <td>The name of the Ant-property, which needs to be <code>false</code>; or &quot;no&quot;, when this &lt;sign &gt; element should be used..</td>
 	</tr>
 	</table>
 
@@ -1437,7 +1602,7 @@ Following variables can be used in the &lt;arg&gt; element and the &quot;message
 The most important attributes of the &lt;java&gt; element are:
 </p>
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>java-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>java Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
 	 <td>classname</td>
  	 <td>either classname or jar</td>
@@ -1461,17 +1626,17 @@ The most important attributes of the &lt;java&gt; element are:
 	<tr>
 	 <td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true when this &lt;java&gt; element should be executed.</td>
+	 <td>The Ant-property which needs to be <code>true</code>; or the preprocessing term which needs result <code>true</code> when this &lt;java&gt; element should be executed.</td>
 	</tr>
 	<tr>
 	 <td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false when this &lt;java&gt; element should be executed.</td>
+	 <td>The Ant-property which needs to be <code>false</code>; or the preprocessing term which needs result <code>false</code> when this &lt;java&gt; element should be executed.</td>
 	</tr>
 </table>
 <p>The most important nested element is the &lt;arg&gt; element:</p>
 <table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>arg-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>arg Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr>
 	 <td>line</td>
  	 <td>No</td>
@@ -1483,65 +1648,24 @@ The most important attributes of the &lt;java&gt; element are:
  for more information about the &lt;java&gt; element.
 </p>
 
-<h3 id="packager">&lt;packager&gt;</h3>
-<p>
-Usually the efficient internal J2ME Polish packager is used for creating the final application bundles. For using a different packaging-program, the &lt;packager&gt; element can be used:
-</p>
-<p>
-<pre>
-&lt;packager
-	executable=&quot;jar&quot;
-	arguments=&quot;cvfM;;${polish.jarPath};;-C;;${polish.packageDir};;.&quot;
-/&gt;
-</pre>
-</p>
-<p>
-A much simpler but equally valid call is this:
-<pre>
-&lt;packager name=&quot;jar&quot; /&gt;
-</pre>
-</p>
-<p>
-A possible alternative might be the Open Source tool &quot;7-Zip&quot;, which can create smaller files compared to the standard ZIP mechanism. This might result in problems on the actual device, though, so use with care. The 7-Zip tool can be obtained free of charge at 
-<a href="http://www.7-zip.org" target="_blank">http://www.7-zip.org</a>.
-</p>
-<p>
-The &lt;packager&gt; element supports following attributes:
-</p>
-<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>packager-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
-	<tr>
-	 <td>name</td>
- 	 <td>Yes, unless executable or class is defined</td>
-	 <td>The name of the packager, e.g. &quot;jar&quot;, &quot;antcall&quot;, &quot;7zip&quot; or &quot;kzip&quot;. You can register your own packager in ${polish.home}/custom-extensions.xml by using the &quot;packager&quot; type.</td>
-	</tr>
-	<tr>
-	 <td>target</td>
- 	 <td>No</td>
-	 <td>The Ant target that should be used for the packaging step. Only relevant when the &quot;antcall&quot; packager is used.</td>
-	</tr>
-	<tr>
-	 <td>executable</td>
- 	 <td>No</td>
-	 <td>The name of the program, e.g. &quot;jar&quot; or &quot;7za.exe&quot;.</td>
-	</tr>
-	<tr>
-	 <td>arguments</td>
- 	 <td>Yes, unless class is used</td>
-	 <td>The arguments for the packager. Several arguments can be separated by using double-semicolons (;;). Any Ant-properties as well as J2ME Polish variables can be used. Often needed variables are:
-	 <ul>
-	 	<li><code>${polish.jarPath}</code>: the full path to the jar-file which should be created.</li>
-		<li><code>${polish.packageDir}</code>: the directory which contains the classes and the resources which should be &quot;jared&quot;.</li>
-	 </ul>
-	 </td>
-	</tr>
-	<tr>
-	 <td>class</td>
- 	 <td>No</td>
-	 <td>The name of the class which extends the 
-	 <a href="<%= javadocdir %>../javadoc/build/de/enough/polish/jar/Packager.html" target="_blank">de.enough.polish.jar.Packager</a>-class. This mechanism can be used for extending the packaging capabilities of J2ME Polish.
-In that case further parameters can be set using nested &lt;parameter&gt; elements.</td>
-	</tr>
-</table>
 	
+	<h3 id="finalizer">&lt;finalizer&gt;</h3>
+	<p>
+		After J2ME Polish has finished compiling and packaging your application it can use a <code>finalizer</code> to do
+		some marvelous stuff. This is used for converting a JAR into a COD archieve for BlackBerry devices, for example.
+		An easy way to implement your own functionality is to use the <code>antcall</code> finalizer:
+	</p>
+<pre>
+&lt;finalizer name=&quot;antcall&quot; target=&quot;MyFinalizerAntTarget&quot; /&gt;
+</pre>
+	<p>
+	Next to all capabilities of the current target device you can then access the Ant properties <code>polish.finalize.jar</code> 
+	and <code>polish.finalize.jad</code> in your <code>MyFinalizerAntTarget</code>:
+	</p>
+<pre>
+&lt;target name=&quot;MyFinalizerTarget&quot;&gt;
+	&lt;echo message=&quot;J2ME Polish is now finished with creating ${polish.finalize.jar} and ${polish.finalize.jad} for device ${polish.identifer}&quot; /&gt;
+&lt;/target&gt;
+</pre>
+
 <%include end.txt %>

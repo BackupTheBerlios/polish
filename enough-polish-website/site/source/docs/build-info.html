@@ -6,25 +6,25 @@
 	
 	<h1 id="top">The &lt;info&gt; Section</h1>
 	<p>
-	In the &lt;info&gt; section general information about the project is defined:
-	<pre>
-  &lt;j2mepolish&gt;
-      &lt;!-- general settings --&gt;
-      &lt;info
-         name=&quot;SimpleMenu&quot;
-         version=&quot;1.3.4&quot;
-         description=&quot;A test project&quot;
-         vendorName=&quot;enough software&quot;
-         infoUrl=&quot;http://www.enough.de/j2mepolish&quot;
-         icon=&quot;dot.png&quot;
-         jarName=&quot;${polish.vendor}-${polish.name}-example.jar&quot; 
-         jarUrl=&quot;${polish.jarName}&quot;
-         copyright=&quot;Copyright 2004 enough software.&quot;
-         deleteConfirm=&quot;Do you really want to kill me?&quot; 
-      /&gt;
-      [...]
-	</pre>
+	Specify general information about your application in the  &lt;info&gt; section:
 	</p>
+	<pre>
+ &lt;j2mepolish&gt;
+     &lt;!-- general settings --&gt;
+     &lt;info
+        name=&quot;SimpleMenu&quot;
+        version=&quot;1.3.4&quot;
+        description=&quot;A test project&quot;
+        vendorName=&quot;enough software&quot;
+        infoUrl=&quot;http://www.enough.de/j2mepolish&quot;
+        icon=&quot;dot.png&quot;
+        jarName=&quot;${polish.vendor}-${polish.name}-example.jar&quot; 
+        jarUrl=&quot;${polish.jarName}&quot;
+        copyright=&quot;Copyright 2008 Enough Software.&quot;
+        deleteConfirm=&quot;Do you really want to kill me?&quot; 
+     /&gt;
+     [...]
+	</pre>
 	<h2 id="attributes">Supported Attributes</h2>
 	<p>Following attributes are supported by the &lt;info&gt; element:
 	</p>
@@ -52,7 +52,7 @@
 	 but the following are especially useful:
 	 <br/><code>${polish.vendor}</code>: The vendor of the device, e.g. Samsung or Motorola
 	 <br/><code>${polish.name}</code>: The name of the device
-	 <br/><code>${polish.identifier}</code>: Vendor and device name, e.g.  &quot;Nokia/6600&quot;
+	 <br/><code>${polish.identifier}</code>: Vendor and device name, e.g.  &quot;Nokia/N95&quot;
 	 <br/><code>${polish.version}</code>: The version of the project as defined above.
 	 <br/><code>${polish.language}</code>: The two letter ISO language-code, e.g. &quot;en&quot; or &quot;de&quot;.
 	 <br/><code>${polish.country}</code>: The two letter ISO country-code, e.g. &quot;US&quot; or &quot;DE&quot;. This can be empty when no country is defined in the current locale.

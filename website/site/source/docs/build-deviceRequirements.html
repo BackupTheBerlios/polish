@@ -5,20 +5,26 @@
 <%include start.txt %>
 	
 	<h1 id="top">The &lt;deviceRequirements&gt; Section</h1>
+	<ul class="relatedtechnologies">
+	<li class="relatedtechnologiesheader">Related Topics:</li>
+	<li><a href="http://devices.j2mepolish.org">J2ME Polish Device Database</a></li>
+	</ul>
+	<p class="pullquote">Select your target devices in the &lt;deviceRequirements&gt; section!</p>
+	
+	
 	<p>
-The optional &lt;deviceRequirements&gt; section is responsible for selecting the
-devices which are supported by the application. When this section is omitted, the 
-application will be optimized for all known devices. Any device capabilities or 
-features can be used for the device selection:
+	Select the devices that you want to target in the &lt;deviceRequirements&gt; section. You can use any device capabilities 
+	for choosing your target devices:
+	</p>
 <pre>
 &lt;deviceRequirements if=&quot;test&quot;&gt;
-	&lt;requirement name=&quot;Identifier&quot; value=&quot;Nokia/6600&quot; /&gt;
+	&lt;requirement name=&quot;Identifier&quot; value=&quot;Nokia/N95, Sony-Ericsson/K850i&quot; /&gt;
 &lt;/deviceRequirements&gt;
 &lt;deviceRequirements unless=&quot;test&quot;&gt;
-	&lt;requirement name=&quot;JavaPackage&quot; value=&quot;nokia-ui&quot; /&gt;
-	&lt;requirement name=&quot;BitsPerPixel&quot; value=&quot;4+&quot; /&gt;
+	&lt;requirement name=&quot;term&quot; value=&quot;polish.api.mmapi and (polish.midp2 or polish.midp3)&quot; /&gt;
 &lt;/deviceRequirements&gt;
-</pre></p><p>
+</pre>
+<p>
 In this example two alternative device-selections are defined - when the test-property is 
 set to true (by defining it with <code>&lt;property name=&quot;test&quot; value="true" /&gt;</code>), 
 only the upper <code>&lt;deviceRequirements&gt;</code>-element is used and the second 

@@ -7,8 +7,9 @@
 	<h1 id="top">The &lt;emulator&gt; Section</h1>
 	<%index %>
 	<p>
-The &lt;emulator&gt; element is responsible for launching any emulators after the application has been build.
-	<pre>
+	Launch your application in emulators by specifying the &lt;emulator&gt; element:
+	</p>
+<pre>
 &lt;emulator
 	wait=&quot;true&quot;
 	trace=&quot;class&quot;
@@ -25,9 +26,8 @@ The &lt;emulator&gt; element is responsible for launching any emulators after th
 			value=&quot;transient=http://localhost:8080/${polish.jadName}&quot; /&gt;
 
 &lt;/emulator&gt;
-	</pre>
-	</p>
-	<p>In the above example the emulator is only started, when the &quot;test&quot;-property is &quot;true&quot;.</p>
+</pre>
+	<p>In the above example the emulator is only started, when the &quot;test&quot; property is &quot;true&quot;.</p>
 	
 	<h2 id="emulator-attributes">Supported Attributes</h2>
 	<p>Following attributes are supported by the &lt;emulator&gt; element:
@@ -36,35 +36,37 @@ The &lt;emulator&gt; element is responsible for launching any emulators after th
 	<tr><th>emulator-Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>wait</td>
  	 <td>No</td>
-	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. Defines whether the J2ME Polish task should wait until the emulator is finished. This is needed when any output should be shown on the Ant-output, therefore wait defaults to &quot;yes&quot;. </td>
-	</tr>
-	<tr><td>trace</td>
- 	 <td>No</td>
-	 <td>Defines if any virtual machine activities should be shown on the output. Possible values are &quot;class&quot; for showing the loading of classes, &quot;gc&quot; for activities of the garbage collection and &quot;all&quot; for a very extensive output. Several values can be given when they are separated by comma, e.g &quot;class,gc&quot;. </td>
-	</tr>
-	<tr><td>securityDomain</td>
- 	 <td>No</td>
-	 <td>The MIDP/2.0 security-domain of the application: either "trusted", "untrusted", "minimum" or "maximum". In &quot;trusted&quot; and &quot;maximum&quot; mode all security sensitive activities are allowed; in the &quot;untrusted&quot; mode the user will be questioned before each security sensitive activity and in the &quot;minimum&quot; mode any security sensitive activity will not be allowed. </td>
-	</tr>
-	<tr><td>enableProfiler</td>
- 	 <td>No</td>
-	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. When activated the  performance will be profiled during the execution of the application. The results will be shown when the emulator itself is closed.</td>
-	</tr>
-	<tr><td>enableMemoryMonitor</td>
- 	 <td>No</td>
-	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. When activated the memory usage of the application will be shown.</td>
-	</tr>
-	<tr><td>enableNetworkMonitor</td>
- 	 <td>No</td>
-	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. When any network activities are done, a monitor will show details of the sent and received data.</td>
+	 <td>Either <code>true</code> or <code>false</code>. Defines whether the J2ME Polish task should wait until the emulator is finished. This is needed when any output should be shown on the Ant-output, therefore wait defaults to &quot;yes&quot;. </td>
 	</tr>
 	<tr><td>transient</td>
  	 <td>No</td>
-	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. When <code>true</code> is given, the application is installed, run and de-installed again.</td>
+	 <td>Either <code>true</code> or <code>false</code>. Starts the emulator in transient mode (install, run, deinstall) if set to <code>true</code>. 
+	 J2ME Polish will then serve the application via a small HTTP server to the emulator.
+	 </td>
 	</tr>
 	<tr><td>transientPort</td>
  	 <td>No</td>
-	 <td>Integer port number. The port on which the application is served when the transient mode is activated. Defaults to 9090.</td>
+	 <td>Sets the port on which the application should be delivered in transient mode. Default port is 9090. </td>
+	</tr>
+	<tr><td>trace</td>
+ 	 <td>No</td>
+	 <td>Defines if any virtual machine activities should be shown on the output. Possible values are &quot;class&quot; for showing the loading of classes, &quot;gc&quot; for activities of the garbage collection and &quot;all&quot; for a very extensive output. Several values can be given when they are separated by comma, e.g &quot;class,gc&quot;. When it is set to  &quot;none&quot; tracing will be deactivated completely.</td>
+	</tr>
+	<tr><td>securityDomain</td>
+ 	 <td>No</td>
+	 <td>The MIDP 2.0 security-domain of the application: either "trusted", "untrusted", "minimum" or "maximum". In &quot;trusted&quot; and &quot;maximum&quot; mode all security sensitive activities are allowed; in the &quot;untrusted&quot; mode the user will be questioned before each security sensitive activity and in the &quot;minimum&quot; mode any security sensitive activity will not be allowed. </td>
+	</tr>
+	<tr><td>enableProfiler</td>
+ 	 <td>No</td>
+	 <td>Either <code>true</code> or <code>false</code>. When activated the  performance will be profiled during the execution of the application. The results will be shown when the emulator itself is closed.</td>
+	</tr>
+	<tr><td>enableMemoryMonitor</td>
+ 	 <td>No</td>
+	 <td>Either <code>true</code> or <code>false</code>. When activated the memory usage of the application will be shown.</td>
+	</tr>
+	<tr><td>enableNetworkMonitor</td>
+ 	 <td>No</td>
+	 <td>Either <code>true</code> or <code>false</code>. When any network activities are done, a monitor will show details of the sent and received data.</td>
 	</tr>
 	<tr><td>preferences</td>
  	 <td>No</td>
@@ -72,15 +74,15 @@ The &lt;emulator&gt; element is responsible for launching any emulators after th
 	</tr>
 	<tr><td>showDecompiledStackTrace</td>
  	 <td>No</td>
-	 <td>Either &quot;yes&quot;/&quot;true&quot; or &quot;no&quot;/&quot;false&quot;. Determines whether a decompiled stack-trace should be shown, even when the source-code position of an exception could be be located. The automatic resolving of stack traces is discussed <a href="#emulator-stacktrace">below</a>.</td>
+	 <td>Either <code>true</code> or <code>false</code>. Determines whether a decompiled stack-trace should be shown, even when the source-code position of an exception could be be located. The automatic resolving of stack traces is discussed <a href="#emulator-stacktrace">below</a>.</td>
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; when the &lt;emulator&gt; element should be executed.</td>
+	 <td>The Ant property which needs to be <code>true</code> when the &lt;emulator&gt; element should be executed.</td>
 	</tr>
 	<tr><td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; when the &lt;emulator&gt; element should be executed.</td>
+	 <td>The Ant property which needs to be <code>true</code> when the &lt;emulator&gt; element should be executed.</td>
 	</tr>
 	</table>
 	
@@ -115,11 +117,11 @@ When only a command-line switch should be defined, just define an empty value, e
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;true&quot; or the preprocessing term which needs result true when this parameter should be used.</td>
+	 <td>The Ant property which needs to be &quot;true&quot; or the preprocessing term which needs result true when this parameter should be used.</td>
 	</tr>
 	<tr><td>unless</td>
  	 <td>No</td>
-	 <td>The Ant-property which needs to be &quot;false&quot; or the preprocessing term which needs result false when this parameter should be used.</td>
+	 <td>The Ant property which needs to be &quot;false&quot; or the preprocessing term which needs result false when this parameter should be used.</td>
 	</tr>
 	</table>
 	
@@ -137,21 +139,21 @@ You can also set several skins, when several versions of an emulator do exist, f
 </p>
 <h3 id="nokia">Nokia Emulators</h3>
 <p>
-For launching Nokia emulators it might be necessary to define the  &quot;<code>nokia.home</code>&quot;-property in the <i>${polish.home}/global.properties</i> file. This property needs to point to the installation directory of the Nokia emulators and defaults to  &quot;C:\Nokia&quot; on Windows machines and to  &quot;${user.home}/Nokia&quot; on Unix machines. For many emulators it is sufficient to set the  <code>&quot;Emulator.Class&quot;</code> and  <code>&quot;Emulator.Skin&quot;</code>-capabilities of the device in the  &quot;${polish.home}/devices.xml&quot; file. The  <code>&quot;Emulator.Class&quot;</code>-capability then needs to be  &quot;NokiaEmulator&quot; and the  <code>&quot;Emulator.Skin&quot;</code>-capability needs to correspond with the name of the emulator which can be found in the  &quot;${nokia.home}/Devices&quot;-directory.
+For launching Nokia emulators it might be necessary to define the  &quot;<code>nokia.home</code>&quot; property in the <i>${polish.home}/global.properties</i> file. This property needs to point to the installation directory of the Nokia emulators and defaults to  &quot;C:\Nokia&quot; on Windows machines and to  &quot;${user.home}/Nokia&quot; on Unix machines. For many emulators it is sufficient to set the  <code>&quot;Emulator.Class&quot;</code> and  <code>&quot;Emulator.Skin&quot;</code>-capabilities of the device in the  &quot;${polish.home}/devices.xml&quot; file. The  <code>&quot;Emulator.Class&quot;</code>-capability then needs to be  &quot;NokiaEmulator&quot; and the  <code>&quot;Emulator.Skin&quot;</code>-capability needs to correspond with the name of the emulator which can be found in the  &quot;${nokia.home}/Devices&quot;-directory.
 </p><p>
 Some non-standard-emulators make it necessary the use the  &quot;GenericEmulator&quot;-class instead. The invocation of such emulators is explained below.
 </p>
 <h3 id="siemens">Siemens Emulators</h3>
 <p>
-For launching Siemens emulators it might be necessary to define the  &quot;<code>siemens.home</code>&quot;-property in the <i>${polish.home}/global.properties</i> file. This property needs to point to the installation directory of the  &quot;Siemens Mobile Toolkit&quot; (SMTK) and defaults to  &quot;C:\siemens&quot;. When a Siemens-emulator should be used, the corresponding device-definition in the  &quot;${polish.home}/devices.xml&quot; file needs to set the  <code>&quot;Emulator.Class&quot;</code>-capability to  &quot;SiemensEmulator&quot; (this is the default for all Siemens-phones). The <code>&quot;Emulator.Skin&quot;</code>-capability needs to specify the name of the emulator, which can be found in the &quot;${siemens.home}/SMTK/emulators&quot;-directory.
+For launching Siemens emulators it might be necessary to define the  &quot;<code>siemens.home</code>&quot; property in the <i>${polish.home}/global.properties</i> file. This property needs to point to the installation directory of the  &quot;Siemens Mobile Toolkit&quot; (SMTK) and defaults to  &quot;C:\siemens&quot;. When a Siemens-emulator should be used, the corresponding device-definition in the  &quot;${polish.home}/devices.xml&quot; file needs to set the  <code>&quot;Emulator.Class&quot;</code>-capability to  &quot;SiemensEmulator&quot; (this is the default for all Siemens-phones). The <code>&quot;Emulator.Skin&quot;</code>-capability needs to specify the name of the emulator, which can be found in the &quot;${siemens.home}/SMTK/emulators&quot;-directory.
 </p>
 <h3 id="motorola">Motorola Emulators</h3>
 <p>
-For launching Motorola emulators it might be  necessary to define the &quot;<code>motorola.home</code>&quot;-property in the <i>${polish.home}/global.properties</i> file. This property needs to point to the installation directory of the Motorola SDKs, e.g. &quot;C:\program files\Motorola&quot;. 
+For launching Motorola emulators it might be  necessary to define the &quot;<code>motorola.home</code>&quot; property in the <i>${polish.home}/global.properties</i> file. This property needs to point to the installation directory of the Motorola SDKs, e.g. &quot;C:\program files\Motorola&quot;. 
 </p>
 <h3 id="blackberry">Blackberry Emulators</h3>
 <p>
-For launching BlackBerry emulators it might be  necessary to define the &quot;<code>blackberry.home</code>&quot;-property in the <i>${polish.home}/global.properties</i> file. This property needs to point to the installation directory of the BlackBerry JDE, e.g. &quot;C:\program files\Research in Motion&quot;. 
+For launching BlackBerry emulators it might be  necessary to define the &quot;<code>blackberry.home</code>&quot; property in the <i>${polish.home}/global.properties</i> file. This property needs to point to the installation directory of the BlackBerry JDE, e.g. &quot;C:\program files\Research in Motion&quot;. 
 When you have installed several JDE's, J2ME Polish will use the correct one for building and launching the emulator.
 </p>
 <h3 id="any-emulator">Launching any Emulator with the GenericEmulator-Implementation</h3>
@@ -188,7 +190,7 @@ In the first line the actual directive is given and in the following lines the b
 </p><p>
 When the &quot;showDecompiledStackTrace&quot;-attribute of the &lt;emulator&gt; element is set to &quot;true&quot; or &quot;yes&quot;, a decompiled code fragment will be given out for each stack-trace, even when the source-code position could be located.
 </p><p>
-Please note that the source-code position can only be located, when the debugging-mode is activated. This is done by setting the &quot;enable&quot;-attribute of the <a href="build-build.html#debug">&lt;debug&gt; element</a> to &quot;true&quot;. In the default-setup this is done when the &quot;test&quot;-target of the build.xml is called first: 
+Please note that the source-code position can only be located, when the debugging-mode is activated. This is done by setting the &quot;enable&quot;-attribute of the <a href="build-build.html#debug">&lt;debug&gt; element</a> to &quot;true&quot;. In the default-setup this is done when you call the  &quot;emulator&quot; target of the <i>build.xml is called first: 
 <pre>
 &quot;ant test j2mepolish&quot;.
 </pre>
