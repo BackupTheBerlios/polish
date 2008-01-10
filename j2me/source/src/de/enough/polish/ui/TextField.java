@@ -2664,43 +2664,47 @@ public class TextField extends StringItem
 						
 						boolean handled = false;
 						
-						//#if tmp.usePredictiveInput
-						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-						//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) ) 
-						//#else
-						if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable)
-						//#endif
-						{
-							//System.out.println("key mode");
-							if(this.lastTimePressed == -1)
-							{
-								this.nextMode = !this.predictiveInput;
-								this.lastTimePressed = System.currentTimeMillis();
-							}
-							else
-							{
-								if((System.currentTimeMillis() - this.lastTimePressed) > SWITCH_DELAY && TrieProvider.isPredictiveInstalled())
-								{
-									if(this.nextMode != this.predictiveInput)
-									{
-										this.predictiveInput = !this.predictiveInput;
-										
-										this.nextMode = this.predictiveInput;
-										updateInfo();
-										
-										this.predictiveInput = !this.predictiveInput;
-									}
-								}
-							}
-							
-							handled = true;
-						}
-						//#endif
-						
-						if(!handled && keyCode != KEY_CHANGE_MODE)
-						{
-							handled = handleKeyInsert(keyCode, gameAction);
-						}
+						//#if tmp.usePredictiveInput && !polish.vendor.Motorola 
+                        if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable)
+                        {
+                                if(this.lastTimePressed == -1)
+                                {
+                                        this.nextMode = !this.predictiveInput;
+                                        this.lastTimePressed = System.currentTimeMillis();
+                                }
+                                else
+                                {
+                                        if((System.currentTimeMillis() - this.lastTimePressed) > SWITCH_DELAY && TrieProvider.isPredictiveInstalled())
+                                        {
+                                                if(this.nextMode != this.predictiveInput)
+                                                {
+                                                        this.predictiveInput = !this.predictiveInput;
+
+                                                        this.nextMode = this.predictiveInput;
+                                                        updateInfo();
+
+                                                        this.predictiveInput = !this.predictiveInput;
+                                                }
+                                        }
+                                }
+
+                                handled = true;
+                        }
+                        //#endif
+
+                        //#ifdef polish.key.ChangeNumericalAlphaInputModeKey:defined
+                        //#= if(!handled &&
+                        //#=     !(keyCode == KEY_CHANGE_MODE && !this.isNumeric &&
+                        //#=       !(KEY_CHANGE_MODE == Canvas.KEY_NUM0 &&
+                        //#=         this.inputMode == MODE_NUMBERS)) &&
+                        //#=     !(keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey} &&
+                        //#=       !this.isNumeric))
+                        //#else
+                        if(!handled && keyCode != KEY_CHANGE_MODE)
+                        //#endif
+                        {
+                                handled = handleKeyInsert(keyCode, gameAction);
+                        }
 						
 						// Backspace
 						//#ifdef polish.key.ClearKey:defined
@@ -3350,12 +3354,14 @@ public class TextField extends StringItem
 		//#endif
 
 		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-		//#= if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable && (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS)) )
+		//#= if ((keyCode == KEY_CHANGE_MODE || keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}) && 
+		//#= !this.isNumeric && !this.isUneditable && 
+		//#= (!(KEY_CHANGE_MODE == Canvas.KEY_NUM0 && this.inputMode == MODE_NUMBERS) || keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}) )
 		//#else
 		if ( keyCode == KEY_CHANGE_MODE && !this.isNumeric && !this.isUneditable)
 		//#endif
 		{
-			//#if tmp.usePredictiveInput
+			//#if tmp.usePredictiveInput && !polish.vendor.Motorola
 			if((System.currentTimeMillis() - this.lastTimePressed) > SWITCH_DELAY && TrieProvider.isPredictiveInstalled())
 			{
 				this.lastTimePressed = -1;

@@ -207,7 +207,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 				
 				this.parent.addCommand(ADD_WORD_CMD);
 				
-				//#if polish.TextField.predictive.showCommands
+				//#if polish.TextField.predictive.showCommands || polish.vendor.Motorola
 				this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
 				//#endif
 				
@@ -243,7 +243,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 	
 	public void disablePredictiveInput() {
-		//#if polish.TextField.predictive.showCommands
+		//#if polish.TextField.predictive.showCommands || polish.vendor.Motorola
 		this.parent.addCommand(PredictiveAccess.ENABLE_PREDICTIVE_CMD);
 		this.parent.removeCommand(PredictiveAccess.DISABLE_PREDICTIVE_CMD);
 		//#endif
@@ -284,7 +284,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 			synchronize();
 		}
 
-		//#if polish.TextField.predictive.showCommands
+		//#if polish.TextField.predictive.showCommands || polish.vendor.Motorola
 			this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
 			this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
 		//#endif
@@ -671,12 +671,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 
 	protected boolean keyMode(int keyCode, int gameAction) {
-
-		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
-		//#= if ( keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}
-		//#else
 		if (keyCode == TextField.KEY_CHANGE_MODE
-		//#endif
 		//#if polish.key.shift:defined
 		//#= || keyCode == ${polish.key.shift}
 		//#endif
