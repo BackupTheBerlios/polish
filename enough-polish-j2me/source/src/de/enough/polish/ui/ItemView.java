@@ -369,7 +369,9 @@ public abstract class ItemView {
 	 * Removes this view from the parent item.
 	 */
 	protected void removeViewFromParent() {
-		this.parentItem.view = null;
+		//#ifdef polish.css.view-type
+			this.parentItem.view = null;
+		//#endif
 	}
 	
 	/**
