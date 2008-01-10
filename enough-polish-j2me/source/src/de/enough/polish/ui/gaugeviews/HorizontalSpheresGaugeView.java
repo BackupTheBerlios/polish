@@ -145,7 +145,7 @@ public class HorizontalSpheresGaugeView extends ItemView {
 		//#endif
 		
 		//#if polish.css.gauge-horizontal-spheres-interval
-		countObj = style.getIntProperty("gauge-horizontal-icons-interval");
+		countObj = style.getIntProperty("gauge-horizontal-spheres-interval");
 		if (countObj != null) {
 			this.interval = countObj.intValue();
 		}
