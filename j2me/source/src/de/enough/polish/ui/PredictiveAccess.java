@@ -207,7 +207,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 				
 				this.parent.addCommand(ADD_WORD_CMD);
 				
-				//#if polish.TextField.predictive.showCommands || polish.vendor.Motorola
+				//#if polish.TextField.predictive.showCommands || polish.key.ChangeNumericalAlphaInputModeKey:defined
 				this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
 				//#endif
 				
@@ -243,7 +243,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 	
 	public void disablePredictiveInput() {
-		//#if polish.TextField.predictive.showCommands || polish.vendor.Motorola
+		//#if polish.TextField.predictive.showCommands || polish.key.ChangeNumericalAlphaInputModeKey:defined
 		this.parent.addCommand(PredictiveAccess.ENABLE_PREDICTIVE_CMD);
 		this.parent.removeCommand(PredictiveAccess.DISABLE_PREDICTIVE_CMD);
 		//#endif
@@ -284,7 +284,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 			synchronize();
 		}
 
-		//#if polish.TextField.predictive.showCommands || polish.vendor.Motorola
+		//#if polish.TextField.predictive.showCommands || polish.key.ChangeNumericalAlphaInputModeKey:defined
 			this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
 			this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
 		//#endif
