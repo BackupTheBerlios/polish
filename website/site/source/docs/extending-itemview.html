@@ -20,16 +20,16 @@
 	<%index %>
 	<p>
 	J2ME Polish GUI items support an unlimited number of visualizations. In this section you will learn how you create your own visualizations
-	of existing items. This technology enables you to unleash an unlimited pool of creativity: yourself!
+	of existing items.
 	</p>
 	
 	<h2 id="concepts">Concepts of ItemViews</h2>
 	<p>
-	ItemViews separate the visualization and optionally the user interaction of an item from the data model of that item.
+	ItemViews separate the visualization and optionally the user interaction of an item from it's data model.
 	A J2ME Polish item usually provides it's default visualization in the same class that provides the data model - this approach minimizes
-	memory usage and JAR size. You can, however, apply your own visualization by following these steps:
+	memory usage and JAR size. You can, however, apply your own visualization by the following these steps:
 	<ol>
-		<li><b>Implement</b> your view by extending <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ItemView.html">de.enough.polish.ui.ItemView</a> or an item-specific ItemView subclass.</li>
+		<li><b>Implement</b> your view by extending <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ItemView.html">de.enough.polish.ui.ItemView</a> or any of it's subclasses.</li>
 		<li><b>Register</b> the view in <i>${polish.home}/custom-css-attributes.xml</i>.</li>
 		<li><b>Apply </b> your visualization by specifying the <code>view-type</code> CSS attribute in your project's <i>polish.css</i> file.</li>
 	</ol>
@@ -37,18 +37,18 @@
 	
 	<h2 id="implementation">Implementing your ItemView</h2>
 	<p>
-	Create your own visualization by extending <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ItemView.html">de.enough.polish.ui.ItemView</a> or an item-specific ItemView subclass.
+	Create your own visualization by extending <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ItemView.html">de.enough.polish.ui.ItemView</a> or an existing ItemView subclass.
 	You need to implement <code>initContent(Item parent, int firstLineWidth, int lineWidth)</code>
 	and <code>paintContent( Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g )</code>. 
-	In the <code>initContent</code> you need to calculate required dimensions for visualization and set the fields
+	In the <code>initContent</code> method you need to calculate required dimensions for visualization and set the fields
 	<code>contentWidth</code> and <code>contentHeight</code>.
 	<br />
 	You can override the <code>isValid( Item parent, Style style )</code> method for ensuring that your view
-	is only used for specify classes.
+	is only used for specified classes.
 	<br />
 	You can also animate your view by overriding the <code>animate()</code> method.
 	</p>
-	<p>In this example we provide a view for <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ClockItem.html">de.enough.polish.ui.ClockItem</a> that
+	<p>In this example we provide an alternative view for <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ClockItem.html">de.enough.polish.ui.ClockItem</a> that
 	uses binary instead of decimal numbers for the visualization. 
 	<br />
 <img src="../images/extending-itemview-clock.png" width="218" height="77" alt="the binary text view in action" />	
@@ -182,7 +182,7 @@ public class BinaryTextClockView extends ItemView {
 	
 	<h2 id="usage">Using Your ItemView</h2>
 	<p>
-	You use the corresponding item just like normal in your source code:
+	You use the corresponding item as always:
 <pre>
 //#style myClock
 ClockItem clockItem = new ClockItem( "time: " );
@@ -190,7 +190,7 @@ form.append( clockItem );
 </pre>
 	</p>
 	<p>
-	Now use your ItemView by specifying it in the appropriate style of your <i>polish.css</i> file:
+	Now use your new ItemView by specifying it in the appropriate style of your <i>polish.css</i> file:
 <pre>
 .myClock {
 	border-type: round-rect;

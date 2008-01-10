@@ -16,7 +16,7 @@
 	</ul>
 	<%index %>
 	<p>
-	A ScreenChangeAnimation animates a transition from one screen to the next one.
+	A ScreenChangeAnimation animates a transition from one screen to the next.
 	While there are
 	<a href="gui-visualguide-screenchangeanimations.html">various screen-change-animations</a> available, you might encounter a 
 	situation in which you want to create your own animation - read on for learning how.</p>
@@ -37,7 +37,7 @@
 	<p>
 	Create your own animation by extending <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/ScreenChangeAnimation.html">de.enough.polish.ui.ScreenChangeAnimation</a> 
 	or an existing ScreenChangeAnimation subclass.
-	For simple animations you only need to implement a constructor, <code>protected boolean animate()</code>
+	For simple animations you only need to implement a constructor and the methods <code>protected boolean animate()</code>
 	and <code>protected void paintAnimation( Graphics g )</code>.
 	</p>
 	<h3 id="implementation-fields">Fields</h3>
@@ -116,7 +116,7 @@ protected void setStyle(Style style) {
 	//#endif
 }
 </pre>
-	<p>The above snippet assumes that you have following attribute definition in <i>${polish.home}/custom-css-attributes.xml</i>:
+	<p>The above snippet assumes that you have the following attribute definition in <i>${polish.home}/custom-css-attributes.xml</i>:
 	</p>
 <pre>
 &lt;attribute
