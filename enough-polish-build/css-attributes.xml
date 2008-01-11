@@ -743,7 +743,7 @@
 		name="gauge-mode"
 		type="integer"
 		appliesTo="Gauge"
-		description="In the continuous mode only the gauge-color will be used, whereas the chunked mode intersects the indicator in chunks. The setting is ignored when an image is provided."
+		description="In continuous mode only the gauge-color will be used, whereas the chunked mode intersects the indicator in chunks. The setting is ignored when an image is provided."
 		default="chunked"
 		values="chunked,continuous"
 		id="21"
@@ -1074,7 +1074,7 @@
 		name="menubar-show-image-and-text"
 		type="boolean"
 		appliesTo="MenuBar"
-		description="Determines whether the text should be shown as well in the menubar, when an image has been defined for the corresponding action."
+		description="Determines whether the text should also be shown in the menubar, when an image has been defined for the corresponding action."
 		default="false"
 		id="51"
 	/>
@@ -1083,7 +1083,7 @@
 		name="foreground-image"
 		type="imageurl"
 		appliesTo="Screen"
-		description="The url of the image that should be shown at the topmost layer. You can also set the foreground-x and forground-y positions."
+		description="The url of the image that should be shown at the topmost layer. You can also set the foreground-x and foreground-y positions."
 		id="52"
 	/>
 	
@@ -1248,7 +1248,7 @@
 		name="left-screen-change-animation-speed"
 		type="integer"
 		appliesTo="LeftScreenChangeAnimation"
-		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		description="The constant speed of the animation. By default the animation uses a somewhat quadratic de-acceleration."
 		default="-1"
 		id="63"
 	/>
@@ -1257,7 +1257,7 @@
 		name="right-screen-change-animation-speed"
 		type="integer"
 		appliesTo="RightScreenChangeAnimation"
-		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		description="The constant speed of the animation. By default the animation uses a somewhat quadratic de-acceleration."
 		default="-1"
 		id="64"
 	/>
@@ -1266,7 +1266,7 @@
 		name="top-screen-change-animation-speed"
 		type="integer"
 		appliesTo="TopScreenChangeAnimation"
-		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		description="The constant speed of the animation. By default the animation uses a somewhat quadratic de-acceleration."
 		default="-1"
 		id="65"
 	/>
@@ -1275,7 +1275,7 @@
 		name="bottom-screen-change-animation-speed"
 		type="integer"
 		appliesTo="BottomScreenChangeAnimation"
-		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		description="The constant speed of the animation. By default the animation uses a somewhat quadratic de-acceleration."
 		default="-1"
 		id="66"
 	/>
@@ -1284,7 +1284,7 @@
 		name="left-shutter-screen-change-animation-speed"
 		type="integer"
 		appliesTo="LeftShutterScreenChangeAnimation"
-		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		description="The constant speed of the animation. By default the animation uses a somewhat quadratic de-acceleration."
 		default="-1"
 		id="67"
 	/>
@@ -1302,7 +1302,7 @@
 		name="right-shutter-screen-change-animation-speed"
 		type="integer"
 		appliesTo="RightShutterScreenChangeAnimation"
-		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		description="The constant speed of the animation. By default the animation uses a somewhat quadratic de-acceleration."
 		default="-1"
 		id="69"
 	/>
@@ -1320,7 +1320,7 @@
 		name="top-shutter-screen-change-animation-speed"
 		type="integer"
 		appliesTo="TopShutterScreenChangeAnimation"
-		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		description="The constant speed of the animation. By default the animation uses a somewhat quadratic de-acceleration."
 		default="-1"
 		id="71"
 	/>
@@ -1338,7 +1338,7 @@
 		name="bottom-shutter-screen-change-animation-speed"
 		type="integer"
 		appliesTo="BottomShutterScreenChangeAnimation"
-		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		description="The constant speed of the animation. By default the animation uses a somewhat quadratic de-acceleration."
 		default="-1"
 		id="73"
 	/>
@@ -1356,7 +1356,7 @@
 		name="flash-screen-change-animation-speed"
 		type="integer"
 		appliesTo="FlashScreenChangeAnimation"
-		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		description="The constant speed of the animation. By default the animation uses a somewhat quadratic de-acceleration."
 		default="-1"
 		id="75"
 	/>
@@ -1374,7 +1374,7 @@
 		name="vertical-flash-screen-change-animation-speed"
 		type="integer"
 		appliesTo="VerticalFlashScreenChangeAnimation"
-		description="The constant speed of the animation - by default the animation uses a somewhat quadratic de-acceleration."
+		description="The constant speed of the animation. By default the animation uses a somewhat quadratic de-acceleration."
 		default="-1"
 		id="77"
 	/>
@@ -1391,7 +1391,7 @@
 		name="complete-background"
 		type="background"
 		appliesTo="Item"
-		description="A background reference from the backgrounds section. The background includes the label of the item and is independent of the item's normal background."
+		description="A background name from the backgrounds section. The background includes the label of the item and is independent of the item's normal background."
 		id="79"
 	/>
 	
@@ -1399,7 +1399,7 @@
 		name="textfield-caret-flash"
 		type="boolean"
 		appliesTo="TextField, TextBox"
-		description="Defines whether the cursor should blink/flash."
+		description="Defines whether the cursor should blink."
 		default="true"
 		id="80"
 	/>
@@ -1463,7 +1463,7 @@
 		name="clip-screen-info"
 		type="boolean"
 		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox"
-		description="Enables or disables the clipping of the info-section. This is visible for TextFields in the direct input mode, for example."
+		description="Enables or disables the clipping of the info-section. It is visible for TextFields in the direct input mode, for example."
 		default="false"
 		id="87"
 	/>
@@ -1684,7 +1684,7 @@
 		name="view-type-left-x-offset"
 		type="integer"
 		appliesTo="ContainerView"
-		description="The number of pixels the left border of the a view-type is shifted to the right (inside), negative values move the left border to the left (outside)."
+		description="The number of pixels the left border of the view-type is shifted to the right (inside), negative values move the left border to the left (outside)."
 		default="0"
 		id="108"
 	/>
@@ -1693,7 +1693,7 @@
 		name="view-type-right-x-offset"
 		type="integer"
 		appliesTo="ContainerView"
-		description="The number of pixels the right border of the a view-type is shifted to the left (inside), negative values move the right border to the right (outside)."
+		description="The number of pixels the right border of the view-type is shifted to the left (inside), negative values move the right border to the right (outside)."
 		default="0"
 		id="109"
 	/>
@@ -1702,7 +1702,7 @@
 		name="view-type-top-y-offset"
 		type="integer"
 		appliesTo="ContainerView"
-		description="The number of pixels the top border of the a view-type is shifted downwards, negative values move the top border to the upwards."
+		description="The number of pixels the top border of the view-type is shifted downwards, negative values move the top border to the upwards."
 		default="0"
 		id="110"
 	/>
@@ -1721,7 +1721,7 @@
 		name="show-dismiss-command"
 		type="boolean"
 		appliesTo="Alert"
-		description="Can be used to deactivate the default Alert.DISMISS command for Alerts that don't have a Alert.FOREVER timeout."
+		description="Can be used to deactivate the default Alert.DISMISS command for Alerts that don't have an Alert.FOREVER timeout."
 		default="true"
 		id="112"
 	/>
@@ -1777,7 +1777,7 @@
 		name="scrollbar-position"
 		type="integer"
 		appliesTo="XXScreen"
-		description="(Note: not supported yes!) You can specify the position of the scrollbar on the screen after activating it with polish.useScrollBar."
+		description="(Note: not supported yet!) You can specify the position of the scrollbar on the screen after activating it with polish.useScrollBar."
 		default="right"
 		values="right, left"
 		id="118"
@@ -1822,7 +1822,7 @@
 		name="scrollbar-slider-mode"
 		type="integer"
 		appliesTo="Screen, ScrollBar"
-		description="The mode of the slider, either &quot;area&quot;, &quot;item&quot; or &quot;page&quot;. In the &quot;area&quot; mode the slider represents the position of the current selection relativ to the complete width and height. In the &quot;item&quot; mode the index of the currently selected item is taken into account relative to the number of items. In the &quot;page&quot; The default mode is &quot;page&quot;."
+		description="The mode of the slider, either &quot;area&quot;, &quot;item&quot; or &quot;page&quot;. In the &quot;area&quot; mode the slider represents the position of the current selection relative to the complete width and height. In the &quot;item&quot; mode the index of the currently selected item is taken into account relative to the number of items. In the &quot;page&quot; The default mode is &quot;page&quot;."
 		default="page"
 		values="area, item, page"
 		id="123"
@@ -1857,7 +1857,7 @@
 		name="exclusiveview-roundtrip"
 		type="boolean"
 		appliesTo="ExclusiveSingleLineView"
-		description="Determines whether the user can continue at the first ChoiceGroup item when he reaches the last item."
+		description="Determines whether the user can continue with the first ChoiceGroup item when she reaches the last item."
 		default="false"
 		id="127"
 	/>
@@ -1876,7 +1876,7 @@
 		name="gauge-animation-speed"
 		type="integer"
 		appliesTo="Gauge"
-		description="The speed for the animation in pixels per animation when the infinitive Gauge is in CONTINUOUS_RUNNING mode."
+		description="The speed for the animation in pixels per cycle when the infinitive Gauge is in CONTINUOUS_RUNNING mode."
 		default="1"
 		id="129"
 	/>
@@ -1885,7 +1885,7 @@
 		name="gauge-animation-mode"
 		type="integer"
 		appliesTo="Gauge"
-		description="The mode for the animation in pixels per animation when the infinitive Gauge is in CONTINUOUS_RUNNING mode. In the default &quot;leftright&quot; mode the image is running from the left to the right, in the &quot;backandforth&quot; mode the image is moved from the left to the right and back again. This makes only sense if you specify a gauge-image." 
+		description="The mode for the animation in pixels per cycle when the infinitive Gauge is in CONTINUOUS_RUNNING mode. In the default &quot;leftright&quot; mode the image is running from the left to the right, in the &quot;backandforth&quot; mode the image is moved from the left to the right and back again. This makes only sense if you specify a gauge-image." 
 		default="leftright"
 		values="leftright,backandforth"
 		id="130"
@@ -1948,7 +1948,7 @@
 		name="horizontalview-expand-background"
 		type="boolean"
 		appliesTo="HorizontalChoiceView"
-		description="Defines whether the background should be painted under the arrows as well. When you set it to false, the include-label attribute will be ignored."
+		description="Defines whether the background should be painted under the arrows as well. When you set this to false, the include-label attribute will be ignored."
 		default="true"
 		id="137"
 	/>
@@ -2002,7 +2002,7 @@
 		name="choicetextfield-choicestyle"
 		type="style"
 		appliesTo="ChoiceTextField"
-		description="Defines the style for single possible matches for the curent user input."
+		description="Defines the style for single possible matches of the curent user input."
 		id="143"
 	/>
 	
@@ -2058,7 +2058,7 @@
 		name="text-wrap"
 		type="boolean"
 		appliesTo="StringItem"
-		description="Determines wether the text should be wrapped (=default) or whether it should be kept on one single line, even when it is larger than the available width."
+		description="Determines wether the text should be wrapped or whether it should be kept on a single line, even when it is larger than the available width."
 		default="true"
 		id="150"
 	/>
@@ -2133,7 +2133,7 @@
 		name="tabbar-roundtrip"
 		type="boolean"
 		appliesTo="TabBar, TabbedForm"
-		description="Defines whether the user starts at the first tab after passing the last tab. By default the user cannot pass the last (or the first) tab." 
+		description="Defines whether the user starts at the first tab after passing the last tab. By default the user cannot pass neither the first nor the last tab." 
 		default="false"
 		id="158"
 	/>
@@ -2142,7 +2142,7 @@
 		name="horizontalview-arrows-image"
 		type="imageurl"
 		appliesTo="HorizontalChoiceView"
-		description="The URL of the combined arrows image (showing both arrows to the left and to the right)."
+		description="The URL of the combined arrows image which shows both arrows to the left and to the right."
 		id="159"
 	/>
 	
@@ -2158,7 +2158,7 @@
 		name="image-height"
 		type="integer"
 		appliesTo="ImageItem"
-		description="The assumed height the image of an image item." 
+		description="The assumed height for the image of an image item." 
 		id="161"
 	/>
 	
@@ -2209,7 +2209,7 @@
 		name="clock-format"
 		type="string"
 		appliesTo="ClockItem"
-		description="The time format for the DigitalClockItem with following identifiers: hh=hours, mm=minutes, ss=seconds, am or pm=for using the 12 hour system instead of the 24 hour one. Examples: &quot;hh:mm am&quot;, &quot;hh/mm/ss&quot;."
+		description="The time format for the DigitalClockItem with the following identifiers: hh=hours, mm=minutes, ss=seconds, am|pm=for using the 12 hour system instead of the 24 hour one. Examples: &quot;hh:mm am&quot;, &quot;hh/mm/ss&quot;."
 		default="hh:mm:ss"
 		id="167"
 	/>
@@ -2218,7 +2218,7 @@
 		name="text-drop-shadow-size"
 		type="integer"
 		appliesTo="DropShadowTextEffect"
-		description="The size of the shadow (in all directions)."
+		description="The size of the shadow for every direction."
 		default="6"
 		id="168"
 	/>
@@ -2226,7 +2226,7 @@
 		name="text-drop-shadow-offsetx"
 		type="integer"
 		appliesTo="DropShadowTextEffect"
-		description="The x offset of the shadow (negative values are possible)"
+		description="The x offset of the shadow. Negative values move the shadow inside."
 		default="1"
 		id="169"
 	/>
@@ -2234,7 +2234,7 @@
 		name="text-drop-shadow-offsety"
 		type="integer"
 		appliesTo="DropShadowTextEffect"
-		description="The y offset of the shadow (negative values are possible)"
+		description="The y offset of the shadow. Negative values move the shadow inside."
 		default="2"
 		id="170"
 	/>
@@ -2261,7 +2261,7 @@
 		type="color"
 		translucent="true"
 		appliesTo="AlienGlowTextEffect"
-		description="The inner parts color of the glow."
+		description="The inner part color of the glow."
 		default="#FFFFFFFF"
 		id="173"
 	/>
@@ -2270,7 +2270,7 @@
 		type="color"
 		translucent="true"
 		appliesTo="AlienGlowTextEffect"
-		description="The outer parts color of the glow."
+		description="The outer part color of the glow."
 		default="#FF00FF00"
 		id="174"
 	/>
@@ -2279,7 +2279,7 @@
 		type="color"
 		translucent="true"
 		appliesTo="FadeTextEffect"
-		description="The color, which the text has, if it is faded in."
+		description="The color of the text if it is faded in."
 		default="#FF000000"
 		id="175"
 	/>
@@ -2288,7 +2288,7 @@
 		type="color"
 		translucent="true"
 		appliesTo="FadeTextEffect"
-		description="The color, which the text has, if it is faded out."
+		description="The color of the text if it is faded out."
 		default="#FF00FF00"
 		id="176"
 	/>
@@ -2296,7 +2296,7 @@
 		name="text-fade-delay"
 		type="integer"
 		appliesTo="FadeTextEffect"
-		description="The delay (in animation steps) before the animation starts."
+		description="The delay in animation steps before the animation starts."
 		default="0"
 		id="177"
 	/>
@@ -2304,7 +2304,7 @@
 		name="text-fade-duration-in"
 		type="integer"
 		appliesTo="FadeTextEffect"
-		description="The time (in animation steps), which the text stays faded in."
+		description="The time for which the text stays faded in, messured in animation steps."
 		default="10"
 		id="178"
 	/>
@@ -2312,7 +2312,7 @@
 		name="text-fade-duration-out"
 		type="integer"
 		appliesTo="FadeTextEffect"
-		description="The time (in animation steps), which the text stays faded out."
+		description="The time for which the text stays faded out, messured in animation steps."
 		default="0"
 		id="179"
 	/>
@@ -2320,7 +2320,7 @@
 		name="text-fade-steps"
 		type="integer"
 		appliesTo="FadeTextEffect"
-		description="The time (in animation teps), which the fade-effect lasts."
+		description="The time for which the fade-effect lasts, messured in animation steps."
 		default="5"
 		id="180"
 	/>
@@ -2339,7 +2339,7 @@
 		type="color"
 		translucent="true"
 		appliesTo="FadingAlienGlowTextEffect"
-		description="The inner parts color of the glow."
+		description="The inner part color of the glow."
 		default="#FFFFFFFF"
 		id="182"
 	/>
@@ -2348,7 +2348,7 @@
 		type="color"
 		translucent="true"
 		appliesTo="FadingAlienGlowTextEffect"
-		description="The outer parts color of the glow, if the state is faded out."
+		description="The outer part color of the glow, if the state is faded out."
 		default="#FF0080FF"
 		id="183"
 	/>
@@ -2357,7 +2357,7 @@
 		type="color"
 		translucent="true"
 		appliesTo="FadingAlienGlowTextEffect"
-		description="The outer parts color of the glow, if the state is faded in."
+		description="The outer part color of the glow, if the state is faded in."
 		default="#FF80FF00"
 		id="184"
 	/>
@@ -2462,7 +2462,7 @@
 		name="carrouselview-remove-text"
 		type="boolean"
 		appliesTo="CarrouselContainerView"
-		description="Text like labels are shown for the focused item ony by default. Set carrouselview-remove-text to false for showing the text for every item."
+		description="Text like labels are shown for the focused item only by default. Set carrouselview-remove-text to false for showing the text for every item."
 		default="true"
 		id="196"
 	/>
@@ -2489,7 +2489,7 @@
 		name="gauge-tachometer-section1-start"
 		type="int"
 		appliesTo="TachometerGaugeView"
-		description="the value at which the first section starts, default is the startvalue (0)."
+		description="The value at which the first section starts, default is the startvalue (0)."
 		default="0"
 		id="199"
 	/>
@@ -2498,7 +2498,7 @@
 		name="gauge-tachometer-section2-start"
 		type="int"
 		appliesTo="TachometerGaugeView"
-		description="the value at which the first section starts, default is the value range divided by 3."
+		description="The value at which the first section starts, default is the value range divided by 3."
 		id="200"
 	/>
 	
@@ -2506,7 +2506,7 @@
 		name="gauge-tachometer-section3-start"
 		type="int"
 		appliesTo="TachometerGaugeView"
-		description="the value at which the first section starts, default is the value range multiplied by 2/3."
+		description="The value at which the first section starts, default is the value range multiplied by 2/3."
 		id="201"
 	/>
 	
@@ -2514,7 +2514,7 @@
 		name="gauge-tachometer-section1-color"
 		type="color"
 		appliesTo="TachometerGaugeView"
-		description="the color of the first section, is invisible by default"
+		description="The color of the first section, is invisible by default"
 		id="202"
 	/>
 	
@@ -2522,7 +2522,7 @@
 		name="gauge-tachometer-section2-color"
 		type="color"
 		appliesTo="TachometerGaugeView"
-		description="the color of the second section, is invisible by default"
+		description="The color of the second section, is invisible by default"
 		id="203"
 	/>
 
@@ -2530,7 +2530,7 @@
 		name="gauge-tachometer-section3-color"
 		type="color"
 		appliesTo="TachometerGaugeView"
-		description="the color of the third section, is invisible by default"
+		description="The color of the third section, is invisible by default"
 		id="204"
 	/>
 
@@ -2538,7 +2538,7 @@
 		name="gauge-tachometer-clockface-color"
 		type="color"
 		appliesTo="TachometerGaugeView"
-		description="the color of the clockface of the tachometer"
+		description="The color of the clockface of the tachometer"
 		default="black"
 		id="205"
 	/>
@@ -2547,7 +2547,7 @@
 		name="gauge-tachometer-inner-color"
 		type="color"
 		appliesTo="TachometerGaugeView"
-		description="the inner color of the tachometer"
+		description="The inner color of the tachometer"
 		default="white"
 		id="206"
 	/>
@@ -2557,7 +2557,7 @@
 		name="gauge-tachometer-needle-color"
 		type="color"
 		appliesTo="TachometerGaugeView"
-		description="the color of the tachometer needle/pointer/indicator."
+		description="The color of the tachometer needle."
 		default="red"
 		id="207"
 	/>
@@ -2566,7 +2566,7 @@
 		name="gauge-tachometer-factor"
 		type="int"
 		appliesTo="TachometerGaugeView"
-		description="an integer factor by which all given values are divided for simulating floating point. A factor of 10 and a value of 14 will result in a shown value of 1.4, for example."
+		description="An integer factor by which all given values are divided for simulating floating point. A factor of 10 and a value of 14 will result in a displayed value of 1.4, for example."
 		default="1"
 		id="208"
 	/>
@@ -2616,7 +2616,7 @@
 		name="gauge-recline-selectedcolor"
 		type="color"
 		appliesTo="RecLineGaugeView"
-		description="The color of an selected rects."
+		description="The color of a selected rect."
 		id="214"
 	/>
 	
@@ -2688,7 +2688,7 @@
 		name="diagonal-screen-change-animation-background-color"
 		type="color"
 		appliesTo="DiagonalScreenChangeAnimation"
-		description="The color of background of the animation when the previous screen should also be moved."
+		description="The background color of the animation when the previous screen should also be moved."
 		default="white"
 		id="223"
 	/>
@@ -2704,7 +2704,7 @@
 		name="fadeOutFadeIn-screen-change-animation-background-color"
 		type="color"
 		appliesTo="FadeOutFadeInScreenChangeAnimation"
-		description="The color of background of the animation."
+		description="The background color of the animation."
 		default="black"
 		id="225"
 	/>
@@ -2796,28 +2796,28 @@
 		name="rightcommand-style"
 		type="style"
 		appliesTo="MenuBar"
-		description="The style for the command shown on the right side of the menubar - can only be used when the extended menubar is enabled."
+		description="The style for the command shown on the right side of the menubar. Can only be used when the extended menubar is enabled."
 		id="237"
 	/>
 	<attribute
 		name="leftcommand-style"
 		type="style"
 		appliesTo="MenuBar"
-		description="The style for the command shonw on the left side of the menubar - can only be used when the extended menubar is enabled."
+		description="The style for the command shown on the left side of the menubar. can only be used when the extended menubar is enabled."
 		id="238"
 	/>
 	<attribute
 		name="middlecommand-style"
 		type="style"
 		appliesTo="MenuBar"
-		description="The style for the (item) command shown in the middle of the menubar - can only be used when the extended menubar is enabled."
+		description="The style for the (item) command shown in the middle of the menubar. Can only be used when the extended menubar is enabled."
 		id="239"
 	/>
 	<attribute
 		name="menu-style"
 		type="style"
 		appliesTo="MenuBar"
-		description="The style for the commands within the options command of the menubar - can only be used when the extended menubar is enabled."
+		description="The style for the commands within the options command of the menubar. Can only be used when the extended menubar is enabled."
 		id="240"
 	/>
 	<attribute
@@ -2825,7 +2825,7 @@
 		type="percent"
 		default="50%"
 		appliesTo="FishEyeContainerView"
-		description="The factor by which the non-focused elements should be scaled - by default they are scaled to 50% of their original size."
+		description="The factor by which the non-focused elements should be scaled. By default they are scaled to 50% of their original size."
 		id="241"
 	/>
 	<attribute
@@ -2864,7 +2864,7 @@
 		type="integer"
 		default="10"
 		appliesTo="SizeIncreaseItemView"
-		description="The percentual amount to increase the item"
+		description="The percentual amount to increase the item."
 		id="246"
 	/>
 	<attribute
@@ -2872,7 +2872,7 @@
 		type="boolean"
 		default="false"
 		appliesTo="SizeIncreaseItemView"
-		description="Declares if the item should build up from the top or from the bottom"
+		description="Declares if the item should build up from the top or from the bottom."
 		id="247"
 	/>
 	<attribute
@@ -2880,7 +2880,7 @@
 		type="integer"
 		default="10"
 		appliesTo="SizeDecreaseItemView"
-		description="The percentual amount to decrease the item"
+		description="The percentual amount to decrease the item."
 		id="248"
 	/>
 	<attribute
@@ -2888,7 +2888,7 @@
 		type="boolean"
 		default="false"
 		appliesTo="SizeDecreaseItemView"
-		description="Declares if the item should build down from the top or from the bottom"
+		description="Declares if the item should build down from the top or from the bottom."
 		id="249"
 	/>
 	<attribute
@@ -2954,7 +2954,7 @@
 		name="predictive-choicestyle"
 		type="style"
 		appliesTo="TextField"
-		description="Defines the style for single possible matches for the curent user input."
+		description="Defines the style for single possible matches of the curent user input."
 		id="257"
 	/>
 
@@ -2971,7 +2971,7 @@
 		name="fisheyeview-scale-end"
 		type="percent"
 		appliesTo="FishEyeContainerView"
-		description="The factor by which the outer most non-focused elements should be scaled - by default they are scaled to 50% of their original size."
+		description="The factor by which the outer most non-focused elements should be scaled. By default they are scaled to 50% of their original size."
 		default="50%"
 		id="259"
 	/>
@@ -3235,7 +3235,7 @@
 		name="gauge-cycling-spheres-interval"
 		type="integer"
 		appliesTo="CyclingSpheresGaugeView"
-		description="The interval of the animation in ms."
+		description="The interval of the animation in miliseconds."
 		default="0"
 		id="288"
 	/>
@@ -3244,7 +3244,7 @@
 		name="gauge-cycling-icons-interval"
 		type="integer"
 		appliesTo="CyclingIconsGaugeView"
-		description="The interval of the animation in ms."
+		description="The interval of the animation in miliseconds."
 		default="0"
 		id="289"
 	/>
@@ -3253,7 +3253,7 @@
 		name="gauge-horizontal-spheres-interval"
 		type="integer"
 		appliesTo="HorizontalSpheresGaugeView"
-		description="The interval of the animation in ms."
+		description="The interval of the animation in miliseconds."
 		default="0"
 		id="290"
 	/>
@@ -3262,7 +3262,7 @@
 		name="gauge-horizontal-icons-interval"
 		type="integer"
 		appliesTo="HorizontalIconsGaugeView"
-		description="The interval of the animation in ms."
+		description="The interval of the animation in miliseconds."
 		default="0"
 		id="291"
 	/>
@@ -3271,7 +3271,7 @@
 		name="pressed-style"
 		type="style"
 		appliesTo="Item"
-		description="The style which indicates that an item (e.g. a button) is being pressed, usually applied with a [style-name]:pressed construct."
+		description="The style which indicates that an item is being pressed, usually applied with a [style-name]:pressed construct."
 		id="292"
 	/>
 	
@@ -3280,7 +3280,7 @@
 		type="percent"
 		default="50%"
 		appliesTo="FishEyeContainerView"
-		description="The factor by which the non-focused elements should be scaled - by default they are scaled to 50% of their original size."
+		description="The factor by which the non-focused elements should be scaled. By default they are scaled to 50% of their original size."
 		id="293"
 	/>
 	
@@ -3289,7 +3289,7 @@
 		type="integer"
 		default="200"
 		appliesTo="FishEyeContainerView"
-		description="the translucency between 0 and 255 for items directly next to the central item of the view. Higher values indicate more opaqness, lower ones make it more translucent."
+		description="The translucency between 0 and 255 for items directly next to the central item of the view. Higher values indicate more opaqueness, lower ones make it more translucent."
 		id="294"
 	/>
 
@@ -3298,7 +3298,7 @@
 		type="integer"
 		default="120"
 		appliesTo="FishEyeContainerView"
-		description="the translucency between 0 and 255 for items at the outer edges of the view. Higher values indicate more opaqness, lower ones make it more translucent."
+		description="The translucency between 0 and 255 for items at the outer edges of the view. Higher values indicate more opaqueness, lower ones make it more translucent."
 		id="295"
 	/>
 	
@@ -3324,7 +3324,7 @@
 		type="integer"
 		default="700"
 		appliesTo="FlashTextEffect"
-		description="the interval in milliseconds for the flashing."
+		description="The interval in milliseconds for the flashing."
 		id="301"
 	/>
 	
@@ -3342,7 +3342,7 @@
 		type="boolean"
 		default="false"
 		appliesTo="ScrollBar"
-		description="Defines if the scrollbar should automatically fade out - additionally you have to define the opacity attribute."
+		description="Defines if the scrollbar should automatically fade out. Additionally you have to define the opacity attribute."
 		id="303"
 	/>
 	
