@@ -15,14 +15,14 @@ Sometimes the design needs to be adapted to a specific device or a group of devi
 In the resources folder itself you put all resources and design definitions which should be valid for all devices.
 In the folder named like the vendor of a device (e.g. &quot;Nokia&quot;, &quot;Samsung&quot; or &quot;Motorola&quot;) you put all resources and design definitions for devices of that vendor.
 In the folder named like the explicit and implicit groups of a device you add the resources and design definitions for these device-groups. An explicit group is for example the &quot;Series60&quot; group, implicit groups are defined by the supported APIs of a device and the BitsPerPixel capability of devices. You can add a small movie for all devices which support the Mobile Media API (mmapi) by putting that movie into the &quot;resources/mmapi&quot; folder. Or you can add colored images for all devices which have at least a color depth of 8 bits per pixel by putting these images into the &quot;resources/BitsPerPixel8+&quot; folder.
-Last but not least you can use device specific resources and design definitions by putting them into the &quot;resources/[vendor]/[device]&quot; folder, e.g. &quot;resources/Nokia/6600&quot; or &quot;resources/Samsung/E700&quot;.
+Last but not least you can use device specific resources and design definitions by putting them into the &quot;resources/[vendor]/[device]&quot; folder, e.g. &quot;resources/Nokia/N95 &quot; or &quot;resources/Samsung/E700&quot;.
 Any existing resources will be overwritten by more specific resources:
 </p>
 <ol>
  <li>At first the basic resources and definitions found in the &quot;resources&quot; folder will be used.</li>
  <li>Secondly the vendor-specific resources will be used, e.g. &quot;resources/Nokia&quot;.</li>
  <li>Thirdly the group-specific resources will be used, e.g. &quot;resources/mmapi&quot;, &quot;resources/Series60&quot;, &quot;resources/BitsPerPixel.8+&quot; or &quot;resources/BitsPerPixe.16&quot;.</li>
- <li>The resources and settings in the device specific folder will overwrite all other resources and settings. The device specific folder is for example the folder &quot;resources/Nokia/6600&quot; for the Nokia/6600 phone or the folder &quot;resources/Samsung/E700&quot; for Samsung's E700.</li>
+ <li>The resources and settings in the device specific folder will overwrite all other resources and settings. The device specific folder is for example the folder &quot;resources/Nokia/N95 &quot; for the Nokia/N95  phone or the folder &quot;resources/Samsung/E700&quot; for Samsung's E700.</li>
 </ol>
 <p>All resources will be copied into the root of the application, so if you want to access 
 an image called &quot;my-imgage.png&quot; you need to load it with the path &quot;/my-image.png&quot; in the
@@ -56,7 +56,7 @@ declaration in &quot;resources/Nokia/polish.css&quot;:
 </p>
 <p>
 You can specify another font-size and font-color for the Nokia 6600 phone with these 
-settings in &quot;resources/Nokia/6600/polish.css&quot;:
+settings in &quot;resources/Nokia/N95 /polish.css&quot;:
 <pre>
 .myStyle {
 	font-color: red;

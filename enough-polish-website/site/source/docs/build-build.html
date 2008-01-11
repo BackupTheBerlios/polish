@@ -82,7 +82,7 @@
 	 a full screen mode. Currently these include all MIDP 2.0 devices as well as devices, 
 	 which support the Nokia-UI API. Possible values are either &quot;no&quot;, &quot;yes&quot; and &quot;menu&quot;. With &quot;yes&quot; the complete screen is used but no commands are supported. With &quot;menu&quot; commands can be used as well. Default setting is &quot;no&quot;. Remember that you need to target a specific device that has known Softkeys for this option. Otherwise always the default (&quot;unpolishable&quot;) commands menu is used.
 	 <br />
-	 Alternatively the preprocessing-variable &quot;polish.FullScreen&quot; can be set. This allows a finer grained
+	 Alternatively the preprocessing-variable <code>polish.FullScreen</code> can be set. This allows a finer grained
 	 control, since variables can have conditions, e.g.:
 <pre>
 &lt;build
@@ -92,7 +92,7 @@
   &lt;variables&gt;
      &lt;variable 
 	name=&quot;polish.FullScreen&quot; 
-	value=&quot;yes&quot;
+	value=&quot;true&quot;
 	if=&quot;polish.vendor == Siemens&quot;
      /&gt;
   &lt;variables&gt;
@@ -157,7 +157,7 @@
 	</tr>
 	<tr><td>obfuscate</td>
  	 <td>No</td>
-	 <td>Either &quot;true&quot; or &quot;false&quot;. Defines whether the applications should be obfuscated. Defaults to &quot;false&quot;.  Alternatively the nested element &quot;obfuscator&quot; can be used (see below).</td>
+	 <td>Either <code>true</code> or <code>false</code>. Defines whether the applications should be obfuscated. Defaults to &quot;false&quot;.  Alternatively the nested element &quot;obfuscator&quot; can be used (see below).</td>
 	</tr>
 	<tr><td>obfuscator</td>
  	 <td>No</td>
@@ -167,7 +167,7 @@
 	<tr>
 	 <td>compilerMode</td>
  	 <td>No</td>
-	 <td>When the compiler-mode is activated, J2ME Polish will not package the application and only process one device. This mode is useful for IDEs which support indirect compilation like NetBeans for example. You can select &quot;Run&quot; in NetBeans and NetBeans uses J2ME Polish as compiler, packages the application and starts the emulator - this saves valuable time during the development phase. Possible values are &quot;true&quot; or &quot;false&quot;. The compiler mode is deactivated (&quot;false&quot;) by default.
+	 <td>When the compiler-mode is activated, J2ME Polish will not package the application and only process one device. This mode is useful for IDEs which support indirect compilation like NetBeans for example. You can select &quot;Run&quot; in NetBeans and NetBeans uses J2ME Polish as compiler, packages the application and starts the emulator - this saves valuable time during the development phase. Possible values are <code>true</code> or <code>false</code>. The compiler mode is deactivated (&quot;false&quot;) by default.
 	 </td>
 	</tr>
 	<tr>
@@ -179,7 +179,7 @@
 	<tr>
 	 <td>compilerModePreverify</td>
  	 <td>No</td>
-	 <td>Defines whether J2ME Polish should preverify the compiled classes as well. This is needed for using J2ME Polish as a compiler for the EclipseME plugin. Possible values are &quot;true&quot; or &quot;false&quot;. The preverifying is deactivated (&quot;false&quot;) by default.
+	 <td>Defines whether J2ME Polish should preverify the compiled classes as well. This is needed for using J2ME Polish as a compiler for the EclipseME plugin. Possible values are <code>true</code> or <code>false</code>. The preverifying is deactivated (&quot;false&quot;) by default.
 	 </td>
 	<tr>
 	 <td>encoding</td>
@@ -390,7 +390,7 @@
 <pre>
 &lt;resources
 	dir=&quot;resources/base&quot;
-	defaultexcludes=&quot;yes&quot;
+	defaultexcludes=&quot;true&quot;
 	excludes=&quot;readme.txt&quot;
 &gt;
 	&lt;root dir=&quot;resources/base/design&quot; /&gt;
@@ -1137,7 +1137,7 @@ Maybe someone with more experience with JODE can provide help here - please get 
 	<tr><th>variables Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>includeAntProperties</td>
  	 <td>No</td>
-	 <td>Either &quot;true&quot; or &quot;false&quot;. When &quot;true&quot; all Ant-properties will be included and can be used in the preprocessing. Defaults to &quot;false&quot;.</td>
+	 <td>Either <code>true</code> or <code>false</code>. When &quot;true&quot; all Ant-properties will be included and can be used in the preprocessing. Defaults to &quot;false&quot;.</td>
 	</tr>
 	</table>
 	<p>
@@ -1215,7 +1215,7 @@ possibilities in the <a href="tutorial.html#debug">introduction</a> as well as i
 	</tr>
 	<tr><td>verbose</td>
  	 <td>No</td>
-	 <td>Either &quot;true&quot; or &quot;false&quot;. When &quot;true&quot; the time, class-name and line-number will be included in each debugging message. Defaults to &quot;false&quot;.
+	 <td>Either <code>true</code> or <code>false</code>. When &quot;true&quot; the time, class-name and line-number will be included in each debugging message. Defaults to &quot;false&quot;.
 	 When the verbose mode is enabled, the preprocessing symbol &quot;polish.debugVerbose&quot; will be defined.
 	 <br/>
 	In the verbose mode exceptions thrown by J2ME&nbsp;Polish will contain useful information. Also the key-handling and animation-handling will be monitored and error messages will be given out. 
@@ -1223,7 +1223,7 @@ possibilities in the <a href="tutorial.html#debug">introduction</a> as well as i
 	</tr>
 	<tr><td>showLogOnError</td>
  	 <td>No</td>
-	 <td>Either &quot;true&quot; or &quot;false&quot;. When &quot;true&quot; 
+	 <td>Either <code>true</code> or <code>false</code>. When &quot;true&quot; 
 	 the log containing all logging-messages will be shown when an exception is logged.
 An exception is logged by printing out a message which is followed by a plus and the exception variable:
 <pre>
@@ -1236,7 +1236,7 @@ Debug.debug( String message, Throwable exception ) method is called.
 	</tr>
 	<tr><td>if</td>
  	 <td>No</td>
-	 <td>The name of the Ant-property which needs to be <code>true</code>; or &quot;yes&quot; to use this &lt;debug&gt;.
+	 <td>The name of the Ant-property which needs to be <code>true</code> to use this &lt;debug&gt;.
 	 When the &lt;debug&gt; element is activated, the preprocessing symbol &quot;polish.debugEnabled&quot; will be defined.
 	 </td>
 	</tr>

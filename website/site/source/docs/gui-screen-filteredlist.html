@@ -23,9 +23,8 @@
 	
 <h2 id="design">Design</h2>
 
-<p>The FilteredList in the screenshot above utilized the <a href="gui-viewtype-fisheye.html">fisheye</a> <code>view-type</code> 
-and has been realized using following CSS settings (without <a href="gui-screenelement-title">title</a> 
-and <a href="gui-screenelement-menubar">menubar</a> settings):</p>
+<p>The FilteredList in the screenshot is a <a href="gui-screen-popup.html">popup screen</a>
+and has been realized using following CSS settings:</p>
 <pre>
 .filterPopupStyle {
 	repaint-previous-screen: true;
@@ -33,6 +32,9 @@ and <a href="gui-screenelement-menubar">menubar</a> settings):</p>
 	margin-bottom: 0;
 	padding: 5;
 	background-color: black;
+	/* not needed, since .filterTextFieldStyle is used by default:
+	filter-style: filterTextFieldStyle;
+	*/
 }
 
 .filterTextFieldStyle {
@@ -48,15 +50,15 @@ and <a href="gui-screenelement-menubar">menubar</a> settings):</p>
 </pre>
 <p>
 By default the <a href="gui-item-textfield.html">TextField</a> of a FilteredList is designed using the 
-<code>.filterTextFieldStyle</code>. 
+<code>.filterTextFieldStyle</code>, you can specify you own style using the <code>filter-style</code> attribute.
 </p>
-<h3 id="design-List">CSS Attributes for Lists</h3>
-<p>You can use the following CSS attributes for a FilteredList:</p>
+<h3 id="design-List">CSS Attributes for a FilteredList</h3>
+<p>You can use following CSS attributes for a FilteredList:</p>
 <%cssattributes de.enough.polish.ui.FilteredList %>
 
 <h3 id="design-ListItems">CSS Attributes for items within a FilteredList</h3>
-<p>For styles of List items you can use the following CSS attributes:</p>
-<%cssattributes de.enough.polish.ui.ListItem %>
+<p>You can design items added to a FilteredList with the following CSS attributes:</p>
+<%cssattributes de.enough.polish.ui.ChoiceItem %>
 
 <h2 id="programming">Programming</h2>
 <p>

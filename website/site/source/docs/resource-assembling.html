@@ -41,7 +41,7 @@ Resources for devices of specific vendors  can be placed into the &quot;resource
 	</p><p>
 	You can refer to any device capability that has been defined in the device database for 
 	</p><p>
-All resources will be copied to the root of the application and more specific resources will overwrite the common resources: If you have a picture named &quot;hello.png&quot; in the &quot;resources&quot; folder as well as in the &quot;resources/Nokia&quot; and in the &quot;resources/Nokia/6600&quot; folder, the version in the &quot;resources&quot; folder will be used for all non-Nokia devices, the version contained in the &quot;resources/Nokia&quot; folder will be used for all Nokia devices, but the image &quot;resources/Nokia/6600/hello.png&quot; will be used for the application which is build for the Nokia/6600 phone. 
+All resources will be copied to the root of the application and more specific resources will overwrite the common resources: If you have a picture named &quot;hello.png&quot; in the &quot;resources&quot; folder as well as in the &quot;resources/Nokia&quot; and in the &quot;resources/Nokia/N95 &quot; folder, the version in the &quot;resources&quot; folder will be used for all non-Nokia devices, the version contained in the &quot;resources/Nokia&quot; folder will be used for all Nokia devices, but the image &quot;resources/Nokia/N95 /hello.png&quot; will be used for the application which is build for the Nokia/N95  phone. 
 <br/>
 In the application code you can load this image as any other resource from the root: 
 </p>
@@ -326,7 +326,11 @@ public class ResourceManager {
 	}
 }
 </pre>
-	
+	<h3 id="externaltranslations">Download Translations Later</h3>
+	<p>
+	You can also <a href="localization.html#externaltranslations">externalize translations</a> and download
+	them at a later point in your application.
+	</p>
 	
 	<h3 id="adjusting">Adjust Resources during Build Time</h3>
 	<p>
