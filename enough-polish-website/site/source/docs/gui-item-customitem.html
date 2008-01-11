@@ -32,7 +32,7 @@ class.
 <h3 id="initialisation">Initialization</h3>
 <p>
 J2ME Polish calls the <code>getPrefContentWidth()</code>-method first with an 
-open height (-1). 
+undefined height (-1). 
 Then the <code>getPrefContentHeight()</code>-method is called with the actual granted width. 
 When the width had to be adjusted, the custom item will be notified again 
 with the <code>setSize(width. height)</code>-method. 
@@ -154,8 +154,8 @@ The <code>setStyle()</code> method will be called before the preferred content w
 </p>
 <p>
 Please note that the variable needs to be called &quot;style&quot; or needs to end with &quot;style&quot;, so that J2ME Polish can process 
-all styles correctly. This is required, since instead of String-based attribute-names numerical short-values will be used in the 
-actual code. This approach significantly reduces the runtime-performance and minimizes the heap-usage.
+all styles correctly. This is required, since instead of string-based attribute names, numerical values of type short will be used in the 
+actual code. This approach significantly reduces the runtime performance and minimizes the heap usage.
 </p>
 <p>
 There are 5 different ways to retrieve a property from a style:

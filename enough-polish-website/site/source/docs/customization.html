@@ -83,7 +83,7 @@ cfg.enableServerBackup=true
 
 	<p>Each root folder will be searched like described in the <a href="../build/resource-assembling.html">Resource Assembling</a> section.
 	So you use subdirectories like <i>${root.dir}/Nokia</i>,  <i>${root.dir}/FullCanvasSize.176+x208+</i> and so on to include resources or settings
-	only for specific target devices. Note that any subsequent resources will take precedent above former ones. 
+	only for specific target devices. Note that any subsequent resources will take precedence over former ones. 
 	So the image <i>resources/${customization}/logo.png</i> will be used instead of <i>resources/base/Samsung/SGH-D900/logo.png</i> when you target
 	the D900 phone and use the &quot;${customization}&quot; root in the above example.
 	</p>
@@ -123,7 +123,7 @@ cfg.enableServerBackup=true
 &lt;/resources&gt;
 </pre>
 </p><p class="caption">Enabling the Localization Framework</p>
-	<p>Now you can customize any texts for your first customization in the above example by adding the definitions to
+	<p>Now you can customize any texts in the above example by adding the definitions to
 	   <i>resources/${customization}/messages.txt</i>:
 <pre>
 MIDlet-Name=My Customized Name
@@ -149,13 +149,13 @@ var:cfg.enableServerBackup=true
 	<h2 id="design">Customizing the Look and Feel of Your Application</h2>
 	<p>
 	You can customize the design of your application by defining the appropriate styles in the <i>polish.css</i> file of 
-	the applicable resource root or by using preprocessing within a <i>polish.css</i> file (or use a combination of both techniques).
+	the applicable resource root or by using preprocessing within a <i>polish.css</i> file or use a combination of both techniques.
 	</p>
 	<p>
 	In your customized <i>polish.css</i> files you do not need to repeat settings that are already used in the base <i>polish.css</i> file.
 	Instead just define settings that differ from the base design:
 <pre>
-/* just using customized colors here and a specialised title>: */
+/* just using customized colors here and a specialised title: */
 colors {
 	textColor: #a00;
 	textColorFocused: #f00;
@@ -239,7 +239,7 @@ title {
 	</p>
 	<h3 id="preprocessing">Use Preprocessing to Customize Your Application</h3>
 	<p>
-	Using <a href="../build/preprocessing.html">preprocessing</a> in your applications source code gives you unlimited possibilities
+	Using <a href="../build/preprocessing.html">preprocessing</a> in your application's source code gives you unlimited possibilities
 	for customizing your application. Best practice is to <a href="#configuration">define customization specific variables</a> first
 	as desribed above:
 <pre>
