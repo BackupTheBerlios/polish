@@ -148,7 +148,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 */
 	public void add( Item item ) {
 		item.relativeY =  0;
-		item.internalX = -9999;
+		item.internalX = NO_POSITION_SET;
 //		item.parent = this;
 		this.itemsList.add( item );
 		if (this.isInitialized) {
@@ -169,7 +169,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 */
 	public void add( int index, Item item ) {
 		item.relativeY = 0;
-		item.internalX = -9999;
+		item.internalX = NO_POSITION_SET;
 //		item.parent = this;
 		this.itemsList.add( index, item );
 		if (index <= this.focusedIndex) {
@@ -233,7 +233,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		Item[] myItems = (Item[]) this.itemsList.toArray( new Item[ this.itemsList.size() ]);
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
-			item.internalX = -9999;
+			item.internalX = NO_POSITION_SET;
 			item.relativeY = 0;
 			/*
 			 int removedItemHeight = removedItem.itemHeight;
@@ -323,8 +323,8 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		}
 		this.yOffset = 0;
 		this.targetYOffset = 0;
-		if (this.internalX != -9999) {
-			this.internalX = -9999;
+		if (this.internalX != NO_POSITION_SET) {
+			this.internalX = NO_POSITION_SET;
 			this.internalY = 0;
 			if ( this.isFocused && this.parent instanceof Container ) {
 //				((Container) this.parent).scroll( 0, this );
@@ -462,7 +462,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		if  (this.isInitialized) {
 			// this container has been initialised already,
 			// so the dimensions are known.
-			if (item.internalX != -9999) {
+			if (item.internalX != NO_POSITION_SET) {
 				this.internalX =  item.relativeX + item.contentX + item.internalX;
 				this.internalWidth = item.internalWidth;
 				this.internalY = item.relativeY + item.contentY + item.internalY;
@@ -534,7 +534,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @param item the item for which the scrolling should be adjusted
 	 */
 	protected void scroll(int direction, Item item) {
-		if (item.internalX != -9999) {
+		if (item.internalX != NO_POSITION_SET) {
 			int relativeInternalX = item.relativeX + item.contentX + item.internalX;
 			int relativeInternalY = item.relativeY + item.contentY + item.internalY;
 			scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
@@ -827,7 +827,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		
 		Item item = this.focusedItem;
 		if (item != null) {
-			if (item.internalX != -9999) {
+			if (item.internalX != NO_POSITION_SET) {
 				// inherit the internal area of the focused item:
 				this.internalX =  item.contentX + item.internalX;
 				this.internalWidth = item.internalWidth;
@@ -877,7 +877,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		if (this.focusedItem != null) {
 			Item item = this.focusedItem;
 			if ( item.handleKeyPressed(keyCode, gameAction) ) {
-				if (this.enableScrolling && item.internalX != -9999) {
+				if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
 					scroll(gameAction, item);
 				}
 				//#debug
@@ -1043,7 +1043,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		if (this.focusedItem != null) {
 			Item item = this.focusedItem;
 			if ( item.handleKeyReleased( keyCode, gameAction ) ) {
-				if (this.enableScrolling && item.internalX != -9999) {
+				if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
 					scroll(gameAction, item);
 				}
 				//#debug
@@ -1064,7 +1064,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		if (this.focusedItem != null) {
 			Item item = this.focusedItem;
 			if ( item.handleKeyRepeated( keyCode, gameAction ) ) {
-				if (this.enableScrolling && item.internalX != -9999) {
+				if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
 					scroll(gameAction, item);
 				}
 				//#debug

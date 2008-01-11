@@ -1198,7 +1198,7 @@ implements Choice
 		this.isPopupClosed = true;
 		if (this.parent instanceof Container) {
 			((Container)this.parent).setScrollYOffset( this.popupParentOpenY );
-			this.internalX = -9999;
+			this.internalX = NO_POSITION_SET;
 		}
 	}
 	//#endif

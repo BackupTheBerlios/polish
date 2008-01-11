@@ -697,7 +697,7 @@ public abstract class Item extends Object
 	public final static int NO_POSITION_SET = -9999;
 	/** 
 	 * The internal horizontal position of this item's content relative to it's left edge. 
-	 * When it is equal -9999 this item's internal position is not known.
+	 * When it is equal NO_POSITION_SET this item's internal position is not known.
 	 * The internal position is useful for items that have a large content which
 	 * needs to be scrolled, e.g. containers.  
 	 */
@@ -3166,7 +3166,7 @@ public abstract class Item extends Object
 				// adjust the internal Y position:
 				Item parentItem = this;
 				while (parentItem != null) {
-					if (parentItem.internalX != -9999) {
+					if (parentItem.internalX != NO_POSITION_SET) {
 						parentItem.internalY += this.itemHeight;
 					}
 					parentItem = parentItem.parent;

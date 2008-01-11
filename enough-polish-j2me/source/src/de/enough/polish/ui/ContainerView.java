@@ -730,7 +730,7 @@ extends ItemView
 		//#debug
 		System.out.println("ContainerView: painting item at (" +  x + ", " + y + ") " + item );
 		if ( ( (y < clipY + clipHeight && y + item.itemHeight > clipY)
-			|| (item.internalX != -9999 && y + item.internalY < clipY + clipHeight && y + item.internalY + item.internalHeight > clipY ) )
+			|| (item.internalX != Item.NO_POSITION_SET && y + item.internalY < clipY + clipHeight && y + item.internalY + item.internalHeight > clipY ) )
 			&& (x < clipX + clipWidth && x + item.itemWidth > clipX) ) 
 		{
 			item.paint(x, y, leftBorder, rightBorder, g);

@@ -215,12 +215,12 @@ public class TreeItem
 	 * @param node the parent node that has been previously added to this tree
 	 * @param text the text 
 	 * @param image the image
-	 * @param style the style
+	 * @param childStyle the style
 	 * @return the created item
 	 */
-	public Item appendToNode( Item node, String text, Image image, Style style ) {
+	public Item appendToNode( Item node, String text, Image image, Style childStyle ) {
 		IconItem item = new IconItem( text, image);
-		appendToNode( node, item, style );
+		appendToNode( node, item, childStyle );
 		return item;
 	}
 
@@ -329,9 +329,8 @@ public class TreeItem
 		int xLeftOffset = 10;
 		private Style rootFocusedStyle;
 		private Style rootPlainStyle;
-		private Style childrenPlainStyle;
 		//private boolean isChildrenFocused;
-		private int availableWidth;
+//		private int availableWidth;
 		
 		public Node( Item root ) {
 			super( null, 0, INTERACTIVE, null );
@@ -348,7 +347,7 @@ public class TreeItem
 		protected void initContent(int firstLineWidth, int lineWidth) {
 			//#debug
 			System.out.println("Node (" + this.root + ").initContent()");
-			this.availableWidth = lineWidth - this.xLeftOffset;
+//			this.availableWidth = lineWidth - this.xLeftOffset;
 			this.root.init(firstLineWidth, lineWidth);
 			this.children.relativeX = this.xLeftOffset;
 			this.children.relativeY = this.root.itemHeight;
@@ -425,13 +424,16 @@ public class TreeItem
 						focusRoot();
 						handled = true;
 					} else {
-						if (this.children.internalX != -999) {
+						if (this.children.internalX != NO_POSITION_SET) {
 							this.internalX = this.children.relativeX + this.children.contentX + this.children.internalX;
 							this.internalY = this.children.relativeY + this.children.contentY + this.children.internalY;
 							this.internalWidth = this.children.internalWidth;
 							this.internalHeight = this.children.internalHeight;
 						} else {
-							this.internalX = -9999;
+							this.internalX = this.children.relativeX;
+							this.internalY = this.children.relativeY;
+							this.internalWidth = this.children.itemWidth;
+							this.internalHeight = this.children.itemHeight;
 						}
 					}
 				} else if (gameAction == Canvas.DOWN && this.children.appearanceMode != PLAIN) {
@@ -496,7 +498,7 @@ public class TreeItem
 				return this.rootPlainStyle;
 			}
 			//this.isChildrenFocused = true;
-			this.childrenPlainStyle = this.children.focus(focusstyle, direction); 
+//			this.childrenPlainStyle = this.children.focus(focusstyle, direction); 
 			return this.root.style;
 		}
 		
@@ -533,7 +535,7 @@ public class TreeItem
 				
 		private void setExpanded( boolean expand ) {
 			if (!expand) {
-				this.internalX = -9999;
+				this.internalX = NO_POSITION_SET;
 				// close down all chidren nodes as well when closing:
 				Item[] myItems = this.children.getItems();
 				for (int i = 0; i < myItems.length; i++) {

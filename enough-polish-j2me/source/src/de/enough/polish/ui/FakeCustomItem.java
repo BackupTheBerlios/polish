@@ -440,6 +440,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 		// ignore
 	}
 
+	public final static int NO_POSITION_SET = -9999;
 	
 	//////////////  END DEFAULT IMPLEMENTATION OF CUSTOM ITEM METHODS  /////////////////////////////
 	
@@ -747,11 +748,11 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	// which should be visible:
 	/** 
 	 * The internal horizontal position of this item's content relative to it's left edge. 
-	 * When it is equal -9999 this item's internal position is not known.
+	 * When it is equal NO_POSITION_SET this item's internal position is not known.
 	 * The internal position is useful for items that have a large content which
 	 * needs to be scrolled, e.g. containers.  
 	 */
-	protected int internalX = -9999;
+	protected int internalX = NO_POSITION_SET;
 	/** the vertical position of this item's internal content relative to it's top edge */
 	protected int internalY;
 	/** The internal width of this item's content.  */

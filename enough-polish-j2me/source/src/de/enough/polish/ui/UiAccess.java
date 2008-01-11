@@ -436,12 +436,12 @@ public final class UiAccess {
 	//#if polish.usePolishGui
 	/**
 	 * Retrieves the internal x position of the given item.
-	 * When it is equal -9999 this item's internal position is not known.
+	 * When it is equal Item.NO_POSITION_SET / -9999 this item's internal position is not known.
 	 * The internal position is useful for items that have a large content which
 	 * needs to be scrolled, e.g. containers.  
 	 * 
 	 * @param item the item
-	 * @return the internal x position of this item's currently selected content, -9999 when it is unknown.
+	 * @return the internal x position of this item's currently selected content, -9999 / Item.NO_POSITION_SET when it is unknown.
 	 */
 	public static int getInternalX( Item item ) {
 		return item.internalX;

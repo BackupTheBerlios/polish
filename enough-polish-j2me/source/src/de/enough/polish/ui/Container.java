@@ -253,7 +253,7 @@ public class Container extends Item {
 	public void add( int index, Item item ) {
 		synchronized (this.itemsList) {
 			item.relativeY = 0;
-			item.internalX = -9999;
+			item.internalX = NO_POSITION_SET;
 			item.parent = this;
 			this.itemsList.add( index, item );
 			if (index <= this.focusedIndex) {
@@ -794,7 +794,7 @@ public class Container extends Item {
 				item.isInitialized = false; // could be that a container view poses restrictions on the possible size, i.e. within a table
 			}
 
-			if (item.internalX != -9999) {
+			if (item.internalX != NO_POSITION_SET) {
 				this.internalX =  item.relativeX + item.contentX + item.internalX;
 				this.internalY = item.relativeY + item.contentY + item.internalY;
 				this.internalWidth = item.internalWidth;
@@ -865,7 +865,7 @@ public class Container extends Item {
 	public void scroll(int direction, Item item) {
 		//#debug
 		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX +", relativeInternalY=" + ( item.relativeY + item.contentY + item.internalY ));
-		if (item.internalX != -9999 
+		if (item.internalX != NO_POSITION_SET 
 				&& ( (item.itemHeight > getScrollHeight()) || ((item.internalY + item.internalHeight) > item.contentHeight ) ) ) 
 		{
 			// use internal position of item for scrolling:
@@ -1066,7 +1066,7 @@ public class Container extends Item {
 						System.out.println("initContent(): scroll is required - scrolling to y=" + myContentHeight + ", height=" + height);
 						scroll( 0, 0, myContentHeight, width, height );
 						this.isScrollRequired = false;
-	//				} else if (item.internalX != -9999 ) {
+	//				} else if (item.internalX != NO_POSITION_SET ) {
 	//					// ensure that lines of textfields etc are within the visible area:
 	//					scroll(0, item );
 					}
@@ -1102,7 +1102,7 @@ public class Container extends Item {
 				this.appearanceMode = INTERACTIVE;
 				if (this.focusedItem != null) {
 					Item item = this.focusedItem;
-					if (item.internalX != -9999) {
+					if (item.internalX != NO_POSITION_SET) {
 						this.internalX =  item.relativeX + item.contentX + item.internalX;
 						this.internalY = item.relativeY + item.contentY + item.internalY;
 						this.internalWidth = item.internalWidth;
@@ -1314,7 +1314,7 @@ public class Container extends Item {
 				item.init( this.contentWidth, this.contentWidth );
 			}
 			if ( item.handleKeyPressed(keyCode, gameAction) ) {
-				if (item.internalX != -9999) {
+				if (item.internalX != NO_POSITION_SET) {
 					if (this.enableScrolling) {
 						//#debug
 						System.out.println("scrolling to item.internalY=" + item.internalY );
@@ -1421,7 +1421,7 @@ public class Container extends Item {
 			if (this.focusedItem != null 
 					&& this.enableScrolling
 					&& ( (offset + this.focusedItem.relativeY + this.focusedItem.itemHeight > this.availableHeight)
-					     || ( this.focusedItem.internalX != -9999
+					     || ( this.focusedItem.internalX != NO_POSITION_SET
 						    && offset + this.focusedItem.relativeY + this.focusedItem.contentY + this.focusedItem.internalY + this.focusedItem.internalHeight > this.availableHeight)) 
 				       )
 			{
@@ -1515,7 +1515,7 @@ public class Container extends Item {
 		if (this.focusedItem != null) {
 			Item item = this.focusedItem;
 			if ( item.handleKeyReleased( keyCode, gameAction ) ) {
-				if (this.enableScrolling && item.internalX != -9999) {
+				if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
 					scroll(gameAction, item);
 				}
 				//#debug
@@ -1536,7 +1536,7 @@ public class Container extends Item {
 		if (this.focusedItem != null) {
 			Item item = this.focusedItem;
 			if ( item.handleKeyRepeated( keyCode, gameAction ) ) {
-				if (this.enableScrolling && item.internalX != -9999) {
+				if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
 					scroll(gameAction, item);
 				}
 				//#debug

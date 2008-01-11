@@ -104,6 +104,7 @@ implements Choice
 		private int popupParentOpenY;
 		private int originalContentWidth;
 		private int originalContentHeight;
+		private int originalBackgroundHeight;
 	//#endif
 	//#ifndef tmp.suppressAllCommands
 		private ItemCommandListener additionalItemCommandListener;
@@ -1216,10 +1217,11 @@ implements Choice
 								+ this.marginRight + this.borderWidth + this.paddingRight;
 					this.popupItem.init(firstLineWidth + noneContentWidth, lineWidth + noneContentWidth);
 				}
-				this.internalX = -9999;
+				this.internalX = NO_POSITION_SET;
 			} else {
 				this.originalContentWidth = this.contentWidth;
 				this.originalContentHeight = this.contentHeight;
+				this.originalBackgroundHeight = this.backgroundHeight;
 			}
 			//this.contentWidth = this.popupItem.contentWidth;			
 			this.contentHeight = this.popupItem.contentHeight;
@@ -1243,7 +1245,7 @@ implements Choice
 			//#debug
 			System.out.println("closing popup and adjusting scroll y offset to " + this.popupParentOpenY);
 			((Container)this.parent).setScrollYOffset( this.popupParentOpenY );
-			this.internalX = -9999;
+			this.internalX = NO_POSITION_SET;
 		}
 		this.isInitialized = false;
 	}
@@ -1272,15 +1274,22 @@ implements Choice
 			this.internalHeight = this.itemHeight + 20;
 			this.internalWidth = this.itemWidth;
 		}
+		this.backgroundHeight = this.originalBackgroundHeight;
 	}
 	//#endif
 	
-	//#ifdef polish.usePopupItem
+	/**
+	 * Checks if the popup window is currently closed for a POPUP ChoiceGroup.
+	 * @return true when this is a POPUP ChoiceGroup and the popup is closed
+	 */
 	public boolean isPopupClosed()
 	{
-		return this.isPopupClosed;
+		boolean result = false;
+		//#ifdef polish.usePopupItem
+			result = this.isPopupClosed;
+		//#endif
+		return result;
 	}
-	//#endif
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
@@ -1296,19 +1305,15 @@ implements Choice
 				//#ifdef polish.usePopupItem
 					if (!this.isPopup || this.isPopupClosed) {
 				//#endif
-				//#ifndef tmp.suppressAllCommands
-					if (this.defaultCommand != null && this.additionalItemCommandListener != null) {
-						this.additionalItemCommandListener.commandAction( this.defaultCommand, this );
-						notifyItemPressedStart();
-						return true;
-					}
-				//#else
-					if (this.defaultCommand != null && this.itemCommandListener != null) {
-						this.itemCommandListener.commandAction( this.defaultCommand, this );
-						notifyItemPressedStart();
-						return true;
-					}
-				//#endif
+						ItemCommandListener listener = this.itemCommandListener;
+						//#ifndef tmp.suppressAllCommands
+							listener = this.additionalItemCommandListener;
+						//#endif
+						if (this.defaultCommand != null && listener != null) {
+							listener.commandAction( this.defaultCommand, this );
+							notifyItemPressedStart();
+							return true;
+						}
 				//#ifdef polish.usePopupItem
 				}
 				//#endif
@@ -1328,7 +1333,7 @@ implements Choice
 			ChoiceItem choiceItem = (ChoiceItem) this.focusedItem;
 			//#ifdef polish.usePopupItem
 				if (this.isPopup && this.isPopupClosed && gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
-					notifyItemPressedStart();
+					notifyItemPressedStart(); // open popup in handleKeyReleased()
 					return true;
 				} else
 			//#endif
