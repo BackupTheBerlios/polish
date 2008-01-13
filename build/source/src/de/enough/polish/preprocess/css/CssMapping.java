@@ -205,7 +205,6 @@ implements Comparable
 			//System.out.println("CssAttribute.appliesTo=[" + this.appliesTo + "], to [" + className + "] = NO APPLIES MAP DEFINED!");
 			return false;
 		} else {
-			//System.out.println("CssAttribute.appliesTo=[" + this.appliesTo + "], to [" + className + "] = " + (this.appliesToMap.get( className ) != null));
 			return (this.appliesToMap.get( className ) != null);
 		}
 	}

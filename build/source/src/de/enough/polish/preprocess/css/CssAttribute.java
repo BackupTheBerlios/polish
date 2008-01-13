@@ -707,17 +707,17 @@ implements Comparable
 			classNames[i] = className;
 		}
 		CssMapping[] mappings = getMappings();
-		ArrayList list = new ArrayList();
+		ArrayList matchingMappingsList = new ArrayList();
 		for (int i = 0; i < mappings.length; i++) {
 			CssMapping mapping = mappings[i];
 			for (int j = 0; j < classNames.length; j++) {
 				if ( mapping.appliesTo( classNames[j] ) || mapping.appliesTo( fullClassNames[j] ) ) {
-					list.add( mapping );
+					matchingMappingsList.add( mapping );
 					break;
 				}
 			}
 		}
-		mappings = (CssMapping[]) list.toArray( new CssMapping[ list.size() ] );
+		mappings = (CssMapping[]) matchingMappingsList.toArray( new CssMapping[ matchingMappingsList.size() ] );
 		Arrays.sort( mappings );
 		return mappings;
 	}
