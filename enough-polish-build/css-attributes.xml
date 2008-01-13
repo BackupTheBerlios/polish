@@ -924,8 +924,9 @@
 		<mapping from="size-decrease" to="new de.enough.polish.ui.itemviews.SizeDecreaseItemView()" appliesTo="Item" />
 		<mapping from="particle" to="new de.enough.polish.ui.itemviews.ExplodingParticlesItemView()" appliesTo="Item" />
 		<!--  for Containers:  -->
-		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideUpView()"  appliesTo="Item" />
-		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideUpView()" />
+		<mapping from="slide" to="new de.enough.polish.ui.containerviews.SlideContainerView()"  appliesTo="Container,FakeContainerCustomItem" />
+		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideContainerView()" />
+		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideContainerView()" />
 		<mapping from="shuffle" to="new de.enough.polish.ui.containerviews.ShuffleView()" appliesTo="Screen, Container, FakeContainerCustomItem" />
 		<mapping from="ShuffleView" to="new de.enough.polish.ui.containerviews.ShuffleView()" />
 		<mapping from="dropping" to="new de.enough.polish.ui.containerviews.DroppingView()" appliesTo="Screen"  />
@@ -3362,6 +3363,26 @@
 		id="305"
 	/>
 	
+	
+	<attribute
+		name="slideview-duration"
+		type="integer"
+		appliesTo="SlideContainerView"
+		description="The maximum time in milliseconds until the slided item will be fully visible."
+		default="1600"
+		id="306"
+	/>
+	
+	<attribute
+		name="slideview-direction"
+		type="integer"
+		appliesTo="SlideContainerView"
+		description="The direction into which the item will be slided."
+		default="up"
+		values="up,down,left,right"
+		id="307"
+	/>
+
 	
 	<!--
 	
