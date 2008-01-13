@@ -123,7 +123,7 @@
 					MIDlet-Data-Size?
 				</manifestFilter>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
+				<obfuscator name="ProGuard" useDefaultPackage="false" unless="test" >
 					<keep class="NokiaFullCanvasTest" />
 					<keep class="Midp2FullCanvasTest" />
 				</obfuscator>

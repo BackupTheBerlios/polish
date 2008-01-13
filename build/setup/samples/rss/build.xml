@@ -153,7 +153,7 @@
 					<localization locales="en_US" unless="test" />
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test or polish.blackberry" >
+				<obfuscator name="ProGuard" useDefaultPackage="false" unless="test or polish.blackberry" >
 					<!--
 					You can set additional parameters here, e.g.:
 					<parameter name="optimize" value="false" />

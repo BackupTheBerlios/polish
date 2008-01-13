@@ -155,7 +155,7 @@
 					-->
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator  name="ProGuard" useDefaultPackage="true" unless="test or polish.blackberry" />
+				<obfuscator  name="ProGuard" useDefaultPackage="false" unless="test or polish.blackberry" />
 				<!-- debug/log settings: only include debug setting when the test-property is true -->
 				<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true" >
 					<filter level="debug" package="de.enough.polish.sample.serialization"/>

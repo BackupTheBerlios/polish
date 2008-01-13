@@ -126,7 +126,7 @@
 					<localization locales="en_US" />
 				</resources>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
+				<obfuscator name="ProGuard" useDefaultPackage="false" unless="test" >
 					<!--
 					You can set additional parameters here, e.g.:
 					<parameter name="optimize" value="false" />
