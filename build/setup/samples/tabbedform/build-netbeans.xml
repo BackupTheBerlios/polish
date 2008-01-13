@@ -89,7 +89,7 @@
 			>
 		<j2mepolish>
 		    <!-- general settings -->
-			<info copyright="Copyright 2006, 2007 Enough Software. All rights reserved." 
+			<info copyright="Copyright 2008 Enough Software. All rights reserved." 
 				description="A demonstration of the TabbedForm." 
 				infoUrl="http://www.enough.de" 
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-tabbedform.jar" 
