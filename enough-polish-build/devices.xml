@@ -15878,16 +15878,6 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
-		<identifier>Motorola/W315</identifier>
-		<capability name="JavaPlatform" value="MIDP/2.0"/>
-		<capability name="JavaConfiguration" value="CLDC/1.1"/>
-		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, wmapi2.0"/>
-		<capability name="BitsPerPixel" value="16"/>	
-		<capability name="ScreenSize" value="128x160"/>
-		<capability name="FullCanvasSize" value="128x160"/>
-	</device>
-
-	<device>
 		<identifier>Motorola/W355</identifier>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
