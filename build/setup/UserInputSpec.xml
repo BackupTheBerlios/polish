@@ -14,7 +14,7 @@
    classpath=&quot;${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar&quot;
 	/&gt;" />
 	<divider alignment="top"/>
-	<field type="staticText" txt="Copyright 2003 - 2007 Enough Software " />
+	<field type="staticText" txt="Copyright 2003 - 2008 Enough Software " />
 </panel>
 
 

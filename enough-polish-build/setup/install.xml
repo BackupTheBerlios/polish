@@ -42,7 +42,7 @@
         <res id="HTMLLicencePanel.licence" src="../setup/j2mepolish-license.html"/>
 		<res id="userInputSpec.xml" src="userInputSpec.xml" />
 		<res id="useNativeLAF" src="../setup/useNativeLAF" />
-        <res id="Installer.image" src="../setup/j2mepolish-christmas.png" />
+        <res id="Installer.image" src="../setup/j2mepolish-logo.png" />
     </resources>
     
     <!-- 
