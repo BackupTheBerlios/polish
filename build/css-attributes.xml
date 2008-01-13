@@ -3379,7 +3379,7 @@
 		appliesTo="SlideContainerView"
 		description="The direction into which the item will be slided."
 		default="up"
-		values="up,down,left,right"
+		values="up,down,left,right,upleft,upright,downleft,downright"
 		id="307"
 	/>
 
