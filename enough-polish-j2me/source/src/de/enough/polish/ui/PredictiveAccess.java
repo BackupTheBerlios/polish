@@ -100,7 +100,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	 * The indicator which is shown in the info box of a textfield indication the predictive
 	 * mode is activated
 	 */
-	public static String INDICATOR = "\u00bb";
+	public static String INDICATOR = ">>";
 	
 	Container choicesContainer;
 
