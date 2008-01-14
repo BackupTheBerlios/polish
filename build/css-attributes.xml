@@ -931,7 +931,6 @@
 		<mapping from="ShuffleView" to="new de.enough.polish.ui.containerviews.ShuffleView()" />
 		<mapping from="dropping" to="new de.enough.polish.ui.containerviews.DroppingView()" appliesTo="Screen"  />
 		<mapping from="DroppingView" to="new de.enough.polish.ui.containerviews.DroppingView()" />
-		<mapping from="sequential" to="new de.enough.polish.ui.containerviews.SequentialTraversalContainerView()" appliesTo="Screen,Container, FakeContainerCustomItem" />
 		<mapping from="midp2" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" appliesTo="Screen,Container, FakeContainerCustomItem" />
 		<mapping from="midp2layout" to="new de.enough.polish.ui.containerviews.MIDP2LayoutView()" />
 		<mapping from="relative" to="new de.enough.polish.ui.containerviews.RelativeLayoutView()" />
@@ -3383,6 +3382,16 @@
 		values="up,down,left,right,upleft,upright,downleft,downright"
 		id="307"
 	/>
+	
+	<attribute
+		name="view-type-sequential-traversal"
+		type="boolean"
+		appliesTo="ContainerView, Container, FakeContainerCustomItem"
+		description="Defines if the cells of a table can only be traversered in sequential order. By default you can move to the next row by pressing down - when the sequential-traversal is enabled pressing down will move the focus to the next item instead."
+		default="false"
+		id="308"
+	/>
+	
 
 	
 	<!--

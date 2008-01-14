@@ -29,7 +29,6 @@ package de.enough.polish.ui;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
-import de.enough.polish.io.Serializable;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.TextUtil;
 
@@ -53,10 +52,10 @@ extends ItemView
 			
 	//#endif
 	
-	private static final int NO_COLUMNS = 0;
-	private static final int EQUAL_WIDTH_COLUMNS = 1;
-	private static final int NORMAL_WIDTH_COLUMNS = 2;
-	private static final int STATIC_WIDTH_COLUMNS = 3;
+	protected static final int NO_COLUMNS = 0;
+	protected static final int EQUAL_WIDTH_COLUMNS = 1;
+	protected static final int NORMAL_WIDTH_COLUMNS = 2;
+	protected static final int STATIC_WIDTH_COLUMNS = 3;
 
 	protected int yOffset;
 	protected int focusedIndex = -1;
@@ -92,6 +91,9 @@ extends ItemView
 	//#endif
 	//#if polish.css.view-type-top-y-offset
 		protected int topYOffset;
+	//#endif
+	//#if polish.css.view-type-sequential-traversal
+		protected boolean isSequentialTraversal;
 	//#endif
 	/** indicates whether the parent Container is allowed to change the currently focused item 
 	 *  when the user traverses around a form and enters the container from different sides 
@@ -761,9 +763,15 @@ extends ItemView
 				//#endif
 				( this.isVertical   && gameAction == Canvas.DOWN   && keyCode != Canvas.KEY_NUM8)) 
 		{
-			if (gameAction == Canvas.DOWN && this.columnsSetting != NO_COLUMNS) {
-				return shiftFocus( true, this.numberOfColumns - 1, myItems );
-			}
+			//#if polish.css.view-type-sequential-traversal
+				if (!this.isSequentialTraversal) {
+			//#endif
+					if (gameAction == Canvas.DOWN && this.columnsSetting != NO_COLUMNS) {
+						return shiftFocus( true, this.numberOfColumns - 1, myItems );
+					}
+			//#if polish.css.view-type-sequential-traversal
+				}
+			//#endif
 			return shiftFocus( true, 0, myItems );
 			
 		} else if ( 
@@ -774,9 +782,15 @@ extends ItemView
 				//#endif
 				(this.isVertical && gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) ) 
 		{
-			if (gameAction == Canvas.UP && this.columnsSetting != NO_COLUMNS) {
-				return shiftFocus( false,  -(this.numberOfColumns -1 ), myItems);
-			}
+			//#if polish.css.view-type-sequential-traversal
+				if (!this.isSequentialTraversal) {
+			//#endif
+					if (gameAction == Canvas.UP && this.columnsSetting != NO_COLUMNS) {
+						return shiftFocus( false,  -(this.numberOfColumns -1 ), myItems);
+					}
+			//#if polish.css.view-type-sequential-traversal
+				}
+			//#endif
 			return shiftFocus( false, 0, myItems );
 		}
 		
@@ -1126,7 +1140,12 @@ extends ItemView
 				this.topYOffset = topYOffsetInt.intValue();
 			}
 		//#endif
-	
+		//#if polish.css.view-type-sequential-traversal
+			Boolean sequentialTraversalBool = style.getBooleanProperty("view-type-sequential-traversal");
+			if (sequentialTraversalBool != null) {
+				this.isSequentialTraversal = sequentialTraversalBool.booleanValue();
+			}
+		//#endif
 	}
 	
 
