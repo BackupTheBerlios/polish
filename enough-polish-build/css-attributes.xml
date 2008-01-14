@@ -3387,7 +3387,7 @@
 		name="view-type-sequential-traversal"
 		type="boolean"
 		appliesTo="ContainerView, Container, FakeContainerCustomItem"
-		description="Defines if the cells of a table can only be traversered in sequential order. By default you can move to the next row by pressing down - when the sequential-traversal is enabled pressing down will move the focus to the next item instead."
+		description="Defines if the cells of a table can only be traversered in sequential order. By default you can move to the next row by pressing down - when the sequential-traversal is enabled pressing down will move the focus to the next item instead. Only applicable when the columns attribute is being used."
 		default="false"
 		id="308"
 	/>
