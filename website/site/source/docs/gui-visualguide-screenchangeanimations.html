@@ -5,22 +5,22 @@
 
 <%include start.txt %>
 
-	<h1 id="top">Visual Guide to screen-change-animation</h1>
+	<h1 id="top">Visual Guide to Screen Transitions</h1>
 	<ul class="relatedtechnologies">
 		<li class="relatedtechnologiesheader">Related Topics:</li>
 		<li><a href="gui-visualguide.html">Visual Guide</a></li>
-		<li><a href="gui-visualguide-backgrounds.html">Visual Guide to background</a></li>
-		<li><a href="gui-visualguide-borders.html">Visual Guide to border</a></li>
-		<li><a href="gui-visualguide-texteffects.html">Visual Guide to text-effect</a></li>
-		<li><a href="gui-visualguide-viewtypes.html">Visual Guide to view-type</a></li>
+		<li><a href="gui-visualguide-backgrounds.html">Visual Guide to Backgrounds</a></li>
+		<li><a href="gui-visualguide-borders.html">Visual Guide to Borders</a></li>
+		<li><a href="gui-visualguide-texteffects.html">Visual Guide to Text Effects</a></li>
+		<li><a href="gui-visualguide-viewtypes.html">Visual Guide to Item Views</a></li>
 		<li><a href="gui-concepts.html">GUI Concepts</a></li>
 		<li><a href="gui-css-basics.html">CSS Basics</a></li>
 		<li><a href="customization.html">Customization</a></li>
 	</ul>
 	<%index %>
 	<p>
-	This guide shows you the available screen-change-animations.
-	<br />You can apply any screen transition by setting the <code>screen-change-animation</code> attribute
+	This guide shows you the available effects for screen transitions.
+	<br />You can apply any effect by setting the <code>screen-change-animation</code> attribute
 	within the screen's CSS style, e.g.:
 	</p>
 <pre>
@@ -31,8 +31,22 @@
 	<b>screen-change-animation: left;</b>
 }
 </pre>
+	<p>
+	Screen transitions may have a direction - when you show a screen with a defined
+	<code>screen-change-animation</code>, the animation will be played in the <i>forward</i> mode. When
+	you are showing a screen without a defined <code>screen-change-animation</code> and the previous
+	screen has a defined animation, the animation will be played in the <i>backward</i> direction.
+	<br />
+	When both the previous as well as the next screen do have a <code>screen-change-animation</code>, the
+	animation of the next screen will take precedence and it will be played in the <i>foward</i> direction.
+	The only exception to this rule is when the previous screen is an Alert - in that case the
+	Alert's <code>screen-change-animation</code> will be played in the <i>backward</i> direction, even 
+	if the next screen has also a defined animation.
+	<br />
+	Note that not all animations do honor the direction of the transition.
+	</p>
 	<p>The following movies show the main menu as the last screen and the
-	popup alert as the next screen.
+	popup alert as the next screen, before returning to the main menu again.
 	</p>
 
 <h2 id="screenchangeanimation-bottom">bottom Animation</h2>

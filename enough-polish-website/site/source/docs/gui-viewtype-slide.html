@@ -1,10 +1,10 @@
 <%define inDocumentationSection %>
 <%define inDocumentationSection.gui %>
-<%set title = J2ME Polish: slideup view-type %>
+<%set title = J2ME Polish: slide view-type %>
 <%set basedir = ../ %>
 <%include start.txt %>
 
-	<h1 id="top">slide-up view-type</h1>
+	<h1 id="top">slide view-type</h1>
 	<ul class="relatedtechnologies">
 		<li class="relatedtechnologiesheader">Related Topics:</li>
 		<li><a href="gui-visualguide-viewtypes.html">View Types</a></li>
@@ -12,7 +12,7 @@
 		<li><a href="gui-screenelement-menubar.hthml">Commands Menu</a></li>
 	</ul>
 	<p>
-	The <code>slide-up</code> view-type moves the affected item upwards. 
+	The <code>slide</code> view-type moves the affected item in the specified direction, by default upwards. 
 	It is typically used for the <a href="gui-screenelement-menubar.hthml">commands menu</a>.
 
 	</p>
@@ -45,17 +45,17 @@ menu {
 	font-color: brightFontColor;
 	font-style: bold;
 	menubar-color: bgColor;
-	<b>view-type: slide-up;</b>
+	<b>view-type: slide;</b>
 }
 </pre>
 	<p>
 	CSS attributes:
 	</p>
-	<%cssattributes de.enough.polish.ui.containerviews.SlideUpView %>
+	<%cssattributes de.enough.polish.ui.containerviews.SlideContainerView %>
 	
 	<h2 id="JavaDoc">JavaDoc</h2>
 	<ul>
-		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/containerviews/SlideUpView.html">SlideUpView</a></li>
+		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/containerviews/SlideContainerView.html">SlideContainerView</a></li>
 	</ul>
 
 <%include end.txt %>

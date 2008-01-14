@@ -122,20 +122,16 @@ this.form.append( coolItem );
 </ol>
 <p>
 The last variant is the most flexible one and you do not need to change the source code, so this is the best way to apply a style. 
-When the item MyItem is now used within the code, the appropriate style can 
-specified with the <code>#style</code> directive:
-<pre>
-MyItem coolItem = new MyItem( label );
-//#style coolStyle
-this.form.append( coolItem );
-</pre>
 </p>
 <p>
 For reading the specific style settings, the method <code>setStyle( Style )</code> needs to be overridden:
 <pre>
 //#if polish.usePolishGui
-  public void setStyle( Style style ) {
-	super.setStyle( style );
+  <b>public void setStyle( Style style )</b> {
+  	// hide the super call from the IDE:
+  	//#if true
+		//# super.setStyle( style );
+	//#endif
 	this.font = style.font;
 	this.fontColor = style.fontColor;
 	// now read specific attributes:

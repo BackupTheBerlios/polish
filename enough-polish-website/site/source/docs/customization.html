@@ -81,7 +81,7 @@ cfg.enableServerBackup=true
 	<img align="left" src="<%= basedir%>images/doc-customization-rootdirs.png" alt="sample directory structure" />
 	</p><!--  <p class="caption">A sample project structure for customization</p>  -->
 
-	<p>Each root folder will be searched like described in the <a href="../build/resource-assembling.html">Resource Assembling</a> section.
+	<p>Each root folder will be searched like described in the <a href="resource-assembling.html">Resource Assembling</a> section.
 	So you use subdirectories like <i>${root.dir}/Nokia</i>,  <i>${root.dir}/FullCanvasSize.176+x208+</i> and so on to include resources or settings
 	only for specific target devices. Note that any subsequent resources will take precedence over former ones. 
 	So the image <i>resources/${customization}/logo.png</i> will be used instead of <i>resources/base/Samsung/SGH-D900/logo.png</i> when you target
@@ -96,7 +96,7 @@ cfg.enableServerBackup=true
 	
 	<h2 id="localization">Changing Text Depending on the Customization</h2>
 	<p>
-	Use the <a href="../localization/localization.html">Localization Framework</a> to customize any texts by defining them in 
+	Use the <a href="localization.html">Localization Framework</a> to customize any texts by defining them in 
 	<i>${root.dir}/messages.txt</i> or the appropriate subfolder of a root directory. 
 	Like in the Resource Assembling step you do not (and should not) repeat any texts that are already defined in your
 	base root, for example in <i>resources/base/messages.txt</i>, and that do not differ in your customized version. In this way
@@ -137,13 +137,14 @@ title.main=My Customized Title
 this.mainScreen.setTitle( Locale.get("title.main") );
 </pre></p><p class="caption">Using de.enough.polish.util.Locale for getting customized texts</p>
 
-	<p>You can also &quot;abuse&quot; the Localization Framework for setting customized preprocesing/configuration variables 
+	<p>You can also &quot;abuse&quot; the <a href="localization.html">Localization Framework</a> for setting customized preprocesing/configuration variables 
 	in your <i>messages.txt</i> files:
+	</p>
 <pre>
 var:cfg.enableSmsSupport=true
 var:cfg.enableServerBackup=true
 </pre>
-</p><p class="caption">Using the Localization Framework for defining customized variables</p>
+	<p class="caption">Using the Localization Framework for defining customized variables</p>
 
 
 	<h2 id="design">Customizing the Look and Feel of Your Application</h2>
@@ -197,7 +198,7 @@ title {
 	</p><p class="caption">Disabling inheritance of CSS attributes for the title style</p>
 	
 	<p>
-	You can also use <a href="../build/preprocessing.html">preprocessing</a> statements to customize your design:
+	You can also use <a href="preprocessing.html">preprocessing</a> statements to customize your design:
 <pre>
 colors {
 	//#if cfg.${customization}
@@ -234,12 +235,12 @@ title {
 	<h2 id="functionality">Customizing the Functionality of Your Application</h2>
 	<p>
 	For some customizations it might be necessary to adjust the functionality of your application as well. You can do this
-	with J2ME Polish by using preprocessing or conditional source folders. You will need to setup customizatin
-	preprocessing, variables, source dirs
+	with J2ME Polish by using preprocessing or conditional source folders. You can achieve this by using 
+	preprocessing and optionally configuring your <i>build.xml</i> script.
 	</p>
 	<h3 id="preprocessing">Use Preprocessing to Customize Your Application</h3>
 	<p>
-	Using <a href="../build/preprocessing.html">preprocessing</a> in your application's source code gives you unlimited possibilities
+	Using <a href="preprocessing.html">preprocessing</a> in your application's source code gives you unlimited possibilities
 	for customizing your application. Best practice is to <a href="#configuration">define customization specific variables</a> first
 	as desribed above:
 <pre>
