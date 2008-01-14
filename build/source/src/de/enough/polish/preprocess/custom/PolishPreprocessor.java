@@ -335,14 +335,19 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					boolean extendsRemote = createRemoteImplementation( className, lines );
 					if (extendsRemote) {
 						File classFile;
+						// get name of the classes directory - this is changed by the java5 postcompiler, for example
+						String classesDirName = this.environment.getVariable("polish.classes.dirname");
+						if (classesDirName == null) {
+							classesDirName = "classes";
+						}
 						if (this.environment.hasSymbol("polish.useDefaultPackage")) {
 							int lastDotPost = className.lastIndexOf('.');
 							if (lastDotPost != -1) {
 								className = className.substring( lastDotPost + 1 );
 							}
-							classFile = new File( this.environment.getDevice().getBaseDir(), "classes" + File.separatorChar +  className + ".class" );
+							classFile = new File( this.environment.getDevice().getBaseDir(), classesDirName + File.separatorChar +  className + ".class" );
 						} else {
-							classFile = new File( this.environment.getDevice().getBaseDir(), "classes" + File.separatorChar +  className.replace('.', File.separatorChar ) + ".class" );
+							classFile = new File( this.environment.getDevice().getBaseDir(), classesDirName + File.separatorChar +  className.replace('.', File.separatorChar ) + ".class" );
 						}
 						rmiClassFiles.add( classFile );						
 					}
