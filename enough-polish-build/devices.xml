@@ -4,7 +4,7 @@
 	You can add or change the existing specifications and
 	use the changed settings in the code.
 
-    Copyright (c) 2004, 2005 Robert Virkus / Enough Software
+    Copyright (c) 2004 - 2008 Robert Virkus / Enough Software
 
     This file is part of J2ME Polish.
 
@@ -27,6 +27,9 @@
     http://www.j2mepolish.org for details.
 
 -->
+<!-- 
+For more information about J2ME Polish please visit www.j2mepolish.org
+ -->
 <!-- 
 These namespaces/schemas will be used soon.
 
