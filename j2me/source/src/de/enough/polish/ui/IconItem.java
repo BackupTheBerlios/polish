@@ -63,14 +63,14 @@ implements ImageConsumer
 //#endif
 {
 	
-	Image image;
-	private int imageAlign = Graphics.LEFT;
+	protected Image image;
+	protected int imageAlign = Graphics.LEFT;
 	//#ifdef polish.css.icon-image-align-next
 		private boolean imageAlignNext;
 	//#endif
-	private int imageHeight;
-	private int imageWidth;
-	private int yAdjustText;
+	protected int imageHeight;
+	protected int imageWidth;
+	protected int yAdjustText;
 	protected boolean isTextVisible = true;
 	//#if polish.midp2 && polish.css.scale-factor
 		private int scaleFactor;
@@ -78,25 +78,25 @@ implements ImageConsumer
 		private int currentStep;
 		private int[] rgbData;
 		private boolean scaleDown;
-		private boolean scaleFinished;
+		protected boolean scaleFinished;
 		// a short array, so that we don't need to use synchronization.
 		// scaleData[0] = scaled RGB Data
 		// scaleData[1] = width of RGB Data 
-		private Object[] scaleData;
+		protected Object[] scaleData;
 	//#endif
 	//#if polish.css.icon-vertical-adjustment
-		private int verticalAdjustment;
+		protected int verticalAdjustment;
 	//#endif
 	//#if polish.css.icon-horizontal-adjustment
-		private int horizontalAdjustment;
+		protected int horizontalAdjustment;
 	//#endif
 	//#if polish.css.icon-padding
 		private int paddingIcon;
 	//#endif
 
 	//private int yAdjustImage;
-	private int relativeIconX;
-	private int relativeIconY;
+	protected int relativeIconX;
+	protected int relativeIconY;
 
 	/**
 	 * Creates a new icon.
