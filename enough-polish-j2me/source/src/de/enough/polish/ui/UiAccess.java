@@ -2735,6 +2735,23 @@ public final class UiAccess {
 	//#endif
 	
 	//#if polish.midp
+	public static void setTextfieldInfoItem(javax.microedition.lcdui.TextField field, StringItem infoItem)
+	{
+		// ignore
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	public static void setTextfieldInfoItem(TextField field, StringItem infoItem)
+	{
+	 	//#if polish.TextField.useDirectInput && polish.TextField.useExternalInfo && !polish.blackberry
+			field.setInfoItem(infoItem);
+			System.out.println("swet info item");
+		//#endif
+	}
+	//#endif
+	
+	//#if polish.midp
 	public static void setTextfieldHelp(javax.microedition.lcdui.TextField field, String text)
 	{
 		// ignore

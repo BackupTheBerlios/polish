@@ -1780,7 +1780,7 @@ public class TextField extends StringItem
 				if ( this.enableDirectInput ) {
 			//#endif
 				// adjust text-start for input info abc|Abc|ABC|123 if it should be shown on the same line:
-				//#if tmp.includeInputInfo
+				//#if tmp.includeInputInfo && !polish.TextField.useExternalInfo
 					if (this.infoItem != null && this.isShowInputInfo) {
 						int infoWidth = this.infoItem.getItemWidth( rightBorder-leftBorder, rightBorder-leftBorder);
 						if (this.infoItem.isLayoutRight) {
@@ -1794,8 +1794,8 @@ public class TextField extends StringItem
 							leftBorder += infoWidth;
 						}
 					}
-					super.paintContent(x, y, leftBorder, rightBorder, g);
 				//#endif
+				super.paintContent(x, y, leftBorder, rightBorder, g);
 
 				//#if polish.TextField.showHelpText
 				if(getString() == null || getString().equals(""))
@@ -2467,7 +2467,7 @@ public class TextField extends StringItem
 			}
 			
 			//#if polish.TextField.includeInputInfo
-				if(this.infoItem.getStyle().layout == Graphics.RIGHT)
+				if(this.infoItem != null && this.infoItem.getStyle().layout == Graphics.RIGHT)
 				{
 					modeStr = PredictiveAccess.INDICATOR + modeStr;
 				}
@@ -2489,9 +2489,11 @@ public class TextField extends StringItem
 		//#endif
 		//#if tmp.includeInputInfo
 			if (this.infoItem == null) {
-				//#style info, default
-				this.infoItem = new StringItem( null, modeStr );
-				this.infoItem.screen = getScreen();
+				//#if !polish.TextField.useExternalInfo
+					//#style info, default
+					this.infoItem = new StringItem( null, modeStr );
+					this.infoItem.screen = getScreen();
+				//#endif
 			} else {
 				this.infoItem.setText(modeStr);
 			}
@@ -2504,7 +2506,6 @@ public class TextField extends StringItem
 				this.screen.setInfo( modeStr );
 			}
 		//#endif
-			
 	}
 	//#endif
 
@@ -3662,6 +3663,7 @@ public class TextField extends StringItem
 		//#if tmp.updateDeleteCommand
 			updateDeleteCommand( this.text );
 		//#endif
+			
 		return unfocusedStyle;
 	}
 	//#endif
@@ -3730,12 +3732,20 @@ public class TextField extends StringItem
 		
 	}
 
-	//#if tmp.updateDeleteCommand
 	protected void showNotify() {
+		//#if tmp.updateDeleteCommand
 		updateDeleteCommand(this.text);
 		super.showNotify();
+		//#endif
+		
+		//#if polish.TextField.useExternalInfo
+		if(this.isFocused && this.infoItem != null)
+		{
+			updateInfo();
+			this.infoItem.repaint();
+		}
+		//#endif
 	}
-	//#endif
 
 	//#if  !polish.blackberry && tmp.directInput
 	/* (non-Javadoc)
@@ -3773,6 +3783,14 @@ public class TextField extends StringItem
 		this.helpItem.setText(text);
 	}
 	//#endif
+
+	public StringItem getInfoItem() {
+		return infoItem;
+	}
+
+	public void setInfoItem(StringItem infoItem) {
+		this.infoItem = infoItem;
+	}
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {
