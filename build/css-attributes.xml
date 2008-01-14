@@ -1823,7 +1823,7 @@
 		name="scrollbar-slider-mode"
 		type="integer"
 		appliesTo="Screen, ScrollBar"
-		description="The mode of the slider, either &quot;area&quot;, &quot;item&quot; or &quot;page&quot;. In the &quot;area&quot; mode the slider represents the position of the current selection relative to the complete width and height. In the &quot;item&quot; mode the index of the currently selected item is taken into account relative to the number of items. In the &quot;page&quot; The default mode is &quot;page&quot;."
+		description="The mode of the slider, either &quot;area&quot;, &quot;item&quot; or &quot;page&quot;. In the &quot;area&quot; mode the slider represents the position of the current selection relative to the complete width and height. In the &quot;item&quot; mode the index of the currently selected item is taken into account relative to the number of items. In the &quot;page&quot; mode the height of the currently visible area will be set relative to the complete height of the screen. The default mode is &quot;page&quot;."
 		default="page"
 		values="area, item, page"
 		id="123"
@@ -2584,7 +2584,7 @@
 	<attribute
 		name="chart-vertical-bars-shadow-color"
 		type="color"
-		appliesTo="ChartItem, chart-vertical-bars view-type"
+		appliesTo="VerticalBarChartView"
 		description="The color of the shadow for the bars. By default no shadows are painted."
 		id="210"
 	/>
