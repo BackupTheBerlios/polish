@@ -1256,7 +1256,7 @@ public class Container extends Item {
 
 	}
 	
-	//#if polish.css.view-type
+	//#if tmp.supportViewType
 		/* (non-Javadoc)
 		 * @see de.enough.polish.ui.Item#paintBackgroundAndBorder(int, int, int, int, javax.microedition.lcdui.Graphics)
 		 */
@@ -2407,7 +2407,7 @@ public class Container extends Item {
 		requestInit();
 	}
 
-	//#ifdef polish.css.view-type
+	//#ifdef tmp.supportViewType
 	public void releaseResources() {
 		super.releaseResources();
 		if (this.containerView != null) {

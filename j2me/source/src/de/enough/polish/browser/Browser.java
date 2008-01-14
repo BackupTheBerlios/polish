@@ -52,6 +52,7 @@ import de.enough.polish.xml.XmlPullParser;
 	import de.enough.polish.ui.FakeContainerCustomItem;
 //#endif
 
+import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Gauge;
 import de.enough.polish.ui.Item;
@@ -837,25 +838,26 @@ implements Runnable
     }
   }
   
-  /* (non-Javadoc)
-   * @see de.enough.polish.ui.Container#animate()
-   */
-  public boolean animate()
-  {
-    boolean result = false;
-    if (this.isWorking) {
-    	result = this.loadingIndicator.animate();
-    } else if (!this.isStoppedWorking) {
-    	this.isStoppedWorking = true;
-    	result = true;
-    }
+  
+  	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeCustomItem#animate(long, de.enough.polish.ui.ClippingRegion)
+	 */
+	public void animate(long currentTime, ClippingRegion repaintRegion)
+	{
+		super.animate(currentTime, repaintRegion);
+	    if (this.isWorking) {
+	    	this.loadingIndicator.animate(currentTime, repaintRegion);
+	    } else if (!this.isStoppedWorking) {
+	    	this.isStoppedWorking = true;
+	    }
+	}
 
-    return super.animate() | result;
-  }
+  
   //#endif
  
   
-  ////////////////  downloading thread /////////////////
+	 
+////////////////  downloading thread /////////////////
   public void run()
   {
 	  // ensure that the user is able to specify the first location before this thread is going to sleep/wait.

@@ -452,11 +452,13 @@ public class CommandItem extends IconItem {
 		this.isOpen = open;
 		if ( open ) {
 			// move focus to first child:
+			this.children.showNotify();
 			this.children.focus( getFocusedStyle(), 0 );
 		} else {
 			// focus myself:
 			// reset selected command element to the first one in the list:
 			if ( this.children != null ) {
+				this.children.hideNotify();
 				this.children.focus( 0 );
 				this.children.setScrollYOffset( 0 );
 			}
@@ -539,17 +541,18 @@ public class CommandItem extends IconItem {
 
 	}
 	
+
 	
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.IconItem#animate()
+	 * @see de.enough.polish.ui.IconItem#animate(long, de.enough.polish.ui.ClippingRegion)
 	 */
-	public boolean animate() {
-		boolean animated = super.animate();
+	public void animate(long currentTime, ClippingRegion repaintRegion)
+	{
+		super.animate(currentTime, repaintRegion);
 		if (this.isOpen && this.isFocused) {
-			animated |= this.children.animate();
+			this.children.animate(currentTime, repaintRegion);
 		}
-		return animated;
 	}
 
 	/* (non-Javadoc)

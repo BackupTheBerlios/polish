@@ -1198,19 +1198,9 @@ extends ItemView
 	 */
 	public void showNotify() {
 		this.restartAnimation = true;
+		super.showNotify();
 	}
 	
-	/**
-	 * Called by the system to notify the item that it is now completely
-	 * invisible, when it previously had been at least partially visible.  No
-	 * further <code>paint()</code> calls will be made on this item
-	 * until after a <code>showNotify()</code> has been called again.
-	 * 
-	 * <p>The container implementation calls hideNotify() on the embedded items.</p>
-	 */
-	public void hideNotify() {
-		// subclasses can override this
-	}
 	
 	/**
 	 * Retrieves the screen to which this view belongs to.
