@@ -1217,6 +1217,14 @@ These namespaces/schemas will be used soon.
 		<parent>Sony-Ericsson/W900</parent>
    		<capability name="Bugs" value="TransparencyNotWorkingInNokiaUiApi"/>
 	</device>
+	
+	<device>
+		<identifier>Sony-Ericsson/W800_emu</identifier>
+		<features>isVirtual</features>
+		<description>Emulator definition, since nokia-ui=API does not work on emulator</description>
+		<parent>Sony-Ericsson/W800</parent>
+   		<capability name="Bugs" value="TransparencyNotWorkingInNokiaUiApi"/>
+	</device>
 
 	<device>
 		<identifier>Sony-Ericsson/W800i, Sony-Ericsson/W800</identifier>
