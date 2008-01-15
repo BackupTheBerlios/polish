@@ -118,14 +118,6 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
         <pack name="Blank Sample Application" required="no" preselected="yes">
             <description>A sample skeleton project structure useful for creating new J2ME Polish projects.</description>
             <file src="samples/blank" targetdir="$INSTALL_PATH/samples"/>
-            <!-- 
-            <file src="samples/blank/resources" targetdir="$INSTALL_PATH/samples/blank"/>
-            <file src="../setup/samples/blank/.classpath" targetdir="$INSTALL_PATH/samples/blank"/>
-            <file src="../setup/samples/blank/.project" targetdir="$INSTALL_PATH/samples/blank"/>
-            <file src="../setup/samples/blank/build.xml" targetdir="$INSTALL_PATH/samples/blank"/>
-            <file src="../setup/samples/blank/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/blank"/>
-            <file src="../setup/samples/blank/nbproject" targetdir="$INSTALL_PATH/samples/blank"/>
-             -->
             <parsable targetfile="$INSTALL_PATH/samples/blank/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/blank/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/blank/.classpath" type="shell" /> 
@@ -134,13 +126,7 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
 
         <pack name="Serialization and Persistence Sample Application" required="no" preselected="yes">
             <description>The serialization and persistence framework allows you to easily store objects on the handset. This sample application shows you how to do that.</description>
-            <file src="samples/serialization/source" targetdir="$INSTALL_PATH/samples/serialization"/>
-            <file src="samples/serialization/resources" targetdir="$INSTALL_PATH/samples/serialization"/>
-            <file src="../setup/samples/serialization/build.xml" targetdir="$INSTALL_PATH/samples/serialization"/>
-            <file src="../setup/samples/serialization/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/serialization"/>
-            <file src="../setup/samples/serialization/nbproject" targetdir="$INSTALL_PATH/samples/serialization"/>
-            <file src="../setup/samples/serialization/.classpath" targetdir="$INSTALL_PATH/samples/serialization"/>
-            <file src="../setup/samples/serialization/.project" targetdir="$INSTALL_PATH/samples/serialization"/>
+            <file src="samples/serialization" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/serialization/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/serialization/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/serialization/build-netbeans.xml" type="shell" /> 
@@ -149,13 +135,7 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
         
         <pack name="RMI Sample Application" required="no" preselected="yes">
             <description>A sample application that shows how to use the RMI (remote method invocation) framework of J2ME Polish.</description>
-            <file src="samples/rmi/source" targetdir="$INSTALL_PATH/samples/rmi"/>
-            <file src="samples/rmi/resources" targetdir="$INSTALL_PATH/samples/rmi"/>
-            <file src="../setup/samples/rmi/build.xml" targetdir="$INSTALL_PATH/samples/rmi"/>
-            <file src="../setup/samples/rmi/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/rmi"/>
-            <file src="../setup/samples/rmi/nbproject" targetdir="$INSTALL_PATH/samples/rmi"/>
-            <file src="../setup/samples/rmi/.classpath" targetdir="$INSTALL_PATH/samples/rmi"/>
-            <file src="../setup/samples/rmi/.project" targetdir="$INSTALL_PATH/samples/rmi"/>
+            <file src="samples/rmi" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/rmi/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/rmi/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/rmi/build-netbeans.xml" type="shell" /> 
@@ -164,13 +144,7 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
 
         <pack name="XML-RPC Sample Application" required="no" preselected="yes">
             <description>A sample application that shows how to call XML-RPC servers using the RMI (remote method invocation) framework of J2ME Polish.</description>
-            <file src="samples/rmi-xmlrpc/source" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
-            <file src="samples/rmi-xmlrpc/resources" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
-            <file src="../setup/samples/rmi-xmlrpc/build.xml" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
-            <file src="../setup/samples/rmi-xmlrpc/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
-            <file src="../setup/samples/rmi-xmlrpc/nbproject" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
-            <file src="../setup/samples/rmi-xmlrpc/.classpath" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
-            <file src="../setup/samples/rmi-xmlrpc/.project" targetdir="$INSTALL_PATH/samples/rmi-xmlrpc"/>
+            <file src="samples/rmi-xmlrpc" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/rmi-xmlrpc/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/rmi-xmlrpc/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/rmi-xmlrpc/build-netbeans.xml" type="shell" /> 
@@ -179,13 +153,7 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
         
         <pack name="Fisheye Sample Application" required="no" preselected="yes">
             <description>A simple application demonstrating the fisheye view-type..</description>
-            <file src="samples/fisheye/source" targetdir="$INSTALL_PATH/samples/fisheye"/>
-            <file src="samples/fisheye/resources" targetdir="$INSTALL_PATH/samples/fisheye"/>
-            <file src="../setup/samples/fisheye/.classpath" targetdir="$INSTALL_PATH/samples/fisheye"/>
-            <file src="../setup/samples/fisheye/.project" targetdir="$INSTALL_PATH/samples/fisheye"/>
-            <file src="../setup/samples/fisheye/build.xml" targetdir="$INSTALL_PATH/samples/fisheye"/>
-            <file src="../setup/samples/fisheye/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/fisheye"/>
-            <file src="../setup/samples/fisheye/nbproject" targetdir="$INSTALL_PATH/samples/fisheye"/>
+            <file src="samples/fisheye" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/fisheye/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/fisheye/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/fisheye/.classpath" type="shell" /> 
@@ -194,13 +162,7 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
         
         <pack name="Java 5 Syntax Sample Application" required="no" preselected="yes">
             <description>You can use Java 5 syntax elements like generics, autoboxing and enums with J2ME Polish. This project shows you an example.</description>
-            <file src="samples/java5/source" targetdir="$INSTALL_PATH/samples/java5"/>
-            <file src="samples/java5/resources" targetdir="$INSTALL_PATH/samples/java5"/>
-            <file src="../setup/samples/java5/build.xml" targetdir="$INSTALL_PATH/samples/java5"/>
-            <file src="../setup/samples/java5/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/java5"/>
-            <file src="../setup/samples/java5/nbproject" targetdir="$INSTALL_PATH/samples/java5"/>
-            <file src="../setup/samples/java5/.classpath" targetdir="$INSTALL_PATH/samples/java5"/>
-            <file src="../setup/samples/java5/.project" targetdir="$INSTALL_PATH/samples/java5"/>
+            <file src="samples/java5" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/java5/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/java5/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/java5/build-netbeans.xml" type="shell" /> 
@@ -212,13 +174,7 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
 We also provide a HTML browser based on top of the XML browser that supports forms, images, differently rendered text and so on out of the box. 
 This sample application shows how to use the browser technology of J2ME Polish.
             </description>
-            <file src="samples/browser/source" targetdir="$INSTALL_PATH/samples/browser"/>
-            <file src="samples/browser/resources" targetdir="$INSTALL_PATH/samples/browser"/>
-            <file src="../setup/samples/browser/build.xml" targetdir="$INSTALL_PATH/samples/browser"/>
-            <file src="../setup/samples/browser/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/browser"/>
-            <file src="../setup/samples/browser/nbproject" targetdir="$INSTALL_PATH/samples/browser"/>
-            <file src="../setup/samples/browser/.classpath" targetdir="$INSTALL_PATH/samples/browser"/>
-            <file src="../setup/samples/browser/.project" targetdir="$INSTALL_PATH/samples/browser"/>
+            <file src="samples/browser" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/browser/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/browser/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/browser/build-netbeans.xml" type="shell" /> 
@@ -228,13 +184,7 @@ This sample application shows how to use the browser technology of J2ME Polish.
        <pack name="RSS Sample Application" required="no" preselected="yes">
             <description>Display RSS feeds with the RssBrowser in your J2ME Polish application.
             </description>
-            <file src="samples/rss/source" targetdir="$INSTALL_PATH/samples/rss"/>
-            <file src="samples/rss/resources" targetdir="$INSTALL_PATH/samples/rss"/>
-            <file src="../setup/samples/rss/build.xml" targetdir="$INSTALL_PATH/samples/rss"/>
-            <file src="../setup/samples/rss/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/rss"/>
-            <file src="../setup/samples/rss/nbproject" targetdir="$INSTALL_PATH/samples/rss"/>
-            <file src="../setup/samples/rss/.classpath" targetdir="$INSTALL_PATH/samples/rss"/>
-            <file src="../setup/samples/rss/.project" targetdir="$INSTALL_PATH/samples/rss"/>
+            <file src="samples/rss" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/rss/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/rss/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/rss/build-netbeans.xml" type="shell" /> 
@@ -244,13 +194,7 @@ This sample application shows how to use the browser technology of J2ME Polish.
         <pack name="ChartItem Sample Application" required="no" preselected="yes">
             <description>Use the ChartItem for visualizing complex data and trends.
             </description>
-            <file src="samples/chartitem/source" targetdir="$INSTALL_PATH/samples/chartitem"/>
-            <file src="samples/chartitem/resources" targetdir="$INSTALL_PATH/samples/chartitem"/>
-            <file src="../setup/samples/chartitem/build.xml" targetdir="$INSTALL_PATH/samples/chartitem"/>
-            <file src="../setup/samples/chartitem/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/chartitem"/>
-            <file src="../setup/samples/chartitem/nbproject" targetdir="$INSTALL_PATH/samples/chartitem"/>
-            <file src="../setup/samples/chartitem/.classpath" targetdir="$INSTALL_PATH/samples/chartitem"/>
-            <file src="../setup/samples/chartitem/.project" targetdir="$INSTALL_PATH/samples/chartitem"/>
+            <file src="samples/chartitem" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/chartitem/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/chartitem/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/chartitem/build-netbeans.xml" type="shell" /> 
@@ -258,13 +202,7 @@ This sample application shows how to use the browser technology of J2ME Polish.
         </pack>
         <pack name="Roadrunner Sample Application" required="no" preselected="yes">
             <description>A sample application that features a well know game principle.</description>
-            <file src="samples/roadrunner/source" targetdir="$INSTALL_PATH/samples/roadrunner"/>
-            <file src="samples/roadrunner/resources" targetdir="$INSTALL_PATH/samples/roadrunner"/>
-            <file src="../setup/samples/roadrunner/build.xml" targetdir="$INSTALL_PATH/samples/roadrunner"/>
-            <file src="../setup/samples/roadrunner/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/roadrunner"/>
-            <file src="../setup/samples/roadrunner/nbproject" targetdir="$INSTALL_PATH/samples/roadrunner"/>
-            <file src="../setup/samples/roadrunner/.classpath" targetdir="$INSTALL_PATH/samples/roadrunner"/>
-            <file src="../setup/samples/roadrunner/.project" targetdir="$INSTALL_PATH/samples/roadrunner"/>
+            <file src="samples/roadrunner" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/roadrunner/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/roadrunner/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/roadrunner/build-netbeans.xml" type="shell" /> 
@@ -273,13 +211,7 @@ This sample application shows how to use the browser technology of J2ME Polish.
         
         <pack name="Accessible Sample Application" required="no" preselected="yes">
             <description>Learn how to deactivate and reactivate user interface elements with J2ME Polish.</description>
-            <file src="samples/accessible/source" targetdir="$INSTALL_PATH/samples/accessible"/>
-            <file src="samples/accessible/resources" targetdir="$INSTALL_PATH/samples/accessible"/>
-            <file src="../setup/samples/accessible/.classpath" targetdir="$INSTALL_PATH/samples/accessible"/>
-            <file src="../setup/samples/accessible/.project" targetdir="$INSTALL_PATH/samples/accessible"/>
-            <file src="../setup/samples/accessible/build.xml" targetdir="$INSTALL_PATH/samples/accessible"/>
-            <file src="../setup/samples/accessible/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/accessible"/>
-            <file src="../setup/samples/accessible/nbproject" targetdir="$INSTALL_PATH/samples/accessible"/>
+            <file src="samples/accessible" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/accessible/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/accessible/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/accessible/.classpath" type="shell" /> 
@@ -288,15 +220,7 @@ This sample application shows how to use the browser technology of J2ME Polish.
         
         <pack name="Menu Sample Application" required="no" preselected="yes">
             <description>A sample application that shows a very simple menu and contains three different CSS designs as well as two localizations.</description>
-            <file src="samples/menu/source" targetdir="$INSTALL_PATH/samples/menu"/>
-            <file src="samples/menu/resources" targetdir="$INSTALL_PATH/samples/menu"/>
-            <file src="samples/menu/resources2" targetdir="$INSTALL_PATH/samples/menu"/>
-            <file src="samples/menu/resources3" targetdir="$INSTALL_PATH/samples/menu"/>
-            <file src="../setup/samples/menu/.classpath" targetdir="$INSTALL_PATH/samples/menu"/>
-            <file src="../setup/samples/menu/.project" targetdir="$INSTALL_PATH/samples/menu"/>
-            <file src="../setup/samples/menu/build.xml" targetdir="$INSTALL_PATH/samples/menu"/>
-            <file src="../setup/samples/menu/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/menu"/>
-            <file src="../setup/samples/menu/nbproject" targetdir="$INSTALL_PATH/samples/menu"/>
+            <file src="samples/menu" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/menu/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/menu/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/menu/.classpath" type="shell" /> 
@@ -305,14 +229,7 @@ This sample application shows how to use the browser technology of J2ME Polish.
         
         <pack name="Logviewer Sample Application" required="no" preselected="yes">
             <description>A sample application that is used to show log entries that have been previously stored in the recordstore.</description>
-            <file src="../setup/samples/logviewer/.classpath" targetdir="$INSTALL_PATH/samples/logviewer"/>
-            <file src="../setup/samples/logviewer/.project" targetdir="$INSTALL_PATH/samples/logviewer"/>
-            <file src="../setup/samples/logviewer/readme.txt" targetdir="$INSTALL_PATH/samples/logviewer"/>
-            <file src="samples/logviewer/source" targetdir="$INSTALL_PATH/samples/logviewer"/>
-            <file src="samples/logviewer/resources" targetdir="$INSTALL_PATH/samples/logviewer"/>
-            <file src="../setup/samples/logviewer/build.xml" targetdir="$INSTALL_PATH/samples/logviewer"/>
-            <file src="../setup/samples/logviewer/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/logviewer"/>
-            <file src="../setup/samples/logviewer/nbproject" targetdir="$INSTALL_PATH/samples/logviewer"/>
+            <file src="../setup/samples/logviewer" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/logviewer/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/logviewer/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/logviewer/nbproject/project.properties" type="shell" /> 
@@ -320,13 +237,7 @@ This sample application shows how to use the browser technology of J2ME Polish.
         </pack>
         <pack name="ChoiceTextField, TreeItem and Subcommands Sample Application" required="no" preselected="yes">
             <description>A sample application that shows how to use subcommands, the TreeItem and ChoiceTextField, a dropdown textfield.</description>
-            <file src="samples/email/source" targetdir="$INSTALL_PATH/samples/email"/>
-            <file src="samples/email/resources" targetdir="$INSTALL_PATH/samples/email"/>
-            <file src="../setup/samples/email/build.xml" targetdir="$INSTALL_PATH/samples/email"/>
-            <file src="../setup/samples/email/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/email"/>
-            <file src="../setup/samples/email/nbproject" targetdir="$INSTALL_PATH/samples/email"/>
-            <file src="../setup/samples/email/.classpath" targetdir="$INSTALL_PATH/samples/email"/>
-            <file src="../setup/samples/email/.project" targetdir="$INSTALL_PATH/samples/email"/>
+            <file src="samples/email" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/email/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/email/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/email/build-netbeans.xml" type="shell" /> 
@@ -334,13 +245,7 @@ This sample application shows how to use the browser technology of J2ME Polish.
         </pack>
         <pack name="FramedForm Sample Application" required="no" preselected="yes">
             <description>A sample application that shows how to use the FramedForm.</description>
-            <file src="samples/framedform/source" targetdir="$INSTALL_PATH/samples/framedform"/>
-            <file src="samples/framedform/resources" targetdir="$INSTALL_PATH/samples/framedform"/>
-            <file src="../setup/samples/framedform/build.xml" targetdir="$INSTALL_PATH/samples/framedform"/>
-            <file src="../setup/samples/framedform/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/framedform"/>
-            <file src="../setup/samples/framedform/nbproject" targetdir="$INSTALL_PATH/samples/framedform"/>
-            <file src="../setup/samples/framedform/.classpath" targetdir="$INSTALL_PATH/samples/framedform"/>
-            <file src="../setup/samples/framedform/.project" targetdir="$INSTALL_PATH/samples/framedform"/>
+            <file src="samples/framedform" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/framedform/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/framedform/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/framedform/build-netbeans.xml" type="shell" /> 
@@ -348,13 +253,7 @@ This sample application shows how to use the browser technology of J2ME Polish.
         </pack>
         <pack name="TabbedForm Sample Application" required="no" preselected="yes">
             <description>A sample application that shows how to use the TabbedForm.</description>
-            <file src="samples/tabbedform/source" targetdir="$INSTALL_PATH/samples/tabbedform"/>
-            <file src="samples/tabbedform/resources" targetdir="$INSTALL_PATH/samples/tabbedform"/>
-            <file src="../setup/samples/tabbedform/build.xml" targetdir="$INSTALL_PATH/samples/tabbedform"/>
-            <file src="../setup/samples/tabbedform/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/tabbedform"/>
-            <file src="../setup/samples/tabbedform/nbproject" targetdir="$INSTALL_PATH/samples/tabbedform"/>
-            <file src="../setup/samples/tabbedform/.classpath" targetdir="$INSTALL_PATH/samples/tabbedform"/>
-            <file src="../setup/samples/tabbedform/.project" targetdir="$INSTALL_PATH/samples/tabbedform"/>
+            <file src="samples/tabbedform" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/tabbedform/build.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/tabbedform/.classpath" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/tabbedform/build-netbeans.xml" type="shell" /> 
@@ -362,13 +261,7 @@ This sample application shows how to use the browser technology of J2ME Polish.
         </pack>
         <pack name="MIDP SysInfo" required="no" preselected="yes">
             <description>An application that checks the capabilities of your device. This application is based on Grimo Software's MIDP SysInfo MIDlet and is a co-effort of Grimo Software, Enough Software and Mark Schriejver.</description>
-            <file src="samples/sysinfo/source" targetdir="$INSTALL_PATH/samples/sysinfo"/>
-            <file src="samples/sysinfo/resources" targetdir="$INSTALL_PATH/samples/sysinfo"/>
-            <file src="../setup/samples/sysinfo/.classpath" targetdir="$INSTALL_PATH/samples/sysinfo"/>
-            <file src="../setup/samples/sysinfo/.project" targetdir="$INSTALL_PATH/samples/sysinfo"/>
-            <file src="../setup/samples/sysinfo/build.xml" targetdir="$INSTALL_PATH/samples/sysinfo"/>
-            <file src="../setup/samples/sysinfo/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/sysinfo"/>
-            <file src="../setup/samples/sysinfo/nbproject" targetdir="$INSTALL_PATH/samples/sysinfo"/>
+            <file src="samples/sysinfo" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/sysinfo/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/sysinfo/nbproject/project.properties" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/sysinfo/build.xml" type="shell" /> 
@@ -376,13 +269,7 @@ This sample application shows how to use the browser technology of J2ME Polish.
         </pack>
         <pack name="DoJa Tetris Sample Application" required="no" preselected="yes">
             <description>A Tetris clone from Sun for DoJa devices.</description>
-            <file src="samples/doja/source" targetdir="$INSTALL_PATH/samples/doja"/>
-            <file src="samples/doja/resources" targetdir="$INSTALL_PATH/samples/doja"/>
-            <file src="../setup/samples/doja/.classpath" targetdir="$INSTALL_PATH/samples/doja"/>
-            <file src="../setup/samples/doja/.project" targetdir="$INSTALL_PATH/samples/doja"/>
-            <file src="../setup/samples/doja/build.xml" targetdir="$INSTALL_PATH/samples/doja"/>
-            <file src="../setup/samples/doja/build-netbeans.xml" targetdir="$INSTALL_PATH/samples/doja"/>
-            <file src="../setup/samples/doja/nbproject" targetdir="$INSTALL_PATH/samples/doja"/>
+            <file src="samples/doja" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/doja/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/doja/nbproject/project.properties" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/doja/build.xml" type="shell" /> 
