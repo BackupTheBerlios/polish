@@ -277,7 +277,8 @@ public class TextFile {
 			return null;
 		}
 		String className = this.filePath.substring(0, this.filePath.length() - ".java".length()  );
-		className = className.replace( File.separatorChar, '.');
+		//className = className.replace( File.separatorChar, '.');
+		className = className.replace( '/', '.');
 		return className;
 	}
 

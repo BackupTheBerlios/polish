@@ -64,7 +64,7 @@ public class TextFileManager {
 		this.filesByName.put( file.getFileName(), file );
 		String className = file.getClassName();
 		if (className != null) {
-			//System.out.println("adding class [" + className + "]");
+//			System.out.println("adding class [" + className + "]");
 			this.filesByClassName.put( className, file );
 			int dotIndex = className.lastIndexOf('.');
 			if (dotIndex != -1) {
@@ -89,7 +89,7 @@ public class TextFileManager {
 		}
 		boolean result = (this.filesByClassName.containsKey(importName)
 				|| this.packagesByName.containsKey(importName));
-		//System.out.println("contains import [" + importName + "]: " + result );		
+//		System.out.println("contains import [" + importName + "]: " + result + ", stored classes: " + this.filesByClassName.size() );		
 		return result;
 	}
 	
