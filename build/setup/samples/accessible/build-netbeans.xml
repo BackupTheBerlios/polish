@@ -21,7 +21,7 @@
 <!--                                                          -->
 <!-- Have fun!                                                -->
 <project 
-	name="enough-j2mepolish-menu" 
+	name="enough-j2mepolish-accessible" 
 	default="j2mepolish">
 	
 	<!-- extend the default NetBeans build script:           -->
