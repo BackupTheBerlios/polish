@@ -3786,7 +3786,7 @@ public class TextField extends StringItem
 
 	//#if polish.TextField.useExternalInfo
 	public StringItem getInfoItem() {
-		return infoItem;
+		return this.infoItem;
 	}
 
 	public void setInfoItem(StringItem infoItem) {
