@@ -91,6 +91,10 @@ public abstract class InfoCollector {
 	public boolean isFinished() {
 		return true;
 	}
+
+	public InfoForm getView() {
+		return this.view;
+	}
 	
 
 }

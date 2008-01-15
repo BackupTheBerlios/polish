@@ -1,0 +1,5 @@
+IntList=c
+Point=e
+ArrayList=b
+IntStack=d
+Properties=a

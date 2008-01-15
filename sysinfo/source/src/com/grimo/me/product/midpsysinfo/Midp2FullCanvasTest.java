@@ -25,8 +25,11 @@
  */
 package com.grimo.me.product.midpsysinfo;
 
+import java.util.Vector;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -42,14 +45,39 @@ import javax.microedition.lcdui.Graphics;
 public class Midp2FullCanvasTest extends Canvas implements DynamicTest {
 
 	private DynamicTestView view;
+	int width;
+	int height;
+	private InfoCollector infoCollector;
 
 	/**
 	 * Creates a new test
 	 */
 	public Midp2FullCanvasTest() {
 		super();
+		super.setFullScreenMode(true);
+	}
+	
+	
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#showNotify()
+	 */
+	protected void showNotify() {
 		setFullScreenMode(true);
 	}
+
+	
+
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#sizeChanged(int, int)
+	 */
+	protected void sizeChanged(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
+
+
 
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#paint(javax.microedition.lcdui.Graphics)
@@ -58,14 +86,22 @@ public class Midp2FullCanvasTest extends Canvas implements DynamicTest {
 		if (this.view != null) {
 			this.view.paint(g);
 		}
+		if (this.infoCollector != null) {
+			if (this.width == 0) {
+				this.width = getWidth();
+				this.height = getHeight();
+			}
+			this.infoCollector.addInfo( "FullCanvasWidth(MIDP/2.0): ", "" + this.width );
+			this.infoCollector.addInfo( "FullCanvasHeight(MIDP/2.0): ", "" + this.height );
+		}
+
 	}
 
 	/* (non-Javadoc)
 	 * @see com.grimo.me.product.midpsysinfo.DynamicTest#addTestResults(javax.microedition.lcdui.Form)
 	 */
 	public void addTestResults(InfoCollector collector) {
-		collector.addInfo( "FullCanvasWidth(MIDP/2.0): ", "" + getWidth() );
-		collector.addInfo( "FullCanvasHeight(MIDP/2.0): ", "" + getHeight() );
+		this.infoCollector = collector;
 	}
 
 	/* (non-Javadoc)
@@ -92,6 +128,8 @@ public class Midp2FullCanvasTest extends Canvas implements DynamicTest {
 			this.view.keyRepeated(keyCode);
 		}
 	}
+	
+	
 
 	/* (non-Javadoc)
 	 * @see com.grimo.me.product.midpsysinfo.DynamicTest#getDisplayable()

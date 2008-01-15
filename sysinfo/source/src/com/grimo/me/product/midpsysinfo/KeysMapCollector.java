@@ -24,19 +24,12 @@ import javax.microedition.lcdui.Graphics;
  * @author  Waldemar Baraldi <waldemar.baraldi@grimo-software.com>
  * @author  Robert Virkus <j2mepolish@enough.de> (architectural changes)
  */
-public class KeysInfoCollector extends InfoCollector
+public class KeysMapCollector extends InfoCollector
 implements DynamicTestView
 {
-	private static final int STEP_LEFT_SOFT_KEY = 0; 
-	private static final int STEP_RIGHT_SOFT_KEY = 1; 
-	private static final int STEP_MIDDLE_SOFT_KEY = 2;
-	private static final int STEP_CLEAR_KEY = 3; 
-	private static final int STEP_RETURN_KEY = 4; 
-	private static final int STEP_SELECT_KEY = 5; 
-
+	private static String charactersMapStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ@!$%&/()=?ŠšŸ§',;.: -_";
     private int step;
     private DynamicTest test;
-    private Canvas canvas;
 	private int canvasWidth;
 	private int canvasHeight;
 	private final Font font;
@@ -46,7 +39,7 @@ implements DynamicTestView
     /** 
      * Creates a new instance of GameControlsInfoCollector
      */
-    public KeysInfoCollector() {
+    public KeysMapCollector() {
         super();
         this.font = Font.getDefaultFont();
     }
@@ -66,7 +59,6 @@ implements DynamicTestView
         	//#endif
         	Class testClass = Class.forName( className );
         	this.test = (DynamicTest) testClass.newInstance();
-        	this.canvas = (Canvas) this.test;
         } catch (Exception e) {
         	//#debug error
         	System.out.println("Unable to load Midp2FullCanvasTest" + e);
@@ -107,38 +99,16 @@ implements DynamicTestView
 	 * @see com.grimo.me.product.midpsysinfo.DynamicTestView#paint(javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(Graphics g) {
-		g.setColor( 0xFFFF00 );
-		//g.fillRect( 0, 0, this.canvasWidth, this.canvasHeight );
-		g.fillRect( 0, 0, this.canvas.getWidth(), this.canvas.getHeight() );
+		g.setColor( 0xFFFFFF );
+		g.fillRect( 0, 0, this.canvasWidth, this.canvasHeight );
 		g.setColor( 0 );
 		g.setFont( this.font );
 		String message = null;
-		switch (this.step) {
-			case STEP_LEFT_SOFT_KEY:
-				message = "Press left Soft-Key";
-				break;
-			case STEP_RIGHT_SOFT_KEY:
-				message = "Press right Soft-Key";
-				break;
-			case STEP_MIDDLE_SOFT_KEY:
-				message = "Press middle Soft-Key";
-				break;
-			case STEP_CLEAR_KEY:
-				message = "Press Clear/Delete-Key";
-				break;
-			case STEP_RETURN_KEY:
-				message = "Press Return-Key";
-				break;
-			case STEP_SELECT_KEY:
-				message = "Press Select-Key";
-				break;
-			default:
-				message = "Test finished - please wait.";
-		}
+		char c = this.charactersMapStr.charAt( this.step );
+		message = "Please press [" + c  + "]";
 		g.drawString(message, 1, 1, Graphics.TOP | Graphics.LEFT );
 		int fontHeight = this.font.getHeight() + 5; 
 		g.drawString("Or press 0 to skip.", 1, fontHeight, Graphics.TOP | Graphics.LEFT );
-		g.drawString( this.canvas.getWidth() + "x" + this.canvas.getHeight(), 1, fontHeight << 1, Graphics.TOP | Graphics.LEFT );
 		
 	}
 
@@ -146,70 +116,24 @@ implements DynamicTestView
 	 * @see com.grimo.me.product.midpsysinfo.DynamicTestView#keyPressed(int)
 	 */
 	public void keyPressed(int keyCode) {
-		if (keyCode == Canvas.KEY_NUM0) {
-			this.step++;
-			if (this.step > STEP_SELECT_KEY) {
-				this.isFinished = true;
-				if (this.view != null) {
-					this.display.setCurrent( this.view );
-				}
-			} else {
-				this.test.repaint();
-			}
-			return;
-		}
-		switch (this.step) {
-			case STEP_LEFT_SOFT_KEY:
-				addInfo( "Left Soft-Key: ", "" + keyCode );
-				break;
-			case STEP_RIGHT_SOFT_KEY:
-				addInfo( "Right Soft-Key: ", "" + keyCode );
-				break;
-			case STEP_MIDDLE_SOFT_KEY:
-				addInfo( "Middle Soft-Key: ", "" + keyCode );
-				break;
-			case STEP_CLEAR_KEY:
-				addInfo( "Clear-Key: ", "" + keyCode );
-				break;
-			case STEP_RETURN_KEY:
-				addInfo( "Return-Key: ", "" + keyCode );
-				break;
-			case STEP_SELECT_KEY:
-				addInfo( "Select-Key: ", "" + keyCode );
-				try {
-					addInfo( "gameAction(Select-Key) == FIRE: ", "" + (((Canvas)this.test).getGameAction( keyCode ) == Canvas.FIRE) );
-				} catch (Exception e) {
-					//#debug error
-					System.out.println("Unable to retrieve game action of Select Key " + keyCode + e );
-				}
-				break;
-		}
 		this.step++;
-		if (this.step > STEP_SELECT_KEY) {
+		if (this.step > this.charactersMapStr.length()) {
 			this.isFinished = true;
-			Canvas canvas = (Canvas) this.test;
-	        addInfo( "Canvas.UP: ", canvas.getKeyName(canvas.getKeyCode(Canvas.UP)));
-	        addInfo( "Canvas.LEFT: ", canvas.getKeyName(canvas.getKeyCode(Canvas.LEFT)));
-	        addInfo( "Canvas.RIGHT: ", canvas.getKeyName(canvas.getKeyCode(Canvas.RIGHT)));
-	        addInfo( "Canvas.DOWN: ", canvas.getKeyName(canvas.getKeyCode(Canvas.DOWN)));
-	        addInfo( "Canvas.FIRE: ", canvas.getKeyName(canvas.getKeyCode(Canvas.FIRE)));
-	        addInfo( "Canvas.GAME_A: ", canvas.getKeyName(canvas.getKeyCode(Canvas.GAME_A)));
-	        addInfo( "Canvas.GAME_B: ", canvas.getKeyName(canvas.getKeyCode(Canvas.GAME_B)));
-	        addInfo( "Canvas.GAME_C: ", canvas.getKeyName(canvas.getKeyCode(Canvas.GAME_C)));
-	        addInfo( "Canvas.GAME_D: ", canvas.getKeyName(canvas.getKeyCode(Canvas.GAME_D)));
 			if (this.view != null) {
 				this.display.setCurrent( this.view );
 			}
-		} else {
-			this.test.repaint();
 		}
+		if (keyCode != Canvas.KEY_NUM0) {
+				addInfo( "Key_" + this.charactersMapStr.charAt( this.step - 1), "" + keyCode );
+		}
+		this.test.repaint();
 	}
 
 	/* (non-Javadoc)
 	 * @see com.grimo.me.product.midpsysinfo.DynamicTestView#keyReleased(int)
 	 */
 	public void keyReleased(int keyCode) {
-		// TODO enough implement keyReleased
+		// ignore
 		
 	}
 
@@ -217,7 +141,7 @@ implements DynamicTestView
 	 * @see com.grimo.me.product.midpsysinfo.DynamicTestView#keyRepeated(int)
 	 */
 	public void keyRepeated(int keyCode) {
-		// TODO enough implement keyRepeated
+		// ignore
 		
 	}
 	

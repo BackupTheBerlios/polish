@@ -41,6 +41,8 @@ import javax.microedition.lcdui.StringItem;
  */
 public class InfoForm extends Form {
 
+	private final InfoCollector infoCollector;
+
 	/**
 	 * Creates a new viewer.
 	 * 
@@ -49,11 +51,13 @@ public class InfoForm extends Form {
 	 */
 	public InfoForm(String title, InfoCollector infoCollector ) {
 		super(title);
+		this.infoCollector = infoCollector;
 		Info[] infos = infoCollector.getInfos();
 		for (int i = 0; i < infos.length; i++) {
 			Info info = infos[i];
 			append( new StringItem( info.name, info.value ) );
 		}
 	}
+	
 
 }

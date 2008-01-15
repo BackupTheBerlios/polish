@@ -9,6 +9,7 @@ package com.grimo.me.product.midpsysinfo;
 import javax.microedition.midlet.*;
 import javax.microedition.lcdui.*;
 
+import de.enough.polish.event.ThreadedCommandListener;
 import de.enough.polish.util.Locale;
 
 /**
@@ -35,6 +36,7 @@ implements CommandListener
     
     private List mainMenu;
 	private Display display;
+	private final ThreadedCommandListener commandListener;
     
     public MIDPSysInfoMIDlet(){
     	this.mainMenu = new List(Locale.get("title.main"), List.IMPLICIT );
@@ -43,9 +45,12 @@ implements CommandListener
     	this.mainMenu.append(Locale.get("cmd.system"), null);
     	this.mainMenu.append(Locale.get("cmd.libraries"), null);
     	this.mainMenu.append(Locale.get("cmd.keys"), null);
+    	this.mainMenu.append(Locale.get("cmd.keysMap"), null);
     	this.mainMenu.append(Locale.get("cmd.arithmeticBenchmark"), null);
+    	this.mainMenu.append(Locale.get("cmd.rms"), null);
     	this.mainMenu.append(Locale.get("cmd.credits"), null);
     	this.mainMenu.append(Locale.get("cmd.exit"), null);
+    	this.commandListener = new ThreadedCommandListener(this);
     	
     }
     
@@ -90,7 +95,7 @@ implements CommandListener
     	} else {
     		disp.addCommand( this.backCmd );
     	}
-    	disp.setCommandListener( this );
+    	disp.setCommandListener( this.commandListener );
 	}
 	
     private void show( Displayable disp) {
@@ -120,12 +125,18 @@ implements CommandListener
 					show( Locale.get("title.keys"), new KeysInfoCollector() );
 					return;
 				case 5:
-					show( Locale.get("title.arithmeticBenchmark"), new ArithmeticBenchmarkInfoCollector() );
+					show( Locale.get("title.keysMap"), new KeysMapCollector() );
 					return;
 				case 6:
-					show( new CreditsCanvas() );
+					show( Locale.get("title.arithmeticBenchmark"), new ArithmeticBenchmarkInfoCollector() );
 					return;
 				case 7:
+					show( Locale.get("title.rms"), new RmsInfoCollector() );
+					return;
+				case 8:
+					show( new CreditsCanvas() );
+					return;
+				case 9:
 					cmd = this.exitCmd;
 					break;
 			}

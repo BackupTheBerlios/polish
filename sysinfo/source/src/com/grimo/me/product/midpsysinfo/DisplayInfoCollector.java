@@ -10,6 +10,7 @@ package com.grimo.me.product.midpsysinfo;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
@@ -73,7 +74,10 @@ public class DisplayInfoCollector extends InfoCollector {
         	//#endif
         	Class testClass = Class.forName( className );
         	DynamicTest test = (DynamicTest) testClass.newInstance();
-        	test.addTestResults( this );
+        	Displayable disp = (Displayable) test;
+        	display.setCurrent(disp);
+        	(new WaitThread(display, test )).start();
+        	//test.addTestResults( this );
         } catch (Exception e) {
         	//#debug error
         	System.out.println("Unable to load Midp2FullCanvasTest" + e);
@@ -91,12 +95,17 @@ public class DisplayInfoCollector extends InfoCollector {
         addInfo("Medium-Font-Height: ", "" + font.getHeight() );
         font = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_LARGE );
         addInfo("Large-Font-Height: ", "" + font.getHeight() );
-        font = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_SMALL );
-        addInfo("Small-Font-Height (bold): ", "" + font.getHeight() );
-        font = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );
-        addInfo("Medium-Font-Height (bold): ", "" + font.getHeight() );
-        font = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_LARGE );
-        addInfo("Large-Font-Height (bold): ", "" + font.getHeight() );
+//        font = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_SMALL );
+//        addInfo("Small-Font-Height (bold): ", "" + font.getHeight() );
+//        font = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );
+//        addInfo("Medium-Font-Height (bold): ", "" + font.getHeight() );
+//        font = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_LARGE );
+//        addInfo("Large-Font-Height (bold): ", "" + font.getHeight() );
+//        try {
+//			Thread.sleep(200);
+//		} catch (InterruptedException e) {
+//			// ignore
+//		}
 	}
 
 
@@ -118,6 +127,33 @@ public class DisplayInfoCollector extends InfoCollector {
         	//#debug error
         	System.out.println("Unable to load NokiaFullCanvasTest" + e);
         }
+	}
+	
+	private class WaitThread extends Thread {
+		private final Display display;
+		private final DynamicTest test;
+
+		/**
+		 * @param display
+		 * @param disp
+		 * @param test 
+		 */
+		public WaitThread( Display display, DynamicTest test ) {
+			this.display = display;
+			this.test = test;
+		}
+		
+		public void run() {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				//ignore
+			}
+			this.test.addTestResults(DisplayInfoCollector.this);
+			if (getView() != null) {
+				this.display.setCurrent( getView() );
+			}
+		}
 	}
     
 }

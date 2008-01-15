@@ -9,7 +9,7 @@
 	<property name="wtk.home" value="/home/enough/dev/WTK2.2"/>
 	<!-- The polish.home property should point to the directory   -->
 	<!-- containing the J2ME Polish installation.                 -->
-	<property name="polish.home" value="/home/enough/workspace/enough-polish-build"/>
+	<property name="polish.home" value="../enough-polish-build"/>
 	<property name="nokia.home" value="/home/enough/dev/Nokia" />
 
 	<taskdef 

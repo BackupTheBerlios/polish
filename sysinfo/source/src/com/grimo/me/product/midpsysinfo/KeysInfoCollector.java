@@ -36,6 +36,7 @@ implements DynamicTestView
 
     private int step;
     private DynamicTest test;
+    private Canvas canvas;
 	private int canvasWidth;
 	private int canvasHeight;
 	private final Font font;
@@ -65,6 +66,7 @@ implements DynamicTestView
         	//#endif
         	Class testClass = Class.forName( className );
         	this.test = (DynamicTest) testClass.newInstance();
+        	this.canvas = (Canvas) this.test;
         } catch (Exception e) {
         	//#debug error
         	System.out.println("Unable to load Midp2FullCanvasTest" + e);
@@ -105,8 +107,9 @@ implements DynamicTestView
 	 * @see com.grimo.me.product.midpsysinfo.DynamicTestView#paint(javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(Graphics g) {
-		g.setColor( 0xFFFFFF );
-		g.fillRect( 0, 0, this.canvasWidth, this.canvasHeight );
+		g.setColor( 0xFFFF00 );
+		//g.fillRect( 0, 0, this.canvasWidth, this.canvasHeight );
+		g.fillRect( 0, 0, this.canvas.getWidth(), this.canvas.getHeight() );
 		g.setColor( 0 );
 		g.setFont( this.font );
 		String message = null;
@@ -135,6 +138,7 @@ implements DynamicTestView
 		g.drawString(message, 1, 1, Graphics.TOP | Graphics.LEFT );
 		int fontHeight = this.font.getHeight() + 5; 
 		g.drawString("Or press 0 to skip.", 1, fontHeight, Graphics.TOP | Graphics.LEFT );
+		g.drawString( this.canvas.getWidth() + "x" + this.canvas.getHeight(), 1, fontHeight << 1, Graphics.TOP | Graphics.LEFT );
 		
 	}
 
