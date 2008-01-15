@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>j2mepolish</name> 
-        <comment>A sample MIDP application which uses J2ME Polish.</comment>
+	<name>accessible</name> 
+        <comment>Demonstrates UiAccess.setAccessible()</comment>
 	<projects>
-		<project>j2mepolish</project>
+		<project>accessible</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

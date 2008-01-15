@@ -3,7 +3,7 @@
 	<name>j2mepolish-browser</name> 
         <comment>Demonstrating the Browser of J2ME Polish.</comment>
 	<projects>
-		<project>j2mepolish</project>
+		<project>j2mepolish-browser</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

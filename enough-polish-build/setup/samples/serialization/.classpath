@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="%{INSTALL_PATH}/import/cldc-1.1-java5.0.jar"/>
+	<classpathentry kind="lib" path="%{INSTALL_PATH}/import/cldc-1.1.jar"/>
 	<classpathentry kind="lib" path="%{INSTALL_PATH}/import/midp-2.0.jar"/>
 	<classpathentry kind="lib" path="%{INSTALL_PATH}/import/mmapi.jar"/>
 	<classpathentry kind="lib" path="%{INSTALL_PATH}/import/nokia-ui.jar"/>

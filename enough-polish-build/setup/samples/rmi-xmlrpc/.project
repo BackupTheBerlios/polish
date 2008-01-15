@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>j2mepolish-rmi</name> 
-        <comment>A sample MIDP application which uses the J2ME Polish RMI framework.</comment>
+	<name>j2mepolish-rmi-xmlrpc</name> 
+        <comment>Demonstrates the XMLRPC support of the J2ME Polish RMI framework.</comment>
 	<projects>
-		<project>j2mepolish</project>
+		<project>j2mepolish-rmi-xmlrpc</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

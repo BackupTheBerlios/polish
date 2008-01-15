@@ -3,7 +3,7 @@
 	<name>j2mepolish-rmi</name> 
         <comment>A sample MIDP application which uses the J2ME Polish RMI framework.</comment>
 	<projects>
-		<project>j2mepolish</project>
+		<project>j2mepolish-rmi</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

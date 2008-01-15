@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>j2mepolish</name> 
-        <comment>A sample MIDP application which uses J2ME Polish.</comment>
+	<name>j2mepolish-fisheye</name> 
+        <comment>Demonstrates the fisheye view-type for Lists and ChoiceGroups.</comment>
 	<projects>
-		<project>j2mepolish</project>
+		<project>j2mepolish-fisheye</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

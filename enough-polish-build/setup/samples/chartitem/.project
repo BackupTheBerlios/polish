@@ -3,7 +3,7 @@
 	<name>j2mepolish-chartitem</name> 
         <comment>Demonstrating the ChartItem of J2ME Polish.</comment>
 	<projects>
-		<project>j2mepolish</project>
+		<project>j2mepolish-chartitem</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

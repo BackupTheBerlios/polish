@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>j2mepolish</name> 
-        <comment>A sample MIDP application which uses J2ME Polish.</comment>
+	<name>blank</name> 
+        <comment>A sample blank project without sources.</comment>
 	<projects>
-		<project>j2mepolish</project>
+		<project>blank</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

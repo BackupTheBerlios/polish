@@ -9,7 +9,7 @@
 	<classpathentry kind="lib" path="%{INSTALL_PATH}/import/nokia-ui.jar"/>
 	<classpathentry kind="lib" path="%{INSTALL_PATH}/import/wmapi.jar"/>
 	<classpathentry kind="lib" path="%{INSTALL_PATH}/lib/enough-j2mepolish-client.jar"/>
-	 <classpathentry kind="lib" path="%{INSTALL_PATH}/lib/enough-j2mepolish-rmi.jar"/>
-
+	<classpathentry kind="lib" path="%{INSTALL_PATH}/lib/enough-j2mepolish-rmi.jar"/>
+	<classpathentry kind="lib" path="%{INSTALL_PATH}/lib/javax.servlet.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
