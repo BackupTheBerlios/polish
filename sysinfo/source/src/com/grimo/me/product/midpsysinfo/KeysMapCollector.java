@@ -17,6 +17,7 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import de.enough.sysinfo.MIDPSysInfoMIDlet;
 
 /**
  * Collects information about the game controls.
@@ -27,7 +28,7 @@ import javax.microedition.lcdui.Graphics;
 public class KeysMapCollector extends InfoCollector
 implements DynamicTestView
 {
-	private static String charactersMapStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ@!$%&/()=?ŠšŸ§',;.: -_";
+	private static String charactersMapStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZ@!$%&/()=?ï¿½ï¿½ï¿½ï¿½',;.: -_";
     private int step;
     private DynamicTest test;
 	private int canvasWidth;

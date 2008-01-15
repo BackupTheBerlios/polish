@@ -13,6 +13,7 @@ import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
 import javax.microedition.rms.RecordStoreFullException;
 import javax.microedition.rms.RecordStoreNotFoundException;
+import de.enough.sysinfo.MIDPSysInfoMIDlet;
 
 /**
  * Collects information about the sound support of the device.

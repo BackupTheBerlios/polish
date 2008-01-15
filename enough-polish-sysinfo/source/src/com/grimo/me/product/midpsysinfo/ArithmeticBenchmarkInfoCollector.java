@@ -12,6 +12,8 @@ import java.util.Random;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.StringItem;
 
+import de.enough.sysinfo.MIDPSysInfoMIDlet;
+
 /**
  * Benchmarks the device using different access strategies.
  * 

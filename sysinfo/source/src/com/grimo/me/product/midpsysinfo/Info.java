@@ -25,6 +25,8 @@
  */
 package com.grimo.me.product.midpsysinfo;
 
+import de.enough.polish.io.Serializable;
+
 /**
  * <p>Contains a single setting.</p>
  *
@@ -35,7 +37,7 @@ package com.grimo.me.product.midpsysinfo;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class Info {
+public class Info implements Serializable{
 
 	public final String name;
 	public final String value;

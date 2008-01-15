@@ -27,6 +27,8 @@ package com.grimo.me.product.midpsysinfo;
 
 import javax.microedition.lcdui.Display;
 
+import de.enough.sysinfo.MIDPSysInfoMIDlet;
+
 /**
  * <p>Collects information about supported APIs</p>
  *
@@ -135,6 +137,31 @@ public class LibrariesInfoCollector extends InfoCollector {
 		} catch (ClassNotFoundException e) {
 			addInfo("Siemens-Extension-API: ", "no" );
 		}
+		try {
+			Class.forName("javax.microedition.m3g.Graphics3D");
+			addInfo("3dapi", "yes" );
+		} catch (ClassNotFoundException e) {
+			addInfo("3dapi", "no" );
+		}
+		try {
+			Class.forName("javax.microedition.m2g.ScalableGraphics");
+			addInfo("polish.api.svg", "true" );
+
+			String svgversion = midlet.getSystemProperty(new String[] {"microedition.m2g.svg.version"});
+
+			if( svgversion != null ){
+				if (svgversion.equals("1.2")) {
+					addInfo("microedition.m2g.svg.version", "1.2" );
+				}else{
+					addInfo("microedition.m2g.svg.version", "1.1" );
+				}
+			}else{
+				addInfo("bugs.noSvgVersionProperty", "true" );
+			}
+		}catch (Throwable e) {
+			
+			//addInfo("SVG present:", "no" );
+		} 
 		
 	}
 

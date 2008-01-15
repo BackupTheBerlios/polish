@@ -14,6 +14,8 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import de.enough.sysinfo.MIDPSysInfoMIDlet;
+
 /**
  * Tests display capabilities of the current device.
  * 
@@ -95,17 +97,23 @@ public class DisplayInfoCollector extends InfoCollector {
         addInfo("Medium-Font-Height: ", "" + font.getHeight() );
         font = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_PLAIN, Font.SIZE_LARGE );
         addInfo("Large-Font-Height: ", "" + font.getHeight() );
-//        font = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_SMALL );
-//        addInfo("Small-Font-Height (bold): ", "" + font.getHeight() );
-//        font = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_MEDIUM );
-//        addInfo("Medium-Font-Height (bold): ", "" + font.getHeight() );
-//        font = Font.getFont( Font.FACE_SYSTEM, Font.STYLE_BOLD, Font.SIZE_LARGE );
-//        addInfo("Large-Font-Height (bold): ", "" + font.getHeight() );
-//        try {
-//			Thread.sleep(200);
-//		} catch (InterruptedException e) {
-//			// ignore
-//		}
+        
+        try{
+        	if(canvas.hasRepeatEvents()){
+        		addInfo("hasRepeatEvents", "yes");
+        	}else{
+        		addInfo("hasRepeatEvents", "no");
+        	}
+        }catch (Exception e) {
+        	addInfo("hasRepeatEvents", "no");
+        }
+        
+        try{
+        	//Display.numAlphaLevels()  Display.numColors()
+        	addInfo("alphaLevels", String.valueOf(display.numAlphaLevels()));
+        }catch (Exception e) {
+        	//nothing to do
+        }
 	}
 
 

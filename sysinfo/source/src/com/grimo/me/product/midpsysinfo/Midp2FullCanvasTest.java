@@ -25,11 +25,8 @@
  */
 package com.grimo.me.product.midpsysinfo;
 
-import java.util.Vector;
-
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 /**
@@ -76,7 +73,6 @@ public class Midp2FullCanvasTest extends Canvas implements DynamicTest {
 		this.width = width;
 		this.height = height;
 	}
-
 
 
 	/* (non-Javadoc)

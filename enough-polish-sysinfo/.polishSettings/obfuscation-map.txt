@@ -1,5 +1,11 @@
-IntList=c
-Point=e
-ArrayList=b
-IntStack=d
-Properties=a
+de.enough.polish.util.Properties=i
+de.enough.polish.ui.Point=j
+de.enough.polish.util.ArrayList=f
+IntList=b
+de.enough.polish.util.IntStack=h
+IntStack=c
+ArrayList=a
+de.enough.polish.util.IntList=g
+com.grimo.me.product.midpsysinfo.Info=k
+Point=d
+Properties=e

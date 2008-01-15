@@ -55,7 +55,7 @@ public class CreditsCanvas extends Canvas {
 		this.titleHeight = (2 * MARGIN) + this.titleFont.getHeight();
 		this.availableHeight = getHeight() - this.titleHeight;
 		int availableWidth = getWidth() - (2 * MARGIN);
-		this.credits = TextUtil.split( Locale.get("text.credits"), this.titleFont, availableWidth, availableWidth );
+		this.credits = TextUtil.wrap( Locale.get("text.credits"), this.titleFont, availableWidth, availableWidth );
 		this.contentHeight = this.credits.length * (this.textFont.getHeight() + MARGIN);
     }
     

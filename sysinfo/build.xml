@@ -9,9 +9,10 @@
 	<property name="wtk.home" value="/home/enough/dev/WTK2.2"/>
 	<!-- The polish.home property should point to the directory   -->
 	<!-- containing the J2ME Polish installation.                 -->
-	<property name="polish.home" value="../enough-polish-build"/>
+	<property name="polish.home" value="/home/enough/workspace/enough-polish-build"/>
 	<property name="nokia.home" value="/home/enough/dev/Nokia" />
-
+	<property name="remotebuild" value="true" />
+	
 	<taskdef 
 		classname="de.enough.polish.ant.PolishTask" 
 		classpath="${polish.home}/bin/classes:${polish.home}/lib/jdom.jar" 
@@ -36,73 +37,67 @@
 		<property name="dir.work" value="build/real" />
 	</target>
     
-<target depends="init" name="j2mepolish">
-	<j2mepolish>
-	    <!-- general settings -->
-		<info 
-			license="GPL"
-			copyright="Copyright 2004, 2005 Grimo Software, Enough Software and Mark Schrijver. All rights reserved." 
-			description="Extracts information from MIDP capable devices." 
-			icon="icon.png" 
-			infoUrl="www.grimo-software.com" 
-			jarName="sysinfo.jar" 
-			jarUrl="${deploy-url}${polish.jarName}" 
-			name="MIDPSysInfo" 
-			vendorName="Grimo Software" 
-			version="0.9.0"
-			profile="MIDP-1.0"
-			configuration="CLDC-1.0"
-	    />
-		<!--
-		, Enough Software and Mark Schrijver
-		-->
-		<!-- selection of supported devices -->
-		<deviceRequirements>
-			<requirement name="Identifier" value="Generic/multi"/>
-		</deviceRequirements>
-	    <!-- build settings -->
-		<build 
-            polishDir="../enough-polish-j2me/source/src" 
-            usePolishGui="false"
-			workDir="${dir.work}"
-			sourceDir="source/src"
-			>
-			<!-- midlets definition -->
-			<midlet class="com.grimo.me.product.midpsysinfo.MIDPSysInfoMIDlet" name="MIDP SysInfo"/>
-			<resources>
-				<localization locale="en" />
-			</resources>
-			<jad>
-				<filter>
-					MIDlet-Name, MIDlet-Version, 
-					MIDlet-Vendor, MIDlet-Jar-URL, MIDlet-Jar-Size, 
-					MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?,
-					MIDlet-Data-Size?, MIDlet-*, *
-				</filter>
- 			</jad>
-			<manifestFilter>
-				Manifest-Version, MIDlet-Name, 
-				MIDlet-1, MIDlet-2?, MIDlet-3?, MIDlet-4?, MIDlet-5?, 
-				MIDlet-Version, MIDlet-Vendor,
-				MicroEdition-Profile, MicroEdition-Configuration,
-				MIDlet-Data-Size?
-			</manifestFilter>
-			<!--
-			unused manifest attributes:
-				MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?,
-			-->
-			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-			<obfuscator name="ProGuard" useDefaultPackage="true" unless="test" >
-				<keep class="NokiaFullCanvasTest" />
-				<keep class="Midp2FullCanvasTest" />
-			</obfuscator>
-			<!-- debug settings: only include debug setting when the test-property is true -->
-			<debug level="error" showLogOnError="true" verbose="true" if="test">
-				<filter level="debug" package="com.grimo.me.product.midpsysinfo"/>
-			</debug>
-			
-		</build>
-		
+	<target depends="init" name="j2mepolish">
+		<j2mepolish>
+			<!-- general settings -->
+					<info 
+						copyright="Copyright 2004 - 2007 Grimo Software, Enough Software and Mark Schrijver. All rights reserved." 
+						description="Extracts information from MIDP capable devices." 
+						icon="icon.png" 
+						infoUrl="www.grimo-software.com" 
+						jarName="sysinfo.jar" 
+						jarUrl="${deploy-url}${polish.jarName}" 
+						name="MIDPSysInfo" 
+						vendorName="Enough Software" 
+						version="0.9.6" 
+						profile="MIDP-1.0" 
+						configuration="CLDC-1.0" 
+					/>
+					<!-- Enough Software and Mark Schrijver	-->
+					<!-- selection of supported devices -->
+					<deviceRequirements>
+						<requirement name="Identifier" value="Generic/multi" />
+					</deviceRequirements>
+					<!-- build settings -->
+					<build polishDir="../enough-polish-j2me/source/src" usePolishGui="false" workDir="${dir.work}" sourceDir="source/src">
+						<sources>
+							<source dir="source/src" />
+						</sources>
+						
+						<!-- midlets definition -->
+						<midlet class="de.enough.sysinfo.MIDPSysInfoMIDlet" name="MIDP SysInfo" />
+						<resources dir="resources">
+							<localization dynamic="true" defaultLocale="en" locales="en, de" />
+						</resources>
+						<jad>
+							<filter>
+									MIDlet-Name, MIDlet-Version, 
+									MIDlet-Vendor, MIDlet-Jar-URL, MIDlet-Jar-Size, 
+									MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?,
+									MIDlet-Data-Size?, MIDlet-*, *
+								</filter>
+						</jad>
+						<manifestFilter>
+								Manifest-Version, MIDlet-Name, 
+								MIDlet-1, MIDlet-2?, MIDlet-3?, MIDlet-4?, MIDlet-5?, 
+								MIDlet-Version, MIDlet-Vendor,
+								MicroEdition-Profile, MicroEdition-Configuration,
+								MIDlet-Data-Size?
+							</manifestFilter>
+						<!--
+							unused manifest attributes:
+								MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?,
+							-->
+						<!-- obfuscator settings: do not obfuscate when the test-property is true -->
+						<obfuscator name="ProGuard" useDefaultPackage="false" unless="test">
+							<keep class="NokiaFullCanvasTest" />
+							<keep class="Midp2FullCanvasTest" />
+						</obfuscator>
+						<!-- debug settings: only include debug setting when the test-property is true -->
+						<debug level="error" showLogOnError="true" verbose="true" unless="test">
+							<filter level="debug" package="com.grimo.me.product.midpsysinfo" />
+						</debug>
+					</build>
 		<!-- execution of emulator(s) -->
 		<emulator
 			wait="true"
@@ -120,11 +115,10 @@
 	<delete dir="dist"/>
 </target>
 	
-	<target 
-		name="emulator"
-		description="Builds and starts the emulator" 
-		depends="test, j2mepolish"
-	/>
+<target name="emulator"
+	description="Builds and starts the emulator" 
+	depends="test, j2mepolish"
+/>
 
 
 </project>

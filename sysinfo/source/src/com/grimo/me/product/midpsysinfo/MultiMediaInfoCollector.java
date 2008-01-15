@@ -10,6 +10,8 @@ package com.grimo.me.product.midpsysinfo;
 
 import javax.microedition.lcdui.Display;
 
+import de.enough.sysinfo.MIDPSysInfoMIDlet;
+
 /**
  * Collects information about the sound support of the device.
  * 
@@ -32,9 +34,9 @@ public class MultiMediaInfoCollector extends InfoCollector {
 	 */
 	public void collectInfos(MIDPSysInfoMIDlet midlet, Display display) {
         addInfo("supports.video.capture: ",  getInfo( System.getProperty("supports.video.capture") ) );
-        addInfo("video.encodings: ",  getInfo( System.getProperty("video.encodings") ) );
+        addInfo("mmapi.video.encodings: ",  getInfo( System.getProperty("video.encodings") ) );
         addInfo("video.snapshot.encodings: ",  getInfo( System.getProperty("video.snapshot.encodings")) );
-        addInfo("audio.encoding: ",  getInfo(System.getProperty("audio.encoding")) );
+        addInfo("mmapi.audio.encodings: ",  getInfo(System.getProperty("audio.encodings")) );
         addInfo("supports.audio.capture: ",  getInfo(System.getProperty("supports.audio.capture")) );
         addInfo("supports.recording: ",  getInfo(System.getProperty("supports.recording")) );
         addInfo("supports.mixing: ",  getInfo(System.getProperty("supports.mixing")) );

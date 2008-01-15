@@ -9,6 +9,8 @@ package com.grimo.me.product.midpsysinfo;
 
 import javax.microedition.lcdui.Display;
 
+import de.enough.sysinfo.MIDPSysInfoMIDlet;
+
 /**
  * Collects information about the system mainly by querying sytem properties.
  * 
@@ -29,17 +31,22 @@ public class SystemInfoCollector extends InfoCollector {
 	 * @see com.grimo.me.product.midpsysinfo.InfoCollector#collectInfos(com.grimo.me.product.midpsysinfo.MIDPSysInfoMIDlet, javax.microedition.lcdui.Display)
 	 */
 	public void collectInfos(MIDPSysInfoMIDlet midlet, Display display) {
-        addInfo( "Microedition Configuration: ", getInfo( System.getProperty("microedition.configuration") ) );
+		addSystemPropertyInfo("microedition.configuration");
         
-        addInfo( "Microedition Profiles: ", getInfo(System.getProperty("microedition.profiles"))  );
+        addSystemPropertyInfo("microedition.profiles");
         
-        addInfo( "microedition.jtwi.version:", getInfo( System.getProperty("microedition.jtwi.version") ));
+        addSystemPropertyInfo( "microedition.jtwi.version" );
         
-        addInfo( "microedition.platform:", getInfo( System.getProperty("microedition.platform") ) );
+        addSystemPropertyInfo("microedition.platform");
+        addSystemPropertyInfo("device.model");
+        addSystemPropertyInfo( "com.sonyericsson.java.platform" );
+        addSystemPropertyInfo("microedition.platform");
 
-        addInfo( "microedition.locale:", getInfo( System.getProperty("microedition.locale") ));
+        addSystemPropertyInfo( "microedition.locale" );
 
-        addInfo( "default encoding:", getInfo( System.getProperty("microedition.encoding") ));
+        addSystemPropertyInfo( "microedition.encoding" );
+        addSystemPropertyInfo( "microedition.commports" );
+        
 
         String[] timeZoneIDs = java.util.TimeZone.getAvailableIDs();
         StringBuffer timeZonesBuffer = new StringBuffer();

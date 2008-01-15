@@ -1,7 +1,7 @@
 /*
- * Created on 10-Feb-2005 at 23:18:59.
+ * Created on 11.04.2007 at 15:00:24.
  * 
- * Copyright (c) 2005 Robert Virkus / Enough Software
+ * Copyright (c) 2007 Robert Virkus / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -23,35 +23,16 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package com.grimo.me.product.midpsysinfo;
+package de.enough.sysinfo;
 
-import de.enough.polish.io.Serializable;
+import java.util.Hashtable;
 
-/**
- * <p>Contains a single setting.</p>
- *
- * <p>Copyright Enough Software 2005</p>
- * <pre>
- * history
- *        10-Feb-2005 - rob creation
- * </pre>
- * @author Robert Virkus, j2mepolish@enough.de
- */
-public class Info implements Serializable{
+import de.enough.polish.rmi.Remote;
+import de.enough.polish.rmi.RemoteException;
 
-	public final String name;
-	public final String value;
+public interface SysInfoServer extends Remote{
 
-	/**
-	 * Creates a new info.
-	 * 
-	 * @param name the name of the setting
-	 * @param value the value of the setting
-	 */
-	public Info( String name, String value ) {
-		super();
-		this.name = name;
-		this.value = value;
-	}
-
+	public String sayHello() throws RemoteException;
+	public boolean login(String name, String password) throws RemoteException;
+	public void sendInfos(Hashtable m, String user, String pwd) throws RemoteException;	
 }

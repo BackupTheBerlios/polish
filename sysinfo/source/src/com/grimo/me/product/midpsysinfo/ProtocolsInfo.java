@@ -11,7 +11,7 @@ package com.grimo.me.product.midpsysinfo;
 * @author  Waldemar Baraldi <waldemar.baraldi@grimo-software.com>
 */
 
-import javax.microedition.media.*;
+import javax.microedition.media.Manager;
 
 public class ProtocolsInfo {
     

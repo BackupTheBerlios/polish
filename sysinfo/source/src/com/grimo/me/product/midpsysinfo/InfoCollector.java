@@ -29,6 +29,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.StringItem;
 
 import de.enough.polish.util.ArrayList;
+import de.enough.sysinfo.MIDPSysInfoMIDlet;
 
 /**
  * <p>Collects information.</p>
@@ -63,6 +64,23 @@ public abstract class InfoCollector {
 	public abstract void collectInfos( MIDPSysInfoMIDlet midlet, Display display );
 	
 	
+	/**
+	 * @param propName
+	 */
+	protected void addSystemPropertyInfo(String propName) {
+		String value = null;
+		try {
+			value = System.getProperty( propName );
+		} catch (Exception e) {
+			//#debug error
+			System.out.println("unable to query " + propName + e );
+		}
+		if (value != null) {
+			addInfo( propName + ":", value );
+		}
+		
+	}
+	
 	public void addInfo( String name, String value ) {
 		this.settings.add( new Info( name, value ));
 		if (this.view != null) {
@@ -83,9 +101,8 @@ public abstract class InfoCollector {
 	public String getInfo(String info) {
 		if (info == null) {
 			return "<unknown>";
-		} else {
-			return info;
 		}
+		return info;
 	}
 	
 	public boolean isFinished() {
