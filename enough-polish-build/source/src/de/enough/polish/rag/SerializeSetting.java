@@ -48,6 +48,7 @@ public class SerializeSetting {
 	
 	private String regex;
 	private String target;
+	private String type;
 	
 	public String getRegex() {
 		return regex;
@@ -63,5 +64,13 @@ public class SerializeSetting {
 
 	public void setTarget(String target) {
 		this.target = target;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

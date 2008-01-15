@@ -56,8 +56,9 @@ import de.enough.polish.ant.build.ClassSetting;
 import de.enough.polish.ant.build.FullScreenSetting;
 import de.enough.polish.io.Serializer;
 import de.enough.polish.rag.RagContainer;
-import de.enough.polish.rag.RagObfuscationMap;
 import de.enough.polish.rag.SerializeSetting;
+import de.enough.polish.rag.obfuscation.RagEntry;
+import de.enough.polish.rag.obfuscation.RagMap;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.ReflectionUtil;
 import de.enough.polish.util.StringUtil;
@@ -80,8 +81,8 @@ import de.enough.polish.util.StringUtil;
  * @author Andre Schmidt, andre@enough.de
  */
 public class RagTask extends PolishTask {
-	private URLClassLoader loader; 
-	private RagObfuscationMap list;
+	private URLClassLoader loader;
+	private RagEntry rootEntry;
 	
 	/**
 	 * Packages the resources and serialized fields to a .rag file.
@@ -105,8 +106,9 @@ public class RagTask extends PolishTask {
 		{
 			// load ProGuard obfuscation map
 			File obfuscationMap = new File( device.getBaseDir() + File.separatorChar + "obfuscation-map.txt");
+			
 			if (obfuscationMap.exists() && this.doObfuscate) {
-				this.list = new RagObfuscationMap(obfuscationMap);
+				this.rootEntry = new RagMap(obfuscationMap).getRoot();
 			}
 			
 			//Get the resources and serializers
@@ -117,37 +119,73 @@ public class RagTask extends PolishTask {
 				SerializeSetting setting = (SerializeSetting)serializers.get(i);
 				
 				Field[] fields;
+				
+				//Get the class target and the typ eo fthe desired fields
 				String target = setting.getTarget();
+				String type = setting.getType();
 				
 				if(this.doObfuscate)
 				{
-					target = this.list.getClassName(target, false);
+					RagEntry targetEntry = null;
+					RagEntry typeEntry = null;
+					
+					targetEntry = RagMap.getChildEntry(this.rootEntry, target, false);
+					target = targetEntry.getObfuscated();
+					
+					typeEntry = RagMap.getChildEntry(this.rootEntry, type, false);
+					type = typeEntry.getObfuscated();
+					
 					//Get the obfuscated fields of the obfuscated class 
 					fields = this.loader.loadClass(target).getDeclaredFields();
+					
+					//Iterate over fields 
+					for (int j = 0; j < fields.length; j++) {
+						Field field = fields[j];
+						
+						String fieldName = field.getName();
+						String fieldType = field.getType().getName();
+						
+						if(fieldType.equals(type))
+						{
+							RagEntry fieldEntry = RagMap.getChildEntry(targetEntry, fieldName, true);
+							
+							fieldName = fieldEntry.getName();
+							
+							if(fieldName.matches(setting.getRegex()))
+							{
+								RagContainer container = null;
+								
+								//Create a container for the field object
+								container = getContainer(setting.getTarget(),fieldName,field.get(null));
+								containers.add(container);
+							}
+						}
+					}
 				}
 				else
 				{
 					//Get the fields of the class
 					fields = this.loader.loadClass(target).getDeclaredFields();
-				}
-				
-				//Iterate over fields 
-				for (int j = 0; j < fields.length; j++) {
 					
-					Field field = fields[j];
-					String fieldName = field.getName();
-					
-					if(this.doObfuscate)
-					{
-						fieldName = this.list.getFieldName(fieldName, true);
-					}
-					
-					//Does the field name match the regular expression of the current serializer ?
-					if(fieldName.matches(setting.getRegex()))
-					{
-						//Create a container for the field object
-						RagContainer container = getContainer(setting.getTarget(),fieldName,field.get(null));
-						containers.add(container);
+					//Iterate over fields 
+					for (int j = 0; j < fields.length; j++) {
+						
+						Field field = fields[j];
+						String fieldName = field.getName();
+						String fieldType = field.getType().getName();
+						
+						if(fieldType.equals(type))
+						{
+							//Does the field name match the regular expression of the current serializer ?
+							if(fieldName.matches(setting.getRegex()))
+							{
+								RagContainer container = null;
+								
+								//Create a container for the field object
+								container = getContainer(setting.getTarget(),fieldName,field.get(null));
+								containers.add(container);
+							}
+						}
 					}
 				}
 			}
@@ -218,7 +256,8 @@ public class RagTask extends PolishTask {
 		try {
 			if(this.doObfuscate)
 			{
-				serializerClassPath = this.list.getClassName("de.enough.polish.io.Serializer", false);
+				RagEntry serializerEntry = RagMap.getChildEntry(this.rootEntry, serializerClassPath, false);
+				serializerClassPath = serializerEntry.getObfuscated();
 			}
 			
 			serializerClass = this.loader.loadClass(serializerClassPath);
@@ -316,6 +355,7 @@ public class RagTask extends PolishTask {
 	private RagContainer getContainer(String className, String fieldName, Object object) throws IOException, NoSuchMethodException
 	{
 		String fullName = className + "." + fieldName;
+		
 		System.out.println("Creating rag container from " + fullName + "(" + object + ")");
 		
 		RagContainer container = new RagContainer();
@@ -328,15 +368,21 @@ public class RagTask extends PolishTask {
 		Object[] 	parameters = getParameters(object,stream);
 		Class[] 	signatures = getSignatures();
 		
-		String methodName = "serialize";
+		String methodName = "serialize(java.lang.Object,java.io.DataOutputStream)";
 		
 		if(this.doObfuscate)
 		{
-			methodName = this.list.getMethodName("serialize", false);
+			RagEntry classEntry = RagMap.getChildEntry(this.rootEntry, "de.enough.polish.io.Serializer", false);
+			RagEntry methodEntry = RagMap.getChildEntry(classEntry, methodName, false); 
+			methodName = methodEntry.getObfuscated();
+			
+			//serialize
+			ReflectionUtil.callMethod(methodName, serializer, signatures, parameters);
 		}
-		
-		//serialize
-		ReflectionUtil.callMethod(methodName, serializer, signatures, parameters);
+		else
+		{
+			ReflectionUtil.callMethod("serialize", serializer, signatures, parameters);
+		}
 		
 		container.setName(fullName.toLowerCase());
 		container.setSize(byteStream.size());
@@ -417,6 +463,7 @@ public class RagTask extends PolishTask {
 		preprocess( device, locale );
 		compile( device, locale );
 		postCompile(device, locale);
+		
 		if (this.doObfuscate) {
 			obfuscate( device, locale );
 		}
@@ -426,7 +473,7 @@ public class RagTask extends PolishTask {
 			this.loader = getURLs(device);
 		}
 		catch (Exception e) {
-			System.out.println("unhable to initialize classloader " + e);
+			System.out.println("unable to initialize classloader " + e);
 			e.printStackTrace();
 		}
 		
