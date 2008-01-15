@@ -3784,6 +3784,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
+	//#if polish.TextField.useExternalInfo
 	public StringItem getInfoItem() {
 		return infoItem;
 	}
@@ -3791,6 +3792,7 @@ public class TextField extends StringItem
 	public void setInfoItem(StringItem infoItem) {
 		this.infoItem = infoItem;
 	}
+	//#endif
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {
