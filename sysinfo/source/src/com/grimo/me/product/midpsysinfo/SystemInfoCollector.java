@@ -40,7 +40,7 @@ public class SystemInfoCollector extends InfoCollector {
         addSystemPropertyInfo("microedition.platform");
         addSystemPropertyInfo("device.model");
         addSystemPropertyInfo( "com.sonyericsson.java.platform" );
-        addSystemPropertyInfo("microedition.platform");
+        //addSystemPropertyInfo("microedition.platform");
 
         addSystemPropertyInfo( "microedition.locale" );
 
