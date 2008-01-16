@@ -2,7 +2,7 @@
 <%define inDocumentationSection.gui %>
 <%set title = J2ME Polish: Scrollbar Design %>
 <%set basedir = ../ %>
-<%include start.txt %>
+<%include start_flash.txt %>
 
 	<h1 id="top">Scrollbar Design</h1>
 	<ul class="relatedtechnologies">
@@ -106,6 +106,22 @@ scrollbar {
 </pre>
 	<p>You can also automatically hide the scrollbar so that it does not occopy screen space. The scrollbar will then be
 	made visible each time the user scrolls on the screen:
+	<br />
+		<div id="id_scrollbar">
+			<a href="http://www.adobe.com/go/getflashplayer">
+				<img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" />
+			</a>
+		</div>
+		<script type="text/javascript">
+				var flashvars = {};
+				flashvars.clip = "../images/gui-screenelement-scrollbar.flv"; /* relative to swf file */
+				var params = {};
+				params.loop = "false";
+				params.quality = "best";
+				var attributes = {};
+				swfobject.embedSWF("<%= basedir%>scripts/videoplayer.swf", "id_scrollbar", "176", "208", "9.0.0", false, flashvars, params, attributes);
+		</script>
+			
 		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
 	        <param name='src' value="<%= basedir%>images/gui-screenelement-scrollbar.mov">
 	        <param name='autoplay' value="false">

@@ -69,19 +69,20 @@ title {
 	<p>You can also combine animated backgrounds as shown in this example:
 	</p>
 	<p>
-		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
-	        <param name='src' value="<%= basedir%>images/background-combined.mov">
-	        <param name='autoplay' value="true">
-	        <param name='controller' value="false">
-	        <param name='loop' value="true">
-	        <param name='width' value="240">
-	        <param name='height' value="240">
-	        <embed src="<%= basedir%>images/background-combined.mov" autoplay="true" 
-	        controller="false" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="240" height="240"
-	        >
-	        </embed>
-		</object>		
+		<div id="id_combined">
+			<a href="http://www.adobe.com/go/getflashplayer">
+				<img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" />
+			</a>
+		</div>
+		<script type="text/javascript">
+				var flashvars = {};
+				flashvars.clip = "../images/gui-background-combined.flv"; /* relative to swf file */
+				var params = {};
+				params.loop = "false";
+				params.quality = "best";
+				var attributes = {};
+				swfobject.embedSWF("<%= basedir%>scripts/videoplayer.swf", "id_combined", "240", "240", "9.0.0", false, flashvars, params, attributes);
+		</script>
 		<br />
 		The above animation has been realized with the following settings:
 	</p>

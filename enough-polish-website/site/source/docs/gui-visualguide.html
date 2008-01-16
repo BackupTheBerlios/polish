@@ -2,7 +2,7 @@
 <%define inDocumentationSection.gui %>
 <%set title = J2ME Polish: Visual Guide %>
 <%set basedir = ../ %>
-<%include start.txt %>
+<%include start_flash.txt %>
 
 	<h1 id="top">Visual Guide</h1>
 	<p>
@@ -110,6 +110,22 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
 	</dld>
 </td>
 <td>
+		<div id="id_particle">
+			<a href="http://www.adobe.com/go/getflashplayer">
+				<img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" />
+			</a>
+		</div>
+		<script type="text/javascript">
+				var flashvars = {};
+				flashvars.clip = "../images/gui-viewtype-particle.flv"; /* relative to swf file */
+				var params = {};
+				params.loop = "false";
+				params.quality = "best";
+				var attributes = {};
+				swfobject.embedSWF("<%= basedir%>scripts/videoplayer.swf", "id_particle", "176", "208", "9.0.0", false, flashvars, params, attributes);
+		</script>
+			
+	<!-- 
 	<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
         <param name='src' value="<%= basedir%>images/gui-viewtype-particle.mov">
         <param name='autoplay' value="false">
@@ -123,6 +139,7 @@ dd#tickerDef a:hover span{display:block;text-indent:0;vertical-align:top;color:#
         >
         </embed>
 	</object>
+	 -->
 	<br />
 	You can optionally give users a <a href="gui-screenelement-pressed.html">visual feedback when they press an item</a> using the <code>[style-name]:pressed</code> construct.
 </td>
@@ -302,16 +319,33 @@ javax.microedition.lcdui.TextBox box = new javax.microedition.lcdui.TextBox("Mes
 	<h3 id="gui-item-spriteitem">SpriteItem</h3>
 	<table><tr>
 		<td>
+		<!-- 
+		<div id="id_spriteitem">
+			<a href="http://www.adobe.com/go/getflashplayer">
+				<img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" />
+			</a>
+		</div>
+		<script type="text/javascript">
+				var flashvars = {};
+				flashvars.clip = "../images/gui-item-spriteitem.flv"; /* relative to swf file */
+				var params = {};
+				params.loop = "false";
+				params.quality = "best";
+				var attributes = {};
+				swfobject.embedSWF("<%= basedir%>scripts/videoplayer.swf", "id_spriteitem", "72", "75", "9.0.0", false, flashvars, params, attributes);
+		</script>
+		 -->
+ 
 		<object classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'  codebase='http://www.apple.com/qtactivex/qtplugin.cab'>
 	        <param name='src' value="<%= basedir%>images/gui-item-spriteitem.mov">
 	        <param name='autoplay' value="false">
 	        <param name='controller' value="true">
 	        <param name='loop' value="true">
 	        <param name='width' value="72">
-	        <param name='height' value="75">
+	        <param name='height' value="100">
 	        <embed src="<%= basedir%>images/gui-item-spriteitem.mov" autoplay="false" 
 	        controller="true" loop="true" pluginspage='http://www.apple.com/quicktime/download/'
-	        width="72" height="95"
+	        width="72" height="100"
 	        >
 	        </embed>
 		</object>
