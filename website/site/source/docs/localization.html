@@ -18,7 +18,7 @@
 Often applications should not only be marketed in one country or region, but in several 
 ones. The process of adjusting an application to a specific region is called localization. 
 </p><p>
-J2ME Polish offers a very powerful framework for not only managing the obvious 
+J2ME Polish offers a very powerful framework for not only managing the obviously 
 needed translations, but also for adjusting any kind of resources like 
 images or sounds to specific regions. 
 Even enhanced features like locale-aware date-formatting is no problem with J2ME Polish. 
@@ -62,7 +62,7 @@ supported. In the above example the locales &quot;de&quot; (German), &quot;en&qu
 (English) and &quot;cn&quot; (Chinese) are used, unless the Ant property <code>test</code> is set to <code>true</code>, in which case the application 
 is only build for the English locale.
 </p><p>
-Locales are defined using the ISO standard of two lowercase letters for the 
+Locales are defined using the ISO standard of two lowercase letters for a 
 <a href="http://www.ics.uci.edu/pub/ietf/http/related/iso639.txt" target="_blank">language</a> 
 (&quot;en&quot; for English, &quot;de&quot; for German, &quot;fr&quot; for French and so on) 
 and two optional uppercase letters for the 
@@ -109,10 +109,10 @@ parameters[1] = enemyName;
 this.textField.setString( Locale.get(&quot;messages.Introduction&quot;, parameters );
 </pre>
 <p>
-You need to put the ${polish.home}/import/enough-polish-client.jar on the classpath 
+Note: You need to put the ${polish.home}/import/enough-polish-client.jar on the classpath 
 of your project to use the Locale-class in your IDE.
 </p><p>
-In the <i>resources/messages.txt</i> the above localizations need to be defined:
+In the file <i>resources/messages.txt</i> the above localizations need to be defined:
 </p>
 <pre>
 menu.StartGame=Start Tickle Fight
@@ -130,7 +130,7 @@ specific characters, e.g. &quot;\t&quot; for a tab or &quot;\&quot;&quot; for us
 quotation mark.
 </p><p>
 The translations are embedded in the actual code during the preprocessing phase, 
-if you have a look at the preprocessed code, you will find following code:
+if you have a look at the preprocessed code, you will find the following:
 </p>
 <pre>
 import de.enough.polish.util.Locale;
@@ -148,10 +148,9 @@ parameters[1] = enemyName;
 this.textField.setString( Locale.get(0, parameters );
 </pre>
 <p>
-The translations for the first two Locale-methods are directly embedded into the source-code 
+The translations for the first two Locale-methods are directly embedded into the sourcecode 
 (unless you are using the <a href ="#dynamictranslations">dyanmic</a> mode)
-so there is no performance or size impact compared to a non-localized application at all 
-for these kinds of translations. 
+so there is no performance or size impact compared to a non-localized application at all. 
 </p>
 <p>
 Only for the third method a call to the Locale class is actually made, but in that call 
@@ -175,7 +174,7 @@ if you have Nokia-specific translations, these can be defined in the
 <i>resources/Nokia/messages.txt</i> etc. 
 When an application is localized for the Nokia/N95 phone and the 
 German (&quot;de&quot;) language, J2ME Polish tries to find a 
-translation in following places:
+translation in the following places:
 </p>
 <ol>
 <li>resources/Nokia/N95/de/messages.txt</li>
@@ -252,8 +251,8 @@ these translations - have a look at the <i>roadrunner</i> sample application for
 <h3 id="externaltranslations">External Translations</h3>
 <p>
 You can also load translations at a later point in your application. You can use this for limiting the JAR size of your application
-when you don't know what locale your user prefers during the initial download. Or you can this technology for providing 
-further translations options to your user.
+when you don't know what locale your user prefers during the initial download. Or you can use this technology for providing 
+further translation options to your user.
 </p>
 <p>
 Follow these steps for externalizing translations - more information about them is given below.
@@ -270,7 +269,7 @@ Follow these steps for externalizing translations - more information about them 
 	<code>de.enough.polish.util.Locale.loadAndStoreTranslations( InputStream in )</code>.
 	</li>
 	<li>From now on you can use all translations defined in your <i>messages_external.txt</i> files, but not
-	the ones only defined in the original <i>messages.txt</i> files.
+	the ones defined only in the original <i>messages.txt</i> files.
 	</li>
 </ol>
 <p>
@@ -290,8 +289,8 @@ After the &quot;setup&quot; phase you will know the preferred locale of your use
 J2ME Polish will then store all translations into the &quot;_translations&quot; record store in your application. At the next
 application start it will load the external translations automatically.
 <br />
-Following code sample illustrates the download process	
-(in real life you need to add proper exception handling):
+The following code sample illustrates the download process	
+(in real life you also need proper exception handling):
 </p>
 <pre>
 HttpConnection connection = (HttpConnection) Connector.open( &quot;http://company.com/locales/en.loc&quot;, Connector.READ_WRITE );
@@ -303,7 +302,7 @@ connection.close();
 </pre>
 <p>
 From now on you can use all translations defined in your <i>messages_external.txt</i> files, but not
-the ones only defined in the original <i>messages.txt</i> files. For accessing setup translations again
+the ones defined only in the original <i>messages.txt</i> files. For accessing setup translations again
 you can call <code>Locale.loadTranslations(&quot;/&quot; + localeName + &quot;.loc&quot; )</code>.
 However, at the next application start J2ME Polish will load the translations again, unless you have removed the
 &quot;_translations&quot; record store yourself.
