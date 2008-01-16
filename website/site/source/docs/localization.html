@@ -15,7 +15,7 @@
 	</p>
 <h2 id="concepts">Concepts</h2>
 <p>
-Often applications should not only be marketed in one country or region, but in several 
+Think global, act local: Often applications should not only be marketed in one country or region, but in several 
 ones. The process of adjusting an application to a specific region is called localization. 
 </p><p>
 J2ME Polish offers a very powerful framework for not only managing the obviously 
@@ -48,10 +48,10 @@ You can specify the supported localizations in your <a href="build.html">build.x
 	dir=&quot;resources&quot;
 	excludes=&quot;*.txt&quot;
 &gt;
-	&lt;localization locales=&quot;de, en, fr_CA&quot; unless=&quot;test&quot; &gt;
-	&lt;locale name=&quot;en&quot; /&gt;
-	&lt;locale name=&quot;de&quot; /&gt;
-	&lt;locale name=&quot;cn&quot; encoding=&quot;GB2312&quot; /&gt;
+	&lt;localization unless=&quot;test&quot; &gt;
+		&lt;locale name=&quot;en&quot; /&gt;
+		&lt;locale name=&quot;de&quot; /&gt;
+		&lt;locale name=&quot;cn&quot; encoding=&quot;GB2312&quot; /&gt;
 	&lt;/localization&gt;
 	&lt;localization locales=&quot;en&quot; if=&quot;test&quot; /&gt;
 &lt;/resources&gt;
@@ -82,7 +82,7 @@ In each used <a href="resource-assembling.html">resources</a> folder you can cre
 <h2 id="translations">Managing Translations</h2>
 <h3 id="localeclass">The Locale Class</h3>
 <p>
-The <a href="<%= javadocdir %>j2me/de/enough/polish/util/Locale.html" target="_blank">de.enough.polish.util.Locale</a> class is used for the 
+The <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/util/Locale.html" target="_blank">de.enough.polish.util.Locale</a> class is used for the 
 retrieval of translations. It offers three distinct translation methods:
 </p>
 <ul>
@@ -109,7 +109,7 @@ parameters[1] = enemyName;
 this.textField.setString( Locale.get(&quot;messages.Introduction&quot;, parameters );
 </pre>
 <p>
-Note: You need to put the ${polish.home}/import/enough-polish-client.jar on the classpath 
+Note: You need to put the <i>${polish.home}/import/enough-polish-client.jar</i> on the classpath 
 of your project to use the Locale-class in your IDE.
 </p><p>
 In the file <i>resources/messages.txt</i> the above localizations need to be defined:
@@ -149,8 +149,9 @@ this.textField.setString( Locale.get(0, parameters );
 </pre>
 <p>
 The translations for the first two Locale-methods are directly embedded into the sourcecode 
-(unless you are using the <a href ="#dynamictranslations">dyanmic</a> mode)
-so there is no performance or size impact compared to a non-localized application at all. 
+(unless you are using the <a href ="#dynamictranslations">dynamic</a> mode)
+so there is no performance or size impact compared to a non-localized application at all 
+for these kinds of translations. 
 </p>
 <p>
 Only for the third method a call to the Locale class is actually made, but in that call 
@@ -212,6 +213,29 @@ title.Main=Welcome {0}!
 messages.Introduction={1} threatens to tickle you!\n{0} against {1} is loading...
 </pre>
 
+<h3 id="encoding">Specifying the Encoding of Messages Files</h3>
+<p>
+You can use different encodings of your <i>messages.txt</i> files - all you need to do is to specify the used encoding
+with the <code>encoding</code> attribute of nested <code>&lt;locale&gt;</code> elements. So instead of specifying all the locales
+within the <code>&lt;localization&gt;</code> element, you specify each supported localization in a single element:
+</p>
+<pre>
+&lt;resources
+	dir=&quot;resources&quot;
+	excludes=&quot;*.txt&quot;
+&gt;
+	&lt;localization unless=&quot;test&quot; &gt;
+		&lt;locale name=&quot;en&quot; /&gt;
+		&lt;locale name=&quot;de&quot; /&gt;
+		&lt;locale name=&quot;cn&quot; <b>encoding=&quot;GB2312&quot;</b> /&gt;
+	&lt;/localization&gt;
+	&lt;localization locales=&quot;en&quot; if=&quot;test&quot; /&gt;
+&lt;/resources&gt;
+</pre>
+<p>
+When you do not specify an encoding, your operating system's default encoding will be used.
+</p>
+
 <h3 id="dynamictranslations">Dynamic Translations</h3>
 <p>
 You can also use dynamic translations that can be changed during the runtime of your application. You have to activate dynamic translations by setting the &quot;dynamic&quot;-attribute of the &lt;localization&gt; element to &quot;true&quot; and specifying the &quot;defaultLocale&quot;:
@@ -222,8 +246,8 @@ You can also use dynamic translations that can be changed during the runtime of 
 	excludes=&quot;*.txt&quot;
 &gt;
 	&lt;localization 
-		dynamic=&quot;true&quot;
-		defaultLocale=&quot;en&quot;
+		<b>dynamic=&quot;true&quot;
+		defaultLocale=&quot;en&quot;</b>
 		locales=&quot;de, en, fr_CA&quot; 
 	/&gt;
 &lt;/resources&gt;
@@ -269,12 +293,12 @@ Follow these steps for externalizing translations - more information about them 
 	<code>de.enough.polish.util.Locale.loadAndStoreTranslations( InputStream in )</code>.
 	</li>
 	<li>From now on you can use all translations defined in your <i>messages_external.txt</i> files, but not
-	the ones defined only in the original <i>messages.txt</i> files.
+	the ones defined only defined in the original <i>messages.txt</i> files.
 	</li>
 </ol>
 <p>
 In a typical situation you will have a setup part of your application that relies on the 
-<a href="dynamictranslations">dynamic localization</a>, so that you can guide the user through the setup in different languages.
+<a href="#dynamictranslations">dynamic localization</a>, so that you can guide the user through the setup in different languages.
 Define these &quot;setup&quot; translations normally in <i>messages.txt</i>, <i>messages_en.txt</i> and so on.
 </p>
 <p>
@@ -290,7 +314,7 @@ J2ME Polish will then store all translations into the &quot;_translations&quot; 
 application start it will load the external translations automatically.
 <br />
 The following code sample illustrates the download process	
-(in real life you also need proper exception handling):
+(in real life you need to add proper exception handling):
 </p>
 <pre>
 HttpConnection connection = (HttpConnection) Connector.open( &quot;http://company.com/locales/en.loc&quot;, Connector.READ_WRITE );
@@ -345,7 +369,7 @@ for learning the names of the MIDlet-attributes.
 </p>
 <h2 id="utilities">Coping with Dates and Currencies</h2>
 <p>
-The <a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/Locale.html" target="_blank">de.enough.polish.util.Locale</a> class offers some help for dealing with localized content:
+The <a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/util/Locale.html" target="_blank">de.enough.polish.util.Locale</a> class offers some help for dealing with localized content:
 </p>
 <ul>
   <li><code>static String formatDate( Calendar calendar )</code> formats a date specific to the current locale, this method is also available for Date and long.</li>
@@ -605,14 +629,14 @@ Instead define the parameters before the actual call:
 // this is just fine:
 String[] parameters = new String[]{ userName, enemyname };
 this.menuScreen.append( Locale.get( &quot;game.StartMessage&quot; , parameters ), null );
-</p>
+</pre>
 
 
 <h2 id="javadoc">JavaDoc</h2>
 <p>Please refer to the Java Doc documentation of the Locale class for more
 information:
 <br />
-<a href="<%= javadocdir %>../javadoc/j2me/de/enough/polish/util/Locale.html" target="_blank">de.enough.polish.util.Locale</a>
+<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/util/Locale.html" target="_blank">de.enough.polish.util.Locale</a>
 </p>
 
 

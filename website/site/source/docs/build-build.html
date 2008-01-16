@@ -59,7 +59,7 @@
  	 <td>No</td>
 	 <td>Either the name of the directory which contains binary-only libraries or the name(s) of the libraries. Several libraries can be separated by colons ':' or by semicolons ';'. When no path is defined, the libraries will be searched within the &quot;import&quot; folder by default.
 	 This mechanism can only be used for third party APIs, which are not available on the phone itself. Device-APIs are automatically included, after they have been defined in the <code>${j2mepolish.home}/apis.xml</code> file. Please compare the <a href="how-tos.html#howto-api">how-to about including APIs</a>.
-	 Alternatively you can used a nested <a href="libraries">&lt;libraries&gt;</a> element.
+	 Alternatively you can used a nested <a href="#libraries">&lt;libraries&gt;</a> element.
 	 </td>
 	</tr>
 	<tr><td>symbols</td>
@@ -1177,7 +1177,7 @@ Maybe someone with more experience with JODE can provide help here - please get 
 //#endif
 </pre>
 	<p>
-	Variables can also be compared, please refer to the description of the <a href="directives.html#preprocessing-if">#if-directive</a> for more information.
+	Variables can also be compared, please refer to the description of the <a href="preprocessing-directives.html#preprocessing-if">#if-directive</a> for more information.
 	</p>
 
 	<h3 id="debug">&lt;debug&gt;</h3>
@@ -1205,7 +1205,7 @@ System.out.println("could not load something: " + e);
 </pre>
 <p>You will find more information about the debugging
 possibilities in the <a href="tutorial.html#debug">introduction</a> as well as in the
-<a href="directives.html#preprocessing-debug">preprocessing</a> documentation.
+<a href="preprocessing-directives.html#preprocessing-debug">preprocessing</a> documentation.
 </p>	
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
 	<tr><th>debug Attribute&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
@@ -1356,7 +1356,7 @@ Inside of the &lt;jadfilter&gt; element you can specify all allowed JAD-attribut
 	 <td>All remaining attributes will be included at this position. A star can only positioned at the end of a filter.</td>
 	</tr>
 	</table>
-	<p>An overview about allowed attributes can be found at <a href="http://java.sun.com/j2me/docs/wtk2.0/user_html/Ap_Attributes.html" target="_blank">http://java.sun.com/j2me/docs/wtk2.0/user_html/Ap_Attributes.html</a>.
+	<p>An overview about allowed attributes can be found at the appendix of the <a href="../book/book.html">Pro J2ME Polish book</a>.
 	</p>
 
 <h3 id="manifestFilter">&lt;manifestFilter&gt;</h3>
@@ -1410,7 +1410,7 @@ Inside of the &lt;manifestFilter &gt; element you can specify all allowed MANIFE
 	 <td>All remaining attributes will be included at this position. A star can only positioned at the end of a filter.</td>
 	</tr>
 	</table>
-	<p>An overview about allowed attributes can be found at <a href="http://java.sun.com/j2me/docs/wtk2.0/user_html/Ap_Attributes.html" target="_blank">http://java.sun.com/j2me/docs/wtk2.0/user_html/Ap_Attributes.html</a>.
+	<p>An overview about allowed attributes can be found at the appendix of the <a href="../book/book.html">Pro J2ME Polish book</a>.
 	</p>
 
 <h3 id="preprocessor">&lt;preprocessor&gt;</h3>
