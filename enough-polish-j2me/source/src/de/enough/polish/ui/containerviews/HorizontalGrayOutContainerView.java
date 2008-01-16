@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui && midp2
+//#condition polish.usePolishGui && polish.midp2
 
 package de.enough.polish.ui.containerviews;
 
