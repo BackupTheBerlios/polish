@@ -13,7 +13,7 @@ import com.grimo.me.product.midpsysinfo.InfoCollector;
 import com.grimo.me.product.midpsysinfo.InfoForm;
 import com.grimo.me.product.midpsysinfo.NormalCanvasTest;
 
-public class KeyCollector extends InfoCollector implements DynamicTestView, Runnable{
+public class KeyCollector extends InfoCollector implements DynamicTestView{
 
 	private static final int STEP_LEFT_SOFT_KEY = 0; 
 	private static final int STEP_RIGHT_SOFT_KEY = 1; 
@@ -29,9 +29,7 @@ public class KeyCollector extends InfoCollector implements DynamicTestView, Runn
 	private Display display;
 	private boolean isFinished;
     private MIDPSysInfoMIDlet sysinfoMIDlet = null;
-    	
-	public void run() {}
-    
+
     /** 
      * Creates a new instance of GameControlsInfoCollector
      */
