@@ -163,7 +163,7 @@ implements DynamicTestView
 	 * @see com.grimo.me.product.midpsysinfo.DynamicTestView#paint(javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(Graphics g) {
-		g.setColor( 0xFFFF00 );
+		g.setColor( 0xFFFFFF );
 		g.fillRect( 0, 0, this.canvasWidth, this.canvasHeight );
 		//g.fillRect( 0, 0, this.canvas.getWidth(), this.canvas.getHeight() );
 		g.setColor( 0 );
@@ -347,7 +347,7 @@ implements DynamicTestView
 		g.drawString(message, 1, 1, Graphics.TOP | Graphics.LEFT );
 		int fontHeight = this.font.getHeight() + 5; 
 		g.drawString("Or press 0 to skip.", 1, fontHeight, Graphics.TOP | Graphics.LEFT );
-		g.drawString( this.canvas.getWidth() + "x" + this.canvas.getHeight(), 1, fontHeight << 1, Graphics.TOP | Graphics.LEFT );
+		//g.drawString( this.canvas.getWidth() + "x" + this.canvas.getHeight(), 1, fontHeight << 1, Graphics.TOP | Graphics.LEFT );
 		
 	}
 

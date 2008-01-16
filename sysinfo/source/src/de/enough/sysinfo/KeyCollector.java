@@ -121,7 +121,7 @@ public class KeyCollector extends InfoCollector implements DynamicTestView, Runn
 				message = "Press Clear/Delete-Key";
 				break;
 			case STEP_RETURN_KEY:
-				message = "Press Return-Key";
+				message = "Press Return/Back-Key";
 				break;
 			case STEP_SELECT_KEY:
 				message = "Press Select-Key";

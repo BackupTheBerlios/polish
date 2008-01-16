@@ -94,17 +94,9 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 	 * Initializes this application.
 	 */
 	private void initApp() {
-		//load translations depending on locale (default is en)
-		try{
-			String loc = System.getProperty("microedition.locale");
-			if(loc != null && loc.substring(0, 2).compareTo("de")==0){
-				Locale.loadTranslations("/de.loc");
-			}
-		}catch(Exception e){
-			//System.out.println(e.getMessage());
-		}
+		// correct translations are being loaded automatically by the J2ME Polish localizationf framework...
 		//#debug
-		//System.out.println("init app");
+		System.out.println("init app");
 		
 		/* build main menu */
 		this.mainMenu = new List(Locale.get("title.main"), List.IMPLICIT);
