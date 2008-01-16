@@ -172,7 +172,7 @@ public final class StyleSheet {
 						if (Locale.LANGUAGE == null || Locale.LANGUAGE.length() == 0) {
 							throw e;
 						}
-						String localeUrl = "/" + Locale.LANGUAGE + url.substring(1);
+						String localeUrl = "/" + Locale.LANGUAGE + url;
 						image = Image.createImage( localeUrl );
 					}
 				//#endif
