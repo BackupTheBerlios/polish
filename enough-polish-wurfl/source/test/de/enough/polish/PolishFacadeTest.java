@@ -45,7 +45,7 @@ public class PolishFacadeTest extends TestCase {
         Device device;
         try {
             device = PolishFacade.getDeviceDatabase().getDeviceManager().getDeviceByUserAgent("SonyEricssonK608i/R2T Browser/SEMC-Browser/4.2 Profile/MIDP-2.0 Configuration/CLDC-1.1");
-        } catch (PolishException exception) {
+        } catch (Exception exception) {
             fail(exception.toString());
             return;
         }
@@ -58,12 +58,12 @@ public class PolishFacadeTest extends TestCase {
             return;
         }
         
-        try {
-            device = PolishFacade.getDeviceByUserAgent("SonyEricssonK608i");
-        } catch (PolishException exception) {
-            fail(exception.toString());
-            return;
-        }
+//        try {
+//            device = PolishFacade.getDeviceByUserAgent("SonyEricssonK608i");
+//        } catch (PolishException exception) {
+//            fail(exception.toString());
+//            return;
+//        }
         
         if(device == null) {
             fail("Should have found device.");
