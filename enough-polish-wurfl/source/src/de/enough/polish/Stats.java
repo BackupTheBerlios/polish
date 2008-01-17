@@ -25,6 +25,8 @@
  */
 package de.enough.polish;
 
+import java.util.LinkedList;
+
 public class Stats{
         private int noPolishDeviceFound = 0;
         private int actualDeviceFound = 0;
@@ -36,6 +38,7 @@ public class Stats{
         private int noJavaPlatformForWurflDevice = 0;
         private int noJavaConfigurationForWurflDevice;
         private int modelNameContainsSlash;
+        private LinkedList<String> modelNamesWithSlash = new LinkedList<String>();
         
         public void actualDeviceFound(String key) {
             this.actualDeviceFound++;
@@ -60,6 +63,7 @@ public class Stats{
         public void print() {
             System.out.println("Stats");
             System.out.println("# of actual devices found in wurfl:"+this.actualDeviceFound);
+            System.out.println("# of non-actual devices found in wurfl:"+this.noActualDeviceFound);
             System.out.println("# of wurfl key with no polish device:"+this.noPolishDeviceFound);
             System.out.println("# of devices mapped:"+this.devicesMapped);
             System.out.println("# of polish devices:"+this.numberOfPolishDevices);
@@ -68,6 +72,10 @@ public class Stats{
             System.out.println("# of wurfl devices with no javaPlatform:"+this.noJavaPlatformForWurflDevice);
             System.out.println("# of wurfl devices with no javaConfiguration:"+this.noJavaConfigurationForWurflDevice);
             System.out.println("# of wurfl devices which contains a slash in the model name:"+this.modelNameContainsSlash);
+            for (String modelNameWithSlash : this.modelNamesWithSlash) {
+                System.out.println("  "+modelNameWithSlash);
+            }
+            
         }
         /**
          * @param wurflDevice
@@ -91,6 +99,7 @@ public class Stats{
          * @param wurflDevice
          */
         public void modelNameContainsSlash(WurflDevice wurflDevice) {
+            this.modelNamesWithSlash.add(wurflDevice.getBrand()+"_"+wurflDevice.getModel());
             this.modelNameContainsSlash++;
         }
     }

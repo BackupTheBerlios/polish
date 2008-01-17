@@ -35,11 +35,9 @@ public class WurflDevice {
     /**
      * This class is intented to be a flyweight so it should change it delegatee
      * with setDevice.
-     * @param device
+     * @param wurflInfo 
+     * @param wurflTree 
      */
-    public WurflDevice(Device device) {
-        setDevice(device);
-    }
     public WurflDevice(WURFLInfo wurflInfo,WURFLTree wurflTree) {
         this.wurflInfo = wurflInfo;
         this.wurflTree = wurflTree;
