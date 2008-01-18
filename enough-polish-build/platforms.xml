@@ -103,6 +103,14 @@
 	</platform>
 	
 	<platform>
+		<identifier>BlackBerry/4.0</identifier>
+		<parent>BlackBerry</parent>
+		<capability name="build.BootClassPath" value="blackberry-4.0.0.jar" />
+		<capability name="build.BlackBery.JDE-Version" value="4.0" />
+		<capability name="JavaPackage" value="wmapi,mmapi,pim" />
+	</platform>
+	
+	<platform>
 		<identifier>BlackBerry/4.1</identifier>
 		<parent>BlackBerry</parent>
 		<capability name="build.BootClassPath" value="blackberry-4.1.0.jar" />

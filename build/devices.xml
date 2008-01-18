@@ -10106,6 +10106,16 @@ These namespaces/schemas will be used soon.
 <!-- Research In Motion devices -->
 
 	<device>
+		<identifier>BlackBerry/4.0</identifier>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
+		<capability name="SoundFormat" value="amr, nb-amr"/>
+		<capability name="Emulator.Skin" value="8700r"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+	</device>
+	
+	<device>
 		<identifier>BlackBerry/4.1</identifier>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.1"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
@@ -10216,6 +10226,7 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="amr, nb-amr"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
+		<capability name="Emulator.Skin" value="8300"/>
 	</device>
 
 	<device>
@@ -10230,6 +10241,7 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="amr, nb-amr"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
+		<capability name="Emulator.Skin" value="8100"/>
 	</device>
 
 	<device>
