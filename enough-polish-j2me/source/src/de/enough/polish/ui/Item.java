@@ -3238,6 +3238,10 @@ public abstract class Item extends Object
 		return this.commands;
 	}
 
+	public void setParent(Item parent) {
+		this.parent = parent;
+	}
+
 
 
 //#ifdef polish.Item.additionalMethods:defined
