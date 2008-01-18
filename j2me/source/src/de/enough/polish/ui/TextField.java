@@ -2496,6 +2496,7 @@ public class TextField extends StringItem
 				//#endif
 			} else {
 				this.infoItem.setText(modeStr);
+				this.infoItem.parent.repaint();
 			}
 			//System.out.println("setting info to [" + modeStr + "]");
 		//#else
@@ -3738,11 +3739,11 @@ public class TextField extends StringItem
 		super.showNotify();
 		//#endif
 		
-		//#if polish.TextField.useExternalInfo
+		//#if polish.TextField.useExternalInfo && tmp.includeInputInfo
 		if(this.isFocused && this.infoItem != null)
 		{
 			updateInfo();
-			this.infoItem.repaint();
+			this.infoItem.parent.repaint();
 		}
 		//#endif
 	}
@@ -3784,7 +3785,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if polish.TextField.useExternalInfo
+	//#if polish.TextField.useExternalInfo && tmp.includeInputInfo
 	public StringItem getInfoItem() {
 		return this.infoItem;
 	}
