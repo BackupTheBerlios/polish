@@ -62,10 +62,10 @@ backgrounds {
 	chart-vertical-bars-shadow-color: gray;
 }
 
-.cakeChart {
+.pieChart {
 	background: chartItemBackground;
 	padding: 3;
-	view-type: chart-cake;
+	view-type: chart-pie;
 }
 
 /**

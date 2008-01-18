@@ -21,7 +21,7 @@ implements CommandListener
 	private Command exitCommand = new Command( "Exit", Command.EXIT, 3 );
 	private Command styleLines = new Command("Lines", Command.SCREEN, 1 );
 	private Command styleVerticalBar = new Command("Vertical Bars", Command.SCREEN, 1 );
-	private Command styleCakeChart = new Command("Cake Chart", Command.SCREEN, 1 );
+	private Command stylePieChart = new Command("Pie Chart", Command.SCREEN, 1 );
 
 	public ChartMidlet() {
 		//#style mainScreen
@@ -31,7 +31,7 @@ implements CommandListener
 		this.form.addCommand( parent );
 		UiAccess.addSubCommand(this.styleLines, parent, this.form );
 		UiAccess.addSubCommand(this.styleVerticalBar, parent, this.form );
-		UiAccess.addSubCommand(this.styleCakeChart, parent, this.form );
+		UiAccess.addSubCommand(this.stylePieChart, parent, this.form );
 		this.form.setCommandListener( this );
 
 
@@ -63,8 +63,8 @@ implements CommandListener
 		} else if (cmd == this.styleVerticalBar) {
 			//#style verticalBarChart
 			updateChart();
-		} else if (cmd == this.styleCakeChart) {
-			//#style cakeChart
+		} else if (cmd == this.stylePieChart) {
+			//#style pieChart
 			updateChart();		
 		}
 	}
