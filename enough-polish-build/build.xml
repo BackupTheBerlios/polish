@@ -520,8 +520,10 @@
 		<delete dir="tmp" />
 		<mkdir dir="tmp/import" />
 		<mkdir dir="tmp/lib" />
+		<!--
 		<mkdir dir="tmp/menu" />
 		<mkdir dir="tmp/sysinfo" />
+		-->
 	</target>
 
 	<target name="copylibs" 
@@ -783,7 +785,7 @@
 		description="converts all text files to windows line endings, so that the stupid windows default text editor can show them correctly. Just sad." 
 		>
 		<convertToWindowsLineEndings>
-			<fileset dir="tmp" includes="**/*.txt"></fileset>
+			<fileset dir="tmp" includes="**/*.txt,**/*.css,**/*.xml"></fileset>
 		</convertToWindowsLineEndings>
 	</target>
 
