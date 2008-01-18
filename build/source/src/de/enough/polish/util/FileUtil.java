@@ -472,14 +472,14 @@ public final class FileUtil {
 		}
 	}
 
-	private static String getPath( File file ) {
-		String path = file.getAbsolutePath();
-		int buildIndex = path.indexOf("build");
-		if (buildIndex != -1) {
-			path = path.substring( buildIndex );
-		}
-		return path;
-	}
+//	private static String getPath( File file ) {
+//		String path = file.getAbsolutePath();
+//		int buildIndex = path.indexOf("build");
+//		if (buildIndex != -1) {
+//			path = path.substring( buildIndex );
+//		}
+//		return path;
+//	}
 
 	/**
 	 * Deletes a file or a directory.
