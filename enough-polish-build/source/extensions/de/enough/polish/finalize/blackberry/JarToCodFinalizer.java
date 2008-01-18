@@ -407,6 +407,10 @@ implements OutputFilter
 		fileOut.close();
 	}
 	
+	/**
+	 * Enables or disables the verbose mode with more logging.
+	 * @param verbose true if verbose output is desired
+	 */
 	public void setVerbose( boolean verbose ) {
 		this.verbose = verbose;
 	}
