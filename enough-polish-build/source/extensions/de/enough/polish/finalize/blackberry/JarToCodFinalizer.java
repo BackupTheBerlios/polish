@@ -26,8 +26,11 @@
 package de.enough.polish.finalize.blackberry;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -164,8 +167,7 @@ implements OutputFilter
 			}
 			// add JAD file to JAR, so that MIDlet.getAppProperty() works later onwards:
 			try {
-				File txtJadFile = new File( classesDir, jadFile.getName().substring( 0, jadFile.getName().length() - ".jad".length() ) + ".txt");
-				FileUtil.copy( jadFile, txtJadFile );
+				storeJadProperties(jadFile, classesDir);
 				FileUtil.delete(jarFile);
 				
 				Packager packager = (Packager) env.get( Packager.KEY_ENVIRONMENT );
@@ -317,9 +319,12 @@ implements OutputFilter
 			File alxFile = new File( jarFile.getParentFile(),  codName  + ".alx" );
 			FileUtil.writeTextFile(alxFile, lines);
 			
+			// 2008-01-17: deactivating this functionality again, since it does
+			// not work correctly for all customers - now we clean the xx.jad.alt.jad 
+			// from the RIM values:
 			// now rewrite JAD file so that it is ready for OTA download:
 			// (first backup JAD file:)
-			FileUtil.copy(jadFile,  new File(jadFile.getParent(), jadFile.getName() + ".bak") );
+			//FileUtil.copy(jadFile,  new File(jadFile.getParent(), jadFile.getName() + ".bak") );
 			Map jadProperties = FileUtil.readPropertiesFile( jadFile, ':' );	
 			Object[] keys = jadProperties.keySet().toArray();
 			for (int i = 0; i < keys.length; i++) {
@@ -333,7 +338,7 @@ implements OutputFilter
 					jadProperties.remove(key);
 				}
 			}
-			FileUtil.writePropertiesFile(jadFile, ':', jadProperties );
+			FileUtil.writePropertiesFile( new File(jadFile.getParent(), jadFile.getName() + ".alt.jad"), ':', jadProperties );
 
 			
 			// request signature when the "blackberry.certificate.dir" variable is set:
@@ -356,6 +361,51 @@ implements OutputFilter
 		    throw new BuildException("rapc was unable to to transform JAR file: " + e.toString() );
 		}
     }
+
+	/**
+	 * Writes the JAD properties in a way so that the MIDlet can load them.
+	 * 
+	 * @param jadFile the JAD file
+	 * @param classesDir the classes directory to which the JAD properties should be saved
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws UnsupportedEncodingException
+	 */
+	private void storeJadProperties(File jadFile, File classesDir) 
+	throws FileNotFoundException, IOException, UnsupportedEncodingException
+	{
+		File txtJadFile = new File( classesDir, jadFile.getName().substring( 0, jadFile.getName().length() - ".jad".length() ) + ".txt");
+		FileUtil.copy( jadFile, txtJadFile );
+		String[] jadProperties = FileUtil.readTextFile( jadFile );
+		ArrayList linesList = new ArrayList();
+		for (int i = 0; i < jadProperties.length; i++)
+		{
+			String line = jadProperties[i];
+			if (line.charAt( line.length() -1 ) == '\r') {
+				line = line.substring(0, line.length() - 1);
+			} else if (line.endsWith("\\r")) {
+				line = line.substring(0, line.length() - 2 );
+			}
+			if ((line.indexOf(':') == -1) &&  (i > 0) ) {
+				String last = (String) linesList.get( linesList.size() - 1);
+				last += line.trim();
+				linesList.set( linesList.size() - 1, last);
+			} else {
+				linesList.add(line);
+			}
+		}
+		jadProperties = (String[]) linesList.toArray( new String[ linesList.size() ] );
+		StringBuffer buffer = new StringBuffer();
+		for (int i = 0; i < jadProperties.length; i++)
+		{
+			String line = jadProperties[i];
+			buffer.append(line).append('\n');
+		}
+		FileOutputStream fileOut = new FileOutputStream(  txtJadFile );
+		fileOut.write( buffer.toString().getBytes("UTF-8") );
+		fileOut.flush();
+		fileOut.close();
+	}
 	
 	public void setVerbose( boolean verbose ) {
 		this.verbose = verbose;
