@@ -79,7 +79,7 @@ public class ClassPath {
 		StringBuffer buffer = new StringBuffer();
 		if (paths != null) {
 			for (int i = 0; i < paths.length; i++) {
-				buffer.append( paths[i] );
+				buffer.append( paths[i].replace('\\', '/') );
 				if ( i != paths.length -1 ) {
 					buffer.append( File.pathSeparatorChar );
 				}
@@ -102,7 +102,7 @@ public class ClassPath {
 		File polishHome = (File) env.get("polish.home");
 		polishHome = new File( polishHome, "import" );
 		File importFolder = (File) env.get("polish.apidir");
-    ArrayList cleanedPaths = new ArrayList( paths.length );
+		ArrayList cleanedPaths = new ArrayList( paths.length );
 		for (int i = 0; i < paths.length; i++) {
 			String pathElement = env.writeProperties( paths[i] );
 			
@@ -131,15 +131,16 @@ public class ClassPath {
 				}
 			}
 			if (lib != null) {
-        cleanedPaths.add( lib.getAbsolutePath() );
-				paths[i] = lib.getAbsolutePath();
-				buffer.append( lib.getAbsolutePath() );
+				String path = lib.getAbsolutePath().replace('\\', '/');
+				cleanedPaths.add( path );
+				paths[i] = path;
+				buffer.append( path );
 				if ( i < paths.length - 1 ) {
 					buffer.append( File.pathSeparatorChar );
 				}
 			}
 		}
-    paths = (String[]) cleanedPaths.toArray( new String[ cleanedPaths.size() ] );
+		paths = (String[]) cleanedPaths.toArray( new String[ cleanedPaths.size() ] );
 		
 		// now add ccertain optional APIs to the bootclasspath if they require it (like the MMAPI on MIDP 2.0 systems):
 		Library[] libraries = this.libraryManager.getLibraries( this.device );
@@ -147,14 +148,14 @@ public class ClassPath {
 		for (int i = 0; i < libraries.length; i++) {
 			Library library = libraries[i];
 			if (library.getPosition() == Library.POSITION_BOOTCP_PREPPEND) {
-				String path = library.getPath();
+				String path = library.getPath().replace('\\', '/');
 				if (additionalPaths == null) {
 					additionalPaths = createList( paths );
 				}
 				additionalPaths.add( 0, path );
 				buffer.insert(0, path + File.pathSeparatorChar );
 			} else if (library.getPosition() == Library.POSITION_BOOTCP_APPEND) {
-				String path = library.getPath();
+				String path = library.getPath().replace('\\', '/');
 				if (additionalPaths == null) {
 					additionalPaths = createList( paths );
 				}
