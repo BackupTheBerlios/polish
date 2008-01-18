@@ -6,13 +6,13 @@ package de.enough.polish.blackberry.ui;
 import net.rim.device.api.system.TrackwheelListener;
 import net.rim.device.api.ui.Keypad;
 import net.rim.device.api.ui.Field;
-import net.rim.device.api.ui.XYRect;
 import de.enough.polish.blackberry.midlet.MIDlet;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 
 
 /**
+ * A BlackBerry specific substitution of javax.microedition.lcdui.Canvas which is based on the native BlackBErry FullScreen.
  * The <code>Canvas</code> class is a base class for writing
  * applications that need to
  * handle low-level events and to issue graphics calls for drawing to the
@@ -662,19 +662,19 @@ extends Displayable
         int key = Keypad.key( keyCode );
         switch ( key ) {
         case Keypad.KEY_ENTER: return FIRE;
-        case Keypad.KEY_SPACE: return FIRE;
+        //#if polish.BlackBerry.mapSpaceToFire != false
+        	case Keypad.KEY_SPACE: return FIRE;
+        //#endif
         case Keypad.KEY_NEXT: return DOWN;
         }
-      //#if polish.key.LeftSoftKey:defined
-              //#= if (keyCode == $polish.key.LeftSoftKey} ) { return FIRE; }
-      //#else
-              if (keyCode == -6) {
-//                              return FIRE;
-              }
-      //#endif
-        if (keyCode == 48) { // = SPACE, the key(48) method returns 0 for some reason... 
-        	return FIRE;
-        }
+        //#if polish.key.LeftSoftKey:defined
+        	//#= if (keyCode == $polish.key.LeftSoftKey} ) { return FIRE; }
+        //#endif
+        //#if polish.BlackBerry.mapSpaceToFire != false
+	        if (keyCode == 48) { // = SPACE, the key(48) method returns 0 for some reason... 
+	        	return FIRE;
+	        }
+        //#endif
             
         //#if polish.key.EnterKey:defined
         	//#if false
@@ -1275,20 +1275,8 @@ extends Displayable
            }
         }
         //#debug
-        System.out.println("keyDown: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
-
-        switch ( Keypad.map( keyCode, status ) ) {
-        case '0': keyCode = KEY_NUM0; break;
-        case '1': keyCode = KEY_NUM1; break;
-        case '2': keyCode = KEY_NUM2; break;
-        case '3': keyCode = KEY_NUM3; break;
-        case '4': keyCode = KEY_NUM4; break;
-        case '5': keyCode = KEY_NUM5; break;
-        case '6': keyCode = KEY_NUM6; break;
-        case '7': keyCode = KEY_NUM7; break;
-        case '8': keyCode = KEY_NUM8; break;
-        case '9': keyCode = KEY_NUM9; break;
-        }
+    	System.out.println("keyDown: keyCode=" + keyCode + ", key=" + Keypad.key( keyCode) + ", char=" + Keypad.map( keyCode ) );
+    	keyCode = getMidpKeyCode(keyCode, status);
         keyPressed( keyCode );
        	keyReleased( keyCode );
         if ( screen != null ) {
@@ -1297,8 +1285,44 @@ extends Displayable
         	return true; // consume the key event
         } 
     }
-    
-    
+
+	/**
+	 * Translates a BlackBerry key event into a MIDP event
+	 * @param keyCode the BlackBerry key
+	 * @param status the status of the BlackBerry keyboard
+	 * @return the MIDP equivalent of the key event
+	 */
+	private int getMidpKeyCode(int keyCode, int status)
+	{
+		switch (keyCode) {
+		case KEY_BB_0: keyCode = KEY_NUM0; break;
+		case KEY_BB_1: keyCode = KEY_NUM1; break;
+		case KEY_BB_2: keyCode = KEY_NUM2; break;
+		case KEY_BB_3: keyCode = KEY_NUM3; break;
+		case KEY_BB_4: keyCode = KEY_NUM4; break;
+		case KEY_BB_5: keyCode = KEY_NUM5; break;
+		case KEY_BB_6: keyCode = KEY_NUM6; break;
+		case KEY_BB_7: keyCode = KEY_NUM7; break;
+		case KEY_BB_8: keyCode = KEY_NUM8; break;
+		case KEY_BB_9: keyCode = KEY_NUM9; break;
+		default:
+		    switch ( Keypad.map( keyCode, status ) ) {
+		    case '0': keyCode = KEY_NUM0; break;
+		    case '1': keyCode = KEY_NUM1; break;
+		    case '2': keyCode = KEY_NUM2; break;
+		    case '3': keyCode = KEY_NUM3; break;
+		    case '4': keyCode = KEY_NUM4; break;
+		    case '5': keyCode = KEY_NUM5; break;
+		    case '6': keyCode = KEY_NUM6; break;
+		    case '7': keyCode = KEY_NUM7; break;
+		    case '8': keyCode = KEY_NUM8; break;
+		    case '9': keyCode = KEY_NUM9; break;
+		    }
+		}
+		
+		return keyCode;
+	}
+	    
 
     /**
      * Decides if a key command should be forwarded to the currently focused native BlackBerry field of this screen.
