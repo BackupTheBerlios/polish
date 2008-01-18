@@ -370,9 +370,11 @@ public abstract class MIDlet extends UiApplication
 					phoneCall.sendDTMFTones( dtmf );
 				}
 				return false;
+			} else {
+				throw new ConnectionNotFoundException();
 			}
 		//#else
-			throw new RuntimeException("Set \"polish.BlackBerry.platformRequest\" to true.");
+			//# throw new RuntimeException("Set \"polish.BlackBerry.platformRequest\" to true.");
 		//#endif
 	}
 
