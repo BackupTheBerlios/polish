@@ -29,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,9 +38,8 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.ClassNode;
 
-import net.sourceforge.retroweaver.RetroWeaver;
-import net.sourceforge.retroweaver.event.WeaveListener;
-import net.sourceforge.retroweaver.translator.NameSpace;
+import com.rc.retroweaver.RetroWeaver;
+import com.rc.retroweaver.event.WeaveListener;
 
 import de.enough.bytecode.ASMClassLoader;
 import de.enough.bytecode.DirClassLoader;
@@ -96,41 +94,35 @@ public class Java5PostCompiler extends BytecodePostCompiler {
     task.setStripSignatures( true );
     boolean useDefaultPackage = this.environment.hasSymbol("polish.useDefaultPackage");
     boolean isCldc10 = this.environment.hasSymbol("polish.cldc1.0");
-    List nameSpaces= new LinkedList();
     if (isCldc10) {
-    	nameSpaces.add(new NameSpace("java.lang.NoClassDefFoundError", "java.lang.Throwable"));
+    	task.addClassTranslation("java.lang.NoClassDefFoundError", "java.lang.Throwable");
     }
-    nameSpaces.add(new NameSpace("java.lang.NoSuchFieldError", "java.lang.Throwable"));
-    nameSpaces.add(new NameSpace("java.lang.NoSuchMethodError", "java.lang.Throwable"));
+    task.addClassTranslation("java.lang.NoSuchFieldError", "java.lang.Throwable");
+    task.addClassTranslation("java.lang.NoSuchMethodError", "java.lang.Throwable");
     if(!useDefaultPackage) {
-	    nameSpaces.add(new NameSpace("java.lang.Autobox", "de.enough.polish.java5.Autobox"));
-	    nameSpaces.add(new NameSpace("java.lang.Enum", "de.enough.polish.java5.Enum"));
-	    nameSpaces.add(new NameSpace("java.lang.Iterable", "de.enough.polish.util.Iterable"));
-	    nameSpaces.add(new NameSpace("java.util.Iterator", "de.enough.polish.util.Iterator"));
+	    task.setAutoboxClass("de.enough.polish.java5.Autobox");
+	    task.setEnumClass("de.enough.polish.java5.Enum");
+	    task.addClassTranslation("java.lang.Iterable", "de.enough.polish.util.Iterable");
+	    task.addClassTranslation("java.util.Iterator", "de.enough.polish.util.Iterator");
     } else {
-	    nameSpaces.add(new NameSpace("java.lang.Autobox", "Autobox"));
-	    nameSpaces.add(new NameSpace("java.lang.Enum", "Enum"));
-        nameSpaces.add(new NameSpace("java.lang.Iterable", "Iterable"));
-        nameSpaces.add(new NameSpace("java.util.Iterator", "Iterator"));    	
+        task.setAutoboxClass("Autobox");
+        task.setEnumClass("Enum");
+        task.addClassTranslation("java.lang.Iterable", "Iterable");
+        task.addClassTranslation("java.util.Iterator", "Iterator");    	
     }
-    task.addNameSpaces(nameSpaces);
     task.setListener( new WeaveListener() {
       public void weavingStarted(String msg) {
         System.out.println(msg);
       }
 
       public void weavingCompleted(String msg) {
-    	  System.out.println(msg);
+        System.out.println(msg);
       }
 
       public void weavingPath(String pPath) {
         if (Java5PostCompiler.this.isVerbose) {
           System.out.println("Weaving " + pPath);
         }
-      }
-
-      public void weavingError(String msg) {
-          System.out.println(msg);
       }
     });
     
