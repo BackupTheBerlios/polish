@@ -1141,7 +1141,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>Sony-Ericsson/W880, Sony-Ericsson/W880i</identifier>
-		<groups>SE-JavaPlatform6</groups>
+		<groups>SE-JavaPlatform7</groups>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x262"/>
