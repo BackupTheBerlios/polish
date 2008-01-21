@@ -516,34 +516,11 @@ public class SerializationVisitor
               {
             	String descShort = desc.substring(1, desc.length() - 1);
 
-            	if (! this.loader.inherits(getClassName(SERIALIZABLE, this.environment), descShort))
-            	  {
-            		mv.visitVarInsn(ALOAD, 0);
-            		mv.visitVarInsn(ALOAD, 1);
-            		mv.visitMethodInsn(INVOKESTATIC, getClassName(SERIALIZER, this.environment), "deserialize", "(Ljava/io/DataInputStream;)Ljava/lang/Object;");
-            		mv.visitTypeInsn(CHECKCAST, descShort);
-            		mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
-            	  }
-            	else
-            	  {
-                    maxStack = Math.max(maxStack, 3);
-            		
-                    Label afterRead = new Label();
-                
-            		    mv.visitVarInsn(ALOAD, 1);
-            		    mv.visitMethodInsn(INVOKEVIRTUAL, DATAINPUTSTREAM, "readBoolean", "()Z");
-            		    mv.visitJumpInsn(IFEQ, afterRead);
-            		    mv.visitVarInsn(ALOAD, 0);
-            		    mv.visitTypeInsn(NEW, descShort);
-            		    mv.visitInsn(DUP);
-            		    mv.visitMethodInsn(INVOKESPECIAL, descShort, "<init>", "()V");
-            		    mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
-                    mv.visitVarInsn(ALOAD, 0);
-                    mv.visitFieldInsn(GETFIELD, this.className, name, desc);
-                    mv.visitVarInsn(ALOAD, 1);
-                    mv.visitMethodInsn(INVOKEVIRTUAL, descShort, "read", "(Ljava/io/DataInputStream;)V");
-                    mv.visitLabel(afterRead);
-            	  }
+            	mv.visitVarInsn(ALOAD, 0);
+            	mv.visitVarInsn(ALOAD, 1);
+            	mv.visitMethodInsn(INVOKESTATIC, getClassName(SERIALIZER, this.environment), "deserialize", "(Ljava/io/DataInputStream;)Ljava/lang/Object;");
+            	mv.visitTypeInsn(CHECKCAST, descShort);
+            	mv.visitFieldInsn(PUTFIELD, this.className, name, desc);
               }
           }
       }
@@ -712,37 +689,10 @@ public class SerializationVisitor
               }
             else
               {
-            	String descShort = desc.substring(1, desc.length() - 1);
-
-            	if (! this.loader.inherits(getClassName(SERIALIZABLE, this.environment), descShort))
-            	  {
-            		mv.visitVarInsn(ALOAD, 0);
-                    mv.visitFieldInsn(GETFIELD, this.className, name, desc);
-                    mv.visitVarInsn(ALOAD, 1);
-            		mv.visitMethodInsn(INVOKESTATIC, getClassName(SERIALIZER, this.environment), "serialize", "(Ljava/lang/Object;Ljava/io/DataOutputStream;)V");
-            	  }
-            	else
-            	  {
-            		Label caseIfNull = new Label();
-            		Label afterElse = new Label();
-          
-            		mv.visitVarInsn(ALOAD, 0);
-            		mv.visitFieldInsn(GETFIELD, this.className, name, desc);
-            		mv.visitJumpInsn(IFNULL, caseIfNull);
-            		mv.visitVarInsn(ALOAD, 1);
-            		mv.visitInsn(ICONST_1);
-            		mv.visitMethodInsn(INVOKEVIRTUAL, DATAOUTPUTSTREAM, "writeBoolean", "(Z)V");
-            		mv.visitVarInsn(ALOAD, 0);
-            		mv.visitFieldInsn(GETFIELD, this.className, name, desc);
-            		mv.visitVarInsn(ALOAD, 1);
-            		mv.visitMethodInsn(INVOKEVIRTUAL, descShort, "write", "(Ljava/io/DataOutputStream;)V");
-            		mv.visitJumpInsn(GOTO, afterElse);
-            		mv.visitLabel(caseIfNull);
-            		mv.visitVarInsn(ALOAD, 1);
-            		mv.visitInsn(ICONST_0);
-            		mv.visitMethodInsn(INVOKEVIRTUAL, DATAOUTPUTSTREAM, "writeBoolean", "(Z)V");
-            		mv.visitLabel(afterElse);
-            	  }
+            	mv.visitVarInsn(ALOAD, 0);
+            	mv.visitFieldInsn(GETFIELD, this.className, name, desc);
+            	mv.visitVarInsn(ALOAD, 1);
+            	mv.visitMethodInsn(INVOKESTATIC, getClassName(SERIALIZER, this.environment), "serialize", "(Ljava/lang/Object;Ljava/io/DataOutputStream;)V");
               }
           }
       }
