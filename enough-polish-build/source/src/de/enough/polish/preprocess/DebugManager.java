@@ -245,7 +245,7 @@ public class DebugManager {
 		if (order != null) {
 			return  order.intValue();
 		} else {
-			return UNDEFINED;
+			return USER_DEFINED;
 		}
 	}
 
