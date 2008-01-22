@@ -83,6 +83,12 @@ public class SerializationPostCompiler extends BytecodePostCompiler
           {
             System.out.println("Error loading class " + className);
           }
+        catch (Exception e)
+        {
+          BuildException be = new BuildException("Error processing class " + className);
+          be.initCause(e);
+          throw be; 
+        }
       }
   }
   

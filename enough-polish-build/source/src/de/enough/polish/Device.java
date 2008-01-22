@@ -855,7 +855,7 @@ public class Device extends PolishComponent {
 	}
 
 	public File getRagDir() {
-		return ragDir;
+		return this.ragDir;
 	}
 
 	public void setRagDir(File ragDir) {

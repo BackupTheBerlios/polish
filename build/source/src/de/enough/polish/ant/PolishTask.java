@@ -176,8 +176,7 @@ public class PolishTask extends ConditionalTask {
 	/** the source-compatibility-switch for the javac-compiler defaults to "1.3" */
 	private String sourceCompatibility = "1.3";
 	private Obfuscator[] obfuscators;
-	protected boolean doObfuscate;
-	private String[] preserveClasses;
+	private boolean doObfuscate;
 	private ImportConverter importConverter;
 	protected TextFile styleSheetSourceFile;
 	protected TextFile styleCacheSourceFile;
@@ -253,6 +252,8 @@ public class PolishTask extends ConditionalTask {
 
 	private Map licensingInformation;
 	protected ConfigurationManager configurationManager;
+
+	private String[] keepClasses;
 
 
 	
@@ -1042,12 +1043,11 @@ public class PolishTask extends ConditionalTask {
 		if (this.buildSetting.doObfuscate()) {
 			ObfuscatorSetting[] obfuscatorSettings = this.buildSetting.getObfuscatorSettings();
 			ArrayList obfuscatorsList = new ArrayList();
-			String[] keepClasses = null;
 			for (int i = 0; i < obfuscatorSettings.length; i++) {
 				ObfuscatorSetting obfuscatorSetting = obfuscatorSettings[i];
-				if (keepClasses == null && 
+				if (this.keepClasses == null && 
 						obfuscatorSetting.hasKeepDefinitions()) {
-					keepClasses = obfuscatorSetting.getPreserveClassNames();
+					this.keepClasses = obfuscatorSetting.getPreserveClassNames();
 				}
 				if ((obfuscatorSetting.isEnabled())) {
 					try {
@@ -1066,44 +1066,6 @@ public class PolishTask extends ConditionalTask {
 			if (this.doObfuscate) {
 				this.obfuscators = (Obfuscator[]) obfuscatorsList.toArray( new Obfuscator[ obfuscatorsList.size() ] );
 				//this.useDefaultPackage = this.buildSetting.useDefaultPackage();
-				
-				String[] midletClasses = this.buildSetting.getMidletClassNames( false, this.environment );
-				ArrayList preserveList = new ArrayList();
-				for (int i = 0; i < midletClasses.length; i++) {
-					String className = midletClasses[i];
-					preserveList.add( className );
-					int lastDotPos = className.lastIndexOf( '.' );
-					if ( lastDotPos != -1 ) {
-						preserveList.add( className.substring( lastDotPos + 1 ) );							
-					}					
-				}
-				if (keepClasses != null) {
-					for (int i = 0; i < keepClasses.length; i++) {
-						String className = keepClasses[i];
-						preserveList.add( className );
-						int lastDotPos = className.lastIndexOf( '.' );
-						if ( lastDotPos != -1 ) {
-							preserveList.add( className.substring( lastDotPos + 1 ) );							
-						}	
-					}
-				}
-				if (this.buildSetting.getDojaClassSetting() != null) {
-					String className = this.buildSetting.getDojaClassSetting().getClassName(); 
-					preserveList.add( className );
-					int lastDotPos = className.lastIndexOf( '.' );
-					if ( lastDotPos != -1 ) {
-						preserveList.add( className.substring( lastDotPos + 1 ) );							
-					}	
-				}
-				if (this.buildSetting.getMainClassSetting() != null) {
-					String className = this.buildSetting.getMainClassSetting().getClassName(); 
-					preserveList.add( className );
-					int lastDotPos = className.lastIndexOf( '.' );
-					if ( lastDotPos != -1 ) {
-						preserveList.add( className.substring( lastDotPos + 1 ) );							
-					}	
-				}
-				this.preserveClasses = (String[]) preserveList.toArray( new String[ preserveList.size() ] );
 			}
 		}
 		
@@ -1359,26 +1321,17 @@ public class PolishTask extends ConditionalTask {
 		
 		TextFile[] files = new TextFile[ fileNames.length ];
 		for (int i = 0; i < fileNames.length; i++) {
-			String fileName = fileNames[i];
+			String fileName = fileNames[i].replace('\\', '/');
 			try {
 				TextFile file = new TextFile( baseDir.getAbsolutePath(), fileName );
 				textFileManager.addTextFile(file);
 				if (fileName.startsWith("de")) {
-					if (fileName.endsWith("StyleSheet.java")) {
-						if ("de/enough/polish/ui/StyleSheet.java".equals(fileName)
-							|| 	"de\\enough\\polish\\ui\\StyleSheet.java".equals(fileName)) {
-							this.styleSheetSourceFile = file;
-						}
-					} else if (fileName.endsWith("StyleCache.java")) {
-						if ("de/enough/polish/ui/StyleCache.java".equals(fileName)
-								|| 	"de\\enough\\polish\\ui\\StyleCache.java".equals(fileName)) {
-								this.styleCacheSourceFile = file;
-						}
-					} else if (fileName.endsWith("Locale.java")) {
-						if ("de/enough/polish/util/Locale.java".equals(fileName)
-								|| 	"de\\enough\\polish\\util\\Locale.java".equals(fileName)) {
-								this.localeSourceFile = file;
-						}
+					if ("de/enough/polish/ui/StyleSheet.java".equals(fileName)) {
+						this.styleSheetSourceFile = file;
+					} else  if ("de/enough/polish/ui/StyleCache.java".equals(fileName)) {
+						this.styleCacheSourceFile = file;
+					} else if ("de/enough/polish/util/Locale.java".equals(fileName)) {
+						this.localeSourceFile = file;
 					} 
 				}
 				files[i] = file;
@@ -1589,6 +1542,7 @@ public class PolishTask extends ConditionalTask {
 		this.environment.addVariable("polish.source.dir", sourceDir);
 		File resourceDir = new File( buildPath + File.separatorChar + "resources" );
 		device.setResourceDir( resourceDir );
+		
 		File ragDir = new File( buildPath + File.separatorChar + "rag" );
 		device.setRagDir( ragDir );
 		this.environment.addVariable("polish.resources.dir", resourceDir.getAbsolutePath() );
@@ -2465,7 +2419,7 @@ public class PolishTask extends ConditionalTask {
 					System.out.println("obfuscating for device [" + device.getIdentifier() + "].");
 					hasBeenObfuscated = true;
 				}
-				obfuscator.obfuscate(device, sourceFile, destFile, this.preserveClasses, bootPath );
+				obfuscator.obfuscate(device, sourceFile, destFile, getObfuscationPreserveClassNames(this.useDefaultPackage), bootPath );
 				if ( i != maxIndex ) {
 					sourceFile = destFile;
 					destFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
@@ -2502,6 +2456,64 @@ public class PolishTask extends ConditionalTask {
 		
 		if (this.polishLogger != null) {
 			this.polishLogger.setObfuscateMode( false );
+		}
+	}
+
+	/**
+	 * Retrieves all class names that should be spared from the obfuscation.
+	 * @return an array of all names that should be spared
+	 */
+	protected String[] getObfuscationPreserveClassNames( boolean isDefaultPackage )
+	{
+		ArrayList preserveList = new ArrayList();
+		String[] midletClasses = this.buildSetting.getMidletClassNames( isDefaultPackage, this.environment );
+		addObfuscationPreserveClassNames( midletClasses, preserveList, isDefaultPackage );
+		if (this.keepClasses != null) {
+			addObfuscationPreserveClassNames( this.keepClasses, preserveList, isDefaultPackage );
+		}
+		if (this.buildSetting.getDojaClassSetting() != null) {
+			String className = this.buildSetting.getDojaClassSetting().getClassName(); 
+			addObfuscationPreserveClassName(className, preserveList, isDefaultPackage);
+		}
+		if (this.buildSetting.getMainClassSetting() != null) {
+			String className = this.buildSetting.getMainClassSetting().getClassName(); 
+			addObfuscationPreserveClassName(className, preserveList, isDefaultPackage);
+		}
+		return (String[]) preserveList.toArray( new String[ preserveList.size() ] );	
+	}
+
+	/**
+	 * Adds all class names to the list of to be preserved class names  for the obfuscation process.
+	 * @param classNames the names of classes
+	 * @param preserveList the list
+	 * @param isDefaultPackage true when the default package is used
+	 */
+	private void addObfuscationPreserveClassNames(String[] classNames, ArrayList preserveList, boolean isDefaultPackage)
+	{
+		for (int i = 0; i < classNames.length; i++)
+		{
+			addObfuscationPreserveClassName( classNames[i], preserveList, isDefaultPackage );
+		}		
+	}
+
+	/**
+	 * Adds a class name to the list of to be preserved class names for the obfuscation.
+	 * 
+	 * @param className the name of the class
+	 * @param preserveList the list of names that should be preserved
+	 * @param isDefaultPackage true when the default package is used on the source code level
+	 */
+	private void addObfuscationPreserveClassName(String className, ArrayList preserveList, boolean isDefaultPackage)
+	{
+		if (!isDefaultPackage) {
+			preserveList.add( className );
+		} else {
+			int lastDotPos = className.lastIndexOf( '.' );
+			if ( lastDotPos != -1 ) {
+				preserveList.add( className.substring( lastDotPos + 1 ) );							
+			} else {
+				preserveList.add( className );
+			}
 		}
 	}
 
