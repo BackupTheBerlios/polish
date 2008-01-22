@@ -1642,11 +1642,8 @@ public class TextField extends StringItem
 				
 		// set item commands:
 				
-		//#if !tmp.suppressCommands
-		
-		//#ifdef polish.key.ClearKey:defined
+		//#if !tmp.suppressCommands		
 		if(!this.suppressCommands)
-		//#endif
 		{
 			if (this.isFocused) {
 				getScreen().removeItemCommands( this );
@@ -1664,10 +1661,6 @@ public class TextField extends StringItem
 					this.addCommand(DELETE_CMD);
 				}
 			//#endif
-		}
-				
-		if(!this.suppressCommands)
-		{
 			//#if polish.TextField.suppressClearCommand != true
 				if (!this.isUneditable) {
 					//#ifdef polish.i18n.useDynamicTranslations
@@ -1683,22 +1676,21 @@ public class TextField extends StringItem
 			if (this.isFocused) {
 				showCommands();
 			}
-		
 			
-		//#if tmp.directInput && tmp.supportsSymbolEntry && polish.TextField.suppressAddSymbolCommand != true
-			if (!this.isNumeric) {
-				if (!this.isUneditable) {
-					//#ifdef polish.i18n.useDynamicTranslations
-						String enterSymbolLabel = Locale.get("polish.command.entersymbol");
-						if ( enterSymbolLabel != ENTER_SYMBOL_CMD.getLabel()) {
-							ENTER_SYMBOL_CMD = new Command( enterSymbolLabel, Command.ITEM, ENTER_SYMBOL_PRIORITY );
-						}
-					//#endif
-					this.addCommand(ENTER_SYMBOL_CMD);
+			//#if tmp.directInput && tmp.supportsSymbolEntry && polish.TextField.suppressAddSymbolCommand != true
+				if (!this.isNumeric) {
+					if (!this.isUneditable) {
+						//#ifdef polish.i18n.useDynamicTranslations
+							String enterSymbolLabel = Locale.get("polish.command.entersymbol");
+							if ( enterSymbolLabel != ENTER_SYMBOL_CMD.getLabel()) {
+								ENTER_SYMBOL_CMD = new Command( enterSymbolLabel, Command.ITEM, ENTER_SYMBOL_PRIORITY );
+							}
+						//#endif
+						this.addCommand(ENTER_SYMBOL_CMD);
+					}
 				}
+			//#endif	
 			}
-		//#endif	
-		}
 		
 		// end of if !tmp.suppressCommands:
 		//#endif
@@ -2493,6 +2485,8 @@ public class TextField extends StringItem
 					//#style info, default
 					this.infoItem = new StringItem( null, modeStr );
 					this.infoItem.screen = getScreen();
+					this.infoItem.parent = this;
+					repaint();
 				//#endif
 			} else {
 				this.infoItem.setText(modeStr);
@@ -3349,9 +3343,9 @@ public class TextField extends StringItem
 		this.deleteKeyRepeatCount = 0;
 		
 		//#if tmp.usePredictiveInput
-		if (this.predictiveAccess.handleKeyReleased( keyCode, gameAction )) {
-			return true;
-		}
+			if (this.predictiveAccess.handleKeyReleased( keyCode, gameAction )) {
+				return true;
+			}
 		//#endif
 		 
 		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
@@ -3734,29 +3728,28 @@ public class TextField extends StringItem
 
 	protected void showNotify() {
 		//#if tmp.updateDeleteCommand
-		updateDeleteCommand(this.text);
-		super.showNotify();
+			updateDeleteCommand(this.text);
+			super.showNotify();
 		//#endif
 		
 		//#if polish.TextField.useExternalInfo
-		if(this.isFocused && this.infoItem != null)
-		{
-			updateInfo();
-			this.infoItem.repaint();
-		}
+			if(this.isFocused && this.infoItem != null)
+			{
+				updateInfo();
+			}
 		//#endif
 	}
 
 	//#if  !polish.blackberry && tmp.directInput
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.StringItem#hideNotify()
-	 */
-	protected void hideNotify() {
-		if (this.caretChar != this.editingCaretChar) {
-			commitCurrentCharacter();
-		}
-		super.hideNotify();
-	}	
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.StringItem#hideNotify()
+		 */
+		protected void hideNotify() {
+			if (this.caretChar != this.editingCaretChar) {
+				commitCurrentCharacter();
+			}
+			super.hideNotify();
+		}	
 	//#endif
 		
 	//#if tmp.usePredictiveInput

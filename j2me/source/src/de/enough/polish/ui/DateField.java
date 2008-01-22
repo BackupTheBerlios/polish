@@ -331,7 +331,7 @@ implements
 				long timeOnly = this.calendar.get( Calendar.MILLISECOND )
 					+ this.calendar.get( Calendar.SECOND ) * 1000
 					+ this.calendar.get( Calendar.MINUTE ) * 60 * 1000
-					+ this.calendar.get( Calendar.HOUR ) * 60 * 60 * 1000;
+					+ this.calendar.get( Calendar.HOUR_OF_DAY ) * 60 * 60 * 1000;
 				date.setTime(timeOnly);
 				//System.out.print("Adjusting date from " + this.calendar + " to " );
 				//this.calendar.setTime(date);

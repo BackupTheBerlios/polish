@@ -2594,33 +2594,34 @@ public abstract class Item extends Object
 	 * @see #getBackgroundHeight()
 	 */
 	public void addRelativeToBackgroundRegion( Background animatedBackground, Border animatedBorder,  ClippingRegion repaintRegion, int x, int y, int width, int height) {
-		boolean addAbsolute = false;
-		//#if polish.css.complete-background
-			addAbsolute = (this.completeBackground != null && animatedBackground == this.completeBackground);
-		//#endif
-		//#if polish.css.complete-border
-			addAbsolute |= (this.completeBorder != null && animatedBorder == this.completeBorder);
-		//#endif
-		if (addAbsolute) {
-			//System.out.println("adding absolute repaint: bgX=" + getBackgroundX() + ", bgY=" + getBackgroundY() + ", itemHeight-bgHeight=" + (this.itemHeight - this.backgroundHeight) + ", itemWidth-bgWidth=" + (this.itemWidth - this.backgroundWidth));
-			int padding = 0;
-			//#if polish.css.complete-background || polish.css.complete-border
-				padding = this.completeBackgroundPadding;
+		//#if polish.css.complete-background || polish.css.complete-border
+			boolean addAbsolute = false;
+			//#if polish.css.complete-background
+				addAbsolute = (this.completeBackground != null && animatedBackground == this.completeBackground);
 			//#endif
-			repaintRegion.addRegion( 
+			//#if polish.css.complete-border
+				addAbsolute |= (this.completeBorder != null && animatedBorder == this.completeBorder);
+			//#endif
+			if (addAbsolute) {
+				//System.out.println("adding absolute repaint: bgX=" + getBackgroundX() + ", bgY=" + getBackgroundY() + ", itemHeight-bgHeight=" + (this.itemHeight - this.backgroundHeight) + ", itemWidth-bgWidth=" + (this.itemWidth - this.backgroundWidth));
+				int padding = this.completeBackgroundPadding;
+				repaintRegion.addRegion( 
 					getAbsoluteX() + x - 1 - padding, 
 					getAbsoluteY() + y - 1 - padding,
 					width + 2 + (padding << 1),
 					height + 2 + (this.itemHeight - this.backgroundHeight) + (padding << 1)
 					);
-		} else {
-			repaintRegion.addRegion( 
+			} else {
+		//#endif
+				repaintRegion.addRegion( 
 					getAbsoluteX() + getBackgroundX() + x - 1, 
 					getAbsoluteY() + getBackgroundY() + y - 1,
 					width + 2,
 					height + 2
 					);
-		}
+		//#if polish.css.complete-background || polish.css.complete-border
+			}
+		//#endif
 	}
 
 	

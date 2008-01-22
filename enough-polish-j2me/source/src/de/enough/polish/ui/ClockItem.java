@@ -209,6 +209,8 @@ public class ClockItem
 		super.setStyle(style);
 		//#if polish.css.clock-format
 			String format = style.getProperty("clock-format");
+			//#debug
+			System.out.println("Using clock-format: " + format);
 			if (format != null) {
 				this.includeAmPm = false;
 				this.includeSeconds = false;
@@ -229,12 +231,12 @@ public class ClockItem
 				} else {
 					throw new IllegalArgumentException("invalid format: [" + format  + "]: no mm found.");
 				}
-				int secondPos = format.indexOf("ss");
 				int amPmPos = format.indexOf("am");
 				if (amPmPos == -1) {
 					amPmPos = format.indexOf("pm");
 				}
-				if (minutePos != -1) {
+				int secondPos = format.indexOf("ss");
+				if (secondPos != -1) {
 					this.includeSeconds = true;
 					this.formatAfterMinutes = format.substring( minutePos + 2, secondPos );
 					if (amPmPos != -1 ) {
