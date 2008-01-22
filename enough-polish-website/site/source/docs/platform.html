@@ -1,20 +1,24 @@
 <%define inDocumentationSection %>
 <%define inDocumentationSection.platform %>
-<%define inDocumentationSection.blackberry %>
-<%set title = J2ME Polish: Non-MIDP Platforms %>
+<%set title = J2ME Polish: Platforms %>
 <%set basedir = ../ %>
 <%include start.txt %>
 
-	<h1 id="top">Non-MIDP Platforms</h1>
+	<h1 id="top">Platforms</h1>
 <p>
 J2ME Polish can be adjusted to support several platforms that support more than the normal MIDP profile.
-The key for this support is the ${polish.home}/platforms.xml file, inclusion of platform specific
-(boot) classpaths, and the automatic invocation of preprocessors, postcompilers, finalizers and so on.
+The key for this support is the <i>${polish.home}/platforms.xml</i> file (visible only if you install the external device database), 
+inclusion of platform specific (boot) classpaths, and the automatic selection and invocation of preprocessors, 
+postcompilers, finalizers and so on.
 </p>
 <p>
-Following Platforms are supported out of the box:
+Following Platforms are supported by J2ME Polish:
 </p>
 <ul>
+	<li><a href="platform-midp.html">MIDP</a></li>
+	<li><a href="platform-windowsmobile.html">Windows Mobile</a> (native support requires additional licensing)</li>
+	<li><a href="platform-iphone.html">iPhone</a> (coming soon, requires additional licensing)</li>
+	<li><a href="platform-android.html">Android</a> (coming soon)</li>
 	<li><a href="platform-blackberry.html">BlackBerry</a></li>
 	<li><a href="platform-palm.html">Palm</a></li>
 	<li><a href="platform-doja.html">DoJa</a></li>

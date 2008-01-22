@@ -143,9 +143,28 @@ of the BlackBerry SigTool during the build.
 The J2ME Polish GUI can be used normally on BlackBerry devices as well. In order to make most of the system, 
 J2ME Polish converts your MIDlet into a native BlackBerry UiApplication. 
 This allows J2ME Polish to process trackwheel/trackball events and so on correctly. 
-Also native InputFields are used for the text input.
 The successful conversion requires that your MIDlet uses a public constructor. 
 </p>
+<h2 id="blackberry-gui-textfield">BlackBerry TextFields</h2>
+<p>
+On BlackBerry devices native BlackBerry <code>EditFields</code> are used for text input. These native fields
+work in the same way like in other BlackBerry applications, but they do not offer the same wealth of design options
+like J2ME Polish <a href="gui-item-textfield.html">TextFields</a>.
+<br />
+Therefore, J2ME Polish displays normal <code>TextFields</code> that you can fully design when the field is not focused.
+When the <code>TextField</code> is focused, however, we switch to the native BlackBerry <code>EditFields</code>. You can still
+specify the background, border and font styles of a focused <code>TextField</code>, but advanced designs like 
+<a href="gui-visualguide-texteffects.html">text effects</a> will not be supported.
+</p>
+<h2 id="blackberry-gui-datefield">BlackBerry DateFields</h2>
+<p>
+Similar to <code>TextFields</code>, J2ME Polish uses native BlackBerry  <code>DateFields</code> when a J2ME Polish
+<a href="gui-item-datefield.html">DateField</a> is focused. 
+This is why the visualization of the  <code>DateField</code> might change when it is focused.
+
+</p>
+
+
 <h2 id="blackberry-gui-platform">Platform Requests in J2ME Polish Applications</h2>
 <p>
 For enabling platform requests using the <code>MIDlet.platformRequest(String url)</code> call, you need to specify the
@@ -223,4 +242,16 @@ preprocessing variable <code>polish.BlackBerry.enablePlatformRequest</code> in y
 <p>
 Note that this functionality requires a signed application.
 </p>
+
+<h3 id="blackberry-spacekey">0/Space Is Mapped To Fire</h3>
+<p>
+By default the '0' and 'space' key will be mapped to a 'FIRE' game action on BlackBerry devices. This will allow your users
+to select entries and trigger OK commands with 0/space. You can deactivate this behavior by specifying the preprocessing 
+<a href="build-build.html#variables">variable</a> <code>polish.BlackBerry.mapSpaceToFire</code>:
+</p>
+<pre>
+&lt;variable name=&quot;polish.BlackBerry.mapSpaceToFire&quot; value=&quot;false&quot; /&gt;
+</pre>
+
+
 <%include end.txt %>

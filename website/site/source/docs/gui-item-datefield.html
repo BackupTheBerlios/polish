@@ -84,6 +84,52 @@ polish.command.clear=Reset
 this.birthdate = new DateField( "birthday:", DateField.DATE );
 this.birthdate.setDate( new Date( System.currentTimeMillis() ) );
 </pre>	
+
+	<h2 id="datefield-Configuration">Configuration</h2>
+	<p>
+	There are several preprocessing variables that you can either specify in the <a href="build-build.html#variables">&lt;variables&gt;</a>
+	section of your <i>build.xml</i> or in your <i>messages.txt</i> files when using the <a href="localization.html">Localization</a>
+	framework.
+	</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+
+<tr><th>Variable&nbsp;&nbsp;</th><th>Default</th><th>Explanation</th></tr>
+	<tr>
+		<td>polish.DateFormat</td>
+		<td>ymd</td>
+		<td>The sequence of date parts - use <code>y</code> for the year, <code>m</code> for the month and <code>d</code> for the day.
+		US American format is for example <code>mdy</code>.
+		<br />
+		You can also use the abbreviations <code>us</code> for US American, <code>fr</code> for French and <code>de</code> for
+		German date formats.
+		<br />
+		For <code>TIME</code> or <code>DATE_TIME</code> DateFields <code>hh:mm</code> will be appended in any case.
+		</td>
+	</tr>
+	<tr>
+		<td>polish.DateFormatEmptyText</td>
+		<td>YYYY-MM-DD</td>
+		<td>Defines the text that should be shown by an empty DateField - the shown default depends on the <code>polish.DateFormat</code> variable as well
+		- if  <code>polish.DateFormat</code> is for example <code>mdy</code>, the default will be <code>MM-DD-YYYY</code>.
+		</td>
+	</tr>
+	<tr>
+		<td>polish.DateFormatSeparator</td>
+		<td>-</td>
+		<td>The separator between years, months and days of a <code>DATE</code> or <code>DATE_TIME</code> DateField.</td>
+	</tr>
+	
+	<!-- 
+	<tr>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	 -->
+</table>
+
+	</tr>
+
 	
 	<h2 id="datefield-JavaDoc">JavaDoc</h2>
 	<ul>
