@@ -807,17 +807,17 @@ public class TextField extends StringItem
 		//#ifdef polish.TextField.charactersKey2:defined
 			//#= private static final String charactersKey2 = "${polish.TextField.charactersKey2}";
 		//#else
-			private static final String charactersKey2 = "abc2\u00e1\u00e2\u00e6\u00e4\u00e0\u00e5";
+			private static final String charactersKey2 = "abc2\u00e1\u00e2\u00e3\u00e4\u00e5\u00e6\u00e7";
 		//#endif
 		//#ifdef polish.TextField.charactersKey3:defined
 			//#= private static final String charactersKey3 = "${polish.TextField.charactersKey3}";
 		//#else
-			private static final String charactersKey3 = "def3\u00e9\u00ea\u00eb\u00e8";
+			private static final String charactersKey3 = "def3\u00e8\u00e9\u00ea\u00eb";
 		//#endif
 		//#ifdef polish.TextField.charactersKey4:defined
 			//#= private static final String charactersKey4 = "${polish.TextField.charactersKey4}";
 		//#else
-			private static final String charactersKey4 = "ghi4\u00ef\u00ee\u00ec\u00ed";
+			private static final String charactersKey4 = "ghi4\u00ec\u00ed\u00ee\u00ef";
 		//#endif
 		//#ifdef polish.TextField.charactersKey5:defined
 			//#= private static final String charactersKey5 = "${polish.TextField.charactersKey5}";
@@ -827,7 +827,7 @@ public class TextField extends StringItem
 		//#ifdef polish.TextField.charactersKey6:defined
 			//#= private static final String charactersKey6 = "${polish.TextField.charactersKey6}";
 		//#else
-			private static final String charactersKey6 = "mno6\u00f1\u00f3\u00f4\u00f6\u00f2";
+			private static final String charactersKey6 = "mno6\u00f1\u00f2\u00f3\u00f4\u00f5\u00f6";
 		//#endif
 		//#ifdef polish.TextField.charactersKey7:defined
 			//#= private static final String charactersKey7 = "${polish.TextField.charactersKey7}";
@@ -837,12 +837,12 @@ public class TextField extends StringItem
 		//#ifdef polish.TextField.charactersKey8:defined
 			//#= private static final String charactersKey8 = "${polish.TextField.charactersKey8}";
 		//#else
-			private static final String charactersKey8 = "tuv8\u00fc\u00fa\u00fb\u00f9";
+			private static final String charactersKey8 = "tuv8\u00f9\u00fa\u00fb\u00fc";
 		//#endif
 		//#ifdef polish.TextField.charactersKey9:defined
 			//#= private static final String charactersKey9 = "${polish.TextField.charactersKey9}";
 		//#else
-			private static final String charactersKey9 = "wxyz9";
+			private static final String charactersKey9 = "wxyz9\u00fd";
 		//#endif
 		//#ifdef polish.TextField.charactersKey0:defined
 			//#= private static final String charactersKey0 = "${polish.TextField.charactersKey0}";
@@ -2496,7 +2496,6 @@ public class TextField extends StringItem
 				//#endif
 			} else {
 				this.infoItem.setText(modeStr);
-				this.infoItem.parent.repaint();
 			}
 			//System.out.println("setting info to [" + modeStr + "]");
 		//#else
@@ -3739,11 +3738,11 @@ public class TextField extends StringItem
 		super.showNotify();
 		//#endif
 		
-		//#if polish.TextField.useExternalInfo && tmp.includeInputInfo
+		//#if polish.TextField.useExternalInfo
 		if(this.isFocused && this.infoItem != null)
 		{
 			updateInfo();
-			this.infoItem.parent.repaint();
+			this.infoItem.repaint();
 		}
 		//#endif
 	}
@@ -3785,7 +3784,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if polish.TextField.useExternalInfo && tmp.includeInputInfo
+	//#if polish.TextField.useExternalInfo
 	public StringItem getInfoItem() {
 		return this.infoItem;
 	}

@@ -3,7 +3,7 @@
 /*
  * Created on 11-Jan-2006 at 19:20:28.
  * 
- * Copyright (c) 2007 Michael Koch / Enough Software
+ * Copyright (c) 2007 - 2008 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -14,12 +14,12 @@
  * 
  * J2ME Polish is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.See the
  * GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License
  * along with J2ME Polish; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA02111-1307USA
  * 
  * Commercial licenses are also available, please
  * refer to the accompanying LICENSE.txt or visit
@@ -45,66 +45,67 @@ import javax.microedition.io.StreamConnection;
  */
 public class HttpProtocolHandler extends ProtocolHandler
 {
-  //#ifndef polish.Browser.UserAgent:defined
-  private static final String USER_AGENT = "J2ME-Polish/" + System.getProperty("microedition.platform");
-  //#else
-  //#= private static final String USER_AGENT = "${polish.Browser.UserAgent}";
-  //#endif
+	private static final String USER_AGENT = 
+	//#if polish.Browser.UserAgent:defined
+		//#= 	"${polish.Browser.UserAgent}";
+	//#else
+				"J2ME-Polish/" + System.getProperty("microedition.platform");
+	//#endif
 
-  private HashMap requestProperties;
+	private HashMap requestProperties;
 
-  /**
-   * Creates a new HTTPProtocolHandler object with "http" as it's protocol.
-   */
-  public HttpProtocolHandler()
-  {
-    this("http",  new HashMap() );
-  }
-  
-  /**
-   * Creates a new HTTPProtocolHandler object with "http" as it's protocol.
-   * 
-   * @param requestProperties the request properties to use for each request
-   */
-  public HttpProtocolHandler(HashMap requestProperties)
-  {
-    this("http", requestProperties );
-  }
+	/**
+	 * Creates a new HttpProtocolHandler object with "http" as it's protocol.
+	 */
+	public HttpProtocolHandler()
+	{
+		this("http",new HashMap() );
+	}
 
-  /**
-   * Creates a new HTTPProtocolHandler object.
-   * 
-   * @param protocolName the protocolname (usually "http" or "https")
-   */
-  public HttpProtocolHandler(String protocolName)
-  {
-	    this(protocolName,  new HashMap() );
-  }
-  /**
-   * Creates a new HTTPProtocolHandler object.
-   * 
-   * @param protocolName the protocolname (usually "http" or "https")
-   * @param requestProperties the request properties to use for each request
-   */
-  public HttpProtocolHandler(String protocolName, HashMap requestProperties)
-  {
-    super( protocolName );
+	/**
+	 * Creates a new HttpProtocolHandler object with "http" as it's protocol.
+	 * 
+	 * @param requestProperties the request properties to use for each request
+	 */
+	public HttpProtocolHandler(HashMap requestProperties)
+	{
+		this("http", requestProperties );
+	}
 
-    this.requestProperties = requestProperties;
-    if (requestProperties != null) {
-	    if ( (requestProperties.get("User-Agent") == null) )
-	    {
-	      requestProperties.put("User-Agent", USER_AGENT );
-	    }
-    }
-  }
+	/**
+	 * Creates a new HttpProtocolHandler object.
+	 * 
+	 * @param protocolName the protocolname (usually "http" or "https")
+	 */
+	public HttpProtocolHandler(String protocolName)
+	{
+		this(protocolName,new HashMap() );
+	}
+	
+	/**
+	 * Creates a new HttpProtocolHandler object.
+	 * 
+	 * @param protocolName the protocolname (usually "http" or "https")
+	 * @param requestProperties the request properties to use for each request
+	 */
+	public HttpProtocolHandler(String protocolName, HashMap requestProperties)
+	{
+		super( protocolName );	
+		this.requestProperties = requestProperties;
+		if (requestProperties != null) {
+			if ( (requestProperties.get("User-Agent") == null) )
+			{
+				requestProperties.put("User-Agent", USER_AGENT );
+			}
+		}
+	}
 
-  /* (non-Javadoc)
-   * @see de.enough.polish.browser.ProtocolHandler#getConnection(java.lang.String)
-   */
-  public StreamConnection getConnection(String url)
-    throws IOException
-  {
-    return new RedirectHttpConnection(url, this.requestProperties);
-  }
+	/* (non-Javadoc)
+	 * @see de.enough.polish.browser.ProtocolHandler#getConnection(java.lang.String)
+	 */
+	public StreamConnection getConnection(String url)
+	throws IOException
+	{
+		return new RedirectHttpConnection(url, this.requestProperties);
+	}
 }

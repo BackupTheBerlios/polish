@@ -1201,7 +1201,7 @@ public abstract class Item extends Object
 	 * @return the complete width of this item.
 	 */
 	public int getItemWidth( int firstLineWidth, int lineWidth ) {
-		if (!this.isInitialized || this.itemWidth > lineWidth) {
+		if (!this.isInitialized || this.itemWidth > lineWidth) {// || (this.isLayoutExpand && lineWidth > this.itemWidth) ) {
 //			if (this.itemWidth > lineWidth) {
 //				System.out.println("itemWidth=" + this.itemWidth + ", lineWidth=" + lineWidth + ", this=" + this);
 //			}
@@ -1661,15 +1661,19 @@ public abstract class Item extends Object
 	public void setDefaultCommand( Command cmd)
 	{
 		//#if !polish.Item.suppressDefaultCommand
-		if (this.defaultCommand != null && cmd != this.defaultCommand) {
-			addCommand(this.defaultCommand);
-		}
+			if (this.defaultCommand != null && cmd != this.defaultCommand) {
+				addCommand(this.defaultCommand);
+			}
 		//#endif		
 		this.defaultCommand = cmd;
 		//#if !polish.Item.suppressDefaultCommand
-		if (cmd != null) {
-			addCommand(cmd);
-		}
+			if (cmd != null) {
+				addCommand(cmd);
+			}
+		//#else
+			if (cmd != null && this.appearanceMode == PLAIN) {
+				this.appearanceMode = INTERACTIVE;
+			}
 		//#endif
 	}
 
@@ -3097,6 +3101,27 @@ public abstract class Item extends Object
 		return this.parent;
 	}
 	
+	/**
+	 * Sets a parent for this item.
+	 * @param parent the parent of this item
+	 */
+	public void setParent(Item  parent)
+	{
+		this.parent = parent;
+	}
+	
+	//#if polish.midp
+	/**
+	 * Sets a parent for this item.
+	 * @param parent the parent of this item
+	 */
+	public void setParent(javax.microedition.lcdui.Item  parent)
+	{
+		// ignore
+	}
+	//#endif
+
+	
 	//#if tmp.invisible
 	/**
 	 * Sets the visible status of this item.
@@ -3236,10 +3261,6 @@ public abstract class Item extends Object
 	 */
 	public ArrayList getItemCommands() {
 		return this.commands;
-	}
-
-	public void setParent(Item parent) {
-		this.parent = parent;
 	}
 
 

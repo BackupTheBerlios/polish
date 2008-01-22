@@ -219,8 +219,18 @@ public final class Locale {
 				}
 			//#endif
 			try {
-				String loc = "/" + System.getProperty("microedition.locale") + ".loc";
-				InputStream in = loc.getClass().getResourceAsStream(loc);
+				String loc = null;
+				InputStream in = null;
+				String meLocale = System.getProperty("microedition.locale");
+				if (meLocale != null) {
+					loc = "/" + meLocale + ".loc";
+					in = loc.getClass().getResourceAsStream(loc);
+					if (in == null && meLocale.length() > 2) {
+						// try to load just the language:
+						loc = "/" + meLocale.substring(0, 2) + ".loc";
+						in = loc.getClass().getResourceAsStream(loc);
+					}
+				}
 				if (in == null) {
 					//#if polish.locale:defined
 						//#= loc = "/${polish.locale}.loc";

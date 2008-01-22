@@ -2,7 +2,7 @@
 /*
  * Created on 11-Jan-2006 at 19:20:28.
  * 
- * Copyright (c) 2007 Michael Koch / Enough Software
+ * Copyright (c) 2007 - 2008 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -102,7 +102,12 @@ implements Runnable
   private boolean isWorking;
   private boolean isCancelRequested;
   private String nextUrl;
-  private BrowserListener browserListener;
+  protected BrowserListener browserListener;
+
+  /**
+   * Currently used container for storing parsing results.
+   */
+  protected Container currentContainer;
 
   /**
    * Creates a new Browser without any protocol handlers, tag handlers or style.
@@ -305,6 +310,48 @@ implements Runnable
     return (TagHandler) this.tagHandlers.get(key);
   }
   
+	/**
+	 * Opens a new Container into which forthcoming elements should be added.
+	 * 
+	 * @param containerStyle the style of the container
+	 */
+	public void openContainer(Style containerStyle)
+	{
+		//#debug
+		System.out.println("Opening nested container");
+		Container previousContainer = this.currentContainer;
+		this.currentContainer = new Container( false, containerStyle );
+		if (previousContainer != null) {
+			this.currentContainer.setParent( previousContainer );
+		}
+	}
+	
+	/**
+	 * Closes the current container
+	 * 
+	 * If the current container only contains a single item, that item will be extracted and directly appended using the current container's style.
+	 */
+	public void closeContainer() {
+		if (this.currentContainer == null) {
+			return;
+		}
+		//#debug
+		System.out.println("closing container with " + this.currentContainer.size() + " items, previous=" + this.currentContainer.getParent());
+		Container current = this.currentContainer;
+		Container previousContainer = (Container) current.getParent();
+		this.currentContainer = previousContainer;
+		//System.out.println("closing container with size " + current.size() + ", 0=" + current.get(0));
+		if (current.size() == 1) {
+			Item item = current.get(0);
+			if (current.getStyle() != null) {
+				item.setStyle( current.getStyle() );
+			}
+			add( item );
+		} else {
+			add( current );
+		}
+	}
+  
   /**
    * @param parser the parser to read the page from
    */
@@ -355,8 +402,11 @@ implements Runnable
     	  if (styleName != null) {
     		  tagStyle = StyleSheet.getStyle(styleName);
     	  }
-
-          handler.handleTag(this, parser, parser.getName(), openingTag, attributeMap, tagStyle);
+    	  Container container =  this.currentContainer;
+    	  if (container == null) {
+    		  container = (Container) ((Object)this);
+    	  }
+          handler.handleTag(container, parser, parser.getName(), openingTag, attributeMap, tagStyle);
         }
         else
         {
@@ -370,6 +420,7 @@ implements Runnable
       }
       else
       {
+    	  //#debug error
     	  System.out.println("unknown type: " + parser.getType() + ", name=" + parser.getName());
       }
     } // end while (parser.next() != PullParser.END_DOCUMENT)
@@ -415,8 +466,22 @@ implements Runnable
    * @param text the text
    */
   protected abstract void handleText(String text);
+  
+  
 
-  /**
+  /* (non-Javadoc)
+ * @see de.enough.polish.ui.FakeContainerCustomItem#add(de.enough.polish.ui.Item)
+ */
+public void add(Item item)
+{
+	if (this.currentContainer != null) {
+		this.currentContainer.add(item);
+	} else {
+		super.add(item);
+	}
+}
+
+/**
    * Loads a page from a given <code>Reader</code>.
    * 
    * @param reader the reader to load the page from

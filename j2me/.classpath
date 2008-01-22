@@ -17,8 +17,8 @@
 	<classpathentry kind="lib" path="/enough-polish-build/import/m3g.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/pdaapi.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/doja-2.5.jar"/>
-	<classpathentry kind="lib" path="/enough-polish-build/import/blackberry-4.2.0.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/samsung-api.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/blackberry-4.2.0.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

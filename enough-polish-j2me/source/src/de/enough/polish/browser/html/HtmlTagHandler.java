@@ -3,7 +3,7 @@
 /*
  * Created on 11-Jan-2006 at 19:20:28.
  * 
- * Copyright (c) 2007 Michael Koch / Enough Software
+ * Copyright (c) 2007 - 2008 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -37,7 +37,6 @@ import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
-import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Locale;
@@ -48,9 +47,12 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Image;
 
 //#if polish.cldc1.0
-//# import de.enough.polish.util.TextUtil;
+	//# import de.enough.polish.util.TextUtil;
 //#endif
 
+/**
+ * Handles HTML tags.
+ */
 public class HtmlTagHandler
   extends TagHandler
   implements ItemCommandListener
@@ -143,11 +145,11 @@ public class HtmlTagHandler
 
   protected HtmlBrowser browser;
 
-  /* next text should be added in bold font style */
+  /** next text should be added in bold font style */
   public boolean textBold;
-  /* next text should be added in italic font style */
+  /** next text should be added in italic font style */
   public boolean textItalic;
-  /* style for the forthcoming text */
+  /** style for the forthcoming text */
   public Style textStyle;
   
   /**
@@ -163,30 +165,30 @@ public class HtmlTagHandler
 	  //#endif
   }
   
-  public void register(Browser browser)
+  public void register(Browser parent)
   {
-    this.browser = (HtmlBrowser) browser;
+    this.browser = (HtmlBrowser) parent;
     this.textBold = false;
     this.textItalic = false;
     
-    browser.addTagHandler(TAG_TITLE, this);
-    browser.addTagHandler(TAG_STYLE, this);
+    parent.addTagHandler(TAG_TITLE, this);
+    parent.addTagHandler(TAG_STYLE, this);
     
-    browser.addTagHandler(TAG_BR, this);
-    browser.addTagHandler(TAG_P, this);
-    browser.addTagHandler(TAG_IMG, this);
-    browser.addTagHandler(TAG_DIV, this);
-    browser.addTagHandler(TAG_SPAN, this);
-    browser.addTagHandler(TAG_A, this);
-    browser.addTagHandler(TAG_B, this);
-    browser.addTagHandler(TAG_STRONG, this);
-    browser.addTagHandler(TAG_I, this);
-    browser.addTagHandler(TAG_EM, this);
-    browser.addTagHandler(TAG_FORM, this);
-    browser.addTagHandler(TAG_INPUT, this);
-    browser.addTagHandler(TAG_SELECT, this);
-    browser.addTagHandler(TAG_OPTION, this);
-    browser.addTagHandler(TAG_SCRIPT, this);
+    parent.addTagHandler(TAG_BR, this);
+    parent.addTagHandler(TAG_P, this);
+    parent.addTagHandler(TAG_IMG, this);
+    parent.addTagHandler(TAG_DIV, this);
+    parent.addTagHandler(TAG_SPAN, this);
+    parent.addTagHandler(TAG_A, this);
+    parent.addTagHandler(TAG_B, this);
+    parent.addTagHandler(TAG_STRONG, this);
+    parent.addTagHandler(TAG_I, this);
+    parent.addTagHandler(TAG_EM, this);
+    parent.addTagHandler(TAG_FORM, this);
+    parent.addTagHandler(TAG_INPUT, this);
+    parent.addTagHandler(TAG_SELECT, this);
+    parent.addTagHandler(TAG_OPTION, this);
+    parent.addTagHandler(TAG_SCRIPT, this);
   }
 
   /* (non-Javadoc)
@@ -199,9 +201,11 @@ public class HtmlTagHandler
 	  tagName = tagName.toLowerCase();
 	  if (TextUtil.equalsIgnoreCase(TAG_DIV, tagName) || TextUtil.equalsIgnoreCase(TAG_SPAN, tagName)) {
 		  if (opening) {
-			  this.textStyle = style;
+			  //this.textStyle = style;
+			  this.browser.openContainer( style );
  		  } else {
-			  this.textStyle = null;
+ 			  this.browser.closeContainer();
+			  //this.textStyle = null;
 		  }
 	  } else if (TAG_SELECT.equals(tagName)) {
     	  if (opening) {
@@ -309,7 +313,7 @@ public class HtmlTagHandler
         	}
     	    linkItem.setDefaultCommand(CMD_LINK);
     	    linkItem.setItemCommandListener( this );
-    	    linkItem.setAttribute(ATTR_HREF, href != null ? href : "");
+    	    linkItem.setAttribute(ATTR_HREF, href );
     	    addCommands(TAG_A, linkItem);
         }
         else
@@ -320,7 +324,7 @@ public class HtmlTagHandler
 		if (style != null) {
 			linkItem.setStyle(style);
 		}
-       this.browser.add(linkItem);
+        this.browser.add(linkItem);
         return true;
       }
       else if (TAG_BR.equals(tagName))
@@ -572,12 +576,43 @@ public class HtmlTagHandler
 
   protected void handleLinkCommand()
   {
-    Item linkItem = this.browser.getFocusedItem();
+	  
+    Item linkItem = getFocusedItemWithAttribute( ATTR_HREF, this.browser );
     String href = (String) linkItem.getAttribute(ATTR_HREF);
-    this.browser.go(this.browser.makeAbsoluteURL(href));
+    if (href != null) {
+    	this.browser.go(this.browser.makeAbsoluteURL(href));
+    }
+    //#if polish.debug.error
+    else {
+    	//#debug error
+    	System.out.println("Unable to handle link command for item " + linkItem + ": no " + ATTR_HREF + " attribute found.");
+    }
+    //#endif
   }
   
-  /**
+  	//#if polish.LibraryBuild
+	private Item getFocusedItemWithAttribute(String attribute, de.enough.polish.ui.FakeContainerCustomItem container )
+	{
+		return null;
+	}
+	//#endif
+  
+	/**
+	 * Retrieves the currently focused item that has specified the attribute
+	 * @param attribute the attribute
+	 * @param container the container that should have focused the item
+	 * @return the item that contains the attribute or the focused item which is not a Container itself
+	 */
+	protected Item getFocusedItemWithAttribute(String attribute, Container container )
+	{
+		Item item = container.getFocusedItem();
+		if (item.getAttribute(attribute) == null && item instanceof Container) {
+			return getFocusedItemWithAttribute(attribute, (Container) item );
+		}
+		return item;
+	}
+
+/**
    * Handles item commands (implements ItemCommandListener).
    * 
    * @param command the command

@@ -3,7 +3,7 @@
 /*
  * Created on 11-Jan-2006 at 19:20:28.
  * 
- * Copyright (c) 2007 Michael Koch / Enough Software
+ * Copyright (c) 2007 - 2008 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -51,10 +51,10 @@ import de.enough.polish.util.TextUtil;
  * @see RedirectHttpConnection
  */
 public class HtmlBrowser
-  extends Browser
+extends Browser
 {
 
-  private HtmlTagHandler htmlTagHandler;
+	private HtmlTagHandler htmlTagHandler;
 
   	/**
   	 * Creates a new browser using the default ".browser" style and default tag- and protocol handlers.
@@ -130,7 +130,8 @@ public class HtmlBrowser
         if (this.htmlTagHandler.textStyle != null) {
         	stringItem = new StringItem(null, str, this.htmlTagHandler.textStyle);
         } 
-        else if (this.htmlTagHandler.textBold && this.htmlTagHandler.textItalic)
+        else 
+        if (this.htmlTagHandler.textBold && this.htmlTagHandler.textItalic)
         {
           //#style browserTextBoldItalic
           stringItem = new StringItem(null, str);
@@ -150,10 +151,9 @@ public class HtmlBrowser
           //#style browserText
           stringItem = new StringItem(null, str);
         }
-        
         add(stringItem);
       }
     }
   }
-  
+
 }

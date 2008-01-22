@@ -276,7 +276,9 @@ implements ItemStateListener //, CommandListener
 	public int append(ChoiceItem item) {
 		if (this.listType == Choice.MULTIPLE) {
 			this.choiceGroup.selectChoiceItem(item, item.isSelected);
-			item.setItemCommandListener( this.choiceGroup );
+			//#if !( polish.ChoiceGroup.suppressSelectCommand || polish.ChoiceGroup.suppressMarkCommands)  
+				item.setItemCommandListener( this.choiceGroup );
+			//#endif
 		}
 		this.itemsList.add( item );
 		this.lastFilterText = null;

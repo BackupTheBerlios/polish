@@ -3,7 +3,7 @@
 /*
  * Created on 11-Jan-2006 at 19:20:28.
  * 
- * Copyright (c) 2007 Michael Koch / Enough Software
+ * Copyright (c) 2007 - 2008 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *

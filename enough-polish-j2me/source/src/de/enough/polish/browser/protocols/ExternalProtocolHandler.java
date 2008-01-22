@@ -54,7 +54,7 @@ public class ExternalProtocolHandler
   }
 
   /**
-   * Creates an ExternalProtocolHandler object using the default "external" protocol name.
+   * Creates an ExternalProtocolHandler object using the specified protocol name.
    * 
    * @param protocolName the name of the protocol to handle
    * @param midlet the midlet object of the application

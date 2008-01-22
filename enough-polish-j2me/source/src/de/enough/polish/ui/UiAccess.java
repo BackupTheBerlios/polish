@@ -1521,9 +1521,98 @@ public final class UiAccess {
     public static void scroll( Screen screen, int yOffset ) {
     	Container container = screen.container;
     	if (container != null) {
-    		container.yOffset = yOffset;
-    		container.targetYOffset = yOffset;
+    		container.setScrollYOffset(yOffset, false);
     	}
+    }
+    //#endif
+
+    //#if polish.midp
+    /**
+     * Scrolls the screen so that the specified item becomes visible.
+     * If the item is above the currently visible screen area, it will be placed at the top.
+     * If the item is below the currently visible screen area, it will be placed at the bottom.
+     * If the item is within the currently visible screen area, the call will be ignored. 
+     * 
+     * @param item the item that should become visible.
+     * @see #scrollTo(javax.microedition.lcdui.Item, int)
+     */
+    public static void scrollTo( javax.microedition.lcdui.Item item ) {
+    	// ignore
+    }
+    //#endif
+
+    //#if polish.midp
+    /**
+     * Scrolls the screen so that the specified item will be position according to the specified position.
+     *  
+     * @param item the item that should become visible.
+     * @param position the position, either Graphics.TOP, Graphics.BOTTOM or Graphics.VCENTER
+     * @see #scrollTo(javax.microedition.lcdui.Item)
+     */
+    public static void scrollTo( javax.microedition.lcdui.Item item, int position ) {
+    	// ignore
+    }
+    //#endif
+    
+    //#if polish.usePolishGui
+    /**
+     * Scrolls the screen so that the specified item becomes visible.
+     * If the item is above the currently visible screen area, it will be placed at the top.
+     * If the item is below the currently visible screen area, it will be placed at the bottom.
+     * If the item is within the currently visible screen area, the call will be ignored. 
+     * 
+     * @param item the item that should become visible.
+     * @see #scrollTo(Item, int)
+     */
+    public static void scrollTo( Item item ) {
+    	Screen screen = item.getScreen();
+    	if (screen == null || screen.container != null) {
+    		return;
+    	}
+    	int itemY = item.getAbsoluteY();
+    	int contentY = screen.container.getAbsoluteY();
+    	int contentHeight = screen.container.getScrollHeight();
+    	int scrollY = screen.container.getScrollYOffset();
+    	if ( itemY + scrollY < contentY ) {
+    		// item needs to be scrolled downwards:
+    		int amount = contentY - (itemY + scrollY);
+    		screen.setScrollYOffset(amount, false);
+    	} else if ( itemY + item.itemHeight > contentY + contentHeight) {
+    		// item needs to be scrolled upwards:
+    		int amount = scrollY - ( (itemY + item.itemHeight) - (contentY + contentHeight) );
+    		screen.setScrollYOffset(amount, false);
+    	}
+    }
+    //#endif
+
+    //#if polish.usePolishGui
+    /**
+     * Scrolls the screen so that the specified item will be position according to the specified position.
+     *  
+     * @param item the item that should become visible.
+     * @param position the position, either Graphics.TOP, Graphics.BOTTOM or Graphics.VCENTER
+     * @see #scrollTo(javax.microedition.lcdui.Item)
+     */
+    public static void scrollTo( Item item, int position ) {
+    	Screen screen = item.getScreen();
+    	if (screen == null || screen.container != null) {
+    		return;
+    	}
+    	int itemY = item.getAbsoluteY();
+    	int contentY = screen.container.getAbsoluteY();
+    	int contentHeight = screen.container.getScrollHeight();
+    	int scrollY = screen.container.getScrollYOffset();
+    	int offset;
+    	if (position == Graphics.TOP) {
+    		offset = scrollY + ( contentY - itemY );     		
+    	} else if (position == Graphics.BOTTOM) {
+    		int bottom = contentY + contentHeight - item.itemHeight;
+    		offset = scrollY + ( bottom - itemY ); 
+    	} else {    		
+    		int verticalCenter = contentY + (contentHeight >> 1) - (item.itemHeight >> 1);
+    		offset = scrollY + ( verticalCenter - itemY ); 
+    	}
+		screen.setScrollYOffset(offset, false);
     }
     //#endif
 
@@ -3011,5 +3100,40 @@ public final class UiAccess {
 		return screen.contentHeight;
 	}
 	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Notifies the specified CustomItem that a key or pointer event has been processed and that it should not be processed by other components.
+	 * This is useful when overriding keyPressed, keyReleased, keyRepeated or pointerPressed in CustomItems -
+	 * these methods do not have a return value that indicates if the event has been handled by the CustomItem.
+	 * In J2ME Polish there are <code>protected boolean handleKeyPressed(int keyCode, int gameAction )</code> etc methods
+	 * for this purpose, however in a CustomItem these will call <code>protected void keyPressed(int keyCode)</code> etc.
+	 * To abort processing of the event, you either have to call <code>invalidate()</code>, <code>repaint()</code> or 
+	 * <code>UiAccess.setEventHandled( CustomItem item )</code>
+	 * 
+	 * @param item the CustomItem which just handled an user input event within keyPressed/keyReleased/pointerPressed/etc. 
+	 */
+	public void setEventHandled( javax.microedition.lcdui.CustomItem item ) {
+		// ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Notifies the specified CustomItem that a key or pointer event has been processed and that it should not be processed by other components.
+	 * This is useful when overriding keyPressed, keyReleased, keyRepeated or pointerPressed in CustomItems -
+	 * these methods do not have a return value that indicates if the event has been handled by the CustomItem.
+	 * In J2ME Polish there are <code>protected boolean handleKeyPressed(int keyCode, int gameAction )</code> etc methods
+	 * for this purpose, however in a CustomItem these will call <code>protected void keyPressed(int keyCode)</code> etc.
+	 * To abort processing of the event, you either have to call <code>invalidate()</code> or 
+	 * <code>UiAccess.setEventHandled( CustomItem item )</code>
+	 * 
+	 * @param item the CustomItem which just handled an user input event within keyPressed/keyReleased/pointerPressed/etc. 
+	 */
+	public void setEventHandled( CustomItem item ) {
+		item.isEventHandled = true;
+	}
+	//#endif
+
 
 }

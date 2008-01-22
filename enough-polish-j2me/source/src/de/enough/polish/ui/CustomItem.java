@@ -472,6 +472,8 @@ public abstract class CustomItem extends Item
 	private int clipWidth;
 
 	private boolean supportsInternalTraversal;
+	/** indivates whether a user input event has been handled */
+	protected boolean isEventHandled;
 
 
 	/**
@@ -1300,8 +1302,9 @@ public abstract class CustomItem extends Item
 				return true;
 			}
 		}
+		this.isEventHandled = false;
 		keyPressed( keyCode );
-		if (this.isInitialized == false) {
+		if (this.isEventHandled || this.isInitialized == false) {
 			return true;
 		} else {
 			return super.handleKeyPressed(keyCode, gameAction);
@@ -1312,8 +1315,9 @@ public abstract class CustomItem extends Item
 	 * @see de.enough.polish.ui.Item#handleKeyRepeated(int, int)
 	 */
 	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
+		this.isEventHandled = false;
 		keyRepeated( keyCode );
-		if (this.isInitialized == false) {
+		if (this.isEventHandled || this.isInitialized == false) {
 			return true;
 		} else {
 			return super.handleKeyRepeated(keyCode, gameAction);
@@ -1324,8 +1328,9 @@ public abstract class CustomItem extends Item
 	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
+		this.isEventHandled = false;
 		keyReleased( keyCode );
-		if (this.isInitialized == false) {
+		if (this.isEventHandled || this.isInitialized == false) {
 			return true;
 		} else {
 			return super.handleKeyReleased(keyCode, gameAction);
@@ -1353,8 +1358,9 @@ public abstract class CustomItem extends Item
 		}
 		x -= this.contentX;
 		y -= this.contentY;
+		this.isEventHandled = false;
 		pointerPressed( x, y );
-		return (this.isInitialized == false);
+		return (this.isEventHandled || this.isInitialized == false);
 	}
 	//#endif
 
@@ -1401,6 +1407,26 @@ public abstract class CustomItem extends Item
 		//#endif
 	}
 	//#endif
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#repaint()
+	 */
+	protected void repaint()
+	{
+		this.isEventHandled = true;
+		super.repaint();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#repaint(int, int, int, int)
+	 */
+	protected void repaint(int relX, int relY, int width, int height)
+	{
+		this.isEventHandled = true;
+		super.repaint(relX, relY, width, height);
+	}
+	
+	
 	
 	 
 }

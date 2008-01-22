@@ -3,7 +3,7 @@
 /*
  * Created on 11-Jan-2006 at 19:20:28.
  * 
- * Copyright (c) 2007 Michael Koch / Enough Software
+ * Copyright (c) 2006 - 2008 Michael Koch / Enough Software
  *
  * This file is part of J2ME Polish.
  *
@@ -70,25 +70,6 @@ public abstract class TagHandler
    */
   public abstract boolean handleTag(Container parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap, Style style);
   
-  //#if polish.LibraryBuild
-  /**
-   * Dummy method.
-   * 
-   * @param parentItem the container item the put the browser items into 
-   * @param parser the parser
-   * @param tagName the name of the tag to handle
-   * @param opening <code>true</code> if this is an opening tag, <code>false</code> otherwise
-   * @param attributeMap all attributes for the tag
-   * @param style the style for the next item, can be null
-   * @return <code>true</code> if the tag was handled, <code>false</code> otherwise
-   * 
-   * @see #handleTag(Container, SimplePullParser, String, boolean, HashMap)
-   */
-  public boolean handleTag(FakeContainerCustomItem parentItem, SimplePullParser parser, String tagName, boolean opening, HashMap attributeMap, Style style)
-  {
-    return false;
-  }
-  //#endif
 
   /**
    * Handles all commands this tag handler is responsible for.

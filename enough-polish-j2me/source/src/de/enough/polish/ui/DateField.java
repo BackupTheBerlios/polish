@@ -346,7 +346,7 @@ implements
 		//#endif
 		// set date:
 		if (date == null ) {
-			if (this.inputMode == DATE) {
+			if (this.inputMode == DATE || this.inputMode == DATE_TIME) {
 				//#if polish.DateFormatEmptyText:defined
 					//#= this.text = "${polish.DateFormatEmptyText}";
 				//#elif polish.DateFormat == us || polish.DateFormat == mdy
@@ -361,23 +361,11 @@ implements
 					// default to ymd
 					this.text = "YYYY-MM-DD";
 				//#endif
+				if (this.inputMode == DATE_TIME) {
+					this.text += " hh:mm";
+				}
 			} else if (this.inputMode == TIME) {
 				this.text = "hh:mm";
-			} else {
-				//#if polish.DateFormatEmptyText:defined
-					//#= this.text = "${polish.DateFormatEmptyText} hh:mm";
-				//#elif polish.DateFormat == us || polish.DateFormat == mdy
-					this.text = "MM-DD-YYYY hh:mm";
-				//#elif polish.DateFormat == de
-					this.text = "TT.MM.JJJJ hh:mm";
-				//#elif polish.DateFormat == fr
-					this.text = "JJ/MM/AAAA hh:mm";
-				//#elif polish.DateFormat == dmy
-					this.text = "DD-MM-YYYY hh:mm";
-				//#else
-					// default to ymd
-					this.text = "YYYY-MM-DD hh:mm";				
-				//#endif
 			}
 		} else {
 			if (this.calendar == null) {

@@ -4061,6 +4061,32 @@ implements AccessibleCanvas
 		return this.menuBar;
 	}
 	//#endif
+
+	/**
+	 * Retrieves the vertical scroll offset.
+	 * 
+	 * @return the vertical scroll offset in pixels.
+	 */
+	public int getScrollYOffset()
+	{
+		if (this.container != null) {
+			return this.container.getScrollYOffset();
+		}
+		return 0;
+	}
+
+	/**
+	 * Sets the vertical scrolling offset of this screen.
+	 *  
+	 * @param offset either the new offset
+	 * @param smooth scroll to this new offset smooth if allowed
+	 */
+	public void setScrollYOffset(int offset, boolean smooth)
+	{
+		if (this.container != null) {
+			this.container.setScrollYOffset(offset, smooth);
+		}
+	}
 	
 //#ifdef polish.Screen.additionalMethods:defined
 	//#include ${polish.Screen.additionalMethods}
