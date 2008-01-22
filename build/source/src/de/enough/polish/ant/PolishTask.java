@@ -157,12 +157,12 @@ public class PolishTask extends ConditionalTask {
 	protected BuildSetting buildSetting;
 	private InfoSetting infoSetting;
 	protected List deviceRequirements;
-	private List emulatorSettings;
+	protected List emulatorSettings;
 	
 	/** the project settings */ 
-	private PolishProject polishProject;
+	protected PolishProject polishProject;
 	/** the manager of all devices */
-	private DeviceDatabase deviceDatabase;
+	protected DeviceDatabase deviceDatabase;
 	protected ExtensionManager extensionManager;
 	protected Environment environment;
 
@@ -170,43 +170,43 @@ public class PolishTask extends ConditionalTask {
 	protected Device[] devices;
 	protected Preprocessor preprocessor;
 	//private File[] sourceDirs;
-	private SourceSetting[] sourceSettings;
+	protected SourceSetting[] sourceSettings;
 	protected TextFile[][] sourceFiles;
-	private String javacTarget;
+	protected String javacTarget;
 	/** the source-compatibility-switch for the javac-compiler defaults to "1.3" */
-	private String sourceCompatibility = "1.3";
-	private Obfuscator[] obfuscators;
-	private boolean doObfuscate;
-	private ImportConverter importConverter;
+	protected String sourceCompatibility = "1.3";
+	protected Obfuscator[] obfuscators;
+	protected boolean doObfuscate;
+	protected ImportConverter importConverter;
 	protected TextFile styleSheetSourceFile;
 	protected TextFile styleCacheSourceFile;
-	private ResourceUtil resourceUtil;
-	private String wtkHome;
-	private HashMap midletClassesByName;
-	private static final Pattern START_APP_PATTERN = 
+	protected ResourceUtil resourceUtil;
+	protected String wtkHome;
+	protected HashMap midletClassesByName;
+	protected static final Pattern START_APP_PATTERN = 
 		Pattern.compile("\\s*void\\s+startApp\\s*\\(\\s*\\)");
-	private static final Pattern DESTROY_APP_PATTERN = 
+	protected static final Pattern DESTROY_APP_PATTERN = 
 		Pattern.compile("\\s*void\\s+destroyApp\\s*\\(\\s*(final)?\\s*boolean\\s+\\w+\\s*\\)");
 
-	private LibraryManager libraryManager;
+	protected LibraryManager libraryManager;
 	protected File errorLock;
 	protected boolean lastRunFailed;
-	private StringList styleSheetCode;
-	private int numberOfChangedFiles;
-	private File polishSourceDir;
-	private TextFile[] polishSourceFiles;
+	protected StringList styleSheetCode;
+	protected int numberOfChangedFiles;
+	protected File polishSourceDir;
+	protected TextFile[] polishSourceFiles;
 	protected Variables variables;
 
 	//private Variable[] conditionalVariables;
 
-	private boolean binaryLibrariesUpdated;
+	protected boolean binaryLibrariesUpdated;
 
-	private JavaExtension[] javaExtensions;
+	protected JavaExtension[] javaExtensions;
 
-	private CssAttributesManager cssAttributesManager;
+	protected CssAttributesManager cssAttributesManager;
 
-	private PolishLogger polishLogger;
-	private ArrayList runningEmulators;
+	protected PolishLogger polishLogger;
+	protected ArrayList runningEmulators;
 
 	protected ResourceManager resourceManager;
 
@@ -224,36 +224,36 @@ public class PolishTask extends ConditionalTask {
 
 	protected LocalizationSetting localizationSetting;
 
-	private String polishHomePath;
+	protected String polishHomePath;
 
 	protected File polishHomeDir;
 
-	private ArrayList customPreprocessors;
+	protected ArrayList customPreprocessors;
 
-	private boolean doPostCompile;
+	protected boolean doPostCompile;
 
-	private PostCompiler[] postCompilers;
+	protected PostCompiler[] postCompilers;
 
-	private LibrariesSetting binaryLibraries;
+	protected LibrariesSetting binaryLibraries;
 
 
 	protected boolean isInitialized;
 
-	private PreCompiler[] preCompilers;
+	protected PreCompiler[] preCompilers;
 
-	private BooleanEvaluator antPropertiesEvaluator;
+	protected BooleanEvaluator antPropertiesEvaluator;
 	
-	private ArrayList polishBuildListenerSettingsList;
-	private PolishBuildListener[] polishBuildListeners;
+	protected ArrayList polishBuildListenerSettingsList;
+	protected PolishBuildListener[] polishBuildListeners;
 
 	protected LocaleSetting currentLocaleSetting;
 
-	private StringList styleCacheCode;
+	protected StringList styleCacheCode;
 
-	private Map licensingInformation;
+	protected Map licensingInformation;
 	protected ConfigurationManager configurationManager;
 
-	private String[] keepClasses;
+	protected String[] keepClasses;
 
 
 	

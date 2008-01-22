@@ -121,7 +121,7 @@ public class RagTask extends PolishTask {
 				Field[] fields;
 				
 				//Get the class target and the typ eo fthe desired fields
-				String target = setting.getTarget();
+				String ragTarget = setting.getTarget();
 				String type = setting.getType();
 				
 				if(this.doObfuscate)
@@ -129,14 +129,14 @@ public class RagTask extends PolishTask {
 					RagEntry targetEntry = null;
 					RagEntry typeEntry = null;
 					
-					targetEntry = RagMap.getChildEntry(this.rootEntry, target, false);
-					target = targetEntry.getObfuscated();
+					targetEntry = RagMap.getChildEntry(this.rootEntry, ragTarget, false);
+					ragTarget = targetEntry.getObfuscated();
 					
 					typeEntry = RagMap.getChildEntry(this.rootEntry, type, false);
 					type = typeEntry.getObfuscated();
 					
 					//Get the obfuscated fields of the obfuscated class 
-					fields = this.loader.loadClass(target).getDeclaredFields();
+					fields = this.loader.loadClass(ragTarget).getDeclaredFields();
 					
 					//Iterate over fields 
 					for (int j = 0; j < fields.length; j++) {
@@ -165,7 +165,7 @@ public class RagTask extends PolishTask {
 				else
 				{
 					//Get the fields of the class
-					fields = this.loader.loadClass(target).getDeclaredFields();
+					fields = this.loader.loadClass(ragTarget).getDeclaredFields();
 					
 					//Iterate over fields 
 					for (int j = 0; j < fields.length; j++) {
