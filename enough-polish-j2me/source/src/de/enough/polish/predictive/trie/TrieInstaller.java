@@ -13,7 +13,7 @@ import javax.microedition.rms.RecordStoreException;
 public class TrieInstaller {
 	
 	public static final String PREFIX = "predictive";
-	static final int MAGIC = 421;
+	public static final int MAGIC = 421;
 	static final int VERSION = 100;
 	
 	static final byte OVERHEAD = 3;
