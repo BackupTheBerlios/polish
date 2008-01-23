@@ -1706,6 +1706,13 @@ public class TextField extends StringItem
 //			super.setAppearanceMode( Item.INTERACTIVE );
 //		}
 	}
+	
+	//#if polish.blackberry
+	public void setEditable(boolean editable)
+	{
+		this._bbField.setEditable(editable);
+	}
+	//#endif
 
 	/**
 	 * Gets the current input constraints of the <code>TextField</code>.
@@ -2489,7 +2496,7 @@ public class TextField extends StringItem
 					repaint();
 				//#endif
 			} else {
-				this.infoItem.setText(modeStr);
+				this.infoItem.setText(modeStr);			
 			}
 			//System.out.println("setting info to [" + modeStr + "]");
 		//#else
