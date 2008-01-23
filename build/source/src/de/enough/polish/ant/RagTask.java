@@ -93,7 +93,6 @@ public class RagTask extends PolishTask {
 		String file = this.buildSetting.getFileSetting().getFile();
 		File ragPath = new File(device.getRagDir().getAbsolutePath());
 		
-		
 		if (!ragPath.exists()) {
 			ragPath.mkdirs();
 		}
@@ -115,75 +114,78 @@ public class RagTask extends PolishTask {
 			File[] resources = this.resourceManager.getResources(device, locale);
 			ArrayList serializers = this.buildSetting.getSerializers();
 			
-			for (int i = 0; i < serializers.size(); i++) {
-				SerializeSetting setting = (SerializeSetting)serializers.get(i);
-				
-				Field[] fields;
-				
-				//Get the class target and the typ eo fthe desired fields
-				String ragTarget = setting.getTarget();
-				String type = setting.getType();
-				
-				if(this.doObfuscate)
-				{
-					RagEntry targetEntry = null;
-					RagEntry typeEntry = null;
+			if(serializers != null)
+			{
+				for (int i = 0; i < serializers.size(); i++) {
+					SerializeSetting setting = (SerializeSetting)serializers.get(i);
 					
-					targetEntry = RagMap.getChildEntry(this.rootEntry, ragTarget, false);
-					ragTarget = targetEntry.getObfuscated();
+					Field[] fields;
 					
-					typeEntry = RagMap.getChildEntry(this.rootEntry, type, false);
-					type = typeEntry.getObfuscated();
+					//Get the class target and the typ eo fthe desired fields
+					String ragTarget = setting.getTarget();
+					String type = setting.getType();
 					
-					//Get the obfuscated fields of the obfuscated class 
-					fields = this.loader.loadClass(ragTarget).getDeclaredFields();
-					
-					//Iterate over fields 
-					for (int j = 0; j < fields.length; j++) {
-						Field field = fields[j];
+					if(this.doObfuscate)
+					{
+						RagEntry targetEntry = null;
+						RagEntry typeEntry = null;
 						
-						String fieldName = field.getName();
-						String fieldType = field.getType().getName();
+						targetEntry = RagMap.getChildEntry(this.rootEntry, ragTarget, false);
+						ragTarget = targetEntry.getObfuscated();
 						
-						if(fieldType.equals(type))
-						{
-							RagEntry fieldEntry = RagMap.getChildEntry(targetEntry, fieldName, true);
+						typeEntry = RagMap.getChildEntry(this.rootEntry, type, false);
+						type = typeEntry.getObfuscated();
+						
+						//Get the obfuscated fields of the obfuscated class 
+						fields = this.loader.loadClass(ragTarget).getDeclaredFields();
+						
+						//Iterate over fields 
+						for (int j = 0; j < fields.length; j++) {
+							Field field = fields[j];
 							
-							fieldName = fieldEntry.getName();
+							String fieldName = field.getName();
+							String fieldType = field.getType().getName();
 							
-							if(fieldName.matches(setting.getRegex()))
+							if(fieldType.equals(type))
 							{
-								RagContainer container = null;
+								RagEntry fieldEntry = RagMap.getChildEntry(targetEntry, fieldName, true);
 								
-								//Create a container for the field object
-								container = getContainer(setting.getTarget(),fieldName,field.get(null));
-								containers.add(container);
+								fieldName = fieldEntry.getName();
+								
+								if(fieldName.matches(setting.getRegex()))
+								{
+									RagContainer container = null;
+									
+									//Create a container for the field object
+									container = getContainer(setting.getTarget(),fieldName,field.get(null));
+									containers.add(container);
+								}
 							}
 						}
 					}
-				}
-				else
-				{
-					//Get the fields of the class
-					fields = this.loader.loadClass(ragTarget).getDeclaredFields();
-					
-					//Iterate over fields 
-					for (int j = 0; j < fields.length; j++) {
+					else
+					{
+						//Get the fields of the class
+						fields = this.loader.loadClass(ragTarget).getDeclaredFields();
 						
-						Field field = fields[j];
-						String fieldName = field.getName();
-						String fieldType = field.getType().getName();
-						
-						if(fieldType.equals(type))
-						{
-							//Does the field name match the regular expression of the current serializer ?
-							if(fieldName.matches(setting.getRegex()))
+						//Iterate over fields 
+						for (int j = 0; j < fields.length; j++) {
+							
+							Field field = fields[j];
+							String fieldName = field.getName();
+							String fieldType = field.getType().getName();
+							
+							if(fieldType.equals(type))
 							{
-								RagContainer container = null;
-								
-								//Create a container for the field object
-								container = getContainer(setting.getTarget(),fieldName,field.get(null));
-								containers.add(container);
+								//Does the field name match the regular expression of the current serializer ?
+								if(fieldName.matches(setting.getRegex()))
+								{
+									RagContainer container = null;
+									
+									//Create a container for the field object
+									container = getContainer(setting.getTarget(),fieldName,field.get(null));
+									containers.add(container);
+								}
 							}
 						}
 					}
