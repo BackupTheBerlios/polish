@@ -10235,6 +10235,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="240x260"/>
 		<capability name="FullCanvasSize" value="240x260"/>
 		<capability name="BitsPerPixel" value="16"/>
+		<capability name="HeapSize" value="dynamic"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.2"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
