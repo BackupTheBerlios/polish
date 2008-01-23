@@ -64,7 +64,6 @@
                 symbols="polish.skipArgumentCheck" 
                 usePolishGui="true"
             	sourceDir="source/src"
-				binaryLibrary="tinylinegzip.zip"
 			>
 			<!-- 			polishDir="../enough-polish-j2me/source/src"
 			-->

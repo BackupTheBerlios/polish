@@ -1,8 +1,4 @@
 /*
- * Created on 04-Apr-2004 at 16:14:27.
- * 
- * Copyright (c) 2004-2005 Robert Virkus / Enough Software
- *
  * This file is part of J2ME Polish.
  *
  * J2ME Polish is free software; you can redistribute it and/or modify
@@ -39,12 +35,8 @@ import de.enough.polish.util.Debug;
 /**
  * <p>Shows a demonstration of the possibilities of J2ME Polish.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
- * <pre>
- * history
- *        04-Apr-2004 - rob creation
- * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class MenuMidlet extends MIDlet implements CommandListener {
@@ -52,7 +44,7 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 	List menuScreen;
 	Command startGameCmd = new Command( Locale.get( "cmd.StartGame" ), Command.ITEM, 8 );
 	Command quitCmd = new Command( Locale.get("cmd.Quit"), Command.EXIT, 10 );
-	Command enableLoadGameCmd = new Command( Locale.get("cmd.EnableLoadGame"), Command.SCREEN, 9 );
+	Command enableSaveGameCmd = new Command( Locale.get("cmd.EnableSaveGame"), Command.SCREEN, 9 );
 	//#ifdef polish.debugEnabled
 		Command showLogCmd = new Command( Locale.get("cmd.ShowLog"), Command.ITEM, 9 );
 	//#endif
@@ -69,20 +61,19 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 		//#endif
 		//#style mainScreen
 		this.menuScreen = new List(title, List.IMPLICIT);
-		//#style mainCommand
+		//#style mainItem
 		this.menuScreen.append( Locale.get( "menu.StartGame"), null);
-		//#style mainCommand
-		this.menuScreen.append(Locale.get( "menu.LoadGame"), null);
-		//#style mainCommand
+		//#style mainItem
+		this.menuScreen.append(Locale.get( "menu.SaveGame"), null);
+		//#style mainItem
 		this.menuScreen.append(Locale.get( "menu.Highscore"), null);
-		//#style mainCommand
+		//#style mainItem
 		this.menuScreen.append(Locale.get( "menu.Quit"), null);
-		
 		
 		this.menuScreen.setCommandListener(this);
 		this.menuScreen.addCommand( this.startGameCmd ); 
 		this.menuScreen.addCommand( this.quitCmd );
-		this.menuScreen.addCommand( this.enableLoadGameCmd );
+		this.menuScreen.addCommand( this.enableSaveGameCmd );
 		//#ifdef polish.debugEnabled
 			this.menuScreen.addCommand( this.showLogCmd );
 		//#endif
@@ -130,7 +121,7 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 						//#style fadeOut
 						UiAccess.setAccessible(this.menuScreen,1,false);
 						//#style menuItem
-						UiAccess.setAccessible( this.menuScreen, this.enableLoadGameCmd, true );
+						UiAccess.setAccessible( this.menuScreen, this.enableSaveGameCmd, true );
 						break;
 					case 2: showHighscore(); break;
 					default: notifyDestroyed(); 
@@ -139,11 +130,11 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 				startGame();
 			} else if (cmd == this.quitCmd) {
 				quit();
-			} else if (cmd == this.enableLoadGameCmd) {
+			} else if (cmd == this.enableSaveGameCmd) {
 				//#style fadeIn
 				UiAccess.setAccessible(this.menuScreen,1,true);
 				//#style deactivatedCommand
-				UiAccess.setAccessible( this.menuScreen, this.enableLoadGameCmd, false );
+				UiAccess.setAccessible( this.menuScreen, this.enableSaveGameCmd, false );
 			}
 		}
 	}
@@ -153,13 +144,6 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 		//#= alert = new Alert( "Welcome", Locale.get( "messages.welcome", "${user.name}" ), null, AlertType.INFO );
 		alert.setTimeout( Alert.FOREVER );
 		this.display.setCurrent( alert, this.menuScreen );
-	}
-	
-	private void loadGame() {
-		//#style loadGameAlert
-		Alert alert = new Alert( "Sorry", "load game not implemented", null, AlertType.INFO );
-		alert.setTimeout( 3000 );
-		this.display.setCurrent( alert );
 	}
 	
 	private void showHighscore() {

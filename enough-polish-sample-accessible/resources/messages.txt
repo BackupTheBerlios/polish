@@ -23,10 +23,10 @@ MIDlet-Description=A localized sample project
 cmd.StartGame=Start Game
 cmd.Quit=Exit
 cmd.ShowLog=Show Log
-cmd.EnableLoadGame=Enable Load Game
+cmd.EnableSaveGame=Enable Save Game
 
 menu.StartGame=Start Game
-menu.LoadGame=Load Game
+menu.SaveGame=Save Game
 menu.Highscore=Highscore
 menu.Quit=Exit
 

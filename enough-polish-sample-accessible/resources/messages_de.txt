@@ -20,7 +20,7 @@ polish.command.ok=OK
 polish.command.cancel=Abbruch
 polish.command.select=Ausw\u00e4hlen
 polish.command.options=Optionen
-cmd.EnableLoadGame=Laden aktivieren
+cmd.EnableSaveGame=Speichern aktivieren
 
 # It's also possible to set MIDlet-attributes for your JAD- and MANIFEST-files here. 
 # If you like you can start them with "var:" as well, but it is not needed.
@@ -38,9 +38,10 @@ MIDlet-Delete-Confirm=J2ME Polish wirklich l\u00f6schen?
 cmd.StartGame=${GameName} starten
 cmd.Quit=Ende
 cmd.ShowLog=Log anzeigen
+cmd.EnableSaveGame=Speichern aktivieren
 
 menu.StartGame=${GameName} Start!
-menu.LoadGame=${GameName} laden
+menu.SaveGame=${GameName} speichern
 menu.Highscore=Rangliste
 menu.Quit=Ende
 

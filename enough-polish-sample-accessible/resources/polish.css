@@ -20,11 +20,154 @@
   */
 colors {
 	bgColor:  rgb(132,143,96);
+	bgColorPressed: #221;
 	brightBgColor:  rgb(238,241,229);
 	translucentBgColor:  argb(130, 238,241,229);
 	brightFontColor: rgb(238,241,229);
 	fontColor: rgb( 30, 85, 86 );
 }
+
+/**
+  * The title style is a predefined style which is used
+  * for all screen-titles.
+  */
+title {
+	padding: 2;
+	margin-top: 0;
+	margin-bottom: 5;
+	margin-left: 0;
+	margin-right: 0;
+	font-face: proportional;
+	font-size: large;
+	font-style: bold;
+	font-color: brightFontColor;
+	background-color: bgColor;
+	border: none;
+	layout: horizontal-center | horizontal-expand;
+}
+
+/**
+  * The focused style is a predefined style which
+  * is used by lists, forms, choice-groups and so on by default
+  * unless you specify a [style-name]:hover style or a focused-style attribute.
+  * This style will be used for highlighting the currently focused item.
+  */
+focused {
+	background-color: black;
+	font-color: white;
+}
+
+/** 
+  * The .mainScreen style is a static style, which
+  * is set in the MIDlet source-code with the //#style directive.
+  * If the source-code would not have defined this
+  * style, we could use the dynamic style "list" to design all
+  * list-screens. 
+  * An interesting attribute is the "columns" attribute which
+  * is used to use a table with two columns instead of the default
+  * layout.
+  */
+.mainScreen {
+	padding: 5;
+	padding-left: 10;
+	padding-right: 10;
+	padding-vertical: 10;
+	background {
+		color: brightBgColor;
+	}
+	layout: horizontal-expand | horizontal-center | vertical-center;
+	columns: 2;
+	columns-width: equal;
+}
+
+/**
+  * The .mainItem style is also a static style, which
+  * is set in the MIDlet source-code with the //#style directive.
+  * If the source-code would not have defined this
+  * style, we could use the dynamic style "listitem" to design all
+  * items on the list-screens. 
+  * An interesting attribute is the "icon-image" URL, which uses
+  * the %INDEX% keyword. The first list-item will use the image
+  * "icon0.png", the second "icon1.png" and so on. 
+  */
+.mainItem {
+	margin: 2; /* for the border of the :hover style */
+	padding: 5;
+	background: none;
+	font-color: fontColor;
+	font-style: bold;
+	font-size: small;
+	layout: center; /* | expand; */
+	max-width: 100;
+	icon-image: url( icon%INDEX%.png );
+	icon-image-align: top;
+}
+
+.mainItem:hover {
+	margin: 0;
+	background {
+		type: round-rect;
+		arc: 8;
+		color: brightBgColor;
+		border-color: fontColor;
+		border-width: 2;
+	}
+	layout: expand | center;	
+}
+
+.mainItem:pressed {
+	margin: 0;
+	background {
+		type: round-rect;
+		arc: 8;
+		color: fontColor;
+		border-color: fontColor;
+		border-width: 2;
+	}
+	font-color: brightFontColor;
+	layout: expand | center;	
+}
+
+.fadeOut extends .mainItem {
+	//#if polish.midp2
+		view-type: fade-out;	
+		fade-out-transparency-end: 40;
+	//#else
+		background-color: gray;
+	//#endif
+}
+
+.fadeIn extends .mainItem {
+	//#if polish.midp2
+		view-type: fade-in;	
+		fade-in-transparency-start: 40;
+		fade-in-next-style: .mainItem;
+	//#endif
+}
+
+
+alert extends .mainScreen {
+	screen-change-animation: fade;
+}
+
+alertcontent {
+	font-color: fontColor;
+	font-size: small;
+	font-style: bold;
+}
+
+.loadGameAlert {
+	margin: 20;
+	padding: 5;
+	padding-left: 15;
+	padding-right: 15;
+	layout: horizontal-expand | horizontal-center | vertical-center;
+	background-color: argb( 150, 255, 255, 255 ); /*translucentBgColor; */
+	show-dismiss-command: false;
+}
+
+
+/************* Menu ********************************************************************/
 
 /**
   * the menu style is a predefined style for
@@ -36,9 +179,6 @@ colors {
   * With the focused-style attribute
   * another style than the default "focused"
   * style is used for the menu. 
-  * The menubar-color can be set to any
-  * color. When "transparent" is used,
-  * the background shines through.
   */
 menu {
 	margin-left: 2;
@@ -49,7 +189,6 @@ menu {
 		border-width: 2;
 		border-color: bgColor;
 	}
-	focused-style: .menuFocused;
 	font-color: brightFontColor;
 	font-style: bold;
 	menubar-color: bgColor;
@@ -79,138 +218,21 @@ menuItem {
 }
 
 /**
-  * This is a custom style for selected
-  * menu items. It is used, because it has
-  * been defined in the menu style. 
+  * A focused menuItem
   */
-.menuFocused extends .menuItem {
+.menuItem:hover {
 	background-color: bgColor;
 	font-color: brightFontColor;
 	layout: left | horizontal-expand;
 }
 
+
 /**
-  * The title style is a predefined style which is used
-  * for all screen-titles.
+  * A pressed menuItem
   */
-title {
-	padding: 2;
-	margin-top: 0;
-	margin-bottom: 5;
-	margin-left: 0;
-	margin-right: 0;
-	font-face: proportional;
-	font-size: large;
-	font-style: bold;
+.menuItem:pressed {
+	background-color: bgColorPressed;
 	font-color: brightFontColor;
-	background-color: bgColor;
-	border: none;
-	layout: horizontal-center | horizontal-expand;
+	layout: left | horizontal-expand;
 }
 
-/**
-  * The focused style is a predefined style which
-  * is used by lists, forms, choice-groups and so on.
-  * This style will be used for highlighting the currently
-  * focused item.
-  */
-focused {
-	padding: 5;
-	background {
-		type: round-rect;
-		arc: 8;
-		color: brightBgColor;
-		border-color: fontColor;
-		border-width: 2;
-	}
-	font {
-		style: bold;
-		color: fontColor;
-		size: small;
-	}
-	layout: expand | center;	
-}
-
-/** 
-  * The .mainScreen style is a static style, which
-  * is set in the MIDlet source-code with the //#style directive.
-  * If the source-code would not have defined this
-  * style, we could use the dynamic style "list" to design all
-  * list-screens. 
-  * An interesting attribute is the "columns" attribute which
-  * is used to use a table with two columns instead of the default
-  * layout.
-  */
-.mainScreen {
-	padding: 5;
-	padding-left: 10;
-	padding-right: 10;
-	padding-vertical: 10;
-	background {
-		color: brightBgColor;
-	}
-	layout: horizontal-expand | horizontal-center | vertical-center;
-	columns: 2;
-	columns-width: equal;
-}
-
-/**
-  * The .mainCommand style is also a static style, which
-  * is set in the MIDlet source-code with the //#style directive.
-  * If the source-code would not have defined this
-  * style, we could use the dynamic style "listitem" to design all
-  * items on the list-screens. 
-  * An interesting attribute is the "icon-image" URL, which uses
-  * the %INDEX% keyword. The first list-item will use the image
-  * "icon0.png", the second "icon1.png" and so on. 
-  */
-.mainCommand {
-	margin: 2; /* for the missing border of the focused style */
-	padding: 5;
-	background: none;
-	font-color: fontColor;
-	font-style: bold;
-	font-size: small;
-	layout: center; /* | expand; */
-	max-width: 100;
-	icon-image: url( icon%INDEX%.png );
-	icon-image-align: top;
-}
-
-.fadeOut extends .mainCommand {
-	//#if polish.midp2
-		view-type: fade-out;	
-		fade-out-transparency-end: 40;
-	//#else
-		background-color: gray;
-	//#endif
-}
-
-.fadeIn extends .mainCommand {
-	//#if polish.midp2
-		view-type: fade-in;	
-		fade-in-transparency-start: 40;
-		fade-in-next-style: .mainCommand;
-	//#endif
-}
-
-
-alert extends .mainScreen {
-	screen-change-animation: fade;
-}
-
-alertcontent {
-	font-color: fontColor;
-	font-size: small;
-	font-style: bold;
-}
-
-.loadGameAlert {
-	margin: 20;
-	padding: 5;
-	padding-left: 15;
-	padding-right: 15;
-	layout: horizontal-expand | horizontal-center | vertical-center;
-	background-color: argb( 150, 255, 255, 255 ); /*translucentBgColor; */
-	show-dismiss-command: false;
-}
