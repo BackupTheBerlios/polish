@@ -17,6 +17,8 @@ import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.StringItem;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.rms.RecordStore;
+import javax.microedition.rms.RecordStoreException;
+import javax.microedition.rms.RecordStoreNotOpenException;
 
 import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.util.Locale;
@@ -133,9 +135,38 @@ implements Runnable, CommandListener
 		}
 	}
 	
+	private void forceClose(String recordStore)
+	{
+		RecordStore store = null;
+		try
+		{
+			store = RecordStore.openRecordStore(recordStore, true);
+		}
+		catch(RecordStoreException e)
+		{
+			this.status.setText(e.getMessage());
+		}
+		
+		if(store != null)
+		{
+			try {
+				while(true)
+				{
+					store.closeRecordStore();
+				}
+			} catch (RecordStoreNotOpenException e) {
+				//All closed
+			} catch (RecordStoreException e) 
+			{
+				this.status.setText(e.getMessage());
+			}
+		}
+	}
+	
 	public void run()
 	{
 		initForm();
+		
 		StyleSheet.display.setCurrent(this.setupForm);
 		
 		try {
@@ -151,6 +182,7 @@ implements Runnable, CommandListener
 				for(int i=0; i<storeList.length; i++)
 					if(storeList[i].startsWith(TrieInstaller.PREFIX))
 					{
+						forceClose(storeList[i]);
 						RecordStore.deleteRecordStore(storeList[i]);
 					}
 			}
@@ -224,6 +256,10 @@ implements Runnable, CommandListener
 				
 				//TODO ANDRE: InpuStream.available() may return 0!!!
 			}while(stream.available() > 0);
+			
+			//Add a record with the magic number to check for failed installations
+			byte[] magicBytes = TrieUtils.intToByte(TrieInstaller.MAGIC);
+			store.addRecord(magicBytes, 0, magicBytes.length);
 			
 			store.closeRecordStore();
 			
