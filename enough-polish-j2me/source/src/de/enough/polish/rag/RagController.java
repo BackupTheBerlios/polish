@@ -52,7 +52,7 @@ public class RagController {
 	 * @param stream the container stream
 	 * @param index the name of the index
 	 */
-	public static void storeIndex(DataInputStream stream, String index)
+	public static void storeIndex(RagStream stream, String index)
 	{
 		try
 		{
@@ -77,23 +77,6 @@ public class RagController {
 		{
 			System.out.println("unable to create index for rag id " + index);
 		}
-	}
-	
-	/**
-	 * Returns a stream for a file in the jar
-	 * @param file the name of the file in the jar
-	 * @return a stream for the file
-	 * @throws IOException
-	 */
-	public static DataInputStream getFileStream(String file) throws IOException
-	{
-		//Open the file in the jar
-		DataInputStream stream = new DataInputStream(StyleSheet.midlet.getClass()
-				.getResourceAsStream(file));
-		
-		stream.mark(stream.available());
-		
-		return stream;
 	}
 	
 	/**
@@ -122,7 +105,7 @@ public class RagController {
 	 * @return the byte array
 	 * @throws IOException
 	 */
-	public static byte[] getData(DataInputStream stream, RagContainer container) throws IOException
+	public static byte[] getData(RagStream stream, RagContainer container) throws IOException
 	{
 		byte[] data = new byte[container.getSize()];
 		
