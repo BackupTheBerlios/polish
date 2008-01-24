@@ -836,7 +836,7 @@ public final class DrawUtil {
 			this.changed=false;
 			
 			// exit, if no animation is neccessary
-			if (this.mode==this.FADE_BREAK){
+			if (this.mode == FADE_BREAK){
 				return false; 
 			}
 			// we have to ensure that a new picture is drawn
@@ -848,8 +848,8 @@ public final class DrawUtil {
 			if (this.cStep==this.steps){
 				this.cStep=0;
 				
-				if (this.mode!=this.FADE_LOOP) {
-					this.mode=this.FADE_BREAK;
+				if (this.mode != FADE_LOOP) {
+					this.mode = FADE_BREAK;
 					return true;
 				}
 			}
