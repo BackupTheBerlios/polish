@@ -60,25 +60,38 @@ public class ResourceUtil
 
 	/**
 	 * Retrieves a resource as a byte array.
-	 * @param in the input stream of the resource
+	 * @param in the input stream of the resource, the input stream will be closed automatically
 	 * @return the resource as byte array
 	 * @throws IOException when the resource could not be read
 	 */
 	public static byte[] toByteArray(InputStream in)
 	throws IOException
 	{
-		int bufferSize = in.available();
-		if (bufferSize <= 0) {
-			bufferSize = 8*1024;
+		try {
+			int bufferSize = in.available();
+			if (bufferSize <= 0) {
+				bufferSize = 8*1024;
+			}
+			byte[] buffer = new byte[ bufferSize ];
+			ByteArrayOutputStream out = new ByteArrayOutputStream(bufferSize);
+			int read;
+			while ( (read = in.read(buffer, 0, bufferSize)) != -1) {
+				out.write(buffer, 0, read);
+			}
+			return out.toByteArray();
+		} catch (IOException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new IOException( e.toString() );
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (Exception e) {
+					// ignore
+				}
+			}
 		}
-		byte[] buffer = new byte[ bufferSize ];
-		ByteArrayOutputStream out = new ByteArrayOutputStream(bufferSize);
-		int read;
-		while ( (read = in.read(buffer, 0, bufferSize)) != -1) {
-			out.write(buffer, 0, read);
-		}
-		in.close();
-		return out.toByteArray();
 	}
 
 }
