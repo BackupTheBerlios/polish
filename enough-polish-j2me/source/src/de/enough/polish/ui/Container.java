@@ -919,9 +919,15 @@ public class Container extends Item {
 		int verticalSpace = this.availableHeight - (this.contentY + this.marginBottom + this.paddingBottom + this.borderWidth); // the available height for this container
 		if ( height == 0 || !this.enableScrolling) {
 			return;
-		} else if ( y + height + currentYOffset > verticalSpace ) {
+		}
+		int yTopAdjust = 0;
+		Screen scr = this.screen;
+		if (scr != null && scr.contentY != this.relativeY) {
+			yTopAdjust = this.relativeY - scr.contentY;
+		}
+		if ( y + height + currentYOffset + yTopAdjust > verticalSpace ) {
 			// the area is too low, so scroll down (= increase the negative yOffset):
-			currentYOffset += verticalSpace - (y + height + currentYOffset);
+			currentYOffset += verticalSpace - (y + height + currentYOffset + yTopAdjust);
 			//#debug
 			System.out.println("scroll: item too low: verticalSpace=" + verticalSpace + "  y=" + y + ", height=" + height + ", yOffset=" + currentYOffset);
 			// check if the top of the area is still visible when scrolling downwards:
@@ -1172,7 +1178,7 @@ public class Container extends Item {
 				System.out.println("Container: drawing " + getClass().getName() + " with yOffset=" + this.yOffset );
 			}
 		//#endif
-		boolean setClipping = ( this.enableScrolling && this.itemHeight > this.availableHeight) ; //( this.yOffset != 0 && (this.marginTop != 0 || this.paddingTop != 0) );
+		boolean setClipping = ( this.enableScrolling && (this.yOffset != 0 || this.itemHeight > this.availableHeight) ); //( this.yOffset != 0 && (this.marginTop != 0 || this.paddingTop != 0) );
 		int clipX = 0;
 		int clipY = 0;
 		int clipWidth = 0;
@@ -2033,11 +2039,11 @@ public class Container extends Item {
 		// scroll the container:
 		int target = this.targetYOffset;
 		int current = this.yOffset;
+		if (target != current	
 		//#if polish.css.scroll-mode
-			if (this.scrollSmooth && target != current ) {
-		//#else
-			//# if (target != current) {	
+			&& this.scrollSmooth
 		//#endif
+		) {
 			if (this.availableHeight != -1 && Math.abs(target - current) > this.availableHeight) {
 				// maximally scroll one page:
 				if (current < target) {
@@ -2059,7 +2065,21 @@ public class Container extends Item {
 //			}
 			// # debug
 			//System.out.println("animate(): adjusting yOffset to " + this.yOffset );
-			repaintRegion.addRegion( getAbsoluteX(), getAbsoluteY(), this.itemWidth, this.itemHeight );
+			int x = getAbsoluteX();
+			int y = getAbsoluteY();
+			int height = this.itemHeight;
+			int width = this.itemWidth;
+			Screen scr = getScreen();
+			//#if polish.useScrollBar || polish.classes.ScrollBar:defined
+				width += scr.getScrollBarWidth();
+			//#endif
+			if (this.availableHeight > height) {
+				x = scr.contentX;
+				y = scr.contentY;
+				height = scr.contentHeight;
+				width = scr.contentWidth + scr.getScrollBarWidth();
+			}
+			repaintRegion.addRegion( x, y, width, height );
 		}
 		if (this.focusedItem != null) {
 			this.focusedItem.animate(currentTime, repaintRegion);

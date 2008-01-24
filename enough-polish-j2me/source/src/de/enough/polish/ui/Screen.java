@@ -1947,10 +1947,10 @@ implements AccessibleCanvas
 				System.out.println("Screen: adjusting y from [" + y + "] to [" + ( y + (height - containerHeight) / 2) + "] - containerHeight=" + containerHeight);
 				*/
 				y += ((height - containerHeight) >> 1);
-				this.container.availableHeight = height - ((height - containerHeight) >> 1);
+				//this.container.availableHeight = height - ((height - containerHeight) >> 1);
 			} else if (this.isLayoutBottom) {
 				y += (height - containerHeight);
-				this.container.availableHeight = containerHeight;
+				//this.container.availableHeight = containerHeight;
 	//			System.out.println("content: y=" + y + ", contentY=" + this.contentY + ", contentHeight="+ this.contentHeight + ", containerHeight=" + containerHeight);
 			}
 			int containerWidth = this.container.itemWidth;
