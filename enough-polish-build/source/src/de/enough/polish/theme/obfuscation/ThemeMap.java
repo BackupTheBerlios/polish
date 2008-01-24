@@ -1,5 +1,5 @@
-//#condition polish.JavaSE && polish.useRAG
-package de.enough.polish.rag.obfuscation;
+//#condition polish.JavaSE && polish.useThemes
+package de.enough.polish.theme.obfuscation;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -26,15 +26,15 @@ import java.util.ArrayList;
  * 
  * @author Andre Schmidt, andre@enough.de
  */
-public class RagMap {
-	RagEntry root;
+public class ThemeMap {
+	ThemeEntry root;
 
 	/**
 	 * Opens a file and reads the lines to <code>lines</code>
 	 * @param file the file
 	 * @throws IOException
 	 */
-	public RagMap(File file) throws IOException {
+	public ThemeMap(File file) throws IOException {
 		FileInputStream fileStream = null;
 		BufferedInputStream bufferedStream = null;
 		
@@ -57,25 +57,25 @@ public class RagMap {
 		this.root = parseMap(lines);
 	}
 	
-	private RagEntry parseMap(ArrayList lines)
+	private ThemeEntry parseMap(ArrayList lines)
 	{
-		RagEntry rootEntry = new RagEntry();
+		ThemeEntry rootEntry = new ThemeEntry();
 		
-		rootEntry.setGroup(RagEntry.ROOT);
+		rootEntry.setGroup(ThemeEntry.ROOT);
 		
-		RagEntry classEntry = null;
+		ThemeEntry classEntry = null;
 		
 		for (int i = 0; i < lines.size(); i++) {
-			RagEntry entry = parseLine((String)lines.get(i));
+			ThemeEntry entry = parseLine((String)lines.get(i));
 			
 			switch(entry.getGroup())
 			{
-				case RagEntry.CLASS:
+				case ThemeEntry.CLASS:
 					classEntry = entry;
 					rootEntry.getChildren().add(classEntry);
 					break;
-				case RagEntry.METHOD:
-				case RagEntry.FIELD:
+				case ThemeEntry.METHOD:
+				case ThemeEntry.FIELD:
 					classEntry.getChildren().add(entry);
 					break;
 			}
@@ -84,16 +84,16 @@ public class RagMap {
 		return rootEntry;
 	}
 	
-	private RagEntry parseLine(String line)
+	private ThemeEntry parseLine(String line)
 	{
-		RagEntry entry = new RagEntry();
+		ThemeEntry entry = new ThemeEntry();
 	
 		line = line.trim();
 		String[] ids = line.split("->");
 		
 		if(isClass(line))
 		{
-			entry.setGroup(RagEntry.CLASS);
+			entry.setGroup(ThemeEntry.CLASS);
 			
 			entry.setType(null);
 			entry.setName(ids[0].trim());
@@ -101,7 +101,7 @@ public class RagMap {
 		}
 		else if(isMethod(line))
 		{
-			entry.setGroup(RagEntry.METHOD);
+			entry.setGroup(ThemeEntry.METHOD);
 			
 			String type = ids[0].trim().split(" ")[0];
 			String name = ids[0].trim().split(" ")[1];
@@ -112,7 +112,7 @@ public class RagMap {
 		}
 		else if(isField(line))
 		{
-			entry.setGroup(RagEntry.FIELD);
+			entry.setGroup(ThemeEntry.FIELD);
 			
 			String type = ids[0].trim().split(" ")[0];
 			String name = ids[0].trim().split(" ")[1];
@@ -149,12 +149,12 @@ public class RagMap {
 	 * @param obfuscated true, if <code>className</code> is an obfuscation name and should be resolved
 	 * @return the entry of the class
 	 */
-	public static RagEntry getChildEntry(RagEntry entry, String name, boolean obfuscated)
+	public static ThemeEntry getChildEntry(ThemeEntry entry, String name, boolean obfuscated)
 	{
 		ArrayList classes = entry.getChildren();
 		
 		for (int i = 0; i < classes.size(); i++) {
-			RagEntry child = (RagEntry)classes.get(i);
+			ThemeEntry child = (ThemeEntry)classes.get(i);
 			
 			if(obfuscated)
 			{
@@ -175,11 +175,11 @@ public class RagMap {
 		return null;
 	}
 
-	public RagEntry getRoot() {
+	public ThemeEntry getRoot() {
 		return root;
 	}
 
-	public void setRoot(RagEntry root) {
+	public void setRoot(ThemeEntry root) {
 		this.root = root;
 	}
 }

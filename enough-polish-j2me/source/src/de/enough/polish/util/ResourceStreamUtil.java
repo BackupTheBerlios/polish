@@ -35,13 +35,13 @@ import java.io.InputStream;
  * <p>Copyright Enough Software 2008</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class ResourceUtil
+public class ResourceStreamUtil
 {
 
 	/**
 	 * Disallow instantiation.
 	 */
-	private ResourceUtil()
+	private ResourceStreamUtil()
 	{
 		// nothing to init
 	}

@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.rag;
+package de.enough.polish.theme;
 
 
 import de.enough.polish.BuildException;
@@ -44,15 +44,33 @@ import java.util.ArrayList;
  * </pre>
  * @author Robert Virkus, robert@enough.de
  */
-public class FileSetting {
+public class SerializeSetting {
 	
-	private String file;
+	private String regex;
+	private String target;
+	private String type;
 	
-	public String getFile() {
-		return file;
+	public String getRegex() {
+		return regex;
 	}
 
-	public void setFile(String name) {
-		this.file = name;
-	}	
+	public void setRegex(String regex) {
+		this.regex = regex;
+	}
+
+	public String getTarget() {
+		return target;
+	}
+
+	public void setTarget(String target) {
+		this.target = target;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }

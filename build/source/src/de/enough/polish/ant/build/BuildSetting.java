@@ -43,8 +43,8 @@ import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Environment;
 import de.enough.polish.ExtensionManager;
 import de.enough.polish.finalize.Finalizer;
-import de.enough.polish.rag.FileSetting;
-import de.enough.polish.rag.SerializeSetting;
+import de.enough.polish.theme.FileSetting;
+import de.enough.polish.theme.SerializeSetting;
 import de.enough.polish.util.ResourceUtil;
 import de.enough.polish.util.StringUtil;
 

@@ -1,10 +1,10 @@
-//#condition polish.usePolishGui && polish.useRAG
-package de.enough.polish.rag;
+//#condition polish.usePolishGui && polish.useThemes
+package de.enough.polish.theme;
 
 import de.enough.polish.io.Serializable;
 
 /**
- * <p>Stores a byte array with name and size to store or load from a RAG file</p>
+ * <p>Stores a byte array with name and size to store or load from a theme file</p>
  *
  * <p>Copyright (c) 2005, 2006, 2007 Enough Software</p>
  * <pre>
@@ -14,26 +14,11 @@ import de.enough.polish.io.Serializable;
  * @author Andre Schmidt, andre@enough.de
  */
 
-public class RagContainer implements Serializable{
+public class ThemeContainer implements Serializable{
 	private String name;
 	private int size;
 	private int offset;
 	private byte[] data;
-	
-	/**
-	 * @return the byte array
-	 */
-	public byte[] getData() {
-		return this.data;
-	}
-	
-	/**
-	 * Set the byte array
-	 * @param data the byte array
-	 */	
-	public void setData(byte[] data) {
-		this.data = data;
-	}
 	
 	/**
 	 * @return the name
@@ -78,5 +63,20 @@ public class RagContainer implements Serializable{
 	 */
 	public void setOffset(int offset) {
 		this.offset = offset;
+	}
+
+	/**
+	 * @return the data
+	 */
+	public byte[] getData() {
+		return data;
+	}
+
+	/**
+	 * Sets the data.
+	 * @param data the data
+	 */
+	public void setData(byte[] data) {
+		this.data = data;
 	}
 }	

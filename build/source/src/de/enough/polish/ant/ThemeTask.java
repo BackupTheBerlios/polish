@@ -25,13 +25,11 @@
  */
 package de.enough.polish.ant;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -41,32 +39,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 
-import de.enough.polish.Attribute;
-import de.enough.polish.BooleanEvaluator;
 import de.enough.polish.Device;
-import de.enough.polish.Variable;
-import de.enough.polish.ant.build.ClassSetting;
-import de.enough.polish.ant.build.FullScreenSetting;
-import de.enough.polish.io.Serializer;
-import de.enough.polish.rag.RagContainer;
-import de.enough.polish.rag.SerializeSetting;
-import de.enough.polish.rag.obfuscation.RagEntry;
-import de.enough.polish.rag.obfuscation.RagMap;
+import de.enough.polish.theme.SerializeSetting;
+import de.enough.polish.theme.ThemeContainer;
+import de.enough.polish.theme.obfuscation.ThemeEntry;
+import de.enough.polish.theme.obfuscation.ThemeMap;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.ReflectionUtil;
-import de.enough.polish.util.StringUtil;
 
 /**
  * <p>
  * Stores resources and serialized objects to a
- * .rag file. 
+ * .theme file. 
  * </p>
  * 
  * <p>
@@ -80,9 +69,9 @@ import de.enough.polish.util.StringUtil;
  * 
  * @author Andre Schmidt, andre@enough.de
  */
-public class RagTask extends PolishTask {
+public class ThemeTask extends PolishTask {
 	private URLClassLoader loader;
-	private RagEntry rootEntry;
+	private ThemeEntry rootEntry;
 	
 	/**
 	 * Packages the resources and serialized fields to a .rag file.
@@ -91,15 +80,15 @@ public class RagTask extends PolishTask {
 	 */
 	protected void bundle(Device device, Locale locale) {
 		String file = this.buildSetting.getFileSetting().getFile();
-		File ragPath = new File(device.getRagDir().getAbsolutePath());
+		File themePath = new File(device.getThemeDir().getAbsolutePath());
 		
-		if (!ragPath.exists()) {
-			ragPath.mkdirs();
+		if (!themePath.exists()) {
+			themePath.mkdirs();
 		}
 		
 		Vector containers = new Vector();
 		
-		File result = new File(ragPath.getAbsolutePath() + File.separator + file);
+		File result = new File(themePath.getAbsolutePath() + File.separator + file);
 		
 		try
 		{
@@ -107,7 +96,7 @@ public class RagTask extends PolishTask {
 			File obfuscationMap = new File( device.getBaseDir() + File.separatorChar + "obfuscation-map.txt");
 			
 			if (obfuscationMap.exists() && this.doObfuscate) {
-				this.rootEntry = new RagMap(obfuscationMap).getRoot();
+				this.rootEntry = new ThemeMap(obfuscationMap).getRoot();
 			}
 			
 			//Get the resources and serializers
@@ -122,22 +111,22 @@ public class RagTask extends PolishTask {
 					Field[] fields;
 					
 					//Get the class target and the typ eo fthe desired fields
-					String ragTarget = setting.getTarget();
+					String themeTarget = setting.getTarget();
 					String type = setting.getType();
 					
 					if(this.doObfuscate)
 					{
-						RagEntry targetEntry = null;
-						RagEntry typeEntry = null;
+						ThemeEntry targetEntry = null;
+						ThemeEntry typeEntry = null;
 						
-						targetEntry = RagMap.getChildEntry(this.rootEntry, ragTarget, false);
-						ragTarget = targetEntry.getObfuscated();
+						targetEntry = ThemeMap.getChildEntry(this.rootEntry, themeTarget, false);
+						themeTarget = targetEntry.getObfuscated();
 						
-						typeEntry = RagMap.getChildEntry(this.rootEntry, type, false);
+						typeEntry = ThemeMap.getChildEntry(this.rootEntry, type, false);
 						type = typeEntry.getObfuscated();
 						
 						//Get the obfuscated fields of the obfuscated class 
-						fields = this.loader.loadClass(ragTarget).getDeclaredFields();
+						fields = this.loader.loadClass(themeTarget).getDeclaredFields();
 						
 						//Iterate over fields 
 						for (int j = 0; j < fields.length; j++) {
@@ -148,13 +137,13 @@ public class RagTask extends PolishTask {
 							
 							if(fieldType.equals(type))
 							{
-								RagEntry fieldEntry = RagMap.getChildEntry(targetEntry, fieldName, true);
+								ThemeEntry fieldEntry = ThemeMap.getChildEntry(targetEntry, fieldName, true);
 								
 								fieldName = fieldEntry.getName();
 								
 								if(fieldName.matches(setting.getRegex()))
 								{
-									RagContainer container = null;
+									ThemeContainer container = null;
 									
 									//Create a container for the field object
 									container = getContainer(setting.getTarget(),fieldName,field.get(null));
@@ -166,7 +155,7 @@ public class RagTask extends PolishTask {
 					else
 					{
 						//Get the fields of the class
-						fields = this.loader.loadClass(ragTarget).getDeclaredFields();
+						fields = this.loader.loadClass(themeTarget).getDeclaredFields();
 						
 						//Iterate over fields 
 						for (int j = 0; j < fields.length; j++) {
@@ -180,7 +169,7 @@ public class RagTask extends PolishTask {
 								//Does the field name match the regular expression of the current serializer ?
 								if(fieldName.matches(setting.getRegex()))
 								{
-									RagContainer container = null;
+									ThemeContainer container = null;
 									
 									//Create a container for the field object
 									container = getContainer(setting.getTarget(),fieldName,field.get(null));
@@ -194,7 +183,7 @@ public class RagTask extends PolishTask {
 			
 			//Add all resources to the container vector
 			for (int i = 0; i < resources.length; i++) {
-				RagContainer container = getContainer(resources[i]);
+				ThemeContainer container = getContainer(resources[i]);
 				containers.add(container);
 			}
 			
@@ -258,7 +247,7 @@ public class RagTask extends PolishTask {
 		try {
 			if(this.doObfuscate)
 			{
-				RagEntry serializerEntry = RagMap.getChildEntry(this.rootEntry, serializerClassPath, false);
+				ThemeEntry serializerEntry = ThemeMap.getChildEntry(this.rootEntry, serializerClassPath, false);
 				serializerClassPath = serializerEntry.getObfuscated();
 			}
 			
@@ -324,12 +313,12 @@ public class RagTask extends PolishTask {
 	 * @return a <code>RagContainer</code>
 	 * @throws IOException
 	 */
-	private RagContainer getContainer(File file) throws IOException
+	private ThemeContainer getContainer(File file) throws IOException
 	{
-		System.out.println("Creating rag container from " + file.getAbsolutePath());
+		System.out.println("Creating theme container from " + file.getAbsolutePath());
 		
 		//Create a container
-		RagContainer container = new RagContainer();
+		ThemeContainer container = new ThemeContainer();
 		DataInputStream stream = new DataInputStream(new FileInputStream(file));
 		
 		byte[] buffer = new byte[(int)file.length()];
@@ -354,13 +343,13 @@ public class RagTask extends PolishTask {
 	 * @throws IOException
 	 * @throws NoSuchMethodException
 	 */
-	private RagContainer getContainer(String className, String fieldName, Object object) throws IOException, NoSuchMethodException
+	private ThemeContainer getContainer(String className, String fieldName, Object object) throws IOException, NoSuchMethodException
 	{
 		String fullName = className + "." + fieldName;
 		
 		System.out.println("Creating rag container from " + fullName + "(" + object + ")");
 		
-		RagContainer container = new RagContainer();
+		ThemeContainer container = new ThemeContainer();
 		
 		ByteArrayOutputStream byteStream = new ByteArrayOutputStream ();
 		DataOutputStream stream = new DataOutputStream (byteStream);
@@ -374,8 +363,8 @@ public class RagTask extends PolishTask {
 		
 		if(this.doObfuscate)
 		{
-			RagEntry classEntry = RagMap.getChildEntry(this.rootEntry, "de.enough.polish.io.Serializer", false);
-			RagEntry methodEntry = RagMap.getChildEntry(classEntry, methodName, false); 
+			ThemeEntry classEntry = ThemeMap.getChildEntry(this.rootEntry, "de.enough.polish.io.Serializer", false);
+			ThemeEntry methodEntry = ThemeMap.getChildEntry(classEntry, methodName, false); 
 			methodName = methodEntry.getObfuscated();
 			
 			//serialize
@@ -411,7 +400,7 @@ public class RagTask extends PolishTask {
 		stream.writeInt(containers.size());
 		
 		for (int i = 0; i < containers.size(); i++) {
-			RagContainer container = (RagContainer) containers.get(i);
+			ThemeContainer container = (ThemeContainer) containers.get(i);
 			
 			stream.writeUTF(container.getName());
 			stream.writeInt(offset);
@@ -422,7 +411,7 @@ public class RagTask extends PolishTask {
 		}
 		
 		for (int i = 0; i < containers.size(); i++) {
-			RagContainer container = (RagContainer) containers.get(i);
+			ThemeContainer container = (ThemeContainer) containers.get(i);
 			
 			//Write the data
 			stream.write(container.getData());
@@ -446,7 +435,7 @@ public class RagTask extends PolishTask {
 		stream.writeInt(1);
 		
 		for (int i = 0; i < containers.size(); i++) {
-			RagContainer container = (RagContainer) containers.get(i);
+			ThemeContainer container = (ThemeContainer) containers.get(i);
 			
 			stream.writeUTF(container.getName());
 			stream.writeInt(1);

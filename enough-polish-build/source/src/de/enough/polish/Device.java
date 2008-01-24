@@ -164,7 +164,7 @@ public class Device extends PolishComponent {
     private Device parentDevice;
 	private File resourceDir;
 	
-	private File ragDir;
+	private File themeDir;
 
 	private DeviceGroupManager groupManager;
 
@@ -854,12 +854,12 @@ public class Device extends PolishComponent {
 		return this.resourceDir;
 	}
 
-	public File getRagDir() {
-		return this.ragDir;
+	public File getThemeDir() {
+		return this.themeDir;
 	}
 
-	public void setRagDir(File ragDir) {
-		this.ragDir = ragDir;
+	public void setThemeDir(File themeDir) {
+		this.themeDir = themeDir;
 	}
 
 	

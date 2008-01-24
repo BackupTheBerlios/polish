@@ -1,8 +1,8 @@
-package de.enough.polish.rag.obfuscation;
+package de.enough.polish.theme.obfuscation;
 
 import java.util.ArrayList;
 
-public class RagEntry
+public class ThemeEntry
 {
 	public static final int ROOT = 0;
 	public static final int CLASS = 1;
@@ -17,7 +17,7 @@ public class RagEntry
 	
 	private ArrayList children;
 	
-	public RagEntry()
+	public ThemeEntry()
 	{
 		this.children = new ArrayList();
 	}

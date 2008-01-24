@@ -1543,8 +1543,8 @@ public class PolishTask extends ConditionalTask {
 		File resourceDir = new File( buildPath + File.separatorChar + "resources" );
 		device.setResourceDir( resourceDir );
 		
-		File ragDir = new File( buildPath + File.separatorChar + "rag" );
-		device.setRagDir( ragDir );
+		File themeDir = new File( buildPath + File.separatorChar + "rag" );
+		device.setThemeDir( themeDir );
 		this.environment.addVariable("polish.resources.dir", resourceDir.getAbsolutePath() );
 
 
@@ -2592,9 +2592,9 @@ public class PolishTask extends ConditionalTask {
 			FileUtil.copyDirectoryContents( device.getResourceDir(), classesDir, !this.buildSetting.getResourceSetting().isForceUpdate() );
 			
 			//If .rag files for this build have been build, copy the files
-			if(device.getRagDir().exists())
+			if(device.getThemeDir().exists())
 			{
-				FileUtil.copyDirectoryContents( device.getRagDir(), classesDir, !this.buildSetting.getResourceSetting().isForceUpdate() );
+				FileUtil.copyDirectoryContents( device.getThemeDir(), classesDir, !this.buildSetting.getResourceSetting().isForceUpdate() );
 			}
 		} catch (IOException e) {
 			System.out.println("creating JAR for device [" + device.getIdentifier() + "]." );
