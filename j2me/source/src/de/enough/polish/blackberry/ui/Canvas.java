@@ -1408,8 +1408,11 @@ extends Displayable
     	if (this.isObscured) {
     		return;
     	}
+        /*
+         * Deactivated because may result in deadlocks
         Object lock = MIDlet.getEventLock();
         synchronized (lock) {
+        */
 	        if ( item != null && item._bbField != null ) {
 	            if ( !item._bbFieldAdded ) {
                     item._bbFieldAdded = true;
@@ -1424,7 +1427,9 @@ extends Displayable
 	            setFocus( this.dummyField, 0, 0, 0, 0 );
 	            //System.out.println("Canvas.focus(): focusing dummy");
 	        }
+	    /*
         }
+        */
     }
 
     //#if polish.hasTrackballEvents
