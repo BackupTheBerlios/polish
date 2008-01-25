@@ -881,7 +881,7 @@
 		<type>finalizer</type>
 		<name>buildlist</name>
 		<class>de.enough.polish.finalize.buildlist.BuildListFinalizer</class>
-		<classpath>${polish.home}/bin/extensions;./bin/classes</classpath>
+		<classpath>${polish.home}/bin/extensions</classpath>
 		<autostart>true</autostart>
 	</extension>
 </extensions>
