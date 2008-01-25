@@ -115,6 +115,7 @@ public class AntBox {
             this.project.init();
             this.project.setUserProperty("ant.version", Main.getAntVersion());
             this.project.setUserProperty("ant.file",this.buildxml.getAbsolutePath());
+            this.project.addReference("ant.projectHelper", this.projectHelper);
             
             this.projectHelper.parse(this.project,this.buildxml);
             
