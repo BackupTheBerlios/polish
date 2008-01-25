@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui && polish.useThemes
 package de.enough.polish.theme;
 
 import java.io.DataInputStream;
