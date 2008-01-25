@@ -45,6 +45,10 @@ public class MotorolaEmulatorA1 extends MotorolaEmulator {
 	
 
 	protected boolean addAdditionalArguments(List arguments, File emulatorProps, String jadPath, String jarPath, Device dev, Environment env, File executable) {
+		if (emulatorProps.getName().endsWith(".xml")) {
+			// new SDK is used:
+			return super.addAdditionalArguments(arguments, emulatorProps, jadPath, jarPath, dev, env, executable);
+		}
 		arguments.add(jadPath );
 		arguments.add("-deviceFile");
 		arguments.add(emulatorProps.getAbsolutePath());

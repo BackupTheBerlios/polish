@@ -67,8 +67,16 @@ public class MotorolaEmulator extends Emulator {
 	 * @return true when all arguments could be added
 	 */
 	protected boolean addArguments(List arguments, File emulatorProps, String jadPath, String jarPath, Device dev, Environment env ) {
-		// emulatorProps is in ${emulator.home}/Resources
-		File executable = getEmulatorExecutable(emulatorProps.getParentFile().getParentFile() );
+		File executable;
+		// emulatorProps is in ${emulator.home}/res/devices in newer (2007+) SDKs:
+		if (emulatorProps.getName().endsWith(".xml")) {
+			executable = 
+				new File( emulatorProps.getParentFile().getParentFile().getParentFile(),
+						"bin/emulator.exe" );
+		} else {
+			// emulatorProps is in ${emulator.home}/Resources in older SDKs:
+			executable = getEmulatorExecutable(emulatorProps.getParentFile().getParentFile() );
+		}
 		if (!executable.exists()) {
 			System.out.println("Warning: unable to find emulator executable at " + executable.getAbsolutePath());
 			return false;
@@ -84,7 +92,12 @@ public class MotorolaEmulator extends Emulator {
 	}
 
 	protected String getDeviceName(File emulatorProps, Device dev, Environment env) {
-		String propsName = emulatorProps.getName().substring( 0, emulatorProps.getName().length() - ".props".length() );
+		String propsName;
+		if (emulatorProps.getName().endsWith(".xml")) {
+			propsName = emulatorProps.getName().substring( 0, emulatorProps.getName().length() - ".xml".length() );
+		} else {
+			propsName = emulatorProps.getName().substring( 0, emulatorProps.getName().length() - ".props".length() );
+		}
 		return propsName;
 	}
 
@@ -137,6 +150,33 @@ public class MotorolaEmulator extends Emulator {
 	}
 
 	protected File getEmulatorProperties(File motorolaSdkHome, String propName, Device dev, Environment env) {
+		System.out.println("getting emulator file from " + motorolaSdkHome.getAbsolutePath() );
+		// first check for newer (2007+) SDK, which store properties in [proName].xml files:
+		String realSdk = "";
+		if (motorolaSdkHome.getName().indexOf("JMESDK") == -1) {
+			realSdk = "/JMESDK";
+		}
+		File propertiesFolder = new File( motorolaSdkHome, realSdk + "/res/devices/" );
+		if (propertiesFolder.exists()) {
+			File[] files = propertiesFolder.listFiles();
+			if (files != null) {
+				String xmlPropName;
+				if (propName.endsWith(".props")) {
+					xmlPropName = propName.substring(0, propName.length() - ".props".length() ); 
+				} else {
+					xmlPropName = propName;
+				}
+				for (int i = 0; i < files.length; i++) {
+					File file = files[i];
+					System.out.println("checking " + file.getName() + " for " + xmlPropName );
+					if (file.getName().indexOf(xmlPropName) != -1) {
+						// found it!
+						return file;
+					}
+				}
+			}
+		}
+		// now check for older SDKs:
 		// when we're lucky the definitiom says "EmulatorA.1/bin/Resources/name.props" or similar:
 		File emulatorFile = new File( motorolaSdkHome, propName );
 		if (emulatorFile.exists()) {
@@ -222,7 +262,9 @@ public class MotorolaEmulator extends Emulator {
 		Arrays.sort(files);
 		for (int i = files.length - 1; i >= 0 ; i--) {
 			File file = files[i];
-			if (file.getName().indexOf("SDK") != -1) {
+			if (file.getName().indexOf("MOTODEV") != -1  // a "new"[2007+] SDK
+					|| file.getName().indexOf("SDK") != -1) // (this is an older SDK) 
+			{
 				homesList.add( file );
 			}
 		}

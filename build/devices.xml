@@ -4258,6 +4258,7 @@ These namespaces/schemas will be used soon.
 		<capability name="AnnouncementDate" value="2006-12-18"/>
 		<capability name="Emulator.Class" value="MotorolaEmulatorM3" />
 		<capability name="Emulator.Skin" value="A910.props" />
+		<capability name="key.MiddleSoftKey" value="" />
 		<capability name="key.LeftSoftKey" value="-21" />
 		<capability name="key.RightSoftKey" value="-22" />
 		<capability name="key.FireKey" value="-5" />
