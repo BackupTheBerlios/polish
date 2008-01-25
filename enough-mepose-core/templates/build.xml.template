@@ -131,7 +131,7 @@
 			icon="dot.png"
 			jarName="${polish.vendor}-${polish.name}-${polish.locale}-example.jar" 
 			jarUrl="${deploy-url}${polish.jarName}"
-			copyright="Copyright 2004 Enough Software. All rights reserved."
+			copyright="Copyright 2008 Enough Software. All rights reserved."
 			deleteConfirm="Do you really want to kill me?" 
 		/>
 		
@@ -202,7 +202,7 @@
 			</resources>
 			
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-			<obfuscator name="ProGuard" useDefaultPackage="true" unless="test || polish.blackberry" >
+			<obfuscator name="ProGuard" useDefaultPackage="false" unless="test || polish.blackberry" >
 				<!--
 				You can set additional parameters here, e.g.:
 				<parameter name="optimize" value="false" />
