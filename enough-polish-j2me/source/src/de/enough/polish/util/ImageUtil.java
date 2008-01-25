@@ -433,7 +433,7 @@ public final class ImageUtil {
 	 * This function adds a weighted (by yIntesity) row of source pixels to the related destination pixel.  
 	 */
 	private static int[] helpWithX(int[] src, int[] tmp, int srcWidth, int srcXdetailed, int Yrounded, int scaleS, int yIntenstiy, int xIntensityStart, int xIntensityEnd , int destPixelItensityMinimum ){
-		if (yIntenstiy<destPixelItensityMinimum>>SCALE_THRESHOLD_SHIFT){
+		if (yIntenstiy< (destPixelItensityMinimum>>SCALE_THRESHOLD_SHIFT) ){
 			return tmp;
 		}
 		int srcXrounded=srcXdetailed>>PSEUDO_FLOAT;
@@ -511,7 +511,7 @@ public final class ImageUtil {
 	 * @param EDGEDETECTION_MAP	if !=0 this enables edge detection which will speed 
 	 * 								up the compuation. Please read the documentation
 	 * 								of scaleDownHq for details.
-	 * @see #scaleDownHq
+	 * @see #scaleDownHq(int[], int[], int, int, int, int, boolean)
 	 */
 	public static void perspectiveShear(int [] src,int[] dest, int originalWidth, int newWidth,int leftHeight, int rightHeight, int opacity, int EDGEDETECTION_MAP){
 		// #debug
