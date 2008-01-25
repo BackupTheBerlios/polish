@@ -8,6 +8,17 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.jdt.launching.sourcelookup.containers.JavaSourcePathComputer;
 
+/**
+ * 
+ * 
+ * <br>Copyright Enough Software 2005-2007
+ * <pre>
+ * history
+ *        Jan 24, 2008 - rickyn creation
+ * </pre>
+ * @author Richard Nkrumah
+ * @deprecated
+ */
 public class MIDletSourcePathComputer
   extends JavaSourcePathComputer
 {

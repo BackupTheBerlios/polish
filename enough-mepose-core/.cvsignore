@@ -2,3 +2,4 @@ bin
 MeposeCore.jar
 temp.folder
 @dot
+de.enough.mepose.core_*.jar
