@@ -990,26 +990,14 @@ public class MenuBar extends Item {
 		if (this.isOpened) {
 			//#if polish.key.Menu:defined
 				if (keyCode == MENU_KEY) {
-					setOpen(false);
-					return true;
+					return true; // close in keyRelease
 				}
 			//#endif
 			if (keyCode == this.selectOptionsMenuKey) {
 				this.isSoftKeyPressed = true;	
 				notifyKeyPressed();
 				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
-				//#if tmp.useInvisibleMenuBar
-					if (commandItem.command == this.hideCommand ) {
-						setOpen( false );
-						return true;
-					}
-				//#endif
 				commandItem.handleKeyPressed( 0, Canvas.FIRE );
-	//			boolean handled = commandItem.handleKeyPressed( 0, Canvas.FIRE );
-	//			if (!handled) { // CommandItem returns false when it invokes the command listener
-				// this is now done automatically by the Screen class
-	//				setOpen( false );
-	//			}				
 				return true;
 		//#if polish.key.ReturnKey:defined
 			//#= } else  if (keyCode == this.closeOptionsMenuKey || keyCode == ${polish.key.ReturnKey}) {
@@ -1018,19 +1006,20 @@ public class MenuBar extends Item {
 		//#endif
 				this.isSoftKeyPressed = true;
 				notifyKeyPressed();
-				int selectedIndex = this.commandsContainer.getFocusedIndex();
-				if (!this.commandsContainer.handleKeyPressed(0, Canvas.LEFT)
-						|| selectedIndex != this.commandsContainer.getFocusedIndex() ) 
-				{
-					setOpen( false );
-				}
+				this.commandsContainer.handleKeyPressed(0, Canvas.LEFT);
+//				int selectedIndex = this.commandsContainer.getFocusedIndex();
+//				if (!this.commandsContainer.handleKeyPressed(0, Canvas.LEFT)
+//						|| selectedIndex != this.commandsContainer.getFocusedIndex() ) 
+//				{
+//					setOpen( false );
+//				}
 				//System.out.println("MenuBar is closing due to key " + keyCode);
 				return true;
 			} else {
 				//#if tmp.useInvisibleMenuBar
 					// handle hide command specifically:
 					if (  gameAction == Canvas.FIRE && ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
-						setOpen( false );
+						//setOpen( false );
 						return true;
 					}
 				//#endif
@@ -1081,7 +1070,7 @@ public class MenuBar extends Item {
 		} else { // menu is currently closed:
 			//#if polish.key.Menu:defined
 				if (keyCode == MENU_KEY) {
-					setOpen(true);
+					notifyKeyPressed();					
 					return true;
 				}
 			//#endif
@@ -1101,37 +1090,32 @@ public class MenuBar extends Item {
 							this.isSoftKeyPressed = true;			
 						//#endif
 						notifyKeyPressed();
-						this.screen.callCommandListener(this.singleMiddleCommand);
+						this.singleMiddleCommandItem.notifyItemPressedStart();
 						return true;			
 					}
 			//#endif
 			if (keyCode == LEFT_SOFT_KEY && this.singleLeftCommand != null && this.singleLeftCommandItem.getAppearanceMode() != PLAIN) {
 				this.isSoftKeyPressed = true;	
 				notifyKeyPressed();
-				this.screen.callCommandListener(this.singleLeftCommand);
+				this.singleLeftCommandItem.notifyItemPressedStart();
 				return true;			
 			} else if (keyCode == RIGHT_SOFT_KEY && this.singleRightCommand != null && this.singleRightCommandItem.getAppearanceMode() != PLAIN) {
 				this.isSoftKeyPressed = true;	
 				notifyKeyPressed();
-				this.screen.callCommandListener(this.singleRightCommand);
+				this.singleRightCommandItem.notifyItemPressedStart();
 				return true;			
 			} else if (keyCode == this.openOptionsMenuKey ) {
 				this.isSoftKeyPressed = true;	
-				notifyKeyPressed();
-				//#if tmp.useInvisibleMenuBar
-					if ( !this.isOpened && this.positiveCommand != null 
-//							&& ((this.singleRightCommand != null && this.commandsContainer.size() == 3) ) )
-							&& (this.singleRightCommand == null && this.commandsContainer.size() == 2) )  
-					{
-						// invoke positive command:
-						this.screen.callCommandListener(this.positiveCommand);
-						return true;
-					} else 
-				//#endif
-				if (this.commandsList.size() > 0) {
-					setOpen( true );
-					return true;
+				if (this.openOptionsMenuKey == LEFT_SOFT_KEY) {
+					if (this.singleLeftCommandItem != null) {
+						this.singleLeftCommandItem.notifyItemPressedStart();
+					}				
+				} else if (this.openOptionsMenuKey == RIGHT_SOFT_KEY) {
+					if (this.singleRightCommandItem != null) {
+						this.singleRightCommandItem.notifyItemPressedStart();
+					}				
 				}
+				return true;
 			}
 		}
 		return false;
@@ -1152,14 +1136,153 @@ public class MenuBar extends Item {
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		//#debug
-		System.out.println("MenuBar: handleKeyReleased(" + keyCode + ", " + gameAction + ")" );
+		System.out.println("MenuBar: handleKeyReleased(" + keyCode + ", " + gameAction + ") - isOpened=" + this.isOpened );
 		if (this.isOpened) {
+//			if (keyCode == this.selectOptionsMenuKey) {
+//				return this.commandsContainer.handleKeyReleased(0, Canvas.FIRE);
+//			} else {
+//				return this.commandsContainer.handleKeyReleased(keyCode, gameAction);
+//			}
+			/////////////////////////////////////////////
+			
+			//#if polish.key.Menu:defined
+				if (keyCode == MENU_KEY) {
+					setOpen(false);
+					return true;
+				}
+			//#endif
 			if (keyCode == this.selectOptionsMenuKey) {
-				return this.commandsContainer.handleKeyReleased(0, Canvas.FIRE);
+				this.isSoftKeyPressed = true;	
+				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
+				//#if tmp.useInvisibleMenuBar
+					if (commandItem.command == this.hideCommand ) {
+						setOpen( false );
+						return true;
+					}
+				//#endif
+				return commandItem.handleKeyReleased(keyCode, Canvas.FIRE);
+		//#if polish.key.ReturnKey:defined
+			//#= } else  if (keyCode == this.closeOptionsMenuKey || keyCode == ${polish.key.ReturnKey}) {
+		//#else
+			} else  if (keyCode == this.closeOptionsMenuKey) {
+		//#endif
+				this.isSoftKeyPressed = true;
+				int selectedIndex = this.commandsContainer.getFocusedIndex();
+				if (!this.commandsContainer.handleKeyReleased(0, Canvas.LEFT)
+						|| selectedIndex != this.commandsContainer.getFocusedIndex() ) 
+				{
+					setOpen( false );
+				}
+				//System.out.println("MenuBar is closing due to key " + keyCode);
+				return true;
 			} else {
-				return this.commandsContainer.handleKeyReleased(keyCode, gameAction);
+				//#if tmp.useInvisibleMenuBar
+					// handle hide command specifically:
+					if (  gameAction == Canvas.FIRE && ((CommandItem)this.commandsContainer.focusedItem).command == this.hideCommand ) {
+						setOpen( false );
+						return true;
+					}
+				//#endif
+				boolean handled = this.commandsContainer.handleKeyReleased(keyCode, gameAction);
+				//System.out.println("menubar: container handled keyReleased " + keyCode + ": " + handled);
+				if (handled) {
+					this.isInitialized = false;
+				} else { 
+					//#if polish.debug.error
+						if (gameAction == Canvas.DOWN || gameAction == Canvas.UP) {
+							//#if polish.Container.allowCycling != false
+								//#debug error
+								System.out.println("Container DID NOT HANDLE DOWN OR UP, selectedIndex=" + this.commandsContainer.getFocusedIndex() + ", count="+ this.commandsContainer.size() + ", cycling=" + this.commandsContainer.allowCycling);
+							//#else
+								//#debug error
+								System.out.println("Container DID NOT HANDLE DOWN OR UP bcause it has been DEACTIVATED - check your polish.Container.allowCycling preprocessing variable" );
+							//#endif
+							//#if polish.css.view-type
+								//#debug error
+								System.out.println("view-type of container " + this.commandsContainer + " = " + this.commandsContainer.containerView );
+							//#endif
+						}
+					//#endif
+					if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {
+						int index = keyCode - Canvas.KEY_NUM1;
+						if (index <= this.commandsContainer.size()) {
+							CommandItem item = (CommandItem) this.commandsContainer.get(index);
+							if (item.getAppearanceMode() != Item.PLAIN) {
+								if (!item.isFocused) {
+									this.commandsContainer.focus( index );
+								}
+								handled = item.handleKeyReleased(0, Canvas.FIRE);
+								return handled;
+							}
+						}
+					}
+				}
+				return true;				
+			}
+		} else { // menu is currently closed:
+			//#if polish.key.Menu:defined
+			if (keyCode == MENU_KEY) {
+				setOpen(true);
+				return true;
+			}
+		//#endif
+
+		
+		//#if tmp.useMiddleCommand
+			//#if polish.key.MiddleSoftKey:defined
+				//#= if ( keyCode == ${polish.key.MiddleSoftKey}
+			//#elif polish.key.CenterSoftKey:defined
+				//#= if ( keyCode == ${polish.key.CenterSoftKey}
+			//#else
+				if ( keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY && gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5
+			//#endif
+						&& this.singleMiddleCommand != null && this.singleMiddleCommandItem.getAppearanceMode() != PLAIN) 
+				{
+					//#if polish.key.MiddleSoftKey:defined
+						this.isSoftKeyPressed = true;			
+					//#endif
+					this.singleMiddleCommandItem.notifyItemPressedEnd();
+					this.screen.callCommandListener(this.singleMiddleCommand);
+					return true;			
+				}
+		//#endif
+		if (keyCode == LEFT_SOFT_KEY && this.singleLeftCommand != null && this.singleLeftCommandItem.getAppearanceMode() != PLAIN) {
+			this.isSoftKeyPressed = true;	
+			this.singleLeftCommandItem.notifyItemPressedEnd();
+			this.screen.callCommandListener(this.singleLeftCommand);
+			return true;			
+		} else if (keyCode == RIGHT_SOFT_KEY && this.singleRightCommand != null && this.singleRightCommandItem.getAppearanceMode() != PLAIN) {
+			this.isSoftKeyPressed = true;	
+			this.singleRightCommandItem.notifyItemPressedEnd();
+			this.screen.callCommandListener(this.singleRightCommand);
+			return true;			
+		} else if (keyCode == this.openOptionsMenuKey ) {
+			this.isSoftKeyPressed = true;
+			if (this.openOptionsMenuKey == LEFT_SOFT_KEY) {
+				if (this.singleLeftCommandItem != null) {
+					this.singleLeftCommandItem.notifyItemPressedEnd();
+				}				
+			} else if (this.openOptionsMenuKey == RIGHT_SOFT_KEY) {
+				if (this.singleRightCommandItem != null) {
+					this.singleRightCommandItem.notifyItemPressedEnd();
+				}				
+			}
+			//#if tmp.useInvisibleMenuBar
+				if ( !this.isOpened && this.positiveCommand != null 
+//						&& ((this.singleRightCommand != null && this.commandsContainer.size() == 3) ) )
+						&& (this.singleRightCommand == null && this.commandsContainer.size() == 2) )  
+				{
+					// invoke positive command:
+					this.screen.callCommandListener(this.positiveCommand);
+					return true;
+				} else 
+			//#endif
+			if (this.commandsList.size() > 0) {
+				setOpen( true );
+				return true;
 			}
 		}
+	}
 		return super.handleKeyReleased(keyCode, gameAction);
 	}
 

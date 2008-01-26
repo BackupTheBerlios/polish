@@ -2397,6 +2397,9 @@ public abstract class Item extends Object
 	 */
 	protected boolean notifyItemPressedStart() {
 		//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
+		if (this.isPressed) {
+			return false;
+		}
 		//#debug
 		System.out.println("notifyItemPressedStart");
 		this.isPressed = true;
@@ -2419,6 +2422,9 @@ public abstract class Item extends Object
 	 * Is called when an item is pressed
 	 */
 	protected void notifyItemPressedEnd() {
+		if (!this.isPressed) {
+			return;
+		}
 		//#debug
 		System.out.println("notifyItemPressedEnd");
 		this.isPressed = false;
