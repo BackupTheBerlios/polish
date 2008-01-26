@@ -385,13 +385,15 @@ implements AccessibleCanvas
 	/**
 	 * Initialises this screen before it is painted for the first time.
 	 */
-	private void init() {
+	private void init( int width, int height) {
 		//#debug
 		System.out.println("Initialising screen " + this );
-		//#if tmp.fullScreen && polish.midp2 && !(polish.Bugs.fullScreenInPaint || tmp.needsNokiaUiForSystemAlerts)
-			super.setFullScreenMode( true );
-		//#endif
-			
+		// calling super.setFullScreenMode(true) is already done within the showNotify() method
+//		//#if tmp.fullScreen && polish.midp2 && !(polish.Bugs.fullScreenInPaint || tmp.needsNokiaUiForSystemAlerts)
+//			super.setFullScreenMode( true );
+//		//#endif
+		/* old code to establish the screen dimensions:
+		 * 
 		//#ifdef tmp.menuFullScreen
 			//#if polish.Screen.base:defined
 				//# this.fullScreenHeight = getCanvasHeight();
@@ -416,7 +418,28 @@ implements AccessibleCanvas
 			//#else
 				return;
 			//#endif
-		} 
+		}
+		//#if tmp.menuFullScreen && polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode
+			//#if polish.FullCanvasWidth:defined
+				//#= width = ${polish.FullCanvasWidth};
+			//#endif
+			//#if polish.FullCanvasHeight:defined
+				//#= height = ${polish.FullCanvasHeight};
+			//#endif
+		//#endif
+		 *  END OLD CODE
+		 * 
+		 */
+		if (height == 0 || width == 0) {
+			return; // invalid initialization values...
+		}
+		//#ifdef tmp.menuFullScreen
+			this.fullScreenHeight = height;
+		//#endif
+		this.screenHeight = height;
+		this.originalScreenHeight =  height;
+		this.screenWidth = width;
+
 		
 		boolean startAnimationThread = false;
 		if (StyleSheet.animationThread == null) {
@@ -836,7 +859,7 @@ implements AccessibleCanvas
 				super.setFullScreenMode( true );
 			//#endif
 			if (!this.isInitialized) {
-				init();
+				init( getScreenFullWidth(), getScreenFullHeight() );
 			}
 			//#if polish.css.repaint-previous-screen
 				if (this.repaintPreviousScreen) {
@@ -1387,7 +1410,7 @@ implements AccessibleCanvas
 		//System.out.println("..paint");
 		//System.out.println("Painting screen "+ this + ", background == null: " + (this.background == null) + ", clipping=" + g.getClipX() + "/" + g.getClipY() + " - " + g.getClipWidth() + "/" + g.getClipHeight() );
 		if (!this.isInitialized) {
-			init();
+			init( getScreenFullWidth(), getScreenFullHeight() );
 		} else  if (this.isInitRequested) {
 			calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
 			this.isInitRequested = false;
@@ -3476,7 +3499,7 @@ implements AccessibleCanvas
 						this.title.isInitialized = false;
 					}
 				//#endif
-				init();
+				init( width, height );
 				//calculateContentArea( 0, 0, this.screenWidth, this.screenHeight  ); done within init()
 			}
 		//#endif
@@ -4000,31 +4023,6 @@ implements AccessibleCanvas
 
 
 
-	/**
-	 * <p>A command listener which forwards commands to the item command listener in case it encounters an item command.</p>
-	 *
-	 * <p>Copyright Enough Software 2004 - 2008</p>
-
-	 * <pre>
-	 * history
-	 *        09-Jun-2004 - rob creation
-	 * </pre>
-	 * @author Robert Virkus, robert@enough.de
-	 */
-	class ForwardCommandListener implements CommandListener {
-		/** the original command listener set by the programmer */
-		public CommandListener realCommandListener;
-
-		/* (non-Javadoc)
-		 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
-		 */
-		public void commandAction(Command cmd, Displayable thisScreen) {
-			handleCommand( cmd );
-		}
-		
-	}
-
-
 
 	/**
 	 * Retrieves the height of the content area.
@@ -4050,14 +4048,59 @@ implements AccessibleCanvas
 		return this.contentWidth;
 	}
 	
+	/**
+	 * Retrieves the height that the complete screen uses, including title, menubar, ticker, etc.
+	 * 
+	 * @return the fully available height.
+	 */
+	public int getScreenFullHeight() {
+		int height;
+		//#if polish.Screen.base:defined
+			//# height = getCanvasHeight();
+		//#elif tmp.fullScreen && polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasHeight:defined
+			//#= height = ${polish.FullCanvasHeight};
+		//#else
+			height = getHeight();
+		//#endif
+		return height;	
+	}
+	
+	/**
+	 * Retrieves the width that the complete screen uses, including scrollbar, etc.
+	 * 
+	 * @return the fully available width.
+	 */
+	public int getScreenFullWidth() {
+		int width;
+		//#if tmp.fullScreen && polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasWidth:defined
+			//#= width = ${polish.FullCanvasWidth};
+		//#else
+			width = getWidth();
+		//#endif
+		return width;
+	}
+
+	
 	//#ifdef tmp.useExternalMenuBar
-	public void setMenuItemStyle(Style style)
+	/**
+	 * Sets the style for menuItems.
+	 * This can only be used within the menu fullscreen mode and when the external menu bar is used.
+	 * 
+	 * @param menuItemStyle the style for menu items
+	 */
+	public void setMenuItemStyle(Style menuItemStyle)
 	{
-		this.menuBar.setMenuItemStyle(style);
+		this.menuBar.setMenuItemStyle(menuItemStyle);
 	}
 	//#endif
 	
 	//#ifdef tmp.useExternalMenuBar
+	/**
+	 * Allows to access the menu bar.
+	 * This can only be used within the menu fullscreen mode and when the external menu bar is used.
+	 * 
+	 * @return the menubar instanse
+	 */
 	public MenuBar getMenuBar()
 	{
 		return this.menuBar;
@@ -4090,9 +4133,41 @@ implements AccessibleCanvas
 		}
 	}
 	
+	
+	
+
+	/**
+	 * <p>A command listener which forwards commands to the item command listener in case it encounters an item command.</p>
+	 *
+	 * <p>Copyright Enough Software 2004 - 2008</p>
+
+	 * <pre>
+	 * history
+	 *        09-Jun-2004 - rob creation
+	 * </pre>
+	 * @author Robert Virkus, robert@enough.de
+	 */
+	class ForwardCommandListener implements CommandListener {
+		/** the original command listener set by the programmer */
+		public CommandListener realCommandListener;
+
+		/* (non-Javadoc)
+		 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+		 */
+		public void commandAction(Command cmd, Displayable thisScreen) {
+			handleCommand( cmd );
+		}
+		
+	}
+
+
+	
 //#ifdef polish.Screen.additionalMethods:defined
 	//#include ${polish.Screen.additionalMethods}
 //#endif
+	
+	
+	
 	
 	
 

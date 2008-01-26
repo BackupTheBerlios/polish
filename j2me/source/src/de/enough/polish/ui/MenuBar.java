@@ -1137,14 +1137,7 @@ public class MenuBar extends Item {
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		//#debug
 		System.out.println("MenuBar: handleKeyReleased(" + keyCode + ", " + gameAction + ") - isOpened=" + this.isOpened );
-		if (this.isOpened) {
-//			if (keyCode == this.selectOptionsMenuKey) {
-//				return this.commandsContainer.handleKeyReleased(0, Canvas.FIRE);
-//			} else {
-//				return this.commandsContainer.handleKeyReleased(keyCode, gameAction);
-//			}
-			/////////////////////////////////////////////
-			
+		if (this.isOpened) {			
 			//#if polish.key.Menu:defined
 				if (keyCode == MENU_KEY) {
 					setOpen(false);
@@ -1188,21 +1181,6 @@ public class MenuBar extends Item {
 				if (handled) {
 					this.isInitialized = false;
 				} else { 
-					//#if polish.debug.error
-						if (gameAction == Canvas.DOWN || gameAction == Canvas.UP) {
-							//#if polish.Container.allowCycling != false
-								//#debug error
-								System.out.println("Container DID NOT HANDLE DOWN OR UP, selectedIndex=" + this.commandsContainer.getFocusedIndex() + ", count="+ this.commandsContainer.size() + ", cycling=" + this.commandsContainer.allowCycling);
-							//#else
-								//#debug error
-								System.out.println("Container DID NOT HANDLE DOWN OR UP bcause it has been DEACTIVATED - check your polish.Container.allowCycling preprocessing variable" );
-							//#endif
-							//#if polish.css.view-type
-								//#debug error
-								System.out.println("view-type of container " + this.commandsContainer + " = " + this.commandsContainer.containerView );
-							//#endif
-						}
-					//#endif
 					if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {
 						int index = keyCode - Canvas.KEY_NUM1;
 						if (index <= this.commandsContainer.size()) {

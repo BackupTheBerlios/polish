@@ -1329,7 +1329,11 @@ public class TextField extends StringItem
 		String start = txt.substring( 0, position );
 		String end = txt.substring( position );
 		setString( start + src + end );
-		
+		//#if tmp.directInput
+			if (position == this.caretPosition) {
+				this.caretPosition += src.length();
+			}
+		//#endif
 		//#if tmp.usePredictiveInput
 			if(this.predictiveInput)
 				this.predictiveAccess.synchronize();
