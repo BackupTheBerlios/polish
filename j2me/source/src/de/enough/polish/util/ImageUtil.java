@@ -514,7 +514,7 @@ public final class ImageUtil {
 	 * @see #scaleDownHq(int[], int[], int, int, int, int, boolean)
 	 */
 	public static void perspectiveShear(int [] src,int[] dest, int originalWidth, int newWidth,int leftHeight, int rightHeight, int opacity, int EDGEDETECTION_MAP){
-		// #debug
+		//#debug
 		System.out.println(" perspectiveShear requested with height="+ rightHeight + " width" + newWidth  + " opacity " + opacity);
 		
 		int originalHeight= src.length/originalWidth;
