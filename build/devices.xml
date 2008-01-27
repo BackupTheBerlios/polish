@@ -367,6 +367,7 @@ These namespaces/schemas will be used soon.
 		<features>isVirtual</features>
 		<groups>Series40DP1</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="HeapSize" value="200kb"/>
@@ -378,6 +379,7 @@ These namespaces/schemas will be used soon.
 		<features>isVirtual</features>
 		<groups>Series40DP1</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="HeapSize" value="200kb"/>
@@ -388,8 +390,6 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/Series40Midp2</identifier>
 		<features>isVirtual</features>
 		<groups>Series40DP2</groups>
-		<capability name="ScreenSize" value="128x128"/>
-		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="wmapi, mmapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="VideoFormat" value="3gpp"/>
@@ -402,8 +402,6 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/Series40DP2</identifier>
 		<features>isVirtual</features>
 		<groups>Series40DP2</groups>
-		<capability name="ScreenSize" value="128x128"/>
-		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="wmapi, mmapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="VideoFormat" value="3gpp"/>
@@ -4995,24 +4993,25 @@ These namespaces/schemas will be used soon.
 <!-- Nokia devices -->
 
 	<device>
-    		<identifier>Nokia/6660</identifier>
-    		<groups>Series60</groups>
-    		<features>hasCamera</features>
-    		<capability name="OS" value="Symbian OS 7.0s"/>
-    		<capability name="ScreenSize" value="176x208"/>
-    		<capability name="BitsPerPixel" value="16"/>
-    		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
-    		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
-    		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
-    		<capability name="SoundFormat" value="midi, midi24, true tones, amr, wb-amr"/>
-    		<capability name="HeapSize" value="3mb"/>
-    		<capability name="MaxJarSize" value="dynamic"/>
-    		<capability name="CameraResolution" value="640x480"/>
-    		<capability name="CameraZoom" value="2"/>
-    		<capability name="Font.small" value="15"/>
-    		<capability name="Font.medium" value="16"/>
-    		<capability name="Font.large" value="21"/>
-    		<capability name="Bugs" value="BluetoothRfcommInputStream"/>
+   		<identifier>Nokia/6660</identifier>
+   		<groups>Series60</groups>
+   		<features>hasCamera</features>
+   		<capability name="OS" value="Symbian OS 7.0s"/>
+   		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
+   		<capability name="BitsPerPixel" value="16"/>
+   		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
+   		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+   		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
+   		<capability name="SoundFormat" value="midi, midi24, true tones, amr, wb-amr"/>
+   		<capability name="HeapSize" value="3mb"/>
+   		<capability name="MaxJarSize" value="dynamic"/>
+   		<capability name="CameraResolution" value="640x480"/>
+   		<capability name="CameraZoom" value="2"/>
+   		<capability name="Font.small" value="15"/>
+   		<capability name="Font.medium" value="16"/>
+   		<capability name="Font.large" value="21"/>
+   		<capability name="Bugs" value="BluetoothRfcommInputStream"/>
     </device>
     
 	<device>
@@ -5027,6 +5026,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
 		<capability name="CanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="ImageFormat" value="gif, gif87a, gif89a, png,png1.0,wbmp" />
 		<capability name="CaptureImageFormat" value="jpeg" />
 		<capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
@@ -5054,6 +5054,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, mp3, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="500 KB"/>
@@ -5098,6 +5099,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, mp3, sp-midi, truetone, wb-amr"/>
 		<capability name="HeapSize" value="512 KB"/>
@@ -5120,6 +5122,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="aac+, eaac, eaac+, aac, midi, midi64, mp4, wma, amr, nb-amr, mp3, truetone, wb-amr"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -5149,6 +5152,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="aac+, eaac+, aac, midi, midi64, mp4, amr, nb-amr, mp3, truetone, wb-amr, sp-midi, m4a, qcelp"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -5222,6 +5226,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="aac+, aac, midi, midi64, qcelp, amr, nb-amr, mp3, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -5241,6 +5246,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="FullCanvasSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="SoundFormat" value="midi, midi16, amr, nb-amr, sp-midi, qcelp"/>
 		<capability name="StorageSize" value="3 MB"/>
 		<capability name="DRM" value="OMA DRM v1.0"/>
@@ -5260,6 +5266,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="208x208"/>
 		<capability name="FullCanvasSize" value="208x208"/>
 		<capability name="CanvasSize" value="208x144"/>
+		<capability name="IconSize" value="37x37"/>	
 		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="aac, aac+, eaac+, midi, midi64, amr, nb-amr, mp3, realaudio, sp-midi, truetones, wb-amr, wav, xmf"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5288,6 +5295,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x234"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="aac, aac+, eaac+,  midi, midi48, amr, nb-amr, mp3, mp4, realaudio, truetones, wb-amr, xmf, sp-midi, waf"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5316,6 +5324,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="FullCanvasSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="VideoFormat" value="3gpp, h.263"/>
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, mp3"/>
 		<capability name="HeapSize" value="500 kb"/>
@@ -5343,6 +5352,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="aac+, eaac+, aac, midi, midi64, mp4, amr, nb-amr, mp3, truetone, wb-amr"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -5375,6 +5385,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="eaac+, aac, aac+, eaac, midi, midi64, mp4, amr, nb-amr, mp3"/>
 		<capability name="HeapSize" value="1 MB"/>
@@ -5399,6 +5410,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, aac, mp4, amr, nb-amr, mp3, truetone, wb-amr"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -5425,6 +5437,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, aac, amr, nb-amr, mp3, mp4, truetone, wb-amr"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -5449,6 +5462,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi16, amr, nb-amr, nrt, mp3, truetone, wb-amr"/>
 		<capability name="HeapSize" value="500 kb"/>
@@ -5473,6 +5487,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, m4a, aac+, eaac, eaac+, realaudio, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5496,6 +5511,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, m4a, aac+, eaac, eaac+, realaudio, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5519,6 +5535,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="176x208"/>
 		<capability name="FullCanvasSize" value="176x208"/>
+		<capability name="IconSize" value="31x31"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, m4a, aac+, eaac+, realaudio, truetone, wb-amr, sp-midi, wav"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5568,6 +5585,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, mp4, aac+, eaac, eaac+, realaudio, truetone, wb-amr"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5647,6 +5665,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="352x416"/>
 		<capability name="FullCanvasSize" value="352x416"/>
+		<capability name="IconSize" value="64x64"/>	
 		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, mp4, aac+, eaac, eaac+, realaudio, truetone, wb-amr"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5670,6 +5689,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenOrientationCanChange" value="true"/>
 		<capability name="ScreenSize" value="352x416"/>
 		<capability name="FullCanvasSize" value="352x416"/>
+		<capability name="IconSize" value="64x64"/>	
 		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, mp4, aac+, eaac, eaac+, realaudio, truetone, wb-amr"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5704,6 +5724,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, mp4, aac+, eaac, eaac+, realaudio, truetone, wb-amr"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5729,6 +5750,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, nrt, mp3, mp4, m4a, aac+, eaac+, realaudio, truetone, wb-amr, xmf, sp-midi"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5752,6 +5774,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, m4a, aac+, eaac, eaac+, realaudio, truetone, wb-amr, sp-midi, xmf"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5777,6 +5800,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, m4a, aac+, eaac, eaac+, realaudio, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5805,6 +5829,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, m4a, aac+, eaac, eaac+, realaudio, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5830,6 +5855,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, m4a, aac+, eaac, eaac+, realaudio, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5855,6 +5881,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, h.26´4, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, aac+, eaac+, realaudio, truetone, wb-amr"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5879,6 +5906,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, m4a, aac+, eaac+, realaudio, truetone, wb-amr, xmf, sp-midi"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5902,6 +5930,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, m4a, aac+, eaac, eaac+, realaudio, truetone, wb-amr, sp-midi, wav"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -5925,6 +5954,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="176x208"/>
 		<capability name="FullCanvasSize" value="176x208"/>
+		<capability name="IconSize" value="31x31"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, m4a, aac+, eaac+, realaudio, truetone, wb-amr, sp-midi, xfm, wav" />
 		<capability name="HeapSize" value="dynamic"/>
@@ -5950,6 +5980,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="352x416"/>
 		<capability name="FullCanvasSize" value="352x416"/>
+		<capability name="IconSize" value="76x76"/>	
 		<capability name="ExternalBitsPerPixel" value="16"/>
 		<capability name="ExternalScreenSize" value="128x128"/>
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo"/>
@@ -5988,6 +6019,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="176x208"/>
 		<capability name="FullCanvasSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, nrt, mp3, mp4, aac+, eaac, eaac+, realaudio, truetone, wb-amr, wav"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -6031,6 +6063,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, wma, mp3, mp4, m4a, aac+, eaac+, realaudio, truetone, wb-amr, sp-midi, wav"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -6055,6 +6088,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="176x208"/>
 		<capability name="FullCanvasSize" value="176x208"/>
+		<capability name="IconSize" value="31x31"/>	
 		<capability name="VideoFormat" value="3gpp, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, aac+, eaac+, realaudio, truetone, wb-amr, waf" />
 		<capability name="HeapSize" value="dynamic"/>
@@ -6079,6 +6113,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, wma, mp3, aac+, eaac+, realaudio, truetone, wb-amr"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -6107,6 +6142,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, wma, mp3, aac+, eaac+, realaudio, truetone, wb-amr"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -6135,6 +6171,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="352x416"/>
 		<capability name="FullCanvasSize" value="352x416"/>
+		<capability name="IconSize" value="64x64"/>	
 		<capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi48, amr, nb-amr, aac, wma, mp3, mp4, m4a, aac+, eaac, eaac+, realaudio, truetone, wb-amr, xmf, sp-midi"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -6165,6 +6202,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="FullCanvasSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, mp3, sp-midi"/>
 		<capability name="HeapSize" value="512 KB"/>
 		<capability name="MaxJarSize" value="128 KB"/>
@@ -6186,6 +6224,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, aac+, eaac, eaac+, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="1 MB"/>
@@ -6209,6 +6248,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, mp4, aac+, eaac, eaac+, truetone, wb-amr, xmf, sp-midi"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -6232,6 +6272,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, aac+, eaac, eaac+, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -6255,6 +6296,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, aac+, eaac, eaac+, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -6278,6 +6320,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, aac+, eaac, eaac+, truetone, wb-amr, xmf, sp-midi"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -6301,6 +6344,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, aac+, eaac, eaac+, truetone, wb-amr, xmf, sp-midi"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -6324,6 +6368,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, aac+, eacc, eaac+, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="1 MB"/>
@@ -6347,6 +6392,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="amr"/>
 		<capability name="HeapSize" value="512 KB"/>
@@ -6368,6 +6414,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, aac+, eaac, eaac+"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -6391,6 +6438,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, aac+, eaac+, truetone, wb-amr, xmf, sp-midi"/>
 		<capability name="HeapSize" value="dynamic"/>
@@ -6414,6 +6462,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, truetone, wb-amr"/>
 		<capability name="HeapSize" value="512 KB"/>
@@ -6437,6 +6486,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, mp4, aac+, eaac, eaac+, truetone, wb-amr"/>
 		<capability name="HeapSize" value="1 MB"/>
@@ -6460,6 +6510,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, mp4, wma, aac+, eaac, eaac+"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -6482,6 +6533,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="FullCanvasSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, mp3"/>
 		<capability name="HeapSize" value="512 KB"/>
 		<capability name="MaxJarSize" value="150 KB"/>
@@ -6501,6 +6553,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, qcelp, aac+, eaac, eaac+"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -6522,6 +6575,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, qcelp, aac+, eaac, eaac+"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -6543,6 +6597,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, mp4, wma, truetone, wb-amr, aac+, eaac, eaac+"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -6565,6 +6620,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, mp4, aac+, eaac, eaac+"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -6588,6 +6644,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, mp4, aac+, eaac, eaac+"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -6611,6 +6668,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, mp3, mp4, aac+, eaac, eaac+, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="512 KB"/>
@@ -6634,6 +6692,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, aac+, eaac, eaac+, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -6657,6 +6716,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="208x208"/>
 		<capability name="FullCanvasSize" value="208x208"/>
+		<capability name="IconSize" value="46x46"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, aac+, eaac, eaac+, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -6680,6 +6740,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="208x208"/>
 		<capability name="CanvasSize" value="208x156"/>
 		<capability name="FullCanvasSize" value="208x208"/>
+		<capability name="IconSize" value="46x46"/>	
 		<capability name="VideoFormat" value="3gpp, h.263"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, nrt, mp3"/>
 		<capability name="HeapSize" value="977 kb"/>
@@ -6707,6 +6768,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="208x208"/>
 		<capability name="CanvasSize" value="208x156"/>
 		<capability name="FullCanvasSize" value="208x208"/>
+		<capability name="IconSize" value="46x46"/>	
 		<capability name="VideoFormat" value="3gpp, h.263"/>
 		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, aac, nrt, mp3"/>
 		<capability name="HeapSize" value="977 kb"/>
@@ -6732,6 +6794,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="ExternalScreenSize" value="96x65"/>
 		<capability name="ExternalBitsPerPixel" value="1"/>
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
@@ -6758,6 +6821,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="ExternalScreenSize" value="96x65"/>
 		<capability name="ExternalBitsPerPixel" value="1"/>
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
@@ -6784,6 +6848,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="ExternalScreenSize" value="96x65"/>
 		<capability name="ExternalBitsPerPixel" value="16"/>
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
@@ -6810,6 +6875,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="ExternalScreenSize" value="96x65"/>
 		<capability name="ExternalBitsPerPixel" value="16"/>
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
@@ -6836,6 +6902,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="ExternalScreenSize" value="96x65"/>
 		<capability name="ExternalBitsPerPixel" value="16"/>
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
@@ -6860,6 +6927,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi1.1"/>
 		<capability name="VideoFormat" value="3gpp, h.263"/>
@@ -6884,6 +6952,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, btapi"/>
 		<capability name="VideoFormat" value="3gpp, h.263"/>
@@ -6912,6 +6981,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="208x208"/>
 		<capability name="CanvasSize" value="208x156"/>
 		<capability name="FullCanvasSize" value="208x208"/>
+		<capability name="IconSize" value="46x46"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi, btapi, m3g, pdaapi"/>
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
@@ -6950,6 +7020,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 8.0a"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, btapi, pdaapi, m3g"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
@@ -6974,8 +7045,9 @@ These namespaces/schemas will be used soon.
 		<groups>Series40DP2</groups>
 		<features>hasCamera</features>
 		<capability name="OS" value="Nokia OS"/>
-		<capability name="ScreenSize" value="128x128"/>
+		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ExternalScreenSize" value="96x65"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pdaapi"/>
@@ -7010,6 +7082,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="FullCanvasSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi64, aac, eaac+, m4a, amr, nb-amr, mp3, mp4, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="2 MB"/>
@@ -7030,8 +7103,9 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, pdaapi"/>
 		<capability name="BitsPerPixel" value="16"/>
-		<capability name="ScreenSize" value="128x128"/>
+		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="VideoFormat" value="3gpp, h.263, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, midi24, amr, nb-amr, mp3, truetone, wb-amr, sp-midi"/>
 		<capability name="HeapSize" value="512 KB"/>
@@ -7050,8 +7124,9 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Nokia OS"/>
 		<capability name="ScreenSize" value="128x160"/>
-		<capability name="ScreenSize" value="128x128"/>
+		<capability name="ScreenSize" value="128x160"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="ScreenSize" value="128x128"/>
 		<capability name="ExternalScreenSize" value="96x65"/>
@@ -7081,6 +7156,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 8.0a"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi, btapi, pdaapi, m3g"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
@@ -7120,6 +7196,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 8.0a"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, btapi, pdaapi, m3g"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
@@ -7149,6 +7226,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Nokia OS"/>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pdaapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -7178,6 +7256,7 @@ These namespaces/schemas will be used soon.
 		<features/>
 		<capability name="OS" value="Nokia OS"/>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="wmapi, pdaapi, m3g"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
@@ -7202,6 +7281,7 @@ These namespaces/schemas will be used soon.
 		<features/>
 		<capability name="OS" value="Nokia OS"/>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="wmapi, pdaapi, m3g"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
@@ -7259,6 +7339,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Nokia OS"/>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
@@ -7289,6 +7370,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera, hasCommandKeyEvents</features>
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, btapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -7317,6 +7399,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, btapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -7350,6 +7433,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Nokia OS"/>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -7440,6 +7524,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="640x200"/>
 		<capability name="FullCanvasSize" value="640x200"/>
 		<capability name="ExternalScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, btapi, pdaapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, FP/1.0, PP/1.0"/>
@@ -7479,6 +7564,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="mmapi, wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -7504,6 +7590,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -7531,6 +7618,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, btapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -7561,6 +7649,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 8.0a"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="pdaapi, btapi, m3g, mmapi1.1, wmapi1.0" />
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -7637,6 +7726,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series60</groups>
 		<capability name="OS" value="Symbian OS 6.1"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -7655,6 +7745,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -7716,6 +7807,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -7743,6 +7835,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 6.1"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -7769,6 +7862,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 6.1"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -7791,6 +7885,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 7.0s"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
@@ -7887,6 +7982,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 6.1"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="mmapi, wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -7907,6 +8003,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series60</groups>
 		<capability name="OS" value="Symbian OS 6.1"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="mmapi, wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -7941,6 +8038,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 6.1"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="mmapi, wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -7989,6 +8087,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera</features>
 		<capability name="OS" value="Symbian OS 6.1"/>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="IconSize" value="42x29"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="wav, true tones"/>
@@ -8027,6 +8126,7 @@ These namespaces/schemas will be used soon.
 		<features>hasCamera, hasCommandKeyEvents</features>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="MaxJarSize" value="391 kb"/>
 		<capability name="HeapSize" value="977 kb"/>
@@ -8081,6 +8181,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="mmapi, wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -8142,6 +8243,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi, btapi"/>
 		<capability name="VideoFormat" value="3gpp, h.263"/>
@@ -8219,6 +8321,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="wmapi, wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
@@ -8284,6 +8387,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="midi"/>
@@ -8354,6 +8458,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/3120</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="midi"/>
@@ -8371,6 +8476,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/3108</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="midi"/>
@@ -8403,6 +8509,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/6810</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -8426,6 +8533,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -8453,6 +8561,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -8498,6 +8607,7 @@ These namespaces/schemas will be used soon.
 		<capability name="ScreenSize" value="128x160"/>
 		<capability name="CanvasSize" value="128x128"/>
 		<capability name="FullCanvasSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -8549,6 +8659,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -8587,6 +8698,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/3100</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -8647,6 +8759,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/6108</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="midi"/>
@@ -8667,6 +8780,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/6560</identifier>
 		<groups>Nokia-UI</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
@@ -8781,6 +8895,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/3300</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="wmapi, mmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -8812,6 +8927,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -8891,6 +9007,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/6800</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPackage" value="wmapi"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
@@ -8923,6 +9040,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/6200</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="midi"/>
@@ -8941,6 +9059,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/6100</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="midi"/>
@@ -9055,6 +9174,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/5100</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="midi"/>
@@ -9081,6 +9201,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series40</groups>
 		<features>hasCamera</features>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="IconSize" value="24x24"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="midi"/>
@@ -9175,6 +9296,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/6610</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="midi"/>
@@ -9202,6 +9324,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Nokia/7210</identifier>
 		<groups>Series40</groups>
 		<capability name="ScreenSize" value="128x128"/>
+		<capability name="IconSize" value="16x16"/>	
 		<capability name="BitsPerPixel" value="12"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
 		<capability name="SoundFormat" value="midi"/>
@@ -14530,6 +14653,7 @@ These namespaces/schemas will be used soon.
 		<groups>Series40E2</groups>
 		<capability name="ScreenSize" value="208x208"/>
 		<capability name="FullCanvasSize" value="208x208"/>
+		<capability name="IconSize" value="46x46"/>	
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi, pdaapi"/>		
@@ -14565,6 +14689,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x235"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, 3gpp2, mp4, h.263, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, sp-midi,midi64, amr, nb-amr, wb-amr, wma, aac, aac+, eaac+, mp3, mp4, m4a,  realaudio, truetone, xmf, wav" />
 		<capability name="HeapSize" value="dynamic"/>
@@ -14646,6 +14771,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
 		<capability name="CanvasSize" value="240x235"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="3gpp, 3gpp2, mp4, h.263, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, sp-midi,midi64, amr, nb-amr, wb-amr, wma, aac, aac+, eaac+, mp3, mp4, m4a,  realaudio, truetone, xmf, wav" />
 		<capability name="HeapSize" value="dynamic"/>
@@ -14735,6 +14861,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="nokia-ui, nwmapi, mmapi, location-api, webservice, security, sip-api, 3dapi, wmapi2.0, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="IconSize" value="53x53,55x55"/>	
 		<capability name="VideoFormat" value="h.263, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="realaudio, midi, sp-midi,midi64, amr, nb-amr, wb-amr, wma, aac, acc+, eaac+, mp3, mp4, truetone, xmf" />
 		<capability name="HeapSize" value="dynamic"/>
@@ -14759,6 +14886,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="nokia-ui, wmapi, mmapi, webservice, security, 3dapi, wmapi2.0, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, sp-midi,midi64, amr, nb-amr, wb-amr, wma, aac, eaac+, mp3, mp4, truetone, xmf" />
 		<capability name="HeapSize" value="2 MB"/>
@@ -14783,6 +14911,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="nokia-ui, wmapi, mmapi, webservice, security, 3dapi, wmapi2.0, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, sp-midi,midi64, amr, nb-amr, wb-amr, wma, aac, aac+, eaac+, mp3, mp4, truetone, xmf" />
 		<capability name="HeapSize" value="2 MB"/>
@@ -14807,6 +14936,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, location-api, sip-api, 3dapi, wmapi, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="h.263, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, sp-midi,midi64, amr, nb-amr, wb-amr, wma, aac, aac+, eaac+, mp3, mp4, truetone, xmf, realaudio, wav" />
 		<capability name="HeapSize" value="dynamic"/>
@@ -14831,6 +14961,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, 3dapi, wmapi, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, sp-midi,midi64, amr, nb-amr, wma, aac, aac+, eaac+, mp3, mp4, truetone, xmf" />
 		<capability name="HeapSize" value="2 MB"/>
@@ -14855,6 +14986,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, 3dapi, wmapi, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, sp-midi,midi64, amr, nb-amr, wma, aac, aac+, eaac+, mp3, mp4, truetone, xmf" />
 		<capability name="HeapSize" value="2 MB"/>
@@ -14879,6 +15011,7 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, 3dapi, wmapi, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
 		<capability name="BitsPerPixel" value="24"/>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="IconSize" value="46x48"/>	
 		<capability name="VideoFormat" value="h.263, h.264, mpeg-4"/>
 		<capability name="SoundFormat" value="midi, sp-midi,midi64, amr, wb-amr, nb-amr, wma, aac, eaac+, mp3, mp4, truetone, xmf" />
 		<capability name="HeapSize" value="2 MB"/>

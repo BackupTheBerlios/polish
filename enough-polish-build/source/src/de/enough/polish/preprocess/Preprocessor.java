@@ -1528,16 +1528,29 @@ public class Preprocessor {
 			debugCall = "de.enough.polish.util.Debug.debug(";
 		}
 		debugCall += "\"" + debugLevel + "\", \"" + className + "\", " + (lines.getCurrentIndex() + 1) + ", ";
-		String line = lines.getCurrent();
-		Matcher matcher = SYSTEM_PRINT_PATTERN.matcher( line );
-		if (matcher.find()) {
+		String line = lines.getCurrent().trim();
+		try {
+		if (line.startsWith("System")) {
 			while (line.indexOf(';') == -1) {
 				commentLine(line, line,  lines);
 				lines.next();
 				String tmp = lines.getCurrent();
 				uncommentLine( tmp, lines );
-				line += lines.getCurrent().trim();
+				String uncommentedLine = lines.getCurrent().trim();
+				int commentIndex = uncommentedLine.indexOf("//");
+				if (commentIndex != -1) {
+					uncommentedLine = uncommentedLine.substring(0, commentIndex).trim();
+				}
+				line += uncommentedLine;
 			}
+		}
+		} catch (Throwable e) {
+			e.printStackTrace();
+			System.out.println("at class " + className + " line=" + line);
+		}
+		
+		Matcher matcher = SYSTEM_PRINT_PATTERN.matcher( line );
+		if (matcher.find()) {
 			// the current line contains a system.out.println()
 			String argument = line.substring( matcher.end() ).trim();
 			int plusPos = argument.lastIndexOf('+');
