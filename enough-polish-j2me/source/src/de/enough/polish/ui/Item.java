@@ -898,6 +898,29 @@ public abstract class Item extends Object
 			if (this.isInitialized) {
 				this.isInitialized = false;
 				repaint();
+			} else if (!this.isStyleInitialised && this.style != null) {
+				setStyle( this.style );
+				this.layout = layout;
+			}
+			// horizontal styles: center -> right -> left
+			if ( ( layout & LAYOUT_CENTER ) == LAYOUT_CENTER ) {
+				this.isLayoutCenter = true;
+				this.isLayoutRight = false;
+			} else {
+				this.isLayoutCenter = false;
+				if ( (layout & LAYOUT_RIGHT ) == LAYOUT_RIGHT ) {
+					this.isLayoutRight = true;
+				} else {
+					this.isLayoutRight = false;
+				}
+			}
+			
+			// vertical styles: vcenter -> bottom -> top
+			// expanding layouts:
+			if ( ( layout & LAYOUT_EXPAND ) == LAYOUT_EXPAND ) {
+				this.isLayoutExpand = true;
+			} else {
+				this.isLayoutExpand = false;
 			}
 		}
 	}

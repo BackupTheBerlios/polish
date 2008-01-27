@@ -101,6 +101,10 @@ extends ContainerView
         Item[] myItems = parContainer.getItems();
     	//#if polish.Container.allowCycling != false
         	this.allowCycling = parContainer.allowCycling;
+			if ( (parent.getParent() instanceof Container)  && ((Container)parent.getParent()).getItems().length>1 )
+			{
+				this.allowCycling = false;
+			}
         //#endif
         this.contentHeight = this.contentWidth = this.rowWidth = this.rowHeight = 0;
         this.currentRow = new ArrayList();
@@ -134,59 +138,55 @@ extends ContainerView
     */
 
     void appendItemToRow(int index, Item item, int firstLineWidth, int lineWidth) {
-    	//System.out.println(".");
     	//System.out.println("adding item to row: " + item);
-        	int itemLayout = item.getLayout();
-        	boolean isExpand = (itemLayout & Item.LAYOUT_EXPAND) == Item.LAYOUT_EXPAND;
-        	if (isExpand) {
-        		item.setLayout( itemLayout ^ Item.LAYOUT_EXPAND );
-        	}
-        	// ensure that the style is set, so that style:hover styles are correctly applied:
-        	item.getItemWidth(firstLineWidth, lineWidth);
-            if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
-                focusItem(index, item);
-                this.focusFirstElement = false;
-            }
-            int width = item.getItemWidth(firstLineWidth, lineWidth);
-            int height = item.getItemHeight(firstLineWidth, lineWidth);
-            if (isExpand) {
-            	item.setLayout(itemLayout);
-            }
-            //System.out.println("appendItemToRow: newline=" + (Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE)) + ", item=" + item);
+    	int itemLayout = item.getLayout();
+    	boolean isExpand = (itemLayout & Item.LAYOUT_EXPAND) == Item.LAYOUT_EXPAND;
+    	if (isExpand) {
+    		item.setLayout( itemLayout ^ Item.LAYOUT_EXPAND );
+    	}
+    	// ensure that the style is set, so that style:hover styles are correctly applied:
+    	item.getItemWidth(firstLineWidth, lineWidth);
+        if (this.focusFirstElement && (item.appearanceMode != Item.PLAIN)) {
+            focusItem(index, item);
+            this.focusFirstElement = false;
+        }
+        int width = item.getItemWidth(firstLineWidth, lineWidth);
+        int height = item.getItemHeight(firstLineWidth, lineWidth);
+        if (isExpand) {
+        	item.setLayout(itemLayout);
+        }
+        //System.out.println("appendItemToRow: newline=" + (Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE)) + ", item=" + item);
 
-            if ( Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE) 
-            		//|| isExpand 
-                    || (this.rowWidth + this.paddingHorizontal + width > lineWidth)) 
-            {
-            	//System.out.println("adding linebreak: newline-before=" +  ( Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE)) + ", width too big=" + (this.rowWidth + this.paddingHorizontal + width > lineWidth) + ", rowWidth=" + this.rowWidth + ", item.width=" + width + ", lineWidth=" + lineWidth + ", isExpand=" + isExpand + ", item=" + item );
-                // Break if the NEWLINE_BEFORE is specified or not enough
-                // room in the current row
-                rowBreak(lineWidth, itemLayout);
+        if ( Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE) 
+        		//|| isExpand 
+                || (this.rowWidth + this.paddingHorizontal + width > lineWidth)) 
+        {
+        	//System.out.println("adding linebreak: newline-before=" +  ( Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE)) + ", width too big=" + (this.rowWidth + this.paddingHorizontal + width > lineWidth) + ", rowWidth=" + this.rowWidth + ", item.width=" + width + ", lineWidth=" + lineWidth + ", isExpand=" + isExpand + ", item=" + item );
+            // Break if the NEWLINE_BEFORE is specified or not enough
+            // room in the current row
+            rowBreak(lineWidth, itemLayout);
+        }
+        this.rowWidth += width;
+        if (this.currentRow.size() == 0) {
+            this.rowHeight = height;
+        } else {
+        	if (this.rowHeight < height) {
+        		this.rowHeight = height;
             }
-            this.rowWidth += width;
-            if (this.currentRow.size() == 0) {
-                this.rowHeight = height;
-            } else {
-            	if (this.rowHeight < height) {
-            		this.rowHeight = height;
-                }
-                this.rowWidth += this.paddingHorizontal;
-            }
+            this.rowWidth += this.paddingHorizontal;
+        }
 
-//                RowItem rowItem = new RowItem();
-//                rowItem.width = width;
-//                rowItem.height = height;
-//                rowItem.item = item;
-            this.currentRow.add(item);
+        this.currentRow.add(item);
 
-            if (Item.LAYOUT_NEWLINE_AFTER == (itemLayout & Item.LAYOUT_NEWLINE_AFTER)) {
-                    rowBreak(lineWidth, itemLayout);
-            }
+        if (Item.LAYOUT_NEWLINE_AFTER == (itemLayout & Item.LAYOUT_NEWLINE_AFTER)) {
+        	//System.out.println("adding rowbreak for newline after");
+            rowBreak(lineWidth, itemLayout);
+        }
     }
 
     private void rowBreak(int lineWidth, int itemLayout) {
         if (this.currentRow.size() == 0) {
-                return; // Current row is empty
+            return; // Current row is empty
         }
         //System.out.println("adding rowbreak at item " + this.currentRow.get( this.currentRow.size() - 1));
         /**
@@ -209,7 +209,8 @@ extends ContainerView
             rowItem.relativeX = currentWidth;
             if (Item.LAYOUT_EXPAND == (rowItem.getLayout() & Item.LAYOUT_EXPAND)) {
             	//System.out.println("encountered expand layout - width before: " + rowItem.itemWidth + ", lineWidth="+ lineWidth + ", currentWidth=" + currentWidth );
-            	rowItem.getItemWidth( lineWidth - currentWidth, lineWidth - currentWidth );
+            	int availableWidth = lineWidth - this.rowWidth + rowItem.itemWidth;
+            	rowItem.getItemWidth( availableWidth, availableWidth );
             	//System.out.println("encountered expand layout - width now: " + rowItem.itemWidth + " for " + rowItem);
 //                        if (requiredExpanded == null) {
 ////                            requiredExpanded = new RowItem[this.currentRow.size() - i];
@@ -254,6 +255,7 @@ extends ContainerView
                 x = remainingWidth;
                 break;
         }
+        //System.out.println("rowbreak - x starts at " + x + " for item " + this.currentRow.get(0));
 
         for (int i = 0; i < this.currentRow.size(); i++) {
 //	                rowItem = (RowItem) this.currentRow.get(i);
@@ -350,6 +352,12 @@ extends ContainerView
      * @see de.enough.polish.ui.ContainerView#getNextItem(int, int)
      */
     protected Item getNextItem(int keyCode, int gameAction) {
+    	//#if polish.css.view-type-sequential-traversal
+			if ( this.isSequentialTraversal) {
+				return super.getNextItem(keyCode, gameAction);
+			}
+		//#endif
+
         if (this.allRows.size() == 0) {
             return null;
         }

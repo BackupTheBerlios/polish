@@ -937,6 +937,7 @@ extends ItemView
 			//# boolean allowCycle = false;
 		//#endif
 		Item nextItem = null;
+		//System.out.println("shifting focus - allowCycle=" + allowCycle + ", this.allowCycling=" + this.allowCycling + ", parent.allowCycling=" + this.parentContainer.allowCycling);
 		while (true) {
 			if (forwardFocus) {
 				i++;
