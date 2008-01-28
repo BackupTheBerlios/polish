@@ -27,7 +27,7 @@ import de.enough.polish.util.TextUtil;
 import de.enough.polish.predictive.trie.TrieSetup;
 
 //#if polish.blackberry
-	import de.enough.polish.blackberry.ui.PolishEditField;
+import de.enough.polish.blackberry.ui.PolishEditField;
 //#endif
 
 public class PredictiveAccess implements TrieSetupCallback{
@@ -387,7 +387,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	 * @param open true, if the list should be opened, to close false
 	 */
 	void openChoices(boolean open) {
-		//#debug
+//		#debug
 		System.out.println("open choices: " + open
 				+ ", have been opened already:" + this.isOpen);
 		this.choicesContainer.focus(-1);
@@ -833,6 +833,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 						this.parent.borderWidth);
 				this.refreshChoices = false;
 			}
+			
 			this.choicesContainer.paint(x + this.elementX, y + this.elementY,
 					leftBorder + this.elementX, rightBorder, g);
 		}
