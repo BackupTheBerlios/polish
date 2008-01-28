@@ -569,6 +569,7 @@ public class Container extends Item {
 	 * Removes all items from this container.
 	 */
 	public void clear() {
+		//System.out.println("CLEARING CONTAINER " + this);
 		synchronized (this.itemsList) {
 			//#if tmp.supportViewType
 				if (this.containerView != null) {
@@ -713,6 +714,7 @@ public class Container extends Item {
 	public void focus( int index, Item item, int direction ) {
 		//#debug
 		System.out.println("Container (" + this + "): Focusing item " + index + " (" + item + ")" );
+		//System.out.println("focus: yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset + ", enableScrolling=" + this.enableScrolling + ", isInitialized=" + this.isInitialized );
 		//#if polish.blackberry
         	//# getScreen().setFocus( item );
 		//#endif
@@ -904,7 +906,7 @@ public class Container extends Item {
 			return;
 		}
 		//#debug
-		System.out.println("scroll: direction=" + direction + ", y=" + y + ", availableHeight=" + this.availableHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset );
+		System.out.println("scroll: direction=" + direction + ", y=" + y + ", availableHeight=" + this.availableHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset +", numberOfItems=" + this.itemsList.size() );
 		// assume scrolling down when the direction is not known:
 		boolean isDownwards = (direction == Canvas.DOWN || direction == Canvas.RIGHT ||  direction == 0);
 		boolean isUpwards = (direction == Canvas.UP );

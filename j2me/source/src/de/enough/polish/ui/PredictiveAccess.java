@@ -122,7 +122,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 
 	private int elementX = 0;
 
-	private int elementY = 0;
+	//private int elementY = 0;
 
 	private boolean refreshChoices = true;
 
@@ -158,6 +158,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 		initPredictiveInput(null);
 		//#style predictiveChoice?
 		this.choicesContainer = new Container(false);
+		this.choicesContainer.setParent(parent);
 
 		if(this.builder != null)
 		{
@@ -177,15 +178,15 @@ public class PredictiveAccess implements TrieSetupCallback{
 	 * the commands <code>DISABLE_PREDICTIVE_CMD</code> and 
 	 * <code>ADD_WORD_CMD</code> is added to the textfield.   
 	 * 
-	 * @param words the words array
+	 * @param allowedWords the words array
 	 */
-	public void initPredictiveInput(String[] words) {
+	public void initPredictiveInput(String[] allowedWords) {
 		this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
 		this.parent.removeCommand(INSTALL_PREDICTIVE_CMD);
 		this.parent.removeCommand(ADD_WORD_CMD);
 		this.parent.removeCommand(DISABLE_PREDICTIVE_CMD);
 		
-		if(words != null)
+		if(allowedWords != null)
 		{
 			this.parent.predictiveInput = true;
 			
@@ -193,7 +194,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 			
 			this.builder = new ArrayTextBuilder(this.parent.getMaxSize());
 			
-			this.words = words;
+			this.words = allowedWords;
 		}
 		else
 		{
@@ -375,8 +376,8 @@ public class PredictiveAccess implements TrieSetupCallback{
 				openChoices(this.numberOfMatches > 0);
 			}
 			
-			this.results = element.getResults();
-			
+			this.results = element.getResults();			
+
 		} else
 			openChoices(false);
 	}
@@ -387,63 +388,63 @@ public class PredictiveAccess implements TrieSetupCallback{
 	 * @param open true, if the list should be opened, to close false
 	 */
 	void openChoices(boolean open) {
-//		#debug
+		//#debug
 		System.out.println("open choices: " + open
 				+ ", have been opened already:" + this.isOpen);
 		this.choicesContainer.focus(-1);
 		if (open) {
-			if (this.parent.getParent() instanceof Container) {
-				Container parentContainer = (Container) this.parent.getParent();
-				if (parentContainer.enableScrolling) {
-					int availableWidth = this.parent.itemWidth
-							- (this.parent.marginLeft + this.parent.marginRight);
-					int choicesHeight = this.choicesContainer.getItemHeight(
-							availableWidth, availableWidth);
-					int choicesBottomY = this.parent.contentY
-							+ this.parent.contentHeight
-							+ this.parent.paddingVertical + choicesHeight;
-					//#debug
-					System.out.println("choicesHeight " + choicesHeight
-							+ ", choicesBottom=" + choicesBottomY
-							+ ", parent.height="
-							+ parentContainer.availableHeight);
-					int parentYOffset = parentContainer.getScrollYOffset();
-					int overlap = choicesBottomY
-							- (parentContainer.getContentScrollHeight() - (this.parent.relativeY + parentYOffset));
-					/*if (overlap > 0) {
-						// try to scroll up this item, so that the user sees all
-						// matches:
-						int yOffsetAdjustment = Math.min(this.parent.relativeY
-								+ parentYOffset, overlap);
-						this.choicesYOffsetAdjustment = yOffsetAdjustment;
-						//#debug
-						System.out.println("Adjusting yOffset of parent by "
-								+ yOffsetAdjustment);
-						parentContainer.setScrollYOffset(parentYOffset
-								- yOffsetAdjustment, true);
-						// System.out.println("choice.itemHeight=" +
-						// this.choicesContainer.itemHeight + ",
-						// parentContainer.availableHeight=" +
-						// parentContainer.availableHeight + ", (this.contentY +
-						// this.contentHeight + this.paddingVertical)=" +
-						// (this.contentY + this.contentHeight +
-						// this.paddingVertical) + ", children.relativeY=" +
-						// this.choicesContainer.relativeY );
-						// TODO this needs some finetuning!
-						int itHeight = this.parent.itemHeight;
-						int ctHeight = this.parent.contentY
-								+ this.parent.contentHeight
-								+ this.parent.paddingVertical;
-						int max = Math.max(itHeight, ctHeight);
-
-						this.choicesContainer.setScrollHeight(parentContainer
-								.getContentScrollHeight()
-								- max);
-					} else {
-						this.choicesYOffsetAdjustment = 0;
-					}*/
-				}
-			}
+//			if (this.parent.getParent() instanceof Container) {
+//				Container parentContainer = (Container) this.parent.getParent();
+//				if (parentContainer.enableScrolling) {
+//					int availableWidth = this.parent.itemWidth
+//							- (this.parent.marginLeft + this.parent.marginRight);
+//					int choicesHeight = this.choicesContainer.getItemHeight(
+//							availableWidth, availableWidth);
+//					int choicesBottomY = this.parent.contentY
+//							+ this.parent.contentHeight
+//							+ this.parent.paddingVertical + choicesHeight;
+//					//#debug
+//					System.out.println("choicesHeight " + choicesHeight
+//							+ ", choicesBottom=" + choicesBottomY
+//							+ ", parent.height="
+//							+ parentContainer.availableHeight);
+////					int parentYOffset = parentContainer.getScrollYOffset();
+////					int overlap = choicesBottomY
+////							- (parentContainer.getContentScrollHeight() - (this.parent.relativeY + parentYOffset));
+//					/*if (overlap > 0) {
+//						// try to scroll up this item, so that the user sees all
+//						// matches:
+//						int yOffsetAdjustment = Math.min(this.parent.relativeY
+//								+ parentYOffset, overlap);
+//						this.choicesYOffsetAdjustment = yOffsetAdjustment;
+//						//#debug
+//						System.out.println("Adjusting yOffset of parent by "
+//								+ yOffsetAdjustment);
+//						parentContainer.setScrollYOffset(parentYOffset
+//								- yOffsetAdjustment, true);
+//						// System.out.println("choice.itemHeight=" +
+//						// this.choicesContainer.itemHeight + ",
+//						// parentContainer.availableHeight=" +
+//						// parentContainer.availableHeight + ", (this.contentY +
+//						// this.contentHeight + this.paddingVertical)=" +
+//						// (this.contentY + this.contentHeight +
+//						// this.paddingVertical) + ", children.relativeY=" +
+//						// this.choicesContainer.relativeY );
+//						// TODO this needs some finetuning!
+//						int itHeight = this.parent.itemHeight;
+//						int ctHeight = this.parent.contentY
+//								+ this.parent.contentHeight
+//								+ this.parent.paddingVertical;
+//						int max = Math.max(itHeight, ctHeight);
+//
+//						this.choicesContainer.setScrollHeight(parentContainer
+//								.getContentScrollHeight()
+//								- max);
+//					} else {
+//						this.choicesYOffsetAdjustment = 0;
+//					}*/
+//				}
+//			}
 		} else {
 			this.choicesContainer.clear();
 			if (this.choicesYOffsetAdjustment != 0
@@ -477,21 +478,20 @@ public class PredictiveAccess implements TrieSetupCallback{
 		System.out.println("enter choices: " + enter
 				+ ", have been entered already: " + this.isInChoice);
 		if (enter) {
-
-			if (this.choiceOrientation == ORIENTATION_BOTTOM)
+			if (this.choiceOrientation == ORIENTATION_BOTTOM) {
 				this.choicesContainer.focus(0);
-			else
+			} else {
+				int scrollOffset = this.choicesContainer.getScrollYOffset();
 				this.choicesContainer.focus(this.choicesContainer.size() - 1);
-
+				// since the choices container was not focused before, it will set it's scroll offset to 0.
+				// We want to see the last item, so we have to reset the scroll offset:
+				this.choicesContainer.setScrollYOffset(scrollOffset, false);
+			}
 			//#if polish.usePolishGui && !polish.LibraryBuild
 				this.parent.showCaret = false;
 				if (!this.isInChoice) {
 					this.parent.getScreen().removeItemCommands( this.parent );
 				}
-			//#endif
-			//#if polish.blackberry
-				PolishEditField field = (PolishEditField) this.parent._bbField;
-				field.processKeyEvents = false;
 			//#endif
 		} else {
 
@@ -501,13 +501,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 			// move focus to TextField input again
 			if (this.isInChoice) {
 				//#if polish.usePolishGui && !polish.LibraryBuild
-				this.parent.showCommands();
+					this.parent.showCommands();
 				//#endif
 			}
-			//#if polish.blackberry
-			PolishEditField field = (PolishEditField) this.parent._bbField;
-			field.processKeyEvents = true;
-			//#endif
 		}
 		this.isInChoice = enter;
 	}
@@ -728,16 +724,21 @@ public class PredictiveAccess implements TrieSetupCallback{
 				this.parent.notifyStateChanged();
 				return true;
 			}
-			else if ( (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM8)
+			else if ( (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2)
 					&& this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS 
 					&& this.choiceOrientation == ORIENTATION_TOP)
 			{
-				if(!this.builder.isString(0))
-				{
-					this.setChoices(this.builder.getTextElement());
-					
-					if(this.numberOfMatches > 0)
-						enterChoices( true );	
+				if (this.isOpen) {
+					enterChoices(true);
+				} else {
+					if(!this.builder.isString(0))
+					{
+						this.setChoices(this.builder.getTextElement());
+						
+						if(this.numberOfMatches > 0) {
+							enterChoices( true );	
+						}
+					}
 				}
 				
 				this.refreshChoices = true;
@@ -821,27 +822,77 @@ public class PredictiveAccess implements TrieSetupCallback{
 		return false;
 	}
 
-	public void paintChoices(int x, int y, int leftBorder, int rightBorder,
-			Graphics g) {
+	/**
+	 * Paints the choices
+	 * @param x horizontal content start position of the textfield
+	 * @param y vertical content start position of the text
+	 * @param caretX the relative horizontal offset of the caret
+	 * @param caretY the relative vertical offset of the caret
+	 * @param leftBorder left border
+	 * @param rightBorder right border
+	 * @param g graphics context
+	 */
+	public void paintChoices(int x, int y, int caretX, int caretY, int leftBorder, int rightBorder,
+			Graphics g) 
+	{
 		
 		if (this.numberOfMatches > 0 && this.isOpen) {
 			if (this.refreshChoices) {
 				this.elementX = getChoicesX(leftBorder, rightBorder,
 						this.choicesContainer.getItemWidth(
 								this.parent.itemWidth, this.parent.itemWidth));
-				this.elementY = getChoicesY(this.parent.paddingVertical,
-						this.parent.borderWidth);
+//				this.elementY = getChoicesY(this.parent.paddingVertical,
+//						this.parent.borderWidth);
 				this.refreshChoices = false;
 			}
-			
-			this.choicesContainer.paint(x + this.elementX, y + this.elementY,
+			// position choices container:
+			int clipX = 0;
+			int clipY = 0;
+			int clipWidth = 0;
+			int clipHeight = 0;
+			if (this.choiceOrientation == ORIENTATION_TOP) {
+				int space = y + caretY - this.parent.getParent().getAbsoluteY();
+				this.choicesContainer.setScrollHeight(space);
+				if (this.choicesContainer.getItemHeight(rightBorder-leftBorder, rightBorder-leftBorder) > space) {
+//					this.elementY = - space;
+					this.choicesContainer.relativeY = caretY - space;
+					if (!this.isInChoice) {
+						this.choicesContainer.setScrollYOffset( space - this.choicesContainer.itemHeight, false);
+					}
+					clipX = g.getClipX();
+					clipY = g.getClipY();
+					clipWidth = g.getClipWidth();
+					clipHeight = g.getClipHeight();
+					g.clipRect( clipX, y + caretY - space, clipWidth, space );
+				} else {
+					this.choicesContainer.relativeY = caretY - this.choicesContainer.itemHeight;
+				}
+			} else {
+				Container parentContainer = (Container) this.parent.getParent();
+				int verticalStart = caretY + this.parent.getFontHeight() + this.parent.paddingVertical;
+				int space = parentContainer.getScrollHeight() - (y + verticalStart - this.parent.getParent().getAbsoluteY());
+				this.choicesContainer.setScrollHeight(space);
+				if (this.choicesContainer.getItemHeight(rightBorder-leftBorder, rightBorder-leftBorder) > space) {
+					clipX = g.getClipX();
+					clipY = g.getClipY();
+					clipWidth = g.getClipWidth();
+					clipHeight = g.getClipHeight();
+					g.clipRect( clipX, y + verticalStart, clipWidth, space );					
+				}
+				this.choicesContainer.relativeY = verticalStart;
+			}
+			this.choicesContainer.relativeX = this.elementX;
+			this.choicesContainer.paint(x + this.elementX, y + this.choicesContainer.relativeY,
 					leftBorder + this.elementX, rightBorder, g);
+			if (clipHeight != 0) {
+				g.setClip(clipX, clipY, clipWidth, clipHeight);
+			}
 		}
 	}
 
-	public void animateChoices() {
-		if (this.numberOfMatches > 0) {
-			this.choicesContainer.animate();
+	public void animateChoices(long currentTime, ClippingRegion region ) {
+		if (this.isOpen && this.numberOfMatches > 0) {
+			this.choicesContainer.animate( currentTime, region);
 		}
 	}
 

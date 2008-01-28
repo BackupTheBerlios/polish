@@ -1848,7 +1848,7 @@ public class TextField extends StringItem
 
 				
 				//#if tmp.usePredictiveInput
-					this.predictiveAccess.paintChoices(x, y, leftBorder, rightBorder, g);
+					this.predictiveAccess.paintChoices(x, y, this.caretX, this.caretY, leftBorder, rightBorder, g);
 				//#endif
 					
 				return;
@@ -2518,6 +2518,19 @@ public class TextField extends StringItem
 		//#endif
 	}
 	//#endif
+	
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.StringItem#animate(long, de.enough.polish.ui.ClippingRegion)
+	 */
+	public void animate(long currentTime, ClippingRegion repaintRegion)
+	{
+		//#if tmp.usePredictiveInput
+			this.predictiveAccess.animateChoices(currentTime, repaintRegion );
+		//#endif
+		super.animate(currentTime, repaintRegion);
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#animate()
@@ -2571,9 +2584,6 @@ public class TextField extends StringItem
 						}
 					}
 				}
-				//#if tmp.usePredictiveInput
-					this.predictiveAccess.animateChoices();
-				//#endif
 			//#endif
 			if (!this.flashCaret || this.isUneditable) {
 				//System.out.println("TextField.animate():  flashCaret==false");
@@ -3807,6 +3817,7 @@ public class TextField extends StringItem
 		this.infoItem = infoItem;
 	}
 	//#endif
+
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {
