@@ -10237,6 +10237,7 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="amr, nb-amr"/>
 		<capability name="Emulator.Skin" value="7100t"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
 	</device>
 	
 	<device>
@@ -10247,6 +10248,7 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="amr, nb-amr"/>
 		<capability name="Emulator.Skin" value="8700r"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
 	</device>
 
 	<device>
@@ -10257,36 +10259,43 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="amr, nb-amr"/>
 		<capability name="Emulator.Skin" value="8100"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
 	</device>
 
 	<device>
 		<identifier>BlackBerry/4.3</identifier>
+		<features>hasTrackballEvents</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.3"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location"/>
 		<capability name="SoundFormat" value="amr, nb-amr"/>
 		<capability name="Emulator.Skin" value="8130"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
 	</device>
 	
 	<device>
 		<identifier>BlackBerry/8130</identifier>
+		<features>hasTrackballEvents</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.3"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location"/>
 		<capability name="SoundFormat" value="amr, nb-amr"/>
 		<capability name="Emulator.Skin" value="8130"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
 	</device>
 	
 	<device>
 		<identifier>BlackBerry/8120</identifier>
+		<features>hasTrackballEvents</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.3"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location"/>
 		<capability name="SoundFormat" value="amr, nb-amr"/>
 		<capability name="Emulator.Skin" value="8120"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
 	</device>
 	
 	
