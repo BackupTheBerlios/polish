@@ -184,9 +184,15 @@ public class MenuBar extends Item {
 	}
 	
 	public void addCommand(Command cmd, Style commandStyle) {
-		//System.out.println("adding cmd " + cmd.getLabel() + " with style " + commandStyle );
+		//#debug
+		System.out.println("adding cmd " + cmd.getLabel() + " with style " + commandStyle );
+		
 		if (cmd == this.singleLeftCommand || cmd == this.singleRightCommand || cmd == this.singleMiddleCommand || this.commandsList.contains(cmd)) {
 			// do not add an existing command again...
+		
+			//#if polish.MenuBar.rebuild
+			removeCommand(cmd);
+			//#else
 			//#debug
 			System.out.println( this + ": Ignoring existing command " + cmd.getLabel() + ",  cmd==this.singleRightCommand: " + ( cmd == this.singleRightCommand) + ", cmd==this.singleLeftCommand: " + (cmd == this.singleLeftCommand) + ", this.commandsList.contains(cmd): " + this.commandsList.contains(cmd)  );
 			//#if polish.debug.debug
@@ -195,7 +201,9 @@ public class MenuBar extends Item {
 				}
 			//#endif
 			return;
+			//#endif
 		}
+				
 		CommandItem item = new CommandItem( cmd, this, commandStyle );
 		this.allCommands.put( cmd, item );
 		//#debug
@@ -425,8 +433,14 @@ public class MenuBar extends Item {
 					}
 					return;
 				}
-				int newSingleLeftCommandIndex = getNextNegativeCommandIndex();
+				int newSingleLeftCommandIndex;
+				//#if tmp.OkCommandOnLeft
+					newSingleLeftCommandIndex = getNextNegativeOrPositiveCommandIndex(false);
+				//#else
+					newSingleLeftCommandIndex = getNextNegativeOrPositiveCommandIndex(true);
+				//#endif
 				if ( newSingleLeftCommandIndex != -1 ) {
+					//#debug
 					System.out.println("moving commmand with index " + newSingleLeftCommandIndex + " from commands container (focused=" + this.commandsContainer.getFocusedIndex() + ") - new Single Left=" + ((Command) this.commandsList.get(newSingleLeftCommandIndex)).getLabel() );
 					if (newSingleLeftCommandIndex == this.commandsContainer.getFocusedIndex()) {
 						this.commandsContainer.focus(-1);
@@ -464,7 +478,7 @@ public class MenuBar extends Item {
 					}
 					return;
 				}
-				int newSingleRightCommandIndex = getNextNegativeCommandIndex();
+				int newSingleRightCommandIndex = getNextNegativeOrPositiveCommandIndex(true);
 				if ( newSingleRightCommandIndex != -1 ) {
 					//#if tmp.useInvisibleMenuBar
 						this.singleRightCommand = (Command) this.commandsList.get(newSingleRightCommandIndex);
@@ -523,7 +537,7 @@ public class MenuBar extends Item {
 		}
 	}
 
-	private int getNextNegativeCommandIndex() {
+	private int getNextNegativeOrPositiveCommandIndex( boolean isNegative ) {
 	
 		// there are several commands available, from the which the BACK/CANCEL command
 		// with the highest priority needs to be chosen:
@@ -533,11 +547,15 @@ public class MenuBar extends Item {
 		for (int i = 0; i < myCommands.length; i++) {
 			Command command = myCommands[i];
 			int type = command.getCommandType();
-			//#if polish.blackberry
-				if ((type == Command.BACK || type == Command.CANCEL || type == Command.EXIT)
-			//#else
-				//# if ((type == Command.BACK || type == Command.CANCEL)
-			//#endif
+			
+				if ((
+					(isNegative && 
+					((type == Command.BACK || type == Command.CANCEL 
+					//#if polish.blackberry
+						|| type == Command.EXIT
+					//#endif
+					)))
+					|| (!isNegative && type == Command.OK))
 					&& command.getPriority() < maxPriority ) 
 			{
 				maxPriority = command.getPriority();
@@ -1594,6 +1612,7 @@ public class MenuBar extends Item {
 	 * This option is only available when the "menu" fullscreen mode is activated.
 	 */
 	public void removeAllCommands() {
+		System.out.println("remove all commands");
 		this.singleLeftCommand = null;
 		this.singleRightCommand = null;
 		this.singleMiddleCommand = null;
