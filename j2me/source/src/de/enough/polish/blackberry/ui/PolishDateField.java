@@ -69,6 +69,10 @@ import net.rim.device.api.ui.component.DateField;
  */
 public class PolishDateField extends DateField {
 
+	private static final int MIDP_DATE = 1;
+	private static final int MIDP_TIME = 2;
+	private static final int MIDP_DATE_TIME = 3;
+
     private boolean isFocused;
     public boolean processKeyEvents = true;
 	private int fontColor;
@@ -83,9 +87,49 @@ public class PolishDateField extends DateField {
    * @see javax.microedition.lcdui.DateField
 	 */
 	public PolishDateField( Date date, int inputMode ) {
-		this( getTime( date ), getDateFormat( inputMode), EDITABLE );
+		this( getTime( date ), getDateFormat( inputMode), getStyle(inputMode) );
 	}
 	
+	/**
+	 * Creates a new date field
+	 *
+	 * @param date the date
+     * @param inputMode the input mode for the date, either
+	 * DateField.DATE, DateField.DATE_TIME or DateField.TIME.
+     *
+     * @see javax.microedition.lcdui.DateField
+	 */
+	public PolishDateField( long time, int inputMode ) {
+		this( time, getDateFormat( inputMode), getStyle(inputMode) );
+	}
+	
+	/**
+	 * Creates a new date field
+	 *
+	 * @param date the date in ms from 1970-01-01
+	 * @param dateFormat the format
+	 * @param style the editing style, e.g. Field.EDITABLE
+	 */
+	public PolishDateField(long date, DateFormat dateFormat, long style) {
+		super(null, date, dateFormat, style);
+	}
+	
+	private static long getStyle(int inputMode) {
+		long style = EDITABLE;
+		switch (inputMode) {
+		case MIDP_DATE:
+			style |= DateField.DATE;
+			break;
+		case MIDP_DATE_TIME:
+			style |= DateField.DATE_TIME;
+			break;
+		case MIDP_TIME:
+			style |= DateField.TIME;
+			break;
+		}
+		return style;
+	}
+
 	private static final long getTime( Date date ) {
 		if (date == null) {
 			return System.currentTimeMillis();
@@ -97,10 +141,10 @@ public class PolishDateField extends DateField {
 	private static DateFormat getDateFormat( int mode ) {
 		int blackberryMode;
 		switch (mode) {
-		case DateField.TIME:
+		case MIDP_TIME:
 			blackberryMode = DateFormat.TIME_DEFAULT;
 			break;
-		case DateField.DATE_TIME:
+		case MIDP_DATE_TIME:
 			blackberryMode = DateFormat.DATETIME_DEFAULT;
 			break;
 		default:
@@ -109,16 +153,7 @@ public class PolishDateField extends DateField {
 		return DateFormat.getInstance( blackberryMode );
 	}
 
-	/**
-	 * Creates a new date field
-	 *
-	 * @param date the date in ms from 1970-01-01
-	 * @param dateFormat the format
-	 * @param style the editing style, e.g. Field.EDITABLE
-	 */
-	public PolishDateField(long date, DateFormat dateFormat, long style) {
-		super(null, date, dateFormat, style);
-	}
+	
 
 	public void focusAdd( boolean draw ) {
         //System.out.println("DateField: focusAdd (" + getText() + ")");
@@ -159,6 +194,7 @@ public class PolishDateField extends DateField {
 	}
 
 	public void setInputMode(int mode) {
+		
 		DateFormat format = getDateFormat(mode);
 		Object bbLock = Application.getEventLock();
 		synchronized (bbLock) {

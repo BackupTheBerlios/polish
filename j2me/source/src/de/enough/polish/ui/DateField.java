@@ -243,8 +243,9 @@ implements
 			
 			this.blackberryDateField = new PolishDateField( 
 					System.currentTimeMillis(),
-					PolishDateField.getDateFormat( mode, this.timeZone ),
-					PolishDateField.EDITABLE );
+					this.inputMode );
+//					PolishDateField.getDateFormat( mode, this.timeZone ),
+//					PolishDateField.EDITABLE );
 			this.blackberryDateField.setChangeListener( this );
 			this._bbField = this.blackberryDateField;
 		//#endif
@@ -1154,9 +1155,11 @@ implements
 	public void fieldChanged(Field field, int context) {
 		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialized ) {
 			setDate( new Date( this.blackberryDateField.getDate()) );
-			if (getScreen() instanceof Form ) {
-				notifyStateChanged();
+			Screen scr = getScreen();
+			if (scr != null) {
+				scr.lastInteractionTime = System.currentTimeMillis();
 			}
+			notifyStateChanged();
 		}
 	}
 	//#endif

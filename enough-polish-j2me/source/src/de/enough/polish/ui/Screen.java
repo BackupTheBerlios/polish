@@ -942,54 +942,59 @@ implements AccessibleCanvas
 					this.ticker.showNotify();
 				}
 			//#endif
-			//#if tmp.ignoreMotorolaTitleCall
-				this.ignoreMotorolaTitleCall = true;
-			//#endif
-		
-			// init components:
-			int	width = this.screenWidth - (this.marginLeft + this.marginRight);
-			//#ifdef tmp.menuFullScreen
-				//#ifdef tmp.useExternalMenuBar
-					if (!this.menuBar.isInitialized) {
-						//#if polish.css.separate-menubar
-							if (this.separateMenubar) {
-								this.menuBar.init( width, width );								
-							} else {
-								this.menuBar.init( this.screenWidth, this.screenWidth );								
-							}
-						//#else
-							this.menuBar.init( this.screenWidth, this.screenWidth );								
-						//#endif
-					}
-				//#else
-					if (this.menuOpened) {
-						if (!this.menuContainer.isInitialized) {
-							this.menuContainer.init( width, width );
-						}
-					} else
-				//#endif
-			//#endif
-			if (this.container != null && !this.container.isInitialized) {
-				this.container.init( width, width );
-			}
 			//#ifdef tmp.usingTitle
 				if (this.title != null) {
-					if (!this.title.isInitialized) {
-						this.title.init( width, width );
-					}
 					this.title.showNotify();
 				}
 			//#endif
-			//#ifndef polish.skipTicker
-				if (this.ticker != null) {
-					if (!this.ticker.isInitialized) {
-						this.ticker.init( width, width );
-					}
-					this.ticker.showNotify();
-				}
+			//#if tmp.ignoreMotorolaTitleCall
+				this.ignoreMotorolaTitleCall = true;
 			//#endif
-			calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
-
+			
+		
+			// init components:
+			if (this.isInitialized) {
+				int	width = this.screenWidth - (this.marginLeft + this.marginRight);
+				//#ifdef tmp.menuFullScreen
+					//#ifdef tmp.useExternalMenuBar
+						if (!this.menuBar.isInitialized) {
+							//#if polish.css.separate-menubar
+								if (this.separateMenubar) {
+									this.menuBar.init( width, width );								
+								} else {
+									this.menuBar.init( this.screenWidth, this.screenWidth );								
+								}
+							//#else
+								this.menuBar.init( this.screenWidth, this.screenWidth );								
+							//#endif
+						}
+					//#else
+						if (this.menuOpened) {
+							if (!this.menuContainer.isInitialized) {
+								this.menuContainer.init( width, width );
+							}
+						} else
+					//#endif
+				//#endif
+				if (this.container != null && !this.container.isInitialized) {
+					this.container.init( width, width );
+				}
+				//#ifdef tmp.usingTitle
+					if (this.title != null) {
+						if (!this.title.isInitialized) {
+							this.title.init( width, width );
+						}
+					}
+				//#endif
+				//#ifndef polish.skipTicker
+					if (this.ticker != null) {
+						if (!this.ticker.isInitialized) {
+							this.ticker.init( width, width );
+						}
+					}
+				//#endif
+				calculateContentArea(0, 0, this.screenWidth, this.screenHeight);
+			}
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("error while calling showNotify" + e );

@@ -1891,6 +1891,11 @@ public class TextField extends StringItem
 				lineWidth -= infoWidth;
 			}
 		//#endif
+		//#if polish.blackberry && polish.css.text-wrap
+			if (this.isFocused) {
+				this.useSingleLine = false;
+			}
+		//#endif
 		super.initContent(firstLineWidth, lineWidth);
 		if (this.font == null) {
 			this.font = Font.getDefaultFont();
@@ -3682,7 +3687,12 @@ public class TextField extends StringItem
 	public void fieldChanged(Field field, int context) {
 		if (context != FieldChangeListener.PROGRAMMATIC && this.isInitialized ) {
 			//#if polish.Bugs.ItemStateListenerCalledTooEarly
-				this.lastFieldChangedEvent = System.currentTimeMillis();
+				long currentTime = System.currentTimeMillis();
+				this.lastFieldChangedEvent = currentTime;
+				Screen scr = getScreen();
+				if (scr != null) {
+					scr.lastInteractionTime = currentTime;
+				}
 			//#else
 				setString( this.editField.getText() );
 				notifyStateChanged();
@@ -3740,7 +3750,6 @@ public class TextField extends StringItem
 	protected void showNotify() {
 		//#if tmp.updateDeleteCommand
 			updateDeleteCommand(this.text);
-			super.showNotify();
 		//#endif
 		
 		//#if polish.TextField.useExternalInfo
@@ -3749,6 +3758,7 @@ public class TextField extends StringItem
 				updateInfo();
 			}
 		//#endif
+		super.showNotify();
 	}
 
 	//#if  !polish.blackberry && tmp.directInput
