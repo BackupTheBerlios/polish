@@ -47,11 +47,11 @@ public class FilteredList
 extends List
 implements ItemStateListener //, CommandListener
 {
-	private static final int POSITION_TOP = 0;
-	private static final int POSITION_BOTTOM = 1;
+	private static final int FIELD_POSITION_TOP = 0;
+	private static final int FIELD_POSITION_BOTTOM = 1;
 	private static final int FILTER_STARTS_WITH = 0;
 	private static final int FILTER_INDEX_OF = 1;
-	protected int filterPosition = POSITION_BOTTOM;
+	protected int filterPosition = FIELD_POSITION_BOTTOM;
 	protected int filterMode = FILTER_STARTS_WITH;
 	protected final TextField filterTextField;
 	private final ArrayList itemsList;
@@ -202,7 +202,7 @@ implements ItemStateListener //, CommandListener
 		int filterHeight = this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth );
 		this.contentHeight -= filterHeight;
 		this.container.setScrollHeight( this.contentHeight );
-		if (this.filterPosition == POSITION_TOP) {
+		if (this.filterPosition == FIELD_POSITION_TOP) {
 			this.filterTextField.relativeY = this.contentY;
 			this.contentY += filterHeight;
 		} else {

@@ -191,16 +191,16 @@ public class MenuBar extends Item {
 			// do not add an existing command again...
 		
 			//#if polish.MenuBar.rebuild
-			removeCommand(cmd);
+				removeCommand(cmd);
 			//#else
-			//#debug
-			System.out.println( this + ": Ignoring existing command " + cmd.getLabel() + ",  cmd==this.singleRightCommand: " + ( cmd == this.singleRightCommand) + ", cmd==this.singleLeftCommand: " + (cmd == this.singleLeftCommand) + ", this.commandsList.contains(cmd): " + this.commandsList.contains(cmd)  );
-			//#if polish.debug.debug
-				for (int i = 0; i < this.commandsList.size(); i++) {
-					System.out.println(  ((Command)this.commandsList.get(i)).getLabel() );
-				}
-			//#endif
-			return;
+				//#debug
+				System.out.println( this + ": Ignoring existing command " + cmd.getLabel() + ",  cmd==this.singleRightCommand: " + ( cmd == this.singleRightCommand) + ", cmd==this.singleLeftCommand: " + (cmd == this.singleLeftCommand) + ", this.commandsList.contains(cmd): " + this.commandsList.contains(cmd)  );
+				//#if polish.debug.debug
+					for (int i = 0; i < this.commandsList.size(); i++) {
+						System.out.println(  ((Command)this.commandsList.get(i)).getLabel() );
+					}
+				//#endif
+				return;
 			//#endif
 		}
 				
@@ -1612,6 +1612,7 @@ public class MenuBar extends Item {
 	 * This option is only available when the "menu" fullscreen mode is activated.
 	 */
 	public void removeAllCommands() {
+		//#debug
 		System.out.println("remove all commands");
 		this.singleLeftCommand = null;
 		this.singleRightCommand = null;

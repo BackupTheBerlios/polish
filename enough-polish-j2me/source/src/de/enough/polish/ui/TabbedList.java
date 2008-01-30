@@ -44,15 +44,15 @@ import de.enough.polish.util.ArrayList;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class TabbedList extends Screen {
-	private final static int POSITION_TOP = 0;
-	private final static int POSITION_BOTTOM = 1;
+	private final static int TAB_POSITION_TOP = 0;
+	private final static int TAB_POSITION_BOTTOM = 1;
 	public static Command SELECT_COMMAND = List.SELECT_COMMAND;
 	
 	private final Container tabTitles;
 	private final ArrayList tabContainers;
 	private int defaultListType;
 	private int currentTabIndex;
-	private int tabTitlePosition = POSITION_BOTTOM;
+	private int tabTitlePosition = TAB_POSITION_BOTTOM;
 	private Command selectCommand = SELECT_COMMAND;
 
 	/**
@@ -170,7 +170,7 @@ public class TabbedList extends Screen {
 	 */
 	protected void calculateContentArea(int x, int y, int width, int height) {
 		super.calculateContentArea(x, y, width, height);
-		if (this.tabTitlePosition == POSITION_TOP) {
+		if (this.tabTitlePosition == TAB_POSITION_TOP) {
 			this.tabTitles.relativeY = this.contentY;
 			this.contentY += this.tabTitles.getItemHeight(this.contentWidth, this.contentWidth);
 		} else {

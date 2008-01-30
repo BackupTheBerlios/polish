@@ -52,7 +52,6 @@ public class CircleBorder extends Border {
 
 	private final int strokeStyle;
 	private final int color;
-	private final int borderWidth;
 
 	public CircleBorder( int color, int width, int strokeStyle ) {
 		super();

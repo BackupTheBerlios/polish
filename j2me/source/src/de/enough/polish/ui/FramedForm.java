@@ -220,6 +220,21 @@ public class FramedForm extends Form {
 			}
 		}
 	}
+	
+	/**
+	 * Retrieves the size of the specified frame.
+	 * 
+	 * @param frameOrientation either Graphics.TOP, Graphics.BOTTOM, Graphics.LEFT or Graphics.RIGHT
+	 * @return the size of the frame, -1 when the frame does not exist 
+	 */
+	public int size( int frameOrientation ) {
+		Container frame = getFrame( frameOrientation );
+		if (frame == null) {
+			return -1;
+		} else {
+			return frame.size();
+		}
+	}
 
 	/**
 	 * Deletes a complete frame.
