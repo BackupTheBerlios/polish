@@ -2552,7 +2552,7 @@ implements AccessibleCanvas
 				//#endif
 				processed = handleKeyReleased( keyCode, gameAction );
 				//#if tmp.menuFullScreen
-					if (!isMenuOpened()) {
+					if (!isMenuOpened() && !processed) {
 						//#ifdef tmp.useExternalMenuBar
 							processed = this.menuBar.handleKeyReleased(keyCode, gameAction);
 						//#endif		
