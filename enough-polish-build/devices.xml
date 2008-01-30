@@ -285,14 +285,14 @@ These namespaces/schemas will be used soon.
 
 	<device supportsPolishGui="true">
 		<identifier>Generic/WindowsMobile</identifier>
-		<features>hasPointerEvents</features>
+		<features>hasPointerEvents, hasCommandKeyEvents</features>
 		<description>An unknown Windows powered phone.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="OS" value="Windows Mobile 5.0"/>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="HeapSize" value="20MB"/>
-		<capability name="MenuBar.OptionsPosition" value="right" />
+		<capability name="MenuBar.OptionsPosition" value="left" />
 	</device>	
 
 	
@@ -408,6 +408,11 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="midi"/>
 		<capability name="HeapSize" value="512kb"/>
 		<capability name="MaxJarSize" value="128kb"/>
+	</device>
+	
+	<device supportsPolishGui="true">
+		<identifier>Nokia/Series40E2</identifier>
+		<parent>Nokia/Series40DP2</parent>
 	</device>
 
 	<device supportsPolishGui="true">

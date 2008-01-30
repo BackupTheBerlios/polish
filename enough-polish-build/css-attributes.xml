@@ -2977,6 +2977,7 @@
 		id="259"
 	/>
 	
+	<!--  free slot
 	<attribute
 		name="focus-container"
 		type="boolean"
@@ -2985,6 +2986,7 @@
 		default="false"
 		id="260"
 	/>
+	 -->
 	
 	<attribute
 		name="always-include"
@@ -3390,6 +3392,15 @@
 		description="Defines if the cells of a table can only be traversered in sequential order. By default you can move to the next row by pressing down - when the sequential-traversal is enabled pressing down will move the focus to the next item instead. Only applicable when the columns attribute is being used."
 		default="false"
 		id="308"
+	/>
+	
+	<attribute
+		name="expand-items"
+		type="boolean"
+		appliesTo="ContainerView, Container, FakeContainerCustomItem, Screen"
+		description="Expands the items within  a screen or container to the width of the largest item - in contrast to the expand layout not the full available width is being used."
+		default="false"
+		id="309"
 	/>
 	
 

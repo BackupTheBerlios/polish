@@ -1588,13 +1588,17 @@ public class PolishTask extends ConditionalTask {
 			String[] versionChunks = StringUtil.split( version, '.' );
 			for (int i = 0; i < versionChunks.length; i++) {
 				String versionChunk = versionChunks[i];
-				int versionNumber = Integer.parseInt( versionChunk );
-				if (versionNumber > 99) {
-					if ( this.environment.hasSymbol("polish.Bugs.VersionNumberMustNotExceed99") ) {
-						throw new BuildException("Invalid MIDlet-Version [" + version + "]: each version-part must not exceed 99 on the " + device.getIdentifier() + "." );
-					} else {
-						System.out.println("WARNING: the MIDlet-Version [" + version + "] contains a number greater than 99, This can cause problems on some devices.");
+				try {
+					int versionNumber = Integer.parseInt( versionChunk );
+					if (versionNumber > 99) {
+						if ( this.environment.hasSymbol("polish.Bugs.VersionNumberMustNotExceed99") ) {
+							throw new BuildException("Invalid MIDlet-Version [" + version + "]: each version-part must not exceed 99 on the " + device.getIdentifier() + "." );
+						} else {
+							System.out.println("WARNING: the MIDlet-Version [" + version + "] contains a number greater than 99, This can cause problems on some devices.");
+						}
 					}
+				} catch (Exception e) {
+					throw new BuildException("Encountered invalid MIDlet-Version \"" + version + "\". Please adjust the \"version\" attribute of your <info> section.");
 				}
 			}
 		}
