@@ -924,7 +924,8 @@ public class Container extends Item {
 		}
 		int yTopAdjust = 0;
 		Screen scr = this.screen;
-		if (scr != null && scr.contentY != this.relativeY) {
+		if (scr != null && this == scr.container && scr.contentY != this.relativeY) {
+			// this is an adjustment for calculating the correct scroll offset for containers with a vertical-center or bottom layout:
 			yTopAdjust = this.relativeY - scr.contentY;
 		}
 		if ( y + height + currentYOffset + yTopAdjust > verticalSpace ) {
