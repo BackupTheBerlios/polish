@@ -2528,29 +2528,36 @@ implements AccessibleCanvas
 					System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
 				}
 				//#if tmp.menuFullScreen
-					//#ifdef tmp.useExternalMenuBar
-						processed = this.menuBar.handleKeyReleased(keyCode, gameAction);
-						if (processed) {
-							repaint();
-							return;
-						} else if (this.menuBar.isOpened) {
-							return;
-						}
-					//#else
-						if (this.menuOpened  && this.menuContainer != null ) {
-							if (keyCode == LEFT_SOFT_KEY) {
-								gameAction = FIRE;
-							}
-							processed = this.menuContainer.handleKeyReleased(keyCode, gameAction);
+					if (isMenuOpened()) {
+						//#ifdef tmp.useExternalMenuBar
+							processed = this.menuBar.handleKeyReleased(keyCode, gameAction);
 							if (processed) {
 								repaint();
 							}
-							return;
-						}
-		
-					//#endif
+							//# return;
+						//#else
+							if (this.menuOpened  && this.menuContainer != null ) {
+								if (keyCode == LEFT_SOFT_KEY) {
+									gameAction = FIRE;
+								}
+								processed = this.menuContainer.handleKeyReleased(keyCode, gameAction);
+								if (processed) {
+									repaint();
+								}
+								return;
+							}
+			
+						//#endif
+					}
 				//#endif
 				processed = handleKeyReleased( keyCode, gameAction );
+				//#if tmp.menuFullScreen
+					if (!isMenuOpened()) {
+						//#ifdef tmp.useExternalMenuBar
+							processed = this.menuBar.handleKeyReleased(keyCode, gameAction);
+						//#endif		
+					}
+				//#endif
 				//#debug
 				System.out.println("keyReleased handled=" + processed);
 				if ( processed ) {
