@@ -93,10 +93,9 @@ public class Container extends Item {
 	//#ifdef polish.css.scroll-mode
 		protected boolean scrollSmooth = true;
 	//#endif
-//	//#if polish.css.focus-container
-//		private boolean isFocusContainer;
-//		private Style oldContainerStyle;
-//	//#endif
+	//#if polish.css.expand-items
+		protected boolean isExpandItems;
+	//#endif
 	private boolean isScrollRequired;
 	/** The height available for scrolling, ignore when set to -1 */
 	protected int availableHeight = -1;
@@ -1105,6 +1104,22 @@ public class Container extends Item {
 				// this can happen when there are different layouts like left and right within the same container:
 				myContentWidth = myContentEndX - myContentStartX;
 			}
+			if (this.minimumWidth > myContentWidth) {
+				myContentWidth = this.minimumWidth - ((this.borderWidth << 1) + this.marginLeft + this.paddingLeft + this.marginRight + this.paddingRight);
+			}
+			//#if polish.css.expand-items
+				if (this.isExpandItems) {
+					for (int i = 0; i < myItems.length; i++)
+					{
+						Item item = myItems[i];
+						if (!item.isLayoutExpand && item.itemWidth < myContentWidth) {
+							item.isLayoutExpand = true;
+							item.init(myContentWidth, myContentWidth);
+							item.isLayoutExpand = false;
+						}
+					}
+				}
+			//#endif
 			if (!hasFocusableItem) {
 				this.appearanceMode = PLAIN;
 			} else {
@@ -1814,12 +1829,13 @@ public class Container extends Item {
 				this.scrollSmooth = (scrollModeInt.intValue() == SCROLL_SMOOTH);
 			}
 		//#endif
-//		//#if polish.css.focus-container
-//			Boolean focusContainerBool = style.getBooleanProperty("focus-container");
-//			if (focusContainerBool != null) {
-//				this.isFocusContainer = focusContainerBool.booleanValue();
-//			}
-//		//#endif
+		//#if polish.css.expand-items
+			Boolean expandItemsBool = style.getBooleanProperty("expand-items");
+			if (expandItemsBool != null) {
+				this.isExpandItems = expandItemsBool.booleanValue();
+			}
+		//#endif
+			
 		//#ifdef tmp.supportViewType
 			if (this.containerView != null) {
 				this.containerView.setStyle(style);

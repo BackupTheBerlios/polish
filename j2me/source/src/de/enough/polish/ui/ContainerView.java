@@ -95,6 +95,9 @@ extends ItemView
 	//#if polish.css.view-type-sequential-traversal
 		protected boolean isSequentialTraversal;
 	//#endif
+	//#if polish.css.expand-items
+		protected boolean isExpandItems;
+	//#endif
 	/** indicates whether the parent Container is allowed to change the currently focused item 
 	 *  when the user traverses around a form and enters the container from different sides 
 	 */
@@ -206,6 +209,22 @@ extends ItemView
 				this.contentHeight = myContentHeight;
 			//#endif
 			this.contentWidth = myContentWidth;
+			//#if polish.css.expand-items
+				if (this.isExpandItems) {
+					if (parent.minimumWidth > myContentWidth) {
+						myContentWidth = parent.minimumWidth - ((parent.borderWidth << 1) + parent.marginLeft + parent.paddingLeft + parent.marginRight + parent.paddingRight);
+					}
+					for (int i = 0; i < myItems.length; i++)
+					{
+						Item item = myItems[i];
+						if (!item.isLayoutExpand && item.itemWidth < myContentWidth) {
+							item.isLayoutExpand = true;
+							item.init(myContentWidth, myContentWidth);
+							item.isLayoutExpand = false;
+						}
+					}
+				}
+			//#endif
 			return;
 		//#ifdef tmp.useTable
 		}
@@ -1145,6 +1164,12 @@ extends ItemView
 			Boolean sequentialTraversalBool = style.getBooleanProperty("view-type-sequential-traversal");
 			if (sequentialTraversalBool != null) {
 				this.isSequentialTraversal = sequentialTraversalBool.booleanValue();
+			}
+		//#endif
+		//#if polish.css.expand-items
+			Boolean expandItemsBool = style.getBooleanProperty("expand-items");
+			if (expandItemsBool != null) {
+				this.isExpandItems = expandItemsBool.booleanValue();
 			}
 		//#endif
 	}
