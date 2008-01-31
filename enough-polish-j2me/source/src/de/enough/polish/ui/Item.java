@@ -1784,7 +1784,7 @@ public abstract class Item extends Object
 		if (!this.isInitialized || (availableWidth < this.itemWidth )) {
 			// #if polish.debug.info
 			if (availableWidth < this.itemWidth ) {
-				// #debug info
+				//#debug info
 				System.out.println("re-initializing item " + this + " for availableWidth=" + availableWidth + ", itemWidth=" + this.itemWidth);
 			}
 			// #endif
