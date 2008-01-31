@@ -196,7 +196,7 @@ public class SplashScreen extends Screen {
         
         public void run() {
             try {
-                Thread.sleep(timeout);
+                Thread.sleep(this.timeout);
             } catch (InterruptedException ie) {
             }
             // doDismiss (only if current display timout matches) - this means this
