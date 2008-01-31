@@ -26,9 +26,11 @@
 package com.izforge.izpack.panels;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
@@ -53,6 +55,9 @@ import com.izforge.izpack.installer.IzPanel;
 public class ChooseTargetPanel extends IzPanel {
 	private static final long serialVersionUID = -7966526000206872182L;
 	private FilePropertyPanel polishHomePanel;
+	private boolean isWindowsVista;
+	private boolean vistaBatchFileCreated;
+	private String vistaBatchFilePath;
 
 	/**
 	 * @param parent
@@ -67,8 +72,7 @@ public class ChooseTargetPanel extends IzPanel {
 //		}
 		
 		JPanel subPanel = new JPanel( new BorderLayout() );
-		
-		
+				
 	    JLabel title = new JLabel("Installation Directory");
 	    title.setFont( title.getFont().deriveFont( title.getFont().getSize() * 2F ));
 	    subPanel.add( title, BorderLayout.NORTH );
@@ -77,6 +81,9 @@ public class ChooseTargetPanel extends IzPanel {
 	    area.setEditable( false );
 	    area.setLineWrap( true );
 	    area.setBackground( title.getBackground() );
+	    area.setWrapStyleWord(true);
+	    JLabel label = new JLabel("hello");
+	    area.setFont( label.getFont() );
 	    subPanel.add( area, BorderLayout.CENTER );
 	    
 	    this.polishHomePanel = new FilePropertyPanel( parent, "polish.home: ", idata.getInstallPath(), "Choose...", true, false );
@@ -84,14 +91,71 @@ public class ChooseTargetPanel extends IzPanel {
 
 	    setLayout( new BorderLayout() );
 	    add( subPanel, BorderLayout.NORTH );
+	    String osName = System.getProperty("os.name");
+	    this.isWindowsVista = osName != null && osName.indexOf("Vista") != -1;
+	    
+	    if (this.isWindowsVista) {
+	    	this.vistaBatchFileCreated = createVistaInstallerBatchFile();
+	    	if (this.vistaBatchFileCreated) {
+	    		JLabel vistaTitle = new JLabel("Windows Vista Installation");
+	    		vistaTitle.setFont( title.getFont() );
+	    		area = new JTextArea( "Please note:\n"
+	    				+ "On Windows Vista (tm) you need to run the installer with administrator rights if you want to install J2ME Polish to a restricted location like C:\\Program Files\\J2ME-Polish.\n"
+	    				+ "A batch file for this purpose has been created at " + this.vistaBatchFilePath + ".\n"
+	    				+ "Right click the bat file and choose \"Run as administrator\" from the popup context menu.\n\n"
+	    				+ "You can install J2ME-Polish to a user directory like \"" + System.getProperty("user.home") + "\\J2ME-Polish\" without needing administrator rights."
+	    				);
+	    	    area.setEditable( false );
+	    	    area.setLineWrap( true );
+	    	    area.setBackground( title.getBackground() );
+	    	    area.setWrapStyleWord(true);
+	    	    area.setFont( label.getFont() );
+	    	    subPanel = new JPanel( new BorderLayout() );
+	    	    subPanel.add( vistaTitle, BorderLayout.NORTH );
+	    	    subPanel.add( area, BorderLayout.CENTER );
+	    	    add( subPanel, BorderLayout.CENTER );
+	    	}
+	    }
 	}
 	
+	/**
+	 * @return true when a batch has been created or when it already exists
+	 */
+	private boolean createVistaInstallerBatchFile()
+	{
+    	try {
+	    	URL url = getClass().getResource("/com/izforge/izpack/panels/polish.properties");
+	    	String jarPath = url.getPath();
+	    	if (!jarPath.startsWith("file:/")) {
+	    		return false;
+	    	}
+    		int exclamationMarkPos = jarPath.indexOf('!');
+    		if (exclamationMarkPos == -1) {
+    			return false;
+    		}
+    		jarPath = jarPath.substring("file:/".length(), exclamationMarkPos  );
+    		File batchFile = new File( jarPath.substring( 0, jarPath.length() - ".jar".length() ) + ".bat" );
+    		if (batchFile.exists()) {
+    			return true;
+    		}
+    		FileUtil.writeTextFile(batchFile, new String[]{ "java -jar \"" + jarPath + "\""} );
+    		this.vistaBatchFilePath = batchFile.getAbsolutePath();
+			return true;
+    	} catch (Exception e) {
+    		System.err.println("Unable to check/create batch file: " + e);
+    		e.printStackTrace();
+    		return false;
+    	}
+	}
+
 	private void setDefaultPath(InstallerFrame parent, InstallData idata) {
 		Preferences prefs = Preferences.userRoot().node( "J2ME-Polish" );
 		String polishHome = prefs.get("polish.home",  null );
 		if (polishHome != null) {
 			// polish install location is known...
 			idata.setInstallPath( polishHome );
+		} else if (this.isWindowsVista) {
+			idata.setInstallPath( System.getProperty("user.home") + "\\J2ME-Polish" );
 		}
 	}
 
@@ -126,7 +190,8 @@ public class ChooseTargetPanel extends IzPanel {
         	out.flush();
         	out.close();
         	testFile.delete();
-        } catch (IOException e) {
+        	System.err.println("validated: path " + installDir.getAbsolutePath() + " is writable.");
+        } catch (Exception e) {
         	e.printStackTrace();
         	emitError(this.parent.langpack.getString("installer.error"), getI18nStringForClass(
                     "notwritable", "TargetPanel"));

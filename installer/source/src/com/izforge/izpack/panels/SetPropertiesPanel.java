@@ -157,6 +157,9 @@ public class SetPropertiesPanel extends IzPanel {
 	    JTextArea area = new JTextArea( message );
 	    area.setEditable( false );
 	    area.setLineWrap( true );
+	    area.setWrapStyleWord(true);
+	    JLabel label = new JLabel("hello");
+	    area.setFont( label.getFont() );
 	    area.setBackground( title.getBackground() );
 	    subPanel.add( area, BorderLayout.CENTER );
 	    
@@ -260,6 +263,10 @@ public class SetPropertiesPanel extends IzPanel {
 
 	private void addMatches(String pathStart, String nameStart, File lookupPath, ArrayList matchesList) {
 		//System.err.println("addMatches: pathStart=" + pathStart + ", nameStart=" + nameStart + ", lookupPath=" + lookupPath.getAbsolutePath() );
+		if (lookupPath == null || pathStart == null || matchesList == null) {
+			System.err.println("SetPropertiesPanel: Unable to add matches for pathStart=" + pathStart + ", nameStart=" + nameStart  + ", matchesList=" + matchesList );
+			return;
+		}
 		File home = new File( lookupPath, pathStart );
 		if (!home.exists()) {
 			return;
@@ -269,6 +276,10 @@ public class SetPropertiesPanel extends IzPanel {
 			return;
 		}
 		File[] files = home.listFiles();
+		if (files == null) {
+			System.err.println("no files in " + home.getAbsolutePath() + ": exists=" + home.exists());
+			return;
+		}
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
 			if (file.getName().startsWith( nameStart )) {

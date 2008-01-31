@@ -73,6 +73,17 @@ implements Runnable
 	 * @see com.izforge.izpack.panels.InstallPanel#panelActivate()
 	 */
 	public void panelActivate() {
+		// store variable for substitution in property files - the install path
+		// should not use the backslash on Windows systems:
+		String installPathProperty = this.idata.getInstallPath();
+		installPathProperty = installPathProperty.replace('\\', '/' );
+//		System.err.println("1: INSTALL_PATH_PROPERTY=" + this.idata.getVariable("INSTALL_PATH_PROPERTY"));
+		//this.idata.setAttribute( "INSTALL_PATH_PROPERTY", installPathProperty );
+		this.idata.setVariable( "INSTALL_PATH_PROPERTY", installPathProperty );
+//		System.err.println("2: INSTALL_PATH_PROPERTY=" + this.idata.getVariable("INSTALL_PATH_PROPERTY"));
+//		this.idata.getVariables().put( "INSTALL_PATH_PROPERTY", installPathProperty );
+//		System.err.println("3: INSTALL_PATH_PROPERTY=" + this.idata.getVariable("INSTALL_PATH_PROPERTY"));
+
 		File existingInstallationDir = new File( this.idata.getInstallPath() );
 		// store install path to preferences (in windows: registry):
 		Preferences prefs = Preferences.userRoot().node( "J2ME-Polish" );
