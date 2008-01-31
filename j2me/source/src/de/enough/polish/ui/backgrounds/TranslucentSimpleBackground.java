@@ -50,12 +50,12 @@ public class TranslucentSimpleBackground extends Background {
 	private final int argbColor;
 	//#if polish.api.nokia-ui && !polish.Bugs.TransparencyNotWorkingInNokiaUiApi
 		//#define tmp.useNokiaUi
-		private final int[] xCoords;
-		private final int[] yCoords;
+		private transient int[] xCoords;
+		private transient int[] yCoords;
 	//#elif polish.midp2 && !polish.blackberry
 		// int MIDP/2.0 the buffer is always used:
-		private int[] buffer;
-		private int lastWidth;
+		private transient int[] buffer;
+		private transient int lastWidth;
 		//#if polish.Bugs.drawRgbNeedsFullBuffer
 			private int lastHeight;
 		//#endif
@@ -69,12 +69,7 @@ public class TranslucentSimpleBackground extends Background {
 	public TranslucentSimpleBackground( int argbColor ) {
 		super();
 		this.argbColor = argbColor;
-		//#if tmp.useNokiaUi
-			this.xCoords = new int[4];
-			this.xCoords[0] = Integer.MIN_VALUE;
-			this.yCoords = new int[4];
-			this.yCoords[0] = Integer.MIN_VALUE;
-		//#endif
+		
 	}
 
 	/* (non-Javadoc)
@@ -91,6 +86,15 @@ public class TranslucentSimpleBackground extends Background {
 			bbGraphics.setGlobalAlpha( 0xff ); // reset to fully opaque		
 		//#elif tmp.useNokiaUi
 			DirectGraphics dg = DirectUtils.getDirectGraphics(g);
+
+			if(this.xCoords == null || this.yCoords == null )
+			{
+				this.xCoords = new int[4];
+				this.xCoords[0] = Integer.MIN_VALUE;
+				this.yCoords = new int[4];
+				this.yCoords[0] = Integer.MIN_VALUE;
+			}
+
 			if ( this.xCoords[0] != x || this.xCoords[1] != x + width) {
 				this.xCoords[0] = x;
 				this.xCoords[1] = x + width;
