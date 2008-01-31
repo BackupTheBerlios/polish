@@ -52,6 +52,7 @@ import de.enough.polish.util.Locale;
 	import de.enough.polish.blackberry.ui.PolishPasswordEditField;
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
+import net.rim.device.api.ui.Manager;
 	import net.rim.device.api.ui.UiApplication;
 import net.rim.device.api.ui.component.BasicEditField;
 //#endif
@@ -1561,7 +1562,10 @@ public class TextField extends StringItem
 		//#endif
 		//#if polish.blackberry
 			
-			long bbStyle = Field.FOCUSABLE;
+			long bbStyle = 0;
+			
+			bbStyle = Field.FOCUSABLE;
+			
 			if (!this.isUneditable) {
 				bbStyle |= Field.EDITABLE;
 			}
@@ -1712,9 +1716,33 @@ public class TextField extends StringItem
 	}
 	
 	//#if polish.blackberry
-	public void setEditable(boolean editable)
+	/**
+	 * Sets a blackberry field to selectable. Used to prevent
+	 * fields to be selectable if they should not be shown.
+	 * 
+	 * @param editable true, if the textfield should be selectable, otherwise false
+	 */
+	public void activate(boolean editable)
 	{
-		this._bbField.setEditable(editable);
+		if(editable)
+		{
+			if(this._bbField == null)
+			{
+				setConstraints(constraints);
+			}
+		}
+		else
+		{	
+			if(this._bbField != null)
+			{
+				Manager manager = this._bbField.getManager();
+				manager.delete(this._bbField);
+				
+				this.editField = null;
+				this._bbField = null;
+				this._bbFieldAdded = false;
+			}
+		}
 	}
 	//#endif
 
@@ -3762,7 +3790,7 @@ public class TextField extends StringItem
 			updateDeleteCommand(this.text);
 		//#endif
 		
-		//#if polish.TextField.useExternalInfo
+		//#if polish.TextField.useExternalInfo && !polish.blackberry
 			if(this.isFocused && this.infoItem != null)
 			{
 				updateInfo();
@@ -3808,7 +3836,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if polish.TextField.useExternalInfo
+	//#if polish.TextField.useExternalInfo && !polish.blackberry
 	public StringItem getInfoItem() {
 		return this.infoItem;
 	}
