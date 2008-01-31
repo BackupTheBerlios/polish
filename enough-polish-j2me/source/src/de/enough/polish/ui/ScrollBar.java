@@ -212,7 +212,7 @@ public class ScrollBar extends Item {
 	{
 		boolean animated = false;
 		int[] rgbData = this.opacityRgbData;
-		if (this.overlap && rgbData != null && this.opacity >= 0)  {
+		if (this.overlap && rgbData != null && this.opacity > 0)  {
 			this.opacity -= 10;
 			if (this.opacity <= 0) {
 				this.opacity = 0;

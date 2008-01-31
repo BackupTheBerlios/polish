@@ -46,6 +46,7 @@ public class HorizontalContainerView extends ContainerView {
 	
 	private int xOffset;
 	private boolean allowRoundTrip;
+	private boolean isExpandRightLayout;
 
 	/**
 	 * Creates a new view
@@ -95,8 +96,22 @@ public class HorizontalContainerView extends ContainerView {
 			}
 		}
 		this.contentHeight = height;
-		this.contentWidth = lineWidth;
+		if (lineWidth < completeWidth) {
+			this.contentWidth = lineWidth;
+		} else {
+			this.contentWidth = completeWidth;
+		}
 		
+    	if (
+    			((parent.getLayout() & Item.LAYOUT_RIGHT) == Item.LAYOUT_RIGHT)
+    		&&	((parent.getLayout() & Item.LAYOUT_EXPAND) == Item.LAYOUT_EXPAND)
+    		) 
+    	{
+    		this.isExpandRightLayout = true;
+    	} else {
+    		this.isExpandRightLayout = false;
+    	}
+
 	}
 	
 	
@@ -117,6 +132,9 @@ public class HorizontalContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#paintContent(de.enough.polish.ui.Container, de.enough.polish.ui.Item[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
+    	if (this.isExpandRightLayout) {
+    		x = rightBorder - this.contentWidth;
+    	}
 		x += this.xOffset;
 		super.paintContent(container, myItems, x, y, leftBorder, rightBorder, clipX,
 				clipY, clipWidth, clipHeight, g);

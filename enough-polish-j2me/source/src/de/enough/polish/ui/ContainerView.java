@@ -225,9 +225,9 @@ extends ItemView
 					}
 				}
 			//#endif
-			return;
 		//#ifdef tmp.useTable
-		}
+				return;
+			}
 		//#endif
 		
 		//#ifdef tmp.useTable
@@ -431,7 +431,36 @@ extends ItemView
 					completeWidth += maxColumnWidth;
 				}
 				if (completeWidth <= availableRowWidth) {
-					// okay, the table is fine just how it is
+					// workaround for cases in which there are only items with a colspan of the complete row,
+					// or when a single column does not occupy any items with colspan=1.
+					//#if polish.css.colspan
+						int numberOfZeroWidthColumns = 0;
+						for (int i = 0; i < maxColumnWidths.length; i++)
+						{
+							if (maxColumnWidths[i] == 0) {
+								numberOfZeroWidthColumns++;
+							}
+						}
+						if (numberOfZeroWidthColumns > 0) {
+							int remainingWidth = availableRowWidth - completeWidth;
+							for (int i = 0; i < maxColumnWidths.length; i++)
+							{
+								if (maxColumnWidths[i] == 0) {
+									int colWidth;
+									if (numberOfZeroWidthColumns == 1) {
+										// last column receives the remaining space:
+										colWidth = remainingWidth;
+									} else {
+										colWidth = remainingWidth / numberOfZeroWidthColumns;
+									}
+									maxColumnWidths[i] = colWidth;
+									numberOfZeroWidthColumns--;
+									remainingWidth -= colWidth;
+								}
+							}
+						}
+					//#endif
+					// okay, the table is now fine just how it is
 					this.columnsWidths = maxColumnWidths;
 				} else {
 					//System.out.println("container-view: too wide");

@@ -93,9 +93,9 @@ public class HorizontalChoiceView extends ContainerView {
 	private int rightArrowStartX;
 	//private int rightArrowEndX;
 	private int xStart;
-	private transient Background parentBackground;
 	//private boolean isInitialized;
 	private int xOffset;
+	private int completeWidthOfItems;
 
 	/**
 	 * Creates a new view
@@ -112,7 +112,7 @@ public class HorizontalChoiceView extends ContainerView {
 			int lineWidth) 
 	{
 		//#debug
-		System.out.println("Initalizing HorizontalChoiceView");
+		System.out.println("Initalizing HorizontalChoiceView with a lineWidth of " + lineWidth );
 		Container parent = (Container) parentItm;
 		//TODO allow no selection for MULTIPLE
 		int selectedItemIndex = ((ChoiceGroup) parent).getSelectedIndex();
@@ -183,7 +183,7 @@ public class HorizontalChoiceView extends ContainerView {
 				this.leftArrowEndX = this.leftArrowStartX + this.arrowWidth;
 				this.rightArrowStartX = lineWidth - this.arrowWidth;
 				//this.rightArrowEndX = lineWidth;
-			} else if (this.arrowPosition == POSITION_RIGHT ) {
+			} else if (this.arrowPosition == POSITION_LEFT ) {
 				this.leftArrowStartX = 0;
 				this.leftArrowEndX = this.arrowWidth;
 				this.rightArrowStartX = this.arrowWidth + this.paddingHorizontal;
@@ -214,6 +214,7 @@ public class HorizontalChoiceView extends ContainerView {
 				}
 			}
 		}
+		this.completeWidthOfItems = completeWidth;
 	
 		this.contentHeight = height;
 		this.contentWidth = lineWidth + completeArrowWidth;
@@ -249,7 +250,6 @@ public class HorizontalChoiceView extends ContainerView {
 			}
 		//#endif
 
-		
 //		System.out.println("leftX=" + this.leftArrowStartX);
 //		System.out.println("rightX=" + this.rightArrowStartX);
 //		System.out.println("arrowColor=" + Integer.toHexString(this.arrowColor));
@@ -364,7 +364,8 @@ public class HorizontalChoiceView extends ContainerView {
 			} else if (this.arrowPosition == POSITION_LEFT ) {
 				modifiedX += (this.arrowWidth + this.paddingHorizontal) << 1;
 				leftBorder += (this.arrowWidth + this.paddingHorizontal) << 1;
-				rightBorder -= (this.arrowWidth + this.paddingHorizontal) << 1;
+			} else {
+				rightBorder -= (this.arrowWidth + this.paddingHorizontal) << 1;				
 			}
 		//#endif	
 				
@@ -378,8 +379,10 @@ public class HorizontalChoiceView extends ContainerView {
 		
 		//#debug
 		System.out.println("HorizontalChoiceView.item: x=" + modifiedX + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder + ", availableWidth=" + (rightBorder - leftBorder) + ", itemWidth=" + this.focusedItem.itemWidth  );
-		
-		boolean setClip = this.contentWidth > rightBorder - leftBorder;
+//		g.setColor(0xff0000);
+//		g.drawLine( rightBorder, y, rightBorder, y + this.contentHeight);
+//		g.drawLine( leftBorder, y, leftBorder, y + this.contentHeight);
+		boolean setClip = this.completeWidthOfItems > rightBorder - leftBorder;
 		if (setClip) {
 			g.clipRect(modifiedX, clipY, rightBorder - modifiedX, clipHeight );
 		}
@@ -458,11 +461,12 @@ public class HorizontalChoiceView extends ContainerView {
 				return;
 			}
 		//#endif
+		if (
 		//#ifdef polish.css.horizontalview-roundtrip
-			if (this.allowRoundTrip ||  (this.currentItemIndex < this.parentContainer.size() - 1) ) {
-		//#else
-			//# if (this.currentItemIndex < this.parentContainer.size() - 1) {
+			this.allowRoundTrip ||  
 		//#endif
+			(this.currentItemIndex < this.parentContainer.size() - 1) ) 
+		{
 			// draw right arrow
 			int startX = x + this.rightArrowStartX;	
 			//#ifdef polish.css.horizontalview-right-arrow

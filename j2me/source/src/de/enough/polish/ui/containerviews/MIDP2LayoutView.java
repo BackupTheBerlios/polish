@@ -79,6 +79,8 @@ extends ContainerView
 
 	private int currentContentHeight;
 
+	private boolean isExpandRightLayout;
+
     /**
      * Constructs an instance of <code>MIDP2LayoutView</code>.
      * <p>
@@ -126,6 +128,16 @@ extends ContainerView
         } else {
         	this.appearanceMode = Item.PLAIN;
         }
+    	if (
+    			((parent.getLayout() & Item.LAYOUT_RIGHT) == Item.LAYOUT_RIGHT)
+    		&&	((parent.getLayout() & Item.LAYOUT_EXPAND) == Item.LAYOUT_EXPAND)
+    		) 
+    	{
+    		this.isExpandRightLayout = true;
+    	} else {
+    		this.isExpandRightLayout = false;
+    	}
+
         //#debug
         System.out.println("MIDP2LayoutView: finished initContent: hasFocusableItem=" + hasFocusableItem + ", focusedItem=" + this.focusedItem + ", focusedIndex=" + this.focusedIndex + ", size=" + myItems.length);
     }
@@ -330,6 +342,9 @@ extends ContainerView
     protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder,
                     Graphics g) 
     {
+    	if (this.isExpandRightLayout) {
+    		x = rightBorder - this.contentWidth;
+    	}
 		int clipX = g.getClipX();
 		int clipY = g.getClipY();
 		int clipWidth = g.getClipWidth();
