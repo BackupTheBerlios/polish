@@ -40,6 +40,10 @@ public class PredictiveAccess implements TrieSetupCallback{
 	public static final int TRIE = 0;
 
 	public static final int ARRAY = 1;
+	
+	//#if polish.predictive.globalSwitch
+		ArrayList registeredFields;
+	//#endif
 
 	/**
 	 * The provider for retrieving rms records, implemented as a static variable
@@ -144,6 +148,10 @@ public class PredictiveAccess implements TrieSetupCallback{
 		//#style predictiveWordNotFoundText?
 		this.alert.setString(Locale.get("polish.predictive.wordNotFound"));
 		this.alert.setTimeout(2000);
+		
+		//#if polish.predictive.globalSwitch
+		registeredFields = new ArrayList();
+		//#endif
 	}
 
 	/**
@@ -164,6 +172,10 @@ public class PredictiveAccess implements TrieSetupCallback{
 		{
 			this.parent.setInputMode(this.builder.getMode());
 		}
+		
+		//#if polish.predictive.globalSwitch
+			this.registeredFields.add(parent);
+		//#endif
 	}
 
 	/**
@@ -376,6 +388,17 @@ public class PredictiveAccess implements TrieSetupCallback{
 				openChoices(this.numberOfMatches > 0);
 			}
 			
+			if(this.numberOfMatches > 0)
+			{
+				if (this.choiceOrientation == ORIENTATION_BOTTOM) {
+					this.choicesContainer.focus(0);
+				}
+				else
+				{
+					this.choicesContainer.focus(this.choicesContainer.size() - 1);
+				}
+			}
+			
 			this.results = element.getResults();			
 
 		} else
@@ -391,7 +414,6 @@ public class PredictiveAccess implements TrieSetupCallback{
 		//#debug
 		System.out.println("open choices: " + open
 				+ ", have been opened already:" + this.isOpen);
-		this.choicesContainer.focus(-1);
 		if (open) {
 //			if (this.parent.getParent() instanceof Container) {
 //				Container parentContainer = (Container) this.parent.getParent();
@@ -447,14 +469,6 @@ public class PredictiveAccess implements TrieSetupCallback{
 //			}
 		} else {
 			this.choicesContainer.clear();
-			if (this.choicesYOffsetAdjustment != 0
-					&& this.parent.getParent() instanceof Container) {
-				Container parentContainer = (Container) this.parent.getParent();
-				parentContainer.setScrollYOffset(parentContainer
-						.getScrollYOffset()
-						+ this.choicesYOffsetAdjustment, true);
-				this.choicesYOffsetAdjustment = 0;
-			}
 			this.isInChoice = false;
 		}
 		
@@ -477,12 +491,21 @@ public class PredictiveAccess implements TrieSetupCallback{
 		//#debug
 		System.out.println("enter choices: " + enter
 				+ ", have been entered already: " + this.isInChoice);
+		
 		if (enter) {
+			int size = this.choicesContainer.size();
 			if (this.choiceOrientation == ORIENTATION_BOTTOM) {
-				this.choicesContainer.focus(0);
+				if(size > 1)
+				{
+					this.choicesContainer.focus(1);
+				}
 			} else {
+				if(size > 1)
+				{
+					this.choicesContainer.focus(this.choicesContainer.size() - 2);
+				}
+				
 				int scrollOffset = this.choicesContainer.getScrollYOffset();
-				this.choicesContainer.focus(this.choicesContainer.size() - 1);
 				// since the choices container was not focused before, it will set it's scroll offset to 0.
 				// We want to see the last item, so we have to reset the scroll offset:
 				this.choicesContainer.setScrollYOffset(scrollOffset, false);
@@ -612,7 +635,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 					}
 					else {
 						if (this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS)
+						{
 							this.setChoices(this.builder.getTextElement());
+						}
 						else
 							this.openChoices(false);
 					}
@@ -1070,5 +1095,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 
 	public void setParent(TextField parent) {
 		this.parent = parent;
+	}
+
+	public boolean isOpen() {
+		return isOpen;
 	}
 }
