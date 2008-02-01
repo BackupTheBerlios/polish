@@ -962,6 +962,7 @@
 						ignore="polish.home" />
 		<propertyWriter srcfile="setup/Readme.txt"
 			            destfile="tmp/Readme.txt" />
+		<copy file="setup/eng.xml" todir="tmp" />
 		<!-- create installation file -->
 		<izpack input="tmp/install.xml"
 		        output="dist/j2mepolish-${Version}.jar"

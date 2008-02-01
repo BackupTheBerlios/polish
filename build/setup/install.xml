@@ -17,21 +17,16 @@
     
     <!-- 
         The gui preferences indication.
-        Sets the installer window to 800x480. It will be able to change the size.
+        Sets the installer window to 100x700. It will be able to change the size.
     -->
 	<guiprefs width="1000" height="700" resizable="yes">
-    	<laf name="metouia">
-        	<os family="unix" />
-        	<os family="windows" />
-        	<os family="osx" />
-    	</laf>
 	</guiprefs>    
     <!-- 
         The locale section.
         Only use the English locale at the moment.
     -->
     <locale>
-        <langpack iso3="eng"/>
+        <langpack iso3="eng" />
     </locale>
     
     <!-- 
@@ -43,6 +38,7 @@
 		<res id="userInputSpec.xml" src="userInputSpec.xml" />
 		<res id="useNativeLAF" src="../setup/useNativeLAF" />
         <res id="Installer.image" src="../setup/j2mepolish-logo.png" />
+        <res id="eng.xml" src="../setup/eng.xml" />
     </resources>
     
     <!-- 

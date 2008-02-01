@@ -76,7 +76,11 @@ public class ImageBackgroundConverter extends BackgroundConverter {
 		if (imageUrl== null) {
 			imageUrl = (String) background.get("background-image");
 			if (imageUrl== null) {
-				throw new BuildException("Invalid CSS: the every image background needs to define the \"image\" CSS attribute - check the " + style.getSelector() + " style.");
+				if (style != null) {
+					throw new BuildException("Invalid CSS: the every image background needs to define the \"image\" CSS attribute - check the " + style.getSelector() + " style.");
+				} else {
+					throw new BuildException("Invalid CSS: the every image background needs to define the \"image\" CSS attribute.");
+				}
 			}
 		}
 		imageUrl = getUrl( imageUrl );
