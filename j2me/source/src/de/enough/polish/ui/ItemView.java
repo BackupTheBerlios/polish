@@ -423,6 +423,9 @@ public abstract class ItemView implements Serializable{
 	 */
 	public void releaseResources(){
 		// do nothing
-		this.parentItem.isInitialized = false;
+		if(this.parentItem != null)
+		{
+			this.parentItem.isInitialized = false;
+		}
 	}
 }
