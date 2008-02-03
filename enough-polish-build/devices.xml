@@ -295,6 +295,15 @@ These namespaces/schemas will be used soon.
 		<capability name="MenuBar.OptionsPosition" value="left" />
 	</device>	
 
+	<device supportsPolishGui="true">
+		<identifier>Generic/android</identifier>
+		<description>An android device</description>
+		<groups>android</groups>
+		<capability name="JavaPlatform" value="MIDP/2.0, android"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="ScreenSize" value="240x320"/>
+	</device>
+
 	
 <!-- virtual devices -->
 

@@ -475,4 +475,11 @@
 		<capability name="JavaPackage" value="mmapi, wmapi" />
 	</group>
 
+	<group>
+		<name>android</name>
+		<capability name="OS" value="android" />
+		<capability name="JavaPlatform" value="MIDP/2.0, android" />
+		<capability name="JavaConfiguration" value="CLDC/1.0" />
+	</group>
+
 </groups>

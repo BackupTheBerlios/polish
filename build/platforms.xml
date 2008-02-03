@@ -205,5 +205,13 @@
 		<capability name="build.DescriptorCreator" value="none" />
 		<capability name="build.Finalizer" value="applet" />
 	</platform>
+
+	<platform>
+		<identifier>android</identifier>
+		<features>android</features>
+		<description>Android is a java platform for mobile devices by Google</description>
+		<capability name="build.BootClassPath" value="android.jar" />
+		<capability name="build.ImplicitGroups" value="android" />
+	</platform>
 	
 </platforms>

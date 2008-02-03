@@ -38,15 +38,6 @@
 		<name>packager</name>
 		<defaultclass>de.enough.polish.jar.ExternalPackager</defaultclass>
 	</typedefinition>
-
-    <!--
-	<extension>
-	    <type>plugin</type>
-    	<name>mBooster</name>
-	    <class>com.innaworks.mbooster.j2mepolish.MBoosterBuildPlugin</class>
-    	<classpath>${polish.home}/import/mbooster.jar</classpath>
-	</extension>
-	-->
 	
 	<!-- Preprocessor -->
 	
@@ -255,6 +246,51 @@
 			<mapping from="javax.microedition.rms.RecordStoreNotFoundException" to="de.enough.polish.doja.rms.RecordStoreNotFoundException" />
 			<mapping from="javax.microedition.rms.RecordStoreNotOpenException" to="de.enough.polish.doja.rms.RecordStoreNotOpenException" />
 			<mapping from="java.lang.IllegalStateException" to="de.enough.polish.doja.lang.IllegalStateException" />
+		</mappings>
+		<!-- mapping of android imports -->
+		<mappings if="polish.usePolishGui and not polish.useDefaultPackage and polish.android">
+			<mapping from="javax.microedition.midlet.*" to="de.enough.polish.drone.midlet.*" />
+			<mapping from="javax.microedition.midlet.MIDlet" to="de.enough.polish.drone.midlet.MIDlet" />
+			<mapping from="javax.microedition.midlet.MIDletStateChangeException" to="de.enough.polish.drone.midlet.MIDletStateChangeException" />
+			<mapping from="javax.microedition.lcdui.AlertType" to="de.enough.polish.drone.lcdui.AlertType" />
+			<mapping from="javax.microedition.lcdui.Canvas" to="de.enough.polish.drone.lcdui.Canvas" />
+			<mapping from="javax.microedition.lcdui.Command" to="de.enough.polish.drone.lcdui.Command" />
+			<mapping from="javax.microedition.lcdui.CommandListener" to="de.enough.polish.drone.lcdui.CommandListener" />
+			<mapping from="javax.microedition.lcdui.Display" to="de.enough.polish.drone.lcdui.Display" />
+			<mapping from="javax.microedition.lcdui.Displayable" to="de.enough.polish.drone.lcdui.Displayable" />
+			<mapping from="javax.microedition.lcdui.Font" to="de.enough.polish.drone.lcdui.Font" />
+			<mapping from="javax.microedition.lcdui.Graphics" to="de.enough.polish.drone.lcdui.Graphics" />
+			<mapping from="javax.microedition.lcdui.Image" to="de.enough.polish.drone.lcdui.Image" />
+			<mapping from="javax.microedition.lcdui.*">
+				<to>
+					de.enough.polish.drone.lcdui.CommandListener; 
+					import de.enough.polish.drone.lcdui.AlertType;
+					import de.enough.polish.drone.lcdui.Canvas;
+					import de.enough.polish.drone.lcdui.Command;
+					import de.enough.polish.drone.lcdui.Display;
+					import de.enough.polish.drone.lcdui.Displayable;
+					import de.enough.polish.drone.lcdui.Font;
+					import de.enough.polish.drone.lcdui.Graphics;
+					import de.enough.polish.drone.lcdui.Image; 
+					import de.enough.polish.ui.*
+				</to>
+			</mapping>
+		</mappings>
+		<mappings if="polish.usePolishGui and polish.useDefaultPackage and polish.android">
+			<mapping from="javax.microedition.midlet.*" to="" />
+			<mapping from="javax.microedition.midlet.MIDlet" to="" />
+			<mapping from="javax.microedition.midlet.MIDletStateChangeException" to="" />
+			<mapping from="javax.microedition.lcdui.Alert" to="" />
+			<mapping from="javax.microedition.lcdui.AlertType" to="" />
+			<mapping from="javax.microedition.lcdui.Canvas" to="" />
+			<mapping from="javax.microedition.lcdui.Command" to="" />
+			<mapping from="javax.microedition.lcdui.CommandListener" to="" />
+			<mapping from="javax.microedition.lcdui.Display" to="" />
+			<mapping from="javax.microedition.lcdui.Displayable" to="" />
+			<mapping from="javax.microedition.lcdui.Font" to="" />
+			<mapping from="javax.microedition.lcdui.Graphics" to="" />
+			<mapping from="javax.microedition.lcdui.Image" to="" />
+			<mapping from="javax.microedition.lcdui.*" to="" />
 		</mappings>
 		
 		<!-- mapping of game imports -->
