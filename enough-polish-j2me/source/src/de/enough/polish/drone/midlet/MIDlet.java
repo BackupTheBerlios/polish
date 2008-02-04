@@ -1,3 +1,4 @@
+//#condition polish.usePolishGui && polish.android
 package de.enough.polish.drone.midlet;
 
 import de.enough.polish.drone.lcdui.Display;
