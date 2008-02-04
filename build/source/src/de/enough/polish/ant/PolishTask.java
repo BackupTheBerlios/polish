@@ -2016,6 +2016,12 @@ public class PolishTask extends ConditionalTask {
 					} else {
 						displayClassName = "de.enough.polish.doja.ui.Display";
 					}
+				} else if ( this.environment.hasSymbol("polish.android")) {
+					if (this.useDefaultPackage) {
+						displayClassName = "Display";
+					} else {
+						displayClassName = "de.enough.polish.drone.lcdui.Display";
+					}
 				}
 				String displayVariableSetting = displayVar + " = " + displayClassName + ".getDisplay( this ); ";
 				if (this.useDefaultPackage) {
