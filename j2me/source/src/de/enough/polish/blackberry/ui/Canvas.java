@@ -1410,9 +1410,9 @@ extends Displayable
     	}
         /*
          * Deactivated because may result in deadlocks
+         */
         Object lock = MIDlet.getEventLock();
         synchronized (lock) {
-        */
 	        if ( item != null && item._bbField != null ) {
 	            if ( !item._bbFieldAdded ) {
                     item._bbFieldAdded = true;
@@ -1428,8 +1428,8 @@ extends Displayable
 	            //System.out.println("Canvas.focus(): focusing dummy");
 	        }
 	    /*
+	     */
         }
-        */
     }
 
     //#if polish.hasTrackballEvents

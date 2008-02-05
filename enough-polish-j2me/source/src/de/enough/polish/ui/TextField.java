@@ -50,6 +50,7 @@ import de.enough.polish.util.Locale;
 	import de.enough.polish.blackberry.ui.PolishTextField;
 	import de.enough.polish.blackberry.ui.PolishEditField;
 	import de.enough.polish.blackberry.ui.PolishPasswordEditField;
+import net.rim.device.api.system.Application;
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
 import net.rim.device.api.ui.Manager;
@@ -1724,26 +1725,31 @@ public class TextField extends StringItem
 	 */
 	public void activate(boolean editable)
 	{
-		if(editable)
+		Object lock = Application.getEventLock();
+		synchronized (lock) 
 		{
-			if(this._bbField == null)
+			if(editable)
 			{
-				setConstraints(constraints);
+				if(this._bbField == null)
+				{
+					setConstraints(constraints);
+				}
+			}
+			else
+			{	
+				if(this._bbField != null)
+				{
+					
+						Manager manager = this._bbField.getManager();
+						manager.delete(this._bbField);
+						
+						this.editField = null;
+						this._bbField = null;
+						this._bbFieldAdded = false;
+					}
+				}
 			}
 		}
-		else
-		{	
-			if(this._bbField != null)
-			{
-				Manager manager = this._bbField.getManager();
-				manager.delete(this._bbField);
-				
-				this.editField = null;
-				this._bbField = null;
-				this._bbFieldAdded = false;
-			}
-		}
-	}
 	//#endif
 
 	/**
