@@ -438,7 +438,7 @@ public class TabBar extends Item {
 				}
 			}
 		}
-		if (this.screen instanceof TabbedForm) {
+		if (this.screen instanceof TabbedForm && this.newActiveTabIndex != this.activeTabIndex) {
 			((TabbedForm)this.screen).setActiveTab( this.newActiveTabIndex );
 		}
 		

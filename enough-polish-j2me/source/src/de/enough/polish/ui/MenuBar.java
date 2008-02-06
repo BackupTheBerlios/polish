@@ -1293,6 +1293,67 @@ public class MenuBar extends Item {
 		System.out.println("MenuBar: handlePointerPressed( relX=" + relX + ", relY=" + relY + " )\nleftCommandEndX = " + leftCommandEndX + ", rightCommandStartXs = " + rightCommandStartX + " screenHeight=" + this.screen.screenHeight);
 		if (relY > 0) {
 			//System.out.println("menubar clicked");
+			CommandItem selectedCommandItem = null;
+			if (relX > rightCommandStartX) {
+				selectedCommandItem = this.singleRightCommandItem;
+			} else if (relX < leftCommandEndX) {
+				selectedCommandItem = this.singleLeftCommandItem;
+			//#if tmp.useMiddleCommand
+			} else if ( relX > this.singleMiddleCommandItem.relativeY 
+					&& relX < this.singleMiddleCommandItem.relativeIconX + this.singleMiddleCommandItem.itemWidth
+					&& this.singleMiddleCommandItem.getAppearanceMode() != PLAIN
+					) 
+			{
+				selectedCommandItem = this.singleMiddleCommandItem;
+			//#endif
+			}
+			if (selectedCommandItem != null) {
+				selectedCommandItem.notifyItemPressedStart();
+			}
+			return true;
+		// okay, y is above the menu bar, so let the commandContainer process the event:
+		} else if (this.isOpened) {
+			relY -= this.commandsContainer.relativeY;
+			//#if tmp.RightOptions
+				// the menu is painted at the lower right corner:
+				relX -= this.screen.screenWidth - this.commandsContainerWidth;
+			//#endif
+
+			boolean handled = this.commandsContainer.handlePointerPressed(relX, relY);
+			//#debug
+			System.out.println("commandContainer.handlePointerPressed: " + handled);
+			return true;
+		}
+		return false;
+	}
+	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	protected boolean handlePointerReleased(int relX, int relY) {
+		// check if one of the command buttons has been pressed:
+		int leftCommandEndX = this.singleLeftCommandItem.relativeX + this.singleLeftCommandItem.itemWidth;
+		int rightCommandStartX = this.singleRightCommandItem.relativeX;
+		//#debug
+		System.out.println("MenuBar: handlePointerReleased( relX=" + relX + ", relY=" + relY + " )\nleftCommandEndX = " + leftCommandEndX + ", rightCommandStartXs = " + rightCommandStartX + " screenHeight=" + this.screen.screenHeight);
+		if (relY > 0) {
+			CommandItem selectedCommandItem = null;
+			if (relX > rightCommandStartX) {
+				selectedCommandItem = this.singleRightCommandItem;
+			} else if (relX < leftCommandEndX) {
+				selectedCommandItem = this.singleLeftCommandItem;
+			//#if tmp.useMiddleCommand
+			} else if ( relX > this.singleMiddleCommandItem.relativeY 
+					&& relX < this.singleMiddleCommandItem.relativeIconX + this.singleMiddleCommandItem.itemWidth
+					&& this.singleMiddleCommandItem.getAppearanceMode() != PLAIN
+					) 
+			{
+				selectedCommandItem = this.singleMiddleCommandItem;
+			//#endif
+			}
+			if (selectedCommandItem != null) {
+				selectedCommandItem.notifyItemPressedEnd();
+			}
+			//System.out.println("menubar clicked");
 			boolean isCloseKeySelected;
 			boolean isOpenKeySelected;
 			boolean isSelectKeySelected;
@@ -1354,24 +1415,13 @@ public class MenuBar extends Item {
 				relX -= this.screen.screenWidth - this.commandsContainerWidth;
 			//#endif
 
-			boolean handled = this.commandsContainer.handlePointerPressed(relX, relY);
+			boolean handled = this.commandsContainer.handlePointerReleased(relX, relY);
+			//#debug
+			System.out.println("commandContainer.handlePointerReleased: " + handled);
 			if (!handled) {
 				setOpen( false );
 			}
 			return true;
-//			// a menu-item could have been selected:
-//			if (x <= this.commandsContainer.xLeftPos + this.commandsContainerWidth 
-//					&& y >= this.commandsContainerY ) 
-//			{
-//				
-//				//boolean handled = this.commandsContainer.handlePointerPressed( x, y );
-//				//System.out.println("handling pointer pressed in open menu at " + x + ", " + y + ": " + handled);
-//				this.commandsContainer.handlePointerPressed( x, y );
-//				int focusedIndex = this.commandsContainer.getFocusedIndex();
-//				Command cmd = (Command) this.commandsList.get( focusedIndex );
-//				this.screen.callCommandListener( cmd );						
-//				return true;
-//			}
 		}
 		return false;
 	}

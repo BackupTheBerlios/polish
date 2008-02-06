@@ -310,7 +310,7 @@ implements AccessibleCanvas
 	private final Object paintLock = new Object();
 	private ArrayList itemCommands;
 	private Object data;
-	/* The last time in ms when the user interacted with this screen. This value is used for stopping
+	/** The last time in ms when the user interacted with this screen. This value is used for stopping
 	 * animations after a period of inactivity. This defaults to 3 minutes, but it can be set with the preprocessing
 	 * variable polish.Animation.MaxIdleTime (integer with the number of ms, 60000 is one minute).
 	 */
@@ -1669,8 +1669,8 @@ implements AccessibleCanvas
 					//#endif
 							if (this.container != null && this.container.itemHeight > this.contentHeight) {
 								// paint scroll bar: - this.container.yOffset
-								//#debug
-								System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
+								// #debug
+								// System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
 								
 								int scrollX = sWidth + this.marginLeft 
 											- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
@@ -1798,6 +1798,7 @@ implements AccessibleCanvas
 							g.setClip(0, topHeight, this.screenWidth, this.originalScreenHeight - topHeight );
 							this.menuContainer.paint(menuLeftX, y, menuLeftX, menuLeftX + this.screenWidth, g);
 							this.menuContainer.relativeY = y;
+							this.menuContainer.relativeX = menuLeftX;
 						 	g.setClip(0, 0, this.screenWidth, this.fullScreenHeight );
 						} 
 						//#if !polish.doja
@@ -1912,6 +1913,8 @@ implements AccessibleCanvas
 					
 //					g.setColor( 0xff);
 //					g.drawRect( g.getClipX(), g.getClipY(), g.getClipWidth() - 2, g.getClipHeight() - 2 );
+//					g.setColor(0xffff00);
+//					g.drawRect( this.container.relativeX, this.container.relativeY, this.contentWidth, this.contentHeight );
 			//#if polish.debug.error
 			} catch (RuntimeException e) {
 				//#debug error
@@ -3262,12 +3265,11 @@ implements AccessibleCanvas
 			super.pointerPressed(x, y);
 		//#endif
 		//#debug
-		System.out.println("PointerPressed at " + x + ", " + y );
+		System.out.println("pointerPressed at " + x + ", " + y );
 		this.lastInteractionTime = System.currentTimeMillis();
 		try {
 			// check for scroll-indicator:
 			//#if tmp.useScrollIndicator
-				//TODO support pointer events for scroll bar
 				if (  this.paintScrollIndicator &&
 						(x > this.scrollIndicatorX) &&
 						(y > this.scrollIndicatorY) &&
@@ -3312,39 +3314,12 @@ implements AccessibleCanvas
 					}
 				//#else
 					// check if one of the command buttons has been pressed:
-					if (y > this.screenHeight) {
-//						System.out.println("pointer at x=" + x + ", menuLeftCommandX=" + menuLeftCommandX );
-						if (x >= this.menuRightCommandX && this.menuRightCommandX != 0) {
-							if (this.menuOpened) {
-								openMenu( false );
-							} else if (this.menuSingleRightCommand != null) {
-								callCommandListener(this.menuSingleRightCommand );
-							}
-							repaint();
-							return;
-						} else if (x <= this.menuLeftCommandX){
-							// assume that the left command has been pressed:
-//							System.out.println("x <= this.menuLeftCommandX: open=" + this.menuOpened );
-							if (this.menuOpened ) {
-								// the "SELECT" command has been clicked:
-								this.menuContainer.handleKeyPressed(0, Canvas.FIRE);
-								openMenu( false );
-							} else if (this.menuSingleLeftCommand != null) {								
-								this.callCommandListener(this.menuSingleLeftCommand);
-							} else {
-								openMenu( true );
-								//this.menuOpened = true;
-							}
-							repaint();
-							return;
-						}
-					} else if (this.menuOpened) {
+					if (this.menuOpened && y <= this.screenHeight) {
 						// a menu-item could have been selected:
-						int menuY = this.originalScreenHeight - (this.menuContainer.itemHeight + 1);
-						if (!this.menuContainer.handlePointerPressed( x, y - menuY )) {
-							openMenu( false );
+						if (this.menuContainer.handlePointerPressed( x - this.menuContainer.relativeX, y - this.menuContainer.relativeY )) {
+							//openMenu( false ); close the menu in pointerReleased so that the user can scroll within large commands menu
+							repaint();
 						}
-						repaint();
 						return;
 					}
 				//#endif
@@ -3386,6 +3361,93 @@ implements AccessibleCanvas
 	}
 	//#endif
 	
+//	//#ifdef polish.hasPointerEvents
+//	/* (non-Javadoc)
+//	 * @see javax.microedition.lcdui.Canvas#pointerDragged(int, int)
+//	 */
+//	protected void pointerDragged(int x, int y)
+//	{
+//		// TODO robertvirkus implement pointerDragged
+//		super.pointerDragged(x, y);
+//		//System.out.println("pointer dragged to " + x + ", " + y);
+//	}
+//	//#endif
+
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#pointerReleased(int, int)
+	 */
+	protected void pointerReleased(int x, int y)
+	{
+		//#if polish.Screen.callSuperEvents
+			super.pointerReleased(x, y);
+		//#endif
+		//#debug
+		System.out.println("pointerReleased at " + x + ", " + y );
+		this.lastInteractionTime = System.currentTimeMillis();
+		//#ifdef tmp.menuFullScreen
+			//#ifdef tmp.useExternalMenuBar
+				if (this.menuBar.handlePointerReleased(x - this.menuBar.relativeX, y - this.menuBar.relativeY)) {
+					repaint();
+					return;
+				}
+			//#else
+				// check if one of the command buttons has been pressed:
+				if (y > this.screenHeight) {
+	//				System.out.println("pointer at x=" + x + ", menuLeftCommandX=" + menuLeftCommandX );
+					if (x >= this.menuRightCommandX && this.menuRightCommandX != 0) {
+						if (this.menuOpened) {
+							openMenu( false );
+						} else if (this.menuSingleRightCommand != null) {
+							callCommandListener(this.menuSingleRightCommand );
+						}
+						repaint();
+						return;
+					} else if (x <= this.menuLeftCommandX){
+						// assume that the left command has been pressed:
+	//					System.out.println("x <= this.menuLeftCommandX: open=" + this.menuOpened );
+						if (this.menuOpened ) {
+							// the "SELECT" command has been clicked:
+							this.menuContainer.handleKeyPressed(0, Canvas.FIRE);
+							openMenu( false );
+						} else if (this.menuSingleLeftCommand != null) {								
+							this.callCommandListener(this.menuSingleLeftCommand);
+						} else {
+							openMenu( true );
+							//this.menuOpened = true;
+						}
+						repaint();
+						return;
+					}
+				} else if (this.menuOpened) {
+					// a menu-item could have been selected:
+					//int menuY = this.originalScreenHeight - (this.menuContainer.itemHeight + 1);
+					if (!this.menuContainer.handlePointerReleased( x - this.menuContainer.relativeX, y - this.menuContainer.relativeY )) {
+						openMenu( false );
+					}
+					repaint();
+					return;
+				}
+			//#endif
+		//#endif
+		if (this.subTitle != null && this.subTitle.handlePointerReleased(x - this.subTitle.relativeX, y - this.subTitle.relativeY)) {
+			return;
+		}
+		//#if tmp.useScrollBar
+			if (this.scrollBar.handlePointerReleased( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
+				return;
+			}
+		//#endif
+			
+		boolean processed = false;
+		processed = handlePointerReleased(x, y);
+		if (processed) {
+			repaint();
+		}
+	}
+	//#endif
+	
 	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles the pressing of a pointer.
@@ -3407,6 +3469,29 @@ implements AccessibleCanvas
 		return this.container.handlePointerPressed(x - this.container.relativeX, y - this.container.relativeY );
 	}
 	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the release of a pointer.
+	 * This method should be overwritten only when the polish.hasPointerEvents 
+	 * preprocessing symbol is defined.
+	 * When the screen could handle the pointer release, it needs to 
+	 * return true.
+	 * The default implementation returns the result of calling the container's
+	 *  handlePointerReleased-method
+	 *  
+	 * @param x the absolute x position of the pointer pressing
+	 * @param y the absolute y position of the pointer pressing
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 */
+	protected boolean handlePointerReleased( int x, int y ) {
+		if (this.container == null) {
+			return false;
+		}
+		return this.container.handlePointerReleased(x - this.container.relativeX, y - this.container.relativeY );
+	}
+	//#endif
+
 	
 	/**
 	 * Tries to handle the specified command.
@@ -4171,8 +4256,6 @@ implements AccessibleCanvas
 		}
 		
 	}
-
-
 	
 //#ifdef polish.Screen.additionalMethods:defined
 	//#include ${polish.Screen.additionalMethods}

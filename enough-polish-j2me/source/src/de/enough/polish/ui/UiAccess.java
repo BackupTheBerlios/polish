@@ -991,6 +991,40 @@ public final class UiAccess {
 	
 	//#if polish.usePolishGui
 	/**
+	 * Forwards a pointer event to the specified item.
+	 * The handlePointerReleased call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param x the x position of the pointer pressing relative to this item's left position
+	 * @param y the y position of the pointer pressing relative to this item's top position
+	 * @return true when the event has been consumed by the item
+	 */
+	public static boolean handlePointerReleased( Item item, int x, int y ) {
+		//#if polish.hasPointerEvents
+			return item.handlePointerReleased(x, y);
+		//#else
+			//# return false;
+		//#endif
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Forwards a pointer event to the specified item.
+	 * The handlePointerReleased call is protected, this is an public accessor for any item.
+	 * 
+	 * @param item the item 
+	 * @param x the x position of the pointer pressing relative to this item's left position
+	 * @param y the y position of the pointer pressing relative to this item's top position
+	 * @return true when the event has been consumed by the item
+	 */
+	public static boolean handlePointerReleased( javax.microedition.lcdui.Item item, int x, int y ) {
+		return false;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
 	 * Asks the specified item to handle the command.
 	 * 
 	 * @param item the item

@@ -1297,7 +1297,7 @@ extends ItemView
 	 */
 	public boolean handleKeyPressed( int keyCode, int gameAction) {
 		//#debug
-		System.out.println("ContainerView.handleKeypressedU() of container " + this);
+		System.out.println("ContainerView.handleKeyPressed() of container " + this);
 		Item item = getNextItem( keyCode, gameAction );
 		if (item != null) {
 			// this is done within getNextItem/shiftFocus anyhow
@@ -1306,26 +1306,6 @@ extends ItemView
 		}
 		return false;
 	}
-
-	//#ifdef polish.hasPointerEvents
-	/**
-	 * Handles pointer pressed events.
-	 * This is an optional feature that doesn't need to be implemented by subclasses, since the parent container already forwards the event to the appropriate item (when this method returns false).
-	 * The default implementation just returns false.
-	 * You only need to implement this method when there are pointer events:
-	 * <pre>
-	 * //#if polish.hasPointerEvents
-	 * </pre>
-	 * 
-	 * @param x the horizontal position of the event relative to the parent container's left content edge 
-	 * @param y the vertical position of the event relative to the parent container's top content edge
-	 * @return true when the event has been handled. When false is returned the parent container
-	 *         tries to sort out the event itself.
-	 */
-	public boolean handlePointerPressed(int x, int y) {
-		return false;
-	}
-	//#endif
 	
 	
 	/**

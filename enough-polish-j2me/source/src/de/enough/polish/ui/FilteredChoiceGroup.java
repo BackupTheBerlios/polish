@@ -257,14 +257,14 @@ public class FilteredChoiceGroup
 	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeCustomItem#handleKeyPressed(int, int)
+	 * @see de.enough.polish.ui.FakeCustomItem#handleKeyReleased(int, int)
 	 */
-	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && StyleSheet.display != null) {
 			showFilteredList( StyleSheet.display );
 			return true;
 		}
-		return super.handleKeyPressed(keyCode, gameAction);
+		return super.handleKeyReleased(keyCode, gameAction);
 	}
 
 	/* (non-Javadoc)

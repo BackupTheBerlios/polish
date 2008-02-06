@@ -50,10 +50,10 @@ import de.enough.polish.util.Locale;
 	import de.enough.polish.blackberry.ui.PolishTextField;
 	import de.enough.polish.blackberry.ui.PolishEditField;
 	import de.enough.polish.blackberry.ui.PolishPasswordEditField;
-import net.rim.device.api.system.Application;
+	import net.rim.device.api.system.Application;
 	import net.rim.device.api.ui.Field;
 	import net.rim.device.api.ui.FieldChangeListener;
-import net.rim.device.api.ui.Manager;
+	import net.rim.device.api.ui.Manager;
 	import net.rim.device.api.ui.UiApplication;
 import net.rim.device.api.ui.component.BasicEditField;
 //#endif
@@ -677,7 +677,7 @@ public class TextField extends StringItem
 			private final static int DELETE_PRIORITY = 1;
 		//#endif
 			
-		//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry
+		//#if (polish.TextField.suppressDeleteCommand != true) && !polish.blackberry && !polish.TextField.keepDeleteCommand
 			//#define tmp.updateDeleteCommand
 		//#endif
 			
@@ -1192,19 +1192,11 @@ public class TextField extends StringItem
 	}
 	 	
 	//#if tmp.updateDeleteCommand
-	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#showCommands(de.enough.polish.util.ArrayList)
-	 */
-	protected void showCommands(ArrayList commandsList)
-	{
-		super.showCommands(commandsList);
-	}
 	protected void updateDeleteCommand(String newText) {
 		// remove delete command when the caret is before the first character,
 		// add it when it is after the first character:
 		// #debug
-		// System.out.println("updateDeleteCommand: newText=[" + newText + "], caretPos=" + this.caretPosition);
+		//System.out.println("updateDeleteCommand: newText=[" + newText + "]");
 		if ( !this.isUneditable ) {
 			if ( newText == null 
 				//#ifdef tmp.directInput
@@ -1562,10 +1554,7 @@ public class TextField extends StringItem
 		//#endif
 		//#if polish.blackberry
 			
-			long bbStyle = 0;
-			
-			bbStyle = Field.FOCUSABLE;
-			
+			long bbStyle = Field.FOCUSABLE;
 			if (!this.isUneditable) {
 				bbStyle |= Field.EDITABLE;
 			}
@@ -1749,6 +1738,13 @@ public class TextField extends StringItem
 				}
 			}
 		}
+	//#endif
+	
+	//#if polish.blackberry
+	public void setEditable(boolean editable)
+	{
+		this._bbField.setEditable(editable);
+	}
 	//#endif
 
 	/**
@@ -3442,7 +3438,6 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	
 	//#if polish.hasPointerEvents && !tmp.forceDirectInput
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
@@ -3458,6 +3453,29 @@ public class TextField extends StringItem
 	 */
 	protected boolean handlePointerPressed( int x, int y ) {
 		if (isInItemArea(x, y)) {
+			return notifyItemPressedStart();
+		} else {
+			return false;
+		}
+	}
+	//#endif
+	
+	//#if polish.hasPointerEvents && !tmp.forceDirectInput
+	/**
+	 * Handles the event when a pointer has been pressed at the specified position.
+	 * The default method translates the pointer-event into an artificial
+	 * pressing of the FIRE game-action, which is subsequently handled
+	 * bu the handleKeyPressed(-1, Canvas.FIRE) method.
+	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
+	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
+	 *    
+	 * @param x the x position of the pointer pressing
+	 * @param y the y position of the pointer pressing
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 */
+	protected boolean handlePointerReleased( int x, int y ) {
+		if (isInItemArea(x, y)) {
+			notifyItemPressedEnd();
 			showTextBox();
 			return true;
 		} else {

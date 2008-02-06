@@ -727,7 +727,8 @@ public abstract class Item extends Object
 	// label settings:
 	protected Style labelStyle = StyleSheet.labelStyle;
 	protected StringItem label;
-	private boolean useSingleRow;
+	/** indicates that label and content are positioned on the same row if true */
+	protected boolean useSingleRow;
 	//#if polish.blackberry
 		/** a blackberry specific internal field */
 		public Field _bbField;
@@ -2388,6 +2389,8 @@ public abstract class Item extends Object
 	 * @see #handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
+		//#debug
+		System.out.println("handleKeyReleased(" + keyCode + ", " + gameAction + ") for " + this);
 		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
 				&& this.appearanceMode != PLAIN && this.isPressed )
 		{
@@ -2531,8 +2534,8 @@ public abstract class Item extends Object
 	 * in the initContent() method (like popup items), might want to override this method.
 	 * It is assumed that the item has been initialized before.
 	 * 
-	 * @param relX the x position relative to this item's left position
-	 * @param relY the y position relative to this item's top position
+	 * @param relX the x position relative to this item's left content position
+	 * @param relY the y position relative to this item's top content position
 	 * @param child the child
 	 * @return true when the relX/relY coordinate is within the child item's area.
 	 */
@@ -2565,11 +2568,39 @@ public abstract class Item extends Object
 	 */
 	protected boolean handlePointerPressed( int relX, int relY ) {
 		if ( isInItemArea(relX, relY)) {
-			return handleKeyPressed( -1, Canvas.FIRE ) | handleKeyReleased( -1, Canvas.FIRE );
+			return handleKeyPressed( -1, Canvas.FIRE );
 		}
 		return false;
 	}
 	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the event when a pointer has been released at the specified position.
+	 * The default method discards this event when relX/relY is outside of the item's area.
+	 * When the event took place inside of the content area, the pointer-event is translated into an artificial
+	 * FIRE game-action keyReleased event, which is subsequently handled
+	 * bu the handleKeyPressed(-1, Canvas.FIRE) method.
+	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
+	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
+	 *    
+	 * @param relX the x position of the pointer pressing relative to this item's left position
+	 * @param relY the y position of the pointer pressing relative to this item's top position
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 * @see #isInItemArea(int, int) this method is used for determining whether the event belongs to this item
+	 * @see #isInContentArea(int, int) for a helper method for determining whether the event took place into the actual content area
+	 * @see #handleKeyPressed(int, int) 
+	 * @see #contentX for calculating the horizontal position relative to the content (relX - contentX)
+	 * @see #contentY for calculating the vertical position relative to the content (relY - contentY)
+	 */
+	protected boolean handlePointerReleased( int relX, int relY ) {
+		if ( isInItemArea(relX, relY)) {
+			return handleKeyReleased( -1, Canvas.FIRE );
+		}
+		return false;
+	}
+	//#endif
+
 	
 	/**
 	 * Adds a region relative to this item's content x/y start position.
@@ -2901,6 +2932,9 @@ public abstract class Item extends Object
 				this.completeBorder.hideNotify();
 			}
 		//#endif
+		if (this.isPressed) {
+			notifyItemPressedEnd();
+		}
 	}
 	
 	/**

@@ -92,7 +92,6 @@ public class HorizontalChoiceView extends ContainerView {
 	private int leftArrowEndX;
 	private int rightArrowStartX;
 	//private int rightArrowEndX;
-	private int xStart;
 	//private boolean isInitialized;
 	private int xOffset;
 	private int completeWidthOfItems;
@@ -351,7 +350,6 @@ public class HorizontalChoiceView extends ContainerView {
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
 		//#debug
 		System.out.println("HorizontalView.start: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
-		this.xStart = x;
 		int modifiedX = x;
 
 		//#ifdef polish.css.horizontalview-arrow-position
@@ -398,7 +396,7 @@ public class HorizontalChoiceView extends ContainerView {
 			} else {
 				//TODO allow explicit setting of top, vcenter and bottom for items (=layout)
 				vOffset = (cHeight - item.itemHeight) / 2;
-				item.paint(itemX, y + vOffset, leftBorder, rightBorder, g);
+				item.paint(itemX, y + vOffset, itemX, itemX + item.itemWidth, g);
 			}
 			itemX += item.itemWidth + this.paddingHorizontal;
 		}
@@ -571,8 +569,10 @@ public class HorizontalChoiceView extends ContainerView {
 	 *         will forward the event to the affected item.
 	 */
 	public boolean handlePointerPressed(int x, int y) {
+		if (y < 0 || y > this.contentHeight ) {
+			return false;
+		}
 		Item[] items = this.parentContainer.getItems();
-		x -= this.xStart;
 		if (this.currentItemIndex > 0 && x >= this.leftArrowStartX  && x <= this.leftArrowEndX ) {
 			this.currentItemIndex--;
 		} else  {

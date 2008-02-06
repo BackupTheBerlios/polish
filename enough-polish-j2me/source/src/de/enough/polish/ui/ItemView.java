@@ -27,6 +27,7 @@
  */
 package de.enough.polish.ui;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.event.EventManager;
@@ -343,12 +344,30 @@ public abstract class ItemView implements Serializable{
 	 * //#if polish.hasPointerEvents
 	 * </pre>
 	 * 
-	 * @param x the x position of the event
-	 * @param y the y position of the event
+	 * @param x the x position of the event relative to the item's horizontal left edge
+	 * @param y the y position of the event relative to the item's vertical top edge
 	 * @return true when the event has been handled. When false is returned the parent container
 	 *         will forward the event to the affected item.
 	 */
 	public boolean handlePointerPressed(int x, int y) {
+		return false;
+	}
+	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the event when a pointer has been released at the specified position.
+	 * The default implementation just returns false.
+	 * You only need to implement this method when there are pointer events:
+	 * <pre>
+	 * //#if polish.hasPointerEvents
+	 * </pre>
+	 *    
+	 * @param x the x position of the event relative to the item's horizontal left edge
+	 * @param y the y position of the event relative to the item's vertical top edge
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 */
+	protected boolean handlePointerReleased( int x, int y ) {
 		return false;
 	}
 	//#endif

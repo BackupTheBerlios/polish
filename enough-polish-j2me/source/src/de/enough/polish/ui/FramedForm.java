@@ -606,6 +606,30 @@ public class FramedForm extends Form {
 	}
 	//#endif
 	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handlePointerPressed(int, int)
+	 */
+	protected boolean handlePointerReleased(int x, int y) {
+		Container newFrame = null;
+		if (this.container.handlePointerReleased(x - this.container.relativeX, y - this.container.relativeY)) {
+			newFrame = this.container;
+		} else if ( this.topFrame != null && this.topFrame.handlePointerReleased(x - this.topFrame.relativeX, y - this.topFrame.relativeY) ) {
+			newFrame = this.topFrame;
+		} else if ( this.bottomFrame != null && this.bottomFrame.handlePointerReleased(x - this.bottomFrame.relativeX, y - this.bottomFrame.relativeY) ) {
+			newFrame = this.bottomFrame;
+		} else if ( this.leftFrame != null && this.leftFrame.handlePointerReleased(x - this.leftFrame.relativeX, y - this.leftFrame.relativeY) ) {
+			newFrame = this.leftFrame;
+		} else if ( this.rightFrame != null && this.rightFrame.handlePointerReleased(x - this.rightFrame.relativeX, y - this.rightFrame.relativeY) ) {
+			newFrame = this.rightFrame;
+		}
+		if (newFrame != null && newFrame != this.currentlyActiveContainer ) {
+			setActiveFrame(newFrame);
+		}
+		return (newFrame != null);
+	}
+	//#endif
+	
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#animate(long,ClippingRegion)

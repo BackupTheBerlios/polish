@@ -200,10 +200,12 @@ public final class TextUtil {
 			char[] valueChars = value.toCharArray();
 			int lastIndex = 0;
 			char c =' ';
+			int lineBreakCount = 0;
 			for (int i = 0; i < valueChars.length; i++) {
 				c = valueChars[i];
 				boolean isCRLF = (c == 0x0D && i < valueChars.length -1 &&  valueChars[i +1] == 0x0A);
 				if (c == '\n' || i == valueChars.length -1 || isCRLF ) {
+					lineBreakCount++;
 					String line = null;
 					if (i == valueChars.length -1) {
 						line = new String( valueChars, lastIndex, (i + 1) - lastIndex );
@@ -227,7 +229,7 @@ public final class TextUtil {
 				} // for each line
 			} // for all chars
 			// special case for lines that end with \n: add a further line
-			if (c == '\n' || c == 10) {
+			if (lineBreakCount > 1 && (c == '\n' || c == 10)) {
 				lines.add("");
 			}
 		}

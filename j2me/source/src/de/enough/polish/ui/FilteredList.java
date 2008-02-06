@@ -135,6 +135,8 @@ implements ItemStateListener //, CommandListener
 	 * @see de.enough.polish.ui.List#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		//#debug
+		System.out.println("handleKeyPressed( " + keyCode + ", " + gameAction + ")");
 		boolean handled = false;
 		if (!(gameAction == FIRE && keyCode != KEY_NUM5)) {
 			handled = this.filterTextField.handleKeyPressed(keyCode, gameAction);
@@ -150,7 +152,9 @@ implements ItemStateListener //, CommandListener
 	 * @see de.enough.polish.ui.List#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
-		boolean handled = false;
+		//#debug
+		System.out.println("handleKeyReleased( " + keyCode + ", " + gameAction + ")");
+		boolean handled = false; 
 		if (!(gameAction == FIRE && keyCode != KEY_NUM5)) {
 			handled = this.filterTextField.handleKeyReleased(keyCode, gameAction);
 		}
@@ -164,6 +168,8 @@ implements ItemStateListener //, CommandListener
 	 * @see de.enough.polish.ui.List#handleKeyRepeated(int, int)
 	 */
 	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
+		//#debug
+		System.out.println("handleKeyRepeated( " + keyCode + ", " + gameAction + ")");
 		boolean handled = false;
 		if (!(gameAction == FIRE && keyCode != KEY_NUM5)) {
 			handled = this.filterTextField.handleKeyRepeated(keyCode, gameAction);

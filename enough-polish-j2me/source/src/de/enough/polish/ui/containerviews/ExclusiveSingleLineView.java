@@ -85,8 +85,6 @@ public class ExclusiveSingleLineView extends ContainerView {
 	private int leftArrowEndX;
 	private int rightArrowStartX;
 	private int rightArrowEndX;
-	private int xStart;
-	//private boolean isInitialized;
 
 	/**
 	 * Creates a new view
@@ -287,7 +285,7 @@ public class ExclusiveSingleLineView extends ContainerView {
 	{
 		//#debug
 		System.out.println("ExclusiveView.start: x=" + x + ", y=" + y + ", leftBorder=" + leftBorder + ", rightBorder=" + rightBorder );
-		this.xStart = x;
+		//this.xStart = x;
 		int modifiedX = x;
 //		//#ifdef polish.css.exclusiveview-expand-background
 //			if (!this.isExpandBackground && this.expandBackground != null) {
@@ -476,7 +474,6 @@ public class ExclusiveSingleLineView extends ContainerView {
 		}
 		Item[] items = this.parentContainer.getItems();
 		this.currentItem.select( false );
-		x -= this.xStart;
 		int index = this.currentItemIndex;
 		if ( (index > 0 || this.allowRoundTrip) && x >= this.leftArrowStartX  && x <= this.leftArrowEndX ) {
 			index--;

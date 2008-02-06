@@ -273,7 +273,7 @@ public class ChoiceTextField
 	 */
 	protected void defocus(Style origStyle) {
 		super.defocus(origStyle);
-		if (!this.isAllowFreeTextEntry && this.numberOfMatches > 0) {
+		if (!this.isAllowFreeTextEntry && this.numberOfMatches > 0 && this.choicesContainer.size() > 0) {
 			Item item = this.choicesContainer.get( 0 );
 			if (item instanceof StringItem) {
 				setString( ((StringItem)item).getText() );
@@ -285,18 +285,17 @@ public class ChoiceTextField
 		this.choicesContainer.clear();
 		openChoices(false);
 	}
-	
-	
+		
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.TextField#animate()
+	 * @see de.enough.polish.ui.FakeCustomItem#animate(long, de.enough.polish.ui.ClippingRegion)
 	 */
-	public boolean animate() {
-		boolean animated = super.animate();
-		if (this.numberOfMatches > 0) {
-			animated |= this.choicesContainer.animate();
+	public void animate(long currentTime, ClippingRegion repaintRegion)
+	{
+		super.animate(currentTime, repaintRegion);
+		if (this.isFocused && this.numberOfMatches > 0) {
+			this.choicesContainer.animate( currentTime, repaintRegion );
 		}
-		return animated;
 	}
 
 	/* (non-Javadoc)
@@ -325,58 +324,12 @@ public class ChoiceTextField
 				}
 				return true;
 			}
-			//System.out.println("focusing textfield again, isFocused=" + this.isFocused);
-			enterChoices( false );
-			
 			if (gameAction == Canvas.FIRE) {
 				// option has been selected!
 				Item item = this.choicesContainer.getFocusedItem();
-				String choiceText;
-				if ( item instanceof ChoiceItem ) {
-					choiceText = ((ChoiceItem) item).getText();
-				} else if (item != null) {
-					choiceText = item.toString();
-				} else {
-					return false;
-				}
-				if (this.isAppendMode) {
-					String currentText = getString();
-					if ( (currentText != null) ) {
-						if (this.appendDelimiterIndex != -1 && this.appendDelimiterIndex < currentText.length() ) {
-							currentText = currentText.substring( 0, this.appendDelimiterIndex );
-						}
-						if ( choiceText.startsWith( currentText) ) {
-							if (this.appendChoiceDelimiter != null ) {
-								choiceText += this.appendChoiceDelimiter;
-							}
-						} else {
-							if (this.appendChoiceDelimiter == null) {
-								choiceText = currentText + choiceText; 
-							} else {
-								if ( this.choiceTriggerEnabled) {
-									choiceText = currentText + choiceText + this.appendChoiceDelimiter;
-								} else if ( currentText.endsWith( this.appendChoiceDelimiter ) ) {
-									choiceText = currentText + choiceText + this.appendChoiceDelimiter;
-								} else {
-									choiceText = currentText + this.appendChoiceDelimiter + choiceText + this.appendChoiceDelimiter;
-								}
-							}
-						}
-					} else if (this.appendChoiceDelimiter != null) {
-						choiceText += this.appendChoiceDelimiter;
-					}
-					this.appendDelimiterIndex = choiceText.length();
-				}
-				if (!this.isAllowFreeTextEntry) {
-					this.lastMatchingText = choiceText;
-				}
-				//#if polish.usePolishGui	
-					setString( choiceText );
-					//# setCaretPosition( choiceText.length() );
-				//#endif
-				this.numberOfMatches = 0;
-				openChoices( false );
-				super.notifyStateChanged();
+				item.notifyItemPressedStart();
+			} else {
+				enterChoices( false );
 			}
 			return true;
 		} else if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
@@ -427,7 +380,7 @@ public class ChoiceTextField
 		//#if polish.Key.ReturnKey:defined
 		} else if (this.isOpen
 				//#= && (keyCode == ${polish.Key.ReturnKey})
-				) {
+		) {
 			openChoices(false);
 			return true;
 		//#endif
@@ -435,26 +388,120 @@ public class ChoiceTextField
 		return super.handleKeyPressed(keyCode, gameAction);
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.TextField#handleKeyReleased(int, int)
+	 */
+	protected boolean handleKeyReleased(int keyCode, int gameAction) {
+		//#debug
+		System.out.println("handleKeyReleased( keyCode=" + keyCode + ", gameAction=" + gameAction +  ", isInChoice=" + this.isInChoice + " )");
+		if (this.isInChoice) {
+			if ( this.choicesContainer.handleKeyReleased(keyCode, gameAction) ) {
+				//#debug
+				System.out.println("handleKeyReleased handled by choices container");
+				if (this.choicesContainer.internalX != Item.NO_POSITION_SET) {
+					this.internalX = this.choicesContainer.relativeX + this.choicesContainer.internalX;
+					this.internalY = this.choicesContainer.relativeY + this.choicesContainer.internalY;
+				}
+				return true;
+			}
+			//System.out.println("focusing textfield again, isFocused=" + this.isFocused);
+			
+			if (gameAction == Canvas.FIRE) {
+				enterChoices( false );
+				// option has been selected!
+				Item item = this.choicesContainer.getFocusedItem();
+				item.notifyItemPressedEnd();
+				String choiceText;
+				if ( item instanceof ChoiceItem ) {
+					choiceText = ((ChoiceItem) item).getText();
+				} else if (item != null) {
+					choiceText = item.toString();
+				} else {
+					return false;
+				}
+				if (this.isAppendMode) {
+					String currentText = getString();
+					if ( (currentText != null) ) {
+						if (this.appendDelimiterIndex != -1 && this.appendDelimiterIndex < currentText.length() ) {
+							currentText = currentText.substring( 0, this.appendDelimiterIndex );
+						}
+						if ( choiceText.startsWith( currentText) ) {
+							if (this.appendChoiceDelimiter != null ) {
+								choiceText += this.appendChoiceDelimiter;
+							}
+						} else {
+							if (this.appendChoiceDelimiter == null) {
+								choiceText = currentText + choiceText; 
+							} else {
+								if ( this.choiceTriggerEnabled) {
+									choiceText = currentText + choiceText + this.appendChoiceDelimiter;
+								} else if ( currentText.endsWith( this.appendChoiceDelimiter ) ) {
+									choiceText = currentText + choiceText + this.appendChoiceDelimiter;
+								} else {
+									choiceText = currentText + this.appendChoiceDelimiter + choiceText + this.appendChoiceDelimiter;
+								}
+							}
+						}
+					} else if (this.appendChoiceDelimiter != null) {
+						choiceText += this.appendChoiceDelimiter;
+					}
+					this.appendDelimiterIndex = choiceText.length();
+				}
+				if (!this.isAllowFreeTextEntry) {
+					this.lastMatchingText = choiceText;
+				}
+				//#if polish.usePolishGui	
+					setString( choiceText );
+					//# setCaretPosition( choiceText.length() );
+				//#endif
+				this.numberOfMatches = 0;
+				openChoices( false );
+				super.notifyStateChanged();
+			}
+			return true;
+		}
+		return super.handleKeyReleased(keyCode, gameAction);
+	}
+	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
+		//#debug
+		System.out.println("handlePointerPressed(" + x + ", " + y + ")");
 		boolean handled = super.handlePointerPressed(x, y);
 		if (!handled && this.isOpen) {
-			handled = this.choicesContainer.handlePointerPressed(x, y - (this.choicesContainer.relativeY + this.contentY) );
-			if (handled) {
-				// select the current element:
+			handled = this.choicesContainer.handlePointerPressed(x - this.contentX, y - (this.choicesContainer.relativeY + this.contentY) );
+			if (handled && !this.isInChoice) {
 				this.isInChoice = true;
-				handleKeyPressed( 0, Canvas.FIRE );
-			} else {
-				openChoices( false );
-				handled = true;
 			}
+			handled = true;
 		}
 		return handled;
 	}
 	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
+	 */
+	protected boolean handlePointerReleased(int x, int y) {
+		//#debug
+		System.out.println("handlePointerReleased(" + x + ", " + y + ")");
+		boolean handled = super.handlePointerReleased(x, y);
+		if (!handled && this.isOpen) {
+			handled = this.choicesContainer.handlePointerReleased(x - this.contentX, y - (this.choicesContainer.relativeY + this.contentY) );
+			if (!handled && this.choicesContainer.focusedItem != null) {
+				this.isInChoice = true;
+				handleKeyReleased( 0, Canvas.FIRE );
+			}
+			handled = true;
+		}
+		return handled;
+	}
+	//#endif
+
 
 	private void enterChoices( boolean enter ) {
 		//#debug
@@ -529,6 +576,9 @@ public class ChoiceTextField
 				}
 			}			
 		} else {
+			if (this.isInChoice) {
+				enterChoices( false );
+			}
 			this.choicesContainer.clear();
 			if (this.choicesYOffsetAdjustment != 0 && this.parent instanceof Container) {
 				Container parentContainer = (Container) this.parent;

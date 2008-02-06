@@ -115,6 +115,9 @@ implements Choice
 	//#if ! tmp.suppressSelectCommand && tmp.supportViewType
 		private boolean isSelectCommandAdded;
 	//#endif
+	//#ifdef polish.hasPointerEvents
+		private boolean isPointerReleaseShouldTriggerKeyRelease;
+	//#endif
 	
 
 	/**
@@ -1204,6 +1207,7 @@ implements Choice
 			}
 		//#endif
 		if (this.isPopup) {
+			//System.out.println("initContent of POPUP " + this + ", isClosed=" + this.isPopupClosed );
 			if (this.popupItem.image == null) {
 				this.popupItem.setImage( createPopupImage() );
 			}
@@ -1221,7 +1225,10 @@ implements Choice
 			} else {
 				this.originalContentWidth = this.contentWidth;
 				this.originalContentHeight = this.contentHeight;
-				this.originalBackgroundHeight = this.backgroundHeight;
+			}
+			this.originalBackgroundHeight = this.contentHeight + this.marginTop + this.marginBottom;
+			if (!this.useSingleRow && this.label != null) {
+				this.originalBackgroundHeight += this.label.itemHeight + this.paddingVertical;
 			}
 			//this.contentWidth = this.popupItem.contentWidth;			
 			this.contentHeight = this.popupItem.contentHeight;
@@ -1253,27 +1260,35 @@ implements Choice
 
 	//#ifdef polish.usePopupItem
 	private void openPopup() {
+		if (this.isPopupClosed == false) {
+			return;
+		}
 		//this.popupOpenY = this.yTopPos; 
 		if (this.parent instanceof Container) {
 			this.popupParentOpenY = ((Container)this.parent).getScrollYOffset();
 			//#debug
 			System.out.println("opening popup and storing scroll y offset of " + this.popupParentOpenY);
 		}
+		//System.out.println("openPopup: backgroundHeight=" + this.originalBackgroundHeight + ", itemHeight=" + this.itemHeight);
 		this.isPopupClosed = false;
 		focus( this.selectedIndex );
 		// recalculate the internal positions of the selected choice:
-		Item item = (Item) this.itemsList.get( this.selectedIndex );
-		if (item.isInitialized) {
-			this.internalY = item.relativeY;
-			this.internalHeight = item.itemHeight;
-			this.internalX = item.relativeX;
-			this.internalWidth = item.itemWidth;
-		} else {
-			this.internalX = 0;
-			this.internalY = 0;
-			this.internalHeight = this.itemHeight + 20;
-			this.internalWidth = this.itemWidth;
+		if (this.selectedIndex != -1) {
+			Item item = (Item) this.itemsList.get( this.selectedIndex );
+			//System.out.println("selectedIndex=" + this.selectedIndex + ", isInitialized=" + item.isInitialized);
+			if (item.isInitialized) {
+				this.internalY = item.relativeY;
+				this.internalHeight = item.itemHeight;
+				this.internalX = item.relativeX;
+				this.internalWidth = item.itemWidth;
+			} else {
+				this.internalX = 0;
+				this.internalY = 0;
+				this.internalHeight = this.itemHeight + 20;
+				this.internalWidth = this.itemWidth;
+			}
 		}
+		this.isInitialized = false;
 		this.backgroundHeight = this.originalBackgroundHeight;
 	}
 	//#endif
@@ -1296,6 +1311,8 @@ implements Choice
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		if (this.itemsList.size() == 0) {
+			//#debug
+			System.out.println("itemsList.size()==0, aborting handleKeyPressed");
 			return super.handleKeyPressed(keyCode, gameAction);
 		}
 		//#debug
@@ -1468,7 +1485,7 @@ implements Choice
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		//#debug
-		System.out.println("handleKeyReleased( " + keyCode + ", " + gameAction + " ) for " + this + ", isPressed="+ this.isPressed);
+		System.out.println("handleKeyReleased( " + keyCode + ", " + gameAction + " ) for " + this + ", isPressed="+ this.isPressed );
 		if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
 			ChoiceItem item = (ChoiceItem) this.focusedItem;
 			if (item != null && item.isPressed) {
@@ -1508,9 +1525,38 @@ implements Choice
 	protected boolean handlePointerPressed(int relX, int relY) {
 		//#debug
 		System.out.println("ChoiceGroup.handlePointerPressed(" + relX + ", " + relY + ") for " + this );
+		int index = this.focusedIndex;
+		boolean handled = super.handlePointerPressed(relX, relY); // focuses the appropriate item, might change this.focusedIndex...
+		relY -= this.yOffset + this.contentY;
+		relX -= this.contentX;
+		boolean triggerKey = (    
+				(handled || isInItemArea(relX, relY, this.focusedItem))
+				//#if polish.css.view-type
+				&& (index == this.focusedIndex || this.containerView == null || this.containerView.allowsDirectSelectionByPointerEvent) 
+				//#endif
+		);
+		//#debug
+		System.out.println("triggerKey=" + triggerKey + ", handled=" + handled + ", index=" + index + ", focusedIndex=" + this.focusedIndex + ", focusedItem=" + this.focusedItem  + ", isInItemArea(relX, relY, this.focusedItem)=" + isInItemArea(relX, relY, this.focusedItem));
+		relY += this.yOffset;
+		if (  triggerKey )  
+		{
+			this.isPointerReleaseShouldTriggerKeyRelease = true;
+			handled |= handleKeyPressed( -1, Canvas.FIRE );
+		}
+		return handled;
+	}
+	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerReleased(int, int)
+	 */
+	protected boolean handlePointerReleased(int relX, int relY) {
+		//#debug
+		System.out.println("ChoiceGroup.handlePointerReleased(" + relX + ", " + relY + ") for " + this );
 		//#ifdef polish.usePopupItem
 			if (this.isPopup && this.isPopupClosed) {
-				if (isInContentArea(relX, relY)) {
+				if (isInItemArea(relX, relY)) {
 					openPopup();
 					return true;
 				} else {
@@ -1518,19 +1564,20 @@ implements Choice
 				}
 			}
 		//#endif
-		int index = this.focusedIndex;
-		boolean handled = super.handlePointerPressed(relX, relY); // focuses the appropriate item
-		//#debug
-		System.out.println("handled=" + handled + ", index=" + index + ", focusedIndex=" + this.focusedIndex + ", focusedItem=" + this.focusedItem  + ", isInItemArea(relX, relY, this.focusedItem)=" + isInItemArea(relX, relY, this.focusedItem));
-		if (    
-				(handled || isInItemArea(relX, relY, this.focusedItem))
-				//#if polish.css.view-type
-				&& (index == this.focusedIndex || this.containerView == null || this.containerView.allowsDirectSelectionByPointerEvent) 
-				//#endif
-		)
-		{
-			handled |= handleKeyPressed( -1, Canvas.FIRE ) | handleKeyReleased( -1, Canvas.FIRE );
+		if (   this.isPointerReleaseShouldTriggerKeyRelease ) { 
+			this.isPointerReleaseShouldTriggerKeyRelease = false;
+			boolean handled = handleKeyReleased( -1, Canvas.FIRE );
+			if (handled) {
+				return true;
+			}
 		}
+		boolean handled = super.handlePointerReleased(relX, relY);
+		//#ifdef polish.usePopupItem
+			if (!handled && this.isPopup && !this.isPopupClosed) {
+				closePopup();
+				handled = true;
+			}
+		//#endif
 		return handled;
 	}
 	//#endif

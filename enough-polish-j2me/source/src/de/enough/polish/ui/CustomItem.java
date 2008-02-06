@@ -459,7 +459,7 @@ public abstract class CustomItem extends Item
 
 	private static final int INTERACTION_MODES = KEY_PRESS | KEY_RELEASE | KEY_REPEAT | TRAVERSE_HORIZONTAL | TRAVERSE_VERTICAL
 	//#ifdef polish.hasPointerEvents
-	 	| POINTER_PRESS
+	 	| POINTER_PRESS | POINTER_RELEASE
 	//#endif
 	 ;
 	//#if polish.css.skip-set-clip
@@ -1340,9 +1340,7 @@ public abstract class CustomItem extends Item
 	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
-	 * The default method translates the pointer-event into an artificial
-	 * pressing of the FIRE game-action, which is subsequently handled
-	 * bu the handleKeyPressed(-1, Canvas.FIRE) method.
+	 * The default implementation forwards the event to pointerPressed().
 	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
 	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
 	 *    
@@ -1360,6 +1358,31 @@ public abstract class CustomItem extends Item
 		y -= this.contentY;
 		this.isEventHandled = false;
 		pointerPressed( x, y );
+		return (this.isEventHandled || this.isInitialized == false);
+	}
+	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the event when a pointer has been released at the specified position.
+	 * The default implementation forwards the event to pointerReleased().
+	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
+	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
+	 *    
+	 * @param x the x position of the pointer pressing
+	 * @param y the y position of the pointer pressing
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 */
+	protected boolean handlePointerReleased( int x, int y ) {
+		// translate the coordinates to the origin of this custom-item:
+		if ( !isInContentArea(x, y) ) {
+			// the content area has not been clicked, so return false:
+			return false;
+		}
+		x -= this.contentX;
+		y -= this.contentY;
+		this.isEventHandled = false;
+		pointerReleased( x, y );
 		return (this.isEventHandled || this.isInitialized == false);
 	}
 	//#endif

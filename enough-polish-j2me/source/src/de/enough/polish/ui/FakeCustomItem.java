@@ -2319,6 +2319,34 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	}
 	//#endif
 	
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the event when a pointer has been released at the specified position.
+	 * The default method discards this event when relX/relY is outside of the item's area.
+	 * When the event took place inside of the content area, the pointer-event is translated into an artificial
+	 * FIRE game-action keyReleased event, which is subsequently handled
+	 * bu the handleKeyPressed(-1, Canvas.FIRE) method.
+	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
+	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
+	 *    
+	 * @param relX the x position of the pointer pressing relative to this item's left position
+	 * @param relY the y position of the pointer pressing relative to this item's top position
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 * @see #isInItemArea(int, int) this method is used for determining whether the event belongs to this item
+	 * @see #isInContentArea(int, int) for a helper method for determining whether the event took place into the actual content area
+	 * @see #handleKeyPressed(int, int) 
+	 * @see #contentX for calculating the horizontal position relative to the content (relX - contentX)
+	 * @see #contentY for calculating the vertical position relative to the content (relY - contentY)
+	 */
+	protected boolean handlePointerReleased( int relX, int relY ) {
+		if ( isInItemArea(relX, relY)) {
+			return handleKeyReleased( -1, Canvas.FIRE );
+		}
+		return false;
+	}
+	//#endif
+
+	
 	/**
 	 * Adds a region relative to this item's content x/y start position.
 	 * @param repaintRegion the clipping region

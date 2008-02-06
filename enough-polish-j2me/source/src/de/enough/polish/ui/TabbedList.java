@@ -210,21 +210,21 @@ public class TabbedList extends Screen {
 		}
 		return handled;
 	}
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int)
-	 */
-	protected boolean handleKeyReleased(int keyCode, int gameAction) {
-		// TODO robertvirkus implement handleKeyReleased
-		return super.handleKeyReleased(keyCode, gameAction);
-	}
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#handleKeyRepeated(int, int)
-	 */
-	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
-		// TODO robertvirkus implement handleKeyRepeated
-		return super.handleKeyRepeated(keyCode, gameAction);
-	}
-	
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int)
+//	 */
+//	protected boolean handleKeyReleased(int keyCode, int gameAction) {
+//		// TODO robertvirkus implement handleKeyReleased
+//		return super.handleKeyReleased(keyCode, gameAction);
+//	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Screen#handleKeyRepeated(int, int)
+//	 */
+//	protected boolean handleKeyRepeated(int keyCode, int gameAction) {
+//		// TODO robertvirkus implement handleKeyRepeated
+//		return super.handleKeyRepeated(keyCode, gameAction);
+//	}
+//	
 	//#ifdef polish.hasPointerEvents
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#handlePointerPressed(int, int)
@@ -234,6 +234,17 @@ public class TabbedList extends Screen {
 				|| super.handlePointerPressed(x, y);
 	}
 	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#handlePointerReleased(int, int)
+	 */
+	protected boolean handlePointerReleased(int x, int y) {
+		return this.tabTitles.handlePointerReleased(x-this.tabTitles.relativeX, y-this.tabTitles.relativeY) 
+				|| super.handlePointerReleased(x, y);
+	}
+	//#endif
+
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#paintScreen(javax.microedition.lcdui.Graphics)

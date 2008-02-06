@@ -413,17 +413,19 @@ public class TreeItem
 		 */
 		protected boolean handleKeyPressed(int keyCode, int gameAction) {
 			//#debug
-			System.out.println("Note " + this + " handleKeyPressed: isExpanded=" + this.isExpanded);
+			System.out.println("Node " + this + " handleKeyPressed: isExpanded=" + this.isExpanded);
 			boolean handled = false;
 			if (this.isExpanded) {
-				//if (this.isChildrenFocused) {
-				if (this.children.isFocused) {
+ 				if (this.children.isFocused) {
 					handled = this.children.handleKeyPressed(keyCode, gameAction);
 					if (!handled && gameAction == Canvas.UP) {
 						// focus this root:
+						//this.root.notifyItemPressedStart();
 						focusRoot();
 						handled = true;
-					} else {
+					}
+//					} else {
+					if (handled) {
 						if (this.children.internalX != NO_POSITION_SET) {
 							this.internalX = this.children.relativeX + this.children.contentX + this.children.internalX;
 							this.internalY = this.children.relativeY + this.children.contentY + this.children.internalY;
@@ -448,6 +450,57 @@ public class TreeItem
 
 			}
 			if (!handled && gameAction == Canvas.FIRE ) {
+				handled = this.root.notifyItemPressedStart();
+			}
+//			if (!handled && gameAction == Canvas.FIRE ) {
+//				setExpanded( !this.isExpanded );
+//				handled = true;
+//			}
+			return handled;
+		}
+		
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
+		 */
+		protected boolean handleKeyReleased(int keyCode, int gameAction) {
+			//#debug
+			System.out.println("Node " + this + " handleKeyReleased: isExpanded=" + this.isExpanded);
+			boolean handled = false;
+			if (this.isExpanded) {
+ 				if (this.children.isFocused) {
+					handled = this.children.handleKeyReleased(keyCode, gameAction);
+//					if (!handled && gameAction == Canvas.UP) {
+//						// focus this root:
+//						this.root.notifyItemPressedEnd();
+//						focusRoot();
+//						handled = true;
+//					} else {
+					if (handled) {
+						if (this.children.internalX != NO_POSITION_SET) {
+							this.internalX = this.children.relativeX + this.children.contentX + this.children.internalX;
+							this.internalY = this.children.relativeY + this.children.contentY + this.children.internalY;
+							this.internalWidth = this.children.internalWidth;
+							this.internalHeight = this.children.internalHeight;
+						} else {
+							this.internalX = this.children.relativeX;
+							this.internalY = this.children.relativeY;
+							this.internalWidth = this.children.itemWidth;
+							this.internalHeight = this.children.itemHeight;
+						}
+					}
+				} else if (gameAction == Canvas.DOWN && this.children.appearanceMode != PLAIN) {
+					// move focus to children
+					if (this.rootPlainStyle != null) {
+						this.root.defocus(this.rootPlainStyle);
+					}
+					this.children.focus(null, gameAction);
+					//this.isChildrenFocused = true;
+					handled = true;
+				}
+
+			}
+			if (!handled && gameAction == Canvas.FIRE) {
+				this.root.notifyItemPressedEnd();
 				setExpanded( !this.isExpanded );
 				handled = true;
 			}
@@ -462,18 +515,29 @@ public class TreeItem
 			boolean handled = false;
 			if (this.isExpanded) {
 				handled = this.children.handlePointerPressed(x - this.children.relativeX, y - this.children.relativeY );
+			}
+			//#debug
+			System.out.println("Node: " + this + " handled pointerPressed=" + handled);
+			return handled || super.handlePointerPressed(x, y);
+		}
+		//#endif
+		
+		//#ifdef polish.hasPointerEvents
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
+		 */
+		protected boolean handlePointerReleased(int x, int y) {
+			boolean handled = false;
+			if (this.isExpanded) {
+				handled = this.children.handlePointerReleased(x - this.children.relativeX, y - this.children.relativeY );
 				if (handled) {
 					if (!this.children.isFocused) {
-						this.children.focus(this.style, 0);
 						this.children.isFocused = true;
 					}
-					//System.out.println("PP: CHILD HANDLED PP for " + this );
-					//this.isChildrenFocused = true;
 					if (this.rootPlainStyle != null) {
 						this.root.setStyle( this.rootPlainStyle );
 					}
 				} else if ( this.root.isInItemArea(x, y)) {
-					//if (this.isChildrenFocused) {
 					if (this.children.isFocused) {
 						focusRoot();
 					}
@@ -481,7 +545,9 @@ public class TreeItem
 					handled = true;
 				}
 			}
-			return handled || super.handlePointerPressed(x, y);
+			//#debug
+			System.out.println("Node: " + this + " handled pointerReleased=" + handled);
+			return handled || super.handlePointerReleased(x, y);
 		}
 		//#endif
 		
@@ -489,7 +555,8 @@ public class TreeItem
 		 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
 		 */
 		protected Style focus(Style focusstyle, int direction ) {
-			//
+			//#debug
+			System.out.println("focus node " + this.root + ", expanded=" + this.isExpanded);
 			this.isFocused = true;
 			this.rootFocusedStyle = focusstyle;
 			if ( !this.isExpanded || direction != Canvas.UP || this.children.size() == 0 || this.children.appearanceMode == PLAIN)
@@ -497,8 +564,8 @@ public class TreeItem
 				this.rootPlainStyle  = this.root.focus(focusstyle, direction);
 				return this.rootPlainStyle;
 			}
-			//this.isChildrenFocused = true;
-//			this.childrenPlainStyle = this.children.focus(focusstyle, direction); 
+			// focus one of the expanded children:
+			this.children.focus(focusstyle, direction); 
 			return this.root.style;
 		}
 		
@@ -518,6 +585,8 @@ public class TreeItem
 		}
 		
 		private void focusRoot() {
+			//#debug
+			System.out.println("focusing root " + this);
 			this.internalX = 0;
 			this.internalY = 0;
 			this.internalWidth = this.root.itemWidth;

@@ -432,13 +432,39 @@ public class CommandItem extends IconItem {
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
+		//#debug
+		System.out.println("handlePointerPressed( " + x + ", " + y + ") for " + this);
 		boolean handled = false;
 		if (this.isOpen) {
 			handled = this.children.handlePointerPressed(x - this.children.relativeX, y - this.children.relativeY );
+			if (!isInItemArea(x, y, this.children)) {
+				open(false);
+				handled = true;
+			}
 		}
 		return handled || super.handlePointerPressed(x, y);
 	}
 	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
+	 */
+	protected boolean handlePointerReleased(int x, int y) {
+		//#debug
+		System.out.println("handlePointerReleased( " + x + ", " + y + ") for " + this);
+		boolean handled = false;
+		if (this.isOpen) {
+			handled = this.children.handlePointerReleased(x - this.children.relativeX, y - this.children.relativeY );
+			if (!handled) {
+				open(false);
+				handled = true;
+			}
+		}
+		return handled || super.handlePointerReleased(x, y);
+	}
+	//#endif
+
 
 	/**
 	 * Opens or closes this command item so that the children commands are visible (or not).
