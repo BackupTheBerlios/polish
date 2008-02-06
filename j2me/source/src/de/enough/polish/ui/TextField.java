@@ -1199,7 +1199,6 @@ public class TextField extends StringItem
 	protected void showCommands(ArrayList commandsList)
 	{
 		super.showCommands(commandsList);
-		updateDeleteCommand( getString() );
 	}
 	protected void updateDeleteCommand(String newText) {
 		// remove delete command when the caret is before the first character,
