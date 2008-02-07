@@ -2867,11 +2867,12 @@ public class TextField extends StringItem
 						&& this.screen.isKeyboardAccessible() 
 						&& this.inputMode != MODE_NUMBERS 
 						&& !this.isNumeric
-						&& !( 	(gameAction == Canvas.UP     &&  keyCode != Canvas.KEY_NUM2)	|| 
-								(gameAction == Canvas.DOWN   &&  keyCode != Canvas.KEY_NUM8) ||
-								(gameAction == Canvas.LEFT   &&  keyCode != Canvas.KEY_NUM4)	||
-								(gameAction == Canvas.RIGHT  &&  keyCode != Canvas.KEY_NUM6) ||
-								(gameAction == Canvas.FIRE   &&  keyCode != Canvas.KEY_NUM5)   )
+//						&& !( 	(gameAction == Canvas.UP     &&  keyCode != Canvas.KEY_NUM2)	|| 
+//								(gameAction == Canvas.DOWN   &&  keyCode != Canvas.KEY_NUM8) ||
+//								(gameAction == Canvas.LEFT   &&  keyCode != Canvas.KEY_NUM4)	||
+//								(gameAction == Canvas.RIGHT  &&  keyCode != Canvas.KEY_NUM6) ||
+//								(gameAction == Canvas.FIRE   &&  keyCode != Canvas.KEY_NUM5)   
+//							)
 						) 
 				{
 					char insertChar = (char) (' ' + (keyCode - 32));
