@@ -294,7 +294,7 @@
 		</mappings>
 		
 		<!-- mapping of game imports -->
-		<mappings if="(polish.midp1 or polish.usePolishGameApi or polish.blackberry  or polish.doja) and not polish.useDefaultPackage and polish.usePolishGui">
+		<mappings if="(polish.midp1 or polish.usePolishGameApi or polish.blackberry or polish.doja or polish.android) and not polish.useDefaultPackage and polish.usePolishGui">
 			<mapping from="javax.microedition.lcdui.game.GameCanvas" to="de.enough.polish.ui.game.GameCanvas; import de.enough.polish.ui.StyleSheet" />
 			<mapping from="javax.microedition.lcdui.game.Layer" to="de.enough.polish.ui.game.Layer; import de.enough.polish.ui.StyleSheet" />
 			<mapping from="javax.microedition.lcdui.game.LayerManager" to="de.enough.polish.ui.game.LayerManager; import de.enough.polish.ui.StyleSheet" />
@@ -310,7 +310,7 @@
 			<mapping from="javax.microedition.lcdui.game.TiledLayer" to="de.enough.polish.ui.game.TiledLayer" />
 			<mapping from="javax.microedition.lcdui.game.*" to="de.enough.polish.ui.game.*" />
 		</mappings>
-		<mappings if="(polish.midp1 or polish.usePolishGameApi or polish.blackberry or polish.doja) and polish.useDefaultPackage">
+		<mappings if="(polish.midp1 or polish.usePolishGameApi or polish.blackberry or polish.doja or polish.android) and polish.useDefaultPackage">
 			<mapping from="javax.microedition.lcdui.game.GameCanvas" to="" />
 			<mapping from="javax.microedition.lcdui.game.Layer" to="" />
 			<mapping from="javax.microedition.lcdui.game.LayerManager" to="" />
