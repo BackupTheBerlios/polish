@@ -95,15 +95,27 @@ smileys={new Smiley(new String[]{":-)",":)"},"/smiley_1.png","smile"),new Smiley
 	<p>
 	A TextField adds the &quot;Clear&quot; and &quot;Delete&quot; commands to the menu by default. 
 	The names of these commands can be <a href="localization.html#localization-gui">changed easily</a>. 
-	If you want to suppress the commands completely, the <code>polish.TextField.suppressCommands</code>-variable has to be set:
+	To suppress all commands, specify the <code>polish.TextField.suppressCommands</code> variable in 
+	your <a href="build-build.html#variables">build.xml</a> script:
 	</p>
 <pre>
 &lt;variable name=&quot;polish.TextField.suppressCommands&quot; value=&quot;true&quot;/&gt;
 </pre>
-	<p>You can also solely supress the &quot;Delete&quot; command:
+	<p>
+	You can also solely supress the &quot;Delete&quot; command, which you should only do for cases when the device in question
+	has a known hardware clear key for deleting characters:
 	</p>
 <pre>
-&lt;variable name=&quot;polish.TextField.suppressDeleteCommand&quot; value=&quot;true&quot;/&gt;
+&lt;variable name=&quot;polish.TextField.suppressDeleteCommand&quot; value=&quot;true&quot; if=&quot;polish.key.ClearKey:defined&quot; /&gt;
+</pre>
+	<p>
+	The &quot;Delete&quot; command is removed in the default configuration when all characters are deleted from the TextField or
+	when the user moves the input caret to the beginning of the TextField. It will then be shown again when input is added
+	or the caret is moved by the user. You can choose to show the command all the time by specifying the
+	<code>polish.TextField.keepDeleteCommand</code> variable:
+	</p>
+<pre>
+&lt;variable name=&quot;polish.TextField.keepDeleteCommand&quot; value=&quot;true&quot; /&gt;
 </pre>
 	<p>When using the direct input mode and in case you allow the input of symbols, you can suppress the &quot;Add Symbol&quot;
 	command as well:
@@ -113,24 +125,99 @@ smileys={new Smiley(new String[]{":-)",":)"},"/smiley_1.png","smile"),new Smiley
 &lt;variable name=&quot;polish.TextField.suppressAddSymbolCommand&quot; value=&quot;true&quot; if=&quot;polish.key.AddSymbolKey:defined&quot; /&gt;
 </pre>
 	<h2 id="textfield-DirectInputMode">Direct Input Mode</h2>
-<p>
-The direct input mode can be activated for TextFields as well as for TextBoxes using the CSS-attribute &quot;textfield-direct-input&quot; or by defining the preprocessing-variable &quot;polish.TextField.useDirectInput&quot; in the build.xml file:
-</p>
+	<p>
+	The direct input mode can be activated for TextFields as well as for TextBoxes using the CSS attribute 
+	<code>textfield-direct-input</code>:
+	</p>
+<pre>
+.itemInput {
+	padding: 2;
+	background-color: silver;
+	border-color: gray;
+	textfield-direct-input: true;
+	textfield-caret-color: red;
+	textfield-show-length: true;
+	<b>textfield-direct-input: true;</b>
+}
+</pre>
+	<p>
+	 Alternatively you can activate the direct input mode globally for all TextFields by defining the preprocessing 
+	 <a href="build-build.html#variables">variable</a> <code>polish.TextField.useDirectInput</code> in your <i>build.xml</i> file:
+	</p>
 <pre>
 &lt;variable name=&quot;polish.TextField.useDirectInput&quot; value=&quot;true&quot;/&gt;
 </pre>
-<p>
-When the direct input mode is used, no extra screen will be used for editing the text and all  designing possibilities of J2ME Polish can be used. When the TextField is used within a Form, the associated ItemStateListener will be notified after each change of the text.
-</p>
-<p>
-On stylus-based devices, this mode should not be used since these devices often rely on native input methods like handwriting recognition. This can be ensured by setting the preprocessing variable only for devices which have no pointer-events:
-</p>
+	<p>
+	When the direct input mode is used, no extra screen will be used for editing the text and all  designing possibilities of J2ME Polish can be used. When the TextField is used within a Form, the associated ItemStateListener will be notified after each change of the text.
+	</p>
+	<p>
+	On stylus-based and Windows devices you should not use the direct input mode, 
+	since these devices often rely on native input methods like handwriting recognition. 
+	This can be ensured by setting the preprocessing variable only for devices which have no pointer-events and which are not Windows based:
+	</p>
 <pre>
 &lt;variable name=&quot;polish.TextField.useDirectInput&quot; value=&quot;true&quot; unless=&quot;polish.hasPointerEvents or isOS(Windows)&quot;/&gt;
 </pre>
-<p>
-The direct input should not be used for editing longs texts (i.e. TextBoxes), since T9 and similar input helpers cannot be used in this mode.
-</p>
+	<p>
+	The direct input should not be used for editing longs texts (i.e. TextBoxes), since T9 and similar input helpers 
+	cannot be used in this mode. You might want to use the <a href="#textfield-PredictiveInputMode">predictive input mode</a> for 
+	entering long texts.
+	</p>
+	<p>
+	When you use the direct input mode, J2ME Polish will map the numeric keys to the characters given in the following table.
+	By pressing the key <code>2</code> twice you will get the character <code>b</code>, for example.
+	</p>
+	<p>
+	You can change the mappings by specifying the preprocessing variables <code>polish.TextField.charactersKey1</code>, 
+	<code>polish.TextField.charactersKey2</code> etc in your <i>build.xml</i> script.
+	</p>
+	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
+		<tr><th>1</th><th>2</th><th>3</th></tr>
+		<tr>
+		 <td>.,!?&#191;/()@_-+1'\&quot;;</td>
+		 <td>abc2&#224;&#225;&#226;&#227;&#228;&#229;&#230;&#231;</td>
+		 <td>def3&#232;&#233;&#234;&#235;</td>
+		</tr>
+		<tr>
+		 <td>polish.TextField.charactersKey1</td>
+		 <td>polish.TextField.charactersKey2</td>
+		 <td>polish.TextField.charactersKey3</td>
+		</tr>
+		<tr><th>4</th><th>5</th><th>6</th></tr>
+		<tr>
+		 <td>ghi4&#261;&#262;&#263;&#264;</td>
+		 <td>jkl5</td>
+		 <td>mno6&#266;&#267;&#268;&#269;&#270;&#271;</td>
+		</tr>
+		<tr>
+		 <td>polish.TextField.charactersKey4</td>
+		 <td>polish.TextField.charactersKey5</td>
+		 <td>polish.TextField.charactersKey6</td>
+		</tr>
+		<tr><th>7</th><th>8</th><th>9</th></tr>
+		<tr>
+		 <td>pqrs7&#248;</td>
+		 <td>tuv8&#274;&#275;&#276;&#277;</td>
+		 <td>wxyz9&#278;</td>
+		</tr>
+		<tr>
+		 <td>polish.TextField.charactersKey7</td>
+		 <td>polish.TextField.charactersKey8</td>
+		 <td>polish.TextField.charactersKey9</td>
+		</tr>
+		<tr><th>*</th><th>0</th><th>#</th></tr>
+		<tr>
+		 <td>.,!?&#191;/()@_-+1'\&quot;;</td>
+		 <td>&nbsp;0</td>
+		 <td>(none)</td>
+		</tr>
+		<tr>
+		 <td>polish.TextField.charactersKeyStar</td>
+		 <td>polish.TextField.charactersKey0</td>
+		 <td>polish.TextField.charactersKeyPound</td>
+		</tr>
+	</table>
+
 <h3 id="textfield-info">The Input Mode Information Indicator</h3>
 <p>
 The user can change the input mode from lowercase (&quot;abc&quot;), to initial-letter uppercase (&quot;Abc&quot;),
@@ -198,19 +285,19 @@ variable is set to <code>true</code>:
 	There are two different installation modes depending on the device using the application: 
 	</p>
 	<ul>
-	<li>
-	The first mode installs the dictionary in a shared record store for all applications to use the same unique dictionary.
-	This mode is available to most of the devices supporting MIDP2 (exceptions are listed in the second mode).
-	The dictionary is contained within a setup that will be downloaded and installed as an j2me application to the
-	user's device. The user just needs to follow the instructions. (NOTE : Some devices will download the application
-	but will not automatically launch the setup. In this case, just start the setup manually)
-	</li>
-	<li>
-	The second mode is used for devices that need signing or are just not capable to use a shared record store.
-	These devices include all MIDP1 and Motorola devices.
-	In this case, the dictionary is downloaded directly to the application without a setup and installed in a local record store. 
-	Every application using the predictive mode has to install its own dictionary.
-	</li>
+		<li>
+		The first mode installs the dictionary in a shared record store for all applications to use the same unique dictionary.
+		This mode is available to most of the devices supporting MIDP2 (exceptions are listed in the second mode).
+		The dictionary is contained within a setup that will be downloaded and installed as an j2me application to the
+		user's device. The user just needs to follow the instructions. (NOTE : Some devices will download the application
+		but will not automatically launch the setup. In this case, just start the setup manually)
+		</li>
+		<li>
+		The second mode is used for devices that need signing or are just not capable to use a shared record store.
+		These devices include all MIDP1 and Motorola devices.
+		In this case, the dictionary is downloaded directly to the application without a setup and installed in a local record store. 
+		Every application using the predictive mode has to install its own dictionary.
+		</li>
 	</ul>
 	
 	<h3 id="textfield-predictive-usage">Usage</h3>
@@ -476,57 +563,57 @@ ArrayList results = UiAccess.getPredictiveMatchingWords(mytextfield);
 	
 	<tr>
 	 <td>polish.TextField.charactersKey1</td>
-	 <td>&quot;.,!?:/@_-+1&quot;</td>
+	 <td>.,!?&#191;/()@_-+1'\&quot;;</td>
 	 <td>The characters which are available when the key &quot;1&quot; is pressed.</td>
 	</tr>
 	<tr>
 	 <td>polish.TextField.charactersKey2</td>
-	 <td>&quot;abc2&quot;</td>
+	 <td>abc2&#224;&#225;&#226;&#227;&#228;&#229;&#230;&#231;</td>
 	 <td>The characters which are available when the key &quot;2&quot; is pressed. It might be useful to add local specific umlauts here.</td>
 	</tr>
 	<tr>
 	 <td>polish.TextField.charactersKey3</td>
-	 <td>&quot;def3&quot;</td>
+	 <td>def3&#232;&#233;&#234;&#235;</td>
 	 <td>The characters which are available when the key &quot;3&quot; is pressed.</td>
 	</tr>
 	<tr>
 	 <td>polish.TextField.charactersKey4</td>
-	 <td>&quot;ghi4&quot;</td>
+	 <td>ghi4&#261;&#262;&#263;&#264;</td>
 	 <td>The characters which are available when the key &quot;4&quot; is pressed.</td>
 	</tr>
 	<tr>
 	 <td>polish.TextField.charactersKey5</td>
-	 <td>&quot;jkl5&quot;</td>
+	 <td>jkl5</td>
 	 <td>The characters which are available when the key &quot;5&quot; is pressed.</td>
 	</tr>
 	<tr>
 	 <td>polish.TextField.charactersKey6</td>
-	 <td>&quot;mno6&quot;</td>
+	 <td>mno6&#266;&#267;&#268;&#269;&#270;&#271;</td>
 	 <td>The characters which are available when the key &quot;6&quot; is pressed.</td>
 	</tr>
 	<tr>
 	 <td>polish.TextField.charactersKey7</td>
-	 <td>&quot;pqrs7&quot;</td>
+	 <td>pqrs7&#248;</td>
 	 <td>The characters which are available when the key &quot;7&quot; is pressed.</td>
 	</tr>
 	<tr>
 	 <td>polish.TextField.charactersKey8</td>
-	 <td>&quot;tuv8&quot;</td>
+	 <td>tuv8&#274;&#275;&#276;&#277;</td>
 	 <td>The characters which are available when the key &quot;8&quot; is pressed.</td>
 	</tr>
 	<tr>
 	 <td>polish.TextField.charactersKey9</td>
-	 <td>&quot;wxyz9&quot;</td>
+	 <td>wxyz9&#278;</td>
 	 <td>The characters which are available when the key &quot;9&quot; is pressed.</td>
 	</tr>
 	<tr>
 	 <td>polish.TextField.charactersKey0</td>
-	 <td>&quot; 0&quot;</td>
+	 <td>&nbsp;0</td>
 	 <td>The characters which are available when the key &quot;0&quot; is pressed. On Motorola devices this key is used for switching the input mode.</td>
 	</tr>
 	<tr>
 	 <td>polish.TextField.charactersKeyStar</td>
-	 <td>&quot;.,!?:/@_-+&quot;</td>
+	 <td>.,!?&#191;/()@_-+1'\&quot;;</td>
 	 <td>The characters which are available when the key &quot;*&quot; is pressed. On Motorola devices this key is used for entering spaces (&quot; &quot;).</td>
 	</tr>
 	<tr>

@@ -176,6 +176,22 @@ to include these characters in the font editor.
 <pre>
 font-bitmap: url( fantasy.bmf );
 </pre>
+	<p>
+	Thanks to Vera Wahler (thanks!) you can also use an Ant task for generating many bitmap fonts in one go or as part of the build process:
+<pre>
+       &lt;taskdef name=&quot;bmfcreate&quot; 
+       		classname=&quot;de.enough.polish.font.BmfCreationTask&quot; 
+       		claspath=&quot;${polish.home}/lib/enough-j2mepolish-build.jar&quot; /&gt;
+        &lt;target name=&quot;convertfonts&quot;&gt;
+                &lt;bmfcreate 
+                color=&quot;#ff0&quot; 
+                size=&quot;12&quot; 
+                antialiased=&quot;true&quot;
+                characterSpacing=&quot;3&quot; 
+                input=&quot;resources/test.ttf&quot;
+                output=&quot;/Users/vera/Desktop/test.bmf&quot;&gt;ABCDEFGHIJ...&lt;/bmfcreate&gt;
+        &lt;/target&gt;
+</pre>
 	
 	<h2 id="StringItem-texteffects">Text Effects</h2>
 	<p>
