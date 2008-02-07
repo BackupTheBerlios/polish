@@ -34,9 +34,11 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+//#if !polish.android
 import de.enough.polish.io.Externalizable;
 import de.enough.polish.io.Serializable;
 import de.enough.polish.io.Serializer;
+//#endif
 
 
 /**
@@ -50,7 +52,10 @@ import de.enough.polish.io.Serializer;
  *        04-Jan-2004 - rob creation
  * </pre>
  */
-public class Style implements Externalizable
+public class Style 
+//#if !polish.android
+implements Externalizable
+//#endif
 {
 	//#if polish.cldc1.1
 		//# public final static Boolean TRUE = Boolean.TRUE;
@@ -428,7 +433,7 @@ public class Style implements Externalizable
 		this.attributeValues = values;
 	}
 
-
+	//#if !polish.android
 	public void read(DataInputStream in) throws IOException {
 		this.background = (Background)Serializer.deserialize(in);
 		this.border 	= (Border)Serializer.deserialize(in);
@@ -475,6 +480,7 @@ public class Style implements Externalizable
 		Serializer.serialize(this.attributeKeys, out);
 		Serializer.serialize(this.attributeValues, out);
 	}
+	//#endif
 	
 //#ifdef polish.Style.additionalMethods:defined
 	//#include ${polish.Style.additionalMethods}

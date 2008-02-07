@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui
+//#condition polish.usePolishGui && !polish.android
 /*
  * Copyright (c) 2004-2005 Robert Virkus / Enough Software
  *

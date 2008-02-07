@@ -569,7 +569,7 @@ public class GZipOutputStream extends OutputStream {
 			}
 			
 			// generate dynamic Huffmantree for Literals + Length
-			this.litCount[256]=1; // theoretisch kann man es auch auf 2 setzen, was das Problem jedoch nicht löst
+			this.litCount[256]=1; // theoretisch kann man es auch auf 2 setzen, was das Problem jedoch nicht loest
 			ZipHelper.genTreeLength(this.litCount, this.huffmanCodeLength,15);
 			ZipHelper.genHuffTree(this.huffmanCode, this.huffmanCodeLength);
 			ZipHelper.revHuffTree(this.huffmanCode, this.huffmanCodeLength);

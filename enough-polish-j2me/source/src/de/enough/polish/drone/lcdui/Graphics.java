@@ -823,7 +823,7 @@ public class Graphics
 	public void clipRect(int x, int y, int width, int height)
 	{
 		Path path = new Path();
-		path.addRect(x, y, x + width, y + height, null);
+		path.addRect(x, y, x + width, y + height, Direction.CW);
 		this.canvas.clipPath(path, ClipMode.INTERSECT);
 	}
 

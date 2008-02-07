@@ -29,8 +29,10 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+//#if !polish.android
 import de.enough.polish.io.Externalizable;
 import de.enough.polish.io.Serializer;
+//#endif
 
 
 /**
@@ -59,7 +61,9 @@ public class ArrayList
 //#if polish.java5
 	<K>
 //#endif
+//#if !polish.android
 implements Externalizable
+//#endif
 {
 	private Object[] storedObjects;
 	private int growthFactor;
@@ -430,6 +434,7 @@ implements Externalizable
 		this.size = addedSize;		
 	}
 
+	//#if !polish.android
 	/* (non-Javadoc)
 	 * @see de.enough.polish.io.Externalizable#read(java.io.DataInputStream)
 	 */
@@ -456,6 +461,7 @@ implements Externalizable
 			Serializer.serialize( o, out);
 		}
 	}
+	//#endif
 
 
 

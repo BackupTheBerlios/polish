@@ -30,7 +30,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+//#if !polish.android
 import de.enough.polish.io.Externalizable;
+//#endif
 
 /**
  * Reads a property list (key and element pairs) from the input stream and stores it in the internal <code>Hashtable</code>. 
@@ -48,7 +50,9 @@ import de.enough.polish.io.Externalizable;
  */
 public class Properties 
 extends HashMap
+//#if !polish.android
 implements Externalizable
+//#endif
 {
 	private boolean isIntegerValues;
 

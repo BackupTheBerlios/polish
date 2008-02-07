@@ -31,7 +31,10 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.event.EventManager;
+
+//#if !polish.android
 import de.enough.polish.io.Serializable;
+//#endif
 
 /**
  * <p>An item view can take over the rendering of an item.</p>
@@ -43,7 +46,11 @@ import de.enough.polish.io.Serializable;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public abstract class ItemView implements Serializable{
+public abstract class ItemView
+//#if !polish.android
+implements Serializable
+//#endif
+{
 	
 	protected int contentWidth;
 	protected int contentHeight;

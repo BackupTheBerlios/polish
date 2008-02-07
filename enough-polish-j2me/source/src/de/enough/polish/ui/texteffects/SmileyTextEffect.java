@@ -34,10 +34,8 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.io.Serializable;
 import de.enough.polish.ui.TextEffect;
 import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.HashMap;
 
 /**
  * <p>Renders textual smileys with images.</p>

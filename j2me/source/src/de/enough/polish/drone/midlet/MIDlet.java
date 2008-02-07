@@ -49,6 +49,9 @@ import android.widget.TextView;
 public abstract class MIDlet extends Activity {
 	public static MIDlet current;
 	
+	//Tag for logging
+	public static final String TAG = "Polish";
+	
 	// The view of the application
 	private Display display;
 	

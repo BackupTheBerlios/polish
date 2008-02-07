@@ -887,7 +887,7 @@ public class TextField extends StringItem
 			private long lastFieldChangedEvent;
 		//#endif
 	//#endif
-	//#if !polish.blackberry && !polish.doja
+	//#if !polish.blackberry && !polish.doja && !polish.android
 		//#define tmp.useNativeTextBox
 		private javax.microedition.lcdui.TextBox midpTextBox;
 	//#endif
@@ -1019,18 +1019,19 @@ public class TextField extends StringItem
 		setString(text);
 	}
 	
-	//#if tmp.useNativeTextBox
+	//#if tmp.useNativeTextBox && !polish.android
 	/**
 	 * Creates the TextBox used for the actual input mode.
 	 */
 	private void createTextBox() {
+		//TODO android : create TextView for debug etc.
 		String currentText = this.isPassword ? this.passwordText : this.text;
 		this.midpTextBox = new javax.microedition.lcdui.TextBox( this.title, currentText, this.maxSize, this.constraints );
 		this.midpTextBox.addCommand(StyleSheet.OK_CMD);
 		if (!this.isUneditable) {
 			this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
 		}
-		this.midpTextBox.setCommandListener( this );	
+		this.midpTextBox.setCommandListener( this );
 	}
 	//#endif
 	
@@ -2689,13 +2690,13 @@ public class TextField extends StringItem
 			//# if (this.enableDirectInput) {
 		//#endif
 				//#ifdef tmp.directInput
-					//#if !polish.blackberry
+					//#if !polish.blackberry 
 						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
 						//#= if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE && keyCode != ${polish.key.ChangeNumericalAlphaInputModeKey}  ) {
 						//#else
 						if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE) {
 						//#endif
-							//#if tmp.useNativeTextBox
+							//#if tmp.useNativeTextBox && !polish.android
 								showTextBox();
 								return true;
 							//#endif
@@ -3529,7 +3530,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if tmp.useNativeTextBox
+	//#if tmp.useNativeTextBox &&!polish.android
 	/**
 	 * Shows the TextBox for entering texts.
 	 */
@@ -3542,6 +3543,7 @@ public class TextField extends StringItem
 		} else if (this.screen == null) {
 			this.screen = getScreen();
 		}
+		
 		StyleSheet.display.setCurrent( this.midpTextBox );
 	}
 	//#endif

@@ -466,8 +466,8 @@ public final class Font extends Object
 	 * @throws StringIndexOutOfBoundsException - if offset and length specify an invalid range
 	 * @throws NullPointerException - if str is null
 	 */
-//	public int substringWidth( String str, int offset, int len)
-//	{
-//		return this.font.getAdvance( str.substring( offset, len ) );
-//	}
+	public int substringWidth( String str, int offset, int len)
+	{
+		return 0;
+	}
 }

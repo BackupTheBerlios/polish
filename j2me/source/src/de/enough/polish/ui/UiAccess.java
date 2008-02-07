@@ -516,7 +516,7 @@ public final class UiAccess {
 	 * @param index the index
 	 */
 	public static void setCurrentListIndex( Display display, javax.microedition.lcdui.List list, int index ) {
-		//#if !polish.blackberry && polish.usePolishGui
+		//#if !polish.blackberry && polish.usePolishGui && !polish.android
 			display.setCurrent( list );
 		//#endif
 	}
@@ -1302,7 +1302,7 @@ public final class UiAccess {
 	 * @param screen the screen.
 	 */
 	public static void addSubCommand(  Command child, Command parent, javax.microedition.lcdui.Screen screen  ) {
-		//#if !polish.blackberry
+		//#if !polish.blackberry && !polish.android
 		screen.addCommand( child );
 		//#endif
 	}

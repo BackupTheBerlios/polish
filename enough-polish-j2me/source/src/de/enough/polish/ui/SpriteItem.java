@@ -27,7 +27,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Graphics;
-//#if polish.midp1 || (polish.usePolishGameApi == true)
+//#if polish.midp1 || (polish.usePolishGameApi == true) || polish.android
 	//# import de.enough.polish.ui.game.Sprite;
 //#else
 	import javax.microedition.lcdui.game.Sprite;

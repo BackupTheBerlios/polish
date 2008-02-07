@@ -255,12 +255,11 @@ public class Image extends Object
 		resources = MIDlet.current.getResources();
 		
 		try
-		{
-			
-//#=		for(int id=${polish.android.Resources}.drawable._; id<${polish.android.Resources}.layout.main; id++)
+		{	
+//#=		for(int id=${polish.android.R}.drawable._; id<${polish.android.R}.layout.main; id++)
 //#=			{
 //#=				String name = resources.getString(id);
-//#=			if(id != ${polish.android.Resources}.drawable._)
+//#=			if(id != ${polish.android.R}.drawable._)
 //#=				{
 //#=					name = name.substring(resourcePath.length() - 1);
 //#=					resourceMap.put(name, new Integer(id));
@@ -268,6 +267,10 @@ public class Image extends Object
 //#=			}
 		}
 		catch(Resources.NotFoundException e){}
+		catch(NullPointerException e)
+		{
+			Log.e(MIDlet.TAG, "Caught NullPointerException, either you're calling Image.create(name) in the MIDlet constructur or you're just doing it wrong");
+		}
 	}
 	
 	private static int getResourceID(String resourceName)

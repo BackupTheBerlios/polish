@@ -649,7 +649,7 @@ public final class DrawUtil {
 				//int gColor=gradient[(Math.abs(ix)+Math.abs(iy))/2];
 
 				// compute the color and draw all shadowPixels with offset (ix, iy)
-				//#if polish.cldc1.1 
+				//#if polish.cldc1.1 || polish.android
 					int r = (int) Math.sqrt(ix*ix+iy*iy); // TODO: this might be a bit slowly
 				//#elif polish.cldc1.0 
 					//# int r = (Math.abs(ix)+Math.abs(iy))/2; // TODO: this looks a bit uncool

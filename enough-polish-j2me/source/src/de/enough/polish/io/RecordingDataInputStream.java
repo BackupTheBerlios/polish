@@ -184,7 +184,7 @@ public class RecordingDataInputStream extends InputStream implements DataInput
 		return result;
 	}
 
-	//#if polish.JavaSE
+	//#if polish.JavaSE || polish.android
 	/* (non-Javadoc)
 	 * @see java.io.DataInput#readLine()
 	 */

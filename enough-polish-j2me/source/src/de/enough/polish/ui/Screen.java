@@ -1603,7 +1603,7 @@ implements AccessibleCanvas
 					//System.out.println("Screen (" + this + ": painting background at leftBorder=" + leftBorder + ", backgroundY=" + backgroundY + ", backgroundHeight=" + backgroundHeight + ", screenHeight=" + this.screenHeight + ", fullscreenHeight=" + this.fullScreenHeight + ", titleHeight=" + this.titleHeight + ", excludeTitleForBackground=" + excludeTitleForBackground);
 					this.background.paint(leftBorder, backgroundY, sWidth, backgroundHeight, g);
 				} else {
-					g.setColor( 0xFFFFFF );
+					g.setColor( 0xFF0000 );
 					g.fillRect( leftBorder, backgroundY, sWidth, backgroundHeight );
 				}
 				

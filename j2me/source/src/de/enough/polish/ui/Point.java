@@ -25,7 +25,9 @@
  */
 package de.enough.polish.ui;
 
+//#if !polish.android
 import de.enough.polish.io.Serializable;
+//#endif
 
 /**
  * <p>Represents a point within a scale</p>
@@ -38,7 +40,9 @@ import de.enough.polish.io.Serializable;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class Point
+//#if !polish.android
 implements Serializable
+//#endif
 {
 	/** the the horizontal position */
 	public int x;

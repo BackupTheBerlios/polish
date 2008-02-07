@@ -35,7 +35,7 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 
-//#if polish.usePolishGui || polish.midp
+//#if (polish.usePolishGui || polish.midp) && !polish.android
 	import javax.microedition.rms.RecordEnumeration;
 	import javax.microedition.rms.RecordStore;
 	import javax.microedition.rms.RecordStoreException;
@@ -171,9 +171,7 @@ public final class Locale {
 	/** 
 	 * The string used to represent infinity.
 	 */
-	public static String INFINITY = "\u221e";
-	
-	
+	public static String INFINITY = "\u221e";	
 
 	private Locale() {
 		// no instantiation allowed
