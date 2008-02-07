@@ -277,9 +277,6 @@ public class MenuBar extends Item {
 						cmd = oldLeftCommand;
 						item = (CommandItem) this.allCommands.get( cmd );
 						priority = oldLeftCommand.getPriority();
-						if (item == null) {
-							System.out.println("1cmd " + cmd.getLabel() + " HAS NO COMMAND ITEM!!");
-						}
 						//System.out.println("MenuBar: now adding previous singleleft command " + cmd.getLabel() );
 					}
 				}
@@ -1553,7 +1550,6 @@ public class MenuBar extends Item {
 	 * @see #addSubCommand(Command, Command, Style)
 	 */
 	public void addSubCommand(Command childCommand, Command parentCommand) {
-		System.out.println("addCommand");
 		if(this.menuItemStyle != null)
 		{
 			addSubCommand(childCommand, parentCommand, this.menuItemStyle);
