@@ -541,25 +541,32 @@ public class PolishTask extends ConditionalTask {
 		initialize( device, locale );
 		assembleResources( device, locale );
 		preprocess( device, locale );
-		compile( device, locale );
-		postCompile(device, locale);
-		if (this.buildSetting.isInCompilerMode()) {
-			if (this.buildSetting.doPreverifyInCompilerMode()) {
+		
+		if(this.buildSetting.doCompile())
+		{
+			compile( device, locale );
+			postCompile(device, locale);
+		
+			if (this.buildSetting.isInCompilerMode()) {
+				if (this.buildSetting.doPreverifyInCompilerMode()) {
+					preverify( device, locale );
+				}
+				finishProject();
+				System.out.println();
+				System.out.println("Successfully processed the activated compilerMode of J2ME Polish.");
+				return;
+			}
+			if (this.doObfuscate) {
+				obfuscate( device, locale );
+			}
+			if (this.buildSetting.doPreverify()) {
 				preverify( device, locale );
 			}
-			finishProject();
-			System.out.println();
-			System.out.println("Successfully processed the activated compilerMode of J2ME Polish.");
-			return;
+			
+			jar( device, locale );
+			jad( device, locale );
 		}
-		if (this.doObfuscate) {
-			obfuscate( device, locale );
-		}
-		if (this.buildSetting.doPreverify()) {
-			preverify( device, locale );
-		}
-		jar( device, locale );
-		jad( device, locale );
+		
 		if (hasExtensions) {
 			callExtensions( device, locale );
 		}

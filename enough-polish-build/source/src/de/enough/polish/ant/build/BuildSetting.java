@@ -126,6 +126,7 @@ public class BuildSetting {
 	private ArrayList compilers;
 	private String encoding = DEFAULT_ENCODING;
 	private boolean doPreverify = true;
+	private boolean doCompile = true;
 	private ArrayList postCompilers;
 	private ArrayList finalizers;
 	private File projectBaseDir;
@@ -967,6 +968,21 @@ public class BuildSetting {
 		}
 		this.preverify = newPreverify;
 	}
+		
+	/**
+	 * Sets compiling (used for android).
+	 * 
+	 * @param packaging the path to the preverify executable.
+	 */
+	public void setCompile( String compile ) {
+		if ( "true".equalsIgnoreCase(compile) || "yes".equalsIgnoreCase( compile)) {
+			this.doCompile = true;
+			return;
+		} else if ( "false".equalsIgnoreCase(compile) || "no".equalsIgnoreCase( compile)) {
+			this.doCompile = false;
+			return;
+		}
+	}
 	
 	public File getPreverify() {
 		return this.preverify;
@@ -979,6 +995,16 @@ public class BuildSetting {
 	 */
 	public boolean doPreverify() {
 		return this.doPreverify;
+	}
+		
+	/**
+	 * Determines whether the project should be compiled.
+	 * This is used for android building.
+	 * 
+	 * @return true when the project should get preverified.
+	 */
+	public boolean doCompile() {
+		return this.doCompile;
 	}
 	
 	/**
