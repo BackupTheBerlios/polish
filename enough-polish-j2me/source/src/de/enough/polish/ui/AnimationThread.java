@@ -158,7 +158,6 @@ public class AnimationThread extends Thread
 			} catch (Throwable e) {
 				//#debug error
 				System.out.println("unable to animate screen" + e );
-				e.printStackTrace();
 			}
 		}
 	}
