@@ -299,8 +299,8 @@ These namespaces/schemas will be used soon.
 		<identifier>Generic/android</identifier>
 		<description>An android device</description>
 		<groups>android</groups>
-		<capability name="JavaPlatform" value="MIDP/2.0, android"/>
-		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="android"/>
+		<capability name="JavaConfiguration" value="android" />
 		<capability name="ScreenSize" value="240x320"/>
 	</device>
 

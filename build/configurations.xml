@@ -61,5 +61,13 @@
 		<capability name="SupportFloatingPoint" value="true" />
 	</configuration>
 
+	<configuration>
+		<identifier>android</identifier>
+		<features>android</features>
+		<description>android</description>
+		<capability name="build.BootClassPath" value="android.jar" />
+		<capability name="SupportFloatingPoint" value="true" />
+	</configuration>
+
 	
 </configurations>

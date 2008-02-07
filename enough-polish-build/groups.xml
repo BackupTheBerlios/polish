@@ -478,8 +478,8 @@
 	<group>
 		<name>android</name>
 		<capability name="OS" value="android" />
-		<capability name="JavaPlatform" value="MIDP/2.0, android" />
-		<capability name="JavaConfiguration" value="CLDC/1.0" />
+		<capability name="JavaPlatform" value="android" />
+		<capability name="JavaConfiguration" value="android" />
 	</group>
 
 </groups>
