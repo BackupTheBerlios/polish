@@ -957,6 +957,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 
 	public boolean commandAction(Command cmd, Item item) {
+		if (this.builder == null) {
+			return false;
+		}
 		if (cmd == TextField.CLEAR_CMD) {
 			while (this.builder.deleteCurrent());
 			openChoices(false);
