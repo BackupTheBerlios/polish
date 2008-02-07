@@ -26,7 +26,7 @@ import de.enough.polish.ui.splash.InitializerSplashScreen;
 /**
  * <p>Shows RSS news feeds</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007 - 2008</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class RssMidlet 
@@ -195,7 +195,7 @@ public class RssMidlet
 	 */
 	private void showAbout() {
 		//#style aboutAlert
-        Alert alert = new Alert("About", "Enough Software (c) 2007", null, null);
+        Alert alert = new Alert("About", "Enough Software (c) 2008", null, null);
         alert.setTimeout(Alert.FOREVER);
         try {
 	          Image splashImage = Image.createImage("/splash.png");

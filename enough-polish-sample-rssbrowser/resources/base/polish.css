@@ -61,17 +61,13 @@ label {
 	layout: horizontal-center | vertical-center;
 	margin: 0;
 	padding: 10;
+	padding-vertical: 5;
 	background: mainBackground;
 }
 
 .itemMain {
-	border {
-		type: pulsating;
-		start-color: #0f0;
-		end-color: #000;
-		back-and-forth: true;
-		repeat: true;
-	}
+	padding: 2;
+	padding-left: 20;
 }
 
 .itemMain:hover {
@@ -223,6 +219,9 @@ menu {
 		arc-height: 4;
 	}
 	min-width: 100;
+	/* you can slide the menu when it is opened:
+	view-type: slide;
+	*/
 }
 
 menuItem {
