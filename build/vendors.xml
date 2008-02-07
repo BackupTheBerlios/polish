@@ -99,8 +99,8 @@
 	<vendor>
 		<name>Sagem</name>
 		<features>hasCommandKeyEvents</features>
-		<capability name="key.LeftSoftKey" value="-6" />
-		<capability name="key.RightSoftKey" value="-7" />
+		<capability name="key.LeftSoftKey" value="-7" />
+		<capability name="key.RightSoftKey" value="-6" />
 	</vendor>
 
 	<vendor>
