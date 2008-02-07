@@ -62,7 +62,13 @@ public class ResourceConnection
   {
     if (this.inputStream != null)
     {
-      this.inputStream.close();
+    	try {
+    		this.inputStream.close();
+    	} catch (Exception e) {
+    		// ignore
+    	} finally{
+    		this.inputStream = null;
+    	}
     }
   }
   
