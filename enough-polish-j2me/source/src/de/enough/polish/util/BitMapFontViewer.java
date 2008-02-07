@@ -276,7 +276,7 @@ public class BitMapFontViewer {
 					if (lastSpaceWidth > maxLineWidth) {
 						maxLineWidth = (short) lastSpaceWidth;
 					}
-					currentLineWidth -= (lastSpaceWidth + this.actualCharacterWidths[ this.spaceIndex ]);
+					currentLineWidth -= (short) (lastSpaceWidth + this.actualCharacterWidths[ this.spaceIndex ]);
 					lineIndex++;
 					//now check not to exceed the lineWidths array limit //use a grow factor of 10
 					if (lineIndex >= this.lineWidths.length) this.lineWidths = increaseShortArraySize(this.lineWidths, (byte)10);
