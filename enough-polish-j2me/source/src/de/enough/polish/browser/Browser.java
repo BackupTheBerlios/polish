@@ -367,6 +367,14 @@ implements Runnable
     System.gc();
     
     parsePartialPage(parser);
+    
+    Object o = this.currentContainer;
+    while ( o != null && o != this ) {
+    	//System.out.println("closing container with " + this.currentContainer.size() );
+    	closeContainer();
+    	o = this.currentContainer;
+    }
+
   }
 
   /**
@@ -382,15 +390,15 @@ implements Runnable
       {
         boolean openingTag = parser.getType() == SimplePullParser.START_TAG;
 
-        //#debug
-        System.out.println( "looking for handler for " + parser.getName()  + ", openingTag=" + openingTag );
+        // #debug
+        //System.out.println( "looking for handler for " + parser.getName()  + ", openingTag=" + openingTag );
         attributeMap.clear();
         TagHandler handler = getTagHandler(parser, attributeMap);
         
         if (handler != null)
         {
-          //#debug
-          System.out.println("Calling handler: " + parser.getName() + " " + attributeMap);
+          // #debug
+          //System.out.println("Calling handler: " + parser.getName() + " " + attributeMap);
     	  String styleName = (String) attributeMap.get("class");
     	  Style tagStyle = null;
     	  if (styleName != null) {
@@ -684,7 +692,7 @@ public void add(Item item)
     	  }
     	  if (connection != null) {
     		  try {
-    			  connection.close();
+					connection.close();
 					// on some Series 40 devices we need to set the connection to null,
 					// which is weird, to say the least.  Nokia, anyone?
 					connection = null;
