@@ -2919,7 +2919,7 @@ public final class UiAccess {
 	}
 	//#endif
 
-	//#if polish.midp2
+	//#if polish.midp2 && !polish.android
 	/**
 	 * Sets an ItemStateListener specifically for this item.
 	 * Change events are forwarded to both this listener as well as a possibly set listener of the
