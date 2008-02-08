@@ -87,6 +87,7 @@ public class ExtensionManager {
 	
 	private Extension[] activeExtensions;
 	private final List autoStartExtensions;
+    private Extension[] lifeCycleExtensions;
 
     /**
      * @param antProject
@@ -583,7 +584,12 @@ public class ExtensionManager {
 	}
 	
 	public void postFinalize( Device device, Locale locale, Environment environment ) {
-		// call preInitialize on the registered plugins:
+        if (this.lifeCycleExtensions != null) {
+            for (int i = 0; i < this.lifeCycleExtensions.length; i++) {
+                Extension extension = this.lifeCycleExtensions[i];
+                extension.execute(device, locale, environment );
+            }
+        }        
 	}
 	
 	
@@ -593,13 +599,18 @@ public class ExtensionManager {
 	 * @param env the environment without device specific settings
 	 */
 	public void notifyBuildStart( Environment env ) {
-		if (this.activeExtensions == null) {
-			return;
-		}
-		for (int i = 0; i < this.activeExtensions.length; i++) {
-			Extension extension = this.activeExtensions[i];
-			extension.notifyBuildStart(env);
-		}
+        if (this.activeExtensions != null) {
+    		for (int i = 0; i < this.activeExtensions.length; i++) {
+    			Extension extension = this.activeExtensions[i];
+    			extension.notifyBuildStart(env);
+    		}
+        }
+        if (this.lifeCycleExtensions != null) {
+            for (int i = 0; i < this.lifeCycleExtensions.length; i++) {
+                Extension extension = this.lifeCycleExtensions[i];
+                extension.notifyBuildStart(env);
+            }
+        }
 	}
 	
 	/**
@@ -608,13 +619,18 @@ public class ExtensionManager {
 	 * @param env the environment without device specific settings
 	 */
 	public void notifyBuildEnd( Environment env ) {
-		if (this.activeExtensions == null) {
-			return;
-		}
-		for (int i = 0; i < this.activeExtensions.length; i++) {
-			Extension extension = this.activeExtensions[i];
-			extension.notifyBuildEnd(env);
-		}
+        if (this.activeExtensions != null) {
+            for (int i = 0; i < this.activeExtensions.length; i++) {
+                Extension extension = this.activeExtensions[i];
+                extension.notifyBuildEnd(env);
+            }
+        }
+        if (this.lifeCycleExtensions != null) {
+            for (int i = 0; i < this.lifeCycleExtensions.length; i++) {
+                Extension extension = this.lifeCycleExtensions[i];
+                extension.notifyBuildEnd(env);
+            }
+        }
 	}
 
 	/**
@@ -686,5 +702,13 @@ public class ExtensionManager {
 			throw new InvalidComponentException("Unable to read custom-extenions.xml: " + e );
 		}
 	}
+
+
+    /**
+     * @param lifeCycleExtensions
+     */
+    public void setLifeCycleExtensions(Extension[] lifeCycleExtensions) {
+        this.lifeCycleExtensions = lifeCycleExtensions;
+    }
 
 }

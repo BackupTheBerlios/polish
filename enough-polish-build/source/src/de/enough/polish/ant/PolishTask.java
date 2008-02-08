@@ -62,6 +62,7 @@ import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.Extension;
 import de.enough.polish.ExtensionManager;
+import de.enough.polish.ExtensionSetting;
 import de.enough.polish.LicenseLoader;
 import de.enough.polish.PolishProject;
 import de.enough.polish.Variable;
@@ -105,7 +106,6 @@ import de.enough.polish.preprocess.Preprocessor;
 import de.enough.polish.preprocess.css.CssAttribute;
 import de.enough.polish.preprocess.css.CssAttributesManager;
 import de.enough.polish.preprocess.css.CssConverter;
-import de.enough.polish.preprocess.css.Style;
 import de.enough.polish.preprocess.css.StyleSheet;
 import de.enough.polish.preprocess.custom.TranslationPreprocessor;
 import de.enough.polish.preverify.CldcPreverifier;
@@ -255,7 +255,7 @@ public class PolishTask extends ConditionalTask {
 
 	protected String[] keepClasses;
 
-
+    private ArrayList lifeCycleManagers;
 	
 	/**
 	 * Creates a new empty task 
@@ -273,6 +273,13 @@ public class PolishTask extends ConditionalTask {
 		}
 		this.polishBuildListenerSettingsList.add( setting );
 	}
+    
+    public void addConfiguredLifeCycleManager(ExtensionSetting setting) {
+        if (this.lifeCycleManagers == null) {
+            this.lifeCycleManagers = new ArrayList();
+        }
+        this.lifeCycleManagers.add( setting );
+    }
 	
 	public void addConfiguredInfo( InfoSetting setting ) {
 		if (setting.getName() == null ) {
@@ -373,7 +380,7 @@ public class PolishTask extends ConditionalTask {
 				System.out.println("Using J2ME Polish as compiler...");
 			} else if (numberOfDevices > 1) {
 				System.out.println("Processing [" + numberOfDevices + "] devices...");
-			}
+			} 
 			this.extensionManager.notifyBuildStart(this.environment);
 			boolean hasExtensions = (this.javaExtensions.length > 0);
 			
@@ -481,9 +488,8 @@ public class PolishTask extends ConditionalTask {
 			e.printStackTrace();
 			executeErrorTarget( this.buildSetting.getOnError(), e );
 			throw new BuildException("Unable to execute J2ME Polish task: " + e.toString(), e );
-		} finally {
-			this.extensionManager.notifyBuildEnd(this.environment);
 		}
+		this.extensionManager.notifyBuildEnd(this.environment);
 		if (this.runningEmulators != null) {
 			System.out.println("Waiting for emulators...");
 			while (this.runningEmulators.size() > 0) {
@@ -704,6 +710,18 @@ public class PolishTask extends ConditionalTask {
 			this.extensionManager.loadCustomDefinitions( this.buildSetting.getCustomExtensions() );
 			this.extensionManager.loadCustomDefinitions( new File( this.polishHomeDir, "custom-extensions.xml" ) );
 			this.extensionManager.loadCustomDefinitions( new File( getProject().getBaseDir(), "custom-extensions.xml" ) );
+            
+            // now load life cycle extensions:
+            if (this.lifeCycleManagers != null) {
+                Extension[] lifeCycleExtensions = new Extension[this.lifeCycleManagers.size()];
+                int i = 0;
+                for (Iterator iterator = this.lifeCycleManagers.iterator(); iterator.hasNext(); ) {
+                    ExtensionSetting setting = (ExtensionSetting) iterator.next();
+                    lifeCycleExtensions[i] = this.extensionManager.getTemporaryExtension(ExtensionManager.TYPE_FINALIZER, setting,this.environment );
+                    i++;
+                }
+                this.extensionManager.setLifeCycleExtensions( lifeCycleExtensions );
+            }
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new BuildException("Unable to load extensions.xml - please report this error to j2mepolish@enough.de.");
@@ -2870,6 +2888,7 @@ public class PolishTask extends ConditionalTask {
 			finalizer.execute(device, locale, this.environment);
 		}
 		device.resetEnvironment();
+        this.extensionManager.postFinalize( device, locale, this.environment );
 	}
 	
 	/**
