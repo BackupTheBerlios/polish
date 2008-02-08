@@ -920,4 +920,11 @@
 		<classpath>${polish.home}/bin/extensions</classpath>
 		<autostart>true</autostart>
 	</extension>
+	
+	<extension>
+		<type>finalizer</type>
+		<name>mea</name>
+		<class>de.enough.polish.finalize.mea.MeaFinalizer</class>
+		<classpath>${polish.home}/bin/extensions</classpath>
+	</extension>
 </extensions>
