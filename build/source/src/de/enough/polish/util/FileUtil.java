@@ -26,6 +26,7 @@
 package de.enough.polish.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -845,5 +846,35 @@ public final class FileUtil {
 		}
 	}
 
+    /**
+     * Extracts the bytes from a file.
+     * @param file the file from which the bytes should be extracted from
+     * @return a byte arry corresponding to the file. Is never null.
+     * @throws IOException
+     */
+    public static byte[] getBytesFromFile(File file) throws IOException {
+        FileInputStream inputStream = null;
+        ByteArrayOutputStream outputStream = null;
+        try {
+            byte[] buffer = new byte[4096];
+            inputStream = new FileInputStream(file);
+            outputStream = new ByteArrayOutputStream();
+            int read;
+            while ( (read = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, read );
+            }
+            byte[] byteArray = null;
+            byteArray = outputStream.toByteArray();
+            return byteArray;
+        }
+        finally {
+            if(inputStream != null) {
+                inputStream.close();
+            }
+            if(outputStream != null) {
+                outputStream.close();
+            }
+        }
+    }
 	
 }
