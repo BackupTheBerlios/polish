@@ -120,7 +120,7 @@
 	<exec executable="${android.home}/activityCreator.bat">
 		<arg value="--out"/>
 		<arg value="${basedir}/android"/>
-		<arg value="de.enough.polish.drone.test.TestMidlet"/>
+		<arg value="${android.activity}"/>
 	</exec>
 	
 	<!-- copy the polish compiled source to the new activity 	-->	

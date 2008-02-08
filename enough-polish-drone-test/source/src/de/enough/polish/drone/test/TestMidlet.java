@@ -24,18 +24,24 @@ public class TestMidlet extends MIDlet {
 	
 	Display display;
 	Form form;
-	StringItem item;
-	Image image;
 	
-	public TestMidlet() {
-		this.form = new Form("TestMidlet");
-		this.item = new StringItem("title","content");
-		this.form.append(this.item);
-	}
+	public TestMidlet() {}
 
 	protected void startApp() throws MIDletStateChangeException {
-		//#debug
-		System.out.println("setting display.");
+		this.form = new Form("TestMidlet");
+		
+		Image image = null;
+		try {
+			image = Image.createImage("/girl.png");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		ImageItem item = new ImageItem("girl",image,0,"girl");
+		this.form.append(item);
+		this.form.append("Hello Android");
+		
 		this.display = Display.getDisplay(this);
 		this.display.setCurrent( this.form );
 	}
