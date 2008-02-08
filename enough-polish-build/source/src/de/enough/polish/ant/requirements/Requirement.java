@@ -132,7 +132,7 @@ implements DeviceFilter
 				try {
 					reqClass = Class.forName( type );
 				} catch (ClassNotFoundException e) {
-					throw new BuildException("The device requirement [" + name + "] could not b eloaded - the type [" + type + "] could not be found: " + e.getMessage());
+					throw new BuildException("The device requirement [" + name + "] could not be loaded - the type [" + type + "] could not be found: " + e.getMessage());
 				}
 			}
 		}
@@ -140,7 +140,10 @@ implements DeviceFilter
 			try {
 				reqClass = Class.forName( "de.enough.polish.ant.requirements." + name + "Requirement");
 			} catch (ClassNotFoundException e) {
-				if (name.startsWith("SoftwarePlatform.") || name.startsWith("HardwarePlatform.")) {
+				if (name.length() > 1 && Character.isLowerCase( name.charAt(0)) ) {
+					name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+					return getInstance( name, value, type );
+				} else if (name.startsWith("SoftwarePlatform.") || name.startsWith("HardwarePlatform.")) {
 					name = name.substring( 18 );
 					try {
 						reqClass = Class.forName( "de.enough.polish.ant.requirements." + name + "Requirement");
