@@ -14,7 +14,7 @@ import de.enough.polish.util.FileUtil;
 public class BuildListFinalizer
 	extends Finalizer
 {
-	private static final String DEFAULT_OUTPUT_FILENAME = "buildlist.txt";
+	public static final String DEFAULT_OUTPUT_FILENAME = "buildlist.txt";
 	private File outputFile;
 	
 	public void setOutputFile( File outputFile ) {
