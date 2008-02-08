@@ -60,6 +60,7 @@ public abstract class Extension {
 	protected Environment environment;
 	protected String autoStartCondition;
 	private String type;
+	protected boolean isBuildStarted;
 
 	/**
 	 * Creates a new extension.
@@ -139,6 +140,27 @@ public abstract class Extension {
 	}
 	
 	/**
+	 * Notifies the extension about the start of the build process.
+	 * Always call super.notifyBuildStart(env) in subclasses.
+	 * 
+	 * @param env the environment without device specific settings
+	 */
+	public void notifyBuildStart( Environment env ) {
+		this.isBuildStarted = true;
+	}
+	
+	/**
+	 * Notifies the extension about the end of the build process.
+	 * Always call super.notifyBuildEnd(env) in subclasses.
+	 * 
+	 * @param env the environment without device specific settings
+	 */
+	public void notifyBuildEnd( Environment env ) {
+		this.isBuildStarted = false;
+	}
+
+	
+	/**
 	 * Initializes this extension for a new device or a new locale.
 	 * The default implementation doesn't do anything.
 	 * 
@@ -147,7 +169,9 @@ public abstract class Extension {
 	 * @param env the environment/configuration
 	 */
 	public void initialize( Device device, Locale locale, Environment env ) {
-		// default implementation does nothing
+		if (!this.isBuildStarted) {
+			notifyBuildStart(env);
+		}
 	}
 	
 	/**

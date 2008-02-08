@@ -585,6 +585,37 @@ public class ExtensionManager {
 	public void postFinalize( Device device, Locale locale, Environment environment ) {
 		// call preInitialize on the registered plugins:
 	}
+	
+	
+	/**
+	 * Notifies the extensions about the start of the build process.
+	 * 
+	 * @param env the environment without device specific settings
+	 */
+	public void notifyBuildStart( Environment env ) {
+		if (this.activeExtensions == null) {
+			return;
+		}
+		for (int i = 0; i < this.activeExtensions.length; i++) {
+			Extension extension = this.activeExtensions[i];
+			extension.notifyBuildStart(env);
+		}
+	}
+	
+	/**
+	 * Notifies the extensions about the end of the build process.
+	 * 
+	 * @param env the environment without device specific settings
+	 */
+	public void notifyBuildEnd( Environment env ) {
+		if (this.activeExtensions == null) {
+			return;
+		}
+		for (int i = 0; i < this.activeExtensions.length; i++) {
+			Extension extension = this.activeExtensions[i];
+			extension.notifyBuildEnd(env);
+		}
+	}
 
 	/**
 	 * @param type the type of the extension

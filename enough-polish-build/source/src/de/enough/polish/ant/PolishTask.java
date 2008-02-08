@@ -374,6 +374,7 @@ public class PolishTask extends ConditionalTask {
 			} else if (numberOfDevices > 1) {
 				System.out.println("Processing [" + numberOfDevices + "] devices...");
 			}
+			this.extensionManager.notifyBuildStart(this.environment);
 			boolean hasExtensions = (this.javaExtensions.length > 0);
 			
 			int successCount = 0;
@@ -480,6 +481,8 @@ public class PolishTask extends ConditionalTask {
 			e.printStackTrace();
 			executeErrorTarget( this.buildSetting.getOnError(), e );
 			throw new BuildException("Unable to execute J2ME Polish task: " + e.toString(), e );
+		} finally {
+			this.extensionManager.notifyBuildEnd(this.environment);
 		}
 		if (this.runningEmulators != null) {
 			System.out.println("Waiting for emulators...");
