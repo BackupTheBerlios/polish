@@ -3,6 +3,52 @@
 	<%index %>
 <%endif %>
 
+	<h2 id="mwc08">Mobile World Congress 2008</h2>
+		<p>
+		<a href="http://www.mobileworldcongress.com/" target="_blank"><img alt="MWC logo" src="images/mwc2008.gif" width="648" height="100"/></a>
+		</p>
+		<p>
+		Meet us on the <a href="http://www.mobileworldcongress.com/" target="_blank">Mobile World Congress</a>
+			 in February 11 - 14 2008 in Barcelona! Visit us in <b>Hall 7, Booth #7A43</b>.
+			Visitors will be able to obtain <a href="licenses.html">J2ME Polish licenses</a> with a <strong>discount of 10%</strong>!
+			<br />
+			Send an email to mwc08@enough.de for 
+			entering a draw to get
+			free guest passes to the congress! Please state your full name and your company's name in the email.
+			The 3 winners will be contacted until the 4th of February by us. And of course we won't sell,
+			rent or do anything bad with your addresses.
+		</p>
+	<h2>Interactive Device Database</h2>
+	<p>
+	<i>2007-10-22:</i> Find our new interactive device datbase at <a href="http://devices.j2mepolish.org">http://devices.j2mepolish.org</a>.
+	Please report any issues by sending an email to <i>devices</i>(at)<i>enough</i>(dot)<i>de</i>.
+	</p>
+	<h2 id="ctia07">CTIA 2007</h2>
+		<table>
+		<tr>
+			<td><a href="http://www.wirelessit.com/" target="_blank"><img alt="CTIA logo" src="images/CTIA2007_30px.gif" width="327" height="30"/></a></td>
+			<td valign="center">Please visit us on the <a href="http://www.wirelessit.com/" target="_blank">CTIA Wireless I.T. & Entertainment</a>
+			 in October 2007 in San Francisco! We are present on our partner's <a href="http://www.tirawireless.com" target="_blank">Tira Wireless</a> booth #1250.
+			Visitors will be able to obtain <a href="licenses.html">J2ME Polish licenses</a> with a discount of 20%!
+			</td>
+		</tr>
+		</table>
+	<h2>J2ME Polish 2.0 RC4</h2>
+	<p>
+	<i>2007-03-17:</i> The <a href="download.html">fourthrelease candidate of J2ME Polish 2.0</a> provides fixes for UI and postcompiler problems, updated device database (Samsung) and small feature enhancements like calculations within CSS attributes:
+	<a href="downloads/changelog-20rc4.html">changelog</a>.
+	</p>
+	<h2 id="javaone">JavaOne 2007</h2>
+		<table>
+		<tr>
+			<td><a href="http://java.sun.com/javaone/sf/" target="_blank"><img alt="JavaOne logo" src="images/2007JavaOneBanner.jpg" width="426" height="124"/></a></td>
+			<td valign="center">Learn how to visually develop mobile applications with J2ME Polish and NetBeans on the 
+			 <a href="http://java.sun.com/javaone/sf/" target="_blank">Java One 2007</a> in San Francisco, 
+			 <a href="http://www28.cplan.com/cc158/sessions_catalog.jsp?ilc=158-1&ilg=english&isort=&isort_type=&is=yes&icriteria1=+&icriteria2=+&icriteria7=+&icriteria9=9452&icriteria8=&icriteria3=" target="_blank">Technical Session 9452</a>!
+			</td>
+		</tr>
+		</table>
+
 <p class="newsdate">2007-02-09:</p>
 <h2 id="20-rc">J2ME Polish 2.0 RC</h2>
 <p>
