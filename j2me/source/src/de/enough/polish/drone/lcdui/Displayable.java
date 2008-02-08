@@ -1,6 +1,7 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.drone.lcdui;
 
+import de.enough.polish.drone.midlet.MIDlet;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.View;
@@ -43,6 +44,7 @@ public abstract class Displayable
 	//ANDROID ADOPTIONS
 	public android.graphics.Canvas canvas = new android.graphics.Canvas();
 	public Display display = null;
+	protected boolean _isShown;
 	/////////////////////
 	
 	//following variables are implicitely defined by getter- or setter-methods:
@@ -52,8 +54,6 @@ public abstract class Displayable
 	private int width;
 	private int height;
 	
-	private boolean isShown;
-
 	/**
 	 * Gets the title of the <code>Displayable</code>. Returns
 	 * <code>null</code> if there is no title.
@@ -156,7 +156,7 @@ public abstract class Displayable
 	 */
 	public boolean isShown()
 	{
-		return false;
+		return this._isShown;
 	}
 
 	/**
@@ -228,7 +228,8 @@ public abstract class Displayable
 	 */
 	public int getWidth()
 	{
-		return 666;
+		Bitmap bitmap = Display.getDisplay(MIDlet.current).bitmap;
+		return bitmap.width();
 	}
 
 	/**
@@ -246,7 +247,8 @@ public abstract class Displayable
 	 */
 	public int getHeight()
 	{
-		return 666;
+		Bitmap bitmap = Display.getDisplay(MIDlet.current).bitmap;
+		return bitmap.height();
 	}
 
 	/**

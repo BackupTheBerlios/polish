@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -210,14 +211,13 @@ public class Display extends View{
 			
 			this.currentCanvas.paint(this.currentCanvas.graphics);
 		}
-		
-		//canvas.drawBitmap(bitmap, 0, 0, new Paint());
 	}
 
 	/* (non-Javadoc)
 	 * @see android.view.View#onKeyDown(int, android.view.KeyEvent)
 	 */
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		Log.v(MIDlet.TAG, "onKeyDown : " + keyCode);
 		this.currentCanvas.keyPressed(keyCode);
 		return true;
 	}
@@ -226,6 +226,7 @@ public class Display extends View{
 	 * @see android.view.View#onKeyUp(int, android.view.KeyEvent)
 	 */
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		Log.v(MIDlet.TAG, "onKeyUp : " + keyCode);
 		this.currentCanvas.keyReleased(keyCode);
 		return true;
 	}
@@ -611,6 +612,10 @@ public class Display extends View{
 	 * @see getCurrent()
 	 */
 	public void setCurrent(Displayable nextDisplayable) {
+		if (this.currentCanvas != null) {
+			this.currentCanvas._isShown = false;
+			this.currentCanvas.hideNotify();
+		}
 		this.current = nextDisplayable;
 		this.current.display = this;
 		this.current.canvas.setDevice(this.bitmap);
@@ -618,6 +623,8 @@ public class Display extends View{
 		if(this.current instanceof de.enough.polish.drone.lcdui.Canvas)
 		{
 			this.currentCanvas = ((de.enough.polish.drone.lcdui.Canvas)this.current);
+			this.currentCanvas._isShown = true;
+			this.currentCanvas.showNotify();
 		}	
 		
 		invalidate();

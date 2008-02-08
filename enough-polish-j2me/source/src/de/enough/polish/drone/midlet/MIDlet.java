@@ -47,6 +47,7 @@ import android.widget.TextView;
  * 
  */
 public abstract class MIDlet extends Activity {
+	//The one and only MIDlet
 	public static MIDlet current;
 	
 	//Tag for logging
@@ -170,7 +171,7 @@ public abstract class MIDlet extends Activity {
 	 *             MIDlet.
 	 */
 	protected MIDlet() {
-		// TODO implement MIDlet
+		current = this;
 	}
 
 	/**

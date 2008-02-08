@@ -1,7 +1,6 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.drone.lcdui;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -11,6 +10,7 @@ import de.enough.polish.drone.midlet.MIDlet;
 import android.content.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.util.Log;
 
 /**
@@ -235,8 +235,12 @@ import android.util.Log;
 public class Image extends Object
 {
 	//following variables are implicitely defined by getter- or setter-methods:
-	private Graphics graphics;
 	protected Bitmap bitmap;
+	
+	/**
+	 * buffer for getGraphics()
+	 */
+	private Graphics graphics;
 	
 	/**
 	 *	The map to store the resource name 
@@ -500,7 +504,14 @@ public class Image extends Object
 	 */
 	public Graphics getGraphics()
 	{
-		return null;
+		if(this.graphics == null)
+		{
+			Canvas canvas = new Canvas();
+			canvas.setDevice(this.bitmap);
+			this.graphics = new Graphics(canvas);
+		}
+			
+		return this.graphics;
 	}
 	
 	/**

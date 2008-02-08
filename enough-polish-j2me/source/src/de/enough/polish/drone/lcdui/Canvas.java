@@ -1,6 +1,7 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.drone.lcdui;
 
+import de.enough.polish.drone.midlet.MIDlet;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
@@ -490,9 +491,23 @@ public abstract class Canvas extends Displayable
 	 */
 	public static final int KEY_POUND = 35;
 
-	//following variables are implicitely defined by getter- or setter-methods:
-	private boolean fullScreenMode;
+	public static final int KEY_ANDROID_UP = 19;
+    public static final int KEY_ANDROID_DOWN = 20;
+    public static final int KEY_ANDROID_LEFT = 21;
+    public static final int KEY_ANDROID_RIGHT = 22;
+	private static final int KEY_ANDROID_FIRE = 23;
 
+    public static final int KEY_ANDROID_0 = 7;
+    public static final int KEY_ANDROID_1 = 8;
+    public static final int KEY_ANDROID_2 = 9;
+    public static final int KEY_ANDROID_3 = 10;
+    public static final int KEY_ANDROID_4 = 11;
+    public static final int KEY_ANDROID_5 = 12;
+    public static final int KEY_ANDROID_6 = 13;
+    public static final int KEY_ANDROID_7 = 14;
+    public static final int KEY_ANDROID_8 = 15;
+    public static final int KEY_ANDROID_9 = 16;
+	
 	/**
 	 * Checks if the <code>Canvas</code> is double buffered by the
 	 * implementation.
@@ -562,6 +577,10 @@ public abstract class Canvas extends Displayable
 	 */
 	public int getKeyCode(int gameAction)
 	{
+		switch(gameAction)
+		{
+		
+		}
 		return 0;
 		//TODO implement getKeyCode
 	}
@@ -618,8 +637,16 @@ public abstract class Canvas extends Displayable
 	 */
 	public int getGameAction(int keyCode)
 	{
+		switch(keyCode)
+		{
+			case KEY_ANDROID_UP: 	return UP;
+			case KEY_ANDROID_DOWN:	return DOWN;
+			case KEY_ANDROID_LEFT: 	return LEFT;
+			case KEY_ANDROID_RIGHT: return RIGHT;
+			case KEY_ANDROID_FIRE: 	return FIRE;
+		}
+		
 		return 0;
-		//TODO implement getGameAction
 	}
 
 	/**
@@ -631,7 +658,7 @@ public abstract class Canvas extends Displayable
 	 */
 	public void setFullScreenMode(boolean mode)
 	{
-		this.fullScreenMode = mode;
+		
 	}
 
 	/**
@@ -780,7 +807,17 @@ public abstract class Canvas extends Displayable
 	 */
 	public final void repaint(int x, int y, int width, int height)
 	{
+		//#debug
+		Log.v(MIDlet.TAG, "repaint : x : " + x + " y : " + y + " width : " + width + " height : " + height);
 		
+		if(display != null)
+		{
+			display.invalidate(x, y, x + width, y + height);
+		}
+		else
+		{
+			Log.v("POLISH","illegal call of repaint(), canvas has no display, call setCurrent()");
+		}
 	}
 
 	/**
@@ -791,13 +828,9 @@ public abstract class Canvas extends Displayable
 	 */
 	public final void repaint()
 	{
-//		if(this.graphics == null)
-//		{
-//			this.graphics = new Graphics(this.canvas);
-//		}
-//		
-//		paint(this.graphics);
-//		
+		//#debug
+		Log.v(MIDlet.TAG, "repaint");
+		
 		if(display != null)
 		{
 			display.invalidate();

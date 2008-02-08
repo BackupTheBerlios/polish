@@ -1,13 +1,17 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.drone.lcdui;
 
+import de.enough.polish.drone.midlet.MIDlet;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Canvas.ClipMode;
+import android.graphics.Paint.Style;
 import android.graphics.Path.Direction;
+import android.util.Log;
 
 /**
  * Provides simple 2D geometric rendering capability.
@@ -434,6 +438,11 @@ public class Graphics
 	Canvas canvas = null;
 	
 	/**
+	 * some buffers and stuff
+	 */
+	Bitmap drawRGBBuffer = null;
+	
+	/**
 	 * android implemenation
 	 * @param canvas
 	 */
@@ -536,10 +545,6 @@ public class Graphics
 	private int grayScale;
 	private Font font;
 	private int strokeStyle;
-	private int clipX;
-	private int clipY;
-	private int clipWidth;
-	private int clipHeight;
 
 	/**
 	 * Translates the origin of the graphics context to the point
@@ -683,6 +688,7 @@ public class Graphics
 	 */
 	public void setColor(int RGB)
 	{
+		RGB += 0xFF000000;
 		paint.setColor(RGB);
 	}
 
@@ -766,7 +772,8 @@ public class Graphics
 	 */
 	public int getClipX()
 	{
-		return this.clipX;
+		Rect rect = this.canvas.getClipBounds();
+		return rect.left;
 	}
 
 	/**
@@ -781,7 +788,8 @@ public class Graphics
 	 */
 	public int getClipY()
 	{
-		return this.clipY;
+		Rect rect = this.canvas.getClipBounds();
+		return rect.top;
 	}
 
 	/**
@@ -792,7 +800,8 @@ public class Graphics
 	 */
 	public int getClipWidth()
 	{
-		return this.clipWidth;
+		Rect rect = this.canvas.getClipBounds();
+		return rect.right - rect.left;
 	}
 
 	/**
@@ -803,7 +812,8 @@ public class Graphics
 	 */
 	public int getClipHeight()
 	{
-		return this.clipHeight;
+		Rect rect = this.canvas.getClipBounds();
+		return rect.bottom - rect.top;
 	}
 
 	/**
@@ -840,8 +850,6 @@ public class Graphics
 	 */
 	public void setClip(int x, int y, int width, int height)
 	{
-		this.clipWidth = width;
-		this.clipHeight = height;
 		this.canvas.clipRect(x, y, x + width, y + height);
 	}
 
@@ -892,7 +900,11 @@ public class Graphics
 	 */
 	public void drawRect(int x, int y, int width, int height)
 	{
-		//TODO implement drawRect
+		RectF rect = new RectF(x,y,x+width,y+height);
+		Style style = this.paint.getStyle();
+		this.paint.setStyle(Style.STROKE);
+		this.canvas.drawRect(x, y, x + width, y + height, paint);
+		this.paint.setStyle(style);
 	}
 
 	/**
@@ -914,7 +926,11 @@ public class Graphics
 	 */
 	public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight)
 	{
-		//TODO implement drawRoundRect
+		RectF rect = new RectF(x,y,x+width,y+height);
+		Style style = this.paint.getStyle();
+		this.paint.setStyle(Style.STROKE);
+		this.canvas.drawRoundRect(rect, arcWidth, arcHeight, this.paint);
+		this.paint.setStyle(style);
 	}
 
 	/**
@@ -932,7 +948,8 @@ public class Graphics
 	 */
 	public void fillRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight)
 	{
-		//TODO implement fillRoundRect
+		RectF rect = new RectF(x,y,x+width,y+height);
+		this.canvas.drawRoundRect(rect, arcWidth, arcHeight, this.paint);
 	}
 
 	/**
@@ -1042,6 +1059,7 @@ public class Graphics
 	 */
 	public void drawString( String str, int x, int y, int anchor)
 	{
+		//TODO convert align and draw with paint from font.paint 
 		this.canvas.drawText(str, x, y, paint);
 	}
 
@@ -1415,8 +1433,18 @@ public class Graphics
 	 */
 	public void drawRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height, boolean processAlpha)
 	{
-		Bitmap bitmap = Bitmap.createBitmap(rgbData, width, height, processAlpha);
-		canvas.drawBitmap(bitmap, x, y, paint);
+		if(this.drawRGBBuffer == null || width > this.drawRGBBuffer.width() || height > this.drawRGBBuffer.height())
+		{
+			Log.v(MIDlet.TAG, "new drawRGBBuffer : width : " + width + " : height : " + height);
+			this.drawRGBBuffer = Bitmap.createBitmap(width, height, processAlpha);
+		}
+		else
+		{
+			Log.v(MIDlet.TAG, "keeping drawRGBBuffer");
+		}
+		
+		this.drawRGBBuffer.setPixels(rgbData, offset, scanlength, 0, 0, width, height);
+		canvas.drawBitmap(this.drawRGBBuffer, x, y, paint);
 	}
 
 	/**

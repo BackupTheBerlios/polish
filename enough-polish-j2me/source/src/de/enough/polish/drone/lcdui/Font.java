@@ -155,8 +155,8 @@ public final class Font extends Object
 	 */
 	public static final int FONT_INPUT_TEXT = 1;
 
-	private Paint.FontMetricsInt metrics;
 	private static Font defaultFont;
+	private Paint paint;
 	
 	private int face;
 	private int style;
@@ -169,44 +169,40 @@ public final class Font extends Object
 		this.style = style;
 		this.size = size; 
 		
-//		if ( face == FACE_SYSTEM && style == STYLE_PLAIN && size == SIZE_MEDIUM) {
-//			this.font = net.rim.device.api.ui.Font.getDefault();
-//		} else {
-//			FontFamily family = FontFamily.forName( FontFamily.FAMILY_SYSTEM );
-//			int bbStyle = 0;
-//			if ( (style & STYLE_BOLD) == STYLE_BOLD  ) {
-//				bbStyle |= net.rim.device.api.ui.Font.BOLD;
-//			}
-//			if ( (style & STYLE_ITALIC) == STYLE_ITALIC  ) {
-//				bbStyle |= net.rim.device.api.ui.Font.ITALIC;
-//			}
-//			if ( (style & STYLE_UNDERLINED) == STYLE_UNDERLINED  ) {
-//				bbStyle |= net.rim.device.api.ui.Font.UNDERLINED;
-//			}
-//			int bbSize;
-//			if (size == SIZE_SMALL ) {
-//				bbSize = 12;
-//			} else if (size == SIZE_MEDIUM) {
-//				bbSize = 16; 
-//			} else {
-//				bbSize = 20;
-//			}
-//			this.font = family.getFont( bbStyle, bbSize, Ui.UNITS_px  );
-//			if (this.font == null) {
-//				//#debug
-//				System.out.println("Unable to retrieve font...");
-//				this.font = net.rim.device.api.ui.Font.getDefault();
-//			}
-//		}
-//		if (this.font != null) {
-//			this.height = this.font.getHeight();
-//			this.baselinePosition = this.font.getBaseline();
-//		} else {
-//			this.height = 12;
-//			this.baselinePosition = 10;
-//		}
+		this.paint = new Paint();
 		
-		this.metrics = new Paint.FontMetricsInt();
+		if ( face == FACE_SYSTEM && style == STYLE_PLAIN && size == SIZE_MEDIUM) {
+			//don't do anything
+		}
+		else
+		{
+			if ( (style & STYLE_BOLD) == STYLE_BOLD  ) {
+				this.paint.setFakeBoldText(true);
+			}
+			if ( (style & STYLE_ITALIC) == STYLE_ITALIC  ) {
+				this.paint.setTextSkewX(10);
+			}
+			if ( (style & STYLE_UNDERLINED) == STYLE_UNDERLINED  ) {
+				this.paint.setUnderlineText(true);
+			}
+		}
+		
+		if(size == SIZE_SMALL)
+		{
+			this.paint.setTextSize(12);
+		}
+		else if(size == SIZE_MEDIUM)
+		{
+			this.paint.setTextSize(16);
+		}
+		else
+		{
+			this.paint.setTextSize(20);
+		}
+		
+		this.height = (int)this.paint.getTextSize();
+		
+		this.baselinePosition = (this.height * 2) / 3;
 	}
 
 	/**
@@ -390,8 +386,7 @@ public final class Font extends Object
 	 */
 	public int charWidth(char ch)
 	{
-		//TODO fix me and the others
-		return 0;
+		return (int)this.paint.measureText("" + ch);
 	}
 
 	/**
@@ -420,7 +415,7 @@ public final class Font extends Object
 	 */
 	public int charsWidth(char[] ch, int offset, int length)
 	{
-		return 0;
+		return (int)this.paint.measureText(new String(ch), offset, length - offset);
 	}
 
 	/**
@@ -438,7 +433,7 @@ public final class Font extends Object
 	 */
 	public int stringWidth( String str)
 	{
-		return 0;
+		return (int)this.paint.measureText(str);
 	}
 
 	/**
@@ -468,6 +463,13 @@ public final class Font extends Object
 	 */
 	public int substringWidth( String str, int offset, int len)
 	{
-		return 0;
+		return (int)this.paint.measureText(str, offset, len - offset);
+	}
+
+	/**
+	 * @return the paint
+	 */
+	public Paint getPaint() {
+		return paint;
 	}
 }
