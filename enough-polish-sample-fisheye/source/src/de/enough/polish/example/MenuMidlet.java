@@ -25,9 +25,17 @@
  */
 package de.enough.polish.example;
 
-import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.List;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
+
+import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.Locale;
 
 //#ifdef polish.debugEnabled
@@ -100,12 +108,14 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 		System.out.println("setting display.");
 		this.display = Display.getDisplay(this);
 		this.display.setCurrent( this.menuScreen );
+		DeviceControl.lightOn();
+		DeviceControl.vibrate(20);
 		//#debug
 		System.out.println("sample application is up and running.");
 	}
 
 	protected void pauseApp() {
-		// ignore
+		DeviceControl.lightOff();
 	}
 	
 	protected void destroyApp(boolean unconditional) throws MIDletStateChangeException {

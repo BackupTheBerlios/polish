@@ -116,6 +116,9 @@
 				defaultexcludes="yes"
 				excludes="readme.txt"
 			>
+				<!--
+				<root dir="resources/smallresolutions" />
+				-->
 				<localization locales="en_US" />
 				<!--
 				<localization dynamic="false" defaultLocale="en_US" locales="de_DE, en_US"  unless="test"/>

@@ -24,25 +24,47 @@ colors {
 	brightFontColor: white;
 	fontColor: rgb( 66, 85, 148 ); 
 	translucentBgColor:  argb(130, 165,190,247);
+	
+	maskColor: red;
 }
 
 backgrounds {
-	titleTop {
+	titleForeground {
 		type: polygon;
 		points: 10,50 50,10 90,50 50,90;
-		color: #d0f;
+		color: #00f;
 		scale-mode: proportional;
 		anchor: right | vcenter;
+		/*
+		type: partial-gradient;
+		top-color: white;
+		bottom-color: blue;
+		start: 0%;
+		end: 30%;
+		*/
+		/*
+		type: partial;
+		start: 0%;
+		end: 40%;
+		color: #0f0;
+		*/
 	}
-	titleBottom {
+	titleBackground {
 		type: combined;
-		top-background: titlePolygonLeft;
-		bottom-background: titleGradient;
+		foreground: titlePolygonLeft;
+		background: titleGradient;
+		/*
+		type: partial;
+		start: 40%;
+		end: 100%;
+		color: blue;
+		*/
 	}
+	
 	titlePolygonLeft {
 		type: polygon;
 		points: 10,50 50,10 90,50 50,90;
-		color: #d0f;
+		color: #00f;
 		scale-mode: proportional;
 		anchor: left | vcenter;
 	}
@@ -51,65 +73,17 @@ backgrounds {
 		top-color: white;
 		bottom-color: blue;
 	}
-}
-
-/**
-  * the menu style is a predefined style for
-  * designing the fullscreen-menu.
-  * The font-settings (font-color,
-  * font-face, font-style and font-size)
-  * are used to design the menu-texts
-  * (like Options, Select, or Cancel).
-  * With the focused-style attribute
-  * another style than the default "focused"
-  * style is used for the menu. 
-  * The menubar-color can be set to any
-  * color. When "transparent" is used,
-  * the background shines through.
-  */
-menu {
-	margin-left: 2;
-	padding: 2;
-	background {
-		type: round-rect;
-		color: brightBgColor;
-		border-width: 2;
-		border-color: bgColor;
+	
+	maskBackground {
+		type: polygon;
+		points: 5,90 55,0 105,90 155,0 205,90;
+		reference-width: 210;
+		reference-height: 100;
+		scale-mode: scale;
+		color: maskColor;
 	}
-	font-color: brightFontColor;
-	font-style: bold;
-	menubar-color: blue;
-	view-type: slide-up;
 }
 
-/**
-  * The menuItem style is a predefined style
-  * for the actual commands in a fullscreen-menu.
-  * When the menuItem style is not defined,
-  * the menu style will be used instead. 
-  */
-menuItem {
-	margin-top: 2;
-	padding: 2;
-	padding-left: 5;
-	font {
-		color: fontColor;
-		size: medium;
-		style: bold;
-	}
-	layout: left;
-}
-
-/**
-  * This is a custom style for selected
-  * menu items. It is used, because it has
-  * been defined in the menu style. 
-  */
-menuItem:hover {
-	background-color: bgColor;
-	font-color: brightFontColor;
-	layout: left | horizontal-expand;
-}
 
 /**
   * The title style is a predefined style which is used
@@ -117,10 +91,6 @@ menuItem:hover {
   */
 title {
 	padding: 2;
-	margin-top: 0;
-	margin-bottom: 5;
-	margin-left: 0;
-	margin-right: 0;
 	font-face: proportional;
 	font-size: large;
 	font-style: bold;
@@ -133,8 +103,8 @@ title {
 	
 	background {
 		type: combined;
-		top-background: titleTop;
-		bottom-background: titleBottom;
+		foreground: titleForeground;
+		background: titleBackground;
 	}
 }
 
@@ -167,9 +137,6 @@ focused {
   * If the source-code would not have defined this
   * style, we could use the dynamic style "list" to design all
   * list-screens. 
-  * An interesting attribute is the "columns" attribute which
-  * is used to use a table with two columns instead of the default
-  * layout.
   */
 .mainScreen {
 	padding: 2;
@@ -188,7 +155,6 @@ focused {
 	fisheyeview-scale: 60%;
 	fisheyeview-scale-end: 20%;
 	fisheyeview-remove-text: true;		
-	view-type: carousel;
 	*/
 	view-type: fisheye;
 	fisheyeview-scale-start: 70%;
@@ -197,9 +163,6 @@ focused {
 	fisheyeview-alpha-end: 80;
 	fisheyeview-remove-text: true;		
 	/* fisheyeview-max-visible: 3; */
-	//#if polish.midp2
-		screen-change-animation: fade;
-	//#endif
 }
 
 /**
@@ -215,11 +178,9 @@ focused {
 .mainCommand {
 	padding: 0;
 	padding-vertical: 0;
-	/*
-	background-color: yellow;
-	layout: center | vertical-center;
-	*/
 	icon-image: url( iconlarge%INDEX%.png );
+	icon-image-align: top;
+	layout: center;
 }
 
 .mainCommand:hover {
@@ -246,6 +207,8 @@ focused {
 	repaint-previous-screen: true;
 	//#if polish.midp2
 		screen-change-animation: fade;
+	//#else
+		screen-change-animation: right;
 	//#endif
 }
 
@@ -276,17 +239,25 @@ info {
 
 /*************   MENU BAR     *************/
 
-menubar
-{
+menubar {
 	margin: 0;
 	padding-top: 3;
 	padding: 2;
+		/*
 	background {
 		type: vertical-gradient;
-		top-color: #ccc;
+		top-color: blue;
 		bottom-color: #fff;
 		start: 10%;
-		end: 90%;
+		end: 100%;
+	}
+		*/
+	background {
+		type: mask;
+		mask: maskBackground;
+		mask-color: maskColor;
+		background: titleGradient;
+		opacity: 150;
 	}
 }
 
@@ -302,7 +273,7 @@ leftcommand
 		padding-top: 7;
 	//#endif
 	padding-bottom: 0;
-	font-color: fontColor;
+	font-color: white;
 	font-style: bold;
 	/*
 	text-effect: vertical-gradient;
@@ -310,7 +281,7 @@ leftcommand
 	text-vertical-gradient-start-color: #000;
 	*/
 	text-effect: shadow;
-	text-shadow-color: #ff0;
+	text-shadow-color: #333;
 	font-size: small;
 }
 
@@ -326,3 +297,89 @@ middlecommand extends leftcommand {
 	padding-top: 1;
 	font-color: black;
 }
+
+
+
+/**
+  * the menu style is a predefined style for
+  * designing the fullscreen-menu.
+  * The font-settings (font-color,
+  * font-face, font-style and font-size)
+  * are used to design the menu-texts
+  * (like Options, Select, or Cancel).
+  * With the focused-style attribute
+  * another style than the default "focused"
+  * style is used for the menu. 
+  */
+menu {
+	margin-left: 2;
+	padding: 2;
+	background {
+		type: round-rect;
+		color: brightBgColor;
+		border-width: 2;
+		border-color: bgColor;
+	}
+	font-color: brightFontColor;
+	font-style: bold;
+	view-type: slide-up;
+	/*
+	view-type: numbered;
+	*/
+}
+
+
+
+/**
+  * The menuItem style is a predefined style
+  * for the actual commands in a fullscreen-menu.
+  * When the menuItem style is not defined,
+  * the menu style will be used instead. 
+  */
+menuItem {
+	margin-top: 2;
+	padding: 2;
+	padding-left: 5;
+	font {
+		color: fontColor;
+		size: medium;
+		style: bold;
+	}
+	layout: left;
+	/*
+	label-style: menuLabel;
+	*/
+}
+
+/**
+  * A focused menuItem
+  */
+menuItem:hover {
+	background-color: bgColor;
+	font-color: brightFontColor;
+	layout: left | horizontal-expand;
+	/*
+	label-style: menuLabelFocused;
+	include-label: true;
+	*/
+}
+
+/*
+.menuLabel {
+	padding: 3;
+	font-color: fontColor;
+	font-style: bold;
+}
+
+.menuLabelFocused {
+	padding: 2;
+	font-color: brightFontColor;
+	font-style: bold;
+	border {
+		type: circle;
+		width: 1;
+		color: brightFontColor;
+	}
+}
+
+*/
