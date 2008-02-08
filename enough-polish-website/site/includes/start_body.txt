@@ -108,6 +108,7 @@
 
 </li>
 <li><a class="menu2four" href="http://www.enough.de/shop.html">Shop</a></li>
+<li><a class="menu2four" href="http://www.enough.de/partners.html">Partners</a></li>
 <li><a class="menu2six" href="http://www.enough.de/news.html">News
 
 <!--[if IE 7]><!--></a><!--<![endif]-->
@@ -140,6 +141,32 @@
 		
 		<%ifdef inIntroductionSection %>
 			<div id="currentLink"><a href="<%= basedir %>docs/introduction.html">Introduction</a></div>
+			<%ifdef inIntroductionSection.lush %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>lush/index.html">Lush</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>lush/index.html">Lush</a></div>
+			<%endif %>
+			<%ifdef inIntroductionSection.janus %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>janus/index.html">Janus</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>janus/index.html">Janus</a></div>
+			<%endif %>
+			<%ifdef inIntroductionSection.touch %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>touch/index.html">Touch</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>touch/index.html">Touch</a></div>
+			<%endif %>
+			<%ifdef inIntroductionSection.trunk %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>trunk/index.html">Trunk</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>trunk/index.html">Trunk</a></div>
+			<%endif %>
+			<%ifdef inIntroductionSection.marjory %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>marjory/index.html">Marjory</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>marjory/index.html">Marjory</a></div>
+			<%endif %>
+			<!--
 			<%ifdef inIntroductionSection.tour %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/tour.html">Take a Tour</a></div>
 			<%else %>
@@ -166,6 +193,8 @@
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/integration.html">IDE Installation</a></div>
 			<%endif %>
 			
+			-->
+	
 		<%else %>
 			<a href="<%= basedir %>docs/introduction.html">Introduction</a>
 		<%endif %>
