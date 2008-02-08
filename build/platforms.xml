@@ -208,7 +208,7 @@
 
 	<platform>
 		<identifier>android</identifier>
-		<features>android</features>
+		<features>android, midp2</features>
 		<description>Android is a java platform for mobile devices by Google</description>
 		<capability name="build.BootClassPath" value="android.jar" />
 		<capability name="build.ImplicitGroups" value="android" />
