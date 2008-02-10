@@ -21,15 +21,15 @@
 	&lt;requirement name=&quot;Identifier&quot; value=&quot;Nokia/N95, Sony-Ericsson/K850i&quot; /&gt;
 &lt;/deviceRequirements&gt;
 &lt;deviceRequirements unless=&quot;test&quot;&gt;
-	&lt;requirement name=&quot;term&quot; value=&quot;polish.api.mmapi and (polish.midp2 or polish.midp3)&quot; /&gt;
+	&lt;requirement name=&quot;Term&quot; value=&quot;polish.api.mmapi and (polish.midp2 or polish.midp3)&quot; /&gt;
 &lt;/deviceRequirements&gt;
 </pre>
 <p>
 In this example two alternative device-selections are defined - when the test-property is 
 set to true (by defining it with <code>&lt;property name=&quot;test&quot; value="true" /&gt;</code>), 
-only the upper <code>&lt;deviceRequirements&gt;</code>-element is used and the second 
-<code>&lt;deviceRequirements&gt;</code>-element is ignored. The actual requirements are defined 
-with the sub-elements <code>&lt;requirement&gt;</code>. Without any clarification, all listed 
+only the upper <code>&lt;deviceRequirements&gt;</code> element is used and the second 
+<code>&lt;deviceRequirements&gt;</code> element is ignored. The actual requirements are defined 
+with the sub elements <code>&lt;requirement&gt;</code>. Without any clarification, all listed 
 requirements need to be fulfilled by the device to be selected. 
 There are <code>&lt;or&gt;</code>, <code>&lt;and&gt;</code>, <code>&lt;not&gt;</code> 
 and <code>&lt;xor&gt;</code> elements, which can be used to 
@@ -53,7 +53,7 @@ define the requirements very flexible.
 	Following nested elements can be used in a &lt;deviceRequirements&gt; element:
 	</p>
 	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>deviceRequirements-Element&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
+	<tr><th>deviceRequirements element&nbsp;&nbsp;</th><th>Required&nbsp;&nbsp;</th><th>Explanation</th></tr>
 	<tr><td>requirement</td>
  	 <td>Yes</td>
 	 <td>The requirement which needs to be fulfilled by the device.</td>

@@ -253,5 +253,21 @@ to select entries and trigger OK commands with 0/space. You can deactivate this 
 &lt;variable name=&quot;polish.BlackBerry.mapSpaceToFire&quot; value=&quot;false&quot; /&gt;
 </pre>
 
+<h3 id="blackberry-usinglcduiandpolish">Using Native High Level LCDUI Components</h3>
+<p>
+Normally you can mix native highlevel LCDUI components like <code>javax.microedition.lcdui.TextBox</code> with J2ME Polish
+in your application by using fully qualified class names. This is not supported on BlackBerry devices, because the native BlackBerry
+user interface API is used by J2ME Polish. On BlackBerry devices you cannot mix LCDUI components with BlackBerry user interface components
+in the same application. Therefore you either either must not fully qualify native LCDUI components in your application or you
+need to deactive the J2ME Polish UI for BlackBerry. 
+<br />
+Please note: In most cases you use a native <code>TextBox</code> so that the user can edit 
+long texts - since J2ME Polish uses native <code>EditFields</code> on BlackBerry when a <code>TextField</code> is focused, there 
+is no benefit in using a native <code>TextBox</code> anyhow.
+</p>
+<pre>
+&lt;variable name=&quot;polish.BlackBerry.mapSpaceToFire&quot; value=&quot;false&quot; /&gt;
+</pre>
+
 
 <%include end.txt %>
