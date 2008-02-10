@@ -11057,6 +11057,50 @@ These namespaces/schemas will be used soon.
 		<capability name="AnnouncementDate" value="2007-01-26"/>
 		<capability name="Bugs" value="SoftKeyMappedToFire" />
 	</device>
+	
+	<device> 
+		<identifier>Samsung/SGH-T629</identifier> 
+		<features>hasCommandKeyEvents</features>
+		<groups></groups>
+		<capability name="Region" value="Americas"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, samsung"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="3gpp"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="34"/>
+		<capability name="CanvasSize" value="176x186"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire,ignoreTitleCall" />
+	</device>
+
+	<device> 
+		<identifier>Samsung/SGH-T609</identifier> 
+		<features>hasCommandKeyEvents</features>
+		<groups></groups>
+		<capability name="Region" value="Americas"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPlatform" value="MIDP/2.0"/>
+		<capability name="JavaProtocol" value="http, https, socket, secure socket"/>
+		<capability name="JavaPackage" value="mmapi1.1, wmapi1.1, samsung"/>
+		<capability name="SamsungSoundFormat" value="midi"/>
+		<capability name="SoundFormat" value="midi"/>
+		<capability name="ImageFormat" value="png"/>
+		<capability name="VideoFormat" value="3gpp"/>
+		<capability name="FullCanvasSize" value="176x220"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="MenuBarHeight" value="34"/>
+		<capability name="CanvasSize" value="176x186"/>
+		<capability name="BitsPerPixel" value="18"/>
+		<capability name="key.ClearKey" value="-8"/>
+		<capability name="Bugs" value="SoftKeyMappedToFire,ignoreTitleCall" />
+	</device>
 			
 	<device> 
 		<identifier>Samsung/SGH-T709</identifier> 
