@@ -393,6 +393,17 @@
 		<files>samsung-api.jar</files>
 		<path>import/samsung-api.jar</path>
 	</api>
+
+	<api>
+		<name>Mobile Sensor API</name>
+		<description>
+		Classes for sensors
+		</description>
+		<names>sensor</names>
+		<symbol>sensor</symbol>
+		<files>sensor.jar</files>
+		<path>import/sensor.jar</path>
+	</api>
 	
 <!--
 	You can use this block to define a new API
