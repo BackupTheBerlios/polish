@@ -1,4 +1,4 @@
-//#condition polish.midp or polish.usePolishGui
+//#condition polish.midp2 or polish.usePolishGui
 
 /*
  * Created on March 12, 2007 at 2:14:10 PM.
@@ -28,11 +28,9 @@
 package de.enough.polish.event;
 
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.ItemCommandListener;
 
-import de.enough.polish.ui.Item;
-import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.util.ArrayList;
 
 /**
