@@ -11055,7 +11055,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.medium" value="16"/>
 		<capability name="Font.large" value="18"/>
 		<capability name="AnnouncementDate" value="2007-01-26"/>
-		<capability name="Bugs" value="SoftKeyMappedToFire" />
+		<capability name="Bugs" value="SoftKeyMappedToFire,ignoreTitleCall" />
 	</device>
 	
 	<device> 
