@@ -1294,33 +1294,20 @@ extends Displayable
 	 */
 	private int getMidpKeyCode(int keyCode, int status)
 	{
-		switch (keyCode) {
-		case KEY_BB_0: keyCode = KEY_NUM0; break;
-		case KEY_BB_1: keyCode = KEY_NUM1; break;
-		case KEY_BB_2: keyCode = KEY_NUM2; break;
-		case KEY_BB_3: keyCode = KEY_NUM3; break;
-		case KEY_BB_4: keyCode = KEY_NUM4; break;
-		case KEY_BB_5: keyCode = KEY_NUM5; break;
-		case KEY_BB_6: keyCode = KEY_NUM6; break;
-		case KEY_BB_7: keyCode = KEY_NUM7; break;
-		case KEY_BB_8: keyCode = KEY_NUM8; break;
-		case KEY_BB_9: keyCode = KEY_NUM9; break;
-		default:
-		    switch ( Keypad.map( keyCode, status ) ) {
-		    case '0': keyCode = KEY_NUM0; break;
-		    case '1': keyCode = KEY_NUM1; break;
-		    case '2': keyCode = KEY_NUM2; break;
-		    case '3': keyCode = KEY_NUM3; break;
-		    case '4': keyCode = KEY_NUM4; break;
-		    case '5': keyCode = KEY_NUM5; break;
-		    case '6': keyCode = KEY_NUM6; break;
-		    case '7': keyCode = KEY_NUM7; break;
-		    case '8': keyCode = KEY_NUM8; break;
-		    case '9': keyCode = KEY_NUM9; break;
-		    }
-		}
-		
-		return keyCode;
+		int key = Keypad.key( keyCode );
+        switch ( Keypad.map( key, 1 ) ) { // 1 is the ALT status
+	        case '0': keyCode = KEY_NUM0; break;
+	        case '1': keyCode = KEY_NUM1; break;
+	        case '2': keyCode = KEY_NUM2; break;
+	        case '3': keyCode = KEY_NUM3; break;
+	        case '4': keyCode = KEY_NUM4; break;
+	        case '5': keyCode = KEY_NUM5; break;
+	        case '6': keyCode = KEY_NUM6; break;
+	        case '7': keyCode = KEY_NUM7; break;
+	        case '8': keyCode = KEY_NUM8; break;
+	        case '9': keyCode = KEY_NUM9; break;
+        }
+        return keyCode;
 	}
 	    
 
