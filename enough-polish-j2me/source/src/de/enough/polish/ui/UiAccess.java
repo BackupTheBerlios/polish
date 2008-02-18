@@ -3170,33 +3170,41 @@ public final class UiAccess {
 	//#endif
 
 	public static void emitKeyPress( int keyCode ) {
+		//#if polish.usePolishGui
 		Screen screen = StyleSheet.currentScreen;
 		if (screen != null && screen.isShown()) {
 			screen.keyPressed(keyCode);
 		}
+		//#endif
 	}
 	
 	public static void emitGameActionPress( int gameAction ) {
+		//#if polish.usePolishGui
 		Screen screen = StyleSheet.currentScreen;
 		if (screen != null && screen.isShown()) {
 			int keyCode = screen.getKeyCode(gameAction);
 			screen.keyPressed(keyCode);
 		}
+		//#endif
 	}
 	
 	public static void emitKeyRelease( int keyCode ) {
+		//#if polish.usePolishGui
 		Screen screen = StyleSheet.currentScreen;
 		if (screen != null && screen.isShown()) {
 			screen.keyReleased(keyCode);
 		}
+		//#endif
 	}
 	
 	public static void emitGameActionRelease( int gameAction ) {
+		//#if polish.usePolishGui
 		Screen screen = StyleSheet.currentScreen;
 		if (screen != null && screen.isShown()) {
 			int keyCode = screen.getKeyCode(gameAction);
 			screen.keyReleased(keyCode);
 		}
+		//#endif
 	}
 
 
