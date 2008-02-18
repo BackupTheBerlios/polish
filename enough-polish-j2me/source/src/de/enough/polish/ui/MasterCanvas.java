@@ -66,6 +66,7 @@ public class MasterCanvas
 	
 	
 	private MasterCanvas() {
+		// disallow instantiation...
 	}
 	
 
@@ -270,6 +271,11 @@ public class MasterCanvas
 ////		display.setCurrent( alert, instance );
 //	}
 	
+	/**
+	 * Retrieves the currently shown displayable.
+	 * @param display the display that is being used to change displayables
+	 * @return the currently shown displayable.
+	 */
 	public static Displayable getCurrent( Display display ) {
 		//#debug
 		System.out.println("MasterCanvas: getCurrent");
@@ -280,6 +286,10 @@ public class MasterCanvas
 		}
 	}
 	
+	/**
+	 * Repaints an accessible canvas.
+	 * @param canvas the canvas that requires a repaint
+	 */
 	public static void repaintAccessibleCanvas( AccessibleCanvas canvas ) {
 		if (canvas == null) {
 			//#debug warn
@@ -295,6 +305,10 @@ public class MasterCanvas
 		}
 	}
 
+	/**
+	 * Repaints a normal canvas
+	 * @param canvas the canvas that requires a repaint
+	 */
 	public static void repaintCanvas( Canvas canvas ) {
 		if (canvas == null) {
 			//#debug warn
@@ -312,7 +326,14 @@ public class MasterCanvas
 			canvas.repaint();
 		}
 	}
-	
+	/**
+	 * Repaints the specified area of a normal canvas
+	 * @param canvas the canvas that should be repainted partically
+	 * @param x horizontal start
+	 * @param y vertical start
+	 * @param width width
+	 * @param height height of the the repaint area in pixels
+	 */
 	public static void repaintCanvas( Canvas canvas, int x, int y, int width, int height ) {
 		if (canvas == null) {
 			//#debug warn
@@ -331,6 +352,11 @@ public class MasterCanvas
 		}
 	}
 	
+	/**
+	 * Determines if the specified canvas is currently being shown
+	 * @param canvas the canvas
+	 * @return true when the canvas is currently the first display on the screen
+	 */
 	public static boolean isAccessibleCanvasShown(AccessibleCanvas canvas) {
 		//#debug
 		System.out.println("MasterCanvas: isAccessibleCanvasShown");
@@ -342,6 +368,12 @@ public class MasterCanvas
 		
 	}
 
+	
+	/**
+	 * Determines if the specified canvas is currently being shown
+	 * @param canvas the canvas
+	 * @return true when the canvas is currently the first display on the screen
+	 */
 	public static boolean isCanvasShown(Canvas canvas) {
 		//#debug
 		System.out.println("MasterCanvas: isCanvasShown");
@@ -352,6 +384,11 @@ public class MasterCanvas
 		}
 	}
 
+	/**
+	 * Determines if the specified displayable is currently being shown
+	 * @param displayable the displayayable
+	 * @return true when the canvas is currently the first display on the screen
+	 */
 	public static boolean isDisplayableShown(Displayable displayable) {
 		//#debug
 		System.out.println("MasterCanvas: isDisplayableShown");

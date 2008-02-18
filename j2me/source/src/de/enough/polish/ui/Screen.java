@@ -2287,6 +2287,7 @@ implements AccessibleCanvas
 		//#if polish.Screen.callSuperEvents
 			super.keyPressed(keyCode);
 		//#endif
+			//System.out.println("keyCode=" + keyCode);
 		
 		this.lastInteractionTime = System.currentTimeMillis();
 		synchronized (this.paintLock) {
@@ -3563,12 +3564,9 @@ implements AccessibleCanvas
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	public void sizeChanged(int width, int height) {
 		 //#if !polish.Bugs.sizeChangedReportsWrongHeight 
-			if (!this.isInitialized) {
-				return;
-			}
 			//#debug
 			System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
-			boolean doInit = false;
+			boolean doInit = !this.isInitialized;
 		
 			//#ifdef tmp.menuFullScreen
 				doInit = width != this.screenWidth || height != this.fullScreenHeight;

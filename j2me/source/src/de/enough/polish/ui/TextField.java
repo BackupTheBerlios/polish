@@ -887,7 +887,7 @@ public class TextField extends StringItem
 			private long lastFieldChangedEvent;
 		//#endif
 	//#endif
-	//#if !polish.blackberry && !polish.doja && !polish.android
+	//#if polish.midp && !polish.blackberry
 		//#define tmp.useNativeTextBox
 		private javax.microedition.lcdui.TextBox midpTextBox;
 	//#endif
@@ -1019,19 +1019,18 @@ public class TextField extends StringItem
 		setString(text);
 	}
 	
-	//#if tmp.useNativeTextBox && !polish.android
+	//#if tmp.useNativeTextBox
 	/**
 	 * Creates the TextBox used for the actual input mode.
 	 */
 	private void createTextBox() {
-		//TODO android : create TextView for debug etc.
 		String currentText = this.isPassword ? this.passwordText : this.text;
 		this.midpTextBox = new javax.microedition.lcdui.TextBox( this.title, currentText, this.maxSize, this.constraints );
 		this.midpTextBox.addCommand(StyleSheet.OK_CMD);
 		if (!this.isUneditable) {
 			this.midpTextBox.addCommand(StyleSheet.CANCEL_CMD);
 		}
-		this.midpTextBox.setCommandListener( this );
+		this.midpTextBox.setCommandListener( this );	
 	}
 	//#endif
 	
@@ -1831,7 +1830,7 @@ public class TextField extends StringItem
 				super.paintContent(x, y, leftBorder, rightBorder, g);
 
 				//#if polish.TextField.showHelpText
-				if(getString() == null || getString().equals(""))
+				if(this.text == null || this.text.length() == 0)
 				{
 					this.helpItem.paint(x, y, leftBorder, rightBorder, g);
 				}
@@ -1870,7 +1869,12 @@ public class TextField extends StringItem
                         //display highlighted text in white color
                         g.setColor( DrawUtil.getComplementaryColor(g.getColor()) );
                         //TODO use bitmap font and text-effect
-                        g.drawChar( this.caretChar, cX, cY, Graphics.TOP | Graphics.LEFT );
+            			//#if polish.Bugs.needsBottomOrientiationForStringDrawing
+                        	cY += this.font.getHeight();
+                        	g.drawChar( this.caretChar, cX, cY, Graphics.BOTTOM | Graphics.LEFT );
+                        //#else
+                        	g.drawChar( this.caretChar, cX, cY, Graphics.TOP | Graphics.LEFT );
+                        //#endif
                     } else {
                         g.drawLine( cX, cY, cX, cY + getFontHeight() - 2);
                     }
@@ -2690,13 +2694,13 @@ public class TextField extends StringItem
 			//# if (this.enableDirectInput) {
 		//#endif
 				//#ifdef tmp.directInput
-					//#if !polish.blackberry 
+					//#if !polish.blackberry
 						//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
 						//#= if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE && keyCode != ${polish.key.ChangeNumericalAlphaInputModeKey}  ) {
 						//#else
 						if (this.inputMode == MODE_NATIVE && keyCode != KEY_CHANGE_MODE) {
 						//#endif
-							//#if tmp.useNativeTextBox && !polish.android
+							//#if tmp.useNativeTextBox
 								showTextBox();
 								return true;
 							//#endif
@@ -2868,12 +2872,12 @@ public class TextField extends StringItem
 						&& this.screen.isKeyboardAccessible() 
 						&& this.inputMode != MODE_NUMBERS 
 						&& !this.isNumeric
-//						&& !( 	(gameAction == Canvas.UP     &&  keyCode != Canvas.KEY_NUM2)	|| 
-//								(gameAction == Canvas.DOWN   &&  keyCode != Canvas.KEY_NUM8) ||
-//								(gameAction == Canvas.LEFT   &&  keyCode != Canvas.KEY_NUM4)	||
-//								(gameAction == Canvas.RIGHT  &&  keyCode != Canvas.KEY_NUM6) ||
-//								(gameAction == Canvas.FIRE   &&  keyCode != Canvas.KEY_NUM5)   
-//							)
+						&& !( 	(gameAction == Canvas.UP     &&  keyCode == this.screen.getKeyCode(Canvas.UP) ) 
+								|| (gameAction == Canvas.DOWN   &&  keyCode == this.screen.getKeyCode(Canvas.DOWN)  )
+								|| (gameAction == Canvas.LEFT   &&  keyCode == this.screen.getKeyCode(Canvas.LEFT)	)
+								|| (gameAction == Canvas.RIGHT  &&  keyCode == this.screen.getKeyCode(Canvas.RIGHT))
+								//|| (gameAction == Canvas.FIRE   &&  keyCode == this.screen.getKeyCode(Canvas.FIRE) )  
+							)
 						) 
 				{
 					char insertChar = (char) (' ' + (keyCode - 32));
@@ -3530,7 +3534,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if tmp.useNativeTextBox &&!polish.android
+	//#if tmp.useNativeTextBox
 	/**
 	 * Shows the TextBox for entering texts.
 	 */
@@ -3543,7 +3547,6 @@ public class TextField extends StringItem
 		} else if (this.screen == null) {
 			this.screen = getScreen();
 		}
-		
 		StyleSheet.display.setCurrent( this.midpTextBox );
 	}
 	//#endif
@@ -3632,7 +3635,7 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println("TextField.commandAction( " + cmd.getLabel() + ", " + this + " )");
 		//#if tmp.usePredictiveInput
-			if (this.predictiveAccess.commandAction(cmd, item)) {			
+			if (this.predictiveInput && this.predictiveAccess.commandAction(cmd, item)) {			
 				return;
 			}
 		//#endif

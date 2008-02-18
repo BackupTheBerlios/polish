@@ -27,11 +27,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Graphics;
-//#if polish.midp1 || (polish.usePolishGameApi == true) || polish.android
-	//# import de.enough.polish.ui.game.Sprite;
-//#else
-	import javax.microedition.lcdui.game.Sprite;
-//#endif
+import javax.microedition.lcdui.game.Sprite;
 
 /**
  * <p>Allows to use sprites within normal forms.</p>

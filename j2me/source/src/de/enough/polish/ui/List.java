@@ -29,7 +29,6 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.Locale;
 
 

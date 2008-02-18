@@ -28,9 +28,7 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Graphics;
 
-//#if !polish.android
 import de.enough.polish.io.Serializable;
-//#endif
 
 /**
  * <p>Provides an abstract  border.</p>
@@ -38,10 +36,7 @@ import de.enough.polish.io.Serializable;
  * <p>copyright Enough Software 2004 - 2008</p>
  * @author Robert Virkus, robert@enough.de
  */
-public abstract class Border
-//#if !polish.android
-implements Serializable
-//#endif 
+public abstract class Border implements Serializable 
 {
 	
 	/** general width of the border */

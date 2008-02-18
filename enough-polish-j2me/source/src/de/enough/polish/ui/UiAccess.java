@@ -516,7 +516,7 @@ public final class UiAccess {
 	 * @param index the index
 	 */
 	public static void setCurrentListIndex( Display display, javax.microedition.lcdui.List list, int index ) {
-		//#if !polish.blackberry && polish.usePolishGui && !polish.android
+		//#if !polish.blackberry && polish.usePolishGui
 			display.setCurrent( list );
 		//#endif
 	}
@@ -1302,7 +1302,7 @@ public final class UiAccess {
 	 * @param screen the screen.
 	 */
 	public static void addSubCommand(  Command child, Command parent, javax.microedition.lcdui.Screen screen  ) {
-		//#if !polish.blackberry && !polish.android
+		//#if !polish.blackberry
 		screen.addCommand( child );
 		//#endif
 	}
@@ -2919,7 +2919,7 @@ public final class UiAccess {
 	}
 	//#endif
 
-	//#if polish.midp2 && !polish.android
+	//#if polish.midp2
 	/**
 	 * Sets an ItemStateListener specifically for this item.
 	 * Change events are forwarded to both this listener as well as a possibly set listener of the
@@ -3135,7 +3135,7 @@ public final class UiAccess {
 	}
 	//#endif
 	
-	//#if polish.midp
+	//#if polish.midp2
 	/**
 	 * Notifies the specified CustomItem that a key or pointer event has been processed and that it should not be processed by other components.
 	 * This is useful when overriding keyPressed, keyReleased, keyRepeated or pointerPressed in CustomItems -
@@ -3168,6 +3168,36 @@ public final class UiAccess {
 		item.isEventHandled = true;
 	}
 	//#endif
+
+	public static void emitKeyPress( int keyCode ) {
+		Screen screen = StyleSheet.currentScreen;
+		if (screen != null && screen.isShown()) {
+			screen.keyPressed(keyCode);
+		}
+	}
+	
+	public static void emitGameActionPress( int gameAction ) {
+		Screen screen = StyleSheet.currentScreen;
+		if (screen != null && screen.isShown()) {
+			int keyCode = screen.getKeyCode(gameAction);
+			screen.keyPressed(keyCode);
+		}
+	}
+	
+	public static void emitKeyRelease( int keyCode ) {
+		Screen screen = StyleSheet.currentScreen;
+		if (screen != null && screen.isShown()) {
+			screen.keyReleased(keyCode);
+		}
+	}
+	
+	public static void emitGameActionRelease( int gameAction ) {
+		Screen screen = StyleSheet.currentScreen;
+		if (screen != null && screen.isShown()) {
+			int keyCode = screen.getKeyCode(gameAction);
+			screen.keyReleased(keyCode);
+		}
+	}
 
 
 }

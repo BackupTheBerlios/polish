@@ -28,9 +28,7 @@ package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Display;
 
-//#if !polish.android
 import de.enough.polish.io.Serializable;
-//#endif
 
 /**
  * <p>Wraps an (A)RGB color and can also contain dynamic references like Display.COLOR_BACKGROUND.</p>
@@ -42,12 +40,7 @@ import de.enough.polish.io.Serializable;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class Color
-//#if !polish.android
-implements Serializable
-//#endif
-
-{
+public class Color implements Serializable {
 	
 	/**
 	 * A color that defines transparent together with the dynamic flag.
