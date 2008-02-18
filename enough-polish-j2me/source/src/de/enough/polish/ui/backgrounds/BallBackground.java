@@ -6,12 +6,7 @@ import java.util.Random;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-
-//#if polish.android 
-//# import de.enough.polish.ui.game.Sprite;
-//#else
-	import javax.microedition.lcdui.game.Sprite;
-//#endif
+import javax.microedition.lcdui.game.Sprite;
 
 import de.enough.polish.ui.Background;
 

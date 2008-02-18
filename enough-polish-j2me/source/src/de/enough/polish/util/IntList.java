@@ -29,9 +29,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-//#if !polish.android
 import de.enough.polish.io.Externalizable;
-//#endif
+
 
 /**
  * <p>Provides an flexible list for storing objects.</p>
@@ -58,9 +57,7 @@ import de.enough.polish.io.Externalizable;
  * </pre>
  */
 public class IntList
-//#if !polish.android
 implements Externalizable
-//#endif
 {
 	private int[] storedObjects;
 	private int growthFactor;

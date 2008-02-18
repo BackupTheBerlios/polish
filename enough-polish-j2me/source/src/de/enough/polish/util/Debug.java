@@ -341,7 +341,7 @@ implements CommandListener
 			System.err.println("Unable to show log with null-Display.");
 			return;
 		}
-		//#if !polish.blackberry && !polish.android
+		//#if polish.midp && !polish.blackberry
 			
 		Displayable currentDisplayable = display.getCurrent();
 		if (Debug.returnDisplayable != currentDisplayable) {

@@ -30,7 +30,9 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import de.enough.polish.ui.MasterCanvas;
+//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
+	import de.enough.polish.ui.MasterCanvas;
+//#endif
 
 //#ifdef polish.usePolishGui
 	//# import de.enough.polish.ui.Screen;
@@ -466,6 +468,17 @@ public abstract class GameCanvas
 	//#endif
 
 		
+	//#ifdef tmp.extendsPolishScreen
+	/* (non-javadoc)
+	 * @see de.enough.polish.ui.Screen#handleKeyReleased(int,int)
+	 */
+	public boolean handleKeyReleased(int keyCode, int gameAction) {
+		if (gameAction != 0) {
+			this.releasedKeys |= 1 << gameAction;
+		}
+		return false;
+	}
+	//#else
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyReleased(int)
 	 */
@@ -475,6 +488,7 @@ public abstract class GameCanvas
 			this.releasedKeys |= 1 << gameAction;
 		}
 	}
+	//#endif
 	
 	//#if tmp.extendsPolishScreen &&  polish.useDynamicStyles	
 	protected String createCssSelector() {
