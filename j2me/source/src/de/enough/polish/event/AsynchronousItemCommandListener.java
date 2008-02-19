@@ -28,9 +28,9 @@
 package de.enough.polish.event;
 
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Item;
-import javax.microedition.lcdui.ItemCommandListener;
 
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.util.ArrayList;
 
 /**
@@ -145,5 +145,4 @@ public class AsynchronousItemCommandListener implements Runnable, ItemCommandLis
 			AsynchronousItemCommandListener.this.parent.commandAction( this.command, this.item);
 		}
 	}
-
 }
