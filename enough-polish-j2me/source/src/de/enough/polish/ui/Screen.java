@@ -2055,7 +2055,6 @@ implements AccessibleCanvas
 	}
 	//#endif
 	
-	//#ifdef tmp.usingTitle
 	/**
 	 * Sets the title of the Screen. If null is given, removes the title.
 	 * 
@@ -2070,60 +2069,63 @@ implements AccessibleCanvas
 	 */
 	public void setTitle( String text, Style tStyle)
 	{
-		//#debug
-		System.out.println("Setting title " + text );
-		//#ifdef tmp.ignoreMotorolaTitleCall
-			if (text == null) {
-				if (this.ignoreMotorolaTitleCall) {
-					this.ignoreMotorolaTitleCall = false;
-					return;
-				}
-				//return;
-			}
-		//#endif
-		if (text != null) {
-			//#style title, default
-			this.title = new StringItem( null, text );
-			this.title.screen = this;
-			if ( tStyle != null ) {
-				this.title.setStyle( tStyle );
-			}
-			//#ifdef polish.css.title-style
-				else if (this.titleStyle != null) {
-					this.title.setStyle( this.titleStyle );
+		//#if !tmp.usingTitle
+			setTitle(text);
+		//#else
+			//#debug
+			System.out.println("Setting title " + text );
+			//#ifdef tmp.ignoreMotorolaTitleCall
+				if (text == null) {
+					if (this.ignoreMotorolaTitleCall) {
+						this.ignoreMotorolaTitleCall = false;
+						return;
+					}
+					//return;
 				}
 			//#endif
-			// the Nokia 6600 has an amazing bug - when trying to refer the
-			// field screenWidth, it returns 0 in setTitle(). Obviously this works
-			// in other phones and in the simulator, but not on the Nokia 6600.
-			// That's why hardcoded values are used here. 
-			// The name of the field does not matter by the way. This is 
-			// a very interesting behaviour and should be analysed
-			// at some point...
-//			//#ifdef polish.ScreenWidth:defined
-//				//#= int width = ${polish.ScreenWidth}  - (this.marginLeft + this.marginRight);
-//			//#else
-//				int width = this.screenWidth - (this.marginLeft + this.marginRight);
-//			//#endif
-//			this.titleHeight = this.title.getItemHeight( width, width );			
-		} else {
-			this.title = null;
-			this.titleHeight = 0;
-		}
-		if (this.isInitialized && super.isShown()) {
-			if (this.title != null) {
-				int width = this.screenWidth - this.marginLeft - this.marginRight;
-				if (this.border != null) {
-					width -= this.border.borderWidth << 1;
+			if (text != null) {
+				//#style title, default
+				this.title = new StringItem( null, text );
+				this.title.screen = this;
+				if ( tStyle != null ) {
+					this.title.setStyle( tStyle );
 				}
-				this.titleHeight = this.title.getItemHeight( width, width );
+				//#ifdef polish.css.title-style
+					else if (this.titleStyle != null) {
+						this.title.setStyle( this.titleStyle );
+					}
+				//#endif
+				// the Nokia 6600 has an amazing bug - when trying to refer the
+				// field screenWidth, it returns 0 in setTitle(). Obviously this works
+				// in other phones and in the simulator, but not on the Nokia 6600.
+				// That's why hardcoded values are used here. 
+				// The name of the field does not matter by the way. This is 
+				// a very interesting behaviour and should be analysed
+				// at some point...
+	//			//#ifdef polish.ScreenWidth:defined
+	//				//#= int width = ${polish.ScreenWidth}  - (this.marginLeft + this.marginRight);
+	//			//#else
+	//				int width = this.screenWidth - (this.marginLeft + this.marginRight);
+	//			//#endif
+	//			this.titleHeight = this.title.getItemHeight( width, width );			
+			} else {
+				this.title = null;
+				this.titleHeight = 0;
 			}
-			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
-			//this.isInitialized = false;
-			repaint();
-		}
+			if (this.isInitialized && super.isShown()) {
+				if (this.title != null) {
+					int width = this.screenWidth - this.marginLeft - this.marginRight;
+					if (this.border != null) {
+						width -= this.border.borderWidth << 1;
+					}
+					this.titleHeight = this.title.getItemHeight( width, width );
+				}
+				calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+				//this.isInitialized = false;
+				repaint();
+			}
+		//#endif
 	}
-	//#endif
 	
 	/**
 	 * Sets an Item as the title for this screen.
