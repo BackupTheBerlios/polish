@@ -1783,12 +1783,12 @@ public abstract class Item extends Object
 		// initialise this item if necessary:
 		int availableWidth = rightBorder - leftBorder;
 		if (!this.isInitialized || (availableWidth < this.itemWidth )) {
-			// #if polish.debug.info
+			//#if polish.debug.info
 			if (availableWidth < this.itemWidth ) {
 				//#debug info
 				System.out.println("re-initializing item " + this + " for availableWidth=" + availableWidth + ", itemWidth=" + this.itemWidth);
 			}
-			// #endif
+			//#endif
 			init( rightBorder - x, availableWidth );
 		}
 		//#if polish.css.opacity && polish.midp2

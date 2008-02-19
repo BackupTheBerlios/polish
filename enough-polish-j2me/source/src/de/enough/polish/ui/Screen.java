@@ -1669,7 +1669,7 @@ implements AccessibleCanvas
 					//#endif
 							if (this.container != null && this.container.itemHeight > this.contentHeight) {
 								// paint scroll bar: - this.container.yOffset
-								// #debug
+								//#debug
 								// System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
 								
 								int scrollX = sWidth + this.marginLeft 
@@ -3349,12 +3349,12 @@ implements AccessibleCanvas
 				}
 			//#endif
 			
-			// #ifdef polish.debug.debug
+			//#ifdef polish.debug.debug
 				if (!processed) {
 					//#debug
 					System.out.println("PointerPressed at " + x + ", " + y + " not processed.");					
 				}
-			// #endif
+			//#endif
 		} catch (Exception e) {
 			//#debug error
 			System.out.println("PointerPressed at " + x + "," + y + " resulted in exception" + e );

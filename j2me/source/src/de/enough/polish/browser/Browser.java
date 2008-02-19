@@ -390,14 +390,14 @@ implements Runnable
       {
         boolean openingTag = parser.getType() == SimplePullParser.START_TAG;
 
-        // #debug
+        //#debug
         //System.out.println( "looking for handler for " + parser.getName()  + ", openingTag=" + openingTag );
         attributeMap.clear();
         TagHandler handler = getTagHandler(parser, attributeMap);
         
         if (handler != null)
         {
-          // #debug
+          //#debug
           //System.out.println("Calling handler: " + parser.getName() + " " + attributeMap);
     	  String styleName = (String) attributeMap.get("class");
     	  Style tagStyle = null;

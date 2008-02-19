@@ -1973,7 +1973,7 @@ public class FakeTextFieldCustomItem extends FakeStringCustomItem
 			// don't show info when this field is not editable
 			return;
 		}
-		// # debug
+		//# debug
 		// System.out.println("update info: " + this.text );
 		if (this.screen == null) {
 			this.screen = getScreen();

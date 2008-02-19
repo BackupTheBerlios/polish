@@ -1662,7 +1662,7 @@ public class Container extends Item {
 							// scroll first before cycling to the
 							// first item:
 							allowCycle = (this.yOffset + this.itemHeight <= this.availableHeight);
-							// #debug
+							//#debug
 							// System.out.println("allowCycle-calculation ( forward non-smoothScroll): yOffset=" + this.yOffset + ", itemHeight=" + this.itemHeight + " (together="+ (this.yOffset + this.itemHeight) + ", height=" + this.height);
 						} else {
 							// when you scroll to the top and
@@ -1678,7 +1678,7 @@ public class Container extends Item {
 							// scroll first before cycling to the
 							// first item:
 							allowCycle = (this.targetYOffset + this.itemHeight <= this.availableHeight + 1);
-							// #debug
+							//#debug
 							//System.out.println("allowCycle-calculation ( forward non-smoothScroll): targetYOffset=" + this.targetYOffset + ", contentHeight=" + this.contentHeight + " (together="+ (this.targetYOffset + this.contentHeight) + ", targetYOfset+itemHeight=" + (this.targetYOffset + this.itemHeight) + ", availableHeight=" + this.availableHeight );
 						} else {
 							// when you scroll to the top and
@@ -2086,7 +2086,7 @@ public class Container extends Item {
 //			if (this.focusedItem != null && this.focusedItem.backgroundYOffset != 0) {
 //				this.focusedItem.backgroundYOffset = (this.targetYOffset - this.yOffset);
 //			}
-			// # debug
+			//#debug
 			//System.out.println("animate(): adjusting yOffset to " + this.yOffset );
 			int x = getAbsoluteX();
 			int y = getAbsoluteY();

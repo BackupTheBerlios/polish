@@ -109,7 +109,7 @@ public class SpringContainerView extends ContainerView {
 	 */
 	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
 		super.initContent(parentContainerItem, firstLineWidth, lineWidth);
-		// #debug
+		//#debug
 		System.out.println("initContent of " + this + ": restartAnimation=" + this.restartAnimation + ", focusedItem=" + this.focusedItem + ", items.length=" + this.parentContainer.getItems().length);
 		// new RuntimeException().printStackTrace();
 		if (this.restartAnimation && this.focusedItem != null) {
@@ -127,7 +127,7 @@ public class SpringContainerView extends ContainerView {
 	 * @param myItems
 	 */
 	private void setTargets(int startX, int startY, Item[] myItems) {
-		// #debug
+		//#debug
 		System.out.println("++++ContainerView: setting targets for " + this );
 		int[] targetY;
 		if (this.targetYPositions == null || this.targetYPositions.length != myItems.length ) {

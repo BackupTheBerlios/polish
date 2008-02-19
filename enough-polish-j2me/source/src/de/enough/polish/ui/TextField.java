@@ -1195,7 +1195,7 @@ public class TextField extends StringItem
 	protected void updateDeleteCommand(String newText) {
 		// remove delete command when the caret is before the first character,
 		// add it when it is after the first character:
-		// #debug
+		//#debug
 		//System.out.println("updateDeleteCommand: newText=[" + newText + "]");
 		if ( !this.isUneditable ) {
 			if ( newText == null 
@@ -2475,7 +2475,7 @@ public class TextField extends StringItem
 			// don't show info when this field is not editable
 			return;
 		}
-		// # debug
+		//# debug
 		// System.out.println("update info: " + this.text );
 		String modeStr;
 		switch (this.inputMode) {

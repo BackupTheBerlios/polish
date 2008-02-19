@@ -702,7 +702,7 @@ public final class ImageUtil {
 			}
 		}
 		
-		// #debug
+		//#debug
 		System.out.println(" time for perspective: " + (System.currentTimeMillis() - t));
 		
 	}
