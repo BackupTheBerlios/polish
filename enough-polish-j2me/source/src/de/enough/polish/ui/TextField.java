@@ -2475,7 +2475,7 @@ public class TextField extends StringItem
 			// don't show info when this field is not editable
 			return;
 		}
-		//# debug
+		//#debug
 		// System.out.println("update info: " + this.text );
 		String modeStr;
 		switch (this.inputMode) {
