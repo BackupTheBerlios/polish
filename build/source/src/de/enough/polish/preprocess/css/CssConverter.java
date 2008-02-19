@@ -338,7 +338,7 @@ public class CssConverter extends Converter {
 	 * @param environment the environment
 	 */
 	protected void processDefaultStyle(boolean defaultFontDefined, boolean defaultBackgroundDefined, boolean defaultBorderDefined, ArrayList codeList, ArrayList staticCodeList, StyleSheet styleSheet, Device device, Environment environment ) {
-		//System.out.println("PROCESSSING DEFAULT STYLE " + styleSheet.getStyle("default").toString() );
+		System.out.println("PROCESSSING DEFAULT STYLE " + styleSheet.getStyle("default").toString() );
 		Style copy = new Style( styleSheet.getStyle("default"));
 		HashMap group = copy.getGroup("font");
 		if (!defaultFontDefined) {
@@ -957,7 +957,8 @@ public class CssConverter extends Converter {
 		String size = getAttributeValue("font", "size", group);
 		String newStatement;
 		if (face == null && styleStr == null && size == null) {
-			newStatement = "Font.getDefaultFont()";
+			newStatement = "Font.getDefaultFont()";		
+		
 		} else {
 			// at least one font property is defined:
 			FontConverter font = new FontConverter();  
@@ -971,7 +972,9 @@ public class CssConverter extends Converter {
 			if ( size != null) {
 				font.setSize(size);
 			}
-			newStatement =  font.createNewStatement();
+			
+			
+			newStatement =  isStandalone? font.createNewStatement(): font.createFontParams();
 		}
 		if (isStandalone) {
 			newStatement = STANDALONE_MODIFIER + "Font " 

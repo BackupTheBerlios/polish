@@ -26,6 +26,7 @@
 package de.enough.polish.preprocess.css;
 
 import de.enough.polish.BuildException;
+import de.enough.polish.drone.lcdui.Font;
 
 import java.util.HashMap;
 
@@ -80,6 +81,57 @@ public class FontConverter extends Converter {
 		// initialisation is done with the setter methods
 	}
 	
+	
+	public String createFontParams() {
+StringBuffer fontCode = new StringBuffer();
+		
+		int fontFace= Font.FACE_SYSTEM;
+		int fontStyle = Font.STYLE_PLAIN;
+		int fontSize = Font.SIZE_SMALL;
+		
+		if (face == "FACE_SYSTEM") {
+			fontFace = Font.FACE_SYSTEM;
+		} else if (face == "FACE_MONOSPACE") {
+			fontFace = Font.FACE_MONOSPACE;
+		} else if (face == "FACE_PROPORTIONAL") {
+			fontFace = Font.FACE_PROPORTIONAL;
+		}
+		
+		
+		if (style == "STYLE_PLAIN") {
+			fontStyle = Font.STYLE_PLAIN;
+		} else if (style == "STYLE_BOLD") {
+			fontStyle = Font.STYLE_BOLD;
+		} else if (style == "STYLE_ITALIC") {
+			fontStyle = Font.STYLE_ITALIC;
+		} else if (style == "STYLE_UNDERLINED") {
+			fontStyle = Font.STYLE_UNDERLINED;
+		}
+			
+		
+		if (size == "SIZE_SMALL") {
+			fontSize = Font.SIZE_SMALL;
+		} else if (size == "SIZE_MEDIUM") {
+			fontSize = Font.SIZE_MEDIUM;
+		} else if (size == "SIZE_LARGE") {			
+			fontSize = Font.SIZE_LARGE;
+		}
+			
+			
+			
+			
+			
+		// first param is the font face:
+		fontCode
+				.append( fontFace )
+				.append(", ")
+				.append( fontStyle )
+				.append(", ")
+				.append( fontSize );
+		
+		return fontCode.toString(); 
+	
+	}
 
 	/**
 	 * Retrieves the statement needed to create this font.
@@ -89,14 +141,17 @@ public class FontConverter extends Converter {
 	public String createNewStatement() {
 		StringBuffer fontCode = new StringBuffer();
 		
+		
+			
+			
 		// first param is the font face:
-		fontCode.append( "Font.getFont( Font.")
-				.append( this.face )
+		fontCode.append("Font.getFont(Font.")
+				.append( face )
 				.append(", ")
-				.append( this.style )
+				.append( style )
 				.append(", Font.")
-				.append( this.size )
-				.append(" )");
+				.append( size )
+				.append(")");
 		
 		return fontCode.toString(); 
 	}
