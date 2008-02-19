@@ -173,10 +173,13 @@ public final class Font extends Object
 		this.face = face;
 		this.style = style;
 		this.size = size;
+		
+		//#if !building.theme
 		if ( face == FACE_SYSTEM && style == STYLE_PLAIN && size == SIZE_MEDIUM) {
 			this.font = net.rim.device.api.ui.Font.getDefault();
 		} else {
 			FontFamily family = FontFamily.forName( FontFamily.FAMILY_SYSTEM );
+			
 			int bbStyle = 0;
 			if ( (style & STYLE_BOLD) == STYLE_BOLD  ) {
 				bbStyle |= net.rim.device.api.ui.Font.BOLD;
@@ -209,6 +212,10 @@ public final class Font extends Object
 			this.height = 12;
 			this.baselinePosition = 10;
 		}
+		//#else
+		//# this.height = 0;
+		//# this.baselinePosition = 0;
+		//#endif
 	}
 
 	/**
