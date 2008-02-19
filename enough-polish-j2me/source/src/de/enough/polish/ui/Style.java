@@ -34,9 +34,11 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+//#if !polish.android
 import de.enough.polish.io.Externalizable;
 import de.enough.polish.io.Serializable;
 import de.enough.polish.io.Serializer;
+//#endif
 
 
 /**
@@ -50,7 +52,10 @@ import de.enough.polish.io.Serializer;
  *        04-Jan-2004 - rob creation
  * </pre>
  */
-public class Style implements Externalizable
+public class Style 
+//#if !polish.android
+implements Externalizable
+//#endif
 {
 	//#if polish.cldc1.1
 		//# public final static Boolean TRUE = Boolean.TRUE;
@@ -90,6 +95,9 @@ public class Style implements Externalizable
 	
 	private short[] attributeKeys;
 	private Object[] attributeValues;
+	private int fontFace=Integer.MIN_VALUE;
+	private int fontStyle=Integer.MIN_VALUE;
+	private int fontSize=Integer.MIN_VALUE;
 	
 	/**
 	 * Creates a new style with default settings
@@ -144,6 +152,27 @@ public class Style implements Externalizable
 				, attributeKeys
 				, attributeValues
 		);
+	}
+	
+	public Style( int marginLeft, int marginRight, int marginTop, int marginBottom,
+			int paddingLeft, int paddingRight, int paddingTop, int paddingBottom, int paddingVertical, int paddingHorizontal,
+			int layout,
+			int fontColor, int fontFace, int fontStyle, int fontSize,  
+			Background background, Border border 
+			, short[] attributeKeys
+			, Object[] attributeValues
+			) {
+		this (marginLeft, marginRight, marginTop, marginBottom,
+				paddingLeft, paddingRight, paddingTop, paddingBottom, paddingVertical, paddingHorizontal,
+				layout,
+				 fontColor, Font.getFont(fontFace, fontStyle, fontSize),
+				 background, border ,
+				attributeKeys, attributeValues);
+		
+		this.fontFace = fontFace;
+		this.fontStyle = fontStyle;
+		this.fontSize = fontSize;
+		
 	}
 	
 	/**
@@ -204,6 +233,27 @@ public class Style implements Externalizable
 			getObjectProperty( -1 );
 			getColorProperty( -1 );
 		//#endif
+	}
+	
+	public Style( int marginLeft, int marginRight, int marginTop, int marginBottom,
+			int paddingLeft, int paddingRight, int paddingTop, int paddingBottom, int paddingVertical, int paddingHorizontal,
+			int layout,
+			int fontColor, Color fontColorObj, int fontFace, int fontStyle, int fontSize,  
+			Background background, Border border 
+			, short[] attributeKeys
+			, Object[] attributeValues
+			) {
+		this (marginLeft, marginRight, marginTop, marginBottom,
+				paddingLeft, paddingRight, paddingTop, paddingBottom, paddingVertical, paddingHorizontal,
+				layout,
+				 fontColor, fontColorObj,Font.getFont(fontFace, fontStyle, fontSize),
+				 background, border ,
+				attributeKeys, attributeValues);
+		
+		this.fontFace = fontFace;
+		this.fontStyle = fontStyle;
+		this.fontSize = fontSize;
+		
 	}
 	
 	//#ifdef polish.LibraryBuild
@@ -428,11 +478,15 @@ public class Style implements Externalizable
 		this.attributeValues = values;
 	}
 
-
+	//#if !polish.android
 	public void read(DataInputStream in) throws IOException {
 		this.background = (Background)Serializer.deserialize(in);
 		this.border 	= (Border)Serializer.deserialize(in);
-		this.font 		= (Font)Serializer.deserialize(in);
+//		this.font 		= (Font)Serializer.deserialize(in);
+		
+		if (in.readBoolean()) {
+			this.font = Font.getFont(in.readInt(), in.readInt(), in.readInt());
+		}
 		
 		this.fontColor = in.readInt();
 		this.fontColorObj = (Color)Serializer.deserialize(in);
@@ -456,8 +510,16 @@ public class Style implements Externalizable
 	public void write(DataOutputStream out) throws IOException {
 		Serializer.serialize(this.background, out);
 		Serializer.serialize(this.border, out);
-		Serializer.serialize(this.font, out);
+		if (fontFace > Integer.MIN_VALUE) {
+			out.writeBoolean(true);
+			out.writeInt(this.fontFace);
+			out.writeInt(this.fontStyle);
+			out.writeInt(this.fontSize);
+		} else {	
+			out.writeBoolean(false);
+		}
 		
+//		Serializer.serialize(this.font, out);
 		out.writeInt(this.fontColor);
 		Serializer.serialize(fontColorObj, out);
 		out.writeInt(this.paddingLeft);
@@ -475,10 +537,22 @@ public class Style implements Externalizable
 		Serializer.serialize(this.attributeKeys, out);
 		Serializer.serialize(this.attributeValues, out);
 	}
+	//#endif
 	
 //#ifdef polish.Style.additionalMethods:defined
 	//#include ${polish.Style.additionalMethods}
 //#endif
 	
+	
+	public final static Style menubarStyle = new Style (
+			0,0,0,0,	// default margin
+			1,1,1,1,1,1,	// default padding
+			Item.LAYOUT_DEFAULT,	// default layout
+			0x000000,	// font-color (default is black)
+			0, 0, 8, //font
+			new de.enough.polish.ui.backgrounds.TranslucentSimpleBackground( 0xFF40C2F3),
+			null, 	// no border
+			null, null	// no additional attributes have been defined
+		);
 
 }
