@@ -166,6 +166,7 @@ implements OutputFilter
 				mainClassName= "de.enough.polish.blackberry.midlet.MIDlet";
 			}
 			// add JAD file to JAR, so that MIDlet.getAppProperty() works later onwards:
+			// TODO: we should remove all unneeded MIDlet attributes that are not going to be read anyhow
 			try {
 				storeJadProperties(jadFile, classesDir);
 				FileUtil.delete(jarFile);
@@ -319,6 +320,20 @@ implements OutputFilter
 			File alxFile = new File( jarFile.getParentFile(),  codName  + ".alx" );
 			FileUtil.writeTextFile(alxFile, lines);
 			
+		
+			// request signature when the "blackberry.certificate.dir" variable is set:
+			if ( env.getVariable("blackberry.certificate.dir") != null) {
+				SignatureRequester requester = new SignatureRequester();
+				try {
+					int signResult = requester.requestSignature(device, locale, new File( blackberryHome ), codFile, env);
+					if (signResult != 0) {
+						System.out.println("Unable to request BlackBerry signature: Signing request returned " + signResult );
+					}
+				} catch (Exception e) {
+				    throw new BuildException("Unable to to request BlackBerry signature: " + e.toString() );
+				}
+			}
+			
 			// 2008-01-17: deactivating this functionality again, since it does
 			// not work correctly for all customers - now we clean the xx.jad.alt.jad 
 			// from the RIM values:
@@ -340,19 +355,11 @@ implements OutputFilter
 			}
 			FileUtil.writePropertiesFile( new File(jadFile.getParent(), jadFile.getName() + ".alt.jad"), ':', jadProperties );
 
-			
-			// request signature when the "blackberry.certificate.dir" variable is set:
-			if ( env.getVariable("blackberry.certificate.dir") != null) {
-				SignatureRequester requester = new SignatureRequester();
-				try {
-					int signResult = requester.requestSignature(device, locale, new File( blackberryHome ), codFile, env);
-					if (signResult != 0) {
-						System.out.println("Unable to request BlackBerry signature: Signing request returned " + signResult );
-					}
-				} catch (Exception e) {
-				    throw new BuildException("Unable to to request BlackBerry signature: " + e.toString() );
-				}
-			}
+	
+			// store new JAR path and name so that later finalizers work on the correct file:
+			env.setVariable( "polish.jarPath", codFile.getAbsolutePath() );
+			env.setVariable("polish.jarName", codFile.getName() );
+
 		} catch (BuildException e) {
 			throw e;
 		} catch (Exception e){
@@ -375,12 +382,12 @@ implements OutputFilter
 	throws FileNotFoundException, IOException, UnsupportedEncodingException
 	{
 		File txtJadFile = new File( classesDir, jadFile.getName().substring( 0, jadFile.getName().length() - ".jad".length() ) + ".txt");
-		FileUtil.copy( jadFile, txtJadFile );
-		String[] jadProperties = FileUtil.readTextFile( jadFile );
+		//FileUtil.copy( jadFile, txtJadFile );
+		String[] jadPropertiesLines = FileUtil.readTextFile( jadFile );
 		ArrayList linesList = new ArrayList();
-		for (int i = 0; i < jadProperties.length; i++)
+		for (int i = 0; i < jadPropertiesLines.length; i++)
 		{
-			String line = jadProperties[i];
+			String line = jadPropertiesLines[i];
 			if (line.charAt( line.length() -1 ) == '\r') {
 				line = line.substring(0, line.length() - 1);
 			} else if (line.endsWith("\\r")) {
@@ -394,11 +401,12 @@ implements OutputFilter
 				linesList.add(line);
 			}
 		}
-		jadProperties = (String[]) linesList.toArray( new String[ linesList.size() ] );
+		//Map appplicationProperties =  
+		jadPropertiesLines = (String[]) linesList.toArray( new String[ linesList.size() ] );
 		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < jadProperties.length; i++)
+		for (int i = 0; i < jadPropertiesLines.length; i++)
 		{
-			String line = jadProperties[i];
+			String line = jadPropertiesLines[i];
 			buffer.append(line).append('\n');
 		}
 		FileOutputStream fileOut = new FileOutputStream(  txtJadFile );
