@@ -588,7 +588,7 @@ public class FishEyeContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#focusItem(int, de.enough.polish.ui.Item, int, de.enough.polish.ui.Style)
 	 */
 	public Style focusItem(int focIndex, Item item, int direction, Style focStyle) {
-		if (this.referenceXCenterPositions == null) {
+		if (this.referenceXCenterPositions == null || this.referenceXCenterPositions.length != this.parentContainer.size() ) {
 			this.focusedStyle = focStyle;
 			this.focusedDirection = direction;
 			this.focusedIndex = focIndex;
@@ -622,6 +622,9 @@ public class FishEyeContainerView extends ContainerView {
 					currentAlphas = this.currentTranslucencies;
 				//#endif
 			}
+			if (referenceXCenterPositions.length != targetXPositions.length) {
+				return item.getStyle();
+			}
 			for (int i = 0; i < myItems.length; i++) {
 				int nextIndex = i + difference;
 				if (nextIndex < 0) {
@@ -648,7 +651,6 @@ public class FishEyeContainerView extends ContainerView {
 				this.currentTranslucencies = currentAlphas;
 			//#endif
 		}
-		
 		Style itemStyle;
 		if (!item.isFocused) {
 			itemStyle = super.focusItem(focIndex, item, direction, focStyle);
@@ -664,7 +666,7 @@ public class FishEyeContainerView extends ContainerView {
 				if (scr != null) {
 					scr.setTitle( this.labels[ focIndex ] );
 				}
-			} else {
+			} else if (focusedLabel != null) {
 				this.focusedLabel.setText( this.labels[ focIndex ] );
 				if (this.focusedLabel.getStyle() != item.getStyle() ) {
 					this.focusedLabel.setStyle( item.getStyle() );
