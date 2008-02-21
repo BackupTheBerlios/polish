@@ -302,6 +302,8 @@ These namespaces/schemas will be used soon.
 	    <capability name="key.down" value="-2" />
 	    <capability name="key.left" value="-3" />
 	    <capability name="key.right" value="-4" />
+		<capability name="key.LeftSoftKey" value="-5"/>
+		<capability name="key.RightSoftKey" value="-6"/>
 		<capability name="key.backspace" value="27" />
 	</device>	
 
