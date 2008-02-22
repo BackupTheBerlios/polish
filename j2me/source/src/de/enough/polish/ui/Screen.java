@@ -382,6 +382,7 @@ implements AccessibleCanvas
 		//#endif
 		setTitle( title );
 		
+		//Set the flag to sign that the Screen is completly loaded
 		this.isLoaded = true;
 	}
 		
