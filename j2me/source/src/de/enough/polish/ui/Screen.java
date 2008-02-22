@@ -321,7 +321,8 @@ implements AccessibleCanvas
 	protected boolean isInitRequested;
 	private CommandListener realCommandListener;
 
-
+	private boolean isLoaded = false;
+	
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
 	 * 
@@ -380,6 +381,8 @@ implements AccessibleCanvas
 			super.setFullScreenMode( true );
 		//#endif
 		setTitle( title );
+		
+		this.isLoaded = true;
 	}
 		
 	/**
@@ -3565,6 +3568,9 @@ implements AccessibleCanvas
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	public void sizeChanged(int width, int height) {
+		if(!isLoaded)
+			return;
+		
 		 //#if !polish.Bugs.sizeChangedReportsWrongHeight 
 			//#debug
 			System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
