@@ -3568,6 +3568,9 @@ implements AccessibleCanvas
 	
 	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
 	public void sizeChanged(int width, int height) {
+		//If the constructor has not been called, exit the method
+		//This is done because on some devices Displayable.sizeChanged() is
+		//called prior to the constructor of Screen
 		if(!isLoaded)
 			return;
 		
