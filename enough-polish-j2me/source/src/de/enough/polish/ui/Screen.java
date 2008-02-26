@@ -315,13 +315,12 @@ implements AccessibleCanvas
 	 * variable polish.Animation.MaxIdleTime (integer with the number of ms, 60000 is one minute).
 	 */
 	protected long lastInteractionTime;
-	private boolean isInRequestInit;
+	//private boolean isInRequestInit;
 	protected boolean ignoreRepaintRequests;
 	/** requests a call to calcuateContentArea() the next time this screen is being painted */
 	protected boolean isInitRequested;
 	private CommandListener realCommandListener;
 
-	private boolean isLoaded = false;
 	
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
@@ -3513,7 +3512,7 @@ implements AccessibleCanvas
 				return true;
 			}
 		//#endif
-		this.isInRequestInit = true;
+		//this.isInRequestInit = true;
 		try {
 			//check if the given command is from the currently focused item:
 			Item item = this.container;
@@ -3532,7 +3531,7 @@ implements AccessibleCanvas
 				return true;
 			}
 		} finally {
-			this.isInRequestInit = false;
+			//this.isInRequestInit = false;
 			this.requestInit();
 		}
 		return false;
@@ -3568,8 +3567,8 @@ implements AccessibleCanvas
 	public void sizeChanged(int width, int height) {
 		//If the constructor has not been called, exit the method
 		//This is done because on some devices Displayable.sizeChanged() is
-		//called prior to the constructor of Screen
-		if(!isLoaded) {
+		//called in the super constructor of Screen
+		if(this.paintLock == null) {
 			return;
 		}
 		//#if !polish.Bugs.sizeChangedReportsWrongHeight 
