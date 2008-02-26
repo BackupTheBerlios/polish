@@ -3162,6 +3162,17 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.usePolishGui && polish.TextField.supportSymbolsEntry
+	/**
+	 * Initializes the symbols list and returns it 
+	 * @return the symbols list
+	 */
+	public static List getTextFieldSymbols() {
+		TextField.initSymbolsList();
+		return TextField.symbolsList;
+	}
+	//#endif
+		
 	//#if polish.usePolishGui
 	/**
 	 * Notifies the specified CustomItem that a key or pointer event has been processed and that it should not be processed by other components.

@@ -3609,10 +3609,7 @@ public class TextField extends StringItem
 	//#endif
 	
 	//#if tmp.supportsSymbolEntry
-	private void showSymbolsList() {
-		if (this.caretChar != this.editingCaretChar) {
-			commitCurrentCharacter();
-		}
+	public static void initSymbolsList() {
 		if (symbolsList == null) {
 			//#style textFieldSymbolList?, textFieldSymbolTable?
 			symbolsList = new List( ENTER_SYMBOL_CMD.getLabel(), Choice.IMPLICIT );
@@ -3622,7 +3619,16 @@ public class TextField extends StringItem
 			}
 			//TODO check localization when using dynamic localization
 			symbolsList.addCommand( StyleSheet.CANCEL_CMD );
+		}			
+	}
+		
+	private void showSymbolsList() {
+		if (this.caretChar != this.editingCaretChar) {
+			commitCurrentCharacter();
 		}
+		
+		initSymbolsList();
+		
 		symbolsList.setCommandListener( this );
 		StyleSheet.display.setCurrent( symbolsList );			
 	}
