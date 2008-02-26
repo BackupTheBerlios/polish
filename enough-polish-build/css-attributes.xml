@@ -3403,6 +3403,14 @@
 		id="309"
 	/>
 	
+	<attribute
+		name="popup-roundtrip"
+		type="boolean"
+		appliesTo="ChoiceGroup"
+		description="Allows to cycle through all items of a POPUP ChoiceGroup. When the user has arrieved at the last item and presses DOWN the focus will jump to the first item instead of closing the POPUP ChoiceGroup."
+		default="false"
+		id="310"
+	/>
 
 	
 	<!--

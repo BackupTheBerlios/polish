@@ -10843,6 +10843,7 @@ These namespaces/schemas will be used soon.
 		<capability name="Font.large" value="24"/>
 		<capability name="AnnouncementDate" value="2007-01-16"/>
 		<capability name="Bugs" value="SoftKeyMappedToFire" />
+		<capability name="Bugs" value="ignoreTitleCall" />
 	</device>
 					
 	<device> 

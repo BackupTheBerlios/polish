@@ -336,10 +336,13 @@ public class PolishPreprocessor extends CustomPreprocessor {
 					if (extendsRemote) {
 						File classFile;
 						// get name of the classes directory - this is changed by the java5 postcompiler, for example
-						String classesDirName = this.environment.getVariable("polish.classes.dirname");
-						if (classesDirName == null) {
-							classesDirName = "classes";
-						}
+						// this is needed when the java5 postcompiler runs before the serializaton compiler, but not
+						// when the serialization postcompiler runs first...
+//						String classesDirName = this.environment.getVariable("polish.classes.dirname");
+//						if (classesDirName == null) {
+//							classesDirName = "classes";
+//						}
+						String classesDirName = "classes";
 						if (this.environment.hasSymbol("polish.useDefaultPackage")) {
 							int lastDotPost = className.lastIndexOf('.');
 							if (lastDotPost != -1) {
@@ -349,6 +352,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 						} else {
 							classFile = new File( this.environment.getDevice().getBaseDir(), classesDirName + File.separatorChar +  className.replace('.', File.separatorChar ) + ".class" );
 						}
+						System.out.println("found remote class: " + classFile.getAbsolutePath());
 						rmiClassFiles.add( classFile );						
 					}
 				} catch (IOException e) {

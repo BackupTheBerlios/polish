@@ -2413,6 +2413,7 @@ public class PolishTask extends ConditionalTask {
 		PostCompiler[] compilers = getActivePostCompilers();
 		for (int i = 0; i < compilers.length; i++) {
 			PostCompiler postCompiler = compilers[i];
+			System.out.println("postcompiling with " + postCompiler.getClass().getName());
 			postCompiler.execute( device, locale, this.environment );
 		}
 	}
