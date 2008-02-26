@@ -100,6 +100,9 @@ implements Choice
 		private int popupBackgroundColor = 0xFFFFFF;
 		private IconItem popupItem;
 		private boolean isPopupClosed;
+		//#ifdef polish.css.popup-roundtrip
+			private boolean popupRoundTrip;
+		//#endif
 		//private int popupOpenY;
 		private int popupParentOpenY;
 		private int originalContentWidth;
@@ -432,11 +435,11 @@ implements Choice
 			this.isImplicit = true;
 			this.autoFocusEnabled = true;
 		} else {
+			throw new IllegalArgumentException(
 			//#ifdef polish.verboseDebug
-				throw new IllegalArgumentException("invalid choiceType [" + choiceType + "] - IMPLICIT=" + Choice.IMPLICIT + ".");
-			//#else
-				//# throw new IllegalArgumentException();
+				"invalid choiceType [" + choiceType + "] - IMPLICIT=" + Choice.IMPLICIT + "."
 			//#endif
+			);
 		}
 		this.choiceType = choiceType;
 		if (items != null) {
@@ -1340,6 +1343,33 @@ implements Choice
 		//#ifdef polish.usePopupItem
 			if (!(this.isPopup && this.isPopupClosed)) {
 				processed = super.handleKeyPressed(keyCode, gameAction);
+				//#ifdef polish.css.popup-roundtrip
+					if (!processed && this.popupRoundTrip && this.isPopup && !this.isPopupClosed && this.itemsList.size() > 1) {
+						int nextFocusedIndex = -1;
+						if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8 ) {
+							// focus the first item of the opened POPUP choice:
+							for (int i= 0; i < this.itemsList.size(); i++ ) {
+								Item item = (Item) this.itemsList.get(i);
+								if (item.appearanceMode != PLAIN) {
+									nextFocusedIndex = i;
+									break;
+								}
+							}
+						} else if ( gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {							
+							for (int i= this.itemsList.size()-1; i >= 0; i-- ) {
+								Item item = (Item) this.itemsList.get(i);
+								if (item.appearanceMode != PLAIN) {
+									nextFocusedIndex = i;
+									break;
+								}
+							}
+						}
+						if (nextFocusedIndex != -1) {
+							focus(nextFocusedIndex);
+							processed = true;
+						}
+					}
+				//#endif
 			}
 		//#else
 			processed = super.handleKeyPressed(keyCode, gameAction);
@@ -1766,6 +1796,12 @@ implements Choice
 					Integer bgColor = style.getIntProperty("popup-background-color");
 					if (bgColor != null) {
 						this.popupBackgroundColor = bgColor.intValue();
+					}
+				//#endif
+				//#ifdef polish.css.popup-roundtrip
+					Boolean popupRoundTripBool = style.getBooleanProperty("popup-roundtrip");
+					if (popupRoundTripBool != null) {
+						this.popupRoundTrip = popupRoundTripBool.booleanValue();
 					}
 				//#endif
 				//#if ! tmp.suppressSelectCommand && tmp.supportViewType
