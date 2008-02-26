@@ -381,9 +381,6 @@ implements AccessibleCanvas
 			super.setFullScreenMode( true );
 		//#endif
 		setTitle( title );
-		
-		//Set the flag to sign that the Screen is completly loaded
-		this.isLoaded = true;
 	}
 		
 	/**
@@ -1673,7 +1670,7 @@ implements AccessibleCanvas
 					//#endif
 							if (this.container != null && this.container.itemHeight > this.contentHeight) {
 								// paint scroll bar: - this.container.yOffset
-								//#debug
+								// #debug
 								// System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
 								
 								int scrollX = sWidth + this.marginLeft 
@@ -3572,13 +3569,13 @@ implements AccessibleCanvas
 		//If the constructor has not been called, exit the method
 		//This is done because on some devices Displayable.sizeChanged() is
 		//called prior to the constructor of Screen
-		if(!isLoaded)
+		if(!isLoaded) {
 			return;
-		
-		 //#if !polish.Bugs.sizeChangedReportsWrongHeight 
+		}
+		//#if !polish.Bugs.sizeChangedReportsWrongHeight 
 			//#debug
 			System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
-			boolean doInit = !this.isInitialized;
+			boolean doInit; // = !this.isInitialized;
 		
 			//#ifdef tmp.menuFullScreen
 				doInit = width != this.screenWidth || height != this.fullScreenHeight;

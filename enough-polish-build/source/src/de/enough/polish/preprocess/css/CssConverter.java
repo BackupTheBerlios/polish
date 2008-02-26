@@ -973,7 +973,7 @@ public class CssConverter extends Converter {
 			}
 			
 			
-			newStatement =  isStandalone? font.createNewStatement(): font.createFontParams();
+			newStatement =  font.createNewStatement();
 		}
 		if (isStandalone) {
 			newStatement = STANDALONE_MODIFIER + "Font " 
