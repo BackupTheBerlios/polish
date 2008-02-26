@@ -28,13 +28,13 @@
 package de.enough.polish.event;
 
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.ItemCommandListener;
 
-import de.enough.polish.ui.Item;
-import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.util.ArrayList;
 
 /**
- * <p>Processes commandAction events in separate threads.</p>
+ * <p>Processes commandAction events in (possibly several) separate threads.</p>
  * <p>Note that several long running operations are handled asynchronously, meaning they are handled
  *    at the same time in different threads. For processing several long running operations in a sequence you
  *    can use the ThreadedCommandListener.
@@ -116,7 +116,7 @@ public class AsynchronousItemCommandListener implements Runnable, ItemCommandLis
 	}
 
 	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+	 * @see javax.microedition.lcdui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Item)
 	 */
 	public void commandAction(Command cmd, Item item) {
 		synchronized (this) {
@@ -145,4 +145,5 @@ public class AsynchronousItemCommandListener implements Runnable, ItemCommandLis
 			AsynchronousItemCommandListener.this.parent.commandAction( this.command, this.item);
 		}
 	}
+
 }

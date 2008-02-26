@@ -1,7 +1,6 @@
 //#condition polish.midp or polish.usePolishGui
-
 /*
- * Created on March 12, 2007 at 2:14:10 PM.
+ * Created on Feb 22, 2007 at 12:41:53 PM.
  * 
  * Copyright (c) 2006 Robert Virkus / Enough Software
  *
@@ -28,47 +27,46 @@
 package de.enough.polish.event;
 
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.ItemCommandListener;
 
 import de.enough.polish.util.ArrayList;
 
 /**
- * <p>Processes commandAction events in (possibly several) separate threads.</p>
- * <p>Note that several long running operations are handled asynchronously, meaning they are handled
- *    at the same time in different threads. For processing several long running operations in a sequence you
- *    can use the ThreadedCommandListener.
+ * <p>Processes item commandAction events in a single separate thread.</p>
+ * <p>Note that several long running operations are handled synchronously, meaning they are handled
+ *    one after the other. For processing several long running operations in parallel you
+ *    can use the AsynchronousCommandListener.
  * </p>
  *
  * <p>Copyright Enough Software 2006 - 2008</p>
  * <pre>
  * history
- *        March 12, 2007 - rob creation
+ *        Feb 22, 2008 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
- * @see ThreadedCommandListener
+ * @see AsynchronousCommandListener
  */
-public class AsynchronousCommandListener implements Runnable, CommandListener {
+public class ThreadedItemCommandListener implements Runnable, ItemCommandListener {
 	
-	private final CommandListener parent;
+	private final ItemCommandListener parent;
 	private final ArrayList commands;
-	private final ArrayList displays;
+	private final ArrayList items;
 	private boolean isStopRequested;
-	private boolean isWorking;
 
 	/**
-	 * Creates a new AsynchronousCommandListener.java
+	 * Creates a new threaded item command listener
 	 * 
-	 * @param parent the parent CommandListener that is used to process commands in a background thread.
+	 * @param parent the parent ItemCommandListener that is used to process commands in a background thread.
 	 * @throws IllegalArgumentException when parent is null
 	 */
-	public AsynchronousCommandListener( CommandListener parent) {
+	public ThreadedItemCommandListener( ItemCommandListener parent) {
 		if (parent == null) {
 			throw new IllegalArgumentException();
 		}
 		this.parent = parent;
 		this.commands = new ArrayList();
-		this.displays = new ArrayList();
+		this.items = new ArrayList();
 		Thread thread = new Thread( this );
 		thread.start();
 	}
@@ -88,27 +86,25 @@ public class AsynchronousCommandListener implements Runnable, CommandListener {
 		while (!this.isStopRequested) {
 			synchronized(this) {
 				if (this.commands.size() == 0) {
-					this.isWorking = false;
 					try {
 						wait();
 					} catch (InterruptedException e) {
 						// ignore
 					}
 				}
-				this.isWorking = true;
 			}
 			while (this.commands.size() > 0) {
 				Command cmd = null;
-				Displayable disp = null;
+				Item item = null;
 				synchronized(this) {
 					cmd = (Command) this.commands.remove(0);
-					disp = (Displayable) this.displays.remove(0);
+					item = (Item) this.items.remove(0);
 				}
 				try {
-					this.parent.commandAction(cmd, disp);
+					this.parent.commandAction(cmd, item);
 				} catch (Throwable e) {
 					//#debug error
-					System.out.println("Unable to process cmd " + cmd.getLabel() + " for screen " + disp + e);
+					System.out.println("Unable to process cmd " + cmd.getLabel() + " for item " + item + e);
 				}
 			} // while there are commands
 		} // while (!this.isStopRequested) 
@@ -116,34 +112,15 @@ public class AsynchronousCommandListener implements Runnable, CommandListener {
 	}
 
 	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+	 * @see javax.microedition.lcdui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Item)
 	 */
-	public void commandAction(Command cmd, Displayable disp) {
+	public void commandAction(Command cmd, Item item) {
 		synchronized (this) {
-			if (this.isWorking) {
-				WorkerThread thread = new WorkerThread( cmd, disp );
-				thread.start();
-			} else {
-				this.commands.add( cmd );
-				this.displays.add( disp );
-				notify();
-			}
+			this.commands.add( cmd );
+			this.items.add( item );
+			notify();
 		}
 
-	}
-	
-	class WorkerThread extends Thread {
-		private Command command;
-		private Displayable displayable;
-		
-		public WorkerThread( Command command, Displayable displayable) {
-			this.command = command;
-			this.displayable = displayable;
-		}
-		
-		public void run() {
-			AsynchronousCommandListener.this.parent.commandAction( this.command, this.displayable);
-		}
 	}
 
 }

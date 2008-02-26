@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.Stack;
 
 import javax.microedition.io.HttpConnection;
@@ -390,14 +391,14 @@ implements Runnable
       {
         boolean openingTag = parser.getType() == SimplePullParser.START_TAG;
 
-        //#debug
+        // #debug
         //System.out.println( "looking for handler for " + parser.getName()  + ", openingTag=" + openingTag );
         attributeMap.clear();
         TagHandler handler = getTagHandler(parser, attributeMap);
         
         if (handler != null)
         {
-          //#debug
+          // #debug
           //System.out.println("Calling handler: " + parser.getName() + " " + attributeMap);
     	  String styleName = (String) attributeMap.get("class");
     	  Style tagStyle = null;
@@ -624,16 +625,38 @@ public void add(Item item)
     }
   }
 
-  public void loadPage(InputStream in)
-  	throws IOException
-  {
-	  if (in == null)
-	  {
-		  throw new IOException("no input stream");
-	  }
+	/** 
+	 * Loads a new HTML page with the specified input stream
+	 * @param in the input stream
+	 * @throws IOException when the page could not be read or when the input stream is null
+	 */
+	public void loadPage(InputStream in)
+	throws IOException
+	{
+		loadPage(in, null);
+	}
 
-    loadPage(new InputStreamReader(in));
-  }
+	/** 
+	 * Loads a new HTML page with the specified input stream
+	 * @param in the input stream
+	 * @param encoding the encoding, is ignored when null
+	 * @throws IOException when the page could not be read or when the input stream is null or when the specified encoding is not supported
+	 */
+	public void loadPage(InputStream in, String encoding)
+	throws IOException
+	{
+		if (in == null)
+		{
+			throw new IOException("no input stream");
+		}
+		InputStreamReader reader;
+		if (encoding == null) {
+			reader = new InputStreamReader(in);
+		} else {
+			reader = new InputStreamReader(in, encoding);
+		}
+		loadPage(reader);
+	}
 
   private Image loadImageInternal(String url)
   {
@@ -817,21 +840,27 @@ public void add(Item item)
       {
 	    notifyPageStart(url);
 	    is = connection.openInputStream();
+	    String contentEncoding = null;
+    	if (connection instanceof HttpConnection) {
+    		HttpConnection httpConnection = (HttpConnection) connection; 
+	    	contentEncoding = httpConnection.getEncoding();
+	    	if (contentEncoding == null) {
+	    		contentEncoding = httpConnection.getHeaderField("Content-Encoding");
+	    	}
+    	}
     	//#if polish.Browser.Gzip
 	  	    try {
-	  	    	if (connection instanceof HttpConnection) {
-	    	    	String contentEncoding = ((HttpConnection) connection).getHeaderField("Content-Encoding");
-	    	    	if (contentEncoding != null && contentEncoding.indexOf("gzip") != -1) {
-	    	    		is = new GZipInputStream(is, GZipInputStream.TYPE_GZIP, false);
-	    	    	}
-	  	    	}
+    	    	if (contentEncoding != null && contentEncoding.indexOf("gzip") != -1) {
+    	    		is = new GZipInputStream(is, GZipInputStream.TYPE_GZIP, false);
+    	    		contentEncoding = null;
+    	    	}
 	  		}
 	  	    catch (IOException e) {
 	  	    	//#debug error
 	  	    	System.out.println("Unable to use GzipInputStream" + e);
 	  		}
   	    //#endif
-    	loadPage(is);
+    	loadPage(is, contentEncoding);
     	notifyPageEnd();
       }
     }

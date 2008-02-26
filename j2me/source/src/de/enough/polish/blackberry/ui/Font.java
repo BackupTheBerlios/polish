@@ -213,8 +213,8 @@ public final class Font extends Object
 			this.baselinePosition = 10;
 		}
 		//#else
-		//# this.height = 0;
-		//# this.baselinePosition = 0;
+			//# this.height = 0;
+			//# this.baselinePosition = 0;
 		//#endif
 	}
 

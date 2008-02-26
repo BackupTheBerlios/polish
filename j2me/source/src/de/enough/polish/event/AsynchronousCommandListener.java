@@ -34,7 +34,7 @@ import javax.microedition.lcdui.Displayable;
 import de.enough.polish.util.ArrayList;
 
 /**
- * <p>Processes commandAction events in separate threads.</p>
+ * <p>Processes commandAction events in (possibly several) separate threads.</p>
  * <p>Note that several long running operations are handled asynchronously, meaning they are handled
  *    at the same time in different threads. For processing several long running operations in a sequence you
  *    can use the ThreadedCommandListener.
@@ -57,7 +57,7 @@ public class AsynchronousCommandListener implements Runnable, CommandListener {
 	private boolean isWorking;
 
 	/**
-	 * Creates a new threaded command listener
+	 * Creates a new AsynchronousCommandListener.java
 	 * 
 	 * @param parent the parent CommandListener that is used to process commands in a background thread.
 	 * @throws IllegalArgumentException when parent is null
