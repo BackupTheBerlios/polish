@@ -58,7 +58,9 @@ public class CssConverter extends Converter {
 	protected ArrayList referencedStyles;
 	protected AbbreviationsGenerator abbreviationGenerator;
 	protected CssAttributesManager attributesManager;
+	private CssAttribute fontFaceAttribute;
 	private CssAttribute fontStyleAttribute;
+	private CssAttribute fontSizeAttribute;
 	private CssAttribute layoutAttribute;
 	private CssAttribute backgroundAttribute;
 	private CssAttribute borderAttribute;
@@ -80,7 +82,9 @@ public class CssConverter extends Converter {
 	 */
 	public void setAttributesManager( CssAttributesManager attributesManager ) {
 		this.attributesManager = attributesManager;
+		this.fontFaceAttribute = attributesManager.getAttribute("font-face");
 		this.fontStyleAttribute = attributesManager.getAttribute("font-style");
+		this.fontSizeAttribute = attributesManager.getAttribute("font-size");
 		this.layoutAttribute = attributesManager.getAttribute("layout");
 		this.backgroundAttribute = attributesManager.getAttribute("background");
 		this.borderAttribute = attributesManager.getAttribute("border");
@@ -897,25 +901,7 @@ public class CssConverter extends Converter {
 	protected void processFont(HashMap group, String groupName, Style style, 
 			ArrayList codeList, StyleSheet styleSheet, boolean isStandalone, Environment environment ) 
 	{
-		//System.out.println("processing font: "  + groupName +  " = " + group.toString() );
-		processFontOrLabel( "Font", group, groupName, style, codeList, styleSheet, isStandalone, environment);
-	}
-
-	/**
-	 * Adds a font definition.
-	 * 
-	 * @param typeName the type name, "Label" or "Font"
-	 * @param group the font definition
-	 * @param groupName the name of this font - usually "font" or "label"
-	 * @param style the style
-	 * @param codeList the array list into which generated code is written
-	 * @param styleSheet the parent style sheet
-	 * @param isStandalone true when a new public font-field should be created,
-	 *        otherwise the font will be embedded in a style instantiation. 
-	 */
-	protected void processFontOrLabel(String typeName, HashMap group, String groupName, Style style, 
-			ArrayList codeList, StyleSheet styleSheet, boolean isStandalone, Environment environment ) 
-	{
+		String typeName = "Font";
 		// check if this is a reference to another font:
 		String reference = (String) group.get(groupName);
 		if (reference != null  && group.size() == 1) {
@@ -962,14 +948,13 @@ public class CssConverter extends Converter {
 			// at least one font property is defined:
 			FontConverter font = new FontConverter();  
 			if ( face != null) {
-				font.setFace(face);
+				font.setFace( this.fontFaceAttribute.getValue( face, environment ) );
 			}
 			if ( styleStr != null) {
 				font.setStyle( this.fontStyleAttribute.getValue(styleStr, environment) );
-				//font.setStyle(styleStr);
 			}
 			if ( size != null) {
-				font.setSize(size);
+				font.setSize( this.fontSizeAttribute.getValue( size, environment ) );
 			}
 			
 			

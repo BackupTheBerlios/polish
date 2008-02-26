@@ -61,11 +61,11 @@ public class FontConverter extends Converter {
 		StringBuffer fontCode = new StringBuffer();
 		
 		// first param is the font face:
-		fontCode.append("Font.getFont(Font.")
+		fontCode.append("Font.getFont( ")
 				.append( this.face )
 				.append(", ")
 				.append( this.style )
-				.append(", Font.")
+				.append(", ")
 				.append( this.size )
 				.append(")");
 		
