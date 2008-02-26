@@ -1515,6 +1515,30 @@ public abstract class Item extends Object
 		this.itemCommandListener = l;
 	}
 	
+	//#if polish.midp
+	/**
+	 * Sets a listener for <code>Commands</code> to this <code>Item</code>,
+	 * replacing any previous
+	 * <code>ItemCommandListener</code>. A <code>null</code> reference
+	 * is allowed and has the effect of removing any existing listener.
+	 * 
+	 * When no listener is registered, J2ME Polish notifies the 
+	 * command-listener of the current screen, when an item command 
+	 * has been selected.
+	 * 
+	 * <p>It is illegal to call this method if this <code>Item</code>
+	 * is contained within an <code>Alert</code>.</p>
+	 * 
+	 * @param l the new listener, or null.
+	 * @throws IllegalStateException if this Item is contained within an Alert
+	 * @since  MIDP 2.0
+	 */
+	public void setItemCommandListener( javax.microedition.lcdui.ItemCommandListener l)
+	{
+		// ignore
+	}
+	//#endif
+	
 	
 	/**
 	 * Gets the listener for <code>Commands</code> to this <code>Item</code>.
