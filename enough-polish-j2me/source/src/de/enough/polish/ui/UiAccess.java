@@ -2106,13 +2106,13 @@ public final class UiAccess {
 	
 	//#if polish.midp
 	/**
-	 * Makes the specified List item selectable or inaccessible - can be used in combination with a #style preprocessing directive.
+	 * Makes the specified List or ChoiceGroup item selectable or inaccessible - can be used in combination with a #style preprocessing directive.
 	 * 
-	 * @param list the list 
+	 * @param choice the list 
 	 * @param itemIndex the index of the list
 	 * @param isAccessible true when the item should be accessible/selectable
 	 */
-	public static void setAccessible(javax.microedition.lcdui.List list, int itemIndex, boolean isAccessible) {
+	public static void setAccessible(javax.microedition.lcdui.Choice choice, int itemIndex, boolean isAccessible) {
 		// ignore
 	}
 	//#endif	
@@ -2121,26 +2121,36 @@ public final class UiAccess {
 	/**
 	 * Makes the specified List item selectable or inaccessible - can be used in combination with a #style preprocessing directive.
 	 * 
-	 * @param list the list 
+	 * @param choice the list 
 	 * @param itemIndex the index of the list
 	 * @param isAccessible true when the item should be accessible/selectable
+	 * @throws IllegalArgumentException when choice is not a List/ChoiceGroup or a J2ME Polish Container
 	 */
-	public static void setAccessible(List list, int itemIndex, boolean isAccessible) {
-		setAccessible(list.getItem(itemIndex), isAccessible);
+	public static void setAccessible(Choice choice, int itemIndex, boolean isAccessible) {
+		setAccessible( choice, itemIndex, isAccessible, null);
 	}
 	//#endif	
 
 	//#if polish.usePolishGui
 	/**
-	 * Makes the specified List item selectable or inaccessible.
+	 * Makes the specified List or ChoiceGroup item selectable or inaccessible.
 	 * 
-	 * @param list the list 
+	 * @param choice the List or ChoiceGroup
 	 * @param itemIndex the index of the list
 	 * @param isAccessible true when the item should be accessible/selectable
 	 * @param style the new style of the item
+	 * @throws IllegalArgumentException when choice is not a List/ChoiceGroup or a J2ME Polish Container
 	 */
-	public static void setAccessible(List list, int itemIndex, boolean isAccessible, Style style) {
-		setAccessible( list.getItem(itemIndex), isAccessible, style );
+	public static void setAccessible(Choice choice, int itemIndex, boolean isAccessible, Style style) {
+		Item item;
+		if (choice instanceof List) {
+			item = ((List)choice).getItem(itemIndex);
+		} else if (choice instanceof Container) {
+			item = ((Container)choice).get(itemIndex);
+		} else {
+			throw new IllegalArgumentException();
+		}
+		setAccessible( item, isAccessible, style );
 	}
 	//#endif	
 	
@@ -3206,6 +3216,7 @@ public final class UiAccess {
 		}
 		//#endif
 	}
+
 
 
 }
