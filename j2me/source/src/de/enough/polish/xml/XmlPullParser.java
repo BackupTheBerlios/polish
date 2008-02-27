@@ -378,7 +378,7 @@ public class XmlPullParser implements SimplePullParser {
             this.attributes[i++] = attrName;
 
             int p = this.txtPos;
-            pushText(delimiter);
+            pushTextAttribute(delimiter);
 
             this.attributes[i] = pop(p);
 
@@ -463,6 +463,29 @@ public class XmlPullParser implements SimplePullParser {
         }
 
         return whitespace;
+    }
+
+    private final boolean pushTextAttribute(int delimiter)
+    	throws IOException
+    {
+    	boolean whitespace = true;
+    	int next = this.peek0;
+    	
+    	while (!this.eof
+    			&& next != delimiter) { // covers eof, '<', '"'
+    		
+    		if (delimiter == ' ')
+    			if (next <= ' ' || next == '>')
+    				break;
+    		
+    		if (next > ' ')
+    			whitespace = false;
+    		
+    		push(read());
+    		next = this.peek0;
+    	}
+    	
+    	return whitespace;
     }
 
     //--------------- public part starts here... ---------------
