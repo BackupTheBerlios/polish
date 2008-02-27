@@ -26,7 +26,9 @@ public class InstallationPage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
-	public InstallationPage() {
+	private SubstitutionDirectoryFieldEditor polishHomeFieldEditor;
+
+    public InstallationPage() {
 		super(GRID);
 		setPreferenceStore(new PreferencesAdapter(MeposePlugin.getDefault().getPluginPreferences()));
 		setDescription("Installation Paths");
@@ -34,9 +36,12 @@ public class InstallationPage
 	
 	public void createFieldEditors() {
         
-	    addField(new SubstitutionDirectoryFieldEditor(MeposeConstants.ID_POLISH_HOME, 
-	                                      "J2ME Polish Installation Directory:", getFieldEditorParent()));
+	    this.polishHomeFieldEditor = new SubstitutionDirectoryFieldEditor(MeposeConstants.ID_POLISH_HOME, 
+                	                                      "J2ME Polish Installation Directory:", getFieldEditorParent());
+        addField(this.polishHomeFieldEditor);
 
+        /* Not needed as these settings are per project and the defaults come from the globals.properties in polish.home.
+        
         if(MeposePlugin.isMacOS()) {
             addField(new SubstitutionDirectoryFieldEditor(MeposeConstants.ID_MPP_HOME, 
                                               "MPP Installation Directory:", getFieldEditorParent()));
@@ -57,6 +62,8 @@ public class InstallationPage
 
         addField(new SubstitutionDirectoryFieldEditor(MeposeConstants.ID_SONY_HOME, 
 	                                      "Sony-Ericsson Installation Directory:", getFieldEditorParent()));
+                                          
+        */
     }
     
 	public void init(IWorkbench workbench) {
@@ -66,6 +73,11 @@ public class InstallationPage
     public boolean performOk() {
         boolean isPerformOK = super.performOk();
         if(isPerformOK) {
+            
+            // TODO: Look if the user is requesting to force the new default into all projects.
+            // If forcing the defaults, give the ModelManager the change with setDefaultProperty.
+            
+            // Not needed anymore as we do not use the preferences. They are not portable with cvs.
             MeposePlugin.getDefault().savePluginPreferences();
         }
         return isPerformOK;
