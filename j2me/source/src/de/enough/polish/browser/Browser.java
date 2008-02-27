@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.util.Stack;
 
 import javax.microedition.io.HttpConnection;
@@ -499,7 +498,7 @@ public void add(Item item)
   public void loadPage(Reader reader)
     throws IOException
   {
-    XmlPullParser xmlReader = new XmlPullParser(reader);
+    XmlPullParser xmlReader = new XmlPullParser(reader, false);
     xmlReader.relaxed = true;
     parsePage(xmlReader);
   }
@@ -513,7 +512,7 @@ public void add(Item item)
   public void loadPartialPage(Reader reader)
     throws IOException
   {
-    XmlPullParser xmlReader = new XmlPullParser(reader);
+    XmlPullParser xmlReader = new XmlPullParser(reader, false);
     xmlReader.relaxed = true;
     parsePartialPage(xmlReader);
   }

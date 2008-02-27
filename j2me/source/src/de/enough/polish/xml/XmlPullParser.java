@@ -43,6 +43,7 @@ public class XmlPullParser implements SimplePullParser {
     // source
 
     private Reader reader;
+    private boolean allowEntitiesInAttributes;
 
     private char[] srcBuf =
         new char[Runtime.getRuntime().freeMemory() >= 1048576
@@ -378,7 +379,13 @@ public class XmlPullParser implements SimplePullParser {
             this.attributes[i++] = attrName;
 
             int p = this.txtPos;
-            pushTextAttribute(delimiter);
+
+            if (this.allowEntitiesInAttributes) {
+            	pushText(delimiter);
+            }
+            else {
+            	pushTextAttribute(delimiter);
+            }
 
             this.attributes[i] = pop(p);
 
@@ -491,8 +498,17 @@ public class XmlPullParser implements SimplePullParser {
     //--------------- public part starts here... ---------------
 
 
-    public XmlPullParser(Reader reader) throws IOException {
+    public XmlPullParser(Reader reader)
+    	throws IOException
+    {
+    	this(reader, true);
+    }
+
+    public XmlPullParser(Reader reader, boolean allowEntitiesInAttributes)
+    	throws IOException
+    {
         this.reader = reader;
+        this.allowEntitiesInAttributes = allowEntitiesInAttributes;
 
         this.peek0 = reader.read();
         this.peek1 = reader.read();
