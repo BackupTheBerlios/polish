@@ -138,6 +138,7 @@ public class PathsPage extends WizardPage {
             }
 
         });
+        // TODO: Remove dependency on Preferences. All values should come from the model.
         String polishHomePath = MeposePlugin.getDefault().getPluginPreferences().getString(MeposeConstants.ID_POLISH_HOME);
         this.polishHomeText.setText(polishHomePath);
         modifyPolishHomeText();
