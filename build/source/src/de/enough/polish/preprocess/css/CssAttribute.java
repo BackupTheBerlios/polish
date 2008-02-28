@@ -260,6 +260,8 @@ implements Comparable
 //					return "new Integer( " + convertedValueBuffer.toString() + ")";
 //				}
 			}
+		} else if ("none".equals(value)) {
+			return "null";
 		}
 		return value;
 	}

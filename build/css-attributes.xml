@@ -286,6 +286,14 @@
 			<param name="end" type="integer" primitive="true" default="100" />
 			<param name="is-percent" type="boolean" primitive="true" default="true" />
 		</mapping>
+		<mapping from="horizontal-gradient"   to="de.enough.polish.ui.backgrounds.GradientHorizontalBackground" converter="de.enough.polish.preprocess.backgrounds.GradientHorizontalBackgroundConverter" >
+			<param name="left-color" type="color" primitive="true" default="white" />
+			<param name="right-color" type="color" primitive="true" default="gray" />
+			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" />
+			<param name="start" type="integer" primitive="true" default="0" />
+			<param name="end" type="integer" primitive="true" default="100" />
+			<param name="is-percent" type="boolean" primitive="true" default="true" />
+		</mapping>
 		<mapping from="partial-gradient"   to="de.enough.polish.ui.backgrounds.PartialGradientBackground" >
 			<param name="top-color" type="color" primitive="true" default="white" />
 			<param name="bottom-color" type="color" primitive="true" default="gray" />
@@ -641,7 +649,7 @@
 
 	<attribute
 		name="checkbox-selected"
-		type="imageurl"
+		type="imageurlornone"
 		appliesTo="ChoiceItem"
 		description="The URL of the image for a selected item. This will be used only when the type of the list or of the choice group is multiple. Default is a simple image drawn in the defined choice-color."
 		id="9"
@@ -657,7 +665,7 @@
 	
 	<attribute
 		name="radiobox-selected"
-		type="imageurl"
+		type="imageurlornone"
 		appliesTo="ChoiceItem"
 		description="The URL of the image for a selected item. This will be used only when the type of the list or of the choice group is exclusive. Default is a simple image drawn in the defined choice-color."
 		id="11"
@@ -3411,7 +3419,23 @@
 		default="false"
 		id="310"
 	/>
+	
+	<attribute
+		name="visible"
+		type="boolean"
+		appliesTo="Item,FakeCustomItem"
+		description="Toggles the visibility of an item. When an item is invisible, it will not occupy any space."
+		default="true"
+		id="311"
+	/>
 
+	<attribute
+		name="change-styles"
+		type="string"
+		appliesTo="Container,FakeContainerCustomItem"
+		description="Changes the styles of child items. Use the notation '[style1]>[style2]', e.g. visible>invisible for defining the style names."
+		id="312"
+	/>
 	
 	<!--
 	
