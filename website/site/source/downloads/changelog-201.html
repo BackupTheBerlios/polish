@@ -2,7 +2,65 @@
 <%set basedir = ../ %>
 <%include start.txt %>
 	
-	<h1 id="top">Changelog</h1>	
+	<h1 id="top">Changelog</h1>
+	<h2 id="201">J2ME Polish 2.0.1</h2>
+	<p>
+	Following changes have been done since J2ME Polish 2.0:
+	</p>
+	<ul>
+		<li><b>- Builds without J2ME Polish UI</b>: Building projects that do not use the J2ME Polish UI do compile again.</li>
+		<li><b>- Builds for MIDP 1.0</b>: Building projects for MIDP 1.0 devices compile again.</li>
+		<li><b>- SGH-E900</b>: added <code>ignoreTitleCall</code> bug for correct rendering of the title</li>
+		<li><b>- Invocation of Command with FIRE</b>: OK commands are now invoked after releasing the FIRE key, not when pressing the FIRE key. This caused problems in some situations.</li>
+		<li><b>- IDE Integration</b>: Classpaths are now resolved and named correctly on Windows systems</li>
+		<li><b>- Screen.getCommandItem()</b>: Fixed NullPointerException when there were no commands available on a screen</li>
+		<li><b>+ POPUP ChoiceGroup</b>: You can cycle through all items of a POPUP ChoiceGroup after you have reached the last item when setting <code>popup-roundtrip</code> to true in the ChoiceGroup's style.</li>
+		<li><b>+ Content Types of HTML and RSS pages</b>: The content types of remote pages are now honored by the HtmlBrowser and RssBrowser.</li>
+		<li><b>+ ThreadedItemCommandListener</b>: added de.enough.polish.event.ThreadedItemCommandListener.</li>
+		<li><b>+ ChoiceGroup Items</b>: you can now deactivate the painting of ChoiceGroup check and radioboxes for the selected elements as well by specifying <code>radiobox-selected: none;</code> or <code>checkbox-selected: none;</code>.</li>
+		<li><b>+ horizontal-gradient background</b>: Added the horizontal-gradient background as a design option.</li>
+		<li><b>+ visible CSS attribute</b>: You can now toggle the visibility of items using the <code>visible</code> CSS attribute.
+		       You can change the style using <code>UiAccess.setStyle( screen/item )</code> or using the <code>change-styles</code> CSS attribute (see below).
+<pre>
+.invisible {
+	visible: false;
+}
+
+.visible {
+	visible: true;
+}
+</pre>
+		</li>
+		<li><b>+ change-styles CSS attribute</b>: You can now change styles of child items of a Container/Screen/ChoiceGroup using the <code>change-styles</code> CSS attribute without doing any programming:
+<pre>
+.result {
+	always-include: true;
+	margin: 2;
+	background-color: silver;
+	view-type: midp2;
+	view-type-sequential-traversal: true;
+	layout: expand;
+	<b>change-styles: visible &gt; invisible;</b>
+}
+
+.result:hover {
+	margin: 0;
+	border-color: #222;
+	border-width: 2;
+	<b>change-styles: invisible &gt; visible;</b>
+	background {
+		type: horizontal-gradient;
+		left-color: white;
+		right-color: #ccc;
+	}
+}
+</pre>
+		</li>
+		<!-- 
+		<li><b>+ </b>: </li>
+		 -->
+	</ul>
+
 	<h2 id="20">J2ME Polish 2.0</h2>
 	<p>
 	Following changes have been done since J2ME Polish 2.0 RC4:
@@ -24,6 +82,7 @@
 		<li><b>- Utils</b>: fixed classpath in the batch files of the FontEditor and the BinaryEditor</li>
 		<li><b>- POPUP ChoiceGroups</b>: lists that are longer than a page are painted and scrolled correctly.</li>
 		<li><b>+ ThreadedCommandListener</b>: added de.enough.polish.event.ThreadedCommandListener and AysnchronousCommandListener</li>
+		<li><b>+ AysnchronousItemCommandListener</b>: added de.enough.polish.event.AysnchronousItemCommandListener</li>
 		<li><b>+ screen change animations</b>: added <code>fade</code>, <code>particle</code>, <code>gradient</code>, <code>zoomBoth</code> and <code>diagonal</code> animations.</li>
 		<li><b>+ ImageUtil</b>: the scale() methods can now scale down images as well.</li>
 		<li><b>+ RssBrowser</b>: the RssBrowser displays RSS 2.0 content</li>

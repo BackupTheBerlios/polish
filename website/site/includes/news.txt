@@ -3,6 +3,13 @@
 	<%index %>
 <%endif %>
 
+	<h2 id="J2MEPolish20">J2ME Polish 2.0 Is Finally Out</h2>
+	<p>
+	<i>2008-02-10</i> We could call J2ME Polish 2.0 &quot;3.0&quot; if we weren't so modest.
+	Along with great new features we've updated to complete <a href="documentation.html">documentation</a>,
+	so that know what you can create with J2ME Polish.  <a href="download.html">Download J2ME Polish 2.0 now</a>.
+	</p>
+
 	<h2 id="mwc08">Mobile World Congress 2008</h2>
 		<p>
 		<a href="http://www.mobileworldcongress.com/" target="_blank"><img alt="MWC logo" src="images/mwc2008.gif" width="648" height="100"/></a>
