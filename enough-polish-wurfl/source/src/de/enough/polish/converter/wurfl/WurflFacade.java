@@ -39,5 +39,6 @@ import de.enough.polish.WurflDevice;
 public interface WurflFacade {
 
     public WurflDevice getAllDevices();
+    public WurflDevice getWurflDevice(String name);
     
 }

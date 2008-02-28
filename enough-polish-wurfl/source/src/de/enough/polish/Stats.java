@@ -39,6 +39,7 @@ public class Stats{
         private int noJavaConfigurationForWurflDevice;
         private int modelNameContainsSlash;
         private LinkedList<String> modelNamesWithSlash = new LinkedList<String>();
+        private int modelNameContainsComma;
         
         public void actualDeviceFound(String key) {
             this.actualDeviceFound++;
@@ -47,7 +48,6 @@ public class Stats{
             this.noActualDeviceFound++;
         }
         public void noPolishDeviceFoundForWurflKey(String key) {
-            System.out.println("polish device not found for wurfl key:"+key);
             this.noPolishDeviceFound++;
         }
         public void devicesMapped(String identifier, String wurfleId) {
@@ -72,6 +72,7 @@ public class Stats{
             System.out.println("# of wurfl devices with no javaPlatform:"+this.noJavaPlatformForWurflDevice);
             System.out.println("# of wurfl devices with no javaConfiguration:"+this.noJavaConfigurationForWurflDevice);
             System.out.println("# of wurfl devices which contains a slash in the model name:"+this.modelNameContainsSlash);
+            System.out.println("# of wurfl devices which contains a comma in the model name:"+this.modelNameContainsComma);
             for (String modelNameWithSlash : this.modelNamesWithSlash) {
                 System.out.println("  "+modelNameWithSlash);
             }
@@ -101,5 +102,11 @@ public class Stats{
         public void modelNameContainsSlash(WurflDevice wurflDevice) {
             this.modelNamesWithSlash.add(wurflDevice.getBrand()+"_"+wurflDevice.getModel());
             this.modelNameContainsSlash++;
+        }
+        /**
+         * @param wurflDevice
+         */
+        public void modelNameContainsComma(WurflDevice wurflDevice) {
+            this.modelNameContainsComma++;
         }
     }
