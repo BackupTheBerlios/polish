@@ -287,12 +287,12 @@
 			<param name="is-percent" type="boolean" primitive="true" default="true" />
 		</mapping>
 		<mapping from="horizontal-gradient"   to="de.enough.polish.ui.backgrounds.GradientHorizontalBackground" converter="de.enough.polish.preprocess.backgrounds.GradientHorizontalBackgroundConverter" >
-			<param name="left-color" type="color" primitive="true" default="white" />
-			<param name="right-color" type="color" primitive="true" default="gray" />
-			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" />
-			<param name="start" type="integer" primitive="true" default="0" />
-			<param name="end" type="integer" primitive="true" default="100" />
-			<param name="is-percent" type="boolean" primitive="true" default="true" />
+			<param name="left-color" type="color" primitive="true" default="white" description="Color on the left side of the gradient." />
+			<param name="right-color" type="color" primitive="true" default="gray"  description="Color on the right side of the gradient."/>
+			<param name="stroke" type="integer" primitive="true" default="solid" values="solid,dotted" description="The line stroke style, either solid or dotted."/>
+			<param name="start" type="integer" primitive="true" default="0" description="The start position of the gradient on the left side."/>
+			<param name="end" type="integer" primitive="true" default="100" description="The end position of the gradient on the right side." />
+			<param name="is-percent" type="boolean" primitive="true" default="true" description="Set to true when the start/end positions should be interpretated as percentage values." />
 		</mapping>
 		<mapping from="partial-gradient"   to="de.enough.polish.ui.backgrounds.PartialGradientBackground" >
 			<param name="top-color" type="color" primitive="true" default="white" />

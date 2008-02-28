@@ -63,6 +63,9 @@ public class MapCssAttribute extends CssAttribute {
 		if (this.requiresMapping && this.mappingsByName == null) {
 			throw new BuildException("Invalid CSS attribute definition of " + this.name + ": no mappings found.");
 		}
+		if ("none".equals(value)) {
+			return "null";
+		}
 		if (!this.allowsCombinations) {
 			CssMapping mapping = getMapping(value);
 			if (mapping != null) {

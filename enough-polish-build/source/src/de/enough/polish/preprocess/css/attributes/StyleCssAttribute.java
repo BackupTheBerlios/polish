@@ -48,20 +48,7 @@ public class StyleCssAttribute extends CssAttribute {
 		super();
 	}
 	
-	/**
-	 * Checks and transforms the given CSS value for this attribute.
-	 * 
-	 * @param value the attribute value
-	 * @param environment the environment
-	 * @return the transformed value or the same value if no transformation is required.
-	 * @throws BuildException when a condition is not met or when the value contains conflicting values
-	 */
-	public String getValue(String value, Environment environment ) {
-		if ("none".equals(value)) {
-			return "null";
-		}
-		return super.getValue(value, environment);
-	}
+
 
 //	/* (non-Javadoc)
 //	 * @see de.enough.polish.preprocess.css.CssAttribute#instantiateValue(java.lang.String)
