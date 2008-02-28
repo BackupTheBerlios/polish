@@ -1093,11 +1093,12 @@ public void add(Item item)
    */
   public void go(String url)
   {
+	  //#debug
+	  System.out.println("Browser: going to [" + url + "]" );
       if (this.currentDocumentBase != null)
       {
-      	this.history.push(this.currentDocumentBase);
+    	  this.history.push(this.currentDocumentBase);
       }
-  	//System.out.println("Browser: going to [" + url + "]" );
       schedule(url);
   }
   
@@ -1118,9 +1119,7 @@ public void add(Item item)
     
     if (document != null)
     {
-    	//System.out.println("Browser: going back to [" + document + "]" );
         schedule(document);
-      //goImpl(document); (dont go directly or commandAction methods may block!)
     }
   }
   

@@ -1526,7 +1526,7 @@ public abstract class Item extends Object
 		this.itemCommandListener = l;
 	}
 	
-	//#if polish.midp
+	//#if polish.midp2
 	/**
 	 * Sets a listener for <code>Commands</code> to this <code>Item</code>,
 	 * replacing any previous

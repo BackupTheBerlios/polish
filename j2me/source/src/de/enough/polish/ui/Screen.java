@@ -2438,11 +2438,6 @@ implements AccessibleCanvas
 				//#if polish.blackberry
 					this.keyPressedProcessed = processed;
 				//#endif
-				//#if tmp.menuFullScreen
-					if (!processed && gameAction == FIRE && keyCode != Canvas.KEY_NUM5 && this.okCommand != null) {
-						callCommandListener(this.okCommand);
-					}
-				//#endif
 				if (processed) {
 					//#if tmp.useScrollBar
 						if (gameAction == Canvas.UP || gameAction == Canvas.DOWN) {
@@ -2562,6 +2557,11 @@ implements AccessibleCanvas
 						//#ifdef tmp.useExternalMenuBar
 							processed = this.menuBar.handleKeyReleased(keyCode, gameAction);
 						//#endif		
+					}
+				//#endif
+				//#if tmp.menuFullScreen
+					if (!processed && gameAction == FIRE && keyCode != Canvas.KEY_NUM5 && this.okCommand != null) {
+						callCommandListener(this.okCommand);
 					}
 				//#endif
 				//#debug
@@ -2963,27 +2963,29 @@ implements AccessibleCanvas
 	 * @return the corresponding CommandItem or null when this command is not present in this MenuBar.
 	 */
 	public CommandItem getCommandItem(Command command) {
+		CommandItem commandItem = null;
 		//#if tmp.menuFullScreen
 			//#ifdef tmp.useExternalMenuBar
-				//# return this.menuBar.getCommandItem( command );
+				commandItem = this.menuBar.getCommandItem( command );
 			//#else
-				int index = this.menuCommands.indexOf(command);
-				if (index != -1) {
-					return (CommandItem) this.menuContainer.get(index);
-				} else {
-					for (int i = 0; i < this.menuContainer.size(); i++) {
-						CommandItem item = (CommandItem) this.menuContainer.get(i);
-						item = item.getChild(command);
-						if (item != null) {
-							return item;
+				if (this.menuCommands != null) {
+					int index = this.menuCommands.indexOf(command);
+					if (index != -1) {
+						commandItem = (CommandItem) this.menuContainer.get(index);
+					} else {
+						for (int i = 0; i < this.menuContainer.size(); i++) {
+							CommandItem item = (CommandItem) this.menuContainer.get(i);
+							item = item.getChild(command);
+							if (item != null) {
+								commandItem = item;
+								break;
+							}
 						}
 					}
 				}
 			//#endif
 		//#endif
-		//#ifndef tmp.useExternalMenuBar
-			return null;
-		//#endif
+		return commandItem;
 	}
 
 	/**
