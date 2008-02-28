@@ -672,6 +672,9 @@ public void add(Item item)
         
 			  connection = handler.getConnection(url);
 			  is = connection.openInputStream();
+			  if (is == null) {
+				  return null;
+			  }
 			  ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			  byte[] buf = new byte[1024];
 			  int bytesRead;
