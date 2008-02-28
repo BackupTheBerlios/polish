@@ -170,7 +170,6 @@ extends ContainerView
         //System.out.println("appendItemToRow: newline=" + (Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE)) + ", item=" + item);
 
         if ( Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE) 
-        		//|| isExpand 
                 || (this.rowWidth + this.paddingHorizontal + width > lineWidth)) 
         {
         	//System.out.println("adding linebreak: newline-before=" +  ( Item.LAYOUT_NEWLINE_BEFORE == (itemLayout & Item.LAYOUT_NEWLINE_BEFORE)) + ", width too big=" + (this.rowWidth + this.paddingHorizontal + width > lineWidth) + ", rowWidth=" + this.rowWidth + ", item.width=" + width + ", lineWidth=" + lineWidth + ", isExpand=" + isExpand + ", item=" + item );
@@ -190,7 +189,10 @@ extends ContainerView
 
         this.currentRow.add(item);
 
-        if (Item.LAYOUT_NEWLINE_AFTER == (itemLayout & Item.LAYOUT_NEWLINE_AFTER)) {
+        if (Item.LAYOUT_NEWLINE_AFTER == (itemLayout & Item.LAYOUT_NEWLINE_AFTER)
+        		|| isExpand
+        	) 
+        {
         	//System.out.println("adding rowbreak for newline after");
             rowBreak(lineWidth, itemLayout);
         }
