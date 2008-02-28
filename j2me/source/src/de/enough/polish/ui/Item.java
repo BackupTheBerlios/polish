@@ -767,7 +767,7 @@ public abstract class Item extends Object
 		protected ItemView view;
 		protected boolean preserveViewType;
 	//#endif
-	//#if polish.supportInvisibleItems
+	//#if polish.supportInvisibleItems || polish.css.visible
 		//#define tmp.invisible
 		protected boolean isInvisible;
 		private int invisibleAppearanceModeCache;
@@ -1213,6 +1213,12 @@ public abstract class Item extends Object
 				this.opacity = opacityInt.intValue();
 			}
 		//#endif
+		//#if polish.css.visible
+			Boolean visibleBool = style.getBooleanProperty("visible");
+			if (visibleBool != null) {
+				setVisible( visibleBool.booleanValue() );
+			}
+		//#endif
 	}
 	
 	/**
@@ -1412,6 +1418,11 @@ public abstract class Item extends Object
 	 * @see #repaint(int, int, int, int)
 	 */
 	protected void repaint() {
+		//#if tmp.invisible
+			if (this.isInvisible) {
+				return;
+			}
+		//#endif
 		//#if polish.Bugs.fullRepaintRequired
 			repaintFully();
 		//#else
@@ -1538,7 +1549,6 @@ public abstract class Item extends Object
 		// ignore
 	}
 	//#endif
-	
 	
 	/**
 	 * Gets the listener for <code>Commands</code> to this <code>Item</code>.

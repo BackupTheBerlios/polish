@@ -1300,8 +1300,6 @@ extends ItemView
 		System.out.println("ContainerView.handleKeyPressed() of container " + this);
 		Item item = getNextItem( keyCode, gameAction );
 		if (item != null) {
-			// this is done within getNextItem/shiftFocus anyhow
-			//focusItem(this.focusedIndex, item);
 			return true;
 		}
 		return false;

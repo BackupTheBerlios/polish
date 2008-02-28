@@ -196,6 +196,21 @@ public class Container extends Item {
 	}
 	
 	/**
+	 * Returns the available height for scrolling eiter from this container or from it's parent container.
+	 * 
+	 * @return the available vertical space for this container or -1 when it is not known.
+	 * @see #getContentScrollHeight()
+	 */
+	public int getRelativeScrollHeight() {
+		if (this.availableHeight == -1 && this.parent instanceof Container) {
+			return ((Container)this.parent).getScrollHeight() - this.relativeY;
+		} else {
+			return this.availableHeight;
+		}
+	}
+
+	
+	/**
 	 * Retrieves the available height available for the content of this container
 	 *  
 	 * @return the available vertical space minus paddings/margins etc or -1 when it is not known.
@@ -333,13 +348,7 @@ public class Container extends Item {
 //			this.items[index] = item;
 //		}
 		this.isInitialized = false;
-		//#if polish.supportInvisibleItems
-			if (!this.isInvisible) {
-				repaint();
-			}
-		//#else
-			repaint();
-		//#endif
+		repaint();
 		return last;
 	}
 	
@@ -879,10 +888,11 @@ public class Container extends Item {
 			scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
 		} else {
 			// use item dimensions for scrolling:
-			scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
 			//  defer scrolling to init at a later stage:
 			if (!this.isInitialized && item.relativeY == 0) {
 				this.scrollItem = item;
+			} else {				
+				scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
 			}
 		}
 	}
@@ -1385,147 +1395,106 @@ public class Container extends Item {
 	 */
 	protected boolean handleNavigate(int keyCode, int gameAction) {
 		// now allow a navigation within the container:
-		//#ifdef tmp.supportViewType
-			if (this.containerView != null) {
-				boolean handled = this.containerView.handleKeyPressed(keyCode, gameAction);
-				if (handled) {
-					return true;
-				}
-				if (this.enableScrolling) {					
-					if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2 && this.targetYOffset < 0 ) {
-						// scroll the container view upwards without changing the focused item:
-						//#if polish.Container.ScrollDelta:defined
-							//#= this.targetYOffset += ${polish.Container.ScrollDelta};
-						//#else
-							this.targetYOffset += 30;
-						//#endif
-						if (this.targetYOffset > 0 ) {
-							this.targetYOffset = 0;
-						}
-						//#if polish.css.scroll-mode
-							if (!this.scrollSmooth) {
-								this.yOffset = this.targetYOffset;
-							}
-						//#endif
-						return true;
-					}
-					if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8
-							&& (this.itemHeight + this.targetYOffset > (this.availableHeight)) ) 
-					{
-						// scroll the container view downwards without changing the focused item:
-						//#if polish.Container.ScrollDelta:defined
-							//#= this.targetYOffset -= ${polish.Container.ScrollDelta};
-						//#else
-							this.targetYOffset -= 30;
-						//#endif
-						//#if polish.css.scroll-mode
-							if (!this.scrollSmooth) {
-								this.yOffset = this.targetYOffset;
-							}
-						//#endif
-						return true;
-					}
-				}
-				return false;
-			}
-		//#endif
 		boolean processed = false;
-		int offset;
-		//#if polish.css.scroll-mode
-			if (this.scrollSmooth) {
-		//#endif
-				offset = this.targetYOffset;
-		//#if polish.css.scroll-mode
-			} else {
-				offset = this.yOffset;
-			}
-		//#endif
+		int offset = getRelativeScrollYOffset();
+		int availableScrollHeight = getRelativeScrollHeight();
+		Item focItem = this.focusedItem;
 		if (
 			//#if polish.blackberry && !polish.hasTrackballEvents
 				(gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) ||
 			//#endif
 			   (gameAction == Canvas.DOWN   && keyCode != Canvas.KEY_NUM8)) 
 		{
-			if (this.focusedItem != null 
-					&& this.enableScrolling
-					&& ( (offset + this.focusedItem.relativeY + this.focusedItem.itemHeight > this.availableHeight)
-					     || ( this.focusedItem.internalX != NO_POSITION_SET
-						    && offset + this.focusedItem.relativeY + this.focusedItem.contentY + this.focusedItem.internalY + this.focusedItem.internalHeight > this.availableHeight)) 
-				       )
+			if (focItem != null 
+					&& ( (offset + focItem.relativeY + focItem.itemHeight > availableScrollHeight)
+					     || ( focItem.internalX != NO_POSITION_SET
+						    && offset + focItem.relativeY + focItem.contentY + focItem.internalY + focItem.internalHeight > availableScrollHeight)) 
+			   )
 			{
 				//System.out.println("offset=" + offset + ", foc.relativeY=" + this.focusedItem.relativeY + ", foc.height=" + this.focusedItem.itemHeight + ", available=" + this.availableHeight);
 				// keep the focus do scroll downwards:
 				//#debug
 				System.out.println("Container(" + this + "): scrolling down: keeping focus, focusedIndex=" + this.focusedIndex + ", focus.relativeY=" + this.focusedItem.relativeX + ", focus.height=" + this.focusedItem.itemHeight + "focus.internalX=" + this.focusedItem.internalX + ", focus.internalY=" + this.focusedItem.internalY + ", focus.internalHeight=" + this.focusedItem.internalHeight );
 			} else {
-				processed = shiftFocus( true, 0 );
-			}
-			//#debug
-			System.out.println("Container(" + this + "): forward shift by one item succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
-			if ((!processed) && this.enableScrolling 
-					&&  ( (this.focusedItem != null && offset + this.focusedItem.relativeY + this.focusedItem.itemHeight > this.availableHeight)
-						|| offset + this.itemHeight > this.availableHeight)) {
-				// scroll downwards:
-				//#if polish.Container.ScrollDelta:defined
-					//#= offset -= ${polish.Container.ScrollDelta};
-				//#else
-					offset -= 30;
-				//#endif
-				//#debug
-				System.out.println("Down/Right: Reducing (target)YOffset to " + offset);	
-				processed = true;
-				//#if polish.css.scroll-mode
-					if (this.scrollSmooth) {
-				//#endif
-						this.targetYOffset = offset;
-				//#if polish.css.scroll-mode
+				//#ifdef tmp.supportViewType
+					if (this.containerView != null) {
+						 processed = this.containerView.handleKeyPressed(keyCode, gameAction);
 					} else {
-						this.yOffset = offset;
+				//#endif
+						processed = shiftFocus( true, 0 );
+				//#ifdef tmp.supportViewType
 					}
 				//#endif
+			}
+			//#debug
+			System.out.println("Container(" + this + "): forward shift by one item succeded: " + processed + ", focusedIndex=" + this.focusedIndex + ", enableScrolling=" + this.enableScrolling);
+			if ((!processed)  
+					&&  ( (focItem != null && offset + focItem.relativeY + focItem.itemHeight > availableScrollHeight)
+						|| (this.enableScrolling && offset + this.itemHeight > availableScrollHeight)) ) 
+			{
+				// scroll downwards:
+				int difference =
+				//#if polish.Container.ScrollDelta:defined
+					//#=  ${polish.Container.ScrollDelta};
+				//#else
+					30;
+				//#endif
+				offset = getScrollYOffset() - difference;
+				setScrollYOffset( offset, true );
+				processed = true;
+				//#debug
+				System.out.println("Down/Right: Decreasing (target)YOffset to " + offset);	
 			}
 		} else if ( 
 				//#if polish.blackberry && !polish.hasTrackballEvents
 					(gameAction == Canvas.LEFT  && keyCode != Canvas.KEY_NUM4) ||
 				//#endif
-				    (gameAction == Canvas.UP    && keyCode != Canvas.KEY_NUM2) ) {
-			if (this.focusedItem != null 
-					&& this.enableScrolling
-					&& offset + this.focusedItem.relativeY < 0 ) // this.focusedItem.yTopPos < this.yTop ) 
+				    (gameAction == Canvas.UP    && keyCode != Canvas.KEY_NUM2) ) 
+		{
+			if (focItem != null 
+					//&& this.enableScrolling
+					&& offset + focItem.relativeY < 0 ) // this.focusedItem.yTopPos < this.yTop ) 
 			{
 				// keep the focus do scroll upwards:
 				//#debug
 				System.out.println("Container(" + this + "): scrolling up: keeping focus, focusedIndex=" + this.focusedIndex + ", focusedItem.yTopPos=" + this.focusedItem.relativeY + ", this.availableHeight=" + this.availableHeight + ", targetYOffset=" + this.targetYOffset);
 			} else {
-				processed = shiftFocus( false, 0 );
+				//#ifdef tmp.supportViewType
+					if (this.containerView != null) {
+						 processed = this.containerView.handleKeyPressed(keyCode, gameAction);
+					} else {
+				//#endif
+						processed = shiftFocus( false, 0 );
+				//#ifdef tmp.supportViewType
+					}
+				//#endif
 			}
 			//#debug
 			System.out.println("Container(" + this + "): upward shift by one item succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
 			if ((!processed) && this.enableScrolling && (offset < 0)) {
 				// scroll upwards:
+				int difference =
 				//#if polish.Container.ScrollDelta:defined
-					//#= offset += ${polish.Container.ScrollDelta};
+					//#= ${polish.Container.ScrollDelta};
 				//#else
-					offset += 30;
+					30;
 				//#endif
+				offset = getScrollYOffset() + difference;
 				if (offset > 0) {
 					offset = 0;
 				}
-				//#if polish.css.scroll-mode
-					if (this.scrollSmooth) {
-				//#endif
-						this.targetYOffset = offset;
-				//#if polish.css.scroll-mode
-					} else {
-						this.yOffset = offset;
-					}
-				//#endif
-
+				setScrollYOffset(offset, true);
 				//#debug
 				System.out.println("Up/Left: Increasing (target)YOffset to " + offset);	
 				processed = true;
 			}
 		}
+		//#ifdef tmp.supportViewType
+			else if (this.containerView != null) 
+			{
+				processed = this.containerView.handleKeyPressed(keyCode, gameAction);
+			}
+		//#endif
 		return processed;
 	}
 	
@@ -1654,41 +1623,21 @@ public class Container extends Item {
 		Item item = null;
 			boolean allowCycle = this.enableScrolling && this.allowCycling;
 			if (allowCycle) {
-				//#if polish.css.scroll-mode
-					if (!this.scrollSmooth) {
-						if (forwardFocus) {
-							// when you scroll to the bottom and
-							// there is still space, do
-							// scroll first before cycling to the
-							// first item:
-							allowCycle = (this.yOffset + this.itemHeight <= this.availableHeight);
-							// #debug
-							// System.out.println("allowCycle-calculation ( forward non-smoothScroll): yOffset=" + this.yOffset + ", itemHeight=" + this.itemHeight + " (together="+ (this.yOffset + this.itemHeight) + ", height=" + this.height);
-						} else {
-							// when you scroll to the top and
-							// there is still space, do
-							// scroll first before cycling to the
-							// last item:
-							allowCycle = (this.yOffset == 0);
-						}						
+					if (forwardFocus) {
+						// when you scroll to the bottom and
+						// there is still space, do
+						// scroll first before cycling to the
+						// first item:
+						allowCycle = (getScrollYOffset() + this.itemHeight <= this.availableHeight + 1);
+						// #debug
+						// System.out.println("allowCycle-calculation ( forward non-smoothScroll): yOffset=" + this.yOffset + ", itemHeight=" + this.itemHeight + " (together="+ (this.yOffset + this.itemHeight) + ", height=" + this.height);
 					} else {
-						if (forwardFocus) {
-							// when you scroll to the bottom and
-							// there is still space, do
-							// scroll first before cycling to the
-							// first item:
-							allowCycle = (this.targetYOffset + this.itemHeight <= this.availableHeight + 1);
-							// #debug
-							//System.out.println("allowCycle-calculation ( forward non-smoothScroll): targetYOffset=" + this.targetYOffset + ", contentHeight=" + this.contentHeight + " (together="+ (this.targetYOffset + this.contentHeight) + ", targetYOfset+itemHeight=" + (this.targetYOffset + this.itemHeight) + ", availableHeight=" + this.availableHeight );
-						} else {
-							// when you scroll to the top and
-							// there is still space, do
-							// scroll first before cycling to the
-							// last item:
-							allowCycle = (this.targetYOffset == 0) || (this.targetYOffset == 1);
-						}
-					}
-				//#endif
+						// when you scroll to the top and
+						// there is still space, do
+						// scroll first before cycling to the
+						// last item:
+						allowCycle = (this.yOffset == 0) || (this.targetYOffset == 1);
+					}						
 			}
 			//#debug
 			System.out.println("shiftFocus of " + this + ": allowCycle(local)=" + allowCycle + ", allowCycle(global)=" + this.allowCycling + ", isFoward=" + forwardFocus + ", enableScrolling=" + this.enableScrolling + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset + ", focusedIndex=" + this.focusedIndex + ", start=" + i );
@@ -1846,6 +1795,63 @@ public class Container extends Item {
 			}
 		//#endif
 	
+		//#if polish.css.change-styles
+			String changeStyles = style.getProperty("change-styles");
+			if (changeStyles != null) {
+				int splitPos = changeStyles.indexOf('>');
+				if (splitPos != -1) {
+					String oldStyle = changeStyles.substring(0, splitPos ).trim();
+					String newStyle = changeStyles.substring(splitPos+1).trim();
+					try {
+						changeChildStyles(oldStyle, newStyle);
+					} catch (Exception e) {
+						//#debug error
+						System.out.println("Unable to apply change-styles \"" + changeStyles + "\"" + e );
+					}
+				}
+			}
+		//#endif
+	}
+	
+	/**
+	 * Changes the style of all children that are currently using the specified oldChildStyle with the given newChildStyle.
+	 * 
+	 * @param oldChildStyleName the name of the style of child items that should be exchanged
+	 * @param newChildStyleName the name of the new style for child items that were using the specified oldChildStyle before
+	 * @throws IllegalArgumentException if no corresponding newChildStyle could be found
+	 * @see StyleSheet#getStyle(String)
+	 */
+	public void changeChildStyles( String oldChildStyleName, String newChildStyleName) {
+		Style newChildStyle = StyleSheet.getStyle(newChildStyleName);
+		if (newChildStyle ==  null) {
+			throw new IllegalArgumentException("for " + newChildStyleName );
+		}
+		Style oldChildStyle = StyleSheet.getStyle(oldChildStyleName);
+		changeChildStyles(oldChildStyle, newChildStyle);
+	}
+	
+	/**
+	 * Changes the style of all children that are currently using the specified oldChildStyle with the given newChildStyle.
+	 * 
+	 * @param oldChildStyle the style of child items that should be exchanged
+	 * @param newChildStyle the new style for child items that were using the specified oldChildStyle before
+	 * @throws IllegalArgumentException if newChildStyle is null
+	 */
+	public void changeChildStyles( Style oldChildStyle, Style newChildStyle) {
+		if (newChildStyle == null) {
+			throw new IllegalArgumentException();
+		}
+		Object[] children = this.itemsList.getInternalArray();
+		for (int i = 0; i < children.length; i++)
+		{
+			Item child = (Item) children[i];
+			if (child == null) {
+				break;
+			}
+			if (child.style == oldChildStyle) {
+				child.setStyle( newChildStyle );
+			}
+		}
 	}
 
 	/**
@@ -2414,6 +2420,24 @@ public class Container extends Item {
 	}
 	
 	/**
+	 * Retrieves the vertical scrolling offset of this item relative to the top most container.
+	 *  
+	 * @return either the currently used offset or the targeted offset in case the targeted one is different.
+	 */
+	public int getRelativeScrollYOffset() {
+		if (!this.enableScrolling && this.parent instanceof Container) {
+			return ((Container)this.parent).getScrollYOffset() - this.relativeY;
+		}
+		int offset = this.targetYOffset;
+		//#ifdef polish.css.scroll-mode
+			if (!this.scrollSmooth) {
+				offset = this.yOffset;
+			}
+		//#endif
+		return offset;
+	}
+	
+	/**
 	 * Sets the vertical scrolling offset of this item.
 	 *  
 	 * @param offset either the new offset
@@ -2479,7 +2503,7 @@ public class Container extends Item {
 		Item[] myItems = getItems();
 		for (int i = 0; i < myItems.length; i++) {
 			Item item = myItems[i];
-			//#if polish.supportInvisibleItems
+			//#if polish.supportInvisibleItems || polish.css.visible
 				if (item.isInvisible) {
 					buffer.append( i ).append(":invis./plain:" + ( item.appearanceMode == PLAIN ) + "=[").append( item.toString() ).append("]");
 				} else {

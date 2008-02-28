@@ -135,6 +135,7 @@ public class ChoiceItem extends IconItem
 	private int boxColor;
 	/** defines whether the plain image should be drawn at all */ 
 	private boolean drawNoPlain;
+	private boolean drawNoSelected;
 	//#ifdef polish.images.backgroundLoad
 		private String selectedImgName;
 		private String plainImgName;
@@ -206,20 +207,20 @@ public class ChoiceItem extends IconItem
 			super.initContent(firstLineWidth, lineWidth);
 			return;
 		}
-		if (this.selected == null) {
+		if (this.selected == null && !this.drawNoSelected) {
 			this.selected = createSelected();
 		}
 		if (this.plain == null && !this.drawNoPlain) {
 			this.plain = createPlain();
 		}
-		int maxWidth = this.selected.getWidth();
+		int maxWidth = this.selected == null ? 0 : this.selected.getWidth();
 		
 		if (!this.drawNoPlain && this.plain.getWidth() > maxWidth ) {
 			maxWidth = this.plain.getWidth();
 		}
 		maxWidth += this.paddingHorizontal;
 		this.boxWidth = maxWidth;
-		int maxHeight = this.selected.getHeight();
+		int maxHeight = this.selected == null ? 0 : this.selected.getHeight();
 		if ( !this.drawNoPlain && this.plain.getHeight() > maxHeight ) {
 			maxHeight = this.plain.getHeight();
 		}
@@ -340,18 +341,24 @@ public class ChoiceItem extends IconItem
 					if (url == null && parentStyle != null) {
 						url = parentStyle.getProperty( "radiobox-selected");
 					}
-					loadImage( url, false );
+					if ("none".equals(url)) {
+						this.drawNoSelected = true;
+					} else {
+						//this.drawNoSelected = false;
+						loadImage( url, false );
+					}
 				}
 			//#endif
 			//#ifdef polish.css.radiobox-plain
 				if (this.choiceType == Choice.EXCLUSIVE) {
 					String plainName = style.getProperty( "radiobox-plain");
+					if (plainName == null && parentStyle != null) {
+						plainName = parentStyle.getProperty( "radiobox-plain");
+					}
 					if ("none".equals(plainName)) {
 						this.drawNoPlain = true;
 					} else {
-						if (plainName == null && parentStyle != null) {
-							plainName = parentStyle.getProperty( "radiobox-plain");
-						}
+						//this.drawNoPlain = false;
 						loadImage( plainName, true );
 					}
 				}
@@ -362,18 +369,24 @@ public class ChoiceItem extends IconItem
 					if (url == null && parentStyle != null) {
 						url = parentStyle.getProperty( "checkbox-selected");
 					}
-					loadImage( url, false );
+					if ("none".equals(url)) {
+						this.drawNoSelected = true;
+					} else {
+						//this.drawNoSelected = false;
+						loadImage( url, false );
+					}
 				}
 			//#endif
 			//#ifdef polish.css.checkbox-plain
 				if (this.choiceType == Choice.MULTIPLE) {
 					String plainName = style.getProperty( "checkbox-plain");
+					if (plainName == null && parentStyle != null) {
+						plainName = parentStyle.getProperty( "checkbox-plain");
+					}
 					if ("none".equals(plainName)) {
 						this.drawNoPlain = true;
 					} else {
-						if (plainName == null && parentStyle != null) {
-							plainName = parentStyle.getProperty( "checkbox-plain");
-						}
+						//this.drawNoPlain = false;
 						loadImage( plainName, true );
 					}
 				}
