@@ -297,13 +297,13 @@ These namespaces/schemas will be used soon.
 		<capability name="HeapSize" value="20MB"/>
 		<capability name="MenuBar.OptionsPosition" value="right" />
 		<capability name="MenuBar.OkPosition" value="left" />
+		<!-- Disabled for Smartphones without hardware/software ascii keyboard. Needs to be enabled otherwise.
 		<capability name="key.supportsAsciiKeyMap" value="true" />
+		-->
 		<capability name="key.up" value="-1" />
 	    <capability name="key.down" value="-2" />
 	    <capability name="key.left" value="-3" />
 	    <capability name="key.right" value="-4" />
-		<capability name="key.LeftSoftKey" value="-5"/>
-		<capability name="key.RightSoftKey" value="-6"/>
 		<capability name="key.backspace" value="27" />
 	</device>	
 
