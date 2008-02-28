@@ -334,14 +334,14 @@ public class DeviceTree {
      */
     private String extractIdentifier(String path) {
         String delimiter;
-        String jarName = path.substring(path.lastIndexOf(File.separator),path.length()-1);
+        // classpaths have been forced into Unix format in ClassPath:
+        String jarName = path.substring(path.lastIndexOf('/') + 1);
         if(jarName.indexOf("-") != -1) {
             delimiter = "-";
         }
         else {
             delimiter = ".";
         }
-        
         return jarName.substring(0,jarName.indexOf(delimiter));
     }
 
