@@ -39,9 +39,50 @@ colors {
 /*************   Browser specific styles - the outcommented styles just replicate the default behavior  *************/
 
 .illustrate {
-	always-include: true; /* include this style even though it is not referenced in the source code */
+	always-include: true; /* include this style even though it is not referenced in the source code, but only within HTML pages */
 	font-color: #333;
 	font-style: italic;
+}
+
+.invisible {
+	always-include: true;
+	visible: false; /* the <div> block and its contents are not shown */
+	view-type: midp2;
+	layout: expand;
+}
+
+.visible extends invisible {
+	visible: true;
+}
+
+
+.result {
+	always-include: true;
+	margin: 2;
+	background-color: silver;
+	view-type: midp2;
+	view-type-sequential-traversal: true;
+	layout: expand;
+	change-styles: visible > invisible;  /* when the result <div> block is unfocused, apply the .invisible style to all child items having the .visible style */
+}
+
+.result:hover {
+	margin: 0;
+	border-color: #222;
+	border-width: 2;
+	change-styles: invisible > visible; /* when the result <div> block is focused, apply the .visible style to all child items having the .invisible style */
+	background {
+		type: horizontal-gradient;
+		left-color: white;
+		right-color: #ccc;
+	}
+}
+
+
+.smalltext {
+	always-include: true; /* include this style even though it is not referenced in the source code, but only within HTML pages */
+	font-color: #222;
+	font-size: small;
 }
 
 .browserScreen {
@@ -248,6 +289,16 @@ title {
 	border: none;
 	layout: horizontal-center | horizontal-expand;
 }
+
+
+/*************    Scrollbar          ***************************************************************************************************/
+scrollbar {
+	scrollbar-slider-color: #fff;
+	scrollbar-slider-width: 4;
+	scrollbar-fadeout: true;
+	opacity: 180;
+}
+
 
 /*************   MENU BAR *************/
 

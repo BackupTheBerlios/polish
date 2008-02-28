@@ -74,14 +74,14 @@ extends TagHandler
 					item.setStyle(this.chartStyle);
 					this.chartStyle = null;
 				} 
-			//#debug
-			System.out.println("adding chartitem" + item);
-			parentItem.add(item);
-			this.collectData = false;
-			this.strDataSequences.clear();
-			this.strColors = null;
-			return true;
+				//#debug
+				System.out.println("adding chartitem" + item);
+				parentItem.add(item);
+				this.collectData = false;
+				this.strDataSequences.clear();
+				this.strColors = null;
 			}
+			return true;
 		}
 		else if (TextUtil.equalsIgnoreCase("span", tagName) && this.collectData) 
 		{
@@ -96,11 +96,17 @@ extends TagHandler
 			{
 				parser.next();
 				this.strColors = parser.getText();
+				return true;
+			} else if (!opening) {
+				// also handle the closing </span> tags while collecting data:
+				return true;
 			}
 		}
 		if (this.parent == null) {
 			return false;
 		} else {
+			//#debug
+			System.out.println("forwarding tag " + tagName + ", opening=" + opening + ", collectData=" + this.collectData + ", elementClass=" + elementClass);
 			return this.parent.handleTag(parentItem, parser, tagName, opening, attributeMap, style);
 		}
 	}
