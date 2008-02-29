@@ -32,6 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+import de.enough.polish.BuildException;
 import de.enough.polish.Variable;
 
 /**
@@ -172,19 +173,45 @@ public final class ReflectionUtil {
 			try {
 				populate( object, baseDir, param, methodsByName );
 			} catch (IllegalArgumentException e) {
-				throw e;
+                RuntimeException runtimeException = cleanupExceptionHierarchy(e,null);
+                throw runtimeException;
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-				String message = "Unable to set the parameter [" + param.getName() + "] with value [" + param.getValue() + "] for class [" + object.getClass().getName() + "]: " + e.toString();
-				throw new IllegalArgumentException( message );				
+			    String message = "Unable to set the parameter [" + param.getName() + "] with value [" + param.getValue() + "] for class [" + object.getClass().getName() + "]: " + e.toString();
+                RuntimeException runtimeException = cleanupExceptionHierarchy(e,message);
+                throw runtimeException;
 			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-				String message = "Unable to set the parameter [" + param.getName() + "] with value [" + param.getValue() + "] for class [" + object.getClass().getName() + "]: " + e.toString();
-				throw new IllegalArgumentException( message );				
+			    String message = "Unable to set the parameter [" + param.getName() + "] with value [" + param.getValue() + "] for class [" + object.getClass().getName() + "]: " + e.toString();
+                RuntimeException runtimeException = cleanupExceptionHierarchy(e,message);
+				throw runtimeException;
 			}
 		}
 	}
 
+    /**
+     * Searches for a BuildException instance in the cause stack of 'throwable' and returns it.
+     * If it is not found the method throws a generic exception.
+     * @param throwable the Throwable instance to search
+     * @param message a message for the generic exception
+     * @return a BuildException instance if it was found in the cause stack of 'throwable' or a generic exception
+     */
+    private static RuntimeException cleanupExceptionHierarchy(Throwable throwable, String message) {
+        if(throwable == null) {
+            return new IllegalArgumentException();
+        }
+        Throwable cause = throwable;
+        do {
+            if(cause instanceof BuildException) {
+                return (BuildException)cause;
+            }
+            cause = cause.getCause();
+        }
+        while(cause != null);
+        if(message == null) {
+            message = "";
+        }
+        return new IllegalArgumentException( message ); 
+    }
+    
 	/**
 	 * Populates the object with the specified parameter.
 	 * 
