@@ -25,8 +25,6 @@
  */
 package de.enough.polish.finalize.mea;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -89,41 +87,32 @@ public class MeaFinalizer extends Finalizer{
             return this.croppedJarFilename;
         }
     }
-    
+
     public MeaFinalizer() {
         super();
     }
     
     private static List entries = new ArrayList();
-    
+    private String fallbackDevice;
+    private String tags;
+    private String access = "owner";
     
     public void finalize(File jadFile, File jarFile, Device device, Locale locale, Environment env) {
         File distFile = env.getBuildSetting().getDestDir(env);
-        String croppedJadFilePath = jadFile.getPath().replaceFirst(distFile.getPath()+"/","");
-        String croppedJarFilePath = jarFile.getPath().replaceFirst(distFile.getPath()+"/","");
+        String distFilePath = distFile.getPath();
+        String croppedJadFilePath = jadFile.getPath().replaceFirst(distFilePath+"/","");
+        String croppedJarFilePath = jarFile.getPath().replaceFirst(distFilePath+"/","");
         Entry entry = new Entry(jadFile,jarFile,device,locale,croppedJadFilePath,croppedJarFilePath);
         entries.add(entry);
     }
 
-    
-//    
-//    public void execute(Device device, Locale locale, Environment env) {
-//        // TODO rickyn implement execute
-//        throw new UnsupportedOperationException();
-//    }
-//
-
-
     public void notifyBuildEnd(Environment env) {
         super.notifyBuildEnd(env);
-//        new RuntimeException().printStackTrace();
-//      env Variables: "MIDlet-Description", "MIDlet-Version", "MIDlet-Vendor", "MIDlet-Name"
         String description = env.getVariable("MIDlet-Description");
         description = description.replaceAll("\"","\\\"");
         String name = env.getVariable("MIDlet-Name");
         String version = env.getVariable("MIDlet-Version");
         String vendor = env.getVariable("MIDlet-Vendor");
-        String fallbackDevice = "Generic/midp2";
         
         // Write contents.xml file.
 
@@ -131,8 +120,8 @@ public class MeaFinalizer extends Finalizer{
         File contentsXmlFile = null;
         File distFile = env.getBuildSetting().getDestDir(env);
         File meaFile = new File(distFile,name+".mea");
+        System.out.println("Creating file '"+meaFile.getName()+"'.");
         try {
-            
             FileOutputStream fileOutputStream = new FileOutputStream(meaFile);
             ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
             
@@ -145,10 +134,17 @@ public class MeaFinalizer extends Finalizer{
             fileWriter.write(name);
             fileWriter.write("\" description=\"");
             fileWriter.write(description);
-            fileWriter.write("\" access=\"owner\" fallbackDevice=\"");
-            fileWriter.write(fallbackDevice);
+            fileWriter.write("\" access=\""+this.access+"\" fallbackDevice=\"");
+            if(this.fallbackDevice == null) {
+                this.fallbackDevice = "Generic/Midp2Cldc11";
+            }
+            fileWriter.write(this.fallbackDevice);
             fileWriter.write("\" version=\"");
             fileWriter.write(version);
+            if(this.tags != null && this.tags.length() > 0) {
+                fileWriter.write("\" tags=\"");
+                fileWriter.write(this.tags);
+            }
             fileWriter.write("\" vendor=\"");
             fileWriter.write(vendor);
             fileWriter.write("\">"+lineSeperator);
@@ -219,4 +215,21 @@ public class MeaFinalizer extends Finalizer{
         // Put contents.xml file in zip.
         
     }
+
+    public void setFallbackDevice(String fallbackDevice) {
+        this.fallbackDevice = fallbackDevice;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+    
+    public void setAccess(String accessParameter) {
+        boolean valid = "public".equals(accessParameter) || "owner".equals(accessParameter);
+        if(!valid) {
+            throw new BuildException("The parameter 'access' of the lifeCycleManager tag requires one of the values 'owner' or 'public'.");
+        }
+        this.access  = accessParameter;
+    }
+    
 }
