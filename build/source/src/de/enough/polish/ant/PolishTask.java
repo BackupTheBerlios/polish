@@ -710,8 +710,15 @@ public class PolishTask extends ConditionalTask {
 			this.extensionManager.loadCustomDefinitions( this.buildSetting.getCustomExtensions() );
 			this.extensionManager.loadCustomDefinitions( new File( this.polishHomeDir, "custom-extensions.xml" ) );
 			this.extensionManager.loadCustomDefinitions( new File( getProject().getBaseDir(), "custom-extensions.xml" ) );
-            
-            // now load life cycle extensions:
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BuildException("Unable to load extensions.xml - please report this error to j2mepolish@enough.de.");
+		}
+
+        // Do not merge these two try blocks as exceptions from the lifecycleManagers can also be
+        // configuration problems like misspelled parameters. In this case we do not want to print 'report this error to j2mepolish@enough.de'.
+        try {
+//          now load life cycle extensions:
             if (this.lifeCycleManagers != null) {
                 Extension[] lifeCycleExtensions = new Extension[this.lifeCycleManagers.size()];
                 int i = 0;
@@ -722,11 +729,11 @@ public class PolishTask extends ConditionalTask {
                 }
                 this.extensionManager.setLifeCycleExtensions( lifeCycleExtensions );
             }
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new BuildException("Unable to load extensions.xml - please report this error to j2mepolish@enough.de.");
-		}
-		
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BuildException("Unable to load LifeCycleManager instances");
+        }
+        
 		Map buildProperties = getProject().getProperties();
 		// create environment
 		this.environment.setExtensionManager(this.extensionManager); 
