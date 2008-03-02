@@ -725,7 +725,7 @@ public class Container extends Item {
 	 */
 	public void focus( int index, Item item, int direction ) {
 		//#debug
-		System.out.println("Container (" + this + "): Focusing item " + index + " (" + item + ")" );
+		System.out.println("Container (" + this + "): Focusing item " + index + " (" + item + "), isInitialized=" + this.isInitialized );
 		//System.out.println("focus: yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset + ", enableScrolling=" + this.enableScrolling + ", isInitialized=" + this.isInitialized );
 		//#if polish.blackberry
         	//# getScreen().setFocus( item );
@@ -796,6 +796,7 @@ public class Container extends Item {
 		int previousIndex = this.focusedIndex; // need to determine whether the user has scrolled from the bottom to the top
 		this.focusedIndex = index;
 		this.focusedItem = item;
+		//System.out.println("focus - still initialzed=" + this.isInitialized + " for " + this);
 		if  (this.isInitialized) {
 			// this container has been initialised already,
 			// so the dimensions are known.
@@ -821,9 +822,9 @@ public class Container extends Item {
 				this.internalWidth = item.itemWidth;
 				this.internalHeight = item.itemHeight;
 				//#debug
-				System.out.println("Container (" + getClass().getName() + "): NO internal area found in item " + item + ": setting internalY=" + this.internalY + ", internalHeight=" + this.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight + ", this.availableHeight=" + this.availableHeight);
+				System.out.println("Container (" + getClass().getName() + "): NO internal area found in item " + item + ": setting internalY=" + this.internalY + ", internalHeight=" + this.internalHeight + ", this.yOffset=" + this.yOffset + ", item.itemHeight=" + item.itemHeight + ", getScrollHeight()=" + getScrollHeight());
 			}
-			if (this.enableScrolling) {	
+			if (getScrollHeight() != -1) {	
 				// Now adjust the scrolling:			
 				Item nextItem;
 				if ( isDownwards && index < this.itemsList.size() - 1 ) {
@@ -839,9 +840,8 @@ public class Container extends Item {
 					System.out.println("Focusing last or first item.");
 					nextItem = item;
 				}
-
 				
-				if ( (index == 0) || (isDownwards && (index < previousIndex) || (previousIndex == -1)) ) {
+				if ( this.enableScrolling && ((index == 0) || (isDownwards && (index < previousIndex) || (previousIndex == -1))) ) {
 					// either the first item or the first selectable item has been focused, so scroll to the very top:
 					//#ifdef polish.css.scroll-mode
 						if (!this.scrollSmooth) {
@@ -858,7 +858,7 @@ public class Container extends Item {
 					scroll( direction, this.relativeX, itemYTop, item.internalWidth, itemYBottom - itemYTop );
 				}
 			}
-		} else if (this.enableScrolling) {
+		} else if (getScrollHeight() != -1) { // if (this.enableScrolling) {
 			//#debug
 			System.out.println("focus: postpone scrolling to initContent() for " + this + ", item " + item);
 			this.isScrollRequired = true;
@@ -875,8 +875,9 @@ public class Container extends Item {
 	 * 
 	 * @param direction the direction, is used for adjusting the scrolling when the internal area is to large. Either 0 or Canvas.UP, Canvas.DOWN, Canvas.LEFT or Canvas.RIGHT
 	 * @param item the item for which the scrolling should be adjusted
+	 * @return true when the container was scrolled
 	 */
-	public void scroll(int direction, Item item) {
+	public boolean scroll(int direction, Item item) {
 		//#debug
 		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX +", relativeInternalY=" + ( item.relativeY + item.contentY + item.internalY ));
 		if (item.internalX != NO_POSITION_SET 
@@ -885,14 +886,15 @@ public class Container extends Item {
 			// use internal position of item for scrolling:
 			int relativeInternalX = item.relativeX + item.contentX + item.internalX;
 			int relativeInternalY = item.relativeY + item.contentY + item.internalY;
-			scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
+			return scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
 		} else {
-			// use item dimensions for scrolling:
-			//  defer scrolling to init at a later stage:
 			if (!this.isInitialized && item.relativeY == 0) {
+				// defer scrolling to init at a later stage:
 				this.scrollItem = item;
+				return true;
 			} else {				
-				scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
+				// use item dimensions for scrolling:
+				return scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
 			}
 		}
 	}
@@ -906,20 +908,24 @@ public class Container extends Item {
 	 * @param y the vertical position of the area relative to this content's top edge
 	 * @param width the width of the area
 	 * @param height the height of the area
+	 * @return true when the scroll request changed the internal scroll offsets
 	 */
-	protected void scroll( int direction, int x, int y, int width, int height ) {
+	protected boolean scroll( int direction, int x, int y, int width, int height ) {
 		if (!this.enableScrolling) {
 			if (this.parent instanceof Container) {
 				x += this.contentX + this.relativeX;
 				y += this.contentY + this.relativeY;
 				//#debug
 				System.out.println("Forwarding scroll request to parent now with y=" + y);
-				((Container)this.parent).scroll(direction, x, y, width, height );
+				return ((Container)this.parent).scroll(direction, x, y, width, height );
 			}
-			return;
+			return false;
 		}
 		//#debug
 		System.out.println("scroll: direction=" + direction + ", y=" + y + ", availableHeight=" + this.availableHeight +  ", height=" +  height + ", focusedIndex=" + this.focusedIndex + ", yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset +", numberOfItems=" + this.itemsList.size() );
+		if ( height == 0) {
+			return false;
+		}
 		// assume scrolling down when the direction is not known:
 		boolean isDownwards = (direction == Canvas.DOWN || direction == Canvas.RIGHT ||  direction == 0);
 		boolean isUpwards = (direction == Canvas.UP );
@@ -932,9 +938,6 @@ public class Container extends Item {
 		//#endif
 
 		int verticalSpace = this.availableHeight - (this.contentY + this.marginBottom + this.paddingBottom + this.borderWidth); // the available height for this container
-		if ( height == 0 || !this.enableScrolling) {
-			return;
-		}
 		int yTopAdjust = 0;
 		Screen scr = this.screen;
 		if (scr != null && this == scr.container && scr.contentY != this.relativeY) {
@@ -963,20 +966,10 @@ public class Container extends Item {
 		} else {
 			//#debug
 			System.out.println("scroll: do nothing");
-			return;
+			return false;
 		}
-				
-		//#if polish.css.scroll-mode
-			if (!this.scrollSmooth) {
-				this.yOffset = currentYOffset;
-			} else {
-		//#endif
-				this.targetYOffset = currentYOffset;
-				//#debug
-				System.out.println("scroll: adjusting targetYOffset to " + this.targetYOffset + ", y=" + y);
-		//#if polish.css.scroll-mode
-			}
-		//#endif	
+		setScrollYOffset(currentYOffset, true);
+		return true;
 	}
 	
 
@@ -1030,7 +1023,7 @@ public class Container extends Item {
 					this.contentWidth = this.containerView.contentWidth;
 					this.contentHeight = this.containerView.contentHeight;
 					
-					if (requireScrolling && this.enableScrolling && this.focusedItem != null) {
+					if (requireScrolling && this.focusedItem != null) {
 						//#debug
 						System.out.println("initContent(): scrolling autofocused or scroll-required item for view");
 						Item item = this.focusedItem;
@@ -1346,36 +1339,49 @@ public class Container extends Item {
 		//#debug
 		System.out.println("handleKeyPressed( " + keyCode + ", " + gameAction + " ) for " + this);
 		
-		if (this.focusedItem != null) {
-			Item item = this.focusedItem;
+		Item item = this.focusedItem;
+		if (item != null) {
 			if (!item.isInitialized) {
 				item.init( this.contentWidth, this.contentWidth );
+			} else if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
+				int startY = getScrollYOffset() + item.relativeY + item.contentY + item.internalY;
+				if ( (
+					(startY < 0  && gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) 
+					||  (startY + item.internalHeight > this.availableHeight  && gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
+					)
+					&& (scroll(gameAction, item))
+				){
+					return true;
+				}
 			}
+			int scrollOffset = getScrollYOffset();
 			if ( item.handleKeyPressed(keyCode, gameAction) ) {
-				if (item.internalX != NO_POSITION_SET) {
+				//if (item.internalX != NO_POSITION_SET) {
 					if (this.enableScrolling) {
-						//#debug
-						System.out.println("scrolling to item.internalY=" + item.internalY );
-						scroll(gameAction, item);
+						if (getScrollYOffset() == scrollOffset) {
+							//#debug
+							System.out.println("scrolling focused item that has handled key pressed, item=" + item + ", item.internalY=" + item.internalY);
+							scroll(gameAction, item);
+						}
 					} else  {
-						if (item.itemHeight > getScrollHeight()) {
+						if (item.internalX != NO_POSITION_SET) { // && (item.itemHeight > getScrollHeight()  || (item.contentY + item.internalY + item.internalHeight > item.itemHeight) ) ) {
 							// adjust internal settings for root container:
 							this.internalX = item.relativeX + item.contentX + item.internalX;
 							this.internalY = item.relativeY + item.contentY + item.internalY;
 							this.internalWidth = item.internalWidth;
 							this.internalHeight = item.internalHeight;
 							//#debug
-							System.out.println("Adjusted internal area by internal area of " + item + " to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );						
+							System.out.println(this + ": Adjusted internal area by internal area of " + item + " to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );						
 						} else {
-							this.internalHeight = item.relativeX;
+							this.internalX = item.relativeX;
 							this.internalY = item.relativeY;
 							this.internalWidth = item.itemWidth;
 							this.internalHeight = item.itemHeight;
 							//#debug
-							System.out.println("Adjusted internal area by full area of " + item + " to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );						
+							System.out.println(this + ": Adjusted internal area by full area of " + item + " to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );						
 						}
 					}
-				}
+				//}
 				//#debug
 				System.out.println("Container(" + this + "): handleKeyPressed consumed by item " + item.getClass().getName() + "/" + item );
 				
@@ -1397,8 +1403,22 @@ public class Container extends Item {
 		// now allow a navigation within the container:
 		boolean processed = false;
 		int offset = getRelativeScrollYOffset();
-		int availableScrollHeight = getRelativeScrollHeight();
+		int availableScrollHeight = getScrollHeight();
 		Item focItem = this.focusedItem;
+		int y = 0;
+		int h = 0;
+		if (focItem != null && availableScrollHeight != -1) {
+			if (focItem.internalX == NO_POSITION_SET || (focItem.relativeY + focItem.contentY + focItem.internalY + focItem.internalHeight < availableScrollHeight)) {
+				y = focItem.relativeY;
+				h = focItem.itemHeight;
+				//System.out.println("normal item has focus: y=" + y + ", h=" + h + ", item=" + focItem);
+			} else {
+				y = focItem.relativeY + focItem.contentY + focItem.internalY;
+				h = focItem.internalHeight;
+				//System.out.println("internal item has focus: y=" + y + ", h=" + h + ", item=" + focItem);
+			}
+			//System.out.println("offset=" + offset + ", scrollHeight=" + availableScrollHeight + ", offset + y + h=" + (offset + y + h) + ", focusedItem=" + focItem);
+		}
 		if (
 			//#if polish.blackberry && !polish.hasTrackballEvents
 				(gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) ||
@@ -1406,15 +1426,12 @@ public class Container extends Item {
 			   (gameAction == Canvas.DOWN   && keyCode != Canvas.KEY_NUM8)) 
 		{
 			if (focItem != null 
-					&& ( (offset + focItem.relativeY + focItem.itemHeight > availableScrollHeight)
-					     || ( focItem.internalX != NO_POSITION_SET
-						    && offset + focItem.relativeY + focItem.contentY + focItem.internalY + focItem.internalHeight > availableScrollHeight)) 
-			   )
-			{
+					&& (availableScrollHeight != -1 && offset + y + h > availableScrollHeight) 
+			) {
 				//System.out.println("offset=" + offset + ", foc.relativeY=" + this.focusedItem.relativeY + ", foc.height=" + this.focusedItem.itemHeight + ", available=" + this.availableHeight);
 				// keep the focus do scroll downwards:
 				//#debug
-				System.out.println("Container(" + this + "): scrolling down: keeping focus, focusedIndex=" + this.focusedIndex + ", focus.relativeY=" + this.focusedItem.relativeX + ", focus.height=" + this.focusedItem.itemHeight + "focus.internalX=" + this.focusedItem.internalX + ", focus.internalY=" + this.focusedItem.internalY + ", focus.internalHeight=" + this.focusedItem.internalHeight );
+				System.out.println("Container(" + this + "): scrolling down: keeping focus, focusedIndex=" + this.focusedIndex + ", y=" + y + ", h=" + h + ", offset=" + offset );
 			} else {
 				//#ifdef tmp.supportViewType
 					if (this.containerView != null) {
@@ -1429,9 +1446,11 @@ public class Container extends Item {
 			//#debug
 			System.out.println("Container(" + this + "): forward shift by one item succeded: " + processed + ", focusedIndex=" + this.focusedIndex + ", enableScrolling=" + this.enableScrolling);
 			if ((!processed)  
-					&&  ( (focItem != null && offset + focItem.relativeY + focItem.itemHeight > availableScrollHeight)
-						|| (this.enableScrolling && offset + this.itemHeight > availableScrollHeight)) ) 
-			{
+					&& ( 
+						(availableScrollHeight != -1 && offset + y + h > availableScrollHeight)
+						|| (this.enableScrolling && offset + this.itemHeight > availableScrollHeight)
+						)
+			) {
 				// scroll downwards:
 				int difference =
 				//#if polish.Container.ScrollDelta:defined
@@ -1452,7 +1471,7 @@ public class Container extends Item {
 				    (gameAction == Canvas.UP    && keyCode != Canvas.KEY_NUM2) ) 
 		{
 			if (focItem != null 
-					//&& this.enableScrolling
+					&& availableScrollHeight != -1 
 					&& offset + focItem.relativeY < 0 ) // this.focusedItem.yTopPos < this.yTop ) 
 			{
 				// keep the focus do scroll upwards:
@@ -1471,7 +1490,10 @@ public class Container extends Item {
 			}
 			//#debug
 			System.out.println("Container(" + this + "): upward shift by one item succeded: " + processed + ", focusedIndex=" + this.focusedIndex );
-			if ((!processed) && this.enableScrolling && (offset < 0)) {
+			if ((!processed) 
+					&& ( (this.enableScrolling && offset < 0)
+					   || (availableScrollHeight != -1 &&  focItem != null && offset + focItem.relativeY < 0) )
+			) {
 				// scroll upwards:
 				int difference =
 				//#if polish.Container.ScrollDelta:defined
@@ -1510,11 +1532,36 @@ public class Container extends Item {
 		//#debug
 		System.out.println("handleKeyReleased( " + keyCode + ", " + gameAction + " ) for " + this);
 		if (this.focusedItem != null) {
+			//int scrollOffset= getScrollYOffset();
 			Item item = this.focusedItem;
 			if ( item.handleKeyReleased( keyCode, gameAction ) ) {
 				if (this.enableScrolling && item.internalX != NO_POSITION_SET) {
 					scroll(gameAction, item);
 				}
+//				if (this.enableScrolling) {
+//					if (getScrollYOffset() == scrollOffset) {
+//						// #debug
+//						System.out.println("scrolling focused item that has handled key pressed, item=" + item + ", item.internalY=" + item.internalY);
+//						scroll(gameAction, item);
+//					}
+//				} else  {
+//					if (item.itemHeight > getScrollHeight()  &&  item.internalX != NO_POSITION_SET) {
+//						// adjust internal settings for root container:
+//						this.internalX = item.relativeX + item.contentX + item.internalX;
+//						this.internalY = item.relativeY + item.contentY + item.internalY;
+//						this.internalWidth = item.internalWidth;
+//						this.internalHeight = item.internalHeight;
+//						// #debug
+//						System.out.println(this + ": Adjusted internal area by internal area of " + item + " to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );						
+//					} else {
+//						this.internalX = item.relativeX;
+//						this.internalY = item.relativeY;
+//						this.internalWidth = item.itemWidth;
+//						this.internalHeight = item.itemHeight;
+//						// #debug
+//						System.out.println(this + ": Adjusted internal area by full area of " + item + " to x=" + this.internalX + ", y=" + this.internalY + ", w=" + this.internalWidth + ", h=" + this.internalHeight );						
+//					}
+//				}
 				//#debug
 				System.out.println("Container(" + this + "): handleKeyReleased consumed by item " + item.getClass().getName() + "/" + item );				
 				return true;
@@ -1629,7 +1676,7 @@ public class Container extends Item {
 						// scroll first before cycling to the
 						// first item:
 						allowCycle = (getScrollYOffset() + this.itemHeight <= this.availableHeight + 1);
-						// #debug
+						//#debug
 						// System.out.println("allowCycle-calculation ( forward non-smoothScroll): yOffset=" + this.yOffset + ", itemHeight=" + this.itemHeight + " (together="+ (this.yOffset + this.itemHeight) + ", height=" + this.height);
 					} else {
 						// when you scroll to the top and
@@ -2426,7 +2473,7 @@ public class Container extends Item {
 	 */
 	public int getRelativeScrollYOffset() {
 		if (!this.enableScrolling && this.parent instanceof Container) {
-			return ((Container)this.parent).getScrollYOffset() - this.relativeY;
+			return ((Container)this.parent).getScrollYOffset() + this.relativeY;
 		}
 		int offset = this.targetYOffset;
 		//#ifdef polish.css.scroll-mode
@@ -2458,15 +2505,13 @@ public class Container extends Item {
 			((Container)this.parent).setScrollYOffset(offset, smooth);
 			return;
 		}
+		if (!smooth  
 		//#ifdef polish.css.scroll-mode
-			if (!smooth || !this.scrollSmooth) {
-				this.yOffset = offset;			
-			}
-		//#else
-			if (!smooth) {
-				this.yOffset = offset;
-			}
+			|| !this.scrollSmooth
 		//#endif
+		) {
+			this.yOffset = offset;			
+		}
 		this.targetYOffset = offset;
 	}
 

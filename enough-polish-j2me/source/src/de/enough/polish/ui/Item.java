@@ -1873,7 +1873,6 @@ public abstract class Item extends Object
 				}
 			//#endif
 		//#endif
-
 		
 		// paint label:
 		if (this.label != null) {

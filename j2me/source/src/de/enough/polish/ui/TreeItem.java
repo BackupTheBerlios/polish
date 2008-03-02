@@ -323,8 +323,8 @@ public class TreeItem
 
 
 	class Node extends Item {
-		private Item root;
-		private Container children;
+		private final Item root;
+		private final Container children;
 		private boolean isExpanded;
 		int xLeftOffset = 10;
 		private Style rootFocusedStyle;
@@ -396,8 +396,7 @@ public class TreeItem
 			if (this.isExpanded) {
 				leftBorder += this.xLeftOffset;
 				x = leftBorder;
-				rightBorder -= this.xLeftOffset;
-				y += this.root.itemHeight;
+				y += this.root.itemHeight + this.paddingVertical;
 				this.children.paint(x, y, leftBorder, rightBorder, g);
 			}
 		}
@@ -418,13 +417,6 @@ public class TreeItem
 			if (this.isExpanded) {
  				if (this.children.isFocused) {
 					handled = this.children.handleKeyPressed(keyCode, gameAction);
-					if (!handled && gameAction == Canvas.UP) {
-						// focus this root:
-						//this.root.notifyItemPressedStart();
-						focusRoot();
-						handled = true;
-					}
-//					} else {
 					if (handled) {
 						if (this.children.internalX != NO_POSITION_SET) {
 							this.internalX = this.children.relativeX + this.children.contentX + this.children.internalX;
@@ -437,6 +429,11 @@ public class TreeItem
 							this.internalWidth = this.children.itemWidth;
 							this.internalHeight = this.children.itemHeight;
 						}
+						//System.out.println("TreeItem: children handled keyPressed, internal area: y=" + this.internalY + ", height=" + this.internalHeight );
+					} else if (gameAction == Canvas.UP) {
+						// focus this root:
+						focusRoot();
+						handled = true;
 					}
 				} else if (gameAction == Canvas.DOWN && this.children.appearanceMode != PLAIN) {
 					// move focus to children
@@ -450,12 +447,18 @@ public class TreeItem
 
 			}
 			if (!handled && gameAction == Canvas.FIRE ) {
-				handled = this.root.notifyItemPressedStart();
+				handled = this.root.notifyItemPressedStart() || this.children.size() > 0;
+				if (this.isExpanded) { //will be closed in keyReleased
+					this.internalX = 0;
+					this.internalY = 0;
+					this.internalHeight = this.root.itemHeight;
+				} else if (this.children.size() > 0) { // will be opened in keyReleased
+					this.internalX = 0;
+					this.internalY = 0;
+					this.internalHeight = this.root.itemHeight + this.paddingVertical + (this.children.itemHeight != 0 ? this.children.itemHeight : 30);
+					//System.out.println("about to open children: internalHeight=" + this.internalHeight);
+				}
 			}
-//			if (!handled && gameAction == Canvas.FIRE ) {
-//				setExpanded( !this.isExpanded );
-//				handled = true;
-//			}
 			return handled;
 		}
 		
@@ -469,12 +472,6 @@ public class TreeItem
 			if (this.isExpanded) {
  				if (this.children.isFocused) {
 					handled = this.children.handleKeyReleased(keyCode, gameAction);
-//					if (!handled && gameAction == Canvas.UP) {
-//						// focus this root:
-//						this.root.notifyItemPressedEnd();
-//						focusRoot();
-//						handled = true;
-//					} else {
 					if (handled) {
 						if (this.children.internalX != NO_POSITION_SET) {
 							this.internalX = this.children.relativeX + this.children.contentX + this.children.internalX;
@@ -488,14 +485,6 @@ public class TreeItem
 							this.internalHeight = this.children.itemHeight;
 						}
 					}
-				} else if (gameAction == Canvas.DOWN && this.children.appearanceMode != PLAIN) {
-					// move focus to children
-					if (this.rootPlainStyle != null) {
-						this.root.defocus(this.rootPlainStyle);
-					}
-					this.children.focus(null, gameAction);
-					//this.isChildrenFocused = true;
-					handled = true;
 				}
 
 			}
@@ -565,6 +554,7 @@ public class TreeItem
 				return this.rootPlainStyle;
 			}
 			// focus one of the expanded children:
+			//System.out.println("node " + this + ": forwarding focus event to children, (direction != Canvas.UP)=" + (direction != Canvas.UP));
 			this.children.focus(focusstyle, direction); 
 			return this.root.style;
 		}
@@ -587,18 +577,20 @@ public class TreeItem
 		private void focusRoot() {
 			//#debug
 			System.out.println("focusing root " + this);
-			this.internalX = 0;
-			this.internalY = 0;
-			this.internalWidth = this.root.itemWidth;
-			this.internalHeight = this.root.itemHeight;
-			this.children.defocus( null );
-			this.children.focus( -1 );
-			//this.isChildrenFocused = false;
-			// move focus to root:
-			if (this.rootFocusedStyle != null) {
-				this.root.focus(this.rootFocusedStyle, Canvas.UP);
-			} else {
-				this.root.focus(this.focusedStyle, Canvas.UP);
+			this.internalX = -this.contentX;
+			this.internalY = -this.contentY;
+			this.internalWidth = this.root.itemWidth + this.contentX;
+			this.internalHeight = this.root.itemHeight + this.contentY;
+			if (this.children.isFocused) {
+				this.children.defocus( null );
+				this.children.focus( -1 );
+				//this.isChildrenFocused = false;
+				// move focus to root:
+				if (this.rootFocusedStyle != null) {
+					this.root.focus(this.rootFocusedStyle, Canvas.UP);
+				} else {
+					this.root.focus(this.focusedStyle, Canvas.UP);
+				}
 			}
 		}
 				
@@ -614,14 +606,12 @@ public class TreeItem
 					}
 				}
 				//if (this.isChildrenFocused) {
-				if (this.children.isFocused) {
-					focusRoot();
-				}
+				focusRoot();
 //			} else if (!this.isExpanded) {
-				// trick so that the parent container can scroll correctly when this node is expanded:
+//				// trick so that the parent container can scroll correctly when this node is expanded:
 //				this.internalX = 0;
 //				this.internalY = 0;
-//				this.internalHeight = this.root.itemHeight + this.children.getItemHeight(this.availableWidth, this.availableWidth);
+//				this.internalHeight = this.root.itemHeight + this.paddingVertical + (this.children.itemHeight != 0 ? this.children.itemHeight : 30);
 			}
 			if (expand != this.isExpanded) {
 				this.isExpanded = expand;
