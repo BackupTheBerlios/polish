@@ -3162,7 +3162,7 @@ public final class UiAccess {
 	}
 	//#endif
 	
-	//#if polish.usePolishGui && polish.TextField.supportSymbolsEntry && !polish.blackberry
+	//#if polish.usePolishGui && polish.TextField.useDirectInput && polish.TextField.supportSymbolsEntry && !polish.blackberry
 	/**
 	 * Initializes the symbols list and returns it 
 	 * @return the symbols list
