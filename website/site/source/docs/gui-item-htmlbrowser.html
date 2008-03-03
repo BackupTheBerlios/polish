@@ -388,8 +388,8 @@ ProtocolHandler[] handlers = new ProtocolHandler[] {
 	new HttpProtocolHandler("http"), // for http://
 	new HttpProtocolHandler("https"), // for https://
 	new ResourceProtocolHandler("resource"), // for resource://
-	new ExternalProtocolHandler("external"), // for external:// (opens in the native browser)
-	new TelProtocolHandler("tel") // for tel:+44123123456 - initiates a phone call
+	new ExternalProtocolHandler("external", myMidlet), // for external:// (opens in the native browser)
+	new TelProtocolHandler("tel", myMidlet) // for tel:+44123123456 - initiates a phone call
 };
 //#style browser
 this.htmlBrowser = new HtmlBrowser( handlers );
@@ -400,8 +400,8 @@ this.htmlBrowser = new HtmlBrowser( handlers );
 <pre>
 //#style browser
 this.htmlBrowser = new HtmlBrowser(); // handlers for http, https and resource are added by default
-this.htmlBrowser.addProtocolHandler( new ExternalProtocolHandler("external") );
-this.htmlBrowser.addProtocolHandler( new TelProtocolHandler("tel") );
+this.htmlBrowser.addProtocolHandler( new ExternalProtocolHandler("external", myMidlet) );
+this.htmlBrowser.addProtocolHandler( new TelProtocolHandler("tel", myMidlet) );
 </pre>
 	<p>
 	Now you can use the <code>external</code> and <code>tel</code> protocols in your HTML markup:
