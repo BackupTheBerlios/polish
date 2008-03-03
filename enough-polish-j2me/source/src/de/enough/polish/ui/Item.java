@@ -2881,6 +2881,9 @@ public abstract class Item extends Object
 	 * @param originalStyle the original style which will be restored.
 	 */
 	protected void defocus( Style originalStyle ) {
+		if (this.isPressed) {
+			notifyItemPressedEnd();
+		}
 		this.backgroundYOffset = 0;
 		if (originalStyle != null) {
 			setStyle( originalStyle );
