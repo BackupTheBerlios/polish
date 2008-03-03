@@ -103,7 +103,7 @@
 				workDir="${dir.work}"
 			>
 				<!-- midlets definition -->
-				<midlet class="com.grimo.me.product.midpsysinfo.MIDPSysInfoMIDlet" name="MIDP SysInfo"/>
+				<midlet class="de.enough.sysinfo.MIDPSysInfoMIDlet" name="MIDP SysInfo"/>
 				<resources>
 					<localization locale="en" />
 				</resources>
