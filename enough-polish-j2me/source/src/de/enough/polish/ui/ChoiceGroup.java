@@ -1386,15 +1386,6 @@ implements Choice
 			//#endif
 			if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && choiceItem != null ) {
 				choiceItem.notifyItemPressedStart();
-				if (this.isMultiple) {
-					selectChoiceItem( choiceItem, !choiceItem.isSelected);
-				} else {
-					setSelectedIndex(this.focusedIndex, true);
-				}
-				if ( this.choiceType != Choice.IMPLICIT ) 
-				{
-					notifyStateChanged();
-				}
 				return true;
 			} else {
 				//#if polish.Container.dontUseNumberKeys != true
@@ -1517,9 +1508,18 @@ implements Choice
 		//#debug
 		System.out.println("handleKeyReleased( " + keyCode + ", " + gameAction + " ) for " + this + ", isPressed="+ this.isPressed );
 		if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
-			ChoiceItem item = (ChoiceItem) this.focusedItem;
-			if (item != null && item.isPressed) {
-				item.notifyItemPressedEnd();
+			ChoiceItem choiceItem = (ChoiceItem) this.focusedItem;
+			if (this.isMultiple) {
+				selectChoiceItem( choiceItem, !choiceItem.isSelected);
+			} else {
+				setSelectedIndex(this.focusedIndex, true);
+			}
+			if ( this.choiceType != Choice.IMPLICIT ) 
+			{
+				notifyStateChanged();
+			}
+			if (choiceItem != null && choiceItem.isPressed) {
+				choiceItem.notifyItemPressedEnd();
 				if (this.isImplicit) {
 					// call command listener:
 					Screen scr = getScreen();
@@ -1529,7 +1529,6 @@ implements Choice
 							selectCmd = List.SELECT_COMMAND;
 						}
 						scr.callCommandListener( selectCmd );
-						return true;
 					}
 				}
 			}
@@ -1541,9 +1540,9 @@ implements Choice
 				} else {
 					closePopup();
 				}
-				return true;
 			}
 			//#endif
+			return true;
 		}
 		return super.handleKeyReleased(keyCode, gameAction);
 	}
