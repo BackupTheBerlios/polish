@@ -156,15 +156,15 @@ public class TreeItem
 	 * 
 	 * @param text the text
 	 * @param image the image
-	 * @param itemStyle the style
+	 * @param rootStyle the style
 	 * @return return the created item
 	 */
 	//#if polish.LibraryBuild
-	public javax.microedition.lcdui.Item appendToRoot( String text, Image image, Style itemStyle ) {
+	public javax.microedition.lcdui.Item appendToRoot( String text, Image image, Style rootStyle ) {
 	//#else
-		//# public Item appendToRoot( String text, Image image, Style style ) {
+		//# public Item appendToRoot( String text, Image image, Style rootStyle ) {
 	//#endif
-		IconItem item = new IconItem( text, image, itemStyle );
+		IconItem item = new IconItem( text, image, rootStyle );
 		appendToRoot( item );
 		//#if polish.LibraryBuild
 			return null;
