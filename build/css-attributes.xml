@@ -294,6 +294,14 @@
 			<param name="end" type="integer" primitive="true" default="100" description="The end position of the gradient on the right side." />
 			<param name="is-percent" type="boolean" primitive="true" default="true" description="Set to true when the start/end positions should be interpretated as percentage values." />
 		</mapping>
+		<mapping from="radial-gradient"   to="de.enough.polish.ui.backgrounds.GradientRadialBackground" >
+			<param name="inner-color" type="color" primitive="true" default="white" description="Color on the left side of the gradient." />
+			<param name="outer-color" type="color" primitive="true" default="gray"  description="Color on the right side of the gradient."/>
+			<param name="start" type="percent" primitive="true" default="0" description="The start position in percent of the gradient within the center."/>
+			<param name="end" type="percent" primitive="true" default="100" description="The end position in percent of the gradient on the outer sides." />
+			<param name="center-x" type="percent" primitive="true" default="0" description="The horizontal center of the circles in percent. 0 is the center, -100 is the very left, +100 the very right of the surrounding square."/>
+			<param name="center-y" type="percent" primitive="true" default="0" description="The vertical center of the circles in percent. 0 is the center, -100 is the very top +100 the very bottom of the surrounding square."/>
+		</mapping>
 		<mapping from="partial-gradient"   to="de.enough.polish.ui.backgrounds.PartialGradientBackground" >
 			<param name="top-color" type="color" primitive="true" default="white" />
 			<param name="bottom-color" type="color" primitive="true" default="gray" />
@@ -924,8 +932,8 @@
 		id="39"
 	>
 		<!--  for any Items: -->
-		<mapping from="plain" to="none" />
-		<mapping from="normal" to="none" />
+		<mapping from="plain" to="null" />
+		<mapping from="normal" to="null" />
 		<mapping from="fade-out" to="new de.enough.polish.ui.itemviews.FadeOutItemView()" appliesTo="Item" />
 		<mapping from="fade-in" to="new de.enough.polish.ui.itemviews.FadeInItemView()" appliesTo="Item" />
 		<mapping from="size-increase" to="new de.enough.polish.ui.itemviews.SizeIncreaseItemView()" appliesTo="Item" />
