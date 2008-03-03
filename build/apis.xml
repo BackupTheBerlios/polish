@@ -405,6 +405,17 @@
 		<path>import/sensor.jar</path>
 	</api>
 	
+	<api>
+		<name>Enough Software Windows Helper API</name>
+		<description>
+		Classes to interact with Windows/.Net environment from Java
+		</description>
+		<names>windows</names>
+		<symbol>windows</symbol>
+		<files>windows.jar</files>
+		<path>import/windows.jar</path>
+	</api>
+
 <!--
 	You can use this block to define a new API
 	( remove these XML-comments ):

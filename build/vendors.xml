@@ -255,6 +255,10 @@
 	<vendor>
 		<name>NTT-DoCoMo</name>
 		<capability name="vendor.alias" value="NTT DoCoMo" />
-	</vendor>	
-	
+	</vendor>
+
+	<vendor>
+		<name>Native</name>
+	</vendor>
+
 </vendors>

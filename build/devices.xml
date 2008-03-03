@@ -284,11 +284,12 @@ These namespaces/schemas will be used soon.
 	</device>	
 
 	<device supportsPolishGui="true">
-		<identifier>Generic/WindowsMobile</identifier>
+		<identifier>Native/WindowsMobile</identifier>
 		<features>hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
 		<description>An unknown Windows powered phone.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="windows" />
 		<capability name="ScreenSize" value="240x320"/>
 		<!-- Don't set OS to Windows. This disables the extended menubar
 		<capability name="OS" value="Windows Mobile 5.0"/>
@@ -305,6 +306,8 @@ These namespaces/schemas will be used soon.
 	    <capability name="key.left" value="-3" />
 	    <capability name="key.right" value="-4" />
 		<capability name="key.backspace" value="27" />
+		<capability name="key.ChangeInputModeKey" value="42" />
+		<capability name="TextField.charactersKeyPound" value=" " />
 	</device>	
 
 	<device supportsPolishGui="true">
