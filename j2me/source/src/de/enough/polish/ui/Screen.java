@@ -4096,7 +4096,9 @@ implements AccessibleCanvas
 	 * @return true when the keyboard (if there is one) is accessible by the application.
 	 */
 	protected boolean isKeyboardAccessible() {
-		//#if polish.key.supportsAsciiKeyMap.condition == open
+		//#if polish.identifier == Native/WindowsMobile
+			//# return de.enough.polish.windows.Keyboard.isKeyboardAccessible();
+		//#elif polish.key.supportsAsciiKeyMap.condition == open
 			return getWidth() > getHeight();
 		//#elif polish.key.supportsAsciiKeyMap && !polish.key.supportsAsciiKeyMap.condition:defined
 			//# return true;
