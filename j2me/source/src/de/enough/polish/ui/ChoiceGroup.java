@@ -1509,26 +1509,33 @@ implements Choice
 		System.out.println("handleKeyReleased( " + keyCode + ", " + gameAction + " ) for " + this + ", isPressed="+ this.isPressed );
 		if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
 			ChoiceItem choiceItem = (ChoiceItem) this.focusedItem;
-			if (this.isMultiple) {
-				selectChoiceItem( choiceItem, !choiceItem.isSelected);
-			} else {
-				setSelectedIndex(this.focusedIndex, true);
-			}
-			if ( this.choiceType != Choice.IMPLICIT ) 
+			if (choiceItem != null
+					//#ifdef polish.usePopupItem
+						&& !(this.isPopup && this.isPopupClosed)
+					//#endif
+					) 
 			{
-				notifyStateChanged();
-			}
-			if (choiceItem != null && choiceItem.isPressed) {
-				choiceItem.notifyItemPressedEnd();
-				if (this.isImplicit) {
-					// call command listener:
-					Screen scr = getScreen();
-					if (scr != null) {
-						Command selectCmd = this.selectCommand;
-						if (selectCmd == null) {
-							selectCmd = List.SELECT_COMMAND;
+				if (this.isMultiple) {
+					selectChoiceItem( choiceItem, !choiceItem.isSelected);
+				} else {
+					setSelectedIndex(this.focusedIndex, true);
+				}
+				if ( this.choiceType != Choice.IMPLICIT ) 
+				{
+					notifyStateChanged();
+				}
+				if (choiceItem.isPressed) {
+					choiceItem.notifyItemPressedEnd();
+					if (this.isImplicit) {
+						// call command listener:
+						Screen scr = getScreen();
+						if (scr != null) {
+							Command selectCmd = this.selectCommand;
+							if (selectCmd == null) {
+								selectCmd = List.SELECT_COMMAND;
+							}
+							scr.callCommandListener( selectCmd );
 						}
-						scr.callCommandListener( selectCmd );
 					}
 				}
 			}
