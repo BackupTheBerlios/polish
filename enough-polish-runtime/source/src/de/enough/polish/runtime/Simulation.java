@@ -41,6 +41,7 @@ import java.util.Iterator;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Font;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 import javax.swing.JComponent;
@@ -228,6 +229,9 @@ implements MouseListener, KeyListener
 		} else {
 			this.fontSizeLarge = DEFAULT_LARGE_FONT_SIZE;
 		}
+		Font.AWT_FONT_SIZE_SMALL = this.fontSizeSmall;
+		Font.AWT_FONT_SIZE_MEDIUM = this.fontSizeMedium;
+		Font.AWT_FONT_SIZE_LARGE = this.fontSizeLarge;
 		this.device = device;
 		BufferedImage image =
 		    new BufferedImage(this.canvasWidth,this.canvasHeight,BufferedImage.TYPE_4BYTE_ABGR);

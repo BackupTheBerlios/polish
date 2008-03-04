@@ -7,8 +7,6 @@ import java.awt.font.LineMetrics;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
-import de.enough.polish.runtime.Simulation;
-
 /**
  * The <code>Font</code> class represents fonts and font
  * metrics. <code>Fonts</code> cannot be
@@ -61,6 +59,9 @@ import de.enough.polish.runtime.Simulation;
  */
 public final class Font extends Object
 {
+	public static int AWT_FONT_SIZE_SMALL = 15;
+	public static int AWT_FONT_SIZE_MEDIUM = 18;
+	public static int AWT_FONT_SIZE_LARGE = 22;
 	/**
 	 * The plain style constant. This may be combined with the
 	 * other style constants for mixed styles.
@@ -228,7 +229,6 @@ public final class Font extends Object
 //			default:
 //				styleStr = "PLAIN";
 //		}
-		Simulation simulation = Simulation.getCurrentSimulation();
 //		if (simulation != null) {
 //			System.out.println("Font-small: " + simulation.getFontSizeSmall());
 //			System.out.println("Font-medium: " + simulation.getFontSizeMedium());
@@ -237,25 +237,13 @@ public final class Font extends Object
 		int awtSize;
 		switch (size) {
 			case SIZE_SMALL:
-				if (simulation == null) {
-					awtSize = 14;
-				} else {
-					awtSize = (simulation.getFontSizeSmall() - 2); // adjust size to compensate for bulky Arial font
-				}
+				awtSize = (AWT_FONT_SIZE_SMALL - 2); // adjust size to compensate for bulky Arial font
 				break;
 			case SIZE_LARGE:
-				if (simulation == null) {
-					awtSize = 19;
-				} else {
-					awtSize  = (simulation.getFontSizeLarge() - 2);
-				}
+				awtSize  = (AWT_FONT_SIZE_LARGE - 2);
 				break;
 			default:
-				if (simulation == null) {
-					awtSize = 15;
-				} else {
-					awtSize = (simulation.getFontSizeMedium() - 2);
-				}
+				awtSize = (AWT_FONT_SIZE_MEDIUM - 2);
 		}
 		if (awtSize < 8) {
 			awtSize = 14;
