@@ -226,6 +226,10 @@ public class ThemeTask extends PolishTask {
 		
 		//boot classpaths
 		String[] bootClassPaths = device.getBootClassPaths();
+
+		//Replace the midp-2.0.jar with enough-j2mepolish-runtime.jar
+		//to prevent initializations of empty stubs e.g. in Font 
+		bootClassPaths = replaceBootClassEntry(bootClassPaths,"import/midp-2.0.jar","lib/enough-j2mepolish-runtime.jar");
 		
 		URL[] urls = new URL[bootClassPaths.length + 1];
 		urls[0] = classesURL;
@@ -234,6 +238,29 @@ public class ThemeTask extends PolishTask {
 		}
 		
 		return new URLClassLoader(urls);
+	}
+	
+	/**
+	 * Replaces a classpath entry 
+	 * @param device the device
+	 * @param entry the entry
+	 * @param replace the replacement for the entry
+	 */
+	private String[] replaceBootClassEntry(String[] entries, String token, String replace)
+	{
+		for (int i = 0; i < entries.length; i++) {
+			String entry = entries[i];
+			int index = entry.indexOf(token);
+			
+			if(index != -1)
+			{
+				entry = entry.substring(0,index);
+				entry += replace;
+				entries[i] = entry;
+			}
+		}
+		
+		return entries;
 	}
 	
 	/**
