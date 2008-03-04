@@ -119,6 +119,8 @@ public class FishEyeContainerView extends ContainerView {
 	//#if polish.css.fisheyeview-max-visible
 		protected int maxVisibleItems;
 	//#endif
+		
+	private final Object lock = new Object();
 	
 	/**
 	 * Creates a new fish eye view
@@ -134,130 +136,133 @@ public class FishEyeContainerView extends ContainerView {
 	 */
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		super.animate(currentTime, repaintRegion);
-		//#if polish.midp2
-		if (this.shownRgbDataWidths == null) {
-			//#debug warn
-			System.out.println("FishEyeContainerView is animated before initContent has been called");
-			return;
-		}
-		//#endif
 		
-		boolean animated = false;
-		if (this.targetXCenterPositions != null) {
-			Item[] myItems = this.parentContainer.getItems();
-			int length = myItems.length;
-			//#if polish.css.fisheyeview-max-visible
-				int maxDistance = length;
-				if (this.maxVisibleItems != 0) {
-					maxDistance = this.maxVisibleItems >> 1;
-				}
+		synchronized (this.lock) {
+			//#if polish.midp2
+			if (this.shownRgbDataWidths == null) {
+				//#debug warn
+				System.out.println("FishEyeContainerView is animated before initContent has been called");
+				return;
+			}
 			//#endif
-			for (int i = 0; i <length; i++) {
-				int target = this.targetXCenterPositions[i];
-				Item item = myItems[i];
-				int halfItemWidth = (item.itemWidth >> 1);
-				int distance = getDistance( i, this.focusedIndex, length );
-				if (distance != 0) {
-					distance--;
-				}
-				//#if polish.midp2
-					int factor = this.scaleFactor;
-				//#endif
-				//#if tmp.scaleAll
-					factor = factor + ((this.scaleFactorEnd - factor ) * distance) / (length >> 1);
-				//#endif
-				//#if polish.midp2
-					if (i != this.focusedIndex) {
-						halfItemWidth = (halfItemWidth * factor) / 100;
+			
+			boolean animated = false;
+			if (this.targetXCenterPositions != null) {
+				Item[] myItems = this.parentContainer.getItems();
+				int length = myItems.length;
+				//#if polish.css.fisheyeview-max-visible
+					int maxDistance = length;
+					if (this.maxVisibleItems != 0) {
+						maxDistance = this.maxVisibleItems >> 1;
 					}
 				//#endif
-				int current = item.relativeX + halfItemWidth;
-				//System.out.println("animate: itemWidth of " + i + " with distance " + distance + " =" + halfItemWidth);
-				//System.out.println(i + ": current=" + current + ", target=" + target);
-				if (current != target) {
-					animated = true;
-					//System.out.println(i + ": animate:  with distance " + distance + ", halfItemWidth=" + halfItemWidth + ", current=" + current + ", target=" + target + ", focusedIndex=" + this.focusedIndex);
-					item.relativeX = calculateCurrent( current, target ) - halfItemWidth;
-					//System.out.println( i + ": relativeX=" + item.relativeX);
-				}
-				if (this.targetYCenterPositions != null) {
-					int halfItemHeight = (item.itemHeight >> 1);
+				for (int i = 0; i <length; i++) {
+					int target = this.targetXCenterPositions[i];
+					Item item = myItems[i];
+					int halfItemWidth = (item.itemWidth >> 1);
+					int distance = getDistance( i, this.focusedIndex, length );
+					if (distance != 0) {
+						distance--;
+					}
+					//#if polish.midp2
+						int factor = this.scaleFactor;
+					//#endif
+					//#if tmp.scaleAll
+						factor = factor + ((this.scaleFactorEnd - factor ) * distance) / (length >> 1);
+					//#endif
 					//#if polish.midp2
 						if (i != this.focusedIndex) {
-							halfItemHeight = (halfItemHeight * factor) / 100;
+							halfItemWidth = (halfItemWidth * factor) / 100;
 						}
 					//#endif
-					current = item.relativeY + halfItemHeight;
-					target = this.targetYCenterPositions[i];
+					int current = item.relativeX + halfItemWidth;
+					//System.out.println("animate: itemWidth of " + i + " with distance " + distance + " =" + halfItemWidth);
+					//System.out.println(i + ": current=" + current + ", target=" + target);
 					if (current != target) {
 						animated = true;
-						item.relativeY = calculateCurrent( current, target ) - halfItemHeight;						
+						//System.out.println(i + ": animate:  with distance " + distance + ", halfItemWidth=" + halfItemWidth + ", current=" + current + ", target=" + target + ", focusedIndex=" + this.focusedIndex);
+						item.relativeX = calculateCurrent( current, target ) - halfItemWidth;
+						//System.out.println( i + ": relativeX=" + item.relativeX);
 					}
-				}
-				//#if polish.css.fisheyeview-max-visible
-					if (distance >= maxDistance ) {
-						continue;
-					}
-				//#endif
-				//#if polish.midp2
-					int currentAlpha = this.currentTranslucencies[i];
-					int targetAlpha = this.targetTranslucencies[i];
-					boolean adjustAlpha = (currentAlpha != targetAlpha);
-					if (adjustAlpha) {
-						currentAlpha = calculateCurrent( currentAlpha, targetAlpha);
-						this.currentTranslucencies[i] = currentAlpha;
-					}
-					boolean isScaled = false;
-					if (factor != 100) {
-						current = this.shownRgbDataWidths[ i ];
-						if (i == this.focusedIndex) {
-							target = this.originalRgbDataWidths[ i ];
-						} else {
-							target = (this.originalRgbDataWidths[ i ] * factor) / 100;
-						}
-						if (current != target && ( distance < (length >> 2) || i == this.focusedIndex || (Math.abs(current - target)*100/target > 5) ) ) {
+					if (this.targetYCenterPositions != null) {
+						int halfItemHeight = (item.itemHeight >> 1);
+						//#if polish.midp2
+							if (i != this.focusedIndex) {
+								halfItemHeight = (halfItemHeight * factor) / 100;
+							}
+						//#endif
+						current = item.relativeY + halfItemHeight;
+						target = this.targetYCenterPositions[i];
+						if (current != target) {
 							animated = true;
-							isScaled = true;
-							int[] data = this.originalRgbData[i];
-							int originalWidth = this.originalRgbDataWidths[i];
-							int originalHeight = data.length / originalWidth;
-							int newWidth = calculateCurrent( current, target );
-							int newHeight = (newWidth * originalHeight) / originalWidth;
-							//int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length );
-							//this.shownRgbData[i] = ImageUtil.scale(alpha, data, newWidth, newHeight, originalWidth, originalHeight );
-							//#if polish.FishEye.scaleHq
-								ImageUtil.scaleDownHq(this.shownRgbData[i],data, originalWidth, newWidth, 0, currentAlpha, false);
-							//#else
-								ImageUtil.scale(currentAlpha, data, newWidth, newHeight, originalWidth, originalHeight, this.shownRgbData[i] );
-							//#endif
-							this.shownRgbDataWidths[i] = newWidth;
-							this.shownRgbDataHeights[i] = newHeight;
-							//item.itemWidth = newWidth;
-							//item.itemHeight = newHeight;
-							//item.relativeX += (originalWidth - newWidth) >> 1;
-							//System.out.println("animate: new item width of " + i + " = " + newWidth + ", difference=" + (originalWidth - newWidth));
+							item.relativeY = calculateCurrent( current, target ) - halfItemHeight;						
 						}
-					} 
-					if (adjustAlpha && !isScaled) {
-						// adjust only the translucency:
-						animated = true;
-						ImageUtil.setTransparencyOnlyForOpaque( currentAlpha, this.shownRgbData[i], true );
 					}
-				//#endif
+					//#if polish.css.fisheyeview-max-visible
+						if (distance >= maxDistance ) {
+							continue;
+						}
+					//#endif
+					//#if polish.midp2
+						int currentAlpha = this.currentTranslucencies[i];
+						int targetAlpha = this.targetTranslucencies[i];
+						boolean adjustAlpha = (currentAlpha != targetAlpha);
+						if (adjustAlpha) {
+							currentAlpha = calculateCurrent( currentAlpha, targetAlpha);
+							this.currentTranslucencies[i] = currentAlpha;
+						}
+						boolean isScaled = false;
+						if (factor != 100) {
+							current = this.shownRgbDataWidths[ i ];
+							if (i == this.focusedIndex) {
+								target = this.originalRgbDataWidths[ i ];
+							} else {
+								target = (this.originalRgbDataWidths[ i ] * factor) / 100;
+							}
+							if (current != target && ( distance < (length >> 2) || i == this.focusedIndex || (Math.abs(current - target)*100/target > 5) ) ) {
+								animated = true;
+								isScaled = true;
+								int[] data = this.originalRgbData[i];
+								int originalWidth = this.originalRgbDataWidths[i];
+								int originalHeight = data.length / originalWidth;
+								int newWidth = calculateCurrent( current, target );
+								int newHeight = (newWidth * originalHeight) / originalWidth;
+								//int alpha = calculateAlpha( getDistance( i, this.focusedIndex, length ), length );
+								//this.shownRgbData[i] = ImageUtil.scale(alpha, data, newWidth, newHeight, originalWidth, originalHeight );
+								//#if polish.FishEye.scaleHq
+									ImageUtil.scaleDownHq(this.shownRgbData[i],data, originalWidth, newWidth, 0, currentAlpha, false);
+								//#else
+									ImageUtil.scale(currentAlpha, data, newWidth, newHeight, originalWidth, originalHeight, this.shownRgbData[i] );
+								//#endif
+								this.shownRgbDataWidths[i] = newWidth;
+								this.shownRgbDataHeights[i] = newHeight;
+								//item.itemWidth = newWidth;
+								//item.itemHeight = newHeight;
+								//item.relativeX += (originalWidth - newWidth) >> 1;
+								//System.out.println("animate: new item width of " + i + " = " + newWidth + ", difference=" + (originalWidth - newWidth));
+							}
+						} 
+						if (adjustAlpha && !isScaled) {
+							// adjust only the translucency:
+							animated = true;
+							ImageUtil.setTransparencyOnlyForOpaque( currentAlpha, this.shownRgbData[i], true );
+						}
+					//#endif
+				}
 			}
-		}
-		if (this.isRemoveText && this.focusedLabel != null) {
-			animated |= this.focusedLabel.animate();
-		}
-		if (this.focusedBackground != null) {
-			animated |= this.focusedBackground.animate();
-		}
-		if (animated) {
-			repaintRegion.addRegion( this.parentContainer.getAbsoluteX() - 5, 
-					this.parentContainer.getAbsoluteY(), 
-					this.parentContainer.itemWidth + 10,
-					this.parentContainer.itemHeight
-			);
+			if (this.isRemoveText && this.focusedLabel != null) {
+				animated |= this.focusedLabel.animate();
+			}
+			if (this.focusedBackground != null) {
+				animated |= this.focusedBackground.animate();
+			}
+			if (animated) {
+				repaintRegion.addRegion( this.parentContainer.getAbsoluteX() - 10, 
+						this.parentContainer.getAbsoluteY() - 10, 
+						this.parentContainer.itemWidth + 20,
+						this.parentContainer.itemHeight + 20
+				);
+			}
 		}
 	}
 
@@ -915,15 +920,17 @@ public class FishEyeContainerView extends ContainerView {
 	/* see ItemView.releaseResources() */
 	public void releaseResources() {
 		super.releaseResources();
-		//#if polish.midp2
-			this.originalRgbData = null;
-			this.originalRgbDataWidths = null;
-			this.shownRgbData = null;
-			this.shownRgbDataWidths = null;
-			this.shownRgbDataHeights= null;
-			this.referenceXCenterPositions = null;
-			this.referenceYCenterPositions = null;
-		//#endif
+		synchronized (this.lock) {
+			//#if polish.midp2
+				this.originalRgbData = null;
+				this.originalRgbDataWidths = null;
+				this.shownRgbData = null;
+				this.shownRgbDataWidths = null;
+				this.shownRgbDataHeights= null;
+				this.referenceXCenterPositions = null;
+				this.referenceYCenterPositions = null;
+			//#endif
+		}
 	}
 
 	
