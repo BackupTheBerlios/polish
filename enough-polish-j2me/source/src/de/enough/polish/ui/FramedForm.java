@@ -340,7 +340,7 @@ public class FramedForm extends Form {
 		y = this.contentY;
 		width = this.contentWidth;
 		height = this.contentHeight;
-		this.originalContentWidth = width + getScrollBarWidth();
+		this.originalContentWidth = width;
 		this.originalContentHeight = height;
 		this.originalContentY = this.contentY;
 		this.originalContentX = this.contentX;
