@@ -241,7 +241,7 @@ public class ThemeTask extends PolishTask {
 	}
 	
 	/**
-	 * Replaces a classpath entry 
+	 * Alters a classpath entry 
 	 * @param device the device
 	 * @param entry the entry
 	 * @param replace the replacement for the entry
