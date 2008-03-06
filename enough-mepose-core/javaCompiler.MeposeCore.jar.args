@@ -13,7 +13,7 @@
 #ADAPTER#ACCESS#local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility_3.1.100.v20060603.jar[?**/*]
 #ADAPTER#ACCESS#local/opt/eclipse_3.2/plugins/org.eclipse.update.configurator_3.2.0.v20060605.jar[?**/*]
 #ADAPTER#ACCESS#local/opt/eclipse_3.2/plugins/org.eclipse.ant.core_3.1.100.v20060531.jar[+org/eclipse/ant/core/*:~org/eclipse/ant/internal/core/*:~org/eclipse/ant/internal/core/contentDescriber/*:?**/*]
-#ADAPTER#ACCESS#local/opt/eclipse_3.2/plugins/org.eclipse.core.variables_3.1.100.v20060605.jar[?**/*]
+#ADAPTER#ACCESS#local/opt/eclipse_3.2/plugins/org.eclipse.core.variables_3.1.100.v20060605.jar[~org/eclipse/core/internal/variables/*:+org/eclipse/core/variables/*:?**/*]
 #ADAPTER#ACCESS#local/opt/eclipse_3.2/plugins/org.eclipse.core.expressions_3.2.0.v20060605-1400.jar[?**/*]
 #ADAPTER#ACCESS#local/opt/eclipse_3.2/plugins/org.eclipse.core.filesystem_1.0.0.v20060603.jar[?**/*]
 #ADAPTER#ACCESS#local/opt/eclipse_3.2/plugins/org.eclipse.core.filesystem.linux.x86_1.0.0.v20060603.jar[?**/*]
