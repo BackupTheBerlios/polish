@@ -307,7 +307,7 @@ implements AccessibleCanvas
 	private boolean isScreenChangeDirtyFlag;
 	protected ItemStateListener itemStateListener;
 //	private ArrayList stateNotifyQueue;
-	private final Object paintLock = new Object();
+	private final Object paintLock;
 	private ArrayList itemCommands;
 	private Object data;
 	/** The last time in ms when the user interacted with this screen. This value is used for stopping
@@ -380,6 +380,9 @@ implements AccessibleCanvas
 			super.setFullScreenMode( true );
 		//#endif
 		setTitle( title );
+		
+		//make sure paintlock is initialized after all the other variables
+		this.paintLock = new Object();
 	}
 		
 	/**
