@@ -344,16 +344,18 @@ implements OutputFilter
 			Object[] keys = jadProperties.keySet().toArray();
 			for (int i = 0; i < keys.length; i++) {
 				String key = (String) keys[i];
-				if (key.endsWith("URL")) {
+				if (key.startsWith("RIM") && key.contains("URL")) {
 					value = (String) jadProperties.get(key);
 					value = StringUtil.replace(value, '$', '%');
 					jadProperties.put( key, value );
 				}
-				if (key.startsWith("RIM") && key.charAt( key.length() - 2) == '-') {
-					jadProperties.remove(key);
-				}
+                // rickyn:2008-03-07: We need all RIM entries if unpacking the .cod for OTA.
+//				if (key.startsWith("RIM") && key.charAt( key.length() - 2) == '-') {
+//					jadProperties.remove(key);
+//				}
 			}
-			FileUtil.writePropertiesFile( new File(jadFile.getParent(), jadFile.getName() + ".alt.jad"), ':', jadProperties );
+            File alternativejadFile = new File(jadFile.getParent(), jadFile.getName() + ".alt.jad");
+			FileUtil.writePropertiesFile( alternativejadFile, ':', jadProperties );
 
 	
 			// store new JAR path and name so that later finalizers work on the correct file:
