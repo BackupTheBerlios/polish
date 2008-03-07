@@ -651,13 +651,13 @@ public final class Serializer {
 					rgb[i] = in.readInt();
 				}
 				return Image.createRGBImage(rgb, width, height, true );
-			} else {
-				// this is a bytes based format like png:
-				int bytesLength = in.readInt();
-				byte[] buffer = new byte[ bytesLength ];
-				in.readFully( buffer );
-				return Image.createImage( buffer, 0, bytesLength );
 			}
+
+			// this is a bytes based format like png:
+			int bytesLength = in.readInt();
+			byte[] buffer = new byte[ bytesLength ];
+			in.readFully( buffer );
+			return Image.createImage( buffer, 0, bytesLength );
 		//#endif
 		//#if polish.midp
 		case TYPE_FONT:

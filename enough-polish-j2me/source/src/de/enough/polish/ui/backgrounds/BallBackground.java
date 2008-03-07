@@ -106,17 +106,44 @@ public class BallBackground extends Background {
 		//		x--{1,5,8}, y--{2,5,6}, y++{3,7,8}, x++{4,6,7}
 		for(int i =0;i < this.number;i++) {
 			switch(this.direction[i]) {
-				case 1:{this.changeX[i]--;this.sprite[i].setTransform(Sprite.TRANS_MIRROR);break; }  
-				case 2:{this.changeY[i]--;this.sprite[i].setTransform(Sprite.TRANS_MIRROR_ROT90);break; } 
-				case 3:{this.changeY[i]++;this.sprite[i].setTransform(Sprite.TRANS_ROT90);break; } 
-				case 4:{this.changeX[i]++;this.sprite[i].setTransform(Sprite.TRANS_NONE);break; } 
-				case 5:{this.changeX[i]--;this.changeY[i]--;this.sprite[i].setTransform(Sprite.TRANS_MIRROR_ROT90);break; } 
-				case 6:{this.changeY[i]--;this.changeX[i]++;this.sprite[i].setTransform(Sprite.TRANS_MIRROR_ROT90);break; } 
-				case 7:{this.changeY[i]++;this.changeX[i]++;this.sprite[i].setTransform(Sprite.TRANS_ROT90);break; } 
-				case 8:{this.changeX[i]--;this.changeY[i]++;this.sprite[i].setTransform(Sprite.TRANS_ROT90);break; } 
+				case 1:
+					this.changeX[i]--;
+					this.sprite[i].setTransform(Sprite.TRANS_MIRROR);
+					break;
+				case 2:
+					this.changeY[i]--;
+					this.sprite[i].setTransform(Sprite.TRANS_MIRROR_ROT90);
+					break; 
+				case 3:
+					this.changeY[i]++;
+					this.sprite[i].setTransform(Sprite.TRANS_ROT90);
+					break;
+				case 4:
+					this.changeX[i]++;
+					this.sprite[i].setTransform(Sprite.TRANS_NONE);
+					break;
+				case 5:
+					this.changeX[i]--;
+					this.changeY[i]--;this.sprite[i].setTransform(Sprite.TRANS_MIRROR_ROT90);
+					break;
+				case 6:
+					this.changeY[i]--;
+					this.changeX[i]++;this.sprite[i].setTransform(Sprite.TRANS_MIRROR_ROT90);
+					break;
+				case 7:
+					this.changeY[i]++;
+					this.changeX[i]++;this.sprite[i].setTransform(Sprite.TRANS_ROT90);
+					break;
+				case 8:
+					this.changeX[i]--;
+					this.changeY[i]++;
+					this.sprite[i].setTransform(Sprite.TRANS_ROT90);
+					break;
 			}
+
 			this.sprite[i].nextFrame();
 		}
-			return !this.gameover;
-		}
+
+		return !this.gameover;
 	}
+}

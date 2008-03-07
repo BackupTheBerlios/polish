@@ -77,7 +77,7 @@ package de.enough.polish.math;
           return this.altCoeff.div(2 * n + 1);  
         case ATAN_HTAYLOR:
           if(n % 2 == 0) return (new HFloat( 1)).div(2 * n + 1);
-          else           return (new HFloat(-1)).div(2 * n + 1);
+          return (new HFloat(-1)).div(2 * n + 1);
         case COS_HTAYLOR:
           if(n < this.altN) init(this.werBinIchP);
           for(int m = this.altN + 1; m <= n; ++m){
@@ -93,7 +93,7 @@ package de.enough.polish.math;
           return this.altCoeff;  
         case LN_HTAYLOR:
           if(n % 2 == 0) return (new HFloat( 1)).div(n + 1);
-          else           return (new HFloat(-1)).div(n + 1);
+          return (new HFloat(-1)).div(n + 1);
         case SIN_HTAYLOR:
          if(n < this.altN) init(this.werBinIchP);
          for(int m = this.altN + 1; m <= n; ++m){
