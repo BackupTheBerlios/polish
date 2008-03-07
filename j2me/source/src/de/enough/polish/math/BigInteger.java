@@ -45,68 +45,68 @@ public class BigInteger
     // Each list has a product < 2^31
     private static final int[][] primeLists = new int[][]
     {
-        new int[]{ 3, 5, 7, 11, 13, 17, 19, 23 },
-        new int[]{ 29, 31, 37, 41, 43 },
-        new int[]{ 47, 53, 59, 61, 67 },
-        new int[]{ 71, 73, 79, 83 },
-        new int[]{ 89, 97, 101, 103 },
+        { 3, 5, 7, 11, 13, 17, 19, 23 },
+        { 29, 31, 37, 41, 43 },
+        { 47, 53, 59, 61, 67 },
+        { 71, 73, 79, 83 },
+        { 89, 97, 101, 103 },
 
-        new int[]{ 107, 109, 113, 127 },
-        new int[]{ 131, 137, 139, 149 },
-        new int[]{ 151, 157, 163, 167 },
-        new int[]{ 173, 179, 181, 191 },
-        new int[]{ 193, 197, 199, 211 },
+        { 107, 109, 113, 127 },
+        { 131, 137, 139, 149 },
+        { 151, 157, 163, 167 },
+        { 173, 179, 181, 191 },
+        { 193, 197, 199, 211 },
 
-        new int[]{ 223, 227, 229 },
-        new int[]{ 233, 239, 241 },
-        new int[]{ 251, 257, 263 },
-        new int[]{ 269, 271, 277 },
-        new int[]{ 281, 283, 293 },
+        { 223, 227, 229 },
+        { 233, 239, 241 },
+        { 251, 257, 263 },
+        { 269, 271, 277 },
+        { 281, 283, 293 },
 
-        new int[]{ 307, 311, 313 },
-        new int[]{ 317, 331, 337 },
-        new int[]{ 347, 349, 353 },
-        new int[]{ 359, 367, 373 },
-        new int[]{ 379, 383, 389 },
+        { 307, 311, 313 },
+        { 317, 331, 337 },
+        { 347, 349, 353 },
+        { 359, 367, 373 },
+        { 379, 383, 389 },
 
-        new int[]{ 397, 401, 409 },
-        new int[]{ 419, 421, 431 },
-        new int[]{ 433, 439, 443 },
-        new int[]{ 449, 457, 461 },
-        new int[]{ 463, 467, 479 },
+        { 397, 401, 409 },
+        { 419, 421, 431 },
+        { 433, 439, 443 },
+        { 449, 457, 461 },
+        { 463, 467, 479 },
 
-        new int[]{ 487, 491, 499 },
-        new int[]{ 503, 509, 521 },
-        new int[]{ 523, 541, 547 },
-        new int[]{ 557, 563, 569 },
-        new int[]{ 571, 577, 587 },
+        { 487, 491, 499 },
+        { 503, 509, 521 },
+        { 523, 541, 547 },
+        { 557, 563, 569 },
+        { 571, 577, 587 },
 
-        new int[]{ 593, 599, 601 },
-        new int[]{ 607, 613, 617 },
-        new int[]{ 619, 631, 641 },
-        new int[]{ 643, 647, 653 },
-        new int[]{ 659, 661, 673 },
+        { 593, 599, 601 },
+        { 607, 613, 617 },
+        { 619, 631, 641 },
+        { 643, 647, 653 },
+        { 659, 661, 673 },
 
-        new int[]{ 677, 683, 691 },
-        new int[]{ 701, 709, 719 },
-        new int[]{ 727, 733, 739 },
-        new int[]{ 743, 751, 757 },
-        new int[]{ 761, 769, 773 },
+        { 677, 683, 691 },
+        { 701, 709, 719 },
+        { 727, 733, 739 },
+        { 743, 751, 757 },
+        { 761, 769, 773 },
 
-        new int[]{ 787, 797, 809 },
-        new int[]{ 811, 821, 823 },
-        new int[]{ 827, 829, 839 },
-        new int[]{ 853, 857, 859 },
-        new int[]{ 863, 877, 881 },
+        { 787, 797, 809 },
+        { 811, 821, 823 },
+        { 827, 829, 839 },
+        { 853, 857, 859 },
+        { 863, 877, 881 },
 
-        new int[]{ 883, 887, 907 },
-        new int[]{ 911, 919, 929 },
-        new int[]{ 937, 941, 947 },
-        new int[]{ 953, 967, 971 },
-        new int[]{ 977, 983, 991 },
+        { 883, 887, 907 },
+        { 911, 919, 929 },
+        { 937, 941, 947 },
+        { 953, 967, 971 },
+        { 977, 983, 991 },
 
-        new int[]{ 997, 1009, 1013 },
-        new int[]{ 1019, 1021, 1031 },
+        { 997, 1009, 1013 },
+        { 1019, 1021, 1031 },
     };
 
     private static int[] primeProducts;
@@ -1200,7 +1200,7 @@ public class BigInteger
         if (certainty <= 0)
             return true;
 
-        if (sign == 0)
+        if (this.sign == 0)
             return false;
 
         BigInteger n = this.abs();
@@ -1761,11 +1761,11 @@ public class BigInteger
      */
     private long getMQuote()
     {
-        if (mQuote != -1L)
+        if (this.mQuote != -1L)
         { // allready calculated
-            return mQuote;
+            return this.mQuote;
         }
-        if ((magnitude[magnitude.length - 1] & 1) == 0)
+        if ((this.magnitude[this.magnitude.length - 1] & 1) == 0)
         {
             return -1L; // not for even numbers
         }
@@ -1776,9 +1776,9 @@ public class BigInteger
         mQuote = this.negate().mod(b).modInverse(b).longValue();
 */
         long v = (((~this.magnitude[this.magnitude.length - 1]) | 1) & 0xffffffffL);
-        mQuote = _modInverse(v, 0x100000000L);
+        this.mQuote = _modInverse(v, 0x100000000L);
 
-        return mQuote;
+        return this.mQuote;
     }
 
     /**
@@ -1886,7 +1886,7 @@ public class BigInteger
     {
         if (exp < 0)
             throw new ArithmeticException("Negative exponent");
-        if (sign == 0)
+        if (this.sign == 0)
             return (exp == 0 ? BigInteger.ONE : this);
 
         BigInteger y, 
@@ -1920,9 +1920,9 @@ public class BigInteger
     private int remainder(int m)
     {
         long acc = 0;
-        for (int pos = 0; pos < magnitude.length; ++pos)
+        for (int pos = 0; pos < this.magnitude.length; ++pos)
         {
-            acc = (acc << 32 | ((long)magnitude[pos] & 0xffffffffL)) % m;
+            acc = (acc << 32 | ((long)this.magnitude[pos] & 0xffffffffL)) % m;
         }
 
         return (int) acc;
@@ -2033,7 +2033,7 @@ public class BigInteger
             throw new ArithmeticException("BigInteger: Divide by zero");
         }
 
-        if (sign == 0)
+        if (this.sign == 0)
         {
             return BigInteger.ZERO;
         }
@@ -2052,11 +2052,11 @@ public class BigInteger
 
                 return rem == 0
                     ?   ZERO
-                    :   new BigInteger(sign, new int[]{ rem });
+                    :   new BigInteger(this.sign, new int[]{ rem });
             }
         }
 
-        if (compareTo(0, magnitude, 0, n.magnitude) < 0)
+        if (compareTo(0, this.magnitude, 0, n.magnitude) < 0)
             return this;
 
         int[] res;
@@ -2072,7 +2072,7 @@ public class BigInteger
             res = remainder(res, n.magnitude);
         }
 
-        return new BigInteger(sign, res);
+        return new BigInteger(this.sign, res);
     }
 
     private int[] lastNBits(
@@ -2146,7 +2146,7 @@ public class BigInteger
 
     public BigInteger shiftLeft(int n)
     {
-        if (sign == 0 || magnitude.length == 0)
+        if (this.sign == 0 || this.magnitude.length == 0)
         {
             return ZERO;
         }
@@ -2161,11 +2161,11 @@ public class BigInteger
             return shiftRight( -n);
         }
 
-        BigInteger result = new BigInteger(sign, shiftLeft(magnitude, n));
+        BigInteger result = new BigInteger(this.sign, shiftLeft(this.magnitude, n));
 
         if (this.nBits != -1)
         {
-            result.nBits = sign > 0
+            result.nBits = this.sign > 0
                 ?   this.nBits
                 :   this.nBits + n;
         }
@@ -2270,7 +2270,7 @@ public class BigInteger
 
     public int signum()
     {
-        return sign;
+        return this.sign;
     }
 
     /**
@@ -2309,7 +2309,7 @@ public class BigInteger
         {
             return this;
         }
-        if (sign == 0 || magnitude.length == 0)
+        if (this.sign == 0 || this.magnitude.length == 0)
         {
             return val.negate();
         }
@@ -2318,7 +2318,7 @@ public class BigInteger
             return this.add(val.negate());
         }
 
-        int compare = compareTo(0, magnitude, 0, val.magnitude);
+        int compare = compareTo(0, this.magnitude, 0, val.magnitude);
         if (compare == 0)
         {
             return ZERO;
@@ -2345,7 +2345,7 @@ public class BigInteger
 
     public byte[] toByteArray()
     {
-        if (sign == 0)
+        if (this.sign == 0)
         {
             return new byte[1]; 
         }
@@ -2353,21 +2353,21 @@ public class BigInteger
         int bitLength = bitLength();
         byte[] bytes = new byte[bitLength / 8 + 1];
 
-        int magIndex = magnitude.length;
+        int magIndex = this.magnitude.length;
         int bytesIndex = bytes.length;
 
-        if (sign > 0)
+        if (this.sign > 0)
         {
             while (magIndex > 1)
             {
-                int mag = magnitude[--magIndex];
+                int mag = this.magnitude[--magIndex];
                 bytes[--bytesIndex] = (byte) mag;
                 bytes[--bytesIndex] = (byte)(mag >>> 8);
                 bytes[--bytesIndex] = (byte)(mag >>> 16);
                 bytes[--bytesIndex] = (byte)(mag >>> 24);
             }
 
-            int lastMag = magnitude[0];
+            int lastMag = this.magnitude[0];
             while ((lastMag & 0xFFFFFF00) != 0)
             {
                 bytes[--bytesIndex] = (byte) lastMag;
@@ -2382,7 +2382,7 @@ public class BigInteger
 
             while (magIndex > 1)
             {
-                int mag = ~magnitude[--magIndex];
+                int mag = ~this.magnitude[--magIndex];
 
                 if (carry)
                 {
@@ -2395,7 +2395,7 @@ public class BigInteger
                 bytes[--bytesIndex] = (byte)(mag >>> 24);
             }
 
-            int lastMag = magnitude[0];
+            int lastMag = this.magnitude[0];
 
             if (carry)
             {
@@ -2440,7 +2440,7 @@ public class BigInteger
             ? val.magnitude
             : val.add(ONE).magnitude;
 
-        boolean resultNeg = (sign < 0 && val.sign >= 0) || (sign >= 0 && val.sign < 0);
+        boolean resultNeg = (this.sign < 0 && val.sign >= 0) || (this.sign >= 0 && val.sign < 0);
         int resultLength = Math.max(aMag.length, bMag.length);
         int[] resultMag = new int[resultLength];
 
@@ -2501,7 +2501,7 @@ public class BigInteger
                         ? value.magnitude
                         : value.add(ONE).magnitude;
 
-        boolean resultNeg = sign < 0 || value.sign < 0;
+        boolean resultNeg = this.sign < 0 || value.sign < 0;
         int resultLength = Math.max(aMag.length, bMag.length);
         int[] resultMag = new int[resultLength];
 
@@ -2555,7 +2555,7 @@ public class BigInteger
         }
 
         // TODO Handle negative values and zero
-        if (sign > 0 && n < (bitLength() - 1))
+        if (this.sign > 0 && n < (bitLength() - 1))
         {
             return flipExistingBit(n);
         }
@@ -2577,7 +2577,7 @@ public class BigInteger
         }
 
         // TODO Handle negative values
-        if (sign > 0 && n < (bitLength() - 1))
+        if (this.sign > 0 && n < (bitLength() - 1))
         {
             return flipExistingBit(n);
         }
@@ -2594,7 +2594,7 @@ public class BigInteger
         }
 
         // TODO Handle negative values and zero
-        if (sign > 0 && n < (bitLength() - 1))
+        if (this.sign > 0 && n < (bitLength() - 1))
         {
             return flipExistingBit(n);
         }
@@ -2611,21 +2611,23 @@ public class BigInteger
         return new BigInteger(this.sign, mag);
     }
 
+    /*
     private int[] createResult(int wordNum)
     {
         int[] result;
-        if (magnitude.length < wordNum + 1)
+        if (this.magnitude.length < wordNum + 1)
         {
             result = new int[wordNum + 1];
         }
         else
         {
-            result = new int[magnitude.length];
+            result = new int[this.magnitude.length];
         }
         
-        System.arraycopy(magnitude, 0, result, result.length - magnitude.length, magnitude.length);
+        System.arraycopy(this.magnitude, 0, result, result.length - this.magnitude.length, this.magnitude.length);
         return result;
     }
+    */
         
     public String toString()
     {
@@ -2634,11 +2636,11 @@ public class BigInteger
 
     public String toString(int rdx)
     {
-        if (magnitude == null)
+        if (this.magnitude == null)
         {
             return "null";
         }
-        else if (sign == 0)
+        else if (this.sign == 0)
         {
             return "0";
         }
@@ -2648,9 +2650,9 @@ public class BigInteger
 
         if (rdx == 16)
         {
-            for (int i = 0; i < magnitude.length; i++)
+            for (int i = 0; i < this.magnitude.length; i++)
             {
-                h = "0000000" + Integer.toHexString(magnitude[i]);
+                h = "0000000" + Integer.toHexString(this.magnitude[i]);
                 h = h.substring(h.length() - 8);
                 sb.append(h);
             }
@@ -2703,7 +2705,7 @@ public class BigInteger
 
         if (s.length() == 0)
             s = "0";
-        else if (sign == -1)
+        else if (this.sign == -1)
             s = "-" + s;
 
         return s;
@@ -2744,17 +2746,17 @@ public class BigInteger
             return -1;
         }
 
-        int w = magnitude.length;
+        int w = this.magnitude.length;
 
         while (--w > 0)
         {
-            if (magnitude[w] != 0)
+            if (this.magnitude[w] != 0)
             {
                 break;
             }
         }
 
-        int word = magnitude[w];
+        int word = this.magnitude[w];
 
         int b = (word & 0x0000FFFF) == 0
             ?   (word & 0x00FF0000) == 0
@@ -2774,7 +2776,7 @@ public class BigInteger
             b--;
         }
 
-        return ((magnitude.length - w) * 32 - (b + 1));
+        return ((this.magnitude.length - w) * 32 - (b + 1));
     }
 
     public boolean testBit(int n) 
@@ -2785,16 +2787,16 @@ public class BigInteger
             throw new ArithmeticException("Bit position must not be negative");
         }
 
-        if (sign < 0)
+        if (this.sign < 0)
         {
             return !not().testBit(n);
         }
 
         int wordNum = n / 32;
-        if (wordNum >= magnitude.length)
+        if (wordNum >= this.magnitude.length)
             return false;
 
-        int word = magnitude[magnitude.length - 1 - wordNum];
+        int word = this.magnitude[this.magnitude.length - 1 - wordNum];
         return ((word >> (n % 32)) & 1) > 0;
     }
 }
