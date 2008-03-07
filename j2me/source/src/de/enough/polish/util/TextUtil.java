@@ -527,18 +527,34 @@ public final class TextUtil {
    * @see String#equals(Object)
    * @see String#equalsIgnoreCase(String)
    */
-  public static boolean equalsIgnoreCase(String str1, String str2)
-  {
-    //#if polish.cldc1.1
-    //# return str1.equalsIgnoreCase(str2);
-    //#else
-    if (str1 != null && str2 == null)
-    {
-      return false;
-    }
+	public static boolean equalsIgnoreCase(String str1, String str2)
+	{
+	//#if polish.cldc1.1
+		//# return str1.equalsIgnoreCase(str2);
+	//#else
+		if (str2 == null || str1.length() != str2.length() )
+		{
+			return false;
+		}
+		return str1.toLowerCase().equals(str2.toLowerCase());
+	//#endif
+	}
 
-    return str1.toLowerCase().equals(str2.toLowerCase());
-    //#endif
-  }
+
+	/**
+	 * Reverses the given text.
+	 * 
+	 * @param text the text
+	 * @return the reveresed text
+	 */
+	public static String reverse(String text)
+	{
+		StringBuffer buffer = new StringBuffer( text.length() );
+		for (int i = text.length(); --i >= 0; )
+		{
+			buffer.append( text.charAt(i));
+		}
+		return buffer.toString();
+	}
 
 }

@@ -1856,7 +1856,11 @@ public class TextField extends StringItem
 						if (this.isLayoutCenter) {
 							cX = x + (((rightBorder - leftBorder) - this.caretRowWidth) >> 1 ) + this.caretX;
 						} else  {
-							cX = rightBorder - this.caretRowWidth + this.caretX;
+							//#if polish.i18n.rightToLeft
+								cX = rightBorder -  this.caretX;
+							//#else
+								cX = rightBorder - this.caretRowWidth + this.caretX;
+							//#endif
 						}
 					}
 					int cY = y + this.caretY;
@@ -2038,7 +2042,7 @@ public class TextField extends StringItem
 			this.internalHeight = this.rowHeight;
 			this.screen = getScreen();
 			if (this.isFocused && this.parent instanceof Container ) {
-				// ensure that the visible area of this TextField is visible:
+				// ensure that the visible area of this TextField is shown:
 				((Container)this.parent).scroll(0, this); // problem: itemHeight is not yet set
 			}
 		//#endif
@@ -3210,7 +3214,11 @@ public class TextField extends StringItem
 					updateDeleteCommand( this.text );
 				//#endif
 				return true;
-			}else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
+			//#if polish.i18n.rightToLeft
+			} else if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) {
+			//#else
+			} else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
+			//#endif
 				//#ifdef polish.css.font-bitmap
 				if (this.bitMapFontViewer != null) {
 					// a bitmap-font is used
@@ -3248,7 +3256,11 @@ public class TextField extends StringItem
 					//#endif
 					return true;
 				}
+			//#if polish.i18n.rightToLeft
+			} else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
+			//#else
 			} else if ( gameAction == Canvas.RIGHT  && keyCode != Canvas.KEY_NUM6) {
+			//#endif
 				//#ifdef polish.debug.debug
 				if (this.isPassword) {
 					//#debug

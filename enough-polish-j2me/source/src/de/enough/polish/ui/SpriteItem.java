@@ -52,7 +52,7 @@ public class SpriteItem
 	private final long animationInterval;
 	private final int defaultFrameIndex;
 	private final boolean repeatAnimation;
-	private boolean isFocused;
+	private boolean isSpriteItemFocused;
 	private int currentStep;
 	private int maxStep;
 	private long lastAnimationTime;
@@ -159,20 +159,20 @@ public class SpriteItem
 	
 
 	protected boolean traverse(int direction, int viewportWidth, int viewportHeight, int[] inoutRect) {
-		if (this.isFocused) {
+		if (this.isSpriteItemFocused) {
 			return false;
 		} else {
 			this.currentStep = 0;
 			if (!this.repeatAnimation) {
 				this.maxStep = this.sprite.getFrameSequenceLength() - 1;
 			}
-			this.isFocused = true;
+			this.isSpriteItemFocused = true;
 			return true;
 		}
 	}
 	
 	protected void traverseOut() {
-		this.isFocused = false;
+		this.isSpriteItemFocused = false;
 		this.sprite.setFrame( this.defaultFrameIndex );
 	}
 	}

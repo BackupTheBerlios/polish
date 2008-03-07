@@ -599,7 +599,15 @@ public class StringItem extends Item
 				} else if (this.isLayoutRight) {
 					orientation = Graphics.RIGHT;
 				}
-				this.bitMapFontViewer = this.bitMapFont.getViewer( this.text );
+				this.bitMapFontViewer = this.bitMapFont.getViewer(
+						//#if polish.i18n.rightToLeft
+							TextUtil.reverse(
+						//#endif
+								this.text 
+						//#if polish.i18n.rightToLeft
+							)
+						//#endif
+				);
 				if (this.bitMapFontViewer != null) {
 					//#if polish.css.text-wrap
 						if (this.useSingleLine) {
@@ -630,7 +638,15 @@ public class StringItem extends Item
 		//#endif
 		//#if polish.css.text-wrap
 			if ( this.useSingleLine ) {
-				this.textLines = new String[]{ this.text };
+				this.textLines = new String[]{ 
+					//#if polish.i18n.rightToLeft
+						TextUtil.reverse(
+					//#endif
+							this.text 
+					//#if polish.i18n.rightToLeft
+						)
+					//#endif
+				};
 				int myTextWidth = stringWidth(this.text);
 				if (myTextWidth > lineWidth) {
 					this.clipText = true;
@@ -652,7 +668,8 @@ public class StringItem extends Item
 				String[] lines;
 				//#ifdef polish.css.text-effect
 					if (this.textEffect != null) {
-						lines = this.textEffect.wrap( this.text, this.font, firstLineWidth, lineWidth );
+						lines = this.textEffect.wrap( this.text, 
+								this.font, firstLineWidth, lineWidth );
 					} else {
 				//#endif
 						lines = TextUtil.wrap(this.text, this.font, firstLineWidth, lineWidth);
@@ -669,6 +686,10 @@ public class StringItem extends Item
 					if (width > maxWidth) {
 						maxWidth = width;
 					}
+					//#if polish.i18n.rightToLeft
+						lines[i] =  TextUtil.reverse( line );
+					//#endif
+
 				}
 				this.contentWidth = maxWidth;
 				this.textLines = lines;
