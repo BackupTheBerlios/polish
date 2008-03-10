@@ -15,10 +15,15 @@ import de.enough.polish.io.Serializable;
  */
 
 public class ThemeContainer implements Serializable{
+	public static final byte STYLE = 1;
+	public static final byte RESOURCE = 2;
+	
+	
 	private String name;
 	private int size;
 	private int offset;
 	private byte[] data;
+	private byte type = STYLE;
 	
 	/**
 	 * @return the name
@@ -78,5 +83,24 @@ public class ThemeContainer implements Serializable{
 	 */
 	public void setData(byte[] data) {
 		this.data = data;
+	}
+	
+	public void setResource() {
+		this.type = RESOURCE;
+	}
+
+	/**
+	 * @return
+	 */
+	public byte getType() {
+		return type;
+	}
+
+	/**
+	 * @param readByte
+	 */
+	public void setType(byte readByte) {
+		this.type = readByte;
+		
 	}
 }	

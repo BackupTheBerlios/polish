@@ -342,7 +342,7 @@ public class ThemeTask extends PolishTask {
 	 */
 	private ThemeContainer getContainer(File file) throws IOException
 	{
-		System.out.println("Creating theme container from " + file.getAbsolutePath());
+//		System.out.println("Creating theme container from " + file.getAbsolutePath());
 		
 		//Create a container
 		ThemeContainer container = new ThemeContainer();
@@ -352,7 +352,7 @@ public class ThemeTask extends PolishTask {
 		
 		//Read the file contents to the buffer
 		stream.readFully(buffer);
-		
+		container.setResource();
 		container.setName(file.getName());
 		container.setSize((int)file.length());
 		container.setData(buffer);
@@ -374,7 +374,7 @@ public class ThemeTask extends PolishTask {
 	{
 		String fullName = className + "." + fieldName;
 		
-		System.out.println("Creating rag container from " + fullName + "(" + object + ")");
+//		System.out.println("Creating rag container from " + fullName + "(" + object + ")");
 		
 		ThemeContainer container = new ThemeContainer();
 		
@@ -417,7 +417,7 @@ public class ThemeTask extends PolishTask {
 	 */
 	private void writeToFile(File file, Vector containers) throws IOException
 	{
-		System.out.println("Writing containers to " + file.getAbsolutePath());
+//		System.out.println("Writing containers to " + file.getAbsolutePath());
 		
 		DataOutputStream stream = new DataOutputStream(new FileOutputStream(file));
 		
@@ -428,10 +428,11 @@ public class ThemeTask extends PolishTask {
 		
 		for (int i = 0; i < containers.size(); i++) {
 			ThemeContainer container = (ThemeContainer) containers.get(i);
-			
+//			System.out.println("ThemeTask.writeToFile() " + container.getName() + " size: " + container.getSize());
 			stream.writeUTF(container.getName());
 			stream.writeInt(offset);
 			stream.writeInt(container.getSize());
+			stream.writeByte(container.getType());
 			
 			//Calculate the offset for the next data
 			offset += container.getSize();
@@ -467,6 +468,7 @@ public class ThemeTask extends PolishTask {
 			stream.writeUTF(container.getName());
 			stream.writeInt(1);
 			stream.writeInt(1);
+			stream.writeByte(1);
 		}
 		
 		return stream.size();

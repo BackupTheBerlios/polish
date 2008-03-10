@@ -70,8 +70,10 @@ public class ThemeStream {
 				container.setName(stream.readUTF());
 				container.setOffset(stream.readInt());
 				container.setSize(stream.readInt());
+				container.setType(stream.readByte());
 				
 				result.put(container.getName(),container);
+//				System.out.println("ThemeStream.readIndex() read container: " + container.getName() + " size: " + container.getSize() + " type: " + container.getType());
 			}
 			
 			stream.close();
