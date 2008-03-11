@@ -362,7 +362,7 @@ implements ItemStateListener //, CommandListener
 	 * @see de.enough.polish.ui.List#getSelectedIndex()
 	 */
 	public int getSelectedIndex() {
-		if (this.listType == Choice.IMPLICIT) {
+		if (this.listType == Choice.IMPLICIT && isShown()) {
 			Item focItem = this.container.getFocusedItem();
 			if (focItem != null) {
 				return this.itemsList.indexOf(focItem);
