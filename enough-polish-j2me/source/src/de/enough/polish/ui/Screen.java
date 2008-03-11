@@ -2563,7 +2563,8 @@ implements AccessibleCanvas
 					}
 				//#endif
 				//#if tmp.menuFullScreen
-					if (!processed && gameAction == FIRE && keyCode != Canvas.KEY_NUM5 && this.okCommand != null) {
+					// only trigger the OK command with the main FIRE key (keyCode == getKeyCode(FIRE))
+					if (!processed && gameAction == FIRE && keyCode == getKeyCode(FIRE) && this.okCommand != null && !isMenuOpened()) {
 						callCommandListener(this.okCommand);
 					}
 				//#endif
