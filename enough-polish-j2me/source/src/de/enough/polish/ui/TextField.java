@@ -1721,6 +1721,9 @@ public class TextField extends StringItem
 				{
 					setConstraints(constraints);
 				}
+				if (this.isFocused) {
+					//# getScreen().setFocus( this );
+				}
 			}
 			else
 			{	

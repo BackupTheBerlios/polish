@@ -1398,8 +1398,8 @@ extends Displayable
         /*
          * Deactivated because may result in deadlocks
          */
-        Object lock = MIDlet.getEventLock();
-        synchronized (lock) {
+        //Object lock = MIDlet.getEventLock();
+        //synchronized (lock) {
 	        if ( item != null && item._bbField != null ) {
 	            if ( !item._bbFieldAdded ) {
                     item._bbFieldAdded = true;
@@ -1416,7 +1416,7 @@ extends Displayable
 	        }
 	    /*
 	     */
-        }
+       // }
     }
 
     //#if polish.hasTrackballEvents
