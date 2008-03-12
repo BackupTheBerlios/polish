@@ -2868,7 +2868,13 @@ public class TextField extends StringItem
 		//#if tmp.directInput
 			//#if tmp.usePredictiveInput
 				if (this.predictiveInput) {
-					return this.predictiveAccess.keyInsert(keyCode, gameAction);
+					//#if polish.key.supportsAsciiKeyMap
+						if (!this.screen.isKeyboardAccessible()) {
+					//#endif
+							return this.predictiveAccess.keyInsert(keyCode, gameAction);
+					//#if polish.key.supportsAsciiKeyMap
+						}
+					//#endif
 				}
 			//#endif
 			
