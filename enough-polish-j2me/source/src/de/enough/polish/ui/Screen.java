@@ -763,6 +763,8 @@ implements AccessibleCanvas
 		//#if tmp.useExternalMenuBar
 			int space;
 			//#if polish.MenuBar.Position:defined
+			if(this.menuBar != null)
+			{
 				space = this.menuBar.getSpaceLeft( this.screenWidth, this.fullScreenHeight );
 				x += space;
 				width -= space;
@@ -771,6 +773,7 @@ implements AccessibleCanvas
 				space = this.menuBar.getSpaceTop( this.screenWidth, this.fullScreenHeight );
 				y += space;
 				height -= space;
+			}
 			//#endif
 				// this is already deducted...
 				//			space = this.menuBar.getSpaceBottom( this.screenWidth, this.fullScreenHeight );
