@@ -187,7 +187,11 @@ implements Externalizable
 			//# public Object remove( int index ) {
 		//#endif
 		if (index < 0 || index >= this.size ) {
-			throw new IndexOutOfBoundsException("the index [" + index + "] is not valid for this list with the size [" + this.size + "].");
+			throw new IndexOutOfBoundsException(
+					//#if polish.debug.error
+						"the index [" + index + "] is not valid for this list with the size [" + this.size + "]."
+					//#endif
+					);
 		}
 		Object removed = this.storedObjects[ index ];
 		for (int i = index+1; i < this.size; i++) {

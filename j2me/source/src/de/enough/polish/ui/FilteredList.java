@@ -615,6 +615,9 @@ implements ItemStateListener //, CommandListener
 			if (text.length() == 0) {
 				matchingItems.addAll( this.itemsList );
 				focIndex = getSelectedIndex();
+				if (focIndex != -1 && focItem == null) {
+					focItem = (Item) this.itemsList.get( focIndex );
+				}
 			} else {
 				String filterText = text.toLowerCase();
 				//System.out.println("caretPos=" + this.filterTextField.getCaretPosition() + ", tex.length=" + text.length());

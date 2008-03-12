@@ -3109,9 +3109,9 @@ implements AccessibleCanvas
 						}
 						int type = command.getCommandType(); 
 						if ( type == Command.BACK || type == Command.CANCEL ) {
-							//System.out.println("removing right command [" + cmd.getLabel() + "], now using " + command.getLabel() + ", menuContainer=" + this.menuContainer.size() + ", menuCommands=" + this.menuCommands.size() );
-							this.menuContainer.remove( i );
+							//System.out.println("removing right command [" + cmd.getLabel() + "], now using " + command.getLabel() + ", menuContainer=" + this.menuContainer.size() + ", menuCommands=" + this.menuCommands.size() + ",i=" + i );
 							this.menuCommands.remove( i );
+							this.menuContainer.remove( i );
 							this.menuSingleRightCommand = command;
 							break;
 						}
@@ -3139,6 +3139,20 @@ implements AccessibleCanvas
 			repaint();
 		//#endif
 	}
+	
+//	private void showMenuItems() {
+//		System.out.println("menuContainer.size=" + this.menuContainer.size() + ", menuCommands.size=" + this.menuCommands.size());
+//		System.out.println("menuCommands: ");
+//		for (int i=0; i<this.menuCommands.size(); i++) {
+//			Command cmd = (Command) this.menuCommands.get(i);
+//			System.out.println( i + "=" + cmd.getLabel() );
+//		}
+//		System.out.println("menuContainer: ");
+//		for (int i=0; i<this.menuContainer.size(); i++) {
+//			CommandItem cmd = (CommandItem) this.menuContainer.get(i);
+//			System.out.println( i + "=" + cmd );
+//		}
+//	}
 	//#endif
 	
 	/**
@@ -3732,7 +3746,7 @@ implements AccessibleCanvas
 			this.container.focus( -1 );
 		} else {
 			//#debug warn
-			System.out.println("Screen: unable to focus item (did not find it in the container or is not activatable) " + index);
+			System.out.println("Screen: unable to focus item (did not find it in the container or is not activatable): index=" + index + ", item=" + item);
 		}
 	}
 	
