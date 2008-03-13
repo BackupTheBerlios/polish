@@ -120,7 +120,7 @@ public class MeaFinalizer extends Finalizer{
         File contentsXmlFile = null;
         File distFile = env.getBuildSetting().getDestDir(env);
         File meaFile = new File(distFile,name+".mea");
-        System.out.println("Creating file '"+meaFile.getName()+"'.");
+        System.out.println("Creating media archive '"+meaFile.getName()+"'.");
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(meaFile);
             ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
