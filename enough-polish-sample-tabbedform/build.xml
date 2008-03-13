@@ -4,6 +4,7 @@
 	<property file="${user.name}.properties" />
 	<!-- the device used for test builds:                         -->
 	<property name="device" value="Nokia/Series60E2" />
+	<property name="devices" value="${device}, Nokia/Series60E2FP3, Sony-Ericsson/W900" />
 
 	<!-- The polish.home property should point to the directory   -->
 	<!-- containing the J2ME Polish installation.                 -->
@@ -61,7 +62,7 @@
 			<requirement name="Identifier" value="${device}"/>
 		</deviceRequirements>
 		<deviceRequirements unless="test">
-			<requirement name="Identifier" value="${device}, Nokia/Series60E2FP3, Sony-Ericsson/W900" />
+			<requirement name="Identifier" value="${devices}" />
 		</deviceRequirements>
 	    <!-- build settings -->
 		<build 
@@ -86,25 +87,31 @@
 				<variable name="polish.TextField.suppressAddSymbolCommand" value="true" if="polish.key.AddSymbolKey:defined" />
 				<variable name="polish.command.entersymbol" value="Add Symbol" />
 				<variable name="polish.TextField.allowNativeModeSwitch" value="true" />
+				<!--
 				<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
-				
+				-->
 			</variables>
 			<!-- obfuscator settings: do not obfuscate when the test-property is true  
 			-->
-			<obfuscator  name="ProGuard" useDefaultPackage="true" unless="test or polish.blackberry">
+			<obfuscator  name="ProGuard" useDefaultPackage="false" unless="test or polish.blackberry">
 				<parameter name="optimize" value="true" />
 			</obfuscator>
 			<!-- debug/log settings: only include debug setting when the test-property is true -->
-			<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true" >
+			<debug level="info" showLogOnError="true" verbose="true" logTimestamp="true" if="test">
 				<filter level="debug" package="de.enough.polish.sample.tabbedform"/>
-				<filter level="debug" class="de.enough.polish.ui.ContainerView"/>
+				<filter level="debug" class="de.enough.polish.ui.TabbedForm"/>
+				<filter level="debug" class="de.enough.polish.ui.TabBar"/>
 				<!--
+				<filter level="debug" class="de.enough.polish.ui.Screen"/>
+				<filter level="debug" class="de.enough.polish.ui.ContainerView"/>
+				<filter level="debug" class="de.enough.polish.ui.Item"/>
+				<filter level="debug" class="de.enough.polish.ui.Container"/>
+				<filter level="debug" class="de.enough.polish.ui.ChoiceGroup"/>
 				<filter level="debug" class="de.enough.polish.ui.TabbedForm"/>
 				<filter level="debug" class="de.enough.polish.ui.Screen"/>
 				<filter level="debug" class="de.enough.polish.ui.MenuBar"/>
 				-->
 			</debug>
-			
 			<resources
 				dir="resources" 
 				defaultexcludes="yes"

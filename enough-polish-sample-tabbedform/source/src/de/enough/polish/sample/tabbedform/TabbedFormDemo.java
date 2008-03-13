@@ -27,7 +27,6 @@ package de.enough.polish.sample.tabbedform;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
-import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -94,7 +93,7 @@ implements ScreenStateListener, CommandListener
 		form.append( 0, label );
 
 		//#style settingsChoice
-		ChoiceGroup group = new ChoiceGroup( Locale.get("label.setting"), Choice.EXCLUSIVE );
+		ChoiceGroup group = new ChoiceGroup( Locale.get("label.setting"), ChoiceGroup.EXCLUSIVE );
 		//#style settingsItem
 		group.append( Locale.get("label.setting.fast"), null);
 		//#style settingsItem
@@ -157,7 +156,7 @@ implements ScreenStateListener, CommandListener
 
 	public void screenStateChanged(Screen screen) {
 		if (screen == this.tabbedForm ) {
-			int tabIndex = this.tabbedForm.getSelectedTab();
+			int tabIndex = this.tabbedForm.getActiveTab();
 			if (tabIndex != this.lastTabIndex ) {
 				//#debug
 				System.out.println("ScreenStateChanged: new tab=" + tabIndex );

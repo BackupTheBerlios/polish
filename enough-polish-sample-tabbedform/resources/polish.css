@@ -4,6 +4,7 @@ colors {
 	titleColor: #6262d4;
 	titleShadowColor: silver;
 	screenBgColor: #7272f4;
+	screenBgBottomColor: #99f;
 	fontColor: black;
 	focusedFontColor: black;
 	inactiveFontColor: white;
@@ -17,11 +18,15 @@ colors {
 .tabbedForm {
 	padding: 4;
 	layout: hcenter | vcenter;
-	background-color: screenBgColor;
-	background-image: url( flames.png );
-	background-anchor: left | bottom;
-	background-top: title;
-	background-bottom: menubar;
+	background {
+		type: vertical-gradient;
+		top-color: screenBgColor;
+		bottom-color: screenBgBottomColor;
+		start: 10%;
+		end: 80%;
+		top: title;
+		bottom: menubar;
+	}
 	/* not supported because we use the extended menu bar:
 	menubar-color: menubarColor;
 	*/
@@ -56,11 +61,12 @@ activetab {
 }
 
 inactivetab {
+	margin-left: 2;
+	margin-right: 2;
+	margin-bottom: 1;
 	padding: 3;
 	padding-left: 6;
 	padding-right: 4;
-	margin-left: 2;
-	margin-right: 2;
 	background-type: round-tab;
 	background-color: inactiveTabColor;
 	background-arc: 8;
@@ -79,19 +85,15 @@ inactivetab {
 	padding-horizontal: 5;
 	font-color: fontColor;
 	font-size: small;
-	layout: expand | left;
-	focused-style: .settingsItemFocused;
 	icon-image: url( dog.png );
+	layout: expand | left;
 }
 
-.settingsItemFocused {
+.settingsItem:hover {
 	padding: 2;
 	padding-horizontal: 5;
-	font-color: fontColor;
-	font-size: small;
 	border-width: 1;
 	border-color: black;
-	layout: expand | left;
 }
 
 
@@ -151,7 +153,8 @@ info {
 
 menu {
 	margin-top: 24;
-	background-color: argb( 200, 255, 255, 255 );
+	/* background-color: argb( 200, 255, 255, 255 ); */
+	background-color: white;
 	min-width: 120;
 	font-style: bold;
 	font-size: small;
@@ -162,12 +165,8 @@ menu {
 menu1 extends menu {
 	margin-bottom: 1;
 	border-color: black;
-	focused-style: menu1Focused;
 }
 
-menu1Focused extends focused {
-	background-color: yellow;
-}
 
 menuitem {
 	padding: 2;
