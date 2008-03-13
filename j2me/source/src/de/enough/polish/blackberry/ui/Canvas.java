@@ -1392,14 +1392,22 @@ extends Displayable
      * @param item the item that is focused
      */
     public void setFocus( Item item ) {
-    	if (this.isObscured) {
+    	setFocus(item, true);
+    }
+    
+    /**
+     * Focuses an item and it's corresponding blackberry field if available.
+     * If not native blackberry field is asscociated with the item, the
+     * internal dummy item will be focused.
+     * 
+     * @param item the item that is focused
+     * @param repeatSync true when the access should be tried synchronized again when the first trial fails
+     */
+    public void setFocus( Item item, boolean repeatSync ) {
+       	if (this.isObscured) {
     		return;
     	}
-        /*
-         * Deactivated because may result in deadlocks
-         */
-        //Object lock = MIDlet.getEventLock();
-        //synchronized (lock) {
+    	try {
 	        if ( item != null && item._bbField != null ) {
 	            if ( !item._bbFieldAdded ) {
                     item._bbFieldAdded = true;
@@ -1414,9 +1422,14 @@ extends Displayable
 	            setFocus( this.dummyField, 0, 0, 0, 0 );
 	            //System.out.println("Canvas.focus(): focusing dummy");
 	        }
-	    /*
-	     */
-       // }
+    	} catch (IllegalStateException e) {
+    		if (repeatSync) {
+	            Object lock = MIDlet.getEventLock();
+	            synchronized (lock) {
+	            	setFocus(item, false);
+	            }
+    		}
+    	}
     }
 
     //#if polish.hasTrackballEvents
