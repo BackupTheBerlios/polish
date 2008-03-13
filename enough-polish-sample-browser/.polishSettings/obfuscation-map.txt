@@ -34,6 +34,7 @@ FadingAlienGlowTextEffect=df
 FishEyeContainerView=dg
 FlashTextEffect=dh
 GradientHorizontalBackground=et
+GradientRadialBackground=eu
 GradientVerticalBackground=o
 HexTextClockView=di
 HorizontalChoiceView=dj
