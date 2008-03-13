@@ -65,7 +65,7 @@ public class UpdateChecker implements Runnable{
 			//#if localbuild
 				url = "http://localhost:8080/wapserver?sysinfoversion=send";
 			//#else
-				url = "http://enough.dyndns.org:8180/wapserver?sysinfoversion=send";
+				url = "http://devices.j2mepolish.org/wapserver?sysinfoversion=send";
 			//#endif
 			//System.out.println("url: " + url);
 			HttpConnection ic = (HttpConnection) Connector.open(url);
