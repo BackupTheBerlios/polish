@@ -62,10 +62,10 @@ public class UpdateChecker implements Runnable{
 		
 		try {
 			String url;
-			//#if localbuild==true
-			url = "http://localhost:8080/wapserver?sysinfoversion=send";
-			//#elif remotebuild==true
-			url = "http://enough.dyndns.org:8180/wapserver?sysinfoversion=send";
+			//#if localbuild
+				url = "http://localhost:8080/wapserver?sysinfoversion=send";
+			//#else
+				url = "http://enough.dyndns.org:8180/wapserver?sysinfoversion=send";
 			//#endif
 			//System.out.println("url: " + url);
 			HttpConnection ic = (HttpConnection) Connector.open(url);
