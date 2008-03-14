@@ -1491,11 +1491,8 @@ public class TextField extends StringItem
 		//#if polish.blackberry
 			this.editField.setCursorPosition(position);
 		//#elif tmp.allowDirectInput || tmp.forceDirectInput
-			if ( ! this.isInitialized ) {
-				this.caretPosition = position;
-			} else if (this.textLines == null ){
-				// ignore position when there is not text present
-			} else {
+			this.caretPosition = position;
+			if ( this.isInitialized  && this.textLines != null ){
 				int row = 0;
 				int col = 0;
 				int passedCharacters = 0;
@@ -3750,12 +3747,15 @@ public class TextField extends StringItem
 	
 	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || !(polish.TextField.suppressDeleteCommand || polish.blackberry) 
 	protected Style focus(Style focStyle, int direction) {
-		//#if tmp.directInput && (polish.TextField.showInputInfo != false)
+		//#if tmp.directInput
 			//#ifdef tmp.allowDirectInput
 				if (this.enableDirectInput) {
 			//#endif
 					//#if tmp.useInputInfo
 						updateInfo();
+					//#endif
+					//#if !polish.TextField.keepCaretPosition
+						setCaretPosition( getString().length() );
 					//#endif
 			//#ifdef tmp.allowDirectInput
 				}
