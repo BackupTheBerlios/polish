@@ -76,7 +76,8 @@ public class WurflDevice {
      * always at least the user agent of the root device.
      */
     public String[] getUserAgents() {
-        Device[] childDevices = getChildWurflDevices(getDevice());
+        Device currentDevice = getDevice();
+        Device[] childDevices = getChildWurflDevices(currentDevice,true);
         LinkedList<String> list = new LinkedList<String>();
         list.add(this.device.getUserAgent());
         Device childDevice;
@@ -114,14 +115,17 @@ public class WurflDevice {
         return "";
     }
     
-    
+    protected Device[] getChildWurflDevices(Device someDevice) {
+        return getChildWurflDevices(someDevice,false);
+    }
     
     /**
      * TODO: Verify that a user agent is found.
      * @param someDevice
+     * @param filterActualDevices true if actual devices and thair children should not appear in the resulting list
      * @return all wurfl devices which are children of the given device.
      */
-    protected Device[] getChildWurflDevices(Device someDevice) {
+    protected Device[] getChildWurflDevices(Device someDevice, boolean filterActualDevices) {
         TreePath pathToParentDevice;
         DefaultMutableTreeNode parentNode;
         int parentChildCount;
@@ -136,8 +140,17 @@ public class WurflDevice {
 
         LinkedList<DefaultMutableTreeNode> childNodes = new LinkedList<DefaultMutableTreeNode>();
         
+        Device childDevice;
         for(int i = 0; i < parentChildCount;i++) {
-            childNodes.add((DefaultMutableTreeNode)parentNode.getChildAt(i));
+            DefaultMutableTreeNode childNode = (DefaultMutableTreeNode)parentNode.getChildAt(i);
+            if(filterActualDevices) {
+                childDevice = (Device) childNode.getUserObject();
+                if(childDevice.isActualDevice()) {
+                    continue;
+                }
+            }
+            
+            childNodes.add(childNode);
         }
         DefaultMutableTreeNode currentNode;
         
@@ -148,12 +161,25 @@ public class WurflDevice {
             int childCount = currentNode.getChildCount();
             if(childCount > 0) {
                 for(int i = 0; i < childCount;i++) {
-                    childNodes.addLast((DefaultMutableTreeNode)currentNode.getChildAt(i));
+                    DefaultMutableTreeNode childTreeNode = (DefaultMutableTreeNode)currentNode.getChildAt(i);
+                    if(filterActualDevices) {
+                        childDevice = (Device) childTreeNode.getUserObject();
+                        if(childDevice.isActualDevice()) {
+                            continue;
+                        }
+                    }
+                    childNodes.addLast(childTreeNode);
                 }
             }
             
             // Get the device.
-            resultDevices.add((Device)currentNode.getUserObject());
+            childDevice = (Device)currentNode.getUserObject();
+            if(filterActualDevices) {
+                if(childDevice.isActualDevice()) {
+                    continue;
+                }
+            }
+            resultDevices.add(childDevice);
         }
         
         return resultDevices.toArray(new Device[resultDevices.size()]);
