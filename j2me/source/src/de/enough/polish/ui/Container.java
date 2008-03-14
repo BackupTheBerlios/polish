@@ -1006,7 +1006,11 @@ public class Container extends Item {
 									// now focus the item:
 									this.autoFocusEnabled = false;
 									requireScrolling = (this.autoFocusIndex != 0);
+									int heightBeforeFocus = item.itemHeight;
 									focus( i, item, 0 );
+									if (item.getItemHeight( item.itemWidth, item.itemWidth ) > heightBeforeFocus) {
+										this.containerView.initContent( this, firstLineWidth, lineWidth);	
+									}
 									this.isScrollRequired = this.isScrollRequired && requireScrolling; // override setting in focus()
 									//this.containerView.focusedIndex = i; is done within focus(i, item, 0) already
 									//this.containerView.focusedItem = item;

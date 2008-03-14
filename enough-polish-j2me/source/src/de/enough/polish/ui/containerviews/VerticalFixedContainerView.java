@@ -54,10 +54,10 @@ import de.enough.polish.ui.Item;
  */
 public class VerticalFixedContainerView extends ContainerView {
 	
-	private static int ALIGN_TOP = 0;
-	private static int ALIGN_CENTER = 1;
-	
-	private int align = ALIGN_TOP;
+//	private static int ALIGN_TOP = 0;
+//	private static int ALIGN_CENTER = 1;
+//	
+//	private int align = ALIGN_TOP;
 
 	/**
 	 * 
@@ -66,23 +66,23 @@ public class VerticalFixedContainerView extends ContainerView {
 		// configure by calling setStyle()
 	}
 
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Item, int, int)
-	 */
-	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
-		super.initContent(parentContainerItem, firstLineWidth, lineWidth);
-		if (this.focusedItem != null) {
-			
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.ContainerView#focusItem(int, de.enough.polish.ui.Item)
-	 */
-	protected void focusItem(int index, Item item) {
-		// TODO robertvirkus implement focusItem
-		super.focusItem(index, item);
-	}
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Item, int, int)
+//	 */
+//	protected void initContent(Item parentContainerItem, int firstLineWidth, int lineWidth) {
+//		super.initContent(parentContainerItem, firstLineWidth, lineWidth);
+//		if (this.focusedItem != null) {
+//			
+//		}
+//	}
+//	
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.ContainerView#focusItem(int, de.enough.polish.ui.Item)
+//	 */
+//	protected void focusItem(int index, Item item) {
+//		// TODO robertvirkus implement focusItem
+//		super.focusItem(index, item);
+//	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#paintContent(de.enough.polish.ui.Container, de.enough.polish.ui.Item[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
@@ -94,7 +94,8 @@ public class VerticalFixedContainerView extends ContainerView {
 			int focusedHeight = this.focusedItem.itemHeight;
 			int targetY = (availableVerticalSpace - focusedHeight) >> 1;
 			if (availableVerticalSpace != -1 && this.focusedItem.relativeY > targetY 
-					&& (this.focusedItem.relativeY + ( focusedHeight >> 1)) < (this.contentHeight - targetY) ) {
+					&& (this.focusedItem.relativeY + ( focusedHeight >> 1)) < (this.contentHeight - targetY) ) 
+			{
 				y += targetY - focusedY;
 //				System.out.println("adjusting by " + (targetY - focusedY) + ": focusedY=" + focusedY + ", targetY=" + targetY + ", availableVerticalSpace=" + availableVerticalSpace + ", focusedHeight=" + focusedHeight + ", focusedItem.relativeY=" + this.focusedItem.relativeY );
 //			} else {
