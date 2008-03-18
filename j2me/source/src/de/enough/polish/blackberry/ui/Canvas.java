@@ -1423,12 +1423,13 @@ extends Displayable
 	            //System.out.println("Canvas.focus(): focusing dummy");
 	        }
     	} catch (IllegalStateException e) {
-    		if (repeatSync) {
+    		/*if (repeatSync) {
 	            Object lock = MIDlet.getEventLock();
 	            synchronized (lock) {
 	            	setFocus(item, false);
 	            }
-    		}
+    		}*/
+    		System.out.println("exception in setFocus() : " + e);
     	}
     }
 

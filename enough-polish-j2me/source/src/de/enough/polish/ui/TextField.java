@@ -1949,11 +1949,14 @@ public class TextField extends StringItem
 			if (!this.isFocused) {
 				return;
 			}
-			this.editField.setFont( this.font, this.textColor );
-			// alowing native field to expand to the fully available width,
-			// the content size does not need to be changed as the same font is being
-			// used.
-			this.editField.layout( lineWidth, this.contentHeight );
+			if(this.editField != null)
+			{
+				this.editField.setFont( this.font, this.textColor );
+				// alowing native field to expand to the fully available width,
+				// the content size does not need to be changed as the same font is being
+				// used.
+				this.editField.layout( lineWidth, this.contentHeight );
+			}
 		//#elif tmp.directInput
 			this.rowHeight = getFontHeight() + this.paddingVertical;			
 			if (this.textLines == null || this.text.length() == 0) {
