@@ -68,6 +68,8 @@ public class HorizontalSpheresGaugeView extends ItemView {
 	private long lastAnimationTime;
 	private long interval = 0;
 	
+	private boolean nextHighlight = false;
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
@@ -155,7 +157,7 @@ public class HorizontalSpheresGaugeView extends ItemView {
 
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		if (this.isContinuousRunning && (currentTime - this.lastAnimationTime) > this.interval) {
-			this.sphereHighlightIndex++;
+			this.nextHighlight = true;
 			this.sphereHighlightIndex = this.sphereHighlightIndex % this.sphereCount;
 			this.lastAnimationTime = currentTime;
 			addFullRepaintRegion( this.parentItem, repaintRegion );
@@ -172,6 +174,13 @@ public class HorizontalSpheresGaugeView extends ItemView {
 		//#if !polish.hasFloatingPoint
 			super.paintContentByParent(parent, x, y, leftBorder, rightBorder, g);
 		//#else
+			
+			if(this.nextHighlight)
+			{
+				this.sphereHighlightIndex++;
+				this.nextHighlight = false;
+			}
+			
 			if(!this.isContinuousRunning)
 			{
 				this.sphereHighlightIndex = ((this.gauge.getValue() * 100 / this.gauge.getMaxValue()) * this.maxSpheres) / 100;

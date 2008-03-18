@@ -69,6 +69,8 @@ public class CyclingIconsGaugeView extends ItemView {
 	private long lastAnimationTime;
 	private long interval = 0;
 	
+	private boolean nextHighlight = false;
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ItemView#initContent(de.enough.polish.ui.Item, int, int)
 	 */
@@ -173,7 +175,7 @@ public class CyclingIconsGaugeView extends ItemView {
 	 */
 	public void animate(long currentTime, ClippingRegion repaintRegion) {
 		if (this.isContinuousRunning && (currentTime - this.lastAnimationTime) > this.interval) {
-			this.iconHighlightIndex++;
+			this.nextHighlight = true;
 			this.iconHighlightIndex = this.iconHighlightIndex % this.iconCount;
 			this.lastAnimationTime = currentTime;
 			addFullRepaintRegion( this.parentItem, repaintRegion );
@@ -190,6 +192,12 @@ public class CyclingIconsGaugeView extends ItemView {
 			super.paintContentByParent(parent, x, y, leftBorder, rightBorder, g);
 		//#else
 			Image img = null;
+			
+			if(this.nextHighlight)
+			{
+				this.iconHighlightIndex++;
+				this.nextHighlight = false;
+			}
 			
 			if(!this.isContinuousRunning)
 			{
