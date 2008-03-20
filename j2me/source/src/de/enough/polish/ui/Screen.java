@@ -199,6 +199,11 @@ implements AccessibleCanvas
 		//#endif
 		
 		private Command okCommand;
+		//#if polish.key.ClearKey:defined
+			//#define tmp.triggerCancelCommand
+			private Command cancelCommand;
+		//#endif
+
 		//#if polish.MenuBar.useExtendedMenuBar || polish.classes.MenuBar:defined
 			//#if polish.classes.MenuBar:defined
 				//#= public final ${polish.classes.MenuBar} menuBar;
@@ -1025,6 +1030,10 @@ implements AccessibleCanvas
 		}
 
 		this.lastInteractionTime = System.currentTimeMillis();
+		//#if polish.Bugs.repaintInShowNotify
+			// request one repaint with full dimensions:
+			repaint();
+		//#endif
 	}
 	
 	/**
@@ -2567,9 +2576,22 @@ implements AccessibleCanvas
 				//#endif
 				//#if tmp.menuFullScreen
 					// only trigger the OK command with the main FIRE key (keyCode == getKeyCode(FIRE))
-					if (!processed && gameAction == FIRE && keyCode == getKeyCode(FIRE) && this.okCommand != null && !isMenuOpened()) {
+					if (!processed && gameAction == FIRE && keyCode != KEY_NUM5 && this.okCommand != null && !isMenuOpened()) {
 						callCommandListener(this.okCommand);
-					}
+						processed = true;
+					} 
+					//#if tmp.triggerCancelCommand
+						int clearKey =
+						//#if polish.key.ClearKey:defined
+							//#= ${polish.key.ClearKey};
+						//#else
+							-8;
+						//#endif
+						if (!processed && keyCode == clearKey && this.cancelCommand != null) {
+							callCommandListener(this.cancelCommand);
+							processed = true;
+						}
+					//#endif
 				//#endif
 				//#debug
 				System.out.println("keyReleased handled=" + processed);
@@ -2849,13 +2871,25 @@ implements AccessibleCanvas
 		//#endif
 		int cmdType = cmd.getCommandType();
 		if ( cmdType == Command.OK 
-				&&  (this.okCommand == null || this.okCommand.getPriority() < cmd.getPriority() ) ) 
+				&&  (this.okCommand == null || this.okCommand.getPriority() > cmd.getPriority() ) ) 
 		{
 			this.okCommand = cmd;
 		}
+		//#if tmp.triggerCancelCommand
+			else if ( cmdType == Command.CANCEL
+					&& (this.cancelCommand == null || this.cancelCommand.getPriority() > cmd.getPriority()) ) 
+			{
+				this.cancelCommand = cmd;
+			}
+		//#endif
+		
 		//#ifdef polish.key.ReturnKey:defined
-			else if ( (cmdType == Command.BACK || cmdType == Command.CANCEL || cmdType == Command.EXIT ) 
-				&& ( this.backCommand == null || cmd.getPriority() < this.backCommand.getPriority() )  ) 
+			else if ( (cmdType == Command.BACK
+					//#if ! tmp.triggerCancelCommand
+					|| cmdType == Command.CANCEL 
+					//#endif
+					|| cmdType == Command.EXIT ) 
+				&& ( this.backCommand == null || this.backCommand.getPriority() > cmd.getPriority())  ) 
 			{
 				//#debug
 				System.out.println("setting new backcommand=" + cmd.getLabel() + " for screen " + this + " " + getTitle() );

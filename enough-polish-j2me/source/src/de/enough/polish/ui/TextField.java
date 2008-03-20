@@ -661,11 +661,11 @@ public class TextField extends StringItem
 		private final static int CLEAR_PRIORITY = 8;
 	//#endif
 	//#ifdef polish.i18n.useDynamicTranslations
-			public static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), Command.ITEM, CLEAR_PRIORITY );
+			public static Command CLEAR_CMD = new Command( Locale.get("polish.command.clear"), Command.CANCEL, CLEAR_PRIORITY );
 	//#elifdef polish.command.clear:defined
-		//#= public static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.ITEM, CLEAR_PRIORITY );
+		//#= public static final Command CLEAR_CMD = new Command( "${polish.command.clear}", Command.CANCEL, CLEAR_PRIORITY );
 	//#else
-		//# public static final Command CLEAR_CMD = new Command( "Clear", Command.ITEM, CLEAR_PRIORITY ); 
+		//# public static final Command CLEAR_CMD = new Command( "Clear", Command.CANCEL, CLEAR_PRIORITY ); 
 	//#endif
 
 		

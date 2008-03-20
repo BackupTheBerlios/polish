@@ -108,6 +108,7 @@ implements Choice
 		private int originalContentWidth;
 		private int originalContentHeight;
 		private int originalBackgroundHeight;
+		private boolean closePopupOnKeyRelease;
 	//#endif
 	//#ifndef tmp.suppressAllCommands
 		private ItemCommandListener additionalItemCommandListener;
@@ -1279,17 +1280,10 @@ implements Choice
 		if (this.selectedIndex != -1) {
 			Item item = (Item) this.itemsList.get( this.selectedIndex );
 			//System.out.println("selectedIndex=" + this.selectedIndex + ", isInitialized=" + item.isInitialized);
-			if (item.isInitialized) {
-				this.internalY = item.relativeY;
-				this.internalHeight = item.itemHeight;
-				this.internalX = item.relativeX;
-				this.internalWidth = item.itemWidth;
-			} else {
-				this.internalX = 0;
-				this.internalY = 0;
-				this.internalHeight = this.itemHeight + 20;
-				this.internalWidth = this.itemWidth;
-			}
+			this.internalY = item.relativeY;
+			this.internalHeight = item.itemHeight;
+			this.internalX = item.relativeX;
+			this.internalWidth = item.itemWidth;
 		}
 		this.isInitialized = false;
 		this.backgroundHeight = this.originalBackgroundHeight;
@@ -1427,7 +1421,7 @@ implements Choice
 				//#endif
 				//#ifdef polish.usePopupItem
 					if (this.isPopup && (this.isPopupClosed == false)) {
-						closePopup();
+						this.closePopupOnKeyRelease = true;
 						return true;
 					}
 				//#endif
@@ -1551,6 +1545,13 @@ implements Choice
 			//#endif
 			return true;
 		}
+		//#ifdef polish.usePopupItem
+			if (this.closePopupOnKeyRelease) {
+				this.closePopupOnKeyRelease = false;
+				closePopup();
+				return true;
+			}
+		//#endif
 		return super.handleKeyReleased(keyCode, gameAction);
 	}
 

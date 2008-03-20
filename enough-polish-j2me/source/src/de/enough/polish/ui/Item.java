@@ -2444,6 +2444,36 @@ public abstract class Item extends Object
 				return true;
 			}
 		}
+		int clearKey =
+		//#if polish.key.ClearKey:defined
+			//#= ${polish.key.ClearKey};
+		//#else
+			-8;
+		//#endif
+		if (keyCode == clearKey && this.commands != null) {
+			Command deleteCommand = null;
+			Object[] cmds = this.commands.getInternalArray();
+			for (int i = 0; i < cmds.length; i++)
+			{
+				Command cmd = (Command) cmds[i];
+				if (cmd == null) {
+					break;
+				}
+				if (cmd.getCommandType() == Command.CANCEL && (deleteCommand == null || deleteCommand.getPriority() > cmd.getPriority()) ) {
+					deleteCommand = cmd;
+				}
+			}
+			if (deleteCommand != null) {
+				if (this.itemCommandListener != null) {
+					this.itemCommandListener.commandAction(deleteCommand, this);
+				} else {			
+					Screen scr = getScreen();
+					if (scr != null ) {
+						scr.callCommandListener(deleteCommand);
+					}
+				}				
+			}
+		}
 
 		return false;
 	}

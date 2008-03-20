@@ -166,4 +166,15 @@ public class TextUtilTest extends TestCase {
 		assertEquals( null, output[3] );
 	}
 		
+	public void testReverseForRtlLanguage() {
+		String input = "ŠšŸ 123 ŠšŸ";
+		String reversed = TextUtil.reverseForRtlLanguage(input);
+		System.out.println(input);
+		System.out.println(reversed);
+		
+		input = "ŠšŸ (123 hallo) ŠšŸ, .šŸšŸ";
+		reversed = TextUtil.reverseForRtlLanguage(input);
+		System.out.println(input);
+		System.out.println(reversed);
+	}
 }

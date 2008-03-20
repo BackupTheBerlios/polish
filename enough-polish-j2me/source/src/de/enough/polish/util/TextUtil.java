@@ -542,19 +542,76 @@ public final class TextUtil {
 
 
 	/**
-	 * Reverses the given text.
+	 * Reverses the given text while keeping English texts and numbers in the normal position.
 	 * 
-	 * @param text the text
+	 * @param input the text
 	 * @return the reveresed text
 	 */
-	public static String reverse(String text)
+	public static String reverseForRtlLanguage(String input)
 	{
-		StringBuffer buffer = new StringBuffer( text.length() );
-		for (int i = text.length(); --i >= 0; )
-		{
-			buffer.append( text.charAt(i));
-		}
-		return buffer.toString();
+		StringBuffer output = new StringBuffer( input.length() );
+		StringBuffer ltrCharacters = new StringBuffer();
+		boolean isCurrRTL = true;
+		 int size = input.length();
+		 for(int index = size - 1; index >= 0;)
+		 {
+			 while(isCurrRTL && index >= 0) // while we are in hebrew
+			 {
+				char curr = input.charAt(index); 
+
+				if(curr > 47 && curr < 128 ) // >= 'a' && curr <= 'z' || curr >= 'A' && curr <= 'Z' || curr >= '0' && curr <= '9') //if its english go out.
+				{
+					isCurrRTL = false;
+				}
+				else
+				{
+					if(curr == '(')
+					{
+						output.append( ')' );
+					}
+					else if(curr == ')')
+					{
+						output.append( '(' );
+					}
+					else 
+					{ 
+						output.append( curr ); //hebrew - save the chars
+					}
+					
+					index--;
+				}
+				
+			 }
+			 ltrCharacters.delete(0, ltrCharacters.length() );
+			 while(!isCurrRTL && index >= 0) // English....
+			 {
+				char curr = input.charAt(index);
+				 
+				if(curr > 47 && curr < 128 )
+				{
+//					if(curr == '(')
+//					{
+//						ltrCharacters.insert(0,  ')' );
+//					}
+//					else if(curr == ')')
+//					{
+//						ltrCharacters.insert( 0,  '(' );
+//					}
+//					else 
+//					{
+						ltrCharacters.insert( 0, curr );
+//					}
+					index--;
+				}
+				else 
+				{
+					isCurrRTL = true;
+				}
+			 }
+			 
+			 output.append( ltrCharacters );
+		 }
+		return output.toString();
 	}
 
 }

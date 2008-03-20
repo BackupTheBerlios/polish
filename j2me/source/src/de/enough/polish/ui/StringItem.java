@@ -601,7 +601,7 @@ public class StringItem extends Item
 				}
 				this.bitMapFontViewer = this.bitMapFont.getViewer(
 						//#if polish.i18n.rightToLeft
-							TextUtil.reverse(
+							TextUtil.reverseForRtlLanguage(
 						//#endif
 								this.text 
 						//#if polish.i18n.rightToLeft
@@ -640,7 +640,7 @@ public class StringItem extends Item
 			if ( this.useSingleLine ) {
 				this.textLines = new String[]{ 
 					//#if polish.i18n.rightToLeft
-						TextUtil.reverse(
+						TextUtil.reverseForRtlLanguage(
 					//#endif
 							this.text 
 					//#if polish.i18n.rightToLeft
@@ -687,7 +687,7 @@ public class StringItem extends Item
 						maxWidth = width;
 					}
 					//#if polish.i18n.rightToLeft
-						lines[i] =  TextUtil.reverse( line );
+						lines[i] =  TextUtil.reverseForRtlLanguage( line );
 					//#endif
 
 				}
