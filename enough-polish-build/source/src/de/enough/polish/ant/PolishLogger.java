@@ -107,6 +107,9 @@ public class PolishLogger implements BuildLogger {
 				}
 				String classPath = message.substring(startIndex, index + ".java".length() );
 				String originalPath = (String) this.classPathTranslations.get( classPath );
+				if (originalPath == null && File.separatorChar == '\\') {
+					originalPath = (String) this.classPathTranslations.get( classPath.replace('\\', '/') );
+				}
 				if (originalPath != null) {
 					// [javac] is needed by some IDEs like Eclipse,
 					// so that it can map the source-code position
