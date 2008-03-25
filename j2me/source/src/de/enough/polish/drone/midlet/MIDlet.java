@@ -131,7 +131,7 @@ public abstract class MIDlet extends Activity {
 		try {
 			startApp();
 		} catch (Exception e) {
-			Logger.getInstance().logInfo(e.getMessage());
+			Logger.getInstance().info(e.getMessage());
 		}
 	}
 

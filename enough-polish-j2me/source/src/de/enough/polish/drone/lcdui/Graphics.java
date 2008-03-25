@@ -8,9 +8,9 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Canvas.ClipMode;
 import android.graphics.Paint.Style;
 import android.graphics.Path.Direction;
+import android.graphics.Region.Op;
 import android.util.Log;
 
 /**
@@ -834,7 +834,7 @@ public class Graphics
 	{
 		Path path = new Path();
 		path.addRect(x, y, x + width, y + height, Direction.CW);
-		this.canvas.clipPath(path, ClipMode.INTERSECT);
+		this.canvas.clipPath(path, Op.INTERSECT);
 	}
 
 	/**
