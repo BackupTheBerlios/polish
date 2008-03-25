@@ -10293,6 +10293,18 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
+		<identifier>BlackBerry/4.2TrackBall</identifier>
+		<features>hasTrackballEvents</features>
+		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.2"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
+		<capability name="SoundFormat" value="amr, nb-amr"/>
+		<capability name="Emulator.Skin" value="8100"/>
+		<capability name="Bugs" value="ReservedKeywordSerializable"/>
+		<capability name="Bugs" value="ItemStateListenerCalledTooEarly"/>
+	</device>
+
+	<device>
 		<identifier>BlackBerry/4.3</identifier>
 		<features>hasTrackballEvents</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.3"/>

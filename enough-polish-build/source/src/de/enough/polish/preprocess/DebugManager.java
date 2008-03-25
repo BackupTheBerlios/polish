@@ -137,6 +137,18 @@ public class DebugManager {
 			this.levelOrder.put( setting.getLevel(), new Integer( USER_DEFINED ));
 			this.debugLevel = USER_DEFINED;
 		}
+		String[] levels = setting.getLevels();
+		if (levels != null) {
+			for (int i = 0; i < levels.length; i++)
+			{
+				String levelStr = levels[i];
+				level = (Integer) this.levelOrder.get( setting.getLevel() );
+				if (level == null) {
+					level = new Integer( USER_DEFINED );
+				}
+				this.levelOrder.put( levelStr, new Integer( USER_DEFINED ));
+			}
+		}
 		LogFilterSetting[] filters = setting.getFilters();
 		for (int i = 0; i < filters.length; i++) {
 			LogFilterSetting filter = filters[i];
@@ -245,7 +257,7 @@ public class DebugManager {
 		if (order != null) {
 			return  order.intValue();
 		} else {
-			return USER_DEFINED;
+			return UNDEFINED;
 		}
 	}
 

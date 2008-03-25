@@ -437,7 +437,6 @@
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="mmapi, wmapi2.0, nokia-ui, m3g, pdaapi, webservice" />
 		<capability name="Bugs" value="usesVideoRam" />
-		<capability name="key.ReturnKey" value="-11"/>
 		<capability name="ScreenSize" value="" />
 		<capability name="FullCanvasSize" value="" />
 		<capability name="CanvasSize" value=""/>
@@ -446,6 +445,7 @@
 		<capability name="MenuBar.OkPosition" value="" />
 		<capability name="command.options" value="Options" />
 		<capability name="dtmf.separator" value=";postd=" />
+		<capability name="Bugs" value="displaySetCurrentFlickers" />
 	</group>
 		
 	<group>

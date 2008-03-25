@@ -59,6 +59,7 @@ centercommand {
 
 
 .browser {
+	inherit: false;
 	/*
 	view-type: midp2;
 	*/

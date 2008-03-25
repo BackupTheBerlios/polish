@@ -26,6 +26,7 @@
 package de.enough.polish.ant.build;
 
 import de.enough.polish.ant.ConditionalElement;
+import de.enough.polish.util.StringUtil;
 
 import de.enough.polish.BuildException;
 
@@ -59,6 +60,7 @@ public class LogSetting extends ConditionalElement {
 	private boolean logMessage = true;
 	private boolean logException = true;
 	private boolean logThread;
+	private String[] levels;
 
 	/**
 	 * Creates a new empty debug-setting.
@@ -99,6 +101,14 @@ public class LogSetting extends ConditionalElement {
 	public String getLevel() {
 		return this.level;
 	}
+	
+	/**
+	 * Retrieves additional user defined debug levels
+	 * @return an array of user defined debug levels, can be null
+	 */
+	public String[] getLevels() {
+		return this.levels;
+	}
 
 	/**
 	 * Sets the general debugging level.
@@ -108,6 +118,10 @@ public class LogSetting extends ConditionalElement {
 	 */
 	public void setLevel(String level) {
 		this.level = level;
+	}
+	
+	public void setLevels( String levelsStr ) {
+		this.levels = StringUtil.splitAndTrim(levelsStr, ',');
 	}
 
 	/**
