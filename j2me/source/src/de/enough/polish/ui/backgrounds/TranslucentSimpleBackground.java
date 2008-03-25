@@ -111,7 +111,7 @@ public class TranslucentSimpleBackground extends Background {
 				this.yCoords[3] = y + height;
 			}
 			dg.fillPolygon( this.xCoords, 0, this.yCoords, 0, 4, this.argbColor );
-		//#elifdef polish.midp2 && !polish.android
+		//#elifdef polish.midp2
 			// on the SE K700 for example the translated origin of the graphics 
 			// does not seem to used. Instead the real origin is used:
 			//#ifdef polish.Bugs.drawRgbOrigin
