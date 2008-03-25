@@ -2908,6 +2908,7 @@ implements AccessibleCanvas
 				//#endif
 				this.menuBarHeight = this.menuBar.getSpaceBottom( availableWidth, this.fullScreenHeight );
 				this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
+				this.menuBar.relativeY = this.screenHeight;
 			}
 			if (super.isShown()) {
 				repaint();
