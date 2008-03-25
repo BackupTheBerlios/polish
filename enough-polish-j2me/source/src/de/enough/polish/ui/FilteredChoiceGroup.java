@@ -196,8 +196,15 @@ public class FilteredChoiceGroup
 		this.filteredList.insert(elementNum, stringPart, imagePart );
 	}
 
-	public void insert(int elementNum, String stringPart, Image imagePart, Style style) {
-		this.filteredList.insert(elementNum, stringPart, imagePart, style );
+	/**
+	 * Inserts an element with an attached style definition
+	 * @param elementNum the index at which the element is added
+	 * @param stringPart the text
+	 * @param imagePart the optional image
+	 * @param elementStyle the associated style
+	 */
+	public void insert(int elementNum, String stringPart, Image imagePart, Style elementStyle) {
+		this.filteredList.insert(elementNum, stringPart, imagePart, elementStyle );
 	}
 
 	/* (non-Javadoc)
@@ -214,8 +221,15 @@ public class FilteredChoiceGroup
 		this.filteredList.set(elementNum, stringPart, imagePart);
 	}
 
-	public void set(int elementNum, String stringPart, Image imagePart, Style style) {
-		this.filteredList.set(elementNum, stringPart, imagePart, style);
+	/**
+	 * Sets an item at the specified index
+	 * @param elementNum the element index
+	 * @param stringPart the text
+	 * @param imagePart the image
+	 * @param elementStyle the associated style
+	 */
+	public void set(int elementNum, String stringPart, Image imagePart, Style elementStyle) {
+		this.filteredList.set(elementNum, stringPart, imagePart, elementStyle);
 	}
 
 	/* (non-Javadoc)
@@ -260,7 +274,10 @@ public class FilteredChoiceGroup
 	 * @see de.enough.polish.ui.FakeCustomItem#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
-		if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && StyleSheet.display != null) {
+		if (gameAction == Canvas.FIRE 
+				&& keyCode != Canvas.KEY_NUM5 
+				&& StyleSheet.display != null) 
+		{
 			showFilteredList( StyleSheet.display );
 			return true;
 		}
@@ -276,6 +293,11 @@ public class FilteredChoiceGroup
 			
 			if (cmd == StyleSheet.OK_CMD || cmd == List.SELECT_COMMAND) {
 				if (this.filteredList.containsChangesTo(this.lastChoices)) {
+					  if (this.filteredList.listType != MULTIPLE) {
+						  // the FilteredList will return multiple selections
+						  // we need to make sure that only the focussed item is retained
+						  this.filteredList.setSelectedIndex(getSelectedIndex(), true);
+					  }
 			         updateText();
 			         this.notifyStateChanged();					
 				}
@@ -318,8 +340,26 @@ public class FilteredChoiceGroup
 		}
 
 	}
+	
+	/**
+	 * Resets the filter text to null.
+	 */
+	public void resetFilter() {
+		this.filteredList.setFilterText(null);
+	}
 
+	/**
+	 * Shows the filtered list.
+	 * @param display the display
+	 */
 	public void showFilteredList( Display display ) {
+		if (this.filteredList.listType == Choice.IMPLICIT) {
+			int selectedIdx = this.filteredList.getSelectedIndex();
+			if (selectedIdx != -1) {
+				ChoiceItem selectedItem = this.filteredList.getItem(selectedIdx);
+				this.filteredList.focus(selectedItem);
+			}
+		}
 		this.filteredList.setTitle( getLabel() );
 		this.lastChoices = new boolean[ this.filteredList.size() ];
 		this.filteredList.getSelectedFlags(this.lastChoices);
