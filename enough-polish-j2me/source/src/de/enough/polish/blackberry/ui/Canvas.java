@@ -1414,7 +1414,9 @@ extends Displayable
                     add( item._bbField );
                     //System.out.println("Canvas.focus(): adding field " + item._bbField );
 	            }
-	            setFocus( item._bbField, 0, 0, 0, 0 );
+	            if (getFieldWithFocus() != item._bbField) {
+	            	setFocus( item._bbField, 0, 0, 0, 0 );
+	            }
 	            //System.out.println("Canvas.focus(): focusing field " + item._bbField );
 	            this.dummyFieldHasFocus = false;
 	        } else if (!this.dummyFieldHasFocus) {
@@ -1423,13 +1425,12 @@ extends Displayable
 	            //System.out.println("Canvas.focus(): focusing dummy");
 	        }
     	} catch (IllegalStateException e) {
-    		/*if (repeatSync) {
+    		if (repeatSync) {
 	            Object lock = MIDlet.getEventLock();
 	            synchronized (lock) {
 	            	setFocus(item, false);
 	            }
-    		}*/
-    		System.out.println("exception in setFocus() : " + e);
+    		}
     	}
     }
 
