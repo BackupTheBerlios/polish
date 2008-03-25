@@ -275,6 +275,16 @@
 					import de.enough.polish.ui.*
 				</to>
 			</mapping>
+			<mapping from="javax.microedition.rms.RecordComparator" to="de.enough.polish.drone.rms.RecordComparator" />
+			<mapping from="javax.microedition.rms.RecordEnumeration" to="de.enough.polish.drone.rms.RecordEnumeration" />
+			<mapping from="javax.microedition.rms.RecordEnumeration" to="de.enough.polish.drone.rms.RecordEnumeration" />
+			<mapping from="javax.microedition.rms.RecordListener" to="de.enough.polish.drone.rms.RecordListener" />
+			<mapping from="javax.microedition.rms.RecordStore" to="de.enough.polish.drone.rms.RecordStore" />
+			<mapping from="javax.microedition.rms.InvalidRecordIDException" to="de.enough.polish.drone.rms.InvalidRecordIDException" />
+			<mapping from="javax.microedition.rms.RecordStoreException" to="de.enough.polish.drone.rms.RecordStoreException" />
+			<mapping from="javax.microedition.rms.RecordStoreFullException" to="de.enough.polish.drone.rms.RecordStoreFullException" />
+			<mapping from="javax.microedition.rms.RecordStoreNotFoundException" to="de.enough.polish.drone.rms.RecordStoreNotFoundException" />
+			<mapping from="javax.microedition.rms.RecordStoreNotOpenException" to="de.enough.polish.drone.rms.RecordStoreNotOpenException" />
 		</mappings>
 		<mappings if="polish.usePolishGui and polish.useDefaultPackage and polish.android">
 			<mapping from="javax.microedition.midlet.*" to="" />
