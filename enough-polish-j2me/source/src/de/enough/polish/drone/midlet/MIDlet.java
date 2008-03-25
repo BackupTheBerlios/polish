@@ -159,6 +159,7 @@ public abstract class MIDlet extends Activity {
 		}
 
 		super.onDestroy();
+		super.finish();
 	}
 
 	/**

@@ -76,7 +76,10 @@ public class TranslucentSimpleBackground extends Background {
 	 * @see de.enough.polish.ui.Background#paint(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
-		//#if polish.blackberry && polish.usePolishGui
+		//#if polish.android 
+			g.setColor( this.argbColor );
+			g.fillRect(x, y, width, height);
+		//#elif polish.blackberry && polish.usePolishGui
 			net.rim.device.api.ui.Graphics bbGraphics = null;
 			//# bbGraphics = g.g;
 			int alpha = this.argbColor >>> 24;
@@ -108,7 +111,7 @@ public class TranslucentSimpleBackground extends Background {
 				this.yCoords[3] = y + height;
 			}
 			dg.fillPolygon( this.xCoords, 0, this.yCoords, 0, 4, this.argbColor );
-		//#elifdef polish.midp2
+		//#elifdef polish.midp2 && !polish.android
 			// on the SE K700 for example the translated origin of the graphics 
 			// does not seem to used. Instead the real origin is used:
 			//#ifdef polish.Bugs.drawRgbOrigin

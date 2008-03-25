@@ -688,7 +688,12 @@ public class Graphics
 	 */
 	public void setColor(int RGB)
 	{
-		RGB += 0xFF000000;
+		//add full opacity for RGB values 
+		if((RGB >> 24) == 0)
+		{
+			RGB += 0xFF000000;
+		}
+		
 		paint.setColor(RGB);
 	}
 
@@ -1059,8 +1064,36 @@ public class Graphics
 	 */
 	public void drawString( String str, int x, int y, int anchor)
 	{
-		//TODO convert align and draw with paint from font.paint 
-		this.canvas.drawText(str, x, y, paint);
+		int horizontalLayout = anchor & (Graphics.LEFT | Graphics.RIGHT | Graphics.HCENTER);
+		switch (horizontalLayout) {
+		case LEFT:
+			break;
+		case RIGHT:
+			this.paint.setTextAlign( Paint.Align.RIGHT);
+			break;
+		case HCENTER:
+			this.paint.setTextAlign( Paint.Align.CENTER );
+			break;
+		}
+		if (this.font == null) {
+			this.font = Font.getDefaultFont();
+		}
+		int verticalLayout = anchor & (Graphics.TOP | Graphics.BOTTOM | Graphics.VCENTER | Graphics.BASELINE);
+		switch (verticalLayout) {
+		case TOP:
+			y += this.font.getBaselinePosition();
+			break;
+		case BOTTOM:
+			y -= this.font.getHeight() - this.font.getBaselinePosition();
+			break;
+		case VCENTER:
+			y -= (this.font.getHeight() - this.font.getBaselinePosition()) >> 1;
+			break;
+		case BASELINE:
+			break;
+		}
+		this.canvas.drawText(str, x, y, this.paint);
+		this.paint.setTextAlign( Paint.Align.LEFT );
 	}
 
 	/**
@@ -1433,18 +1466,22 @@ public class Graphics
 	 */
 	public void drawRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height, boolean processAlpha)
 	{
-		if(this.drawRGBBuffer == null || width > this.drawRGBBuffer.width() || height > this.drawRGBBuffer.height())
-		{
-			Log.v(MIDlet.TAG, "new drawRGBBuffer : width : " + width + " : height : " + height);
-			this.drawRGBBuffer = Bitmap.createBitmap(width, height, processAlpha);
-		}
-		else
-		{
-			Log.v(MIDlet.TAG, "keeping drawRGBBuffer");
-		}
 		
-		this.drawRGBBuffer.setPixels(rgbData, offset, scanlength, 0, 0, width, height);
-		canvas.drawBitmap(this.drawRGBBuffer, x, y, paint);
+//		if(this.drawRGBBuffer == null || width > this.drawRGBBuffer.width() || height > this.drawRGBBuffer.height())
+//		{
+//			Log.v(MIDlet.TAG, "new drawRGBBuffer : width : " + width + " : height : " + height);
+//			this.drawRGBBuffer = Bitmap.createBitmap(width, height, processAlpha);
+//		}
+//		else
+//		{
+//			Log.v(MIDlet.TAG, "keeping drawRGBBuffer");
+//		}
+//		
+//		this.drawRGBBuffer.setPixels(rgbData, offset, scanlength, 0, 0, width, height);
+//		canvas.drawBitmap(this.drawRGBBuffer, x, y, paint);
+		Bitmap bitmap = Bitmap.createBitmap(rgbData, width, height, true);
+		canvas.drawBitmap(bitmap,x,y,paint);
+		
 	}
 
 	/**

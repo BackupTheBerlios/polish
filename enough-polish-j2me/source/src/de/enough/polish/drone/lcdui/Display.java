@@ -188,7 +188,12 @@ import de.enough.polish.drone.midlet.MIDlet;
 public class Display extends View{
 
 	//ANDROID ADOPTIONS
+	//#if polish.ScreenHeight:defined
+	//#= Bitmap bitmap = Bitmap.createBitmap(${polish.ScreenWidth}, ${polish.ScreenHeight}, true);
+	//#else
 	Bitmap bitmap = Bitmap.createBitmap(240, 320, true);
+	//#endif
+	
 	de.enough.polish.drone.lcdui.Canvas currentCanvas;
 	/**
 	 * Creates a view with the given context
@@ -202,6 +207,8 @@ public class Display extends View{
 	 * @see android.view.View#onDraw(android.graphics.Canvas)
 	 */
 	protected void onDraw(Canvas canvas) {
+		Log.v(MIDlet.TAG, "onDraw");
+		
 		if(this.currentCanvas != null)
 		{
 			if(this.currentCanvas.graphics == null)

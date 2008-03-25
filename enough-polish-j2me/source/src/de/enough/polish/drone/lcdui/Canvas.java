@@ -812,7 +812,7 @@ public abstract class Canvas extends Displayable
 		
 		if(display != null)
 		{
-			display.invalidate(x, y, x + width, y + height);
+			display.postInvalidate();
 		}
 		else
 		{
@@ -833,7 +833,7 @@ public abstract class Canvas extends Displayable
 		
 		if(display != null)
 		{
-			display.invalidate();
+			display.postInvalidate();
 		}
 		else
 		{
