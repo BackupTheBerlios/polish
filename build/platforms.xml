@@ -212,6 +212,8 @@
 		<description>Android is a java platform for mobile devices by Google</description>
 		<capability name="build.BootClassPath" value="android.jar" />
 		<capability name="build.ImplicitGroups" value="android" />
+<capability name="polish.MenuBar.useExtendedMenuBar" value="true" />
+		<capability name="polish.MenuBar.Position" value="invisible" />
 	</platform>
 	
 </platforms>

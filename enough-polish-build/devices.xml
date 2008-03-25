@@ -316,7 +316,9 @@ These namespaces/schemas will be used soon.
 		<groups>android</groups>
 		<capability name="JavaPlatform" value="android"/>
 		<capability name="JavaConfiguration" value="android" />
-		<capability name="ScreenSize" value="240x320"/>
+		<capability name="ScreenSize" value="240x273"/>
+		<capability name="key.Menu" value="1"/>
+		<capability name="key.ReturnKey" value="4"/>
 	</device>
 
 	
