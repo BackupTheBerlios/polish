@@ -348,57 +348,60 @@ implements Comparable
 		//boolean debug = (name.indexOf("javapackage") != -1);
 		if (this.capabilityManager != null) {
 			Capability capability = this.capabilityManager.getCapability( name );
-            //TODO: this is the vision.
-//            capability.set(name,value,this.);
 			if ( capability != null ) {
-				if ( capability.appendExtensions() ) {
-					//value = value.toLowerCase();
-					//if (debug) {
-					//	System.out.println( this.identifier + ": " + name + ": value = [" + value + "], existingValue = [" + existingValue + "]");
-					//}
-					if (existingValue != null) {
-						String[] singleValues = StringUtil.splitAndTrim( value, ',' );
-						boolean valueAdded = false;
-						for (int i = 0; i < singleValues.length; i++) {
-							String singleValue = singleValues[i];
-							//TODO what happens if I add "mmapi" to a "mmaapi1.1" device?
-							int existingValueIndex = existingValue.indexOf( singleValue ); 
-							if ( existingValueIndex != -1 ) {
-								// this is a value that seems to be present already,
-								// double check it:
-								int commaIndex = existingValue.indexOf(',', existingValueIndex );
-								String checkValue;
-								if (commaIndex == -1) {
-									checkValue = existingValue.substring( existingValueIndex ).trim();
-								} else {
-									checkValue = existingValue.substring( existingValueIndex, commaIndex ).trim();
-								}
-								if ( !checkValue.equals( singleValue ) ) {
-									// this was just a similar value...
-									//System.out.println( this.identifier + ": Adding value " + singleValue + " to " + name );
-									existingValueIndex = -1;
-								//} else {
-								//	System.out.println( this.identifier + ": Duplicate value " + singleValue + " of " + name );
-								}
-							}
-							if ( existingValueIndex == -1) {
-								existingValue += ", " + singleValue;
-								valueAdded = true;
-							}
-						}
-						if (valueAdded) {
-							value = existingValue;
-						} else {
-							return;
-						}
-					}
+				value = capability.getValue(existingValue, value);
+				if (value == existingValue) {
+					// this is a duplicate:
+					return;
 				}
-                if(capability.appendZeroDelimitedExtension()) {
-                    if(existingValue != null) {
-                        String temp = existingValue + '\1' + value;
-                        value = temp;
-                    }
-                }
+//				if ( capability.appendExtensions() ) {
+//					//value = value.toLowerCase();
+//					//if (debug) {
+//					//	System.out.println( this.identifier + ": " + name + ": value = [" + value + "], existingValue = [" + existingValue + "]");
+//					//}
+//					if (existingValue != null) {
+//						String[] singleValues = StringUtil.splitAndTrim( value, ',' );
+//						boolean valueAdded = false;
+//						for (int i = 0; i < singleValues.length; i++) {
+//							String singleValue = singleValues[i];
+//							//TODO what happens if I add "mmapi" to a "mmaapi1.1" device?
+//							int existingValueIndex = existingValue.indexOf( singleValue ); 
+//							if ( existingValueIndex != -1 ) {
+//								// this is a value that seems to be present already,
+//								// double check it:
+//								int commaIndex = existingValue.indexOf(',', existingValueIndex );
+//								String checkValue;
+//								if (commaIndex == -1) {
+//									checkValue = existingValue.substring( existingValueIndex ).trim();
+//								} else {
+//									checkValue = existingValue.substring( existingValueIndex, commaIndex ).trim();
+//								}
+//								if ( !checkValue.equals( singleValue ) ) {
+//									// this was just a similar value...
+//									//System.out.println( this.identifier + ": Adding value " + singleValue + " to " + name );
+//									existingValueIndex = -1;
+//								//} else {
+//								//	System.out.println( this.identifier + ": Duplicate value " + singleValue + " of " + name );
+//								}
+//							}
+//							if ( existingValueIndex == -1) {
+//								existingValue += ", " + singleValue;
+//								valueAdded = true;
+//							}
+//						}
+//						if (valueAdded) {
+//							value = existingValue;
+//						} else {
+//							return;
+//						}
+//					}
+//				}
+//                if(capability.appendZeroDelimitedExtension()) {
+//                    if(existingValue != null) {
+//                        String temp = existingValue + '\1' + value;
+//                        value = temp;
+//                    }
+//                }
 				String group = capability.getImplicitGroup();
 				if ( group != null ) {
 					addImplicitGroups( value );

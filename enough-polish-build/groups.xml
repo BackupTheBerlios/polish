@@ -230,8 +230,7 @@
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="m3g, pdaapi, webservice, sipapi, svgapi, securityapi" />		
-		<capability name="Emulator.Skin" value="S60_3rd_MIDP_SDK" />
-		<capability name="Emulator.Skin.2" value="\Devices\S60_3rd_MIDP_SDK" />		
+		<capability name="build.Emulator.Skin" value="S60_3rd_MIDP_SDK" />
 		<capability name="Bugs" value="needsBottomOrientiationForStringDrawing, NoBacklight" />
 	</group>
 
@@ -239,8 +238,14 @@
 		<name>Series60E3FP1</name>
 		<parent>Series60E3</parent>
 		<capability name="IconSize" value="32x32" />
-		<capability name="Emulator.Skin" value="S60_3rd_MIDP_SDK_FP1" />
-		<capability name="Emulator.Skin.2" value="\Devices\S60_3rd_MIDP_SDK_FP1" />
+		<capability name="build.Emulator.Skin" value="S60_3rd_MIDP_SDK_FP1" />
+	</group>
+
+	<group>
+		<name>Series60E3FP2</name>
+		<parent>Series60E3</parent>
+		<capability name="IconSize" value="32x32" />
+		<capability name="build.Emulator.Skin" value="S60_3rd_FP2_SDK" />
 	</group>
 
 	<group>

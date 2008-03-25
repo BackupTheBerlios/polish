@@ -29,6 +29,7 @@ import org.jdom.Element;
 
 import de.enough.polish.exceptions.InvalidComponentException;
 import de.enough.polish.util.CastUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * <p>Configures the behavior of &lt;capability&gt; elements.</p>
@@ -43,14 +44,15 @@ import de.enough.polish.util.CastUtil;
 public class Capability {
 
 	private final String identifier;
-	private final boolean appendExtensions;
-	private final char appendExtensionsSeparator;
+	private final boolean appendValues;
+	private final char singleValuesSeparator;
 	private final String group;
 	private final boolean required;
 	private final String type;
 	private final String implicitGroup;
 	private final String description;
     private boolean appendZeroDelimitedExtension;
+	private boolean prependValues;
 
 	/**
 	 * Creates a new capability
@@ -68,14 +70,18 @@ public class Capability {
 			System.out.println("definition=" + definition.toString() );
 			throw new InvalidComponentException("Each defined capability need the <identifier> element in capabilities.xml");
 		}
-		this.appendExtensions = "append".equals( definition.getChildTextTrim("extension-mode") );
+		String extensionMode = definition.getChildTextTrim("extension-mode");
+		this.appendValues = "append".equals( extensionMode );
+		this.prependValues = "prepend".equals( extensionMode );
 		String separator = definition.getChildTextTrim("extension-mode-separator");
-		if (separator == null || separator.length()==0) {
-			this.appendExtensionsSeparator = ',';
-		} else {
-			this.appendExtensionsSeparator = separator.charAt(0);
-		}
 		this.appendZeroDelimitedExtension = "appendZero".equals(definition.getChildTextTrim("extension-mode"));
+		if (separator == null || separator.length()==0) {
+			this.singleValuesSeparator = ',';
+		} else if (this.appendValues) {
+			this.singleValuesSeparator = '\1';
+		} else {
+			this.singleValuesSeparator = separator.charAt(0);
+		}
         this.group = definition.getChildTextTrim("group");
 		this.required = CastUtil.getBoolean( definition.getChildTextTrim("required") );
 		this.type = definition.getChildTextTrim("type");
@@ -88,10 +94,10 @@ public class Capability {
 	 * @return Returns true when extensions of this capability should be appended (instead overwriting the old values).
 	 */
 	public boolean appendExtensions() {
-		return this.appendExtensions;
+		return this.appendValues;
 	}
 	public char getAppendExtensionsSeparator(){
-		return this.appendExtensionsSeparator;
+		return this.singleValuesSeparator;
 	}
 	/**
 	 * @return Returns the group.
@@ -135,6 +141,63 @@ public class Capability {
 	 */
     public boolean appendZeroDelimitedExtension() {
         return this.appendZeroDelimitedExtension;
+    }
+    
+    /**
+     * Marges a value with a new value.
+     * @param previousValue the previous value of this capability, may be null
+     * @param currentValue the current value of this capability
+     * @return the resulting, possibly merged value.
+     */
+    public String getValue( String previousValue, String currentValue ) {
+    	if (previousValue == null) {
+    		return currentValue;
+    	}
+    	if (this.appendValues || this.prependValues) {
+    		// check for duplicates:
+			int existingValueIndex = previousValue.indexOf( currentValue ); 
+			if ( existingValueIndex != -1 ) {
+				// this is a value that seems to be present already,
+				// double check it:
+				int commaIndex = previousValue.indexOf(this.singleValuesSeparator, existingValueIndex );
+				// now move towards the beginning of the value until we find a separator or the beginning:
+				int i = existingValueIndex -1;
+				while (i >= 0 && !(Character.isWhitespace(previousValue.charAt(i)) || previousValue.charAt(i) == this.singleValuesSeparator) ) {
+					i--;
+				}
+				existingValueIndex = i+1;
+				String checkValue;
+				if (commaIndex == -1) {
+					checkValue = previousValue.substring( existingValueIndex ).trim();
+				} else {
+					checkValue = previousValue.substring( existingValueIndex, commaIndex ).trim();
+				}
+				if ( !checkValue.equals( currentValue ) ) {
+					// this was just a similar value...
+					existingValueIndex = -1;
+				}
+			}
+			if ( existingValueIndex != -1) {
+				return previousValue;
+			}
+
+    	}
+    	if (this.appendValues) {
+    		return previousValue + this.singleValuesSeparator + currentValue;
+    	} else if (this.prependValues) {
+    		return currentValue + this.singleValuesSeparator + previousValue;
+    	} else {
+    		return currentValue;
+    	}
+    }
+    
+    /**
+     * Splits a possibly combined capability value into it's single values
+     * @param combinedValue the combined value
+     * @return an array of the values
+     */
+    public String[] getSingleValues( String combinedValue ) {
+    	return StringUtil.splitAndTrim( combinedValue, this.singleValuesSeparator );
     }
 
 }

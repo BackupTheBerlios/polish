@@ -159,11 +159,26 @@ public class WtkEmulator extends Emulator {
 	
 	
 	protected String[] getEmulatorSkinNames( Environment env ) {
-		String skinNamesStr = env.getVariable("polish.Emulator.Skin");
+		String skinNamesStr = env.getVariable("polish.build.Emulator.Skin");
+		if (skinNamesStr == null) {
+			skinNamesStr = env.getVariable("polish.Emulator.Skin");
+		}
 		if (skinNamesStr == null) {
 			return new String[0];
 		} else {
-			return StringUtil.splitAndTrim(skinNamesStr, ':');
+			StringBuffer buffer = new StringBuffer( skinNamesStr );
+			// add backwards compatible old skin definitions:
+			int i = 1;
+			String skin = null;
+			do {
+				i++;
+				skin = env.getVariable("polish.Emulator.Skin." + i);
+				if (skin != null) {
+					buffer.append(':').append(skin);
+				}
+			} while (skin != null);
+			// get all supported skins:
+			return StringUtil.splitAndTrim(buffer.toString(), ':');
 		}
 	}
 	
@@ -180,45 +195,76 @@ public class WtkEmulator extends Emulator {
 
 		String xDevice = getParameterValue("-Xdevice", parameters );
 		boolean xDeviceParameterGiven = true;
-		if (xDevice == null) {
-			xDeviceParameterGiven = false;
-			xDevice = dev.getCapability("polish.Emulator.Skin");
-		}
+//		if (xDevice == null) {
+//			xDeviceParameterGiven = false;
+//			xDevice = dev.getCapability("polish.build.Emulator.Skin");
+//			if (xDevice == null) {
+//				xDevice = dev.getCapability("polish.Emulator.Skin");
+//			}
+//		}
 		String wtkHome = env.getVariable("wtk.home");
 		if (xDevice != null) {
-			// test if this emulator exists:
 			File skinFile = getEmulatorSkin(wtkHome, xDevice);
-			if (!skinFile.exists()) {
-				if (xDeviceParameterGiven) {
-					System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + xDevice + "] for the device [" + dev.getIdentifier() + "] is not installed.");
-					return false;
-				} else {
-					String originalSkin = xDevice;
-					System.out.println("Info: Emulator [" + skinFile.getAbsolutePath() + "] not found.");
-					// check if there are other skins given:
-					int skinNumber = 2;
-					while (true) {
-						xDevice = dev.getCapability("polish.Emulator.Skin." + skinNumber);
-						if (xDevice == null) {
-							break;
-						}
-						skinNumber++;
-						skinFile = getEmulatorSkin(wtkHome, xDevice);
-						if (skinFile.exists()) {
-							break;
-						}
-						System.out.println("Info: Emulator [" + skinFile.getAbsolutePath() + "] not found.");
-					}
-					if (!skinFile.exists()) {
-						System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + originalSkin + "] for the device [" + dev.getIdentifier() + "] is not installed.");
-						return false;
+			if (!(skinFile.exists())) {
+				System.out.println("Warning: did not find emulator referenced by -Xdevice parameter " + xDevice );
+				return false;
+			}
+		} else {
+			String[] skinNames = getEmulatorSkinNames( env );
+			File skinFile = null;
+			for (int i = 0; i < skinNames.length; i++) {
+				xDevice = skinNames[i];
+				skinFile = getEmulatorSkin(wtkHome, xDevice);
+				if (skinFile.exists()) {
+					break;
+				}
+				skinFile = null;
+			}
+			if (skinFile == null) {
+				System.out.print("Warning: Unable to find emulator for ");
+				for (int i = 0; i < skinNames.length; i++) {
+					System.out.print(skinNames[i]);
+					if (i < skinNames.length - 1) {
+						System.out.print(", ");
 					}
 				}
+				System.out.println();
+				return false;
 			}
-			// okay, skin-file exists:
-		} else {
-			System.out.println("Warning: found no emulator-skin or -Xdevice-parameter for device [" + dev.getIdentifier() + "], now using the default emulator.");
 		}
+//			// test if this emulator exists:
+//			File skinFile = getEmulatorSkin(wtkHome, xDevice);
+//			if (!skinFile.exists()) {
+//				if (xDeviceParameterGiven) {
+//					System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + xDevice + "] for the device [" + dev.getIdentifier() + "] is not installed.");
+//					return false;
+//				} else {
+//					String originalSkin = xDevice;
+//					System.out.println("Info: Emulator [" + skinFile.getAbsolutePath() + "] not found.");
+//					// check if there are other skins given:
+//					int skinNumber = 2;
+//					while (true) {
+//						xDevice = dev.getCapability("polish.Emulator.Skin." + skinNumber);
+//						if (xDevice == null) {
+//							break;
+//						}
+//						skinNumber++;
+//						skinFile = getEmulatorSkin(wtkHome, xDevice);
+//						if (skinFile.exists()) {
+//							break;
+//						}
+//						System.out.println("Info: Emulator [" + skinFile.getAbsolutePath() + "] not found.");
+//					}
+//					if (!skinFile.exists()) {
+//						System.out.println("Warning: unable  to start the emulator: the emulator-skin [" + originalSkin + "] for the device [" + dev.getIdentifier() + "] is not installed.");
+//						return false;
+//					}
+//				}
+//			}
+			// okay, skin-file exists:
+//		} else {
+//			System.out.println("Warning: found no emulator-skin or -Xdevice-parameter for device [" + dev.getIdentifier() + "], now using the default emulator.");
+//		}
 		
 		// get emulator executable:
 		File execFile = getEmulatorExcecutable(wtkHome, xDevice, dev, env );

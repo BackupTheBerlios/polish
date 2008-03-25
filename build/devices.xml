@@ -5844,6 +5844,7 @@ These namespaces/schemas will be used soon.
 		<capability name="CameraResolution" value="2582x1944"/>
 		<capability name="AnnouncementDate" value="2006-09-26"/>
 		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D"/>
+		<capability name="build.Emulator.Skin" value="S60_3rd_FP2_SDK" />
 		<capability name="wap.userAgent" value="NokiaN95"/>
 		<capability name="wap.userAgent" value="Mozilla/5.0 (SymbianOS/9.2; U; Series60/3.1 NokiaN95/11.0.026; Profile/MIDP-2.0 Configuration/CLDC-1.1 ) AppleWebKit/413 (KHTML, like Gecko) Safari/413"/>
 		

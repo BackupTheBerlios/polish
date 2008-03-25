@@ -69,7 +69,7 @@ public class NokiaEmulator extends WtkEmulator {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ant.emulator.WtkEmulator#getEmulatorExcecutable(java.lang.String, java.lang.String)
 	 */
-	protected File getEmulatorExcecutable(String wtkHome, String xDevice, Device dev, Environment env) {
+	protected File getEmulatorExcecutable(File wtkHome, String xDevice, Device dev, Environment env) {
 		String execName = dev.getCapability("polish.Emulator.Executable");
 		if (execName == null) {
 			if (File.separatorChar == '\\') {
@@ -89,9 +89,12 @@ public class NokiaEmulator extends WtkEmulator {
 	 */
 	public boolean init(Device dev, EmulatorSetting setting, Environment properties) 
 	{
-		String skin = dev.getCapability("polish.Emulator.Skin");
+		String skin = dev.getCapability("polish.build.Emulator.Skin");
 		if (skin == null) {
-			System.err.println("Unable to start emulator for device [" + dev.getIdentifier() + "]: no \"Emulator.Skin\"-capability defined in devices.xml.");
+			skin = dev.getCapability("polish.Emulator.Skin");
+		}
+		if (skin == null) {
+			System.err.println("Unable to start emulator for device [" + dev.getIdentifier() + "]: no \"build.Emulator.Skin\"-capability defined in devices.xml.");
 			return false;
 		}
 		String nokiaHomePath = properties.getVariable("nokia.home");
