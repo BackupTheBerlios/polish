@@ -715,6 +715,14 @@ public class PolishTask extends ConditionalTask {
 			throw new BuildException("Unable to load extensions.xml - please report this error to j2mepolish@enough.de.");
 		}
 
+		Map buildProperties = getProject().getProperties();
+		// create environment
+		this.environment.setExtensionManager(this.extensionManager); 
+		this.environment.setBaseDir( getProject().getBaseDir()  );
+		this.environment.setBaseProperties( buildProperties );
+		//= new Environment( this.extensionManager, buildProperties, getProject().getBaseDir() );
+		this.environment.setBuildSetting( this.buildSetting );
+		
         // Do not merge these two try blocks as exceptions from the lifecycleManagers can also be
         // configuration problems like misspelled parameters. In this case we do not want to print 'report this error to j2mepolish@enough.de'.
         try {
@@ -729,18 +737,13 @@ public class PolishTask extends ConditionalTask {
                 }
                 this.extensionManager.setLifeCycleExtensions( lifeCycleExtensions );
             }
+        } catch (de.enough.polish.BuildException e) {
+        	throw e;
         } catch (Exception e) {
             e.printStackTrace();
             throw new BuildException("Unable to load LifeCycleManager instances");
         }
-        
-		Map buildProperties = getProject().getProperties();
-		// create environment
-		this.environment.setExtensionManager(this.extensionManager); 
-		this.environment.setBaseDir( getProject().getBaseDir()  );
-		this.environment.setBaseProperties( buildProperties );
-		//= new Environment( this.extensionManager, buildProperties, getProject().getBaseDir() );
-		this.environment.setBuildSetting( this.buildSetting );
+
 		
 		
 		Midlet[] midlets = this.buildSetting.getMidlets(this.environment); 

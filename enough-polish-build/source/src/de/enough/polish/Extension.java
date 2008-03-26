@@ -330,16 +330,26 @@ public abstract class Extension {
 					classPath,
 					false);
 		}
-		Class extensionClass = classLoader.loadClass( className );		
-		Extension extension = (Extension) extensionClass.newInstance();
-		extension.init( typeDefinition, definition, setting, antProject, manager, environment );
-		if (setting != null && setting.hasParameters()) {
-			//System.out.println("Extension [" + className + "]: setting [" + setting.getParameters().length + "] parameters");
-			ReflectionUtil.populate( extension, setting.getAllParameters( environment ), antProject.getBaseDir() );
-		//} else {
-		//	System.out.println("Extension [" + className + "]: setting no parameters - setting == null: " + (setting == null) );
-		}
+		try {
+			Class extensionClass = classLoader.loadClass( className );		
+			Extension extension = (Extension) extensionClass.newInstance();
+			extension.init( typeDefinition, definition, setting, antProject, manager, environment );
+			if (setting != null && setting.hasParameters()) {
+				//System.out.println("Extension [" + className + "]: setting [" + setting.getParameters().length + "] parameters");
+				ReflectionUtil.populate( extension, setting.getAllParameters( environment ), antProject.getBaseDir() );
+			//} else {
+			//	System.out.println("Extension [" + className + "]: setting no parameters - setting == null: " + (setting == null) );
+			}
 		return extension;
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			throw new BuildException( "Unable to load " 
+					+ ((typeDefinition != null) ? typeDefinition.getName() : ((setting != null) ? setting.getName() : "extension"))
+					+ " with class " + className
+					+ " and classpath " + classPath
+					+ ": " + e.toString() );
+					
+		}
 	}
 
 	/**

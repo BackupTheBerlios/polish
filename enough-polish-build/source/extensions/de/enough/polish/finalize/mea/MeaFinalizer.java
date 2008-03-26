@@ -43,6 +43,7 @@ import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.util.FileUtil;
 
 /**
+ * Creates a MEdia Archive from all build applications.
  * 
  * <br>Copyright Enough Software 2005-2007
  * <pre>
