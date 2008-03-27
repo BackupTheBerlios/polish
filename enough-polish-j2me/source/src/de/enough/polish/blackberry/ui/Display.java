@@ -572,6 +572,9 @@ implements TrackwheelListener, KeyListener
 	 */
 	public void setCurrent( Displayable nextDisplayable)
 	{
+		if (nextDisplayable == null) {
+			return;
+		}
 		((Canvas)nextDisplayable).showNotify();
         Object lock = Application.getEventLock();
         synchronized (lock) {

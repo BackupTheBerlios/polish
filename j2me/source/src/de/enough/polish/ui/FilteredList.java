@@ -486,14 +486,56 @@ implements ItemStateListener //, CommandListener
 			}
 			ChoiceItem newSelected = (ChoiceItem) this.itemsList.get( elementNum );
 			newSelected.select( true );
+			
 		}
 		if (isShown()) {
+			if (this.listType == Choice.IMPLICIT) {
+				focus( elementNum );
+			}
 			itemStateChanged( this.filterTextField );
 		}
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#focus(int, boolean)
+	 */
+	public void focus(int index, boolean force)
+	{
+		Item item = null;
+		if (index != -1) {
+			item = (Item) this.itemsList.get( index );
+		}
+		focus( index, item, force );
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#focus(de.enough.polish.ui.Item, boolean)
+	 */
+	public void focus(Item item, boolean force)
+	{
+		int index = -1;
+		if (item != null) {
+			this.itemsList.indexOf( item );
+		}
+		focus( index, item, force );
+	}
 	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#focus(int, de.enough.polish.ui.Item, boolean)
+	 */
+	public void focus(int index, Item item, boolean force)
+	{
+		if (index != -1 && item == null) {
+			item = (Item) this.itemsList.get( index );
+		}
+		if (item != null) {
+			index = this.container.indexOf(item);
+			this.container.focus(index);
+		} else {
+			this.container.focus(-1);
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.List#isSelected(int)

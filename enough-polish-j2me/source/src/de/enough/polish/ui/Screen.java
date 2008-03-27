@@ -3717,11 +3717,7 @@ implements AccessibleCanvas
 	 * @param index the index of the item which is already shown on this screen.
 	 */
 	public void focus(int index) {
-		Item item = null;
-		if (index != -1) {
-			item = this.container.get(index);
-		}
-		focus( index, item, false );
+		focus( index, false );
 	}
 	
 	/**
