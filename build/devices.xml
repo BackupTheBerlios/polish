@@ -117,6 +117,7 @@ These namespaces/schemas will be used soon.
 		<capability name="key.backspace" value="16"/>
 		<capability name="MenuBar.OptionsPosition" value="right" />
 		<capability name="MenuBar.OkPosition" value="left" />
+		<capability name="HeapSize" value="20MB"/>
 	</device>
 
 	<device supportsPolishGui="true">
