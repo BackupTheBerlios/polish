@@ -41,6 +41,8 @@ import com.nttdocomo.ui.Frame;
 
 import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.DrawUtil;
+import de.enough.polish.util.ImageUtil;
 import de.enough.polish.util.Locale;
 
 //#ifdef polish.Screen.imports:defined
@@ -308,6 +310,11 @@ implements AccessibleCanvas
 			private int previousScreenTitleHeight;
 		//#endif
 	//#endif
+	//#if polish.ScreenOrientationCanChangeManually
+		//#define tmp.manualOrientationChange
+		private int screenOrientationDegrees;
+		private Image screenOrientationBuffer;
+	//#endif
 	protected ScreenStateListener screenStateListener;
 	private boolean isScreenChangeDirtyFlag;
 	protected ItemStateListener itemStateListener;
@@ -325,7 +332,6 @@ implements AccessibleCanvas
 	/** requests a call to calcuateContentArea() the next time this screen is being painted */
 	protected boolean isInitRequested;
 	private CommandListener realCommandListener;
-
 	
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
@@ -397,47 +403,6 @@ implements AccessibleCanvas
 		//#debug
 		System.out.println("Initialising screen " + this );
 		// calling super.setFullScreenMode(true) is already done within the showNotify() method
-//		//#if tmp.fullScreen && polish.midp2 && !(polish.Bugs.fullScreenInPaint || tmp.needsNokiaUiForSystemAlerts)
-//			super.setFullScreenMode( true );
-//		//#endif
-		/* old code to establish the screen dimensions:
-		 * 
-		//#ifdef tmp.menuFullScreen
-			//#if polish.Screen.base:defined
-				//# this.fullScreenHeight = getCanvasHeight();
-			//#elif polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasHeight:defined
-				//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
-			//#else
-				this.fullScreenHeight = getHeight();
-			//#endif
-		//#endif
-		this.screenHeight = getHeight();
-		this.originalScreenHeight = this.screenHeight;		
-		//#if tmp.menuFullScreen && polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasWidth:defined
-			//#= this.screenWidth = ${polish.FullCanvasWidth};
-		//#else
-			this.screenWidth = getWidth();
-		//#endif
-		
-		if (this.screenWidth == 0) {
-			//#if polish.FullCanvasSize:defined && tmp.menuFullScreen
-				//#= this.screenWidth = ${polish.FullCanvasWidth};
-				//#= this.fullScreenHeight = ${polish.FullCanvasHeight};
-			//#else
-				return;
-			//#endif
-		}
-		//#if tmp.menuFullScreen && polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode
-			//#if polish.FullCanvasWidth:defined
-				//#= width = ${polish.FullCanvasWidth};
-			//#endif
-			//#if polish.FullCanvasHeight:defined
-				//#= height = ${polish.FullCanvasHeight};
-			//#endif
-		//#endif
-		 *  END OLD CODE
-		 * 
-		 */
 		if (height == 0 || width == 0) {
 			return; // invalid initialization values...
 		}
@@ -1423,6 +1388,23 @@ implements AccessibleCanvas
 	 * @see #paintScreen(Graphics)
 	 */
 	public void paint(Graphics g) {
+		//#if tmp.manualOrientationChange
+			Graphics originalGraphics = null;
+			if (this.screenOrientationDegrees != 0) {
+				Image buffer = this.screenOrientationBuffer;
+				if (buffer == null) {
+					int w = this.screenWidth;
+					int h = this.screenHeight;
+					//#if tmp.fullScreen
+						h = this.fullScreenHeight;
+					//#endif
+					buffer = Image.createImage( w, h );
+					this.screenOrientationBuffer = buffer;
+				}
+				originalGraphics = g;
+				g = buffer.getGraphics();
+			}
+		//#endif
 		//#if polish.Screen.callSuperEvents
 			//# super.paint(g);
 		//#endif
@@ -1457,26 +1439,6 @@ implements AccessibleCanvas
 						//#endif
 					//#endif
 				}
-			//#endif
-				// test code for JP8 preview
-//			//#if tmp.menuFullScreen
-//				g.setClip( 0, 0, this.screenWidth, this.fullScreenHeight );
-//			//#endif
-			//#if !tmp.menuFullScreen
-				// not needed since sizeChanged() takes care for that now (robert, 2007-07-28)
-//				int translateY = g.getTranslateY();
-//				if (false && translateY != 0 && this.screenHeight == this.originalScreenHeight) {
-//					this.screenHeight -= translateY;
-//					//#if tmp.useScrollIndicator 
-//						this.scrollIndicatorY -= translateY;
-//					//#endif
-//					//#debug
-//					System.out.println("Adjusting screenheight from " + this.originalScreenHeight + " to " + this.screenHeight );
-//					if (this.container != null) {
-//						int y = translateY;
-//						calculateContentArea( 0, y, this.screenWidth, this.screenHeight - y );
-//					}
-//				}
 			//#endif
 			//#if tmp.fullScreen && polish.FullCanvasSize:defined && polish.Bugs.setClipForFullScreenNeeded
 				g.translate( -g.getTranslateX(), -g.getTranslateY() );
@@ -1937,6 +1899,21 @@ implements AccessibleCanvas
 			}
 			//#endif
 		}
+		//#if tmp.manualOrientationChange
+			if (this.screenOrientationDegrees != 0 && originalGraphics != null) {
+				//#if polish.midp2 && polish.hasFloatingPoint
+				Image bufferImage = this.screenOrientationBuffer;
+				if (bufferImage != null) {
+					int w = bufferImage.getWidth();
+					int h = bufferImage.getHeight();
+					int[] rgb = new int[ w * h ];
+					bufferImage.getRGB(rgb, 0, w, 0, 0, w, h ); 
+					rgb = ImageUtil.rotate(rgb, w, h, this.screenOrientationDegrees, 0 );
+					originalGraphics.drawRGB( rgb, 0, h, 0, 0, h, w, false);
+				}
+				//#endif
+			}
+		//#endif
 	}
 	
 	/**
@@ -3661,7 +3638,6 @@ implements AccessibleCanvas
 					}
 				//#endif
 				init( width, height );
-				//calculateContentArea( 0, 0, this.screenWidth, this.screenHeight  ); done within init()
 			}
 		//#endif
 	}
@@ -4296,6 +4272,20 @@ implements AccessibleCanvas
 		}
 	}
 	
+	public void setScreenOrientation( int degrees ) {
+		//#if tmp.manualOrientationChange
+			this.screenOrientationDegrees = degrees;
+			if ((degrees >= 90 && degrees <= 180) || (degrees >= 270 && degrees <= 360)) {
+				sizeChanged( getScreenFullHeight(), getScreenFullWidth() );
+			} else {
+				this.screenOrientationBuffer = null;
+				sizeChanged( getScreenFullWidth(), getScreenFullHeight() );
+			}
+			if (isShown()) {
+				repaint();
+			}
+		//#endif
+	}
 	
 	
 

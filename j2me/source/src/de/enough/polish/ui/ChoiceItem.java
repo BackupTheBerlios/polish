@@ -231,6 +231,7 @@ public class ChoiceItem extends IconItem
 		
 		this.contentWidth += maxWidth;
 		if (this.contentHeight < maxHeight) {
+			// TODO look at layout and adjust yAlign accordingly
 			this.yAdjust = maxHeight - this.contentHeight;
 			this.contentHeight = maxHeight;
 			this.yBoxAdjust = 0;

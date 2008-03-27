@@ -627,7 +627,7 @@ public class FishEyeContainerView extends ContainerView {
 					currentAlphas = this.currentTranslucencies;
 				//#endif
 			}
-			if (referenceXCenterPositions.length != targetXPositions.length) {
+			if (this.referenceXCenterPositions.length != targetXPositions.length) {
 				return item.getStyle();
 			}
 			for (int i = 0; i < myItems.length; i++) {
@@ -671,7 +671,7 @@ public class FishEyeContainerView extends ContainerView {
 				if (scr != null) {
 					scr.setTitle( this.labels[ focIndex ] );
 				}
-			} else if (focusedLabel != null) {
+			} else if (this.focusedLabel != null) {
 				this.focusedLabel.setText( this.labels[ focIndex ] );
 				if (this.focusedLabel.getStyle() != item.getStyle() ) {
 					this.focusedLabel.setStyle( item.getStyle() );

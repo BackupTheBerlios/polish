@@ -238,7 +238,8 @@ public class MenuBar extends Item {
 			}
 		//#else
 			//#if tmp.useMiddleCommand
-				if (type == Command.ITEM) {
+				if (type == Command.ITEM || type == Command.OK) {
+					//System.out.println("adding item/ok command " + cmd.getLabel() + " with prio " + priority + ", previous priority=" + (this.singleMiddleCommand == null ? "<none>" : (Integer.toString(this.singleMiddleCommand.getPriority())) ));
 					if (this.singleMiddleCommand == null) {
 						this.singleMiddleCommand = cmd;
 						this.singleMiddleCommandItem.setImage( (Image)null );
@@ -680,6 +681,9 @@ public class MenuBar extends Item {
 				this.contentHeight = 0;
 			//#else
 				if (this.singleLeftCommand == null && this.singleRightCommand == null 
+						//#if tmp.useMiddleCommand
+							&& this.singleMiddleCommand == null
+						//#endif
 						&& this.commandsList.size() == 0 ) 
 				{
 					this.contentWidth = 0;
@@ -756,25 +760,22 @@ public class MenuBar extends Item {
 			//#if tmp.useMiddleCommand
 				height = Math.max( height, this.singleMiddleCommandItem.getItemHeight( availableWidth, availableWidth) ); 
 			//#endif
-			//if (height > this.contentHeight) {
-				this.contentHeight = height; 
-			//} else {
-				// TODO allow LAYOUT_VEXPAND
-				if (( this.singleLeftCommandItem.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {
-					this.singleLeftCommandItem.relativeY = (this.contentHeight - this.singleLeftCommandItem.itemHeight) >> 1;					
-				} else if (( this.singleLeftCommandItem.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM) {
-					this.singleLeftCommandItem.relativeY = this.contentHeight - this.singleLeftCommandItem.itemHeight;
-				} else {
-					this.singleLeftCommandItem.relativeY = 0;
-				}
-				if (( this.singleRightCommandItem.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {
-					this.singleRightCommandItem.relativeY = (this.contentHeight - this.singleRightCommandItem.itemHeight) >> 1;					
-				} else if (( this.singleRightCommandItem.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM) {
-					this.singleRightCommandItem.relativeY = this.contentHeight - this.singleRightCommandItem.itemHeight;
-				} else {
-					this.singleRightCommandItem.relativeY = 0;
-				}
-			//}
+			this.contentHeight = height; 
+			// TODO allow LAYOUT_VEXPAND
+			if (( this.singleLeftCommandItem.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {
+				this.singleLeftCommandItem.relativeY = (this.contentHeight - this.singleLeftCommandItem.itemHeight) >> 1;					
+			} else if (( this.singleLeftCommandItem.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM) {
+				this.singleLeftCommandItem.relativeY = this.contentHeight - this.singleLeftCommandItem.itemHeight;
+			} else {
+				this.singleLeftCommandItem.relativeY = 0;
+			}
+			if (( this.singleRightCommandItem.layout & Item.LAYOUT_VCENTER) == Item.LAYOUT_VCENTER) {
+				this.singleRightCommandItem.relativeY = (this.contentHeight - this.singleRightCommandItem.itemHeight) >> 1;					
+			} else if (( this.singleRightCommandItem.layout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM) {
+				this.singleRightCommandItem.relativeY = this.contentHeight - this.singleRightCommandItem.itemHeight;
+			} else {
+				this.singleRightCommandItem.relativeY = 0;
+			}
 			this.contentWidth = lineWidth;
 			//#if polish.ScreenOrientationCanChange
 				if (this.isOrientationVertical) {
@@ -1781,6 +1782,7 @@ public class MenuBar extends Item {
 	 * @return the number of commands in this menubar.
 	 */
 	public int size() {
+		System.out.println("commands in " + this.screen + ": " + this.allCommands.size());
 		return this.allCommands.size();
 	}
 	

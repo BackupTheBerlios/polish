@@ -505,17 +505,17 @@ public final class ImageUtil {
 	 * 								destination image will still have the same size
 	 *								as the source image, but contain the new image
 	 *								centered within.
-	 * @param leftHeight		The hight of the left image border after scaling.
-	 * @param rightHeight		The hight of the right image border after scaling.
+	 * @param leftHeight		The height of the left image border after scaling.
+	 * @param rightHeight		The height of the right image border after scaling.
 	 * @param opacity			The opacity of the image all in all.
 	 * @param EDGEDETECTION_MAP	if !=0 this enables edge detection which will speed 
-	 * 								up the compuation. Please read the documentation
+	 * 								up the computation. Please read the documentation
 	 * 								of scaleDownHq for details.
 	 * @see #scaleDownHq(int[], int[], int, int, int, int, boolean)
 	 */
-	public static void perspectiveShear(int [] src,int[] dest, int originalWidth, int newWidth,int leftHeight, int rightHeight, int opacity, int EDGEDETECTION_MAP){
+	public static void perspectiveShear(int[] src, int[] dest, int originalWidth, int newWidth,int leftHeight, int rightHeight, int opacity, int EDGEDETECTION_MAP){
 		//#debug
-		System.out.println(" perspectiveShear requested with height="+ rightHeight + " width" + newWidth  + " opacity " + opacity);
+		System.out.println("perspectiveShear requested with height="+ rightHeight + " width" + newWidth  + " opacity " + opacity);
 		
 		int originalHeight= src.length/originalWidth;
 		int smallHeight;
