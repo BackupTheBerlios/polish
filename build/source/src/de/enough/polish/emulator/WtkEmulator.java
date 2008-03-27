@@ -221,15 +221,19 @@ public class WtkEmulator extends Emulator {
 				skinFile = null;
 			}
 			if (skinFile == null) {
-				System.out.print("Warning: Unable to find emulator for ");
-				for (int i = 0; i < skinNames.length; i++) {
-					System.out.print(skinNames[i]);
-					if (i < skinNames.length - 1) {
-						System.out.print(", ");
+				if (skinNames.length > 0) {
+					System.out.print("Warning: Unable to find emulator for ");
+					for (int i = 0; i < skinNames.length; i++) {
+						System.out.print(skinNames[i]);
+						if (i < skinNames.length - 1) {
+							System.out.print(", ");
+						}
 					}
+					System.out.println();
+					return false;
+				} else {
+					System.out.println("Warning: found no emulator-skin or -Xdevice-parameter for device [" + dev.getIdentifier() + "], now using the default emulator.");
 				}
-				System.out.println();
-				return false;
 			}
 		}
 //			// test if this emulator exists:
