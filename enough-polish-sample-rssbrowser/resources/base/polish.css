@@ -30,7 +30,9 @@ title {
 		style: bold;
 		color: #000000;
 	}
-	text-effect: alien-glow;
+	//#if polish.midp2 && polish.hasFloatingPoint
+		text-effect: alien-glow;
+	//#endif
 	background {
 		type: simple;
 		color: #ffffff;

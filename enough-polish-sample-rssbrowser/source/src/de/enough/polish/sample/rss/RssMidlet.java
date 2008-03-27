@@ -80,7 +80,7 @@ public class RssMidlet
          menu.addCommand( CMD_EXIT );
          menu.setCommandListener(this);
          this.mainMenu = menu;
-         
+                  
          //#style rssBrowserForm
          this.browserScreen = new Form("Browser");
          //#style rssBrowser

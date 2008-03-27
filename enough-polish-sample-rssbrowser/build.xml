@@ -161,6 +161,7 @@
 				<variable name="polish.TextField.supportSymbolsEntry" value="true" />
 				<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 				<variable name="polish.useScrollBar" value="true" />
+				<variable name="polish.ScreenInfo.enable" value="false" />
 			</variables>
 			<!-- Here you can set the dir attribute to "resources2" for an alternative design. -->
 			<resources
@@ -174,6 +175,7 @@
 				     versions of your application: -->
 				<localization locales="en_US" unless="test" />
 			</resources>
+			
 			
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
 			<obfuscator name="ProGuard" useDefaultPackage="false" unless="test || polish.blackberry" >
@@ -192,6 +194,8 @@
 			<!-- user defined JAD attributes can also be used: -->
 			<jad>
 				<attribute name="Nokia-MIDlet-Category" value="Game" if="polish.group.Series40" />
+				<!-- allow to runt the app as a background application: -->
+				<attribute name="SEMC-StandbyApplication" value="Y" if="polish.vendor.Sony-Ericsson" />
 			</jad>	
 			
 			
