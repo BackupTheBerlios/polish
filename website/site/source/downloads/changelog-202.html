@@ -11,7 +11,22 @@
 		<li><b>- Builds for MIDP 1.0 without J2ME Polish UI</b>: Building projects for MIDP 1.0 devices compile again when the J2ME Polish UI is deactivated.</li>
 		<li><b>- FilteredList</b>: in some circumstances an invalid filtered list entry was returned in <code>FilteredList.getSelectedIndex()</code></li>
 		<li><b>- Series 60 E2 FP3</b>: fixed screen size detection for Series 60, second edition, feature pack 3 devices.</li>
+		<li><b>- Sony Ericsson Platform 8</b>: Added bug definitions for Sony Ericsson Java Platform 8 devices, setting middle soft key commands correctly.</li>
 		<li><b>+ BigInteger</b>: Added <code>de.enough.polish.math.BigInteger</code> for applications relying on <code>java.lang.BigInteger</code> which is not available on MIDP/CLDC handsets.</li>
+		<li><b>+ TextField caret positionM</b>: Jumping to the last character when a textfield is being focused</li> 
+		<li><b>+ Left To Right Languages</b>: Added experimental support for left-to-right languages. Set the <code>polish.i18n.rightToLeft</code> preprocessing variable to enable this support.</li>
+		<li><b>+ Logging</b>: user defined logging levels that are used within <code>//#debug</code> preprocessing directives 
+		now have a lower priority than the debug level. You can activate all applicable user defined levels using the 
+		<code>levels</code> attribute of the <code>&lt;debug&gt;</code> element:
+<pre>
+&lt;debug verbose=&quot;true&quot; level=&quot;warn&quot; levels=&quot;timing, memory&quot; /&gt;
+</pre>
+		</li>
+		<li><b>+ Content Distribution</b>: added support for content deployment using the <code>mea</code> archive type - we will be launching an accompanying free OTA service for developers soon:
+<pre>
+&lt;lifeCycleManager name=&quot;mea&quot; /&gt;
+</pre>
+		</li>
 		<!-- 
 		<li><b></b>: </li>
 		 -->
