@@ -510,8 +510,8 @@ public final class StyleSheet {
 				int width;
 				int height;
 				if (currentScreen != null) {
-					width = currentScreen.getWidth();
-					height = currentScreen.getScreenHeight();
+					width = currentScreen.getScreenFullWidth();
+					height = currentScreen.getScreenFullHeight();
 				} else {
 					//#if polish.FullCanvasSize:defined
 						//#= width = ${polish.FullCanvasWidth};
@@ -553,8 +553,16 @@ public final class StyleSheet {
 				g = nextScreenImage.getGraphics();
 				AccessibleCanvas nextCanvas = (AccessibleCanvas) nextDisplayable;
 				nextCanvas.showNotify();
-				//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
-					nextCanvas.sizeChanged(width, height);
+				//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts
+					//if (nextScreen == null || !nextScreen.isInitialized) {
+						nextCanvas.sizeChanged(width, height);
+					//}
+					//#if polish.ScreenOrientationCanChangeManually
+						if (lastScreen != null && nextScreen != null && nextScreen != lastScreen) {
+							nextScreen.screenOrientationDegrees = -1;
+							nextScreen.setScreenOrientation( lastScreen.screenOrientationDegrees );
+						} 
+					//#endif
 				//#endif
 				nextCanvas.paint( g );
 				//#debug

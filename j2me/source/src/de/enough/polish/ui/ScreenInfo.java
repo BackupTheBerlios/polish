@@ -117,7 +117,7 @@ public class ScreenInfo {
 	}
 	
 	/**
-	 * Sets the text contents of the ScreenInfo along with a style. 
+	 * Sets the text contents of the ScreenInfo. 
 	 * 
 	 * @param text the new text
 	 */
@@ -127,6 +127,17 @@ public class ScreenInfo {
 		((IconItem)item).setText( text );
 		repaint();
 	}
+	
+	/**
+	 * Retrieves the text contents of the ScreenInfo element.
+	 * 
+	 * @return the current text of this screen info
+	 */
+	public static String getText()
+	{
+		return ((IconItem)item).getText();
+	}
+	
 
 	/**
 	 * Sets the text contents of the ScreenInfo along with a style. 
@@ -283,5 +294,6 @@ public class ScreenInfo {
 			item.paint( 0, 0, 0, screenWidth, g );
 		}
 	}
-	
+
+
 }

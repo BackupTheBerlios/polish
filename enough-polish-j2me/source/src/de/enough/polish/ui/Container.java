@@ -2447,6 +2447,9 @@ public class Container extends Item {
 		for (int i = 0; i < this.itemsList.size(); i++) {
 			Item item = (Item) this.itemsList.get(i);
 			item.isInitialized = false;
+			if (item instanceof Container) {
+				((Container)item).requestFullInit();
+			}
 		}
 		requestInit();
 	}

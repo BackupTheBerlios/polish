@@ -33,6 +33,11 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 
+//#if polish.api.sensor
+import de.enough.polish.util.sensor.AccelationInfoItem;
+	import de.enough.polish.util.sensor.AccelerationListener;
+import de.enough.polish.util.sensor.AccelerationUtil;
+//#endif
 
 /**
  * <p>Is used for only displaying a single canvas for devices that flicker between screen changes.</p>
@@ -63,10 +68,20 @@ public class MasterCanvas
 		//#define tmp.fullScreenInPaint
 		private boolean isInFullScreenMode;
 	//#endif
+	//#if polish.api.sensor
+		private int screenOrientation;
+	//#endif
 	
 	
 	private MasterCanvas() {
 		// disallow instantiation...
+		//#if polish.api.sensor
+			ScreenOrientationDetector detector = new ScreenOrientationDetector();
+			AccelerationUtil.addAccelerationListener(detector);
+//			//#style screenInfo
+//			AccelationInfoItem item = new AccelationInfoItem();
+//			ScreenInfo.setItem( item );
+		//#endif
 	}
 	
 
@@ -86,7 +101,17 @@ public class MasterCanvas
 	 */
 	protected void showNotify() {
 		//#if polish.midp2 && tmp.fullScreen
+			//#if polish.ScreenOrientationCanChangeManually
+				if (this.currentCanvas instanceof Screen) {
+					((Screen)this.currentCanvas).isSetFullScreenCalled = true;
+				}
+			//#endif
 			setFullScreenMode( true );
+			//#if polish.ScreenOrientationCanChangeManually
+				if (this.currentCanvas instanceof Screen) {
+					((Screen)this.currentCanvas).isSetFullScreenCalled = false;
+				}
+			//#endif
 		//#endif
 		if (this.currentCanvas != null) { 
 			this.currentCanvas.showNotify();
@@ -204,6 +229,11 @@ public class MasterCanvas
 				if (alert.nextDisplayable == null) {
 					alert.nextDisplayable = (instance.currentDisplayable != null ? instance.currentDisplayable : display.getCurrent() );
 				}
+			}
+		//#endif
+		//#if polish.api.sensor
+			if (canvas instanceof Screen) {
+				((Screen)canvas).setScreenOrientation( instance.screenOrientation );
 			}
 		//#endif
 		canvas.showNotify();
@@ -398,5 +428,34 @@ public class MasterCanvas
 			return displayable.isShown();
 		}
 	}
+	
+	//#if polish.api.sensor
+	class ScreenOrientationDetector implements AccelerationListener {
+		
+		/* (non-Javadoc)
+		 * @see de.enough.polish.util.sensor.AccelerationListener#notifyAcceleration(int, int, int, int, int, int, int, int, int)
+		 */
+		public void notifyAcceleration(int x, int minimumX, int maximumX,
+				int y, int minimumY, int maximumY, int z, int minimumZ,
+				int maximumZ)
+		{
+			if (MasterCanvas.this.currentCanvas instanceof Screen) {
+				if (x > 800 && y < 250) {
+					instance.screenOrientation = 90;
+					((Screen)MasterCanvas.this.currentCanvas).setScreenOrientation( 90 ); 
+				} else if (x < 200 && y > 750) {
+					instance.screenOrientation = 0;
+					((Screen)MasterCanvas.this.currentCanvas).setScreenOrientation( 0 ); 
+				} else if (x < 200 && y < -800) {
+					instance.screenOrientation = 180;
+					((Screen)MasterCanvas.this.currentCanvas).setScreenOrientation( 180 );
+				} else if (x < -800 && y < 250) {
+					instance.screenOrientation = 270;
+					((Screen)MasterCanvas.this.currentCanvas).setScreenOrientation( 270 );
+				}
+			}
+		}		
+	}
+	//#endif
 
 }

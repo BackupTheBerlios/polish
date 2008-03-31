@@ -53,16 +53,6 @@ import de.enough.polish.util.Locale;
  */
 public class MenuBar extends Item {
 	
-	//#ifdef polish.key.LeftSoftKey:defined
-		//#= private final static int LEFT_SOFT_KEY = ${polish.key.LeftSoftKey};
-	//#else
-		private final static int LEFT_SOFT_KEY = -6;
-	//#endif
-	//#ifdef polish.key.RightSoftKey:defined
-		//#= private final static int RIGHT_SOFT_KEY = ${polish.key.RightSoftKey};
-	//#else
-		private final static int RIGHT_SOFT_KEY = -7;
-	//#endif
 	//#if polish.key.Menu:defined
 		//#if false
 			private final static int MENU_KEY = 268566528;
@@ -78,24 +68,12 @@ public class MenuBar extends Item {
 	//#if ${lowercase(polish.MenuBar.OptionsPosition)} == right && ${lowercase(polish.MenuBar.OkPosition)} != right
 		//#define tmp.RightOptions
 		//#define tmp.OkCommandOnLeft
-		//# private final int openOptionsMenuKey = RIGHT_SOFT_KEY;
-		//# private final int selectOptionsMenuKey = LEFT_SOFT_KEY;
-		//# private final int closeOptionsMenuKey = RIGHT_SOFT_KEY;
 	//#elif ${lowercase(polish.MenuBar.OptionsPosition)} == right
 		//#define tmp.RightOptions
-		//# private final int openOptionsMenuKey = RIGHT_SOFT_KEY;
-		//# private final int selectOptionsMenuKey = RIGHT_SOFT_KEY;
-		//# private final int closeOptionsMenuKey = LEFT_SOFT_KEY;
 	//#elif ${lowercase(polish.MenuBar.OptionsPosition)} == middle
 		//#define tmp.MiddleOptions
-		//# private final int openOptionsMenuKey = MIDDLE_SOFT_KEY;
-		//# private final int selectOptionsMenuKey = LEFT_SOFT_KEY;
-		//# private final int closeOptionsMenuKey = RIGHT_SOFT_KEY;
 	//#else
 		//#define tmp.LeftOptions
-		private final int openOptionsMenuKey = LEFT_SOFT_KEY;
-		private final int selectOptionsMenuKey = LEFT_SOFT_KEY;
-		private final int closeOptionsMenuKey = RIGHT_SOFT_KEY;
 	//#endif
 	
 	protected final ArrayList commandsList;
@@ -1009,16 +987,16 @@ public class MenuBar extends Item {
 					return true; // close in keyRelease
 				}
 			//#endif
-			if (keyCode == this.selectOptionsMenuKey) {
+			if (isSelectOptionsMenuKey(keyCode)) {
 				this.isSoftKeyPressed = true;	
 				notifyKeyPressed();
 				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
 				commandItem.handleKeyPressed( 0, Canvas.FIRE );
 				return true;
 		//#if polish.key.ReturnKey:defined
-			//#= } else  if (keyCode == this.closeOptionsMenuKey || keyCode == ${polish.key.ReturnKey}) {
+			//#= } else  if (isCloseOptionsMenuKey(keyCode) || keyCode == ${polish.key.ReturnKey}) {
 		//#else
-			} else  if (keyCode == this.closeOptionsMenuKey) {
+			} else  if (isCloseOptionsMenuKey(keyCode)) {
 		//#endif
 				this.isSoftKeyPressed = true;
 				notifyKeyPressed();
@@ -1058,7 +1036,7 @@ public class MenuBar extends Item {
 								System.out.println("Container DID NOT HANDLE DOWN OR UP, selectedIndex=" + this.commandsContainer.getFocusedIndex() + ", count="+ this.commandsContainer.size() + ", cycling=" + this.commandsContainer.allowCycling);
 							//#else
 								//#debug error
-								System.out.println("Container DID NOT HANDLE DOWN OR UP bcause it has been DEACTIVATED - check your polish.Container.allowCycling preprocessing variable" );
+								System.out.println("Container DID NOT HANDLE DOWN OR UP because it has been DEACTIVATED - check your polish.Container.allowCycling preprocessing variable" );
 							//#endif
 							//#if polish.css.view-type
 								//#debug error
@@ -1098,7 +1076,8 @@ public class MenuBar extends Item {
 				//#elif polish.key.CenterSoftKey:defined
 					//#= if ( keyCode == ${polish.key.CenterSoftKey}
 				//#else
-					if ( keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY && gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5
+					if ( gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5
+							&& !(this.screen.isSoftKeyLeft(keyCode) || this.screen.isSoftKeyRight(keyCode))
 				//#endif
 							&& this.singleMiddleCommand != null && this.singleMiddleCommandItem.getAppearanceMode() != PLAIN) 
 					{
@@ -1110,26 +1089,21 @@ public class MenuBar extends Item {
 						return true;			
 					}
 			//#endif
-			if (keyCode == LEFT_SOFT_KEY && this.singleLeftCommand != null && this.singleLeftCommandItem.getAppearanceMode() != PLAIN) {
+			if ( this.singleLeftCommand != null && this.screen.isSoftKeyLeft(keyCode) && this.singleLeftCommandItem.getAppearanceMode() != PLAIN) {
 				this.isSoftKeyPressed = true;	
 				notifyKeyPressed();
 				this.singleLeftCommandItem.notifyItemPressedStart();
 				return true;			
-			} else if (keyCode == RIGHT_SOFT_KEY && this.singleRightCommand != null && this.singleRightCommandItem.getAppearanceMode() != PLAIN) {
+			} else if (this.singleRightCommand != null && this.screen.isSoftKeyRight(keyCode) && this.singleRightCommandItem.getAppearanceMode() != PLAIN) {
 				this.isSoftKeyPressed = true;	
 				notifyKeyPressed();
 				this.singleRightCommandItem.notifyItemPressedStart();
 				return true;			
-			} else if (keyCode == this.openOptionsMenuKey ) {
+			} else if (isOpenOptionsMenuKey(keyCode) ) {
 				this.isSoftKeyPressed = true;	
-				if (this.openOptionsMenuKey == LEFT_SOFT_KEY) {
-					if (this.singleLeftCommandItem != null) {
-						this.singleLeftCommandItem.notifyItemPressedStart();
-					}				
-				} else if (this.openOptionsMenuKey == RIGHT_SOFT_KEY) {
-					if (this.singleRightCommandItem != null) {
-						this.singleRightCommandItem.notifyItemPressedStart();
-					}				
+				CommandItem item = getOpenOptionsItem();
+				if (item != null) {
+					item.notifyItemPressedStart();
 				}
 				return true;
 			}
@@ -1137,6 +1111,80 @@ public class MenuBar extends Item {
 		return false;
 	}
 	
+	private CommandItem getOpenOptionsItem() {
+		CommandItem result;
+		//#if ${lowercase(polish.MenuBar.OptionsPosition)} == right && ${lowercase(polish.MenuBar.OkPosition)} != right
+			result = this.singleRightCommandItem;
+		//#elif ${lowercase(polish.MenuBar.OptionsPosition)} == right
+			result = this.singleRightCommandItem;
+		//#elif ${lowercase(polish.MenuBar.OptionsPosition)} == middle
+			result = this.singleMiddleCommandItem;
+		//#else
+			result = this.singleLeftCommandItem;
+		//#endif
+		return result;	
+	}
+	
+	/**
+	 * Determines whether the given key should open the commands menu
+	 * @param keyCode the key code
+	 * @return true when the commands menu should be opened by this key
+	 */
+	private boolean isOpenOptionsMenuKey(int keyCode)
+	{
+		boolean result;
+		//#if ${lowercase(polish.MenuBar.OptionsPosition)} == right && ${lowercase(polish.MenuBar.OkPosition)} != right
+			result = this.screen.isSoftKeyRight(keyCode);
+		//#elif ${lowercase(polish.MenuBar.OptionsPosition)} == right
+			result = this.screen.isSoftKeyRight(keyCode);
+		//#elif ${lowercase(polish.MenuBar.OptionsPosition)} == middle
+			result = this.screen.isSoftKeyMiddle(keyCode);
+		//#else
+			result = this.screen.isSoftKeyLeft(keyCode);
+		//#endif
+		return result;	
+	}
+
+	/**
+	 * Determines whether the given key should close the commands menu
+	 * @param keyCode the key code
+	 * @return true when the commands menu should be closed by this key
+	 */
+	private boolean isCloseOptionsMenuKey(int keyCode)
+	{
+		boolean result;
+		//#if ${lowercase(polish.MenuBar.OptionsPosition)} == right && ${lowercase(polish.MenuBar.OkPosition)} != right
+			result = this.screen.isSoftKeyRight(keyCode);
+		//#elif ${lowercase(polish.MenuBar.OptionsPosition)} == right
+			result = this.screen.isSoftKeyLeft(keyCode);
+		//#elif ${lowercase(polish.MenuBar.OptionsPosition)} == middle
+			result = this.screen.isSoftKeyRight(keyCode);
+		//#else
+			result = this.screen.isSoftKeyRight(keyCode);
+		//#endif
+		return result;	
+	}
+
+	/**
+	 * Determines whether the given key should select an entry of the opened the commands menu
+	 * @param keyCode the key code
+	 * @return true when the key should select the currently focused command option
+	 */
+	private boolean isSelectOptionsMenuKey(int keyCode)
+	{
+		boolean result;
+		//#if ${lowercase(polish.MenuBar.OptionsPosition)} == right && ${lowercase(polish.MenuBar.OkPosition)} != right
+			result = this.screen.isSoftKeyLeft(keyCode);
+		//#elif ${lowercase(polish.MenuBar.OptionsPosition)} == right
+			result = this.screen.isSoftKeyRight(keyCode);
+		//#elif ${lowercase(polish.MenuBar.OptionsPosition)} == middle
+			result = this.screen.isSoftKeyLeft(keyCode);
+		//#else
+			result = this.screen.isSoftKeyLeft(keyCode);
+		//#endif
+		return result;
+	}
+
 	/**
 	 * Commits different actions depending on the device using a menubar
 	 */
@@ -1160,7 +1208,7 @@ public class MenuBar extends Item {
 					return true;
 				}
 			//#endif
-			if (keyCode == this.selectOptionsMenuKey) {
+			if (isSelectOptionsMenuKey(keyCode)) {
 				this.isSoftKeyPressed = true;	
 				CommandItem commandItem = (CommandItem) this.commandsContainer.getFocusedItem();
 				//#if tmp.useInvisibleMenuBar
@@ -1171,9 +1219,9 @@ public class MenuBar extends Item {
 				//#endif
 				return commandItem.handleKeyReleased(keyCode, Canvas.FIRE);
 		//#if polish.key.ReturnKey:defined
-			//#= } else  if (keyCode == this.closeOptionsMenuKey || keyCode == ${polish.key.ReturnKey}) {
+			//#= } else  if (isCloseOptionsMenuKey(keyCode) || keyCode == ${polish.key.ReturnKey}) {
 		//#else
-			} else  if (keyCode == this.closeOptionsMenuKey) {
+			} else  if (isCloseOptionsMenuKey(keyCode)) {
 		//#endif
 				this.isSoftKeyPressed = true;
 				int selectedIndex = this.commandsContainer.getFocusedIndex();
@@ -1228,7 +1276,8 @@ public class MenuBar extends Item {
 			//#elif polish.key.CenterSoftKey:defined
 				//#= if ( keyCode == ${polish.key.CenterSoftKey}
 			//#else
-				if ( keyCode != LEFT_SOFT_KEY && keyCode != RIGHT_SOFT_KEY && gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5
+				if ( gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5
+						&& !(this.screen.isSoftKeyLeft(keyCode) || this.screen.isSoftKeyRight(keyCode))
 			//#endif
 						&& this.singleMiddleCommand != null && this.singleMiddleCommandItem.getAppearanceMode() != PLAIN) 
 				{
@@ -1240,26 +1289,21 @@ public class MenuBar extends Item {
 					return true;			
 				}
 		//#endif
-		if (keyCode == LEFT_SOFT_KEY && this.singleLeftCommand != null && this.singleLeftCommandItem.getAppearanceMode() != PLAIN) {
+		if (this.singleLeftCommand != null && this.screen.isSoftKeyLeft(keyCode) && this.singleLeftCommandItem.getAppearanceMode() != PLAIN) {
 			this.isSoftKeyPressed = true;	
 			this.singleLeftCommandItem.notifyItemPressedEnd();
 			this.screen.callCommandListener(this.singleLeftCommand);
 			return true;			
-		} else if (keyCode == RIGHT_SOFT_KEY && this.singleRightCommand != null && this.singleRightCommandItem.getAppearanceMode() != PLAIN) {
+		} else if (this.singleRightCommand != null && this.screen.isSoftKeyRight(keyCode) && this.singleRightCommandItem.getAppearanceMode() != PLAIN) {
 			this.isSoftKeyPressed = true;	
 			this.singleRightCommandItem.notifyItemPressedEnd();
 			this.screen.callCommandListener(this.singleRightCommand);
 			return true;			
-		} else if (keyCode == this.openOptionsMenuKey ) {
+		} else if (isOpenOptionsMenuKey(keyCode) ) {
 			this.isSoftKeyPressed = true;
-			if (this.openOptionsMenuKey == LEFT_SOFT_KEY) {
-				if (this.singleLeftCommandItem != null) {
-					this.singleLeftCommandItem.notifyItemPressedEnd();
-				}				
-			} else if (this.openOptionsMenuKey == RIGHT_SOFT_KEY) {
-				if (this.singleRightCommandItem != null) {
-					this.singleRightCommandItem.notifyItemPressedEnd();
-				}				
+			Item item = getOpenOptionsItem();
+			if (item != null) {
+				item.notifyItemPressedEnd();
 			}
 			//#if tmp.useInvisibleMenuBar
 				if ( !this.isOpened && this.positiveCommand != null 
@@ -1782,7 +1826,6 @@ public class MenuBar extends Item {
 	 * @return the number of commands in this menubar.
 	 */
 	public int size() {
-		System.out.println("commands in " + this.screen + ": " + this.allCommands.size());
 		return this.allCommands.size();
 	}
 	

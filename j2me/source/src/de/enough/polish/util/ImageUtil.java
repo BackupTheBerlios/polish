@@ -768,25 +768,6 @@ public final class ImageUtil {
 	 * Rotates the given rgb data and returns the rotated rgb data array.
 	 * 
 	 * @param sourceRgbData the rgb data to be rotated.
-	 * @param width the width of the rgb data.
-	 * @param height the heigth of the rgb data.
-   * @param targetRgbData unused
-	 * @param degree the degree value of the rotation.
-	 * @param degreeCos unused
-   * @param degreeSin unused
-	 * @param backgroundColor the ARGB color used for the background
-	 * @return the rotated rgb data.
-	 */
-	public static final int[] rotate(int[] sourceRgbData, int width, int height, int targetRgbData, int degree, double degreeCos, double degreeSin, int backgroundColor) {
-		return rotate(sourceRgbData, width, height, degree, width/2, height/2, backgroundColor);
-	}
-	//#endif
-
-	//#if polish.hasFloatingPoint
-	/**
-	 * Rotates the given rgb data and returns the rotated rgb data array.
-	 * 
-	 * @param sourceRgbData the rgb data to be rotated.
 	 * @param width the width of the source rgb data.
 	 * @param height the heigth of the source rgb data.
 	 * @param degree the angle of the rotation.
@@ -800,9 +781,9 @@ public final class ImageUtil {
 		double degreeSin = Math.sin(Math.PI*degree/180);		
 		int rotatedWidth = getRotatedWidth(degree,width,height,degreeCos,degreeSin);
 		int rotatedHeight = getRotatedHeight(degree,width,height,degreeCos,degreeSin);
-		int[] rotatedRGB = new int [rotatedHeight * rotatedWidth];
-		rotate(sourceRgbData, width, height, referenceX, referenceY, backgroundColor, degreeCos, degreeSin, rotatedRGB, rotatedWidth, rotatedHeight);
-		return rotatedRGB;
+		int[] rotatedRgb = new int [rotatedHeight * rotatedWidth];
+		rotate(sourceRgbData, width, height, referenceX, referenceY, backgroundColor, degreeCos, degreeSin, rotatedRgb, rotatedWidth, rotatedHeight);
+		return rotatedRgb;
 	}
 	//#endif
 
@@ -939,6 +920,39 @@ public final class ImageUtil {
 		return (int) (maxX - minX);
 	}
 	//#endif
+	
+	/**
+	 * Rotates the given source RGB array 
+	 * @param source the source RGB data
+	 * @param target the target RGB date
+	 * @param w the width of the source data
+	 * @param h the height of the source data
+	 * @param degrees either 90, 180 or 270 degrees
+	 * @throws IllegalArgumentException when the degrees are not either 90, 180 or 270
+	 */
+	public static void rotateSimple( int[] source, int[] target, int w, int h, int degrees ) {
+		if (degrees == 90) {
+			for (int row = 0; row < h; row++) {
+				for (int col = 0; col < w; col++) {
+					target[ col*h + ((h - 1)-row)] = source[ row * w + col ];
+				}
+			}
+		} else if (degrees == 180) {
+			for (int row = 0; row < h; row++) {
+				for (int col = 0; col < w; col++) {
+					target[ ((h - 1)-row)*w + ((w - 1) - col) ] = source[ row * w + col ];
+				}
+			}
+		} else if (degrees == 270) {
+			for (int row = 0; row < h; row++) {
+				for (int col = 0; col < w; col++) {
+					target[ ((w - 1) - col)*h + row] = source[ row * w + col ];
+				}
+			}
+		} else {
+			throw new IllegalArgumentException();
+		}
+	}
 	
 	/**
 	 * Scales an rgb data unproportional in every new size you want bigger or smaller than the given original. Returns the scaled rgb data.

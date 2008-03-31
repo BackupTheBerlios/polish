@@ -120,4 +120,56 @@ public class ImageUtilTest extends TestCase {
 		return data;
 	}
 	
+	public void testRotateSimple() {
+		int[] source;
+		int[] target;
+		int[] expected;
+		
+		source = new int[] { 0, 1, 2, 3,
+				             4, 5, 6, 7,
+				             8, 9, 10,11 };
+		target = new int[ source.length ];
+		
+		expected = new int[] { 8, 4, 0,
+				               9, 5, 1,
+				               10,6, 2,
+				               11,7, 3 };
+		ImageUtil.rotateSimple(source, target, 4, 3, 90 );
+		for (int i = 0; i < source.length; i++)
+		{
+			int v = source[i];
+			System.out.print(v + ", ");
+			if ( (i+1) % 4 == 0) {
+				System.out.println();
+			}
+			
+		}
+		System.out.println("result for 90:");
+		for (int i = 0; i < target.length; i++)
+		{
+			int v = target[i];
+			System.out.print(v + ", ");
+			if ( (i+1) % 3 == 0) {
+				System.out.println();
+			}
+		}
+
+		assertTrue( Arrays.equals( expected, target) );
+		
+		expected = new int[] { 11, 10, 9, 8,
+	             				7, 6, 5, 4,
+	             				3, 2, 1, 0 };
+		ImageUtil.rotateSimple(source, target, 4, 3, 180 );
+		assertTrue( Arrays.equals( expected, target) );
+		
+		
+		expected = new int[] { 8, 4, 0,
+	               9, 5, 1,
+	               10,6, 2,
+	               11,7, 3 };
+		ImageUtil.rotateSimple(source, target, 4, 3, 270 );
+		assertTrue( Arrays.equals( expected, target) );
+		
+	}
+	
 }

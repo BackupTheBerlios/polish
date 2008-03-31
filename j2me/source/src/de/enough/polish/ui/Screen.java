@@ -186,7 +186,7 @@ implements AccessibleCanvas
 	private boolean isLayoutBottom;
 	private boolean isLayoutHorizontalShrink;
 	private boolean isLayoutVerticalShrink;
-	private boolean isInitialized;
+	boolean isInitialized;
 	//#if polish.ScreenChangeAnimation.forward:defined
 		protected Command lastTriggeredCommand;
 	//#endif	
@@ -312,8 +312,12 @@ implements AccessibleCanvas
 	//#endif
 	//#if polish.ScreenOrientationCanChangeManually
 		//#define tmp.manualOrientationChange
-		private int screenOrientationDegrees;
+		protected boolean isSetFullScreenCalled;
+		protected int screenOrientationDegrees;
 		private Image screenOrientationBuffer;
+		//#if polish.css.screen-orientation-change-animation
+			private ScreenChangeAnimation screenOrientationAnimation;
+		//#endif
 	//#endif
 	protected ScreenStateListener screenStateListener;
 	private boolean isScreenChangeDirtyFlag;
@@ -443,7 +447,7 @@ implements AccessibleCanvas
 						availableScreenWidth -= (this.marginLeft + this.marginRight);
 					}
 				//#endif
-				//#if polish.ScreenOrientationCanChange
+				//#if polish.ScreenOrientationCanChange && ! ( polish.key.TopLeftSotkey:defined || polish.hasPointerEvents )
 					if (this.screenWidth > this.screenHeight) {
 						this.menuBar.setOrientationVertical( true );
 					} else {
@@ -631,7 +635,6 @@ implements AccessibleCanvas
 //		//}
 //	}
 //	
-	//#if !polish.Screen.callSuperEvents
 	/**
 	 * Forwards a repaint request only when those requests should not be ignored.
 	 * Requests should be usually ignored during the event handling, for example. 
@@ -642,9 +645,39 @@ implements AccessibleCanvas
 	 * @see #ignoreRepaintRequests
 	 */
 	protected void requestRepaint( int x, int y, int width, int height ) {
-		super.repaint( x, y, width, height );
+		//#if tmp.manualOrientationChange
+			int sh;
+			//#if tmp.fullScreen
+				sh = this.fullScreenHeight;
+			//#else
+				sh = this.screenHeight;
+			//#endif
+			int sw = this.screenWidth;
+			if (this.screenOrientationDegrees == 90) {
+				int t = x;
+				x = sh - (y + height);
+				y = t;
+				t = width;
+				width = height;
+				height = t;
+			} else if (this.screenOrientationDegrees == 180) {
+				x = sw - (x + width);
+				y = sh - (y + height);
+			} else if (this.screenOrientationDegrees == 270) {
+				int t = x;
+				x = y;
+				y = sw - (t + width);
+				t = width;
+				width = height;
+				height = t;
+			}
+		//#endif
+		//#if polish.Screen.callSuperEvents
+			//#  super.requestRepaint( x, y, width, height );
+		//#else
+			super.repaint( x, y, width, height );
+		//#endif
 	}
-	//#endif
 	
 	
 	
@@ -825,17 +858,32 @@ implements AccessibleCanvas
 			//#ifdef polish.Screen.showNotifyCode:defined
 				//#include ${polish.Screen.showNotifyCode}
 			//#endif
+			//#if polish.ScreenOrientationCanChangeManually
+				this.isSetFullScreenCalled = true;
+			//#endif
 			//#if   tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
 				super.setFullScreenMode( true );
 				this.isInitialized = false;
 			//#elif tmp.fullScreen && polish.midp2 && !polish.blackberry && !tmp.fullScreenInPaint && !polish.Bugs.displaySetCurrentFlickers
-				// this is needed on Sony Ericsson for example,
+				// this is needed on old Sony Ericssons for example,
 				// since the fullscreen mode is not resumed automatically
 				// when the previous screen was in the "normal" mode:
 				super.setFullScreenMode( true );
 			//#endif
+			//#if polish.ScreenOrientationCanChangeManually
+				this.isSetFullScreenCalled = false;
+			//#endif
 			if (!this.isInitialized) {
-				init( getScreenFullWidth(), getScreenFullHeight() );
+				int w = getScreenFullWidth();
+				int h = getScreenFullHeight();
+				//#if tmp.manualOrientationChange
+					if ((this.screenOrientationDegrees == 90) || (this.screenOrientationDegrees == 270)) {
+						int t = w;
+						w = h;
+						h = t;
+					}
+				//#endif
+				init( w, h );
 			}
 			//#if polish.css.repaint-previous-screen
 				if (this.repaintPreviousScreen) {
@@ -1298,6 +1346,11 @@ implements AccessibleCanvas
 				}
 			//#endif
 		//#endif
+		//#if tmp.manualOrientationChange
+			//#if polish.css.screen-orientation-change-animation
+				this.screenOrientationAnimation = (ScreenChangeAnimation) style.getObjectProperty("screen-orientation-change-animation");
+			//#endif
+		//#endif
 	}
 	
 	/**
@@ -1392,7 +1445,7 @@ implements AccessibleCanvas
 			Graphics originalGraphics = null;
 			if (this.screenOrientationDegrees != 0) {
 				Image buffer = this.screenOrientationBuffer;
-				if (buffer == null) {
+				if (buffer == null || buffer.getWidth() != this.screenWidth) {
 					int w = this.screenWidth;
 					int h = this.screenHeight;
 					//#if tmp.fullScreen
@@ -1907,9 +1960,15 @@ implements AccessibleCanvas
 					int w = bufferImage.getWidth();
 					int h = bufferImage.getHeight();
 					int[] rgb = new int[ w * h ];
-					bufferImage.getRGB(rgb, 0, w, 0, 0, w, h ); 
-					rgb = ImageUtil.rotate(rgb, w, h, this.screenOrientationDegrees, 0 );
-					originalGraphics.drawRGB( rgb, 0, h, 0, 0, h, w, false);
+					bufferImage.getRGB(rgb, 0, w, 0, 0, w, h );
+					int[] targetRgb = new int[ rgb.length ];
+					ImageUtil.rotateSimple(rgb, targetRgb, w, h, this.screenOrientationDegrees );
+					if (this.screenOrientationDegrees == 90 || this.screenOrientationDegrees == 270) {
+						int t = w;
+						w = h;
+						h = t;
+					}
+					originalGraphics.drawRGB( targetRgb, 0, w, 0, 0, w, h, false);
 				}
 				//#endif
 			}
@@ -2269,6 +2328,40 @@ implements AccessibleCanvas
 	}
 	//#endif
 		
+	//#if tmp.manualOrientationChange
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#getGameAction(int)
+	 */
+	public int getGameAction(int keyCode)
+	{
+		int gameAction = super.getGameAction(keyCode);
+		if (this.screenOrientationDegrees == 90) {
+			switch (gameAction) {
+			case UP: gameAction = LEFT; break;
+			case LEFT: gameAction = DOWN; break;
+			case RIGHT: gameAction = UP; break;
+			case DOWN: gameAction = RIGHT; break;
+			}
+		} else if (this.screenOrientationDegrees == 180) {
+			switch (gameAction) {
+			case UP: gameAction = DOWN; break;
+			case LEFT: gameAction = RIGHT; break;
+			case RIGHT: gameAction = LEFT; break;
+			case DOWN: gameAction = UP; break;
+			}
+		} else if (this.screenOrientationDegrees == 270) {
+			switch (gameAction) {
+			case UP: gameAction = RIGHT; break;
+			case LEFT: gameAction = UP; break;
+			case RIGHT: gameAction = DOWN; break;
+			case DOWN: gameAction = LEFT; break;
+			}
+		}
+		return gameAction;
+	}	
+	//#endif
+
+
 	/**
 	 * Handles key events.
 	 * 
@@ -3606,6 +3699,11 @@ implements AccessibleCanvas
 		if(this.paintLock == null) {
 			return;
 		}
+		//#if tmp.manualOrientationChange
+			if ( this.isSetFullScreenCalled ) {
+				return;
+			}
+		//#endif
 		//#if !polish.Bugs.sizeChangedReportsWrongHeight 
 			//#debug
 			System.out.println("Screen: sizeChanged to width=" + width + ", height=" + height );
@@ -3636,6 +3734,9 @@ implements AccessibleCanvas
 					if (this.title != null) {
 						this.title.isInitialized = false;
 					}
+				//#endif
+				//#if tmp.useExternalMenuBar
+					this.menuBar.isInitialized = false;
 				//#endif
 				init( width, height );
 			}
@@ -4268,21 +4369,116 @@ implements AccessibleCanvas
 		}
 	}
 	
+	/**
+	 * Sets the screen orientation in 90 degrees steps.
+	 * @param degrees the screen orientation in degrees: 90, 180, 270 or 0
+	 */
 	public void setScreenOrientation( int degrees ) {
 		//#if tmp.manualOrientationChange
+			if (degrees == this.screenOrientationDegrees) {
+				return;
+			}
+			//#if polish.css.screen-orientation-change-animation
+				Image beforeImage = null;
+				if (this.screenOrientationAnimation != null) {
+					beforeImage = Image.createImage( getScreenFullWidth(), getScreenFullHeight() );
+					paint( beforeImage.getGraphics() );
+				}
+			//#endif
 			this.screenOrientationDegrees = degrees;
-			if ((degrees >= 90 && degrees <= 180) || (degrees >= 270 && degrees <= 360)) {
+			if ((degrees == 90) || (degrees == 270)) {
 				sizeChanged( getScreenFullHeight(), getScreenFullWidth() );
 			} else {
 				this.screenOrientationBuffer = null;
 				sizeChanged( getScreenFullWidth(), getScreenFullHeight() );
 			}
-			if (isShown()) {
-				repaint();
-			}
+			//#if polish.css.screen-orientation-change-animation
+				if (this.screenOrientationAnimation != null) {
+					boolean isForward = (degrees == 90 || degrees == 270);
+					Image afterImage = Image.createImage( getScreenFullWidth(), getScreenFullHeight() );
+					paint( afterImage.getGraphics() );
+					this.screenOrientationAnimation.show( this.style, StyleSheet.display, getScreenFullWidth(), getScreenFullHeight(),
+							beforeImage, afterImage, this, this, isForward );
+				} else {
+			//#endif
+					if (isShown()) {
+						repaint();
+					}
+			//#if polish.css.screen-orientation-change-animation
+				}
+			//#endif
 		//#endif
 	}
 	
+	public final boolean isSoftKeyLeft( int keyCode ) {
+		int expected = 
+		//#ifdef polish.key.LeftSoftKey:defined
+			//#=  ${polish.key.LeftSoftKey};
+		//#else
+			-6;
+		//#endif
+		//#if tmp.manualOrientationChange && polish.key.TopLeftSoftKey:defined
+			if (this.screenOrientationDegrees == 90) {
+				//#= expected = ${polish.key.TopLeftSoftKey};
+			}
+			//#if polish.key.TopRightSoftKey:defined
+			else if (this.screenOrientationDegrees == 180) {
+				//#= expected = ${polish.key.TopRightSoftKey};
+			} else if (this.screenOrientationDegrees == 270) {
+				expected = 
+				//#ifdef polish.key.RightSoftKey:defined
+					//#=  ${polish.key.RightSoftKey};
+				//#else
+					-7;
+				//#endif
+			}
+			//#endif
+		//#endif
+		return (keyCode == expected);
+	}
+	
+	public final boolean isSoftKeyRight( int keyCode ) {
+		int expected = 
+		//#ifdef polish.key.RightSoftKey:defined
+			//#=  ${polish.key.RightSoftKey};
+		//#else
+			-7;
+		//#endif
+		//#if tmp.manualOrientationChange && polish.key.TopLeftSoftKey:defined
+			if (this.screenOrientationDegrees == 90) {
+				expected = 
+				//#ifdef polish.key.LeftSoftKey:defined
+					//#=  ${polish.key.LeftSoftKey};
+				//#else
+					-6;
+				//#endif
+			//#if polish.key.TopRightSoftKey:defined
+			} else if (this.screenOrientationDegrees == 180) {
+				//#= expected = ${polish.key.TopLeftSoftKey};
+			} else if (this.screenOrientationDegrees == 270) {
+				//#= expected = ${polish.key.TopRightSoftKey};
+			//#endif
+			}
+		//#endif
+		return (keyCode == expected);
+	}
+	
+	public final boolean isSoftKeyMiddle( int keyCode ) {
+		int expected = 
+		//#ifdef polish.key.MiddleSoftKey:defined
+			//#=  ${polish.key.MiddleSoftKey};
+		//#elifdef polish.key.CenterSoftKey:defined
+			//#=  ${polish.key.CenterSoftKey};
+		//#else
+			//#define tmp.hasNoMiddleSoftKey
+			0;
+			//# return false;
+		//#endif
+		//#if !tmp.hasNoMiddleSoftKey
+		return (keyCode == expected);
+		//#endif
+	}
+
 	
 
 	/**
