@@ -15451,6 +15451,8 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="aac, aac+, eaac, eaac+, mp3, m4a, 3gpp, nb-amr, wav, midi, midi64, truetone, wb-amr, sp-midi, wma, realaudio"/>
 		<capability name="DRM" value="OMA DRM 2.0"/>
 		<capability name="Frequency" value="850, 900,1800,1900"/>
+		<capability name="key.TopLeftSoftKey" value="-13" />
+		<capability name="key.TopRightSoftKey" value="-14" />		
 	</device>
 
 	<device>

@@ -1233,6 +1233,7 @@
 		</mapping>
 		<mapping from="fade" to="new de.enough.polish.ui.screenanimations.FadeScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="fadeoutfadein" to="new de.enough.polish.ui.screenanimations.FadeOutFadeInScreenChangeAnimation()" condition="polish.midp2"/>
+		<mapping from="fade-out-fade-in" to="new de.enough.polish.ui.screenanimations.FadeOutFadeInScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="fadeOutFadeIn" to="new de.enough.polish.ui.screenanimations.FadeOutFadeInScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="particle" to="new de.enough.polish.ui.screenanimations.ParticleScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="scale" to="new de.enough.polish.ui.screenanimations.ScaleScreenChangeAnimation()" condition="polish.midp2"/>
@@ -1260,6 +1261,7 @@
 		<mapping from="NewWave" to="new de.enough.polish.ui.screenanimations.NewWaveScreenChangeAnimation()" condition="polish.midp2"/>
 		<mapping from="DanceBabyDance" to="new de.enough.polish.ui.screenanimations.DancingPixelScreenChangeAnimation()"  condition="polish.midp2"/>
 		<mapping from="gradient" to="new de.enough.polish.ui.screenanimations.GradientScreenChangeAnimation()"  condition="polish.midp2"/>
+		<mapping from="rotate" to="new de.enough.polish.ui.screenanimations.RotateScreenChangeAnimation()" condition="polish.midp2 and polish.hasFloatingPoint"/>
 	</attribute>
 	
 	<attribute
@@ -3444,6 +3446,14 @@
 		appliesTo="Container,FakeContainerCustomItem"
 		description="Changes the styles of child items. Use the notation '[style1]>[style2]', e.g. visible>invisible for defining the style names."
 		id="312"
+	/>
+	
+	<attribute
+		name="screen-orientation-change-animation"
+		type="screen-change-animation"
+		appliesTo="Screen"
+		description="Defines the animation that should be shown when the screen orientation is changed. Orientation changes need to be allowed by setting the preprocessing variable ScreenOrientationCanChangeManually to true."
+		id="313"
 	/>
 	
 	<!--
