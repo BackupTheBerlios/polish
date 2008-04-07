@@ -1000,9 +1000,9 @@ public class TextField extends StringItem
 			
 			//#style help?
 			this.helpItem = new StringItem(null,null);
-			if (style != null && this.helpItem.style != null && this.helpItem.style.font == null) {
+/*			if (style != null && this.helpItem.style != null && this.helpItem.style.font == null) {
 				this.helpItem.style.font = style.font;
-			}
+			}*/
 			/*Font font = this.helpItem.getFont();
 			Font newFont = Font.getFont(font.getFace(), font.getStyle(), this.getFont().getSize());
 			
@@ -3891,6 +3891,13 @@ public class TextField extends StringItem
 	public void setHelpText(String text)
 	{
 		this.helpItem.setText(text);
+	}
+	//#endif
+	
+	//#if polish.TextField.showHelpText
+	public void setHelpStyle(Style style)
+	{
+		this.helpItem.setStyle(style);
 	}
 	//#endif
 
