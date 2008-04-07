@@ -353,7 +353,7 @@ public class GZipOutputStream extends OutputStream {
     	int di;
     	int distExtra;
     	
-    	//#debug fatal
+    	//#debug info
 		//# System.out.println(length +  "-Tupel found  at " + distance + "back");
 		
 		// compute length information
