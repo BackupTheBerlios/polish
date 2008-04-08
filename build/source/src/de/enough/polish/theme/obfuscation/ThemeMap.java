@@ -128,7 +128,7 @@ public class ThemeMap {
 
 	private boolean isClass(String line)
 	{
-		return line.indexOf(":") != -1 && line.indexOf(".") != -1;
+		return line.indexOf(":") != -1 && line.indexOf("->") != -1;
 	}
 	
 	private boolean isField(String line)
