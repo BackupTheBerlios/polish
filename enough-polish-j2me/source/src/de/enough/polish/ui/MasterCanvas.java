@@ -1,4 +1,4 @@
-//#condition polish.midp || polish.usePolishGui
+//#condition polish.usePolishGui
 
 /*
  * Created on 03-Jun-2005 at 18:18:19.
@@ -33,8 +33,9 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 
-//#if polish.api.sensor
-import de.enough.polish.util.sensor.AccelationInfoItem;
+//#if polish.api.sensor && polish.Screen.AutomaticOrientationChange
+	//#define tmp.automaticScreenOrientationChange
+	// import de.enough.polish.util.sensor.AccelationInfoItem;
 	import de.enough.polish.util.sensor.AccelerationListener;
 import de.enough.polish.util.sensor.AccelerationUtil;
 //#endif
@@ -68,14 +69,14 @@ public class MasterCanvas
 		//#define tmp.fullScreenInPaint
 		private boolean isInFullScreenMode;
 	//#endif
-	//#if polish.api.sensor
+	//#if tmp.automaticScreenOrientationChange
 		private int screenOrientation;
 	//#endif
 	
 	
 	private MasterCanvas() {
 		// disallow instantiation...
-		//#if polish.api.sensor
+		//#if tmp.automaticScreenOrientationChange
 			ScreenOrientationDetector detector = new ScreenOrientationDetector();
 			AccelerationUtil.addAccelerationListener(detector);
 //			//#style screenInfo
@@ -231,7 +232,7 @@ public class MasterCanvas
 				}
 			}
 		//#endif
-		//#if polish.api.sensor
+		//#if tmp.automaticScreenOrientationChange
 			if (canvas instanceof Screen) {
 				((Screen)canvas).setScreenOrientation( instance.screenOrientation );
 			}
@@ -429,7 +430,7 @@ public class MasterCanvas
 		}
 	}
 	
-	//#if polish.api.sensor
+	//#if tmp.automaticScreenOrientationChange
 	class ScreenOrientationDetector implements AccelerationListener {
 		
 		/* (non-Javadoc)

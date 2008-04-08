@@ -1501,6 +1501,18 @@ implements Choice
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		//#debug
 		System.out.println("handleKeyReleased( " + keyCode + ", " + gameAction + " ) for " + this + ", isPressed="+ this.isPressed );
+		// note: this was a rough fix for selecting an entry on a popup choice group when the "Select" command button
+		// was pressed - that worked for few cases and additionally required a Nokia layout, so it's outcommented for now
+//		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
+//				|| (
+//				//#if polish.key.LeftSoftKey:defined
+//					//#= keyCode == ${polish.key.LeftSoftKey} 
+//				//#else
+//					keyCode == -6
+//				//#endif	
+//				&& this.isPopup && !this.isPopupClosed
+//				)
+//			) {
 		if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
 			ChoiceItem choiceItem = (ChoiceItem) this.focusedItem;
 			if (choiceItem != null

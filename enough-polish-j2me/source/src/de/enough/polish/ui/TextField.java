@@ -1519,7 +1519,11 @@ public class TextField extends StringItem
 				} else {
 					firstPart = textLine;
 				}
-				this.caretX = stringWidth( firstPart );
+				if (this.isPassword) {
+					this.caretX = stringWidth( "*" ) * firstPart.length();
+				} else {
+					this.caretX = stringWidth( firstPart );
+				}
 				this.internalY = this.caretRow * this.rowHeight;
 				this.caretY = this.internalY;
 				repaint();
@@ -2084,7 +2088,11 @@ public class TextField extends StringItem
 			caretRowFirstPart = line.substring( 0, column );
 			//this.caretRowLastPartWidth = this.font.stringWidth(this.caretRowLastPart);;
 		}
-		this.caretX = stringWidth(caretRowFirstPart);
+		if (this.isPassword) {
+			this.caretX = stringWidth( "*" ) * caretRowFirstPart.length();
+		} else {
+			this.caretX = stringWidth(caretRowFirstPart);
+		}
 		if (this.isLayoutCenter || this.isLayoutRight) {
 			if (firstPartIsFullRow) {
 				this.caretRowWidth = this.caretX;
@@ -2344,7 +2352,11 @@ public class TextField extends StringItem
 		// increase caret position after notifying itemstatelisteners in case they want to know the current caret position...
 		this.caretPosition++;
 		this.caretColumn++;
-		this.caretX += this.caretWidth;
+		if (this.isPassword) {
+			this.caretX += stringWidth("*");
+		} else {
+			this.caretX += this.caretWidth;
+		}
 		boolean nextCharInputHasChanged = false;
 		//#if polish.TextField.suppressAutoInputModeChange
 			if ( this.inputMode == MODE_FIRST_UPPERCASE  
@@ -3305,7 +3317,11 @@ public class TextField extends StringItem
 					}
 					this.originalRowText = this.realTextLines[ this.caretRow ];
 					if (characterInserted) {
-						this.caretX = this.font.charWidth(character);
+						if (this.isPassword) {
+							this.caretX = stringWidth("*");
+						} else {
+							this.caretX = stringWidth( String.valueOf( character ) );
+						}
 						//System.out.println(this + ".handleKeyPressed()/font6: caretX=" + this.caretX);
 						this.caretColumn = 1;
 					} else {
@@ -3320,7 +3336,11 @@ public class TextField extends StringItem
 				} else if (characterInserted) {
 					//System.out.println("right after character insertion");
 					// a character has been inserted at the last column of the last row:
-					this.caretX += this.caretWidth;
+					if (this.isPassword) {
+						this.caretX += stringWidth("*");
+					} else {
+						this.caretX += this.caretWidth;
+					}
 					this.caretColumn++;
 					this.caretPosition++;
 					//#if tmp.updateDeleteCommand

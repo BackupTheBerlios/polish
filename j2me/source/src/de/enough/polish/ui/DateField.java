@@ -348,7 +348,9 @@ implements
 		// set date:
 		if (date == null ) {
 			if (this.inputMode == DATE || this.inputMode == DATE_TIME) {
-				//#if polish.DateFormatEmptyText:defined
+				//#if polish.i18n.useDynamicTranslations
+					this.text = Locale.get("polish.DateFormatEmptyText");
+				//#elif polish.DateFormatEmptyText:defined
 					//#= this.text = "${polish.DateFormatEmptyText}";
 				//#elif polish.DateFormat == us || polish.DateFormat == mdy
 					this.text = "MM-DD-YYYY";

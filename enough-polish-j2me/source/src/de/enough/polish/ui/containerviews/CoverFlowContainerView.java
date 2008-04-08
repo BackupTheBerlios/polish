@@ -244,7 +244,7 @@ public class CoverFlowContainerView extends ContainerView {
 			if (this.focusedBackground != null) {
 				animated |= this.focusedBackground.animate();
 			}
-			if (animated) {
+			if (animated && repaintRegion != null) {
 				repaintRegion.addRegion( this.parentContainer.getAbsoluteX() - 10, 
 						this.parentContainer.getAbsoluteY() - 10, 
 						this.parentContainer.itemWidth + 20,
@@ -469,6 +469,7 @@ public class CoverFlowContainerView extends ContainerView {
 		if (!this.isFocused) {
 			AnimationThread.addAnimationItem( parent );
 		}
+		animate(System.currentTimeMillis(), null);
 		}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -677,6 +678,7 @@ public class CoverFlowContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#paintContent(de.enough.polish.ui.Container, de.enough.polish.ui.Item[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
+		synchronized (this.lock) {
 		int lineWidth = rightBorder - leftBorder;
 		int itemLabelDiff = 0;
 		if (this.isRemoveText && this.focusedLabel != null) {
@@ -795,7 +797,7 @@ public class CoverFlowContainerView extends ContainerView {
 //			g.drawLine( x + referenceX, y, x+referenceX, y+this.contentHeight);
 //
 //		}
-		
+		}
 	}
 	
 
