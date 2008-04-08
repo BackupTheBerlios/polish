@@ -1820,6 +1820,7 @@ public class MenuBar extends Item {
 		//#endif
 	}
 
+	
 	/**
 	 * Retrieves the number of commands in this menubar.
 	 * 

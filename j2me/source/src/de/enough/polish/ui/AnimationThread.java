@@ -119,23 +119,11 @@ public class AnimationThread extends Thread
 							//System.out.println("AnimationThread: screen needs repainting");
 							//#debug debug
 							System.out.println("triggering repaint for screen " + screen + ", is shown: " + screen.isShown() );
-//							//#if polish.Bugs.displaySetCurrentFlickers && polish.useFullScreen
-//								if ( MasterCanvas.instance != null ) {
-//									MasterCanvas.instance.repaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
-//								}
-//							//#else
-								//System.out.println("repainting area " + repaintRegion.getX() + " , " + repaintRegion.getY() + ", " + repaintRegion.getWidth() + ", " + repaintRegion.getHeight());
-								//#if polish.Bugs.fullRepaintRequired
-									screen.repaint();
-								//#else
-									screen.requestRepaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
-//									//#if polish.Screen.base:defined
-//									screen.requestRepaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
-//									//#else
-//									screen.repaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
-//									//#endif
-								//#endif
-//							//#endif
+							//#if polish.Bugs.fullRepaintRequired
+								screen.requestRepaint();
+							//#else
+								screen.requestRepaint( repaintRegion.getX(), repaintRegion.getY(), repaintRegion.getWidth(), repaintRegion.getHeight() );
+							//#endif
 							repaintRegion.reset();
 							sleeptime = ANIMATION_INTERVAL;
 						}

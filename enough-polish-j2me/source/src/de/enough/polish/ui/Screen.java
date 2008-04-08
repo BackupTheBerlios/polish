@@ -333,6 +333,7 @@ implements AccessibleCanvas
 	protected long lastInteractionTime;
 	//private boolean isInRequestInit;
 	protected boolean ignoreRepaintRequests;
+	protected boolean isRepaintRequested;
 	/** requests a call to calcuateContentArea() the next time this screen is being painted */
 	protected boolean isInitRequested;
 	private CommandListener realCommandListener;
@@ -635,6 +636,20 @@ implements AccessibleCanvas
 //		//}
 //	}
 //	
+	
+	/**
+	 * Forwards a repaint request only when those requests should not be ignored.
+	 * Requests should be usually ignored during the event handling, for example. 
+	 * @see #ignoreRepaintRequests
+	 */
+	protected void requestRepaint() {
+		if (this.ignoreRepaintRequests) {
+			this.isRepaintRequested = true;
+			return;
+		}
+		super.repaint();
+	}
+
 	/**
 	 * Forwards a repaint request only when those requests should not be ignored.
 	 * Requests should be usually ignored during the event handling, for example. 
@@ -645,6 +660,9 @@ implements AccessibleCanvas
 	 * @see #ignoreRepaintRequests
 	 */
 	protected void requestRepaint( int x, int y, int width, int height ) {
+		if (this.ignoreRepaintRequests) {
+			return;
+		}
 		//#if tmp.manualOrientationChange
 			int sh;
 			//#if tmp.fullScreen
@@ -2173,7 +2191,7 @@ implements AccessibleCanvas
 				}
 				calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 				//this.isInitialized = false;
-				repaint();
+				requestRepaint();
 			}
 		//#endif
 	}
@@ -2202,7 +2220,7 @@ implements AccessibleCanvas
 		}
 		if (this.isInitialized && super.isShown()) {
 			calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
-			repaint();
+			requestRepaint();
 		}
 		//#endif
 	}
@@ -2311,7 +2329,7 @@ implements AccessibleCanvas
 			if (ticker != null) {
 				ticker.showNotify();
 			}
-			repaint();
+			requestRepaint();
 		}
 	}
 	//#endif
@@ -2523,7 +2541,7 @@ implements AccessibleCanvas
 				//#if polish.blackberry
 					this.keyPressedProcessed = processed;
 				//#endif
-				if (processed) {
+				if (processed || this.isRepaintRequested) {
 					//#if tmp.useScrollBar
 						if (gameAction == Canvas.UP || gameAction == Canvas.DOWN) {
 							this.scrollBar.resetAnimation();
@@ -2584,7 +2602,7 @@ implements AccessibleCanvas
 				//#endif
 			//#endif
 			boolean handled = handleKeyRepeated( keyCode, gameAction );
-			if ( handled ) {
+			if ( handled  || this.isRepaintRequested ) {
 				repaint();
 			}
 		//}
@@ -2665,7 +2683,7 @@ implements AccessibleCanvas
 				//#endif
 				//#debug
 				System.out.println("keyReleased handled=" + processed);
-				if ( processed ) {
+				if ( processed  || this.isRepaintRequested) {
 					repaint();
 				}
 			}
@@ -2981,7 +2999,7 @@ implements AccessibleCanvas
 				this.menuBar.relativeY = this.screenHeight;
 			}
 			if (super.isShown()) {
-				repaint();
+				requestRepaint();
 			}
 		//#else
 			if (this.menuCommands == null) {
@@ -3026,7 +3044,7 @@ implements AccessibleCanvas
 					// this is a command for the right side of the menu:
 					this.menuSingleRightCommand = cmd;
 					updateMenuTexts();
-					repaint();
+					requestRepaint();
 					return;
 				}
 			}
@@ -3063,7 +3081,7 @@ implements AccessibleCanvas
 				}
 			}
 			updateMenuTexts();
-			repaint();
+			requestRepaint();
 		//#endif
 	}
 	//#endif
@@ -3114,7 +3132,7 @@ implements AccessibleCanvas
 				updateMenuTexts();
 			//#endif
 			if (super.isShown()) {
-				repaint();
+				requestRepaint();
 			}
 		//#endif
 	}
@@ -3174,13 +3192,9 @@ implements AccessibleCanvas
 				if (parent == this.menuSingleLeftCommand) {
 					this.menuSingleLeftCommand = null;
 				}
-				if (this.menuOpened) {
-					//this.isInitialized = false;
-					repaint();
-				}				
 			//#endif	
-			if (super.isShown()) {
-				repaint();
+			if (super.isShown() || isMenuOpened()) {
+				requestRepaint();
 			}
 		//#endif
 	}
@@ -3196,7 +3210,7 @@ implements AccessibleCanvas
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.removeCommand(cmd);
 			if (super.isShown()) {
-				repaint();
+				requestRepaint();
 			}
 		//#else
 			if (this.okCommand == cmd) {
@@ -3223,7 +3237,7 @@ implements AccessibleCanvas
 					}
 				}
 				updateMenuTexts();
-				repaint();
+				requestRepaint();
 				return;
 			}
 			if (this.menuCommands == null) {
@@ -3241,7 +3255,7 @@ implements AccessibleCanvas
 				this.menuContainer.remove(index);			
 			}
 			updateMenuTexts();
-			repaint();
+			requestRepaint();
 		//#endif
 	}
 	
@@ -3275,6 +3289,8 @@ implements AccessibleCanvas
 			// will be removed:
 			if (this.itemCommands == null) {
 				this.itemCommands = new ArrayList( commands.length );
+			} else {
+				this.itemCommands.clear();
 			}
 			for (int i = 0; i < commands.length; i++) {
 				Command command = (Command) commands[i];
@@ -3301,7 +3317,7 @@ implements AccessibleCanvas
 		}
 		//#ifdef tmp.useExternalMenuBar
 			if (super.isShown()) {
-				repaint();
+				requestRepaint();
 			}
 		//#endif
 	}
@@ -3324,20 +3340,22 @@ implements AccessibleCanvas
 				}
 				//#ifdef tmp.useExternalMenuBar
 					this.menuBar.removeCommand(command);
-					if (this.menuBar.size() ==0) {
-						this.menuBarHeight = 0;
-					}
 				//#else
 					removeCommand(command);
 				//#endif
 			}
 		}
+		//#ifdef tmp.useExternalMenuBar
+			if (this.menuBar.size() ==0) {
+				this.menuBarHeight = 0;
+			}
+		//#endif
 		if (this.focusedItem == item) {
 			this.focusedItem = null;
 		}
 		//#ifdef tmp.useExternalMenuBar
 			if (super.isShown()) {
-				repaint();
+				requestRepaint();
 			}
 		//#endif
 	}
@@ -3399,6 +3417,7 @@ implements AccessibleCanvas
 		System.out.println("pointerPressed at " + x + ", " + y );
 		this.lastInteractionTime = System.currentTimeMillis();
 		try {
+			this.ignoreRepaintRequests = true;
 			// check for scroll-indicator:
 			//#if tmp.useScrollIndicator
 				if (  this.paintScrollIndicator &&
@@ -3467,12 +3486,12 @@ implements AccessibleCanvas
 			boolean processed = handlePointerPressed( x, y  );
 			//#ifdef tmp.usingTitle
 				//boolean processed = handlePointerPressed( x, y - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
-				if (processed) {
+				if (processed || this.isRepaintRequested) {
 					notifyScreenStateChanged();
 					repaint();
 				}
 			//#else
-				if (processed) {
+				if (processed || this.isRepaintRequested) {
 					repaint();
 				}
 			//#endif
@@ -3487,6 +3506,7 @@ implements AccessibleCanvas
 			//#debug error
 			System.out.println("PointerPressed at " + x + "," + y + " resulted in exception" + e );
 		} finally {
+			this.ignoreRepaintRequests = false;
 			this.isScreenChangeDirtyFlag = false;
 		}
 	}
@@ -3516,65 +3536,70 @@ implements AccessibleCanvas
 		//#endif
 		//#debug
 		System.out.println("pointerReleased at " + x + ", " + y );
-		this.lastInteractionTime = System.currentTimeMillis();
-		//#ifdef tmp.menuFullScreen
-			//#ifdef tmp.useExternalMenuBar
-				if (this.menuBar.handlePointerReleased(x - this.menuBar.relativeX, y - this.menuBar.relativeY)) {
-					repaint();
-					return;
-				}
-			//#else
-				// check if one of the command buttons has been pressed:
-				if (y > this.screenHeight) {
-	//				System.out.println("pointer at x=" + x + ", menuLeftCommandX=" + menuLeftCommandX );
-					if (x >= this.menuRightCommandX && this.menuRightCommandX != 0) {
-						if (this.menuOpened) {
-							openMenu( false );
-						} else if (this.menuSingleRightCommand != null) {
-							callCommandListener(this.menuSingleRightCommand );
-						}
+		try {
+			this.ignoreRepaintRequests = true;
+			this.lastInteractionTime = System.currentTimeMillis();
+			//#ifdef tmp.menuFullScreen
+				//#ifdef tmp.useExternalMenuBar
+					if (this.menuBar.handlePointerReleased(x - this.menuBar.relativeX, y - this.menuBar.relativeY)) {
 						repaint();
 						return;
-					} else if (x <= this.menuLeftCommandX){
-						// assume that the left command has been pressed:
-	//					System.out.println("x <= this.menuLeftCommandX: open=" + this.menuOpened );
-						if (this.menuOpened ) {
-							// the "SELECT" command has been clicked:
-							this.menuContainer.handleKeyPressed(0, Canvas.FIRE);
+					}
+				//#else
+					// check if one of the command buttons has been pressed:
+					if (y > this.screenHeight) {
+		//				System.out.println("pointer at x=" + x + ", menuLeftCommandX=" + menuLeftCommandX );
+						if (x >= this.menuRightCommandX && this.menuRightCommandX != 0) {
+							if (this.menuOpened) {
+								openMenu( false );
+							} else if (this.menuSingleRightCommand != null) {
+								callCommandListener(this.menuSingleRightCommand );
+							}
+							repaint();
+							return;
+						} else if (x <= this.menuLeftCommandX){
+							// assume that the left command has been pressed:
+		//					System.out.println("x <= this.menuLeftCommandX: open=" + this.menuOpened );
+							if (this.menuOpened ) {
+								// the "SELECT" command has been clicked:
+								this.menuContainer.handleKeyPressed(0, Canvas.FIRE);
+								openMenu( false );
+							} else if (this.menuSingleLeftCommand != null) {								
+								this.callCommandListener(this.menuSingleLeftCommand);
+							} else {
+								openMenu( true );
+								//this.menuOpened = true;
+							}
+							repaint();
+							return;
+						}
+					} else if (this.menuOpened) {
+						// a menu-item could have been selected:
+						//int menuY = this.originalScreenHeight - (this.menuContainer.itemHeight + 1);
+						if (!this.menuContainer.handlePointerReleased( x - this.menuContainer.relativeX, y - this.menuContainer.relativeY )) {
 							openMenu( false );
-						} else if (this.menuSingleLeftCommand != null) {								
-							this.callCommandListener(this.menuSingleLeftCommand);
-						} else {
-							openMenu( true );
-							//this.menuOpened = true;
 						}
 						repaint();
 						return;
 					}
-				} else if (this.menuOpened) {
-					// a menu-item could have been selected:
-					//int menuY = this.originalScreenHeight - (this.menuContainer.itemHeight + 1);
-					if (!this.menuContainer.handlePointerReleased( x - this.menuContainer.relativeX, y - this.menuContainer.relativeY )) {
-						openMenu( false );
-					}
-					repaint();
+				//#endif
+			//#endif
+			if (this.subTitle != null && this.subTitle.handlePointerReleased(x - this.subTitle.relativeX, y - this.subTitle.relativeY)) {
+				return;
+			}
+			//#if tmp.useScrollBar
+				if (this.scrollBar.handlePointerReleased( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
 					return;
 				}
 			//#endif
-		//#endif
-		if (this.subTitle != null && this.subTitle.handlePointerReleased(x - this.subTitle.relativeX, y - this.subTitle.relativeY)) {
-			return;
-		}
-		//#if tmp.useScrollBar
-			if (this.scrollBar.handlePointerReleased( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
-				return;
+				
+			boolean processed = false;
+			processed = handlePointerReleased(x, y);
+			if (processed || this.isRepaintRequested) {
+				repaint();
 			}
-		//#endif
-			
-		boolean processed = false;
-		processed = handlePointerReleased(x, y);
-		if (processed) {
-			repaint();
+		} finally {
+			this.ignoreRepaintRequests = false;
 		}
 	}
 	//#endif
@@ -3687,7 +3712,7 @@ implements AccessibleCanvas
 				//#endif
 			}
 		//#endif
-		repaint();
+		requestRepaint();
 	}
 	
 	
@@ -4026,7 +4051,7 @@ implements AccessibleCanvas
 	public void scrollRelative(int amount) {
 		if (this.container != null) {
 			this.container.setScrollYOffset( this.container.getScrollYOffset() + amount );
-			repaint();
+			requestRepaint();
 		}
 	}
 
@@ -4402,7 +4427,7 @@ implements AccessibleCanvas
 				} else {
 			//#endif
 					if (isShown()) {
-						repaint();
+						requestRepaint();
 					}
 			//#if polish.css.screen-orientation-change-animation
 				}
