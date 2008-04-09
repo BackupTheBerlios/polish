@@ -275,7 +275,7 @@ These namespaces/schemas will be used soon.
 	
 	<device supportsPolishGui="true">
 		<identifier>Generic/DotNetCF1.1</identifier>
-		<features>hasPointerEvents</features>
+		<features>hasPointerEvents, isVirtual</features>
 		<description>An unknown Windows powered phone with .NET CF 1.1 support.</description>
 		<groups>DotNetCF1.1</groups>
 		<capability name="OS" value="Windows Mobile 5.0"/>

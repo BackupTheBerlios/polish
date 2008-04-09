@@ -33,6 +33,8 @@ polish.command.back=Back
 # RSS commands:
 polish.rss.command.select=Show
 polish.rss.command.followlink=Go
+# DateField:
+polish.DateFormatEmptyText=YYYY-MM-DD
 
 # used for predictive setup
 polish.predictive.command.enable=Enable Predictive Input

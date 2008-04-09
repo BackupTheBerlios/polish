@@ -790,7 +790,7 @@
 	</target>
 
 	<target name="installer" 
-			 depends="bin-dist, copyfiles, convertWindowsLineEndings"
+			 depends="clean, bin-dist, copyfiles, convertWindowsLineEndings"
 			 description="creates the j2mepolish-installer." 
 		>
 		<taskdef name="izpack" 
@@ -860,6 +860,7 @@
 		    	doctitle="The J2ME Polish Client Framework, Version ${Version}"
 		/>	
 		<!-- copy the whole website to the documentation -->
+		<echo message="starting webprocessor (1/2)" />
 		<webprocessor 
 			srcdir="../enough-polish-website/site/source"
 		 	includedir="../enough-polish-website/site/includes"
@@ -884,7 +885,7 @@
 			<variable name="index.h5" value="h5index" />
 			<directive name="cssattributes" class="de.enough.polish.website.CssDirectiveHandler" />
 		</webprocessor>
-		<!-- created & copy the device database -->
+		<!-- created & copy the device database 
 		<echo message="starting device export" />
 		<deviceExport />
 		<echo message="starting webprocessor (1/2)" />
@@ -905,6 +906,7 @@
 			<variable name="index.h4" value="h4index" />
 			<variable name="index.h5" value="h5index" />
 		</webprocessor>
+		-->
 		<!-- copy the documentation.html to the root -->
 		<echo message="starting webprocessor (2/2)" />
 		<webprocessor 
