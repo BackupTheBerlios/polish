@@ -200,7 +200,7 @@ public class CyclingSpheresGaugeView extends ItemView {
 			{
 				setSphereColor(g, i);
 				
-				alpha = (360d / this.sphereCount) * i;
+				alpha = 360d - ((360d / this.sphereCount) * i);
 				alpha = (alpha / 180) * Math.PI;
 				
 				sphereX = (int)(centerX + radius * Math.cos(alpha));
