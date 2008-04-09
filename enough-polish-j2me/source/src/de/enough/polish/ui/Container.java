@@ -344,6 +344,13 @@ public class Container extends Item {
 				focus( -1 );
 			}
 		}
+		if (this.focusedIndex == -1 || index <= this.focusedIndex ) {
+			int offset = getScrollYOffset() + last.itemHeight;
+			if (offset > 0) {
+				offset = 0;
+			}
+			setScrollYOffset(offset);
+		}
 //		if (this.items != null) {
 //			this.items[index] = item;
 //		}
