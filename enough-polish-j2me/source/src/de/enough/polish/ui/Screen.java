@@ -2542,6 +2542,7 @@ implements AccessibleCanvas
 					this.keyPressedProcessed = processed;
 				//#endif
 				if (processed || this.isRepaintRequested) {
+					this.isRepaintRequested = false;
 					//#if tmp.useScrollBar
 						if (gameAction == Canvas.UP || gameAction == Canvas.DOWN) {
 							this.scrollBar.resetAnimation();
@@ -2603,6 +2604,7 @@ implements AccessibleCanvas
 			//#endif
 			boolean handled = handleKeyRepeated( keyCode, gameAction );
 			if ( handled  || this.isRepaintRequested ) {
+				this.isRepaintRequested = false;
 				repaint();
 			}
 		//}
@@ -2684,6 +2686,7 @@ implements AccessibleCanvas
 				//#debug
 				System.out.println("keyReleased handled=" + processed);
 				if ( processed  || this.isRepaintRequested) {
+					this.isRepaintRequested = false;
 					repaint();
 				}
 			}
@@ -3475,10 +3478,12 @@ implements AccessibleCanvas
 				//#endif
 			//#endif
 			if (this.subTitle != null && this.subTitle.handlePointerPressed(x - this.subTitle.relativeX, y - this.subTitle.relativeY)) {
+				repaint();
 				return;
 			}
 			//#if tmp.useScrollBar
 				if (this.scrollBar.handlePointerPressed( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
+					repaint();
 					return;
 				}
 			//#endif
@@ -3487,11 +3492,13 @@ implements AccessibleCanvas
 			//#ifdef tmp.usingTitle
 				//boolean processed = handlePointerPressed( x, y - (this.titleHeight + this.infoHeight + this.subTitleHeight) );
 				if (processed || this.isRepaintRequested) {
+					this.isRepaintRequested = false;
 					notifyScreenStateChanged();
 					repaint();
 				}
 			//#else
 				if (processed || this.isRepaintRequested) {
+					this.isRepaintRequested = false;
 					repaint();
 				}
 			//#endif
@@ -3596,6 +3603,7 @@ implements AccessibleCanvas
 			boolean processed = false;
 			processed = handlePointerReleased(x, y);
 			if (processed || this.isRepaintRequested) {
+				this.isRepaintRequested = false;
 				repaint();
 			}
 		} finally {
