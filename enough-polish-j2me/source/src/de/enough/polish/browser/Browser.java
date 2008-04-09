@@ -1169,7 +1169,7 @@ public void add(Item item)
   {
     this.history.removeAllElements();
     this.imageCache.clear();
-    clear();
+    //clear();
     this.currentDocumentBase = null;
   }
 
