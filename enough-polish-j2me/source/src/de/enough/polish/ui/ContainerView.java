@@ -585,7 +585,7 @@ extends ItemView
 	 * @param g the Graphics on which this item should be painted.
 	 * @see #paintContent(Container, Item[], int, int, int, int, int, int, int, int, Graphics)
 	 */
-	protected void paintContent( Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g ) {
+	public void paintContent( Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g ) {
 		//System.out.println("ContainerView: painting content for " + this + " with vertical-padding " + this.paddingVertical  + ", screen=" + this.parentContainer.getScreen());
 		
 		//#if polish.css.view-type-top-y-offset
