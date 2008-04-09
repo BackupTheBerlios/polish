@@ -103,7 +103,7 @@ public class Container extends Item {
 	private boolean isScrollRequired;
 	/** The height available for scrolling, ignore when set to -1 */
 	protected int availableHeight = -1;
-	private Item[] containerItems;
+	protected Item[] containerItems;
 	private boolean showCommandsHasBeenCalled;
 	private Item scrollItem;
 	protected Style plainStyle;
@@ -219,11 +219,35 @@ public class Container extends Item {
 	int getContentScrollHeight() {
 		return getScrollHeight() - (this.contentY + this.borderWidth + this.paddingBottom + this.marginBottom ); 
 	}
+	
+	/**
+	 * Adds an StringItem with the given text to this container.
+	 * 
+	 * @param text the text
+	 * @throws IllegalArgumentException when the given item is null
+	 */
+	public void add(String text)
+	{
+		add(new StringItem(null,text));
+	}
+	
+	/**
+	 * Adds an StringItem with the given text to this container.
+	 * 
+	 * @param text the text
+	 * @param textAddStyle the style for the text
+	 * @throws IllegalArgumentException when the given item is null
+	 */
+	public void add(String text,Style textAddStyle)
+	{
+		add(new StringItem(null,text),textAddStyle);
+	}
 
 	/**
 	 * Adds an item to this container.
 	 * 
 	 * @param item the item which should be added.
+	 * @param itemAddStyle the style for the item
 	 * @throws IllegalArgumentException when the given item is null
 	 */
 	public void add( Item item ) {
