@@ -1849,7 +1849,7 @@ public class MenuBar extends Item {
 	}
 
 	public Container getCommandsContainer() {
-		return commandsContainer;
+		return this.commandsContainer;
 	}
 	
 //#ifdef polish.MenuBar.additionalMethods:defined
