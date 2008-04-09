@@ -3448,6 +3448,14 @@ public class TextField extends StringItem
 				return true;
 			}
 		//#endif
+
+		int clearKey =
+			//#if polish.key.ClearKey:defined
+				//#= ${polish.key.ClearKey};
+			//#else
+				-8;
+			//#endif
+		boolean clearKeyPressed = (keyCode == clearKey);
 		 
 		//#if polish.key.ChangeNumericalAlphaInputModeKey:defined
 			//#= if ((keyCode == KEY_CHANGE_MODE || keyCode == ${polish.key.ChangeNumericalAlphaInputModeKey}) && 
@@ -3471,16 +3479,15 @@ public class TextField extends StringItem
 				}
 				
 				updateInfo();
+				return true;
 			}
-			else
 			//#endif
-			{
-				this.lastTimePressed = -1;
-				return handleKeyMode(keyCode, gameAction);
-			}
+			this.lastTimePressed = -1;
+			return handleKeyMode(keyCode, gameAction) || clearKeyPressed;
 		}
 		
-		return super.handleKeyReleased( keyCode, gameAction );
+		
+		return clearKeyPressed || super.handleKeyReleased( keyCode, gameAction );
 	}
 	//#endif
 	
