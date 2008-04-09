@@ -341,7 +341,7 @@ extends ContainerView
      * @see de.enough.polish.ui.ContainerView#paintContent(int, int, int, int,
      *      javax.microedition.lcdui.Graphics)
      */
-    protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder,
+    public  void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder,
                     Graphics g) 
     {
     	if (this.isExpandRightLayout) {
