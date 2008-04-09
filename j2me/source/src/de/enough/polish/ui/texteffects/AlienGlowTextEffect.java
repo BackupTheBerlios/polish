@@ -50,7 +50,8 @@ public class AlienGlowTextEffect extends TextEffect {
 	 * @see de.enough.polish.ui.TextEffect#drawString(java.lang.String, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	public void drawString(String text, int textColor, int x, int y,
-			int orientation, Graphics g) {
+			int orientation, Graphics g) 
+	{
 		
 		final int radius=3+1;
 
@@ -60,12 +61,6 @@ public class AlienGlowTextEffect extends TextEffect {
 		int fWidth = font.stringWidth( text );
 		int newWidth=fWidth + radius*2;
 		int newHeight=fHeight+ radius*2;
-		int startX = getLeftX( x, orientation, fWidth );
-		int startY = getTopY( y, orientation, fHeight, font.getBaselinePosition() );
-		
-		// offset of an invisble area caused by negative (x,y)
-		int invX=Math.max(0, -(startX-radius));
-		int invY=Math.max(0, -(startY-radius));
 		
 		// check whether the string has to be rerendered
 		if (this.lastText != text || this.lastTextColor != textColor) {
@@ -118,13 +113,11 @@ public class AlienGlowTextEffect extends TextEffect {
 
 		}
 		
-		// draw RGB-Data
-		if (newHeight-invY<=0 || newWidth-invX<=0){
-			// bugfix: exit if there is no part of text visible
-			return;
-		}
-		g.drawRGB(this.argbBuffer, invY * ( newWidth)+invX ,newWidth, ( startX-radius+invX<=0 ? 0 :startX-radius+invX), ( startY-radius+invY<=0 ? 0 :startY-radius+invY) , newWidth-invX, newHeight-invY, true);
+		// get draw position:
+		int startX = getLeftX( x, orientation, fWidth );
+		int startY = getTopY( y, orientation, fHeight, font.getBaselinePosition() );
 		
+		DrawUtil.drawRgb(this.argbBuffer, startX-radius, startY-radius, newWidth, newHeight, true,  g );
 		g.setColor( textColor );
 		g.drawString(text,startX,startY, Graphics.LEFT | Graphics.TOP);
 	}
