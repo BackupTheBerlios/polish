@@ -103,7 +103,7 @@ public class Container extends Item {
 	private boolean isScrollRequired;
 	/** The height available for scrolling, ignore when set to -1 */
 	protected int availableHeight = -1;
-	protected Item[] containerItems;
+	private Item[] containerItems;
 	private boolean showCommandsHasBeenCalled;
 	private Item scrollItem;
 	protected Style plainStyle;
@@ -247,7 +247,6 @@ public class Container extends Item {
 	 * Adds an item to this container.
 	 * 
 	 * @param item the item which should be added.
-	 * @param itemAddStyle the style for the item
 	 * @throws IllegalArgumentException when the given item is null
 	 */
 	public void add( Item item ) {

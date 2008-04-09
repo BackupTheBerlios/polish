@@ -3368,6 +3368,16 @@ public class TextField extends StringItem
 		{
 			// ignore repeat events when the current input mode is numbers:
 			if ( this.isNumeric || this.inputMode == MODE_NUMBERS ) {
+				if (keyCode == Canvas.KEY_NUM0 && this.inputMode == PHONENUMBER) {
+					if (this.caretPosition == 0 || "0".equals(this.text)) {
+						String str = getString();
+						if (str.length() > 0 && str.charAt(0) == '0') {
+							str = str.substring(1);
+						}
+						setString( "+" + str );
+						return true;
+					}
+				}
 				return false;
 			}
 			int currentLength = (this.text == null ? 0 : this.text.length());
@@ -3784,7 +3794,11 @@ public class TextField extends StringItem
 					//#if tmp.useInputInfo
 						updateInfo();
 					//#endif
-					//#if !polish.TextField.keepCaretPosition
+					//#if polish.TextField.jumpToStartOnFocus
+						if (this.caretPosition != 0) {
+							setCaretPosition( 0 );
+						}
+					//#elif !polish.TextField.keepCaretPosition
 						setCaretPosition( getString().length() );
 					//#endif
 			//#ifdef tmp.allowDirectInput

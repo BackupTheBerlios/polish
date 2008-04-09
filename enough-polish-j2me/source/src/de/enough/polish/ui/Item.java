@@ -701,7 +701,7 @@ public abstract class Item extends Object
 	 * The internal position is useful for items that have a large content which
 	 * needs to be scrolled, e.g. containers.  
 	 */
-	public int internalX = NO_POSITION_SET;
+	protected int internalX = NO_POSITION_SET;
 	/** the vertical position of this item's internal content relative to it's top edge */
 	protected int internalY;
 	/** The internal width of this item's content.  */
