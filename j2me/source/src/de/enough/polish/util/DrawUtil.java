@@ -962,4 +962,57 @@ public final class DrawUtil {
 		//#endif
 	}
 	
+	public static void drawRgb( int[] rgb, int x, int y, int width, int height, boolean processAlpha, Graphics g) {
+		drawRgb( rgb, x, y, width, height, processAlpha, g.getClipX(), g.getClipY(), g.getClipWidth(), g.getClipHeight(), g );
+	}
+
+
+	/**
+	 * @param rgb
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @param processAlpha
+	 * @param clipX
+	 * @param clipY
+	 * @param clipWidth
+	 * @param clipHeight
+	 * @param g
+	 */
+	public static  void drawRgb(int[] rgb, int x, int y, int width, int height,
+			boolean processAlpha, int clipX, int clipY, int clipWidth,
+			int clipHeight, Graphics g)
+	{
+		if (x + width < clipX || x > clipX + clipWidth || y + height < clipY || y > clipY + clipHeight) {
+			// this is not within the visible bounds:
+			return;
+		}
+		// adjust x / y / width / height to draw RGB within visible bounds:
+		int offset = 0;
+		if (x < clipX) {
+			offset = clipX - x;
+			x = clipX;
+		}
+		int scanlength = width;
+		width -= offset;
+		if (x + width > clipX + clipWidth) {
+			width = (clipX + clipWidth) - x;
+		}
+		if (y < clipY) {
+			offset += (clipY - y) * scanlength;
+			height -= (clipY - y);
+			y = clipY;
+		}
+		if (y + height > clipY + clipHeight) {
+			height = (clipY + clipHeight) - y;
+		}
+		
+		//#if polish.midp2
+			g.drawRGB(rgb, offset, scanlength, x, y, width, height,  processAlpha);
+		//#endif
+	}
+	
+
+	
 }
