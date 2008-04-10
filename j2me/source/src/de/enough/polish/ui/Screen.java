@@ -41,7 +41,6 @@ import com.nttdocomo.ui.Frame;
 
 import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
 import de.enough.polish.util.ArrayList;
-import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.ImageUtil;
 import de.enough.polish.util.Locale;
 
@@ -116,17 +115,6 @@ implements AccessibleCanvas
 	private final static int POSITION_TOP = 0;
 	private final static int POSITION_LEFT = 1;
 	
-	//#ifdef polish.key.LeftSoftKey:defined
-		//#= private final static int LEFT_SOFT_KEY = ${polish.key.LeftSoftKey};
-	//#else
-		private final static int LEFT_SOFT_KEY = -6;
-	//#endif
-	//#ifdef polish.key.RightSoftKey:defined
-		//#= private final static int RIGHT_SOFT_KEY = ${polish.key.RightSoftKey};
-	//#else
-		private final static int RIGHT_SOFT_KEY = -7;
-	//#endif
-
 	
 	//#if tmp.fullScreen || polish.midp1 || (polish.usePolishTitle == true)
 		//#define tmp.usingTitle
@@ -2420,11 +2408,12 @@ implements AccessibleCanvas
 					//#endif
 					//#if polish.Bugs.SoftKeyMappedToFire
 						if (gameAction == FIRE 
-						//#if polish.key.LeftSoftKey:defined && polish.key.RightSoftKey:defined
-							//#= && (keyCode == ${polish.key.LeftSoftKey} || keyCode == ${polish.key.RightSoftKey} )
-						//#else
-							&& (keyCode == -6 || keyCode == -7)
-						//#endif
+								&& isSoftKey(keyCode) 
+//						//#if polish.key.LeftSoftKey:defined && polish.key.RightSoftKey:defined
+//							//#= && (keyCode == ${polish.key.LeftSoftKey} || keyCode == ${polish.key.RightSoftKey} )
+//						//#else
+//							&& (keyCode == -6 || keyCode == -7)
+//						//#endif
 						) {
 							letTheMenuBarProcessKey = true;
 							gameAction = 0;
@@ -2460,7 +2449,7 @@ implements AccessibleCanvas
 							//System.out.println("menubar did not handle " + keyCode );
 						//#else
 							// internal menubar is used:
-							if (keyCode == LEFT_SOFT_KEY) {
+							if ( isSoftKeyLeft(keyCode) ) {
 								if ( this.menuSingleLeftCommand != null) {
 									callCommandListener( this.menuSingleLeftCommand );
 									return;
@@ -2476,7 +2465,7 @@ implements AccessibleCanvas
 										gameAction = Canvas.FIRE;
 									}
 								}
-							} else if (keyCode == RIGHT_SOFT_KEY) {
+							} else if ( isSoftKeyRight(keyCode)) {
 								if (!this.menuOpened && this.menuSingleRightCommand != null) {
 									callCommandListener( this.menuSingleRightCommand );
 									repaint();
@@ -2484,14 +2473,14 @@ implements AccessibleCanvas
 								}
 							}
 							boolean doReturn = false;
-							if (keyCode == LEFT_SOFT_KEY || keyCode == RIGHT_SOFT_KEY ) {
+							if ( isSoftKeyLeft(keyCode) || isSoftKeyRight(keyCode)) {
 								//#if polish.blackberry
 									this.keyPressedProcessed = false;
 								//#endif
 								doReturn = true;
 							}
 							if (this.menuOpened) {
-								if (keyCode == RIGHT_SOFT_KEY ) {
+								if ( isSoftKeyRight(keyCode) ) {
 									int selectedIndex = this.menuContainer.getFocusedIndex();
 									if (!this.menuContainer.handleKeyPressed(0, LEFT)
 											|| selectedIndex != this.menuContainer.getFocusedIndex() ) 
@@ -2643,7 +2632,7 @@ implements AccessibleCanvas
 							//# return;
 						//#else
 							if (this.menuOpened  && this.menuContainer != null ) {
-								if (keyCode == LEFT_SOFT_KEY) {
+								if ( isSoftKeyLeft(keyCode)) {
 									gameAction = FIRE;
 								}
 								processed = this.menuContainer.handleKeyReleased(keyCode, gameAction);
@@ -4165,25 +4154,6 @@ implements AccessibleCanvas
 		this.itemStateListener = iListener;
 	}
 	
-	/**
-	 * Determines if the given keycode belongs to a softkey
-	 * 
-	 * @param keyCode the keycode
-	 * @return true when the key code represents a softkey
-	 */
-	public boolean isSoftKey( int keyCode ) {
-		if (keyCode == LEFT_SOFT_KEY
-				|| keyCode == RIGHT_SOFT_KEY
-				//#if polish.key.MiddleSoftKey:defined
-					//#= || keyCode == ${polish.key.MiddleSoftKey}
-				//#endif
-				) 
-		{
-			return true;
-		}
-		return false;
-	}
-	
 	//#if polish.LibraryBuild
 	/**
 	 * Sets the <code>ItemStateListener</code> for the <code>Screen</code>, 
@@ -4539,6 +4509,17 @@ implements AccessibleCanvas
 		//#if !tmp.hasNoMiddleSoftKey
 		return (keyCode == expected);
 		//#endif
+	}
+	
+	
+	/**
+	 * Determines if the given keycode belongs to a softkey
+	 * 
+	 * @param keyCode the keycode
+	 * @return true when the key code represents a softkey
+	 */
+	public boolean isSoftKey( int keyCode ) {
+		return isSoftKeyLeft( keyCode ) || isSoftKeyRight( keyCode ) || isSoftKeyMiddle( keyCode );
 	}
 
 	
