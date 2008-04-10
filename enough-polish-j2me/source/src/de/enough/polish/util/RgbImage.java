@@ -196,7 +196,7 @@ public class RgbImage {
 	 */
 	public void paint( int x, int y, Graphics g ) {
 		//#if polish.midp2
-			g.drawRGB( this.rgbData, 0, this.width, x, y, this.width, this.height, this.processTransparency );
+			DrawUtil.drawRgb( this.rgbData, x, y, this.width, this.height, this.processTransparency, g );
 		//#endif
 	}
 

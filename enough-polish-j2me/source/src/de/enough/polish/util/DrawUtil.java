@@ -113,23 +113,23 @@ public final class DrawUtil {
 					buffer[i] = color;
 				}
 			//#endif
-			if (x < 0) {
-				width += x;
-				x = 0;
-			}
-			if (width <= 0) {
-				return;
-			}
-			if (y < 0) {
-				height += y;
-				y = 0;
-			}
-			if (height <= 0) {
-				return;
-			}
 			//#if polish.Bugs.drawRgbNeedsFullBuffer
-				g.drawRGB(buffer, 0, width, x, y, width, height, true);
+				drawRgb(buffer, x, y, width, height, true, g);
 			//#else
+				if (x < 0) {
+					width += x;
+					x = 0;
+				}
+				if (width <= 0) {
+					return;
+				}
+				if (y < 0) {
+					height += y;
+					y = 0;
+				}
+				if (height <= 0) {
+					return;
+				}
 				g.drawRGB(buffer, 0, 0, x, y, width, height, true);
 			//#endif
 		//#else
@@ -962,23 +962,36 @@ public final class DrawUtil {
 		//#endif
 	}
 	
+	/**
+	 * Draws an (A)RGB array and fits it into the clipping area.
+	 * 
+	 * @param rgb the (A)RGB array
+	 * @param x the horizontal start position
+	 * @param y the vertical start position
+	 * @param width the width of the RGB array
+	 * @param height the heigt of the RGB array
+	 * @param processAlpha true when the alpha values should be used so that pixels are blended with the background
+	 * @param g the graphics context
+	 */
 	public static void drawRgb( int[] rgb, int x, int y, int width, int height, boolean processAlpha, Graphics g) {
 		drawRgb( rgb, x, y, width, height, processAlpha, g.getClipX(), g.getClipY(), g.getClipWidth(), g.getClipHeight(), g );
 	}
 
 
 	/**
-	 * @param rgb
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 * @param processAlpha
-	 * @param clipX
-	 * @param clipY
-	 * @param clipWidth
-	 * @param clipHeight
-	 * @param g
+	 * Draws an (A)RGB array and fits it into the clipping area.
+	 * 
+	 * @param rgb the (A)RGB array
+	 * @param x the horizontal start position
+	 * @param y the vertical start position
+	 * @param width the width of the RGB array
+	 * @param height the heigt of the RGB array
+	 * @param processAlpha true when the alpha values should be used so that pixels are blended with the background
+	 * @param clipX the horizontal start of the clipping area
+	 * @param clipY the vertical start of the clipping area
+	 * @param clipWidth the width of the clipping area
+	 * @param clipHeight the height of the clipping area
+	 * @param g the graphics context
 	 */
 	public static  void drawRgb(int[] rgb, int x, int y, int width, int height,
 			boolean processAlpha, int clipX, int clipY, int clipWidth,
