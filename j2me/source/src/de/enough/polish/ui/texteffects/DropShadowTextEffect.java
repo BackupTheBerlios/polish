@@ -80,16 +80,11 @@ public class DropShadowTextEffect extends TextEffect {
 		int fWidth = font.stringWidth( text );
 		int newWidth=fWidth + this.size*2;
 		int newHeight=fHeight+ this.size*2;
-		int startX = getLeftX( x, orientation, fWidth );
-		int startY = getTopY( y, orientation, fHeight, font.getBaselinePosition() );
 		
 		// additional Margin for the image because of the shadow
 		int iLeft = this.size-this.xOffset<0 ? 0 : this.size-this.xOffset;
 		int iTop = this.size-this.yOffset<0 ? 0 : this.size-this.yOffset;
 		
-		// offset of an invisble area caused by negative (x,y)
-		int invX=Math.max(0, -(startX-iLeft));
-		int invY=Math.max(0, -(startY-iTop));
 		
 		// check whether the string has to be rerendered
 		if (this.lastText!=text || this.lastTextColor != textColor) {
@@ -102,12 +97,18 @@ public class DropShadowTextEffect extends TextEffect {
 			
 		}
 		
-		// draw RGB-Data
-		if (newHeight-invY<=0 || newWidth-invX<=0){
-			// bugfix: exit if there is no part of text visible
-			return;
-		}
-		g.drawRGB(this.localRgbBuffer,invY*(newWidth)+invX,newWidth, ( startX-iLeft+invX<=0 ? 0 :startX-iLeft+invX), ( startY-iTop+invY<=0 ? 0 :startY-iTop+invY) , newWidth-invX, newHeight-invY, true);
+		int startX = getLeftX( x, orientation, fWidth );
+		int startY = getTopY( y, orientation, fHeight, font.getBaselinePosition() );
+		DrawUtil.drawRgb(this.localRgbBuffer, startX-iLeft, startY-iTop, newWidth, newHeight, true, g);
+//		// offset of an invisble area caused by negative (x,y)
+//		int invX=Math.max(0, -(startX-iLeft));
+//		int invY=Math.max(0, -(startY-iTop));
+//		// draw RGB-Data
+//		if (newHeight-invY<=0 || newWidth-invX<=0){
+//			// bugfix: exit if there is no part of text visible
+//			return;
+//		}
+//		g.drawRGB(this.localRgbBuffer,invY*(newWidth)+invX,newWidth, ( startX-iLeft+invX<=0 ? 0 :startX-iLeft+invX), ( startY-iTop+invY<=0 ? 0 :startY-iTop+invY) , newWidth-invX, newHeight-invY, true);
 		
 	}
 

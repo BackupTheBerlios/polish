@@ -34,6 +34,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
+import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.ImageUtil;
 
 /**
@@ -150,7 +151,7 @@ public class FadeInItemView extends ItemView {
 		if (this.currentTransparency == 0) {
 			// do not paint anything
 		} else if (this.currentTransparency != 255 && data != null) {
-			g.drawRGB( data, 0, this.contentWidth, x, y, this.contentWidth, this.contentHeight, true );
+			DrawUtil.drawRgb( data, x, y, this.contentWidth, this.contentHeight, true, g );
 		} else {
 			super.paintContentByParent(parent, x, y, leftBorder, rightBorder, g);
 		}

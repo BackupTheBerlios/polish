@@ -34,6 +34,7 @@ import javax.microedition.lcdui.Image;
 import de.enough.polish.ui.Background;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StyleSheet;
+import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.ImageUtil;
 
 /**
@@ -220,7 +221,7 @@ extends Background
 						y += height - this.scaledHeight;
 					}
 				}
-				g.drawRGB(this.rgbDataScaled, 0, this.scaledWidth, x, y, this.scaledWidth, this.scaledHeight, true );
+				DrawUtil.drawRgb( this.rgbDataScaled, x, y, this.scaledWidth, this.scaledHeight, true, g );
 			//#else
 				// fallback to plain images on MIDP 1.0 phones:
 				if (this.doCenter) {

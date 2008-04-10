@@ -145,7 +145,8 @@ public class VerticalMirrorTextEffect extends TextEffect {
 			} else if ( (orientation & Graphics.HCENTER) == Graphics.HCENTER ) {
 				x -= this.rgbWidth/2;
 			}
-			g.drawRGB( this.rgbData, 0, this.rgbWidth, x, y + fontHeight + this.padding, this.rgbWidth, this.rgbHeight, true );
+			// g.drawRGB( this.rgbData, 0, this.rgbWidth, x, y + fontHeight + this.padding, this.rgbWidth, this.rgbHeight, true );
+			DrawUtil.drawRgb( this.rgbData, x, y + fontHeight + this.padding, this.rgbWidth, this.rgbHeight, true, g );
 			return;
 		}
 		
@@ -182,7 +183,8 @@ public class VerticalMirrorTextEffect extends TextEffect {
 		} else if ( (orientation & Graphics.HCENTER) == Graphics.HCENTER ) {
 			x -= width/2;
 		}
-		g.drawRGB( data, 0, width, x, y + fontHeight + this.padding, width, height, true );
+		//g.drawRGB( data, 0, width, x, y + fontHeight + this.padding, width, height, true );
+		DrawUtil.drawRgb( data, x, y + fontHeight + this.padding, width, height, true, g );
 		
 		this.rgbData = data;
 		this.lastText = text;

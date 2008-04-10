@@ -11,6 +11,7 @@ import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
+import de.enough.polish.util.DrawUtil;
 
 
 /**
@@ -172,8 +173,8 @@ public class HorizontalGrayOutContainerView extends ContainerView {
 			Item item = myItems[i];
 			int[] rgbData = this.inactiveIcons[i];
 			
-			g.drawRGB(rgbData, 0, item.itemWidth, x + itemOffset, y, item.itemWidth, item.itemHeight, true);
-			
+			DrawUtil.drawRgb( rgbData, x + itemOffset, y, item.itemWidth, item.itemHeight, true, g );
+
 			itemOffset += item.itemWidth;
 		}
 		

@@ -87,12 +87,6 @@ public class FadingAlienGlowTextEffect extends TextEffect {
 		int fWidth = font.stringWidth( text );
 		int newWidth=fWidth + radius*2;
 		int newHeight=fHeight+ radius*2;
-		int startX = getLeftX( x, orientation, fWidth );
-		int startY = getTopY( y, orientation, fHeight, font.getBaselinePosition() );
-		
-		// offset of an invisble area caused by negative (x,y)
-		int invX=Math.max(0, -(startX-radius));
-		int invY=Math.max(0, -(startY-radius));
 				
 		// create Image, Graphics, ARGB-buffer
 		Graphics bufferG;
@@ -139,12 +133,18 @@ public class FadingAlienGlowTextEffect extends TextEffect {
 				,150,this.argbBuffer,newWidth,newHeight);
 		
 		// draw RGB-Data
-		if (newHeight-invY<=0 || newWidth-invX<=0){
-			// bugfix: exit if there is no part of text visible
-			return;
-		}
-		
-		g.drawRGB(this.argbBuffer, invY * ( newWidth)+invX ,newWidth, ( startX-radius+invX<=0 ? 0 :startX-radius+invX), ( startY-radius+invY<=0 ? 0 :startY-radius+invY) , newWidth-invX, newHeight-invY, true);
+		int startX = getLeftX( x, orientation, fWidth );
+		int startY = getTopY( y, orientation, fHeight, font.getBaselinePosition() );
+		DrawUtil.drawRgb(this.argbBuffer, startX-radius, startY-radius, newWidth, newHeight, true,  g );
+//		// offset of an invisble area caused by negative (x,y)
+//		int invX=Math.max(0, -(startX-radius));
+//		int invY=Math.max(0, -(startY-radius));
+//		if (newHeight-invY<=0 || newWidth-invX<=0){
+//			// bugfix: exit if there is no part of text visible
+//			return;
+//		}
+//		
+//		g.drawRGB(this.argbBuffer, invY * ( newWidth)+invX ,newWidth, ( startX-radius+invX<=0 ? 0 :startX-radius+invX), ( startY-radius+invY<=0 ? 0 :startY-radius+invY) , newWidth-invX, newHeight-invY, true);
 		
 		g.setColor( textColor );
 		g.drawString(text,startX,startY, Graphics.LEFT | Graphics.TOP);

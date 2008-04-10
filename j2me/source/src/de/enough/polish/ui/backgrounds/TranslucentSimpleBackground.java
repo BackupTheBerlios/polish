@@ -33,6 +33,7 @@ import javax.microedition.lcdui.Graphics;
 //#endif
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.util.DrawUtil;
 
 /**
  * <p>Paints a simple translucent background.</p>
@@ -141,23 +142,23 @@ public class TranslucentSimpleBackground extends Background {
 					this.buffer = newBuffer;
 				}
 			//#endif
-			if (x < 0) {
-				width += x;
-				x = 0;
-			}
-			if (width <= 0) {
-				return;
-			}
-			if (y < 0) {
-				height += y;
-				y = 0;
-			}
-			if (height <= 0) {
-				return;
-			}
 			//#if polish.Bugs.drawRgbNeedsFullBuffer
-				g.drawRGB(this.buffer, 0, width, x, y, width, height, true);
+				DrawUtil.drawRgb( this.buffer, x, y, width, height, true, g );
 			//#else
+				if (x < 0) {
+					width += x;
+					x = 0;
+				}
+				if (width <= 0) {
+					return;
+				}
+				if (y < 0) {
+					height += y;
+					y = 0;
+				}
+				if (height <= 0) {
+					return;
+				}
 				g.drawRGB(this.buffer, 0, 0, x, y, width, height, true);
 			//#endif
 //		//#elif tmp.useNokiaUi

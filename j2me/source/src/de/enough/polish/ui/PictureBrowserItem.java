@@ -31,6 +31,7 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.ImageUtil;
 
 /**
@@ -170,10 +171,11 @@ public class PictureBrowserItem
 			if (index == this.selectedThumbIndex) {
 				y = originalY;
 				x += this.thumbnailWidth + this.paddingHorizontal;
-				g.drawRGB(this.thumbnailsRGBData[index], 0, this.selectedWidth, x, y, this.selectedWidth, this.selectedHeight, false);
+				DrawUtil.drawRgb( this.thumbnailsRGBData[index], x, y, this.selectedWidth, this.selectedHeight, false, g );
+				
 				x += this.selectedWidth + this.paddingHorizontal;
 			} else {
-				g.drawRGB(this.thumbnailsRGBData[index], 0, this.thumbnailWidth, x, y, this.thumbnailWidth, this.thumbnailHeight, false);	
+				DrawUtil.drawRgb( this.thumbnailsRGBData[index], x, y, this.thumbnailWidth, this.thumbnailHeight, false, g );
 				y += this.thumbnailHeight + this.paddingVertical;
 			}
 			index++;

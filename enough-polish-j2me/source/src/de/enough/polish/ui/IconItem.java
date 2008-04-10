@@ -31,6 +31,7 @@ import java.io.IOException;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.ImageUtil;
 
 /**
@@ -272,17 +273,7 @@ implements ImageConsumer
 					int sHeight = sData.length / sWidth;
 					int scaleX = x + this.relativeIconX + ((this.imageWidth - sWidth) >> 1);
 					int scaleY = y + this.relativeIconY + ((this.imageHeight - sHeight) >> 1);
-					//#ifdef polish.Bugs.drawRgbOrigin
-						scaleX += g.getTranslateX();
-						scaleY += g.getTranslateY();						
-					//#endif
-					if (scaleX < 0) {
-						scaleX = 0;
-					}
-					if (scaleY < 0) {
-						scaleY = 0;
-					}
-					g.drawRGB(sData, 0, sWidth, scaleX, scaleY, sWidth, sHeight, true );
+					DrawUtil.drawRgb(sData, scaleX, scaleY, sWidth, sHeight, true, g );
 				} else {
 			//#endif
 				g.drawImage( this.image, x + this.relativeIconX, y + this.relativeIconY, Graphics.TOP | Graphics.LEFT );

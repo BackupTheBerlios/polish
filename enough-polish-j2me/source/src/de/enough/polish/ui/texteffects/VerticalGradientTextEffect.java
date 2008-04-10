@@ -184,7 +184,8 @@ public class VerticalGradientTextEffect extends TextEffect {
 				}
 				//System.out.println("Set " + number + " pixels to transparent");
 				this.rgbBuffer = localRgbBuffer;
-				g.drawRGB( localRgbBuffer, 0, width, startX, startY, width, height, true );
+				//g.drawRGB( localRgbBuffer, 0, width, startX, startY, width, height, true );
+				DrawUtil.drawRgb(localRgbBuffer, startX, startY, width, height, true, g );
 			//#else
 				g.setClip( clipX, clipY, clipWidth, clipHeight );
 			//#endif
@@ -196,7 +197,8 @@ public class VerticalGradientTextEffect extends TextEffect {
 					DirectGraphics dg = DirectUtils.getDirectGraphics( g );
 					dg.drawImage( this.nokiaImageBuffer, startX, startY, Graphics.TOP | Graphics.LEFT, 0 );
 				//#elif polish.midp2
-					g.drawRGB( this.rgbBuffer, 0, width, startX, startY, width, height, true );
+					//g.drawRGB( this.rgbBuffer, 0, width, startX, startY, width, height, true );
+					DrawUtil.drawRgb(this.rgbBuffer, startX, startY, width, height, true, g );
 				//#endif
 			}
 		//#endif

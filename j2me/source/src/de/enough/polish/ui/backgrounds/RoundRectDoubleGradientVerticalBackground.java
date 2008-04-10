@@ -29,6 +29,8 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.util.DrawUtil;
+
 
 /**
  * <p>Paints a translucent rectangle with round corners as a background.</p>
@@ -127,21 +129,7 @@ extends DoubleGradientVerticalBackground
 				x += g.getTranslateX();
 				y += g.getTranslateY();
 			//#endif
-			if (x < 0) {
-				width += x;
-				x = 0;
-			}
-			if (width <= 0) {
-				return;
-			}
-			if (y < 0) {
-				height += y;
-				y = 0;
-			}
-			if (height <= 0) {
-				return;
-			}
-			g.drawRGB(this.buffer, 0, width, x, y, width, height, true);
+			DrawUtil.drawRgb( this.buffer, x, y, width, height, true, g );
 			// draw border:
 			int border = this.borderWidth;
 			if (border > 0) {

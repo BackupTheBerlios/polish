@@ -35,6 +35,7 @@ import javax.microedition.lcdui.Graphics;
 //#endif
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.util.DrawUtil;
 
 /**
  * <p>Fades in the background from fully transparent to the target color, which might also be translucent.</p>
@@ -174,7 +175,7 @@ public class FadeInBackground extends Background {
 				y = 0;
 			}
 			//#if polish.Bugs.drawRgbNeedsFullBuffer
-				g.drawRGB(this.buffer, 0, width, x, y, width, height, true);
+				DrawUtil.drawRgb( this.buffer, x, y, width, height, true, g );
 			//#else
 				g.drawRGB(this.buffer, 0, 0, x, y, width, height, true);
 			//#endif

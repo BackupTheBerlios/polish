@@ -33,6 +33,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
+import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.ImageUtil;
 
 /**
@@ -176,12 +177,11 @@ public class SizeIncreaseItemView extends ItemView {
 		} else if (this.currentHeight != this.targetHeight && data != null) {
 			if(this.sizeIncreaseTop)
 			{
-				g.drawRGB( data, 0, this.contentWidth, x, y, this.contentWidth, this.currentHeight, true );
+				DrawUtil.drawRgb( data, x, y, this.contentWidth, this.contentHeight, true, g );
 			}
 			else
 			{
-				g.drawRGB( data, 0, this.contentWidth, x , y - (this.currentHeight - this.targetHeight), this.contentWidth, this.currentHeight, true );
-				
+				DrawUtil.drawRgb( data, x, y - (this.currentHeight - this.targetHeight), this.contentWidth, this.contentHeight, true, g );
 			}
 		} else {
 			super.paintContentByParent(parent, x, y, leftBorder, rightBorder, g);

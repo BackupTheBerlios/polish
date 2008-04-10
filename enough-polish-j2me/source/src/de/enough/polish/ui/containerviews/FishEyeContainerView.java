@@ -40,6 +40,7 @@ import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
+import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.ImageUtil;
 
 /**
@@ -849,7 +850,7 @@ public class FishEyeContainerView extends ContainerView {
 			} else if ( (itemLayout & Item.LAYOUT_BOTTOM) == Item.LAYOUT_BOTTOM) {
 				y += (this.maxItemHeight - height);
 			} 
-			g.drawRGB(data, 0, width, x, y, width, height, true );
+			DrawUtil.drawRgb( data, x, y, width, height, true, g );
 //			g.setColor( 0xffff00);
 //			g.drawRect( x, y, item.itemWidth, item.itemHeight );
 //			g.drawLine( x, y, x + item.itemWidth, y + item.itemHeight );

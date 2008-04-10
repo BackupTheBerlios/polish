@@ -34,6 +34,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
+import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.ImageUtil;
 
 /**
@@ -128,7 +129,7 @@ public class FadeOutItemView extends ItemView {
 	 */
 	protected void paintContent(Item parent, int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		if (this.currentTransparency != 0) {
-			g.drawRGB( this.rgbData, 0, this.contentWidth, x, y, this.contentWidth, this.contentHeight, true );
+			DrawUtil.drawRgb( this.rgbData, x, y, this.contentWidth, this.contentHeight, true, g );
 		}
 	}
 

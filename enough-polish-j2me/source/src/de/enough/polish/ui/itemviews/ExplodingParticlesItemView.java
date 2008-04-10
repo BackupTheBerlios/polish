@@ -32,6 +32,7 @@ import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.UiAccess;
+import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.ImageUtil;
 
 /**
@@ -147,10 +148,10 @@ public class ExplodingParticlesItemView extends ItemView {
 			return;
 		}
 		//#if polish.midp2
-			g.drawRGB(this.scaledRgb, 0, this.paintWidth, 
+			DrawUtil.drawRgb(this.scaledRgb, 
 				x - ((this.paintWidth - this.contentWidth)>>1), 
 				y - ((this.paintHeight - this.contentHeight)>>1), 
-				this.paintWidth, this.paintHeight, true );
+				this.paintWidth, this.paintHeight, true, g );
 		//#endif
 	}
 

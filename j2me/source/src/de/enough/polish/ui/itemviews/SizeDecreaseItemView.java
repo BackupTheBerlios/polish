@@ -34,6 +34,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemView;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
+import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.ImageUtil;
 
 /**
@@ -172,13 +173,13 @@ public class SizeDecreaseItemView extends ItemView {
 		if (this.currentHeight == 0) {
 			// do not paint anything
 		} else if (this.currentHeight != this.targetHeight && data != null) {
-			if(sizeDecreaseTop)
+			if(this.sizeDecreaseTop)
 			{
-				g.drawRGB( data, 0, this.contentWidth, x, y, this.contentWidth, this.currentHeight, true );
+				DrawUtil.drawRgb( data, x, y, this.contentWidth, this.currentHeight, true, g );
 			}
 			else
 			{
-				g.drawRGB( data, 0, this.contentWidth, x , y - (this.currentHeight - this.originalHeight), this.contentWidth, this.currentHeight, true );
+				DrawUtil.drawRgb( data, x , y - (this.currentHeight - this.originalHeight), this.contentWidth, this.currentHeight, true, g );
 			}
 		} else {
 			super.paintContentByParent(parent, x, y, leftBorder, rightBorder, g);

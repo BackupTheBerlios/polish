@@ -38,6 +38,7 @@ import javax.microedition.lcdui.Image;
 
 import de.enough.polish.event.EventManager;
 import de.enough.polish.util.ArrayList;
+import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.HashMap;
 
 
@@ -1838,7 +1839,7 @@ public abstract class Item extends Object
 					this.opacityPaintNormally = false;
 				} 
 				//System.out.println("painting RGB data for " + this  + ", pixel=" + Integer.toHexString( rgbData[ rgbData.length / 2 ]));
-				g.drawRGB(rgbData, 0,this.itemWidth, x, y, this.itemWidth, this.itemHeight, true );
+				DrawUtil.drawRgb(rgbData, x, y, this.itemWidth, this.itemHeight, true, g );
 				return;
 			}
 		//#endif
