@@ -109,6 +109,8 @@ implements Runnable
    */
   protected Container currentContainer;
 
+private Command cmdBack;
+
   /**
    * Creates a new Browser without any protocol handlers, tag handlers or style.
    */
@@ -1098,6 +1100,9 @@ public void add(Item item)
       if (this.currentDocumentBase != null)
       {
     	  this.history.push(this.currentDocumentBase);
+    	  if (this.cmdBack != null && this.history.size() == 1 && getScreen() != null) {
+    		  getScreen().addCommand(this.cmdBack);
+    	  }
       }
       schedule(url);
   }
@@ -1120,6 +1125,9 @@ public void add(Item item)
     if (document != null)
     {
         schedule(document);
+        if (this.history.size() == 0 && this.cmdBack != null && getScreen() != null) {
+        	getScreen().removeCommand(this.cmdBack);
+        }
     }
   }
   
@@ -1133,6 +1141,20 @@ public void add(Item item)
       go(makeAbsoluteURL(href));
     }
   }
+  
+  /**
+   * Sets the back command for this browser.
+   * The back command will be appended to the parent screen when the browser can go back and it will be removed when the browser cannot got back anymore.
+   * @param cmdBack the back command - set to null to remove it completely
+   */
+  public void setBackCommand(Command cmdBack)
+  {
+	  if (this.cmdBack != null && getScreen() != null) {
+		  getScreen().removeCommand(this.cmdBack);
+	  }
+	  this.cmdBack = cmdBack;
+  }
+
   
   /**
    * Goes back one history step.
@@ -1171,6 +1193,9 @@ public void add(Item item)
     this.imageCache.clear();
     //clear();
     this.currentDocumentBase = null;
+    if (this.cmdBack != null && getScreen() != null) {
+    	getScreen().removeCommand(this.cmdBack);
+    }
   }
 
   protected void notifyPageError(String url, Exception e)
