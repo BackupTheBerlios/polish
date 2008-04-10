@@ -119,6 +119,14 @@ form.append( this.htmlBrowser );
 <pre>
 this.htmlBrowser.go( "http://www.digg.com" );
 </pre>
+	<p>
+	You can also specify your own back command, which is dynamically added and removed from the browser's screen depending on
+	the history size:
+	</p>
+<pre>
+Command cmdBack = new Command("Back", Command.BACK, 9);
+this.htmlBrowser.setBackCommand( cmdBack );
+</pre>
 	<h3 id="htmlbrowser-Programming-taghandler">Registering Your Own Tags</h2>
 	<p>
 	You can easily extend the <code>HtmlBrowser</code> by registering your own 
