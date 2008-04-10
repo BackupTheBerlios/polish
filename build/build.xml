@@ -754,6 +754,16 @@
 			<fileset dir="setup/samples/accessible" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-accessible" includes="resources/**/*.*" excludes="**/CVS"/>
 		</copy>
+		<!-- copy table application -->
+		<mkdir dir="tmp/samples/tableitem/source/src" />
+		<copy todir="tmp/samples/tableitem/source/src">
+			<fileset dir="../enough-polish-sample-tableitem/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/tableitem/" 
+			>
+			<fileset dir="setup/samples/tableitem" excludes="**/macosx/**,**/CVS" />
+			<fileset dir="../enough-polish-sample-tableitem" includes="resources/**/*.*" excludes="**/CVS"/>
+		</copy>
 		<!-- copy doja sample application -->
 		<mkdir dir="tmp/samples/doja/source/src" />
 		<copy todir="tmp/samples/doja/source/src">

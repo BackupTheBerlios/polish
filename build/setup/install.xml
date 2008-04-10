@@ -200,6 +200,15 @@ This sample application shows how to use the browser technology of J2ME Polish.
             <parsable targetfile="$INSTALL_PATH/samples/chartitem/build-netbeans.xml" type="shell" /> 
             <parsable targetfile="$INSTALL_PATH/samples/chartitem/nbproject/project.properties" type="shell" /> 
         </pack>
+        <pack name="TableItem Sample Application" required="no" preselected="yes">
+            <description>Demonstrates the usage of the J2ME Polish TableItem.
+            </description>
+            <file src="samples/tableitem" targetdir="$INSTALL_PATH/samples"/>
+            <parsable targetfile="$INSTALL_PATH/samples/tableitem/build.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/tableitem/.classpath" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/tableitem/build-netbeans.xml" type="shell" /> 
+            <parsable targetfile="$INSTALL_PATH/samples/tableitem/nbproject/project.properties" type="shell" /> 
+        </pack>
         <pack name="Roadrunner Sample Application" required="no" preselected="yes">
             <description>A sample application that features a well know game principle.</description>
             <file src="samples/roadrunner" targetdir="$INSTALL_PATH/samples"/>
