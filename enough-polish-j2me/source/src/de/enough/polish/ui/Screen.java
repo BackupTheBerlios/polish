@@ -4443,6 +4443,11 @@ implements AccessibleCanvas
 		//#endif
 	}
 	
+	/**
+	 * Checks if the given keycode is the left softkey
+	 * @param keyCode the key code
+	 * @return true when the key is the left soft key
+	 */
 	public final boolean isSoftKeyLeft( int keyCode ) {
 		int expected = 
 		//#ifdef polish.key.LeftSoftKey:defined
@@ -4467,9 +4472,21 @@ implements AccessibleCanvas
 			}
 			//#endif
 		//#endif
-		return (keyCode == expected);
+		boolean result = (keyCode == expected);
+		//#ifdef polish.key.LeftSoftKeys:defined
+			//#foreach key in polish.key.LeftSoftKeys
+				//#= expected = ${key};
+				result = result || (keyCode == expected);
+			//#next key
+		//#endif
+		return result;
 	}
 	
+	/**
+	 * Checks if the given keycode is the right softkey
+	 * @param keyCode the key code
+	 * @return true when the key is the right soft key
+	 */
 	public final boolean isSoftKeyRight( int keyCode ) {
 		int expected = 
 		//#ifdef polish.key.RightSoftKey:defined
@@ -4493,9 +4510,21 @@ implements AccessibleCanvas
 			//#endif
 			}
 		//#endif
-		return (keyCode == expected);
+		boolean result = (keyCode == expected);
+		//#ifdef polish.key.RightSoftKeys:defined
+			//#foreach key in polish.key.RightSoftKeys
+				//#= expected = ${key};
+				result = result || (keyCode == expected);
+			//#next key
+		//#endif
+		return result;
 	}
 	
+	/**
+	 * Checks if the given keycode is the middle softkey
+	 * @param keyCode the key code
+	 * @return true when the key is the middle soft key
+	 */
 	public final boolean isSoftKeyMiddle( int keyCode ) {
 		int expected = 
 		//#ifdef polish.key.MiddleSoftKey:defined
