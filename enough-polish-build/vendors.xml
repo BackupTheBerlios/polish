@@ -121,7 +121,7 @@
 
 	<vendor>
 		<name>LG</name>
-		<features></features>
+		<features>hasCommandKeyEvents</features>
 	</vendor>
 	
 	<vendor>
