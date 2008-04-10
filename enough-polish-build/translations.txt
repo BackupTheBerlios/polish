@@ -60,5 +60,3 @@ polish.predictive.setup.cmd.cancel=Cancel
 polish.predictive.setup.cmd.exit=Exit
 polish.predictive.setup.cmd.yes=Yes
 polish.predictive.setup.cmd.no=No
-
-polish.DateFormatEmptyText=

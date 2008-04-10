@@ -274,6 +274,22 @@ These namespaces/schemas will be used soon.
 	</device>	
 	
 	<device supportsPolishGui="true">
+		<identifier>Generic/AnyPhone</identifier>
+		<description>A MIDP 2.0 and CLDC 1.1 phone that supports softkeys and the fullscreen mode.</description>
+		<features>isVirtual, hasPointerEvents, hasCommandKeyEvents</features>
+		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaPackage" value="mmapi,wmapi"/>
+		<capability name="SoundFormat" value="midi, amr, wav"/>
+		<capability name="HeapSize" value="1MB"/>
+		<capability name="key.LeftSoftKeys" value="-6,-1,-21,21"/>
+		<capability name="key.RightSoftKeys" value="-7,-4,-22,22"/>
+		<capability name="MenuBar.OptionsPosition" value="right" />
+		<capability name="MenuBar.OkPosition" value="left" />		
+	</device>	
+	
+	
+	<device supportsPolishGui="true">
 		<identifier>Generic/DotNetCF1.1</identifier>
 		<features>hasPointerEvents, isVirtual</features>
 		<description>An unknown Windows powered phone with .NET CF 1.1 support.</description>
@@ -286,7 +302,7 @@ These namespaces/schemas will be used soon.
 
 	<device supportsPolishGui="true">
 		<identifier>Native/WindowsMobile</identifier>
-		<features>hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents</features>
+		<features>hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents, isVirtual</features>
 		<description>An unknown Windows powered phone.</description>
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
