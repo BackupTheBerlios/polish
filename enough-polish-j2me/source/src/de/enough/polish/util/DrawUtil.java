@@ -1012,6 +1012,9 @@ public final class DrawUtil {
 		if (x + width > clipX + clipWidth) {
 			width = (clipX + clipWidth) - x;
 		}
+		if (width <= 0) {
+			return;
+		}
 		if (y < clipY) {
 			offset += (clipY - y) * scanlength;
 			height -= (clipY - y);
@@ -1019,6 +1022,9 @@ public final class DrawUtil {
 		}
 		if (y + height > clipY + clipHeight) {
 			height = (clipY + clipHeight) - y;
+		}
+		if (height <= 0) {
+			return;
 		}
 		
 		//#if polish.midp2
