@@ -109,7 +109,7 @@ implements Runnable
    */
   protected Container currentContainer;
 
-private Command cmdBack;
+  private Command cmdBack;
 
   /**
    * Creates a new Browser without any protocol handlers, tag handlers or style.
