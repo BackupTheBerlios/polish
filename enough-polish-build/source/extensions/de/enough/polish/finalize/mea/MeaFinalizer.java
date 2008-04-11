@@ -110,10 +110,21 @@ public class MeaFinalizer extends Finalizer{
     public void notifyBuildEnd(Environment env) {
         super.notifyBuildEnd(env);
         String description = env.getVariable("MIDlet-Description");
-        description = description.replaceAll("\"","\\\"");
+        if(description != null){
+            description = description.replaceAll("\"","&quot;");
+        }
         String name = env.getVariable("MIDlet-Name");
+        if(name == null || name.length() == 0) {
+            name = "unknown";
+        }
         String version = env.getVariable("MIDlet-Version");
+        if(version == null || version.length() == 0) {
+            version = "1.0.0";
+        }
         String vendor = env.getVariable("MIDlet-Vendor");
+        if(vendor == null || vendor.length() == 0) {
+            vendor = "unknown";
+        }
         
         // Write contents.xml file.
 
