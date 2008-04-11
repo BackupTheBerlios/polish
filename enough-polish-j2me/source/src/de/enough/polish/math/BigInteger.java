@@ -508,7 +508,7 @@ public class BigInteger
 //        }
     }
 
-    private static final byte[] rndMask = {(byte)255, 127, 63, 31, 15, 7, 3, 1};
+    private static final byte[] rndMask = {-1 /* = 0xff */, 127, 63, 31, 15, 7, 3, 1};
 
     public BigInteger(int bitLength, int certainty, Random rnd) throws ArithmeticException
     {
@@ -2413,7 +2413,7 @@ public class BigInteger
 
             if (bytesIndex > 0)
             {
-                bytes[--bytesIndex] = (byte)0xFF;
+                bytes[--bytesIndex] = (byte) -1 /* = 0xFF */;
             }
         }
 
@@ -2670,7 +2670,7 @@ public class BigInteger
         {
             // This is algorithm 1a from chapter 4.4 in Seminumerical Algorithms, slow but it works
             Stack S = new Stack();
-            BigInteger base = new BigInteger(Integer.toString(rdx, rdx), rdx);
+            BigInteger biBase = new BigInteger(Integer.toString(rdx, rdx), rdx);
             // The sign is handled separatly.
             // Notice however that for this to work, radix 16 _MUST_ be a special case,
             // unless we want to enter a recursion well. In their infinite wisdom, why did not 
@@ -2683,12 +2683,12 @@ public class BigInteger
             // For speed, maye these test should look directly a u.magnitude.length?
             while (!u.equals(BigInteger.ZERO))
             {
-                b = u.mod(base);
+                b = u.mod(biBase);
                 if (b.equals(BigInteger.ZERO))
                     S.push("0");
                 else
                     S.push(Integer.toString(b.magnitude[0], rdx));
-                u = u.divide(base);
+                u = u.divide(biBase);
             }
             // Then pop the stack
             while (!S.empty())
