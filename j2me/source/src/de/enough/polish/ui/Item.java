@@ -33,6 +33,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 //#if polish.blackberry
+import net.rim.device.api.io.IONotRoutableException;
 	import net.rim.device.api.ui.Field;
 //#endif
 
@@ -3270,6 +3271,7 @@ public abstract class Item extends Object
 //		} else {
 //			System.out.println("--- SETTING INVISIBLE: " + this );
 //		}
+		
 		if (this.parent instanceof Container) {
 			Container parentContainer = (Container) this.parent;
 			if (invisible && this.isFocused) {
@@ -3296,7 +3298,6 @@ public abstract class Item extends Object
 						parentContainer.scroll( 0, parentContainer.focusedItem );
 					}
 				}
-				
 			} else if (!this.isFocused && parentContainer.focusedIndex > parentContainer.indexOf(this)) {
 				// adjust scrolling so that the focused element of the parent container stays in the current position:
 				int offset;
@@ -3327,9 +3328,20 @@ public abstract class Item extends Object
 					}
 					parentItem = parentItem.parent;
 				}
-
+			} else if (parentContainer.focusedIndex == -1)
+			{
+				if(visible)
+				{
+					//No other container is set to focused
+					//so it is ASSUMED that this is the only
+					//visisble item
+					this.relativeY = 0;
+					parentContainer.setScrollYOffset(0);
+					parentContainer.focus(parentContainer.indexOf(this));
+				}
 			}
 		}
+		
 		if ( invisible ) {
 			this.invisibleAppearanceModeCache = this.appearanceMode;
 			this.invisibleItemHeight = this.itemHeight;
@@ -3338,6 +3350,7 @@ public abstract class Item extends Object
 			this.appearanceMode = this.invisibleAppearanceModeCache;
 		}
 		this.isInvisible = invisible;
+		
 		requestInit();
 	}
 	//#endif
