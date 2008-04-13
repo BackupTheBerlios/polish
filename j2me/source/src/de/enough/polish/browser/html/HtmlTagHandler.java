@@ -114,6 +114,10 @@ public class HtmlTagHandler
   public static final String ATTR_VALUE = "value";
 	/** name attribute */
   public static final String ATTR_NAME = "name";
+  	/** size attribute */
+  	public static final String ATTR_SIZE = "size";
+  	/** multiple attribute */
+  	public static final String ATTR_MULTIPLE = "multiple";
 
   /** default link command */
 	//#ifdef polish.i18n.useDynamicTranslations
@@ -225,7 +229,18 @@ public class HtmlTagHandler
     		  }
 
     		  String name = parser.getAttributeValue(ATTR_NAME);
-    		  this.currentSelect = new HtmlSelect(name, style);
+    		  String sizeStr = parser.getAttributeValue(ATTR_SIZE);
+    		  int size;
+
+    		  try {
+    			  size = Integer.parseInt(sizeStr);
+    		  }
+    		  catch (NumberFormatException e) {
+    			  size = -1;
+    		  }
+
+    		  boolean isMultiple = parser.getAttributeValue(ATTR_MULTIPLE) != null;
+    		  this.currentSelect = new HtmlSelect(name, size, isMultiple, style);
     	  } else { // tag is closed
     		  if (this.currentSelect != null) {
     			  ChoiceGroup choiceGroup = this.currentSelect.getChoiceGroup();

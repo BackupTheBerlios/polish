@@ -32,14 +32,14 @@ import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.Style;
 import de.enough.polish.util.ArrayList;
 
-import java.util.Vector;
-
 public class HtmlSelect
 {
 	private final static Style NO_STYLE = new Style();
 	public static final String SELECT = "select";
 
 	private final String name;
+	private int size;
+	private boolean isMultiple;
 	private int selectedIndex;
 	private final ArrayList optionNames;
 	private final ArrayList optionValues;
@@ -47,9 +47,11 @@ public class HtmlSelect
 
 	private Style style;
 
-	public HtmlSelect(String name, Style style)
+	public HtmlSelect(String name, int size, boolean isMultiple, Style style)
 	{
 		this.name = name;
+		this.size = size;
+		this.isMultiple = isMultiple;
 		this.style = style;
 
 		this.selectedIndex = -1;
@@ -92,8 +94,17 @@ public class HtmlSelect
 	{
 		try
 		{
+			int choiceType = Choice.EXCLUSIVE;
+
+			if (this.isMultiple) {
+				choiceType = Choice.MULTIPLE;
+			}
+			else if (this.size == 1) {
+				choiceType = Choice.POPUP;
+			}
+			
 			//#style browserOption
-			ChoiceGroup choiceGroup = new ChoiceGroup(null, Choice.EXCLUSIVE);
+			ChoiceGroup choiceGroup = new ChoiceGroup(null, choiceType);
 			if (this.style != null) {
 				choiceGroup.setStyle(this.style);
 			}
