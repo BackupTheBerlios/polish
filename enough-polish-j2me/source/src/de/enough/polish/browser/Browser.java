@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.util.Stack;
 
@@ -102,6 +103,7 @@ implements Runnable
   private boolean isWorking;
   private boolean isCancelRequested;
   private String nextUrl;
+  private String nextPostData;
   protected BrowserListener browserListener;
 
   /**
@@ -827,7 +829,7 @@ public void add(Item item)
     return super.handleCommand(command);
   }
   
-  protected void goImpl(String url)
+  protected void goImpl(String url, String postData)
   {
 	 String previousDocumentBase = this.currentDocumentBase;
 	 StreamConnection connection = null;
@@ -843,6 +845,16 @@ public void add(Item item)
       if (connection != null)
       {
 	    notifyPageStart(url);
+
+	    if (postData != null && connection instanceof HttpConnection) {
+	    	HttpConnection httpConnection = (HttpConnection) connection;
+	    	httpConnection.setRequestMethod(HttpConnection.POST);
+	    	httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		    OutputStream os = connection.openOutputStream();
+		    os.write(postData.getBytes());
+		    os.close();
+	    }
+
 	    is = connection.openInputStream();
 	    String contentEncoding = null;
     	if (connection instanceof HttpConnection) {
@@ -984,7 +996,9 @@ public void add(Item item)
         	this.isStoppedWorking = false;
         //#endif
         String url = this.nextUrl;
+        String postData = this.nextPostData;
         this.nextUrl = null;
+        this.nextPostData = null;
           
         if (this.isCancelRequested != true)
         {
@@ -997,7 +1011,7 @@ public void add(Item item)
         	//#endif
 
             try {
-            	goImpl(url);
+            	goImpl(url, postData);
 
         	}
             catch (OutOfMemoryError e) {
@@ -1033,6 +1047,7 @@ public void add(Item item)
         repaint();
         this.isCancelRequested = false;
         this.nextUrl = null;
+        this.nextPostData = null;
         loadPage("Request canceled");
       }
         
@@ -1050,9 +1065,11 @@ public void add(Item item)
     } // end while(isRunning)
   } // end run()
   
-  protected void schedule(String url)
+  protected void schedule(String url, String postData)
   {
     this.nextUrl = url;
+    this.nextPostData = postData;
+
     synchronized( this.loadingThread ) {
     	this.loadingThread.notify();
     }
@@ -1097,6 +1114,25 @@ public void add(Item item)
   {
 	  //#debug
 	  System.out.println("Browser: going to [" + url + "]" );
+	  if (this.currentDocumentBase != null)
+	  {
+		  this.history.push(this.currentDocumentBase);
+		  if (this.cmdBack != null && this.history.size() == 1 && getScreen() != null) {
+			  getScreen().addCommand(this.cmdBack);
+		  }
+	  }
+	  schedule(url, null);
+  }
+  
+  /**
+   * Schedules the given URL for loading with HTTP POST data.
+   * @param url the URL that should be loaded
+   * @param postData the data to be sent via HTTP POST
+   */
+  public void go(String url, String postData)
+  {
+	  //#debug
+	  System.out.println("Browser: going to [" + url + "]" );
       if (this.currentDocumentBase != null)
       {
     	  this.history.push(this.currentDocumentBase);
@@ -1104,7 +1140,7 @@ public void add(Item item)
     		  getScreen().addCommand(this.cmdBack);
     	  }
       }
-      schedule(url);
+      schedule(url, postData);
   }
   
   /**
@@ -1124,7 +1160,7 @@ public void add(Item item)
     
     if (document != null)
     {
-        schedule(document);
+        schedule(document, null);
         if (this.history.size() == 0 && this.cmdBack != null && getScreen() != null) {
         	getScreen().removeCommand(this.cmdBack);
         }

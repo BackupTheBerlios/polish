@@ -565,14 +565,72 @@ public class HtmlTagHandler
     return sb.toString();
   }
 
-  protected void handleSubmitCommand()
-  {
-	  String url = createGetSubmitCall(this.browser);
-    
-    // TODO: Implement form submit for POST method.
-    
-    this.browser.go(url);
-  }
+  	/**
+  	 * Does a Form POST method call.
+  	 */
+  	public void doPostSubmitCall()
+  	{
+  		Item submitItem = browser.getFocusedItem();
+	    HtmlForm form = (HtmlForm) submitItem.getAttribute(ATTR_FORM);
+	
+		if (form == null) {
+		  	return;
+		}
+	
+	    StringBuffer sb = new StringBuffer();
+	    Item[] items = form.getItems();
+	    int numItems = items.length;
+	    
+	    for (int i = 0; i < numItems; i++) {
+	    	Item item = items[i];
+	      
+	    	if ("submit".equals(item.getAttribute(ATTR_TYPE)) && item != submitItem) {
+	    		continue;
+	    	}
+	      
+	    	String name = (String) item.getAttribute(ATTR_NAME);
+	    	String value = (String) item.getAttribute(ATTR_VALUE);
+		      
+	    	if (item instanceof TextField)	{
+		        TextField textField = (TextField) item;
+		        value = textField.getText();
+	    	}
+	    	else if (item instanceof ChoiceGroup) {
+	    		ChoiceGroup choiceGroup = (ChoiceGroup) item;
+	    		HtmlSelect htmlSelect = (HtmlSelect) choiceGroup.getAttribute(HtmlSelect.SELECT);
+	    		value = htmlSelect.getValue(choiceGroup.getSelectedIndex());
+	    	}
+
+	    	if (i > 0) {
+	    		sb.append("&");
+	    	}
+
+	    	sb.append(name);
+	    	sb.append('=');
+	    	sb.append(TextUtil.encodeUrl(value));
+	    }
+
+	    // TODO: Implement me.
+	    this.browser.go(form.getTarget(), sb.toString());
+  	}
+
+  	protected void handleSubmitCommand()
+  	{
+  		Item submitItem = browser.getFocusedItem();
+  		HtmlForm form = (HtmlForm) submitItem.getAttribute(ATTR_FORM);
+	  
+  		if (form == null) {
+  			return;
+  		}
+
+  		if (form.getMethod() == HtmlForm.POST) {
+  			doPostSubmitCall();
+  		}
+  		else {
+  			String url = createGetSubmitCall(this.browser);
+  			this.browser.go(url);
+  		}
+  	}
 
   protected void handleLinkCommand()
   {
