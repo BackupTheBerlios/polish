@@ -192,10 +192,10 @@ implements OutputFilter
 				if (iconUrl != null && iconUrl.length() > 1) {
 					//iconUrl = iconUrl.substring( 1 );
 					// add absolute path for the icon, so that stupid rapcs build before 4.2 can find it:
-					if (File.pathSeparatorChar == '\\') {
+//					if (File.pathSeparatorChar == '\\') {
 						iconUrl = device.getClassesDir() + iconUrl;
-						System.out.println("using icon path " + iconUrl );
-					}
+						//System.out.println("using icon path " + iconUrl );
+//					}
 				} else {
 					iconUrl = "";
 				}

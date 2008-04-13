@@ -30,6 +30,7 @@ import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -38,16 +39,24 @@ import org.apache.tools.ant.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.OutputFilter;
 import de.enough.polish.util.ProcessUtil;
 import de.enough.polish.util.StringUtil;
 
+/**
+ * <pRequests signatures using the BB SigTool.jar tool.></p>
+ *
+ * <p>Copyright Enough Software 2008</p>
+ * @author Robert Virkus, j2mepolish@enough.de
+ */
 public class SignatureRequester
-implements Runnable
+implements Runnable, OutputFilter
 {
 
 	private String password;
-	private boolean isFinished;
 	private Environment environment;
+	
+	private boolean isSupportingPasswordParameter;
 
 	public SignatureRequester() {
 		// no initialisation
@@ -107,14 +116,31 @@ implements Runnable
 		// execute BlackBerry's SignatureTool.jar:
 		String signToolPath = new File( jdeBin, "SignatureTool.jar" ).getAbsolutePath();
 		ArrayList arguments = new ArrayList();
+		// check if the SignatureTool version supports the "-p password" argument first:
+		if (pw != null) {
+			this.isSupportingPasswordParameter = false;
+			arguments.add( "java" );
+			arguments.add( "-jar" );
+			arguments.add( signToolPath );
+			arguments.add( "-?" );
+			// the output will be analyzed within filter( message, out ):
+			ProcessUtil.exec( arguments, "SignatureTool: ", true, this, certificateDir );
+		}
+		// now call the actual SignatureTool process:
+		arguments.clear();
 		arguments.add( "java" );
 		arguments.add( "-jar" );
 		arguments.add( signToolPath );
 		arguments.add( "-a" ); // automatically request for signatures.
 		arguments.add( "-s" ); //  display the number of signatures requested and the number that were signed
-		arguments.add( "-C" ); //  close regardless of its success. 
+		arguments.add( "-C" ); //  close regardless of its success.
+		if (this.isSupportingPasswordParameter && pw != null) {
+			// specify password:
+			arguments.add("-p");
+			arguments.add(pw);
+		}
 		arguments.add( codFile.getAbsolutePath() ); // cod file to be signed
-		if ( pw != null ) {
+		if ( pw != null && ! this.isSupportingPasswordParameter ) {
 			this.password = pw;
 			Thread thread = new Thread( this );
 			thread.start();
@@ -123,9 +149,12 @@ implements Runnable
 		int result =  ProcessUtil.exec( arguments, "SignatureTool: ", true, null, certificateDir );
 		if (result != 0 && pw != null) {
 			System.err.println("BlackBerry signing failed with result [" + result + "].");
-			System.err.println("Call was: \n" + StringUtil.toString( arguments) );
+			String call = StringUtil.toString( arguments);
+			if (this.isSupportingPasswordParameter &&  pw != null) {
+				call = StringUtil.replace(call, pw, "<password>" );
+			}
+			System.err.println("Call was: \n" + call );
 		}
-		this.isFinished = true;
 		return result;
 	}
 
@@ -274,6 +303,16 @@ implements Runnable
 		case '_': return KeyEvent.VK_UNDERSCORE;
 		}
 		throw new BuildException("The BlackBerry password contains the unsupported character [" + c + "] - you need to enter the password for yourself.");
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.util.OutputFilter#filter(java.lang.String, java.io.PrintStream)
+	 */
+	public void filter(String message, PrintStream output)
+	{
+		if (message.indexOf("-p password") != -1) {
+			this.isSupportingPasswordParameter = true;
+		}
 	}
 
 }
