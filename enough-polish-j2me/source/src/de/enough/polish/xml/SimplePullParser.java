@@ -107,7 +107,7 @@ public interface SimplePullParser
    * Retrieves the value of an attribute associated with the current tag.
    * 
    * @param name the name of the attribute
-   * @return the value
+   * @return the value, or null of attribute doesn't exist
    */
   String getAttributeValue(String name);
 
