@@ -2979,7 +2979,7 @@ implements AccessibleCanvas
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.addCommand(cmd, commandStyle);
 			//TODO adjust for other menubar positions
-			if (this.menuBarHeight == 0 && this.isInitialized) {
+			if (this.isInitialized) {
 				int availableWidth = this.screenWidth;
 				//#if polish.css.separate-menubar
 					if (!this.separateMenubar) {
