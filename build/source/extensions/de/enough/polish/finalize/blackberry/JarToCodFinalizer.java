@@ -180,6 +180,7 @@ implements OutputFilter
 				throw new BuildException("Unable to store JAD file in BlackBerry JAR file: " + e.toString() );
 			}
 		}
+		File iconFile = null;
 		if (mainClassName != null) {
 			try {
 				/*
@@ -189,13 +190,26 @@ implements OutputFilter
 				newEntries[ entries.length ] = "RIM-MIDlet-Flags-1: 0";
 				*/
 				String iconUrl = env.getVariable("MIDlet-Icon");
+				if (iconUrl == null || iconUrl.length() == 0) {
+					String midletDef = env.getVariable("MIDlet-1");
+					if (midletDef != null) {
+						int commaPos = midletDef.indexOf(',');
+						midletDef = midletDef.substring(commaPos + 1);
+						commaPos = midletDef.indexOf(',');
+						if (commaPos != -1) {
+							iconUrl = midletDef.substring(0, commaPos ).trim();
+						}
+					}
+				}
 				if (iconUrl != null && iconUrl.length() > 1) {
-					//iconUrl = iconUrl.substring( 1 );
-					// add absolute path for the icon, so that stupid rapcs build before 4.2 can find it:
-//					if (File.pathSeparatorChar == '\\') {
-						iconUrl = device.getClassesDir() + iconUrl;
-						//System.out.println("using icon path " + iconUrl );
-//					}
+					// copy icon to the working directory of the rapc, so that stupid rapcs build before 4.2 can find it:
+					File iconSource = new File( device.getClassesDir() + iconUrl );
+					iconFile = new File( jarFile.getParentFile(), iconUrl );
+					try {
+						FileUtil.copy(iconSource, iconFile);
+					} catch (IOException e) {
+						System.err.println("Warning: unable to copy temporary icon " + iconSource.getAbsolutePath() + ": " + e.toString() );
+					}
 				} else {
 					iconUrl = "";
 				}
@@ -268,7 +282,9 @@ implements OutputFilter
 //			System.out.println("Call to rapc: " + argsBuffer.toString() );
 			File distDir = jarFile.getParentFile();
 			int result = ProcessUtil.exec( commands, "rapc: ", true, this, distDir );
-			
+			if (iconFile != null) {
+				iconFile.delete();
+			}
 			if ( result != 0 ) {
 				System.err.println("rapc-call: " + commands.toString() );
 				throw new BuildException("rapc failed and returned " + result );
