@@ -593,7 +593,16 @@ implements AccessibleCanvas
 			this.menuBar.relativeY = this.screenHeight;
 		//#endif
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
-		
+		//#if tmp.menuFullScreen &&  tmp.useExternalMenuBar
+			int menuHeight = this.menuBar.getSpaceBottom( availableScreenWidth, this.fullScreenHeight);
+			if (menuHeight != this.menuBarHeight) {
+				// this can happen when the container has been initialized within calculateContentArea...
+				this.menuBarHeight = menuHeight;
+				this.screenHeight = this.fullScreenHeight - menuHeight;
+				calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+			}
+		//#endif
+
 		this.isInitialized = true;
 		// start the animmation thread if necessary: 
 		if (startAnimationThread) {
