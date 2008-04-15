@@ -333,14 +333,15 @@ public class ChoiceTextField
 			}
 			return true;
 		} else if ( (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
-				&& this.numberOfMatches > 0) {
+				&& this.numberOfMatches > 0) 
+		{
 			//System.out.println("focusing choices container");
 			enterChoices( true );
 			return true;
 		} else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
 			if (this.isOpen) {
 				this.numberOfMatches = 0;
-				openChoices( false );
+				//openChoices( false );
 				return true;
 			}
 			// open all available choices:
@@ -458,6 +459,11 @@ public class ChoiceTextField
 				openChoices( false );
 				super.notifyStateChanged();
 			}
+			return true;
+		} 
+		else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && this.isOpen)
+		{
+			openChoices(false);
 			return true;
 		}
 		return super.handleKeyReleased(keyCode, gameAction);
@@ -607,10 +613,10 @@ public class ChoiceTextField
 	 */
 	public void notifyStateChanged() {
 		Screen scr = getScreen();
-		if (scr != null && scr instanceof Form && ((Form)scr).itemStateListener != null ) {
+		if (scr != null && scr.itemStateListener != null ) {
 			// let the external item state listener do the work
 			super.notifyStateChanged();
-		} else {		
+		} else {
 			// find out possible matches yourself:
 			if ( this.lowerCaseChoices == null ) {
 				return; // no choices are known
@@ -619,6 +625,8 @@ public class ChoiceTextField
 				this.choicesContainer.focus(-1);
 			}
 			String currentText = getString();
+			//#debug
+			System.out.println("notifyStateChanged: text=[" + currentText + "]");
 			if (currentText != null) {
 				if (this.isAppendMode) {
 					if (this.appendChoiceDelimiter != null) {
@@ -688,6 +696,8 @@ public class ChoiceTextField
 			openChoices( this.numberOfMatches > 0 );
 		}
 	}
+	
+	
 
 	/**
 	 * Checks if the input and the available choice do match.

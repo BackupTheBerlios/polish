@@ -28,6 +28,7 @@
 package de.enough.polish.ui;
 
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 public class MessageItem 
 //#if !polish.LibraryBuild
@@ -107,10 +108,19 @@ public class MessageItem
 		return height;
 	}
 	
+	/**
+	 * Sets the headline text
+	 * @param headline the new headline
+	 */
 	public void setHeadline( String headline ) {
 		setHeadline( headline, null );
 	}
 	
+	/**
+	 * Sets the headline text
+	 * @param headline the new headline
+	 * @param style the new style for the headline
+	 */
 	public void setHeadline( String headline, Style style ) {
 		this.headlineItem.setText( headline );
 		if ( style != null ) {
@@ -118,15 +128,32 @@ public class MessageItem
 		}
 	}
 	
+	/**
+	 * Sets the text of the message.
+	 * @param text the new text
+	 */
 	public void setText( String text ) {
 		setText( text, null );
 	}
 	
+	/**
+	 * Sets the text of the message.
+	 * @param text the new text
+	 * @param style the new style of the text
+	 */
 	public void setText( String text, Style style ) {
 		this.textItem.setText( text );
 		if ( style != null ) {
 			this.textItem.setStyle( style );
 		}
+	}
+	
+	/**
+	 * Sets the image of the headline
+	 * @param image the new image of the headline
+	 */
+	public void setImage( Image image ) {
+		this.headlineItem.setImage(image);
 	}
 
 
