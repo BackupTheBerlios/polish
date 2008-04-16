@@ -129,16 +129,21 @@ implements OutputFilter
 		}
 		argsList.add( buffer.toString() );
 		// add classes that should be kept from obfuscating:
+		Map keepClassesByName = new HashMap();
 		for (int i = 0; i < preserve.length; i++) {
+			String className = preserve[i];
 			argsList.add( "-keep" );
-			argsList.add( "class " + preserve[i] );
+			argsList.add( "class " + className );
+			keepClassesByName.put( className, Boolean.TRUE );
 		}
 		Environment env = device.getEnvironment();
 		if (env != null && env.getVariable("polish.build.Obfuscator.KeepClasses") != null ) {
 			preserve = StringUtil.splitAndTrim(env.getVariable("polish.build.Obfuscator.KeepClasses"), ',');
 			for (int i = 0; i < preserve.length; i++) {
 				argsList.add( "-keep" );
-				argsList.add( "class " + preserve[i] );
+				String className = preserve[i];
+				argsList.add( "class " + className );
+				keepClassesByName.put( className, Boolean.TRUE );
 			}			
 		}
 		// add settings:
@@ -152,19 +157,32 @@ implements OutputFilter
 	    if (serializableClassNames != null) {
 	    	Map obfuscationMap = new HashMap();
 	    	File mapFile = new File( this.environment.getProjectHome(), ".polishSettings/obfuscation-map.txt" );
+	    	int originalObfuscationMapSize = 0;
 	    	if (mapFile.exists()) {
 	    		try {
 					FileUtil.readPropertiesFile(mapFile, '=', obfuscationMap);
+					originalObfuscationMapSize = obfuscationMap.size();
+					// remove all keep classes from the map:
+					String[] classNames = (String[]) obfuscationMap.keySet().toArray( new String[ originalObfuscationMapSize ]);
+					for (int i = 0; i < classNames.length; i++)
+					{
+						String name = classNames[i];
+						if (keepClassesByName.get(name) != null) {
+							obfuscationMap.remove(name);
+						}
+					}
+					
 				} catch (IOException e) {
 					System.out.println("warning: unable to read obfuscation map " + mapFile.getAbsolutePath() + ": " + e.toString() + " - this error is ignored.");
 				}
 	    	}
 	    	AbbreviationsGenerator abbreviationsGenerator = new AbbreviationsGenerator( obfuscationMap, AbbreviationsGenerator.ABBREVIATIONS_ALPHABET_LOWERCASE );
 	    	// add all class names to the map:
-	    	int originalObfuscationMapSize = obfuscationMap.size();
 	    	for (Iterator iter = serializableClassNames.iterator(); iter.hasNext();) {
 				String className = (String) iter.next();
-				abbreviationsGenerator.getAbbreviation(className, true);
+				if (keepClassesByName.get(className) == null) {
+					abbreviationsGenerator.getAbbreviation(className, true);
+				}
 			}
 	    	// store obfuscation map:
 	    	if (obfuscationMap.size() != originalObfuscationMapSize) {
