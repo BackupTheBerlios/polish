@@ -116,6 +116,7 @@ public class TabBar extends Item {
 			String name = tabNames[i];
 			Image image = tabImages[i];
 			ImageItem tab = new ImageItem( null, image, 0, name, this.inactiveStyle );
+			tab.parent = this;
 			this.tabs[i] = tab;
 		}
 
