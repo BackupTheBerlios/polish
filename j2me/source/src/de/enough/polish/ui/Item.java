@@ -3323,7 +3323,11 @@ public abstract class Item extends Object
 				Item parentItem = this;
 				while (parentItem != null) {
 					if (parentItem.internalX != NO_POSITION_SET) {
-						parentItem.internalY += this.itemHeight;
+						if (invisible) {
+							parentItem.internalY -= this.itemHeight;
+						} else {
+							parentItem.internalY += this.itemHeight;
+						}
 					}
 					parentItem = parentItem.parent;
 				}
