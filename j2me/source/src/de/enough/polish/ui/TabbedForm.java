@@ -316,6 +316,12 @@ public class TabbedForm extends Form {
 		setActiveTab(tabIndex, true);
 	}
 
+	/**
+	 * Focuses the specified tab.
+	 * 
+	 * @param tabIndex the index of the tab, the first tab has the index 0.
+	 * @param focusTabBar true when the tabbar should be focused - this only has an effect when polish.TabbedForm.allowTabSelection is set to true
+	 */
 	public void setActiveTab( int tabIndex, boolean focusTabBar ) {
 		if (!notifyTabbedChangeRequested( this.activeTabIndex, tabIndex )) {
 			return;

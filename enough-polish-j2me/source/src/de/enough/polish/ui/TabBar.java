@@ -59,7 +59,7 @@ public class TabBar extends Item {
 	
 	private int activeTabIndex;
 	//#ifdef polish.hasPointerEvents
-		protected int newActiveTabIndex;
+		protected boolean handlePointerReleaseEvent;
 	//#endif
 	private int xOffset;
 	private int scrollArrowHeight = 10;
@@ -410,21 +410,23 @@ public class TabBar extends Item {
 
 	//#ifdef polish.hasPointerEvents
 	protected boolean handlePointerPressed(int x, int y) {
+		this.handlePointerReleaseEvent = false;
 		if (!isInContentArea(x, y)) {
 			return false;
 		}
 		//System.out.println( "pointer-pressed: " + x + ", " + y);
-		int scrollerWidth = this.scrollArrowHeight + 2 * this.scrollArrowPadding; 
+		int scrollerWidth = this.scrollArrowHeight + 2 * this.scrollArrowPadding;
+		int newActiveTabIndex = this.activeTabIndex;
 		if ( (this.activeTabIndex > 0 || this.allowRoundtrip) && x <= scrollerWidth ) {
 			//System.out.println("left: x <= " + scrollerWidth );
 			int index = this.activeTabIndex - 1;
 			if (index < 0) {
 				index = this.tabs.length - 1;
 			}
-			this.newActiveTabIndex = index;
+			newActiveTabIndex = index;
 		} else if ( (this.activeTabIndex < this.tabs.length -1 || this.allowRoundtrip) && x >= this.contentWidth - scrollerWidth) {
 			//System.out.println("right: x >= " + (this.xRightPos - scrollerWidth) );
-			this.newActiveTabIndex = (this.activeTabIndex + 1) % this.tabs.length;
+			newActiveTabIndex = (this.activeTabIndex + 1) % this.tabs.length;
 		} else {
 			if (this.activeTabIndex > 0 || this.allowRoundtrip) {
 //				x -= scrollerWidth;
@@ -434,16 +436,34 @@ public class TabBar extends Item {
 //				System.out.println( "x=" + x + ", tab.relativeX=" + tab.relativeX + ", xOffset=" + this.xOffset +  ", tab=" + tab);
 				int tabX = tab.relativeX + this.xOffset;
 				if (tabX <= x && x <= tabX + tab.itemWidth) {
-					this.newActiveTabIndex = i;
+					newActiveTabIndex = i;
 					break;
 				}
 			}
 		}
-		if (this.screen instanceof TabbedForm && this.newActiveTabIndex != this.activeTabIndex) {
-			((TabbedForm)this.screen).setActiveTab( this.newActiveTabIndex );
+		int activeTab = this.activeTabIndex;
+		if (newActiveTabIndex != activeTab) {
+			this.tabs[newActiveTabIndex].notifyItemPressedStart();
+			this.nextTabIndex = newActiveTabIndex;
+			this.handlePointerReleaseEvent = true;
 		}
 		
-		return (this.newActiveTabIndex != this.activeTabIndex);
+		return this.handlePointerReleaseEvent;
+	}
+	//#endif
+	
+	
+	//#ifdef polish.hasPointerEvents
+	protected boolean handlePointerReleased(int x, int y) {
+		if (this.handlePointerReleaseEvent) {
+			this.handlePointerReleaseEvent = false;
+			if (this.screen instanceof TabbedForm) {
+				this.tabs[this.nextTabIndex].notifyItemPressedEnd();
+				((TabbedForm)this.screen).setActiveTab(this.nextTabIndex);
+			}
+			return true;
+		}
+		return false;
 	}
 	//#endif
 

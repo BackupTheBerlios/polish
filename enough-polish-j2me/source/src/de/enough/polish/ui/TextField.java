@@ -3785,7 +3785,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#if (tmp.directInput && (polish.TextField.showInputInfo != false)) || !(polish.TextField.suppressDeleteCommand || polish.blackberry) 
+	//#if tmp.directInput || !(polish.TextField.suppressDeleteCommand || polish.blackberry) 
 	protected Style focus(Style focStyle, int direction) {
 		//#if tmp.directInput
 			//#ifdef tmp.allowDirectInput
