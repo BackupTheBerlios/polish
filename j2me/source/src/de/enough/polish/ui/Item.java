@@ -3314,6 +3314,8 @@ public abstract class Item extends Object
 						this.isInvisible = false;
 						this.isInitialized = false;
 						height = getItemHeight( this.parent.contentWidth, this.parent.contentWidth );
+					} else {
+						this.itemHeight = height;
 					}
 					offset = parentContainer.getScrollYOffset() - height;
 					//System.out.println("visible: adjusting yScrollOffset with height=" + height + " to " + offset );					
