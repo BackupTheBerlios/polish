@@ -127,12 +127,20 @@
 		<!-- In the test mode the application is build only for the  -->
 		<!-- Generic/midp1 phone, but when the test-property is set to false, -->
 		<!-- the second deviceRequirements will be used instead. -->
-		<deviceRequirements>
+		<deviceRequirements if="test">
 			<requirement name="Identifier" value="${device}" />
 		</deviceRequirements>
+		<deviceRequirements unless="test or devices:defined">
+			<requirement name="Term" value="${ bytes(polish.MaxJarSize)} > 100" />
+		</deviceRequirements>
+		<deviceRequirements if="!test and devices:defined">
+			<requirement name="Identifier" value="${devices}" />
+		</deviceRequirements>
+		<!--
 		<deviceRequirements if="!test and device:defined">
 			<requirement name="Identifier" value="${device}" />
 		</deviceRequirements>
+		-->
 		<deviceRequirements if="false" unless="test">
 			<or>
 						<requirement name="Identifier" value="Generic/DefaultColorPhone" />

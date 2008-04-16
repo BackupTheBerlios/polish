@@ -25,20 +25,25 @@
  */
 package de.enough.polish.sample.framedform;
 
-import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Gauge;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemStateListener;
+import javax.microedition.lcdui.StringItem;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.ui.FramedForm;
+import de.enough.polish.ui.Style;
+import de.enough.polish.ui.UiAccess;
+import de.enough.polish.ui.backgrounds.SimpleBackground;
 import de.enough.polish.util.IntHashMap;
+import de.enough.polish.util.Locale;
 
 /**
  * <p>Provides an example how to use the FramedForm</p>
@@ -70,12 +75,20 @@ implements ItemStateListener, CommandListener
 		COLOR_MAP.put(BLUE, new Integer( 0x0000FF ) );
 		COLOR_MAP.put(BLACK, new Integer( 0x000000 ) );
 	}
+	private FramedForm framedForm;
 	private GradientItem gradientItem;
 	private ChoiceGroup topColorGroup;
 	private ChoiceGroup middleColorGroup;
 	private ChoiceGroup bottomColorGroup;
 	
-	private Command exitCmd = new Command("Exit", Command.EXIT, 1 );
+	private Command exitCmd = new Command("Exit", Command.EXIT, 2 );
+	private Command nextCmd = new Command("Next", Command.OK, 1 );
+	
+	private static final int DEMO_RIGHT = 0;
+	private static final int DEMO_BOTTOM = 1;
+	private static final int DEMO_LAST = DEMO_BOTTOM;
+	
+	private int currentDemo = -1;
 
 	/**
 	 * Creates a new MIDlet.
@@ -95,33 +108,80 @@ implements ItemStateListener, CommandListener
 		
 		//#style gradientFramedForm
 		FramedForm form = new FramedForm( "Framed Form" );
-		this.gradientItem = new GradientItem( 20 );
-		form.append( Graphics.RIGHT,  this.gradientItem );
-		this.topColorGroup = createColorChoiceGroup("top: ");
-		this.topColorGroup.setSelectedIndex(WHITE, true);
-		form.append( this.topColorGroup );
-		this.middleColorGroup = createColorChoiceGroup("middle: ");
-		this.middleColorGroup.setSelectedIndex(YELLOW, true);
-		form.append( this.middleColorGroup );
-		this.bottomColorGroup = createColorChoiceGroup("bottom: ");
-		this.bottomColorGroup.setSelectedIndex(BLUE, true);
-		form.append( this.bottomColorGroup );
-		
+		//form.setTitle( Locale.get("title.main"))
+
+		form.addCommand( this.nextCmd );
 		form.addCommand( this.exitCmd );
 		form.setItemStateListener( this );
 		form.setCommandListener( this );
 		
 		Display display = Display.getDisplay( this );
-		display.setCurrent( form );
+		this.framedForm = form;
+		next();
 		
+		display.setCurrent( form );
 		//#debug
 		System.out.println("FramedFormDemo MIDlet is up and running.");
 
 	}
 
+	/**
+	 * Shows the next demo
+	 */
+	private void next()
+	{
+		this.currentDemo++;
+		if (this.currentDemo > DEMO_LAST) {
+			this.currentDemo = DEMO_RIGHT;
+		}
+		switch (this.currentDemo) {
+		case DEMO_RIGHT: nextDemoRight(); break;
+		case DEMO_BOTTOM: nextDemoBottom(); break;
+		}
+		
+	}
+	
+	/**
+	 * shows a scrollable demo with bottom item
+	 */
+	private void nextDemoBottom()
+	{
+		this.framedForm.deleteAll();
+		this.topColorGroup = createColorChoiceGroup("top: ");
+		this.topColorGroup.setSelectedIndex(WHITE, true);
+		this.framedForm.append( Graphics.TOP, this.topColorGroup );
+		this.bottomColorGroup = createColorChoiceGroup("bottom: ");
+		this.bottomColorGroup.setSelectedIndex(BLUE, true);
+		this.framedForm.append( Graphics.BOTTOM, this.bottomColorGroup );
+		for (int i=0; i<20; i++) {
+			//#style meaninglessSelectableItem
+			StringItem item = new StringItem( null, "item " + i );
+			item.setDefaultCommand( this.nextCmd );
+			this.framedForm.append(item);
+		}
+	}
+
+	/**
+	 * Shows the color setting demo
+	 */
+	private void nextDemoRight() {
+		this.framedForm.deleteAll();
+		this.gradientItem = new GradientItem( 20 );
+		this.framedForm.append( Graphics.RIGHT,  this.gradientItem );
+		this.topColorGroup = createColorChoiceGroup("top: ");
+		this.topColorGroup.setSelectedIndex(WHITE, true);
+		this.framedForm.append( this.topColorGroup );
+		this.middleColorGroup = createColorChoiceGroup("middle: ");
+		this.middleColorGroup.setSelectedIndex(YELLOW, true);
+		this.framedForm.append( this.middleColorGroup );
+		this.bottomColorGroup = createColorChoiceGroup("bottom: ");
+		this.bottomColorGroup.setSelectedIndex(BLUE, true);
+		this.framedForm.append( this.bottomColorGroup );
+	}
+
 	private ChoiceGroup createColorChoiceGroup(String label) {
 		//#style colorChoiceGroup
-		ChoiceGroup group = new ChoiceGroup( label, Choice.EXCLUSIVE );
+		ChoiceGroup group = new ChoiceGroup( label, ChoiceGroup.EXCLUSIVE );
 		//#style colorChoiceItem
 		group.append( "white", null );
 		//#style colorChoiceItem
@@ -163,13 +223,23 @@ implements ItemStateListener, CommandListener
 			} else {
 				this.gradientItem.setBottomColor( color );
 			}
+			// sample for setting a screen style dynamically:
+//			Style style = UiAccess.getStyle(this.framedForm);
+//			if (style == null) {
+//				style = new Style();
+//			}
+//			style.background = new SimpleBackground( color );
+//			UiAccess.setStyle(this.framedForm, style);
 		}
 		
 	}
 
 	public void commandAction(Command cmd, Displayable disp) {
-		// currently only the Exit command is present/supported
-		notifyDestroyed();
+		if (cmd == this.nextCmd) {
+			next();
+		} else {
+			notifyDestroyed();
+		}
 	}
 
 }

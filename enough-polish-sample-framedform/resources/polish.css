@@ -40,6 +40,22 @@ rightframe {
 	
 }
 
+.colorChoiceGroup:hover {
+	padding: 2;
+	font-color: focusedFontColor;
+	layout: expand | center;
+	background {
+		type: web20;
+		color: highlightedBgColor;
+		circle-anchor: top;
+		circle-color: #A2A2f9;
+		padding: 3;
+		padding-top: 0;
+		padding-bottom: 8;
+	}
+	label-style: .labelFocused;
+}
+
 .colorChoiceItem {
 	padding: 2;
 	font-color: fontColor;
@@ -48,11 +64,13 @@ rightframe {
 	focused-style: .colorChoiceItemFocused;
 }
 
-.colorChoiceItemFocused {
-	padding: 2;
-	font-color: fontColor;
-	font-size: small;
-	layout: expand | center;
+.colorChoiceItem:hover {
+	font-style: bold;
+}
+
+.meaninglessSelectableItem {
+	font-color: #222;
+	layout: center;
 }
 
 
