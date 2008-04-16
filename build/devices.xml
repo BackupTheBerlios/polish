@@ -313,7 +313,7 @@ These namespaces/schemas will be used soon.
 		-->
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="HeapSize" value="20MB"/>
-		<capability name="MenuBar.OptionsPosition" value="right" />
+		<capability name="MenuBar.OptionsPosition" value="left" />
 		<capability name="MenuBar.OkPosition" value="left" />
 		<!-- Disabled for Smartphones without hardware/software ascii keyboard. Needs to be enabled otherwise.
 		<capability name="key.supportsAsciiKeyMap" value="true" />
