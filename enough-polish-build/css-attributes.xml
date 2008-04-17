@@ -3456,6 +3456,38 @@
 		id="313"
 	/>
 	
+	<attribute
+		name="leftframe-style"
+		type="style"
+		appliesTo="FramedForm"
+		description="The style for the left frame of a FramedForm."
+		id="314"
+	/>
+	
+	<attribute
+		name="rightframe-style"
+		type="style"
+		appliesTo="FramedForm"
+		description="The style for the right frame of a FramedForm."
+		id="315"
+	/>
+
+	<attribute
+		name="topframe-style"
+		type="style"
+		appliesTo="FramedForm"
+		description="The style for the top frame of a FramedForm."
+		id="316"
+	/>
+
+	<attribute
+		name="bottomframe-style"
+		type="style"
+		appliesTo="FramedForm"
+		description="The style for bottom top frame of a FramedForm."
+		id="317"
+	/>
+	
 	<!--
 	
 	<attribute
