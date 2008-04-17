@@ -55,6 +55,7 @@ implements ItemCommandListener
 		
 	private final static String[] RECEIVERS = new String[] {
 		"google.com", "yahoo.com", "msn.com", "somewhere.com"
+		//, "a.com", "b.com", "c.com", "d.com", "e.com", "f.com", "g.com", "h.com", "i.com", "j.com", "k.com", "l.com", "m.com", "n.com", "o.com", "p.com", "q.com", "r.com", "s.com", "t.com", "u.com", "v.com", "w.com", "x.com"  
 //		"aaron@somewhere.com", "ajax@hype.com", "asynchron@performance.com", "best@j2mepolish.org",
 //		"beta@j2mepolish.org", "circus@ms.com", "doing@going.com", "info@enough.de", "j2mepolish@enough.de"		
 	};
@@ -106,7 +107,7 @@ implements ItemCommandListener
 		this.receiver.setChoiceTrigger( choiceTriggerChar, allowChoicesBeforeChoiceTriggerHasBeenEntered );
 		append( this.receiver );
 		//#style addressInput
-		this.sender = new FilteredChoiceGroup( "from: ", "select sender...", Choice.EXCLUSIVE );
+		this.sender = new FilteredChoiceGroup( "from: ", "select sender...", Choice.MULTIPLE );
 		this.sender.addCommand(this.cmdChoose);
 		this.sender.setItemCommandListener( this );
 		for (int i = 0; i < SENDERS.length; i++) {
@@ -129,8 +130,9 @@ implements ItemCommandListener
 		
 		
 		//#style input, addressInput
-		this.text = new TextField( "message: ", null, 255, TextField.ANY );
+		this.text = new TextField( "message: ", "Hello J2ME Polish World!", 255, TextField.ANY );
 		append( this.text );
+	
 	}
 	
 	/**
@@ -161,10 +163,11 @@ implements ItemCommandListener
 	 * @see javax.microedition.lcdui.ItemCommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Item)
 	 */
 	public void commandAction(Command cmd, Item item) {
+		//#debug
+		System.out.println("commandAction for command=" + cmd.getLabel() + " and item=" + item );
 		if (item == this.sender) {
 			this.sender.showFilteredList( StyleSheet.display );
 		}
 	}
-
 
 }

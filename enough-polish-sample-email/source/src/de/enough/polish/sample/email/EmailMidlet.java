@@ -83,7 +83,8 @@ implements CommandListener, ItemStateListener
 	 */
 	public EmailMidlet() {
 		super();
-		System.out.println("email created");
+		//#debug
+		System.out.println("email midlet created");
 	}
 
 	/* (non-Javadoc)
@@ -116,7 +117,9 @@ implements CommandListener, ItemStateListener
 
 		//#style mailTicker
 		Ticker ticker = new Ticker( "Sending mail \"J2ME Polish Test Result\" to sales@mycompany.com" );
+		/*
 		form.setTicker( ticker );
+		*/
 
 		form.setCommandListener( this );
 		form.setItemStateListener( this );
@@ -134,6 +137,9 @@ implements CommandListener, ItemStateListener
 		
 		this.display = Display.getDisplay( this );
 		this.display.setCurrent( form );
+		
+//		de.enough.polish.ui.Screen scr = (de.enough.polish.ui.Screen)  form;
+//		scr.setScreenOrientation( 90 );
 	}
 
 	private void addMessage(TreeItem tree, Item node, String from, String subject, String text ) {
@@ -204,7 +210,7 @@ implements CommandListener, ItemStateListener
 				form.setCommandListener( this );
 				form.addCommand( this.okCommand );
 				form.addCommand( this.abortCommand );
-				this.createMessageForm = form;
+				this.createMessageForm = form;				
 				this.display.setCurrent( form );
 			} else if (cmd == this.setStatusOnlineCommand) {
 				setStatus( STATUS_ONLINE );
@@ -219,6 +225,8 @@ implements CommandListener, ItemStateListener
 				this.display.setCurrent( alert, this.mainScreen );
 			}
 		} else if (disp == this.createMessageForm ){
+			//#debug
+			System.out.println("command for create message form...");
 			if (cmd == this.okCommand) {
 				//#debug
 				System.out.println("creating message for " + this.createMessageForm.getReceiver() + " from " + this.createMessageForm.getSender() );
@@ -241,5 +249,5 @@ implements CommandListener, ItemStateListener
 		System.out.println("ItemStateChanged " + item);
 	}
 
-
 }
+

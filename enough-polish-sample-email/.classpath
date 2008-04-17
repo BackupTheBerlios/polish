@@ -8,5 +8,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/enough-polish-build/import/cldc-1.1.jar"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/wmapi.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
