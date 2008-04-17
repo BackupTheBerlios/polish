@@ -140,6 +140,18 @@ public class MasterCanvas
 	}
 	//#endif
 	
+	//#if polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
+	 */
+	protected void pointerReleased(int x, int y) {
+		if (this.currentCanvas != null) { 
+			this.currentCanvas.pointerReleased( x, y );
+		}
+	}
+	//#endif
+
+	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyRepeated(int)
 	 */

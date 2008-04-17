@@ -432,7 +432,7 @@ public class CommandItem extends IconItem {
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerPressed(int x, int y) {
-		//#debug
+		// #debug
 		System.out.println("handlePointerPressed( " + x + ", " + y + ") for " + this);
 		boolean handled = false;
 		if (this.isOpen) {
@@ -451,7 +451,7 @@ public class CommandItem extends IconItem {
 	 * @see de.enough.polish.ui.Item#handlePointerPressed(int, int)
 	 */
 	protected boolean handlePointerReleased(int x, int y) {
-		//#debug
+		// #debug
 		System.out.println("handlePointerReleased( " + x + ", " + y + ") for " + this);
 		boolean handled = false;
 		if (this.isOpen) {

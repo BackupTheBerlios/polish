@@ -247,6 +247,13 @@ implements Runnable, AccessibleCanvas
 	}
 	//#endif
 	
+	//#ifdef polish.hasPointerEvents
+	public void pointerReleased(int x, int y) {
+		keyReleased( 0 );
+	}
+	//#endif
+
+	
 	//#if polish.midp2
 	public void sizeChanged( int width, int height ) {
 		// ignore

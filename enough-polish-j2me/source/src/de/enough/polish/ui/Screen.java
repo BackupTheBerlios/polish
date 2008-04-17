@@ -3538,12 +3538,12 @@ implements AccessibleCanvas
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#pointerReleased(int, int)
 	 */
-	protected void pointerReleased(int x, int y)
+	public void pointerReleased(int x, int y)
 	{
 		//#if polish.Screen.callSuperEvents
 			super.pointerReleased(x, y);
 		//#endif
-		//#debug
+		// #debug
 		System.out.println("pointerReleased at " + x + ", " + y );
 		try {
 			this.ignoreRepaintRequests = true;

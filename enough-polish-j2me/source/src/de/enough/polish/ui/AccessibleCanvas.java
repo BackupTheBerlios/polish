@@ -51,6 +51,14 @@ public interface AccessibleCanvas {
 	public void pointerPressed( int x, int y );
 	//#endif
 	
+	//#if polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
+	 */
+	public void pointerReleased(int x, int y);
+	//#endif
+
+	
 	public void showNotify();
 	
 	public void hideNotify();

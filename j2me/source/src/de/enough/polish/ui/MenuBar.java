@@ -1375,7 +1375,7 @@ public class MenuBar extends Item {
 		// check if one of the command buttons has been pressed:
 		int leftCommandEndX = this.singleLeftCommandItem.relativeX + this.singleLeftCommandItem.itemWidth;
 		int rightCommandStartX = this.singleRightCommandItem.relativeX;
-		//#debug
+		// #debug
 		System.out.println("MenuBar: handlePointerReleased( relX=" + relX + ", relY=" + relY + " )\nleftCommandEndX = " + leftCommandEndX + ", rightCommandStartXs = " + rightCommandStartX + " screenHeight=" + this.screen.screenHeight);
 		if (relY > 0) {
 			CommandItem selectedCommandItem = null;
