@@ -79,7 +79,8 @@ public class RecordStoreContentProvider extends DatabaseContentProvider implemen
             SQLiteQueryBuilder qBuilder = new SQLiteQueryBuilder();
         	
         	qBuilder.setTables(storeID);
-            qBuilder.appendWhere("_id=" + recordID);
+        	//TODO FIX !!!
+            //qBuilder.appendWhere("_id=" + recordID);
             
             return qBuilder.query(mDb,
             		PROJECTION,

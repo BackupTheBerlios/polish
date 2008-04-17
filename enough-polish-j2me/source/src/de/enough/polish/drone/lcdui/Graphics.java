@@ -1479,8 +1479,9 @@ public class Graphics
 //		
 //		this.drawRGBBuffer.setPixels(rgbData, offset, scanlength, 0, 0, width, height);
 //		canvas.drawBitmap(this.drawRGBBuffer, x, y, paint);
-		Bitmap bitmap = Bitmap.createBitmap(rgbData, width, height, true);
-		canvas.drawBitmap(bitmap,x,y,paint);
+		//TODO FIX !!!
+		//Bitmap bitmap = Bitmap.createBitmap(rgbData, width, height, true);
+		//canvas.drawBitmap(bitmap,x,y,paint);
 		
 	}
 
