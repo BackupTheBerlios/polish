@@ -55,6 +55,18 @@ public class FramedForm extends Form {
 	private boolean expandLeftFrame;
 	
 	protected Container currentlyActiveContainer;
+	//#if polish.css.leftframe-style
+		private Style leftFrameStyle;
+	//#endif
+	//#if polish.css.rightframe-style
+		private Style rightFrameStyle;
+	//#endif
+	//#if polish.css.topframe-style
+		private Style topFrameStyle;
+	//#endif
+	//#if polish.css.bottomframe-style
+		private Style bottomFrameStyle;
+	//#endif
 	private int originalContentY;
 	private int originalContentX;
 
@@ -291,6 +303,11 @@ public class FramedForm extends Form {
 				if (this.topFrame == null) {
 					//#style topframe, frame, default
 					this.topFrame = new Container( false );
+					//#if polish.css.topframe-style
+						if (this.topFrameStyle != null) {
+							this.topFrame.setStyle(this.topFrameStyle);
+						}
+					//#endif
 				}
 				frame = this.topFrame;
 				break;
@@ -298,6 +315,11 @@ public class FramedForm extends Form {
 				if (this.bottomFrame == null) {
 					//#style bottomframe, frame, default
 					this.bottomFrame = new Container( false );
+					//#if polish.css.bottomframe-style
+						if (this.bottomFrameStyle != null) {
+							this.bottomFrame.setStyle(this.bottomFrameStyle);
+						}
+					//#endif
 				}
 				frame = this.bottomFrame;
 				break;
@@ -305,6 +327,11 @@ public class FramedForm extends Form {
 				if (this.leftFrame == null) {
 					//#style leftframe, frame, default
 					this.leftFrame = new Container( false );
+					//#if polish.css.leftframe-style
+						if (this.leftFrameStyle != null) {
+							this.leftFrame.setStyle(this.leftFrameStyle);
+						}
+					//#endif
 				}
 				frame = this.leftFrame;
 				break;
@@ -312,6 +339,11 @@ public class FramedForm extends Form {
 				if (this.rightFrame == null) {
 					//#style rightframe, frame, default
 					this.rightFrame = new Container( false );
+					//#if polish.css.rightframe-style
+						if (this.rightFrameStyle != null) {
+							this.rightFrame.setStyle(this.rightFrameStyle);
+						}
+					//#endif
 				}
 				frame = this.rightFrame;
 				break;
@@ -682,13 +714,34 @@ public class FramedForm extends Form {
 	}
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Screen#focus(int, de.enough.polish.ui.Item, boolean)
+	 * @see de.enough.polish.ui.Screen#setStyle(de.enough.polish.ui.Style)
 	 */
-	public void focus(int index, Item item, boolean force)
+	public void setStyle(Style style)
 	{
-		// TODO robertvirkus implement focus
-		super.focus(index, item, force);
+		super.setStyle(style);
 		
+		//#if polish.css.leftframe-style
+			this.leftFrameStyle = (Style) style.getObjectProperty("leftframe-style");
+		//#endif
+		//#if polish.css.rightframe-style
+			this.rightFrameStyle = (Style) style.getObjectProperty("rightframe-style");
+		//#endif
+		//#if polish.css.topframe-style
+			this.topFrameStyle = (Style) style.getObjectProperty("topframe-style");
+		//#endif
+		//#if polish.css.bottomframe-style
+			this.bottomFrameStyle = (Style) style.getObjectProperty("bottomframe-style");
+		//#endif
+	}
+
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.Screen#focus(int, de.enough.polish.ui.Item, boolean)
+//	 */
+//	public void focus(int index, Item item, boolean force)
+//	{
+//		// TODO robertvirkus implement focus
+//		super.focus(index, item, force);
+//		
 //		/**
 //		 * Focuses the specified item.
 //		 * 
@@ -711,7 +764,9 @@ public class FramedForm extends Form {
 //				System.out.println("Screen: unable to focus item (did not find it in the container or is not activatable) " + index);
 //			}
 //		}
-	}
+//	}
+	
+	
 	
 	
 	
