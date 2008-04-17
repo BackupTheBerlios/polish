@@ -188,6 +188,34 @@ You can also develop native BlackBerry applications by defining the blackberry.m
 Please note that the currently provided BlackBerry library does not contain all available classes, compare the following Troubleshooting section.
 </p>
 
+<h2 id="blackberry-ota">Deploying a BlackBerry Application Over The Air</h2>
+<p>
+The BlackBerry platform supports delivery of applications over the air (OTA).
+These are the steps to get this kind of provisioning to work:
+
+<ul>
+  <li><a href="#blackberry-jar2cod">Create</a> a <i>.cod</i> file</li>
+  <li>Unpack the <i>.cod</i> file. Every <i>.cod</i> file is a <i>.zip</i> file in disguise and you can unpack it
+  with every unzip program available. Beware that the outer <i>.cod</i> file contains
+  inner <i>.cod</i> files and that one inner <i>.cod</i> file has the same name as the outer
+  <i>.cod</i> file. It is imperative that <em>every</em> inner <i>.cod</i> file is
+  extracted, even if you need to overwrite the outer <i>.cod</i> file in the process.</li>
+  <li>While building for a BlackBerry device, a file is created which name ends with
+  <i>.jad.alt.jad</i>. This file is a <i>.jad</i> file with URL safe entries. The 
+  original <i>.jad</i> file which is generated from the rapc compiler contains
+  entries of the form
+   <code>RIM-COD-URL-1: BlackBerry$2d8100$2den_US$2dblank-1.cod</code>. Note the
+   sequence <code>&quot;&#36;2d&quot;</code>. This should encode the charater
+   <code>&quot;&#0045;&quot;</code> but the webserver will need the sequence
+   <code>&quot;&#37;2d&quot;</code> to find the correct file. The file
+   <i>.jad.alt.jad</i> contains corrected entries.</li>
+   <li>Make all inner <i>.cod</i> files and the corrected <i>.jad</i> file
+   available on a web server.
+   The mimetype for the <i>.cod</i> file should be
+   <code>application/vnd.rim.cod</code> and for the <i>.jad</i> file
+   <code>text/vnd.sun.j2me.app-descriptor</code>.</li>
+</ul>
+
 <h2 id="blackberry-virtualdevices">Useful Virtual Devices</h2>
 <p>
 The J2ME Polish device database contains several virtual devices that you can target for limiting the number of BlackBerry builds.
