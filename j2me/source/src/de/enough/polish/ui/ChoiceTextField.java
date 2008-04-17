@@ -312,7 +312,7 @@ public class ChoiceTextField
 	 * @see de.enough.polish.ui.TextField#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
-		// #debug
+		//#debug
 		System.out.println("handleKeyPressed( keyCode=" + keyCode + ", gameAction=" + gameAction +  ", isInChoice=" + this.isInChoice + ", isOpen=" + this.isOpen + ", matches=" + this.numberOfMatches +" )");
 		if (this.isInChoice) {
 			if ( this.choicesContainer.handleKeyPressed(keyCode, gameAction) ) {
@@ -396,7 +396,7 @@ public class ChoiceTextField
 	 * @see de.enough.polish.ui.TextField#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
-		// #debug
+		//#debug
 		System.out.println("handleKeyReleased( keyCode=" + keyCode + ", gameAction=" + gameAction +  ", isInChoice=" + this.isInChoice + ", isOpen=" + this.isOpen + ", matches=" + this.numberOfMatches +" )");
 		if (this.isInChoice) {
 			if ( this.choicesContainer.handleKeyReleased(keyCode, gameAction) ) {
@@ -629,7 +629,7 @@ public class ChoiceTextField
 				this.choicesContainer.focus(-1);
 			}
 			String currentText = getString();
-			// #debug
+			//#debug
 			System.out.println("notifyStateChanged: text=[" + currentText + "]");
 			if (currentText != null) {
 				if (this.isAppendMode) {
