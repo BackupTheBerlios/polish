@@ -592,6 +592,10 @@ implements AccessibleCanvas
 		//#elif tmp.useExternalMenuBar
 			this.menuBar.relativeY = this.screenHeight;
 		//#endif
+		if (this.infoItem != null) {
+			this.infoHeight = this.infoItem.getItemHeight(this.screenWidth, this.screenWidth);
+			this.showInfoItem = true;
+		}
 		calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
 		//#if tmp.menuFullScreen &&  tmp.useExternalMenuBar
 			int menuHeight = this.menuBar.getSpaceBottom( availableScreenWidth, this.fullScreenHeight);
@@ -2244,7 +2248,7 @@ implements AccessibleCanvas
 		if (infoText == null) {
 			this.infoHeight = 0;
 			this.showInfoItem = false;
-		} else {
+		} else if (this.screenWidth != 0){
 			this.infoHeight = this.infoItem.getItemHeight(this.screenWidth, this.screenWidth);
 			this.showInfoItem = true;
 		}

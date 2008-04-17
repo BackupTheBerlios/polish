@@ -341,8 +341,10 @@ public class TabbedForm extends Form {
 		this.tabBar.setActiveTab(tabIndex);
 		Container tabContainer = this.tabContainers[ tabIndex ];
 		this.container = tabContainer;
-		tabContainer.setScrollHeight( this.contentHeight );
-		if (!tabContainer.isInitialized && this.isInitialized) {
+		if (this.contentHeight != 0) {
+			tabContainer.setScrollHeight( this.contentHeight );
+		}
+		if (!tabContainer.isInitialized && this.contentWidth != 0) {
 			tabContainer.init( this.contentWidth, this.contentWidth );
 		}
 		if (

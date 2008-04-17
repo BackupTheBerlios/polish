@@ -312,8 +312,8 @@ public class ChoiceTextField
 	 * @see de.enough.polish.ui.TextField#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
-		//#debug
-		System.out.println("keyPressed( keyCode=" + keyCode + ", gameAction=" + gameAction +  ", isInChoice=" + this.isInChoice + " )");
+		// #debug
+		System.out.println("handleKeyPressed( keyCode=" + keyCode + ", gameAction=" + gameAction +  ", isInChoice=" + this.isInChoice + ", isOpen=" + this.isOpen + ", matches=" + this.numberOfMatches +" )");
 		if (this.isInChoice) {
 			if ( this.choicesContainer.handleKeyPressed(keyCode, gameAction) ) {
 				//#debug
@@ -340,6 +340,7 @@ public class ChoiceTextField
 			return true;
 		} else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
 			if (this.isOpen) {
+				notifyItemPressedStart();
 				this.numberOfMatches = 0;
 				//openChoices( false );
 				return true;
@@ -348,6 +349,7 @@ public class ChoiceTextField
 			if (this.choiceTriggerEnabled && !this.choiceTriggerAllowInputBeforeTrigger) {
 				String currentText = getString();
 				if (currentText == null || currentText.length() == 0 || currentText.charAt( currentText.length() -1 ) != this.choiceTrigger) {
+					System.out.println("foward fire to textfield...");
 					return super.handleKeyPressed(keyCode, gameAction);
 				}
 
@@ -356,10 +358,11 @@ public class ChoiceTextField
 				if (this.choices == null) {
 					return super.handleKeyPressed(keyCode, gameAction);
 				}
-				if (this.numberOfMatches == this.choices.length) {
-					this.numberOfMatches = 0; // close choices container
-					openChoices( false );
-				} else {
+				notifyItemPressedStart();
+//				if (this.numberOfMatches == this.choices.length) {
+//					this.numberOfMatches = 0; // close choices container
+//					openChoices( false );
+//				} else {
 					this.appendDelimiterIndex = -1;
 //					if (!this.isAllowFreeTextEntry) {
 //						
@@ -374,8 +377,8 @@ public class ChoiceTextField
 						this.choicesContainer.add( item );
 					}
 					this.numberOfMatches = this.choicesContainer.size();
-					openChoices( true );
-				}
+					//openChoices( true );
+//				}
 			//}
 			return true;
 		//#if polish.Key.ReturnKey:defined
@@ -393,8 +396,8 @@ public class ChoiceTextField
 	 * @see de.enough.polish.ui.TextField#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
-		//#debug
-		System.out.println("handleKeyReleased( keyCode=" + keyCode + ", gameAction=" + gameAction +  ", isInChoice=" + this.isInChoice + " )");
+		// #debug
+		System.out.println("handleKeyReleased( keyCode=" + keyCode + ", gameAction=" + gameAction +  ", isInChoice=" + this.isInChoice + ", isOpen=" + this.isOpen + ", matches=" + this.numberOfMatches +" )");
 		if (this.isInChoice) {
 			if ( this.choicesContainer.handleKeyReleased(keyCode, gameAction) ) {
 				//#debug
@@ -461,9 +464,10 @@ public class ChoiceTextField
 			}
 			return true;
 		} 
-		else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && this.isOpen)
+		else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
 		{
-			openChoices(false);
+			notifyItemPressedEnd();
+			openChoices(!this.isOpen);
 			return true;
 		}
 		return super.handleKeyReleased(keyCode, gameAction);
@@ -600,7 +604,7 @@ public class ChoiceTextField
 	 */
 	public void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
 		super.paintContent(x, y, leftBorder, rightBorder, g);
-		if ( this.isFocused && this.numberOfMatches > 0 ) {
+		if ( this.isFocused && this.isOpen && this.numberOfMatches > 0 ) {
 			// paint container:
 			y += this.contentHeight + this.paddingVertical;
 			this.choicesContainer.paint(x, y, leftBorder, rightBorder, g);			
@@ -625,7 +629,7 @@ public class ChoiceTextField
 				this.choicesContainer.focus(-1);
 			}
 			String currentText = getString();
-			//#debug
+			// #debug
 			System.out.println("notifyStateChanged: text=[" + currentText + "]");
 			if (currentText != null) {
 				if (this.isAppendMode) {
@@ -646,6 +650,7 @@ public class ChoiceTextField
 					int lastChar = currentText.charAt( currentText.length() - 1);
 					if (lastChar == this.choiceTrigger && !this.isOpen) {
 						handleKeyPressed(0, Canvas.FIRE );
+						handleKeyReleased(0, Canvas.FIRE );
 					} 
 					return;
 				}
