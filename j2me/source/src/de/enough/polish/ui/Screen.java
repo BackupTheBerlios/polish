@@ -326,6 +326,10 @@ implements AccessibleCanvas
 	protected boolean isInitRequested;
 	private CommandListener realCommandListener;
 	
+	//#if polish.Bugs.displaySetCurrentFlickers || polish.MasterCanvas.enable
+		//#define tmp.useMasterCanvas
+	//#endif
+	
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
 	 * 
@@ -883,7 +887,7 @@ implements AccessibleCanvas
 			//#if   tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
 				super.setFullScreenMode( true );
 				this.isInitialized = false;
-			//#elif tmp.fullScreen && polish.midp2 && !polish.blackberry && !tmp.fullScreenInPaint && !polish.Bugs.displaySetCurrentFlickers
+			//#elif tmp.fullScreen && polish.midp2 && !polish.blackberry && !tmp.fullScreenInPaint && !tmp.useMasterCanvas
 				// this is needed on old Sony Ericssons for example,
 				// since the fullscreen mode is not resumed automatically
 				// when the previous screen was in the "normal" mode:
@@ -3918,7 +3922,7 @@ implements AccessibleCanvas
 		}
 	}
 	
-	//#if polish.Bugs.displaySetCurrentFlickers  && polish.useFullScreen
+	//#if tmp.useMasterCanvas  && polish.useFullScreen
 	/**
 	 * Determines whether the screen is currently shown.
 	 * When the screen is shown but the menu is openend, this method return false.
@@ -3933,7 +3937,7 @@ implements AccessibleCanvas
 	
 	// when returning false in isShown(), repaint() will not trigger an actual repaint() on Sony Ericsson devices
 	// so we cannot implement this behavior differently
-//	//#if polish.Bugs.displaySetCurrentFlickers || tmp.menuFullScreen
+//	//#if tmp.useMasterCanvas || tmp.menuFullScreen
 //	/**
 //	 * Determines whether the screen is currently shown.
 //	 * When the screen is shown but the menu is openend, this method return false.
@@ -3943,7 +3947,7 @@ implements AccessibleCanvas
 //	 */
 //	public boolean isShown() {
 //		boolean isShown;
-//		//#if polish.Bugs.displaySetCurrentFlickers
+//		//#if tmp.useMasterCanvas
 //			isShown = (StyleSheet.currentScreen == this);
 //		//#else
 //			isShown = super.isShown();
@@ -4311,6 +4315,12 @@ implements AccessibleCanvas
 			//# height = getCanvasHeight();
 		//#elif tmp.fullScreen && polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasHeight:defined
 			//#= height = ${polish.FullCanvasHeight};
+		//#elif tmp.useMasterCanvas
+			if (MasterCanvas.instance != null) {
+				height = MasterCanvas.instance.getHeight();
+			} else {
+				height = getHeight();
+			}
 		//#else
 			height = getHeight();
 		//#endif
@@ -4326,6 +4336,12 @@ implements AccessibleCanvas
 		int width;
 		//#if tmp.fullScreen && polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasWidth:defined
 			//#= width = ${polish.FullCanvasWidth};
+		//#elif tmp.useMasterCanvas
+			if (MasterCanvas.instance != null) {
+				width = MasterCanvas.instance.getWidth();
+			} else {
+				width = getWidth();
+			}
 		//#else
 			width = getWidth();
 		//#endif
