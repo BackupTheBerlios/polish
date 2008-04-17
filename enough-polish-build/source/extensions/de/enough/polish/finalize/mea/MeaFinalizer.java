@@ -145,7 +145,11 @@ public class MeaFinalizer extends Finalizer{
             fileWriter.write("<application name=\"");
             fileWriter.write(name);
             fileWriter.write("\" description=\"");
-            fileWriter.write(description);
+            if (description != null) {
+            	fileWriter.write(description);
+            } else {
+            	fileWriter.write("Build with J2ME Polish");
+            }
             fileWriter.write("\" access=\""+this.access+"\" fallbackDevice=\"");
             if(this.fallbackDevice == null) {
                 this.fallbackDevice = "Generic/Midp2Cldc11";
