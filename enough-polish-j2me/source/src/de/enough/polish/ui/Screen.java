@@ -333,7 +333,7 @@ implements AccessibleCanvas
 	
 	
 	//#if polish.key.LeftSoftKeys:defined || polish.key.RightSoftKeys:defined
-		private static final boolean IS_MOTO_DEVICE;
+		private static boolean IS_MOTO_DEVICE;
 		static {
 			boolean hasDeviceModel = false;
 			try {
@@ -632,6 +632,11 @@ implements AccessibleCanvas
 		if (startAnimationThread) {
 			StyleSheet.animationThread.start();
 		}
+		//#if polish.key.LeftSoftKeys:defined || polish.key.RightSoftKeys:defined
+			if (getKeyCode(DOWN) == -6) {
+				IS_MOTO_DEVICE = true;
+			}
+		//#endif
 	}
 	
 	/**
