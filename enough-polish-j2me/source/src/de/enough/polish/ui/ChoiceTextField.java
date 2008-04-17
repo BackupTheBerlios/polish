@@ -214,7 +214,9 @@ public class ChoiceTextField
 			this.choicesContainer.add( item );
 		}
 		this.choices = choices;
-		openChoices( choices.length > 0 );
+		if (this.isFocused) {
+			openChoices( choices.length > 0 );
+		}
 	}
 	
 	
