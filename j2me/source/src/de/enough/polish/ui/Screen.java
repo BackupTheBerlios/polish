@@ -330,6 +330,22 @@ implements AccessibleCanvas
 		//#define tmp.useMasterCanvas
 	//#endif
 	
+	
+	
+	//#if polish.key.LeftSoftKeys:defined || polish.key.RightSoftKeys:defined
+		private static final boolean IS_MOTO_DEVICE;
+		static {
+			boolean hasDeviceModel = false;
+			try {
+				hasDeviceModel = (System.getProperty("device.model") != null);
+			} catch (Exception e) {
+				// ignore
+			}
+			IS_MOTO_DEVICE = hasDeviceModel;
+		}
+	//#endif
+
+	
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
 	 * 
@@ -4473,9 +4489,13 @@ implements AccessibleCanvas
 		//#endif
 		boolean result = (keyCode == expected);
 		//#ifdef polish.key.LeftSoftKeys:defined
+			result = false;
 			//#foreach key in polish.key.LeftSoftKeys
 				//#= expected = ${key};
-				result = result || (keyCode == expected);
+				// on (some?) moto devices the down action has the code -6:
+				if (!IS_MOTO_DEVICE || (expected != -6)) {
+					result = result || (keyCode == expected);
+				}
 			//#next key
 		//#endif
 		return result;
