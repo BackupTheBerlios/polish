@@ -342,7 +342,7 @@ public class TabbedForm extends Form {
 		Container tabContainer = this.tabContainers[ tabIndex ];
 		this.container = tabContainer;
 		tabContainer.setScrollHeight( this.contentHeight );
-		if (!tabContainer.isInitialized) {
+		if (!tabContainer.isInitialized && this.isInitialized) {
 			tabContainer.init( this.contentWidth, this.contentWidth );
 		}
 		if (
