@@ -132,7 +132,6 @@ public class ScrollBar extends Item {
 	public int initScrollBar( int screenWidth, int screenAvailableHeight, int screenContentHeight, int contentYOffset, int selectionStart, int selectionHeight, int focusedIndex, int numberOfItems ) {
 		//#debug
 		System.out.println("initScrollBar( screenWidth=" + screenWidth + ", screenAvailableHeight=" + screenAvailableHeight + ", screenContentHeight=" + screenContentHeight + ", contentYOffset=" + contentYOffset + ", selectionStart=" + selectionStart + ", selectionHeight=" + selectionHeight + ", focusedIndex=" + focusedIndex + ", numberOfItems=" + numberOfItems + ")");
-		
 		if ( screenAvailableHeight >= screenContentHeight ) {
 			this.isVisible = false;
 			return 0;
@@ -172,7 +171,7 @@ public class ScrollBar extends Item {
 		//#endif
 		//#debug
 		System.out.println("sliderY=" + this.sliderY + ", sliderHeight=" + this.sliderHeight);
-		if (!this.isInitialized) {	
+		if (!this.isInitialized || (this.scrollBarHeight < this.itemHeight) ) {
 			init( screenWidth, screenWidth );
 		}
 		//#if polish.css.opacity && polish.midp2
