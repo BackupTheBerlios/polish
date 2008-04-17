@@ -128,9 +128,6 @@ implements Runnable, AccessibleCanvas
 			public InitializerSplashScreen( Display display, SplashView view, ApplicationInitializer initializer )
 		//#endif
 		{
-			//#if polish.midp2 && !(polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint)
-				super.setFullScreenMode( true );
-			//#endif
 			this.view = view;
 			this.display = display;
 			this.initializer = initializer;
@@ -139,8 +136,10 @@ implements Runnable, AccessibleCanvas
 				this.backgroundColor = 0;
 				this.readyMessage = null;
 				this.messageColor = 0;
+			//#endif			
+			//#if polish.midp2 && !(polish.Bugs.fullScreenInShowNotify || polish.Bugs.fullScreenInPaint)
+				super.setFullScreenMode( true );
 			//#endif
-			
 		}
 	//#endif
 
@@ -256,7 +255,7 @@ implements Runnable, AccessibleCanvas
 	
 	//#if polish.midp2
 	public void sizeChanged( int width, int height ) {
-		// ignore
+		repaint();
 	}
 	//#endif
 	
