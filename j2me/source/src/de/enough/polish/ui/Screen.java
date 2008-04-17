@@ -633,7 +633,7 @@ implements AccessibleCanvas
 			StyleSheet.animationThread.start();
 		}
 		//#if polish.key.LeftSoftKeys:defined || polish.key.RightSoftKeys:defined
-			if (getKeyCode(DOWN) == -6) {
+			if (!IS_MOTO_DEVICE && getKeyCode(DOWN) == -6) {
 				IS_MOTO_DEVICE = true;
 			}
 		//#endif
