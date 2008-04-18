@@ -85,6 +85,7 @@ import de.enough.polish.ant.build.PreverifierSetting;
 import de.enough.polish.ant.build.SourceSetting;
 import de.enough.polish.ant.build.Variables;
 import de.enough.polish.ant.buildlistener.BuildListenerExtensionSetting;
+import de.enough.polish.ant.emulator.DebuggerSetting;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.ant.info.InfoSetting;
 import de.enough.polish.ant.requirements.IdentifierRequirement;
@@ -597,7 +598,7 @@ public class PolishTask extends ConditionalTask {
 		finalize( device, locale );
 		
 		notifyPolishBuildListeners( PolishBuildListener.EVENT_BUILD_FINISHED, this.environment );
-		if (this.emulatorSettings != null) {
+		if (getEmulatorSettings() != null) {
 			runEmulator( device, locale );
 		}
 	}
@@ -2953,7 +2954,28 @@ public class PolishTask extends ConditionalTask {
 	}
 	
 	private EmulatorSetting[] getEmulatorSettings() {
-		if (this.emulatorSettings == null) {
+		boolean useBuildControl = (getProject().getProperty("polish.buildcontrol.emulator.enabled") != null);
+		if (useBuildControl) {
+			boolean enableEmulator = "true".equals(getProject().getProperty("polish.buildcontrol.emulator.enabled"));
+			if (!enableEmulator) {
+				return new EmulatorSetting[0];
+			}
+			EmulatorSetting setting = createEmulator();
+			String debugPort = getProject().getProperty("polish.buildcontrol.emulator.port");
+			if (debugPort != null) {
+				DebuggerSetting debugger = new DebuggerSetting();
+				debugger.setPort( Integer.parseInt(debugPort) );
+				setting.addConfiguredDebugger(debugger);
+			}
+			String securityDomain = getProject().getProperty("polish.buildcontrol.emulator.securityDomain");
+			if (securityDomain != null) {
+				setting.setSecurityDomain( securityDomain );
+			}
+			setting.setEnableMemoryMonitor("true".equals(getProject().getProperty("polish.buildcontrol.emulator.enableProfiler")));
+			setting.setEnableNetworkMonitor("true".equals(getProject().getProperty("polish.buildcontrol.emulator.enableNetworkMonitor")));
+			setting.setEnableProfiler("true".equals(getProject().getProperty("polish.buildcontrol.emulator.enableNetworkMonitor")));
+			return new EmulatorSetting[]{ setting }; 
+		} else if (this.emulatorSettings == null) {
 			return new EmulatorSetting[0];
 		} else {
 			return (EmulatorSetting[]) this.emulatorSettings.toArray( new EmulatorSetting[ this.emulatorSettings.size()]);
