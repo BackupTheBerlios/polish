@@ -87,7 +87,9 @@ import de.enough.polish.ant.build.Variables;
 import de.enough.polish.ant.buildlistener.BuildListenerExtensionSetting;
 import de.enough.polish.ant.emulator.EmulatorSetting;
 import de.enough.polish.ant.info.InfoSetting;
+import de.enough.polish.ant.requirements.IdentifierRequirement;
 import de.enough.polish.ant.requirements.Requirements;
+import de.enough.polish.ant.requirements.TermRequirement;
 import de.enough.polish.descriptor.DescriptorCreator;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.devices.LibraryManager;
@@ -305,6 +307,19 @@ public class PolishTask extends ConditionalTask {
 	}
 	
 	public Requirements getDeviceRequirements() {
+		String buildControlRequirements = getProject().getProperty("polish.buildcontrol.deviceRequirements.requirement.Identifier");
+		if (buildControlRequirements != null) {
+			Requirements requirements = new Requirements(getProject().getProperties());
+			requirements.addRequirement( new IdentifierRequirement(buildControlRequirements) );
+			return requirements;
+		}
+		buildControlRequirements = getProject().getProperty("polish.buildcontrol.deviceRequirements.requirement.Term");
+		if (buildControlRequirements != null) {
+			Requirements requirements = new Requirements(getProject().getProperties());
+			requirements.addRequirement( new TermRequirement(buildControlRequirements) );
+			return requirements;
+		}
+		
 		for (Iterator iter = deviceRequirements.iterator(); iter.hasNext();) {
 			Requirements requirements = (Requirements) iter.next();
 			if (requirements.isActive( this.antPropertiesEvaluator )) {
