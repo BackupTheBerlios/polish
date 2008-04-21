@@ -370,8 +370,9 @@ implements OutputFilter
 //					jadProperties.remove(key);
 //				}
 			}
-            File alternativejadFile = new File(jadFile.getParent(), jadFile.getName() + ".alt.jad");
-			FileUtil.writePropertiesFile( alternativejadFile, ':', jadProperties );
+            File backupJadFile = new File(jadFile.getParent(), jadFile.getName() + ".bak");
+            FileUtil.copy( jadFile, backupJadFile);
+			FileUtil.writePropertiesFile( jadFile, ':', jadProperties );
 
 	
 			// store new JAR path and name so that later finalizers work on the correct file:
