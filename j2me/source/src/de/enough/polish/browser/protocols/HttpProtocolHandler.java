@@ -93,9 +93,12 @@ public class HttpProtocolHandler extends ProtocolHandler
 		super( protocolName );	
 		this.requestProperties = requestProperties;
 		if (requestProperties != null) {
-			if ( (requestProperties.get("User-Agent") == null) )
+			if ( requestProperties.get("User-Agent") == null )
 			{
 				requestProperties.put("User-Agent", USER_AGENT );
+			}
+			if ( requestProperties.get("Accept") == null ) {
+				requestProperties.put("Accept", "text/*, image/png, application/xhtml+xml" );
 			}
 		}
 	}

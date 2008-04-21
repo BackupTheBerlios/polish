@@ -85,6 +85,8 @@ public class HtmlTagHandler
   public static final String TAG_FORM = "form";
 	/** input tag */
   public static final String TAG_INPUT = "input";
+	/** text area tag */
+  public static final String TAG_TEXT_AREA = "textarea";
 	/** select tag */
   public static final String TAG_SELECT = "select";
 	/** option tag */
@@ -193,6 +195,7 @@ public class HtmlTagHandler
     parent.addTagHandler(TAG_SELECT, this);
     parent.addTagHandler(TAG_OPTION, this);
     parent.addTagHandler(TAG_SCRIPT, this);
+    parent.addTagHandler(TAG_TEXT_AREA, this);
   }
 
   /* (non-Javadoc)
@@ -205,11 +208,9 @@ public class HtmlTagHandler
 	  tagName = tagName.toLowerCase();
 	  if (TextUtil.equalsIgnoreCase(TAG_DIV, tagName) || TextUtil.equalsIgnoreCase(TAG_SPAN, tagName)) {
 		  if (opening) {
-			  //this.textStyle = style;
 			  this.browser.openContainer( style );
  		  } else {
  			  this.browser.closeContainer();
-			  //this.textStyle = null;
 		  }
 	  } else if (TAG_SELECT.equals(tagName)) {
     	  if (opening) {
@@ -255,6 +256,7 @@ public class HtmlTagHandler
     		  }
     		  //#mdebug error
     		  else {
+    			  //#debug error
     			  System.out.println("Error in HTML-Code. You cannot close a <select>-tag without opening one.");
     		  }
     		  //#enddebug
@@ -375,6 +377,20 @@ public class HtmlTagHandler
         }
         return true;
       }
+      else if (TAG_TEXT_AREA.equals(tagName)) 
+      {
+    	  int type = parser.next();
+    	  String value = null;
+    	  if (type == SimplePullParser.TEXT) {
+    		  value = parser.getText();
+    	  }
+          //#style browserInput
+          TextField textField = new TextField(null, value, 500, TextField.ANY);
+          if (style != null) {
+          	textField.setStyle(style);
+          }
+          this.browser.add(textField);    	  
+      }
       else if (TAG_INPUT.equals(tagName))
       {
         if (this.currentForm != null)
@@ -389,7 +405,6 @@ public class HtmlTagHandler
           {
             String name = (String) attributeMap.get(INPUT_NAME);
             String value = (String) attributeMap.get(INPUT_VALUE);
-
             if (value == null) {
             	value = name;
             }
@@ -482,7 +497,6 @@ public class HtmlTagHandler
         {
           method = "GET";
         }
-        
         this.currentForm = new HtmlForm(target, method.toUpperCase().equals("POST")
                                         ? HtmlForm.POST : HtmlForm.GET);
       }
@@ -534,15 +548,32 @@ public class HtmlTagHandler
    */
   public static String createGetSubmitCall(Browser browser)
   {
-    Item submitItem = browser.getFocusedItem();
-    HtmlForm form = (HtmlForm) submitItem.getAttribute(ATTR_FORM);
+	    Item submitItem = browser.getFocusedItem();
+	    HtmlForm form = (HtmlForm) submitItem.getAttribute(ATTR_FORM);
+  		while (form == null && (submitItem instanceof Container)) {
+  			submitItem = ((Container)submitItem).getFocusedItem();
+  			form = (HtmlForm) submitItem.getAttribute(ATTR_FORM);
+  		}
+  		return createGetSubmitCall(browser, submitItem, form);
+  }
+  /**
+   * Creates a Form GET method URL for the specified browser.
+   * 
+   * @param browser the browser
+ * @param submitItem the item that triggered the action
+ * @param form the form that contains necessary data
+   * @return the GET URL or null when the browser's current item is not a Submit button
+   */
+  public static String createGetSubmitCall(Browser browser, Item submitItem, HtmlForm form)
+  {
 
 	  if (form == null)
 	  {
 	  	return null;
 	  }
 
-    StringBuffer sb = new StringBuffer(form.getTarget());
+    StringBuffer sb = new StringBuffer();
+    sb.append( browser.makeAbsoluteURL(form.getTarget()) );
     Item[] items = form.getItems();
     int numItems = items.length;
     char separatorChar = '?';
@@ -574,7 +605,9 @@ public class HtmlTagHandler
       sb.append(separatorChar);
       sb.append(name);
       sb.append('=');
-      sb.append(TextUtil.encodeUrl(value));
+      if (value != null) {
+    	  sb.append(TextUtil.encodeUrl(value));
+      }
       separatorChar = '&';
     }
     return sb.toString();
@@ -582,11 +615,11 @@ public class HtmlTagHandler
 
   	/**
   	 * Does a Form POST method call.
+  	 * @param submitItem the item triggering the call
+  	 * @param form the form containing the data
   	 */
-  	public void doPostSubmitCall()
+  	public void doPostSubmitCall(Item submitItem, HtmlForm form )
   	{
-  		Item submitItem = browser.getFocusedItem();
-	    HtmlForm form = (HtmlForm) submitItem.getAttribute(ATTR_FORM);
 	
 		if (form == null) {
 		  	return;
@@ -631,18 +664,21 @@ public class HtmlTagHandler
 
   	protected void handleSubmitCommand()
   	{
-  		Item submitItem = browser.getFocusedItem();
+  		Item submitItem = this.browser.getFocusedItem();
   		HtmlForm form = (HtmlForm) submitItem.getAttribute(ATTR_FORM);
-	  
+  		while (form == null && (submitItem instanceof Container)) {
+  			submitItem = ((Container)submitItem).getFocusedItem();
+  			form = (HtmlForm) submitItem.getAttribute(ATTR_FORM);
+  		}
   		if (form == null) {
   			return;
   		}
 
   		if (form.getMethod() == HtmlForm.POST) {
-  			doPostSubmitCall();
+  			doPostSubmitCall(submitItem, form );
   		}
   		else {
-  			String url = createGetSubmitCall(this.browser);
+  			String url = createGetSubmitCall(this.browser, submitItem, form);
   			this.browser.go(url);
   		}
   	}

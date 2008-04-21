@@ -867,6 +867,7 @@ public class TextField extends StringItem
 		private boolean isNumeric;
 		private boolean isDecimal;
 		private boolean isEmail;
+		private boolean isUrl;
 
 		private int rowHeight;
 		//#if polish.TextField.includeInputInfo
@@ -908,7 +909,7 @@ public class TextField extends StringItem
 	private boolean suppressCommands = false;
 	
 	//#if polish.TextField.showHelpText
-	private StringItem helpItem;
+		private StringItem helpItem;
 	//#endif
 	
 	/**
@@ -1591,6 +1592,8 @@ public class TextField extends StringItem
 		//#endif
 		//#ifdef tmp.directInput
 			this.characters = CHARACTERS;
+			this.isEmail = false;
+			this.isUrl = false;
 			if ((constraints & PASSWORD) == PASSWORD) {
 				this.isPassword = true;
 			}
@@ -1613,6 +1616,9 @@ public class TextField extends StringItem
 			if (fieldType == EMAILADDR) {
 				this.isEmail = true;
 				this.characters = EMAIL_CHARACTERS;
+			}
+			if (fieldType == URL) {
+				this.isUrl = true;
 			}
 			if ((constraints & INITIAL_CAPS_WORD) == INITIAL_CAPS_WORD) {
 				this.inputMode = MODE_FIRST_UPPERCASE;
@@ -2360,7 +2366,7 @@ public class TextField extends StringItem
 		boolean nextCharInputHasChanged = false;
 		//#if polish.TextField.suppressAutoInputModeChange
 			if ( this.inputMode == MODE_FIRST_UPPERCASE  
-				&& (insertChar == ' ' ||  ( insertChar == '.' && !this.isEmail) )) 
+				&& (insertChar == ' ' ||  ( insertChar == '.' && !(this.isEmail || this.isUrl)) )) 
 			{
 				this.nextCharUppercase = true;
 			} else {
@@ -2370,7 +2376,7 @@ public class TextField extends StringItem
 			nextCharInputHasChanged = this.nextCharUppercase;
 			if ( ( (this.inputMode == MODE_FIRST_UPPERCASE || this.nextCharUppercase) 
 					&& insertChar == ' ') 
-				|| ( insertChar == '.' && !this.isEmail)) 
+				|| ( insertChar == '.' && !(this.isEmail || this.isUrl))) 
 			{
 				this.nextCharUppercase = true;
 			} else {
@@ -2444,7 +2450,7 @@ public class TextField extends StringItem
 			this.caretColumn++;
 			//#if polish.TextField.suppressAutoInputModeChange
 				if ( this.inputMode == MODE_FIRST_UPPERCASE  
-					&& (insertChar == ' ' ||  ( insertChar == '.' && !this.isEmail) )) 
+					&& (insertChar == ' ' ||  ( insertChar == '.' && !(this.isEmail || this.isUrl)) )) 
 				{
 					this.nextCharUppercase = true;
 				} else {
@@ -2454,7 +2460,7 @@ public class TextField extends StringItem
 				nextCharInputHasChanged = this.nextCharUppercase;
 				if ( ( (this.inputMode == MODE_FIRST_UPPERCASE || this.nextCharUppercase) 
 						&& insertChar == ' ') 
-					|| ( insertChar == '.' && !this.isEmail)) 
+					|| ( insertChar == '.' && !(this.isEmail || this.isUrl))) 
 				{
 					this.nextCharUppercase = true;
 				} else {

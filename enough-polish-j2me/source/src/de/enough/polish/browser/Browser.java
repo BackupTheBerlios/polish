@@ -44,6 +44,7 @@ import de.enough.polish.browser.protocols.HttpProtocolHandler;
 import de.enough.polish.browser.protocols.ResourceProtocolHandler;
 import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.io.StringReader;
+import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.zip.GZipInputStream;
 import de.enough.polish.xml.SimplePullParser;
@@ -89,8 +90,9 @@ implements Runnable
   private HashMap imageCache = new HashMap();
 
   protected String currentDocumentBase = null;
-  protected HashMap protocolHandlers = new HashMap();
-  protected HashMap tagHandlers = new HashMap();
+  protected HashMap protocolHandlersByProtocol = new HashMap();
+  protected HashMap tagHandlersByTag = new HashMap();
+  protected ArrayList tagHandlers = new ArrayList();
   
   protected Stack history = new Stack();
   //#if polish.Browser.PaintDownloadIndicator
@@ -255,17 +257,17 @@ implements Runnable
 
   public void addProtocolHandler(ProtocolHandler handler)
   {
-    this.protocolHandlers.put(handler.getProtocolName(), handler);
+    this.protocolHandlersByProtocol.put(handler.getProtocolName(), handler);
   }
   
   public void addProtocolHandler(String protocolName, ProtocolHandler handler)
   {
-    this.protocolHandlers.put(protocolName, handler);
+    this.protocolHandlersByProtocol.put(protocolName, handler);
   }
   
   protected ProtocolHandler getProtocolHandler(String protocolName)
   {
-    return (ProtocolHandler) this.protocolHandlers.get(protocolName);
+    return (ProtocolHandler) this.protocolHandlersByProtocol.get(protocolName);
   }
 
   protected ProtocolHandler getProtocolHandlerForURL(String url)
@@ -279,7 +281,7 @@ implements Runnable
     }
     
     String protocol = url.substring(0, pos);
-    ProtocolHandler handler = (ProtocolHandler) this.protocolHandlers.get(protocol);
+    ProtocolHandler handler = (ProtocolHandler) this.protocolHandlersByProtocol.get(protocol);
     
     if (handler == null)
       throw new IOException("protocol handler not found");
@@ -289,7 +291,10 @@ implements Runnable
   
   public void addTagHandler(String tagName, TagHandler handler)
   {
-    this.tagHandlers.put(new TagHandlerKey(tagName), handler);
+    this.tagHandlersByTag.put(new TagHandlerKey(tagName), handler);
+    if (!this.tagHandlers.contains(handler)) {
+    	this.tagHandlers.add(handler);
+    }    
   }
   
   public void addTagHandler(String tagName, String attributeName, String attributeValue, TagHandler handler)
@@ -299,19 +304,22 @@ implements Runnable
     //#debug
     System.out.println("Browser.addTagHandler: adding key: " + key);
     
-    this.tagHandlers.put(key, handler);
+    this.tagHandlersByTag.put(key, handler);
+    if (!this.tagHandlers.contains(handler)) {
+    	this.tagHandlers.add(handler);
+    }
   }
   
   public TagHandler getTagHandler(String tagName)
   {
     TagHandlerKey key = new TagHandlerKey(tagName);
-    return (TagHandler) this.tagHandlers.get(key);
+    return (TagHandler) this.tagHandlersByTag.get(key);
   }
   
   public TagHandler getTagHandler(String tagName, String attributeName, String attributeValue)
   {
     TagHandlerKey key = new TagHandlerKey(tagName, attributeName, attributeValue);
-    return (TagHandler) this.tagHandlers.get(key);
+    return (TagHandler) this.tagHandlersByTag.get(key);
   }
   
 	/**
@@ -445,6 +453,7 @@ implements Runnable
   {
     TagHandlerKey key;
     TagHandler handler = null;
+    String name = parser.getName().toLowerCase();
     
     for (int i = 0; i < parser.getAttributeCount(); i++)
     {
@@ -452,10 +461,10 @@ implements Runnable
       String attributeValue = parser.getAttributeValue(i);
       attributeMap.put(attributeName, attributeValue);
       
-      key = new TagHandlerKey(parser.getName(),
+      key = new TagHandlerKey(name,
                               attributeName,
                               attributeValue);
-      handler = (TagHandler) this.tagHandlers.get(key);
+      handler = (TagHandler) this.tagHandlersByTag.get(key);
       
       if (handler != null)
       {
@@ -465,10 +474,9 @@ implements Runnable
     
     if (handler == null)
     {
-      key = new TagHandlerKey(parser.getName());
-      handler = (TagHandler) this.tagHandlers.get(key);
+      key = new TagHandlerKey(name);
+      handler = (TagHandler) this.tagHandlersByTag.get(key);
     }
-    
     return handler;
   }
   
@@ -815,17 +823,18 @@ public void add(Item item)
   
   public boolean handleCommand(Command command)
   {
-    TagHandler[] handlers = (TagHandler[])
-      this.tagHandlers.values(new TagHandler[this.tagHandlers.size()]);
-    
-    for (int i = 0; i < handlers.length; i++)
-    {
-      if (handlers[i].handleCommand(command))
-      {
-        return true;
-      }
-    }
-    
+	  Object[] handlers = this.tagHandlers.getInternalArray();
+	  for (int i = 0; i < handlers.length; i++)
+	{
+		TagHandler handler = (TagHandler) handlers[i];
+		if (handler == null) {
+			break;
+		}
+		if (handler.handleCommand(command)) {
+			return true;
+		}
+		
+	}
     return super.handleCommand(command);
   }
   
