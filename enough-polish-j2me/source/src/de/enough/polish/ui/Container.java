@@ -1510,7 +1510,7 @@ public class Container extends Item {
 			{
 				// keep the focus do scroll upwards:
 				//#debug
-				System.out.println("Container(" + this + "): scrolling up: keeping focus, focusedIndex=" + this.focusedIndex + ", focusedItem.yTopPos=" + this.focusedItem.relativeY + ", this.availableHeight=" + this.availableHeight + ", targetYOffset=" + this.targetYOffset);
+				System.out.println("Container(" + this + "): scrolling up: keeping focus, relativeScrollOffset=" + offset + ", scrollHeight=" + availableScrollHeight +  ", focusedIndex=" + this.focusedIndex + ", focusedItem.relativeY=" + this.focusedItem.relativeY + ", this.availableHeight=" + this.availableHeight + ", targetYOffset=" + this.targetYOffset);
 			} else {
 				//#ifdef tmp.supportViewType
 					if (this.containerView != null) {
@@ -2509,7 +2509,7 @@ public class Container extends Item {
 	 */
 	public int getRelativeScrollYOffset() {
 		if (!this.enableScrolling && this.parent instanceof Container) {
-			return ((Container)this.parent).getScrollYOffset() + this.relativeY;
+			return ((Container)this.parent).getRelativeScrollYOffset() + this.relativeY;
 		}
 		int offset = this.targetYOffset;
 		//#ifdef polish.css.scroll-mode
