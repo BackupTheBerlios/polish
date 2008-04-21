@@ -15,8 +15,10 @@ package de.enough.polish.util;
 public class DeviceControl
 //#if polish.api.nokia-ui && !polish.Bugs.NoPermanentBacklight
 	//#define tmp.useNokiaUi
+//#elif polish.blackberry && blackberry.certificate.dir:defined
+	//#define tmp.useBlackBerry
 //#endif
-//#if (!tmp.useNokiaUi && polish.usePolishGui && polish.midp2) || polish.api.samsung-api
+//#if (!(tmp.useNokiaUi || tmp.useBlackBerry) && polish.usePolishGui && polish.midp2) || polish.api.samsung-api
 	//#define tmp.useThread
 	extends Thread 
 //#endif
@@ -79,6 +81,9 @@ public class DeviceControl
 		//#if tmp.useNokiaUi
 			com.nokia.mid.ui.DeviceControl.setLights(0,100);
 			success = true;
+		//#elif tmp.useBlackBerry
+			net.rim.device.api.system.Backlight.enable(true);
+			success = true;
 		//#elif tmp.useThread
 			if (thread == null) {
 				if (isLightSupported()) {
@@ -101,6 +106,8 @@ public class DeviceControl
 	{
 		//#if tmp.useNokiaUi
 			com.nokia.mid.ui.DeviceControl.setLights(0,0);
+		//#elif tmp.useBlackBerry
+			net.rim.device.api.system.Backlight.enable(false);
 		//#elif tmp.useThread
 			DeviceControl dc = thread;
 			if (dc != null) {
@@ -119,6 +126,8 @@ public class DeviceControl
 	{
 		boolean isSupported = false;
 		//#if tmp.useNokiaUi
+			isSupported = true;
+		//#elif tmp.useBlackBerry
 			isSupported = true;
 		//#elif polish.api.samsung
 			isSupported = com.samsung.util.LCDLight.isSupported();

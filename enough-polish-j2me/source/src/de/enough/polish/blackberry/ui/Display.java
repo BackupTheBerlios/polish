@@ -7,6 +7,9 @@ package de.enough.polish.blackberry.ui;
 import java.util.Hashtable;
 
 import net.rim.device.api.system.Application;
+//#if blackberry.certificate.dir:defined
+	import net.rim.device.api.system.Backlight;
+//#endif
 import net.rim.device.api.system.KeyListener;
 import net.rim.device.api.system.TrackwheelListener;
 
@@ -802,8 +805,11 @@ implements TrackwheelListener, KeyListener
 	 */
 	public boolean flashBacklight(int duration)
 	{
+		//#if blackberry.certificate.dir:defined
+			// the application is going to be signed, so we can use Backlight:
+			Backlight.enable(true, duration/1000);
+		//#endif
 		return false;
-		//TODO implement flashBacklight
 	}
 
 	/**
