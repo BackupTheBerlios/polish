@@ -552,14 +552,21 @@ public final class TextUtil {
 		StringBuffer output = new StringBuffer( input.length() );
 		StringBuffer ltrCharacters = new StringBuffer();
 		boolean isCurrRTL = true;
-		 int size = input.length();
-		 for(int index = size - 1; index >= 0;)
-		 {
-			 while(isCurrRTL && index >= 0) // while we are in hebrew
-			 {
+		
+		int size = input.length();
+		for(int index = size - 1; index >= 0;)
+		{
+			while(isCurrRTL && index >= 0) // while we are in hebrew
+			{
 				char curr = input.charAt(index); 
-
-				if(curr > 47 && curr < 128 ) // >= 'a' && curr <= 'z' || curr >= 'A' && curr <= 'Z' || curr >= '0' && curr <= '9') //if its english go out.
+				char nextChr = 0;
+				if(index > 0) {
+					nextChr = input.charAt(index-1);
+				} else {
+					nextChr = curr;
+				}
+				
+				if(isEnglishChar(curr) || isEnglishChar(nextChr))
 				{
 					isCurrRTL = false;
 				}
@@ -574,44 +581,53 @@ public final class TextUtil {
 						output.append( '(' );
 					}
 					else 
-					{ 
-						output.append( curr ); //hebrew - save the chars
+					{
+						output.append( curr ); //left to right language - save the chars
 					}
 					
 					index--;
 				}
 				
-			 }
-			 ltrCharacters.delete(0, ltrCharacters.length() );
-			 while(!isCurrRTL && index >= 0) // English....
-			 {
+			}
+			ltrCharacters.delete(0, ltrCharacters.length() );
+			while(!isCurrRTL && index >= 0) // English....
+			{
 				char curr = input.charAt(index);
-				 
-				if(curr > 47 && curr < 128 )
+				char nextChr = 0;
+				if(index > 0) 
 				{
-//					if(curr == '(')
-//					{
-//						ltrCharacters.insert(0,  ')' );
-//					}
-//					else if(curr == ')')
-//					{
-//						ltrCharacters.insert( 0,  '(' );
-//					}
-//					else 
-//					{
-						ltrCharacters.insert( 0, curr );
-//					}
+					nextChr = input.charAt(index-1);
+				}
+				else 
+				{
+					nextChr = curr;
+				}
+				if(isEnglishChar(curr) || isEnglishChar(nextChr))
+				{
+					ltrCharacters.insert( 0, curr );
 					index--;
 				}
 				else 
 				{
 					isCurrRTL = true;
 				}
-			 }
+			}
 			 
-			 output.append( ltrCharacters );
+			output.append( ltrCharacters );
 		 }
 		return output.toString();
 	}
+	
+	 private static boolean isEnglishChar(char chr)
+	 {
+		 if ( chr < 128 && (chr >= 'a' && chr <= 'z' || chr >= 'A' && chr <= 'Z' || chr >= '0' && chr <= '9' || chr == '+' ) )
+		 {
+			 return true;
+		 }
+		 else 
+		 {
+			 return false;
+		 }
+	 } 
 
 }
