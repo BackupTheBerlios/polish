@@ -246,6 +246,9 @@ public class TableItem
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
 			Graphics g)
 	{
+		if (this.tableData == null) {
+			return;
+		}
 		int clipX = 0;
 		int clipY = 0;
 		int clipWidth = 0;

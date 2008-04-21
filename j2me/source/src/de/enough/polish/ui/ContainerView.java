@@ -333,7 +333,8 @@ extends ItemView
 						}
 					}
 				//#endif
-				//System.out.println( i + ": available with: " + availableWidth + ", itemWidth=" + item.getItemWidth( availableWidth, availableWidth ));
+//				System.out.println( i + ": available with: " + availableWidth + ", lineWidth=" + lineWidth );
+//				System.out.println("itemWidth=" + item.getItemWidth( availableWidth, availableWidth ));
 				int width = item.getItemWidth( availableWidth, availableWidth );
 				//System.out.println("got item width");
 				int height = item.getItemHeight( availableWidth, availableWidth );

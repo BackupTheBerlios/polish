@@ -37,6 +37,7 @@ import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
+import de.enough.polish.ui.TableItem;
 import de.enough.polish.ui.TextField;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Locale;
@@ -93,6 +94,14 @@ public class HtmlTagHandler
   public static final String TAG_OPTION = "option";
 	/** script tag */
   public static final String TAG_SCRIPT = "script";
+	/** table tag */
+  public static final String TAG_TABLE = "table";
+	/** table row tag */
+  public static final String TAG_TR = "tr";
+	/** table header tag */
+  public static final String TAG_TH = "th";
+	/** table data tag */
+  public static final String TAG_TD = "td";
   
 	/** type attribute */
   public static final String INPUT_TYPE = "type";
@@ -148,7 +157,8 @@ public class HtmlTagHandler
   
   private HtmlForm currentForm;
   private HtmlSelect currentSelect;
-
+  private TableItem currentTable;
+  
   protected HtmlBrowser browser;
 
   /** next text should be added in bold font style */
@@ -157,6 +167,7 @@ public class HtmlTagHandler
   public boolean textItalic;
   /** style for the forthcoming text */
   public Style textStyle;
+private int currentTableColumn;
   
   /**
    * Creates a new html tag handler
@@ -196,6 +207,10 @@ public class HtmlTagHandler
     parent.addTagHandler(TAG_OPTION, this);
     parent.addTagHandler(TAG_SCRIPT, this);
     parent.addTagHandler(TAG_TEXT_AREA, this);
+    parent.addTagHandler(TAG_TABLE, this);
+    parent.addTagHandler(TAG_TR, this);
+    parent.addTagHandler(TAG_TH, this);
+    parent.addTagHandler(TAG_TD, this);
   }
 
   /* (non-Javadoc)
@@ -379,17 +394,15 @@ public class HtmlTagHandler
       }
       else if (TAG_TEXT_AREA.equals(tagName)) 
       {
-    	  int type = parser.next();
-    	  String value = null;
-    	  if (type == SimplePullParser.TEXT) {
-    		  value = parser.getText();
-    	  }
+    	  parser.next();
+    	  String value = parser.getText();
           //#style browserInput
           TextField textField = new TextField(null, value, 500, TextField.ANY);
           if (style != null) {
           	textField.setStyle(style);
           }
-          this.browser.add(textField);    	  
+          this.browser.add(textField);    	
+          return true;
       }
       else if (TAG_INPUT.equals(tagName))
       {
@@ -472,7 +485,63 @@ public class HtmlTagHandler
     	  parser.next();
     	  return true;
       }
+      else if (TAG_TABLE.equals(tagName)) {
+    	  //#style browserTable?
+    	  this.currentTable = new TableItem();
+    	  if (style != null) {
+    		  this.currentTable.setStyle(style);
+    	  }
+    	  this.currentTableColumn = 0;
+    	  return true;
+      }
+      else if (this.currentTable != null && TAG_TR.equals(tagName)) {
+    	  this.currentTable.addRow();
+    	  this.currentTableColumn = 0;
+    	  return true;
+      }
+      else if (this.currentTable != null && TAG_TH.equals(tagName)) {
+    	  int col = this.currentTableColumn;
+    	  if (col + 1 > this.currentTable.getNumberOfColumns()) {
+    		  this.currentTable.addColumn();
+    	  }
+    	  parser.next();
+    	  if (style != null) {
+	    	  this.currentTable.set( col, this.currentTable.getNumberOfRows() - 1, parser.getText(), style );    		  
+    	  } else {
+	    	  //#style browserTableHeader?
+	    	  this.currentTable.set( col, this.currentTable.getNumberOfRows() - 1, parser.getText() );
+    	  }
+    	  this.currentTableColumn++;
+    	  return true;
+      }
+      else if (this.currentTable != null && TAG_TD.equals(tagName)) {
+    	  parser.next();
+    	  int col = this.currentTableColumn;
+    	  if (col + 1 > this.currentTable.getNumberOfColumns()) {
+    		  this.currentTable.addColumn();
+    	  }
+    	  if (style != null) {
+        	  this.currentTable.set( col, this.currentTable.getNumberOfRows() - 1, parser.getText(), style );
+    	  } else {
+        	  //#style browserTableData?
+        	  this.currentTable.set( col, this.currentTable.getNumberOfRows() - 1, parser.getText() );
+    	  }
+    	  this.currentTableColumn++;
+    	  return true;
+      }
     }
+    else 
+    {
+    	// the tag is being closed:
+    	if (TAG_TABLE.equals(tagName)) {
+    		System.out.println("adding table...");
+    		this.browser.add(this.currentTable);
+    		this.currentTable = null;
+    		return true;
+    	}
+    }
+   
+    
     
     if (TAG_B.equals(tagName)
       || TAG_STRONG.equals(tagName))
@@ -657,9 +726,7 @@ public class HtmlTagHandler
 	    	sb.append('=');
 	    	sb.append(TextUtil.encodeUrl(value));
 	    }
-
-	    // TODO: Implement me.
-	    this.browser.go(form.getTarget(), sb.toString());
+	    this.browser.go( this.browser.makeAbsoluteURL( form.getTarget() ), sb.toString());
   	}
 
   	protected void handleSubmitCommand()

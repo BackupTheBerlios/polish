@@ -489,17 +489,29 @@ implements Runnable
   
   
 
-  /* (non-Javadoc)
- * @see de.enough.polish.ui.FakeContainerCustomItem#add(de.enough.polish.ui.Item)
- */
-public void add(Item item)
-{
-	if (this.currentContainer != null) {
-		this.currentContainer.add(item);
-	} else {
-		super.add(item);
+	 /* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeContainerCustomItem#add(de.enough.polish.ui.Item)
+	 */
+	public void add(Item item)
+	{
+		if (this.currentContainer != null) {
+			this.currentContainer.add(item);
+		} else {
+			super.add(item);
+		}
 	}
-}
+	
+	
+	//#if polish.LibraryBuild
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeContainerCustomItem#add(de.enough.polish.ui.Item)
+	 */
+	public void add(javax.microedition.lcdui.Item item)
+	{
+		// ignore
+	}
+	//#endif
+
 
 /**
    * Loads a page from a given <code>Reader</code>.
