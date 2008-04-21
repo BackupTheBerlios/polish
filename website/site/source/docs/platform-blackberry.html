@@ -133,9 +133,14 @@ For such cases the password needs to contain only ASCII characters, otherwise J2
 <pre>
 &lt;property name=&quot;blackberry.certificate.password&quot; value=&quot;secret&quot;/&gt;
 </pre>
-<p>Note that currently BlackBerry only provides a GUI based tool. For successfully signing your application automatically you
+<p>Note that BlackBerry only provides a GUI based tool for JDEs before 2.0.1.
+For successfully signing your application automatically you
 need to run the build process in the foreground, so that the J2ME Polish can send key events to the foreground window 
-of the BlackBerry SigTool during the build.
+of the BlackBerry SigTool during the build with such JDEs.
+</p>
+<p>
+Note also that the blackberry SigTool application does not work on Unix systems. This shlashdev guide describes 
+<a href="http://www.slashdev.ca/2008/03/16/using-sigtool-in-linux" target="_blank">how to run the SigTool on Unix</a>.
 </p>
 
 <h2 id="blackberry-gui">Using the J2ME Polish GUI on BlackBerry Devices</h2>
@@ -195,14 +200,14 @@ These are the steps to get this kind of provisioning to work:
 
 <ul>
   <li><a href="#blackberry-jar2cod">Create</a> a <i>.cod</i> file</li>
-  <li>Unpack the <i>.cod</i> file. Every <i>.cod</i> file is a <i>.zip</i> file in disguise and you can unpack it
+  <li>Unpack the <i>.cod</i> file. The 'outer' <i>.cod</i> file is a <i>.zip</i> file in disguise and you can unpack it
   with every unzip program available. Beware that the outer <i>.cod</i> file contains
   inner <i>.cod</i> files and that one inner <i>.cod</i> file has the same name as the outer
   <i>.cod</i> file. It is imperative that <em>every</em> inner <i>.cod</i> file is
   extracted, even if you need to overwrite the outer <i>.cod</i> file in the process.</li>
-  <li>While building for a BlackBerry device, a file is created which name ends with
-  <i>.jad.alt.jad</i>. This file is a <i>.jad</i> file with URL safe entries. The 
-  original <i>.jad</i> file which is generated from the rapc compiler contains
+  <li>While building for a BlackBerry device, the created JAD file contains modified 
+  URL safe entries. In case you require the original JAD file, use the <i>.jad.bak</i> one.
+  The original <i>.jad</i> file which is generated from the rapc compiler contains
   entries of the form
    <code>RIM-COD-URL-1: BlackBerry$2d8100$2den_US$2dblank-1.cod</code>. Note the
    sequence <code>&quot;&#36;2d&quot;</code>. This should encode the charater
