@@ -224,7 +224,7 @@ private int currentTableColumn;
 	  //#debug
 	  System.out.println("checking tag " + tagName );
 	  tagName = tagName.toLowerCase();
-	  if (TextUtil.equalsIgnoreCase(TAG_DIV, tagName) || TextUtil.equalsIgnoreCase(TAG_SPAN, tagName)) {
+	  if (TAG_DIV.equals(tagName) || TAG_SPAN.equals(tagName)) {
 		  if (opening) {
 			  this.browser.openContainer( style );
  		  } else {
@@ -463,11 +463,7 @@ private int currentTableColumn;
         {
           String type = (String) attributeMap.get(INPUT_TYPE);
           
-          //#if polish.cldc1.1
-          if (INPUTTYPE_TEXT.equalsIgnoreCase(type))
-          //#else
-          //# if (TextUtil.equalsIgnoreCase(INPUTTYPE_TEXT, type))
-          //#endif
+          if (INPUTTYPE_TEXT.equals(type))
           {
             String name = (String) attributeMap.get(INPUT_NAME);
             String value = (String) attributeMap.get(INPUT_VALUE);
@@ -490,11 +486,7 @@ private int currentTableColumn;
             	textField.setAttribute(ATTR_VALUE, value);
             }
           }
-          //#if polish.cldc1.1
-          else if (INPUTTYPE_SUBMIT.equalsIgnoreCase(type))
-          //#else
-          //# if (TextUtil.equalsIgnoreCase(INPUTTYPE_SUBMIT, type))
-          //#endif
+          else if (INPUTTYPE_SUBMIT.equals(type))
           {
             String name = (String) attributeMap.get(INPUT_NAME);
             String value = (String) attributeMap.get(INPUT_VALUE);
