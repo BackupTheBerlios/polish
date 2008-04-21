@@ -333,16 +333,8 @@ implements AccessibleCanvas
 	
 	
 	//#if polish.key.LeftSoftKeys:defined || polish.key.RightSoftKeys:defined
-		private static boolean IS_MOTO_DEVICE;
-		static {
-			boolean hasDeviceModel = false;
-			try {
-				hasDeviceModel = (System.getProperty("device.model") != null);
-			} catch (Exception e) {
-				// ignore
-			}
-			IS_MOTO_DEVICE = hasDeviceModel;
-		}
+		private static int[] possibleLeftSoftkeys;
+		private static int[] possibleRightSoftkeys;
 	//#endif
 
 	
@@ -633,8 +625,35 @@ implements AccessibleCanvas
 			StyleSheet.animationThread.start();
 		}
 		//#if polish.key.LeftSoftKeys:defined || polish.key.RightSoftKeys:defined
-			if (!IS_MOTO_DEVICE && getKeyCode(DOWN) == -6) {
-				IS_MOTO_DEVICE = true;
+			if (possibleLeftSoftkeys == null) {
+				int up = getKeyCode(UP);
+				int down = getKeyCode(DOWN);
+				int left = getKeyCode(LEFT);
+				int right = getKeyCode(RIGHT);
+				ArrayList keys = new ArrayList();
+				int key = 0;
+				//#foreach key in polish.key.LeftSoftKeys
+					//#= key = ${key};
+					if (! (key == up || key == down ||  key == left || key == right)) {
+						keys.add( new Integer(key) );
+					}
+				//#next key
+				possibleLeftSoftkeys = new int[ keys.size() ];
+				for (int i=0; i<keys.size(); i++) {
+					possibleLeftSoftkeys[i] = ((Integer)keys.get(i)).intValue();
+				}
+				keys.clear();
+				//#foreach key in polish.key.RightSoftKeys
+					//#= key = ${key};
+					if (! (key == up || key == down ||  key == left || key == right)) {
+						keys.add( new Integer(key) );
+					}
+				//#next key
+				possibleRightSoftkeys = new int[ keys.size() ];
+				for (int i=0; i<keys.size(); i++) {
+					possibleRightSoftkeys[i] = ((Integer)keys.get(i)).intValue();
+				}
+				
 			}
 		//#endif
 	}
@@ -4492,16 +4511,17 @@ implements AccessibleCanvas
 			}
 			//#endif
 		//#endif
-		boolean result = (keyCode == expected);
-		//#ifdef polish.key.LeftSoftKeys:defined
+		boolean result;
+		//#if ! polish.key.LeftSoftKeys:defined
+			result = (keyCode == expected);
+		//#else
 			result = false;
-			//#foreach key in polish.key.LeftSoftKeys
-				//#= expected = ${key};
-				// on (some?) moto devices the down action has the code -6:
-				if (!IS_MOTO_DEVICE || (expected != -6)) {
-					result = result || (keyCode == expected);
+			for (int i=0; i<possibleLeftSoftkeys.length; i++) {
+				if (keyCode == possibleLeftSoftkeys[i]) {
+					result = true;
+					break;
 				}
-			//#next key
+ 			}
 		//#endif
 		return result;
 	}
@@ -4534,12 +4554,17 @@ implements AccessibleCanvas
 			//#endif
 			}
 		//#endif
-		boolean result = (keyCode == expected);
-		//#ifdef polish.key.RightSoftKeys:defined
-			//#foreach key in polish.key.RightSoftKeys
-				//#= expected = ${key};
-				result = result || (keyCode == expected);
-			//#next key
+		boolean result;
+		//#if ! polish.key.RightSoftKeys:defined
+			result = (keyCode == expected);
+		//#else
+			result = false;
+			for (int i=0; i<possibleRightSoftkeys.length; i++) {
+				if (keyCode == possibleRightSoftkeys[i]) {
+					result = true;
+					break;
+				}
+ 			}
 		//#endif
 		return result;
 	}

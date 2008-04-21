@@ -83,6 +83,11 @@ public class MasterCanvas
 //			AccelationInfoItem item = new AccelationInfoItem();
 //			ScreenInfo.setItem( item );
 		//#endif
+			
+		//#if tmp.fullScreen && polish.midp2 && !polish.Bugs.fullScreenInShowNotify
+			super.setFullScreenMode(true);
+		//#endif
+
 	}
 	
 
