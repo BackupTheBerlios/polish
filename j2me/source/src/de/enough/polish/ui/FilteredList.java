@@ -194,7 +194,15 @@ implements ItemStateListener //, CommandListener
 	 */
 	protected void setItemCommands( ArrayList commandsList, Item item ) {
 		if (item != this.filterTextField) {
-			this.filterTextField.showCommands(commandsList);
+			this.filterTextField.addCommands(commandsList);
+		} else {
+			this.container.addCommands(commandsList);
+			//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
+		}
+		System.out.println( item + ": setting item commands " );
+		for (int i=0; i<commandsList.size(); i++) {
+			Command cmd = (Command) commandsList.get(i);
+			System.out.println("-> " + cmd.getLabel());
 		}
 		super.setItemCommands(commandsList, item);
 	}
@@ -688,13 +696,7 @@ implements ItemStateListener //, CommandListener
 			if (checkForSelectedRadioItem && this.getSelectedIndex() != -1) {
 				( (ChoiceGroup)this.container ).setSelectedIndex( matchingItems.indexOf( this.itemsList.get( getSelectedIndex() ) ) , true);
 			}
-			// problem: this also adds the delete command
 			this.filterTextField.showCommands();
-			//#if !polish.TextField.suppressCommands
-//			if (this.filterTextField.getCaretPosition() == 0) {
-//				removeCommand( TextField.DELETE_CMD );
-//			}
-			//#endif
 		}
 	}
 	

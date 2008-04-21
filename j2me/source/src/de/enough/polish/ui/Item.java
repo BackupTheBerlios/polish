@@ -2863,26 +2863,45 @@ public abstract class Item extends Object
 	 */
 	public void showCommands() {
 		COMMANDS.clear();
-		showCommands( COMMANDS );
+		addCommands( COMMANDS );
+		Screen scr = getScreen();
+		if (scr != null) {
+			scr.setItemCommands( COMMANDS, this );
+		}			
 	}
 	
+//	/**
+//	 * Shows the commands on the screen.
+//	 * 
+//	 * @param commandsList an ArrayList with the commands from this item.
+//	 */
+//	protected void showCommands(ArrayList commandsList) {
+//		addCommands(commandsList);
+//		if (this.commands != null) {
+//			commandsList.addAll( this.commands );
+//		}
+//		if (this.parent != null) {
+//			this.parent.showCommands(commandsList);
+//		} else {
+//			Screen scr = getScreen();
+//			if (scr != null) {
+//				scr.setItemCommands( commandsList, this );
+//			}			
+//		}
+//	}
+	
 	/**
-	 * Shows the commands on the screen.
+	 * Adds all commands to the specified list.
 	 * 
-	 * @param commandsList an ArrayList with the commands from this item.
+	 * @param commandsList an ArrayList into which the commands from this item should be added.
 	 */
-	protected void showCommands(ArrayList commandsList) {
+	protected void addCommands( ArrayList commandsList) {
 		if (this.commands != null) {
 			commandsList.addAll( this.commands );
 		}
 		if (this.parent != null) {
-			this.parent.showCommands(commandsList);
-		} else {
-			Screen scr = getScreen();
-			if (scr != null) {
-				scr.setItemCommands( commandsList, this );
-			}			
-		}
+			this.parent.addCommands(commandsList);
+		}		
 	}
 	
 	/**

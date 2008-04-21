@@ -2120,11 +2120,11 @@ public class Container extends Item {
 	
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#showCommands(de.enough.polish.util.ArrayList)
+	 * @see de.enough.polish.ui.Item#showCommands()
 	 */
-	protected void showCommands(ArrayList commandsList) {
+	public void showCommands() {
 		this.showCommandsHasBeenCalled = true;
-		super.showCommands(commandsList);
+		super.showCommands();
 	}
 	
 	

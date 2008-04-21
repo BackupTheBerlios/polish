@@ -2508,21 +2508,13 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	public void showCommands() {
 		COMMANDS.clear();
-		showCommands( COMMANDS );
 	}
 	/**
 	 * Shows the commands on the screen.
 	 * 
 	 * @param commandsList an ArrayList with the commands from this item.
 	 */
-	protected void showCommands(ArrayList commandsList) {
-		if (this.commands != null) {
-			commandsList.addAll( this.commands );
-		}
-		if (this.parent != null) {
-			this.parent.showCommands(commandsList);
-					
-		}
+	protected void addCommands(ArrayList commandsList) {
 	}
 	
 	/**
