@@ -86,6 +86,8 @@ public class HtmlTagHandler
   public static final String TAG_FORM = "form";
 	/** input tag */
   public static final String TAG_INPUT = "input";
+	/** button tag */
+  public static final String TAG_BUTTON = "button";
 	/** text area tag */
   public static final String TAG_TEXT_AREA = "textarea";
 	/** select tag */
@@ -203,6 +205,7 @@ private int currentTableColumn;
     parent.addTagHandler(TAG_EM, this);
     parent.addTagHandler(TAG_FORM, this);
     parent.addTagHandler(TAG_INPUT, this);
+    parent.addTagHandler(TAG_BUTTON, this);
     parent.addTagHandler(TAG_SELECT, this);
     parent.addTagHandler(TAG_OPTION, this);
     parent.addTagHandler(TAG_SCRIPT, this);
@@ -396,13 +399,63 @@ private int currentTableColumn;
       {
     	  parser.next();
     	  String value = parser.getText();
+    	  int maxCharNumber = 500;
+    	  String cols = (String) attributeMap.get("cols");
+    	  String rows = (String) attributeMap.get("rows");
+    	  if (cols != null && rows != null) {
+    		  try {
+    			  maxCharNumber = Integer.parseInt(cols) * Integer.parseInt(rows);
+    		  } catch (Exception e) {
+    			  //#debug error
+    			  System.out.println("Unable to parse textarea cols or rows attribute: cols=" + cols + ", rows=" + rows);
+    		  }
+    	  }
           //#style browserInput
-          TextField textField = new TextField(null, value, 500, TextField.ANY);
+          TextField textField = new TextField(null, value, maxCharNumber, TextField.ANY);
           if (style != null) {
           	textField.setStyle(style);
           }
-          this.browser.add(textField);    	
+          this.browser.add(textField);
+          if (this.currentForm != null) {
+        	  this.currentForm.addItem(textField);
+        	  textField.setAttribute(ATTR_FORM, this.currentForm);
+              String name = (String) attributeMap.get(INPUT_NAME);
+              if (value == null) {
+              	value = name;
+              }
+              if (name != null) {
+              	textField.setAttribute(ATTR_NAME, name);
+            	textField.setAttribute(ATTR_VALUE, value);            	  
+              }
+          }
           return true;
+      }
+      else if (TAG_BUTTON.equals(tagName) && this.currentForm != null) {
+          String name = (String) attributeMap.get(INPUT_NAME);
+          String value = (String) attributeMap.get(INPUT_VALUE);
+
+          if (value == null) {
+          	value = name;
+          }
+
+          //#style browserLink
+          StringItem buttonItem = new StringItem(null, value);
+          if (style != null) {
+          	buttonItem.setStyle(style);
+          }
+          buttonItem.setDefaultCommand(CMD_SUBMIT);
+          buttonItem.setItemCommandListener(this);
+          addCommands(TAG_INPUT, INPUT_TYPE, INPUTTYPE_SUBMIT, buttonItem);
+          this.browser.add(buttonItem);
+          
+          this.currentForm.addItem(buttonItem);
+          buttonItem.setAttribute(ATTR_FORM, this.currentForm);
+          buttonItem.setAttribute(ATTR_TYPE, "submit");
+
+          if (name != null) {
+          	buttonItem.setAttribute(ATTR_NAME, name);
+          	buttonItem.setAttribute(ATTR_VALUE, value);
+          }    	  
       }
       else if (TAG_INPUT.equals(tagName))
       {
@@ -534,7 +587,6 @@ private int currentTableColumn;
     {
     	// the tag is being closed:
     	if (TAG_TABLE.equals(tagName)) {
-    		System.out.println("adding table...");
     		this.browser.add(this.currentTable);
     		this.currentTable = null;
     		return true;
@@ -658,6 +710,9 @@ private int currentTableColumn;
       }
       
       String name = (String) item.getAttribute(ATTR_NAME);
+      if (name == null) {
+    	  continue;
+      }
       String value = (String) item.getAttribute(ATTR_VALUE);
       
       if (item instanceof TextField)
@@ -706,6 +761,9 @@ private int currentTableColumn;
 	    	}
 	      
 	    	String name = (String) item.getAttribute(ATTR_NAME);
+	    	if (name == null) {
+	    		continue;
+	    	}
 	    	String value = (String) item.getAttribute(ATTR_VALUE);
 		      
 	    	if (item instanceof TextField)	{
@@ -724,7 +782,9 @@ private int currentTableColumn;
 
 	    	sb.append(name);
 	    	sb.append('=');
-	    	sb.append(TextUtil.encodeUrl(value));
+	    	if (value != null) {
+	    		sb.append(TextUtil.encodeUrl(value));
+	    	}
 	    }
 	    this.browser.go( this.browser.makeAbsoluteURL( form.getTarget() ), sb.toString());
   	}

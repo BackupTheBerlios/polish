@@ -457,7 +457,7 @@ implements Runnable
     
     for (int i = 0; i < parser.getAttributeCount(); i++)
     {
-      String attributeName = parser.getAttributeName(i);
+      String attributeName = parser.getAttributeName(i).toLowerCase();
       String attributeValue = parser.getAttributeValue(i);
       attributeMap.put(attributeName, attributeValue);
       
