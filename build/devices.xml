@@ -282,8 +282,8 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="mmapi,wmapi"/>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="HeapSize" value="1MB"/>
-		<capability name="key.LeftSoftKeys" value="-6,-21,21"/> <!--  -1 can be used for Siemens, however this is used for example by LG for the UP key -->
-		<capability name="key.RightSoftKeys" value="-7,-22,22"/> <!--  -4 can be used for Siemens, however this can be used by other brands -->
+		<capability name="key.LeftSoftKeys" value="-6,-21,21,-1" />
+		<capability name="key.RightSoftKeys" value="-7,-22,22,-4" />
 		<capability name="MenuBar.OptionsPosition" value="left" />
 		<capability name="Bugs" value="SoftKeyMappedToFire,displaySetCurrentFlickers"/>	
 	</device>	
