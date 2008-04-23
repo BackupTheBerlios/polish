@@ -69,7 +69,12 @@ public class PolishEditField extends EditField implements PolishTextField {
         }
         
 		public void setFont(Font font, int textColor) {
-			super.setFont( font.font );
+			try {
+				super.setFont( font.font );
+			} catch (IllegalStateException e) {
+				//#debug
+				System.out.println("Layout error: " + e );
+			}
 			this.fontColor = textColor;
 		}
 

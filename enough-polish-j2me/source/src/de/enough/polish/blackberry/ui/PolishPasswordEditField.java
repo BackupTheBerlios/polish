@@ -70,7 +70,12 @@ public class PolishPasswordEditField extends PasswordEditField implements Polish
         }
         
 		public void setFont(Font font, int textColor) {
-			super.setFont( font.font );
+			try {
+				super.setFont( font.font );
+			} catch (IllegalStateException e) {
+				//#debug
+				System.out.println("Layout error: " + e );
+			}
 			this.fontColor = textColor;
 		}
 
