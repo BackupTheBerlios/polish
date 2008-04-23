@@ -748,13 +748,14 @@ public class PolishTask extends ConditionalTask {
         try {
 //          now load life cycle extensions:
             if (this.lifeCycleManagers != null) {
-                Extension[] lifeCycleExtensions = new Extension[this.lifeCycleManagers.size()];
-                int i = 0;
+                ArrayList extensions = new ArrayList( this.lifeCycleManagers.size() );
                 for (Iterator iterator = this.lifeCycleManagers.iterator(); iterator.hasNext(); ) {
                     ExtensionSetting setting = (ExtensionSetting) iterator.next();
-                    lifeCycleExtensions[i] = this.extensionManager.getTemporaryExtension(ExtensionManager.TYPE_FINALIZER, setting,this.environment );
-                    i++;
+                    if (setting.isActive( getProject() )) {
+                    	extensions.add( this.extensionManager.getTemporaryExtension(ExtensionManager.TYPE_FINALIZER, setting,this.environment ) );
+                    }
                 }
+                Extension[] lifeCycleExtensions = (Extension[]) extensions.toArray( new Extension[extensions.size()] );
                 this.extensionManager.setLifeCycleExtensions( lifeCycleExtensions );
             }
         } catch (de.enough.polish.BuildException e) {

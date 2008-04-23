@@ -25,7 +25,10 @@ public class BlackBerryEmulator extends Emulator {
 	public boolean init( Device dev, EmulatorSetting setting,
 			Environment env ) 
 	{
-		String blackberryHomeStr = env.getVariable("blackberry.home");
+		String blackberryHomeStr =  env.getVariable("blackberry.emulator.home");
+		if (blackberryHomeStr == null){
+			blackberryHomeStr = env.getVariable("blackberry.home");
+		}
 		if (blackberryHomeStr == null) {
 			File file = new File( "C:\\Program Files\\Research In Motion");
 			if (file.exists()) {
@@ -39,7 +42,7 @@ public class BlackBerryEmulator extends Emulator {
 		if ( !this.blackberryHome.exists() ) {
 			System.err.println("Unable to start blackberry simulator: Ant property \"blackberry.home\" points to an invalid directory: " + this.blackberryHome.getAbsolutePath()  );
 			return false;
-		}
+		}		
 		File home = new File( this.blackberryHome, "simulator" );
 		File executable = getExecutable(home, dev, env);
 		if ( !executable.exists() ) {

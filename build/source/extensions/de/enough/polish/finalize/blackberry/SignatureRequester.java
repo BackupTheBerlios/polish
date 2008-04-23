@@ -109,8 +109,19 @@ implements Runnable, OutputFilter
 		File jdeBin = new File( jdeHome, "bin" );
 		// copy sigtool files to jdeBin:
 		if (!sigtoolDir.equals(jdeBin)) {
-			FileUtil.copy( new File( sigtoolDir, "sigtool.csk"), jdeBin );
-			FileUtil.copy( new File( sigtoolDir, "sigtool.db"), jdeBin );
+			File sigtoolCskSource = new File( sigtoolDir, "sigtool.csk");
+			File sigtoolDbSource = new File( sigtoolDir, "sigtool.db");
+			File sigtoolCskTarget = new File( jdeBin, "sigtool.csk");
+			File sigtoolDbTarget = new File( jdeBin, "sigtool.db");
+			if (!sigtoolCskTarget.exists() || !sigtoolDbTarget.exists()
+				|| sigtoolCskSource.lastModified() > sigtoolCskTarget.lastModified()
+				|| sigtoolDbSource.lastModified() > sigtoolDbTarget.lastModified()
+				|| sigtoolCskSource.length() != sigtoolCskTarget.length()
+				|| sigtoolDbSource.length() != sigtoolDbTarget.length()
+			) {
+				FileUtil.copy( sigtoolCskSource,  sigtoolCskTarget );
+				FileUtil.copy( sigtoolDbSource, sigtoolDbTarget );
+			}
 		}
 				
 		// execute BlackBerry's SignatureTool.jar:
