@@ -382,6 +382,10 @@ public class PolishTask extends ConditionalTask {
 			this.errorLock = new File( this.buildSetting.getWorkDir(),  "error.lock");
 			if (this.errorLock.exists()) {
 				this.lastRunFailed = true;
+				System.out.println("Last build was interrupted or failed, now clearing work directory...");
+				if (this.buildSetting.getWorkDir().exists()) {
+					FileUtil.delete( this.buildSetting.getWorkDir() );
+				}
 			} else {
 				this.lastRunFailed = false;
 				try {

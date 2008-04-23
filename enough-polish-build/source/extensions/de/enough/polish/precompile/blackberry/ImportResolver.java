@@ -84,6 +84,7 @@ public class ImportResolver extends PreCompiler
     // Find all classes and put their class names into the classes list.
     ArrayList classes = new ArrayList();
     String[] fileNames = FileUtil.filterDirectory( classesDir, ".class", true );
+    System.out.println("Precompiling " + fileNames.length + " classes from " + classesDir.getPath() );
     
     for (int i = 0; i < fileNames.length; i++)
       {
@@ -122,6 +123,11 @@ public class ImportResolver extends PreCompiler
           {
             throw new BuildException(e);
           }
+        catch (Exception e)
+        {
+          System.out.println("Error loading class " + className + ": " + e.toString() );
+          throw new BuildException(e);
+        }
       }
 	}
 
