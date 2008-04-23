@@ -566,6 +566,7 @@ public class MeposeModel extends PropertyModel{
         if(getPolishHome() != null && getProjectHome() != null) {
             return PolishDeviceDatabase.getNewDeviceDatabase(this.polishHome,this.projectHome,targetDevices);
         }
+        // TODO: Throw exception.
         return null;
     }
     
