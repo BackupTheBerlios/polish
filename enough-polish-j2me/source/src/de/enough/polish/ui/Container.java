@@ -172,13 +172,11 @@ public class Container extends Item {
 		this.availableHeight = height;
 		this.enableScrolling = (height != -1);
 		Item item = this.focusedItem;
-		if (this.isScrollRequired && this.enableScrolling && item != null) {
+		if (this.isInitialized && this.enableScrolling && item != null) {
 			//#debug
-			System.out.println("setScrollHeight(): scroll is required - scrolling to y=" + item.relativeY + ", height=" + height);
-			scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
+			System.out.println("setScrollHeight(): scrolling to item=" + item + " with y=" + item.relativeY + ", height=" + height);
+			scroll( 0, item );
 			this.isScrollRequired = false;
-		} else if (this.isInitialized && item != null && height != -1) {
-			scroll(Canvas.DOWN, item );
 		}
 	}
 	

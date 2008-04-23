@@ -517,11 +517,14 @@ public class MenuBar extends Item {
 	
 		// there are several commands available, from the which the BACK/CANCEL command
 		// with the highest priority needs to be chosen:
-		Command[] myCommands = (Command[]) this.commandsList.toArray( new Command[ this.commandsList.size() ]);
+		Object[] myCommands = this.commandsList.getInternalArray();
 		int maxPriority = 1000;
 		int maxPriorityId = -1;
 		for (int i = 0; i < myCommands.length; i++) {
-			Command command = myCommands[i];
+			Command command = (Command) myCommands[i];
+			if (command == null) {
+				break;
+			}
 			int type = command.getCommandType();
 			
 				if ((
