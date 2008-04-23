@@ -394,7 +394,8 @@ public class MenuBar extends Item {
 				this.isInitialized = false;
 				repaint();
 			}
-			//#if tmp.RightOptions && polish.MenuBar.OkPosition != left
+			//#if tmp.RightOptions 
+				//#if polish.MenuBar.OkPosition != left
 				if (this.singleRightCommand != null) {
 					if ( this.singleRightCommand.getCommandType() == Command.BACK 
 						|| this.singleRightCommand.getCommandType() == Command.CANCEL ) 
@@ -409,6 +410,7 @@ public class MenuBar extends Item {
 					}
 					return;
 				}
+				//#endif
 				int newSingleLeftCommandIndex;
 				//#if tmp.OkCommandOnLeft
 					newSingleLeftCommandIndex = getNextNegativeOrPositiveCommandIndex(false);
@@ -529,12 +531,13 @@ public class MenuBar extends Item {
 			
 				if ((
 					(isNegative && 
-					((type == Command.BACK || type == Command.CANCEL 
+					((type == Command.BACK || type == Command.CANCEL || type == Command.STOP
 					//#if polish.blackberry
 						|| type == Command.EXIT
 					//#endif
 					)))
-					|| (!isNegative && type == Command.OK))
+					|| (!isNegative && 
+							(type == Command.OK || type == Command.ITEM || type == Command.SCREEN) ))
 					&& command.getPriority() < maxPriority ) 
 			{
 				maxPriority = command.getPriority();
