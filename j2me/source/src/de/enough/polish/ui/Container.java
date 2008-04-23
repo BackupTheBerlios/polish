@@ -177,6 +177,8 @@ public class Container extends Item {
 			System.out.println("setScrollHeight(): scroll is required - scrolling to y=" + item.relativeY + ", height=" + height);
 			scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
 			this.isScrollRequired = false;
+		} else if (this.isInitialized && item != null && height != -1) {
+			scroll(Canvas.DOWN, item );
 		}
 	}
 	
