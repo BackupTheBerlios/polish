@@ -811,11 +811,14 @@ public class MenuBar extends Item {
 			//#endif
 		//#endif
 	}
+	
+	
 
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
+	 * @see de.enough.polish.ui.Item#paintBackgroundAndBorder(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) 
+	protected void paintBackgroundAndBorder(int x, int y, int width,
+			int height, Graphics g)
 	{
 		if (this.isOpened) {
 			// paint overlay background:
@@ -824,10 +827,20 @@ public class MenuBar extends Item {
 					//#if polish.MenuBar.Position == right
 						this.overlayBackground.paint( 0, this.screen.contentY, this.screen.screenWidth - this.itemWidth, this.screen.screenHeight, g );
 					//#else
-						this.overlayBackground.paint( 0, this.screen.contentY, this.screen.screenWidth , this.screen.screenHeight - this.screen.contentY, g );
+						this.overlayBackground.paint( 0, this.screen.contentY, this.screen.screenWidth, this.screen.screenHeight, g );
 					//#endif
 				}
 			//#endif
+		}
+		super.paintBackgroundAndBorder(x, y, width, height, g);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
+	 */
+	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) 
+	{
+		if (this.isOpened) {
 			// paint opened menu:
 			//System.out.println("setting clip " + this.topY + ", " + (this.screen.screenHeight - this.topY) );
 			int clipX = g.getClipX();
