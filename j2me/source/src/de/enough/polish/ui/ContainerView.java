@@ -183,7 +183,7 @@ extends ItemView
 				this.appearanceMode = Item.INTERACTIVE;
 				if (isLayoutShrink && this.focusedItem != null) {
 					Item item = this.focusedItem;
-					//System.out.println("container has shrinking layout and contains focuse item " + item);
+					//System.out.println("container has shrinking layout and contains focuse item " + item + ", minWidth=" + parent.minimumWidth);
 					item.isInitialized = false;
 					boolean doExpand = item.isLayoutExpand;
 					int width;
@@ -197,6 +197,9 @@ extends ItemView
 					}
 					if (width > myContentWidth) {
 						myContentWidth = width;
+					}
+					if ( parent.minimumWidth != 0 && myContentWidth < parent.minimumWidth ) {
+						myContentWidth = parent.minimumWidth;
 					}
 				}
 			} else {

@@ -1038,7 +1038,11 @@ public class Container extends Item {
 									requireScrolling = (this.autoFocusIndex != 0);
 									int heightBeforeFocus = item.itemHeight;
 									focus( i, item, 0 );
-									if (item.getItemHeight( item.itemWidth, item.itemWidth ) > heightBeforeFocus) {
+									int availableWidth = item.itemWidth;
+									if (availableWidth < this.minimumWidth) {
+										availableWidth = this.minimumWidth;
+									}
+									if (item.getItemHeight( availableWidth, availableWidth ) > heightBeforeFocus) {
 										this.containerView.initContent( this, firstLineWidth, lineWidth);	
 									}
 									this.isScrollRequired = this.isScrollRequired && requireScrolling; // override setting in focus()
@@ -1056,7 +1060,7 @@ public class Container extends Item {
 					}
 					this.contentWidth = this.containerView.contentWidth;
 					this.contentHeight = this.containerView.contentHeight;
-					
+
 					if (requireScrolling && this.focusedItem != null) {
 						//#debug
 						System.out.println("initContent(): scrolling autofocused or scroll-required item for view");
