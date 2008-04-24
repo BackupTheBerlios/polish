@@ -182,6 +182,7 @@ public class ThemeTask extends PolishTask {
 									ThemeContainer container = null;
 									
 									//Create a container for the field object
+									System.out.println("Bundling " + fieldName + "...");
 									container = getContainer(setting.getTarget(),fieldName,field.get(null));
 									containers.add(container);
 								}
