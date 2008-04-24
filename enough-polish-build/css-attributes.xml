@@ -386,6 +386,30 @@
 			<param name="y-offset" type="integer" primitive="true" default="0" description="Vertical adjustment in pixels, negative values move the background to the top" />
 		</mapping>
 		<mapping from="repaint-test"   to="de.enough.polish.ui.backgrounds.RepaintTestBackground"  />
+		<mapping from="split"    to="de.enough.polish.ui.backgrounds.VerticalSplitBackground"  >
+			<param name="top-color" type="color" primitive="true" default="white" description="Top color of the background." />
+			<param name="bottom-color" type="color" primitive="true" default="gray" description="Bottom color of the background." />
+			<param name="split-pos" type="percentorabsolute" primitive="true" default="50" description="The split position either in percent (0 - 100) or in pixels." />
+		</mapping>
+		<mapping from="horizontal-split"    to="de.enough.polish.ui.backgrounds.HorizontalSplitBackground"  >
+			<param name="left-color" type="color" primitive="true" default="white" description="Left color of the background." />
+			<param name="right-color" type="color" primitive="true" default="gray" description="Right color of the background." />
+			<param name="split-pos" type="percentorabsolute" primitive="true" default="50" description="The split position either in percent (0 - 100) or in pixels." />
+		</mapping>
+		<mapping from="round-rect-split"    to="de.enough.polish.ui.backgrounds.VerticalSplitRoundRectBackground"  >
+			<param name="top-color" type="color" primitive="true" default="white" description="Top color of the background." />
+			<param name="bottom-color" type="color" primitive="true" default="gray" description="Bottom color of the background." />
+			<param name="split-pos" type="percentorabsolute" primitive="true" default="50" description="The split position either in percent (0 - 100) or in pixels." />
+			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+		</mapping>
+		<mapping from="horizontal-round-rect-split"    to="de.enough.polish.ui.backgrounds.HorizontalSplitRoundRectBackground"  >
+			<param name="left-color" type="color" primitive="true" default="white" description="Left color of the background." />
+			<param name="right-color" type="color" primitive="true" default="gray" description="Right color of the background." />
+			<param name="split-pos" type="percentorabsolute" primitive="true" default="50" description="The split position either in percent (0 - 100) or in pixels." />
+			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+		</mapping>
 	</attribute>
 	
 	<!--  backgrounds that require a background attribute themselves   -->
@@ -1524,7 +1548,9 @@
 		<mapping from="rotating" to="new de.enough.polish.ui.texteffects.RotatingTextEffect()" >
 			<condition>polish.midp2 and polish.hasFloatingPoint</condition>
 		</mapping>
-		<mapping from="flash" to="new de.enough.polish.ui.texteffects.FlashTextEffect()"/>		
+		<mapping from="flash" to="new de.enough.polish.ui.texteffects.FlashTextEffect()"/>
+		<mapping from="split" to="new de.enough.polish.ui.texteffects.VerticalSplitTextEffect()"/>		
+		<mapping from="vertical-split" to="new de.enough.polish.ui.texteffects.VerticalSplitTextEffect()"/>		
 	</attribute>
 	
 	<attribute
@@ -3487,6 +3513,25 @@
 		description="The style for bottom top frame of a FramedForm."
 		id="317"
 	/>
+	
+	<attribute
+		name="text-split-bottom-color"
+		type="color"
+		appliesTo="VerticalSplitTextEffect"
+		description="The color of the bottom part."
+		default="#cccccc"
+		id="318"
+	/>
+	
+	<attribute
+		name="text-split-split-pos"
+		type="percent"
+		appliesTo="VerticalSplitTextEffect"
+		description="The vertical split position in percent - 0..100."
+		default="50"
+		id="319"
+	/>
+	
 	
 	<!--
 	

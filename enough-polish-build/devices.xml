@@ -275,7 +275,7 @@ These namespaces/schemas will be used soon.
 	
 	<device supportsPolishGui="true">
 		<identifier>Generic/AnyPhone</identifier>
-		<description>A MIDP 2.0 and CLDC 1.1 phone that supports softkeys and the fullscreen mode.</description>
+		<description>A MIDP 2.0 and CLDC 1.1 phone that supports softkeys and the fullscreen mode and the JTWI standard. Use this phone to run a single application on various platforms like Nokia, Motorola, Samsung and so on.</description>
 		<features>isVirtual, hasPointerEvents, hasCommandKeyEvents</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
