@@ -876,7 +876,15 @@ public class PredictiveAccess implements TrieSetupCallback{
 			int clipWidth = 0;
 			int clipHeight = 0;
 			if (this.choiceOrientation == ORIENTATION_TOP) {
-				int space = y + caretY - this.parent.getParent().getAbsoluteY();
+				int space;
+				if(this.parent.getParent() != null)
+				{
+					space = y + caretY - this.parent.getParent().getAbsoluteY();
+				}
+				else
+				{
+					space = y + caretY - this.parent.getScreen().contentY;
+				}
 				this.choicesContainer.setScrollHeight(space);
 				if (this.choicesContainer.getItemHeight(rightBorder-leftBorder, rightBorder-leftBorder) > space) {
 //					this.elementY = - space;
