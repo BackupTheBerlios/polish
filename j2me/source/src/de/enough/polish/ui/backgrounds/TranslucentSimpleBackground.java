@@ -57,8 +57,11 @@ public class TranslucentSimpleBackground extends Background {
 		// int MIDP/2.0 the buffer is always used:
 		private transient int[] buffer;
 		private transient int lastWidth;
-		//#if polish.Bugs.drawRgbNeedsFullBuffer
+		//#if polish.Bugs.drawRgbNeedsFullBuffer || polish.isDynamic
 			private int lastHeight;
+		//#endif
+		//#if polish.isDynamic
+			private boolean needsFullBuffer;
 		//#endif
 	//#endif
 
@@ -122,17 +125,24 @@ public class TranslucentSimpleBackground extends Background {
 				
 			// check if the buffer needs to be created:
 			
-			//#if polish.Bugs.drawRgbNeedsFullBuffer
-				if (width != this.lastWidth || height != this.lastHeight) {
-					this.lastWidth = width;
-					this.lastHeight = height;
-					int[] newBuffer = new int[ width * height ];
-					for (int i = newBuffer.length - 1; i >= 0 ; i--) {
-						newBuffer[i] = this.argbColor;
+			//#if polish.Bugs.drawRgbNeedsFullBuffer || polish.isDynamic
+				//#if polish.isDynamic
+					if (this.needsFullBuffer) {
+				//#endif
+						if (width != this.lastWidth || height != this.lastHeight) {
+							this.lastWidth = width;
+							this.lastHeight = height;
+							int[] newBuffer = new int[ width * height ];
+							for (int i = newBuffer.length - 1; i >= 0 ; i--) {
+								newBuffer[i] = this.argbColor;
+							}
+							this.buffer = newBuffer;
+						}
+				//#if polish.isDynamic
 					}
-					this.buffer = newBuffer;
-				}
-			//#else
+				//#endif
+			//#endif
+			//#if !polish.Bugs.drawRgbNeedsFullBuffer
 				if (width != this.lastWidth) {
 					this.lastWidth = width;
 					int[] newBuffer = new int[ width ];
@@ -142,9 +152,17 @@ public class TranslucentSimpleBackground extends Background {
 					this.buffer = newBuffer;
 				}
 			//#endif
-			//#if polish.Bugs.drawRgbNeedsFullBuffer
-				DrawUtil.drawRgb( this.buffer, x, y, width, height, true, g );
-			//#else
+			//#if polish.Bugs.drawRgbNeedsFullBuffer || polish.isDynamic
+				//#if polish.isDynamic
+					if (this.needsFullBuffer) {
+				//#endif
+						DrawUtil.drawRgb( this.buffer, x, y, width, height, true, g );
+				//#if polish.isDynamic
+						return;
+					}
+				//#endif
+			//#endif
+			//#if !polish.Bugs.drawRgbNeedsFullBuffer
 				if (x < 0) {
 					width += x;
 					x = 0;
@@ -159,16 +177,27 @@ public class TranslucentSimpleBackground extends Background {
 				if (height <= 0) {
 					return;
 				}
-				g.drawRGB(this.buffer, 0, 0, x, y, width, height, true);
+				//#if polish.isDynamic
+					try {
+				//#endif
+						g.drawRGB(this.buffer, 0, 0, x, y, width, height, true);
+				//#if polish.isDynamic
+					} catch (Exception e) {
+						//#debug error
+						System.out.println("problem while rendering RGB array: " + e.toString() + ": " + e.getMessage() );
+						e.printStackTrace();
+						this.needsFullBuffer = true;
+						this.lastWidth = width;
+						this.lastHeight = height;
+						int[] newBuffer = new int[ width * height ];
+						for (int i = newBuffer.length - 1; i >= 0 ; i--) {
+							newBuffer[i] = this.argbColor;
+						}
+						this.buffer = newBuffer;
+						DrawUtil.drawRgb( newBuffer, x, y, width, height, true, g );
+					}
+				//#endif
 			//#endif
-//		//#elif tmp.useNokiaUi
-//			if (width != this.lastWidth || height != this.lastHeight) {
-//				this.lastWidth = width;
-//				this.lastHeight = height;
-//				this.imageBuffer = DirectUtils.createImage( width, height, this.argbColor );
-//			}
-//			//DirectGraphics dg = DirectUtils.getDirectGraphics(g);
-//			dg.drawImage(this.imageBuffer, x, y, Graphics.TOP | Graphics.LEFT, 0 );
 		//#else
 			// ignore alpha-value
 			g.setColor( this.argbColor );
