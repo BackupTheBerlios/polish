@@ -28,6 +28,7 @@ package de.enough.polish.preprocess.css;
 import java.util.*;
 
 import de.enough.polish.Device;
+import de.enough.polish.preprocess.css.attributes.StyleCssAttribute;
 
 /**
  * <p>Represents a CSS-style-definition.</p>
@@ -461,9 +462,10 @@ public class Style {
 	/**
 	 * Retrieves the names of styles which are referenced by the this style.
 	 * 
+	 * @param attributesManager the attribute manager
 	 * @return an array with names of referenced styles. Can be empty but not null.
 	 */
-	public String[] getReferencedStyleNames() {
+	public String[] getReferencedStyleNames(CssAttributesManager attributesManager) {
 		ArrayList referencedNames = new ArrayList();
 		String[] groupNames = getGroupNames();
 		for (int i = 0; i < groupNames.length; i++) {
@@ -472,9 +474,13 @@ public class Style {
 			String[] attributesNames = (String[]) group.keySet().toArray( new String[ group.size() ]);
 			for (int j = 0; j < attributesNames.length; j++) {
 				String attributeName = attributesNames[j];
-				if (attributeName.endsWith("style") && !("font".equals(groupName))) {
+				CssAttribute attribute = attributesManager.getAttribute(groupName + "-" + attributeName);
+				if (attribute instanceof StyleCssAttribute) {
 					referencedNames.add( group.get( attributeName ));
 				}
+//				if (attributeName.endsWith("style") && !("font".equals(groupName))) {
+//					referencedNames.add( group.get( attributeName ));
+//				}
 			}
 		}
 		return (String[]) referencedNames.toArray( new String[ referencedNames.size() ]);

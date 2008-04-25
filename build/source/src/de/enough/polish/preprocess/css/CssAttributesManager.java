@@ -173,15 +173,13 @@ public class CssAttributesManager {
 			Element definition = (Element) iter.next();
 			String name = definition.getAttributeValue("name");
 			String[] names;
-			if (name != null) {
-				names = new String[] { name.toLowerCase() };
-			} else {
+			if (name == null) {
 				name = definition.getAttributeValue("names");
-				if (name == null) {
-					throw new BuildException("Invalid CSS type definition: no name nor names attribute found: " + definition );
-				}
-				names = StringUtil.splitAndTrim(name.toLowerCase(), ',');
 			}
+			if (name == null) {
+				throw new BuildException("Invalid CSS type definition: no name nor names attribute found: " + definition );
+			}
+			names = StringUtil.splitAndTrim(name.toLowerCase(), ',');
 			String className = definition.getAttributeValue("class");
 			if (className == null) {
 				throw new BuildException("Invalid CSS type definition: no class attribute found: " + definition );

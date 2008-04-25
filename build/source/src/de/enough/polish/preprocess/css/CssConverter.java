@@ -194,7 +194,7 @@ public class CssConverter extends Converter {
 			defaultStyleNames.add( "menuitem");
 		}
 		String[] defaultNames = (String[]) defaultStyleNames.toArray( new String[ defaultStyleNames.size() ]);
-		Style[] styles = styleSheet.getUsedAndReferencedStyles(defaultNames);
+		Style[] styles = styleSheet.getUsedAndReferencedStyles(defaultNames, this.attributesManager);
 		boolean isLabelStyleReferenced = false;
 		codeList.add("\t//static and referenced styles:");
 		for (int i = 0; i < styles.length; i++) {

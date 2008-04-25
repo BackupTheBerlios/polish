@@ -35,6 +35,7 @@
 		<type  name="percentorabsolute" class="de.enough.polish.preprocess.css.attributes.PercentOrAbsoluteCssAttribute" />
 		<type names="resourceurl,resource-url" class="de.enough.polish.preprocess.css.attributes.ResourceUrlCssAttribute" />
 		<type names="imageurl,image-url" class="de.enough.polish.preprocess.css.attributes.ImageUrlCssAttribute" />
+		<type names="imageurls,image-urls" class="de.enough.polish.preprocess.css.attributes.ImageUrlsCssAttribute" />
 		<type  name="imageurlornone" class="de.enough.polish.preprocess.css.attributes.ImageUrlOrNoneCssAttribute" />
 		<type  name="object" class="de.enough.polish.preprocess.css.attributes.ObjectCssAttribute" />
 		<type  name="style" class="de.enough.polish.preprocess.css.attributes.StyleCssAttribute" />
@@ -44,6 +45,7 @@
 		<type  name="converter" class="de.enough.polish.preprocess.css.attributes.ConverterCssAttribute" />
 		<type  name="parameterized" class="de.enough.polish.preprocess.css.attributes.ParameterizedCssAttribute" />
 		<type  name="point" class="de.enough.polish.preprocess.css.attributes.PointCssAttribute" />
+		<type names="time, timems, time-ms" class="de.enough.polish.preprocess.css.attributes.TimeMsCssAttribute" />
 	</types>
 
 	<attribute
@@ -409,6 +411,14 @@
 			<param name="split-pos" type="percentorabsolute" primitive="true" default="50" description="The split position either in percent (0 - 100) or in pixels." />
 			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
 			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
+		</mapping>
+		<mapping from="slideshow"               to="de.enough.polish.ui.backgrounds.SlideShowBackground" >
+			<param name="color" type="color" primitive="true" default="white" />
+			<param name="images" type="image-urls" default="none" />
+			<param name="anchor" type="anchor" primitive="true" default="hcenter | vcenter" />
+			<param name="interval" type="time-ms" primitive="true" default="5000 ms" />
+			<param name="x-offset" type="integer" primitive="true" default="0" />
+			<param name="y-offset" type="integer" primitive="true" default="0" />
 		</mapping>
 	</attribute>
 	
@@ -3530,6 +3540,22 @@
 		description="The vertical split position in percent - 0..100."
 		default="50"
 		id="319"
+	/>
+	
+	<attribute
+		name="focused-style-first"
+		type="style"
+		appliesTo="Screen, Container, FakeContainerCustomItem"
+		description="The focused style for the first item in an Screen, ChoiceGroup, List, Container."
+		id="320"
+	/>
+	
+	<attribute
+		name="focused-style-last"
+		type="style"
+		appliesTo="Screen, Container, FakeContainerCustomItem"
+		description="The focused style for the last item in an Screen, ChoiceGroup, List, Container."
+		id="321"
 	/>
 	
 	

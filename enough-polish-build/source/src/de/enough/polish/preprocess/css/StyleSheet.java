@@ -258,9 +258,10 @@ public class StyleSheet {
 	 * Retrieves a list of all used or referenced styles.
 	 * 
 	 * @param defaultStyleNames an array with styles which are needed by default, e.g. "menu" in the fullscreen-mode.
+	 * @param attributesManager the manager for CSS attributes
 	 * @return an array of styles, can be empty but not null 
 	 */
-	public Style[] getUsedAndReferencedStyles(final String[] defaultStyleNames ) {
+	public Style[] getUsedAndReferencedStyles(final String[] defaultStyleNames, CssAttributesManager attributesManager ) {
 		final ArrayList stylesList = new ArrayList();
 		final ArrayList finalStylesList = new ArrayList();
 		final HashMap referencedStylesByName = new HashMap();
@@ -272,7 +273,7 @@ public class StyleSheet {
 			String styleName = usedStyleNames[i];
 			Style style = getStyle( styleName );
 			stylesList.add( style );
-			markReferences(style, referencedStylesByName);
+			markReferences(style, referencedStylesByName, attributesManager);
 		}
 		// default styles:
 		for (int i = 0; i < defaultStyleNames.length; i++) {
@@ -281,7 +282,7 @@ public class StyleSheet {
 			if (style != null && !stylesList.contains(style)) {
 				//System.out.println("adding default style " + style.getSelector());
 				stylesList.add( style );
-				markReferences(style, referencedStylesByName);
+				markReferences(style, referencedStylesByName, attributesManager);
 			}
 		}
 		// always include styles:
@@ -291,7 +292,7 @@ public class StyleSheet {
 			if ( !stylesList.contains(style) && "true".equals(style.getAttributeValue( "always-include" ) ) ) 
 			{
 				stylesList.add( style );
-				markReferences(style, referencedStylesByName);				
+				markReferences(style, referencedStylesByName, attributesManager);				
 			}
 		}
 
@@ -302,7 +303,7 @@ public class StyleSheet {
 				Style style = dynamicStyles[i];
 				if (!stylesList.contains(style)) {
 					stylesList.add( style );
-					markReferences(style, referencedStylesByName);
+					markReferences(style, referencedStylesByName, attributesManager);
 				}
 			}
 		}
@@ -424,8 +425,8 @@ public class StyleSheet {
 	 * @param style the parent style
 	 * @param referencedStylesByName a map in which referenced styles are marked
 	 */
-	private void markReferences(Style style, HashMap referencedStylesByName) {
-		String[] references = style.getReferencedStyleNames();
+	private void markReferences(Style style, HashMap referencedStylesByName, CssAttributesManager attributesManager) {
+		String[] references = style.getReferencedStyleNames(attributesManager);
 		for (int i = 0; i < references.length; i++) {
 			String referencedStyleName = references[i].toLowerCase();
 			if (referencedStyleName.charAt(0) == '.') {
@@ -443,7 +444,7 @@ public class StyleSheet {
 				if (reference == null) {
 					// this style has not been referenced before
 					referencedStylesByName.put( referencedStyleName, referencedStyle );
-					markReferences( referencedStyle, referencedStylesByName );
+					markReferences( referencedStyle, referencedStylesByName, attributesManager );
 				}
 			}
 		}
