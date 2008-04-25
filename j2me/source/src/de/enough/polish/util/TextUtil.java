@@ -559,7 +559,7 @@ public final class TextUtil {
 			while(isCurrRTL && index >= 0) // while we are in hebrew
 			{
 				char curr = input.charAt(index); 
-				char nextChr = 0;
+				char nextChr = '\0';
 				if(index > 0) {
 					nextChr = input.charAt(index-1);
 				} else {
@@ -593,7 +593,7 @@ public final class TextUtil {
 			while(!isCurrRTL && index >= 0) // English....
 			{
 				char curr = input.charAt(index);
-				char nextChr = 0;
+				char nextChr = '\0';
 				if(index > 0) 
 				{
 					nextChr = input.charAt(index-1);
