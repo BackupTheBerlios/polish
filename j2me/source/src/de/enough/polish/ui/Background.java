@@ -69,19 +69,32 @@ public abstract class Background implements Serializable
 	public void animate(Screen screen, Item parent, long currentTime, ClippingRegion repaintRegion) 
 	{
 		if (animate()) {
-			if (parent != null) {
-				parent.addRelativeToBackgroundRegion(
-						//#if polish.css.complete-background
-							this, null, // provide references to this background so that the correct background dimensions are selected 
-						//#endif
-						repaintRegion, 0, 0, parent.backgroundWidth, parent.backgroundHeight 
-				);
-			} else {
-				repaintRegion.addRegion(0, 0, screen.getWidth(), screen.getScreenHeight() );
-			}
+			addRelativeToBackgroundRegion(repaintRegion, screen, parent, 0, 0, 0, 0 );
 		}
 	}
 
+	/**
+	 * Adds an repaint area relative to this background
+	 * @param repaintRegion the clipping rectangle
+	 * @param screen the screen of this background
+	 * @param parent the item of this background
+	 * @param left left adjustment of the repaint region, use negative values to expand area
+	 * @param right right adjustment of the repaint region, use positive values to expand area
+	 * @param top top adjustment of the repaint region, use negative values to expand area
+	 * @param bottom bottom adjustment of the repaint region, use positive values to expand area
+	 */
+	protected void addRelativeToBackgroundRegion(ClippingRegion repaintRegion, Screen screen, Item parent, int left, int right, int top, int bottom ) {
+		if (parent != null) {
+			parent.addRelativeToBackgroundRegion(
+					//#if polish.css.complete-background
+						this, null, // provide references to this background so that the correct background dimensions are selected 
+					//#endif
+					repaintRegion, left, top, parent.backgroundWidth - left + right, parent.backgroundHeight - top + bottom 
+			);
+		} else {
+			repaintRegion.addRegion(0, 0, screen.getWidth(), screen.getScreenHeight() );
+		}		
+	}
 	
 	/**
 	 * Animates this background.

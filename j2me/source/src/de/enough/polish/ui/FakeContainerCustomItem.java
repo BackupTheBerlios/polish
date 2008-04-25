@@ -182,6 +182,28 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	}
 	
 	/**
+	 * Adds an item to this container.
+	 * 
+	 * @param item the item which should be added.
+	 * @throws IllegalArgumentException when the given item is null
+	 */
+	public void add( javax.microedition.lcdui.Item item ) {
+	}
+
+	/**
+	 * Inserts the given item at the defined position.
+	 * Any following elements are shifted one position to the back.
+	 * 
+	 * @param index the position at which the element should be inserted, 
+	 * 					 use 0 when the element should be inserted in the front of this list.
+	 * @param item the item which should be inserted
+	 * @throws IllegalArgumentException when the given item is null
+	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
+	 */
+	public void add( int index, javax.microedition.lcdui.Item item ) {
+	}
+	
+	/**
 	 * Replaces the item at the specified position in this list with the given item. 
 	 * 
 	 * @param index the position of the element, the first element has the index 0.
@@ -206,6 +228,19 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 		}
 		return last;
 	}
+	
+	/**
+	 * Replaces the item at the specified position in this list with the given item. 
+	 * 
+	 * @param index the position of the element, the first element has the index 0.
+	 * @param item the item which should be set
+	 * @return the replaced item
+	 * @throws IndexOutOfBoundsException when the index < 0 || index >= size()
+	 */
+	public Item set( int index, javax.microedition.lcdui.Item item ) {
+		return null;
+	}
+	
 	
 	/**
 	 * Returns the item at the specified position of this container.

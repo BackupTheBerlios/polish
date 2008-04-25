@@ -609,6 +609,82 @@ public final class UiAccess {
 		// ignore
 	}
 	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets a ChoiceItem or a subclass for the given ChoiceGroup. 
+	 * @param ChoiceGroup the ChoiceGroup
+	 * @param index the index of the item that should be exchanged
+	 * @param item the new item
+	 */
+	public static void setChoiceGroupItem( ChoiceGroup ChoiceGroup, int index, ChoiceItem item ) {
+		ChoiceGroup.set(index, item);
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves a ChoiceItem or a subclass for the given ChoiceGroup. 
+	 * @param ChoiceGroup the ChoiceGroup
+	 * @param index the index of the item that should be returned
+	 * @return the item at the given position
+	 */
+	public static ChoiceItem getChoiceGroupItem( ChoiceGroup ChoiceGroup, int index ) {
+		return ChoiceGroup.getItem(index);
+	}
+	//#endif
+
+	
+	//#if polish.usePolishGui
+	/**
+	 * Sets a ChoiceItem or a subclass for the given ChoiceGroup. 
+	 * @param ChoiceGroup the ChoiceGroup
+	 * @param item the new item
+	 */
+	public static void appendChoiceGroupItem( ChoiceGroup ChoiceGroup, ChoiceItem item ) {
+		ChoiceGroup.append( item );
+	}
+	//#endif
+	
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Sets a ChoiceItem or a subclass for the given ChoiceGroup. 
+	 * @param ChoiceGroup the ChoiceGroup
+	 * @param index the index of the item that should be exchanged
+	 * @param item the new item
+	 */
+	public static void setChoiceGroupItem( javax.microedition.lcdui.ChoiceGroup ChoiceGroup, int index, ChoiceItem item ) {
+		// ignore
+	}
+	//#endif
+
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Retrieves a ChoiceItem or a subclass for the given ChoiceGroup. 
+	 * @param ChoiceGroup the ChoiceGroup
+	 * @param index the index of the item that should be returned
+	 * @return the item at the given position
+	 */
+	public static ChoiceItem getChoiceGroupItem( javax.microedition.lcdui.ChoiceGroup ChoiceGroup, int index ) {
+		return null;
+	}
+	//#endif
+
+	
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Sets a ChoiceItem or a subclass for the given ChoiceGroup. 
+	 * @param ChoiceGroup the ChoiceGroup
+	 * @param item the new item
+	 */
+	public static void appendChoiceGroupItem( javax.microedition.lcdui.ChoiceGroup ChoiceGroup, ChoiceItem item ) {
+		// ignore
+	}
+	//#endif
+	
+	
+	
+	
 
 	//#if polish.midp
 	/**
@@ -3227,7 +3303,41 @@ public final class UiAccess {
 		}
 		//#endif
 	}
+	
+	
 
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Casts the given LCDUI item into a J2ME Polish item
+	 * @param item the LCDUI item
+	 * @return the corresponding J2ME Polish item, null when no cast is possible
+	 */
+	public static Item cast( javax.microedition.lcdui.Item item ) {
+		return null;
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Casts the given J2ME Polish item into a LCDUI item
+	 * @param item the J2ME Polish item
+	 * @return the corresponding LCDUI item, null when no cast is possible
+	 */
+	public static
+	//#if polish.LibraryBuild
+		javax.microedition.lcdui.Item
+	//#else
+		//# Item 
+	//#endif
+	cast(Item item ) {
+		//#if polish.LibraryBuild
+			return null;
+		//#else
+			//# return item;
+		//#endif
+	}
+	//#endif
+	
 
 
 }

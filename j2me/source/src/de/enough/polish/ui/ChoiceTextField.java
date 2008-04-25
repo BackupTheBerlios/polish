@@ -239,7 +239,9 @@ public class ChoiceTextField
 			Item item = choices[i];
 			this.choicesContainer.add( item );
 		}
-		openChoices( choices.length > 0 );
+		if (this.isFocused) {
+			openChoices( choices.length > 0 );
+		}
 	}
 	
 	/**
@@ -745,6 +747,17 @@ public class ChoiceTextField
 			Style choicestyle = (Style) style.getObjectProperty("choicetextfield-choicestyle");
 			if (choicestyle != null) {
 				this.choiceItemStyle = choicestyle;
+				if (this.choiceItems != null) {
+					for (int i=0; i<this.choiceItems.length; i++) {
+						Item item = this.choiceItems[i];
+						if (item != null) {
+							item.setStyle( choicestyle );
+							if (item.isFocused) {
+								item.focus( null, 0 );
+							}
+						}
+					}
+				}
 			}
 		//#endif
 	}

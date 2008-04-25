@@ -2832,9 +2832,7 @@ public abstract class Item extends Object
 		if (!this.isStyleInitialised && oldStyle != null) {
 			setStyle( oldStyle );
 		}
-		if (this.focusedStyle != null) {
-			newStyle = this.focusedStyle;
-		} else if (newStyle == null) {
+		if (newStyle == null) {
 			newStyle = getFocusedStyle();
 		}
 		//#if polish.css.view-type

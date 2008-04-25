@@ -100,6 +100,12 @@ public class Container extends Item {
 		/** vertical pointer position when it was pressed the last time */ 
 		protected int lastPointerPressY;
 	//#endif
+	//#if polish.css.focused-style-first
+		protected Style focusedStyleFirst;
+	//#endif
+	//#if polish.css.focused-style-last
+		protected Style focusedStyleLast;
+	//#endif
 	private boolean isScrollRequired;
 	/** The height available for scrolling, ignore when set to -1 */
 	protected int availableHeight = -1;
@@ -357,7 +363,6 @@ public class Container extends Item {
 		if (index == this.focusedIndex) {
 			last.defocus(this.itemStyle);
 			if ( item.appearanceMode != PLAIN ) {
-				//this.itemStyle = item.focus( this.focusedStyle, 0 );
 				if (this.isFocused) {
 					focus( index, item, 0 );
 				} else {
@@ -807,12 +812,13 @@ public class Container extends Item {
 		int wBefore = item.itemWidth;
 		int hBefore = item.itemHeight;
 		int layoutBefore = item.layout;
+		Style newStyle = getFocusedStyle( index, item);
 		//#if tmp.supportViewType
 			if ( this.containerView != null ) {
-				this.itemStyle =  this.containerView.focusItem( index, item, direction, this.focusedStyle );
+				this.itemStyle =  this.containerView.focusItem( index, item, direction, newStyle );
 			} else {
 		//#endif
-				this.itemStyle = item.focus( this.focusedStyle, direction );
+				this.itemStyle = item.focus( newStyle, direction );
 		//#if tmp.supportViewType
 			} 
 		//#endif
@@ -898,6 +904,31 @@ public class Container extends Item {
 		}
 	}
 	
+	/**
+	 * Retrieves the best matching focus style for the given item
+	 * @param index the index of the item
+	 * @param item the item
+	 * @return the matching focus style
+	 */
+	protected Style getFocusedStyle(int index, Item item)
+	{
+		Style newStyle = item.focusedStyle;
+		//#if polish.css.focused-style-first
+			if (index == 0 && this.focusedStyleFirst != null) {
+				newStyle = this.focusedStyleFirst;
+			}
+		//#endif
+		//#if polish.css.focused-style-last
+			if (this.focusedStyleLast != null  && index == this.itemsList.size() - 1) {
+				newStyle = this.focusedStyleLast;
+			}
+		//#endif
+		if (newStyle == null) {
+			newStyle = item.getFocusedStyle();
+		}
+		return newStyle;
+	}
+
 	/**
 	 * Scrolls this container so that the (internal) area of the given item is best seen.
 	 * This is used when a GUI even has been consumed by the currently focused item.
@@ -1820,15 +1851,28 @@ public class Container extends Item {
 			this.marginRight = 0;
 		}
 		//#if polish.css.focused-style
-			this.focusedTopMargin = this.focusedStyle.marginTop + this.focusedStyle.paddingTop;
-			if (this.focusedStyle.border != null) {
-				this.focusedTopMargin += this.focusedStyle.border.borderWidth;
-			}
-			if (this.focusedStyle.background != null) {
-				this.focusedTopMargin += this.focusedStyle.background.borderWidth;
+			if (this.focusedStyle != null) {
+				this.focusedTopMargin = this.focusedStyle.marginTop + this.focusedStyle.paddingTop;
+				if (this.focusedStyle.border != null) {
+					this.focusedTopMargin += this.focusedStyle.border.borderWidth;
+				}
+				if (this.focusedStyle.background != null) {
+					this.focusedTopMargin += this.focusedStyle.background.borderWidth;
+				}
 			}
 		//#endif
-		
+		//#if polish.css.focused-style-first
+			Style firstFocusStyleObj = (Style) style.getObjectProperty("focused-style-first");
+			if (firstFocusStyleObj != null) {
+				this.focusedStyleFirst = firstFocusStyleObj;
+			}
+		//#endif
+		//#if polish.css.focused-style-last
+			Style lastFocusStyleObj = (Style) style.getObjectProperty("focused-style-last");
+			if (lastFocusStyleObj != null) {
+				this.focusedStyleLast = lastFocusStyleObj;
+			}
+		//#endif
 		//#ifdef polish.css.view-type
 //			ContainerView viewType =  (ContainerView) style.getObjectProperty("view-type");
 //			if (this instanceof ChoiceGroup) {
@@ -1970,25 +2014,25 @@ public class Container extends Item {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#focus(de.enough.polish.ui.Style, int)
 	 */
-	protected Style focus(Style focusstyle, int direction ) {
+	protected Style focus(Style focusStyle, int direction ) {
 		this.plainStyle = null;
 		if ( this.itemsList.size() == 0) {
-			return super.focus( this.focusedStyle, direction );
+			return super.focus(focusStyle, direction );
 		} else {
-			focusstyle = getFocusedStyle();
+			focusStyle = getFocusedStyle();
 			Style result = this.style;
-			if ((focusstyle != StyleSheet.focusedStyle && focusstyle != null)  
+			if ((focusStyle != StyleSheet.focusedStyle && focusStyle != null)  
 				//#if polish.css.include-label
 				|| this.includeLabel 
 				//#endif
 			) {
-				result = super.focus( focusstyle, direction );
+				result = super.focus( focusStyle, direction );
 				this.plainStyle = result;
 			}
 			
 			//#if tmp.supportViewType
 				if (this.containerView != null) {
-					this.containerView.focus(focusstyle, direction);
+					this.containerView.focus(focusStyle, direction);
 					//this.isInitialised = false; not required
 				}
 			//#endif
@@ -2023,7 +2067,7 @@ public class Container extends Item {
 				if (newFocusIndex == -1) {
 					//System.out.println("DID NOT FIND SUITEABLE ITEM");
 					// this container has only non-focusable items!
-					return super.focus( this.focusedStyle, direction );
+					return super.focus( focusStyle, direction );
 				}
 			//}
 			//#if tmp.supportViewType
@@ -2041,7 +2085,7 @@ public class Container extends Item {
 					if (newFocusIndex == -1) {
 						//System.out.println("DID NOT FIND SUITEABLE ITEM");
 						// this container has only non-focusable items!
-						return super.focus( this.focusedStyle, direction );
+						return super.focus( focusStyle, direction );
 					}
 				}
 			//#endif
@@ -2065,7 +2109,7 @@ public class Container extends Item {
 			// change the label-style of this container:
 			//#ifdef polish.css.label-style
 				if (this.label != null) {
-					Style labStyle = (Style) focusstyle.getObjectProperty("label-style");
+					Style labStyle = (Style) focusStyle.getObjectProperty("label-style");
 					if (labStyle != null) {
 						this.labelStyle = this.label.style;
 						this.label.setStyle( labStyle );
