@@ -103,7 +103,6 @@ public class MeaFinalizer extends Finalizer{
         String distFilePath = distFile.getAbsolutePath();
         String croppedJadFilePath = jadFile.getAbsolutePath().substring( distFilePath.length() + 1 ).replace('\\', '/');// replaceFirst(distFilePath+"/","");
         String croppedJarFilePath = jarFile.getAbsolutePath().substring( distFilePath.length() + 1 ).replace('\\', '/');// replaceFirst(distFilePath+"/","");
-        System.out.println("CROPPED PATH=" + croppedJarFilePath );
         Entry entry = new Entry(jadFile,jarFile,device,locale,croppedJadFilePath,croppedJarFilePath);
         entries.add(entry);
     }
