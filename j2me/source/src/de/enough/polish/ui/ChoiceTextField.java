@@ -175,7 +175,10 @@ public class ChoiceTextField
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		super.initContent(firstLineWidth, lineWidth);
 		this.choicesContainer.relativeY = this.contentHeight + this.paddingVertical;
-	}
+		if (!this.isLayoutExpand) {
+			try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
+		}
+ 	}
 
 	/**
 	 * Enables that available choices should (only) be shown after the specified character is entered.
@@ -322,10 +325,6 @@ public class ChoiceTextField
 			if ( this.choicesContainer.handleKeyPressed(keyCode, gameAction) ) {
 				//#debug
 				System.out.println("keyPressed handled by choices container");
-				if (this.choicesContainer.internalX != Item.NO_POSITION_SET) {
-					this.internalX = this.choicesContainer.relativeX + this.choicesContainer.internalX;
-					this.internalY = this.choicesContainer.relativeY + this.choicesContainer.internalY;
-				}
 				return true;
 			}
 			if (gameAction == Canvas.FIRE) {
