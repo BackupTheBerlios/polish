@@ -327,10 +327,7 @@ public class TreeItem
 		private final Container children;
 		private boolean isExpanded;
 		int xLeftOffset = 10;
-		private Style rootFocusedStyle;
 		private Style rootPlainStyle;
-		//private boolean isChildrenFocused;
-//		private int availableWidth;
 		
 		public Node( Item root ) {
 			super( null, 0, INTERACTIVE, null );
@@ -547,7 +544,6 @@ public class TreeItem
 			//#debug
 			System.out.println("focus node " + this.root + ", expanded=" + this.isExpanded);
 			this.isFocused = true;
-			this.rootFocusedStyle = focusstyle;
 			if ( !this.isExpanded || direction != Canvas.UP 
 					|| this.children.size() == 0 || this.children.appearanceMode == PLAIN)
 			{
@@ -588,11 +584,6 @@ public class TreeItem
 				//this.isChildrenFocused = false;
 				// move focus to root:
 				this.root.focus(null, Canvas.UP);
-//				if (this.rootFocusedStyle != null) {
-//					this.root.focus(this.rootFocusedStyle, Canvas.UP);
-//				} else {
-//					this.root.focus(this.focusedStyle, Canvas.UP);
-//				}
 			}
 		}
 				
