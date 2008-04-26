@@ -548,14 +548,15 @@ public class TreeItem
 			System.out.println("focus node " + this.root + ", expanded=" + this.isExpanded);
 			this.isFocused = true;
 			this.rootFocusedStyle = focusstyle;
-			if ( !this.isExpanded || direction != Canvas.UP || this.children.size() == 0 || this.children.appearanceMode == PLAIN)
+			if ( !this.isExpanded || direction != Canvas.UP 
+					|| this.children.size() == 0 || this.children.appearanceMode == PLAIN)
 			{
-				this.rootPlainStyle  = this.root.focus(focusstyle, direction);
+				this.rootPlainStyle  = this.root.focus(null, direction);
 				return this.rootPlainStyle;
 			}
 			// focus one of the expanded children:
 			//System.out.println("node " + this + ": forwarding focus event to children, (direction != Canvas.UP)=" + (direction != Canvas.UP));
-			this.children.focus(focusstyle, direction); 
+			this.children.focus(null, direction); 
 			return this.root.style;
 		}
 		
@@ -586,11 +587,12 @@ public class TreeItem
 				this.children.focus( -1 );
 				//this.isChildrenFocused = false;
 				// move focus to root:
-				if (this.rootFocusedStyle != null) {
-					this.root.focus(this.rootFocusedStyle, Canvas.UP);
-				} else {
-					this.root.focus(this.focusedStyle, Canvas.UP);
-				}
+				this.root.focus(null, Canvas.UP);
+//				if (this.rootFocusedStyle != null) {
+//					this.root.focus(this.rootFocusedStyle, Canvas.UP);
+//				} else {
+//					this.root.focus(this.focusedStyle, Canvas.UP);
+//				}
 			}
 		}
 				
