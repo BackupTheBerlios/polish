@@ -151,7 +151,7 @@ public class ThemeTask extends PolishTask {
 									ThemeContainer container = null;
 									
 									//Create a container for the field object
-									System.out.println("Bundling " + fieldName + "...");
+									System.out.println("Bundling object " + fieldName + "...");
 									
 									//setAccessible() only grants access to private members
 									//if the security manager allows this !!!
@@ -182,7 +182,7 @@ public class ThemeTask extends PolishTask {
 									ThemeContainer container = null;
 									
 									//Create a container for the field object
-									System.out.println("Bundling " + fieldName + "...");
+									System.out.println("Bundling object " + fieldName + "...");
 									container = getContainer(setting.getTarget(),fieldName,field.get(null));
 									containers.add(container);
 								}
@@ -195,6 +195,7 @@ public class ThemeTask extends PolishTask {
 			//Add all resources to the container vector
 			for (int i = 0; i < resources.length; i++) {
 				ThemeContainer container = getContainer(resources[i]);
+				System.out.println("Bundling file " + container.getName() + "...");
 				containers.add(container);
 			}
 			
