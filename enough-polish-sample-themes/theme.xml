@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="j2mepolish" name="enough-polish-example">
+
+	<property file="${user.name}.properties" />
+	<!-- the device used for test builds:                         -->
+	<property  name="device" value="Nokia/Series60E2" />
+
+
+	<property name="wtk.home" location="/home/enough/dev/WTK2.2" />
+	<property name="nokia.home" location="/home/enough/dev/Nokia" />
+	<property name="polish.home" location="../enough-polish-build" />
+	<property  name="mpp.home" location="/home/enough/dev/mpp-sdk"/>
+
+	
+	<!-- task definitions -->
+	<taskdef 
+		name="j2mepolish"
+		classname="de.enough.polish.ant.PolishTask" 
+		classpath="${polish.home}/bin/classes:${polish.home}/lib/jdom.jar" 
+	/>
+
+<target name="_init">
+		<property file="${user.name}.properties" />
+		<taskdef name="theme" classname="de.enough.polish.ant.ThemeTask" classpath="bin/build:bin/classes:${j2me.home}/bin/classes;${polish.home}/bin/classes:${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar:${wtk.home}:${polish.home}/import/midp-2.0.jar:${polish.home}/import/blackberry-4.3.0.jar" />
+	</target>
+    
+<target depends="_init" name="j2mepolish">
+	<theme>
+	    <!-- general settings -->
+		<info copyright="Copyright 2006 Enough Software. All rights reserved." 
+			description="A theme example" 
+			infoUrl="http://www.enough.de" 
+			jarName="${polish.vendor}-${polish.name}-${polish.locale}-email.jar" 
+			jarUrl="${deploy-url}${polish.jarName}" 
+			license="GPL" 
+			name="ThemeExample" 
+			vendorName="Enough Software" 
+			version="1.0"
+	    />
+		<!-- selection of supported devices -->
+		<deviceRequirements if="test">
+			<requirement name="Identifier" value="${device}"/>
+			<!--
+			<requirement name="Name" value="MppPhone"/>
+			-->
+		</deviceRequirements>
+		<deviceRequirements unless="test">
+			<requirement name="Identifier" value="${devices}"/>
+		</deviceRequirements>
+	    <!-- build settings -->
+		<build fullscreen="menu" 
+                polishDir="../enough-polish-j2me/source/src" 
+                symbols="polish.skipArgumentCheck" 
+                usePolishGui="true"
+			>
+			<!-- midlets definition -->
+			<midlet class="de.enough.polish.sample.ThemeMidlet" name="ThemeMidlet" />
+			<!-- project-wide variables - used for preprocessing  -->
+			<variables>
+				<variable name="polish.TextField.useDirectInput" value="true" />
+				<variable name="polish.TextField.supportSymbolsEntry" value="true" />
+				<!--
+				<variable name="polish.Container.allowCycling" value="false" />
+				-->
+				<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
+				<variable name="polish.useScrollBar" value="true" />
+			</variables>
+			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
+			<obfuscator useDefaultPackage="false" name="ProGuard" unless="test">
+				<keep class="de.enough.polish.example.Dummy" />
+			</obfuscator>
+			<!-- debug settings: only include debug setting when the test-property is true -->
+			<debug if="test" level="error" showLogOnError="true" verbose="true">
+				<filter level="debug" package="de.enough.polish.sample.mail"/>
+				<filter level="info" pattern="de.enough.polish.ui.*"/>
+				<filter level="debug" class="de.enough.polish.ui.Container" />
+				<!--
+				<filter level="debug" class="de.enough.polish.ui.ChoiceTextField" />
+				<filter level="debug" class="de.enough.polish.ui.TreeItem" />
+				-->
+			</debug>
+			<resources
+				dir="resources"
+			>	
+				<root dir="resources/style" />
+				<root dir="resources/${id}" />
+				<localization locales="en_US" />
+			</resources>
+
+			<serialize regex="^.*Style" target="de.enough.polish.ui.StyleSheet" type="de.enough.polish.ui.Style" />
+
+			<file file="${id}.theme" />
+		</build>
+		<emulator if="test" />
+	</theme>
+</target>
+</project>

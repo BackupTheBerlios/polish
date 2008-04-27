@@ -1,0 +1,18 @@
+.main extends form{
+	always-include: true;
+	background-color: #FF17497A;
+	menubar-style: mainMenu;
+	title-style: mainTitle;
+}
+
+.mainMenu extends menubar{
+	always-include: true;
+	background-color: #FF17497A;
+	font-color: white;
+}
+
+.mainTitle extends title{
+	always-include: true;
+	background-color: #FF17497A;
+	font-color: white;
+}

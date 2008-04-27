@@ -1,0 +1,29 @@
+.form{
+	always-include: true;
+	padding-top: 60;
+	title-style: title;
+	menubar-style: menubar;
+}
+
+.logo{
+	always-include: true;
+	layout: horizontal-expand | horizontal-center;
+}
+
+menubar{
+	font-size: small;
+	font-style: bold;
+}
+
+title{
+	font-style: bold;
+	font-size: large;
+}
+
+leftCommand{
+	layout: left;
+}
+
+rightCommand{
+	layout: right;
+}
