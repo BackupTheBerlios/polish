@@ -115,6 +115,7 @@ public class ThemeController {
 	 */
 	public static Image getImage(ThemeStream stream, String id) throws IOException
 	{
+		id = id + ".png";
 		byte[] data = getData(stream, id);
 		return Image.createImage(data, 0, data.length);
 	}
