@@ -1602,7 +1602,7 @@ public class PolishTask extends ConditionalTask {
 		File resourceDir = new File( buildPath + File.separatorChar + "resources" );
 		device.setResourceDir( resourceDir );
 		
-		File themeDir = new File( buildPath + File.separatorChar + "rag" );
+		File themeDir = new File( buildPath + File.separatorChar + "theme" );
 		device.setThemeDir( themeDir );
 		this.environment.addVariable("polish.resources.dir", resourceDir.getAbsolutePath() );
 
