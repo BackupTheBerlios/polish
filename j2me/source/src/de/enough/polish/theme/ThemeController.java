@@ -1,7 +1,14 @@
 //#condition polish.usePolishGui && polish.useThemes
 package de.enough.polish.theme;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
+
+import javax.microedition.lcdui.Image;
+
+import de.enough.polish.io.Serializer;
+import de.enough.polish.ui.Style;
 
 /**
  * <p>
@@ -55,5 +62,73 @@ public class ThemeController {
 		}
 		
 		return data;
+	}
+	
+	/**
+	 * Returns an byte array from a ThemeStream
+	 * @param stream the stream to read
+	 * @param id the id of the data
+	 * @return the byte array
+	 * @throws IOException
+	 */
+	public static byte[] getData(ThemeStream stream, String id) throws IOException
+	{
+		ThemeContainer header = getContainerHeader(stream, id);
+		return getContainerData(stream, header);
+	}
+	
+	/**
+	 * Returns an object from a ThemeStream
+	 * @param stream the stream to read
+	 * @param id the id of the object
+	 * @return the object
+	 * @throws IOException
+	 */
+	public static Object getObject(ThemeStream stream, String id) throws IOException
+	{
+
+		ThemeContainer header = getContainerHeader(stream, id);
+		byte[] data = getContainerData(stream, header);
+		
+		return Serializer.deserialize(new DataInputStream(new ByteArrayInputStream(data)));
+	}
+	
+	/**
+	 * Returns a themed image (png) as an Image object  
+	 * @param stream the stream to read
+	 * @param id the id of the file
+	 * @return the image
+	 * @throws IOException
+	 */
+	public static Style getStyle(ThemeStream stream, String id) throws IOException
+	{
+		id = "de.enough.polish.ui.stylesheet." + id + "style".toLowerCase();
+		return (Style) getObject(stream, id);
+	}
+	
+	/**
+	 * Returns a themed image (png) as an Image object  
+	 * @param stream the stream to read
+	 * @param id the id of the file
+	 * @return the image
+	 * @throws IOException
+	 */
+	public static Image getImage(ThemeStream stream, String id) throws IOException
+	{
+		byte[] data = getData(stream, id);
+		return Image.createImage(data, 0, data.length);
+	}
+	
+	/**
+	 * Returns the contents of a themed file as a String
+	 * @param stream the stream to read
+	 * @param id the id of the file
+	 * @return the string
+	 * @throws IOException
+	 */
+	public static String getContentString(ThemeStream stream, String id) throws IOException
+	{
+		byte[] data = getData(stream,id);
+		return new String(data);
 	}
 }
