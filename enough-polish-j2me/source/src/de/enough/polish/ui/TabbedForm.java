@@ -165,7 +165,7 @@ public class TabbedForm extends Form {
 	 * @return the assigned index of the Item within the specified tab
 	 */
 	public int append( int tabIndex, Item item ) {
-		return append( tabIndex, item, null );		
+		return append( tabIndex, item, null );
 	}
 
 	/**
