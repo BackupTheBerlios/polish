@@ -1615,7 +1615,11 @@ implements Choice
 		//#endif
 		if (   this.isPointerReleaseShouldTriggerKeyRelease ) { 
 			this.isPointerReleaseShouldTriggerKeyRelease = false;
-			boolean handled = handleKeyReleased( -1, Canvas.FIRE );
+			
+			boolean handled = handlePointerScrollReleased(relX, relY);
+			if (!handled) {
+				handled = handleKeyReleased( -1, Canvas.FIRE );
+			}
 			if (handled) {
 				return true;
 			}

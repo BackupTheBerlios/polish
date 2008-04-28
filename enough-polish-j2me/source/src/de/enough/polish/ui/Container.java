@@ -2385,21 +2385,19 @@ public class Container extends Item {
 	//#endif
 	
 	//#ifdef polish.hasPointerEvents
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#handlePointerReleased(int, int)
+	/**
+	 * Allows subclasses to check if a pointer release event is used for scrolling the container.
+	 * This method can only be called when polish.hasPointerEvents is true.
+	 * 
+	 * @param relX the x position of the pointer pressing relative to this item's left position
+	 * @param relY the y position of the pointer pressing relative to this item's top position
 	 */
-	protected boolean handlePointerReleased(int relX, int relY) {
-		//#debug
-		System.out.println("Container.handlePointerReleased(" + relX + ", " + relY + ") for " + this );
-		
+	protected boolean handlePointerScrollReleased(int relX, int relY) {
 		int yDiff = relY - this.lastPointerPressY;
 		int bottomY = Math.max( this.itemHeight, this.internalY + this.internalHeight );
 		if (this.focusedItem != null && this.focusedItem.relativeY + this.focusedItem.backgroundHeight > bottomY) {
 			bottomY = this.focusedItem.relativeY + this.focusedItem.backgroundHeight;
 		}
-//		if (yDiff != 0) {
-//			System.out.println("yDiff=" + yDiff + ", items=" + this.itemsList.size() + ", (this.itemHeight > this.availableHeight || this.yOffset != 0)=" + (this.itemHeight > this.availableHeight || this.yOffset != 0) + ", (yDiff < -5 && this.yOffset + bottomY > this.availableHeight)=" + (yDiff < -5 && this.yOffset + bottomY > this.availableHeight) + ", (yDiff > 5 && this.yOffset != 0)=" + (yDiff > 5 && this.yOffset != 0) );
-//		}
 		if ( this.enableScrolling 
 				&& (this.itemHeight > this.availableHeight || this.yOffset != 0)
 				&& ((yDiff < -5 && this.yOffset + bottomY > this.availableHeight) // scrolling downwards
@@ -2412,6 +2410,21 @@ public class Container extends Item {
 			}
 			//System.out.println("adjusting scrolloffset to " + offset);
 			setScrollYOffset(offset, true);
+			return true;
+		}
+		return false;
+	}
+	//#endif
+	
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#handlePointerReleased(int, int)
+	 */
+	protected boolean handlePointerReleased(int relX, int relY) {
+		//#debug
+		System.out.println("Container.handlePointerReleased(" + relX + ", " + relY + ") for " + this );
+		
+		if (handlePointerScrollReleased(relX, relY)) {
 			return true;
 		}
 		// an item within this container was selected:
