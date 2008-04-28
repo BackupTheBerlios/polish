@@ -271,22 +271,21 @@ implements Runnable
   }
 
   protected ProtocolHandler getProtocolHandlerForURL(String url)
-    throws IOException
+  throws IOException
   {
-    int pos = url.indexOf(':');
-    
-    if (pos < 0)
-    {
-      throw new IOException("malformed url");
-    }
-    
-    String protocol = url.substring(0, pos);
-    ProtocolHandler handler = (ProtocolHandler) this.protocolHandlersByProtocol.get(protocol);
-    
-    if (handler == null)
-      throw new IOException("protocol handler not found");
-    
-    return handler;
+	  if (url.length() > 1 && url.charAt(0) == '/') {
+		  url = protocolAndHostOf(this.currentDocumentBase) + url;
+	  }
+	  int pos = url.indexOf(':');
+	  if (pos == -1) {
+		  throw new IOException("malformed url");
+	  }
+	  String protocol = url.substring(0, pos);
+	  ProtocolHandler handler = (ProtocolHandler) this.protocolHandlersByProtocol.get(protocol);
+	  if (handler == null) {
+		  throw new IOException("protocol handler not found");
+	  }
+	  return handler;
   }
   
   public void addTagHandler(String tagName, TagHandler handler)
@@ -332,6 +331,13 @@ implements Runnable
 		//#debug
 		System.out.println("Opening nested container");
 		Container previousContainer = this.currentContainer;
+		if (containerStyle == null) {
+			if (previousContainer != null) {
+				containerStyle = previousContainer.getStyle();
+			} else {
+				containerStyle = getStyle();
+			}
+		}
 		this.currentContainer = new Container( false, containerStyle );
 		if (previousContainer != null) {
 			this.currentContainer.setParent( previousContainer );
