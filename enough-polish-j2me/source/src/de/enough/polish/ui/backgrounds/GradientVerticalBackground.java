@@ -86,6 +86,7 @@ public class GradientVerticalBackground  extends Background {
 	 * Paints the screen 
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g) {
+		width--;
 		g.setStrokeStyle(this.stroke);
 		int startOffset = this.startLine;
 		int endOffset = this.endLine;
