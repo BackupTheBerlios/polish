@@ -197,12 +197,6 @@ implements ItemStateListener //, CommandListener
 			this.filterTextField.addCommands(commandsList);
 		} else {
 			this.container.addCommands(commandsList);
-			//try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
-		}
-		System.out.println( item + ": setting item commands " );
-		for (int i=0; i<commandsList.size(); i++) {
-			Command cmd = (Command) commandsList.get(i);
-			System.out.println("-> " + cmd.getLabel());
 		}
 		super.setItemCommands(commandsList, item);
 	}
