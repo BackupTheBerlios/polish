@@ -1285,15 +1285,19 @@ implements AccessibleCanvas
 			this.titleStyle = (Style) style.getObjectProperty("title-style");
 			if (this.titleStyle != null && this.title != null) {
 				this.title.setStyle(this.titleStyle);
-				int width = this.screenWidth - (this.marginLeft + this.marginRight);
-				this.titleHeight = this.title.getItemHeight( width, width );
+				if (this.isInitialized) {
+					int width = this.screenWidth - (this.marginLeft + this.marginRight);
+					this.titleHeight = this.title.getItemHeight( width, width );
+				}
 			} else {
 		//#endif
 		 //#if tmp.usingTitle
 		 	if (this.title != null && this.title.isInitialized) {
 		 		this.title.isInitialized = false;
-				int width = this.screenWidth - (this.marginLeft + this.marginRight);
-				this.titleHeight = this.title.getItemHeight( width, width );
+				if (this.isInitialized) {
+					int width = this.screenWidth - (this.marginLeft + this.marginRight);
+					this.titleHeight = this.title.getItemHeight( width, width );
+				}
 		 	}
 		 //#endif
 		//#if tmp.usingTitle && polish.css.title-style				
