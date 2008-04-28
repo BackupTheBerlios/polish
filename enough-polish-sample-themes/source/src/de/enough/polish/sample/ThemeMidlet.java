@@ -33,8 +33,10 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
 
+//#if polish.useThemes
 import de.enough.polish.theme.ThemeController;
 import de.enough.polish.theme.ThemeStream;
+//#endif
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;

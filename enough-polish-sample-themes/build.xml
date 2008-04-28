@@ -3,7 +3,8 @@
 
 	<property file="${user.name}.properties" />
 	<!-- the device used for test builds:                         -->
-	<property  name="device" value="Nokia/Series60E2" />
+	<property  name="device" value="Generic/AnyPhone" />
+	<property  name="devices" value="${device}" />
 
 
 	<property name="wtk.home" location="/home/enough/dev/WTK2.2" />
@@ -16,7 +17,7 @@
 	<taskdef 
 		name="j2mepolish"
 		classname="de.enough.polish.ant.PolishTask" 
-		classpath="${polish.home}/bin/classes:${polish.home}/lib/jdom.jar" 
+		classpath="${polish.home}/bin/classes:${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar" 
 	/>
 
 		
@@ -46,10 +47,10 @@
 <target depends="init" name="j2mepolish">
 	<j2mepolish>
 	    <!-- general settings -->
-		<info copyright="Copyright 2006 Enough Software. All rights reserved." 
+		<info copyright="Copyright 2008 Enough Software. All rights reserved." 
 			description="A theme example" 
 			infoUrl="http://www.enough.de" 
-			jarName="${polish.vendor}-${polish.name}-${polish.locale}-email.jar" 
+			jarName="${polish.vendor}-${polish.name}-${polish.locale}-theme.jar" 
 			jarUrl="${deploy-url}${polish.jarName}" 
 			license="GPL" 
 			name="ThemeExample" 
@@ -68,7 +69,6 @@
 		</deviceRequirements>
 	    <!-- build settings -->
 		<build fullscreen="menu" 
-                polishDir="../enough-polish-j2me/source/src" 
                 symbols="polish.skipArgumentCheck" 
                 usePolishGui="true"
 			>
@@ -76,6 +76,10 @@
 			<midlet class="de.enough.polish.sample.ThemeMidlet" name="ThemeMidlet" />
 			<!-- project-wide variables - used for preprocessing  -->
 			<variables>
+				<variable name="polish.useThemes" value="true" />
+				<variable name="id" value="enough" />
+				<!--
+				-->
 				<variable name="polish.TextField.useDirectInput" value="true" />
 				<variable name="polish.TextField.supportSymbolsEntry" value="true" />
 				<!--
@@ -91,7 +95,7 @@
 			</obfuscator>
 			<!-- debug settings: only include debug setting when the test-property is true -->
 			<debug if="test" level="error" showLogOnError="true" verbose="true">
-				<filter level="debug" package="de.enough.polish.sample.mail"/>
+				<filter level="debug" package="de.enough.polish.sample.theme"/>
 				<filter level="info" pattern="de.enough.polish.ui.*"/>
 				<filter level="debug" class="de.enough.polish.ui.Container" />
 				<!--
