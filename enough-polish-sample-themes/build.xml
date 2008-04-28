@@ -11,6 +11,7 @@
 	<property name="nokia.home" location="/home/enough/dev/Nokia" />
 	<property name="polish.home" location="../enough-polish-build" />
 	<property  name="mpp.home" location="/home/enough/dev/mpp-sdk"/>
+	<property name="id" value="enough" />
 
 	
 	<!-- task definitions -->
@@ -44,7 +45,7 @@
 	</ant>
 </target>
     
-<target depends="init" name="j2mepolish">
+<target depends="init, theme" name="j2mepolish" >
 	<j2mepolish>
 	    <!-- general settings -->
 		<info copyright="Copyright 2008 Enough Software. All rights reserved." 
@@ -77,7 +78,6 @@
 			<!-- project-wide variables - used for preprocessing  -->
 			<variables>
 				<variable name="polish.useThemes" value="true" />
-				<variable name="id" value="enough" />
 				<!--
 				-->
 				<variable name="polish.TextField.useDirectInput" value="true" />
