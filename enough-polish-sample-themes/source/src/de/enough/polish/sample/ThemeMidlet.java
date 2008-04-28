@@ -78,7 +78,7 @@ public class ThemeMidlet extends MIDlet implements CommandListener{
 			
 			this.form.setStyle(mainStyle);
 			
-			Image logoImage = ThemeController.getImage(stream, "logo.png");
+			Image logoImage = ThemeController.getImage(stream, "logo");
 			
 			//#style logo
 			this.form.append(logoImage);
