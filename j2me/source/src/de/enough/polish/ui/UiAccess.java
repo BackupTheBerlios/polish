@@ -3338,6 +3338,28 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.usePolishGui
+	/**
+	 * Sets the screen orientation in 90 degrees steps.
+	 * @param screen the screen
+	 * @param degrees the screen orientation in degrees: 90, 180, 270 or 0
+	 */
+	public void setScreenOrientation( Screen screen, int degrees ) {
+		screen.setScreenOrientation(degrees);
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Sets the screen orientation in 90 degrees steps.
+	 * @param screen the screen
+	 * @param degrees the screen orientation in degrees: 90, 180, 270 or 0
+	 */
+	public void setScreenOrientation( javax.microedition.lcdui.Screen screen, int degrees ) {
+		// ignore
+	}
+	//#endif
+
 
 
 }
