@@ -37,6 +37,7 @@ public class CreditsCanvas extends Canvas {
     private final Font textFont;
     private final String[] credits;
 	private final int titleHeight;
+	private long hideNotifyTime;
     
     /**
      * Creates a new instance of CreditsCanvas 
@@ -72,18 +73,28 @@ public class CreditsCanvas extends Canvas {
         g.drawString( Locale.get("title.credits"), getWidth()/2, MARGIN, Graphics.TOP | Graphics.HCENTER );
         
 
-        // protect title:
-        g.setClip( 0, this.titleHeight, getWidth(), this.availableHeight );
         
         int y = this.titleHeight + this.yOffset;
-        g.setColor( TEXT_COLOR );
         g.setFont( this.textFont );
+        // protect title:
+        //g.setClip( 0, this.titleHeight, getWidth(), this.availableHeight );
+        g.setColor( TEXT_COLOR );
         int lineHeight = this.textFont.getHeight() + MARGIN;
         for (int i = 0; i < this.credits.length; i++) {
 			String text = this.credits[i];
 			g.drawString( text, MARGIN, y, Graphics.TOP | Graphics.LEFT );
 			y += lineHeight;
 		}
+        if (this.hideNotifyTime != 0) {
+        	g.setColor(0x00ff00);
+        	if (this.hideNotifyTime > 60 * 1000) {
+        		g.drawString("screen hidden for  " + (this.hideNotifyTime/ (60*1000)) + " min.", 10, 10, Graphics.TOP | Graphics.LEFT );
+        	} else if (this.hideNotifyTime > 1000) {
+        		g.drawString("screen hidden for  " + (this.hideNotifyTime/ (1000)) + " s.", 10, 10, Graphics.TOP | Graphics.LEFT );
+        	} else {
+        		g.drawString("screen hidden for  " + this.hideNotifyTime + " ms.", 10, 10, Graphics.TOP | Graphics.LEFT );
+        	}
+        }
     }
     
     
@@ -106,4 +117,28 @@ public class CreditsCanvas extends Canvas {
 			System.out.println("Unable to scroll credits screen" + e );			
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#hideNotify()
+	 */
+	protected void hideNotify()
+	{
+		super.hideNotify();
+		this.hideNotifyTime = System.currentTimeMillis();
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#showNotify()
+	 */
+	protected void showNotify()
+	{
+		super.showNotify();
+		if (this.hideNotifyTime != 0) {
+			this.hideNotifyTime = System.currentTimeMillis() - this.hideNotifyTime; 
+		}
+	}
+	
+	
+	
+	
 }

@@ -47,7 +47,7 @@ import de.enough.polish.util.Locale;
  * 
  * <p>collects infos and uploads them to the enough sysinfo database</p>
  *
- * <p>Copyright Enough Software 2007</p>
+ * <p>Copyright Enough Software 2007, 2008</p>
  * <pre>
  * history
  *        18.06.2007 - timon creation
@@ -142,6 +142,7 @@ public class SysinfoUploader implements Runnable{
 				this.keyCodeInfos[i] = new Info(this.keyCodeInfos[i].name,
 						String.valueOf(c.getKeyCode(this.keyCodes[i])));
 			} catch (Exception e) {
+				//#debug error
 				System.err.println("Could not get keyInfo for "
 						+ this.keyCodeInfos[i]);
 			}

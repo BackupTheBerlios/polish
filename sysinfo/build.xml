@@ -39,6 +39,11 @@
     
 	<target depends="init" name="j2mepolish">
 		<j2mepolish>
+			<lifeCycleManager name="mea" unless="test">
+			    <parameter name="fallbackDevice" value="Generic/multi" />
+			    <parameter name="tags" value="test" />
+			    <parameter name="access" value="public" />
+		  </lifeCycleManager>
 			<!-- general settings -->
 					<info 
 						copyright="Copyright 2004 - 2007 Grimo Software, Enough Software and Mark Schrijver. All rights reserved." 
@@ -59,7 +64,11 @@
 						<requirement name="Identifier" value="Generic/multi" />
 					</deviceRequirements>
 					<!-- build settings -->
-					<build polishDir="../enough-polish-j2me/source/src" usePolishGui="false" workDir="${dir.work}" sourceDir="source/src">
+					<build polishDir="../enough-polish-j2me/source/src" 
+						usePolishGui="false" 
+						workDir="${dir.work}" 
+						sourceDir="source/src"
+					>
 						<sources>
 							<source dir="source/src" />
 						</sources>
@@ -67,7 +76,7 @@
 						<!-- midlets definition -->
 						<midlet class="de.enough.sysinfo.MIDPSysInfoMIDlet" name="MIDP SysInfo" />
 						<resources dir="resources">
-							<localization dynamic="true" defaultLocale="en" locales="en, de" />
+							<localization dynamic="false" defaultLocale="en" locales="en" />
 						</resources>
 						<jad>
 							<filter>
@@ -89,9 +98,9 @@
 								MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?,
 							-->
 						<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-						<obfuscator name="ProGuard" useDefaultPackage="false" unless="test">
-							<keep class="NokiaFullCanvasTest" />
-							<keep class="Midp2FullCanvasTest" />
+						<obfuscator name="ProGuard" useDefaultPackage="false" unless="false">
+							<keep class="com.grimo.me.product.midpsysinfo.NokiaFullCanvasTest" />
+							<keep class="com.grimo.me.product.midpsysinfo.Midp2FullCanvasTest" />
 						</obfuscator>
 						<!-- debug settings: only include debug setting when the test-property is true -->
 						<debug level="error" showLogOnError="true" verbose="true" unless="test">
