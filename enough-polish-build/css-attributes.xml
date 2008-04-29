@@ -391,24 +391,24 @@
 		<mapping from="split"    to="de.enough.polish.ui.backgrounds.VerticalSplitBackground"  >
 			<param name="top-color" type="color" primitive="true" default="white" description="Top color of the background." />
 			<param name="bottom-color" type="color" primitive="true" default="gray" description="Bottom color of the background." />
-			<param name="split-pos" type="percentorabsolute" primitive="true" default="50" description="The split position either in percent (0 - 100) or in pixels." />
+			<param name="split-pos" type="percentorabsolute" primitive="true" default="50%" description="The split position either in percent (0 - 100) or in pixels." />
 		</mapping>
 		<mapping from="horizontal-split"    to="de.enough.polish.ui.backgrounds.HorizontalSplitBackground"  >
 			<param name="left-color" type="color" primitive="true" default="white" description="Left color of the background." />
 			<param name="right-color" type="color" primitive="true" default="gray" description="Right color of the background." />
-			<param name="split-pos" type="percentorabsolute" primitive="true" default="50" description="The split position either in percent (0 - 100) or in pixels." />
+			<param name="split-pos" type="percentorabsolute" primitive="true" default="50%" description="The split position either in percent (0 - 100) or in pixels." />
 		</mapping>
 		<mapping from="round-rect-split"    to="de.enough.polish.ui.backgrounds.VerticalSplitRoundRectBackground"  >
 			<param name="top-color" type="color" primitive="true" default="white" description="Top color of the background." />
 			<param name="bottom-color" type="color" primitive="true" default="gray" description="Bottom color of the background." />
-			<param name="split-pos" type="percentorabsolute" primitive="true" default="50" description="The split position either in percent (0 - 100) or in pixels." />
+			<param name="split-pos" type="percentorabsolute" primitive="true" default="50%" description="The split position either in percent (0 - 100) or in pixels." />
 			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
 			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
 		</mapping>
 		<mapping from="horizontal-round-rect-split"    to="de.enough.polish.ui.backgrounds.HorizontalSplitRoundRectBackground"  >
 			<param name="left-color" type="color" primitive="true" default="white" description="Left color of the background." />
 			<param name="right-color" type="color" primitive="true" default="gray" description="Right color of the background." />
-			<param name="split-pos" type="percentorabsolute" primitive="true" default="50" description="The split position either in percent (0 - 100) or in pixels." />
+			<param name="split-pos" type="percentorabsolute" primitive="true" default="50%" description="The split position either in percent (0 - 100) or in pixels." />
 			<param name="arc-width" type="integer" primitive="true" default="4" description="The width of the arc of the background corners." />
 			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the background corners." />
 		</mapping>
