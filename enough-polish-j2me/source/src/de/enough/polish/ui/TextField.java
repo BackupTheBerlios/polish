@@ -1579,8 +1579,10 @@ public class TextField extends StringItem
 				}
 			}
 			if ((constraints & PASSWORD) == PASSWORD) {
+				this.isPassword = true;
 				this.editField = new PolishPasswordEditField( null, getString(), this.maxSize, bbStyle );
 			} else {
+				this.isPassword = false;
 				this.editField = new PolishEditField( null, getString(), this.maxSize, bbStyle );
 			}
 			//# this.editField.setChangeListener( this );
