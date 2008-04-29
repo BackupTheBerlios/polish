@@ -97,6 +97,7 @@ public class MeaFinalizer extends Finalizer{
     private String fallbackDevice;
     private String tags;
     private String access = "owner";
+    private String pseudoprivateToken = null;
     
     public void finalize(File jadFile, File jarFile, Device device, Locale locale, Environment env) {
         File distFile = env.getBuildSetting().getDestDir(env);
@@ -150,7 +151,16 @@ public class MeaFinalizer extends Finalizer{
             } else {
             	fileWriter.write("Build with J2ME Polish");
             }
-            fileWriter.write("\" access=\""+this.access+"\" fallbackDevice=\"");
+            fileWriter.write("\" access=\""+this.access+"\" ");
+            if(this.pseudoprivateToken != null && this.pseudoprivateToken.length() != 0) {
+                if( ! "pseudoprivate".equals(this.access)) {
+                    throw new BuildException("The parameter 'pseudoprivate' of the .mea lifecycle manager must not be set if the access restriction is not set to 'pseudoprivate'.");
+                }
+                fileWriter.write("pseudoprivate=\"");
+                fileWriter.write(this.pseudoprivateToken);
+                fileWriter.write("\" ");
+            }
+            fileWriter.write("fallbackDevice=\"");
             if(this.fallbackDevice == null) {
                 this.fallbackDevice = "Generic/Midp2Cldc11";
             }
@@ -240,10 +250,14 @@ public class MeaFinalizer extends Finalizer{
         this.tags = tags;
     }
     
+    public void setPseudoprivate(String pseudoprivateToken) {
+        this.pseudoprivateToken  = pseudoprivateToken;
+    }
+    
     public void setAccess(String accessParameter) {
-        boolean valid = "public".equals(accessParameter) || "owner".equals(accessParameter);
+        boolean valid = "public".equals(accessParameter) || "owner".equals(accessParameter) || "pseudoprivate".equals(accessParameter);
         if(!valid) {
-            throw new BuildException("The parameter 'access' of the lifeCycleManager tag requires one of the values 'owner' or 'public'.");
+            throw new BuildException("The parameter 'access' of the lifeCycleManager tag requires one of the values 'owner','public' or 'pseudoprivate'.");
         }
         this.access  = accessParameter;
     }
