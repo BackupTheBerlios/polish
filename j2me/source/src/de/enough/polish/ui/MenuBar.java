@@ -40,6 +40,9 @@ import de.enough.polish.ui.backgrounds.TranslucentSimpleBackground;
 import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DeviceControl;
 import de.enough.polish.util.Locale;
+//#if polish.api.windows
+	import de.enough.polish.windows.Keyboard;
+//#endif
 
 /**
  * <p>Provides a more powerful alternative to the build-in menu bar of the Screen-class.</p>
@@ -104,6 +107,11 @@ public class MenuBar extends Item {
 	//#endif
 	protected final Hashtable allCommands;
 	protected boolean isOrientationVertical;
+	//#if polish.api.windows
+		protected static Image windowsSipImage;
+		protected int windowsSipX;
+		protected int windowsSipY;
+	//#endif
 	
 	protected Style menuItemStyle;
 
@@ -147,6 +155,17 @@ public class MenuBar extends Item {
 			this.singleMiddleCommandItem = new CommandItem( dummy, this );
 			this.singleMiddleCommandItem.setImageAlign( Graphics.LEFT );
 		//#endif
+		//#if polish.api.windows
+			if (windowsSipImage == null && Keyboard.hasSoftwareKeyboard()) {
+				try {
+					windowsSipImage = StyleSheet.getImage("/sip.png", null, false );
+				} catch (Exception e) {
+					//#debug error'
+					System.out.println("Unable to load sip.png: " + e);
+				}
+			}
+		//#endif
+			
 	}
 
 	public void addCommand(Command cmd) {
@@ -668,6 +687,9 @@ public class MenuBar extends Item {
 						//#if tmp.useMiddleCommand
 							&& this.singleMiddleCommand == null
 						//#endif
+						//#if polish.api.windows
+							&& !Keyboard.hasSoftwareKeyboard()
+						//#endif
 						&& this.commandsList.size() == 0 ) 
 				{
 					this.contentWidth = 0;
@@ -810,6 +832,20 @@ public class MenuBar extends Item {
 				}
 			//#endif
 		//#endif
+		//#if polish.api.windows
+				if (windowsSipImage != null) {
+					int h = windowsSipImage.getHeight();
+					if (h > this.contentHeight) {
+						this.contentHeight = h;
+						this.windowsSipY = 0;
+					}  else {
+						this.windowsSipY = (this.contentHeight - h) / 2;
+					}
+					int w = windowsSipImage.getWidth();
+					this.windowsSipX = (lineWidth - w) / 2;
+				}
+		//#endif
+
 	}
 	
 	
@@ -1397,6 +1433,17 @@ public class MenuBar extends Item {
 		//#debug
 		System.out.println("MenuBar: handlePointerReleased( relX=" + relX + ", relY=" + relY + " )\nleftCommandEndX = " + leftCommandEndX + ", rightCommandStartXs = " + rightCommandStartX + " screenHeight=" + this.screen.screenHeight);
 		if (relY > 0) {
+			//#if polish.api.windows
+				if (windowsSipImage != null
+						&& relX >= this.windowsSipX 
+						&& relY >= this.windowsSipY 
+						&& relX <= this.windowsSipX + windowsSipImage.getWidth()
+						&& relY <= this.windowsSipY + windowsSipImage.getHeight()
+				) {
+						
+					Keyboard.showSoftwareKeyboard( !Keyboard.isSoftwareKeyboardOpened() );
+				}
+			//#endif
 			CommandItem selectedCommandItem = null;
 			if (relX > rightCommandStartX) {
 				selectedCommandItem = this.singleRightCommandItem;
