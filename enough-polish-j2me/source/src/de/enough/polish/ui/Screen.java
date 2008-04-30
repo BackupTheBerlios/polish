@@ -298,7 +298,7 @@ implements AccessibleCanvas
 			private int previousScreenTitleHeight;
 		//#endif
 	//#endif
-	//#if polish.ScreenOrientationCanChangeManually
+	//#if polish.ScreenOrientationCanChangeManually && polish.midp2
 		//#define tmp.manualOrientationChange
 		protected boolean isSetFullScreenCalled;
 		protected int screenOrientationDegrees;
@@ -4447,6 +4447,8 @@ implements AccessibleCanvas
 	
 	/**
 	 * Sets the screen orientation in 90 degrees steps.
+	 * The preprocessing variable "polish.ScreenOrientationCanChangeManually" needs to be set to "true" for supporting this mode.
+	 * 
 	 * @param degrees the screen orientation in degrees: 90, 180, 270 or 0
 	 */
 	public void setScreenOrientation( int degrees ) {

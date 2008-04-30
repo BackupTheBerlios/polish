@@ -3341,10 +3341,12 @@ public final class UiAccess {
 	//#if polish.usePolishGui
 	/**
 	 * Sets the screen orientation in 90 degrees steps.
+	 * The preprocessing variable "polish.ScreenOrientationCanChangeManually" needs to be set to "true" for supporting this mode.
+	 * 
 	 * @param screen the screen
 	 * @param degrees the screen orientation in degrees: 90, 180, 270 or 0
 	 */
-	public void setScreenOrientation( Screen screen, int degrees ) {
+	public static  void setScreenOrientation( Screen screen, int degrees ) {
 		screen.setScreenOrientation(degrees);
 	}
 	//#endif
@@ -3355,11 +3357,95 @@ public final class UiAccess {
 	 * @param screen the screen
 	 * @param degrees the screen orientation in degrees: 90, 180, 270 or 0
 	 */
-	public void setScreenOrientation( javax.microedition.lcdui.Screen screen, int degrees ) {
+	public static void setScreenOrientation( javax.microedition.lcdui.Screen screen, int degrees ) {
 		// ignore
 	}
 	//#endif
 
+	//#if polish.midp
+	/**
+	 * Determines whether the given key code is the left soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param screen the screen
+	 * @return true when the given key is the right soft key
+	 */
+	public static boolean isLeftSoftKey( int keyCode, javax.microedition.lcdui.Screen screen ) {
+		return false;
+	}
+	//#endif
 
+	//#if polish.midp
+	/**
+	 * Determines whether the given key code is the right soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param screen the screen
+	 * @return true when the given key is the right soft key
+	 */
+	public static boolean isRightSoftKey( int keyCode, javax.microedition.lcdui.Screen screen ) {
+		return false;
+	}
+	//#endif
 
+	//#if polish.midp
+	/**
+	 * Determines whether the given key code is the middle soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param screen the screen
+	 * @return true when the given key is the middle soft key
+	 */
+	public static boolean isMiddleSoftKey( int keyCode, javax.microedition.lcdui.Screen screen ) {
+		return false;
+	}
+	//#endif
+	
+	
+	
+
+	//#if polish.usePolishGui
+	/**
+	 * Determines whether the given key code is the left soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param screen the screen
+	 * @return true when the given key is the right soft key
+	 */
+	public static boolean isLeftSoftKey( int keyCode, Screen screen ) {
+		return screen.isSoftKeyLeft( keyCode );
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Determines whether the given key code is the right soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param screen the screen
+	 * @return true when the given key is the right soft key
+	 */
+	public static boolean isRightSoftKey( int keyCode, Screen screen ) {
+		return screen.isSoftKeyRight( keyCode );
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Determines whether the given key code is the middle soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param screen the screen
+	 * @return true when the given key is the middle soft key
+	 */
+	public static boolean isMiddleSoftKey( int keyCode, Screen screen ) {
+		return screen.isSoftKeyMiddle( keyCode );
+	}
+	//#endif
 }
