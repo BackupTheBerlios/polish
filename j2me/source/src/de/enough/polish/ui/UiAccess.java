@@ -3371,7 +3371,7 @@ public final class UiAccess {
 	 * @param screen the screen
 	 * @return true when the given key is the right soft key
 	 */
-	public static boolean isLeftSoftKey( int keyCode, javax.microedition.lcdui.Screen screen ) {
+	public static boolean isSoftKeyLeft( int keyCode, javax.microedition.lcdui.Screen screen ) {
 		return false;
 	}
 	//#endif
@@ -3385,7 +3385,7 @@ public final class UiAccess {
 	 * @param screen the screen
 	 * @return true when the given key is the right soft key
 	 */
-	public static boolean isRightSoftKey( int keyCode, javax.microedition.lcdui.Screen screen ) {
+	public static boolean isSoftKeyRight( int keyCode, javax.microedition.lcdui.Screen screen ) {
 		return false;
 	}
 	//#endif
@@ -3399,7 +3399,7 @@ public final class UiAccess {
 	 * @param screen the screen
 	 * @return true when the given key is the middle soft key
 	 */
-	public static boolean isMiddleSoftKey( int keyCode, javax.microedition.lcdui.Screen screen ) {
+	public static boolean isSoftKeyMiddle( int keyCode, javax.microedition.lcdui.Screen screen ) {
 		return false;
 	}
 	//#endif
@@ -3416,7 +3416,7 @@ public final class UiAccess {
 	 * @param screen the screen
 	 * @return true when the given key is the right soft key
 	 */
-	public static boolean isLeftSoftKey( int keyCode, Screen screen ) {
+	public static boolean isSoftKeyLeft( int keyCode, Screen screen ) {
 		return screen.isSoftKeyLeft( keyCode );
 	}
 	//#endif
@@ -3430,7 +3430,7 @@ public final class UiAccess {
 	 * @param screen the screen
 	 * @return true when the given key is the right soft key
 	 */
-	public static boolean isRightSoftKey( int keyCode, Screen screen ) {
+	public static boolean isSoftKeyRight( int keyCode, Screen screen ) {
 		return screen.isSoftKeyRight( keyCode );
 	}
 	//#endif
@@ -3444,7 +3444,7 @@ public final class UiAccess {
 	 * @param screen the screen
 	 * @return true when the given key is the middle soft key
 	 */
-	public static boolean isMiddleSoftKey( int keyCode, Screen screen ) {
+	public static boolean isSoftKeyMiddle( int keyCode, Screen screen ) {
 		return screen.isSoftKeyMiddle( keyCode );
 	}
 	//#endif
