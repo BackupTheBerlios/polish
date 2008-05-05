@@ -257,7 +257,11 @@ public class MeaFinalizer extends Finalizer{
     public void setAccess(String accessParameter) {
         boolean valid = "public".equals(accessParameter) || "owner".equals(accessParameter) || "pseudoprivate".equals(accessParameter);
         if(!valid) {
-            throw new BuildException("The parameter 'access' of the lifeCycleManager tag requires one of the values 'owner','public' or 'pseudoprivate'.");
+        	if ( "private".equals(accessParameter) ) {
+        		accessParameter = "owner";
+        	} else {
+        		throw new BuildException("The parameter 'access' of the lifeCycleManager tag requires one of the values 'owner','public' or 'pseudoprivate'.");
+        	}
         }
         this.access  = accessParameter;
     }
