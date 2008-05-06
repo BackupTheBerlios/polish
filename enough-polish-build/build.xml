@@ -894,6 +894,7 @@
 			<variable name="index.h4" value="h4index" />
 			<variable name="index.h5" value="h5index" />
 			<directive name="cssattributes" class="de.enough.polish.website.CssDirectiveHandler" />
+			<directive name="cssmappings" class="de.enough.polish.website.CssMappingsDirectiveHandler" />
 		</webprocessor>
 		<!-- created & copy the device database 
 		<echo message="starting device export" />
@@ -939,6 +940,7 @@
 			<variable name="index.h4" value="h4index" />
 			<variable name="index.h5" value="h5index" />
 			<directive name="cssattributes" class="de.enough.polish.website.CssDirectiveHandler" />
+			<directive name="cssmappings" class="de.enough.polish.website.CssMappingsDirectiveHandler" />
 		</webprocessor>
 		<echo message="updating installation settings" />
 		<!-- update installation settings -->

@@ -594,6 +594,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		String newImplements = sourceClass.getClassName();
 		sourceClass.setClassName(newImplements + "RemoteClient");
 		sourceClass.setImplementedInterfaces( new String[]{ newImplements } );
+		sourceClass.addImport("de.enough.polish.io.Externalizable");			
 		if (useXmlRpc) {
 			sourceClass.setExtendsStatement("XmlRpcRemoteClient");
 			sourceClass.addImport("de.enough.polish.rmi.xmlrpc.XmlRpcRemoteClient");
@@ -702,8 +703,16 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		} else if ( isPrimitive( returnType )) {
 			addPrimitiveReturnCast( returnType, methodCall, methodCode );
 		} else {
-			// the return value is a normal object:
-			methodCode.add( "return (" + returnType + ") " + methodCall );
+			if (isArray(returnType)) {
+				methodCode.add("Externalizable[] _returnValues = (Externalizable[])" + methodCall);
+				String plainReturnType = returnType.substring( 0, returnType.indexOf('[')).trim();
+				methodCode.add(returnType + " _castedReturnValues = new " + plainReturnType + "[ _returnValues.length ];");
+				methodCode.add("System.arraycopy( _returnValues, 0, _castedReturnValues, 0, _returnValues.length );");
+				methodCode.add("return _castedReturnValues;");
+			} else {
+				// the return value is a normal object:
+				methodCode.add( "return (" + returnType + ") " + methodCall );
+			}
 		}
 		if (hasDeclaredExceptions) {
 			methodCode.add("} catch (RemoteException _e) {");
@@ -721,6 +730,17 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		}
 		method.setMethodCode( (String[]) methodCode.toArray( new String[methodCode.size()]));
 	}
+
+	/**
+	 * @param returnType
+	 * @return
+	 */
+	private boolean isArray(String type)
+	{
+		return type.indexOf('[') != -1 && type.indexOf(']') != -1;
+	}
+
+
 
 	/**
 	 * Adds a cast for primitive return types.

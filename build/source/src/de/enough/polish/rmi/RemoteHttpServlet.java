@@ -204,18 +204,26 @@ public class RemoteHttpServlet extends HttpServlet {
 		boolean useObfuscation = true;
 		try {			
 			int version = in.readInt();
-			logger.log( Level.FINE, "using RMI version=" + version);
+			if (logger.isLoggable(Level.FINE)) {
+				logger.log( Level.FINE, "using RMI version=" + version);
+			}
 			if (version > 101) {
 				useObfuscation = in.readBoolean();
-				logger.log( Level.FINER, "using obfuscation: " + useObfuscation );
+				if (logger.isLoggable(Level.FINER)) {
+					logger.log( Level.FINER, "using obfuscation: " + useObfuscation );
+				}
 			}
 			
 			String methodName = in.readUTF();
-			logger.log( Level.FINE, "requested method: " + methodName );
+			if (logger.isLoggable(Level.FINE)) {
+				logger.log( Level.FINE, "requested method: " + methodName );
+			}
 			long primitivesFlag = 0;
 			if (version > 100) {
 				primitivesFlag = in.readLong();
-				logger.log( Level.FINER, "primitivesFlag=" + primitivesFlag );
+				if (logger.isLoggable(Level.FINER)) {
+					logger.log( Level.FINER, "primitivesFlag=" + primitivesFlag );
+				}
 			}
 			Object[] parameters = (Object[]) Serializer.deserialize(in);
 			Class[] signature = null;

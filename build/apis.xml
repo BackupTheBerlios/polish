@@ -408,7 +408,7 @@
 	<api>
 		<name>Enough Software Windows Helper API</name>
 		<description>
-		Classes to interact with Windows/.Net environment from Java
+		Classes to interact with Windows/.Net environment from within Java.
 		</description>
 		<names>windows</names>
 		<symbol>windows</symbol>

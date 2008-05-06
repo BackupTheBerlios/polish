@@ -1665,7 +1665,11 @@ public class PolishTask extends ConditionalTask {
 		this.extensionManager.postInitialize(device, locale, this.environment);
 		
 		
-		
+		if (this.doObfuscate && getObfuscators().length > 0) {
+			this.environment.addSymbol("polish.obfuscate");
+		} else {
+			this.environment.removeSymbol("polish.obfuscate");
+		}
 		
 		this.environment.set( "polish.home", this.polishHomeDir );
 		this.environment.set( "polish.apidir", this.buildSetting.getApiDir() );
@@ -2478,23 +2482,20 @@ public class PolishTask extends ConditionalTask {
 				+ File.separatorChar + "dest.jar");
 		
 		// start the obfuscation:
-		int maxIndex = this.obfuscators.length - 1;
-		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
-		Project antProject = getProject();
 		boolean hasBeenObfuscated = false;
-		for (int i=0; i <= maxIndex ; i++ ) {
-			Obfuscator obfuscator = this.obfuscators[i];
-			if (obfuscator.getSetting().isActive(evaluator, antProject) ) {
-				if (!hasBeenObfuscated) {
-					System.out.println("obfuscating for device [" + device.getIdentifier() + "].");
-					hasBeenObfuscated = true;
-				}
-				obfuscator.obfuscate(device, sourceFile, destFile, getObfuscationPreserveClassNames(this.useDefaultPackage), bootPath );
-				if ( i != maxIndex ) {
-					sourceFile = destFile;
-					destFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
-							+ File.separatorChar + "dest" + (i + 1) + ".jar");
-				}
+		Obfuscator[] activeObfuscators = getObfuscators();
+		for (int i = 0; i < activeObfuscators.length; i++)
+		{
+			Obfuscator obfuscator = activeObfuscators[i];
+			if (!hasBeenObfuscated) {
+				System.out.println("obfuscating for device [" + device.getIdentifier() + "].");
+				hasBeenObfuscated = true;
+			}
+			obfuscator.obfuscate(device, sourceFile, destFile, getObfuscationPreserveClassNames(this.useDefaultPackage), bootPath );
+			if ( i != activeObfuscators.length -1 ) {
+				sourceFile = destFile;
+				destFile = new File( this.buildSetting.getWorkDir().getAbsolutePath()
+						+ File.separatorChar + "dest" + (i + 1) + ".jar");
 			}
 		}
 		
@@ -2527,6 +2528,27 @@ public class PolishTask extends ConditionalTask {
 		if (this.polishLogger != null) {
 			this.polishLogger.setObfuscateMode( false );
 		}
+	}
+
+	/**
+	 * @return an array of active obfuscators, can be empty but not null
+	 */
+	protected Obfuscator[] getObfuscators()
+	{
+		if (this.obfuscators == null) {
+			return new Obfuscator[0];
+		}
+		ArrayList obfuscatorsList = new ArrayList( this.obfuscators.length );
+		BooleanEvaluator evaluator = this.environment.getBooleanEvaluator();
+		Project antProject = getProject();
+		for (int i=0; i<this.obfuscators.length; i++) {
+			Obfuscator obfuscator = this.obfuscators[i];
+			if (obfuscator.getSetting().isActive(evaluator, antProject) ) {
+				obfuscatorsList.add(obfuscator);
+			}
+		}
+		
+		return (Obfuscator[]) obfuscatorsList.toArray( new Obfuscator[ obfuscatorsList.size() ] );
 	}
 
 	/**

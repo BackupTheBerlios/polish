@@ -3558,6 +3558,24 @@
 		id="321"
 	/>
 	
+	<attribute
+		name="table-line-color"
+		type="color"
+		appliesTo="TableItem"
+		description="The color of lines between cells."
+		default="black"
+		id="322"
+	/>
+	
+	<attribute
+		name="table-line-stroke"
+		type="integer"
+		default="solid" 
+		values="solid,dotted" 
+		appliesTo="TableItem"
+		description="The stroke style of lines between cells."
+		id="323"
+	/>
 	
 	<!--
 	
