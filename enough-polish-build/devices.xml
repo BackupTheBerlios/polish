@@ -10296,6 +10296,7 @@ These namespaces/schemas will be used soon.
 	
 	<device>
 		<identifier>BlackBerry/4.1</identifier>
+		<features>isVirtual</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.1"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
@@ -10307,6 +10308,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>BlackBerry/4.2</identifier>
+		<features>isVirtual</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.2"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
@@ -10318,7 +10320,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>BlackBerry/4.2TrackBall</identifier>
-		<features>hasTrackballEvents</features>
+		<features>hasTrackballEvents, isVirtual</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.2"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
@@ -10330,7 +10332,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>BlackBerry/4.3</identifier>
-		<features>hasTrackballEvents</features>
+		<features>hasTrackballEvents, isVirtual</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.3"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location"/>
