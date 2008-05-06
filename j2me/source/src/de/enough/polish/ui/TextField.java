@@ -3928,12 +3928,24 @@ public class TextField extends StringItem
 	}
 	//#endif
 
+	/**
+	 * Checks if commands are currently suppressed by this TextField.
+	 * @return true when commands are suppressed
+	 */
 	public boolean isSuppressCommands() {
 		return this.suppressCommands;
 	}
 
+	/**
+	 * Toggles the surpressing of commands for this TextField
+	 * This has no effect when commands are globally suppressed by settting
+	 * the preprocessing variable "polish.TextField.suppressCommands" to "true".
+	 * 
+	 * @param suppressCommands true when commands should be suppressed
+	 */
 	public void setSuppressCommands(boolean suppressCommands) {
 		this.suppressCommands = suppressCommands;
+		setConstraints( this.constraints );
 	}
 
 	//#if polish.TextField.showHelpText

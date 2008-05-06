@@ -59,7 +59,6 @@ public class RemoteClient implements Runnable {
 	//public static final int RMI_VERSION = 101; // = 1.0.1 (support of primitives)
 	public static final int RMI_VERSION = 102; // = 1.0.2 (support of dynamic obfuscation)
 	
-	protected final boolean useObfuscation;
 	protected final Vector callQueue;
 	protected String url;
 	protected String cookie;
@@ -70,7 +69,6 @@ public class RemoteClient implements Runnable {
 	 * @param url the url of the server, e.g. http://myserver.com/myservice
 	 */
 	protected RemoteClient( String url ) {
-		this.useObfuscation = (getClass().getName().indexOf("RemoteClient") == -1);
 		this.url = url;
 		this.callQueue = new Vector( 3 );
 		//#if !polish.rmi.synchrone
@@ -150,7 +148,11 @@ public class RemoteClient implements Runnable {
 			// write parameters:
 			out = connection.openDataOutputStream();
 			out.writeInt( RMI_VERSION );
-			out.writeBoolean( this.useObfuscation );
+			//#if polish.obfuscate
+				out.writeBoolean( true );
+			//#else
+				out.writeBoolean( false );
+			//#endif
 			out.writeUTF( name );
 			out.writeLong( primitivesFlag );
 			Serializer.serialize( parameters, out);

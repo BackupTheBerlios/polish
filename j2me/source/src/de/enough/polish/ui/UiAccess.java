@@ -494,12 +494,26 @@ public final class UiAccess {
 	//#endif
 	
 	//#if polish.usePolishGui
+	/**
+	 * Focusses the given item with the specified style.
+	 * 
+	 * @param item the item that should be focussed
+	 * @param direction the direction from which the focus comes, e.g. Canvas.DOWN, Canvas.UP or 0. 
+	 * @param style the style - use null when the item's focussed style should be used
+	 * @return the previously assigned style of that item
+	 */
 	public static Style focus( Item item, int direction, Style style ) {
 		return item.focus(style, direction);
 	}
 	//#endif
 	
 	//#if polish.usePolishGui
+	/**
+	 * Defocuses the given item and sets the style to the specified one.
+	 * 
+	 * @param item the item
+	 * @param style the style 
+	 */
 	public static void defocus( Item item, Style style ) {
 		item.defocus(style);
 	}
@@ -1586,24 +1600,48 @@ public final class UiAccess {
     //#endif
     
 	//#if polish.midp
+    /**
+     * Sets the subtitle for the specified screen
+     * 
+     * @param screen the screen
+     * @param subtitle the subtitle text
+     */
     public static void setSubtitle( javax.microedition.lcdui.Screen screen, String subtitle ) {
     		// ignore
     }
     //#endif
 
     //#if polish.usePolishGui
+    /**
+     * Sets the subtitle for the specified screen
+     * 
+     * @param screen the screen
+     * @param subtitle the subtitle text
+     */
     public static void setSubtitle( Screen screen, String subtitle ) {
     		setSubtitle( screen, new StringItem(null, subtitle));
     }
     //#endif
 
 	//#if polish.midp
+    /**
+     * Sets the subtitle for the specified screen
+     * 
+     * @param screen the screen
+     * @param subtitle the subtitle item
+     */
     public static void setSubtitle( javax.microedition.lcdui.Screen screen, javax.microedition.lcdui.Item subtitle ) {
     		// ignore
     }
     //#endif
 
     //#if polish.usePolishGui
+    /**
+     * Sets the subtitle for the specified screen
+     * 
+     * @param screen the screen
+     * @param subtitle the subtitle item
+     */
     public static void setSubtitle( Screen screen, Item subtitle ) {
     		screen.setSubTitle(subtitle);
     }
@@ -2944,6 +2982,14 @@ public final class UiAccess {
 	//#endif
 	
 	//#if polish.midp
+	/**
+	 * Sets the item responsible for displaying the current input mode like Abc, ABC, 123, and so on.
+	 * This feature requires that the preprocessing variable
+	 * "polish.TextField.useExternalInfo" is set to "true".
+	 * 
+	 * @param field the TextField
+	 * @param infoItem the StringItem that should be used for rendering the current input mode. 
+	 */
 	public static void setTextfieldInfoItem(javax.microedition.lcdui.TextField field, javax.microedition.lcdui.StringItem infoItem)
 	{
 		// ignore
@@ -2951,6 +2997,14 @@ public final class UiAccess {
 	//#endif
 
 	//#if polish.usePolishGui
+	/**
+	 * Sets the item responsible for displaying the current input mode like Abc, ABC, 123, and so on.
+	 * This feature requires that the preprocessing variable
+	 * "polish.TextField.useExternalInfo" is set to "true".
+	 * 
+	 * @param field the TextField
+	 * @param infoItem the StringItem that should be used for rendering the current input mode. 
+	 */
 	public static void setTextfieldInfoItem(TextField field, StringItem infoItem)
 	{
 	 	//#if polish.TextField.useDirectInput && polish.TextField.useExternalInfo && !polish.blackberry
@@ -2960,6 +3014,15 @@ public final class UiAccess {
 	//#endif
 	
 	//#if polish.midp
+	/**
+	 * Sets the help text for the specified TextField.
+	 * This text will be shown when the TextField's content is null.
+	 * This can only be called when the preprocessing variable
+	 * "polish.TextField.showHelpText" is true.
+	 * 
+	 * @param field the TextField
+	 * @param text the help text
+	 */
 	public static void setTextfieldHelp(javax.microedition.lcdui.TextField field, String text)
 	{
 		// ignore
@@ -2967,6 +3030,15 @@ public final class UiAccess {
 	//#endif
 
 	//#if polish.usePolishGui
+	/**
+	 * Sets the help text for the specified TextField.
+	 * This text will be shown when the TextField's content is null.
+	 * This can only be called when the preprocessing variable
+	 * "polish.TextField.showHelpText" is true.
+	 * 
+	 * @param field the TextField
+	 * @param text the help text
+	 */
 	public static void setTextfieldHelp(TextField field, String text)
 	{
 		//#if polish.TextField.showHelpText
@@ -2975,18 +3047,33 @@ public final class UiAccess {
 	}
 	//#endif
 	
-	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.midp && polish.TextField.usePredictiveInput
+	//#if polish.midp
+	/**
+	 * Can be used to deactivate or activate commands for a specific TextField.
+	 * This has no effect when commands are globally suppressed by settting
+	 * the preprocessing variable "polish.TextField.suppressCommands" to "true".
+	 * 
+	 * @param field the TextField
+	 * @param suppress true when commands should be surpressed
+	 */
 	public static void setSuppressCommands(javax.microedition.lcdui.TextField field, boolean suppress)
 	{
 		// ignore
 	}
 	//#endif
 
- 	//#if polish.TextField.useDirectInput && !polish.blackberry && polish.usePolishGui && polish.TextField.usePredictiveInput
+ 	//#if polish.usePolishGui
+	/**
+	 * Can be used to deactivate or activate commands for a specific TextField.
+	 * This has no effect when commands are globally suppressed by settting
+	 * the preprocessing variable "polish.TextField.suppressCommands" to "true".
+	 * 
+	 * @param field the TextField
+	 * @param suppress true when commands should be surpressed
+	 */
 	public static void setSuppressCommands(TextField field, boolean suppress)
 	{
 		field.setSuppressCommands(suppress);
-		field.setConstraints(field.getConstraints());
 	}
 	//#endif
 
@@ -3266,6 +3353,12 @@ public final class UiAccess {
 	}
 	//#endif
 
+	/**
+	 * Simulates a keyPressed event.
+	 * The event will be forwarded to the current screen.
+	 * 
+	 * @param keyCode the keyCode 
+	 */
 	public static void emitKeyPress( int keyCode ) {
 		//#if polish.usePolishGui
 		Screen screen = StyleSheet.currentScreen;
@@ -3275,6 +3368,12 @@ public final class UiAccess {
 		//#endif
 	}
 	
+	/**
+	 * Simulates a keyPressed event.
+	 * The event will be forwarded to the current screen.
+	 * 
+	 * @param gameAction the game action that should be triggered, e.g. Canvas.DOWN or Canvas.FIRE 
+	 */
 	public static void emitGameActionPress( int gameAction ) {
 		//#if polish.usePolishGui
 		Screen screen = StyleSheet.currentScreen;
@@ -3285,6 +3384,12 @@ public final class UiAccess {
 		//#endif
 	}
 	
+	/**
+	 * Simulates a keyReleased event.
+	 * The event will be forwarded to the current screen.
+	 * 
+	 * @param keyCode the keyCode 
+	 */
 	public static void emitKeyRelease( int keyCode ) {
 		//#if polish.usePolishGui
 		Screen screen = StyleSheet.currentScreen;
@@ -3294,6 +3399,12 @@ public final class UiAccess {
 		//#endif
 	}
 	
+	/**
+	 * Simulates a keyReleased event.
+	 * The event will be forwarded to the current screen.
+	 * 
+	 * @param gameAction the game action that should be triggered, e.g. Canvas.DOWN or Canvas.FIRE 
+	 */
 	public static void emitGameActionRelease( int gameAction ) {
 		//#if polish.usePolishGui
 		Screen screen = StyleSheet.currentScreen;

@@ -25,14 +25,22 @@
  */
 package de.enough.polish.util;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import de.enough.polish.io.Externalizable;
+import de.enough.polish.io.Serializer;
+
 /**
  * <p>Allows to manage data in a tabular structure.</p>
  *
  * <p>Copyright Enough Software 2008</p>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class TableData
+public class TableData implements Externalizable
 {
+	private static final int VERSION = 90;
 	private int numberOfColumns;
 	private int numberOfRows;
 	private Object[][] data;
@@ -281,5 +289,52 @@ public class TableData
 	public Object[][] getInternalData() {
 		return this.data;
 	}
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#write(java.io.DataOutputStream)
+	 */
+	public void write(DataOutputStream out) throws IOException
+	{
+		out.writeInt( VERSION );
+		int columns = this.numberOfColumns;
+		int rows = this.numberOfRows;
+		out.writeInt( columns );
+		out.writeInt( rows );
+		Object[][] currentData = this.data;
+		for (int col = 0; col < columns; col++)
+		{
+			for (int row = 0; row < rows; row++)
+			{
+				Serializer.serialize( currentData[col][row], out);
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.io.Externalizable#read(java.io.DataInputStream)
+	 */
+	public void read(DataInputStream in) throws IOException
+	{
+		int version = in.readInt();
+		//#if polish.debug
+			if (version > VERSION) {
+				//#debug warn
+				System.out.println("unsupported table item version: " + version);
+			}
+		//#endif
+		int columns = in.readInt();
+		int rows = in.readInt();
+		setDimension(columns, rows);
+		Object[][] currentData = this.data;
+		for (int col = 0; col < columns; col++)
+		{
+			for (int row = 0; row < rows; row++)
+			{
+				currentData[col][row] = Serializer.deserialize( in );
+			}
+		}
+	}
+
 
 }

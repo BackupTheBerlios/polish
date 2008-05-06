@@ -59,7 +59,7 @@ public class TableItem
 	private int[] rowHeights;
 	private int[] columnWidths;
 	
-	private int lineStyle;
+	private int lineStroke;
 	private int lineColor = -1;
 	private int completeWidth;
 	
@@ -153,18 +153,30 @@ public class TableItem
 		if (this.lineColor == -1) {
 			this.lineColor = this.fontColor;
 		}
+		//#if polish.css.table-line-color
+			Color lineColorObj = style.getColorProperty("table-line-color");
+			if (lineColorObj != null) {
+				this.lineColor = lineColorObj.getColor();
+			}
+		//#endif
+		//#if polish.css.table-line-stroke
+			Integer strokeObj = style.getIntProperty("table-line-stroke");
+			if (strokeObj != null) {
+				this.lineStroke = strokeObj.intValue();
+			}
+		//#endif
 	}
 	
 	/**
-	 * Sets the line style and color.
-	 * @param lineStyle the line style
+	 * Sets the stroke style and color of the lines between cells.
+	 * @param lineStroke the line stroke style
 	 * @param lineColor the color for lines
 	 * @see #LINE_STYLE_SOLID
 	 * @see #LINE_STYLE_DOTTED
 	 * @see #LINE_STYLE_INVISIBLE
 	 */
-	public void setLineStyle( int lineStyle, int lineColor) {
-		this.lineStyle = lineStyle;
+	public void setLineStyle( int lineStroke, int lineColor) {
+		this.lineStroke = lineStroke;
 		this.lineColor = lineColor;
 	}
 
@@ -199,7 +211,7 @@ public class TableItem
 					width = this.font.stringWidth( data.toString() );
 					height = textHeight;
 				}
-				if (this.lineStyle != LINE_STYLE_INVISIBLE) {
+				if (this.lineStroke != LINE_STYLE_INVISIBLE) {
 					width += (this.paddingHorizontal << 1) + 1;
 					height += (this.paddingVertical << 1) + 1;
 				} else {
@@ -283,9 +295,9 @@ public class TableItem
 					g.drawString( data.toString(), x + width, y + height, Graphics.LEFT | Graphics.TOP );
 				}
 				height += heights[row];
-				if (this.lineStyle != LINE_STYLE_INVISIBLE && row != numberOfRows -1) {
+				if (this.lineStroke != LINE_STYLE_INVISIBLE && row != numberOfRows -1) {
 					g.setColor( this.lineColor );
-					if (this.lineStyle == LINE_STYLE_DOTTED) {
+					if (this.lineStroke == LINE_STYLE_DOTTED) {
 						g.setStrokeStyle( Graphics.DOTTED );
 						g.drawLine( x, y + height - this.paddingVertical, x + this.completeWidth, y + height - this.paddingVertical );
 						g.setStrokeStyle( Graphics.SOLID );
@@ -295,9 +307,9 @@ public class TableItem
 				}
 			}
 			width += widths[col];
-			if (this.lineStyle != LINE_STYLE_INVISIBLE && col != numberOfColumns -1) {
+			if (this.lineStroke != LINE_STYLE_INVISIBLE && col != numberOfColumns -1) {
 				g.setColor( this.lineColor );
-				if (this.lineStyle == LINE_STYLE_DOTTED) {
+				if (this.lineStroke == LINE_STYLE_DOTTED) {
 					g.setStrokeStyle( Graphics.DOTTED );
 					g.drawLine( x + width - this.paddingHorizontal, y, x + width - this.paddingHorizontal, y + this.contentHeight );
 					g.setStrokeStyle( Graphics.SOLID );
