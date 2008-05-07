@@ -118,14 +118,14 @@ public class SquareSonarBorder extends Border
 								|| ( ((outerColor >>> 24) != 0)  && ((outerColor >>> 24) != 0xff) );
 		this.distances = new int[ steps ];
 		if (speed != -1) {
-			for (int i = 0; i < steps; i++)
+			for (int i = 0; i &lt; steps; i++)
 			{
 				this.distances[i] = i * speed;
 			}
 		} else {
 			int sum = 0;
 			int dist = distance;
-			for (int i = 0; i < steps; i++)
+			for (int i = 0; i &lt; steps; i++)
 			{
 				int amount = dist / 3;
 				sum += amount;
@@ -133,7 +133,7 @@ public class SquareSonarBorder extends Border
 			}
 			dist = distance + (distance - sum);
 			sum = 0;
-			for (int i = 0; i < steps; i++)
+			for (int i = 0; i &lt; steps; i++)
 			{
 				this.distances[i] = sum;
 				int amount = dist / 3;
@@ -154,7 +154,7 @@ public class SquareSonarBorder extends Border
 	public void showNotify()
 	{
 		super.showNotify();
-		for (int i = 0; i < this.steps; i++)
+		for (int i = 0; i &lt; this.steps; i++)
 		{
 			this.activeSignals[i] = false;
 		}
@@ -180,7 +180,7 @@ public class SquareSonarBorder extends Border
 			}
 		}
 		this.activeSignals[ 0 ] = false;
-		if ((currentTime - this.lastEmittingTime > this.pause) && (this.numSignals == -1 || this.emittedSignals < this.numSignals) ){
+		if ((currentTime - this.lastEmittingTime > this.pause) && (this.numSignals == -1 || this.emittedSignals &lt; this.numSignals) ){
 			this.activeSignals[0] = true;
 			this.lastEmittingTime = currentTime;
 			if (maxDist == 0) {
@@ -197,8 +197,8 @@ public class SquareSonarBorder extends Border
 		parent.addRelativeToBackgroundRegion(repaintRegion, 
 			-maxDist, 
 			-maxDist, 
-			parent.getBackgroundWidth() + (maxDist << 1), 
-			parent.getBackgroundHeight() + (maxDist << 1));
+			parent.getBackgroundWidth() + (maxDist &lt;&lt; 1), 
+			parent.getBackgroundHeight() + (maxDist &lt;&lt; 1));
 	}
 
 
@@ -208,7 +208,7 @@ public class SquareSonarBorder extends Border
 	 */
 	public void paint(int x, int y, int width, int height, Graphics g)
 	{
-		for (int i = 0; i < this.steps; i++)
+		for (int i = 0; i &lt; this.steps; i++)
 		{
 			int dist = this.distances[i];
 			if (this.activeSignals[i]) {
