@@ -39,27 +39,31 @@ import de.enough.polish.ui.Background;
 public class HorizontalSplitRoundRectBackground extends Background
 {
 
-	private final int topColor;
-	private final int bottomColor;
+	private static final int SIDE_RIGHT = 1;
+	private final int leftColor;
+	private final int rightColor;
 	private final int splitPos;
 	private final boolean isPercent;
 	private final int arcWidth;
 	private final int arcHeight;
+	private boolean isSplitRight;
 
 	/**
 	 * Creates a new background
-	 * @param topColor the top color
-	 * @param bottomColor the bottom color
+	 * @param leftColor the left color
+	 * @param rightColor the right color
 	 * @param splitPos the split position either in percent (0 - 100) or in pixels, negative values are interpreted as percent
+	 * @param splitSide the side of the splitting area (0 = left, 1 = right)
 	 * @param arcWidth the horizontal diameter of the arc at the four corners
 	 * @param arcHeight the vertical diameter of the arc at the four corners
 	 */
-	public HorizontalSplitRoundRectBackground( int topColor, int bottomColor, int splitPos, int arcWidth, int arcHeight ) 
+	public HorizontalSplitRoundRectBackground( int leftColor, int rightColor, int splitPos, int splitSide, int arcWidth, int arcHeight ) 
 	{
-		this.topColor = topColor;
-		this.bottomColor = bottomColor;
+		this.leftColor = leftColor;
+		this.rightColor = rightColor;
 		this.splitPos = splitPos < 0 ? -splitPos : splitPos;
 		this.isPercent = splitPos < 0;
+		this.isSplitRight = splitSide == SIDE_RIGHT;
 		this.arcWidth = arcWidth;
 		this.arcHeight = arcHeight;
 	}
@@ -73,11 +77,17 @@ public class HorizontalSplitRoundRectBackground extends Background
 		if (this.isPercent) {
 			split = (width * split) / 100;
 		}
-		g.setColor( this.topColor );
+		if (split == 0) {
+			split = Math.min(width, height);
+		}
+		if (this.isSplitRight) {
+			split = width - split;
+		}
+		g.setColor( this.leftColor );
 		g.fillRoundRect(x, y, split + 1, height, this.arcWidth, this.arcHeight );
 		g.fillRect( x + split - this.arcWidth, y , this.arcWidth, height );
-		g.setColor( this.bottomColor );
-		g.fillRoundRect( x, y, width - split, height, this.arcWidth, this.arcHeight );
+		g.setColor( this.rightColor );
+		g.fillRoundRect( x + split, y, width - split, height, this.arcWidth, this.arcHeight );
 		g.fillRect( x + split, y , this.arcWidth, height );
 	}
 

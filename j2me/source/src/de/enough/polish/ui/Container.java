@@ -2701,14 +2701,23 @@ public class Container extends Item {
 		requestInit();
 	}
 
-	//#ifdef tmp.supportViewType
+	/**
+	 * Releases all (memory intensive) resources such as images or RGB arrays of this background.
+	 */
 	public void releaseResources() {
 		super.releaseResources();
-		if (this.containerView != null) {
-			this.containerView.releaseResources();
+		Item[] items = getItems();
+		for (int i = 0; i < items.length; i++)
+		{
+			Item item = items[i];
+			item.releaseResources();
 		}
+		//#ifdef tmp.supportViewType
+			if (this.containerView != null) {
+				this.containerView.releaseResources();
+			}
+		//#endif
 	}
-	//#endif
 	
 	
 

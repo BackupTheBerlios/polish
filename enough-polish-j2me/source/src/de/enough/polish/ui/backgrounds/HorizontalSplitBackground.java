@@ -38,24 +38,27 @@ import de.enough.polish.ui.Background;
  */
 public class HorizontalSplitBackground extends Background
 {
-
+	private final static int SIDE_RIGHT = 1;
 	private final int leftColor;
 	private final int rightColor;
 	private final int splitPos;
 	private final boolean isPercent;
+	private final boolean isSplitRight;
 
 	/**
 	 * Creates a new background
 	 * @param leftColor the top color
 	 * @param rightColor the bottom color
 	 * @param splitPos the split position either in percent (0 - 100) or in pixels, negative values are interpreted as percent values
+	 * @param splitSide the side of the splitPos
 	 */
-	public HorizontalSplitBackground( int leftColor, int rightColor, int splitPos) 
+	public HorizontalSplitBackground( int leftColor, int rightColor, int splitPos, int splitSide ) 
 	{
 		this.leftColor = leftColor;
 		this.rightColor = rightColor;
 		this.splitPos = splitPos < 0 ? -splitPos : splitPos;
 		this.isPercent = splitPos < 0;
+		this.isSplitRight = splitSide == SIDE_RIGHT;
 	}
 
 	/* (non-Javadoc)
@@ -66,6 +69,12 @@ public class HorizontalSplitBackground extends Background
 		int split = this.splitPos;
 		if (this.isPercent) {
 			split = (width * split) / 100;
+		}
+		if (split == 0) {
+			split = Math.min(width, height);
+		}
+		if (this.isSplitRight) {
+			split = width - split;
 		}
 		g.setColor( this.leftColor );
 		g.fillRect(x, y, split + 1, height);
