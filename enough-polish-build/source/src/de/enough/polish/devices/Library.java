@@ -347,5 +347,14 @@ public class Library extends PolishComponent {
 	public String toString() {
 		return this.identifier;
 	}
+	
+	/**
+	 * Retrieves the parent library, if any.
+	 * 
+	 * @return the parent library or null
+	 */
+	public Library getParentLibrary() {
+		return (Library) this.parent;
+	}
 
 }

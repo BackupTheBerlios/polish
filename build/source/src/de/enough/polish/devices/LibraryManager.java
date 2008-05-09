@@ -186,6 +186,19 @@ public class LibraryManager {
 			String libPath = null;
 			if (lib != null ) {
 				libPath = lib.getPath();
+				// check for parent library that are already on the classpath
+				// this can lead to problems when in a child library a class has been extended, for example:
+				while ( (lib = lib.getParentLibrary()) != null ) {
+					for (int j=0; j<libPaths.size(); j++) {
+						if (libPaths.get(j) == lib.getPath()) {
+							// a parent library is on the path before this library:
+							libPaths.add(j, libPath);
+							this.resolvedLibraryPaths.put( libName, libPath );
+							libPath = null;
+							break;
+						}
+					}
+				}
 			} else {
 				libPath = (String) this.resolvedLibraryPaths.get( libName );
 				if (libPath == null) {
