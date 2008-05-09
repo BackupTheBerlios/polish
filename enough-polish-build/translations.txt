@@ -35,6 +35,8 @@ polish.rss.command.select=Show
 polish.rss.command.followlink=Go
 # DateField:
 polish.DateFormatEmptyText=YYYY-MM-DD
+# TextField:
+polish.command.switch_keyboard=Switch keyboard
 
 # used for predictive setup
 polish.predictive.command.enable=Enable Predictive Input
