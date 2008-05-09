@@ -58,6 +58,10 @@ import de.enough.polish.util.Locale;
 import net.rim.device.api.ui.component.BasicEditField;
 //#endif
 
+//#if polish.api.windows
+	import de.enough.polish.windows.Keyboard;
+//#endif
+
 /**
  * A <code>TextField</code> is an editable text component that may be
  * placed into
@@ -702,6 +706,15 @@ public class TextField extends StringItem
 	  	//#endif
 	//#endif	
 	
+	//#if polish.key.maybeSupportsAsciiKeyMap
+		//#ifdef polish.command.switch_keyboard.priority:defined
+			//#= private final static int SWITCH_KEYBOARD_PRIORITY = ${polish.command.switch_keyboard.priority}; 
+		//#else
+			private final static int SWITCH_KEYBOARD_PRIORITY = 1; 
+		//#endif
+		private static Command SWITCH_KEYBOARD_CMD = new Command (Locale.get("polish.command.switch_keyboard"), Command.ITEM, SWITCH_KEYBOARD_PRIORITY);
+	//#endif
+
   	/** valid input characters for local parts of email addresses, apart from 0..9 and a..z. */
   	private static final String VALID_LOCAL_EMAIL_ADDRESS_CHARACTERS = ".-_@!#$%&'*+/=?^`{|}~";
   	/** valid input characters for domain names, apart from 0..9 and a..z. */
@@ -912,6 +925,10 @@ public class TextField extends StringItem
 		private StringItem helpItem;
 	//#endif
 	
+	//#if polish.key.maybeSupportsAsciiKeyMap
+		private boolean useAsciiKeyMap = true;
+	//#endif
+
 	/**
 	 * Creates a new <code>TextField</code> object with the given label, initial
 	 * contents, maximum size in characters, and constraints.
@@ -1014,6 +1031,12 @@ public class TextField extends StringItem
 			//#else
 				this.helpItem.setText("type text here");
 			//#endif
+		//#endif
+
+		//#if polish.key.maybeSupportsAsciiKeyMap
+			if (Keyboard.needsQwertzAndNumericSupport()) {
+				addCommand(SWITCH_KEYBOARD_CMD);
+			}
 		//#endif
 
 		setString(text);
@@ -2902,6 +2925,9 @@ public class TextField extends StringItem
 			//#if polish.key.supportsAsciiKeyMap
 				if (keyCode >= 32 
 						&& this.screen.isKeyboardAccessible() 
+						//#if polish.key.maybeSupportsAsciiKeyMap
+							&& this.useAsciiKeyMap
+						//#endif
 						&& this.inputMode != MODE_NUMBERS 
 						&& !this.isNumeric
 						&& !( 	(gameAction == Canvas.UP     &&  keyCode == this.screen.getKeyCode(Canvas.UP) ) 
@@ -3760,6 +3786,11 @@ public class TextField extends StringItem
 					}
 				}
 			//#endif		
+			//#if polish.key.maybeSupportsAsciiKeyMap
+				if (cmd == SWITCH_KEYBOARD_CMD) {
+					this.useAsciiKeyMap = !this.useAsciiKeyMap;
+				}
+			//#endif
 		//#endif
 	}
 		

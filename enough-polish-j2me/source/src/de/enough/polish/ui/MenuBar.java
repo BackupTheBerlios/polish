@@ -993,6 +993,11 @@ public class MenuBar extends Item {
 					}
 				//#endif
 			//#endif
+			//#if polish.api.windows
+				if (MenuBar.windowsSipImage != null) {
+					g.drawImage(MenuBar.windowsSipImage, this.windowsSipX, y + this.windowsSipY, Graphics.TOP | Graphics.LEFT);
+				}
+			//#endif
 		//#endif
 		}
 	}
