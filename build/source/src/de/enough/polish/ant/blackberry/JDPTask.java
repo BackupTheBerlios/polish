@@ -10,14 +10,17 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 public class JDPTask extends Task {
-	private static final String TOKEN = "@@FILES@@";
+	private static final String FILES = "@@FILES@@";
+	private static final String NAME = "@@NAME@@";
 
-	String project;
+	String name;
+	
+	String path;
 
 	String template;
 
 	String sources;
-
+	
 	public void execute() throws BuildException {
 		String sourceDir = this.sources.trim() + "/source";
 
@@ -25,6 +28,8 @@ public class JDPTask extends Task {
 
 		try {
 			System.out.println("Reading template...");
+			
+			String fullPath = path.trim() + "\\" + name.trim() + ".jdp";
 
 			String content = readFile(new File(template)).trim();
 
@@ -40,14 +45,15 @@ public class JDPTask extends Task {
 			List resourceFiles = FileListing.getFileListing(new File(
 					resourceDir), null, false);
 
-			System.out.println("Writing files to project " + project
+			System.out.println("Writing files to project " + fullPath
 					+ "...");
 
 			String list = getFileList(sourceFiles, resourceFiles).trim();
 			
-			content = content.replaceAll(TOKEN, list);
+			content = content.replaceAll(FILES, list);
+			content = content.replace(NAME, name);
 			
-			writeFile(new File(project.trim()),content);
+			writeFile(new File(fullPath),content);
 			
 		} catch (IOException e) {
 			throw new BuildException(e);
@@ -103,11 +109,11 @@ public class JDPTask extends Task {
 	}
 
 	public String getproject() {
-		return project;
+		return path;
 	}
 
-	public void setProject(String project) {
-		this.project = project;
+	public void setPath(String project) {
+		this.path = project;
 	}
 
 	public String getSources() {
@@ -124,6 +130,14 @@ public class JDPTask extends Task {
 
 	public void setTemplate(String template) {
 		this.template = template;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }
