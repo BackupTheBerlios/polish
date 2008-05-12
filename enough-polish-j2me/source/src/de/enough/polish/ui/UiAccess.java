@@ -3559,4 +3559,20 @@ public final class UiAccess {
 		return screen.isSoftKeyMiddle( keyCode );
 	}
 	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Set the style of a screens menubar.
+	 * 
+	 * @param screen the screen
+	 * @param style the style
+	 * @return true when the given key is the middle soft key
+	 */
+	public static void setMenuBarStyle(Screen screen, Style style)
+	{
+		System.out.println("!!!!!!!!!!!!!" + style);
+		screen.getMenuBar().setStyle(style);
+		screen.requestInit();
+	}
+	//#endif
 }
