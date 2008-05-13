@@ -523,7 +523,7 @@ extends ItemView
 				}
 				if (columnIndex != 0) {
 					// last row is not completely filled.
-					myContentHeight += maxRowHeight;
+					//myContentHeight += maxRowHeight;
 				}
 			} else if (this.columnsSetting == EQUAL_WIDTH_COLUMNS) {
 				// Use the maximum used column-width for each column,
