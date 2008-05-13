@@ -3570,7 +3570,6 @@ public final class UiAccess {
 	 */
 	public static void setMenuBarStyle(Screen screen, Style style)
 	{
-		System.out.println("!!!!!!!!!!!!!" + style);
 		screen.getMenuBar().setStyle(style);
 		screen.requestInit();
 	}
