@@ -453,6 +453,9 @@ public class Container extends Item {
 					} else {
 						focusClosestItem(index, myItems);
 					}
+				} else {
+					this.autoFocusEnabled = true;
+					this.autoFocusIndex = 0;
 				}
 			} else if (index < this.focusedIndex) {
 				//#if tmp.supportViewType

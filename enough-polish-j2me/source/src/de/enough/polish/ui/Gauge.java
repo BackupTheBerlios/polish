@@ -789,7 +789,11 @@ implements ImageConsumer
 		} else {
 			if (this.mode == MODE_CONTINUOUS) {
 				g.setColor( this.color );
-				int w = (this.contentWidth * this.value) / this.maxValue;
+				int maxWidth = this.contentWidth;
+				if (this.showValue) {
+					maxWidth -= this.valueWidth;
+				}
+				int w = (maxWidth * this.value) / this.maxValue;
 				g.fillRect(x, y, w + 1, this.contentHeight + 1 );
 			} else {
 				g.drawImage(this.indicatorImage, x, y, Graphics.TOP | Graphics.LEFT );
