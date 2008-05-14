@@ -3928,7 +3928,7 @@ implements AccessibleCanvas
 	public void focus(int index, Item item, boolean force) {
 		if (index != -1 && item != null && (item.appearanceMode != Item.PLAIN || force ) ) {
 			//#debug
-			System.out.println("Screen: focusing item " + index );
+			System.out.println("Screen: focusing item " + index + ": " + item );
 			this.container.focus( index, item, 0 );
 			if (index == 0) {
 				this.container.setScrollYOffset( 0, false );
