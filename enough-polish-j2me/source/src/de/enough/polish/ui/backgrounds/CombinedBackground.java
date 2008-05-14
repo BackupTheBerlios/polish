@@ -29,6 +29,9 @@ package de.enough.polish.ui.backgrounds;
 import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Background;
+import de.enough.polish.ui.ClippingRegion;
+import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Screen;
 
 /**
  * <p>Provides a background consisting of two other backgrounds.</p>
@@ -119,12 +122,25 @@ public class CombinedBackground extends Background
 		this.foreground.paint(x, y, width, height, g);
 	}
 
+
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Background#animate()
+	 * @see de.enough.polish.ui.Background#animate(de.enough.polish.ui.Screen, de.enough.polish.ui.Item, long, de.enough.polish.ui.ClippingRegion)
 	 */
-	public boolean animate()
+	public void animate(Screen screen, Item parent, long currentTime,
+			ClippingRegion repaintRegion)
 	{
-		return this.foreground.animate() || this.background.animate();
+		this.foreground.animate(screen, parent, currentTime, repaintRegion);
+		this.background.animate(screen, parent, currentTime, repaintRegion);
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Background#showNotify()
+	 */
+	public void showNotify()
+	{
+		this.foreground.showNotify();
+		this.background.showNotify();
 	}
 
 	/* (non-Javadoc)
@@ -144,16 +160,5 @@ public class CombinedBackground extends Background
 		this.foreground.releaseResources();
 		this.background.releaseResources();
 	}
-
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Background#showNotify()
-	 */
-	public void showNotify()
-	{
-		this.foreground.showNotify();
-		this.background.showNotify();
-	}
-	
-	
 
 }
