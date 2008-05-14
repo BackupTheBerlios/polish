@@ -2601,7 +2601,7 @@ public class PolishTask extends ConditionalTask {
 			preserveList.add( className );
 		} else {
 			int lastDotPos = className.lastIndexOf( '.' );
-			if ( lastDotPos != -1 ) {
+			if ( lastDotPos != -1 && className.charAt( className.length() -1) != '*') {
 				preserveList.add( className.substring( lastDotPos + 1 ) );							
 			} else {
 				preserveList.add( className );

@@ -45,14 +45,37 @@ import de.enough.polish.preprocess.css.StyleSheet;
  */
 public class CombinedBackgroundConverter extends BackgroundConverter
 {
+	
+
+	private final String attribute1;
+	private final String attribute2;
+	private final String name;
+	private final String className;
+
 
 	/**
-	 * 
+	 * Creates a new combined bg converter 
 	 */
 	public CombinedBackgroundConverter()
 	{
-		// no initialization needed
+		this( "CombinedBackground", "combined", "foreground", "background" );
 	}
+	
+	/**
+	 * Creates a new combined bg converter 
+	 * @param className the name of the background class
+	 * @param name the name of the bg, e.g. combined
+	 * @param attribute1 the name of the first background attribute, e.g. foreground
+	 * @param attribute2 the name of the first background attribute, e.g. background
+	 */
+	public CombinedBackgroundConverter( String className, String name, String attribute1, String attribute2 )
+	{
+		this.className = className;
+		this.name = name;
+		this.attribute1 = attribute1;
+		this.attribute2 = attribute2;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.preprocess.css.BackgroundConverter#createNewStatement(java.util.HashMap, de.enough.polish.preprocess.css.Style, de.enough.polish.preprocess.css.StyleSheet)
@@ -60,23 +83,23 @@ public class CombinedBackgroundConverter extends BackgroundConverter
 	protected String createNewStatement(HashMap background, Style style,
 			StyleSheet styleSheet) throws BuildException
 	{
-		String foregroundReference = (String) background.get("foreground");
+		String foregroundReference = (String) background.get(this.attribute1);
 		if (foregroundReference == null) {
-			throw new BuildException( "Invalid CSS: a \"combined\" background is missing the \"foreground\" CSS attribute which needs to refer to a background defined within the backgrounds section of your polish.css file.");
+			throw new BuildException( "Invalid CSS: a \"" + this.name + "\" background is missing the \"" + this.attribute1 + "\" CSS attribute which needs to refer to a background defined within the backgrounds section of your polish.css file.");
 		}
 		if (styleSheet.getBackgrounds().get(foregroundReference) == null) {
-			throw new BuildException( "Invalid CSS: a \"combined\" background contains the invalid \"foreground: " + foregroundReference +";\" CSS attribute. Please refer to a background defined within the backgrounds section of your polish.css file.");
+			throw new BuildException( "Invalid CSS: a \"" + this.name + "\" background contains the invalid \"" + this.attribute1 +": " + foregroundReference +";\" CSS attribute. Please refer to a background defined within the backgrounds section of your polish.css file.");
 		}
 		foregroundReference += "Background";
-		String backgroundReference  = (String) background.get("background");
+		String backgroundReference  = (String) background.get(this.attribute2);
 		if (backgroundReference == null) {
-			throw new BuildException( "Invalid CSS: a \"combined\" background is missing the \"background\" CSS attribute which needs to refer to a background defined within the backgrounds section of your polish.css file.");
+			throw new BuildException( "Invalid CSS: a \"" + this.name + "\" background is missing the \"" + this.attribute2 + "\" CSS attribute which needs to refer to a background defined within the backgrounds section of your polish.css file.");
 		}
 		if (styleSheet.getBackgrounds().get(backgroundReference) == null) {
-			throw new BuildException( "Invalid CSS: a \"combined\" background contains the invalid \"background: " + backgroundReference +";\" CSS attribute. Please refer to a background defined within the backgrounds section of your polish.css file.");
+			throw new BuildException( "Invalid CSS: a \"" + this.name + "\" background contains the invalid \"" + this.attribute2 + ": " + backgroundReference +";\" CSS attribute. Please refer to a background defined within the backgrounds section of your polish.css file.");
 		}
 		backgroundReference += "Background";
-		String result = "new " + BACKGROUNDS_PACKAGE + "CombinedBackground(" 
+		String result = "new " + BACKGROUNDS_PACKAGE + this.className + "(" 
 		+ foregroundReference + ", " + backgroundReference + ")";
 	
 		return result;

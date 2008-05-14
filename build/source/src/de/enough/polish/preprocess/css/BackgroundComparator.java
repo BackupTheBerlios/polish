@@ -28,6 +28,7 @@ package de.enough.polish.preprocess.css;
 import java.util.Comparator;
 import java.util.Map;
 
+import de.enough.polish.BuildException;
 import de.enough.polish.preprocess.css.attributes.ParameterizedCssAttribute;
 
 /**
@@ -79,6 +80,9 @@ public class BackgroundComparator implements Comparator
 			return 1;
 		}
 		ParameterizedCssMapping backgroundMapping1 = (ParameterizedCssMapping) this.backgroundTypes.getMapping(type1);
+		if (backgroundMapping1 == null) {
+			throw new BuildException("Unable to resolve background mapping for type \"" + type1 + "\" - check your polish.css file(s).");
+		}
 		int backgroundTypeParams1 = 0;
 		CssAttribute[] parameters1 = backgroundMapping1.getParameters();
 		for (int i = 0; i < parameters1.length; i++)
@@ -95,6 +99,9 @@ public class BackgroundComparator implements Comparator
 			}
 		}
 		ParameterizedCssMapping backgroundMapping2 = (ParameterizedCssMapping) this.backgroundTypes.getMapping(type2);
+		if (backgroundMapping2 == null) {
+			throw new BuildException("Unable to resolve background mapping for type \"" + type2 + "\" - check your polish.css file(s).");
+		}
 		int backgroundTypeParams2 = 0;
 		CssAttribute[] parameters2 = backgroundMapping2.getParameters();
 		for (int i = 0; i < parameters2.length; i++)
