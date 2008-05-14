@@ -760,22 +760,24 @@ public class Container extends Item {
 	 */
 	public void focus( int index, Item item, int direction ) {
 		//#debug
-		System.out.println("Container (" + this + "): Focusing item " + index + " (" + item + "), isInitialized=" + this.isInitialized );
+		System.out.println("Container (" + this + "): Focusing item " + index + " (" + item + "), isInitialized=" + this.isInitialized + ", autoFocusEnabled=" + this.autoFocusEnabled );
 		//System.out.println("focus: yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset + ", enableScrolling=" + this.enableScrolling + ", isInitialized=" + this.isInitialized );
-		//#if polish.blackberry
-        	//# getScreen().setFocus( item );
-		//#endif
 		
 		
-		if (this.autoFocusEnabled  && !this.isInitialized) {
+		if (!this.isInitialized) {
 			// setting the index for automatically focusing the appropriate item
 			// during the initialisation:
 			//#debug
 			System.out.println("Container: Setting autofocus-index to " + index );
 			this.autoFocusIndex = index;
 			//this.isFirstPaint = true;
-			return;
-		}
+			if (this.autoFocusEnabled) {
+				return;
+			}
+		} 
+		//#if polish.blackberry
+	    	//# getScreen().setFocus( item );
+		//#endif
 		
 		if (index == this.focusedIndex && item.isFocused && item == this.focusedItem) {
 			//#debug
@@ -2041,31 +2043,38 @@ public class Container extends Item {
 			//#endif
 			this.isFocused = true;
 			int newFocusIndex = this.focusedIndex;
+			
 			//if (this.focusedIndex == -1) {
 			//#if tmp.supportViewType
 				if ( this.containerView == null || this.containerView.allowsAutoTraversal ) {
 			//#endif
-				Item[] myItems = getItems();
-				// focus the first interactive item...
-				if (direction == Canvas.UP || direction == Canvas.LEFT ) {
-					//System.out.println("Container: direction UP with " + myItems.length + " items");
-					for (int i = myItems.length; --i >= 0; ) {
-						Item item = myItems[i];
-						if (item.appearanceMode != PLAIN) {
-							newFocusIndex = i;
-							break;
+					//#debug
+					System.out.println("focus(Style, direction): autofocusing " + this + ", focusedIndex=" + this.focusedIndex + ", autofocus=" + this.autoFocusIndex);
+					Item[] myItems = getItems();
+					if (this.autoFocusIndex != 0 && this.autoFocusIndex < myItems.length) {
+						newFocusIndex = this.autoFocusIndex;
+					} else {
+						// focus the first interactive item...
+						if (direction == Canvas.UP || direction == Canvas.LEFT ) {
+							//System.out.println("Container: direction UP with " + myItems.length + " items");
+							for (int i = myItems.length; --i >= 0; ) {
+								Item item = myItems[i];
+								if (item.appearanceMode != PLAIN) {
+									newFocusIndex = i;
+									break;
+								}
+							}
+						} else {
+							//System.out.println("Container: direction DOWN");
+							for (int i = 0; i < myItems.length; i++) {
+								Item item = myItems[i];
+								if (item.appearanceMode != PLAIN) {
+									newFocusIndex = i;
+									break;
+								}
+							}
 						}
 					}
-				} else {
-					//System.out.println("Container: direction DOWN");
-					for (int i = 0; i < myItems.length; i++) {
-						Item item = myItems[i];
-						if (item.appearanceMode != PLAIN) {
-							newFocusIndex = i;
-							break;
-						}
-					}
-				}
 				this.focusedIndex = newFocusIndex;
 				if (newFocusIndex == -1) {
 					//System.out.println("DID NOT FIND SUITEABLE ITEM");
