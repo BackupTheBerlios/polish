@@ -3562,16 +3562,70 @@ public final class UiAccess {
 	
 	//#if polish.usePolishGui
 	/**
-	 * Set the style of a screens menubar.
+	 * Set the style of the specified screen's menubar.
+	 * A full style is only applied when the external menubar is used, set the preprocessing variable
+	 * polish.MenuBar.useExtendedMenuBar to true for this.
+	 * Specify the style with a //#style preprocessing directive, e.g.
+	 * <pre>
+	 * //#style newMenuBarStyle
+	 * UiAccess.setMenuBarStyle( myScreen );
+	 * </pre>
+	 * 
+	 * @param screen the screen
+	 */
+	public static void setMenuBarStyle(Screen screen)
+	{
+		// ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Set the style of the specified screen's menubar.
+	 * A full style is only applied when the external menubar is used, set the preprocessing variable
+	 * polish.MenuBar.useExtendedMenuBar to true for this.
 	 * 
 	 * @param screen the screen
 	 * @param style the style
-	 * @return true when the given key is the middle soft key
 	 */
 	public static void setMenuBarStyle(Screen screen, Style style)
 	{
-		screen.getMenuBar().setStyle(style);
-		screen.requestInit();
+		screen.setMenuBarStyle( style );
+	}
+	//#endif
+	
+	
+	//#if polish.midp
+	/**
+	 * Set the style of the specified screen's menubar.
+	 * A full style is only applied when the external menubar is used, set the preprocessing variable
+	 * polish.MenuBar.useExtendedMenuBar to true for this.
+	 * Specify the style with a //#style preprocessing directive, e.g.
+	 * <pre>
+	 * //#style newMenuBarStyle
+	 * UiAccess.setMenuBarStyle( myScreen );
+	 * </pre>
+	 * 
+	 * @param screen the screen
+	 */
+	public static void setMenuBarStyle(javax.microedition.lcdui.Screen screen)
+	{
+		// ignore
+	}
+	//#endif
+	
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Set the style of the specified screen's menubar.
+	 * A full style is only applied when the external menubar is used, set the preprocessing variable
+	 * polish.MenuBar.useExtendedMenuBar to true for this.
+	 * 
+	 * @param screen the screen
+	 * @param style the style
+	 */
+	public static void setMenuBarStyle(javax.microedition.lcdui.Screen screen, Style style)
+	{
+		// ignore
 	}
 	//#endif
 }

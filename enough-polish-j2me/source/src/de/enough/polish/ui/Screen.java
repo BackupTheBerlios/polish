@@ -4419,6 +4419,25 @@ implements AccessibleCanvas
 	}
 	//#endif
 
+
+	/**
+	 * Sets the style for the menubar.
+	 * A full style is only applied when the external menubar is used, set the preprocessing variable
+	 * polish.MenuBar.useExtendedMenuBar to true for this.
+	 * 
+	 * @param menuBarStyle
+	 */
+	public void setMenuBarStyle(Style menuBarStyle)
+	{
+		//#ifdef tmp.useExternalMenuBar
+			this.menuBar.setStyle(menuBarStyle);
+			requestInit();
+		//#elif tmp.menuFullScreen
+			this.menuFontColor = menuBarStyle.getFontColor();
+		//#endif
+	}
+	
+	
 	/**
 	 * Retrieves the vertical scroll offset.
 	 * 
@@ -4632,7 +4651,9 @@ implements AccessibleCanvas
 		}
 		
 	}
-	
+
+
+
 //#ifdef polish.Screen.additionalMethods:defined
 	//#include ${polish.Screen.additionalMethods}
 //#endif
