@@ -53,10 +53,29 @@ implements Externalizable
 	private boolean isIntegerValues;
 
 	/**
-	 * Creates a new Properties set.
+	 * Creates a new empty Properties set.
 	 */
 	public Properties() {
 		super();
+	}
+	
+	/**
+	 * Creates a new Properties set and loads the specified resources.
+	 * @param url the URL of the properties, e.g. "/settings.properties"
+	 * @throws IOException when loading fails
+	 */
+	public Properties( String url) throws IOException {
+		this( url, null );
+	}
+
+	/**
+	 * Creates a new Properties set and loads the specified resources.
+	 * @param url the URL of the properties, e.g. "/settings.properties"
+	 * @param encoding the encoding of the referenced file
+	 * @throws IOException when loading fails
+	 */
+	public Properties( String url, String encoding) throws IOException {
+		load( getClass().getResourceAsStream(url), encoding, false );
 	}
 	
 	
