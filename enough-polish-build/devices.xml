@@ -3042,9 +3042,7 @@ These namespaces/schemas will be used soon.
 </device>
 	
 	<device>
-		<identifier>
-			Motorola/i730
-		</identifier>
+		<identifier>Motorola/i730</identifier>
 		<user-agent>MOTi730</user-agent>
 		<features>hasCamera</features>
 		<capability name="SoftwarePlatform.JavaPlatform" value="MIDP/2.0"/>
@@ -3052,7 +3050,7 @@ These namespaces/schemas will be used soon.
 		<capability name="HardwarePlatform.BitsPerPixel" value="16"/>
 		<capability name="HardwarePlatform.CameraResolution" value="300x200"/>
 		<capability name="SoftwarePlatform.JavaProtocol" value="UDP, TCP, SSL, HTTP, HTTPS, Serial"/>
-		<capability name="SoftwarePlatform.JavaPackage" value="wmapi, mmapi, motorola-lwt, location-api, motorola-lwt, Polyphonic-MIDI, WAV, AU, Vibrator, Lighting, Location API, Phonebook, Datebook, External display, Call Initiation, Recent calls, File I/O, Serial, Crypto, Digital Camera, RF enabling, Alpha blending, Secure file connection, Voicenote, 3D"/>
+		<capability name="SoftwarePlatform.JavaPackage" value="wmapi, mmapi, motorola-lwt, motorola-lwt, Polyphonic-MIDI, WAV, AU, Vibrator, Lighting, Location API, Phonebook, Datebook, External display, Call Initiation, Recent calls, File I/O, Serial, Crypto, Digital Camera, RF enabling, Alpha blending, Secure file connection, Voicenote, 3D"/>
 		<capability name="SoftwarePlatform.HeapSize" value="1.15 MB"/>
 		<capability name="StorageSize" value="2 MB"/>
 		<capability name="SoftwarePlatform.MaxJarSize" value="500 kb"/>
@@ -3119,7 +3117,7 @@ These namespaces/schemas will be used soon.
 		<capability name="MaxSockets.tcp" value="2"/>
 		<capability name="MaxSockets.http" value="2"/>
 		<capability name="MaxSockets.udp" value="11"/>
-		<capability name="JavaPackage" value="Location API, File I/O, serial"/>
+		<capability name="JavaPackage" value="File I/O, serial"/>
 		<capability name="key.LeftSoftKey" value="-20"/>
 		<capability name="key.RightSoftKey" value="-21"/>
 		<capability name="key.MiddleSoftKey" value="-22"/>
@@ -10452,7 +10450,7 @@ These namespaces/schemas will be used soon.
 		<identifier>BlackBerry/5810</identifier>
 		<capability name="ScreenSize" value="160x160"/>
 		<capability name="BitsPerPixel" value="1"/>
-		<capability name="JavaPlatform" value="MIDP/1.0, BlackBerry/4.1"/>
+		<capability name="JavaPlatform" value="MIDP/1.0, BlackBerry"/>
 		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
