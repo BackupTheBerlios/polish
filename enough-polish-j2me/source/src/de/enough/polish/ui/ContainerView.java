@@ -135,7 +135,7 @@ extends ItemView
 		this.focusedItem = parent.getFocusedItem();
 		//#if polish.Container.allowCycling != false
 			this.allowCycling = parent.allowCycling;
-			if ( (parent.parent instanceof Container)  && ((Container)parent.parent).getItems().length>1 )
+			if ( (parent.parent instanceof Container)  && ((Container)parent.parent).getNumberOfInteractiveItems()>1 )
 			{
 				this.allowCycling = false;
 			}
@@ -521,10 +521,11 @@ extends ItemView
 					} // for each item		
 					this.columnsWidths = newMaxColumnWidths;
 				}
-				if (columnIndex != 0) {
+				// this seems to be not required, 2008-05-15:
+				//if (columnIndex != 0) {
 					// last row is not completely filled.
 					//myContentHeight += maxRowHeight;
-				}
+				//}
 			} else if (this.columnsSetting == EQUAL_WIDTH_COLUMNS) {
 				// Use the maximum used column-width for each column,
 				// unless this table should be expanded, in which
@@ -866,8 +867,9 @@ extends ItemView
 		//#debug
 		System.out.println("ContainerView.shiftFocus( forward=" + forwardFocus + ", steps=" + steps + ", focusedIndex=" + this.focusedIndex + ")" );
 //		System.out.println("parent.focusedIndex=" + this.parentContainer.getFocusedIndex() );
+		int i;
 		//#if polish.css.colspan
-			int i = this.focusedIndex;
+			i = this.focusedIndex;
 			if ( i != -1 && steps != 0) {
 				//System.out.println("ShiftFocus: steps=" + steps + ", forward=" + forwardFocus);
 				int doneSteps = 0;
@@ -929,7 +931,7 @@ extends ItemView
 				}
 			}
 		//#else			
-			//# int i = this.focusedIndex + steps;
+			i = this.focusedIndex + steps;
 			if (steps != 0) {
 				if (!forwardFocus) {
 					if (i < 0) {
@@ -983,13 +985,13 @@ extends ItemView
 	//			System.out.println("shiftFocus: allowCycl=" + allowCycle + ", isFoward=" + forwardFocus + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset );	
 	//		}
 	//	//#endif
+		boolean allowCycle = false;
 		//#if polish.Container.allowCycling != false
-			boolean allowCycle = this.allowCycling;
-		//#else
-			//# boolean allowCycle = false;
+			allowCycle = this.allowCycling;
 		//#endif
 		Item nextItem = null;
 		//System.out.println("shifting focus - allowCycle=" + allowCycle + ", this.allowCycling=" + this.allowCycling + ", parent.allowCycling=" + this.parentContainer.allowCycling);
+		//System.out.println("starting at i=" + i + ", focusedIndex=" + this.focusedIndex + ", steps=" + steps + ", allowCycle=" + allowCycle) ;
 		while (true) {
 			if (forwardFocus) {
 				i++;
@@ -1020,6 +1022,7 @@ extends ItemView
 					//#endif
 				}
 			}
+			//System.out.println("now at i=" + i + ", focusedIndex=" + this.focusedIndex);
 			nextItem = items[i];
 			if (nextItem.appearanceMode != Item.PLAIN) {
 				break;

@@ -1714,7 +1714,11 @@ public final class UiAccess {
      */
     public static void scrollTo( Item item ) {
     	Screen screen = item.getScreen();
-    	if (screen == null || screen.container != null) {
+    	if (item.parent instanceof Container) {
+    		((Container)item.parent).scroll(0, item);
+    		return;
+    	}
+    	if (screen == null || screen.container == null) {
     		return;
     	}
     	int itemY = item.getAbsoluteY();
@@ -1743,7 +1747,7 @@ public final class UiAccess {
      */
     public static void scrollTo( Item item, int position ) {
     	Screen screen = item.getScreen();
-    	if (screen == null || screen.container != null) {
+    	if (screen == null || screen.container == null) {
     		return;
     	}
     	int itemY = item.getAbsoluteY();

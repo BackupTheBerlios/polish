@@ -2712,6 +2712,28 @@ public class Container extends Item {
 		}
 		requestInit();
 	}
+	
+
+	/**
+	 * Calculates the number of interactive items included in this container.
+	 * @return the number between 0 and size()
+	 */
+	public int getNumberOfInteractiveItems()
+	{
+		int number = 0;
+		Object[] items = this.itemsList.getInternalArray();
+		for (int i = 0; i < items.length; i++)
+		{
+			Item item = (Item) items[i];
+			if (item == null) {
+				break;
+			}
+			if (item.appearanceMode != PLAIN) {
+				number++;
+			}
+		}
+		return number;
+	}
 
 	/**
 	 * Releases all (memory intensive) resources such as images or RGB arrays of this background.
@@ -2730,6 +2752,7 @@ public class Container extends Item {
 			}
 		//#endif
 	}
+
 	
 	
 
