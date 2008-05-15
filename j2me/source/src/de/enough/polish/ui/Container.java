@@ -177,7 +177,7 @@ public class Container extends Item {
 	public void setScrollHeight( int height ) {
 		this.availableHeight = height;
 		this.enableScrolling = (height != -1);
-		Item item = this.focusedItem;
+		Item item = this.scrollItem != null ? this.scrollItem : this.focusedItem;
 		if (this.isInitialized && this.enableScrolling && item != null) {
 			//#debug
 			System.out.println("setScrollHeight(): scrolling to item=" + item + " with y=" + item.relativeY + ", height=" + height);
@@ -1009,15 +1009,16 @@ public class Container extends Item {
 		int verticalSpace = this.availableHeight - (this.contentY + this.marginBottom + this.paddingBottom + this.borderWidth); // the available height for this container
 		int yTopAdjust = 0;
 		Screen scr = this.screen;
-		if (scr != null && this == scr.container && scr.contentY != this.relativeY) {
+		if (scr != null && this == scr.container && this.relativeY > scr.contentY) {
 			// this is an adjustment for calculating the correct scroll offset for containers with a vertical-center or bottom layout:
 			yTopAdjust = this.relativeY - scr.contentY;
 		}
 		if ( y + height + currentYOffset + yTopAdjust > verticalSpace ) {
 			// the area is too low, so scroll down (= increase the negative yOffset):
-			currentYOffset += verticalSpace - (y + height + currentYOffset + yTopAdjust);
+			//currentYOffset += verticalSpace - (y + height + currentYOffset + yTopAdjust);
+			currentYOffset = verticalSpace - (y + height + yTopAdjust);
 			//#debug
-			System.out.println("scroll: item too low: verticalSpace=" + verticalSpace + "  y=" + y + ", height=" + height + ", yOffset=" + currentYOffset);
+			System.out.println("scroll: item too low: verticalSpace=" + verticalSpace + "  y=" + y + ", height=" + height + ", yTopAdjust=" + yTopAdjust + ", yOffset=" + currentYOffset);
 			// check if the top of the area is still visible when scrolling downwards:
 			if ( isDownwards && y + currentYOffset < 0 ) {
 				currentYOffset -= (y + currentYOffset);
@@ -1107,8 +1108,10 @@ public class Container extends Item {
 						scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
 					}
 					else if (this.scrollItem != null) {
-						scroll( 0, this.scrollItem );
-						this.scrollItem = null;
+						boolean  scrolled = scroll( 0, this.scrollItem );
+						if (scrolled) {
+							this.scrollItem = null;
+						}
 					}
 					return;
 				}
@@ -1249,8 +1252,10 @@ public class Container extends Item {
 				}
 			}
 			if (this.scrollItem != null) {
-				scroll( 0, this.scrollItem );
-				this.scrollItem = null;
+				boolean scrolled = scroll( 0, this.scrollItem );
+				if (scrolled) {
+					this.scrollItem = null;
+				}
 			}
 			this.contentHeight = myContentHeight;
 			this.contentWidth = myContentWidth;
@@ -2612,7 +2617,8 @@ public class Container extends Item {
 	 * @param smooth scroll to this new offset smooth if allowed
 	 */
 	public void setScrollYOffset( int offset, boolean smooth) {
-		//System.out.println("SET SCROLL Y OFFSET TO " + offset );
+		//#debug
+		System.out.println("Setting scrollYOffset to " + offset );
 		if (!this.enableScrolling && this.parent instanceof Container) {
 			((Container)this.parent).setScrollYOffset(offset, smooth);
 			return;

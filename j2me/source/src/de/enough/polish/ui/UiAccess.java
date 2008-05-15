@@ -1713,11 +1713,11 @@ public final class UiAccess {
      * @see #scrollTo(Item, int)
      */
     public static void scrollTo( Item item ) {
-    	Screen screen = item.getScreen();
     	if (item.parent instanceof Container) {
     		((Container)item.parent).scroll(0, item);
     		return;
     	}
+    	Screen screen = item.getScreen();
     	if (screen == null || screen.container == null) {
     		return;
     	}
