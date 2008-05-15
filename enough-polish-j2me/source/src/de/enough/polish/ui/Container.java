@@ -735,6 +735,9 @@ public class Container extends Item {
 			//#endif
 			return true;
 		}
+		if (!this.isFocused) {
+			this.autoFocusEnabled = true;
+		}
 		Item item = (Item) this.itemsList.get(index );
 		if (item.appearanceMode != Item.PLAIN) {
 			int direction = 0;
@@ -766,17 +769,12 @@ public class Container extends Item {
 		System.out.println("Container (" + this + "): Focusing item " + index + " (" + item + "), isInitialized=" + this.isInitialized + ", autoFocusEnabled=" + this.autoFocusEnabled );
 		//System.out.println("focus: yOffset=" + this.yOffset + ", targetYOffset=" + this.targetYOffset + ", enableScrolling=" + this.enableScrolling + ", isInitialized=" + this.isInitialized );
 		
-		
-		if (!this.isInitialized) {
+		if (!this.isInitialized && this.autoFocusEnabled) {
 			// setting the index for automatically focusing the appropriate item
 			// during the initialisation:
 			//#debug
 			System.out.println("Container: Setting autofocus-index to " + index );
 			this.autoFocusIndex = index;
-			//this.isFirstPaint = true;
-			if (this.autoFocusEnabled) {
-				return;
-			}
 		} 
 		//#if polish.blackberry
 	    	//# getScreen().setFocus( item );
@@ -1064,7 +1062,7 @@ public class Container extends Item {
 	//				System.out.println("ABOUT TO CALL INIT CONTENT - focusedIndex of Container=" + this.focusedIndex);
 					this.containerView.initContent( this, firstLineWidth, lineWidth);
 					this.appearanceMode = this.containerView.appearanceMode;
-					if (this.autoFocusEnabled) {
+					if (this.isFocused && this.autoFocusEnabled) {
 						//#debug
 						System.out.println("Container/View: autofocusing element starting at " + this.autoFocusIndex);
 						if (this.autoFocusIndex >= 0 && this.appearanceMode != Item.PLAIN) {
@@ -1136,7 +1134,7 @@ public class Container extends Item {
 				if (item.appearanceMode != PLAIN) {
 					hasFocusableItem = true;
 				}
-				if (this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
+				if (this.isFocused && this.autoFocusEnabled  && (i >= this.autoFocusIndex ) && (item.appearanceMode != Item.PLAIN)) {
 					this.autoFocusEnabled = false;
 					//System.out.println("Container.initContent: auto-focusing " + i + ": " + item );
 					focus( i, item, 0 );
@@ -2056,11 +2054,12 @@ public class Container extends Item {
 			//#if tmp.supportViewType
 				if ( this.containerView == null || this.containerView.allowsAutoTraversal ) {
 			//#endif
-					//#debug
-					System.out.println("focus(Style, direction): autofocusing " + this + ", focusedIndex=" + this.focusedIndex + ", autofocus=" + this.autoFocusIndex);
 					Item[] myItems = getItems();
-					if (this.autoFocusIndex != 0 && this.autoFocusIndex < myItems.length) {
+					if (this.autoFocusEnabled &&  this.autoFocusIndex < myItems.length) {
+						//#debug
+						System.out.println("focus(Style, direction): autofocusing " + this + ", focusedIndex=" + this.focusedIndex + ", autofocus=" + this.autoFocusIndex);
 						newFocusIndex = this.autoFocusIndex;
+						this.autoFocusEnabled = false;
 					} else {
 						// focus the first interactive item...
 						if (direction == Canvas.UP || direction == Canvas.LEFT ) {

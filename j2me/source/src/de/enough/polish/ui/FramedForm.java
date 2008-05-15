@@ -26,6 +26,7 @@
  */
 package de.enough.polish.ui;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
 
@@ -406,6 +407,8 @@ public class FramedForm extends Form {
 		this.contentY = y;
 		this.contentWidth = width;
 		this.contentHeight = height;
+		this.container.relativeX = x;
+		this.container.relativeY = y;
 		this.container.setScrollHeight( height );
 	}	
 	
@@ -606,7 +609,27 @@ public class FramedForm extends Form {
 		}
 		this.currentlyActiveContainer.defocus( this.currentlyActiveContainer.style );
 		if (newFrame.appearanceMode != Item.PLAIN) {
-			newFrame.focus( StyleSheet.focusedStyle, 0 );
+			int direction = 0;
+			if (this.currentlyActiveContainer == this.bottomFrame) {
+				direction = Canvas.UP;
+			} else if (this.currentlyActiveContainer == this.topFrame) {
+				direction = Canvas.DOWN;
+			} else if (this.currentlyActiveContainer == this.leftFrame) {
+				direction = Canvas.RIGHT;
+			} else if (this.currentlyActiveContainer == this.rightFrame) {
+				direction = Canvas.LEFT;
+			} else {
+				if (newFrame == this.bottomFrame) {
+					direction = Canvas.DOWN;
+				} else if (newFrame == this.topFrame) {
+					direction = Canvas.UP;
+				} else if (newFrame == this.leftFrame) {
+					direction = Canvas.LEFT;
+				} else {
+					direction = Canvas.RIGHT;
+				}
+			}
+			newFrame.focus( StyleSheet.focusedStyle, direction );
 		}
 		this.currentlyActiveContainer = newFrame;
 		if (this.screenStateListener != null) {
