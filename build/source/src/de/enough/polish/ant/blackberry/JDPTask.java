@@ -10,6 +10,48 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 public class JDPTask extends Task {
+	private static final String TEMPLATE = 
+		"## RIM Java Development Environment\n" +
+		"# RIM Project file\n" + 
+		"AlwaysBuild=0\n" + 
+		"[AlxImports\n" + 
+		"]\n" + 
+		"AutoRestart=0\n" + 
+		"[ClassProtection\n" + 
+		"]\n" + 
+		"[CustomBuildFiles\n" + 
+		"]\n" + 
+		"[CustomBuildRules\n" + 
+		"]\n" + 
+		"[DefFiles\n" + 
+		"]\n" + 
+		"[DependsOn\n" + 
+		"]\n" + 
+		"ExcludeFromBuildAll=0\n" +
+		"[Files\n" +
+		"@@FILES@@\n" +
+		"]\n" +
+		"HaveAlxImports=0\n" +
+		"HaveDefs=0\n" +
+		"HaveImports=0\n" +
+		"[Icons\n" +
+		"]\n" +
+		"[ImplicitRules\n" +
+		"]\n" +
+		"[Imports\n" +
+		"]\n" +
+		"Listing=0\n" +
+		"Options=-quiet\n" +
+		"OutputFileName=@@NAME@@\n" +
+		"[PackageProtection\n" +
+		"]\n" +
+		"RibbonPosition=0\n" +
+		"RunOnStartup=0\n" +
+		"StartupTier=7\n" +
+		"SystemModule=0\n" +
+		"Type=0\n";
+	
+	
 	private static final String FILES = "@@FILES@@";
 	private static final String NAME = "@@NAME@@";
 
@@ -31,7 +73,16 @@ public class JDPTask extends Task {
 			
 			String fullPath = path.trim() + "\\" + name.trim() + ".jdp";
 
-			String content = readFile(new File(template)).trim();
+			String content;
+			
+			if(template != null)
+			{
+				content = readFile(new File(template)).trim();
+			}
+			else
+			{
+				content = TEMPLATE;
+			}
 
 			System.out.println("Collecting java classes from " + sourceDir
 					+ "...");
