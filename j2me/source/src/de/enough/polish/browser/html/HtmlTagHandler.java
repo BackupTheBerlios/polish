@@ -27,6 +27,9 @@
  */
 package de.enough.polish.browser.html;
 
+import java.util.Enumeration;
+import java.util.Hashtable;
+
 import de.enough.polish.browser.Browser;
 import de.enough.polish.browser.TagHandler;
 import de.enough.polish.ui.ChoiceGroup;
@@ -114,6 +117,8 @@ public class HtmlTagHandler
 
 	/** text type-value */
   public static final String INPUTTYPE_TEXT = "text";
+	/** hidden type-value */
+  public static final String INPUTTYPE_HIDDEN = "hidden";
 	/** submit type-value */
   public static final String INPUTTYPE_SUBMIT = "submit";
   
@@ -170,6 +175,7 @@ public class HtmlTagHandler
   /** style for the forthcoming text */
   public Style textStyle;
 private int currentTableColumn;
+private FormListener formListener;
   
   /**
    * Creates a new html tag handler
@@ -462,15 +468,15 @@ private int currentTableColumn;
         if (this.currentForm != null)
         {
           String type = (String) attributeMap.get(INPUT_TYPE);
+          String name = (String) attributeMap.get(INPUT_NAME);
+          String value = (String) attributeMap.get(INPUT_VALUE);
+          
+          if (this.formListener != null && name != null) {
+        	  value = this.formListener.verifyInitialFormValue(this.currentForm.getAction(),  name, value);
+          }
           
           if (INPUTTYPE_TEXT.equals(type))
           {
-            String name = (String) attributeMap.get(INPUT_NAME);
-            String value = (String) attributeMap.get(INPUT_VALUE);
-            if (value == null) {
-            	value = name;
-            }
-
             //#style browserInput
             TextField textField = new TextField(null, value, 100, TextField.ANY);
             if (style != null) {
@@ -488,8 +494,6 @@ private int currentTableColumn;
           }
           else if (INPUTTYPE_SUBMIT.equals(type))
           {
-            String name = (String) attributeMap.get(INPUT_NAME);
-            String value = (String) attributeMap.get(INPUT_VALUE);
 
             if (value == null) {
             	value = name;
@@ -513,6 +517,9 @@ private int currentTableColumn;
             	buttonItem.setAttribute(ATTR_NAME, name);
             	buttonItem.setAttribute(ATTR_VALUE, value);
             }
+          }
+          else if (INPUTTYPE_HIDDEN.equals(type)) {
+        	  this.currentForm.addHiddenElement( name, value );
           }
           //#if polish.debug.debug
           else
@@ -603,15 +610,15 @@ private int currentTableColumn;
     {
       if (opening)
       {
-        String target = (String) attributeMap.get("action");
+	    String name = (String) attributeMap.get("name");	
+        String action = (String) attributeMap.get("action");
         String method = (String) attributeMap.get("method");
         
         if (method == null)
         {
           method = "GET";
         }
-        this.currentForm = new HtmlForm(target, method.toUpperCase().equals("POST")
-                                        ? HtmlForm.POST : HtmlForm.GET);
+        this.currentForm = new HtmlForm(name, action, method.toUpperCase());
       }
       else
       {
@@ -656,28 +663,26 @@ private int currentTableColumn;
   /**
    * Creates a Form GET method URL for the specified browser.
    * 
-   * @param browser the browser
    * @return the GET URL or null when the browser's current item is not a Submit button
    */
-  public static String createGetSubmitCall(Browser browser)
+  public String createGetSubmitCall()
   {
-	    Item submitItem = browser.getFocusedItem();
+	    Item submitItem = this.browser.getFocusedItem();
 	    HtmlForm form = (HtmlForm) submitItem.getAttribute(ATTR_FORM);
   		while (form == null && (submitItem instanceof Container)) {
   			submitItem = ((Container)submitItem).getFocusedItem();
   			form = (HtmlForm) submitItem.getAttribute(ATTR_FORM);
   		}
-  		return createGetSubmitCall(browser, submitItem, form);
+  		return createGetSubmitCall(submitItem, form);
   }
   /**
    * Creates a Form GET method URL for the specified browser.
    * 
-   * @param browser the browser
  * @param submitItem the item that triggered the action
  * @param form the form that contains necessary data
    * @return the GET URL or null when the browser's current item is not a Submit button
    */
-  public static String createGetSubmitCall(Browser browser, Item submitItem, HtmlForm form)
+  public String createGetSubmitCall(Item submitItem, HtmlForm form)
   {
 
 	  if (form == null)
@@ -686,46 +691,18 @@ private int currentTableColumn;
 	  }
 
     StringBuffer sb = new StringBuffer();
-    sb.append( browser.makeAbsoluteURL(form.getTarget()) );
-    Item[] items = form.getItems();
-    int numItems = items.length;
+    sb.append( this.browser.makeAbsoluteURL(form.getAction()) );
+    Hashtable elements = form.getFormElements(this.formListener, submitItem);
+    Enumeration enumeration = elements.keys();
     char separatorChar = '?';
-    
-    for (int i = 0; i < numItems; i++)
-    {
-      Item item = items[i];
-      
-      if ("submit".equals(item.getAttribute(ATTR_TYPE))
-          && item != submitItem)
-      {
-        continue;
-      }
-      
-      String name = (String) item.getAttribute(ATTR_NAME);
-      if (name == null) {
-    	  continue;
-      }
-      String value = (String) item.getAttribute(ATTR_VALUE);
-      
-      if (item instanceof TextField)
-      {
-        TextField textField = (TextField) item;
-        value = textField.getText();
-      }
-      else if (item instanceof ChoiceGroup) {
-    	  ChoiceGroup choiceGroup = (ChoiceGroup) item;
-    	  HtmlSelect htmlSelect = (HtmlSelect) choiceGroup.getAttribute(HtmlSelect.SELECT);
-    	  value = htmlSelect.getValue(choiceGroup.getSelectedIndex());
-      }
-      
-      sb.append(separatorChar);
-      sb.append(name);
-      sb.append('=');
-      if (value != null) {
-    	  sb.append(TextUtil.encodeUrl(value));
-      }
-      separatorChar = '&';
-    }
+	while (enumeration.hasMoreElements()) {
+		String name = (String) enumeration.nextElement();
+		String value = (String) elements.get(name);
+		value = TextUtil.encodeUrl(value);
+		sb.append(separatorChar);
+		sb.append(name).append('=').append( value );
+		separatorChar = '&';
+	}
     return sb.toString();
   }
 
@@ -742,43 +719,20 @@ private int currentTableColumn;
 		}
 	
 	    StringBuffer sb = new StringBuffer();
-	    Item[] items = form.getItems();
-	    int numItems = items.length;
 	    
-	    for (int i = 0; i < numItems; i++) {
-	    	Item item = items[i];
-	      
-	    	if ("submit".equals(item.getAttribute(ATTR_TYPE)) && item != submitItem) {
-	    		continue;
-	    	}
-	      
-	    	String name = (String) item.getAttribute(ATTR_NAME);
-	    	if (name == null) {
-	    		continue;
-	    	}
-	    	String value = (String) item.getAttribute(ATTR_VALUE);
-		      
-	    	if (item instanceof TextField)	{
-		        TextField textField = (TextField) item;
-		        value = textField.getText();
-	    	}
-	    	else if (item instanceof ChoiceGroup) {
-	    		ChoiceGroup choiceGroup = (ChoiceGroup) item;
-	    		HtmlSelect htmlSelect = (HtmlSelect) choiceGroup.getAttribute(HtmlSelect.SELECT);
-	    		value = htmlSelect.getValue(choiceGroup.getSelectedIndex());
-	    	}
+	    Hashtable elements = form.getFormElements(this.formListener, submitItem);
+	    Enumeration enumeration = elements.keys();
+		while (enumeration.hasMoreElements()) {
+			String name = (String) enumeration.nextElement();
+			String value = (String) elements.get(name);
+			value = TextUtil.encodeUrl(value);
+			sb.append(name).append('=').append( value );
+			if (enumeration.hasMoreElements()) {
+				sb.append('&');
+			}
+		}
 
-	    	if (i > 0) {
-	    		sb.append("&");
-	    	}
-
-	    	sb.append(name);
-	    	sb.append('=');
-	    	if (value != null) {
-	    		sb.append(TextUtil.encodeUrl(value));
-	    	}
-	    }
-	    this.browser.go( this.browser.makeAbsoluteURL( form.getTarget() ), sb.toString());
+	    this.browser.go( this.browser.makeAbsoluteURL( form.getAction() ), sb.toString());
   	}
 
   	protected void handleSubmitCommand()
@@ -793,11 +747,11 @@ private int currentTableColumn;
   			return;
   		}
 
-  		if (form.getMethod() == HtmlForm.POST) {
+  		if (form.isPost()) {
   			doPostSubmitCall(submitItem, form );
   		}
   		else {
-  			String url = createGetSubmitCall(this.browser, submitItem, form);
+  			String url = createGetSubmitCall(submitItem, form);
   			this.browser.go(url);
   		}
   	}
@@ -849,5 +803,15 @@ private int currentTableColumn;
 	public void commandAction(Command command, Item item)
 	{
 		handleCommand(command);
+	}
+
+	  /**
+	   * Sets the form listener that is notified about form creation and submission events
+	   * 
+	   * @param listener the listener, use null for de-registering a previous listener
+	   */
+	public void setFormListener(FormListener listener)
+	{
+		this.formListener = listener;
 	}
 }

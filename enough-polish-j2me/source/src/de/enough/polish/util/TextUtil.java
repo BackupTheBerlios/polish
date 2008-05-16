@@ -386,7 +386,8 @@ public final class TextUtil {
     }
 
     /**
-     * Encodes a URL for  - This method assumes UTF-8
+     * Encodes a URL string.
+     * This method assumes UTF-8 usage.
      * 
      * @param url URL to encode
      * @return the encoded URL

@@ -325,6 +325,7 @@ implements AccessibleCanvas
 	/** requests a call to calcuateContentArea() the next time this screen is being painted */
 	protected boolean isInitRequested;
 	private CommandListener realCommandListener;
+	private boolean isResourcesReleased;
 	
 	//#if polish.Bugs.displaySetCurrentFlickers || polish.MasterCanvas.enable
 		//#define tmp.useMasterCanvas
@@ -1108,6 +1109,7 @@ implements AccessibleCanvas
 		}
 
 		this.lastInteractionTime = System.currentTimeMillis();
+		this.isResourcesReleased = false;
 		//#if polish.Bugs.repaintInShowNotify
 			// request one repaint with full dimensions:
 			repaint();
@@ -1510,6 +1512,9 @@ implements AccessibleCanvas
 	 * @see #paintScreen(Graphics)
 	 */
 	public void paint(Graphics g) {
+		if (this.isResourcesReleased) {
+			return;
+		}
 		//#if tmp.manualOrientationChange
 			Graphics originalGraphics = null;
 			if (this.screenOrientationDegrees != 0) {
@@ -4076,31 +4081,35 @@ implements AccessibleCanvas
 	/**
 	 * Releases all (memory intensive) resources such as images or RGB arrays of this item.
 	 * The default implementation does release any background resources.
+	 * This method must not be called from within a paint call, as this will result in a dead lock.
 	 */
 	public void releaseResources() {
-		if (this.background != null) {
-			this.background.releaseResources();
-		}
-		if (this.container != null) {
-			this.container.releaseResources();
-		}
-		//#ifdef tmp.menuFullScreen
-			//#ifdef tmp.useExternalMenuBar
-				this.menuBar.releaseResources();
-			//#else
-				this.menuContainer.releaseResources();
+		synchronized (this.paintLock) {
+			if (this.background != null) {
+				this.background.releaseResources();
+			}
+			if (this.container != null) {
+				this.container.releaseResources();
+			}
+			//#ifdef tmp.menuFullScreen
+				//#ifdef tmp.useExternalMenuBar
+					this.menuBar.releaseResources();
+				//#else
+					this.menuContainer.releaseResources();
+				//#endif
 			//#endif
-		//#endif
-		//#ifdef tmp.usingTitle
-			if (this.title != null) {
-				this.title.releaseResources();
-			}
-		//#endif
-		//#ifndef polish.skipTicker
-			if (this.ticker != null) {
-				this.ticker.releaseResources();
-			}
-		//#endif	
+			//#ifdef tmp.usingTitle
+				if (this.title != null) {
+					this.title.releaseResources();
+				}
+			//#endif
+			//#ifndef polish.skipTicker
+				if (this.ticker != null) {
+					this.ticker.releaseResources();
+				}
+			//#endif
+			this.isResourcesReleased = true;
+		}
 	}
 
 	/**

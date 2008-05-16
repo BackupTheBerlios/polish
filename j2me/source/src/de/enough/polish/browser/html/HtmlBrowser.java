@@ -115,6 +115,15 @@ extends Browser
 	  this.htmlTagHandler = tagHandler;
   }
   
+  /**
+   * Sets the form listener that is notified about form creation and submission events
+   * 
+   * @param listener the listener, use null for de-registering a previous listener
+   */
+  public void setFormListener( FormListener listener ) {
+	  this.htmlTagHandler.setFormListener( listener );
+  }
+  
   
   protected void handleText(String text)
   {
@@ -155,5 +164,7 @@ extends Browser
       }
     }
   }
+  
+  
 
 }
