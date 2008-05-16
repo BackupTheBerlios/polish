@@ -140,7 +140,6 @@ extends Background
 		UiAccess.showNotify(this.item);
 		if (this.textStyleName != null) {
 			Style style = StyleSheet.getStyle( this.textStyleName );
-			System.out.println("textbackground: got style " + style.name );
 			if (style != null) {
 				this.item.setStyle(style);
 			}

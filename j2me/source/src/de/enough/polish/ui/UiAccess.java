@@ -1139,6 +1139,192 @@ public final class UiAccess {
 	}
 	//#endif
 	
+
+	//#if polish.usePolishGui
+	/**
+	 * Forwards a key event to the specified screen.
+	 * The handleKeyPressed call is protected, this is an public accessor for any screen.
+	 * 
+	 * @param screen the screen 
+	 * @param keyCode the code of the key
+	 * @param gameAction the associated game action
+	 * @return true when the event has been consumed by the screen
+	 */
+	public static boolean handleKeyPressed( Screen screen, int keyCode, int gameAction ) {
+		return screen.handleKeyPressed(keyCode, gameAction);
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Forwards a key event to the specified screen.
+	 * The handleKeyPressed call is protected, this is an public accessor for any screen.
+	 * 
+	 * @param screen the screen 
+	 * @param keyCode the code of the key
+	 * @param gameAction the associated game action
+	 * @return true when the event has been consumed by the screen
+	 */
+	public static boolean handleKeyPressed( javax.microedition.lcdui.Screen screen, int keyCode, int gameAction ) {
+		return false;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Forwards a key event to the specified screen.
+	 * The handleKeyReleased call is protected, this is an public accessor for any screen.
+	 * 
+	 * @param screen the screen 
+	 * @param keyCode the code of the key
+	 * @param gameAction the associated game action
+	 * @return true when the event has been consumed by the screen
+	 */
+	public static boolean handleKeyReleased( Screen screen, int keyCode, int gameAction ) {
+		return screen.handleKeyReleased(keyCode, gameAction);
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Forwards a key event to the specified screen.
+	 * The handleKeyPressed call is protected, this is an public accessor for any screen.
+	 * 
+	 * @param screen the screen 
+	 * @param keyCode the code of the key
+	 * @param gameAction the associated game action
+	 * @return true when the event has been consumed by the screen
+	 */
+	public static boolean handleKeyReleased( javax.microedition.lcdui.Screen screen, int keyCode, int gameAction ) {
+		return false;
+	}
+	//#endif
+	
+	
+	//#if polish.usePolishGui
+	/**
+	 * Forwards a key event to the specified screen.
+	 * The handleKeyRepeated call is protected, this is an public accessor for any screen.
+	 * 
+	 * @param screen the screen 
+	 * @param keyCode the code of the key
+	 * @param gameAction the associated game action
+	 * @return true when the event has been consumed by the screen
+	 */
+	public static boolean handleKeyRepeated( Screen screen, int keyCode, int gameAction ) {
+		return screen.handleKeyRepeated(keyCode, gameAction);
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Forwards a key event to the specified screen.
+	 * The handleKeyPressed call is protected, this is an public accessor for any screen.
+	 * 
+	 * @param screen the screen 
+	 * @param keyCode the code of the key
+	 * @param gameAction the associated game action
+	 * @return true when the event has been consumed by the screen
+	 */
+	public static boolean handleKeyRepeated( javax.microedition.lcdui.Screen screen, int keyCode, int gameAction ) {
+		return false;
+	}
+	//#endif
+	
+	
+	//#if polish.usePolishGui
+	/**
+	 * Forwards a key event to the specified screen.
+	 * The handlePointerPressed call is protected, this is an public accessor for any screen.
+	 * 
+	 * @param screen the screen 
+	 * @param x the x position of the pointer pressing relative to this screen's left position
+	 * @param y the y position of the pointer pressing relative to this screen's top position
+	 * @return true when the event has been consumed by the screen
+	 */
+	public static boolean handlePointerPressed( Screen screen, int x, int y ) {
+		//#if polish.hasPointerEvents
+			return screen.handlePointerPressed(x, y);
+		//#else
+			//# return false;
+		//#endif
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Forwards a key event to the specified screen.
+	 * The handlePointerPressed call is protected, this is an public accessor for any screen.
+	 * 
+	 * @param screen the screen 
+	 * @param x the x position of the pointer pressing relative to this screen's left position
+	 * @param y the y position of the pointer pressing relative to this screen's top position
+	 * @return true when the event has been consumed by the screen
+	 */
+	public static boolean handlePointerPressed( javax.microedition.lcdui.Screen screen, int x, int y ) {
+		return false;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Forwards a pointer event to the specified screen.
+	 * The handlePointerReleased call is protected, this is an public accessor for any screen.
+	 * 
+	 * @param screen the screen 
+	 * @param x the x position of the pointer pressing relative to this screen's left position
+	 * @param y the y position of the pointer pressing relative to this screen's top position
+	 * @return true when the event has been consumed by the screen
+	 */
+	public static boolean handlePointerReleased( Screen screen, int x, int y ) {
+		//#if polish.hasPointerEvents
+			return screen.handlePointerReleased(x, y);
+		//#else
+			//# return false;
+		//#endif
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Forwards a pointer event to the specified screen.
+	 * The handlePointerReleased call is protected, this is an public accessor for any screen.
+	 * 
+	 * @param screen the screen 
+	 * @param x the x position of the pointer pressing relative to this screen's left position
+	 * @param y the y position of the pointer pressing relative to this screen's top position
+	 * @return true when the event has been consumed by the screen
+	 */
+	public static boolean handlePointerReleased( javax.microedition.lcdui.Screen screen, int x, int y ) {
+		return false;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Asks the specified screen to handle the command.
+	 * 
+	 * @param screen the screen
+	 * @param cmd the command that the screen should handle
+	 * @return true when the screen has handled that command
+	 */
+	public static boolean handleCommand(Screen screen, Command cmd) {
+		return screen.handleCommand(cmd);
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Asks the specified screen to handle the command.
+	 * 
+	 * @param screen the screen
+	 * @param cmd the command that the screen should handle
+	 * @return true when the screen has handled that command
+	 */
+	public static boolean handleCommand(javax.microedition.lcdui.Screen screen, Command cmd) {
+		return false;
+	}
+	//#endif
 	
 	//#if polish.midp
 	/**
@@ -1580,6 +1766,8 @@ public final class UiAccess {
     //#if polish.usePolishGui
     /**
      * Releases all (memory) instensive resources that are currently hold by the J2ME Polish GUI for the specified screen.
+     * The release is synchronized with the paint cycle of the screen and must not be called from within a
+     * paint method, as this will result in deadlocks.
      * 
      * @param screen the screen for which the resources should be released. 
      */
@@ -1591,6 +1779,8 @@ public final class UiAccess {
 	//#if polish.midp
     /**
      * Releases all (memory) instensive resources that are currently hold by the J2ME Polish GUI for the specified screen.
+     * The release is synchronized with the paint cycle of the screen and must not be called from within a
+     * paint method, as this will result in deadlocks.
      * 
      * @param screen the screen for which the resources should be released. 
      */
@@ -3630,6 +3820,37 @@ public final class UiAccess {
 	public static void setMenuBarStyle(javax.microedition.lcdui.Screen screen, Style style)
 	{
 		// ignore
+	}
+	//#endif
+	
+	
+	//#if polish.usePolishGui
+	/**
+	 * Retrieves text from a J2ME Polish item.
+	 * @param item the item
+	 * @return the text within the item, e.g. a StringItem or a TextField
+	 */
+	public static String getText( Item item) {
+		if (item instanceof StringItem) {
+			return ((StringItem)item).getText();
+		}
+		return null;
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Retrieves text from a J2ME Polish item.
+	 * @param item the item
+	 * @return the text within the item, e.g. a StringItem or a TextField
+	 */
+	public static String getText( javax.microedition.lcdui.Item item) {
+		if (item instanceof javax.microedition.lcdui.StringItem) {
+			return ((javax.microedition.lcdui.StringItem)item).getText();
+		} else if (item instanceof javax.microedition.lcdui.TextField) {
+			return ((javax.microedition.lcdui.TextField)item).getString();
+		}
+		return null;
 	}
 	//#endif
 }

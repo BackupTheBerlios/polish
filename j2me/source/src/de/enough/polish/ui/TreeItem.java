@@ -60,6 +60,7 @@ public class TreeItem
 		private Image openedIndicator;
 		private int indicatorWidth;
 	//#endif
+	private Style nodeStyle;
 
 	
 	/**
@@ -258,11 +259,11 @@ public class TreeItem
 				//# if (node.parent == this) {
 				// this is a root item:
 				//# parentContainer = this;
-				//#endif
+			//#endif
 			} else {
 				parentContainer = (Container) node.parent;
 			}
-			parentNode = new Node( node );
+			parentNode = new Node( node, this.nodeStyle );
 			Item[] myItems = parentContainer.getItems();
 			for (int i = 0; i < myItems.length; i++) {
 				Item rootItem = myItems[i];
@@ -315,6 +316,24 @@ public class TreeItem
 				}
 			}
 		//#endif
+		//#if polish.css.treeitem-node-style
+			Style nodeStyleObj = (Style) style.getObjectProperty("treeitem-node-style");
+			if (nodeStyleObj != null) {
+				this.nodeStyle = nodeStyleObj;
+			}
+			Object[] items = this.itemsList.getInternalArray();
+			for (int i = 0; i < items.length; i++)
+			{
+				Item item = (Item) items[i];
+				if (item == null) {
+					break;
+				}
+				if (item instanceof Node) {
+					((Node)item).children.setStyle(nodeStyleObj);
+				}
+				
+			}
+		//#endif
 	}
 
 
@@ -329,14 +348,33 @@ public class TreeItem
 		int xLeftOffset = 10;
 		private Style rootPlainStyle;
 		
+		/**
+		 * Creates a new node without children style
+		 * 
+		 * @param root the root element
+		 */
 		public Node( Item root ) {
+			this( root, null );
+		}
+		
+		/**
+		 * Creates a new node without children style
+		 * 
+		 * @param root the root element
+		 * @param childrenStyle the style for the children container
+		 */
+		public Node( Item root, Style childrenStyle ) {
 			super( null, 0, INTERACTIVE, null );
 			this.root = root;
 			this.root.parent = this;
-			this.children = new Container( false );
+			this.children = new Container( false, childrenStyle );
 			this.children.parent = this;
 		}
-		
+
+		/**
+		 * Adds a child to this note
+		 * @param child the child
+		 */
 		public void addChild( Item child ) {
 			this.children.add( child );
 		}

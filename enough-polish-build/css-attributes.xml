@@ -3605,6 +3605,15 @@
 		id="323"
 	/>
 	
+	<attribute
+		name="treeitem-node-style"
+		type="style"
+		appliesTo="TreeItem"
+		description="The style for nodes in a TreeItem. You can use any Container related styles for nodes."
+		id="324"
+	/>
+	
+	
 	<!--
 	
 	<attribute
