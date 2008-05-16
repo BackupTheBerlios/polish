@@ -581,8 +581,8 @@ implements ImageConsumer
 		//#if polish.midp2 && polish.css.scale-factor
 			this.scaleData = null;
 		//#endif
-		this.image = null;
 		this.isStyleInitialised = false;
+		this.isInitialized = false;
 	}
 
 	/**
