@@ -621,7 +621,7 @@ implements Comparable
 	/**
 	 * Retrieves the defined features of this component.
 	 * 
-	 * @return the features which have been set in the appropriate component.xml file
+	 * @return the comma separated features which have been set in the appropriate component.xml file
 	 */
 	public String getFeaturesAsString() {
 		return this.featuresAsString;
