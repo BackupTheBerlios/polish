@@ -3619,10 +3619,30 @@
 		name="view-remove-text"
 		type="boolean"
 		default="true"
-		appliesTo="	RemoveTextContainerView"
+		appliesTo="RemoveTextContainerView"
 		description="Removes the text of the non-focused elements if set to true."
 		id="325"
 	/>
+	
+	<attribute
+		name="view-remove-text-position"
+		type="integer"
+		default="bottom" 
+		values="bottom,top" 
+		appliesTo="RemoveTextContainerView"
+		description="The position of the text that is extracted from the currently focused item."
+		id="326"
+	/>
+	
+	<attribute
+		name="view-remove-text-style"
+		type="style"
+		appliesTo="RemoveTextContainerView"
+		description="The style for the removed text, this defaults to the font-settings of the focused item."
+		id="327"
+	/>
+	
+	
 	<!--
 	
 	<attribute
