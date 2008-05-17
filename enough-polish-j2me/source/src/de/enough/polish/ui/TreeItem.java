@@ -63,6 +63,8 @@ public class TreeItem
 		private int indicatorWidth;
 	//#endif
 	private Style nodeStyle;
+	private Object focusPathKey;
+	private Object[] focusPathValues;
 
 	
 	/**
@@ -365,16 +367,121 @@ public class TreeItem
 		return (Item[]) list.toArray( new Item[ list.size() ] );
 	}
 
+	/**
+	 * Retireves the currently selected path of this tree item.
+	 * 
+	 * @param key the key that is used for querying attributes from the focused item
+	 * @return an array that contains all attribute values of the selected items. 
+	 * When an item has not registered the specified attribute, the item itself will be put into that array slot. 
+	 * @see UiAccess#setAttribute(Item, Object, Object)
+	 * @see UiAccess#getAttribute(Item, Object)
+	 */
+	public Object[] getFocusedPathAsAttributes( Object key )
+	{
+		Object[] items = getFocusedPath();
+		for (int i = 0; i < items.length; i++)
+		{
+			Item item = (Item) items[i];
+			Object value = item.getAttribute(key);
+			if (value != null) {
+				items[i] = value;
+			}
+		}
+		return items;
+	}
 
 
 	/**
-	 * @param id
-	 * @param strings
+	 * Opens the tree and focuses the specified items.
+	 * All other branches are collapsed while the specified path(s) is opened.
+	 * When several pathes do match, the last atching path is focused.
+	 * @param key the attribute key
+	 * @param values the values that are set for each item / node
+	 * @see UiAccess#setAttribute(Item, Object, Object)
+	 * @see UiAccess#getAttribute(Item, Object)
 	 */
-	public void setFocusedPathByAttribute(String key, String[] values)
+	public void setFocusedPathByAttribute(Object key, Object[] values)
 	{
-		// TODO robertvirkus implement setFocusedPathByAttribute
-		
+		if (!this.isFocused) {
+			this.focusPathKey = key;
+			this.focusPathValues = values;
+		} else {
+			setFocusedPathByAttribute( key, values, (Container)(Object)this, 0 );
+		}
+	}
+	
+	private void setFocusedPathByAttribute( Object key, Object[] values, Container container, int index ) {
+		Object[] items = container.itemsList.getInternalArray();
+		Object valueExpected = values[index];
+		for (int i = 0; i < items.length; i++)
+		{
+			Item item = (Item) items[i];
+			if (item == null) {
+				break;
+			}
+			Node node = null;
+			if (item instanceof Node) {
+				node = (Node)item;
+				item = node.root;
+			}
+			Object valuePresent = item.getAttribute(key);
+			if (valueExpected.equals(valuePresent)) {
+				if (node != null) {
+					node.setExpanded(true);
+					container.focus( i, node, Canvas.UP );
+				} else {
+					container.focus( i, item, 0 );
+				}
+				if (index < values.length - 1) {
+					if (node != null) {
+						setFocusedPathByAttribute(key, values, node.children, index + 1);
+					} else if (item instanceof Container) {
+						setFocusedPathByAttribute(key, values, (Container)item, index + 1);
+					}
+				}
+			} else if (node != null && node.isExpanded) {
+				node.setExpanded(false);
+			}
+		}
+
+	}
+	
+	
+
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeContainerCustomItem#focus(de.enough.polish.ui.Style, int)
+	 */
+	protected Style focus(Style focusStyle, int direction)
+	{
+		Style myPlainStyle = super.focus(focusStyle, direction);
+		if (this.focusPathKey != null) {
+			setFocusedPathByAttribute(this.focusPathKey, this.focusPathValues, (Container)(Object)this, 0 );
+			this.focusPathKey = null;
+			this.focusPathValues = null;
+		}
+		return myPlainStyle;
+	}
+
+	/**
+	 * Collapses all branches of this TreeItem.
+	 */
+	public void collapseAll()
+	{
+		Object[] items = this.itemsList.getInternalArray();
+		for (int i = 0; i < items.length; i++)
+		{
+			Object item = items[i];
+			if (item == null) {
+				break;
+			}
+			if (item instanceof Node) {
+				Node node = (Node)item;
+				if (node.isExpanded) {
+					node.setExpanded(false);
+				}
+			}
+		}
 	}
 
 
@@ -628,7 +735,7 @@ public class TreeItem
 				return this.rootPlainStyle;
 			}
 			// focus one of the expanded children:
-			//System.out.println("node " + this + ": forwarding focus event to children, (direction != Canvas.UP)=" + (direction != Canvas.UP));
+			System.out.println("node " + this + ": forwarding focus event to children, (direction != Canvas.UP)=" + (direction != Canvas.UP));
 			this.children.focus(null, direction); 
 			return this.root.style;
 		}
