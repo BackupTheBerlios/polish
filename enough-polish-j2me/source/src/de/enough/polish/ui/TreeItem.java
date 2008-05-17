@@ -611,7 +611,7 @@ public class TreeItem
 		
 		private void focusRoot() {
 			//#debug
-			System.out.println("focusing root " + this);
+			System.out.println("focusing root " + this + ", children.isFocused=" + this.children.isFocused );
 			this.internalX = -this.contentX;
 			this.internalY = -this.contentY;
 			this.internalWidth = this.root.itemWidth + this.contentX;
@@ -619,7 +619,6 @@ public class TreeItem
 			if (this.children.isFocused) {
 				this.children.defocus( null );
 				this.children.focus( -1 );
-				//this.isChildrenFocused = false;
 				// move focus to root:
 				this.root.focus(null, Canvas.UP);
 			}

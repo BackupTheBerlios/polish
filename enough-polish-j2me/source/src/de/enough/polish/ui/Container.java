@@ -2143,19 +2143,21 @@ public class Container extends Item {
 	 * @see de.enough.polish.ui.Item#defocus(de.enough.polish.ui.Style)
 	 */
 	public void defocus(Style originalStyle) {
-		if ( this.itemsList.size() == 0 || this.focusedIndex == -1 
-		) {
+		if ( this.itemsList.size() == 0 || this.focusedIndex == -1 ) {
 			super.defocus( originalStyle );
 		} else {
 			if (this.plainStyle != null) {
 				super.defocus( this.plainStyle );
+				if (originalStyle == null) {
+					originalStyle = this.plainStyle;
+				}
 				this.plainStyle = null;
 			}
 			this.isFocused = false;
 			Item item = this.focusedItem; //(Item) this.itemsList.get( this.focusedIndex );
 			item.defocus( this.itemStyle );
 			//#ifdef tmp.supportViewType
-				if (this.containerView != null && originalStyle != null) {
+				if (this.containerView != null) {
 					this.containerView.defocus( originalStyle );
 					this.isInitialized = false;
 				}

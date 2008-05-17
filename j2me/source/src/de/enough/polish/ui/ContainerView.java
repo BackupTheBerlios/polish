@@ -135,9 +135,13 @@ extends ItemView
 		this.focusedItem = parent.getFocusedItem();
 		//#if polish.Container.allowCycling != false
 			this.allowCycling = parent.allowCycling;
-			if ( (parent.parent instanceof Container)  && ((Container)parent.parent).getNumberOfInteractiveItems()>1 )
-			{
-				this.allowCycling = false;
+			Item ancestor = parent.parent;
+			while (this.allowCycling && ancestor != null) {
+				if ( (ancestor instanceof Container)  && ((Container)ancestor).getNumberOfInteractiveItems()>1 ) {
+					this.allowCycling = false;
+					break;
+				}
+				ancestor = ancestor.parent;
 			}
 		//#endif
 		//#if polish.css.view-type-left-x-offset
@@ -1081,34 +1085,36 @@ extends ItemView
 		this.parentContainer.focus(index, item, direction );
 	}
 
-	/**
-	 * Sets the focus to this container view.
-	 * The default implementation sets the style and the field "isFocused" to true.
-	 * 
-	 * @param focusstyle the appropriate style.
-	 * @param direction the direction from the which the focus is gained, 
-	 *        either Canvas.UP, Canvas.DOWN, Canvas.LEFT, Canvas.RIGHT or 0.
-	 *        When 0 is given, the direction is unknown.1
-	 * 
-	 */
-	public void focus(Style focusstyle, int direction) {
-		this.isFocused = true;
-		setStyle( focusstyle );
-	}
-
-	
-	/**
-	 * Notifies this view that the parent container is not focused anymore.
-	 * Please call super.defocus() when overriding this method.
-	 * The default implementation calls setStyle( originalStyle )
-	 * and sets the field "isFocused" to false.
-	 * 
-	 * @param originalStyle the previous used style.
-	 */
-	protected void defocus( Style originalStyle ) {
-		this.isFocused = false;
-		setStyle( originalStyle );
-	}
+//	/**
+//	 * Sets the focus to this container view.
+//	 * The default implementation sets the style and the field "isFocused" to true.
+//	 * 
+//	 * @param focusstyle the appropriate style.
+//	 * @param direction the direction from the which the focus is gained, 
+//	 *        either Canvas.UP, Canvas.DOWN, Canvas.LEFT, Canvas.RIGHT or 0.
+//	 *        When 0 is given, the direction is unknown.1
+//	 * 
+//	 */
+//	public void focus(Style focusstyle, int direction) {
+//		this.isFocused = true;
+//		setStyle( focusstyle );
+//	}
+//
+//	
+//	/**
+//	 * Notifies this view that the parent container is not focused anymore.
+//	 * Please call super.defocus() when overriding this method.
+//	 * The default implementation calls setStyle( originalStyle )
+//	 * and sets the field "isFocused" to false.
+//	 * 
+//	 * @param originalStyle the previous used style, may be null
+//	 */
+//	protected void defocus( Style originalStyle ) {
+//		this.isFocused = false;
+//		if (originalStyle != null) {
+//			setStyle( originalStyle );
+//		}
+//	}
 	
 	/**
 	 * Sets the style for this view.

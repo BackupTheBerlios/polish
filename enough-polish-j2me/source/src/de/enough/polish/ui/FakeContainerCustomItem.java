@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui
+//#condition polish.LibraryBuild
 /*
  * Created on 01-Mar-2004 at 09:45:32.
  *

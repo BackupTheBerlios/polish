@@ -126,7 +126,9 @@ public abstract class ItemView implements Serializable{
 	 */
 	public void focus(Style focusstyle, int direction) {
 		this.isFocused = true;
-		setStyle( focusstyle );
+		if (focusstyle != null) {
+			setStyle( focusstyle );
+		}
 	}
 
 	
@@ -136,11 +138,13 @@ public abstract class ItemView implements Serializable{
 	 * The default implementation calls setStyle( originalStyle )
 	 * and sets the field "isFocused" to false.
 	 * 
-	 * @param originalStyle the previous used style.
+	 * @param originalStyle the previous used style, may be null.
 	 */
 	protected void defocus( Style originalStyle ) {
 		this.isFocused = false;
-		setStyle( originalStyle );
+		if (originalStyle != null) {
+			setStyle( originalStyle );
+		}
 	}
 	
 	
