@@ -26,8 +26,6 @@
  */
 package de.enough.polish.ui;
 
-import javax.microedition.lcdui.CustomItem;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 /**
@@ -43,42 +41,53 @@ import javax.microedition.lcdui.Image;
  */
 public final class IconCustomItem 
 //#if polish.LibraryBuild
-	extends CustomItem 
+	extends FakeIconCustomItem 
 //#else
 	//# extends IconItem 
 //#endif
 {
 
-	public IconCustomItem(String label, String text, Image image ) {
-		this(label, text, image, null);
+	/**
+	 * Creates a new icon.
+	 * 
+	 * @param text the text of this item
+	 * @param image the image of this item, null when no image should be displayed
+	 */
+	public IconCustomItem( String text, Image image ) {
+		super( text, image );
+	}
+	
+	/**
+	 * Creates a new icon.
+	 * 
+	 * @param text the text of this item
+	 * @param image the image of this item, null when no image should be displayed
+	 * @param style the style of this item
+	 */
+	public IconCustomItem( String text, Image image, Style style) {
+		this( null, text, image, style );
+	}
+	
+	/**
+	 * Creates a new icon.
+	 * 
+	 * @param label the label of this item
+	 * @param text the text of this item
+	 * @param image the image of this item, null when no image should be displayed
+	 */
+	public IconCustomItem( String label, String text, Image image) {
+		super( label, text, image, null );
 	}
 
-	public IconCustomItem(String label, String text, Image image, Style style ) {
-		//#if polish.usePolishGui && !polish.LibraryBuild
-			//# super( label, text, image, style  );
-		//#else
-			super( label );
-		//#endif
+	/**
+	 * Creates a new icon.
+	 * 
+	 * @param label the label of this item
+	 * @param text the text of this item
+	 * @param image the image of this item, null when no image should be displayed
+	 * @param style the style of this item
+	 */
+	public IconCustomItem( String label, String text, Image image, Style style) {
+		super(label, text, image, style);
 	}
-
-	protected final int getMinContentWidth() {
-		return 0;
-	}
-
-	protected final int getMinContentHeight() {
-		return 0;
-	}
-
-	protected final int getPrefContentWidth(int maxHeight) {
-		return 0;
-	}
-
-	protected final int getPrefContentHeight(int maxWidth) {
-		return 1;
-	}
-
-	protected final void paint(Graphics g, int width, int height) {
-		// do nothing
-	}
-
 }

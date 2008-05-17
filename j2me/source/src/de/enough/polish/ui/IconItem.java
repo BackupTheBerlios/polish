@@ -119,6 +119,17 @@ implements ImageConsumer
 	public IconItem( String text, Image image, Style style) {
 		this( null, text, image, style );
 	}
+	
+	/**
+	 * Creates a new icon.
+	 * 
+	 * @param label the label of this item
+	 * @param text the text of this item
+	 * @param image the image of this item, null when no image should be displayed
+	 */
+	public IconItem( String label, String text, Image image) {
+		this( label, text, image, null );
+	}
 
 	/**
 	 * Creates a new icon.

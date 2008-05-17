@@ -32,6 +32,8 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.util.ArrayList;
+
 /**
  * <p>Provides a tree of items that can contain several branches.</p>
  * <p>Each tree branch behaves like a normal J2ME Polish container, so 
@@ -337,6 +339,43 @@ public class TreeItem
 	}
 
 
+
+	/**
+	 * Retireves the currently selected path of this tree item.
+	 * 
+	 * @return an array that contains all selected items
+	 */
+	public Item[] getFocusedPath()
+	{
+		ArrayList list = new ArrayList();
+		Item current = getFocusedItem();
+		while (current != null) {
+			Item next = null;
+			if (current instanceof Node) {
+				Node node = (Node)current;
+				current = node.root;
+				next = node.children.getFocusedItem();
+			} else if (current instanceof Container) {
+				next = ((Container)current).getFocusedItem();
+			}
+			list.add( current );
+			current = next;
+			
+		}
+		return (Item[]) list.toArray( new Item[ list.size() ] );
+	}
+
+
+
+	/**
+	 * @param id
+	 * @param strings
+	 */
+	public void setFocusedPathByAttribute(String key, String[] values)
+	{
+		// TODO robertvirkus implement setFocusedPathByAttribute
+		
+	}
 
 
 
@@ -658,5 +697,6 @@ public class TreeItem
 
 		
 	}
+
 
 }

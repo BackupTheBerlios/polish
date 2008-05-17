@@ -72,12 +72,18 @@ import de.enough.polish.util.ImageUtil;
  */
 public class RemoveTextContainerView extends ContainerView {
 
-	
+	private final static int POSITION_BOTTOM = 0;
+	private final static int POSITION_TOP = 1;
 	protected boolean isRemoveText = true;
 	protected boolean isShowTextInTitle;
 	protected String[] labels;
-	protected transient StringItem focusedLabel;
-	protected boolean isFocusedLabelTop;
+	protected transient StringItem removeTextItem;
+	//#if polish.css.view-remove-text-position
+		private int removeTextPosition;
+	//#endif
+	//#if polish.css.view-remove-text-style
+		private Style removeTextStyle;
+	//#endif
 
 	
 	/**
@@ -112,15 +118,19 @@ public class RemoveTextContainerView extends ContainerView {
 			this.focusedItem = myItems[this.focusedIndex];
 		}
 
-		//#if polish.css.show-text-in-title
-			if (this.isRemoveText && this.focusedLabel == null && !this.isShowTextInTitle) {
-				this.focusedLabel = new StringItem(null, null);
-			}
-		//#else
-			if (this.isRemoveText && this.focusedLabel == null) {
-				this.focusedLabel = new StringItem(null, null);
-			}
-		//#endif
+		if (this.isRemoveText && this.removeTextItem == null 
+			//#if polish.css.show-text-in-title
+				&& !this.isShowTextInTitle
+			//#endif
+			)
+		{
+			this.removeTextItem = new StringItem(null, null);
+			//#if polish.css.view-remove-text-style
+				if (this.removeTextStyle  != null) {
+					this.removeTextItem.setStyle( this.removeTextStyle );
+				}
+			//#endif
+		}
 
 		if (this.isRemoveText && (this.labels == null || this.labels.length != length)) {
 			this.labels = new String[ length ];
@@ -154,19 +164,30 @@ public class RemoveTextContainerView extends ContainerView {
 		}
 		super.initContent( parentContainerItem, firstLineWidth, lineWidth );
 
-		if (this.focusedLabel != null) {
+		if (this.removeTextItem != null) {
 			int height;
-			if (this.focusedLabel.getText() == null) {
-				this.focusedLabel.setText(longestText);
-				height = this.focusedLabel.getItemHeight(lineWidth, lineWidth);
-				this.focusedLabel.setText(null);
+			if (this.removeTextItem.getText() == null) {
+				this.removeTextItem.setText(longestText);
+				height = this.removeTextItem.getItemHeight(lineWidth, lineWidth);
+				this.removeTextItem.setText(null);
 			} else {
-				height = this.focusedLabel.getItemHeight(lineWidth, lineWidth);
+				height = this.removeTextItem.getItemHeight(lineWidth, lineWidth);
 			}
-			this.focusedLabel.relativeY = this.contentHeight + this.paddingVertical;
+			//#if polish.css.view-remove-text-position
+				if (this.removeTextPosition == POSITION_BOTTOM) {
+			//#endif
+					this.removeTextItem.relativeY = this.contentHeight + this.paddingVertical;
+			//#if polish.css.view-remove-text-position
+				} else {
+					for (int i = 0; i < length; i++) {
+						Item item = myItems[i];
+						item.relativeY += height;
+					}
+				}
+			//#endif
 			this.contentHeight += height + this.paddingVertical;
-			if (this.focusedLabel.itemWidth > this.contentWidth) {
-				this.contentWidth = this.focusedLabel.itemWidth;
+			if (this.removeTextItem.itemWidth > this.contentWidth) {
+				this.contentWidth = this.removeTextItem.itemWidth;
 			}
 		}
 	}
@@ -184,13 +205,19 @@ public class RemoveTextContainerView extends ContainerView {
 				if (scr != null) {
 					scr.setTitle( this.labels[ focIndex ] );
 				}
-			} else if (this.focusedLabel != null) {
-				this.focusedLabel.setText( this.labels[ focIndex ] );
-				if (this.focusedLabel.getStyle() != item.getStyle() ) {
-					this.focusedLabel.setStyle( item.getStyle() );
-					removeItemBackground( this.focusedLabel );
-					removeItemBorder( this.focusedLabel );
-				}
+			} else if (this.removeTextItem != null) {
+				this.removeTextItem.setText( this.labels[ focIndex ] );
+				//#if polish.css.view-remove-text-style
+					if (this.removeTextStyle == null) {
+				//#endif
+						if (this.removeTextItem.getStyle() != item.getStyle() ) {
+							this.removeTextItem.setStyle( item.getStyle() );
+							removeItemBackground( this.removeTextItem );
+							removeItemBorder( this.removeTextItem );
+						}						
+				//#if polish.css.view-remove-text-style
+					}
+				//#endif
 			}
 		}
 		return super.focusItem(focIndex, item, direction, focStyle);
@@ -201,8 +228,8 @@ public class RemoveTextContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#paintContent(de.enough.polish.ui.Container, de.enough.polish.ui.Item[], int, int, int, int, int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
 	protected void paintContent(Container container, Item[] myItems, int x, int y, int leftBorder, int rightBorder, int clipX, int clipY, int clipWidth, int clipHeight, Graphics g) {
-		if (this.focusedLabel != null) {
-			this.focusedLabel.paint( x + this.focusedLabel.relativeX, y + this.focusedLabel.relativeY, leftBorder, rightBorder, g );
+		if (this.removeTextItem != null) {
+			this.removeTextItem.paint( x + this.removeTextItem.relativeX, y + this.removeTextItem.relativeY, leftBorder, rightBorder, g );
 		}
 		super.paintContent(container, myItems, x, y, leftBorder, rightBorder, clipX, clipY, clipWidth, clipHeight, g);
 	}
@@ -220,6 +247,18 @@ public class RemoveTextContainerView extends ContainerView {
 				this.isRemoveText = removeTextBool.booleanValue();
 			}
 		//#endif
+		//#if polish.css.view-remove-text-position
+			Integer removeTextPositionObj = style.getIntProperty("view-remove-text-position");
+			if (removeTextPositionObj != null) {
+				this.removeTextPosition = removeTextPositionObj.intValue();
+			}
+		//#endif
+		//#if polish.css.view-remove-text-style
+			Style removeTextStyleObj = (Style) style.getObjectProperty("view-remove-text-style");
+			if (removeTextStyleObj != null) {
+				this.removeTextStyle = removeTextStyleObj;
+			}
+		//#endif
 
 		//#if polish.css.show-text-in-title
 			Boolean showTextInTitleBool = style.getBooleanProperty("show-text-in-title");
@@ -232,6 +271,21 @@ public class RemoveTextContainerView extends ContainerView {
 		//#endif
 	}
 
+	
+
+//	/* (non-Javadoc)
+//	 * @see de.enough.polish.ui.ItemView#focus(de.enough.polish.ui.Style, int)
+//	 */
+//	public void focus(Style focusstyle, int direction)
+//	{
+//		super.focus(focusstyle, direction);
+//		//#if polish.css.view-remove-text-style
+//			if (this.removeTextItem != null && this.removeTextStyle != null) {
+//				UiAccess.focus( this.removeTextItem, direction, null );
+//			}
+//		//#endif
+//	}
+
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#defocus(de.enough.polish.ui.Style)
@@ -239,8 +293,16 @@ public class RemoveTextContainerView extends ContainerView {
 	protected void defocus(Style originalStyle)
 	{
 		super.defocus(originalStyle);
-		if (this.focusedLabel != null) {
-			this.focusedLabel.setText(null);
+		if (this.removeTextItem != null) {
+//			//#if polish.css.view-remove-text-style
+//				if (this.removeTextStyle  != null) {
+//					UiAccess.defocus(this.removeTextItem, this.removeTextStyle );
+//				} else {
+//			//#endif
+					this.removeTextItem.setText(null);
+//			//#if polish.css.view-remove-text-style
+//				}
+//			//#endif
 		}
 	}
 

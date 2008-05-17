@@ -715,6 +715,24 @@ public final class UiAccess {
 		// ignore
 	}
 	//#endif
+	
+	//#if polish.midp && polish.usePolishGui
+	/**
+	 * Applies a style to the given item if used in conjunction with the //#style preprocessing directive.
+	 * 
+	 * Example:
+	 * <pre>
+	 * //#style myStyle
+	 * UiAccess.setStyle( myItem );
+	 * </pre>
+	 * @param item the item which should get the new style
+	 * @param style the style for the item
+	 */
+	public static void setStyle( javax.microedition.lcdui.Item item, Style style ) {
+		// ignore
+	}
+	//#endif
+
 
 	//#if polish.midp
 	/**
@@ -758,6 +776,7 @@ public final class UiAccess {
 	 * UiAccess.setStyle( myAlert );
 	 * </pre>
 	 * @param screen the alert which should get the new style
+	 * @param style the style for the alert
 	 */
 	public static void setStyle( javax.microedition.lcdui.Alert screen, Style style ) {
 		// ignore
@@ -3639,6 +3658,38 @@ public final class UiAccess {
 			return null;
 		//#else
 			//# return item;
+		//#endif
+	}
+	//#endif
+	
+	//#if polish.usePolishGui && polish.midp
+	/**
+	 * Casts the given LCDUI items into J2ME Polish items
+	 * @param items the LCDUI items
+	 * @return the corresponding J2ME Polish item, null when no cast is possible
+	 */
+	public static Item[] cast( javax.microedition.lcdui.Item[] items ) {
+		return null;
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Casts the given J2ME Polish items into a LCDUI items
+	 * @param items the J2ME Polish items
+	 * @return the corresponding LCDUI item, null when no cast is possible
+	 */
+	public static
+	//#if polish.LibraryBuild
+		javax.microedition.lcdui.Item[]
+	//#else
+		//# Item[] 
+	//#endif
+	cast(Item[] items ) {
+		//#if polish.LibraryBuild
+			return null;
+		//#else
+			//# return items;
 		//#endif
 	}
 	//#endif
