@@ -1820,6 +1820,19 @@ public final class UiAccess {
     }
     //#endif
 
+	//#if polish.midp && polish.usePolishGui
+    /**
+     * Sets the subtitle for the specified screen
+     * 
+     * @param screen the screen
+     * @param subtitle the subtitle text
+     * @param style the style of the subtitle text
+     */
+    public static void setSubtitle( javax.microedition.lcdui.Screen screen, String subtitle, Style style ) {
+    		// ignore
+    }
+    //#endif
+
     //#if polish.usePolishGui
     /**
      * Sets the subtitle for the specified screen
@@ -1831,6 +1844,20 @@ public final class UiAccess {
     		setSubtitle( screen, new StringItem(null, subtitle));
     }
     //#endif
+    
+    //#if polish.usePolishGui
+    /**
+     * Sets the subtitle for the specified screen
+     * 
+     * @param screen the screen
+     * @param subtitle the subtitle text
+     * @param style the style of the subtitle text
+     */
+    public static void setSubtitle( Screen screen, String subtitle, Style style ) {
+    		setSubtitle( screen, new StringItem(null, subtitle, style));
+    }
+    //#endif
+
 
 	//#if polish.midp
     /**

@@ -166,6 +166,21 @@ public class RemoveTextContainerView extends ContainerView {
 
 		if (this.removeTextItem != null) {
 			int height;
+			if (this.isFocused && this.removeTextItem.getText() == null && this.focusedIndex != -1 && this.focusedItem != null) {
+				System.out.println("setting removeTextItem.text to " +  this.labels[ this.focusedIndex ]);
+				this.removeTextItem.setText( this.labels[ this.focusedIndex ] );
+				//#if polish.css.view-remove-text-style
+					if (this.removeTextStyle == null) {
+				//#endif
+						if (this.removeTextItem.getStyle() != this.focusedItem.getStyle() ) {
+							this.removeTextItem.setStyle( this.focusedItem.getStyle() );
+							removeItemBackground( this.removeTextItem );
+							removeItemBorder( this.removeTextItem );
+						}						
+				//#if polish.css.view-remove-text-style
+					}
+				//#endif
+			}			
 			if (this.removeTextItem.getText() == null) {
 				this.removeTextItem.setText(longestText);
 				height = this.removeTextItem.getItemHeight(lineWidth, lineWidth);
@@ -199,6 +214,9 @@ public class RemoveTextContainerView extends ContainerView {
 	 * @see de.enough.polish.ui.ContainerView#focusItem(int, de.enough.polish.ui.Item, int, de.enough.polish.ui.Style)
 	 */
 	public Style focusItem(int focIndex, Item item, int direction, Style focStyle) {
+		if (this.labels == null) {
+			return super.focusItem(focIndex, item, direction, focStyle);
+		}
 		if (this.isRemoveText) {
 			if (this.isShowTextInTitle) {
 				Screen scr = getScreen();

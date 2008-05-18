@@ -735,7 +735,7 @@ public class TreeItem
 				return this.rootPlainStyle;
 			}
 			// focus one of the expanded children:
-			System.out.println("node " + this + ": forwarding focus event to children, (direction != Canvas.UP)=" + (direction != Canvas.UP));
+			//System.out.println("node " + this + ": forwarding focus event to children, (direction != Canvas.UP)=" + (direction != Canvas.UP));
 			this.children.focus(null, direction); 
 			return this.root.style;
 		}
@@ -781,6 +781,7 @@ public class TreeItem
 						((Node)item).setExpanded(false);
 					}
 				}
+				this.children.hideNotify();
 				//if (this.isChildrenFocused) {
 				focusRoot();
 //			} else if (!this.isExpanded) {
@@ -792,6 +793,9 @@ public class TreeItem
 			if (expand != this.isExpanded) {
 				this.isExpanded = expand;
 				requestInit();
+				if (expand) {
+					this.children.showNotify();
+				}
 			}
 		}
 		
@@ -802,6 +806,31 @@ public class TreeItem
 		}
 		//#endif
 
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Item#hideNotify()
+		 */
+		protected void hideNotify()
+		{
+			super.hideNotify();
+			this.root.hideNotify();
+			if (this.isExpanded) {
+				this.children.hideNotify();
+			}
+		}
+
+		/* (non-Javadoc)
+		 * @see de.enough.polish.ui.Item#showNotify()
+		 */
+		protected void showNotify()
+		{
+			super.showNotify();
+			this.root.showNotify();
+			if (this.isExpanded) {
+				this.children.showNotify();
+			}
+		}
+
+		
 		
 	}
 
