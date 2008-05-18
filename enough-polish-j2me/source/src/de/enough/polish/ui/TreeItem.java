@@ -498,6 +498,7 @@ public class TreeItem
 		private boolean isExpanded;
 		int xLeftOffset = 10;
 		private Style rootPlainStyle;
+		//private int availableWidth;
 		
 		/**
 		 * Creates a new node without children style
@@ -533,7 +534,7 @@ public class TreeItem
 		protected void initContent(int firstLineWidth, int lineWidth) {
 			//#debug
 			System.out.println("Node (" + this.root + ").initContent()");
-//			this.availableWidth = lineWidth - this.xLeftOffset;
+			//this.availableWidth = lineWidth - this.xLeftOffset;
 			this.root.init(firstLineWidth, lineWidth);
 			this.children.relativeX = this.xLeftOffset;
 			this.children.relativeY = this.root.itemHeight;
@@ -616,12 +617,12 @@ public class TreeItem
 							this.internalHeight = this.children.itemHeight;
 						}
 						//System.out.println("TreeItem: children handled keyPressed, internal area: y=" + this.internalY + ", height=" + this.internalHeight );
-					} else if (gameAction == Canvas.UP) {
+					} else if (gameAction == Canvas.UP || gameAction == Canvas.LEFT) {
 						// focus this root:
 						focusRoot();
 						handled = true;
 					}
-				} else if (gameAction == Canvas.DOWN && this.children.appearanceMode != PLAIN) {
+				} else if ((gameAction == Canvas.DOWN || gameAction == Canvas.RIGHT) && this.children.appearanceMode != PLAIN) {
 					// move focus to children
 					if (this.rootPlainStyle != null) {
 						this.root.defocus(this.rootPlainStyle);

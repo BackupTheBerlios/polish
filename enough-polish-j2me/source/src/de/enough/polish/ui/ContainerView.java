@@ -871,6 +871,10 @@ extends ItemView
 		//#debug
 		System.out.println("ContainerView.shiftFocus( forward=" + forwardFocus + ", steps=" + steps + ", focusedIndex=" + this.focusedIndex + ")" );
 //		System.out.println("parent.focusedIndex=" + this.parentContainer.getFocusedIndex() );
+		boolean allowCycle = false;
+		//#if polish.Container.allowCycling != false
+			allowCycle = this.allowCycling;
+		//#endif
 		int i;
 		//#if polish.css.colspan
 			i = this.focusedIndex;
@@ -888,27 +892,19 @@ extends ItemView
 					if (forwardFocus) {
 						i++;
 						if (i == items.length - 1 ) {
-							//#if polish.Container.allowCycling == false
-								//# return null;
-							//#else
-								if (!this.allowCycling) {
-									return null;
-								}
+							if (!allowCycle) {
+								return null;
+							}
 //								System.out.println("reached items.length -1, breaking at -2");
-								i = items.length - 2;
-								break;
-							//#endif
+							i = items.length - 2;
+							break;
 						} else if (i >= items.length) {
-							//#if polish.Container.allowCycling == false
-								//# return null;
-							//#else
-								if (!this.allowCycling) {
-									return null;
-								}
+							if (!allowCycle) {
+								return null;
+							}
 //								System.out.println("reached items.length, breaking at -1");
-								i = items.length - 1;
-								break;
-							//#endif
+							i = items.length - 1;
+							break;
 						}
 					} else {
 						i--; 
@@ -939,12 +935,21 @@ extends ItemView
 			if (steps != 0) {
 				if (!forwardFocus) {
 					if (i < 0) {
+						if (!allowCycle) {
+							return null;
+						}
 						i = items.length + i;
 					}
-//					System.out.println("forward: Adjusting startIndex to " + i );
+					//System.out.println("forward: Adjusting startIndex to " + i );
 				} else {
 					i = i % items.length;
-//					System.out.println("backward: Adjusting startIndex to " + i );
+					if ( i >= items.length) {
+						if (!allowCycle) {
+							return null;
+						}
+						i -= items.length;
+					}
+					//System.out.println("backward: Adjusting startIndex to " + i );
 				}
 			}
 		//#endif
@@ -989,10 +994,6 @@ extends ItemView
 	//			System.out.println("shiftFocus: allowCycl=" + allowCycle + ", isFoward=" + forwardFocus + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset );	
 	//		}
 	//	//#endif
-		boolean allowCycle = false;
-		//#if polish.Container.allowCycling != false
-			allowCycle = this.allowCycling;
-		//#endif
 		Item nextItem = null;
 		//System.out.println("shifting focus - allowCycle=" + allowCycle + ", this.allowCycling=" + this.allowCycling + ", parent.allowCycling=" + this.parentContainer.allowCycling);
 		//System.out.println("starting at i=" + i + ", focusedIndex=" + this.focusedIndex + ", steps=" + steps + ", allowCycle=" + allowCycle) ;

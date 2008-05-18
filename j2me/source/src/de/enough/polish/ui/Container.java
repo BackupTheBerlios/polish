@@ -1055,6 +1055,14 @@ public class Container extends Item {
 			if (this.autoFocusEnabled && this.autoFocusIndex >= myItems.length ) {
 				this.autoFocusIndex = 0;
 			}
+			Item ancestor = this.parent;
+			while (this.allowCycling && ancestor != null) {
+				if ( (ancestor instanceof Container)  && ((Container)ancestor).getNumberOfInteractiveItems()>1 ) {
+					this.allowCycling = false;
+					break;
+				}
+				ancestor = ancestor.parent;
+			}
 			//#if tmp.supportViewType
 				if (this.containerView != null) {
 					// additional initialization is necessary when a view is used for this container:
@@ -1748,49 +1756,49 @@ public class Container extends Item {
 			}
 		//#endif
 		Item item = null;
-			boolean allowCycle = this.enableScrolling && this.allowCycling;
-			if (allowCycle) {
-					if (forwardFocus) {
-						// when you scroll to the bottom and
-						// there is still space, do
-						// scroll first before cycling to the
-						// first item:
-						allowCycle = (getScrollYOffset() + this.itemHeight <= this.availableHeight + 1);
-						// System.out.println("allowCycle-calculation ( forward non-smoothScroll): yOffset=" + this.yOffset + ", itemHeight=" + this.itemHeight + " (together="+ (this.yOffset + this.itemHeight));
-					} else {
-						// when you scroll to the top and
-						// there is still space, do
-						// scroll first before cycling to the
-						// last item:
-						allowCycle = (this.yOffset == 0) || (this.targetYOffset == 1);
-					}						
-			}
-			//#debug
-			System.out.println("shiftFocus of " + this + ": allowCycle(local)=" + allowCycle + ", allowCycle(global)=" + this.allowCycling + ", isFoward=" + forwardFocus + ", enableScrolling=" + this.enableScrolling + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset + ", focusedIndex=" + this.focusedIndex + ", start=" + i );
+		boolean allowCycle = this.allowCycling;
+		if (allowCycle) {
+				if (forwardFocus) {
+					// when you scroll to the bottom and
+					// there is still space, do
+					// scroll first before cycling to the
+					// first item:
+					allowCycle = (getScrollYOffset() + this.itemHeight <= getScrollHeight() + 1);
+					//System.out.println("allowCycle-calculation ( forward non-smoothScroll): yOffset=" + this.yOffset + ", itemHeight=" + this.itemHeight + " (together="+ (this.yOffset + this.itemHeight));
+				} else {
+					// when you scroll to the top and
+					// there is still space, do
+					// scroll first before cycling to the
+					// last item:
+					allowCycle = (getScrollYOffset() == 0);
+				}						
+		}
+		//#debug
+		System.out.println("shiftFocus of " + this + ": allowCycle(local)=" + allowCycle + ", allowCycle(global)=" + this.allowCycling + ", isFoward=" + forwardFocus + ", enableScrolling=" + this.enableScrolling + ", targetYOffset=" + this.targetYOffset + ", yOffset=" + this.yOffset + ", focusedIndex=" + this.focusedIndex + ", start=" + i );
 		while (true) {
 			if (forwardFocus) {
 				i++;
 				if (i >= items.length) {
-						if (allowCycle) {
-							allowCycle = false;
-							i = 0;
-							//#debug
-							System.out.println("allowCycle: Restarting at the beginning");
-						} else {
-							break;
-						}
+					if (allowCycle) {
+						allowCycle = false;
+						i = 0;
+						//#debug
+						System.out.println("allowCycle: Restarting at the beginning");
+					} else {
+						break;
+					}
 				}
 			} else {
 				i--;
 				if (i < 0) {
-						if (allowCycle) {
-							allowCycle = false;
-							i = items.length - 1;
-							//#debug
-							System.out.println("allowCycle: Restarting at the end");
-						} else {
-							break;
-						}
+					if (allowCycle) {
+						allowCycle = false;
+						i = items.length - 1;
+						//#debug
+						System.out.println("allowCycle: Restarting at the end");
+					} else {
+						break;
+					}
 				}
 			}
 			item = items[i];
