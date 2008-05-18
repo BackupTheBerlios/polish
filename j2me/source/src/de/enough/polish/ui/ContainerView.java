@@ -278,9 +278,9 @@ extends ItemView
 			}
 				
 			//#if polish.css.colspan
-				ArrayList rowHeightsList = new ArrayList( (myItems.length / this.numberOfColumns) + (myItems.length % 2) + 1 );
+				ArrayList rowHeightsList = new ArrayList( (myItems.length / this.numberOfColumns) + (myItems.length % this.numberOfColumns) + 1 );
 			//#else
-				this.numberOfRows = (myItems.length / this.numberOfColumns) + (myItems.length % 2);
+				this.numberOfRows = (myItems.length / this.numberOfColumns) + (this.numberOfColumns - (myItems.length % this.numberOfColumns));
 				this.rowsHeights = new int[ this.numberOfRows ];
 			//#endif
 			int maxRowHeight = 0;
@@ -871,10 +871,10 @@ extends ItemView
 		//#debug
 		System.out.println("ContainerView.shiftFocus( forward=" + forwardFocus + ", steps=" + steps + ", focusedIndex=" + this.focusedIndex + ")" );
 //		System.out.println("parent.focusedIndex=" + this.parentContainer.getFocusedIndex() );
-		boolean allowCycle = false;
-		//#if polish.Container.allowCycling != false
-			allowCycle = this.allowCycling;
-		//#endif
+		boolean allowCycle = this.allowCycling;
+		if (!allowCycle && forwardFocus && steps != 0 && isInBottomRow(this.focusedIndex) ) {
+			return null;
+		}
 		int i;
 		//#if polish.css.colspan
 			i = this.focusedIndex;
@@ -930,7 +930,7 @@ extends ItemView
 					}
 				}
 			}
-		//#else			
+		//#else
 			i = this.focusedIndex + steps;
 			if (steps != 0) {
 				if (!forwardFocus) {
@@ -1043,6 +1043,36 @@ extends ItemView
 //		}
 		focusItem(i, nextItem );
 		return nextItem;
+	}
+
+	/**
+	 * Detects if the specified item index is within the last row of this view.
+	 * @param index the item's index
+	 * @return true when the item is in the last row of this view. When no columns are used, this will be only true for the last item.
+	 */
+	protected boolean isInBottomRow(int index)
+	{
+		//#ifdef tmp.useTable
+			if (this.columnsSetting == NO_COLUMNS || this.parentContainer.size() <= 1) {
+		//#endif
+				return (index == this.parentContainer.size() -1 ); 
+		//#ifdef tmp.useTable
+			} else {
+				//#if polish.css.colspan
+					int adjustedIndex = 0;
+					
+					for (int i=0; i < index; i++) {
+						Item item = this.parentContainer.get(i);
+						adjustedIndex += item.colSpan;
+					}
+					index = adjustedIndex;
+				//#endif
+				int row = index / this.numberOfColumns;
+				//System.out.println("index=" + index + ", row=" + row + ", numberOfRows=" + this.numberOfRows);
+				return (row == this.numberOfRows - 1);
+				
+			}
+		//#endif
 	}
 
 	/**
