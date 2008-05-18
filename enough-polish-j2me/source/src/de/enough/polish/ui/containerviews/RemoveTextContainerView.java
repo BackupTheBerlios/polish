@@ -167,7 +167,6 @@ public class RemoveTextContainerView extends ContainerView {
 		if (this.removeTextItem != null) {
 			int height;
 			if (this.isFocused && this.removeTextItem.getText() == null && this.focusedIndex != -1 && this.focusedItem != null) {
-				System.out.println("setting removeTextItem.text to " +  this.labels[ this.focusedIndex ]);
 				this.removeTextItem.setText( this.labels[ this.focusedIndex ] );
 				//#if polish.css.view-remove-text-style
 					if (this.removeTextStyle == null) {

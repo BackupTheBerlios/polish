@@ -347,7 +347,7 @@ public class TreeItem
 	 * 
 	 * @return an array that contains all selected items
 	 */
-	public Item[] getFocusedPath()
+	public Item[] getSelectedPath()
 	{
 		ArrayList list = new ArrayList();
 		Item current = getFocusedItem();
@@ -376,9 +376,9 @@ public class TreeItem
 	 * @see UiAccess#setAttribute(Item, Object, Object)
 	 * @see UiAccess#getAttribute(Item, Object)
 	 */
-	public Object[] getFocusedPathAsAttributes( Object key )
+	public Object[] getSelectedPathAsAttributes( Object key )
 	{
-		Object[] items = getFocusedPath();
+		Object[] items = getSelectedPath();
 		for (int i = 0; i < items.length; i++)
 		{
 			Item item = (Item) items[i];
@@ -400,19 +400,22 @@ public class TreeItem
 	 * @see UiAccess#setAttribute(Item, Object, Object)
 	 * @see UiAccess#getAttribute(Item, Object)
 	 */
-	public void setFocusedPathByAttribute(Object key, Object[] values)
+	public void setSelectedPathByAttribute(Object key, Object[] values)
 	{
 		if (!this.isFocused) {
 			this.focusPathKey = key;
 			this.focusPathValues = values;
 		} else {
-			setFocusedPathByAttribute( key, values, (Container)(Object)this, 0 );
+			setSelectedPathByAttribute( key, values, (Container)(Object)this, 0 );
 		}
 	}
 	
-	private void setFocusedPathByAttribute( Object key, Object[] values, Container container, int index ) {
+	private void setSelectedPathByAttribute( Object key, Object[] values, Container container, int index ) {
 		Object[] items = container.itemsList.getInternalArray();
 		Object valueExpected = values[index];
+		if (container.isFocused) {
+			container.focus(-1);
+		}
 		for (int i = 0; i < items.length; i++)
 		{
 			Item item = (Item) items[i];
@@ -423,8 +426,12 @@ public class TreeItem
 			if (item instanceof Node) {
 				node = (Node)item;
 				item = node.root;
+				if (node.isExpanded) {
+					node.setExpanded( false );
+				}
 			}
 			Object valuePresent = item.getAttribute(key);
+			
 			if (valueExpected.equals(valuePresent)) {
 				if (node != null) {
 					node.setExpanded(true);
@@ -434,19 +441,17 @@ public class TreeItem
 				}
 				if (index < values.length - 1) {
 					if (node != null) {
-						setFocusedPathByAttribute(key, values, node.children, index + 1);
+						setSelectedPathByAttribute(key, values, node.children, index + 1);
 					} else if (item instanceof Container) {
-						setFocusedPathByAttribute(key, values, (Container)item, index + 1);
+						setSelectedPathByAttribute(key, values, (Container)item, index + 1);
 					}
 				}
-			} else if (node != null && node.isExpanded) {
-				node.setExpanded(false);
+//			} else if (node != null && node.isExpanded) {
+//				node.setExpanded(false);
 			}
 		}
 
 	}
-	
-	
 
 
 	/* (non-Javadoc)
@@ -456,7 +461,7 @@ public class TreeItem
 	{
 		Style myPlainStyle = super.focus(focusStyle, direction);
 		if (this.focusPathKey != null) {
-			setFocusedPathByAttribute(this.focusPathKey, this.focusPathValues, (Container)(Object)this, 0 );
+			setSelectedPathByAttribute(this.focusPathKey, this.focusPathValues, (Container)(Object)this, 0 );
 			this.focusPathKey = null;
 			this.focusPathValues = null;
 		}
@@ -745,7 +750,6 @@ public class TreeItem
 		 */
 		protected void defocus(Style originalStyle) {
 			this.isFocused = false;
-			//System.out.println("defocus " + this );
 			//if (this.isExpanded && this.isChildrenFocused) {
 			if (this.isExpanded && this.children.isFocused) {
 				this.children.defocus(originalStyle);
