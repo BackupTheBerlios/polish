@@ -278,9 +278,12 @@ extends ItemView
 			}
 				
 			//#if polish.css.colspan
-				ArrayList rowHeightsList = new ArrayList( (myItems.length / this.numberOfColumns) + (myItems.length % this.numberOfColumns) + 1 );
+				ArrayList rowHeightsList = new ArrayList( (myItems.length / this.numberOfColumns) + 1 );
 			//#else
-				this.numberOfRows = (myItems.length / this.numberOfColumns) + (this.numberOfColumns - (myItems.length % this.numberOfColumns));
+				this.numberOfRows = (myItems.length / this.numberOfColumns);
+				if (myItems.length % this.numberOfColumns != 0) {
+					this.numberOfRows += 1;
+				}
 				this.rowsHeights = new int[ this.numberOfRows ];
 			//#endif
 			int maxRowHeight = 0;
