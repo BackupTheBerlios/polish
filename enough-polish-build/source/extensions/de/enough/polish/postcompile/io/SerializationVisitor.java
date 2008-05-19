@@ -29,6 +29,7 @@ public class SerializationVisitor
   public static final String POLISH_USE_DEFAULT_PACKAGE = "polish.useDefaultPackage";
   public static final String SERIALIZER = "de/enough/polish/io/Serializer";
   public static final String SERIALIZABLE = "de/enough/polish/io/Serializable";
+  public static final String SERIALIZABLE_RENAMED = "de/enough/polish/io/EnoughSerializable";
   public static final String EXTERNALIZABLE = "de/enough/polish/io/Externalizable";
   public static final String DATAINPUTSTREAM = "java/io/DataInputStream";
   public static final String DATAOUTPUTSTREAM = "java/io/DataOutputStream";
@@ -78,6 +79,21 @@ public class SerializationVisitor
 
     return className;
   }
+  
+  private static String getSerializableClassName( ASMClassLoader loader, Environment env ) {
+	  String className = getClassName( SERIALIZABLE, env);
+	  if (env.hasSymbol("polish.Bugs.ReservedKeywordSerializable")) 
+	  {
+		  try
+		{
+			loader.loadClass(className);
+		} catch (ClassNotFoundException e)
+		{
+			className = getClassName( SERIALIZABLE_RENAMED, env);
+		}
+	  }
+	  return className;
+  }
 
   private String className;
   private String superClassName;
@@ -89,6 +105,9 @@ public class SerializationVisitor
   private boolean generateReadMethod = true;
   private boolean generateWriteMethod = true;
   private HashSet serializableObjectTypes;
+  
+  private String serializableClassName;
+  private String externalizableClassName;
 
   public SerializationVisitor(ClassVisitor cv, ASMClassLoader loader,
                               Environment environment)
@@ -98,6 +117,9 @@ public class SerializationVisitor
     this.environment = environment;
     this.fields = new HashMap();
     this.serializableObjectTypes = new HashSet();
+    
+    this.serializableClassName = getSerializableClassName(loader, environment);
+    this.externalizableClassName = getClassName( EXTERNALIZABLE, environment );
 
     // TODO: This throws always a NullPointerException. Make this work reliable.
     if (false)
@@ -189,11 +211,11 @@ public class SerializationVisitor
   private String[] rewriteInterfaces(String superName, String[] interfaces)
   {
     this.superImplementsSerializable =
-      this.loader.inherits(getClassName(SERIALIZABLE, this.environment), superName);
+      this.loader.inherits(this.serializableClassName, superName);
 
     boolean found = false;
-    String serializable = getClassName(SERIALIZABLE, this.environment);
-    String externalizable = getClassName(EXTERNALIZABLE, this.environment);
+    String serializable = this.serializableClassName;
+    String externalizable = this.externalizableClassName;
     
     for (int i = 0; i < interfaces.length; i++)
       {
@@ -262,7 +284,7 @@ public class SerializationVisitor
           {
             descShot = descShot.substring(1, descShot.length() - 1);
             
-            if (this.loader.inherits(getClassName(SERIALIZABLE, this.environment), descShot))
+            if (this.loader.inherits(this.serializableClassName, descShot))
               {
             	this.fields.put(name, desc);
               }
