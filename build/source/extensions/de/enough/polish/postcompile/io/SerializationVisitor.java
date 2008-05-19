@@ -69,7 +69,7 @@ public class SerializationVisitor
     methodNamesWrite.put("Z", "writeBoolean(Z)V");
   }
 
-  public static String getClassName(String className, Environment env)
+  protected static String getClassName(String className, Environment env)
   {
     if (env != null && env.hasSymbol(POLISH_USE_DEFAULT_PACKAGE))
       {
@@ -80,7 +80,7 @@ public class SerializationVisitor
     return className;
   }
   
-  private static String getSerializableClassName( ASMClassLoader loader, Environment env ) {
+  protected static String getSerializableClassName( ASMClassLoader loader, Environment env ) {
 	  String className = getClassName( SERIALIZABLE, env);
 	  if (env.hasSymbol("polish.Bugs.ReservedKeywordSerializable")) 
 	  {
