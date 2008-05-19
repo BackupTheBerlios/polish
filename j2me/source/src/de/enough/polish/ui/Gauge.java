@@ -790,7 +790,7 @@ implements ImageConsumer
 			if (this.mode == MODE_CONTINUOUS) {
 				g.setColor( this.color );
 				int maxWidth = this.contentWidth;
-				if (this.showValue) {
+				if (this.showValue && this.valuePosition != POSITION_CENTER) {
 					maxWidth -= this.valueWidth;
 				}
 				int w = (maxWidth * this.value) / this.maxValue;
