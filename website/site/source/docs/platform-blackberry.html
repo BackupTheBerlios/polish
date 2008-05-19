@@ -142,7 +142,50 @@ of the BlackBerry SigTool during the build with such JDEs.
 Note also that the blackberry SigTool application does not work on Unix systems. This shlashdev guide describes 
 <a href="http://www.slashdev.ca/2008/03/16/using-sigtool-in-linux" target="_blank">how to run the SigTool on Unix</a>.
 </p>
+<h2 id="blackberry-signing">Debugging</h2>
+<p>
+To debug your BlackBerry project you first need to create a project file to use
+in the BlackBerry JDE. The compilation of source files to the project file can
+be done manually or by using the JDP creator.
+</p>
+<h3 id="blackberry-signing-using">Using the JDP creator</h3>
+<p>
+The JDP creator is an ant task. Here's an example implementation:
+<pre>
+&lt;project basedir="." default="run">
 
+	&lt;property name="polish.home" value="../../enough-polish-build" /&gt;
+
+	&lt;taskdef name="jdp" classname="de.enough.polish.ant.blackberry.JDPTask"&gt;
+		&lt;classpath&gt;
+			&lt;pathelement location="${polish.home}/bin/classes" /&gt;
+		&lt;/classpath&gt;
+	&lt;/taskdef&gt;
+
+	&lt;target name="run"&gt;
+		&lt;jdp name="myproject" 
+			 path="."
+			 template="template.jdp" 
+			 sources="build/BlackBerry/Pearl/de" /&gt;
+	&lt;/target&gt;
+
+&lt;/project&gt;
+</pre>
+You need to create the task definition for the jdp task. This is mandatory and done
+in &lt;taskdef&g;. To use the JDP creator, create a target that uses the jdp task.
+There are three attributes that must be set : 
+<h4>name</h4>
+The name for the project
+<h4>path</h4>
+The path to store the project file
+<h4>sources</h4>
+The path to the root directory of the build. The root directory is the directory 
+containing the preprocessed sources and assembled resources for the specified build,
+ for example <code>../myproject/build/BlackBerry/Pearl/de</code>.
+<p>
+After execution of the task, you can use the resulting .jdp file to open the project in your BlackBerry JDE to debug etc..
+</p>
+</p>
 <h2 id="blackberry-gui">Using the J2ME Polish GUI on BlackBerry Devices</h2>
 <p>
 The J2ME Polish GUI can be used normally on BlackBerry devices as well. In order to make most of the system, 
