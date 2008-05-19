@@ -897,7 +897,7 @@ implements AccessibleCanvas
 		//#debug
 		System.out.println("calculateContentArea: x=" + this.contentX + ", y=" + this.contentY + ", width=" + this.contentWidth + ", height=" + this.contentHeight);
 		if (this.container != null) {
-			this.container.relativeY = x;
+			this.container.relativeX = x;
 			this.container.relativeY = y;
 			this.container.setScrollHeight( height );
 		}
