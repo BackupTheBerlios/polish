@@ -1220,6 +1220,24 @@ public class Preprocessor {
 				lines.setCurrent( nextLine );
 			}
 			while ( nextLine.indexOf(';') == -1) {
+				// check for number of openening and closing parentheses in this line -
+				// there should be at least one parentheses - if the number of opening and closing
+				// parentheses is the same, we are in the correct source code line already:
+				int opening = 0;
+				int closing = 0;
+				for (int i=0; i<nextLine.length(); i++) {
+					char c = nextLine.charAt(i);
+					if (c == '(') {
+						opening++;
+					} else if (c == ')') {
+						closing++;
+					}
+				}
+				if (opening == closing && opening != 0) {
+					break;
+				}
+				// okay, number of opening and closing parentheses is not yet the same, 
+				// add more lines:
 				if (!lines.next()) {
 					throw new BuildException(
 							className + " line " + styleDirectiveLine
