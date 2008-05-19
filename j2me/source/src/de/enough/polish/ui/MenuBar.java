@@ -1394,6 +1394,17 @@ public class MenuBar extends Item {
 		//#debug
 		System.out.println("MenuBar: handlePointerPressed( relX=" + relX + ", relY=" + relY + " )\nleftCommandEndX = " + leftCommandEndX + ", rightCommandStartXs = " + rightCommandStartX + " screenHeight=" + this.screen.screenHeight);
 		if (relY > 0) {
+			//#if polish.api.windows
+				if (windowsSipImage != null
+						&& relX >= this.windowsSipX 
+						&& relY >= this.windowsSipY 
+						&& relX <= this.windowsSipX + windowsSipImage.getWidth()
+						&& relY <= this.windowsSipY + windowsSipImage.getHeight()
+				) {
+					// Do nothing when windows sip image is pointer pressed.
+					return true;
+				}
+			//#endif
 			//System.out.println("menubar clicked");
 			CommandItem selectedCommandItem = null;
 			if (relX > rightCommandStartX) {
@@ -1445,8 +1456,8 @@ public class MenuBar extends Item {
 						&& relX <= this.windowsSipX + windowsSipImage.getWidth()
 						&& relY <= this.windowsSipY + windowsSipImage.getHeight()
 				) {
-						
 					Keyboard.showSoftwareKeyboard( !Keyboard.isSoftwareKeyboardOpened() );
+					return true;
 				}
 			//#endif
 			CommandItem selectedCommandItem = null;
