@@ -891,6 +891,9 @@ implements Runnable
 	    		contentEncoding = httpConnection.getHeaderField("Content-Encoding");
 	    	}
     	}
+    	if (contentEncoding == null) {
+    		contentEncoding = "UTF-8";
+    	}
     	//#if polish.Browser.Gzip
 	  	    try {
     	    	if (contentEncoding != null && contentEncoding.indexOf("gzip") != -1) {
