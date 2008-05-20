@@ -45,6 +45,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -87,7 +88,7 @@ implements ActionListener
 	private static final String[] FONT_SIZES = new String[]{ "8", "9", "10", "10.5", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "22", "24", "26", "28", "30", "32", "34", "36" };
 	private static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
-	private static final String PUNCTUATION = "@\u00a9\u00ae\u00a7\u0080\u00a3$&_+-\'\"(),./\\:;?!<>\u00ab\u00bb\u00b0\u00e0\u00e1\u00e2\u00e7\u00e8\u00ea\u00e9\u00fb\u00c8\u00c9\u00ca";
+	private static final String PUNCTUATION = "@\u00a9\u00ae\u00a7\u0080\u00a3$&_+-\'\"(),./\\:;?!<>\u00ab\u00bb\u00b0\u00e0\u00e1\u00e2\u00e7\u00e8\u00ea\u00e9\u00fb";
 	private static final String NUMBERS = "0123456789";
 	private static final String SPACE = " "; 
 	private static final String STANDARD_TEXT =  LOWERCASE + SPACE + PUNCTUATION + NUMBERS;
@@ -314,43 +315,43 @@ implements ActionListener
 	public void saveBitMapFont(File file) 
 	throws IOException 
 	{
-		//FIXME 
-		// ADD CHARSPACING FIELD
-		BufferedImage image = createImage();
-		FileOutputStream out = new FileOutputStream( file );
-		String text = this.characterMap.getText();
-		DataOutputStream dataOut = new DataOutputStream( out );
-		// write whether there are mixed case characters included:
-		boolean hasMixedCase = hasMixedCase(text);
-		dataOut.writeBoolean( hasMixedCase );
-		// write the character-map:
-		String charMap = text;
-		if (!hasMixedCase) {
-			charMap = text.toLowerCase();
-		}
-		dataOut.writeUTF(charMap);
-		// write the widths of each character:
-		Graphics2D g = image.createGraphics();
-		if(this.optionAntiAliasing.isSelected() ){ 
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		} else {
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-		}
-		FontRenderContext fc = g.getFontRenderContext();
-		for (int i = 0; i < text.length(); i++) {
-			String substring = text.substring( i, i + 1);
-			Rectangle2D bounds = this.derivedFont.getStringBounds(substring, fc);
-			dataOut.writeByte( (int) (bounds.getWidth() + this.characterSpacing) );
-		}
-		// write the image itself:
-		ImageIO.write( image, "png", out );
-		out.close();
+		BitMapFont font = getBitMapFont();
+		font.write(file);
+//		BufferedImage image = createImage();
+//		FileOutputStream out = new FileOutputStream( file );
+//		String text = this.characterMap.getText();
+//		DataOutputStream dataOut = new DataOutputStream( out );
+//		// write whether there are mixed case characters included:
+//		boolean hasMixedCase = hasMixedCase(text);
+//		dataOut.writeBoolean( hasMixedCase );
+//		// write the character-map:
+//		String charMap = text;
+//		if (!hasMixedCase) {
+//			charMap = text.toLowerCase();
+//		}
+//		dataOut.writeUTF(charMap);
+//		// write the widths of each character:
+//		Graphics2D g = image.createGraphics();
+//		if(this.optionAntiAliasing.isSelected() ){ 
+//			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//		} else {
+//			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+//		}
+//		FontRenderContext fc = g.getFontRenderContext();
+//		for (int i = 0; i < text.length(); i++) {
+//			String substring = text.substring( i, i + 1);
+//			Rectangle2D bounds = this.derivedFont.getStringBounds(substring, fc);
+//			dataOut.writeByte( (int) (bounds.getWidth() + this.characterSpacing) );
+//		}
+//		// write the image itself:
+//		ImageIO.write( image, "png", out );
+//		out.close();
 		
-		this.imageLabel.setIcon( new ImageIcon( image ) );
+		this.imageLabel.setIcon( new ImageIcon( font.getImage() ) );
 	}
 	
 	public void savePngFile( File file ) throws IOException {
-		BufferedImage image = createImage();
+		BufferedImage image = getBitMapFont().getImage();
 		FileOutputStream out = new FileOutputStream( file );
 		ImageIO.write( image, "png", out );
 		out.close();
@@ -403,147 +404,177 @@ implements ActionListener
 //		return image;
 //	}
 	
-	public BufferedImage createImage() {
-		final boolean isAntiAlised = this.optionAntiAliasing.isSelected();
+//	public BufferedImage createImage() {
+//		final boolean isAntiAlised = this.optionAntiAliasing.isSelected();
+//		if (this.externalImage != null) {
+//			return this.externalImage;
+//		}
+//		String text = this.characterMap.getText();
+//		if (text.length() == 0) {
+//			return null;
+//		}
+//		
+//		// use dummy buffer for get a render context:
+//		BufferedImage image = new BufferedImage(1,1,BufferedImage.TYPE_4BYTE_ABGR);
+//		Graphics2D g = image.createGraphics();
+//		if (isAntiAlised) {
+//			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+//		} else {
+//			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
+//		}
+//		FontRenderContext fc = g.getFontRenderContext();
+//		
+//		// Rectangle2D bounds = this.derivedFont.getStringBounds(text,fc);
+//		// double height = bounds.getHeight();
+//		// double width = bounds.getWidth() /*+ (text.length() * this.characterSpacing)*/;
+//		//
+//		// Vorpalware/20060421F
+//		// 
+//		// Java docs say that Font.getStringBounds() can't be counted on to give the
+//		// real pixel bounding box of the rendered text.  For instance, Font.getStringBounds() 
+//		// seems to return an unrealistically low value for the height when certain, 
+//		// seemingly arbitrary Unicode chars appear in the string, like the Dagger \u2020; 
+//		// as in 2.51 instead of 14.58 -- way off.
+//		//
+//		// The docs' recommended way of finding the bounding box is something like
+//		// the following:
+//		//
+//		TextLayout fulltl = new TextLayout(text, this.derivedFont, fc);
+//		Rectangle2D bounds = fulltl.getBounds();
+//		int height = (int) Math.ceil(bounds.getHeight());
+//		int y = (int) Math.ceil(-bounds.getY());
+//		// int width = (int) Math.ceil(bounds.getWidth()) + (text.length() * this.characterSpacing);
+//		//
+//		// When it comes to the width: given the potential for rounding differences between
+//		// TextLayout.getBounds() and the way we must place characters below (must always 
+//		// round up if a single character has a fractional width), here's a sure way to 
+//		// make sure the image is wide enough for all of the characters:
+//		//
+//		int width=0;
+//		String onechar;
+//		for (int i = 0; i < text.length(); i++) {
+//			// bounds = this.derivedFont.getStringBounds(characters, i, i+1, fc);
+//			onechar = text.substring(i,i+1);
+//			TextLayout tl = new TextLayout( onechar, this.derivedFont, fc);
+//			bounds = tl.getBounds();
+//			
+//			int minx = (int) Math.floor(bounds.getMinX());
+//			if (minx < 0) width -= (int) Math.floor(bounds.getMinX());
+//			
+//			bounds = this.derivedFont.getStringBounds(onechar, fc);
+//			// int minx = (int) Math.floor(bounds.getMinX());
+//			// int charwidth;
+//			// if (minx < 0) 
+//				// charwidth = (int) Math.ceil(bounds.getMaxX()) - minx;
+//			// else
+//				// charwidth = (int) Math.ceil(bounds.getMaxX());
+//			int charwidth = (int) Math.ceil(bounds.getMaxX());
+//			if (charwidth == 0) charwidth = this.spaceCharWidth;
+//			width += charwidth + this.characterSpacing ;
+//		}
+//		
+//		image = new BufferedImage( width, height, BufferedImage.TYPE_4BYTE_ABGR);
+//		g = image.createGraphics();
+//		Color transparent = new Color( 1, 1, 1, 0);
+//		g.setBackground( transparent );
+//		g.clearRect(0, 0, width, height );
+//		if (isAntiAlised) {
+//			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+//		} else {
+//			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
+//		}
+//		g.setFont( this.derivedFont );
+//		g.setColor( this.currentColor );
+//
+//		int x = 0;
+//		// char[] characters = text.toCharArray();
+//		for (int i = 0; i < text.length(); i++) {
+//			
+//			onechar = text.substring(i,i+1);
+//			TextLayout tl = new TextLayout( onechar, this.derivedFont, fc);
+//			bounds = tl.getBounds();
+//			// int oldx = x;
+//			
+////			// For testing - mark character's origin point
+////			Color speck = new Color( 255, 255, 0, 255 );
+////			g.setColor( speck );
+////			g.drawLine( x,y,x,y );
+////			g.setColor( this.currentColor );
+//			
+//			int minx = (int) Math.floor(bounds.getMinX());
+//			if (minx < 0) x -= (int) Math.floor(bounds.getMinX());
+//				// Letters like j, p, etc. can hook to the left of their origin point, 
+//				// especially in italic fonts.  Pre-adjust position to make sure the glyph
+//				// remains inside the box.
+//			
+//			g.drawString( onechar, x, y );
+//			
+//			bounds = this.derivedFont.getStringBounds(onechar, fc);
+//				// Font's idea of character width gives prettier results than strict pixel bounding box
+//				// returned by TextLayout
+//			
+//			// x += (int) Math.ceil(bounds.width());
+//			int charwidth = (int) Math.ceil(bounds.getMaxX());
+//			if (charwidth == 0) {
+//				// space characters have zero width according to TextLayout.getBounds()
+//				charwidth = this.spaceCharWidth;
+//			}
+//			x += charwidth + this.characterSpacing; 
+//		}
+//		return image;
+//	}
+	
+	/**
+	 * Retrieves the bitmap font
+	 * @return the rendered font
+	 */
+	public BitMapFont getBitMapFont() {
+		BitMapFont font = new BitMapFont( getCharacterMapText(), 
+				this.derivedFont, 
+				this.optionAntiAliasing.isSelected(),
+				this.characterSpacing,
+				this.spaceCharWidth,
+				this.currentColor
+				);
 		if (this.externalImage != null) {
-			return this.externalImage;
+			font.setImage( this.externalImage );
 		}
-		String text = this.characterMap.getText();
-		if (text.length() == 0) {
-			return null;
-		}
-		
-		// use dummy buffer for get a render context:
-		BufferedImage image = new BufferedImage(1,1,BufferedImage.TYPE_4BYTE_ABGR);
-		Graphics2D g = image.createGraphics();
-		if (isAntiAlised) {
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-		} else {
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
-		}
-		FontRenderContext fc = g.getFontRenderContext();
-		
-		// Rectangle2D bounds = this.derivedFont.getStringBounds(text,fc);
-		// double height = bounds.getHeight();
-		// double width = bounds.getWidth() /*+ (text.length() * this.characterSpacing)*/;
-		//
-		// Vorpalware/20060421F
-		// 
-		// Java docs say that Font.getStringBounds() can't be counted on to give the
-		// real pixel bounding box of the rendered text.  For instance, Font.getStringBounds() 
-		// seems to return an unrealistically low value for the height when certain, 
-		// seemingly arbitrary Unicode chars appear in the string, like the Dagger \u2020; 
-		// as in 2.51 instead of 14.58 -- way off.
-		//
-		// The docs' recommended way of finding the bounding box is something like
-		// the following:
-		//
-		TextLayout fulltl = new TextLayout(text, this.derivedFont, fc);
-		Rectangle2D bounds = fulltl.getBounds();
-		int height = (int) Math.ceil(bounds.getHeight());
-		int y = (int) Math.ceil(-bounds.getY());
-		// int width = (int) Math.ceil(bounds.getWidth()) + (text.length() * this.characterSpacing);
-		//
-		// When it comes to the width: given the potential for rounding differences between
-		// TextLayout.getBounds() and the way we must place characters below (must always 
-		// round up if a single character has a fractional width), here's a sure way to 
-		// make sure the image is wide enough for all of the characters:
-		//
-		int width=0;
-		String onechar;
-		for (int i = 0; i < text.length(); i++) {
-			// bounds = this.derivedFont.getStringBounds(characters, i, i+1, fc);
-			onechar = text.substring(i,i+1);
-			TextLayout tl = new TextLayout( onechar, derivedFont, fc);
-			bounds = tl.getBounds();
-			
-			int minx = (int) Math.floor(bounds.getMinX());
-			if (minx < 0) width -= (int) Math.floor(bounds.getMinX());
-			
-			bounds = this.derivedFont.getStringBounds(onechar, fc);
-			// int minx = (int) Math.floor(bounds.getMinX());
-			// int charwidth;
-			// if (minx < 0) 
-				// charwidth = (int) Math.ceil(bounds.getMaxX()) - minx;
-			// else
-				// charwidth = (int) Math.ceil(bounds.getMaxX());
-			int charwidth = (int) Math.ceil(bounds.getMaxX());
-			if (charwidth == 0) charwidth = this.spaceCharWidth;
-			width += charwidth + this.characterSpacing ;
-		}
-		
-		image = new BufferedImage( width, height, BufferedImage.TYPE_4BYTE_ABGR);
-		g = image.createGraphics();
-		Color transparent = new Color( 1, 1, 1, 0);
-		g.setBackground( transparent );
-		g.clearRect(0, 0, width, height );
-		if (isAntiAlised) {
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-		} else {
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);
-		}
-		g.setFont( this.derivedFont );
-		g.setColor( this.currentColor );
-
-		int x = 0;
-		// char[] characters = text.toCharArray();
-		for (int i = 0; i < text.length(); i++) {
-			
-			onechar = text.substring(i,i+1);
-			TextLayout tl = new TextLayout( onechar, this.derivedFont, fc);
-			bounds = tl.getBounds();
-			// int oldx = x;
-			
-//			// For testing - mark character's origin point
-//			Color speck = new Color( 255, 255, 0, 255 );
-//			g.setColor( speck );
-//			g.drawLine( x,y,x,y );
-//			g.setColor( this.currentColor );
-			
-			int minx = (int) Math.floor(bounds.getMinX());
-			if (minx < 0) x -= (int) Math.floor(bounds.getMinX());
-				// Letters like j, p, etc. can hook to the left of their origin point, 
-				// especially in italic fonts.  Pre-adjust position to make sure the glyph
-				// remains inside the box.
-			
-			g.drawString( onechar, x, y );
-			
-			bounds = this.derivedFont.getStringBounds(onechar, fc);
-				// Font's idea of character width gives prettier results than strict pixel bounding box
-				// returned by TextLayout
-			
-			// x += (int) Math.ceil(bounds.width());
-			int charwidth = (int) Math.ceil(bounds.getMaxX());
-			if (charwidth == 0) charwidth = this.spaceCharWidth;
-			x += charwidth + this.characterSpacing; 
-				// space characters have zero width according to TextLayout.getBounds()
-		}
-		return image;
+		return font;
 	}
 	
+	/**
+	 * @return
+	 */
+	private String getCharacterMapText()
+	{
+		return this.characterMap.getText();
+	}
+
+
 	private void updateImage() {
-		BufferedImage image = createImage();
+		BitMapFont font = getBitMapFont();
+		BufferedImage image = font.getImage();
 		if (image == null) {
 			this.imageLabel.setIcon( null );
 		} else {
 			this.imageLabel.setIcon( new ImageIcon( image ) );
 		}
 	}
-	private boolean hasMixedCase( String map ) {
-		char[] characters = map.toCharArray();
-		char lastChar = 0;
-		for (int i = 0; i < characters.length; i++) {
-			if( lastChar != 0 ){
-				if ((Character.isUpperCase( lastChar ) != Character.isUpperCase( characters[i] ) ) ||
-					(Character.isLowerCase( lastChar ) != Character.isLowerCase( characters[i] ) )){
-					return true;
-				}
-			} 
-			// Too soon to know
-			lastChar = characters[i];
-		}
-		return false;
-	}
+//	private boolean hasMixedCase( String map ) {
+//		char[] characters = map.toCharArray();
+//		char lastChar = 0;
+//		for (int i = 0; i < characters.length; i++) {
+//			if( lastChar != 0 ){
+//				if ((Character.isUpperCase( lastChar ) != Character.isUpperCase( characters[i] ) ) ||
+//					(Character.isLowerCase( lastChar ) != Character.isLowerCase( characters[i] ) )){
+//					return true;
+//				}
+//			} 
+//			// Too soon to know
+//			lastChar = characters[i];
+//		}
+//		return false;
+//	}
 
 
 	/**

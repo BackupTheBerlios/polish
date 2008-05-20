@@ -126,9 +126,11 @@ public class BmfCreationTask extends Task
 		Font ttfFont;
 		try
 		{
-			ttfFont = Font.createFont(Font.TRUETYPE_FONT, attributInputTtfFile).deriveFont((float)attributeSize);
-			TrueType2BmfConversion conversion = new TrueType2BmfConversion(ttfFont, attributeColor, stringToConvert, attributeAntialiased, attributeCharacterSpacing, attributOutputBmfFile);
-			conversion.createBmfFont();
+			ttfFont = Font.createFont(Font.TRUETYPE_FONT, this.attributInputTtfFile).deriveFont((float)this.attributeSize);
+			BitMapFont bitMapFont = new BitMapFont( this.stringToConvert, ttfFont, this.attributeAntialiased, this.attributeCharacterSpacing, this.attributeSize/2, this.attributeColor );
+			bitMapFont.write( this.attributOutputBmfFile );
+//			TrueType2BmfConversion conversion = new TrueType2BmfConversion(ttfFont, attributeColor, stringToConvert, attributeAntialiased, attributeCharacterSpacing, attributOutputBmfFile);
+//			conversion.createBmfFont();
 		}
 		catch(FontFormatException e)
 		{
