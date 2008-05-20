@@ -1277,7 +1277,7 @@ These namespaces/schemas will be used soon.
 		<identifier>Sony-Ericsson/W800i, Sony-Ericsson/W800</identifier>
 		<groups>SE-JavaPlatform5</groups>
 		<features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>
-		<capability name="ScreenSize" value="176x208"/>
+		<capability name="ScreenSize" value="176x220"/>
 		<capability name="BitsPerPixel" value="18"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, m3g, btapi, nokia-ui, pdaapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
