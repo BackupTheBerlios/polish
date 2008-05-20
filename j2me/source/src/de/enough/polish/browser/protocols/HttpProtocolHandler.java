@@ -29,6 +29,7 @@ package de.enough.polish.browser.protocols;
 
 import de.enough.polish.browser.ProtocolHandler;
 import de.enough.polish.io.RedirectHttpConnection;
+import de.enough.polish.ui.StyleSheet;
 import de.enough.polish.util.HashMap;
 
 import java.io.IOException;
@@ -92,14 +93,18 @@ public class HttpProtocolHandler extends ProtocolHandler
 	{
 		super( protocolName );	
 		this.requestProperties = requestProperties;
-		if (requestProperties != null) {
-			if ( requestProperties.get("User-Agent") == null )
-			{
-				requestProperties.put("User-Agent", USER_AGENT );
-			}
-			if ( requestProperties.get("Accept") == null ) {
-				requestProperties.put("Accept", "text/*, image/png, application/xhtml+xml" );
-			}
+		if (requestProperties == null) {
+			requestProperties = new HashMap();
+		}
+		if ( requestProperties.get("User-Agent") == null )
+		{
+			requestProperties.put("User-Agent", USER_AGENT );
+		}
+		if ( requestProperties.get("Accept") == null ) {
+			requestProperties.put("Accept", "text/html, text/xml, text/*, image/png, image/*, application/xhtml+xml, */*" );
+		}
+		if ( requestProperties.get("UA-pixels")  == null && StyleSheet.currentScreen != null)  {
+			requestProperties.put("UA-pixels", StyleSheet.currentScreen.getWidth() + "x" + StyleSheet.currentScreen.getHeight() );
 		}
 	}
 

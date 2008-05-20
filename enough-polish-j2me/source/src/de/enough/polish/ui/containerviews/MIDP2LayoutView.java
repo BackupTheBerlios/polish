@@ -39,6 +39,7 @@ import javax.microedition.lcdui.Graphics;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.Screen;
 import de.enough.polish.util.ArrayList;
 
 /**
@@ -52,7 +53,7 @@ import de.enough.polish.util.ArrayList;
  * </pre>
  * </p>
  * 
- * @author Kin Wong
+ * @author Kin Wong, Robert Virkus
  */
 public class MIDP2LayoutView 
 extends ContainerView 
@@ -464,14 +465,22 @@ extends ContainerView
         
         // Finally set the focus if it has been found
         if (item != null) {
+            Screen screen = getScreen();
+            //Item focItem = this.focusedItem;
+                if (screen != null && focItem != null 
+                	&& (gameAction == Canvas.DOWN || gameAction == Canvas.RIGHT) 
+                	&& (item.relativeY - focItem.relativeY + (focItem.relativeY + this.parentContainer.getRelativeScrollYOffset()) > screen.getScreenContentHeight() )
+             ) {
+                     // scroll before shifting focus
+                         return null;
+            }
             for (int i = 0; i < items.length; i++) {
                 if (items[i] == item) {
                     focusItem(i, item, gameAction);
                     break;
                 }
             }
-    }
-        else {
+        } else {
             if (this.focusedIndex >= items.length) {
                 for(int i=0; i < items.length; i++) {
                     Item toBeFocused = items[i];

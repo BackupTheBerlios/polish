@@ -898,6 +898,14 @@ public class Container extends Item {
 				} else {
 					int itemYTop = isDownwards ? item.relativeY : nextItem.relativeY;
 					int itemYBottom = isDownwards ? nextItem.relativeY + nextItem.itemHeight : item.relativeY + item.itemHeight;
+                    int availHeight = getRelativeScrollHeight();
+                    int height = itemYBottom - itemYTop;
+                    if (height > availHeight) {
+                        height = availHeight - 5;
+                        if (!isDownwards) {
+                            itemYTop += (itemYBottom - itemYTop) - height;
+                        }
+                    }
 					scroll( direction, this.relativeX, itemYTop, item.internalWidth, itemYBottom - itemYTop );
 				}
 			}
@@ -1023,7 +1031,7 @@ public class Container extends Item {
 			//#debug
 			System.out.println("scroll: item too low: verticalSpace=" + verticalSpace + "  y=" + y + ", height=" + height + ", yTopAdjust=" + yTopAdjust + ", yOffset=" + currentYOffset);
 			// check if the top of the area is still visible when scrolling downwards:
-			if ( isDownwards && y + currentYOffset < 0 ) {
+			if ( isDownwards && y + currentYOffset < 0  && height < verticalSpace) {
 				currentYOffset -= (y + currentYOffset);
 			}
 		} else if ( y + currentYOffset < 0 ) {
@@ -1032,7 +1040,7 @@ public class Container extends Item {
 			//#debug
 			System.out.println("scroll: item too high: , y=" + y + ", target=" + currentYOffset ); //+ ", focusedTopMargin=" + this.focusedTopMargin );
 			// check if the bottom of the area is still visible when scrolling upwards:
-			if (isUpwards && y + height + currentYOffset > verticalSpace ) {
+			if (isUpwards && y + height + currentYOffset > verticalSpace  && height < verticalSpace) {
 				currentYOffset += verticalSpace - (y + height + currentYOffset);
 			}
 
@@ -1550,7 +1558,7 @@ public class Container extends Item {
 				//#if polish.Container.ScrollDelta:defined
 					//#=  ${polish.Container.ScrollDelta};
 				//#else
-					30;
+					getScreen() != null ? getScreen().contentHeight / 2 :  30;
 				//#endif
 				offset = getScrollYOffset() - difference;
 				setScrollYOffset( offset, true );
@@ -1593,7 +1601,7 @@ public class Container extends Item {
 				//#if polish.Container.ScrollDelta:defined
 					//#= ${polish.Container.ScrollDelta};
 				//#else
-					30;
+					getScreen() != null ? getScreen().contentHeight / 2 :  30;
 				//#endif
 				offset = getScrollYOffset() + difference;
 				if (offset > 0) {

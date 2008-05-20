@@ -1044,6 +1044,16 @@ extends ItemView
 //		if (forwardFocus) {
 //			direction = Canvas.DOWN;
 //		}
+		Screen screen = getScreen();
+		Item focItem = this.focusedItem;
+		if (screen != null && focItem != null 
+				&& i > this.focusedIndex 
+				&& (nextItem.relativeY - focItem.relativeY + (focItem.relativeY + this.parentContainer.getRelativeScrollYOffset()) > screen.contentHeight )
+		) {
+			// scroll before shifting focus
+			return null;
+		}
+				
 		focusItem(i, nextItem );
 		return nextItem;
 	}
