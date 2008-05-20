@@ -15176,8 +15176,8 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="mmapi1.1, wmapi1.0, wmapi2.0, m3g, pdaapi, btapi, webservice, securityapi"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="ScreenSize" value="220x176"/>
-		<capability name="FullCanvasSize" value="220x176"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="VideoFormat" value="3gpp, wmv, h.263, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="aac, aac+, eaac, eaac+, mp3, mp4, 3gpp, nb-amr, wav, midi, midi64, truetone, wb-amr, sp-midi, wma, realaudio, "/>
 		<capability name="ImageFormat" value="jpeg, bmp, wbmp, gif, gif87a, gif89a, png, png1.0, m3g, svg"/>
@@ -15194,8 +15194,8 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPlatform" value="MIDP/2.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="BitsPerPixel" value="18"/>
-		<capability name="ScreenSize" value="220x176"/>
-		<capability name="FullCanvasSize" value="220x176"/>
+		<capability name="ScreenSize" value="176x220"/>
+		<capability name="FullCanvasSize" value="176x220"/>
 		<capability name="VideoFormat" value="3gpp, wmv, h.263, h.264, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="aac, aac+, eaac, eaac+, mp3, mp4, 3gpp, nb-amr, wav, midi, midi64, truetone, wb-amr, sp-midi, wma, realaudio"/>
 		<capability name="ImageFormat" value="jpeg, bmp, wbmp, gif, gif87a, gif89a, png, png1.0, m3g"/>
