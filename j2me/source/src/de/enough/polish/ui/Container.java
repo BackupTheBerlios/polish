@@ -311,10 +311,11 @@ public class Container extends Item {
 					}
 				//#endif
 			}
-			
-			this.isInitialized = false;
-			if (this.parent != null) {
-				this.parent.isInitialized = false;
+			requestInit();
+			// set following items to relativeY=0, so that they will be scrolled correctly:
+			for (int i= index + 1; i < this.itemsList.size(); i++ ) {
+				Item followingItem = (Item) this.itemsList.get(i);
+				followingItem.relativeY = 0;
 			}
 			if (this.isShown) {
 				item.showNotify();
@@ -379,10 +380,13 @@ public class Container extends Item {
 			}
 			setScrollYOffset(offset);
 		}
-//		if (this.items != null) {
-//			this.items[index] = item;
-//		}
-		this.isInitialized = false;
+		requestInit();
+		// set following items to relativeY=0, so that they will be scrolled correctly:
+		for (int i= index + 1; i < this.itemsList.size(); i++ ) {
+			Item followingItem = (Item) this.itemsList.get(i);
+			followingItem.relativeY = 0;
+		}
+		requestInit();
 		repaint();
 		return last;
 	}
@@ -957,6 +961,7 @@ public class Container extends Item {
 		} else {
 			if (!this.isInitialized && item.relativeY == 0) {
 				// defer scrolling to init at a later stage:
+				//System.out.println( this + ": setting scrollItem to " + item);
 				this.scrollItem = item;
 				return true;
 			} else {				
@@ -1259,6 +1264,7 @@ public class Container extends Item {
 			}
 			if (this.scrollItem != null) {
 				boolean scrolled = scroll( 0, this.scrollItem );
+				//System.out.println( this + ": scrolled scrollItem " + this.scrollItem + ": " + scrolled);
 				if (scrolled) {
 					this.scrollItem = null;
 				}
