@@ -1219,12 +1219,12 @@ public class Preprocessor {
 				nextLine = removeComment( nextLine, commentIndex) ;//nextLine.substring(0, commentIndex);
 				lines.setCurrent( nextLine );
 			}
+			int opening = 0;
+			int closing = 0;
 			while ( nextLine.indexOf(';') == -1) {
 				// check for number of openening and closing parentheses in this line -
 				// there should be at least one parentheses - if the number of opening and closing
 				// parentheses is the same, we are in the correct source code line already:
-				int opening = 0;
-				int closing = 0;
 				for (int i=0; i<nextLine.length(); i++) {
 					char c = nextLine.charAt(i);
 					if (c == '(') {

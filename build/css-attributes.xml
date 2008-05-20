@@ -178,8 +178,31 @@
 		</mapping>
 		<mapping from="round-rect-translucent"       to="de.enough.polish.ui.backgrounds.TranslucentRoundRectBackground" converter="de.enough.polish.preprocess.backgrounds.RoundRectBackgroundConverter" >
 			<param name="color" type="color" primitive="true" translucent="true" default="#8fff" />
-			<param name="arc-width" type="integer" primitive="true" default="4" />
-			<param name="arc-height" type="integer" primitive="true" default="4" />			
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" />
+			<param name="arc-width" type="integer" primitive="true" default="arc" />
+			<param name="arc-height" type="integer" primitive="true" default="arc" />
+		</mapping>
+		<mapping from="round-rect-cornered"          to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground" >
+			<param name="color" type="color" primitive="true" default="white" description="Color of the background." />
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="Use arc for defining the same arc-width and arc-height" />
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc" description="The width of the arc of the background corners." />
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc of the background corners." />
+			<param name="corners" type="map" default="all"
+				  	values="all, left-top, top-left, right-top, top-right, left-bottom, bottom-left, right-bottom, bottom-right"
+					allowsCombinations="true"
+					requiresMapping="true"
+					isCaseSensitive="false"
+			>
+				<mapping from="all"          to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_ALL"/>
+				<mapping from="left-top"     to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_LEFT_TOP"/>
+				<mapping from="top-left"     to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_LEFT_TOP"/>
+				<mapping from="right-top"    to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_RIGHT_TOP"/>
+				<mapping from="top-right"    to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_RIGHT_TOP"/>
+				<mapping from="left-bottom"  to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_LEFT_BOTTOM"/>
+				<mapping from="bottom-left"  to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_LEFT_BOTTOM"/>
+				<mapping from="right-bottom" to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_RIGHT_BOTTOM"/>
+				<mapping from="bottom-right" to="de.enough.polish.ui.backgrounds.RoundRectCorneredBackground.CORNER_RIGHT_BOTTOM"/>
+			</param>		
 		</mapping>
 		<mapping from="pulsating"           to="de.enough.polish.ui.backgrounds.PulsatingBackground" converter="de.enough.polish.preprocess.backgrounds.PulsatingBackgroundConverter" >
 			<param name="start-color" type="color" primitive="true" default="white" description="The color at the beginning of the animation sequence." />

@@ -26,10 +26,13 @@
 package de.enough.polish.preprocess.css;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import de.enough.polish.BuildException;
+
 import org.jdom.Element;
 
 /**
@@ -45,6 +48,7 @@ import org.jdom.Element;
 public class ParameterizedCssMapping extends CssMapping {
 	
 	private List parameters;
+	private Map parametersByName;
 	
 	/**
 	 * Creates a new mapping.
@@ -58,16 +62,33 @@ public class ParameterizedCssMapping extends CssMapping {
 			throw new BuildException("Unable to get CssAttributesManager for reading parameterized CSS attributes.");
 		}
 		this.parameters = new ArrayList();
+		this.parametersByName = new HashMap();
 		List parameterList = definition.getChildren("param");
 		for (Iterator iter = parameterList.iterator(); iter.hasNext();) {
 			Element parameterDefinition = (Element) iter.next();
 			CssAttribute attribute = manager.createCssAttribute(parameterDefinition);
 			this.parameters.add( attribute );
+			this.parametersByName.put( attribute.getName(), attribute );
 		}
 	}
 
+	/**
+	 * Retrieves all known parameters
+	 * @return all parameters of this mapping
+	 */
 	public CssAttribute[] getParameters() {
 		return (CssAttribute[]) this.parameters.toArray( new CssAttribute[ this.parameters.size() ] );
+	}
+
+	/**
+	 * Retrieves the specfied attribute.
+	 * 
+	 * @param name the name of the attribute
+	 * @return the attribute or null when it is not defined
+	 */
+	public CssAttribute getParameter(String name)
+	{
+		return (CssAttribute) this.parametersByName.get(name);
 	}
 
 }

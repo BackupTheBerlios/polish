@@ -72,6 +72,7 @@ implements Comparable
 	protected boolean allowsCombinations;
 	protected boolean requiresMapping;
 	protected String type;
+	private boolean isHidden;
 	
 	protected CssAttribute() {
 		// do nothing
@@ -98,6 +99,9 @@ implements Comparable
 		}
 		this.type = definition.getAttributeValue("type");
 		this.defaultValue = definition.getAttributeValue("default");
+		if ("true".equals( definition.getAttributeValue("hidden")))  {
+			this.isHidden = true;
+		}
 //		String typeStr = definition.getAttributeValue("type");
 //		if (typeStr != null) {
 //			Integer typeInt = (Integer) TYPES_MAP.get( typeStr.toLowerCase() );
@@ -744,6 +748,15 @@ implements Comparable
 	 */
 	public boolean isBaseAttribute() {
 		return this.isBaseAttribute;
+	}
+
+	/**
+	 * Determines whether this attribute can be ignored
+	 * @return true when this parameter should be ignored when instantiating new backgrounds/borders
+	 */
+	public boolean isHidden()
+	{
+		return this.isHidden;
 	}
 	
 

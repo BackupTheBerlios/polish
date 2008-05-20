@@ -59,11 +59,11 @@ public class ParameterizedAttributeConverter extends Converter {
 		CssAttribute[] parameters = mapping.getParameters();
 		for (int i = 0; i < parameters.length; i++) {
 			CssAttribute parameter = parameters[i];
-			String paramName = parameter.getName();
-			String paramValue = (String) cssValues.get(paramName);
-			if (paramValue == null) {
-				paramValue = parameter.getDefaultValue();
+			if (parameter.isHidden()) {
+				continue;
 			}
+			String paramName = parameter.getName();
+			String paramValue = getParamValue( parameter, paramName, mapping, cssValues, environment, 0 ); 
 			if (paramValue == null) {
 				System.out.println("Parameters of " + attribute.getName() + ":");
 				for (int j = 0; j < parameters.length; j++) {
@@ -79,6 +79,36 @@ public class ParameterizedAttributeConverter extends Converter {
 		}
 		buffer.append(")");
 		return buffer.toString();
+	}
+
+	/**
+	 * @param parameter
+	 * @param paramName
+	 * @param mapping
+	 * @param cssValues
+	 * @param environment
+	 * @return
+	 */
+	private String getParamValue(CssAttribute parameter, String paramName,
+			ParameterizedCssMapping mapping, HashMap cssValues,
+			Environment environment, int overflowIndex)
+	{
+		if (overflowIndex > 10) {
+			throw new BuildException("Error: unable to resolve CSS attribute " + paramName + " with value " + cssValues.get(paramName) + ": too many nested dependencies. Please report this error to j2mepolish@enough.de or check your mappings in custom-css-attributes.xml");
+		}
+		String paramValue = (String) cssValues.get(paramName);
+		if (paramValue == null) {
+			paramValue = parameter.getDefaultValue();
+			// the default value could be a reference to another parameter:
+			if (paramValue != null && paramValue.startsWith("ref:")) {
+				paramName = paramValue.substring("ref:".length()).trim();
+				CssAttribute referencedParameter = mapping.getParameter(paramName);
+				if (referencedParameter != null) {
+					return getParamValue(referencedParameter, paramName, mapping, cssValues, environment, overflowIndex + 1);
+				}
+			}
+		}
+		return paramValue;
 	}
 
 }

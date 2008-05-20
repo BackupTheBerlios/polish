@@ -36,7 +36,7 @@ import java.util.HashMap;
 /**
  * <p>Creates a RoundRect- or BorderedRoundRectBackground.</p>
  *
- * <p>Copyright Enough Software 2004, 2005</p>
+ * <p>Copyright Enough Software 2004 - 2008</p>
 
  * <pre>
  * history
@@ -61,7 +61,7 @@ public class RoundRectBackgroundConverter extends BackgroundConverter {
 		if (arc != null) {
 			parseInt( "arc", arc );
 		} else {
-			arc = "10";
+			arc = "8";
 		}
 		String arcHeight = (String) background.get("arc-height");
 		if (arcHeight != null) {
