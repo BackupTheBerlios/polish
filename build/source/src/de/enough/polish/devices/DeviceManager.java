@@ -74,6 +74,7 @@ public class DeviceManager {
 	private DeviceGroupManager groupManager;
 	private LibraryManager libraryManager;
 	private CapabilityManager capabilityManager;
+	private HashMap allowedDuplicatesByIdentifier;
 
 	/**
 	 * Creates a new device manager with the given devices.xml file.
@@ -218,6 +219,9 @@ public class DeviceManager {
 //					System.out.println("found required identifier: " + identifier );
 				}
 				if (devicesMap.get( identifier ) != null) {
+					if (this.allowedDuplicatesByIdentifier != null && this.allowedDuplicatesByIdentifier.get(identifier) != null ) {
+						continue;
+					}
 					throw new InvalidComponentException("The device [" + identifier + "] has been defined twice in [devices.xml]. Please remove one of those definitions.");
 				}
 				String[] chunks = StringUtil.split( identifier, '/');
@@ -275,6 +279,10 @@ public class DeviceManager {
 		if (device == null && this.devicesXmlList != null) {
 			List identifiers = new ArrayList();
 			identifiers.add(identifier);
+			if (this.allowedDuplicatesByIdentifier == null) {
+				this.allowedDuplicatesByIdentifier = new HashMap();
+			}
+			this.allowedDuplicatesByIdentifier.put( identifier, Boolean.TRUE );
 			try {
 				loadDevices(identifiers, this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, this.devicesByIdentifier, this.devicesXmlList);
 				device = (Device) this.devicesByIdentifier.get( identifier );
