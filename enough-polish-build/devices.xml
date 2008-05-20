@@ -283,8 +283,8 @@ These namespaces/schemas will be used soon.
 		<capability name="JavaPackage" value="mmapi,wmapi"/>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="HeapSize" value="1MB"/>
-		<capability name="key.LeftSoftKeys" value="-6,-21,21" />
-		<capability name="key.RightSoftKeys" value="-7,-22,22" />
+		<capability name="key.LeftSoftKeys" value="-6,-21,21,57345" />
+		<capability name="key.RightSoftKeys" value="-7,-22,22,57346" />
 		<!--
 		Siemens also supports -1, -4, however on Nokia Series 40 -4 is the right game action, which cannot retrieved
 		using canvas.getKeyCode( Canvas.RIGHT ) (these do return the KEY_NUM6 etc constants).... 
