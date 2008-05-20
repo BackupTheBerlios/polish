@@ -2833,6 +2833,10 @@ public class TextField extends StringItem
 								!handled) 
 						{
 							handled = handleKeyNavigation(keyCode, gameAction);
+							if (!handled && gameAction == Canvas.FIRE && this.defaultCommand != null) {
+								notifyItemPressedStart();
+								handled = true;
+							}
 						}
 						
 						if(true)
@@ -3484,6 +3488,7 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
+		//System.out.println("handleKeyReleased for textfield " + getString() );
 		this.isKeyDown = false;
 		this.deleteKeyRepeatCount = 0;
 		
