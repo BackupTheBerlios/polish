@@ -40,6 +40,7 @@ import org.apache.tools.ant.types.Path;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ExtensionDefinition;
+import de.enough.polish.Variable;
 import de.enough.polish.util.AbbreviationsGenerator;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.OutputFilter;
@@ -67,6 +68,9 @@ implements OutputFilter
 	private File proGuardJarFile;
 	private boolean dontObfuscate;
 	private String includeFileName;
+	
+	private Map parameters;
+	private boolean isVerbose;
 
 	/**
 	 * Creates a new pro guard obfuscator.
@@ -96,22 +100,17 @@ implements OutputFilter
 				this.proGuardJarFile = new File( getEnvironment().getBaseDir(), proguardPath );
 			}
 		}
-		ArrayList argsList = new ArrayList();
-		// the executable:
-		argsList.add( "java" );
-		argsList.add( "-jar" );
-		argsList.add( this.proGuardJarFile.getAbsolutePath() );
+		if (this.parameters == null) {
+			this.parameters = new HashMap();
+		}
 		if (this.includeFileName!=null) {
-			argsList.add("-include " + this.includeFileName);
+			this.parameters.put("-include", this.includeFileName);
 		}
 		// the input jar file:
-		argsList.add( "-injars" );
-		argsList.add( quote( sourceFile.getAbsolutePath() ) );
+		this.parameters.put( "-injars", quote( sourceFile.getAbsolutePath() ) );
 		// the output jar file:
-		argsList.add( "-outjars" );
-		argsList.add( quote( targetFile.getAbsolutePath() ) );
+		this.parameters.put(  "-outjars", quote( targetFile.getAbsolutePath() ) );
 		// the libraries:
-		argsList.add( "-libraryjars" );
 		StringBuffer buffer = new StringBuffer();
 		String[] apiPaths = device.getBootClassPaths();
 		String path = apiPaths[0];
@@ -127,31 +126,29 @@ implements OutputFilter
 			buffer.append( File.pathSeparatorChar );
 			buffer.append( quote( path ) );
 		}
-		argsList.add( buffer.toString() );
+		this.parameters.put( "-libraryjars", buffer.toString() );
 		// add classes that should be kept from obfuscating:
 		Map keepClassesByName = new HashMap();
 		for (int i = 0; i < preserve.length; i++) {
 			String className = preserve[i];
-			argsList.add( "-keep" );
-			argsList.add( "class " + className );
+			this.parameters.put( "-keep", "class " + className );
 			keepClassesByName.put( className, Boolean.TRUE );
 		}
 		Environment env = device.getEnvironment();
 		if (env != null && env.getVariable("polish.build.Obfuscator.KeepClasses") != null ) {
 			preserve = StringUtil.splitAndTrim(env.getVariable("polish.build.Obfuscator.KeepClasses"), ',');
 			for (int i = 0; i < preserve.length; i++) {
-				argsList.add( "-keep" );
 				String className = preserve[i];
-				argsList.add( "class " + className );
+				this.parameters.put( "-keep", "class " + className );
 				keepClassesByName.put( className, Boolean.TRUE );
 			}			
 		}
 		// add settings:
 		if (!this.doOptimize) {
-			argsList.add( "-dontoptimize" );
+			this.parameters.put( "-dontoptimize", "" );
 		}
 		if (this.environment.hasSymbol("polish.build.obfuscator.ignorewarnings")) {
-			argsList.add( "-ignorewarnings" );
+			this.parameters.put( "-ignorewarnings", "" );
 		}
 	    List serializableClassNames = (List) this.environment.get("serializable-classes" );
 	    if (serializableClassNames != null) {
@@ -209,22 +206,36 @@ implements OutputFilter
 				be.initCause(e);
 				throw be;
 			}
-			argsList.add("-applymapping" );
-			argsList.add( quote( pgMapFile.getAbsolutePath() ) );
+			this.parameters.put("-applymapping", quote( pgMapFile.getAbsolutePath() ) );
 	    }
 
-		argsList.add( "-printmapping" );
-		argsList.add( quote( device.getBaseDir() + File.separator + "obfuscation-map.txt" ) );
+	    this.parameters.put( "-printmapping" , quote( device.getBaseDir() + File.separator + "obfuscation-map.txt" ) );
 		if (this.dontObfuscate) {
-			argsList.add( "-dontobfuscate" );			
+			this.parameters.put( "-dontobfuscate", "" );			
 		} else {
-			argsList.add( "-allowaccessmodification" );
-			argsList.add( "-overloadaggressively" );
-			argsList.add( "-defaultpackage" );
-			argsList.add( "" );
-			argsList.add( "-dontusemixedcaseclassnames" );			
+			this.parameters.put( "-allowaccessmodification", "" );
+			this.parameters.put( "-overloadaggressively", "" );
+			this.parameters.put( "-defaultpackage", "\"\"" );
+			this.parameters.put( "-dontusemixedcaseclassnames", "" );			
 		}
 		
+		ArrayList argsList = new ArrayList();
+		// the executable:
+		argsList.add( "java" );
+		argsList.add( "-jar" );
+		argsList.add( this.proGuardJarFile.getAbsolutePath() );
+		
+		Object[] keys = this.parameters.keySet().toArray();
+		for (int i = 0; i < keys.length; i++)
+		{
+			String key = (String) keys[i];
+			String value = (String) this.parameters.get(key);
+			argsList.add( key );
+			if (value.length() > 0) {
+				argsList.add( value );
+			}
+		}
+
 		//System.out.println( argsList );
 		int result = 0;
 		try {
@@ -357,13 +368,14 @@ implements OutputFilter
 	 * @see de.enough.polish.util.OutputFilter#filter(java.lang.String, java.io.PrintStream)
 	 */
 	public void filter(String message, PrintStream output) {
-		if (message.indexOf("Note:") == -1
+		if (this.isVerbose 
+			|| (message.indexOf("Note:") == -1
 			&& message.indexOf("Reading program") == -1
 			&& message.indexOf("Reading library") == -1			
 			&& message.indexOf("You might consider") == -1
 			&& message.indexOf("their implementations") == -1
 			&& message.indexOf("Copying resources") == -1
-			) 
+			) )
 		{
 			output.println( message );
 		}
@@ -399,6 +411,45 @@ implements OutputFilter
 	public void setInclude(String filename)
 	{
 		this.includeFileName=filename;
+	}
+	
+	/**
+	 * Sets all parameters
+	 * @param parameters the parameters
+	 * @param baseDir the base directory
+	 */
+	public void setParameters( Variable[] parameters, File baseDir ) {
+		if (this.parameters == null ) {
+			this.parameters = new HashMap();
+		} else {
+			this.parameters.clear();
+		}
+		for (int i = 0; i < parameters.length; i++)
+		{
+			Variable variable = parameters[i];
+			String name =  variable.getName().toLowerCase();
+			if (name.charAt(0) != '-') {
+				name = "-" + name;
+			}
+			String value = variable.getValue() == null ?  "" : variable.getValue();
+			if (name.equals("-optimize")) {
+				if ("".equals(value) || "false".equals(value)) {
+					value = "";
+					name = "-dontoptimize";
+				} else {
+					continue;
+				}
+			}
+			if (name.equals("-verbose")) {
+				if ("true".equals(value)) {
+					value = "";
+					this.isVerbose = true;
+				} else {
+					continue;
+				}
+			}
+			this.parameters.put(name, value );
+		}
 	}
 
 }
