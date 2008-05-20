@@ -108,7 +108,7 @@ implements OutputFilter
 		if ( !rapcJarFile.exists() ) {
 			// try to sort out the correct JDE automatically:
 			File[] files = blackberryHomeDir.listFiles();
-			String recommendedJdeVersion = env.getVariable("polish.build.BlackBery.JDE-Version");
+			String recommendedJdeVersion = env.getVariable("polish.build.BlackBerry.JDE-Version");
 			if (recommendedJdeVersion == null) {
 				if (!device.hasFeature("polish.hasTrackballEvents")) {
 					recommendedJdeVersion = "4.1";
