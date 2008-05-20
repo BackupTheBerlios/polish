@@ -906,7 +906,7 @@ public class Container extends Item {
                             itemYTop += (itemYBottom - itemYTop) - height;
                         }
                     }
-					scroll( direction, this.relativeX, itemYTop, item.internalWidth, itemYBottom - itemYTop );
+					scroll( direction, this.relativeX, itemYTop, item.internalWidth, height );
 				}
 			}
 		} else if (getScrollHeight() != -1) { // if (this.enableScrolling) {
