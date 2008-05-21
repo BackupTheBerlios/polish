@@ -714,7 +714,7 @@
 		<class>de.enough.polish.postcompile.j2se.JavaSEPostCompiler</class>
 		<classpath>${polish.home}/bin/extensions</classpath>
 	</extension>
-	
+		
 	<!-- Log Handler -->
 	
 	<extension>
@@ -888,6 +888,16 @@
 		<type>finalizer</type>
 		<name>jar2cod</name>
 		<class>de.enough.polish.finalize.blackberry.JarToCodFinalizer</class>
+		<classpath>${polish.home}/bin/extensions</classpath>
+		<autostart>
+				polish.blackberry
+		</autostart>
+	</extension>
+	
+	<extension>
+		<type>finalizer</type>
+		<name>jdp</name>
+		<class>de.enough.polish.finalize.blackberry.JDPFinalizer</class>
 		<classpath>${polish.home}/bin/extensions</classpath>
 		<autostart>
 				polish.blackberry

@@ -69,7 +69,7 @@ public class JDPTask extends Task {
 		String resourceDir = this.sources.trim() + "/classes";
 
 		try {
-			System.out.println("Reading template...");
+			System.out.println("jdp: Reading template...");
 			
 			String fullPath = path.trim() + "\\" + name.trim() + ".jdp";
 
@@ -84,19 +84,19 @@ public class JDPTask extends Task {
 				content = TEMPLATE;
 			}
 
-			System.out.println("Collecting java classes from " + sourceDir
+			System.out.println("jdp: Collecting java classes from " + sourceDir
 					+ "...");
 
 			List sourceFiles = FileListing.getFileListing(new File(sourceDir),
 					"java", true);
 
-			System.out.println("Collecting resources from " + resourceDir
+			System.out.println("jdp: Collecting resources from " + resourceDir
 					+ "...");
 
 			List resourceFiles = FileListing.getFileListing(new File(
 					resourceDir), null, false);
 
-			System.out.println("Writing files to project " + fullPath
+			System.out.println("jdp: Writing files to project " + fullPath
 					+ "...");
 
 			String list = getFileList(sourceFiles, resourceFiles).trim();
@@ -163,8 +163,8 @@ public class JDPTask extends Task {
 		return path;
 	}
 
-	public void setPath(String project) {
-		this.path = project;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public String getSources() {
