@@ -59,7 +59,7 @@ import net.rim.device.api.ui.component.BasicEditField;
 //#endif
 
 //#if polish.api.windows
-	import de.enough.polish.windows.Keyboard;
+//#	import de.enough.polish.windows.Keyboard;
 //#endif
 
 /**
@@ -1034,9 +1034,9 @@ public class TextField extends StringItem
 		//#endif
 
 		//#if polish.key.maybeSupportsAsciiKeyMap
-			if (Keyboard.needsQwertzAndNumericSupport()) {
-				addCommand(SWITCH_KEYBOARD_CMD);
-			}
+		//#	if (Keyboard.needsQwertzAndNumericSupport()) {
+		//#		addCommand(SWITCH_KEYBOARD_CMD);
+		//#	}
 		//#endif
 
 		setString(text);
