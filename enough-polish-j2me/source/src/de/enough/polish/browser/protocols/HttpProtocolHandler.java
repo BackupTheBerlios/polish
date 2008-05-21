@@ -92,10 +92,10 @@ public class HttpProtocolHandler extends ProtocolHandler
 	public HttpProtocolHandler(String protocolName, HashMap requestProperties)
 	{
 		super( protocolName );	
-		this.requestProperties = requestProperties;
 		if (requestProperties == null) {
 			requestProperties = new HashMap();
 		}
+		this.requestProperties = requestProperties;
 		if ( requestProperties.get("User-Agent") == null )
 		{
 			requestProperties.put("User-Agent", USER_AGENT );
