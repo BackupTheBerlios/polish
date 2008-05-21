@@ -293,7 +293,54 @@ These namespaces/schemas will be used soon.
 		<capability name="Bugs" value="SoftKeyMappedToFire,displaySetCurrentFlickers"/>	
 	</device>	
 	
+	<device supportsPolishGui="true">
+		<identifier>Generic/AnyPhone_128x128</identifier>
+		<parent>Generic/AnyPhone</parent>
+		<capability name="ScreenSize" value="128x160"/>
+	</device>	
 	
+	<device supportsPolishGui="true">
+		<identifier>Generic/AnyPhone_128x160</identifier>
+		<parent>Generic/AnyPhone</parent>
+		<capability name="ScreenSize" value="128x160"/>
+	</device>	
+	
+	<device supportsPolishGui="true">
+		<identifier>Generic/AnyPhone_176x208</identifier>
+		<parent>Generic/AnyPhone</parent>
+		<capability name="ScreenSize" value="176x208"/>
+	</device>	
+	
+	<device supportsPolishGui="true">
+		<identifier>Generic/AnyPhone_176x220</identifier>
+		<parent>Generic/AnyPhone</parent>
+		<capability name="ScreenSize" value="176x220"/>
+	</device>	
+	
+	<device supportsPolishGui="true">
+		<identifier>Generic/AnyPhone_208x208</identifier>
+		<parent>Generic/AnyPhone</parent>
+		<capability name="ScreenSize" value="208x208"/>
+	</device>	
+	
+	<device supportsPolishGui="true">
+		<identifier>Generic/AnyPhone_240x320</identifier>
+		<parent>Generic/AnyPhone</parent>
+		<capability name="ScreenSize" value="240x320"/>
+	</device>	
+	
+	<device supportsPolishGui="true">
+		<identifier>Generic/AnyPhone_320x240</identifier>
+		<parent>Generic/AnyPhone</parent>
+		<capability name="ScreenSize" value="320x240"/>
+	</device>
+	
+	<device supportsPolishGui="true">
+		<identifier>Generic/AnyPhone_352x416</identifier>
+		<parent>Generic/AnyPhone</parent>
+		<capability name="ScreenSize" value="352x416"/>
+	</device>
+		
 	<device supportsPolishGui="true">
 		<identifier>Generic/DotNetCF1.1</identifier>
 		<features>hasPointerEvents, isVirtual</features>
@@ -10285,6 +10332,7 @@ These namespaces/schemas will be used soon.
 
 	<device>
 		<identifier>BlackBerry/4.0</identifier>
+		<features>isVirtual</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.0"/>
 		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="JavaPackage" value="wmapi, mmapi, pimapi"/>
