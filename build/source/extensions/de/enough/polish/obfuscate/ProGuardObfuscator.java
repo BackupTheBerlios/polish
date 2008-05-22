@@ -43,6 +43,7 @@ import de.enough.polish.ExtensionDefinition;
 import de.enough.polish.Variable;
 import de.enough.polish.util.AbbreviationsGenerator;
 import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.OrderedMultipleEntriesMap;
 import de.enough.polish.util.OutputFilter;
 import de.enough.polish.util.ProcessUtil;
 import de.enough.polish.util.StringUtil;
@@ -69,7 +70,7 @@ implements OutputFilter
 	private boolean dontObfuscate;
 	private String includeFileName;
 	
-	private Map parameters;
+	private Map furtherParameters;
 	private boolean isVerbose;
 
 	/**
@@ -100,16 +101,14 @@ implements OutputFilter
 				this.proGuardJarFile = new File( getEnvironment().getBaseDir(), proguardPath );
 			}
 		}
-		if (this.parameters == null) {
-			this.parameters = new HashMap();
-		}
+		OrderedMultipleEntriesMap params = new OrderedMultipleEntriesMap();
 		if (this.includeFileName!=null) {
-			this.parameters.put("-include", this.includeFileName);
+			params.put("-include", this.includeFileName);
 		}
 		// the input jar file:
-		this.parameters.put( "-injars", quote( sourceFile.getAbsolutePath() ) );
+		params.put( "-injars", quote( sourceFile.getAbsolutePath() ) );
 		// the output jar file:
-		this.parameters.put(  "-outjars", quote( targetFile.getAbsolutePath() ) );
+		params.put(  "-outjars", quote( targetFile.getAbsolutePath() ) );
 		// the libraries:
 		StringBuffer buffer = new StringBuffer();
 		String[] apiPaths = device.getBootClassPaths();
@@ -126,12 +125,12 @@ implements OutputFilter
 			buffer.append( File.pathSeparatorChar );
 			buffer.append( quote( path ) );
 		}
-		this.parameters.put( "-libraryjars", buffer.toString() );
+		params.put( "-libraryjars", buffer.toString() );
 		// add classes that should be kept from obfuscating:
 		Map keepClassesByName = new HashMap();
 		for (int i = 0; i < preserve.length; i++) {
 			String className = preserve[i];
-			this.parameters.put( "-keep", "class " + className );
+			params.put( "-keep", "class " + className );
 			keepClassesByName.put( className, Boolean.TRUE );
 		}
 		Environment env = device.getEnvironment();
@@ -139,16 +138,16 @@ implements OutputFilter
 			preserve = StringUtil.splitAndTrim(env.getVariable("polish.build.Obfuscator.KeepClasses"), ',');
 			for (int i = 0; i < preserve.length; i++) {
 				String className = preserve[i];
-				this.parameters.put( "-keep", "class " + className );
+				params.put( "-keep", "class " + className );
 				keepClassesByName.put( className, Boolean.TRUE );
 			}			
 		}
 		// add settings:
 		if (!this.doOptimize) {
-			this.parameters.put( "-dontoptimize", "" );
+			params.put( "-dontoptimize", "" );
 		}
 		if (this.environment.hasSymbol("polish.build.obfuscator.ignorewarnings")) {
-			this.parameters.put( "-ignorewarnings", "" );
+			params.put( "-ignorewarnings", "" );
 		}
 	    List serializableClassNames = (List) this.environment.get("serializable-classes" );
 	    if (serializableClassNames != null) {
@@ -206,17 +205,17 @@ implements OutputFilter
 				be.initCause(e);
 				throw be;
 			}
-			this.parameters.put("-applymapping", quote( pgMapFile.getAbsolutePath() ) );
+			params.put("-applymapping", quote( pgMapFile.getAbsolutePath() ) );
 	    }
 
-	    this.parameters.put( "-printmapping" , quote( device.getBaseDir() + File.separator + "obfuscation-map.txt" ) );
+	    params.put( "-printmapping" , quote( device.getBaseDir() + File.separator + "obfuscation-map.txt" ) );
 		if (this.dontObfuscate) {
-			this.parameters.put( "-dontobfuscate", "" );			
+			params.put( "-dontobfuscate", "" );			
 		} else {
-			this.parameters.put( "-allowaccessmodification", "" );
-			this.parameters.put( "-overloadaggressively", "" );
-			this.parameters.put( "-defaultpackage", "\"\"" );
-			this.parameters.put( "-dontusemixedcaseclassnames", "" );			
+			params.put( "-allowaccessmodification", "" );
+			params.put( "-overloadaggressively", "" );
+			params.put( "-defaultpackage", "\"\"" );
+			params.put( "-dontusemixedcaseclassnames", "" );			
 		}
 		
 		ArrayList argsList = new ArrayList();
@@ -225,11 +224,20 @@ implements OutputFilter
 		argsList.add( "-jar" );
 		argsList.add( this.proGuardJarFile.getAbsolutePath() );
 		
-		Object[] keys = this.parameters.keySet().toArray();
+		for (int i = 0; i < params.size(); i++) {
+			String key = (String) params.getKey(i);
+			String value = (String) params.getValue(i);
+			argsList.add( key );
+			if (value.length() > 0) {
+				argsList.add( value );
+			}
+		}
+		
+		Object[] keys = this.furtherParameters.keySet().toArray();
 		for (int i = 0; i < keys.length; i++)
 		{
 			String key = (String) keys[i];
-			String value = (String) this.parameters.get(key);
+			String value = (String) this.furtherParameters.get(key);
 			argsList.add( key );
 			if (value.length() > 0) {
 				argsList.add( value );
@@ -419,10 +427,10 @@ implements OutputFilter
 	 * @param baseDir the base directory
 	 */
 	public void setParameters( Variable[] parameters, File baseDir ) {
-		if (this.parameters == null ) {
-			this.parameters = new HashMap();
+		if (this.furtherParameters == null ) {
+			this.furtherParameters = new HashMap();
 		} else {
-			this.parameters.clear();
+			this.furtherParameters.clear();
 		}
 		for (int i = 0; i < parameters.length; i++)
 		{
@@ -448,7 +456,7 @@ implements OutputFilter
 					continue;
 				}
 			}
-			this.parameters.put(name, value );
+			this.furtherParameters.put(name, value );
 		}
 	}
 
