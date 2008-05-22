@@ -3539,7 +3539,7 @@ implements AccessibleCanvas
 				return;
 			}
 			//#if tmp.useScrollBar
-				if (this.scrollBar.handlePointerPressed( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
+				if (this.container.itemHeight > this.contentHeight && this.scrollBar.handlePointerPressed( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
 					repaint();
 					return;
 				}
@@ -3652,7 +3652,7 @@ implements AccessibleCanvas
 				return;
 			}
 			//#if tmp.useScrollBar
-				if (this.scrollBar.handlePointerReleased( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
+				if (this.container.itemHeight > this.contentHeight && this.scrollBar.handlePointerReleased( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
 					return;
 				}
 			//#endif
