@@ -146,9 +146,6 @@ public class Device extends PolishComponent {
 
 	private int numberOfChangedFiles;
 
-	private boolean isCldc10;
-	private boolean isCldc11;
-
 	private Environment environment;
 
 	private ClassLoader classLoader;
@@ -224,12 +221,12 @@ public class Device extends PolishComponent {
 			parentIdentifier = definition.getAttributeValue("extends");
 		}
 		if (parentIdentifier != null) {
-			Device parentDevice = deviceManager.getDevice( parentIdentifier );
-			if (parentDevice == null) {
+			Device parentDev = deviceManager.getDevice( parentIdentifier );
+			if (parentDev == null) {
 				throw new InvalidComponentException("Unable to load device [" + this.identifier + "]: the parent-device [" + parentIdentifier + "] is not known. Make sure it is defined before this device.");
 			}
-            this.parentDevice = parentDevice;
-			addComponent( parentDevice );
+            this.parentDevice = parentDev;
+			addComponent( parentDev );
 		}
 
 
@@ -248,6 +245,15 @@ public class Device extends PolishComponent {
 					+ this.identifier
 					+ "] does not define the needed element [" + JAVA_PLATFORM
 					+ "].");
+		}
+		if (this.parentDevice != null) {
+			Device parentDev = this.parentDevice;
+			for (int i=0; i<parentDev.platforms.length; i++) {
+				Platform platform = parentDev.platforms[i];
+				if (platformsStr.indexOf( platform.getIdentifier() ) == -1) {
+					removeComponent( platform );
+				}
+			}
 		}
 		String[] platformNames = StringUtil.splitAndTrim(platformsStr, ',');
 		this.platforms = new Platform[ platformNames.length ];
@@ -275,6 +281,16 @@ public class Device extends PolishComponent {
 			throw new InvalidComponentException("The device [" + this.identifier
 					+ "] does not define the needed element [" + JAVA_CONFIGURATION	+ "].");
 		}
+		// remove parent configurations and platforms that are not supported by this device:
+		if (this.parentDevice != null) {
+			Device parentDev = this.parentDevice;
+			for (int i=0; i<parentDev.configurations.length; i++) {
+				Configuration config = parentDev.configurations[i];
+				if (configurationDefinition.indexOf( config.getIdentifier() ) == -1) {
+					removeComponent( config );
+				}
+			}
+		}
 		String[] configurationNames = StringUtil.splitAndTrim( configurationDefinition, ',' );
 		this.configurations = new Configuration[ configurationNames.length ];
 		for (int i = 0; i < configurationNames.length; i++) {
@@ -287,13 +303,9 @@ public class Device extends PolishComponent {
 			addComponent( configuration );
 			addImplicitGroups( configuration, groupNamesList, groupsList, groupManager );
 		}
-		if (hasFeature("polish.cldc1.1")) {
-			this.isCldc10 = false;
-			this.isCldc11 = true;
-		} else if (hasFeature("polish.cldc1.0")) {
-			this.isCldc10 = true;
-			this.isCldc11 = false;
-		}
+		
+
+
 		this.isVirtual = hasFeature("polish.isVirtual");
 
 
@@ -483,6 +495,7 @@ public class Device extends PolishComponent {
 	}
 
     
+
 	public Device getParentDevice() {
         return this.parentDevice;
     }
@@ -724,14 +737,14 @@ public class Device extends PolishComponent {
 	 * @return true when this device supports the CLDC/1.0 standard.
 	 */
 	public boolean isCldc10() {
-		return this.isCldc10;
+		return hasFeature("polish.cldc1.0");
 	}
 
 	/**
 	 * @return true when this device supports the CLDC/1.1 configuration
 	 */
 	public boolean isCldc11() {
-		return this.isCldc11;
+		return hasFeature("polish.cldc1.1");
 	}
 
 	/**

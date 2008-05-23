@@ -56,7 +56,7 @@ implements Comparable
 	protected String identifier;
 	protected PolishComponent parent;
 	protected boolean supportsPolishGui;
-	private HashMap features;
+	protected HashMap features;
 	protected HashMap capabilities;
 	private String featuresAsString;
 	protected CapabilityManager capabilityManager;
@@ -255,6 +255,56 @@ implements Comparable
 			//System.out.println( this.identifier + ".addComponent(): featuresAsString=" + this.featuresAsString);
 		}
 	}
+	
+	/**
+	 * Removes a component:
+	 * @param component
+	 */
+	protected void removeComponent(PolishComponent component)
+	{
+		//System.out.println("REMOVING " + component.getIdentifier());
+		// 1. remove the capabilities:
+		HashMap caps = component.getCapabilities();
+		for (Iterator iter = caps.keySet().iterator(); iter.hasNext();) {
+			String name = (String) iter.next();
+			String componentValue = (String) caps.get( name );
+			String feature = name + "." + componentValue;
+			this.features.remove( feature );
+			//System.out.println("REMOVED: " + feature);
+			String existingValue = getCapability(name);
+			if (existingValue != null) {
+				int index = existingValue.indexOf(componentValue);
+				if (index != -1) {
+					String start = existingValue.substring(0, index);
+					if (start.length() == 1) { // this will be a comma or similar
+						start = ""; 
+					} else if (start.endsWith(",")) {
+						start = start.substring(0, start.length() -1 );
+					}
+					String end = existingValue.substring( index + componentValue.length() );
+					if (end.length() == 1) {
+						end = "";
+					} else if (end.startsWith(",")) {
+						end = end.substring(1);
+					}
+					
+					existingValue = start + end;
+					this.capabilities.put( name, existingValue );
+					//System.out.println("NEW VALUE FOR " + name + ": " + existingValue );
+				}
+			}
+			
+		}
+		
+		// 2. remove all features:
+		Set feats = component.features.keySet();
+		for ( Iterator iter = feats.iterator(); iter.hasNext(); ) {
+			String name = (String) iter.next();
+			this.features.remove( name );
+			System.out.println("REMOVED: " + name);
+		}
+	}
+
 	
 	/**
 	 * Retrieves all preprocessing-symbols of this component and its parent component.

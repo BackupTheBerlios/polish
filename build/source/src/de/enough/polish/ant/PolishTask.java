@@ -2719,7 +2719,7 @@ public class PolishTask extends ConditionalTask {
 
 		// set MicroEdition-Configuration:
 		String config = this.infoSetting.getConfiguration();
-		if (config == null) {			
+		if (config == null) {
 			if (!device.isCldc10()) {
 				config = InfoSetting.CLDC1_1;
 			} else {
