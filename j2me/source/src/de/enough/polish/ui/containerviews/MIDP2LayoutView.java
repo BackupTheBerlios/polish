@@ -357,9 +357,11 @@ extends ContainerView
                 for (int j = 0; j < row.size(); j++) {
                     Item rowItem = (Item) row.get(j);
                     int xItem = x + rowItem.relativeX;
-                    paintItem(rowItem, i, xItem,  y + rowItem.relativeY, 
-                    		Math.max(leftBorder, xItem), Math.min(rightBorder, xItem + rowItem.itemWidth),
-                    		clipX, clipY, clipWidth, clipHeight, g);
+                    if (rowItem.itemWidth != 0) {
+	                    paintItem(rowItem, i, xItem,  y + rowItem.relativeY, 
+	                    		Math.max(leftBorder, xItem), Math.min(rightBorder, xItem + rowItem.itemWidth),
+	                    		clipX, clipY, clipWidth, clipHeight, g);
+                    }
                 }
             }
     }

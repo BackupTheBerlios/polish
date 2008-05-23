@@ -115,6 +115,8 @@ implements Runnable
 
   private Command cmdBack;
 
+private HistoryEntry scheduledHistoryEntry;
+
   /**
    * Creates a new Browser without any protocol handlers, tag handlers or style.
    */
@@ -933,28 +935,34 @@ implements Runnable
     			System.out.println("Unable to close connection " + e);
     		}
     	}
+      	HistoryEntry entry = this.scheduledHistoryEntry;
+      	if (entry != null) {
+      		focus( entry.getFocusedIndex() );
+      		setScrollYOffset( entry.getScrollOffset(), false );
+      		this.scheduledHistoryEntry = null;
+      	}
 
     }
   }
   
   //////////////// download indicator handling /////////////
   
-  //#if polish.Browser.PaintDownloadIndicator
   
+  //#if polish.Browser.PaintDownloadIndicator
   /* (non-Javadoc)
    * @see de.enough.polish.ui.Container#initContent(int, int)
    */
   protected void initContent(int firstLineWidth, int lineWidth) {
   	super.initContent(firstLineWidth, lineWidth);
-  	// when there is a loading indicator, we need to specify the minmum size:
-  	int width = this.loadingIndicator.getItemWidth( lineWidth, lineWidth );
-  	if (width > this.contentWidth) {
-  		this.contentWidth = width;
-  	}
-  	int height = this.loadingIndicator.itemHeight;
-  	if (height > this.contentHeight) {
-  		this.contentHeight = height;
-  	}
+	  	// when there is a loading indicator, we need to specify the minmum size:
+	  	int width = this.loadingIndicator.getItemWidth( lineWidth, lineWidth );
+	  	if (width > this.contentWidth) {
+	  		this.contentWidth = width;
+	  	}
+	  	int height = this.loadingIndicator.itemHeight;
+	  	if (height > this.contentHeight) {
+	  		this.contentHeight = height;
+	  	}
   }
   
   /* (non-Javadoc)
@@ -1146,7 +1154,7 @@ implements Runnable
 	  System.out.println("Browser: going to [" + url + "]" );
 	  if (this.currentDocumentBase != null)
 	  {
-		  this.history.push(this.currentDocumentBase);
+		  this.history.push( new HistoryEntry( this.currentDocumentBase, getFocusedIndex(), getScrollYOffset() ) );
 		  if (this.cmdBack != null && this.history.size() == 1 && getScreen() != null) {
 			  getScreen().addCommand(this.cmdBack);
 		  }
@@ -1180,17 +1188,18 @@ implements Runnable
    */
   public void go(int historySteps)
   {
-    String document = null;
+    HistoryEntry entry = null;
     
     while (historySteps > 0 && this.history.size() > 0)
     {
-      document = (String) this.history.pop();
+      entry = (HistoryEntry) this.history.pop();
       historySteps--;
     }
     
-    if (document != null)
+    if (entry != null)
     {
-        schedule(document, null);
+    	this.scheduledHistoryEntry = entry;
+        schedule(entry.getUrl(), null);
         if (this.history.size() == 0 && this.cmdBack != null && getScreen() != null) {
         	getScreen().removeCommand(this.cmdBack);
         }

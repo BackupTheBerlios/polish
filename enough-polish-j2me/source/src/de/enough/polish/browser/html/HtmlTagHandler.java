@@ -489,6 +489,9 @@ private FormListener formListener;
 
             if (name != null) {
             	textField.setAttribute(ATTR_NAME, name);
+            	if (value == null) {
+            		value = "";
+            	}
             	textField.setAttribute(ATTR_VALUE, value);
             }
           }

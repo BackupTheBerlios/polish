@@ -49,6 +49,9 @@ public class HtmlSelect
 
 	public HtmlSelect(String name, int size, boolean isMultiple, Style style)
 	{
+		if (name == null) {
+			name = "";
+		}
 		this.name = name;
 		this.size = size;
 		this.isMultiple = isMultiple;
@@ -116,7 +119,6 @@ public class HtmlSelect
 			if (this.selectedIndex != -1) {
 				choiceGroup.setSelectedIndex(this.selectedIndex, true);
 			}
-
 			choiceGroup.setAttribute("name", this.name);
 			choiceGroup.setAttribute(SELECT, this);
 			return choiceGroup;

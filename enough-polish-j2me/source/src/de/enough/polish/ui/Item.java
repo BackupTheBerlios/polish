@@ -2424,7 +2424,7 @@ public abstract class Item extends Object
 	 */
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
 		//#debug
-		System.out.println("handleKeyReleased(" + keyCode + ", " + gameAction + ") for " + this);
+		System.out.println("handleKeyReleased(" + keyCode + ", " + gameAction + ") for " + this + ", isPressed=" + this.isPressed);
 		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
 				&& this.appearanceMode != PLAIN && this.isPressed )
 		{
