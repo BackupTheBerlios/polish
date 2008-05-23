@@ -72,6 +72,8 @@ public class MasterCanvas
 	//#if tmp.automaticScreenOrientationChange
 		private int screenOrientation;
 	//#endif
+	private int screenWidth;
+	private int screenHeight;
 	
 	
 	private MasterCanvas() {
@@ -178,8 +180,34 @@ public class MasterCanvas
 		if (this.currentCanvas != null) { 
 			this.currentCanvas.sizeChanged( width, height );
 		}
+		if (instance != null) {
+			instance.screenHeight = height;
+			instance.screenWidth = width;
+		}
 	}
 	//#endif
+	
+	public static int getScreenHeight() {
+		int h = 0;
+		if (instance != null) {
+			h = instance.screenHeight;
+			if (h == 0) {
+				h = instance.getHeight();
+			}
+		}
+		return h;
+	}
+	
+	public static int getScreenWidth() {
+		int w = 0;
+		if (instance != null) {
+			w = instance.screenWidth;
+			if (w == 0) {
+				w = instance.getWidth();
+			}
+		}
+		return w;
+	}
 		
 	
 	/* (non-Javadoc)
@@ -254,7 +282,9 @@ public class MasterCanvas
 				((Screen)canvas).setScreenOrientation( instance.screenOrientation );
 			}
 		//#endif
-		canvas.showNotify();
+		if (instance.isShown()) {
+			canvas.showNotify();
+		}
 		instance.currentCanvas = canvas;
 		instance.currentDisplayable = nextDisplayable;
 //		if (nextDisplayable instanceof Alert) {

@@ -326,6 +326,7 @@ implements AccessibleCanvas
 	protected boolean isInitRequested;
 	private CommandListener realCommandListener;
 	private boolean isResourcesReleased;
+	//private String lastSizeChangedEvent;
 	
 	//#if polish.Bugs.displaySetCurrentFlickers || polish.MasterCanvas.enable
 		//#define tmp.useMasterCanvas
@@ -2047,6 +2048,10 @@ implements AccessibleCanvas
 				//#endif
 			}
 		//#endif
+//		if (this.lastSizeChangedEvent != null) {
+//			g.setColor( 0xff0000 );
+//			g.drawString( this.lastSizeChangedEvent, 5, this.screenHeight / 2, 0 );
+//		}
 	}
 	
 	/**
@@ -3786,6 +3791,7 @@ implements AccessibleCanvas
 		//If the constructor has not been called, exit the method
 		//This is done because on some devices Displayable.sizeChanged() is
 		//called in the super constructor of Screen
+		//this.lastSizeChangedEvent = width + "x" +  height;
 		if(this.paintLock == null) {
 			return;
 		}
@@ -4371,9 +4377,8 @@ implements AccessibleCanvas
 		//#elif tmp.fullScreen && polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasHeight:defined
 			//#= height = ${polish.FullCanvasHeight};
 		//#elif tmp.useMasterCanvas
-			if (MasterCanvas.instance != null) {
-				height = MasterCanvas.instance.getHeight();
-			} else {
+			height = MasterCanvas.getScreenHeight();
+			if (height == 0) {
 				height = getHeight();
 			}
 		//#else
@@ -4392,9 +4397,8 @@ implements AccessibleCanvas
 		//#if tmp.fullScreen && polish.Bugs.requiresHardcodedCanvasDimensionsInFullScreenMode && polish.FullCanvasWidth:defined
 			//#= width = ${polish.FullCanvasWidth};
 		//#elif tmp.useMasterCanvas
-			if (MasterCanvas.instance != null) {
-				width = MasterCanvas.instance.getWidth();
-			} else {
+			width = MasterCanvas.getScreenWidth();
+			if (width == 0) {
 				width = getWidth();
 			}
 		//#else
