@@ -596,4 +596,21 @@ public class TabbedForm extends Form {
 		return super.getCurrentItem();
 	}
 
+	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
+	public void sizeChanged(int width, int height) {
+		boolean doInit;
+		
+		//#if (polish.useMenuFullScreen && tmp.fullScreen) || polish.needsManualMenu
+			doInit = width != this.screenWidth || height != this.fullScreenHeight;
+		//#else
+			doInit = width != this.screenWidth || height != this.originalScreenHeight;
+		//#endif
+
+		if (doInit) {
+			this.tabBar.isInitialized = false;
+		}
+
+		super.sizeChanged(width, height);
+	}
+	//#endif
 }
