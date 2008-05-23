@@ -411,7 +411,7 @@ public class TabBar extends Item {
 	//#ifdef polish.hasPointerEvents
 	protected boolean handlePointerPressed(int x, int y) {
 		this.handlePointerReleaseEvent = false;
-		if (!isInContentArea(x, y)) {
+		if (!isInItemArea(x, y)) {
 			return false;
 		}
 		//System.out.println( "pointer-pressed: " + x + ", " + y);
@@ -424,7 +424,7 @@ public class TabBar extends Item {
 				index = this.tabs.length - 1;
 			}
 			newActiveTabIndex = index;
-		} else if ( (this.activeTabIndex < this.tabs.length -1 || this.allowRoundtrip) && x >= this.contentWidth - scrollerWidth) {
+		} else if ( (this.activeTabIndex < this.tabs.length -1 || this.allowRoundtrip) && x >= this.itemWidth - scrollerWidth) {
 			//System.out.println("right: x >= " + (this.xRightPos - scrollerWidth) );
 			newActiveTabIndex = (this.activeTabIndex + 1) % this.tabs.length;
 		} else {
