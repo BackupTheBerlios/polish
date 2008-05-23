@@ -279,7 +279,7 @@ These namespaces/schemas will be used soon.
 		<description>A MIDP 2.0 and CLDC 1.1 phone that supports softkeys and the fullscreen mode and the JTWI standard. Use this phone to run a single application on various platforms like Nokia, Motorola, Samsung and so on.</description>
 		<features>isVirtual, hasPointerEvents, hasCommandKeyEvents, isDynamic</features>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
-		<capability name="JavaConfiguration" value="CLDC/1.1"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 		<capability name="JavaPackage" value="mmapi,wmapi"/>
 		<capability name="SoundFormat" value="midi, amr, wav"/>
 		<capability name="HeapSize" value="1MB"/>
@@ -297,48 +297,56 @@ These namespaces/schemas will be used soon.
 		<identifier>Generic/AnyPhone_128x128</identifier>
 		<parent>Generic/AnyPhone</parent>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 	</device>	
 	
 	<device supportsPolishGui="true">
 		<identifier>Generic/AnyPhone_128x160</identifier>
 		<parent>Generic/AnyPhone</parent>
 		<capability name="ScreenSize" value="128x160"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 	</device>	
 	
 	<device supportsPolishGui="true">
 		<identifier>Generic/AnyPhone_176x208</identifier>
 		<parent>Generic/AnyPhone</parent>
 		<capability name="ScreenSize" value="176x208"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 	</device>	
 	
 	<device supportsPolishGui="true">
 		<identifier>Generic/AnyPhone_176x220</identifier>
 		<parent>Generic/AnyPhone</parent>
 		<capability name="ScreenSize" value="176x220"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 	</device>	
 	
 	<device supportsPolishGui="true">
 		<identifier>Generic/AnyPhone_208x208</identifier>
 		<parent>Generic/AnyPhone</parent>
 		<capability name="ScreenSize" value="208x208"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 	</device>	
 	
 	<device supportsPolishGui="true">
 		<identifier>Generic/AnyPhone_240x320</identifier>
 		<parent>Generic/AnyPhone</parent>
 		<capability name="ScreenSize" value="240x320"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 	</device>	
 	
 	<device supportsPolishGui="true">
 		<identifier>Generic/AnyPhone_320x240</identifier>
 		<parent>Generic/AnyPhone</parent>
 		<capability name="ScreenSize" value="320x240"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 	</device>
 	
 	<device supportsPolishGui="true">
 		<identifier>Generic/AnyPhone_352x416</identifier>
 		<parent>Generic/AnyPhone</parent>
 		<capability name="ScreenSize" value="352x416"/>
+		<capability name="JavaConfiguration" value="CLDC/1.0"/>
 	</device>
 		
 	<device supportsPolishGui="true">
@@ -7990,6 +7998,7 @@ These namespaces/schemas will be used soon.
 		<capability name="BitsPerPixel" value="16"/>
 		<capability name="JavaPackage" value="mmapi, wmapi, btapi"/>
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="JavaConfiguration" value="CLDC/1.1"/>
 		<capability name="VideoFormat" value="3gpp, mpeg-4, realvideo"/>
 		<capability name="SoundFormat" value="midi, midi24, true tones, amr, wb-amr"/>
 		<capability name="HeapSize" value="3mb"/>
