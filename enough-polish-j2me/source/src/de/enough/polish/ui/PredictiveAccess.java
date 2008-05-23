@@ -653,7 +653,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 
 			this.parent.setText(this.builder.getText().toString());
 			this.parent.setCaretPosition(this.builder.getCaretPosition());
-			this.parent.showCommands(); //getScreen().setItemCommands(this.parent);
+			//this.parent.showCommands(); //getScreen().setItemCommands(this.parent);
 			this.parent.notifyStateChanged();
 			this.refreshChoices = true;
 
