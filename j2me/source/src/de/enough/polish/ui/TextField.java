@@ -42,7 +42,6 @@ import javax.microedition.lcdui.Graphics;
 	import de.enough.polish.predictive.TextBuilder;
 	import de.enough.polish.predictive.trie.TrieProvider;
 //#endif
-import de.enough.polish.util.ArrayList;
 import de.enough.polish.util.DrawUtil;
 import de.enough.polish.util.Locale;
 
@@ -361,6 +360,10 @@ public class TextField extends StringItem
 //#endif
 //#if polish.TextField.suppressCommands
 	//#define tmp.suppressCommands
+	//#if polish.key.maybeSupportsAsciiKeyMap
+		//#defineorappend tmp.implements=ItemCommandListener
+		//#define tmp.implementsItemCommandListener
+	//#endif
 //#else
  	//#defineorappend tmp.implements=ItemCommandListener
 	//#define tmp.implementsItemCommandListener
