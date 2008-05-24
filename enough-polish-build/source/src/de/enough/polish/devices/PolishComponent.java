@@ -301,7 +301,7 @@ implements Comparable
 		for ( Iterator iter = feats.iterator(); iter.hasNext(); ) {
 			String name = (String) iter.next();
 			this.features.remove( name );
-			System.out.println("REMOVED: " + name);
+			//System.out.println("REMOVED: " + name);
 		}
 	}
 
