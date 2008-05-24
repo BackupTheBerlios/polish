@@ -931,6 +931,7 @@ public class TextField extends StringItem
 	//#if polish.key.maybeSupportsAsciiKeyMap
 		private boolean useAsciiKeyMap = true;
 	//#endif
+	private boolean isKeyPressedHandled;
 
 	/**
 	 * Creates a new <code>TextField</code> object with the given label, initial
@@ -2690,6 +2691,7 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		this.isKeyPressedHandled = false;
 		//#ifndef tmp.directInput
 			//#if polish.bugs.inversedGameActions
 				if ((gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM8)
@@ -2844,6 +2846,7 @@ public class TextField extends StringItem
 						
 						if(true)
 						{
+							this.isKeyPressedHandled = handled;
 							return handled;
 						}
 					}
@@ -2861,11 +2864,13 @@ public class TextField extends StringItem
 					if (currentLength >= this.maxSize) {
 						// in numeric mode ignore 2,4,6 and 8 keys, so that they are not processed
 						// by a parent component:
+						this.isKeyPressedHandled = true;
 						return true;
 					}
 					String newText = (currentText == null ? "" : currentText ) + (keyCode - 48);
 					setString( newText );
 					notifyStateChanged();
+					this.isKeyPressedHandled = true;
 					return true;
 				}
 				if (currentLength > 0) {
@@ -2876,6 +2881,7 @@ public class TextField extends StringItem
 					//#endif
 						setString( currentText.substring(0, currentLength - 1) );
 						notifyStateChanged();
+						this.isKeyPressedHandled = true;
 						return true;
 					}
 				}				
@@ -2884,8 +2890,7 @@ public class TextField extends StringItem
 		//#endif
 		
 		
-		if ( (keyCode >= Canvas.KEY_NUM0 
-			&& keyCode <= Canvas.KEY_NUM9)
+		if ( keyCode >= 32 
 			//#ifdef polish.key.ClearKey:defined
 				//#= || (keyCode == ${polish.key.ClearKey})
 			//#else
@@ -2929,7 +2934,16 @@ public class TextField extends StringItem
 			//#endif
 			
 			int currentLength = (this.text == null ? 0 : this.text.length());
+			char insertChar = (char) (' ' + (keyCode - 32));
 			//#if polish.key.supportsAsciiKeyMap
+				try {
+					String name  = this.screen.getKeyName( keyCode );
+					if (name.length() == 1) {
+						insertChar = name.charAt(0);
+					}
+				} catch (IllegalArgumentException e) {
+					// ignore
+				}
 				if (keyCode >= 32 
 						&& this.screen.isKeyboardAccessible() 
 						//#if polish.key.maybeSupportsAsciiKeyMap
@@ -2937,15 +2951,15 @@ public class TextField extends StringItem
 						//#endif
 						&& this.inputMode != MODE_NUMBERS 
 						&& !this.isNumeric
-						&& !( 	(gameAction == Canvas.UP     &&  keyCode == this.screen.getKeyCode(Canvas.UP) ) 
-								|| (gameAction == Canvas.DOWN   &&  keyCode == this.screen.getKeyCode(Canvas.DOWN)  )
-								|| (gameAction == Canvas.LEFT   &&  keyCode == this.screen.getKeyCode(Canvas.LEFT)	)
-								|| (gameAction == Canvas.RIGHT  &&  keyCode == this.screen.getKeyCode(Canvas.RIGHT))
+						&& !( 	   (gameAction == Canvas.UP     &&  insertChar != '2' && keyCode == this.screen.getKeyCode(Canvas.UP) ) 
+								|| (gameAction == Canvas.DOWN   &&  insertChar != '8' && keyCode == this.screen.getKeyCode(Canvas.DOWN)  )
+								|| (gameAction == Canvas.LEFT   &&  insertChar != '4' && keyCode == this.screen.getKeyCode(Canvas.LEFT)	)
+								|| (gameAction == Canvas.RIGHT  &&  insertChar != '6' && keyCode == this.screen.getKeyCode(Canvas.RIGHT))
 								//|| (gameAction == Canvas.FIRE   &&  keyCode == this.screen.getKeyCode(Canvas.FIRE) )  
 							)
 						) 
 				{
-					char insertChar = (char) (' ' + (keyCode - 32));
+					
 					if (this.nextCharUppercase || this.inputMode == MODE_UPPERCASE) {
 						insertChar = Character.toUpperCase(insertChar);
 					}
@@ -2967,7 +2981,7 @@ public class TextField extends StringItem
 						// ignore this key event - also don't forward it to the parent component:
 						return true;
 					}
-					char insertChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
+					insertChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
 					insertCharacter(insertChar, true, true );
 					return true;
 				} else if ( this.isDecimal ) {
@@ -2978,7 +2992,7 @@ public class TextField extends StringItem
 							) 
 					{
 						
-						char insertChar = Locale.DECIMAL_SEPARATOR;
+						insertChar = Locale.DECIMAL_SEPARATOR;
 						insertCharacter(insertChar, true, true );
 						return true;								
 					}
@@ -3539,7 +3553,7 @@ public class TextField extends StringItem
 		}
 		
 		
-		return clearKeyPressed || super.handleKeyReleased( keyCode, gameAction );
+		return this.isKeyPressedHandled || clearKeyPressed || super.handleKeyReleased( keyCode, gameAction );
 	}
 	//#endif
 	
