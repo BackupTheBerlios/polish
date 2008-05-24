@@ -394,7 +394,7 @@ implements AccessibleCanvas
 	 			this.menuBar = new MenuBar( this );
 	 		//#endif
 		//#endif
-		//#if tmp.fullScreen && polish.midp2 && !(polish.Bugs.fullScreenInPaint || tmp.needsNokiaUiForSystemAlerts)
+		//#if !tmp.useMasterCanvas && tmp.fullScreen && polish.midp2 && !(polish.Bugs.fullScreenInPaint || tmp.needsNokiaUiForSystemAlerts)
 			super.setFullScreenMode( true );
 		//#endif
 		setTitle( title );
@@ -928,10 +928,10 @@ implements AccessibleCanvas
 			//#if polish.ScreenOrientationCanChangeManually
 				this.isSetFullScreenCalled = true;
 			//#endif
-			//#if   tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
+			//#if !tmp.useMasterCanvas &&  tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
 				super.setFullScreenMode( true );
 				this.isInitialized = false;
-			//#elif tmp.fullScreen && polish.midp2 && !polish.blackberry && !tmp.fullScreenInPaint && !tmp.useMasterCanvas
+			//#elif !tmp.useMasterCanvas && tmp.fullScreen && polish.midp2 && !polish.blackberry && !tmp.fullScreenInPaint && !tmp.useMasterCanvas
 				// this is needed on old Sony Ericssons for example,
 				// since the fullscreen mode is not resumed automatically
 				// when the previous screen was in the "normal" mode:
@@ -1547,12 +1547,12 @@ implements AccessibleCanvas
 		}
 
 		synchronized (this.paintLock ) {
-			//#if polish.Bugs.losesFullScreen
-				//# super.setFullScreenMode( true );
+			//#if !tmp.useMasterCanvas && polish.Bugs.losesFullScreen
+				super.setFullScreenMode( true );
 			//#endif
-			//#if tmp.fullScreenInPaint
+			//#if tmp.fullScreenInPaint && !tmp.useMasterCanvas
 				if (!this.isInFullScreenMode) {
-					//# super.setFullScreenMode( true );
+					super.setFullScreenMode( true );
 					this.isInFullScreenMode = true;
 					//#if tmp.menuFullScreen
 						//#ifdef polish.FullCanvasHeight:defined
@@ -2048,10 +2048,11 @@ implements AccessibleCanvas
 				//#endif
 			}
 		//#endif
+//		g.setColor( 0xff0000 );
 //		if (this.lastSizeChangedEvent != null) {
-//			g.setColor( 0xff0000 );
-//			g.drawString( this.lastSizeChangedEvent, 5, this.screenHeight / 2, 0 );
+//			g.drawString( this.lastSizeChangedEvent, 5, 10, 0 );
 //		}
+//		g.drawString( Integer.toString( MasterCanvas.getScreenHeight() ), 5, 25, 0);
 	}
 	
 	/**
@@ -3795,6 +3796,13 @@ implements AccessibleCanvas
 		if(this.paintLock == null) {
 			return;
 		}
+		//#if tmp.useMasterCanvas
+			if (MasterCanvas.instance == null || MasterCanvas.getScreenHeight() != height || MasterCanvas.getScreenWidth() != width) {
+				// ignore this sizeChanged event - we are probably on Series 60 and the system called sizeChaned on
+				// this screen rather than on MasterCanvas
+				return;
+			}
+		//#endif
 		//#if tmp.manualOrientationChange
 			if ( this.isSetFullScreenCalled ) {
 				return;

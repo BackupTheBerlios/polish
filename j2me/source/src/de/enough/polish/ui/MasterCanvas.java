@@ -123,9 +123,11 @@ public class MasterCanvas
 		//#endif
 		if (this.currentCanvas != null) { 
 			this.currentCanvas.showNotify();
+			if (this.screenHeight != 0) {
+				this.currentCanvas.sizeChanged( this.screenWidth, this.screenHeight );
+			}
 		}
 	}
-
 
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
@@ -175,17 +177,15 @@ public class MasterCanvas
 		this.currentCanvas.keyReleased( keyCode );
 	}
 
-	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts
 	protected void sizeChanged(int width, int height) {
+		this.screenHeight = height;
+		this.screenWidth = width;
+		//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts
 		if (this.currentCanvas != null) { 
 			this.currentCanvas.sizeChanged( width, height );
 		}
-		if (instance != null) {
-			instance.screenHeight = height;
-			instance.screenWidth = width;
-		}
+		//#endif
 	}
-	//#endif
 	
 	public static int getScreenHeight() {
 		int h = 0;
@@ -284,6 +284,9 @@ public class MasterCanvas
 		//#endif
 		if (instance.isShown()) {
 			canvas.showNotify();
+			if (instance.screenHeight != 0) {
+				canvas.sizeChanged( instance.screenWidth, instance.screenHeight );
+			}
 		}
 		instance.currentCanvas = canvas;
 		instance.currentDisplayable = nextDisplayable;
