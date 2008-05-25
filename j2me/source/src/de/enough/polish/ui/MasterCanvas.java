@@ -160,6 +160,17 @@ public class MasterCanvas
 	}
 	//#endif
 
+	//#if polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
+	 */
+	protected void pointerDragged(int x, int y) {
+		if (this.currentCanvas != null) {
+			this.currentCanvas.pointerDragged(x, y);
+		}
+	}
+	//#endif
+
 	
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#keyRepeated(int)

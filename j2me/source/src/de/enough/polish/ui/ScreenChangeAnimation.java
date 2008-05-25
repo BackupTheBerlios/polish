@@ -254,6 +254,24 @@ implements Runnable
 	}
 	//#endif
 	
+	//#if polish.hasPointerEvents
+	/**
+	 * Forwards pointer dragged events to the next screen.
+	 * 
+	 * @param x the horizontal coordinate of the clicked pixel
+	 * @param y the vertical coordinate of the clicked pixel
+	 * @see #updateNextScreen(AccessibleCanvas, Image, int[])
+	 */
+	public void pointerDragged( int x, int y ) {
+		AccessibleCanvas next = this.nextCanvas;
+		Image nextImage = this.nextCanvasImage;
+		if (next != null) {
+			next.pointerDragged( x, y );
+			updateNextScreen(next, nextImage, this.nextCanvasRgb);
+		}
+	}
+	//#endif
+	
 	
 	/**
 	 * Notifies this animation that it will be shown shortly.

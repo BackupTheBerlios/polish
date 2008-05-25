@@ -252,6 +252,17 @@ implements Runnable, AccessibleCanvas
 	}
 	//#endif
 
+	//#if polish.hasPointerEvents
+	/**
+	 * Processes pointer dragged events.
+	 * 
+	 * @param x the horizontal coordinate of the clicked pixel
+	 * @param y the vertical coordinate of the clicked pixel
+	 */
+	public void pointerDragged( int x, int y ) {
+		// ignore
+	}
+	//#endif
 	
 	//#if polish.midp2
 	public void sizeChanged( int width, int height ) {

@@ -100,6 +100,10 @@ public class ScrollBar extends Item {
 	//#endif
 	private boolean isVisible;
 	protected boolean overlap;
+	private int screenAvailableContentHeight;
+	private int screenActualContentHeight;
+	private boolean isPointerDraggedHandled;
+	private boolean isPointerPressedHandled;
 
 	/**
 	 * Creates a new default scrollbar
@@ -132,6 +136,8 @@ public class ScrollBar extends Item {
 	public int initScrollBar( int screenWidth, int screenAvailableHeight, int screenContentHeight, int contentYOffset, int selectionStart, int selectionHeight, int focusedIndex, int numberOfItems ) {
 		//#debug
 		System.out.println("initScrollBar( screenWidth=" + screenWidth + ", screenAvailableHeight=" + screenAvailableHeight + ", screenContentHeight=" + screenContentHeight + ", contentYOffset=" + contentYOffset + ", selectionStart=" + selectionStart + ", selectionHeight=" + selectionHeight + ", focusedIndex=" + focusedIndex + ", numberOfItems=" + numberOfItems + ")");
+		this.screenActualContentHeight = screenContentHeight;
+		this.screenAvailableContentHeight = screenAvailableHeight;
 		if ( screenAvailableHeight >= screenContentHeight ) {
 			this.isVisible = false;
 			return 0;
@@ -252,14 +258,14 @@ public class ScrollBar extends Item {
 			//System.out.println("scrollbar is not visible - aborting paint");
 			return;
 		}
-		//System.out.println("painting scrollbar at y=" + y + " width=" + this.itemWidth + ", height=" + this.itemHeight + " pixel=" + Integer.toHexString( this.opacityRgbData[ this.itemWidth * this.itemHeight / 2] ) ) ;
-		//#if polish.css.scrollbar-slider-hide
-			if (this.hideSlider) {
-		//#endif
-				//x -= this.itemWidth;
-		//#if polish.css.scrollbar-slider-hide
-			}
-		//#endif
+//		//System.out.println("painting scrollbar at y=" + y + " width=" + this.itemWidth + ", height=" + this.itemHeight + " pixel=" + Integer.toHexString( this.opacityRgbData[ this.itemWidth * this.itemHeight / 2] ) ) ;
+//		//#if polish.css.scrollbar-slider-hide
+//			if (this.hideSlider) {
+//		//#endif
+//				//x -= this.itemWidth;
+//		//#if polish.css.scrollbar-slider-hide
+//			}
+//		//#endif
 		super.paint(x, y, leftBorder, rightBorder, g);
 	}
 
@@ -312,6 +318,7 @@ public class ScrollBar extends Item {
 				try {
 					this.sliderImage = StyleSheet.getImage(url, url, false);
 					this.sliderWidth = this.sliderImage.getWidth();
+					this.sliderHeight = this.sliderImage.getHeight();
 				} catch (Exception e) {
 					//#debug error
 					System.out.println("Unable to load scrollbar slider image " + url + e );
@@ -354,7 +361,7 @@ public class ScrollBar extends Item {
 			}
 		//#endif
 	}
-
+	
 	//#ifdef polish.hasPointerEvents
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
@@ -373,19 +380,87 @@ public class ScrollBar extends Item {
 	 * @see #handleKeyPressed(int, int) 
 	 */
 	protected boolean handlePointerPressed( int relX, int relY ) {
-		if ( isInItemArea(relX, relY) ) {
+		this.isPointerPressedHandled = false;
+		//System.out.println("relX=" + relX + ", itemWidth=" + this.itemWidth);
+		if (this.screenActualContentHeight <= this.screenAvailableContentHeight) {
+			return false;
+		}
+		//if ( isInItemArea(relX, relY) ) {
+		if ( (relX >= 0) || ((this.hideSlider || !this.isVisible) && relX >= -this.itemWidth) ) 
+		{
+			this.isPointerPressedHandled = true;
+			return true;
+		}
+		return false;
+	}
+	//#endif
+
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Handles the event when a pointer has been released at the specified position.
+	 * The default method discards this event when relX/relY is outside of the item's area.
+	 * When the event took place inside of the content area, the pointer-event is translated into an artificial
+	 * FIRE game-action keyPressed event, which is subsequently handled
+	 * bu the handleKeyPressed(-1, Canvas.FIRE) method.
+	 * This method needs should be overwritten only when the "polish.hasPointerEvents"
+	 * preprocessing symbol is defined: "//#ifdef polish.hasPointerEvents".
+	 *    
+	 * @param relX the x position of the pointer pressing relative to this item's left position
+	 * @param relY the y position of the pointer pressing relative to this item's top position
+	 * @return true when the pressing of the pointer was actually handled by this item.
+	 * @see #isInItemArea(int, int) this method is used for determining whether the event belongs to this item
+	 * @see #isInContentArea(int, int) for a helper method for determining whether the event took place into the actual content area
+	 * @see #handleKeyPressed(int, int) 
+	 */
+	protected boolean handlePointerReleased( int relX, int relY ) {
+		if (this.screenActualContentHeight <= this.screenAvailableContentHeight) {
+			return false;
+		}
+		if ( this.isPointerPressedHandled) {
+			if (this.isPointerDraggedHandled ) {
+				// consume event so that no other items will handle it:
+				return true;
+			}
 			int diff = 0;
+			//System.out.println("y=" + relY + ", sliderY=" + this.sliderY + ", bottom=" + (this.sliderY + this.sliderHeight ) );
 			if (relY < this.sliderY) {
 				// scroll up
-				diff = 30;
+				diff = this.screen.contentHeight / 2;
 			} else if (relY > this.sliderY + this.sliderHeight){
 				// scroll down
-				diff = -30;
+				diff = - (this.screen.contentHeight / 2);
 			}
 			if (diff != 0) {
 				this.screen.scrollRelative( diff );
+				return true;
 			}
-			
+		}
+		return false;
+	}
+	//#endif
+
+	//#ifdef polish.hasPointerEvents
+	/**
+	 * Allows to drag the scroll handle.
+	 * 
+	 * @param x relative x offset
+	 * @param y relative y offset
+	 * @return true when the dragged event was handled
+	 */
+	protected boolean handlePointerDragged(int x, int y)
+	{
+		//System.out.println("pointer drag " + x + ", " + y);
+		this.isPointerDraggedHandled = false;
+		if (this.screenActualContentHeight <= this.screenAvailableContentHeight) {
+			//System.out.println("no scroll");
+			return false;
+		}
+		if (this.isPointerPressedHandled) {
+			// use the page dimensions:
+			int scrollOffset = (y * this.screenActualContentHeight) / this.screenAvailableContentHeight;
+			this.screen.setScrollYOffset(-scrollOffset, false);
+			this.isPointerDraggedHandled = true;
+			return true;
 		}
 		return false;
 	}

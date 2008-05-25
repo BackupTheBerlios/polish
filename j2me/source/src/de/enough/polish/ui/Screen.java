@@ -879,6 +879,7 @@ implements AccessibleCanvas
 			//#if polish.css.show-scrollbar
 				}
 			//#endif
+			this.scrollBar.relativeX = x + width;
 		//#endif
 			
 		// now set the content coordinates:	
@@ -1769,27 +1770,27 @@ implements AccessibleCanvas
 	//				g.drawRect(g.getClipX() + 1 , g.getClipY() + 1 , g.getClipWidth() - 2 ,  g.getClipHeight() - 2);
 					
 				//#if tmp.useScrollBar
-					//#if polish.css.show-scrollbar
-						if ( this.scrollBarVisible ) {
-					//#endif
-							if (this.container != null && this.container.itemHeight > this.contentHeight) {
-								// paint scroll bar: - this.container.yOffset
-								// #debug
-								// System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
-								
-								int scrollX = sWidth + this.marginLeft 
-											- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
-								//TODO allow scroll bar on the left side
-								this.scrollBar.relativeX = scrollX;
-								this.scrollBar.relativeY = this.contentY;
-								this.scrollBar.paint( scrollX , this.contentY, scrollX, rightBorder, g);
-								//g.setColor( 0x00ff00 );
-								//g.drawRect( this.contentX, this.contentY, this.contentWidth - 3, this.contentHeight );
-								//System.out.println("scrollbar: width=" + scrollBar.itemWidth + ", backgroundWidth=" + scrollBar.backgroundWidth + ", height=" + scrollBar.itemHeight + ", backgroundHeight=" + scrollBar.backgroundHeight + ", contentY=" + contentY + ", contentHeight=" + this.contentHeight );
-							}
-					//#if polish.css.show-scrollbar
+						if (this.container != null && this.container.itemHeight > this.contentHeight) {
+							// paint scroll bar: - this.container.yOffset
+							// #debug
+							// System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
+							
+							int scrollX = sWidth + this.marginLeft 
+										- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
+							//TODO allow scroll bar on the left side
+							this.scrollBar.relativeX = scrollX;
+							this.scrollBar.relativeY = this.contentY;
+							//#if polish.css.show-scrollbar
+								if ( this.scrollBarVisible ) {
+							//#endif
+									this.scrollBar.paint( scrollX , this.contentY, scrollX, rightBorder, g);
+							//#if polish.css.show-scrollbar
+								}
+							//#endif
+							//g.setColor( 0x00ff00 );
+							//g.drawRect( this.contentX, this.contentY, this.contentWidth - 3, this.contentHeight );
+							//System.out.println("scrollbar: width=" + scrollBar.itemWidth + ", backgroundWidth=" + scrollBar.backgroundWidth + ", height=" + scrollBar.itemHeight + ", backgroundHeight=" + scrollBar.backgroundHeight + ", contentY=" + contentY + ", contentHeight=" + this.contentHeight );
 						}
-					//#endif
 				//#endif
 					
 
@@ -3545,8 +3546,8 @@ implements AccessibleCanvas
 				return;
 			}
 			//#if tmp.useScrollBar
-				if (this.container.itemHeight > this.contentHeight && this.scrollBar.handlePointerPressed( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
-					repaint();
+				if (this.scrollBar.handlePointerPressed( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
+					//repaint();
 					return;
 				}
 			//#endif
@@ -3582,17 +3583,30 @@ implements AccessibleCanvas
 	}
 	//#endif
 	
-//	//#ifdef polish.hasPointerEvents
-//	/* (non-Javadoc)
-//	 * @see javax.microedition.lcdui.Canvas#pointerDragged(int, int)
-//	 */
-//	protected void pointerDragged(int x, int y)
-//	{
-//		// TODO robertvirkus implement pointerDragged
-//		super.pointerDragged(x, y);
-//		//System.out.println("pointer dragged to " + x + ", " + y);
-//	}
-//	//#endif
+
+	//#ifdef polish.hasPointerEvents
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#pointerDragged(int, int)
+	 */
+	public void pointerDragged(int x, int y)
+	{
+		//System.out.println("screen: pointer drag " + x + ", " + y);
+		try {
+			this.ignoreRepaintRequests = true;
+			//#if polish.Screen.callSuperEvents
+				super.pointerDragged(x, y);
+			//#endif
+			//#if tmp.useScrollBar
+				if (this.scrollBar.handlePointerDragged( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
+					repaint();
+					return;
+				}			
+			//#endif
+		} finally {
+			this.ignoreRepaintRequests = false;
+		}
+	}
+	//#endif
 
 	
 	//#ifdef polish.hasPointerEvents
@@ -3655,10 +3669,12 @@ implements AccessibleCanvas
 				//#endif
 			//#endif
 			if (this.subTitle != null && this.subTitle.handlePointerReleased(x - this.subTitle.relativeX, y - this.subTitle.relativeY)) {
+				repaint();
 				return;
 			}
 			//#if tmp.useScrollBar
-				if (this.container.itemHeight > this.contentHeight && this.scrollBar.handlePointerReleased( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
+				if (this.scrollBar.handlePointerReleased( x - this.scrollBar.relativeX, y - this.scrollBar.relativeY )) {
+					repaint();
 					return;
 				}
 			//#endif
