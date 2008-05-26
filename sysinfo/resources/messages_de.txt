@@ -14,6 +14,7 @@ cmd.system=System Info
 cmd.libraries=APIs Info
 cmd.keys=Tasten Info
 cmd.arithmeticBenchmark=Benchmark
+cmd.events=Events Viewer
 cmd.credits=Mitwirkende
 cmd.back=Zur\u00fcck
 cmd.exit=Beenden

@@ -18,6 +18,7 @@ cmd.keys=Keys Info
 cmd.keysMap=Reading Key Map
 cmd.arithmeticBenchmark=Arithmetic Benchmark
 cmd.rms=RMS Info
+cmd.events=Events Viewer
 cmd.credits=Credits
 cmd.back=Back
 cmd.exit=Exit
