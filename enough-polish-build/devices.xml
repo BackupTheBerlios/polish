@@ -15347,7 +15347,7 @@ These namespaces/schemas will be used soon.
 	</device>
 
 	<device>
-		<identifier>Sony-Ericsson/P1</identifier>
+		<identifier>Sony-Ericsson/P1, Sony-Ericsson/P1i</identifier>
 		<features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents, hasPointerEvents</features>
 		<capability name="OS" value="Symbian 9.1" />
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0"/>
@@ -15365,6 +15365,10 @@ These namespaces/schemas will be used soon.
 		<capability name="DRM" value="OMA DRM 1.0"/>
 		<capability name="Frequency" value="900,1800,1900"/>
 		<capability name="key.supportsAsciiKeyMap" value="true" />
+		<capability name="wap.useragent" value="SonyEricssonP1i/R100 Mozilla/4.0 (compatible; MSIE 6.0; Symbian OS; 598) Opera 8.65 [de] UP.Link/6.3.0.0.0" />
+		<capability name="mmapi.protocol.device" value="audio/x-tone-seq, audio/midi" />
+		<capability name="mmapi.protocol.file" value="audio/x-tone-seq, audio/wav, audio/x-wav, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/midi, audio/x-midi, audio/mid, audio/x-mid, audio/rmf, audio/xmf, audio/xmf0, audio/xmf1, application/vnd.smaf, application/vnd.x-smaf, audio/smaf, audio/imelody, audio/x-imelody, audio/x-nokia-rng, audio/sp-midi, audio/mobile-xmf, audio/imelody, audio/x-imelody, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-midi, audio/mid, audio/x-mid, audio/rmf, audio/xmf, audio/xmf0, audio/xmf1, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/fmradio, audio/x-ms-wma, audio/x-ms-asf, video/x-ms-wmv, video/x-ms-wmv, video/x-ms-asf, audio/x-ms-wma, audio/mpg, audio/x-mpg, audio/mpeg, audio/x-mpeg, audio/mp3, audio/x-mp3, audio/mpeg3, audio/mpg3, audio/amr, audio/x-amr, audio/mp4, audio/mp4a-latm, video/mpeg4, application/mpeg4, video/mpeg, video/mp4, video/mp4v-es, audio/x-aac, audio/aac, audio/x-pv-aac, video/3gpp, video/mpeg4, application/mpeg4, video/mpeg, video/mp4, video/mp4v-es, audio/3gpp, video/3gpp" />
+		<capability name="mmapi.protocol.http" value="audio/x-tone-seq, audio/wav, audio/x-wav, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/midi, audio/x-midi, audio/mid, audio/x-mid, audio/rmf, audio/xmf, audio/xmf0, audio/xmf1, application/vnd.smaf, application/vnd.x-smaf, audio/smaf, audio/imelody, audio/x-imelody, audio/x-nokia-rng, audio/sp-midi, audio/mobile-xmf, audio/imelody, audio/x-imelody, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-midi, audio/mid, audio/x-mid, audio/rmf, audio/xmf, audio/xmf0, audio/xmf1, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/fmradio, audio/x-ms-wma, audio/x-ms-asf, video/x-ms-wmv, video/x-ms-wmv, video/x-ms-asf, audio/x-ms-wma, audio/mpg, audio/x-mpg, audio/mpeg, audio/x-mpeg, audio/mp3, audio/x-mp3, audio/mpeg3, audio/mpg3, audio/amr, audio/x-amr, audio/mp4, audio/mp4a-latm, video/mpeg4, application/mpeg4, video/mpeg, video/mp4, video/mp4v-es, audio/x-aac, audio/aac, audio/x-pv-aac, video/3gpp, video/mpeg4, application/mpeg4, video/mpeg, video/mp4, video/mp4v-es, audio/3gpp, video/3gpp" />
 		<capability name="Bugs" value="displaySetCurrentFlickers" />
 	</device>
 
