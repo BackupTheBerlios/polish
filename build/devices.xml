@@ -289,6 +289,7 @@ These namespaces/schemas will be used soon.
 		Siemens also supports -1, -4, however on Nokia Series 40 -4 is the right game action, which cannot retrieved
 		using canvas.getKeyCode( Canvas.RIGHT ) (these do return the KEY_NUM6 etc constants).... 
 		 -->
+		<capability name="key.maybeSupportsAsciiKeyMap" value="true" />
 		<capability name="MenuBar.OptionsPosition" value="left" />
 		<capability name="Bugs" value="SoftKeyMappedToFire,displaySetCurrentFlickers"/>	
 	</device>	
