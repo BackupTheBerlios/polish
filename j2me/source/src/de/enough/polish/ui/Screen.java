@@ -4336,6 +4336,8 @@ implements AccessibleCanvas
 			return getWidth() > getHeight();
 		//#elif polish.key.supportsAsciiKeyMap && !polish.key.supportsAsciiKeyMap.condition:defined
 			//# return true;
+		//#elif polish.key.maybeSupportsAsciiKeyMap
+			//# return true;
 		//#else
 			//# return false;
 		//#endif

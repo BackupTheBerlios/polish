@@ -929,7 +929,10 @@ public class TextField extends StringItem
 	//#endif
 	
 	//#if polish.key.maybeSupportsAsciiKeyMap
-		private boolean useAsciiKeyMap = true;
+		private static boolean useAsciiKeyMap = false;
+	//#endif
+	//#if polish.key.supportsAsciiKeyMap || polish.key.maybeSupportsAsciiKeyMap
+		//#define tmp.supportsAsciiKeyMap
 	//#endif
 	private boolean isKeyPressedHandled;
 
@@ -1038,9 +1041,12 @@ public class TextField extends StringItem
 		//#endif
 
 		//#if polish.key.maybeSupportsAsciiKeyMap
-			if (Keyboard.needsQwertzAndNumericSupport()) {
-				addCommand(SWITCH_KEYBOARD_CMD);
-			}
+			//#if polish.api.windows
+				if (Keyboard.needsQwertzAndNumericSupport()) {
+					addCommand(SWITCH_KEYBOARD_CMD);
+				}
+				useAsciiKeyMap = true;
+			//#endif
 		//#endif
 
 		setString(text);
@@ -1748,14 +1754,14 @@ public class TextField extends StringItem
 	 */
 	public void activate(boolean editable)
 	{
-		Object lock = Application.getEventLock();
-		synchronized (lock) 
+		Object bbLock = Application.getEventLock();
+		synchronized (bbLock) 
 		{
 			if(editable)
 			{
 				if(this._bbField == null)
 				{
-					setConstraints(constraints);
+					setConstraints(this.constraints);
 				}
 				if (this.isFocused) {
 					//# getScreen().setFocus( this );
@@ -2523,6 +2529,9 @@ public class TextField extends StringItem
 	//#endif
 
 	//#if tmp.directInput && tmp.useInputInfo
+	/**
+	 * Updates the information text
+	 */
 	public void updateInfo() {
 		if (this.isUneditable || !this.isShowInputInfo) {
 			// don't show info when this field is not editable
@@ -2923,11 +2932,11 @@ public class TextField extends StringItem
 		//#if tmp.directInput
 			//#if tmp.usePredictiveInput
 				if (this.predictiveInput) {
-					//#if polish.key.supportsAsciiKeyMap
+					//#if tmp.supportsAsciiKeyMap
 						if (!this.screen.isKeyboardAccessible()) {
 					//#endif
 							return this.predictiveAccess.keyInsert(keyCode, gameAction);
-					//#if polish.key.supportsAsciiKeyMap
+					//#if tmp.supportsAsciiKeyMap
 						}
 					//#endif
 				}
@@ -2935,7 +2944,7 @@ public class TextField extends StringItem
 			
 			int currentLength = (this.text == null ? 0 : this.text.length());
 			char insertChar = (char) (' ' + (keyCode - 32));
-			//#if polish.key.supportsAsciiKeyMap
+			//#if tmp.supportsAsciiKeyMap
 				try {
 					String name  = this.screen.getKeyName( keyCode );
 					if (name.length() == 1) {
@@ -2944,10 +2953,20 @@ public class TextField extends StringItem
 				} catch (IllegalArgumentException e) {
 					// ignore
 				}
+				//#if polish.key.maybeSupportsAsciiKeyMap
+					if (!useAsciiKeyMap) {
+						if (keyCode >= 32
+								&& (keyCode < Canvas.KEY_NUM0 || keyCode > Canvas.KEY_NUM9)
+								&& (keyCode != Canvas.KEY_POUND && keyCode != Canvas.KEY_STAR)
+						) {
+							useAsciiKeyMap = true;
+						}
+					}
+				//#endif
 				if (keyCode >= 32 
 						&& this.screen.isKeyboardAccessible() 
 						//#if polish.key.maybeSupportsAsciiKeyMap
-							&& this.useAsciiKeyMap
+							&& useAsciiKeyMap
 						//#endif
 						&& this.inputMode != MODE_NUMBERS 
 						&& !this.isNumeric
@@ -2963,6 +2982,7 @@ public class TextField extends StringItem
 					if (this.nextCharUppercase || this.inputMode == MODE_UPPERCASE) {
 						insertChar = Character.toUpperCase(insertChar);
 					}
+					System.out.println("insertChar=" + insertChar);
 					insertCharacter( insertChar, true, true );
 					return true;
 				}

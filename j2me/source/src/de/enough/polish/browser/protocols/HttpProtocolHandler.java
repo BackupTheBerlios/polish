@@ -30,6 +30,7 @@ package de.enough.polish.browser.protocols;
 import de.enough.polish.browser.ProtocolHandler;
 import de.enough.polish.io.RedirectHttpConnection;
 import de.enough.polish.util.HashMap;
+import de.enough.polish.util.Locale;
 
 //#if polish.usePolishGui
 	import de.enough.polish.ui.StyleSheet;
@@ -105,6 +106,21 @@ public class HttpProtocolHandler extends ProtocolHandler
 		}
 		if ( requestProperties.get("Accept") == null ) {
 			requestProperties.put("Accept", "text/html, text/xml, text/*, image/png, image/*, application/xhtml+xml, */*" );
+		}
+		if (requestProperties.get("Accept-Language") == null) {
+			//#ifdef polish.i18n.useDynamicTranslations
+				requestProperties.put("Accept-Language", Locale.LANGUAGE );
+			//#else
+				String meLocale = System.getProperty("microedition.locale");
+				//#if polish.language:defined
+					if (meLocale == null) { 
+						//#= meLocale = "${polish.language}";
+					}
+				//#endif
+				if (meLocale != null) {
+					requestProperties.put("Accept-Language", meLocale );
+				} 
+			//#endif
 		}
 		//#if polish.usePolishGui
 		if ( requestProperties.get("UA-pixels")  == null && StyleSheet.currentScreen != null)  {
