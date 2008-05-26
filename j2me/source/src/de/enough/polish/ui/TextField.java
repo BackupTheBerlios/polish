@@ -2754,7 +2754,7 @@ public class TextField extends StringItem
 		//#endif
 		
 		//#if tmp.allowDirectInput
-			//# if (this.enableDirectInput) {
+			if (this.enableDirectInput) {
 		//#endif
 				//#ifdef tmp.directInput
 					//#if !polish.blackberry
@@ -2828,7 +2828,7 @@ public class TextField extends StringItem
 						//#ifdef polish.key.ClearKey:defined
 							//#= if (keyCode == ${polish.key.ClearKey}
 						//#else
-							if ( keyCode == -8 
+							if ( keyCode == -8 || keyCode == 8 
 						//#endif
 						//#if polish.key.backspace:defined
 							//#= || keyCode == ${polish.key.backspace}
@@ -2861,7 +2861,7 @@ public class TextField extends StringItem
 					}
 				//#endif
 		//#if tmp.allowDirectInput
-			//# }
+			}
 		//#endif
 		//#ifndef polish.hasPointerEvents
 			String currentText = this.isPassword ? this.passwordText : this.text;
@@ -2903,7 +2903,7 @@ public class TextField extends StringItem
 			//#ifdef polish.key.ClearKey:defined
 				//#= || (keyCode == ${polish.key.ClearKey})
 			//#else
-				|| (keyCode == -8)
+				|| (keyCode == -8 || keyCode == 8)
 			//#endif
 			//#if ${ isOS( Windows ) }
 				|| (gameAction != Canvas.DOWN && gameAction != Canvas.UP && gameAction != Canvas.LEFT && gameAction != Canvas.RIGHT)
@@ -3003,7 +3003,61 @@ public class TextField extends StringItem
 					insertChar = Integer.toString( keyCode - Canvas.KEY_NUM0 ).charAt( 0 );
 					insertCharacter(insertChar, true, true );
 					return true;
-				} else if ( this.isDecimal ) {
+				}
+				//#if polish.TextField.numerickeys.1:defined
+					String numericKeyStr = null;
+					int foundNumber = -1;
+					//#= numericKeyStr = "${polish.TextField.numerickeys.1}";
+					if (numericKeyStr.indexOf(insertChar) != -1) {
+						foundNumber = 1;
+					}
+					//#= numericKeyStr = "${polish.TextField.numerickeys.2}";
+					if (numericKeyStr.indexOf(insertChar) != -1) {
+						foundNumber = 2;
+					}
+					//#= numericKeyStr = "${polish.TextField.numerickeys.3}";
+					if (numericKeyStr.indexOf(insertChar) != -1) {
+						foundNumber = 3;
+					}
+					//#= numericKeyStr = "${polish.TextField.numerickeys.4}";
+					if (numericKeyStr.indexOf(insertChar) != -1) {
+						foundNumber = 4;
+					}
+					//#= numericKeyStr = "${polish.TextField.numerickeys.5}";
+					if (numericKeyStr.indexOf(insertChar) != -1) {
+						foundNumber = 5;
+					}
+					//#= numericKeyStr = "${polish.TextField.numerickeys.6}";
+					if (numericKeyStr.indexOf(insertChar) != -1) {
+						foundNumber = 6;
+					}
+					//#= numericKeyStr = "${polish.TextField.numerickeys.7}";
+					if (numericKeyStr.indexOf(insertChar) != -1) {
+						foundNumber = 7;
+					}
+					//#= numericKeyStr = "${polish.TextField.numerickeys.8}";
+					if (numericKeyStr.indexOf(insertChar) != -1) {
+						foundNumber = 8;
+					}
+					//#= numericKeyStr = "${polish.TextField.numerickeys.9}";
+					if (numericKeyStr.indexOf(insertChar) != -1) {
+						foundNumber = 9;
+					}
+					//#= numericKeyStr = "${polish.TextField.numerickeys.0}";
+					if (numericKeyStr.indexOf(insertChar) != -1) {
+						foundNumber = 0;
+					}
+					if (foundNumber != -1) {
+						if (currentLength >= this.maxSize) {
+							// ignore this key event - also don't forward it to the parent component:
+							return true;
+						}
+						insertChar = Integer.toString( foundNumber ).charAt( 0 );
+						insertCharacter(insertChar, true, true );
+						return true;						
+					}
+				//#endif
+				if ( this.isDecimal ) {
 					//System.out.println("handling key for DECIMAL TextField");
 					if (currentLength < this.maxSize 
 							&& ( keyCode == Canvas.KEY_POUND || keyCode == Canvas.KEY_STAR )
@@ -3016,6 +3070,7 @@ public class TextField extends StringItem
 						return true;								
 					}
 				}
+				
 			}
 			if ( (!this.isNumeric) //this.inputMode != MODE_NUMBERS 
 					&& !this.isUneditable
