@@ -291,7 +291,7 @@ These namespaces/schemas will be used soon.
 		 -->
 		<capability name="key.maybeSupportsAsciiKeyMap" value="true" />
 		<capability name="MenuBar.OptionsPosition" value="left" />
-		<capability name="Bugs" value="SoftKeyMappedToFire,displaySetCurrentFlickers"/>	
+		<capability name="Bugs" value="SoftKeyMappedToFire,displaySetCurrentFlickers,needsBottomOrientiationForStringDrawing"/>	
 	</device>	
 	
 	<device supportsPolishGui="true">
@@ -5744,6 +5744,16 @@ These namespaces/schemas will be used soon.
 		<capability name="key.enter" value="10" />
 		<!--  use Ctrl-i for triggering the symbol table as well: -->
 		<capability name="key.AddSymbolKey2" value="9" />
+		<capability name="polish.TextField.numerickeys.1" value="r" />
+		<capability name="polish.TextField.numerickeys.2" value="t" />
+		<capability name="polish.TextField.numerickeys.3" value="zy" />
+		<capability name="polish.TextField.numerickeys.4" value="f" />
+		<capability name="polish.TextField.numerickeys.5" value="g" />
+		<capability name="polish.TextField.numerickeys.6" value="h" />
+		<capability name="polish.TextField.numerickeys.7" value="v" />
+		<capability name="polish.TextField.numerickeys.8" value="b" />
+		<capability name="polish.TextField.numerickeys.9" value="n" />
+		<capability name="polish.TextField.numerickeys.0" value="m" />
 	</device>
 	
 	<device>
@@ -5771,6 +5781,16 @@ These namespaces/schemas will be used soon.
 		<capability name="key.enter" value="10" />
 		<!--  use Ctrl-i for triggering the symbol table as well: -->
 		<capability name="key.AddSymbolKey2" value="9" />
+		<capability name="polish.TextField.numerickeys.1" value="r" />
+		<capability name="polish.TextField.numerickeys.2" value="t" />
+		<capability name="polish.TextField.numerickeys.3" value="zy" />
+		<capability name="polish.TextField.numerickeys.4" value="f" />
+		<capability name="polish.TextField.numerickeys.5" value="g" />
+		<capability name="polish.TextField.numerickeys.6" value="h" />
+		<capability name="polish.TextField.numerickeys.7" value="v" />
+		<capability name="polish.TextField.numerickeys.8" value="b" />
+		<capability name="polish.TextField.numerickeys.9" value="n" />
+		<capability name="polish.TextField.numerickeys.0" value="m" />
 	</device>
 	
 	<device>
@@ -15370,6 +15390,16 @@ These namespaces/schemas will be used soon.
 		<capability name="mmapi.protocol.device" value="audio/x-tone-seq, audio/midi" />
 		<capability name="mmapi.protocol.file" value="audio/x-tone-seq, audio/wav, audio/x-wav, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/midi, audio/x-midi, audio/mid, audio/x-mid, audio/rmf, audio/xmf, audio/xmf0, audio/xmf1, application/vnd.smaf, application/vnd.x-smaf, audio/smaf, audio/imelody, audio/x-imelody, audio/x-nokia-rng, audio/sp-midi, audio/mobile-xmf, audio/imelody, audio/x-imelody, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-midi, audio/mid, audio/x-mid, audio/rmf, audio/xmf, audio/xmf0, audio/xmf1, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/fmradio, audio/x-ms-wma, audio/x-ms-asf, video/x-ms-wmv, video/x-ms-wmv, video/x-ms-asf, audio/x-ms-wma, audio/mpg, audio/x-mpg, audio/mpeg, audio/x-mpeg, audio/mp3, audio/x-mp3, audio/mpeg3, audio/mpg3, audio/amr, audio/x-amr, audio/mp4, audio/mp4a-latm, video/mpeg4, application/mpeg4, video/mpeg, video/mp4, video/mp4v-es, audio/x-aac, audio/aac, audio/x-pv-aac, video/3gpp, video/mpeg4, application/mpeg4, video/mpeg, video/mp4, video/mp4v-es, audio/3gpp, video/3gpp" />
 		<capability name="mmapi.protocol.http" value="audio/x-tone-seq, audio/wav, audio/x-wav, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/midi, audio/x-midi, audio/mid, audio/x-mid, audio/rmf, audio/xmf, audio/xmf0, audio/xmf1, application/vnd.smaf, application/vnd.x-smaf, audio/smaf, audio/imelody, audio/x-imelody, audio/x-nokia-rng, audio/sp-midi, audio/mobile-xmf, audio/imelody, audio/x-imelody, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-midi, audio/mid, audio/x-mid, audio/rmf, audio/xmf, audio/xmf0, audio/xmf1, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/fmradio, audio/x-ms-wma, audio/x-ms-asf, video/x-ms-wmv, video/x-ms-wmv, video/x-ms-asf, audio/x-ms-wma, audio/mpg, audio/x-mpg, audio/mpeg, audio/x-mpeg, audio/mp3, audio/x-mp3, audio/mpeg3, audio/mpg3, audio/amr, audio/x-amr, audio/mp4, audio/mp4a-latm, video/mpeg4, application/mpeg4, video/mpeg, video/mp4, video/mp4v-es, audio/x-aac, audio/aac, audio/x-pv-aac, video/3gpp, video/mpeg4, application/mpeg4, video/mpeg, video/mp4, video/mp4v-es, audio/3gpp, video/3gpp" />
+		<capability name="polish.TextField.numerickeys.1" value="er" />
+		<capability name="polish.TextField.numerickeys.2" value="tyz" />
+		<capability name="polish.TextField.numerickeys.3" value="ui" />
+		<capability name="polish.TextField.numerickeys.4" value="df" />
+		<capability name="polish.TextField.numerickeys.5" value="gh" />
+		<capability name="polish.TextField.numerickeys.6" value="jk" />
+		<capability name="polish.TextField.numerickeys.7" value="xc" />
+		<capability name="polish.TextField.numerickeys.8" value="vb" />
+		<capability name="polish.TextField.numerickeys.9" value="nm" />
+		<capability name="polish.TextField.numerickeys.0" value=" " />
 		<capability name="Bugs" value="displaySetCurrentFlickers" />
 	</device>
 
