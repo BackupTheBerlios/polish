@@ -2982,7 +2982,6 @@ public class TextField extends StringItem
 					if (this.nextCharUppercase || this.inputMode == MODE_UPPERCASE) {
 						insertChar = Character.toUpperCase(insertChar);
 					}
-					System.out.println("insertChar=" + insertChar);
 					insertCharacter( insertChar, true, true );
 					return true;
 				}
