@@ -3349,6 +3349,7 @@ implements AccessibleCanvas
 	 * @see #removeItemCommands(Item)
 	 */
 	protected void setItemCommands( ArrayList commandsList, Item item ) {
+		//System.out.println("setItemCommands for " + item );
 		this.focusedItem = item;
 		if (commandsList != null) {
 			Object[] commands = commandsList.getInternalArray();
@@ -3357,6 +3358,9 @@ implements AccessibleCanvas
 			if (this.itemCommands == null) {
 				this.itemCommands = new ArrayList( commands.length );
 			} else {
+				if (this.itemCommands.size() > 0) {
+					removeItemCommands(item);
+				}
 				this.itemCommands.clear();
 			}
 			for (int i = 0; i < commands.length; i++) {
@@ -3396,6 +3400,7 @@ implements AccessibleCanvas
 	 * @see #setItemCommands(ArrayList,Item)
 	 */
 	protected void removeItemCommands( Item item ) {
+		//System.out.println("removeItemCommands for " + item);
 		if (this.itemCommands != null) {
 			// use the Screen's itemCommands list, since in this list only commands that are only present on the item
 			// are listed (not commands that are also present on the screen).
