@@ -515,6 +515,13 @@
 			<param name="arc-height" type="integer" primitive="true" default="4" description="The height of the arc of the border corners." />
 		</mapping>
 		<mapping from="roundrect" 			converter="de.enough.polish.preprocess.borders.RoundRectBorderConverter" />
+		<mapping from="round-rect-translucent"    to="de.enough.polish.ui.borders.TranslucentRoundRectBorder" >
+			<param name="color" type="color" primitive="true" translucent="true" default="#8fff" description="ARGB-Color of the border." />
+			<param name="width" type="integer" primitive="true" default="2" description="Width of the border." />
+			<param name="arc" type="integer" primitive="true" default="8" hidden="true" description="The default arc used for arc-width and arc-height."/>
+			<param name="arc-width" type="integer" primitive="true" default="ref:arc"  description="The width of the arc in the rounded corners."/>
+			<param name="arc-height" type="integer" primitive="true" default="ref:arc" description="The height of the arc in the rounded corners." />
+		</mapping>
 		<mapping from="circle" 				to="de.enough.polish.ui.borders.CircleBorder" converter="de.enough.polish.preprocess.borders.CircleBorderConverter" >
 			<param name="color" type="color" primitive="true" default="black" description="The border color." />
 			<param name="width" type="integer" primitive="true" default="1" description="The width of the border." />
