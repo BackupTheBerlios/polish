@@ -76,6 +76,7 @@
 		<capability name="TextField.charactersKeyPound" value=" " />		
 		<capability name="Property.imei" value="com.sonyericsson.imei" />
 		<capability name="vendor.alias" value="SonyEricsson" />
+		<capability name="vendor.alias" value="Sony Ericsson Mobile Communications" />
 		<capability name="MenuBar.OptionsPosition" value="right" />
 		<capability name="MenuBar.OkPosition" value="left" />
 		<capability name="command.options" value="Menu" />
@@ -115,12 +116,8 @@
 	</vendor>
 	
 	<vendor>
-		<name>LG Electronics</name>
-		<features></features>
-	</vendor>
-
-	<vendor>
 		<name>LG</name>
+		<capability name="vendor.alias" value="LG Electronics" />
 		<features>hasCommandKeyEvents</features>
 	</vendor>
 	
@@ -167,15 +164,10 @@
 	</vendor>
 	
 	<vendor>
-		<name>Research In Motion</name>
-		<features></features>
-		<capability name="vendor.alias" value="RMI" />
-		<capability name="vendor.alias" value="Research In Motion Ltd." />
-	</vendor>
-
-	<vendor>
 		<name>BlackBerry</name>
 		<features></features>
+		<capability name="vendor.alias" value="RIM" />
+		<capability name="vendor.alias" value="Research In Motion Ltd." />
 		<capability name="IconSize" value="44x44" />
 	</vendor>
 
@@ -205,6 +197,7 @@
 
 	<vendor>
 		<name>BenQ</name>
+		<capability name="vendor.alias" value="BenQ-Siemens" />
 	</vendor>
 	
 	<vendor>
