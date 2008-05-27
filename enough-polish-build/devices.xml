@@ -10588,21 +10588,9 @@ These namespaces/schemas will be used soon.
 		<capability name="SoundFormat" value="vnf"/>
 		<capability name="Bugs" value="ReservedKeywordSerializable"/>
 	</device>
-	
 
 	<device>
-		<identifier>Research In Motion/BlackBerry 5810</identifier>
-		<capability name="ScreenSize" value="160x160"/>
-		<capability name="BitsPerPixel" value="1"/>
-		<capability name="JavaPlatform" value="MIDP/1.0"/>
-		<capability name="JavaConfiguration" value="CLDC/1.0"/>
-		<capability name="wap.userAgent" value="BlackBerry5810"/>
-		<capability name="wap.userAgent" value="BlackBerry/3.2.1"/>
-		<capability name="Bugs" value="ReservedKeywordSerializable"/>
-	</device>
-
-	<device>
-		<identifier>Research In Motion/BlackBerry 5820</identifier>
+		<identifier>BlackBerry/5820</identifier>
 		<capability name="ScreenSize" value="160x160"/>
 		<capability name="BitsPerPixel" value="1"/>
 		<capability name="JavaPlatform" value="MIDP/1.0"/>
