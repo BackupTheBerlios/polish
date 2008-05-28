@@ -105,6 +105,10 @@ public class VendorManager {
 		}
 	}
 
+    public void addVendor(Vendor vendor) {
+        this.vendors.put(vendor.getIdentifier(), vendor);
+    }
+    
 	/**
 	 * Retrieves the specified vendor.
 	 * 
