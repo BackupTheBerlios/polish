@@ -263,6 +263,8 @@ implements Runnable, CommandListener
 			
 			store.closeRecordStore();
 			
+			stream.close();
+			
 			this.status.setText(Locale.get("polish.predictive.setup.status.finished"));
 			
 			//#if polish.predictive.setup.showCommands
