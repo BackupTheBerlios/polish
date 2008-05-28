@@ -36,12 +36,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import de.enough.polish.BuildException;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 
+import de.enough.polish.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.ant.requirements.Requirements;
 import de.enough.polish.ant.requirements.VariableDefinedRequirement;
@@ -342,7 +342,6 @@ public class DeviceManager {
             initializeUserAgentMapping();
         }
         Object device = null;
-//        device = this.devicesByUserAgent.get(userAgent);
         int userAgentLength = userAgent.length();
         String subString;
         for(int i = userAgentLength; i > 1; i--) {
@@ -356,7 +355,7 @@ public class DeviceManager {
     }
     
     private void initializeUserAgentMapping() {
-        this.devicesByUserAgent = new HashMap(10000);
+        this.devicesByUserAgent = new HashMap();
         String CAPABILITY_WAP_USER_AGENT = "wap.userAgent";
         Device[] allDevices = getDevices();
 
@@ -364,7 +363,6 @@ public class DeviceManager {
         requirements.addRequirement(new VariableDefinedRequirement(CAPABILITY_WAP_USER_AGENT));
         Device[] devicesWithUA = requirements.filterDevices(allDevices);
         
-        Device cachedDevice;
         Device currentDevice;
         String shortendUserAgentId;
         String currentUserAgentAsString;
@@ -381,28 +379,31 @@ public class DeviceManager {
             String[] currentUserAgents = StringUtil.splitAndTrim(currentUserAgentAsString,'\1');
             
             for (int userAgentIndex = 0; userAgentIndex < currentUserAgents.length; userAgentIndex++) {
-                
                 String currentUserAgent = currentUserAgents[userAgentIndex];
-                int lengthOfString = currentUserAgent.length();
                 
-                for (int postfixIndex = 0; postfixIndex < lengthOfString; postfixIndex++) {
-                    shortendUserAgentId = currentUserAgent.substring(0,lengthOfString-postfixIndex);
-                    cachedDevice = (Device)this.devicesByUserAgent.get(shortendUserAgentId);
-                    if(cachedDevice != null) {
-                        // We have already a device with this user agent prefix. Abort.
-                        if(currentUserAgent.equals(shortendUserAgentId)) {
-                            // Perfect matches override everything. This is a problem
-                            // if several perfect matches are present.
-                            this.devicesByUserAgent.put(currentUserAgent,currentDevice);
+                int lengthOfString = currentUserAgent.length();
+                int i = lengthOfString;
+                while(i > 1) {
+                    // Save all prefixes of the useragent.
+                    shortendUserAgentId = currentUserAgent.substring(0,i);
+                    
+                    boolean shortendKeyPresent = this.devicesByUserAgent.containsKey(shortendUserAgentId);
+                    if(shortendKeyPresent) {
+                        // The prefix exists. Remove all of them to remove ambiguity
+                        while(i > 1) {
+                            shortendUserAgentId = currentUserAgent.substring(0,i);
+                            this.devicesByUserAgent.remove(shortendUserAgentId);
+                            i--;
                         }
-                        break;
+                    } else {
+                        this.devicesByUserAgent.put(currentUserAgent,currentDevice);
                     }
-                    this.devicesByUserAgent.put(shortendUserAgentId,currentDevice);
+                    i--;
                 }
             }
         }
     }
-
+    
     public Device[] getVirtualDevices() {
 		return getVirtualDevices( this.devices );
 	}
