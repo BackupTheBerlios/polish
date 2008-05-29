@@ -11141,7 +11141,7 @@ These namespaces/schemas will be used soon.
     <capability name="Font.large" value="24" />
     <capability name="AnnouncementDate" value="2007-01-16" />
     <capability name="Bugs" value="SoftKeyMappedToFire" />
-    <capability name="Bugs" value="ignoreTitleCall, getTitleRequiresNull" />
+    <capability name="Bugs" value="ignoreTitleCall" />
     <capability name="wap.userAgent" value="SEC-SGHE900" />
     <capability name="wap.userAgent" value="SEC-SGHE900/1.0 NetFront/3.2 Profile/MIDP-2.0 Configuration/CLDC-1.1" />
   </device>
