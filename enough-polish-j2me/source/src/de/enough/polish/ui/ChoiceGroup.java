@@ -970,22 +970,28 @@ implements Choice
 				ChoiceItem oldSelected = (ChoiceItem) this.itemsList.get( this.selectedIndex );
 				oldSelected.select( false );
 			}
-			ChoiceItem newSelected = (ChoiceItem) this.itemsList.get( elementNum );
-			newSelected.select( true );
+			
+			if(elementNum != -1)
+			{
+				ChoiceItem newSelected = (ChoiceItem) this.itemsList.get( elementNum );
+				newSelected.select( true );
+				
+				if (this.isFocused) {
+					if ( this.isInitialized) {
+						focus( elementNum, newSelected, 0 );
+					} else {
+						this.autoFocusEnabled = true;
+						this.autoFocusIndex = elementNum;
+					}
+				}
+				//#ifdef polish.usePopupItem
+					if (this.isPopup) {
+						this.popupItem.setText( newSelected.getText() );
+					}
+				//#endif
+			}		
+			
 			this.selectedIndex = elementNum;
-			if (this.isFocused) {
-				if ( this.isInitialized) {
-					focus( elementNum, newSelected, 0 );
-				} else {
-					this.autoFocusEnabled = true;
-					this.autoFocusIndex = elementNum;
-				}
-			}
-			//#ifdef polish.usePopupItem
-				if (this.isPopup) {
-					this.popupItem.setText( newSelected.getText() );
-				}
-			//#endif
 		}
 		if (this.isInitialized) {
 			this.isInitialized = false;
