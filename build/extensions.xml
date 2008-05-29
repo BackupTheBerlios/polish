@@ -554,6 +554,13 @@
 		<class>de.enough.polish.preverify.AntCallPreverifier</class>
 	</extension>
 	
+	<extension>
+		<type>preverifier</type>
+		<name>blackberry</name>
+		<class>de.enough.polish.preverify.BlackBerryPreverifier</class>
+	</extension>
+	
+	
 
 	<!-- Obfuscator -->
 	
