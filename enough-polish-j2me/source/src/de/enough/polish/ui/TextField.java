@@ -3884,7 +3884,7 @@ public class TextField extends StringItem
 			//#endif		
 			//#if polish.key.maybeSupportsAsciiKeyMap
 				if (cmd == SWITCH_KEYBOARD_CMD) {
-					this.useAsciiKeyMap = !this.useAsciiKeyMap;
+					useAsciiKeyMap = !useAsciiKeyMap;
 				}
 			//#endif
 		//#endif
