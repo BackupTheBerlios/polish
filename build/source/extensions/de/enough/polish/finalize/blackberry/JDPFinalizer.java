@@ -2,6 +2,7 @@ package de.enough.polish.finalize.blackberry;
 
 import java.io.File;
 import java.util.Locale;
+import java.util.Map;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
@@ -26,10 +27,7 @@ public class JDPFinalizer extends Finalizer{
 	public void finalize(File jadFile, File jarFile, Device device, Locale locale, Environment env) {
 		JDPTask task = new JDPTask();
 		
-		String name = jarFile.getName();
-		
-		//Strip .cod from the name
-		name = name.substring(0, name.length() - 4);
+		String name = env.getVariable("MIDlet-Name");
 		
 		task.setName(name);
 		task.setPath(device.getBaseDir());
