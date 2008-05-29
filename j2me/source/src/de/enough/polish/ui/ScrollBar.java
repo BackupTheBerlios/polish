@@ -177,9 +177,10 @@ public class ScrollBar extends Item {
 		//#endif
 		//#debug
 		System.out.println("sliderY=" + this.sliderY + ", sliderHeight=" + this.sliderHeight);
-		if (!this.isInitialized || (this.scrollBarHeight < this.itemHeight) ) {
+		if (!this.isInitialized || (this.scrollBarHeight != this.itemHeight) ) {
 			init( screenWidth, screenWidth );
 		}
+		this.itemHeight = this.scrollBarHeight;
 		//#if polish.css.opacity && polish.midp2
 			if (lastSliderY != this.sliderY || lastSliderHeight != this.sliderHeight) {
 				this.opacityRgbData = null;
