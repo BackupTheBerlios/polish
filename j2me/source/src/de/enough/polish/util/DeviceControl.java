@@ -25,6 +25,8 @@ public class DeviceControl
 {
 	
 	private static DeviceControl thread;
+	private static Object lightsLock = new Object();
+	private static Object vibrateLock = new Object();
 	private boolean lightOff = false; 
 	
 	private DeviceControl() {
@@ -48,26 +50,30 @@ public class DeviceControl
 	}
 	
 	private void switchLightOnFor( int durationInMs ) {
-		//#if polish.api.samsung
-			com.samsung.util.LCDLight.on(durationInMs);
-		//#elif polish.api.nokia-ui
-			//#if polish.Bugs.BacklightRequiresLightOff
-				com.nokia.mid.ui.DeviceControl.setLights(0,0);
+		synchronized(lightsLock) {
+			//#if polish.api.samsung
+				com.samsung.util.LCDLight.on(durationInMs);
+			//#elif polish.api.nokia-ui
+				//#if polish.Bugs.BacklightRequiresLightOff
+					com.nokia.mid.ui.DeviceControl.setLights(0,0);
+				//#endif
+				com.nokia.mid.ui.DeviceControl.setLights(0,100);
+			//#elif polish.midp2  && polish.usePolishGui
+				StyleSheet.display.flashBacklight(durationInMs);
 			//#endif
-			com.nokia.mid.ui.DeviceControl.setLights(0,100);
-		//#elif polish.midp2  && polish.usePolishGui
-			StyleSheet.display.flashBacklight(durationInMs);
-		//#endif
+		}
 	}
 	
 	private void switchLightOff()
 	{
-		this.lightOff = true;
-		//#if polish.api.samsung
-			com.samsung.util.LCDLight.off();
-		//#elif polish.midp2 && polish.usePolishGui
-			StyleSheet.display.flashBacklight(0);
-		//#endif
+		synchronized(lightsLock) {
+			this.lightOff = true;
+			//#if polish.api.samsung
+				com.samsung.util.LCDLight.off();
+			//#elif polish.midp2 && polish.usePolishGui
+				StyleSheet.display.flashBacklight(0);
+			//#endif
+		}
 	}
 	
 	/**
@@ -77,25 +83,27 @@ public class DeviceControl
 	 */
 	public static boolean lightOn()
 	{
-		boolean success = false;
-		//#if tmp.useNokiaUi
-			com.nokia.mid.ui.DeviceControl.setLights(0,100);
-			success = true;
-		//#elif tmp.useBlackBerry
-			net.rim.device.api.system.Backlight.enable(true);
-			success = true;
-		//#elif tmp.useThread
-			if (thread == null) {
-				if (isLightSupported()) {
-					DeviceControl dc = new DeviceControl();
-					dc.start();
+		synchronized(lightsLock) {
+			boolean success = false;
+			//#if tmp.useNokiaUi
+				com.nokia.mid.ui.DeviceControl.setLights(0,100);
+				success = true;
+			//#elif tmp.useBlackBerry
+				net.rim.device.api.system.Backlight.enable(true);
+				success = true;
+			//#elif tmp.useThread
+				if (thread == null) {
+					if (isLightSupported()) {
+						DeviceControl dc = new DeviceControl();
+						dc.start();
+						success = true;
+					}
+				} else {
 					success = true;
 				}
-			} else {
-				success = true;
-			}
-		//#endif
-		return success;
+			//#endif
+			return success;
+		}
 	}
 	
 	/**
@@ -104,17 +112,19 @@ public class DeviceControl
 	 */
 	public static void lightOff()
 	{
-		//#if tmp.useNokiaUi
-			com.nokia.mid.ui.DeviceControl.setLights(0,0);
-		//#elif tmp.useBlackBerry
-			net.rim.device.api.system.Backlight.enable(false);
-		//#elif tmp.useThread
-			DeviceControl dc = thread;
-			if (dc != null) {
-				dc.switchLightOff();
-				thread = null;
-			}
-		//#endif
+		synchronized(lightsLock) {
+			//#if tmp.useNokiaUi
+				com.nokia.mid.ui.DeviceControl.setLights(0,0);
+			//#elif tmp.useBlackBerry
+				net.rim.device.api.system.Backlight.enable(false);
+			//#elif tmp.useThread
+				DeviceControl dc = thread;
+				if (dc != null) {
+					dc.switchLightOff();
+					thread = null;
+				}
+			//#endif
+		}
 	}
 	
 	/**
@@ -124,17 +134,19 @@ public class DeviceControl
 	 */
 	public static boolean isLightSupported()
 	{
-		boolean isSupported = false;
-		//#if tmp.useNokiaUi
-			isSupported = true;
-		//#elif tmp.useBlackBerry
-			isSupported = true;
-		//#elif polish.api.samsung
-			isSupported = com.samsung.util.LCDLight.isSupported();
-		//#elif polish.midp2 && polish.usePolishGui
-			isSupported = StyleSheet.display.flashBacklight(0);
-		//#endif
-		return isSupported;
+		synchronized (lightsLock) {
+			boolean isSupported = false;
+			//#if tmp.useNokiaUi
+				isSupported = true;
+			//#elif tmp.useBlackBerry
+				isSupported = true;
+			//#elif polish.api.samsung
+				isSupported = com.samsung.util.LCDLight.isSupported();
+			//#elif polish.midp2 && polish.usePolishGui
+				isSupported = StyleSheet.display.flashBacklight(0);
+			//#endif
+			return isSupported;
+		}
 	}
 
 	
@@ -148,21 +160,23 @@ public class DeviceControl
 	 */
 	public static boolean vibrate(int duration)
 	{
-		boolean success = false;
-		//#if polish.midp2 && polish.usePolishGui
-			success = StyleSheet.display.vibrate(duration);
-		//#elif polish.api.nokia-ui
-			try {
-				com.nokia.mid.ui.DeviceControl.startVibra(80, duration);
-				success = true;
-			} catch (IllegalStateException e) {
-				// no vibration support
-			}
-		//#elif polish.api.samsung
-			com.samsung.util.Vibration.start(duration, 100);
-			success = com.samsung.util.Vibration.isSupported();
-		//#endif
-		return success;
+		synchronized(vibrateLock) {
+			boolean success = false;
+			//#if polish.midp2 && polish.usePolishGui
+				success = StyleSheet.display.vibrate(duration);
+			//#elif polish.api.nokia-ui
+				try {
+					com.nokia.mid.ui.DeviceControl.startVibra(80, duration);
+					success = true;
+				} catch (IllegalStateException e) {
+					// no vibration support
+				}
+			//#elif polish.api.samsung
+				com.samsung.util.Vibration.start(duration, 100);
+				success = com.samsung.util.Vibration.isSupported();
+			//#endif
+			return success;
+		}
 	}
 	
 	/**
@@ -172,20 +186,22 @@ public class DeviceControl
 	 */
 	public static boolean isVibrateSupported()
 	{
-		boolean isSupported = false;
-		//#if polish.api.nokia-ui && !polish.api.midp2
-			try {
-				com.nokia.mid.ui.DeviceControl.startVibra(0, 1);
-				isSupported = true;
-			} catch (IllegalStateException e) {
-				// no vibration support
-			}
-		//#elif polish.api.samsung
-			isSupported = com.samsung.util.Vibration.isSupported();
-		//#elif polish.midp2 && polish.usePolishGui
-			isSupported = StyleSheet.display.vibrate(0);
-		//#endif
-		return isSupported;
+		synchronized(vibrateLock) {
+			boolean isSupported = false;
+			//#if polish.api.nokia-ui && !polish.api.midp2
+				try {
+					com.nokia.mid.ui.DeviceControl.startVibra(0, 1);
+					isSupported = true;
+				} catch (IllegalStateException e) {
+					// no vibration support
+				}
+			//#elif polish.api.samsung
+				isSupported = com.samsung.util.Vibration.isSupported();
+			//#elif polish.midp2 && polish.usePolishGui
+				isSupported = StyleSheet.display.vibrate(0);
+			//#endif
+			return isSupported;
+		}
 	}
 
 	
