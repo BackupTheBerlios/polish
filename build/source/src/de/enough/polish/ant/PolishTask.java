@@ -1064,7 +1064,9 @@ public class PolishTask extends ConditionalTask {
 			SourceSetting setting = this.sourceSettings[i];
 			File dir = setting.getDir();
 			if (!dir.exists()) {
-				throw new BuildException("The source-directory [" + dir.getAbsolutePath() + "] does not exist. Please check your settings in the \"sourceDir\" attribute of the <build> element.");
+				System.err.println("Warning: The source directory [" + dir.getAbsolutePath() + "] does not exist. Please check your settings in the \"sourceDir\" attribute of the <build> element.");
+				this.sourceFiles[i] = new TextFile[0];
+				continue;
 			}
 			//this.sourceDirs[i] = dir; 
 			dirScanner.setBasedir(dir);

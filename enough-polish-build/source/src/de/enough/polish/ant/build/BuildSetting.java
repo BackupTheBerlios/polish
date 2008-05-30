@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Vector;
 
 import de.enough.polish.BuildException;
 import org.apache.tools.ant.Project;
@@ -702,11 +701,13 @@ public class BuildSetting {
 				path += ":" + paths[i];
 			}
 			File dir = getFile( path );
-			if (!dir.exists()) {
-				throw new BuildException("The source directory [" + path + "] does not exist. " +
-						"Please correct the attribute [sourceDir] of the <build> element.");
+			if (dir.exists()) {
+				this.sourceSettings.add( new SourceSetting( dir ) );
 			}
-			this.sourceSettings.add( new SourceSetting( dir ) );
+			else {
+				System.err.println("Warning: The source directory [" + path + "] does not exist. " +
+					"Please correct the attribute [sourceDir] of the <build> element.");
+			}
 		}
 	}
 	
