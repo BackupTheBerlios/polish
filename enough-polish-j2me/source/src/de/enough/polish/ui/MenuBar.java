@@ -1054,7 +1054,7 @@ public class MenuBar extends Item {
 				commandItem.handleKeyPressed( 0, Canvas.FIRE );
 				return true;
 		//#if polish.key.ReturnKey:defined
-			//#= } else  if (isCloseOptionsMenuKey(keyCode) || keyCode == ${polish.key.ReturnKey}) {
+			//#= } else  if (isCloseOptionsMenuKey(keyCode, gameAction) || keyCode == ${polish.key.ReturnKey}) {
 		//#else
 			} else  if (isCloseOptionsMenuKey(keyCode, gameAction)) {
 		//#endif
@@ -1279,7 +1279,7 @@ public class MenuBar extends Item {
 				//#endif
 				return commandItem.handleKeyReleased(keyCode, Canvas.FIRE);
 		//#if polish.key.ReturnKey:defined
-			//#= } else  if (isCloseOptionsMenuKey(keyCode) || keyCode == ${polish.key.ReturnKey}) {
+			//#= } else  if (isCloseOptionsMenuKey(keyCode, gameAction) || keyCode == ${polish.key.ReturnKey}) {
 		//#else
 			} else  if (isCloseOptionsMenuKey(keyCode, gameAction)) {
 		//#endif
