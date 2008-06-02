@@ -3787,6 +3787,79 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.midp
+	/**
+	 * Determines whether the given key code is a soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param screen the screen
+	 * @return true when the given key is the middle soft key
+	 */
+	public static boolean isSoftKey( int keyCode, javax.microedition.lcdui.Screen screen ) {
+		return false;
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Determines whether the given key code is the left soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param gameAction the corresponding game action
+	 * @param screen the screen
+	 * @return true when the given key is the right soft key
+	 */
+	public static boolean isSoftKeyLeft( int keyCode, int gameAction, javax.microedition.lcdui.Screen screen ) {
+		return false;
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Determines whether the given key code is the right soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param gameAction the corresponding game action
+	 * @param screen the screen
+	 * @return true when the given key is the right soft key
+	 */
+	public static boolean isSoftKeyRight( int keyCode, int gameAction, javax.microedition.lcdui.Screen screen ) {
+		return false;
+	}
+	//#endif
+
+	//#if polish.midp
+	/**
+	 * Determines whether the given key code is the middle soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param gameAction the corresponding game action
+	 * @param screen the screen
+	 * @return true when the given key is the middle soft key
+	 */
+	public static boolean isSoftKeyMiddle( int keyCode, int gameAction, javax.microedition.lcdui.Screen screen ) {
+		return false;
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Determines whether the given key code is a soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param gameAction the corresponding game action
+	 * @param screen the screen
+	 * @return true when the given key is the middle soft key
+	 */
+	public static boolean isSoftKey( int keyCode, int gameAction,  javax.microedition.lcdui.Screen screen ) {
+		return false;
+	}
+	//#endif
 	
 	
 
@@ -3800,7 +3873,7 @@ public final class UiAccess {
 	 * @return true when the given key is the right soft key
 	 */
 	public static boolean isSoftKeyLeft( int keyCode, Screen screen ) {
-		return screen.isSoftKeyLeft( keyCode );
+		return screen.isSoftKeyLeft( keyCode, getGameAction(keyCode, screen) );
 	}
 	//#endif
 
@@ -3814,7 +3887,7 @@ public final class UiAccess {
 	 * @return true when the given key is the right soft key
 	 */
 	public static boolean isSoftKeyRight( int keyCode, Screen screen ) {
-		return screen.isSoftKeyRight( keyCode );
+		return screen.isSoftKeyRight( keyCode, getGameAction(keyCode, screen) );
 	}
 	//#endif
 
@@ -3828,7 +3901,93 @@ public final class UiAccess {
 	 * @return true when the given key is the middle soft key
 	 */
 	public static boolean isSoftKeyMiddle( int keyCode, Screen screen ) {
-		return screen.isSoftKeyMiddle( keyCode );
+		return screen.isSoftKeyMiddle( keyCode, getGameAction(keyCode, screen) );
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Determines whether the given key code is the middle soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param screen the screen
+	 * @return true when the given key is the middle soft key
+	 */
+	public static boolean isSoftKey( int keyCode, Screen screen ) {
+		return screen.isSoftKeyMiddle( keyCode, getGameAction(keyCode, screen) );
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	private static int getGameAction(int keyCode, Screen screen) {
+		int gameAction = 0;
+		try {
+			gameAction = screen.getGameAction(keyCode);
+		} catch (Exception e) {
+			// could be illegal key code for game action
+		}
+		return gameAction;
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Determines whether the given key code is the left soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param gameAction the corresponding game action
+	 * @param screen the screen
+	 * @return true when the given key is the right soft key
+	 */
+	public static boolean isSoftKeyLeft( int keyCode, int gameAction, Screen screen ) {
+		return screen.isSoftKeyLeft( keyCode, gameAction );
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Determines whether the given key code is the right soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param gameAction the corresponding game action
+	 * @param screen the screen
+	 * @return true when the given key is the right soft key
+	 */
+	public static boolean isSoftKeyRight( int keyCode, int gameAction, Screen screen ) {
+		return screen.isSoftKeyRight( keyCode, gameAction );
+	}
+	//#endif
+
+	//#if polish.usePolishGui
+	/**
+	 * Determines whether the given key code is the middle soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param gameAction the corresponding game action
+	 * @param screen the screen
+	 * @return true when the given key is the middle soft key
+	 */
+	public static boolean isSoftKeyMiddle( int keyCode, int gameAction, Screen screen ) {
+		return screen.isSoftKeyMiddle( keyCode, gameAction );
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Determines whether the given key code is a soft key for the given screen.
+	 * If the screen is rotated, the key detection might also change.
+	 * 
+	 * @param keyCode the keyCode value
+	 * @param gameAction the corresponding game action
+	 * @param screen the screen
+	 * @return true when the given key is the middle soft key
+	 */
+	public static boolean isSoftKey( int keyCode, int gameAction, Screen screen ) {
+		return screen.isSoftKey( keyCode, gameAction );
 	}
 	//#endif
 	

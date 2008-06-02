@@ -333,13 +333,6 @@ implements AccessibleCanvas
 	//#endif
 	
 	
-	
-	//#if polish.key.LeftSoftKeys:defined || polish.key.RightSoftKeys:defined
-		private static int[] possibleLeftSoftkeys;
-		private static int[] possibleRightSoftkeys;
-	//#endif
-
-	
 	/**
 	 * Creates a new screen, this constructor can be used together with the //#style directive.
 	 * 
@@ -626,38 +619,6 @@ implements AccessibleCanvas
 		if (startAnimationThread) {
 			StyleSheet.animationThread.start();
 		}
-		//#if polish.key.LeftSoftKeys:defined || polish.key.RightSoftKeys:defined
-			if (possibleLeftSoftkeys == null) {
-				int up = getKeyCode(UP);
-				int down = getKeyCode(DOWN);
-				int left = getKeyCode(LEFT);
-				int right = getKeyCode(RIGHT);
-				ArrayList keys = new ArrayList();
-				int key = 0;
-				//#foreach key in polish.key.LeftSoftKeys
-					//#= key = ${key};
-					if (! (key == up || key == down ||  key == left || key == right)) {
-						keys.add( new Integer(key) );
-					}
-				//#next key
-				possibleLeftSoftkeys = new int[ keys.size() ];
-				for (int i=0; i<keys.size(); i++) {
-					possibleLeftSoftkeys[i] = ((Integer)keys.get(i)).intValue();
-				}
-				keys.clear();
-				//#foreach key in polish.key.RightSoftKeys
-					//#= key = ${key};
-					if (! (key == up || key == down ||  key == left || key == right)) {
-						keys.add( new Integer(key) );
-					}
-				//#next key
-				possibleRightSoftkeys = new int[ keys.size() ];
-				for (int i=0; i<keys.size(); i++) {
-					possibleRightSoftkeys[i] = ((Integer)keys.get(i)).intValue();
-				}
-				
-			}
-		//#endif
 	}
 	
 	/**
@@ -2524,7 +2485,7 @@ implements AccessibleCanvas
 							//System.out.println("menubar did not handle " + keyCode );
 						//#else
 							// internal menubar is used:
-							if ( isSoftKeyLeft(keyCode) ) {
+							if ( isSoftKeyLeft(keyCode, gameAction) ) {
 								if ( this.menuSingleLeftCommand != null) {
 									callCommandListener( this.menuSingleLeftCommand );
 									return;
@@ -2540,7 +2501,7 @@ implements AccessibleCanvas
 										gameAction = Canvas.FIRE;
 									}
 								}
-							} else if ( isSoftKeyRight(keyCode)) {
+							} else if ( isSoftKeyRight(keyCode, gameAction)) {
 								if (!this.menuOpened && this.menuSingleRightCommand != null) {
 									callCommandListener( this.menuSingleRightCommand );
 									repaint();
@@ -2548,14 +2509,14 @@ implements AccessibleCanvas
 								}
 							}
 							boolean doReturn = false;
-							if ( isSoftKeyLeft(keyCode) || isSoftKeyRight(keyCode)) {
+							if ( isSoftKeyLeft(keyCode, gameAction) || isSoftKeyRight(keyCode, gameAction)) {
 								//#if polish.blackberry
 									this.keyPressedProcessed = false;
 								//#endif
 								doReturn = true;
 							}
 							if (this.menuOpened) {
-								if ( isSoftKeyRight(keyCode) ) {
+								if ( isSoftKeyRight(keyCode, gameAction) ) {
 									int selectedIndex = this.menuContainer.getFocusedIndex();
 									if (!this.menuContainer.handleKeyPressed(0, LEFT)
 											|| selectedIndex != this.menuContainer.getFocusedIndex() ) 
@@ -2707,7 +2668,7 @@ implements AccessibleCanvas
 							//# return;
 						//#else
 							if (this.menuOpened  && this.menuContainer != null ) {
-								if ( isSoftKeyLeft(keyCode)) {
+								if ( isSoftKeyLeft(keyCode, gameAction)) {
 									gameAction = FIRE;
 								}
 								processed = this.menuContainer.handleKeyReleased(keyCode, gameAction);
@@ -4556,9 +4517,13 @@ implements AccessibleCanvas
 	/**
 	 * Checks if the given keycode is the left softkey
 	 * @param keyCode the key code
+	 * @param gameAction the associated game action
 	 * @return true when the key is the left soft key
 	 */
-	public final boolean isSoftKeyLeft( int keyCode ) {
+	public final boolean isSoftKeyLeft( int keyCode, int gameAction ) {
+		if (gameAction == LEFT || gameAction == RIGHT || gameAction == UP || gameAction == DOWN) {
+			return false;
+		}
 		int expected = 
 		//#ifdef polish.key.LeftSoftKey:defined
 			//#=  ${polish.key.LeftSoftKey};
@@ -4587,12 +4552,12 @@ implements AccessibleCanvas
 			result = (keyCode == expected);
 		//#else
 			result = false;
-			for (int i=0; i<possibleLeftSoftkeys.length; i++) {
-				if (keyCode == possibleLeftSoftkeys[i]) {
-					result = true;
-					break;
+			//#foreach key in polish.key.LeftSoftKeys
+				//#= expected = ${key};
+				if ( keyCode == expected ) {
+					return true;
 				}
- 			}
+			//#next key
 		//#endif
 		return result;
 	}
@@ -4600,9 +4565,13 @@ implements AccessibleCanvas
 	/**
 	 * Checks if the given keycode is the right softkey
 	 * @param keyCode the key code
+	 * @param gameAction the associated game action
 	 * @return true when the key is the right soft key
 	 */
-	public final boolean isSoftKeyRight( int keyCode ) {
+	public final boolean isSoftKeyRight( int keyCode, int gameAction ) {
+		if (gameAction == LEFT || gameAction == RIGHT || gameAction == UP || gameAction == DOWN) {
+			return false;
+		}
 		int expected = 
 		//#ifdef polish.key.RightSoftKey:defined
 			//#=  ${polish.key.RightSoftKey};
@@ -4630,12 +4599,12 @@ implements AccessibleCanvas
 			result = (keyCode == expected);
 		//#else
 			result = false;
-			for (int i=0; i<possibleRightSoftkeys.length; i++) {
-				if (keyCode == possibleRightSoftkeys[i]) {
-					result = true;
-					break;
+			//#foreach key in polish.key.RightSoftKeys
+				//#= expected = ${key};
+				if ( keyCode == expected ) {
+					return true;
 				}
- 			}
+			//#next key
 		//#endif
 		return result;
 	}
@@ -4643,9 +4612,13 @@ implements AccessibleCanvas
 	/**
 	 * Checks if the given keycode is the middle softkey
 	 * @param keyCode the key code
+	 * @param gameAction the associated game action
 	 * @return true when the key is the middle soft key
 	 */
-	public final boolean isSoftKeyMiddle( int keyCode ) {
+	public final boolean isSoftKeyMiddle( int keyCode, int gameAction ) {
+		if (gameAction == LEFT || gameAction == RIGHT || gameAction == UP || gameAction == DOWN) {
+			return false;
+		}
 		int expected = 
 		//#ifdef polish.key.MiddleSoftKey:defined
 			//#=  ${polish.key.MiddleSoftKey};
@@ -4669,7 +4642,26 @@ implements AccessibleCanvas
 	 * @return true when the key code represents a softkey
 	 */
 	public boolean isSoftKey( int keyCode ) {
-		return isSoftKeyLeft( keyCode ) || isSoftKeyRight( keyCode ) || isSoftKeyMiddle( keyCode );
+		int gameAction = 0;
+		try {
+			gameAction = getGameAction(keyCode);
+		} catch (Exception e) {
+			// could be an illegal key code
+		}
+		return isSoftKey( keyCode, gameAction );
+	}
+	
+
+
+	/**
+	 * Determines if the given keycode belongs to a soft key
+	 * @param keyCode the key code
+	 * @param gameAction the associated game action
+	 * @return true when the given key is a keycode	
+	 */
+	public boolean isSoftKey(int keyCode, int gameAction)
+	{
+		return isSoftKeyLeft(keyCode, gameAction) || isSoftKeyRight(keyCode, gameAction) || isSoftKeyMiddle(keyCode, gameAction);
 	}
 
 	
@@ -4697,6 +4689,8 @@ implements AccessibleCanvas
 		}
 		
 	}
+
+
 
 
 

@@ -350,7 +350,7 @@ public abstract class MIDlet extends UiApplication
 	 */
 	public final boolean platformRequest( String URL) throws ConnectionNotFoundException
 	{
-		//#if polish.BlackBerry.enablePlatformRequest || blackberry.certificate.dir
+		//#if polish.BlackBerry.enablePlatformRequest || blackberry.certificate.dir:defined
 			if (URL.startsWith("http")) {
 				Browser.getDefaultSession().displayPage(URL);
 				return false;
