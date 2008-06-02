@@ -14,11 +14,13 @@ import javax.microedition.midlet.MIDletStateChangeException;
 import de.enough.polish.blackberry.ui.Display;
 import de.enough.polish.util.TextUtil;
 
+//#if polish.BlackBerry.platformRequest
 import net.rim.blackberry.api.browser.Browser;
 import net.rim.blackberry.api.invoke.Invoke;
 import net.rim.blackberry.api.invoke.PhoneArguments;
 import net.rim.blackberry.api.phone.Phone;
 import net.rim.blackberry.api.phone.PhoneCall;
+//#endif
 import net.rim.device.api.ui.UiApplication;
 
 /**
