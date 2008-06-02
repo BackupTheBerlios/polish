@@ -755,7 +755,7 @@ implements AccessibleCanvas
 		
 		int availableWidth = this.screenWidth - this.marginLeft - this.marginRight;
 		if (this.border != null) {
-			availableWidth -= this.border.borderWidth << 1;
+			availableWidth -= (this.border.borderWidth << 1);
 		}
 		//#if tmp.usingTitle
 			if (this.title != null) {
@@ -1736,15 +1736,15 @@ implements AccessibleCanvas
 							// #debug
 							// System.out.println("Screen/ScrollBar: container.contentY=" + this.container.contentY + ", container.internalY=" +  this.container.internalY + ", container.yOffset=" + this.container.yOffset + ", container.height=" + this.container.availableHeight + ", container.relativeY=" + this.container.relativeY);
 							
-							int scrollX = sWidth + this.marginLeft 
+							int scrollX =  rightBorder
 										- this.scrollBar.initScrollBar(sWidth, this.contentHeight, this.container.itemHeight, this.container.yOffset, this.container.internalY, this.container.internalHeight, this.container.focusedIndex, this.container.size() );
 							//TODO allow scroll bar on the left side
 							this.scrollBar.relativeX = scrollX;
-							this.scrollBar.relativeY = this.contentY;
+							this.scrollBar.relativeY = this.container.relativeY;
 							//#if polish.css.show-scrollbar
 								if ( this.scrollBarVisible ) {
 							//#endif
-									this.scrollBar.paint( scrollX , this.contentY, scrollX, rightBorder, g);
+									this.scrollBar.paint( scrollX , this.scrollBar.relativeY + borderWidth, scrollX, rightBorder, g);
 							//#if polish.css.show-scrollbar
 								}
 							//#endif

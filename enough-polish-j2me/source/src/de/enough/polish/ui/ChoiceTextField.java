@@ -352,7 +352,7 @@ public class ChoiceTextField
 			if (this.choiceTriggerEnabled && !this.choiceTriggerAllowInputBeforeTrigger) {
 				String currentText = getString();
 				if (currentText == null || currentText.length() == 0 || currentText.charAt( currentText.length() -1 ) != this.choiceTrigger) {
-					System.out.println("foward fire to textfield...");
+					//System.out.println("foward fire to textfield...");
 					return super.handleKeyPressed(keyCode, gameAction);
 				}
 
