@@ -15,7 +15,7 @@ package de.enough.polish.util;
 public class DeviceControl
 //#if polish.api.nokia-ui && !polish.Bugs.NoPermanentBacklight
 	//#define tmp.useNokiaUi
-//#elif polish.blackberry && blackberry.certificate.dir:defined
+//#elif polish.blackberry && (polish.BlackBerry.enableBackLight || blackberry.certificate.dir:defined)
 	//#define tmp.useBlackBerry
 //#endif
 //#if (!(tmp.useNokiaUi || tmp.useBlackBerry) && polish.usePolishGui && polish.midp2) || polish.api.samsung-api
@@ -89,7 +89,7 @@ public class DeviceControl
 				com.nokia.mid.ui.DeviceControl.setLights(0,100);
 				success = true;
 			//#elif tmp.useBlackBerry
-				//net.rim.device.api.system.Backlight.enable(true);
+				net.rim.device.api.system.Backlight.enable(true);
 				success = true;
 			//#elif tmp.useThread
 				if (thread == null) {
@@ -98,8 +98,6 @@ public class DeviceControl
 						dc.start();
 						success = true;
 					}
-				} else {
-					success = true;
 				}
 			//#endif
 			return success;
@@ -116,7 +114,7 @@ public class DeviceControl
 			//#if tmp.useNokiaUi
 				com.nokia.mid.ui.DeviceControl.setLights(0,0);
 			//#elif tmp.useBlackBerry
-				//net.rim.device.api.system.Backlight.enable(false);
+				net.rim.device.api.system.Backlight.enable(false);
 			//#elif tmp.useThread
 				DeviceControl dc = thread;
 				if (dc != null) {
