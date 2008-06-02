@@ -351,12 +351,103 @@ public class DeviceManager {
                 break;
             }
         }
+        if (device == null) {
+        	System.err.println("Warning: user agent [" + userAgent + "] is not registered.");
+        	int index;
+        	if (userAgent.startsWith("Nokia")) {
+        		return resolveUserAgent( "Nokia", "Nokia", userAgent, true );
+         	} else if (userAgent.startsWith("SonyEricsson")) { 
+        		return resolveUserAgent("Sony-Ericsson", "SonyEricsson", userAgent, false );
+         	} else if (userAgent.startsWith("MOT-")) { 
+        		return resolveUserAgent("Motorola", "MOT-", userAgent, false);
+         	} else if (userAgent.startsWith("SAMSUNG-") || userAgent.startsWith("Samsung-")) { 
+        		return resolveUserAgent("Samsung", "SAMSUNG-", userAgent, false);
+         	} else if (userAgent.startsWith("LG-") ) { 
+        		return resolveUserAgent("LG", "LG-", userAgent, false);
+         	} else if (userAgent.startsWith("LG/") ) { 
+        		return resolveUserAgent("LG", "LG/", userAgent, false);
+         	} else if (userAgent.startsWith("LGE-") ) { 
+        		return resolveUserAgent("LG", "LGE-", userAgent, false);
+         	} else if (userAgent.startsWith("LG") ) { 
+        		return resolveUserAgent("LG", "LG", userAgent, false);
+         	} else if (userAgent.startsWith("SAGEM-") ) { 
+        		return resolveUserAgent("Sagem", "SAGEM-", userAgent, true);
+         	} else if (userAgent.startsWith("SIE-") ) { 
+        		return resolveUserAgent("Siemens", "SIE-", userAgent, true);
+         	} else if ( userAgent.startsWith("BlackBerry/")) {
+         		return resolveUserAgent("BlackBerry", "BlackBerry/", userAgent, false);
+         	} else if ( (index=userAgent.indexOf("Nokia")) != -1) {
+         		userAgent = userAgent.substring(index);
+         		return resolveUserAgent("Nokia", "Nokia", userAgent, true);
+         	} else if ( (index=userAgent.indexOf("BlackBerry")) != -1) {
+         		userAgent = userAgent.substring(index);
+         		return resolveUserAgent("BlackBerry", "BlackBerry", userAgent, false);
+         	} else if ( (index=userAgent.indexOf("Samsung")) != -1) {
+         		userAgent = userAgent.substring(index);
+         		return resolveUserAgent("Samsung", "Samsung", userAgent, false);
+         	}
+        }
         return (Device)device;
     }
     
-    private void initializeUserAgentMapping() {
+ 
+
+	/**
+	 * Dynamically resolves a user agent for a known vendor
+	 * @param vendor the J2ME Polish vendor name, e.g. "Motorola"
+	 * @param userAgentVendor the vendor name at the start of the user agent, e.g. "MOT-"
+	 * @param userAgent the user agent, needs to start with the userAgentVendor, e.g. "MOT-V3i/CLDC-1.0/MIDP-2.0"
+	 * @return the device if it can be resolved, null otherwise
+	 */
+	protected Device resolveUserAgent(String vendor, String userAgentVendor, String userAgent, boolean mayUseMinusSeparator)
+	{
+		String deviceName = userAgent.substring(userAgentVendor.length());
+		int slashPos = deviceName.indexOf('/');
+		int spacePos = deviceName.indexOf(' ');
+		int endPos = slashPos;
+		if (mayUseMinusSeparator) {
+			int minusPos = deviceName.indexOf('-');
+			if ((minusPos < slashPos && minusPos != -1) || (slashPos == -1)) {
+				endPos = minusPos;
+			}
+		}
+		if (spacePos < endPos && spacePos != -1) {
+			endPos = spacePos;
+		}
+		if (endPos == 0) {
+			deviceName = deviceName.substring(1);
+			slashPos = deviceName.indexOf('/');
+			spacePos = deviceName.indexOf(' ');
+			endPos = slashPos;
+			if (mayUseMinusSeparator) {
+				int minusPos = deviceName.indexOf('-');
+				if ((minusPos < slashPos && minusPos != -1) || (slashPos == -1)) {
+					endPos = minusPos;
+				}
+			}
+			if (spacePos < endPos && spacePos != -1) {
+				endPos = spacePos;
+			}
+		}
+		if (endPos != -1){
+			deviceName = deviceName.substring(0, endPos);
+		}
+		Device foundDevice = getDevice( vendor + "/" + deviceName);
+		if (foundDevice == null && deviceName.charAt( deviceName.length() - 1) == 'i') {
+			foundDevice = getDevice( vendor + "/" + deviceName.substring(0, deviceName.length() - 1 ));
+		}
+		if (foundDevice != null) {
+			foundDevice.addCapability("wap.UserAgent", userAgent);
+			if (this.devicesByUserAgent != null) {
+				this.devicesByUserAgent.put(userAgent, foundDevice);
+			}
+		}
+		return foundDevice;
+	}
+
+	private void initializeUserAgentMapping() {
         this.devicesByUserAgent = new HashMap();
-        String CAPABILITY_WAP_USER_AGENT = "wap.userAgent";
+        String CAPABILITY_WAP_USER_AGENT = "wap.UserAgent";
         Device[] allDevices = getDevices();
 
         Requirements requirements = new Requirements();
