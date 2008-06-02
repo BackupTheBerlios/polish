@@ -352,7 +352,7 @@ public class DeviceManager {
             }
         }
         if (device == null) {
-        	System.err.println("Warning: user agent [" + userAgent + "] is not registered.");
+        	//System.err.println("Warning: user agent [" + userAgent + "] is not registered.");
         	int index;
         	if (userAgent.startsWith("Nokia")) {
         		return resolveUserAgent( "Nokia", "Nokia", userAgent, true );
