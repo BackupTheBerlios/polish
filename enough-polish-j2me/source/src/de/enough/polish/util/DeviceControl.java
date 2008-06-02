@@ -89,7 +89,7 @@ public class DeviceControl
 				com.nokia.mid.ui.DeviceControl.setLights(0,100);
 				success = true;
 			//#elif tmp.useBlackBerry
-				net.rim.device.api.system.Backlight.enable(true);
+				//net.rim.device.api.system.Backlight.enable(true);
 				success = true;
 			//#elif tmp.useThread
 				if (thread == null) {
@@ -116,7 +116,7 @@ public class DeviceControl
 			//#if tmp.useNokiaUi
 				com.nokia.mid.ui.DeviceControl.setLights(0,0);
 			//#elif tmp.useBlackBerry
-				net.rim.device.api.system.Backlight.enable(false);
+				//net.rim.device.api.system.Backlight.enable(false);
 			//#elif tmp.useThread
 				DeviceControl dc = thread;
 				if (dc != null) {
