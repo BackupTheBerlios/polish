@@ -1532,7 +1532,7 @@ public class TextField extends StringItem
 				int passedCharacters = 0;
 				String textLine = null;
 				for (int i = 0; i < this.textLines.length; i++) {
-					textLine = this.textLines[i];
+					textLine = this.realTextLines[i]; //this.textLines[i];
 					passedCharacters += textLine.length();
 					//System.out.println("passedCharacters=" + passedCharacters + ", line=" + textLine );
 					if (passedCharacters >= position ) {
@@ -2958,6 +2958,8 @@ public class TextField extends StringItem
 						if (keyCode >= 32
 								&& (keyCode < Canvas.KEY_NUM0 || keyCode > Canvas.KEY_NUM9)
 								&& (keyCode != Canvas.KEY_POUND && keyCode != Canvas.KEY_STAR)
+								&& (keyCode <= 126) // only allow ascii characters for the initial input...
+								&& ( !getScreen().isSoftKey(keyCode, gameAction) )
 						) {
 							useAsciiKeyMap = true;
 						}
