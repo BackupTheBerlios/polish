@@ -256,10 +256,11 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 	
 	public void disablePredictiveInput() {
-		//#if polish.TextField.predictive.showCommands || polish.key.ChangeNumericalAlphaInputModeKey:defined
-		this.parent.addCommand(PredictiveAccess.ENABLE_PREDICTIVE_CMD);
-		this.parent.removeCommand(PredictiveAccess.DISABLE_PREDICTIVE_CMD);
+		//#if polish.TextField.predictive.showCommands || !polish.key.ChangeNumericalAlphaInputModeKey:defined
+			this.parent.addCommand(PredictiveAccess.ENABLE_PREDICTIVE_CMD);
 		//#endif
+			
+		this.parent.removeCommand(PredictiveAccess.DISABLE_PREDICTIVE_CMD);
 		
 		this.parent.removeCommand(PredictiveAccess.ADD_WORD_CMD);
 
@@ -296,9 +297,10 @@ public class PredictiveAccess implements TrieSetupCallback{
 			this.parent.predictiveInput = true;
 			synchronize();
 		}
+		
+		this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
 
-		//#if polish.TextField.predictive.showCommands || polish.key.ChangeNumericalAlphaInputModeKey:defined
-			this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
+		//#if polish.TextField.predictive.showCommands || !polish.key.ChangeNumericalAlphaInputModeKey:defined
 			this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
 		//#endif
 		
