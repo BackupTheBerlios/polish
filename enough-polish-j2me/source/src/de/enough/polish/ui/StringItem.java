@@ -45,6 +45,9 @@ import javax.microedition.lcdui.Graphics;
  */
 public class StringItem extends Item
 {
+	private static final int DIRECTION_BACK_AND_FORTH = 0;
+	private static final int DIRECTION_LEFT = 1;
+	private static final int DIRECTION_RIGHT = 2;
 	protected String text;
 	protected String[] textLines;
 	protected int textColor;
@@ -60,6 +63,12 @@ public class StringItem extends Item
 		private int textWidth;
 		private boolean isHorizontalAnimationDirectionRight;
 		protected boolean animateTextWrap = true;
+		//#ifdef polish.css.text-wrap-animation-direction
+			protected int textWrapDirection = DIRECTION_BACK_AND_FORTH;
+		//#endif
+		//#ifdef polish.css.text-wrap-animation-speed
+			protected int textWrapSpeed = DIRECTION_BACK_AND_FORTH;
+		//#endif
 	//#endif
 	//#ifdef polish.css.text-horizontal-adjustment
 		protected int textHorizontalAdjustment;
@@ -190,6 +199,48 @@ public class StringItem extends Item
 	public void animate(long currentTime, ClippingRegion repaintRegion)
 	{
 		super.animate(currentTime, repaintRegion);
+		//#if polish.css.text-wrap
+			if (this.animateTextWrap) {
+				if (this.useSingleLine && this.clipText) {
+					
+					int speed = 1;
+					//#ifdef polish.css.text-wrap-animation-speed
+						speed = this.textWrapSpeed;
+					//#endif
+					//#ifdef polish.css.text-wrap-animation-direction
+						if (this.textWrapDirection == 0) {
+					//#endif
+							if (this.isHorizontalAnimationDirectionRight) {
+								this.xOffset += speed;
+								if (this.xOffset >= 0) {
+									this.isHorizontalAnimationDirectionRight = false;
+								}
+							} else {
+								this.xOffset -= speed;
+								if (this.xOffset + this.textWidth < this.contentWidth) {
+									this.isHorizontalAnimationDirectionRight = true;
+								}
+							}
+					//#ifdef polish.css.text-wrap-animation-direction
+						} else if (this.textWrapDirection == DIRECTION_LEFT) {
+							int offset = this.xOffset - speed;
+							if (offset + this.textWidth < 0) {
+								offset = this.contentWidth;
+							}
+							this.xOffset = offset;
+						} else {
+							int offset = this.xOffset + speed;
+							if (offset > this.contentWidth) {
+								offset = -this.textWidth;
+							}
+							this.xOffset = offset;							
+						}
+					//#endif
+
+					addRelativeToContentRegion(repaintRegion, 0, 0, this.contentWidth, this.contentHeight );
+				}
+			}
+		//#endif
 		//#if polish.css.text-effect
 			if (this.textEffect != null) {
 				this.textEffect.animate( this, currentTime, repaintRegion );
@@ -198,33 +249,6 @@ public class StringItem extends Item
 	}
 	//#endif
 
-	//#if polish.css.text-wrap
-	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.Item#animate()
-	 */
-	public boolean animate() {
-		boolean animated = super.animate();
-		//#if polish.css.text-wrap
-			if (this.animateTextWrap) {
-				if (this.useSingleLine && this.clipText) {
-					if (this.isHorizontalAnimationDirectionRight) {
-						this.xOffset++;
-						if (this.xOffset >= 0) {
-							this.isHorizontalAnimationDirectionRight = false;
-						}
-					} else {
-						this.xOffset--;
-						if (this.xOffset + this.textWidth < this.contentWidth) {
-							this.isHorizontalAnimationDirectionRight = true;
-						}
-					}
-					animated = true;
-				}
-			}
-		//#endif
-		return animated;
-	}
-	//#endif
 	
 	//#if polish.css.text-wrap
 	/* (non-Javadoc)
@@ -748,6 +772,18 @@ public class StringItem extends Item
 				Boolean animateTextWrapBool = style.getBooleanProperty("text-wrap-animate");
 				if (animateTextWrapBool != null) {
 					this.animateTextWrap = animateTextWrapBool.booleanValue();
+				}
+			//#endif
+			//#ifdef polish.css.text-wrap-animation-direction
+				Integer directionInt = style.getIntProperty("text-wrap-animation-direction");
+				if (directionInt != null) {
+					this.textWrapDirection = directionInt.intValue();
+				}
+			//#endif
+			//#ifdef polish.css.text-wrap-animation-speed
+				Integer animationSpeedInt = style.getIntProperty("text-wrap-animation-speed");
+				if (animationSpeedInt != null) {
+					this.textWrapSpeed = animationSpeedInt.intValue();
 				}
 			//#endif
 		//#endif
