@@ -2707,12 +2707,8 @@ public class TextField extends StringItem
 					|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM2)
 					|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM6)
 					|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM4)
-				//#if polish.key.LeftSoftKey:defined
-					//#= || (keyCode == ${polish.key.LeftSoftKey} )
-				//#endif
-				//#if polish.key.RightSoftKey:defined
-					//#= || (keyCode == ${polish.key.RightSoftKey} )
-				//#endif
+					|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
+					|| (this.screen.isSoftKey(keyCode, gameAction))
 				) 
 				{
 					return false;
@@ -2722,12 +2718,8 @@ public class TextField extends StringItem
 						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
 						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
 						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
-					//#if polish.key.LeftSoftKey:defined
-						//#= || (keyCode == ${polish.key.LeftSoftKey} )
-					//#endif
-					//#if polish.key.RightSoftKey:defined
-						//#= || (keyCode == ${polish.key.RightSoftKey} )
-					//#endif
+						|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
+						|| (this.screen.isSoftKey(keyCode, gameAction))
 					) 
 				{
 					return false;
@@ -2739,12 +2731,8 @@ public class TextField extends StringItem
 						|| (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
 						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4)
 						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
-						//#if polish.key.LeftSoftKey:defined
-							//#= || (keyCode == ${polish.key.LeftSoftKey} )
-						//#endif
-						//#if polish.key.RightSoftKey:defined
-							//#= || (keyCode == ${polish.key.RightSoftKey} )
-						//#endif
+						|| (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
+						|| (this.screen.isSoftKey(keyCode, gameAction))
 						) 
 				{
 					return false;
