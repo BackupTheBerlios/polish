@@ -2,7 +2,6 @@ package de.enough.polish.finalize.blackberry;
 
 import java.io.File;
 import java.util.Locale;
-import java.util.Map;
 
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
