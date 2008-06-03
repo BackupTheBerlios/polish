@@ -1526,7 +1526,7 @@ public class TextField extends StringItem
 			this.editField.setCursorPosition(position);
 		//#elif tmp.allowDirectInput || tmp.forceDirectInput
 			this.caretPosition = position;
-			if ( this.isInitialized  && this.textLines != null ){
+			if ( this.isInitialized  && this.realTextLines != null ){
 				int row = 0;
 				int col = 0;
 				int passedCharacters = 0;
