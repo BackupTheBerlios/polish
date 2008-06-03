@@ -2947,7 +2947,7 @@ public class TextField extends StringItem
 			//#if tmp.supportsAsciiKeyMap
 				try {
 					String name  = this.screen.getKeyName( keyCode );
-					if (name.length() == 1) {
+					if (name != null && name.length() == 1) {
 						insertChar = name.charAt(0);
 					}
 				} catch (IllegalArgumentException e) {
