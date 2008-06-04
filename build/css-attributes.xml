@@ -3672,6 +3672,24 @@
 		id="327"
 	/>
 	
+	<attribute
+		name="text-wrap-animation-direction"
+		type="integer"
+		appliesTo="StringItem,FakeStringCustomItem"
+		description="The direction of the animation when the text is too wide and wrapping is deactivated."
+		default="both"
+		values="both,left,right"
+		id="328"
+	/>
+
+	<attribute
+		name="text-wrap-animation-speed"
+		type="integer"
+		appliesTo="StringItem,FakeStringCustomItem"
+		description="The speed of the animation when the text is too wide and wrapping is deactivated."
+		default="1"
+		id="329"
+	/>
 	
 	<!--
 	
