@@ -108,11 +108,8 @@
     <features />
   </vendor>
   <vendor>
-    <name>LG Electronics</name>
-    <features />
-  </vendor>
-  <vendor>
     <name>LG</name>
+    <capability name="vendor.alias" value="LG Electronics" />
     <features>hasCommandKeyEvents</features>
   </vendor>
   <vendor>
@@ -177,6 +174,7 @@
   </vendor>
   <vendor>
     <name>BenQ</name>
+    <capability name="vendor.alias" value="BenQ-Siemens" />
   </vendor>
   <vendor>
     <name>Palm</name>
@@ -247,10 +245,6 @@
   </vendor>
   <vendor>
     <name>Philips</name>
-    <features />
-  </vendor>
-  <vendor>
-    <name>BenQ-Siemens</name>
     <features />
   </vendor>
   <vendor>

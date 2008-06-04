@@ -455,8 +455,18 @@ public class DeviceManager {
         Device[] devicesWithUA = requirements.filterDevices(allDevices);
         
         Device currentDevice;
-        String shortendUserAgentId;
+        String shortendUserAgentId = null;
         String currentUserAgentAsString;
+
+//        Writer allAgentsWriter;
+//        Writer filteredAgentsWriter;
+//        try {
+//            allAgentsWriter = new OutputStreamWriter(new FileOutputStream("/home/rickyn/test/originalAgents"));
+//            filteredAgentsWriter = new OutputStreamWriter(new FileOutputStream("/home/rickyn/test/filteredAgents"));
+//        } catch (FileNotFoundException exception) {
+//            exception.printStackTrace();
+//            throw new RuntimeException(exception);
+//        }
         
         for (int deviceIndex = 0; deviceIndex < devicesWithUA.length; deviceIndex++) {
             
@@ -468,12 +478,25 @@ public class DeviceManager {
                 continue;
             }
             String[] currentUserAgents = StringUtil.splitAndTrim(currentUserAgentAsString,'\1');
+            Arrays.sort( currentUserAgents ); // longest one is the last one
             
-            for (int userAgentIndex = 0; userAgentIndex < currentUserAgents.length; userAgentIndex++) {
+            for (int userAgentIndex = currentUserAgents.length; --userAgentIndex >= 0;) {
                 String currentUserAgent = currentUserAgents[userAgentIndex];
                 
                 int lengthOfString = currentUserAgent.length();
                 int i = lengthOfString;
+                
+//                try {
+//                    allAgentsWriter.write(currentUserAgent + "\t" + currentDevice.toString() + "\n");
+//                } catch (IOException exception) {
+//                    exception.printStackTrace();
+//                }
+                
+                boolean containsUserAgentAlready = this.devicesByUserAgent.containsKey(currentUserAgent);
+                if(containsUserAgentAlready) {
+                    continue;
+                }
+                
                 while(i > 1) {
                     // Save all prefixes of the useragent.
                     shortendUserAgentId = currentUserAgent.substring(0,i);
@@ -486,13 +509,30 @@ public class DeviceManager {
                             this.devicesByUserAgent.remove(shortendUserAgentId);
                             i--;
                         }
-                    } else {
-                        this.devicesByUserAgent.put(currentUserAgent,currentDevice);
+                        break;
                     }
+                    this.devicesByUserAgent.put(currentUserAgent,currentDevice);
                     i--;
                 }
             }
         }
+//        Set entrySet = this.devicesByUserAgent.entrySet();
+//        for (Iterator iterator = entrySet.iterator(); iterator.hasNext(); ) {
+//            Entry element = (Entry) iterator.next();
+//            try {
+//                filteredAgentsWriter.write(element.getKey().toString() + "\t" + element.getValue().toString() + "\n");
+//            } catch (IOException exception) {
+//                exception.printStackTrace();
+//            }
+//        }
+//        
+//        try {
+//            filteredAgentsWriter.close();
+//            allAgentsWriter.close();
+//        } catch (IOException exception) {
+//            exception.printStackTrace();
+//        }
+        
     }
     
     public Device[] getVirtualDevices() {
