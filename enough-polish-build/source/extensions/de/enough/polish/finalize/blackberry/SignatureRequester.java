@@ -96,9 +96,6 @@ implements Runnable, OutputFilter
 		}
 		
 		String pw = env.getVariable( "blackberry.certificate.password" );
-		if (jdeHome.getAbsolutePath().indexOf("4.1") != -1 ) {
-			pw = '\t' + pw;
-		}
 		
 		return requestSignature( jdeHome, codFile, certificateDir, sigtoolDir, pw );
 	}
@@ -152,6 +149,9 @@ implements Runnable, OutputFilter
 		}
 		arguments.add( codFile.getAbsolutePath() ); // cod file to be signed
 		if ( pw != null && ! this.isSupportingPasswordParameter ) {
+			if (jdeHome.getAbsolutePath().indexOf("4.1") != -1 ) {
+				pw = '\t' + pw;
+			}
 			this.password = pw;
 			Thread thread = new Thread( this );
 			thread.start();
