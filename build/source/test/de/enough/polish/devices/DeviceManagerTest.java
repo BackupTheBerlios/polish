@@ -27,6 +27,8 @@ package de.enough.polish.devices;
 
 import java.io.File;
 
+import de.enough.polish.Device;
+
 import junit.framework.TestCase;
 
 /**
@@ -38,12 +40,18 @@ import junit.framework.TestCase;
 public class DeviceManagerTest extends TestCase
 {
 	
-	public void testResolveUserAgent(){
-		DeviceDatabase db = DeviceDatabase.getInstance( new File("/Users/robertvirkus/Documents/workspace/enough-polish-build" ) );
+	private static final String POLISH_HOME = ".";
+
+    public void testResolveUserAgent(){
+		DeviceDatabase db = DeviceDatabase.getInstance( new File(POLISH_HOME ) );
 		DeviceManager manager = db.getDeviceManager();
 		String userAgent;
 		de.enough.polish.Device device;
-		
+       
+		userAgent = "MOT-RAZRV3x/85.97.41P MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1";
+		device = manager.getDeviceByUserAgent(userAgent);
+		assertNotNull(device);
+        
 		userAgent = "Nokia6300/2.0 (05.50) Profile/MIDP-2.0 Configuration/CLDC-1.1";
 		device = manager.getDeviceByUserAgent(userAgent);
 		assertNotNull(device);
@@ -80,10 +88,12 @@ public class DeviceManagerTest extends TestCase
 		device = manager.getDeviceByUserAgent(userAgent);
 		assertNotNull(device);
 
-//		userAgent = "";
-//		device = manager.getDeviceByUserAgent(userAgent);
-//		assertNotNull(device);
-
 	}
+    
+    public void testA() {
+        DeviceDatabase deviceDatabase = DeviceDatabase.getInstance(new File(POLISH_HOME));
+        Device device = deviceDatabase.getDeviceManager().getDeviceByUserAgent("BlackBerry8110/4.3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/124");
+        System.out.println(device);
+    }
 
 }
