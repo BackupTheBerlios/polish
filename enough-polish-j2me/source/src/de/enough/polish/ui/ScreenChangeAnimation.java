@@ -34,7 +34,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 /**
- * <p>Paints a transition two screens for a nice effect.</p>
+ * <p>Paints a transition of two screens for a nice effect.</p>
  * <p>Using a screen change animation is easy:
  *    <br />
  *    Use the <code>screen-change-animation</code> CSS attribute for specifying which

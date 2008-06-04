@@ -30,7 +30,9 @@ import java.util.Hashtable;
 import de.enough.polish.util.ArrayList;
 
 /**
- * <p>Copyright Enough Software 2006, 2007 - 2008</p>
+ * <p>Holds information about an XML node.</p>
+ * <p>This is typically used for parsing XML documents using the XmlDomParser.</p>
+ * <p>Copyright Enough Software 2006 - 2008</p>
  * 
  * <pre>
  * history
@@ -38,32 +40,35 @@ import de.enough.polish.util.ArrayList;
  * </pre>
  * 
  * @author Richard Nkrumah, Richard.Nkrumah@enough.de
+ * @see XmlDomParser
  */
 public class XmlDomNode
 {
     private XmlDomNode parent;
-    private ArrayList childList;
+    private final ArrayList childList;
     private Hashtable attributes;
     private String name;
     private int type;
     private String text;
     
     /**
-     * 
-     * @param parent
-     * @param name
-     * @param type
+     * Creates a new XmlDomNode
+     * @param parent the parent node
+     * @param name the name of this element
+     * @param type the type of the element, see SimplePullParser
+     * @see SimplePullParser
      */
     public XmlDomNode(XmlDomNode parent, String name, int type) {
     	this(parent, name, null, type);
     }
 
     /**
-     * 
-     * @param parent
-     * @param name
-     * @param attributes
-     * @param type
+     * Creates a new XmlDomNode
+     * @param parent the parent node
+     * @param name the name of this element
+     * @param attributes the attributes of this node
+     * @param type the type of the element, see SimplePullParser
+     * @see SimplePullParser
      */
     public XmlDomNode(XmlDomNode parent, String name, Hashtable attributes, int type) {
         this.parent = parent;
@@ -79,8 +84,8 @@ public class XmlDomNode
     }
     
     /**
-     * 
-     * @param childName
+     * Retrieves the name child element
+     * @param childName the name of the child
      * @return the first child with the given name or null if no child node is found.
      */
     public XmlDomNode getChild(String childName) {
@@ -108,72 +113,124 @@ public class XmlDomNode
     }
    
     /**
-     * 
-     * @param i 
-     * @return Node
+     * Retrieves the numbered child
+     * @param index the index of the child
+     * @return the associated child
+     * @throws ArrayIndexOutOfBoundsException when the index is illegal
+     * @see #getChildCount() for getting the number of children
      */
-    public XmlDomNode getChild(int i) {
-        return (XmlDomNode) this.childList.get(i);
+    public XmlDomNode getChild(int index) {
+        return (XmlDomNode) this.childList.get(index);
     }
     
     /**
-     * Add Node (child).
+     * Adds a child node
      * 
-     * @param childNode
+     * @param childNode the childNode
      */
     public void addChild(XmlDomNode childNode) {
         this.childList.add(childNode);
     }
     
     /**
-     * 
+     * Retrieves the number of children
      * @return number of Childs.
      */
     public int getChildCount() {
         return this.childList.size();
     }
     
+    /**
+     * Retrieves the text embedded in this element
+     * @return the text
+     */
     public String getText() {
         return this.text;
     }
 
+    /**
+     * Sets the text of the node
+     * @param text the text
+     */
     public void setText(String text) {
         this.text = text;
     }
 
+    /**
+     * Retrieves the name of this node
+     * @return the name of this node
+     */
     public String getName() {
         return this.name;
     }
 
+    /**
+     * Sets the name of this node
+     * @param name the name of this node
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets the parent of this node
+     * @return the parent or null if there is no parent
+     */
     public XmlDomNode getParent() {
         return this.parent;
     }
     
+    /**
+     * Sets the parent of this node
+     * @param parent the parent node
+     */
     public void setParent(XmlDomNode parent) {
         this.parent = parent;
     }
 
+    /**
+     * Retrieves the type of this node
+     * @return the type
+     * @see SimplePullParser
+     */
     public int getType() {
         return this.type;
     }
     
+    /**
+     * Sets the type of this node
+     * @param type the type
+     * @see SimplePullParser
+     */
     public void setType(int type) {
         this.type = type;
     }
 
+    /**
+     * Retrieves all attributes
+     * @return all attributes, can be null
+     */
 	public Hashtable getAttributes() {
 		return this.attributes;
 	}
 	
+    /**
+     * Sets all attributes
+     * @param attributes all attributes, can be null
+     */
 	public void setAttributes(Hashtable attributes) {
 		this.attributes = attributes;
 	}
 
-	public String getAttribute(String name) {
-		return (String) this.attributes.get(name);
+	/**
+	 * Retrieves the specified attribute
+	 * @param attributeName the attribute name
+	 * @return the attribute value, null if it is not known
+	 */
+	public String getAttribute(String attributeName) {
+		if (this.attributes == null) {
+			return null;
+		}
+		return (String) this.attributes.get(attributeName);
 	}
 }
