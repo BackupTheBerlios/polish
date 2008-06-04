@@ -71,14 +71,14 @@ public class Capability {
 			throw new InvalidComponentException("Each defined capability need the <identifier> element in capabilities.xml");
 		}
 		String extensionMode = definition.getChildTextTrim("extension-mode");
-		this.appendValues = "append".equals( extensionMode );
+		this.appendValues = "append".equals( extensionMode ) || "appendZero".equals(definition.getChildTextTrim("extension-mode"));
 		this.prependValues = "prepend".equals( extensionMode );
 		String separator = definition.getChildTextTrim("extension-mode-separator");
 		this.appendZeroDelimitedExtension = "appendZero".equals(definition.getChildTextTrim("extension-mode"));
-		if (separator == null || separator.length()==0) {
+        if (this.appendZeroDelimitedExtension) {
+            this.singleValuesSeparator = '\1';
+        } else if (separator == null || separator.length()==0) {
 			this.singleValuesSeparator = ',';
-		} else if (this.appendValues) {
-			this.singleValuesSeparator = '\1';
 		} else {
 			this.singleValuesSeparator = separator.charAt(0);
 		}
