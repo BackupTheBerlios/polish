@@ -166,6 +166,14 @@ public class DeviceManager {
 		HashMap devicesMap = this.devicesByIdentifier;
 		List xmlList = document.getRootElement().getChildren();
 		if (identifierList != null) {
+			Object[] identifiers = identifierList.toArray();
+			for (int i = 0; i < identifiers.length; i++)
+			{
+				String identifier = (String) identifiers[i];
+				identifierList.set(i, identifier.toLowerCase() );
+				//System.out.println("requested=" + identifier);
+			}
+			//System.out.println("loading " + identifierList.size() + " devices...");
 			// optimized loading: load only devices of the specified identifiers.
 			// This drastically improves loadtime but produces overhead for cases
 			// when a desired device contains a parent device that is not in the list.
@@ -184,7 +192,7 @@ public class DeviceManager {
 	/**
 	 * Loads the requested devices from the given xmlList
 	 * 
-	 * @param identifierList the requested identifiers, if null all devices are loaded
+	 * @param identifierList the requested identifiers in lower case, if null all devices are loaded 
 	 * @param configuratioManager
 	 * @param platfManager
 	 * @param vendManager
@@ -209,8 +217,9 @@ public class DeviceManager {
 			String[] identifiers = StringUtil.splitAndTrim(identifierStr,',');
 			for (int i = 0; i < identifiers.length; i++) {
 				String identifier = identifiers[i];
+				String identifierLowerCase = identifier.toLowerCase();
 				if (identifierList != null) {
-					boolean isRequiredIdentifier = identifierList.remove( identifier );
+					boolean isRequiredIdentifier = (identifierList.remove( identifier ) || identifierList.remove( identifierLowerCase) );
 					if (!isRequiredIdentifier) {
 						// skip the loading of devices which are not needed. When a device later onwards
 						// refers to a parent device, this will be loaded in the getDevice( String identifier ) method.
@@ -236,6 +245,7 @@ public class DeviceManager {
 				}
 				Device device = new Device( configuratioManager, platfManager, definition, identifier, deviceName, vendor, grManager, libManager, this, capManager );
 				devicesMap.put( identifier, device );
+				devicesMap.put( identifierLowerCase, device );
 				this.devicesList.add( device );
 				if (identifierList != null && identifierList.size() == 0) {
 //					System.out.println("done loading <identifier> devices");
@@ -274,6 +284,9 @@ public class DeviceManager {
 	 */
 	public Device getDevice(String identifier) {
 		Device device = (Device) this.devicesByIdentifier.get( identifier );
+		if (device == null) {
+			device = (Device) this.devicesByIdentifier.get( identifier.toLowerCase() );
+		}
 		// when devices are only loaded for specific identifiers, 
 		// J2ME Polish might need to load parent devices later onwards:
 		if (device == null && this.devicesXmlList != null) {
@@ -289,6 +302,9 @@ public class DeviceManager {
 				if (device == null && this.currentDevicesXmlList != this.devicesXmlList) {
 					loadDevices(identifiers, this.configurationManager, this.platformManager, this.vendorManager, this.groupManager, this.libraryManager, this.capabilityManager, this.devicesByIdentifier, this.currentDevicesXmlList );
 					device = (Device) this.devicesByIdentifier.get( identifier );
+					if (device == null) {
+						device = (Device) this.devicesByIdentifier.get( identifier.toLowerCase() );
+					}
 				}
 			} catch (InvalidComponentException e) {
 				e.printStackTrace();

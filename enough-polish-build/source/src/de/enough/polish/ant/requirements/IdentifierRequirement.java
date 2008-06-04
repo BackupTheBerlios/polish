@@ -60,7 +60,7 @@ public class IdentifierRequirement extends Requirement {
 		String deviceIdentifier = device.getIdentifier();
 		for (int i = 0; i < this.identifiers.length; i++) {
 			String identifier = this.identifiers[i];
-			if (identifier.equals( deviceIdentifier)) {
+			if (identifier.equalsIgnoreCase( deviceIdentifier)) {
 				return true;
 			}
 		}
