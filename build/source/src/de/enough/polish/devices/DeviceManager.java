@@ -357,16 +357,17 @@ public class DeviceManager {
         if (this.devicesByUserAgent == null) {
             initializeUserAgentMapping();
         }
-        Object device = null;
-        int userAgentLength = userAgent.length();
-        String subString;
-        for(int i = userAgentLength; i > 1; i--) {
-            subString = userAgent.substring(0,i);
-            device = this.devicesByUserAgent.get(subString);
-            if(device != null) {
-                break;
-            }
-        }
+        Device device = (Device) this.devicesByUserAgent.get(userAgent);
+//        Object device = null;
+//        int userAgentLength = userAgent.length();
+//        String subString;
+//        for(int i = userAgentLength; i > 1; i--) {
+//            subString = userAgent.substring(0,i);
+//            device = this.devicesByUserAgent.get(subString);
+//            if(device != null) {
+//                break;
+//            }
+//        }
         if (device == null) {
         	//System.err.println("Warning: user agent [" + userAgent + "] is not registered.");
         	int index;
@@ -374,8 +375,8 @@ public class DeviceManager {
         		return resolveUserAgent( "Nokia", "Nokia", userAgent, true );
          	} else if (userAgent.startsWith("SonyEricsson")) { 
         		return resolveUserAgent("Sony-Ericsson", "SonyEricsson", userAgent, false );
-         	} else if (userAgent.startsWith("MOT-")) { 
-        		return resolveUserAgent("Motorola", "MOT-", userAgent, false);
+         	} else if (userAgent.startsWith("MOT-")) {
+         		return resolveMotorolaUserAgent( userAgent );
          	} else if (userAgent.startsWith("SAMSUNG-") || userAgent.startsWith("Samsung-")) { 
         		return resolveUserAgent("Samsung", "SAMSUNG-", userAgent, false);
          	} else if (userAgent.startsWith("LG-") ) { 
@@ -403,10 +404,54 @@ public class DeviceManager {
          		return resolveUserAgent("Samsung", "Samsung", userAgent, false);
          	}
         }
-        return (Device)device;
+        return device;
     }
     
  
+
+	/**
+	 * Resolves a Motorola user agent.
+	 * Motorola device definitions often start with RAZR etc, which might not need to be used in J2ME Polish.
+	 * @param userAgent the full user agent
+	 * @return the found Motorola device, if any
+	 */
+	private Device resolveMotorolaUserAgent(String userAgent)
+	{
+		String vendor = "Motorola";
+		String deviceName = resolveDeviceName("MOT-", userAgent, false);
+		Device foundDevice = getDevice( vendor + "/" + deviceName);
+		if (foundDevice == null) {
+			if (deviceName.startsWith("RAZR")) {
+				if (deviceName.length() > "RAZR".length()) {
+					deviceName = deviceName.substring("RAZR".length());
+				} else {
+					deviceName = resolveDeviceName("RAZR", userAgent.substring( userAgent.indexOf("RAZR")), false);
+				}
+				foundDevice = getDevice( vendor + "/" + deviceName);
+			} else if (deviceName.startsWith("MOTOROKR")) {
+				if (deviceName.length() > "MOTOROKR".length()) {
+					deviceName = deviceName.substring("MOTOROKR".length());
+				} else {
+					deviceName = resolveDeviceName("MOTOROKR", userAgent.substring( userAgent.indexOf("MOTOROKR")), false);
+				}
+				foundDevice = getDevice( vendor + "/" + deviceName);
+			} else if (deviceName.startsWith("ROKR")) {
+				if (deviceName.length() > "ROKR".length()) {
+					deviceName = deviceName.substring("ROKR".length());
+				} else {
+					deviceName = resolveDeviceName("ROKR", userAgent.substring( userAgent.indexOf("ROKR")), false);
+				}
+				foundDevice = getDevice( vendor + "/" + deviceName);				
+			}
+		}
+		if (foundDevice != null) {
+			foundDevice.addCapability("wap.UserAgent", userAgent);
+			if (this.devicesByUserAgent != null) {
+				this.devicesByUserAgent.put(userAgent, foundDevice);
+			}
+		}
+		return foundDevice;
+	}
 
 	/**
 	 * Dynamically resolves a user agent for a known vendor
@@ -417,7 +462,30 @@ public class DeviceManager {
 	 */
 	protected Device resolveUserAgent(String vendor, String userAgentVendor, String userAgent, boolean mayUseMinusSeparator)
 	{
-		String deviceName = userAgent.substring(userAgentVendor.length());
+		String deviceName = resolveDeviceName(userAgentVendor, userAgent, mayUseMinusSeparator);
+		Device foundDevice = getDevice( vendor + "/" + deviceName);
+		if (foundDevice == null && deviceName.charAt( deviceName.length() - 1) == 'i') {
+			foundDevice = getDevice( vendor + "/" + deviceName.substring(0, deviceName.length() - 1 ));
+		}
+		if (foundDevice != null) {
+			foundDevice.addCapability("wap.UserAgent", userAgent);
+			if (this.devicesByUserAgent != null) {
+				this.devicesByUserAgent.put(userAgent, foundDevice);
+			}
+		}
+		return foundDevice;
+	}
+
+	/**
+	 * @param userAgentVendor
+	 * @param userAgent
+	 * @param mayUseMinusSeparator
+	 * @return
+	 */
+	private String resolveDeviceName(String userAgentVendor, String userAgent,
+			boolean mayUseMinusSeparator)
+	{
+		String deviceName = userAgent.substring(userAgentVendor.length()).trim();
 		int slashPos = deviceName.indexOf('/');
 		int spacePos = deviceName.indexOf(' ');
 		int endPos = slashPos;
@@ -448,17 +516,7 @@ public class DeviceManager {
 		if (endPos != -1){
 			deviceName = deviceName.substring(0, endPos);
 		}
-		Device foundDevice = getDevice( vendor + "/" + deviceName);
-		if (foundDevice == null && deviceName.charAt( deviceName.length() - 1) == 'i') {
-			foundDevice = getDevice( vendor + "/" + deviceName.substring(0, deviceName.length() - 1 ));
-		}
-		if (foundDevice != null) {
-			foundDevice.addCapability("wap.UserAgent", userAgent);
-			if (this.devicesByUserAgent != null) {
-				this.devicesByUserAgent.put(userAgent, foundDevice);
-			}
-		}
-		return foundDevice;
+		return deviceName;
 	}
 
 	private void initializeUserAgentMapping() {
@@ -471,7 +529,7 @@ public class DeviceManager {
         Device[] devicesWithUA = requirements.filterDevices(allDevices);
         
         Device currentDevice;
-        String shortendUserAgentId = null;
+//        String shortendUserAgentId = null;
         String currentUserAgentAsString;
 
 //        Writer allAgentsWriter;
@@ -494,42 +552,43 @@ public class DeviceManager {
                 continue;
             }
             String[] currentUserAgents = StringUtil.splitAndTrim(currentUserAgentAsString,'\1');
-            Arrays.sort( currentUserAgents ); // longest one is the last one
+//            Arrays.sort( currentUserAgents ); // longest one is the last one
             
             for (int userAgentIndex = currentUserAgents.length; --userAgentIndex >= 0;) {
                 String currentUserAgent = currentUserAgents[userAgentIndex];
+                this.devicesByUserAgent.put( currentUserAgent, currentDevice );
                 
-                int lengthOfString = currentUserAgent.length();
-                int i = lengthOfString;
-                
-//                try {
-//                    allAgentsWriter.write(currentUserAgent + "\t" + currentDevice.toString() + "\n");
-//                } catch (IOException exception) {
-//                    exception.printStackTrace();
+//                int lengthOfString = currentUserAgent.length();
+//                int i = lengthOfString;
+//                
+////                try {
+////                    allAgentsWriter.write(currentUserAgent + "\t" + currentDevice.toString() + "\n");
+////                } catch (IOException exception) {
+////                    exception.printStackTrace();
+////                }
+//                
+//                boolean containsUserAgentAlready = this.devicesByUserAgent.containsKey(currentUserAgent);
+//                if(containsUserAgentAlready) {
+//                    continue;
 //                }
-                
-                boolean containsUserAgentAlready = this.devicesByUserAgent.containsKey(currentUserAgent);
-                if(containsUserAgentAlready) {
-                    continue;
-                }
-                
-                while(i > 1) {
-                    // Save all prefixes of the useragent.
-                    shortendUserAgentId = currentUserAgent.substring(0,i);
-                    
-                    boolean shortendKeyPresent = this.devicesByUserAgent.containsKey(shortendUserAgentId);
-                    if(shortendKeyPresent) {
-                        // The prefix exists. Remove all of them to remove ambiguity
-                        while(i > 1) {
-                            shortendUserAgentId = currentUserAgent.substring(0,i);
-                            this.devicesByUserAgent.remove(shortendUserAgentId);
-                            i--;
-                        }
-                        break;
-                    }
-                    this.devicesByUserAgent.put(currentUserAgent,currentDevice);
-                    i--;
-                }
+//                
+//                while(i > 1) {
+//                    // Save all prefixes of the useragent.
+//                    shortendUserAgentId = currentUserAgent.substring(0,i);
+//                    
+//                    boolean shortendKeyPresent = this.devicesByUserAgent.containsKey(shortendUserAgentId);
+//                    if(shortendKeyPresent) {
+//                        // The prefix exists. Remove all of them to remove ambiguity
+//                        while(i > 1) {
+//                            shortendUserAgentId = currentUserAgent.substring(0,i);
+//                            this.devicesByUserAgent.remove(shortendUserAgentId);
+//                            i--;
+//                        }
+//                        break;
+//                    }
+//                    this.devicesByUserAgent.put(currentUserAgent,currentDevice);
+//                    i--;
+//                }
             }
         }
 //        Set entrySet = this.devicesByUserAgent.entrySet();

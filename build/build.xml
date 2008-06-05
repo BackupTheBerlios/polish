@@ -142,8 +142,7 @@
 		<j2mepolish>
 		    <!-- general settings -->
 			<info 
-				license="GPL"
-				copyright="Copyright 2007 Enough Software. All rights reserved." 
+				copyright="Copyright 2008 Enough Software. All rights reserved." 
 				description="Used for building the enough-j2mepolish-client.jar." 
 				infoUrl="http://www.j2mepolish.org" 
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-${polish.locale}-j2mepolish.jar" 
@@ -234,8 +233,7 @@
 		<j2mepolish>
 		    <!-- general settings -->
 			<info 
-				license="GPL"
-				copyright="Copyright 2007 Enough Software. All rights reserved." 
+				copyright="Copyright 2008 Enough Software. All rights reserved." 
 				description="Used for building versions for Java 5 syntax support." 
 				infoUrl="http://www.j2mepolish.org" 
 				jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-${polish.locale}-j2mepolish.jar" 
@@ -303,8 +301,7 @@
 			<j2mepolish>
 			    <!-- general settings -->
 				<info 
-					license="GPL"
-					copyright="Copyright 2007 Enough Software. All rights reserved." 
+					copyright="Copyright 2008 Enough Software. All rights reserved." 
 					description="Used for building the enough-j2mepolish-client.jar." 
 					infoUrl="http://www.j2mepolish.org" 
 					jarName="${ nospace(polish.vendor) }-${ nospace(polish.name) }-${polish.locale}-j2mepolish.jar" 
@@ -773,6 +770,16 @@
 			>
 			<fileset dir="setup/samples/doja" excludes="**/macosx/**,**/CVS" />
 			<fileset dir="../enough-polish-sample-doja" includes="resources/**/*.*" excludes="CVS"/>
+		</copy>
+		<!-- copy thirdparty-smaato-blackbox application -->
+		<mkdir dir="tmp/samples/thirdparty-smaato-blackbox/source/src" />
+		<copy todir="tmp/samples/thirdparty-smaato-blackbox/source/src">
+			<fileset dir="../smaato-blackbox/source/src" includes="**/*.java" />
+		</copy>
+		<copy todir="tmp/samples/thirdparty-smaato-blackbox/" 
+			>
+			<fileset dir="setup/samples/thirdparty-smaato-blackbox" excludes="**/macosx/**,**/CVS" />
+			<fileset dir="../smaato-blackbox" includes="resources/**/*.*" excludes="**/CVS"/>
 		</copy>
 	</target>
 

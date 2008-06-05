@@ -113,7 +113,9 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
         </pack>
         <pack name="Third Party: SMAATO Advertising Library" required="no" preselected="yes">
             <description>A library for embedding advertisements in your application.</description>
-            <file src="../../smaato-soma-library/dist/smaato-soma-1.0-Beta6.jar" targetdir="$INSTALL_PATH/thirdparty/smaato"/>
+            <file src="../setup/thirdparty/smaato" targetdir="$INSTALL_PATH/thirdparty"/>
+            <file src="samples/thirdparty-smaato-blackbox" targetdir="$INSTALL_PATH/samples"/>
+            <parsable targetfile="$INSTALL_PATH/samples/thirdparty-smaato-blackbox/build.xml" type="shell" /> 
         </pack>
         <pack name="Blank Sample Application" required="no" preselected="yes">
             <description>A sample skeleton project structure useful for creating new J2ME Polish projects.</description>
