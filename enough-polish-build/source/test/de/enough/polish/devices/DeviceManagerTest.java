@@ -43,7 +43,7 @@ public class DeviceManagerTest extends TestCase
 	private static final String POLISH_HOME = ".";
 
     public void testResolveUserAgent(){
-    	implResolveUserAgent( new FileUserAgentStorage(  new File("tmp/useragents.txt")) );
+    	implResolveUserAgent( new FileUserAgentStorage(  new File("tmp/useragents.txt"), new File("tmp/useragents_unresolved.txt")) );
     	implResolveUserAgent(null);
     }
     
@@ -107,6 +107,10 @@ public class DeviceManagerTest extends TestCase
 		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNotNull(device);
 		assertEquals("KG800", device.getName() );
+
+		userAgent = "Fantasy/6600";
+		device = manager.getDeviceByUserAgent(userAgent, storage );
+		assertNull(device);
 
 	}
     
