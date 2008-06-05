@@ -486,12 +486,6 @@ public class DeviceManager {
 		if (foundDevice == null && deviceName.charAt( deviceName.length() - 1) == 'i') {
 			foundDevice = getDevice( vendor + "/" + deviceName.substring(0, deviceName.length() - 1 ));
 		}
-		if (foundDevice != null) {
-			foundDevice.addCapability("wap.UserAgent", userAgent);
-			if (this.devicesByUserAgent != null) {
-				this.devicesByUserAgent.put(userAgent, foundDevice);
-			}
-		}
 		return foundDevice;
 	}
 
@@ -540,7 +534,7 @@ public class DeviceManager {
 
 	private void initializeUserAgentMapping() {
         this.devicesByUserAgent = new HashMap();
-        String CAPABILITY_WAP_USER_AGENT = "wap.UserAgent";
+        String CAPABILITY_WAP_USER_AGENT = "wap.userAgent";
         Device[] allDevices = getDevices();
 
         Requirements requirements = new Requirements();
