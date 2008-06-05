@@ -220,7 +220,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 				
 				this.parent.addCommand(ADD_WORD_CMD);
 				
-				//#if polish.TextField.predictive.showCommands || polish.key.ChangeNumericalAlphaInputModeKey:defined
+				//#if polish.TextField.predictive.showCommands || !polish.key.ChangeInputModeKey:defined
 				this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
 				//#endif
 				
@@ -256,7 +256,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 	
 	public void disablePredictiveInput() {
-		//#if polish.TextField.predictive.showCommands || !polish.key.ChangeNumericalAlphaInputModeKey:defined
+		//#if polish.TextField.predictive.showCommands || !polish.key.ChangeInputModeKey:defined
 			this.parent.addCommand(PredictiveAccess.ENABLE_PREDICTIVE_CMD);
 		//#endif
 			
@@ -300,7 +300,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 		
 		this.parent.removeCommand(ENABLE_PREDICTIVE_CMD);
 
-		//#if polish.TextField.predictive.showCommands || !polish.key.ChangeNumericalAlphaInputModeKey:defined
+		//#if polish.TextField.predictive.showCommands || !polish.key.ChangeInputModeKey:defined
 			this.parent.addCommand(DISABLE_PREDICTIVE_CMD);
 		//#endif
 		
@@ -829,7 +829,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 				this.parent.notifyStateChanged();
 				return false;
 			}
-			else if ( this.parent.getScreen().isGameActionFire(keyCode, gameAction)) {
+			else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
 				
 				openChoices( false );
 				if(!this.builder.isString(0))
