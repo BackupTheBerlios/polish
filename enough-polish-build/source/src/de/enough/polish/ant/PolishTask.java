@@ -385,10 +385,17 @@ public class PolishTask extends ConditionalTask {
 				System.out.println("Last build was interrupted or failed, now clearing work directory...");
 				if (this.buildSetting.getWorkDir().exists()) {
 					FileUtil.delete( this.buildSetting.getWorkDir() );
+					try {
+						this.errorLock.getParentFile().mkdirs();
+						this.errorLock.createNewFile();
+					} catch (IOException e) {
+						System.err.println("Warning: unable to create temporary lock file: " + e.toString() );
+					}
 				}
 			} else {
 				this.lastRunFailed = false;
 				try {
+					this.errorLock.getParentFile().mkdirs();
 					this.errorLock.createNewFile();
 				} catch (IOException e) {
 					System.err.println("Warning: unable to create temporary lock file: " + e.toString() );
@@ -2296,7 +2303,7 @@ public class PolishTask extends ConditionalTask {
 		if (this.polishLogger != null) {
 			this.polishLogger.setCompileMode( true );
 		}
-		String taskName = getTaskName();
+		String localTaskName = getTaskName();
 		try {
 			//compiler.setTaskName("javac");
 			setTaskName("javac"  );
@@ -2323,7 +2330,7 @@ public class PolishTask extends ConditionalTask {
 				throw new BuildException( "Unable to compile source code for device [" + device.getIdentifier() + "]: " + e.getMessage(), e );
 			}
 		} finally {
-			setTaskName( taskName );
+			setTaskName( localTaskName );
 		}
 		if (this.polishLogger != null) {
 			this.polishLogger.setCompileMode( false );
