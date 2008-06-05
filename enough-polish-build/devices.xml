@@ -258,7 +258,7 @@ These namespaces/schemas will be used soon.
     <capability name="key.RightSoftKeys" value="-7,-22,22,57346,-4" />
     <capability name="key.maybeSupportsAsciiKeyMap" value="true" />
     <capability name="MenuBar.OptionsPosition" value="left" />
-    <capability name="Bugs" value="SoftKeyMappedToFire,displaySetCurrentFlickers,needsBottomOrientiationForStringDrawing" />
+    <capability name="Bugs" value="SoftKeyMappedToFire,noSoftKeyReleasedEvents,displaySetCurrentFlickers,needsBottomOrientiationForStringDrawing" />
   </device>
   <device supportsPolishGui="true">
     <identifier>Generic/AnyPhone_128x128</identifier>
@@ -12176,7 +12176,7 @@ These namespaces/schemas will be used soon.
     <capability name="Font.medium" value="20" />
     <capability name="Font.large" value="24" />
     <capability name="AnnouncementDate" value="2007-01-15" />
-    <capability name="Bugs" value="SoftKeyMappedToFire" />
+    <capability name="Bugs" value="SoftKeyMappedToFire, noSoftKeyReleasedEvents" />
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D820" />
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D820/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0" />
   </device>
@@ -12215,7 +12215,7 @@ These namespaces/schemas will be used soon.
     <capability name="Font.medium" value="20" />
     <capability name="Font.large" value="24" />
     <capability name="AnnouncementDate" value="2007-01-26" />
-    <capability name="Bugs" value="SoftKeyMappedToFire" />
+    <capability name="Bugs" value="SoftKeyMappedToFire, noSoftKeyReleasedEvents" />
   </device>
   <device>
     <identifier>Samsung/SGH-D908</identifier>
@@ -12252,7 +12252,7 @@ These namespaces/schemas will be used soon.
     <capability name="Font.medium" value="20" />
     <capability name="Font.large" value="24" />
     <capability name="AnnouncementDate" value="2007-01-26" />
-    <capability name="Bugs" value="SoftKeyMappedToFire" />
+    <capability name="Bugs" value="SoftKeyMappedToFire, noSoftKeyReleasedEvents" />
   </device>
   <device>
     <identifier>Samsung/SGH-C130</identifier>
@@ -12326,7 +12326,7 @@ These namespaces/schemas will be used soon.
     <capability name="Font.medium" value="16" />
     <capability name="Font.large" value="20" />
     <capability name="AnnouncementDate" value="2006-10-25" />
-    <capability name="Bugs" value="SoftKeyMappedToFire" />
+    <capability name="Bugs" value="SoftKeyMappedToFire, noSoftKeyReleasedEvents" />
     <capability name="wap.userAgent" value="SEC-SGHD520/1.0 NetFront/3.2" />
     <capability name="wap.userAgent" value="SEC-SGHD520/1.0 NetFront/3.2 Profile/MIDP-2.0 Configuration/CLDC-1.1" />
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D520" />
@@ -12367,7 +12367,7 @@ These namespaces/schemas will be used soon.
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D608" />
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D608/1.0/WAP2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1/*MzU3MTEzMDAwMDIyMjY5 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0" />
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D608/1.0/WAP2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1/*MzU3MTEzMDAwMjI5MzY5 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0" />
-    <capability name="Bugs" value="SoftKeyMappedToFire" />
+    <capability name="Bugs" value="SoftKeyMappedToFire, noSoftKeyReleasedEvents" />
   </device>
   <device>
     <identifier>Samsung/SGH-T809</identifier>
@@ -12504,13 +12504,15 @@ These namespaces/schemas will be used soon.
     <capability name="StorageSize" value="18MB" />
     <capability name="MaxJarSize" value="dynamic" />
     <capability name="Emulator.Control" value="SamsungD720" />
-    <capability name="Bugs" value="SoftKeyMappedToFire" />
+    <capability name="Bugs" value="SoftKeyMappedToFire, noSoftKeyReleasedEvents" />
     <capability name="wap.userAgent" value="SEC-SGHD720" />
   </device>
   <device>
     <identifier>Samsung/SGH-D730</identifier>
     <parent>Samsung/SGH-D720</parent>
     <capability name="Emulator.Control" value="SamsungD730" />
+    <capability name="wap.userAgent" value="" />
+    <capability name="wap.userAgent" value="SEC-SGHD730" />
   </device>
   <device>
     <identifier>Samsung/Z100</identifier>
@@ -13282,8 +13284,7 @@ These namespaces/schemas will be used soon.
     <capability name="Network" value="GSM, GPRS" />
     <capability name="Frequency" value="900, 1800, 1900" />
     <capability name="CameraResolution" value="1.3 MP" />
-    <capability name="Bugs" value="losesFullScreen" />
-    <capability name="Bugs" value="SoftKeyMappedToFire" />
+    <capability name="Bugs" value="SoftKeyMappedToFire, noSoftKeyReleasedEvents" />
     <capability name="AnnouncementDate" value="2007-01-15" />
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D500" />
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D500/1.0" />
@@ -13342,7 +13343,7 @@ These namespaces/schemas will be used soon.
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D600/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0" />
     <capability name="wap.userAgent" value="SAMSUNG-SCH-D600/1.0 profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101(GUI) MMP/2.0" />
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D600E/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0" />
-    <capability name="Bugs" value="SoftKeyMappedToFire" />
+    <capability name="Bugs" value="SoftKeyMappedToFire, noSoftKeyReleasedEvents" />
   </device>
   <device>
     <identifier>Samsung/SGH-D800</identifier>
@@ -13378,7 +13379,7 @@ These namespaces/schemas will be used soon.
     <capability name="Font.medium" value="20" />
     <capability name="Font.large" value="24" />
     <capability name="AnnouncementDate" value="2006-10-27" />
-    <capability name="Bugs" value="SoftKeyMappedToFire" />
+    <capability name="Bugs" value="SoftKeyMappedToFire, noSoftKeyReleasedEvents" />
     <capability name="wap.userAgent" value="SEC-SGHD800" />
     <capability name="wap.userAgent" value="SEC-SGHD800/1.0 NetFront/3.2 Profile/MIDP-2.0 Configuration/CLDC-1.1" />
   </device>
@@ -13454,7 +13455,7 @@ These namespaces/schemas will be used soon.
     <capability name="CameraResolution" value="2 MP" />
     <capability name="CameraZoom" value="4" />
     <capability name="key.ReturnKey" value="-11" />
-    <capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin, SoftKeyMappedToFire" />
+    <capability name="Bugs" value="ImageIOStreamAutoClose, drawRgbOrigin, SoftKeyMappedToFire, noSoftKeyReleasedEvents" />
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D900" />
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D900/1.0" />
     <capability name="wap.userAgent" value="SAMSUNG-SGH-D900/1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 UP.Browser/6.2.3.3.c.1.101 (GUI) MMP/2.0 (via IBM WBI 4.5)" />

@@ -632,6 +632,19 @@
 		</solution>
 	</bug>
 
+
+	<bug>
+		<name>noSoftKeyReleasedEvents</name>
+		<area>ui</area>
+		<description>
+			No keyReleased(int) event is triggered when a softkey has been released. Only the keyPressed(int) event is 
+			forwarded.
+		</description>
+		<solution>
+			Use the J2ME Polish UI or only react to keyPressed(int) events for softkey values.
+		</solution>
+	</bug>
+
 	<!--
 	<bug>
 		<name></name>
