@@ -2387,7 +2387,7 @@ public abstract class Item extends Object
 	protected boolean handleKeyPressed( int keyCode, int gameAction ) {
 		//#debug
 		System.out.println("item " + this + ": handling keyPressed for keyCode=" + keyCode + ", gameAction=" + gameAction);
-		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) && this.appearanceMode != PLAIN )
+		if ( this.appearanceMode != PLAIN && getScreen().isGameActionFire(keyCode, gameAction) )
 		{
 			return notifyItemPressedStart();
 		}
@@ -2425,8 +2425,7 @@ public abstract class Item extends Object
 	protected boolean handleKeyReleased( int keyCode, int gameAction ) {
 		//#debug
 		System.out.println("handleKeyReleased(" + keyCode + ", " + gameAction + ") for " + this + ", isPressed=" + this.isPressed);
-		if ((gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
-				&& this.appearanceMode != PLAIN && this.isPressed )
+		if (this.appearanceMode != PLAIN && this.isPressed && getScreen().isGameActionFire(keyCode, gameAction) )
 		{
 			notifyItemPressedEnd();
 			Item item = this;
@@ -2632,7 +2631,7 @@ public abstract class Item extends Object
 	 */
 	protected boolean handlePointerPressed( int relX, int relY ) {
 		if ( isInItemArea(relX, relY)) {
-			return handleKeyPressed( -1, Canvas.FIRE );
+			return handleKeyPressed( 0, Canvas.FIRE );
 		}
 		return false;
 	}
@@ -2659,7 +2658,7 @@ public abstract class Item extends Object
 	 */
 	protected boolean handlePointerReleased( int relX, int relY ) {
 		if ( isInItemArea(relX, relY)) {
-			return handleKeyReleased( -1, Canvas.FIRE );
+			return handleKeyReleased( 0, Canvas.FIRE );
 		}
 		return false;
 	}

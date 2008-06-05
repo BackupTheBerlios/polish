@@ -321,13 +321,14 @@ public class ChoiceTextField
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		//#debug
 		System.out.println("handleKeyPressed( keyCode=" + keyCode + ", gameAction=" + gameAction +  ", isInChoice=" + this.isInChoice + ", isOpen=" + this.isOpen + ", matches=" + this.numberOfMatches +" )");
+		boolean isFireGameAction = getScreen().isGameActionFire(keyCode, gameAction);
 		if (this.isInChoice) {
 			if ( this.choicesContainer.handleKeyPressed(keyCode, gameAction) ) {
 				//#debug
 				System.out.println("keyPressed handled by choices container");
 				return true;
 			}
-			if (gameAction == Canvas.FIRE) {
+			if (isFireGameAction) {
 				// option has been selected!
 				Item item = this.choicesContainer.getFocusedItem();
 				item.notifyItemPressedStart();
@@ -341,7 +342,7 @@ public class ChoiceTextField
 			//System.out.println("focusing choices container");
 			enterChoices( true );
 			return true;
-		} else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
+		} else if (isFireGameAction) {
 			if (this.isOpen) {
 				notifyItemPressedStart();
 				this.numberOfMatches = 0;
@@ -401,6 +402,7 @@ public class ChoiceTextField
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		//#debug
 		System.out.println("handleKeyReleased( keyCode=" + keyCode + ", gameAction=" + gameAction +  ", isInChoice=" + this.isInChoice + ", isOpen=" + this.isOpen + ", matches=" + this.numberOfMatches +" )");
+		boolean isFireGameAction = getScreen().isGameActionFire(keyCode, gameAction);
 		if (this.isInChoice) {
 			if ( this.choicesContainer.handleKeyReleased(keyCode, gameAction) ) {
 				//#debug
@@ -413,7 +415,7 @@ public class ChoiceTextField
 			}
 			//System.out.println("focusing textfield again, isFocused=" + this.isFocused);
 			
-			if (gameAction == Canvas.FIRE) {
+			if (isFireGameAction) {
 				enterChoices( false );
 				// option has been selected!
 				Item item = this.choicesContainer.getFocusedItem();
@@ -467,7 +469,7 @@ public class ChoiceTextField
 			}
 			return true;
 		} 
-		else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
+		else if (isFireGameAction)
 		{
 			notifyItemPressedEnd();
 			openChoices(!this.isOpen);

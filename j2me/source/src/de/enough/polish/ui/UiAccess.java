@@ -3991,6 +3991,33 @@ public final class UiAccess {
 	}
 	//#endif
 	
+	//#if polish.midp
+	/**
+	 * Determines whether the given key is really a Canvas.FIRE game action
+	 * @param keyCode the key code
+	 * @param gameAction the game action
+	 * @param screen the screen
+	 * @return true when the gameAction is Canvas.FIRE and the given key is not '5' or a soft key
+	 */
+	public static boolean isGameActionFire( int keyCode, int gameAction, javax.microedition.lcdui.Screen screen ) {
+		return gameAction == javax.microedition.lcdui.Canvas.FIRE && keyCode != javax.microedition.lcdui.Canvas.KEY_NUM5; 
+	}
+	//#endif
+	
+	//#if polish.usePolishGui
+	/**
+	 * Determines whether the given key is really a Canvas.FIRE game action
+	 * @param keyCode the key code
+	 * @param gameAction the game action
+	 * @param screen the screen
+	 * @return true when the gameAction is Canvas.FIRE and the given key is not '5' or a soft key
+	 */
+	public static boolean isGameActionFire( int keyCode, int gameAction, Screen screen ) {
+		return screen.isGameActionFire( keyCode, gameAction );
+	}
+	//#endif
+
+	
 	//#if polish.usePolishGui
 	/**
 	 * Set the style of the specified screen's menubar.

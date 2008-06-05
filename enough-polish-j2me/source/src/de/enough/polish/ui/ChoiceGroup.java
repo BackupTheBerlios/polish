@@ -1320,8 +1320,10 @@ implements Choice
 		}
 		//#debug
 		System.out.println("handleKeyPressed( " + keyCode + ", " + gameAction + " ) for " + this);
+		boolean gameActionIsFire = getScreen().isGameActionFire(keyCode, gameAction); 
+		
 		//#if polish.ChoiceGroup.handleDefaultCommandFirst == true
-			if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
+			if (gameActionIsFire) {
 				//#ifdef polish.usePopupItem
 					if (!this.isPopup || this.isPopupClosed) {
 				//#endif
@@ -1379,12 +1381,12 @@ implements Choice
 		if (!processed) {
 			ChoiceItem choiceItem = (ChoiceItem) this.focusedItem;
 			//#ifdef polish.usePopupItem
-				if (this.isPopup && this.isPopupClosed && gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
+				if (this.isPopup && this.isPopupClosed && gameActionIsFire) {
 					notifyItemPressedStart(); // open popup in handleKeyReleased()
 					return true;
 				} else
 			//#endif
-			if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && choiceItem != null ) {
+			if (gameActionIsFire && choiceItem != null) {
 				choiceItem.notifyItemPressedStart();
 				return true;
 			} else {
@@ -1519,7 +1521,8 @@ implements Choice
 //				&& this.isPopup && !this.isPopupClosed
 //				)
 //			) {
-		if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
+		boolean gameActionIsFire =	getScreen().isGameActionFire(keyCode, gameAction); 
+		if (gameActionIsFire) {
 			ChoiceItem choiceItem = (ChoiceItem) this.focusedItem;
 			if (choiceItem != null
 					//#ifdef polish.usePopupItem
@@ -1596,7 +1599,7 @@ implements Choice
 		if (  triggerKey )  
 		{
 			this.isPointerReleaseShouldTriggerKeyRelease = true;
-			handled |= handleKeyPressed( -1, Canvas.FIRE );
+			handled |= handleKeyPressed( 0, Canvas.FIRE );
 		}
 		return handled;
 	}
@@ -1624,7 +1627,7 @@ implements Choice
 			
 			boolean handled = handlePointerScrollReleased(relX, relY);
 			if (!handled) {
-				handled = handleKeyReleased( -1, Canvas.FIRE );
+				handled = handleKeyReleased( 0, Canvas.FIRE );
 			}
 			if (handled) {
 				return true;

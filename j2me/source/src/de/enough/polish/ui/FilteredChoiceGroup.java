@@ -274,8 +274,7 @@ public class FilteredChoiceGroup
 	 * @see de.enough.polish.ui.FakeCustomItem#handleKeyReleased(int, int)
 	 */
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
-		if (gameAction == Canvas.FIRE 
-				&& keyCode != Canvas.KEY_NUM5 
+		if (getScreen().isGameActionFire(keyCode, gameAction)
 				&& StyleSheet.display != null) 
 		{
 			showFilteredList( StyleSheet.display );

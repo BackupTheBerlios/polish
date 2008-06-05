@@ -1414,7 +1414,7 @@ implements Choice
 		//#endif
 		boolean success = super.handlePointerPressed(relX, relY); // focuses the appropriate item
 		if (success || isInItemArea(relX, relY)) {
-			success |= handleKeyPressed( -1, Canvas.FIRE );
+			success |= handleKeyPressed( 0, Canvas.FIRE );
 		}
 		return success;
 	}

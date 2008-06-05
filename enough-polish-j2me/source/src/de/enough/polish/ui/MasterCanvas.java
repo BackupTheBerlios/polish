@@ -74,7 +74,9 @@ public class MasterCanvas
 	//#endif
 	private int screenWidth;
 	private int screenHeight;
-	
+	//#if polish.Bugs.noSoftKeyReleasedEvents
+		private boolean isIgnoreReleasedEvent;
+	//#endif
 	
 	private MasterCanvas() {
 		// disallow instantiation...
@@ -133,11 +135,44 @@ public class MasterCanvas
 	 * @see javax.microedition.lcdui.Canvas#keyPressed(int)
 	 */
 	protected void keyPressed(int keyCode) {
+		//#if polish.Bugs.noSoftKeyReleasedEvents
+			this.isIgnoreReleasedEvent = false;
+		//#endif
 		if (this.currentCanvas != null) { 
 			this.currentCanvas.keyPressed( keyCode );
 		}
 	}
+
 	
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#keyRepeated(int)
+	 */
+	protected void keyRepeated(int keyCode) {
+		if (this.currentCanvas != null) { 
+			//#if polish.Bugs.noSoftKeyReleasedEvents
+				if (this.isIgnoreReleasedEvent) {
+					// also ignore repeated events:
+					return;
+				}
+			//#endif
+			this.currentCanvas.keyRepeated( keyCode );
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.lcdui.Canvas#keyReleased(int)
+	 */
+	protected void keyReleased(int keyCode) {
+		//#if polish.Bugs.noSoftKeyReleasedEvents
+			if (this.isIgnoreReleasedEvent) {
+				this.isIgnoreReleasedEvent = false;
+				return;
+			}
+		//#endif
+		this.currentCanvas.keyReleased( keyCode );
+	}
+	
+
 	//#if polish.hasPointerEvents
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#pointerPressed(int,int)
@@ -170,23 +205,6 @@ public class MasterCanvas
 		}
 	}
 	//#endif
-
-	
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#keyRepeated(int)
-	 */
-	protected void keyRepeated(int keyCode) {
-		if (this.currentCanvas != null) { 
-			this.currentCanvas.keyRepeated( keyCode );
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.Canvas#keyReleased(int)
-	 */
-	protected void keyReleased(int keyCode) {
-		this.currentCanvas.keyReleased( keyCode );
-	}
 
 	protected void sizeChanged(int width, int height) {
 		this.screenHeight = height;
@@ -317,6 +335,9 @@ public class MasterCanvas
 			if (StyleSheet.currentScreen != nextDisplayable &&  (!(nextDisplayable instanceof Screen))  ) {
 				StyleSheet.currentScreen = null;
 			}
+		//#endif
+		//#if polish.Bugs.noSoftKeyReleasedEvents
+			instance.isIgnoreReleasedEvent = true;
 		//#endif
 		if ( !instance.isShown() ) {
 			display.setCurrent( instance );

@@ -633,7 +633,7 @@ public class TreeItem
 				}
 
 			}
-			if (!handled && gameAction == Canvas.FIRE ) {
+			if (!handled && getScreen().isGameActionFire(keyCode, gameAction) ) {
 				handled = this.root.notifyItemPressedStart() || this.children.size() > 0;
 				if (this.isExpanded) { //will be closed in keyReleased
 					this.internalX = 0;
@@ -675,7 +675,7 @@ public class TreeItem
 				}
 
 			}
-			if (!handled && gameAction == Canvas.FIRE) {
+			if (!handled && getScreen().isGameActionFire(keyCode, gameAction)) {
 				this.root.notifyItemPressedEnd();
 				setExpanded( !this.isExpanded );
 				handled = true;

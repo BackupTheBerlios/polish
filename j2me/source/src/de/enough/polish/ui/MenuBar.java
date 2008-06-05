@@ -1136,8 +1136,7 @@ public class MenuBar extends Item {
 				//#elif polish.key.CenterSoftKey:defined
 					//#= if ( keyCode == ${polish.key.CenterSoftKey}
 				//#else
-					if ( gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5
-							&& !(this.screen.isSoftKeyLeft(keyCode, gameAction) || this.screen.isSoftKeyRight(keyCode, gameAction))
+					if ( this.screen.isGameActionFire(keyCode, gameAction)
 				//#endif
 							&& this.singleMiddleCommand != null && this.singleMiddleCommandItem.getAppearanceMode() != PLAIN) 
 					{
@@ -1277,7 +1276,7 @@ public class MenuBar extends Item {
 						return true;
 					}
 				//#endif
-				return commandItem.handleKeyReleased(keyCode, Canvas.FIRE);
+				return commandItem.handleKeyReleased(0, Canvas.FIRE);
 		//#if polish.key.ReturnKey:defined
 			//#= } else  if (isCloseOptionsMenuKey(keyCode, gameAction) || keyCode == ${polish.key.ReturnKey}) {
 		//#else
@@ -1336,10 +1335,9 @@ public class MenuBar extends Item {
 			//#elif polish.key.CenterSoftKey:defined
 				//#= if ( keyCode == ${polish.key.CenterSoftKey}
 			//#else
-				if ( gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5
-						&& !(this.screen.isSoftKeyLeft(keyCode, gameAction) || this.screen.isSoftKeyRight(keyCode, gameAction))
+				if ( getScreen().isGameActionFire(keyCode, gameAction)
 			//#endif
-						&& this.singleMiddleCommand != null && this.singleMiddleCommandItem.getAppearanceMode() != PLAIN) 
+					&& this.singleMiddleCommand != null && this.singleMiddleCommandItem.getAppearanceMode() != PLAIN) 
 				{
 					//#if polish.key.MiddleSoftKey:defined
 						this.isSoftKeyPressed = true;			

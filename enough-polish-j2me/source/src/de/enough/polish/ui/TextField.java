@@ -2835,7 +2835,7 @@ public class TextField extends StringItem
 								!handled) 
 						{
 							handled = handleKeyNavigation(keyCode, gameAction);
-							if (!handled && gameAction == Canvas.FIRE && this.defaultCommand != null) {
+							if (!handled && getScreen().isGameActionFire(keyCode, gameAction) && this.defaultCommand != null) {
 								notifyItemPressedStart();
 								handled = true;
 							}
@@ -2896,7 +2896,7 @@ public class TextField extends StringItem
 			//#if ${ isOS( Windows ) }
 				|| (gameAction != Canvas.DOWN && gameAction != Canvas.UP && gameAction != Canvas.LEFT && gameAction != Canvas.RIGHT)
 			//#endif
-			|| (gameAction == Canvas.FIRE ) )
+			|| (getScreen().isGameActionFire(keyCode, gameAction) ) )
 		{	
 			//#if !(polish.blackberry || tmp.forceDirectInput)
 				showTextBox();
@@ -3296,8 +3296,7 @@ public class TextField extends StringItem
 				commitCurrentCharacter();
 			}
 			
-			if (gameAction == Canvas.FIRE
-					&& keyCode != Canvas.KEY_NUM5
+			if (getScreen().isGameActionFire(keyCode, gameAction)
 					&& this.defaultCommand != null 
 					&& this.itemCommandListener != null) 
 			{

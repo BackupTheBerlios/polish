@@ -2335,7 +2335,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	protected boolean handlePointerPressed( int relX, int relY ) {
 		if ( isInItemArea(relX, relY)) {
-			return handleKeyPressed( -1, Canvas.FIRE );
+			return handleKeyPressed( 0, Canvas.FIRE );
 		}
 		return false;
 	}
@@ -2362,7 +2362,7 @@ public abstract class FakeCustomItem extends javax.microedition.lcdui.CustomItem
 	 */
 	protected boolean handlePointerReleased( int relX, int relY ) {
 		if ( isInItemArea(relX, relY)) {
-			return handleKeyReleased( -1, Canvas.FIRE );
+			return handleKeyReleased( 0, Canvas.FIRE );
 		}
 		return false;
 	}

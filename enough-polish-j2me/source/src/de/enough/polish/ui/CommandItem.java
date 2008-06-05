@@ -307,6 +307,7 @@ public class CommandItem extends IconItem {
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		//#debug
 		System.out.println( this + " handleKeyPressed, isOpen=" + this.isOpen);
+		boolean isFireGameAction = getScreen().isGameActionFire(keyCode, gameAction);
 		if ( this.isOpen ) {
 			if (
 			//#if !polish.blackberry || polish.hasTrackBallEvents
@@ -332,14 +333,14 @@ public class CommandItem extends IconItem {
 			}
 			return true;
 		} else if ( this.hasChildren && this.appearanceMode != PLAIN ) { // has children but is not open
-			if ( (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5)
+			if ( isFireGameAction
 				//#if !polish.blackberry || polish.hasTrackBallEvents
 					|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
 				//#endif
 			) {
 				return notifyItemPressedStart();
 			}
-		} else if ( gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5  && this.appearanceMode != PLAIN ){ // has no children:
+		} else if ( isFireGameAction && this.appearanceMode != PLAIN ){ // has no children:
 			// press this item:
 			return notifyItemPressedStart();
 		}
@@ -398,8 +399,9 @@ public class CommandItem extends IconItem {
 		}
 		else
 		{
+			boolean isFireGameAction = getScreen().isGameActionFire(keyCode, gameAction);
 			if ( this.hasChildren && this.appearanceMode != PLAIN ) { // has children but is not open
-				if ( (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) 
+				if ( isFireGameAction 
 					//#if !polish.blackberry || polish.hasTrackBallEvents
 						|| (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
 					//#endif
@@ -408,7 +410,7 @@ public class CommandItem extends IconItem {
 					open( true );
 					return true;
 				}
-			} else if (  gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5 && this.appearanceMode != PLAIN ){ // has no children:
+			} else if (  isFireGameAction && this.appearanceMode != PLAIN ){ // has no children:
 				notifyItemPressedEnd();
 				// fire command action event:
 				//#debug

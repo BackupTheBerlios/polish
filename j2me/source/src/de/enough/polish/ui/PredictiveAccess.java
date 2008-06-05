@@ -829,7 +829,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 				this.parent.notifyStateChanged();
 				return false;
 			}
-			else if (gameAction == Canvas.FIRE && keyCode != Canvas.KEY_NUM5) {
+			else if ( this.parent.getScreen().isGameActionFire(keyCode, gameAction)) {
 				
 				openChoices( false );
 				if(!this.builder.isString(0))

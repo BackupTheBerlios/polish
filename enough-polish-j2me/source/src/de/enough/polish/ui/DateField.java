@@ -829,7 +829,7 @@ implements
 			}
 
 		//#else
-			if ( (keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9) || gameAction == Canvas.FIRE ) 
+			if ( (keyCode >= Canvas.KEY_NUM0 && keyCode <= Canvas.KEY_NUM9) || getScreen().isGameActionFire(keyCode, gameAction) ) 
 			{
 				showDateForm();
 			} else {

@@ -327,6 +327,10 @@ implements AccessibleCanvas
 	private CommandListener realCommandListener;
 	private boolean isResourcesReleased;
 	//private String lastSizeChangedEvent;
+	//#if polish.Bugs.noSoftKeyReleasedEvents
+		protected int triggerReleasedKeyCode;
+		protected long triggerReleasedTime;
+	//#endif
 	
 	//#if polish.Bugs.displaySetCurrentFlickers || polish.MasterCanvas.enable
 		//#define tmp.useMasterCanvas
@@ -1086,6 +1090,10 @@ implements AccessibleCanvas
 		//#if polish.Screen.callSuperEvents
 			super.showNotify();
 		//#endif
+		//#if polish.Bugs.noSoftKeyReleasedEvents
+			this.triggerReleasedKeyCode = 0;
+			this.triggerReleasedTime = 0;
+		//#endif
 		//#if polish.css.repaint-previous-screen
 			//TODO when the previousScreen reference is removed, there is no way how several popus can be handled correctly
 			// e.g. an input form with a TextField as a popup that allows to enter symbols in another popup.
@@ -1440,6 +1448,13 @@ implements AccessibleCanvas
 				//#endif
 				//#if tmp.useScrollBar
 					this.scrollBar.animate(currentTime, repaintRegion); 
+				//#endif
+				//#if polish.Bugs.noSoftKeyReleasedEvents
+					int keyCode = this.triggerReleasedKeyCode;
+					long time = this.triggerReleasedTime;
+					if (time != 0 && keyCode != 0 && (currentTime - time) > 400) {
+						keyReleased(keyCode);
+					}
 				//#endif
 			} catch (Exception e) {
 				//#debug error
@@ -2010,6 +2025,11 @@ implements AccessibleCanvas
 				//#endif
 			}
 		//#endif
+//			g.setColor( 0xff0000 );
+//			g.drawString( "key =" + this.triggerReleasedKeyCode, 20, 30, 0 );
+//			g.drawString( "time=" + this.triggerReleasedTime, 20, 55, 0 );
+//			g.drawString( "trig=" + this.hasBeenTriggered, 20, 80, 0 );
+//			g.drawString( "rej=" + this.rejectedKeyCode, 20, 105, 0 );
 //		g.setColor( 0xff0000 );
 //		if (this.lastSizeChangedEvent != null) {
 //			g.drawString( this.lastSizeChangedEvent, 5, 10, 0 );
@@ -2370,13 +2390,19 @@ implements AccessibleCanvas
 	}
 	//#endif
 		
-	//#if tmp.manualOrientationChange
+	//#if tmp.manualOrientationChange || polish.Bugs.SoftKeyMappedToFire
 	/* (non-Javadoc)
 	 * @see javax.microedition.lcdui.Canvas#getGameAction(int)
 	 */
 	public int getGameAction(int keyCode)
 	{
 		int gameAction = super.getGameAction(keyCode);
+		//#if polish.Bugs.SoftKeyMappedToFire
+			if (gameAction == FIRE && ( isSoftKeyLeft( keyCode, gameAction) || isSoftKeyRight(keyCode, gameAction))) {
+				gameAction = 0;
+			}
+		//#endif
+		//#if tmp.manualOrientationChange
 		if (this.screenOrientationDegrees == 90) {
 			switch (gameAction) {
 			case UP: gameAction = LEFT; break;
@@ -2399,6 +2425,7 @@ implements AccessibleCanvas
 			case DOWN: gameAction = LEFT; break;
 			}
 		}
+		//#endif
 		return gameAction;
 	}	
 	//#endif
@@ -2420,6 +2447,9 @@ implements AccessibleCanvas
 		
 		this.lastInteractionTime = System.currentTimeMillis();
 		synchronized (this.paintLock) {
+			//#if polish.Bugs.noSoftKeyReleasedEvents
+				this.triggerReleasedKeyCode = 0;
+			//#endif
 			try {
 				this.ignoreRepaintRequests = true;
 				//#debug
@@ -2443,13 +2473,7 @@ implements AccessibleCanvas
 						letTheMenuBarProcessKey = this.menuOpened;
 					//#endif
 					//#if polish.Bugs.SoftKeyMappedToFire
-						if (gameAction == FIRE 
-								&& isSoftKey(keyCode) 
-//						//#if polish.key.LeftSoftKey:defined && polish.key.RightSoftKey:defined
-//							//#= && (keyCode == ${polish.key.LeftSoftKey} || keyCode == ${polish.key.RightSoftKey} )
-//						//#else
-//							&& (keyCode == -6 || keyCode == -7)
-//						//#endif
+						if (gameAction == FIRE && isSoftKey(keyCode, gameAction) 
 						) {
 							letTheMenuBarProcessKey = true;
 							gameAction = 0;
@@ -2472,6 +2496,12 @@ implements AccessibleCanvas
 					if (!processed) {
 						//#ifdef tmp.useExternalMenuBar
 							if (this.menuBar.handleKeyPressed(keyCode, gameAction)) {
+								//#if polish.Bugs.noSoftKeyReleasedEvents
+									if (isSoftKeyLeft(keyCode, gameAction) || isSoftKeyRight(keyCode, gameAction)) {
+										this.triggerReleasedKeyCode = keyCode;
+										this.triggerReleasedTime = System.currentTimeMillis();
+									}
+								//#endif
 								repaint();
 								return;
 							}
@@ -2486,6 +2516,10 @@ implements AccessibleCanvas
 						//#else
 							// internal menubar is used:
 							if ( isSoftKeyLeft(keyCode, gameAction) ) {
+								//#if polish.Bugs.noSoftKeyReleasedEvents
+									this.triggerReleasedKeyCode = keyCode;
+									this.triggerReleasedTime = System.currentTimeMillis();
+								//#endif
 								if ( this.menuSingleLeftCommand != null) {
 									callCommandListener( this.menuSingleLeftCommand );
 									return;
@@ -2502,6 +2536,10 @@ implements AccessibleCanvas
 									}
 								}
 							} else if ( isSoftKeyRight(keyCode, gameAction)) {
+								//#if polish.Bugs.noSoftKeyReleasedEvents
+									this.triggerReleasedKeyCode = keyCode;
+									this.triggerReleasedTime = System.currentTimeMillis();
+								//#endif
 								if (!this.menuOpened && this.menuSingleRightCommand != null) {
 									callCommandListener( this.menuSingleRightCommand );
 									repaint();
@@ -2596,6 +2634,11 @@ implements AccessibleCanvas
 	 * @param keyCode the code of the key, which is pressed repeatedly
 	 */
 	public void keyRepeated(int keyCode) {
+		//#if polish.Bugs.noSoftKeyReleasedEvents
+			if (keyCode == this.triggerReleasedKeyCode && this.triggerReleasedTime == 0) {
+				return;
+			}
+		//#endif
 		//synchronized (this.paintLock) {
 		try {
 			this.ignoreRepaintRequests = true;
@@ -2647,6 +2690,16 @@ implements AccessibleCanvas
 		boolean processed = false;
 		try {
 			synchronized (this.paintLock) {
+				//#if polish.Bugs.noSoftKeyReleasedEvents
+					if (keyCode == this.triggerReleasedKeyCode) {
+						if (this.triggerReleasedTime == 0) {
+							this.triggerReleasedKeyCode = 0;
+							return;
+						} else {
+							this.triggerReleasedTime = 0;
+						}
+					}
+				//#endif
 				this.ignoreRepaintRequests = true;
 				//#debug
 				System.out.println("keyReleased(" + keyCode + ")");
@@ -2659,13 +2712,15 @@ implements AccessibleCanvas
 					System.out.println("Unable to get game action for key code " + keyCode + ": " + e );
 				}
 				//#if tmp.menuFullScreen
-					if (isMenuOpened()) {
+					if (isMenuOpened()) { // || (isSoftKeyLeft(keyCode, gameAction)) || (isSoftKeyRight(keyCode, gameAction))) {
 						//#ifdef tmp.useExternalMenuBar
 							processed = this.menuBar.handleKeyReleased(keyCode, gameAction);
 							if (processed) {
 								repaint();
 							}
-							//# return;
+							//if (processed || isMenuOpened()) { 
+								//# return;
+							//}
 						//#else
 							if (this.menuOpened  && this.menuContainer != null ) {
 								if ( isSoftKeyLeft(keyCode, gameAction)) {
@@ -2675,7 +2730,9 @@ implements AccessibleCanvas
 								if (processed) {
 									repaint();
 								}
-								return;
+								//if (processed || isMenuOpened()) { 
+									return;
+								//}
 							}
 			
 						//#endif
@@ -4512,6 +4569,21 @@ implements AccessibleCanvas
 				}
 			//#endif
 		//#endif
+	}
+	
+	/**
+	 * Determines whether the given key is really a Canvas.FIRE game action
+	 * @param keyCode the key code
+	 * @param gameAction the game action
+	 * @return true when the gameAction is Canvas.FIRE and the given key is not '5' or a soft key
+	 */
+	public boolean isGameActionFire(int keyCode, int gameAction)
+	{
+		return gameAction == FIRE && keyCode != KEY_NUM5
+		//#if polish.Bugs.SoftKeyMappedToFire
+			&& ( !(isSoftKeyLeft(keyCode, gameAction) || isSoftKeyRight(keyCode, gameAction)))
+		//#endif
+		;
 	}
 	
 	/**
