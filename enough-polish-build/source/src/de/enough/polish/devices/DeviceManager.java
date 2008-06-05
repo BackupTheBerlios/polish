@@ -348,12 +348,22 @@ public class DeviceManager {
     }
 	
     /**
-     * Searches for a device with a given user agent. If it is not found the
-     * user agent is shortend and matched again.
-     * @param userAgent
+     * Searches for a device with a given user agent. 
+     * If it is not found it an algorithm will try to resolve the user agent automatically
+     * @param userAgent the user agent
      * @return the device corresponding to the given userAgent or null.
      */
     public Device getDeviceByUserAgent(String userAgent) {
+    	return getDeviceByUserAgent( userAgent, null );
+    }
+    /**
+     * Searches for a device with a given user agent. 
+     * If it is not found it an algorithm will try to resolve the user agent automatically
+     * @param userAgent the user agent
+     * @param userAgentStorage the user agent storage that stores new resolved user agents
+     * @return the device corresponding to the given userAgent or null.
+     */
+    public Device getDeviceByUserAgent(String userAgent, UserAgentStorage userAgentStorage ) {
         if (this.devicesByUserAgent == null) {
             initializeUserAgentMapping();
         }
@@ -372,37 +382,45 @@ public class DeviceManager {
         	//System.err.println("Warning: user agent [" + userAgent + "] is not registered.");
         	int index;
         	if (userAgent.startsWith("Nokia")) {
-        		return resolveUserAgent( "Nokia", "Nokia", userAgent, true );
+        		device = resolveUserAgent( "Nokia", "Nokia", userAgent, true );
          	} else if (userAgent.startsWith("SonyEricsson")) { 
-        		return resolveUserAgent("Sony-Ericsson", "SonyEricsson", userAgent, false );
+         		device =  resolveUserAgent("Sony-Ericsson", "SonyEricsson", userAgent, false );
          	} else if (userAgent.startsWith("MOT-")) {
-         		return resolveMotorolaUserAgent( userAgent );
+         		device =  resolveMotorolaUserAgent( userAgent );
          	} else if (userAgent.startsWith("SAMSUNG-") || userAgent.startsWith("Samsung-")) { 
-        		return resolveUserAgent("Samsung", "SAMSUNG-", userAgent, false);
+         		device =  resolveUserAgent("Samsung", "SAMSUNG-", userAgent, false);
          	} else if (userAgent.startsWith("LG-") ) { 
-        		return resolveUserAgent("LG", "LG-", userAgent, false);
+         		device =  resolveUserAgent("LG", "LG-", userAgent, false);
          	} else if (userAgent.startsWith("LG/") ) { 
-        		return resolveUserAgent("LG", "LG/", userAgent, false);
+         		device =  resolveUserAgent("LG", "LG/", userAgent, false);
          	} else if (userAgent.startsWith("LGE-") ) { 
-        		return resolveUserAgent("LG", "LGE-", userAgent, false);
+         		device =  resolveUserAgent("LG", "LGE-", userAgent, false);
          	} else if (userAgent.startsWith("LG") ) { 
-        		return resolveUserAgent("LG", "LG", userAgent, false);
+         		device =  resolveUserAgent("LG", "LG", userAgent, false);
          	} else if (userAgent.startsWith("SAGEM-") ) { 
-        		return resolveUserAgent("Sagem", "SAGEM-", userAgent, true);
+         		device =  resolveUserAgent("Sagem", "SAGEM-", userAgent, true);
          	} else if (userAgent.startsWith("SIE-") ) { 
-        		return resolveUserAgent("Siemens", "SIE-", userAgent, true);
+         		device =  resolveUserAgent("Siemens", "SIE-", userAgent, true);
          	} else if ( userAgent.startsWith("BlackBerry/")) {
-         		return resolveUserAgent("BlackBerry", "BlackBerry/", userAgent, false);
+         		device =  resolveUserAgent("BlackBerry", "BlackBerry/", userAgent, false);
          	} else if ( (index=userAgent.indexOf("Nokia")) != -1) {
-         		userAgent = userAgent.substring(index);
-         		return resolveUserAgent("Nokia", "Nokia", userAgent, true);
+         		String userAgentSubString = userAgent.substring(index);
+         		device =  resolveUserAgent("Nokia", "Nokia", userAgentSubString, true);
          	} else if ( (index=userAgent.indexOf("BlackBerry")) != -1) {
-         		userAgent = userAgent.substring(index);
-         		return resolveUserAgent("BlackBerry", "BlackBerry", userAgent, false);
+         		String userAgentSubString = userAgent.substring(index);
+         		device =  resolveUserAgent("BlackBerry", "BlackBerry", userAgentSubString, false);
          	} else if ( (index=userAgent.indexOf("Samsung")) != -1) {
-         		userAgent = userAgent.substring(index);
-         		return resolveUserAgent("Samsung", "Samsung", userAgent, false);
+         		String userAgentSubString = userAgent.substring(index);
+         		device =  resolveUserAgent("Samsung", "Samsung", userAgentSubString, false);
          	}
+        	
+        	if (device != null) {
+        		device.addCapability("wap.UserAgent", userAgent);
+				this.devicesByUserAgent.put(userAgent, device);
+				if (userAgentStorage != null) {
+					userAgentStorage.notifyDeviceResolved(userAgent, device);
+				}
+        	}
         }
         return device;
     }
@@ -442,12 +460,13 @@ public class DeviceManager {
 					deviceName = resolveDeviceName("ROKR", userAgent.substring( userAgent.indexOf("ROKR")), false);
 				}
 				foundDevice = getDevice( vendor + "/" + deviceName);				
-			}
-		}
-		if (foundDevice != null) {
-			foundDevice.addCapability("wap.UserAgent", userAgent);
-			if (this.devicesByUserAgent != null) {
-				this.devicesByUserAgent.put(userAgent, foundDevice);
+			} else if (deviceName.toLowerCase().startsWith("motorola")) {
+				if (deviceName.length() > "motorola".length()) {
+					deviceName = deviceName.substring("motorola".length());
+				} else {
+					deviceName = resolveDeviceName("motorola", "motorola" + userAgent.substring( userAgent.toLowerCase().indexOf("motorola") + "motorola".length()), false);
+				}
+				foundDevice = getDevice( vendor + "/" + deviceName);				
 			}
 		}
 		return foundDevice;
