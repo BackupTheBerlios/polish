@@ -626,21 +626,25 @@ private HistoryEntry scheduledHistoryEntry;
         // "http://foo.bar.com" + "/foo.png" => "http://foo.bar.com/foo.png"
         return protocolAndHostOf(this.currentDocumentBase) + url;
       }
-    }
+    } 
     else
     {
-      // It's a relative url, so merge it with the current document
-      // path.
-      String prefix = protocolAndPathOf(this.currentDocumentBase);
-      
-      if (prefix.endsWith("/"))
-      {
-        return prefix + url;
-      }
-      else
-      {
-        return prefix + "/" + url;
-      }
+      // It's a relative url, so merge it with the current document path:
+    	String baseUrl = this.currentDocumentBase;
+    	if (baseUrl == null) {
+    		return url;
+    	} else {
+	      String prefix = protocolAndPathOf(baseUrl);
+	      
+	      if (prefix.endsWith("/"))
+	      {
+	        return prefix + url;
+	      }
+	      else
+	      {
+	        return prefix + "/" + url;
+	      }
+    	}
     }
   }
 

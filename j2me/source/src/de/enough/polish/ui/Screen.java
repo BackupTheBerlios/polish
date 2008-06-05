@@ -1410,6 +1410,12 @@ implements AccessibleCanvas
 		
 		synchronized (this.paintLock) {
 			try {
+				//#if tmp.useScrollBar
+					int scrollYOffset = 0;
+					if (this.container != null) {
+						scrollYOffset = this.container.yOffset;
+					}
+				//#endif
 				// for ensured backward compatibility call the standard animate method:
 				if (animate()) {
 					//#ifdef tmp.menuFullScreen
@@ -1447,7 +1453,13 @@ implements AccessibleCanvas
 					}
 				//#endif
 				//#if tmp.useScrollBar
-					this.scrollBar.animate(currentTime, repaintRegion); 
+					this.scrollBar.animate(currentTime, repaintRegion);
+					if (this.container != null) {
+						if (this.container.yOffset != scrollYOffset) {
+							// scrollbar area needs to be added:
+							repaintRegion.addRegion(this.scrollBar.relativeX, this.scrollBar.relativeY, this.scrollBar.itemWidth, this.scrollBar.itemHeight);
+						}
+					}
 				//#endif
 				//#if polish.Bugs.noSoftKeyReleasedEvents
 					int keyCode = this.triggerReleasedKeyCode;
@@ -3836,8 +3848,14 @@ implements AccessibleCanvas
 			return;
 		}
 		//#if tmp.useMasterCanvas
-			if (MasterCanvas.instance == null || MasterCanvas.getScreenHeight() != height || MasterCanvas.getScreenWidth() != width) {
-				// ignore this sizeChanged event - we are probably on Series 60 and the system called sizeChaned on
+			if (MasterCanvas.instance == null
+					//#if polish.Screen.base:defined
+						//# || height != getCanvasHeight()
+					//#else
+						|| MasterCanvas.getScreenHeight() != height
+					//#endif
+					|| MasterCanvas.getScreenWidth() != width) {
+				// ignore this sizeChanged event - we are probably on Series 60 and the system called sizeChanged on
 				// this screen rather than on MasterCanvas
 				return;
 			}
