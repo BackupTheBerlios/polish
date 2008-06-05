@@ -27,14 +27,21 @@ package com.izforge.izpack.panels;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 import java.util.Map;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
 
+import com.izforge.izpack.Pack;
 import com.izforge.izpack.gui.IzPanelLayout;
 import com.izforge.izpack.gui.LabelFactory;
 import com.izforge.izpack.installer.InstallData;
@@ -73,6 +80,28 @@ implements Runnable
 	 * @see com.izforge.izpack.panels.InstallPanel#panelActivate()
 	 */
 	public void panelActivate() {
+    	if (isPackSelected("thirdparty-smaato-soma")) {
+    		// show another window with the HTML content:
+    		 JTextPane tp = new JTextPane();
+    		 tp.setEditable(false);
+    		 tp.setBorder( new EmptyBorder( 20, 20, 20, 20 ));
+    		  JScrollPane js = new JScrollPane();
+    		  js.getViewport().add(tp);
+    		  JFrame jf = new JFrame();
+    		  jf.getContentPane().add(js);
+    		  jf.pack();
+    		  jf.setSize(800,800);
+    		  
+    		  jf.setVisible(true); 
+    		  
+    		  try {
+    		    URL url = new URL("http://www1.j2mepolish.org/thirdparty/smaato-soma.html");
+    		    tp.setPage(url);
+    		    }
+    		  catch (Exception e) {
+    		    e.printStackTrace();
+    		    }
+    	}
 		// store variable for substitution in property files - the install path
 		// should not use the backslash on Windows systems:
 		String installPathProperty = this.idata.getInstallPath();
@@ -125,6 +154,9 @@ implements Runnable
 	    	System.err.println("Unable to store global.properties - no properties found!");
 	    } else {
 	        try {
+	        	if (isPackSelected("sources")) {
+	        		globalProperties.put("#polish.client.source", this.idata.getInstallPath() + "/j2mepolish-src/j2me/src/    (uncomment if you want to modify J2ME Polish client sources)");
+	        	}
 	        	File globalPropertiesFile = new File( this.idata.getInstallPath() + File.separatorChar + "global.properties" );
 	        	FileUtil.writePropertiesFile(globalPropertiesFile, globalProperties );
 				this.installationFinishInfoLabel.setText("Wrote global.properties successfully.");
@@ -199,6 +231,25 @@ implements Runnable
 //            }
 //        });
     }
+
+
+
+	/**
+	 * Checks if the pack with the specified ID has been selected
+	 * @param id the id
+	 * @return true when it has been selected by the user
+	 */
+	private boolean isPackSelected(String id)
+	{
+		List selectedPacks = this.idata.selectedPacks;
+		for (int i=0; i<selectedPacks.size(); i++) {
+			Pack pack = (Pack) selectedPacks.get(i);
+			if (id.equals( pack.id )) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 
 
