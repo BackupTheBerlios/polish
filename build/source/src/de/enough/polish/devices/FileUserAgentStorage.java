@@ -40,23 +40,26 @@ import de.enough.polish.util.FileUtil;
 public class FileUserAgentStorage implements UserAgentStorage
 {
 
-	private final File userAgentsFile;
+	private final File resolvedUserAgentsFile;
+	private final File unresolvedUserAgentsFile;
 
-	/**
-	 * Creates a new storage for "./useragents.txt"
+	/** 
+	 * Creates a new storage for "./useragents.txt" and "./useragents_unresolved.txt"
 	 */
 	public FileUserAgentStorage()
 	{
-		this( new File("./useragents.txt") );
+		this( new File("./useragents.txt"), new File("./useragents_unresolved.txt")  );
 	}
 
 	/**
 	 * Creates a new storage
-	 * @param userAgentsFile the file into which user agents should be written
+	 * @param resolvedUserAgentsFile the file into which user agents should be written
+	 * @param unresolvedUserAgentsFile the file into which unresolvable user agents are written
 	 */
-	public FileUserAgentStorage(File userAgentsFile)
+	public FileUserAgentStorage(File resolvedUserAgentsFile, File unresolvedUserAgentsFile)
 	{
-		this.userAgentsFile = userAgentsFile;
+		this.resolvedUserAgentsFile = resolvedUserAgentsFile;
+		this.unresolvedUserAgentsFile = unresolvedUserAgentsFile;
 	}
 
 	/* (non-Javadoc)
@@ -66,12 +69,26 @@ public class FileUserAgentStorage implements UserAgentStorage
 	{
 		try
 		{
-			FileUtil.addLine(this.userAgentsFile, device.getIdentifier() + ": " + userAgent );
+			FileUtil.addLine(this.resolvedUserAgentsFile, device.getIdentifier() + ": " + userAgent );
 		} catch (IOException e)
 		{
 			System.err.println("Unable to store user agent: " + e.toString() );
 			e.printStackTrace();
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.devices.UserAgentStorage#notifyDeviceUnresolved(java.lang.String)
+	 */
+	public void notifyDeviceUnresolved(String userAgent)
+	{
+		try
+		{
+			FileUtil.addLine(this.unresolvedUserAgentsFile, userAgent );
+		} catch (IOException e)
+		{
+			System.err.println("Unable to store user agent: " + e.toString() );
+			e.printStackTrace();
+		}	}
 
 }

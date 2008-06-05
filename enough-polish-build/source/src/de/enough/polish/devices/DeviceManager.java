@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -75,6 +76,7 @@ public class DeviceManager {
 	private LibraryManager libraryManager;
 	private CapabilityManager capabilityManager;
 	private HashMap allowedDuplicatesByIdentifier;
+	private Map unresolvableUserAgents;
 
 	/**
 	 * Creates a new device manager with the given devices.xml file.
@@ -379,6 +381,10 @@ public class DeviceManager {
 //            }
 //        }
         if (device == null) {
+        	if (this.unresolvableUserAgents.get(userAgent) != null) {
+        		// already tried to resolve this device, do not retry:
+        		return null;
+        	}
         	//System.err.println("Warning: user agent [" + userAgent + "] is not registered.");
         	int index;
         	if (userAgent.startsWith("Nokia")) {
@@ -419,6 +425,11 @@ public class DeviceManager {
 				this.devicesByUserAgent.put(userAgent, device);
 				if (userAgentStorage != null) {
 					userAgentStorage.notifyDeviceResolved(userAgent, device);
+				}
+        	} else {
+        		this.unresolvableUserAgents.put( userAgent, Boolean.TRUE );
+				if (userAgentStorage != null) {
+					userAgentStorage.notifyDeviceUnresolved(userAgent);
 				}
         	}
         }
@@ -477,6 +488,7 @@ public class DeviceManager {
 	 * @param vendor the J2ME Polish vendor name, e.g. "Motorola"
 	 * @param userAgentVendor the vendor name at the start of the user agent, e.g. "MOT-"
 	 * @param userAgent the user agent, needs to start with the userAgentVendor, e.g. "MOT-V3i/CLDC-1.0/MIDP-2.0"
+	 * @param mayUseMinusSeparator true when the device name and rest of the user agent be separated by a minus sign
 	 * @return the device if it can be resolved, null otherwise
 	 */
 	protected Device resolveUserAgent(String vendor, String userAgentVendor, String userAgent, boolean mayUseMinusSeparator)
@@ -490,10 +502,11 @@ public class DeviceManager {
 	}
 
 	/**
-	 * @param userAgentVendor
-	 * @param userAgent
-	 * @param mayUseMinusSeparator
-	 * @return
+	 * Extracts a device name from a user agent
+	 * @param userAgentVendor the vendor name at the start of the user agent, e.g. "MOT-"
+	 * @param userAgent the user agent, needs to start with the userAgentVendor, e.g. "MOT-V3i/CLDC-1.0/MIDP-2.0"
+	 * @param mayUseMinusSeparator true when the device name and rest of the user agent be separated by a minus sign
+	 * @return the device name
 	 */
 	private String resolveDeviceName(String userAgentVendor, String userAgent,
 			boolean mayUseMinusSeparator)
@@ -534,6 +547,7 @@ public class DeviceManager {
 
 	private void initializeUserAgentMapping() {
         this.devicesByUserAgent = new HashMap();
+        this.unresolvableUserAgents = new HashMap();
         String CAPABILITY_WAP_USER_AGENT = "wap.userAgent";
         Device[] allDevices = getDevices();
 

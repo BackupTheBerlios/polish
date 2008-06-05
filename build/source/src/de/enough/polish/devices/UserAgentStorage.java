@@ -28,7 +28,7 @@ package de.enough.polish.devices;
 import de.enough.polish.Device;
 
 /**
- * <p>Receives information about new devices that have been resolved using the UserAgent.</p>
+ * <p>Receives information about new devices that have been resolved or that were unable to become resolved using the UserAgent.</p>
  *
  * <p>Copyright Enough Software 2008</p>
  * @author Robert Virkus, j2mepolish@enough.de
@@ -43,5 +43,11 @@ public interface UserAgentStorage
 	 * @param device the corresponding found device
 	 */
 	public void notifyDeviceResolved( String userAgent, Device device );
+	
+	/**
+	 * Is called whenever a device could not be resolved.
+	 * @param userAgent the user agent
+	 */
+	public void notifyDeviceUnresolved( String userAgent );
 
 }
