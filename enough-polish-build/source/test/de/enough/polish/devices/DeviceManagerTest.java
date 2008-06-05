@@ -43,63 +43,68 @@ public class DeviceManagerTest extends TestCase
 	private static final String POLISH_HOME = ".";
 
     public void testResolveUserAgent(){
+    	implResolveUserAgent( new FileUserAgentStorage(  new File("tmp/useragents.txt")) );
+    	implResolveUserAgent(null);
+    }
+    
+    public void implResolveUserAgent(UserAgentStorage storage){
 		DeviceDatabase db = DeviceDatabase.getInstance( new File(POLISH_HOME ) );
 		DeviceManager manager = db.getDeviceManager();
 		String userAgent;
 		de.enough.polish.Device device;
        
 		userAgent = "MOT-RAZRV3x/85.97.41P MIB/BER2.2 Profile/MIDP-2.0 Configuration/CLDC-1.1";
-		device = manager.getDeviceByUserAgent(userAgent);
+		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNotNull(device);
 		assertTrue( device.getName().endsWith("V3x"));
 
 		userAgent = "MOT-ROKR E2/R564_G_12.00.45P Mozilla/4.0 (compatible; MSIE 6.0; Linux; Motorola ROKR E2; 781) Profile/MIDP-2.0 Configuration/CLDC-1.1 Opera 8.50 [";
-		device = manager.getDeviceByUserAgent(userAgent);
+		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNotNull(device);
 		assertTrue( device.getName().endsWith("E2"));
 
 		userAgent = "Nokia6300/2.0 (05.50) Profile/MIDP-2.0 Configuration/CLDC-1.1";
-		device = manager.getDeviceByUserAgent(userAgent);
+		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNotNull(device);
 		assertEquals("6300", device.getName() );
 
 		userAgent = "NokiaN90-1/2.0523.1.4 Series60/2.8 Profile/MIDP-2.0 Configuration/CLDC-1.1";
-		device = manager.getDeviceByUserAgent(userAgent);
+		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNotNull(device);
 		assertEquals("N90", device.getName() );
 
 		userAgent = "Mozilla/5.0 (SymbianOS/9.2 U; Series60/3.1 NokiaN95_8GB/10.0.007; Profile/MIDP-2.0 Configuration/CLDC-1.1 ) AppleWebKit/413 (KHTML, like Gecko) Safari/413";
-		device = manager.getDeviceByUserAgent(userAgent);
+		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNotNull(device);
 		assertEquals("N95_8GB", device.getName() );
 		
 		userAgent = "SAMSUNG-SGH-U700/1.0 SHP/VPP/R5 NetFront/3.4 SMM-MMS/1.2.0 profile/MIDP-2.0 configuration/CLDC-1.1";
-		device = manager.getDeviceByUserAgent(userAgent);
+		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNotNull(device);
 		assertEquals("SGH-U700", device.getName() );
 
 		userAgent = "MOT-V3c/08.B5.10R MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1";
-		device = manager.getDeviceByUserAgent(userAgent);
+		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNotNull(device);
 		assertEquals("V3c", device.getName() );
 
 		userAgent = "Mozilla/2.0 (compatible; MSIE 3.02; Windows CE; PPC; 240x320) BlackBerry8800/4.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/102";
-		device = manager.getDeviceByUserAgent(userAgent);
+		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNotNull(device);
 		assertEquals("8800", device.getName() );
 
 		userAgent = "LG-KG800/V10e Obigo/WAP2.0 MIDP-2.0/CLDC-1.1";
-		device = manager.getDeviceByUserAgent(userAgent);
+		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNotNull(device);
 		assertEquals("KG800", device.getName() );
 
 		userAgent = "LGE-KG800/V10e Obigo/WAP2.0 MIDP-2.0/CLDC-1.1";
-		device = manager.getDeviceByUserAgent(userAgent);
+		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNotNull(device);
 		assertEquals("KG800", device.getName() );
 
 		userAgent = "LGKG800/V10e Obigo/WAP2.0 MIDP-2.0/CLDC-1.1";
-		device = manager.getDeviceByUserAgent(userAgent);
+		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNotNull(device);
 		assertEquals("KG800", device.getName() );
 
