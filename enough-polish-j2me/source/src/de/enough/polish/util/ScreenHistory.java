@@ -181,5 +181,13 @@ public class ScreenHistory {
 		this.history.clear();
 	}
 
+	/**
+	 * Removes the last history entry, if there is one
+	 */
+	 public synchronized void popHistory() {
+         if (this.history.size()>0) {
+               this.history.remove(this.history.size()-1);
+         }
+   }
 
 }
