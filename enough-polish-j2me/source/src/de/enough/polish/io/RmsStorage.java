@@ -1,4 +1,7 @@
 //#condition polish.midp || polish.usePolishGui
+
+//PATCHED VERSION for delete function (ask fabio)
+
 /*
  * Created on 13-Mar-2006 at 21:34:23.
  * 
@@ -36,6 +39,7 @@ import java.util.Enumeration;
 import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
+import javax.microedition.rms.RecordStoreNotOpenException;
 
 import de.enough.polish.util.HashMap;
 
@@ -48,19 +52,21 @@ import de.enough.polish.util.HashMap;
  *        13-Mar-2006 - rob creation
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
+ * @author Begin Fabio (delete functions)
  * @param <K> when you use the enough-polish-client-java5.jar you can parameterize the RmsStorage, e.g. RmsStorage&lt;Vector&lt;Note&gt;&gt;>.
  */
 public class RmsStorage
 //#if polish.java5
-	<K>
-	implements Storage<K> 
+//#	<K>
+//#	implements Storage<K> 
 //#else
-	//# implements Storage 
+	 implements Storage 
 //#endif
 {
 	
 	private final RecordStore masterRecordStore;
 	private final HashMap masterRecordSetIdsByName;
+	private final HashMap masterRecordSetNameById;
 	private final int indexRecordId;
 
 	/**
@@ -70,6 +76,7 @@ public class RmsStorage
 	{
 		this.masterRecordStore = null;
 		this.masterRecordSetIdsByName = null;
+		this.masterRecordSetNameById = null;
 		this.indexRecordId = -1;
 	}
 	
@@ -88,6 +95,8 @@ public class RmsStorage
 			try {
 				this.masterRecordStore = RecordStore.openRecordStore(singleRecordStoreName, true);
 				this.masterRecordSetIdsByName = new HashMap();
+				this.masterRecordSetNameById = new HashMap();
+				
 				// now read index record set:
 				RecordEnumeration enumeration = this.masterRecordStore.enumerateRecords( null, null, false );
 				int firstId = Integer.MAX_VALUE;
@@ -114,10 +123,14 @@ public class RmsStorage
 					DataInputStream in = new DataInputStream( 
 							new ByteArrayInputStream( this.masterRecordStore.getRecord(firstId) ));
 					int numberOfEntries = in.readInt();
+					Integer inte = null;
 					for (int i = 0; i < numberOfEntries; i++) {
 						String name = in.readUTF();
 						int recordId = in.readInt();
-						this.masterRecordSetIdsByName.put( name, new Integer( recordId ) );
+						inte =  new Integer( recordId );
+						this.masterRecordSetIdsByName.put( name,inte );
+						this.masterRecordSetNameById.put( inte, name );
+						inte = null;
 					}
 					in.close();
 				}
@@ -127,6 +140,7 @@ public class RmsStorage
 		} else {
 			this.masterRecordStore = null;			
 			this.masterRecordSetIdsByName = null;
+			this.masterRecordSetNameById = null;
 			this.indexRecordId = -1;
 		}
 	}
@@ -138,7 +152,7 @@ public class RmsStorage
 	 * @param name the name of the set
 	 * @return either the set ID or -1 when the name is not yet used 
 	 */
-	private int getRecordSetId( String name ) {
+	public int getRecordSetId( String name ) {
 		Integer id = (Integer) this.masterRecordSetIdsByName.get(name);
 		if (id != null) {
 			return id.intValue();
@@ -146,6 +160,24 @@ public class RmsStorage
 			return -1;
 		}
 	}
+	
+	/**
+	 * F.Beghin
+	 * 
+	 * Retrieves the logic key by the record set ID
+	 * 
+	 * @param recordSetId the ID of the set
+	 * @return the name of the record set 
+	 */
+	public String getRecordLogicKey( int recordSetId ) {
+		
+		String logicalKey = (String) this.masterRecordSetNameById.get(new Integer(recordSetId));
+		 
+		return logicalKey;
+		 
+	}
+	
+	
 	
 	/**
 	 * Registers a new record set ID in the index record set of the master record store.
@@ -158,14 +190,17 @@ public class RmsStorage
 	private void registerRecordSetId( int id, String name )
 	throws IOException, RecordStoreException
 	{
-		this.masterRecordSetIdsByName.put( name, new Integer( id ) );
+		Integer idInt = new Integer(id);
+		this.masterRecordSetIdsByName.put( name,  idInt  );
+		this.masterRecordSetNameById.put(idInt, name);
+		idInt = null;
 		Object[] keys = this.masterRecordSetIdsByName.keys();
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream( byteOut );
 		out.writeInt( this.masterRecordSetIdsByName.size() );
 		for (int i = 0; i < keys.length; i++) {
 			String key = (String)keys[i];
-			Integer idInt = (Integer) this.masterRecordSetIdsByName.get( key );
+			idInt = (Integer) this.masterRecordSetIdsByName.get( key );
 			out.writeUTF( key );
 			out.writeInt( idInt.intValue() );
 		}
@@ -179,9 +214,9 @@ public class RmsStorage
 	 * @see de.enough.polish.io.Storage#save(de.enough.polish.io.Serializable, java.lang.String)
 	 */
 	//#if polish.java5
-		public void save(K object, String name) throws IOException {
+	//#	public void save(K object, String name) throws IOException  {
 	//#else
-		//# public void save(Object object, String name) throws IOException {
+		 public void save(Object object, String name) throws IOException  {
 	//#endif
 
 		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
@@ -193,7 +228,26 @@ public class RmsStorage
 		saveData( name, data);
 	}
 
-	
+		 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.io.Storage#save(de.enough.polish.io.Serializable, java.lang.String)
+	 */
+	//#if polish.java5
+	//#	public void update(K object, String newKey, String oldKey) throws IOException {
+	//#else
+		 public void update(Object object, String newKey, String oldKey) throws IOException {
+	//#endif
+
+		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream( byteOut );
+		Serializer.serialize(object, out);
+		byte[] data = byteOut.toByteArray();
+		out.close();
+		byteOut.close();
+		saveData( newKey, oldKey, data);
+	}	 
+	 
+			 
 	/**
 	 * Stores the data under the given name.
 	 * 
@@ -202,17 +256,48 @@ public class RmsStorage
 	 * @throws IOException when storage fails
 	 */
 	private void saveData(String name, byte[] data) throws IOException {
+		saveData(name, null, data);
+	}
+	
+	/**
+	 * Saves the data under a possibly new name
+	 * 
+	 * @param newKey the current name
+	 * @param oldKey the old name
+	 * @param data the data
+	 * @throws IOException when the storage fails 
+	 */
+	private void saveData(String newKey, String oldKey, byte[] data)throws IOException {
 		try {
 			if (this.masterRecordStore != null) {
-				int recordSetId = getRecordSetId( name );
-				if (recordSetId != -1 ) {
-					this.masterRecordStore.setRecord(recordSetId, data, 0, data.length );
+				int recordSetId = -1;
+				if (oldKey != null){
+					recordSetId = getRecordSetId( oldKey );
+					Integer recordInt = new Integer(recordSetId);
+					if (recordSetId != -1 ) {
+					
+						if ((getRecordSetId(newKey) != -1) && (!(newKey.equals(oldKey)))){
+							throw new IOException ("key already used");
+						}
+						this.masterRecordSetIdsByName.remove(oldKey);
+						//this.masterRecordSetIdsByName.put(newKey, recordInt);
+						this.masterRecordSetNameById.remove(recordInt);
+						//this.masterRecordSetNameById.put(recordInt, newKey);
+						recordInt = null;
+						this.masterRecordStore.setRecord(recordSetId, data, 0, data.length );
+						registerRecordSetId(recordSetId, newKey);
+					}
 				} else {
+					
+					if (getRecordSetId(newKey) != -1){
+						throw new IOException ("key already used");
+					}
 					recordSetId = this.masterRecordStore.addRecord( data, 0, data.length );
-					registerRecordSetId(recordSetId, name);
+					registerRecordSetId(recordSetId, newKey);
+				
 				}
 			} else {
-				RecordStore store = RecordStore.openRecordStore(name, true);
+				RecordStore store = RecordStore.openRecordStore(newKey, true);
 				int recordSetId = -1;
 				RecordEnumeration enumeration = store.enumerateRecords(null, null, false);
 				if (enumeration.hasNextElement()) {
@@ -230,7 +315,7 @@ public class RmsStorage
 			}
 		} catch (RecordStoreException e ) {
 			//#debug error
-			System.out.println("Unable to store object under name [" + name + "]" + e );
+			System.out.println("Unable to store object under name [" + newKey + "]" + e );
 			throw new IOException( e.toString() );
 		}
 	}
@@ -240,9 +325,9 @@ public class RmsStorage
 	 * @see de.enough.polish.io.Storage#read(java.lang.String)
 	 */
 	//#if polish.java5
-		public K read( String name )
+	//#	public K read( String name )
 	//#else
-		//# public Object read( String name )
+		 public Object read( String name )
 	//#endif
 	throws IOException {
 		byte[] data;
@@ -265,9 +350,9 @@ public class RmsStorage
 		}
 		DataInputStream in = new DataInputStream( new ByteArrayInputStream( data ));
 		//#if polish.java5
-			return (K)Serializer.deserialize( in );
+		//#	return (K)Serializer.deserialize( in );
 		//#else
-			//# return Serializer.deserialize( in );
+			 return Serializer.deserialize( in );
 		//#endif
 	}
 
@@ -305,12 +390,105 @@ public class RmsStorage
 	               && !this.masterRecordSetIdsByName.isEmpty())
 			{
 				Integer id = (Integer) this.masterRecordSetIdsByName.remove(name);
+				this.masterRecordSetNameById.remove( id);
 				if (id != null) {
 					this.masterRecordStore.deleteRecord(id.intValue());
 				}
+				registerAfterDeletingAKeyRecordSetId();
+				
 			}
 		} catch (RecordStoreException e) {
 			throw new IOException(e.toString());
 		}
 	}
+	
+	
+	/**
+	 * Delete all record store to improve performance.
+	 * This method should be used only 
+	 * with RmsStorage that uses a single record store for several stored objects
+	 * @throws IOException  when the operation fails
+	 * @author F.Beghin 
+	 */
+	public void deleteAll() throws IOException {
+		if (this.masterRecordSetIdsByName != null
+	               && !this.masterRecordSetIdsByName.isEmpty()){
+			this.masterRecordSetIdsByName.clear();
+			this.masterRecordSetNameById.clear();
+			try {
+				if (this.masterRecordStore.getName() != null){
+					String temp = this.masterRecordStore.getName(); 
+					this.masterRecordStore.closeRecordStore();
+					RecordStore.deleteRecordStore(temp);
+				}
+			 
+			} catch (RecordStoreException e) {
+				throw new IOException( e.toString() );
+			}
+		}
+	}
+	
+	
+	/**
+	 * Persist hashtable after delete object operation
+	 * 
+	 * @param id the ID of the new record set
+	 * @param name the name for the set
+	 * @throws IOException when the index record set could not be prepared
+	 * @throws RecordStoreException when the index record set could not be written
+	 * @author F.Beghin 
+	 */
+	private void registerAfterDeletingAKeyRecordSetId( )
+	throws IOException, RecordStoreException
+	{
+		Object[] keys = this.masterRecordSetIdsByName.keys();
+		ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
+		DataOutputStream out = new DataOutputStream( byteOut );
+		out.writeInt( this.masterRecordSetIdsByName.size() );
+		for (int i = 0; i < keys.length; i++) {
+			String key = (String)keys[i];
+			Integer idInt = (Integer) this.masterRecordSetIdsByName.get( key );
+			out.writeUTF( key );
+			out.writeInt( idInt.intValue() );
+		}
+		byte[] data = byteOut.toByteArray();
+		this.masterRecordStore.setRecord( this.indexRecordId, data, 0, data.length );
+		out.close();
+		byteOut.close();		
+	}
+	
+	/**
+	 * Retrieves the used size of the underlying record store
+	 * @return the used size (in bytes), -1 when an error occurred
+	 */
+	public int getSize(){
+		if (this.masterRecordStore == null) {
+			return -1;
+		}
+		try {
+			return this.masterRecordStore.getSize();
+		} catch (RecordStoreNotOpenException e) {
+			//#debug warn
+			System.out.println("Unable to retrieve masterStoreSize" + e );
+		}
+		return -1;
+	}
+	
+	/**
+	 * Retrieves the available size of the underlying record store
+	 * @return the available size (in bytes), -1 when an error occurred
+	 */
+	public int getSizeAvailable(){
+		if (this.masterRecordStore == null) {
+			return -1;
+		}
+		try {
+			return this.masterRecordStore.getSizeAvailable();
+		} catch (RecordStoreNotOpenException e) {
+			//#debug warn
+			System.out.println("Unable to retrieve available masterStoreSize" + e );
+		}
+		return -1;
+	}
+	
 }
