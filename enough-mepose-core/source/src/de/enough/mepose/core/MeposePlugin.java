@@ -98,7 +98,7 @@ public class MeposePlugin extends Plugin {
         }
         File toolsJarFile = new File(toolsJarEntry.toString());
         try {
-            
+            //TODO: Why is this needed?
             BundleFile bundleFile = new ZipBundleFile(toolsJarFile,null);
             Object toolsJarClasspathEntryObject = ReflectionUtil.callMethod("createClassPathEntry",classLoader,new Class[] {BundleFile.class,ProtectionDomain.class},new Object[] {bundleFile,null});
             
