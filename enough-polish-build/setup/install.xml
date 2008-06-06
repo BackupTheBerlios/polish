@@ -111,7 +111,7 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
             <file src="ide/eclipse/plugins" targetdir="$ECLIPSE_INSTALL_HOME"/>
             <file src="ide/eclipse/features" targetdir="$ECLIPSE_INSTALL_HOME"/>
         </pack>
-        <pack name="Third Party: SMAATO Advertising Library" required="no" preselected="yes">
+        <pack id="thirdparty-smaato-soma" name="Third Party: SMAATO Advertising Library" required="no" preselected="yes">
             <description>A library for embedding advertisements in your application.</description>
             <file src="../setup/thirdparty/smaato" targetdir="$INSTALL_PATH/thirdparty"/>
             <file src="samples/thirdparty-smaato-blackbox" targetdir="$INSTALL_PATH/samples"/>
@@ -355,7 +355,7 @@ Instead use custom-devices.xml, custom-vendors.xml, custom-groups.xml and custom
             <file src="capabilities.xml" targetdir="$INSTALL_PATH"/>
             <file src="custom-extensions.xml" targetdir="$INSTALL_PATH"/>
         </pack>
-        <pack name="Sources" required="no" preselected="no">
+        <pack id="sources" name="Sources" required="no" preselected="yes">
             <description>The sources of J2ME Polish. These are useful if you want to extend J2ME Polish.</description>
             <file src="j2mepolish-src" targetdir="$INSTALL_PATH"/>
         </pack>
