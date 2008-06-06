@@ -32,7 +32,7 @@ public class WikipediaMidlet
 	extends MIDlet
 	implements CommandListener, ApplicationInitializer
 {
-	private static final Command CMD_MAIN_MENU = new Command( Locale.get("cmd.MainMenu"), Command.BACK, 5 );
+	private static final Command CMD_MAIN_MENU = new Command( Locale.get("cmd.MainMenu"), Command.BACK, 6 );
 	private static final Command CMD_BACK = new Command( Locale.get("cmd.Back"), Command.BACK, 5 );
 	private static final Command CMD_EXIT = new Command( Locale.get("cmd.Exit"), Command.EXIT, 10);
 	private static final Command CMD_GO = new Command( Locale.get("cmd.Go"), Command.OK, 2 );
