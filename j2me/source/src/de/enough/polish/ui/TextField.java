@@ -1224,8 +1224,8 @@ public class TextField extends StringItem
 		//#endif
 	}
 	 	
-	//#if tmp.updateDeleteCommand
 	protected void updateDeleteCommand(String newText) {
+		//#if tmp.updateDeleteCommand
 		// remove delete command when the caret is before the first character,
 		// add it when it is after the first character:
 		// #debug
@@ -1247,8 +1247,8 @@ public class TextField extends StringItem
 				addCommand( DELETE_CMD );
 			}
 		}
+		//#endif		
 	}
-	//#endif		
 
 	
 	/**

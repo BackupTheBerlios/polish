@@ -658,6 +658,8 @@ public class PredictiveAccess implements TrieSetupCallback{
 			//this.parent.showCommands(); //getScreen().setItemCommands(this.parent);
 			this.parent.notifyStateChanged();
 			this.refreshChoices = true;
+			
+			this.parent.updateDeleteCommand(this.builder.getText().toString());
 
 			return true;
 		}
@@ -690,6 +692,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 		this.parent.showCommands();//this.parent.getScreen().setItemCommands(this.parent);
 		this.refreshChoices = true;
 		this.parent.notifyStateChanged();
+		
+		this.parent.updateDeleteCommand(this.builder.getText().toString());
+		
 		return true;
 	}
 
