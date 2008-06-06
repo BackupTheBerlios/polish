@@ -1511,7 +1511,7 @@ extends Displayable
         	   }
            }
         }
-    	int keyCode = 0;
+        int keyCode = 0;
 		// Trackball up.
 		if (dx == 0 && dy < 0)
 		{
@@ -1537,7 +1537,7 @@ extends Displayable
 			keyReleased( keyCode );
 			if ( (Object)this instanceof Screen) {
 				Screen scr = (Screen) (Object) this;
-				return scr.keyPressedProcessed || scr.keyReleasedProcessed;
+				return true;//scr.keyPressedProcessed || scr.keyReleasedProcessed;
 			} else {
 				return true;
 			}
