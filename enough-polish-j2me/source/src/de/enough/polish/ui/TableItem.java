@@ -46,6 +46,27 @@ public class TableItem
 //#endif
 
 {
+	/**
+	 * Selection mode for a table in which no cells can be selected.
+	 */
+	public static final int SELECTION_MODE_NONE = 0;
+	/**
+	 * Selection mode for a table in which single cells can be selected.
+	 */
+	public static final int SELECTION_MODE_CELL = 1;
+	/**
+	 * Selection mode for a table in which rows can be selected.
+	 */
+	public static final int SELECTION_MODE_ROW = 2;
+	/**
+	 * Selection mode for a table in which columns can be selected.
+	 */
+	public static final int SELECTION_MODE_COLUMN = 3;
+	/**
+	 * Selection mode for a table in which cells can be selected, but the complete row and column of the selected cell will be highlighted, too.
+	 */
+	public static final int SELECTION_MODE_ROW_AND_COLUMN = 4;
+	
 	/** default style for lines between cells */
 	public static int LINE_STYLE_SOLID = 0;
 	/** dotted style for lines between cells */
@@ -53,18 +74,28 @@ public class TableItem
 	/** no lines between cells */
 	public static int LINE_STYLE_INVISIBLE = 2;
 	
-	private TableData tableData;
-	private Font font;
-	private int fontColor;
-	private int[] rowHeights;
-	private int[] columnWidths;
+	protected TableData tableData;
+	protected Font font;
+	protected int fontColor;
+	protected int[] rowHeights;
+	protected int[] columnWidths;
 	
-	private int lineStroke;
-	private int lineColor = -1;
-	private int completeWidth;
+	protected int lineStroke;
+	protected int lineColor = -1;
+	protected int completeWidth;
 	
-	private int xOffset;
-	private int targetXOffset;
+	protected int xOffset;
+	protected int targetXOffset;
+	
+	protected int selectionMode = SELECTION_MODE_NONE;
+	protected Background selectedBackground;
+	protected Background selectedBackgroundHorizontal;
+	protected Background selectedBackgroundVertical;
+	private int selectedRowIndex;
+	private int selectedColumnIndex;
+	private Style selectedItemStyle;
+	
+	
 
 	/**
 	 * Creates a new TableItem with an empty table data.
@@ -284,6 +315,9 @@ public class TableItem
 			height = 0;
 			for (int row = 0; row < numberOfRows; row++ ) {
 				Object data = this.tableData.get(col, row);
+				if (this.isFocused && this.selectedBackground != null && col == this.selectedColumnIndex && row == this.selectedRowIndex) {
+					this.selectedBackground.paint(x + width, y + height - (this.paddingVertical/2), widths[col] - this.paddingHorizontal, heights[row] - this.paddingVertical, g);
+				}
 				if (data instanceof Item) {
 					Item item = (Item) data;
 					item.paint(x + width, y + height, x + width, x + width + widths[col] - (this.paddingHorizontal << 1), g);
@@ -344,7 +378,7 @@ public class TableItem
 				current = target;
 			}
 			this.xOffset = current;
-			addRelativeToContentRegion(repaintRegion, 0, 0, this.contentWidth, this.contentHeight );
+			addRelativeToContentRegion(repaintRegion, -1, -1, this.contentWidth + 2, this.contentHeight + 2 );
 		}
 	}
 
@@ -354,30 +388,138 @@ public class TableItem
 	protected boolean handleKeyPressed(int keyCode, int gameAction)
 	{
 		if (this.appearanceMode != PLAIN) {
-			if (gameAction == Canvas.RIGHT 
-					&& this.xOffset + this.completeWidth > this.contentWidth) 
-			{
-				int offset = this.targetXOffset -  (this.contentWidth >> 1);
-				if (offset + this.completeWidth < this.contentWidth) {
-					offset = this.contentWidth - this.completeWidth;
+			if (this.selectionMode == SELECTION_MODE_NONE) {
+				if (gameAction == Canvas.RIGHT 
+						&& this.xOffset + this.completeWidth > this.contentWidth) 
+				{
+					int offset = this.targetXOffset -  (this.contentWidth >> 1);
+					if (offset + this.completeWidth < this.contentWidth) {
+						offset = this.contentWidth - this.completeWidth;
+					}
+					this.targetXOffset = offset;
+					return true;
+				} else if (gameAction == Canvas.LEFT 
+						&& this.xOffset < 0)
+				{
+					int offset = this.targetXOffset + (this.contentWidth >> 1);
+					if (offset > 0) {
+						offset = 0;
+					}
+					this.targetXOffset = offset;
+					return true;
 				}
-				this.targetXOffset = offset;
-				return true;
-			} else if (gameAction == Canvas.LEFT 
-					&& this.xOffset < 0)
-			{
-				int offset = this.targetXOffset + (this.contentWidth >> 1);
-				if (offset > 0) {
-					offset = 0;
+			} else {
+				if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM4) {
+					for (int col=this.selectedColumnIndex + 1; col < getNumberOfColumns(); col++) {
+						Object cell = get( col, this.selectedRowIndex );
+						if (cell != null) {
+							setSelectedCell( col, this.selectedRowIndex, Canvas.RIGHT );
+							return true;
+						}
+					}
 				}
-				this.targetXOffset = offset;
-				return true;
+				if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM6) {
+					for (int col=this.selectedColumnIndex - 1; col >= 0; col--) {
+						Object cell = get( col, this.selectedRowIndex );
+						if (cell != null) {
+							setSelectedCell( col, this.selectedRowIndex, Canvas.LEFT );
+							return true;
+						}
+					}
+				}
+				if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
+					for (int row=this.selectedRowIndex + 1; row < getNumberOfRows(); row++) {
+						Object cell = get( this.selectedColumnIndex, row );
+						if (cell != null) {
+							setSelectedCell( this.selectedColumnIndex, row, Canvas.DOWN );
+							return true;
+						}
+					}
+				}
+				if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
+					for (int row=this.selectedRowIndex - 1; row >= 0; row--) {
+						Object cell = get( this.selectedColumnIndex, row );
+						if (cell != null) {
+							setSelectedCell( this.selectedColumnIndex, row, Canvas.UP );
+							return true;
+						}
+					}
+				}
 			}
 		}
 		return super.handleKeyPressed(keyCode, gameAction);
 	}
 	
 	
+	/**
+	 * @param col the column
+	 * @param row the row
+	 */
+	public void setSelectedCell(int col, int row)
+	{
+		setSelectedCell(col, row, 0);
+	}
+	/**
+	 * @param col the column
+	 * @param row the row
+	 * @param direction the direction
+	 */
+	public void setSelectedCell(int col, int row, int direction)
+	{
+		if (this.selectedItemStyle != null) {
+			Object data = getSelectedCell();
+			if (data instanceof Item) {
+				Item item = (Item) data;
+				item.defocus(this.selectedItemStyle);
+			}
+		}
+		Object data = get(col, row);
+		if (data instanceof Item) {
+			Item item = (Item) data;
+			item.focus( null, direction );
+		}
+		this.selectedColumnIndex = col;
+		this.selectedRowIndex = row;
+		if (this.rowHeights != null) {
+			this.internalX = getRelativeColumnX(col);
+			this.internalY = getRelativeRowY(row);
+			this.internalWidth = this.columnWidths[col];
+			this.internalHeight = this.rowHeights[row];
+			// scroll horizontally:
+			if (this.targetXOffset + this.internalX <  0) {
+				this.targetXOffset = -this.internalX;
+			} else if (this.targetXOffset + this.internalX + this.internalWidth > this.contentWidth) {
+				this.targetXOffset = this.contentWidth - (this.internalX + this.internalWidth );
+			}
+		}
+	}
+
+	/**
+	 * @param row
+	 * @return
+	 */
+	private int getRelativeRowY(int row)
+	{
+		int y = 0;
+		for (int i=0; i<row; i++) {
+			y += this.rowHeights[i];
+		}
+		return y;
+	}
+
+	/**
+	 * @param col
+	 * @return
+	 */
+	private int getRelativeColumnX(int col)
+	{
+		int x = 0;
+		for (int i=0; i<col; i++) {
+			x += this.columnWidths[i];
+		}
+		return x;
+	}
+
 	//**************************** Table Management  ******************************************************************//
 	
 
@@ -542,7 +684,35 @@ public class TableItem
 		return this.tableData.get(column, row);
 	}
 	
+	/**
+	 * Retrieves the data within the currently selected cell.
+	 * @return the data of the selected cell, null if none is selected or this table has not a  cell or column_and_row selection mode
+	 * @see #setSelectionMode(int)
+	 */
+	public Object getSelectedCell() {
+		if (this.selectionMode == SELECTION_MODE_NONE || this.selectionMode == SELECTION_MODE_ROW || this.selectionMode == SELECTION_MODE_COLUMN) {
+			return null;
+		}
+		return this.tableData.get( this.getSelectedColumn(), getSelectedRow() );
+	}
 	
+	/**
+	 * Retrieves the index of the currently selected row
+	 * 
+	 * @return the index of the currently selected row, 0 is the first row
+	 */
+	public int getSelectedRow() {
+		return this.selectedRowIndex;
+	}
+	
+	/**
+	 * Retrieves the index of the currently selected column
+	 * 
+	 * @return the index of the currently selected column, 0 is the first column
+	 */
+	public int getSelectedColumn() {
+		return this.selectedColumnIndex;
+	}
 
 
 	//#ifdef polish.useDynamicStyles	
@@ -554,5 +724,123 @@ public class TableItem
 		return "table";
 	}
 	//#endif
+
+	/**
+	 * Retrieves the selection mode 
+	 * @return the current selection mode
+	 * @see #SELECTION_MODE_NONE
+	 * @see #SELECTION_MODE_CELL
+	 * @see #SELECTION_MODE_ROW
+	 * @see #SELECTION_MODE_COLUMN
+	 * @see #SELECTION_MODE_ROW_AND_COLUMN
+	 */
+	public int getSelectionMode() {
+	return this.selectionMode;}
+	
+
+	/**
+	 * Retrieves the selection mode 
+	 * @param selectionMode the desired selection mode
+	 * @see #SELECTION_MODE_NONE
+	 * @see #SELECTION_MODE_CELL
+	 * @see #SELECTION_MODE_ROW
+	 * @see #SELECTION_MODE_COLUMN
+	 * @see #SELECTION_MODE_ROW_AND_COLUMN
+	 */
+	public void setSelectionMode(int selectionMode)
+	{
+		this.selectionMode = selectionMode;
+		if (this.selectionMode != SELECTION_MODE_NONE) {
+			for (int row=0; row<getNumberOfRows(); row++) {
+				for (int col=0; col<getNumberOfColumns(); col++ ) {
+					Object data = get(col, row);
+					if (data != null) {
+						this.selectedColumnIndex = col;
+						this.selectedRowIndex = row;
+						return;
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * @return the selectedBackground
+	 */
+	public Background getSelectedBackground() {
+	return this.selectedBackground;}
+	
+
+	/**
+	 * @param selectedBackground the selectedBackground to set
+	 */
+	public void setSelectedBackground(Background selectedBackground)
+	{
+		this.selectedBackground = selectedBackground;
+	}
+
+	/**
+	 * @return the selectedBackgroundHorizontal
+	 */
+	public Background getSelectedBackgroundHorizontal() {
+	return this.selectedBackgroundHorizontal;}
+	
+
+	/**
+	 * @param selectedBackgroundHorizontal the selectedBackgroundHorizontal to set
+	 */
+	public void setSelectedBackgroundHorizontal(
+			Background selectedBackgroundHorizontal)
+	{
+		this.selectedBackgroundHorizontal = selectedBackgroundHorizontal;
+	}
+
+	/**
+	 * @return the selectedBackgroundVertical
+	 */
+	public Background getSelectedBackgroundVertical() {
+	return this.selectedBackgroundVertical;}
+	
+
+	/**
+	 * @param selectedBackgroundVertical the selectedBackgroundVertical to set
+	 */
+	public void setSelectedBackgroundVertical(Background selectedBackgroundVertical)
+	{
+		this.selectedBackgroundVertical = selectedBackgroundVertical;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeCustomItem#defocus(de.enough.polish.ui.Style)
+	 */
+	protected void defocus(Style originalStyle)
+	{
+		super.defocus(originalStyle);
+		if ( !(this.selectionMode == SELECTION_MODE_NONE || this.appearanceMode == PLAIN)) {			
+			Object obj = getSelectedCell();
+			if (obj instanceof Item) {
+				Item item = (Item) obj;
+				item.defocus(this.selectedItemStyle);
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeCustomItem#focus(de.enough.polish.ui.Style, int)
+	 */
+	protected Style focus(Style newStyle, int direction)
+	{
+		Style oldStyle = super.focus(newStyle, direction);
+		if ( !(this.selectionMode == SELECTION_MODE_NONE || this.appearanceMode == PLAIN)) {			
+			Object obj = getSelectedCell();
+			if (obj instanceof Item) {
+				Item item = (Item) obj;
+				this.selectedItemStyle = item.focus( null, direction );
+			}
+		}
+		return oldStyle;
+	}
+	
+	
 
 }
