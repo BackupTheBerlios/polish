@@ -108,16 +108,47 @@ public class DeviceManagerTest extends TestCase
 		assertNotNull(device);
 		assertEquals("KG800", device.getName() );
 
+		userAgent = "Nokia5500d/2.0 (03.18) SymbianOS/9.1 Series60/3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1";
+		device = manager.getDeviceByUserAgent(userAgent, storage );
+		assertNotNull(device);
+		assertEquals("5500", device.getName() );
+
+		userAgent = "Nokia5500d/2.0 (03.19) SymbianOS/9.1 Series60/3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1";
+		device = manager.getDeviceByUserAgent(userAgent, storage );
+		assertNotNull(device);
+		assertEquals("5500", device.getName() );
+		
+		
+		userAgent = "MOTOROKR Z6/R60_G_80.xx.yyI Mozilla/4.0 (compatible; MSIE 6.0 Linux; MOTOROKR Z6;nnn) Profile/MIDP-2.0 Configuration/CLDC-1.1 Opera 8.50[yy]";
+		device = manager.getDeviceByUserAgent(userAgent, storage );
+		assertNotNull(device);
+		assertEquals("Z6", device.getName() );
+		
+		userAgent = "MOT-Motorola L6/0A.52.26RX MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1";
+		device = manager.getDeviceByUserAgent(userAgent, storage );
+		assertNotNull(device);
+		assertEquals("L6", device.getName() );
+		
+		userAgent = "MOT-SLVR L6/0A.52.26ZZ MIB/2.2.1 Profile/MIDP-2.0 Configuration/CLDC-1.1";
+		device = manager.getDeviceByUserAgent(userAgent, storage );
+		assertNotNull(device);
+		assertEquals("L6", device.getName() );
+
+		userAgent = "MOT-SLVR";
+		device = manager.getDeviceByUserAgent(userAgent, storage );
+		assertNotNull(device);
+		assertEquals("SLVR", device.getName() );
+		
 		userAgent = "Fantasy/6600";
 		device = manager.getDeviceByUserAgent(userAgent, storage );
 		assertNull(device);
 
 	}
     
-    public void testA() {
-        DeviceDatabase deviceDatabase = DeviceDatabase.getInstance(new File(POLISH_HOME));
-        Device device = deviceDatabase.getDeviceManager().getDeviceByUserAgent("BlackBerry8110/4.3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/124");
-        System.out.println(device);
-    }
+//    public void testA() {
+//        DeviceDatabase deviceDatabase = DeviceDatabase.getInstance(new File(POLISH_HOME));
+//        Device device = deviceDatabase.getDeviceManager().getDeviceByUserAgent("BlackBerry8110/4.3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/124");
+//        System.out.println(device);
+//    }
 
 }

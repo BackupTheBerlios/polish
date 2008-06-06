@@ -388,11 +388,13 @@ public class DeviceManager {
         	//System.err.println("Warning: user agent [" + userAgent + "] is not registered.");
         	int index;
         	if (userAgent.startsWith("Nokia")) {
-        		device = resolveUserAgent( "Nokia", "Nokia", userAgent, true );
+        		device = resolveNokiaUserAgent( "Nokia", userAgent );
          	} else if (userAgent.startsWith("SonyEricsson")) { 
          		device =  resolveUserAgent("Sony-Ericsson", "SonyEricsson", userAgent, false );
          	} else if (userAgent.startsWith("MOT-")) {
-         		device =  resolveMotorolaUserAgent( userAgent );
+         		device =  resolveMotorolaUserAgent( "MOT-", userAgent );
+         	} else if (userAgent.startsWith("MOTO")) {
+         		device =  resolveMotorolaUserAgent( "MOTO", userAgent );
          	} else if (userAgent.startsWith("SAMSUNG-") || userAgent.startsWith("Samsung-")) { 
          		device =  resolveUserAgent("Samsung", "SAMSUNG-", userAgent, false);
          	} else if (userAgent.startsWith("LG-") ) { 
@@ -436,7 +438,36 @@ public class DeviceManager {
         return device;
     }
     
- 
+
+	/**
+	 * Resolves a Nolia user agent.
+	 * Motorola device definitions often start with RAZR etc, which might not need to be used in J2ME Polish.
+	 * @param userAgent the full user agent
+	 * @return the found Motorola device, if any
+	 */
+	private Device resolveNokiaUserAgent(String userAgentVendor, String userAgent)
+	{
+		String vendor = "Nokia";
+		String deviceName = resolveDeviceName(userAgentVendor, userAgent, true);
+		Device foundDevice = getDevice( vendor + "/" + deviceName);
+		if (foundDevice == null && deviceName.length() > 4) {
+			// Nokia device names consist usually of 4 characters:
+			StringBuffer buffer = new StringBuffer( deviceName.length() );
+			boolean lastCharWasNumber = false;
+			for (int i=0; i<deviceName.length(); i++) {
+				char c = deviceName.charAt(i);
+				if (Character.isDigit(c)) {
+					buffer.append(c);
+					lastCharWasNumber = true;
+				} else if (lastCharWasNumber) {
+					break;
+				}
+			}
+			foundDevice = getDevice( vendor + "/" + buffer.toString() );
+		}
+		return foundDevice;
+	}
+
 
 	/**
 	 * Resolves a Motorola user agent.
@@ -444,11 +475,23 @@ public class DeviceManager {
 	 * @param userAgent the full user agent
 	 * @return the found Motorola device, if any
 	 */
-	private Device resolveMotorolaUserAgent(String userAgent)
+	private Device resolveMotorolaUserAgent(String userAgentVendor, String userAgent)
 	{
 		String vendor = "Motorola";
-		String deviceName = resolveDeviceName("MOT-", userAgent, false);
-		Device foundDevice = getDevice( vendor + "/" + deviceName);
+		String deviceName = resolveDeviceName(userAgentVendor, userAgent, false);
+		if ("SLVR".equals(deviceName)) {
+			int startIndex = userAgent.indexOf("SLVR");
+			if ( (userAgent.length() > (startIndex + "SLVR".length() + 2))
+					&& (userAgent.charAt( startIndex + "SLVR".length()) == ' ')
+			) {
+				String realDeviceName = resolveDeviceName("SLVR", userAgent.substring(startIndex), false );
+				Device device = getDevice( vendor + "/" + realDeviceName );
+				if (device != null) {
+					return device;
+				}
+			}	
+		}
+ 		Device foundDevice = getDevice( vendor + "/" + deviceName);
 		if (foundDevice == null) {
 			if (deviceName.startsWith("RAZR")) {
 				if (deviceName.length() > "RAZR".length()) {

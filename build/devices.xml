@@ -2316,6 +2316,29 @@ These namespaces/schemas will be used soon.
     <capability name="wap.userAgent" value="SonyEricssonP910a/R4A SEMC-Browser/Symbian/3.0 Profile/MIDP-2.0 Configuration/CLDC-1.0" />
   </device>
   <!-- Motorola devices -->
+    <device>
+    <identifier>Motorola/Motorokr_Z6,Motorola/Z6</identifier>
+    <features>doubleBuffering, hasCamera</features>
+    <capability name="OS" value="MOTOMAGX" />
+    <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="ScreenSize" value="240x320" />
+    <capability name="BitsPerPixel" value="16" />
+    <capability name="HeapSize" value="1 MB" />
+    <capability name="StorageSize" value="64 MB" />
+    <capability name="MaxRecordStoreSize" value="1 MB" />
+    <capability name="JavaProtocol" value="udp, http, socket, ssl" />
+    <capability name="MaxSockets" value="4" />
+    <capability name="JavaPackage" value="3dapi, webservice, pdaapi, wmapi1.0, wmapi2.0, mmapi, moto-flex" />
+    <capability name="ImageFormat" value="png, jpeg, wbmp, gif, bmp" />
+    <capability name="SoundFormat" value="amr-mb, amr-wb, amr, midi, mp3, aac, imelody, aac+, eaac+, wma, realaudio" />
+    <capability name="Region" value="Global" />
+    <capability name="Network" value="GSM, GPRS" />
+    <capability name="Frequency" value="850, 900, 1800, 1900" />
+    <capability name="CameraResolution" value="640x480" />
+    <capability name="CameraZoom" value="4" />
+    <capability name="wap.userAgent" value="MOTOROKR Z6/R60_G_80.xx.yyI Mozilla/4.0 (compatible; MSIE 6.0 Linux; MOTOROKR Z6;nnn) Profile/MIDP-2.0 Configuration/CLDC-1.1 Opera 8.50[yy]" />
+  </device>
   <device>
     <identifier>Motorola/Motoslvr_L7i,Motorola/L7i,Motorola/Motoslvr_L7e,Motorola/L7e</identifier>
     <features>doubleBuffering, hasCamera</features>
@@ -5464,6 +5487,7 @@ These namespaces/schemas will be used soon.
     <capability name="wap.userAgent" value="Nokia5500d" />
     <capability name="wap.userAgent" value="Nokia5500d/2.0(03.14) SymbianOS/9.1 Series60/3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1" />
     <capability name="wap.userAgent" value="Nokia5500d/2.0 (03.14) SymbianOS/9.1 Series60/3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1" />
+    <capability name="wap.userAgent" value="Nokia5500d/2.0 (03.18) SymbianOS/9.1 Series60/3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1" />
   </device>
   <device>
     <identifier>Nokia/E50</identifier>
@@ -15598,6 +15622,7 @@ These namespaces/schemas will be used soon.
     <capability name="Frequency" value="850, 900,1800,1900" />
     <capability name="key.TopLeftSoftKey" value="-13" />
     <capability name="key.TopRightSoftKey" value="-14" />
+    <capability name="wap.userAgent" value="SonyEricssonW910i/R1EA Browser/NetFront/3.4 Profile/MIDP-2.1 Configuration/CLDC-1.1" />    
   </device>
   <device>
     <identifier>Sony-Ericsson/W960</identifier>
