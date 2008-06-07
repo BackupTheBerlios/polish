@@ -373,6 +373,19 @@ public class TabBar extends Item {
 				this.allowRoundtrip = allowRoundtripBool.booleanValue();
 			}
 		//#endif
+		//#if polish.css.tabbar-activetab-style
+			Style actStyle = (Style) style.getObjectProperty("tabbar-activetab-style");
+			if (actStyle != null) {
+				this.activeStyle = actStyle; 
+				this.activeStyleUsed = actStyle;
+			}
+		//#endif
+		//#if polish.css.tabbar-inactivetab-style
+			Style inactStyle = (Style) style.getObjectProperty("tabbar-inactivetab-style");
+			if (inactStyle != null) {
+				this.inactiveStyle = inactStyle; 
+			}
+		//#endif
 	}
 	
 	

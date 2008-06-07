@@ -73,10 +73,10 @@ public class TabbedForm extends Form {
 	public TabbedForm(String title, String[] tabNames, Image[] tabImages, Style style) {
 		super(title, style );
 		//#if polish.classes.TabBar:defined
-			//#style tabbar, default
+			//#style tabbar?
 			//#= this.tabBar = new ${polish.classes.TabBar} ( tabNames, tabImages );
 		//#else
-			//#style tabbar, default
+			//#style tabbar?
 			this.tabBar = new TabBar( tabNames, tabImages );
 		//#endif
 		int length;
@@ -611,6 +611,22 @@ public class TabbedForm extends Form {
 		}
 
 		super.sizeChanged(width, height);
+	}
+	//#endif
+
+	//#if polish.css.tabbar-style
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#setStyle(de.enough.polish.ui.Style)
+	 */
+	public void setStyle(Style style)
+	{
+		super.setStyle(style);
+		//#if polish.css.tabbar-style
+			Style tabbarStyle = (Style) style.getObjectProperty("tabbar-style");
+			if (tabbarStyle != null) {
+				this.tabBar.setStyle(tabbarStyle);
+			}
+		//#endif		
 	}
 	//#endif
 }
