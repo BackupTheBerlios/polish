@@ -75,56 +75,21 @@ inactivetab {
 <p>The TabbedForm contains any kind of items in several tabs. The user can jump between different tabs by clicking left and right.
 </p>
 <p>
-The TabbedForm uses different styles for its design:
+The TabbedForm uses these default styles for its design:
 </p>
 <ul>
 	<li><b>tabbar</b>: the design of the complete bar that contains all tabs</li>
 	<li><b>activetab</b>: the design of the currently selected tab</li>
 	<li><b>inactivetab</b>: designs the remaining tabs</li>
 </ul>
+<h3 id="tabbedform-attributes">CSS Attributes for TabbedForm</h3>
 <p>You can use following TabbedForm specific CSS attributes for your design:</p>
 <%cssattributes de.enough.polish.ui.TabbedForm %>
-<!-- 
-	<table class="borderedTable"  cellspacing="0" cellpadding="3" border="1">
-	<tr><th>CSS Attribute&nbsp;&nbsp;</th><th>Default</th><th>Values</th><th>Applies To&nbsp;&nbsp;</th><th>Explanation</th></tr>
-	<tr>
-		<td>tabbar-scrolling-indicator-color</td><td>white</td><td>color definition</td><td><code>tabbar</code> style</td>
-		<td>
-		Defines the color of the scrolling indicator of the tabbar. Is ignored when an image has been defined.
-		</td>
-	</tr>
-	<tr>
-		<td>tabbar-left-arrow</td><td>-</td><td></td>image URL<td><code>tabbar</code> style</td>
-		<td>
-		The URL of the image used for indicating that there are tabs left of the current selection available.
-		</td>
-	</tr>
-	<tr>
-		<td>tabbar-right-arrow</td><td>-</td><td></td>image URL<td><code>tabbar</code> style</td>
-		<td>
-		The URL of the image used for indicating that there are tabs right of the current selection available.
-		</td>
-	</tr>
-	<tr>
-		<td>tabbar-arrow-y-offset</td><td>0</td><td>integer</td><td><code>tabbar</code> style</td>
-		<td>
-		The vertical adjustment for the scrolling indicator arrows. Positive values move the indicators torwards the bottom.
-		</td>
-	</tr>
-	<tr>
-		<td>tabbar-arrow-x-offset</td><td>0</td><td>integer</td><td><code>tabbar</code> style</td>
-		<td>
-		The horizontal adjustment for the scrolling indicator arrows. Positive values move the indicators to the right.
-		</td>
-	</tr>
-	<tr>
-		<td>tabbar-roundtrip</td><td>false</td><td>true, false</td><td><code>tabbar</code> style</td>
-		<td>
-		Defines whether the user starts at the first tab after passing the last tab. By default the user cannot pass the last (or the first) tab.
-		</td>
-	</tr>
-	</table>
- -->
+
+<h3 id="tabbar-attributes">CSS Attributes for the Tab Bar</h3>
+<p>For designing the tab bar at the top of a TabbedForm, use these CSS attributes:</p>
+<%cssattributes de.enough.polish.ui.TabBar %>
+
 
 
 <h2 id="programming">Programming</h2>
@@ -201,8 +166,6 @@ section of your <i>build.xml</i> script.
  -->
 
 </table>
-
-
 	<h2 id="JavaDoc">JavaDoc</h2>
 	<ul>
 		<li><a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/TabbedForm.html">TabbedForm</a></li>
