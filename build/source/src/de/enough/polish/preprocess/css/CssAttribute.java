@@ -637,8 +637,9 @@ implements Comparable
 	 */
 	public void add( CssAttribute extension ) {
 		try {
-		this.mappingsByName.putAll( extension.mappingsByName );
+			this.mappingsByName.putAll( extension.mappingsByName );
 		} catch (RuntimeException e) {
+			System.err.println("Warning: unable to add extension " + extension.getName() + " to CSS attribute " + this.name );
 			e.printStackTrace();
 			System.out.println("attribute=" + this.name);
 			System.out.println("mappingsByName=" + this.mappingsByName );

@@ -1152,7 +1152,7 @@
 	<attribute
 		name="tabbar-scrolling-indicator-color"
 		type="color"
-		appliesTo="TabBar, TabbedForm"
+		appliesTo="TabBar"
 		description="Defines the color of the scrolling indicator of the tabbar."
 		default="white"
 		id="47"
@@ -1576,7 +1576,7 @@
 	<attribute
 		name="clip-screen-info"
 		type="boolean"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox"
+		appliesTo="Screen"
 		description="Enables or disables the clipping of the info-section. It is visible for TextFields in the direct input mode, for example."
 		default="false"
 		id="87"
@@ -2216,7 +2216,7 @@
 	<attribute
 		name="tabbar-left-arrow"
 		type="imageurl"
-		appliesTo="TabBar, TabbedForm"
+		appliesTo="TabBar"
 		description="The URL of the image used for indicating that there are tabs left of the current selection available." 
 		id="155"
 	/>
@@ -2224,7 +2224,7 @@
 	<attribute
 		name="tabbar-right-arrow"
 		type="imageurl"
-		appliesTo="TabBar, TabbedForm"
+		appliesTo="TabBar"
 		description="The URL of the image used for indicating that there are tabs right of the current selection available." 
 		id="156"
 	/>
@@ -2232,7 +2232,7 @@
 	<attribute
 		name="tabbar-arrow-y-offset"
 		type="integer"
-		appliesTo="TabBar, TabbedForm"
+		appliesTo="TabBar"
 		description="The vertical adjustment for the scrolling indicator arrows. Positive values move the indicators torwards the bottom." 
 		id="157"
 	/>
@@ -2240,7 +2240,7 @@
 	<attribute
 		name="tabbar-arrow-x-offset"
 		type="integer"
-		appliesTo="TabBar, TabbedForm"
+		appliesTo="TabBar"
 		description="The horizontal adjustment for the scrolling indicator arrows. Positive values move the indicators torwards the right." 
 		id="157"
 	/>
@@ -2248,7 +2248,7 @@
 	<attribute
 		name="tabbar-roundtrip"
 		type="boolean"
-		appliesTo="TabBar, TabbedForm"
+		appliesTo="TabBar"
 		description="Defines whether the user starts at the first tab after passing the last tab. By default the user cannot pass neither the first nor the last tab." 
 		default="false"
 		id="158"
@@ -3010,8 +3010,8 @@
 	<attribute
 		name="tabbar-style"
 		type="style"
-		appliesTo="TabbedList"
-		description="The style for the tabbar within a TabbedList."
+		appliesTo="TabbedList, TabbedForm"
+		description="The style for the tabbar at the top of a TabbedList or TabbedForm."
 		id="250"
 	/>
 	<attribute
@@ -3691,12 +3691,31 @@
 		id="329"
 	/>
 	
+	<attribute
+		name="tabbar-activetab-style"
+		type="style"
+		appliesTo="TabBar"
+		description="Style of the currently selected tab within a TabbedForm."
+		default="activetab"
+		id="330"
+	/>
+		
+	<attribute
+		name="tabbar-inactivetab-style"
+		type="style"
+		appliesTo="TabBar"
+		description="Style of the unselected tabs within a TabbedForm."
+		default="inactivetab"
+		id="331"
+	/>
+	
+	
 	<!--
 	
 	<attribute
 		name="fullscreen-background"
 		type="background"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox, Alert"
+		appliesTo="Screen"
 		description="The background that is painted over the last screen. This can be used for dimming previous screens when tbe new screen does have margins." 
 		id="144"
 	/>
@@ -3704,7 +3723,7 @@
 	<attribute
 		name="opened-menu-background"
 		type="background"
-		appliesTo="Screen, Form, TabbedForm, FramedForm, TextBox, Alert"
+		appliesTo="Screen"
 		description="The background that is painted over the rest of the screen when the menu is opened. This makes sense only when the &quot;fullscreen&quot; mode is activated." 
 		id="145"
 	/>
