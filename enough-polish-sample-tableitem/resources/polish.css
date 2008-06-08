@@ -63,6 +63,10 @@ backgrounds {
 	font-size: small;
 }
 
+.heading:hover {
+	font-color: #000;
+}
+
 .centeredCell {
 	padding: 0;
 	font-color: gray;
@@ -80,7 +84,6 @@ backgrounds {
 title {
 	padding: 2;
 	font-face: proportional;
-	font-size: normal;
 	font-style: bold;
 	font-color: white;
 	text-effect: split;

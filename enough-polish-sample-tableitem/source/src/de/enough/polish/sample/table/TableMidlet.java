@@ -16,6 +16,7 @@ import de.enough.polish.ui.ChartItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TableItem;
 import de.enough.polish.ui.UiAccess;
+import de.enough.polish.ui.backgrounds.SimpleBackground;
 import de.enough.polish.util.TableData;
 
 public class TableMidlet 
@@ -109,7 +110,7 @@ implements CommandListener
 		//#style label
 		this.form.append("items in a table:");
 		//#style defaultTable
-		table = new TableItem(4, 3);
+		table = new TableItem(4, 5);
 		//#style heading
 		table.set( 1, 0, "Nokia");
 		//#style heading
@@ -138,8 +139,31 @@ implements CommandListener
 		table.set( 2, 2, "13%");
 		//#style centeredCell
 		table.set( 3, 2, "12%");
+		//#style heading
+		table.set( 0, 3, "Share 07:");
+		//#style centeredCell
+		table.set( 1, 3, "34%");
+		//#style centeredCell
+		table.set( 2, 3, "11%");
+		//#style centeredCell
+		table.set( 3, 3, "17%");
+		//#style heading
+		table.set( 0, 4, "Share 06:");
+		//#style centeredCell
+		table.set( 1, 4, "31%");
+		//#style centeredCell
+		table.set( 2, 4, "9%");
+		//#style centeredCell
+		table.set( 3, 4, "21%");
+		
+		table.setSelectionMode( TableItem.SELECTION_MODE_CELL_EMPTY );
+		table.setSelectedBackground( new SimpleBackground(0xffff00));
 
 		this.form.append( table );
+		
+		
+
+		
 	}
 
 }
