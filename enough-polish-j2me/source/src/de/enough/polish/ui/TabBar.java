@@ -46,15 +46,9 @@ import javax.microedition.lcdui.Image;
 public class TabBar extends Item {
 
 	private final ImageItem[] tabs;
-	//#if !polish.LibraryBuild
-		//# private final Style activeStyle;
-		//# private final Style activeFocusedStyle;
-		//# private final Style inactiveStyle;
-	//#else
-		private Style activeStyle;
-		private Style activeFocusedStyle;
-		private Style inactiveStyle;
-	//#endif
+	private Style activeStyle;
+	private Style activeFocusedStyle;
+	private Style inactiveStyle;
 	private Style activeStyleUsed;
 	
 	private int activeTabIndex;

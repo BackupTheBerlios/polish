@@ -51,21 +51,25 @@ public class TableItem
 	 */
 	public static final int SELECTION_MODE_NONE = 0;
 	/**
-	 * Selection mode for a table in which single cells can be selected.
+	 * Selection mode for a table in which single non-empty cells can be selected.
 	 */
 	public static final int SELECTION_MODE_CELL = 1;
 	/**
+	 * Selection mode for a table in which any cell can be selected, even empty ones.
+	 */
+	public static final int SELECTION_MODE_CELL_EMPTY = 2;
+	/**
 	 * Selection mode for a table in which rows can be selected.
 	 */
-	public static final int SELECTION_MODE_ROW = 2;
+	public static final int SELECTION_MODE_ROW = 3;
 	/**
 	 * Selection mode for a table in which columns can be selected.
 	 */
-	public static final int SELECTION_MODE_COLUMN = 3;
+	public static final int SELECTION_MODE_COLUMN = 4;
 	/**
 	 * Selection mode for a table in which cells can be selected, but the complete row and column of the selected cell will be highlighted, too.
 	 */
-	public static final int SELECTION_MODE_ROW_AND_COLUMN = 4;
+	public static final int SELECTION_MODE_ROW_AND_COLUMN = 5;
 	
 	/** default style for lines between cells */
 	public static int LINE_STYLE_SOLID = 0;
@@ -257,6 +261,9 @@ public class TableItem
 				}
 			}
 		}
+//		if (numberOfRows > 0) {
+//			heights[ numberOfRows - 1] -= this.paddingVertical;
+//		}
 		height = 0;
 		width = 0;
 		for (int col = 0; col < numberOfColumns; col++ ) {
@@ -274,20 +281,22 @@ public class TableItem
 		}
 		this.completeWidth = width;
 		this.contentWidth = width;
-		this.contentHeight = height;
+		this.contentHeight = height - this.paddingVertical;
 		this.columnWidths = widths;
 		this.rowHeights = heights;
 		if (this.completeWidth > lineWidth) {
 			this.appearanceMode = INTERACTIVE;
 			this.contentWidth = lineWidth;
 		}
+		if (this.selectionMode != SELECTION_MODE_NONE && this.internalX == NO_POSITION_SET) {
+			selectCell();
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Item#paintContent(int, int, int, int, javax.microedition.lcdui.Graphics)
 	 */
-	protected void paintContent(int x, int y, int leftBorder, int rightBorder,
-			Graphics g)
+	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g)
 	{
 		if (this.tableData == null) {
 			return;
@@ -311,12 +320,34 @@ public class TableItem
 		int height = 0;
 		int width = 0;
 		x += this.xOffset;
+		boolean paintSelection = this.isFocused;
+		if (paintSelection && this.selectionMode == SELECTION_MODE_ROW && this.selectedRowIndex != -1 && this.selectedBackgroundHorizontal != null) {
+			paintSelection = false;
+		}
+		if (!(paintSelection && this.selectedBackground != null && (this.selectionMode == SELECTION_MODE_CELL || this.selectionMode == SELECTION_MODE_CELL_EMPTY))) {
+			paintSelection = false;
+		}
+		boolean horizontalLinesPainted = false;
 		for (int col = 0; col < numberOfColumns; col++ ) {
 			height = 0;
 			for (int row = 0; row < numberOfRows; row++ ) {
+				int nextHeight = height + heights[row];
+				if (!horizontalLinesPainted) {
+					if (this.lineStroke != LINE_STYLE_INVISIBLE && row != numberOfRows -1) {
+						g.setColor( this.lineColor );
+						if (this.lineStroke == LINE_STYLE_DOTTED) {
+							g.setStrokeStyle( Graphics.DOTTED );
+							g.drawLine( x, y + nextHeight - this.paddingVertical, x + this.completeWidth, y + nextHeight - this.paddingVertical );
+							g.setStrokeStyle( Graphics.SOLID );
+						} else {
+							g.drawLine( x, y + nextHeight - this.paddingVertical, x + this.completeWidth, y + nextHeight - this.paddingVertical );
+						}
+					}
+				}
+				
 				Object data = this.tableData.get(col, row);
-				if (this.isFocused && this.selectedBackground != null && col == this.selectedColumnIndex && row == this.selectedRowIndex) {
-					this.selectedBackground.paint(x + width, y + height - (this.paddingVertical/2), widths[col] - this.paddingHorizontal, heights[row] - this.paddingVertical, g);
+				if (paintSelection && col == this.selectedColumnIndex && row == this.selectedRowIndex) {
+					this.selectedBackground.paint(x + this.internalX, y + this.internalY, this.internalWidth, this.internalHeight, g);
 				}
 				if (data instanceof Item) {
 					Item item = (Item) data;
@@ -328,18 +359,9 @@ public class TableItem
 					g.setFont( this.font );
 					g.drawString( data.toString(), x + width, y + height, Graphics.LEFT | Graphics.TOP );
 				}
-				height += heights[row];
-				if (this.lineStroke != LINE_STYLE_INVISIBLE && row != numberOfRows -1) {
-					g.setColor( this.lineColor );
-					if (this.lineStroke == LINE_STYLE_DOTTED) {
-						g.setStrokeStyle( Graphics.DOTTED );
-						g.drawLine( x, y + height - this.paddingVertical, x + this.completeWidth, y + height - this.paddingVertical );
-						g.setStrokeStyle( Graphics.SOLID );
-					} else {
-						g.drawLine( x, y + height - this.paddingVertical, x + this.completeWidth, y + height - this.paddingVertical );
-					}
-				}
+				height = nextHeight;
 			}
+			horizontalLinesPainted = true;
 			width += widths[col];
 			if (this.lineStroke != LINE_STYLE_INVISIBLE && col != numberOfColumns -1) {
 				g.setColor( this.lineColor );
@@ -357,12 +379,38 @@ public class TableItem
 		}
 	}
 	
-	
-	
 
 	
 	/* (non-Javadoc)
-	 * @see de.enough.polish.ui.FakeCustomItem#animate(long, de.enough.polish.ui.ClippingRegion)
+	 * @see de.enough.polish.ui.Item#paintBackground(int, int, int, int, javax.microedition.lcdui.Graphics)
+	 */
+	protected void paintBackground(int x, int y, int width, int height, Graphics g)
+	{
+		super.paintBackground(x, y, width, height, g);
+		if (this.isFocused) {
+			if ( (this.selectionMode == SELECTION_MODE_ROW || this.selectionMode == SELECTION_MODE_ROW_AND_COLUMN)  && this.selectedRowIndex != -1 && this.selectedBackgroundHorizontal != null) {
+				this.selectedBackgroundHorizontal.paint(x, y + this.internalY + this.paddingTop, width, this.internalHeight, g);
+			}
+			if ((this.selectionMode == SELECTION_MODE_COLUMN || this.selectionMode == SELECTION_MODE_ROW_AND_COLUMN)  && this.selectedRowIndex != -1 && this.selectedBackgroundVertical != null) {
+				int bgX  = x + this.xOffset + this.internalX;
+				int bgW = this.internalWidth;
+				if (bgX < x) {
+					bgW -= (x - bgX);
+					bgX = x;
+				}
+				if (bgX + bgW > x + width) {
+					bgW = (x + width) - bgX;
+				}
+				if (bgW > 0) {
+					this.selectedBackgroundHorizontal.paint(bgX, y + this.paddingTop, bgW, this.contentHeight - (this.paddingTop + this.paddingBottom), g);
+				}
+			}
+		}
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Item#animate(long, de.enough.polish.ui.ClippingRegion)
 	 */
 	public void animate(long currentTime, ClippingRegion repaintRegion)
 	{
@@ -410,37 +458,65 @@ public class TableItem
 				}
 			} else {
 				if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM4) {
-					for (int col=this.selectedColumnIndex + 1; col < getNumberOfColumns(); col++) {
-						Object cell = get( col, this.selectedRowIndex );
-						if (cell != null) {
-							setSelectedCell( col, this.selectedRowIndex, Canvas.RIGHT );
+					if (this.selectionMode == SELECTION_MODE_CELL) {
+						for (int col=this.selectedColumnIndex + 1; col < getNumberOfColumns(); col++) {
+							Object cell = get( col, this.selectedRowIndex );
+							if (cell != null) {
+								setSelectedCell( col, this.selectedRowIndex, Canvas.RIGHT );
+								return true;
+							}
+						}
+					} else if (this.selectionMode != SELECTION_MODE_ROW) {
+						if (this.selectedColumnIndex < getNumberOfColumns() - 1) {
+							setSelectedCell( this.selectedColumnIndex + 1, this.selectedRowIndex, Canvas.RIGHT );
 							return true;
 						}
 					}
 				}
 				if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM6) {
-					for (int col=this.selectedColumnIndex - 1; col >= 0; col--) {
-						Object cell = get( col, this.selectedRowIndex );
-						if (cell != null) {
-							setSelectedCell( col, this.selectedRowIndex, Canvas.LEFT );
+					if (this.selectionMode == SELECTION_MODE_CELL) {
+						for (int col=this.selectedColumnIndex - 1; col >= 0; col--) {
+							Object cell = get( col, this.selectedRowIndex );
+							if (cell != null) {
+								setSelectedCell( col, this.selectedRowIndex, Canvas.LEFT );
+								return true;
+							}
+						}
+					} else if (this.selectionMode != SELECTION_MODE_ROW) {
+						if (this.selectedColumnIndex > 0) {
+							setSelectedCell( this.selectedColumnIndex - 1, this.selectedRowIndex, Canvas.LEFT );
 							return true;
 						}
 					}
 				}
 				if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
-					for (int row=this.selectedRowIndex + 1; row < getNumberOfRows(); row++) {
-						Object cell = get( this.selectedColumnIndex, row );
-						if (cell != null) {
-							setSelectedCell( this.selectedColumnIndex, row, Canvas.DOWN );
+					if (this.selectionMode == SELECTION_MODE_CELL) {
+						for (int row=this.selectedRowIndex + 1; row < getNumberOfRows(); row++) {
+							Object cell = get( this.selectedColumnIndex, row );
+							if (cell != null) {
+								setSelectedCell( this.selectedColumnIndex, row, Canvas.DOWN );
+								return true;
+							}
+						}
+					} else if (this.selectionMode != SELECTION_MODE_COLUMN) {
+						if (this.selectedRowIndex < getNumberOfRows() - 1) {
+							setSelectedCell( this.selectedColumnIndex, this.selectedRowIndex + 1, Canvas.DOWN );
 							return true;
 						}
 					}
 				}
 				if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
-					for (int row=this.selectedRowIndex - 1; row >= 0; row--) {
-						Object cell = get( this.selectedColumnIndex, row );
-						if (cell != null) {
-							setSelectedCell( this.selectedColumnIndex, row, Canvas.UP );
+					if (this.selectionMode == SELECTION_MODE_CELL) {
+						for (int row=this.selectedRowIndex - 1; row >= 0; row--) {
+							Object cell = get( this.selectedColumnIndex, row );
+							if (cell != null) {
+								setSelectedCell( this.selectedColumnIndex, row, Canvas.UP );
+								return true;
+							}
+						}
+					} else if (this.selectionMode != SELECTION_MODE_COLUMN) {
+						if (this.selectedRowIndex > 0) {
+							setSelectedCell( this.selectedColumnIndex, this.selectedRowIndex - 1, Canvas.UP );
 							return true;
 						}
 					}
@@ -466,17 +542,19 @@ public class TableItem
 	 */
 	public void setSelectedCell(int col, int row, int direction)
 	{
-		if (this.selectedItemStyle != null) {
-			Object data = getSelectedCell();
+		if (this.selectionMode == SELECTION_MODE_CELL) {
+			if (this.selectedItemStyle != null) {
+				Object data = getSelectedCell();
+				if (data instanceof Item) {
+					Item item = (Item) data;
+					item.defocus(this.selectedItemStyle);
+				}
+			}
+			Object data = get(col, row);
 			if (data instanceof Item) {
 				Item item = (Item) data;
-				item.defocus(this.selectedItemStyle);
+				item.focus( null, direction );
 			}
-		}
-		Object data = get(col, row);
-		if (data instanceof Item) {
-			Item item = (Item) data;
-			item.focus( null, direction );
 		}
 		this.selectedColumnIndex = col;
 		this.selectedRowIndex = row;
@@ -484,7 +562,7 @@ public class TableItem
 			this.internalX = getRelativeColumnX(col);
 			this.internalY = getRelativeRowY(row);
 			this.internalWidth = this.columnWidths[col];
-			this.internalHeight = this.rowHeights[row];
+			this.internalHeight = this.rowHeights[row] - (this.paddingVertical / 1);
 			// scroll horizontally:
 			if (this.targetXOffset + this.internalX <  0) {
 				this.targetXOffset = -this.internalX;
@@ -502,7 +580,10 @@ public class TableItem
 	{
 		int y = 0;
 		for (int i=0; i<row; i++) {
-			y += this.rowHeights[i];
+			y += this.rowHeights[i]; 
+		}
+		if (y > 0) {
+			 y -= (this.paddingVertical / 2);
 		}
 		return y;
 	}
@@ -690,7 +771,7 @@ public class TableItem
 	 * @see #setSelectionMode(int)
 	 */
 	public Object getSelectedCell() {
-		if (this.selectionMode == SELECTION_MODE_NONE || this.selectionMode == SELECTION_MODE_ROW || this.selectionMode == SELECTION_MODE_COLUMN) {
+		if (this.selectionMode != SELECTION_MODE_CELL && this.selectionMode != SELECTION_MODE_CELL_EMPTY) {
 			return null;
 		}
 		return this.tableData.get( this.getSelectedColumn(), getSelectedRow() );
@@ -750,17 +831,18 @@ public class TableItem
 	public void setSelectionMode(int selectionMode)
 	{
 		this.selectionMode = selectionMode;
-		if (this.selectionMode != SELECTION_MODE_NONE) {
-			for (int row=0; row<getNumberOfRows(); row++) {
-				for (int col=0; col<getNumberOfColumns(); col++ ) {
-					Object data = get(col, row);
-					if (data != null) {
-						this.selectedColumnIndex = col;
-						this.selectedRowIndex = row;
-						return;
-					}
-				}
-			}
+		if (this.selectionMode == SELECTION_MODE_CELL_EMPTY || this.selectionMode == SELECTION_MODE_ROW_AND_COLUMN) {
+			this.selectedRowIndex = 0;
+			this.selectedColumnIndex = 0;
+			
+		} else if (this.selectionMode != SELECTION_MODE_CELL) {
+			selectCell();
+		} else if (this.selectionMode == SELECTION_MODE_ROW) {
+			this.selectedColumnIndex = -1;
+			this.selectedRowIndex = 0;
+		} else if (this.selectionMode == SELECTION_MODE_COLUMN) {
+			this.selectedColumnIndex = 0;
+			this.selectedRowIndex = -1;
 		}
 	}
 
@@ -777,6 +859,12 @@ public class TableItem
 	public void setSelectedBackground(Background selectedBackground)
 	{
 		this.selectedBackground = selectedBackground;
+		if (this.selectedBackgroundHorizontal == null) {
+			this.selectedBackgroundHorizontal = selectedBackground;
+		}
+		if (this.selectedBackgroundVertical == null) {
+			this.selectedBackgroundVertical = selectedBackground;
+		}
 	}
 
 	/**
@@ -831,14 +919,37 @@ public class TableItem
 	protected Style focus(Style newStyle, int direction)
 	{
 		Style oldStyle = super.focus(newStyle, direction);
-		if ( !(this.selectionMode == SELECTION_MODE_NONE || this.appearanceMode == PLAIN)) {			
+		if ( this.selectionMode == SELECTION_MODE_CELL) {			
 			Object obj = getSelectedCell();
+			if (obj == null) {
+				selectCell();
+			}
 			if (obj instanceof Item) {
 				Item item = (Item) obj;
 				this.selectedItemStyle = item.focus( null, direction );
 			}
 		}
 		return oldStyle;
+	}
+
+	/**
+	 *  
+	 */
+	private void selectCell()
+	{
+		if (this.selectionMode == SELECTION_MODE_CELL) {
+			for (int row=0; row<getNumberOfRows(); row++) {
+				for (int col=0; col<getNumberOfColumns(); col++ ) {
+					Object data = get(col, row);
+					if (data != null) {
+						setSelectedCell(col, row);
+						return;
+					}
+				}
+			}
+		} else {
+			setSelectedCell(0, 0);
+		}
 	}
 	
 	

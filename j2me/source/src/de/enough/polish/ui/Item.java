@@ -2027,12 +2027,16 @@ public abstract class Item extends Object
 	}
 	
 	/**
-	 * Paints the background and the border of this item.
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 * @param g
+	 * Paints the background and border of this item.
+	 * The call is forwarded to paintBackground() and paintBorder().
+	 * 
+	 * @param x the horizontal start position
+	 * @param y the vertical start position
+	 * @param width the width
+	 * @param height the height
+	 * @param g graphics context
+	 * @see #paintBackground(int, int, int, int, Graphics)
+	 * @see #paintBorder(int, int, int, int, Graphics)
 	 */
 	protected void paintBackgroundAndBorder(int x, int y, int width, int height, Graphics g) {
 		if ( this.background != null ) {
@@ -2043,15 +2047,7 @@ public abstract class Item extends Object
 				width -= (bWidth << 1);
 				height -= (bWidth << 1);
 			}
-			//#if polish.css.view-type
-				if (this.view != null) {
-					this.view.paintBackground( this.background, x, y, width, height, g );
-				} else {
-			//#endif
-					this.background.paint(x, y, width, height, g);
-			//#if polish.css.view-type
-				}
-			//#endif
+			paintBackground(x, y, width, height, g);
 			if (this.border != null) {
 				x -= bWidth;
 				y -= bWidth;
@@ -2060,16 +2056,51 @@ public abstract class Item extends Object
 			}
 		}
 		if ( this.border != null ) {
-			//#if polish.css.view-type
-				if (this.view != null) {
-					this.view.paintBorder( this.border, x, y, width, height, g );
-				} else {
-			//#endif
-					this.border.paint(x, y, width, height, g);
-			//#if polish.css.view-type
-				}
-			//#endif
+			paintBorder( x, y, width, height, g );
 		}
+	}
+	
+	/**
+	 * Paints the border of this item.
+	 * 
+	 * @param x the horizontal start position
+	 * @param y the vertical start position
+	 * @param width the width
+	 * @param height the height
+	 * @param g graphics context
+	 */
+	protected void paintBorder(int x, int y, int width, int height, Graphics g)
+	{
+		//#if polish.css.view-type
+			if (this.view != null) {
+				this.view.paintBorder( this.border, x, y, width, height, g );
+			} else {
+		//#endif
+				this.border.paint(x, y, width, height, g);
+		//#if polish.css.view-type
+			}
+		//#endif
+	}
+
+	/**
+	 * Paints the background of this item.
+	 * 
+	 * @param x the horizontal start position
+	 * @param y the vertical start position
+	 * @param width the width
+	 * @param height the height
+	 * @param g graphics context
+	 */
+	protected void paintBackground( int x, int y, int width, int height, Graphics g ) {
+		//#if polish.css.view-type
+			if (this.view != null) {
+				this.view.paintBackground( this.background, x, y, width, height, g );
+			} else {
+		//#endif
+				this.background.paint(x, y, width, height, g);
+		//#if polish.css.view-type
+			}
+		//#endif
 	}
 
 	/**
