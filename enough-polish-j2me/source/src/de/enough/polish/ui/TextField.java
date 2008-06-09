@@ -735,6 +735,7 @@ public class TextField extends StringItem
 	private String passwordText;
 	private boolean isPassword;
 	private boolean enableDirectInput;
+	
 	//#if (!tmp.suppressCommands && !tmp.supportsSymbolEntry) || tmp.supportsSymbolEntry
 		private ItemCommandListener additionalItemCommandListener;
 	//#endif
@@ -1710,11 +1711,6 @@ public class TextField extends StringItem
 					this.addCommand(CLEAR_CMD);
 				}
 			//#endif
-			this.itemCommandListener = this;
-			if (this.isFocused) {
-				showCommands();
-			}
-			
 			//#if tmp.directInput && tmp.supportsSymbolEntry && polish.TextField.suppressAddSymbolCommand != true
 				if (!this.isNumeric) {
 					if (!this.isUneditable) {
@@ -1730,6 +1726,11 @@ public class TextField extends StringItem
 			//#endif	
 			}
 		
+			this.itemCommandListener = this;
+			if (this.isFocused) {
+				showCommands();
+			}
+			
 		// end of if !tmp.suppressCommands:
 		//#endif
 			
@@ -3823,11 +3824,13 @@ public class TextField extends StringItem
 		//#endif
 		
 		//#if tmp.implementsItemCommandListener
-			//#if tmp.supportsSymbolEntry
+			//#if tmp.supportsSymbolEntry 
 				if (cmd == ENTER_SYMBOL_CMD ) {
-					showSymbolsList();
+					//#if !polish.TextField.ignoreSymbolCommand
+						showSymbolsList();
+					//#endif
 					return;
-				}
+				} 
 			//#endif
 			//#ifndef tmp.suppressCommands
 				if ( cmd == DELETE_CMD ) {
@@ -4088,6 +4091,11 @@ public class TextField extends StringItem
 	}
 	//#endif
 
+	//#if !polish.blackberry
+	public static String[] getDefinedSymbols() {
+		return definedSymbols;
+	}
+	//#endif
 	
 	/*
 	public boolean keyChar(char key, int status, int time) {
