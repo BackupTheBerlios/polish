@@ -143,7 +143,7 @@ implements
 		//#if polish.css.font-bitmap
 			private int caretWidth;
 			private int caretX;
-			private int fontHeight;
+			private int bitmapFontHeight;
 			private BitMapFontViewer caretViewer;
 		//#endif
 	//#else
@@ -609,7 +609,7 @@ implements
 							x = rightBorder - this.bitMapFontViewer.getWidth();
 						}
 						g.setColor( this.textComplementColor );
-						g.fillRect( x + this.caretX - 1, y  - 1, this.caretWidth + 1, this.fontHeight + 1 );
+						g.fillRect( x + this.caretX - 1, y  - 1, this.caretWidth + 1, this.bitmapFontHeight + 1 );
 						BitMapFontViewer viewer;
 						if (this.showCaret && (viewer = this.caretViewer) != null) {
 							//System.out.println("caretX=" + this.caretX + ", x=" + x);
@@ -636,7 +636,7 @@ implements
 						
 						if (this.showCaret) {
 							g.setColor( this.textComplementColor );
-							g.drawChar( editChar, x + headWidth, y, Graphics.TOP | Graphics.LEFT );
+							g.drawChar( editChar, x + headWidth, y + this.font.getHeight(), Graphics.BOTTOM | Graphics.LEFT );
 						}
 				//#if polish.css.font-bitmap
 					}
@@ -699,7 +699,7 @@ implements
 					this.caretViewer = viewer;
 					this.caretWidth = viewer.getWidth();
 					this.caretX = 0;
-					this.fontHeight = viewer.getFontHeight();
+					this.bitmapFontHeight = viewer.getFontHeight();
 				}
 			}
 		//#endif
@@ -900,7 +900,7 @@ implements
 					viewer = this.bitMapFont.getViewer( this.text.substring( 0, this.editIndex ));
 					this.caretX = viewer.getWidth();
 				}
-				this.fontHeight = viewer.getFontHeight();
+				this.bitmapFontHeight = viewer.getFontHeight();
 			}
 		//#endif
 	}
@@ -944,7 +944,7 @@ implements
 				BitMapFontViewer viewer = this.bitMapFont.getViewer( "" + editChar );
 				this.caretViewer = viewer;
 				this.caretWidth = viewer.getWidth();
-				this.fontHeight = viewer.getFontHeight();
+				this.bitmapFontHeight = viewer.getFontHeight();
 				//System.out.println("moveForward: caretX=" + this.caretX );
 			}
 		//#endif
