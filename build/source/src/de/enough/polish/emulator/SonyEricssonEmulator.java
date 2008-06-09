@@ -25,6 +25,7 @@ package de.enough.polish.emulator;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 
 import de.enough.polish.Device;
@@ -122,27 +123,44 @@ public class SonyEricssonEmulator extends WtkEmulator {
 		if (sonyHomePath == null) {
 			sonyHomePath = properties.getVariable("sonyericsson.home");
 		}
+		File home = null;
 		if (sonyHomePath == null) {
 			if (File.separatorChar == '\\') {
-				sonyHomePath = "C:\\SonyEricsson\\JavaME_SDK_CLDC";
-				File home = new File( sonyHomePath );
+				sonyHomePath = "C:\\SonyEricsson";
+				home = new File( sonyHomePath );
 				if (!home.exists()) {
-					sonyHomePath = "C:\\SonyEricsson\\J2ME_SDK_CLDC";
-					home = new File( sonyHomePath );
-					if (!home.exists()) {
-						sonyHomePath = "C:\\SonyEricsson\\J2ME_SDK";
-						home = new File( sonyHomePath );
-						if (!home.exists()) {
-							sonyHomePath = null;
-							// try to start emulators from the standard WTK directory.
-						}
-					}
+					sonyHomePath = null;
+					// try to start emulators from the standard WTK directory.
 				}
 			}
 		} else {
-			File home = new File( sonyHomePath );
+			home = new File( sonyHomePath );
 			if (!home.exists()) {
 				System.err.println("Unable to start emulator for device [" + dev.getIdentifier() + "]: Please adjust the ${sony-ericsson.home}-property in your build.xml. The path [" + sonyHomePath + "] does not exist.");
+			}
+		}
+		if (home != null) {
+			File pcEmulation = new File( home, "PC_Emulation");
+			if (!pcEmulation.exists()) {
+				File[] files = home.listFiles();
+				Arrays.sort( files );
+				boolean foundSdk = false;
+				for (int i = files.length; --i >= 0; ) {
+					File file = files[i];
+					if (file.isDirectory()) {
+						pcEmulation = new File( file, "PC_Emulation");
+						if (pcEmulation.exists()) {
+							home = file;
+							sonyHomePath = home.getAbsolutePath();
+							foundSdk = true;
+							break;
+						}
+					}
+				}
+				if (!foundSdk) {
+					System.out.println("Warning: unable to find correct Sony Ericsson SDK in " + home.getAbsolutePath() + ": please specify the sony-ericsson.home property in ${polish.home}/global.properties. Now trying to use default WTK.");
+					sonyHomePath = null;
+				}
 			}
 		}
 		this.sonyEricssonHome = sonyHomePath;
