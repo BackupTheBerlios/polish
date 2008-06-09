@@ -3709,6 +3709,29 @@
 		id="331"
 	/>
 	
+	<attribute
+		name="table-selected-background"
+		type="background"
+		appliesTo="TableItem"
+		description="The background for selected cells of a table."
+		id="332"
+	/>
+	
+	<attribute
+		name="table-selected-row-background"
+		type="background"
+		appliesTo="TableItem"
+		description="The background for selected rows of a table."
+		id="333"
+	/>
+
+	<attribute
+		name="table-selected-column-background"
+		type="background"
+		appliesTo="TableItem"
+		description="The background for selected columns of a table."
+		id="334"
+	/>
 	
 	<!--
 	

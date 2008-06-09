@@ -93,8 +93,8 @@ public class TableItem
 	
 	protected int selectionMode = SELECTION_MODE_NONE;
 	protected Background selectedBackground;
-	protected Background selectedBackgroundHorizontal;
-	protected Background selectedBackgroundVertical;
+	protected Background selectedRowBackground;
+	protected Background selectedColumnBackground;
 	private int selectedRowIndex;
 	private int selectedColumnIndex;
 	private Style selectedItemStyle;
@@ -200,6 +200,25 @@ public class TableItem
 				this.lineStroke = strokeObj.intValue();
 			}
 		//#endif
+		//#if polish.css.table-selected-background
+			Background sBackground = (Background) style.getObjectProperty("table-selected-background");
+			if (sBackground != null) {
+				setSelectedBackground(sBackground);
+			}
+		//#endif
+		//#if polish.css.table-selected-row-background
+			Background srBackground = (Background) style.getObjectProperty("table-selected-row-background");
+			if (srBackground != null) {
+				this.selectedRowBackground = srBackground;
+			}
+		//#endif
+		//#if polish.css.table-selected-column-background
+			Background scBackground = (Background) style.getObjectProperty("table-selected-column-background");
+			if (scBackground != null) {
+				this.selectedColumnBackground = scBackground;
+			}
+		//#endif
+		
 	}
 	
 	/**
@@ -288,9 +307,16 @@ public class TableItem
 			this.appearanceMode = INTERACTIVE;
 			this.contentWidth = lineWidth;
 		}
-		if (this.selectionMode != SELECTION_MODE_NONE && this.internalX == NO_POSITION_SET) {
-			selectCell();
-		}
+		if (this.selectionMode != SELECTION_MODE_NONE) {
+			if (this.internalX == NO_POSITION_SET) {
+				selectCell();
+			} else if (
+					(this.selectedColumnIndex != -1 && widths[this.selectedColumnIndex] != this.internalWidth)
+					|| (this.selectedRowIndex != -1 && (heights[this.selectedRowIndex] - (this.paddingVertical / 2)) != this.internalHeight)
+			) {
+				setSelectedCell( this.selectedColumnIndex, this.selectedRowIndex);
+			}
+		} 
 	}
 
 	/* (non-Javadoc)
@@ -321,7 +347,7 @@ public class TableItem
 		int width = 0;
 		x += this.xOffset;
 		boolean paintSelection = this.isFocused;
-		if (paintSelection && this.selectionMode == SELECTION_MODE_ROW && this.selectedRowIndex != -1 && this.selectedBackgroundHorizontal != null) {
+		if (paintSelection && this.selectionMode == SELECTION_MODE_ROW && this.selectedRowIndex != -1 && this.selectedRowBackground != null) {
 			paintSelection = false;
 		}
 		if (!(paintSelection && this.selectedBackground != null && (this.selectionMode == SELECTION_MODE_CELL || this.selectionMode == SELECTION_MODE_CELL_EMPTY))) {
@@ -388,10 +414,10 @@ public class TableItem
 	{
 		super.paintBackground(x, y, width, height, g);
 		if (this.isFocused) {
-			if ( (this.selectionMode == SELECTION_MODE_ROW || this.selectionMode == SELECTION_MODE_ROW_AND_COLUMN)  && this.selectedRowIndex != -1 && this.selectedBackgroundHorizontal != null) {
-				this.selectedBackgroundHorizontal.paint(x, y + this.internalY + this.paddingTop, width, this.internalHeight, g);
+			if ( (this.selectionMode == SELECTION_MODE_ROW || this.selectionMode == SELECTION_MODE_ROW_AND_COLUMN)  && this.selectedRowIndex != -1 && this.selectedRowBackground != null) {
+				this.selectedRowBackground.paint(x, y + this.internalY + this.paddingTop, width, this.internalHeight, g);
 			}
-			if ((this.selectionMode == SELECTION_MODE_COLUMN || this.selectionMode == SELECTION_MODE_ROW_AND_COLUMN)  && this.selectedRowIndex != -1 && this.selectedBackgroundVertical != null) {
+			if ((this.selectionMode == SELECTION_MODE_COLUMN || this.selectionMode == SELECTION_MODE_ROW_AND_COLUMN)  && this.selectedRowIndex != -1 && this.selectedColumnBackground != null) {
 				int bgX  = x + this.xOffset + this.internalX;
 				int bgW = this.internalWidth;
 				if (bgX < x) {
@@ -402,7 +428,7 @@ public class TableItem
 					bgW = (x + width) - bgX;
 				}
 				if (bgW > 0) {
-					this.selectedBackgroundHorizontal.paint(bgX, y + this.paddingTop, bgW, this.contentHeight - (this.paddingTop + this.paddingBottom), g);
+					this.selectedRowBackground.paint(bgX, y + this.paddingTop, bgW, this.contentHeight - (this.paddingTop + this.paddingBottom), g);
 				}
 			}
 		}
@@ -559,10 +585,20 @@ public class TableItem
 		this.selectedColumnIndex = col;
 		this.selectedRowIndex = row;
 		if (this.rowHeights != null) {
-			this.internalX = getRelativeColumnX(col);
-			this.internalY = getRelativeRowY(row);
-			this.internalWidth = this.columnWidths[col];
-			this.internalHeight = this.rowHeights[row] - (this.paddingVertical / 1);
+			if (col != -1) {
+				this.internalX = getRelativeColumnX(col);
+				this.internalWidth = this.columnWidths[col];
+			} else {
+				this.internalX = 0;
+				this.internalWidth = this.completeWidth;				
+			}
+			if (row != -1) {
+				this.internalY = getRelativeRowY(row);
+				this.internalHeight = this.rowHeights[row] - (this.paddingVertical / 1);
+			} else {
+				this.internalY = 0;
+				this.internalHeight = this.contentHeight;
+			}
 			// scroll horizontally:
 			if (this.targetXOffset + this.internalX <  0) {
 				this.targetXOffset = -this.internalX;
@@ -859,43 +895,43 @@ public class TableItem
 	public void setSelectedBackground(Background selectedBackground)
 	{
 		this.selectedBackground = selectedBackground;
-		if (this.selectedBackgroundHorizontal == null) {
-			this.selectedBackgroundHorizontal = selectedBackground;
+		if (this.selectedRowBackground == null) {
+			this.selectedRowBackground = selectedBackground;
 		}
-		if (this.selectedBackgroundVertical == null) {
-			this.selectedBackgroundVertical = selectedBackground;
+		if (this.selectedColumnBackground == null) {
+			this.selectedColumnBackground = selectedBackground;
 		}
 	}
 
 	/**
 	 * @return the selectedBackgroundHorizontal
 	 */
-	public Background getSelectedBackgroundHorizontal() {
-	return this.selectedBackgroundHorizontal;}
+	public Background getSelectedRowBackground() {
+	return this.selectedRowBackground;}
 	
 
 	/**
 	 * @param selectedBackgroundHorizontal the selectedBackgroundHorizontal to set
 	 */
-	public void setSelectedBackgroundHorizontal(
+	public void setSelectedRowBackground(
 			Background selectedBackgroundHorizontal)
 	{
-		this.selectedBackgroundHorizontal = selectedBackgroundHorizontal;
+		this.selectedRowBackground = selectedBackgroundHorizontal;
 	}
 
 	/**
 	 * @return the selectedBackgroundVertical
 	 */
-	public Background getSelectedBackgroundVertical() {
-	return this.selectedBackgroundVertical;}
+	public Background getSelectedColumnBackground() {
+	return this.selectedColumnBackground;}
 	
 
 	/**
 	 * @param selectedBackgroundVertical the selectedBackgroundVertical to set
 	 */
-	public void setSelectedBackgroundVertical(Background selectedBackgroundVertical)
+	public void setSelectedColumnBackground(Background selectedBackgroundVertical)
 	{
-		this.selectedBackgroundVertical = selectedBackgroundVertical;
+		this.selectedColumnBackground = selectedBackgroundVertical;
 	}
 
 	/* (non-Javadoc)
