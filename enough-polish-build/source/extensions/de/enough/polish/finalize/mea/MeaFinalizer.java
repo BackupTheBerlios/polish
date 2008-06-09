@@ -39,6 +39,7 @@ import java.util.zip.ZipOutputStream;
 import de.enough.polish.BuildException;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
+import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.util.FileUtil;
 
@@ -100,7 +101,10 @@ public class MeaFinalizer extends Finalizer{
     private String pseudoprivateToken = null;
     
     public void finalize(File jadFile, File jarFile, Device device, Locale locale, Environment env) {
-        File distFile = env.getBuildSetting().getDestDir(env);
+        finalize( env.getBuildSetting().getDestDir(env), jadFile, jarFile, device, locale, env  );
+    }
+
+    public void finalize(File distFile, File jadFile, File jarFile, Device device, Locale locale, Environment env) {
         String distFilePath = distFile.getAbsolutePath();
         String croppedJadFilePath = jadFile.getAbsolutePath().substring( distFilePath.length() + 1 ).replace('\\', '/');// replaceFirst(distFilePath+"/","");
         String croppedJarFilePath = jarFile.getAbsolutePath().substring( distFilePath.length() + 1 ).replace('\\', '/');// replaceFirst(distFilePath+"/","");
@@ -109,6 +113,12 @@ public class MeaFinalizer extends Finalizer{
     }
 
     public void notifyBuildEnd(Environment env) {
+        super.notifyBuildEnd(env);
+        notifyBuildEnd(  env.getBuildSetting().getDestDir(env), env);
+        
+    }
+    
+    public void notifyBuildEnd(File distFile, Environment env) {
         super.notifyBuildEnd(env);
         String description = env.getVariable("MIDlet-Description");
         if(description != null){
@@ -131,9 +141,8 @@ public class MeaFinalizer extends Finalizer{
 
         FileWriter fileWriter = null;
         File contentsXmlFile = null;
-        File distFile = env.getBuildSetting().getDestDir(env);
         File meaFile = new File(distFile,name+".mea");
-        System.out.println("Creating media archive '"+meaFile.getName()+"'.");
+        System.out.println("Creating media archive '"+meaFile.getName()+"' with " + this.access + " access.");
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(meaFile);
             ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
@@ -162,7 +171,7 @@ public class MeaFinalizer extends Finalizer{
             }
             fileWriter.write("fallbackDevice=\"");
             if(this.fallbackDevice == null) {
-                this.fallbackDevice = "Generic/Midp2Cldc11";
+                this.fallbackDevice = "Generic/AnyPhone";
             }
             fileWriter.write(this.fallbackDevice);
             fileWriter.write("\" version=\"");
@@ -265,5 +274,127 @@ public class MeaFinalizer extends Finalizer{
         }
         this.access  = accessParameter;
     }
+    
+    public static void main(String[] args)
+	{
+    	String polishHomeDir = System.getProperty("polish.home");
+    	if (polishHomeDir == null) {
+			polishHomeDir = getArgument("-polish.home", args);
+			if (polishHomeDir == null) {
+				System.err.println("No polish.home argument found.");
+    			printUsage();
+    			System.exit(1);
+			}
+    	}
+    	File polishHome = new File( polishHomeDir );
+    	DeviceDatabase deviceDb = DeviceDatabase.getInstance(polishHome);
+		Environment env = new Environment( polishHome
+				);
+		MeaFinalizer mea = new MeaFinalizer();
+		// add args to environment:
+		int lastNonFileArgumentIndex = -1;
+		for (int i = 0; i < args.length; i++)
+		{
+			String arg = args[i];
+			if (arg.charAt(0) == '-') {
+				lastNonFileArgumentIndex = i;
+				int splitPos = arg.indexOf('=');
+				if (splitPos == -1) {
+					env.addSymbol( arg.substring(1).trim() );
+				} else {
+					String name = arg.substring(1, splitPos ).trim();
+					String value = arg.substring( splitPos + 1).trim();
+					env.addVariable(name, value);
+					if (name.equals("access")) {
+						mea.setAccess(value);
+					} else if (name.equals("name")) {
+						env.addVariable("MIDlet-Name", value);
+					} else if (name.equals("description")) {
+						env.addVariable("MIDlet-Description", value);
+					} else if (name.equals("version")) {
+						env.addVariable("MIDlet-Version", value);
+					} else if (name.equals("vendor")) {
+						env.addVariable("MIDlet-Vendor", value);
+					} else if (name.equals("fallback")) {
+						mea.setFallbackDevice(value);
+					} else if (name.equals("pseudoprivate")) {
+						mea.setPseudoprivate(value);
+					} else if (name.equals("tags")) {
+						mea.setTags(value);
+					}
+				}
+			}
+		}
+		if (lastNonFileArgumentIndex == -1 || lastNonFileArgumentIndex == args.length -1 ) {
+			System.out.println("No files arguments found.");
+			printUsage();
+			System.exit(1);
+		}
+		File jar = null;
+		File jad = null;
+		mea.notifyBuildStart(env);
+		for (int i=lastNonFileArgumentIndex + 1; i<args.length; i += 2) {
+			String fileReference = args[i];
+			if (fileReference.endsWith(".jad")) {
+				jad = new File( fileReference );
+				jar = new File( fileReference.substring(0, fileReference.length() - ".jad".length() ) + ".jar");
+			} else if (fileReference.endsWith(".jar")){
+				jar = new File( fileReference );
+				jad = new File( fileReference.substring(0, fileReference.length() - ".jar".length() ) + ".jad");				
+			} else {
+				System.err.println("Invalid file reference: " + fileReference + " - only jad and jar files are supported.");
+				printUsage();
+				System.exit(2);
+			}
+			if (i == args.length -1) {
+				System.err.println("No device found after file reference: " + fileReference);
+				printUsage();
+				System.exit(3);				
+			}
+			String deviceName = args[i+1];
+			Device device = deviceDb.getDevice(deviceName);
+			if (device == null) {
+				System.err.println("Unable to resolve device " + deviceName );
+				printUsage();
+				System.exit(4);								
+			}
+			mea.finalize(jad.getParentFile(), jad, jar, device, null, env);
+		}
+		mea.notifyBuildEnd(jad.getParentFile(),  env);
+	}
+
+	/**
+	 * @param string
+	 * @param args
+	 * @return
+	 */
+	private static String getArgument(String name, String[] args)
+	{
+		for (int i = 0; i < args.length; i++)
+		{
+			String arg = args[i];
+			if (arg.startsWith(name)) {
+				int splitPos = arg.indexOf('=');
+				if (splitPos == -1) {
+					if (i < args.length - 1) {
+						return args[i+1];
+					} else {
+						return null;
+					}
+				} else {
+					return arg.substring(splitPos + 1 ).trim();
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 */
+	private static void printUsage()
+	{
+		System.out.println("Usage: java -cp classpath de.enough.polish.finalize.mea.MeaFinalizer -polish.home=path/to/polish -access=[private|public|pseudoprivate]  -name=name -description=description -fallback=[fallbackdevice] -tags=tags file1 device1..fileN deviceN");
+	}
     
 }
