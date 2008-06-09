@@ -4091,7 +4091,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 
-	//#if !polish.blackberry
+	//#if !polish.blackberry && tmp.supportsSymbolEntry
 	public static String[] getDefinedSymbols() {
 		return definedSymbols;
 	}
