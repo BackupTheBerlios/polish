@@ -190,9 +190,7 @@ extends ContainerView
 
         this.currentRow.add(item);
 
-        if (Item.LAYOUT_NEWLINE_AFTER == (itemLayout & Item.LAYOUT_NEWLINE_AFTER)
-        		|| isExpand
-        	) 
+        if (Item.LAYOUT_NEWLINE_AFTER == (itemLayout & Item.LAYOUT_NEWLINE_AFTER) || isExpand) 
         {
         	//System.out.println("adding rowbreak for newline after");
             rowBreak(lineWidth, itemLayout);

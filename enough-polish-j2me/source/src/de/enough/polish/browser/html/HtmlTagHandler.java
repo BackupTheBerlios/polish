@@ -372,14 +372,14 @@ private FormListener formListener;
       {
         // TODO: Can we do this without adding a dummy StringItem?
         StringItem stringItem = new StringItem(null, null);
-        stringItem.setLayout(Item.LAYOUT_NEWLINE_BEFORE);
+        stringItem.setLayout(Item.LAYOUT_NEWLINE_AFTER);
         this.browser.add(stringItem);
         return true;
       }
       else if (TAG_P.equals(tagName))
       {
         StringItem stringItem = new StringItem(null, null);
-        stringItem.setLayout(Item.LAYOUT_NEWLINE_BEFORE);
+        stringItem.setLayout(Item.LAYOUT_NEWLINE_AFTER);
         this.browser.add(stringItem);
         if (opening) {
         	this.textStyle = style;
