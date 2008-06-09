@@ -1535,12 +1535,15 @@ extends Displayable
 		if (keyCode != 0) {
 			keyPressed( keyCode );
 			keyReleased( keyCode );
-			if ( (Object)this instanceof Screen) {
-				Screen scr = (Screen) (Object) this;
-				return true;//scr.keyPressedProcessed || scr.keyReleasedProcessed;
-			} else {
-				return true;
-			}
+			// when false is returned, the BlackBerry will generate a trackwheelRoll event which we don't want,
+			// so true is always returned:
+			return true;
+//			if ( (Object)this instanceof Screen) {
+//				Screen scr = (Screen) (Object) this;
+//				return scr.keyPressedProcessed || scr.keyReleasedProcessed;
+//			} else {
+//				return true;
+//			}
 		}
     	if (!superImplementationCalled) {
     		processed = super.navigationMovement(dx, dy, status, time);
