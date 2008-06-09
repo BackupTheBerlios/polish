@@ -880,6 +880,15 @@ public class TableItem
 			this.selectedColumnIndex = 0;
 			this.selectedRowIndex = -1;
 		}
+		if (this.selectionMode == SELECTION_MODE_NONE) {
+			if (this.completeWidth > this.contentWidth) {
+				this.appearanceMode = INTERACTIVE;
+			} else {
+				this.appearanceMode = PLAIN;
+			}
+		} else {
+			this.appearanceMode = INTERACTIVE;
+		}
 	}
 
 	/**
