@@ -4092,6 +4092,10 @@ public class TextField extends StringItem
 	//#endif
 
 	//#if !polish.blackberry && tmp.supportsSymbolEntry
+	/**
+	 * Returns the defined symbols as a String array
+	 * @return the string array 
+	 */
 	public static String[] getDefinedSymbols() {
 		return definedSymbols;
 	}
