@@ -28,6 +28,9 @@ backgrounds {
 		top-color: #f6ec5d;
 		bottom-color: #c3b81e;
 	}
+	tableSelection {
+		color: #ffc;
+	}
 }
 
 .mainScreen {
@@ -41,6 +44,7 @@ backgrounds {
 	padding-horizontal: 6;
 	font-color: gray;
 	font-size: small;
+	table-selected-background: tableSelection;
 	background {
 		type: round-rect;
 		color: #dfdfaa;
