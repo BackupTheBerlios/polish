@@ -1913,6 +1913,12 @@ public class TextField extends StringItem
                     if (this.caretChar != this.editingCaretChar) {
                     	// draw background rectangle
                         int w = this.caretWidth;
+                        if (this.isPassword) {
+                        	int starWidth = stringWidth("*");
+                        	if (starWidth > w) {
+                        		w = starWidth;
+                        	}
+                        }
                         int h = getFontHeight();
                         g.fillRect( cX, cY, w, h);
                         //display highlighted text in white color
