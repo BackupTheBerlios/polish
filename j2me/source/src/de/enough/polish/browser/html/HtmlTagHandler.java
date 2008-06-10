@@ -42,6 +42,7 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TableItem;
 import de.enough.polish.ui.TextField;
+import de.enough.polish.ui.UiAccess;
 import de.enough.polish.util.HashMap;
 import de.enough.polish.util.Locale;
 import de.enough.polish.util.TextUtil;
@@ -174,7 +175,6 @@ public class HtmlTagHandler
   public boolean textItalic;
   /** style for the forthcoming text */
   public Style textStyle;
-private int currentTableColumn;
 private FormListener formListener;
   
   /**
@@ -234,7 +234,10 @@ private FormListener formListener;
 		  if (opening) {
 			  this.browser.openContainer( style );
  		  } else {
- 			  this.browser.closeContainer();
+ 			  Container container = this.browser.closeContainer();
+ 			  if (UiAccess.cast(container) instanceof TableItem) {
+ 				  this.currentTable = (TableItem)UiAccess.cast(container);
+ 			  }
 		  }
 	  } else if (TAG_SELECT.equals(tagName)) {
     	  if (opening) {
@@ -243,7 +246,7 @@ private FormListener formListener;
     			  System.out.println("Error in HTML-Code: You cannot open a <select>-tag inside another <select>-tag.");
 
     			  ChoiceGroup choiceGroup = this.currentSelect.getChoiceGroup();
-    			  this.browser.add(choiceGroup);
+    			  add(choiceGroup);
     			  if (this.currentForm == null) {
     				  //#debug error
     				  System.out.println("Error in HTML-Code: no <form> for <select> element found!");
@@ -269,7 +272,7 @@ private FormListener formListener;
     	  } else { // tag is closed
     		  if (this.currentSelect != null) {
     			  ChoiceGroup choiceGroup = this.currentSelect.getChoiceGroup();
-    			  this.browser.add(choiceGroup);
+    			  add(choiceGroup);
     			  if (this.currentForm == null) {
     				  //#debug error
     				  System.out.println("Error in HTML-Code: no <form> for <select> element found!");
@@ -365,7 +368,7 @@ private FormListener formListener;
 		if (style != null) {
 			linkItem.setStyle(style);
 		}
-        this.browser.add(linkItem);
+        add(linkItem);
         return true;
       }
       else if (TAG_BR.equals(tagName))
@@ -373,14 +376,14 @@ private FormListener formListener;
         // TODO: Can we do this without adding a dummy StringItem?
         StringItem stringItem = new StringItem(null, null);
         stringItem.setLayout(Item.LAYOUT_NEWLINE_AFTER);
-        this.browser.add(stringItem);
+        add(stringItem);
         return true;
       }
       else if (TAG_P.equals(tagName))
       {
         StringItem stringItem = new StringItem(null, null);
         stringItem.setLayout(Item.LAYOUT_NEWLINE_AFTER);
-        this.browser.add(stringItem);
+        add(stringItem);
         if (opening) {
         	this.textStyle = style;
         }
@@ -397,7 +400,7 @@ private FormListener formListener;
     			item.setStyle(style);
     		}
 
-        	this.browser.add(item);
+        	add(item);
         }
         return true;
       }
@@ -421,7 +424,7 @@ private FormListener formListener;
           if (style != null) {
           	textField.setStyle(style);
           }
-          this.browser.add(textField);
+          add(textField);
           if (this.currentForm != null) {
         	  this.currentForm.addItem(textField);
         	  textField.setAttribute(ATTR_FORM, this.currentForm);
@@ -452,7 +455,7 @@ private FormListener formListener;
           buttonItem.setDefaultCommand(CMD_SUBMIT);
           buttonItem.setItemCommandListener(this);
           addCommands(TAG_INPUT, INPUT_TYPE, INPUTTYPE_SUBMIT, buttonItem);
-          this.browser.add(buttonItem);
+          add(buttonItem);
           
           this.currentForm.addItem(buttonItem);
           buttonItem.setAttribute(ATTR_FORM, this.currentForm);
@@ -482,7 +485,7 @@ private FormListener formListener;
             if (style != null) {
             	textField.setStyle(style);
             }
-            this.browser.add(textField);
+            add(textField);
             
             this.currentForm.addItem(textField);
             textField.setAttribute(ATTR_FORM, this.currentForm);
@@ -510,7 +513,7 @@ private FormListener formListener;
             buttonItem.setDefaultCommand(CMD_SUBMIT);
             buttonItem.setItemCommandListener(this);
             addCommands(TAG_INPUT, INPUT_TYPE, INPUTTYPE_SUBMIT, buttonItem);
-            this.browser.add(buttonItem);
+            add(buttonItem);
             
             this.currentForm.addItem(buttonItem);
             buttonItem.setAttribute(ATTR_FORM, this.currentForm);
@@ -542,46 +545,29 @@ private FormListener formListener;
       }
       else if (TAG_TABLE.equals(tagName)) {
     	  //#style browserTable?
-    	  this.currentTable = new TableItem();
+    	  TableItem table  = new TableItem();
+    	  table.setSelectionMode( TableItem.SELECTION_MODE_CELL | TableItem.SELECTION_MODE_INTERACTIVE );
+    	  table.setCellContainerStyle( this.browser.getStyle() );
     	  if (style != null) {
-    		  this.currentTable.setStyle(style);
+    		  table.setStyle(style);
     	  }
-    	  this.currentTableColumn = 0;
+    	  
+    	  this.currentTable = table;
+    	  this.browser.openContainer(table);
     	  return true;
       }
       else if (this.currentTable != null && TAG_TR.equals(tagName)) {
-    	  this.currentTable.addRow();
-    	  this.currentTableColumn = 0;
+    	  this.currentTable.moveToNextRow();
     	  return true;
       }
       else if (this.currentTable != null && TAG_TH.equals(tagName)) {
-    	  int col = this.currentTableColumn;
-    	  if (col + 1 > this.currentTable.getNumberOfColumns()) {
-    		  this.currentTable.addColumn();
-    	  }
-    	  parser.next();
-    	  if (style != null) {
-	    	  this.currentTable.set( col, this.currentTable.getNumberOfRows() - 1, parser.getText(), style );    		  
-    	  } else {
-	    	  //#style browserTableHeader?
-	    	  this.currentTable.set( col, this.currentTable.getNumberOfRows() - 1, parser.getText() );
-    	  }
-    	  this.currentTableColumn++;
+    	  //TODO differentiate between th and td
+    	  this.currentTable.moveToNextColumn();
     	  return true;
       }
       else if (this.currentTable != null && TAG_TD.equals(tagName)) {
-    	  parser.next();
-    	  int col = this.currentTableColumn;
-    	  if (col + 1 > this.currentTable.getNumberOfColumns()) {
-    		  this.currentTable.addColumn();
-    	  }
-    	  if (style != null) {
-        	  this.currentTable.set( col, this.currentTable.getNumberOfRows() - 1, parser.getText(), style );
-    	  } else {
-        	  //#style browserTableData?
-        	  this.currentTable.set( col, this.currentTable.getNumberOfRows() - 1, parser.getText() );
-    	  }
-    	  this.currentTableColumn++;
+    	  //TODO differentiate between th and td
+    	  this.currentTable.moveToNextColumn();
     	  return true;
       }
     }
@@ -589,8 +575,12 @@ private FormListener formListener;
     {
     	// the tag is being closed:
     	if (TAG_TABLE.equals(tagName)) {
-    		this.browser.add(this.currentTable);
-    		this.currentTable = null;
+    		Container container = this.browser.closeContainer();
+    		if (UiAccess.cast(container) instanceof TableItem) {
+    			this.currentTable = (TableItem)UiAccess.cast(container);
+    		} else {
+    			this.currentTable = null;
+    		}
     		return true;
     	}
     }
@@ -634,7 +624,17 @@ private FormListener formListener;
     return false;
   }
 
-  /* (non-Javadoc)
+   /**
+     * Adds an item either to the browser or to the current table.
+	 * @param item the item
+	 */
+	private void add(Item item)
+	{
+		//System.out.println("adding " + item + ", currentTable=" + this.currentTable);
+		this.browser.add(item);
+	}
+
+/* (non-Javadoc)
    * @see de.enough.polish.browser.TagHandler#handleCommand(javax.microedition.lcdui.Command)
    */
   public boolean handleCommand(Command command)

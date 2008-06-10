@@ -595,7 +595,7 @@ public class FakeContainerCustomItem extends FakeCustomItem {
 	 * @throws IllegalArgumentException when the given item is null
 	 */
 	public boolean remove( Item item ) {
-		int index = this.itemsList.indexOf(item);
+		int index = indexOf(item);
 		if (index != -1) {
 			remove( index );
 			return true;

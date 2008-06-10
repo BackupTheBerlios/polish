@@ -61,6 +61,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
+import de.enough.polish.ui.UiAccess;
 
 /**
  * TODO: Write good docs.
@@ -340,37 +341,106 @@ private HistoryEntry scheduledHistoryEntry;
 				containerStyle = getStyle();
 			}
 		}
-		this.currentContainer = new Container( false, containerStyle );
-		if (previousContainer != null) {
-			this.currentContainer.setParent( previousContainer );
-		}
+		openContainer( new Container( false, containerStyle ) );
 	}
+	
+	/**
+	 * Opens a new Container into which forthcoming elements should be added.
+	 * 
+	 * @param container the new the container
+	 */
+	public void openContainer(Container container)
+	{
+//		Container cont = this.currentContainer;
+//		while (cont != null) {
+//			System.out.print(" ");
+//			if (cont.getParent() instanceof Container) {
+//				cont = (Container) cont.getParent();
+//			} else {
+//				cont = null;
+//			}
+//		}
+		//#debug
+		System.out.println("Opening nested container " + container);
+		
+		Container previousContainer = this.currentContainer;
+		if (previousContainer != null) {
+			container.setParent( previousContainer );
+		} else {
+			container.setParent( this );
+		}
+		//add(container);
+		this.currentContainer = container;
+	}
+	
+	//#if polish.LibraryBuild
+	/**
+	 * Opens a new Container into which forthcoming elements should be added.
+	 * 
+	 * @param container the new the container
+	 */
+	public void openContainer(FakeContainerCustomItem container)
+	{
+		// ignore
+	}
+	//#endif
 	
 	/**
 	 * Closes the current container
 	 * 
 	 * If the current container only contains a single item, that item will be extracted and directly appended using the current container's style.
+	 * @return the previous container, if any is known
 	 */
-	public void closeContainer() {
+	public Container closeContainer() {
 		if (this.currentContainer == null) {
-			return;
+			return null;
 		}
+//		Container cont = this.currentContainer;
+//		while (cont != null) {
+//			System.out.print(" ");
+//			if (cont.getParent() instanceof Container) {
+//				cont = (Container) cont.getParent();
+//			} else {
+//				cont = null;
+//			}
+//		}
+//		System.out.println("closing container " + this.currentContainer + " with size " + this.currentContainer.size() );
 		//#debug
 		System.out.println("closing container with " + this.currentContainer.size() + " items, previous=" + this.currentContainer.getParent());
 		Container current = this.currentContainer;
 		Container previousContainer = (Container) current.getParent();
-		this.currentContainer = previousContainer;
+		if (previousContainer == UiAccess.cast(this)) {
+			this.currentContainer = null;
+		} else {
+			this.currentContainer = previousContainer;
+		}
+		
 		//System.out.println("closing container with size " + current.size() + ", 0=" + current.get(0));
 		if (current.size() == 1) {
 			Item item = current.get(0);
-			if (current.getStyle() != null) {
-				item.setStyle( current.getStyle() );
+			if (item != null) {
+				if (current.getStyle() != null) {
+					item.setStyle( current.getStyle() );
+				}
+				//previousContainer.remove(current);
+				add( item );
 			}
-			add( item );
 		} else {
-			add( current );
+			add(current);
 		}
+		return previousContainer;
 	}
+	
+	  /**
+		 * 
+		 */
+		private void closeContainers()
+		{
+			while (this.currentContainer != null) {
+				closeContainer();
+			}
+		}
+
   
   /**
    * @param parser the parser to read the page from
@@ -922,6 +992,7 @@ private HistoryEntry scheduledHistoryEntry;
       System.out.println("Unable to load page " + url + e );
       this.currentDocumentBase = previousDocumentBase;
       notifyPageError(url, e);
+      closeContainers();
     } finally {
 	  	  if (is != null) {
 			  try {
@@ -949,7 +1020,8 @@ private HistoryEntry scheduledHistoryEntry;
     }
   }
   
-  //////////////// download indicator handling /////////////
+
+//////////////// download indicator handling /////////////
   
   
   //#if polish.Browser.PaintDownloadIndicator

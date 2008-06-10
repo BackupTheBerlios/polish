@@ -40,9 +40,9 @@ import de.enough.polish.util.TableData;
  */
 public class TableItem 
 //#if polish.LibraryBuild
-	extends FakeCustomItem 
+	extends FakeContainerCustomItem
 //#else
-	//# extends Item
+	//# extends Container
 //#endif
 
 {
@@ -51,25 +51,25 @@ public class TableItem
 	 */
 	public static final int SELECTION_MODE_NONE = 0;
 	/**
-	 * Selection mode for a table in which single non-empty cells can be selected.
-	 */
-	public static final int SELECTION_MODE_CELL = 1;
-	/**
 	 * Selection mode for a table in which any cell can be selected, even empty ones.
 	 */
-	public static final int SELECTION_MODE_CELL_EMPTY = 2;
+	public static final int SELECTION_MODE_CELL = 2;
+	/**
+	 * Selection mode for a table in which cells/colummns/rows with content can be selected.
+	 */
+	public static final int SELECTION_MODE_NONEMPTY = 4;
+	/**
+	 * Selection mode for a table in which cells/columns/rows with interactive items (like TextField) can be selected.
+	 */
+	public static final int SELECTION_MODE_INTERACTIVE = 8;
 	/**
 	 * Selection mode for a table in which rows can be selected.
 	 */
-	public static final int SELECTION_MODE_ROW = 3;
+	public static final int SELECTION_MODE_ROW = 16;
 	/**
 	 * Selection mode for a table in which columns can be selected.
 	 */
-	public static final int SELECTION_MODE_COLUMN = 4;
-	/**
-	 * Selection mode for a table in which cells can be selected, but the complete row and column of the selected cell will be highlighted, too.
-	 */
-	public static final int SELECTION_MODE_ROW_AND_COLUMN = 5;
+	public static final int SELECTION_MODE_COLUMN = 32;
 	
 	/** default style for lines between cells */
 	public static int LINE_STYLE_SOLID = 0;
@@ -95,9 +95,12 @@ public class TableItem
 	protected Background selectedBackground;
 	protected Background selectedRowBackground;
 	protected Background selectedColumnBackground;
-	private int selectedRowIndex;
-	private int selectedColumnIndex;
+	private int selectedRowIndex = -1;
+	private int selectedColumnIndex = -1;
 	private Style selectedItemStyle;
+	private int currentColumnIndex = -1;
+	private int currentRowIndex = -1;
+	private Style cellContainerStyle;
 	
 	
 
@@ -159,7 +162,7 @@ public class TableItem
 	 */
 	public TableItem(TableData tableData, Style style )
 	{
-		super( style );
+		super( false, style );
 		this.tableData = tableData;
 	}
 	
@@ -316,6 +319,11 @@ public class TableItem
 			) {
 				setSelectedCell( this.selectedColumnIndex, this.selectedRowIndex);
 			}
+			if (this.selectedColumnIndex != -1 || this.selectedRowIndex != -1) {
+				this.appearanceMode = INTERACTIVE;
+			} else if (this.completeWidth <= this.contentWidth){
+				this.appearanceMode = PLAIN;
+			}
 		} 
 	}
 
@@ -342,15 +350,14 @@ public class TableItem
 		int numberOfRows = this.tableData.getNumberOfRows();
 		int[] widths = this.columnWidths;
 		int[] heights = this.rowHeights;
-		
+		if (numberOfColumns != widths.length || numberOfRows != heights.length) {
+			return;
+		}
 		int height = 0;
 		int width = 0;
 		x += this.xOffset;
 		boolean paintSelection = this.isFocused;
-		if (paintSelection && this.selectionMode == SELECTION_MODE_ROW && this.selectedRowIndex != -1 && this.selectedRowBackground != null) {
-			paintSelection = false;
-		}
-		if (!(paintSelection && this.selectedBackground != null && (this.selectionMode == SELECTION_MODE_CELL || this.selectionMode == SELECTION_MODE_CELL_EMPTY))) {
+		if (!(paintSelection && this.selectedBackground != null && ( (this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL)) ) {
 			paintSelection = false;
 		}
 		boolean horizontalLinesPainted = false;
@@ -414,10 +421,10 @@ public class TableItem
 	{
 		super.paintBackground(x, y, width, height, g);
 		if (this.isFocused) {
-			if ( (this.selectionMode == SELECTION_MODE_ROW || this.selectionMode == SELECTION_MODE_ROW_AND_COLUMN)  && this.selectedRowIndex != -1 && this.selectedRowBackground != null) {
+			if ( ((this.selectionMode & SELECTION_MODE_ROW) == SELECTION_MODE_ROW)  && this.selectedRowIndex != -1 && this.selectedRowBackground != null) {
 				this.selectedRowBackground.paint(x, y + this.internalY + this.paddingTop, width, this.internalHeight, g);
 			}
-			if ((this.selectionMode == SELECTION_MODE_COLUMN || this.selectionMode == SELECTION_MODE_ROW_AND_COLUMN)  && this.selectedRowIndex != -1 && this.selectedColumnBackground != null) {
+			if (( (this.selectionMode & SELECTION_MODE_COLUMN) == SELECTION_MODE_COLUMN)  && this.selectedColumnIndex != -1 && this.selectedColumnBackground != null) {
 				int bgX  = x + this.xOffset + this.internalX;
 				int bgW = this.internalWidth;
 				if (bgX < x) {
@@ -483,69 +490,123 @@ public class TableItem
 					return true;
 				}
 			} else {
-				if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM4) {
-					if (this.selectionMode == SELECTION_MODE_CELL) {
-						for (int col=this.selectedColumnIndex + 1; col < getNumberOfColumns(); col++) {
+				boolean selectInteractive = ((this.selectionMode & SELECTION_MODE_INTERACTIVE) == SELECTION_MODE_INTERACTIVE);
+				boolean selectNotempty = ((this.selectionMode & SELECTION_MODE_NONEMPTY) == SELECTION_MODE_NONEMPTY);
+				boolean selectCell = ((this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL);
+				boolean selectRow = ((this.selectionMode & SELECTION_MODE_ROW) == SELECTION_MODE_ROW);
+				boolean selectColumn = ((this.selectionMode & SELECTION_MODE_COLUMN) == SELECTION_MODE_COLUMN);
+				if ( ((gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
+						| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4))
+						&& (selectCell || selectColumn)
+				) {
+					int startCol;
+					int endCol;
+					int addCol;
+					if (gameAction == Canvas.RIGHT) {
+						startCol = this.selectedColumnIndex + 1;
+						endCol = getNumberOfColumns();
+						addCol = 1;
+					} else {
+						startCol = this.selectedColumnIndex - 1;
+						endCol = -1;
+						addCol = -1;
+						
+					}
+					for (int col=startCol; col != endCol; col += addCol) {
+						if (selectCell) {
 							Object cell = get( col, this.selectedRowIndex );
-							if (cell != null) {
-								setSelectedCell( col, this.selectedRowIndex, Canvas.RIGHT );
-								return true;
+							if (selectInteractive) {
+								if (cell instanceof Item && ((Item)cell).appearanceMode != PLAIN) {
+									setSelectedCell( col, this.selectedRowIndex, gameAction );
+									return true;
+								}
+							} else if (selectNotempty) {
+								if (cell !=  null) {
+									setSelectedCell( col, this.selectedRowIndex, gameAction );
+									return true;										
+								}
+							} else {
+								setSelectedCell( col, this.selectedRowIndex, gameAction );
+								return true;																													
 							}
-						}
-					} else if (this.selectionMode != SELECTION_MODE_ROW) {
-						if (this.selectedColumnIndex < getNumberOfColumns() - 1) {
-							setSelectedCell( this.selectedColumnIndex + 1, this.selectedRowIndex, Canvas.RIGHT );
-							return true;
+						} else {
+							// select next selectable column:
+							for (int row=0; row < getNumberOfRows(); row++) {
+								Object cell = get( col, row );
+								if (selectInteractive) {
+									if (cell instanceof Item && ((Item)cell).appearanceMode != PLAIN) {
+										setSelectedCell( col, this.selectedRowIndex, gameAction );
+										return true;
+									}
+								} else if (selectNotempty) {
+									if (cell !=  null) {
+										setSelectedCell( col, this.selectedRowIndex, gameAction );
+										return true;										
+									}
+								} else {
+									setSelectedCell( col, this.selectedRowIndex, gameAction );
+									return true;																													
+								}
+							}
 						}
 					}
 				}
-				if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM6) {
-					if (this.selectionMode == SELECTION_MODE_CELL) {
-						for (int col=this.selectedColumnIndex - 1; col >= 0; col--) {
-							Object cell = get( col, this.selectedRowIndex );
-							if (cell != null) {
-								setSelectedCell( col, this.selectedRowIndex, Canvas.LEFT );
-								return true;
-							}
-						}
-					} else if (this.selectionMode != SELECTION_MODE_ROW) {
-						if (this.selectedColumnIndex > 0) {
-							setSelectedCell( this.selectedColumnIndex - 1, this.selectedRowIndex, Canvas.LEFT );
-							return true;
-						}
+				if ( ((gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8)
+						|| (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2)
+						)
+						&& (selectCell || selectRow)
+				){
+					int startRow;
+					int endRow;
+					int addRow;
+					if (gameAction == Canvas.DOWN) {
+						startRow = this.selectedRowIndex + 1;
+						endRow = getNumberOfRows();
+						addRow = 1;
+					} else {
+						startRow = this.selectedRowIndex - 1;
+						endRow = -1;
+						addRow = -1;
 					}
-				}
-				if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
-					if (this.selectionMode == SELECTION_MODE_CELL) {
-						for (int row=this.selectedRowIndex + 1; row < getNumberOfRows(); row++) {
+					for (int row=startRow; row != endRow; row += addRow) {
+						if (selectCell) {
 							Object cell = get( this.selectedColumnIndex, row );
-							if (cell != null) {
-								setSelectedCell( this.selectedColumnIndex, row, Canvas.DOWN );
-								return true;
+							if (selectInteractive) {
+								if (cell instanceof Item && ((Item)cell).appearanceMode != PLAIN) {
+									setSelectedCell( this.selectedColumnIndex, row, gameAction );
+									return true;
+								}
+							} else if (selectNotempty) {
+								if (cell !=  null) {
+									setSelectedCell( this.selectedColumnIndex, row, gameAction );
+									return true;										
+								}
+							} else {
+								setSelectedCell( this.selectedColumnIndex, row, gameAction );
+								return true;																													
+							}
+						} else {
+							// select next selectable column:
+							for (int col=0; col < getNumberOfColumns(); col++) {
+								Object cell = get( col, row );
+								if (selectInteractive) {
+									if (cell instanceof Item && ((Item)cell).appearanceMode != PLAIN) {
+										setSelectedCell( this.selectedColumnIndex, row, gameAction );
+										return true;
+									}
+								} else if (selectNotempty) {
+									if (cell !=  null) {
+										setSelectedCell( this.selectedColumnIndex, row, gameAction );
+										return true;										
+									}
+								} else {
+									setSelectedCell( this.selectedColumnIndex, row, gameAction );
+									return true;																													
+								}
 							}
 						}
-					} else if (this.selectionMode != SELECTION_MODE_COLUMN) {
-						if (this.selectedRowIndex < getNumberOfRows() - 1) {
-							setSelectedCell( this.selectedColumnIndex, this.selectedRowIndex + 1, Canvas.DOWN );
-							return true;
-						}
 					}
-				}
-				if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
-					if (this.selectionMode == SELECTION_MODE_CELL) {
-						for (int row=this.selectedRowIndex - 1; row >= 0; row--) {
-							Object cell = get( this.selectedColumnIndex, row );
-							if (cell != null) {
-								setSelectedCell( this.selectedColumnIndex, row, Canvas.UP );
-								return true;
-							}
-						}
-					} else if (this.selectionMode != SELECTION_MODE_COLUMN) {
-						if (this.selectedRowIndex > 0) {
-							setSelectedCell( this.selectedColumnIndex, this.selectedRowIndex - 1, Canvas.UP );
-							return true;
-						}
-					}
+
 				}
 			}
 		}
@@ -684,13 +745,43 @@ public class TableItem
 	 * @return the index of the created column, the first/most left one has the index 0.
 	 */
 	public int addColumn() {
+		int col = 0;
 		if (this.tableData == null) {
 			this.tableData = new TableData( 1, 0);
 			requestInit();
-			return 0;
 		} else {
 			requestInit();
-			return this.tableData.addColumn();
+			col = this.tableData.addColumn();
+		}
+		this.currentColumnIndex = col;
+		return col;
+	}
+	
+	/**
+	 * Moves the internal column index to the next column.
+	 * If necessary a new column will be created.
+	 * The internal column index is used for add()
+	 * @see #add(Item)
+	 */
+	public void moveToNextColumn() {
+		if (this.currentColumnIndex + 1 >= getNumberOfColumns()) {
+			addColumn();
+		} else {
+			this.currentColumnIndex++;
+		}
+	}
+	
+	/**
+	 * Moves the internal row index to the next row.
+	 * If necessary a new row will be created.
+	 * The internal row index is used for add()
+	 * @see #add(Item)
+	 */
+	public void moveToNextRow() {
+		if (this.currentRowIndex + 1 >= getNumberOfRows()) {
+			addRow();
+		} else {
+			this.currentRowIndex++;
 		}
 	}
 	
@@ -722,14 +813,16 @@ public class TableItem
 	 * @return the index of the created row, the first/top one has the index 0.
 	 */
 	public int addRow() {
+		int row = 0;
 		if (this.tableData == null) {
 			this.tableData = new TableData( 0, 1);
 			requestInit();
-			return 0;
 		} else {
 			requestInit();
-			return this.tableData.addRow();
+			row = this.tableData.addRow();
 		}
+		this.currentRowIndex = row;
+		return row;
 	}
 	
 	/**
@@ -763,8 +856,7 @@ public class TableItem
 	 * @see #get(int, int)
 	 */
 	public void set( int column, int row, Object value ) {
-		this.tableData.set(column, row, value);
-		repaint();
+		set( column, row, value, null );
 	}
 	
 	/**
@@ -777,11 +869,17 @@ public class TableItem
 	 * @see #get(int, int)
 	 */
 	public void set( int column, int row, Object value, Style itemStyle ) {
+		Item item = null;
+		if (value instanceof Item) {
+			item = (Item) value;
+			item.parent = UiAccess.cast(this);
+		}
 		if (itemStyle != null) {
-			if (value instanceof Item) {
-				((Item)value).setStyle(itemStyle);
+			if (item != null) {
+				item.setStyle(itemStyle);
 			} else if (value != null) {
-				StringItem item = new StringItem( null, value.toString(), itemStyle );
+				item = new StringItem( null, value.toString(), itemStyle );
+				item.parent = UiAccess.cast(this);
 				value = item;
 			}
 		}
@@ -807,7 +905,7 @@ public class TableItem
 	 * @see #setSelectionMode(int)
 	 */
 	public Object getSelectedCell() {
-		if (this.selectionMode != SELECTION_MODE_CELL && this.selectionMode != SELECTION_MODE_CELL_EMPTY) {
+		if (this.selectedColumnIndex == -1 || this.selectedRowIndex == -1) {
 			return null;
 		}
 		return this.tableData.get( this.getSelectedColumn(), getSelectedRow() );
@@ -847,47 +945,52 @@ public class TableItem
 	 * @return the current selection mode
 	 * @see #SELECTION_MODE_NONE
 	 * @see #SELECTION_MODE_CELL
+	 * @see #SELECTION_MODE_NONEMPTY
+	 * @see #SELECTION_MODE_INTERACTIVE
 	 * @see #SELECTION_MODE_ROW
 	 * @see #SELECTION_MODE_COLUMN
-	 * @see #SELECTION_MODE_ROW_AND_COLUMN
 	 */
 	public int getSelectionMode() {
-	return this.selectionMode;}
+		return this.selectionMode;
+	}
 	
 
 	/**
-	 * Retrieves the selection mode 
+	 * Sets the selection mode.
+	 * You can combine several settings with the OR operator. If you
+	 * want to select a column and a row at the same time but only want the user
+	 * to select interactive cells (cells that have interactive items) 
+	 * call setSelectionMode( TableItem.SELECTION_MODE_ROW | TableItem.SELECTION_MODE_COLUMN | TableItem.SELECTION_MODE_INTERACTIVE ).
+	 * If you want that individual cells are focused using either the 'focused-style' or the 'stylename:hover' CSS styles,
+	 * you need to use the SELECTION_MODE_CELL as well:
+	 * setSelectionMode( Table.SELECTION_MODE_CELL | TableItem.SELECTION_MODE_ROW | TableItem.SELECTION_MODE_COLUMN | TableItem.SELECTION_MODE_INTERACTIVE ).
+	 *  
 	 * @param selectionMode the desired selection mode
 	 * @see #SELECTION_MODE_NONE
 	 * @see #SELECTION_MODE_CELL
+	 * @see #SELECTION_MODE_NONEMPTY
+	 * @see #SELECTION_MODE_INTERACTIVE
 	 * @see #SELECTION_MODE_ROW
 	 * @see #SELECTION_MODE_COLUMN
-	 * @see #SELECTION_MODE_ROW_AND_COLUMN
 	 */
 	public void setSelectionMode(int selectionMode)
 	{
 		this.selectionMode = selectionMode;
-		if (this.selectionMode == SELECTION_MODE_CELL_EMPTY || this.selectionMode == SELECTION_MODE_ROW_AND_COLUMN) {
-			this.selectedRowIndex = 0;
-			this.selectedColumnIndex = 0;
-			
-		} else if (this.selectionMode != SELECTION_MODE_CELL) {
-			selectCell();
-		} else if (this.selectionMode == SELECTION_MODE_ROW) {
-			this.selectedColumnIndex = -1;
-			this.selectedRowIndex = 0;
-		} else if (this.selectionMode == SELECTION_MODE_COLUMN) {
-			this.selectedColumnIndex = 0;
-			this.selectedRowIndex = -1;
-		}
 		if (this.selectionMode == SELECTION_MODE_NONE) {
+			this.selectedColumnIndex = -1;
+			this.selectedRowIndex = -1;
 			if (this.completeWidth > this.contentWidth) {
 				this.appearanceMode = INTERACTIVE;
 			} else {
 				this.appearanceMode = PLAIN;
 			}
 		} else {
-			this.appearanceMode = INTERACTIVE;
+			selectCell();
+			if (this.selectedColumnIndex != -1 || this.selectedRowIndex != -1) {
+				this.appearanceMode = INTERACTIVE;
+			} else if (this.completeWidth <= this.contentWidth){
+				this.appearanceMode = PLAIN;
+			}
 		}
 	}
 
@@ -946,7 +1049,7 @@ public class TableItem
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.FakeCustomItem#defocus(de.enough.polish.ui.Style)
 	 */
-	protected void defocus(Style originalStyle)
+	public void defocus(Style originalStyle)
 	{
 		super.defocus(originalStyle);
 		if ( !(this.selectionMode == SELECTION_MODE_NONE || this.appearanceMode == PLAIN)) {			
@@ -978,25 +1081,171 @@ public class TableItem
 	}
 
 	/**
-	 *  
+	 *  Selects the first selectable cell/column/row
 	 */
 	private void selectCell()
 	{
-		if (this.selectionMode == SELECTION_MODE_CELL) {
-			for (int row=0; row<getNumberOfRows(); row++) {
-				for (int col=0; col<getNumberOfColumns(); col++ ) {
-					Object data = get(col, row);
-					if (data != null) {
+		boolean selectInteractive = ((this.selectionMode & SELECTION_MODE_INTERACTIVE) == SELECTION_MODE_INTERACTIVE);
+		boolean selectNotempty = ((this.selectionMode & SELECTION_MODE_NONEMPTY) == SELECTION_MODE_NONEMPTY);
+		boolean selectCell = ((this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL);
+		boolean selectRow = ((this.selectionMode & SELECTION_MODE_ROW) == SELECTION_MODE_ROW);
+		boolean selectColumn = ((this.selectionMode & SELECTION_MODE_COLUMN) == SELECTION_MODE_COLUMN);
+		for (int row=0; row<getNumberOfRows(); row++) {
+			for (int col=0; col<getNumberOfColumns(); col++ ) {
+				Object data = get(col, row);
+				if (selectInteractive) {
+					if (data instanceof Item &&  ((Item)data).appearanceMode != PLAIN) {
+						if ( !(selectCell || selectColumn)) {
+							col = -1;
+						}
+						if ( !(selectCell || selectRow)) {
+							row = -1;
+						}
 						setSelectedCell(col, row);
 						return;
 					}
+				} else if (selectNotempty) {
+					if (data != null) {
+						if ( !(selectCell || selectColumn)) {
+							col = -1;
+						}
+						if ( !(selectCell || selectRow)) {
+							row = -1;
+						}
+						setSelectedCell(col, row);
+						return;
+					}
+				} else {
+					if ( !(selectCell || selectColumn)) {
+						col = -1;
+					}
+					if ( !(selectCell || selectRow)) {
+						row = -1;
+					}
+					setSelectedCell(col, row);
+					return;
 				}
 			}
-		} else {
-			setSelectedCell(0, 0);
 		}
 	}
 	
+	/**
+	 * Sets the style for cases when several items are added to a cell.
+	 * @param containerStyle the style for containers that are automatically generated when several items are added into a cell
+	 */
+	public void setCellContainerStyle(Style containerStyle)
+	{
+		this.cellContainerStyle = containerStyle;
+	}
 	
 
+
+	/**
+	 * Adds the given item to the specified table element.
+	 * The table element itself will be changed into a container, if necessary
+	 * @param col the column index
+	 * @param row the row index
+	 * @param item the item
+	 */
+	public void add(int col, int row, Item item)
+	{
+		if (this.tableData == null) {
+			setDimension(col + 1, row + 1);
+		}
+		Object existing = this.tableData.get(col, row);
+		if (existing == null) {
+			set( this.currentColumnIndex, this.currentRowIndex, item );
+		} else {
+			if (existing instanceof Container) {
+				((Container)existing).add(item);
+			} else {
+				Container container = new Container(false, this.cellContainerStyle);
+				if (existing instanceof Item) {
+					container.add( (Item)existing );
+				} else {
+					container.add( existing.toString() );
+				}
+				container.add(item);
+				set( this.currentColumnIndex, this.currentRowIndex, container );
+			}
+		}
+	}
+
+	
+	/****** Container methods ********************************************************************************/
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeContainerCustomItem#add(de.enough.polish.ui.Item)
+	 */
+	public void add(Item item)
+	{
+		add( this.currentColumnIndex, this.currentRowIndex, item );
+	}
+
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeContainerCustomItem#size()
+	 */
+	public int size()
+	{
+		return getNumberOfColumns() * getNumberOfRows();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeContainerCustomItem#get(int)
+	 */
+	public Item get(int index)
+	{
+		int row = index / getNumberOfColumns();
+		int col = index % getNumberOfColumns();
+		return (Item) this.tableData.get(col, row);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeContainerCustomItem#indexOf(de.enough.polish.ui.Item)
+	 */
+	public int indexOf(Item item)
+	{
+		for (int row=0; row<getNumberOfRows();row++) {
+			for (int col=0;col<getNumberOfColumns();col++) {
+				Object obj = this.tableData.get(col, row);
+				if (obj == item) {
+					return (row * getNumberOfColumns()) + col;
+				}
+			}
+		}
+		return -1;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeContainerCustomItem#remove(int)
+	 */
+	public Item remove(int index)
+	{
+		int row = index / getNumberOfColumns();
+		int col = index % getNumberOfColumns();
+		Item previous = (Item) this.tableData.get(col, row);
+		this.tableData.set(col, row, null);
+		return previous;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.FakeContainerCustomItem#set(int, de.enough.polish.ui.Item, de.enough.polish.ui.Style)
+	 */
+	public Item set(int index, Item item, Style itemStyle)
+	{
+		int row = index / getNumberOfColumns();
+		int col = index % getNumberOfColumns();
+		if (itemStyle != null) {
+			item.setStyle( itemStyle );
+		}
+		Item prev = (Item) this.tableData.get(col, row);
+		set(col, row, item);
+		return prev;
+	}
+
+	
+	
 }
