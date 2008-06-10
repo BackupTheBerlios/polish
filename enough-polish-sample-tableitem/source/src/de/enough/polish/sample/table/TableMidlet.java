@@ -156,7 +156,7 @@ implements CommandListener
 		//#style centeredCell
 		table.set( 3, 4, "21%");
 		
-		table.setSelectionMode( TableItem.SELECTION_MODE_ROW_AND_COLUMN );
+		table.setSelectionMode( TableItem.SELECTION_MODE_ROW | TableItem.SELECTION_MODE_COLUMN );
 		//table.setSelectedBackground( new SimpleBackground(0xffff00)); // using CSS instead now
 
 		this.form.append( table );
