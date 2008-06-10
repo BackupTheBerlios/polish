@@ -42,6 +42,7 @@ import de.enough.polish.Environment;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.util.FileUtil;
+import de.enough.polish.util.StringUtil;
 
 /**
  * Creates a MEdia Archive from all build applications.
@@ -62,11 +63,12 @@ public class MeaFinalizer extends Finalizer{
         private Locale locale;
         private String croppedJadFilename;
         private String croppedJarFilename;
-        public Entry(File jadFile, File jarFile, Device device,Locale locale, String croppedJadFilename,String croppedJarFilename) {
+		private String supportedLocales;
+        public Entry(File jadFile, File jarFile, Device device,String supportedLocales, String croppedJadFilename,String croppedJarFilename) {
             this.jadFile = jadFile;
             this.jarFile = jarFile;
             this.device = device;
-            this.locale = locale;
+            this.supportedLocales = supportedLocales;
             this.croppedJadFilename = croppedJadFilename;
             this.croppedJarFilename = croppedJarFilename;
         }
@@ -79,8 +81,8 @@ public class MeaFinalizer extends Finalizer{
         public File getJarFile() {
             return this.jarFile;
         }
-        public Locale getLocale() {
-            return this.locale;
+        public String getSupportedLocales() {
+            return this.supportedLocales;
         }
         public String getCroppedJadFilename() {
             return this.croppedJadFilename;
@@ -88,6 +90,31 @@ public class MeaFinalizer extends Finalizer{
         public String getCroppedJarFilename() {
             return this.croppedJarFilename;
         }
+		/**
+		 * @return all supported languages as a comma separated string
+		 */
+		public String getSupportedLanguages()
+		{
+			if (this.supportedLocales == null) {
+				return null;
+			}
+			String[] localeNames = StringUtil.splitAndTrim( this.supportedLocales, ',');
+			StringBuffer languages = new StringBuffer();
+			for (int i = 0; i < localeNames.length; i++)
+			{
+				String localeName = localeNames[i];
+				int splitPos = localeName.indexOf('_');
+				if (splitPos != -1) {
+					languages.append( localeName.substring(0, splitPos));
+				} else {
+					languages.append( localeName);
+				}
+				if (i < localeNames.length - 1) {
+					languages.append(',');
+				}
+			}
+			return languages.toString();
+		}
     }
 
     public MeaFinalizer() {
@@ -108,7 +135,13 @@ public class MeaFinalizer extends Finalizer{
         String distFilePath = distFile.getAbsolutePath();
         String croppedJadFilePath = jadFile.getAbsolutePath().substring( distFilePath.length() + 1 ).replace('\\', '/');// replaceFirst(distFilePath+"/","");
         String croppedJarFilePath = jarFile.getAbsolutePath().substring( distFilePath.length() + 1 ).replace('\\', '/');// replaceFirst(distFilePath+"/","");
-        Entry entry = new Entry(jadFile,jarFile,device,locale,croppedJadFilePath,croppedJarFilePath);
+        String supportedLocales = null;
+        if (env.hasSymbol("polish.i18n.useDynamicTranslations")) {
+        	supportedLocales = env.getVariable("polish.SupportedLocales");
+        } else if (locale != null) {
+        	supportedLocales = locale.toString();
+        }
+        Entry entry = new Entry(jadFile,jarFile,device,supportedLocales,croppedJadFilePath,croppedJarFilePath);
         entries.add(entry);
     }
 
@@ -191,13 +224,17 @@ public class MeaFinalizer extends Finalizer{
                 String croppedJadFilename = entry.getCroppedJadFilename();
                 String croppedJarFilename = entry.getCroppedJarFilename();
                 fileWriter.write("<javaMeBundle>"+lineSeperator);
-                fileWriter.write("<supportedDevices>"+lineSeperator);
-                fileWriter.write("<supportedDevice>");
-                fileWriter.write(entry.getDevice().toString());
+                fileWriter.write("\t<supportedDevices>"+lineSeperator);
+                fileWriter.write("\t\t<supportedDevice>");
+                fileWriter.write(entry.getDevice().getIdentifier());
                 fileWriter.write("</supportedDevice>"+lineSeperator);
-                fileWriter.write("</supportedDevices>"+lineSeperator);
-                fileWriter.write("<data filename=\""+croppedJadFilename+"\" />"+lineSeperator);
-                fileWriter.write("<data filename=\""+croppedJarFilename+"\" />"+lineSeperator);
+                fileWriter.write("\t</supportedDevices>"+lineSeperator);
+                fileWriter.write("\t<data filename=\""+croppedJadFilename+"\" />"+lineSeperator);
+                fileWriter.write("\t<data filename=\""+croppedJarFilename+"\" />"+lineSeperator);
+                if (entry.getSupportedLocales() != null) {
+                	fileWriter.write("\t<supportedLocales>"+ entry.getSupportedLocales() +"</supportedLocales>"+lineSeperator);
+                	fileWriter.write("\t<supportedLanguages>"+ entry.getSupportedLanguages() +"</supportedLanguages>"+lineSeperator);
+                }
                 fileWriter.write("</javaMeBundle>"+lineSeperator);
                 
                 // Jad into the zip
