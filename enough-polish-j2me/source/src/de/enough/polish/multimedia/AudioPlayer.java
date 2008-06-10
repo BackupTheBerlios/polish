@@ -42,7 +42,7 @@ import javax.microedition.media.PlayerListener;
  * </p>
  * 
  * <p>
- * Copyright Enough Software 2006, 2007 - 2008
+ * Copyright Enough Software 2006 - 2008
  * </p>
  * 
  * <pre>
@@ -64,24 +64,52 @@ public class AudioPlayer implements PlayerListener {
 
 	private final String defaultContentType;
 
+	/**
+	 * Creates a new audio player with no default content type and no caching.
+	 */
 	public AudioPlayer() {
 		this(false, null, null);
 	}
 
+	/**
+	 * Creates a new audio player with no default content type.
+	 * 
+	 * @param doCachePlayer caches the player even though the end of the media is reached
+	 */
 	public AudioPlayer(boolean doCachePlayer) {
 		this(doCachePlayer, null, null);
 	}
 
+	/**
+	 * Creates a new audio player without caching and with no listener.
+	 * @param contentType the type of the referenced media, this is being resolved to the phone's expected type automatically.
+	 *        You can, for example, use the type "audio/mp3" and this method resolves the type to "audio/mpeg3", if this
+	 *        is expected by the device.
+	 */
 	public AudioPlayer(String contentType) {
 		this(false, contentType, null);
 	}
 
+	/**
+	 * Creates a new audio player with no listener
+	 * @param doCachePlayer caches the player even though the end of the media is reached
+	 * @param contentType the type of the referenced media, this is being resolved to the phone's expected type automatically.
+	 *        You can, for example, use the type "audio/mp3" and this method resolves the type to "audio/mpeg3", if this
+	 *        is expected by the device.
+	 */
 	public AudioPlayer(boolean doCachePlayer, String contentType) {
 		this(doCachePlayer, contentType, null);
 	}
 
-	public AudioPlayer(boolean doCachePlayer, String contentType,
-			PlayerListener listener) {
+	/**
+	 * Creates a new audio player
+	 * @param doCachePlayer caches the player even though the end of the media is reached
+	 * @param contentType the type of the referenced media, this is being resolved to the phone's expected type automatically.
+	 *        You can, for example, use the type "audio/mp3" and this method resolves the type to "audio/mpeg3", if this
+	 *        is expected by the device.
+	 * @param listener an optional PlayerListener
+	 */
+	public AudioPlayer(boolean doCachePlayer, String contentType, PlayerListener listener) {
 		this.listener = listener;
 		this.doCachePlayer = doCachePlayer;
 		if (contentType != null) {
@@ -96,6 +124,15 @@ public class AudioPlayer implements PlayerListener {
 		this.defaultContentType = contentType;
 	}
 
+	/**
+	 * Plays the media taken from the specified URL.
+	 * @param url the URL of the media 
+	 * @param type the type of the referenced media, this is being resolved to the phone's expected type automatically.
+	 *        You can, for example, use the type "audio/mp3" and this method resolves the type to "audio/mpeg3", if this
+	 *        is expected by the device.
+	 * @throws MediaException when the media is not supported
+	 * @throws IOException when the URL cannot be resolved
+	 */
 	public void play(String url, String type) throws MediaException,
 			IOException {
 		InputStream in = getClass().getResourceAsStream(url);
@@ -105,6 +142,15 @@ public class AudioPlayer implements PlayerListener {
 		play(in, type);
 	}
 
+	/**
+	 * Plays the media taken from the specified input stream.
+	 * @param in the media input 
+	 * @param type the type of the referenced media, this is being resolved to the phone's expected type automatically.
+	 *        You can, for example, use the type "audio/mp3" and this method resolves the type to "audio/mpeg3", if this
+	 *        is expected by the device.
+	 * @throws MediaException when the media is not supported
+	 * @throws IOException when the input cannot be read
+	 */
 	public void play(InputStream in, String type) throws MediaException,
 			IOException {
 		String correctType = getAudioType(type, "file");
@@ -124,6 +170,12 @@ public class AudioPlayer implements PlayerListener {
 		this.player.start();
 	}
 
+	/**
+	 * Plays the media taken from the specified URL  with the content type specified in the constructor.
+	 * @param url the URL of the media 
+	 * @throws MediaException when the media is not supported
+	 * @throws IOException when the URL cannot be resolved
+	 */
 	public void play(String url) throws MediaException, IOException {
 		InputStream in = getClass().getResourceAsStream(url);
 		if (in == null) {
@@ -132,6 +184,12 @@ public class AudioPlayer implements PlayerListener {
 		play(in);
 	}
 
+	/**
+	 * Plays the media taken from the specified input stream with the content type specified in the constructor.
+	 * @param in the media input 
+	 * @throws MediaException when the media is not supported
+	 * @throws IOException when the input cannot be read
+	 */
 	public void play(InputStream in) throws MediaException, IOException {
 		String correctType = this.defaultContentType;
 		this.player = Manager.createPlayer(in, correctType);
@@ -219,6 +277,10 @@ public class AudioPlayer implements PlayerListener {
 		return null;
 	}
 
+	/**
+	 * Determines if the audio player is currently playing music
+	 * @return true when audio is played back
+	 */
 	public boolean isPlaying() {
 		if (this.player == null) {
 			return false;
@@ -254,9 +316,13 @@ public class AudioPlayer implements PlayerListener {
 		}
 	}
 
+	/**
+	 * Closes and deallocates the player.
+	 */
 	public void cleanUpPlayer() {
 		if (this.player != null) {
-			player.deallocate();
+			this.player.deallocate();
+			this.player.close(); // necessary for some Motorola devices
 			this.player = null;
 		}
 	}
