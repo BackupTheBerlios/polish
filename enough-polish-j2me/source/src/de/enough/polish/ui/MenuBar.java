@@ -218,7 +218,7 @@ public class MenuBar extends Item {
 					//# String text =  "Hide";
 				//#endif
 				
-				//#if polish.MenuBar.suppressHideCommand					
+				//#if !polish.MenuBar.suppressHideCommand					
 				this.hideCommand = new Command( text, Command.CANCEL, 2000 );
 				addCommand( this.hideCommand, commandStyle );
 				//#endif
