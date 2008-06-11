@@ -3083,17 +3083,8 @@ implements AccessibleCanvas
 		//#endif
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.addCommand(cmd, commandStyle);
-			//TODO adjust for other menubar positions
 			if (this.isInitialized) {
-				int availableWidth = this.screenWidth;
-				//#if polish.css.separate-menubar
-					if (!this.separateMenubar) {
-						availableWidth -= (this.marginLeft + this.marginRight);
-					}
-				//#endif
-				this.menuBarHeight = this.menuBar.getSpaceBottom( availableWidth, this.fullScreenHeight );
-				this.screenHeight = this.fullScreenHeight - this.menuBarHeight;
-				this.menuBar.relativeY = this.screenHeight;
+				initMenuBar();
 			}
 			if (super.isShown()) {
 				requestRepaint();
@@ -3223,6 +3214,9 @@ implements AccessibleCanvas
 		//#ifdef tmp.menuFullScreen
 			//#ifdef tmp.useExternalMenuBar
 				this.menuBar.removeAllCommands();
+				if (this.isInitialized) {
+					initMenuBar();
+				}
 			//#else
 				this.menuCommands.clear();
 				this.menuContainer.clear();
@@ -3306,6 +3300,9 @@ implements AccessibleCanvas
 		System.out.println("removing command " + cmd.getLabel() + " from screen " + this );
 		//#ifdef tmp.useExternalMenuBar
 			this.menuBar.removeCommand(cmd);
+			if (this.isInitialized) {
+				initMenuBar();
+			}
 			if (super.isShown()) {
 				requestRepaint();
 			}
@@ -3356,6 +3353,31 @@ implements AccessibleCanvas
 		//#endif
 	}
 	
+	//#if tmp.menuFullScreen &&  tmp.useExternalMenuBar
+	/**
+	 * 
+	 */
+	private void initMenuBar()
+	{
+		//TODO adjust for other menubar positions
+		int availableWidth = this.screenWidth;
+		//#if polish.css.separate-menubar
+			if (!this.separateMenubar) {
+				availableWidth -= (this.marginLeft + this.marginRight);
+			}
+		//#endif
+		int previousHeight = this.menuBar.itemHeight;
+		//int previousWidth = this.menuBar.itemWidth;
+		int height = this.menuBar.getSpaceBottom( availableWidth, this.fullScreenHeight );
+		if (height != previousHeight) {
+			this.menuBarHeight = height;
+			this.screenHeight = this.fullScreenHeight - height;
+			this.menuBar.relativeY = this.screenHeight;
+			calculateContentArea(0, 0, this.screenWidth, this.screenHeight );
+		}
+	}
+	//#endif
+
 //	private void showMenuItems() {
 //		System.out.println("menuContainer.size=" + this.menuContainer.size() + ", menuCommands.size=" + this.menuCommands.size());
 //		System.out.println("menuCommands: ");
