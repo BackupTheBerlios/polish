@@ -3457,6 +3457,15 @@ public abstract class Item extends Object
 		return this.commands;
 	}
 
+	/**
+	 * Determines the initialization state of this item
+	 * @return true when it is initialized, false otherwise
+	 */
+	public boolean isInitialized()
+	{
+		return this.isInitialized;
+	}
+
 
 
 //#ifdef polish.Item.additionalMethods:defined
