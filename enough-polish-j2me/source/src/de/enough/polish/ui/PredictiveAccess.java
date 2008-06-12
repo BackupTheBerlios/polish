@@ -970,6 +970,11 @@ public class PredictiveAccess implements TrieSetupCallback{
 
 		return false;
 	}
+	
+	public void addWord(String word)
+	{
+		this.builder.addWord(word);
+	}
 
 	public boolean commandAction(Command cmd, Item item) {
 		if (this.builder == null) {
@@ -993,6 +998,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 			disablePredictiveInput();
 			return true;
 		} else if (cmd == ADD_WORD_CMD) {
+			//#if !polish.predictive.ignoreAddWordCommand
 			if (PROVIDER.getCustomField() == null) {
 				TextField field = new TextField(Locale.get("polish.predictive.registerNewWord.label"), "",50, TextField.ANY);
 				field.getPredictiveAccess().disablePredictiveInput();
@@ -1003,6 +1009,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 			}
 			PROVIDER.getCustomForm().setCommandListener(this.parent);
 			StyleSheet.display.setCurrent(PROVIDER.getCustomForm());
+			//#endif
 			return true;
 		}
 
