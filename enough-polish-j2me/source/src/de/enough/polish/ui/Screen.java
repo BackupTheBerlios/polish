@@ -3355,7 +3355,7 @@ implements AccessibleCanvas
 	
 	//#if tmp.menuFullScreen &&  tmp.useExternalMenuBar
 	/**
-	 * 
+	 * Initializes the menubar and calls calculateContentArea again if necessary 
 	 */
 	private void initMenuBar()
 	{
