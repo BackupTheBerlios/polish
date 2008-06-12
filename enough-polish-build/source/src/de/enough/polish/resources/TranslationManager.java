@@ -623,7 +623,7 @@ implements Comparator
 					this.lastModificationTime = messagesFile.lastModified();
 				}
 				//System.out.println("Reading translations from " + messagesFile.getAbsolutePath() );
-				readPropertiesFile(messagesFile, rawTranslations );
+				readPropertiesFile(messagesFile, rawTranslations, this.locale.getEncoding() );
 			}
 			if (languageFileName != null) {
 				messagesFile = new File( dirPath + languageFileName );
@@ -633,7 +633,7 @@ implements Comparator
 						this.lastModificationTime = messagesFile.lastModified();
 					}
 					//System.out.println("Reading translations from " + messagesFile.getAbsolutePath() );
-					readPropertiesFile(messagesFile, rawTranslations );
+					readPropertiesFile(messagesFile, rawTranslations, this.locale.getEncoding() );
 				}
 			}
 			messagesFile = new File( dirPath + localeFileName );
@@ -643,7 +643,7 @@ implements Comparator
 					this.lastModificationTime = messagesFile.lastModified();
 				}
 				//System.out.println("Reading translations from " + messagesFile.getAbsolutePath() );
-				readPropertiesFile(messagesFile, rawTranslations );
+				readPropertiesFile(messagesFile, rawTranslations, this.locale.getEncoding() );
 			}
 		}
 		
@@ -652,7 +652,7 @@ implements Comparator
 			Map guiTranslations = new HashMap();
 			ResourceUtil resourceUtil = new ResourceUtil( getClass().getClassLoader() );
 			InputStream in = resourceUtil.open( this.environment.getVariable("polish.home"), "translations.txt");
-			readProperties(in, guiTranslations);
+			readProperties(in, guiTranslations, null);
 			in.close();
 			//System.out.println( this.locale + ": read " + rawTranslations.size() + " translations:");
 			Object[] keys = guiTranslations.keySet().toArray();
@@ -678,36 +678,21 @@ implements Comparator
 		return rawTranslations;
 	}
 	
-	private void readPropertiesFile( File messagesFile, Map rawTranslations ) 
+	private void readPropertiesFile( File messagesFile, Map rawTranslations, String encoding ) 
 	throws FileNotFoundException, IOException 
 	{
 		//System.out.println("Reading properties from file " + messagesFile.getAbsolutePath() );
 		InputStream in = new FileInputStream( messagesFile );
-		readProperties( in, rawTranslations );
+		readProperties( in, rawTranslations, encoding );
 		in.close();
 	}
 	
-	private void readProperties( InputStream in, Map rawTranslations ) 
+	private void readProperties( InputStream in, Map rawTranslations, String encoding ) 
 	throws FileNotFoundException, IOException 
 	{
-		String encoding = this.locale.getEncoding();
-//		BufferedReader reader = new BufferedReader( new InputStreamReader(in, encoding));
-//		if ( encoding != null ) {
-//			in = Native2Ascii.translateToAscii( in, encoding );	
-//		}
-//		if (this.isDynamic) {
-//			// use the java.util.Properties tool for resolving Unicode escape mechanism.
-//			// this is needed because we later store the loaded strings via DataOutputStream.writeUTF()
-//			// and the device would show \t instead of a tab and so on.
-//			Properties properties = new Properties();
-//			properties.load( in );
-//			rawTranslations.putAll( properties );
-//		} else {
-			// just load the properties directly
-			boolean translateToAscii = (encoding != null) && !this.isDynamic;
-			boolean translateToNative = this.isDynamic;
-			FileUtil.readProperties(in, '=', rawTranslations, encoding, translateToAscii, translateToNative );
-//		}
+		boolean translateToAscii = (encoding != null) && !this.isDynamic;
+		boolean translateToNative = this.isDynamic;
+		FileUtil.readProperties(in, '=', rawTranslations, encoding, translateToAscii, translateToNative );
 	}
 
 	
