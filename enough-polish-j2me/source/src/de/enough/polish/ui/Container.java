@@ -958,11 +958,12 @@ public class Container extends Item {
 	 */
 	public boolean scroll(int direction, Item item) {
 		//#debug
-		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX +", relativeInternalY=" + ( item.relativeY + item.contentY + item.internalY ));
+		System.out.println("scroll: scrolling for item " + item  + ", item.internalX=" + item.internalX +", relativeInternalY=" + ( item.relativeY + item.contentY + item.internalY ) + ", relativeY=" + item.relativeY + ", contentY=" + item.contentY + ", internalY=" + item.internalY);
 		if (item.internalX != NO_POSITION_SET 
 				&& ( (item.itemHeight > getScrollHeight()) || ((item.internalY + item.internalHeight) > item.contentHeight ) ) ) 
 		{
 			// use internal position of item for scrolling:
+			//System.out.println("using internal area for scrolling");
 			int relativeInternalX = item.relativeX + item.contentX + item.internalX;
 			int relativeInternalY = item.relativeY + item.contentY + item.internalY;
 			return scroll(  direction, relativeInternalX, relativeInternalY, item.internalWidth, item.internalHeight );
@@ -974,6 +975,7 @@ public class Container extends Item {
 				return true;
 			} else {				
 				// use item dimensions for scrolling:
+				//System.out.println("use item area for scrolling");
 				return scroll(  direction, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
 			}
 		}
@@ -1079,7 +1081,7 @@ public class Container extends Item {
 			//#if tmp.supportViewType
 				if (this.containerView != null) {
 					// additional initialization is necessary when a view is used for this container:
-					boolean requireScrolling = this.isScrollRequired;
+					boolean requireScrolling = this.isScrollRequired && this.isFocused;
 	//				System.out.println("ABOUT TO CALL INIT CONTENT - focusedIndex of Container=" + this.focusedIndex);
 					this.containerView.initContent( this, firstLineWidth, lineWidth);
 					this.appearanceMode = this.containerView.appearanceMode;
@@ -1122,11 +1124,12 @@ public class Container extends Item {
 
 					if (requireScrolling && this.focusedItem != null) {
 						//#debug
-						System.out.println("initContent(): scrolling autofocused or scroll-required item for view");
+						System.out.println("initContent(): scrolling autofocused or scroll-required item for view, focused=" + this.focusedItem);
 						Item item = this.focusedItem;
 						scroll( 0, item.relativeX, item.relativeY, item.itemWidth, item.itemHeight );
 					}
 					else if (this.scrollItem != null) {
+						//System.out.println("initContent(): scrolling scrollItem=" + this.scrollItem);
 						boolean  scrolled = scroll( 0, this.scrollItem );
 						if (scrolled) {
 							this.scrollItem = null;
@@ -1532,7 +1535,7 @@ public class Container extends Item {
 			) {
 				//System.out.println("offset=" + offset + ", foc.relativeY=" + this.focusedItem.relativeY + ", foc.height=" + this.focusedItem.itemHeight + ", available=" + this.availableHeight);
 				// keep the focus do scroll downwards:
-				//#debug
+				// #debug
 				System.out.println("Container(" + this + "): scrolling down: keeping focus, focusedIndex=" + this.focusedIndex + ", y=" + y + ", h=" + h + ", offset=" + offset );
 			} else {
 				//#ifdef tmp.supportViewType
@@ -1577,7 +1580,7 @@ public class Container extends Item {
 					&& offset + focItem.relativeY < 0 ) // this.focusedItem.yTopPos < this.yTop ) 
 			{
 				// keep the focus do scroll upwards:
-				//#debug
+				// #debug
 				System.out.println("Container(" + this + "): scrolling up: keeping focus, relativeScrollOffset=" + offset + ", scrollHeight=" + availableScrollHeight +  ", focusedIndex=" + this.focusedIndex + ", focusedItem.relativeY=" + this.focusedItem.relativeY + ", this.availableHeight=" + this.availableHeight + ", targetYOffset=" + this.targetYOffset);
 			} else {
 				//#ifdef tmp.supportViewType

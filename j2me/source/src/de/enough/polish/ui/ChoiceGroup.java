@@ -1482,6 +1482,17 @@ implements Choice
 		return processed;
 	}
 	
+	
+	
+	//#ifdef polish.usePopupItem
+	protected boolean handleNavigate(int keyCode, int gameAction) {
+		if (this.isPopup && this.isPopupClosed) {
+			return false;
+		}
+		return super.handleNavigate(keyCode, gameAction);
+	}
+	//#endif
+
 	/**
 	 * Selects a choice item.
 	 * @param item the item
