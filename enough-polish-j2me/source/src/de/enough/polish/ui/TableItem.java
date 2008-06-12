@@ -329,7 +329,7 @@ public class TableItem
 				this.appearanceMode = PLAIN;
 			}
 		} 
-		System.out.println("contentHeight=" + this.contentHeight + ", width=" + this.contentWidth );
+		//System.out.println("contentHeight=" + this.contentHeight + ", width=" + this.contentWidth );
 		
 	}
 
@@ -367,7 +367,7 @@ public class TableItem
 			if (!(paintSelection && this.selectedBackground != null && ( (this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL)) ) {
 				paintSelection = false;
 			}
-			System.out.println("clipping: y=" + clipY + ", bottom=" + (clipY + clipHeight));
+			//System.out.println("clipping: y=" + clipY + ", bottom=" + (clipY + clipHeight));
 			boolean horizontalLinesPainted = false;
 			for (int col = 0; col < numberOfColumns; col++ ) {
 				height = 0;
@@ -390,7 +390,7 @@ public class TableItem
 					if (paintSelection && col == this.selectedColumnIndex && row == this.selectedRowIndex) {
 						this.selectedBackground.paint(x + this.internalX, y + this.internalY, this.internalWidth, this.internalHeight, g);
 					}
-					System.out.println("painting cell " + col + ", " + row + " / " + (x + width) + ", " + (y + height) + " : " + data);
+					//System.out.println("painting cell " + col + ", " + row + " / " + (x + width) + ", " + (y + height) + " : " + data);
 					if (data instanceof Item) {
 						Item item = (Item) data;
 						item.paint(x + width, y + height, x + width, x + width + widths[col] - (this.paddingHorizontal << 1), g);
