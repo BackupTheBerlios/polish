@@ -102,6 +102,7 @@ public class TableItem
 	private int currentRowIndex = -1;
 	private Style cellContainerStyle;
 	
+	private final Object paintLock = new Object();
 	
 
 	/**
@@ -239,6 +240,9 @@ public class TableItem
 
 	protected void initContent(int firstLineWidth, int lineWidth)
 	{
+		if (lineWidth == 0) {
+			return;
+		}
 		if (this.tableData == null) {
 			this.contentWidth = 0;
 			this.contentHeight = 0;
@@ -325,6 +329,8 @@ public class TableItem
 				this.appearanceMode = PLAIN;
 			}
 		} 
+		System.out.println("contentHeight=" + this.contentHeight + ", width=" + this.contentWidth );
+		
 	}
 
 	/* (non-Javadoc)
@@ -332,83 +338,87 @@ public class TableItem
 	 */
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g)
 	{
-		if (this.tableData == null) {
-			return;
-		}
-		int clipX = 0;
-		int clipY = 0;
-		int clipWidth = 0;
-		int clipHeight = 0;
-		if (this.completeWidth > rightBorder - leftBorder){
-			clipX = g.getClipX();
-			clipY = g.getClipY();
-			clipWidth = g.getClipWidth();
-			clipHeight = g.getClipHeight();
-			g.clipRect( x, clipY, rightBorder - leftBorder, clipHeight);
-		}
-		int numberOfColumns = this.tableData.getNumberOfColumns();
-		int numberOfRows = this.tableData.getNumberOfRows();
-		int[] widths = this.columnWidths;
-		int[] heights = this.rowHeights;
-		if (numberOfColumns != widths.length || numberOfRows != heights.length) {
-			return;
-		}
-		int height = 0;
-		int width = 0;
-		x += this.xOffset;
-		boolean paintSelection = this.isFocused;
-		if (!(paintSelection && this.selectedBackground != null && ( (this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL)) ) {
-			paintSelection = false;
-		}
-		boolean horizontalLinesPainted = false;
-		for (int col = 0; col < numberOfColumns; col++ ) {
-			height = 0;
-			for (int row = 0; row < numberOfRows; row++ ) {
-				int nextHeight = height + heights[row];
-				if (!horizontalLinesPainted) {
-					if (this.lineStroke != LINE_STYLE_INVISIBLE && row != numberOfRows -1) {
-						g.setColor( this.lineColor );
-						if (this.lineStroke == LINE_STYLE_DOTTED) {
-							g.setStrokeStyle( Graphics.DOTTED );
-							g.drawLine( x, y + nextHeight - this.paddingVertical, x + this.completeWidth, y + nextHeight - this.paddingVertical );
-							g.setStrokeStyle( Graphics.SOLID );
-						} else {
-							g.drawLine( x, y + nextHeight - this.paddingVertical, x + this.completeWidth, y + nextHeight - this.paddingVertical );
+		synchronized (this.paintLock) {
+			if (this.tableData == null) {
+				return;
+			}
+			int clipX = 0;
+			int clipY = 0;
+			int clipWidth = 0;
+			int clipHeight = 0;
+			if (this.completeWidth > rightBorder - leftBorder){
+				clipX = g.getClipX();
+				clipY = g.getClipY();
+				clipWidth = g.getClipWidth();
+				clipHeight = g.getClipHeight();
+				g.clipRect( x, clipY, rightBorder - leftBorder, clipHeight);
+			}
+			int numberOfColumns = this.tableData.getNumberOfColumns();
+			int numberOfRows = this.tableData.getNumberOfRows();
+			int[] widths = this.columnWidths;
+			int[] heights = this.rowHeights;
+			if (numberOfColumns != widths.length || numberOfRows != heights.length) {
+				return;
+			}
+			int height = 0;
+			int width = 0;
+			x += this.xOffset;
+			boolean paintSelection = this.isFocused;
+			if (!(paintSelection && this.selectedBackground != null && ( (this.selectionMode & SELECTION_MODE_CELL) == SELECTION_MODE_CELL)) ) {
+				paintSelection = false;
+			}
+			System.out.println("clipping: y=" + clipY + ", bottom=" + (clipY + clipHeight));
+			boolean horizontalLinesPainted = false;
+			for (int col = 0; col < numberOfColumns; col++ ) {
+				height = 0;
+				for (int row = 0; row < numberOfRows; row++ ) {
+					int nextHeight = height + heights[row];
+					if (!horizontalLinesPainted) {
+						if (this.lineStroke != LINE_STYLE_INVISIBLE && row != numberOfRows -1) {
+							g.setColor( this.lineColor );
+							if (this.lineStroke == LINE_STYLE_DOTTED) {
+								g.setStrokeStyle( Graphics.DOTTED );
+								g.drawLine( x, y + nextHeight - this.paddingVertical, x + this.completeWidth, y + nextHeight - this.paddingVertical );
+								g.setStrokeStyle( Graphics.SOLID );
+							} else {
+								g.drawLine( x, y + nextHeight - this.paddingVertical, x + this.completeWidth, y + nextHeight - this.paddingVertical );
+							}
 						}
 					}
+					
+					Object data = this.tableData.get(col, row);
+					if (paintSelection && col == this.selectedColumnIndex && row == this.selectedRowIndex) {
+						this.selectedBackground.paint(x + this.internalX, y + this.internalY, this.internalWidth, this.internalHeight, g);
+					}
+					System.out.println("painting cell " + col + ", " + row + " / " + (x + width) + ", " + (y + height) + " : " + data);
+					if (data instanceof Item) {
+						Item item = (Item) data;
+						item.paint(x + width, y + height, x + width, x + width + widths[col] - (this.paddingHorizontal << 1), g);
+	//					g.setColor( 0x00ff00);
+	//					g.drawRect(x + width, y + height, widths[col] - (this.paddingHorizontal << 1), heights[row] - (this.paddingVertical << 1 ) );
+					} else if (data != null) {
+						g.setColor( this.fontColor );
+						g.setFont( this.font );
+						g.drawString( data.toString(), x + width, y + height, Graphics.LEFT | Graphics.TOP );
+					}
+					height = nextHeight;
 				}
-				
-				Object data = this.tableData.get(col, row);
-				if (paintSelection && col == this.selectedColumnIndex && row == this.selectedRowIndex) {
-					this.selectedBackground.paint(x + this.internalX, y + this.internalY, this.internalWidth, this.internalHeight, g);
+				horizontalLinesPainted = true;
+				width += widths[col];
+				if (this.lineStroke != LINE_STYLE_INVISIBLE && col != numberOfColumns -1) {
+					g.setColor( this.lineColor );
+					if (this.lineStroke == LINE_STYLE_DOTTED) {
+						g.setStrokeStyle( Graphics.DOTTED );
+						g.drawLine( x + width - this.paddingHorizontal, y, x + width - this.paddingHorizontal, y + this.contentHeight );
+						g.setStrokeStyle( Graphics.SOLID );
+					} else {
+						g.drawLine( x + width - this.paddingHorizontal, y, x + width - this.paddingHorizontal, y + this.contentHeight );
+					}
 				}
-				if (data instanceof Item) {
-					Item item = (Item) data;
-					item.paint(x + width, y + height, x + width, x + width + widths[col] - (this.paddingHorizontal << 1), g);
-//					g.setColor( 0x00ff00);
-//					g.drawRect(x + width, y + height, widths[col] - (this.paddingHorizontal << 1), heights[row] - (this.paddingVertical << 1 ) );
-				} else if (data != null) {
-					g.setColor( this.fontColor );
-					g.setFont( this.font );
-					g.drawString( data.toString(), x + width, y + height, Graphics.LEFT | Graphics.TOP );
-				}
-				height = nextHeight;
 			}
-			horizontalLinesPainted = true;
-			width += widths[col];
-			if (this.lineStroke != LINE_STYLE_INVISIBLE && col != numberOfColumns -1) {
-				g.setColor( this.lineColor );
-				if (this.lineStroke == LINE_STYLE_DOTTED) {
-					g.setStrokeStyle( Graphics.DOTTED );
-					g.drawLine( x + width - this.paddingHorizontal, y, x + width - this.paddingHorizontal, y + this.contentHeight );
-					g.setStrokeStyle( Graphics.SOLID );
-				} else {
-					g.drawLine( x + width - this.paddingHorizontal, y, x + width - this.paddingHorizontal, y + this.contentHeight );
-				}
+			if (this.completeWidth > rightBorder - leftBorder){
+				g.setClip(clipX, clipY, clipWidth, clipHeight );
 			}
-		}
-		if (this.completeWidth > rightBorder - leftBorder){
-			g.setClip(clipX, clipY, clipWidth, clipHeight );
 		}
 	}
 	
@@ -460,6 +470,16 @@ public class TableItem
 			}
 			this.xOffset = current;
 			addRelativeToContentRegion(repaintRegion, -1, -1, this.contentWidth + 2, this.contentHeight + 2 );
+		}
+		synchronized (this.paintLock) {
+			int sCol = this.selectedColumnIndex;
+			int sRow = this.selectedRowIndex;
+			if (sCol != -1 && sRow != -1 && this.tableData != null) {
+				Object data = this.tableData.get(sCol, sRow);
+				if (data instanceof Item) {
+					((Item)data).animate(currentTime, repaintRegion);
+				}
+			}
 		}
 	}
 
@@ -708,11 +728,13 @@ public class TableItem
 	 * @param rows  the number of rows
 	 */
 	public void setDimension(int columns, int rows) {
-		if (this.tableData == null) 
-		{
-			this.tableData = new TableData(columns, rows );
-		} else {
-			this.tableData.setDimension(columns, rows);
+		synchronized (this.paintLock) {
+			if (this.tableData == null) 
+			{
+				this.tableData = new TableData(columns, rows );
+			} else {
+				this.tableData.setDimension(columns, rows);
+			}
 		}
 		requestInit();
 	}
@@ -746,12 +768,14 @@ public class TableItem
 	 */
 	public int addColumn() {
 		int col = 0;
-		if (this.tableData == null) {
-			this.tableData = new TableData( 1, 0);
-			requestInit();
-		} else {
-			requestInit();
-			col = this.tableData.addColumn();
+		synchronized (this.paintLock) {
+			if (this.tableData == null) {
+				this.tableData = new TableData( 1, 0);
+				requestInit();
+			} else {
+				requestInit();
+				col = this.tableData.addColumn();
+			}
 		}
 		this.currentColumnIndex = col;
 		return col;
@@ -792,8 +816,10 @@ public class TableItem
 	 * @throws ArrayIndexOutOfBoundsException when the index is invalid
 	 */
 	public void insertColumn( int index ) {
-		this.tableData.insertColumn(index);
-		requestInit();
+		synchronized (this.paintLock) {
+			this.tableData.insertColumn(index);
+			requestInit();
+		}
 	}
 	
 	/**
@@ -803,8 +829,10 @@ public class TableItem
 	 * @throws ArrayIndexOutOfBoundsException when the index is invalid
 	 */
 	public void removeColumn( int index ) {
-		this.tableData.removeColumn(index);
-		requestInit();
+		synchronized (this.paintLock) {
+			this.tableData.removeColumn(index);
+			requestInit();
+		}
 	}
 	
 	
@@ -814,12 +842,14 @@ public class TableItem
 	 */
 	public int addRow() {
 		int row = 0;
-		if (this.tableData == null) {
-			this.tableData = new TableData( 0, 1);
-			requestInit();
-		} else {
-			requestInit();
-			row = this.tableData.addRow();
+		synchronized (this.paintLock) {
+			if (this.tableData == null) {
+				this.tableData = new TableData( 0, 1);
+				requestInit();
+			} else {
+				requestInit();
+				row = this.tableData.addRow();
+			}
 		}
 		this.currentRowIndex = row;
 		return row;
@@ -832,8 +862,10 @@ public class TableItem
 	 * @throws ArrayIndexOutOfBoundsException when the index is invalid
 	 */
 	public void insertRow( int index ) {
-		this.tableData.insertRow(index);
-		requestInit();
+		synchronized (this.paintLock) {
+			this.tableData.insertRow(index);
+			requestInit();
+		}
 	}
 	
 	/**
@@ -843,8 +875,10 @@ public class TableItem
 	 * @throws ArrayIndexOutOfBoundsException when the index is invalid
 	 */
 	public void removeRow( int index ) {
-		this.tableData.removeRow(index);
-		requestInit();
+		synchronized (this.paintLock) {
+			this.tableData.removeRow(index);
+			requestInit();
+		}
 	}
 
 	/**
@@ -883,7 +917,9 @@ public class TableItem
 				value = item;
 			}
 		}
-		this.tableData.set(column, row, value);
+		synchronized (this.paintLock) {
+			this.tableData.set(column, row, value);
+		}
 		repaint();
 	}
 
@@ -1149,24 +1185,26 @@ public class TableItem
 	 */
 	public void add(int col, int row, Item item)
 	{
-		if (this.tableData == null) {
-			setDimension(col + 1, row + 1);
-		}
-		Object existing = this.tableData.get(col, row);
-		if (existing == null) {
-			set( this.currentColumnIndex, this.currentRowIndex, item );
-		} else {
-			if (existing instanceof Container) {
-				((Container)existing).add(item);
+		synchronized (this.paintLock) {
+			if (this.tableData == null) {
+				setDimension(col + 1, row + 1);
+			}
+			Object existing = this.tableData.get(col, row);
+			if (existing == null) {
+				set( this.currentColumnIndex, this.currentRowIndex, item );
 			} else {
-				Container container = new Container(false, this.cellContainerStyle);
-				if (existing instanceof Item) {
-					container.add( (Item)existing );
+				if (existing instanceof Container) {
+					((Container)existing).add(item);
 				} else {
-					container.add( existing.toString() );
+					Container container = new Container(false, this.cellContainerStyle);
+					if (existing instanceof Item) {
+						container.add( (Item)existing );
+					} else {
+						container.add( existing.toString() );
+					}
+					container.add(item);
+					set( this.currentColumnIndex, this.currentRowIndex, container );
 				}
-				container.add(item);
-				set( this.currentColumnIndex, this.currentRowIndex, container );
 			}
 		}
 	}
