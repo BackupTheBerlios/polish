@@ -91,6 +91,11 @@ public abstract class TextBuilder {
 		addString(" ");
 	}
 	
+	public boolean hasText()
+	{
+		return (this.textElements.size() > 0 && this.element != -1);
+	}
+	
 	public abstract boolean keyClear() throws RecordStoreException;
 
 	public void addWord(String string) {}

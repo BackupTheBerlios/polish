@@ -673,29 +673,37 @@ public class PredictiveAccess implements TrieSetupCallback{
 			openChoices(false);
 		}
 
-		try {
-			this.builder.keyClear();
-
-			if (!this.builder.isString(0)
-					&& this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS) {
-				this.setChoices(this.builder.getTextElement());
-			} else {
-				this.openChoices(false);
+		if(this.builder.hasText())
+		{
+			try {
+				
+				this.builder.keyClear();
+	
+				if (!this.builder.isString(0)
+						&& this.builder.getAlign() == TrieTextBuilder.ALIGN_FOCUS) {
+					this.setChoices(this.builder.getTextElement());
+				} else {
+					this.openChoices(false);
+				}
+			} catch (RecordStoreException e) {
+				//#debug error
+				System.out.println("unable to load record store " + e);
 			}
-		} catch (RecordStoreException e) {
-			//#debug error
-			System.out.println("unable to load record store " + e);
+	
+			this.parent.setText(this.builder.getText().toString());
+			this.parent.setCaretPosition(this.builder.getCaretPosition());
+			this.parent.showCommands();//this.parent.getScreen().setItemCommands(this.parent);
+			this.refreshChoices = true;
+			this.parent.notifyStateChanged();
+			
+			this.parent.updateDeleteCommand(this.builder.getText().toString());
+			
+			return true;
 		}
-
-		this.parent.setText(this.builder.getText().toString());
-		this.parent.setCaretPosition(this.builder.getCaretPosition());
-		this.parent.showCommands();//this.parent.getScreen().setItemCommands(this.parent);
-		this.refreshChoices = true;
-		this.parent.notifyStateChanged();
-		
-		this.parent.updateDeleteCommand(this.builder.getText().toString());
-		
-		return true;
+		else
+		{
+			return false;
+		}
 	}
 
 	protected boolean keyMode(int keyCode, int gameAction) {
