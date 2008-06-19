@@ -410,10 +410,10 @@ public class CssConverter extends Converter {
 		while ((cssAnimation = extractAnimationGroup(style)) != null) {
 //			System.out.println("got animation for " + cssAnimation.getCssAttributeName()  + " in style " + styleName);
 			CssAttribute  attribute = this.attributesManager.getAttribute( cssAnimation.getCssAttributeName() );
-			if (attribute == null) {
-				throw new BuildException("Unable to process animation for the unregistered CSS attribute \"" + cssAnimation.getCssAttributeName() + "\": please register this attribute in custom-css-attributes.xml.");
-			}
 			if (attribute.getId() == -1) {
+				if (attribute.isBaseAttribute()) {
+					throw new BuildException("Sorry, but at the moment you cannot aniamte the base CSS attribute \"" + cssAnimation.getCssAttributeName() + "\".");
+				}
 				throw new BuildException("Unable to process animation for CSS attribute \"" + cssAnimation.getCssAttributeName() + "\" with an unknown id: please register the \"id\" attribute in custom-css-attributes.xml.");
 			}
 			String animationSourceCode = attribute.generateAnimationSourceCode( cssAnimation, style, environment );
@@ -673,6 +673,11 @@ public class CssConverter extends Converter {
 				if ( (startIndex = key.indexOf("-animation-")) != -1) {
 					if (cssAnimation == null) {
 						String attributeName = name + "-" + key.substring(0, startIndex);
+						if (this.attributesManager.getAttribute(attributeName) == null) {
+							// this is not an attribute that can be animated:
+							System.out.println("Discarding attribute " + attributeName );
+							continue;
+						}
 						cssAnimation = new CssAnimationSetting(attributeName);
 					} 
 					String realKey = key.substring( startIndex + "-animation-".length() );
