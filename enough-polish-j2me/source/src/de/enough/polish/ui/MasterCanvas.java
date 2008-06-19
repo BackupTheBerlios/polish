@@ -128,6 +128,10 @@ public class MasterCanvas
 			if (this.screenHeight != 0) {
 				this.currentCanvas.sizeChanged( this.screenWidth, this.screenHeight );
 			}
+			if (StyleSheet.currentScreen != this.currentCanvas && this.currentCanvas instanceof Screen) {
+				// this can happen in some circumstances on Nokia Series 60 Second Edition phones:
+				StyleSheet.currentScreen = (Screen) this.currentCanvas;
+			}
 		}
 	}
 
