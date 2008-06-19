@@ -96,7 +96,7 @@ public class ScrollBar extends Item {
 	protected int scrollBarHeight;
 	//#if polish.css.opacity && polish.midp2 && polish.css.scrollbar-fadeout
 		//#define tmp.fadeout
-		private int startOpacity;
+		private int startOpacity = 255;
 	//#endif
 	private boolean isVisible;
 	protected boolean overlap;
