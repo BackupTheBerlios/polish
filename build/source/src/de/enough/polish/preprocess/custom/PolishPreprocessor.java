@@ -390,18 +390,26 @@ public class PolishPreprocessor extends CustomPreprocessor {
 				if (startPos != -1) {
 					int endPos = line.indexOf( ')', startPos );
 					if (endPos == -1) {
-						throw new BuildException ( getErrorStart(className, lines) + ": Invalid style-usage: "
-								+ "style.getProperty( \"name\" ); always needs to be on a single line. "
-								+ " This line is invalid: " + line );
+						if (!this.isInJ2MEPolishPackage) {
+							System.out.println( getErrorStart(className, lines) + "Unsupported style-usage: "
+									+ "style.getProperty( \"name\" ); always needs to be on a single line. "
+									+ " This line might be invalid: " + line );
+							System.out.println("Assuming accessing attributes are accessed using style.getXXX(int).");
+						}
+						continue;
 					}
 					
 					String property = line.substring( startPos + methodName.length(),
 							endPos ).trim();
 					//System.out.println("last line: " + lines.getPrevious() + "\ncurrent=" + lines.getCurrent() + "\nnext = " + lines.getNext() );
 					if (property.charAt(0) != '"' || property.charAt( property.length() - 1) != '"') {
-						throw new BuildException (getErrorStart(className, lines) + ": Invalid style-usage: "
-								+ "style.getProperty( \"name\" ); always needs to use the property-name directly (not a variable). "
-								+ " This line is invalid: " + line );
+						if (!this.isInJ2MEPolishPackage) {
+							System.out.println(getErrorStart(className, lines) + "Direct style-usage: "
+									+ "style.getProperty( \"name\" ); always needs to use the property-name directly (not a variable). "
+									+ " This line might be invalid: " + line );
+							System.out.println("Assuming accessing attributes are directly accessed using style.getXXX(int).");
+						}
+						continue;
 					}
 					String key = property.substring( 1, property.length() - 1);
 					int id = this.idGenerator.getId(

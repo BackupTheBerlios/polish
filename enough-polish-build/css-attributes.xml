@@ -3733,6 +3733,17 @@
 		id="334"
 	/>
 	
+	
+	<attribute
+		name="x-adjust"
+		type="integer"
+		appliesTo="Item"
+		description="The horizontal position adjustment."
+		default="0"
+		id="335"
+	/>
+	
+	
 	<!--
 	
 	<attribute

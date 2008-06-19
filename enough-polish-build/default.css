@@ -202,9 +202,11 @@ centercommand {
 }
 
 .browserOptionItem {
+	inherit: false;
 }
 
 .rssDescriptionAlert {
+	inherit: false;
 }
 
 .verticalmenubar {
@@ -214,21 +216,33 @@ centercommand {
 }
 
 .predictiveInstallDialog {
+	inherit: false;
 	layout: vertical-shrink | bottom;
 }
 
 .predictiveInstallMessage {
+	inherit: false;
 	font-color: black;
 }
 
 .predictiveWordNotFound {
+	inherit: false;
 	layout: vertical-shrink | bottom;
 }
 
 .predictiveWordNotFoundText {
+	inherit: false;
 	font-color: black;
 }
 
 .predictiveChoice {
+	inherit: false;
+	background-color: white;
+}
+
+scrollbar {
+	inherit: false;
+	scrollbar-slider-color: silver;
+	scrollbar-slider-width: 3;
 	background-color: white;
 }

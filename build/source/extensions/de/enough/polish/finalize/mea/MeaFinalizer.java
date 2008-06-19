@@ -231,10 +231,10 @@ public class MeaFinalizer extends Finalizer{
                 fileWriter.write("\t</supportedDevices>"+lineSeperator);
                 fileWriter.write("\t<data filename=\""+croppedJadFilename+"\" />"+lineSeperator);
                 fileWriter.write("\t<data filename=\""+croppedJarFilename+"\" />"+lineSeperator);
-                if (entry.getSupportedLocales() != null) {
-                	fileWriter.write("\t<supportedLocales>"+ entry.getSupportedLocales() +"</supportedLocales>"+lineSeperator);
-                	fileWriter.write("\t<supportedLanguages>"+ entry.getSupportedLanguages() +"</supportedLanguages>"+lineSeperator);
-                }
+//                if (entry.getSupportedLocales() != null) {
+//                	fileWriter.write("\t<supportedLocales>"+ entry.getSupportedLocales() +"</supportedLocales>"+lineSeperator);
+//                	fileWriter.write("\t<supportedLanguages>"+ entry.getSupportedLanguages() +"</supportedLanguages>"+lineSeperator);
+//                }
                 fileWriter.write("</javaMeBundle>"+lineSeperator);
                 
                 // Jad into the zip

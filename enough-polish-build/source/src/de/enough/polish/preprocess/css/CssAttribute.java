@@ -58,6 +58,8 @@ public class CssAttribute
 implements Comparable
 {
 	
+	protected final static String ANIMATION_PACKAGE = "de.enough.polish.ui.cssanimations.";
+	
 	protected String name;
 	protected String[] allowedValues;
 	protected String defaultValue;
@@ -758,6 +760,19 @@ implements Comparable
 	public boolean isHidden()
 	{
 		return this.isHidden;
+	}
+
+	/**
+	 * Generates source code for creating a CssAnimation
+	 * @param cssAnimation the settings of the animation
+	 * @param style the parent style
+	 * @param environment the environment 
+	 * @return source code that creates the animation
+	 */
+	public String generateAnimationSourceCode(CssAnimationSetting cssAnimation,
+			Style style, Environment environment)
+	{
+		return null;
 	}
 	
 

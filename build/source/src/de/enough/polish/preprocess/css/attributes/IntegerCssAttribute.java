@@ -27,7 +27,9 @@ package de.enough.polish.preprocess.css.attributes;
 
 import de.enough.polish.BuildException;
 import de.enough.polish.Environment;
+import de.enough.polish.preprocess.css.CssAnimationSetting;
 import de.enough.polish.preprocess.css.CssAttribute;
+import de.enough.polish.preprocess.css.Style;
 
 /**
  * <p>A simple numerical attribute.</p>
@@ -116,6 +118,36 @@ public class IntegerCssAttribute extends CssAttribute {
 			return new Integer( Integer.parseInt(sourceCode));
 		}
 		return super.instantiateValue(sourceCode);
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.preprocess.css.CssAttribute#generateAnimationSourceCode(de.enough.polish.preprocess.css.CssAnimationSetting, de.enough.polish.preprocess.css.Style, de.enough.polish.Environment)
+	 */
+	public String generateAnimationSourceCode(CssAnimationSetting cssAnimation, Style style, Environment environment)
+	{
+		StringBuffer buffer = new StringBuffer();
+		buffer.append( "new " );
+		buffer.append( ANIMATION_PACKAGE );
+		buffer.append( "IntegerCssAnimation(");
+		buffer.append( this.id ).append(", ");
+		buffer.append( '"').append(cssAnimation.getOn() ).append("\", ");
+		buffer.append( cssAnimation.getDuration() ).append(", ");
+		buffer.append( cssAnimation.getDelay() ).append(", ");
+		buffer.append( cssAnimation.getTimingFunction() ).append(", ");
+		String start = cssAnimation.getValue("start");
+		if (start == null) {
+			start = "-1";
+		}
+		buffer.append( start ).append(", ");
+		String end = cssAnimation.getValue("end");
+		if (end == null) {
+			throw new BuildException("CSS animation for " + this.name + " does not specify and \"end\" value - check style " + style.getSelector() + " in your polish.css");
+		}
+		buffer.append( end );
+		buffer.append(')');
+		return buffer.toString();
 	}
 	
 	

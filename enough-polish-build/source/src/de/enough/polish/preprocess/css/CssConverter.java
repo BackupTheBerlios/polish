@@ -402,6 +402,35 @@ public class CssConverter extends Converter {
 		//System.out.println("processing style " + style.getStyleName() + ": " + style.toString() );
 		// create a new style:
 		codeList.add( STANDALONE_MODIFIER + "Style " + styleName + "Style = new Style (");
+		
+		// process all animations, do this here so animations can also be done for margins, paddings, font settings etc:
+		CssAnimationSetting cssAnimation;
+		ArrayList animationsList = new ArrayList();
+		while ((cssAnimation = extractAnimationGroup(style)) != null) {
+//			System.out.println("got animation for " + cssAnimation.getCssAttributeName()  + " in style " + styleName);
+			CssAttribute  attribute = this.attributesManager.getAttribute( cssAnimation.getCssAttributeName() );
+			if (attribute == null) {
+				throw new BuildException("Unable to process animation for the unregistered CSS attribute \"" + cssAnimation.getCssAttributeName() + "\": please register this attribute in custom-css-attributes.xml.");
+			}
+			if (attribute.getId() == -1) {
+				throw new BuildException("Unable to process animation for CSS attribute \"" + cssAnimation.getCssAttributeName() + "\" with an unknown id: please register the \"id\" attribute in custom-css-attributes.xml.");
+			}
+			String animationSourceCode = attribute.generateAnimationSourceCode( cssAnimation, style, environment );
+			if (animationSourceCode == null) {
+				throw new BuildException("Animations for " + cssAnimation.getCssAttributeName() + " are not supported - check your polish.css for style " + style.getSelector() + ".");
+			}
+			animationsList.add( animationSourceCode );
+//			System.out.println("sourceCode=" + animationSourceCode );
+//			String[] keys = cssAnimation.getKeys();
+//			for (int i = 0; i < keys.length; i++)
+//			{
+//				String key = keys[i];
+//				System.out.println( key + "=" + cssAnimation.getValue(key));
+//			}
+//			System.out.println();
+		}
+		
+
 		// process the margins:
 		HashMap group = style.removeGroup("margin");
 		if ( group != null ) {
@@ -596,6 +625,17 @@ public class CssConverter extends Converter {
 			codeList.add( "\t\t" + keyList.toString() + ",");
 			codeList.add( "\t\t" + valueList.toString());
 		} // if there are any non-standard attribute-groups
+		if (animationsList.size() > 0) {
+			codeList.add("\t\t, new CssAnimation[]{");
+			for (int i=0; i<animationsList.size(); i++) {
+				String code = "\t\t\t" + animationsList.get(i);
+				if (i < animationsList.size() - 1) {
+					code += ",";
+				}
+				codeList.add(code);
+			}
+			codeList.add("\t\t}");
+		}
 		
 		// close the style definition:
 		codeList.add("\t);");
@@ -610,6 +650,42 @@ public class CssConverter extends Converter {
 
 
 	
+	/**
+	 * @param style
+	 * @return
+	 */
+	protected CssAnimationSetting extractAnimationGroup(Style style)
+	{
+		String[] names = style.getGroupNames();
+		for (int i = 0; i < names.length; i++)
+		{
+			String name = names[i];
+			//System.out.println("found group: " + name + ": " + style.getGroup(name));
+			HashMap group = style.getGroup(name);
+			Object[] keys = group.keySet().toArray();
+			CssAnimationSetting cssAnimation = null;
+			for (int j = 0; j < keys.length; j++)
+			{
+				String key = (String) keys[j];
+				int startIndex;
+				if ( (startIndex = key.indexOf("-animation-")) != -1) {
+					if (cssAnimation == null) {
+						String attributeName = name + "-" + key.substring(0, startIndex);
+						cssAnimation = new CssAnimationSetting(attributeName);
+					} 
+					String realKey = key.substring( startIndex + "-animation-".length() );
+					cssAnimation.addAnimationSetting(realKey, (String)group.get(key) );
+					group.remove(key);
+				}
+			}
+			if (cssAnimation != null) {
+				//System.out.println("found animation: " + animationGroup);
+				return cssAnimation;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Retrieves the color value as a decimal integer value.
 	 * 

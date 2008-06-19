@@ -886,6 +886,7 @@ public class StyleSheet {
 			HashMap symbols = new HashMap();
 			HashMap attributesByName = new HashMap();
 			Style[] myStyles = getAllStyles();
+			boolean hasAnimations  = false;
 			for (int i = 0; i < myStyles.length; i++) {
 				Style style = myStyles[i];
 				symbols.put( "polish.css.style." + style.getStyleName(), Boolean.TRUE );
@@ -895,6 +896,10 @@ public class StyleSheet {
 					//System.out.println("adding symbol polish.css." + attribute + " of style " + style.getSelector() );
 					symbols.put( "polish.css." + attribute, Boolean.TRUE );
 					attributesByName.put( attribute, Boolean.TRUE );
+					if (!hasAnimations && attribute.endsWith("-animation")) {
+						symbols.put( "polish.css.animations", Boolean.TRUE );
+						hasAnimations = true;
+					}
 				}
 			}
 			this.cssPreprocessingSymbols = symbols;
