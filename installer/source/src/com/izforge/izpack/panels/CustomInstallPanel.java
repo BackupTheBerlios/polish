@@ -95,7 +95,7 @@ implements Runnable
     		  jf.setVisible(true); 
     		  
     		  try {
-    		    URL url = new URL("http://www1.j2mepolish.org/thirdparty/smaato-soma.html");
+    		    URL url = new URL("http://www.smaato.com/download/j2mepolish/after-install.html");
     		    tp.setPage(url);
     		    }
     		  catch (Exception e) {
