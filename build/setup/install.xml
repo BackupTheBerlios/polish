@@ -111,8 +111,8 @@ When the plugin is not installed correctly, please start eclipse with "-clean" c
             <file src="ide/eclipse/plugins" targetdir="$ECLIPSE_INSTALL_HOME"/>
             <file src="ide/eclipse/features" targetdir="$ECLIPSE_INSTALL_HOME"/>
         </pack>
-        <pack id="thirdparty-smaato-soma" name="Third Party: SMAATO Advertising Library" required="no" preselected="yes">
-            <description>A library for embedding advertisements in your application.</description>
+        <pack id="thirdparty-smaato-soma" name="Third Party: Smaato SOMA Client (mobile advertising library)" required="no" preselected="yes">
+            <description>A library for embedding advertisements in your application. J2ME Polish can embed ads automatically for you.</description>
             <file src="../setup/thirdparty/smaato" targetdir="$INSTALL_PATH/thirdparty"/>
             <file src="samples/thirdparty-smaato-blackbox" targetdir="$INSTALL_PATH/samples"/>
             <parsable targetfile="$INSTALL_PATH/samples/thirdparty-smaato-blackbox/build.xml" type="shell" /> 
