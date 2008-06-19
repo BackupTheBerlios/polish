@@ -406,6 +406,7 @@ public class CssConverter extends Converter {
 		// process all animations, do this here so animations can also be done for margins, paddings, font settings etc:
 		CssAnimationSetting cssAnimation;
 		ArrayList animationsList = new ArrayList();
+		if (false) { // outcommented for 2.0.3 release
 		while ((cssAnimation = extractAnimationGroup(style)) != null) {
 //			System.out.println("got animation for " + cssAnimation.getCssAttributeName()  + " in style " + styleName);
 			CssAttribute  attribute = this.attributesManager.getAttribute( cssAnimation.getCssAttributeName() );
@@ -428,6 +429,7 @@ public class CssConverter extends Converter {
 //				System.out.println( key + "=" + cssAnimation.getValue(key));
 //			}
 //			System.out.println();
+		}
 		}
 		
 
