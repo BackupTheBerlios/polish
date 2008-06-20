@@ -674,6 +674,7 @@ public class Container extends Item {
 				this.internalX = NO_POSITION_SET;
 				this.internalY = 0;
 			}
+			
 				// adjust scrolling:
 				if ( this.isFocused && this.parent instanceof Container ) {
 					Container parentContainer = (Container) this.parent;
@@ -684,6 +685,8 @@ public class Container extends Item {
 					}
 				}
 			//}
+			this.contentHeight = 0;
+			this.itemHeight = this.marginTop + this.paddingTop + this.paddingBottom + this.marginBottom;
 			if (this.isInitialized) {
 				this.isInitialized = false;
 				//this.yBottom = this.yTop = 0;
@@ -1535,7 +1538,7 @@ public class Container extends Item {
 			) {
 				//System.out.println("offset=" + offset + ", foc.relativeY=" + this.focusedItem.relativeY + ", foc.height=" + this.focusedItem.itemHeight + ", available=" + this.availableHeight);
 				// keep the focus do scroll downwards:
-				// #debug
+				//#debug
 				System.out.println("Container(" + this + "): scrolling down: keeping focus, focusedIndex=" + this.focusedIndex + ", y=" + y + ", h=" + h + ", offset=" + offset );
 			} else {
 				//#ifdef tmp.supportViewType
@@ -1580,7 +1583,7 @@ public class Container extends Item {
 					&& offset + focItem.relativeY < 0 ) // this.focusedItem.yTopPos < this.yTop ) 
 			{
 				// keep the focus do scroll upwards:
-				// #debug
+				//#debug
 				System.out.println("Container(" + this + "): scrolling up: keeping focus, relativeScrollOffset=" + offset + ", scrollHeight=" + availableScrollHeight +  ", focusedIndex=" + this.focusedIndex + ", focusedItem.relativeY=" + this.focusedItem.relativeY + ", this.availableHeight=" + this.availableHeight + ", targetYOffset=" + this.targetYOffset);
 			} else {
 				//#ifdef tmp.supportViewType
