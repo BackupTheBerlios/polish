@@ -282,10 +282,10 @@
 		<description>
 		Extensions for handling multimedia content as a supplement to the MMAPI.
 		</description>
-		<names>JSR-234, JSR234, advancedmultimedia, advanced-multimedia, advancedmmapi</names>
+		<names>JSR-234, JSR234, advancedmultimedia, advanced-multimedia, advancedmmapi, ams</names>
 		<symbol>advancedmultimedia</symbol>
 		<files>advancedmultimedia.jar</files>
-		<path>import/advancedmultimedia-1.0.jar</path>
+		<path>import/jsr234.jar</path>
 	</api>
 
 	<api>
@@ -314,7 +314,7 @@
 		<names>webservice, webservices, webserviceapi, JSR-172, JSR172</names>
 		<symbol>webservice</symbol>
 		<files>webservice.jar</files>
-		<path>import/webservice-api.jar</path>
+		<path>import/jsr172.jar</path>
 	</api>
 
 	<api>
@@ -325,7 +325,7 @@
 		<names>security, security-api, security-and-trust-api, JSR-177, JSR177</names>
 		<symbol>security</symbol>
 		<files>security.jar</files>
-		<path>import/security.jar</path>
+		<path>import/jsr177.jar</path>
 	</api>
 	
 	<api>
@@ -336,7 +336,7 @@
 		<names>sip, sipapi, sip-api, JSR-180, JSR180</names>
 		<symbol>sip</symbol>
 		<files>sip.jar, sip-1.0.jar</files>
-		<path>import/sip-1.0.jar</path>
+		<path>import/jsr180.jar</path>
 	</api>
 	
 	<api>
@@ -347,7 +347,7 @@
 		<names>content, contentapi, content-api, contenthandlerapi,chapi, contenthandler, contenthandler-api, JSR-211, JSR211</names>
 		<symbol>contenthandler</symbol>
 		<files>contenthandler.jar,contenthandler-1.0.jar</files>
-		<path>import/contenthandler-1.0.jar</path>
+		<path>import/jsr211.jar</path>
 	</api>
 
 	<api>
@@ -358,7 +358,7 @@
 		<names>payment, paymentapi, payment-api, JSR-229, JSR229</names>
 		<symbol>payment</symbol>
 		<files>payment.jar,payment-1.0.jar</files>
-		<path>import/payment-1.0.jar</path>
+		<path>import/jsr229.jar</path>
 	</api>
 
 	<api>
@@ -369,7 +369,7 @@
 		<names>internationalization, internationalization-api, i18n, i18n-api, JSR-238, JSR238,global, global-api</names>
 		<symbol>i18n</symbol>
 		<files>i18n.jar,i18n-1.0.jar,global.jar</files>
-		<path>import/i18n-1.0.jar</path>
+		<path>import/jsr238.jar</path>
 	</api>
 
 	<api>
@@ -380,7 +380,7 @@
 		<names>JSR239,JSR-239,opengl,opengles,openglesbindings</names>
 		<symbol>opengl</symbol>
 		<files>opengl-1.0.jar</files>
-		<path>import/opengl-1.0.jar</path>
+		<path>import/jsr239.jar</path>
 	</api>
 	
 	<api>

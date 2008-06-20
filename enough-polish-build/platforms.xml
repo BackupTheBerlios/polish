@@ -61,6 +61,17 @@
 		<capability name="build.ImplicitGroups" value="jtwi" />
 	</platform>
 
+
+	<platform>
+		<identifier>MSA/1.0</identifier>
+		<parent>JTWI/1.0</parent>
+		<description>The Mobile Service Architecture clarifies specifications and mandates support of additional technologies.</description>
+		<features>msa</features>
+		<capability name="build.ImplicitGroups" value="msa" />
+		<capability name="JavaPackage" value="pdaapi, btapi, mmapi, 3dapi, wmapi2.0, svg" />
+	</platform>
+	
+	
 	<platform>
 		<identifier>FP/1.0</identifier>
 		<features>fp</features>

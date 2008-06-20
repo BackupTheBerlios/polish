@@ -593,7 +593,7 @@ These namespaces/schemas will be used soon.
   <!-- Sony-Ericsson devices -->
   <device>
     <identifier>Sony-Ericsson/K320i, Sony-Ericsson/K320</identifier>
-    <groups>SE-JavaPlatform3</groups>
+    <groups>SE-JavaPlatform6</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="ScreenSize" value="128x160" />
     <capability name="CanvasSize" value="128x160" />
@@ -624,7 +624,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/W830i, Sony-Ericsson/W830</identifier>
-    <groups>SE-JavaPlatform6</groups>
+    <groups>SE-JavaPlatform7</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="ScreenSize" value="240x320" />
     <capability name="FullCanvasSize" value="240x320" />
@@ -687,7 +687,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/W710i, Sony-Ericsson/W710</identifier>
-    <groups>SE-JavaPlatform6</groups>
+    <groups>SE-JavaPlatform7</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="ScreenSize" value="176x220" />
     <capability name="FullCanvasSize" value="176x220" />
@@ -754,7 +754,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/Z525</identifier>
-    <groups />
+    <groups>SE-JavaPlatform5</groups>
     <features>hasCamera, hasVideo</features>
     <capability name="ScreenSize" value="128x160" />
     <capability name="FullCanvasSize" value="128x160" />
@@ -771,7 +771,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/Z530</identifier>
-    <groups />
+    <groups>SE-JavaPlatform6</groups>
     <features>hasCamera, hasVideo</features>
     <capability name="ScreenSize" value="128x160" />
     <capability name="FullCanvasSize" value="128x160" />
@@ -788,7 +788,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/Z710</identifier>
-    <groups>SE-JavaPlatform6</groups>
+    <groups>SE-JavaPlatform7</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="ScreenSize" value="176x220" />
     <capability name="FullCanvasSize" value="176x220" />
@@ -820,7 +820,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/K510</identifier>
-    <groups>SE-JavaPlatform5</groups>
+    <groups>SE-JavaPlatform6</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="ScreenSize" value="128x160" />
     <capability name="FullCanvasSize" value="128x160" />
@@ -946,7 +946,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/K310i, Sony-Ericsson/K310</identifier>
-    <groups>SE-JavaPlatform3</groups>
+    <groups>SE-JavaPlatform6</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="ScreenSize" value="128x160" />
     <capability name="FullCanvasSize" value="128x160" />
@@ -1055,7 +1055,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/W850i, Sony-Ericsson/W850</identifier>
-    <groups>SE-JavaPlatform6</groups>
+    <groups>SE-JavaPlatform7</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="ScreenSize" value="240x320" />
     <capability name="CanvasSize" value="240x266" />
@@ -1095,7 +1095,7 @@ These namespaces/schemas will be used soon.
     <capability name="FullCanvasSize" value="240x320" />
     <capability name="BitsPerPixel" value="18" />
     <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, nokiaui, webservices,location,sip,security,msa,contenthandler,svg,i18n,sensor" />
-    <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+	<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
     <capability name="SoundFormat" value="midi, midi40, aac, wav, mp3, mp4" />
@@ -1432,7 +1432,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/K608</identifier>
-    <groups />
+    <groups>SE-JavaPlatform5</groups>
     <features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="ScreenSize" value="176x220" />
     <capability name="BitsPerPixel" value="18" />
@@ -1639,7 +1639,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/W300</identifier>
-    <groups>SE-JavaPlatform3</groups>
+    <groups>SE-JavaPlatform6</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="ScreenSize" value="128x160" />
     <capability name="FullCanvasSize" value="128x160" />
@@ -1712,7 +1712,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/K790</identifier>
-    <groups>SE-JavaPlatform5</groups>
+    <groups>SE-JavaPlatform7</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="ScreenSize" value="240x320" />
     <capability name="BitsPerPixel" value="18" />
@@ -1802,7 +1802,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/V630</identifier>
-    <groups>SE-JavaPlatform5</groups>
+    <groups>SE-JavaPlatform7</groups>
     <features>hasCamera</features>
     <capability name="ScreenSize" value="176x220" />
     <capability name="FullCanvasSize" value="176x220" />
@@ -1815,7 +1815,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/K610i</identifier>
-    <groups>SE-JavaPlatform5</groups>
+    <groups>SE-JavaPlatform7</groups>
     <features>hasCamera</features>
     <capability name="ScreenSize" value="176x220" />
     <capability name="FullCanvasSize" value="176x220" />
@@ -15332,6 +15332,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/K550im</identifier>
+    <group>SE-JavaPlatform7</group>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
@@ -15368,7 +15369,7 @@ These namespaces/schemas will be used soon.
     <identifier>Sony-Ericsson/K630</identifier>
     <groups>SE-JavaPlatform8</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
-    <capability name="JavaPlatform" value="MIDP/2.0" />
+	<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, nokiaui, webservices,location,sip,security,msa,contenthandler,svg,i18n" />
     <capability name="BitsPerPixel" value="18" />
@@ -15387,7 +15388,7 @@ These namespaces/schemas will be used soon.
     <identifier>Sony-Ericsson/K660</identifier>
     <groups>SE-JavaPlatform8</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
-    <capability name="JavaPlatform" value="MIDP/2.0" />
+	<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="HeapSize" value="dynamic" />
     <capability name="MaxJarSize" value="dynamic" />
@@ -15498,7 +15499,7 @@ These namespaces/schemas will be used soon.
     <identifier>Sony-Ericsson/V640</identifier>
     <groups>SE-JavaPlatform8</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
-    <capability name="JavaPlatform" value="MIDP/2.0" />
+	<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="HeapSize" value="dynamic" />
     <capability name="MaxJarSize" value="dynamic" />
@@ -15515,9 +15516,11 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/W200</identifier>
+    <group>SE-JavaPlatform6</group>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="ScreenSize" value="128x160" />
     <capability name="HeapSize" value="1.5 MB" />
     <capability name="MaxJarSize" value="dynamic" />
     <capability name="StorageSize" value="27 MB" />
@@ -15533,6 +15536,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/W350</identifier>
+    <group>SE-JavaPlatform7</group>
     <features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
@@ -15542,6 +15546,7 @@ These namespaces/schemas will be used soon.
     <capability name="BitsPerPixel" value="18" />
     <capability name="ScreenSize" value="176x220" />
     <capability name="FullCanvasSize" value="176x220" />
+    <capability name="JavaPackage" value="" />
     <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, webservices, m3g" />
     <capability name="ImageFormat" value="jpeg, bmp, wbmp, gif, gif87a, gif89a, png, png1.0, svg, swf" />
     <capability name="SoundFormat" value="aac, aac+, mp3, m4a, m4a, 3gp, nb-amr, wb-amr, wav" />
@@ -15550,6 +15555,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/W380</identifier>
+    <group>SE-JavaPlatform7</group>
     <features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
@@ -15559,6 +15565,7 @@ These namespaces/schemas will be used soon.
     <capability name="BitsPerPixel" value="18" />
     <capability name="ScreenSize" value="176x220" />
     <capability name="FullCanvasSize" value="176x220" />
+    <capability name="JavaPackage" value="" />
     <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, webservices, m3g" />
     <capability name="ImageFormat" value="jpeg, bmp, wbmp, gif, gif87a, gif89a, png, png1.0, svg, swf" />
     <capability name="SoundFormat" value="aac, aac+, mp3, m4a, m4a, 3gp, nb-amr, wb-amr, midi, sp-midi, wav" />
@@ -15567,6 +15574,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/W700</identifier>
+    <groups>SE-JavaPlatform5</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
@@ -15588,7 +15596,7 @@ These namespaces/schemas will be used soon.
     <identifier>Sony-Ericsson/W760</identifier>
     <groups>SE-JavaPlatform8</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
-    <capability name="JavaPlatform" value="MIDP/2.0" />
+	<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="HeapSize" value="dynamic" />
     <capability name="MaxJarSize" value="dynamic" />
@@ -15607,7 +15615,7 @@ These namespaces/schemas will be used soon.
     <identifier>Sony-Ericsson/W910</identifier>
     <groups>SE-JavaPlatform8</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
-    <capability name="JavaPlatform" value="MIDP/2.0" />
+	<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="HeapSize" value="dynamic" />
     <capability name="MaxJarSize" value="dynamic" />
@@ -15663,6 +15671,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/Z310</identifier>
+    <group>SE-JavaPlatform7</group>
     <features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
@@ -15697,6 +15706,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/Z555</identifier>
+    <group>SE-JavaPlatform7</group>
     <features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
@@ -15714,6 +15724,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/Z558</identifier>
+    <group>SE-JavaPlatform6</group>
     <features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
@@ -15731,6 +15742,7 @@ These namespaces/schemas will be used soon.
   </device>
   <device>
     <identifier>Sony-Ericsson/Z610</identifier>
+    <group>SE-JavaPlatform7</group>
     <features>hasCamera, doubleBuffering, hasCommandKeyEvents</features>
     <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
@@ -15751,7 +15763,7 @@ These namespaces/schemas will be used soon.
     <identifier>Sony-Ericsson/Z750</identifier>
     <groups>SE-JavaPlatform8</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
-    <capability name="JavaPlatform" value="MIDP/2.0" />
+	<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="HeapSize" value="1.5 MB" />
     <capability name="MaxJarSize" value="dynamic" />
@@ -15770,7 +15782,7 @@ These namespaces/schemas will be used soon.
     <identifier>Sony-Ericsson/Z770</identifier>
     <groups>SE-JavaPlatform8</groups>
     <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
-    <capability name="JavaPlatform" value="MIDP/2.0" />
+	<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="HeapSize" value="1.5 MB" />
     <capability name="MaxJarSize" value="dynamic" />

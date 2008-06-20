@@ -397,7 +397,7 @@
 		<capability name="OS" value="Sony-Ericsson OS" />
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="mmapi, wmapi, nokia-ui, m3g, pdaapi" />
+		<capability name="JavaPackage" value="mmapi, wmapi, nokia-ui, m3g, mascot, pdaapi, btapi" />
 		<capability name="ScreenSize" value="176x220" />
 		<capability name="FullCanvasSize" value="176x220" />
 		<capability name="CanvasSize" value="176x176"/>
@@ -411,7 +411,7 @@
 		<capability name="OS" value="Sony-Ericsson OS" />
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="mmapi, wmapi2.0, nokia-ui, m3g, pdaapi, webservice" />
+		<capability name="JavaPackage" value="wmapi2.0, webservice" />
 		<capability name="ScreenSize" value="176x220" />
 		<capability name="FullCanvasSize" value="176x220" />
 		<capability name="CanvasSize" value="176x176"/>
@@ -426,7 +426,7 @@
 		<capability name="OS" value="Sony-Ericsson OS" />
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="mmapi, wmapi2.0, nokia-ui, m3g, pdaapi, webservice" />
+		<capability name="JavaPackage" value="ams" />
 		<capability name="Bugs" value="usesVideoRam" />
 		<capability name="key.ReturnKey" value="-11"/>
 		<capability name="ScreenSize" value="" />
@@ -439,9 +439,9 @@
 	<group>
 		<name>SE-JavaPlatform8</name>
 		<capability name="OS" value="Sony-Ericsson OS" />
-		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+		<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="mmapi, wmapi2.0, nokia-ui, m3g, pdaapi, webservice" />
+		<capability name="JavaPackage" value="svg, security, locationapi, sip, contenthandler, payment, i18n, opengl" />
 		<capability name="ScreenSize" value="" />
 		<capability name="FullCanvasSize" value="" />
 		<capability name="CanvasSize" value=""/>

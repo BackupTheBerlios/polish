@@ -421,14 +421,6 @@ public class CssConverter extends Converter {
 				throw new BuildException("Animations for " + cssAnimation.getCssAttributeName() + " are not supported - check your polish.css for style " + style.getSelector() + ".");
 			}
 			animationsList.add( animationSourceCode );
-//			System.out.println("sourceCode=" + animationSourceCode );
-//			String[] keys = cssAnimation.getKeys();
-//			for (int i = 0; i < keys.length; i++)
-//			{
-//				String key = keys[i];
-//				System.out.println( key + "=" + cssAnimation.getValue(key));
-//			}
-//			System.out.println();
 		}
 		}
 		
