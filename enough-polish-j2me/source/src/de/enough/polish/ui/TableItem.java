@@ -310,8 +310,9 @@ public class TableItem
 		this.contentHeight = height - this.paddingVertical;
 		this.columnWidths = widths;
 		this.rowHeights = heights;
+		int appearance = PLAIN;
 		if (this.completeWidth > lineWidth) {
-			this.appearanceMode = INTERACTIVE;
+			appearance = INTERACTIVE;
 			this.contentWidth = lineWidth;
 		}
 		if (this.selectionMode != SELECTION_MODE_NONE) {
@@ -324,11 +325,12 @@ public class TableItem
 				setSelectedCell( this.selectedColumnIndex, this.selectedRowIndex);
 			}
 			if (this.selectedColumnIndex != -1 || this.selectedRowIndex != -1) {
-				this.appearanceMode = INTERACTIVE;
+				appearance = INTERACTIVE;
 			} else if (this.completeWidth <= this.contentWidth){
-				this.appearanceMode = PLAIN;
+				appearance = PLAIN;
 			}
-		} 
+		}
+		this.appearanceMode = appearance;
 		//System.out.println("contentHeight=" + this.contentHeight + ", width=" + this.contentWidth );
 		
 	}
