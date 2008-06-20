@@ -876,11 +876,6 @@ implements AccessibleCanvas
 	 * Initialises this screen and informs all items about being painted soon.
 	 */
 	public void showNotify() {
-		if (StyleSheet.currentScreen == this && this.isShown()) {
-			//#debug 
-			System.out.println("ignoring showNotify, as this screen is shown already");
-			return;
-		}
 		//#if polish.Screen.callSuperEvents
 			super.showNotify();
 		//#endif
