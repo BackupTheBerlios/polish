@@ -449,14 +449,18 @@ public class ResourceManager {
 									dirs.add( file );
 								}
 							}
-						}
-						else if (device.hasFeature(name) 
-							|| this.booleanEvaluator.evaluate(name, "resourceassembling", 0)
-							|| (name.endsWith(".0x0")
-								&& device.getCapability(name.substring(0, name.length() - ".0x0".length()) ) == null ) )
-						{
-							//System.out.println("Adding feature (" +  device.hasFeature(name) + ") or preprocessing dir (" + this.booleanEvaluator.evaluate(name, "resourceassembling", 0) + "): " + file.getAbsolutePath() );
-							dirs.add( file );
+						} else {
+							if (!name.startsWith("polish.")) {
+								name = "polish." + name;
+							}
+							if (device.hasFeature(name) 
+								|| this.booleanEvaluator.evaluate(name, "resourceassembling", 0)
+								|| (name.endsWith(".0x0")
+									&& device.getCapability(name.substring(0, name.length() - ".0x0".length()) ) == null ) )
+							{
+								//System.out.println("Adding feature (" +  device.hasFeature(name) + ") or preprocessing dir (" + this.booleanEvaluator.evaluate(name, "resourceassembling", 0) + "): " + file.getAbsolutePath() );
+								dirs.add( file );
+							}
 						}
 					} catch (BuildException e) {
 						System.out.println("WARNING: unable to add resource folder [" + file.getAbsolutePath() + "]: " + e.getMessage() );
