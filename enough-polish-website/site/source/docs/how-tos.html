@@ -203,7 +203,7 @@ focused {
 <p>
 A third optimization is not to use <a href="css-styles.html">dynamic styles</a>. 
 This requires the usage of the 
-<a href="directives.html#preprocessing-styles">#style-directive</a> in the application code. 
+<a href="preprocessing-directives.html#preprocessing-styles">#style-directive</a> in the application code. 
 </p>
 <h4 id="howto-memory-resources">Using Optimal Resources</h4>
 <p>
@@ -291,7 +291,7 @@ With the help of <a href="preprocessing.html">preprocessing</a> you can shift th
 <h4 id="howto-memory-debug">Remove Debug Code</h4>
 <p>
 When the application should be shipped any debug code should be removed from the project. 
-The easiest way is to use the <a href="directives.html#debug">#debug and #mdebug</a>
+The easiest way is to use the <a href="preprocessing-directives.html#debug">#debug and #mdebug</a>
  preprocessing directives. The debugging can then be controlled with 
  the <a href="build-build.html#debug">&lt;debug&gt;</a>-element in the 
  &quot;build.xml&quot; file.
@@ -395,7 +395,7 @@ The left column will be 40 pixels wide, whereas the right column will use 100 pi
 <h3 id="howto-gui-apply">How to Apply the J2ME Polish GUI for Existing Applications</h3>
 <p>
 If an existing application should be &quot;polished up&quot; you should insert 
-<a href="directives.html#preprocessing-styles">#style preprocessing directives</a> within the 
+<a href="preprocessing-directives.html#preprocessing-styles">#style preprocessing directives</a> within the 
 application to allow a fine grained design:
 <pre>
 //#style mainScreen
@@ -486,7 +486,7 @@ or some of the &lt;j2mepolish&gt; tasks:
 </pre></p>
 <p>
 These variables then can be used within the application with the use of 
-<a href="directives.html#preprocessing-variables">preprocessing</a>:
+<a href="preprocessing-directives.html#preprocessing-variables">preprocessing</a>:
 <pre>
 //#ifdef player-width:defined
 	//#= int width = ${player-width};
