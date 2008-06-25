@@ -886,7 +886,7 @@ implements AccessibleCanvas
 			//#ifdef polish.Screen.showNotifyCode:defined
 				//#include ${polish.Screen.showNotifyCode}
 			//#endif
-			//#if polish.ScreenOrientationCanChangeManually
+			//#if tmp.manualOrientationChange
 				this.isSetFullScreenCalled = true;
 			//#endif
 			//#if !tmp.useMasterCanvas &&  tmp.fullScreen && polish.midp2 && polish.Bugs.fullScreenInShowNotify
@@ -898,7 +898,7 @@ implements AccessibleCanvas
 				// when the previous screen was in the "normal" mode:
 				super.setFullScreenMode( true );
 			//#endif
-			//#if polish.ScreenOrientationCanChangeManually
+			//#if tmp.manualOrientationChange
 				this.isSetFullScreenCalled = false;
 			//#endif
 			if (!this.isInitialized) {
