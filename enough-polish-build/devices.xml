@@ -1098,7 +1098,7 @@ These namespaces/schemas will be used soon.
 	<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
-    <capability name="SoundFormat" value="midi, midi40, aac, wav, mp3, mp4" />
+    <capability name="SoundFormat" value="amr, midi, midi40, aac, wav, mp3, mp4" />
     <capability name="VideoFormat" value="mpeg-4, 3gpp, h.263, xmf, svgt" />
     <capability name="ImageFormat" value="gif, gif87a, gif89a, png, png1.0, bmp, bmp3, wbmp" />
     <capability name="CaptureImageFormat" value="jpeg" />
