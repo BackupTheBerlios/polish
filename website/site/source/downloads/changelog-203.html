@@ -5,8 +5,26 @@
 	<h1 id="top">Changelog</h1>
 	
 	<h2 id="203">J2ME Polish 2.0.3</h2>
+	<h3 id="203-anyphone">Generic/AnyPhone</h3>
 	<p>
-	Following changes have been done since J2ME Polish 2.0.2:
+	The biggest news is that you can now build applications that run on any MIDP based handset byt targeting the
+	<code>Generic/AnyPhone</code> in your <i>build.xml</i> script.
+	Use following code snippet to achieve this:
+	</p>
+<pre>
+&lt;deviceRequirements&gt;
+	&lt;requirement name=&quot;Identifier&quot; value=&quot;Generic/AnyPhone&quot; /&gt;
+&lt;/deviceRequirements&gt;
+</pre>
+	<h3 id="203-ota">Free OTA Service for Developers</h3>
+	<p>
+	Visit <a href="http://ota.j2mepolish.org">http://ota.j2mepolish.org</a> for uploading your builds
+	to our free OTA service. You can upload both private and public content. More documentation can be found
+	on ota.j2mepolish.org.
+	</p>
+	<h3 id="203-changes">Further 2.0.3 Changes</h3>
+	<p>
+	Furthermore following changes have been done since J2ME Polish 2.0.2:
 	</p>
 	<ul>
 		<li><b>- Memory Leak</b>: The item command handling contained a now fixed memory leak.</li>
@@ -16,6 +34,9 @@
 		<li><b>- Phonenumber TextField</b>: A phonenumber input now allows to enter a plus for international country codes by pressing '0' for a long time.</li>
 		<li><b>- RGB handling</b>: now the new <code>DrawUtil.drawRgb(...)</code> method is used for the J2ME Polish internal RGB handling, so it now works on Samsung devices as well under all circumstances.</li>
 		<li><b>+ Browser back command</b>: You can now call <code>browser.setBackCommand(Command cmd)</code> on any HtmlBrowser and RssBrowser. The back command will now be dynamically added and removed depending on the history size of the browser.</li>
+		<li><b>+ Browser FormListener</b>: Use a <code>FormListener</code> to change and check form inputs before they are shown or send.</li>
+		<li><b>+ TableItem</b>: Use the <code>TableItem</code> to display dynamic tabular data.</li>
+		<li><b>+ Lots of new UI Features</b>: Browse the visual guides and you will find a lot of new UI features like using a specific layout for the first and/or last item of a container/List/menu/etc, using new backgrounds or new TextEffects like the split text-effect, and so on.</li>
 		<!-- 
 		<li><b></b>: </li>
 		 -->

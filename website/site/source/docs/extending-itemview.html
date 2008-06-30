@@ -76,9 +76,9 @@ public class BinaryTextClockView extends ItemView {
 
 	private final Date date;
 	private final Calendar calendar;
-	private final StringItem clockText;
+	private final transient StringItem clockText;
 	private long lastTimeUpdate;
-	private ClockItem clockItem;
+	private transient ClockItem clockItem;
 	
 	/**
 	 * Creates a new item view.
@@ -166,6 +166,11 @@ public class BinaryTextClockView extends ItemView {
 
 }
 </pre>
+	</p>
+	<p>
+	Note: we are using the <code>transient</code> modifier for referenced items to allow the serialization of this view. This is important
+	for sending styles over the network. 
+	Refer to the <a href="serialization.html">serialization</a> documentation for more information about this process.
 	</p>
 	
 	<h2 id="registration">Registering Your ItemView</h2>
