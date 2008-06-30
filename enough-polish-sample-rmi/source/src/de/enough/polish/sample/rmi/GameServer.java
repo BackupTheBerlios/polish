@@ -50,4 +50,6 @@ public interface GameServer extends Remote {
 	
 	public void uploadScreenShot( Image image ) throws RemoteException;
 
+	public GameUser[] getAllUsers() throws RemoteException;
+
 }

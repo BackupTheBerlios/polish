@@ -1,0 +1,3 @@
+messages.welcome=1
+messages.welcome2=2
+messages.welcome3=3

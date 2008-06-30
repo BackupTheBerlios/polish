@@ -96,12 +96,7 @@ implements CommandListener
 		this.mainMenu.append( Locale.get( "menu.About"), null);
 		//#style mainMenuItem
 		this.mainMenu.append( Locale.get( "menu.Quit"), null);
-		
-		for (int i=0; i < 10; i++ ) {
-			//#style mainMenuItem
-			this.mainMenu.append( "dummy " + (i+1), null);		
-		}
-		
+				
 		this.quitCmd = new Command( Locale.get("cmd.Quit"), Command.EXIT, 10 );
 		this.mainMenu.addCommand( this.quitCmd );
 		//#ifdef polish.debugEnabled
@@ -232,9 +227,13 @@ implements CommandListener
 				group.setSelectedIndex( this.lastSelectedLocaleId, true );	
 				this.settingsForm.append( group );
 			//#endif
+			String userName = "";
+			//#if true
+				//#= userName = "${user.name}";
+			//#endif
 
 			//#style input?
-			TextField nameField = new TextField( Locale.get("setting.name"), "Lars\nHenrik\nWerner\nErnie\nBert\nWhatever\nLuis\nGertrud\nPfannie\nBlšdie\nChsi\nMusi\nKusi\nYakuzzi", 1000, TextField.ANY | TextField.UNEDITABLE);
+			TextField nameField = new TextField( Locale.get("setting.name"), userName, 1000, TextField.ANY);
 			this.settingsForm.append( nameField );
 			
 			

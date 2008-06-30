@@ -130,6 +130,9 @@
 		    	<source dir="source/src" />
 			</sources>
 			<postcompiler name="floater" />
+			<postcompiler name="java5" />			
+			<!--
+			--> 
 			
 			<!-- midlets definition -->
 			<!-- <midlet class="de.enough.polish.example.MenuMidlet" name="Example" /> -->
@@ -167,7 +170,6 @@
 				<parameter name="optimize" value="false" />
 				-->
 			</obfuscator>
-			
 			<!-- debug settings: only include debug setting when the test-property is true -->
 			<debug if="test" showLogOnError="false" verbose="true" level="error">
 				<filter pattern="de.enough.polish.sample.*" level="debug" />

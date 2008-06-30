@@ -34,6 +34,7 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.StringItem;
 import javax.microedition.lcdui.TextField;
+import javax.microedition.lcdui.Image;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -61,6 +62,8 @@ implements ScreenStateListener, CommandListener
 	private Command exitCmd = new Command( Locale.get("cmd.exit"), Command.BACK, 2 );
 	private Command backCmd = new Command( Locale.get("cmd.back"), Command.BACK, 2 );
 	private Command parentCmd = new Command( Locale.get("cmd.modetypes"), Command.SCREEN, 20 );
+	private Command playerCmd = new Command(Locale.get("cmd.player"), Command.SCREEN, 1);
+	private Command adversaryCmd = new Command(Locale.get("cmd.adversary"), Command.SCREEN, 2);
 	private TabbedForm tabbedForm;
 	private int lastTabIndex;
 
@@ -79,7 +82,6 @@ implements ScreenStateListener, CommandListener
 	protected void startApp() throws MIDletStateChangeException {
 		//#debug
 		System.out.println("Starting FramedFormDemo MIDlet.");
-		
 		String[] headings = new String[]{
 				Locale.get("title.introduction"), 
 				Locale.get("title.setting"), 
@@ -146,6 +148,13 @@ implements ScreenStateListener, CommandListener
 			this.tabbedForm.setActiveTab( this.lastTabIndex - 1 );
 			// manually call screenStateChanged, so that commands are updated accordingly:
 			screenStateChanged( this.tabbedForm );
+		} else if (cmd == this.playerCmd) {
+			try {
+				Image image = Image.createImage("/icon.png");
+				this.tabbedForm.setTabImage(0, image);
+			} catch (Exception e) {
+				// ignore
+			}
 		} else {
 			//#style notificationAlert
 			Alert alert = new Alert( "Notification", "The command \"" + cmd.getLabel() + "\" is currently not supported.", null, AlertType.INFO);
@@ -171,8 +180,8 @@ implements ScreenStateListener, CommandListener
 //						this.tabbedForm.addCommand( new Command( getText(i), Command.SCREEN, i % 14 + 2) );								
 //					}
 					this.tabbedForm.addCommand( this.parentCmd );
-					UiAccess.addSubCommand( new Command(Locale.get("cmd.player"), Command.SCREEN, 1), this.parentCmd, this.tabbedForm );
-					UiAccess.addSubCommand( new Command(Locale.get("cmd.adversary"), Command.SCREEN, 2), this.parentCmd, this.tabbedForm );
+					UiAccess.addSubCommand( this.playerCmd , this.parentCmd, this.tabbedForm );
+					UiAccess.addSubCommand( this.adversaryCmd , this.parentCmd, this.tabbedForm );
 //					UiAccess.addSubCommand( new Command("hi1 and some longer text", Command.SCREEN, 5), this.parentCmd, this.tabbedForm );
 //					UiAccess.addSubCommand( new Command("hi2 and allaf", Command.SCREEN, 4), this.parentCmd, this.tabbedForm );
 //					UiAccess.addSubCommand( new Command("hi3 whoey! Yes", Command.SCREEN, 3), this.parentCmd, this.tabbedForm );

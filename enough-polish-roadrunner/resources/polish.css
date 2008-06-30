@@ -19,7 +19,7 @@
   * can be changed here. 
   */
 colors {
-	bgColor:  rgb( 0, 3, 0 );
+	bgColor:  argb( 150, 20, 121, 8);
 	highlightedBgColor:  rgb(20,121,8);
 	fontColor: rgb( 0, 3, 0 );
 	highlightedFontColor: rgb(0,255,0);
@@ -36,8 +36,10 @@ fonts {
   */
 backgrounds {
 	froggerBackground {
+		type: slideshow;
 		color: bgColor;
-		image: url( bg.png );
+		images: url( bg.png, van.png, icon.png, car.png );
+		interval: 3s;
 	}
 
 }
@@ -75,7 +77,7 @@ title {
 focused {
 	padding: 5;
 	padding-horizontal: 2;
-	background-color: argb( 150, 20, 121, 8);
+	background-color:bgColor;
 	/*
 	background {
 		type: round-rect-opening;
@@ -147,27 +149,32 @@ focused {
 
 .aboutScreen extends .mainScreen {
 	screen-change-animation: left;
-	left-screen-change-animation-speed: 4;
 }
 
 .aboutText {
 	font {
 		color: highlightedFontColor;
 	}
-	background-color: argb( 150, 20, 121, 8);
+	background-color: bgColor;
 }
 
 .input {
 	font {
 		color: fontColor;
 	}
+	/*
 	textfield-caret-char: :;
-	layout: expand | center;
+	*/
+	layout: expand | left;
+}
+
+.input:hover {
+	background-color: bgColor;
 }
 
 
 /**
-  * The .mainCommand style is also a static style, which
+  * The .mainMenuItem style is also a static style, which
   * is set in the MIDlet source-code with the //#style directive.
   * If the source-code would not have defined this
   * style, we could use the dynamic style "listitem" to design all
@@ -188,6 +195,14 @@ focused {
 	layout: center;
 	checkbox-plain: none;
 	checkbox-selected: url(checked.png);
+	text-wrap: false;
+}
+
+.mainMenuItem:hover {
+	//#if polish.midp2
+		text-effect: fade;
+	//#endif
+	background-color:bgColor;
 }
 
 
@@ -214,6 +229,7 @@ menu {
 		border-width: 2;
 		border-color: bgColor;
 	}
+	min-width: 120;
 	font-color: highlightedFontColor;
 	font-style: bold;
 	menubar-color: transparent;

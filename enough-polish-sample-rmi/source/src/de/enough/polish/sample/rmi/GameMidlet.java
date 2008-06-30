@@ -121,6 +121,14 @@ public class GameMidlet extends MIDlet implements Runnable, CommandListener {
 			this.form.setTitle("added user!");
 			this.form.append( response.toString() );
 			
+			GameUser[] users = this.server.getAllUsers();
+			System.out.println("Got users:");
+			for (int i = 0; i < users.length; i++)
+			{
+				GameUser gameUser = users[i];
+				System.out.println( i + ": " + gameUser.getUserName() );
+			}
+			
 			//boolean pingSucceeded = this.server.ping( System.currentTimeMillis() );
 			//System.out.println("ping succeeded: " + pingSucceeded);
 			

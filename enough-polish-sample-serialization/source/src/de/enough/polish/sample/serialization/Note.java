@@ -44,7 +44,7 @@ public class Note implements Serializable {
 	private final String text;
 	//private final Date date;
 	private long time;
-
+	
 	public Note( String text ) {
 		this.text = text;
 		//this.date = new Date();

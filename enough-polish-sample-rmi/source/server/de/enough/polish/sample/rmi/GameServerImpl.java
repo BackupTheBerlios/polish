@@ -147,4 +147,16 @@ implements GameServer
 		} 
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.sample.rmi.GameServer#getAllUsers()
+	 */
+	public GameUser[] getAllUsers() throws RemoteException
+	{
+		return new GameUser[] {
+				new GameUser( 12, "Robert", 120 ),
+				new GameUser( 17, "Olga", 343 ),
+				new GameUser( 23, "Jim", 21323 )
+		};
+	}
+
 }

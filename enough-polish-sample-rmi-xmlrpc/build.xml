@@ -142,7 +142,6 @@
 				-->
 				<variable name="update-url" value="http://www.enough.de/update" />
 				<variable name="title" value="J2ME Polish" />
-				<variable name="polish.DateField.useDirectInput" value="true" />
 				<variable name="polish.TextField.useDirectInput" value="true" />
 				<variable name="polish.rmi.redirects" value="false" />
 				<variable name="polish.rmi.xmlrpc" value="true" />

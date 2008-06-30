@@ -40,11 +40,10 @@
 		<j2mepolish>
 		    <!-- general settings -->
 			<info 
-				license="GPL" 
 				name="RoadRunner" 
 				vendorName="Enough Software" 
 				version="1.0.20"
-				copyright="Copyright 2004, 2005 Enough Software. All rights reserved." 
+				copyright="Copyright 2004 - 2007 Enough Software. All rights reserved." 
 				deleteConfirm="Do you really want to remove Roadrunner?" 
 				description="A frogger clone." 
 				icon="icon.png" 
@@ -98,6 +97,7 @@
 					<variable name="polish.TextField.useDirectInput" value="true"  />
 					<variable name="polish.TiledLayer.useBackBuffer" value="true"/>
 					<variable name="polish.TiledLayer.TransparentTileColor" value="0x00FF00"/>
+					<variable name="polish.List.suppressSelectCommand" value="true" />
 					<!--
 					<variable name="polish.TextField.useDirectInput" value="true" unless="polish.hasPointerEvents" />
 					<variable name="polish.jarName" value="N60E2_RR.jar" if="polish.group.Series60E2" />
@@ -136,7 +136,7 @@
 				<!--
 				 if="test"
 				-->
-				<debug level="error" showLogOnError="true" verbose="true" if="test" >
+				<debug level="error" showLogOnError="true" verbose="true" if="test and false" >
 					<handler name="rms" if="false"/>
 					<handler name="file" if="polish.api.pdaapi">
 			            <parameter name="preferredRoot" value="E:"/>
@@ -166,7 +166,13 @@
 					defaultexcludes="yes"
 					excludes="readme.txt, *.definition"
 				>
-					<localization defaultLocale="en_US" dynamic="false" locales="en_US"/>
+					<localization defaultLocale="en_US" dynamic="false" if="test">
+						<locale name="en_US" />
+					</localization>
+					<localization defaultLocale="en_US" dynamic="true" unless="test">
+						<locale name="en_US" />
+						<locale name="de_DE" encoding="UTF-8"	/>
+					</localization>
 				</resources>
 				<!--
 				<packager

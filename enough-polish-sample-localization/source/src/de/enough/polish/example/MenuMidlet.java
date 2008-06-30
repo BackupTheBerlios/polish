@@ -25,14 +25,18 @@
  */
 package de.enough.polish.example;
 
-import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.List;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
-import de.enough.polish.util.Locale;
 
-//#ifdef polish.debugEnabled
-	import de.enough.polish.util.Debug;
-//#endif
+import de.enough.polish.util.Debug;
+import de.enough.polish.util.Locale;
 	
 /**
  * <p>Shows a demonstration of the possibilities of J2ME Polish.</p>
@@ -131,11 +135,14 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 	}
 	
 	private void startGame() {
-		Alert alert = null;
-		//#= alert = new Alert( "Welcome", Locale.get( "messages.welcome", "${user.name}" ), null, AlertType.INFO );
+		//this.menuScreen.set(0, "Started", null );
+		String userName = null;
+		//#= userName = "${user.name}";
+		Alert alert =  new Alert( "Welcome", Locale.get( "messages.welcome", userName ), null, AlertType.INFO );
 		alert.setTimeout( Alert.FOREVER );
 		this.display.setCurrent( alert, this.menuScreen );
 	}
+	
 	
 	private void loadGame() {
 		//#style loadGameAlert

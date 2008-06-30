@@ -27,7 +27,7 @@ cmd.ShowLog=Show Log
 menu.StartGame=Start Game
 menu.LoadGame=Load Game
 menu.Highscore=Highscore
-menu.Quit=Exit
+var:menu.Quit=Exit
 
 messages.welcome=Welcome to the game, {0}!
 

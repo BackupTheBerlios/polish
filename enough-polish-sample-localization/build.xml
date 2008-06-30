@@ -8,6 +8,7 @@
 <property name="polish.home" location="../enough-polish-build" />
 <property  name="mpp.home" location="/home/enough/dev/mpp-sdk"/>
 	<property  name="device" value="Nokia/Series60E2" />
+	<property name="resources" value="resources" />
 
 	
 	<!-- task definitions -->
@@ -65,7 +66,6 @@
                 symbols="polish.skipArgumentCheck" 
                 usePolishGui="true"
             	sourceDir="source/src"
-				binaryLibrary="tinylinegzip.zip"
 			>
 			<!-- 			polishDir="../enough-polish-j2me/source/src"
 			-->
@@ -101,9 +101,11 @@
 				<filter level="info" class="de.enough.polish.ui.Container"/>
 				<filter level="debug" class="de.enough.polish.ui.Screen"/>
 				<filter level="debug" pattern="de.enough.polish.example.*"/>
-				-->
+				<filter level="debug" class="de.enough.polish.ui.Screen"/>
 				<filter level="debug" class="de.enough.polish.ui.ContainerView"/>
+				-->
 				<filter level="info" pattern="de.enough.polish.ui.*"/>
+				<filter level="debug" pattern="de.enough.polish.util.*"/>
 			</debug>
 			<!-- play around with an additional preprocessor: 
 			<preprocessor 
@@ -116,14 +118,12 @@
 			</preprocessor>
 			-->
 			<resources
-				dir="resources"
+				dir="${resources}"
 				defaultexcludes="yes"
 				excludes="readme.txt"
 			>
-				<localization dynamic="false" defaultLocale="en_US" locales="de_DE, en_US"  unless="test"/>
-				<localization locales="en_US" if="test" />
-				<!--
-				-->
+				<localization dynamic="false" locales="en_US" if="test" />
+				<localization dynamic="true" defaultLocale="en_US" locales="en_US" unless="test" />
 			</resources>
 		</build>
 		<emulator if="test" />

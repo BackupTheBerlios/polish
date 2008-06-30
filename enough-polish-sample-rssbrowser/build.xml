@@ -24,7 +24,7 @@
 	
 <property file="${user.name}.properties" />
 <property file="midlet.properties" />
-<property name="device" value="Generic/WTK" />
+<property name="device" value="Generic/AnyPhone" />
 <property name="devices" value="${device}" />
 	
 <!-- The polish.home property should point to the directory   -->
@@ -37,29 +37,12 @@
 
 
 
-
-<!-- The siemens.home, nokia.home and motorola.home-          -->
-<!-- properties can be necessary when their emulators         -->
-<!-- should be started.                                       -->
-<!-- The directory which contains the Siemens-SMTK
-	<property name="siemens.home" value="C:\siemens" />
--->
-<!-- The directory which contains the Nokia-emulators
-	<property name="nokia.home" value="C:\Nokia" />
--->
-<!-- The path to the Sony-Ericsson SDK
-	<property name="sony-ericsson.home" value="C:\SonyEricsson\J2ME_SDK" />
--->
-<!-- The directory which contains the Motorola-emulators
-	<property name="motorola.home" value="C:\Program Files\Motorola\SDK v4.3 for J2ME" />
--->
-	
 	
 <!-- Definition of the J2ME Polish task:                      -->
 
 <taskdef name="j2mepolish" 
 	classname="de.enough.polish.ant.PolishTask" 
-	classpath="${polish.home}:${polish.home}/bin/classes:${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar"/>
+	classpath="${polish.home}/bin/classes:${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar"/>
 
 	
 <!-- build targets, each target can be called via "ant [name]", 
@@ -96,6 +79,10 @@
 		description="This is the controller for the J2ME build process." 
 		>
 	<j2mepolish>
+		  <lifeCycleManager name="mea">
+		    <parameter name="fallbackDevice" value="Generic/AnyPhone" />
+		    <parameter name="access" value="public" />
+		  </lifeCycleManager>
 	    <!-- general settings, these settings basically form the JAD-attributes. -->
 	    <!-- Have a look at the <jad>-section for setting specialised attributes.
 	         You can also define localized attributes in the resources/messages.txt files -->

@@ -41,7 +41,7 @@ cmd.ShowLog=Log anzeigen
 menu.StartGame=${GameName} Start!
 menu.LoadGame=${GameName} laden
 menu.Highscore=Rangliste
-menu.Quit=Ende
+var:menu.Quit=Ende
 
 messages.welcome=Willkommen zum Spiel, {0}!!!
 

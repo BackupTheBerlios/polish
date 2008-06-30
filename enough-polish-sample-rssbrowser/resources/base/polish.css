@@ -173,6 +173,8 @@ alertcontent {
 
 .rssDescriptionAlertTitle extends title {
 	text-wrap: false;
+	text-wrap-animation-direction: left;
+	text-wrap-animation-speed: 2;
 }
 
 .rssDescriptionAlertContent {
