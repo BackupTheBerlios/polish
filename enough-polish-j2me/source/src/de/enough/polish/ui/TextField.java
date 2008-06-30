@@ -1973,6 +1973,7 @@ public class TextField extends StringItem
 	 * @see de.enough.polish.ui.Item#initItem()
 	 */
 	protected void initContent(int firstLineWidth, int lineWidth) {
+		this.screen = getScreen();
 		//#if tmp.includeInputInfo
 			if (this.infoItem != null) {
 				int infoWidth = this.infoItem.getItemWidth(firstLineWidth, lineWidth);
