@@ -106,3 +106,22 @@ label {
 .labelFocused extends label {
 	font-color: fontColor;
 }
+
+.note {
+	font-style: italic;
+	font-color: #333;
+	font-size: small;
+}
+
+.colorInput {
+	margin: 1;
+	background-color: silver;
+	layout: expand;
+	textfield-direct-input: true;
+}
+
+.colorInput:hover {
+	margin: 0;
+	border-color: black;
+	background-color: white;
+}

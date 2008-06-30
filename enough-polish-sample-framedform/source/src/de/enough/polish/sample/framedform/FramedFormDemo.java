@@ -35,6 +35,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemStateListener;
 import javax.microedition.lcdui.StringItem;
+import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -86,9 +87,11 @@ implements ItemStateListener, CommandListener
 	
 	private static final int DEMO_RIGHT = 0;
 	private static final int DEMO_BOTTOM = 1;
-	private static final int DEMO_LAST = DEMO_BOTTOM;
+	private static final int DEMO_TEXTFIELD = 2;
+	private static final int DEMO_LAST = DEMO_TEXTFIELD;
 	
 	private int currentDemo = -1;
+	private String lastColor;
 
 	/**
 	 * Creates a new MIDlet.
@@ -137,6 +140,7 @@ implements ItemStateListener, CommandListener
 		switch (this.currentDemo) {
 		case DEMO_RIGHT: nextDemoRight(); break;
 		case DEMO_BOTTOM: nextDemoBottom(); break;
+		case DEMO_TEXTFIELD: nextDemoTextField(); break;
 		}
 		
 	}
@@ -163,7 +167,7 @@ implements ItemStateListener, CommandListener
 		}
 		// scroll to last appended item:
 		UiAccess.focus(this.framedForm, numberOfAppendedItems - 1);
-		//UiAccess.scrollTo( item );
+		//UiAccess.scrollTo( item ); (not needed)
 	}
 
 	/**
@@ -182,6 +186,23 @@ implements ItemStateListener, CommandListener
 		this.bottomColorGroup = createColorChoiceGroup("bottom: ");
 		this.bottomColorGroup.setSelectedIndex(BLUE, true);
 		this.framedForm.append( this.bottomColorGroup );
+	}
+	
+	/**
+	 * Shows a demo with a TextField that is fixed to the bottom of the Screen.
+	 */
+	private void nextDemoTextField() {
+		this.framedForm.deleteAll();
+		this.gradientItem = new GradientItem( 20 );
+		//#style note
+		this.framedForm.append("Enter color definition in RGB hex for setting the top color (e.g. ff0000 for red).");
+		this.framedForm.append( Graphics.RIGHT, this.gradientItem );
+		//#style colorInput
+		TextField field = new TextField(null, "ffffff", 6, TextField.ANY );
+		UiAccess.setItemStateListener(field, this);
+		this.framedForm.append( Graphics.BOTTOM, field );
+		// select the bottom frame (and therefore the input field):
+		this.framedForm.setActiveFrame(Graphics.BOTTOM);
 	}
 
 	private ChoiceGroup createColorChoiceGroup(String label) {
@@ -235,6 +256,20 @@ implements ItemStateListener, CommandListener
 //			}
 //			style.background = new SimpleBackground( color );
 //			UiAccess.setStyle(this.framedForm, style);
+		} else if (item instanceof TextField) {
+			String text = ((TextField)item).getString();
+			if (text.length() == 0) {
+				this.lastColor = "0";
+				this.gradientItem.setTopColor(0);
+				return;
+			}
+			try {
+				int color = Integer.parseInt(text, 16);
+				this.gradientItem.setTopColor(color);
+				this.lastColor = text;
+			} catch (Exception e) {
+				((TextField)item).setString(this.lastColor);
+			}
 		}
 		
 	}

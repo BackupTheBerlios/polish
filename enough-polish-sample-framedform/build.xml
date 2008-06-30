@@ -231,6 +231,7 @@
 			<debug if="test" showLogOnError="true" verbose="true" level="error">
 				<filter pattern="de.enough.polish.example.*" level="debug" />
 				<filter pattern="de.enough.polish.ui.*" level="warn" />
+				<filter class="de.enough.polish.ui.TextField" level="debug" />
 				<!--
 				<filter level="debug" package="de.enough.polish.sample.framedform"/>
 				<filter level="debug" package="de.enough.polish.ui.Container" />
