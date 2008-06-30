@@ -402,6 +402,7 @@ public class MenuBar extends Item {
 		//#endif
 		
 		// 0.case: cmd == this.singleMiddleCommand
+		//#if tmp.useMiddleCommand
 		if ( cmd == this.singleMiddleCommand ) {
 			this.singleMiddleCommand = null;
 			//#if tmp.RightOptions
@@ -458,6 +459,7 @@ public class MenuBar extends Item {
 			}
 			return;
 		} 
+		//#endif
 		// 1.case: cmd == this.singleLeftCommand
 		if ( cmd == this.singleLeftCommand ) {
 			this.singleLeftCommand = null;
