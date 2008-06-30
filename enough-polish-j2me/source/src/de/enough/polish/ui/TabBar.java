@@ -523,10 +523,31 @@ public class TabBar extends Item {
 	* @param tabStyle the style of the tab
 	*/
 	public void addNewTab(String tabName, Image tabImage, Style tabStyle) {
-	   ImageItem tab = new ImageItem(null, tabImage, 0, tabName, this.inactiveStyle);
+	   ImageItem tab = new ImageItem(null, tabImage, 0, tabName, tabStyle);
 	   this.tabs.add(tab);
 	}
 	
+	 /**
+	* Creates a new tab on the tab bar.
+	*
+	* @param tabName the name of the new tab
+	* @param tabImage the image of the new tab, can be null
+	*/
+	public void addNewTab(int index, String tabName, Image tabImage) {
+	   addNewTab( tabName, tabImage, this.inactiveStyle );
+	}
+
+  /**
+	* Creates a new tab on the tab bar.
+	*
+	* @param tabName the name of the new tab
+	* @param tabImage the image of the new tab, can be null
+	* @param tabStyle the style of the tab
+	*/
+	public void addNewTab(int index, String tabName, Image tabImage, Style tabStyle) {
+	   ImageItem tab = new ImageItem(null, tabImage, 0, tabName, tabStyle);
+	   this.tabs.add(index, tab);
+	}
 
 	/**
 	* Removes a tab from the tab bar.

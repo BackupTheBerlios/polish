@@ -664,12 +664,46 @@ public class TabbedForm extends Form {
 	   }
 	   tabContainer.screen = this;
 	   //#if polish.Container.allowCycling != false
-	   //# tabContainer.allowCycling = false;
+	   		tabContainer.allowCycling = false;
 	   //#endif
 	   this.tabContainers.add(tabContainer);
 
 	   return tabContainers.size() - 1;
 	}
+	
+	/**
+	* Adds a new tab with a container to the TabbedForm.
+	* 
+	* @param index the index at which the tab should be added. 0 adds the tab at the beginning.
+	* @param tabName The name of the new tab
+	* @param tabImage The optional image
+	*/
+	public void addNewTab(int index, String tabName, Image tabImage) {
+	   addNewTab(index, tabName, tabImage, null);
+	}
+
+	/**
+	* Adds a new tab with a container to the TabbedForm.
+	* This method also assigns a style or uses the default
+	* if style is set to null.
+	* 
+	* @param tabName The name of the new tab
+	* @param tabImage The optional image
+	* @param tabStyle The initial style of the tab
+	*/
+	public void addNewTab(int index, String tabName, Image tabImage, Style tabStyle) {
+	   this.tabBar.addNewTab(index, tabName, tabImage);
+	   Container tabContainer = new Container(null, false, null, this.contentHeight);
+	   if (tabStyle != null) {
+	       tabContainer.setStyle(tabStyle, true);
+	   }
+	   tabContainer.screen = this;
+	   //#if polish.Container.allowCycling != false
+	   		tabContainer.allowCycling = false;
+	   //#endif
+	   this.tabContainers.add( index, tabContainer);
+	}
+	
 	
 	/**
 	* Removes a tab and its container from the TabbedForm.
