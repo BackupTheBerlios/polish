@@ -232,9 +232,9 @@ implements CommandListener, ItemStateListener
 				System.out.println("creating message for " + this.createMessageForm.getReceiver() + " from " + this.createMessageForm.getSender() );
 				//#style mailAlert
 				Alert alert = new Alert( "Creating New Message", 
-						"Receiver: " + this.createMessageForm.getReceiver()  + "\nSender: " + this.createMessageForm.getSender(), 
-						//null,
+						"Receiver: " + this.createMessageForm.getReceiver()  + "\nSender: " + this.createMessageForm.getSender(),
 						null, AlertType.INFO );
+				
 				this.createMessageForm = null;
 				this.display.setCurrent( alert, this.mainScreen );
 			} else {
