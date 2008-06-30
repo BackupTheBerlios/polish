@@ -31,6 +31,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -228,13 +229,17 @@ public class RemoteHttpServlet extends HttpServlet {
 			Object[] parameters = (Object[]) Serializer.deserialize(in);
 			Class[] signature = null;
 			int flag = 1;
+			boolean hasNullParameter = false;
 			if (parameters != null) {
 				signature = new Class[ parameters.length ];
 				for (int i = 0; i < parameters.length; i++) {
 					Object param = parameters[i];
 					// check for primitive wrapper:
 					//System.out.println("primitiveFlag=" + primitivesFlag + ", flag=" + flag + ", (primitiveFlag & flag)=" + (primitivesFlag & flag) );
-					if ( (primitivesFlag & flag) == 0) {
+					if (param == null) {
+						signature[i] = null;
+						hasNullParameter = true;
+					} else if ( (primitivesFlag & flag) == 0) {
 						// this is a normal class, not a primitive:
 						signature[i] = param.getClass();
 					} else {
@@ -249,8 +254,8 @@ public class RemoteHttpServlet extends HttpServlet {
 					flag <<= 1;
 				}
 			}
-			// idee: server koennte beim ersten call eine int-ID zurueckgeben, damit der Methoden-Name nicht jedes Mal uebermittelt werden muss und das lookup schneller geht... (ist allerdings potentielles memory leak)
-			Method method = this.implementation.getClass().getMethod( methodName, signature );
+			Method method = lookupMethod( methodName, signature, hasNullParameter ); 
+				
 			Object returnValue = method.invoke(this.implementation, parameters); // for void methods null is returned...
 			out.writeInt( Remote.STATUS_OK );
 			Serializer.serialize(returnValue, out, useObfuscation);
@@ -293,6 +298,49 @@ public class RemoteHttpServlet extends HttpServlet {
 			}
 		}
 	}
+
+	protected Method lookupMethod(String methodName, Class[] signature,
+			boolean hasNullParameter) throws SecurityException, NoSuchMethodException 
+	{
+		if (!hasNullParameter) {
+			try {
+				return this.implementation.getClass().getMethod( methodName, signature );
+			} catch (NoSuchMethodException e) {
+				if (signature == null) {
+					throw e;
+				}
+				// when there is a signature, this can happen when the method accepts generic types and the caller
+				// provides specific subclasses. Continue below...
+			}
+		}
+		Method[] methods = this.implementation.getClass().getMethods();
+		for (int i = 0; i < methods.length; i++) {
+			Method method = methods[i];
+			if (method.getName().equals(methodName)) {
+				Class[] parameterTypes = method.getParameterTypes();
+				if ( parameterTypes.length == signature.length) {
+					boolean foundMatch = true;
+					for (int j = 0; j < signature.length; j++) {
+						Class signatureClass = signature[j];
+						if (signatureClass == null) {
+							continue;
+						}
+						Class parameterClass = parameterTypes[j];
+						if (!parameterClass.isAssignableFrom(signatureClass)) {
+							foundMatch = false;
+							break;
+						}
+					}
+					if (foundMatch) {
+						return method;
+					}
+				}
+			}
+		}
+		throw new NoSuchMethodException("method not found: name=" + methodName  + ", signature=" + (signature == null ? null : Arrays.toString(signature)) );
+	}
+
+
 
 	/**
 	 * Processes an exception which is thrown by the method or while accessing the method.
