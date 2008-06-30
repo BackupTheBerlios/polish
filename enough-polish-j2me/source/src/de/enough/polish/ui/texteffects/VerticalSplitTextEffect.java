@@ -92,7 +92,12 @@ public class VerticalSplitTextEffect extends TextEffect
 		int clipW = g.getClipWidth();
 		int clipH = g.getClipHeight();
 		int split = (g.getFont().getHeight() * this.splitPos) / 100;
-		g.clipRect(clipX, y + split , clipW, split );
+		if (orientation == 0) {
+			g.clipRect(clipX, y + split , clipW, clipH );
+		} else {
+			int topY = getTopY(y, orientation, g.getFont());
+			g.clipRect(clipX, topY + split , clipW, clipH );
+		}
 		g.setColor(this.bottomColor);
 		g.drawString(text, x, y, orientation);
 		g.setClip(clipX, clipY, clipW, clipH);

@@ -60,6 +60,9 @@ public class MasterCanvas
 //#else
 	extends Canvas
 //#endif
+	//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts
+		//#define tmp.supportSizeChanged
+	//#endif
 {
 	/** the master canvas that actually displays the canvas that should be shown */
 	public static MasterCanvas instance;
@@ -124,16 +127,12 @@ public class MasterCanvas
 			//#endif
 		//#endif
 		if (this.currentCanvas != null) { 
-			this.currentCanvas.showNotify();
-			//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
+			this.currentCanvas.showNotify();			
+			//#if tmp.supportSizeChanged
 				if (this.screenHeight != 0) {
 					this.currentCanvas.sizeChanged( this.screenWidth, this.screenHeight );
 				}
 			//#endif
-			if (StyleSheet.currentScreen != this.currentCanvas && this.currentCanvas instanceof Screen) {
-				// this can happen in some circumstances on Nokia Series 60 Second Edition phones:
-				StyleSheet.currentScreen = (Screen) this.currentCanvas;
-			}
 		}
 	}
 
@@ -215,7 +214,7 @@ public class MasterCanvas
 	protected void sizeChanged(int width, int height) {
 		this.screenHeight = height;
 		this.screenWidth = width;
-		//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts
+		//#if tmp.supportSizeChanged
 		if (this.currentCanvas != null) { 
 			this.currentCanvas.sizeChanged( width, height );
 		}
@@ -319,7 +318,7 @@ public class MasterCanvas
 		//#endif
 		if (instance.isShown()) {
 			canvas.showNotify();
-			//#if polish.midp2 && !polish.Bugs.needsNokiaUiForSystemAlerts 
+			//#if tmp.supportSizeChanged
 				if (instance.screenHeight != 0) {
 					canvas.sizeChanged( instance.screenWidth, instance.screenHeight );
 				}
