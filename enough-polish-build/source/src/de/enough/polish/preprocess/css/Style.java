@@ -244,7 +244,7 @@ public class Style {
 		// check if this style disallows inheritance - in that case all former CSS attribute are forgotten.
 		// this is done when the basic style has defined "inherit: false;"
 		 Map inheritGroup = this.getGroup("inherit");
-		boolean disallowInheritance = (inheritGroup != null) && ("false".equals(inheritGroup.get("inerhit")));
+		boolean disallowInheritance = (inheritGroup != null) && ("false".equals(inheritGroup.get("inherit")));
 		if (disallowInheritance) {
 			this.groupsByName.clear();
 			this.groupNamesList.clear();
