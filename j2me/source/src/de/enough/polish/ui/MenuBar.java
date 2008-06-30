@@ -394,6 +394,7 @@ public class MenuBar extends Item {
 		//#debug
 		System.out.println(this + ": removing command " + cmd.getLabel() + " (" + cmd + ")");
 		this.allCommands.remove( cmd );
+		
 		//#if tmp.useInvisibleMenuBar
 			if (cmd == this.positiveCommand) {
 				this.positiveCommand = null;
@@ -403,6 +404,54 @@ public class MenuBar extends Item {
 		// 0.case: cmd == this.singleMiddleCommand
 		if ( cmd == this.singleMiddleCommand ) {
 			this.singleMiddleCommand = null;
+			//#if tmp.RightOptions
+				//If the options are on the right side, use the left command as the middle command
+				//and shift the other commands
+				if (this.singleLeftCommand != null)
+				{
+					this.singleMiddleCommand = this.singleLeftCommand;
+					this.singleMiddleCommandItem.setText( this.singleLeftCommand.getLabel() );
+					this.singleLeftCommand = null;
+				}
+				
+				int newSingleLeftCommandIndex;
+				//#if tmp.OkCommandOnLeft
+					newSingleLeftCommandIndex = getNextNegativeOrPositiveCommandIndex(false);
+				//#else
+					newSingleLeftCommandIndex = getNextNegativeOrPositiveCommandIndex(true);
+				//#endif
+				if ( newSingleLeftCommandIndex != -1 ) {
+					//#debug
+					System.out.println("moving commmand with index " + newSingleLeftCommandIndex + " from commands container (focused=" + this.commandsContainer.getFocusedIndex() + ") - new Single Left=" + ((Command) this.commandsList.get(newSingleLeftCommandIndex)).getLabel() );
+					if (newSingleLeftCommandIndex == this.commandsContainer.getFocusedIndex()) {
+						this.commandsContainer.focus(-1);
+					}
+					this.singleLeftCommand = (Command) this.commandsList.remove(newSingleLeftCommandIndex);
+					this.singleLeftCommandItem.setText( this.singleLeftCommand.getLabel() );
+					this.commandsContainer.remove( newSingleLeftCommandIndex );
+				}
+			//#elif tmp.LeftOptions
+				//if the options are on the left side, use the command with the highest priority 
+				//(if any) as the new middle command
+				Command command;
+				int newMiddleCommandIndex = getNextNegativeOrPositiveCommandIndex(false);
+				if ( newMiddleCommandIndex != -1 ) {
+					//#if tmp.useInvisibleMenuBar
+						command = (Command) this.commandsList.get(newMiddleCommandIndex);
+					//#else
+						if (newMiddleCommandIndex == this.commandsContainer.getFocusedIndex()) {
+							this.commandsContainer.focus(-1);
+						}
+						command = (Command) this.commandsList.remove(newMiddleCommandIndex);
+						this.singleMiddleCommand = command;
+						
+						this.commandsContainer.remove( newMiddleCommandIndex );
+						
+					//#endif
+					this.singleMiddleCommandItem.setText( command.getLabel() );
+				}
+			//#endif
+			
 			if (this.isInitialized) {
 				this.isInitialized = false;
 				repaint();
@@ -501,6 +550,7 @@ public class MenuBar extends Item {
 		
 		// 3.case: cmd belongs to command collection
 		int index = this.commandsList.indexOf( cmd );
+		System.out.println(index);
 		if (index != -1) {
 			//System.out.println("removing normal command");
 			if (index == this.commandsContainer.getFocusedIndex()) {
