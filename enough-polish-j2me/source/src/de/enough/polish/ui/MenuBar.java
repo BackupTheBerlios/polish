@@ -552,7 +552,6 @@ public class MenuBar extends Item {
 		
 		// 3.case: cmd belongs to command collection
 		int index = this.commandsList.indexOf( cmd );
-		System.out.println(index);
 		if (index != -1) {
 			//System.out.println("removing normal command");
 			if (index == this.commandsContainer.getFocusedIndex()) {
