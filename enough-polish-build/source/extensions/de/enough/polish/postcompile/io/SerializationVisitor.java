@@ -294,7 +294,7 @@ public class SerializationVisitor
               }
             else
               {
-                throw new BuildException("Cannot serialize field " + this.className + "." + name);
+                throw new BuildException("Cannot serialize field " + this.className + "." + name + ": use the \"transient\" modifier to exclude this field from serialization.");
               }
           }
       }
