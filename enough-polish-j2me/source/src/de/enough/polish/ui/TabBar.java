@@ -32,6 +32,8 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import de.enough.polish.util.ArrayList;
+
 
 /**
  * <p>Manages and paints the tabs of a tabbed form (or another Screen).</p>
@@ -45,7 +47,7 @@ import javax.microedition.lcdui.Image;
  */
 public class TabBar extends Item {
 
-	private final ImageItem[] tabs;
+	private final ArrayList tabs;
 	private Style activeStyle;
 	private Style activeFocusedStyle;
 	private Style inactiveStyle;
@@ -105,17 +107,17 @@ public class TabBar extends Item {
 			//# this.inactiveStyle = ();
 		//#endif
 		
-		this.tabs = new ImageItem[ tabNames.length ];
+		this.tabs = new ArrayList( tabNames.length );
 		for (int i = 0; i < tabImages.length; i++) {
 			String name = tabNames[i];
 			Image image = tabImages[i];
 			ImageItem tab = new ImageItem( null, image, 0, name, this.inactiveStyle );
 			tab.parent = this;
-			this.tabs[i] = tab;
+			this.tabs.add( tab );
 		}
 
 		this.activeStyleUsed = this.activeStyle;
-		this.tabs[0].style = this.activeStyleUsed;
+		((ImageItem)this.tabs.get(0)).style = this.activeStyleUsed;
 	}
 	
 	/**
@@ -125,10 +127,10 @@ public class TabBar extends Item {
 	 */
 	public void setActiveTab( int index ) {
 		// deactivating the old tab:
-		this.tabs[ this.activeTabIndex ].setStyle(this.inactiveStyle);
+		((ImageItem)this.tabs.get( this.activeTabIndex )).setStyle(this.inactiveStyle);
 		// activating the new tab:
 		this.activeTabIndex = index;
-		this.tabs[ index ].setStyle(this.activeStyleUsed);
+		((ImageItem)this.tabs.get( index )).setStyle(this.activeStyleUsed);
 		this.isInitialized = false;
 	}
 
@@ -138,7 +140,7 @@ public class TabBar extends Item {
 	protected Style focus(Style newStyle, int direction)
 	{
 		this.activeStyleUsed = this.activeFocusedStyle;
-		this.tabs[ this.activeTabIndex ].setStyle(this.activeFocusedStyle);
+		((ImageItem)this.tabs.get( this.activeTabIndex )).setStyle(this.activeFocusedStyle);
 		return super.focus(newStyle, direction);
 	}
 
@@ -148,7 +150,7 @@ public class TabBar extends Item {
 	protected void defocus(Style originalStyle)
 	{
 		this.activeStyleUsed = this.activeStyle;
-		this.tabs[ this.activeTabIndex ].setStyle(this.activeStyle);
+		((ImageItem)this.tabs.get( this.activeTabIndex )).setStyle(this.activeStyle);
 		super.defocus(originalStyle);
 	}
 
@@ -158,12 +160,12 @@ public class TabBar extends Item {
 	protected void initContent(int firstLineWidth, int lineWidth) {
 		int scrollerWidth = this.scrollArrowHeight + 2 * this.scrollArrowPadding;
 		//#debug
-		System.out.println("init of TabBar lineWidth=" + lineWidth + ", scrollerWidth=" + scrollerWidth + ", number of tabs=" + this.tabs.length );
+		System.out.println("init of TabBar lineWidth=" + lineWidth + ", scrollerWidth=" + scrollerWidth + ", number of tabs=" + this.tabs.size() );
 		int maxHeight = scrollerWidth;
 		int completeWidth = 0;
 		int rightBorder = lineWidth - scrollerWidth;
 		//#if polish.css.tabbar-roundtrip
-			if (this.allowRoundtrip || this.activeTabIndex == 0 || this.activeTabIndex == this.tabs.length -1) {
+			if (this.allowRoundtrip || this.activeTabIndex == 0 || this.activeTabIndex == this.tabs.size() -1) {
 		//#else
 			//# if (this.activeTabIndex == 0 || this.activeTabIndex == this.tabs.length -1) {
 		//#endif
@@ -184,8 +186,8 @@ public class TabBar extends Item {
 		
 		int activeTabXPos = 0;
 		int activeTabWidth = 0;
-		for (int i = 0; i < this.tabs.length; i++) {
-			ImageItem tab = this.tabs[i];
+		for (int i = 0; i < this.tabs.size(); i++) {
+			ImageItem tab = (ImageItem) this.tabs.get(i);
 			int tabHeight = tab.getItemHeight(firstLineWidth, lineWidth);
 			if (tabHeight > maxHeight ) { 
 				maxHeight = tabHeight;
@@ -265,7 +267,7 @@ public class TabBar extends Item {
 		}
 			
 		//#if polish.css.tabbar-roundtrip
-			if ( this.allowRoundtrip || this.activeTabIndex < this.tabs.length - 1 ) {
+			if ( this.allowRoundtrip || this.activeTabIndex < this.tabs.size() - 1 ) {
 		//#else
 			//# if ( this.activeTabIndex < this.tabs.length - 1 ) {
 		//#endif		
@@ -298,8 +300,8 @@ public class TabBar extends Item {
 		int clipHeight = g.getClipHeight();
 		g.setClip( x, y, rightBorder - x, clipHeight);
 		x = originalX + this.xOffset;
-		for (int i = 0; i < this.tabs.length; i++) {
-			ImageItem tab = this.tabs[i];
+		for (int i = 0; i < this.tabs.size(); i++) {
+			ImageItem tab = (ImageItem) this.tabs.get(i);
 			int tabHeight = tab.itemHeight;
 			tab.paint( x, y + (cHeight - tabHeight), leftBorder, rightBorder, g );
 			x += tab.itemWidth;
@@ -392,20 +394,20 @@ public class TabBar extends Item {
 			if (this.allowRoundtrip) {
 				if (gameAction == Canvas.RIGHT) {
 					this.nextTabIndex = this.activeTabIndex + 1;
-					if (this.nextTabIndex >= this.tabs.length) {
+					if (this.nextTabIndex >= this.tabs.size()) {
 						this.nextTabIndex = 0;
 					}
 					return true;
 				} else if (gameAction == Canvas.LEFT) {
 					this.nextTabIndex = this.activeTabIndex - 1;
 					if (this.nextTabIndex < 0) {
-						this.nextTabIndex = this.tabs.length - 1;
+						this.nextTabIndex = this.tabs.size() - 1;
 					}		
 					return true;
 				}
 			}
 		//#endif
-		if (gameAction == Canvas.RIGHT && this.activeTabIndex < this.tabs.length -1 ) {
+		if (gameAction == Canvas.RIGHT && this.activeTabIndex < this.tabs.size() -1 ) {
 			this.nextTabIndex = this.activeTabIndex + 1;
 			return true;
 		} else if (gameAction == Canvas.LEFT && this.activeTabIndex > 0) {
@@ -428,18 +430,18 @@ public class TabBar extends Item {
 			//System.out.println("left: x <= " + scrollerWidth );
 			int index = this.activeTabIndex - 1;
 			if (index < 0) {
-				index = this.tabs.length - 1;
+				index = this.tabs.size() - 1;
 			}
 			newActiveTabIndex = index;
-		} else if ( (this.activeTabIndex < this.tabs.length -1 || this.allowRoundtrip) && x >= this.itemWidth - scrollerWidth) {
+		} else if ( (this.activeTabIndex < this.tabs.size() -1 || this.allowRoundtrip) && x >= this.itemWidth - scrollerWidth) {
 			//System.out.println("right: x >= " + (this.xRightPos - scrollerWidth) );
-			newActiveTabIndex = (this.activeTabIndex + 1) % this.tabs.length;
+			newActiveTabIndex = (this.activeTabIndex + 1) % this.tabs.size();
 		} else {
 			if (this.activeTabIndex > 0 || this.allowRoundtrip) {
 //				x -= scrollerWidth;
 			}
-			for (int i = 0; i < this.tabs.length; i++) {
-				ImageItem tab = this.tabs[i];
+			for (int i = 0; i < this.tabs.size(); i++) {
+				ImageItem tab = (ImageItem) this.tabs.get(i);
 //				System.out.println( "x=" + x + ", tab.relativeX=" + tab.relativeX + ", xOffset=" + this.xOffset +  ", tab=" + tab);
 				int tabX = tab.relativeX + this.xOffset;
 				if (tabX <= x && x <= tabX + tab.itemWidth) {
@@ -450,7 +452,7 @@ public class TabBar extends Item {
 		}
 		int activeTab = this.activeTabIndex;
 		if (newActiveTabIndex != activeTab) {
-			this.tabs[newActiveTabIndex].notifyItemPressedStart();
+			((ImageItem)this.tabs.get(newActiveTabIndex)).notifyItemPressedStart();
 			this.nextTabIndex = newActiveTabIndex;
 			this.handlePointerReleaseEvent = true;
 		}
@@ -465,7 +467,7 @@ public class TabBar extends Item {
 		if (this.handlePointerReleaseEvent) {
 			this.handlePointerReleaseEvent = false;
 			if (this.screen instanceof TabbedForm) {
-				this.tabs[this.nextTabIndex].notifyItemPressedEnd();
+				((ImageItem)this.tabs.get(this.nextTabIndex)).notifyItemPressedEnd();
 				((TabbedForm)this.screen).setActiveTab(this.nextTabIndex);
 			}
 			return true;
@@ -481,7 +483,7 @@ public class TabBar extends Item {
 	 * @param image the image
 	 */
 	public void setImage(int tabIndex, Image image) {
-		this.tabs[tabIndex].setImage(image);		
+		((ImageItem)this.tabs.get(tabIndex)).setImage(image);		
 	}
 	
 	/**
@@ -491,7 +493,7 @@ public class TabBar extends Item {
 	 * @param text the text
 	 */
 	public void setText(int tabIndex, String text ) {
-		this.tabs[tabIndex].setAltText(text);		
+		((ImageItem)this.tabs.get(tabIndex)).setAltText(text);		
 	}
 
 	/**
@@ -501,6 +503,38 @@ public class TabBar extends Item {
 	 */
 	public int getNextTab() {
 		return this.nextTabIndex;
+	}
+
+  /**
+	* Creates a new tab on the tab bar.
+	*
+	* @param tabName the name of the new tab
+	* @param tabImage the image of the new tab, can be null
+	*/
+	public void addNewTab(String tabName, Image tabImage) {
+	   addNewTab( tabName, tabImage, this.inactiveStyle );
+	}
+
+  /**
+	* Creates a new tab on the tab bar.
+	*
+	* @param tabName the name of the new tab
+	* @param tabImage the image of the new tab, can be null
+	* @param tabStyle the style of the tab
+	*/
+	public void addNewTab(String tabName, Image tabImage, Style tabStyle) {
+	   ImageItem tab = new ImageItem(null, tabImage, 0, tabName, this.inactiveStyle);
+	   this.tabs.add(tab);
+	}
+	
+
+	/**
+	* Removes a tab from the tab bar.
+	*
+	* @param index the index of the tab to remove
+	*/
+	public void removeTab(int index) {
+	   this.tabs.remove(index);
 	}
 
 }
