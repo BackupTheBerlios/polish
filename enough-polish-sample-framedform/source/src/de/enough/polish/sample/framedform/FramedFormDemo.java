@@ -153,12 +153,17 @@ implements ItemStateListener, CommandListener
 		this.bottomColorGroup = createColorChoiceGroup("bottom: ");
 		this.bottomColorGroup.setSelectedIndex(BLUE, true);
 		this.framedForm.append( Graphics.BOTTOM, this.bottomColorGroup );
-		for (int i=0; i<20; i++) {
+		StringItem item = null;
+		int numberOfAppendedItems = 20;
+		for (int i=0; i<numberOfAppendedItems; i++) {
 			//#style meaninglessSelectableItem
-			StringItem item = new StringItem( null, "item " + i );
+			item = new StringItem( null, "item " + i );
 			item.setDefaultCommand( this.nextCmd );
 			this.framedForm.append(item);
 		}
+		// scroll to last appended item:
+		UiAccess.focus(this.framedForm, numberOfAppendedItems - 1);
+		//UiAccess.scrollTo( item );
 	}
 
 	/**
