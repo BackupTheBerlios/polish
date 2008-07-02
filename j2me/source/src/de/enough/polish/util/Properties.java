@@ -51,6 +51,8 @@ extends HashMap
 implements Externalizable
 {
 	private boolean isIntegerValues;
+	
+	public char separator = '=';
 
 	/**
 	 * Creates a new empty Properties set.
@@ -149,9 +151,9 @@ implements Externalizable
 					}
 				}
 				if (newLineFound) {
-					int splitPos = line.indexOf('=', start);
+					int splitPos = line.indexOf(this.separator, start);
 					if(splitPos == -1) {
-						throw new IOException("no = separator: " + line.substring( start, end ));
+						throw new IOException("no " + this.separator + " separator: " + line.substring( start, end ));
 					}
 					String key = line.substring( start, splitPos );
 					String value = line.substring( splitPos + 1, end );
@@ -227,6 +229,23 @@ implements Externalizable
 				out.writeUTF( (String) get(key ) );
 			}
 		}
+	}
+	
+	/**
+	 * Returns the separator used to split keys and values in a properties file
+	 * @return the separator
+	 */
+
+	public char getSeparator() {
+		return separator;
+	}
+
+	/**
+	 * Sets the separator used to split keys and values in a properties file
+	 * @param separator the separator
+	 */
+	public void setSeparator(char separator) {
+		this.separator = separator;
 	}
 	
 }
