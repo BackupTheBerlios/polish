@@ -130,7 +130,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 
 	private boolean refreshChoices = true;
 
-	private boolean predictiveInput;
+	private boolean predictiveEnabled;
 	
 	private String[] words;
 	
@@ -264,7 +264,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 		
 		this.parent.removeCommand(PredictiveAccess.ADD_WORD_CMD);
 
-		this.predictiveInput = false;
+		this.predictiveEnabled = false;
 		this.parent.predictiveInput = false;
 
 		this.parent.setText(this.builder.getText().toString());
@@ -275,6 +275,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 		openChoices(false);
 
 		this.parent.updateInfo();
+		this.parent.notifyStateChanged();
 	}
 	
 	public void enablePredictiveInput()
@@ -284,7 +285,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 				PROVIDER.init();
 			}
 
-			this.predictiveInput = true;
+			this.predictiveEnabled = true;
 		} catch (RecordStoreException e)
 		{
 			//#debug error
@@ -292,8 +293,8 @@ public class PredictiveAccess implements TrieSetupCallback{
 			return;
 		}
 
-		if (this.predictiveInput) {
-			this.predictiveInput = true;
+		if (this.predictiveEnabled) {
+			this.predictiveEnabled = true;
 			this.parent.predictiveInput = true;
 			synchronize();
 		}
@@ -305,6 +306,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 		//#endif
 		
 		this.parent.addCommand(ADD_WORD_CMD);
+		this.parent.notifyStateChanged();
 	}
 
 	/**
@@ -1132,5 +1134,9 @@ public class PredictiveAccess implements TrieSetupCallback{
 
 	public boolean isOpen() {
 		return isOpen;
+	}
+
+	public boolean isPredictiveEnabled() {
+		return predictiveEnabled;
 	}
 }
