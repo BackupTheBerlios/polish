@@ -244,7 +244,7 @@ public class TabbedForm extends Form {
 	//#else
 		//# public Item get(int tabIndex, int itemNum)
 		//# {
-		//#	Container tabContainer = this.tabContainers[ tabIndex ];
+		//#	Container tabContainer = (Container)this.tabContainers.get(tabIndex);
 		//#	return tabContainer.get( itemNum );
 		//# }
 	//#endif

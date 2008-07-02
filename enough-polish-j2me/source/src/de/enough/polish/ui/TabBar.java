@@ -167,7 +167,7 @@ public class TabBar extends Item {
 		//#if polish.css.tabbar-roundtrip
 			if (this.allowRoundtrip || this.activeTabIndex == 0 || this.activeTabIndex == this.tabs.size() -1) {
 		//#else
-			//# if (this.activeTabIndex == 0 || this.activeTabIndex == this.tabs.length -1) {
+			//# if (this.activeTabIndex == 0 || this.activeTabIndex == this.tabs.size() -1) {
 		//#endif
 			// only one scroll indicator needs to be painted
 			//#if polish.css.tabbar-roundtrip
@@ -269,7 +269,7 @@ public class TabBar extends Item {
 		//#if polish.css.tabbar-roundtrip
 			if ( this.allowRoundtrip || this.activeTabIndex < this.tabs.size() - 1 ) {
 		//#else
-			//# if ( this.activeTabIndex < this.tabs.length - 1 ) {
+			//# if ( this.activeTabIndex < this.tabs.size() - 1 ) {
 		//#endif		
 			// draw right scrolling indicator:
 			rightBorder -=  (this.scrollArrowHeight + this.scrollArrowPadding);
