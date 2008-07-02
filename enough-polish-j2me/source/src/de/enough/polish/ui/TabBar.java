@@ -527,7 +527,7 @@ public class TabBar extends Item {
 	   this.tabs.add(tab);
 	}
 	
-	 /**
+ /**
 	* Creates a new tab on the tab bar.
 	*
 	* @param tabName the name of the new tab
@@ -557,5 +557,26 @@ public class TabBar extends Item {
 	public void removeTab(int index) {
 	   this.tabs.remove(index);
 	}
+	
+	/**
+	 * Retrieves a tab item
+	 * @param tabIndex the index of the tab item
+	 * @return the tab item
+	 */
+	public Item getTabItem(int tabIndex)
+	{
+		return (Item) this.tabs.get(tabIndex);
+	}
+
+	/**
+	 * Sets a tab item
+	 * @param tabIndex the index of the tab
+	 * @param item the item
+	 */
+	public void setTabItem(int tabIndex, Item item)
+	{
+		this.tabs.set(tabIndex, item);
+	}
+
 
 }

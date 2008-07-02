@@ -244,7 +244,7 @@ public class TabbedForm extends Form {
 	//#else
 		//# public Item get(int tabIndex, int itemNum)
 		//# {
-		//#	Container tabContainer = (Container)this.tabContainers.get(tabIndex);
+		//#	Container tabContainer = (Container) this.tabContainers.get( tabIndex );
 		//#	return tabContainer.get( itemNum );
 		//# }
 	//#endif
@@ -714,5 +714,38 @@ public class TabbedForm extends Form {
 	   this.tabContainers.remove(index);        
 	   this.tabBar.removeTab(index);
 	}
+	
+	/**
+	 * Retrieves the item that renders the tab
+	 * 
+	 * @param tabIndex the tab position
+	 * @return the tab item
+	 */
+	public Item getTabItem( int tabIndex ) {
+		return this.tabBar.getTabItem(tabIndex);
+	}
+
+	/**
+	 * Sets the item that renders the specified tab
+	 * 
+	 * @param tabIndex the tab position
+	 * @param item the tab item
+	 */
+	public void setTabItem( int tabIndex, Item item ) {
+		this.tabBar.setTabItem(tabIndex, item);
+		repaint();
+	}
+	
+	//#if polish.LibraryBuild
+	/**
+	 * Sets the item that renders the specified tab
+	 * 
+	 * @param tabIndex the tab position
+	 * @param item the tab item
+	 */
+	public void setTabItem( int tabIndex, javax.microedition.lcdui.Item item ) {
+		// ignore
+	}
+	//#endif
 
 }
