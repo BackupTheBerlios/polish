@@ -37,7 +37,7 @@ import de.enough.polish.io.Externalizable;
  * The stream is assumed to be using the ISO 8859-1 character encoding; 
  * that is each byte is one Latin1 character.
  * 
- * <p>Copyright (c) 2007 Enough Software</p>
+ * <p>Copyright (c) 2007-2008 Enough Software</p>
  * <pre>
  * history
  *        09-Jul-2007 - asc creation
@@ -51,8 +51,8 @@ extends HashMap
 implements Externalizable
 {
 	private boolean isIntegerValues;
-	
-	public char separator = '=';
+	private char separator = '=';
+	private char comment = '#';
 
 	/**
 	 * Creates a new empty Properties set.
@@ -151,20 +151,22 @@ implements Externalizable
 					}
 				}
 				if (newLineFound) {
-					int splitPos = line.indexOf(this.separator, start);
-					if(splitPos == -1) {
-						throw new IOException("no " + this.separator + " separator: " + line.substring( start, end ));
-					}
-					String key = line.substring( start, splitPos );
-					String value = line.substring( splitPos + 1, end );
-					if (generateIntegerValues) {
-						try {
-							put( key, Integer.valueOf(value) );
-						} catch(NumberFormatException ex) {
-							throw new IOException( ex.toString() );
-						}												
-					} else {
-						put( key, value );	
+					if (line.indexOf(this.comment, start) != start) { // this is not a comment
+						int splitPos = line.indexOf(this.separator, start);
+						if(splitPos == -1) {
+							throw new IOException("no " + this.separator + " separator: " + line.substring( start, end ));
+						}
+						String key = line.substring( start, splitPos );
+						String value = line.substring( splitPos + 1, end );
+						if (generateIntegerValues) {
+							try {
+								put( key, Integer.valueOf(value) );
+							} catch(NumberFormatException ex) {
+								throw new IOException( ex.toString() );
+							}												
+						} else {
+							put( key, value );	
+						}
 					}
 					if (c == '\r') {
 						start = end + 2;
@@ -233,19 +235,40 @@ implements Externalizable
 	
 	/**
 	 * Returns the separator used to split keys and values in a properties file
-	 * @return the separator
+	 * @return the separator, '=' by default
 	 */
 
 	public char getSeparator() {
-		return separator;
+		return this.separator;
 	}
 
 	/**
-	 * Sets the separator used to split keys and values in a properties file
+	 * Sets the separator used to split keys and values in a properties file, defaults to '='
 	 * @param separator the separator
 	 */
 	public void setSeparator(char separator) {
 		this.separator = separator;
 	}
+	
+	/**
+	 * Returns the comment char that marks lines that should be skipped.
+	 * 
+	 * @return the separator
+	 */
+
+	public char getComment() {
+		return this.comment;
+	}
+
+	/**
+	 * Sets the comment used to skip a line, defaults to '#'
+	 * @param comment the comment char, '#' by default
+	 */
+	public void setComment(char comment) {
+		this.comment = comment;
+	}
+	
+	
+	
 	
 }
