@@ -35,9 +35,9 @@ public class DeviceControl
 	
 	public void run()
 	{
-		int displaytime = 10000;
+		int displaytime = 5000;
 		long sleeptime = ((displaytime >> 1) + (displaytime >> 2));
-		
+		boolean increaseAfterFirstLoop = true;
 		while(!this.lightOff)
 		{
 			switchLightOnFor( displaytime );
@@ -45,6 +45,11 @@ public class DeviceControl
 				Thread.sleep(sleeptime);
 			} catch (InterruptedException e) {
 				// ignore
+			}
+			if (increaseAfterFirstLoop) {
+				increaseAfterFirstLoop = false;
+				displaytime = 60000;
+				sleeptime = 55000;
 			}
 		}
 	}
@@ -59,6 +64,9 @@ public class DeviceControl
 				//#endif
 				com.nokia.mid.ui.DeviceControl.setLights(0,100);
 			//#elif polish.midp2  && polish.usePolishGui
+				//#if polish.Bugs.BacklightRequiresLightOff
+				StyleSheet.display.flashBacklight(0);
+				//#endif
 				StyleSheet.display.flashBacklight(durationInMs);
 			//#endif
 		}
@@ -85,7 +93,7 @@ public class DeviceControl
 	{
 		synchronized(lightsLock) {
 			boolean success = false;
-			//#if tmp.useNokiaUi
+			//#if tmp.useNokiaUi 
 				com.nokia.mid.ui.DeviceControl.setLights(0,100);
 				success = true;
 			//#elif tmp.useBlackBerry
@@ -132,19 +140,17 @@ public class DeviceControl
 	 */
 	public static boolean isLightSupported()
 	{
-		synchronized (lightsLock) {
-			boolean isSupported = false;
-			//#if tmp.useNokiaUi
-				isSupported = true;
-			//#elif tmp.useBlackBerry
-				isSupported = true;
-			//#elif polish.api.samsung
-				isSupported = com.samsung.util.LCDLight.isSupported();
-			//#elif polish.midp2 && polish.usePolishGui
-				isSupported = StyleSheet.display.flashBacklight(0);
-			//#endif
-			return isSupported;
-		}
+		boolean isSupported = false;
+		//#if polish.api.nokia-ui && !polish.Bugs.NoBacklight
+			isSupported = true;
+		//#elif tmp.useBlackBerry
+			isSupported = true;
+		//#elif polish.api.samsung
+			isSupported = com.samsung.util.LCDLight.isSupported();
+		//#elif polish.midp2 && polish.usePolishGui
+			isSupported = StyleSheet.display.flashBacklight(0);
+		//#endif
+		return isSupported;
 	}
 
 	
