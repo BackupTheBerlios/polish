@@ -433,7 +433,7 @@
 		<capability name="FullCanvasSize" value="" />
 		<capability name="CanvasSize" value=""/>
 		<capability name="dtmf.separator" value=";postd=" />
-		<capability name="Bugs" value="NoPermanentBacklight" />
+		<capability name="Bugs" value="NoPermanentBacklight, BacklightRequiresLightOff" />
 	</group>
 
 	<group>
@@ -451,7 +451,7 @@
 		<capability name="command.options" value="Options" />
 		<capability name="dtmf.separator" value=";postd=" />
 		<capability name="Bugs" value="usesVideoRam" />
-		<capability name="Bugs" value="displaySetCurrentFlickers, NoPermanentBacklight" />
+		<capability name="Bugs" value="displaySetCurrentFlickers, NoPermanentBacklight, BacklightRequiresLightOff" />
 	</group>
 		
 	<group>

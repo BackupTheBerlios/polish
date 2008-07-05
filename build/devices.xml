@@ -258,7 +258,7 @@ These namespaces/schemas will be used soon.
     <capability name="key.RightSoftKeys" value="-7,-22,22,57346,-4,-303" />
     <capability name="key.maybeSupportsAsciiKeyMap" value="true" />
     <capability name="MenuBar.OptionsPosition" value="left" />
-    <capability name="Bugs" value="SoftKeyMappedToFire,noSoftKeyReleasedEvents,displaySetCurrentFlickers,needsBottomOrientiationForStringDrawing" />
+    <capability name="Bugs" value="SoftKeyMappedToFire,noSoftKeyReleasedEvents,displaySetCurrentFlickers,needsBottomOrientiationForStringDrawing,NoPermanentBacklight, BacklightRequiresLightOff" />
   </device>
   <device supportsPolishGui="true">
     <identifier>Generic/AnyPhone_128x128</identifier>
