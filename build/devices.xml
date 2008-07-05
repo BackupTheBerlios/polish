@@ -255,7 +255,7 @@ These namespaces/schemas will be used soon.
     <capability name="SoundFormat" value="midi, amr, wav" />
     <capability name="HeapSize" value="1MB" />
     <capability name="key.LeftSoftKeys" value="-6,-21,21,57345,-1,-202" />
-    <capability name="key.RightSoftKeys" value="-7,-22,22,57346,-4,-303" />
+    <capability name="key.RightSoftKeys" value="-7,-22,22,57346,-4,-203" />
     <capability name="key.maybeSupportsAsciiKeyMap" value="true" />
     <capability name="MenuBar.OptionsPosition" value="left" />
     <capability name="Bugs" value="SoftKeyMappedToFire,noSoftKeyReleasedEvents,displaySetCurrentFlickers,needsBottomOrientiationForStringDrawing,NoPermanentBacklight, BacklightRequiresLightOff" />
