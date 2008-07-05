@@ -35,8 +35,8 @@ public class DeviceControl
 	
 	public void run()
 	{
-		int displaytime = 5000;
-		long sleeptime = ((displaytime >> 1) + (displaytime >> 2));
+		int displaytime = 10000;
+		long sleeptime = (displaytime * 90) / 100;
 		boolean increaseAfterFirstLoop = true;
 		while(!this.lightOff)
 		{
@@ -48,8 +48,8 @@ public class DeviceControl
 			}
 			if (increaseAfterFirstLoop) {
 				increaseAfterFirstLoop = false;
-				displaytime = 60000;
-				sleeptime = 55000;
+				displaytime = 20000;
+				sleeptime = 18000;
 			}
 		}
 	}
