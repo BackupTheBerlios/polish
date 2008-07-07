@@ -1070,6 +1070,14 @@ extends Displayable
 //    protected void paint( net.rim.device.api.ui.Graphics g ) {
 //      // do nothing..
 //    }
+    
+    //#if !polish.useFullScreen
+    protected void paint( net.rim.device.api.ui.Graphics g ) {
+	    // when extending the BB MainScreen, super.paint(g) will
+    	// clear the paint area, subpaint(g) will only render the fields.
+	    super.subpaint(g);
+   }
+    //#endif
 
     protected void paintBackground( net.rim.device.api.ui.Graphics g ) {
         //System.out.println("Canvas.paintBackground(): enter");
@@ -1109,6 +1117,7 @@ extends Displayable
             sizeChanged( w, h );
     }
 
+    //#if polish.useFullScreen
     /* (non-Javadoc)
      * @see net.rim.device.api.ui.Screen#onMenu(int)
      */
@@ -1147,6 +1156,7 @@ extends Displayable
             //#endif
             return true;
     }
+    //#endif
 
     /* (non-Javadoc)
      * @see net.rim.device.api.ui.Screen#trackwheelRoll(int, int, int)
