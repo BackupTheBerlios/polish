@@ -195,6 +195,79 @@ public class TabbedForm extends Form {
 		return tabContainer.size() - 1;
 	}
 
+	//#if polish.LibraryBuild
+	/**
+	 * Inserts an item into this form just prior to the item specified on the
+	 * specified tab.
+	 * 
+	 * @param tabIndex the index of the tab to which the item should be added,
+	 *        the first tab has the index 0.
+	 * @param itemNum the index where insertion is to occur
+	 * @param item the item to be inserted
+	 */
+	public void insert(int tabIndex, int itemNum, javax.microedition.lcdui.Item item)
+	{
+	}
+	//#endif
+
+	/**
+	 * Inserts an item into this form just prior to the item specified on the
+	 * specified tab.
+	 * 
+	 * @param tabIndex the index of the tab to which the item should be added,
+	 *        the first tab has the index 0.
+	 * @param itemNum the index where insertion is to occur
+	 * @param item the item to be inserted
+	 */
+	public void insert(int tabIndex, int itemNum, Item item)
+	{
+		insert(tabIndex, itemNum, item, null);
+	}
+
+	//#if polish.LibraryBuild
+	/**
+	 * Inserts an item into this form just prior to the item specified on the
+	 * specified tab.
+	 * 
+	 * @param tabIndex the index of the tab to which the item should be added,
+	 *        the first tab has the index 0.
+	 * @param itemNum the index where insertion is to occur
+	 * @param item the item to be inserted
+	 * @param itemStyle the style of the item
+	 */
+	public void insert(int tabIndex, int itemNum, javax.microedition.lcdui.Item item, Style itemStyle)
+	{
+	}
+	//#endif
+
+	/**
+	 * Inserts an item into this form just prior to the item specified on the
+	 * specified tab.
+	 * 
+	 * @param tabIndex the index of the tab to which the item should be added,
+	 *        the first tab has the index 0.
+	 * @param itemNum the index where insertion is to occur
+	 * @param item the item to be inserted
+	 * @param itemStyle the style of the item
+	 */
+	public void insert(int tabIndex, int itemNum, Item item, Style itemStyle)
+	{
+		//#if polish.Container.allowCycling != false
+			if (item instanceof Container) {
+				((Container)item).allowCycling = false;
+			}
+		//#endif
+		if (itemStyle != null) {
+			item.setStyle(itemStyle);
+		}
+ 		Container tabContainer = (Container) this.tabContainers.get( tabIndex );
+		if (itemNum == tabContainer.size()) {
+			tabContainer.add(item);
+		} else {
+			tabContainer.add(itemNum, item);
+		}
+	}
+
 	/**
 	 * Changes the item of the first tab.
 	 * 
