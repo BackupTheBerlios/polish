@@ -68,3 +68,5 @@ im.presence.chat=Chat
 im.presence.away=Away
 im.presence.dnd=DND
 im.presence.unavailable=Unavailable
+
+im.error.notconnected=Not connected to RMI server
