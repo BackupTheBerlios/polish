@@ -1055,6 +1055,7 @@
 		<mapping from="carrousel" to="new de.enough.polish.ui.containerviews.CarouselContainerView()" />
 		<mapping from="fisheye" to="new de.enough.polish.ui.containerviews.FishEyeContainerView()" appliesTo="Screen,Container, FakeContainerCustomItem"/>
 		<mapping from="coverflow" to="new de.enough.polish.ui.containerviews.CoverFlowContainerView()" appliesTo="Screen,Container, FakeContainerCustomItem" condition="polish.midp2 and polish.hasFloatingPoint"/>
+		<mapping from="center" to="new de.enough.polish.ui.containerviews.CenterNavigationContainerView()"  appliesTo="Screen,Container, FakeContainerCustomItem"/>
 		<mapping from="grayout" to="new de.enough.polish.ui.containerviews.HorizontalGrayOutContainerView()"  appliesTo="Screen,Container, FakeContainerCustomItem"/>
 		<mapping from="gray-out" to="new de.enough.polish.ui.containerviews.HorizontalGrayOutContainerView()"  />
 		<mapping from="horizontal-gray-out" to="new de.enough.polish.ui.containerviews.HorizontalGrayOutContainerView()" />
