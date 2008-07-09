@@ -3744,6 +3744,14 @@
 		id="335"
 	/>
 	
+	<attribute
+		name="expand-background"
+		type="boolean"
+		appliesTo="Screen"
+		description="Specifies if the background should be expanded to the container of the screen."
+		default="false"
+		id="346"
+	/>
 	
 	<!--
 	

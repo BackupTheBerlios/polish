@@ -331,6 +331,9 @@ implements AccessibleCanvas
 		protected int triggerReleasedKeyCode;
 		protected long triggerReleasedTime;
 	//#endif
+	//#if polish.css.expand-background
+		protected boolean isExpandBackground;
+	//#endif
 	
 	//#if polish.Bugs.displaySetCurrentFlickers || polish.MasterCanvas.enable
 		//#define tmp.useMasterCanvas
@@ -1367,6 +1370,12 @@ implements AccessibleCanvas
 				this.separateMenubar = separateMenubarBool.booleanValue();
 			}
 		//#endif
+		//#if polish.css.expand-background
+			Boolean expandbackgroundBool = style.getBooleanProperty("expand-background");
+			if (expandbackgroundBool != null) {
+				this.isExpandBackground = expandbackgroundBool.booleanValue();
+			}
+		//#endif
 		//#if tmp.menuFullScreen
 			//#if polish.css.background-bottom
 				Integer backgroundBottomInt = style.getIntProperty("background-bottom");
@@ -1690,7 +1699,13 @@ implements AccessibleCanvas
 				//#endif
 				if (this.background != null) {
 					//System.out.println("Screen (" + this + ": painting background at leftBorder=" + leftBorder + ", backgroundY=" + backgroundY + ", backgroundHeight=" + backgroundHeight + ", screenHeight=" + this.screenHeight + ", fullscreenHeight=" + this.fullScreenHeight + ", titleHeight=" + this.titleHeight + ", excludeTitleForBackground=" + excludeTitleForBackground);
-					this.background.paint(leftBorder, backgroundY, sWidth, backgroundHeight, g);
+					int bgHeight = backgroundHeight;
+					//#if polish.css.expand-background
+						if (this.isExpandBackground && this.container != null) {
+							 bgHeight = Math.max( bgHeight, this.container.itemHeight);
+						}
+					//#endif
+					this.background.paint(leftBorder, backgroundY, sWidth, bgHeight, g);
 				} else {
 					g.setColor( 0xFFFFFF );
 					g.fillRect( leftBorder, backgroundY, sWidth, backgroundHeight );
