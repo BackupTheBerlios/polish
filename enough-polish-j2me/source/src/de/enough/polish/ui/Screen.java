@@ -1699,13 +1699,25 @@ implements AccessibleCanvas
 				//#endif
 				if (this.background != null) {
 					//System.out.println("Screen (" + this + ": painting background at leftBorder=" + leftBorder + ", backgroundY=" + backgroundY + ", backgroundHeight=" + backgroundHeight + ", screenHeight=" + this.screenHeight + ", fullscreenHeight=" + this.fullScreenHeight + ", titleHeight=" + this.titleHeight + ", excludeTitleForBackground=" + excludeTitleForBackground);
-					int bgHeight = backgroundHeight;
 					//#if polish.css.expand-background
 						if (this.isExpandBackground && this.container != null) {
-							 bgHeight = Math.max( bgHeight, this.container.itemHeight);
+							 int bgHeight = Math.max( backgroundHeight, this.container.itemHeight);
+							 int bgY = backgroundY + this.container.yOffset;
+							 if (bgY + bgHeight < backgroundY + backgroundHeight) {
+								 bgHeight += (backgroundY + backgroundHeight) - (bgY + bgHeight); 
+							 }
+							 int clipX = g.getClipX();
+							 int clipWidth = g.getClipWidth();
+							 int clipHeight = g.getClipHeight();
+							 g.clipRect( clipX, backgroundY, clipWidth, backgroundHeight );
+							 this.background.paint(leftBorder, bgY, sWidth, bgHeight, g);
+							 g.setClip( clipX, clipY, clipWidth, clipHeight );
+						} else {
+					//#endif
+							this.background.paint(leftBorder, backgroundY, sWidth, backgroundHeight, g);
+					//#if polish.css.expand-background
 						}
 					//#endif
-					this.background.paint(leftBorder, backgroundY, sWidth, bgHeight, g);
 				} else {
 					g.setColor( 0xFFFFFF );
 					g.fillRect( leftBorder, backgroundY, sWidth, backgroundHeight );
