@@ -331,8 +331,8 @@ implements AccessibleCanvas
 		protected int triggerReleasedKeyCode;
 		protected long triggerReleasedTime;
 	//#endif
-	//#if polish.css.expand-background
-		protected boolean isExpandBackground;
+	//#if polish.css.scroll-background
+		protected boolean isScrollBackground;
 	//#endif
 	
 	//#if polish.Bugs.displaySetCurrentFlickers || polish.MasterCanvas.enable
@@ -1370,10 +1370,10 @@ implements AccessibleCanvas
 				this.separateMenubar = separateMenubarBool.booleanValue();
 			}
 		//#endif
-		//#if polish.css.expand-background
-			Boolean expandbackgroundBool = style.getBooleanProperty("expand-background");
-			if (expandbackgroundBool != null) {
-				this.isExpandBackground = expandbackgroundBool.booleanValue();
+		//#if polish.css.scroll-background
+			Boolean scrollBackgroundBool = style.getBooleanProperty("scroll-background");
+			if (scrollBackgroundBool != null) {
+				this.isScrollBackground = scrollBackgroundBool.booleanValue();
 			}
 		//#endif
 		//#if tmp.menuFullScreen
@@ -1699,8 +1699,8 @@ implements AccessibleCanvas
 				//#endif
 				if (this.background != null) {
 					//System.out.println("Screen (" + this + ": painting background at leftBorder=" + leftBorder + ", backgroundY=" + backgroundY + ", backgroundHeight=" + backgroundHeight + ", screenHeight=" + this.screenHeight + ", fullscreenHeight=" + this.fullScreenHeight + ", titleHeight=" + this.titleHeight + ", excludeTitleForBackground=" + excludeTitleForBackground);
-					//#if polish.css.expand-background
-						if (this.isExpandBackground && this.container != null) {
+					//#if polish.css.scroll-background
+						if (this.isScrollBackground && this.container != null) {
 							 int bgHeight = Math.max( backgroundHeight, this.container.itemHeight);
 							 int bgY = backgroundY + this.container.yOffset;
 							 if (bgY + bgHeight < backgroundY + backgroundHeight) {
@@ -1715,7 +1715,7 @@ implements AccessibleCanvas
 						} else {
 					//#endif
 							this.background.paint(leftBorder, backgroundY, sWidth, backgroundHeight, g);
-					//#if polish.css.expand-background
+					//#if polish.css.scroll-background
 						}
 					//#endif
 				} else {

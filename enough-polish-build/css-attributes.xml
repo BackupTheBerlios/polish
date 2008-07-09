@@ -3745,7 +3745,7 @@
 	/>
 	
 	<attribute
-		name="expand-background"
+		name="scroll-background"
 		type="boolean"
 		appliesTo="Screen"
 		description="Specifies if the background should be expanded to the container of the screen."
