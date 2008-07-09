@@ -4408,7 +4408,7 @@ These namespaces/schemas will be used soon.
     <capability name="MaxRecordStoreSize" value="64 kb" />
     <capability name="JavaProtocol" value="udp, http, serial, socket" />
     <capability name="MaxSockets" value="4" />
-    <capability name="JavaPackage" value="wmapi, mmapi, pdaapi, 3d" />
+    <capability name="JavaPackage" value="wmapi, mmapi, pdaapi" />
     <capability name="ImageFormat" value="png, jpeg, gif, bmp, mpeg-4" />
     <capability name="SoundFormat" value="midi, wav, amr, aac, mp3" />
     <capability name="CameraResolution" value="640x480" />
