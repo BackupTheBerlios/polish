@@ -3171,13 +3171,14 @@ These namespaces/schemas will be used soon.
     <identifier>Motorola/i730</identifier>
     <user-agent>MOTi730</user-agent>
     <features>hasCamera</features>
-    <capability name="SoftwarePlatform.JavaPlatform" value="MIDP/2.0" />
+    <capability name="JavaPlatform" value="MIDP/2.0" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="HardwarePlatform.ScreenSize" value="130x130" />
     <capability name="HardwarePlatform.BitsPerPixel" value="16" />
     <capability name="HardwarePlatform.CameraResolution" value="300x200" />
-    <capability name="SoftwarePlatform.JavaProtocol" value="UDP, TCP, SSL, HTTP, HTTPS, Serial" />
-    <capability name="SoftwarePlatform.JavaPackage" value="wmapi, mmapi, motorola-lwt, motorola-lwt, Polyphonic-MIDI, WAV, AU, Vibrator, Lighting, Location API, Phonebook, Datebook, External display, Call Initiation, Recent calls, File I/O, Serial, Crypto, Digital Camera, RF enabling, Alpha blending, Secure file connection, Voicenote, 3D" />
-    <capability name="SoftwarePlatform.HeapSize" value="1.15 MB" />
+    <capability name="JavaProtocol" value="UDP, TCP, SSL, HTTP, HTTPS, Serial" />
+    <capability name="JavaPackage" value="wmapi, mmapi, motorola-lwt, motorola-lwt, Polyphonic-MIDI, WAV, AU, Vibrator, Lighting, Location API, Phonebook, Datebook, External display, Call Initiation, Recent calls, File I/O, Serial, Crypto, Digital Camera, RF enabling, Alpha blending, Secure file connection, Voicenote, 3D" />
+    <capability name="HeapSize" value="1.15 MB" />
     <capability name="StorageSize" value="2 MB" />
     <capability name="SoftwarePlatform.MaxJarSize" value="500 kb" />
     <capability name="MaxSockets.tcp" value="16" />
