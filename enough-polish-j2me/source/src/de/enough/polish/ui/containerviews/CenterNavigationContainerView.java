@@ -43,6 +43,8 @@ public class CenterNavigationContainerView extends ContainerView {
 		}
 	}
 	
+	private transient int[][] inactiveIcons = null;
+	
 	/**
 	 * Creates a new view
 	 */
@@ -62,32 +64,74 @@ public class CenterNavigationContainerView extends ContainerView {
 	{
 		Container parent = (Container) parentItm;
 		
-		int height = parent.get(0).getItemHeight(firstLineWidth, lineWidth);
+		int height = 0;
+		
+		Item[] items = this.parentContainer.getItems();
+		
+		this.inactiveIcons = new int[items.length][];
+		
+		for (int i = 0; i < items.length; i++) {
+			Item item = items[i];
+			
+			int itemHeight = item.getItemHeight(lineWidth, lineWidth);
+			int itemWidth = item.itemWidth;
+			
+			if (itemWidth == 0)  {
+				this.inactiveIcons[i] = new int[0];
+				continue;
+			}
+			
+			if (itemHeight > height ) {
+				height = itemHeight;
+			}
+			
+			if(item.isFocused)
+			{
+				//set to normal style
+				item.setStyle(this.originalStyle);
+			}
+			
+			int rgbData[] = UiAccess.getRgbData(item);
+			
+			if(item.isFocused)
+			{
+				item.setStyle(item.getFocusedStyle());
+			}
+			
+			convertToGrayScale(rgbData);
+			this.inactiveIcons[i] = rgbData;
+		}
 		
 		this.contentHeight = height;
 		this.contentWidth = lineWidth;
 	}
 	
 	boolean animateItems = false;
-	
+	Style originalStyle;
 	public Style focusItem(int index, Item item, int direction, Style focusedStyle) {
-		this.animateItems = true;
-		return super.focusItem(index, item, direction, focusedStyle);
+		this.originalStyle = super.focusItem(index, item, direction, focusedStyle); 
+		return this.originalStyle;
 	}
 	
-	public boolean animate() {
-		boolean animated = super.animate();
-		
-		if(this.animateItems)
-		{
-			System.out.println("animateItems");
+	
+	protected void convertToGrayScale(int[] rgbData)
+	{
+		int color,red,green,blue,alpha;
+		for(int i = 0;i < rgbData.length;i++){
+			color = rgbData[i];			
 			
-			this.animateItems = false;
+			alpha = (0xFF000000 & color);
+			red = (0x00FF & (color >>> 16));	
+			green = (0x0000FF & (color >>> 8));
+			blue = color & (0x000000FF );
 			
-			animated = true;
+			int brightness = ((red + green + blue) / 3 ) & 0x000000FF;
+			color = (brightness << 0)
+				|   (brightness << 8)
+				|   (brightness << 16);
+			color |= alpha;
+			rgbData[i] = color;
 		}
-		
-		return animated;
 	}
 
 	/* (non-Javadoc)
@@ -119,7 +163,15 @@ public class CenterNavigationContainerView extends ContainerView {
 			
 			if(xOffset > leftBorder && (xOffset + itemWidth) < rightBorder)
 			{
-				item.paint(xOffset, y, leftBorder, rightBorder, g);
+				if(item == this.focusedItem)
+				{
+					item.paint(xOffset, y, leftBorder, rightBorder, g);
+				}
+				else
+				{
+					int[] rgbData = this.inactiveIcons[i];
+					DrawUtil.drawRgb( rgbData, xOffset, y, item.itemWidth, item.itemHeight, true, g );
+				}
 			}
 			
 			offset += itemWidth;
