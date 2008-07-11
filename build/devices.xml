@@ -15627,7 +15627,7 @@ These namespaces/schemas will be used soon.
     <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, nokiaui, webservices,location,sip,security,msa,contenthandler,svg,i18n,sensor" />
     <capability name="VideoFormat" value="3gpp, wmv, h.263, h.264, mpeg-4, realvideo" />
     <capability name="ImageFormat" value="jpeg, bmp, wbmp, gif, gif87a, gif89a, png, png1.0, svg" />
-    <capability name="SoundFormat" value="aac, aac+, eaac, eaac+, mp3, m4a, 3gpp, nb-amr, wav, midi, midi64, truetone, wb-amr, sp-midi, wma, realaudio" />
+    <capability name="SoundFormat" value="aac, aac+, eaac, eaac+, mp3, m4a, 3gpp, amr, nb-amr, wav, midi, midi64, truetone, wb-amr, sp-midi, wma, realaudio" />
     <capability name="DRM" value="OMA DRM 2.0" />
     <capability name="Frequency" value="850, 900,1800,1900" />
     <capability name="key.TopLeftSoftKey" value="-13" />
