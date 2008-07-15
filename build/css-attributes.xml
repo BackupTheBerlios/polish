@@ -3753,6 +3753,14 @@
 		id="346"
 	/>
 	
+	<attribute
+		name="gray-offset"
+		type="integer"
+		appliesTo="CenterNavigationContainerView"
+		description="the offset to lighten up the grayscaling"
+		id="347"
+	/>
+	
 	<!--
 	
 	<attribute
