@@ -4,12 +4,9 @@ package de.enough.polish.ui.containerviews;
 
 import java.io.IOException;
 
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-
-import de.enough.polish.ui.ClippingRegion;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ContainerView;
 import de.enough.polish.ui.ImageItem;
@@ -62,12 +59,8 @@ public class CenterNavigationContainerView extends ContainerView {
 	protected void initContent(Item parentItm, int firstLineWidth,
 			int lineWidth) 
 	{
-		Container parent = (Container) parentItm;
-		
 		int height = 0;
-		
 		Item[] items = this.parentContainer.getItems();
-		
 		this.inactiveIcons = new int[items.length][];
 		
 		for (int i = 0; i < items.length; i++) {
@@ -108,6 +101,7 @@ public class CenterNavigationContainerView extends ContainerView {
 	
 	boolean animateItems = false;
 	Style originalStyle;
+
 	public Style focusItem(int index, Item item, int direction, Style focusedStyle) {
 		this.originalStyle = super.focusItem(index, item, direction, focusedStyle); 
 		return this.originalStyle;
@@ -143,8 +137,8 @@ public class CenterNavigationContainerView extends ContainerView {
 		
 		int width = rightBorder - leftBorder;
 
-		int leftWidth = this.leftItem.getItemWidth(width, width);
-		int rightWidth = this.rightItem.getItemWidth(width, width);
+		int leftWidth = leftItem.getItemWidth(width, width);
+		int rightWidth = rightItem.getItemWidth(width, width);
 		
 		leftBorder += leftWidth;
 		rightBorder -= rightWidth;
@@ -184,12 +178,12 @@ public class CenterNavigationContainerView extends ContainerView {
 		{
 			if(this.focusedIndex != 0)
 			{
-				this.leftItem.paint(leftBorder, y, leftBorder, rightBorder, g);
+				leftItem.paint(leftBorder, y, leftBorder, rightBorder, g);
 			}
 			
 			if(this.focusedIndex != (myItems.length - 1))
 			{
-				this.rightItem.paint(rightBorder - rightWidth, y, leftBorder, rightBorder, g);	
+				rightItem.paint(rightBorder - rightWidth, y, leftBorder, rightBorder, g);	
 			}
 		}
 	}
