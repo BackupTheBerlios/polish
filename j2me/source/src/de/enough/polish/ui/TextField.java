@@ -1365,6 +1365,8 @@ public class TextField extends StringItem
 			if(this.predictiveInput)
 				this.predictiveAccess.synchronize();
 		//#endif
+		
+		notifyStateChanged();
 	}
 
 	/**
