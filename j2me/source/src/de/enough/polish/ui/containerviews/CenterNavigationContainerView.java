@@ -27,6 +27,8 @@ public class CenterNavigationContainerView extends ContainerView {
 	transient static ImageItem leftItem;
 	transient static ImageItem rightItem;
 	
+	int grayOffset = 0;
+	
 	static
 	{
 		try {
@@ -52,7 +54,17 @@ public class CenterNavigationContainerView extends ContainerView {
 		this.isVertical = false;
 		
 	}
-
+	
+	
+	protected void setStyle(Style style) {
+		super.setStyle(style);
+		
+		Integer grayOffsetObj= style.getIntProperty("gray-offset");
+		if (grayOffsetObj != null) {
+			this.grayOffset = grayOffsetObj.intValue();
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
@@ -91,7 +103,7 @@ public class CenterNavigationContainerView extends ContainerView {
 				item.setStyle(item.getFocusedStyle());
 			}
 			
-			convertToGrayScale(rgbData);
+			convertToGrayScale(rgbData,this.grayOffset);
 			this.inactiveIcons[i] = rgbData;
 		}
 		
@@ -108,7 +120,7 @@ public class CenterNavigationContainerView extends ContainerView {
 	}
 	
 	
-	protected void convertToGrayScale(int[] rgbData)
+	protected void convertToGrayScale(int[] rgbData, int grayOffset)
 	{
 		int color,red,green,blue,alpha;
 		for(int i = 0;i < rgbData.length;i++){
@@ -120,11 +132,16 @@ public class CenterNavigationContainerView extends ContainerView {
 			blue = color & (0x000000FF );
 			
 			int brightness = ((red + green + blue) / 3 ) & 0x000000FF;
-			color = (brightness << 0)
-				|   (brightness << 8)
-				|   (brightness << 16);
-			color |= alpha;
-			rgbData[i] = color;
+            brightness += grayOffset;
+            if (brightness>255)
+            {
+                  brightness = 255;
+            }
+            color = (brightness << 0)
+                  |   (brightness << 8)
+                  |   (brightness << 16);
+            color |= alpha;
+            rgbData[i] = color;
 		}
 	}
 
