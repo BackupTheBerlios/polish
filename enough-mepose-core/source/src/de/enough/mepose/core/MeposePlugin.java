@@ -27,7 +27,7 @@ import org.osgi.framework.BundleContext;
 import de.enough.mepose.core.model.MeposeModelManager;
 import de.enough.mepose.core.model.MiDletChangeListener;
 import de.enough.mepose.core.project.IProjectPersistence;
-import de.enough.polish.util.ReflectionUtil;
+import de.enough.utils.ReflectionUtil;
 
 
 public class MeposePlugin extends Plugin {
@@ -38,7 +38,6 @@ public class MeposePlugin extends Plugin {
 	private static MeposePlugin plugin;
 	private ResourceBundle resourceBundle;
     
-//    private MeposeModel meposeModel;
     private BundleContext bundleContext;
 
     private MiDletChangeListener midletChangeListener;

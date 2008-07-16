@@ -54,25 +54,25 @@ public class MeposeModelManager {
     private IProject currentProject;
     private IProjectPersistence persistence;
     
-    public static class PropertyStorer implements PropertyChangeListener{
-        private MeposeModel model;
-        private IProjectPersistence persistence;
-        private IProject project;
-        
-        public PropertyStorer(MeposeModel model,IProjectPersistence persistence,IProject project) {
-            this.model = model;
-            this.persistence = persistence;
-            this.project = project;
-            this.model.addPropertyChangeListener(this);
-        }
-        public void propertyChange(PropertyChangeEvent evt) {
-            try {
-                this.persistence.putMapInProject(this.model.getStoreableProperties(),this.project);
-            } catch (CoreException exception) {
-                MeposePlugin.log("Could not store model in project",exception);
-            }
-        }
-    }
+//    public static class PropertyStorer implements PropertyChangeListener{
+//        private MeposeModel model;
+//        private IProjectPersistence persistence;
+//        private IProject project;
+//        
+//        public PropertyStorer(MeposeModel model,IProjectPersistence persistence,IProject project) {
+//            this.model = model;
+//            this.persistence = persistence;
+//            this.project = project;
+//            this.model.addPropertyChangeListener(this);
+//        }
+//        public void propertyChange(PropertyChangeEvent evt) {
+//            try {
+//                this.persistence.putMapInProject(this.model.getStoreableProperties(),this.project);
+//            } catch (CoreException exception) {
+//                MeposePlugin.log("Could not store model in project",exception);
+//            }
+//        }
+//    }
     
     public MeposeModelManager() {
         this.modelByProject = new HashMap();
@@ -105,7 +105,7 @@ public class MeposeModelManager {
         } catch (CoreException exception) {
             MeposePlugin.log("Could not store properties in project."+exception.getMessage());
         }
-        new PropertyStorer(meposeModel,this.persistence,project);
+//        new PropertyStorer(meposeModel,this.persistence,project);
     }
 
     public void removeModel(IProject project) {

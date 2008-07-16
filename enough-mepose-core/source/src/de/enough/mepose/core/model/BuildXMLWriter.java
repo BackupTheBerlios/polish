@@ -29,18 +29,21 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Writer;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.plugin.VelocityService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.MeposeConstants;
+import de.enough.utils.velocity.DefaultVelocityService;
+import de.enough.utils.velocity.VelocityService;
 
 /**
  * 
@@ -62,11 +65,8 @@ public class BuildXMLWriter {
     
     public void writeBuildXML(Writer os) {
         try {
-            VelocityService velocityService = getVelocityService();
-            
-            if(velocityService == null) {
-                return;
-            }
+
+            VelocityEngine velocityEngine = new VelocityEngine();
             URL resource = getBundleContext().getBundle().getEntry(MeposeConstants.PATH_BUILD_XML_TEMPLATE);
             if(resource == null) {
                 throw new IllegalStateException("No URL for build template found.");
@@ -75,9 +75,8 @@ public class BuildXMLWriter {
             if(resource == null) {
                 throw new IllegalStateException("No build template found.");
             }
-            velocityService.setTemplate(MeposeConstants.ID_TEMPLATE_NAME,buildxmlAsStream);
+//            velocityService.setTemplate(MeposeConstants.ID_TEMPLATE_NAME,buildxmlAsStream);
             
-            VelocityEngine velocityEngine = velocityService.getNewVelocityEngine();
             velocityEngine.init();
             
             VelocityContext context = new VelocityContext();
@@ -110,12 +109,6 @@ public class BuildXMLWriter {
         }
     }
 
-    private VelocityService getVelocityService() {
-        BundleContext bundleContext = getBundleContext();
-        this.sr = bundleContext.getServiceReference(VelocityService.class.getName());
-        return (VelocityService)bundleContext.getService(this.sr);
-    }
-
     private void ungetVelocityService() {
         if(this.sr == null) {
             return;
@@ -130,18 +123,19 @@ public class BuildXMLWriter {
 //        File mppHome = (File)this.meposeModel.getPropertyValue(MeposeModel.ID_MPP_HOME);
         File polishHome = this.meposeModel.getPolishHome();
        
-        String projectDescription = this.meposeModel.getProjectDescription();
+//        String projectDescription = this.meposeModel.getProjectDescription();
         
         context.put("polishHome",polishHome.getAbsolutePath());
-        context.put("projectDescription",projectDescription);
-        context.put("deviceList",this.meposeModel.getSupportedDevices());
+//        context.put("projectDescription",projectDescription);
+        //FIXME: remodel without polish classes.
+//        context.put("deviceList",this.meposeModel.getSupportedDevices());
         
-        addPath(context,"nokiaHome",this.meposeModel.getNokiaHome());
-        addPath(context,"sonyHome",this.meposeModel.getSonyHome());
-        addPath(context,"motorolaHome",this.meposeModel.getMotorolaHome());
-        addPath(context,"wtkHome",this.meposeModel.getWTKHome());
-        addPath(context,"mppHome",this.meposeModel.getMppHome());
-        addPath(context,"siemensHome",this.meposeModel.getSiemensHome());
+//        addPath(context,"nokiaHome",this.meposeModel.getNokiaHome());
+//        addPath(context,"sonyHome",this.meposeModel.getSonyHome());
+//        addPath(context,"motorolaHome",this.meposeModel.getMotorolaHome());
+//        addPath(context,"wtkHome",this.meposeModel.getWTKHome());
+//        addPath(context,"mppHome",this.meposeModel.getMppHome());
+//        addPath(context,"siemensHome",this.meposeModel.getSiemensHome());
         
     }
 

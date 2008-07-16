@@ -25,37 +25,17 @@
  */
 package de.enough.mepose.core.model;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Target;
-import org.apache.tools.ant.Task;
 import org.eclipse.jdt.core.IClasspathEntry;
 
-import de.enough.mepose.core.MeposePlugin;
-import de.enough.polish.Device;
-import de.enough.polish.Environment;
-import de.enough.polish.ant.PolishTask;
-import de.enough.polish.devices.Configuration;
-import de.enough.polish.devices.ConfigurationManager;
-import de.enough.polish.devices.DeviceDatabase;
-import de.enough.polish.devices.DeviceManager;
-import de.enough.polish.devices.DeviceTree;
-import de.enough.polish.devices.DeviceTreeItem;
-import de.enough.polish.devices.Platform;
-import de.enough.polish.devices.PlatformManager;
 import de.enough.utils.AntBox;
-import de.enough.utils.Arrays;
 import de.enough.utils.PropertyModel;
 import de.enough.utils.Status;
 
@@ -128,11 +108,8 @@ public class MeposeModel extends PropertyModel{
     // Ant.
     private AntBox antBox;
     private File buildxml = new File("");
-    private PolishTask polishTask;
-    private Environment environment;
 
     // Path.
-//    private String projectPath = "";
     private File polishHome = null;
     private File wtkHome = new File("");
     private File nokiaHome = new File("");
@@ -142,17 +119,9 @@ public class MeposeModel extends PropertyModel{
     private File projectHome = new File("");
     private File mppHome = new File("");
 
-    // Supported Config.
-//    private DeviceDatabase deviceDatabase;
-    private DeviceTree deviceTree;
     private IClasspathEntry[] classpathEntries;
-    private Configuration[] supportedConfigurations = new Configuration[0];
-    private Platform[] supportedPlatforms = new Platform[0];
-    private Device[] supportedDevices = new Device[0];
 
-    // Current Config.
     private File jadFile;
-    private Device currentDevice;
     
     // Info.
     private String projectDescription = "";
@@ -161,7 +130,6 @@ public class MeposeModel extends PropertyModel{
     private List propertyChangeListeners;
     private String buildTargetName = "j2mepolish";
     private List buildListener;
-//    private ClassLoader antClassLoader;
 
     private Map variables;
     
@@ -177,7 +145,7 @@ public class MeposeModel extends PropertyModel{
     //TODO: Check if all fields are initialized.
     //TODO: If fields are already set dispose them properly before resetting them.
     public void reset() {
-        resetAntBox();
+        this.antBox = new AntBox();
 
         this.buildxml = new File("");
         this.projectHome = new File("");
@@ -192,38 +160,6 @@ public class MeposeModel extends PropertyModel{
         
     }
 
-    private void resetAntBox() {
-        this.antBox = new AntBox();
-        
-        // This code was used set a classloader with tools.jar on board. It is not needed
-        // anymore as this injection is done in the MeposePlugin on startup.
-//        AntCorePreferences antPreferences = AntCorePlugin.getPlugin().getPreferences();
-//        IAntClasspathEntry[] antClasspathEntries = antPreferences.getDefaultAntHomeEntries();
-//        
-//        List antClasspathList = new LinkedList();
-//        try {
-//            for (int i = 0; i < antClasspathEntries.length; i++) {
-//                IAntClasspathEntry entry = antClasspathEntries[i];
-//                antClasspathList.add(new URL("file://"+entry.toString()));
-//            }
-//            URL toolsJarUrl = new URL("file://"+antPreferences.getToolsJarEntry().toString());
-//            antClasspathList.add(toolsJarUrl);
-//        } catch (MalformedURLException exception) {
-//            MeposePlugin.log("No tools.jar found.",exception);
-//        }
-        
-        // We inject the tools.jar classpath element now directly into the eclipse class loader.
-//        URL[] antClasspathAsUrls = (URL[]) antClasspathList.toArray(new URL[antClasspathList.size()]);
-//        ClassLoader eclipseClassLoader = getClass().getClassLoader();
-//        this.antClassLoader = new URLClassLoader(antClasspathAsUrls,eclipseClassLoader);
-//        this.antClassLoader = new AntClassLoader(eclipseClassLoader,false);
-//        for (int i = 0; i < antClasspathAsUrls.length; i++) {
-//            ((AntClassLoader)this.antClassLoader).addPathElement(antClasspathAsUrls[i].getPath());
-//        }
-//        //TODO: Commented for testing.
-//        this.antBox.setAlternativeClassLoader(this.antClassLoader);
-    }
-    
     
     // ###################################################################
     // Ant.
@@ -240,302 +176,17 @@ public class MeposeModel extends PropertyModel{
             throw new IllegalArgumentException("ERROR:MeposeProject.setBuildxml(...):Parameter 'buildxml' is null.");
         }
         this.buildxml = buildxml;
-        if( ! this.buildxml.exists()) {
-            setPropertyStatus(ID_PATH_BUILDXML_FILE,STATUS_BUILDXML_MISSING);
-            return;
-        }
-        try {
-            extractTaskFromBuildXML();
-        } catch (Throwable e) {
-            // Something went wrong.
-            MeposePlugin.log("build.xml could not be set."+e);
-        }
-        firePropertyChangeEvent(ID_PATH_BUILDXML_FILE,null,this.buildxml);
     }
 
-    // TODO: Break this method up to have several smaller ones.
-    private void extractTaskFromBuildXML() {
-        this.antBox.setWorkingDirectory(this.projectHome);
-        this.antBox.setBuildxml(this.buildxml);
-        this.antBox.setProperty("dir.work","build/test");
-        
-        // Configure all ant targets.
-        Project project = this.antBox.createProject();
-        Map targetObjectForTargetName = project.getTargets();
-        Collection targetObjectSet = targetObjectForTargetName.values();
-        this.polishTask = null;
-        for (Iterator iterator = targetObjectSet.iterator(); iterator.hasNext(); ) {
-            Target target = (Target) iterator.next();
-            try {
-                this.antBox.configureTarget(target);
-            }
-            catch(BuildException e) {
-                // configuring the target failed, maybe because the taskdef could not be resolved.
-                MeposePlugin.log("MeposeProject.setBuildxml():Could not configure target:"+target.getName(),e);
-                continue;
-            }
-            Task[] tasks = target.getTasks();
-            Task task;
-            for (int taskIndex = 0; taskIndex < tasks.length; taskIndex++) {
-                task = tasks[taskIndex];
-                    if(task instanceof PolishTask) {
-                        this.polishTask = (PolishTask)task;
-                        setPropertyStatus(ID_ANT_TASK_POLISH,Status.OK);
-                        break;
-                    }
-            }
-            if(this.polishTask != null) {
-                break;
-            }
-        }
-        //TODO: Think about alternative error reporting facility instead of boolean return value.
-        if(this.polishTask == null) {
-            setPropertyStatus(ID_ANT_TASK_POLISH,new Status(Status.TYPE_ERROR,"Ant task 'polish' not found in build.xml",null));
-            MeposePlugin.log("Ant task 'polish' not found in build.xml");
-            return;
-        }
-        Environment oldEnvironment = this.environment;
-        try {
-            this.polishTask.initProject();
-        } catch (Exception exception) {
-            // Maybe a ClassNotFoundException if obfuscator is not present.
-            MeposePlugin.log("Something went wrong while polishTask.initProject().",exception);
-        }
-        this.environment = this.polishTask.getEnvironment();
-        firePropertyChangeEvent("environment",oldEnvironment,this.environment);
-        // Needed for polish initialization.
-        this.polishTask.selectDevices();
-//        this.configuredDevicesANT = this.polishTask.getDevices();
-    }
-
-    // TODO: Check if method is needed anymore.
-    protected void setEnvironmentToDevice(Device device) {
-        if(device == null){
-            throw new IllegalArgumentException("ERROR:AntPolishProject.setEnvironmentToDevice(...):Parameter 'device' is null.");
-        }
-        if(this.polishTask == null){
-            throw new IllegalStateException("ERROR:MeposeProject.setEnvironmentToDevice(...):Field 'polishTask' is null.");
-        }
-        
-        // This does not delete or create the environment object but modifies it in place.
-        this.polishTask.initialize(device,null);
-        this.environment = this.polishTask.getEnvironment();
-    }
   
-    public String getSourcePath(Device device) {
-        this.polishTask.initialize(device,null);
-        return device.getSourceDir();
-    }
-    
-    public AntBox getAntBox() {
-        return this.antBox;
-    }
-
-    public Environment getEnvironment() {
-        return this.environment;
-    }
-
-    public void setAntBox(AntBox antBox) {
-        if(antBox == null){
-            throw new IllegalArgumentException("ERROR:MeposeProject.setAntBox(...):Parameter 'antBox' is null.");
-        }
-        this.antBox = antBox;
-    }
-
-    public void setEnvironment(Environment environment) {
-        if(environment == null){
-            throw new IllegalArgumentException("ERROR:MeposeProject.setEnvironment(...):Parameter 'environment' is null.");
-        }
-        this.environment = environment;
-        firePropertyChangeEvent(ID_ANT_ENVIRONMENT,null,this.environment);
+    public String getSourcePath(String deviceIdentifier) {
+        throw new UnsupportedOperationException();
     }
     
     public File getBuildxml() {
         return this.buildxml;
     }
 
-    
-    // ###################################################################
-    // Supported Config methods.
-    
-    public Device[] getSupportedDevices() {
-        DeviceTree dt = getDeviceTree();
-        if(dt == null) {
-            return new Device[0];
-        }
-        return dt.getSelectedDevices();
-    }
-    
-    public Platform[] getSupportedPlatforms() {
-        return this.supportedPlatforms;
-    }
-
-    public void setSupportedPlatforms(Platform[] supportedPlatforms) {
-        this.supportedPlatforms = supportedPlatforms;
-        firePropertyChangeEvent(ID_SUPPORTED_PLATFORMS,null,this.supportedPlatforms);
-    }
-
-    public void setSupportedConfigurations(Configuration[] supportedConfigurations) {
-        if(supportedConfigurations == null){
-            throw new IllegalArgumentException("setSupportedConfigurations(...):parameter 'supportedConfigurations' is null contrary to API.");
-        }
-        this.supportedConfigurations = supportedConfigurations;
-        firePropertyChangeEvent(ID_SUPPORTED_CONFIGURATIONS,null,this.supportedConfigurations);
-    }
-
-    public Configuration[] getSupportedConfigurations() {
-        return this.supportedConfigurations;
-    }
-
-    public void setSupportedDevices(Device[] supportedDevices) {
-        if(supportedDevices == null){
-            throw new IllegalArgumentException("setSupportedDevices(...):parameter 'supportedDevices' is null contrary to API.");
-        }
-        this.supportedDevices = supportedDevices;
-        
-        List supportedDevicesStringList = new LinkedList();
-        for (int i = 0; i < supportedDevices.length; i++) {
-            supportedDevicesStringList.add(supportedDevices[i].getIdentifier());
-        }
-        
-        DeviceTree deviceTreeTemp = getDeviceTree(supportedDevicesStringList);
-        if(deviceTreeTemp == null) {
-            return;
-        }
-        DeviceTreeItem[] deviceTreeItems = deviceTreeTemp.getDeviceTreeItems();
-        for (int i = 0; i < deviceTreeItems.length; i++) {
-            for (int j = 0; j < supportedDevices.length; j++) {
-                if(deviceTreeItems[i].getDevice().getIdentifier().equals(supportedDevices[j].getIdentifier())) {
-                    deviceTreeItems[i].setIsSelected(true);
-                    break;
-                }
-            }
-        }
-        
-        // TODO: This needs to be done as a listener task as the case of a change
-        // in the supported devices must be handled.
-        //TODO: Remove the old values of devices not present any more.
-        if(this.environment != null) {
-            this.variables.clear();
-            for (int i = 0; i < supportedDevices.length; i++) {
-                this.environment.initialize(supportedDevices[i],null);
-                this.variables.putAll(this.environment.getSymbols());
-                this.variables.putAll(this.environment.getVariables());
-            }
-        }
-        firePropertyChangeEvent(ID_SUPPORTED_DEVICES,null,this.supportedDevices);
-    }
-    
-    public Map getVariables() {
-        return this.variables;
-    }
-    
-    public void setClasspath(IClasspathEntry[] classpathEntries) {
-        if(classpathEntries == null){
-            throw new IllegalArgumentException("setClasspath(...):parameter 'classpathEntries' is null contrary to API.");
-        }
-        this.classpathEntries = classpathEntries;
-        firePropertyChangeEvent(ID_SUPPORTED_CLASSPATH,null,this.classpathEntries);
-    }
-    
-    public IClasspathEntry[] getClasspathEntries() {
-        return this.classpathEntries;
-    }
-    
-    
-    // ###################################################################
-    // Current methods.
-    
-    public File getJadFile() {
-        return this.jadFile;
-    }
-    
-    public void setJadFile(File jadFile) {
-        if(jadFile == null){
-            throw new IllegalArgumentException("setJadFile(...):parameter 'jadFile' is null contrary to API.");
-        }
-        this.jadFile = jadFile;
-        firePropertyChangeEvent(ID_CURRENT_JADJARPAIRS,null,this.jadFile);
-    }
-    
-    public Device getCurrentDevice() {
-        return this.currentDevice;
-    }
-
-    public void setCurrentDevice(Device currentDevice) {
-        if(currentDevice == null){
-            throw new IllegalArgumentException("setCurrentDevice(...):parameter 'currentDevice' is null contrary to API.");
-        }
-        this.currentDevice = currentDevice;
-        firePropertyChangeEvent(ID_CURRENT_DEVICE,null,this.currentDevice);
-        if(this.environment != null) {
-            this.environment.initialize(currentDevice,null);
-        }
-    }
-    
-    
-    // ###################################################################
-    // Paths methods.
-    
-    public File getProjectHome() {
-        return this.projectHome;
-    }
-
-    public void setProjectHome(File projectHome) {
-        this.projectHome = projectHome;
-    }
-    
-    /**
-     * @param nokiaHome
-     */
-    public void setNokiaHome(File nokiaHome) {
-        this.nokiaHome = nokiaHome;
-    }
-
-    public File getNokiaHome() {
-        return this.nokiaHome;
-    }
-    
-    public void setSonyHome(File sonyHome) {
-        this.sonyHome = sonyHome;
-    }
-    
-    public File getSonyHome() {
-        return this.sonyHome;
-    }
-    
-    public File getMotorolaHome() {
-        return this.motorolaHome;
-    }
-
-
-    public void setMotorolaHome(File motorolaHome) {
-        this.motorolaHome = motorolaHome;
-    }
-
-
-    public File getSiemensHome() {
-        return this.siemensHome;
-    }
-
-
-    public void setSiemensHome(File siemensHome) {
-        this.siemensHome = siemensHome;
-    }
-
-    public File getMppHome() {
-        return this.mppHome;
-    }
-
-
-    public void setMppHome(File mppHome) {
-        this.mppHome = mppHome;
-    }
-
-
-    /**
-     * @param file May be null to indicate that there is no polish home specified.
-     */
     public void setPolishHome(File file) {
         this.polishHome = file;
     }
@@ -555,304 +206,12 @@ public class MeposeModel extends PropertyModel{
         return this.wtkHome;
     }
 
-    /**
-     * 
-     * @param targetDevices 
-     * @return May be null.
-     * @throws DeviceDatabaseException 
-     */
-    public DeviceDatabase getDeviceDatabase(List targetDevices) throws DeviceDatabaseException {
-        
-        if(getPolishHome() != null && getProjectHome() != null) {
-            return PolishDeviceDatabase.getNewDeviceDatabase(this.polishHome,this.projectHome,targetDevices);
-        }
-        // TODO: Throw exception.
-        return null;
-    }
-    
-    public DeviceDatabase getDeviceDatabase() throws DeviceDatabaseException {
-        return getDeviceDatabase(null);
-    }
-
-    public DeviceTree getDeviceTree() {
-        return getDeviceTree(null);
-    }
-    
-    // May be null.
-    public DeviceTree getDeviceTree(List supportedDevicesStringList) {
-        
-        if(this.deviceTree == null) {
-            DeviceDatabase deviceDatabase2;
-            try {
-                deviceDatabase2 = getDeviceDatabase(supportedDevicesStringList);
-            } catch (DeviceDatabaseException exception) {
-                //TODO: Rethrow the exception.
-                return null;
-            }
-            try {
-                this.deviceTree = new DeviceTree(deviceDatabase2,null,null);
-            }
-            catch(Exception e) {
-                return null;
-            }
-        }
-      
-        return this.deviceTree;
-        
-    }
-
-    public void setProjectDescription(String projectDescription) {
-        if(projectDescription == null){
-            throw new IllegalArgumentException("setProjectDescription(...):parameter 'projectDescription' is null contrary to API.");
-        }
-        
-        this.projectDescription = projectDescription;
-        firePropertyChangeEvent(ID_INFO_DESCRIPTION,null,this.projectDescription);
-    }
-
-    public String getProjectDescription() {
-        return this.projectDescription;
-    }
-
-    
-
-    
-    
-    // ###################################################################
-    // Maintainance.
-    
-    public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-        if(propertyChangeListener == null){
-            throw new IllegalArgumentException("ERROR:MeposeProject.addPropertyChangeListener(...):Parameter 'propertyChangeListener' is null.");
-        }
-        this.propertyChangeListeners.add(propertyChangeListener);
-    }
-    
-    public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-        if(propertyChangeListener == null){
-            throw new IllegalArgumentException("ERROR:MeposeProject.removePropertyChangeListener(...):Parameter 'propertyChangeListener' is null.");
-        }
-        this.propertyChangeListeners.remove(propertyChangeListener);
-    }
-    
-    public void firePropertyChangeEvent(String property,Object oldValue, Object newValue) {
-        if(property == null){
-            throw new IllegalArgumentException("ERROR:MeposeProject.firePropertyChangeEvent(...):Parameter 'property' is null.");
-        }
-        PropertyChangeEvent event = new PropertyChangeEvent(this,property,oldValue,newValue);
-        for (Iterator iterator = this.propertyChangeListeners.iterator(); iterator.hasNext(); ) {
-            PropertyChangeListener propertyChangeListener = (PropertyChangeListener) iterator.next();
-            propertyChangeListener.propertyChange(event);
-        }
-    }
-
-    
-
     public Map getStoreableProperties() {
-        Map p = new HashMap();
-        
-        File value;
-        // Paths.
-        value = getPolishHome();
-        if(value != null) {
-            p.put(ID_PATH_POLISH_FILE,value.toString());
-        }
-        value = getWTKHome();
-        p.put(ID_PATH_WTK_FILE,value==null?"":value.toString());
-        value = getNokiaHome();
-        p.put(ID_PATH_NOKIA_FILE,value==null?"":value.toString());
-        value = getSonyHome();
-        p.put(ID_PATH_SONY_FILE,value==null?"":value.toString());
-        value = getSiemensHome();
-        p.put(ID_PATH_SIEMENS_FILE,value==null?"":value.toString());
-        value = getMotorolaHome();
-        p.put(ID_PATH_MOTOROLA_FILE,value==null?"":value.toString());
-        value = getMppHome();
-        p.put(ID_PATH_MPP_FILE,value==null?"":value.toString());
-        value = getProjectHome();
-        p.put(ID_PATH_PROJECT_FILE,value==null?"":value.toString());
-        value = getBuildxml();
-        p.put(ID_PATH_BUILDXML_FILE,value==null?"":value.toString());
-//        p.put(ID_PATH_WORKINGDIRECTORY_BUILD)
-        
-        // Supported Config.
-        Configuration[] supportedConfigurations2 = getSupportedConfigurations();
-        if(supportedConfigurations2 != null) {
-            p.put(ID_SUPPORTED_CONFIGURATIONS,Arrays.arrayToString(supportedConfigurations2));
-        }
-        
-        Platform[] supportedPlatforms2 = getSupportedPlatforms();
-        if(supportedPlatforms2 != null) {
-            p.put(ID_SUPPORTED_PLATFORMS,Arrays.arrayToString(supportedPlatforms2));
-        }
-        Device[] supportedDevices2 = getSupportedDevices();
-        if(supportedDevices2 != null) {
-            p.put(ID_SUPPORTED_DEVICES,Arrays.arrayToString(supportedDevices2));
-        }
-        
-        // Current Config.
-        Device currentDevice2 = getCurrentDevice();
-        if(currentDevice2 != null) {
-            p.put(ID_CURRENT_DEVICE,currentDevice2.getIdentifier());
-        }
-        p.put(ID_CURRENT_TARGET_ONLYBUILD,getBuildTargetName());
-        return p;
+        throw new UnsupportedOperationException();
     }
-
 
     public void restoreFromProperties(Map p) {
-        
-        
-        // Paths.
-        String polishHomeTmp = (String)p.get(ID_PATH_POLISH_FILE);
-        if(polishHomeTmp != null) {
-            setPolishHome(new File(polishHomeTmp));
-        }
-        
-        String wtkHomeTmp = (String)p.get(ID_PATH_WTK_FILE);
-        if(wtkHomeTmp != null) {
-            setWTKHome(new File(wtkHomeTmp));
-        }
-        String mppHomeTmp = (String)p.get(ID_PATH_MPP_FILE);
-        if(mppHomeTmp != null) {
-            setMppHome(new File(mppHomeTmp));
-        }
-        String nokiaHomeTmp = (String)p.get(ID_PATH_NOKIA_FILE);
-        if(nokiaHomeTmp != null) {
-            setNokiaHome(new File(nokiaHomeTmp));
-        }
-        String motorolaHomeTmp = (String)p.get(ID_PATH_MOTOROLA_FILE);
-        if(motorolaHomeTmp != null) {
-            setMotorolaHome(new File(motorolaHomeTmp));
-        }
-        String siemensHomeTmp = (String)p.get(ID_PATH_SIEMENS_FILE);
-        if(siemensHomeTmp != null) {
-            setSiemensHome(new File(siemensHomeTmp));
-        }
-        String sonyHomeTmp = (String)p.get(ID_PATH_SONY_FILE);
-        if(sonyHomeTmp != null) {
-            setSonyHome(new File(sonyHomeTmp));
-        }
-        String projectNameTmp = (String)p.get(ID_PATH_PROJECT_FILE);
-        if(projectNameTmp != null) {
-            setProjectHome(new File(projectNameTmp));
-        }
-        
-        DeviceDatabase db = null;
-        
-        String supportedDevicesString = (String)p.get(ID_SUPPORTED_DEVICES);
-        if(supportedDevicesString == null) {
-            supportedDevicesString = "";
-        }
-        String[] supportedDevicesStringArray = supportedDevicesString.split(",");
-        boolean genericDeviceFound = false;
-        int index = java.util.Arrays.binarySearch(supportedDevicesStringArray,DEFAULT_DEVICE_NAME);
-        genericDeviceFound = index >= 0;
-        if(! genericDeviceFound) {
-            String[] temp = new String[supportedDevicesStringArray.length+1];
-            System.arraycopy(supportedDevicesStringArray,0,temp,0,supportedDevicesStringArray.length);
-            temp[supportedDevicesStringArray.length] = DEFAULT_DEVICE_NAME;
-            supportedDevicesStringArray = temp;
-        }
-        List supportedDevicesList = new LinkedList();
-        List targetDevicesStringList = new LinkedList();
-        for (int i = 0; i < supportedDevicesStringArray.length; i++) {
-            targetDevicesStringList.add(supportedDevicesStringArray[i]);
-        }
-        
-        try {
-            db = getDeviceDatabase(targetDevicesStringList);
-        } catch (DeviceDatabaseException exception) {
-            MeposePlugin.log(exception);
-            return;
-        }
-        
-        // TODO: This will happen on the first invocation as the user has most
-        // probably not set the polish home in the preferences.
-        if(db == null) {
-            return;
-        }
-        
-        DeviceManager deviceManager = db.getDeviceManager();
-        if(deviceManager == null) {
-            return;
-        }
-        for(int i = 0; i < supportedDevicesStringArray.length; i++) {
-            String identifier = supportedDevicesStringArray[i];
-            Device device = deviceManager.getDevice(identifier);
-            //TODO: Sometimes the Nokia/6611 is not found although it is in the supportedDevicesString.
-            if(device == null) {
-                continue;
-            }
-            supportedDevicesList.add(device);
-        }
-        setSupportedDevices((Device[]) supportedDevicesList.toArray(new Device[supportedDevicesList.size()]));
-        
-        // When no supported devices are found, no device database has been created. We do this know with the default
-        // device.
-        
-        if(db == null) {
-            try {
-                List devicesList = new LinkedList();
-                devicesList.add(DEFAULT_DEVICE_NAME);
-                db = getDeviceDatabase(devicesList);
-            } catch (DeviceDatabaseException exception) {
-                MeposePlugin.log(exception);
-            }
-        }
-        
-        // Supported Config.
-        String supportedConfigurationsString = (String)p.get(ID_SUPPORTED_CONFIGURATIONS);
-        if(supportedConfigurationsString != null) {
-            String[] supportedConfigurationsArray = supportedConfigurationsString.split(",");
-            Configuration[] supportedConfigurationsTmp = new Configuration[supportedConfigurationsArray.length];
-            ConfigurationManager cm = db.getConfigurationManager();
-            // TODO: We can return here only because we know that the whole deviceDatabase is not initialized
-            // and everything from here on is about this db.
-            if(cm == null) {
-                return;
-            }
-            for (int i = 0; i < supportedConfigurationsArray.length; i++) {
-                String identifier = supportedConfigurationsArray[i];
-                Configuration c = cm.getConfiguration(identifier);
-                supportedConfigurationsTmp[i] = c;
-            }
-            setSupportedConfigurations(supportedConfigurationsTmp);
-        }
-        
-        String supportedPlatformsString = (String)p.get(ID_SUPPORTED_PLATFORMS);
-        if(supportedPlatformsString != null) {
-            String[] supportedPlatformsArray = supportedPlatformsString.split(",");
-            Platform[] supportedPlatformsTmp = new Platform[supportedPlatformsArray.length];
-            PlatformManager pm = db.getPlatformManager();
-            if(pm == null) {
-                return;
-            }
-            for (int i = 0; i < supportedPlatformsArray.length; i++) {
-                String identifier = supportedPlatformsArray[i];
-                Platform platform = pm.getPlatform(identifier);
-                supportedPlatformsTmp[i] = platform;
-            }
-            setSupportedPlatforms(supportedPlatformsTmp);
-        }
-        
-        
-        
-        String currentDeviceString = (String)p.get(ID_CURRENT_DEVICE);
-        if(currentDeviceString == null) {
-            currentDeviceString = MeposeModel.DEFAULT_DEVICE_NAME;
-        }
-        Device device = deviceManager.getDevice(currentDeviceString);
-        if(device != null) {
-            setCurrentDevice(device);
-        }
-        
-        
-        String buildXmlTmp = (String)p.get(ID_PATH_BUILDXML_FILE);
-        if(buildXmlTmp != null) {
-            setBuildxml(new File(buildXmlTmp));
-        }
-        db.clear();
+        throw new UnsupportedOperationException();
     }
 
 //    public void build(String targetName) {
@@ -927,8 +286,21 @@ public class MeposeModel extends PropertyModel{
         this.antBox.getProject().removeBuildListener(aBuildListener);
     }
 
-    public void setDeviceTree(DeviceTree deviceTreeModel) {
-        this.deviceTree = deviceTreeModel;
+
+    /**
+     * @return
+     */
+    public String getCurrentDeviceIdentifier() {
+        // TODO rickyn implement getCurrentDeviceIdentifier
+        throw new UnsupportedOperationException();
+    }
+
+
+    /**
+     * @return
+     */
+    public String getProjectHome() {
+        throw new UnsupportedOperationException();
     }
     
 }
