@@ -1595,7 +1595,7 @@ implements AccessibleCanvas
 				}
 				int sWidth = this.screenWidth - this.marginLeft - this.marginRight - (borderWidth << 1);
 				int leftBorder = this.marginLeft + borderWidth;
-				int rightBorder = leftBorder + sWidth - borderWidth;
+				int rightBorder = leftBorder + sWidth;
 				int sHeight;
 				//#ifdef tmp.menuFullScreen
 					sHeight = this.fullScreenHeight - this.marginTop - this.marginBottom - (borderWidth << 1);
@@ -1680,7 +1680,7 @@ implements AccessibleCanvas
 
 				int clipY = g.getClipY();
 				// paint background:
-				int backgroundHeight = sHeight - (borderWidth << 1);
+				int backgroundHeight = sHeight;
 				int backgroundY = topBorder + borderWidth;
 				//#ifdef tmp.menuFullScreen
 					if (!this.excludeMenuBarForBackground && this.marginBottom == 0) {
