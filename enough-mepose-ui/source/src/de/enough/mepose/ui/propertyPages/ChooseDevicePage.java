@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
 import de.enough.mepose.core.model.MeposeModel;
-import de.enough.mepose.widgets.ChooseDeviceManager;
 
 /**
  * 
@@ -44,18 +43,20 @@ import de.enough.mepose.widgets.ChooseDeviceManager;
  */
 public class ChooseDevicePage extends MeposePropertyPage {
 
-    private ChooseDeviceManager chooseDeviceManager;
+//    private ChooseDeviceManager chooseDeviceManager;
 
     protected Control createContents(Composite parent) {
         MeposeModel model = getMeposeModel();
         if(model == null) {
             return createErrorControl(parent,"The element is not within a Mepose Project.");
         }
-        if(this.chooseDeviceManager == null) {
-            this.chooseDeviceManager = new ChooseDeviceManager(parent,model);
-        }
-        Control control = this.chooseDeviceManager.getControl();
-        return control;
+//        if(this.chooseDeviceManager == null) {
+//            this.chooseDeviceManager = new ChooseDeviceManager(parent,model);
+//        }
+//        Control control = this.chooseDeviceManager.getControl();
+        Label label = new Label(parent,SWT.None);
+        label.setText("Implement ChooseDeviceManager as MVC");
+        return label;
     }
 
     /**
@@ -69,9 +70,9 @@ public class ChooseDevicePage extends MeposePropertyPage {
     }
 
     public boolean performCancel() {
-        if(this.chooseDeviceManager != null) {
-            this.chooseDeviceManager.performCancel();
-        }
+//        if(this.chooseDeviceManager != null) {
+//            this.chooseDeviceManager.performCancel();
+//        }
         return super.performCancel();
     }
 
@@ -81,9 +82,9 @@ public class ChooseDevicePage extends MeposePropertyPage {
     }
 
     public boolean performOk() {
-    	if(this.chooseDeviceManager != null){
-    		this.chooseDeviceManager.performOk();
-    	}
+//    	if(this.chooseDeviceManager != null){
+//    		this.chooseDeviceManager.performOk();
+//    	}
         return super.performOk();
     }
 

@@ -32,3 +32,4 @@ Export-Package: de.enough.mepose.ui,
  de.enough.mepose.launcher,
  de.enough.swt.widgets
 Bundle-Vendor: Enough Software
+Bundle-ClassPath: .

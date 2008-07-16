@@ -58,7 +58,7 @@ import de.enough.swt.widgets.StatusGroup;
  */
 public class PathsPage extends WizardPage {
 
-    private NewProjectModel newProjectModel;
+//    private NewProjectModel newProjectModel;
     
     private Text wtkHomeText;
     private Text nokiaHomeText;
@@ -111,7 +111,7 @@ public class PathsPage extends WizardPage {
     
     protected PathsPage(NewProjectModel newPolishProjectDAO) {
         super("Paths and Locations");
-        this.newProjectModel = newPolishProjectDAO;
+//        this.newProjectModel = newPolishProjectDAO;
         setTitle("Paths and Locations");
         setDescription("Specify where to find the required resources");
     }

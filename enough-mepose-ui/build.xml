@@ -57,32 +57,24 @@
 		<delete dir="${temp.folder}/@dot.bin"/>
 		<mkdir dir="${temp.folder}/@dot.bin"/>
 		<path id="@dot.classpath">
-			<pathelement path="${build.result.folder}/../enough-mepose-core/bin/classes/"/>
-			<pathelement path="${build.result.folder}/../de.enough.mepose.core/bin/classes/"/>
-			<pathelement path="${build.result.folder}/../enough-mepose-core/MeposeCore.jar"/>
-			<pathelement path="${build.result.folder}/../de.enough.mepose.core/MeposeCore.jar"/>
-			<pathelement path="${build.result.folder}/../enough-mepose-core/bin/classes"/>
-			<pathelement path="${build.result.folder}/../de.enough.mepose.core/bin/classes"/>
-			<pathelement path="${build.result.folder}/../enough-mepose-core/lib/ant-nodeps.jar"/>
-			<pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/ant-nodeps.jar"/>
-			<pathelement path="${build.result.folder}/../enough-mepose-core/lib/ant.jar"/>
-			<pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/ant.jar"/>
-			<pathelement path="${build.result.folder}/../enough-mepose-core/lib/jdom.jar"/>
-			<pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/jdom.jar"/>
-			<pathelement path="${build.result.folder}/../enough-mepose-core/lib/enough-j2mepolish-build.jar"/>
-			<pathelement path="${build.result.folder}/../de.enough.mepose.core/lib/enough-j2mepolish-build.jar"/>
-			<pathelement path="../enough-mepose-core/lib/ant.jar"/>
+			<pathelement path="../enough-mepose-core/bin/classes/"/>
+			<pathelement path="../enough-mepose-core/MeposeCore.jar"/>
+			<pathelement path="../enough-mepose-core/bin/classes"/>
 			<pathelement path="../enough-mepose-core/lib/ant-nodeps.jar"/>
-			<pathelement path="../enough-mepose-core/lib/enough-j2mepolish-build.jar"/>
+			<pathelement path="../enough-mepose-core/lib/ant.jar"/>
 			<pathelement path="../enough-mepose-core/lib/jdom.jar"/>
+			<pathelement path="../enough-mepose-core/lib/velocity-1.4.jar"/>
+			<pathelement path="../enough-mepose-core/lib/velocity-dep-1.4.jar"/>
+			<pathelement path="../enough-mepose-core/lib/enough-j2mepolish-build.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime_3.2.0.v20060603.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.osgi_3.2.0.v20060601.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.equinox.common_3.2.0.v20060603.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.jobs_3.2.0.v20060603.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.0.v20060603/runtime_registry_compatibility.jar"/>
-			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.0.v20060603/@dot"/>
+			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.0.v20060603"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.equinox.registry_3.2.0.v20060601.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.equinox.preferences_3.2.0.v20060601.jar"/>
+			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility.registry_3.2.0.v20060603/@dot"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.contenttype_3.2.0.v20060603.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.runtime.compatibility.auth_3.2.0.v20060601.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.core.resources_3.2.0.v20060603.jar"/>
@@ -101,18 +93,6 @@
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.team.core_3.2.0.I200606051140.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.update.core_3.2.0.v20060605.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.update.core.linux_3.2.0.v20060605.jar"/>
-			<pathelement path="${build.result.folder}/../org.apache.velocity/bin/"/>
-			<pathelement path="${build.result.folder}/../de.enough.velocity/bin/"/>
-			<pathelement path="${build.result.folder}/../org.apache.velocity/@dot"/>
-			<pathelement path="${build.result.folder}/../de.enough.velocity/@dot"/>
-			<pathelement path="${build.result.folder}/../org.apache.velocity/bin"/>
-			<pathelement path="${build.result.folder}/../de.enough.velocity/bin"/>
-			<pathelement path="${build.result.folder}/../org.apache.velocity/velocity-1.4.jar"/>
-			<pathelement path="${build.result.folder}/../de.enough.velocity/velocity-1.4.jar"/>
-			<pathelement path="${build.result.folder}/../org.apache.velocity/velocity-dep-1.4.jar"/>
-			<pathelement path="${build.result.folder}/../de.enough.velocity/velocity-dep-1.4.jar"/>
-			<pathelement path="../org.apache.velocity/velocity-1.4.jar"/>
-			<pathelement path="../org.apache.velocity/velocity-dep-1.4.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.debug.core_3.2.0.v20060605.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.debug.ui_3.2.0.v20060605.jar"/>
 			<pathelement path="../../../local/opt/eclipse_3.2/plugins/org.eclipse.ui_3.2.0.I20060605-1400.jar"/>
@@ -191,14 +171,12 @@
 			<compilerarg line="${compilerArg}" compiler="${build.compiler}"/>
 			<classpath refid="@dot.classpath" />
 			<src path="source/src/"			/>
-			<src path="source/test/"			/>
 			<compilerarg value="@${basedir}/javaCompiler...args" compiler="org.eclipse.jdt.core.JDTCompilerAdapter"/>
 			<compilerarg line="-log '${temp.folder}/@dot.bin${logExtension}'" compiler="org.eclipse.jdt.core.JDTCompilerAdapter"/>
 		</javac>
 		<!-- Copy necessary resources -->
 		<copy todir="${temp.folder}/@dot.bin" failonerror="true" overwrite="false">
 			<fileset dir="source/src/" excludes="**/*.java, **/package.htm*"			/>
-			<fileset dir="source/test/" excludes="**/*.java, **/package.htm*"			/>
 		</copy>
 		<mkdir dir="${build.result.folder}"/>
 		<copy todir="${build.result.folder}/@dot" failonerror="true" overwrite="false">
@@ -211,7 +189,6 @@
 		<mkdir dir="${build.result.folder}"/>
 		<zip destfile="${build.result.folder}/src.zip" filesonly="false" whenempty="skip" update="false">
 			<fileset dir="source/src/" includes="**/*.java"			/>
-			<fileset dir="source/test/" includes="**/*.java"			/>
 		</zip>
 	</target>
 

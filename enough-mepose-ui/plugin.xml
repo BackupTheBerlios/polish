@@ -151,19 +151,19 @@
    </extension> 
  	-->
  
- <!--
+ <!-- Why is it not possible to adept to org.eclipse.jdt.core.IJavaProject? -->
 	<extension point="org.eclipse.ui.popupMenus">
 		<objectContribution adaptable="true"
-			id="de.enough.mepose.ui.actions.TogglePolishNature"
+			id="de.enough.mepose.menu.TogglePolishNature"
 			objectClass="org.eclipse.core.resources.IProject">
 			<action
-				class="de.enough.mepose.ui.actions.TogglePolishNatureAction"
+				class="de.enough.mepose.actions.TogglePolishNatureAction"
 				enablesFor="1" icon="icons/polish_logo_16x16.png"
-				id="de.enough.mepose.ui.actions.togglePolishNatureAction"
-				label="Toggle J2ME Polish nature" />
+				id="de.enough.mepose.actions.TogglePolishNatureAction"
+				label="Toggle J2ME Polish Nature" />
 		</objectContribution>
 	</extension>
--->
+
 
 	<extension point="de.enough.mepose.core.buildListeners">
 		<buildListener

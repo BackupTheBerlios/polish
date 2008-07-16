@@ -26,37 +26,34 @@ import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.BuildXMLWriter;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.ui.MeposeUIPlugin;
-import de.enough.polish.Device;
 
 
 public class PolishNewWizard extends Wizard implements INewWizard {
     
-//    public static Logger logger = Logger.getLogger(PolishNewWizard.class);
-    
-    private NewProjectModel newProjectModel;
-    private PathsPage pathsPage;
-    private PlatformPage platformPage;
-    private ProjectPage projectPage;
-    private JavaCapabilityConfigurationPage javaSettingsPage;
-
-    public PolishNewWizard() {
-		super();
-		setNeedsProgressMonitor(true);
-        this.newProjectModel = new NewProjectModel(new MeposeModel());
-	}
+//    private NewProjectModel newProjectModel;
+//    private PathsPage pathsPage;
+//    private PlatformPage platformPage;
+//    private ProjectPage projectPage;
+//    private JavaCapabilityConfigurationPage javaSettingsPage;
+//
+//    public PolishNewWizard() {
+//		super();
+//		setNeedsProgressMonitor(true);
+//        this.newProjectModel = new NewProjectModel(new MeposeModel());
+//	}
 	
 	/**
 	 * Adding the page to the wizard.
 	 */
 	public void addPages() {
-        this.projectPage = new ProjectPage(this.newProjectModel);
-        this.pathsPage = new PathsPage(this.newProjectModel);
-        this.platformPage = new PlatformPage(this.newProjectModel);
-        this.javaSettingsPage = new JavaCapabilityConfigurationPage();
-        addPage(this.projectPage);
-		addPage(this.pathsPage);
-        addPage(this.platformPage);
-        addPage(this.javaSettingsPage);
+//        this.projectPage = new ProjectPage(this.newProjectModel);
+//        this.pathsPage = new PathsPage(this.newProjectModel);
+//        this.platformPage = new PlatformPage(this.newProjectModel);
+//        this.javaSettingsPage = new JavaCapabilityConfigurationPage();
+//        addPage(this.projectPage);
+//		addPage(this.pathsPage);
+//        addPage(this.platformPage);
+//        addPage(this.javaSettingsPage);
 	}
 
 	/**
@@ -106,11 +103,11 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 
     
     private void generateTemplates() {
-        if( ! this.newProjectModel.isGenerateTemplate()) {
-            return;
-        }
-        TemplateGenerator templateGenerator = new TemplateGenerator(this.newProjectModel);
-        templateGenerator.generate();
+//        if( ! this.newProjectModel.isGenerateTemplate()) {
+//            return;
+//        }
+//        TemplateGenerator templateGenerator = new TemplateGenerator(this.newProjectModel);
+//        templateGenerator.generate();
     }
 
 //    private void generateTemplates(){
@@ -172,64 +169,64 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 //    }
 
     private void registerMeposeModel() {
-        MeposeModel meposeModel = this.newProjectModel.getMeposeModel();
-        MeposePlugin.getDefault().getMeposeModelManager().addModel(this.newProjectModel.getProject(),meposeModel);
-////      TODO: Do we ensure somewhere that there must be always at least on device supported?
-        Device[] supportedDevices = meposeModel.getSupportedDevices();
-        if(supportedDevices.length > 0) {
-            meposeModel.setCurrentDevice(supportedDevices[0]);
-        }
+//        MeposeModel meposeModel = this.newProjectModel.getMeposeModel();
+//        MeposePlugin.getDefault().getMeposeModelManager().addModel(this.newProjectModel.getProject(),meposeModel);
+        //TODO: Why is this important? 
+//        Device[] supportedDevices = meposeModel.getSupportedDevices();
+//        if(supportedDevices.length > 0) {
+//            meposeModel.setCurrentDevice(supportedDevices[0]);
+//        }
     }
 
     private void makeJavaProject() {
-        try {
-            this.javaSettingsPage.configureJavaProject(null);
-        } catch (CoreException exception) {
-            // TODO rickyn handle CoreException
-            exception.printStackTrace();
-        } catch (InterruptedException exception) {
-            // TODO rickyn handle InterruptedException
-            exception.printStackTrace();
-        }
+//        try {
+//            this.javaSettingsPage.configureJavaProject(null);
+//        } catch (CoreException exception) {
+//            // TODO rickyn handle CoreException
+//            exception.printStackTrace();
+//        } catch (InterruptedException exception) {
+//            // TODO rickyn handle InterruptedException
+//            exception.printStackTrace();
+//        }
     }
 
     private void createBuildXML() {
-        BuildXMLWriter buildXMLWriter = new BuildXMLWriter((MeposeModel)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_MEPOSEMODEL));
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        OutputStreamWriter writer = new OutputStreamWriter(byteArrayOutputStream);
-        buildXMLWriter.writeBuildXML(writer);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-        
-//        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
-        IProject project = this.newProjectModel.getProject();
-        if(project == null) {
-            throw new IllegalStateException("No project instance to generate build.xml in.");
-        }
-        IFile buildXmlFile = project.getFile("build.xml");
-        try {
-            if(buildXmlFile.exists()) {
-                Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(System.currentTimeMillis());
-                StringBuffer sb = new StringBuffer();
-                sb.append(c.get(Calendar.YEAR));
-                sb.append(c.get(Calendar.MONTH));
-                sb.append(c.get(Calendar.DAY_OF_WEEK_IN_MONTH));
-                sb.append(":");
-                sb.append(c.get(Calendar.HOUR));
-                sb.append(c.get(Calendar.MINUTE));
-                sb.append(c.get(Calendar.SECOND));
-                IPath path = new Path("build."+sb.toString()+".xml");
-                buildXmlFile.move(path,true,true,new NullProgressMonitor());
-            }
-            buildXmlFile = project.getFile("build.xml");
-            buildXmlFile.create(inputStream,true,null);
-        } catch (CoreException exception) {
-//            System.out.println("DEBUG:PolishNewWizard.createBuildXML(...):could not create file:"+exception);
-            return;
-        }
-        IPath path = buildXmlFile.getRawLocation();
-        File f = path.toFile();
-        this.newProjectModel.getMeposeModel().setBuildxml(f);
+//        BuildXMLWriter buildXMLWriter = new BuildXMLWriter((MeposeModel)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_MEPOSEMODEL));
+//        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//        OutputStreamWriter writer = new OutputStreamWriter(byteArrayOutputStream);
+//        buildXMLWriter.writeBuildXML(writer);
+//        ByteArrayInputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+//        
+////        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+//        IProject project = this.newProjectModel.getProject();
+//        if(project == null) {
+//            throw new IllegalStateException("No project instance to generate build.xml in.");
+//        }
+//        IFile buildXmlFile = project.getFile("build.xml");
+//        try {
+//            if(buildXmlFile.exists()) {
+//                Calendar c = Calendar.getInstance();
+//                c.setTimeInMillis(System.currentTimeMillis());
+//                StringBuffer sb = new StringBuffer();
+//                sb.append(c.get(Calendar.YEAR));
+//                sb.append(c.get(Calendar.MONTH));
+//                sb.append(c.get(Calendar.DAY_OF_WEEK_IN_MONTH));
+//                sb.append(":");
+//                sb.append(c.get(Calendar.HOUR));
+//                sb.append(c.get(Calendar.MINUTE));
+//                sb.append(c.get(Calendar.SECOND));
+//                IPath path = new Path("build."+sb.toString()+".xml");
+//                buildXmlFile.move(path,true,true,new NullProgressMonitor());
+//            }
+//            buildXmlFile = project.getFile("build.xml");
+//            buildXmlFile.create(inputStream,true,null);
+//        } catch (CoreException exception) {
+////            System.out.println("DEBUG:PolishNewWizard.createBuildXML(...):could not create file:"+exception);
+//            return;
+//        }
+//        IPath path = buildXmlFile.getRawLocation();
+//        File f = path.toFile();
+//        this.newProjectModel.getMeposeModel().setBuildxml(f);
     }
     
     public void init(IWorkbench workbench, IStructuredSelection newSelection) {
@@ -237,28 +234,30 @@ public class PolishNewWizard extends Wizard implements INewWizard {
 	}
     
     public boolean canFinish() {
+        throw new UnsupportedOperationException();
 //        this.newProjectModel.getModelStatus().getType() == Status.TYPE_OK;
-        return this.newProjectModel.canFinish();
+//        return this.newProjectModel.canFinish();
     }
     
     public boolean performCancel() {
-//        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
-        IProject project = this.newProjectModel.getProject();
-        if(project == null) {
-            return super.performCancel();
-        }
-        removeMeposeModel(project);
-        if( ! this.newProjectModel.isProjectNewlyCreated()) {
-            return super.performCancel();
-        }
-        try {
-            project.delete(true,true,new NullProgressMonitor());
-        } catch (CoreException exception) {
-            MeposeUIPlugin.log("Could not delete project.",exception);
-            MessageDialog.openError(getShell(), "Error", "Could not delete project:"+project.getName());
-            return false;
-        }
-        return super.performCancel();
+        throw new UnsupportedOperationException();
+////        IProject project = (IProject)this.newProjectModel.getPropertyValue(NewProjectModel.ID_NEWPROJECTMODEL_PROJECT_INSTANCE);
+//        IProject project = this.newProjectModel.getProject();
+//        if(project == null) {
+//            return super.performCancel();
+//        }
+//        removeMeposeModel(project);
+//        if( ! this.newProjectModel.isProjectNewlyCreated()) {
+//            return super.performCancel();
+//        }
+//        try {
+//            project.delete(true,true,new NullProgressMonitor());
+//        } catch (CoreException exception) {
+//            MeposeUIPlugin.log("Could not delete project.",exception);
+//            MessageDialog.openError(getShell(), "Error", "Could not delete project:"+project.getName());
+//            return false;
+//        }
+//        return super.performCancel();
     }
 
     private void removeMeposeModel(IProject project) {

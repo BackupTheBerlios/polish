@@ -3,9 +3,7 @@ package de.enough.mepose.launcher;
 import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 import org.apache.tools.ant.DemuxInputStream;
@@ -22,7 +20,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -31,8 +28,6 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupDirector;
-import org.eclipse.debug.core.sourcelookup.ISourceContainer;
-import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMConnector;
@@ -45,7 +40,6 @@ import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.core.MeposePlugin;
 import de.enough.mepose.core.model.MeposeModel;
 import de.enough.mepose.ui.MeposeUIPlugin;
-import de.enough.polish.Device;
 import de.enough.utils.AntBox;
 
 public class MIDletLaunchConfigurationDelegate extends
@@ -63,6 +57,10 @@ public class MIDletLaunchConfigurationDelegate extends
     private IProject project;
     private AbstractSourceLookupDirector sourceLocator;
 
+    public MIDletLaunchConfigurationDelegate() {
+        System.out.println("Instance of MIDletLaunchConfigurationDelegate created");
+    }
+    
     public void launch(ILaunchConfiguration configuration, String mode,
                        ILaunch launch, final IProgressMonitor monitor)
                                                                       throws CoreException {
@@ -73,11 +71,10 @@ public class MIDletLaunchConfigurationDelegate extends
 
         MeposeModel model = extractModel(configuration);
 
-        File buildxml = extractBuildXml(model);
+        File buildxml = model.getBuildxml();
 
-        // TODO: Alter the behavior: When no current device is set, buid for several devices.
-        Device currentDevice = model.getCurrentDevice();
-        if (currentDevice == null) {
+        String currentDeviceIdentifier = model.getCurrentDeviceIdentifier();
+        if (currentDeviceIdentifier == null) {
             showErrorBox(MSG_CAN_NOT_BUILD_PROJECT, "No device selected for build");
             return;
         }
@@ -96,7 +93,9 @@ public class MIDletLaunchConfigurationDelegate extends
             throw new CoreException(multiStatus);
         }
         
-        antBox.setProperty("device", currentDevice.getIdentifier());
+        //FIXME: Set more build.control properties.
+        antBox.setProperty("build.control","true");
+        antBox.setProperty("device", currentDeviceIdentifier);
         antBox.setProperty("dir.work", "build/test");
         antBox.setProperty("test", "true");
         if (isDebug) {
@@ -141,8 +140,6 @@ public class MIDletLaunchConfigurationDelegate extends
 
             monitor.subTask("Setting source lookup path.");
             monitor.worked(1);
-            
-            
 
             AntProcess antProcess = new MeposeProcess("J2ME Polish", launch,attributes);
 
@@ -242,10 +239,11 @@ public class MIDletLaunchConfigurationDelegate extends
                 // We have connected. Thats means the build should be finised.
                 
                 // Create SourceLocator objects.
-                this.sourceLocator = (AbstractSourceLookupDirector) launch.getSourceLocator();
-                ISourceContainer[] sourceContainers = this.sourceLocator.getSourceContainers();
-                sourceContainers = createNewSourceContainers(model, sourceContainers);
-                this.sourceLocator.setSourceContainers(sourceContainers);
+                //FIXME: Not needed because we have the MeposeSourceLocator??
+//                this.sourceLocator = (AbstractSourceLookupDirector) launch.getSourceLocator();
+//                ISourceContainer[] sourceContainers = this.sourceLocator.getSourceContainers();
+//                sourceContainers = createNewSourceContainers(model, sourceContainers);
+//                this.sourceLocator.setSourceContainers(sourceContainers);
 
                 monitor.done();
             }
@@ -289,18 +287,6 @@ public class MIDletLaunchConfigurationDelegate extends
         }
     }
 
-    /**
-     * @param model
-     * @throws CoreException
-     */
-    private File extractBuildXml(MeposeModel model) throws CoreException {
-        File file = model.getBuildxml();
-        if (file == null) {
-            throw new CoreException(new Status(IStatus.ERROR,MeposeUIPlugin.ID,0,"The project '" + this.project.getName() + "' does not have a build.xml file.",null));
-        }
-        return file;
-    }
-
     private IProject extractProject(ILaunchConfiguration configuration) throws CoreException{
         String projectName;
         projectName = configuration.getAttribute(MeposeConstants.ID_PROJECT_NAME, "");
@@ -325,33 +311,33 @@ public class MIDletLaunchConfigurationDelegate extends
      * @param model
      * @param sourceContainers
      */
-    private ISourceContainer[] createNewSourceContainers(MeposeModel model, ISourceContainer[] sourceContainers) {
-        // TODO: Do not hardwire the path here.
-        Path path;
-        LinkedList list = new LinkedList();
-        list.addAll(Arrays.asList(sourceContainers));
-        
-        path = new Path(model.getProjectHome()+"/source/src");
-        ISourceContainer mainSourceContainer = new DirectorySourceContainer(path,true);
-        list.add(mainSourceContainer);
-        
-        Device currentDevice = model.getCurrentDevice();
-        String sourceDir = currentDevice.getSourceDir();
-        if(sourceDir != null) {
-            path = new Path(sourceDir);
-            ISourceContainer deviceSourceContainer = new DirectorySourceContainer(path,true);
-            list.add(deviceSourceContainer);
-        }
-        
-        return (ISourceContainer[]) list.toArray(new ISourceContainer[list.size()]);
-        
-        //TODO: How to solve this? The sourcePath of a device is initialized first the build started.
-//        String unprocessedBuildPath = model.getSourcePath(currentDevice);
-//        if(unprocessedBuildPath != null) {
-//            ISourceContainer unprocessedBuildContainer = new DirectorySourceContainer(new Path(unprocessedBuildPath),true);
-//            sourceContainers.add(unprocessedBuildContainer);
+//    private ISourceContainer[] createNewSourceContainers(MeposeModel model, ISourceContainer[] sourceContainers) {
+//        // TODO: Do not hardwire the path here.
+//        Path path;
+//        LinkedList list = new LinkedList();
+//        list.addAll(Arrays.asList(sourceContainers));
+//        
+//        path = new Path(model.getProjectHome()+"/source/src");
+//        ISourceContainer mainSourceContainer = new DirectorySourceContainer(path,true);
+//        list.add(mainSourceContainer);
+//        
+//        Device currentDevice = model.getCurrentDevice();
+//        String sourceDir = currentDevice.getSourceDir();
+//        if(sourceDir != null) {
+//            path = new Path(sourceDir);
+//            ISourceContainer deviceSourceContainer = new DirectorySourceContainer(path,true);
+//            list.add(deviceSourceContainer);
 //        }
-    }
+//        
+//        return (ISourceContainer[]) list.toArray(new ISourceContainer[list.size()]);
+//        
+//        //TODO: How to solve this? The sourcePath of a device is initialized first the build started.
+////        String unprocessedBuildPath = model.getSourcePath(currentDevice);
+////        if(unprocessedBuildPath != null) {
+////            ISourceContainer unprocessedBuildContainer = new DirectorySourceContainer(new Path(unprocessedBuildPath),true);
+////            sourceContainers.add(unprocessedBuildContainer);
+////        }
+//    }
 
     
     /**

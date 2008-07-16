@@ -98,14 +98,16 @@ public class MeposeSourceLocator extends JavaSourceLookupDirector implements
 //            }
 //        }
         
+        //TODO: Needed for 
         ISourceContainer meposeContainer1 = new DirectorySourceContainer(new Path(this.model.getProjectHome()+"/source/src"),true);
-        ISourceContainer meposeContainer2 = new DirectorySourceContainer(new Path(this.model.getCurrentDevice().getSourceDir()),true);
+        
+        //FIXME: We need to get the source dir from the device.
+//        ISourceContainer meposeContainer2 = new DirectorySourceContainer(new Path(this.model.getCurrentDevice().getSourceDir()),true);
         
         ISourceContainer[] newSourceContainers = new ISourceContainer[sourceContainers.length+2];
         System.arraycopy(sourceContainers,0,newSourceContainers,0,sourceContainers.length);
         newSourceContainers[sourceContainers.length] = meposeContainer1;
-        newSourceContainers[sourceContainers.length+1] = meposeContainer2;
-//        setSourceContainers(newSourceContainers);
+//        newSourceContainers[sourceContainers.length+1] = meposeContainer2;
         
         return newSourceContainers;
     }

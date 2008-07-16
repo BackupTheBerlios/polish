@@ -1,7 +1,7 @@
 /*
  * Created on 11.04.2005
  */
-package de.enough.mepose.ui.actions;
+package de.enough.mepose.actions;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -21,6 +21,7 @@ import org.eclipse.ui.PlatformUI;
 
 import de.enough.mepose.core.MeposeConstants;
 import de.enough.mepose.ui.MeposeUIPlugin;
+import de.enough.swt.widgets.DialogUtils;
 
 /**
  * @author rickyn
@@ -28,18 +29,18 @@ import de.enough.mepose.ui.MeposeUIPlugin;
 public class TogglePolishNatureAction implements IObjectActionDelegate{
 
     private IProject selectedProject;
-    private boolean projecthasPolishNature;
-    
 
+    public TogglePolishNatureAction() {
+        System.out.println("ENTER.");
+    }
+    
     public void setActivePart(IAction action, IWorkbenchPart currentTargetPart) {
-        //this.proxyAction = action;
-        //this.targetPart = currentTargetPart;
+        System.out.println("DEBUG:TogglePolishNatureAction.setActivePart(...):enter.");
     }
 
     public void run(final IAction action) {
         try {
             PlatformUI.getWorkbench().getActiveWorkbenchWindow().run(true,false,new IRunnableWithProgress() {
-
                 public void run(IProgressMonitor monitor) {
                     doRun(action, monitor);
                 }
@@ -53,52 +54,33 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
 
     protected void doRun(IAction action,IProgressMonitor monitor) {
         monitor.beginTask("Toggling Polish Nature",IProgressMonitor.UNKNOWN);
-//        System.out.println("TogglePolishNatureAction.run(...).enter.");
-        if(this.selectedProject != null){
-            if( ! this.selectedProject.isOpen()){
-//                System.out.println("ERROR:TogglePolishNatureAction.run(...):project not open.");
-                return;
+        
+        if(this.selectedProject == null || ! this.selectedProject.isOpen()) {
+            monitor.done();
+            return;
+        }
+        
+        try {
+            if(this.selectedProject.hasNature(MeposeConstants.ID_NATURE)) {
+                removePolishNatureFromProject(this.selectedProject);
             }
-            try {
-                if(this.selectedProject.hasNature(MeposeConstants.ID_NATURE)) {
-                    monitor.subTask("Polish Nature found");
-                    this.projecthasPolishNature = true;
-                }
-                else {
-                    monitor.subTask("No Polish Nature found");
-                    this.projecthasPolishNature = false;
-                }
-                if(this.projecthasPolishNature) {
-                    monitor.subTask("About to remove Polish Nature");
-                    removePolishNatureFromProject(this.selectedProject);
-                    monitor.subTask("Polish Nature removed.");
-                    this.projecthasPolishNature = false;
-                }
-                else {
-                    monitor.subTask("About to install Polish Nature.");
-                    addPolishNatureToProject(this.selectedProject,monitor);
-                    monitor.subTask("Polish Nature installed.");
-                    this.projecthasPolishNature = true;
-                }
-                
-            } catch (CoreException e) {
-                // Give a nice explanation to this silly coreexception.
-                e.printStackTrace();
-            } finally {
-                monitor.done();
+            else {
+                addPolishNatureToProject(this.selectedProject,monitor);
             }
+        } catch (CoreException e) {
+            e.printStackTrace();
+//            DialogUtils.showErrorBox("Toggle J2ME Polish Nature","Could not toggle nature because of '"+e+"'");
+        } finally {
+            monitor.done();
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-     */
     public void selectionChanged(IAction action, ISelection selection) {
         if( ! (selection instanceof IStructuredSelection)){
-//            System.out.println("ERROR:TogglePolishNatureAction.selectionChanged(...):Parameter selection has wrong type.selection:class:"+selection.getClass());
             return;
         }
-        IStructuredSelection structuredSelection = (IStructuredSelection) selection; // What a stupid cast. Who comes up with a malformed interface like ISelection??
+//      What a stupid cast. Who comes up with a malformed interface like ISelection??
+        IStructuredSelection structuredSelection = (IStructuredSelection) selection;
         try{
             if(structuredSelection.size() > 0){
                 Object object = structuredSelection.getFirstElement();
@@ -109,15 +91,12 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
             }
         }
         catch(Exception exception){
-//            System.out.println("ERROR:TogglePolishNatureAction.selectionChanged(...):Parameter selection is not an IProject.selection:class:"+exception);
             this.selectedProject = null;
         }
-       
     }
-    public void addPolishNatureToProject(IProject project,IProgressMonitor monitor) throws CoreException {
-        
+    
+    private void addPolishNatureToProject(IProject project,IProgressMonitor monitor) throws CoreException {
         if(project.hasNature(MeposeConstants.ID_NATURE)){
-//            System.out.println("ERROR:PolishEditorPlugin.addPolishNatureToProject(...):Project has Polish nature already.");
             return;
         }
         IProjectDescription description = project.getDescription();
@@ -129,13 +108,10 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
         project.setDescription(description,monitor);
     }
 
-    public void removePolishNatureFromProject(IProject project) throws CoreException{
-        
+    private void removePolishNatureFromProject(IProject project) throws CoreException{
         if( ! project.hasNature(MeposeConstants.ID_NATURE)){
-//            System.out.println("ERROR:PolishEditorPlugin.removePolishNatureFromProject(...):Project has no Polish nature.");
             return;
         }
-        
         IProjectDescription description = project.getDescription();
         String[] ids = description.getNatureIds();
         for(int i = 0; i < ids.length; i++) {
@@ -148,6 +124,5 @@ public class TogglePolishNatureAction implements IObjectActionDelegate{
                 return;
             }
         }
-        
     }
 }
