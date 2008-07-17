@@ -1,4 +1,4 @@
-//#condition polish.mmapi || polish.midp2
+//#condition polish.midp2
 /*
  * Created on Nov 21, 2006 at 6:16:24 PM.
  * 
@@ -30,10 +30,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Hashtable;
 
+//#if polish.android
+import android.media.MediaPlayer;
+import de.enough.polish.drone.midlet.MIDlet;
+import de.enough.polish.drone.resource.RawResources;
+import javax.sound.sampled.AndroidAudioInputStream;
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioFormat;
+//#else
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
+//#endif
+
 
 /**
  * <p>
@@ -52,15 +62,23 @@ import javax.microedition.media.PlayerListener;
  * 
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class AudioPlayer implements PlayerListener {
+public class AudioPlayer
+//#if !polish.android
+implements PlayerListener
+//#endif
+{
 
 	private final static Hashtable AUDIO_TYPES = new Hashtable();
 
 	private final boolean doCachePlayer;
 
+	//#if !polish.android
 	private Player player;
-
 	private PlayerListener listener;
+	//#else
+	//# private MediaPlayer player;
+	//#endif
+
 
 	private final String defaultContentType;
 
@@ -109,8 +127,15 @@ public class AudioPlayer implements PlayerListener {
 	 *        is expected by the device.
 	 * @param listener an optional PlayerListener
 	 */
-	public AudioPlayer(boolean doCachePlayer, String contentType, PlayerListener listener) {
+	public AudioPlayer(boolean doCachePlayer, String contentType ,
+	//#if polish.android
+	//#	Object object)
+	//#	{
+	//#else
+	 PlayerListener listener)
+	{
 		this.listener = listener;
+		//#endif
 		this.doCachePlayer = doCachePlayer;
 		if (contentType != null) {
 			if (!contentType.startsWith("audio/")) {
@@ -133,13 +158,21 @@ public class AudioPlayer implements PlayerListener {
 	 * @throws MediaException when the media is not supported
 	 * @throws IOException when the URL cannot be resolved
 	 */
-	public void play(String url, String type) throws MediaException,
-			IOException {
+	public void play(String url, String type)
+	//#if !polish.android
+	throws MediaException, IOException
+	//#endif
+			{
+		//#if polish.android
+		//# this.player = MediaPlayer.create(MIDlet.current, RawResources.getResourceID(url));
+		//# this.player.start();
+		//#else
 		InputStream in = getClass().getResourceAsStream(url);
 		if (in == null) {
 			throw new IOException("not found: " + url);
 		}
 		play(in, type);
+		//#endif
 	}
 
 	/**
@@ -151,8 +184,11 @@ public class AudioPlayer implements PlayerListener {
 	 * @throws MediaException when the media is not supported
 	 * @throws IOException when the input cannot be read
 	 */
-	public void play(InputStream in, String type) throws MediaException,
-			IOException {
+	public void play(InputStream in, String type)
+	//#if !polish.android
+	throws MediaException, IOException 
+	//#endif
+	{
 		String correctType = getAudioType(type, "file");
 		if (correctType == null) {
 			//#debug warn
@@ -165,9 +201,13 @@ public class AudioPlayer implements PlayerListener {
 				correctType = type;
 			}
 		}
+		//#if polish.android
+		
+		//#else
 		this.player = Manager.createPlayer(in, correctType);
 		this.player.addPlayerListener(this);
 		this.player.start();
+		//#endif
 	}
 
 	/**
@@ -176,12 +216,21 @@ public class AudioPlayer implements PlayerListener {
 	 * @throws MediaException when the media is not supported
 	 * @throws IOException when the URL cannot be resolved
 	 */
-	public void play(String url) throws MediaException, IOException {
+	public void play(String url)
+	//#if !polish.android
+	throws MediaException, IOException 
+	//#endif
+	{
+		//#if polish.android
+		//# this.player = MediaPlayer.create(MIDlet.current, RawResources.getResourceID(url));
+		//# this.player.start();
+		//#else
 		InputStream in = getClass().getResourceAsStream(url);
 		if (in == null) {
 			throw new IOException("not found: " + url);
 		}
 		play(in);
+		//#endif
 	}
 
 	/**
@@ -190,12 +239,16 @@ public class AudioPlayer implements PlayerListener {
 	 * @throws MediaException when the media is not supported
 	 * @throws IOException when the input cannot be read
 	 */
-	public void play(InputStream in) throws MediaException, IOException {
+	//#if !polish.android
+	public void play(InputStream in)
+	throws MediaException, IOException 
+	{
 		String correctType = this.defaultContentType;
 		this.player = Manager.createPlayer(in, correctType);
 		this.player.addPlayerListener(this);
 		this.player.start();
 	}
+	//#endif
 
 	/**
 	 * Plays back the last media again. This can only be used when doCachePlayer
@@ -208,7 +261,11 @@ public class AudioPlayer implements PlayerListener {
 	 * @see #AudioPlayer(boolean, String, PlayerListener)
 	 * @see #AudioPlayer(String)
 	 */
-	public void play() throws MediaException {
+	public void play()
+	//#if !polish.android
+	throws MediaException
+	//#endif
+	{
 		if (this.player != null) {
 			this.player.start();
 		}
@@ -220,9 +277,11 @@ public class AudioPlayer implements PlayerListener {
 	 * @return the original player, this can be null when no audio has been
 	 *         played back so far.
 	 */
+	//#if !polish.android
 	public Player getPlayer() {
 		return this.player;
 	}
+	//#endif
 
 	/**
 	 * Helper function for getting a supported media type.
@@ -235,7 +294,8 @@ public class AudioPlayer implements PlayerListener {
 	 * @return the type supported by the device, for example "audio/mpeg3" -
 	 *         null when the given type is not supported by the device.
 	 */
-	public static String getAudioType(String type, String protocol) {
+	public static String getAudioType(String type, String protocol) {		
+		//#if !polish.android
 		if (AUDIO_TYPES.size() == 0) {
 			addTypes(new String[] { "audio/3gpp", "audio/3gp" });
 			addTypes(new String[] { "audio/x-mp3", "audio/mp3", "audio/x-mp3",
@@ -273,7 +333,7 @@ public class AudioPlayer implements PlayerListener {
 				}
 			}
 		}
-
+		//#endif
 		return null;
 	}
 
@@ -282,11 +342,19 @@ public class AudioPlayer implements PlayerListener {
 	 * @return true when audio is played back
 	 */
 	public boolean isPlaying() {
+		//#if polish.android
+		//# if (this.player == null) {
+		//#	return false;
+		//# } else {
+		//#	 return this.player.isPlaying();
+		//# }
+		//#else
 		if (this.player == null) {
 			return false;
 		} else {
 			return this.player.getState() == Player.STARTED;
 		}
+		//#endif
 	}
 
 	private static final void addTypes(String[] types) {
@@ -298,6 +366,7 @@ public class AudioPlayer implements PlayerListener {
 		}
 	}
 
+	//#if !polish.android
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -315,15 +384,24 @@ public class AudioPlayer implements PlayerListener {
 			cleanUpPlayer();
 		}
 	}
+	//#endif
 
 	/**
 	 * Closes and deallocates the player.
 	 */
 	public void cleanUpPlayer() {
+		//#if !polish.android
 		if (this.player != null) {
 			this.player.deallocate();
 			this.player.close(); // necessary for some Motorola devices
 			this.player = null;
 		}
+		//#else
+		//# if (this.player != null) {
+		//# 	this.player.release();
+		//# 	this.player = null;
+		//# }
+		//#endif
 	}
+
 }
