@@ -1,4 +1,4 @@
-//#condition polish.midp
+//#condition polish.midp || polish.android
 /*
  * Created on Jan 14, 2007 at 11:54:15 AM.
  * 
