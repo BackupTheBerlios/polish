@@ -837,9 +837,8 @@ public class Graphics
 	 */
 	public void clipRect(int x, int y, int width, int height)
 	{
-		Path path = new Path();
-		path.addRect(x, y, x + width, y + height, Direction.CW);
-		this.canvas.clipPath(path, Op.INTERSECT);
+		Rect clip = new Rect( x, y, x + width, y + height );
+		this.canvas.clipRect(clip);
 	}
 
 	/**
@@ -855,7 +854,8 @@ public class Graphics
 	 */
 	public void setClip(int x, int y, int width, int height)
 	{
-		this.canvas.clipRect(x, y, x + width, y + height);
+		Rect clip = new Rect( x, y, x + width, y + height );
+		this.canvas.clipRect(clip, Op.REPLACE);
 	}
 
 	/**
@@ -1002,7 +1002,8 @@ public class Graphics
 	 */
 	public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle)
 	{
-		//TODO implement fillArc
+		RectF rect = new RectF(x,y,x+width,y+height);
+		this.canvas.drawArc(rect, startAngle, arcAngle, paint);
 	}
 
 	/**
@@ -1465,23 +1466,20 @@ public class Graphics
 	 * @since  MIDP 2.0
 	 */
 	public void drawRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height, boolean processAlpha)
-	{
+	{		
+		/*if(this.drawRGBBuffer == null || width > this.drawRGBBuffer.width() || height > this.drawRGBBuffer.height())
+		{
+			Log.v(MIDlet.TAG, "new drawRGBBuffer : width : " + width + " : height : " + height);
+			
+		}
+		else
+		{
+			Log.v(MIDlet.TAG, "keeping drawRGBBuffer");
+		}*/
 		
-//		if(this.drawRGBBuffer == null || width > this.drawRGBBuffer.width() || height > this.drawRGBBuffer.height())
-//		{
-//			Log.v(MIDlet.TAG, "new drawRGBBuffer : width : " + width + " : height : " + height);
-//			this.drawRGBBuffer = Bitmap.createBitmap(width, height, processAlpha);
-//		}
-//		else
-//		{
-//			Log.v(MIDlet.TAG, "keeping drawRGBBuffer");
-//		}
-//		
-//		this.drawRGBBuffer.setPixels(rgbData, offset, scanlength, 0, 0, width, height);
-//		canvas.drawBitmap(this.drawRGBBuffer, x, y, paint);
-		//TODO FIX !!!
-		//Bitmap bitmap = Bitmap.createBitmap(rgbData, width, height, true);
-		//canvas.drawBitmap(bitmap,x,y,paint);
+		this.drawRGBBuffer = Bitmap.createBitmap(width, height, processAlpha);
+		this.drawRGBBuffer.setPixels(rgbData, offset, scanlength, 0, 0, width, height);
+		canvas.drawBitmap(this.drawRGBBuffer, x, y, paint);
 		
 	}
 

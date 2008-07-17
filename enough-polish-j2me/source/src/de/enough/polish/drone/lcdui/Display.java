@@ -634,7 +634,7 @@ public class Display extends View{
 			this.currentCanvas.showNotify();
 		}	
 		
-		invalidate();
+		postInvalidate();
 	}
 
 	/**
