@@ -60,7 +60,36 @@ public class ColumnsWidthCssAttribute extends CssAttribute {
 	public String getValue(String value, Environment environment ) {
 		// remove any spaces, e.g. "columns-width: 50, 100, *":
 		value = StringUtil.replace( value, " ", "" );
-		return '"' + value + '"';
+		if (value.equals("equal")) {
+			return "\"equal\"";
+		}
+		String[] values = StringUtil.split(value, ',');
+		StringBuffer result = new StringBuffer();
+		result.append('"');
+		for (int i = 0; i < values.length; i++) {
+			String string = values[i];
+			if ("*".equals(string)) {
+				result.append(string);
+			} else {
+				try {
+					Integer.parseInt(string);
+					result.append(string);
+				} catch (NumberFormatException e) {
+					if (string.startsWith("(")) {
+						string = "calculate" + string;
+					} else {
+						string = "calculate(" + string + ")";
+					}
+					string = environment.getProperty(string, true);
+					result.append(string);
+				}
+			}
+			if (i < values.length -1) {
+				result.append(",");
+			}
+		}
+		result.append('"');
+		return result.toString();
 	}
 
 	/* (non-Javadoc)
