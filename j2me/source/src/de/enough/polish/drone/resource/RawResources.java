@@ -1,3 +1,4 @@
+//#condition polish.android
 package de.enough.polish.drone.resource;
 
 import java.io.InputStream;
