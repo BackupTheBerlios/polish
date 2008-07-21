@@ -646,7 +646,7 @@ public class MenuBar extends Item {
 				containerHeight -= titleHeight - commandsContainerY;
 				commandsContainerY = titleHeight;
 			}
-			//#if tmp.useInvisibleMenuBar && !polish.hasTrackballEvents
+			//#if tmp.useInvisibleMenuBar && !polish.hasTrackballEvents && !polish.android
 				this.commandsContainer.relativeY = this.itemHeight - screenHeight + this.topY;
 			//#else
 				this.commandsContainer.relativeY = - containerHeight;

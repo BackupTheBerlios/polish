@@ -3,7 +3,9 @@ package de.enough.polish.drone.lcdui;
 
 import de.enough.polish.drone.midlet.MIDlet;
 import android.content.Context;
+import android.text.method.KeyCharacterMap;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 
 /**
@@ -617,9 +619,13 @@ public abstract class Canvas extends Displayable
 	 * @throws IllegalArgumentException - if keyCode  is not a valid key code
 	 */
 	public String getKeyName(int keyCode)
-	{
-		return null;
-		//TODO implement getKeyName
+	{	
+		int key = this.display.getCurrentEvent().getKeyCode();
+		int meta = this.display.getCurrentEvent().getMetaState();
+		
+		int ascii = Display.characterMap.get(key, meta);
+		
+		return "" + (char)ascii;
 	}
 
 	/**

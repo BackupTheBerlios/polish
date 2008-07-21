@@ -1197,6 +1197,20 @@ public class Graphics
 	 */
 	public void drawImage( Image img, int x, int y, int anchor)
 	{
+		Bitmap bitmap = img.bitmap;
+		int width = bitmap.getWidth();
+		if ( (anchor & RIGHT) == RIGHT ) {
+			x -= width;
+		} else if ( (anchor & HCENTER) == HCENTER ) {
+			x -= width / 2;
+		}
+		int height = bitmap.getHeight();
+		if ( (anchor & BOTTOM) == BOTTOM ) {
+			y -= height;
+		} else if ( (anchor & VCENTER) == VCENTER ) {
+			y -= height / 2;
+		}
+		
 		this.canvas.drawBitmap(img.getBitmap(), x, y, paint);
 	}
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.text.method.KeyCharacterMap;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -195,6 +196,11 @@ public class Display extends View{
 	//#endif
 	
 	de.enough.polish.drone.lcdui.Canvas currentCanvas;
+	
+	KeyEvent currentEvent;
+
+	public static KeyCharacterMap characterMap;
+	
 	/**
 	 * Creates a view with the given context
 	 * @param context the context
@@ -225,6 +231,14 @@ public class Display extends View{
 	 */
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.v(MIDlet.TAG, "onKeyDown : " + keyCode);
+		
+		if(characterMap == null)
+		{
+			characterMap = KeyCharacterMap.load(event.getKeyboardDevice());
+		}
+		
+		this.currentEvent = event;
+		
 		this.currentCanvas.keyPressed(keyCode);
 		return true;
 	}
@@ -929,6 +943,14 @@ public class Display extends View{
 	public int getBestImageHeight(int imageType) {
 		return 0;
 		// TODO implement getBestImageHeight
+	}
+
+	public KeyEvent getCurrentEvent() {
+		return currentEvent;
+	}
+
+	public de.enough.polish.drone.lcdui.Canvas getCurrentCanvas() {
+		return currentCanvas;
 	}
 
 }
