@@ -4528,6 +4528,7 @@ implements AccessibleCanvas
 	 */
 	public void setMenuItemStyle(Style menuItemStyle)
 	{
+		System.out.println("setmenuitemstyle");
 		this.menuBar.setMenuItemStyle(menuItemStyle);
 	}
 	//#endif

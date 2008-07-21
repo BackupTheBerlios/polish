@@ -1976,7 +1976,6 @@ public class MenuBar extends Item {
 		while(enumerator.hasMoreElements())
 		{
 			CommandItem item = (CommandItem) enumerator.nextElement();
-			System.out.println(item);
 			item.setStyle(menuItemStyle);
 			item.repaint();
 		}

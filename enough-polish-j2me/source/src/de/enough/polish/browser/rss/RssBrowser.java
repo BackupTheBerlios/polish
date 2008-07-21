@@ -1,4 +1,4 @@
-//#condition polish.usePolishGui
+//#condition polish.usePolishGui && !polish.android
 
 /*
  * Created on 24-Apr-2007 at 19:20:28.

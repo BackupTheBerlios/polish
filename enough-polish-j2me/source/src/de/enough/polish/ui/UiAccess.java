@@ -3332,7 +3332,7 @@ public final class UiAccess {
 	}
 	//#endif
 
-	//#if polish.midp2
+	//#if polish.midp2 && !polish.android
 	/**
 	 * Sets an ItemStateListener specifically for this item.
 	 * Change events are forwarded to both this listener as well as a possibly set listener of the
@@ -3548,7 +3548,7 @@ public final class UiAccess {
 	}
 	//#endif
 	
-	//#if polish.midp2
+	//#if polish.midp2 && !polish.android
 	/**
 	 * Notifies the specified CustomItem that a key or pointer event has been processed and that it should not be processed by other components.
 	 * This is useful when overriding keyPressed, keyReleased, keyRepeated or pointerPressed in CustomItems -
