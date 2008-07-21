@@ -287,8 +287,10 @@
 			<mapping from="javax.microedition.rms.RecordStoreNotOpenException" to="de.enough.polish.drone.rms.RecordStoreNotOpenException" />
 			<mapping from="javax.microedition.io.Connector" to="de.enough.polish.drone.io.Connector" />
 			<mapping from="javax.microedition.io.InputConnection" to="de.enough.polish.drone.io.InputConnection" />
+			<mapping from="javax.microedition.io.StreamConnection" to="de.enough.polish.drone.io.StreamConnection" />
 			<mapping from="javax.microedition.io.OutputConnection" to="de.enough.polish.drone.io.OutputConnection" />
 			<mapping from="javax.microedition.io.SocketConnection" to="de.enough.polish.drone.io.SocketConnection" />
+			<mapping from="javax.microedition.io.HttpConnection" to="de.enough.polish.drone.io.HttpConnection" />
 			<mapping from="javax.microedition.io.ConnectionNotFoundException" to="de.enough.polish.drone.io.ConnectionNotFoundException" />
 		</mappings>
 		<mappings if="polish.usePolishGui and polish.useDefaultPackage and polish.android">
