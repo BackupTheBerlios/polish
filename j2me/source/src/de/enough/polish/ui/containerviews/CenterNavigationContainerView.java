@@ -68,7 +68,7 @@ public class CenterNavigationContainerView extends ContainerView {
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.ContainerView#initContent(de.enough.polish.ui.Container, int, int)
 	 */
-	protected void initContent(Item parentItm, int firstLineWidth,
+	protected synchronized void initContent(Item parentItm, int firstLineWidth,
 			int lineWidth) 
 	{
 		int height = 0;
