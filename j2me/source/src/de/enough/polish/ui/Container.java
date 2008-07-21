@@ -823,25 +823,25 @@ public class Container extends Item {
 		int hBefore = item.itemHeight;
 		int layoutBefore = item.layout;
 		Style newStyle = getFocusedStyle( index, item);
-		//#if tmp.supportViewType
-			if ( this.containerView != null ) {
-				this.itemStyle =  this.containerView.focusItem( index, item, direction, newStyle );
-			} else {
-		//#endif
-				this.itemStyle = item.focus( newStyle, direction );
-		//#if tmp.supportViewType
-			} 
-		//#endif
-		//#ifdef polish.debug.error
-			if (this.itemStyle == null) {
-				//#debug error 
-				System.out.println("Container: Unable to retrieve style of item " + item.getClass().getName() );
-			}
-		//#endif
 		boolean isDownwards = (direction == Canvas.DOWN) || (direction == Canvas.RIGHT) || (direction == 0 &&  index > this.focusedIndex);
 		int previousIndex = this.focusedIndex; // need to determine whether the user has scrolled from the bottom to the top
 		this.focusedIndex = index;
 		this.focusedItem = item;
+		//#if tmp.supportViewType
+		if ( this.containerView != null ) {
+			this.itemStyle =  this.containerView.focusItem( index, item, direction, newStyle );
+		} else {
+			//#endif
+			this.itemStyle = item.focus( newStyle, direction );
+			//#if tmp.supportViewType
+		} 
+		//#endif
+		//#ifdef polish.debug.error
+		if (this.itemStyle == null) {
+			//#debug error 
+			System.out.println("Container: Unable to retrieve style of item " + item.getClass().getName() );
+		}
+		//#endif
 		//System.out.println("focus - still initialzed=" + this.isInitialized + " for " + this);
 		if  (this.isInitialized) {
 			// this container has been initialised already,
