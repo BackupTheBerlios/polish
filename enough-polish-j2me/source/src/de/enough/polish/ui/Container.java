@@ -828,20 +828,21 @@ public class Container extends Item {
 		this.focusedIndex = index;
 		this.focusedItem = item;
 		//#if tmp.supportViewType
-		if ( this.containerView != null ) {
-			this.itemStyle =  this.containerView.focusItem( index, item, direction, newStyle );
-		} else {
-			//#endif
-			this.itemStyle = item.focus( newStyle, direction );
-			//#if tmp.supportViewType
-		} 
+			if ( this.containerView != null ) {
+				this.itemStyle =  this.containerView.focusItem( index, item, direction, newStyle );
+			} else {
+		//#endif
+				this.itemStyle = item.focus( newStyle, direction );
+		//#if tmp.supportViewType
+			} 
 		//#endif
 		//#ifdef polish.debug.error
-		if (this.itemStyle == null) {
-			//#debug error 
-			System.out.println("Container: Unable to retrieve style of item " + item.getClass().getName() );
-		}
+			if (this.itemStyle == null) {
+				//#debug error 
+				System.out.println("Container: Unable to retrieve style of item " + item.getClass().getName() );
+			}
 		//#endif
+
 		//System.out.println("focus - still initialzed=" + this.isInitialized + " for " + this);
 		if  (this.isInitialized) {
 			// this container has been initialised already,
