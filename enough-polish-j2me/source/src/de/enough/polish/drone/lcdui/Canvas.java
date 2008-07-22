@@ -313,6 +313,8 @@ public abstract class Canvas extends Displayable
 	//ANDROID ADOPTIONS
 	public Graphics graphics;
 	
+	public static KeyCharacterMap characterMap;
+	
 	public int getCanvasHeight()
 	{
 		return this.canvas.getBitmapHeight();
@@ -620,12 +622,7 @@ public abstract class Canvas extends Displayable
 	 */
 	public String getKeyName(int keyCode)
 	{	
-		int key = this.display.getCurrentEvent().getKeyCode();
-		int meta = this.display.getCurrentEvent().getMetaState();
-		
-		int ascii = Display.characterMap.get(key, meta);
-		
-		return "" + (char)ascii;
+		return "" + (char)keyCode;
 	}
 
 	/**

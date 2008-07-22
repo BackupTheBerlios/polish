@@ -189,6 +189,7 @@ import de.enough.polish.drone.midlet.MIDlet;
 public class Display extends View{
 
 	//ANDROID ADOPTIONS
+	
 	//#if polish.ScreenHeight:defined
 	//#= Bitmap bitmap = Bitmap.createBitmap(${polish.ScreenWidth}, ${polish.ScreenHeight}, true);
 	//#else
@@ -199,7 +200,7 @@ public class Display extends View{
 	
 	KeyEvent currentEvent;
 
-	public static KeyCharacterMap characterMap;
+	static KeyCharacterMap characterMap;
 	
 	/**
 	 * Creates a view with the given context
@@ -237,9 +238,22 @@ public class Display extends View{
 			characterMap = KeyCharacterMap.load(event.getKeyboardDevice());
 		}
 		
-		this.currentEvent = event;
+		if(this.currentCanvas.getGameAction(keyCode) != 0)
+		{
+			this.currentCanvas.keyPressed(keyCode);
+		}
+		else
+		{
+			int key = event.getKeyCode();
+			int meta = event.getMetaState();
+			
+			int ascii = characterMap.get(key, meta);
+			
+			this.currentEvent = event;
+			
+			this.currentCanvas.keyPressed(ascii);
+		}
 		
-		this.currentCanvas.keyPressed(keyCode);
 		return true;
 	}
 
