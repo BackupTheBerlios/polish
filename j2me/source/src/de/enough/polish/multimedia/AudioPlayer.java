@@ -1,4 +1,4 @@
-//#condition polish.midp2
+//#condition polish.api.mmapi || polish.midp2
 /*
  * Created on Nov 21, 2006 at 6:16:24 PM.
  * 
