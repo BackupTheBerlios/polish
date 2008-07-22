@@ -605,9 +605,7 @@ public class MenuBar extends Item {
 				if ((
 					(isNegative && 
 					((type == Command.BACK || type == Command.CANCEL || type == Command.STOP
-					//#if polish.blackberry
 						|| type == Command.EXIT
-					//#endif
 					)))
 					|| (!isNegative && 
 							(type == Command.OK || type == Command.ITEM || type == Command.SCREEN) ))
