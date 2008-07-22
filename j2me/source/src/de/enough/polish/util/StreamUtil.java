@@ -1,14 +1,12 @@
 package de.enough.polish.util;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
  * <p>Provides some useful Stream methods.</p>
  *
- * <p>Copyright Enough Software 2004 - 2008</p>
+ * <p>Copyright Enough Software 2008</p>
 
  * <pre>
  * history
