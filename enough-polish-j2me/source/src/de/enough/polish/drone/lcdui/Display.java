@@ -198,9 +198,7 @@ public class Display extends View{
 	
 	de.enough.polish.drone.lcdui.Canvas currentCanvas;
 	
-	KeyEvent currentEvent;
-
-	static KeyCharacterMap characterMap;
+	DisplayUtil util;
 	
 	/**
 	 * Creates a view with the given context
@@ -214,8 +212,6 @@ public class Display extends View{
 	 * @see android.view.View#onDraw(android.graphics.Canvas)
 	 */
 	protected void onDraw(Canvas canvas) {
-		Log.v(MIDlet.TAG, "onDraw");
-		
 		if(this.currentCanvas != null)
 		{
 			if(this.currentCanvas.graphics == null)
@@ -233,26 +229,14 @@ public class Display extends View{
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.v(MIDlet.TAG, "onKeyDown : " + keyCode);
 		
-		if(characterMap == null)
+		if(this.util == null)
 		{
-			characterMap = KeyCharacterMap.load(event.getKeyboardDevice());
+			this.util = new DisplayUtil(event.getDeviceId());
 		}
 		
-		if(this.currentCanvas.getGameAction(keyCode) != 0)
-		{
-			this.currentCanvas.keyPressed(keyCode);
-		}
-		else
-		{
-			int key = event.getKeyCode();
-			int meta = event.getMetaState();
-			
-			int ascii = characterMap.get(key, meta);
-			
-			this.currentEvent = event;
-			
-			this.currentCanvas.keyPressed(ascii);
-		}
+		int key = this.util.handleKey(keyCode, event, this.currentCanvas);
+		
+		this.currentCanvas.keyPressed(key);
 		
 		return true;
 	}
@@ -262,7 +246,16 @@ public class Display extends View{
 	 */
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		Log.v(MIDlet.TAG, "onKeyUp : " + keyCode);
-		this.currentCanvas.keyReleased(keyCode);
+		
+		if(this.util == null)
+		{
+			this.util = new DisplayUtil(event.getDeviceId());
+		}
+		
+		int key = this.util.handleKey(keyCode, event, this.currentCanvas);
+		
+		this.currentCanvas.keyReleased(key);
+		
 		return true;
 	}
 	
@@ -958,13 +951,4 @@ public class Display extends View{
 		return 0;
 		// TODO implement getBestImageHeight
 	}
-
-	public KeyEvent getCurrentEvent() {
-		return currentEvent;
-	}
-
-	public de.enough.polish.drone.lcdui.Canvas getCurrentCanvas() {
-		return currentCanvas;
-	}
-
 }

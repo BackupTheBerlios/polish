@@ -438,11 +438,6 @@ public class Graphics
 	Canvas canvas = null;
 	
 	/**
-	 * some buffers and stuff
-	 */
-	Bitmap drawRGBBuffer = null;
-	
-	/**
 	 * android implemenation
 	 * @param canvas
 	 */
@@ -1481,20 +1476,8 @@ public class Graphics
 	 */
 	public void drawRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height, boolean processAlpha)
 	{		
-		/*if(this.drawRGBBuffer == null || width > this.drawRGBBuffer.width() || height > this.drawRGBBuffer.height())
-		{
-			Log.v(MIDlet.TAG, "new drawRGBBuffer : width : " + width + " : height : " + height);
-			
-		}
-		else
-		{
-			Log.v(MIDlet.TAG, "keeping drawRGBBuffer");
-		}*/
-		
-		this.drawRGBBuffer = Bitmap.createBitmap(width, height, processAlpha);
-		this.drawRGBBuffer.setPixels(rgbData, offset, scanlength, 0, 0, width, height);
-		canvas.drawBitmap(this.drawRGBBuffer, x, y, paint);
-		
+		Bitmap rgbBuffer = Bitmap.createBitmap(rgbData,width, height, Bitmap.Config.ARGB_4444);
+		this.canvas.drawBitmap(rgbBuffer, x, y, this.paint);
 	}
 
 	/**

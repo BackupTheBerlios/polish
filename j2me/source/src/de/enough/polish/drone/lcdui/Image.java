@@ -580,8 +580,7 @@ public class Image extends Object
 	 */
 	public static Image createRGBImage(int[] rgb, int width, int height, boolean processAlpha)
 	{
-		return null;
-		//TODO implement createRGBImage
+		return new Image(Bitmap.createBitmap(rgb,width, height, Bitmap.Config.ARGB_4444));
 	}
 
 	/**
