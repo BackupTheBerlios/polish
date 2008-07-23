@@ -174,7 +174,7 @@ focused {
 	layout: center;
 
 	filter: grayscale;
-	filter-grayscale-grade: 100%;
+	filter-grayscale-grade: 10%;
 	filter-grayscale-grade-animation {
 		on: defocus;
 		range: 0%..100%;
@@ -207,12 +207,12 @@ focused {
 	layout: center;
 	filter: gaussian-blur;
 	filter-gaussian-blur: 100%;
-	/*
+	
 	filter-gaussian-blur-animation {
 		on: defocus;
 		range: 0%..100%;
 	}
-	*/
+	
 	
 }
 .blurItem:hover {
@@ -220,7 +220,7 @@ focused {
 	
 	filter-gaussian-blur-animation {
 		on: focus;
-		range: 100%..0%;
+		range: 100%..50%;
 	}
 }
 
