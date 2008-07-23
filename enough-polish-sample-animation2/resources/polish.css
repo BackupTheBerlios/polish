@@ -149,6 +149,7 @@ focused {
 		first-bottom-color: blue;
 		second-bottom-color: black;
 	}
+
 	layout: horizontal-expand | horizontal-center | vertical-center;
 	columns: 2;
 	columns-width: equal;
@@ -172,9 +173,17 @@ focused {
 	icon-image: url( iconlarge%INDEX%.png );
 	icon-image-align: top;
 	layout: center;
+	/*
 	filter: grayscale;
 	filter-grayscale-grade: 100%;
 	filter-grayscale-grade-animation {
+		on: defocus;
+		range: 0%..100%;
+	}
+	*/
+	filter: blur;
+	filter-blur-grade: 100%;
+	filter-blur-grade-animation {
 		on: defocus;
 		range: 0%..100%;
 	}
@@ -183,7 +192,13 @@ focused {
 .mainItem:hover {
 	font-color: white;
 	text-effect: shadow;
+	/*
 	filter-grayscale-grade-animation {
+		on: focus;
+		range: 100%..0%;
+	}
+	*/
+	filter-blur-grade-animation {
 		on: focus;
 		range: 100%..0%;
 	}
