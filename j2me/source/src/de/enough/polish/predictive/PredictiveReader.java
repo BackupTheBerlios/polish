@@ -54,7 +54,7 @@ public abstract class PredictiveReader {
 	}
 
 	public boolean isEmpty() {
-		return empty;
+		return this.empty;
 	}
 
 	protected void setEmpty(boolean empty) {
@@ -62,7 +62,7 @@ public abstract class PredictiveReader {
 	}
 	
 	public boolean isWordFound() {
-		return wordFound;
+		return this.wordFound;
 	}
 
 	protected void setWordFound(boolean wordFound) {

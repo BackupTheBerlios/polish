@@ -150,7 +150,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 		this.alert.setTimeout(2000);
 		
 		//#if polish.predictive.globalSwitch
-		registeredFields = new ArrayList();
+		this.registeredFields = new ArrayList();
 		//#endif
 	}
 
@@ -1027,7 +1027,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 
 	public TextBuilder getBuilder() {
-		return builder;
+		return this.builder;
 	}
 
 	public void setBuilder(TextBuilder builder) {
@@ -1035,7 +1035,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 
 	public int getPredictiveType() {
-		return predictiveType;
+		return this.predictiveType;
 	}
 
 	public void setPredictiveType(int predictiveType) {
@@ -1043,7 +1043,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 
 	public Container getChoicesContainer() {
-		return choicesContainer;
+		return this.choicesContainer;
 	}
 
 	public void setChoicesContainer(Container choicesContainer) {
@@ -1125,7 +1125,7 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 
 	public TextField getParent() {
-		return parent;
+		return this.parent;
 	}
 
 	public void setParent(TextField parent) {
@@ -1133,10 +1133,10 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 
 	public boolean isOpen() {
-		return isOpen;
+		return this.isOpen;
 	}
 
 	public boolean isPredictiveEnabled() {
-		return predictiveEnabled;
+		return this.predictiveEnabled;
 	}
 }

@@ -459,7 +459,7 @@ public class Style implements Externalizable
 		Serializer.serialize(this.font, out);
 		
 		out.writeInt(this.fontColor);
-		Serializer.serialize(fontColorObj, out);
+		Serializer.serialize(this.fontColorObj, out);
 		out.writeInt(this.paddingLeft);
 		out.writeInt(this.paddingRight);
 		out.writeInt(this.paddingTop);

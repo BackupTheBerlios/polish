@@ -59,7 +59,7 @@ public class ThemeContainer implements Serializable{
 	 * @return the offset
 	 */
 	public int getOffset() {
-		return offset;
+		return this.offset;
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class ThemeContainer implements Serializable{
 	 * @return the data
 	 */
 	public byte[] getData() {
-		return data;
+		return this.data;
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class ThemeContainer implements Serializable{
 	 * @return
 	 */
 	public byte getType() {
-		return type;
+		return this.type;
 	}
 
 	/**
