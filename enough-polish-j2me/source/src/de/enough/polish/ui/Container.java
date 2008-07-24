@@ -1560,13 +1560,23 @@ public class Container extends Item {
 						|| (this.enableScrolling && offset + this.itemHeight > availableScrollHeight)
 						)
 			) {
+				int containerHeight = this.contentHeight;
+				int scrollHeight = this.getContentScrollHeight();
+				int scrollOffset = this.getScrollYOffset();
+				
 				// scroll downwards:
 				int difference =
 				//#if polish.Container.ScrollDelta:defined
 					//#=  ${polish.Container.ScrollDelta};
 				//#else
-					getScreen() != null ? getScreen().contentHeight / 2 :  30;
+					((containerHeight + scrollOffset) - scrollHeight);
+				
+					if(difference > scrollHeight)
+					{
+						difference = difference / 2;
+					}
 				//#endif
+					
 				offset = getScrollYOffset() - difference;
 				setScrollYOffset( offset, true );
 				processed = true;
