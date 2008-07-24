@@ -205,22 +205,22 @@ focused {
 	icon-image: url( iconlarge%INDEX%.png );
 	icon-image-align: top;
 	layout: center;
-	filter: gaussian-blur;
-	filter-gaussian-blur: 100%;
-	
-	filter-gaussian-blur-animation {
+	filter: blur;
+	filter-blur-grade: 100%;
+
+	/*filter-blur-grade-animation {
 		on: defocus;
 		range: 0%..100%;
-	}
+	}*/
 	
 	
 }
 .blurItem:hover {
 	font-color: white;
 	
-	filter-gaussian-blur-animation {
+	filter-blur-grade-animation {
 		on: focus;
-		range: 100%..50%;
+		range: 100%..0%;
 	}
 }
 
