@@ -1571,9 +1571,9 @@ public class Container extends Item {
 				//#else
 					((containerHeight + scrollOffset) - scrollHeight);
 				
-					if(difference > scrollHeight)
+					if(difference > (scrollHeight / 2))
 					{
-						difference = difference / 2;
+						difference = scrollHeight / 2;
 					}
 				//#endif
 					
