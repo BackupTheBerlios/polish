@@ -206,12 +206,12 @@ focused {
 	icon-image-align: top;
 	layout: center;
 	filter: blur;
-	filter-blur-grade: 100%;
+	filter-blur-grade: 0%;
 
-	/*filter-blur-grade-animation {
+	filter-blur-grade-animation {
 		on: defocus;
-		range: 0%..100%;
-	}*/
+		range: 50%..0%;
+	}
 	
 	
 }
@@ -220,7 +220,7 @@ focused {
 	
 	filter-blur-grade-animation {
 		on: focus;
-		range: 100%..0%;
+		range: 0%..50%;
 	}
 }
 
