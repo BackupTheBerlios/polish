@@ -81,13 +81,13 @@ public class MenuMidlet extends MIDlet implements CommandListener {
 		this.menuScreen.append("Mail", null);
 		//#style mainItem
 		this.menuScreen.append("Settings", null);
-		//#style blurItem
+		//#style mainItem
 		this.menuScreen.append("Applications", null);
-		//#style blurItem
+		//#style scaleItem
 		this.menuScreen.append("Help", null);
 		//#style mainItem
 		this.menuScreen.append("Quit", null);
-		//#style scalarItem
+		//#style scaleItem
 		this.menuScreen.append("Documents", null);
 		
 		

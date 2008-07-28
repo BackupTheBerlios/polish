@@ -224,7 +224,7 @@ focused {
 	}
 }
 
-.scalarItem {
+.scaleItem {
 	font-style: bold;
 	font-size: small;
 	padding: 0;
@@ -233,19 +233,19 @@ focused {
 	icon-image-align: top;
 	layout: center;
 	filter: scalar;
-	filter-scalar-grade: 0%;
+	filter-scale-grade: 0%;
 
-	filter-scalar-grade-animation {
+	filter-scale-grade-animation {
 		on: defocus;
 		range: 50%..0%;
 	}
 	
 	
 }
-.scalarItem:hover {
+.scaleItem:hover {
 	font-color: white;
 	
-	filter-scalar-grade-animation {
+	filter-scale-grade-animation {
 		on: focus;
 		range: 0%..50%;
 	}
