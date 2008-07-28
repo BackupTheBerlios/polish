@@ -4117,4 +4117,32 @@ public final class UiAccess {
 		return null;
 	}
 	//#endif
+	
+
+	//#if polish.usePolishGui
+	/**
+	 * Determines the height of the title of the specified screen.
+	 * This gives only a result after the screen has been shown.
+	 * @param screen the screen
+	 * @return the screen's title height or 0 when the the screen has not been initialized or J2ME Polish is not used in fullscreen mode
+	 */
+	public static int getTitleHeight(Screen screen)
+	{
+		return screen.titleHeight;
+	}
+	//#endif
+	
+	//#if polish.midp
+	/**
+	 * Determines the height of the title of the specified screen.
+	 * This gives only a result after the screen has been shown.
+	 * @param screen the screen
+	 * @return the screen's title height or 0 when the the screen has not been initialized or J2ME Polish is not used in fullscreen mode
+	 */
+	public static int getTitleHeight(javax.microedition.lcdui.Screen screen)
+	{
+		return 0;
+	}
+	//#endif
+
 }
