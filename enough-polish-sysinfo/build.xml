@@ -42,7 +42,7 @@
 			<lifeCycleManager name="mea" unless="test">
 			    <parameter name="fallbackDevice" value="Generic/multi" />
 			    <parameter name="tags" value="test" />
-			    <parameter name="access" value="public" />
+			    <parameter name="access" value="pseudoprivate" />
 		  </lifeCycleManager>
 			<!-- general settings -->
 					<info 

@@ -90,7 +90,8 @@ public class Midp2FullCanvasTest extends Canvas implements DynamicTest {
 			this.infoCollector.addInfo( "FullCanvasWidth(MIDP/2.0): ", "" + this.width );
 			this.infoCollector.addInfo( "FullCanvasHeight(MIDP/2.0): ", "" + this.height );
 		}
-
+//		g.setColor(0xff0000);
+//		g.drawString("MIDP 2.0 Test", 10, 20, 0 );
 	}
 
 	/* (non-Javadoc)
