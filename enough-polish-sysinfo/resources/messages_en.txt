@@ -13,6 +13,7 @@ cmd.multimedia=Multimedia Info
 cmd.system=System Info
 cmd.libraries=APIs Info
 cmd.keys=Keys Info
+cmd.platformRequest=Platform Request
 cmd.arithmeticBenchmark=Arithmetic Benchmark
 cmd.credits=Credits
 cmd.back=Back

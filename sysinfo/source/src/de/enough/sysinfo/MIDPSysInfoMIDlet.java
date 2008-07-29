@@ -25,6 +25,7 @@ import com.grimo.me.product.midpsysinfo.InfoForm;
 import com.grimo.me.product.midpsysinfo.KeysInfoCollector;
 import com.grimo.me.product.midpsysinfo.LibrariesInfoCollector;
 import com.grimo.me.product.midpsysinfo.MultiMediaInfoCollector;
+import com.grimo.me.product.midpsysinfo.PlatformRequestViewer;
 import com.grimo.me.product.midpsysinfo.SystemInfoCollector;
 
 import de.enough.polish.rmi.RemoteClient;
@@ -107,6 +108,7 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 		this.mainMenu.append(Locale.get("cmd.libraries"), null);
 		this.mainMenu.append(Locale.get("cmd.keys"), null);
 		this.mainMenu.append(Locale.get("cmd.events"), null);
+		this.mainMenu.append(Locale.get("cmd.platformRequest"), null);
 		this.mainMenu.append(Locale.get("cmd.arithmeticBenchmark"), null);
 		this.mainMenu.append(Locale.get("cmd.credits"), null);
 		this.mainMenu.append(Locale.get("cmd.upload"), null);
@@ -249,22 +251,25 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 				show(Locale.get("title.keys"), new KeysInfoCollector());
 				return;
 			case 5:
-				show( new EventViewer(this) );
+				this.display.setCurrent( new EventViewer(this) );
 				return;
 			case 6:
+				this.display.setCurrent( new PlatformRequestViewer(this) );
+				return;
+			case 7:
 				show(Locale.get("title.arithmeticBenchmark"),
 						new ArithmeticBenchmarkInfoCollector());
 				return;
-			case 7:
+			case 8:
 				show(new CreditsCanvas());
 				return;
-			case 8:
+			case 9:
 				show(Locale.get("title.keys"), new KeyCollector(this));
 				return;
-			case 9:
+			case 10:
 				new UpdateChecker(this.display, this);
 				break;
-			case 10:
+			case 11:
 				cmd = this.exitCmd;
 				break;
 			}
