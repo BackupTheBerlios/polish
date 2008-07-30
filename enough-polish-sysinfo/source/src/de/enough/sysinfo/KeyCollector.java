@@ -158,27 +158,27 @@ public class KeyCollector extends InfoCollector implements DynamicTestView{
 		switch (this.step) {
 			case STEP_LEFT_SOFT_KEY:
 				addInfo( "Left Soft-Key: ", "" + keyCode );
-				this.sysinfoMIDlet.keyInfos.put("softkeyleft", String.valueOf(keyCode));
+				this.sysinfoMIDlet.keyInfos.put("key.LeftSoftKey", String.valueOf(keyCode));
 				break;
 			case STEP_RIGHT_SOFT_KEY:
 				addInfo( "Right Soft-Key: ", "" + keyCode );
-				this.sysinfoMIDlet.keyInfos.put("softkeyright", String.valueOf(keyCode));
+				this.sysinfoMIDlet.keyInfos.put("key.RightSoftKey", String.valueOf(keyCode));
 				break;
 			case STEP_MIDDLE_SOFT_KEY:
 				addInfo( "Middle Soft-Key: ", "" + keyCode );
-				this.sysinfoMIDlet.keyInfos.put("softkeymiddle", String.valueOf(keyCode));
+				this.sysinfoMIDlet.keyInfos.put("key.MiddleSoftKey", String.valueOf(keyCode));
 				break;
 			case STEP_CLEAR_KEY:
 				addInfo( "Clear-Key: ", "" + keyCode );
-				this.sysinfoMIDlet.keyInfos.put("softkeyclear", String.valueOf(keyCode));
+				this.sysinfoMIDlet.keyInfos.put("key.ClearSoftKey", String.valueOf(keyCode));
 				break;
 			case STEP_RETURN_KEY:
 				addInfo( "Return-Key: ", "" + keyCode );
-				this.sysinfoMIDlet.keyInfos.put("softkeyreturn", String.valueOf(keyCode));
+				this.sysinfoMIDlet.keyInfos.put("key.ReturnSoftKey", String.valueOf(keyCode));
 				break;
 			case STEP_SELECT_KEY:
 				addInfo( "Select-Key: ", "" + String.valueOf(keyCode) );
-				this.sysinfoMIDlet.keyInfos.put("softkeyselect", String.valueOf(keyCode));
+				this.sysinfoMIDlet.keyInfos.put("key.SelectSoftKey", String.valueOf(keyCode));
 				try {
 					addInfo( "gameAction(Select-Key) == FIRE: ", "" + (((Canvas)this.test).getGameAction( keyCode ) == Canvas.FIRE) );
 				} catch (Exception e) {

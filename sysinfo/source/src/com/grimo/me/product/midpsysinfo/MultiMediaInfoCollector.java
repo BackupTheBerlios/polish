@@ -33,20 +33,20 @@ public class MultiMediaInfoCollector extends InfoCollector {
 	 * @see com.grimo.me.product.midpsysinfo.InfoCollector#collectInfos(com.grimo.me.product.midpsysinfo.MIDPSysInfoMIDlet, javax.microedition.lcdui.Display)
 	 */
 	public void collectInfos(MIDPSysInfoMIDlet midlet, Display display) {
-        addInfo("supports.video.capture: ",  getInfo( System.getProperty("supports.video.capture") ) );
-        addInfo("mmapi.video.encodings: ",  getInfo( System.getProperty("video.encodings") ) );
-        addInfo("video.snapshot.encodings: ",  getInfo( System.getProperty("video.snapshot.encodings")) );
-        addInfo("mmapi.audio.encodings: ",  getInfo(System.getProperty("audio.encodings")) );
-        addInfo("supports.audio.capture: ",  getInfo(System.getProperty("supports.audio.capture")) );
-        addInfo("supports.recording: ",  getInfo(System.getProperty("supports.recording")) );
-        addInfo("supports.mixing: ",  getInfo(System.getProperty("supports.mixing")) );
+        addInfo("property.supports.video.capture: ",  getInfo( System.getProperty("supports.video.capture") ) );
+        addInfo("property.mmapi.video.encodings: ",  getInfo( System.getProperty("video.encodings") ) );
+        addInfo("property.video.snapshot.encodings: ",  getInfo( System.getProperty("video.snapshot.encodings")) );
+        addInfo("property.mmapi.audio.encodings: ",  getInfo(System.getProperty("audio.encodings")) );
+        addInfo("property.supports.audio.capture: ",  getInfo(System.getProperty("supports.audio.capture")) );
+        addInfo("property.supports.recording: ",  getInfo(System.getProperty("supports.recording")) );
+        addInfo("property.supports.mixing: ",  getInfo(System.getProperty("supports.mixing")) );
         
 		try {
 	        
             Class.forName("javax.microedition.media.Manager");
             addInfo( "MMAPI present:", "yes" );
-            addInfo("microedition.media.version: ",  getInfo(System.getProperty("microedition.media.version")) );
-            addInfo("streamable.contents: ",  getInfo(System.getProperty("streamable.contents")) );
+            addInfo("property.microedition.media.version: ",  getInfo(System.getProperty("microedition.media.version")) );
+            addInfo("property.streamable.contents: ",  getInfo(System.getProperty("streamable.contents")) );
             
             String[] supportedProtocols = ProtocolsInfo.getSupportedProtocols(null);
             

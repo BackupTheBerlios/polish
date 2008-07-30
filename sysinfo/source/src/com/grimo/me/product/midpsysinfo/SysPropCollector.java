@@ -94,7 +94,7 @@ public class SysPropCollector extends InfoCollector{
 						valueString += ", ";
 					}
 				}
-				System.out.println("Property " + key + " has actions " + valueString );
+				
 			}
 			//#enddebug
 			
@@ -112,6 +112,9 @@ public class SysPropCollector extends InfoCollector{
 		while(keys.hasMoreElements()){
 			String key = (String) keys.nextElement();
 			addInfo( key, (String) this.capabilities.get(key) );
+			
+			//#debug
+			//System.out.println("adding info " + key + ": " + this.capabilities.get(key));
 		}
 	}
 
@@ -139,6 +142,9 @@ public class SysPropCollector extends InfoCollector{
 		if( value.length() == 0 ){
 			return;
 		}
+		
+		
+		
 		Enumeration keys = actions.elements();
 		while( keys.hasMoreElements() ){
 			String key = (String) keys.nextElement();

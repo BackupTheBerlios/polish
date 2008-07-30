@@ -151,9 +151,9 @@ public class LibrariesInfoCollector extends InfoCollector {
 
 			if( svgversion != null ){
 				if (svgversion.equals("1.2")) {
-					addInfo("microedition.m2g.svg.version", "1.2" );
+					addInfo("property.microedition.m2g.svg.version", "1.2" );
 				}else{
-					addInfo("microedition.m2g.svg.version", "1.1" );
+					addInfo("property.microedition.m2g.svg.version", "1.1" );
 				}
 			}else{
 				addInfo("bugs.noSvgVersionProperty", "true" );

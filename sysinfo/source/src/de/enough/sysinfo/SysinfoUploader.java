@@ -39,6 +39,7 @@ import com.grimo.me.product.midpsysinfo.Info;
 import com.grimo.me.product.midpsysinfo.LibrariesInfoCollector;
 import com.grimo.me.product.midpsysinfo.MultiMediaInfoCollector;
 import com.grimo.me.product.midpsysinfo.NormalCanvasTest;
+import com.grimo.me.product.midpsysinfo.SysPropCollector;
 import com.grimo.me.product.midpsysinfo.SystemInfoCollector;
 
 import de.enough.polish.util.Locale;
@@ -154,44 +155,51 @@ public class SysinfoUploader implements Runnable{
 
 		
 		/* collect system properties */
-		Hashtable lines = new Hashtable();
-		try{
-			InputStream is = getClass().getResourceAsStream("sysprops.txt");
-			StringBuffer buf = new StringBuffer();
-			int i;
-			while ((i = is.read()) != -1){ 
-				char ch = (char) i;
-				if (ch == '\n' || ch == '\r'){ 
-					lines.put(buf.toString().trim(),"");
-					buf.delete(0,buf.length());
-				}else{ 
-					buf.append(ch);
-				}
-			}
-			/* if the last line is not empty */
-			if(buf.toString().trim().length()>0){
-				lines.put(buf.toString(), "");
-			}
-			is.close();
-			
-			Enumeration keys = lines.keys();
-			while(keys.hasMoreElements()){
-				String key = (String) keys.nextElement();
-				try {
-					String value = System.getProperty(key);
-					if (value != null && value.length()>0) {
-						lines.put(key, value);
-						this.infoTable.put(key, value);
-						//System.out.println("put " + key + " with value " + value);
-					}
-				} catch (Exception e) {
-					//#debug 
-					//System.out.println("Unable to resolve property " + key + e );
-				}
-			}
-		}catch(Exception ex){
-			System.err.println(ex.getMessage());
+		SysPropCollector spCollector = new SysPropCollector();
+		spCollector.collectInfos(this.sysinfoMidlet, this.display);
+		Info[] spInfos = spCollector.getInfos();
+		for (int i = 0; i < spInfos.length; i++) {
+			if ( (spInfos[i].value.compareTo("<unknown>")) != 0 && (spInfos[i].value.compareTo("N/A") != 0) )
+				this.infoTable.put(spInfos[i].name, spInfos[i].value);
 		}
+//		Hashtable lines = new Hashtable();
+//		try{
+//			InputStream is = getClass().getResourceAsStream("sysprops.txt");
+//			StringBuffer buf = new StringBuffer();
+//			int i;
+//			while ((i = is.read()) != -1){ 
+//				char ch = (char) i;
+//				if (ch == '\n' || ch == '\r'){ 
+//					lines.put(buf.toString().trim(),"");
+//					buf.delete(0,buf.length());
+//				}else{ 
+//					buf.append(ch);
+//				}
+//			}
+//			/* if the last line is not empty */
+//			if(buf.toString().trim().length()>0){
+//				lines.put(buf.toString(), "");
+//			}
+//			is.close();
+//			
+//			Enumeration keys = lines.keys();
+//			while(keys.hasMoreElements()){
+//				String key = (String) keys.nextElement();
+//				try {
+//					String value = System.getProperty(key);
+//					if (value != null && value.length()>0) {
+//						lines.put(key, value);
+//						this.infoTable.put(key, value);
+//						//System.out.println("put " + key + " with value " + value);
+//					}
+//				} catch (Exception e) {
+//					//#debug 
+//					//System.out.println("Unable to resolve property " + key + e );
+//				}
+//			}
+//		}catch(Exception ex){
+//			System.err.println(ex.getMessage());
+//		}
 		/* collect memory infos */
 		try {
 			Runtime rt = Runtime.getRuntime();

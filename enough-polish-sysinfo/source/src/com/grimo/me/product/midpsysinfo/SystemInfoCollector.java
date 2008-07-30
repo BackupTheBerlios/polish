@@ -31,21 +31,21 @@ public class SystemInfoCollector extends InfoCollector {
 	 * @see com.grimo.me.product.midpsysinfo.InfoCollector#collectInfos(com.grimo.me.product.midpsysinfo.MIDPSysInfoMIDlet, javax.microedition.lcdui.Display)
 	 */
 	public void collectInfos(MIDPSysInfoMIDlet midlet, Display display) {
-		addSystemPropertyInfo("microedition.configuration");
+		addSystemPropertyInfo("property.microedition.configuration");
         
-        addSystemPropertyInfo("microedition.profiles");
+        addSystemPropertyInfo("property.microedition.profiles");
         
-        addSystemPropertyInfo( "microedition.jtwi.version" );
+        addSystemPropertyInfo( "property.microedition.jtwi.version" );
         
-        addSystemPropertyInfo("microedition.platform");
-        addSystemPropertyInfo("device.model");
-        addSystemPropertyInfo( "com.sonyericsson.java.platform" );
+        addSystemPropertyInfo("property.microedition.platform");
+        addSystemPropertyInfo("property.device.model");
+        addSystemPropertyInfo( "property.com.sonyericsson.java.platform" );
         //addSystemPropertyInfo("microedition.platform");
 
-        addSystemPropertyInfo( "microedition.locale" );
+        addSystemPropertyInfo( "property.microedition.locale" );
 
-        addSystemPropertyInfo( "microedition.encoding" );
-        addSystemPropertyInfo( "microedition.commports" );
+        addSystemPropertyInfo( "property.microedition.encoding" );
+        addSystemPropertyInfo( "property.microedition.commports" );
         
 
         String[] timeZoneIDs = java.util.TimeZone.getAvailableIDs();

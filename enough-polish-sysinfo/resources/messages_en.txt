@@ -21,6 +21,7 @@ cmd.exit=Exit
 cmd.select=Select
 cmd.upload=Upload system information
 cmd.update=Check for updates
+cmd.sysprops=SystemProperties
 
 msg.thanks=Thank you!
 msg.uploaded=The device information was successfully uploaded!

@@ -111,7 +111,7 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 		this.mainMenu.append(Locale.get("cmd.events"), null);
 		this.mainMenu.append(Locale.get("cmd.platformRequest"), null);
 		this.mainMenu.append(Locale.get("cmd.arithmeticBenchmark"), null);
-		this.mainMenu.append("Sysprops", null);
+		this.mainMenu.append(Locale.get("cmd.sysprops"), null);
 		this.mainMenu.append(Locale.get("cmd.credits"), null);
 		this.mainMenu.append(Locale.get("cmd.upload"), null);
 		this.mainMenu.append(Locale.get("cmd.update"), null);
@@ -263,7 +263,7 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 						new ArithmeticBenchmarkInfoCollector());
 				return;
 			case 8:
-				show("Sysprops",
+				show(Locale.get("cmd.sysprops"),
 						new SysPropCollector());
 				return;
 			case 9:

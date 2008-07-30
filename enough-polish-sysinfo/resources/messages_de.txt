@@ -21,6 +21,7 @@ cmd.exit=Beenden
 cmd.select=W\u00e4hlen
 cmd.upload=Systeminformationen hochladen
 cmd.update=Auf updates prüfen
+cmd.sysprops=SystemProperties
 
 msg.thanks=Danke
 msg.uploaded=Die Ger\u00e4teinformationen wurden erfolgreich gesendet!

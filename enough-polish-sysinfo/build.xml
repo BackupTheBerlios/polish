@@ -28,7 +28,7 @@
 	</target>
 		
 	<target name="deploy">
-		<property name="deploy-url" value="http://193.22.164.185:8080/"/>
+		<property name="deploy-url" value="http://dl.j2mepolish.org"/>
 	</target>
 			
 	<target name="init">
@@ -98,13 +98,16 @@
 								MIDlet-Description?, MIDlet-Icon?, MIDlet-Info-URL?,
 							-->
 						<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-						<obfuscator name="ProGuard" useDefaultPackage="false" unless="false">
+						<obfuscator name="ProGuard" useDefaultPackage="false" unless="test or polish.vendor == BlackBerry">
 							<keep class="com.grimo.me.product.midpsysinfo.NokiaFullCanvasTest" />
 							<keep class="com.grimo.me.product.midpsysinfo.Midp2FullCanvasTest" />
 						</obfuscator>
 						<!-- debug settings: only include debug setting when the test-property is true -->
 						<debug level="error" showLogOnError="true" verbose="true" unless="test">
 							<filter level="debug" package="com.grimo.me.product.midpsysinfo" />
+						</debug>
+						<debug level="debug" showLogOnError="true" verbose="true" if="test">
+						
 						</debug>
 					</build>
 		<!-- execution of emulator(s) -->
