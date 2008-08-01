@@ -284,6 +284,7 @@ These namespaces/schemas will be used soon.
     <identifier>Generic/AnyPhone_176x208</identifier>
     <parent>Generic/AnyPhone</parent>
     <capability name="ScreenSize" value="176x208" />
+    <capability name="IconSize" value="16x16" />
   </device>
   <device supportsPolishGui="true">
     <identifier>Generic/AnyPhone_176x208_CLDC10</identifier>
@@ -294,26 +295,31 @@ These namespaces/schemas will be used soon.
     <identifier>Generic/AnyPhone_176x220</identifier>
     <parent>Generic/AnyPhone</parent>
     <capability name="ScreenSize" value="176x220" />
+    <capability name="IconSize" value="16x16" />
   </device>
   <device supportsPolishGui="true">
     <identifier>Generic/AnyPhone_208x208</identifier>
     <parent>Generic/AnyPhone</parent>
     <capability name="ScreenSize" value="208x208" />
+    <capability name="IconSize" value="16x16" />
   </device>
   <device supportsPolishGui="true">
     <identifier>Generic/AnyPhone_240x320</identifier>
     <parent>Generic/AnyPhone</parent>
     <capability name="ScreenSize" value="240x320" />
+    <capability name="IconSize" value="32x32" />
   </device>
   <device supportsPolishGui="true">
     <identifier>Generic/AnyPhone_320x240</identifier>
     <parent>Generic/AnyPhone</parent>
     <capability name="ScreenSize" value="320x240" />
+    <capability name="IconSize" value="32x32" />
   </device>
   <device supportsPolishGui="true">
     <identifier>Generic/AnyPhone_352x416</identifier>
     <parent>Generic/AnyPhone</parent>
     <capability name="ScreenSize" value="352x416" />
+    <capability name="IconSize" value="44x44" />
   </device>
   
  
