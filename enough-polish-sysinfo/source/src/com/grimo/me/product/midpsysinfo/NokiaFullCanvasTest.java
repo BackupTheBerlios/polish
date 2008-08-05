@@ -64,8 +64,9 @@ public class NokiaFullCanvasTest extends FullCanvas implements DynamicTest {
 	 * @see com.grimo.me.product.midpsysinfo.DynamicTest#addTestResults(javax.microedition.lcdui.Form)
 	 */
 	public void addTestResults(InfoCollector collector ) {
-		collector.addInfo( "FullCanvasWidth(Nokia): ", "" + getWidth() );
-		collector.addInfo( "FullCanvasHeight(Nokia): ", "" + getHeight() );
+		//collector.addInfo( "FullCanvasWidth(Nokia): ", "" + getWidth() );
+		//collector.addInfo( "FullCanvasHeight(Nokia): ", "" + getHeight() );
+		collector.addInfo( "FullCanvasSize: ", "" + getWidth() + "x" + getHeight() );
 	}
 	
 	/* (non-Javadoc)

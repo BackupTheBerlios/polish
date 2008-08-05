@@ -53,8 +53,8 @@ public class DisplayInfoCollector extends InfoCollector {
         	addInfo( "Colors: ", Integer.toString(numColors) );
         }
         
-        addInfo( "Canvas width: ", Integer.toString(canvas.getWidth()) );
-        addInfo( "Canvas height: ", Integer.toString(canvas.getHeight()) );
+        //addInfo( "Canvas width: ", Integer.toString(canvas.getWidth()) );
+        //addInfo( "Canvas height: ", Integer.toString(canvas.getHeight()) );
         addInfo( "CanvasSize: ", Integer.toString(canvas.getWidth()) + "x" + Integer.toString(canvas.getHeight()) );
         try {
         	Class fullCanvasClass = Class.forName( "com.nokia.mid.ui.FullCanvas" );

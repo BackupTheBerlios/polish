@@ -162,44 +162,7 @@ public class SysinfoUploader implements Runnable{
 			if ( (spInfos[i].value.compareTo("<unknown>")) != 0 && (spInfos[i].value.compareTo("N/A") != 0) )
 				this.infoTable.put(spInfos[i].name, spInfos[i].value);
 		}
-//		Hashtable lines = new Hashtable();
-//		try{
-//			InputStream is = getClass().getResourceAsStream("sysprops.txt");
-//			StringBuffer buf = new StringBuffer();
-//			int i;
-//			while ((i = is.read()) != -1){ 
-//				char ch = (char) i;
-//				if (ch == '\n' || ch == '\r'){ 
-//					lines.put(buf.toString().trim(),"");
-//					buf.delete(0,buf.length());
-//				}else{ 
-//					buf.append(ch);
-//				}
-//			}
-//			/* if the last line is not empty */
-//			if(buf.toString().trim().length()>0){
-//				lines.put(buf.toString(), "");
-//			}
-//			is.close();
-//			
-//			Enumeration keys = lines.keys();
-//			while(keys.hasMoreElements()){
-//				String key = (String) keys.nextElement();
-//				try {
-//					String value = System.getProperty(key);
-//					if (value != null && value.length()>0) {
-//						lines.put(key, value);
-//						this.infoTable.put(key, value);
-//						//System.out.println("put " + key + " with value " + value);
-//					}
-//				} catch (Exception e) {
-//					//#debug 
-//					//System.out.println("Unable to resolve property " + key + e );
-//				}
-//			}
-//		}catch(Exception ex){
-//			System.err.println(ex.getMessage());
-//		}
+
 		/* collect memory infos */
 		try {
 			Runtime rt = Runtime.getRuntime();
@@ -215,7 +178,7 @@ public class SysinfoUploader implements Runnable{
 		}
 		
 		/* put the given identifier */
-		this.infoTable.put( "userIdentifier" , this.sysinfoMidlet.vendorField.getString() + "/" + this.sysinfoMidlet.deviceField.getString());
+		this.infoTable.put( "identifier" , this.sysinfoMidlet.vendorField.getString() + "/" + this.sysinfoMidlet.deviceField.getString());
 		
 		try{
 			if(this.sysinfoMidlet.getAppProperty("user-agent") != null){
@@ -283,46 +246,22 @@ public class SysinfoUploader implements Runnable{
 			this.infoTable.put("polish.imagecreateformat", imageFormat);
 		}
 		
-		//Scalar Vector Graphics support
-		/*try {
-			Class.forName("javax.microedition.m2g.ScalableGraphics");
-			this.infoTable.put("property.supports.scalablegraphics", "true" );
-
-			String svgversion = this.sysinfoMidlet.getSystemProperty(new String[] {"microedition.m2g.svg.version"});
-
-			if (svgversion.equals("1.2")) {
-				this.infoTable.put("microedition.m2g.svg.version", "1.2" );
-			}else{
-				this.infoTable.put("microedition.m2g.svg.version", "1.1" );
-			}
-
-		}catch (Throwable e) {
-			if( this.infoTable.get("Property.supports.scalablegraphics") != null){
-				//add bug?
-			}
-			//this.infoTable.put("SVG present:", "no" );
-		} */
-		
 		this.sysinfoMidlet.waitForm.append("collecting done...");
 		
 		try {
 			this.sysinfoMidlet.waitForm.append("trying to send...");
-			//System.out.println("Sending infos");
 			this.sysinfoMidlet.remoteServer.sendInfos(this.infoTable, this.sysinfoMidlet.userField.getString(), this.sysinfoMidlet.pwdField.getString());
-			//System.out.println("succesfully send infos");
 			this.sysinfoMidlet.doneForm.deleteAll();
 			this.sysinfoMidlet.doneForm.setTitle(Locale.get("msg.thanks"));
 			this.sysinfoMidlet.doneForm.append(Locale.get("msg.uploaded"));
 			this.sysinfoMidlet.doneForm.setCommandListener(this.sysinfoMidlet);
 			this.display.setCurrent(this.sysinfoMidlet.doneForm);
-		}catch (Exception e) {
-			//System.out.println("ERROR (sending infos): " + e.getMessage());			
+		}catch (Exception e) {	
 			this.sysinfoMidlet.doneForm.deleteAll();
 			this.sysinfoMidlet.doneForm.setTitle(Locale.get("msg.uploadfailedtitle"));
-			this.sysinfoMidlet.doneForm.append(Locale.get("msg.uploadfailed"));
-			//this.sysinfoMidlet.doneForm.append(e.getClass().getName());
+			this.sysinfoMidlet.doneForm.append(Locale.get("msg.uploadfailed") + "\n");
+			this.sysinfoMidlet.doneForm.append(e.getMessage());
 			this.display.setCurrent(this.sysinfoMidlet.doneForm);
-			//e.printStackTrace();
 		}
 		
 	}

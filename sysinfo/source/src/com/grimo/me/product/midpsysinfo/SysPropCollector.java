@@ -116,6 +116,35 @@ public class SysPropCollector extends InfoCollector{
 			//#debug
 			//System.out.println("adding info " + key + ": " + this.capabilities.get(key));
 		}
+		
+		
+		//collect bluetooth infos if available
+		try{
+			Class c = Class.forName( "javax.bluetooth.LocalDevice" );
+			Class collClass = Class.forName( "com.grimo.me.product.midpsysinfo.BTPropsCollector" );
+			
+			SysPropCollector coll = (SysPropCollector) collClass.newInstance();
+			System.out.println("infos: " + coll );
+			coll.collectInfos(midlet, display);
+			Info[] infos = coll.getInfos();
+			//#debug
+			System.out.println("infos: " + infos.length );
+			if( infos != null  && infos.length > 0 ){
+				for (int i = 0; i < infos.length; i++) {
+					Info info = infos[i];
+					addInfo(info.name, info.value);
+				}
+			}
+		}catch (InstantiationException e) {
+			//#debug
+			System.out.println("Could not load bt class (InstantiationException): " + e.getMessage() );
+		}catch ( IllegalAccessException e) {
+			//#debug
+			System.out.println("Could not load bt class (IllegalAccessException): " + e.getMessage() );
+		} catch (ClassNotFoundException e) {
+			//#debug
+			System.out.println("Could not load bt class (ClassNotFoundException): " + e.getMessage() );
+		}
 	}
 
 	private void processProperties( Hashtable properties ){
@@ -333,17 +362,6 @@ public class SysPropCollector extends InfoCollector{
 		}
 		return value;
 	}
-	
-//	public Info[] getInfos(){
-//		Info[] infos = new Info[this.capabilities.size()];
-//		Enumeration caps = this.capabilities.keys();
-//		while (caps.hasMoreElements()) {
-//			String key = (String) caps.nextElement();
-//			String value = (String) this.capabilities.get(key);
-//			Info i = new Info(key,value);
-//		}
-//		return infos;
-//	}
-	
+
 	
 }
