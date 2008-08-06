@@ -753,6 +753,12 @@
 		<clientClass>de.enough.polish.log.http.HttpLogHandler</clientClass>
 	</extension>
 	
+	<extension>
+		<type>loghandler</type>
+		<name>asynchronousrms</name>
+		<clientClass>de.enough.polish.log.rms.AsynchronousRmsLogHandler</clientClass>
+	</extension>
+	
 	<!-- Preverifier -->
 	
 	<extension>
