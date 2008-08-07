@@ -5261,7 +5261,32 @@ These namespaces/schemas will be used soon.
     <capability name="ImageFormat" value="png" />
     <capability name="wap.userAgent" value="MOT-T720i" />
   </device>
+  
   <!-- Nokia devices -->
+  <device>
+ 	<identifier>Nokia/N78</identifier>
+    <groups>Series60E3FP2</groups>
+    <features>hasCamera</features>
+    <capability name="OS" value="Symbian OS 9.3" />
+    <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0, MSA/1.0" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="JavaPackage" value="locationapi, mmapi1.1, wmapi2.0, m3g, pdaapi, btapi, sipapi, webservice, securityapi, svg, eswt, iap, ams" />
+    <capability name="BitsPerPixel" value="24" />
+    <capability name="ScreenSize" value="240x320" />
+    <capability name="FullCanvasSize" value="240x320" />
+    <capability name="IconSize" value="53x53,55x55" />
+    <capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo" />
+    <capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, nrt, mp3, mp4, m4a, aac+, eaac+, realaudio, truetone, wb-amr, xmf, sp-midi" />
+    <capability name="HeapSize" value="dynamic" />
+    <capability name="MaxJarSize" value="dynamic" />
+    <capability name="StorageSize" value="70 MB" />
+    <capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0, OMA DRM v2.0" />
+    <capability name="Region" value="Latin America, Asia-Pacific, China, Europe, Middle East" />
+    <capability name="CameraResolution" value="1600x1200" />
+    <capability name="AnnouncementDate" value="2008-02-11" />
+    <capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D" />
+    <capability name="Bugs" value="noSystemArrayCopy" />
+  </device>
   <device>
     <identifier>Nokia/6660</identifier>
     <groups>Series60</groups>

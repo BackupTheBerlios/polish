@@ -661,7 +661,16 @@
 			and not polish.Bugs.displaySetCurrentFlickers
 		 -->
 	</extension>
-
+	
+	<extension>
+		<type>postcompiler</type>
+		<name>systemarraycopy</name>
+		<class>de.enough.polish.postcompile.systemarraycopy.SystemArrayCopyPostCompiler</class>
+		<classpath>${polish.home}/lib/asm-all.jar:${polish.home}/lib/enough-bytecode.jar</classpath>
+		<autostart>
+			polish.Bugs.noSystemArrayCopy
+		</autostart>
+	</extension>
 	<extension>
 		<type>postcompiler</type>
 		<name>mastercanvas</name>

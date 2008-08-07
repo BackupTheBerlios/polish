@@ -632,7 +632,6 @@
 		</solution>
 	</bug>
 
-
 	<bug>
 		<name>noSoftKeyReleasedEvents</name>
 		<area>ui</area>
@@ -645,6 +644,18 @@
 		</solution>
 	</bug>
 
+	<bug>
+		<name>noSystemArrayCopy</name>
+		<area>system</area>
+		<description>
+			When using System.arraycopy(..) array length might get modified and the application crashes.
+		</description>
+		<solution>
+			Use your own implementation instead of System.arraycopy(). J2ME Polish works around this bug automatically.
+		</solution>
+	</bug>
+	
+	
 	<!--
 	<bug>
 		<name></name>
