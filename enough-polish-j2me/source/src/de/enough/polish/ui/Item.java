@@ -1480,6 +1480,9 @@ public abstract class Item extends Object
 			p = p.parent;
 		}
 		this.isInitialized = false;
+		if (this.label != null) {
+			this.label.isInitialized = false;
+		}
 		Screen scr = getScreen();
 		if (scr != null) {
 			//if (scr.checkForRequestInit(this)) {
