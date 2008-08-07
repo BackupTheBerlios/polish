@@ -323,8 +323,8 @@ These namespaces/schemas will be used soon.
   </device>
   
  
-  <device supportsPolishGui="true">
-    <identifier>Generic/AnyMsaPhone</identifier>
+ <device supportsPolishGui="true">
+    <identifier>Generic/AnyMsaBasicPhone</identifier>
     <description>A MIDP 2.0 and CLDC 1.1 phone that supports softkeys and the fullscreen mode and the JTWI standard. Use this phone to run a single application on various platforms like Nokia, Motorola, Samsung and so on.</description>
     <features>isVirtual, hasPointerEvents, hasCommandKeyEvents, isDynamic</features>
     <capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
@@ -339,60 +339,57 @@ These namespaces/schemas will be used soon.
     <capability name="Bugs" value="SoftKeyMappedToFire,noSoftKeyReleasedEvents,displaySetCurrentFlickers,needsBottomOrientiationForStringDrawing,BacklightRequiresLightOff" />
   </device>
   <device supportsPolishGui="true">
-    <identifier>Generic/AnyMsaPhone_128x128</identifier>
-    <parent>Generic/AnyMsaPhone</parent>
-    <capability name="ScreenSize" value="128x160" />
+    <identifier>Generic/AnyMsaBasicPhone_240x320</identifier>
+    <parent>Generic/AnyMsaBasicPhone</parent>
+    <capability name="ScreenSize" value="240x320" />
+    <capability name="IconSize" value="32x32" />
   </device>
   <device supportsPolishGui="true">
-    <identifier>Generic/AnyMsaPhone_128x128_CLDC10</identifier>
-    <parent>Generic/AnyMsaPhone_128x128</parent>
-    <capability name="JavaConfiguration" value="CLDC/1.0" />
+    <identifier>Generic/AnyMsaBasicPhone_320x240</identifier>
+    <parent>Generic/AnyMsaBasicPhone</parent>
+    <capability name="ScreenSize" value="320x240" />
+    <capability name="IconSize" value="32x32" />
   </device>
   <device supportsPolishGui="true">
-    <identifier>Generic/AnyMsaPhone_128x160</identifier>
-    <parent>Generic/AnyMsaPhone</parent>
-    <capability name="ScreenSize" value="128x160" />
-  </device>
+    <identifier>Generic/AnyMsaBasicPhone_352x416</identifier>
+    <parent>Generic/AnyMsaBasicPhone</parent>
+    <capability name="ScreenSize" value="352x416" />
+    <capability name="IconSize" value="44x44" />
+  </device>  
+  
   <device supportsPolishGui="true">
-    <identifier>Generic/AnyMsaPhone_128x160_CLDC10</identifier>
-    <parent>Generic/AnyMsaPhone_128x160</parent>
-    <capability name="JavaConfiguration" value="CLDC/1.0" />
-  </device>
-  <device supportsPolishGui="true">
-    <identifier>Generic/AnyMsaPhone_176x208</identifier>
-    <parent>Generic/AnyMsaPhone</parent>
-    <capability name="ScreenSize" value="176x208" />
-  </device>
-  <device supportsPolishGui="true">
-    <identifier>Generic/AnyMsaPhone_176x208_CLDC10</identifier>
-    <parent>Generic/AnyMsaPhone_176x208</parent>
-    <capability name="JavaConfiguration" value="CLDC/1.0" />
-  </device>
-  <device supportsPolishGui="true">
-    <identifier>Generic/AnyMsaPhone_176x220</identifier>
-    <parent>Generic/AnyMsaPhone</parent>
-    <capability name="ScreenSize" value="176x220" />
-  </device>
-  <device supportsPolishGui="true">
-    <identifier>Generic/AnyMsaPhone_208x208</identifier>
-    <parent>Generic/AnyMsaPhone</parent>
-    <capability name="ScreenSize" value="208x208" />
+    <identifier>Generic/AnyMsaPhone</identifier>
+    <description>A MIDP 2.0 and CLDC 1.1 phone that supports softkeys and the fullscreen mode and the JTWI standard. Use this phone to run a single application on various platforms like Nokia, Motorola, Samsung and so on.</description>
+    <features>isVirtual, hasPointerEvents, hasCommandKeyEvents, isDynamic</features>
+    <capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="JavaPackage" value="JSR238, JSR234, JSR211, JSR180, JSR179, JSR177, JSR172" />
+    <capability name="SoundFormat" value="midi, amr, wav" />
+    <capability name="HeapSize" value="1MB" />
+    <capability name="key.LeftSoftKeys" value="-6,-21,21,57345,-1,-202" />
+    <capability name="key.RightSoftKeys" value="-7,-22,22,57346,-4,-203" />
+    <capability name="key.maybeSupportsAsciiKeyMap" value="true" />
+    <capability name="MenuBar.OptionsPosition" value="left" />
+    <capability name="Bugs" value="SoftKeyMappedToFire,noSoftKeyReleasedEvents,displaySetCurrentFlickers,needsBottomOrientiationForStringDrawing,BacklightRequiresLightOff" />
   </device>
   <device supportsPolishGui="true">
     <identifier>Generic/AnyMsaPhone_240x320</identifier>
     <parent>Generic/AnyMsaPhone</parent>
     <capability name="ScreenSize" value="240x320" />
+    <capability name="IconSize" value="32x32" />
   </device>
   <device supportsPolishGui="true">
     <identifier>Generic/AnyMsaPhone_320x240</identifier>
     <parent>Generic/AnyMsaPhone</parent>
     <capability name="ScreenSize" value="320x240" />
+    <capability name="IconSize" value="32x32" />
   </device>
   <device supportsPolishGui="true">
     <identifier>Generic/AnyMsaPhone_352x416</identifier>
     <parent>Generic/AnyMsaPhone</parent>
     <capability name="ScreenSize" value="352x416" />
-  </device>   
+    <capability name="IconSize" value="44x44" />
+  </device> 
   
   <device supportsPolishGui="true">
     <identifier>Generic/DotNetCF1.1</identifier>
