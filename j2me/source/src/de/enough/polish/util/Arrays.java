@@ -408,5 +408,131 @@ public final class Arrays implements Comparator {
     		}
     		return true;
     }
+    
+    
+    /**
+	 * Casts the given input array into the output array 
+	 * @param input the input array, may be null
+	 * @param output the output array
+	 * @return the filled output array
+	 */
+	public static Object[] cast(Object[] input, Object[] output)
+	{
+		if (input == null) {
+			return null;
+		}
+		System.arraycopy(input, 0, output, 0, Math.min( input.length, output.length) );
+		return output;
+	}
+    
+	
+	/**
+	 * A replacement for System.arraycopy() which crashes badly on some Nokia N78 firmware versions
+	 * Usage of this method is automatically triggered when the Bug "noSystemArrayCopy" is defined.
+	 * 
+	 * @param source the source array
+	 * @param sourceOffset the start index for copying
+	 * @param destination the target array
+	 * @param destinationOffset the start index for copying
+	 * @param length the number of copied elements 
+	 */
+	public static void arraycopy( Object source, int sourceOffset, Object destination, int destinationOffset, int length ) {
+		if (source instanceof byte[]) {
+			arraycopyImpl( (byte[])source, sourceOffset, (byte[])destination, destinationOffset, length);
+		} else if (source instanceof int[]) {
+			arraycopyImpl( (int[])source, sourceOffset, (int[])destination, destinationOffset, length);
+		} else if (source instanceof Object[]) {
+			arraycopyImpl( (Object[])source, sourceOffset, (Object[])destination, destinationOffset, length);
+		} else if (source instanceof short[]) {
+			arraycopyImpl( (short[])source, sourceOffset, (short[])destination, destinationOffset, length);
+		} else if (source instanceof long[]) {
+			arraycopyImpl( (long[])source, sourceOffset, (long[])destination, destinationOffset, length);
+		} else if (source instanceof boolean[]) {
+			arraycopyImpl( (boolean[])source, sourceOffset, (boolean[])destination, destinationOffset, length);
+		} else if (source instanceof char[]) {
+			arraycopyImpl( (char[])source, sourceOffset, (char[])destination, destinationOffset, length);
+		//#if polish.hasFloatingPoint
+		} else if (source instanceof float[]) {
+			arraycopyImpl( (float[])source, sourceOffset, (float[])destination, destinationOffset, length);
+		} else if (source instanceof double[]) {
+			arraycopyImpl( (double[])source, sourceOffset, (double[])destination, destinationOffset, length);
+		//#endif
+		}
+	}
+
+	private static void arraycopyImpl(char[] source, int sourceOffset,
+			char[] destination, int destinationOffset, int length)
+	{
+		for (int i=0; i<length; i++) {
+			destination[destinationOffset+i] = source[sourceOffset+i];
+		}
+	}
+
+	//#if polish.hasFloatingPoint
+	private static void arraycopyImpl(double[] source, int sourceOffset,
+			double[] destination, int destinationOffset, int length)
+	{
+		for (int i=0; i<length; i++) {
+			destination[destinationOffset+i] = source[sourceOffset+i];
+		}
+	}
+	//#endif
+
+	//#if polish.hasFloatingPoint
+	private static void arraycopyImpl(float[] source, int sourceOffset,
+			float[] destination, int destinationOffset, int length)
+	{
+		for (int i=0; i<length; i++) {
+			destination[destinationOffset+i] = source[sourceOffset+i];
+		}
+	}
+	//#endif
+
+	private static void arraycopyImpl(boolean[] source, int sourceOffset,
+			boolean[] destination, int destinationOffset, int length)
+	{
+		for (int i=0; i<length; i++) {
+			destination[destinationOffset+i] = source[sourceOffset+i];
+		}
+	}
+
+	private static void arraycopyImpl(long[] source, int sourceOffset,
+			long[] destination, int destinationOffset, int length)
+	{
+		for (int i=0; i<length; i++) {
+			destination[destinationOffset+i] = source[sourceOffset+i];
+		}
+	}
+
+	private static void arraycopyImpl(short[] source, int sourceOffset,
+			short[] destination, int destinationOffset, int length)
+	{
+		for (int i=0; i<length; i++) {
+			destination[destinationOffset+i] = source[sourceOffset+i];
+		}
+	}
+
+	private static void arraycopyImpl(Object[] source, int sourceOffset,
+			Object[] destination, int destinationOffset, int length)
+	{
+		for (int i=0; i<length; i++) {
+			destination[destinationOffset+i] = source[sourceOffset+i];
+		}
+	}
+
+	private static void arraycopyImpl(int[] source, int sourceOffset,
+			int[] destination, int destinationOffset, int length)
+	{
+		for (int i=0; i<length; i++) {
+			destination[destinationOffset+i] = source[sourceOffset+i];
+		}
+	}
+
+	private static void arraycopyImpl(byte[] source, int sourceOffset, byte[] destination, int destinationOffset, int length )
+	{
+		for (int i=0; i<length; i++) {
+			destination[destinationOffset+i] = source[sourceOffset+i];
+		}
+	}
 
 }
