@@ -118,6 +118,8 @@ implements Runnable
 
 private HistoryEntry scheduledHistoryEntry;
 
+private String cookie;
+
   /**
    * Creates a new Browser without any protocol handlers, tag handlers or style.
    */
@@ -947,10 +949,16 @@ private HistoryEntry scheduledHistoryEntry;
       
       if (connection != null)
       {
-	    notifyPageStart(url);
-
-	    if (postData != null && connection instanceof HttpConnection) {
-	    	HttpConnection httpConnection = (HttpConnection) connection;
+	    
+	    boolean isHttpConnection = connection instanceof HttpConnection;
+	    HttpConnection httpConnection = null;
+	    if (isHttpConnection) {
+	    	httpConnection = (HttpConnection) connection;
+			if (this.cookie != null) {
+				httpConnection.setRequestProperty("cookie", this.cookie );
+			}
+	    }
+		if (postData != null && isHttpConnection) {
 	    	httpConnection.setRequestMethod(HttpConnection.POST);
 	    	httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 		    OutputStream os = connection.openOutputStream();
@@ -959,13 +967,24 @@ private HistoryEntry scheduledHistoryEntry;
 	    }
 
 	    is = connection.openInputStream();
+	    notifyPageStart(url);
 	    String contentEncoding = null;
-    	if (connection instanceof HttpConnection) {
-    		HttpConnection httpConnection = (HttpConnection) connection; 
+    	if (isHttpConnection) {
 	    	contentEncoding = httpConnection.getEncoding();
 	    	if (contentEncoding == null) {
 	    		contentEncoding = httpConnection.getHeaderField("Content-Encoding");
 	    	}
+			String newCookie = httpConnection.getHeaderField("Set-cookie");
+			if ( newCookie != null) {
+				int semicolonPos = newCookie.indexOf(';');
+				//#debug
+				System.out.println("received cookie = [" + newCookie + "]");
+				if (semicolonPos != -1) {
+					// a session cookie has a session ID and a domain to which it should be sent, e.g. 
+					newCookie = newCookie.substring(0, semicolonPos );
+				}
+				this.cookie = newCookie;
+			}
     	}
     	if (contentEncoding == null) {
     		contentEncoding = "UTF-8";
