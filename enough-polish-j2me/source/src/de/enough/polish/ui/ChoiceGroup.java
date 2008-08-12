@@ -691,7 +691,7 @@ implements Choice
 	 */
 	public void insert(int elementNum, ChoiceItem item, Style elementStyle)
 	{
-		if (style != null) {
+		if (this.style != null) {
 			item.setStyle(elementStyle);
 		}
 		add(elementNum, item);
