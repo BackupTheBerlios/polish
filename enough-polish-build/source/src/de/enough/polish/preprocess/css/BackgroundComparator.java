@@ -25,14 +25,15 @@
  */
 package de.enough.polish.preprocess.css;
 
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import de.enough.polish.BuildException;
 import de.enough.polish.preprocess.css.attributes.ParameterizedCssAttribute;
 
 /**
- * <p>Compares backgrounds within the backgrounds section - backgrounds without dependencies need to be created before backgrounds with dependencies like the combined or the mask background.</p>
+ * <p>Sorts backgrounds within the backgrounds section - backgrounds without dependencies need to be created before backgrounds with dependencies like the combined or the mask background.</p>
  *
  * <p>Copyright Enough Software 2007</p>
  * <pre>
@@ -41,95 +42,105 @@ import de.enough.polish.preprocess.css.attributes.ParameterizedCssAttribute;
  * </pre>
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class BackgroundComparator implements Comparator
+public class BackgroundComparator
 {
 
-	private final Map backgrounds;
-	private final ParameterizedCssAttribute backgroundTypes;
 
 	/**
-	 * @param backgrounds
-	 * @param backgroundTypes 
+	 * Sorts all backgrounds corresponding to their dependencies
+	 * @param backgrounds the backgrounds
+	 * @param backgroundTypes the background types
+	 * @return a sorted array of the given background names
 	 */
-	public BackgroundComparator(Map backgrounds, ParameterizedCssAttribute backgroundTypes)
+	public static Object[] sort( HashMap backgrounds, ParameterizedCssAttribute backgroundTypes)
 	{
-		this.backgrounds = backgrounds;
-		this.backgroundTypes = backgroundTypes;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-	 */
-	public int compare(Object name1, Object name2)
-	{
-//		System.out.println();
-//		System.out.println("comparing background " + name1 + " with " + name2 );
-		Map background1 = (Map) this.backgrounds.get(name1);
-		Map background2 = (Map) this.backgrounds.get(name2);
+		Object[] backgroundNames = backgrounds.keySet().toArray();
+		ArrayList backgroundsWithoutDependencies = new ArrayList();
+		ArrayList backgroundsWithDependencies = new ArrayList();
+		for (int i = 0; i < backgroundNames.length; i++)
+		{
+			Object name = backgroundNames[i];
+			Map background = (Map) backgrounds.get(name);
+			String type = (String) background.get("type");
+			if (type == null) {
+				// must be a simple background without dependencies:
+				//System.out.println("directly adding simple background " + name);
+				backgroundsWithoutDependencies.add( name );
+				continue;
+			}
+			ParameterizedCssMapping mapping = (ParameterizedCssMapping) backgroundTypes.getMapping(type);
+			if (mapping == null) {
+				throw new BuildException("Unable to resolve background type \"" + type + "\" - please check your polish.css file." );
+			}
+			CssAttribute[] parameters = mapping.getParameters();
+			boolean hasDependencies = false;
+			for (int j = 0; j < parameters.length; j++)
+			{
+				CssAttribute parameter = parameters[j];
+				if ("background".equals(parameter.getType())) {
+					//System.out.println("adding " + name + " to list of dependent backgrounds");
+					backgroundsWithDependencies.add( name );
+					hasDependencies = true;
+					break;
+				}
+			}
+			if (!hasDependencies) {
+				// there was no background type, so this background has no dependencies:
+				backgroundsWithoutDependencies.add( name );
+				//System.out.println("directly adding " + name);
+			}
+		}
 		
-		String type1 = (String) background1.get("type");
-		String type2 = (String) background2.get("type");
-//		System.out.println("comparing background type " + type1 + " with " + type2 );
-		if (type1 == null && type2 == null) {
-			return 0;
-		}
-		if (type1 == null) {
-			return -1;
-		}
-		if (type2 == null) {
-			return 1;
-		}
-		ParameterizedCssMapping backgroundMapping1 = (ParameterizedCssMapping) this.backgroundTypes.getMapping(type1);
-		if (backgroundMapping1 == null) {
-			throw new BuildException("Unable to resolve background mapping for type \"" + type1 + "\" - check your polish.css file(s).");
-		}
-		int backgroundTypeParams1 = 0;
-		CssAttribute[] parameters1 = backgroundMapping1.getParameters();
-		for (int i = 0; i < parameters1.length; i++)
-		{
-			CssAttribute parameter = parameters1[i];
-			if ("background".equals(parameter.getType()) || "background".equals(parameter.getName())) {
-//				System.out.println("background1: " + i + "=" + parameter.getName() + " / " + parameter.getType() + " / value=" +  background1.get( parameter.getName() ) );
-				backgroundTypeParams1++;
-				if (name2.equals( background1.get( parameter.getName() )) ) {
-					// background1 depends on background2:
-//					System.out.println( name1 + " depends on " + name2 );
-					return 1;
+		// now sort the backgrounds with dependencies and 
+		// add each one with resolved dependencies to the list of backgrounds without dependencies:
+		while (backgroundsWithDependencies.size() > 0) {
+			boolean backgroundResolved = false;
+			backgroundNames = backgroundsWithDependencies.toArray();
+			for (int i=0; i<backgroundNames.length; i++) {
+				Object name = backgroundNames[i];
+				Map background = (Map) backgrounds.get(name);
+				String type = (String) background.get("type");
+				ParameterizedCssMapping mapping = (ParameterizedCssMapping) backgroundTypes.getMapping(type);
+				CssAttribute[] parameters = mapping.getParameters();
+				boolean hasDependency = false;
+				for (int j = 0; j < parameters.length; j++)
+				{
+					CssAttribute parameter = parameters[j];
+					if ("background".equals(parameter.getType())) {
+						Object referencedBackground = background.get(parameter.getName());
+						if (referencedBackground != null && backgroundsWithDependencies.contains(referencedBackground)) {
+							//System.out.println( name + " depends on " + referencedBackground);
+							hasDependency = true;
+							break;
+//						} else {
+//							System.out.println( name + " reference " + referencedBackground + " has been resolved.");
+						}
+					}
+				}
+				if (!hasDependency) {
+					//System.out.println("adding " + name);
+					backgroundResolved = true;
+					backgroundsWithoutDependencies.add( name );
+					backgroundsWithDependencies.remove( name );
 				}
 			}
-		}
-		ParameterizedCssMapping backgroundMapping2 = (ParameterizedCssMapping) this.backgroundTypes.getMapping(type2);
-		if (backgroundMapping2 == null) {
-			throw new BuildException("Unable to resolve background mapping for type \"" + type2 + "\" - check your polish.css file(s).");
-		}
-		int backgroundTypeParams2 = 0;
-		CssAttribute[] parameters2 = backgroundMapping2.getParameters();
-		for (int i = 0; i < parameters2.length; i++)
-		{
-			CssAttribute parameter = parameters2[i];
-			if ("background".equals(parameter.getType())  || "background".equals(parameter.getName()) ) {
-//				System.out.println("background2: " + i + "=" + parameter.getName() + " / " + parameter.getType() + " / value=" +  background1.get( parameter.getName() ) );
-				backgroundTypeParams2++;
-				if (name1.equals( background2.get( parameter.getName() )) ) {
-					// background2 depends on background1:
-//					System.out.println( name2 + " depends on " + name1 );
-					return -1;
+			
+			if (!backgroundResolved) {
+				StringBuffer buffer = new StringBuffer();
+				buffer.append( "There are unresolvable dependencies between following backgrounds: " );
+				for (int i=0; i<backgroundsWithDependencies.size();i++) {
+					buffer.append( backgroundsWithDependencies.get(i));
+					if (i != backgroundsWithDependencies.size() - 1) {
+						buffer.append(", ");
+					}
 				}
+				buffer.append(". Please check your polish.css settings.");
+				throw new BuildException( buffer.toString() );
 			}
 		}
-//		System.out.println("background1.number=" + backgroundTypeParams1 + ", background2.number=" + backgroundTypeParams2);
-		if (backgroundTypeParams1 == 0 && backgroundTypeParams2 == 0) {
-			return 0;
-		}
-		if (backgroundTypeParams1 == 0 && backgroundTypeParams2 != 0) {
-//			System.out.println( name2 + " contains background references" );
-			return -1;
-		}
-		if (backgroundTypeParams1 != 0 && backgroundTypeParams2 == 0) {
-//			System.out.println( name1 + " contains background references");
-			return 1;
-		}
-		return 0;
+		
+		return backgroundsWithoutDependencies.toArray();
 	}
+	
 
 }

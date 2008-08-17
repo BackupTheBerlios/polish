@@ -146,9 +146,7 @@ public class CssConverter extends Converter {
 		// add the backgrounds-definition:
 		boolean defaultBackgroundDefined = false;
 		HashMap backgrounds = styleSheet.getBackgrounds();
-		keys = backgrounds.keySet();
-		Object[] backgroundKeys = keys.toArray();
-		Arrays.sort( backgroundKeys, new BackgroundComparator( backgrounds, (ParameterizedCssAttribute) this.backgroundAttribute ));
+		Object[] backgroundKeys = BackgroundComparator.sort( backgrounds, (ParameterizedCssAttribute) this.backgroundAttribute );
 		for (int i = 0; i < backgroundKeys.length; i++)
 		{
 			String groupName = (String) backgroundKeys[i];
