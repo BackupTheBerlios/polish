@@ -3446,9 +3446,10 @@ implements AccessibleCanvas
 				//System.out.println("scren: add ItemCommand " + command.getLabel() );
 				boolean addCommand;
 				//#ifdef tmp.useExternalMenuBar
-					addCommand = !this.menuBar.commandsList.contains( command );
+					addCommand = !this.menuBar.contains( command );
 				//#elif tmp.menuFullScreen
-					addCommand = ( ( this.menuCommands == null) ||  !this.menuCommands.contains( command) );
+					addCommand = ( ( this.menuCommands == null) ||  !this.menuCommands.contains( command) )
+							&& ( command != this.menuSingleLeftCommand && command != this.menuSingleRightCommand);
 				//#else
 					addCommand = true;
 				//#endif

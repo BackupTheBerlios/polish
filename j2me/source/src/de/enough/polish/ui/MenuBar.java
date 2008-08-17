@@ -1983,6 +1983,16 @@ public class MenuBar extends Item {
 		return this.commandsContainer;
 	}
 	
+	/**
+	 * Checks if the specified command is already registered within this menubar.
+	 * @param command the command
+	 * @return true when the given command is already registered
+	 */
+	public boolean contains(Command command)
+	{
+		return (this.allCommands != null) && (this.allCommands.get(command) != null);
+	}
+	
 //#ifdef polish.MenuBar.additionalMethods:defined
 	//#include ${polish.MenuBar.additionalMethods}
 //#endif
