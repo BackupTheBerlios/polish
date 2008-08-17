@@ -187,7 +187,7 @@ public final class TextUtil {
 			//if (hasLineBreaks) {
 			//	return split( "complete/linebreaks:" + completeWidth + "> " + value, '\n');
 			//} else {
-				return new String[]{  value };
+				return new String[]{ value };
 			//}
 		}
 		// the given string does not fit on the first line:
@@ -306,8 +306,13 @@ public final class TextUtil {
 				currentLineWidth = 0;
 				firstLineWidth = lineWidth; 
 				i = startPos;
-			} else if (currentLineWidth >= firstLineWidth && i > 0) {
-				if ( lastSpacePos == -1 ) {
+			} else if (currentLineWidth > firstLineWidth && i > 0) {
+				if (c == ' ' || c == '\t') { 
+					list.add( new String( valueChars, startPos, i - startPos ) );
+					startPos =  ++i;
+					currentLineWidth = 0;
+					lastSpacePos = -1;
+				} else if ( lastSpacePos == -1) {
 					i--;
 					//System.out.println("value=" + value + ", i=" + i + ", startPos=" + startPos);
 					list.add( new String( valueChars, startPos, i - startPos ) );
