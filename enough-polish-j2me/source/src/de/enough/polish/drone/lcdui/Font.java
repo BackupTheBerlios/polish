@@ -470,6 +470,6 @@ public final class Font extends Object
 	 * @return the paint
 	 */
 	public Paint getPaint() {
-		return paint;
+		return this.paint;
 	}
 }

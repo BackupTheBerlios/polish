@@ -2,11 +2,8 @@
 package de.enough.polish.drone.lcdui;
 
 import de.enough.polish.drone.midlet.MIDlet;
-import android.content.Context;
 import android.text.method.KeyCharacterMap;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
 
 /**
  * The <code>Canvas</code> class is a base class for writing
@@ -813,9 +810,9 @@ public abstract class Canvas extends Displayable
 		//#debug
 		Log.v(MIDlet.TAG, "repaint : x : " + x + " y : " + y + " width : " + width + " height : " + height);
 		
-		if(display != null)
+		if(this.display != null)
 		{
-			display.postInvalidate();
+			this.display.postInvalidate();
 		}
 		else
 		{
@@ -834,9 +831,9 @@ public abstract class Canvas extends Displayable
 		//#debug
 		Log.v(MIDlet.TAG, "repaint");
 		
-		if(display != null)
+		if(this.display != null)
 		{
-			display.postInvalidate();
+			this.display.postInvalidate();
 		}
 		else
 		{

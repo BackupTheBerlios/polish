@@ -2,10 +2,7 @@
 package de.enough.polish.drone.lcdui;
 
 import de.enough.polish.drone.midlet.MIDlet;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.view.View;
-import android.graphics.Canvas;
 
 /**
  * An object that has the capability of being placed on the display.

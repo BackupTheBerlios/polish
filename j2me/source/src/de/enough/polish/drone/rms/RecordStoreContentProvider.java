@@ -82,7 +82,7 @@ public class RecordStoreContentProvider extends DatabaseContentProvider implemen
         	//TODO FIX !!!
             //qBuilder.appendWhere("_id=" + recordID);
             
-            return qBuilder.query(mDb,
+            return qBuilder.query(this.mDb,
             		PROJECTION,
                     null,
                     null,

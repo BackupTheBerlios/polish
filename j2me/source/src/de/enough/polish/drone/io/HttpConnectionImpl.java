@@ -6,15 +6,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
 
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.util.HttpURLConnection;
-
 
 class HttpConnectionImpl implements HttpConnection {
 	
@@ -36,19 +32,17 @@ class HttpConnectionImpl implements HttpConnection {
 	private HttpClient client;
 	private HttpMethodBase method;
 		
-	private HttpConnectionImpl(){}
-	
 	protected HttpConnectionImpl(String url) {
 		this.url = url;
 		splitUrl(url);
-		client = new HttpClient(); 
+		this.client = new HttpClient(); 
 	}
 	
 	HttpConnectionImpl(String url, int mode) {
 		this.url = url;
 		this.mode = mode;
 		splitUrl(url);
-		client = new HttpClient();
+		this.client = new HttpClient();
 	}
 
 	
@@ -119,7 +113,7 @@ class HttpConnectionImpl implements HttpConnection {
 	
 	//only in setup state
 	public void setRequestMethod(String method) throws IOException {
-		if (state == STATE_SETUP) {
+		if (this.state == STATE_SETUP) {
 			if (method.equals(GET)) {
 				this.methodStr = method;
 				this.method = new GetMethod(this.url);
@@ -136,7 +130,7 @@ class HttpConnectionImpl implements HttpConnection {
 	}
 	
 	public void setRequestProperty(String key, String value) throws IOException {
-		if (state == STATE_SETUP) {
+		if (this.state == STATE_SETUP) {
 			// set param here
 		} else {
 			throw new IOException("already connected");
@@ -145,7 +139,7 @@ class HttpConnectionImpl implements HttpConnection {
 	
 	//invoke at any time
 	public String getRequestMethod() {
-		return methodStr;
+		return this.methodStr;
 	}
 	
 	public String getRequestProperty(String key) {
@@ -153,11 +147,11 @@ class HttpConnectionImpl implements HttpConnection {
 	}
 	
 	public String getURL() {
-		return url;
+		return this.url;
 	}
 	
 	public String getQuery() {
-		return query;
+		return this.query;
 	}
 	
 	public int getPort() {
@@ -165,7 +159,7 @@ class HttpConnectionImpl implements HttpConnection {
 	}
 	
 	public String getHost() {
-		return host;
+		return this.host;
 	}
 	
 	public String getProtocol() {
@@ -173,7 +167,7 @@ class HttpConnectionImpl implements HttpConnection {
 	}
 		
 	public String getFile() {
-		return file;
+		return this.file;
 	}
 		
 	public String getRef() {
@@ -262,12 +256,12 @@ class HttpConnectionImpl implements HttpConnection {
 	}
 	
 	private synchronized void execute() throws IOException {
-		if (state == STATE_CONNECTED) {
+		if (this.state == STATE_CONNECTED) {
 			return;
 		} else {
-			state = STATE_CONNECTED;
+			this.state = STATE_CONNECTED;
 		}
-		client.executeMethod(method);
+		this.client.executeMethod(this.method);
 	}
 	
 }	

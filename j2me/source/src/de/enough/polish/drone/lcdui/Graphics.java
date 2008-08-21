@@ -1,17 +1,13 @@
 //#condition polish.usePolishGui && polish.android
 package de.enough.polish.drone.lcdui;
 
-import de.enough.polish.drone.midlet.MIDlet;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Paint.Style;
-import android.graphics.Path.Direction;
 import android.graphics.Region.Op;
-import android.util.Log;
 
 /**
  * Provides simple 2D geometric rendering capability.
@@ -597,7 +593,7 @@ public class Graphics
 	 */
 	public int getColor()
 	{
-		return paint.getColor();
+		return this.paint.getColor();
 	}
 
 	/**
@@ -664,7 +660,7 @@ public class Graphics
 	 */
 	public void setColor(int red, int green, int blue)
 	{
-		paint.setARGB(255, red, green, blue);
+		this.paint.setARGB(255, red, green, blue);
 	}
 
 	/**
@@ -689,7 +685,7 @@ public class Graphics
 			RGB += 0xFF000000;
 		}
 		
-		paint.setColor(RGB);
+		this.paint.setColor(RGB);
 	}
 
 	/**
@@ -865,7 +861,7 @@ public class Graphics
 	 */
 	public void drawLine(int x1, int y1, int x2, int y2)
 	{
-		canvas.drawLine(x1, y1, x2, y2, paint);
+		this.canvas.drawLine(x1, y1, x2, y2, this.paint);
 	}
 
 	/**
@@ -881,7 +877,7 @@ public class Graphics
 	 */
 	public void fillRect(int x, int y, int width, int height)
 	{
-		canvas.drawRect(x, y, x + width, y + height, paint);
+		this.canvas.drawRect(x, y, x + width, y + height, this.paint);
 	}
 
 	/**
@@ -900,10 +896,9 @@ public class Graphics
 	 */
 	public void drawRect(int x, int y, int width, int height)
 	{
-		RectF rect = new RectF(x,y,x+width,y+height);
 		Style style = this.paint.getStyle();
 		this.paint.setStyle(Style.STROKE);
-		this.canvas.drawRect(x, y, x + width, y + height, paint);
+		this.canvas.drawRect(x, y, x + width, y + height, this.paint);
 		this.paint.setStyle(style);
 	}
 
@@ -998,7 +993,7 @@ public class Graphics
 	public void fillArc(int x, int y, int width, int height, int startAngle, int arcAngle)
 	{
 		RectF rect = new RectF(x,y,x+width,y+height);
-		this.canvas.drawArc(rect, startAngle, arcAngle, paint);
+		this.canvas.drawArc(rect, startAngle, arcAngle, this.paint);
 	}
 
 	/**
@@ -1192,6 +1187,7 @@ public class Graphics
 	 */
 	public void drawImage( Image img, int x, int y, int anchor)
 	{
+		this.canvas.drawBitmap(img.getBitmap(), x, y, this.paint);
 		Bitmap bitmap = img.bitmap;
 		int width = bitmap.getWidth();
 		if ( (anchor & RIGHT) == RIGHT ) {
@@ -1206,7 +1202,7 @@ public class Graphics
 			y -= height / 2;
 		}
 		
-		this.canvas.drawBitmap(img.getBitmap(), x, y, paint);
+		this.canvas.drawBitmap(img.getBitmap(), x, y, this.paint);
 	}
 
 	/**
@@ -1475,7 +1471,7 @@ public class Graphics
 	 * @since  MIDP 2.0
 	 */
 	public void drawRGB(int[] rgbData, int offset, int scanlength, int x, int y, int width, int height, boolean processAlpha)
-	{		
+	{
 		Bitmap rgbBuffer = Bitmap.createBitmap(rgbData,width, height, Bitmap.Config.ARGB_4444);
 		this.canvas.drawBitmap(rgbBuffer, x, y, this.paint);
 	}

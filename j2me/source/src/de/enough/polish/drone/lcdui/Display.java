@@ -4,12 +4,9 @@ package de.enough.polish.drone.lcdui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.text.method.KeyCharacterMap;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ImageView;
 import de.enough.polish.drone.midlet.MIDlet;
 
 /**
@@ -235,7 +232,7 @@ public class Display extends View{
 		}
 		
 		int key = this.util.handleKey(keyCode, event, this.currentCanvas);
-		
+			
 		this.currentCanvas.keyPressed(key);
 		
 		return true;

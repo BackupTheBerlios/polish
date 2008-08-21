@@ -6,7 +6,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.Socket;
 
 class SocketConnectionImpl implements SocketConnection {
@@ -19,14 +18,12 @@ class SocketConnectionImpl implements SocketConnection {
 	
 	private Socket internalSocket;
 
-    private SocketConnectionImpl() {}
-    
     SocketConnectionImpl(String url, int mode) throws IOException {
     	this.mode = mode;
     	splitUrl(url);
 //    	InetAddress address = InetAddress.getByName(dstName);
 //    	internalSocket = new Socket(address, dstPort);
-    	internalSocket = new Socket(dstName, dstPort);
+    	this.internalSocket = new Socket(this.dstName, this.dstPort);
     }
         
 	private void splitUrl(String url) {
@@ -47,22 +44,22 @@ class SocketConnectionImpl implements SocketConnection {
 	}
 
 	public void close() throws IOException {
-		internalSocket.close();
+		this.internalSocket.close();
 	}
 	
 	public InputStream openInputStream() throws IOException {
-		if (mode == Connector.WRITE) {
+		if (this.mode == Connector.WRITE) {
 			throw new IOException("connection is write only");
 		} else {
-			return internalSocket.getInputStream();
+			return this.internalSocket.getInputStream();
 		}
 	}
 	
 	public OutputStream openOutputStream() throws IOException {
-		if (mode == Connector.READ) {
+		if (this.mode == Connector.READ) {
 			throw new IOException("connection is read only");
 		} else {
-			return internalSocket.getOutputStream();			
+			return this.internalSocket.getOutputStream();			
 		}
 	}
 	
@@ -75,49 +72,49 @@ class SocketConnectionImpl implements SocketConnection {
 	}
 	
 	public String getAddress() {
-		return internalSocket.getInetAddress().toString();
+		return this.internalSocket.getInetAddress().toString();
 	}
 	
 	public String getLocalAddress() {
-		return internalSocket.getLocalAddress().toString();
+		return this.internalSocket.getLocalAddress().toString();
 	}
 	
 	public int getLocalPort() {
-		return internalSocket.getLocalPort();
+		return this.internalSocket.getLocalPort();
 	}
 	
 	public int getPort() {
-		return internalSocket.getPort();
+		return this.internalSocket.getPort();
 	}
 	
 	public void setSocketOption(byte option, int value) throws IOException {
 		switch (option) {
 			case DELAY:
 				if (value==0) {
-					internalSocket.setTcpNoDelay(false);
+					this.internalSocket.setTcpNoDelay(false);
 				} else {
-					internalSocket.setTcpNoDelay(true);						
+					this.internalSocket.setTcpNoDelay(true);						
 				}
 				break;
 			case KEEPALIVE:
 				if (value==0) {
-					internalSocket.setKeepAlive(false);
+					this.internalSocket.setKeepAlive(false);
 				} else {
-					internalSocket.setKeepAlive(true);						
+					this.internalSocket.setKeepAlive(true);						
 				}
 				break;
 			case LINGER:
 				if (value<=0) {
-					internalSocket.setSoLinger(false, 0);
+					this.internalSocket.setSoLinger(false, 0);
 				} else {
-					internalSocket.setSoLinger(true, value);						
+					this.internalSocket.setSoLinger(true, value);						
 				}
 				break;
 			case RCVBUF:
-				internalSocket.setReceiveBufferSize(value);
+				this.internalSocket.setReceiveBufferSize(value);
 				break;
 			case SNDBUF:
-				internalSocket.setSendBufferSize(value);
+				this.internalSocket.setSendBufferSize(value);
 				break;
 			default:
 				throw new IllegalArgumentException("invalid socket option");
@@ -127,24 +124,24 @@ class SocketConnectionImpl implements SocketConnection {
 	public int getSocketOption(byte option) throws IOException {
 		switch (option) {
 			case DELAY:
-				if (internalSocket.getTcpNoDelay()) {
+				if (this.internalSocket.getTcpNoDelay()) {
 					return 1;						
 				}
 				else {
 					return 0;
 				}
 			case KEEPALIVE:
-				if (internalSocket.getKeepAlive()) {
+				if (this.internalSocket.getKeepAlive()) {
 					return 1;
 				} else {
 					return 0;						
 				}
 			case LINGER:
-				return internalSocket.getSoLinger();
+				return this.internalSocket.getSoLinger();
 			case RCVBUF:
-					return internalSocket.getReceiveBufferSize();
+					return this.internalSocket.getReceiveBufferSize();
 			case SNDBUF:
-				return internalSocket.getSendBufferSize();
+				return this.internalSocket.getSendBufferSize();
 			default:
 				throw new IllegalArgumentException("invalid socket option");
 		}

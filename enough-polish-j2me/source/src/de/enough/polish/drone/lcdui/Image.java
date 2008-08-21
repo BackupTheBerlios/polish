@@ -3,16 +3,12 @@ package de.enough.polish.drone.lcdui;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 
-import de.enough.polish.drone.midlet.MIDlet;
 import de.enough.polish.drone.resource.DrawableResources;
 
-import android.content.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.util.Log;
 
 /**
  * The <code>Image</code> class is used to hold graphical image

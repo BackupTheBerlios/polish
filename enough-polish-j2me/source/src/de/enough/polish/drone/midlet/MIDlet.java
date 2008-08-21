@@ -64,22 +64,22 @@ public abstract class MIDlet extends Activity {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		current = this;
-		display = new Display(this);
-		setContentView(display);
+		this.display = new Display(this);
+		setContentView(this.display);
 	}
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)
 	 */
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		return display.onKeyDown(keyCode, event);
+		return this.display.onKeyDown(keyCode, event);
 	}
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onKeyUp(int, android.view.KeyEvent)
 	 */
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		return display.onKeyUp(keyCode, event);
+		return this.display.onKeyUp(keyCode, event);
 	}
 
 	/*
@@ -445,7 +445,7 @@ public abstract class MIDlet extends Activity {
 	 * @return the display
 	 */
 	public Display getDisplay() {
-		return display;
+		return this.display;
 	}
 
 	/**
