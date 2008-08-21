@@ -17,19 +17,19 @@ public class TrieOrder {
 	
 	public TrieOrder()
 	{
-		bytes 	= load();
+		this.bytes = load();
 	}
 	
 	public byte[] load()
 	{
 		try
 		{
-			bytes  = PredictiveAccess.PROVIDER.getRecord(TrieInstaller.ORDER_RECORD);
+			this.bytes = PredictiveAccess.PROVIDER.getRecord(TrieInstaller.ORDER_RECORD);
 			
-			if(bytes == null)
-				bytes = new byte[0];
+			if(this.bytes == null)
+				this.bytes = new byte[0];
 			
-			return bytes;
+			return this.bytes;
 		}
 		catch(RecordStoreException e)
 		{
@@ -52,16 +52,16 @@ public class TrieOrder {
 		
 		buffer[buffer.length - 1] = index;
 		
-		temp = new byte[bytes.length + buffer.length];
+		temp = new byte[this.bytes.length + buffer.length];
 		
-		System.arraycopy(bytes, 0, temp, 0, bytes.length);
-		System.arraycopy(buffer, 0, temp, bytes.length, buffer.length);
+		System.arraycopy(this.bytes, 0, temp, 0, this.bytes.length);
+		System.arraycopy(buffer, 0, temp, this.bytes.length, buffer.length);
 		
-		bytes = new byte[bytes.length + buffer.length];
+		this.bytes = new byte[this.bytes.length + buffer.length];
 		
-		System.arraycopy(temp, 0, bytes, 0, temp.length);
+		System.arraycopy(temp, 0, this.bytes, 0, temp.length);
 		
-		save(bytes);
+		save(this.bytes);
 	}
 	
 	public void save(byte[] bytes)
@@ -78,14 +78,14 @@ public class TrieOrder {
 	
 	public void getOrder(ArrayList words, int[] keyCodes)
 	{
-		if(bytes.length > 0)
+		if(this.bytes.length > 0)
 		{
-			for(int i=0; i<bytes.length; i+= COUNT_SIZE + (bytes[i] * KEY_SIZE) + INDEX_SIZE)
+			for(int i=0; i<this.bytes.length; i+= COUNT_SIZE + (this.bytes[i] * KEY_SIZE) + INDEX_SIZE)
 			{
 				if(matchesKeyCode(keyCodes, i))
 				{	
-					byte length = bytes[i];
-					byte index = TrieUtils.byteToByte(bytes, i + COUNT_SIZE + (length * KEY_SIZE));
+					byte length = this.bytes[i];
+					byte index = TrieUtils.byteToByte(this.bytes, i + COUNT_SIZE + (length * KEY_SIZE));
 					
 					if(index > 0 && index < words.size())
 					{
@@ -107,11 +107,11 @@ public class TrieOrder {
 		else
 		{
 			int start 	= offset + 1;
-			int end 	= (bytes[offset] * KEY_SIZE) + start;
+			int end 	= (this.bytes[offset] * KEY_SIZE) + start;
 			
 			for(int i=start; i < end;i += KEY_SIZE)
 			{
-				byte keyCode = bytes[i];
+				byte keyCode = this.bytes[i];
 				byte storedKeyCode = (byte)(keyCodes[(i - offset - 1) / KEY_SIZE]);
 				
 				if(keyCode != storedKeyCode)

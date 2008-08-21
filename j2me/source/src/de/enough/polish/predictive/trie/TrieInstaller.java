@@ -110,22 +110,22 @@ public class TrieInstaller {
 	}
 	
 	public int getChunkSize() {
-		return chunkSize;
+		return this.chunkSize;
 	}
 
 	public int getLineCount() {
-		return lineCount;
+		return this.lineCount;
 	}
 
 	public int getMagic() {
-		return magic;
+		return this.magic;
 	}
 
 	public int getVersion() {
-		return version;
+		return this.version;
 	}
 
 	public DataInputStream getStream() {
-		return stream;
+		return this.stream;
 	}
 }

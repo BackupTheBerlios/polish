@@ -108,7 +108,7 @@ public class TrieProvider {
 		
 		if(record == null)
 		{
-			record = new TrieRecord(id,store.getRecord(id));
+			record = new TrieRecord(id,this.store.getRecord(id));
 			
 			this.records.put(recordMapID, record);
 		}
@@ -141,7 +141,7 @@ public class TrieProvider {
 			Integer keyToRemove = null;
 			int	references = 0;
 			
-			while(keys.length > maxRecords)
+			while(keys.length > this.maxRecords)
 			{
 				references = 1000;
 				
@@ -165,27 +165,27 @@ public class TrieProvider {
 	}
 
 	public int getChunkSize() {
-		return chunkSize;
+		return this.chunkSize;
 	}
 
 	public TrieCustom getCustom() {
-		return custom;
+		return this.custom;
 	}
 	
 	public TrieOrder getOrder() {
-		return order;
+		return this.order;
 	}
 
 	public int getLineCount() {
-		return lineCount;
+		return this.lineCount;
 	}
 
 	public Form getCustomForm() {
-		return customForm;
+		return this.customForm;
 	}
 
 	public TextField getCustomField() {
-		return customField;
+		return this.customField;
 	}
 
 	public void setCustomField(TextField customField) {

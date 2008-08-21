@@ -54,9 +54,9 @@ public class TrieReader extends PredictiveReader {
 				
 				if(node.getReference() != 0)
 				{
-					record = this.getRecord(node.getReference());
-					partOffset = this.getPartOffset(record, getPartID(node.getReference()));
-					readNodes(record, partOffset, keyCode, node.getWord());
+					this.record = this.getRecord(node.getReference());
+					partOffset = this.getPartOffset(this.record, getPartID(node.getReference()));
+					readNodes(this.record, partOffset, keyCode, node.getWord());
 				}
 			}
 		}
@@ -93,7 +93,7 @@ public class TrieReader extends PredictiveReader {
 		
 		copyNodes(this.nodes,newNodes);
 		
-		keyCount++;
+		this.keyCount++;
 		
 		this.prevNodes.push(newNodes);
 	}
@@ -105,7 +105,7 @@ public class TrieReader extends PredictiveReader {
 			try
 			{
 				this.nodes = (ArrayList)this.prevNodes.pop();
-				keyCount--;
+				this.keyCount--;
 			}
 			catch(EmptyStackException e)
 			{

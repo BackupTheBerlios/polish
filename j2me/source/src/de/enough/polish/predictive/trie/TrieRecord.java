@@ -24,10 +24,10 @@ public class TrieRecord {
 	}
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public byte[] getRecord() {
-		return record;
+		return this.record;
 	}
 }

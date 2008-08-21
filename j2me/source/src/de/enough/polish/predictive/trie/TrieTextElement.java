@@ -21,7 +21,7 @@ public class TrieTextElement extends TextElement {
 	
 	public void setResults() {
 		
-		if (element instanceof TrieReader) 
+		if (this.element instanceof TrieReader) 
 		{
 				this.customResults.clear();
 				
@@ -31,11 +31,11 @@ public class TrieTextElement extends TextElement {
 				
 				this.trieResults.clear();
 				
-				if(((TrieReader)element).isWordFound() || 
+				if(((TrieReader)this.element).isWordFound() || 
 					!this.isCustomFound() ||
-					this.getKeyCount() == ((TrieReader)element).getKeyCount())
+					this.getKeyCount() == ((TrieReader)this.element).getKeyCount())
 				{
-					ArrayList nodes = ((TrieReader) element).getNodes();
+					ArrayList nodes = ((TrieReader) this.element).getNodes();
 					
 					for(int i=0; i<nodes.size();i++)
 					{
@@ -114,7 +114,7 @@ public class TrieTextElement extends TextElement {
 	}
 
 	public Object getElement() {
-		return element;
+		return this.element;
 	}
 	
 	public int getKeyCount()

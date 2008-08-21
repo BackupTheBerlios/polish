@@ -11,7 +11,7 @@ public class TrieNode {
 	}
 	
 	public int getReference() {
-		return reference;
+		return this.reference;
 	}
 	public void setReference(char reference) {
 		this.reference = reference;

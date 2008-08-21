@@ -24,12 +24,12 @@ public class TrieCustom {
 	{
 		try
 		{
-			bytes  = PredictiveAccess.PROVIDER.getRecord(TrieInstaller.CUSTOM_RECORD);
+			this.bytes  = PredictiveAccess.PROVIDER.getRecord(TrieInstaller.CUSTOM_RECORD);
 			
-			if(bytes == null)
-				bytes = new byte[0];
+			if(this.bytes == null)
+				this.bytes = new byte[0];
 			
-			return bytes;
+			return this.bytes;
 		}
 		catch(RecordStoreException e)
 		{
@@ -59,16 +59,16 @@ public class TrieCustom {
 				buffer[(i * CHAR_SIZE) + 2] = (byte) (chars[i] & 0x00FF);
 			}
 			
-			temp = new byte[bytes.length + buffer.length];
+			temp = new byte[this.bytes.length + buffer.length];
 			
-			System.arraycopy(bytes, 0, temp, 0, bytes.length);
-			System.arraycopy(buffer, 0, temp, bytes.length, buffer.length);
+			System.arraycopy(this.bytes, 0, temp, 0, this.bytes.length);
+			System.arraycopy(buffer, 0, temp, this.bytes.length, buffer.length);
 			
-			bytes = new byte[bytes.length + buffer.length];
+			this.bytes = new byte[this.bytes.length + buffer.length];
 			
-			System.arraycopy(temp, 0, bytes, 0, temp.length);
+			System.arraycopy(temp, 0, this.bytes, 0, temp.length);
 			
-			save(bytes);
+			save(this.bytes);
 		}
 	}
 	
@@ -88,19 +88,19 @@ public class TrieCustom {
 	{
 		boolean relevant = true;
 		
-		if(bytes.length > 0)
+		if(this.bytes.length > 0)
 		{
-			for(int i=0; i<bytes.length; i+= ((bytes[i] * CHAR_SIZE) + COUNT_SIZE))
+			for(int i=0; i<this.bytes.length; i+= ((this.bytes[i] * CHAR_SIZE) + COUNT_SIZE))
 			{
 				char character;
 				
-				if(keyCodes.length <= bytes[i])
+				if(keyCodes.length <= this.bytes[i])
 				{
 					relevant = true;
 					
 					for(int k=0; k < keyCodes.length; k++)
 					{
-						character = byteToChar(bytes, i + COUNT_SIZE + (k * CHAR_SIZE));
+						character = byteToChar(this.bytes, i + COUNT_SIZE + (k * CHAR_SIZE));
 						
 						if(!isInCharset(keyCodes[k],character))
 						{
@@ -111,7 +111,7 @@ public class TrieCustom {
 					
 					if(relevant == true)
 					{
-						words.add(getWord(bytes, i));
+						words.add(getWord(this.bytes, i));
 					}
 				}
 			}
