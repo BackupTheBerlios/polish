@@ -926,22 +926,8 @@ public final class DrawUtil {
 				x2 = x1;
 				x1 = left;
 			}
-//			int[] rgb = new int[]{ color };
-//			if (y1 == y2) {
-//				int start = Math.max( x1, 0);
-//				for (int i = start; i < x2; i++ ) {
-//					g.drawRGB(rgb, 0, 0, start + i, y1, 1, 1, true ); 
-//				}
-//			} else if (x1 == x2) {
-//				int start = Math.max( y1, 0);
-//				for (int i = start; i < y2; i++ ) {
-//					g.drawRGB(rgb, 0, 0, x1, start + i, 1, 1, true ); 
-//				}				
-//			}
 			
 			if (x1 == x2 || y1 == y2) {
-//				int[] rgb = new int[]{ color };
-//				g.drawRGB( rgb, 0, 0, x1, y1, x2 - x1, y2 - y1, true );
 				int width = x2 - x1;
 				if (width == 0) {
 					width = 1;
@@ -954,7 +940,17 @@ public final class DrawUtil {
 				for (int i = 0; i < rgb.length; i++) {
 					rgb[i] = color;
 				}
-				g.drawRGB( rgb, 0, 0, x1, y1, width, height, true );
+				// the scanlength should really be 0, but we use width so that 
+				// this works on Nokia Series 40 devices as well:
+				// drawRGB(		  int[] rgbData,
+				//                int offset,
+				//                int scanlength, <<< this _should_ allow any value, even 0 or negative ones
+				//                int x,
+				//                int y,
+				//                int width,
+				//                int height,
+				//                boolean processAlpha)
+				g.drawRGB( rgb, 0, width, x1, y1, width, height, true );
 			}
 		//#else
 			g.setColor( color );
