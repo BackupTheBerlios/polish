@@ -162,10 +162,10 @@ public final class TextUtil {
 	//#if polish.midp || polish.usePolishGui
 	/**
 	 * Wraps the given string so it fits on the specified lines.
-	 * First of al it is splitted at the line-breaks ('\n'), subsequently the substrings
-	 * are splitted when they do not fit on a single line.
+	 * First of all it is split at the line-breaks ('\n'), subsequently the substrings
+	 * are split when they do not fit on a single line.
 	 *  
-	 * @param value the string which should be splitted
+	 * @param value the string which should be wrapped
 	 * @param font the font which is used to display the font
 	 * @param firstLineWidth the allowed width for the first line
 	 * @param lineWidth the allowed width for all other lines, lineWidth >= firstLineWidth
@@ -246,12 +246,12 @@ public final class TextUtil {
 	 * The resulting substrings will be added to the given ArrayList.
 	 * When the complete string fits into the first line, it will be added
 	 * to the list.
-	 * When the string needs to be splited to fit on the lines, it is tried to
-	 * split the string at a gab between words. When this is not possible, the
-	 * given string will be splitted in the middle of the corresponding word. 
+	 * When the string needs to be split to fit on the lines, it is tried to
+	 * split the string at a gap between words. When this is not possible, the
+	 * given string will be split in the middle of the corresponding word. 
 	 * 
 	 * 
-	 * @param value the string which should be splitted
+	 * @param value the string which should be wrapped
 	 * @param font the font which is used to display the font
 	 * @param completeWidth the complete width of the given string for the specified font.
 	 * @param firstLineWidth the allowed width for the first line
@@ -275,12 +275,12 @@ public final class TextUtil {
 	 * The resulting substrings will be added to the given ArrayList.
 	 * When the complete string fits into the first line, it will be added
 	 * to the list.
-	 * When the string needs to be splited to fit on the lines, it is tried to
-	 * split the string at a gab between words. When this is not possible, the
-	 * given string will be splitted in the middle of the corresponding word. 
+	 * When the string needs to be split to fit on the lines, it is tried to
+	 * split the string at a gap between words. When this is not possible, the
+	 * given string will be split in the middle of the corresponding word. 
 	 * 
 	 * 
-	 * @param value the string which should be splitted
+	 * @param value the string which should be wrapped
 	 * @param font the font which is used to display the font
 	 * @param completeWidth the complete width of the given string for the specified font.
 	 * @param firstLineWidth the allowed width for the first line
@@ -313,7 +313,9 @@ public final class TextUtil {
 					currentLineWidth = 0;
 					lastSpacePos = -1;
 				} else if ( lastSpacePos == -1) {
-					i--;
+					if (i > startPos + 1) {
+						i--;
+					}
 					//System.out.println("value=" + value + ", i=" + i + ", startPos=" + startPos);
 					list.add( new String( valueChars, startPos, i - startPos ) );
 					startPos =  i;
