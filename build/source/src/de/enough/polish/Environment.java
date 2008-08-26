@@ -59,7 +59,7 @@ import de.enough.polish.util.StringUtil;
 public class Environment {
 	private static Environment INSTANCE;
 
-	private final static String PROPERTY_CHARS_STR = "\\w|\\.|\\-|,|\\(|\\)|\\s|/";
+	private final static String PROPERTY_CHARS_STR = "\\w|\\.|\\-|,|\\(|\\)|\\s|/|\\\\";
 
 	private final static String PROPERTY_PATTERN_STR = "\\$\\{\\s*["
 			+ PROPERTY_CHARS_STR + "]+\\s*\\}";
@@ -67,7 +67,7 @@ public class Environment {
 	protected final static Pattern PROPERTY_PATTERN = Pattern
 			.compile(PROPERTY_PATTERN_STR);
 
-	private final static String PROPERTY_FUNCTION_CHARS_STR = "\\w|\\.|\\-|,|\\s|/|\\s|,|\\+|\\*|:";
+	private final static String PROPERTY_FUNCTION_CHARS_STR = "\\w|\\.|\\-|,|\\s|/|\\s|,|\\+|\\*|:|\\\\";
 
 	private final static String FUNCTION_PATTERN_STR = "\\w+\\s*\\(\\s*["
 			+ PROPERTY_FUNCTION_CHARS_STR + "]+\\s*\\)";
