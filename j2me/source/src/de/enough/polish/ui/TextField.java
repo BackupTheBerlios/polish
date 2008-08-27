@@ -3836,7 +3836,6 @@ public class TextField extends StringItem
 					//#if !polish.TextField.ignoreSymbolCommand
 						showSymbolsList();
 					//#endif
-					return;
 				} 
 			//#endif
 			//#ifndef tmp.suppressCommands
