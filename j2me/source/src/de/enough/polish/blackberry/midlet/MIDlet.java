@@ -75,7 +75,7 @@ public abstract class MIDlet extends UiApplication
 	 */
 	protected MIDlet()
 	{
-		//TODO implement MIDlet
+		// Create protected default constructor for derived classes.
 	}
 
 	/**
@@ -191,7 +191,7 @@ public abstract class MIDlet extends UiApplication
 	 */
 	public final void notifyPaused()
 	{
-		//TODO implement notifyPaused
+		// Nothing to do here.
 	}
 
 	/**
@@ -275,7 +275,7 @@ public abstract class MIDlet extends UiApplication
 	 */
 	public final void resumeRequest()
 	{
-		//TODO implement resumeRequest
+		// Nothing to do here.
 	}
 
 	/**
@@ -407,16 +407,12 @@ public abstract class MIDlet extends UiApplication
 			midlet.startApp();	
 			midlet.enterEventDispatcher();
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (MIDletStateChangeException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
