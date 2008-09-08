@@ -27,6 +27,7 @@
  */
 package de.enough.polish.log.file;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Enumeration;
 
@@ -130,8 +131,8 @@ implements Runnable
 			Enumeration enumeration = FileSystemRegistry.listRoots();
 			String roots = "";
 			//#if polish.log.file.preferredRoot:defined
-				while (enumeration.hasMoreElements()) {
-					root = (String) enumeration.nextElement();
+				while( enumeration.hasMoreElements() ) {
+					root = (String) enumeration.nextElement();				
 					roots += root + "; ";
 					//#= if  ( root.startsWith( "${polish.log.file.preferredRoot}" )) {
 						break;
@@ -139,7 +140,44 @@ implements Runnable
 				}
 				
 			//#else				
-				root = (String) enumeration.nextElement();
+				//root = (String) enumeration.nextElement();
+				while (enumeration.hasMoreElements()) {
+					try{
+						root = (String) enumeration.nextElement();
+						//#if polish.log.file.useUnqiueName == true
+						url = "file:///" + root + "j2melog" + System.currentTimeMillis() + ".txt";
+						//#elif polish.log.file.fileName:defined
+							//#= url = "file:///" + root + "${polish.log.file.fileName}";
+						//#else
+							url = "file:///" + root + "j2melog.txt";
+						//#endif
+						FileConnection c = null;
+						if( url != null ){
+							c = (FileConnection) Connector.open( url, Connector.READ_WRITE );
+						}
+						if( c != null ){
+							if( ( !c.canRead() ) || ( !c.canWrite() ) ){
+								continue;
+							}
+							this.out = new PrintStream( c.openOutputStream() );
+							break;
+						}
+					}catch (SecurityException e) {
+						//ignore
+					}catch (IOException e) {
+						//ignore
+					}catch (Exception e) {
+						//ignore
+					}finally{
+						if( this.out != null ){
+							try{
+								this.out.close();
+							}catch (Exception e) {
+								//ignore
+							}
+						}
+					}
+				}
 			//#endif
 			
 			//#if polish.log.file.useUnqiueName == true
@@ -149,6 +187,7 @@ implements Runnable
 			//#else
 				url = "file:///" + root + "j2melog.txt";
 			//#endif
+				
 			try {
 				connection = (FileConnection) Connector.open( url, Connector.READ_WRITE );
 				if (!connection.exists()) {
@@ -166,6 +205,8 @@ implements Runnable
 				e.printStackTrace();
 				System.err.println("Unable to open file log: " + e );
 				this.isPermanentLogError = true;
+				//#debug error
+				System.out.println("Unable to open file log: " + e);
 				return;
 			}
 			//this.out.println( roots );
@@ -189,6 +230,7 @@ implements Runnable
 						this.out = new PrintStream( connection.openOutputStream() );
 					//#endif
 					this.out.println( buffer.toString() );
+					
 					//#if polish.log.file.flushEachEntry == true
 						this.out.close();
 						this.out = null;
@@ -196,6 +238,8 @@ implements Runnable
 				} catch (Exception e) {
 					e.printStackTrace();
 					System.err.println("Unable to write log entry: " + e );
+					//#debug error
+					System.out.println("Unable to write log entry: " + e);
 				}
 			}
 			// wait for next log entry:
