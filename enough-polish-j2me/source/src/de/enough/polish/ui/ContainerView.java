@@ -138,8 +138,15 @@ extends ItemView
 			Item ancestor = parent.parent;
 			while (this.allowCycling && ancestor != null) {
 				if ( (ancestor instanceof Container)  && ((Container)ancestor).getNumberOfInteractiveItems()>1 ) {
+					System.out.println("ancestor " + ancestor + " has interactive items: " + (((Container)ancestor).getNumberOfInteractiveItems()));
 					this.allowCycling = false;
 					break;
+				} else {
+					if ( (ancestor instanceof Container)) {
+						System.out.println("ancestor " + ancestor + " has NOT ENOUGH interactive items: "+ (((Container)ancestor).getNumberOfInteractiveItems()));
+					} else {
+						System.out.println("ancestor " + ancestor + " has NO or ONE interactive items.");
+					}
 				}
 				ancestor = ancestor.parent;
 			}
@@ -156,7 +163,7 @@ extends ItemView
 		Item[] myItems = parent.getItems();
 
 		//#ifdef tmp.useTable
-			if (this.columnsSetting == NO_COLUMNS || myItems.length <= 1) {
+			if (this.columnsSetting == NO_COLUMNS || myItems.length <= 1 || this.numberOfColumns <= 1) {
 		//#endif
 			this.isHorizontal = false;
 			this.isVertical = true;
@@ -181,7 +188,7 @@ extends ItemView
 				}
 				item.relativeY = myContentHeight;
 				item.relativeX = 0;
-				myContentHeight += height + this.paddingVertical;
+				myContentHeight += height + (height != 0 ? this.paddingVertical : 0);
 			}
 			if (hasFocusableItem) {
 				this.appearanceMode = Item.INTERACTIVE;
@@ -391,7 +398,7 @@ extends ItemView
 					//#else
 						this.rowsHeights[rowIndex] = maxRowHeight;						
 					//#endif
-					myContentHeight += maxRowHeight + this.paddingVertical;
+					myContentHeight += maxRowHeight + (maxRowHeight != 0 ? this.paddingVertical : 0);
 					maxRowHeight = 0;
 					rowIndex++;
 				}
@@ -521,7 +528,7 @@ extends ItemView
 							//System.out.println("starting new row: rowIndex=" + rowIndex + "  numberOfRows: " + numberOfRows);
 							columnIndex = 0;
 							this.rowsHeights[rowIndex] = maxRowHeight;
-							myContentHeight += maxRowHeight + this.paddingVertical;
+							myContentHeight += maxRowHeight + (maxRowHeight != 0 ? this.paddingVertical : 0 );
 							maxRowHeight = 0;
 							rowIndex++;
 						}
@@ -638,7 +645,7 @@ extends ItemView
 		int focusedLeftBorder = leftBorder;
 		int focusedRightBorder = rightBorder;
 		//#ifdef tmp.useTable
-			if (this.columnsSetting == NO_COLUMNS || myItems.length == 1) {
+			if (this.columnsSetting == NO_COLUMNS || myItems.length == 1 || this.numberOfColumns <= 1) {
 		//#endif
 				for (int i = 0; i < myItems.length; i++) {
 					if (i != this.focusedIndex) {

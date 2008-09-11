@@ -2204,6 +2204,7 @@ public abstract class Item extends Object
 		//#ifdef polish.css.view-type
 			}
 		//#endif
+			
 		
 		if (this.contentWidth == 0 && this.contentHeight == 0) {
 			this.itemWidth = labelWidth;
@@ -3467,6 +3468,51 @@ public abstract class Item extends Object
 	public boolean isInitialized()
 	{
 		return this.isInitialized;
+	}
+	
+	/**
+	 * Retrieves the internal area's horizontal start relative to this item's content area
+	 * @return the horizontal start in pixels, -1 if it not set
+	 */
+	public int getInternalX() {
+		if (this.internalX == NO_POSITION_SET) {
+			return -1;
+		}
+		return this.internalX;
+	}
+
+	/**
+	 * Retrieves the internal area's vertical start relative to this item's content area
+	 * @return the vertical start in pixels, -1 if it not set
+	 */
+	public int getInternalY() {
+		if (this.internalX == NO_POSITION_SET) {
+			return -1;
+		}
+		return this.internalY;
+	}
+
+	/**
+	 * Retrieves the internal area's vertical width
+	 * @return the vertical width in pixels, -1 if it not set
+	 */
+	public int getInternalWidth() {
+		if (this.internalX == NO_POSITION_SET) {
+			return -1;
+		}
+		return this.internalWidth;
+	}
+
+
+	/**
+	 * Retrieves the internal area's vertical height
+	 * @return the vertical height in pixels, -1 if it not set
+	 */
+	public int getInternalHeight() {
+		if (this.internalX == NO_POSITION_SET) {
+			return -1;
+		}
+		return this.internalHeight;
 	}
 
 
