@@ -1032,6 +1032,7 @@
 		<mapping from="size-decrease" to="new de.enough.polish.ui.itemviews.SizeDecreaseItemView()" appliesTo="Item" />
 		<mapping from="particle" to="new de.enough.polish.ui.itemviews.ExplodingParticlesItemView()" appliesTo="Item" />
 		<!--  for Containers:  -->
+		<mapping from="scroll" to="new de.enough.polish.ui.containerviews.ScrollContainerView()" appliesTo="Container,FakeContainerCustomItem" deprecated="A J2ME Polish 2.0.x only view-type, will not be supported in J2ME Polish 2.1 anymore."  />
 		<mapping from="slide" to="new de.enough.polish.ui.containerviews.SlideContainerView()"  appliesTo="Container,FakeContainerCustomItem" />
 		<mapping from="slideup" to="new de.enough.polish.ui.containerviews.SlideContainerView()" />
 		<mapping from="slide-up" to="new de.enough.polish.ui.containerviews.SlideContainerView()" />
@@ -3759,6 +3760,23 @@
 		appliesTo="CenterNavigationContainerView"
 		description="the offset to lighten up the grayscaling"
 		id="347"
+	/>
+	
+	<attribute
+		name="scrollview-height"
+		type="percentorabsolute"
+		appliesTo="ScrollContainerView"
+		description="The maximum height of the container in either percent or pixels."
+		id="348"
+		deprecated="Only valid for J2ME Polish 2.0.x"
+	/>
+	<attribute
+		name="scrollview-scrollbar-style"
+		type="style"
+		appliesTo="ScrollContainerView"
+		description="The style of the scrollbar."
+		id="349"
+		deprecated="Only valid for J2ME Polish 2.0.x"
 	/>
 	
 	<!--
