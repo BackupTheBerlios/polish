@@ -7,6 +7,7 @@ import net.rim.device.api.system.TrackwheelListener;
 import net.rim.device.api.ui.Keypad;
 import net.rim.device.api.ui.Field;
 import de.enough.polish.blackberry.midlet.MIDlet;
+import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.Screen;
 
@@ -1232,6 +1233,9 @@ extends Displayable
     private boolean focusChangeDetected(Screen screen) {
     	if (screen != null) {
             Item focusedItem = screen.getCurrentItem();
+            while (focusedItem instanceof Container) {
+                focusedItem = ((Container)focusedItem).getFocusedItem();
+            }
             Field nativeFocusedItem = super.getFieldWithFocus();
             if ( focusedItem != null && focusedItem._bbField != nativeFocusedItem) {
             	//#debug
@@ -1460,16 +1464,14 @@ extends Displayable
 		    // TODO: Do something here.
 		  }
 		*/
-    	boolean processed = super.navigationClick(status, time);
-    	if (!processed) {
-    		keyPressed( Canvas.KEY_BB_FIRE );
-    		if ( (Object)this instanceof Screen ) {
-    			processed = ((Screen)((Object)this)).keyPressedProcessed;
-    		} else {
-    			processed = true;
-    		}
+    	boolean processed = false;
+		keyPressed( Canvas.KEY_BB_FIRE );
+		if ( (Object)this instanceof Screen ) {
+			processed = ((Screen)((Object)this)).keyPressedProcessed;
+		} else {
+			processed = true;
     	}
-    	return processed;
+    	return processed || super.navigationClick(status, time);
     }
     
     /* (non-Javadoc)
@@ -1477,16 +1479,14 @@ extends Displayable
      */
     protected boolean navigationUnclick(int status, int time)
     {
-    	boolean processed = super.navigationUnclick(status, time);
-    	if (!processed) {
-    		keyReleased( Canvas.KEY_BB_FIRE );
-    		if ( (Object)this instanceof Screen ) {
-    			processed = ((Screen)((Object)this)).keyReleasedProcessed;
-    		} else {
-    			processed = true;
-    		}
+    	boolean processed = false;
+		keyReleased( Canvas.KEY_BB_FIRE );
+		if ( (Object)this instanceof Screen ) {
+			processed = ((Screen)((Object)this)).keyReleasedProcessed;
+		} else {
+			processed = true;
     	}
-    	return processed;
+    	return processed || super.navigationUnclick(status, time);
     }
 
     /* (non-Javadoc)
