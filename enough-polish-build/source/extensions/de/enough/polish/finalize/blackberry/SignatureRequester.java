@@ -140,7 +140,9 @@ implements Runnable, OutputFilter
 		arguments.add( "-jar" );
 		arguments.add( signToolPath );
 		arguments.add( "-a" ); // automatically request for signatures.
-		arguments.add( "-s" ); //  display the number of signatures requested and the number that were signed
+		if (!this.isSupportingPasswordParameter || pw == null) {
+			arguments.add( "-s" ); //  display the number of signatures requested and the number that were signed
+		}
 		arguments.add( "-C" ); //  close regardless of its success.
 		if (this.isSupportingPasswordParameter && pw != null) {
 			// specify password:
