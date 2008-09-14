@@ -2,5 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="source/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/enough-polish-build/lib/AppleJavaExtensions.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
