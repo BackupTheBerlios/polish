@@ -834,7 +834,7 @@ implements CommandListener
 	 */
 	public void showNotify() {
 		this.showTime = System.currentTimeMillis();
-		if (this.iconItem == null && this.title != null) {
+		if (this.iconItem == null && getTitle() != null) {
 			setString( getTitle() );
 			setTitle( (String)null );
 		}
