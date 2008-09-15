@@ -102,7 +102,7 @@ public class ThemeController {
 	 */
 	public static Style getStyle(ThemeStream stream, String id) throws IOException
 	{
-		id = "de.enough.polish.ui.stylesheet." + id.toLowerCase() + "style".toLowerCase();
+		id = "de.enough.polish.ui.stylesheet." + id.toLowerCase() + "style";
 		return (Style) getObject(stream, id);
 	}
 	
