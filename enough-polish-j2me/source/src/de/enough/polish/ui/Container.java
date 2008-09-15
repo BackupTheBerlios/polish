@@ -2079,9 +2079,9 @@ public class Container extends Item {
 		} else {
 			focusStyle = getFocusedStyle();
 			Style result = this.style;
-			if ((focusStyle != StyleSheet.focusedStyle && focusStyle != null)  
+			if ((focusStyle != StyleSheet.focusedStyle && focusStyle != null && (this.parent == null || this.parent.getFocusedStyle() != focusStyle))  
 				//#if polish.css.include-label
-				|| this.includeLabel 
+				|| (this.includeLabel && focusStyle != null) 
 				//#endif
 			) {
 				result = super.focus( focusStyle, direction );
