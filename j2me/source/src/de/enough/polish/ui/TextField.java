@@ -3825,7 +3825,7 @@ public class TextField extends StringItem
 		//#debug
 		System.out.println("TextField.commandAction( " + cmd.getLabel() + ", " + this + " )");
 		//#if tmp.usePredictiveInput
-			if (this.predictiveInput && this.predictiveAccess.commandAction(cmd, item)) {			
+			if (this.predictiveAccess.commandAction(cmd, item)) {			
 				return;
 			}
 		//#endif

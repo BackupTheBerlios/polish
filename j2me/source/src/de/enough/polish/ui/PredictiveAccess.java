@@ -993,6 +993,12 @@ public class PredictiveAccess implements TrieSetupCallback{
 	}
 
 	public boolean commandAction(Command cmd, Item item) {
+		if (cmd == INSTALL_PREDICTIVE_CMD) {
+			this.setup = new TrieSetup(this);
+			this.setup.showInfo();
+			return true;
+		}
+		
 		if (this.builder == null) {
 			return false;
 		}
@@ -1002,10 +1008,6 @@ public class PredictiveAccess implements TrieSetupCallback{
 
 			this.parent.setString(null);
 			this.parent.notifyStateChanged();
-			return true;
-		} else if (cmd == INSTALL_PREDICTIVE_CMD) {
-			this.setup = new TrieSetup(this);
-			this.setup.showInfo();
 			return true;
 		} else if (cmd == ENABLE_PREDICTIVE_CMD) {
 			enablePredictiveInput();
