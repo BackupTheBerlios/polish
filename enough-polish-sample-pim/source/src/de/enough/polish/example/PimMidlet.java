@@ -374,10 +374,9 @@ public class PimMidlet extends MIDlet implements CommandListener{
 	private void processSelectCmdOfContactDatabases() {
 		try {
 			String listName = contactDatabases.getString(contactDatabases.getSelectedIndex());
-			Vector contactObjects = pimUtil.getAllContacts(listName);
-			int size = contactObjects.size();
-			for(int i = 0 ; i < size ; i++) {
-				PimContact pimContact = (PimContact)contactObjects.elementAt(i);
+			PimContact[] contactObjects = pimUtil.getAllContacts(listName);
+			for(int i = 0 ; i < contactObjects.length ; i++) {
+				PimContact pimContact = contactObjects[i];
 				contactListMenu.append(pimContact.getFormattedName() + "\n " + pimContact.getTelephoneNumber(), null);
 			}
 			contactListMenu.addCommand(newCommand);
