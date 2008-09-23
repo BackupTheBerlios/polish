@@ -156,8 +156,30 @@ public final class ProcessUtil {
 	public static final int exec( String[] arguments, String info, boolean wait, OutputFilter filter, File dir ) 
 	throws IOException 
 	{
+		return exec(arguments,info,wait, filter,dir,null);
+	}
+	
+	/**
+	 * Executes an external process and logs the output of it.
+	 * 
+	 * @param arguments the arguments, e.g. { "java", "-jar", "home/lib/Blubb.jar" }
+	 * @param info the information that should be printed before each log output, e.g. "process: "
+	 * @param wait true when this method should wait for the return of the process.
+	 * @param filter the filter for messages of the processs
+	 * @param dir the current directory for the started process
+	 * @param processProxy an array to retrieve the underlying process. May be null or an array with at a size of at least one.
+	 * @return always 0, when wait == false; -1 when the waiting was interrupted; in all other cases the return value
+	 *         of the process is returned, 0 usally indicates success.
+	 * @throws IOException when the process could not be started
+	 */
+	public static final int exec( String[] arguments, String info, boolean wait, OutputFilter filter, File dir,Process[] processProxy ) 
+	throws IOException 
+	{
 		Runtime runtime = Runtime.getRuntime();
 		Process process = runtime.exec( arguments, null, dir );
+		if(processProxy != null && processProxy.length > 0) {
+			processProxy[0] = process;
+		}
 		LoggerThread errorLog = new LoggerThread( process.getErrorStream(), System.err, info, true, filter );
 		errorLog.start();
 		LoggerThread outputLog = new LoggerThread( process.getInputStream(), System.out, info, true, filter );
