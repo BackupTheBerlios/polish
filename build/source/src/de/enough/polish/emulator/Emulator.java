@@ -73,6 +73,7 @@ implements Runnable, OutputFilter
 	private String ignoreMessagePattern;
 	private String applicationName;
 	private Process[] processProxy;
+	private boolean logOutput = true;
 	
 	/**
 	 * Creates a new emulator instance.
@@ -244,7 +245,7 @@ implements Runnable, OutputFilter
 		System.out.println( "Starting emulator " + arguments[0] );
 		this.decompilerInstalled = true;
 		this.header = info;
-		return ProcessUtil.exec( arguments, info, wait, filter,  executionDir,this.processProxy );
+		return ProcessUtil.exec( arguments, info, wait, filter,  executionDir,this.processProxy,this.logOutput );
 	}
 
 	/**
@@ -438,19 +439,19 @@ implements Runnable, OutputFilter
 	public void execute(Device dev, Locale locale, Environment env)
 			throws BuildException 
 	{
-		execute(dev,locale,env,null);
+		execute(dev,locale,env,null,true);
 	}
 	
 	/* (non-Javadoc)
 	 * @see de.enough.polish.Extension#execute(de.enough.polish.devices.Device, java.util.Locale, de.enough.polish.Environment)
 	 */
-	public void execute(Device dev, Locale locale, Environment env,Process[] aProcessProxy)
+	public void execute(Device dev, Locale locale, Environment env,Process[] aProcessProxy, boolean shouldLogOutput)
 			throws BuildException 
 	{
 		this.device = dev;
 		this.environment = env;
 		this.processProxy = aProcessProxy;
-//		this.emulatorListener = aEmulatorListener;
+		this.logOutput = shouldLogOutput;
 		Thread t = new Thread( this );
 		t.start();
 	}

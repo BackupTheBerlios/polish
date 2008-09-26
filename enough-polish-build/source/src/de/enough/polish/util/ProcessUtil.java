@@ -156,7 +156,7 @@ public final class ProcessUtil {
 	public static final int exec( String[] arguments, String info, boolean wait, OutputFilter filter, File dir ) 
 	throws IOException 
 	{
-		return exec(arguments,info,wait, filter,dir,null);
+		return exec(arguments,info,wait, filter,dir,null,true);
 	}
 	
 	/**
@@ -172,7 +172,7 @@ public final class ProcessUtil {
 	 *         of the process is returned, 0 usally indicates success.
 	 * @throws IOException when the process could not be started
 	 */
-	public static final int exec( String[] arguments, String info, boolean wait, OutputFilter filter, File dir,Process[] processProxy ) 
+	public static final int exec( String[] arguments, String info, boolean wait, OutputFilter filter, File dir,Process[] processProxy,boolean logOutput ) 
 	throws IOException 
 	{
 		Runtime runtime = Runtime.getRuntime();
@@ -180,10 +180,12 @@ public final class ProcessUtil {
 		if(processProxy != null && processProxy.length > 0) {
 			processProxy[0] = process;
 		}
-		LoggerThread errorLog = new LoggerThread( process.getErrorStream(), System.err, info, true, filter );
-		errorLog.start();
-		LoggerThread outputLog = new LoggerThread( process.getInputStream(), System.out, info, true, filter );
-		outputLog.start();
+		if(logOutput) {
+			LoggerThread errorLog = new LoggerThread( process.getErrorStream(), System.err, info, true, filter );
+			errorLog.start();
+			LoggerThread outputLog = new LoggerThread( process.getInputStream(), System.out, info, true, filter );
+			outputLog.start();
+		}
 		int result = 0;
 		if (wait) {
 			try {
