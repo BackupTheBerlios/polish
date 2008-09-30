@@ -393,10 +393,10 @@ public class PimMidlet extends MIDlet implements CommandListener{
 	private void processSelectCmdOfEventDatabases() {
 		try {
 			String listName = eventDatabases.getString(eventDatabases.getSelectedIndex());
-			Vector eventObjects = pimUtil.getAllEvents(listName);
-			int size = eventObjects.size();
+			PimEvent[] eventObjects = pimUtil.getAllEvents(listName);
+			int size = eventObjects.length;
 			for(int i = 0 ; i < size ; i++) {
-				PimEvent pimEvent = (PimEvent)eventObjects.elementAt(i);
+				PimEvent pimEvent = eventObjects[i];
 				eventListMenu.append(pimEvent.getSummary() + " " + pimEvent.getNote(), null);
 			}
 			eventListMenu.addCommand(newCommand);
@@ -413,10 +413,10 @@ public class PimMidlet extends MIDlet implements CommandListener{
 	private void processSelectCmdOfToDoDatabases() {
 		try {
 			String listName = toDoDatabases.getString(toDoDatabases.getSelectedIndex());
-			Vector toDoObjects = pimUtil.getAllToDos(listName);
-			int size = toDoObjects.size();
+			PimToDo[] toDoObjects = pimUtil.getAllToDos(listName);
+			int size = toDoObjects.length;
 			for(int i = 0 ; i < size ; i++) {
-				PimToDo pimToDo = (PimToDo)toDoObjects.elementAt(i);
+				PimToDo pimToDo = toDoObjects[i];
 				toDoListMenu.append(pimToDo.getSummary() + " " + pimToDo.getDueDate(), null);
 			}
 			toDoListMenu.addCommand(newCommand);
