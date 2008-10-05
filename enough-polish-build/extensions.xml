@@ -974,4 +974,19 @@
 		<class>de.enough.polish.finalize.mea.MeaFinalizer</class>
 		<classpath>${polish.home}/bin/extensions</classpath>
 	</extension>
+
+	<extension>
+		<type>finalizer</type>
+		<name>windowsmobile-source</name>
+		<class>de.enough.polish.finalize.windowsmobile.WindowsMobileSourceFinalizer</class>
+		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/dotter.jar</classpath>
+	</extension>
+
+	<extension>
+		<type>finalizer</type>
+		<name>windowsmobile</name>
+		<class>de.enough.polish.finalize.windowsmobile.WindowsMobileFinalizer</class>
+		<classpath>${polish.home}/bin/extensions:${polish.home}/lib/dotter-solution.jar</classpath>
+	</extension>
+
 </extensions>
