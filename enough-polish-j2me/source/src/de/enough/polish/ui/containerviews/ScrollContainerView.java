@@ -83,7 +83,7 @@ public class ScrollContainerView extends ContainerView {
 			int availHeight = parent.getScreen() != null ? parent.getScreen().getAvailableHeight() : 300;
 			int h = this.height >= 0 ? this.height : (this.height * availHeight) / -100;
 			this.showVerticalScrollBar = (this.contentHeight > h);
-			this.scrollBar.initScrollBar(lineWidth, h, this.contentHeight, parent.getScrollYOffset(), parent.getInternalY(), parent.getInternalHeight(), focusedIndex, parent.size());
+			this.scrollBar.initScrollBar(lineWidth, h, this.contentHeight, parent.getScrollYOffset(), parent.getInternalY(), parent.getInternalHeight(), this.focusedIndex, parent.size());
 			if (this.showVerticalScrollBar) {
 				this.contentHeight = h;
 				parent.setScrollHeight(h);
