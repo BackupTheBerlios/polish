@@ -77,9 +77,9 @@
 				-->
 				<variable name="polish.android.R" value="${android.package}.R" />
 				
+				<variable name="polish.Screen.base" value="Canvas" />
 				<variable name="polish.useFullScreen" value="true" />
 				<variable name="polish.useMenuFullScreen" value="true" />
-				<variable name="polish.Screen.base" value="de.enough.polish.drone.lcdui.Canvas" />
 
 			</variables>
 			<!-- debug settings: only include debug setting when the test-property is true -->
@@ -128,9 +128,6 @@
 	    <fileset dir="${basedir}/build/Generic/android/de/source"/>
 	</copy>
 	
-	<!-- copy dummy resource (DON'T YOU DARE CHANGE THIS) -->
-	<copy file="${polish.home}/android/_.png" todir="${android.build}/res/drawable"/>
-		
 	<!-- copy project files -->
 	<copy file="${polish.home}/android/.project" todir="${android.build}"/>
 	<copy file="${polish.home}/android/.classpath" todir="${android.build}"/>
@@ -140,17 +137,16 @@
 	  	<replacefilter token="@@NAME@@"/>
 	</replace>
 	
-	<!-- copy the resource images -->	
-	<copy todir="${android.build}/res/drawable" overwrite="true">
+	<!-- copy the resources -->	
+	<copy todir="${android.build}/res/raw" overwrite="true">
 	    <fileset dir="${basedir}/build/Generic/android/de/resources">
-	    	<include name="**/*.png"/>
+	    	<include name="**/*.*"/>
 		</fileset>
 	</copy>
 	
 	<!-- remove unneccessary sources for testing -->
 	<delete dir="${android.src}/browser"/>
 	<delete dir="${android.src}/codec"/>
-	<delete dir="${android.src}/io"/>
 	<delete dir="${android.src}/log/http"/>
 	<delete dir="${android.src}/log/rms"/>
 	<delete dir="${android.src}/math"/>
