@@ -1,0 +1,17 @@
+.image
+{
+	border-color: red;
+	border-width: 5;
+}
+
+menuItem
+{
+	font-color: 0x666666;
+	background-color: white;
+}
+
+menuItem:hover
+{
+	font-color: white;
+	background-color: 0x666666;
+}

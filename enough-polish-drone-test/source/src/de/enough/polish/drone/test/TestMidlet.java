@@ -20,10 +20,12 @@ import de.enough.polish.util.Debug;
 
  * @author Robert Virkus, j2mepolish@enough.de
  */
-public class TestMidlet extends MIDlet {
+public class TestMidlet extends MIDlet implements CommandListener{
 	
 	Display display;
 	Form form;
+	
+	Command cmdQuit = new Command("Quit",Command.EXIT,0);
 	
 	public TestMidlet() {}
 
@@ -38,9 +40,12 @@ public class TestMidlet extends MIDlet {
 			e.printStackTrace();
 		}
 		
-		ImageItem item = new ImageItem("girl",image,0,"girl");
+		//#style image
+		ImageItem item = new ImageItem(null,image,0,"girl");
 		this.form.append(item);
 		this.form.append("Hello Android");
+		this.form.addCommand(cmdQuit);
+		this.form.setCommandListener(this);
 		
 		this.display = Display.getDisplay(this);
 		this.display.setCurrent( this.form );
@@ -54,5 +59,12 @@ public class TestMidlet extends MIDlet {
 	
 	protected void destroyApp(boolean unconditional) throws MIDletStateChangeException {
 		// just quit
+	}
+
+	public void commandAction(Command cmd, Displayable disp) {
+		if(cmd == cmdQuit)
+		{
+			notifyDestroyed();
+		}
 	}
 }
