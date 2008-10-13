@@ -58,10 +58,19 @@ public interface SimplePullParser
    */
   int TEXT = 4;
 
+  /**
+   * CDATA section was just read
+   */
   int CDSECT = 5;
 
+  /**
+   * Entity reference was just read
+   */
   int ENTITY_REF = 6;
 
+  /**
+   * Legacy section was just read (ignoring php and co)
+   */
   int LEGACY = 999;
 
   int getType();
