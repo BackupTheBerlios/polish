@@ -3,22 +3,19 @@
  */
 package de.enough.polish.example;
 
-import java.util.Vector;
-
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
-
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import de.enough.polish.calendar.CalendarEntry;
+import de.enough.polish.event.AsynchronousCommandListener;
 import de.enough.polish.pim.PimContact;
-import de.enough.polish.pim.PimEvent;
 import de.enough.polish.pim.PimToDo;
 import de.enough.polish.pim.PimUtility;
-import de.enough.polish.event.AsynchronousCommandListener;
 /**
  * @author Rama
  *
@@ -393,11 +390,11 @@ public class PimMidlet extends MIDlet implements CommandListener{
 	private void processSelectCmdOfEventDatabases() {
 		try {
 			String listName = eventDatabases.getString(eventDatabases.getSelectedIndex());
-			PimEvent[] eventObjects = pimUtil.getAllEvents(listName);
+			CalendarEntry[] eventObjects = pimUtil.getAllEvents(listName);
 			int size = eventObjects.length;
 			for(int i = 0 ; i < size ; i++) {
-				PimEvent pimEvent = eventObjects[i];
-				eventListMenu.append(pimEvent.getSummary() + " " + pimEvent.getNote(), null);
+				CalendarEntry pimEvent = eventObjects[i];
+				eventListMenu.append(pimEvent.getSummary() + " " + pimEvent.getNotes(), null);
 			}
 			eventListMenu.addCommand(newCommand);
 			eventListMenu.addCommand(removeCommand);
