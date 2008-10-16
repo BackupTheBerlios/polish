@@ -1,14 +1,105 @@
-<%define inDocumentationSection %>
-<%define inDocumentationSection.platform %>
-<%set title = J2ME Polish: Android Development %>
-<%set basedir = ../ %>
-<%include start.txt %>
+<%define inDocumentationSection %> <%define
+inDocumentationSection.platform %> <%set title = J2ME Polish: Android
+Development %> <%set basedir = ../ %> <%include start.txt %>
 
 <h1 id="top">Developing for Android Devices</h1>
+The Android platform is a Java - driven platform for mobile devices from
+Google. In J2ME Polish, you can develop normal MIDlet applications and
+simply convert these applications to the native Android application
+format.
+<h2 id="android-preparation">Preparations</h2>
+<p>To create and deploy application for Android all thats needed is
+the android sdk with the version 1.0 or higher. Please visit the <a
+	href="http://code.google.com/android/download.html">Android
+Download Site</a> to download the SDK for your operation system and install
+it.</p>
+<p>Optionally, you can install the Android ADT Plugins for eclipse.
+For further information how to install the plugins, go to the <a
+	href="http://code.google.com/android/intro/installing.html">Android
+Installation Guide</a>.</p>
+<p>After the installation of the Android SDK you should define the <code>android.home</code>
+in either <i>${polish.home}/global.properties</i>,
+${project.home}/${user.name}.properties or in your <i>build.xml</i>
+script. In your <i>build.xml</i> script the definitition could look like
+this:
+<pre>
+&lt;property 
+	name=&quot;blackberry.home&quot; 
+	location=&quot;C:/Program Files/android-sdk-windows-1.0_r1&quot; 
+/&gt;
+</pre>
+</p>
+<h2 id="blackberry-building">Building Android Application</h2>
+<p>To convert, compile and package your source code for the Android
+platform, you simply need to set <i>Generic/android</i> as the device to
+build your application for. This device has a resolution of 240 x 320
+and has all default features of an Android phone. Future versions of
+J2ME Polish will add more sofisticated devices like the T-Mobile G1.</p>
+<p>The building of the application is done in <number>
+steps :
+<ol>
+	<li>An activity is created in <code>/activity</code> of the
+	Android build folder. </li>
+	<li>The R.java / Manifest.java are created from the resources and
+	sources via <i>aapt</i> of the Android SDK</li>
+	<li>The code is compiled with target and source set to Java 1.5</li>
+	<li>A file named classes.dex is created from the source code via dx 
+	of the Android SDK</li>
+	<li>The resources are packed to a .ap_ file with <i>aapt</i></li>
+	<li>The application is packaged to a .apk file with the SDK's <i>apkbuilder</i></li>
+</ol>
+</p>
+<b>
+Please note that the current android conversion is in its first stages. By now, only the 
+Polish API and HTTP is supported. Other packages and feature will follow.
+</b>
+<h2 id="blackberry-testing">Testing Android application</h2>
 <p>
-Soon you will be able to automatically port your application to the Android platform.
-More details will follow soon.
+There are two possibilities to test Android application build with J2ME Polish :
+</p>
+<ul>
+<li>
+If <code>test</code> is set to true, the Android emulator is started automatically 
+and the application is installed. Before launching the programm, please wait for the build.xml
+to output <i>Successfully installed</i>. To rebuild the application and test it, just cancel 
+the running build.xml and leave the emulator running, the build process will automatically detect 
+if there's an emulator running and install the application to the running emulator. You can also 
+start the emulator before the build process is started.
+</li>
+<li>
+The created activity in the <code>build</code> folder can also be imported to eclipse and used to 
+test via the Android ADT Plugins if they're installed. Please note that you need to fix the project to use it with the ADT
+plugins. To do so, right-click the imported activity and run <i>Android
+Tools / Fix Project Properties</i>.
+</li>
+</ul>
+<h2 id="blackberry-troubleshooting">Troubleshooting</h2>
+<b>The creation of the .dex file terminates with an OutOfMemoryError</b>
+<p>
+This error is quite common and due to insufficient memory settings in the dx executable of the android installation.
+Please go to ${android.home}/tools and open the dx executable. Remove <code>REM</code> from the line
+<pre>
+REM set javaOpts=-Xmx256M
+</pre>
+and rerun the build process. If the error occurs again, increase the settings for -XmX to a higher amount.
 </p>
 
-
+<h2 id="blackberry-roadmap">Roadmap</h2>
+<p>
+Future versions of the android conversion will support the conversion of the following Java Packages : 
+<ul>
+<li>
+RMS
+</li>
+<li>
+Multimedia API
+</li>
+<li>
+Location API
+</li>
+<li>
+Bluetooth API
+</li>
+</ul>
+</p>
 <%include end.txt %>
