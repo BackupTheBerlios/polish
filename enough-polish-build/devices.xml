@@ -407,7 +407,7 @@ These namespaces/schemas will be used soon.
     <description>An unknown Windows powered phone.</description>
     <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="windows" />
+    <capability name="JavaPackage" value="btapi,fileconnection,location,pim,windows" />
     <capability name="ScreenSize" value="240x320" />
     <!-- Don't set OS to Windows. This disables the extended menubar
 		<capability name="OS" value="Windows Mobile 5.0"/>
