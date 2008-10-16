@@ -1,4 +1,4 @@
-//#condition polish.api.pdaapi
+//#condition polish.api.pdaapi || polish.api.fileconnection
 
 /*
  * Created on 05-Jul-2005 at 23:45:29.
