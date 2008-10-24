@@ -344,6 +344,9 @@ public class TextField extends StringItem
 //#elif polish.css.textfield-direct-input && !polish.blackberry
 	//#define tmp.directInput
 	//#define tmp.allowDirectInput
+//#elif polish.api.windows
+	//#define tmp.forceDirectInput
+	//#define tmp.directInput
 //#endif
 //#if tmp.directInput && polish.TextField.usePredictiveInput && !polish.blackberry
 	//#define tmp.usePredictiveInput
@@ -904,7 +907,7 @@ public class TextField extends StringItem
 			private long lastFieldChangedEvent;
 		//#endif
 	//#endif
-	//#if polish.midp && !polish.blackberry
+	//#if polish.midp && !polish.blackberry && !polish.api.windows
 		//#define tmp.useNativeTextBox
 		private javax.microedition.lcdui.TextBox midpTextBox;
 	//#endif
@@ -1147,7 +1150,7 @@ public class TextField extends StringItem
 	{
 		//#debug
 		System.out.println("setString [" + text + "] for textfield [" + (this.label != null ? this.label.getText() : "no label") + "].");
-		//#if !(tmp.forceDirectInput || polish.blackberry)
+		//#if tmp.useNativeTextBox
 			if (this.midpTextBox != null) {
 				this.midpTextBox.setString( text );
 			}
@@ -1457,7 +1460,7 @@ public class TextField extends StringItem
 		if ((this.text != null && maxSize < this.text.length()) || (maxSize < 1)) {
 			throw new IllegalArgumentException();
 		}
-		//#if ! tmp.forceDirectInput && !polish.blackberry
+		//#if tmp.useNativeTextBox
 			if (this.midpTextBox != null) {
 				this.maxSize = this.midpTextBox.setMaxSize(maxSize);
 				return this.maxSize;
@@ -1465,7 +1468,7 @@ public class TextField extends StringItem
 		//#endif
 				this.maxSize = maxSize;
 				return maxSize;
-		//#if ! tmp.forceDirectInput  && !polish.blackberry
+		//#if tmp.useNativeTextBox
 			}
 		//#endif
 	}
@@ -1498,7 +1501,7 @@ public class TextField extends StringItem
 		//#ifdef tmp.allowDirectInput
 			if (this.enableDirectInput) {
 				return this.caretPosition;
-			//#if !tmp.forceDirectInput
+			//#if tmp.useNativeTextBox
 			} else if (this.midpTextBox != null) {
 				return this.midpTextBox.getCaretPosition();
 			//#endif
@@ -1509,9 +1512,11 @@ public class TextField extends StringItem
 		//#elif tmp.forceDirectInput
 			//# return this.caretPosition;
 		//#else
-			if (this.midpTextBox != null) {
-				return this.midpTextBox.getCaretPosition();
-			}
+			//#ifdef tmp.useNativeTextBox
+				if (this.midpTextBox != null) {
+					return this.midpTextBox.getCaretPosition();
+				}
+			//#endif
 			return 0;
 		//#endif
 	}
@@ -1621,7 +1626,7 @@ public class TextField extends StringItem
 			}
 			//# this.editField.setChangeListener( this );
 			this._bbField = (Field) this.editField;
-		//#elif !tmp.forceDirectInput
+		//#elif tmp.useNativeTextBox
 			if (this.midpTextBox != null) {
 				this.midpTextBox.setConstraints(constraints);
 			}
@@ -1819,7 +1824,7 @@ public class TextField extends StringItem
 	 */
 	public void setInitialInputMode( String characterSubset)
 	{
-		//#if !(tmp.forceDirectInput || polish.blackberry) && polish.midp2
+		//#if tmp.useNativeTextBox
 			if (this.midpTextBox == null) {
 				createTextBox();
 			}
@@ -2906,7 +2911,7 @@ public class TextField extends StringItem
 			//#endif
 			|| (getScreen().isGameActionFire(keyCode, gameAction) ) )
 		{	
-			//#if !(polish.blackberry || tmp.forceDirectInput)
+			//#if tmp.useNativeTextBox
 				showTextBox();
 			//#endif
 			return true;
@@ -3650,7 +3655,7 @@ public class TextField extends StringItem
 	}
 	//#endif
 	
-	//#if polish.hasPointerEvents && !tmp.forceDirectInput
+	//#if tmp.useNativeTextBox
 	/**
 	 * Handles the event when a pointer has been pressed at the specified position.
 	 * The default method translates the pointer-event into an artificial
