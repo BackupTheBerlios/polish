@@ -10902,6 +10902,32 @@ These namespaces/schemas will be used soon.
   </device>
   <!-- Samsung devices -->
   <device>
+    <identifier>Samsung/SGH-F700</identifier>
+    <capability name="FullCanvasSize" value="240x440" />
+    <capability name="CanvasSize" value="240x440" />
+    <capability name="ScreenSize" value="240x440" />
+    <capability name="JavaPlatform" value="MIDP/2.0" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="VideoHeapSize" value="0 KB" />
+    <capability name="Font.small" value="9" />
+    <capability name="Font.medium" value="12" />
+    <capability name="Font.large" value="14" />
+    <capability name="ImageFormat" value="png" />
+    <capability name="SoundFormat" value="midi" />
+    <capability name="VideoFormat" value="mpeg4,3gpp" />
+    <capability name="PolyphonicVoices" value="40" />
+    <capability name="JavaPackage" value="wmapi-1.1,mmapi-1.1,3d" />
+    <capability name="StorageSize" value="50 MB" />
+    <capability name="HeapSize" value="2 MB" />
+    <capability name="MaxJarSize" value="300 kb" />
+    <capability name="MaxRecordStoreSize" value="256 KB" />
+    <capability name="DRM" value="OMA v1.0" />
+    <capability name="Region" value="global" />
+    <capability name="Network" value="GSM, GPRS, UMTS" />
+    <capability name="Frequency" value="900,1800,1900" />
+    <capability name="Bugs" value="SoftKeyMappedToFire" />
+  </device>
+  <device>
     <identifier>Samsung/SGH-Z500</identifier>
     <features>hasCommandKeyEvents</features>
     <capability name="FullCanvasSize" value="176x205" />
@@ -14604,6 +14630,11 @@ These namespaces/schemas will be used soon.
     <capability name="wap.userAgent" value="BenQ P30/R101 Profile/MIDP-2.0 Configuration/CLDC-1.0" />
   </device>
   <!-- Vodafone devices -->
+  <device>
+    <identifier>Vodafone/Samsung-SGH-F700</identifier>
+    <parent>Samsung/SGH-F700</parent>
+    <capability name="JavaPackage" value="VSCL-1.0.1" />
+  </device>
   <device>
     <identifier>Vodafone/Sharp-GX20</identifier>
     <parent>Sharp/GX20</parent>
