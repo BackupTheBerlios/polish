@@ -57,6 +57,7 @@ implements ItemStateListener //, CommandListener
 	private final ArrayList itemsList;
 	//private CommandListener originalCommandListener;
 	private String lastFilterText;
+	private int filterHeight;
 
 	/**
 	 * Creates a new FilteredList 
@@ -140,6 +141,12 @@ implements ItemStateListener //, CommandListener
 		boolean handled = false;
 		if (! isGameActionFire( keyCode, gameAction )) {
 			handled = this.filterTextField.handleKeyPressed(keyCode, gameAction);
+			if (handled) {
+				int height = this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth );
+				if (height != this.filterHeight) {
+					calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+				}
+			}
 		}
 		if (!handled) {
 			handled = super.handleKeyPressed(keyCode, gameAction);
@@ -208,7 +215,7 @@ implements ItemStateListener //, CommandListener
 	 */
 	protected void calculateContentArea(int x, int y, int width, int height) {
 		super.calculateContentArea(x, y, width, height);
-		int filterHeight = this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth );
+		this.filterHeight = this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth );
 		this.contentHeight -= filterHeight;
 		this.container.setScrollHeight( this.contentHeight );
 		if (this.filterPosition == FIELD_POSITION_TOP) {
@@ -598,13 +605,27 @@ implements ItemStateListener //, CommandListener
 		this.filterTextField.setLabel(label);
 	}
 	
+	/**
+	 * Sets the text of the filter element.
+	 * 
+	 * @param text the text that is should be entered into the filter field.
+	 */
 	public void setFilterText( String text ) {
 		this.filterTextField.setString( text );
 		if (isShown()) {
+			int height = this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth );
+			if (height != this.filterHeight) {
+				calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );
+			}
 			itemStateChanged( this.filterTextField );
 		}
 	}
 	
+	/**
+	 * Retrieves the text from the filter element.
+	 * 
+	 * @return the text that is currently entered into the filter field.
+	 */
 	public String getFilterText() {
 		return this.filterTextField.getString();
 	}

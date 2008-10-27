@@ -100,6 +100,25 @@ public class FilteredChoiceGroup
 		this.nullText = nullText;
 	}
 	
+
+	/**
+	 * Sets the text of the filter element.
+	 * 
+	 * @param text the text that is should be entered into the filter field.
+	 */
+	public void setFilterText( String text ) {
+		this.filteredList.setFilterText(text);
+	}
+	
+	/**
+	 * Retrieves the text from the filter element.
+	 * 
+	 * @return the text that is currently entered into the filter field.
+	 */
+	public String getFilterText() {
+		return this.filteredList.getFilterText();
+	}
+	
 	
 
 	/* (non-Javadoc)
