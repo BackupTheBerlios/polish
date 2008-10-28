@@ -273,6 +273,12 @@ implements
 	 */
 	public Date getDate()
 	{
+		//#if tmp.directInput
+			if (this.isFocused) {
+				moveForward(false);
+				moveBackward(false);
+			}
+		//#endif
 		return this.date;
 	}
 
@@ -771,6 +777,10 @@ implements
 	protected void defocus(Style originalStyle) {
 		super.defocus(originalStyle);
 		this.showCaret = false;
+		//#if tmp.directInput
+			moveForward(false);
+			moveBackward(false);
+		//#endif
 		//#if polish.blackberry
 			this.blackberryDateField.focusRemove();
 		//#endif
@@ -805,19 +815,19 @@ implements
 					newText += this.text.substring( this.editIndex + 1 );
 				}
 				setText( newText );
-				moveForward();
+				moveForward(true);
 			//#ifdef polish.key.ClearKey:defined
 				//#= } else if ( this.date != null && (gameAction == Canvas.LEFT || keyCode == ${polish.key.ClearKey}) ) {
 			//#else
 				} else if ( this.date != null && gameAction == Canvas.LEFT ) {
 			//#endif
-				moveBackward();
+				moveBackward(true);
 			} else if ( this.date != null && gameAction == Canvas.RIGHT ) {
-				moveForward();
+				moveForward(true);
 			} else if (gameAction != Canvas.FIRE){
 				// force check before leaving this date=-field:
 				if (this.date != null) {
-					moveForward();
+					moveForward(true);
 					this.currentField = 0;
 					this.currentFieldStartIndex = 0;
 					this.editIndex = 0;
@@ -840,7 +850,7 @@ implements
 	}
 	
 	//#if tmp.directInput
-	private void moveBackward() {
+	private void moveBackward(boolean notifyStateListener) {
 		if (this.date == null) {
 			return;
 		}
@@ -856,7 +866,7 @@ implements
 		int newIndex = this.editIndex -1;
 		while (true) {
 			if ( newIndex < 0 ) {
-				checkField( forwardIndex );
+				checkField( forwardIndex, notifyStateListener );
 				newIndex = this.text.length() - 1;
 				if (this.inputMode == DATE) {
 					this.currentField = 2;
@@ -871,7 +881,7 @@ implements
 			if ( Character.isDigit(c) ) {
 				break;
 			}
-			checkField( forwardIndex );
+			checkField( forwardIndex, notifyStateListener );
 			this.currentField--;
 			newIndex--;
 		}
@@ -907,12 +917,12 @@ implements
 	//#endif
 
 	//#if tmp.directInput
-	private void moveForward() {
+	private void moveForward(boolean notifyStateListener) {
 		int newIndex = this.editIndex + 1;
 		while (true) {
 			if ( newIndex >= this.text.length() ) {
 				newIndex = 0;
-				checkField( newIndex );
+				checkField( newIndex, notifyStateListener );
 				this.currentField = 0;
 				this.currentFieldStartIndex = 0;
 			}
@@ -922,7 +932,7 @@ implements
 				break;
 			}
 			// okay, we're entering a new field, so check the value of the last field now:
-			checkField( newIndex );
+			checkField( newIndex, notifyStateListener );
 			newIndex++;
 			this.currentFieldStartIndex = newIndex;
 			this.currentField++;
@@ -952,7 +962,7 @@ implements
 	//#endif
 	
 	//#if tmp.directInput
-	private void checkField(int newIndex) {
+	private void checkField(int newIndex, boolean notifyStateListener) {
 		String fieldStr;
 		if ( newIndex == 0 ) {
 			fieldStr = this.text.substring( this.currentFieldStartIndex );
@@ -1072,7 +1082,7 @@ implements
 				}
 				//#endif
 			}
-			if ( changed && ( getScreen() instanceof Form ) ) {
+			if ( notifyStateListener && changed) {
 				notifyStateChanged();
 			}
 		}
