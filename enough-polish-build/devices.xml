@@ -15215,8 +15215,8 @@ These namespaces/schemas will be used soon.
     <capability name="key.gamea" value="55" />
     <capability name="key.gamec" value="42" />
     <capability name="key.gamed" value="35" />
-    <capability name="key.LeftSoftKey" value="-3" />
-    <capability name="key.RightSoftKey" value="-4" />
+    <capability name="key.LeftSoftKey" value="-6" />
+    <capability name="key.RightSoftKey" value="-7" />
     <capability name="key.left" value="-3" />
     <capability name="key.ReturnSoftKey" value="-5" />
     <capability name="key.SelectSoftKey" value="-5" />
@@ -15329,7 +15329,7 @@ These namespaces/schemas will be used soon.
   <device>
     <identifier>Nokia/5700_XpressMusic</identifier>
     <features>hasCamera</features>
-    <groups>Series40E3FP1</groups>
+    <groups>Series60E3FP1</groups>
     <capability name="OS" value="Symbian OS 9.2" />
     <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
