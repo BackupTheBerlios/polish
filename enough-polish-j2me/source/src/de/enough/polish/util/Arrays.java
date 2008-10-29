@@ -463,8 +463,14 @@ public final class Arrays implements Comparator {
 	private static void arraycopyImpl(char[] source, int sourceOffset,
 			char[] destination, int destinationOffset, int length)
 	{
-		for (int i=0; i<length; i++) {
-			destination[destinationOffset+i] = source[sourceOffset+i];
+		if (source == destination && destinationOffset > sourceOffset && sourceOffset + length > destinationOffset) {
+			for (int i=length; --i >= 0; ) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}			
+		} else {
+			for (int i=0; i<length; i++) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}
 		}
 	}
 
@@ -472,8 +478,14 @@ public final class Arrays implements Comparator {
 	private static void arraycopyImpl(double[] source, int sourceOffset,
 			double[] destination, int destinationOffset, int length)
 	{
-		for (int i=0; i<length; i++) {
-			destination[destinationOffset+i] = source[sourceOffset+i];
+		if (source == destination && destinationOffset > sourceOffset && sourceOffset + length > destinationOffset) {
+			for (int i=length; --i >= 0; ) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}			
+		} else {
+			for (int i=0; i<length; i++) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}
 		}
 	}
 	//#endif
@@ -482,8 +494,14 @@ public final class Arrays implements Comparator {
 	private static void arraycopyImpl(float[] source, int sourceOffset,
 			float[] destination, int destinationOffset, int length)
 	{
-		for (int i=0; i<length; i++) {
-			destination[destinationOffset+i] = source[sourceOffset+i];
+		if (source == destination && destinationOffset > sourceOffset && sourceOffset + length > destinationOffset) {
+			for (int i=length; --i >= 0; ) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}			
+		} else {
+			for (int i=0; i<length; i++) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}
 		}
 	}
 	//#endif
@@ -491,47 +509,83 @@ public final class Arrays implements Comparator {
 	private static void arraycopyImpl(boolean[] source, int sourceOffset,
 			boolean[] destination, int destinationOffset, int length)
 	{
-		for (int i=0; i<length; i++) {
-			destination[destinationOffset+i] = source[sourceOffset+i];
+		if (source == destination && destinationOffset > sourceOffset && sourceOffset + length > destinationOffset) {
+			for (int i=length; --i >= 0; ) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}			
+		} else {
+			for (int i=0; i<length; i++) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}
 		}
 	}
 
 	private static void arraycopyImpl(long[] source, int sourceOffset,
 			long[] destination, int destinationOffset, int length)
 	{
-		for (int i=0; i<length; i++) {
-			destination[destinationOffset+i] = source[sourceOffset+i];
+		if (source == destination && destinationOffset > sourceOffset && sourceOffset + length > destinationOffset) {
+			for (int i=length; --i >= 0; ) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}			
+		} else {
+			for (int i=0; i<length; i++) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}
 		}
 	}
 
 	private static void arraycopyImpl(short[] source, int sourceOffset,
 			short[] destination, int destinationOffset, int length)
 	{
-		for (int i=0; i<length; i++) {
-			destination[destinationOffset+i] = source[sourceOffset+i];
+		if (source == destination && destinationOffset > sourceOffset && sourceOffset + length > destinationOffset) {
+			for (int i=length; --i >= 0; ) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}			
+		} else {
+			for (int i=0; i<length; i++) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}
 		}
 	}
 
 	private static void arraycopyImpl(Object[] source, int sourceOffset,
 			Object[] destination, int destinationOffset, int length)
 	{
-		for (int i=0; i<length; i++) {
-			destination[destinationOffset+i] = source[sourceOffset+i];
+		if (source == destination && destinationOffset > sourceOffset && sourceOffset + length > destinationOffset) {
+			for (int i=length; --i >= 0; ) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}			
+		} else {
+			for (int i=0; i<length; i++) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}
 		}
 	}
 
 	private static void arraycopyImpl(int[] source, int sourceOffset,
 			int[] destination, int destinationOffset, int length)
 	{
-		for (int i=0; i<length; i++) {
-			destination[destinationOffset+i] = source[sourceOffset+i];
+		if (source == destination && destinationOffset > sourceOffset && sourceOffset + length > destinationOffset) {
+			for (int i=length; --i >= 0; ) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}			
+		} else {
+			for (int i=0; i<length; i++) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}
 		}
 	}
 
 	private static void arraycopyImpl(byte[] source, int sourceOffset, byte[] destination, int destinationOffset, int length )
 	{
-		for (int i=0; i<length; i++) {
-			destination[destinationOffset+i] = source[sourceOffset+i];
+		if (source == destination && destinationOffset > sourceOffset && sourceOffset + length > destinationOffset) {
+			for (int i=length; --i >= 0; ) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}			
+		} else {
+			for (int i=0; i<length; i++) {
+				destination[destinationOffset+i] = source[sourceOffset+i];
+			}
 		}
 	}
 
