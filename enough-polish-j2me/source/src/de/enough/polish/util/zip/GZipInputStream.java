@@ -607,7 +607,7 @@ public class GZipInputStream extends InputStream {
 	    	int wanted=(int)(BL-this.smallCodeBuffer[1]/8-1);
 	    	int count= this.inStream.read(this.tmpRef,0,wanted);
 	    	
-	    	if (count!=wanted){
+	    	if (count == -1){
 	    		this.inStreamEnded=true;
 	    	}
 	    	
