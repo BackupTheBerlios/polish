@@ -35,10 +35,6 @@ import de.enough.polish.xml.SimplePullParser;
 
 import javax.microedition.lcdui.Command;
 
-//#if polish.LibraryBuild
-import de.enough.polish.ui.FakeContainerCustomItem;
-//#endif
-
 /**
  * This class provides the basic functionality for tag handlers. A tag handler is a
  * responsible for handling domain-specific tags in the browser. E.g. you can
