@@ -118,6 +118,8 @@ public class HtmlTagHandler
 
 	/** text type-value */
   public static final String INPUTTYPE_TEXT = "text";
+	/** password type-value */
+  public static final String INPUTTYPE_PASSWORD = "password";
 	/** hidden type-value */
   public static final String INPUTTYPE_HIDDEN = "hidden";
 	/** submit type-value */
@@ -478,10 +480,10 @@ private FormListener formListener;
         	  value = this.formListener.verifyInitialFormValue(this.currentForm.getAction(),  name, value);
           }
           
-          if (INPUTTYPE_TEXT.equals(type))
+          if (INPUTTYPE_TEXT.equals(type) || INPUTTYPE_PASSWORD.equals(type))
           {
             //#style browserInput
-            TextField textField = new TextField(null, value, 100, TextField.ANY);
+            TextField textField = new TextField(null, value, 100, INPUTTYPE_TEXT.equals(type) ? TextField.ANY : TextField.PASSWORD);
             if (style != null) {
             	textField.setStyle(style);
             }
