@@ -89,7 +89,7 @@ import javax.microedition.lcdui.Image;
 public abstract class ScreenChangeAnimation
 //#if polish.midp2
 	extends Canvas
-//#elif polish.classes.fullscreen:defined
+//#elif polish.classes.fullscreen:defined && polish.useFullScreen
 	//#= extends ${polish.classes.fullscreen}
 //#else
 	//#= extends Canvas 
@@ -124,7 +124,7 @@ implements Runnable
 	 */
 	public ScreenChangeAnimation() {
 		// default constructor
-		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint
+		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint && polish.useFullScreen
 			setFullScreenMode(true);
 		//#endif
 	}
@@ -199,7 +199,7 @@ implements Runnable
 	protected abstract void paintAnimation( Graphics g );
 	
 	public final void paint( Graphics g ) {
-		//#if polish.Bugs.fullScreenInPaint
+		//#if polish.Bugs.fullScreenInPaint && polish.useFullScreen
 			if (! this.fullScreenModeSet ) {
 				setFullScreenMode(true);
 				this.fullScreenModeSet = true;
@@ -278,7 +278,7 @@ implements Runnable
 	 * The default implementation switches into fullscreen mode
 	 */
 	public void showNotify() {
-		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint
+		//#if polish.midp2 && !polish.Bugs.fullScreenInPaint && polish.useFullScreen
 			setFullScreenMode(true);
 		//#endif
 	}

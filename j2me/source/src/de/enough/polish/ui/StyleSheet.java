@@ -570,6 +570,15 @@ public final class StyleSheet {
 				if ( screenstyle == null ) {
 					screenstyle = defaultStyle;
 				}
+				//#if !polish.useFullScreen
+					//#if polish.midp2
+						screenAnimation.setTitle( nextDisplayable.getTitle() );
+					//#else
+						if (nextScreen != null) {
+							screenAnimation.setTitle( nextScreen.getTitle() );
+						}
+					//#endif
+				//#endif
 				screenAnimation.show( screenstyle, display, width, height, lastScreenImage, nextScreenImage, nextCanvas, nextDisplayable, isForwardAnimation );
 			} catch (Exception e) {
 				//#debug error
