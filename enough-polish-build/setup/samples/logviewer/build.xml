@@ -83,7 +83,7 @@
 					-->
 				</variables>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true unless="test" -->
-				<obfuscator name="ProGuard" useDefaultPackage="false" unless="test or polish.blackberry" >
+				<obfuscator name="ProGuard" unless="test or polish.blackberry" >
 				</obfuscator>
 				
 				<resources

@@ -123,7 +123,7 @@
 					<variable name="polish.useScrollBar" value="true" />
 				</variables>
 				<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-				<obfuscator useDefaultPackage="false" name="ProGuard" unless="test or polish.blackberry">
+				<obfuscator name="ProGuard" unless="test or polish.blackberry">
 				</obfuscator>
 				<!-- debug settings: only include debug setting when the test-property is true -->
 				<debug if="test" level="error" showLogOnError="true" verbose="true">
