@@ -231,11 +231,18 @@ public class ChoiceItem extends IconItem
 		
 		this.contentWidth += maxWidth;
 		if (this.contentHeight < maxHeight) {
-			// TODO look at layout and adjust yAlign accordingly
-			this.yAdjust = maxHeight - this.contentHeight;
-			this.contentHeight = maxHeight;
+			// the image is bigger than the text:
 			this.yBoxAdjust = 0;
+			if ((this.layout & LAYOUT_TOP) == LAYOUT_TOP) {
+				this.yAdjust = 0;
+			} else if ((this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM) { 
+				this.yAdjust = maxHeight - this.contentHeight;
+			} else {
+				this.yAdjust = (maxHeight - this.contentHeight)/2;
+			}
+			this.contentHeight = maxHeight;
 		} else {
+			// the image is smaller than the text:
 			if ((this.layout & LAYOUT_TOP) == LAYOUT_TOP) {
 				this.yBoxAdjust = 0;
 			} else if ((this.layout & LAYOUT_BOTTOM) == LAYOUT_BOTTOM) { 
