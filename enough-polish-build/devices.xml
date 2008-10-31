@@ -251,14 +251,14 @@ These namespaces/schemas will be used soon.
     <features>isVirtual, hasPointerEvents, hasCommandKeyEvents, isDynamic</features>
     <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="mmapi,wmapi" />
+    <capability name="JavaPackage" value="btapi, fileconnection,mmapi,wmapi" />
     <capability name="SoundFormat" value="midi, amr, wav" />
     <capability name="HeapSize" value="1MB" />
     <capability name="key.LeftSoftKeys" value="-6,-21,21,57345,-1,-202" />
     <capability name="key.RightSoftKeys" value="-7,-22,22,57346,-4,-203" />
     <capability name="key.maybeSupportsAsciiKeyMap" value="true" />
     <capability name="MenuBar.OptionsPosition" value="left" />
-    <capability name="Bugs" value="SoftKeyMappedToFire,noSoftKeyReleasedEvents,displaySetCurrentFlickers,needsBottomOrientiationForStringDrawing,NoPermanentBacklight, BacklightRequiresLightOff" />
+    <capability name="Bugs" value="SoftKeyMappedToFire,noSoftKeyReleasedEvents,displaySetCurrentFlickers,needsBottomOrientiationForStringDrawing,BacklightRequiresLightOff" />
   </device>
   <device supportsPolishGui="true">
     <identifier>Generic/AnyPhone_128x128</identifier>
@@ -280,7 +280,7 @@ These namespaces/schemas will be used soon.
     <parent>Generic/AnyPhone_128x160</parent>
     <capability name="JavaConfiguration" value="CLDC/1.0" />
   </device>
-  <device supportsPolishGui="true">
+   <device supportsPolishGui="true">
     <identifier>Generic/AnyPhone_176x208</identifier>
     <parent>Generic/AnyPhone</parent>
     <capability name="ScreenSize" value="176x208" />
@@ -322,8 +322,7 @@ These namespaces/schemas will be used soon.
     <capability name="IconSize" value="44x44" />
   </device>
   
- 
- <device supportsPolishGui="true">
+  <device supportsPolishGui="true">
     <identifier>Generic/AnyMsaBasicPhone</identifier>
     <description>A MIDP 2.0 and CLDC 1.1 phone that supports softkeys and the fullscreen mode and the JTWI standard. Use this phone to run a single application on various platforms like Nokia, Motorola, Samsung and so on.</description>
     <features>isVirtual, hasPointerEvents, hasCommandKeyEvents, isDynamic</features>
@@ -389,7 +388,7 @@ These namespaces/schemas will be used soon.
     <parent>Generic/AnyMsaPhone</parent>
     <capability name="ScreenSize" value="352x416" />
     <capability name="IconSize" value="44x44" />
-  </device> 
+  </device>  
   
   <device supportsPolishGui="true">
     <identifier>Generic/DotNetCF1.1</identifier>
@@ -434,8 +433,9 @@ These namespaces/schemas will be used soon.
     <groups>android</groups>
     <capability name="JavaPlatform" value="android" />
     <capability name="JavaConfiguration" value="android" />
-    <capability name="ScreenSize" value="240x273" />
-    <capability name="key.Menu" value="1" />
+    <capability name="ScreenSize" value="240x320" />
+    <capability name="CanvasSize" value="240x273" />
+    <capability name="key.Menu" value="82" />
     <capability name="key.ReturnKey" value="4" />
   </device>
   <!-- virtual devices -->
@@ -667,6 +667,30 @@ These namespaces/schemas will be used soon.
   </device>
   <!-- Sony-Ericsson devices -->
   <!-- Sony-Ericsson devices -->
+  
+  <device>
+    <identifier>Sony-Ericsson/C902</identifier>
+    <groups>SE-JavaPlatform8</groups>
+    <capability name="ScreenSize" value="240x320" />
+    <capability name="FullCanvasSize" value="240x320" />
+    <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="JavaPackage" value="jsr75, jsr82, jsr120, jsr135, jsr172, jsr177, jsr179, jsr180, jsr184, jsr205, jsr211, jsr226, jsr229, jsr234, jsr238, jsr239, jsr248, jsr256, mascot, vscl20" />
+    <capability name="Region" value="Europe, Americas, Asia Pacific, China" />
+   </device>
+  
+  
+  <device>
+    <identifier>Sony-Ericsson/C702</identifier>
+    <groups>SE-JavaPlatform8</groups>
+    <capability name="ScreenSize" value="240x320" />
+    <capability name="FullCanvasSize" value="240x320" />
+    <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="JavaPackage" value="jsr75, jsr82, jsr120, jsr135, jsr172, jsr177, jsr179, jsr180, jsr184, jsr205, jsr211, jsr226, jsr229, jsr234, jsr238, jsr239, jsr248, mascot, vscl20" />
+    <capability name="Region" value="Europe, Americas, Asia Pacific, China" />
+   </device>
+
   <device>
     <identifier>Sony-Ericsson/K320i, Sony-Ericsson/K320</identifier>
     <groups>SE-JavaPlatform6</groups>
@@ -1170,7 +1194,7 @@ These namespaces/schemas will be used soon.
     <capability name="CanvasSize" value="240x266" />
     <capability name="FullCanvasSize" value="240x320" />
     <capability name="BitsPerPixel" value="18" />
-    <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, nokiaui, webservices,location,sip,security,msa,contenthandler,svg,i18n,sensor" />
+    <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, nokiaui, webservices, location, sip, security, contenthandler, svg, i18n, sensor,jsr234" />
 	<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
@@ -3694,7 +3718,7 @@ These namespaces/schemas will be used soon.
     <capability name="MaxJarSize" value="600 kb" />
     <capability name="JavaProtocol" value="http, socket, serial, udp" />
     <capability name="MaxSockets" value="4" />
-    <capability name="JavaPackage" value="btapi, pdaapi, jsr84, wmapi1.0, wmapi2.0, mmapi" />
+    <capability name="JavaPackage" value="btapi, pdaapi, JSR84, wmapi1.0, wmapi2.0, mmapi" />
     <capability name="ImageFormat" value="png, jpeg" />
     <capability name="SoundFormat" value="midi, mp3, wav, realaudio, ra9, xmf, aac, aac+" />
     <capability name="Region" value="Global" />
@@ -3788,7 +3812,7 @@ These namespaces/schemas will be used soon.
     <capability name="MaxJarSize" value="600 kb" />
     <capability name="JavaProtocol" value="http, socket, serial, udp" />
     <capability name="MaxSockets" value="4" />
-    <capability name="JavaPackage" value="btapi, pdaapi, jsr84, wmapi1.0, wmapi2.0, mmapi" />
+    <capability name="JavaPackage" value="btapi, pdaapi, JSR84, wmapi1.0, wmapi2.0, mmapi" />
     <capability name="ImageFormat" value="png, jpeg" />
     <capability name="SoundFormat" value="midi, mp3, wav, realaudio, ra9, xmf, aac, aac+" />
     <capability name="Region" value="Global" />
@@ -5263,6 +5287,204 @@ These namespaces/schemas will be used soon.
   </device>
   
   <!-- Nokia devices -->
+  
+   	<device>
+		<identifier>Nokia/3600slide</identifier>
+		<groups>Series40E5FP1</groups>
+		<capability name="OS" value="Nokia OS" />
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+	    <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0, MSA/1.0" />
+	    <capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="jsr75, jsr82, jsr120, jsr135, jsr172, jsr177, jsr184, jsr205, jsr211, jsr226, jsr234,nokia-ui" />
+		<capability name="HeapSize" value="2 MB" />
+		<capability name="MaxJarSize" value="1 MB" />
+		<capability name="StorageSize" value="30 MB" />
+		<capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0, OMA DRM v2.0" />
+		<capability name="Region" value="Africa, Americas, Asia-Pacific, Latin America, Europe, Middle East" />
+		<capability name="CameraResolution" value="1600x1200" />
+		<capability name="AnnouncementDate" value="2008-02-05" />
+		<capability name="RootCertificates" value="UTI Root" />
+  	</device>
+  
+  	<device>
+		<identifier>Nokia/3120classic,Nokia/3120c</identifier>
+		<groups>Series40E5FP1</groups>
+		<capability name="OS" value="Nokia OS" />
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+	    <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0, MSA/1.0" />
+	    <capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="jsr75, jsr82, jsr120, jsr135, jsr172, jsr177, jsr184, jsr205, jsr211, jsr226, jsr234,nokia-ui" />
+		<capability name="HeapSize" value="2 MB" />
+		<capability name="MaxJarSize" value="1 MB" />
+		<capability name="StorageSize" value="24 MB" />
+		<capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0, OMA DRM v2.0" />
+		<capability name="Region" value="Africa, Americas, Asia-Pacific, Latin America, Europe, Middle East" />
+		<capability name="CameraResolution" value="2048x1536" />
+		<capability name="AnnouncementDate" value="2008-04-28" />
+		<capability name="RootCertificates" value="UTI Root" />
+  	</device>
+
+ 	<device>
+		<identifier>Nokia/5610</identifier>
+		<groups>Series40E5FP1</groups>
+		<capability name="OS" value="Nokia OS" />
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+	    <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0, MSA/1.0" />
+	    <capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="jsr75, jsr82, jsr120, jsr135, jsr172, jsr177, jsr179, jsr184, jsr205, jsr211, jsr226, jsr234,nokia-ui" />
+		<capability name="HeapSize" value="2 MB" />
+		<capability name="MaxJarSize" value="1 MB" />
+		<capability name="StorageSize" value="20 MB" />
+		<capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0, OMA DRM v2.0" />
+		<capability name="Region" value="Africa, Americas, Asia-Pacific, Latin America, Europe, Middle East" />
+		<capability name="CameraResolution" value="2048x1536" />
+		<capability name="AnnouncementDate" value="2007-08-29" />
+		<capability name="RootCertificates" value="UTI Root" />
+ 	</device>
+  	
+  
+  	<device>
+		<identifier>Nokia/E66</identifier>
+		<groups>Series60E3FP1</groups>
+		<capability name="OS" value="Symbian OS v9.2" />
+		<capability name="ScreenSize" value="240x320"/>
+		<capability name="FullCanvasSize" value="240x320"/>
+	    <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0, MSA/1.0" />
+	    <capability name="JavaConfiguration" value="CLDC/1.1" />
+		<capability name="JavaPackage" value="jsr75, jsr82, jsr135, jsr172, jsr177, jsr179, jsr180, jsr184, jsr205, jsr226, jsr234,nokia-ui" />
+		<capability name="IconSize" value="53x53,55x55" />
+		<capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo" />
+		<capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, nrt, mp3, mp4, m4a, aac+, eaac+, realaudio, truetone, wb-amr, xmf, sp-midi" />
+		<capability name="HeapSize" value="dynamic" />
+		<capability name="MaxJarSize" value="dynamic" />
+		<capability name="StorageSize" value="110 MB" />
+		<capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0, OMA DRM v2.0" />
+		<capability name="Region" value="Africa, Americas, Asia-Pacific, Latin America, Europe, Middle East" />
+		<capability name="CameraResolution" value="2048x1536" />
+		<capability name="AnnouncementDate" value="2008-06-16" />
+		<capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D" />
+  	</device>
+  	
+  	<device>
+		<identifier>Nokia/E71</identifier>
+		<groups>Series60E3FP1</groups>
+		<capability name="OS" value="Symbian OS v9.2" />
+		<capability name="ScreenSize" value="320x240"/>
+		<capability name="FullCanvasSize" value="320x240"/>
+		<capability name="CanvasSize" value="320x198"/>
+		<capability name="property.supports.audio.capture" value="true"/>
+		<capability name="property.audio3d.simultaneouslocations" value="4"/>
+		<capability name="timezones" value="GMT, UTC"/>
+		<capability name="key.up" value="-1"/>
+		<capability name="key.right" value="-4"/>
+		<capability name="key.down" value="-2"/>
+		<capability name="key.fire" value="97"/>
+		<capability name="ScreenSize" value="320x240"/>
+		<capability name="property.wireless.messaging.sms.smsc" value="defined"/>
+		<capability name="property.fileconn.dir.tones.name" value="Tones"/>
+		<capability name="protocol rtsp" value="audio/3gpp&#10;audio/3gpp2&#10;audio/amr&#10;audio/mp4&#10;audio/mp4-latm&#10;audio/qcelp&#10;audio/vnd.qcelp&#10;video/3gpp&#10;video/3gpp2&#10;video/mp4&#10;application/vnd.rn-realmedia&#10;application/sdp&#10;"/>
+		<capability name="property.fileconn.dir.photos.name" value="Images"/>
+		<capability name="font.default" value="21"/>
+		<capability name="totalmemory" value="512000"/>
+		<capability name="property.microedition.pim.version" value="1.0"/>
+		<capability name="property.bluetooth.connected.inquiry" value="false"/>
+		<capability name="objectmemory" value="4"/>
+		<capability name="property.fileconn.dir.videos.name" value="Video clips"/>
+		<capability name="font.small" value="19"/>
+		<capability name="property.supports.video.capture" value="true"/>
+		<capability name="property.video.encodings" value="encoding=video/3gpp2 encoding=video/mp4 encoding=video/3gpp"/>
+		<capability name="property.microedition.hostname" value="localhost"/>
+		<capability name="mmapi.protocol.http" value="application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq, application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq"/>
+		<capability name="imagecreateformat" value="jpeg, gif, bmp, wbmp"/>
+		<capability name="key.gamed" value="122"/>
+		<capability name="property.fileconn.dir.memorycard" value="file:///E:/"/>
+		<capability name="supportfloatingpoint" value="true"/>
+		<capability name="key.returnsoftkey" value="8"/>
+		<capability name="colors" value="16777216"/>
+		<capability name="property.fileconn.dir.photos" value="file:///C:/Data/Images/"/>
+		<capability name="font.medium" value="21"/>
+		<capability name="property.microedition.m2g.svg.baseprofile" value="tiny"/>
+		<capability name="property.fileconn.dir.tones" value="file:///C:/Data/Sounds/"/>
+		<capability name="property.com.nokia.mid.batterylevel" value="71"/>
+		<capability name="mmapi.supportsaudiocapture" value="true"/>
+		<capability name="property.supports.mixing" value="true"/>
+		<capability name="key.addsymbolkey" value="42"/>
+		<capability name="property.microedition.platform" value="NokiaE71-1/0.07.76"/>
+		<capability name="javapackage" value="wmapi2.0, sipapi, m3g, mmapi1.1, webservice, pimapi, 3dapi, fileconnection, btapi, nokia-ui, wmapi1.1, locationapi,wmapi2.0, sipapi, m3g, mmapi1.1, webservice, pimapi, 3dapi, fileconnection, btapi, nokia-ui, wmapi1.1, locationapi"/>
+		<capability name="property.com.nokia.mid.imei" value="defined"/>
+		<capability name="key.gamec" value="113"/>
+		<capability name="protocolrtsp" value="audio/3gpp, audio/3gpp2, audio/amr, audio/mp4, audio/mp4-latm, audio/qcelp, audio/vnd.qcelp, video/3gpp, video/3gpp2, video/mp4, application/vnd.rn-realmedia, application/sdp, "/>
+		<capability name="property.microedition.jtwi.version" value="1.0"/>
+		<capability name="property.wireless.messaging.mms.mmsc" value="http://mmsc.mms.vodafone.nl"/>
+		<capability name="property.com.nokia.mid.timeformat" value="hh:mm a"/>
+		<capability name="nokiasound" value="true"/>
+		<capability name="key.clearsoftkey" value="8"/>
+		<capability name="mmapi.protocol.file" value="application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq"/>
+		<capability name="property.microedition.configuration" value="CLDC-1.1"/>
+		<capability name="name" value="E71"/>
+		<capability name="font.large" value="24"/>
+		<capability name="mmapi.supportsvideocapture" value="true"/>
+		<capability name="property.microedition.sip.version" value="1.0.1"/>
+		<capability name="key.gameb" value="115"/>
+		<capability name="property.file.separator" value="/"/>
+		<capability name="property.microedition.m3g.version" value="1.1"/>
+		<capability name="classes.fullscreen" value="com.nokia.mid.ui.FullCanvas"/>
+		<capability name="property.supports.recording" value="true"/>
+		<capability name="key.leftsoftkey" value="-6"/>
+		<capability name="property.com.nokia.network.access" value="na"/>
+		<capability name="property.fileconn.dir.private" value="file:///c:/private/102033e6/midlets/[1010e1d2]/scratch/"/>
+		<capability name="property.microedition.commports" value="USB0,COM0,IR0,BT0,BT1,BT2,BT3,BT4,BT5,BT6,BT7,BT8,BT9,BT10,BT11,BT12,BT13,BT14,BT15,BT16,BT17,BT18,BT19,BT20,BT21,BT22,BT23,BT24,BT25,BT26,BT27,BT28,BT29,BT30,BT31,BT32,BT33,BT34,BT35,BT36,BT37,BT38,BT39,BT40,BT41,BT42,BT43,BT44,BT45,BT46,BT47,BT48,BT49,BT50,BT51,BT52,BT53,BT54,BT55,BT56,BT57,BT58,BT59,BT60,BT61,BT62,BT63"/>
+		<capability name="property.microedition.location.version" value="1.0"/>
+		<capability name="property.mmapi.video.encodings" value="encoding=video/3gpp2 encoding=video/mp4 encoding=video/3gpp"/>
+		<capability name="key.gamea" value="35"/>
+		<capability name="property.microedition.io.file.fileconnection.version" value="1.0"/>
+		<capability name="mmapi.audio.encodings" value="encoding=audio/amr encoding=audio/basic encoding=audio/x-au encoding=audio/au encoding=audio/x-basic encoding=audio/wav encoding=audio/x-wav encoding=pcm encoding=ulaw encoding=gsm"/>
+		<capability name="key.changeinputmodekey" value="35"/>
+		<capability name="canvas.isdoublebuffered" value="true"/>
+		<capability name="key.left" value="-3"/>
+		<capability name="property.supports.mediacapabilities" value="music audio3d"/>
+		<capability name="property.com.nokia.mid.networkavailability" value="available"/>
+		<capability name="property.mmapi.audio.encodings" value="encoding=audio/amr encoding=audio/basic encoding=audio/x-au encoding=audio/au encoding=audio/x-basic encoding=audio/wav encoding=audio/x-wav encoding=pcm encoding=ulaw encoding=gsm"/>
+		<capability name="property.fileconn.dir.videos" value="file:///C:/Data/Videos/"/>
+		<capability name="property.video.snapshot.encodings" value="png, jpeg, image/png, image/jpeg, image/jpg, image/gif, image/bmp, png, jpeg, image/png, image/jpeg, image/jpg, image/gif, image/bmp"/>
+		<capability name="property.fileconn.dir.memorycard.name" value="Memory card"/>
+		<capability name="property.microedition.media.version" value="1.1"/>
+		<capability name="property.microedition.encoding" value="ISO-8859-1"/>
+		<capability name="property.com.nokia.mid.networkid" value="04 (vodafone N)"/>
+		<capability name="property.com.nokia.mid.countrycode" value="204"/>
+		<capability name="bugs" value="FillPolygonRequiresPositiveXYInNokiaUiApi"/>
+		<capability name="property.audio.encodings" value="encoding=audio/amr encoding=audio/basic encoding=audio/x-au encoding=audio/au encoding=audio/x-basic encoding=audio/wav encoding=audio/x-wav encoding=pcm encoding=ulaw encoding=gsm"/>
+		<capability name="javaplatform" value="MIDP/2.0, JTWI/1.0"/>
+		<capability name="property.microedition.profiles" value="MIDP-2.0"/>
+		<capability name="build.bootclasspath" value="midp-2.0.jar,cldc-1.1.jar"/>
+		<capability name="key.selectsoftkey" value="-5"/>
+		<capability name="mmapi.video.encodings" value="encoding=video/3gpp2 encoding=video/mp4 encoding=video/3gpp"/>
+		<capability name="menubar.optionsposition" value="left"/>
+		<capability name="property.com.nokia.mid.networksignal" value="6 (99 dBm)"/>
+		<capability name="mmapi.protocol.device" value="audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-tone-seq"/>
+		<capability name="property.bluetooth.connected.page.scan" value="false"/>
+		<capability name="alphalevels" value="256"/>
+		<capability name="property.com.nokia.mid.dateformat" value="dd/MM/yyyy"/>
+		<capability name="hasrepeatevents" value="true"/>
+		<capability name="property.bluetooth.api.version" value="1.0"/>
+		<capability name="mmapi.protocol.capture" value="audio/amr, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, video/3gpp2, video/mp4, video/3gpp"/>
+		<capability name="property.bluetooth.connected.inquiry.scan" value="false"/>
+		<capability name="property.microedition.m2g.version" value="1.1"/>
+		<capability name="key.rightsoftkey" value="-7"/>
+		<capability name="properties" value="microedition.commports, com.nokia.mid.timeformat, microedition.io.file.FileConnection.version, fileconn.dir.tones.name, com.nokia.mid.dateformat, microedition.profiles, microedition.platform, microedition.hostname, fileconn.dir.memorycard.name, microedition.jtwi.version, com.nokia.mid.networksignal, microedition.m3g.version, microedition.configuration, com.nokia.mid.countrycode, file.separator, audio3d.simultaneouslocations, fileconn.dir.videos.name, fileconn.dir.videos, fileconn.dir.photos, microedition.sip.version, supports.recording, fileconn.dir.private, wireless.messaging.sms.smsc, microedition.locale, microedition.m2g.svg.version, video.snapshot.encodings, wireless.messaging.mms.mmsc, fileconn.dir.tones, supports.mediacapabilities, fileconn.dir.photos.name, com.nokia.mid.networkid, supports.video.capture, com.nokia.network.access, audio.samplerates, microedition.amms.version, com.nokia.mid.networkavailability, supports.mixing, video.encodings, microedition.m2g.version, microedition.encoding, com.nokia.mid.batterylevel, microedition.location.version, microedition.m2g.svg.baseProfile, microedition.pim.version, microedition.media.version, audio.encodings, com.nokia.mid.imei, fileconn.dir.memorycard, supports.audio.capture"/>
+		<capability name="property.microedition.amms.version" value="1.0"/>
+		<capability name="property.bluetooth.connected.page" value="false"/>
+		<capability name="javaconfiguration" value="CLDC/1.1"/>
+		<capability name="property.microedition.m2g.svg.version" value="1.1"/>
+		<capability name="api.svg" value="true"/>
+		<capability name="property.bluetooth.connected.devices.max" value="7"/>
+		<capability name="property.audio.samplerates" value="8000 16000"/>
+		<capability name="key.middlesoftkey" value="-5"/>
+	</device>
+  
   <device>
  	<identifier>Nokia/N78</identifier>
     <groups>Series60E3FP2</groups>
@@ -5287,6 +5509,7 @@ These namespaces/schemas will be used soon.
     <capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D" />
     <capability name="Bugs" value="noSystemArrayCopy" />
   </device>
+  
   <device>
     <identifier>Nokia/6660</identifier>
     <groups>Series60</groups>
@@ -5963,6 +6186,7 @@ These namespaces/schemas will be used soon.
     <capability name="wap.userAgent" value="NokiaE61i" />
     <capability name="wap.userAgent" value="NokiaE61i-1/3.0 (1.00.0633.15.00) SymbianOS/9.1 Series60/3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1" />
     <capability name="wap.userAgent" value="Mozilla/5.0 (SymbianOS/9.1; U; en-us) AppleWebKit/413 (KHTML, like Gecko) Safari/413 es61i" />
+    <capability name="Bugs" value="NormalKeyMappedToFire" />
   </device>
   <device>
     <identifier>Nokia/E61</identifier>
@@ -6004,6 +6228,7 @@ These namespaces/schemas will be used soon.
     <capability name="wap.userAgent" value="Mozilla/4.0 (compatible; MSIE 5.0; Series60/3.0 NokiaE61-1/05w38.2 Profile/MIDP-2.0 Configuration/CLDC-1.1)" />
     <capability name="wap.userAgent" value="NokiaE61-1/3.0 (1.0610.04.04) SymbianOS/9.1 Series60/3.0 Profile/MIDP-2.0 Configuration/CLDC-1.1" />
     <capability name="wap.userAgent" value="Mozilla/5.0 (SymbianOS/9.1; U; en-us) AppleWebKit/413 (KHTML, like Gecko) Safari/413 es61" />
+    <capability name="Bugs" value="NormalKeyMappedToFire" />
   </device>
   <device>
     <identifier>Nokia/E60</identifier>
@@ -10721,6 +10946,39 @@ These namespaces/schemas will be used soon.
     <capability name="Bugs" value="ItemStateListenerCalledTooEarly" />
   </device>
   <device>
+    <identifier>BlackBerry/4.5</identifier>
+    <features>hasTrackballEvents, isVirtual</features>
+    <capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.5" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location" />
+    <capability name="SoundFormat" value="amr, nb-amr" />
+    <capability name="Emulator.Skin" value="8300" />
+    <capability name="Bugs" value="ReservedKeywordSerializable" />
+    <capability name="Bugs" value="ItemStateListenerCalledTooEarly" />
+  </device>
+  <device>
+    <identifier>BlackBerry/4.6</identifier>
+    <features>hasTrackballEvents, isVirtual</features>
+    <capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.6" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location" />
+    <capability name="SoundFormat" value="amr, nb-amr" />
+    <capability name="Emulator.Skin" value="9000" />
+    <capability name="Bugs" value="ReservedKeywordSerializable" />
+    <capability name="Bugs" value="ItemStateListenerCalledTooEarly" />
+  </device>
+  <device>
+    <identifier>BlackBerry/4.7</identifier>
+    <features>hasTrackballEvents, isVirtual</features>
+    <capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.7" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="JavaPackage" value="wmapi, mmapi, pimapi,javacard,contenthandler,location" />
+    <capability name="SoundFormat" value="amr, nb-amr" />
+    <capability name="Emulator.Skin" value="9500" />
+    <capability name="Bugs" value="ReservedKeywordSerializable" />
+    <capability name="Bugs" value="ItemStateListenerCalledTooEarly" />
+  </device>
+  <device>
     <identifier>BlackBerry/8130</identifier>
     <features>hasTrackballEvents</features>
     <capability name="JavaPlatform" value="MIDP/2.0, BlackBerry/4.3" />
@@ -11021,7 +11279,7 @@ These namespaces/schemas will be used soon.
     <capability name="DebugInterface" value="KDWP" />
     <capability name="CameraResolution" value="3.2 MP" />
     <capability name="CameraZoom" value="4" />
-    <capability name="Bugs" value="SoftKeyMappedToFire, ignoreTitleCall" />
+    <capability name="Bugs" value="displaySetCurrentFlickers, SoftKeyMappedToFire, ignoreTitleCall" />
     <capability name="wap.userAgent" value="SEC-SGHU600" />
     <capability name="wap.userAgent" value="SEC-SGHU600/1.0 NetFront/3.2 Profile/MIDP-2.0 Configuration/CLDC-1.1" />
     <capability name="wap.userAgent" value="SEC-SGHU600-ORANGE/1.0 NetFront/3.2 Profile/MIDP-2.0 Configuration/CLDC-1.1" />
@@ -15301,6 +15559,7 @@ These namespaces/schemas will be used soon.
     <capability name="CameraResolution" value="1600x1200" />
     <capability name="RootCertificates" value="UTI Root" />
     <capability name="ImageFormat" value="jpeg, gif, bmp, wbmp, png" />
+    <capability name="Bugs" value="displaySetCurrentFlickers" />
   </device>
   <device>
     <identifier>Nokia/5610_XpressMusic</identifier>
@@ -15397,6 +15656,7 @@ These namespaces/schemas will be used soon.
     <capability name="CameraResolution" value="2048x1536" />
     <capability name="RootCertificates" value="UTI Root" />
     <capability name="ImageFormat" value="jpeg, gif, bmp, wbmp, png" />
+    <capability name="Bugs" value="displaySetCurrentFlickers" />
   </device>
   <device>
     <identifier>Nokia/6555</identifier>
@@ -15548,7 +15808,23 @@ These namespaces/schemas will be used soon.
     <capability name="BitsPerPixel" value="18" />
     <capability name="ScreenSize" value="240x320" />
     <capability name="FullCanvasSize" value="240x320" />
-    <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, nokiaui, webservices" />
+    <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, nokiaui, webservices, jsr234" />
+    <capability name="VideoFormat" value="3gpp, wmv, h.263, h.264, mpeg-4, realvideo" />
+    <capability name="ImageFormat" value="jpeg, bmp, wbmp, gif, gif87a, gif89a, png, png1.0, svg" />
+    <capability name="SoundFormat" value="aac, aac+, eaac, eaac+, mp3, m4a, 3gpp, nb-amr, wav, midi, midi64, truetone, wb-amr, sp-midi, wma, realaudio" />
+    <capability name="DRM" value="OMA DRM 2.0" />
+    <capability name="Frequency" value="900,1800,1900" />
+  </device>
+    <device>
+    <identifier>Sony-Ericsson/K550</identifier>
+    <groups>SE-JavaPlatform7</groups>
+    <features>hasCamera, hasVideo, doubleBuffering, hasCommandKeyEvents</features>
+    <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="BitsPerPixel" value="18" />
+    <capability name="ScreenSize" value="176x220" />
+    <capability name="FullCanvasSize" value="176x220" />
+    <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, nokiaui, webservices, mascot, jsr234" />
     <capability name="VideoFormat" value="3gpp, wmv, h.263, h.264, mpeg-4, realvideo" />
     <capability name="ImageFormat" value="jpeg, bmp, wbmp, gif, gif87a, gif89a, png, png1.0, svg" />
     <capability name="SoundFormat" value="aac, aac+, eaac, eaac+, mp3, m4a, 3gpp, nb-amr, wav, midi, midi64, truetone, wb-amr, sp-midi, wma, realaudio" />
@@ -15621,7 +15897,7 @@ These namespaces/schemas will be used soon.
     <capability name="BitsPerPixel" value="18" />
     <capability name="ScreenSize" value="240x320" />
     <capability name="FullCanvasSize" value="240x320" />
-    <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, webservices" />
+    <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, webservices, jsr234" />
     <capability name="VideoFormat" value="3gpp, h.263, h.264, mpeg-4, realvideo" />
     <capability name="ImageFormat" value="jpeg, bmp, wbmp, gif, gif87a, gif89a, png, png1.0, svg" />
     <capability name="SoundFormat" value="aac, aac+, eaac, eaac+, mp3, m4a, 3gpp, nb-amr, wav, midi, midi64, truetone, wb-amr, sp-midi" />
