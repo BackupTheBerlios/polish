@@ -319,6 +319,10 @@ public class CommandItem extends IconItem {
 				// close menu:
 				notifyItemPressedStart();
 			} else {
+				//#if polish.Container.allowCycling != false
+					// allow subcommands to cycle in any case:
+					this.children.allowCycling = true;
+				//#endif
 				boolean handled = this.children.handleKeyPressed(keyCode, gameAction);
 				if (!handled) {
 					 if (keyCode >= Canvas.KEY_NUM1 && keyCode <= Canvas.KEY_NUM9) {

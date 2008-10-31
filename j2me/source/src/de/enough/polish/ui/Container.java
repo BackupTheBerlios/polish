@@ -1731,6 +1731,8 @@ public class Container extends Item {
 	 * @return true when the focus could be moved to either the next or the previous item.
 	 */
 	private boolean shiftFocus(boolean forwardFocus, int steps ) {
+		//#debug
+		System.out.println("shiftFocus, forward=" + forwardFocus + ", steps=" + steps );
 		Item[] items = getItems();
 		if ( items == null || items.length == 0) {
 			//#debug
