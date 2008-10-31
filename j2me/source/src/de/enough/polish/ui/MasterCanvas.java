@@ -168,13 +168,15 @@ public class MasterCanvas
 	 * @see javax.microedition.lcdui.Canvas#keyReleased(int)
 	 */
 	protected void keyReleased(int keyCode) {
-		//#if polish.Bugs.noSoftKeyReleasedEvents
-			if (this.isIgnoreReleasedEvent) {
-				this.isIgnoreReleasedEvent = false;
-				return;
-			}
-		//#endif
-		this.currentCanvas.keyReleased( keyCode );
+        if (this.currentCanvas != null) { 
+    		//#if polish.Bugs.noSoftKeyReleasedEvents
+    			if (this.isIgnoreReleasedEvent) {
+    				this.isIgnoreReleasedEvent = false;
+    				return;
+    			}
+    		//#endif
+    		this.currentCanvas.keyReleased( keyCode );
+        }
 	}
 	
 
