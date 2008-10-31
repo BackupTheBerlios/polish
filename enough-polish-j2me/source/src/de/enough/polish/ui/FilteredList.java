@@ -612,7 +612,7 @@ implements ItemStateListener //, CommandListener
 	 */
 	public void setFilterText( String text ) {
 		this.filterTextField.setString( text );
-		if (isShown()) {
+		if (this.contentWidth != 0 && isShown()) {
 			int height = this.filterTextField.getItemHeight( this.contentWidth, this.contentWidth );
 			if (height != this.filterHeight) {
 				calculateContentArea( 0, 0, this.screenWidth, this.screenHeight );

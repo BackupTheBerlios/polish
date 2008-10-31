@@ -55,7 +55,7 @@ public class TableItem
 	 */
 	public static final int SELECTION_MODE_CELL = 2;
 	/**
-	 * Selection mode for a table in which cells/colummns/rows with content can be selected.
+	 * Selection mode for a table in which cells/columns/rows with content can be selected.
 	 */
 	public static final int SELECTION_MODE_NONEMPTY = 4;
 	/**
@@ -854,6 +854,7 @@ public class TableItem
 			}
 		}
 		this.currentRowIndex = row;
+		this.currentColumnIndex = 0;
 		return row;
 	}
 	

@@ -137,16 +137,9 @@ extends ItemView
 			this.allowCycling = parent.allowCycling;
 			Item ancestor = parent.parent;
 			while (this.allowCycling && ancestor != null) {
-				if ( (ancestor instanceof Container)  && ((Container)ancestor).getNumberOfInteractiveItems()>1 ) {
-					System.out.println("ancestor " + ancestor + " has interactive items: " + (((Container)ancestor).getNumberOfInteractiveItems()));
+				if ( (ancestor instanceof Container)  && ((Container)ancestor).getNumberOfInteractiveItems() > 1 ) {
 					this.allowCycling = false;
 					break;
-				} else {
-					if ( (ancestor instanceof Container)) {
-						System.out.println("ancestor " + ancestor + " has NOT ENOUGH interactive items: "+ (((Container)ancestor).getNumberOfInteractiveItems()));
-					} else {
-						System.out.println("ancestor " + ancestor + " has NO or ONE interactive items.");
-					}
 				}
 				ancestor = ancestor.parent;
 			}
