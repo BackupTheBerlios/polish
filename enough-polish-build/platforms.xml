@@ -100,15 +100,9 @@
 		<capability name="key.MoveLeftKey" value="5177410" />
 		<capability name="key.MoveRightKey" value="5242946" />
 		<capability name="polish.MenuBar.useExtendedMenuBar" value="true" />
-		<capability name="polish.usePolishTitle" value="true" />
 		<capability name="polish.MenuBar.Position" value="invisible" />
 		<capability name="polish.IconSize" value="28x28,55x55" />
 		<capability name="SoundFormat" value="mp3"/>
-		<!--
-		<capability name="build.BootClassPath" value="${blackberry.home}/lib/net_rim_api.jar" />
-		<capability name="build.Preverifier" value="none" />
-		<capability name="build.Finalizer" value="jar2cod" />
-		-->
 		<capability name="build.Preverifier" value="blackberry" />
 		<capability name="build.BootClassPath" value="blackberry-4.1.0.jar" />
 		<capability name="build.ImplicitGroups" value="blackberry" />
@@ -138,7 +132,7 @@
 		<capability name="build.BlackBerry.JDE-Version" value="4.2" />
 		<!-- key for opening/closing the menu -->
 		<capability name="key.Menu" value="268566528" />
-		<capability name="JavaPackage" value="location,wmapi,pim,mmapi" />	
+		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi" />	
 	</platform>
 
 	<platform>
@@ -148,7 +142,38 @@
 		<capability name="build.BlackBerry.JDE-Version" value="4.3" />
 		<!-- key for opening/closing the menu -->
 		<capability name="key.Menu" value="268566528" />
-		<capability name="JavaPackage" value="location,wmapi,pim,mmapi" />	
+		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi" />	
+	</platform>
+
+	<platform>
+		<identifier>BlackBerry/4.5</identifier>
+		<parent>BlackBerry</parent>
+		<capability name="build.BootClassPath" value="blackberry-4.5.0.jar" />
+		<capability name="build.BlackBerry.JDE-Version" value="4.5" />
+		<!-- key for opening/closing the menu -->
+		<capability name="key.Menu" value="268566528" />
+		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi" />	
+	</platform>
+
+	<platform>
+		<identifier>BlackBerry/4.6</identifier>
+		<parent>BlackBerry</parent>
+		<capability name="build.BootClassPath" value="blackberry-4.6.0.jar" />
+		<capability name="build.BlackBerry.JDE-Version" value="4.6" />
+		<!-- key for opening/closing the menu -->
+		<capability name="key.Menu" value="268566528" />
+		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi" />	
+	</platform>
+
+	<platform>
+		<identifier>BlackBerry/4.7</identifier>
+		<parent>BlackBerry</parent>
+		<features>hasPointerEvents</features>
+		<capability name="build.BootClassPath" value="blackberry-4.7.0.jar" />
+		<capability name="build.BlackBerry.JDE-Version" value="4.7" />
+		<!-- key for opening/closing the menu -->
+		<capability name="key.Menu" value="268566528" />
+		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi" />	
 	</platform>
 
 	<platform>
@@ -225,8 +250,20 @@
 		<description>Android is a java platform for mobile devices by Google</description>
 		<capability name="build.BootClassPath" value="android.jar" />
 		<capability name="build.ImplicitGroups" value="android" />
-<capability name="polish.MenuBar.useExtendedMenuBar" value="true" />
+		<capability name="polish.MenuBar.useExtendedMenuBar" value="true" />
 		<capability name="polish.MenuBar.Position" value="invisible" />
+		<capability name="Display.baseclass" value="de.enough.polish.android.lcdui.Canvas" />
+		<capability name="build.classes.screen" value="de.enough.polish.android.lcdui.Displayable" />
+		<capability name="build.classes.fullscreen" value="de.enough.polish.android.lcdui.Displayable" />
+		<capability name="build.classes.NativeDisplay" value="de.enough.polish.android.lcdui.Display" />
+		<capability name="javac.source" value="1.5" /> 
+		<capability name="javac.target" value="1.5" />
+		<capability name="javac.srcdir" value="activity/src" /> 
+		<capability name="javac.destdir" value="activity/bin/classes" />
+		<capability name="polish.java5" value="true" />
+		<capability name="build.Preverifier" value="none" />
+		<capability name="Emulator.Class" value="AndroidEmulator" />
 	</platform>
 	
 </platforms>
+
