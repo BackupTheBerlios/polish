@@ -44,6 +44,7 @@ import net.rim.device.api.ui.XYRect;
 public interface PolishTextField {
 	
 	public String getText();
+	
 	public void setText(String text);
 	
 	public void focusRemove();

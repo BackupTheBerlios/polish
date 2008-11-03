@@ -86,5 +86,9 @@ public class PolishEditField extends EditField implements PolishTextField {
             this.isFocused = true;
             super.setPosition(x, y);
 		}
+		
+		public int getInsertPositionOffset() {
+			return getCursorPosition();
+		}
 
 }
