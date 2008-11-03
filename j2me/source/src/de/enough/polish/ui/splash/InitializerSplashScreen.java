@@ -288,7 +288,7 @@ implements Runnable, AccessibleCanvas
 		// the application will never be able to start.
 	}
 
-	//#if polish.usePolishGui
+	//#if polish.usePolishGui && not polish.blackberry
 	/**
 	 * Retrieves the background.
 	 * Warning: this method is only available when the J2ME Polish GUI is used, check for the polish.usePolishGui preprocessing symbol
