@@ -90,7 +90,7 @@ public class TabbedForm extends Form {
 		}
 		this.tabContainers = new ArrayList( length );
 		this.tabContainers.add( this.container );
-		//#if polish.Container.allowCycling != false
+		//#if polish.TabbedForm.allowTabSelection != false
 			this.container.allowCycling = false;
 		//#endif
 		for (int i = 1; i < length; i++) {
@@ -99,8 +99,8 @@ public class TabbedForm extends Form {
 				tabContainer.setStyle( style, true );
 			}
 			tabContainer.screen = this;
-			//#if polish.Container.allowCycling != false
-				tabContainer.allowCycling = false;
+			//#if polish.TabbedForm.allowTabSelection != false
+				tabContainer.allowCycling = true;
 			//#endif
 			this.tabContainers.add( tabContainer );
 		}
