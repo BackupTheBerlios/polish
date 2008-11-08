@@ -15367,12 +15367,6 @@ These namespaces/schemas will be used soon.
     <capability name="Font.large" value="24" />
     <capability name="Font.medium" value="21" />
     <capability name="Font.small" value="19" />
-    <capability name="key.ReturnSoftKey" value="-5" />
-    <capability name="key.LeftSoftKey" value="-3" />
-    <capability name="key.SelectSoftKey" value="-5" />
-    <capability name="key.RightSoftKey" value="-4" />
-    <capability name="key.MiddleSoftKey" value="-5" />
-    <capability name="key.ClearSoftKey" value="-8" />
     <capability name="mmapi.protocol.device" value="audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-tone-seq" />
     <capability name="mmapi.protocol.capture" value="audio/amr, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, video/3gpp2, video/mp4, video/3gpp" />
     <capability name="mmapi.protocol.http" value="application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq, application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq" />
@@ -15469,21 +15463,6 @@ These namespaces/schemas will be used soon.
     <capability name="microedition.profiles" value="MIDP-2.0" />
     <capability name="microedition.platform" value="NokiaN81-3/10.0.035" />
     <capability name="microedition.configuration" value="CLDC-1.1" />
-    <capability name="key.FireKey" value="-10" />
-    <capability name="key.gamea" value="55" />
-    <capability name="key.gamec" value="42" />
-    <capability name="key.gamed" value="35" />
-    <capability name="key.LeftSoftKey" value="-6" />
-    <capability name="key.RightSoftKey" value="-7" />
-    <capability name="key.left" value="-3" />
-    <capability name="key.ReturnSoftKey" value="-5" />
-    <capability name="key.SelectSoftKey" value="-5" />
-    <capability name="key.gameb" value="57" />
-    <capability name="key.down" value="-2" />
-    <capability name="key.MiddleSoftKey" value="-5" />
-    <capability name="key.up" value="-1" />
-    <capability name="key.ClearSoftKey" value="-8" />
-    <capability name="key.right" value="-4" />
     <capability name="font.small" value="19" />
     <capability name="font.medium" value="21" />
     <capability name="font.default" value="21" />
