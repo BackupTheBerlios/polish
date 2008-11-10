@@ -401,6 +401,31 @@ These namespaces/schemas will be used soon.
     <capability name="MenuBar.OptionsPosition" value="right" />
   </device>
   <device supportsPolishGui="true">
+    <identifier>Native/iPhone</identifier>
+    <features>hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents, isVirtual</features>
+    <description>An Apple iPhone.</description>
+    <capability name="JavaPlatform" value="MIDP/2.0" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="JavaPackage" value="btapi,fileconnection,location,pim,wmapi1.1,iphone" />
+    <capability name="CanvasSize" value="320x460" />
+    <capability name="ScreenSize" value="320x460" />
+    <capability name="FullScreenSize" value="320x480" />
+    <capability name="SoundFormat" value="midi, amr, wav" />
+    <capability name="HeapSize" value="20MB" />
+    <capability name="MenuBar.OptionsPosition" value="left" />
+    <capability name="MenuBar.OkPosition" value="left" />
+    <capability name="TextField.directInput" value="true" />
+    <capability name="key.supportsAsciiKeyMap" value="true" />
+    <capability name="key.maybeSupportsAsciiKeyMap" value="true" />
+    <capability name="key.up" value="-1" />
+    <capability name="key.down" value="-2" />
+    <capability name="key.left" value="-3" />
+    <capability name="key.right" value="-4" />
+    <capability name="key.backspace" value="27" />
+    <capability name="key.ChangeInputModeKey" value="42" />
+    <capability name="TextField.charactersKeyPound" value=" " />
+  </device>
+  <device supportsPolishGui="true">
     <identifier>Native/WindowsMobile</identifier>
     <features>hasPointerEvents, hasPointerMotionEvents, hasCommandKeyEvents, isVirtual</features>
     <description>An unknown Windows powered phone.</description>
@@ -6067,6 +6092,29 @@ These namespaces/schemas will be used soon.
     <capability name="Region" value="Asia-Pacific, China, Europe, Middle East" />
     <capability name="CameraResolution" value="1600x1200" />
     <capability name="AnnouncementDate" value="2007-02-12" />
+    <capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D" />
+  </device>
+  <device>
+    <identifier>Nokia/6110, Nokia/6210_Navigator</identifier>
+    <groups>Series60E3FP2</groups>
+    <features>hasCamera</features>
+    <capability name="OS" value="Symbian OS 9.3" />
+    <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0" />
+    <capability name="JavaConfiguration" value="CLDC/1.1" />
+    <capability name="JavaPackage" value="locationapi, mmapi1.1, wmapi2.0, m3g, pdaapi, btapi, sipapi, webservice, securityapi, svg, eswt, iap, ams" />
+    <capability name="BitsPerPixel" value="24" />
+    <capability name="ScreenSize" value="240x320" />
+    <capability name="FullCanvasSize" value="240x320" />
+    <capability name="IconSize" value="53x53,55x55" />
+    <capability name="VideoFormat" value="3gpp, h.264, mpeg-4, realvideo" />
+    <capability name="SoundFormat" value="midi, midi64, amr, nb-amr, wma, aac, mp3, mp4, m4a, aac+, eaac, eaac+, realaudio, truetone, wb-amr, sp-midi" />
+    <capability name="HeapSize" value="dynamic" />
+    <capability name="MaxJarSize" value="dynamic" />
+    <capability name="StorageSize" value="120 MB" />
+    <capability name="DRM" value="OMA DRM Forward Lock, OMA DRM v1.0, OMA DRM v2.0" />
+    <capability name="Region" value="Asia-Pacific, China, Europe, Middle East" />
+    <capability name="CameraResolution" value="2048x1536" />
+    <capability name="AnnouncementDate" value="2008-02-11" />
     <capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D" />
   </device>
   <device>
