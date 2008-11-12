@@ -172,7 +172,7 @@ public class TabbedForm extends Form {
 	 * @param tabIndex the index of the tab to which the item should be added,
 	 *        the first tab has the index 0.
 	 * @param item the item which should be added.
-   * @param itemStyle the style for that item
+	 * @param itemStyle the style for that item
 	 * @return the assigned index of the Item within the specified tab
 	 */
 	public int append( int tabIndex, Item item, Style itemStyle ) {
