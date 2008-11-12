@@ -65,7 +65,7 @@ public class CommandItem extends IconItem {
 	/**
 	 * Creates a new command item.
 	 * 
-	 * @param command the commmand represented by this item.
+	 * @param command the command represented by this item.
 	 * @param parent the parent item
 	 */
 	public CommandItem( Command command, Item parent ) {
