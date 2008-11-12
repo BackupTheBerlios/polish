@@ -90,18 +90,12 @@ public class TabbedForm extends Form {
 		}
 		this.tabContainers = new ArrayList( length );
 		this.tabContainers.add( this.container );
-		//#if polish.TabbedForm.allowTabSelection != false
-			this.container.allowCycling = false;
-		//#endif
 		for (int i = 1; i < length; i++) {
 			Container tabContainer = new Container( null, false, null, this.screenHeight );
 			if (style != null) {
 				tabContainer.setStyle( style, true );
 			}
 			tabContainer.screen = this;
-			//#if polish.TabbedForm.allowTabSelection != false
-				tabContainer.allowCycling = true;
-			//#endif
 			this.tabContainers.add( tabContainer );
 		}
 		setSubTitle( this.tabBar );
@@ -490,76 +484,78 @@ public class TabbedForm extends Form {
 	
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
 		//#if polish.TabbedForm.allowTabSelection
-		if (this.tabBar.isFocused) {
-			int nextTabIndex = this.activeTabIndex;
-			//#if polish.css.tabbar-roundtrip
-				if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) {
+			if (this.tabBar.isFocused) {
+				int nextTabIndex = this.activeTabIndex;
+				if ( (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
+						&&	(this.tabBar.isRoundtrip() || (this.activeTabIndex < (this.tabContainers.size() - 1)))
+
+				){
 					nextTabIndex = this.activeTabIndex + 1;
 					if (nextTabIndex >= this.tabContainers.size()) {
 						nextTabIndex = 0;
 					}
-				} else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
+				} else if ((gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) 
+						&&	(this.tabBar.isRoundtrip() || (this.activeTabIndex > 0))
+				){
 					nextTabIndex = this.activeTabIndex - 1;
 					if (nextTabIndex < 0) {
 						nextTabIndex = this.tabContainers.size() - 1;
 					}		
 				}
-			//#else
-				if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6 && this.activeTabIndex < (this.tabContainers.size() - 1)) {
-					nextTabIndex = this.activeTabIndex + 1;
-				}
-				else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4 && this.activeTabIndex > 0) {
-					nextTabIndex = this.activeTabIndex - 1;
-				}
-			//#endif
-			else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
-				this.tabBar.defocus(this.tabBar.style);
-				this.container.focus(this.container.style, Canvas.DOWN);
-				return true;
-			}
-			//#if polish.css.tabbar-roundtrip
-				else if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
+				else if (gameAction == Canvas.DOWN && keyCode != Canvas.KEY_NUM8) {
 					this.tabBar.defocus(this.tabBar.style);
-					this.container.focus(this.container.style, Canvas.UP);
+					this.container.focus(this.container.style, Canvas.DOWN);
 					return true;
 				}
-			//#endif
-
-			if (this.activeTabIndex != nextTabIndex) {
-				setActiveTab(nextTabIndex, true);
-				return true;
-			}
-
-			// Don't continue processing events when tabbar is focused.
-			return false;
-		}
-		//#endif
-
-		boolean handled = super.handleKeyPressed(keyCode, gameAction);
-
-		//#if !polish.TabbedForm.allowTabSelection
-			if (!handled) {
-				int nextTabIndex = this.activeTabIndex;
 				//#if polish.css.tabbar-roundtrip
-					if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) {
-						nextTabIndex = this.activeTabIndex + 1;
-						if (nextTabIndex >= this.tabContainers.size()) {
-							nextTabIndex = 0;
-						}
-					} else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) {
-						nextTabIndex = this.activeTabIndex - 1;
-						if (nextTabIndex < 0) {
-							nextTabIndex = this.tabContainers.size() - 1;
-						}		
-					}
-				//#else
-					if (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6 && this.activeTabIndex < (this.tabContainers.size() - 1)) {
-						nextTabIndex = this.activeTabIndex + 1;
-					}
-					else if (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4 && this.activeTabIndex > 0) {
-						nextTabIndex = this.activeTabIndex - 1;
+					else if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
+						this.tabBar.defocus(this.tabBar.style);
+						this.container.focus(this.container.style, Canvas.UP);
+						return true;
 					}
 				//#endif
+	
+				if (this.activeTabIndex != nextTabIndex) {
+					setActiveTab(nextTabIndex, true);
+					return true;
+				}
+	
+				// Don't continue processing events when tabbar is focused.
+				return false;
+			}
+		//#endif
+
+		int indexBeforeEvent = this.container.getFocusedIndex(); 
+		boolean handled = super.handleKeyPressed(keyCode, gameAction);
+		//#if !polish.TabbedForm.allowTabSelection
+			int indexAfterEvent = this.container.getFocusedIndex();
+			if (handled && indexAfterEvent < indexBeforeEvent) {
+				// the container cycled, if left or right has been pressed, undo this change:
+				if ((gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6) 
+						|| (gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4))
+				{
+					handled = false;
+					this.container.focus(indexBeforeEvent);
+				}
+			}
+			if (!handled) {
+				int nextTabIndex = this.activeTabIndex;
+				if ( (gameAction == Canvas.RIGHT && keyCode != Canvas.KEY_NUM6)
+						&&	(this.tabBar.isRoundtrip() || (this.activeTabIndex < (this.tabContainers.size() - 1)))
+
+				){
+					nextTabIndex = this.activeTabIndex + 1;
+					if (nextTabIndex >= this.tabContainers.size()) {
+						nextTabIndex = 0;
+					}
+				} else if ((gameAction == Canvas.LEFT && keyCode != Canvas.KEY_NUM4) 
+						&&	(this.tabBar.isRoundtrip() || (this.activeTabIndex > 0))
+				){
+					nextTabIndex = this.activeTabIndex - 1;
+					if (nextTabIndex < 0) {
+						nextTabIndex = this.tabContainers.size() - 1;
+					}		
+				}
 				if (this.activeTabIndex != nextTabIndex) {
 					setActiveTab(nextTabIndex, true);
 					return true;
@@ -736,9 +732,6 @@ public class TabbedForm extends Form {
 	       tabContainer.setStyle(tabStyle, true);
 	   }
 	   tabContainer.screen = this;
-	   //#if polish.Container.allowCycling != false
-	   		tabContainer.allowCycling = false;
-	   //#endif
 	   this.tabContainers.add(tabContainer);
 
 	   return tabContainers.size() - 1;
@@ -771,9 +764,6 @@ public class TabbedForm extends Form {
 	       tabContainer.setStyle(tabStyle, true);
 	   }
 	   tabContainer.screen = this;
-	   //#if polish.Container.allowCycling != false
-	   		tabContainer.allowCycling = false;
-	   //#endif
 	   this.tabContainers.add( index, tabContainer);
 	}
 	

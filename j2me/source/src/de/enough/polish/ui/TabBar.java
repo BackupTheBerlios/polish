@@ -578,5 +578,19 @@ public class TabBar extends Item {
 		this.tabs.set(tabIndex, item);
 	}
 
-
+	/**
+	 * Specifies if cycling is allowed
+	 * @return true when cycling is allowed for this TabBar
+	 */
+	public boolean isRoundtrip() {
+		return this.allowRoundtrip;
+	}
+	
+	/**
+	 * Specifies if cycling is allowed
+	 * @param allow true when cycling should be allowed for this TabBar
+	 */
+	public void setRoundtrip(boolean allow) {
+		this.allowRoundtrip = allow;
+	}
 }
