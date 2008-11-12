@@ -15643,7 +15643,7 @@ These namespaces/schemas will be used soon.
     <capability name="OS" value="Nokia OS" />
     <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, 3dapi, wmapi, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
+    <capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, 3dapi, wmapi, contentapi, svgapi, jsr234, pimapi, fileconnectionapi, btapi" />
     <capability name="BitsPerPixel" value="24" />
     <capability name="ScreenSize" value="240x320" />
     <capability name="IconSize" value="46x48" />
@@ -15667,7 +15667,7 @@ These namespaces/schemas will be used soon.
     <capability name="OS" value="Nokia OS" />
     <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, 3dapi, wmapi, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
+    <capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, 3dapi, wmapi, contentapi, svgapi, jsr234,  pimapi, fileconnectionapi, btapi" />
     <capability name="BitsPerPixel" value="24" />
     <capability name="ScreenSize" value="240x320" />
     <capability name="IconSize" value="46x48" />
