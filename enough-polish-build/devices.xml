@@ -15546,7 +15546,7 @@ These namespaces/schemas will be used soon.
     <capability name="OS" value="Symbian OS 9.2" />
     <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="nokia-ui, nwmapi, mmapi, location-api, webservice, security, sip-api, 3dapi, wmapi2.0, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
+    <capability name="JavaPackage" value="nokia-ui, nwmapi, mmapi, location-api, webservice, security, sip-api, 3dapi, wmapi2.0, contentapi, svgapi, jsr234, pimapi, fileconnectionapi, btapi" />
     <capability name="BitsPerPixel" value="24" />
     <capability name="ScreenSize" value="240x320" />
     <capability name="IconSize" value="53x53,55x55" />
@@ -15570,7 +15570,7 @@ These namespaces/schemas will be used soon.
     <capability name="OS" value="Nokia OS" />
     <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="nokia-ui, wmapi, mmapi, webservice, security, 3dapi, wmapi2.0, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
+    <capability name="JavaPackage" value="nokia-ui, wmapi, mmapi, webservice, security, 3dapi, wmapi2.0, contentapi, svgapi, jsr234, pimapi, fileconnectionapi, btapi" />
     <capability name="BitsPerPixel" value="24" />
     <capability name="ScreenSize" value="240x320" />
     <capability name="IconSize" value="46x48" />
@@ -15595,7 +15595,7 @@ These namespaces/schemas will be used soon.
     <capability name="OS" value="Nokia OS" />
     <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="nokia-ui, wmapi, mmapi, webservice, security, 3dapi, wmapi2.0, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
+    <capability name="JavaPackage" value="nokia-ui, wmapi, mmapi, webservice, security, 3dapi, wmapi2.0, contentapi, svgapi, jsr234, pimapi, fileconnectionapi, btapi" />
     <capability name="BitsPerPixel" value="24" />
     <capability name="ScreenSize" value="240x320" />
     <capability name="IconSize" value="46x48" />
@@ -15619,7 +15619,7 @@ These namespaces/schemas will be used soon.
     <capability name="OS" value="Symbian OS 9.2" />
     <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, location-api, sip-api, 3dapi, wmapi, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
+    <capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, location-api, sip-api, 3dapi, wmapi, contentapi, svgapi, jsr234, pimapi, fileconnectionapi, btapi" />
     <capability name="BitsPerPixel" value="24" />
     <capability name="ScreenSize" value="240x320" />
     <capability name="IconSize" value="46x48" />
@@ -15692,7 +15692,7 @@ These namespaces/schemas will be used soon.
     <capability name="OS" value="Nokia OS" />
     <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, 3dapi, wmapi, contentapi, svgapi, advancedmmap, pimapi, fileconnectionapi, btapi" />
+    <capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, 3dapi, wmapi, contentapi, svgapi, jsr234, pimapi, fileconnectionapi, btapi" />
     <capability name="BitsPerPixel" value="24" />
     <capability name="ScreenSize" value="240x320" />
     <capability name="IconSize" value="46x48" />
