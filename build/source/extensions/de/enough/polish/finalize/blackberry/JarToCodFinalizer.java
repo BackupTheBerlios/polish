@@ -40,8 +40,11 @@ import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 
+import de.enough.polish.Attribute;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
+import de.enough.polish.ant.Jad;
+import de.enough.polish.descriptor.DescriptorCreator;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.jar.JarPackager;
@@ -168,7 +171,7 @@ implements OutputFilter
 			// add JAD file to JAR, so that MIDlet.getAppProperty() works later onwards:
 			// TODO: we should remove all unneeded MIDlet attributes that are not going to be read anyhow
 			try {
-				storeJadProperties(jadFile, classesDir);
+				storeJadProperties(jadFile, classesDir, env);
 				FileUtil.delete(jarFile);
 				
 				Packager packager = (Packager) env.get( Packager.KEY_ENVIRONMENT );
@@ -397,31 +400,15 @@ implements OutputFilter
 	 * @throws IOException
 	 * @throws UnsupportedEncodingException
 	 */
-	private void storeJadProperties(File jadFile, File classesDir) 
+	private void storeJadProperties(File jadFile, File classesDir, Environment env) 
 	throws FileNotFoundException, IOException, UnsupportedEncodingException
 	{
 		File txtJadFile = new File( classesDir, jadFile.getName().substring( 0, jadFile.getName().length() - ".jad".length() ) + ".txt");
 		//FileUtil.copy( jadFile, txtJadFile );
-		String[] jadPropertiesLines = FileUtil.readTextFile( jadFile );
-		ArrayList linesList = new ArrayList();
-		for (int i = 0; i < jadPropertiesLines.length; i++)
-		{
-			String line = jadPropertiesLines[i];
-			if (line.charAt( line.length() -1 ) == '\r') {
-				line = line.substring(0, line.length() - 1);
-			} else if (line.endsWith("\\r")) {
-				line = line.substring(0, line.length() - 2 );
-			}
-			if ((line.indexOf(':') == -1) &&  (i > 0) ) {
-				String last = (String) linesList.get( linesList.size() - 1);
-				last += line.trim();
-				linesList.set( linesList.size() - 1, last);
-			} else {
-				linesList.add(line);
-			}
-		}
-		//Map appplicationProperties =  
-		jadPropertiesLines = (String[]) linesList.toArray( new String[ linesList.size() ] );
+		Attribute[] descriptorAttributes = (Attribute[]) env.get(DescriptorCreator.DESCRIPTOR_ATTRIBUTES_KEY);
+		Jad jad = new Jad( env );
+		jad.setAttributes( descriptorAttributes );
+		String[] jadPropertiesLines = jad.getContent();
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < jadPropertiesLines.length; i++)
 		{
