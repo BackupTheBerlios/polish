@@ -711,7 +711,10 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		} else if ( isPrimitive( returnType )) {
 			addPrimitiveReturnCast( returnType, methodCall, methodCode );
 		} else {
-			if (isArray(returnType)) {
+			if (isPrimitiveArray(returnType)) {
+				// the return value is a normal object:
+				methodCode.add( "return (" + returnType + ") " + methodCall );				
+			} else if (isArray(returnType)) {
 				methodCode.add("Externalizable[] _returnValues = (Externalizable[])" + methodCall);
 				String plainReturnType = returnType.substring( 0, returnType.indexOf('[')).trim();
 				methodCode.add(returnType + " _castedReturnValues = new " + plainReturnType + "[ _returnValues.length ];");
@@ -739,14 +742,7 @@ public class PolishPreprocessor extends CustomPreprocessor {
 		method.setMethodCode( (String[]) methodCode.toArray( new String[methodCode.size()]));
 	}
 
-	/**
-	 * @param returnType
-	 * @return
-	 */
-	private boolean isArray(String type)
-	{
-		return type.indexOf('[') != -1 && type.indexOf(']') != -1;
-	}
+	
 
 
 
@@ -784,8 +780,16 @@ public class PolishPreprocessor extends CustomPreprocessor {
 			throw new IllegalArgumentException("return type [" + returnType + "] is not primitive.");
 		}
 	}
-
-
+	
+	/**
+	 * Checks if the specified type constitutes an array
+	 * @param type the type, e.g. "String[]"
+	 * @return true when this is an array
+	 */
+	protected static boolean isArray(String type)
+	{
+		return type.indexOf('[') != -1 && type.indexOf(']') != -1;
+	}
 
 	/**
 	 * Determines whether the given type is a primitive one like byte, int, float etc.
@@ -793,9 +797,27 @@ public class PolishPreprocessor extends CustomPreprocessor {
 	 * @param paramType the type, for example "int", "String" or similar
 	 * @return true when the given type is primitive
 	 */
-	private boolean isPrimitive(String paramType) {
+	private static boolean isPrimitive(String paramType) {
 		return (PRIMITIVES_BY_NAME.get(paramType) != null);
 	}
+
+
+	/**
+	 * Checks if the given type is a primitive array type like long[] or boolean[]
+	 * @param type the type
+	 * @return true when this is a primitive array
+	 */
+	protected static boolean isPrimitiveArray(String type)
+	{
+		int arrayIndex = type.indexOf('[');
+		int stopIndex = type.indexOf(']');
+		if (arrayIndex != -1 && stopIndex != -1) {
+			String primitiveType = type.substring(0, arrayIndex).trim();
+			return isPrimitive(primitiveType);
+		}
+		return false;
+	}
+
 
 
 	/**
