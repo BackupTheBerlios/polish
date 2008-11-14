@@ -44,15 +44,15 @@ import de.enough.polish.Attribute;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.Jad;
-import de.enough.polish.descriptor.DescriptorCreator;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.jar.JarPackager;
 import de.enough.polish.jar.Packager;
+import de.enough.polish.manifest.ManifestCreator;
 import de.enough.polish.util.FileUtil;
 import de.enough.polish.util.JarUtil;
-import de.enough.polish.util.ProcessUtil;
 import de.enough.polish.util.OutputFilter;
+import de.enough.polish.util.ProcessUtil;
 import de.enough.polish.util.StringUtil;
 
 /**
@@ -405,7 +405,7 @@ implements OutputFilter
 	{
 		File txtJadFile = new File( classesDir, jadFile.getName().substring( 0, jadFile.getName().length() - ".jad".length() ) + ".txt");
 		//FileUtil.copy( jadFile, txtJadFile );
-		Attribute[] descriptorAttributes = (Attribute[]) env.get(DescriptorCreator.DESCRIPTOR_ATTRIBUTES_KEY);
+		Attribute[] descriptorAttributes = (Attribute[]) env.get(ManifestCreator.MANIFEST_ATTRIBUTES_KEY);
 		Jad jad = new Jad( env );
 		jad.setAttributes( descriptorAttributes );
 		String[] jadPropertiesLines = jad.getContent();
