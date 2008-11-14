@@ -44,6 +44,7 @@ import de.enough.polish.Attribute;
 import de.enough.polish.Device;
 import de.enough.polish.Environment;
 import de.enough.polish.ant.Jad;
+import de.enough.polish.descriptor.DescriptorCreator;
 import de.enough.polish.devices.DeviceDatabase;
 import de.enough.polish.finalize.Finalizer;
 import de.enough.polish.jar.JarPackager;
@@ -408,6 +409,8 @@ implements OutputFilter
 		Attribute[] descriptorAttributes = (Attribute[]) env.get(ManifestCreator.MANIFEST_ATTRIBUTES_KEY);
 		Jad jad = new Jad( env );
 		jad.setAttributes( descriptorAttributes );
+		descriptorAttributes = (Attribute[]) env.get(DescriptorCreator.DESCRIPTOR_ATTRIBUTES_KEY);
+		jad.addAttributes( descriptorAttributes );
 		String[] jadPropertiesLines = jad.getContent();
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < jadPropertiesLines.length; i++)
