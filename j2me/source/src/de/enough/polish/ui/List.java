@@ -995,5 +995,16 @@ public class List extends Screen implements Choice
 	}
 	//#endif
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#getDefaultCommand(de.enough.polish.ui.Item)
+	 */
+	protected Command getDefaultCommand(Item item)
+	{
+		if (this.choiceGroup.choiceType != Choice.MULTIPLE && this.selectCommand != null) {
+			return this.selectCommand;
+		}
+		return super.getDefaultCommand(item);
+	}
+
 	
 }

@@ -1541,12 +1541,13 @@ implements Choice
 					//#endif
 					) 
 			{
+				boolean isAlreadySelected = choiceItem.isSelected;
 				if (this.isMultiple) {
-					selectChoiceItem( choiceItem, !choiceItem.isSelected);
-				} else {
+					selectChoiceItem( choiceItem, !isAlreadySelected);
+				} else if (!isAlreadySelected){
 					setSelectedIndex(this.focusedIndex, true);
 				}
-				if ( this.choiceType != Choice.IMPLICIT ) 
+				if ( !isAlreadySelected && this.choiceType != Choice.IMPLICIT ) 
 				{
 					notifyStateChanged();
 				}
@@ -1563,6 +1564,9 @@ implements Choice
 							scr.callCommandListener( selectCmd );
 						}
 					}
+				}
+				if (isAlreadySelected) {
+					return false;
 				}
 			}
 			//#ifdef polish.usePopupItem

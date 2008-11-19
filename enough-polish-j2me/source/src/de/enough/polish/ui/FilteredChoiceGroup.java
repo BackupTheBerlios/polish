@@ -313,7 +313,7 @@ public class FilteredChoiceGroup
 				if (this.filteredList.containsChangesTo(this.lastChoices)) {
 					  if (this.filteredList.listType != MULTIPLE) {
 						  // the FilteredList will return multiple selections
-						  // we need to make sure that only the focussed item is retained
+						  // we need to make sure that only the focused item is retained
 						  this.filteredList.setSelectedIndex(getSelectedIndex(), true);
 					  }
 			         updateText();

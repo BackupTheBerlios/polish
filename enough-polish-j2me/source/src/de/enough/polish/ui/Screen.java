@@ -3462,16 +3462,28 @@ implements AccessibleCanvas
 			this.itemCommands.clear();
 		}
 		//#ifdef tmp.useExternalMenuBar
-			Command cmd = item.getDefaultCommand();
-			if (cmd != null) {
-				this.menuBar.informDefaultCommand( cmd );
-			}
+			//#if ((polish.key.MiddleSoftKey:defined || polish.key.CenterSoftKey:defined) && (polish.MenuBar.useMiddleCommand != false) && polish.useScrollBar) || polish.MenuBar.useMiddleCommand || polish.MenuBar.useCenterCommand
+				Command cmd = getDefaultCommand(item);
+				if (cmd != null) {
+					this.menuBar.informDefaultCommand( cmd );
+				}
+			//#endif
 			if (super.isShown()) {
 				requestRepaint();
 			}
 		//#endif
 	}
 	
+	/**
+	 * Retrieves the default command of the specfied item.
+	 * Default implementation just calls item.getDefaultCommand
+	 * @param item the item
+	 * @return the default command associated with the item, or null
+	 */
+	protected Command getDefaultCommand(Item item) {
+		return item.defaultCommand;
+	}
+
 	/**
 	 * Removes the commands of the given item.
 	 *  

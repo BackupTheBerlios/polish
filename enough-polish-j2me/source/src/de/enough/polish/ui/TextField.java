@@ -762,11 +762,11 @@ public class TextField extends StringItem
 			//#endif
 				
 			//#ifdef polish.i18n.useDynamicTranslations
-				public static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.ITEM, ENTER_SYMBOL_PRIORITY );
+				public static Command ENTER_SYMBOL_CMD = new Command( Locale.get("polish.command.entersymbol"), Command.SCREEN, ENTER_SYMBOL_PRIORITY );
 			//#elifdef polish.command.entersymbol:defined
-				//#= public static final Command ENTER_SYMBOL_CMD = new Command( "${polish.command.entersymbol}", Command.ITEM, ENTER_SYMBOL_PRIORITY );
+				//#= public static final Command ENTER_SYMBOL_CMD = new Command( "${polish.command.entersymbol}", Command.SCREEN, ENTER_SYMBOL_PRIORITY );
 			//#else
-				//# public static final Command ENTER_SYMBOL_CMD = new Command( "Add Symbol", Command.ITEM, ENTER_SYMBOL_PRIORITY ); 
+				//# public static final Command ENTER_SYMBOL_CMD = new Command( "Add Symbol", Command.SCREEN, ENTER_SYMBOL_PRIORITY ); 
 			//#endif
 		//#endif
 		private boolean isKeyDown;
