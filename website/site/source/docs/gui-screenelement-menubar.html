@@ -389,13 +389,23 @@ form.addCommand( this.cmdExit );
 	</p>
 	<p>You can add subcommands by calling 
 	<a href="<%= javadocdir %>/javadoc/j2me/de/enough/polish/ui/UiAccess.html">UiAccess.addSubCommand( Command child, Command parent, Screen screen )</a>:
+</p>
 <pre>
 //#style onlineCmd
 UiAccess.addSubCommand( this.cmdStatusOnline, this.cmdStatus, form );
 // using the default "menuitem" style:
 UiAccess.addSubCommand( this.cmdStatusOffline, this.cmdStatus, form );
 </pre>
-</p>
+	<p>You can use the <code>.menu1</code> style for designing the background and layout of the first layer of subcommands, 
+	<code>.menu2</code> for the second, and <code>.menu3</code> for the third level of subcommands:
+	</p>
+<pre>
+/** design the first level of subcommands: */
+.menu1 extends menu {
+	background-color: #ddd;
+}
+</pre>
+ 
 	<h3 id="commandsorder">Order Commands</h3>
 	<p>
 	The order of commands is specified using the priorities of commands. A command with a higher numerical value will be placed below a command with
