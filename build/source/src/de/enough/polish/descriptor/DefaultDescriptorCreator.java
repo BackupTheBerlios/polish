@@ -82,50 +82,11 @@ public class DefaultDescriptorCreator extends DescriptorCreator  {
 		
 		try {
 			System.out.println("creating JAD file [" + descriptorFile.getAbsolutePath() + "].");
-			ArrayList list = new ArrayList();
-			String[] lines = jad.getContent();
-			for (int i = 0; i < lines.length; i++)
-			{
-				String line = lines[i];
-				addAttribute( line, list, encoding );
-			}
-			lines = (String[]) list.toArray( new String[ list.size() ]);
-			FileUtil.writeTextFile(descriptorFile, lines, encoding );
+			FileUtil.writeTextFile(descriptorFile, jad.getContent(), encoding );
 		} catch (IOException e) {
 			throw new BuildException("Unable to create JAD file [" + descriptorFile.getAbsolutePath() +"] for device [" + device.getIdentifier() + "]: " + e.getMessage() );
 		}
 		
 	}
-	
-
-    /**
-     * Adds an attribute to the list of string
-     * @throws IOException 
-     * @throws UnsupportedEncodingException 
-     */
-    private void addAttribute(String attribute, List lines, String encoding) 
-    throws UnsupportedEncodingException, IOException 
-    {
-    	String original = attribute;
-        while (attribute.getBytes(encoding).length > MAX_SECTION_LENGTH) {
-            // try to find a MAX_LINE_LENGTH byte section
-            int breakIndex = MAX_SECTION_LENGTH;
-            if (breakIndex >= attribute.length()) {
-                breakIndex = attribute.length() - 1;
-            }
-            String section = attribute.substring(0, breakIndex);
-            while (section.getBytes(encoding).length > MAX_SECTION_LENGTH && breakIndex > 0) {
-                breakIndex--;
-                section = attribute.substring(0, breakIndex);
-            }
-            if (breakIndex == 0) {
-                throw new IOException("Unable to process JAD attribute " + original + ": unable to break at offset 0 in section " + attribute);
-            }
-            lines.add(section + EOL);
-            attribute = " " + attribute.substring(breakIndex);
-        }
-        lines.add(attribute + EOL);
-    }
-
 
 }
