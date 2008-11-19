@@ -123,8 +123,8 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 		/* try to guess vendor and model */
 		String model = getSystemProperty( new String[]{ "device.model", "microedition.platform" } );
 		if(model != null){
-			this.vendorField = new TextField(Locale.get("msg.vendor") + ": ", model, 50, TextField.ANY);
-			this.deviceField = new TextField(Locale.get("msg.device") + ": ", model, 50, TextField.ANY);
+			this.vendorField = new TextField(Locale.get("msg.vendor") + ": ", model, model.length(), TextField.ANY);
+			this.deviceField = new TextField(Locale.get("msg.device") + ": ", model, model.length(), TextField.ANY);
 		} else {
 			this.vendorField = new TextField(Locale.get("msg.vendor") + ": ", "vendor", 50, TextField.ANY);
 			this.deviceField = new TextField(Locale.get("msg.device") + ": ", "model", 50, TextField.ANY);				

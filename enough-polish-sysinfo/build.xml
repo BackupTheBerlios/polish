@@ -5,7 +5,7 @@
 <!-- classpath="import/enough-j2mepolish-build.jar:import/jdom.jar:import/proguard.jar" -->
 	<!-- read user properties first -->
 	<property file="${user.name}.properties"/>
-
+	<property name="device" value="Generic/multi" />
 	<property name="wtk.home" value="/home/enough/dev/WTK2.2"/>
 	<!-- The polish.home property should point to the directory   -->
 	<!-- containing the J2ME Polish installation.                 -->
@@ -61,7 +61,7 @@
 					<!-- Enough Software and Mark Schrijver	-->
 					<!-- selection of supported devices -->
 					<deviceRequirements>
-						<requirement name="Identifier" value="Generic/multi" />
+						<requirement name="Identifier" value="${device}" />
 					</deviceRequirements>
 					<!-- build settings -->
 					<build polishDir="../enough-polish-j2me/source/src" 
