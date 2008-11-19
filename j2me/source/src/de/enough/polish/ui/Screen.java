@@ -3417,9 +3417,9 @@ implements AccessibleCanvas
 	
 	/**
 	 * Sets the commands of the given item
-	 * @param commandsList 
 	 * 
-	 * @param item the item which has at least one command 
+	 * @param commandsList commands that should be added 
+	 * @param item the item which contains the commands 
 	 * @see #removeItemCommands(Item)
 	 */
 	protected void setItemCommands( ArrayList commandsList, Item item ) {
@@ -3462,6 +3462,10 @@ implements AccessibleCanvas
 			this.itemCommands.clear();
 		}
 		//#ifdef tmp.useExternalMenuBar
+			Command cmd = item.getDefaultCommand();
+			if (cmd != null) {
+				this.menuBar.informDefaultCommand( cmd );
+			}
 			if (super.isShown()) {
 				requestRepaint();
 			}

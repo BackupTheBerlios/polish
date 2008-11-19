@@ -1993,6 +1993,29 @@ public class MenuBar extends Item {
 		return (this.allCommands != null) && (this.allCommands.get(command) != null);
 	}
 	
+	//#if tmp.useMiddleCommand
+	private static Command tmpMiddleCommand = new Command( "", Command.OK, -1 );
+	//#endif
+	/**
+	 * Informs the menubar about an possibly updated default command.
+	 * When the menubar displays middle commands, the default command will be shown as the middle command.
+	 * 
+	 * @param cmd the new default command
+	 */
+	public void informDefaultCommand(Command cmd)
+	{
+		//#if tmp.useMiddleCommand
+			if (cmd != this.singleMiddleCommand) {
+				removeCommand( cmd );
+				if (this.singleMiddleCommand != null) {
+					addCommand( tmpMiddleCommand );
+				}
+				this.singleMiddleCommand = cmd;
+				this.singleMiddleCommandItem.setText( cmd.getLabel() );
+			}
+		//#endif
+	}
+	
 //#ifdef polish.MenuBar.additionalMethods:defined
 	//#include ${polish.MenuBar.additionalMethods}
 //#endif
