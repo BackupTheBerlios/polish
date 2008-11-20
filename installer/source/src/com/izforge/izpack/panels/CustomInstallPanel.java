@@ -116,7 +116,37 @@ implements Runnable
 		File existingInstallationDir = new File( this.idata.getInstallPath() );
 		// store install path to preferences (in windows: registry):
 		Preferences prefs = Preferences.userRoot().node( "J2ME-Polish" );
-		prefs.put( "polish.home",  existingInstallationDir.getAbsolutePath() );
+		String versions = prefs.get("polish.versions", null);
+		String polishHome = existingInstallationDir.getAbsolutePath();
+		String appVersion = this.idata.info.getAppVersion();
+		if (versions != null) {
+			String[] chunks = StringUtil.split(versions, ',');
+			StringBuffer buffer = new StringBuffer();
+			buffer.append( appVersion );
+			for (int i = 0; i < chunks.length; i++)
+			{
+				String version = chunks[i];
+				String key = "polish.home." + version;
+				String path = prefs.get(key, null);
+				if (path != null && path.equals(polishHome)) {
+					// a previous version has used the same installation path, so remove it:
+					prefs.remove( key );
+				} else if ( path != null && (new File(path)).exists() ){
+					buffer.append(',');
+					buffer.append( version );
+				}
+			}
+			versions = buffer.toString();
+		} else {
+			versions = appVersion;
+		}
+		prefs.put( "polish.home",  polishHome );
+		String polishBase = this.idata.getVariable("polish.base");
+		if (polishBase != null) {
+			prefs.put( "polish.base",  polishBase );
+		}
+		prefs.put( "polish.home." + appVersion,  polishHome );
+		prefs.put( "polish.versions",  versions );
 		try {
 			prefs.flush();
 		} catch (BackingStoreException e) {

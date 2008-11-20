@@ -151,11 +151,25 @@ public class ChooseTargetPanel extends IzPanel {
 	private void setDefaultPath(InstallerFrame parent, InstallData idata) {
 		Preferences prefs = Preferences.userRoot().node( "J2ME-Polish" );
 		String polishHome = prefs.get("polish.home",  null );
-		if (polishHome != null) {
-			// polish install location is known...
-			idata.setInstallPath( polishHome );
+		String polishBase = prefs.get("polish.base", null);
+		if (polishBase != null) {
+			// polish basic install location is known...
+			idata.setVariable("polish.base", polishBase );
+			idata.setInstallPath( polishBase + idata.info.getAppVersion() );
+		} else if (polishHome != null) {
+			// previous polish install location is known...
+			int index = polishHome.length() - 1;
+			char c = polishHome.charAt(index);
+			while (Character.isDigit(c) || c == '.') {
+				index--;
+				c = polishHome.charAt(index);
+			}
+			polishHome = polishHome.substring(0, index + 1);
+			idata.setVariable("polish.base", polishHome );
+			idata.setInstallPath( polishHome + idata.info.getAppVersion() );
 		} else if (this.isWindowsVista) {
-			idata.setInstallPath( System.getProperty("user.home") + "\\J2ME-Polish" );
+			idata.setVariable("polish.base", System.getProperty("user.home") + "\\J2ME-Polish" );
+			idata.setInstallPath( System.getProperty("user.home") + "\\J2ME-Polish"  + idata.info.getAppVersion() );
 		}
 	}
 
