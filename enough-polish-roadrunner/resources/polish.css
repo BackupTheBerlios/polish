@@ -36,10 +36,9 @@ fonts {
   */
 backgrounds {
 	froggerBackground {
-		type: slideshow;
+		type: scaling-image;
 		color: bgColor;
-		images: url( bg.png, van.png, icon.png, car.png );
-		interval: 3s;
+		image: url( bg.png );
 	}
 
 }
@@ -98,18 +97,7 @@ focused {
 }
 
 
-.menuFocused extends focused {
-	padding: 2;
-	padding-left: 5;
-	background {
-		color: bgColor;
-		border-color: fontColor;
-		border-width: 2;
-	}
-	font-bitmap: none;
-	text-effect: typewriter;
-	layout: left | expand;
-}
+
 
 /** 
   * The .mainMenu style is a static style, which
@@ -209,16 +197,6 @@ focused {
 /**
   * the menu style is a predefined style for
   * designing the fullscreen-menu.
-  * The font-settings (font-color,
-  * font-face, font-style and font-size)
-  * are used to design the menu-texts
-  * (like Options, Select, or Cancel).
-  * With the focused-style attribute
-  * another style than the default "focused"
-  * style is used for the menu. 
-  * The menubar-color can be set to any
-  * color. When "transparent" is used,
-  * the background shines through.
   */
 menu {
 	margin-left: 2;
@@ -233,7 +211,6 @@ menu {
 	font-color: highlightedFontColor;
 	font-style: bold;
 	menubar-color: transparent;
-	focused-style: .menuFocused;
 }
 
 /**
@@ -243,7 +220,7 @@ menu {
   * the menu style will be used instead. 
   */
 menuItem {
-	margin-top: 2;
+	margin: 2;
 	padding: 2;
 	padding-left: 5;
 	font {
@@ -254,6 +231,16 @@ menuItem {
 	layout: left;
 }
 
+.menuItem:hover {
+	margin: 0;
+	background {
+		color: bgColor;
+		border-color: fontColor;
+		border-width: 2;
+	}
+	text-effect: typewriter;
+	layout: left | expand;
+}
 
 label {
 	font-color: fontColor;
