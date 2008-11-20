@@ -1824,7 +1824,7 @@ public class TextField extends StringItem
 	 */
 	public void setInitialInputMode( String characterSubset)
 	{
-		//#if tmp.useNativeTextBox
+		//#if tmp.useNativeTextBox && polish.midp2
 			if (this.midpTextBox == null) {
 				createTextBox();
 			}
