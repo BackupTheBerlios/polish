@@ -39,6 +39,7 @@ backgrounds {
 		type: scaling-image;
 		color: bgColor;
 		image: url( bg.png );
+		scale-mode: scale;
 	}
 
 }
