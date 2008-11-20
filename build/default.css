@@ -67,69 +67,25 @@ centercommand {
 
 .browserText {
 	inherit: false;
-	padding-bottom: 1;
-	padding-right: 1;
-	font-color: black;
-	focused-style: .browserTextFocused
-}
-
-.browserTextFocused {
-	inherit: false;
-	padding-bottom: 1;
-	padding-right: 1;
-	font-color: red;
 }
 
 .browserTextBold {
 	inherit: false;
-	padding-bottom: 1;
-	padding-right: 1;
 	font-color: black;
-	font-style: bold;
-	focused-style: .browserTextBoldFocused
-}
-
-.browserTextBoldFocused {
-	inherit: false;
-	padding-bottom: 1;
-	padding-right: 1;
-	font-color: red;
 	font-style: bold;
 }
 
 .browserTextItalic {
 	inherit: false;
-	padding-bottom: 1;
-	padding-right: 1;
-	font-color: black;
 	font-style: italic;
-	focused-style: .browserTextItalicFocused
 }
 
-.browserTextItalicFocused {
-	inherit: false;
-	padding-bottom: 1;
-	padding-right: 1;
-	font-color: red;
-	font-style: italic;
-}
 
 .browserTextBoldItalic {
 	inherit: false;
-	padding-bottom: 1;
-	padding-right: 1;
-	font-color: black;
 	font-style: bold | italic;
-	focused-style: .browserTextBoldItalicFocused
 }
 
-.browserTextBoldItalicFocused {
-	inherit: false;
-	padding-bottom: 1;
-	padding-right: 1;
-	font-color: red;
-	font-style: bold | italic;
-}
 
 .browserLink {
 	inherit: false;
@@ -137,10 +93,10 @@ centercommand {
 	padding-right: 1;
 	font-color: blue;
 	font-style: bold;
-	focused-style: .browserLinkFocused;
+	focused-style: .browserLinkFoc;
 }
 
-.browserLinkFocused {
+.browserLinkFoc {
 	inherit: false;
 	padding-bottom: 1;
 	padding-right: 1;
@@ -152,7 +108,7 @@ centercommand {
 	inherit: false;
 	padding: 2;
 	layout: expand | left;
-	focused-style: browserInputFocused;
+	focused-style: browserInputFoc;
 	border {
 		type: round-rect;
 		width: 1;
@@ -160,7 +116,8 @@ centercommand {
 	}
 }
 
-.browserInputFocused extends .browserTextFocused {
+.browserInputFoc extends .browserInput {
+	padding: 1;
 	inherit: false;
 	layout: expand | left;
 	border {
