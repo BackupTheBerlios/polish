@@ -64,6 +64,8 @@ public class RssTagHandler
 	private static final String TAG_DIGG_USERIMAGE = "digg:userimage";
 	private static final String TAG_DIGG_CATEGORY = "digg:category";
 	private static final String TAG_DIGG_COMMENTCOUNT = "digg:commentCount";
+	
+	private static final String TAG_FEEDBURNER_ORIGLINK = "feedburner:origLink";
 
 	/** item attribute for storing the RSS item */
 	public static final String ATTR_RSS_ITEM = "RSS_ITEM";
@@ -143,6 +145,8 @@ public class RssTagHandler
 		browser.addTagHandler(TAG_DIGG_USERIMAGE, this);
 		browser.addTagHandler(TAG_DIGG_CATEGORY, this);
 		browser.addTagHandler(TAG_DIGG_COMMENTCOUNT, this);
+		
+		browser.addTagHandler(TAG_FEEDBURNER_ORIGLINK, this);
 	}
 	
 	private static String decodeHtml(String encodedHtml) {
@@ -212,13 +216,20 @@ public class RssTagHandler
 
 					return true;
 				}
+			} else if (TAG_TITLE.equals(tagName)) {
+				if (opening) {
+					parser.next();
+					String title = parser.getText();
+					browser.getScreen().setTitle(title);
+				}
+				return true;
 			}
 		}
 
 		// Ignore content of some tags.
-		if (TAG_TITLE.equals(tagName)
-			|| TAG_LINK.equals(tagName)
-			|| TAG_DESCRIPTION.equals(tagName)
+		if (  (!this.inItemTag && 
+				(TAG_LINK.equals(tagName)
+			|| TAG_DESCRIPTION.equals(tagName))) 
 			|| TAG_LANGUAGE.equals(tagName)
 			|| TAG_PUBDATE.equals(tagName)
 			|| TAG_GUID.equals(tagName)
@@ -227,7 +238,9 @@ public class RssTagHandler
 			|| TAG_DIGG_USERNAME.equals(tagName)
 			|| TAG_DIGG_USERIMAGE.equals(tagName)
 			|| TAG_DIGG_CATEGORY.equals(tagName)
-			|| TAG_DIGG_COMMENTCOUNT.equals(tagName)) {
+			|| TAG_DIGG_COMMENTCOUNT.equals(tagName)
+			|| TAG_FEEDBURNER_ORIGLINK.equals(tagName)
+		) {
 			if (opening) {
 				parser.next();
 			}

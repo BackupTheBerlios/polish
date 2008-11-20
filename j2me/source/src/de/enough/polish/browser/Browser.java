@@ -295,7 +295,7 @@ private String cookie;
   
   public void addTagHandler(String tagName, TagHandler handler)
   {
-    this.tagHandlersByTag.put(new TagHandlerKey(tagName), handler);
+    this.tagHandlersByTag.put(new TagHandlerKey(tagName.toLowerCase()), handler);
     if (!this.tagHandlers.contains(handler)) {
     	this.tagHandlers.add(handler);
     }    
@@ -477,10 +477,11 @@ private String cookie;
 	  HashMap attributeMap = new HashMap();
 	while (parser.next() != SimplePullParser.END_DOCUMENT)
     {
-      if (parser.getType() == SimplePullParser.START_TAG
-          || parser.getType() == SimplePullParser.END_TAG)
+      int type = parser.getType();
+	if (type == SimplePullParser.START_TAG
+          || type == SimplePullParser.END_TAG)
       {
-        boolean openingTag = parser.getType() == SimplePullParser.START_TAG;
+        boolean openingTag = type == SimplePullParser.START_TAG;
 
         // #debug
         //System.out.println( "looking for handler for " + parser.getName()  + ", openingTag=" + openingTag );
@@ -508,20 +509,28 @@ private String cookie;
     	  }
           handler.handleTag(container, parser, parser.getName(), openingTag, attributeMap, tagStyle);
         }
+        //#if polish.debug.debug
         else
         {
         	//#debug
-        	System.out.println( "no handler for " + parser.getName() );
+        	System.out.println( "found no handler for tag [" + parser.getName() + "]" );
         }
+        //#endif
       }
-      else if (parser.getType() == SimplePullParser.TEXT)
+      else if (type == SimplePullParser.TEXT)
       {
+    	  if ("http://digg.com/general_sciences/Rational_or_Random_Model_Shows_How_People_Send_E_Mail".equals(parser.getText().trim())) {
+    		  try { throw new RuntimeException(); } catch (Exception e) { e.printStackTrace(); }
+    		  System.out.println("name: " + parser.getName());
+    		  System.out.println("type: " + type );
+    		  System.out.println("start=" + SimplePullParser.START_TAG + ", end=" + SimplePullParser.END_TAG);
+    	  } 
         handleText(parser.getText().trim());
       }
       else
       {
     	  //#debug error
-    	  System.out.println("unknown type: " + parser.getType() + ", name=" + parser.getName());
+    	  System.out.println("unknown type: " + type + ", name=" + parser.getName());
       }
     } // end while (parser.next() != PullParser.END_DOCUMENT)
 
