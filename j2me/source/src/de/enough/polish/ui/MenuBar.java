@@ -404,55 +404,13 @@ public class MenuBar extends Item {
 		// 0.case: cmd == this.singleMiddleCommand
 		//#if tmp.useMiddleCommand
 		if ( cmd == this.singleMiddleCommand ) {
-			this.singleMiddleCommand = null;
-			//#if tmp.RightOptions
-				//If the options are on the right side, use the left command as the middle command
-				//and shift the other commands
-				if (this.singleLeftCommand != null)
-				{
-					this.singleMiddleCommand = this.singleLeftCommand;
-					this.singleMiddleCommandItem.setText( this.singleLeftCommand.getLabel() );
-					this.singleLeftCommand = null;
-				}
-				
-				int newSingleLeftCommandIndex;
-				//#if tmp.OkCommandOnLeft
-					newSingleLeftCommandIndex = getNextNegativeOrPositiveCommandIndex(false);
-				//#else
-					newSingleLeftCommandIndex = getNextNegativeOrPositiveCommandIndex(true);
-				//#endif
-				if ( newSingleLeftCommandIndex != -1 ) {
-					//#debug
-					System.out.println("moving commmand with index " + newSingleLeftCommandIndex + " from commands container (focused=" + this.commandsContainer.getFocusedIndex() + ") - new Single Left=" + ((Command) this.commandsList.get(newSingleLeftCommandIndex)).getLabel() );
-					if (newSingleLeftCommandIndex == this.commandsContainer.getFocusedIndex()) {
-						this.commandsContainer.focus(-1);
-					}
-					this.singleLeftCommand = (Command) this.commandsList.remove(newSingleLeftCommandIndex);
-					this.singleLeftCommandItem.setText( this.singleLeftCommand.getLabel() );
-					this.commandsContainer.remove( newSingleLeftCommandIndex );
-				}
-			//#elif tmp.LeftOptions
-				//if the options are on the left side, use the command with the highest priority 
-				//(if any) as the new middle command
-				Command command;
-				int newMiddleCommandIndex = getNextNegativeOrPositiveCommandIndex(false);
-				if ( newMiddleCommandIndex != -1 ) {
-					//#if tmp.useInvisibleMenuBar
-						command = (Command) this.commandsList.get(newMiddleCommandIndex);
-					//#else
-						if (newMiddleCommandIndex == this.commandsContainer.getFocusedIndex()) {
-							this.commandsContainer.focus(-1);
-						}
-						command = (Command) this.commandsList.remove(newMiddleCommandIndex);
-						this.singleMiddleCommand = command;
-						
-						this.commandsContainer.remove( newMiddleCommandIndex );
-						
-					//#endif
-					this.singleMiddleCommandItem.setText( command.getLabel() );
-				}
-			//#endif
-			
+			Command newMiddleCommand = getNextMiddleCommand();
+			this.singleMiddleCommand = newMiddleCommand;
+			if (newMiddleCommand == null) {
+				this.singleMiddleCommandItem.setText(null);
+			} else {
+				this.singleMiddleCommandItem.setText( newMiddleCommand.getLabel() );
+			}
 			if (this.isInitialized) {
 				this.isInitialized = false;
 				repaint();
@@ -588,12 +546,74 @@ public class MenuBar extends Item {
 		}
 	}
 
+	/**
+	 * Retrieves the next possible middle command (ITEM or OK with the lowest priority number).
+	 * @return the next possible middle command or null if none has found
+	 */
+	private Command getNextMiddleCommand() {
+		Command next = null;
+		next = getNextMiddleCommand( next, this.singleLeftCommand );
+		next = getNextMiddleCommand( next, this.singleRightCommand );
+		Object[] myCommands = this.commandsList.getInternalArray();
+		int index = -1;
+		for (int i = 0; i < myCommands.length; i++) {
+			Command command = (Command) myCommands[i];
+			if (command == null) {
+				break;
+			}
+			Command cmd = getNextMiddleCommand( next, command );
+			if (cmd != next) {
+				index = i;
+				next = cmd;
+			}
+		}
+		if (next != null) {
+			if (next == this.singleLeftCommand) {
+				this.singleLeftCommand = null;
+				this.singleLeftCommandItem.setText(null);
+				index = getNextNegativeOrPositiveCommandIndex(false);
+				if (index != -1) {
+					this.singleLeftCommand = (Command) this.commandsList.remove(index);
+					this.commandsContainer.remove( index );
+					this.singleLeftCommandItem.setText( this.singleLeftCommand.getLabel() );
+				}
+			} else if (next == this.singleRightCommand) {
+				this.singleRightCommand = null;
+				this.singleRightCommandItem.setText(null);
+				index = getNextNegativeOrPositiveCommandIndex(false);
+				if (index != -1) {
+					this.singleRightCommand = (Command) this.commandsList.remove(index);
+					this.commandsContainer.remove( index );
+					this.singleRightCommandItem.setText( this.singleRightCommand.getLabel() );
+				}
+			} else {
+				if (index == this.commandsContainer.focusedIndex) {
+					this.commandsContainer.focus(-1);
+				}
+				this.commandsContainer.remove(index);
+			}
+		}
+		return next;
+	}
+
+	private Command getNextMiddleCommand(Command current, Command cmd) {
+		if (cmd != null) {
+			int commandType = cmd.getCommandType();
+			if (commandType == Command.OK || commandType == Command.ITEM) {
+				if (current == null || cmd.getPriority() < current.getPriority())  {
+					return cmd;
+				}
+			}
+		}
+		return current;
+	}
+
 	private int getNextNegativeOrPositiveCommandIndex( boolean isNegative ) {
 	
 		// there are several commands available, from the which the BACK/CANCEL command
 		// with the highest priority needs to be chosen:
 		Object[] myCommands = this.commandsList.getInternalArray();
-		int maxPriority = 1000;
+		int maxPriority = Integer.MAX_VALUE;
 		int maxPriorityId = -1;
 		for (int i = 0; i < myCommands.length; i++) {
 			Command command = (Command) myCommands[i];
