@@ -87,6 +87,8 @@
 	<group>
 		<name>Series40E2</name>
 		<parent>Series40</parent>
+		<capability name="ScreenSize" value="" />
+		<capability name="FullCanvasSize" value="" />
 		<capability name="Emulator.Skin" value="Nokia_S40_DP20_SDK_1_0" />
 		<capability name="JavaPlatform" value="MIDP/2.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
@@ -212,7 +214,7 @@
 		<capability name="OS" value="Symbian OS 8.0a" />
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="m3g, pdaapi" />		
+		<capability name="JavaPackage" value="m3g, pdaapi, videoControlBeforePlayer" />		
 	</group>
 
 	<group>
@@ -225,7 +227,7 @@
 		<capability name="Emulator.Skin" value="S60_2nd_FP3_MIDP_SDK" />
 		<capability name="Bugs" value="" />
 		<!--  add E2FP3 specific bugs 	-->
-		<capability name="Bugs" value="displaySetCurrentFlickers, NoBacklight" />
+		<capability name="Bugs" value="displaySetCurrentFlickers, NoBacklight, videoControlBeforePlayer" />
 	</group>
 	
 	<group>
@@ -236,7 +238,7 @@
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
 		<capability name="JavaPackage" value="m3g, pdaapi, webservice, sipapi, svgapi, securityapi" />		
 		<capability name="build.Emulator.Skin" value="S60_3rd_MIDP_SDK" />
-		<capability name="Bugs" value="needsBottomOrientiationForStringDrawing, NoBacklight" />
+		<capability name="Bugs" value="needsBottomOrientiationForStringDrawing, NoBacklight, videoControlBeforePlayer" />
 	</group>
 
 	<group>
@@ -431,7 +433,7 @@
 		<capability name="OS" value="Sony-Ericsson OS" />
 		<capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="ams" />
+		<capability name="JavaPackage" value="nokia-ui, jsr75, jsr82, jsr120, jsr135, jsr184, jsr172, jsr205, jsr234" />
 		<capability name="Bugs" value="usesVideoRam" />
 		<capability name="key.ReturnKey" value="-11"/>
 		<capability name="ScreenSize" value="" />
@@ -446,7 +448,7 @@
 		<capability name="OS" value="Sony-Ericsson OS" />
 		<capability name="JavaPlatform" value="MIDP/2.0, MSA/1.0" />
 		<capability name="JavaConfiguration" value="CLDC/1.1" />
-		<capability name="JavaPackage" value="svg, security, locationapi, sip, contenthandler, payment, i18n, opengl" />
+		<capability name="JavaPackage" value="nokia-ui, jsr75, jsr82, jsr120, jsr135, jsr184, jsr172, jsr205, jsr234, jsr226, jsr177, jsr179, jsr180, jsr211, jsr229, jsr238, jsr239, jsr256" />
 		<capability name="ScreenSize" value="" />
 		<capability name="FullCanvasSize" value="" />
 		<capability name="CanvasSize" value=""/>

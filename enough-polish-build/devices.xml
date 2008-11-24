@@ -672,12 +672,44 @@ These namespaces/schemas will be used soon.
     <capability name="FullCanvasSize" value="" />
   </device>
   <device supportsPolishGui="true">
+    <identifier>Sony-Ericsson/JavaPlatform7_176x220</identifier>
+    <features>isVirtual</features>
+    <groups>SE-JavaPlatform7</groups>
+    <capability name="ScreenSize" value="176x220" />
+    <capability name="CanvasSize" value="" />
+    <capability name="FullCanvasSize" value="176x220" />
+  </device>
+  <device supportsPolishGui="true">
+    <identifier>Sony-Ericsson/JavaPlatform7_240x320</identifier>
+    <features>isVirtual</features>
+    <groups>SE-JavaPlatform7</groups>
+    <capability name="ScreenSize" value="240x320" />
+    <capability name="CanvasSize" value="" />
+    <capability name="FullCanvasSize" value="240x320" />
+  </device>
+  <device supportsPolishGui="true">
     <identifier>Sony-Ericsson/JavaPlatform8</identifier>
     <features>isVirtual</features>
     <groups>SE-JavaPlatform8</groups>
     <capability name="ScreenSize" value="" />
     <capability name="CanvasSize" value="" />
     <capability name="FullCanvasSize" value="" />
+  </device>
+  <device supportsPolishGui="true">
+    <identifier>Sony-Ericsson/JavaPlatform8_176x220</identifier>
+    <features>isVirtual</features>
+    <groups>SE-JavaPlatform8</groups>
+    <capability name="ScreenSize" value="176x220" />
+    <capability name="CanvasSize" value="" />
+    <capability name="FullCanvasSize" value="176x220" />
+  </device>
+  <device supportsPolishGui="true">
+    <identifier>Sony-Ericsson/JavaPlatform8_240x320</identifier>
+    <features>isVirtual</features>
+    <groups>SE-JavaPlatform8</groups>
+    <capability name="ScreenSize" value="240x320" />
+    <capability name="CanvasSize" value="" />
+    <capability name="FullCanvasSize" value="240x320" />
   </device>
   <device supportsPolishGui="true">
     <identifier>Sony-Ericsson/JavaPlatform1Symbian</identifier>
@@ -1148,7 +1180,7 @@ These namespaces/schemas will be used soon.
     <capability name="CanvasSize" value="240x266" />
     <capability name="FullCanvasSize" value="240x320" />
     <capability name="BitsPerPixel" value="18" />
-    <capability name="JavaPackage" value="mmapi, wmapi2.0, m3g, mascot, btapi, nokia-ui, pdaapi, webservice" />
+    <capability name="JavaPackage" value="mmapi, wmapi2.0, m3g, mascot, btapi, nokia-ui, pdaapi, webservice, jsr234" />
     <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
@@ -1252,7 +1284,7 @@ These namespaces/schemas will be used soon.
     <capability name="CanvasSize" value="240x266" />
     <capability name="FullCanvasSize" value="240x320" />
     <capability name="BitsPerPixel" value="18" />
-    <capability name="JavaPackage" value="mmapi, wmapi2.0, m3g, mascot, btapi, nokia-ui, pdaapi, webservice" />
+    <capability name="JavaPackage" value="mmapi, wmapi2.0, m3g, mascot, btapi, nokia-ui, pdaapi, webservice, jsr234" />
     <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
@@ -1459,7 +1491,7 @@ These namespaces/schemas will be used soon.
     <capability name="CanvasSize" value="176x176" />
     <capability name="FullCanvasSize" value="176x220" />
     <capability name="BitsPerPixel" value="18" />
-    <capability name="JavaPackage" value="mmapi, wmapi2.0, m3g, mascot, btapi, nokia-ui, pdaapi, webservice" />
+    <capability name="JavaPackage" value="mmapi, wmapi2.0, m3g, mascot, btapi, nokia-ui, pdaapi, webservice, jsr234" />
     <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="JavaProtocol" value="http, https, ssl, tls, tcp, udp" />
@@ -1945,7 +1977,7 @@ These namespaces/schemas will be used soon.
     <capability name="ScreenSize" value="176x220" />
     <capability name="FullCanvasSize" value="176x220" />
     <capability name="BitsPerPixel" value="18" />
-    <capability name="JavaPackage" value="wmapi, wmapi2.0, mmapi, btapi, pdaapi, webservice, advanced-multimedia, m3g, mascot, nokia-ui" />
+    <capability name="JavaPackage" value="wmapi, wmapi2.0, mmapi, btapi, pdaapi, webservice, advanced-multimedia, m3g, mascot, nokia-ui, jsr234" />
     <capability name="JavaPlatform" value="MIDP/2.0, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
     <capability name="SoundFormat" value="iMelody, eMelody, midi, sp-midi, amr, mp4, mp3, m4a, 3gpp, wav, RA8, wma, xmf, rhz" />
@@ -6095,7 +6127,7 @@ These namespaces/schemas will be used soon.
     <capability name="RootCertificates" value="UTI Root, Symbian A, Symbian B, Symbian C, Symbian D" />
   </device>
   <device>
-    <identifier>Nokia/6110, Nokia/6210_Navigator</identifier>
+    <identifier>Nokia/6210, Nokia/6210_Navigator</identifier>
     <groups>Series60E3FP2</groups>
     <features>hasCamera</features>
     <capability name="OS" value="Symbian OS 9.3" />
@@ -11209,13 +11241,13 @@ These namespaces/schemas will be used soon.
   <!-- Samsung devices -->
   <device>
     <identifier>Samsung/SGH-F700</identifier>
-	<features>hasPointerEvents</features>
+    <features>hasPointerEvents</features>
     <capability name="FullCanvasSize" value="240x320" />
     <capability name="CanvasSize" value="240x320" />
     <capability name="ScreenSize" value="240x320" />
     <capability name="JavaPlatform" value="MIDP/2.1" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="pda,wmapi-2.0,mmapi-1.1,3d" />
+    <capability name="JavaPackage" value="wmapi-1.1,mmapi-1.1,3d" />
     <capability name="VideoHeapSize" value="0 KB" />
     <capability name="Font.small" value="18" />
     <capability name="Font.medium" value="20" />
@@ -15417,6 +15449,9 @@ These namespaces/schemas will be used soon.
     <capability name="Font.large" value="24" />
     <capability name="Font.medium" value="21" />
     <capability name="Font.small" value="19" />
+    <capability name="key.ReturnSoftKey" value="-5" />
+    <capability name="key.SelectSoftKey" value="-5" />
+    <capability name="key.ClearSoftKey" value="-8" />
     <capability name="mmapi.protocol.device" value="audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-tone-seq" />
     <capability name="mmapi.protocol.capture" value="audio/amr, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, video/3gpp2, video/mp4, video/3gpp" />
     <capability name="mmapi.protocol.http" value="application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq, application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq" />
@@ -15669,7 +15704,7 @@ These namespaces/schemas will be used soon.
     <capability name="OS" value="Nokia OS" />
     <capability name="JavaPlatform" value="MIDP/2.1, JTWI/1.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
-    <capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, 3dapi, wmapi, contentapi, svgapi, jsr234,  pimapi, fileconnectionapi, btapi" />
+    <capability name="JavaPackage" value="nokia-ui, mmapi, webservice, security, 3dapi, wmapi, contentapi, svgapi, jsr234, pimapi, fileconnectionapi, btapi" />
     <capability name="BitsPerPixel" value="24" />
     <capability name="ScreenSize" value="240x320" />
     <capability name="IconSize" value="46x48" />
@@ -16061,7 +16096,7 @@ These namespaces/schemas will be used soon.
     <capability name="BitsPerPixel" value="18" />
     <capability name="ScreenSize" value="240x320" />
     <capability name="FullCanvasSize" value="240x320" />
-    <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, nokiaui, webservices,location,sip,security,msa,contenthandler,svg,i18n,sensor" />
+    <capability name="JavaPackage" value="mmapi, wmapi2.0, pdaapi, btapi, m3g, nokiaui, webservices,location,sip,security, jsr234,contenthandler,svg,i18n,sensor" />
     <capability name="VideoFormat" value="3gpp, wmv, h.263, h.264, mpeg-4, realvideo" />
     <capability name="ImageFormat" value="jpeg, bmp, wbmp, gif, gif87a, gif89a, png, png1.0, svg" />
     <capability name="SoundFormat" value="aac, aac+, eaac, eaac+, mp3, m4a, 3gpp, amr, nb-amr, wav, midi, midi64, truetone, wb-amr, sp-midi, wma, realaudio" />

@@ -655,6 +655,44 @@
 		</solution>
 	</bug>
 	
+	<bug>
+		<name>NormalKeyMappedToFire</name>
+		<area>ui</area>
+		<description>
+			The # or * key is mapped to the game action FIRE.
+		</description>
+		<solution>
+			Be careful when evaluating game actions.
+		</solution>
+	</bug>
+	
+	<bug>
+		<name>videoControlBeforePlayer</name>
+		<area>ui</area>
+		<description>
+			Display size of a video cannot be influenced before starting a player.			 
+		</description>
+		<solution>
+			When setting the display size of a video player, make sure to start the player first and then specify
+			the dimensions with VideoControl.setDisplaySize() and Location, e.g.:
+			 }
+			this.player.realize();
+			this.videoControl = (VideoControl) this.player.getControl("VideoControl");
+			if (this.videoControl != null) {
+				this.videoControl.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, Display.getInstance());
+				int width = this.contentWidth;//getWidth() - 5;
+				int height = this.contentHeight; //getHeight() - (this.titleHeight + 2);
+				this.videoControl.setVisible(true);
+				this.player.prefetch();
+				// it's a bit weird to first start the player before setting the size and location,
+				// but in this way it works fine on Nokia Series 60 as well:
+				this.player.start();
+				this.videoControl.setDisplaySize( width, height );
+				this.videoControl.setDisplayLocation(this.contentX, this.contentY );
+			}
+			
+		</solution>
+	</bug>
 	
 	<!--
 	<bug>
