@@ -404,7 +404,7 @@ public class MenuBar extends Item {
 		// 0.case: cmd == this.singleMiddleCommand
 		//#if tmp.useMiddleCommand
 		if ( cmd == this.singleMiddleCommand ) {
-			Command newMiddleCommand = getNextMiddleCommand();
+			Command newMiddleCommand = extractNextMiddleCommand();
 			this.singleMiddleCommand = newMiddleCommand;
 			if (newMiddleCommand == null) {
 				this.singleMiddleCommandItem.setText(null);
@@ -550,7 +550,7 @@ public class MenuBar extends Item {
 	 * Retrieves the next possible middle command (ITEM or OK with the lowest priority number).
 	 * @return the next possible middle command or null if none has found
 	 */
-	private Command getNextMiddleCommand() {
+	private Command extractNextMiddleCommand() {
 		Command next = null;
 		next = getNextMiddleCommand( next, this.singleLeftCommand );
 		next = getNextMiddleCommand( next, this.singleRightCommand );
@@ -591,6 +591,7 @@ public class MenuBar extends Item {
 					this.commandsContainer.focus(-1);
 				}
 				this.commandsContainer.remove(index);
+				this.commandsList.remove(index);
 			}
 		}
 		return next;
