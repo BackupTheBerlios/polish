@@ -4432,7 +4432,7 @@ implements AccessibleCanvas
 	 * @return true when the keyboard (if there is one) is accessible by the application.
 	 */
 	protected boolean isKeyboardAccessible() {
-		//#if polish.identifier == Native/WindowsMobile
+		//#if polish.api.windows
 			//# return de.enough.polish.windows.Keyboard.isKeyboardAccessible();
 		//#elif polish.key.supportsAsciiKeyMap.condition == open
 			return getWidth() > getHeight();
