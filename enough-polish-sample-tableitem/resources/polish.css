@@ -54,6 +54,7 @@ backgrounds {
 .defaultTable:hover {
 	padding: 1;
 	padding-vertical: 3;
+	padding-horizontal: 6;
 	border {
 		type: round-rect;
 		width: 2;
@@ -107,6 +108,11 @@ label {
 	font-size: small;
 	font-style: plain;
 	layout: left;
+}
+/*********************** country alert        ****************************************************************/
+.countryAlert {
+	layout: vertical-shrink | bottom;
+	background-color: #afff;
 }
 
 /*********************** ScrollBar        ****************************************************************/
