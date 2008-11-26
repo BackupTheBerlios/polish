@@ -1737,6 +1737,9 @@ public abstract class Item extends Object
 				this.appearanceMode = INTERACTIVE;
 			}
 		//#endif
+		if (this.isFocused) {
+			getScreen().notifyDefaultCommand( cmd );
+		}
 	}
 
 	/**

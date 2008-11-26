@@ -204,6 +204,10 @@ implements ItemStateListener //, CommandListener
 		if (item != this.filterTextField) {
 			this.filterTextField.addCommands(commandsList);
 		} else {
+			item = this.container.getFocusedItem();
+			if (item == null) {
+				item = this.container;
+			}
 			this.container.addCommands(commandsList);
 		}
 		super.setItemCommands(commandsList, item);
@@ -448,18 +452,17 @@ implements ItemStateListener //, CommandListener
 	 */
 	public void setSelectedFlags(boolean[] selectedArray) {
 		for (int i = 0; i < selectedArray.length; i++) {
-			boolean selected = selectedArray[i];
+			boolean isSelected = selectedArray[i];
 			ChoiceItem item = ((ChoiceItem) this.itemsList.get(i));
-			item.select( selected );
-			
+			item.select( isSelected );
 			//#if !polish.ChoiceGroup.suppressMarkCommands
 				if (this.listType == Choice.MULTIPLE) {
-					if (selected) {
-						item.addCommand(ChoiceGroup.MARK_COMMAND);
-						item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+					if (isSelected) {
+						item.removeCommand(ChoiceGroup.MARK_COMMAND);
+						item.setDefaultCommand(ChoiceGroup.UNMARK_COMMAND);
 					} else {
-						item.addCommand(ChoiceGroup.MARK_COMMAND);
 						item.removeCommand(ChoiceGroup.UNMARK_COMMAND);
+						item.setDefaultCommand(ChoiceGroup.MARK_COMMAND);
 					}
 				}
 			//#endif

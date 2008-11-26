@@ -1565,9 +1565,6 @@ implements Choice
 						}
 					}
 				}
-				if (isAlreadySelected) {
-					return false;
-				}
 			}
 			//#ifdef polish.usePopupItem
 			if (this.isPopup) {

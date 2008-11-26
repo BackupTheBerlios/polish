@@ -3474,6 +3474,23 @@ implements AccessibleCanvas
 		//#endif
 	}
 	
+
+
+	/**
+	 * Informs this screen about a new default command for a focused item
+	 * @param cmd the new default command
+	 */
+	public void notifyDefaultCommand(Command cmd) {
+		//#ifdef tmp.useExternalMenuBar
+			//#if ((polish.key.MiddleSoftKey:defined || polish.key.CenterSoftKey:defined) && (polish.MenuBar.useMiddleCommand != false) && polish.useScrollBar) || polish.MenuBar.useMiddleCommand || polish.MenuBar.useCenterCommand
+				if (cmd != null) {
+					this.menuBar.informDefaultCommand(cmd);
+				}
+			//#endif
+		//#endif
+	}
+
+	
 	/**
 	 * Retrieves the default command of the specfied item.
 	 * Default implementation just calls item.getDefaultCommand
@@ -4840,6 +4857,7 @@ implements AccessibleCanvas
 		}
 		
 	}
+
 
 
 
