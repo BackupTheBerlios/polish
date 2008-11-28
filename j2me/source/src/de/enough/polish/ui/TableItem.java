@@ -1194,7 +1194,7 @@ public class TableItem
 			}
 			Object existing = this.tableData.get(col, row);
 			if (existing == null) {
-				set( this.currentColumnIndex, this.currentRowIndex, item );
+				set( col, row, item );
 			} else {
 				if (existing instanceof Container) {
 					((Container)existing).add(item);
@@ -1206,7 +1206,7 @@ public class TableItem
 						container.add( existing.toString() );
 					}
 					container.add(item);
-					set( this.currentColumnIndex, this.currentRowIndex, container );
+					set( col, row, container );
 				}
 			}
 		}
