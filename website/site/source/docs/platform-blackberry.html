@@ -61,6 +61,9 @@ blackberry/certificate/client-RRT-XXXX.csi (certificate)
 blackberry/BlackBerry JDE Component Package 4.1.0 (for 4.1 devices)
 blackberry/BlackBerry JDE Component Package 4.2.0 (for 4.2 devices)
 blackberry/BlackBerry JDE Component Package 4.3.0 (for 4.3 devices)
+blackberry/BlackBerry JDE Component Package 4.5.0 (for 4.5 devices)
+blackberry/BlackBerry JDE Component Package 4.6.0 (for 4.6 devices)
+blackberry/BlackBerry JDE Component Package 4.7.0 (for 4.7 devices)
 </pre>
 <p>
 In project's we then use following property definitions in the <i>build.xml</i> scripts for BlackBerry support:
@@ -98,6 +101,12 @@ of the build process.
 Remember that resources should be less than 64 kb in size for older BlackBerry platforms, otherwise the rapc process will
  abort the processing. 
 </p>
+<p>If rapc fails because there is not enough heapspace, you can specify the preprocessing variable or Ant property 
+<code>blackberry.rapc.opts</code>, e.g.:<br />
+<code>&lt;property name=&quot;blackberry.rapc.opts&quot; value=&quot;-Xmx512m&quot;/&gt;</code><br />
+This example will set the maximum usable heapspace to 512 MB.
+</p>
+
 <h2 id="blackberry-signing">Signing COD Files</h2>
 <p>
 J2ME Polish can also automate the requesting of signatures during the build process. 
