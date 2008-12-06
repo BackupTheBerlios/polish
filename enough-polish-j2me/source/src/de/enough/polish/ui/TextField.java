@@ -1992,6 +1992,14 @@ public class TextField extends StringItem
 			}
 		//#endif
 		super.initContent(firstLineWidth, lineWidth);
+		//#if tmp.includeInputInfo
+			if (this.infoItem != null) {
+				this.contentWidth += this.infoItem.itemWidth;
+				if (this.contentHeight < this.infoItem.itemHeight) {
+					this.contentHeight = this.infoItem.itemHeight;
+				}
+			}
+		//#endif
 		if (this.font == null) {
 			this.font = Font.getDefaultFont();
 		}
@@ -2157,8 +2165,8 @@ public class TextField extends StringItem
 		//System.out.println("caretRowWidth=" + this.caretRowWidth + " for line=" + line);
 		//#if polish.css.text-wrap
 			if (this.useSingleLine) {
-				if (this.caretX > this.contentWidth) {
-					this.xOffset = this.contentWidth - this.caretX - this.caretWidth - 5;
+				if (this.caretX > this.availableTextWidth) {
+					this.xOffset = this.availableTextWidth - this.caretX - this.caretWidth - 5;
 				} else {
 					this.xOffset = 0;
 				}

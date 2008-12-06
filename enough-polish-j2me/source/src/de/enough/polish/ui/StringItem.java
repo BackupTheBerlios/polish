@@ -63,11 +63,12 @@ public class StringItem extends Item
 		private int textWidth;
 		private boolean isHorizontalAnimationDirectionRight;
 		protected boolean animateTextWrap = true;
+		protected int availableTextWidth;
 		//#ifdef polish.css.text-wrap-animation-direction
 			protected int textWrapDirection = DIRECTION_BACK_AND_FORTH;
 		//#endif
 		//#ifdef polish.css.text-wrap-animation-speed
-			protected int textWrapSpeed = DIRECTION_BACK_AND_FORTH;
+			protected int textWrapSpeed = 1;
 		//#endif
 	//#endif
 	//#ifdef polish.css.text-horizontal-adjustment
@@ -202,7 +203,6 @@ public class StringItem extends Item
 		//#if polish.css.text-wrap
 			if (this.animateTextWrap) {
 				if (this.useSingleLine && this.clipText) {
-					
 					int speed = 1;
 					//#ifdef polish.css.text-wrap-animation-speed
 						speed = this.textWrapSpeed;
@@ -217,7 +217,7 @@ public class StringItem extends Item
 								}
 							} else {
 								this.xOffset -= speed;
-								if (this.xOffset + this.textWidth < this.contentWidth) {
+								if (this.xOffset + this.textWidth < this.availableTextWidth) {
 									this.isHorizontalAnimationDirectionRight = true;
 								}
 							}
@@ -225,12 +225,12 @@ public class StringItem extends Item
 						} else if (this.textWrapDirection == DIRECTION_LEFT) {
 							int offset = this.xOffset - speed;
 							if (offset + this.textWidth < 0) {
-								offset = this.contentWidth;
+								offset = this.availableTextWidth;
 							}
 							this.xOffset = offset;
-						} else {
+						} else { // direction is right:
 							int offset = this.xOffset + speed;
-							if (offset > this.contentWidth) {
+							if (offset > this.availableTextWidth) {
 								offset = -this.textWidth;
 							}
 							this.xOffset = offset;							
@@ -414,7 +414,7 @@ public class StringItem extends Item
 					clipY = g.getClipY();
 					clipWidth = g.getClipWidth();
 					clipHeight = g.getClipHeight();
-					g.clipRect( x, y, this.contentWidth, this.contentHeight );
+					g.clipRect( x, y, this.availableTextWidth, this.contentHeight );
 				}
 			//#endif
 			//#ifdef polish.css.text-vertical-adjustment
@@ -634,6 +634,7 @@ public class StringItem extends Item
 				);
 				if (this.bitMapFontViewer != null) {
 					//#if polish.css.text-wrap
+						this.availableTextWidth = lineWidth;
 						if (this.useSingleLine) {
 							this.contentHeight = this.bitMapFontViewer.getHeight();
 							int width = this.bitMapFontViewer.getWidth();
@@ -662,6 +663,7 @@ public class StringItem extends Item
 		//#endif
 		//#if polish.css.text-wrap
 			if ( this.useSingleLine ) {
+				this.availableTextWidth = lineWidth;
 				this.textLines = new String[]{ 
 					//#if polish.i18n.rightToLeft
 						TextUtil.reverseForRtlLanguage(
