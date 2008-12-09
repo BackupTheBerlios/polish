@@ -94,6 +94,7 @@
 		     basedir="bin/classes"
 			 excludes="**/*.html"
 			 index="true"
+			 manifest="META-INF/MANIFEST.MF"
 		     >
 			<fileset dir="." includes="capabilities.xml,configurations.xml,platforms.xml,extensions.xml,custom-extensions.xml,custom-devices.xml,apis.xml,vendors.xml,groups.xml,devices.xml,bugs.xml,css-attributes.xml,build/j2mepolish.index.txt,translations.txt,default.css" />
 			<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
