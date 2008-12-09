@@ -2212,6 +2212,11 @@ public class PolishTask extends ConditionalTask {
 		// add binary class files, if there are any:
 		copyBinaryLibraries( device, locale, targetDir, targetDirName );
 		
+		String showSourceDirVariable = this.environment.getVariable("polish.buildcontrol.compile.showSourceDir");
+		if("true".equals(showSourceDirVariable)) {
+			System.out.println("Using source directory:"+new Path(getProject(),  device.getSourceDir()).toString());
+		}
+		
 		if (device.getNumberOfChangedFiles() == 0 && !this.lastRunFailed) {
 			System.out.println("nothing to compile for device [" +  device.getIdentifier() + "]." );
 			return;			
@@ -2252,6 +2257,7 @@ public class PolishTask extends ConditionalTask {
 		if (!compiler.isSourceDirSet()) {
 			compiler.setDirectSrcdir(new Path( getProject(),  device.getSourceDir() ) );
 		}
+		
 		//javac.setSourcepath(new Path( getProject(),  "" ));
 		String classPath = device.getClassPath();
 		String completePath = classPath; // just used for printing out the classpath in case of an error
@@ -2465,11 +2471,17 @@ public class PolishTask extends ConditionalTask {
 
 	/**
 	 * Obfuscates the compiled source code.
-	 *  
+	 * The obfuscation can be omitted if the property 'polish.buildcontrol.obfucation.enabled' is set to 'false'.
+	 * The default behavior is to use the obfuscation options given in the build.xml file.
 	 * @param device The device for which the obfuscation should be done.
 	 * @param locale the current localization
 	 */
 	protected void obfuscate( Device device, Locale locale ) {
+		String enableObfuscation = getProject().getProperty("polish.buildcontrol.obfucation.enabled");
+		if("false".equals(enableObfuscation)){
+			return;
+		}
+		
 		if (this.polishLogger != null) {
 			this.polishLogger.setObfuscateMode( true );
 		}
