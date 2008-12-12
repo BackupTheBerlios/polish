@@ -327,7 +327,7 @@
 			<mapping from="javax.microedition.lcdui.game.TiledLayer" to="de.enough.polish.ui.game.TiledLayer" />
 			<mapping from="javax.microedition.lcdui.game.*" to="de.enough.polish.ui.game.*" />
 		</mappings>
-		<mappings if="(polish.midp1 or polish.usePolishGameApi or (polish.blackberry && polish.usePolishGui) or polish.doja or polish.android) and polish.useDefaultPackage">
+		<mappings if="(polish.midp1 or polish.usePolishGameApi or (polish.blackberry and polish.usePolishGui) or polish.doja or polish.android) and polish.useDefaultPackage">
 			<mapping from="javax.microedition.lcdui.game.GameCanvas" to="" />
 			<mapping from="javax.microedition.lcdui.game.Layer" to="" />
 			<mapping from="javax.microedition.lcdui.game.LayerManager" to="" />
