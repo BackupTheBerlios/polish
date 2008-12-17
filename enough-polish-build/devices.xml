@@ -5540,6 +5540,7 @@ These namespaces/schemas will be used soon.
 		<capability name="property.bluetooth.connected.devices.max" value="7"/>
 		<capability name="property.audio.samplerates" value="8000 16000"/>
 		<capability name="key.middlesoftkey" value="-5"/>
+		<capability name="key.supportsAsciiKeyMap" value="true" />
 	</device>
   
   <device>
