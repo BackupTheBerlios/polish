@@ -152,7 +152,14 @@ public class CyclingSpheresGaugeView extends ItemView {
 			this.interval = countObj.intValue();
 		}
 		//#endif
-		
+
+		//#if polish.css.gauge-cycling-spheres-width
+		countObj = style.getIntProperty("gauge-cycling-spheres-width");
+		if (countObj != null && countObj.intValue() >= 3)
+		{
+			this.sphereWidth  = countObj.intValue();
+		}
+		//#endif
 	}
 	
 	/* (non-Javadoc)
