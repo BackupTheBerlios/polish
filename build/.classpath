@@ -29,6 +29,6 @@
 	<classpathentry kind="lib" path="lib/yguard-lib.jar"/>
 	<classpathentry kind="lib" path="lib/enough-webprocessor.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="lib/osgi-3.0.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
