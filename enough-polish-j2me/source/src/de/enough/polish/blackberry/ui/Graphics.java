@@ -913,7 +913,7 @@ public class Graphics extends Object
 	 */
 	public void drawRect(int x, int y, int width, int height)
 	{
-		this.g.drawRect(x + this.translateX, y + this.translateY, width, height);
+		this.g.drawRect(x + this.translateX, y + this.translateY, width + 1, height + 1);
 	}
 
 	/**
@@ -935,7 +935,7 @@ public class Graphics extends Object
 	 */
 	public void drawRoundRect(int x, int y, int width, int height, int arcWidth, int arcHeight)
 	{
-		this.g.drawRoundRect(x + this.translateX, y + this.translateY, width, height, arcWidth, arcHeight);
+		this.g.drawRoundRect(x + this.translateX, y + this.translateY, width + 1, height + 1, arcWidth, arcHeight);
 	}
 
 	/**
@@ -1068,7 +1068,7 @@ public class Graphics extends Object
 		} else if (( anchor & HCENTER ) == HCENTER ) {
 			x -= this.font.font.getAdvance( str ) / 2;
 		} 
-		this.g.drawText(str, x + this.translateX, y + this.translateY, DrawStyle.LEFT | DrawStyle.TOP );
+		this.g.drawText(str, x + this.translateX - 1, y + this.translateY, DrawStyle.LEFT | DrawStyle.TOP );
 	}
 
 	/**
