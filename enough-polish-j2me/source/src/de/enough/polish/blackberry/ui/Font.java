@@ -446,7 +446,7 @@ public final class Font extends Object
 	 */
 	public int stringWidth( String str)
 	{
-		return this.font.getAdvance( str );
+		return this.font.getAdvance( str ) - 1;
 	}
 
 	/**
