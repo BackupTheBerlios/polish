@@ -486,7 +486,9 @@ implements ImageConsumer
 			this.rgbData = null;
 			this.scaleData = null;
 		//#endif
-		requestInit();
+		if (this.isInitialized) {
+			requestInit();
+		}
 	}
 
 	

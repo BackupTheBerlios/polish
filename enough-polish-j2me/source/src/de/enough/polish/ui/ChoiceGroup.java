@@ -1177,10 +1177,6 @@ implements Choice
 			}
 		//#endif
 		if (this.isPopup && this.isPopupClosed) {
-			int availableWidth = rightBorder - leftBorder;
-			if (availableWidth < this.popupItem.contentWidth) {
-				this.popupItem.init(availableWidth, availableWidth);
-			}
 			this.popupItem.paintContent(x, y, leftBorder, rightBorder, g);
 		} else {
 			//System.out.println("painting popup content at y=" + y + ", yScrollOffse=" + this.yOffset + ", clipY=" + g.getClipY() + ", clipHeight=" + g.getClipHeight());
@@ -1226,11 +1222,8 @@ implements Choice
 					ChoiceItem selectedItem = (ChoiceItem) this.itemsList.get( 0 );
 					this.popupItem.setText( selectedItem.getText() );
 				}
-				if (!this.popupItem.isInitialized) {
-					int noneContentWidth = this.marginLeft + this.borderWidth + this.paddingLeft
-								+ this.marginRight + this.borderWidth + this.paddingRight;
-					this.popupItem.init(firstLineWidth + noneContentWidth, lineWidth + noneContentWidth);
-				}
+				int noneContentWidth = lineWidth + this.marginLeft + this.borderWidth + this.paddingLeft + this.marginRight + this.borderWidth + this.paddingRight;
+				this.popupItem.init( noneContentWidth, noneContentWidth ); //firstLineWidth + noneContentWidth, lineWidth + noneContentWidth);
 				this.internalX = NO_POSITION_SET;
 			} else {
 				this.originalContentWidth = this.contentWidth;
@@ -1240,7 +1233,9 @@ implements Choice
 			if (!this.useSingleRow && this.label != null) {
 				this.originalBackgroundHeight += this.label.itemHeight + this.paddingVertical;
 			}
-			//this.contentWidth = this.popupItem.contentWidth;			
+			if (this.popupItem.contentWidth > this.contentWidth) {
+				this.contentWidth = this.popupItem.contentWidth;		
+			}
 			this.contentHeight = this.popupItem.contentHeight;
 		}
 	}
@@ -1261,8 +1256,9 @@ implements Choice
 		if (this.parent instanceof Container) {
 			//#debug
 			System.out.println("closing popup and adjusting scroll y offset to " + this.popupParentOpenY);
-			((Container)this.parent).setScrollYOffset( this.popupParentOpenY );
+			((Container)this.parent).setScrollYOffset( this.popupParentOpenY, false );
 			this.internalX = NO_POSITION_SET;
+			this.parent.internalX = NO_POSITION_SET;
 		}
 		this.isInitialized = false;
 	}

@@ -1567,9 +1567,9 @@ public class Container extends Item {
 						|| (this.enableScrolling && offset + this.itemHeight > availableScrollHeight)
 						)
 			) {
-				int containerHeight = this.contentHeight;
-				int scrollHeight = this.getContentScrollHeight();
-				int scrollOffset = this.getScrollYOffset();
+				int containerHeight = Math.max( this.contentHeight, this.backgroundHeight );
+				int scrollHeight = getContentScrollHeight();
+				int scrollOffset = getScrollYOffset();
 				
 				// scroll downwards:
 				int difference =
@@ -1577,14 +1577,16 @@ public class Container extends Item {
 					//#=  ${polish.Container.ScrollDelta};
 				//#else
 					((containerHeight + scrollOffset) - scrollHeight);
-				
 					if(difference > (scrollHeight / 2))
 					{
 						difference = scrollHeight / 2;
 					}
 				//#endif
 					
-				offset = getScrollYOffset() - difference;
+				offset = scrollOffset - difference;
+				if (offset > 0) {
+					offset = 0;
+				}
 				setScrollYOffset( offset, true );
 				processed = true;
 				//#debug
