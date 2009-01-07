@@ -91,7 +91,7 @@ public class TabBar extends Item {
 	 * @param style the style of the bar
 	 */
 	public TabBar(String[] tabNames, Image[] tabImages, Style style) {
-		super( null, 0, Item.BUTTON, style);
+		super( null, 0, Item.INTERACTIVE, style);
 		if (tabImages == null) {
 			tabImages = new Image[ tabNames.length ];
 		} else if (tabNames == null) {
@@ -391,28 +391,46 @@ public class TabBar extends Item {
 	 * @see de.enough.polish.ui.Item#handleKeyPressed(int, int)
 	 */
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		int index = this.activeTabIndex;
 		//#if polish.css.tabbar-roundtrip
 			if (this.allowRoundtrip) {
 				if (gameAction == Canvas.RIGHT) {
-					this.nextTabIndex = this.activeTabIndex + 1;
-					if (this.nextTabIndex >= this.tabs.size()) {
-						this.nextTabIndex = 0;
+					index++;
+					if (index >= this.tabs.size()) {
+						index = 0;
 					}
-					return true;
+//					this.nextTabIndex = this.activeTabIndex + 1;
+//					if (this.nextTabIndex >= this.tabs.size()) {
+//						this.nextTabIndex = 0;
+//					}
+//					return true;
 				} else if (gameAction == Canvas.LEFT) {
-					this.nextTabIndex = this.activeTabIndex - 1;
-					if (this.nextTabIndex < 0) {
-						this.nextTabIndex = this.tabs.size() - 1;
-					}		
-					return true;
+					index--;
+					if (index < 0) {
+						index = this.tabs.size() - 1;
+					}
+//					this.nextTabIndex = this.activeTabIndex - 1;
+//					if (this.nextTabIndex < 0) {
+//						this.nextTabIndex = this.tabs.size() - 1;
+//					}		
+//					return true;
 				}
 			}
+		//#else
+			if (gameAction == Canvas.RIGHT && index < this.tabs.size() -1 ) {
+				index++;
+	//			this.nextTabIndex = this.activeTabIndex + 1;
+	//			return true;
+			} else if (gameAction == Canvas.LEFT && index > 0) {
+				index--;
+	//			this.nextTabIndex = this.activeTabIndex - 1;
+	//			return true;
+			}
 		//#endif
-		if (gameAction == Canvas.RIGHT && this.activeTabIndex < this.tabs.size() -1 ) {
-			this.nextTabIndex = this.activeTabIndex + 1;
-			return true;
-		} else if (gameAction == Canvas.LEFT && this.activeTabIndex > 0) {
-			this.nextTabIndex = this.activeTabIndex - 1;
+
+		if (index != this.activeTabIndex) {
+			setActiveTab(index);
+			notifyStateChanged();
 			return true;
 		}
 		return super.handleKeyPressed(keyCode, gameAction);
@@ -467,9 +485,12 @@ public class TabBar extends Item {
 	protected boolean handlePointerReleased(int x, int y) {
 		if (this.handlePointerReleaseEvent) {
 			this.handlePointerReleaseEvent = false;
+			((ImageItem)this.tabs.get(this.nextTabIndex)).notifyItemPressedEnd();
 			if (this.screen instanceof TabbedForm) {
-				((ImageItem)this.tabs.get(this.nextTabIndex)).notifyItemPressedEnd();
 				((TabbedForm)this.screen).setActiveTab(this.nextTabIndex);
+			} else {
+				setActiveTab(this.nextTabIndex);
+				notifyStateChanged();
 			}
 			return true;
 		}
