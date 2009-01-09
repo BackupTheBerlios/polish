@@ -100,7 +100,8 @@
 			<fileset dir="../enough-polish-j2me/source" includes="src/**/*.java" />
 			<fileset dir="setup" includes="icons/*.*" />
 			<fileset dir="tmp" includes="version.properties" />
-		</jar>	
+			<zipgroupfileset dir="lib" includes="jdom.jar"/>
+		</jar>
 	</target>
 
 	<target name="build-build-source" 
