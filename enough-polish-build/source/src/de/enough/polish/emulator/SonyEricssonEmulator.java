@@ -64,19 +64,27 @@ public class SonyEricssonEmulator extends WtkEmulator {
 		if (this.sonyEricssonHome == null ) {
 			return super.getEmulatorSkin(wtkHome, xDevice);
 		}
-		File skinFolder = new File( this.sonyEricssonHome + "\\PC_Emulation\\WTK1\\wtklib\\devices\\" + xDevice );
+		File skinFolder;
+
+		skinFolder = new File( this.sonyEricssonHome + "\\PC_Emulation\\WTK1\\wtklib\\devices\\" + xDevice );
 		if (skinFolder.exists()) {
 			this.sonyWtkHome = this.sonyEricssonHome + "\\PC_Emulation\\WTK1";
 			return skinFolder;
-		} else {
-			System.out.println("Warning: Unable to find Sony-Ericsson emulator in " + skinFolder.getAbsolutePath() );
-			skinFolder = new File( this.sonyEricssonHome + "\\PC_Emulation\\WTK2\\wtklib\\devices\\" + xDevice );
-			if (skinFolder.exists()) {
-				this.sonyWtkHome = this.sonyEricssonHome + "\\PC_Emulation\\WTK2";
-				return skinFolder;
-			}
-			System.out.println("Warning: Unable to find Sony-Ericsson emulator in " + skinFolder.getAbsolutePath() );
 		}
+		
+		skinFolder = new File( this.sonyEricssonHome + "\\PC_Emulation\\WTK2\\wtklib\\devices\\" + xDevice );
+		if (skinFolder.exists()) {
+			this.sonyWtkHome = this.sonyEricssonHome + "\\PC_Emulation\\WTK2";
+			return skinFolder;
+		}
+
+		skinFolder = new File( this.sonyEricssonHome + "\\WTK2\\wtklib\\devices\\" + xDevice );
+		if (skinFolder.exists()) {
+			this.sonyWtkHome = this.sonyEricssonHome + "\\WTK2";
+			return skinFolder;
+		}
+		
+		System.out.println("Warning: Unable to find Sony-Ericsson emulator in " + skinFolder.getAbsolutePath() );
 		// try to get the emulator from the default WTK:
 		return super.getEmulatorSkin(wtkHome, xDevice);
 	}
@@ -140,27 +148,47 @@ public class SonyEricssonEmulator extends WtkEmulator {
 			}
 		}
 		if (home != null) {
-			File pcEmulation = new File( home, "PC_Emulation");
-			if (!pcEmulation.exists()) {
+			boolean foundSdk = false;
+			File pcEmulation;
+			pcEmulation = new File( home, "PC_Emulation");
+			if (pcEmulation.exists()) {
+				sonyHomePath = home.getAbsolutePath();
+				foundSdk = true;
+			}
+			File wtk2Folder;
+			if(!foundSdk){
+				wtk2Folder = new File( home, "WTK2");
+				if (wtk2Folder.exists()) {
+					sonyHomePath = home.getAbsolutePath();
+					foundSdk = true;
+				}
+			}
+			if(!foundSdk) {
 				File[] files = home.listFiles();
 				Arrays.sort( files );
-				boolean foundSdk = false;
 				for (int i = files.length; --i >= 0; ) {
-					File file = files[i];
-					if (file.isDirectory()) {
-						pcEmulation = new File( file, "PC_Emulation");
+					File possibleHome = files[i];
+					if (possibleHome.isDirectory()) {
+						pcEmulation = new File( possibleHome, "PC_Emulation");
 						if (pcEmulation.exists()) {
-							home = file;
+							home = possibleHome;
+							sonyHomePath = home.getAbsolutePath();
+							foundSdk = true;
+							break;
+						}
+						wtk2Folder = new File( possibleHome, "WTK2");
+						if(wtk2Folder.exists()) {
+							home = possibleHome;
 							sonyHomePath = home.getAbsolutePath();
 							foundSdk = true;
 							break;
 						}
 					}
 				}
-				if (!foundSdk) {
-					System.out.println("Warning: unable to find correct Sony Ericsson SDK in " + home.getAbsolutePath() + ": please specify the sony-ericsson.home property in ${polish.home}/global.properties. Now trying to use default WTK.");
-					sonyHomePath = null;
-				}
+			}
+			if (!foundSdk) {
+				System.out.println("Warning: unable to find correct Sony Ericsson SDK in " + home.getAbsolutePath() + ": please specify the sony-ericsson.home property in ${polish.home}/global.properties. Now trying to use default WTK.");
+				sonyHomePath = null;
 			}
 		}
 		this.sonyEricssonHome = sonyHomePath;
