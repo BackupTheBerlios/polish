@@ -42,8 +42,8 @@
 
 package org.mozilla.javascript;
 
-import javax.microedition.lcdui.Command;
 
+import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
 

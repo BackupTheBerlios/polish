@@ -56,6 +56,7 @@ final public class InterpretedFunction extends NativeFunction implements Script
     Scriptable[] functionRegExps;
 
     public InterpretedFunction() {
+    	// for implementing externalizable
     }
 
     private InterpretedFunction(InterpreterData idata)
@@ -108,13 +109,13 @@ final public class InterpretedFunction extends NativeFunction implements Script
 
     Scriptable[] createRegExpWraps(Context cx, Scriptable scope)
     {
-        if (idata.itsRegExpLiterals == null) Kit.codeBug();
+        if (this.idata.itsRegExpLiterals == null) Kit.codeBug();
 
         RegExpProxy rep = ScriptRuntime.checkRegExpProxy(cx);
-        int N = idata.itsRegExpLiterals.length;
+        int N = this.idata.itsRegExpLiterals.length;
         Scriptable[] array = new Scriptable[N];
         for (int i = 0; i != N; ++i) {
-            array[i] = rep.wrapRegExp(cx, scope, idata.itsRegExpLiterals[i]);
+            array[i] = rep.wrapRegExp(cx, scope, this.idata.itsRegExpLiterals[i]);
         }
         return array;
     }
@@ -122,14 +123,14 @@ final public class InterpretedFunction extends NativeFunction implements Script
     private void initInterpretedFunction(Context cx, Scriptable scope)
     {
         initScriptFunction(cx, scope);
-        if (idata.itsRegExpLiterals != null) {
-            functionRegExps = createRegExpWraps(cx, scope);
+        if (this.idata.itsRegExpLiterals != null) {
+            this.functionRegExps = createRegExpWraps(cx, scope);
         }
     }
 
     public String getFunctionName()
     {
-        return (idata.itsName == null) ? "" : idata.itsName;
+        return (this.idata.itsName == null) ? "" : this.idata.itsName;
     }
 
     /**
@@ -172,7 +173,7 @@ final public class InterpretedFunction extends NativeFunction implements Script
 
     public Object exec(Context cx, Scriptable scope)
     {
-        if (idata.itsFunctionType != 0) {
+        if (this.idata.itsFunctionType != 0) {
             // Can only be applied to scripts
             throw new IllegalStateException();
         }
@@ -187,44 +188,44 @@ final public class InterpretedFunction extends NativeFunction implements Script
 
     protected int getLanguageVersion()
     {
-        return idata.languageVersion;
+        return this.idata.languageVersion;
     }
 
     protected int getParamCount()
     {
-        return idata.argCount;
+        return this.idata.argCount;
     }
 
     protected int getParamAndVarCount()
     {
-        return idata.argNames.length;
+        return this.idata.argNames.length;
     }
 
     protected String getParamOrVarName(int index)
     {
-        return idata.argNames[index];
+        return this.idata.argNames[index];
     }
 
     protected boolean getParamOrVarConst(int index)
     {
-        return idata.argIsConst[index];
+        return this.idata.argIsConst[index];
     }
 
 	
 	public void read(DataInputStream in) throws IOException {
 		super.read(in);
-		idata = (InterpreterData) Serializer.deserialize(in);
+		this.idata = (InterpreterData) Serializer.deserialize(in);
 		Object[] functions = (Object[]) Serializer.deserialize(in);
 		Scriptable[] scriptables = new Scriptable[functions.length];
 		System.arraycopy(functions, 0, scriptables, 0, functions.length );
-		functionRegExps = scriptables; 
+		this.functionRegExps = scriptables; 
 	}
 
 	
 	public void write(DataOutputStream out) throws IOException {
 		super.write(out);
-		Serializer.serialize(idata, out);
-		Serializer.serialize(functionRegExps, out);
+		Serializer.serialize(this.idata, out);
+		Serializer.serialize(this.functionRegExps, out);
 	}
 }
 

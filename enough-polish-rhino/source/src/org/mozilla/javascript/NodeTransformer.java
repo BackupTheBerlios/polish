@@ -142,8 +142,9 @@ public class NodeTransformer
                  * block gets the correct scope... which could mean
                  * that some LEAVEWITH nodes are necessary.
                  */
-                if (!hasFinally)
+                if (!hasFinally) {
                     break;     // skip the whole mess.
+                }
                 Node unwindBlock = null;
                 for (int i=loops.getSize()-1; i >= 0; i--) {
                     Node n = (Node) loops.get(i);

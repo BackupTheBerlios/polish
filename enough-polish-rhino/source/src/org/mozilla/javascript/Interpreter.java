@@ -269,7 +269,9 @@ public class Interpreter
 
 		CallFrame cloneFrozen()
         {
-            if (!frozen) Kit.codeBug();
+            if (!frozen) {
+            	Kit.codeBug();
+            }
 
 			CallFrame cl = new CallFrame();
 			cl.parentFrame = parentFrame;
@@ -464,7 +466,7 @@ public class Interpreter
                && token <= Token.LAST_BYTECODE_TOKEN;
     }
 
-    public Object compile(CompilerEnvirons compilerEnv,
+    public InterpreterData compile(CompilerEnvirons compilerEnv,
                           ScriptOrFnNode tree,
                           String encodedSource,
                           boolean returnFunction)
@@ -476,19 +478,19 @@ public class Interpreter
             tree = tree.getFunctionNode(0);
         }
 
-        scriptOrFn = tree;
-        itsData = new InterpreterData(compilerEnv.getLanguageVersion(),
-                                      scriptOrFn.getSourceName(),
+        this.scriptOrFn = tree;
+        this.itsData = new InterpreterData(compilerEnv.getLanguageVersion(),
+                                      this.scriptOrFn.getSourceName(),
                                       encodedSource);
-        itsData.topLevel = true;
+        this.itsData.topLevel = true;
 
         if (returnFunction) {
             generateFunctionICode();
         } else {
-            generateICodeFromTree(scriptOrFn);
+            generateICodeFromTree(this.scriptOrFn);
         }
 
-        return itsData;
+        return this.itsData;
     }
 
     public Script createScriptObject(Object bytecode)
@@ -542,7 +544,7 @@ public class Interpreter
 
         if (itsData.itsICode.length != itsICodeTop) {
             // Make itsData.itsICode length exactly itsICodeTop to save memory
-            // and catch bugs with jumps beyound icode as early as possible
+            // and catch bugs with jumps beyond icode as early as possible
             byte[] tmp = new byte[itsICodeTop];
             System.arraycopy(itsData.itsICode, 0, tmp, 0, itsICodeTop);
             itsData.itsICode = tmp;
@@ -594,7 +596,9 @@ public class Interpreter
             itsData.literalIds = itsLiteralIds.toArray();
         }
 
-        if (Token.printICode) dumpICode(itsData);
+        if (Token.printICode) {
+        	dumpICode(itsData);
+        }
     }
 
     private void generateNestedFunctions()
@@ -1992,6 +1996,7 @@ public class Interpreter
                 break;
             }
         }
+        System.out.println();
 
         int[] table = idata.itsExceptionTable;
         if (table != null) {
@@ -2155,7 +2160,9 @@ public class Interpreter
                             Context cx, Scriptable scope,
                             Scriptable thisObj, Object[] args)
     {
-        if (!ScriptRuntime.hasTopCall(cx)) Kit.codeBug();
+        if (!ScriptRuntime.hasTopCall(cx)) {
+        	Kit.codeBug();
+        }
 
         CallFrame frame = new CallFrame();
         initFrame(cx, scope, thisObj, args, null, 0, args.length,
@@ -2222,7 +2229,7 @@ public class Interpreter
         // When restarting continuation throwable is not null and to jump
         // to the code that rewind continuation state indexReg should be set
         // to -1.
-        // With the normal call throable == null and indexReg == -1 allows to
+        // With the normal call throwable == null and indexReg == -1 allows to
         // catch bugs with using indeReg to access array eleemnts before
         // initializing indexReg.
 
@@ -2297,7 +2304,9 @@ public class Interpreter
 
                         CallFrame x = cjump.capturedFrame;
                         for (int i = 0; i != rewindCount; ++i) {
-                            if (!x.frozen) Kit.codeBug();
+                            if (!x.frozen) {
+                            	Kit.codeBug();
+                            }
                             if (isFrameEnterExitRequired(x)) {
                                 if (enterFrames == null) {
                                     // Allocate enough space to store the rest
@@ -2331,7 +2340,9 @@ public class Interpreter
                     }
 
                 } else {
-                    if (frame.frozen) Kit.codeBug();
+                    if (frame.frozen) {
+                    	Kit.codeBug();
+                    }
                 }
 
                 // Use local variables for constant values in frame

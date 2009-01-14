@@ -288,7 +288,7 @@ public class Context
     public Context()
     {
         setLanguageVersion(VERSION_DEFAULT);
-        maximumInterpreterStackDepth = Integer.MAX_VALUE;
+        this.maximumInterpreterStackDepth = Integer.MAX_VALUE;
     }
 
     /**

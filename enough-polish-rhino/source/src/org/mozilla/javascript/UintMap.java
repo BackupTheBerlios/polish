@@ -293,8 +293,39 @@ public class UintMap implements Externalizable
     // values associated with keys
     private transient int ivaluesShift;
 
-// If true, enables consitency checks
+// If true, enables consistency checks
     private static final boolean check = false;
+    
+    
+    
+
+
+ // Structure of kyes and values arrays (N == 1 << power):
+ // keys[0 <= i < N]: key value or EMPTY or DELETED mark
+ // values[0 <= i < N]: value of key at keys[i]
+ // keys[N <= i < 2N]: int values of keys at keys[i - N]
+
+     private transient int[] keys;
+
+
+    
+
+    /**
+     * Get integer value assigned with key.
+     * @return key integer value or defaultValue if key is absent
+     */
+    public int getInt(int key, int defaultValue) {
+        if (key < 0) Kit.codeBug();
+        int index = findIndex(key);
+        if (0 <= index) {
+            if (this.ivaluesShift != 0) {
+                return keys[this.ivaluesShift + index];
+            }
+            return 0;
+        }
+        return defaultValue;
+    }
+
 
 	
 	public void read(DataInputStream in) throws IOException {

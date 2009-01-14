@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="source"/>
+	<classpathentry kind="src" path="source/src"/>
+	<classpathentry kind="src" output="bin/test" path="source/test"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/cldc-1.1.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/locationapi-1.0.jar"/>
 	<classpathentry kind="lib" path="/enough-polish-build/import/midp-2.0.jar">
@@ -9,5 +10,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -322,17 +322,17 @@ public class Parser
         throws IOException
     {
         this.nf = new IRFactory(this);
-        currentScriptOrFn = nf.createScript();
+        this.currentScriptOrFn = this.nf.createScript();
         this.encodedSource = null;
 
         this.currentFlaggedToken = Token.EOF;
         this.syntaxErrorCount = 0;
 
-        int baseLineno = ts.getLineno();  // line number where source starts
+        int baseLineno = this.ts.getLineno();  // line number where source starts
 
         /* so we have something to add nodes to until
          * we've collected all the source */
-        Node pn = nf.createLeaf(Token.BLOCK);
+        Node pn = this.nf.createLeaf(Token.BLOCK);
 
         try {
             for (;;) {
@@ -346,7 +346,7 @@ public class Parser
                 if (tt == Token.FUNCTION) {
                     consumeToken();
                     try {
-                        n = function(calledByCompileFunction
+                        n = function(this.calledByCompileFunction
                                      ? FunctionNode.FUNCTION_EXPRESSION
                                      : FunctionNode.FUNCTION_STATEMENT);
                     } catch (ParserException e) {
@@ -355,30 +355,30 @@ public class Parser
                 } else {
                     n = statement();
                 }
-                nf.addChildToBack(pn, n);
+                this.nf.addChildToBack(pn, n);
             }
         } catch (VirtualMachineError ex) {
             String msg = ScriptRuntime.getMessage0(
                 "msg.too.deep.parser.recursion");
-            throw Context.reportRuntimeError(msg, sourceURI,
-                                             ts.getLineno(), null, 0);
+            throw Context.reportRuntimeError(msg, this.sourceURI,
+            		this.ts.getLineno(), null, 0);
         }
 
         if (this.syntaxErrorCount != 0) {
             String msg = String.valueOf(this.syntaxErrorCount);
             msg = ScriptRuntime.getMessage1("msg.got.syntax.errors", msg);
-            throw errorReporter.runtimeError(msg, sourceURI, baseLineno,
+            throw this.errorReporter.runtimeError(msg, this.sourceURI, baseLineno,
                                              null, 0);
         }
 
-        currentScriptOrFn.setSourceName(sourceURI);
-        currentScriptOrFn.setBaseLineno(baseLineno);
-        currentScriptOrFn.setEndLineno(ts.getLineno());
+        this.currentScriptOrFn.setSourceName(this.sourceURI);
+        this.currentScriptOrFn.setBaseLineno(baseLineno);
+        this.currentScriptOrFn.setEndLineno(this.ts.getLineno());
 
-        nf.initScript(currentScriptOrFn, pn);
+        this.nf.initScript(this.currentScriptOrFn, pn);
 
 
-        return currentScriptOrFn;
+        return this.currentScriptOrFn;
     }
 
     /*
@@ -390,8 +390,8 @@ public class Parser
     private Node parseFunctionBody()
         throws IOException
     {
-        ++nestingOfFunction;
-        Node pn = nf.createBlock(ts.getLineno());
+        this.nestingOfFunction++;
+        Node pn = this.nf.createBlock(this.ts.getLineno());
         try {
             bodyLoop: for (;;) {
                 Node n;
@@ -410,12 +410,12 @@ public class Parser
                     n = statement();
                     break;
                 }
-                nf.addChildToBack(pn, n);
+                this.nf.addChildToBack(pn, n);
             }
         } catch (ParserException e) {
             // Ignore it
         } finally {
-            --nestingOfFunction;
+            this.nestingOfFunction--;
         }
 
         return pn;
@@ -425,17 +425,17 @@ public class Parser
         throws IOException, ParserException
     {
         int syntheticType = functionType;
-        int baseLineno = ts.getLineno();  // line number where source starts
+        int baseLineno = this.ts.getLineno();  // line number where source starts
 
         String name;
         Node memberExprNode = null;
         if (matchToken(Token.NAME)) {
-            name = ts.getString();
+            name = this.ts.getString();
             if (!matchToken(Token.LP)) {
-                if (compilerEnv.isAllowMemberExprAsFunctionName()) {
+                if (this.compilerEnv.isAllowMemberExprAsFunctionName()) {
                     // Extension to ECMA: if 'function <name>' does not follow
                     // by '(', assume <name> starts memberExpr
-                    Node memberExprHead = nf.createName(name);
+                    Node memberExprHead = this.nf.createName(name);
                     name = "";
                     memberExprNode = memberExprTail(false, memberExprHead);
                 }
@@ -446,7 +446,7 @@ public class Parser
             name = "";
         } else {
             name = "";
-            if (compilerEnv.isAllowMemberExprAsFunctionName()) {
+            if (this.compilerEnv.isAllowMemberExprAsFunctionName()) {
                 // Note that memberExpr can not start with '(' like
                 // in function (1+2).toString(), because 'function (' already
                 // processed as anonymous function
@@ -461,8 +461,8 @@ public class Parser
 
         boolean nested = insideFunction();
 
-        FunctionNode fnNode = nf.createFunction(name);
-        if (nested || nestingOfWith > 0) {
+        FunctionNode fnNode = this.nf.createFunction(name);
+        if (nested || this.nestingOfWith > 0) {
             // 1. Nested functions are not affected by the dynamic scope flag
             // as dynamic scope is already a parent of their scope.
             // 2. Functions defined under the with statement also immune to
@@ -471,27 +471,27 @@ public class Parser
             fnNode.itsIgnoreDynamicScope = true;
         }
 
-        int functionIndex = currentScriptOrFn.addFunction(fnNode);
+        int functionIndex = this.currentScriptOrFn.addFunction(fnNode);
 
-        ScriptOrFnNode savedScriptOrFn = currentScriptOrFn;
-        currentScriptOrFn = fnNode;
-        int savedNestingOfWith = nestingOfWith;
-        nestingOfWith = 0;
-        Hashtable savedLabelSet = labelSet;
-        labelSet = null;
-        ObjArray savedLoopSet = loopSet;
-        loopSet = null;
-        ObjArray savedLoopAndSwitchSet = loopAndSwitchSet;
-        loopAndSwitchSet = null;
-        boolean savedHasReturnValue = hasReturnValue;
-        int savedFunctionEndFlags = functionEndFlags;
+        ScriptOrFnNode savedScriptOrFn = this.currentScriptOrFn;
+        this.currentScriptOrFn = fnNode;
+        int savedNestingOfWith = this.nestingOfWith;
+        this.nestingOfWith = 0;
+        Hashtable savedLabelSet = this.labelSet;
+        this.labelSet = null;
+        ObjArray savedLoopSet = this.loopSet;
+        this.loopSet = null;
+        ObjArray savedLoopAndSwitchSet = this.loopAndSwitchSet;
+        this.loopAndSwitchSet = null;
+        boolean savedHasReturnValue = this.hasReturnValue;
+        int savedFunctionEndFlags = this.functionEndFlags;
 
         Node body;
         try {
             if (!matchToken(Token.RP)) {
                 do {
                     mustMatchToken(Token.NAME, "msg.no.parm");
-                    String s = ts.getString();
+                    String s = this.ts.getString();
                     if (fnNode.hasParamOrVar(s)) {
                         addWarning("msg.dup.parms", s);
                     }
@@ -505,7 +505,7 @@ public class Parser
             body = parseFunctionBody();
             mustMatchToken(Token.RC, "msg.no.brace.after.body");
 
-            if (compilerEnv.isStrictMode() && !body.hasConsistentReturnUsage())
+            if (this.compilerEnv.isStrictMode() && !body.hasConsistentReturnUsage())
             {
               String msg = name.length() > 0 ? "msg.no.return.value"
                                              : "msg.anon.no.return.value";
@@ -514,31 +514,31 @@ public class Parser
 
         }
         finally {
-            hasReturnValue = savedHasReturnValue;
-            functionEndFlags = savedFunctionEndFlags;
-            loopAndSwitchSet = savedLoopAndSwitchSet;
-            loopSet = savedLoopSet;
-            labelSet = savedLabelSet;
-            nestingOfWith = savedNestingOfWith;
-            currentScriptOrFn = savedScriptOrFn;
+        	this.hasReturnValue = savedHasReturnValue;
+        	this.functionEndFlags = savedFunctionEndFlags;
+        	this.loopAndSwitchSet = savedLoopAndSwitchSet;
+        	this.loopSet = savedLoopSet;
+        	this.labelSet = savedLabelSet;
+        	this.nestingOfWith = savedNestingOfWith;
+        	this.currentScriptOrFn = savedScriptOrFn;
         }
 
-        fnNode.setSourceName(sourceURI);
+        fnNode.setSourceName(this.sourceURI);
         fnNode.setBaseLineno(baseLineno);
-        fnNode.setEndLineno(ts.getLineno());
+        fnNode.setEndLineno(this.ts.getLineno());
 
         if (name != null) {
-          int index = currentScriptOrFn.getParamOrVarIndex(name);
-          if (index >= 0 && index < currentScriptOrFn.getParamCount())
+          int index = this.currentScriptOrFn.getParamOrVarIndex(name);
+          if (index >= 0 && index < this.currentScriptOrFn.getParamCount())
             addStrictWarning("msg.var.hides.arg", name);
         }
 
-        Node pn = nf.initFunction(fnNode, functionIndex, body, syntheticType);
+        Node pn = this.nf.initFunction(fnNode, functionIndex, body, syntheticType);
         if (memberExprNode != null) {
-            pn = nf.createAssignment(Token.ASSIGN, memberExprNode, pn);
+            pn = this.nf.createAssignment(Token.ASSIGN, memberExprNode, pn);
             if (functionType != FunctionNode.FUNCTION_EXPRESSION) {
                 // XXX check JScript behavior: should it be createExprStatement?
-                pn = nf.createExprStatementNoReturn(pn, baseLineno);
+                pn = this.nf.createExprStatementNoReturn(pn, baseLineno);
             }
         }
         return pn;
@@ -547,11 +547,11 @@ public class Parser
     private Node statements()
         throws IOException
     {
-        Node pn = nf.createBlock(ts.getLineno());
+        Node pn = this.nf.createBlock(this.ts.getLineno());
 
         int tt;
         while((tt = peekToken()) > Token.EOF && tt != Token.RC) {
-            nf.addChildToBack(pn, statement());
+        	this.nf.addChildToBack(pn, statement());
         }
 
         return pn;
@@ -584,9 +584,9 @@ public class Parser
         int tt = peekTokenOrEOL();
         if (tt == Token.NAME) {
             consumeToken();
-            String name = ts.getString();
-            if (labelSet != null) {
-                label = (Node)labelSet.get(name);
+            String name = this.ts.getString();
+            if (this.labelSet != null) {
+                label = (Node)this.labelSet.get(name);
             }
             if (label == null) {
                 reportError("msg.undef.label");
@@ -602,14 +602,14 @@ public class Parser
         try {
             Node pn = statementHelper(null);
             if (pn != null) {
-                if (compilerEnv.isStrictMode() && !pn.hasSideEffects())
+                if (this.compilerEnv.isStrictMode() && !pn.hasSideEffects())
                     addStrictWarning("msg.no.side.effects", "");
                 return pn;
             }
         } catch (ParserException e) { }
 
         // skip to end of statement
-        int lineno = ts.getLineno();
+        int lineno = this.ts.getLineno();
         guessingStatementEnd: for (;;) {
             int tt = peekTokenOrEOL();
             consumeToken();
@@ -621,7 +621,7 @@ public class Parser
                 break guessingStatementEnd;
             }
         }
-        return nf.createExprStatement(nf.createName("error"), lineno);
+        return this.nf.createExprStatement(this.nf.createName("error"), lineno);
     }
 
     /**

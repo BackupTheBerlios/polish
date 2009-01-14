@@ -47,12 +47,13 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import javax.microedition.lcdui.AlertType;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Alert;
+import de.enough.polish.ui.Command;
+import de.enough.polish.ui.CommandListener;
+import de.enough.polish.ui.Display;
+import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
 
@@ -267,8 +268,8 @@ final public class NativeAlert extends IdScriptableObject implements CommandList
 
         switch (id) {
           case Id_show:
-        	realThis.previousScreen = StyleSheet.display.getCurrent();
-        	StyleSheet.setCurrent(StyleSheet.display, realThis.alert);
+        	realThis.previousScreen = Display.getInstance().getCurrent();
+        	Display.getInstance().setCurrent( realThis.alert);
 
         	return realThis;
           case Id_isShown:
@@ -378,7 +379,7 @@ final public class NativeAlert extends IdScriptableObject implements CommandList
 		if (function != null) {
 			function.call(VMBridge.instance.getContext(), VMBridge.instance.getScope(), VMBridge.instance.getScope(), ScriptRuntime.emptyArgs);
 		} else {
-			StyleSheet.setCurrent( StyleSheet.display, this.previousScreen);
+			Display.getInstance().setCurrent( this.previousScreen );
 		}
 	}
 }
