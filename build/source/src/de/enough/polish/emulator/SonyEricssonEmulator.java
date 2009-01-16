@@ -66,6 +66,18 @@ public class SonyEricssonEmulator extends WtkEmulator {
 		}
 		File skinFolder;
 
+		skinFolder = new File( this.sonyEricssonHome + "\\WTK1\\wtklib\\devices\\" + xDevice );
+		if (skinFolder.exists()) {
+			this.sonyWtkHome = this.sonyEricssonHome + "\\WTK1";
+			return skinFolder;
+		}
+
+		skinFolder = new File( this.sonyEricssonHome + "\\WTK2\\wtklib\\devices\\" + xDevice );
+		if (skinFolder.exists()) {
+			this.sonyWtkHome = this.sonyEricssonHome + "\\WTK2";
+			return skinFolder;
+		}
+
 		skinFolder = new File( this.sonyEricssonHome + "\\PC_Emulation\\WTK1\\wtklib\\devices\\" + xDevice );
 		if (skinFolder.exists()) {
 			this.sonyWtkHome = this.sonyEricssonHome + "\\PC_Emulation\\WTK1";
@@ -75,12 +87,6 @@ public class SonyEricssonEmulator extends WtkEmulator {
 		skinFolder = new File( this.sonyEricssonHome + "\\PC_Emulation\\WTK2\\wtklib\\devices\\" + xDevice );
 		if (skinFolder.exists()) {
 			this.sonyWtkHome = this.sonyEricssonHome + "\\PC_Emulation\\WTK2";
-			return skinFolder;
-		}
-
-		skinFolder = new File( this.sonyEricssonHome + "\\WTK2\\wtklib\\devices\\" + xDevice );
-		if (skinFolder.exists()) {
-			this.sonyWtkHome = this.sonyEricssonHome + "\\WTK2";
 			return skinFolder;
 		}
 		
