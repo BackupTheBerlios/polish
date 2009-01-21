@@ -104,7 +104,7 @@ Remember that resources should be less than 64 kb in size for older BlackBerry p
 <p>If rapc fails because there is not enough heapspace, you can specify the preprocessing variable or Ant property 
 <code>blackberry.rapc.opts</code>, e.g.:<br />
 <code>&lt;property name=&quot;blackberry.rapc.opts&quot; value=&quot;-Xmx512m&quot;/&gt;</code><br />
-This example will set the maximum usable heapspace to 512 MB.
+This example will set the maximum usable heapspace to 512 MB, which is actually the default setting.
 </p>
 
 <h2 id="blackberry-signing">Signing COD Files</h2>
@@ -283,7 +283,8 @@ These are the steps to get this kind of provisioning to work:
 <h2 id="blackberry-virtualdevices">Useful Virtual Devices</h2>
 <p>
 The J2ME Polish device database contains several virtual devices that you can target for limiting the number of BlackBerry builds.
-Instead of building for BlackBerry/8100 and BlackBerry/8800 for example, you can generate one build for the virtual BlackBerry/4.2 device.
+Instead of building for BlackBerry/8100 and BlackBerry/8800 for example, you can generate one build for the virtual 
+<code>BlackBerry/4.2TrackBall</code> device.
 Note, however, that these virtual devices do not contain a screen size definition, so if you have resources that depend on the
 screen resolution, you should target real devices instead.
 <br />
@@ -291,7 +292,8 @@ Following virtual devices are available:
 </p>
 <ul>
 	<li><b>BlackBerry/4.1</b>: for devices like the 8700, 7290 etc</li>
-	<li><b>BlackBerry/4.2</b>: for devices like the 8100, 8800 etc</li>
+	<li><b>BlackBerry/4.2</b>: for 4.2 devices without trackball</li>
+	<li><b>BlackBerry/4.2TrackBall</b>: for 4.2 devices with trackball like the 8100, 8800 etc</li>
 	<li><b>BlackBerry/4.3</b>: for devices like the 8120, 8130 etc</li>
 </ul>
 
