@@ -20,10 +20,10 @@ it.</p>
 For further information how to install the plugins, go to the <a
 	href="http://code.google.com/android/intro/installing.html">Android
 Installation Guide</a>.</p>
-<p>After the installation of the Android SDK you should define the <code>android.home</code>
+<p>After the installation of the Android SDK you should define the <code>android.home</code> property
 in either <i>${polish.home}/global.properties</i>,
 ${project.home}/${user.name}.properties or in your <i>build.xml</i>
-script. In your <i>build.xml</i> script the definitition could look like
+script. In your <i>build.xml</i> script the definition could look like
 this:
 <pre>
 &lt;property 
@@ -37,35 +37,35 @@ this:
 platform, you simply need to set <i>Generic/android</i> as the device to
 build your application for. This device has a resolution of 240 x 320
 and has all default features of an Android phone. Future versions of
-J2ME Polish will add more sofisticated devices like the T-Mobile G1.</p>
-<p>The building of the application is done in <number>
-steps :
+J2ME Polish will add more sophisticated devices like the T-Mobile G1.</p>
+<p>The building of the application is done in these steps:
 <ol>
 	<li>An activity is created in <code>/activity</code> of the
 	Android build folder. </li>
-	<li>The R.java / Manifest.java are created from the resources and
-	sources via <i>aapt</i> of the Android SDK</li>
-	<li>The code is compiled with target and source set to Java 1.5</li>
-	<li>A file named classes.dex is created from the source code via dx 
+	<li>The <i>R.java</i> / <i>Manifest.java</i> files are created from the resources and
+	sources via <code>aapt</code> of the Android SDK</li>
+	<li>The code is compiled with <code>target</code> and <code>source</code> set to <code>Java 1.5</code> (so yes, you can use Generics etc)</li>
+	<li>A file named <i>classes.dex</i> is created from the source code using the <code>dx</code> utility 
 	of the Android SDK</li>
-	<li>The resources are packed to a .ap_ file with <i>aapt</i></li>
-	<li>The application is packaged to a .apk file with the SDK's <i>apkbuilder</i></li>
+	<li>The resources are packed to a <i>.ap_</i> file with <code>aapt</code></li>
+	<li>The application is packaged to a <i>.apk</i> file with the SDK's <code>apkbuilder</code> command</li>
 </ol>
 </p>
 <b>
-Please note that the current android conversion is in its first stages. By now, only the 
-Polish API and HTTP is supported. Other packages and feature will follow.
+Please note that the current android conversion is in its first stages. So far only the 
+Polish API and HTTP are supported. Other packages and features will follow soon.
 </b>
 <h2 id="blackberry-testing">Testing Android application</h2>
 <p>
-There are two possibilities to test Android application build with J2ME Polish :
+There are two possibilities to test Android application build with J2ME Polish:
 </p>
 <ul>
 <li>
-If <code>test</code> is set to true, the Android emulator is started automatically 
-and the application is installed. Before launching the programm, please wait for the build.xml
+If the <code>test</code> Ant property is set to true or if you call the <code>emulator</code> target, 
+the Android emulator is started automatically 
+and the application is installed. Before launching your application, please wait for the <i>build.xml</i>
 to output <i>Successfully installed</i>. To rebuild the application and test it, just cancel 
-the running build.xml and leave the emulator running, the build process will automatically detect 
+the running <i>build.xml</i> and leave the emulator running, the build process will automatically detect 
 if there's an emulator running and install the application to the running emulator. You can also 
 start the emulator before the build process is started.
 </li>
