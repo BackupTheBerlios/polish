@@ -152,7 +152,7 @@
 		<capability name="build.BlackBerry.JDE-Version" value="4.5" />
 		<!-- key for opening/closing the menu -->
 		<capability name="key.Menu" value="268566528" />
-		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi" />	
+		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi,jsr172" />	
 	</platform>
 
 	<platform>
@@ -162,7 +162,7 @@
 		<capability name="build.BlackBerry.JDE-Version" value="4.6" />
 		<!-- key for opening/closing the menu -->
 		<capability name="key.Menu" value="268566528" />
-		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi" />	
+		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi,jsr172" />	
 	</platform>
 
 	<platform>
@@ -173,7 +173,7 @@
 		<capability name="build.BlackBerry.JDE-Version" value="4.7" />
 		<!-- key for opening/closing the menu -->
 		<capability name="key.Menu" value="268566528" />
-		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi" />	
+		<capability name="JavaPackage" value="location,wmapi,pdaapi,mmapi,jsr172" />	
 	</platform>
 
 	<platform>
