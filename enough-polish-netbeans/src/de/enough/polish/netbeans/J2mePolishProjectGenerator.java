@@ -93,7 +93,6 @@ public class J2mePolishProjectGenerator {
                 //linesList.add( line );
                 for (int j = 0; j < configurationNames.length; j++) {
                     String configuration = configurationNames[j];
-                    FileUtil.writeTextFile(new File("c://j2melog.txt"),configurationNames);
                     //linesList.add( "            <configuration>" + configuration + "</configuration>");
                 }
                 // now skip until the configurations tag is found again:
