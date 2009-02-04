@@ -90,22 +90,29 @@ public class J2mePolishProjectGenerator {
                 line = line.substring(0, projectNameIndex + "<name>".length() )
                         + name + line.substring( closingIndex );
             } else if (line.indexOf("<configurations") != -1) {
-                linesList.add( line );
+                //linesList.add( line );
                 for (int j = 0; j < configurationNames.length; j++) {
                     String configuration = configurationNames[j];
-                    linesList.add( "            <configuration>" + configuration + "</configuration>");
+                    FileUtil.writeTextFile(new File("c://j2melog.txt"),configurationNames);
+                    //linesList.add( "            <configuration>" + configuration + "</configuration>");
                 }
                 // now skip until the configurations tag is found again:
-                i++;
-                while ( (line = lines[i]).indexOf("</configurations") == -1) {
+                do {
+                    line = lines[i];
                     i++;
-                }
+                }while( (line).indexOf("</configurations") == -1);
+                line = lines[i];
             }
             linesList.add( line );
         } 
         FileUtil.writeTextFile(projectScript, linesList);
         // set name in project.properties:
         buildProperties.put( "name", name );
+        String usedConfigurations = "";
+        for (int i = 0; i < configurationNames.length; i++) {
+            usedConfigurations = usedConfigurations+" ,"+configurationNames[i];
+        }
+        buildProperties.put( "all.configurations", usedConfigurations );
         
         // add configuration properties:
         //TODO dynamically find the used J2ME Platform
@@ -153,6 +160,7 @@ public class J2mePolishProjectGenerator {
             "config.active=" + configurationNames[0],
             "javadoc.preview=true"
         };
+
         File privatePropertiesFile = new File( projectDir, "nbproject/private/private.properties");
         FileUtil.writeTextFile( privatePropertiesFile, privatePropertiesLines );
         
