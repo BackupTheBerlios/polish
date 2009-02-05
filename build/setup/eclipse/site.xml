@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/de.enough.mepose.feature_0.7.23.jar" id="de.enough.mepose.feature" version="0.7.23"/>
-   <category-def name="Mepose" label="Mepose"/>
+   <feature url="features/de.enough.mepose.feature.id_1.0.17.jar" id="de.enough.mepose.feature.id" version="1.0.17"/>
 </site>
