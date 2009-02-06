@@ -8,6 +8,8 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
+import javax.microedition.lcdui.Item;
+import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
@@ -18,8 +20,6 @@ import de.enough.polish.browser.rss.RssBrowser;
 import de.enough.polish.browser.rss.RssItem;
 import de.enough.polish.browser.rss.RssTagHandler;
 import de.enough.polish.event.ThreadedCommandListener;
-import de.enough.polish.ui.Item;
-import de.enough.polish.ui.ItemCommandListener;
 import de.enough.polish.ui.UiAccess;
 import de.enough.polish.ui.splash.ApplicationInitializer;
 import de.enough.polish.ui.splash.InitializerSplashScreen;
@@ -145,8 +145,8 @@ public class RssMidlet
 				this.rssBrowser.clearHistory();
 				this.display.setCurrent( this.mainMenu );
 			} else if (command == RssTagHandler.CMD_RSS_ITEM_SELECT || command.getLabel().equals("Select")) {
-				Item item = this.rssBrowser.getFocusedItem();
-				RssItem rssItem = (RssItem) item.getAttribute(RssTagHandler.ATTR_RSS_ITEM);
+				Item item = UiAccess.cast( this.rssBrowser.getFocusedItem() );
+				RssItem rssItem = (RssItem) UiAccess.getAttribute(item, RssTagHandler.ATTR_RSS_ITEM);
 				showRssNewsItem( rssItem );
 			}
 		} else if (displayable == this.settingsForm) {
@@ -171,7 +171,7 @@ public class RssMidlet
 		//#debug
 		System.out.println("commandAction: cmd=" + command.getLabel() + " for item " + item);
 		if (command == RssTagHandler.CMD_RSS_ITEM_SELECT) {
-			RssItem rssItem = (RssItem) item.getAttribute(RssTagHandler.ATTR_RSS_ITEM);
+			RssItem rssItem = (RssItem) UiAccess.getAttribute(item, RssTagHandler.ATTR_RSS_ITEM);
 			showRssNewsItem( rssItem );
 		}
 		else {

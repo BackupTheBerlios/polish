@@ -18,6 +18,17 @@ backgrounds {
 		second-bottom-color: #33ff00;
 	}
 	
+	triangleBg {
+		type: triangle;
+		color: blue;
+	}
+	
+	gradientBg {
+		type: vertical-gradient;
+		top-color: white;
+		bottom-color: red;
+	}
+	
 }
 
 /************************** general styles  ********************************************************************************/
@@ -33,10 +44,7 @@ title {
 	//#if polish.midp2 && polish.hasFloatingPoint
 		text-effect: alien-glow;
 	//#endif
-	background {
-		type: simple;
-		color: #ffffff;
-	}
+	background-color: #fff;
 }
 
 focused {
