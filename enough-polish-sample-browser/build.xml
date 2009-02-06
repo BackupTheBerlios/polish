@@ -36,8 +36,11 @@
 
 <taskdef name="j2mepolish" 
 	classname="de.enough.polish.ant.PolishTask" 
-	classpath="${polish.home}:${polish.home}/bin/classes:${polish.home}/lib/enough-j2mepolish-build.jar:${polish.home}/lib/jdom.jar"/>
-
+	classpath="${polish.home}:${polish.home}/bin/classes:
+			${polish.home}/lib/enough-j2mepolish-build.jar:
+			${polish.home}/lib/jdom.jar"
+/>
+	
 	
 <!-- build targets, each target can be called via "ant [name]", 
 	 e.g. "ant clean", "ant test j2mepolish" or just "ant" for calling the default target -->
@@ -73,6 +76,10 @@
 		description="This is the controller for the J2ME build process." 
 		>
 	<j2mepolish>
+		<lifecyclemanager name="mea">
+			<parameter name="fallbackDevice" value="Generic/AnyPhone" />
+			<parameter name="access" value="pseudoprivate" />
+		</lifecyclemanager>
 	    <!-- general settings, these settings basically form the JAD-attributes. -->
 	    <!-- Have a look at the <jad>-section for setting specialised attributes.
 	         You can also define localized attributes in the resources/messages.txt files -->
@@ -141,12 +148,14 @@
 			<!-- project-wide variables - used for preprocessing.  -->
 			<!-- You can set localized variables in the resources/messages.txt files as well.  -->
 			<variables includeAntProperties="true" >
+				<variable name="polish.usePopupItem" value="true" />
 				<variable name="polish.Browser.UserAgent" value="J2ME-Polish 2.0" />
 				<variable name="polish.Browser.MaxRedirects" value="5" />
 				<variable name="polish.Browser.Gzip" value="true" />
 				<variable name="polish.Browser.PaintDownloadIndicator" value="true" />
 				<variable name="polish.MenuBar.useExtendedMenuBar" value="true" />
 				<variable name="polish.useScrollBar" value="true" />
+				<variable name="polish.RemoteBluetoothScreen" value="true" />
 			</variables>
 			<resources
 				dir="resources"
@@ -160,7 +169,7 @@
 			</resources>
 			
 			<!-- obfuscator settings: do not obfuscate when the test-property is true -->
-			<obfuscator name="ProGuard" useDefaultPackage="true" unless="test || polish.blackberry" > 
+			<obfuscator name="ProGuard" unless="test || polish.blackberry" > 
 				<!--
 				You can set additional parameters here, e.g.:
 				<parameter name="optimize" value="false" />
@@ -168,10 +177,13 @@
 			</obfuscator>
 			
 			<!-- debug settings: only include debug setting when the test-property is true -->
-			<debug if="test" showLogOnError="true" verbose="true" level="error">
-				<filter package="de.enough.polish.sample.browser" level="debug" />
+			<debug if="test or log" showLogOnError="true" verbose="true" level="error">
 				<filter pattern="de.enough.polish.ui.*" level="warn" />
+				<filter class="de.enough.polish.ui.ChoiceGroup" level="debug" />
 				<!--
+				<filter package="de.enough.polish.sample.browser" level="debug" />
+				<filter class="de.enough.polish.browser.Browser" level="debug" />
+				<filter class="de.enough.polish.browser.html.HtmlBrowser" level="debug" />
 				<filter class="de.enough.polish.ui.containerviews.MIDP2LayoutView" level="debug" />
 				<filter class="de.enough.polish.ui.ContainerView" level="debug" />
 				<filter class="de.enough.polish.ui.Container" level="debug" />

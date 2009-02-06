@@ -9,6 +9,9 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.browser.html.HtmlBrowser;
+import de.enough.polish.ui.PercentOrAbsoluteInteger;
+import de.enough.polish.ui.Style;
+import de.enough.polish.ui.UiAccess;
 
 /**
  * <p>Demonstrates a simple browser app using the HtmlBrowser component of J2ME Polish.</p>
@@ -33,6 +36,8 @@ implements CommandListener
 	          Form form = new Form("HTML Browser");
 	          //#style browser
 	          this.htmlBrowser = new HtmlBrowser();
+	          // you can add a gzip resource handler for reading gzipped resources:
+	          //this.htmlBrowser.addProtocolHandler( new GZipResourceProtocolHandler() );
 	          new ChartTagHandler( this.htmlBrowser.getTagHandler("div")).register(this.htmlBrowser);
 	          form.append(this.htmlBrowser);
 	          this.htmlBrowser.go( "resource://index.html");
@@ -61,7 +66,6 @@ implements CommandListener
 			//destroyApp( true );
 			notifyDestroyed();
 		}
-		
 	}
 
 }
