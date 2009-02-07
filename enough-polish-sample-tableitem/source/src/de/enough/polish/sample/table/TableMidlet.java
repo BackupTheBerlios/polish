@@ -3,6 +3,7 @@ package de.enough.polish.sample.table;
 import java.io.IOException;
 
 import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
@@ -10,10 +11,15 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.ImageItem;
+import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
+import de.enough.polish.ui.ChartItem;
+import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TableItem;
+import de.enough.polish.ui.UiAccess;
+import de.enough.polish.ui.backgrounds.SimpleBackground;
 import de.enough.polish.util.TableData;
 
 public class TableMidlet 
@@ -21,25 +27,27 @@ extends MIDlet
 implements CommandListener
 {
 	
+	private static final int DEMO_INACTIVE = 0;
+	private static final int DEMO_INTERACTIVE = 1;
+	
 	private Form form;
 	private Command cmdExit = new Command( "Exit", Command.EXIT, 3 );
-	private Command cmdShowCountry = new Command("Show", Command.OK, 1 );
-	private TableItem tableCountries;
+	private Command cmdNext = new Command( "Next", Command.OK, 1 );
+	private int currentDemo;
 	private Display display;
 
 	public TableMidlet() {
 		//#style mainScreen
 		this.form = new Form( "J2ME Polish Table");
 		this.form.addCommand( this.cmdExit );
+		this.form.addCommand( this.cmdNext );	
 		this.form.setCommandListener( this );
-
-
 	}
 
      protected void startApp() throws MIDletStateChangeException{
           this.display = Display.getDisplay( this );
           try {
-        	  updateTables();
+        	  demoInactiveTableElements();
           } catch (Exception e) {
         	  //#debug error
         	  System.out.println("Unable to initialize table completely");
@@ -61,15 +69,51 @@ implements CommandListener
 	public void commandAction(Command cmd, Displayable disp) {
 		if (cmd == this.cmdExit) {
 			notifyDestroyed();
-		} else if (cmd == this.cmdShowCountry) {
-			ImageItem item = (ImageItem) this.tableCountries.getSelectedCell();
-			//#style countryAlert
-			Alert alert = new Alert( item.getAltText() );
-			this.display.setCurrent( alert );
+		} else if (cmd == this.cmdNext) {
+			try {
+				if (this.currentDemo == DEMO_INACTIVE) {
+					demoInteractiveTableElements();
+				} else  if (this.currentDemo == DEMO_INTERACTIVE) {
+					demoInactiveTableElements();
+				}
+			} catch (Exception e) {
+				//#debug error
+				System.out.println("Unable to create demo" + e);
+				//#style screenWarning
+				Alert alert = new Alert("Error: " + e.toString() );
+				this.display.setCurrent( alert );
+			}
 		}
 	}
 	
-	private void updateTables() throws IOException{
+	private void demoInteractiveTableElements()
+	{
+		this.currentDemo = DEMO_INTERACTIVE;
+		this.form.deleteAll();
+		//#style defaultTable
+		TableItem table = new TableItem(3, 3);
+		table.set( 1, 0, "1,0");
+		table.set( 2, 0, "2,0");
+		table.set( 0, 1, "0,1");
+		//#style textinput
+		TextField tf = new TextField("Name: ", null, 30, TextField.ANY);
+		table.set( 1, 1, tf);
+		//#style textinput
+		tf = new TextField("Age: ", "18", 3, TextField.NUMERIC);
+		table.set( 2, 1, tf);
+		//#style popupChoice
+		ChoiceGroup group = new ChoiceGroup(null, ChoiceGroup.POPUP);
+		for (int i=0; i<4; i++) {
+			//#style popupChoiceItem
+			group.append("entry " + i, null);
+		}
+		table.set( 2, 2, group );
+		table.setSelectionMode( TableItem.SELECTION_MODE_CELL | TableItem.SELECTION_MODE_INTERACTIVE );
+		this.form.append( table );
+	}
+
+	private void demoInactiveTableElements() throws IOException{
+		this.currentDemo = DEMO_INACTIVE;
 		this.form.deleteAll();
 		//#style label
 		this.form.append("without cell design:");
@@ -126,18 +170,15 @@ implements CommandListener
 		table.set( 0, 1, "Country:");
 		Image img = Image.createImage("/fi.png");
 		//#style centeredCell
-		ImageItem imgItem = new ImageItem(null, img, ImageItem.PLAIN, "Finland");
-		imgItem.setDefaultCommand( this.cmdShowCountry );
+		ImageItem imgItem = new ImageItem(null, img, ImageItem.PLAIN, null);
 		table.set( 1, 1, imgItem);
 		img = Image.createImage("/ko.png");
 		//#style centeredCell
-		imgItem = new ImageItem(null, img, ImageItem.PLAIN, "Korea");
-		imgItem.setDefaultCommand( this.cmdShowCountry );
+		imgItem = new ImageItem(null, img, ImageItem.PLAIN, null);
 		table.set( 2, 1, imgItem);
 		img = Image.createImage("/us.png");
 		//#style centeredCell
-		imgItem = new ImageItem(null, img, ImageItem.PLAIN, "USA");
-		imgItem.setDefaultCommand( this.cmdShowCountry );
+		imgItem = new ImageItem(null, img, ImageItem.PLAIN, null);
 		table.set( 3, 1, imgItem);
 		//#style heading
 		table.set( 0, 2, "Share:");
@@ -164,8 +205,8 @@ implements CommandListener
 		//#style centeredCell
 		table.set( 3, 4, "21%");
 		
-		table.setSelectionMode( TableItem.SELECTION_MODE_ROW | TableItem.SELECTION_MODE_COLUMN );
-		this.tableCountries = table;
+		//table.setSelectionMode( TableItem.SELECTION_MODE_ROW | TableItem.SELECTION_MODE_COLUMN );
+		table.setSelectionMode( TableItem.SELECTION_MODE_CELL );
 		//table.setSelectedBackground( new SimpleBackground(0xffff00)); // using CSS instead now
 
 		this.form.append( table );

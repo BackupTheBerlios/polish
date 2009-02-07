@@ -33,6 +33,8 @@ backgrounds {
 	}
 }
 
+/************************ Demo Screen ********************************************************************/
+
 .mainScreen {
 	padding: 5;
 	layout: horizontal-expand | horizontal-center | top;
@@ -49,6 +51,7 @@ backgrounds {
 		type: round-rect;
 		color: #dfdfaa;
 	}
+	layout: center;
 }
 
 .defaultTable:hover {
@@ -79,6 +82,57 @@ backgrounds {
 	layout: center;
 }
 
+.centeredCell:hover {
+	font-color: #222;
+}
+
+.textinput {
+	padding: 2px;
+	include-label: true;
+	background {
+		type: round-rect;
+		color: silver;
+	}
+}
+
+.textinput:hover {
+	padding: 1px;
+	background-color: white;
+	border {
+		type: round-rect;
+		color: black;
+	}
+}
+
+info {
+	layout: right;
+	background-color: #ee8;
+}
+
+.popupChoice {
+	padding: 2px;
+}
+
+.popupChoice:hover {
+	padding: 1px;
+	border-color: black;
+	background-color: white;
+}
+
+.popupChoiceItem {
+}
+
+.popupChoiceItem:hover {
+	font-color: white;
+	background-color: #333;
+}
+
+/************************  Error / Warning  ****************************************************************/
+
+.screenWarning {
+	background-color: red;
+	font-size: large;
+}
 
 /************************  General Purpose Styles  ****************************************************************/
 
@@ -103,16 +157,11 @@ title {
 
 
 label {
-	padding: 2;
+	padding: 2px;
 	font-color: #150020;
 	font-size: small;
 	font-style: plain;
-	layout: left;
-}
-/*********************** country alert        ****************************************************************/
-.countryAlert {
-	layout: vertical-shrink | bottom;
-	background-color: #afff;
+	layout: newline-after;
 }
 
 /*********************** ScrollBar        ****************************************************************/
