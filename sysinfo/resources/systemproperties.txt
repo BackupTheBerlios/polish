@@ -29,6 +29,7 @@ microedition.payment.version
 microedition.contactless.version
 microedition.sensor.version
 obex.api.version
+microedition.contactless.version:JavaPackage + nfc
 
 #Mobile Media API (JSR-135)
 supports.mixing

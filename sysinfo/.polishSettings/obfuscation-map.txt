@@ -4,6 +4,7 @@ IntStack=c
 Point=d
 Properties=e
 com.grimo.me.product.midpsysinfo.Info=k
+de.enough.polish.ui.PercentOrAbsoluteInteger=m
 de.enough.polish.ui.Point=j
 de.enough.polish.util.ArrayList=f
 de.enough.polish.util.IntList=g

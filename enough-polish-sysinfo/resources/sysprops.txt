@@ -38,3 +38,4 @@ Bluetooth.connected.page.scan
 Bluetooth.master.switch
 Bluetooth.sd.trans.max
 Bluetooth.sd.attr.retrievable.max
+microedition.contactless.version
