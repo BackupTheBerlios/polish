@@ -8,10 +8,29 @@ colors {
 	inactiveFontColor: gray;
 }
 
+backgrounds {
+	contBackground {
+		color: #7f7f7f;
+	}
+}
+
+borders {
+	contBorder {
+		width: 2;
+		color: #777;
+	}
+}
+
 .gradientFramedForm {
-	padding: 2;
+	padding: 5%;
 	background-color: screenBgColor;
 	layout: vertical-center | horizontal-center;
+	content-background: contBackground;
+	content-border: contBorder;
+}
+
+scrollbar {
+	background-color: red;
 }
 
 rightframe {
@@ -26,16 +45,19 @@ rightframe {
 	*/
 	background-color: bgColor;
 
+	/*
 	view-type: exclusive;
 	exclusiveview-right-arrow: url( right.png );
 	exclusiveview-left-arrow: url( left.png );
 	exclusiveview-roundtrip: true;
-	
+	*/
 	/* Alternatively you might want to use the horizontal-choice view-type:
+	*/
 	view-type: horizontal-choice;
 	horizontalview-right-arrow: url( right.png );
 	horizontalview-left-arrow: url( left.png );
 	horizontalview-roundtrip: true;
+	/* 
 	*/
 	
 }
@@ -43,7 +65,6 @@ rightframe {
 .colorChoiceGroup:hover {
 	padding: 2;
 	font-color: focusedFontColor;
-	layout: expand | center;
 	background {
 		type: web20;
 		color: highlightedBgColor;
@@ -60,7 +81,9 @@ rightframe {
 	padding: 2;
 	font-color: fontColor;
 	font-size: small;
+	/*
 	layout: expand | center;
+	*/
 	focused-style: .colorChoiceItemFocused;
 }
 
@@ -103,9 +126,34 @@ label {
 	font-size: small;
 }
 
+
 .labelFocused extends label {
 	font-color: fontColor;
 }
+
+/************************ Default Command Demo ********************************************************************/
+
+.horizontalFrame {
+	view-type: horizontal;
+}
+
+.popupAlert {
+	repaint-previous-screen: true;
+	margin: 20%;
+	layout: bottom | horizontal-center;
+	background-color: #afff;
+}
+
+.itemWithDefaultCommand {
+	font-color: #333;
+}
+
+.itemWithDefaultCommand:hover {
+	background-color: #333;
+	font-color: #eee;
+}
+
+/************************* Calendar Demo **************************************************************************/
 
 .note {
 	font-style: italic;
@@ -124,4 +172,39 @@ label {
 	margin: 0;
 	border-color: black;
 	background-color: white;
+}
+
+
+.calendarFramedForm extends gradientFramedForm {
+	columns: 7;
+	columns-width: equal;
+	topframe-style: calendarFramedFormHeader;
+}
+
+.calendarFramedFormHeader {
+	columns: 7;
+	columns-width: equal;
+}
+
+.calendarDayHeader {
+	font-style: italic;
+	font-size: small;
+	layout: center | expand;
+}
+
+.calendarDayEntry {
+	font-size: small;
+	min-height: 40;
+	layout: center | expand | vertical-center;
+	background-color: silver;
+	border-color: #333;
+}
+
+.calendarDayEntry:hover {
+	border-color: #f66;
+}
+
+.currentCalendarDayEntry extends calendarDayEntry {
+	background-color: yellow;
+	border-color: #3f3;
 }

@@ -25,12 +25,14 @@
  */
 package de.enough.polish.sample.framedform;
 
+import java.util.Calendar;
+
+import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Gauge;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemStateListener;
@@ -40,11 +42,8 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.ui.FramedForm;
-import de.enough.polish.ui.Style;
 import de.enough.polish.ui.UiAccess;
-import de.enough.polish.ui.backgrounds.SimpleBackground;
 import de.enough.polish.util.IntHashMap;
-import de.enough.polish.util.Locale;
 
 /**
  * <p>Provides an example how to use the FramedForm</p>
@@ -82,16 +81,20 @@ implements ItemStateListener, CommandListener
 	private ChoiceGroup middleColorGroup;
 	private ChoiceGroup bottomColorGroup;
 	
-	private Command exitCmd = new Command("Exit", Command.EXIT, 2 );
-	private Command nextCmd = new Command("Next", Command.OK, 1 );
+	private Command cmdExit = new Command("Exit", Command.EXIT, 2 );
+	private Command cmdNext = new Command("Next", Command.OK, 1 );
+	private Command cmdShowAlert = new Command("Alert", Command.ITEM, 3 );
 	
 	private static final int DEMO_RIGHT = 0;
 	private static final int DEMO_BOTTOM = 1;
 	private static final int DEMO_TEXTFIELD = 2;
-	private static final int DEMO_LAST = DEMO_TEXTFIELD;
+	private static final int DEMO_DEFAULTCOMMAND = 3;
+	private static final int DEMO_CALENDAR = 4;
+	private static final int DEMO_LAST = DEMO_CALENDAR;
 	
 	private int currentDemo = -1;
 	private String lastColor;
+	private Display display;
 
 	/**
 	 * Creates a new MIDlet.
@@ -109,20 +112,10 @@ implements ItemStateListener, CommandListener
 		//#debug
 		System.out.println("Starting FramedFormDemo MIDlet.");
 		
-		//#style gradientFramedForm
-		FramedForm form = new FramedForm( "Framed Form" );
-		//form.setTitle( Locale.get("title.main"))
-
-		form.addCommand( this.nextCmd );
-		form.addCommand( this.exitCmd );
-		form.setItemStateListener( this );
-		form.setCommandListener( this );
 		
-		Display display = Display.getDisplay( this );
-		this.framedForm = form;
+		this.display = Display.getDisplay( this );
 		next();
 		
-		display.setCurrent( form );
 		//#debug
 		System.out.println("FramedFormDemo MIDlet is up and running.");
 
@@ -141,10 +134,39 @@ implements ItemStateListener, CommandListener
 		case DEMO_RIGHT: nextDemoRight(); break;
 		case DEMO_BOTTOM: nextDemoBottom(); break;
 		case DEMO_TEXTFIELD: nextDemoTextField(); break;
+		case DEMO_DEFAULTCOMMAND: nextDemoDefaultCommand(); break;
+		case DEMO_CALENDAR: nextDemoCalendar(); break;
 		}
 		
 	}
 	
+
+	/**
+	 * Shows the color setting demo
+	 */
+	private void nextDemoRight() {
+		//#style gradientFramedForm
+		FramedForm form = new FramedForm( "Framed Form" );
+		form.addCommand( this.cmdNext );
+		form.addCommand( this.cmdExit );
+		form.setItemStateListener( this );
+		form.setCommandListener( this );
+		this.framedForm = form;
+		this.display.setCurrent( form );
+		this.gradientItem = new GradientItem( 20 );
+		this.framedForm.append( Graphics.RIGHT,  this.gradientItem );
+		this.topColorGroup = createColorChoiceGroup("top: ");
+		this.topColorGroup.setSelectedIndex(WHITE, true);
+		this.framedForm.append( this.topColorGroup );
+		this.middleColorGroup = createColorChoiceGroup("middle: ");
+		this.middleColorGroup.setSelectedIndex(YELLOW, true);
+		this.framedForm.append( this.middleColorGroup );
+		this.bottomColorGroup = createColorChoiceGroup("bottom: ");
+		this.bottomColorGroup.setSelectedIndex(BLUE, true);
+		this.framedForm.append( this.bottomColorGroup );
+	}
+	
+
 	/**
 	 * shows a scrollable demo with bottom item
 	 */
@@ -162,7 +184,7 @@ implements ItemStateListener, CommandListener
 		for (int i=0; i<numberOfAppendedItems; i++) {
 			//#style meaninglessSelectableItem
 			item = new StringItem( null, "item " + i );
-			item.setDefaultCommand( this.nextCmd );
+			item.setDefaultCommand( this.cmdNext );
 			this.framedForm.append(item);
 		}
 		// scroll to last appended item:
@@ -170,23 +192,6 @@ implements ItemStateListener, CommandListener
 		//UiAccess.scrollTo( item ); (not needed)
 	}
 
-	/**
-	 * Shows the color setting demo
-	 */
-	private void nextDemoRight() {
-		this.framedForm.deleteAll();
-		this.gradientItem = new GradientItem( 20 );
-		this.framedForm.append( Graphics.RIGHT,  this.gradientItem );
-		this.topColorGroup = createColorChoiceGroup("top: ");
-		this.topColorGroup.setSelectedIndex(WHITE, true);
-		this.framedForm.append( this.topColorGroup );
-		this.middleColorGroup = createColorChoiceGroup("middle: ");
-		this.middleColorGroup.setSelectedIndex(YELLOW, true);
-		this.framedForm.append( this.middleColorGroup );
-		this.bottomColorGroup = createColorChoiceGroup("bottom: ");
-		this.bottomColorGroup.setSelectedIndex(BLUE, true);
-		this.framedForm.append( this.bottomColorGroup );
-	}
 	
 	/**
 	 * Shows a demo with a TextField that is fixed to the bottom of the Screen.
@@ -203,6 +208,73 @@ implements ItemStateListener, CommandListener
 		this.framedForm.append( Graphics.BOTTOM, field );
 		// select the bottom frame (and therefore the input field):
 		this.framedForm.setActiveFrame(Graphics.BOTTOM);
+	}
+	
+	private void nextDemoDefaultCommand()
+	{
+		this.framedForm.deleteAll();
+		StringItem item = null;
+		int numberOfAppendedItems = 20;
+		for (int i=0; i<numberOfAppendedItems; i++) {
+			//#style meaninglessSelectableItem
+			item = new StringItem( null, "item " + i );
+			item.setDefaultCommand( this.cmdNext );
+			this.framedForm.append(item);
+		}
+		for (int i=0; i<3; i++) {
+			//#style itemWithDefaultCommand
+			item = new StringItem( null, "press-" + i);
+			item.setDefaultCommand( this.cmdShowAlert );
+			this.framedForm.append( Graphics.TOP, item );
+		}
+		for (int i=6; i>0; i--) {
+			//#style itemWithDefaultCommand
+			item = new StringItem( null, "press+" + i);
+			item.setDefaultCommand( this.cmdShowAlert );
+			this.framedForm.append( Graphics.BOTTOM, item );
+		}
+		//#style horizontalFrame
+		this.framedForm.setFrameStyle( Graphics.TOP );
+		//#style horizontalFrame
+		this.framedForm.setFrameStyle( Graphics.BOTTOM );
+		this.framedForm.setActiveFrame(Graphics.TOP);
+	}
+
+	
+	private void nextDemoCalendar() {
+		String[] MONTHS = new String[]{ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+		int[] DAYS_IN_MONTH_OF_NONLEAPYEAR = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+		String[] DAYS = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+		this.framedForm.deleteAll();
+		//#style calendarFramedForm
+		UiAccess.setStyle( this.framedForm );
+		Calendar calendar = Calendar.getInstance();
+		String month = MONTHS[ calendar.get( Calendar.MONTH ) ];
+		this.framedForm.setTitle( month );
+		for (int i = 0; i < DAYS.length; i++)
+		{
+			String day = DAYS[i];
+			//#style calendarDayHeader
+			StringItem dayItem = new StringItem(null, day);
+			this.framedForm.append( Graphics.TOP, dayItem );
+		}
+		int dayOfMonthIndex = calendar.get(Calendar.DAY_OF_MONTH) - 1;
+		int numberOfDays = DAYS_IN_MONTH_OF_NONLEAPYEAR[calendar.get( Calendar.MONTH )];
+		Command command = new Command("Add Date", Command.ITEM, 2 );
+		for (int i = 0; i < numberOfDays; i++)
+		{
+			
+			//#style calendarDayEntry
+			StringItem item = new StringItem( null, Integer.toString( i + 1));
+			if (i == dayOfMonthIndex) {
+				//#style currentCalendarDayEntry
+				UiAccess.setStyle( item );
+			}
+			item.setDefaultCommand(command);
+			this.framedForm.append(item);
+			
+		}
+		
 	}
 
 	private ChoiceGroup createColorChoiceGroup(String label) {
@@ -275,8 +347,12 @@ implements ItemStateListener, CommandListener
 	}
 
 	public void commandAction(Command cmd, Displayable disp) {
-		if (cmd == this.nextCmd) {
+		if (cmd == this.cmdNext) {
 			next();
+		} else if (cmd == this.cmdShowAlert) {
+			//#style popupAlert
+			Alert alert = new Alert("Showing a popup alert!");
+			this.display.setCurrent( alert );
 		} else {
 			notifyDestroyed();
 		}
