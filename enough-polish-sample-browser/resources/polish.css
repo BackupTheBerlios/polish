@@ -195,73 +195,53 @@ backgrounds {
 /*
 
 .browserText {
-	inherit: false;
 	font-color: black;
-	focused-style: .browserTextFocused
 }
 
-.browserTextFocused {
-	inherit: false;
+.browserText:hover {
 	font-color: red;
 }
 
 .browserTextBold {
-	inherit: false;
 	font-color: black;
 	font-style: bold;
-	focused-style: .browserTextBoldFocused
 }
 
-.browserTextBoldFocused {
-	inherit: false;
+.browserTextBold:hover {
 	font-color: red;
-	font-style: bold;
 }
 
 .browserTextItalic {
-	inherit: false;
 	font-color: black;
 	font-style: italic;
-	focused-style: .browserTextItalicFocused
 }
 
-.browserTextItalicFocused {
-	inherit: false;
+.browserTextItalic:hover {
 	font-color: red;
 	font-style: italic;
 }
 
 .browserTextBoldItalic {
-	inherit: false;
 	font-color: black;
 	font-style: bold | italic;
-	focused-style: .browserTextBoldItalicFocused
 }
 
-.browserTextBoldItalicFocused {
-	inherit: false;
+.browserTextBoldItalic:hover {
 	font-color: red;
-	font-style: bold | italic;
 }
 
 .browserLink {
-	inherit: false;
 	font-color: blue;
 	font-style: bold;
-	focused-style: .browserLinkFocused;
 }
 
-.browserLinkFocused {
-	inherit: false;
+.browserLink:hover {
 	font-color: red;
-	font-style: bold;
 }
 
 .browserInput extends .browserText {
-	inherit: false;
-	padding: 2;
+	padding: 2px;
 	layout: expand | left;
-	focused-style: browserInputFocused;
 	border {
 		type: round-rect;
 		width: 1;
@@ -269,9 +249,8 @@ backgrounds {
 	}
 }
 
-.browserInputFocused extends .browserTextFocused {
-	inherit: false;
-	layout: expand | left;
+.browserInput:hover  {
+	padding: 1px;
 	border {
 		type: round-rect;
 		width: 2;
