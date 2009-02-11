@@ -529,11 +529,17 @@ public class FramedForm extends Form {
 						break;
 					}
 				}
-			} else if (this.container.appearanceMode != Item.PLAIN){
+			} else if (this.container.appearanceMode != Item.PLAIN &&
+					(
+					(gameAction == UP && this.currentlyActiveContainer == this.bottomFrame)
+					|| (gameAction == DOWN && this.currentlyActiveContainer == this.topFrame)
+					|| (gameAction == LEFT && this.currentlyActiveContainer == this.rightFrame)
+					|| (gameAction == RIGHT && this.currentlyActiveContainer == this.leftFrame)
+					)
+			){
 				//System.out.println("Changing back to default container");
+
 				newFrame = this.container;
-			} else {
-				this.container.handleKeyPressed(keyCode, gameAction);
 			}	
 			if ( newFrame != null && newFrame != this.currentlyActiveContainer ) {
 				setActiveFrame(newFrame);
