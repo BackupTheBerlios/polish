@@ -1,0 +1,57 @@
+<%define inDocumentationSection %> <%define inDocumentationSection.build
+%> <%set title = J2ME Polish: Documentation %> <%set basedir = ../ %>
+<%include start.txt %>
+
+<h1 id="top">Debug/Logging</h1>
+<p>J2ME Polish provides a logging framework for debugging purposes.
+The goals for the framework are :</p>
+<ul>
+	<li>Enable and disable different logging levels for specific
+	classes or packages</li>
+	<li>Leave no traces, when disabled</li>
+	<li>Extensible: define your own logging levels, add your own log
+	handlers</li>
+	<li>Allow to process and view log messages on real devices</li>
+</ul>
+
+<h2>Create a log output</h2>
+<p>To create a log entry in one of your project classes, a simple
+System.out.println() is used combined with a preprocessing directive:
+<br>
+<code>
+try {<br>
+doSomething();<br>
+//#debug<br>
+System.out.println("doSomething() succeeded");<br>
+} catch (Exception e) {<br>
+//#debug error<br>
+System.err.println("doSomething() failed" + e);
+}<br>
+</code>
+You can also tag a debug message with a log level as shown above. There are 5 predefined log levels,
+but you can also create your own log levels : 
+<ul>
+<li>debug</li>
+<li>info</li>
+<li>warn</li>
+<li>error</li>
+<li>fatal</li>
+</ul>
+<h2>Activate logging</h2>
+<p>To activate the logging for your application, you have to adopt the &lt;debug&gt; section in your build.xml :</p>
+<pre>
+&lt;debug showLogOnError="true"
+verbose="false"
+level="error"
+if="test" &gt;
+&lt;filter package="com.company.mail" level="info" /&gt;
+&lt;filter class="com.company.mail.IMapServer" level="debug" /&gt;
+&lt;/debug&gt;
+</pre>
+<p>The example above will show log messages with the level info from the package <code>com.company.mail</code>
+and log messages with the level debug <code>com.company.mail</code>. Please note that log levels are cascading :
+if for example debug is set as the log level for a package all messages with a lower level (info, warn, error, fatal) 
+will also be logged.
+</p>
+
+<%include end.txt %>
