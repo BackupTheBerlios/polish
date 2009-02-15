@@ -11,7 +11,7 @@
 	<li><a href="gui-item-htmlbrowser.html">GUI: HtmlBrowser</a></li>
 	<li><a href="gui-item-rssbrowser.html">GUI: RssBrowser</a></li>
 	<li><a href="utilities.html#">IO: RedirectHttpConnection</a></li>
-		<li><a href="../touch/index.html">Touch (Client Server)</a></li>
+	<li><a href="../touch/index.html">Touch (Client Server)</a></li>
 	</ul>
 	
 	
@@ -571,6 +571,346 @@ public class TestClient {
 </pre>
 	
 	
+		<h2 id="bluetooth">Accessing Bluetooth Servers</h2>
+	<p>
+	Instead of accessing servers from the internet, you can also choose to access a bluetooth service on a local computer.
+	You can choose between accessing L2CAP and SPP/RFComm bluetooth services. L2CAP has less overhead than SPP, but L2CAP is not 
+	available in Microsoft Windows PCs that use the Microsoft Bluetooth stack.
+	Creating the client is no different than with normal RMI, but the server implementation differs. 
+	</p>
+	<h3 id="bluetooth-sample-l2cap">L2CAP Support</h3>
+	<p>
+	For accessing a bluetooth service over L2CAP you need to follow these steps:
+	</p>
+	<ul>
+	<li>Create a unique bluetooth service UUID,for example by visiting <a href="http://www.famkruithof.net/uuid/uuidgen" target="_blank">http://www.famkruithof.net/uuid/uuidgen</a> (remove the slashes from the generated UUID).</li> 
+	<li>Download Bluecove or another JSR 82 compatible desktop bluetooth API: <a href="http://bluecove.org/" target="_blank">http://bluecove.org</a>.</li> 
+	<li>Activate L2CAP RMI usage in your <i>build.xml</i> script: <code>&lt;variable name=&quot;polish.rmi.l2cap&quot; value=&quot;true&quot; /&gt;</code></li>
+	<li>Define the RMI interface like explained above.</li>
+	<li>Implement your service on the desktop.</li>
+	 <li>Now add both <i>bluecove.jar</i> and <i>${polish.home}/lib/enough-j2mepolish-build.jar</i>
+	    on your classpath and instantiate <code>de.enough.polish.rmi.bluetooth.L2CapRemoteService</code>;
+	    register your server implementation by calling init( Remote impl, String uuid ):
+<pre>
+BluetoothRemoteService serv = new L2CapRemoteService();
+serv.init( myImplementation, UUID );
+</pre>
+</li>
+	<li>In your client call <code>RemoteClient.open()</code> with the classname and the UUID of the service:
+<pre>
+MoteServer server = (MoteServer) RemoteClient.open("de.enough.mote.MoteServer", MoteServer.UUID );
+</pre>
+</li>
+	</ul>
+	<p>
+	The client searches automatically for a PC based bluetooth server upon first usage. To search and connect before, 
+	you can cast the Remote instance that 
+	you receive by calling <code>RemoteClient.open()</code> to <code>de.enough.polish.rmi.bluetooth.BluetoothRemoteClient</code>
+	and call <code>connect()</code> on a separate thread:
+	</p>
+<pre>
+MoteServer server = (MoteServer) RemoteClient.open("de.enough.mote.MoteServer", MoteServer.UUID );
+((BluetoothRemoteClient)server).connect();
+</pre> 
+
+	<h3 id="bluetooth-sample-spp">SPP Support</h3>
+	<p>
+	Using the serial port protocol (SPP) instead of L2CAP is easy and uses the very same steps as for L2CAP with following differences:
+	</p>
+	<ul>
+	<li>Activate SPP RMI usage in your <i>build.xml</i> script: <code>&lt;variable name=&quot;polish.rmi.spp&quot; value=&quot;true&quot; /&gt;</code></li>
+	<li>On the server implementation instantiate <code>de.enough.polish.rmi.bluetooth.SppRemoteService</code> instead of <code>L2CapRemoteServer</code>.</li>
+	</ul>
+
+	<h3 id="bluetooth-code">Sample Implementation</h3>
+	<p>
+	The following code extracts give you some insights into the process of creating a bluetooth based sample application.
+	This sample uses the Serial Port Protocol (SPP) support, the steps are the same for L2CAP, necessary changes are outlined in
+	the code where applicable.
+	</p>
+	<h4 id="bluetooth-code-interface">Remote Interface</h4>
+	<p>Create the interface like normally in RMI by extending <code>de.enough.polish.rmi.Remote</code>:</p>
+<pre>
+package de.enough.mote;
+
+import de.enough.mote.model.ActionDescription;
+import de.enough.mote.model.ActionSuiteDescription;
+import de.enough.polish.rmi.Remote;
+import de.enough.polish.rmi.RemoteException;
+
+public interface MoteServer extends Remote
+{
+	
+	public static final int VERSION = 100;
+	public static final String UUID = "deb89bf0add611ddad8b0800200c9a66";
+	public static final String EVENT_CONNECTED = "mt.cnctd";
+	public static final String EVENT_CONNECTING = "mt.cnctng";
+	
+	public ActionSuiteDescription[] getSuites( String locale, String device )
+	throws RemoteException;
+	
+	public ActionDescription[] getActions( String locale, String suiteId )
+	throws RemoteException;
+
+	public void executeAction( String actionId )
+	throws RemoteException;
+}
+</pre>
+	<h4 id="bluetooth-code-server">Server Implementation</h4>
+	<p>Implement the server and register it with either <code>de.enough.polish.rmi.bluetooth.L2CapRemoteService</code>
+	or <code>de.enough.polish.rmi.bluetooth.SppRemoteService</code>:
+	</p>
+<pre>
+package de.enough.mote.desktop;
+
+import javax.bluetooth.BluetoothStateException;
+
+import de.enough.mote.MoteServer;
+import de.enough.mote.desktop.actions.keynote.KeynoteShowNextAction;
+import de.enough.mote.desktop.actions.keynote.KeynoteShowPreviousAction;
+import de.enough.mote.desktop.actions.say.TalkHelloAction;
+import de.enough.mote.desktop.actions.say.TalkOlgsAction;
+import de.enough.mote.model.ActionDescription;
+import de.enough.mote.model.ActionSuiteDescription;
+import de.enough.polish.rmi.RemoteException;
+import de.enough.polish.rmi.bluetooth.BluetoothRemoteService;
+import de.enough.polish.rmi.bluetooth.L2CapRemoteService;
+import de.enough.polish.rmi.bluetooth.SppRemoteService;
+
+public class MoteDesktopServer implements MoteServer
+{
+	
+	private static final int MODE_L2CAP = 0;
+	private static final int MODE_SPP = 1;
+	private static final int MODE_OBEX = 2;
+	
+	private static final int MODE = MODE_SPP;
+	
+	private BluetoothRemoteService service;
+	private KeynoteShowNextAction keynoteForwardAction;
+	private KeynoteShowPreviousAction keynoteBackwardAction;
+	private TalkHelloAction talkHelloAction;
+
+
+	public MoteDesktopServer() {
+		BluetoothRemoteService serv = new SppRemoteService();
+		// use L2CapRemoteService when using L2CAP instead of SPP:
+		// BluetoothRemoteService serv = new L2CapRemoteService();
+		
+		serv.init( this, UUID );
+		this.service = serv;
+		this.keynoteForwardAction = new KeynoteShowNextAction();
+		this.keynoteBackwardAction = new KeynoteShowPreviousAction();
+		this.talkHelloAction = new TalkHelloAction();
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see de.enough.mote.MoteServer#getSuites(java.lang.String, java.lang.String)
+	 */
+	public ActionSuiteDescription[] getSuites(String locale, String device)
+			throws RemoteException
+	{
+		System.out.println("getSuites for language " + locale + ", device=" + device);
+		return new ActionSuiteDescription[] {
+			new ActionSuiteDescription("keynote", "Keynote", "Controls Apple Keynote.", null ),	
+			new ActionSuiteDescription("say", "Talk", "Talk to me.", null )	
+		};
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.mote.MoteServer#getActions(java.lang.String, java.lang.String)
+	 */
+	public ActionDescription[] getActions(String locale, String suiteId)
+			throws RemoteException
+	{
+		System.out.println("getActions");
+		if (suiteId.equals("keynote")) {
+			return new ActionDescription[]{
+				new ActionDescription( "keynote.forward", "forward", -1, ActionDescription.GAME_ACTION_RIGHT, null ),
+				new ActionDescription( "keynote.backward", "backward", -1, ActionDescription.GAME_ACTION_LEFT, null )
+			};
+		} else {
+			return new ActionDescription[]{
+					new ActionDescription( "talk.hello", "hello world", -1, -1, null ),
+			};
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.mote.MoteServer#executeAction(java.lang.String)
+	 */
+	public void executeAction(String actionId) throws RemoteException
+	{
+		System.out.println("executing action " + actionId);
+		if (actionId.equals("keynote.forward")) {
+			this.keynoteForwardAction.execute();
+		} else if (actionId.equals("keynote.backward")) {
+			this.keynoteBackwardAction.execute();
+		} else if (actionId.equals("talk.hello")) {
+			this.talkHelloAction.execute();
+		}
+	}
+
+	public void start() throws BluetoothStateException
+	{
+		this.service.start();
+	}
+
+	public void stop()
+	{
+		this.service.stop();
+	}
+}
+</pre>
+
+	<h4 id="bluetooth-code-client">Client Implementation</h4>
+	<p>
+	The client implementation is the same as with normal RMI - instead of a website URL you specify the UUID
+	of the service in <code>RemoteClient.open()</code>:
+	</p>
+<pre>
+package de.enough.mote;
+
+import java.io.IOException;
+
+import javax.microedition.midlet.MIDlet;
+import javax.microedition.midlet.MIDletStateChangeException;
+
+import de.enough.mote.ui.UiManager;
+import de.enough.polish.rmi.RemoteClient;
+import de.enough.polish.rmi.bluetooth.BluetoothRemoteClient;
+
+public class MoteMidlet extends MIDlet
+{
+
+	private UiManager uiManager;
+	private MoteServer server;
+
+	public MoteMidlet()
+	{
+		// startApp is used
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.midlet.MIDlet#destroyApp(boolean)
+	 */
+	protected void destroyApp(boolean force) throws MIDletStateChangeException
+	{
+		if (this.server instanceof BluetoothRemoteClient) {
+			try
+			{
+				((BluetoothRemoteClient)this.server).disconnect();
+			} catch (IOException e)
+			{
+				//#debug error
+				System.out.println("Unable to disconnect bluetooth client" + e);
+			}
+		}
+
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.midlet.MIDlet#pauseApp()
+	 */
+	protected void pauseApp()
+	{
+		// nothing to pause...
+
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.microedition.midlet.MIDlet#startApp()
+	 */
+	protected void startApp() throws MIDletStateChangeException
+	{
+		if (this.uiManager == null) {
+			this.server = loadMoteServer();
+			this.uiManager = UiManager.getInstance(this, this.server);
+			if (this.server instanceof BluetoothRemoteClient) {
+				ConnectionThread thread = new ConnectionThread((BluetoothRemoteClient)this.server);
+				thread.start();
+			}
+		}
+		this.uiManager.startApp();
+	}
+
+	private MoteServer loadMoteServer()
+	{
+		return (MoteServer) RemoteClient.open("de.enough.mote.MoteServer", MoteServer.UUID );
+	}
+
+	public void exitApp()
+	{
+		try
+		{
+			destroyApp(true);
+		} catch (MIDletStateChangeException e)
+		{
+			// ignore
+		}
+		notifyDestroyed();
+	}
+
+}
+
+package de.enough.mote;
+
+import de.enough.polish.event.EventManager;
+import de.enough.polish.rmi.bluetooth.BluetoothRemoteClient;
+
+public class ConnectionThread extends Thread
+{
+
+	private BluetoothRemoteClient client;
+
+	public ConnectionThread( BluetoothRemoteClient client ) {
+		this.client = client;
+	}
+	
+
+	public void run() {
+		// wait so that UI is started and shown:
+		try
+		{
+			Thread.sleep(500);
+		} catch (InterruptedException e)
+		{
+			// ignore
+		}
+		EventManager.fireEvent(MoteServer.EVENT_CONNECTING, this.client, null);
+		while (true) {
+			try
+			{
+				this.client.connect();
+				EventManager.fireEvent(MoteServer.EVENT_CONNECTED,  this.client, null);
+				return;
+			} catch (Exception e)
+			{
+				//#debug error
+				System.out.println("Unable to establish connection" + e);
+				try
+				{
+					Thread.sleep(10 * 1000);
+				} catch (InterruptedException e1)
+				{
+					// ignore
+				}
+			}
+		}
+	}
+}
+
+</pre>
+	
+	<h4 id="bluetooth-code-buildscript">build.xml Setup</h4>
+	<p>The necessary setup in your <i>build.xml</i> only requires setting either <code>polish.rmi.spp</code>
+	or <code>polish.rmi.l2cap</code>:
+	</p>
+<pre>
+&lt;variable name=&quot;polish.rmi.spp&quot; value=&quot;true&quot; /&gt;
+</pre>
+	
 	<h2 id="configuration">Configuring the RMI Framework</h2>
 	<p>
 	The RMI framework can be tweaked towards your needs by setting preprocessing variables in the &lt;variables&gt; section of your
@@ -595,6 +935,18 @@ public class TestClient {
 	<code>polish.rmi.xmlrpc.methodname.dot</code> preprocessing variable:
 <pre>
 &lt;variable name=&quot;polish.rmi.xmlrpc.methodname.dot&quot; value=&quot;_dot_&quot; /&gt;
+</pre>
+		</li>
+		<li><b>Bluetooth L2CAP Support</b>: To access a desktop L2CAP based bluetooth server instead of HTTP servers, you need to set the 
+		<code>polish.rmi.l2cap</code> variable to true:
+<pre>
+&lt;variable name=&quot;polish.rmi.l2cap&quot; value=&quot;true&quot; /&gt;
+</pre>
+		</li>
+		<li><b>Bluetooth SPP Support</b>: To access a desktop Serial Port Protocol/RFComm based bluetooth server instead of HTTP servers, you need to set the 
+		<code>polish.rmi.spp</code> variable to true:
+<pre>
+&lt;variable name=&quot;polish.rmi.spp&quot; value=&quot;true&quot; /&gt;
 </pre>
 		</li>
 	</ul>
