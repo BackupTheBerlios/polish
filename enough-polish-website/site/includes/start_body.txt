@@ -267,6 +267,7 @@
 				<a href="<%= basedir %>docs/gui-visualguide-screenchangeanimations.html">Visual Guide to Screen Transitions</a>
 				<a href="<%= basedir %>docs/gui-visualguide-viewtypes.html">Visual Guide to Item Views</a>
 				<a href="<%= basedir %>docs/gui-css-basics.html">CSS Basics</a>
+				<a href="<%= basedir %>docs/gui-css-animations.html">CSS Animations</a>
 				<a href="<%= basedir %>docs/gui-programming.html">Programming Concepts</a>
 				<a href="<%= basedir %>docs/gui-localization.html">GUI Localization</a>
 				<a href="<%= basedir %>docs/extending-gui.html">Extending the UI</a>
