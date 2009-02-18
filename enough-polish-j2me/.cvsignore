@@ -1,8 +1,10 @@
 classes
+velocity.log
 test-classes
 doc
 target
-maven.log
-velocity.log
 bin
+build
+maven.log
 j2mepolish-src
+dist
