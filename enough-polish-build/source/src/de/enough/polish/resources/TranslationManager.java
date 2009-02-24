@@ -501,13 +501,16 @@ implements Comparator
 			if (translationsPlain.size() < idsPlain.getIdsMap().size()) {
 //				System.out.println("it appears that a translation is not used anymore");
 				Translation[] translations = getTranslations( translationsPlain );
-				int index = 0;
-				for (int i = 0; i < translations.length; i++)
+				int index = 1;
+				for (int i = 1; i < translations.length; i++)
 				{
 					Translation translation = translations[i];
 //					System.out.println(translation.getId() + "=" +  (index+1) );
 					while (translation.getId() != (index+1)) {
 						String key = idsPlain.getKey(index);
+						if (key == null) {
+						    break;
+						}
 //						System.out.println("adding empty translation for " + index + "=" + key );
 						Translation plain = new Translation(key, "", index);
 						this.translationsByKey.put(key, plain);
@@ -519,8 +522,8 @@ implements Comparator
 			}
 			if (translationsSingle.size() < idsSingle.getIdsMap().size()) {
 				Translation[] translations = getTranslations(translationsSingle);
-				int index = 0;
-				for (int i = 0; i < translations.length; i++)
+				int index = 1;
+				for (int i = 1; i < translations.length; i++)
 				{
 					Translation translation = translations[i];
 					while (translation.getId() != (index+1)) {
@@ -535,8 +538,8 @@ implements Comparator
 			}
 			if (translationsMultiple.size() < idsMultiple.getIdsMap().size()) {
 				Translation[] translations = getTranslations(translationsMultiple);
-				int index = 0;
-				for (int i = 0; i < translations.length; i++)
+				int index = 1;
+				for (int i = 1; i < translations.length; i++)
 				{
 					Translation translation = translations[i];
 					while (translation.getId() != (index+1)) {
