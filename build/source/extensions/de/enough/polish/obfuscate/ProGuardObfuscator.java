@@ -68,6 +68,7 @@ implements OutputFilter
 	private boolean doOptimize;
 	private File proGuardJarFile;
 	private boolean dontObfuscate;
+	private boolean overloadAggressively = true;
 	private String includeFileName;
 	
 	private Map furtherParameters;
@@ -213,7 +214,9 @@ implements OutputFilter
 			params.put( "-dontobfuscate", "" );			
 		} else {
 			params.put( "-allowaccessmodification", "" );
-			params.put( "-overloadaggressively", "" );
+			if (this.overloadAggressively) {
+				params.put( "-overloadaggressively", "" );
+			}
 			params.put( "-defaultpackage", "\"\"" );
 			params.put( "-dontusemixedcaseclassnames", "" );			
 		}
@@ -449,7 +452,7 @@ implements OutputFilter
 					continue;
 				}
 			}
-			if (name.equals("-verbose")) {
+			else if (name.equals("-verbose")) {
 				if ("true".equals(value)) {
 					value = "";
 					this.isVerbose = true;
@@ -457,8 +460,13 @@ implements OutputFilter
 					continue;
 				}
 			}
-			this.furtherParameters.put(name, value );
+			else if (name.equals("-overloadaggressively")) {
+				if ("false".equals(value)) {
+					this.overloadAggressively = false;
+				}
+				continue;
+			}
+			this.furtherParameters.put(name, value);
 		}
 	}
-
 }
