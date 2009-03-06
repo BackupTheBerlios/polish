@@ -3,6 +3,7 @@
 	<classpathentry output="bin/main" kind="src" path="source/src"/>
 	<classpathentry output="bin/test" kind="src" path="source/test"/>
 	<classpathentry kind="lib" path="lib/ant.jar"/>
+	<classpathentry kind="lib" path="lib/mDevInf.jar"/>
 	<classpathentry kind="lib" path="lib/jdom.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="resources"/>

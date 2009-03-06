@@ -25,6 +25,7 @@
  */
 package de.enough.polish;
 
+import de.enough.polish.converter.PolishFacade;
 import junit.framework.TestCase;
 
 /**

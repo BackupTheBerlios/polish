@@ -25,23 +25,16 @@
  */
 package de.enough.polish.util;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
+import org.jdom.Document;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 
-import org.w3c.dom.Document;
-
-import de.enough.polish.ConverterException;
+import de.enough.polish.converter.ConverterException;
 
 /**
  * 
@@ -54,34 +47,52 @@ import de.enough.polish.ConverterException;
  */
 public class XmlUtils {
 
-    public static void outputDocument(OutputStream outputStream, Document dbDocument) throws TransformerFactoryConfigurationError, ConverterException {
-        DOMSource domSource = new DOMSource(dbDocument);
-        StreamResult streamResult = new StreamResult(outputStream);
-        TransformerFactory tf = TransformerFactory.newInstance();
-        tf.setAttribute("indent-number", 4);
-        Transformer transformer;
+//    public static void outputDocument(OutputStream outputStream, Document dbDocument) throws TransformerFactoryConfigurationError, ConverterException {
+//        DOMOutputter outputter = new DOMOutputter();
+//        
+//        org.w3c.dom.Document output;
+//        try {
+//            output = outputter.output(dbDocument);
+//        } catch (JDOMException exception1) {
+//            exception1.printStackTrace();
+//            throw new ConverterException(exception1);
+//        }
+//        DOMSource domSource = new DOMSource(output);
+//        StreamResult streamResult = new StreamResult(outputStream);
+//        TransformerFactory tf = TransformerFactory.newInstance();
+//        tf.setAttribute("indent-number", 4);
+//        Transformer transformer;
+//        try {
+//            transformer = tf.newTransformer();
+//        } catch (TransformerConfigurationException exception) {
+//            throw new ConverterException("Could not create transformer.",exception);
+//        }
+//        transformer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
+//        transformer.setOutputProperty(OutputKeys.METHOD,"xml");
+//        transformer.setOutputProperty(OutputKeys.INDENT,"yes");
+////        serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+////        serializer.setOutputProperty(OutputKeys.STANDALONE,"yes");
+//        try {
+//          transformer.transform(domSource, streamResult);
+//        } catch (TransformerException exception) {
+//            throw new ConverterException("Could not write document to output stream",exception);
+//        }
+//    }
+    
+    public static void outputDocument(OutputStream outputStream, Document dbDocument) {
+        XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
         try {
-            transformer = tf.newTransformer();
-        } catch (TransformerConfigurationException exception) {
-            throw new ConverterException("Could not create transformer.",exception);
-        }
-        transformer.setOutputProperty(OutputKeys.ENCODING,"ISO-8859-1");
-        transformer.setOutputProperty(OutputKeys.METHOD,"xml");
-        transformer.setOutputProperty(OutputKeys.INDENT,"yes");
-//        serializer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-//        serializer.setOutputProperty(OutputKeys.STANDALONE,"yes");
-        try {
-          transformer.transform(domSource, streamResult);
-        } catch (TransformerException exception) {
-            throw new ConverterException("Could not write document to output stream",exception);
+            xmlOutputter.output(dbDocument,outputStream);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            throw new RuntimeException(exception);
         }
     }
     
     public static Document getDocumentFromXmlStream(InputStream xmlStream) throws ConverterException {
         Document dbDocument;
         try {
-            DocumentBuilder newDocumentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            dbDocument = newDocumentBuilder.parse(xmlStream);
+            dbDocument = new SAXBuilder().build(xmlStream);
         } catch (Exception exception) {
             throw new ConverterException("Could not create DOM Document",exception);
         }

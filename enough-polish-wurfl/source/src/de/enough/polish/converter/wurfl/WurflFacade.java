@@ -25,7 +25,7 @@
  */
 package de.enough.polish.converter.wurfl;
 
-import de.enough.polish.WurflDevice;
+import de.enough.polish.converter.WurflDevice;
 
 /**
  * 

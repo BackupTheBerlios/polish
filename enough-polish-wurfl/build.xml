@@ -15,9 +15,9 @@
     <target name="run">
     	<java classname="de.enough.polish.Converter" fork="yes">
     	<classpath>
+    		<pathelement location="bin/main" />
     		<fileset dir="lib" />
     		<fileset dir="." includes="../enough-polish-build/dist/enough-j2mepolish-build.jar" />
-    		<pathelement location="bin/main" />
     	</classpath>
 		<arg line="-Xms256m -Xmx256m" />
 		</java>
