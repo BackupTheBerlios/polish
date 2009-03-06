@@ -28,7 +28,6 @@ package de.enough.polish.converter.modelnameextractor;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.enough.polish.converter.Converter;
 import de.enough.polish.converter.ModelNameExtractor;
 
 public class NokiaModelNameExtractor implements ModelNameExtractor{

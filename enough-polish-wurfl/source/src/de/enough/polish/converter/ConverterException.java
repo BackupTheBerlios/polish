@@ -36,7 +36,9 @@ package de.enough.polish.converter;
  */
 public class ConverterException extends Exception {
 
-    public ConverterException() {
+	private static final long serialVersionUID = -4992311690076929792L;
+
+	public ConverterException() {
         super();
     }
 

@@ -157,7 +157,7 @@ public class Converter {
         // Look at every wurfl device.
         Hashtable<String, Device> wurflDevices = this.wurflInfo.getDevices();
         WurflDevice wurflDevice = new WurflDevice(this.wurflInfo,this.wurflTree);
-        for (Iterator wurflDeviceIterator = wurflDevices.keySet().iterator(); wurflDeviceIterator.hasNext(); ) {
+        for (Iterator<String> wurflDeviceIterator = wurflDevices.keySet().iterator(); wurflDeviceIterator.hasNext(); ) {
             // 1. Get an actual device.
             String key = (String) wurflDeviceIterator.next();
             Device device = wurflDevices.get(key);
