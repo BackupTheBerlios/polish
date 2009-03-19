@@ -170,7 +170,7 @@ public class KeyCollector extends InfoCollector implements DynamicTestView{
 				break;
 			case STEP_CLEAR_KEY:
 				addInfo( "Clear-Key: ", "" + keyCode );
-				this.sysinfoMIDlet.keyInfos.put("key.ClearSoftKey", String.valueOf(keyCode));
+				this.sysinfoMIDlet.keyInfos.put("key.ClearKey", String.valueOf(keyCode));
 				break;
 			case STEP_RETURN_KEY:
 				addInfo( "Return-Key: ", "" + keyCode );
