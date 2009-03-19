@@ -565,8 +565,9 @@
 		<copy todir="tmp/ide/eclipse">
 			<fileset dir="setup/eclipse" excludes="**/CVS, **/de.enough.mepose.core*" />
 		</copy>
+		<!--
 		<setAttribute property="mepose.core" dir="setup/eclipse/plugins" fileValue="de.enough.mepose.core*" />
-		<!-- add current enough-j2mepolish-build.jar to mepose: -->
+		add current enough-j2mepolish-build.jar to mepose:
 		<mkdir dir="tmp/ide/mepose_core" />
 		<unjar overwrite="true" dest="tmp/ide/mepose_core" src="setup/eclipse/plugins/${mepose.core}" />
 		<copy file="dist/enough-j2mepolish-build.jar" todir="tmp/ide/mepose_core/lib" />
@@ -575,6 +576,7 @@
 			excludes="**/*src.zip" 
 			manifest="tmp/ide/mepose_core/META-INF/MANIFEST.MF"
 		/>
+		-->
 	</target>
 
 	<target name="copysamples" 
