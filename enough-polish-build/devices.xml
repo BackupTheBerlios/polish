@@ -451,6 +451,7 @@ These namespaces/schemas will be used soon.
     <capability name="key.ChangeInputModeKey" value="42" />
     <capability name="TextField.charactersKeyPound" value=" " />
   </device>
+  
   <device supportsPolishGui="true">
     <identifier>Generic/android</identifier>
     <features>isVirtual</features>
@@ -5478,7 +5479,7 @@ These namespaces/schemas will be used soon.
 		<capability name="property.wireless.messaging.mms.mmsc" value="http://mmsc.mms.vodafone.nl"/>
 		<capability name="property.com.nokia.mid.timeformat" value="hh:mm a"/>
 		<capability name="nokiasound" value="true"/>
-		<capability name="key.clearsoftkey" value="8"/>
+		<capability name="key.ClearKey" value="8"/>
 		<capability name="mmapi.protocol.file" value="application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq"/>
 		<capability name="property.microedition.configuration" value="CLDC-1.1"/>
 		<capability name="name" value="E71"/>
@@ -5499,7 +5500,8 @@ These namespaces/schemas will be used soon.
 		<capability name="key.gamea" value="35"/>
 		<capability name="property.microedition.io.file.fileconnection.version" value="1.0"/>
 		<capability name="mmapi.audio.encodings" value="encoding=audio/amr encoding=audio/basic encoding=audio/x-au encoding=audio/au encoding=audio/x-basic encoding=audio/wav encoding=audio/x-wav encoding=pcm encoding=ulaw encoding=gsm"/>
-		<capability name="key.changeinputmodekey" value="35"/>
+		<!-- disable changeinputmodekey to support input of '#' -->
+		<capability name="key.changeinputmodekey" value="50000"/>
 		<capability name="canvas.isdoublebuffered" value="true"/>
 		<capability name="key.left" value="-3"/>
 		<capability name="property.supports.mediacapabilities" value="music audio3d"/>
@@ -10870,8 +10872,6 @@ These namespaces/schemas will be used soon.
     <capability name="BitsPerPixel" value="16" />
     <capability name="key.ClearKey" value="-16" />
     <capability name="key.ReturnKey" value="-16" />
-    <capability name="key.ClearKey" value="-16" />
-    <capability name="key.ClearKey" value="-16" />
     <capability name="JavaPackage" value="mmapi1.1, pimapi, wmapi1.1, fileconnection" />
     <capability name="JavaPlatform" value="MIDP/2.0" />
     <capability name="JavaConfiguration" value="CLDC/1.1" />
@@ -15452,7 +15452,7 @@ These namespaces/schemas will be used soon.
     <capability name="Font.small" value="19" />
     <capability name="key.ReturnSoftKey" value="-5" />
     <capability name="key.SelectSoftKey" value="-5" />
-    <capability name="key.ClearSoftKey" value="-8" />
+    <capability name="key.ClearKey" value="-8" />
     <capability name="mmapi.protocol.device" value="audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/x-tone-seq" />
     <capability name="mmapi.protocol.capture" value="audio/amr, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, video/3gpp2, video/mp4, video/3gpp" />
     <capability name="mmapi.protocol.http" value="application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq, application/sdp, video/mp4, video/mpeg4, video/3gpp, application/vnd.rn-realmedia, audio/amr-wb, audio/amr, video/3gpp2, audio/mp3, audio/rmf, audio/sp-midi, audio/mobile-xmf, audio/x-beatnik-rmf, audio/x-rmf, audio/midi, audio/mp4, audio/3gpp2, audio/3gpp, audio/3gpp, audio/aac, audio/mpeg, text/plain, audio/x-ms-wma, audio/basic, audio/x-au, audio/au, audio/x-basic, audio/wav, audio/x-wav, image/gif, audio/x-tone-seq" />
