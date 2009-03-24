@@ -57,7 +57,8 @@ import java.util.Map;
  * @author Robert Virkus, robert@enough.de
  */
 public final class FileUtil {
-	
+
+    
 	/**
 	 * Reads a text file.
 	 *  
@@ -397,8 +398,10 @@ public final class FileUtil {
 		for (int i = 0; i < fileNames.length; i++) {
 			String fileName = fileNames[i];
 			File file = new File( directory.getAbsolutePath(), fileName );
+            
 			if (file.isDirectory()) {
-				copyDirectoryContents( file, targetDir.getAbsolutePath() + File.separatorChar + fileName, update );
+				createDirectory(targetDir.getAbsolutePath() + File.separatorChar + fileName);
+                copyDirectoryContents( file, targetDir.getAbsolutePath() + File.separatorChar + fileName, update );
 			}  else {
 				File targetFile = new File( targetDir, fileName  );
 				if (update) {
@@ -407,14 +410,24 @@ public final class FileUtil {
 						|| (file.lastModified() > targetFile.lastModified() )) {
 						copy( file, targetFile );
 					}
-				} else {
-					// copy the file in all cases:
-					copy( file, targetFile );
-				}
+				} else{
+                    // copy the file in all cases:
+                    copy( file, targetFile );
+                }
 			}
 		}
 	}
 
+    /**
+     * Create a empty directory
+     * 
+     * @param directoryName the absolute path inc. directory name
+     * @throws IOException when a directory could not be crreated
+     */
+    public static void createDirectory(String directoryName) throws IOException {
+            File directory = new File(directoryName);
+            directory.mkdirs();
+    }
 
 	/**
 	 * Deletes a file or a directory.
