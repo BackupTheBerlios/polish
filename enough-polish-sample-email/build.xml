@@ -137,7 +137,7 @@
 		</emulator>
 	
 		<emulator
-			wait="false"
+			wait="true"
 			securityDomain="trusted"
 			enableProfiler="false"
 			enableMemoryMonitor="false"
