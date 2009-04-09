@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="source/src"/>
+	<classpathentry kind="src" path="source/server"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-build"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/enough-polish-j2me"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/blackberry-4.7.0.jar"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/cldc-1.1.jar"/>
+	<classpathentry kind="lib" path="/enough-polish-build/import/midp-2.0.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/home/mkoch/local/WTK2.2/docs/api/midp/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
