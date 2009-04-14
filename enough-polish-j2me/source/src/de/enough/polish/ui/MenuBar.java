@@ -1102,7 +1102,9 @@ public class MenuBar extends Item {
 			this.isOpened = open;
 			//#if !polish.MenuBar.focusFirstAfterClose
 				// focus the first item again, so when the user opens the menu again, it will be "fresh" again
-				this.commandsContainer.focus(0);
+				if(this.commandsContainer.size() > 0){
+					this.commandsContainer.focus(0);
+				}
 			//#endif
 			this.commandsContainer.showNotify();
 		}
