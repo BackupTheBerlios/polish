@@ -26,7 +26,6 @@
 package de.enough.polish.preprocess.custom;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import de.enough.polish.BuildException;
 

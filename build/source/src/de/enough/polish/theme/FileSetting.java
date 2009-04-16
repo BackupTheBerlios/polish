@@ -25,14 +25,6 @@
  */
 package de.enough.polish.theme;
 
-
-import de.enough.polish.BuildException;
-
-import de.enough.polish.Attribute;
-import de.enough.polish.Environment;
-
-import java.util.ArrayList;
-
 /**
  * <p>Represents the info-section of a polish project.</p>
  *

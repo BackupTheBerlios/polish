@@ -31,7 +31,6 @@ import de.enough.polish.BuildException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**

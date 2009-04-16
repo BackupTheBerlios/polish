@@ -25,8 +25,6 @@
  */
 package de.enough.polish.preprocess.css.attributes;
 
-import de.enough.polish.BuildException;
-import de.enough.polish.Environment;
 import de.enough.polish.preprocess.css.CssAttribute;
 
 /**
