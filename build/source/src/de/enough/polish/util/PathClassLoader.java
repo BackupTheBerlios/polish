@@ -523,7 +523,7 @@ public class PathClassLoader extends ClassLoader {
         }
 
         if (!"".equals(classpath)) {
-            URL baseURL =  pathComponent.toURL();
+            URL baseURL =  pathComponent.toURI().toURL();
             StringTokenizer st = new StringTokenizer(classpath);
             while (st.hasMoreTokens()) {
                 String classpathElement = st.nextToken();
@@ -976,7 +976,7 @@ public class PathClassLoader extends ClassLoader {
 
                 if (resource.exists()) {
                     try {
-                        return resource.toURL();
+                        return resource.toURI().toURL();
                     } catch (MalformedURLException ex) {
                         return null;
                     }
@@ -991,7 +991,7 @@ public class PathClassLoader extends ClassLoader {
                 ZipEntry entry = zipFile.getEntry(resourceName);
                 if (entry != null) {
                     try {
-                        return new URL("jar:" + file.toURL()
+                        return new URL("jar:" + file.toURI().toURL()
                                        + "!/" + entry);
                     } catch (MalformedURLException ex) {
                         return null;
@@ -1228,7 +1228,7 @@ public class PathClassLoader extends ClassLoader {
 
         if (sealedString != null && sealedString.equalsIgnoreCase("true")) {
             try {
-                sealBase = container.toURL(); //new URL(FileUtils.getFileUtils().toURI(container.getAbsolutePath()));
+                sealBase = container.toURI().toURL(); //new URL(FileUtils.getFileUtils().toURI(container.getAbsolutePath()));
             } catch (MalformedURLException e) {
                 // ignore
             }
