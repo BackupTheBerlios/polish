@@ -56,9 +56,7 @@ public class DeviceTreeView
 extends JTree
 implements TreeExpansionListener
 {
-
 	private static final long serialVersionUID = 2343392013648834988L;
-	private final DeviceTree deviceTree;
 
 	/**
 	 * Is used to visualize a device tree.
@@ -67,7 +65,6 @@ implements TreeExpansionListener
 	 */
 	public DeviceTreeView( DeviceTree deviceTree ) {
 		super( new DeviceTreeModel( deviceTree ) );
-		this.deviceTree = deviceTree;
 		DeviceTreeItemCellRenderer renderer = new DeviceTreeItemCellRenderer();
 		setCellRenderer( renderer );
 		//setCellEditor( new DeviceTreeItemCellEditor(this, renderer) );
