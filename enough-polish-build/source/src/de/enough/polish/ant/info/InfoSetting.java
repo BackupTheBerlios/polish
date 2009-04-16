@@ -76,7 +76,6 @@ public class InfoSetting {
 	public static final String CLDC1_1 = "CLDC-1.1";
 	public static final String MIDP1 = "MIDP-1.0";
 	public static final String MIDP2 = "MIDP-2.0";
-	private  static final String GPL_LICENSE = "GPL";
 	
 	private String name;
 	private String version;
