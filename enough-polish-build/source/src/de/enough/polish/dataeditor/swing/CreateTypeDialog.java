@@ -64,8 +64,9 @@ public class CreateTypeDialog
 extends JDialog
 implements ActionListener
 {
-	
-	private final CreateTypeTableModel tableModel;
+    private static final long serialVersionUID = 1366169570854644586L;
+
+    private final CreateTypeTableModel tableModel;
 	private final JTable table;
 	private final JTextField nameTextField;
 	private final JButton addTypeButton = new JButton( "Add Subtype");

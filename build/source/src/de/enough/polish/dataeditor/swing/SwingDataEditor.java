@@ -77,7 +77,9 @@ public class SwingDataEditor
 extends SwingApplication
 implements DataEditorUI, ActionListener
 {
-	private JMenuItem menuNewDefinition;	
+    private static final long serialVersionUID = 6447380899408950583L;
+
+    private JMenuItem menuNewDefinition;	
 	private JMenuItem menuOpenDefinition;
 	private JMenuItem menuOpenData;
 	private JMenuItem menuSaveDefinition;

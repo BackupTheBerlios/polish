@@ -24,7 +24,9 @@ import javax.swing.JPanel;
  */
 public class ToolBar extends JPanel {
 
-	private JPanel leftPanel;
+    private static final long serialVersionUID = -3469652953195193159L;
+
+    private JPanel leftPanel;
 	private JPanel rightPanel;
 
 	/**

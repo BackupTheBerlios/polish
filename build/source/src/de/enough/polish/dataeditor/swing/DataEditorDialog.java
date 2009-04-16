@@ -57,8 +57,9 @@ public class DataEditorDialog
 extends JDialog
 implements ActionListener
 {
-	
-	private final JButton okButton;
+    private static final long serialVersionUID = 2383600165182958744L;
+
+    private final JButton okButton;
 	private final JButton cancelButton;
 	private final JTextField[] textFields;
 	private final String[] originalData;

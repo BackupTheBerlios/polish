@@ -41,7 +41,9 @@ import javax.swing.JMenuItem;
  */
 public class ContextJMenuItem extends JMenuItem {
 
-	private Object context;
+    private static final long serialVersionUID = -2467077350097887900L;
+
+    private Object context;
 
 	/**
 	 * Creates a new empty item

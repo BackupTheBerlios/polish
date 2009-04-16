@@ -47,8 +47,9 @@ import de.enough.polish.dataeditor.DataType;
  */
 public class DataView extends JTable {
 
+    private static final long serialVersionUID = 3655944205917161708L;
 
-	/**
+    /**
 	 * @param parentFrame
 	 * @param dataModel
 	 * @param manager

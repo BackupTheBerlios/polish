@@ -51,7 +51,9 @@ import javax.swing.JTextField;
  */
 public class CreateCodeDialog extends JDialog implements ActionListener {
 	
-	private final JTextField packageNameField;
+    private static final long serialVersionUID = 1161197272516841399L;
+
+    private final JTextField packageNameField;
 	private final JTextField classNameField;
 	private final JButton okButton;
 	private boolean okPressed;

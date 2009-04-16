@@ -42,7 +42,9 @@ import de.enough.polish.dataeditor.DataEntry;
  */
 public class DataEntryButton extends JButton {
 
-	private DataEntry entry;
+    private static final long serialVersionUID = -1523409336974295169L;
+
+    private DataEntry entry;
 	
 	/**
 	 * @param entry

@@ -47,7 +47,9 @@ import de.enough.polish.dataeditor.DataType;
  */
 public class CreateTypeTableModel extends AbstractTableModel {
 
-	private final List subtypes;
+    private static final long serialVersionUID = 899856310835630210L;
+
+    private final List subtypes;
 	private final DataManager manager; 
 
 	/**
