@@ -141,7 +141,7 @@ public class ResourcesFileSet extends FileSet {
 		String realDirName = this.dirName;
 		File resolved = new File( realDirName );
 		if (!(resolved.isAbsolute() || resolved.exists())) {
-			resolved = new File( env.getBaseDir(), realDirName );
+			resolved = new File( realDirName );
 		}
 		this.resolvedDir = resolved;
 		//System.out.println("resolved dir = [" + this.resolvedDir.getAbsolutePath() + "]");
