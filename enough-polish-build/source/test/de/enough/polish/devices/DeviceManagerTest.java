@@ -27,8 +27,6 @@ package de.enough.polish.devices;
 
 import java.io.File;
 
-import de.enough.polish.Device;
-
 import junit.framework.TestCase;
 
 /**

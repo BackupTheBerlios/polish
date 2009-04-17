@@ -27,9 +27,6 @@ package de.enough.polish.preprocess.custom;
 
 import java.util.regex.Matcher;
 
-import de.enough.polish.ui.UiAccess;
-import de.enough.polish.util.Locale;
-
 import junit.framework.TestCase;
 
 /**
