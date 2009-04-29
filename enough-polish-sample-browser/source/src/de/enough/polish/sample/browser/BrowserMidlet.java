@@ -9,9 +9,6 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import de.enough.polish.browser.html.HtmlBrowser;
-import de.enough.polish.ui.PercentOrAbsoluteInteger;
-import de.enough.polish.ui.Style;
-import de.enough.polish.ui.UiAccess;
 
 /**
  * <p>Demonstrates a simple browser app using the HtmlBrowser component of J2ME Polish.</p>
