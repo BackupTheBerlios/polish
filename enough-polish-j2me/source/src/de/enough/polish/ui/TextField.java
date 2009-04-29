@@ -1855,6 +1855,12 @@ public class TextField extends StringItem
 		//#endif
     		
 		if (this.isUneditable || !this.isFocused) {
+			//#if polish.TextField.showHelpText
+			if(this.text == null || this.text.length() == 0)
+			{
+				this.helpItem.paint(x, y, leftBorder, rightBorder, g);
+			}
+			//#endif
 			return;
 		}
 		//#ifdef tmp.directInput
