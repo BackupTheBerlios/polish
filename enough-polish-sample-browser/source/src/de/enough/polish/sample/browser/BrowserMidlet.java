@@ -17,10 +17,9 @@ import de.enough.polish.browser.html.HtmlBrowser;
  * @author Robert Virkus, j2mepolish@enough.de
  */
 public class BrowserMidlet 
-extends MIDlet
-implements CommandListener
+	extends MIDlet
+	implements CommandListener
 {
-	
 	private Command cmdBack = new Command("Back", Command.BACK, 9);
 	private Command cmdExit = new Command("Exit", Command.EXIT, 10 );
 	private Form browserScreen;
