@@ -23,7 +23,7 @@
  * refer to the accompanying LICENSE.txt or visit
  * http://www.j2mepolish.org for details.
  */
-package de.enough.polish.sample;
+package de.enough.polish.test;
 
 import javax.microedition.midlet.MIDlet;
 
@@ -39,7 +39,7 @@ import de.enough.polish.ui.Form;
  * </pre>
  * @author Richard Nkrumah
  */
-public class Blank extends MIDlet{
+public class Test extends MIDlet{
 
     protected void destroyApp(boolean arg0) {
         System.out.println("Destroying MIDlet.");
