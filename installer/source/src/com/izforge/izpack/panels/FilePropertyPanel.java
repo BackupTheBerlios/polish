@@ -25,9 +25,12 @@
  */
 package com.izforge.izpack.panels;
 
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -61,6 +64,7 @@ public class FilePropertyPanel extends JPanel implements ActionListener {
 	private JComboBox inputComboBox;
 	private String propertyName;
 	private final String label;
+	private JLabel labelComponent;
 
 	public FilePropertyPanel( Frame parent, String label, String value, String openButtonLabel, boolean isDirectory, boolean needsToExist ) {
 		this( parent, label, new String[]{ value }, openButtonLabel, isDirectory, needsToExist );
@@ -92,7 +96,11 @@ public class FilePropertyPanel extends JPanel implements ActionListener {
 		if ( description == null ) {
 			description = " ";
 		}
-		add( new JLabel( description), constraints );
+		JLabel descriptionLabel = new JLabel( description);
+		Font font = descriptionLabel.getFont();
+		font.deriveFont( Font.ITALIC );
+		descriptionLabel.setFont(font);
+		add( descriptionLabel, constraints );
 
 	    //constraints.weightx = 1.0D;
 	    constraints.insets.top = 0;
@@ -100,7 +108,8 @@ public class FilePropertyPanel extends JPanel implements ActionListener {
 	    constraints.gridwidth = 3;
 	    constraints.gridx = 0;
 	    constraints.gridy = 1;
-		add( new JLabel( label ), constraints );
+	    this.labelComponent = new JLabel( label ); 
+		add( this.labelComponent, constraints );
 		
 	    constraints.fill = GridBagConstraints.HORIZONTAL;
 	    constraints.gridwidth = 5;
@@ -131,6 +140,28 @@ public class FilePropertyPanel extends JPanel implements ActionListener {
 		add( this.openButton, constraints );
 		
 	
+	}
+	
+	public int getLabelWidth() {
+		return this.labelComponent.getPreferredSize().width;
+	}
+	
+	public void setLabelWidth( int width ) {
+		Dimension rect = this.labelComponent.getPreferredSize();
+		//int diff  =  width - rect.width;
+		rect.width = width;
+		this.labelComponent.setPreferredSize(rect);
+//		if (this.inputTextField != null) {
+//			this.inputTextField.getBounds(rect);
+//			rect.x += diff;
+//			rect.width -= diff;
+//			this.inputTextField.setBounds(rect);
+//		} else if (this.inputComboBox != null) {
+//			this.inputComboBox.getBounds(rect);
+//			rect.x += diff;
+//			rect.width -= diff;
+//			this.inputComboBox.setBounds(rect);			
+//		}
 	}
 	
 	public File getValueFile() {

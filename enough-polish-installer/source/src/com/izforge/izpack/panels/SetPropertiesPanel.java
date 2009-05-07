@@ -27,6 +27,7 @@ package com.izforge.izpack.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.io.File;
@@ -37,9 +38,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 
 import com.izforge.izpack.installer.InstallData;
@@ -62,6 +65,7 @@ public class SetPropertiesPanel extends IzPanel {
 	private FilePropertyPanel[] propertyPanels;
 	private boolean activated;
 	private GridBagLayout gridBagLayout;
+	private boolean labelWidthsSet;
 
 	/**
 	 * @param parent
@@ -113,7 +117,8 @@ public class SetPropertiesPanel extends IzPanel {
     	}	
 		File[] lookupPaths = (File[]) paths.toArray( new File[ paths.size() ] );
 		
-		Map propertiesMap = null;
+		//Map propertiesMap = null;
+		String[] propertyLines = null;
 		InputStream in = getClass().getResourceAsStream("/com/izforge/izpack/panels/polish.properties");
 		if (in == null) {
 			System.out.println("Error: no property definitions found!");
@@ -122,7 +127,8 @@ public class SetPropertiesPanel extends IzPanel {
         	return;
 		} else {
 			try {
-				propertiesMap = FileUtil.readProperties(in);
+				propertyLines = FileUtil.readTextLines(in);
+				//propertiesMap = FileUtil.readProperties(in);
 			} catch (IOException e) {
 				e.printStackTrace();
 	        	emitError(this.parent.langpack.getString("installer.error"), "Unable to load global.properties: " + e.toString() );
@@ -131,18 +137,23 @@ public class SetPropertiesPanel extends IzPanel {
 		}
 		Map globalProperties = (Map) this.idata.getAttribute("global.properties");
 		ArrayList panelsList = new ArrayList();
-		addPropertyPanels( this.parent, propertiesMap, globalProperties, panelsList, lookupPaths );
+		addPropertyPanels( this.parent, propertyLines, globalProperties, panelsList, lookupPaths );
 		if (globalProperties != null) {
 			// add remaining global properties, if there are any:
 			addPropertyPanels( this.parent, globalProperties, panelsList );
 		}
-		
-		FilePropertyPanel[] filePropertyPanels = (FilePropertyPanel[]) panelsList.toArray( new FilePropertyPanel[ panelsList.size() ] );
-		JPanel propertiesPanel =  new JPanel( new GridLayout( filePropertyPanels.length, 1 ) );
-		for (int i = 0; i < filePropertyPanels.length; i++) {
-			FilePropertyPanel panel = filePropertyPanels[i];
-			propertiesPanel.add( panel );			
+		JComponent[] components = (JComponent[]) panelsList.toArray( new JComponent[ panelsList.size() ] );
+		JPanel propertiesPanel =  new JPanel( new GridLayout( components.length, 1 ) );
+		ArrayList filePropertyPanelsList = new ArrayList();
+		for (int i = 0; i < components.length; i++) {
+			JComponent component = components[i];
+			if (component instanceof FilePropertyPanel) {
+				FilePropertyPanel fpPanel = (FilePropertyPanel) component;
+				filePropertyPanelsList.add( fpPanel );
+			}
+			propertiesPanel.add( component );			
 		}
+		FilePropertyPanel[] filePropertyPanels = (FilePropertyPanel[]) filePropertyPanelsList.toArray( new FilePropertyPanel[ filePropertyPanelsList.size() ] );
 		this.propertyPanels = filePropertyPanels;
 		
 		JPanel subPanel = new JPanel( new BorderLayout() );
@@ -169,9 +180,57 @@ public class SetPropertiesPanel extends IzPanel {
 
 	    setLayout( new BorderLayout() );
 	    add( subPanel, BorderLayout.NORTH );
+	    
+	    // layout the labels of the FilePropertyPanels:
+		int maxWidth = 0;
+		FilePropertyPanel[] panels = this.propertyPanels;
+		for (int i = 0; i < panels.length; i++) {
+			FilePropertyPanel fpPanel = panels[i];
+			int width = fpPanel.getLabelWidth();
+			if (width > maxWidth) {
+				maxWidth = width;
+			}
+		}
+		System.err.println("paint: maxWidth=" + maxWidth);
+		if (maxWidth > 0) {
+			this.labelWidthsSet = true;
+			for (int i = 0; i < panels.length; i++) {
+				FilePropertyPanel fpPanel = panels[i];
+				fpPanel.setLabelWidth(maxWidth);
+			}
+		}
+
+	    
 	    this.activated = true;
     }
-	
+    
+    
+//	
+//	
+//	public void paint(Graphics g) {
+//		if (!this.labelWidthsSet) {
+//			int maxWidth = 0;
+//			FilePropertyPanel[] panels = this.propertyPanels;
+//			for (int i = 0; i < panels.length; i++) {
+//				FilePropertyPanel fpPanel = panels[i];
+//				int width = fpPanel.getLabelWidth();
+//				if (width > maxWidth) {
+//					maxWidth = width;
+//				}
+//			}
+//			System.err.println("paint: maxWidth=" + maxWidth);
+//			if (maxWidth > 0) {
+//				this.labelWidthsSet = true;
+//				for (int i = 0; i < panels.length; i++) {
+//					FilePropertyPanel fpPanel = panels[i];
+//					fpPanel.setLabelWidth(maxWidth);
+//				}
+//			}
+//		}
+//		super.paint(g);
+//	}
+
+
 	private void addPropertyPanels(InstallerFrame parent, Map propertiesMap, ArrayList panelsList) {
 		String[] keys = (String[]) propertiesMap.keySet().toArray( new String[ propertiesMap.size() ] );
 		Arrays.sort( keys );
@@ -185,16 +244,24 @@ public class SetPropertiesPanel extends IzPanel {
 	}
 
 
-	private void addPropertyPanels(InstallerFrame parent, Map propertiesMap, Map knownProperties, ArrayList panelsList, File[] lookupPaths) {
-		String[] keys = (String[]) propertiesMap.keySet().toArray( new String[ propertiesMap.size() ] );
-		Arrays.sort( keys );
-		for (int i = 0; i < keys.length; i++) {
-			String key = keys[i];
-			String value = (String) propertiesMap.get( key );
-			int underlinePos = key.indexOf('_');
-			if (underlinePos != -1) {
-				key = key.substring( underlinePos + 1 );
+	private void addPropertyPanels(InstallerFrame parent, String[] propertyLines, Map knownProperties, ArrayList panelsList, File[] lookupPaths) {
+		//String[] keys = (String[]) propertiesMap.keySet().toArray( new String[ propertiesMap.size() ] );
+		//Arrays.sort( keys );
+		for (int i = 0; i < propertyLines.length; i++) {
+			String line = propertyLines[i].trim();
+			if (line.length() == 0 || line.startsWith("#")) {
+				// ignore comments:
+				continue;
 			}
+			int splitPos = line.indexOf('=');
+			if (splitPos == -1) {
+				if ("separator".equals(line)) {
+					panelsList.add( new JSeparator() );
+				}
+				continue;
+			}
+			String key = line.substring( 0, splitPos );
+			String value = line.substring(splitPos + 1);
 			String knownValue = System.getProperty(key);
 			if (knownValue == null && knownProperties != null) {
 				knownValue = (String) knownProperties.remove( key );

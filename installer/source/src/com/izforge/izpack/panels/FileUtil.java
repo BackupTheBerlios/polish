@@ -92,6 +92,26 @@ public final class FileUtil {
 		return (String[]) lines.toArray( new String[ lines.size() ]);
 	}
 	
+
+	/**
+	 * Reads the text of an input stream
+	 * @param is the input stream
+	 * @return the text read
+	 * @throws IOException when reading fails
+	 */
+	public static String[] readTextLines(InputStream is) 
+	throws IOException 
+	{
+		ArrayList lines = new ArrayList();
+		BufferedReader in = new BufferedReader(new InputStreamReader(is));
+		String line;
+		while ((line = in.readLine()) != null) {
+			lines.add( line );
+		}
+		in.close();
+		return (String[]) lines.toArray( new String[ lines.size() ]);
+	}
+	
 	/**
 	 * Reads a text file.
 	 *  
@@ -709,5 +729,6 @@ public final class FileUtil {
 			}
 		}
 	}
+
 	
 }
