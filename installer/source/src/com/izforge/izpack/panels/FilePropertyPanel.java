@@ -98,7 +98,7 @@ public class FilePropertyPanel extends JPanel implements ActionListener {
 		}
 		JLabel descriptionLabel = new JLabel( description);
 		Font font = descriptionLabel.getFont();
-		font.deriveFont( Font.ITALIC );
+		font = font.deriveFont( Font.ITALIC );
 		descriptionLabel.setFont(font);
 		add( descriptionLabel, constraints );
 

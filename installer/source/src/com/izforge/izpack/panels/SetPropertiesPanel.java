@@ -191,7 +191,6 @@ public class SetPropertiesPanel extends IzPanel {
 				maxWidth = width;
 			}
 		}
-		System.err.println("paint: maxWidth=" + maxWidth);
 		if (maxWidth > 0) {
 			this.labelWidthsSet = true;
 			for (int i = 0; i < panels.length; i++) {
