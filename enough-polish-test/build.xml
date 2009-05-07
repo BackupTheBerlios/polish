@@ -101,7 +101,14 @@
 				</localization>
 			</resources>
 		</build>
-		<emulator if="test" />
+		<emulator wait="true" securityDomain="trusted" enableProfiler="false" enableMemoryMonitor="false" enableNetworkMonitor="false" if="test and not debug">
+			<parameter name="-Xheapsize" value="5M" />
+		</emulator>
+
+		<emulator wait="true" securityDomain="trusted" enableProfiler="false" enableMemoryMonitor="true" enableNetworkMonitor="false" if="debug">
+			<debugger port="8000" />
+			<parameter name="-Xheapsize" value="5M" />
+		</emulator>
 	</j2mepolish>
 </target>
 
