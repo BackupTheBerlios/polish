@@ -60,10 +60,10 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 
 	public Form identForm = new Form(Locale.get("msg.deviceident"));
 	
-	public TextField vendorField = new TextField("Vendor: ", "", 20,
+	public TextField vendorField = new TextField("Vendor: ", "", 50,
 			TextField.ANY);
 
-	public TextField deviceField = new TextField("Device: ", "", 20,
+	public TextField deviceField = new TextField("Device: ", "", 50,
 			TextField.ANY);
 	
 	public Form userForm = new Form(Locale.get("msg.userif"));
@@ -71,7 +71,7 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 	public TextField userField = new TextField(Locale.get("msg.user") + ": ", "anonymous", 20,
 			TextField.ANY);
 
-	public TextField pwdField = new TextField(Locale.get("msg.pwd") + ": ", "", 20,
+	public TextField pwdField = new TextField(Locale.get("msg.pwd") + ": ", "", 50,
 			TextField.PASSWORD);
 
 	public Form waitForm = new Form(Locale.get("msg.wait"));
@@ -123,11 +123,8 @@ public class MIDPSysInfoMIDlet extends MIDlet implements CommandListener {
 		/* try to guess vendor and model */
 		String model = getSystemProperty( new String[]{ "device.model", "microedition.platform" } );
 		if(model != null){
-			this.vendorField = new TextField(Locale.get("msg.vendor") + ": ", model, model.length(), TextField.ANY);
-			this.deviceField = new TextField(Locale.get("msg.device") + ": ", model, model.length(), TextField.ANY);
-		} else {
-			this.vendorField = new TextField(Locale.get("msg.vendor") + ": ", "vendor", 50, TextField.ANY);
-			this.deviceField = new TextField(Locale.get("msg.device") + ": ", "model", 50, TextField.ANY);				
+			this.vendorField = new TextField(Locale.get("msg.vendor") + ": ", model, 50, TextField.ANY);
+			this.deviceField = new TextField(Locale.get("msg.device") + ": ", model, 50, TextField.ANY);
 		}
 		
 		// device identifier form 
