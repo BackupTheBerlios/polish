@@ -13,13 +13,16 @@
 	</ul>
 	<%index %>
 	<p>
-	There are 3 different options to indicate possible scrolling:
+	There are 4 different options to indicate possible scrolling:
 	</p>
 	<ol>
 		<li><b>Default</b>: In the default mode, scroll indicators are drawn in the middle of the menubar.</li>
 		<li><b>ScrollBar</b>: You can activate the scrollbar mode, in which the scrollbar will be shown on the right side of the screen.</li>
 		<li><b>None</b>: You can also deactivate the indication of possible scrolling completely.</li>
+		<li><b>scroll-up/down-background</b>: Additionally you can use the CSS attributes <code>scroll-down-background</code> and <code>scroll-up-background</code> for showing
+	subtle scrolling hints.</li>
 	</ol>
+	
 	<h2 id="Design">Design</h2>
 	<h3 id="default-scrollindicators">Default Scroll Indicators</h3>
 	<p>
@@ -202,6 +205,69 @@ scrollbar {
 	show-scrollbar: false;
 }
 </pre>
+
+	<h3 id="scroll-backgrounds">Use Backgrounds as Scroll Indicators</h3>
+	<p>
+	You can use the CSS attributes <code>scroll-down-background</code> and <code>scroll-up-background</code> for showing
+	subtle scrolling hints like in the following example:
+	<br />
+	<img src="<%= basedir%>images/gui-screenelement-scrollbackground.png"  width="350" height="413" alt="Using Backgrounds as Scroll Indicators" /> 
+	</p>
+	<pre>
+backgrounds {
+	
+	rssScrollUpBg {
+		type: partial-gradient;
+		top-color: #2f2f2f;
+		bottom-color: #ececec;
+		start: 0%;
+		end: 6%;
+	}
+	
+	rssScrollDownBg {
+		type: partial-gradient;
+		top-color: #ececec;
+		bottom-color: #2f2f2f;
+		start: 94%;
+		end: 100%;
+	}
+}	
+
+
+.rssBrowserForm {
+	padding-top: 3%;
+	padding: 0px;
+	background-color: #ececec;
+	background-top: title;
+	background-bottom: menubar;
+	<b>
+	scroll-up-background: rssScrollUpBg;
+	scroll-down-background: rssScrollDownBg;
+	</b>	
+	screen-change-animation: right;	
+}
+</pre>
+	<p>
+	The <code>scroll-up-background</code> will be drawn over the screen's normal background when the user is able to scroll up, likewise the 
+	<code>scroll-down-background</code> is drawn when the user can scroll down.
+	<br />
+	If you use the fullscreen mode
+	and you do have backgrounds for the <code>title</code> and / or <code>menubar</code> you should specify that the screen's background is painted from below
+	the title down to the beginning of the menubar, instead from the very top to the very bottom of the screen. Realize this with 
+	<code>background-top: title;</code> and <code>background-bottom: menubar;</code>.
+	</p>
+	<p>
+	For the scroll background you should ensure that not the whole background area is covered by the background - in that case the screen's original background
+	would not be visible and the scroll-down-background would cover the scroll-up-background. Also note that only parts of the scroll backgrounds
+	are painted when only small parts can be scrolled. These backgrounds are recommended for scroll backgrounds:
+	</p>
+	<ul>
+		<li><a href="gui-background-partial-gradient.html">partial-gradient</a>: paints a vertical gradient</li>
+		<li><a href="gui-background-image.html">image</a>: paints an image, use 'transparent' for its color</li>
+		<li><a href="gui-background-partial.html">partial</a>: paints a simple background in a specified vertical region</li>
+	</ul>
+	
+	
 	
 	<h2 id="Configuration">Configuration</h2>
 	<ul>
@@ -218,6 +284,7 @@ scrollbar {
 </pre>
 	</li>
 	</ul>
+	
 	
 	<h2 id="JavaDoc">JavaDoc</h2>
 	<p>
