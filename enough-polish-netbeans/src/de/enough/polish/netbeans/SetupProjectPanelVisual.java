@@ -10,6 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
+import org.netbeans.api.java.platform.JavaPlatform;
+import org.netbeans.api.java.platform.JavaPlatformManager;
+import org.netbeans.api.java.platform.Profile;
 import org.netbeans.spi.project.ui.support.ProjectChooser;
 import org.openide.WizardDescriptor;
 import org.openide.WizardValidationException;
@@ -46,33 +49,27 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
         activatePolishGuiCheckBox = new javax.swing.JCheckBox();
         projectNameLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        textFieldEmulatorPlatform = new javax.swing.JTextField();
         comboBoxTemplate = new javax.swing.JComboBox();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        comboBoxEmulatorPlatform = new javax.swing.JComboBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(activatePolishGuiLabel, "&Activate J2ME Polish GUI:");
 
         activatePolishGuiCheckBox.setSelected(true);
         activatePolishGuiCheckBox.setToolTipText("Uncheck this element if you do not want to use the advanced J2ME Polish GUI for your project.");
-        activatePolishGuiCheckBox.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         activatePolishGuiCheckBox.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
         org.openide.awt.Mnemonics.setLocalizedText(projectNameLabel3, "Template");
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, "Emulator Platform");
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, "Java Platform");
         jLabel1.setName("labelEmulatorPlatform"); // NOI18N
-
-        textFieldEmulatorPlatform.setText("MPowerPlayer");
-        textFieldEmulatorPlatform.setName("textFieldEmulatorPlatform"); // NOI18N
 
         comboBoxTemplate.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, "NetBean 5.5: Use J2ME_Wireless_Toolkit_2_2");
-        jLabel2.setName("labelEmulatorPlatform"); // NOI18N
-
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, "NetBean 6.0: Use Sun_Java_TM__Wireless_Toolkit_2_5_2_for_CLDC");
-        jLabel3.setName("labelEmulatorPlatform"); // NOI18N
+        comboBoxEmulatorPlatform.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBoxEmulatorPlatformActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -84,13 +81,11 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
                     .add(projectNameLabel3)
                     .add(jLabel1)
                     .add(activatePolishGuiLabel))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel3)
-                    .add(jLabel2)
-                    .add(activatePolishGuiCheckBox)
-                    .add(comboBoxTemplate, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 315, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, textFieldEmulatorPlatform, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, activatePolishGuiCheckBox)
+                    .add(comboBoxEmulatorPlatform, 0, 429, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, comboBoxTemplate, 0, 429, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -107,25 +102,23 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel1)
-                    .add(textFieldEmulatorPlatform, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jLabel2)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jLabel3)
-                .addContainerGap(169, Short.MAX_VALUE))
+                    .add(comboBoxEmulatorPlatform, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(220, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+private void comboBoxEmulatorPlatformActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxEmulatorPlatformActionPerformed
+// TODO add your handling code here:
+}//GEN-LAST:event_comboBoxEmulatorPlatformActionPerformed
         
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox activatePolishGuiCheckBox;
     private javax.swing.JLabel activatePolishGuiLabel;
+    private javax.swing.JComboBox comboBoxEmulatorPlatform;
     private javax.swing.JComboBox comboBoxTemplate;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel projectNameLabel3;
-    private javax.swing.JTextField textFieldEmulatorPlatform;
     // End of variables declaration//GEN-END:variables
     
     public void addNotify() {
@@ -139,7 +132,7 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
     }
     
     void store(WizardDescriptor settings) {
-        settings.putProperty("polish.EmulatorPlatform", this.textFieldEmulatorPlatform.getText() );
+        settings.putProperty("polish.EmulatorPlatform", this.comboBoxEmulatorPlatform.getSelectedItem().toString() );
         // read template:
         String template = (String) this.comboBoxTemplate.getSelectedItem();
         settings.putProperty("polish.template", template );
@@ -152,10 +145,29 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
     
     void read(WizardDescriptor settings) {
         //TODO find out which emulator platform to use!
-        if (File.separatorChar == '\\') {
-            // windows:
-            this.textFieldEmulatorPlatform.setText("Sun_Java_TM__Wireless_Toolkit_2_5_2_for_CLDC");
+        JavaPlatform[] platforms = JavaPlatformManager.getDefault().getInstalledPlatforms();
+        JavaPlatform standardPlatform = JavaPlatformManager.getDefault().getDefaultPlatform();
+        JavaPlatform defaultPlatform = null;
+        this.comboBoxEmulatorPlatform.removeAllItems();
+        for (int i = 0; i < platforms.length; i++) {
+            JavaPlatform javaPlatform = platforms[i];
+            if (javaPlatform != standardPlatform && 
+                    ("j2me".equalsIgnoreCase(javaPlatform.getSpecification().getName())
+                    || "javame".equalsIgnoreCase(javaPlatform.getSpecification().getName()) )
+                    )  
+            {
+                this.comboBoxEmulatorPlatform.addItem( javaPlatform.getDisplayName() );
+                if (javaPlatform.getDisplayName().toLowerCase().indexOf("wireless") != -1
+                        || (File.separatorChar == '\\' && javaPlatform.getDisplayName().toLowerCase().indexOf("mpp") != -1) 
+                ) {
+                    defaultPlatform = javaPlatform;
+                }
+            }
         }
+        if (defaultPlatform != null) {
+            this.comboBoxEmulatorPlatform.setSelectedItem( defaultPlatform.getDisplayName() );
+        }
+        
         String polishHome =  (String) settings.getProperty("polish.home");
         ArrayList templatesList = new ArrayList();
         File samplesDir = new File( polishHome + "/samples");
@@ -177,7 +189,9 @@ public class SetupProjectPanelVisual extends JPanel implements DocumentListener 
     }
     
     void validate(WizardDescriptor d) throws WizardValidationException {
-        // nothing to validate
+        if (this.comboBoxEmulatorPlatform.getSelectedItem() == null) {
+            throw new WizardValidationException(this, "No suitable Java Platform found. Please install the Mobility pack.", "No suitable Java Platform found. Please install the Mobility pack.");
+        }
     }
     
     // Implementation of DocumentListener --------------------------------------
