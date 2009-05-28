@@ -78,7 +78,7 @@ measure and log the duration of the call. You can check for any log level by que
 	<li>polish.debug.debug</li>
 	<li>polish.debug.info</li>
 	<li>polish.debug.warn</li>
-	<li>polish.debug.error<li>
+	<li>polish.debug.error</li>
 	<li>polish.debug.fatal</li>
 	<li>polish.debug.${userdefined}</li>
 </ul>
@@ -191,7 +191,6 @@ This log handler will create a GET request for each log entry. The following exa
 reads received log entries:
 </p>
 <pre>
-<pre>
 #!/usr/bin/ruby
 require 'webrick'
 include WEBrick
@@ -216,6 +215,29 @@ trap("INT") { s.shutdown }
 
 s.start
 </pre>
+
+<h2 id="stacktraces">Stack Traces</h2>
+<p>
+Emulator stacktraces usually only give the bytecode offset of an exception:
+</p>
+<pre>
+at com.company.product.ClassName.method(+20);
+</pre>
+<p>J2ME Polish can resolve such offsets automatically:</p>
+<pre>
+at com.company.product.ClassName.java:200
+</pre>
+<p>
+For making this possible, please install the <i>jad</i> decompiler from <a href="http://www.kpdus.com/jad.html" target="_blank">http://www.kpdus.com/jad.html</a> to <i>${polish.home}/bin</i>.
+</p>
+<p>
+Last but not least don't forget to add a catched exception as the last parameter to a log entry in this way:
+</p>
+<pre>
+} catch (Exception e) {
+	//#debug error
+	System.err.println("doSomething() failed" <b>+ e</b>);
+}
 </pre>
 
 <%include end.txt %>
