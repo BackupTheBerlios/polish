@@ -298,6 +298,11 @@
 			<%else %>
 				<div class="secondLevelLink"><a href="<%= basedir %>docs/rmi.html">RMI &amp; XML-RPC</a></div>
 			<%endif %>			
+			<%ifdef inDocumentationSection.logging %>
+				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/logging.html">Logging</a></div>
+			<%else %>
+				<div class="secondLevelLink"><a href="<%= basedir %>docs/logging.html">Logging</a></div>
+			<%endif %>			
 			<%ifdef inDocumentationSection.build %>
 				<div id="currentSecondLevelLink"><a href="<%= basedir %>docs/build.html">Building</a></div>
 				<div id="thirdLevel">
