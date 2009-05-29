@@ -451,6 +451,7 @@ public class Graphics
 		this.canvas = canvas;
 		this.paint = new Paint();
 		this.paint.setStyle(Style.STROKE);
+		this.paint.setPathEffect(null);
 		this.paint.setAntiAlias(true);
 		this.paint.setSubpixelText(true);
 		this.font = Font.getDefaultFont();
@@ -681,18 +682,18 @@ public class Graphics
 	 * order byte of
 	 * this value is ignored.
 	 * 
-	 * @param RGB - the color being set
+	 * @param rgb - the color being set
 	 * @see getColor()
 	 */
-	public void setColor(int RGB)
+	public void setColor(int rgb)
 	{
-		//add full opacity for RGB values 
-		if((RGB >> 24) == 0)
+		//add full opacity for RGB values
+		if((rgb >> 24) == 0)
 		{
-			RGB += 0xFF000000;
+			rgb |= 0xFF000000;
 		}
 		
-		this.paint.setColor(RGB);
+		this.paint.setColor(rgb);
 	}
 
 	/**
@@ -807,6 +808,9 @@ public class Graphics
 	public int getClipWidth()
 	{
 		Rect rect = this.canvas.getClipBounds();
+		if(rect.top == 0 && rect.bottom == 0 && rect.left == 0 && rect.right == 0 ) {
+			return this.canvas.getWidth();
+		}
 		return rect.right - rect.left;
 	}
 
@@ -819,6 +823,9 @@ public class Graphics
 	public int getClipHeight()
 	{
 		Rect rect = this.canvas.getClipBounds();
+		if(rect.top == 0 && rect.bottom == 0 && rect.left == 0 && rect.right == 0 ) {
+			return this.canvas.getHeight();
+		}
 		return rect.bottom - rect.top;
 	}
 
@@ -879,7 +886,10 @@ public class Graphics
 		y1 += this.translateY;
 		x2 += this.translateX;
 		y2 += this.translateY;
+		float strokeWidth = this.paint.getStrokeWidth();
+		this.paint.setStrokeWidth(2);
 		this.canvas.drawLine(x1, y1, x2, y2, this.paint);
+		this.paint.setStrokeWidth(strokeWidth);
 	}
 
 	/**

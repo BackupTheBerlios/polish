@@ -193,7 +193,7 @@ public class AndroidDisplay extends View implements NativeDisplay, OnTouchListen
 	private static AndroidDisplay instance;
 
 	// This is just a fallback
-	Bitmap bitmap = Bitmap.createBitmap(320,455,Bitmap.Config.ARGB_4444);
+	Bitmap bitmap = Bitmap.createBitmap(320,455,Bitmap.Config.ARGB_8888);
 	
 	/** This instance may be null*/
 	private de.enough.polish.android.lcdui.Canvas currentPolishCanvas;

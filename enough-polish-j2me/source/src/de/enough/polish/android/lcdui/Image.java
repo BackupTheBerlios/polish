@@ -255,7 +255,8 @@ public class Image extends Object
 	 */
 	public static Image createImage(int width, int height)
 	{
-		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+//		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		return new Image( bitmap );
 	}
 
@@ -581,7 +582,7 @@ public class Image extends Object
 	 */
 	public static Image createRGBImage(int[] rgb, int width, int height, boolean processAlpha)
 	{
-		return new Image(Bitmap.createBitmap(rgb,width, height, Bitmap.Config.ARGB_4444));
+		return new Image(Bitmap.createBitmap(rgb,width, height, Bitmap.Config.ARGB_8888));
 	}
 
 	/**
